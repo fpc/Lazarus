@@ -318,27 +318,34 @@
         <seealso/>
       </element>
       <element name="TStatusPanel.PanelChanged.Parts">
-        <short/>
+        <short>Set type with the parts changed on the status panel.</short>
       </element>
 
       <element name="TStatusPanel.SetIndex">
         <short>
-          <var>SetIndex</var> saves the old index value, checks that the supplied value is different and then calls inherited method.
+          Sets the value for the Index property.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SetIndex</var> saves the old index value, checks that the supplied value is different and then calls inherited method.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
         </seealso>
       </element>
       <element name="TStatusPanel.SetIndex.Value">
-        <short/>
+        <short>New value for the Index property.</short>
       </element>
 
       <element name="TStatusPanel.Create">
         <short>
-          <var>Create</var> - constructor for <var>TStatusPanel</var>: sets default width, alignment and bevel, calls inherited <var>Create</var> and loads into StatusBar.
+          Constructor for the class instance.
         </short>
         <descr>
+          <p>
+            <var>Create</var> is the constructor for <var>TStatusPanel</var>. It  sets default values for the width, alignment and bevel, calls the inherited <var>Create</var> method, and loads the class instance into StatusBar.
+          </p>
         </descr>
         <seealso>
           <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
@@ -350,31 +357,51 @@
 
       <element name="TStatusPanel.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TStatusPanel</var>: calls inherited <var>Destroy</var> and removes itself from the StatusBar.
+          Destructor for the class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Destroy</var> is the destructor for <var>TStatusPanel</var> and calls the inherited Destroy method. It removes itself from the StatusBar by calling its InvalidatePanel method.
+          </p>
+        </descr>
         <seealso>
+          <link id="TStatusPanel.StatusBar"/>
+          <link id="TStatusBar.InvalidatePanel"/>
           <link id="#rtl.Classes.TCollectionItem.Destroy">TCollectionItem.Destroy</link>
         </seealso>
       </element>
 
       <element name="TStatusPanel.Assign">
         <short>
-          <var>Assign</var> copies text, width, alignment, bevel and style properties from <var>Source</var> if it is of correct type, otherwise calls inherited <var>Assign</var> (which will probably raise an exception).
+          Implements persistence for the class type.
         </short>
-        <descr/>
+        <descr>
+          <var>Assign</var> copies text, width, alignment, bevel and style properties from <var>Source</var> if it is of correct type, otherwise calls inherited <var>Assign</var> (which will probably raise an exception).
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
         </seealso>
       </element>
       <element name="TStatusPanel.Assign.Source">
-        <short>Class instance with the values stored in the status panel.</short>
+        <short>
+          Class instance with the values stored in the status panel.
+        </short>
       </element>
 
       <element name="TStatusPanel.StatusBar">
-        <short>The <var>StatusBar</var> that contains this <var>StatusPanel</var></short>
-        <descr/>
-        <seealso/>
+        <short>
+          Gets the status bar which contains the class instance.
+        </short>
+        <descr>
+          <p>
+            <var>StatusBar</var> is a <var>TStatusBar</var> function used to retrieve the status bar where the class instance is displayed. It uses the Collection which owns the item to access its StatusBar property. If the Collection is not derived from TStatusPanels, the return value is <b>Nil</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TStatusBar"/>
+          <link id="TStatusPanels.StatusBar"/>
+          <link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
+        </seealso>
       </element>
       <element name="TStatusPanel.StatusBar.Result">
         <short>Status bar where the panel is displayed.</short>
@@ -390,47 +417,89 @@
 
       <element name="TStatusPanel.Bevel">
         <short>The type of <var>Bevel</var> for the display.</short>
-        <descr>Only supported on Windows.</descr>
+        <descr>
+          <p>
+            Supported for the Windows platform only.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TStatusPanel.BiDiMode">
-        <short>Introduces BiDiMode support not present in the ancestor class.</short>
+        <short>
+          Introduces BiDiMode support not present in the ancestor class.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TStatusPanel.ParentBiDiMode">
-        <short>Introduces BiDiMode support not present in the ancestor class.</short>
+        <short>
+          Introduces BiDiMode support not present in the ancestor class.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TStatusPanel.Style">
         <short>
-          <var>Style</var> - whether text or something drawn by the owner.
+          Indicates whether the panel contains text or is owner-drawn.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Style</var> is a <var>TStatusPanelStyle</var> property which indicates whether the panel is drawn as text, or uses an owner-draw routine to render the status panel.
+          </p>
+          <dl>
+            <dt>psText</dt>
+            <dd>
+              Indicates that the panel draws its Text on the panel. Causes the widgetset class to send a message which sets the text for the panel handle.
+            </dd>
+            <dt>psOwnerDraw</dt>
+            <dd>
+              Indicates that the panel is drawn using the OnDrawPanel routine assigned to the StatusBar for the panel. Causes an additional drawing flag to be set when the widgetset class updates the panel on its StatusBar.
+            </dd>
+          </dl>
+          <p>
+            The default value for the property is <var>psText</var>. Changing the value for the property causes the Changed method to be called to update the collection item in its owner. PanelChanged is also called to invalidate the border for the status bar panel.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TStatusPanel.Text"/>
+          <link id="TStatusPanel.Alignment"/>
+          <link id="TStatusPanel.BiDiMode"/>
+          <link id="TStatusPanel.ParentBiDiMode"/>
+          <link id="TStatusPanel.PanelChanged"/>
+          <link id="TStatusPanelStyle"/>
+          <link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+        </seealso>
       </element>
 
       <element name="TStatusPanel.Text">
         <short>
-          <var>Text</var> - the string for display in the StatusBar.
+          Text displayed on the status bar panel.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Text</var> is a <var>TCaption</var> property with the text displayed for the status bar panel. Changing the value for the property causes the Changed method to be called to update the collection item in its owner. PanelChanged is also called to invalidate the text area for the status bar panel.
+          </p>
+          <p>
+            Text is used when the Style property contains psText. Set Style to psOwnerDraw to use the OnDrawPanel event handler in the StatusBar to render the panel.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TStatusPanel.Width">
-        <short>The <var>Width</var> of this panel on the StatusBar.</short>
+        <short>
+          The Width for the panel on the StatusBar.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TStatusPanels">
         <short>
-          <var>TStatusPanels</var> - the collection of Status Panels in this StatusBar.
+          A collection of panels displayed on a status bar control.
         </short>
         <descr/>
         <seealso/>
@@ -524,32 +593,101 @@
       </element>
 
       <element name="TStatusPanels.Items">
-        <short>Provides indexed access to the TStatusPanel items in the collection.</short>
-        <descr/>
+        <short>
+          Provides indexed access to the TStatusPanel items in the collection.
+        </short>
+        <descr>
+          <p>
+            <var>Items</var> is a <var>TStatusPanel</var> property which allows access to a status bar panel by an ordinal position specified in Index. Values in the Index argument must be in the range 0..Count-1.
+          </p>
+          <p>
+            Items is the default property for the class instance, and allows access using either of the following:
+          </p>
+<code>// var AStatusBar: TStatusBar;
+AStatusBar.Panels.Items[0];
+AStatusBar.Panels[0];
+</code>
+          <p>
+            It is also the target member for an enumerator. For example:
+          </p>
+<code>// var AStatusBar: TStatusBar;
+//   APanel: TStatusPanel;
+for APanel in AStatusBar.Panels do
+begin
+  APanel.Alignment := taCenter;
+  APanel.Width := 88;
+end;
+</code>
+          <p>
+            Use methods like Add, Delete, and Clear to maintain the items in the collection.
+          </p>
+        </descr>
         <seealso>
+          <link id="TStatusPanel"/>
+          <link id="TStatusPanels.Add"/>
+          <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
+          <link id="#rtl.classes.TCollection.Delete">TCollection.Delete</link>
           <link id="#rtl.classes.TCollection.Items">TCollection.Items</link>
         </seealso>
       </element>
       <element name="TStatusPanels.Items.Index">
-        <short>Ordinal position for the collection item.</short>
+        <short>Ordinal position for the status bar panel.</short>
       </element>
 
       <element name="TStatusPanels.StatusBar">
         <short>
-          The <var>StatusBar</var> to which this collection of Status Panels belongs.
+          The <var>StatusBar</var> to which this collection of status panels belongs.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>StatusBar</var> is a read-only <var>TStatusBar</var> property and contains the status bar that is the owner of the items in the collection. It provides access to the properties and methods in the status bar from methods in the collection. Its primary purpose is to notify the status bar when panel(s) in the collection have been added or modified.
+          </p>
+          <p>
+            The property value is assigned in the <var>Create</var> constructor, and uses the value passed as an argument to the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TStatusPanels.Create"/>
+          <link id="TStatusPanels.Add"/>
+          <link id="TStatusBar"/>
+          <link id="#rtl.classes.TCollection">TCollection</link>
+        </seealso>
       </element>
 
       <element name="TSBCreatePanelClassEvent">
         <short>
-          <var>TSBCreatePanelClassEvent</var> - generic event handling procedure for creating a Status Bar panel class.
+          Specifies an event handler signalled to get the class type for a new status bar panel.
         </short>
+        <descr>
+          <p>
+            <var>TSBCreatePanelClassEvent</var> is an object procedure type and specifies an event handler used to get the class type needed for a new status bar panel instance.
+          </p>
+          <p>
+            <var>Sender</var> is the status bar where the panel will be created. It must be cast to TStatusBar to access properties and method specific to the class type.
+          </p>
+          <p>
+            <var>PanelClass</var> is a variable argument with the class type used to create the new panel instance. It can be updated in the event handler to use the value from the GetPanelClass method in the status bar, or another class type if desired.
+          </p>
+          <p>
+            TSBCreatePanelClassEvent is the type used for the <var>OnCreatePanelClass</var> event handler in <var>TStatusBar</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TStatusBar.OnCreatePanelClass"/>
+          <link id="TStatusBar.CreatePanel"/>
+        </seealso>
+      </element>
+      <element name="TSBCreatePanelClassEvent.Sender">
+        <short>Object (TStatusBar) for the event.</short>
+      </element>
+      <element name="TSBCreatePanelClassEvent.PanelClass">
+        <short>Class reference for the new panel.</short>
       </element>
 
       <element name="TDrawPanelEvent">
-        <short>Specified an event handler used to draw a panel in a status bar.</short>
+        <short>
+          Specifies an event handler used to draw a panel in a status bar.
+        </short>
         <descr>
           <p>
             <var>TDrawPanelEvent</var> is the type used to implement the <var>OnDrawPanel</var> property in <var>TStatusBar</var>.
@@ -571,14 +709,14 @@
 
       <element name="TStatusBar">
         <short>
-          <var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status.
+          Displays a panel along the bottom of a form with current status information.
         </short>
         <descr>
           <p>
             <var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status. The bar may consist of a single <var>SimplePanel</var> in which case the displayed text is contained in <var>SimpleText</var>.
           </p>
           <p>
-            However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar whose properties are described in <var>Panels</var>.
+            However if <var>SimplePanel</var> is <b>False</b>, then there can be multiple panels or sub-sections of the status bar whose properties are described in <var>Panels</var>.
           </p>
           <p>
             The property <var>SimpleText</var> can be assigned in code to display the value of some variable, such as the position of the Splitter in the example.
@@ -753,7 +891,7 @@
 
       <element name="TStatusBar.DoSetApplicationHint">
         <short>
-          <var>DoSetApplicationHint</var> - specifies a hint string and returns True if successful.
+          <var>DoSetApplicationHint</var> - specifies a hint string and returns <b>True</b> if successful.
         </short>
         <descr/>
         <seealso/>
@@ -762,7 +900,9 @@
       <element name="TStatusBar.DoHint">
         <short>Displays the hint for the status bar.</short>
         <descr>
-          <var>DoHint</var> shows the hint text for the control and returns True when successful. Uses the <var>OnHint</var> event handler.
+          <p>
+            <var>DoHint</var> shows the hint text for the control and returns <b>True</b> when successful. Uses the <var>OnHint</var> event handler.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -836,9 +976,13 @@
 
       <element name="TStatusBar.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TStatusBar</var>: frees canvas and panels, then calls inherited <var>Destroy</var>.
+          Destructor for the class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Destroy</var> is the destructor for <var>TStatusBar</var>. It  frees the Canvas and panels, and calls the inherited <var>Destroy</var> method.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
           <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
@@ -868,14 +1012,16 @@
 
       <element name="TStatusBar.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - starts the update process.</short>
+          Starts an update process for the status bar.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TStatusBar.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finishes the update process.</short>
+          Finishes an update process for the status bar.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -898,7 +1044,7 @@
             <var>GetPanelIndexAt</var> gets the ordinal position for the panel at the specified coordinates. The return value is <b>-1</b> when <var>Panels</var> have not been defined in the status bar. No actions are performed in the method when Panels is empty.
           </p>
           <p>
-            GetPanelIndexAt uses the display rectangle for the control to determine in the specified coordinates are within one of the Panels defined for the control. When True, each of the items in the Panels collection are examined to determine if the point is within a specific panel. The ordinal position for the panel is assigned as the return value.
+            GetPanelIndexAt uses the display rectangle for the control to determine in the specified coordinates are within one of the Panels defined for the control. When <b>True</b>, each of the items in the Panels collection are examined to determine if the point is within a specific panel. The ordinal position for the panel is assigned as the return value.
           </p>
         </descr>
         <seealso/>
@@ -909,30 +1055,37 @@
         </short>
       </element>
       <element name="TStatusBar.GetPanelIndexAt.X">
-        <short>Horizontal coordinate to locate in the Panels for the status bar.</short>
+        <short>
+          Horizontal coordinate to locate in the Panels for the status bar.
+        </short>
       </element>
       <element name="TStatusBar.GetPanelIndexAt.Y">
-        <short>Vertical  coordinate to locate in the Panels for the status bar.</short>
+        <short>
+          Vertical  coordinate to locate in the Panels for the status bar.
+        </short>
       </element>
 
       <element name="TStatusBar.SizeGripEnabled">
         <short>
-          <var>SizeGripEnabled</var> - returns True if the size-grip (an area at the bottom of the statusbar where a mouse can grip to change the size) is enabled.
+          <var>SizeGripEnabled</var> - returns <b>True</b> if the size-grip (an area at the bottom of the statusbar where a mouse can grip to change the size) is enabled.
         </short>
       </element>
 
       <element name="TStatusBar.UpdatingStatusBar">
         <short>
-          <var>UpdatingStatusBar</var> - returns True if the status bar is being updated.</short>
+          Returns <b>True</b> if the status bar is being updated.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStatusBar.UpdatingStatusBar.Result">
-        <short>True if the status bar is being updated.</short>
+        <short><b>True</b> if the status bar is being updated.</short>
       </element>
 
       <element name="TStatusBar.Canvas">
-        <short>The <var>Canvas</var> where the Panels for the StatusBar are are Painted.</short>
+        <short>
+          The <var>Canvas</var> where the Panels for the StatusBar are painted.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -943,7 +1096,7 @@
         <short>Specifies the placement of the control inside its Parent.</short>
         <descr>
           <p>
-            Align is a TAlign property which specifies how the control is aligned to its parent control. The default value for the property is alBottom in TStatusBar.
+            <var>Align</var> is a <var>TAlign</var> property which specifies how the control is aligned to its parent control. The default value for the property is <var>alBottom</var> in <var>TStatusBar</var>.
           </p>
         </descr>
         <seealso>
@@ -959,7 +1112,7 @@
         </short>
         <descr>
           <p>
-            The default value for the property is False.
+            The default value for the property is <b>False</b>.
           </p>
         </descr>
       </element>
@@ -970,7 +1123,7 @@
         </short>
         <descr>
           <p>
-            The default value for the property is True in TStatusBar.
+            The default value for the property is <b>True</b> in <var>TStatusBar</var>.
           </p>
         </descr>
         <seealso>
@@ -986,10 +1139,10 @@
         <short>The background color of the control.</short>
         <descr>
           <p>
-            The default value for the property is clDefault or clBtnFace (depending on the UseCLDefault compiler define).If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to an actual TColor value.
+            The default value for the property is clDefault or clBtnFace (depending on the UseCLDefault compiler define). If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to an actual TColor value.
           </p>
           <p>
-            Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+            Convenience routines which obtain the color by resolving clDefault and ParentColor are provided in the TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent methods.
           </p>
         </descr>
         <seealso>
@@ -1005,7 +1158,9 @@
       <element name="TStatusBar.Font" link="#lcl.controls.TControl.Font"/>
 
       <element name="TStatusBar.Panels">
-        <short>Collection with the TStatusPanel instances defined for the control.</short>
+        <short>
+          Collection with the TStatusPanel instances defined for the control.
+        </short>
         <descr>
           <p>
             <var>Panels</var> is a collection used to store <var>TStatusPanel</var> class instances added to the status bar. Panels are significant when the <var>SimplePanel</var> property is set to <b>False</b>; when SimplePanel contains <b>True</b>, the status bar displays the value in <var>SimpleText</var> across the entire width for the status bar.
@@ -1025,10 +1180,11 @@
 
       <element name="TStatusBar.SimpleText">
         <short>
-          <var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar.</short>
+          <var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar.
+        </short>
         <descr>
           <p>
-            <var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar. This is displayed if <var>SimplePanel</var> is true; otherwise the information in Panels is displayed.
+            <var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar. This is displayed if <var>SimplePanel</var> is <b>True</b>; otherwise the information in Panels is displayed.
           </p>
         </descr>
       </element>
@@ -1087,14 +1243,16 @@
         <short>Indicates if the control is visible.</short>
         <descr>
           <p>
-            Allows the control, and all of its children, to be displayed or hidden. Visible is set to True by Show , or to False by Hide. Calling these methods is equivalent to setting the Visible property.
+            Allows the control, and all of its children, to be displayed or hidden. Visible is set to <b>True</b> in the <var>Show</var> method, and to <b>False</b> in the <var>Hide</var> method. Calling these methods is equivalent to setting the value in the Visible property.
           </p>
           <p>
-            The default value for the property is True in TStatusBar.
+            The default value for the property is <b>True</b> in <var>TStatusBar</var>.
           </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+          <link id="#lcl.controls.TControl.Show">TControl.Show</link>
+          <link id="#lcl.controls.TControl.Hide">TControl.Hide</link>
         </seealso>
       </element>
 
@@ -1357,14 +1515,18 @@
         </seealso>
       </element>
       <element name="TCustomPage.DialogChar.Result">
-        <short>True if message contains an accelerator key handled in the method.</short>
+        <short>
+          <b>True</b> if message contains an accelerator key handled in the method.
+        </short>
       </element>
       <element name="TCustomPage.DialogChar.Message">
         <short>Message examined in the method.</short>
       </element>
 
       <element name="TCustomPage.DoHide">
-        <short>Performs actions needed when Visible is changed to False.</short>
+        <short>
+          Performs actions needed when Visible is changed to <b>False</b>.
+        </short>
         <descr>
           <p>
             <var>DoHide</var> is a method used to perform actions needed when the <var>Visible</var> property is changed to <b>False</b>. DoHide signals the <var>OnHide</var> event handler (when assigned).
@@ -1381,7 +1543,9 @@
       </element>
 
       <element name="TCustomPage.DoShow">
-        <short>Performs actions needed when Visible is changed to True.</short>
+        <short>
+          Performs actions needed when Visible is changed to <b>True</b>.
+        </short>
         <descr>
           <p>
             <var>DoShow</var> is a method used to perform actions needed when <var>Visible</var> property is changed to <b>True</b>. DoShow signals the OnShow event handler (when assigned).
@@ -1459,7 +1623,7 @@
         </seealso>
       </element>
       <element name="TCustomPage.CanTab.Result">
-        <short>Always returns False.</short>
+        <short>Always returns <b>False</b>.</short>
       </element>
 
       <element name="TCustomPage.IsControlVisible">
@@ -1485,7 +1649,7 @@
         </seealso>
       </element>
       <element name="TCustomPage.IsControlVisible.Result">
-        <short>True when the control is visible.</short>
+        <short><b>True</b> when the control is visible.</short>
       </element>
 
       <element name="TCustomPage.HandleObjectShouldBeVisible" link="#lcl.controls.TControl.HandleObjectShouldBeVisible">
@@ -1506,10 +1670,10 @@
             <var>VisibleIndex</var> is an <var>Integer</var> function used to get the ordinal position for the page instance within the list of visible pages for the Parent control.
           </p>
           <p>
-            When Parent is a <var>TCustomTabControl</var> descendant, its TCustomPage instances are examined to find the current class instance. At run-time, only pages with the TabVisible property set to True are considered in the method. At design-time, all pages are examined.
+            When Parent is a <var>TCustomTabControl</var> descendant, its TCustomPage instances are examined to find the current class instance. At run-time, only pages with the TabVisible property set to <b>True</b> are considered in the method. At design-time, all pages are examined.
           </p>
           <p>
-            The return value is the relative position in the list of visible pages where the current class instance was found. The return value is -1 if the current page was not found in the Parent control, or when none of the pages in the Parent control  are visible.
+            The return value is the relative position in the list of visible pages where the current class instance was found. The return value is -1 if the current page was not found in the Parent control, or when none of the pages in the Parent control are visible.
           </p>
           <p>
             When Parent is not derived from TCustomTabControl, the return value is always <b>-1</b>.
@@ -2361,7 +2525,7 @@
         <short>Locates a visible page in the tab control.</short>
         <descr>
           <p>
-            <var>FindVisiblePage</var> is used to locate a Page in the tab control with its TabVisible property set to True.
+            <var>FindVisiblePage</var> is used to locate a Page in the tab control with its TabVisible property set to <b>True</b>.
           </p>
           <p>
             Index specifies the ordinal position in Pages property that is the search locus. FindVisiblePage searches the Page collection in ascending order starting at the position in Index. If a visible page is not found, Page is searched in descending order starting at Index -1.
@@ -2391,11 +2555,13 @@
         <seealso/>
       </element>
       <element name="TCustomTabControl.IsStoredActivePage.Result">
-        <short>Always returns False in TCustomTabControl.</short>
+        <short>Always returns <b>False</b> in TCustomTabControl.</short>
       </element>
 
       <element name="TCustomTabControl.MoveTab">
-        <short>Moves the specified page control to the position in NewIndex.</short>
+        <short>
+          Moves the specified page control to the position in NewIndex.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2563,7 +2729,9 @@
       </element>
 
       <element name="TCustomTabControl.ShowCurrentPage">
-        <short>Ensures that the current page has its Visible property set to True.</short>
+        <short>
+          Ensures that the current page has its Visible property set to <b>True</b>.
+        </short>
         <descr>
           <p>
             <var>ShowCurrentPage</var> checks the value in <var>PageIndex</var> to determine if a valid page index has been specified. No actions are performed in the method when PageIndex is less than <b>0</b> or greater than <b>PageCount - 1</b>.
@@ -2806,7 +2974,9 @@
         </seealso>
       </element>
       <element name="TCustomTabControl.DialogChar.Result">
-        <short>True if the accelerator was handled in the active page.</short>
+        <short>
+          <b>True</b> if the accelerator was handled in the active page.
+        </short>
       </element>
       <element name="TCustomTabControl.DialogChar.Message">
         <short>Message with the accelerator key examined in the method.</short>
@@ -2907,7 +3077,7 @@
         </short>
         <descr>
           <p>
-            <var>Notification</var> is overridden in <var>TCustomTabControl</var> to ensure that resources allocated for the Images property are Nil'd when the component is removed.
+            <var>Notification</var> is overridden in <var>TCustomTabControl</var> to ensure that resources allocated for the Images property are <b>Nil</b>'d when the component is removed.
           </p>
         </descr>
         <seealso>
@@ -3038,7 +3208,7 @@
         <seealso/>
       </element>
       <element name="TCustomTabControl.CanChange.Result">
-        <short>Always returns True.</short>
+        <short>Always returns <b>True</b>.</short>
       </element>
 
       <element name="TCustomTabControl.DisplayRect">
@@ -3435,7 +3605,7 @@
 
       <element name="TCustomTabControl.ShowTabs">
         <short>
-          <var>ShowTabs</var> - if True (default condition), show the tabs for each page.
+          Shows the tabs for each page when set to <b>True</b> (default).
         </short>
         <descr/>
         <seealso/>
@@ -3612,13 +3782,13 @@
         <short>Indicates if the tab is visible in the Parent control.</short>
         <descr>
           <p>
-            TabVisible indicates if the Tab is visible in the Parent control. The default value for the property is True in TTabSheet.
+            TabVisible indicates if the Tab is visible in the Parent control. The default value for the property is <b>True</b> in TTabSheet.
           </p>
           <p>
             Changing the value in the property cause the Parent control to be updated to reflect the new value. No actions are performed in the method at design-time, or when the property value is not different than the stored value.
           </p>
           <p>
-            When the Parent control has been assigned and has a handle allocated, the TCustomTabControl in Parent is updated to reflect the new value for the property. When True, the active page in the Parent control is changed to the current page instance if one has not already been assigned in the Parent. The page and its handle are removed from the Tab control when the property value is False.
+            When the Parent control has been assigned and has a handle allocated, the TCustomTabControl in Parent is updated to reflect the new value for the property. When <b>True</b>, the active page in the Parent control is changed to the current page instance if one has not already been assigned in the Parent. The page and its handle are removed from the Tab control when the property value is <b>False</b>.
           </p>
           <p>
             Use IsControlVisible to determine if the page is currently the active page displayed in the Parent tab control.
@@ -3844,9 +4014,13 @@
           <var>SelectNextPage</var> - checking that its tab is visible.
         </short>
         <descr>
-          <p>If GoForward is True, goes to next (higher index) page;</p>
-          <p>if False, goes to previous (lower index)</p>
-          <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>
+          <p>
+            If GoForward is <b>True</b>, goes to next (higher index) page.
+            If <b>False</b>, goes to previous (lower index)
+          </p>
+          <p>
+            If <var>CheckTabVisible</var> is <b>True</b>, will only move if the tab is Visible.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -4105,7 +4279,7 @@
           </p>
           <p>Among the defaults set are:</p>
           <p>
-            HotTrack, Multiline, MultiSelect, OwnerDraw, RaggedRight, ScrollOpposite - all False; Tab height and width to zero
+            HotTrack, Multiline, MultiSelect, OwnerDraw, RaggedRight, ScrollOpposite - all <b>False</b>; Tab height and width to zero
           </p>
         </descr>
         <seealso>
@@ -4242,7 +4416,7 @@
 
       <element name="TTabControlStrings.IsUpdating">
         <short>
-          <var>IsUpdating</var> - returns True if in the process of updating.
+          <var>IsUpdating</var> - returns <b>True</b> if in the process of updating.
         </short>
         <descr/>
         <seealso/>
@@ -4283,7 +4457,7 @@
 
       <element name="TTabControlStrings.MultiLine">
         <short>
-          <var>MultiLine</var> - if True, multiple lines may be used in Tab strings.
+          <var>MultiLine</var> - if <b>True</b>, multiple lines may be used in Tab strings.
         </short>
         <descr/>
         <seealso/>
@@ -4291,7 +4465,7 @@
 
       <element name="TTabControlStrings.MultiSelect">
         <short>
-          <var>MultiSelect</var> - if True, multiple tabs can be selected, for example by holding down Shift or Ctrl keys while selecting.
+          <var>MultiSelect</var> - if <b>True</b>, multiple tabs can be selected, for example by holding down Shift or Ctrl keys while selecting.
         </short>
         <descr/>
         <seealso/>
@@ -4299,14 +4473,14 @@
 
       <element name="TTabControlStrings.OwnerDraw">
         <short>
-          <var>OwnerDraw</var> - if True, Owner object (or calling routine) can specify drawing methods.
+          <var>OwnerDraw</var> - if <b>True</b>, Owner object (or calling routine) can specify drawing methods.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTabControlStrings.RaggedRight">
         <short>
-          <var>RaggedRight</var> - if True, strings are un-justified or un-aligned with ragged right margin.
+          <var>RaggedRight</var> - if <b>True</b>, strings are un-justified or un-aligned with ragged right margin.
         </short>
         <descr/>
         <seealso/>
@@ -4314,7 +4488,7 @@
 
       <element name="TTabControlStrings.ScrollOpposite">
         <short>
-          <var>ScrollOpposite</var> - if True, scrolling proceeds in opposite direction to usual.
+          <var>ScrollOpposite</var> - if <b>True</b>, scrolling proceeds in opposite direction to usual.
         </short>
         <descr/>
         <seealso/>
@@ -4747,7 +4921,7 @@
 
       <element name="TTabControlNoteBookStrings.SetUpdateState">
         <short>
-          <var>SetUpdateState</var> - if Updating is True, calls <var>BeginUpdate</var>; otherwise calls <var>EndUpdate</var>.
+          <var>SetUpdateState</var> - if Updating is <b>True</b>, calls <var>BeginUpdate</var>; otherwise calls <var>EndUpdate</var>.
         </short>
         <descr/>
         <seealso>
@@ -5133,7 +5307,7 @@
             <var>SetTabHeight</var> is used to set the height for the tabs displayed on the control to the value in <var>AValue</var>. SetTabHeight calls <var>GetCapabilities</var> to determine if the value <var>nbcTabsSizeable</var> is included in the capabilities for the control. No actions are performed in the method when nbcTabsSizeable is <b>not</b> present in the controls capabilities list.
           </p>
           <p>
-            SetTabHeight propogates the new tab height to the Notebook which contains the <var>Tabs</var> in the control.
+            SetTabHeight propagates the new tab height to the Notebook which contains the <var>Tabs</var> in the control.
           </p>
         </descr>
         <seealso/>
@@ -5226,7 +5400,7 @@
         <short>Indicates whether the tab control can update its Tabs property.</short>
         <descr>
           <p>
-            Signals the OnChanging event handler (when assigned) to get the return value for the method. The default return value is True when OnChanging has not been assigned.
+            Signals the OnChanging event handler (when assigned) to get the return value for the method. The default return value is <b>True</b> when OnChanging has not been assigned.
           </p>
         </descr>
         <seealso>
@@ -5235,18 +5409,20 @@
         </seealso>
       </element>
       <element name="TTabControl.CanChange.Result">
-        <short>True if the Tabs for the control can be modified.</short>
+        <short>
+          <b>True</b> if the Tabs for the control can be modified.
+        </short>
       </element>
 
       <element name="TTabControl.CanShowTab">
         <short>Indicates if the control can show the tab at the specified position.</short>
         <descr>
-          <p>Always returns True in TTabControl.</p>
+          <p>Always returns <b>True</b> in TTabControl.</p>
         </descr>
         <seealso/>
       </element>
       <element name="TTabControl.CanShowTab.Result">
-        <short>Always returns True in TTabControl.</short>
+        <short>Always returns <b>True</b> in TTabControl.</short>
       </element>
       <element name="TTabControl.CanShowTab.ATabIndex">
         <short>Ordinal position for the requested tab.</short>
@@ -5878,16 +6054,16 @@
         </seealso>
       </element>
       <element name="TListItemState.lisCut">
-        <short>The list item has its Cut property set to True.</short>
+        <short>The list item has its Cut property set to <b>True</b>.</short>
       </element>
       <element name="TListItemState.lisDropTarget">
-        <short>The list item has its DropTarget property set to True.</short>
+        <short>The list item has its DropTarget property set to <b>True</b>.</short>
       </element>
       <element name="TListItemState.lisFocused">
-        <short>The list item has its Focused property set to True.</short>
+        <short>The list item has its Focused property set to <b>True</b>.</short>
       </element>
       <element name="TListItemState.lisSelected">
-        <short>The list item has its Selected property set to True.</short>
+        <short>The list item has its Selected property set to <b>True</b>.</short>
       </element>
 
       <element name="TListItemStates">
@@ -6132,7 +6308,7 @@
         <short>Indicates whether icons in a list view can be automatically arranged.</short>
         <descr>
           <p>
-            AutoArrange is a Boolean property which indicates if icons in a list view control can be automatically arranged when items are added to the control. The default value for the property is False.
+            AutoArrange is a Boolean property which indicates if icons in a list view control can be automatically arranged when items are added to the control. The default value for the property is <b>False</b>.
           </p>
           <p>
             AutoArrange is used when the list view uses the vsIcon or vsSmallIcon view styles.
@@ -6148,7 +6324,7 @@
         <short>Indicates if the caption for a list item can wrap into multiple lines.</short>
         <descr>
           <p>
-            WrapText is a Boolean property which indicates if the Caption for a list view item  can be wrapped into multiple lines. The default value for the property is True.
+            WrapText is a Boolean property which indicates if the Caption for a list view item  can be wrapped into multiple lines. The default value for the property is <b>True</b>.
           </p>
           <p>
             The Caption for the item is wrapped when its length exceeds the width for the icon in the list item.
@@ -6514,7 +6690,7 @@
         <seealso/>
       </element>
       <element name="TListItem.IsEqual.Result">
-        <short>True when the list items have the same content.</short>
+        <short><b>True</b> when the list items have the same content.</short>
       </element>
       <element name="TListItem.IsEqual.AItem">
         <short>List item compared to the current class instance.</short>
@@ -6532,11 +6708,15 @@
         </seealso>
       </element>
       <element name="TListItem.IsOwnerData.Result">
-        <short>True if the list item has an owner with a valid handle.</short>
+        <short>
+          <b>True</b> if the list item has an owner with a valid handle.
+        </short>
       </element>
 
       <element name="TListItem.GetCheckedInternal">
-        <short>True if the member variable for the Checked property contains True.</short>
+        <short>
+          <b>True</b> if the member variable for the Checked property contains <b>True</b>.
+        </short>
         <descr>
           <p>
             Used in methods in the widgetset class.
@@ -6619,7 +6799,7 @@
             Destroy sets the internal flag that marks the list item for destruction in the <var>Owner</var>. When the Owner is assigned, its <var>ItemDestroying</var> method is called to signal destruction of the list item in the container.
           </p>
           <p>
-            Destroy free and Nils resources allocated for the <var>SubItems</var> property, and calls the inherited destructor prior to exit.
+            Destroy free and <b>Nil</b>s resources allocated for the <var>SubItems</var> property, and calls the inherited destructor prior to exit.
           </p>
         </descr>
         <seealso>
@@ -6642,7 +6822,9 @@
         <seealso/>
       </element>
       <element name="TListItem.MakeVisible.PartialOK">
-        <short>True is the list item can be partially visible in the control.</short>
+        <short>
+          <b>True</b> is the list item can be partially visible in the control.
+        </short>
       </element>
 
       <element name="TListItem.DisplayRect">
@@ -6699,7 +6881,9 @@
         </seealso>
       </element>
       <element name="TListItem.EditCaption.Result">
-        <short>True if the control is not ReadOnly and the editor is valid, otherwise False.</short>
+        <short>
+           <b>True</b> if the control is not ReadOnly and the editor is valid, otherwise <b>False</b>.
+        </short>
       </element>
 
       <element name="TListItem.GetStates">
@@ -6725,7 +6909,7 @@
 
       <element name="TListItem.Checked">
         <short>
-          <var>Checked</var> - if True, a check mark is present beside the item implying it has been selected.
+          <var>Checked</var> - if <b>True</b>, a check mark is present beside the item implying it has been selected.
         </short>
         <descr/>
         <seealso/>
@@ -6743,14 +6927,14 @@
 
       <element name="TListItem.DropTarget">
         <short>
-          <var>DropTarget</var> - returns True if this is a valid target on the list for dropping.
+          <var>DropTarget</var> - returns <b>True</b> if this is a valid target on the list for dropping.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TListItem.Focused">
-        <short>Property is true if this item has Focus.</short>
+        <short>Property is <b>True</b> if this item has Focus.</short>
         <descr/>
         <seealso/>
       </element>
@@ -6797,10 +6981,10 @@
         </short>
         <descr>
           <p>
-            Selected is a Boolean property which indicates if the list item has been selected. The property value is determined by examining the internal TListItemStates set for the class instance. When lisSelected has been included in the state values, the property is True. Otherwise, the property is False.
+            Selected is a Boolean property which indicates if the list item has been selected. The property value is determined by examining the internal TListItemStates set for the class instance. When lisSelected has been included in the state values, the property is <b>True</b>. Otherwise, the property is <b>False</b>.
           </p>
           <p>
-            Setting a new value for the property causes the value lisSelected to be included in or removed from the internal set. AIsSet indicates whether the state value is set. When True, the state value is included in the set. Otherwise, the state value is excluded.
+            Setting a new value for the property causes the value lisSelected to be included in or removed from the internal set. AIsSet indicates whether the state value is set. When <b>True</b>, the state value is included in the set. Otherwise, the state value is excluded.
           </p>
         </descr>
         <seealso/>
@@ -6920,7 +7104,7 @@
 
       <element name="TOwnerDataListItem.IsOwnerData">
         <short>
-          True if the owner for the list item has been assigned and can be updated in the widgetset class.
+          <b>True</b> if the owner for the list item has been assigned and can be updated in the widgetset class.
         </short>
         <descr/>
         <seealso/>
@@ -6930,7 +7114,7 @@
       </element>
 
       <element name="TOwnerDataListItem.SetDataIndex">
-        <short>Sets the internal index position for the virutal item.</short>
+        <short>Sets the internal index position for the virtual item.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7783,7 +7967,7 @@
             The Changed method is called to signal a change in the values for the collection item.
           </p>
           <p>
-            If ASource is not derived from TListColumn, the inherited method is called using ASource as an argument. An EConvertError exception is raised if ASource has not been assigned (contains Nil).
+            If ASource is not derived from TListColumn, the inherited method is called using ASource as an argument. An EConvertError exception is raised if ASource has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
         <seealso>
@@ -8258,23 +8442,37 @@
 
       <element name="TLVColumnClickEvent">
         <short>
-          <var>TLVColumnClickEvent</var> - generic event handler method for a click on a List View column.
+          Specifies an event handler signalled for a mouse click on a list view column.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVColumnClickEvent</var> is the type used to implement the <var>OnColumnClick</var> property in <var>TCustomListView</var>. TLVColumnClickEvent allows an application to perform actions needed when a click event is handled for a column on the list view control.
+          </p>
+          <p>
+            Use <var>Sender</var> (cast to a TCustomListView type) to access properties and methods in the list view control. Use <var>Column</var> to access properties and methods in the TListColumn instance for the event.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnColumnClick"/>
+          <link id="TListColumn"/>
+        </seealso>
       </element>
       <element name="TLVColumnClickEvent.Sender">
-        <short/>
+        <short>Object (TCustomListView) for the event.</short>
       </element>
       <element name="TLVColumnClickEvent.Column">
-        <short/>
+        <short>TListColumn instance for the event.</short>
       </element>
 
       <element name="TLVColumnRClickEvent">
         <short>
-          <var>TLVColumnRClickEvent</var> - generic event handler method for a right click on a List View column.
+          Specifies an event handler signalled for a right mouse click on a list view column.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Not used in the current LCL version.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TLVColumnRClickEvent.Sender">
@@ -8692,7 +8890,7 @@
             <var>TListViewProperties</var> is a set type used to store zero or more values from the <var>TListViewProperty</var> enumeration.
           </p>
           <p>
-            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the corresponding property in TCustomListView has been set to True. The value is excluded from the set when the corresponding property in TCustomListView is set to False.
+            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the corresponding property in TCustomListView has been set to <b>True</b>. The value is excluded from the set when the corresponding property in TCustomListView is set to <b>False</b>.
           </p>
           <p>
             TListViewProperties is the type used to implement the internal FProperties member in TCustomListView.
@@ -9312,6 +9510,7 @@
           <link id="TCustomListView.StateImages"/>
           <link id="TCustomListView.GetImageList"/>
           <link id="TListViewImageList"/>
+          <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
         </seealso>
       </element>
       <element name="TCustomListView.SetImageList.ALvilOrd">
@@ -9395,7 +9594,7 @@
       </element>
       <element name="TCustomListView.SetItemVisible.APartialOK">
         <short>
-          True when the list item can be partially visible in the control; False requires the item to be fully visible to be displayed.
+          <b>True</b> when the list item can be partially visible in the control; <b>False</b> requires the item to be fully visible to be displayed.
         </short>
       </element>
 
@@ -9551,8 +9750,7 @@
             Toggles the Boolean value in the ShowEditorQueued property, and calls the ShowEditor method.
           </p>
           <p>
-            QueuedShowEditor is called when the ShowEditorQueued property is set to True.
-            Application.QueueAsyncCall is used to asynchronously execute the method.
+            QueuedShowEditor is called when the ShowEditorQueued property is set to <b>True</b>. Application.QueueAsyncCall is used to asynchronously execute the method.
           </p>
         </descr>
         <seealso/>
@@ -9657,7 +9855,7 @@
         <short>Clears the current selection for the control.</short>
         <descr>
           <p>
-            <var>InvalidateSelected</var> is a method used to clear the current selection for the control. It sets the value in the Selected property to Nil, and resets the internal memeber used to track the selected item in OwnerData mode. It also updates the control flags to remove the value lffSelectedValid.
+            <var>InvalidateSelected</var> is a method used to clear the current selection for the control. It sets the value in the Selected property to  <b>Nil</b>, and resets the internal member used to track the selected item in OwnerData mode. It also updates the control flags to remove the value lffSelectedValid.
           </p>
           <p>
             InvalidateSelected is called when a list item is deleted which is the current value in Selected, or when all list items are deleted for the control. It is also called when a new value is assigned to Selected.
@@ -9764,7 +9962,7 @@
             <var>ItemDeleted</var> is a method called when the specified list item is removed from the Items for the control.
           </p>
           <p>
-            ItemDeleted ensures that the list item in AItem is not referenced as a selected or focused item on the control. If AItem is the value in Selected, Selected is set to Nil and the control flags are updated to removed the valid selection flag (ffSelectedValid). If AItem is the focused list item on the control, the focus reference is set to Nil.
+            ItemDeleted ensures that the list item in AItem is not referenced as a selected or focused item on the control. If AItem is the value in Selected, Selected is set to  <b>Nil</b> and the control flags are updated to removed the valid selection flag (ffSelectedValid). If AItem is the focused list item on the control, the focus reference is set to  <b>Nil</b>.
           </p>
           <p>
             ItemDeleted is called when the TListItem instance in AItem is freed from the container in Items. ItemDeleted calls DoDeletion to execute the Delete method in TCustomListView (when not overridden) or signal the OnDeletion event handler (when assigned).
@@ -9778,13 +9976,23 @@
 
       <element name="TCustomListView.ItemInserted">
         <short>
-          <var>ItemInserted</var> - the specified item is inserted into the list.
+          Performs actions when a list item has been inserted in the Items collection.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls the <var>DoInsert</var> method to execute an overridden <var>InsertItem</var> method, or to signal the <var>OnInsert</var> event handler for the list item in <var>AItem</var>. Called from the <var>InsertItem</var> method in <var>TListItems</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.DoInsert"/>
+          <link id="TCustomListView.InsertItem"/>
+          <link id="TCustomListView.OnInsert"/>
+          <link id="TListItems.InsertItem"/>
+          <link id="TListItem"/>
+        </seealso>
       </element>
       <element name="TCustomListView.ItemInserted.AItem">
-        <short/>
+        <short>List item for the insert notification.</short>
       </element>
 
       <element name="TCustomListView.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -9793,7 +10001,7 @@
         <short>Gets the default size for new instances of the class.</short>
         <descr>
           <p>
-            GetControlClassDefaultSize is an overridden TSize class function used to get the default size for new instances of the class type. In TCustomListView, the default dimensions are 250 pixels wide by 150 pixels high.
+            <var>GetControlClassDefaultSize</var> is an overridden TSize class function used to get the default size for new instances of the class type. In TCustomListView, the default dimensions are 250 pixels wide by 150 pixels high.
           </p>
         </descr>
         <seealso/>
@@ -9806,7 +10014,7 @@
 
       <element name="TCustomListView.InitializeWnd">
         <short>
-          <var>InitializeWnd</var> - calls inherited method, then sets various local properties.
+          Calls the inherited method, and sets default values in properties.
         </short>
         <descr>
           <var>InitializeWnd</var> - calls inherited method, then sets style, adds columns, sets imagelists and item depending properties (scroll bars, sorting etc), adds items and sets other miscellaneous properties (default item height, hot track styles, hover time etc)
@@ -9819,7 +10027,9 @@
       <element name="TCustomListView.FinalizeWnd">
         <short>Frees the window handle and other resources for the control.</short>
         <descr>
-          <var>FinalizeWnd</var> retrieves the cached origin for the list view and finalizes the items and columns for the control.
+          <p>
+            <var>FinalizeWnd</var> retrieves the cached origin for the list view and finalizes the items and columns for the control.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
@@ -9833,39 +10043,76 @@
         <short>
           Signals the OnCreateItemClass event handler to get the class type used for new list items, and creates a new list item.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TListItemClass</var> is the default class reference used to create the list item in the method. Use the <var>OnCreateItemClass</var> event handler to provide an alternate class type used for list Items in the control.
+          </p>
+          <p>
+            <var>Items</var> is assigned as the owner for the list item instance created in the method.
+          </p>
+          <p>
+            CreateListItem is called from the <var>Add</var> method in <var>TListItems</var> when an <var>Owner</var> has been assigned for the container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnCreateItemClass"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItem"/>
+          <link id="TListItemClass"/>
+          <link id="TListItems.Add"/>
+          <link id="TListItems.Owner"/>
+        </seealso>
       </element>
       <element name="TCustomListView.CreateListItem.Result">
         <short>List item created in the method.</short>
       </element>
 
       <element name="TCustomListView.CreateListItems">
-        <short>Creates a new TListItems instance.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Creates a new TListItems instance used in the Items property.
+        </short>
+        <descr>
+          <var>CreateListItems</var> allocates the container used for the <var>Items</var> property when <var>OwnerData</var> is set to <b>False</b>. It creates and returns a new <var>TListItems</var> instance using the list view control as the Owner of the items in the container. A <var>TOwnerDataListItems</var> instance is allocated for use in Items when OwnerData is changed to <b>True</b>.
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="TListItems"/>
+          <link id="TOwnerDataListItems"/>
+        </seealso>
       </element>
       <element name="TCustomListView.CreateListItems.Result">
         <short>TListItems instance created in the method.</short>
       </element>
 
       <element name="TCustomListView.CanEdit">
-        <short>Determines if the specified Item can be edited in the control.</short>
+        <short>
+          Determines if the specified list Item can be edited in the control.
+        </short>
         <descr>
           <p>
-            <var>CanEdit</var> is a <var>Boolean</var> function used to determine if the editor can be displayed and activated for the specified Item. The return value defaults to <b>True</b>.
+            <var>CanEdit</var> is a <var>Boolean</var> function used to determine if the editor can be displayed and activated for the specified list Item. The default return value is <b>True</b>.
           </p>
           <p>
-            CanEdit signals the <var>OnEditing</var> event handler (when assigned), where the return value can be modified. Use values in <var>Item</var> or the list view control to determine the return value (including their respective ReadOnly properties).
+            CanEdit signals the <var>OnEditing</var> event handler (when assigned) where the return value can be modified. The event handler can examine values in the <var>Item</var> argument, the list view instance, or use other user-specified criteria to determine the return value.
           </p>
           <p>
-            CanEdit is called from the <var>ShowEditor</var> method, and occurs before the Editor in the control is configured and displayed.
+            CanEdit is called from the <var>ShowEditor</var> method, and occurs before the Editor in the control is configured and displayed. Use the <var>Readonly</var> property to prevent ShowEditor from being called when keyboard (F2) and mouse click events are handled in the control.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.OnEditing"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="TCustomListView.Readonly"/>
+          <link id="TCustomListView.SelCount"/>
+          <link id="TListItem"/>
+        </seealso>
       </element>
       <element name="TCustomListView.CanEdit.Result">
-        <short>True if the editor can be displayed and activated for the specified item.</short>
+        <short>
+          <b>True</b> if the editor can be displayed and activated for the specified list item.
+        </short>
       </element>
       <element name="TCustomListView.CanEdit.Item">
         <short>List item to examine in the method.</short>
@@ -9900,13 +10147,13 @@
             ColClick ensures that the Editor for the control is hidden when it has been assigned and displayed for the control.
           </p>
           <p>
-            AColumn is the TListColumn instance representing the column header clicked on the control. The OnColumnClick event handler is signalled (when assigned) if  ColumnClick is set to True. The event handler can be used to adjust property  values in the column argument or the list view control as needed.
+            AColumn is the TListColumn instance representing the column header clicked on the control. The OnColumnClick event handler is signalled (when assigned) if ColumnClick is set to <b>True</b>. The event handler can be used to adjust property values in the column argument or the list view control as needed.
           </p>
           <p>
-            ColClick uses the value in AutoSort to determine if the control is updated to reflect a change to the sort column or its order indicator. No additional actions are performed when AutoSort is False or SortType is stNone.
+            ColClick uses the value in AutoSort to determine if the control is updated to reflect a change to the sort column or its order indicator. No additional actions are performed when AutoSort is <b>False</b> or SortType is stNone.
           </p>
           <p>
-            When AutoSort is set to True, the Index in AColumn is used to set the value for the SortColumn property, When AutoSortIndicator is enabled, the Columns for the control are updated to clear any previous sort indicators when a new sort column has been clicked. The sort indicator in the AColumn argument is also updated. If AColumn was already the SortColumn for the control, the value in SortDirection is toggled between it ascending and descending values.
+            When AutoSort is set to <b>True</b>, the Index in AColumn is used to set the value for the SortColumn property. When AutoSortIndicator is enabled, the Columns for the control are updated to clear any previous sort indicators when a new sort column has been clicked. The sort indicator in the AColumn argument is also updated. If AColumn was already the SortColumn for the control, the value in SortDirection is toggled between it ascending and descending values.
           </p>
           <p>
             ColClick is called when the LVN_COLUMNCLICK control notification message is handled for the list view control.
@@ -9924,13 +10171,13 @@
             <var>Delete</var> is a method used to delete the list item specified in AItem.
           </p>
           <p>
-            In Delphi, Delete is called when Items.Delete is executed.  The OnDeletion event handler is signalled each time the method is called, even when list items are freed from the Items container.
+            In Delphi, Delete is called when Items.Delete is executed. The OnDeletion event handler is signalled each time the method is called, even when list items are freed from the Items container.
           </p>
           <p>
             The Lazarus implementation differs. It uses a flag value in AItem to determine if the method has been called when the list item is freed, or when the Delete method in the list item has been called explicitly.
           </p>
           <p>
-            Delete is called from the DoDeletion method if an overridden Delete method has  been implemented. The OnDeletion event handler is signalled when Delete has been explicitly called, and when the Delete method has not been overridden.
+            Delete is called from the DoDeletion method if an overridden Delete method has been implemented. The OnDeletion event handler is signalled when Delete has been explicitly called, and when the Delete method has not been overridden.
           </p>
           <p>
             While not 100% Delphi compatible, it is more compatible than previous LCL versions.
@@ -10012,7 +10259,9 @@
         </seealso>
       </element>
       <element name="TCustomListView.InsertItem.AItem">
-        <short>Item with the values inserted into the Items for the control.</short>
+        <short>
+          Item with the values inserted into the Items for the control.
+        </short>
       </element>
 
       <element name="TCustomListView.DoItemChecked">
@@ -10042,12 +10291,14 @@
       </element>
       <element name="TCustomListView.DoSelectItem.ASelected">
         <short>
-          True if the list item is selected.
+          <b>True</b> if the list item is selected.
         </short>
       </element>
 
       <element name="TCustomListView.DoAutoAdjustLayout">
-        <short>Adjusts the layout for the list view using the specified arguments.</short>
+        <short>
+          Adjusts the layout for the list view using the specified arguments.
+        </short>
         <descr>
           <p>
             <var>DoAutoAdjustLayout</var> is an overridden procedure used to adjust the layout for the list view using the specified arguments. DoAutoAdjustLayout calls the inherited method.
@@ -10097,7 +10348,7 @@
 
       <element name="TCustomListView.DoEndEdit">
         <short>
-          Performs actions when editing has been completed for an item in the control.
+          Performs actions when editing has been completed for a list item.
         </short>
         <descr>
           <p>
@@ -10126,10 +10377,20 @@
 
       <element name="TCustomListView.ImageChanged">
         <short>
-          <var>ImageChanged</var> - procedure to signal that an image has changed.
+          Implements the event handler signalled when an image on the control is changed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Assigned in the constructor as the OnChange event handler in TChangeLink instances used for the control.
+          </p>
+          <p>
+            Please note that the current implementation is empty. This needs to be moved to the LCL interface since image changes can occur there.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Create"/>
+          <link id="#lcl.imglist.TChangeLink.OnChange">TChangeLink.OnChange</link>
+        </seealso>
       </element>
       <element name="TCustomListView.ImageChanged.Sender">
         <short>Object for the event notification.</short>
@@ -10155,7 +10416,7 @@
         </short>
         <descr>
           <p>
-            Ensures that members for the LargeImages, SmallImages, and StateImages are set to Nil when the corresponding image list is removed.
+            Ensures that members for the LargeImages, SmallImages, and StateImages are set to  <b>Nil</b> when the corresponding image list is removed.
           </p>
         </descr>
         <seealso/>
@@ -10169,7 +10430,7 @@
 
       <element name="TCustomListView.IsCustomDrawn">
         <short>
-          <var>IsCustomDrawn</var> - returns True if a target has been custom drawn.
+          Returns <b>True</b> if a target has been custom drawn.
         </short>
         <descr>
           <p>
@@ -10190,31 +10451,53 @@
 
       <element name="TCustomListView.CustomDraw">
         <short>
-          Performs custom drawing in the given rectangle and returns True if successful.
+          Performs custom drawing in the specified rectangle and returns <b>True</b> on success.
         </short>
         <descr>
           <p>
-            <var>CustomDraw</var> draws the control using the OnCustomDraw or OnAdvancedCustomDraw event handlers (when assigned).
+            <var>CustomDraw</var> draws the list view control using the OnCustomDraw or OnAdvancedCustomDraw event handlers. OnCustomDraw is signalled (when assigned) if the drawing stage in AStage is cdPrePaint. OnAdvancedCustomDraw is signalled (when assigned).
+          </p>
+          <p>
+            The default return value is <b>True</b>, but may be modified in the event handlers if it is not able to render the control in the handler routine.
+          </p>
+          <p>
+            Use OnDrawItem and OnAdvancedCustomDrawItem to draw an individual list item on the control.
+          </p>
+          <p>
+            CustomDraw is called from the IntfCustomDraw method and occurs when the widgetset class instance redraws the LCL control.
           </p>
         </descr>
+        <seealso>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+        </seealso>
       </element>
       <element name="TCustomListView.CustomDraw.Result">
-        <short/>
+        <short>
+          <b>True</b> if the control was drawn using the assigned event handlers.
+        </short>
       </element>
       <element name="TCustomListView.CustomDraw.ARect">
-        <short/>
+        <short>
+          Bounds rectangle for the drawing operation.
+        </short>
       </element>
       <element name="TCustomListView.CustomDraw.AStage">
-        <short/>
+        <short>
+          Drawing stage for the control. Affects the OnCustomDraw event handler.
+        </short>
       </element>
 
       <element name="TCustomListView.CustomDrawItem">
         <short>
-          Custom draws the specified item and returns True if successful.
+          Custom draws the specified item and returns <b>True</b> on success.
         </short>
         <descr>
           <p>
-            <var>CustomDrawItem</var> draws an item in the control using the OnCustomDrawItem or OnAdvancedCustomDrawItem event handlers (when assigned).
+            <var>CustomDrawItem</var> draws an item on the list view control using the OnCustomDrawItem or OnAdvancedCustomDrawItem event handlers (when assigned).
           </p>
         </descr>
         <seealso/>
@@ -10234,11 +10517,11 @@
 
       <element name="TCustomListView.CustomDrawSubItem">
         <short>
-          Custom draws the specified subitem returning True if successful.
+          Custom draws the specified subitem and returns <b>True</b> on success.
         </short>
         <descr>
           <p>
-            <var>CustomDrawSubItem</var> draws a sub-item in the control using the OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem event handlers (when assigned).
+            <var>CustomDrawSubItem</var> draws a sub-item on the list view control using the OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem event handlers (when assigned).
           </p>
         </descr>
         <seealso/>
@@ -10323,7 +10606,7 @@
 
       <element name="TCustomListView.DoGetOwnerData">
         <short>
-          Performs actions to get list item data when OwnerData is True.
+          Performs actions to get list item data when OwnerData is <b>True</b>.
         </short>
         <descr>
           <p>
@@ -10333,11 +10616,13 @@
         <seealso/>
       </element>
       <element name="TCustomListView.DoGetOwnerData.Item">
-        <short/>
+        <short>List item updated in the method.</short>
       </element>
 
       <element name="TCustomListView.DoOwnerDataHint">
-        <short>Signals the OnDataHint event handler (when assigned).</short>
+        <short>
+          Signals the OnDataHint event handler (when assigned).
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -10352,7 +10637,9 @@
       </element>
 
       <element name="TCustomListView.DoOwnerDataStateChange">
-        <short>Signals the OnDataStateChange event handler (when assigned).</short>
+        <short>
+          Signals the OnDataStateChange event handler (when assigned).
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -10372,7 +10659,7 @@
         <short/>
       </element>
 
-      <element name="FMultiSelList">
+      <element name="TCustomListView.FMultiSelList">
         <short>
           Member used to store the multi-selection list in the class instance.
         </short>
@@ -10399,7 +10686,7 @@
       </element>
       <element name="TCustomListView.GetFirstSelected.Result">
         <short>
-          The first TListItem instance with its Selected property set to True.
+          The first TListItem instance with its Selected property set to <b>True</b>.
         </short>
       </element>
 
@@ -10424,7 +10711,7 @@
       </element>
       <element name="TCustomListView.InitMultiSelList.AEnable">
         <short>
-          True if the internal multi-selection list needs to be initialized. False when MultiSelect is not enabled and the list is not required.
+          <b>True</b> if the internal multi-selection list needs to be initialized. <b>False</b> when MultiSelect is not enabled and the list is not required.
         </short>
       </element>
 
@@ -10469,7 +10756,7 @@
         <short>Performs actions needed when the control is double clicked.</short>
         <descr>
           <p>
-            Calls the inherited DblClick method. Ensures that ShowEditorQueued is set to True when the control has an assigned editor and is not marked as read-only.
+            Calls the inherited DblClick method. Ensures that ShowEditorQueued is set to <b>True</b> when the control has an assigned editor and is not marked as read-only.
           </p>
         </descr>
         <seealso>
@@ -10601,7 +10888,7 @@
             Columns is a TListColumns property which contains the column definitions for the list view control. The TListItem instances in the collection contain information about the caption for the column header, column width, image, and sort indicator value. Assigning a new collection to the property causes the designer for the parent form to be updated at design-time.
           </p>
           <p>
-            Column is significant when the ViewStyle for the control is set to vsReport. Report view is the only style where the columns are used or displayed. Set the value in ShowColumnHeaders to True to display the column header defined in the collection.
+            Column is significant when the ViewStyle for the control is set to vsReport. Report view is the only style where the columns are used or displayed. Set the value in ShowColumnHeaders to <b>True</b> to display the column header defined in the collection.
           </p>
           <p>
             Columns are used at run-time to handle column click notifications and changes to the sort indicator. Use AutoSort, AutoSortIndicator, SortColumn, SortType, and SortDirection to access or maintain values for items in the collection.
@@ -10642,13 +10929,13 @@
         </short>
         <descr>
           <p>
-            <var>HideSelection</var> is a <var>Boolean</var> property which indicates if the selected item(s) for the list view are highlighted when the control loses focus. When set to True, the selected item(s) are redrawn to remove the selection highlighting. When set to False, the selection hightlighting is retained when the control loses focus.
+            <var>HideSelection</var> is a <var>Boolean</var> property which indicates if the selected item(s) for the list view are highlighted when the control loses focus. When set to <b>True</b>, the selected item(s) are redrawn to remove the selection highlighting. When set to <b>False</b>, the selection hightlighting is retained when the control loses focus.
           </p>
           <p>
-            The default value for the property is True. Changing the value for the property causes the widgetset class to be updated with the new value.
+            The default value for the property is <b>True</b>. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <remark>
-            The Windows API documentation recommends setting HideSelection to False if the application uses Accessiblity roles and descriptions.
+            The Windows API documentation recommends setting HideSelection to <b>False</b> if the application uses Accessiblity roles and descriptions.
           </remark>
         </descr>
         <seealso/>
@@ -10672,7 +10959,7 @@
         </short>
         <descr>
           <p>
-            A typical application might have two ImageLists: one of <var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list.
+            A typical application might have two ImageLists: one of <var>LargeImages</var> and one of <var>SmallImages</var> containing two versions of the same collection of images, in large and small format; the index positions in the first image list should correspond to those in the second image list.
         </p>
         <p>
           SmallImages could be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.
@@ -11060,7 +11347,7 @@
         <short>The event handler is not signalled in the current LCL implementation.</short>
         <descr>
           <p>
-            <var>OnDataHint</var> is not used in the current LCL implementation. In virtual mode (OwnerData = True), only the most recently accessed virtual list item exists in the list view control. The data hinting, or pre-fetch caching, feature is not used in the current implementation.
+            <var>OnDataHint</var> is not used in the current LCL implementation. In virtual mode (OwnerData = <b>True</b>), only the most recently accessed virtual list item exists in the list view control. The data hinting, or pre-fetch caching, feature is not used in the current implementation.
           </p>
         </descr>
         <seealso/>
@@ -11383,7 +11670,7 @@
         <short>Locates the list item closest to the specified position.</short>
         <descr>
           <p>
-            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item.If no item is found Nil is returned.
+            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item.If no item is found  <b>Nil</b> is returned.
           </p>
         </descr>
         <seealso/>
@@ -11519,7 +11806,7 @@
         </short>
         <descr>
           <p>
-            <var>Checkboxes</var> is a <var>Boolean</var> property which indicates if check boxes are displayed next to list items on the control. The default value for the property is False. Changing the value for the property causes the widgetset class to be updated.
+            <var>Checkboxes</var> is a <var>Boolean</var> property which indicates if check boxes are displayed next to list items on the control. The default value for the property is <b>False</b>. Changing the value for the property causes the widgetset class to be updated.
           </p>
           <p>
             Use the OnItemChecked event handler to perform actions needed when the check state for a list item has been changed.
@@ -11528,7 +11815,7 @@
             CheckBoxes is used when a LVN_ITEMCHANGED notification message is handled for the control with a LVIF_STATE change flag.
           </p>
           <p>
-            The value in CheckBoxes is ignored when OwnerData is set to True. Check box display cannot be enabled for virtual mode.
+            The value in CheckBoxes is ignored when OwnerData is set to <b>True</b>. Check box display cannot be enabled for virtual mode.
           </p>
         </descr>
         <seealso/>
@@ -11597,7 +11884,7 @@
             FlatScrollBars is a Boolean property which indicates if scroll bars are drawn using a "flat" display style. Flat scroll bars are not drawn using raised 3-D relief with shadowing normally used for borders or edges on the control. It also applies color inversion when elements in the control are hovered under the mouse pointer.
           </p>
           <p>
-            The default value for the property is False. Changing the value for the property causes the widgetset class to be updated.
+            The default value for the property is <b>False</b>. Changing the value for the property causes the widgetset class to be updated.
           </p>
         </descr>
         <seealso/>
@@ -11615,7 +11902,7 @@
         <short>Enables or disables grid lines between rows and columns on the control.</short>
         <descr>
           <p>
-            <var>GridLines</var> is a <var>Boolean</var> property used to enable or disable drawing of a 1-pixel grid line between rows and columns on the control. The default value for the property is False, and hides the grid lines. Changing the value for the property causes the widgetset class to be updated.
+            <var>GridLines</var> is a <var>Boolean</var> property used to enable or disable drawing of a 1-pixel grid line between rows and columns on the control. The default value for the property is <b>False</b>, and hides the grid lines. Changing the value for the property causes the widgetset class to be updated.
           </p>
         </descr>
         <seealso/>
@@ -11703,13 +11990,13 @@
             <var>ItemIndex</var> is an <var>Integer</var> property which contains the ordinal position for the selected item on the list view control.
           </p>
           <p>
-            When OwnerData is False, the property value contains the value received from the widgetset class when the LVN_ITEMCHANGED notification message is handled for the control. If OwnerData is True, an internal member is locally maintained to track the selected item. In OwnerData (virtual) mode, only the most recently accessed item is stored for the control.
+            When OwnerData is <b>False</b>, the property value contains the value received from the widgetset class when the LVN_ITEMCHANGED notification message is handled for the control. If OwnerData is <b>True</b>, an internal member is locally maintained to track the selected item. In OwnerData (virtual) mode, only the most recently accessed item is stored for the control.
           </p>
           <p>
-            Setting a new value for the property causes the Selected property to be updated. In OwnerData mode, this causes the internal member to be updated and the virtual item is retrieved to set its Selected property to True. If Virtual mode is not enabled, the Selected property is set to corresponding value in Items.
+            Setting a new value for the property causes the Selected property to be updated. In OwnerData mode, this causes the internal member to be updated and the virtual item is retrieved to set its Selected property to <b>True</b>. If Virtual mode is not enabled, the Selected property is set to corresponding value in Items.
           </p>
           <p>
-            If the new property value is -1, the value in Selected is set to Nil. Setting a new property value when MultiSelect is enabled also causes Selected to be set to Nil.
+            If the new property value is -1, the value in Selected is set to  <b>Nil</b>. Setting a new property value when MultiSelect is enabled also causes Selected to be set to  <b>Nil</b>.
           </p>
           <p>
             An Exception is raised if the new property value is not a value index position in Items, or -1.
@@ -11741,14 +12028,16 @@
         </short>
         <descr>
           <p>
-            <var>MultiSelect</var> is a <var>Boolean</var> property which indicates if multiple simultaneous item selections are allows in the list view control. The default value for the property is False, and allows a single selection as reflected in the Selected property.
+            <var>MultiSelect</var> is a <var>Boolean</var> property which indicates if multiple simultaneous item selections are allows in the list view control. The default value for the property is <b>False</b>, and allows a single selection as reflected in the Selected property.
           </p>
           <p>
-            When set to True, multiple entries in the Items property can bemarked as Selected. This can be achieved in program code by iterating over the TListItem instances in Items, and setting the Selected property for the appropriate items. At run-time, the mouse can be use toggle the selected state for one or more of the list items.
+            When set to <b>True</b>, multiple entries in the Items property can be marked as Selected. This can be achieved in program code by iterating over the TListItem instances in Items, and setting the Selected property for the appropriate items. At run-time, the mouse can be use toggle the selected state for one or more of the list items.
           </p>
           <dl>
             <dt>Click</dt>
-            <dd>Toggles the selected state for the list item under the mouse pointer.</dd>
+            <dd>
+              Toggles the selected state for the list item under the mouse pointer.
+            </dd>
             <dt>Shift+Click</dt>
             <dd>
               Toggles the selected state for a contiguous block of list items from the mouse pointer to the previous item selection.
@@ -11766,7 +12055,7 @@
             Use SelCount to get the number of selected items when MultiSelect is enabled. Use Items to access the list items to check the values in their Selected properties.
           </p>
           <p>
-            Use SelectAll to set the selected state to True for all of the Items on the control.
+            Use SelectAll to set the selected state to <b>True</b> for all of the Items on the control.
           </p>
           <p>
             Use ClearSelection to clear the selected state for all of the Items on the control.
@@ -11810,7 +12099,7 @@
       </element>
 
       <element name="TCustomListView.ReadOnly">
-        <short>Disables editing of list items on the control when set to True.</short>
+        <short>Disables editing of list items on the control when set to <b>True</b>.</short>
         <descr>
           <p>
             <var>ReadOnly</var> is a <var>Boolean</var> property used to enable or disable editing of captions for list items at run-time. When ReadOnly is set to <b>True</b>, the editor for the control cannot be activated using a mouse double Click or by pressing the F2 function key.
@@ -11837,7 +12126,7 @@
             <var>SelCount</var> is a read-only <var>Integer</var> property with the number selected entries in <var>Items</var>. SelCount is relevant when <var>MultiSelect</var> is set to <b>True</b>; otherwise, the single selected item is found in the Selected property.
           </p>
           <p>
-            If the <var>Handle</var> has been allocated for the widgetset class, the value from the <var>GetSelCount</var> method is used as the property value. Otherwise, the property value is calculated by counting the number of <var>TListItem</var> instances in Items that have their <var>Selected</var> property set to True. The return value is 0 when none of the Items have a selected property set to <b>True</b>.
+            If the <var>Handle</var> has been allocated for the widgetset class, the value from the <var>GetSelCount</var> method is used as the property value. Otherwise, the property value is calculated by counting the number of <var>TListItem</var> instances in Items that have their <var>Selected</var> property set to <b>True</b>. The return value is 0 when none of the Items have a selected property set to <b>True</b>.
           </p>
           <p>
             Use GetNextItem with the lisSelected item state to retrieve a multi-selected item that is adjacent to another selected item.
@@ -11918,7 +12207,7 @@
         </short>
         <descr>
           <p>
-            The default value for the property is True in TCustomListView,
+            The default value for the property is <b>True</b> in TCustomListView,
           </p>
         </descr>
         <seealso>
@@ -11963,7 +12252,7 @@
             The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (<b>...</b>) next to the <var>Items</var> entry in the Object Inspector.
           </p>
           <p>
-            A typical application might have two ImageLists: one of <var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list.
+            A typical application might have two image lists: <var>LargeImages</var> and <var>SmallImages</var>. They contain large and small sizes for the same collection of images. The index positions in the first list would correspond with those in the second list.
           </p>
           <p>
             <var>SmallImages</var> (if assigned to a string-list) can be displayed beside the text strings in the list view and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.
@@ -11974,6 +12263,7 @@
         </descr>
         <seealso>
           <link id="TCustomListView"/>
+          <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
         </seealso>
       </element>
 
@@ -12010,10 +12300,10 @@
         <short>Uses the Color from the Parent control, when enabled.</short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TListView.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TListView.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
          <p>
            Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
@@ -12817,7 +13107,9 @@
         <seealso/>
       </element>
       <element name="TCustomUpDown.CheckMouseEntering.Result">
-        <short>True when the mouse pointer in within the bounds for the control.</short>
+        <short>
+          <b>True</b> when the mouse pointer in within the bounds for the control.
+        </short>
       </element>
 
       <element name="TCustomUpDown.CheckMouseLeaving">
@@ -12826,7 +13118,9 @@
         <seealso/>
       </element>
       <element name="TCustomUpDown.CheckMouseLeaving.Result">
-        <short>True when the mouse pointer is not in the client rectangle for the control.</short>
+        <short>
+          <b>True</b> when the mouse pointer is not in the client rectangle for the control.
+        </short>
       </element>
 
       <element name="TCustomUpDown.GetPosition">
@@ -13001,7 +13295,7 @@
       </element>
       <element name="TCustomUpDown.AdjustPos.incPos">
         <short>
-          True when the position value is being incremented. False when being decremented.
+          <b>True</b> when the position is being incremented. <b>False</b> when being decremented.
         </short>
       </element>
 
@@ -13009,7 +13303,7 @@
         <short/>
         <descr>
           <p>
-            InitializeWnd is an overridden method used to initialize the widgetset class  for the control. InitializeWnd calls the inherited method. When the FUseWS member contains False, no additional actions are performed in the method. When it contains True, methods in its widgetset class are called to synchronize values in the Min, Max, Position, Increment, Wrap, Orientation, and UseArrowKeys properties.
+            InitializeWnd is an overridden method used to initialize the widgetset class  for the control. InitializeWnd calls the inherited method. When the FUseWS member contains <b>False</b>, no additional actions are performed in the method. When it contains <b>True</b>, methods in its widgetset class are called to synchronize values in the Min, Max, Position, Increment, Wrap, Orientation, and UseArrowKeys properties.
           </p>
         </descr>
         <version>Introduced in LCL version 2.1.0.</version>
@@ -13231,7 +13525,7 @@
 
       <element name="TCustomUpDown.CanChange">
         <short>
-          <var>CanChange</var> - if True, control can be changed.
+          <var>CanChange</var> - if <b>True</b>, control can be changed.
         </short>
         <descr/>
         <seealso/>
@@ -13279,7 +13573,7 @@
 
       <element name="TCustomUpDown.ArrowKeys">
         <short>
-          <var>ArrowKeys</var> - if True, the control can be operated by the keyboard's arrow keys which would simulate a click on the Next or Previous button.
+          <var>ArrowKeys</var> - if <b>True</b>, the control can be operated by the keyboard's arrow keys which would simulate a click on the Next or Previous button.
         </short>
         <descr/>
         <seealso/>
@@ -13370,7 +13664,7 @@
       </element>
 
       <element name="TCustomUpDown.Thousands">
-        <short>If True, multiply all displayed values and the Increment by 1000.</short>
+        <short>If <b>True</b>, multiply all displayed values and the Increment by 1000.</short>
         <descr/>
         <seealso/>
       </element>
@@ -13385,7 +13679,7 @@
 
       <element name="TCustomUpDown.Wrap">
         <short>
-          If True, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrementing beyond the extreme value.
+          If <b>True</b>, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrementing beyond the extreme value.
         </short>
         <descr/>
         <seealso/>
@@ -13592,7 +13886,7 @@
 
       <element name="TToolButtonActionLink.SetChecked">
         <short>
-          <var>SetChecked</var> - stores the Checked status (True or False).
+          <var>SetChecked</var> - stores the Checked status (<b>True</b> or <b>False</b>).
         </short>
         <descr/>
         <seealso/>
@@ -13853,7 +14147,7 @@
             The <var>Sender</var> argument is the new <var>TCustomAction</var> instance assigned to the Action property for the tool button.
           </p>
           <p>
-            <var>CheckDefaults</var> indicates when values from the action are copied into the control. When set to True, the values in the Action are applied only when its  property value has been assigned.
+            <var>CheckDefaults</var> indicates when values from the action are copied into the control. When set to <b>True</b>, the values in the Action are applied only when its  property value has been assigned.
           </p>
           <p>
             ActionChange calls the inherited method on entry to copy properties from Sender to the control. It provides support for translating the <var>Checked</var> property in the action to the <var>Down</var> property used in the tool button. It also changes the value in <var>ImageIndex</var> only when a valid image index has been assigned in the Action.
@@ -13867,7 +14161,7 @@
         </seealso>
       </element>
       <element name="TToolButton.ActionChange.Sender">
-        <short>New action for the control, or Nil.</short>
+        <short>New action for the control, or <b>Nil</b>.</short>
       </element>
       <element name="TToolButton.ActionChange.CheckDefaults">
         <short>Indicates if the property in the action must be assigned (not empty).</short>
@@ -13973,7 +14267,7 @@
             If the mouse event is over the drop-down indicator, the DropDownMenu when its AutoPopUp property is enabled. This requires sending a LM_LBUTTONUP message to ensure that the feature works for all widgetsets.
           </p>
           <p>
-            If the mouse event is over the button, the Down property is set to True.
+            If the mouse event is over the button, the Down property is set to <b>True</b>.
           </p>
           <p>
             MouseDown is called from window message handlers for the control.
@@ -14029,7 +14323,7 @@
       </element>
 
       <element name="TToolButton.MouseLeave">
-        <short>Handles a message sent when the mouse lesaves a control.</short>
+        <short>Handles a message sent when the mouse leaves a control.</short>
         <descr/>
         <seealso>
           <link id="#lcl.controls.TControl.MouseLeave">TControl.MouseLeave</link>
@@ -14217,10 +14511,10 @@
         </short>
         <descr>
           <p>
-            Adjacent check box-style buttons (and their separators / dividers) with their Grouped property set to True are considered to be in the same group. GroupAllUpAllowed examines the adjacent tool buttons on the Parent tool bar to determine whether any of the grouped buttons have the AllowAllUp property set to True. When one grouped check-box button has AllowAllUp set, the remaining buttons in the group are treated in the same manner.
+            Adjacent check box-style buttons (and their separators / dividers) with their Grouped property set to <b>True</b> are considered to be in the same group. GroupAllUpAllowed examines the adjacent tool buttons on the Parent tool bar to determine whether any of the grouped buttons have the AllowAllUp property set to <b>True</b>. When one grouped check-box button has AllowAllUp set, the remaining buttons in the group are treated in the same manner.
           </p>
           <remark>
-            Change the Grouped property to False on a separator or divider to force the preceding or subsequent check-box buttons to be treated as a different group.
+            Change the Grouped property to <b>False</b> on a separator or divider to force the preceding or subsequent check-box buttons to be treated as a different group.
           </remark>
         </descr>
         <seealso>
@@ -14232,7 +14526,7 @@
       </element>
       <element name="TToolButton.GroupAllUpAllowed.Result">
         <short>
-          True when the AllowAllUp property is set for any of the adjacent grouped check-box buttons on the tool bar.
+          <b>True</b> when the AllowAllUp property is set for any of the adjacent grouped check-box buttons on the tool bar.
           </short>
       </element>
 
@@ -14254,7 +14548,7 @@
       </element>
       <element name="TToolButton.DialogChar.Result">
         <short>
-          True If the message was handled as an accelerator key for the tool bar button.
+          <b>True</b> If the message was handled as an accelerator key for the tool bar button.
         </short>
       </element>
 
@@ -14329,7 +14623,7 @@
       </element>
       <element name="TToolButton.CheckMenuDropdown.Result">
         <short>
-          True if the drop-down menu for the button was successfully displayed and executed.
+          <b>True</b> if the drop-down menu for the button was successfully displayed and executed.
         </short>
       </element>
 
@@ -14364,7 +14658,7 @@
             GetCurrentIcon is a method used to get information for the icon drawn on the tool button. It returns values in the variable parameters with the scaled image list for the icon, its position in the image list, and the drawing effect for the image.
           </p>
           <p>
-            ImageList is the scaled image list with the images from the parent tool bar. It is re-created in the method and uses the image size from the parent tool bar scaled to the run-time display density (PPI). The images in the list are retrieved from the Images, HotImages, or DisabledImages properties in the parent tool bar and reflect the values in the Enabled property and the tool button flags. The default value is Nil (unassigned).
+            ImageList is the scaled image list with the images from the parent tool bar. It is re-created in the method and uses the image size from the parent tool bar scaled to the run-time display density (PPI). The images in the list are retrieved from the Images, HotImages, or DisabledImages properties in the parent tool bar and reflect the values in the Enabled property and the tool button flags. The default value is <b>Nil</b> (unassigned).
           </p>
           <p>
             TheIndex is the position in the image list for the icon image. It defaults to the value in the ImageIndex property.
@@ -14413,7 +14707,7 @@
             Called during AutoSize calculations. Only positive values are valid. Negative or 0 are treated as undefined, and the LCL uses other sizes instead.
           </p>
           <p>
-            When WithThemeSpace is True, additional space is reserved for stacking.
+            When WithThemeSpace is <b>True</b>, additional space is reserved for stacking.
           </p>
           <p>
             Calls the inherited method on entry. Values from the ButtonWidth and ButtonHeight properties in the parent tool bar may be used in the PreferredWidth and PreferredHeight arguments, depending on the orientation for the tool bar. No additional actions are performed in the method if the parent tool bar has not been assigned.
@@ -14459,7 +14753,9 @@
         <seealso/>
       </element>
       <element name="TToolButton.PointInArrow.Result">
-        <short>True when the coordinates are within the arrow for the drop-down.</short>
+        <short>
+          <b>True</b> when the coordinates are within the arrow for the drop-down.
+        </short>
       </element>
       <element name="TToolButton.PointInArrow.X">
         <short>Horizontal coordinate examined in the method.</short>
@@ -14472,11 +14768,11 @@
 
       <element name="TToolButton.AllowAllUp">
         <short>
-          Indicates if all buttons in a group can have their Down property set to False.
+          Indicates if all buttons in a group can have their Down property set to <b>False</b>.
         </short>
         <descr>
           <p>
-            <var>AllowAllUp</var>, when True, indicates that all buttons in a group are allowed to be  'Up' at the same time. The default value for the property is False, and indicates that one of the grouped buttons must have its Down property set to True.
+            <var>AllowAllUp</var>, when <b>True</b>, indicates that all buttons in a group are allowed to be  'Up' at the same time. The default value for the property is <b>False</b>, and indicates that one of the grouped buttons must have its Down property set to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -14493,7 +14789,7 @@
             The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption.
           </p>
           <p>
-            Default value for the property is False, and disables auto-sizing for the control instance.
+            Default value for the property is <b>False</b>, and disables auto-sizing for the control instance.
           </p>
           <p>
             The write access specifier is overridden in TToolButton to resize and align the tool button and its parent tool bar when needed.
@@ -14509,7 +14805,7 @@
 
       <element name="TToolButton.Down">
         <short>
-          Is this button <var>Down</var> (i.e. has it been selected)? Default false.
+          Is this button <var>Down</var> (i.e. has it been selected)? Default <b>False</b>.
         </short>
         <descr>
           <p>
@@ -14557,7 +14853,7 @@
 
       <element name="TToolButton.Grouped">
         <short>
-          Indicates if the tool button is a member of a group. The default value is False.
+          Indicates if the tool button is a member of a group. The default value is <b>False</b>.
         </short>
         <descr>
           <p>Is this button a member of a group?</p>
@@ -14625,7 +14921,7 @@
         <short>Indicates if the tool button is marked.</short>
         <descr>
           <p>
-            <var>Marked</var> is a <var>Boolean</var> property which indicates if the tool button is marked. The default value for the property is False.
+            <var>Marked</var> is a <var>Boolean</var> property which indicates if the tool button is marked. The default value for the property is <b>False</b>.
           </p>
           <p>
             Marked is  provided for Delphi code compatibility; it is not used in the implementation of <var>TToolButton</var> or <var>TToolBar</var>.
@@ -15037,9 +15333,9 @@
           </p>
           <dl>
             <dt>alLeft, alRight</dt>
-            <dd>The return value is True.</dd>
+            <dd>The return value is <b>True</b>.</dd>
             <dt>alNone, alClient, alCustom</dt>
-            <dd>The return value is True when Height is larger than Width.</dd>
+            <dd>The return value is <b>True</b> when Height is larger than Width.</dd>
           </dl>
           <p>
             If the tool bar is parented by a <var>TCoolBar</var> control, the value in its <var>Vertical</var> property is used as the return value.
@@ -15048,7 +15344,9 @@
         <seealso/>
       </element>
       <element name="TToolBar.IsVertical.Result">
-        <short>True when the buttons on the control are displayed vertically.</short>
+        <short>
+          <b>True</b> when the buttons on the control are displayed vertically.
+        </short>
       </element>
 
       <element name="TToolBar.WSRegisterClass">
@@ -15096,7 +15394,7 @@
         <seealso/>
       </element>
       <element name="TToolBar.ButtonHeightIsStored.Result">
-        <short>True when ButtonHeight is 0 or larger.</short>
+        <short><b>True</b> when ButtonHeight is 0 or larger.</short>
       </element>
 
       <element name="TToolBar.ButtonWidthIsStored">
@@ -15105,7 +15403,7 @@
         <seealso/>
       </element>
       <element name="TToolBar.ButtonWidthIsStored.Result">
-        <short>True when ButtonWidth is 0 or larger.</short>
+        <short><b>True</b> when ButtonWidth is 0 or larger.</short>
       </element>
 
       <element name="TToolBar.DropDownWidthIsStored">
@@ -15114,7 +15412,7 @@
         <seealso/>
       </element>
       <element name="TToolBar.DropDownWidthIsStored.Result">
-        <short>True when DropDownWidth is 0 or larger.</short>
+        <short><b>True</b> when DropDownWidth is 0 or larger.</short>
       </element>
 
       <element name="TToolBar.GetControlClassDefaultSize">
@@ -15159,7 +15457,7 @@
         </seealso>
       </element>
       <element name="TToolBar.CheckMenuDropdown.Result">
-        <short>True if the menu item for the button was checked (clicked) in the method.</short>
+        <short><b>True</b> if the menu item for the button was checked (clicked) in the method.</short>
       </element>
       <element name="TToolBar.CheckMenuDropdown.Button">
         <short>Tool button examined in the method.</short>
@@ -15235,10 +15533,14 @@
         </seealso>
       </element>
       <element name="TToolBar.FindButtonFromAccel.Result">
-        <short>Tool button using the specified shortcut, or Nil when not found.</short>
+        <short>
+          Tool button using the specified shortcut, or <b>Nil</b> when not found.
+        </short>
       </element>
       <element name="TToolBar.FindButtonFromAccel.Accel">
-        <short>Shortcut or accelerator key to locate in the tool bar buttons.</short>
+        <short>
+          Shortcut or accelerator key to locate in the tool bar buttons.
+        </short>
       </element>
 
       <element name="TToolBar.FontChanged">
@@ -15276,7 +15578,7 @@
         </short>
         <descr>
           <p>
-            Calls the inherited method on entry. Ensures that the <var>DisabledImages</var>, <var>HotImages</var>, and <var>Images</var> properties are Nil'd if their image list is removed from the control.
+            Calls the inherited method on entry. Ensures that the <var>DisabledImages</var>, <var>HotImages</var>, and <var>Images</var> properties are <b>Nil</b>'d if their image list is removed from the control.
           </p>
         </descr>
         <seealso>
@@ -15532,7 +15834,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TToolBar.CanFocus">
-        <short>Always returns False for TToolBar.</short>
+        <short>Always returns <b>False</b> for TToolBar.</short>
         <descr>
           <p>
             The tool bar cannot be given focus, but its buttons or controls can.
@@ -15543,7 +15845,7 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TToolBar.CanFocus.Result">
-        <short>Always returns False for TToolBar.</short>
+        <short>Always returns <b>False</b> for TToolBar.</short>
       </element>
 
       <element name="TToolBar.ButtonCount">
@@ -15869,7 +16171,7 @@ AToolbar.ButtonHeight := 30;
             <var>List</var> is a <var>Boolean</var> property which indicates if the buttons on the tool bar are displayed using a list style.
           </p>
           <p>
-            When List is set to True, the icon for a tool button is displayed on the left edge of the button immediately before the Caption text (when enabled). When set to False, the icon is centered in the button width and above the Caption text for the button.
+            When List is set to <b>True</b>, the icon for a tool button is displayed on the left edge of the button immediately before the Caption text (when enabled). When set to <b>False</b>, the icon is centered in the button width and above the Caption text for the button.
           </p>
           <p>
             The default value for the property is <b>False</b>. Changing the value for the property causes the tool bar to be resized and redrawn.
@@ -15890,7 +16192,7 @@ AToolbar.ButtonHeight := 30;
         <short>Indicates whether captions are displayed on tool bar buttons.</short>
         <descr>
           <p>
-            <var>ShowCaptions</var> is a <var>Boolean</var> property which indicates whether  caption text is displayed on tool bar buttons. The default value for the property is False. Changing the value for the property causes the tool bar to be redrawn.
+            <var>ShowCaptions</var> is a <var>Boolean</var> property which indicates whether  caption text is displayed on tool bar buttons. The default value for the property is <b>False</b>. Changing the value for the property causes the tool bar to be redrawn.
           </p>
           <p>
             ShowCaptions is used in the <var>Paint</var> method for the tool buttons on the control. When set to <b>True</b>, the caption text for a button is centered aligned at the bottom edge of the button. The icon for a button is drawn center aligned at the top edge of the button.
@@ -16101,7 +16403,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCoolBand.IsBitmapStored.Result">
-        <short>True when ParentBitmap is not set.</short>
+        <short><b>True</b> when ParentBitmap is not set.</short>
       </element>
 
       <element name="TCoolBand.IsColorStored">
@@ -16110,7 +16412,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCoolBand.IsColorStored.Result">
-        <short>True when ParentColor is not set.</short>
+        <short><b>True</b> when ParentColor is not set.</short>
       </element>
 
       <element name="TCoolBand.GetRight">
@@ -16411,7 +16713,7 @@ AToolbar.ButtonHeight := 30;
           <ul>
             <li>Break (True)</li>
             <li>Color (clDefault)</li>
-            <li>Control (set to Nil)</li>
+            <li>Control (set to <b>Nil</b>)</li>
             <li>FixedBackground (True)</li>
             <li>ImageIndex (-1)</li>
             <li>MinHeight (cDefMinHeight)</li>
@@ -16564,7 +16866,7 @@ AToolbar.ButtonHeight := 30;
         <short>Color for the band.</short>
         <descr>
           <p>
-            The default value for the property is clDefault. Please note that the default value for ParentColor is True, and causes the color defined for the TCoolBar control to be used.
+            The default value for the property is clDefault. Please note that the default value for ParentColor is <b>True</b>, and causes the color defined for the TCoolBar control to be used.
           </p>
         </descr>
         <seealso/>
@@ -16574,7 +16876,7 @@ AToolbar.ButtonHeight := 30;
         <short>Control displayed on the band.</short>
         <descr>
           <p>
-            Setting a new value for the property causes the Collection for the class to be updated. The existing control on the band is Nil'd and the new value is assigned. The Parent property in the control is set to the TCoolBar instance.
+            Setting a new value for the property causes the Collection for the class to be updated. The existing control on the band is <b>Nil</b>'d and the new value is assigned. The Parent property in the control is set to the TCoolBar instance.
           </p>
         </descr>
         <seealso/>
@@ -16796,7 +17098,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCoolBands.FindBand.Result">
         <short>
-          TCoolBand instance with the specified control, or Nil when not found.
+          TCoolBand instance with the specified control, or <b>Nil</b> when not found.
         </short>
       </element>
       <element name="TCoolBands.FindBand.AControl">
@@ -17179,7 +17481,9 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
       <element name="TCustomCoolBar.CalculatePreferredSize.WithThemeSpace">
-        <short>True to reserve additional space for theme elements.</short>
+        <short>
+          <b>True</b> to reserve additional space for theme elements.
+        </short>
       </element>
 
       <element name="TCustomCoolBar.CalculateAndAlign">
@@ -17210,10 +17514,10 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomCoolBar.ChangeCursor.ABand">
-        <short>True is a band is under the mouse pointer.</short>
+        <short><b>True</b> is a band is under the mouse pointer.</short>
       </element>
       <element name="TCustomCoolBar.ChangeCursor.AGrabber">
-        <short>True is the grabber is under the mouse pointer.</short>
+        <short><b>True</b> is the grabber is under the mouse pointer.</short>
       </element>
 
       <element name="TCustomCoolBar.CMBiDiModeChanged">
@@ -17283,7 +17587,7 @@ AToolbar.ButtonHeight := 30;
             ABand is the ordinal position for the requested band in the visible bands for the control. It represents an element in the internal array of visible TCoolBand instances populated in the CalculateAndAlign method.
           </p>
           <p>
-            IsFirstAtRow uses values from Vertical and IsRightToLeft to determine the orientation and order for the bands. The return value is True when the band at the specified position is the first one visually displayed on a given row.
+            IsFirstAtRow uses values from Vertical and IsRightToLeft to determine the orientation and order for the bands. The return value is <b>True</b> when the band at the specified position is the first one visually displayed on a given row.
           </p>
           <p>
             IsFirstAtRow is used in MouseDown and MouseMove when handling drag messages to order the bands in the control.
@@ -17293,7 +17597,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomCoolBar.IsFirstAtRow.Result">
         <short>
-          True is the requested band is the left edge of the visible display area for the control.
+          <b>True</b> is the requested band is the left edge of the visible display area for the control.
         </short>
       </element>
       <element name="TCustomCoolBar.IsFirstAtRow.ABand">
@@ -17535,7 +17839,7 @@ AToolbar.ButtonHeight := 30;
             MouseToBandPos is a method used to get the position for the band under the specified mouse coordinates.
           </p>
           <p>
-            ABand is an Integer output parameter with the position for the band under the mouse pointer. It can contain an ordinal position in the visible bands for the control, and can be in the range 0..Bands.Count-1. The upper limit may be smaller if any of the bands have their Visible property set to False.
+            ABand is an Integer output parameter with the position for the band under the mouse pointer. It can contain an ordinal position in the visible bands for the control, and can be in the range 0..Bands.Count-1. The upper limit may be smaller if any of the bands have their Visible property set to <b>False</b>.
           </p>
           <p>
             ABand may contain a negative value, defined in the cNewRowAbove and cNewRowBelow constants, that represent the unused space above or below the bands on the control.
@@ -18132,10 +18436,10 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTrackBar.ShouldAutoAdjust.AWidth">
-        <short>True if the value in Width should be resized.</short>
+        <short><b>True</b> if the value in Width should be resized.</short>
       </element>
       <element name="TCustomTrackBar.ShouldAutoAdjust.AHeight">
-        <short>True if the value in Height should be resized.</short>
+        <short><b>True</b> if the value in Height should be resized.</short>
       </element>
 
       <element name="TCustomTrackBar.Create">
@@ -18219,7 +18523,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTrackBar.Reversed">
         <short>
-          True if the values are displayed in ascending order from right-to-left.
+          <b>True</b> if the values are displayed in ascending order from right-to-left.
         </short>
         <descr/>
         <seealso/>
@@ -18258,7 +18562,7 @@ AToolbar.ButtonHeight := 30;
         <short>Enables or disables navigatiopn using the Tab key.</short>
         <descr>
           <p>
-            The default value for the property is True in TCustomTrackBar.
+            The default value for the property is <b>True</b> in TCustomTrackBar.
           </p>
         </descr>
         <seealso>
@@ -18442,7 +18746,7 @@ AToolbar.ButtonHeight := 30;
         <short>Visible has been set in the TTreeNode.</short>
       </element>
       <element name="TNodeState.nsEnabled">
-        <short>Enabled has been set to True for the TTreeNode.</short>
+        <short>Enabled has been set to <b>True</b> for the TTreeNode.</short>
       </element>
       <element name="TNodeState.nsBound">
         <short>The tree node is bound to a tree (has a Parent) or is a top-level node.</short>
@@ -18728,7 +19032,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTVEditingEvent">
         <short>
-          <var>TTVEditingEvent</var> - generic event handling method for editing a specified node if <var>AllowEdit</var> is True.
+          <var>TTVEditingEvent</var> - generic event handling method for editing a specified node if <var>AllowEdit</var> is <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -18779,7 +19083,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTVExpandingEvent">
         <short>
-          <var>TTVExpandingEvent</var> - generic event handling method for expanding a tree node if <var>AllowExpansion</var> is True.
+          <var>TTVExpandingEvent</var> - generic event handling method for expanding a tree node if <var>AllowExpansion</var> is <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -18796,7 +19100,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTVCollapsingEvent">
         <short>
-          <var>TTVCollapsingEvent</var> - generic event handling method for collapsing a Tree Node if AllowCollapse is True.
+          <var>TTVCollapsingEvent</var> - generic event handling method for collapsing a Tree Node if AllowCollapse is <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -18990,7 +19294,7 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TTVHasChildrenEvent.Result">
-        <short>True if the specified node has child nodes.</short>
+        <short><b>True</b> if the specified node has child nodes.</short>
       </element>
       <element name="TTVHasChildrenEvent.Sender">
         <short>Object (TCustomTreeView ) for the event notification.</short>
@@ -19128,7 +19432,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodeInfo.Expanded">
         <short>
-          True if the node is expanded to show its child nodes, or False when it is collapsed.
+          <b>True</b> if the node is expanded to show its child nodes, or <b>False</b> when it is collapsed.
         </short>
         <descr/>
         <seealso/>
@@ -19430,10 +19734,10 @@ AToolbar.ButtonHeight := 30;
             It notifies the owner ( the TTreeNodes container) that the tree node and its accessibility object are being deleted. The Unbind method is called to remove any references to the node in the parent and sibling nodes, or as a selection in TreeNodes.
           </p>
           <p>
-            Child nodes are removed by setting HasChildren to False. Child nodes in Items are freed, and its storage is set to Nil.
+            Child nodes are removed by setting HasChildren to <b>False</b>. Child nodes in Items are freed, and its storage is set to <b>Nil</b>.
           </p>
           <p>
-            The Pointer in the Data property is set to Nil.
+            The Pointer in the Data property is set to <b>Nil</b>.
           </p>
           <p>
             Destroy calls the inherited method prior to exit.
@@ -19462,7 +19766,7 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TTreeNode.AlphaSort.Result">
-        <short>True on success.</short>
+        <short><b>True</b> on success.</short>
       </element>
 
       <element name="TTreeNode.Bottom">
@@ -19502,17 +19806,17 @@ AToolbar.ButtonHeight := 30;
         <short><var>CustomSort</var> - Sorts the child nodes using SortProc.</short>
         <descr>
           <p>
-            The child nodes (but not the grand-children) are sorted. If SortProc is Nil the method DefaultTreeViewSort is used. The default implementation always returns True.
+            The child nodes (but not the grand-children) are sorted. If SortProc is <b>Nil</b> the method DefaultTreeViewSort is used. The default implementation always returns <b>True</b>.
          </p>
         </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.CustomSort.Result">
-        <short>Always returns True.</short>
+        <short>Always returns <b>True</b>.</short>
       </element>
       <element name="TTreeNode.CustomSort.SortProc">
         <short>
-          Sorting algorithm executed in the method, or Nil to use the default procedure.
+          Sorting algorithm executed in the method, or <b>Nil</b> to use the default procedure.
         </short>
       </element>
 
@@ -19597,7 +19901,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.DisplayRect">
         <short>
-          <var>DisplayRect</var> - returns the coordinates of the rectangle containing the current entry; if <var>TextOnly</var> is True, returns the coordinates for the text.
+          <var>DisplayRect</var> - returns the coordinates of the rectangle containing the current entry; if <var>TextOnly</var> is <b>True</b>, returns the coordinates for the text.
         </short>
         <descr/>
         <seealso/>
@@ -19660,7 +19964,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.EditText.Result">
-        <short>True if editing was enabled for the tree node in the method.</short>
+        <short>
+          <b>True</b> if editing was enabled for the tree node in the method.
+        </short>
       </element>
 
       <element name="TTreeNode.FindNode">
@@ -19686,7 +19992,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNode.FindNode.Result">
         <short>
-          The TTreeNode instance in Items with the specified value, or Nil if not found.
+          The TTreeNode instance in Items with the specified value, or <b>Nil</b> if not found.
         </short>
       </element>
       <element name="TTreeNode.FindNode.NodeText">
@@ -19709,7 +20015,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.GetFirstChild.Result">
-        <short>First tree node in the Items property, or Nil when Items is empty.</short>
+        <short>
+          First tree node in the Items property, or <b>Nil</b> when Items is empty.
+        </short>
       </element>
 
       <element name="TTreeNode.GetFirstSibling">
@@ -19817,7 +20125,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.GetLastVisibleChild">
         <short>
-          Gets the last child node in Items with its Visible property set to True.
+          Gets the last child node in Items with its Visible property set to <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -19904,7 +20212,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.GetNextSkipChildren">
         <short>
-          Gets the next sibling node for the current tree node, or Nil when a sibling does not exist.
+          Gets the next sibling node for the current tree node, or <b>Nil</b> when a sibling does not exist.
         </short>
         <descr/>
         <seealso/>
@@ -19931,16 +20239,22 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextVisible.Result">
-        <short>Next node in the tree node navigation order, or Nil.</short>
+        <short>
+          Next node in the tree node navigation order, or <b>Nil</b>.
+        </short>
       </element>
 
       <element name="TTreeNode.GetNextVisibleEnabled">
-        <short>Gets the next child or sibling for the current node that is visible and enabled.</short>
+        <short>
+          Gets the next child or sibling for the current node that is visible and enabled.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextVisibleEnabled.Result">
-        <short>Child or sibling tree node, or Nil when not enabled and visible.</short>
+        <short>
+          Child or sibling tree node, or <b>Nil</b> when not enabled and visible.
+        </short>
       </element>
 
       <element name="TTreeNode.GetNextVisibleSibling">
@@ -20000,7 +20314,9 @@ AToolbar.ButtonHeight := 30;
         <short>Node which is the previous child node.</short>
       </element>
       <element name="TTreeNode.GetPrevChild.AValue">
-        <short>Node which is the previous sibling for the specified child, or Nil.</short>
+        <short>
+          Node which is the previous sibling for the specified child, or <b>Nil</b>.
+        </short>
       </element>
 
       <element name="TTreeNode.GetPrevExpanded">
@@ -20080,7 +20396,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.GetPrevVisibleEnabledSibling.Result">
-        <short>The located tree node, or Nil if none of the sibling nodes are both visible and enabled.</short>
+        <short>
+          The located tree node, or <b>Nil</b> if none of the sibling nodes are both visible and enabled.
+        </short>
       </element>
 
       <element name="TTreeNode.GetTextPath">
@@ -20093,7 +20411,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.HasAsParent">
         <short>
-          Returns True if the specified node is a parent for the current node.
+          Returns <b>True</b> if the specified node is a parent for the current node.
         </short>
         <descr/>
         <seealso/>
@@ -20160,7 +20478,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.Collapse.Recurse">
-        <short>True to collapses all descendent nodes in the subtree.</short>
+        <short>
+          <b>True</b> to collapses all descendent nodes in the subtree.
+        </short>
       </element>
 
       <element name="TTreeNode.ConsistencyCheck">
@@ -20173,11 +20493,11 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Delete">
         <short>
-          Frees  the current tree node when the Deleting property is not True.
+          Frees  the current tree node when the Deleting property is not <b>True</b>.
         </short>
         <descr>
           <p>
-            Delete is a method used to remove the tree node from the TTreeNodes container. Delete calls Free to destroy the object instance if the Deleting property is not set to True. No actions are performed when Deleting is True.
+            Delete is a method used to remove the tree node from the TTreeNodes container. Delete calls Free to destroy the object instance if the Deleting property is not set to <b>True</b>. No actions are performed when Deleting is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -20201,7 +20521,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.EndEdit.Cancel">
-        <short>True if the edited value for Text is discarded.</short>
+        <short><b>True</b> if the edited value for Text is discarded.</short>
       </element>
 
       <element name="TTreeNode.Expand">
@@ -20216,7 +20536,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.Expand.Recurse">
-        <short>True to expand all descendent nodes.</short>
+        <short><b>True</b> to expand all descendent nodes.</short>
       </element>
 
       <element name="TTreeNode.ExpandParents">
@@ -20298,7 +20618,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.WriteDebugReport">
         <short>
-          <var>WriteDebugReport</var> - for debugging. If <var>Recurse</var> is True, report for all descendants as well.
+          <var>WriteDebugReport</var> - for debugging. If <var>Recurse</var> is <b>True</b>, report for all descendants as well.
         </short>
         <descr/>
         <seealso/>
@@ -20334,7 +20654,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            Cut is a Boolean property which indicates if the tree node has been cut from the tree structure. The property value is True when nsCut has been included in the States property for the tree node. Changing the value for the property causes the States property to be updated to include or exclude the node state value.
+            Cut is a Boolean property which indicates if the tree node has been cut from the tree structure. The property value is <b>True</b> when nsCut has been included in the States property for the tree node. Changing the value for the property causes the States property to be updated to include or exclude the node state value.
           </p>
         </descr>
         <seealso/>
@@ -20360,7 +20680,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Deleting">
         <short>
-          True if the node has been marked for deletion in the associated tree view control.
+          <b>True</b> if the node has been marked for deletion in the associated tree view control.
         </short>
         <descr>
           <p>
@@ -20372,14 +20692,14 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.DropTarget">
         <short>
-          True if the node is a drop target in a drag and drop operation.
+          <b>True</b> if the node is a drop target in a drag and drop operation.
         </short>
         <descr>
           <p>
             <var>DropTarget</var> is a <var>Boolean</var> property which indicates if the node is a drop target in a drag and drop operation. The value for the property is <b>True</b> when <var>nsDropHilited</var> has been included in the <var>States</var> property.
           </p>
           <p>
-            Setting a new value for the property causes States to be updated to reflect the new value. When set to True, nsDropHilited is included in State and the internal last drop target is updated in the associated <var>TreeView</var> control. When set to False, nsDropHilited is excluded from States and the last drop target is set to <b>Nil</b> in the TreeView control.
+            Setting a new value for the property causes States to be updated to reflect the new value. When set to <b>True</b>, nsDropHilited is included in State and the internal last drop target is updated in the associated <var>TreeView</var> control. When set to <b>False</b>, nsDropHilited is excluded from States and the last drop target is set to <b>Nil</b> in the TreeView control.
           </p>
         </descr>
         <seealso/>
@@ -20387,7 +20707,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Expanded">
         <short>
-          True if the node has been expanded, False when collapsed.
+          <b>True</b> if the node has been expanded, <b>False</b> when collapsed.
         </short>
         <descr>
           <p>
@@ -20402,7 +20722,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Focused">
         <short>
-          True if the node has focus in the TreeView control.
+          <b>True</b> if the node has focus in the TreeView control.
         </short>
         <descr>
           <p>
@@ -20436,10 +20756,10 @@ AToolbar.ButtonHeight := 30;
             HasChildren is a Boolean property which indicates whether the tree node has child nodes.
           </p>
           <p>
-            The property value is True when States includes the value nsHasChildren. Items is not used to determine the property value.
+            The property value is <b>True</b> when States includes the value nsHasChildren. Items is not used to determine the property value.
           </p>
           <p>
-            Setting a new value for the property causes States to be updated to include or exclude nsHasChildren to reflect the new value. When the value is False, child nodes in the Items property are freed.
+            Setting a new value for the property causes States to be updated to include or exclude nsHasChildren to reflect the new value. When the value is <b>False</b>, child nodes in the Items property are freed.
           </p>
           <p>
             The Update method is called to refresh the associated TreeView control (when assigned).
@@ -20500,7 +20820,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.IsFullHeightVisible">
         <short>
-          True if the entire node is visible in the display area for the associated TreeView control.
+          <b>True</b> if the entire node is visible in the display area for the associated TreeView control.
         </short>
         <descr>
           <p>
@@ -20518,7 +20838,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.IsVisible">
         <short>
-          True if the node is visible.
+          <b>True</b> if the node is visible.
         </short>
         <descr>
           <p>
@@ -20570,7 +20890,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.MultiSelected">
         <short>
-          <var>MultiSelected</var> - if True, several nodes have been selected simultaneously (e.g. using the Shift or Ctrl key while selecting).
+          <var>MultiSelected</var> - if <b>True</b>, several nodes have been selected simultaneously (e.g. using the Shift or Ctrl key while selecting).
         </short>
         <descr/>
         <seealso/>
@@ -20623,7 +20943,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Selected">
         <short>
-          True if the current node is selected in the tree view control.
+          <b>True</b> if the current node is selected in the tree view control.
         </short>
         <descr>
           <p>
@@ -20787,7 +21107,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Visible">
         <short>
-          True if the tree node is visible in the associated TreeView control.
+          <b>True</b> if the tree node is visible in the associated TreeView control.
         </short>
         <descr>
           <p>
@@ -20807,7 +21127,7 @@ AToolbar.ButtonHeight := 30;
         <short>Controls whether the tree node can be selected, and its visual appearance.</short>
         <descr>
           <p>
-            <var>Enabled</var> is a <var>Boolean</var> property which indicates if the tree node can be selected in a tree control. The <var>Selected</var> and <var>MultiSelected</var> properties cannot be set to <b>True</b> when Enabled is <b>False</b>. A mouse click used to select the node is also ignored when Enabled is False. The default value for the property is <b>True</b>.
+            <var>Enabled</var> is a <var>Boolean</var> property which indicates if the tree node can be selected in a tree control. The <var>Selected</var> and <var>MultiSelected</var> properties cannot be set to <b>True</b> when Enabled is <b>False</b>. A mouse click used to select the node is also ignored when Enabled is <b>False</b>. The default value for the property is <b>True</b>.
           </p>
           <p>
             Read and write access to the property value are redirected to the <var>States</var> property. Enabled is <b>True</b> when <var>nsEnabled</var> is included in the States property. It is <b>False</b> if the value is omitted from States.
@@ -20894,7 +21214,9 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TTreeNodesEnumerator.MoveNext.Result">
-        <short>True when more tree nodes are available in the internal container.</short>
+        <short>
+          <b>True</b> when more tree nodes are available in the internal container.
+        </short>
       </element>
 
       <element name="TTreeNodesEnumerator.Current">
@@ -21041,7 +21363,9 @@ AToolbar.ButtonHeight := 30;
         <short>TTreeNode instance created or updated in the method.</short>
       </element>
       <element name="TTreeNodes.InternalAddObject.Node">
-        <short>An existing tree node to update, or Nil to create a new tree node.</short>
+        <short>
+          An existing tree node to update, or <b>Nil</b> to create a new tree node.
+        </short>
       </element>
       <element name="TTreeNodes.InternalAddObject.S">
         <short>Text for the tree node.</short>
@@ -21345,7 +21669,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            Returns the TTreeNode instance found which matches the text ancestry in TextPath, or Nil if a tree node is not found matching the specified values.
+            Returns the TTreeNode instance found which matches the text ancestry in TextPath, or <b>Nil</b> if a tree node is not found matching the specified values.
           </p>
           <p>
             TextPath contains the delimited text values used to locate a tree node. The '/' (Slash) character is used as the delimiter between text values in TextPath. An initial slash character representing the root node is not needed or allowed. The search always starts at the top-level tree nodes in the container. The FindNode method is used to locate subsequent delimited text values in TextPath.
@@ -21368,7 +21692,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNodes.FindTopLvlNode.Result">
-        <short>Tree node with the specified text, or Nil.</short>
+        <short>Tree node with the specified text, or <b>Nil</b>.</short>
       </element>
       <element name="TTreeNodes.FindTopLvlNode.NodeText">
         <short>Text to locate in the top-level siblings.</short>
@@ -21398,7 +21722,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.GetFirstVisibleNode">
         <short>
-          Gets the first top-level tree node with its Visible property set to True.
+          Gets the first top-level tree node with its Visible property set to <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -21451,7 +21775,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.GetLastVisibleNode">
         <short>
-          Gets the last top-level tree node with its Visible property set to True.
+          Gets the last top-level tree node with its Visible property set to <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -21466,7 +21790,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNodes.GetLastVisibleEnabledNode.Result">
-        <short>The tree node, or Nil when a top-level sibling is not visible and enabled.</short>
+        <short>
+          The tree node, or <b>Nil</b> when a top-level sibling is not visible and enabled.
+        </short>
       </element>
 
       <element name="TTreeNodes.GetSelections">
@@ -21563,14 +21889,14 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.IsMultiSelection">
         <short>
-          True if the node is part of a multi-selection in the internal selection list.
+          <b>True</b> if the node is part of a multi-selection in the internal selection list.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.IsMultiSelection.Result">
         <short>
-          True if the node is part of a multi-selection in the internal selection list.
+          <b>True</b> if the node is part of a multi-selection in the internal selection list.
         </short>
       </element>
 
@@ -21658,7 +21984,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNodes.SelectionsChanged.AIsSelected">
         <short>
-          True to add the node, False to remove the node in the selection list.
+          <b>True</b> to add the node, <b>False</b> to remove the node in the selection list.
         </short>
       </element>
 
@@ -21710,7 +22036,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNodes.MultiSelect.ClearWholeSelection">
         <short>
-          True to remove all existing nodes in the selection list, False to remove the most recent node.
+          <b>True</b> to remove all existing nodes in the selection list, <b>False</b> to remove the most recent node.
         </short>
       </element>
 
@@ -21756,7 +22082,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.KeepCollapsedNodes">
         <short>
-          <var>KeepCollapsedNodes</var> - if True, preserves the nodes that have been collapsed.
+          <var>KeepCollapsedNodes</var> - if <b>True</b>, preserves the nodes that have been collapsed.
         </short>
         <descr/>
         <seealso/>
@@ -21907,12 +22233,12 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeViewOption.tvoAllowMultiselect">
         <short>
-          Allows selection of several tree-items, e.g. using Ctrl+click and Shift+click. Has the same affect as setting the MultiSelect property to True.
+          Allows selection of several tree-items, e.g. using Ctrl+click and Shift+click. Has the same affect as setting the MultiSelect property to <b>True</b>.
         </short>
       </element>
       <element name="TTreeViewOption.tvoAutoExpand">
         <short>
-          Automatically expands child nodes for a tree-item when user clicks it, or the item is activated by code. Has the same affect as setting the AutoExpand property to True.
+          Automatically expands child nodes for a tree-item when user clicks it, or the item is activated by code. Has the same affect as setting the AutoExpand property to <b>True</b>.
         </short>
       </element>
       <element name="TTreeViewOption.tvoAutoInsertMark">
@@ -22517,10 +22843,14 @@ AToolbar.ButtonHeight := 30;
             No actions are performed in the method for any of the following conditions:
           </p>
           <ul>
-            <li>ANode has not been assigned (contains Nil).</li>
+            <li>ANode has not been assigned (contains <b>Nilb></b>).</li>
             <li>ANode is not visible.</li>
-            <li>BeginEditing has been called and EndEditing has not yet been called.</li>
-            <li>CanEdit (and the OnEditing event handler) returns False.</li>
+            <li>
+              BeginEditing has been called and EndEditing has not yet been called.
+            </li>
+            <li>
+              CanEdit (and the OnEditing event handler) returns <b>False</b>.
+            </li>
           </ul>
           <p>
             If a different node is being edited in the control, the EndEditing method is called.
@@ -22552,7 +22882,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.CanChange">
         <short>
-          True if the specified tree node can be used in the Selected or Selections properties.
+          <b>True</b> if the specified tree node can be used in the Selected or Selections properties.
         </short>
         <descr>
           <p>
@@ -22573,7 +22903,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomTreeView.CanChange.Result">
         <short>
-          True if the specified tree node can be used in the Selected or Selections properties.
+          <b>True</b> if the specified tree node can be used in the Selected or Selections properties.
         </short>
       </element>
       <element name="TCustomTreeView.CanChange.Node">
@@ -22581,13 +22911,13 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.CanCollapse">
-        <short>Returns True if a given TreeNode can be collapsed.</short>
+        <short>Returns <b>True</b> if a given TreeNode can be collapsed.</short>
         <descr>
           <p>
             <var>CanCollapse</var> is a <var>Boolean</var> function used to determine if the tree node in <var>Node</var> can be collapsed. CanCollapse signals the <var>OnCollapsing</var> event handler (when assigned) to determine if the tree node can be collapsed.
           </p>
           <p>
-            The return value is updated in the event handler, and can be set to <b>True</b> when the node has child nodes and is currently expanded. The return value should be set to False if the node does not have any child nodes.
+            The return value is updated in the event handler, and can be set to <b>True</b> when the node has child nodes and is currently expanded. The return value should be set to <b>False</b> if the node does not have any child nodes.
           </p>
           <p>
             The return value is always <b>True</b> if the OnCollapsing event handler has not been assigned, or when the component is being freed.
@@ -22596,33 +22926,37 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanCollapse.Result">
-        <short>True if the specified node can be collapsed.</short>
+        <short>
+          <b>True</b> if the specified node can be collapsed.
+        </short>
       </element>
       <element name="TCustomTreeView.CanCollapse.Node">
         <short>Tree node examined in the method.</short>
       </element>
 
       <element name="TCustomTreeView.CanEdit">
-        <short>Returns True if the specified tree node can be edited.</short>
+        <short>Returns <b>True</b> if the specified tree node can be edited.</short>
         <descr>
           <p>
             <var>CanEdit</var> is a <var>Boolean</var> function used to determine if the tree node in <var>Node</var> can be edited. CanEdit signals the OnEditing event handler (when assigned) to determine if the TTreeNode instance can be modified.
           </p>
           <p>
-            The return value is updated in the event handler, and can be set to True if the tree view control is not configured to be read-only and the tree node is eligible for modification. Use the Options property in the tree view control to check for the read-only setting. The return value is always True if the OnEditing event handler has not been assigned.
+            The return value is updated in the event handler, and can be set to <b>True</b> if the tree view control is not configured to be read-only and the tree node is eligible for modification. Use the Options property in the tree view control to check for the read-only setting. The return value is always <b>True</b> if the OnEditing event handler has not been assigned.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanEdit.Result">
-        <short>True if the specified tree node can modify its property values.</short>
+        <short>
+          <b>True</b> if the specified tree node can modify its property values.
+        </short>
       </element>
       <element name="TCustomTreeView.CanEdit.Node">
         <short>Tree node examined in the method.</short>
       </element>
 
       <element name="TCustomTreeView.CanExpand">
-        <short>True if the specified tree node can be expanded.</short>
+        <short><b>True</b> if the specified tree node can be expanded.</short>
         <descr>
           <p>
             <var>CanExpand</var> is a <var>Boolean</var> function used to determine if the tree node specified in <var>Node</var> can be expanded. CanExpand signals the <var>OnExpanding</var> event handler (when assigned) to get  the return value for the method.
@@ -22634,7 +22968,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanExpand.Result">
-        <short>True if the specified node can be expanded.</short>
+        <short><b>True</b> if the specified node can be expanded.</short>
       </element>
       <element name="TCustomTreeView.CanExpand.Node">
         <short>Tree node examined in the method.</short>
@@ -22666,11 +23000,11 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.CustomDraw">
         <short>
-          <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle.
+          <var>CustomDraw</var> - returns <b>True</b> if Custom Drawing is proceeding in the specified Rectangle.
         </short>
         <descr>
           <p>
-            <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle.
+            <var>CustomDraw</var> - returns <b>True</b> if Custom Drawing is proceeding in the specified Rectangle.
           </p>
           <p>
             Stage indicates whether PrePaint, PostPaint, PreErase or PostErase.
@@ -22692,17 +23026,17 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.CustomDrawItem">
         <short>
-          <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode.
+          <var>CustomDrawItem</var> - returns <b>True</b> if Custom Image drawing is proceeding at the specified TreeNode.
         </short>
         <descr>
           <p>
-            <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode.
+            <var>CustomDrawItem</var> - returns <b>True</b> if Custom Image drawing is proceeding at the specified TreeNode.
           </p>
           <p>
             State denotes one of <var>Selected, Grayed, Disabled, Checked, Focused, Default, Hot, Marked or Indeterminate</var>.
           </p>
           <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase.</p>
-          <p>If <var>PaintImages</var> is True, Images should be painted as well as text.</p>
+          <p>If <var>PaintImages</var> is <b>True</b>, Images should be painted as well as text.</p>
         </descr>
         <seealso/>
       </element>
@@ -22728,11 +23062,15 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.DefaultItemHeightIsStored.Result">
-        <short>True when tvoAutoItemHeight in not in the Options for the control.</short>
+        <short>
+          <b>True</b> when tvoAutoItemHeight in not in the Options for the control.
+        </short>
       </element>
 
       <element name="TCustomTreeView.DoAutoAdjustLayout">
-        <short>Applies a layout adjustment policy using the specified scaling factors.</short>
+        <short>
+          Applies a layout adjustment policy using the specified scaling factors.
+        </short>
         <descr/>
         <seealso>
           <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
@@ -22754,7 +23092,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.ExpandSignSizeIsStored.Result">
-        <short>True when ExpandSignSize has a value other than the default (-1).</short>
+        <short>
+          <b>True</b> when ExpandSignSize has a value other than the default (-1).
+        </short>
       </element>
 
       <element name="TCustomTreeView.GetBuiltinIconSize">
@@ -22867,7 +23207,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeWithExpandSignAt.Result">
-        <short>The expanded tree node found at the vertical coordinate, or Nil when a node is not found.</short>
+        <short>
+          The expanded tree node found at the vertical coordinate, or <b>Nil</b> when a node is not found.
+      </short>
       </element>
       <element name="TCustomTreeView.GetNodeWithExpandSignAt.X">
         <short>
@@ -22904,12 +23246,14 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.IndentIsStored.Result">
-        <short>True when Indent has a value other than the default value (-1).</short>
+        <short>
+          <b>True</b> when Indent has a value other than the default value (-1).
+        </short>
       </element>
 
       <element name="TCustomTreeView.IsCustomDrawn">
         <short>
-          <var>IsCustomDrawn</var> - returns True if the specified target is custom drawn.
+          <var>IsCustomDrawn</var> - returns <b>True</b> if the specified target is custom drawn.
         </short>
         <descr/>
         <seealso>
@@ -22921,7 +23265,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Result">
         <short>
-          True when event handlers have been assigned for the specified target and stage.
+          <b>True</b> when event handlers have been assigned for the specified target and stage.
         </short>
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Target">
@@ -22933,14 +23277,14 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.IsNodeVisible">
         <short>
-          Returns True if the specified tree node and its parent nodes are visible and expanded.
+          Returns <b>True</b> if the specified tree node and its parent nodes are visible and expanded.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.IsNodeVisible.Result">
         <short>
-          True if the specified tree node and its parent nodes are visible and expanded.
+          <b>True</b> if the specified tree node and its parent nodes are visible and expanded.
         </short>
       </element>
       <element name="TCustomTreeView.IsNodeVisible.ANode">
@@ -22949,7 +23293,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.IsNodeHeightFullVisible">
         <short>
-          <var>IsNodeHeightFullVisible</var> - returns True if the full height of the specified node is visible in the current view.
+          <var>IsNodeHeightFullVisible</var> - returns <b>True</b> if the full height of the specified node is visible in the current view.
         </short>
         <descr/>
         <seealso/>
@@ -22963,7 +23307,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.IsInsertMarkVisible">
         <short>
-          <var>IsInsertMarkVisible</var> - returns True if an Insert mark is visible.
+          <var>IsInsertMarkVisible</var> - returns <b>True</b> if an Insert mark is visible.
         </short>
         <descr/>
         <seealso/>
@@ -22995,7 +23339,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomTreeView.MoveSelection.ASelect">
         <short>
-          True to include the tree node in Selections (when enabled), False to select only the specified node.
+          <b>True</b> to include the tree node in Selections (when enabled), <b>False</b> to select only the specified node.
         </short>
       </element>
 
@@ -23313,10 +23657,10 @@ AToolbar.ButtonHeight := 30;
         <short>Performs actions needed when an object is dragged over the tree view control.</short>
         <descr>
           <p>
-            DragOver is an overridden method in TCustomTreeView used to perform actions needed when an object is dragged over the tree view control. DragOver calls the inherited method on entry to get the initial value for the Accept argument and signal the OnDragOver event handler (when assigned). The event handler is used to determine whether a drop can be accepted for the specified object instance. If the event handler has not been aasigned, Accept is set False.
+            DragOver is an overridden method in TCustomTreeView used to perform actions needed when an object is dragged over the tree view control. DragOver calls the inherited method on entry to get the initial value for the Accept argument and signal the OnDragOver event handler (when assigned). The event handler is used to determine whether a drop can be accepted for the specified object instance. If the event handler has not been assigned, Accept is set <b>False</b>.
           </p>
           <p>
-            DragOver checks for a tree node at the coordinates in X and Y, and checks whether the node is DropTarget for the control. If the node is different than the DropTarget for the control,  the DropTarget property in the TTreeNode instance is set to True.
+            DragOver checks for a tree node at the coordinates in X and Y, and checks whether the node is DropTarget for the control. If the node is different than the DropTarget for the control, the DropTarget property in the TTreeNode instance is set to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -23591,13 +23935,13 @@ AToolbar.ButtonHeight := 30;
             The tree node for the mouse event is retrieved using GetNodeAt for the mouse coordinates. The Selected state for the tree node is saved so the selection can be restored prior to exit.
           </p>
           <p>
-            MouseDown ensures that both Left and Right mouse button events are handled (when needed). When RightClickSelect is True, the Selection can be changed using the Right mouse button. Otherwise, it is ignored. Multi-selection is handled when the Shift modifier is set for the mouse event.
+            MouseDown ensures that both Left and Right mouse button events are handled (when needed). When RightClickSelect is <b>True</b>, the Selection can be changed using the Right mouse button. Otherwise, it is ignored. Multi-selection is handled when the Shift modifier is set for the mouse event.
           </p>
           <p>
-            A mouse event on an unused space in the control causes ClearSelection to be called when RowSelect is True. Selected is set to Nil if RowSelect is False.
+            A mouse event on an unused space in the control causes ClearSelection to be called when RowSelect is <b>True</b>. Selected is set to <b>Nil</b> if RowSelect is <b>False</b>.
           </p>
           <p>
-            When MultiSelect has not been enabled, the selected tree node is assigned to the Selected property. When it has been enabled, the MultiSelect method in Items is used to include the selected tree node in the Selections property. ClearSelection is called if the tree node was de-selected by the mouse event. Selected is set to Nil if the tree node was de-selected by the mouse event.
+            When MultiSelect has not been enabled, the selected tree node is assigned to the Selected property. When it has been enabled, the MultiSelect method in Items is used to include the selected tree node in the Selections property. ClearSelection is called if the tree node was de-selected by the mouse event. Selected is set to <b>Nil</b> if the tree node was de-selected by the mouse event.
           </p>
           <p>
             The control is Focused (when needed and allowed) by calling the SetFocus method.
@@ -23711,7 +24055,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomTreeView.NodeHaschildren.Result">
         <short>
-          True if the node has child nodes. False if OnHasChildren has not been assigned.
+          <b>True</b> if the node has child nodes. <b>False</b> if OnHasChildren has not been assigned.
         </short>
       </element>
       <element name="TCustomTreeView.NodeHaschildren.Node">
@@ -23991,7 +24335,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetSelectedChildAccessibleObject.Result">
-        <short>True if the node data was successfully added to the accessibility object.</short>
+        <short>
+          <b>True</b> if the node data was successfully added to the accessibility object.
+        </short>
       </element>
 
       <element name="TCustomTreeView.GetChildAccessibleObjectAtPos" link="#lcl.controls.TControl.GetChildAccessibleObjectAtPos"/>
@@ -24089,13 +24435,15 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.MultiSelect">
-        <short>Enables or disables selection of several tree-items at one time.</short>
+        <short>
+          Enables or disables selection of multiple tree nodes at the same time.
+        </short>
         <descr>
           <p>
             <var>MultiSelect</var> is a <var>Boolean</var> property used to enable or disable selection of multiple nodes in the tree view control. The default value for the property is <b>False</b>, and allows a single selected node indicated in the <var>Selection</var> property.
           </p>
           <p>
-            When set to <b>True</b>, multiple nodes can be selected and stored in the Selections property. Use <b>Ctrl+Click</b> add or remove a node in the Selections property. Use <b>Shift+Click</b> to add or remove a range of nodes in the Selections property.
+            When set to <b>True</b>, multiple nodes can be selected and stored in the Selections property. Use <b>Ctrl+Click</b> to add or remove a node in the Selections property. Use <b>Shift+Click</b> and <b>Ctrl+Shift+Click</b> to add or remove a range of nodes in the Selections property.
           </p>
           <p>
             Changing the value for the property causes existing nodes in both Selection and Selections to be cleared.
@@ -24482,7 +24830,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.AlphaSort.Result">
-        <short>Always returns False (because CustomSort returns False).</short>
+        <short>Always returns <b>False</b> (because CustomSort returns <b>False</b>).</short>
       </element>
 
       <element name="TCustomTreeView.ClearSelection">
@@ -24495,13 +24843,13 @@ AToolbar.ButtonHeight := 30;
             If <var>MultiSelect</var> has  been enabled in the <var>Options</var> for the control,  the ClearMultiSelection method is called to clear the selected nodes.
           </p>
           <p>
-            <var>KeepPrimary</var> indicates whether the first tree node in a multi-selection is retained. When set to False, all selected nodes are removed from the Selections property. Otherwise, the tree node in Selected is retained.
+            <var>KeepPrimary</var> indicates whether the first tree node in a multi-selection is retained. When set to <b>False</b>, all selected nodes are removed from the Selections property. Otherwise, the tree node in Selected is retained.
           </p>
           <p>
-            If MultiSelect has not been enabled, the value in the Selected property is set to Nil to clear the single node selection.
+            If MultiSelect has not been enabled, the value in the Selected property is set to <b>Nil</b> to clear the single node selection.
           </p>
           <p>
-            No actions are performed in the method when MultiSelect is False and KeepPrimary is True.
+            No actions are performed in the method when MultiSelect is <b>False</b> and KeepPrimary is <b>True</b>.
           </p>
           <p>
             ClearSelections is called from methods that handle mouse or keyboard selection, like <var>KeyDown</var> and <var>MouseDown</var>. It is also called when a new value is assigned to the MultiSelect property.
@@ -24510,7 +24858,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.ClearSelection.KeepPrimary">
-        <short>True if the first node in a multi-selection is kept.</short>
+        <short>
+          <b>True</b> if the first node in a multi-selection is kept.
+        </short>
       </element>
 
       <element name="TCustomTreeView.ConsistencyCheck">
@@ -24531,7 +24881,7 @@ AToolbar.ButtonHeight := 30;
             <dt>FMaxRight member</dt>
             <dd>Raises the exception if FMaxRight has a negative value.</dd>
             <dt>IsEditing / Selected</dt>
-            <dd>Raises the exception if IsEditing is True and Selected is unassigned.</dd>
+            <dd>Raises the exception if IsEditing is <b>True</b> and Selected is unassigned.</dd>
             <dt>Selected</dt>
             <dd>Raises the exception if the node in Selected is not visible.</dd>
             <dt>Items</dt>
@@ -24552,7 +24902,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.CustomSort">
         <short>
-          If True, the external method specified in <var>SortProc</var> is used for sorting.
+          If <b>True</b>, the external method specified in <var>SortProc</var> is used for sorting.
         </short>
         <descr>
           <p>
@@ -24562,7 +24912,7 @@ AToolbar.ButtonHeight := 30;
             No actions are performed in the method when the number of tree nodes in Items is 0 (zero).
           </p>
           <p>
-            The return value is always False.
+            The return value is always <b>False</b>.
           </p>
           <p>
             CustomSort calls BeginUpdate to minimize updates during the sorting process. EndUpdates is called when the sorting process is completed.
@@ -24577,7 +24927,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.CustomSort.Result">
-        <short>Always returns False.</short>
+        <short>Always returns <b>False</b>.</short>
       </element>
       <element name="TCustomTreeView.CustomSort.SortProc">
         <short>Routine used to implement the sort procedure in the method.</short>
@@ -24644,7 +24994,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeAt.Result">
-        <short>Visible tree node at the specified position, or Nil when not found.</short>
+        <short>
+          Visible tree node at the specified position, or <b>Nil</b> when not found.
+        </short>
       </element>
       <element name="TCustomTreeView.GetNodeAt.X">
         <short>Horizontal coordinate for the the node or row.</short>
@@ -24763,7 +25115,9 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TCustomTreeView.IsEditing.Result">
-        <short>True if the tvsIsEditing flag is present in States.</short>
+        <short>
+          <b>True</b> if the tvsIsEditing flag is present in States.
+        </short>
       </element>
 
       <element name="TCustomTreeView.BeginUpdate">
@@ -24951,7 +25305,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TCustomTreeView.SelectionVisible.Result">
         <short>
-          True when a selected tree node on the control is visible.
+          <b>True</b> when a selected tree node on the control is visible.
         </short>
       </element>
 
@@ -24964,7 +25318,7 @@ AToolbar.ButtonHeight := 30;
             <var>MakeSelectionVisible</var> allows the control to display a selected node on the tree view control. It forces the tree node to become visible in the display area for the control. The node made visible is either the value in <var>Selected</var> or the first multi-selected node in <var>Selections</var>. The <var>MakeVisible</var> method for the <var>TTreeNode</var> instance is called to update the parent nodes and the associated tree view control.
           </p>
           <p>
-            No actions are performed in the method when SelectionVisible returns True.
+            No actions are performed in the method when SelectionVisible returns <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -24979,7 +25333,7 @@ AToolbar.ButtonHeight := 30;
         <short>Clears selected tree node(s) in the control if they are not visible.</short>
         <descr>
           <p>
-            If MultiSelect has been enabled in the Options for the control, the ClearMultiSelection method in Items is called to clear the values in the Selections property. Otherwise the Selected property for the TTreeNode instance in Selected is set to False (which makes the Selected property unassigned).
+            If MultiSelect has been enabled in the Options for the control, the ClearMultiSelection method in Items is called to clear the values in the Selections property. Otherwise the Selected property for the TTreeNode instance in Selected is set to <b>False</b> (which makes the Selected property unassigned).
           </p>
           <p>
             No action are performed if MultiSelect has not been enabled and Selected has not been assigned.
@@ -25005,10 +25359,14 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.ApplyStoredSelection.ASelection">
-        <short>TStringList with the text for nodes selected in the method.</short>
+        <short>
+          TStringList with the text for nodes selected in the method.
+        </short>
       </element>
       <element name="TCustomTreeView.ApplyStoredSelection.FreeList">
-        <short>True if the TStringList instance is freed in the method.</short>
+        <short>
+          <b>True</b> if the TStringList instance is freed in the method.
+        </short>
       </element>
 
       <element name="TCustomTreeView.MoveToNextNode">
@@ -25019,7 +25377,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveToNextNode.ASelect">
-        <short>True if the next node becomes selected in the control.</short>
+        <short>
+          <b>True</b> if the next node becomes selected in the control.
+        </short>
       </element>
 
       <element name="TCustomTreeView.MoveToPrevNode">
@@ -25030,7 +25390,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveToPrevNode.ASelect">
-        <short>True if the previous node becomes selected in the control.</short>
+        <short>
+          <b>True</b> if the previous node becomes selected in the control.
+        </short>
       </element>
 
       <element name="TCustomTreeView.MovePageDown">
@@ -25041,7 +25403,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MovePageDown.ASelect">
-        <short>True if the node becomes selected in the control.</short>
+        <short>
+          <b>True</b> if the node becomes selected in the control.
+        </short>
       </element>
 
       <element name="TCustomTreeView.MovePageUp">
@@ -25052,7 +25416,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MovePageUp.ASelect">
-        <short>True if the node becomes selected in the control.</short>
+        <short><b>True</b> if the node becomes selected in the control.</short>
       </element>
 
       <element name="TCustomTreeView.MoveHome">
@@ -25061,7 +25425,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveHome.ASelect">
-        <short>True if the node is selected in the control.</short>
+        <short><b>True</b> if the node is selected in the control.</short>
       </element>
 
       <element name="TCustomTreeView.MoveEnd">
@@ -25070,7 +25434,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveEnd.ASelect">
-        <short>True if the node is selected in the control.</short>
+        <short><b>True</b> if the node is selected in the control.</short>
       </element>
 
       <element name="TCustomTreeView.BackgroundColor">
@@ -25377,7 +25741,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 
       <element name="TCustomTreeView.KeepCollapsedNodes">
         <short>
-          <var>KeepCollapsedNodes</var> - if True, the collapsed nodes are to be retained.
+          <var>KeepCollapsedNodes</var> - if <b>True</b>, the collapsed nodes are to be retained.
         </short>
         <descr/>
         <seealso/>
@@ -25410,10 +25774,10 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>Specifies the scroll bars displayed for the tree view control.</short>
         <descr>
           <p>
-            <var>ScrollBars</var> is a <var>TScrollStyle</var> property with the scrollbars displayed for the tree view control. The default value for the property is <var>ssBoth</var>, and indicates both horizontal and vertical scrollbars are always visible. See <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link> for more information about values in the enumeration and their meanings.
+            <var>ScrollBars</var> is a <var>TScrollStyle</var> property with the scroll bars displayed for the tree view control. The default value for the property is <var>ssBoth</var>, and indicates both horizontal and vertical scroll bars are always visible. See <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link> for more information about values in the enumeration and their meanings.
           </p>
           <p>
-            Changing the value for the property causes the States property to be update,  and the scollbars are  redrawn for the control.
+            Changing the value for the property causes the States property to be updated, and the scroll bars are redrawn for the control.
           </p>
         </descr>
         <seealso>
@@ -25619,10 +25983,10 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>Enables or disables navigation using the Tab key.</short>
         <descr>
           <p>
-            <var>TabStop</var> is a <var>Boolean</var> property which enables or disables keyboard navigation for the control. When set to True, the control can be entered and exited using the Tab and Shift+Tab keys. When set to False, the control does not respond to these keystrokes, and cannot be entered or exited using the keyboard to  navigate the tab order for controls on a form.
+            <var>TabStop</var> is a <var>Boolean</var> property which enables or disables keyboard navigation for the control. When set to <b>True</b>, the control can be entered and exited using the Tab and Shift+Tab keys. When set to <b>False</b>, the control does not respond to these keystrokes, and cannot be entered or exited using the keyboard to  navigate the tab order for controls on a form.
           </p>
           <p>
-            The default value for the property is True in TCustomTreeView.
+            The default value for the property is <b>True</b> in TCustomTreeView.
           </p>
         </descr>
         <seealso>
@@ -25677,7 +26041,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short/>
         <descr>
           <p>
-            The default value for the property is False in TTreeView.
+            The default value for the property is <b>False</b> in TTreeView.
           </p>
         </descr>
         <seealso>
@@ -25709,7 +26073,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>Enables or disables navigation using the Tab key.</short>
         <descr>
           <p>
-            The default value for the property is True in TTreeView.
+            The default value for the property is <b>True</b> in TTreeView.
           </p>
         </descr>
         <seealso>
@@ -25898,7 +26262,7 @@ OldExpanded.Free;
         <short>Tree view with nodes examined in the method.</short>
       </element>
       <element name="TTreeNodeExpandedState.Apply.CollapseToo">
-        <short>Collapses previously expanded child nodes when True.</short>
+        <short>Collapses previously expanded child nodes when <b>True</b>.</short>
       </element>
 
       <element name="TTreeNodeExpandedState.OnGetNodeText">
@@ -26241,10 +26605,12 @@ OldExpanded.Free;
       </element>
 
       <element name="THeaderSections.Update">
-        <short>Performs actions needed when a collection item has been changed.</short>
+        <short>
+          Performs actions needed when a collection item has been changed.
+        </short>
         <descr>
           <p>
-            <var>Update</var> is an overridden method used to update the section in the header control. When Item is assigned, the UpdateSection method in the THeaderControl instance is called. If Item is unassigned (contains Nil), the UpdateSections method in the THeaderControl instance is called update all sections in the collection.
+            <var>Update</var> is an overridden method used to update the section in the header control. When Item is assigned, the UpdateSection method in the THeaderControl instance is called. If Item is unassigned (contains <b>Nil</b>), the UpdateSections method in the THeaderControl instance is called update all sections in the collection.
           </p>
           <remark>
             Update does <b>not</b> call the inherited method which notifies observers of the change.
@@ -26296,17 +26662,25 @@ OldExpanded.Free;
         </descr>
       </element>
       <element name="THeaderSections.AddItem.Result">
-        <short>Header section created (optional) and stored in the method.</short>
+        <short>
+          Header section created (optional) and stored in the method.
+        </short>
       </element>
       <element name="THeaderSections.AddItem.Item">
-        <short>Header section to add in the method, or Nil to create a new one.</short>
+        <short>
+          Header section to add in the method, or <b>Nil</b> to create a new one.
+        </short>
       </element>
       <element name="THeaderSections.AddItem.Index">
-        <short>Ordinal position in the collection where the header section is stored.</short>
+        <short>
+          Ordinal position in the collection where the header section is stored.
+        </short>
       </element>
 
       <element name="THeaderSections.Insert">
-        <short>Inserts a new collection item at the specified position in the collection.</short>
+        <short>
+          Inserts a new collection item at the specified position in the collection.
+        </short>
         <descr/>
         <seealso>
           <link id="#rtl.classes.TCollection.Insert">TCollection.Insert</link>
@@ -27100,9 +27474,10 @@ OldExpanded.Free;
         <short>Registers components in the Lazarus IDE.</short>
         <descr>
           <p>
-            Register is a procedure used to register components in the <file>comctrls.pp</file> unit in the Lazarus IDE. Register adds the following components:
+            Register is a procedure used to register components in the <file>comctrls.pp</file> unit in the Lazarus IDE. Register adds the following components to the Component palette:
           </p>
-          <p><b>Common Controls Tab</b>
+          <p>
+            <b>Common Controls Tab</b>
           </p>
           <ul>
             <li>TTrackbar</li>
