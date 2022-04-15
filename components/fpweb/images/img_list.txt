@@ -7,9 +7,6 @@ div_left.png
 div_right.png
 HTMLForm.png
 HTMLList.png
-thtmlpageproducer_150.png
-thtmlpageproducer_200.png
-thtmlpageproducer.png
 lineedit.png
 quick_table.png
 radio.png
@@ -63,6 +60,9 @@ textjsjsonwebdatainputadaptor.png
 textjsxmldataformatter_150.png
 textjsxmldataformatter_200.png
 textjsxmldataformatter.png
+textjsxmlwebdatainputadaptor_150.png
+textjsxmlwebdatainputadaptor_200.png
+textjsxmlwebdatainputadaptor.png
 tfphttpclient_150.png
 tfphttpclient_200.png
 tfphttpclient.png
@@ -70,6 +70,9 @@ tfphttpserver_150.png
 tfphttpserver_200.png
 tfphttpserver.png
 tfphttpwebclient.png
+tfpoauth2inistore_150.png
+tfpoauth2inistore_200.png
+tfpoauth2inistore.png
 tfpwebdataprovider_150.png
 tfpwebdataprovider_200.png
 tfpwebdataprovider.png
@@ -91,6 +94,9 @@ thtmldatasetselectproducer.png
 thtmlentityproducer_150.png
 thtmlentityproducer_200.png
 thtmlentityproducer.png
+thtmlpageproducer_150.png
+thtmlpageproducer_200.png
+thtmlpageproducer.png
 thtmlselectproducer_150.png
 thtmlselectproducer_200.png
 thtmlselectproducer.png
@@ -103,6 +109,9 @@ tjsonrpcdispatcher.png
 tjsonrpchandler_150.png
 tjsonrpchandler_200.png
 tjsonrpchandler.png
+toauth2handler_150.png
+toauth2handler_200.png
+toauth2handler.png
 tsessionjsonrpcdispatcher_150.png
 tsessionjsonrpcdispatcher_200.png
 tsessionjsonrpcdispatcher.png
