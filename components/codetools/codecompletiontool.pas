@@ -2155,14 +2155,30 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     {$ENDIF}
     // add new event name as right value of assignment
     // add address operator @ if needed or user provided it himself
+
+    if UserEventAtom.StartPos>0 then begin
+    end else begin
+
+    end;
+
     RValue:=AnEventName+';';
     if (AddrOperatorPos>0)
-    or ((Scanner.PascalCompiler=pcFPC) and (Scanner.CompilerMode<>cmDelphi))
+    or (Scanner.CompilerMode in [cmDelphi,cmDELPHIUNICODE])
     then
       RValue:='@'+RValue;
-    RValue:=':='+RValue;
+    if (AddrOperatorPos>0) or (UserEventAtom.StartPos>0) then begin
+      // left := |SomeName  -> keep assignment and space behind
+      StartInsertPos:=AddrOperatorPos;
+      if StartInsertPos<1 then
+        StartInsertPos:=UserEventAtom.StartPos;
+    end else begin
+      // left :=|
+      RValue:=':='+RValue;
+      StartInsertPos:=AssignmentOperator;
+    end;
+
     RValue:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(RValue,0);
-    StartInsertPos:=AssignmentOperator;
+    RValue:=TrimLeft(RValue);
     EndInsertPos:=SemicolonPos+1;
     if EndInsertPos<1 then
       EndInsertPos:=UserEventAtom.EndPos;
