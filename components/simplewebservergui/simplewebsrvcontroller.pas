@@ -1113,9 +1113,9 @@ begin
   begin
     Instance:=Servers[i];
     aThread:=Instance.Thread;
-    Instance.State:=swssStopping;
     if (Instance.State=swssRunning) and (aThread<>nil) then
     begin
+      Instance.State:=swssStopping;
       aThread.TerminateProcess;
       aThread.Terminate;
     end;
@@ -1126,10 +1126,10 @@ begin
   // wait for all threads (max 2 seconds)
   i:=0;
   repeat
-    sleep(20);
+    sleep(15); // windows sleep has a resolution of 1/64th of a second
     CheckSynchronize(1);
     inc(i);
-  until CleanUp or (i=100);
+  until CleanUp or (i=140);
 
   // free all instances
   FMainSrvInstance:=nil;
