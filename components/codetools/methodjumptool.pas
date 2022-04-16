@@ -1257,7 +1257,7 @@ begin
       while CurProcNode<>nil do begin
         if CurProcNode.Desc=ctnProcedure then begin
           CurProcHead:=ExtractProcHead(CurProcNode,Attr);
-          debugln(['TMethodJumpingCodeTool.FindProc "',CurProcHead,'"']);
+          //debugln(['TMethodJumpingCodeTool.FindProc "',CurProcHead,'"']);
           if CompareTextIgnoringSpace(ProcHead,CurProcHead,false)=0 then
             exit(CurProcNode);
         end;
