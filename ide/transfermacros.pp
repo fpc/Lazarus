@@ -27,10 +27,6 @@
       $MakeDir(filename) - append path delimiter
       $MakeFile(filename) - chomp path delimiter
       $Trim(filename) - equal to TrimFilename
-
-  ToDo:
-    sort items to accelerate find
-
 }
 unit TransferMacros;
 
@@ -39,7 +35,7 @@ unit TransferMacros;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Types,
   // LazUtils
   LazFileUtils, LazUTF8,
   // CodeTools
