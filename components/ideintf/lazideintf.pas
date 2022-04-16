@@ -273,7 +273,10 @@ type
   TLazToolStatusChangeEvent = procedure(Sender: TObject; OldStatus, NewStatus: TLazToolStatus) of object;
 
   TLazBuildingFinishedEvent = procedure(Sender: TObject; BuildSuccessful: Boolean) of object;
-  TLazLoadSaveCustomDataEvent = procedure(Sender: TObject; Load: boolean; CustomData: TStringToStringTree; PathDelimChanged: boolean) of object;
+  TLazLoadSaveCustomDataEvent = procedure(Sender: TObject; Load: boolean;
+    CustomData: TStringToStringTree; // on save this is a temporary clone free for altering
+    PathDelimChanged: boolean
+    ) of object;
 
   { TLazIDEInterface }
 
