@@ -505,8 +505,13 @@ begin
   len:=length(s) div 2;
   if len=0 then
     exit('');
-  SetLength(Result,len*3);// UTF-8 is at most 3/2 times the size
   Src:=PWord(Pointer(s));
+  if (Src^=$FEFF) then // Skip BOM
+  begin
+    inc(Src);
+    dec(len);
+  end;
+  SetLength(Result,len*3);// UTF-8 is at most 3/2 times the size
   Dest:=PChar(Result);
   for i:=1 to len do begin
     c:=LEtoN(Src^);
@@ -536,8 +541,13 @@ begin
   len:=length(s) div 2;
   if len=0 then
     exit('');
-  SetLength(Result,len*3);// UTF-8 is at most three times the size
   Src:=PWord(Pointer(s));
+  if (Src^=$FFFE) then // Skip BOM
+  begin
+    inc(Src);
+    dec(len);
+  end;
+  SetLength(Result,len*3);// UTF-8 is at most three times the size
   Dest:=PChar(Result);
   for i:=1 to len do begin
     c:=BEtoN(Src^);
