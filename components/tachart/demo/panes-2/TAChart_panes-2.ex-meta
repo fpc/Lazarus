@@ -1,0 +1,5 @@
+{ "TAChart_panes-2" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","panes"],
+   "Description" : "Display several panes, vertically or horizontally in a TAChart"}
+}

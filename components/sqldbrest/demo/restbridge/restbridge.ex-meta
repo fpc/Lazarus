@@ -1,0 +1,5 @@
+{ "restbridge" : {
+   "Category" : "DBase",
+   "Keywords" : ["sqldbrest", "REST", "TFPhttpclient", "TBufDataSet", "Work Required"],
+   "Description" : "One part of a set of demos (search for sqldbrest) demonstrating using REST to access a database. Compiles  and runs (without any GUI). Might be associated with the other sqldbrest demos but listens on 8080 and they talk 3000. Needs clarification.\n\nBetter documentation would be great !"}
+}

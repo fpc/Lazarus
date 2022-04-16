@@ -1,0 +1,5 @@
+{ "TAChart_radial" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Pie","explode"],
+   "Description" : "Demonstrate a pie chart where a click on a segment explodes it or moves it out."}
+}

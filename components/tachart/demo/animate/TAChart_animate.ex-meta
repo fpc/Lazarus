@@ -1,0 +1,5 @@
+{ "TAChart_animate" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Animated"],
+   "Description" : "Animate a TAChart in three different modes."}
+}

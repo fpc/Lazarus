@@ -1,0 +1,5 @@
+{ "TAChart_manhattan" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","manhatten","genomic"],
+   "Description" : "Displays a Manhatten Plot (often used in genomics), useful for a large number of datapoints of varying amplitude."}
+}

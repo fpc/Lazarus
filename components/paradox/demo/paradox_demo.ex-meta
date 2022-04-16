@@ -1,0 +1,5 @@
+{ "paradox_demo" : {
+   "Category" : "DBase",
+   "Keywords" : ["paradox","dbase","db","Needs Work"],
+   "Description" : "Appears to demonstrate basic use of Paradox Database.\nRequires the lazparadox package (in Laz SRC Tree) to be installed.\nRequires Paradox library on your system, eg on Debian pxlib1.\nGenerates a message \"unable to find TDatasource...\" despite it being in the use db unit and compiling and running fine.\n\n"}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_labels" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Labels"],
+   "Description" : "Demonstrates how to add labels to the chart. Places them across the top of the bars in a bar chart and in the axes of a line chart."}
+}

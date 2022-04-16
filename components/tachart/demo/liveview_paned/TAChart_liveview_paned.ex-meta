@@ -1,0 +1,5 @@
+{ "TAChart_liveview_paned" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","liveview","pane","animated"],
+   "Description" : "Displays three panes, each with a chart that grows over time."}
+}

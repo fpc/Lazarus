@@ -1,0 +1,5 @@
+{ "lr_codereport_sample" : {
+   "Category" : "Components",
+   "Keywords" : ["LazReport","CodeReport","PDF"],
+   "Description" : "Generates a report and can export it as a PDF.\nRequires LazReportPDFExport and lr_CodeReport\n\n "}
+}

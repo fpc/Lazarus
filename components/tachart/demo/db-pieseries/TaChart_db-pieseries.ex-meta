@@ -1,0 +1,5 @@
+{ "TaChart_db-pieseries" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Pie Chart","dbgrid"],
+   "Description" : "Draws a Pie Chart using data from a dbgrid."}
+}

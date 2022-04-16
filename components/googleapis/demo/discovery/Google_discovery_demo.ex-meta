@@ -1,0 +1,5 @@
+{ "Google_discovery_demo" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Google API", "discovery", "Synapse"],
+   "Description" : "Finds and displays the Google API Services.\nRequires the synapse package from the OPM."}
+}

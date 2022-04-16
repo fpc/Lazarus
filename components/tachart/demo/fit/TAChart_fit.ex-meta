@@ -1,0 +1,5 @@
+{ "TAChart_fit" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","fit","confidence","function"],
+   "Description" : "Fit data to a function, calculating and plotting confidence levels. "}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_financial" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Financial"],
+   "Description" : "Displays, in a TAChart, financial data, specificially hi and low extent of share prices."}
+}

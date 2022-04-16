@@ -1,0 +1,5 @@
+{ "TaChart_combobox" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","TChartCombobox"],
+   "Description" : "Demonstrates use of TChartCombobox, preconfigured with content useful in drawing a chart.  "}
+}

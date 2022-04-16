@@ -1,0 +1,5 @@
+{ "TAChart_panes" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Panes"],
+   "Description" : "Demonstrates using several panes in a TAChart."}
+}

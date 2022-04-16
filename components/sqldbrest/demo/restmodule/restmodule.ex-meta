@@ -1,0 +1,5 @@
+{ "restmodule" : {
+   "Category" : "DBase",
+   "Keywords" : ["sqldbrest", "REST"],
+   "Description" : "One part of a set of demos (search for sqldbrest) demonstrating using REST to access a database. Compiles but not tested because it requires a server to connect to, possibly also provided in this set under RESTBridge ?\n\nNo GUI, just registers 'REST'.\n\nBetter documentation would be great !"}
+}

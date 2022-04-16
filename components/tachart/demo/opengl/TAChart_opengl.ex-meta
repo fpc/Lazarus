@@ -1,0 +1,5 @@
+{ "TAChart_opengl" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","OpenGL"],
+   "Description" : "Demonstrates using OpenGL in a TAChart.\nRequires the package LazOpenGLContext\n\n\n\n"}
+}

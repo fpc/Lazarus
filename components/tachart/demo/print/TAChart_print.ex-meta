@@ -1,0 +1,5 @@
+{ "TAChart_print" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","printing"],
+   "Description" : "Demonstrates printing a TAChart, including via the canvas, scaled and direct."}
+}

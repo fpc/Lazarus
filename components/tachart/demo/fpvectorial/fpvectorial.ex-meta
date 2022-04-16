@@ -1,0 +1,5 @@
+{ "fpvectorial" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TaChart","TvVectorialFormat","TFPVectorialDrawer"],
+   "Description" : "Uses Vectorial to display (and export) some line and block charts.\n\nNote, generates a message that it has failed to open a particular TrueTypeFont that is definitly available but works anyway. "}
+}

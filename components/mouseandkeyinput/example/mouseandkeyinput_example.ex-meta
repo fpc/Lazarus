@@ -1,0 +1,5 @@
+{ "mouseandkeyinput_example" : {
+   "Category" : "Techniques",
+   "Keywords" : ["mouse", "keyboard", "input", "simulate"],
+   "Description" : "Shows how to simulate mouse and keyboard input programatically, for example triggered by the press of a button."}
+}

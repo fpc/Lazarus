@@ -1,0 +1,5 @@
+{ "TAChart_chartstyles" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Stacked Bar","runtime"],
+   "Description" : "This project shows how to add and delete levels to a stacked bar series at runtime. For every new level, a new chart style is created, and for every deleted level, the corresponding chart style is deleted as well.\n\nSee the associated readme.txt for more information.\n\n\n\n"}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_plotunit" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","plotunit","runtime"],
+   "Description" : "The demo \"plotunit\" show how to generate a series and insert it into a chart at runtime. The main series types of TAChart are supported.\n\nSee the associated readme.txt"}
+}
