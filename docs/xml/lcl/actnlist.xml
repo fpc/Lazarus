@@ -1184,14 +1184,15 @@
         </short>
         <descr>
           <p>
-            Used in the Application message processing loop. Whn enabled, the action must hande have an OnExecute event handler, even if an associated action list OnExecute handler has been provided.
+            Used in the Application message processing loop. When enabled, the action must have an OnExecute event handler - even if an OnExecute handler has been provided in the associated action list.
           </p>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.Enabled">
         <short>
-          <var>Enabled</var> - whether this action is able to be used (default True).</short>
+          <var>Enabled</var> - whether this action is able to be used (default is True).
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.GroupIndex">

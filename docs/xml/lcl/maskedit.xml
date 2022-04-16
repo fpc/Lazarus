@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          <file>maskedit.pp</file> implements an masked edit control which can be used to format, vaidate, or obscure the text entered in the control. The following components are added to the Lazarus IDE component palette:
+          <file>maskedit.pp</file> implements an masked edit control which can be used to format, validate, or obscure the text entered in the control. The following components are added to the Lazarus IDE component palette:
         </p>
         <p>
           <b>Additional</b> Tab
@@ -492,11 +492,11 @@
 
       <element name="EInvalidCodePoint">
         <short>
-          Exeption raised when an error occurs while setting a UTF-8 Code Point in a String.
+          Exception raised when an error occurs while setting a UTF-8 Code Point in a String.
         </short>
         <descr>
           <p>
-            <var>EInvalidCodePoint</var> is an <var>EInvalidUtf8</var> descendant that implements the Exeption raised when an error occurs while setting a UTF-8 Code Point in a String. The exception message contains the constant value in <var>SInvalidCodePoint</var>.
+            <var>EInvalidCodePoint</var> is an <var>EInvalidUtf8</var> descendant that implements the Exception raised when an error occurs while setting a UTF-8 Code Point in a String. The exception message contains the constant value in <var>SInvalidCodePoint</var>.
           </p>
           <p>
             Used in the <var>SetCodePoint</var> routine in the implementation section for the unit.
@@ -1316,7 +1316,7 @@
         <short>Restores the saved edit mask in the control.</short>
         <descr>
           <p>
-            <var>RestoreMask</var> is a procedure used to restore the saved edit mask in the control. The edit mask is saved when <var>DisableMask</var> is called and an edit mask is active for the control. The return value is <b>True</b> when the edit mask (and control state and value) are successfullly restored.
+            <var>RestoreMask</var> is a procedure used to restore the saved edit mask in the control. The edit mask is saved when <var>DisableMask</var> is called and an edit mask is active for the control. The return value is <b>True</b> when the edit mask (and control state and value) are successfully restored.
           </p>
           <p>
             In either circumstance, the value in <var>NewText</var> is assigned as the value for the <var>Text</var> property in the control.
@@ -1471,7 +1471,7 @@
           </p>
           <ul>
             <li>
-              A Cut, Paster, or Clear operation from an Operating System context menu. We try to catch and handle these messages.
+              A Cut, Paste, or Clear operation from an Operating System context menu. We try to catch and handle these messages.
             </li>
             <li>
               Dragging selected text in the control with the mouse.
@@ -1848,7 +1848,7 @@
             Setting a new value for the property causes the existing text in the control to be updated. All occurrences of the existing SpaceChar are converted to the new value for the property, and stored as the new text for the control. The cursor position and text selection are updated when the text is stored.
           </p>
           <p>
-            SpaceChar is not used when <var>EditMask</var> is an emtpy string (''), or <var>IsMasked</var> is <b>False</b>.
+            SpaceChar is not used when <var>EditMask</var> is an empty string (''), or <var>IsMasked</var> is <b>False</b>.
           </p>
         </descr>
         <seealso>

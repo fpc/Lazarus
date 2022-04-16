@@ -7952,7 +7952,7 @@
             <var>DrawCellText</var> is a procedure used to draw the text specified in <var>AText</var> using the given text rectangle on the <var>Canvas</var> for the control. The Canvas also contains the alignment and layout used for the text drawn in the method.
           </p>
           <p>
-            <var>ARect</var> contains the Canvas coordinates for the text is drawn. DrawCellText adjusts the bounds in ARect to account for the cell padding used in the control (<var>varCellPadding</var>) as needed for the text aligment and layout. The <var>TextRect</var> method in the Canvas is called to render the text.
+            <var>ARect</var> contains the Canvas coordinates for the text is drawn. DrawCellText adjusts the bounds in ARect to account for the cell padding used in the control (<var>varCellPadding</var>) as needed for the text alignment and layout. The <var>TextRect</var> method in the Canvas is called to render the text.
           </p>
           <p>
             Values in the <var>ACol</var>, <var>ARow</var>, and <var>AState</var> parameters are not used in DrawCellText.
@@ -7998,7 +7998,7 @@
             DrawGridCheckboxBitmaps adjusts ARect to use the cell padding for the control (varCellPadding) along with the size, alignment and layout needed for the grid column.
           </p>
           <p>
-            The checkbox bitmap is drawn using the mechanism needed for the image source; ThemeService.DrawElement, Canvas.StretchDraw, or TScaledImageListResolution.StretchDraw.
+            The checkbox bitmap is drawn using the mechanism needed for the image source; ThemeServices.DrawElement, Canvas.StretchDraw, or TScaledImageListResolution.StretchDraw.
           </p>
           <p>
             DrawGridCheckboxBitmaps is called from the DrawCellCheckboxBitmaps method.
@@ -8103,7 +8103,7 @@
             When native sort indicators are not used for the column, an image scaled to the display density is retrieved from the image list. DrawColumnTitleImage ensures that image padding (DEFIMAGEPADDING) is applied to the bounds in ARect. The top and bottom bounds are adjusted so that the image is vertically centered in the area in ARect. The <var>Draw</var> method in the scaled image resolution is called to draw the image on the control Canvas.
           </p>
           <p>
-            <var>TitleImageList</var> is used to determine if an additional image is displayed for the column at AColumnIndex. When TitleImageList has been assigned, the <var>GetTitleImageInfo</var> method is called to get the image list and position used for the column. When an image is defined in <var>Columns</var>, an image scaled to the size size needed for the display densitity (PPI) is retrieved from TitleImageList. The bounds in ARect is adjusted to include  padding around the image (DEFIMAGEPADDING) usiing the image layout for the column. The <var>Draw</var> method in the scaled image resolution is called to render the image to the control Canvas.
+            <var>TitleImageList</var> is used to determine if an additional image is displayed for the column at AColumnIndex. When TitleImageList has been assigned, the <var>GetTitleImageInfo</var> method is called to get the image list and position used for the column. When an image is defined in <var>Columns</var>, an image scaled to the size size needed for the display density (PPI) is retrieved from TitleImageList. The bounds in ARect is adjusted to include  padding around the image (DEFIMAGEPADDING) using the image layout for the column. The <var>Draw</var> method in the scaled image resolution is called to render the image to the control Canvas.
           </p>
           <p>
             DrawColumnTitleImage is called from the <var>DrawColumnText</var> method.
@@ -8315,7 +8315,7 @@
             EditorShow sets the value in EditorMode to True, and saves the existing cell value on entry. EditorShowing is set to True to indicate that the Editor is visible, and calls doEditorShow to display the Editor control.
           </p>
           <p>
-            SelAll indicates whether all of the content in the cuirrent cell is selected in the Editor for the control. When set to True, the EditorSelectAll method is called to post the GM_SELECTALL message to the Editor control. The value in GridState is set to gsNormal prior to exiting from the method.
+            SelAll indicates whether all of the content in the current cell is selected in the Editor for the control. When set to True, the EditorSelectAll method is called to post the GM_SELECTALL message to the Editor control. The value in GridState is set to gsNormal prior to exiting from the method.
           </p>
           <p>
             EditorShow is called when the value goAlwaysShowEditor is included in the Options for the grid control. It is also called from methods like:
@@ -9224,7 +9224,7 @@
             HeaderClick calls the <var>Sort</var> method to sort all non-fixed rows in the grid control using the content from the column number in Index.
           </p>
           <p>
-            No actions are perfomed in the method when <var>ColumnClickSorts</var> is set to <b>False</b>.
+            No actions are performed in the method when <var>ColumnClickSorts</var> is set to <b>False</b>.
           </p>
           <p>
             <var>IsColumn</var> indicates whether the header click applies to a column or a row. When set to <b>True</b>, the mouse click occurred in a fixed header for the column number in Index. This parameter implies that similar handling is provided in the method for a header click on a fixed header in a row. No actions are performed for a header click on a row.
@@ -9255,7 +9255,7 @@
             <var>Index</var> indicates the column or row number in the grid where the resizing action occurred.
           </p>
           <p>
-            HeaderSized has an empty implementation in <var>TCustomGrid</var>. It is overidden in descendent classes like <var>TCustomDrawGrid</var> to perform additional actions.
+            HeaderSized has an empty implementation in <var>TCustomGrid</var>. It is overridden in descendent classes like <var>TCustomDrawGrid</var> to perform additional actions.
           </p>
           <p>
             HeaderSized is called from methods like <var>MouseUp</var> (when column or row sizing is completed) and <var>DblClick</var> (when column sizing is enabled in the grid <var>Options</var>).
@@ -9670,7 +9670,7 @@
             No additional actions are performed in the method at design-time, or when the mouse Button is not allowed in the grid control.
           </p>
           <p>
-            MouseDown ensures that the grid control is focused and updates GCache with the coordinates for trhe mouse down event. The grid "hot" zone in the cached information determines the value assigned to GridState, GridFlags, CursorState and the actions perfomed for the mouse event.
+            MouseDown ensures that the grid control is focused and updates GCache with the coordinates for the mouse down event. The grid "hot" zone in the cached information determines the value assigned to GridState, GridFlags, CursorState and the actions performed for the mouse event.
           </p>
           <p>
             <b>gzFixedCells</b>
@@ -11286,10 +11286,10 @@
             <var>Editor</var> is a <var>TWinControl</var> descendant which contains the control used to edit the value in the current cell for the grid control.
           </p>
           <p>
-            There are several editor styles available for columns in the grid control: String, Button, Composite, and Pick List. Button editors display a button that can be clicked to perform actions which determine the value for the cell. A composite editor uses an editor for the string value and a button for additional actions. A pick list editor allows selection of oneof the predetermined values for the cell. The String editor is essentially a TEdit control, and is the default editor style used in the grid control.
+            There are several editor styles available for columns in the grid control: String, Button, Composite, and Pick List. Button editors display a button that can be clicked to perform actions which determine the value for the cell. A composite editor uses an editor for the string value and a button for additional actions. A pick list editor allows selection from one of the predetermined values for the cell. The String editor is essentially a TEdit control, and is the default editor style used in the grid control.
           </p>
           <p>
-            The Editor style is determined either by examing values in the column definition stored in the Columns property, or using the OnSelectEditor event handler. OnSelectEditor is signalled  when Columns has not been Enabled in the grid.
+            The Editor style is determined either by examining values in the column definition stored in the Columns property, or using the OnSelectEditor event handler. OnSelectEditor is signalled  when Columns has not been Enabled in the grid.
           </p>
           <p>
             Editor display behavior is controlled by properties like Options and AutoEdit.
@@ -14892,7 +14892,7 @@
               <var>TCustomStringGrid</var> is a <var>TCustomDrawGrid</var> descendant which implements the base class for <var>TStringGrid</var>.
             </p>
             <p>
-              TCustomStringGrid provides the familar tabular format used in grid controls, and is designed for use with string content stored in its cells. Internally, columns and rows in the class are mapped to <var>TStringGridStrings</var> instances used to store the values in the grid control. TCustomStringGrid also allows a TObject instance to be stored for each cell in the grid using the <var>Objects</var> property.
+              TCustomStringGrid provides the familiar tabular format used in grid controls, and is designed for use with string content stored in its cells. Internally, columns and rows in the class are mapped to <var>TStringGridStrings</var> instances used to store the values in the grid control. TCustomStringGrid also allows a TObject instance to be stored for each cell in the grid using the <var>Objects</var> property.
             </p>
         </descr>
         <seealso>
@@ -15527,7 +15527,7 @@
             <var>AutoSizeColumn</var> sets the column width to the length of the widest text found in the column specified by <var>ACol</var>.
           </p>
           <p>
-            Tip: Use <var>goDblClickAutoSize</var> in Options to allow columns to be automatically resized when doubleClicking the column border.
+            Tip: Use <var>goDblClickAutoSize</var> in Options to allow columns to be automatically resized when double Clicking on the column border.
           </p>
         </descr>
         <seealso>

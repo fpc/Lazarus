@@ -15,7 +15,7 @@
           <file>imglist.pp</file> implements <var>TImageList</var> and <var>TChangelink</var> in the Lazarus Component Library (<b>LCL</b>).
         </p>
         <p>
-          Orginal author: Marc Weustink
+          Original author: Marc Weustink
         </p>
       </descr>
 

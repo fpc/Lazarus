@@ -58,7 +58,9 @@
       </element>
 
       <element name="TEbEdit">
-        <short>Implements the embedded edit control used in TCustomEditButton.</short>
+        <short>
+          Implements the embedded edit control used in TCustomEditButton.
+        </short>
         <descr>
           <p>
             <var>TEbEdit</var> is a <var>TGEEdit</var> descendant which implements the embedded edit control used in <var>TCustomEditButton</var>. TEbEdit provides overridden methods to alter the behavior of the control when handling <var>OnEnter</var> and <var>OnExit</var> notifications.
@@ -1031,7 +1033,7 @@
       </element>
 
       <element name="TCustomControlFilterEdit.EditKeyDown">
-        <short>Gandles a KeyDown event for the Edit control.</short>
+        <short>Handles a KeyDown event for the Edit control.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -1330,7 +1332,7 @@
         </short>
         <descr>
           <p>
-          CharCase is a TEditCharCase property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is ecLowerCase in TCustomControlFilterEdit, and indicates that charcters are converted to lower case.
+          CharCase is a TEditCharCase property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is ecLowerCase in TCustomControlFilterEdit, and indicates that characters are converted to lower case.
         </p>
           <p>
             See TEditCharCase for more information about the enumeration values supported for the type.

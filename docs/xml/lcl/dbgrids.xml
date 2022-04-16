@@ -975,13 +975,15 @@
         </short>
         <descr>
           <p>
-            <var>Refresh</var> searches for and removes invalid Bookmarks in the list. The return value is True if an invalid TBookmark instance was found and removed in the methodl it also indicates that the Invalidate method in the associated Grid control was called prior to exiting from the method.
+            <var>Refresh</var> searches for and removes invalid Bookmarks in the list. The return value is True if an invalid TBookmark instance was found and removed in the method; it also indicates that the Invalidate method in the associated Grid control was called prior to exiting from the method.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TBookmarkList.Refresh.Result">
-        <short>True when the bookmark list was updated and the grid was refreshed.</short>
+        <short>
+          True when the bookmark list was updated and the grid was refreshed.
+        </short>
       </element>
 
       <element name="TBookmarkList.GetEnumerator">
@@ -1671,7 +1673,7 @@
         </short>
         <descr>
           <p>
-            <var>SetField</var> is a procedure used to set the value in the Field property. SetField compares the new value for the property to the value stored in the member variable. When they are different, the new value is stored in the member variable. If the new value is not Nil, its FieldName is updated as well. SetField calls the ColumnChanged method to indicate that the column definition has been updated.
+            <var>SetField</var> is a procedure used to set the value in the Field property. SetField compares the new value for the property to the value stored in the member variable. When they are different, the new value is stored in the member variable. If the new value is not <b>Nil</b>, its FieldName is updated as well. SetField calls the ColumnChanged method to indicate that the column definition has been updated.
           </p>
           <p>
             No actions are performed in the method when the new Field value is the same as the value stored in the member variable .
@@ -2289,10 +2291,10 @@
         <seealso/>
       </element>
       <element name="TDBGridColumns.ColumnByFieldname.Result">
-        <short>TColumn instance with the specified name, or Nil.</short>
+        <short>TColumn instance with the specified name, or <b>Nil</b>.</short>
       </element>
       <element name="TDBGridColumns.ColumnByFieldname.AFieldname">
-        <short>FIeld name to locate the collection items.</short>
+        <short>Field name to locate the collection items.</short>
       </element>
 
       <element name="TDBGridColumns.ColumnByTitle">
@@ -2305,7 +2307,9 @@
         <seealso/>
       </element>
       <element name="TDBGridColumns.ColumnByTitle.Result">
-        <short>Column instance with the specified title, or Nill when not found.</short>
+        <short>
+          Column instance with the specified title, or <b>Nil</b> when not found.
+        </short>
       </element>
       <element name="TDBGridColumns.ColumnByTitle.ATitle">
         <short>Column title to located in the collection items.</short>
@@ -2938,7 +2942,7 @@
         </short>
         <descr>
           <p>
-            <var>DefaultFieldColWidth</var> is an Integer function used to get the default column width for the specified Field. When the specified Field contains Nil, the value from DefaultColWidth is used. Otherwise, the DisplayWidth property in the TField instance is used to get the Canvas.TextWidth for the DisplayName in the Field.
+            <var>DefaultFieldColWidth</var> is an Integer function used to get the default column width for the specified Field. When the specified Field contains <b>Nil</b>, the value from DefaultColWidth is used. Otherwise, the DisplayWidth property in the TField instance is used to get the Canvas.TextWidth for the DisplayName in the Field.
           </p>
         </descr>
         <seealso></seealso>
@@ -3568,7 +3572,7 @@
             <var>DoCopyToClipboard</var> is an overridden method in <var>TCustomDBGrid</var> used to copy the field value for the selected column and row in the grid to the clipboard. No actions are performed in the method when the linked  dataset is not active.
           </p>
           <p>
-            DoCopyToClipboard calls <var>GetFieldFromGridColumn</var> to get the field definition for the current column in the grid. If the field is not Nil (unassigned), the String value for the field is stored to the global <var>Clipboard</var> instance using its <var>AsText</var> method.
+            DoCopyToClipboard calls <var>GetFieldFromGridColumn</var> to get the field definition for the current column in the grid. If the field is not <b>Nil</b> (unassigned), the String value for the field is stored to the global <var>Clipboard</var> instance using its <var>AsText</var> method.
           </p>
           <p>
             DoCopyToClipboard re-implements the method from the ancestor class.
@@ -3619,7 +3623,7 @@
 
       <element name="TCustomDBGrid.DoMouseWheelUp">
         <short>
-          Handle mouse wheelup events in the grid control.
+          Handles a mouse wheel up event in the grid control.
         </short>
         <descr>
           <p>
@@ -3755,12 +3759,7 @@
             DrawFocusRect is an overridden procedure used to draw the current selection  in the grid in a focused state.
           </p>
           <p>
-            The grid control must have focus before the current selection can be drawn. In
-            addition the DataLink for the control must refer to  an active dataset.
-            DrawFocusRect checks the Options property to ensure that  dgAlwaysShowSelection
-            has been included for the control. Finally DefaultDrawing must be enabled  to
-            allow drawing of the focus rectangle using the rubber band style on the Canvas
-            for the control.
+            The grid control must have focus before the current selection can be drawn. In addition the DataLink for the control must refer to  an active dataset. DrawFocusRect checks the Options property to ensure that dgAlwaysShowSelection has been included for the control. Finally DefaultDrawing must be enabled to allow drawing of the focus rectangle using the rubber band style on the Canvas for the control.
           </p>
           <p>
             If any of the previous conditions are not met, no actions are performed in the method.
@@ -4599,7 +4598,7 @@
             HeaderSized calls the ColumnIndexFromGridColumn method to determine the position in the Columns collection for the Field specified in Index. The width in Columns is updated with the corresponding value from ColWidths. HeaderSized sets the value in DefaultColWidths to False to indicate that custom column sizing has been applied to the control.
           </p>
           <p>
-            HeaderSized signals theOnColumnSized event handler when assigned for the control.
+            HeaderSized signals the OnColumnSized event handler when assigned for the control.
           </p>
         </descr>
         <seealso>
@@ -4636,7 +4635,7 @@
               <var>IsValidChar</var> is a Boolean function that indicates if the Field specified in <var>AField</var> contains the UTF-8 encoded character in <var>AChar</var>. No action is required (or performed) when <var>AChar</var> contains a single byte character.
             </p>
             <p>
-              Please note that TField does not contain a method which verifies a Unicode character. This routine converts a multibyte Unicode character using UTF8ToSys and calls the TField.IsValidChar method to validate.
+              Please note that TField does not contain a method which verifies a Unicode character. This routine converts a multi-byte Unicode character using UTF8ToSys and calls the TField.IsValidChar method to validate.
             </p>
             <p>
               IsValidChar returns True when TField.IsValidChar returns the same or when AChar contains the <var>BackSace (Decimal 8)</var> character.
@@ -4680,7 +4679,7 @@
             </dd>
             <dt><var><b>Shift + Up</b></var></dt>
             <dd>
-              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the preceeding row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is  selected.
+              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the preceding row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is  selected.
             </dd>
             <dt><var><b>Shift + Down</b></var></dt>
             <dd>
@@ -5650,7 +5649,7 @@
       </element>
       <element name="TCustomDBGrid.MouseToRecordOffset.Column">
         <short>
-          TColumn instance for the cell under the mouse cursor, or Nil if the cell is a fixed title cell.
+          TColumn instance for the cell under the mouse cursor, or <b>Nil</b> if the cell is a fixed title cell.
         </short>
       </element>
       <element name="TCustomDBGrid.MouseToRecordOffset.RecordOffset">

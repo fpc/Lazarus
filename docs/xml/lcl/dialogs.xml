@@ -410,7 +410,7 @@
             <var>OnDialogResult</var> is a <var>TDialogResultEvent</var> property with the event handler signalled when a result is available for the dialog.
           </p>
           <p>
-            OnDialogResult is a platform-specific  property, and may not be used in all widgetsets. It provides a way for platforms which use native dialogs in their  implementation to notify the dialog that a result is availabile.
+            OnDialogResult is a platform-specific  property, and may not be used in all widgetsets. It provides a way for platforms which use native dialogs in their  implementation to notify the dialog that a result is available.
           </p>
         </descr>
         <seealso>
@@ -803,7 +803,9 @@
       </element>
 
       <element name="TFileDialog.Filter">
-        <short>A string which contains possible filename filters (e.g. .doc, .xmp, .pas etc).</short>
+        <short>
+          A string which contains possible filename filters (e.g. .doc, .xmp, .pas etc).
+        </short>
         <descr>
           <p>
             This is a string which contains the filters a user can choose from. The available filters and their description are separated by pipe symbols.
@@ -1855,18 +1857,22 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <seealso/>
       </element>
       <element name="TFontDialogOption.fdAnsiOnly">
-        <short>Limits the font name selection list to font using ANSI character sets.</short>
+        <short>
+          Limits the font name selection list to font using ANSI character sets.
+        </short>
       </element>
       <element name="TFontDialogOption.fdTrueTypeOnly">
         <short>Limits the font name selection list to TrueType fonts.</short>
       </element>
       <element name="TFontDialogOption.fdEffects">
         <short>
-          Displays check boxes for strikethrough, underline, et. al. font effects in the dialog.
+          Displays check boxes for strike-through, underline, et. al. font effects in the dialog.
         </short>
       </element>
       <element name="TFontDialogOption.fdFixedPitchOnly">
-        <short>Limits the font name selection list to fixed-pitch (mono-spaced) fonts.</short>
+        <short>
+          Limits the font name selection list to fixed-pitch (mono-spaced) fonts.
+        </short>
       </element>
       <element name="TFontDialogOption.fdForceFontExist">
         <short/>
@@ -1896,10 +1902,14 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Displays font names using a WYSIWYG preview.</short>
       </element>
       <element name="TFontDialogOption.fdLimitSize">
-        <short>Restricts font sizes to the range in MinFontSize and MaxFontSize.</short>
+        <short>
+          Restricts font sizes to the range in MinFontSize and MaxFontSize.
+        </short>
       </element>
       <element name="TFontDialogOption.fdScalableOnly">
-        <short>Limits the font selection list to scalable fonts; no bitmapped fonts.</short>
+        <short>
+          Limits the font selection list to scalable fonts; no bitmapped fonts.
+        </short>
       </element>
       <element name="TFontDialogOption.fdApplyButton">
         <short>Makes the Apply button visible in the dialog.</short>
@@ -2069,7 +2079,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>OnApplyClicked</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the Apply button is clicked in the font dialog. The Apply button must be enabled in the Options property to receive the event notification.
           </p>
           <p>
-            OnApplyClicked allows the application to perform actions needed when a Font has been applied. This can include assigning the value in Font to another control. SImilar actions need to be performed when the Execute method returns True, indicating that the OK button was clicked.
+            OnApplyClicked allows the application to perform actions needed when a Font has been applied. This can include assigning the value in Font to another control. Similar actions need to be performed when the Execute method returns True, indicating that the OK button was clicked.
           </p>
           <p>
             OnApplyClicked is signalled from the ApplyClicked method, and triggered directly from methods in widgetset classes.
@@ -4360,16 +4370,18 @@ end;
       </element>
 
       <element name="QuestionDlg">
-        <short>Show a question to the user and get a response. Similar to MessageDlg, but allows to use custom button captions and any response values.</short>
+        <short>
+          Shows a question to the user and gets a response. Similar to MessageDlg, but allows to use custom button captions and any response values.
+        </short>
         <descr>
           <p>
             QuestionDlg has the same functionality as MessageDlg except for the parameter <var>Buttons</var> which is of a different type. You can define your own captions and return values of this function.
           </p>
           <p>
-            <var>Buttons</var> contains an array of integer identifiers and optional strings. For each number a button is created. Usually the identifiers are selected as the <var>TModalResult</var> constants <var>[mrNone..mrYesLast]</var> in <link id="Controls"/>); the correspondig buttons will be decorated by an associated icon. Any other integers can be used as well, but their buttons will have no icon. The identifier number of the clicked button is returned by the <var>QuestionDlg()</var> function. The order of the buttons on the dialog form will be the same as the order of the array elements.
+            <var>Buttons</var> contains an array of integer identifiers and optional strings. For each number a button is created. Usually the identifiers are selected as the <var>TModalResult</var> constants <var>[mrNone..mrYesLast]</var> in <link id="Controls"/>); the corresponding buttons will be decorated by an associated icon. Any other integers can be used as well, but their buttons will have no icon. The identifier number of the clicked button is returned by the <var>QuestionDlg()</var> function. The order of the buttons on the dialog form will be the same as the order of the array elements.
           </p>
           <p>
-            Each string following the button identifier in the <var>Buttons</var> array denotes the caption of the button. When the button identifier is one of the default <var>TModalResult</var> values defined in controls.pp (<var>mrNone..mrLast</var>) the caption can be omitted, and the default caption will be used. For non-<var>TModalResult</var> identifiers, the caption MUST be specified. Empty strings are not allowed as captions, they will create a runtime error.
+            Each string following the button identifier in the <var>Buttons</var> array denotes the caption of the button. When the button identifier is one of the default <var>TModalResult</var> values defined in controls.pp (<var>mrNone..mrLast</var>) the caption can be omitted, and the default caption will be used. For non-<var>TModalResult</var> identifiers, the caption MUST be specified. Empty strings are not allowed as captions, they will create a run-time error.
           </p>
           <p>
             You can mark one default button by adding the 'IsDefault' option after the caption string. When the user presses 'Return' this button is triggered.

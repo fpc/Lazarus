@@ -688,13 +688,13 @@
             GetItemProp is a <var>TItemProp</var> function used to get an item definition for the specified key name or index position in the AKeyOrIndex argument. AKeyOrIndex is a variant type and contains the string with the name for a key, or the Integer row number  for the item.
           </p>
           <p>
-            When a String value is used, the IIndexOfName method is called to get the ordinal position for the key name. An Exception is raised if the key name does not exist in the string list.
+            When a String value is used, the IndexOfName method is called to get the ordinal position for the key name. An Exception is raised if the key name does not exist in the string list.
           </p>
           <p>
-            The item definition in the associated grid control is retrieved using the ordinal position, and stored in the return value. An Exception is raised if the item definition in the list has not been assigned (contains Nil).
+            The item definition in the associated grid control is retrieved using the ordinal position, and stored in the return value. An Exception is raised if the item definition in the list has not been assigned (contains <b>Nil</b>).
           </p>
           <p>
-            No actions are performed in the method when Count is zero (0), or when UpdateCount contains a non-zero value. The return value is Nil for either case.
+            No actions are performed in the method when Count is zero (0), or when UpdateCount contains a non-zero value. The return value is <b>Nil</b> for either case.
           </p>
         </descr>
         <errors>
@@ -1395,10 +1395,10 @@
         </short>
         <descr>
           <p>
-            <var>AdjustRowCount</var> is a procedure used to set the number of visible rows for the control. AdjustRowCount uses the <var>Strings</var> property to get the total number of rows needed for the control, including  the fixed caption row (if needed). When the value differs from <var>RowCount</var>, the <var>Row</var> and RowCount properties are updated.
+            <var>AdjustRowCount</var> is a procedure used to set the number of visible rows for the control. AdjustRowCount uses the <var>Strings</var> property to get the total number of rows needed for the control, including the fixed caption row (if needed). When the value differs from <var>RowCount</var>, the <var>Row</var> and RowCount properties are updated.
           </p>
           <p>
-            AdjustRowCount is called from event hansdlers when values in Strings or <var>TitleCaptions</var> are changed, and when values are included in or excluded from <var>DisplayOptions</var>.
+            AdjustRowCount is called from event handlers when values in Strings or <var>TitleCaptions</var> are changed, and when values are included in or excluded from <var>DisplayOptions</var>.
           </p>
         </descr>
         <seealso>
@@ -2355,7 +2355,7 @@
             Index contain the position for the column sorted in the method.
           </p>
           <p>
-            IndxFrom and IndxTo specifiy the starting and ending row numbers affected by the sort operation. When the variant with column and row indexes is used, the inherited <var>Sort</var> method is called to perform the sort.
+            IndxFrom and IndxTo specify the starting and ending row numbers affected by the sort operation. When the variant with column and row indexes is used, the inherited <var>Sort</var> method is called to perform the sort.
           </p>
           <p>
             Sort hides a visible cell editor during the sort operation. The cell editor is restored (when needed) prior to exiting from the method.

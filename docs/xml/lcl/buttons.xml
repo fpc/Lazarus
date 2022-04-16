@@ -687,7 +687,7 @@
         <short>Canvas where the glyph is rendered.</short>
       </element>
       <element name="TButtonGlyph.Draw.Client">
-        <short>Ciient coordintates for the drawing operation.</short>
+        <short>Client coordinates for the drawing operation.</short>
       </element>
       <element name="TButtonGlyph.Draw.Offset">
         <short>Offset in the client coordinates where the glyph is drawn.</short>
@@ -3515,7 +3515,7 @@
             <var>Kind</var> is a <var>TBitBtnKind</var> argument that identifies the content needed in the bitmap returned from the function.
           </p>
           <p>
-            <var>Handled</var> is a <var>Boolean</var> value which indicates if the <var>TBitmap</var> instance was successfuly created and loaded in the routine.
+            <var>Handled</var> is a <var>Boolean</var> value which indicates if the <var>TBitmap</var> instance was successfully created and loaded in the routine.
           </p>
           <p>
             Create a function using the signature in TGetDefaultBitBtnGlyph, and assign it the variable to use custom bitmaps for the glyphs in TBitBtn. For example:

@@ -9564,16 +9564,19 @@
        </short>
         <descr>
           <p>
-            <var>ReleaseBitmapHandle</var> is a HBITMAP function used to release the hndle for the shared image without freeing it. The return value contains the handle value in the shared image when its
+            <var>ReleaseBitmapHandle</var> is a HBITMAP function used to release the handle for the shared image without freeing it. The return value contains the handle value in the shared image when its
             <var>ReleaseHandle</var> method is called.
           </p>
-          <p>Calls <var>BitmapHandleNeeded</var> to ensure that the <var>BitmapHandle</var> and optional <var>MaskHandle</var> are valid for the image type. Calls <var>FreeCanvasContext</var> to free the cavas context when the handle been has changed.
+          <p>
+            Calls <var>BitmapHandleNeeded</var> to ensure that the <var>BitmapHandle</var> and optional <var>MaskHandle</var> are valid for the image type. Calls <var>FreeCanvasContext</var> to free the canvas context when the handle been has changed.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.ReleaseBitmapHandle.Result">
-        <short>Value for the handle in the shared image before it is released.</short>
+        <short>
+          Value for the handle in the shared image before it is released.
+        </short>
       </element>
       <element name="TRasterImage.ReleaseMaskHandle">
         <short>
@@ -9606,49 +9609,58 @@
         <short/>
       </element>
       <element name="TRasterImage.Canvas">
-        <short>The <var>Canvas</var> where the raster image is rendered.</short>
+        <short>
+          The <var>Canvas</var> where the raster image is rendered.
+        </short>
         <descr>
           <p>
-            <var>Canvas</var> is a read-only
-            <var>TCanvas</var> property which contains the drawing surface where the data for the image is rendered.
+            <var>Canvas</var> is a read-only <var>TCanvas</var> property which contains the drawing surface where the data for the image is rendered.
           </p>
-          <p>Reading the value for the property causes the <var>CreateCanvas</var> method to be called when the member has not been initialized. In TRasterImage, the Canvas member is an instance of <var>TBitmapCanvas</var>. It is configured to use the <var>CanvasChanging</var> and <var>Changed</var> methods for the <var>OnChanging</var> and <var>OnChange</var> event handlers in the canvas.
+          <p>
+            Reading the value for the property causes the <var>CreateCanvas</var> method to be called when the member has not been initialized. In TRasterImage, the Canvas member is an instance of <var>TBitmapCanvas</var>. It is configured to use the <var>CanvasChanging</var> and <var>Changed</var> methods for the <var>OnChanging</var> and <var>OnChange</var> event handlers in the canvas.
           </p>
-          <p>The device context (or handle) for the Canvas is modified when the <var>BitmapHandle</var> or <var>MaskHandle</var> are assigned or released for the class instance.
+          <p>
+            The device context (or handle) for the Canvas is modified when the <var>BitmapHandle</var> or <var>MaskHandle</var> are assigned or released for the class instance.
           </p>
-          <p>Canvas is used in the <var>Draw</var> method to get the rendered content transferred to a destination canvas. Canvas is also used to auto-detect the <var>TransparentColor</var> using the <var>Pixels</var> in the image.
+          <p>
+            Canvas is used in the <var>Draw</var> method to get the rendered content transferred to a destination canvas. Canvas is also used to auto-detect the <var>TransparentColor</var> using the <var>Pixels</var> in the image.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.HandleAllocated">
-        <short>Indicates if a handle has been assigned for the shared image in the class.
-       </short>
+        <short>
+          Indicates if a handle has been assigned for the shared image in the class.
+        </short>
         <descr>
           <p>
             <var>HandleAllocated</var> is a <var>Boolean</var> function which indicates if a valid handle has been assigned for the internal <var>TSharedRasterImage</var> instance in the class. The return value is <b>True</b> when the handle in the shared image contains a <b>non-zero</b> value.
           </p>
-          <p>Use <var>BitmapHandleAllocated</var> to determine if a <var>HBITMAP</var> handle has been assigned for the Bitmap in the class instance.
+          <p>
+            Use <var>BitmapHandleAllocated</var> to determine if a <var>HBITMAP</var> handle has been assigned for the Bitmap in the class instance.
           </p>
-          <p>Use <var>MaskHandleAllocated</var> to determine if a <var>HBITMAP</var> handle has been assigned for the Mask in the class instance.
+          <p>
+            Use <var>MaskHandleAllocated</var> to determine if a <var>HBITMAP</var> handle has been assigned for the Mask in the class instance.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TRasterImage.HandleAllocated.Result">
-        <short>True when a handle has been assigned for the shared image.</short>
+        <short>
+          True when a handle has been assigned for the shared image.
+        </short>
       </element>
       <element name="TRasterImage.BitmapHandle">
         <short>
           <var>BitmapHandle</var> - the Handle that has been allocated for the Bitmap.
-       </short>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TRasterImage.Masked">
         <short>
           <var>Masked</var> - returns True if a Mask is being applied.
-       </short>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -9661,14 +9673,13 @@
         <short>Storage format for the Pixels in the Image.</short>
         <descr>
           <p>
-            <var>PixelFormat</var> is a
-            <var>TPixelFormat</var> property which contains the storage format for colors in
-            <var>Pixels</var>. The default value is
-            <var>pfDevice</var> and indicates that the source device determines the pixel format. The value is PixelFormat indicates the number of bits required to store the color, and the maximum number of colors allowed for a given pixel.
+            <var>PixelFormat</var> is a <var>TPixelFormat</var> property which contains the storage format for colors in <var>Pixels</var>. The default value is <var>pfDevice</var> and indicates that the source device determines the pixel format. The value is PixelFormat indicates the number of bits required to store the color, and the maximum number of colors allowed for a given pixel.
           </p>
-          <p>See <link id="TPixelFormat">TPixelFormat</link> for the values in the enumeration and their meanings.
+          <p>
+            See <link id="TPixelFormat">TPixelFormat</link> for the values in the enumeration and their meanings.
           </p>
-          <p>PixelFormat is essentially a read-only property in <var>TRasterImage</var>. The read and write access specifiers are declared as abstract virtual methods, and are overridden in descendent classes to access raw image data for a specific image format.
+          <p>
+            PixelFormat is essentially a read-only property in <var>TRasterImage</var>. The read and write access specifiers are declared as abstract virtual methods, and are overridden in descendent classes to access raw image data for a specific image format.
           </p>
         </descr>
         <seealso>
@@ -9681,7 +9692,8 @@
           <p>
             <var>RawImage</var> is a read-only TRawImage property which provides access to the raw image data for the image type. It provides access to the raw image descriptor and pointers to the bytes values used in the Bitmap, Mask, and Palette for the image. The value for the property is captured using the pointer returned by the GetRawImagePtr method.
           </p>
-          <p>Always use <var>BeginUpdate</var> and <var>EndUpate</var> to surround any action which modifies member values in RawImage.
+          <p>
+            Always use <var>BeginUpdate</var> and <var>EndUpate</var> to surround any action which modifies member values in RawImage.
           </p>
         </descr>
         <seealso>
@@ -9694,8 +9706,7 @@
         <short>Provides indexed access to a scan line in the raw image data.</short>
         <descr>
           <p>
-            <var>ScanLine</var> is a read-only indexed
-            <var>Pointer</var> property which provides access to a scan line in the raster image. The scan line consists of a single row of pixels in the the raw image data.
+            <var>ScanLine</var> is a read-only indexed <var>Pointer</var> property which provides access to a scan line in the raster image. The scan line consists of a single row of pixels in the the raw image data.
           </p>
           <p>
             <var>Row</var> contains the row number read from the <var>TRawImage</var> instance provided by the <var>GetRawImage</var> method. Row number values start at <b>0</b> (<b>zero</b>).
@@ -9859,12 +9870,13 @@
        </short>
         <descr>
           <p>
-            <var>ReleasePalette</var> is a
-            <var>HPALETTE</var> function used to release the internal pallette handle for the shared bitmap. The return value contains the existing palette handle on entry.
+            <var>ReleasePalette</var> is a <var>HPALETTE</var> function used to release the internal palette handle for the shared bitmap. The return value contains the existing palette handle on entry.
           </p>
-          <p>Sets the value in the internal palette handle to <b>0</b> to indicate that the palette handle is no longer in use or is invalid.
+          <p>
+            Sets the value in the internal palette handle to <b>0</b> to indicate that the palette handle is no longer in use or is invalid.
           </p>
-          <p>Use FreePalette to remove the palette handle in widgetset classes.
+          <p>
+            Use FreePalette to remove the palette handle in widgetset classes.
           </p>
         </descr>
         <seealso/>
@@ -10632,19 +10644,18 @@
         <seealso/>
       </element>
       <element name="TCustomBitmap.ReleaseHandle.Result">
-        <short>Returns True when the handle is sucessfully released.</short>
+        <short>Returns True when the handle is successfully released.</short>
       </element>
       <element name="TCustomBitmap.SetHandles">
-        <short>Sets handles for the bitmap and the mask to the specified values.</short>
+        <short>
+          Sets handles for the bitmap and the mask to the specified values.
+        </short>
         <descr>
           <p>
-            <var>SetHandles</var> is a procedure used to set the handles for the bitmap and the mask to the values specified in
-            <var>ABitmap</var> and
-            <var>AMask</var>. SetHandles ensures that the
-            <var>Canvas</var> context, shared image, and save stream are unshared and freed. SetHandles calls
-            <var>UpdateHandles</var> to store the specified handles for the shared image and its mask.
+            <var>SetHandles</var> is a procedure used to set the handles for the bitmap and the mask to the values specified in <var>ABitmap</var> and <var>AMask</var>. SetHandles ensures that the <var>Canvas</var> context, shared image, and save stream are unshared and freed. SetHandles calls <var>UpdateHandles</var> to store the specified handles for the shared image and its mask.
           </p>
-          <p>SetHandles is called from methods that load image data using <var>TLazIntfImage</var> from the LCL interface. It is also called when values are assigned to the <var>BitmapHandle</var> or <var>MaskHandle</var> properties.
+          <p>
+            SetHandles is called from methods that load image data using <var>TLazIntfImage</var> from the LCL interface. It is also called when values are assigned to the <var>BitmapHandle</var> or <var>MaskHandle</var> properties.
           </p>
         </descr>
         <seealso>
@@ -10661,20 +10672,22 @@
         <short>Sets the Height and Width for the image to the specified values.</short>
         <descr>
           <p>
-            <var>SetSize</var> is an overridden method in
-            <var>TCustomBitmap</var> used to change the
-            <var>Height</var> and
-            <var>Width</var> for the bitmap image to the specified values. SetSize implements the abstract virtual method defined in the ancestor class.
+            <var>SetSize</var> is an overridden method in <var>TCustomBitmap</var> used to change the <var>Height</var> and <var>Width</var> for the bitmap image to the specified values. SetSize implements the abstract virtual method defined in the ancestor class.
           </p>
-          <p>Calls RawImageNeeded to ensure that the image header in RawImage is valid for the image.
+          <p>
+            Calls RawImageNeeded to ensure that the image header in RawImage is valid for the image.
           </p>
-          <p>The values in AWidth and AHeight contain the new dimensions for the image. Both values must contain a positive value or 0. The default value for an argument is set to 0 when a negative value is found. Their values are assigned to the image desriptor in the shared imaged to change the size for the image content. No additional actions are performed in the method if either value is not successfully applied to the raw image descriptor.
+          <p>
+            The values in AWidth and AHeight contain the new dimensions for the image. Both values must contain a positive value or 0. The default value for an argument is set to 0 when a negative value is found. Their values are assigned to the image desriptor in the shared imaged to change the size for the image content. No additional actions are performed in the method if either value is not successfully applied to the raw image descriptor.
           </p>
-          <p>Calls UnshareImage and RawImageNeeded to re-create the raw image data for the shared image.
+          <p>
+            Calls UnshareImage and RawImageNeeded to re-create the raw image data for the shared image.
           </p>
-          <p>Copies existing pixel data for the image into the resized image. When the new image size is smaller, only the portion of the image that fits within the new dimensions is copied. Uses the CopyPixels method in the TLazIntfImage instance to copy the image content.
+          <p>
+            Copies existing pixel data for the image into the resized image. When the new image size is smaller, only the portion of the image that fits within the new dimensions is copied. Uses the CopyPixels method in the TLazIntfImage instance to copy the image content.
           </p>
-          <p>Ensures that the Canvas context, BitMapHandle, and MaskHandle are updated for the image. Calls the Changed method to update the shared image data and signal the OnChange event handler (when assigned).
+          <p>
+            Ensures that the Canvas context, BitMapHandle, and MaskHandle are updated for the image. Calls the Changed method to update the shared image data and signal the OnChange event handler (when assigned).
           </p>
         </descr>
         <seealso>
@@ -10719,16 +10732,19 @@
         <short>True when the image contains monochrome image data.</short>
         <descr>
           <p>
-            <var>Monochrome</var> is a
-            <var>Boolean</var> property which indicates whether the raw image data is represented using pixels of a single color.
+            <var>Monochrome</var> is a <var>Boolean</var> property which indicates whether the raw image data is represented using pixels of a single color.
           </p>
-          <p>The property value is <b>True</b> when the descriptor for the shared raw image data has a color depth of <b>1</b>. The <var>PixelFormat</var> property willl also contain the value <var>pf1bit</var>.
+          <p>
+            The property value is <b>True</b> when the descriptor for the shared raw image data has a color depth of <b>1</b>. The <var>PixelFormat</var> property will also contain the value <var>pf1bit</var>.
           </p>
-          <p>Setting a new value in Monochrome causes the value in PixelFormat to be changed. When set to <b>True</b>, PixelFormat is set to <var>pf1bit</var>. When set to <b>False</b>, the value <var>pfDevice</var> is assigned to the PixelFormat property.
+          <p>
+            Setting a new value in Monochrome causes the value in PixelFormat to be changed. When set to <b>True</b>, PixelFormat is set to <var>pf1bit</var>. When set to <b>False</b>, the value <var>pfDevice</var> is assigned to the PixelFormat property.
           </p>
-          <p>Changing the value in Monochrome (and PixelFormat) causes the image data to be discarded, and the Handle for the internal shared image is freed.
+          <p>
+            Changing the value in Monochrome (and PixelFormat) causes the image data to be discarded, and the Handle for the internal shared image is freed.
           </p>
-          <p>No actions are performed when Monochrome is set to the existing value for the property.
+          <p>
+            No actions are performed when Monochrome is set to the existing value for the property.
           </p>
         </descr>
         <seealso>
@@ -10737,22 +10753,29 @@
         </seealso>
       </element>
       <element name="TFPImageBitmap">
-        <short>Implements a Bitmap using the FPImage reader and writer from the FCL.
+        <short>
+          Implements a Bitmap using the FPImage reader and writer from the FCL.
        </short>
         <descr>
-          <p>Use this class to easily create a <var>TCustomBitmap</var> descendant using an FPImage reader and writer.
+          <p>
+            Use this class to easily create a <var>TCustomBitmap</var> descendant using an FPImage reader and writer.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.GetMimeType">
-        <short>Gets the MIME type used for the image data in the image type.</short>
+        <short>
+          Gets the MIME type used for the image data in the image type.
+        </short>
         <descr>
-          <p>GetMimeType is an overridden String function used to get the MIME type for the image data in the class instance.
+          <p>
+            GetMimeType is an overridden String function used to get the MIME type for the image data in the class instance.
           </p>
-          <p>Calls GetFileExtensions to get the delimited list of file extensions supported for the image type. The list is an empty string in TFPImageBitmap. Descendent classes provide value(s) which reflect  the image formats supported in their implementations.
+          <p>
+            Calls GetFileExtensions to get the delimited list of file extensions supported for the image type. The list is an empty string in TFPImageBitmap. Descendent classes provide value(s) which reflect  the image formats supported in their implementations.
           </p>
-          <p>GetMimeType extracts the first file extension in the list (separated by a SemiColon character), and uses the file extension in the return value. For example:
+          <p>
+            GetMimeType extracts the first file extension in the list (separated by a SemiColon character), and uses the file extension in the return value. For example:
           </p>
           <ul>
             <li>'image/bmp'</li>
@@ -10762,7 +10785,8 @@
             <li>'image/tiff'</li>
             <li>'image/xpm'</li>
           </ul>
-          <remark>GetMimeType is not implemented in the current LCL version.
+          <remark>
+            GetMimeType is not implemented in the current LCL version.
           </remark>
         </descr>
         <seealso>
@@ -10775,42 +10799,48 @@
         <short>MIME type used for the image data in the class.</short>
       </element>
       <element name="TFPImageBitmap.GetReaderClass">
-        <short>Gets the class reference used to create new instances of the FCL-compatible image reader.
+        <short>
+          Gets the class reference used to create new instances of the FCL-compatible image reader.
        </short>
         <descr>
-          <p>Defined as an abstract virtual method in TFPImageBitmap. Must be implemented in a descendent class which provides support for a specific image format.
+          <p>
+            Defined as an abstract virtual method in TFPImageBitmap. Must be implemented in a descendent class which provides support for a specific image format.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.GetReaderClass.Result">
-        <short>TFPCustomImageReaderClass descendent used for the image class type.</short>
+        <short>
+          TFPCustomImageReaderClass descendent used for the image class type.
+        </short>
       </element>
       <element name="TFPImageBitmap.GetWriterClass">
-        <short>Gets the class reference used to create new instances of the FCL-compatible image writer.
+        <short>
+          Gets the class reference used to create new instances of the FCL-compatible image writer.
        </short>
         <descr>
-          <p>Defined as an abstract virtual method in TFPImageBitmap. Must be implemented in a descendent class which provides support for a specific image format.
+          <p>
+            Defined as an abstract virtual method in TFPImageBitmap. Must be implemented in a descendent class which provides support for a specific image format.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.GetWriterClass.Result">
-        <short>TFPCustomImageWriterClass descendent used for the image class type.</short>
+        <short>
+          TFPCustomImageWriterClass descendent used for the image class type.
+        </short>
       </element>
       <element name="TFPImageBitmap.InitializeReader">
         <short>Configures the reader class instance for the image type.</short>
         <descr>
           <p>
-            <var>InitializeReader</var> is a virtual method used to configure the FCL-compatible image reader class instance in
-            <var>AReader</var>. InitializeReader assigns the
-            <var>Progress</var> method to the
-            <var>OnProgress</var> event handler in AReader.
+            <var>InitializeReader</var> is a virtual method used to configure the FCL-compatible image reader class instance in <var>AReader</var>. InitializeReader assigns the <var>Progress</var> method to the <var>OnProgress</var> event handler in AReader.
           </p>
           <p>
             <var>AImage</var> is not used in the current implementation.
           </p>
-          <p>InitializeReader is called from the <var>ReadStream</var> method prior to any operation that reads the image descriptor, header, or data.
+          <p>
+            InitializeReader is called from the <var>ReadStream</var> method prior to any operation that reads the image descriptor, header, or data.
           </p>
         </descr>
         <seealso/>
@@ -10825,22 +10855,18 @@
         <short>Configures the writer class instance for the image type.</short>
         <descr>
           <p>
-            <var>InitializeWriter</var> is a virtual method used to configure the FCL-compatible image writer class instance in
-            <var>AWriter</var>. InitializeWriter assigns the
-            <var>Progress</var> method to the
-            <var>OnProgress</var> event handler in
-            <var>AWriter</var>. When AWriter implmements the
-            <var>ILazImageWriter</var> interface, its
-            <var>Initialize</var> method is called to store the data for the LCL interface image in
-            <var>AImage</var>.
+            <var>InitializeWriter</var> is a virtual method used to configure the FCL-compatible image writer class instance in <var>AWriter</var>. InitializeWriter assigns the <var>Progress</var> method to the <var>OnProgress</var> event handler in <var>AWriter</var>. When AWriter implements the <var>ILazImageWriter</var> interface, its <var>Initialize</var> method is called to store the data for the LCL interface image in <var>AImage</var>.
           </p>
-          <p>InitializeWriter is called from the <var>WriteStream</var> method prior to any operation that writes the raw image data to a stream.
+          <p>
+            InitializeWriter is called from the <var>WriteStream</var> method prior to any operation that writes the raw image data to a stream.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TFPImageBitmap.InitializeWriter.AImage">
-        <short>LCL interface image with the image data for the write class instance.</short>
+        <short>
+          LCL interface image with the image data for the write class instance.
+        </short>
       </element>
       <element name="TFPImageBitmap.InitializeWriter.AWriter">
         <short>FCL image write instance updated in the method.</short>
@@ -10849,8 +10875,7 @@
         <short>Finalizes the FCL image reader when a read operation has been completed.</short>
         <descr>
           <p>
-            <var>FinalizeReader</var> has an empty implementation in
-            <var>TFPImageBitmap</var>. In a descendent class, it is used to update properties in the class instance to reflect values encountered by the image reader.
+            <var>FinalizeReader</var> has an empty implementation in <var>TFPImageBitmap</var>. In a descendent class, it is used to update properties in the class instance to reflect values encountered by the image reader.
           </p>
         </descr>
         <seealso/>
@@ -12253,7 +12278,7 @@
         <short>Unshares the shared image when the content in the icon is changed.</short>
         <descr>
           <p>
-            <var>UnshareImage</var> is an overridden procedure used to stop sharing the image(s) for the icon. UnshareImage implements the abstract virtual method defined in the enacestor class.
+            <var>UnshareImage</var> is an overridden procedure used to stop sharing the image(s) for the icon. UnshareImage implements the abstract virtual method defined in the ancestor class.
           </p>
           <p>No actions are performed in the method when the <var>RefCount</var> for the internal <var>TSharedIcon</var> instance is less than <b>1</b>.
           </p>
@@ -12462,24 +12487,24 @@
         <short>Copies values from the specified persistent object into the current class instance.</short>
         <descr>
           <p>
-            <var>Assign</var> is an overridden method used to copyvalues from the persistent object in
-            <var>Source</var> into the current class instance. Assign calls
-            <var>BeginUpdate</var> to increment the active update counter, and calls
-            <var>EndUpdate</var> prior to exiting from the method.
+            <var>Assign</var> is an overridden method used to copy values from the persistent object in <var>Source</var> into the current class instance. Assign calls <var>BeginUpdate</var> to increment the active update counter, and calls <var>EndUpdate</var> prior to exiting from the method.
           </p>
           <p>Assign handles specific class types in Source, including:
           </p>
           <dl>
             <dt>TRasterImage
             </dt>
-            <dd>Calls Clear to remove existing image content,  and calls Add to create and icon image with the attributes in the PixelFormat, Height, and Width properties in Source. Calls AssignImage to store the image content from Source in the icon image. If the shared image class in Source is different than the one for the current class instance, UnshareImage is called.
+            <dd>
+              Calls Clear to remove existing image content, and calls Add to create and icon image with the attributes in the PixelFormat, Height, and Width properties in Source. Calls AssignImage to store the image content from Source in the icon image. If the shared image class in Source is different than the one for the current class instance, UnshareImage is called.
             </dd>
             <dt>TCustomIcon
             </dt>
-            <dd>Sets the value in Current to the value found in Source.
+            <dd>
+              Sets the value in Current to the value found in Source.
             </dd>
           </dl>
-          <p>When Source is derived from another class type, the inherited Assign method is called.
+          <p>
+            When Source is derived from another class type, the inherited Assign method is called.
           </p>
         </descr>
         <seealso>
@@ -12528,22 +12553,27 @@
         </seealso>
       </element>
       <element name="TCustomIcon.Delete">
-        <short>Deletes the image at the specified position in the list of images for the icon.
+        <short>
+          Deletes the image at the specified position in the list of images for the icon.
        </short>
         <descr>
           <p>
-            <var>Delete</var> is a procedure used to delete the icon image at the ordinal position specified in
-            <var>AIndex</var> from the list of images for the icon.
+            <var>Delete</var> is a procedure used to delete the icon image at the ordinal position specified in <var>AIndex</var> from the list of images for the icon.
           </p>
-          <p>Delete calls <var>UnshareImage</var> to stop sharing the image list for the icon. A copy of the images is kept and restored when the Delete method in TSharedIcon has removed the image at the specified postion.
+          <p>
+            Delete calls <var>UnshareImage</var> to stop sharing the image list for the icon. A copy of the images is kept and restored when the Delete method in TSharedIcon has removed the image at the specified position.
           </p>
-          <p>When AIndex is also the <var>Current</var> image for the icon, Current is set to <b>-1</b> and the <var>UpdateCurrentView</var> method is called. Otherwise, the value in Current is decremented.
+          <p>
+            When AIndex is also the <var>Current</var> image for the icon, Current is set to <b>-1</b> and the <var>UpdateCurrentView</var> method is called. Otherwise, the value in Current is decremented.
           </p>
-          <p>Use <var>Remove</var> to delete an icon image with specific PixelFormat, Height, and Width values.
+          <p>
+            Use <var>Remove</var> to delete an icon image with specific PixelFormat, Height, and Width values.
           </p>
-          <p>Use <var>Add</var> to add an icon image with specific PixelFormat, Height, and Width values.
+          <p>
+            Use <var>Add</var> to add an icon image with specific PixelFormat, Height, and Width values.
           </p>
-          <p>Use <var>Count</var> to determine the number of images in the list of images for the icon.
+          <p>
+            Use <var>Count</var> to determine the number of images in the list of images for the icon.
           </p>
         </descr>
         <seealso/>
@@ -12582,18 +12612,15 @@
         <short>Width for the icon image.</short>
       </element>
       <element name="TCustomIcon.GetDescription">
-        <short>Gets metadata which describes the icon image at the specified position in the image list.
+        <short>
+          Gets metadata which describes the icon image at the specified position in the image list.
        </short>
         <descr>
           <p>
-            <var>GetDescription</var> is used to get image metadata whcih describes the icon image at the position specified in
-            <var>AIndex</var>.
-            <var>AFormat</var>,
-            <var>AHeight</var>, and
-            <var>AWidth</var> are output parameters where the corresponding values from the
-            <var>TIconImage</var> instance are stored.
+            <var>GetDescription</var> is used to get image metadata which describes the icon image at the position specified in <var>AIndex</var>. <var>AFormat</var>, <var>AHeight</var>, and <var>AWidth</var> are output parameters where the corresponding values from the <var>TIconImage</var> instance are stored.
           </p>
-          <p>GetDescription accesses the image list in the internal <var>TSharedIcon</var> instance used in the class.
+          <p>
+            GetDescription accesses the image list in the internal <var>TSharedIcon</var> instance used in the class.
           </p>
         </descr>
         <seealso>
@@ -14073,13 +14100,18 @@
         <short/>
       </element>
       <element name="GraphicExtension">
-        <short>Gets a string with the file extension used for the specified image class type.</short>
+        <short>
+          Gets a string with the file extension used for the specified image class type.
+        </short>
         <descr>
-          <p>Calls <var>GetPicFileFormats</var> to get the list which maps TGraphicClass (or descendent) references to a file extension.
+          <p>
+            Calls <var>GetPicFileFormats</var> to get the list which maps TGraphicClass (or descendent) references to a file extension.
           </p>
-          <p>GraphicExtension iterates over the values in the mapping list in reverese order, and compares the class name for the list item to the class name in <var>GraphicClass</var>. When a match is found, the <var>GetFormatExt</var> method for the item is called to get the return value for the function.
+          <p>
+            GraphicExtension iterates over the values in the mapping list in reverse order, and compares the class name for the list item to the class name in <var>GraphicClass</var>. When a match is found, the <var>GetFormatExt</var> method for the item is called to get the return value for the function.
           </p>
-          <p>The return value is an empty string (<b>''</b>) when a mapping for GraphicClass is not found in the list.
+          <p>
+            The return value is an empty string (<b>''</b>) when a mapping for GraphicClass is not found in the list.
           </p>
         </descr>
       </element>

@@ -750,10 +750,10 @@
             <var>ShellListView</var> is a <var>TCustomShellListView</var> property used to connect the tree view to a list view control.
           </p>
           <p>
-            Methods and properties in the list view control can be used to change the currently selected directory, or to limit its display to specic object types. Changes to the <var>Root</var> or <var>ObjectTypes</var> properties in the list view are propogated to the associated tree view control.
+            Methods and properties in the list view control can be used to change the currently selected directory, or to limit its display to specific object types. Changes to the <var>Root</var> or <var>ObjectTypes</var> properties in the list view are propagated to the associated tree view control.
           </p>
           <p>
-            In a similar fashion, changes to the <var>Root</var> property or the selected item in the tree view causes the changes to be propogated to the associated list view control.
+            In a similar fashion, changes to the <var>Root</var> property or the selected item in the tree view causes the changes to be propagated to the associated list view control.
           </p>
         </descr>
         <seealso>

@@ -1415,7 +1415,9 @@
       </element>
 
       <element name="TCustomComboBoxEx.AutoCompleteOptions">
-        <short>Contains settings for autocompletion features enabled in the control.</short>
+        <short>
+          Contains settings for auto-complete features enabled in the control.
+        </short>
         <descr/>
         <seealso/>
       </element>

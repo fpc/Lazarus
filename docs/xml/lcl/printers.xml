@@ -1263,7 +1263,7 @@
         <short>The physical and logical dimension rectangles for the paper size.</short>
         <descr>
           <p>
-            Use the PhysicalRect member to access the rectangle for the physical paper size. Use the WorkRect member to access the rectangle for the usbale print area for the paper size.
+            Use the PhysicalRect member to access the rectangle for the physical paper size. Use the WorkRect member to access the rectangle for the usable print area for the paper size.
           </p>
         </descr>
         <seealso>
@@ -1618,7 +1618,7 @@
             <var>DoBeginDoc</var> is a virtual procedure which performs actions needed when printing is started for a document. DoBeginDoc is called from the <var>BeginDoc</var> method, and occurs after checking the printer status and updating values in <var>PrinterFlags</var>. When <var>RawMode</var> is <b>False</b>, the <var>Canvas</var> has already been refreshed and its BeginDoc method has been called.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoBeginDoc has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoBeginDoc has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso>
@@ -1638,7 +1638,7 @@
             <var>DoNewPage</var> is a virtual procedure used to perform actions needed to start a new page for the print device. DoNewPage is called from the <var>NewPage</var> method when an overridden method has been provided in the class implementation. It occurs after checking the printer status and incrementing the value in <var>PageNumber</var>.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoNewPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoNewPage has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso/>
@@ -1651,7 +1651,7 @@
             <var>DoBeginPage</var> is a virtual procedure used to perform actions needed to begin a page for the selected print device. DoBeginPage is called from the <var>BeginPage</var> method, and occurs after checking the printer status and incrementing the <var>PageNumber</var>.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoBeginPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoBeginPage has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso>
@@ -1665,7 +1665,7 @@
             <var>DoEndPage</var> is a virtual procedure used to perform actions needed to end the current page for the print device. DoEndPage is called from the <var>EndPage</var> method, and occurs after synchronizing the printer canvas when <var>RawMode</var> is <b>False</b>.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoEndPage has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoEndPage has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso>
@@ -1682,7 +1682,7 @@
             <var>DoEndDoc</var> is a virtual method used to finishing printing the current document. <var>aAborted</var> is <b>True</b> if printing has been halted by calling the <var>Abort</var> method.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoEndDoc has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoEndDoc has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso/>
@@ -1697,10 +1697,10 @@
         </short>
         <descr>
           <p>
-            <var>DoAbort</var> is a virutal procedure used to perform actions needed to abort printing for the current document. DoAbort is called from the <var>Abort</var> method, and occurs after checking the printer status and before setting values in <var>PrinterFlags</var>.
+            <var>DoAbort</var> is a virtual procedure used to perform actions needed to abort printing for the current document. DoAbort is called from the <var>Abort</var> method, and occurs after checking the printer status and before setting values in <var>PrinterFlags</var>.
           </p>
           <remark>
-            In <var>TPrinter</var>, DoAbort has an empty implementation. It must be overridden in a desendent class to perfom actions needed for the operating system / widgetset / printer-related technology used in the implementation.
+            In <var>TPrinter</var>, DoAbort has an empty implementation. It must be overridden in a desendent class to perform actions needed for the operating system / widgetset / printer-related technology used in the implementation.
           </remark>
         </descr>
         <seealso/>
@@ -2205,7 +2205,7 @@
         <short>Ensures that RawMode contains the specified value.</short>
         <descr>
           <p>
-            <var>CheckRawMode</var> is a procedure used to ensure that the <var>RawMode</var> property contains the specified <var>Value</var>. If RawMode does not have the requested value, an <var>EPrinter</var> exception is raised. <var>Msg</var> contains the message text for the exception. When Msg is not specified, or contains an empty strng (<b>''</b>), a default message is used:
+            <var>CheckRawMode</var> is a procedure used to ensure that the <var>RawMode</var> property contains the specified <var>Value</var>. If RawMode does not have the requested value, an <var>EPrinter</var> exception is raised. <var>Msg</var> contains the message text for the exception. When Msg is not specified, or contains an empty string (<b>''</b>), a default message is used:
           </p>
           <dl>
             <dt>Value is True</dt>
@@ -2458,7 +2458,7 @@
             <var>NewPage</var> is a procedure used to create a new page for the document currently printing on the selected device.
           </p>
           <p>
-            NewPage checks the current class instance to see if it is a <var>TPrinter</var> descendant with an overriden <var>DoNewPage</var> method. If it has <b>not</b> been overridden, the following methods are called:
+            NewPage checks the current class instance to see if it is a <var>TPrinter</var> descendant with an overridden <var>DoNewPage</var> method. If it has <b>not</b> been overridden, the following methods are called:
           </p>
           <ul>
             <li>EndPage</li>
@@ -2986,7 +2986,7 @@
             <var>CanRenderCopies</var> is a read-only <var>Boolean</var> property which indicates if the print device can print more than one copy of pages in the document. The property value is <b>True</b> when the print device includes the <var>pcCopies</var> printer capability.
           </p>
           <remark>
-            In <var>TPrinter</var>, the property value is always <b>True</b>. The read access speciifer (<var>GetCanRenderCopies</var>) can be overridden in a descendent class to use the facilities in the operating system / widgetset / printer-related technology in the implementation.
+            In <var>TPrinter</var>, the property value is always <b>True</b>. The read access specifier (<var>GetCanRenderCopies</var>) can be overridden in a descendent class to use the facilities in the operating system / widgetset / printer-related technology in the implementation.
           </remark>
         </descr>
         <seealso>
@@ -3222,7 +3222,7 @@ end;
             While the above example seems somewhat complex, it demonstrates basic text output using formatting for your text. These are some the actions performed in the code:
           </p>
           <p>
-            Printer.BeginDoc starts the printing proess. However, nothing is sent to the printer device until the Printer.EndDoc statement is used.
+            Printer.BeginDoc starts the printing process. However, nothing is sent to the printer device until the Printer.EndDoc statement is used.
           </p>
           <p>
             The Printer uses a Canvas to draw its output. It is this drawing that ends up on the printed page. Canvas.Font has the font object used to output text on the canvas. That is, the TextOut call we use later will output text using the settings of the font object of that moment.
@@ -3387,7 +3387,7 @@ end;
 </code>
 
           <p>
-            A printer name given by oneof the lines in the property can be used to change the active printer  via the SetPrinter() method.
+            A printer name given by one of the lines in the property can be used to change the active printer via the SetPrinter() method.
           </p>
           <p>
             Internals: any class implementing TPrinter class should implement DoEnumPrinters() method. DoEnumPrinters should populate the passed Lst parameters with the name of printers. It's expected that the name of the printer device is unique.
@@ -3479,7 +3479,7 @@ end;
 </code>
 
           <p>
-            Here's an example of reseting paper size, using default paper name property.
+            Here's an example of resetting paper size, using default paper name property.
           </p>
 
 <code>

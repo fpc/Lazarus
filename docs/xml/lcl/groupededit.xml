@@ -40,7 +40,7 @@
         <short>Implements the edit control used in TCustomAbstractGroupedEdit.</short>
         <descr>
           <p>
-            <var>TGEEdit</var> is a <var>TCustomMaskedit</var> descendant which implements the edit control used in <var>TCustomAbstractGroupedEdit</var>. TGEEdit provides an overridden method to handle <b>Tab</b> keys. The key can be frowarded to the control that owns the class instance, to the ancestor class, or simply discarded.
+            <var>TGEEdit</var> is a <var>TCustomMaskedit</var> descendant which implements the edit control used in <var>TCustomAbstractGroupedEdit</var>. TGEEdit provides an overridden method to handle <b>Tab</b> keys. The key can be forwarded to the control that owns the class instance, to the ancestor class, or simply discarded.
           </p>
           <p>
             TGEEdit is the type used to implement the <var>BaseEditor</var> property in <var>TCustomAbstractGroupedEdit</var>.
@@ -2151,7 +2151,7 @@
             <var>ParentColor</var> is a <var>Boolean</var> property which indicates if the <var>Color</var> from the <var>Parent</var> control is used instead the value  assigned to the control. When this property is True, all changes to Color  in the parent will also be applied to the Color in the control, ensuring that they both contain the same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
           </p>
           <p>
-            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control. The defaul value for the property is <b>False</b>.
+            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control. The default value for the property is <b>False</b>.
           </p>
           <p>
             Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.

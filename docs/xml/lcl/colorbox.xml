@@ -265,7 +265,7 @@
         <short>Ordinal position for the item drawn in the method.</short>
       </element>
       <element name="TCustomColorBox.DrawItem.Rect">
-        <short>Rectanlge with the bounds for the item.</short>
+        <short>Rectangle with the bounds for the item.</short>
       </element>
       <element name="TCustomColorBox.DrawItem.State">
         <short>Owner draw state for the item.</short>
