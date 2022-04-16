@@ -1688,7 +1688,7 @@ begin
         {$IFDEF VerboseExtToolThread}
         DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' reading exit status ...']);
         {$ENDIF}
-        if (Tool.MaxIdleInMS>0) and (IdleCount>Tool.MaxIdleInMS) then
+        if (Tool.MaxIdleInMS<1) or (IdleCount<Tool.MaxIdleInMS) then
         begin
           Tool.ExitStatus:=Tool.Process.ExitStatus;
           Tool.ExitCode:=Tool.Process.ExitCode;
