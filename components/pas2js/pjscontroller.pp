@@ -11,7 +11,8 @@ uses
   // LCL
   Forms, Controls, LazHelpIntf,
   // IdeIntf
-  MacroIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  MacroIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, IDEExternToolIntf,
+  LazIDEIntf, ProjectGroupIntf,
   // pas2js
   SimpleWebSrvController, StrPas2JSDesign, PJSDsgnOptions, CodeToolManager,
   CodeCache;
@@ -30,6 +31,8 @@ Type
     procedure OnLoadSaveCustomData(Sender: TObject; Load: boolean;
       CustomData: TStringToStringTree; PathDelimChanged: boolean);
     function OnProjectBuilding(Sender: TObject): TModalResult;
+    function OnProjectGroupRunLazbuild({%H-}Target: TPGCompileTarget;
+      Tool: TAbstractExternalTool): boolean;
     function OnRunDebugInit(Sender: TObject; var Handled: boolean
       ): TModalResult;
     function OnRunWithoutDebugInit(Sender: TObject; var Handled: boolean): TModalResult;
@@ -171,6 +174,17 @@ begin
     if not SaveHTMLFileToTestDir(aProject) then
       exit(mrCancel);
     end;
+end;
+
+function TPJSController.OnProjectGroupRunLazbuild(Target: TPGCompileTarget;
+  Tool: TAbstractExternalTool): boolean;
+var
+  Pas2jsFilename: String;
+begin
+  Result:=true;
+  Pas2jsFilename:=PJSOptions.GetParsedCompilerFilename;
+  if Pas2jsFilename<>'' then
+    Tool.EnvironmentOverrides.Values['PAS2JS']:=Pas2jsFilename;
 end;
 
 function TPJSController.OnRunDebugInit(Sender: TObject; var Handled: boolean
@@ -416,6 +430,7 @@ begin
   LazarusIDE.AddHandlerOnRunDebugInit(@OnRunDebugInit);
   LazarusIDE.AddHandlerOnRunWithoutDebugInit(@OnRunWithoutDebugInit);
   LazarusIDE.AddHandlerOnLoadSaveCustomData(@OnLoadSaveCustomData);
+  ProjectGroupManager.AddHandlerOnRunLazbuild(@OnProjectGroupRunLazbuild);
 end;
 
 procedure TPJSController.UnHook;
