@@ -591,7 +591,7 @@ end;
         <short/>
         <descr>
           <p>
-            The text dispalyed as the primary content for the dialog. The value is used in the Execute method to add a label displayed in the dialog.
+            The text displayed as the primary content for the dialog. The value is used in the Execute method to add a label displayed in the dialog.
           </p>
           <remark>
             In previous LCL versions, '\n' characters sequences were converted to LineEnding characters. This action is no longer performed as of revision 64975.
@@ -843,7 +843,7 @@ end;
         <short/>
         <descr>
           <p>
-            Allow a OnButtonClicked callback to change the Task Dialog main elements. Note that tdeVerif could be modified only in emulation mode, since the API does not give any runtime access to the checkbox caption. Other elements will work in both emulated and native modes.
+            Allow a OnButtonClicked callback to change the Task Dialog main elements. Note that tdeVerif could be modified only in emulation mode, since the API does not give any run-time access to the checkbox caption. Other elements will work in both emulated and native modes.
           </p>
         </descr>
         <seealso/>

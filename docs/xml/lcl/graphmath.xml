@@ -508,7 +508,7 @@
             Use PolyBezierArcPoints to convert an Arc and ArcLength into a Pointer Array of TPoints for use with Polyline or Polygon. The Rotation parameter accepts a Rotation-Angle for a rotated Ellipse - for a non-rotated ellipse this value would be 0, or 360. The result is an Approximation based on 1 or more Beziers. If the AngleLength is greater than 45 degrees, it recursively breaks the Arc into Arcs of 45 degrees or less, and converts them into Beziers with BezierArcPoints.
           </p>
           <p>
-            The angles are s[ecified in 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+            The angles are specified in 1/16th of a degree. For example, a full circle equals 5760 (16*360).
           </p>
           <p>
             Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3'o clock position.
