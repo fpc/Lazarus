@@ -36,10 +36,8 @@ msgid "Binding of socket failed"
 msgstr "Не удалось привязать сокет"
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
-#, fuzzy
-#| msgid "Browser to open HTML page (macro $(SWSBrowser))"
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
-msgstr "Браузер для открытия страницы HTML (макрос $(SWSBrowser))"
+msgstr "Браузер для открытия страницы HTML, макрос $(SWSBrowser)"
 
 #: simplewebsrvstrconsts.rsswcannotfindbrowsersee
 msgid "Cannot find browser. See"
@@ -216,16 +214,12 @@ msgid "Simple Web Server Port"
 msgstr "Порт простого веб-сервера"
 
 #: simplewebsrvstrconsts.rsswspathofcompileserver
-#, fuzzy
-#| msgid "Path of compileserver"
 msgid "Path of compileserver, macro $(SWSExe)"
-msgstr "Путь к серверу компиляции"
+msgstr "Путь к серверу компиляции, макрос $(SWSExe)"
 
 #: simplewebsrvstrconsts.rsswsport
-#, fuzzy
-#| msgid "Port"
 msgid "Port, macro $(SWSPort)"
-msgstr "Порт"
+msgstr "Порт, макрос $(SWSPort)"
 
 #: simplewebsrvstrconsts.rsswstartserver
 msgid "Start Server"
