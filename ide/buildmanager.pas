@@ -310,41 +310,33 @@ procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
   Abort: boolean; Depth: integer);
 {$IFDEF EnableDefaultMacroEnvVar}
 var
-  VarCnt, i, BestIndex: Integer;
-  EnvStr: String;
+  VarCnt, i: Integer;
+  EnvStr, UpperMacroName: String;
   p: SizeInt;
 {$ENDIF}
 begin
   if TheMacro=nil then begin
     {$IFDEF EnableDefaultMacroEnvVar}
     if s='' then begin
-      // default: use environment variable
+      // default: use uppercase environment variable
       VarCnt:=GetEnvironmentVariableCountUTF8;
       if length(fEnv)<>VarCnt then begin
         SetLength(fEnv,VarCnt);
         for i:=0 to VarCnt-1 do
-          fEnv[i]:=GetEnvironmentStringUTF8(i);
+          fEnv[i]:=GetEnvironmentStringUTF8(i+1);
       end;
-      BestIndex:=-1;
+      UpperMacroName:=UTF8UpperCase(MacroName);
       for i:=0 to VarCnt-1 do begin
         EnvStr:=fEnv[i];
         p:=Pos('=',EnvStr);
         if p<2 then continue;
-        if (p-1=length(MacroName)) and CompareMem(@MacroName[1],@EnvStr[1],p-1) then
+        if (p-1=length(UpperMacroName)) and CompareMem(@UpperMacroName[1],@EnvStr[1],p-1) then
         begin
-          // perfect match
           Handled:=true;
           s:=copy(EnvStr,p+1,length(EnvStr));
           exit;
-        end else if (BestIndex<0) and (UTF8CompareText(MacroName,LeftStr(EnvStr,p-1))=0) then
-        begin
-          // case insensitive match -> use and search further
-          Handled:=true;
-          BestIndex:=i;
-          s:=copy(EnvStr,p+1,length(EnvStr));
         end;
       end;
-      if Handled then exit;
     end;
     {$ENDIF}
 
