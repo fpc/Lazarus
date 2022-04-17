@@ -1,20 +1,20 @@
 object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
   Left = 0
-  Height = 339
+  Height = 437
   Top = 0
   Width = 565
-  ClientHeight = 339
+  ClientHeight = 437
   ClientWidth = 565
   TabOrder = 0
   DesignLeft = 469
   DesignTop = 358
   object ServerAddrLabel: TLabel
-    AnchorSideTop.Control = ServerAddrComboBox
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Control = ServerExeComboBox
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ServerAddrComboBox
     Left = 8
     Height = 15
-    Top = 67
+    Top = 59
     Width = 44
     BorderSpacing.Left = 20
     BorderSpacing.Right = 2
@@ -22,15 +22,15 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     ParentColor = False
   end
   object ServerAddrComboBox: TComboBox
-    AnchorSideLeft.Control = ServerAddrLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ServerExeComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ServerAddrLabel
     AnchorSideTop.Side = asrBottom
-    Left = 54
+    Left = 6
     Height = 30
-    Top = 59
+    Top = 76
     Width = 136
-    BorderSpacing.Top = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
     BorderSpacing.Bottom = 6
     ItemHeight = 0
     TabOrder = 0
@@ -38,27 +38,28 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
   end
   object PortLabel: TLabel
     AnchorSideLeft.Control = ServerAddrLabel
-    AnchorSideTop.Control = PortComboBox
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Control = ServerAddrComboBox
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = PortComboBox
     Left = 8
     Height = 15
-    Top = 103
+    Top = 112
     Width = 24
+    BorderSpacing.Top = 6
     BorderSpacing.Right = 2
     Caption = 'Port'
     ParentColor = False
   end
   object PortComboBox: TComboBox
-    AnchorSideLeft.Control = PortLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ServerAddrComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PortLabel
     AnchorSideTop.Side = asrBottom
-    Left = 34
+    Left = 6
     Height = 30
-    Top = 95
+    Top = 129
     Width = 100
-    BorderSpacing.Top = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
     BorderSpacing.Bottom = 6
     ItemHeight = 0
     TabOrder = 1
@@ -112,11 +113,11 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
   object BindAnyCheckBox: TCheckBox
     AnchorSideLeft.Control = ServerAddrComboBox
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ServerAddrLabel
+    AnchorSideTop.Control = ServerAddrComboBox
     AnchorSideTop.Side = asrCenter
-    Left = 196
+    Left = 148
     Height = 23
-    Top = 63
+    Top = 80
     Width = 123
     BorderSpacing.Left = 6
     Caption = 'Bind Any (0.0.0.0)'
@@ -128,7 +129,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 131
+    Top = 165
     Width = 268
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -142,7 +143,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 253
+    Top = 287
     Width = 186
     BorderSpacing.Top = 2
     BorderSpacing.Right = 6
@@ -157,7 +158,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 236
+    Top = 270
     Width = 258
     BorderSpacing.Left = 6
     BorderSpacing.Top = 15
@@ -172,7 +173,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 73
-    Top = 148
+    Top = 182
     Width = 553
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -188,7 +189,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 21
     Height = 30
-    Top = 285
+    Top = 319
     Width = 538
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 15

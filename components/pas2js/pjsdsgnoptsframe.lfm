@@ -9,8 +9,8 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
   ParentShowHint = False
   ShowHint = True
   TabOrder = 0
-  DesignLeft = 388
-  DesignTop = 200
+  DesignLeft = 1042
+  DesignTop = 410
   object Pas2jsPathLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -64,7 +64,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 78
+    Top = 97
     Width = 74
     BorderSpacing.Top = 2
     MaxValue = 65353
@@ -74,14 +74,14 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
   end
   object ServerPortLabel: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Pas2jsPathComboBox
+    AnchorSideTop.Control = SimpleWebServerLinkLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 61
+    Top = 80
     Width = 114
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 8
+    BorderSpacing.Top = 6
     Caption = 'Standard server port'
     ParentColor = False
   end
@@ -92,7 +92,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = BBrowserBrowseButton
     Left = 6
     Height = 30
-    Top = 131
+    Top = 150
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -106,7 +106,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 114
+    Top = 133
     Width = 258
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -121,7 +121,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 131
+    Top = 150
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -136,7 +136,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 167
+    Top = 186
     Width = 105
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -150,7 +150,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
     Height = 30
-    Top = 184
+    Top = 203
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -166,7 +166,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 184
+    Top = 203
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -181,7 +181,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 220
+    Top = 239
     Width = 185
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -195,7 +195,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
     Height = 30
-    Top = 237
+    Top = 256
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -211,7 +211,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 237
+    Top = 256
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -226,7 +226,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 273
+    Top = 292
     Width = 209
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -240,7 +240,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
     Height = 30
-    Top = 290
+    Top = 309
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -256,7 +256,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 290
+    Top = 309
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -264,5 +264,22 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     Caption = '...'
     OnClick = VSCodeTemplateDirBrowseButtonClick
     TabOrder = 10
+  end
+  object SimpleWebServerLinkLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Pas2jsPathComboBox
+    AnchorSideTop.Side = asrBottom
+    Cursor = crHandPoint
+    Left = 6
+    Height = 15
+    Top = 59
+    Width = 107
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Web server options'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = SimpleWebServerLinkLabelClick
   end
 end

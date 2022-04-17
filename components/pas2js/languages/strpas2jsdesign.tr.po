@@ -275,6 +275,10 @@ msgstr "Web Tarayıcı Uygulaması"
 msgid "Web Project (pas2js)"
 msgstr ""
 
+#: strpas2jsdesign.pjsdwebserveroptions
+msgid "Web server options"
+msgstr ""
+
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."

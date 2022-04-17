@@ -18,12 +18,13 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
   // Pas2Js
-  PJSDsgnOptions, strpas2jsdesign;
+  PJSDsgnOptions, strpas2jsdesign, SimpleWebSrvOptionsFrame;
 
 Type
   { TPas2jsOptionsFrame }
 
   TPas2jsOptionsFrame = class(TAbstractIDEOptionsEditor)
+    SimpleWebServerLinkLabel: TLabel;
     VSCodeTemplateDirBrowseButton: TButton;
     VSCodeTemplateDirComboBox: TComboBox;
     BBrowserBrowseButton: TButton;
@@ -45,8 +46,10 @@ Type
     procedure AtomTemplateDirBrowseButtonClick(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
+    procedure SimpleWebServerLinkLabelClick(Sender: TObject);
     procedure VSCodeTemplateDirBrowseButtonClick(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     function CheckCompiler({%H-}Buttons: TMsgDlgButtons): boolean;
   public
     function GetTitle: String; override;
@@ -80,6 +83,11 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TPas2jsOptionsFrame.SimpleWebServerLinkLabelClick(Sender: TObject);
+begin
+  FDialog.OpenEditor(GroupEnvironment,SimpleWebServerOptionID);
 end;
 
 procedure TPas2jsOptionsFrame.VSCodeTemplateDirBrowseButtonClick(Sender: TObject
@@ -194,12 +202,15 @@ procedure TPas2jsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   DefPas2jsExe: String;
 begin
+  FDialog := ADialog;
+
   DefPas2jsExe:=GetStandardPas2jsExe;
   Pas2jsPathLabel.Caption:=SafeFormat(pjsdPathOfXMacroPas2js, ['pas2js'+GetExeExt]);
   Pas2jsPathLabel.Hint:=Format(
     pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [DefPas2jsExe]);
   Pas2jsPathBrowseButton.Hint:=pjsdBrowse;
 
+  SimpleWebServerLinkLabel.Caption:=pjsdWebServerOptions;
   ServerPortLabel.Caption:=pjsdPortNumberToStartAllocatingFrom;
   ServerPortLabel.Hint:=pjsdServerInstancesWillBeStartedWithAPortStartingFromT;
 

@@ -36,6 +36,7 @@ Resourcestring
   pjsdBrowse = 'Browse';
   pjsdPortNumberToStartAllocatingFrom = 'Port number to start allocating '
     +'from, macro $(Pas2JSWebServerPort)';
+  pjsdWebServerOptions = 'Web server options';
   pjsdServerInstancesWillBeStartedWithAPortStartingFromT = 'Server instances '
     +'will be started with a port starting from this number, increasing per '
     +'new project';
