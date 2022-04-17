@@ -276,7 +276,7 @@ msgstr "Веб-проект (pas2js)"
 
 #: strpas2jsdesign.pjsdwebserveroptions
 msgid "Web server options"
-msgstr ""
+msgstr "Параметры веб-сервера"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
