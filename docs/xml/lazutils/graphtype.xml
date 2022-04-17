@@ -85,7 +85,7 @@
       </element>
       <element name="TGraphicsBevelCut.bvSpace">
         <short>
-          The bevel is drawn as a space using the required width, netiher inset nor outset.
+          The bevel is drawn as a space using the required width, neither inset nor outset.
         </short>
       </element>
 
@@ -1195,10 +1195,10 @@
 
       <element name="MissingBits">
         <short>
-          Used to pad bit data in a raw image to specific precisions and byte boundaries.
+          Used to pad bit data in a raw image to a specific precision and byte boundaries.
         </short>
         <descr>
-          Used to pad bit data in a raw image to specific precisions and byte boundaries.
+          Used to pad bit data in a raw image to a specific precision and byte boundaries.
         </descr>
         <seealso/>
       </element>

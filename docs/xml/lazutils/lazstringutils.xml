@@ -668,13 +668,15 @@
       </element>
 
       <element name="StringToStringList">
-        <short>Stores a multi-line string as seperate lines in a TStrings instance.</short>
+        <short>
+          Stores a multi-line string as separate lines in a TStrings instance.
+        </short>
         <descr>
           <p>
             <var>StringToStringList</var> is a procedure used to convert the multi-line String in <var>S</var> to separate lines of text in a <var>TStrings</var> instance.
           </p>
           <p>
-            The <b>LF</b> (<b>#10</b>) character is used to mark the end of a line in <var>S</var>, and causes the preceeding text to be added to the string list in <var>List</var>. The LF character is not included in the value added to the string list.
+            The <b>LF</b> (<b>#10</b>) character is used to mark the end of a line in <var>S</var>, and causes the preceding text to be added to the string list in <var>List</var>. The LF character is not included in the value added to the string list.
           </p>
           <p>
             If no end-of-line characters are found in <var>S</var>, then a single line of text is added to the string list.
@@ -683,14 +685,18 @@
         <seealso/>
       </element>
       <element name="StringToStringList.s">
-        <short>String with values extracted and stored in the string list.</short>
+        <short>
+          String with values extracted and stored in the string list.
+        </short>
       </element>
       <element name="StringToStringList.List">
         <short>TStrings instance where values are stored in the routine.</short>
       </element>
 
       <element name="GetNextDelimitedItem">
-        <short>Gets the next delimited value in List starting at the specified position.</short>
+        <short>
+          Gets the next delimited value in List starting at the specified position.
+        </short>
         <descr>
           <p>
             <var>GetNextDelimitedItem</var> is a <var>String</var> function used to get the next item in a delimited list of items starting at the specified position.

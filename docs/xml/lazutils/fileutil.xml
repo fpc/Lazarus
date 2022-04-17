@@ -144,7 +144,7 @@
         <short>Gets a short path name using the 8.3 notation from the UTF-8-encoded value.</short>
         <descr>
           <p>
-            <var>ExtractShortPathNameUTF8</var> is a <var>String</var> function used to get a short path name from the UTF-8-encoded value in FileName. Short path names use the familiar 8.3 notation, where the file name contains a maximum of 8 chararacters, and the optional file extension has a maximum of 3 characters.
+            <var>ExtractShortPathNameUTF8</var> is a <var>String</var> function used to get a short path name from the UTF-8-encoded value in FileName. Short path names use the familiar 8.3 notation, where the file name contains a maximum of 8 characters, and the optional file extension has a maximum of 3 characters.
           </p>
           <p>
             ExtractShortPathNameUTF8 is similar to the <var>ExtractShortPathName</var> routine in the RTL <file>sysutils</file> unit, but accepts a String value in <var>FileName</var> and returns a String value in the result which uses UTF-8 encoding.The RTL routine uses UnicodeString for both.
@@ -179,10 +179,14 @@
             Returns <b>True</b> when the specified entries are deleted on the local file system. Returns <b>False</b> when:
           </p>
           <ul>
-            <li>DirectoryName is one of the relative path indicatiors like '.' or '..'</li>
+            <li>
+              DirectoryName is one of the relative path indicators like '.' or '..'
+            </li>
             <li>DirectoryName is an empty string ('')</li>
             <li>DirectoryName does not exist on the local file system</li>
-            <li>The process does not have permissions needed to delete the directory or its content</li>
+            <li>
+              The process does not have permissions needed to delete the directory or its content
+            </li>
           </ul>
         </descr>
         <errors>
@@ -623,7 +627,7 @@ ShowMessage('File: ' + sFile + LineEnding +
             <var>SearchFileInPath</var> is a <var>String</var> function used to get the fully-qualified name for the specified <var>FileName</var> in the specified search paths. When FileName contains an absolute path, and the file exists in the file system, no other directories are checked in the routine.
           </p>
           <p>
-            <var>SearchPath</var> contains the delimited list of search paths examined in the routine. Search paths are separated using the value in <var>Delimter</var>.
+            <var>SearchPath</var> contains the delimited list of search paths examined in the routine. Search paths are separated using the value in <var>Delimiter</var>.
           </p>
           <p>
             <var>BasePath</var> contains the path used to resolve relative path references in SearchPath. By default, BasePath is also searched unless <var>sffDontSearchInBasePath</var> is included in the <var>Flags</var> parameter.

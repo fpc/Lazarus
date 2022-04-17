@@ -21,13 +21,13 @@
           <b>TLazShiftBufferList</b>
         </p>
         <p>
-          This list is designed for shift/unshift/pop/push operations. The first list element is not forced to the start of the allocated memory. Instead it allows a gap (some of the over-allocated memory / List.Capacity) in front of the first element. Therefore elements can be added/removed at either the begin or end of the list, withouth any need to move the other elemnts in the list.
+          This list is designed for shift/unshift/pop/push operations. The first list element is not forced to the start of the allocated memory. Instead it allows a gap (some of the over-allocated memory / List.Capacity) in front of the first element. Therefore elements can be added/removed at either the begin or end of the list, withouth any need to move the other elements in the list.
         </p>
         <p>
           <b>TLazRoundBufferList</b>
         </p>
         <p>
-          The first element of the list can be anywhere within the allocated memory (capacity). If the elements of the list reach the end of the memory, the list will wrap arount and continues in the available memory at the start of the allocation. This list can be used for a first-in, first-out queue. If the list does never exceed the size set by its capacity, then elements can be pushed/shifted from/to the list without any need to reallocate or move entries to new locations.
+          The first element of the list can be anywhere within the allocated memory (capacity). If the elements of the list reach the end of the memory, the list will wrap around and continues in the available memory at the start of the allocation. This list can be used for a first-in, first-out queue. If the list does never exceed the size set by its capacity, then elements can be pushed/shifted from/to the list without any need to reallocate or move entries to new locations.
         </p>
         <p>
           <b>TLazPagedListMem</b>
@@ -49,7 +49,7 @@
         <ul>
           <li>So it is necessary to call Destroy.</li>
           <li>
-            It is also necessary to call Create. (Unless you can gurantee that the memory for the object has been zero filled).
+            It is also necessary to call Create. (Unless you can guarantee that the memory for the object has been zero filled).
           </li>
         </ul>
         <p>
@@ -1271,7 +1271,7 @@ TLazPagedListObj = object
         <short/>
         <descr>
           <p>
-            The first element of the list can be anywhere within the allocated memory (capacity). If the elements of the list reach the end of the memory, the list will wrap arount and continues in the available memory at the start of the allocation.
+            The first element of the list can be anywhere within the allocated memory (capacity). If the elements of the list reach the end of the memory, the list will wrap around and continues in the available memory at the start of the allocation.
           </p>
           <p>
             This list can be used for a first-in, first-out queue. If the list does never exceed the size set by its capacity, then elements can be pushed/shifted from/to the list without any need to reallocate or move entries to new locations.
@@ -2301,7 +2301,7 @@ TLazPagedListObj = object
             The first list element is not forced to the start of the allocated memory. Instead it allows a gap (some of the over-allocated memory / List.Capacity) in front of the first element.
           </p>
           <p>
-            Therefore elements can be added/removed at either the begin or end of the list, withouth any need to move the other elemnts in the list.
+            Therefore elements can be added/removed at either the begin or end of the list, without any need to move the other elements in the list.
           </p>
         </descr>
         <seealso/>

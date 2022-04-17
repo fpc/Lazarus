@@ -332,7 +332,9 @@
       </element>
 
       <element name="TLazFifoQueue.Grow">
-        <short>Resizes the internal storage for the queue by the specified Delta value.</short>
+        <short>
+          Resizes the internal storage for the queue by the specified Delta value.
+        </short>
         <descr>
           <p>
             <var>Grow</var> is a method used to resize the internal storage for the queue by the specified Delta value.
@@ -341,7 +343,7 @@
             When <var>ADelta</var> is a position Integer value, the size for the internal array is enlarged by the value specified number of entries. When ADelta is a negative Integer value, the internal storage is shrunk by the specified number of entries.
           </p>
           <p>
-            Grow reallocates the internal array used to store the item types for the specialization. Exisitng items in the queue are moved to the new array, and the internal storage is updated.
+            Grow reallocates the internal array used to store the item types for the specialization. Existing items in the queue are moved to the new array, and the internal storage is updated.
           </p>
           <p>
             The value in the <var>QueueSize</var> property is set to the new length for the internal array.
@@ -743,7 +745,7 @@ TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
             When <var>ADelta</var> is a position Integer value, the size for the internal array is enlarged by the value specified number of entries. When ADelta is a negative Integer value, the internal storage is shrunk by the specified number of entries.
           </p>
           <p>
-            Grow reallocates the internal array used to store the item types for the specialization. Exisitng items in the queue are moved to the new array, and the internal storage is updated.
+            Grow reallocates the internal array used to store the item types for the specialization. Existing items in the queue are moved to the new array, and the internal storage is updated.
           </p>
           <p>
             The value in the <var>QueueSize</var> property is set to the new length for the internal array.

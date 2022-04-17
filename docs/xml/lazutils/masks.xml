@@ -1011,7 +1011,9 @@
       </element>
 
       <element name="TMaskUTF8.MatchesWindowsMask">
-        <short>Indicates whether the specified value is a match for the WIndows-specific Mask expression.</short>
+        <short>
+          Indicates whether the specified value is a match for the Windows-specific Mask expression.
+        </short>
         <descr>
           <remark>
             Deprecated in Lazarus version 2.3, and will be removed in 2.5. Create a TWindowsMask instance and call its Matches method instead.
@@ -1034,7 +1036,9 @@
       </element>
 
       <element name="TMaskUTF8.Mask">
-        <short>Mask expression used to match files or directories in the class instance.</short>
+        <short>
+          Mask expression used to match files or directories in the class instance.
+        </short>
         <descr>
           <p>
             <var>Mask</var> is a <var>String</var> property which contains the mask expression used to compare / evaluate a value in the Matches method. The property value is initially set using the arguments passed to the Create constructor. Values in Mask use the UNIX file system conventions for wildcards and related notations.
@@ -1050,7 +1054,9 @@
       </element>
 
       <element name="TMask">
-        <short>The TMask class represents a mask expression and performs comparisons.</short>
+        <short>
+          The TMask class represents a mask expression and performs comparisons.
+        </short>
         <descr>
           <p>
             TMask is an alias for the TMaskUTF8 class. Provided for compatibility with previous LazUtils versions.

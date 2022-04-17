@@ -57,7 +57,7 @@ LazLoggerBase
     <dt>Stdout/Console</dt>
     <dd>
       <p>
-        By default the output created by DebugLn is written to the stdout device. The output is silently discarded if stdout is not open. On Windows this is the default behavior, if project type "Application" is used to create a Windows GUI application. To get a console alongside your Windows GUI application, you need to uncheck the option "Win32 gui application (-WG)" under Project options / Compiler options / Config and Target / Target specific options. Alternatively you can add {$APPTYPE CONSOLE} at the top of your project .lpr file, or configure multiple "Build Modes" to control the -WG switch.
+        By default the output created by DebugLn is written to the stdout device. The output is silently discarded if stdout is not open. On Windows this is the default behavior, if project type "Application" is used to create a Windows GUI application. To get a console alongside your Windows GUI application, you need to uncheck the option "Win32 GUI application (-WG)" under Project options / Compiler options / Config and Target / Target specific options. Alternatively you can add {$APPTYPE CONSOLE} at the top of your project .lpr file, or configure multiple "Build Modes" to control the -WG switch.
       </p>
     </dd>
     <dt>File</dt>
@@ -124,7 +124,7 @@ LazLoggerBase
   <short>Set type used to store values from the TLazLoggerLogGroupFlag enumeration.</short>
   <descr>
     <p>
-      TLazLoggerLogGroupFlags is the type used for the FLags member in TLazLoggerLogGroup.
+      TLazLoggerLogGroupFlags is the type used for the Flags member in TLazLoggerLogGroup.
     </p>
   </descr>
   <seealso>
@@ -165,7 +165,9 @@ LazLoggerBase
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.FOpenedIndents">
-  <short>Member usesd to track the current indentation level for the log group.</short>
+  <short>
+    Member used to track the current indentation level for the log group.
+  </short>
   <descr/>
   <seealso/>
 </element>
@@ -202,7 +204,7 @@ LazLoggerBase
   <short>Logger output is written to the stdout device.</short>
 </element>
 <element name="TLazLoggerWriteTarget.lwtStdErr">
-  <short>Logger outout is written to the StdErr device.</short>
+  <short>Logger output is written to the StdErr device.</short>
 </element>
 <element name="TLazLoggerWriteTarget.lwtTextFile">
   <short>Logger output is written to a text file.</short>
@@ -377,7 +379,7 @@ LazLoggerBase
   <short>Ordinal position in the container for the specified log group.</short>
 </element>
 <element name="TLazLoggerLogGroupList.IndexOf.AConfigName">
-  <short>Name of the loag group to locate in the container.</short>
+  <short>Name of the load group to locate in the container.</short>
 </element>
 <element name="TLazLoggerLogGroupList.IndexOf.AnEntry">
   <short>Pointer to the log group to locate in the container.</short>
@@ -504,10 +506,12 @@ LazLoggerBase
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.IndentChanged">
-  <short>Performs actions needed when the nesting level for the logger has been changed.</short>
+  <short>
+    Performs actions needed when the nesting level for the logger has been changed.
+  </short>
   <descr>
     <p>
-      IndentChanged has an empty implementation, andmust be overridden in a descendent class to perform the actions needed when the nesting level (Increaseindent, DecreaseIndent) has been changed.
+      IndentChanged has an empty implementation, and must be overridden in a descendent class to perform the actions needed when the nesting level (Increaseindent, DecreaseIndent) has been changed.
     </p>
   </descr>
   <seealso/>
@@ -524,7 +528,9 @@ LazLoggerBase
   <short>Value for the indexed property.</short>
 </element>
 <element name="TLazLogger.GetBlockHandler.AIndex">
-  <short>Ordinal position for the property value retrieved in the method.</short>
+  <short>
+    Ordinal position for the property value retrieved in the method.
+  </short>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -660,7 +666,7 @@ LazLoggerBase
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.Finish">
-  <short>FInalizes the logger class instance.</short>
+  <short>Finalizes the logger class instance.</short>
   <descr>
   </descr>
   <errors>
@@ -694,7 +700,7 @@ LazLoggerBase
 <!-- property Visibility: public -->
 <element name="TLazLogger.MaxNestPrefixLen">
   <short>
-    Indicates the maximum length for the nexting prefix used when values are output in the logger.
+    Indicates the maximum length for the nesting prefix used when values are output in the logger.
   </short>
   <descr>
   </descr>
@@ -754,7 +760,7 @@ LazLoggerBase
 <!-- property Visibility: public -->
 <element name="TLazLogger.UseGlobalLogGroupList">
   <short>
-    Indicates if the gloabal DebugLoggerGroupList is used as the value for the LogGroupList property.
+    Indicates if the global DebugLoggerGroupList is used as the value for the LogGroupList property.
   </short>
   <descr>
   </descr>
@@ -772,7 +778,7 @@ LazLoggerBase
 </element>
 
 <element name="TLazLogger.RemoveBlockHandler">
-  <short>Removes the specified block hander for the logger type.</short>
+  <short>Removes the specified block handler for the logger type.</short>
   <descr/>
   <seealso/>
 </element>
@@ -800,7 +806,9 @@ LazLoggerBase
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebuglnStack">
-  <short>Calls DoDebuglnStack to write the message in s when the logger has been enabed.</short>
+  <short>
+    Calls DoDebuglnStack to write the message in s when the logger has been enabled.
+  </short>
   <descr>
   </descr>
   <errors>
