@@ -13,7 +13,7 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
   // IdeIntf
-  PackageIntf, ProjectIntf;
+  PackageIntf, ProjectIntf, IDEExternToolIntf;
 
 Type
   TPGTargetType = (
@@ -81,6 +81,7 @@ Type
   protected
     FParent: TPGCompileTarget;
     FProjectGroup: TProjectGroup;
+    function CallRunLazbuildHandlers(Tool: TAbstractExternalTool): boolean; virtual;
     function GetAllowedActions: TPGTargetActions; virtual; // By default, return all allowed actions for target type.
     function GetBuildModeCount: integer; virtual; abstract;
     function GetBuildModes(Index: integer): TPGBuildMode; virtual; abstract;
@@ -143,6 +144,8 @@ Type
   protected
     FSelfTarget: TPGCompileTarget;
     FParent: TProjectGroup;
+    function CallRunLazbuildHandlers(Target: TPGCompileTarget;
+                                 Tool: TAbstractExternalTool): boolean; virtual;
     procedure SetFileName(AValue: String); virtual;
     function GetModified: Boolean; virtual;
     function GetTargetCount: Integer; virtual; abstract;
@@ -201,13 +204,27 @@ Type
   );
   TProjectGroupLoadOptions = set of TProjectGroupLoadOption;
 
+  TPGManagerHandler = (
+    pgmhRunLazbuild // called before running lazbuild
+    );
+  TPGManagerHandlers = set of TPGManagerHandler;
+
+  TPGMRunLazbuildEvent = function(Target: TPGCompileTarget;
+               Tool: TAbstractExternalTool): boolean of object; // false = abort
+
   { TProjectGroupManager }
 
   TProjectGroupManager = Class(TPersistent)
+  private
+    FHandlers: array[TPGManagerHandler] of TMethodList;
   protected
     FEditor: TForm;
+    function CallRunLazbuildHandlers(Target: TPGCompileTarget;
+                                 Tool: TAbstractExternalTool): boolean; virtual;
     function GetCurrentProjectGroup: TProjectGroup; virtual; abstract;
   public
+    constructor Create;
+    destructor Destroy; override;
     function NewProjectGroup(AddActiveProject: boolean): boolean; virtual; abstract;
     function LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions): boolean; virtual; abstract;
     function SaveProjectGroup: boolean; virtual; abstract;
@@ -218,6 +235,11 @@ Type
     procedure Redo; virtual; abstract;
     property CurrentProjectGroup: TProjectGroup Read GetCurrentProjectGroup; // Always top-level.
     property Editor: TForm read FEditor write FEditor;
+  public
+    // handlers
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnRunLazbuild(const OnRunLazbuild: TPGMRunLazbuildEvent; AsLast: boolean = false);
+    procedure RemoveHandlerOnRunLazbuild(const OnRunLazbuild: TPGMRunLazbuildEvent);
   end;
 
 var
@@ -267,6 +289,60 @@ begin
   Result:=AAction in [taCompile,taCompileClean];
 end;
 
+{ TProjectGroupManager }
+
+function TProjectGroupManager.CallRunLazbuildHandlers(Target: TPGCompileTarget;
+  Tool: TAbstractExternalTool): boolean;
+var
+  Handler: TMethodList;
+  i: Integer;
+begin
+  Result:=true;
+  Handler:=FHandlers[pgmhRunLazbuild];
+  i:=Handler.Count;
+  while Handler.NextDownIndex(i) do begin
+    if not TPGMRunLazbuildEvent(Handler[i])(Target,Tool) then
+      exit(false);
+  end;
+end;
+
+constructor TProjectGroupManager.Create;
+var
+  HandlerType: TPGManagerHandler;
+begin
+  for HandlerType in TPGManagerHandler do
+    FHandlers[HandlerType]:=TMethodList.Create;
+end;
+
+destructor TProjectGroupManager.Destroy;
+var
+  HandlerType: TPGManagerHandler;
+begin
+  for HandlerType in TPGManagerHandler do
+    FreeAndNil(FHandlers[HandlerType]);
+  inherited Destroy;
+end;
+
+procedure TProjectGroupManager.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TPGManagerHandler;
+begin
+  for HandlerType in TPGManagerHandler do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TProjectGroupManager.AddHandlerOnRunLazbuild(
+  const OnRunLazbuild: TPGMRunLazbuildEvent; AsLast: boolean);
+begin
+  FHandlers[pgmhRunLazbuild].Add(TMethod(OnRunLazbuild),AsLast);
+end;
+
+procedure TProjectGroupManager.RemoveHandlerOnRunLazbuild(
+  const OnRunLazbuild: TPGMRunLazbuildEvent);
+begin
+  FHandlers[pgmhRunLazbuild].Remove(TMethod(OnRunLazbuild));
+end;
+
 { TPGBuildMode }
 
 procedure TPGBuildMode.SetCompile(AValue: boolean);
@@ -301,6 +377,15 @@ begin
     IncreaseChangeStamp
   else
     FLastSavedChangeStamp:=FChangeStamp;
+end;
+
+function TProjectGroup.CallRunLazbuildHandlers(Target: TPGCompileTarget;
+  Tool: TAbstractExternalTool): boolean;
+begin
+  if ProjectGroupManager<>nil then
+    Result:=ProjectGroupManager.CallRunLazbuildHandlers(Target,Tool)
+  else
+    Result:=true;
 end;
 
 procedure TProjectGroup.SetFileName(AValue: String);
@@ -455,6 +540,18 @@ begin
   Group:=Parent.ProjectGroup;
   if Group=nil then exit(0);
   Result:=Group.IndexOfTarget(Self);
+end;
+
+function TPGCompileTarget.CallRunLazbuildHandlers(Tool: TAbstractExternalTool
+  ): boolean;
+var
+  Group: TProjectGroup;
+begin
+  Group:=GetOwnerProjectGroup;
+  if Group<>nil then
+    Result:=Group.CallRunLazbuildHandlers(Self,Tool)
+  else
+    Result:=true;
 end;
 
 function TPGCompileTarget.GetAllowedActions: TPGTargetActions;

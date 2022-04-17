@@ -603,6 +603,7 @@ end;
 
 constructor TIDEProjectGroupManager.Create;
 begin
+  inherited Create;
   FOptions:=TIDEProjectGroupOptions.Create;
   FUndoList:=TObjectList.Create(true);
   FRedoList:=TObjectList.Create(true);
@@ -1547,6 +1548,10 @@ begin
     //and (AProject.MainFilename<>'') then
     //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
     Tool.AddParsers(SubToolMake);
+
+    if not CallRunLazbuildHandlers(Tool) then
+      exit(arFailed);
+
     DebugLn(['CompileUsingLazBuild: Calling "', LazBuildFilename, '" with parameters']);
     Params.Delimiter:=' ';
     DebugLn(['    ', Params.DelimitedText]);
