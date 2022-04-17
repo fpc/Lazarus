@@ -122,16 +122,16 @@ begin
 
   aProject:=LazarusIDE.ActiveProject;
   if ConsoleVerbosity>0 then
-    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',aProject.CustomData[PJSProjectWebBrowser]]);
+    DebugLN(['Hint: (lazarus) [TPJSController.GetPas2jsProjectURL] LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',aProject.CustomData[PJSProjectWebBrowser]]);
   Abort:=aProject.CustomData[PJSProjectWebBrowser]<>'1';
   if Abort then
     exit;
   if ConsoleVerbosity>0 then
-    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',aProject.CustomData[PJSProjectURL]]);
+    DebugLN(['Hint: (lazarus) [TPJSController.GetPas2jsProjectURL] LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',aProject.CustomData[PJSProjectURL]]);
   Result:=GetProjectURL(aProject);
   Abort:=(Result='');
   if ConsoleVerbosity>0 then
-    DebugLN(['GetPas2jsProjectURL : ',Result]);
+    DebugLN(['Hint: (lazarus) [TPJSController.GetPas2jsProjectURL] Result="',Result,'"']);
 end;
 
 procedure TPJSController.OnLoadSaveCustomData(Sender: TObject; Load: boolean;
