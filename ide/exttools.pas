@@ -75,7 +75,7 @@ type
   public
     property Tool: TExternalTool read FTool write SetTool;
     procedure Execute; override;
-    procedure DebuglnThreadLog(const Args: array of const);
+    procedure DebuglnThreadLog(const Args: array of string);
     destructor Destroy; override; // (main thread)
   end;
 
@@ -693,8 +693,8 @@ begin
     debugln(['Info: (lazarus) Executable="',Process.Executable,'"']);
     for i:=0 to Process.Parameters.Count-1 do
       debugln(['Info: (lazarus) Param[',i,']="',Process.Parameters[i],'"']);
-    for i:=0 to Process.Environment.Count-1 do
-      debugln(['Info: (lazarus) Env[',i,']="',LeftStr(DbgStr(Process.Environment[i]),100),'"']);
+    for i:=0 to EnvironmentOverrides.Count-1 do
+      debugln(['Info: (lazarus) Env[',i,']="',LeftStr(DbgStr(EnvironmentOverrides[i]),100),'"']);
   end;
   Thread.Start;
 end;
@@ -1748,9 +1748,27 @@ begin
   {$ENDIF}
 end;
 
-procedure TExternalToolThread.DebuglnThreadLog(const Args: array of const);
+procedure TExternalToolThread.DebuglnThreadLog(const Args: array of string);
+var
+  s, aFilename: String;
+  fs: TFileStream;
+  i: Integer;
 begin
-  debugln(Args);
+  s:='['+IntToStr(GetThreadID)+'] ';
+  for i:=low(Args) to High(Args) do
+    s:=s+Args[i];
+  s:=s+sLineBreak;
+  aFilename:='TExternalToolThread-DebuglnThreadLog.txt';
+  if FileExists(aFilename) then
+    fs:=TFileStream.Create(aFilename,fmOpenWrite or fmShareDenyNone)
+  else
+    fs:=TFileStream.Create(aFilename,fmCreate or fmShareDenyNone);
+  try
+    fs.Seek(0,soEnd);
+    fs.Write(s[1],length(s));
+  finally
+    fs.Free;
+  end;
 end;
 
 destructor TExternalToolThread.Destroy;
