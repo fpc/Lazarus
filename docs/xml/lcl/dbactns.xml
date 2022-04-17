@@ -605,7 +605,7 @@
              Positioning of the inserted record is actually determined using the facilities for the underlying database engine. In most cases, the record is simply appended to its data store and ordered using the indexing facilities for the database engine. Some database engines require an additional step to make the record insertion and/or field editing permanent; i.e. SQL databases require use of a COMMIT statement to flush the changes to the database engine.
            </p>
           <p>
-            TDataSetInsert calls the <var>Insert</var> method for the target dataset to perform the databse action.
+            TDataSetInsert calls the <var>Insert</var> method for the target dataset to perform the database action.
           </p>
         </descr>
         <seealso>

@@ -580,7 +580,9 @@
       </element>
 
       <element name="TCustomButtonPanel.UpdateButtonSize">
-        <short>Applies button sizes when the visibiity for the panel is changed.</short>
+        <short>
+          Applies button sizes when the visibility for the panel is changed.
+        </short>
         <descr>
           <p>
             <var>UpdateButtonSize</var> is a method used to adjust the size for the visible buttons on the panel when the value in the <var>Visible</var> property has been changed.

@@ -10,7 +10,7 @@
       <short>Useful lower-level helper functions and classes.</short>
       <descr>
         <p>
-          <file>lclproc.pas</file> contains lower-level  classes and helper routines that are useful in LCL applications.
+          <file>lclproc.pas</file> contains lower-level classes and helper routines that are useful in LCL applications.
         </p>
         <p>
           This file is part of the Lazarus Component Library (<b>LCL</b>).
@@ -688,17 +688,17 @@
 
       <element name="DeleteAmpersands">
         <short>
-          Removes all Ampersand ('&amp;') characters Str, and return the position for the first occurence.
+          Removes all Ampersand ('&amp;') characters Str, and return the position for the first occurrence.
         </short>
         <descr>
           <p>
-            <var>DeleteAmpersands</var> is an <var>Integer</var> function used to remove all occurrences of the Ampersand character in Str. The return value contains the position in Str where the first occurence of the of the character was found.
+            <var>DeleteAmpersands</var> is an <var>Integer</var> function used to remove all occurrences of the Ampersand character in Str. The return value contains the position in Str where the first occurrence of the of the character was found.
           </p>
           <p>
             Double Ampersands (&amp;&amp;) are converted to a single &amp; character in Str.
           </p>
           <p>
-            DeleteAmpersands can be used to remove the prefix used for accelerator keys in button, tool bar, and menu  captions.
+            DeleteAmpersands can be used to remove the prefix used for accelerator keys in button, tool bar, and menu captions.
           </p>
         </descr>
         <errors/>

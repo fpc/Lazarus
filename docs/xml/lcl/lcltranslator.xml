@@ -198,7 +198,7 @@
             <var>Create</var> is the overloaded constructor for the class instance. Both variant call the inherited constructor to initialize the class instance. The overloaded variants allow use of a file name or a <var>TPOFile</var> instance in the class. TPOTranslator contains an internal TPOFile member which is used to access the translated string values.
           </p>
           <p>
-            POFileName contains the file name which constains the translated values for strings. A TPOFile instance is created for the specified file name.
+            POFileName is the file name which contains the translated values for strings. A TPOFile instance is created for the specified file name.
           </p>
           <p>
             aPOFile is the TPPOFile class instance which contains the translated values for strings.
@@ -271,10 +271,10 @@
             Dir is an optional path where .PO or .MO files can be found with the translated values for string constants.
           </p>
           <p>
-            TranslateLCLResourceStrings calls FindLocaleFileName to locate the .PO or .MO file. Preference is given to the .PO variant. If it is locate in the speciifed path, the TranslateUnitResourceStrings routine is called to tranlate constants from the LCLStrConts unit.
+            TranslateLCLResourceStrings calls FindLocaleFileName to locate the .PO or .MO file. Preference is given to the .PO variant. If it is located in the specified path, the TranslateUnitResourceStrings routine is called to translate constants from the LCLStrConts unit.
           </p>
           <p>
-            If a .PO file is not found, FindLocaleFileName is called to locate a .MO file used for translation. When found, the TranslateResourceStrings routine is called to translate string using the .MO file in the specified path.
+            If a .PO file is not found, FindLocaleFileName is called to locate a .MO file used for translation. When found, the TranslateResourceStrings routine is called to translate strings using the .MO file in the specified path.
           </p>
           <p>
             The return value contains the name of the .PO or .MO file used to translate string constants, or an empty string when a file is not found in the path specified in Dir.
@@ -289,7 +289,9 @@
         <short>Path to the .MO or .PO file used for the translation.</short>
       </element>
       <element name="TranslateLCLResourceStrings.Result">
-        <short>File name used for the translation, or an empty when translation is not available.</short>
+        <short>
+          File name used for the translation, or an empty string ('') when translation is not available.
+        </short>
       </element>
 
       <element name="SetDefaultLang">
