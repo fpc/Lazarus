@@ -78,14 +78,6 @@ msgstr "Файлы HTML|*.html|Все файлы|*.*"
 msgid "HTML Source not found"
 msgstr "Не найден исходный текст HTML"
 
-#: strpas2jsdesign.pjsdhttpserveroptslabelcaption
-msgid "HTTP Server extra command-line options (one per line)"
-msgstr "Дополнительные параметры команды запуска сервера HTTP (по одному на строку)"
-
-#: strpas2jsdesign.pjsdhttpserveroptslabelhint
-msgid "Add extra command-line options for the command which starts the webserver."
-msgstr "Добавить дополнительные параметры в команду запуска веб-сервера."
-
 #: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
 msgid "Let RTL show uncaught exceptions"
 msgstr "Разрешать RTL показывать необработанные исключения"
@@ -154,14 +146,6 @@ msgstr "Выбранный исполнимый файл браузера для
 msgid "Pas2JS selected NodeJS excutable"
 msgstr "Выбранный исполнимый файл NodeJS для Pas2JS"
 
-#: strpas2jsdesign.pjsdpas2jswebserverexe
-msgid "Pas2JS webserver executable"
-msgstr "Исполнимый файл веб-сервера Pas2JS"
-
-#: strpas2jsdesign.pjsdpas2jswebserverport
-msgid "Pas2JS webserver port"
-msgstr "Порт веб-сервера Pas2JS"
-
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
 msgstr "Путь к исполнимому файлу Node.js, макрос $(Pas2JSNodeJS)"
@@ -171,12 +155,6 @@ msgstr "Путь к исполнимому файлу Node.js, макрос $(Pa
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
 msgstr "Путь к %s, макрос $(pas2js)"
-
-#: strpas2jsdesign.pjsdpathofxmacropas2jswebserver
-#, object-pascal-format
-msgctxt "strpas2jsdesign.pjsdpathofxmacropas2jswebserver"
-msgid "Path of %s, macro $(Pas2JSWebServer)"
-msgstr "Путь к %s, макрос $(Pas2JSWebServer)"
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"

@@ -9,7 +9,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, LazHelpIntf,
   // LazUtils
-  LazLoggerBase, LazFileUtils, FileUtil, Laz2_XMLCfg,
+  LazLoggerBase, LazFileUtils, FileUtil,
   // codetools
   CodeToolManager, CodeCache,
   // IdeIntf

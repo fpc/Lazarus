@@ -29,9 +29,6 @@ Type
     BBrowserBrowseButton: TButton;
     BrowserComboBox: TComboBox;
     BrowserLabel: TLabel;
-    HTTPServerBrowseButton: TButton;
-    HTTPServerCmdLabel: TLabel;
-    HTTPServerComboBox: TComboBox;
     lblVSCodeTemplateDir: TLabel;
     NodeJSBrowseButton: TButton;
     AtomTemplateDirBrowseButton: TButton;
@@ -44,10 +41,7 @@ Type
     Pas2jsPathLabel: TLabel;
     ServerPortLabel: TLabel;
     ServerPortSpinEdit: TSpinEdit;
-    HTTPServerOptsLabel: TLabel;
-    HTTPServerOptionsMemo: TMemo;
     procedure BBrowserBrowseButtonClick(Sender: TObject);
-    procedure HTTPServerBrowseButtonClick(Sender: TObject);
     procedure AtomTemplateDirBrowseButtonClick(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
@@ -100,28 +94,6 @@ begin
     ADirName:=CleanAndExpandFilename(ADirName);
     SetComboBoxText(VSCodeTemplateDirComboBox,ADirName,cstFilename,30);
     PJSOptions.VSCodeTemplateDir:=ADirName;
-  end;
-end;
-
-procedure TPas2jsOptionsFrame.HTTPServerBrowseButtonClick(Sender: TObject);
-
-var
-  OpenDialog: TOpenDialog;
-  AFilename: String;
-
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    //InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:=SafeFormat(pjsdSelectXExecutable,[PJSDefaultWebServer]);
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      SetComboBoxText(HTTPServerComboBox,AFilename,cstFilename,30);
-      PJSOptions.WebServerFileName:=AFileName;
-    end;
-  finally
-    OpenDialog.Free;
   end;
 end;
 
@@ -228,12 +200,6 @@ begin
     pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [DefPas2jsExe]);
   Pas2jsPathBrowseButton.Hint:=pjsdBrowse;
 
-  HTTPServerCmdLabel.Caption:=SafeFormat(pjsdPathOfXMacroPas2JSWebServer, [
-    PJSDefaultWebServerName+GetExeExt]);
-  HTTPServerCmdLabel.Hint:=SafeFormat(
-    pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [PJSDefaultWebServerName]);
-  HTTPServerBrowseButton.Hint:=pjsdBrowse;
-
   ServerPortLabel.Caption:=pjsdPortNumberToStartAllocatingFrom;
   ServerPortLabel.Hint:=pjsdServerInstancesWillBeStartedWithAPortStartingFromT;
 
@@ -242,9 +208,6 @@ begin
 
   NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
 
-  HTTPServerOptsLabel.Caption:=pjsdHTTPServerOptsLabelCaption;
-  HTTPServerOptsLabel.Hint:=pjsdHTTPServerOptsLabelHint;
-
   lblAtomTemplateDir.Caption := pjsdAtomPackageTemplateDirectory;
   lblVSCodeTemplateDir.Caption := pjsdVisualStudioCodeExtensionTemplateDirectory;
 end;
@@ -252,11 +215,9 @@ end;
 procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   SetComboBoxText(Pas2jsPathComboBox,PJSOptions.CompilerFilename,cstFilename,30);
-  SetComboBoxText(HTTPServerComboBox,PJSOptions.WebServerFileName,cstFilename,30);
   ServerPortSpinEdit.Value:=PJSOptions.StartAtPort;
    SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
   SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
-  HTTPServerOptionsMemo.Lines:=PJSOptions.HTTPServerOpts;
   SetComboBoxText(AtomTemplateDirComboBox,PJSOptions.AtomTemplateDir,cstFilename,30);
   SetComboBoxText(VSCodeTemplateDirComboBox,PJSOptions.VSCodeTemplateDir,cstFilename,30);
 end;
@@ -264,11 +225,9 @@ end;
 procedure TPas2jsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   PJSOptions.CompilerFilename:=Pas2jsPathComboBox.Text;
-  PJSOptions.WebServerFileName:=HTTPServerComboBox.Text;
   PJSOptions.StartAtPort:=ServerPortSpinEdit.Value;
   PJSOptions.BrowserFileName:=BrowserComboBox.Text;
   PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
-  PJSOptions.HTTPServerOpts:=HTTPServerOptionsMemo.Lines;
   PJSOptions.AtomTemplateDir:=AtomTemplateDirComboBox.Text;
   PJSOptions.VSCodeTemplateDir:=VSCodeTemplateDirComboBox.Text;
   If PJSOptions.Modified then

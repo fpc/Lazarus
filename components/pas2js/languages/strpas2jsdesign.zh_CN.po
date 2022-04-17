@@ -76,14 +76,6 @@ msgstr ""
 msgid "HTML Source not found"
 msgstr ""
 
-#: strpas2jsdesign.pjsdhttpserveroptslabelcaption
-msgid "HTTP Server extra command-line options (one per line)"
-msgstr ""
-
-#: strpas2jsdesign.pjsdhttpserveroptslabelhint
-msgid "Add extra command-line options for the command which starts the webserver."
-msgstr ""
-
 #: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
 msgid "Let RTL show uncaught exceptions"
 msgstr ""
@@ -154,14 +146,6 @@ msgstr ""
 msgid "Pas2JS selected NodeJS excutable"
 msgstr ""
 
-#: strpas2jsdesign.pjsdpas2jswebserverexe
-msgid "Pas2JS webserver executable"
-msgstr ""
-
-#: strpas2jsdesign.pjsdpas2jswebserverport
-msgid "Pas2JS webserver port"
-msgstr ""
-
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
 msgstr ""
@@ -170,12 +154,6 @@ msgstr ""
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
-msgstr ""
-
-#: strpas2jsdesign.pjsdpathofxmacropas2jswebserver
-#, object-pascal-format
-msgctxt "strpas2jsdesign.pjsdpathofxmacropas2jswebserver"
-msgid "Path of %s, macro $(Pas2JSWebServer)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom

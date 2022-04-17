@@ -24,8 +24,6 @@ Type
   Private
     FOnRefresh: TNotifyEvent;
     function GetPas2JSPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    function GetPas2JSWebServerPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    function GetPas2JSWebServerPort(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
@@ -91,28 +89,6 @@ begin
   Result:=PJSOptions.GetParsedCompilerFilename;
   if Result='' then
     Result:='pas2js'; // always return something to get nicer error messages
-end;
-
-function TPJSController.GetPas2JSWebServerPath(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Abort:=False;
-  if (s<>'') and (ConsoleVerbosity>=0) then
-    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSWebServerPath] ignoring macro Pas2JSWebServer parameter "',s,'"']);
-  Result:=PJSOptions.GetParsedWebServerFilename;
-  if Result='' then
-    Result:=PJSDefaultWebServerName; // always return something to get nicer error messages
-end;
-
-function TPJSController.GetPas2JSWebServerPort(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Abort:=False;
-  if (s<>'') and (ConsoleVerbosity>=0) then
-    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSWebServerPort] ignoring macro Pas2JSWebServerPort parameter "',s,'"']);
-  Result:=PJSOptions.GetParsedWebServerFilename;
-  if Result='' then
-    Result:=PJSDefaultWebServerName; // always return something to get nicer error messages
 end;
 
 function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -261,7 +237,10 @@ begin
     exit('');
   Result:=aProject.CustomData[PJSProjectURL];
   if Result<>'' then
+    begin
     IDEMacros.SubstituteMacros(Result);
+    exit;
+    end;
 
   if Result='' then
     begin
@@ -309,10 +288,10 @@ begin
   if SimpleWebServerController.Options.ServerExe='compileserver'+GetExeExt then
     begin
     // simplewebservergui package has default value
-    if CompareFilenames(ExtractFilename(PJSOptions.WebServerFileName),'compileserver'+GetExeExt)=0 then
+    if CompareFilenames(ExtractFilename(PJSOptions.OldWebServerFileName),'compileserver'+GetExeExt)=0 then
       begin
-      // this package has a compileserver -> for compatibility set our value
-      SimpleWebServerController.Options.ServerExe:=PJSOptions.WebServerFileName;
+      // user had used compileserver too -> migrate to simplewebservergui
+      SimpleWebServerController.Options.ServerExe:=PJSOptions.OldWebServerFileName;
       end;
     end;
 
@@ -427,10 +406,6 @@ procedure TPJSController.Hook;
 begin
   IDEMacros.Add(TTransferMacro.Create('Pas2JS', '', pjsdPas2JSExecutable, @
     GetPas2JSPath, []));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSWebServer', '', pjsdPas2JSWebServerExe, @
-    GetPas2JSWebServerPath, []));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSWebServerPort', '', pjsdPas2JSWebServerPort, @
-    GetPas2JSWebServerPort, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser', '',
     pjsdPas2JSSelectedBrowserExecutable, @GetPas2JSBrowser, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS', '',
