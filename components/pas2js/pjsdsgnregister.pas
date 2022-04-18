@@ -125,7 +125,7 @@ type
     function InteractiveCopyFile(Src, Dest: string): boolean; virtual;
     function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
       ): TModalResult; override;
-    function ProjectDirSelected: boolean; virtual;
+    function ProjectDirSelected: boolean; virtual; // called after user selected the lpr
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -186,6 +186,8 @@ type
   protected
     function ProjectDirSelected: boolean; override;
     function CreatePreloadProject(AProject: TLazProject): boolean; virtual;
+    function CreateRenderProject(AProject: TLazProject): boolean; virtual;
+    function CreateWebAppProject(AProject: TLazProject): boolean; virtual;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -971,6 +973,7 @@ begin
   RenderLPR:=CheckOverwriteFile(ProjectDir+RenderLPR);
   CheckOverwriteFile(ChangeFileExt(RenderLPR,'.lpi'));
 
+  HTMLFilename:=CheckOverwriteFile(ProjectDir+HTMLFilename);
   PackageFilename:=CheckOverwriteFile(ProjectDir+PackageFilename);
 
   LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
@@ -1039,6 +1042,131 @@ begin
   // save preload.lpi
   if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
 
+  // delete preload.lpr from project
+  LazarusIDE.DoCloseEditorFile(PreloadLPR,[cfQuiet,cfProjectClosing]);
+  if AProject.MainFileID<>0 then
+    raise Exception.Create('20220418140809');
+  AProject.MainFileID:=-1;
+  AProject.RemoveUnit(0,false);
+
+  Result:=true;
+end;
+
+function TProjectPas2JSElectronWebApp.CreateRenderProject(AProject: TLazProject
+  ): boolean;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+  Src: TStringList;
+begin
+  Result:=false;
+
+  MainFile:=AProject.CreateProjectFile(RenderLPR);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultWebCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(RenderLPR);
+  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
+
+  Src:=TStringList.Create;
+  try
+    Src.Add('program '+ExtractFileNameOnly(RenderLPR)+';');
+    Src.Add('');
+    Src.Add('{$mode objfpc}');
+    Src.Add('');
+    Src.Add('uses');
+    Src.Add('  JS, Web;');
+    Src.Add('');
+    Src.Add('Var');
+    Src.Add('  el : TJSHTMLElement;');
+    Src.Add('');
+    Src.Add('begin');
+    Src.Add('  el:=Document.getHTMLElementById("renderertext");');
+    Src.Add('  el.innerHTML:="This text was produced in the Electron Renderer process using Pas2JS version <b>"+{$i %PAS2JSVERSION%}+"</b>";');
+    Src.Add('end.');
+    AProject.MainFile.SetSourceText(Src.Text,true);
+  finally
+    Src.Free;
+  end;
+
+  // save render.lpr and open it in source editor
+  if not InteractiveSaveFile(RenderLPR) then exit;
+  if LazarusIDE.DoOpenEditorFile(RenderLPR,-1,-1,[ofProjectLoading,ofRegularFile])<>mrOk then exit;
+
+  // save render.lpi
+  if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
+  // delete render.lpr from project
+  LazarusIDE.DoCloseEditorFile(RenderLPR,[cfQuiet,cfProjectClosing]);
+  if AProject.MainFileID<>0 then
+    raise Exception.Create('20220418141228');
+  AProject.MainFileID:=-1;
+  AProject.RemoveUnit(0,false);
+
+  Result:=true;
+end;
+
+function TProjectPas2JSElectronWebApp.CreateWebAppProject(AProject: TLazProject
+  ): boolean;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+  PreloadJS: String;
+  Src: TStringList;
+begin
+  Result:=false;
+
+  PreloadJS:=ChangeFileExt(PreloadLPR,'.js');
+
+  MainFile:=AProject.CreateProjectFile(MainSrcFileName);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultNodeJSCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(MainSrcName);
+  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
+
+  Src:=TStringList.Create;
+  try
+    Src.Add('program '+ExtractFileNameOnly(MainSrcName)+';');
+    Src.Add('');
+    Src.Add('{$mode objfpc}');
+    Src.Add('');
+    Src.Add('uses');
+    Src.Add('  js, nodejs, node.fs, libelectron;');
+    Src.Add('');
+    Src.Add('    Procedure createWindow(event : TEvent; accessibilitySupportEnabled : boolean);');
+    Src.Add('Var');
+    Src.Add('  opts : TBrowserWindowConstructorOptions;');
+    Src.Add('  win : TBrowserWindow;');
+    Src.Add('begin');
+    Src.Add('  opts:=TBrowserWindowConstructorOptions.new;');
+    Src.Add('  opts.width:=800;');
+    Src.Add('  opts.height:=600;');
+    Src.Add('  opts.webPreferences:=TWebPreferences.New;');
+    Src.Add('  opts.webPreferences.preload:=NJS_Path.join(__dirname,"'+PreloadJS+'");');
+    Src.Add('  win:=Electron.TBrowserWindow.new(opts);');
+    Src.Add('  win.loadFile("index.html");');
+    Src.Add('end;');
+    Src.Add('');
+    Src.Add('begin');
+    Src.Add('  electron.app.addListener("ready",@CreateWindow);');
+    Src.Add('end.');
+    AProject.MainFile.SetSourceText(Src.Text,true);
+  finally
+    Src.Free;
+  end;
+
+  // save lpr and open it in source editor
+  if not InteractiveSaveFile(MainSrcFileName) then exit;
+  if LazarusIDE.DoOpenEditorFile(MainSrcFileName,-1,-1,[ofProjectLoading,ofRegularFile])<>mrOk then exit;
+
+  // save render.lpi
+  if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
   Result:=true;
 end;
 
@@ -1051,10 +1179,11 @@ end;
 procedure TProjectPas2JSElectronWebApp.Clear;
 begin
   inherited Clear;
-  FPreloadLPR:='preload.lpr';
-  FRenderLPR:='render.lpr';
-  FPackageFilename:='package.json';
-  FLPGFilename:='electron1.lpg';
+  PreloadLPR:='preload.lpr';
+  RenderLPR:='render.lpr';
+  HTMLFilename:='index.html';
+  PackageFilename:='package.json';
+  LPGFilename:='electron1.lpg';
 end;
 
 function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
@@ -1084,8 +1213,13 @@ begin
   Result:=mrCancel;
 
   if not CreatePreloadProject(AProject) then exit;
+  if not CreateRenderProject(AProject) then exit;
+  if not CreateWebAppProject(AProject) then exit;
 
+  //if not CreateHTMLFile(AProject,) then exit;
 
+  // package.json
+  // lpg
 end;
 
 { TPas2JSDTSToPasUnitDef }
