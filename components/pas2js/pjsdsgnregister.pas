@@ -112,6 +112,7 @@ type
 
   TMultiProjectPas2JSWebApp = class(TProjectPas2JSWebApp)
   private
+    FLPGFilename: string;
     FOverwrites: TStrings;
     FProjectDir: string;
     FWebDir: string;
@@ -126,12 +127,14 @@ type
     function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
       ): TModalResult; override;
     function ProjectDirSelected: boolean; virtual; // called after user selected the lpr
+    function CreateProjectGroup(AProject: TLazProject; LPIFiles: array of string): boolean; virtual;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear; override;
     property ProjectDir: string read FProjectDir write FProjectDir;
     property WebDir: string read FWebDir write FWebDir;
+    property LPGFilename: string read FLPGFilename write FLPGFilename;
     property Overwrites: TStrings read FOverwrites write SetOverwrites; // list of overwrite warnings
   end;
 
@@ -143,7 +146,6 @@ type
     FCSSStyleFilename: string;
     FIconSizes: TWordDynArray;
     FImagesDir: string;
-    FLPGFilename: string;
     FManifestFilename: string;
     FServiceWorker: TProjectPas2JSServiceWorker;
     FServiceWorkerLPR: string;
@@ -154,7 +156,6 @@ type
       ): TLazProjectFile; virtual;
     function CreateCSSStyle(AProject: TLazProject; AFileName: String
       ): TLazProjectFile; virtual;
-    function CreateProjectGroup(AProject: TLazProject): boolean; virtual;
     function CopyFavIcon: boolean; virtual;
     function CopyIcons: boolean; virtual;
   public
@@ -171,7 +172,6 @@ type
     property ManifestFilename: string read FManifestFilename write FManifestFilename;
     property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
     property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker; // set by Register
-    property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
   { TProjectPas2JSElectronWebApp - project descriptor creating
@@ -179,15 +179,17 @@ type
 
   TProjectPas2JSElectronWebApp = class(TMultiProjectPas2JSWebApp)
   private
-    FLPGFilename: string;
-    FPackageFilename: string;
+    FPackageJSON: string;
+    FPreloadLPI: string;
     FPreloadLPR: string;
+    FRenderLPI: string;
     FRenderLPR: string;
   protected
     function ProjectDirSelected: boolean; override;
     function CreatePreloadProject(AProject: TLazProject): boolean; virtual;
     function CreateRenderProject(AProject: TLazProject): boolean; virtual;
     function CreateWebAppProject(AProject: TLazProject): boolean; virtual;
+    function CreatePackageJSON(AProject: TLazProject): boolean; virtual;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -196,8 +198,10 @@ type
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     property PreloadLPR: string read FPreloadLPR write FPreloadLPR;
+    property PreloadLPI: string read FPreloadLPI write FPreloadLPI;
     property RenderLPR: string read FRenderLPR write FRenderLPR;
-    property PackageFilename: string read FPackageFilename write FPackageFilename;
+    property RenderLPI: string read FRenderLPI write FRenderLPI;
+    property PackageJSON: string read FPackageJSON write FPackageJSON;
     property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
@@ -511,6 +515,37 @@ begin
   ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
   CheckOverwriteFile(MainSrcFileName);
   CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
+  LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
+end;
+
+function TMultiProjectPas2JSWebApp.CreateProjectGroup(AProject: TLazProject;
+  LPIFiles: array of string): boolean;
+var
+  Grp: TProjectGroup;
+  i: integer;
+begin
+  Result:=false;
+
+  if AProject=nil then ;
+
+  if not IDEProjectGroupManager.NewProjectGroup(false) then
+  begin
+    debugln(['Error: TMultiProjectPas2JSWebApp.CreateProjectGroup failed to create new project group ']);
+    exit;
+  end;
+  Grp:=IDEProjectGroupManager.CurrentProjectGroup;
+  Grp.FileName:=LPGFilename;
+
+  for i:=low(LPIFiles) to high(LPIFiles) do
+    Grp.AddTarget(LPIFiles[i]);
+
+  if not IDEProjectGroupManager.SaveProjectGroup then
+  begin
+    debugln(['Error: TMultiProjectPas2JSWebApp.CreateProjectGroup failed writing project group "',Grp.FileName,'"']);
+    exit;
+  end;
+
+  Result:=true;
 end;
 
 constructor TMultiProjectPas2JSWebApp.Create;
@@ -530,6 +565,7 @@ begin
   inherited Clear;
   FProjectDir:='';
   FWebDir:='';
+  FLPGFilename:='quickstart.lpg';
   if FOverwrites<>nil then
     FOverwrites.Clear;
 end;
@@ -567,8 +603,6 @@ begin
   HTMLFilename:=CheckOverwriteFile(WebDir+HTMLFilename);
   ManifestFilename:=CheckOverwriteFile(WebDir+ManifestFilename);
   CSSStyleFilename:=CheckOverwriteFile(WebDir+CSSStyleFilename);
-
-  LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
 end;
 
 function TProjectPas2JSProgressiveWebApp.CreateManifestFile(
@@ -678,34 +712,6 @@ begin
   Result:=true;
 end;
 
-function TProjectPas2JSProgressiveWebApp.CreateProjectGroup(
-  AProject: TLazProject): boolean;
-var
-  ServiceWorkerLPI: String;
-  Grp: TProjectGroup;
-begin
-  Result:=false;
-
-  ServiceWorkerLPI:=ChangeFileExt(ServiceWorkerLPR,'.lpi');
-
-  if not IDEProjectGroupManager.NewProjectGroup(false) then
-  begin
-    debugln(['Error: TProjectPas2JSProgressiveWebApp.CreateProjectGroup failed to create new project group ']);
-    exit;
-  end;
-  Grp:=IDEProjectGroupManager.CurrentProjectGroup;
-  Grp.FileName:=LPGFilename;
-  Grp.AddTarget(AProject.ProjectInfoFile);
-  Grp.AddTarget(ServiceWorkerLPI);
-  if not IDEProjectGroupManager.SaveProjectGroup then
-  begin
-    debugln(['Error: TProjectPas2JSProgressiveWebApp.CreateProjectGroup failed writing project group "',Grp.FileName,'"']);
-    exit;
-  end;
-
-  Result:=true;
-end;
-
 constructor TProjectPas2JSProgressiveWebApp.Create;
 begin
   inherited Create;
@@ -730,6 +736,7 @@ begin
   FCSSStyleFilename:='style.css';
   FServiceWorkerLPR:='ServiceWorker.lpr';
   FServiceWorkerJSFilename:='/ServiceWorker.js';
+  FLPGFilename:='pwa1.lpg';
   SetLength(FIconSizes,length(DefaultIconSizes));
   for i:=0 to high(DefaultIconSizes) do
     FIconSizes[i]:=DefaultIconSizes[i];
@@ -843,7 +850,10 @@ begin
   if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
 
   // project group
-  if not CreateProjectGroup(AProject) then exit;
+  if not CreateProjectGroup(AProject,[
+    AProject.ProjectInfoFile,
+    ChangeFileExt(ServiceWorkerLPR,'.lpi')
+    ]) then exit;
 
   Result:=mrOk;
 end;
@@ -967,14 +977,16 @@ function TProjectPas2JSElectronWebApp.ProjectDirSelected: boolean;
 begin
   Result:=inherited ProjectDirSelected;
 
+  WebDir:=ProjectDir;
+
   PreloadLPR:=CheckOverwriteFile(ProjectDir+PreloadLPR);
-  CheckOverwriteFile(ChangeFileExt(PreloadLPR,'.lpi'));
+  PreloadLPI:=CheckOverwriteFile(ChangeFileExt(PreloadLPR,'.lpi'));
 
   RenderLPR:=CheckOverwriteFile(ProjectDir+RenderLPR);
-  CheckOverwriteFile(ChangeFileExt(RenderLPR,'.lpi'));
+  RenderLPI:=CheckOverwriteFile(ChangeFileExt(RenderLPR,'.lpi'));
 
   HTMLFilename:=CheckOverwriteFile(ProjectDir+HTMLFilename);
-  PackageFilename:=CheckOverwriteFile(ProjectDir+PackageFilename);
+  PackageJSON:=CheckOverwriteFile(ProjectDir+PackageJSON);
 
   LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
 end;
@@ -1030,7 +1042,7 @@ begin
     Src.Add('  console.log("preload environment done");');
     Src.Add('  window.addEventListener("DOMContentLoaded",@DoRun);');
     Src.Add('end.');
-    AProject.MainFile.SetSourceText(Src.Text,true);
+    MainFile.SetSourceText(Src.Text,true);
   finally
     Src.Free;
   end;
@@ -1086,7 +1098,7 @@ begin
     Src.Add('  el:=Document.getHTMLElementById("renderertext");');
     Src.Add('  el.innerHTML:="This text was produced in the Electron Renderer process using Pas2JS version <b>"+{$i %PAS2JSVERSION%}+"</b>";');
     Src.Add('end.');
-    AProject.MainFile.SetSourceText(Src.Text,true);
+    MainFile.SetSourceText(Src.Text,true);
   finally
     Src.Free;
   end;
@@ -1155,7 +1167,7 @@ begin
     Src.Add('begin');
     Src.Add('  electron.app.addListener("ready",@CreateWindow);');
     Src.Add('end.');
-    AProject.MainFile.SetSourceText(Src.Text,true);
+    MainFile.SetSourceText(Src.Text,false);
   finally
     Src.Free;
   end;
@@ -1166,6 +1178,39 @@ begin
 
   // save render.lpi
   if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
+  Result:=true;
+end;
+
+function TProjectPas2JSElectronWebApp.CreatePackageJSON(AProject: TLazProject
+  ): boolean;
+var
+  aFile: TLazProjectFile;
+  Src: TStringList;
+begin
+  Result:=false;
+
+  aFile:=AProject.CreateProjectFile(PackageJSON);
+  aFile.IsPartOfProject:=true;
+  AProject.AddFile(aFile,false);
+
+  Src:=TStringList.Create;
+  try
+    Src.Add('{');
+    Src.Add('  "name": "quickstart-electron-app",');
+    Src.Add('  "version": "1.0.0",');
+    Src.Add('  "description": "Hello World!",');
+    Src.Add('  "main": "'+FileToWebFile(ScriptFilename)+'",');
+    Src.Add('  "author": "Lazarus - www.lazarus-ide.org",');
+    Src.Add('  "license": "LGPL2"');
+    Src.Add('}');
+    aFile.SetSourceText(Src.Text,false);
+  finally
+    Src.Free;
+  end;
+
+  if not InteractiveSaveFile(PackageJSON) then exit;
+  if LazarusIDE.DoOpenEditorFile(PackageJSON,-1,-1,[ofProjectLoading,ofRegularFile])<>mrOk then exit;
 
   Result:=true;
 end;
@@ -1182,8 +1227,7 @@ begin
   PreloadLPR:='preload.lpr';
   RenderLPR:='render.lpr';
   HTMLFilename:='index.html';
-  PackageFilename:='package.json';
-  LPGFilename:='electron1.lpg';
+  PackageJSON:='package.json';
 end;
 
 function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
@@ -1202,7 +1246,7 @@ begin
   AProject.CustomData.Values[PJSProject]:='1';
 
   // start with the render project
-  AProject.ProjectInfoFile:=ChangeFileExt(PreloadLPR,'.lpi');
+  AProject.ProjectInfoFile:=PreloadLPI;
 
   Result:=mrOk;
 end;
@@ -1218,8 +1262,15 @@ begin
 
   //if not CreateHTMLFile(AProject,) then exit;
 
-  // package.json
-  // lpg
+  if not CreatePackageJSON(AProject) then exit;
+
+  if not CreateProjectGroup(AProject,[
+    AProject.ProjectInfoFile,
+    PreloadLPI,
+    RenderLPI
+    ]) then exit;
+
+  Result:=mrOk;
 end;
 
 { TPas2JSDTSToPasUnitDef }
