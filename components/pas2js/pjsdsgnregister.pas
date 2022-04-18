@@ -36,7 +36,8 @@ const
 
 type
 
-  { TProjectPas2JSWebApp }
+  { TProjectPas2JSWebApp - a project descriptor showing an option dialog to
+    setup a html file, and using pas2js as compiler }
 
   TBrowserApplicationOption = (baoCreateHtml,        // Create template HTML page
                                baoMaintainHTML,      // Maintain the template HTML page
@@ -92,7 +93,7 @@ type
     property ScriptFilename: string read GetScriptFilename write FScriptFilename;
   end;
 
-  { TProjectPas2JSServiceWorker }
+  { TProjectPas2JSServiceWorker - project descriptor for a pas2js service worker }
 
   TProjectPas2JSServiceWorker = class(TProjectDescriptor)
   public
@@ -106,7 +107,8 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
-  { TMultiProjectPas2JSWebApp }
+  { TMultiProjectPas2JSWebApp - like TProjectPas2JSWebApp, except
+    asks user for a the lpr filename and warns about overwrites }
 
   TMultiProjectPas2JSWebApp = class(TProjectPas2JSWebApp)
   private
@@ -133,7 +135,8 @@ type
     property Overwrites: TStrings read FOverwrites write SetOverwrites; // list of overwrite warnings
   end;
 
-  { TProjectPas2JSProgressiveWebApp }
+  { TProjectPas2JSProgressiveWebApp - project descriptor creating
+    serviceworker project, web app project, project group, manifest and icons }
 
   TProjectPas2JSProgressiveWebApp = class(TMultiProjectPas2JSWebApp)
   private
@@ -171,13 +174,18 @@ type
     property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
-  { TProjectPas2JSElectronWebApp }
+  { TProjectPas2JSElectronWebApp - project descriptor creating
+    preload-, render-, web app- project, project group, and package.json }
 
   TProjectPas2JSElectronWebApp = class(TMultiProjectPas2JSWebApp)
   private
+    FLPGFilename: string;
     FPackageFilename: string;
+    FPreloadLPR: string;
+    FRenderLPR: string;
   protected
     function ProjectDirSelected: boolean; override;
+    function CreatePreloadProject(AProject: TLazProject): boolean; virtual;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -185,7 +193,10 @@ type
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    property PreloadLPR: string read FPreloadLPR write FPreloadLPR;
+    property RenderLPR: string read FRenderLPR write FRenderLPR;
     property PackageFilename: string read FPackageFilename write FPackageFilename;
+    property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
   { TProjectPas2JSNodeJSApp }
@@ -335,49 +346,6 @@ begin
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@Pas2JSHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@Pas2JSHandler.OnPrjInspPopup);
-end;
-
-{ TProjectPas2JSElectronWebApp }
-
-function TProjectPas2JSElectronWebApp.ProjectDirSelected: boolean;
-begin
-  Result:=inherited ProjectDirSelected;
-
-  PackageFilename:=CheckOverwriteFile(ProjectDir+PackageFilename);
-end;
-
-constructor TProjectPas2JSElectronWebApp.Create;
-begin
-  inherited Create;
-  Name:=ProjDescNamePas2JSElectronWebApp;
-end;
-
-procedure TProjectPas2JSElectronWebApp.Clear;
-begin
-  inherited Clear;
-  FPackageFilename:='package.json';
-end;
-
-function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
-begin
-  Result:=pjsdElectronWebApplication;
-end;
-
-function TProjectPas2JSElectronWebApp.GetLocalizedDescription: string;
-begin
-  Result:=pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat;
-end;
-
-function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=inherited InitProject(AProject);
-end;
-
-function TProjectPas2JSElectronWebApp.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=inherited CreateStartFiles(AProject);
 end;
 
 { TMultiProjectPas2JSWebApp }
@@ -989,6 +957,135 @@ begin
                                       [ofProjectLoading,ofRegularFile]);
   if Result<>mrOK then
      exit;
+end;
+
+{ TProjectPas2JSElectronWebApp }
+
+function TProjectPas2JSElectronWebApp.ProjectDirSelected: boolean;
+begin
+  Result:=inherited ProjectDirSelected;
+
+  PreloadLPR:=CheckOverwriteFile(ProjectDir+PreloadLPR);
+  CheckOverwriteFile(ChangeFileExt(PreloadLPR,'.lpi'));
+
+  RenderLPR:=CheckOverwriteFile(ProjectDir+RenderLPR);
+  CheckOverwriteFile(ChangeFileExt(RenderLPR,'.lpi'));
+
+  PackageFilename:=CheckOverwriteFile(ProjectDir+PackageFilename);
+
+  LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
+end;
+
+function TProjectPas2JSElectronWebApp.CreatePreloadProject(AProject: TLazProject
+  ): boolean;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+  Src: TStringList;
+begin
+  Result:=false;
+
+  MainFile:=AProject.CreateProjectFile(PreloadLPR);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultNodeJSCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(PreloadLPR);
+  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
+
+  Src:=TStringList.Create;
+  try
+    Src.Add('program '+ExtractFileNameOnly(PreloadLPR)+';');
+    Src.Add('');
+    Src.Add('{$mode objfpc}');
+    Src.Add('');
+    Src.Add('uses');
+    Src.Add('  JS, Classes, SysUtils, Web, libelectron, nodejs;');
+    Src.Add('');
+    Src.Add('procedure DoRun(event : TJSEvent);');
+    Src.Add('');
+    Src.Add('  Procedure ReplaceText(const aSelector, aText : String);');
+    Src.Add('  Var');
+    Src.Add('    el : TJSHTMLElement;');
+    Src.Add('  begin');
+    Src.Add('    el:=TJSHTMLElement(Document.getElementById(aSelector));');
+    Src.Add('    if Assigned(el) then');
+    Src.Add('      el.InnerText:=aText;');
+    Src.Add('  end;');
+    Src.Add('');
+    Src.Add('begin');
+    Src.Add('  ReplaceText("pas2js-version",{$i %PAS2JSVERSION%});');
+    Src.Add('  ReplaceText("chrome-version",String(TNJSProcess.versions["chrome"]));');
+    Src.Add('  ReplaceText("electron-version",String(TNJSProcess.versions["electron"]));');
+    Src.Add('  ReplaceText("node-version",String(TNJSProcess.versions["node"]));');
+    Src.Add('end;');
+    Src.Add('');
+    Src.Add('begin');
+    Src.Add('  console.log("preload environment start");');
+    Src.Add('  console.log(electron);');
+    Src.Add('  console.log("preload environment done");');
+    Src.Add('  window.addEventListener("DOMContentLoaded",@DoRun);');
+    Src.Add('end.');
+    AProject.MainFile.SetSourceText(Src.Text,true);
+  finally
+    Src.Free;
+  end;
+
+  // save preload.lpr and open it in source editor
+  if not InteractiveSaveFile(PreloadLPR) then exit;
+  if LazarusIDE.DoOpenEditorFile(PreloadLPR,-1,-1,[ofProjectLoading,ofRegularFile])<>mrOk then exit;
+
+  // save preload.lpi
+  if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
+  Result:=true;
+end;
+
+constructor TProjectPas2JSElectronWebApp.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNamePas2JSElectronWebApp;
+end;
+
+procedure TProjectPas2JSElectronWebApp.Clear;
+begin
+  inherited Clear;
+  FPreloadLPR:='preload.lpr';
+  FRenderLPR:='render.lpr';
+  FPackageFilename:='package.json';
+  FLPGFilename:='electron1.lpg';
+end;
+
+function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
+begin
+  Result:=pjsdElectronWebApplication;
+end;
+
+function TProjectPas2JSElectronWebApp.GetLocalizedDescription: string;
+begin
+  Result:=pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat;
+end;
+
+function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
+  ): TModalResult;
+begin
+  AProject.CustomData.Values[PJSProject]:='1';
+
+  // start with the render project
+  AProject.ProjectInfoFile:=ChangeFileExt(PreloadLPR,'.lpi');
+
+  Result:=mrOk;
+end;
+
+function TProjectPas2JSElectronWebApp.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+
+  if not CreatePreloadProject(AProject) then exit;
+
+
 end;
 
 { TPas2JSDTSToPasUnitDef }
