@@ -193,7 +193,7 @@ begin
       aFile:=aProject.Files[I];
       if aFile.IsPartOfProject
           and (aFile.CustomData[PJSIsProjectHTMLFile]='1') then
-        Result:=aProject.Files[I].GetFullFilename;
+        Result:=aFile.GetFullFilename;
       Dec(I);
       end;
     end;
