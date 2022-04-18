@@ -21,7 +21,7 @@
           <b>TLazShiftBufferList</b>
         </p>
         <p>
-          This list is designed for shift/unshift/pop/push operations. The first list element is not forced to the start of the allocated memory. Instead it allows a gap (some of the over-allocated memory / List.Capacity) in front of the first element. Therefore elements can be added/removed at either the begin or end of the list, withouth any need to move the other elements in the list.
+          This list is designed for shift/unshift/pop/push operations. The first list element is not forced to the start of the allocated memory. Instead it allows a gap (some of the over-allocated memory / List.Capacity) in front of the first element. Therefore elements can be added/removed at either the begin or end of the list, without any need to move the other elements in the list.
         </p>
         <p>
           <b>TLazRoundBufferList</b>

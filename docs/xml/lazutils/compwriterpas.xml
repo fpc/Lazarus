@@ -8,14 +8,14 @@
     -->
     <module name="CompWriterPas">
       <short>
-        Contains types, classes, and rotuinees used to serialize components into Pascal code.
+        Contains types, classes, and routines used to serialize components into Pascal code.
         </short>
       <descr>
         <p>
           The following features and functionality are currently implemented:
         </p>
         <ul>
-          <li>signature begin, end, versionli</li>
+          <li>signature begin, end, version</li>
           <li>boolean, set of boolean</li>
           <li>char, widechar, custom char, set of custom char</li>
           <li>integers, custom int, set of custom int</li>

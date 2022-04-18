@@ -1281,7 +1281,7 @@
         </short>
         <descr>
           <p>
-            Quirks is a TWindowsQuirks property with the set of WIndows-specific "quirks" allowed when comparing a value to the Mask expression. It contains values from the TWindowsQuirk enumeration which are enabled for the class instance.
+            Quirks is a TWindowsQuirks property with the set of Windows-specific "quirks" allowed when comparing a value to the Mask expression. It contains values from the TWindowsQuirk enumeration which are enabled for the class instance.
           </p>
           <p>
             The default value for Quirks is assigned using an argument passed to the Create constructor. If the value is omitted, values in the DefaultWindowsQuirks constant are assigned to the property.
@@ -2145,7 +2145,7 @@
             While the syntax and notation for mask expressions is the same for different platforms, there are some platform-specific behaviors.
           </p>
           <p>
-            The TMask and TWindowsMask classes are used to isolate and implement those platform-specific behaviors. TMask conforms the to conventions used for UNIX-like file systems. TWindowsMask implements the conventions used for WIndows-based file systems.
+            The TMask and TWindowsMask classes are used to isolate and implement those platform-specific behaviors. TMask conforms the to conventions used for UNIX-like file systems. TWindowsMask implements the conventions used for Windows-based file systems.
           </p>
           <p>
             Most differences between the platforms center on the implementation of the "any file" mask. This is the notation used to match any file or directory name, regardless of the presence of a file extension. For UNIX file systems (TMask), the notation used is '*'. For Windows file systems (TWindowsMask), the notation '*.*' is used.

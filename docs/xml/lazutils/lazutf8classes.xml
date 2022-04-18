@@ -288,7 +288,7 @@
             LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name.
           </p>
           <p>
-            List is the TStrings decendant where the content from FileName is stored. FileName can contain UTF-8-encoded characters.
+            List is the TStrings descendant where the content from FileName is stored. FileName can contain UTF-8-encoded characters.
           </p>
           <p>
             LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the content in FileName, and calls the Assign method in List to store the values.
@@ -317,7 +317,7 @@
         </short>
         <descr>
           <p>
-            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings desccendant with the content to store in the specified file name. FileName can contain UTF-8-encoded character values. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the content in the string list to the specified FileName.
+            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings descendant with the content to store in the specified file name. FileName can contain UTF-8-encoded character values. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the content in the string list to the specified FileName.
           </p>
         </descr>
         <remark>

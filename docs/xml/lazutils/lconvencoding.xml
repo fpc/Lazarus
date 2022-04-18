@@ -214,11 +214,10 @@
             GuessEncoding checks S for various Byte Order Marks at the start of the value, including: <var>UTF8BOM</var>, <var>UTF16LEBOM</var>, and <var>UTF16BEBOM</var>. When present, the BOM determines the encoding used for the value.
           </p>
           <p>
-            Next, it checks for an explict '<b>{%encoding</b>' marker at the start of the value. When present, the value after the marker (up to the closing '<b>}</b>' character) is normalized and used as the return value.
+            Next, it checks for an explicit '<b>{%encoding</b>' marker at the start of the value. When present, the value after the marker (up to the closing '<b>}</b>' character) is normalized and used as the return value.
           </p>
           <p>
-            Finally, it checks for a valid UTF-8 encoding (which includes ASII characters).
-            All characters in S are examined until a character whose UTF-8 code point is not valid is encountered.
+            Finally, it checks for a valid UTF-8 encoding (which includes ASCII characters). All characters in S are examined until a character whose UTF-8 code point is not valid is encountered.
           </p>
           <p>
             When <var>EncodingValid</var> is <b>True</b>, <var>EncodingAnsi</var> is assumed. Otherwise, the default encoding for the platform is used. When the return value is <var>EncodingUTF8</var>, it is changed to '<b>ISO-8859-1</b>'. This is done because the system may use the UTF-8 encoding, but the value in S does not. ISO 8859-1 has a full mapping to Unicode, and this prevents data loss in encoding conversions.
@@ -1779,7 +1778,7 @@
         </short>
         <descr>
           <p>
-            UTF8ToSingleByte is used in an internal routine to convert the UTF-8-encoded value in s by calling the custom conversion routine in UTF8CharConvFunc. The return value is a string with the single-byte representation for the string value. UTF8ToSingleByte is called when the UseSystemCPConv compiler flag has not been defined for the platform, and system code pages are not availabe for the purpose.
+            UTF8ToSingleByte is used in an internal routine to convert the UTF-8-encoded value in s by calling the custom conversion routine in UTF8CharConvFunc. The return value is a string with the single-byte representation for the string value. UTF8ToSingleByte is called when the UseSystemCPConv compiler flag has not been defined for the platform, and system code pages are not available for the purpose.
           </p>
           <p>
             No actions are performed in the routine when s is an empty string (''), and the return value is set to an empty string.
@@ -1843,7 +1842,7 @@
         <short>Converts a UTF-8-encoded value to UCS 2-byte Little Endian encoding.</short>
         <descr>
           <p>
-            UTF8ToUCS2LE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 LE (Little Endian) encoding. UTF8ToUCS2LE iterates over each of the UTF-8 codepoints in s, and calls NtoLE to convert the Unicode character value to the Least Signifcant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
+            UTF8ToUCS2LE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 LE (Little Endian) encoding. UTF8ToUCS2LE iterates over each of the UTF-8 codepoints in s, and calls NtoLE to convert the Unicode character value to the Least Significant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
           </p>
           <p>
             No actions are  performed in the routine when s contains an empty string (''), and the return value is set to an empty string as well.
@@ -1865,7 +1864,7 @@
         <short>Converts a UTF-8-encoded value to UCS 2-byte Big Endian encoding.</short>
         <descr>
           <p>
-            UTF8ToUCS2BE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 BE (Big Endian) encoding. UTF8ToUCS2BE iterates over each of the UTF-8 codepoints in s, and calls NtoBE to convert the Unicode character value to the Most Signifcant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
+            UTF8ToUCS2BE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 BE (Big Endian) encoding. UTF8ToUCS2BE iterates over each of the UTF-8 codepoints in s, and calls NtoBE to convert the Unicode character value to the Most Significant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
           </p>
           <p>
             No actions are  performed in the routine when s contains an empty string (''), and the return value is set to an empty string as well.
@@ -1965,7 +1964,9 @@
         <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP932.SetTargetCodePage">
-        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
+        <short>
+          True to set the code page for the result, False to use the ANSI code page.
+        </short>
       </element>
 
       <element name="UTF8ToCP936">
@@ -1986,7 +1987,9 @@
         <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP936.SetTargetCodePage">
-        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
+        <short>
+          True to set the code page for the result, False to use the ANSI code page.
+        </short>
       </element>
 
       <element name="UTF8ToCP949">
@@ -2007,7 +2010,7 @@
         <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP949.SetTargetCodePage">
-        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
+        <short>True to set the code page for the result, False to use the ANSI code page.</short>
       </element>
 
       <element name="UTF8ToCP950">
@@ -2028,7 +2031,9 @@
         <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP950.SetTargetCodePage">
-        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
+        <short>
+          True to set the code page for the result, False to use the ANSI code page.
+        </short>
       </element>
 
       <element name="UTF8ToDBCS">
