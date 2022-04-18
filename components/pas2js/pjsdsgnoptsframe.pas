@@ -27,9 +27,6 @@ Type
     SimpleWebServerLinkLabel: TLabel;
     VSCodeTemplateDirBrowseButton: TButton;
     VSCodeTemplateDirComboBox: TComboBox;
-    BBrowserBrowseButton: TButton;
-    BrowserComboBox: TComboBox;
-    BrowserLabel: TLabel;
     lblVSCodeTemplateDir: TLabel;
     NodeJSBrowseButton: TButton;
     AtomTemplateDirBrowseButton: TButton;
@@ -155,7 +152,6 @@ begin
     OpenDialog.Title:=pjsdSelectBrowserExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      SetComboBoxText(BrowserComboBox,AFilename,cstFilename,30);
       PJSOptions.BrowserFileName:=AFileName;
     end;
   finally
@@ -210,12 +206,9 @@ begin
     pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [DefPas2jsExe]);
   Pas2jsPathBrowseButton.Hint:=pjsdBrowse;
 
-  SimpleWebServerLinkLabel.Caption:=pjsdWebServerOptions;
+  SimpleWebServerLinkLabel.Caption:=pjsdWebServerAndBrowserOptions;
   ServerPortLabel.Caption:=pjsdPortNumberToStartAllocatingFrom;
   ServerPortLabel.Hint:=pjsdServerInstancesWillBeStartedWithAPortStartingFromT;
-
-  BrowserLabel.Caption:=pjsdBrowserToOpenHTMLPage;
-  BrowserLabel.Hint:=pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
 
   NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
 
@@ -227,7 +220,6 @@ procedure TPas2jsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   SetComboBoxText(Pas2jsPathComboBox,PJSOptions.CompilerFilename,cstFilename,30);
   ServerPortSpinEdit.Value:=PJSOptions.StartAtPort;
-   SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
   SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
   SetComboBoxText(AtomTemplateDirComboBox,PJSOptions.AtomTemplateDir,cstFilename,30);
   SetComboBoxText(VSCodeTemplateDirComboBox,PJSOptions.VSCodeTemplateDir,cstFilename,30);
@@ -237,7 +229,6 @@ procedure TPas2jsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   PJSOptions.CompilerFilename:=Pas2jsPathComboBox.Text;
   PJSOptions.StartAtPort:=ServerPortSpinEdit.Value;
-  PJSOptions.BrowserFileName:=BrowserComboBox.Text;
   PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
   PJSOptions.AtomTemplateDir:=AtomTemplateDirComboBox.Text;
   PJSOptions.VSCodeTemplateDir:=VSCodeTemplateDirComboBox.Text;

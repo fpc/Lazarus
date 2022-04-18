@@ -11,6 +11,12 @@ Resourcestring
   pjsdWebApplication = 'Web Browser Application';
   pjsdWebAppDescription = 'A pas2js program running in the browser.';
   pjsdProgressiveWebApplication = 'Progressive Web Application';
+  pjsdOverwrite = 'Overwrite?';
+  pjsdError = 'Error';
+  pjsdNewProjectFile = 'New project file';
+  pjsdProjectPascalFile = 'Project Pascal file';
+  pjsdPleaseChooseAFileWithFullPath = 'Please choose a file with full path.';
+  pjsdOverwriteFiles = 'Overwrite files:';
   pjsdProgressiveWebAppDescription = 'A Web Application using a service worker, a manifest, and more to be installable.';
   pjsdServiceWorker = 'Pas2JS Service Worker';
   pjsdServiceWorkerDescription = 'A pas2js program running as cache for a web app. It does not run standalone.';
@@ -34,15 +40,12 @@ Resourcestring
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';
   pjsdBrowse = 'Browse';
+  pjsdWebServerAndBrowserOptions = 'Web server and browser options';
   pjsdPortNumberToStartAllocatingFrom = 'Port number to start allocating '
     +'from, macro $(Pas2JSWebServerPort)';
-  pjsdWebServerOptions = 'Web server options';
   pjsdServerInstancesWillBeStartedWithAPortStartingFromT = 'Server instances '
     +'will be started with a port starting from this number, increasing per '
     +'new project';
-  pjsdBrowserToOpenHTMLPage = 'Browser to open HTML page, macro $(Pas2JSBrowser)';
-  pjsdUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
-    +'when opening the URL or HTML file of a web browser project';
   pjsdPathOfNodeJsExecutable = 'Path of Node.js executable, macro $(Pas2JSNodeJS)';
   pjsdAtomPackageTemplateDirectory = 'Atom package template directory';
   pjsdVisualStudioCodeExtensionTemplateDirectory = 'Visual Studio Code '

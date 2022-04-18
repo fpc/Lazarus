@@ -23,11 +23,6 @@ msgstr "Répertoire des modèles de paquets Atom"
 msgid "Browse"
 msgstr "Parcourir"
 
-#: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
-msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
-msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr "Navigateur pour ouvrir la page HTML, macro $(Pas2JSBrowser)"
-
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
 msgstr ""
@@ -44,6 +39,10 @@ msgstr "Créer la page initiale HTML"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "répertoire \"%s\" non trouvé"
+
+#: strpas2jsdesign.pjsderror
+msgid "Error"
+msgstr ""
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
@@ -103,6 +102,10 @@ msgstr "Paquet Atom"
 msgid "A pas2js program running as Atom package."
 msgstr "Un programme pas2js exécuté en tant que paquet Atom."
 
+#: strpas2jsdesign.pjsdnewprojectfile
+msgid "New project file"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
 msgstr "Extension de code Visual Studio"
@@ -122,6 +125,14 @@ msgstr "Application Node.js"
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
 msgstr "Options du projet NodeJS"
+
+#: strpas2jsdesign.pjsdoverwrite
+msgid "Overwrite?"
+msgstr ""
+
+#: strpas2jsdesign.pjsdoverwritefiles
+msgid "Overwrite files:"
+msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
@@ -153,6 +164,10 @@ msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
 msgstr "Chemin de %s, macro $(pas2js)"
 
+#: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
+msgid "Please choose a file with full path."
+msgstr ""
+
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr "Numéro de port pour l'allocation, macro $(Pas2JSWebServerPort)"
@@ -172,6 +187,10 @@ msgstr "Page du projet HTML :"
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
 msgstr "Le projet est un projet de navigateur Web (pas2js)"
+
+#: strpas2jsdesign.pjsdprojectpascalfile
+msgid "Project Pascal file"
+msgstr ""
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
@@ -245,10 +264,6 @@ msgstr "Utiliser l'unité de la console du navigateur pour afficher la sortie wr
 msgid "Use NodeJS Application object"
 msgstr "Utiliser l'objet application NodeJS"
 
-#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
-msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr "Utiliser ce navigateur lors de l'ouverture de l'URL ou du fichier HTML d'un projet de navigateur Web"
-
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr "Utiliser cette URL pour démarrer l'application"
@@ -273,8 +288,8 @@ msgstr "Application navigateur Web"
 msgid "Web Project (pas2js)"
 msgstr "Projet Web (pas2js)"
 
-#: strpas2jsdesign.pjsdwebserveroptions
-msgid "Web server options"
+#: strpas2jsdesign.pjsdwebserverandbrowseroptions
+msgid "Web server and browser options"
 msgstr ""
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea

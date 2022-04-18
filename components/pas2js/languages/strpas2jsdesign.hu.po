@@ -23,11 +23,6 @@ msgstr ""
 msgid "Browse"
 msgstr "Böngészés"
 
-#: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
-msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
-msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr "Böngésző a HTML lapok megnyitásához, makró $(Pas2JSBrowser)"
-
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
 msgstr ""
@@ -44,6 +39,10 @@ msgstr "Kezdő HTML lap létrehozása"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "a(z) \"%s\" könyvtár nem található"
+
+#: strpas2jsdesign.pjsderror
+msgid "Error"
+msgstr ""
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
@@ -103,6 +102,10 @@ msgstr ""
 msgid "A pas2js program running as Atom package."
 msgstr ""
 
+#: strpas2jsdesign.pjsdnewprojectfile
+msgid "New project file"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
 msgstr ""
@@ -124,6 +127,14 @@ msgstr "Node.js alkalmazás"
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
 msgstr "NodeJS projekt beállítások"
+
+#: strpas2jsdesign.pjsdoverwrite
+msgid "Overwrite?"
+msgstr ""
+
+#: strpas2jsdesign.pjsdoverwritefiles
+msgid "Overwrite files:"
+msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
@@ -155,6 +166,10 @@ msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
 msgstr "%s útvonala, makró $(pas2js)"
 
+#: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
+msgid "Please choose a file with full path."
+msgstr ""
+
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr "A portok lefoglalása e porttól kezdődik, makró $(Pas2JSWebServerPort)"
@@ -174,6 +189,10 @@ msgstr "A projekt HTML lapja:"
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
 msgstr "A projekt egy webböngészős (pas2js) projekt"
+
+#: strpas2jsdesign.pjsdprojectpascalfile
+msgid "Project Pascal file"
+msgstr ""
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
@@ -247,10 +266,6 @@ msgstr "Böngészőkonzol használata a writeln() kimenet megjelenítésére"
 msgid "Use NodeJS Application object"
 msgstr "NodeJS alkalmazásobjektum használata"
 
-#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
-msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr "Ez a böngésző legyen használva amikor egy böngészős projekt URL-je vagy HTML lapja megnyitásra kerül"
-
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr "Az alkalmazás indításához ezt az URL-t használja"
@@ -277,8 +292,8 @@ msgstr "Webböngésző alkalmazás"
 msgid "Web Project (pas2js)"
 msgstr "Web projekt (pas2js)"
 
-#: strpas2jsdesign.pjsdwebserveroptions
-msgid "Web server options"
+#: strpas2jsdesign.pjsdwebserverandbrowseroptions
+msgid "Web server and browser options"
 msgstr ""
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea

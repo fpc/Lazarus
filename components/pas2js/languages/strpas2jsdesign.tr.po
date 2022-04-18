@@ -23,11 +23,6 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
-msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
-msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr ""
-
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
 msgstr ""
@@ -43,6 +38,10 @@ msgstr ""
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
+msgstr ""
+
+#: strpas2jsdesign.pjsderror
+msgid "Error"
 msgstr ""
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
@@ -103,6 +102,10 @@ msgstr ""
 msgid "A pas2js program running as Atom package."
 msgstr ""
 
+#: strpas2jsdesign.pjsdnewprojectfile
+msgid "New project file"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
 msgstr ""
@@ -123,6 +126,14 @@ msgstr "Node.js uygulaması"
 
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
+msgstr ""
+
+#: strpas2jsdesign.pjsdoverwrite
+msgid "Overwrite?"
+msgstr ""
+
+#: strpas2jsdesign.pjsdoverwritefiles
+msgid "Overwrite files:"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
@@ -155,6 +166,10 @@ msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
 msgstr ""
 
+#: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
+msgid "Please choose a file with full path."
+msgstr ""
+
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr ""
@@ -173,6 +188,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
+msgstr ""
+
+#: strpas2jsdesign.pjsdprojectpascalfile
+msgid "Project Pascal file"
 msgstr ""
 
 #: strpas2jsdesign.pjsdresetcompilecommand
@@ -245,10 +264,6 @@ msgstr ""
 msgid "Use NodeJS Application object"
 msgstr ""
 
-#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
-msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr ""
-
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr ""
@@ -275,8 +290,8 @@ msgstr "Web Tarayıcı Uygulaması"
 msgid "Web Project (pas2js)"
 msgstr ""
 
-#: strpas2jsdesign.pjsdwebserveroptions
-msgid "Web server options"
+#: strpas2jsdesign.pjsdwebserverandbrowseroptions
+msgid "Web server and browser options"
 msgstr ""
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea

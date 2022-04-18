@@ -105,23 +105,46 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
+  { TMultiProjectPas2JSWebApp }
+
+  TMultiProjectPas2JSWebApp = class(TProjectPas2JSWebApp)
+  private
+    FOverwrites: TStrings;
+    FProjectDir: string;
+    FWebDir: string;
+    procedure SetOverwrites(const AValue: TStrings);
+  protected
+    function CheckOverwriteFile(aFilename: string): string;
+    function CheckOverwriteDir(aDir: string): string;
+    function FileToWebFile(aFilename: string): string; virtual;
+    function InteractiveForceDir(Dir: string; AutoDelete: boolean): boolean; virtual;
+    function InteractiveSaveFile(aFilename: string): boolean; virtual;
+    function InteractiveCopyFile(Src, Dest: string): boolean; virtual;
+    function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
+      ): TModalResult; override;
+    function ProjectDirSelected: boolean; virtual;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Clear; override;
+    property ProjectDir: string read FProjectDir write FProjectDir;
+    property WebDir: string read FWebDir write FWebDir;
+    property Overwrites: TStrings read FOverwrites write SetOverwrites; // list of overwrite warnings
+  end;
+
   { TProjectPas2JSProgressiveWebApp }
 
-  TProjectPas2JSProgressiveWebApp = class(TProjectPas2JSWebApp)
+  TProjectPas2JSProgressiveWebApp = class(TMultiProjectPas2JSWebApp)
   private
     FCSSStyleFilename: string;
     FIconSizes: TWordDynArray;
     FImagesDir: string;
     FManifestFilename: string;
-    FProjectDir: string;
     FServiceWorker: TProjectPas2JSServiceWorker;
     FServiceWorkerLPR: string;
-    FWebDir: string;
   protected
-    function FileToWebFile(aFilename: string): string; virtual;
     procedure AddHTMLHead(Src: TStringList); override;
-    function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
-      ): TModalResult; override;
+    function ProjectDirSelected: boolean; override;
     function CreateManifestFile(AProject: TLazProject; AFileName: String
       ): TLazProjectFile; virtual;
     function CreateCSSStyle(AProject: TLazProject; AFileName: String
@@ -129,9 +152,27 @@ type
     function CreateProjectGroup(AProject: TLazProject): boolean; virtual;
     function CopyFavIcon: boolean; virtual;
     function CopyIcons: boolean; virtual;
-    function InteractiveForceDir(Dir: string; AutoDelete: boolean): boolean; virtual;
-    function InteractiveSaveFile(aFilename: string): boolean; virtual;
-    function InteractiveCopyFile(Src, Dest: string): boolean; virtual;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Clear; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    property ServiceWorkerLPR: string read FServiceWorkerLPR write FServiceWorkerLPR;
+    property CSSStyleFilename: string read FCSSStyleFilename write FCSSStyleFilename;
+    property ImagesDir: string read FImagesDir write FImagesDir;
+    property ManifestFilename: string read FManifestFilename write FManifestFilename;
+    property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
+    property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker;
+  end;
+
+  { TProjectPas2JSElectronWebApp }
+
+  TProjectPas2JSElectronWebApp = class(TMultiProjectPas2JSWebApp)
+  private
+  protected
   public
     constructor Create; override;
     procedure Clear; override;
@@ -139,14 +180,6 @@ type
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
-    property ProjectDir: string read FProjectDir write FProjectDir;
-    property ServiceWorkerLPR: string read FServiceWorkerLPR write FServiceWorkerLPR;
-    property CSSStyleFilename: string read FCSSStyleFilename write FCSSStyleFilename;
-    property ImagesDir: string read FImagesDir write FImagesDir;
-    property WebDir: string read FWebDir write FWebDir;
-    property ManifestFilename: string read FManifestFilename write FManifestFilename;
-    property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
-    property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker;
   end;
 
   { TProjectPas2JSNodeJSApp }
@@ -272,6 +305,7 @@ begin
   SrvWorker:=TProjectPas2JSServiceWorker.Create;
   RegisterProjectDescriptor(SrvWorker);
   PWA.ServiceWorker:=SrvWorker;
+  RegisterProjectDescriptor(TProjectPas2JSElectronWebApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSModuleApp.Create);
   Pas2JSHTMLClassDef:=TPas2JSHTMLClassDef.Create;
@@ -297,14 +331,224 @@ begin
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@Pas2JSHandler.OnPrjInspPopup);
 end;
 
-{ TProjectPas2JSProgressiveWebApp }
+{ TProjectPas2JSElectronWebApp }
 
-function TProjectPas2JSProgressiveWebApp.FileToWebFile(aFilename: string
+constructor TProjectPas2JSElectronWebApp.Create;
+begin
+  inherited Create;
+end;
+
+procedure TProjectPas2JSElectronWebApp.Clear;
+begin
+  inherited Clear;
+end;
+
+function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
+begin
+  Result:=inherited GetLocalizedName;
+end;
+
+function TProjectPas2JSElectronWebApp.GetLocalizedDescription: string;
+begin
+  Result:=inherited GetLocalizedDescription;
+end;
+
+function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=inherited InitProject(AProject);
+end;
+
+function TProjectPas2JSElectronWebApp.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=inherited CreateStartFiles(AProject);
+end;
+
+{ TMultiProjectPas2JSWebApp }
+
+procedure TMultiProjectPas2JSWebApp.SetOverwrites(const AValue: TStrings);
+begin
+  if FOverwrites=AValue then Exit;
+  FOverwrites.Assign(AValue);
+end;
+
+function TMultiProjectPas2JSWebApp.CheckOverwriteFile(aFilename: string
   ): string;
+begin
+  if FileExists(aFilename) then
+    Overwrites.Add(aFilename);
+  Result:=aFilename;
+end;
+
+function TMultiProjectPas2JSWebApp.CheckOverwriteDir(aDir: string): string;
+begin
+  aDir:=ChompPathDelim(aDir);
+  if FileExists(aDir) and not DirectoryExistsUTF8(aDir) then
+    Overwrites.Add(aDir);
+  Result:=AppendPathDelim(aDir);
+end;
+
+function TMultiProjectPas2JSWebApp.FileToWebFile(aFilename: string): string;
 begin
   Result:=CreateRelativePath(aFilename,WebDir);
   Result:=FilenameToURLPath(Result);
 end;
+
+function TMultiProjectPas2JSWebApp.InteractiveForceDir(Dir: string;
+  AutoDelete: boolean): boolean;
+begin
+  Dir:=ChompPathDelim(Dir);
+  if DirectoryExistsUTF8(Dir) then
+    exit(true);
+  Result:=false;
+  if FileExists(Dir) then
+    begin
+    if AutoDelete then
+      begin
+      debugln(['Info: [TMultiProjectPas2JSWebApp.InteractiveForceDir] DeleteFile "',Dir,'"']);
+      if not DeleteFileUTF8(Dir) then
+        begin
+        IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because unable to delete file.',mtError,[mbOK]);
+        exit;
+        end;
+      end
+    else
+      begin
+      IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because file already exists.',mtError,[mbOK]);
+      exit;
+      end;
+    end;
+  debugln(['Info: [TMultiProjectPas2JSWebApp.InteractiveForceDir] ForceDirectories "',Dir,'"']);
+  if not ForceDirectoriesUTF8(Dir) then
+    begin
+    IDEMessageDialog('Error','Unable to create directory "'+Dir+'".',mtError,[mbOK]);
+    exit;
+    end;
+  Result:=true;
+end;
+
+function TMultiProjectPas2JSWebApp.InteractiveSaveFile(aFilename: string
+  ): boolean;
+var
+  Code: TCodeBuffer;
+begin
+  Result:=false;
+  Code:=CodeToolBoss.FindFile(aFilename);
+  if Code=nil then
+    begin
+    debugln(['Error: [TMultiProjectPas2JSWebApp.SaveFile] 20220404130903 "',aFilename,'"']);
+    IDEMessageDialog('Error','File missing in codetools: "'+aFilename+'"',mtError,[mbOk]);
+    exit;
+    end;
+  debugln(['Info: [TMultiProjectPas2JSWebApp.InteractiveSaveFile] saving "',Code.Filename,'"']);
+  if not Code.Save then
+    begin
+    IDEMessageDialog('Error','Unable to write file "'+aFilename+'"',mtError,[mbOk]);
+    exit;
+    end;
+  Result:=true;
+end;
+
+function TMultiProjectPas2JSWebApp.InteractiveCopyFile(Src, Dest: string
+  ): boolean;
+begin
+  debugln(['Info: [TMultiProjectPas2JSWebApp.InteractiveCopyFile] CopyFile "',Src,'" -> "',Dest,'"']);
+  if CopyFile(Src,Dest) then
+    exit(true);
+  IDEMessageDialog('Error','Unable to copy file'+sLineBreak
+    +Src+sLineBreak
+    +'to'+sLineBreak
+    +Dest,mtError,[mbOk]);
+  Result:=false;
+end;
+
+function TMultiProjectPas2JSWebApp.ShowModalOptions(
+  Frm: TWebBrowserProjectOptionsForm): TModalResult;
+var
+  CurProjDir: String;
+  SaveDlg: TIDESaveDialog;
+begin
+  // hide unsupported options
+  Frm.HideWASM;
+  Frm.HideModule;
+
+  Result:=inherited ShowModalOptions(Frm);
+  if Result<>mrOk then exit;
+
+  SaveDlg:=IDESaveDialogClass.Create(nil);
+  try
+    InitIDEFileDialog(SaveDlg);
+    SaveDlg.Title:=pjsdNewProjectFile+' (.lpr)';
+    SaveDlg.Filter:=pjsdProjectPascalFile+' (*.lpr;*.pas)|*.lpr;*.pas';
+
+    if not SaveDlg.Execute then
+      exit(mrCancel);
+
+    MainSrcFileName:=SaveDlg.FileName;
+    if not FilenameIsAbsolute(MainSrcFileName) then
+      begin
+      IDEMessageDialog(pjsdError, pjsdPleaseChooseAFileWithFullPath,
+        mtError, [mbOk]);
+      exit(mrCancel);
+      end;
+
+    MainSrcFileName:=CleanAndExpandFilename(MainSrcFileName);
+    if CompareFileExt(MainSrcFileName,'.lpi')=0 then
+      MainSrcFileName:=ChangeFileExt(MainSrcFileName,'.lpr');
+    if ExtractFileExt(MainSrcFileName)='' then
+      MainSrcFileName:=MainSrcFileName+'.lpr';
+    if CompareFilenames(ExtractFileNameOnly(MainSrcFileName),MainSrcName)<>0 then
+      MainSrcName:=ExtractFileNameOnly(MainSrcFileName);
+    CurProjDir:=ExtractFilePath(MainSrcFileName);
+    if CurProjDir='' then exit(mrCancel);
+    CurProjDir:=AppendPathDelim(CurProjDir);
+    ProjectDir:=CurProjDir;
+
+    CheckOverwriteFile(MainSrcFileName);
+    CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
+
+    ProjectDirSelected;
+
+    if Overwrites.Count>0 then
+      begin
+      if IDEMessageDialog(pjsdOverwrite, pjsdOverwriteFiles+sLineBreak+
+        Overwrites.Text,
+          mtConfirmation,[mbOk,mbCancel])<>mrOk then
+        exit(mrCancel);
+      end;
+
+  finally
+    SaveDlg.Free;
+  end;
+end;
+
+function TMultiProjectPas2JSWebApp.ProjectDirSelected: boolean;
+begin
+  Result:=true;
+end;
+
+constructor TMultiProjectPas2JSWebApp.Create;
+begin
+  inherited Create;
+  FOverwrites:=TStringList.Create;
+end;
+
+destructor TMultiProjectPas2JSWebApp.Destroy;
+begin
+  FreeAndNil(FOverwrites);
+  inherited Destroy;
+end;
+
+procedure TMultiProjectPas2JSWebApp.Clear;
+begin
+  inherited Clear;
+  FProjectDir:='';
+  FWebDir:='';
+  FOverwrites.Clear;
+end;
+
+{ TProjectPas2JSProgressiveWebApp }
 
 procedure TProjectPas2JSProgressiveWebApp.AddHTMLHead(Src: TStringList);
 var
@@ -324,91 +568,20 @@ begin
     end;
 end;
 
-function TProjectPas2JSProgressiveWebApp.ShowModalOptions(
-  Frm: TWebBrowserProjectOptionsForm): TModalResult;
-var
-  CurProjDir: String;
-  Overwrites: TStringList;
-  SaveDlg: TIDESaveDialog;
-
-  function CheckOverwriteFile(aFilename: string): string;
-  begin
-    if FileExists(aFilename) then
-      Overwrites.Add(aFilename);
-    Result:=aFilename;
-  end;
-
-  function CheckOverwriteDir(aDir: string): string;
-  begin
-    aDir:=ChompPathDelim(aDir);
-    if FileExists(aDir)  and not DirectoryExistsUTF8(aDir) then
-      Overwrites.Add(aDir);
-    Result:=AppendPathDelim(aDir);
-  end;
-
+function TProjectPas2JSProgressiveWebApp.ProjectDirSelected: boolean;
 begin
-  // hide unsupported options
-  Frm.HideWASM;
-  Frm.HideModule;
+  Result:=true;
+  ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
 
-  Result:=inherited ShowModalOptions(Frm);
-  if Result<>mrOk then exit;
+  ServiceWorkerLPR:=CheckOverwriteFile(ProjectDir+ServiceWorkerLPR);
+  CheckOverwriteFile(ChangeFileExt(ServiceWorkerLPR,'.lpi'));
 
-  SaveDlg:=IDESaveDialogClass.Create(nil);
-  Overwrites:=TStringList.Create;
-  try
-    InitIDEFileDialog(SaveDlg);
-    SaveDlg.Title:='New project file (.lpr)';
-    SaveDlg.Filter:='Project Pascal file (*.lpr;*.pas)|*.lpr;*.pas';
+  WebDir:=CheckOverwriteDir(ProjectDir+WebDir);
+  ImagesDir:=CheckOverwriteDir(WebDir+ImagesDir);
 
-    if not SaveDlg.Execute then
-      exit(mrCancel);
-
-    MainSrcFileName:=SaveDlg.FileName;
-    if not FilenameIsAbsolute(MainSrcFileName) then
-      begin
-      IDEMessageDialog('Error','Please choose a file with full path.',mtError,[mbOk]);
-      exit(mrCancel);
-      end;
-
-    MainSrcFileName:=CleanAndExpandFilename(MainSrcFileName);
-    if CompareFileExt(MainSrcFileName,'.lpi')=0 then
-      MainSrcFileName:=ChangeFileExt(MainSrcFileName,'.lpr');
-    if ExtractFileExt(MainSrcFileName)='' then
-      MainSrcFileName:=MainSrcFileName+'.lpr';
-    CurProjDir:=ExtractFilePath(MainSrcFileName);
-    if CurProjDir='' then exit(mrCancel);
-    CurProjDir:=AppendPathDelim(CurProjDir);
-    ProjectDir:=CurProjDir;
-
-    CheckOverwriteFile(MainSrcFileName);
-    CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
-    ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
-
-    ServiceWorkerLPR:=CheckOverwriteFile(ProjectDir+ServiceWorkerLPR);
-    CheckOverwriteFile(ChangeFileExt(ServiceWorkerLPR,'.lpi'));
-
-    WebDir:=CheckOverwriteDir(CurProjDir+WebDir);
-    ImagesDir:=CheckOverwriteDir(WebDir+ImagesDir);
-
-    HTMLFilename:=CheckOverwriteFile(WebDir+HTMLFilename);
-    ManifestFilename:=CheckOverwriteFile(WebDir+ManifestFilename);
-    CSSStyleFilename:=CheckOverwriteFile(WebDir+CSSStyleFilename);
-
-    if Overwrites.Count>0 then
-      begin
-      if IDEMessageDialog('Overwrite?','Overwrite files:'+sLineBreak+Overwrites.Text,
-          mtConfirmation,[mbOk,mbCancel])<>mrOk then
-        exit(mrCancel);
-      end;
-
-  finally
-    SaveDlg.Free;
-    Overwrites.Free;
-  end;
-
-  if CompareFilenames(ExtractFileNameOnly(MainSrcFileName),MainSrcName)<>0 then
-    MainSrcName:=ExtractFileNameOnly(MainSrcFileName);
+  HTMLFilename:=CheckOverwriteFile(WebDir+HTMLFilename);
+  ManifestFilename:=CheckOverwriteFile(WebDir+ManifestFilename);
+  CSSStyleFilename:=CheckOverwriteFile(WebDir+CSSStyleFilename);
 end;
 
 function TProjectPas2JSProgressiveWebApp.CreateManifestFile(
@@ -518,73 +691,6 @@ begin
   Result:=true;
 end;
 
-function TProjectPas2JSProgressiveWebApp.InteractiveForceDir(Dir: string;
-  AutoDelete: boolean): boolean;
-begin
-  Dir:=ChompPathDelim(Dir);
-  if DirectoryExistsUTF8(Dir) then
-    exit(true);
-  Result:=false;
-  if FileExists(Dir) then
-    begin
-    if AutoDelete then
-      begin
-      debugln(['Info: [TProjectPas2JSProgressiveWebApp.InteractiveForceDir] DeleteFile "',Dir,'"']);
-      if not DeleteFileUTF8(Dir) then
-        begin
-        IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because unable to delete file.',mtError,[mbOK]);
-        exit;
-        end;
-      end
-    else
-      begin
-      IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because file already exists.',mtError,[mbOK]);
-      exit;
-      end;
-    end;
-  debugln(['Info: [TProjectPas2JSProgressiveWebApp.InteractiveForceDir] ForceDirectories "',Dir,'"']);
-  if not ForceDirectoriesUTF8(Dir) then
-    begin
-    IDEMessageDialog('Error','Unable to create directory "'+Dir+'".',mtError,[mbOK]);
-    exit;
-    end;
-  Result:=true;
-end;
-
-function TProjectPas2JSProgressiveWebApp.InteractiveSaveFile(aFilename: string): boolean;
-var
-  Code: TCodeBuffer;
-begin
-  Result:=false;
-  Code:=CodeToolBoss.FindFile(aFilename);
-  if Code=nil then
-    begin
-    debugln(['Error: [TProjectPas2JSProgressiveWebApp.SaveFile] 20220404130903 "',aFilename,'"']);
-    IDEMessageDialog('Error','File missing in codetools: "'+aFilename+'"',mtError,[mbOk]);
-    exit;
-    end;
-  debugln(['Info: [TProjectPas2JSProgressiveWebApp.InteractiveSaveFile] saving "',Code.Filename,'"']);
-  if not Code.Save then
-    begin
-    IDEMessageDialog('Error','Unable to write file "'+aFilename+'"',mtError,[mbOk]);
-    exit;
-    end;
-  Result:=true;
-end;
-
-function TProjectPas2JSProgressiveWebApp.InteractiveCopyFile(Src, Dest: string
-  ): boolean;
-begin
-  debugln(['Info: [TProjectPas2JSProgressiveWebApp.InteractiveCopyFile] CopyFile "',Src,'" -> "',Dest,'"']);
-  if CopyFile(Src,Dest) then
-    exit(true);
-  IDEMessageDialog('Error','Unable to copy file'+sLineBreak
-    +Src+sLineBreak
-    +'to'+sLineBreak
-    +Dest,mtError,[mbOk]);
-  Result:=false;
-end;
-
 function TProjectPas2JSProgressiveWebApp.CreateProjectGroup(
   AProject: TLazProject): boolean;
 var
@@ -619,7 +725,12 @@ constructor TProjectPas2JSProgressiveWebApp.Create;
 begin
   inherited Create;
   Name:=ProjDescNamePas2JSProgressiveWebApp;
-  Clear;
+end;
+
+destructor TProjectPas2JSProgressiveWebApp.Destroy;
+begin
+  FreeAndNil(FServiceWorker);
+  inherited Destroy;
 end;
 
 procedure TProjectPas2JSProgressiveWebApp.Clear;
@@ -635,9 +746,12 @@ begin
   FCSSStyleFilename:='style.css';
   FServiceWorkerLPR:='ServiceWorker.lpr';
   FServiceWorkerJSFilename:='/ServiceWorker.js';
+  FreeAndNil(FServiceWorker);
+  FServiceWorker:=TProjectPas2JSServiceWorker.Create;
   SetLength(FIconSizes,length(DefaultIconSizes));
   for i:=0 to high(DefaultIconSizes) do
     FIconSizes[i]:=DefaultIconSizes[i];
+  FOverwrites.Clear;
 end;
 
 function TProjectPas2JSProgressiveWebApp.GetLocalizedName: string;
@@ -1370,13 +1484,14 @@ constructor TProjectPas2JSWebApp.Create;
 begin
   inherited Create;
   Name:=ProjDescNamePas2JSWebApp;
-  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
-  FMainSrcName:='Project1';
+  Clear;
 end;
 
 procedure TProjectPas2JSWebApp.Clear;
 begin
   // Reset options
+  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+  FMainSrcName:='Project1';
   FOptions:=[baoCreateHtml,baoMaintainHTML,baoStartServer];
   ProjectPort:=0;
   ProjectURL:='';
