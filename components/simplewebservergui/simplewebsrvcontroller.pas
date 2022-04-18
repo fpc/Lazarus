@@ -1654,7 +1654,7 @@ begin
         // conflicting foreign process
         r:=IDEQuestionDialog(rsSWError,
            ViewCaption+':'+sLineBreak
-           +rsSWBindingOfSocketFailed+': '+MainSrvAddr+':'+IntToStr(MainSrvPort)+sLineBreak
+           +rsSWBindingOfSocketFailed+': '+SrvAddr+':'+IntToStr(Port)+sLineBreak
            +sLineBreak
            +rsSWTheFollowingProcessAlreadyListens+sLineBreak
            +'PID: '+IntToStr(aPID)+sLineBreak
