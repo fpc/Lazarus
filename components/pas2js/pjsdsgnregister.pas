@@ -26,6 +26,7 @@ const
   ProjDescNamePas2JSWebApp = 'Web Application';
   ProjDescNamePas2JSProgressiveWebApp = 'Progressive Web Application';
   ProjDescNamePas2JSServiceWorker = 'Pas2JS Service Worker';
+  ProjDescNamePas2JSElectronWebApp = 'Electron Web Application';
   ProjDescNamePas2JSNodeJSApp = 'NodeJS Application';
   ProjDescNamePas2JSModuleApp = 'Pas2JS Library';
   FileDescNameClassFromHTMLFile = 'Class definition from HTML file';
@@ -139,6 +140,7 @@ type
     FCSSStyleFilename: string;
     FIconSizes: TWordDynArray;
     FImagesDir: string;
+    FLPGFilename: string;
     FManifestFilename: string;
     FServiceWorker: TProjectPas2JSServiceWorker;
     FServiceWorkerLPR: string;
@@ -166,13 +168,16 @@ type
     property ManifestFilename: string read FManifestFilename write FManifestFilename;
     property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
     property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker;
+    property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
   { TProjectPas2JSElectronWebApp }
 
   TProjectPas2JSElectronWebApp = class(TMultiProjectPas2JSWebApp)
   private
+    FPackageFilename: string;
   protected
+    function ProjectDirSelected: boolean; override;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -180,6 +185,7 @@ type
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    property PackageFilename: string read FPackageFilename write FPackageFilename;
   end;
 
   { TProjectPas2JSNodeJSApp }
@@ -333,24 +339,33 @@ end;
 
 { TProjectPas2JSElectronWebApp }
 
+function TProjectPas2JSElectronWebApp.ProjectDirSelected: boolean;
+begin
+  Result:=inherited ProjectDirSelected;
+
+  PackageFilename:=CheckOverwriteFile(ProjectDir+PackageFilename);
+end;
+
 constructor TProjectPas2JSElectronWebApp.Create;
 begin
   inherited Create;
+  Name:=ProjDescNamePas2JSElectronWebApp;
 end;
 
 procedure TProjectPas2JSElectronWebApp.Clear;
 begin
   inherited Clear;
+  FPackageFilename:='package.json';
 end;
 
 function TProjectPas2JSElectronWebApp.GetLocalizedName: string;
 begin
-  Result:=inherited GetLocalizedName;
+  Result:=pjsdElectronWebApplication;
 end;
 
 function TProjectPas2JSElectronWebApp.GetLocalizedDescription: string;
 begin
-  Result:=inherited GetLocalizedDescription;
+  Result:=pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat;
 end;
 
 function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
@@ -505,9 +520,6 @@ begin
     CurProjDir:=AppendPathDelim(CurProjDir);
     ProjectDir:=CurProjDir;
 
-    CheckOverwriteFile(MainSrcFileName);
-    CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
-
     ProjectDirSelected;
 
     if Overwrites.Count>0 then
@@ -526,6 +538,9 @@ end;
 function TMultiProjectPas2JSWebApp.ProjectDirSelected: boolean;
 begin
   Result:=true;
+  ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
+  CheckOverwriteFile(MainSrcFileName);
+  CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
 end;
 
 constructor TMultiProjectPas2JSWebApp.Create;
@@ -570,8 +585,7 @@ end;
 
 function TProjectPas2JSProgressiveWebApp.ProjectDirSelected: boolean;
 begin
-  Result:=true;
-  ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
+  Result:=inherited ProjectDirSelected;
 
   ServiceWorkerLPR:=CheckOverwriteFile(ProjectDir+ServiceWorkerLPR);
   CheckOverwriteFile(ChangeFileExt(ServiceWorkerLPR,'.lpi'));
@@ -582,6 +596,8 @@ begin
   HTMLFilename:=CheckOverwriteFile(WebDir+HTMLFilename);
   ManifestFilename:=CheckOverwriteFile(WebDir+ManifestFilename);
   CSSStyleFilename:=CheckOverwriteFile(WebDir+CSSStyleFilename);
+
+  LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
 end;
 
 function TProjectPas2JSProgressiveWebApp.CreateManifestFile(
@@ -694,13 +710,11 @@ end;
 function TProjectPas2JSProgressiveWebApp.CreateProjectGroup(
   AProject: TLazProject): boolean;
 var
-  LPGFilename, ServiceWorkerLPI, WebAppLPI: String;
+  ServiceWorkerLPI: String;
   Grp: TProjectGroup;
 begin
   Result:=false;
 
-  WebAppLPI:=AProject.ProjectInfoFile;
-  LPGFilename:=ChangeFileExt(WebAppLPI,'.lpg');
   ServiceWorkerLPI:=ChangeFileExt(ServiceWorkerLPR,'.lpi');
 
   if not IDEProjectGroupManager.NewProjectGroup(false) then
@@ -710,7 +724,7 @@ begin
   end;
   Grp:=IDEProjectGroupManager.CurrentProjectGroup;
   Grp.FileName:=LPGFilename;
-  Grp.AddTarget(WebAppLPI);
+  Grp.AddTarget(AProject.ProjectInfoFile);
   Grp.AddTarget(ServiceWorkerLPI);
   if not IDEProjectGroupManager.SaveProjectGroup then
   begin

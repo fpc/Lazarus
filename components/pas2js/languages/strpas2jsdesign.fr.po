@@ -19,6 +19,10 @@ msgstr ""
 msgid "Atom package template directory"
 msgstr "Répertoire des modèles de paquets Atom"
 
+#: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
+msgid "A Web Application using Electron to run as desktop application."
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Parcourir"
@@ -39,6 +43,10 @@ msgstr "Créer la page initiale HTML"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "répertoire \"%s\" non trouvé"
+
+#: strpas2jsdesign.pjsdelectronwebapplication
+msgid "Electron Web Application"
+msgstr ""
 
 #: strpas2jsdesign.pjsderror
 msgid "Error"

@@ -21,6 +21,10 @@ msgstr ""
 msgid "Atom package template directory"
 msgstr "Тека шаблонів пакунка Atom"
 
+#: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
+msgid "A Web Application using Electron to run as desktop application."
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Огляд"
@@ -41,6 +45,10 @@ msgstr "Створити початкову HTML-сторінку"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "теку \"%s\" не знайдено"
+
+#: strpas2jsdesign.pjsdelectronwebapplication
+msgid "Electron Web Application"
+msgstr ""
 
 #: strpas2jsdesign.pjsderror
 msgid "Error"

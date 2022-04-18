@@ -19,6 +19,10 @@ msgstr ""
 msgid "Atom package template directory"
 msgstr ""
 
+#: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
+msgid "A Web Application using Electron to run as desktop application."
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Böngészés"
@@ -39,6 +43,10 @@ msgstr "Kezdő HTML lap létrehozása"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "a(z) \"%s\" könyvtár nem található"
+
+#: strpas2jsdesign.pjsdelectronwebapplication
+msgid "Electron Web Application"
+msgstr ""
 
 #: strpas2jsdesign.pjsderror
 msgid "Error"

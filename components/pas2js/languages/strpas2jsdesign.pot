@@ -9,6 +9,10 @@ msgstr ""
 msgid "Atom package template directory"
 msgstr ""
 
+#: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
+msgid "A Web Application using Electron to run as desktop application."
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr ""
@@ -28,6 +32,10 @@ msgstr ""
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
+msgstr ""
+
+#: strpas2jsdesign.pjsdelectronwebapplication
+msgid "Electron Web Application"
 msgstr ""
 
 #: strpas2jsdesign.pjsderror

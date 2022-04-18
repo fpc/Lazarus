@@ -11,6 +11,9 @@ Resourcestring
   pjsdWebApplication = 'Web Browser Application';
   pjsdWebAppDescription = 'A pas2js program running in the browser.';
   pjsdProgressiveWebApplication = 'Progressive Web Application';
+  pjsdElectronWebApplication = 'Electron Web Application';
+  pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat = 'A Web Application '
+    +'using Electron to run as desktop application.';
   pjsdOverwrite = 'Overwrite?';
   pjsdError = 'Error';
   pjsdNewProjectFile = 'New project file';
