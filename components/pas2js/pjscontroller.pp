@@ -181,6 +181,7 @@ class function TPJSController.GetProjectHTMLFilename(aProject: TLazProject): str
 
 Var
   I : Integer;
+  aFile: TLazProjectFile;
 
 begin
   Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
@@ -189,7 +190,9 @@ begin
     I:=aProject.FileCount-1;
     While (Result='') and (I>=0) do
       begin
-      if aProject.Files[I].CustomData[PJSIsProjectHTMLFile]='1' then
+      aFile:=aProject.Files[I];
+      if aFile.IsPartOfProject
+          and (aFile.CustomData[PJSIsProjectHTMLFile]='1') then
         Result:=aProject.Files[I].GetFullFilename;
       Dec(I);
       end;

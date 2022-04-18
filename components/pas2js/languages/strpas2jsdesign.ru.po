@@ -19,14 +19,13 @@ msgstr "Создать не сценарий, а модуль JavaScript"
 msgid "Atom package template directory"
 msgstr "Каталог шаблона пакета Atom"
 
+#: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
+msgid "A Web Application using Electron to run as desktop application."
+msgstr ""
+
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
 msgstr "Обзор"
-
-#: strpas2jsdesign.pjsdbrowsertoopenhtmlpage
-msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
-msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
-msgstr "Браузер для открытия страницы HTML, макрос $(Pas2JSBrowser)"
 
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
@@ -44,6 +43,14 @@ msgstr "Создать первоначальную страницу HTML"
 #, object-pascal-format
 msgid "directory \"%s\" not found"
 msgstr "каталог \"%s\" не найден"
+
+#: strpas2jsdesign.pjsdelectronwebapplication
+msgid "Electron Web Application"
+msgstr ""
+
+#: strpas2jsdesign.pjsderror
+msgid "Error"
+msgstr ""
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
@@ -106,6 +113,10 @@ msgstr "Пакет Atom"
 msgid "A pas2js program running as Atom package."
 msgstr "Программа pas2js, запускаемая в качестве пакета Atom."
 
+#: strpas2jsdesign.pjsdnewprojectfile
+msgid "New project file"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
 msgstr "Расширение Visual Studio Code"
@@ -125,6 +136,14 @@ msgstr "Приложение Node.js"
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
 msgstr "Параметры проекта NodeJS"
+
+#: strpas2jsdesign.pjsdoverwrite
+msgid "Overwrite?"
+msgstr ""
+
+#: strpas2jsdesign.pjsdoverwritefiles
+msgid "Overwrite files:"
+msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
@@ -156,6 +175,10 @@ msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
 msgstr "Путь к %s, макрос $(pas2js)"
 
+#: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
+msgid "Please choose a file with full path."
+msgstr ""
+
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr "Начало диапазона запрашиваемых портов, макрос $(Pas2JSWebServerPort)"
@@ -175,6 +198,10 @@ msgstr "Страница HTML проекта:"
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
 msgstr "Проект предназначен для веб-браузера (pas2js)"
+
+#: strpas2jsdesign.pjsdprojectpascalfile
+msgid "Project Pascal file"
+msgstr ""
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
@@ -246,10 +273,6 @@ msgstr "Отображать вывод writeln() посредством мод�
 msgid "Use NodeJS Application object"
 msgstr "Использовать объект приложения для NodeJS"
 
-#: strpas2jsdesign.pjsdusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
-msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr "Браузер для открытия предназначенного для него проекта по указанному адресу либо из файла HTML"
-
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr "Использовать следующий адрес для запуска приложения"
@@ -274,9 +297,9 @@ msgstr "Приложение для веб-браузера"
 msgid "Web Project (pas2js)"
 msgstr "Веб-проект (pas2js)"
 
-#: strpas2jsdesign.pjsdwebserveroptions
-msgid "Web server options"
-msgstr "Параметры веб-сервера"
+#: strpas2jsdesign.pjsdwebserverandbrowseroptions
+msgid "Web server and browser options"
+msgstr ""
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format

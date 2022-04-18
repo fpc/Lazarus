@@ -167,7 +167,7 @@ type
     property ImagesDir: string read FImagesDir write FImagesDir;
     property ManifestFilename: string read FManifestFilename write FManifestFilename;
     property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
-    property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker;
+    property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker; // set by Register
     property LPGFilename: string read FLPGFilename write FLPGFilename;
   end;
 
@@ -545,8 +545,8 @@ end;
 
 constructor TMultiProjectPas2JSWebApp.Create;
 begin
-  inherited Create;
   FOverwrites:=TStringList.Create;
+  inherited Create;
 end;
 
 destructor TMultiProjectPas2JSWebApp.Destroy;
@@ -560,7 +560,8 @@ begin
   inherited Clear;
   FProjectDir:='';
   FWebDir:='';
-  FOverwrites.Clear;
+  if FOverwrites<>nil then
+    FOverwrites.Clear;
 end;
 
 { TProjectPas2JSProgressiveWebApp }
@@ -743,7 +744,6 @@ end;
 
 destructor TProjectPas2JSProgressiveWebApp.Destroy;
 begin
-  FreeAndNil(FServiceWorker);
   inherited Destroy;
 end;
 
@@ -760,8 +760,6 @@ begin
   FCSSStyleFilename:='style.css';
   FServiceWorkerLPR:='ServiceWorker.lpr';
   FServiceWorkerJSFilename:='/ServiceWorker.js';
-  FreeAndNil(FServiceWorker);
-  FServiceWorker:=TProjectPas2JSServiceWorker.Create;
   SetLength(FIconSizes,length(DefaultIconSizes));
   for i:=0 to high(DefaultIconSizes) do
     FIconSizes[i]:=DefaultIconSizes[i];
