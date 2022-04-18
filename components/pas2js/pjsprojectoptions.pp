@@ -311,7 +311,7 @@ begin
   CBWebProject.Checked:=Prj.CustomData[PJSProjectWebBrowser]='1';
   if HTMLIdx=-1 then
     begin
-    HFN:=Prj.CustomData[PJSProjectHTMLFile];
+    HFN:=TPJSController.GetProjectHTMLFilename(Prj);
     HTMLIdx:=CBHTMLFile.Items.IndexOf(HFN);
     end;
   CBHTMLFile.ItemIndex:=HTMLIdx;
@@ -353,7 +353,6 @@ begin
     begin
     Remove(PJSProject);
     Remove(PJSProjectWebBrowser);
-    Remove(PJSProjectHTMLFile);
     Remove(PJSProjectMaintainHTML);
     Remove(PJSProjectUseBrowserConsole);
     Remove(PJSProjectRunAtReady);

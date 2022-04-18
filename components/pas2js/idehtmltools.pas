@@ -5,7 +5,7 @@ unit idehtmltools;
 interface
 
 uses
-  Classes, SysUtils, contnrs, ProjectIntf;
+  Classes, SysUtils, contnrs, idehtml2class, ProjectIntf;
 
 Const
   // Options for HTML -> class generation
@@ -16,11 +16,11 @@ Const
 Type
 
   { TIDEHTMLTools }
+  TComponentHTMLFileNameHandler = procedure (Sender : TObject; aComponent : TComponent; var aHTMLFileName : string) of object;
 
   TIDEHTMLTools = class(TPersistent)
   Private
     Type
-
       { TTagCacheItem }
 
       TTagCacheItem = class
@@ -30,21 +30,44 @@ Type
         Constructor Create(Const aFilename : String; aTimeStamp : TDateTime; aTags: TStringArray);
         function IsValid : Boolean;
       end;
-    function HasCached(const aFileName: string; aList: TStrings): Boolean;
+
+      { THandler }
+
+      THandler = Class(TObject)
+      Private
+        FClass : TComponentClass;
+        FHandler : TComponentHTMLFileNameHandler;
+      Public
+        Constructor Create(aClass : TComponentClass; aHandler: TComponentHTMLFileNameHandler);
+        Function Matches(aClass : TComponentClass; aHandler: TComponentHTMLFileNameHandler) : Boolean;
+        Function MatchesClass(aClass : TComponentClass) : Boolean;
+        Property ComponentClass : TComponentClass Read FClass;
+        Property Handler : TComponentHTMLFileNameHandler Read FHandler;
+      end;
+
+    function GetNameFromComponent(aComponent: TComponent): string;
+  Private
+    Class Var
+      _ComponentHandlers  : TFPObjectList;
   Private
     FTagCache : TFPObjectHashTable;
+    function HasCached(const aFileName: string; aList: TStrings): Boolean;
   Public
     class function GetDefaultHTMLDesignFile(aFile: TLazProjectFile): String;
     class function GetDefaultHTML2ClassFile(aFile: TLazProjectFile): String;
-    class function GetProjectHTMLFile : String;
   Public
     Constructor Create;
-    Procedure GetTagIDs(Const aFileName : string; aList : TStrings);
-    Function GetTagIDs(Const aFileName : string) : TStringArray;
+    Class Constructor Init;
+    Class Destructor Done;
+    Class Procedure RegisterComponent2HTMLFileHandler(aClass : TComponentClass; aHandler : TComponentHTMLFileNameHandler);
+    Class Procedure UnRegisterComponent2HTMLFileHandler(aClass : TComponentClass; aHandler : TComponentHTMLFileNameHandler);
+    Procedure GetTagIDs(Const aFileName : string; aList : TStrings; aOptions : TExtractOptions = []);
+    Procedure GetTagIDs(Const aFileName : string; aList : TTagInfoList; aOptions : TExtractOptions = []);
+    Function GetTagIDs(Const aFileName : string; aOptions : TExtractOptions = []) : TStringArray;
     class function TagToIdentifier(aTag: String): String;
     function GetHTMLFileForProjectFile(aFile: TLazProjectFile): String;
     Function GetHTMLFileForComponent(aComponent : TComponent) : String;
-
+    class function GetProjectHTMLFile : String;
     Procedure ClearCache;
   end;
 
@@ -53,7 +76,27 @@ Var
 
 implementation
 
-uses LazIDEIntf, forms, idehtml2class, pjscontroller;
+uses LazIDEIntf, forms, pjscontroller;
+
+{ TIDEHTMLTools.THandler }
+
+constructor TIDEHTMLTools.THandler.Create(aClass: TComponentClass;
+  aHandler: TComponentHTMLFileNameHandler);
+begin
+  FClass:=aClass;
+  FHandler:=aHandler;
+end;
+
+function TIDEHTMLTools.THandler.Matches(aClass: TComponentClass;
+  aHandler: TComponentHTMLFileNameHandler): Boolean;
+begin
+  Result:=(aHandler=FHandler) and MatchesClass(aClass);
+end;
+
+function TIDEHTMLTools.THandler.MatchesClass(aClass: TComponentClass): Boolean;
+begin
+  Result:=aClass.InheritsFrom(FClass);
+end;
 
 { TIDEHTMLTools.TTagCacheItem }
 
@@ -82,7 +125,37 @@ begin
 
 end;
 
-Class Function TIDEHTMLTools.TagToIdentifier(aTag : String) : String;
+class constructor TIDEHTMLTools.Init;
+begin
+  _ComponentHandlers:=TFPObjectList.Create(True);
+end;
+
+class destructor TIDEHTMLTools.Done;
+begin
+  FreeAndNil(_ComponentHandlers);
+end;
+
+class procedure TIDEHTMLTools.RegisterComponent2HTMLFileHandler(
+  aClass: TComponentClass; aHandler: TComponentHTMLFileNameHandler);
+begin
+  _ComponentHandlers.Add(THandler.Create(aClass,aHandler));
+end;
+
+class procedure TIDEHTMLTools.UnRegisterComponent2HTMLFileHandler(
+  aClass: TComponentClass; aHandler: TComponentHTMLFileNameHandler);
+
+Var
+  Idx : Integer;
+
+begin
+  Idx:=_ComponentHandlers.Count-1;
+  While (Idx>=0) and not THandler(_ComponentHandlers[Idx]).Matches(aClass,aHandler) do
+    Dec(Idx);
+  if Idx>=0 then
+    _ComponentHandlers.Delete(Idx);
+end;
+
+class function TIDEHTMLTools.TagToIdentifier(aTag: String): String;
 
 Var
   C : Char;
@@ -116,7 +189,7 @@ begin
 end;
 
 
-procedure TIDEHTMLTools.GetTagIDs(const aFileName: string; aList: TStrings);
+procedure TIDEHTMLTools.GetTagIDs(const aFileName: string; aList: TStrings; aOptions : TExtractOptions = []);
 
 Var
   Itm : TTagCacheItem;
@@ -125,6 +198,7 @@ begin
   If Not HasCached(aFileName,aList) then
     with THTMLExtractIDS.Create(Nil) do
       try
+        Options:=aOptions;
         ExtractIDS(aFileName,aList);
         Itm:=TTagCacheItem.Create(aFileName,Now,aList.ToStringArray);
         FTagCache.Add(aFileName,Itm);
@@ -133,7 +207,20 @@ begin
       end;
 end;
 
-function TIDEHTMLTools.GetTagIDs(const aFileName: string): TStringArray;
+procedure TIDEHTMLTools.GetTagIDs(const aFileName: string; aList: TTagInfoList;
+  aOptions: TExtractOptions);
+begin
+  // Todo : cache
+  with THTMLExtractIDS.Create(Nil) do
+    try
+      Options:=aOptions;
+      ExtractIDS(aFileName,aList);
+    finally
+      Free;
+    end;
+end;
+
+function TIDEHTMLTools.GetTagIDs(const aFileName: string; aOptions : TExtractOptions = []): TStringArray;
 
 Var
   aList : TStrings;
@@ -141,7 +228,7 @@ Var
 begin
   aList:=TStringList.Create;
   try
-    GetTagIDS(aFileName,aList);
+    GetTagIDS(aFileName,aList,aOptions);
     Result:=aList.ToStringArray;
   finally
     aList.Free;
@@ -152,7 +239,8 @@ class function TIDEHTMLTools.GetDefaultHTMLDesignFile(aFile: TLazProjectFile
   ): String;
 
 begin
-  Result:=aFile.CustomData.Values[SDesignHTMLFile];
+  if assigned(aFile) and assigned(aFile.CustomData) then
+    Result:=aFile.CustomData.Values[SDesignHTMLFile];
 end;
 
 class function TIDEHTMLTools.GetDefaultHTML2ClassFile(aFile : TLazProjectFile) : String;
@@ -199,7 +287,7 @@ begin
     end;
   if Result='' then
     begin
-    Result:=Prj.CustomData.Values[PJSProjectHTMLFile];
+    Result:=TPJSController.GetProjectHTMLFilename(Prj);
     if not FileExists(Result) then
        Result:='';
     end;
@@ -217,13 +305,41 @@ begin
     Result:=GetProjectHTMLFile;
 end;
 
+function TIDEHTMLTools.GetNameFromComponent(aComponent : TComponent) : string;
+
+Var
+  Idx,aCount : Integer;
+  aClass : TComponentClass;
+
+begin
+  Result:='';
+  aCount:=_ComponentHandlers.Count;
+  aClass:=TComponentClass(aComponent.ClassType);
+  Idx:=0;
+  While (Result='') and (Idx<aCount) do
+    With THandler(_ComponentHandlers[Idx]) do
+      begin
+      // Writeln('Checking class ',aClass);
+      if MatchesClass(aClass) then
+        Handler(Self,aComponent,Result);
+      Inc(Idx);
+      end;
+end;
+
 function TIDEHTMLTools.GetHTMLFileForComponent(aComponent: TComponent): String;
 
 Var
   aFile : TLazProjectFile;
 begin
-  aFile:=LazarusIDE.GetProjectFileWithRootComponent(aComponent.Owner);
-  Result:=GetHTMLFileForProjectFile(aFile);
+  Result:=GetNameFromComponent(aComponent);
+  if Result='' then
+    begin
+    aFile:=LazarusIDE.GetProjectFileWithRootComponent(aComponent.Owner);
+    if aFile=Nil then
+      aFile:=LazarusIDE.GetProjectFileWithRootComponent(aComponent);
+    if Assigned(aFile) then
+      Result:=GetHTMLFileForProjectFile(aFile);
+    end;
 end;
 
 procedure TIDEHTMLTools.ClearCache;

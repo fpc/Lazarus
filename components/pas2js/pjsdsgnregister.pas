@@ -1651,7 +1651,6 @@ Var
 begin
   HTMLFile:=AProject.CreateProjectFile(HTMLFilename);
   HTMLFile.IsPartOfProject:=true;
-  AProject.CustomData.Values[PJSProjectHTMLFile]:=HTMLFile.Filename;
   AProject.AddFile(HTMLFile,false);
   ScriptType:='';
   if baoUseModule in Options then

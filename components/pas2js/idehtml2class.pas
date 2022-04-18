@@ -216,24 +216,76 @@ Type
 
   { THTMLExtractIDS }
 
+  TExtractOption = (eoExtraInfo // Add info object with Tag. In stringarray, emit ID=Info.ToString
+                    );
+
+  { TTagInfo - attached to string in objects }
+
+  TTagInfo = Class(TObject)
+  private
+    FInputName: String;
+    FInputType: String;
+    FTag: String;
+  Public
+    Constructor Create(Const aTag,aType,aName : String);
+    Function ToString : String; override;
+    Property TagName : String Read FTag Write FTag;
+    Property InputType : String Read FInputType Write FInputType;
+    Property InputName : String Read FInputName Write FInputName;
+  end;
+
+  { TTagInfoItem }
+
+  TTagInfoItem = Class(TCollectionItem)
+  private
+    FElementID: UTF8String;
+    FInputName: UTF8String;
+    FInputType: UTF8String;
+    FTagName: UTF8String;
+  Public
+    Procedure Assign(aSource : TPersistent); override;
+    Function ToString : String; override;
+    Property ElementID : UTF8String Read FElementID Write FElementID;
+    Property TagName : UTF8String Read FTagName Write FTagName;
+    Property InputType : UTF8String Read FInputType Write FInputType;
+    Property InputName : UTF8String Read FInputName Write FInputName;
+  end;
+
+  { TTagInfoList }
+
+  TTagInfoList = class(TCollection)
+  private
+    function GetTag(aIndex : Integer): TTagInfoItem;
+    procedure SetTag(aIndex : Integer; AValue: TTagInfoItem);
+  Public
+    function AddTagItem(const aElementID, aTag, aType, aName: String): TTagInfoItem;
+    Property Tags [aIndex : Integer] : TTagInfoItem Read GetTag Write SetTag; default;
+  end;
+
+
+  TExtractOptions = set of TExtractOption;
   THTMLExtractIDS = Class(TComponent)
   Private
     FBelowID: String;
     FLevel: Integer;
-    FList: TStrings;
+    FList: TTagInfoList;
+    FOptions: TExtractOptions;
   Protected
     procedure DoStartElement(Sender: TObject; const {%H-}NamespaceURI, {%H-}LocalName,
       {%H-}QName: SAXString; Atts: TSAXAttributes);  virtual;
     procedure DoEndElement(Sender: TObject; const {%H-}NamespaceURI, {%H-}LocalName,
       {%H-}QName: SAXString);  virtual;
-    Property List : TStrings Read FList;
+    Property List : TTagInfoList Read FList;
     Property Level : Integer Read FLevel Write FLevel;
   Public
-    Procedure ExtractIDS(aInput : TStream; aList : TStrings);
-    Function ExtractIDS(aInput : TStream) : TStringArray;
-    Procedure ExtractIDS(Const aFileName : String; aList : TStrings);
-    function ExtractIDS(const aFileName: String): TStringArray;
+    Procedure ExtractIDS(aInput : TStream; aList : TTagInfoList); overload;
+    Procedure ExtractIDS(aInput : TStream; aList : TStrings); overload;
+    Function ExtractIDS(aInput : TStream) : TStringArray; overload;
+    Procedure ExtractIDS(Const aFileName : String; aList : TTagInfoList); overload;
+    Procedure ExtractIDS(Const aFileName : String; aList : TStrings); overload;
+    function ExtractIDS(const aFileName: String): TStringArray; overload;
     Property BelowID : String Read FBelowID Write FBelowID;
+    Property Options : TExtractOptions Read FOptions Write FOptions;
   end;
 
   { TFormCodeGen }
@@ -338,13 +390,95 @@ implementation
 
 uses TypInfo, bufstream;
 
+{ TTagInfoList }
+
+function TTagInfoList.GetTag(aIndex : Integer): TTagInfoItem;
+begin
+  Result:=Items[aIndex] as TTagInfoItem;
+end;
+
+procedure TTagInfoList.SetTag(aIndex : Integer; AValue: TTagInfoItem);
+begin
+  Items[aIndex]:=aValue;
+end;
+
+function TTagInfoList.AddTagItem(const aElementID, aTag, aType, aName: String
+  ): TTagInfoItem;
+begin
+  Result:=TTagInfoItem(Add);
+  Result.ElementID:=aElementID;
+  Result.TagName:=aTag;
+  Result.InputType:=aType;
+  Result.InputName:=aName;
+end;
+
+{ TTagInfoItem }
+
+procedure TTagInfoItem.Assign(aSource: TPersistent);
+
+Var
+  Src : TTagInfoItem absolute aSource;
+
+begin
+  if aSource is TTagInfoItem then
+    begin
+    ElementID:=Src.ElementID;
+    InputName:=Src.InputName;
+    InputType:=Src.InputType;
+    TagName:=Src.TagName;
+    end
+  else
+    inherited Assign(aSource);
+end;
+
+function TTagInfoItem.ToString: String;
+begin
+  Result:=ElementID;
+  if (TagName<>'') or (InputType<>'') or (InputName<>'') then
+    Result:=Result+'=';
+  Result:=Result+TagName;
+  if InputType<>'' then
+    Result:=Result+'['+InputType+']';
+  if InputName<>'' then
+    Result:=Result+'('+InputName+')';
+end;
+
+{ TTagInfo }
+
+constructor TTagInfo.Create(const aTag, aType, aName: String);
+begin
+  FTag:=aTag;
+  FInputType:=aType;
+  FInputName:=aName;
+end;
+
+function TTagInfo.ToString: String;
+begin
+  Result:=FTag;
+  if FInputType<>'' then
+    Result:=Result+'['+FInputType+']'
+end;
+
 { THTMLExtractIDS }
 
 procedure THTMLExtractIDS.DoStartElement(Sender: TObject; const NamespaceURI, LocalName, QName: SAXString; Atts: TSAXAttributes);
 
+  function GetIndex(const aName: SAXString): Integer;
+
+  begin
+    Result := Atts.Length-1;
+    while (Result>=0) and not SameText(UTF8Encode(Atts.LocalNames[Result]),UTF8Encode(aName)) do
+      Dec(Result);
+  end;
+
 Var
-  aID: String;
+  aID,aTag,aType,aName: UTF8String;
+  Idx : Integer;
+
 begin
+  aTag:='';
+  aType:='';
+  aName:='';
   if Not Assigned(atts) then exit;
   aID:=UTF8Encode(Atts.GetValue('','id'));
   if (aID<>'') then
@@ -356,7 +490,19 @@ begin
       end
     else if (BelowID<>'') and (Level<=0) then
       Exit;
-    FList.Add(aID);
+    if eoExtraInfo in FOptions then
+      begin
+      aTag:=LowerCase(UTF8Encode(LocalName));
+      if SameText(aTag,'input') then
+        begin
+        idx:=GetIndex('type');
+        if Idx=-1 then
+          aType:='text'
+        else
+          aType:=LowerCase(Utf8Encode(Atts.LocalNames[Idx]));
+        end;
+      end;
+    FList.AddTagItem(aID,aTag,aType,aName);
     end;
 end;
 
@@ -367,6 +513,32 @@ begin
 end;
 
 procedure THTMLExtractIDS.ExtractIDS(aInput: TStream; aList: TStrings);
+
+Var
+  aCol : TTagInfoList;
+  aItm : TTagInfoItem;
+  obj : TTagInfo;
+  I : Integer;
+
+begin
+  Obj:=nil;
+  aCol:=TTagInfoList.Create(TTagInfoItem);
+  try
+    ExtractIDS(aInput,aCol);
+    For I:=0 to aCol.Count-1 do
+      begin
+      aItm:=aCol[i];
+      if eoExtraInfo in FOptions then
+        Obj:=TTagInfo.Create(aItm.TagName,aItm.InputType,aItm.InputName);
+      aList.AddObject(aItm.ElementID,Obj);
+      end;
+  finally
+    aCol.Free;
+  end;
+end;
+
+procedure THTMLExtractIDS.ExtractIDS(aInput: TStream; aList: TTagInfoList);
+
 var
   MyReader : THTMLReader;
 
@@ -380,25 +552,48 @@ begin
   finally
     FreeAndNil(MyReader);
   end;
-
 end;
 
 function THTMLExtractIDS.ExtractIDS(aInput: TStream): TStringArray;
 
 Var
   L : TStringList;
+  S : String;
   I : Integer;
 
 begin
   L:=TStringList.Create;
   try
+    L.OwnsObjects:=True;
     ExtractIDS(aInput,L);
     L.Sort;
     Setlength(Result{%H-},L.Count);
     For I:=0 to L.Count-1 do
-      Result[I]:=L[i];
+      begin
+      S:=L[i];
+      if Assigned(L.Objects[i]) then
+        S:=S+TTagInfo(L.Objects[i]).ToString;
+      Result[I]:=S;
+      end;
   finally
     L.Free;
+  end;
+end;
+
+procedure THTMLExtractIDS.ExtractIDS(const aFileName: String;
+  aList: TTagInfoList);
+Var
+  F : TFileStream;
+  B : TBufStream;
+
+begin
+  F:=TFileStream.Create(aFileName,fmOpenRead or fmShareDenyWrite);
+  try
+    B:=TReadBufStream.Create(F,4096);
+    B.SourceOwner:=True;
+    ExtractIDS(B,aList);
+  finally
+    B.Free;
   end;
 end;
 
@@ -424,6 +619,7 @@ function THTMLExtractIDS.ExtractIDS(const aFileName : String): TStringArray;
 Var
   L : TStringList;
   I : Integer;
+  S : String;
 
 begin
   L:=TStringList.Create;
@@ -432,7 +628,12 @@ begin
     L.Sort;
     Setlength(Result{%H-},L.Count);
     For I:=0 to L.Count-1 do
-      Result[I]:=L[i];
+      begin
+      S:=L[i];
+      if Assigned(L.Objects[i]) then
+        S:=S+TTagInfo(L.Objects[i]).ToString;
+      Result[I]:=S;
+      end;
   finally
     L.Free;
   end;

@@ -28,8 +28,6 @@ Type
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    procedure OnLoadSaveCustomData(Sender: TObject; Load: boolean;
-      CustomData: TStringToStringTree; PathDelimChanged: boolean);
     function OnProjectBuilding(Sender: TObject): TModalResult;
     function OnProjectGroupRunLazbuild({%H-}Target: TPGCompileTarget;
       Tool: TAbstractExternalTool): boolean;
@@ -45,8 +43,13 @@ Type
     Class Function instance :  TPJSController;
     Procedure Hook; virtual;
     Procedure UnHook; virtual;
+    // Determine project HTML file from custom data
+    class function GetProjectHTMLFilename(aProject: TLazProject): string;
+    // Get filename to show in browser when running
     function GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string; virtual;
+    // Return directory for webserver
     function GetWebDir(aProject: TLazProject): string; virtual;
+    // Get project URL.
     function GetProjectURL(aProject: TLazProject): string; virtual;
     Property OnRefresh : TNotifyEvent Read FOnRefresh Write FonRefresh;
   end;
@@ -55,14 +58,14 @@ Const
   // Custom settings in .lpi
   PJSProject = 'Pas2JSProject'; // Project is pas2js project
   PJSProjectWebBrowser =  'PasJSWebBrowserProject'; // Web browser project
-  PJSProjectHTMLFile = 'PasJSHTMLFile';
+  PJSProjectHTMLFile = 'PasJSHTMLFile' deprecated 'use TPJSController.GetProjectHTMLFilename'; // No longer used
   PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
   PJSProjectMaintainHTML = 'MaintainHTML';
   PJSProjectUseBrowserConsole = 'BrowserConsole';
   PJSProjectRunAtReady = 'RunAtReady';
   PJSProjectPort = 'PasJSPort';
   PJSProjectURL = 'PasJSURL';
-
+  PJSProjectHTMLBaseDir = 'HTMLDir';
 
 implementation
 
@@ -137,30 +140,6 @@ begin
     DebugLN(['Hint: (lazarus) [TPJSController.GetPas2jsProjectURL] Result="',Result,'"']);
 end;
 
-procedure TPJSController.OnLoadSaveCustomData(Sender: TObject; Load: boolean;
-  CustomData: TStringToStringTree; PathDelimChanged: boolean);
-var
-  fn: String;
-  aProject: TLazProject;
-begin
-  if Sender is TLazProject then
-    begin
-    aProject:=TLazProject(Sender);
-    if CustomData[PJSProjectWebBrowser]='1' then
-      begin
-      fn:=CustomData[PJSProjectHTMLFile];
-      if fn<>'' then
-        begin
-        if Load then
-          aProject.ConvertFromLPIFilename(fn)
-        else
-          aProject.ConvertToLPIFilename(fn);
-        CustomData[PJSProjectHTMLFile]:=fn;
-        end;
-      end;
-    end;
-  if PathDelimChanged then ;
-end;
 
 function TPJSController.OnProjectBuilding(Sender: TObject): TModalResult;
 var
@@ -198,12 +177,32 @@ begin
   Result:=RunProject(Sender,false,Handled);
 end;
 
-function TPJSController.GetHTMLFilename(aProject: TLazProject;
-  UseTestDir: boolean): string;
+class function TPJSController.GetProjectHTMLFilename(aProject: TLazProject): string;
+
+Var
+  I : Integer;
+
+begin
+  Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
+  If Result='' then
+    begin
+    I:=aProject.FileCount-1;
+    While (Result='') and (I>=0) do
+      begin
+      if aProject.Files[I].CustomData[PJSIsProjectHTMLFile]='1' then
+        Result:=aProject.Files[I].GetFullFilename;
+      Dec(I);
+      end;
+    end;
+end;
+
+function TPJSController.GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string;
+
 var
   HTMLFile: TLazProjectFile;
+
 begin
-  Result:=aProject.CustomData.Values[PJSProjectHTMLFile];
+  Result:=GetProjectHTMLFileName(aProject);
   if Result='' then exit;
   if aProject.IsVirtual then
     begin
@@ -372,7 +371,7 @@ var
 begin
   // if project has a pas2js html filename, save it to the test directory
   Result:=false;
-  HTMLFilename:=aProject.CustomData.Values[PJSProjectHTMLFile];
+  HTMLFilename:=GetProjectHTMLFilename(aProject);
   if (HTMLFilename='') then
     exit(true);
   if FilenameIsAbsolute(HTMLFilename) then
@@ -383,7 +382,7 @@ begin
   HTMLFile:=aProject.FindFile(HTMLFilename,[pfsfOnlyProjectFiles]);
   if HTMLFile=nil then
     begin
-    debugln(['Warning: TPJSController.SaveHTMLFileToTestDir invalid aProject.CustomData.Values[',PJSProjectHTMLFile,']']);
+    debugln(['Warning: TPJSController.SaveHTMLFileToTestDir invalid project filename [',HTMLFilename,']']);
     exit;
     end;
   HTMLFilename:=HTMLFile.Filename;
@@ -429,7 +428,6 @@ begin
   LazarusIDE.AddHandlerOnProjectBuilding(@OnProjectBuilding);
   LazarusIDE.AddHandlerOnRunDebugInit(@OnRunDebugInit);
   LazarusIDE.AddHandlerOnRunWithoutDebugInit(@OnRunWithoutDebugInit);
-  LazarusIDE.AddHandlerOnLoadSaveCustomData(@OnLoadSaveCustomData);
   ProjectGroupManager.AddHandlerOnRunLazbuild(@OnProjectGroupRunLazbuild);
 end;
 
