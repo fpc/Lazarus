@@ -35,6 +35,8 @@ Type
       ): TModalResult;
     function OnRunWithoutDebugInit(Sender: TObject; var Handled: boolean): TModalResult;
     function RunProject(Sender: TObject; WithDebug: boolean; var Handled: boolean): TModalResult;
+    function RunBrowserProject(aProject: TLazProject; WithDebug: boolean; var Handled: boolean): TModalResult;
+    function RunNonBrowserProject(aProject: TLazProject; WithDebug: boolean; var Handled: boolean): TModalResult;
     function SaveHTMLFileToTestDir(aProject: TLazProject): boolean;
   Public
     Constructor Create;
@@ -286,10 +288,7 @@ function TPJSController.RunProject(Sender: TObject; WithDebug: boolean;
   var Handled: boolean): TModalResult;
 var
   aProject: TLazProject;
-  IsWebProject: Boolean;
-  ServerPort: Integer;
-  WebDir, HTMLFilename, URL, WorkDir: String;
-  aServer: TSWSInstance;
+  IsWebProject, IsPSProject: Boolean;
 begin
   Result:=mrOk;
   if Sender=nil then ;
@@ -298,8 +297,29 @@ begin
   if aProject=nil then exit;
 
   IsWebProject:=aProject.CustomData[PJSProjectWebBrowser]='1';
-  if not IsWebProject then
+  if IsWebProject then
+    begin
+    Result:=RunBrowserProject(aProject,WithDebug,Handled);
     exit;
+    end;
+
+  IsPSProject:=aProject.CustomData[PJSProject]='1';
+  if IsPSProject then
+    begin
+    Result:=RunNonBrowserProject(aProject,WithDebug,Handled);
+    exit;
+    end;
+end;
+
+function TPJSController.RunBrowserProject(aProject: TLazProject;
+  WithDebug: boolean; var Handled: boolean): TModalResult;
+var
+  ServerPort: Integer;
+  WebDir, HTMLFilename, URL, WorkDir: String;
+  aServer: TSWSInstance;
+begin
+  Result:=mrOk;
+  aProject:=LazarusIDE.ActiveProject;
 
   if SimpleWebServerController.Options.ServerExe='compileserver'+GetExeExt then
     begin
@@ -364,6 +384,21 @@ begin
     if not SimpleWebServerController.OpenBrowserWithURL(URL,WorkDir) then
       exit(mrCancel);
     end;
+end;
+
+function TPJSController.RunNonBrowserProject(aProject: TLazProject;
+  WithDebug: boolean; var Handled: boolean): TModalResult;
+begin
+  Result:=mrOk;
+
+  if not WithDebug then
+    exit; // compile normally and run the run-parameters
+
+  if aProject=nil then ;
+
+  // for  now: redirect to run without debug
+  Handled:=true;
+  Result:=LazarusIDE.DoRunProjectWithoutDebug;
 end;
 
 function TPJSController.SaveHTMLFileToTestDir(aProject: TLazProject): boolean;
