@@ -1001,20 +1001,20 @@ end;
 procedure TProjectPas2JSElectronWebApp.AddHTMLHead(Src: TStringList);
 begin
   inherited AddHTMLHead(Src);
-  Src.Add('    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->');
-  Src.Add('    <meta http-equiv="Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
-  Src.Add('    <meta http-equiv="X-Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
+  Src.Add('  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->');
+  Src.Add('  <meta http-equiv="Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
+  Src.Add('  <meta http-equiv="X-Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
   Src.Add('');
 end;
 
 procedure TProjectPas2JSElectronWebApp.AddBody(Src: TStringList);
 begin
-  Src.Add('    <h1>Hello World!</h1>');
-  Src.Add('    <p>We are using Pas2JS <b><span id="pas2js-version"></span></b>,</p>');
-  Src.Add('    <p>Node <b><span id="node-version"></span></b>,</p>');
-  Src.Add('    <p>Chromium <b><span id="chrome-version"></span></b>,</p>');
-  Src.Add('    <p>and Electron <b><span id="electron-version"></span></b>.</p>');
-  Src.Add('    <p>Additionally, <span id="renderertext"></span></p>');
+  Src.Add('  <h1>Hello World!</h1>');
+  Src.Add('  <p>We are using Pas2JS <b><span id="pas2js-version"></span></b>,</p>');
+  Src.Add('  <p>Node <b><span id="node-version"></span></b>,</p>');
+  Src.Add('  <p>Chromium <b><span id="chrome-version"></span></b>,</p>');
+  Src.Add('  <p>and Electron <b><span id="electron-version"></span></b>.</p>');
+  Src.Add('  <p>Additionally, <span id="renderertext"></span></p>');
   inherited AddBody(Src);
 end;
 
@@ -1053,7 +1053,6 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(PreloadLPR);
-  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
 
   Src:=TStringList.Create;
   try
@@ -1130,7 +1129,6 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultWebCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(RenderLPR);
-  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
 
   Src:=TStringList.Create;
   try
@@ -1191,7 +1189,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultWebCompileOptions(CompOpts);
+  SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(MainSrcName);
 
   Units:='';
@@ -1216,7 +1214,7 @@ begin
     Src.Add('  opts.width:=800;');
     Src.Add('  opts.height:=600;');
     Src.Add('  opts.webPreferences:=TWebPreferences.New;');
-    Src.Add('  opts.webPreferences.preload:=NJS_Path.join(__dirname,'''+PreloadJS+''');');
+    Src.Add('  opts.webPreferences.preload:=NJS_Path.join(__dirname,'''+FileToWebFile(PreloadJS)+''');');
     Src.Add('  win:=Electron.TBrowserWindow.new(opts);');
     Src.Add('  win.loadFile(''index.html'');');
     Src.Add('end;');
@@ -1318,9 +1316,9 @@ begin
   // start with the preload project
   AProject.ProjectInfoFile:=PreloadLPI;
 
-  // set compiler and TargetOS
+  // set compiler and TargetOS (Note: must match the last project)
   CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultWebCompileOptions(CompOpts);
+  SetDefaultNodeJSCompileOptions(CompOpts);
 
   // all three projects can run the electron app
   RunMode:=AProject.RunParameters.GetOrCreate('default');
