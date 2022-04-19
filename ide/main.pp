@@ -7345,7 +7345,7 @@ end;
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
   Process: TProcessUTF8;
-  RunCmdLine, RunWorkingDirectory, ExeFile: string;
+  RunCmdLine, RunWorkingDirectory, ExeFile, aFilename: string;
   Params: TStringList;
   Handled: Boolean;
   ARunMode: TRunParamsOptionsMode;
@@ -7374,6 +7374,16 @@ begin
     Exit(mrNone);
   end;
 
+  ARunMode := Project1.RunParameterOptions.GetActiveMode;
+  if ARunMode<>nil then
+    RunWorkingDirectory := ARunMode.WorkingDirectory
+  else
+    RunWorkingDirectory := '';
+  if not GlobalMacroList.SubstituteStr(RunWorkingDirectory) then
+    RunWorkingDirectory := '';
+  if (RunWorkingDirectory='') and (not Project1.IsVirtual) then
+    RunWorkingDirectory := ChompPathDelim(Project1.Directory);
+
   Params := TStringList.Create;
   Process := TProcessUTF8.Create(nil);
   try
@@ -7386,19 +7396,19 @@ begin
     end;
     ExeFile := Params[0];
     Params.Delete(0);
-    //writeln('TMainIDE.DoRunProjectWithoutDebug ExeFile=',ExeFile);
-    Process.Executable := ExeFile;
-    Process.Parameters.Assign(Params);
-    ARunMode := Project1.RunParameterOptions.GetActiveMode;
+    //debugln('TMainIDE.DoRunProjectWithoutDebug ExeFile=',ExeFile);
+    if not FilenameIsAbsolute(ExeFile) then
+    begin
+      aFilename:=FindDefaultExecutablePath(ExeFile);
+      if aFilename<>'' then
+        ExeFile:=aFilename;
+    end;
 
-    if ARunMode<>nil then
-      RunWorkingDirectory := ARunMode.WorkingDirectory
-    else
-      RunWorkingDirectory := '';
-    if not GlobalMacroList.SubstituteStr(RunWorkingDirectory) then
-      RunWorkingDirectory := '';
     if RunWorkingDirectory = '' then
       RunWorkingDirectory := ExtractFilePath(ExeFile);
+
+    Process.Executable := ExeFile;
+    Process.Parameters.Assign(Params);
     Process.CurrentDirectory := RunWorkingDirectory;
 
     if MainBuildBoss.GetProjectUsesAppBundle
