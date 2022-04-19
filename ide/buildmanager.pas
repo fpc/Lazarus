@@ -88,9 +88,7 @@ type
     // cache
     FFPCompilerFilename: string;
     FFPCompilerFilenameStamp: Integer;
-    {$IFDEF EnableDefaultMacroEnvVar}
     fEnv: TStringDynArray;
-    {$ENDIF}
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetTargetFilename: String;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
@@ -308,15 +306,12 @@ end;
 procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt; var Handled,
   Abort: boolean; Depth: integer);
-{$IFDEF EnableDefaultMacroEnvVar}
 var
   VarCnt, i: Integer;
   EnvStr, UpperMacroName: String;
   p: SizeInt;
-{$ENDIF}
 begin
   if TheMacro=nil then begin
-    {$IFDEF EnableDefaultMacroEnvVar}
     if s='' then begin
       // default: use uppercase environment variable
       VarCnt:=GetEnvironmentVariableCountUTF8;
@@ -330,7 +325,11 @@ begin
         EnvStr:=fEnv[i];
         p:=Pos('=',EnvStr);
         if p<2 then continue;
+        {$IFDEF Windows}
+        if UTF8CompareText(UpperMacroName,LeftStr(EnvStr,p-1))=0 then
+        {$ELSE}
         if (p-1=length(UpperMacroName)) and CompareMem(@UpperMacroName[1],@EnvStr[1],p-1) then
+        {$ENDIF}
         begin
           Handled:=true;
           s:=copy(EnvStr,p+1,length(EnvStr));
@@ -338,7 +337,6 @@ begin
         end;
       end;
     end;
-    {$ENDIF}
 
     if ConsoleVerbosity>=0 then
       DebugLn('Warning: (lazarus) Macro not defined: "'+MacroName+'".');
