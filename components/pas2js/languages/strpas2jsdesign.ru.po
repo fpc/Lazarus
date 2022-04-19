@@ -21,7 +21,7 @@ msgstr "Каталог шаблона пакета Atom"
 
 #: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
 msgid "A pas2js Web Application using Electron to run as desktop application."
-msgstr ""
+msgstr "Веб-приложение pas2js, использующее Electron для работы в качестве классического."
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
@@ -46,11 +46,11 @@ msgstr "каталог \"%s\" не найден"
 
 #: strpas2jsdesign.pjsdelectronwebapplication
 msgid "Electron Web Application"
-msgstr ""
+msgstr "Веб-приложение на Electron"
 
 #: strpas2jsdesign.pjsderror
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
@@ -115,7 +115,7 @@ msgstr "Программа pas2js, запускаемая в качестве п
 
 #: strpas2jsdesign.pjsdnewprojectfile
 msgid "New project file"
-msgstr ""
+msgstr "Новый файл проекта"
 
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
@@ -139,11 +139,11 @@ msgstr "Параметры проекта NodeJS"
 
 #: strpas2jsdesign.pjsdoverwrite
 msgid "Overwrite?"
-msgstr ""
+msgstr "Перезаписать?"
 
 #: strpas2jsdesign.pjsdoverwritefiles
 msgid "Overwrite files:"
-msgstr ""
+msgstr "Перезаписать файлы:"
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
@@ -177,17 +177,15 @@ msgstr "Путь к %s, макрос $(pas2js)"
 
 #: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
 msgid "Please choose a file with full path."
-msgstr ""
+msgstr "Следует указать полный путь при выборе файла."
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr "Начало диапазона запрашиваемых портов, макрос $(Pas2JSWebServerPort)"
 
 #: strpas2jsdesign.pjsdprogressivewebappdescription
-#, fuzzy
-#| msgid "A Web Application using a service worker, a manifest, and more to be installable."
 msgid "A pas2js Web Application using a service worker, a manifest, and more to be installable."
-msgstr "Веб-приложение, использующее вспомогательный процесс, файл описания (manifest) и другие средства для обеспечения возможности быть установленным."
+msgstr "Веб-приложение pas2js, использующее вспомогательный процесс, файл описания (manifest) и другие средства для обеспечения возможности быть установленным."
 
 #: strpas2jsdesign.pjsdprogressivewebapplication
 msgid "Progressive Web Application"
@@ -203,7 +201,7 @@ msgstr "Проект предназначен для веб-браузера (pa
 
 #: strpas2jsdesign.pjsdprojectpascalfile
 msgid "Project Pascal file"
-msgstr ""
+msgstr "Файл проекта на Паскале"
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
@@ -301,7 +299,7 @@ msgstr "Веб-проект (pas2js)"
 
 #: strpas2jsdesign.pjsdwebserverandbrowseroptions
 msgid "Web server and browser options"
-msgstr ""
+msgstr "Параметры веб-сервера и браузера"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
