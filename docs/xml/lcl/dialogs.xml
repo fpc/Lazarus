@@ -876,7 +876,7 @@
         <short/>
       </element>
       <element name="TOpenOption.ofAllowMultiSelect">
-        <short>allow multiselection.</short>
+        <short>Enaboles multi-selection.</short>
       </element>
       <element name="TOpenOption.ofExtensionDifferent">
         <short/>
@@ -3630,7 +3630,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>ExpandButtonCaption</var> is a TTranslateString property with the caption text displayed beside the button used to expand or collapse the ExpandedText on the Task dialog. The property value can be localized using the standard LCL translation facilities.
           </p>
            <p>
-             The default value for the property is an empty String (''), and cause the values "See details" or "Hide details" to be used on the Task dialog (when the lanuguage is English). Setting a value for the property causes the same caption to be displayed for both the expanded and collapsed states; only the button indicator changes.
+             The default value for the property is an empty String (''), and cause the values "See details" or "Hide details" to be used on the Task dialog (when the language is English). Setting a value for the property causes the same caption to be displayed for both the expanded and collapsed states; only the button indicator changes.
            </p>
            <p>
              Use the Flags property to control the position (tfExpandFooterArea) or the expanded / collapsed state (tfExpandedByDefault) for the ExpandedText on the Task dialog.

@@ -2050,7 +2050,7 @@
         </short>
         <descr>
           <p>
-            <var>OnCanResize</var> is a <var>TCanResizeEvent</var> proprety with the event handler signalled to determine if the splitter control can be resized. OnCanResise is signalled (when assigned) from the <var>CheckNewSize</var> method using the splitter control and the new size for the anchored control as arguments. The <var>Accept</var> argument can be updated in the event handler to indicate whether the new size is acceptable (True) or rejected (False).
+            <var>OnCanResize</var> is a <var>TCanResizeEvent</var> property with the event handler signalled to determine if the splitter control can be resized. OnCanResise is signalled (when assigned) from the <var>CheckNewSize</var> method using the splitter control and the new size for the anchored control as arguments. The <var>Accept</var> argument can be updated in the event handler to indicate whether the new size is acceptable (True) or rejected (False).
           </p>
         </descr>
         <seealso>
@@ -2061,7 +2061,9 @@
       </element>
 
       <element name="TCustomSplitter.OnMoved">
-        <short>Event handler signalled when the splitter has been dragged / moved.</short>
+        <short>
+          Event handler signalled when the splitter has been dragged / moved.
+        </short>
         <descr>
           <p>
             <var>OnMoved</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the  splitter control has been dragged / moved. It is signalled (when assigned) from the <var>StopSplitterMove</var> method when the mouse button is released to end the drag operation. It occurs after the splitter has been moved using the <var>MoveSplitter</var> method.
@@ -7156,7 +7158,9 @@
         </seealso>
       </element>
       <element name="TBandDrawingStyle.dsNormal">
-        <short>Bands are drawn noramlly using the color for the control bar.</short>
+        <short>
+          Bands are drawn normally using the color for the control bar.
+        </short>
       </element>
       <element name="TBandDrawingStyle.dsGradient">
         <short>Bands are drawn using a gradient for the background colors.</short>

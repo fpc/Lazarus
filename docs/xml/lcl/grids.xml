@@ -2927,7 +2927,7 @@
             <li>IsDefaultFont returns True.</li>
           </ul>
           <p>
-            IsDefault is when the coloumns for the parent grid are streamed using the LCL component streaming mechanism. Columns which contain default values (including the title) are not written during component streaming.
+            IsDefault is when the columns for the parent grid are streamed using the LCL component streaming mechanism. Columns which contain default values (including the title) are not written during component streaming.
           </p>
         </descr>
         <seealso>
@@ -4601,13 +4601,13 @@
       </element>
 
       <element name="TGridDataCache.AccumWidth">
-        <short>Cumulative preceeding width per grid column.</short>
+        <short>Cumulative preceding width per grid column.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TGridDataCache.AccumHeight">
-        <short>Cumulative preceeding height per grid row.</short>
+        <short>Cumulative preceding height per grid row.</short>
         <descr/>
         <seealso/>
       </element>
@@ -8797,7 +8797,7 @@
         <short>Gets the default text used as the column title for the specified column number.</short>
         <descr>
           <p>
-            <var>GetDefaultColumnTitle</var> provides the text used for the specified column number when <var>Columns</var> have not been enabled for the grid control. GetDefaultColumnTitle always returns an empty strng ('') in <var>TCustomGrid</var>.
+            <var>GetDefaultColumnTitle</var> provides the text used for the specified column number when <var>Columns</var> have not been enabled for the grid control. GetDefaultColumnTitle always returns an empty string ('') in <var>TCustomGrid</var>.
           </p>
           <p>
             GetDefaultColumnTitle is called from the <var>GetColumnTitle</var> method.
@@ -8959,7 +8959,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.GetScrollBarPosition.Result">
-        <short>Current position in the secified scrollbar.</short>
+        <short>Current position in the specified scrollbar.</short>
       </element>
       <element name="TCustomGrid.GetScrollBarPosition.Which">
         <short>Indicates the scrollbar (horizontal or vertical) examined in the method.</short>
@@ -9765,7 +9765,7 @@
             </dd>
           </dl>
           <p>
-            MouseMove sets the Hint displayed for the cell under the mouse pointer when ShowHint is enabled. Values in Hint, CellHintPriority, Options, and the OnGetCellHint event hander are used for the purpose. If the mouse pointer is not over a cell, the Hint for the application is reset to a previous hint or an empty string ('') when saved hint text is not available.
+            MouseMove sets the Hint displayed for the cell under the mouse pointer when ShowHint is enabled. Values in Hint, CellHintPriority, Options, and the OnGetCellHint event handler are used for the purpose. If the mouse pointer is not over a cell, the Hint for the application is reset to a previous hint or an empty string ('') when saved hint text is not available.
           </p>
           <p>
             Called from WMMouseMove when a LM_MOUSEMOVE window message is handled for the grid control.
@@ -11335,7 +11335,7 @@
             <var>EditorMode</var> is a <var>Boolean</var> property which indicates whether the cell <var>Editor</var> has been enabled for the grid control. Set EditorMode to <b>True</b> to display the cell Editor for the control. Set it to <b>False</b> to hide the cell Editor.
           </p>
           <p>
-            The value in EditorMode is updated when handling key presses and mouse clicks, scrolling the visible area for the control, or changing the configration of the grid.
+            The value in EditorMode is updated when handling key presses and mouse clicks, scrolling the visible area for the control, or changing the configuration of the grid.
           </p>
         </descr>
         <seealso>
@@ -13516,7 +13516,7 @@
             <var>ColRowDeleted</var> is an overridden method used to remove the specified column or row, and perform a notification for the change.
           </p>
           <p>
-            <var>IsColumn</var> indicates whether a column or a row is affected in the method. When set to True, a column is removed. Othewise, a row is removed.
+            <var>IsColumn</var> indicates whether a column or a row is affected in the method. When set to True, a column is removed. Otherwise, a row is removed.
           </p>
           <p>
             <var>Index</var> contains the column or row number removed in the method.
@@ -13873,7 +13873,7 @@
             <var>WasInsert</var> determines the event handler signalled in the method. When WasInsert is set to <b>True</b>, the <var>OnColRowInserted</var> event handler is signalled (when assigned). When set to <b>False</b>, the <var>OnColRowDeleted</var> event handler is signalled (when assigned).
           </p>
           <p>
-            <var>FromIndex</var> and <var>ToIndex</var> indicate the column(s) or row(s) affected by the change. FromIndex has the column or row number where the action was performed. When a column or row was inserted, ToIndex has the same value as FromIndex. For changes to <var>ColCout</var> or <var>RowCount</var>, FromIndex and ToIndex contain the column or row count prior to and following the change.
+            <var>FromIndex</var> and <var>ToIndex</var> indicate the column(s) or row(s) affected by the change. FromIndex has the column or row number where the action was performed. When a column or row was inserted, ToIndex has the same value as FromIndex. For changes to <var>ColCount</var> or <var>RowCount</var>, FromIndex and ToIndex contain the column or row count prior to and following the change.
           </p>
           <p>
             NotifyColRowChange is called from methods like <var>ColRowInserted</var>, <var>ColRowDeleted</var>, and <var>SizeChanged</var>.
@@ -15765,7 +15765,7 @@
             While values in Cells and Objects are related, they are handled independently. The value in Objects is not changed when a new value is assigned  to Cells.
           </p>
           <p>
-            Values stored in Objects are set to Nil when the Clean method is callled to remove content in the grid. The application is responsible for allocating and freeing resources in Objects.
+            Values stored in Objects are set to Nil when the Clean method is called to remove content in the grid. The application is responsible for allocating and freeing resources in Objects.
           </p>
           <p>
             Values for the Objects property are not included in the grid data read and written during LCL component streaming. They are not handled by the LoadContent and SaveContent either. The property values are available at run-time only.
@@ -16177,7 +16177,7 @@
               <var>goVertLine, goHorzLine</var>
             </dt>
             <dd>
-              The same as previous, but for the normal browseable area. A grid can be made to simulate a listbox by unsetting both of these options.
+              The same as previous, but for the normal browseable area. A grid can be made to simulate the visual appearance of a listbox by removing both of these options.
             </dd>
             <dt>
               <var>goDrawFocusSelected</var>

@@ -262,7 +262,9 @@
           </p>
           <dl>
               <dt><b>\</b></dt>
-              <dd>Quotes the following character; ie. '\-' inserts the literal '-' character</dd>
+              <dd>
+                Quotes the following character; i. e. '\-' inserts the literal '-' character
+              </dd>
               <dt><b>&lt;</b></dt>
               <dd>Converts following characters to upper case</dd>
               <dt><b>&gt;</b></dt>
@@ -2191,7 +2193,7 @@
             InsertRowWithValues inserts the key name and value in Strings at the specified position using the "Key=Value" convention used in the control.
           </p>
           <p>
-            Use <var>InsertRow</var> to insert a new row using seperate key and item value parameters.
+            Use <var>InsertRow</var> to insert a new row using separate key and item value parameters.
           </p>
         </descr>
         <seealso>

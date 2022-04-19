@@ -43,10 +43,12 @@
       <element name="Forms"/>
 
       <element name="TAutoCompleteOption">
-        <short>Enumerated type with values representing the autocomplete options used in TComboBoxEx.</short>
+        <short>
+          Enumerated type with values representing the auto-complete options used in TComboBoxEx.
+        </short>
         <descr>
           <p>
-            <var>TAutoCompleteOption</var> is an enumerated type with values representing the autocomplete options used in <var>TCustomComboBoxEx</var> and    <var>TComboBoxEx</var>. Values from the enumeration are stored in the <var>TAutoCompleteOptions</var> set type used to implement the <var>AutoCompleteOptions</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. Including a value from the enumeration in the TAutoCompleteOptions set enables the corresponding feature.
+            <var>TAutoCompleteOption</var> is an enumerated type with values representing the autocomplete options used in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. Values from the enumeration are stored in the <var>TAutoCompleteOptions</var> set type used to implement the <var>AutoCompleteOptions</var> property in <var>TCustomComboBoxEx</var> and <var>TComboBoxEx</var>. Including a value from the enumeration in the TAutoCompleteOptions set enables the corresponding feature.
           </p>
         </descr>
         <seealso>
@@ -62,7 +64,9 @@
         <short>Enables auto-appending items to the combo-box.</short>
       </element>
       <element name="TAutoCompleteOption.acoSearch">
-        <short>Enables searching items for the current value in the edit control.</short>
+        <short>
+          Enables searching items for the current value in the edit control.
+        </short>
       </element>
       <element name="TAutoCompleteOption.acoFilterPrefixes">
         <short>Enables prefixes in the filter for the control.</short>
@@ -71,10 +75,14 @@
         <short>Enables Tab key navigation in the control.</short>
       </element>
       <element name="TAutoCompleteOption.acoUpDownKeyDropsList">
-        <short>Enables toggling the visibility of the drop down using Up and Down cursor keys.</short>
+        <short>
+          Enables toggling the visibility of the drop down using Up and Down cursor keys.
+        </short>
       </element>
       <element name="TAutoCompleteOption.acoRtlReading">
-        <short>Enables Right-to-Left text rendering (BiDi Mode) in the control.</short>
+        <short>
+          Enables Right-to-Left text rendering (BiDi Mode) in the control.
+        </short>
       </element>
 
       <element name="TAutoCompleteOptions">

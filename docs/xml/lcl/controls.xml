@@ -10006,7 +10006,7 @@
         </short>
         <descr>
           <p>
-            GetChildAccessibleObjectAtPos returns the accesibility object at the position expressed in client coordinates. This method is provided for controls which wish to override this behavior without sub-classing TLazAccessibleObject.
+            GetChildAccessibleObjectAtPos returns the accessibility object at the position expressed in client coordinates. This method is provided for controls which wish to override this behavior without sub-classing TLazAccessibleObject.
           </p>
         </descr>
         <seealso>
@@ -10567,7 +10567,7 @@
             GetDefaultColor uses the value provided by the corresponding method in the widgetset class instance when a value other than clDefault is returned. When not resolved in the widgetset class, the return value is retrieved using the Parent color or the local values in the class instance. If <var>ParentColor</var> is <b>True</b> (and <var>Parent</var> is assigned), the GetDefaultColor method in the Parent control is called to get the specified color type. Otherwise, one of the values from the preceding list is used for the color type.
           </p>
           <p>
-            GetDefaultColor is a virtual method and can be overridden in descedent classes to use the colors needed for a specific control.
+            GetDefaultColor is a virtual method and can be overridden in descendent classes to use the colors needed for a specific control.
           </p>
           <p>
             GetDefaultColor is used in the implementation of the GetColorResolvingParent and GetRGBColorResolvingParent methods. It is also called from the SetColor and CreateBrush methods in the TWinControl descendant.
@@ -11110,7 +11110,7 @@
             The return value is <b>True</b> when the Visible property is set to <b>True</b>. The value is <b>False</b> at design-time if the ControlStyle property includes the value csNoDesignVisible. IsControlVisible does not check the visibility for parent controls in the control hierarchy.
           </p>
           <p>
-            Use IsVisible to consider the visiblity for any Parent controls.
+            Use IsVisible to consider the visibility for any Parent controls.
           </p>
         </descr>
         <seealso>
@@ -12523,7 +12523,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Event handler signalled when the Bounds of the control have been changed.</short>
         <descr>
           <p>
-            <var>OnChangeBounds</var> is signalled from the DoOnChangeBounds method (when assigned). It occurs after the internal control flags have been updated to excelude cfOnChangeBoundsNeeded, and before DoCallNotifyHandler is called to notify handlers for the chtOnChangeBounds type.
+            <var>OnChangeBounds</var> is signalled from the DoOnChangeBounds method (when assigned). It occurs after the internal control flags have been updated to exclude cfOnChangeBoundsNeeded, and before DoCallNotifyHandler is called to notify handlers for the chtOnChangeBounds type.
           </p>
         </descr>
         <seealso>
@@ -13231,7 +13231,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Enlarge children equally, i.e. by the same amount of pixels.</short>
         <descr>
           <p>
-            Enlarge children equally. Children are resized to their normal/adviced size. If there is some space left in the client area of the parent, then the remaining space is distributed equally to each child.
+            Enlarge children equally. Children are resized to their normal/advised size. If there is space left in the client area of the parent, the remaining space is distributed equally to each child.
           </p>
           <p>
             For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, then 60/3=20 is added to each Child.

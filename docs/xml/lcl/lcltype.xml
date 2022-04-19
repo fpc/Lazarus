@@ -774,7 +774,7 @@
       <element name="DT_EDITCONTROL">
         <short>
           <var>DrawText</var> formatting:
-           emulate behavior of a multiline EDIT control.
+           emulates the behavior of a multi-line edit control.
         </short>
         <descr/>
         <seealso/>

@@ -174,7 +174,7 @@
       </element>
       <element name="TWindowState.wsFullScreen">
         <short>
-          The window appears in full screen mode, when allowed by the platform. It will, for example, attempt to appear on the top of taskbars and other static platform user interface elements. wsFullScreen is converted to wsMaximized for use on the the Windows platform; the API does not provide a full screen option.
+          The window appears in full screen mode, when allowed by the platform. It will, for example, attempt to appear on the top of task bars and other static platform user interface elements. wsFullScreen is converted to wsMaximized for use on the the Windows platform; the API does not provide a full screen option.
         </short>
       </element>
 
@@ -6169,7 +6169,7 @@
         <short>Arranges MDI child forms so they overlap.</short>
         <descr>
           <p>
-            Cascade is a method used to arrange MDI Chid forms so that they overlap in a cascading fashion.
+            Cascade is a method used to arrange MDI Child forms so that they overlap in a cascading fashion.
           </p>
           <p>
             No actions are performed in the method when FormStyle has a value other than fsMDIForm. At run-time, the Cascade method in the widgetset class is called when its Handle has been allocated.
@@ -13384,7 +13384,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            <var>OnUserInput</var> is a <var>TOnUserInputEvent</var> property with the event handler signalled when an input message is available in the processing loop for the widgetset class. It is signalled (when assigned) from the <var>NotifyUserInputHandler</var> method, and occurs before other application handlers using the <var>ahtUserInput</var> type are notififed.
+            <var>OnUserInput</var> is a <var>TOnUserInputEvent</var> property with the event handler signalled when an input message is available in the processing loop for the widgetset class. It is signalled (when assigned) from the <var>NotifyUserInputHandler</var> method, and occurs before other application handlers using the <var>ahtUserInput</var> type are notified.
           </p>
         </descr>
         <seealso>

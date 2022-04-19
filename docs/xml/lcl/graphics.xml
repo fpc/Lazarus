@@ -2488,8 +2488,7 @@
         <short>Rotation for the current font in 1/10ths of a degree.</short>
         <descr>
           <p>
-            <var>Orientation</var> is an
-            <var>Integer</var> property which contains the rotation angle used for text in 1/10ths of a degree. The rotation angle is determined by the relationship between the X Axis for the Canvas and the baseline for the font,  and uses the following directionality:
+            <var>Orientation</var> is an <var>Integer</var> property which contains the rotation angle used for text in 1/10ths of a degree. The rotation angle is determined by the relationship between the X Axis for the Canvas and the baseline for the font, and uses the following directions:
           </p>
           <table>
             <caption>Orientation Values and Directions</caption>
@@ -2510,9 +2509,11 @@
               <td>Text is drawn vertically from top to bottom.</td>
             </tr>
           </table>
-          <p>Setting a new value for the property causes the font Reference to be re-created, and calls Changes to signal the OnChange event handler (when assigned).
+          <p>
+            Setting a new value for the property causes the font Reference to be re-created, and calls Changes to signal the OnChange event handler (when assigned).
           </p>
-          <p>The default value for the property is <b>0</b> (<b>zero</b>).
+          <p>
+            The default value for the property is <b>0</b> (<b>zero</b>).
           </p>
         </descr>
       </element>
@@ -6257,7 +6258,7 @@
       </element>
       <element name="TCanvas.SetClipping">
         <short>
-          <var>SetClipping</var> specifies (via boolean argument) whether clipping is to be performed.
+          <var>SetClipping</var> specifies whether clipping is to be performed.
        </short>
         <descr/>
         <seealso/>
@@ -8278,19 +8279,21 @@
        </short>
         <descr>
           <p>
-            <var>IsEmpy</var> is a
-            <var>Boolean</var> function which indicates if image content has been assigned for the shared image. The return value is <b>True</b> when both the Handle and the <var>SaveStream</var> for the shared image are unassigned. Specifically, Handle contains <b>0</b> and SaveStream is <b>Nil</b>.
+            <var>IsEmpty</var> is a <var>Boolean</var> function which indicates if image content has been assigned for the shared image. The return value is <b>True</b> when both the Handle and the <var>SaveStream</var> for the shared image are unassigned. Specifically, Handle contains <b>0</b> and SaveStream is <b>Nil</b>.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TSharedRasterImage.IsEmpty.Result">
-        <short/>
+        <short>
+          True if both the handle and the storage stream are not assigned.
+        </short>
       </element>
       <element name="TSharedRasterImage.Create">
         <short>Constructor for the class instance.</short>
         <descr>
-          <p>Create is the constructor for the class instance, and calls the inherited constructor on entry.
+          <p>
+            Create is the constructor for the class instance, and calls the inherited constructor on entry.
           </p>
         </descr>
         <seealso>
@@ -9530,7 +9533,8 @@
       <element name="TRasterImage.Mask">
         <short>Applies the color used for transparent pixels to the image.</short>
         <descr>
-          <p>Calls CreateMask to create and appy the mask handle required for the fixed color transparency.
+          <p>
+            Calls CreateMask to create and apply the mask handle required for the fixed color transparency.
           </p>
         </descr>
         <seealso/>
@@ -9733,15 +9737,17 @@
         <short>Color used for transparent pixels in the image.</short>
         <descr>
           <p>
-            <var>TransparentColor</var> is a
-            <var>TColor</var> property which indicates the color used for transparent pixels in the raw image data. The default value for the property is
+            <var>TransparentColor</var> is a <var>TColor</var> property which indicates the color used for transparent pixels in the raw image data. The default value for the property is
             <var>clDefault</var>.
           </p>
-          <p>TransparentColor is used along with <var>TransparentMode</var> to determine whether a fixed color is used for transparency, or if the tranparent color is read from a specified pixel in the raw image data.
+          <p>
+            TransparentColor is used along with <var>TransparentMode</var> to determine whether a fixed color is used for transparency, or if the transparent color is read from a specified pixel in the raw image data.
           </p>
-          <p>When TransparentColor contains <var>clDefault</var>, the <var>RequestTransparentColor</var> method is used to get the transparency color value from the bottom-left pixel in the raw image data.
+          <p>
+            When TransparentColor contains <var>clDefault</var>, the <var>RequestTransparentColor</var> method is used to get the transparency color value from the bottom-left pixel in the raw image data.
           </p>
-          <p>When setting a new value for the property, the TransparentMode property is updated as well. When clDefault is assigned to the property, TransparentMode is set to <var>tmAuto</var>.  For other color values, TransparentMode is set to <var>tmFixed</var>.
+          <p>
+            When setting a new value for the property, the TransparentMode property is updated as well. When clDefault is assigned to the property, TransparentMode is set to <var>tmAuto</var>.  For other color values, TransparentMode is set to <var>tmFixed</var>.
           </p>
           <p>
             <var>MaskHandleAllocated</var> is called to determine if a HBITMAP handle has been allocated for the MaskHandle property. When <b>True</b>, the <var>MaskHandle</var> is reset to 0 to indicate the handle is no longer in use or is invalid.
@@ -9940,7 +9946,7 @@
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is theoverridden destructor for
+            <var>Destroy</var> is the overridden destructor for
             <var>TSharedCustomBitmap</var>.
           </p>
           <p>Destroy frees the internal save stream for the class instance. It also calls FreeHandle and FreeImage to free the handle and the raw image data for the shared bitmap. Calls the inherited destructor prior to exiting from the method.
@@ -10272,7 +10278,7 @@
         <short>Gets a pointer to the image descriptor for the shared Bitmap image.
         </short>
         <descr>
-          <p>Calls <var>RawimageNeeded</var> to ensure that the image desriptor is valid.
+          <p>Calls <var>RawimageNeeded</var> to ensure that the image descriptor is valid.
           </p>
         </descr>
         <seealso>
@@ -12205,7 +12211,7 @@
             <var>ReadStream</var> is an overridden procedure used to read the content for the icon from the stream specified in
             <var>AStream</var>. ReadStream implements the abstract virtual method defined in the ancestor class.
           </p>
-          <p>ReadStream verifies that AStream contains an icon image by checking for header value(s) that are valid for .ICO data. If the header values are nopt found, an <var>EInvalidGraphic</var> exception is raised.
+          <p>ReadStream verifies that AStream contains an icon image by checking for header value(s) that are valid for .ICO data. If the header values are not found, an <var>EInvalidGraphic</var> exception is raised.
           </p>
           <p>For icon data, the icon directory must be read from the stream. The header contains the number of icon directory entries included in the stream. The icon directory entries are read from AStream, and include values for each icon image that includes:
           </p>
@@ -12215,7 +12221,7 @@
             <li>BytesInRes</li>
             <li>ImageOffset</li>
           </ul>
-          <p>ReadStream positions the stream, and reads image data for the each of the icon directory entries. It handles both DIB Bitmap and PNG (used in WIndows Vista) image data for the icon images. An  FCL-compatible image reader is created as required for the image type, and a <var>TLazIntfImage</var> instance is used to capture the raw image data from the stream. Images read from the stream are added to the internal list of images in the <var>TSharedIcon</var> member for the class instance.
+          <p>ReadStream positions the stream, and reads image data for the each of the icon directory entries. It handles both DIB Bitmap and PNG (used in Windows Vista) image data for the icon images. An  FCL-compatible image reader is created as required for the image type, and a <var>TLazIntfImage</var> instance is used to capture the raw image data from the stream. Images read from the stream are added to the internal list of images in the <var>TSharedIcon</var> member for the class instance.
           </p>
           <p>ReadStream calls <var>CheckRequestedSize</var> to use the <var>Width</var> and/or <var>Height</var> specified in the class instance. <var>GetBestIndexForSize</var> is called to determine the value in <var>Current</var> with the requested image size.
           </p>

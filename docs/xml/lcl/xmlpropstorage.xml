@@ -9,10 +9,16 @@
     -->
 
     <module name="XMLPropStorage">
-      <short>Contains a component that stores Form Session Properties in XML format.</short>
+      <short>
+        Contains a component that stores Form Session Properties in XML format.
+      </short>
       <descr>
-        <p>In this unit you can find an implementation of a name/value pair storage container in XML format.</p>
-        <p>This container will get the Form's Session Properties that you setup in <link id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on the file you specify on <link id="#LCL.XmlPropStorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link>.</p>
+        <p>
+          In this unit you can find an implementation of a name/value pair storage container in XML format.
+        </p>
+        <p>
+          This container will get the Form's Session Properties that you setup in <link id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on the file you specify on <link id="#LCL.XmlPropStorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link>.
+        </p>
       </descr>
 
       <!-- unresolved type references -->
@@ -29,7 +35,9 @@
 
       <!-- object Visibility: default -->
       <element name="TPropStorageXMLConfig">
-        <short>Wrapper class around <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.<url href="http://wiki.freepascal.org/TXMLConfig">TXMLConfig</url>.</short>
+        <short>
+          Wrapper class around <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.<url href="http://wiki.freepascal.org/TXMLConfig">TXMLConfig</url>.
+        </short>
         <descr />
         <errors />
         <seealso />
@@ -84,7 +92,9 @@
 
       <!-- object Visibility: default -->
       <element name="TCustomXMLPropStorage">
-        <short>Implements the base class for the XML Form's Session Properties Storage.</short>
+        <short>
+          Implements the base class for the XML Form's Session Properties Storage.
+        </short>
         <descr />
         <errors />
         <seealso />
@@ -135,7 +145,9 @@
 
       <!-- function result Visibility: default -->
       <element name="TCustomXMLPropStorage.GetXMLFileName.Result">
-        <short>The current value of the property <link id="#LCL.XmlPropStorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link>.</short>
+        <short>
+          The current value of the property <link id="#LCL.XmlPropStorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link>.
+        </short>
       </element> <!-- function result TCustomXMLPropStorage.GetXMLFileName.Result -->
 
       <!-- function Visibility: protected -->
@@ -153,7 +165,9 @@
 
       <!-- function Visibility: protected -->
       <element name="TCustomXMLPropStorage.FixPath">
-        <short>Turns '.' notation into '/' notation for the xpath-like implementation in <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.</short>
+        <short>
+          Turns '.' notation into '/' notation for the XPATH-like implementation in <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.
+        </short>
         <descr />
         <errors />
         <seealso />
@@ -171,7 +185,9 @@
 
       <!-- property Visibility: protected -->
       <element name="TCustomXMLPropStorage.XMLConfig">
-        <short>Property to access the <link id="#LCL.XmlPropStorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>.</short>
+        <short>
+          Property to access the <link id="#LCL.XmlPropStorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>.
+        </short>
         <descr />
         <seealso />
       </element> <!-- property TCustomXMLPropStorage.XMLConfig -->
@@ -227,7 +243,9 @@
 
       <!-- procedure Visibility: public -->
       <element name="TCustomXMLPropStorage.DoWriteString">
-        <short>Implements the actual writing of a value from the underlying storage container.</short>
+        <short>
+          Implements writing of a string value to the underlying storage container.
+        </short>
         <descr />
         <errors />
         <seealso />
@@ -263,7 +281,9 @@
 
       <!-- property Visibility: public -->
       <element name="TCustomXMLPropStorage.FileName">
-        <short>Name of the file where the property data is saved in XML format.</short>
+        <short>
+          Name of the file where the property data is saved in XML format.
+        </short>
         <descr />
         <seealso />
       </element> <!-- propert TCustomXMLPropStorage.FileName -->
@@ -277,7 +297,9 @@
 
       <!-- object Visibility: default -->
       <element name="TXMLPropStorage">
-        <short>Implements the final class for the XML Form Session Properties storage.</short>
+        <short>
+          Implements a class for XML Form Session Properties storage.
+        </short>
         <descr />
         <errors />
         <seealso>
@@ -349,7 +371,7 @@
 
       <element name="TXMLConfigStorage">
         <short>
-          Implements a configation storage mechanism using XML-tagged content.
+          Implements a configuration storage mechanism using XML-tagged content.
         </short>
         <descr>
           <p>
@@ -384,7 +406,9 @@
 
       <!-- protected -->
       <element name="TXMLConfigStorage.GetFullPathValue">
-        <short>Gets the String value stored at the specified path in the XML storage.</short>
+        <short>
+          Gets the String value stored at the specified path in the XML storage.
+        </short>
         <descr>
           <p>
             Calls the GetValue method for the internal TXMLConfig instance.
@@ -401,7 +425,9 @@
         <short>Path to the XML node with the requested value.</short>
       </element>
       <element name="TXMLConfigStorage.GetFullPathValue.ADefault">
-        <short>Default value returned if APath is not found in the internal storage.</short>
+        <short>
+          Default value returned if APath is not found in the internal storage.
+        </short>
       </element>
 
       <element name="TXMLConfigStorage.SetFullPathValue">
@@ -431,7 +457,9 @@
       </element>
 
       <element name="TXMLConfigStorage.DeleteFullPath">
-        <short>Deletes the XML node and its content and the specified path.</short>
+        <short>
+          Deletes the XML node and its content and the specified path.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -468,7 +496,7 @@
             <var>Create</var> is the overridden, overloaded constructor for the class instance. The overloaded variants allow the XML content to read from various sources like a file name, a TXMLConfig instance, a scoped TXMLConfig instance, or a TStream instance.
           </p>
           <p>
-            Use WriteToDisk or SaveToStream to speciy where the XML content is stored .
+            Use WriteToDisk or SaveToStream to specify where the XML content is stored .
           </p>
         </descr>
         <seealso/>
@@ -482,13 +510,19 @@
         </short>
       </element>
       <element name="TXMLConfigStorage.Create.TheXMLConfig">
-        <short>TXMLConfig instance where the XML paths and values are stored.</short>
+        <short>
+          TXMLConfig instance where the XML paths and values are stored.
+        </short>
       </element>
       <element name="TXMLConfigStorage.Create.StartPath">
-        <short>Intial path for values read and written in the class instance.</short>
+        <short>
+          Initial path for values read and written in the class instance.
+        </short>
       </element>
       <element name="TXMLConfigStorage.Create.s">
-        <short>Stream with the XML content loaded in the XMLConfig storage.</short>
+        <short>
+          Stream with the XML content loaded in the XMLConfig storage.
+        </short>
       </element>
 
       <element name="TXMLConfigStorage.Destroy">
@@ -509,7 +543,9 @@
       </element>
 
       <element name="TXMLConfigStorage.XMLConfig">
-        <short>TXMLConfig with the values accessed and maintained in the class instance.</short>
+        <short>
+          TXMLConfig with the values accessed and maintained in the class instance.
+        </short>
         <descr>
           Read-only TXMLConfig property.
         </descr>
@@ -544,7 +580,9 @@
       </element>
 
       <element name="TXMLConfigStorage.SaveToStream">
-        <short>Saves the content in XMLConfig to the specified TStream instance.</short>
+        <short>
+          Saves the content in XMLConfig to the specified TStream instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -554,7 +592,9 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short>Registers <link id="#LCL.XmlPropStorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component palette.</short>
+        <short>
+          Registers <link id="#LCL.XmlPropStorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component palette.
+        </short>
         <descr />
         <errors />
         <seealso />

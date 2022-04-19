@@ -152,7 +152,9 @@
 
       <!-- function Visibility: protected -->
       <element name="TCustomJSONPropStorage.FixPath">
-        <short>Turns '.' notation into '/' notation for the xpath-ish <url href="http://wiki.freepascal.org/fcl-json">JSONConf</url> underlayer.</short>
+        <short>
+          Turns '.' notation into '/' notation for the XPATH-like <url href="http://wiki.freepascal.org/fcl-json">JSONConf</url> underlayer.
+        </short>
         <descr />
         <errors />
         <seealso />

@@ -352,7 +352,7 @@
       </element>
 
       <element name="TButtonGlyph._AddRef">
-        <short>Implements the method from IUnkown.</short>
+        <short>Implements the method from IUnknown.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -628,7 +628,7 @@
         </short>
         <descr>
           <p>
-            <var>Draw</var> is a method used to draw the glyph for the button using the target and configuration specified in the arguments. Draw is overloaded to provide a variant which uses a scalilng factor for the glyph image.
+            <var>Draw</var> is a method used to draw the glyph for the button using the target and configuration specified in the arguments. Draw is overloaded to provide a variant which uses a scaling factor for the glyph image.
           </p>
           <p>
             <var>Canvas</var> is the TCanvas instance where the glyph is rendered.

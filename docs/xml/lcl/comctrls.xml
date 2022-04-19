@@ -5952,7 +5952,7 @@ end;
         <short>Control is drawn using the hot tracking style.</short>
       </element>
       <element name="TCustomDrawStateFlag.cdsMarked">
-        <short>Control is drawn using the marked (multiselected) style.</short>
+        <short>Control is drawn using the marked (multi-selected) style.</short>
       </element>
       <element name="TCustomDrawStateFlag.cdsIndeterminate">
         <short>Control is drawn using the indeterminate state style.</short>
@@ -9782,7 +9782,7 @@ end;
         <short>Not implemented in the current LCL version.</short>
         <descr>
           <p>
-            Not implemented in the current LCL version. Updates to scrll bar visibility, position, or range are handled in the widgetset class.
+            Not implemented in the current LCL version. Updates to scroll bar visibility, position, or range are handled in the widgetset class.
           </p>
         </descr>
         <seealso/>
@@ -10974,7 +10974,7 @@ end;
         <short>Contains the Width for the large images used in the list view.</short>
         <descr>
           <p>
-            <var>LargeImagesWidth</var> is an <var>Integer</var> property with the width for large images in the list view. The value indicates the image resolution requested from the LargeImages image list. If a resoution using the requested width does not already exist, it is created by scaling a candidate resolution for the image list.
+            <var>LargeImagesWidth</var> is an <var>Integer</var> property with the width for large images in the list view. The value indicates the image resolution requested from the LargeImages image list. If a resolution using the requested width does not already exist, it is created by scaling a candidate resolution for the image list.
           </p>
           <p>
             The default value for the property is zero (<b>0</b>), and causes the width stored in LargeImages to be used for the large images.
@@ -11073,7 +11073,7 @@ end;
         <short>Width for the images in the SmallImages property.</short>
         <descr>
           <p>
-            <var>SmallImagesWidth</var> is an <var>Integer</var> property that indicates the width for the small images displayed in the list view. The value indicates the image resolution requested from the SmallImages image list. If a resoution using the requested width does not already exist, it is created by scaling a candidate resolution for the image list.
+            <var>SmallImagesWidth</var> is an <var>Integer</var> property that indicates the width for the small images displayed in the list view. The value indicates the image resolution requested from the SmallImages image list. If a resolution using the requested width does not already exist, it is created by scaling a candidate resolution for the image list.
           </p>
           <p>
             The default value for the property is zero (<b>0</b>), and causes the width stored in the image list to be used for its images.
@@ -22843,7 +22843,7 @@ AToolbar.ButtonHeight := 30;
             No actions are performed in the method for any of the following conditions:
           </p>
           <ul>
-            <li>ANode has not been assigned (contains <b>Nilb></b>).</li>
+            <li>ANode has not been assigned (contains <b>Nil</b>).</li>
             <li>ANode is not visible.</li>
             <li>
               BeginEditing has been called and EndEditing has not yet been called.
@@ -26262,7 +26262,9 @@ OldExpanded.Free;
         <short>Tree view with nodes examined in the method.</short>
       </element>
       <element name="TTreeNodeExpandedState.Apply.CollapseToo">
-        <short>Collapses previously expanded child nodes when <b>True</b>.</short>
+        <short>
+          Collapses previously expanded child nodes when <b>True</b>.
+        </short>
       </element>
 
       <element name="TTreeNodeExpandedState.OnGetNodeText">

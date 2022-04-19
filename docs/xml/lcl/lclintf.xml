@@ -694,10 +694,10 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DeleteCriticalSection">
-        <short>Deletes an unowned critical section.</short>
+        <short>Deletes an un-owned critical section.</short>
         <descr/>
         <errors>
-          Results are unpredictable when the section is owned, i.e. has been entered but not yet left.
+          Results are unpredictable when the section is owned, i. e. has been entered but not yet exited.
         </errors>
         <seealso/>
       </element>
@@ -1384,7 +1384,7 @@
         <short>Returns various device specific information.</short>
         <descr>
           <p>
-            Returns information about any DC (Device Context), which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas. The following constants can be utilized in the index argument:
+            Returns information about any DC (Device Context), which might be the screen DC representing the monitor, a control canvas or a off-screen bitmap canvas. The following constants can be utilized in the index argument:
           </p>
           <ul>
             <li>HORZSIZE</li>
@@ -4166,7 +4166,7 @@ end;
         <descr>
           <p>
             The bytes are shifted into place, following the format $00bbggrr, which is the format of the
-            Windows API type COLORREF. Their actual physical order depends on the endianness of the machine.
+            Windows API type COLORREF. Their actual physical order depends on the endian-ness of the machine.
           </p>
         </descr>
         <seealso/>

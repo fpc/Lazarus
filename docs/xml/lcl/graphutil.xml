@@ -503,7 +503,7 @@
             <var>FloodFill</var> is a procedure which implements a simple first-in-first-out circular buffer (queue) for flood-filling contiguous voxels. This algorithm avoids stack problems associated simple recursive algorithms described in the discussion at <url href="http://steve.hollasch.net/cgindex/polygons/floodfill.html"/>. Please note that the routine is slow because of its use of <var>Canvas.Pixels</var>.
           </p>
           <p>
-            Orginal author: Chris Rorden
+            Original author: Chris Rorden
           </p>
         </descr>
         <seealso></seealso>
@@ -649,7 +649,9 @@
       </element>
 
       <element name="WaveTo">
-        <short>Draws a hoizontal or vertical wave at the specified position to the given device context.</short>
+        <short>
+          Draws a horizontal or vertical wave at the specified position to the given device context.
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>

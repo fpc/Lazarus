@@ -356,7 +356,7 @@
             The <var>FileName</var> property is assigned to <var>PreviewFileName</var>, which is used as the source for the content displayed in <var>ImageCtrl</var>. FileName must be a valid file name on the local file system, and have read permissions. PreviewFileName is loaded into the picture for the ImageCtrl, and the caption in <var>PictureGroupBox</var> is updated to display the Width and Height for the stored image in the format <b>'(%dx%d)'</b>.
           </p>
           <p>
-            If the file is not successully loaded (due to permissions or image format), the <var>ClearPreview</var> method is called.
+            If the file is not successfully loaded (due to permissions or image format), the <var>ClearPreview</var> method is called.
           </p>
           <p>
             UpdatePreview is called from the <var>DoSelectionChange</var> method when the selected file name for the preview dialog has changed.
@@ -442,7 +442,7 @@
         </short>
         <descr>
           <p>
-            <var>DoShow</var> is an overridden procedure used to display the Picture FIle Open preview dialog. DoShow calls <var>ClearPreview</var> to set the dialog to the state needed prior to selecting an image file name in the preview dialog.
+            <var>DoShow</var> is an overridden procedure used to display the Picture File Open preview dialog. DoShow calls <var>ClearPreview</var> to set the dialog to the state needed prior to selecting an image file name in the preview dialog.
           </p>
           <p>
             DoShow calls the inherited method to signal the <var>OnShow</var> event handler (when assigned).
@@ -1208,7 +1208,7 @@
         </short>
         <descr>
           <p>
-            <var>DialogScale</var> is an <var>Integer</var> property which indicates the scaling percentage applied to the height and width for the calculator dialog. When the value for the property is changed, it its validated and adjusted to ensure that it is in the range <b>80...400</b> (the minuimum and maximum allowed for the property).
+            <var>DialogScale</var> is an <var>Integer</var> property which indicates the scaling percentage applied to the height and width for the calculator dialog. When the value for the property is changed, it its validated and adjusted to ensure that it is in the range <b>80...400</b> (the minimum and maximum allowed for the property).
           </p>
           <p>
             DialogScale is passed as the multiplier argument to the <var>ScaleBy</var> method in <var>TCalculatorForm</var>; the divisor is always set to <b>100</b>.
@@ -1431,7 +1431,7 @@
 
       <element name="TCalendarDialog.Execute">
         <short>
-          Configures and dIsplays the form for the calendar dialog, and captures the results.
+          Configures and displays the form for the calendar dialog, and captures the results.
         </short>
         <descr/>
         <seealso>

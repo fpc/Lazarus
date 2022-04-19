@@ -413,7 +413,7 @@
             Create is the overridden constructor for the class instance, and calls the inherited method on entry.
           </p>
           <p>
-            ACollection is the <var>TCollection</var> instance which owns the new dialog button. It is assigned to the <var>Collection</var> property in the colleciton item.
+            ACollection is the <var>TCollection</var> instance which owns the new dialog button. It is assigned to the <var>Collection</var> property in the collection item.
           </p>
           <p>
             Create sets the default values for the <var>Caption</var> and <var>ModalResult</var> properties.
@@ -612,7 +612,7 @@
             <var>AModalResult</var> contains the modal result value to locate in the collection Items.
           </p>
           <p>
-            <var>AOrder</var> allows an array of modal resuilt values to be located in the method. It specifies the search order for the modal result values.
+            <var>AOrder</var> allows an array of modal result values to be located in the method. It specifies the search order for the modal result values.
           </p>
           <p>
             FindButton iterates over the <var>Items</var> in the collection to find the first button which uses the modal result value(s). The return value is the first TDialogButton instance in Items which matches the requested value(s).
@@ -722,10 +722,10 @@
       <element name="TWidgetSet.FThemeServices" link="#lcl.interfacebase.TWidgetSet.ThemeServices"/>
 
       <element name="TWidgetSet.PassCmdLineOptions">
-        <short>Passes commandline arguments needed for the platform.</short>
+        <short>Passes command line arguments needed for the platform.</short>
         <descr>
           <p>
-            <var>PassCmdLineOptions</var> is a procedure used to pass commandline arguments used for the platform-specific widgetset implementation. PassCmdLineOptions has an empty implementation in <var>TWidgetSet</var>, and must be overridden in a descendent class. It allows commandline arguments to be preprocessed or modified prior to starting an application.
+            <var>PassCmdLineOptions</var> is a procedure used to pass command line arguments used for the platform-specific widgetset implementation. PassCmdLineOptions has an empty implementation in <var>TWidgetSet</var>, and must be overridden in a descendent class. It allows command line arguments to be preprocessed or modified prior to starting an application.
           </p>
         </descr>
         <seealso/>
@@ -951,7 +951,7 @@
             <var>ACapability</var> contains a <var>TLCLCapability</var> enumeration value examined in the method. The value identifies a feature or behavior in the LCL.
           </p>
           <p>
-            The return value is either <var>LCL_CAPABILITY_NO</var> or <var>LCL_CAPABILITY_YES</var>. LCL_CAPABILITY_YES indicates that the capabiity is implemented for the platform.
+            The return value is either <var>LCL_CAPABILITY_NO</var> or <var>LCL_CAPABILITY_YES</var>. LCL_CAPABILITY_YES indicates that the capability is implemented for the platform.
           </p>
           <p>
             GetLCLCapability is overridden in descendent classes to return a value valid for the platform-specific implementation. The implementation in TWidgetSet handles the capabilities common to all widgetsets supported in the LCL. It is called when the descendent class does not handle the value in ACapability.
@@ -1764,7 +1764,7 @@
       </element>
 
       <element name="TWidgetSet.DeleteCriticalSection">
-        <short>Deletes an unowned critical section.</short>
+        <short>Deletes an un-owned critical section.</short>
         <descr/>
         <errors>
           Results are unpredictable when the section is owned, i.e. has been entered but not yet left.
@@ -1875,7 +1875,7 @@
             Window managers do not normally allow the user to paint the components for a window frame, and do not supply a DC for that purpose.
           </p>
           <p>
-            The available features depend on the window manager for the platform, and the capabiities for the widgetset.
+            The available features depend on the window manager for the platform, and the capabilities for the widgetset.
           </p>
         </descr>
         <seealso/>
@@ -4225,7 +4225,7 @@
           </p>
           <dl>
               <dt>RDW_NOERASE</dt>
-              <dd>Sppress all pending WM_ERASEBKGND messages.</dd>
+              <dd>Suppress all pending WM_ERASEBKGND messages.</dd>
               <dt>RDW_NOFRAME</dt>
               <dd>Suppress all pending WM_NCPAINT messages.</dd>
               <dt>RDW_NOINTERNALPAINT</dt>
@@ -4800,7 +4800,7 @@
             The raster operation specifies how foreground painting (Brush, Pen) is combined with the current pixels in the DC. The operation combines bitwise the distinct red, green and blue values in pixel colors.
           </p>
           <p>
-            There are  16 raster operations usig the possible combinations of two (boolean) values:
+            There are 16 raster operations using the possible combinations of two (boolean) values:
           </p>
           <dl>
             <dt>R2_BLACK</dt>
@@ -5821,7 +5821,7 @@
         </short>
       </element>
       <element name="TWidgetSet.ClipboardGetOwnerShip.FormatCount">
-        <short>Number of clipbpard formats in the list.</short>
+        <short>Number of clipboard formats in the list.</short>
       </element>
       <element name="TWidgetSet.ClipboardGetOwnerShip.Formats">
         <short>Pointer to the list of registered clipboard formats requested.</short>

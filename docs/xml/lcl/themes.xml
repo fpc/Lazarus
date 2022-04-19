@@ -228,7 +228,7 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 
 <!-- enumeration type Visibility: default -->
 <element name="TThemedComboBox">
-<short>Represents theme elemenets used to theme combo-box controls.</short>
+<short>Represents theme elements used to theme combo-box controls.</short>
 <descr/>
 <seealso/>
 </element>
@@ -1981,7 +1981,7 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-Calls <var>InitThemes</var> to detrmine if theme data is available. Sets the value in the <var>ThemesAvailable</var> property. Calls <var>UpdateThemes</var> to load theme data.
+Calls <var>InitThemes</var> to determine if theme data is available. Sets the value in the <var>ThemesAvailable</var> property. Calls <var>UpdateThemes</var> to load theme data.
 </p>
 </descr>
 <seealso>
@@ -2274,7 +2274,7 @@ Draws the icon for a theme element.
 </short>
 <descr>
 <p>
-Overloaded to provide WIndows and non-Windows variants. Overridden in the TWin32ThemeServices descendant for compatability with Delphi.
+Overloaded to provide Windows and non-Windows variants. Overridden in the TWin32ThemeServices descendant for compatibility with Delphi.
 </p>
 </descr>
 <seealso/>

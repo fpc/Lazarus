@@ -1236,7 +1236,7 @@
         </short>
         <descr>
           <p>
-            <var>StoredValues</var> is a <var>TStoredValues</var> property with the collection of names and values for properties handled by the storage container. StoredValues is used in the <var>Save</var> and <var>Restore</var> methods when the collection items are read or written using the underlying storage mechamism for the container. It is also used to read or write the value for the indexed <var>StoreValue</var> property.
+            <var>StoredValues</var> is a <var>TStoredValues</var> property with the collection of names and values for properties handled by the storage container. StoredValues is used in the <var>Save</var> and <var>Restore</var> methods when the collection items are read or written using the underlying storage mechanism for the container. It is also used to read or write the value for the indexed <var>StoreValue</var> property.
           </p>
         </descr>
         <seealso>

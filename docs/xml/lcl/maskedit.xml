@@ -1151,7 +1151,7 @@
       </element>
       <element name="TCustomMaskEdit.DeleteChars.NextChar">
         <short>
-          When True the following character(s) are deleted; when False the preceeding character(s) are deleted.
+          When True the following character(s) are deleted; when False the preceding character(s) are deleted.
         </short>
       </element>
 
