@@ -212,7 +212,7 @@ type
     function FindSrcViaPPU(aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine;
       const PPUFilename: string): boolean;
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
-      out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
+      out TranslatedMsg: String; var MsgType: TMessageLineUrgency);
     function ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean): boolean;
     function ReverseTestBuildDir(MsgLine: TMessageLine; var aFilename: string): boolean;
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
@@ -1279,7 +1279,6 @@ begin
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=mluProgress;
   MsgLine.SubTool:=DefaultSubTool;
-  MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
   inherited AddMsgLine(MsgLine);
   Result:=true;
@@ -2575,14 +2574,15 @@ begin
 end;
 
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
-  out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
+  out TranslatedMsg: String; var MsgType: TMessageLineUrgency);
 begin
   TranslatedMsg:='';
-  MsgType:=mluNone;
-  if TranslatedItem<>nil then
-    MsgType:=FPCMsgToMsgUrgency(TranslatedItem);
-  if (MsgType=mluNone) and (MsgItem<>nil) then
-    MsgType:=FPCMsgToMsgUrgency(MsgItem);
+  if (MsgType=mluNone) or UseTranslationUrgency then begin
+    if (TranslatedItem<>nil) then
+      MsgType:=FPCMsgToMsgUrgency(TranslatedItem);
+    if (MsgType=mluNone) and (MsgItem<>nil) then
+      MsgType:=FPCMsgToMsgUrgency(MsgItem);
+  end;
   if TranslatedItem<>nil then begin
     if System.Pos('$',TranslatedItem.Pattern)<1 then begin
       TranslatedMsg:=TranslatedItem.Pattern;
@@ -2640,6 +2640,7 @@ begin
   FFilesToIgnoreUnitNotUsed:=TStringList.Create;
   HideHintsSenderNotUsed:=true;
   HideHintsUnitNotUsedInMainSource:=true;
+  UseTranslationUrgency:=true;
   PC_FullVersion:=GetCompiledFPCVersion;
 end;
 
@@ -2730,6 +2731,7 @@ begin
   TranslatedItem:=nil;
   if (TranslationFile<>nil) then
     TranslatedItem:=TranslationFile.GetMsg(fMsgID);
+  MsgUrgency:=mluNone;
   Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgUrgency);
   Msg:=p;
   case fMsgID of
@@ -2851,6 +2853,7 @@ begin
       p:=p2+1;
     end;
   end;
+
   while p^ in [' ',#9] do inc(p);
   Result:=true;
   TranslatedMsg:='';

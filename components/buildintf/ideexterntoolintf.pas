@@ -326,6 +326,7 @@ type
     FHideHintsSenderNotUsed: boolean;
     FHideHintsUnitNotUsedInMainSource: boolean;
     FShowLinesCompiled: boolean;
+    FUseTranslationUrgency: boolean;
   protected
     FFilesToIgnoreUnitNotUsed: TStrings;
   public
@@ -345,6 +346,7 @@ type
     property HideHintsUnitNotUsedInMainSource: boolean
                            read FHideHintsUnitNotUsedInMainSource
                            write FHideHintsUnitNotUsedInMainSource default true;
+    property UseTranslationUrgency: boolean read FUseTranslationUrgency write FUseTranslationUrgency default true;
   end;
   TFPCParserClass = class of TFPCParser;
 var
