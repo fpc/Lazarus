@@ -122,6 +122,8 @@ uses
   FpDbgCommon, FpdMemoryTools, FpErrorMessages;
 
 type
+  PPWSTR = ^PWSTR;
+  TGetThreadDescription = function(threadHandle: THandle; name: PPWSTR): HResult; stdcall;
 
   TFpWinCtxFlags = (cfSkip, cfControl, cfFull);
   TFpContextChangeFlag = (ccfControl, ccfInteger);
@@ -143,6 +145,7 @@ type
     procedure LoadRegisterValues; override;
     function GetFpThreadContext(var AStorage: TFpContext; out ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags): Boolean;
     function SetFpThreadContext(ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags = cfSkip): Boolean;
+    function GetName: String; override;
   public
     procedure Suspend;
     procedure SuspendForStepOverBreakPoint;
@@ -237,6 +240,8 @@ implementation
 
 var
   DBG_VERBOSE, DBG_WARNINGS, FPDBG_WINDOWS: PLazLoggerLogGroup;
+  KernelHandle : THandle;
+  GetThreadDescription: TGetThreadDescription;
 
 {$ifdef cpux86_64}
 const
@@ -1594,6 +1599,22 @@ begin
   DebugLn(DBG_WARNINGS and (not Result), ['Unable to set Context for ', ID, ': ', GetLastErrorText]);
 end;
 
+function TDbgWinThread.GetName: String;
+var
+  n: PWSTR;
+begin
+  if Assigned(GetThreadDescription) then begin
+    if Succeeded(GetThreadDescription(Handle, @n)) then begin
+      Result := WideCharToString(n);
+      LocalFree(HLOCAL(n));
+      if Result = '' then
+        Result := inherited GetName;
+    end else
+      Result := inherited GetName;
+  end else
+    Result := inherited GetName;
+end;
+
 procedure TDbgWinThread.Suspend;
 var
   r: DWORD;
@@ -1924,6 +1945,10 @@ initialization
     TDbgWinThread,
     TX86AsmDecoder
   ));
+
+  KernelHandle := GetModuleHandle(KernelDLL);
+  if KernelHandle <> 0 then
+    GetThreadDescription := TGetThreadDescription(GetProcAddress(KernelHandle, 'GetThreadDescription'));
 
 end.
 
