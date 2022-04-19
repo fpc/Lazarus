@@ -211,11 +211,13 @@ type
     FStoreStepStartAddr, FStoreStepEndAddr: TDBGPtr;
     FStoreStepSrcLineNo: integer;
     FStoreStepFuncAddr: TDBGPtr;
+    FThreadNum: Integer;
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
     procedure DoBeforeBreakLocationMapChange; // A new location added / or a location removed => memory will change
     procedure ValidateRemovedBreakPointInfo;
+    function GetName: String; virtual;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     procedure DoBeforeProcessLoop;
@@ -260,6 +262,8 @@ type
     procedure StoreStepInfo(AnAddr: TDBGPtr = 0);
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
+    property Name: String read GetName;
+    property ThreadNum: Integer read FThreadNum;
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
@@ -2908,6 +2912,11 @@ begin
      (FPausedAtRemovedBreakPointAddress <> GetInstructionPointerRegisterValue)
   then
     FPausedAtRemovedBreakPointState := rbUnknown;
+end;
+
+function TDbgThread.GetName: String;
+begin
+  Result := 'Thread ' + IntToStr(FID);
 end;
 
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
