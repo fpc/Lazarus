@@ -287,6 +287,8 @@ Const
   // Position in project options dialog.
   Pas2JSOptionsIndex  = ProjectOptionsMisc + 100;
 
+function dbgs(opts: TBrowserApplicationOptions): string; overload;
+
 procedure Register;
 
 implementation
@@ -315,6 +317,22 @@ Var
   Pas2JSHTMLClassDef : TPas2JSHTMLClassDef;
   Pas2JSDTSToPasUnitDef : TPas2JSDTSToPasUnitDef;
   Pas2JSHandler : TPas2JSHandler;
+
+function dbgs(opts: TBrowserApplicationOptions): string;
+var
+  s: String;
+  o: TBrowserApplicationOption;
+begin
+  Result:='';
+  for o in Opts do
+    begin
+    if Result<>'' then Result:=Result+',';
+    s:='';
+    str(o,s);
+    Result:=Result+s;
+    end;
+  Result:='['+s+']';
+end;
 
 procedure Register;
 Var
@@ -1026,6 +1044,8 @@ begin
   Result:=false;
 
   AProject.CustomData.Values[PJSProject]:='1';
+  AProject.Flags:=AProject.Flags-[pfRunnable];
+
   MainFile:=AProject.CreateProjectFile(PreloadLPR);
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
@@ -1101,6 +1121,7 @@ begin
 
   AProject.ProjectInfoFile:=RenderLPI;
   AProject.CustomData.Values[PJSProject]:='1';
+  AProject.Flags:=AProject.Flags-[pfRunnable];
 
   MainFile:=AProject.CreateProjectFile(RenderLPR);
   MainFile.IsPartOfProject:=true;
@@ -1156,7 +1177,6 @@ var
   CompOpts: TLazCompilerOptions;
   PreloadJS, Units: String;
   Src: TStringList;
-  RunMode: TAbstractRunParamsOptionsMode;
 begin
   Result:=false;
 
@@ -1164,6 +1184,7 @@ begin
 
   AProject.ProjectInfoFile:=ChangeFileExt(MainSrcFileName,'.lpi');
   AProject.CustomData.Values[PJSProject]:='1';
+  AProject.Flags:=AProject.Flags+[pfRunnable];
 
   MainFile:=AProject.CreateProjectFile(MainSrcFileName);
   MainFile.IsPartOfProject:=true;
@@ -1172,10 +1193,6 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultWebCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(MainSrcName);
-
-  RunMode:=AProject.RunParameters.GetOrCreate('default');
-  RunMode.UseLaunchingApplication:=true;
-  RunMode.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,electron) .';
 
   Units:='';
   if baoUseBrowserConsole in Options then
@@ -1293,7 +1310,9 @@ function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
   ): TModalResult;
 var
   CompOpts: TLazCompilerOptions;
+  RunMode: TAbstractRunParamsOptionsMode;
 begin
+  AProject.Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
   AProject.CustomData.Values[PJSProject]:='1';
 
   // start with the preload project
@@ -1302,6 +1321,11 @@ begin
   // set compiler and TargetOS
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultWebCompileOptions(CompOpts);
+
+  // all three projects can run the electron app
+  RunMode:=AProject.RunParameters.GetOrCreate('default');
+  RunMode.UseLaunchingApplication:=true;
+  RunMode.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,electron) .';
 
   Result:=mrOk;
 end;
