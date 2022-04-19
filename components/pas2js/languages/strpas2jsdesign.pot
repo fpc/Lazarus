@@ -10,7 +10,7 @@ msgid "Atom package template directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
-msgid "A Web Application using Electron to run as desktop application."
+msgid "A pas2js Web Application using Electron to run as desktop application."
 msgstr ""
 
 #: strpas2jsdesign.pjsdbrowse
@@ -171,7 +171,7 @@ msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr ""
 
 #: strpas2jsdesign.pjsdprogressivewebappdescription
-msgid "A Web Application using a service worker, a manifest, and more to be installable."
+msgid "A pas2js Web Application using a service worker, a manifest, and more to be installable."
 msgstr ""
 
 #: strpas2jsdesign.pjsdprogressivewebapplication

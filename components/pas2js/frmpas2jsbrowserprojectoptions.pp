@@ -63,6 +63,9 @@ type
   public
     procedure HideWASM; virtual;
     procedure HideModule; virtual;
+    procedure HideRunOnReady; virtual;
+    procedure HideUseBrowserApp; virtual;
+    procedure HideRunHTTPServer; virtual;
 
     property CreateHTML : Boolean Index WBBoolCreateHTML read GetB Write SetB;
     property MaintainHTML : Boolean Index WBBoolMainHTML read GetB Write SetB;
@@ -256,6 +259,21 @@ end;
 procedure TWebBrowserProjectOptionsForm.HideModule;
 begin
   CBUseModule.Visible:=false;
+end;
+
+procedure TWebBrowserProjectOptionsForm.HideRunOnReady;
+begin
+  CBRunOnReady.Visible:=false;
+end;
+
+procedure TWebBrowserProjectOptionsForm.HideUseBrowserApp;
+begin
+  CBUseBrowserApp.Visible:=false;
+end;
+
+procedure TWebBrowserProjectOptionsForm.HideRunHTTPServer;
+begin
+  RunGroupBox.Visible:=false;
 end;
 
 end.

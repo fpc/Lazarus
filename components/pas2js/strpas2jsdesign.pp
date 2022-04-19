@@ -12,7 +12,7 @@ Resourcestring
   pjsdWebAppDescription = 'A pas2js program running in the browser.';
   pjsdProgressiveWebApplication = 'Progressive Web Application';
   pjsdElectronWebApplication = 'Electron Web Application';
-  pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat = 'A Web Application '
+  pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat = 'A pas2js Web Application '
     +'using Electron to run as desktop application.';
   pjsdOverwrite = 'Overwrite?';
   pjsdError = 'Error';
@@ -20,7 +20,7 @@ Resourcestring
   pjsdProjectPascalFile = 'Project Pascal file';
   pjsdPleaseChooseAFileWithFullPath = 'Please choose a file with full path.';
   pjsdOverwriteFiles = 'Overwrite files:';
-  pjsdProgressiveWebAppDescription = 'A Web Application using a service worker, a manifest, and more to be installable.';
+  pjsdProgressiveWebAppDescription = 'A pas2js Web Application using a service worker, a manifest, and more to be installable.';
   pjsdServiceWorker = 'Pas2JS Service Worker';
   pjsdServiceWorkerDescription = 'A pas2js program running as cache for a web app. It does not run standalone.';
   pjsdNodeJSApplication = 'Node.js Application';

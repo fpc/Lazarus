@@ -69,6 +69,7 @@ type
     function GetScriptFilename: string;
   protected
     procedure AddHTMLHead(Src: TStringList); virtual;
+    procedure AddBody(Src: TStringList); virtual;
     function CreateHTMLFile(AProject: TLazProject; aScriptFileName: String
       ): TLazProjectFile; virtual;
     function CreateProjectSource: String; virtual;
@@ -76,6 +77,7 @@ type
     function GetNextPort: Word; virtual;
     function ShowOptionsDialog: TModalResult; virtual;
     function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm): TModalResult; virtual;
+    procedure EnableRunBrowser(AProject: TLazProject); virtual;
   public
     constructor Create; override;
     procedure Clear; virtual;
@@ -185,11 +187,15 @@ type
     FRenderLPI: string;
     FRenderLPR: string;
   protected
+    procedure AddHTMLHead(Src: TStringList); override;
+    procedure AddBody(Src: TStringList); override;
     function ProjectDirSelected: boolean; override;
     function CreatePreloadProject(AProject: TLazProject): boolean; virtual;
     function CreateRenderProject(AProject: TLazProject): boolean; virtual;
     function CreateWebAppProject(AProject: TLazProject): boolean; virtual;
-    function CreatePackageJSON(AProject: TLazProject): boolean; virtual;
+    function CreatePackageJSON(AProject: TLazProject): TLazProjectFile; virtual;
+    function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
+      ): TModalResult; override;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -365,7 +371,7 @@ end;
 function TMultiProjectPas2JSWebApp.CheckOverwriteFile(aFilename: string
   ): string;
 begin
-  if FileExists(aFilename) then
+  if (Overwrites.IndexOf(aFilename)<0) and FileExists(aFilename) then
     Overwrites.Add(aFilename);
   Result:=aFilename;
 end;
@@ -373,7 +379,7 @@ end;
 function TMultiProjectPas2JSWebApp.CheckOverwriteDir(aDir: string): string;
 begin
   aDir:=ChompPathDelim(aDir);
-  if FileExists(aDir) and not DirectoryExistsUTF8(aDir) then
+  if (Overwrites.IndexOf(aDir)<0) and FileExists(aDir) and not DirectoryExistsUTF8(aDir) then
     Overwrites.Add(aDir);
   Result:=AppendPathDelim(aDir);
 end;
@@ -462,6 +468,7 @@ begin
   Frm.HideWASM;
   Frm.HideModule;
 
+  Frm.Caption:=GetLocalizedName+' Options';
   Result:=inherited ShowModalOptions(Frm);
   if Result<>mrOk then exit;
 
@@ -973,6 +980,26 @@ end;
 
 { TProjectPas2JSElectronWebApp }
 
+procedure TProjectPas2JSElectronWebApp.AddHTMLHead(Src: TStringList);
+begin
+  inherited AddHTMLHead(Src);
+  Src.Add('    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->');
+  Src.Add('    <meta http-equiv="Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
+  Src.Add('    <meta http-equiv="X-Content-Security-Policy" content="default-src ''self''; script-src ''self'' ''unsafe-inline''">');
+  Src.Add('');
+end;
+
+procedure TProjectPas2JSElectronWebApp.AddBody(Src: TStringList);
+begin
+  Src.Add('    <h1>Hello World!</h1>');
+  Src.Add('    <p>We are using Pas2JS <b><span id="pas2js-version"></span></b>,</p>');
+  Src.Add('    <p>Node <b><span id="node-version"></span></b>,</p>');
+  Src.Add('    <p>Chromium <b><span id="chrome-version"></span></b>,</p>');
+  Src.Add('    <p>and Electron <b><span id="electron-version"></span></b>.</p>');
+  Src.Add('    <p>Additionally, <span id="renderertext"></span></p>');
+  inherited AddBody(Src);
+end;
+
 function TProjectPas2JSElectronWebApp.ProjectDirSelected: boolean;
 begin
   Result:=inherited ProjectDirSelected;
@@ -987,8 +1014,6 @@ begin
 
   HTMLFilename:=CheckOverwriteFile(ProjectDir+HTMLFilename);
   PackageJSON:=CheckOverwriteFile(ProjectDir+PackageJSON);
-
-  LPGFilename:=CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpg'));
 end;
 
 function TProjectPas2JSElectronWebApp.CreatePreloadProject(AProject: TLazProject
@@ -1000,6 +1025,7 @@ var
 begin
   Result:=false;
 
+  AProject.CustomData.Values[PJSProject]:='1';
   MainFile:=AProject.CreateProjectFile(PreloadLPR);
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
@@ -1030,17 +1056,17 @@ begin
     Src.Add('  end;');
     Src.Add('');
     Src.Add('begin');
-    Src.Add('  ReplaceText("pas2js-version",{$i %PAS2JSVERSION%});');
-    Src.Add('  ReplaceText("chrome-version",String(TNJSProcess.versions["chrome"]));');
-    Src.Add('  ReplaceText("electron-version",String(TNJSProcess.versions["electron"]));');
-    Src.Add('  ReplaceText("node-version",String(TNJSProcess.versions["node"]));');
+    Src.Add('  ReplaceText(''pas2js-version'',{$i %PAS2JSVERSION%});');
+    Src.Add('  ReplaceText(''chrome-version'',String(TNJSProcess.versions[''chrome'']));');
+    Src.Add('  ReplaceText(''electron-version'',String(TNJSProcess.versions[''electron'']));');
+    Src.Add('  ReplaceText(''node-version'',String(TNJSProcess.versions[''node'']));');
     Src.Add('end;');
     Src.Add('');
     Src.Add('begin');
-    Src.Add('  console.log("preload environment start");');
+    Src.Add('  console.log(''preload environment start'');');
     Src.Add('  console.log(electron);');
-    Src.Add('  console.log("preload environment done");');
-    Src.Add('  window.addEventListener("DOMContentLoaded",@DoRun);');
+    Src.Add('  console.log(''preload environment done'');');
+    Src.Add('  window.addEventListener(''DOMContentLoaded'',@DoRun);');
     Src.Add('end.');
     MainFile.SetSourceText(Src.Text,true);
   finally
@@ -1073,6 +1099,9 @@ var
 begin
   Result:=false;
 
+  AProject.ProjectInfoFile:=RenderLPI;
+  AProject.CustomData.Values[PJSProject]:='1';
+
   MainFile:=AProject.CreateProjectFile(RenderLPR);
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
@@ -1095,8 +1124,8 @@ begin
     Src.Add('  el : TJSHTMLElement;');
     Src.Add('');
     Src.Add('begin');
-    Src.Add('  el:=Document.getHTMLElementById("renderertext");');
-    Src.Add('  el.innerHTML:="This text was produced in the Electron Renderer process using Pas2JS version <b>"+{$i %PAS2JSVERSION%}+"</b>";');
+    Src.Add('  el:=Document.getHTMLElementById(''renderertext'');');
+    Src.Add('  el.innerHTML:=''This text was produced in the Electron Renderer process using Pas2JS version <b>''+{$i %PAS2JSVERSION%}+''</b>'';');
     Src.Add('end.');
     MainFile.SetSourceText(Src.Text,true);
   finally
@@ -1125,21 +1154,32 @@ function TProjectPas2JSElectronWebApp.CreateWebAppProject(AProject: TLazProject
 var
   MainFile: TLazProjectFile;
   CompOpts: TLazCompilerOptions;
-  PreloadJS: String;
+  PreloadJS, Units: String;
   Src: TStringList;
+  RunMode: TAbstractRunParamsOptionsMode;
 begin
   Result:=false;
 
   PreloadJS:=ChangeFileExt(PreloadLPR,'.js');
+
+  AProject.ProjectInfoFile:=ChangeFileExt(MainSrcFileName,'.lpi');
+  AProject.CustomData.Values[PJSProject]:='1';
 
   MainFile:=AProject.CreateProjectFile(MainSrcFileName);
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultNodeJSCompileOptions(CompOpts);
+  SetDefaultWebCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(MainSrcName);
-  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
+
+  RunMode:=AProject.RunParameters.GetOrCreate('default');
+  RunMode.UseLaunchingApplication:=true;
+  RunMode.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,electron) .';
+
+  Units:='';
+  if baoUseBrowserConsole in Options then
+    Units:=' BrowserConsole,';
 
   Src:=TStringList.Create;
   try
@@ -1148,9 +1188,9 @@ begin
     Src.Add('{$mode objfpc}');
     Src.Add('');
     Src.Add('uses');
-    Src.Add('  js, nodejs, node.fs, libelectron;');
+    Src.Add('  js, nodejs, node.fs,'+Units+' libelectron;');
     Src.Add('');
-    Src.Add('    Procedure createWindow(event : TEvent; accessibilitySupportEnabled : boolean);');
+    Src.Add('Procedure createWindow(event : TEvent; accessibilitySupportEnabled : boolean);');
     Src.Add('Var');
     Src.Add('  opts : TBrowserWindowConstructorOptions;');
     Src.Add('  win : TBrowserWindow;');
@@ -1159,13 +1199,13 @@ begin
     Src.Add('  opts.width:=800;');
     Src.Add('  opts.height:=600;');
     Src.Add('  opts.webPreferences:=TWebPreferences.New;');
-    Src.Add('  opts.webPreferences.preload:=NJS_Path.join(__dirname,"'+PreloadJS+'");');
+    Src.Add('  opts.webPreferences.preload:=NJS_Path.join(__dirname,'''+PreloadJS+''');');
     Src.Add('  win:=Electron.TBrowserWindow.new(opts);');
-    Src.Add('  win.loadFile("index.html");');
+    Src.Add('  win.loadFile(''index.html'');');
     Src.Add('end;');
     Src.Add('');
     Src.Add('begin');
-    Src.Add('  electron.app.addListener("ready",@CreateWindow);');
+    Src.Add('  electron.app.addListener(''ready'',@CreateWindow);');
     Src.Add('end.');
     MainFile.SetSourceText(Src.Text,false);
   finally
@@ -1183,13 +1223,12 @@ begin
 end;
 
 function TProjectPas2JSElectronWebApp.CreatePackageJSON(AProject: TLazProject
-  ): boolean;
+  ): TLazProjectFile;
 var
   aFile: TLazProjectFile;
   Src: TStringList;
 begin
-  Result:=false;
-
+  Result:=nil;
   aFile:=AProject.CreateProjectFile(PackageJSON);
   aFile.IsPartOfProject:=true;
   AProject.AddFile(aFile,false);
@@ -1212,7 +1251,16 @@ begin
   if not InteractiveSaveFile(PackageJSON) then exit;
   if LazarusIDE.DoOpenEditorFile(PackageJSON,-1,-1,[ofProjectLoading,ofRegularFile])<>mrOk then exit;
 
-  Result:=true;
+  Result:=aFile;
+end;
+
+function TProjectPas2JSElectronWebApp.ShowModalOptions(
+  Frm: TWebBrowserProjectOptionsForm): TModalResult;
+begin
+  Frm.HideRunOnReady;
+  Frm.HideUseBrowserApp;
+  Frm.HideRunHTTPServer;
+  Result:=inherited ShowModalOptions(Frm);
 end;
 
 constructor TProjectPas2JSElectronWebApp.Create;
@@ -1224,6 +1272,7 @@ end;
 procedure TProjectPas2JSElectronWebApp.Clear;
 begin
   inherited Clear;
+  Options:=Options+[baoRunOnReady]-[baoUseBrowserApp,baoStartServer,baoUseURL];
   PreloadLPR:='preload.lpr';
   RenderLPR:='render.lpr';
   HTMLFilename:='index.html';
@@ -1242,17 +1291,25 @@ end;
 
 function TProjectPas2JSElectronWebApp.InitProject(AProject: TLazProject
   ): TModalResult;
+var
+  CompOpts: TLazCompilerOptions;
 begin
   AProject.CustomData.Values[PJSProject]:='1';
 
-  // start with the render project
+  // start with the preload project
   AProject.ProjectInfoFile:=PreloadLPI;
+
+  // set compiler and TargetOS
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultWebCompileOptions(CompOpts);
 
   Result:=mrOk;
 end;
 
 function TProjectPas2JSElectronWebApp.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
+var
+  RenderJS: String;
 begin
   Result:=mrCancel;
 
@@ -1260,9 +1317,11 @@ begin
   if not CreateRenderProject(AProject) then exit;
   if not CreateWebAppProject(AProject) then exit;
 
-  //if not CreateHTMLFile(AProject,) then exit;
+  RenderJS:=FileToWebFile(ChangeFileExt(RenderLPR,'.js'));
+  if CreateHTMLFile(AProject,RenderJS)=nil then exit;
+  if not InteractiveSaveFile(HTMLFilename) then exit;
 
-  if not CreatePackageJSON(AProject) then exit;
+  if CreatePackageJSON(AProject)=nil then exit;
 
   if not CreateProjectGroup(AProject,[
     AProject.ProjectInfoFile,
@@ -1884,6 +1943,29 @@ begin
   Result:=Frm.ShowModal;
 end;
 
+procedure TProjectPas2JSWebApp.EnableRunBrowser(AProject: TLazProject);
+begin
+  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
+  if baoUseURL in Options then
+    begin
+    AProject.CustomData.Remove(PJSProjectPort);
+    AProject.CustomData.Values[PJSProjectURL]:=ProjectURL;
+    end
+  else
+    begin
+    AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
+    AProject.CustomData.Remove(PJSProjectURL);
+    end;
+  With AProject.CustomData do
+    begin
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
+    end;
+end;
+
 function TProjectPas2JSWebApp.DoInitDescriptor: TModalResult;
 begin
   Clear;
@@ -1930,14 +2012,28 @@ end;
 
 procedure TProjectPas2JSWebApp.AddHTMLHead(Src: TStringList);
 begin
-  if Src=nil then ;
+  Src.Add('  <meta http-equiv="Content-type" content="text/html; charset=utf-8">');
+  Src.Add('  <title>'+MainSrcName+'</title>');
+  Src.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">');
+end;
+
+procedure TProjectPas2JSWebApp.AddBody(Src: TStringList);
+begin
+  Src.Add('  <script>');
+  if baoShowException in Options then
+    Src.Add('    rtl.showUncaughtExceptions=true;');
+  if baoRunOnReady in Options then
+    Src.Add('    window.addEventListener("load", rtl.run);')
+  else
+    Src.Add('    rtl.run();');
+  Src.Add('  </script>');
+  if baoUseBrowserConsole in Options then
+    Src.Add('  <div id="pasjsconsole"></div>');
 end;
 
 function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
   aScriptFileName: String): TLazProjectFile;
 
-Const
-  ConsoleDiv = '<div id="pasjsconsole"></div>'+LineEnding;
 Var
   HTMLFile: TLazProjectFile;
   ScriptType: String;
@@ -1954,23 +2050,11 @@ begin
     Src.Add('<!doctype html>');
     Src.Add('<html lang="en">');
     Src.Add('<head>');
-    Src.Add('  <meta http-equiv="Content-type" content="text/html; charset=utf-8">');
-    Src.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">');
-    Src.Add('  <title>'+MainSrcName+'</title>');
-    Src.Add('  <script'+ScriptType+' src="'+aScriptFileName+'"></script>');
     AddHTMLHead(Src);
+    Src.Add('  <script'+ScriptType+' src="'+aScriptFileName+'"></script>');
     Src.Add('</head>');
     Src.Add('<body>');
-    Src.Add('  <script>');
-    if baoShowException in Options then
-      Src.Add('    rtl.showUncaughtExceptions=true;');
-    if baoRunOnReady in Options then
-      Src.Add('    window.addEventListener("load", rtl.run);')
-    else
-      Src.Add('    rtl.run();');
-    Src.Add('  </script>');
-    if baoUseBrowserConsole in Options then
-      Src.Add('  '+ConsoleDiv);
+    AddBody(Src);
     Src.Add('</body>');
     Src.Add('</html>');
 
@@ -1983,7 +2067,7 @@ begin
   if baoMaintainHTML in Options then
     AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
   if baoUseBrowserConsole in Options then
-    AProject.CustomData[PJSProjectWebBrowser]:='1';
+    AProject.CustomData[PJSProjectUseBrowserConsole]:='1';
   if baoRunOnReady in options then
     AProject.CustomData[PJSProjectRunAtReady]:='1';
 
@@ -2093,26 +2177,10 @@ begin
   CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
   if baoUseModule in Options then
     CompOpts.TargetOS:='module';
-  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
-  AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
-  if baoUseURL in Options then
-    begin
-    AProject.CustomData.Remove(PJSProjectPort);
-    AProject.CustomData.Values[PJSProjectURL]:=ProjectURL;
-    end
-  else
-    begin
-    AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
-    AProject.CustomData.Remove(PJSProjectURL);
-    end;
-  With AProject.CustomData do
-    begin
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
-    end;
+
+  EnableRunBrowser(AProject);
+
   // create html source
   if baoCreateHtml in Options then
     begin
