@@ -199,6 +199,7 @@ function ChompDottedIdentifier(const Identifier: string): string;
 function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
 function StringToPascalConst(const s: string): string;
+function UnicodeSpacesToASCII(const s: string): string;
 
 // string constants
 function SplitStringConstant(const StringConstant: string;
@@ -5406,6 +5407,76 @@ begin
   end;
   SetLength(Result,NewLen);
   Convert(Result);
+end;
+
+function UnicodeSpacesToASCII(const s: string): string;
+var
+  p, StartP: PChar;
+
+  procedure Replace(Count: integer; const Insertion: string);
+  var
+    StartPos: integer;
+  begin
+    StartPos:=p-StartP;
+    LazStringUtils.ReplaceSubstring(Result,StartPos+1,Count,Insertion);
+    StartP:=PChar(Result);
+    p:=StartP+StartPos+length(Insertion);
+  end;
+
+var
+  c: Char;
+  CodepointLen: integer;
+  u: Cardinal;
+begin
+  Result:=s;
+  if s='' then exit;
+  StartP:=PChar(Result);
+  p:=StartP;
+  repeat
+    c:=p^;
+    case c of
+    #0:
+      if (p-StartP=length(Result)) then
+        break
+      else
+        inc(p);
+    #1..#191:
+      inc(p);
+    else
+      u:=UTF8CodepointToUnicode(p,CodepointLen);
+      if CodepointLen<=0 then
+        inc(p,1)
+      else begin
+        case u of
+        $200A, // hair space
+        $200B, // zero width space
+        $200C, // zero width non-joiner
+        $200D, // zero width joiner
+        $2060, // zero width word joiner
+        $FEFF  // zero width no-break space
+          : Replace(CodepointLen,'');
+        $0020, // space
+        $00A0, // non breakable space
+        $2000, // en quad, half wide space
+        $2002, // en space, half wide space
+        $2004, // three-per-em space, 1/3 wide space
+        $2005, // four-per-em space, 1/4 wide space
+        $2006, // six-per-em space, 1/6 wide space
+        $2007, // figure space
+        $2008, // punctuation space
+        $2009, // thin space
+        $202F, // narrow non breakable space
+        $205F, // medium mathamtical space
+        $3000  // ideographic space
+         : Replace(CodepointLen,' ');
+        $2001, // em quad, wide space
+        $2003  // em space, wide space
+         : Replace(CodepointLen,'  ');
+        end;
+        inc(p,CodepointLen);
+      end;
+    end;
+  until false;
 end;
 
 function SplitStringConstant(const StringConstant: string;

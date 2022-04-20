@@ -5650,6 +5650,9 @@ var
   SemMode: TSemSelectionMode;
   SemAction: TSemCopyPasteAction;
 begin
+  if (SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    AText:=UnicodeSpacesToASCII(AText);
+
   if Assigned(Manager) then begin
     // call handlers
     i:=Manager.FHandlers[semhtCopyPaste].Count;
@@ -5669,6 +5672,7 @@ begin
   if not CodeToolsOpts.IndentOnPaste then exit;
   if not (SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
     exit;
+
   {$IFDEF VerboseIndenter}
   debugln(['TSourceEditor.EditorPaste LogCaret=',dbgs(ALogStartPos)]);
   {$ENDIF}
