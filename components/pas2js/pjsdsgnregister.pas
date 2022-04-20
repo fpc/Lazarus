@@ -1256,7 +1256,10 @@ begin
     Src.Add('  "description": "Hello World!",');
     Src.Add('  "main": "'+FileToWebFile(ScriptFilename)+'",');
     Src.Add('  "author": "Lazarus - www.lazarus-ide.org",');
-    Src.Add('  "license": "LGPL2"');
+    Src.Add('  "license": "LGPL2",');
+    Src.Add('  "scripts": {');
+    Src.Add('    "start": "electron ."');
+    Src.Add('  }');
     Src.Add('}');
     aFile.SetSourceText(Src.Text,false);
   finally
@@ -1323,7 +1326,7 @@ begin
   // all three projects can run the electron app
   RunMode:=AProject.RunParameters.GetOrCreate('default');
   RunMode.UseLaunchingApplication:=true;
-  RunMode.LaunchingApplicationPathPlusParams:='"$(Pas2JSElectron)" .';
+  RunMode.LaunchingApplicationPathPlusParams:='npm start';
 
   Result:=mrOk;
 end;
