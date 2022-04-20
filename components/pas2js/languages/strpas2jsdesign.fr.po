@@ -158,9 +158,17 @@ msgstr "Exécutable Pas2JS"
 msgid "Pas2JS selected browser executable"
 msgstr "Exécutable du navigateur sélectionné de Pas2JS"
 
+#: strpas2jsdesign.pjsdpas2jsselectedelectronexcutable
+msgid "Pas2JS selected Electron excutable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
 msgstr "Exécutable du NodeJS sélectionné pour Pas2JS"
+
+#: strpas2jsdesign.pjsdpathofelectronexecutablemacropas2jselectron
+msgid "Path of Electron executable, macro $(Pas2JSElectron)"
+msgstr ""
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"

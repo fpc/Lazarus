@@ -132,11 +132,11 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
   end
   object lblAtomTemplateDir: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = NodeJSComboBox
+    AnchorSideTop.Control = ElectronExeComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 186
+    Top = 239
     Width = 185
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -150,7 +150,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
     Height = 30
-    Top = 203
+    Top = 256
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -166,7 +166,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 203
+    Top = 256
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -181,7 +181,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 239
+    Top = 292
     Width = 209
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -195,7 +195,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Control = NodeJSBrowseButton
     Left = 6
     Height = 30
-    Top = 256
+    Top = 309
     Width = 470
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -211,7 +211,7 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 476
     Height = 30
-    Top = 256
+    Top = 309
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -236,5 +236,50 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = SimpleWebServerLinkLabelClick
+  end
+  object lblElectronExe: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = NodeJSComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 186
+    Width = 111
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Electron executable'
+    ParentColor = False
+  end
+  object ElectronExeComboBox: TComboBox
+    AnchorSideLeft.Control = lblElectronExe
+    AnchorSideTop.Control = lblElectronExe
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = NodeJSBrowseButton
+    Left = 6
+    Height = 30
+    Top = 203
+    Width = 470
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    ItemHeight = 0
+    TabOrder = 9
+    Text = 'ElectronExeComboBox'
+  end
+  object ElectronExeBrowseButton: TButton
+    AnchorSideTop.Control = ElectronExeComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ElectronExeComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 476
+    Height = 30
+    Top = 203
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = ElectronExeBrowseButtonClick
+    TabOrder = 10
   end
 end

@@ -27,12 +27,13 @@ const
   PJSDefaultHTTPServerParams = '-s -p $()';
   PJSDefaultBrowser = '$MakeExe(IDE,firefox)';
   PJSDefaultNodeJS = '$MakeExe(IDE,nodejs)';
+  PJSDefaultElectronExe = '$MakeExe(IDE,electron)';
 
 Type
   TPas2jsCachedOption = (
     p2jcoCompilerFilename,
-    p2jcoBrowserFilename,
     p2jcoNodeJSFilename,
+    p2jcoElectronFilename,
     p2jcoAtomTemplateDir,
     p2jcoVSCodeTemplateDir,
     p2jcoDTSToPas,
@@ -43,8 +44,8 @@ Type
 const
   p2jcoFilenames = [
     p2jcoCompilerFilename,
-    p2jcoBrowserFilename,
     p2jcoNodeJSFilename,
+    p2jcoElectronFilename,
     p2jcoAtomTemplateDir,
     p2jcoVSCodeTemplateDir,
     p2jcoDTSToPas
@@ -62,24 +63,25 @@ type
 
   TPas2jsOptions = class
   private
+    FBrowserFileName: String;
     FCachedOptions: array[TPas2jsCachedOption] of TPas2jsCachedValue;
     FChangeStamp: int64;
     FOldWebServerFileName: string;
     FSavedStamp: int64;
     FStartAtPort: Word;
     function GetAtomTemplateDir: String;
-    function GetBrowserFileName: String;
     function GetCompilerFilename: string;
     function GetDTS2Pas: String;
     function GetDTS2PasService: String;
+    function GetElectronFileName: string;
     function GetVSCodeTemplateDir: String;
     function GetModified: boolean;
     function GetNodeJSFileName: string;
     function GetParsedOptionValue(Option: TPas2jsCachedOption): string;
     procedure SetAtomTemplateDir(AValue: String);
-    procedure SetBrowserFileName(AValue: String);
     procedure SetDTS2Pas(AValue: String);
     procedure SetDTS2PasService(AValue: String);
+    procedure SetElectronFileName(AValue: string);
     procedure SetVSCodeTemplateDir(AValue: String);
     procedure SetModified(AValue: boolean);
     procedure SetCompilerFilename(AValue: string);
@@ -94,30 +96,30 @@ type
     procedure Save;
     function GetParsedCompilerFilename: string;
     function GetParsedNodeJSFilename: string;
+    function GetParsedElectronExe: string;
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage);
   public
-    property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
-    Property NodeJSFileName : string Read GetNodeJSFileName Write SetNodeJSFileName;
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
-    Property AtomTemplateDir : String Read GetAtomTemplateDir Write SetAtomTemplateDir;
-    Property VSCodeTemplateDir : String Read GetVSCodeTemplateDir Write SetVSCodeTemplateDir;
-    Property DTS2Pas : String Read GetDTS2Pas Write SetDTS2Pas;
-    Property DTS2PasServiceURL : String Read GetDTS2PasService Write SetDTS2PasService;
-    Property StartAtPort : Word Read FStartAtPort Write SetStartAtPort;
+    property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
+    property NodeJSFileName : string Read GetNodeJSFileName Write SetNodeJSFileName;
+    property ElectronFileName : string Read GetElectronFileName Write SetElectronFileName;
+    property AtomTemplateDir : String Read GetAtomTemplateDir Write SetAtomTemplateDir;
+    property VSCodeTemplateDir : String Read GetVSCodeTemplateDir Write SetVSCodeTemplateDir;
+    property DTS2Pas : String Read GetDTS2Pas Write SetDTS2Pas;
+    property DTS2PasServiceURL : String Read GetDTS2PasService Write SetDTS2PasService;
+    property StartAtPort : Word Read FStartAtPort Write SetStartAtPort;
   public
-    // ToDo: remove when migrated to SimpleWebServerGUI
     property OldWebServerFileName: string read FOldWebServerFileName write FOldWebServerFileName;
-    function GetParsedBrowserFilename: string;
-    Property BrowserFileName : String Read GetBrowserFileName Write SetBrowserFileName;
+    property BrowserFileName : String Read FBrowserFileName Write FBrowserFileName;
   end;
 
 var
   PJSOptions: TPas2jsOptions = nil;
 
 function GetStandardPas2jsExe: string;
-function GetStandardBrowser: string;
+function GetStandardElectron: string;
 function GetStandardNodeJS: string;
 function GetPas2jsQuality(Filename: string; out Msg: string): boolean;
 
@@ -137,31 +139,12 @@ function GetStandardNodeJS: string;
 begin
   Result:=PJSDefaultNodeJS;
   if not IDEMacros.SubstituteMacros(Result) then
-    begin
-    Result:='$MakeExe(IDE,node)';
-    if not IDEMacros.SubstituteMacros(Result) then
-      Result:='nodejs'+GetExeExt;
-    end;
+    Result:='nodejs'+GetExeExt;
 end;
 
-function GetStandardBrowser: string;
+function GetStandardElectron: string;
 begin
-  Result:='$MakeExe(IDE,firefox)';
-  if not IDEMacros.SubstituteMacros(Result) then
-    begin
-    Result:='$MakeExe(IDE,chrome)';
-    {$ifdef windows}
-    if not IDEMacros.SubstituteMacros(Result) then
-      Result:='$MakeExe(IDE,iexplore)';
-    {$else}
-    {$ifdef darwin}
-     if not IDEMacros.SubstituteMacros(Result) then
-       Result:='$MakeExe(IDE,xdg-open)';
-    {$endif}
-     if not IDEMacros.SubstituteMacros(Result) then
-       Result:='';
-    {$endif}
-    end;
+  Result:='electron'+GetExeExt;
 end;
 
 function GetPas2jsQuality(Filename: string; out Msg: string): boolean;
@@ -210,11 +193,6 @@ begin
   Result:=FSavedStamp<>FChangeStamp;
 end;
 
-function TPas2jsOptions.GetBrowserFileName: String;
-begin
-  Result:=FCachedOptions[p2jcoBrowserFilename].RawValue;
-end;
-
 function TPas2jsOptions.GetAtomTemplateDir: String;
 begin
   Result:=FCachedOptions[p2jcoAtomTemplateDir].RawValue;
@@ -233,6 +211,11 @@ end;
 function TPas2jsOptions.GetDTS2PasService: String;
 begin
   Result:=FCachedOptions[p2jcoDTSToPasServiceURL].RawValue
+end;
+
+function TPas2jsOptions.GetElectronFileName: string;
+begin
+  Result:=FCachedOptions[p2jcoElectronFilename].RawValue;
 end;
 
 function TPas2jsOptions.GetVSCodeTemplateDir: String;
@@ -264,7 +247,7 @@ begin
   FChangeStamp:=LUInvalidChangeStamp64;
   FCachedOptions[p2jcoCompilerFilename].RawValue:=PJSDefaultCompiler;
   FCachedOptions[p2jcoNodeJSFilename].RawValue:=PJSDefaultNodeJS;
-  FCachedOptions[p2jcoBrowserFilename].RawValue:=PJSDefaultBrowser;
+  FCachedOptions[p2jcoElectronFilename].RawValue:=PJSDefaultElectronExe;
   FCachedOptions[p2jcoAtomTemplateDir].RawValue:='';
   FCachedOptions[p2jcoVSCodeTemplateDir].RawValue:='';
   FCachedOptions[p2jcoDTSToPas].RawValue:=PJSDefaultDTS2Pas;
@@ -312,6 +295,7 @@ Const
   KeyHTTPServer = 'webserver/value';
   KeyBrowser = 'webbrowser/value';
   KeyNodeJS = 'nodejs/value';
+  KeyElectronExe = 'electron/value';
   KeyAtomTemplate = 'atomtemplate/value';
   KeyVSCodeTemplate = 'vscodetemplate/value';
   KeyStartPortAt = 'webserver/startatport/value';
@@ -322,8 +306,8 @@ procedure TPas2jsOptions.LoadFromConfig(Cfg: TConfigStorage);
 
 begin
   CompilerFilename:=Cfg.GetValue(KeyCompiler,PJSDefaultCompiler);
-  BrowserFileName:=Cfg.GetValue(KeyBrowser,PJSDefaultBrowser);
   NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
+  ElectronFileName:=Cfg.GetValue(KeyElectronExe,PJSDefaultElectronExe);
   AtomTemplateDir:=Cfg.GetValue(KeyAtomTemplate,'');
   VSCodeTemplateDir:=Cfg.GetValue(KeyVSCodeTemplate,'');
   DTS2Pas:=cfg.GetValue(KeyDTS2PasTool,PJSDefaultDTS2Pas);
@@ -332,6 +316,7 @@ begin
 
   // legacy
   FOldWebServerFileName:=Cfg.GetValue(KeyHTTPServer,'');
+  BrowserFileName:=Cfg.GetValue(KeyBrowser,'');
 
   Modified:=false;
 end;
@@ -342,7 +327,7 @@ begin
   Cfg.SetDeleteValue(KeyCompiler,CompilerFilename,PJSDefaultCompiler);
   Cfg.SetDeleteValue(KeyStartPortAt,StartAtPort,PJSDefaultStartAtPort);
   Cfg.SetDeleteValue(KeyNodeJS,NodeJSFileName,PJSDefaultNodeJS);
-  Cfg.SetDeleteValue(KeyBrowser,BrowserFileName,PJSDefaultBrowser);
+  Cfg.SetDeleteValue(KeyElectronExe,ElectronFileName,PJSDefaultElectronExe);
   Cfg.SetDeleteValue(KeyAtomTemplate,AtomTemplateDir,'');
   Cfg.SetDeleteValue(KeyVSCodeTemplate,VSCodeTemplateDir,'');
   cfg.SetDeleteValue(KeyDTS2PasTool,DTS2Pas,PJSDefaultDTS2Pas);
@@ -350,6 +335,7 @@ begin
 
   // legacy
   cfg.SetDeleteValue(KeyHTTPServer,OldWebServerFileName,'');
+  Cfg.SetDeleteValue(KeyBrowser,BrowserFileName,'');
 
   Modified:=false;
 end;
@@ -362,6 +348,11 @@ end;
 function TPas2jsOptions.GetParsedNodeJSFilename: string;
 begin
   Result:=GetParsedOptionValue(p2jcoNodeJSFilename);
+end;
+
+function TPas2jsOptions.GetParsedElectronExe: string;
+begin
+  Result:=GetParsedOptionValue(p2jcoElectronFilename);
 end;
 
 function TPas2jsOptions.GetParsedOptionValue(Option: TPas2jsCachedOption
@@ -393,8 +384,8 @@ begin
     begin
       case Option of
         p2jcoCompilerFilename: p^.ParsedValue:=GetStandardPas2jsExe;
-        p2jcoBrowserFilename: p^.ParsedValue:=GetStandardBrowser;
         p2jcoNodeJSFilename: p^.ParsedValue:=GetStandardNodeJS;
+        p2jcoElectronFilename: p^.ParsedValue:=GetStandardElectron;
       end;
       if IsFilename and (p^.ParsedValue<>'')
           and not FilenameIsAbsolute(p^.ParsedValue) then
@@ -415,17 +406,6 @@ begin
   SetCachedOption(p2jcoAtomTemplateDir,AValue);
 end;
 
-function TPas2jsOptions.GetParsedBrowserFilename: string;
-begin
-  Result:=GetParsedOptionValue(p2jcoBrowserFilename);
-end;
-
-procedure TPas2jsOptions.SetBrowserFileName(AValue: String);
-begin
-  AValue:=TrimFilename(AValue);
-  SetCachedOption(p2jcoBrowserFilename,AValue);
-end;
-
 procedure TPas2jsOptions.SetDTS2Pas(AValue: String);
 begin
   AValue:=TrimFilename(AValue);
@@ -435,6 +415,12 @@ end;
 procedure TPas2jsOptions.SetDTS2PasService(AValue: String);
 begin
   SetCachedOption(p2jcoDTSToPasServiceURL,AValue);
+end;
+
+procedure TPas2jsOptions.SetElectronFileName(AValue: string);
+begin
+  AValue:=TrimFilename(AValue);
+  SetCachedOption(p2jcoElectronFilename,AValue);
 end;
 
 procedure TPas2jsOptions.SetVSCodeTemplateDir(AValue: String);

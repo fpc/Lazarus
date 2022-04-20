@@ -27,6 +27,7 @@ Type
     function GetPas2JSPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSElectron(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function OnProjectBuilding(Sender: TObject): TModalResult;
     function OnProjectGroupRunLazbuild({%H-}Target: TPGCompileTarget;
@@ -100,12 +101,18 @@ begin
 end;
 
 function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
-
+var
+  Params: TStringList;
 begin
   Abort:=False;
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
-  Result:=PJSOptions.GetParsedBrowserFilename;
+  Params:=TStringList.Create;
+  try
+    Result:=SimpleWebServerController.GetBrowser('',Params);
+  finally
+    Params.Free;
+  end;
   if Result='' then
     Result:='firefox'; // always return something to get nicer error messages
 end;
@@ -119,6 +126,17 @@ begin
   Result:=PJSOptions.GetParsedNodeJSFilename;
   if Result='' then
     Result:='nodejs'+GetExeExt; // always return something to get nicer error messages
+end;
+
+function TPJSController.GetPas2JSElectron(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSElectron] ignoring macro Pas2JSElectron parameter "',s,'"']);
+  Result:=PJSOptions.GetParsedElectronExe;
+  if Result='' then
+    Result:='electron'+GetExeExt; // always return something to get nicer error messages
 end;
 
 function TPJSController.GetPas2jsProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -326,8 +344,11 @@ begin
     // simplewebservergui package has default value
     if CompareFilenames(ExtractFilename(PJSOptions.OldWebServerFileName),'compileserver'+GetExeExt)=0 then
       begin
-      // user had used compileserver too -> migrate to simplewebservergui
+      // user had used compileserver too -> migrate to simplewebservergui once
       SimpleWebServerController.Options.ServerExe:=PJSOptions.OldWebServerFileName;
+      SimpleWebServerController.Options.SaveSafe;
+      PJSOptions.OldWebServerFileName:='';
+      PJSOptions.Save;
       end;
     end;
 
@@ -396,7 +417,7 @@ begin
 
   if aProject=nil then ;
 
-  // for  now: redirect to run without debug
+  // for now: redirect to run without debug
   Handled:=true;
   Result:=LazarusIDE.DoRunProjectWithoutDebug;
 end;
@@ -461,6 +482,8 @@ begin
     pjsdPas2JSSelectedBrowserExecutable, @GetPas2JSBrowser, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS', '',
     pjsdPas2JSSelectedNodeJSExcutable, @GetPas2JSNodeJS, []));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSElectron', '',
+    pjsdPas2JSSelectedElectronExcutable, @GetPas2JSElectron, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL', '',
     pjsdPas2JSCurrentProjectURL, @GetPas2jsProjectURL, []));
   LazarusIDE.AddHandlerOnProjectBuilding(@OnProjectBuilding);

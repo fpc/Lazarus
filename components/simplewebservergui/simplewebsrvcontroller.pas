@@ -249,6 +249,7 @@ type
     function OpenBrowserWithServer(aServer: TSWSInstance; HTMLFilename: string): boolean; virtual;
     function FindBrowserFile(ShortFilename: string): string; virtual;
     function FindBrowserPath(Filenames: array of string; URL: string; Params: TStrings): string; virtual;
+    function GetBrowser(URL: string; Params: TStrings): string; virtual;
     function GetBrowserChrome(URL: string; Params: TStrings): string; virtual;
     function GetBrowserFirefox(URL: string; Params: TStrings): string; virtual;
     function GetBrowserOpera(URL: string; Params: TStrings): string; virtual;
@@ -1802,42 +1803,12 @@ function TSimpleWebServerController.OpenBrowserWithURL(URL, WorkDir: string
   ): boolean;
 var
   Params: TStringList;
-  Cmd, Exe: String;
+  Exe: String;
   Tool: TIDEExternalToolOptions;
 begin
   Params:=TStringList.Create;
   try
-    case Options.BrowserKind of
-    swsbkCustom:
-      begin
-        Cmd:=Options.BrowserCmd;
-        Cmd:=SubstituteURLMacro(Cmd,URL);
-        if not IDEMacros.SubstituteMacros(Cmd) then
-        begin
-          IDEMessageDialog(rsSWError, rsSWInvalidMacroSee+sLineBreak +
-            rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbOk]);
-          exit(false);
-        end;
-        SplitCmdLineParams(Cmd,Params);
-        Exe:=Params[0];
-        Params.Delete(0);
-      end;
-    swsbkFirefox: Exe:=GetBrowserFirefox(URL,Params);
-    swsbkChrome: Exe:=GetBrowserChrome(URL,Params);
-    swsbkOpera: Exe:=GetBrowserOpera(URL,Params);
-    swsbkVivaldi: Exe:=GetBrowserVivaldi(URL,Params);
-    {$IFDEF Darwin}
-    swsbkSafari: Exe:=GetBrowserSafari(URL,Params);
-    {$ENDIF}
-    {$IFDEF MSWindows}
-    swsbkEdge: Exe:=GetBrowserEdge(URL,Params);
-    {$ENDIF}
-    else
-      begin
-        Result:=OpenURL(URL);
-        exit;
-      end;
-    end;
+    Exe:=GetBrowser(URL,Params);
 
     if Exe='' then
     begin
@@ -1907,6 +1878,45 @@ begin
   if Result<>'' then
   begin
     Params.Add(URL);
+  end;
+end;
+
+function TSimpleWebServerController.GetBrowser(URL: string; Params: TStrings
+  ): string;
+var
+  Cmd: String;
+begin
+  Result:='';
+  case Options.BrowserKind of
+  swsbkCustom:
+    begin
+      Cmd:=Options.BrowserCmd;
+      Cmd:=SubstituteURLMacro(Cmd,URL);
+      if not IDEMacros.SubstituteMacros(Cmd) then
+      begin
+        IDEMessageDialog(rsSWError, rsSWInvalidMacroSee+sLineBreak +
+          rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbOk]);
+        exit;
+      end;
+      SplitCmdLineParams(Cmd,Params);
+      Result:=Params[0];
+      Params.Delete(0);
+    end;
+  swsbkFirefox: Result:=GetBrowserFirefox(URL,Params);
+  swsbkChrome: Result:=GetBrowserChrome(URL,Params);
+  swsbkOpera: Result:=GetBrowserOpera(URL,Params);
+  swsbkVivaldi: Result:=GetBrowserVivaldi(URL,Params);
+  {$IFDEF Darwin}
+  swsbkSafari: Result:=GetBrowserSafari(URL,Params);
+  {$ENDIF}
+  {$IFDEF MSWindows}
+  swsbkEdge: Result:=GetBrowserEdge(URL,Params);
+  {$ENDIF}
+  else
+    begin
+      FindDefaultBrowser(Result,Cmd);
+      SplitCmdLineParams(Cmd,Params);
+    end;
   end;
 end;
 

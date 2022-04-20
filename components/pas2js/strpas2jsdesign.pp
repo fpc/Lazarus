@@ -51,6 +51,8 @@ Resourcestring
     +'new project';
   pjsdPathOfNodeJsExecutable = 'Path of Node.js executable, macro $(Pas2JSNodeJS)';
   pjsdAtomPackageTemplateDirectory = 'Atom package template directory';
+  pjsdPathOfElectronExecutableMacroPas2JSElectron = 'Path of Electron '
+    +'executable, macro $(Pas2JSElectron)';
   pjsdVisualStudioCodeExtensionTemplateDirectory = 'Visual Studio Code '
     +'extension template directory';
 
@@ -99,6 +101,7 @@ Resourcestring
   pjsdPas2JSExecutable = 'Pas2JS executable';
   pjsdPas2JSSelectedBrowserExecutable = 'Pas2JS selected browser executable';
   pjsdPas2JSSelectedNodeJSExcutable = 'Pas2JS selected NodeJS excutable';
+  pjsdPas2JSSelectedElectronExcutable = 'Pas2JS selected Electron excutable';
   pjsdPas2JSCurrentProjectURL = 'Pas2JS current project URL';
 
   // Error descriptions

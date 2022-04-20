@@ -24,8 +24,10 @@ Type
   { TPas2jsOptionsFrame }
 
   TPas2jsOptionsFrame = class(TAbstractIDEOptionsEditor)
+    lblElectronExe: TLabel;
     SimpleWebServerLinkLabel: TLabel;
     VSCodeTemplateDirBrowseButton: TButton;
+    ElectronExeBrowseButton: TButton;
     VSCodeTemplateDirComboBox: TComboBox;
     lblVSCodeTemplateDir: TLabel;
     NodeJSBrowseButton: TButton;
@@ -39,8 +41,9 @@ Type
     Pas2jsPathLabel: TLabel;
     ServerPortLabel: TLabel;
     ServerPortSpinEdit: TSpinEdit;
-    procedure BBrowserBrowseButtonClick(Sender: TObject);
+    ElectronExeComboBox: TComboBox;
     procedure AtomTemplateDirBrowseButtonClick(Sender: TObject);
+    procedure ElectronExeBrowseButtonClick(Sender: TObject);
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
     procedure SimpleWebServerLinkLabelClick(Sender: TObject);
@@ -117,15 +120,35 @@ begin
   end;
 end;
 
+procedure TPas2jsOptionsFrame.ElectronExeBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TIDEOpenDialog;
+  AFilename: String;
+begin
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:='Select Electron executable';
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(ElectronExeComboBox,AFilename,cstFilename,30);
+      PJSOptions.ElectronFileName:=AFileName;
+    end;
+  finally
+    StoreIDEFileDialog(OpenDialog);
+    OpenDialog.Free;
+  end;
+end;
+
 procedure TPas2jsOptionsFrame.NodeJSBrowseButtonClick(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   AFilename: String;
-
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
-    //InputHistories.ApplyFileDialogSettings(OpenDialog);
+    InitIDEFileDialog(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=pjsdSelectNodeJSExecutable;
     if OpenDialog.Execute then begin
@@ -134,27 +157,7 @@ begin
       PJSOptions.NodeJSFileName:=AFileName;
     end;
   finally
-    OpenDialog.Free;
-  end;
-end;
-
-procedure TPas2jsOptionsFrame.BBrowserBrowseButtonClick(Sender: TObject);
-
-var
-  OpenDialog: TOpenDialog;
-  AFilename: String;
-
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    //InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:=pjsdSelectBrowserExecutable;
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      PJSOptions.BrowserFileName:=AFileName;
-    end;
-  finally
+    StoreIDEFileDialog(OpenDialog);
     OpenDialog.Free;
   end;
 end;
@@ -211,6 +214,7 @@ begin
   ServerPortLabel.Hint:=pjsdServerInstancesWillBeStartedWithAPortStartingFromT;
 
   NodeJSLabel.Caption:=pjsdPathOfNodeJsExecutable;
+  lblElectronExe.Caption:=pjsdPathOfElectronExecutableMacroPas2JSElectron;
 
   lblAtomTemplateDir.Caption := pjsdAtomPackageTemplateDirectory;
   lblVSCodeTemplateDir.Caption := pjsdVisualStudioCodeExtensionTemplateDirectory;
@@ -221,6 +225,7 @@ begin
   SetComboBoxText(Pas2jsPathComboBox,PJSOptions.CompilerFilename,cstFilename,30);
   ServerPortSpinEdit.Value:=PJSOptions.StartAtPort;
   SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
+  SetComboBoxText(ElectronExeComboBox,PJSOptions.ElectronFileName,cstFilename,30);
   SetComboBoxText(AtomTemplateDirComboBox,PJSOptions.AtomTemplateDir,cstFilename,30);
   SetComboBoxText(VSCodeTemplateDirComboBox,PJSOptions.VSCodeTemplateDir,cstFilename,30);
 end;
@@ -230,6 +235,7 @@ begin
   PJSOptions.CompilerFilename:=Pas2jsPathComboBox.Text;
   PJSOptions.StartAtPort:=ServerPortSpinEdit.Value;
   PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
+  PJSOptions.ElectronFileName:=ElectronExeComboBox.Text;
   PJSOptions.AtomTemplateDir:=AtomTemplateDirComboBox.Text;
   PJSOptions.VSCodeTemplateDir:=VSCodeTemplateDirComboBox.Text;
   If PJSOptions.Modified then
