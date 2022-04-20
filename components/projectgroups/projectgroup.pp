@@ -1523,7 +1523,9 @@ begin
     exit(arFailed);
   end;
 
-  WorkingDir:=ExtractFilePath(Filename);
+  WorkingDir:='$(LazarusDir)';
+  IDEMacros.SubstituteMacros(WorkingDir);
+
   Params:=TStringList.Create;
   if AAction=taCompileClean then
     Params.Add('-B');
