@@ -1326,7 +1326,7 @@ begin
   // all three projects can run the electron app
   RunMode:=AProject.RunParameters.GetOrCreate('default');
   RunMode.UseLaunchingApplication:=true;
-  RunMode.LaunchingApplicationPathPlusParams:='npm start';
+  RunMode.LaunchingApplicationPathPlusParams:='"$(Pas2jsElectron)" .';
 
   Result:=mrOk;
 end;
