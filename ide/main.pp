@@ -6315,6 +6315,10 @@ begin
       Result.EndUpdate;
   end;
 
+  with Result.RunParameterOptions do
+    if (GetActiveMode=nil) and (Count>0) then
+      ActiveModeName:=Modes[0].Name;
+
   Result.MainProject:=true;
   Result.OnFileBackup:=@MainBuildBoss.BackupFileForWrite;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;

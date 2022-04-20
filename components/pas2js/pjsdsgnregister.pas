@@ -1323,7 +1323,7 @@ begin
   // all three projects can run the electron app
   RunMode:=AProject.RunParameters.GetOrCreate('default');
   RunMode.UseLaunchingApplication:=true;
-  RunMode.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,electron) .';
+  RunMode.LaunchingApplicationPathPlusParams:='"$(Pas2JSElectron)" .';
 
   Result:=mrOk;
 end;

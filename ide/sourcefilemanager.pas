@@ -3675,6 +3675,9 @@ begin
         // or the project main source is not auto updated by the IDE
         OpenMainUnit(-1,-1,[]);
       end;
+      with Project1.RunParameterOptions do
+        if (GetActiveMode=nil) and (Count>0) then
+          ActiveModeName:=Modes[0].Name;
 
       // init resource files
       if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False,'') then
