@@ -223,7 +223,7 @@ begin
 
   BindAnyCheckBox.Caption:=rsSWSBindAny+' (0.0.0.0)';
 
-  PortLabel.Caption:=rsSWSPort;
+  PortLabel.Caption:=rsSWSPortMacro;
 
   ServerOptsLabel.Caption:=rsSWServerExtraCommandLineOptionsOnePerLine;
   ServerOptsLabel.Hint:=rsSWAddExtraCommandLineOptionsForTheCommandWhichStarts;

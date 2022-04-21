@@ -8,9 +8,10 @@ resourcestring
   rsSWSTitle = 'Simple Web Server';
   rsSWSPathOfCompileserver = 'Path of compileserver, macro $(SWSExe)';
   rsSWSAddress = 'Address';
-  rsSWSPort = 'Port, macro $(SWSPort)';
+  rsSWSPortMacro = 'Port, macro $(SWSPort)';
   rsSWTCPPort102465535YouCanUseMacroPortForBelowParams = 'TCP Port 1024..65535'
     +' (you can use macro $(port) for below params)';
+  rsSWPort = 'Port';
   rsSWExecutable = 'Executable';
   rsSWWorkingDirectory = 'Working Directory';
   rsSWParametersPleaseUseMacroPort = 'Parameters (please use macro $(port))';

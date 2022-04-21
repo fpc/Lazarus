@@ -98,7 +98,7 @@ begin
   LocButtonPanel.OKButton.Caption:=rsSWAddLocation;
 
   // add server page
-  SrvPortLabel.Caption:=rsSWSPort;
+  SrvPortLabel.Caption:=rsSWPort;
   SrvPortComboBox.Hint:=rsSWTCPPort102465535YouCanUseMacroPortForBelowParams;
   SrvExeLabel.Caption:=rsSWExecutable;
   SrvExeComboBox.Hint:='';

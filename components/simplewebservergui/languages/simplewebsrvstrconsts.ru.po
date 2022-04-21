@@ -154,6 +154,10 @@ msgstr "Отсутствует исполнимый файл сервера."
 msgid "Parameters (please use macro $(port))"
 msgstr "Параметры (используйте макрос $(port))"
 
+#: simplewebsrvstrconsts.rsswport
+msgid "Port"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswportalreadyused
 msgid "Port already used."
 msgstr "Порт уже используется."
@@ -217,7 +221,9 @@ msgstr "Порт простого веб-сервера"
 msgid "Path of compileserver, macro $(SWSExe)"
 msgstr "Путь к серверу компиляции, макрос $(SWSExe)"
 
-#: simplewebsrvstrconsts.rsswsport
+#: simplewebsrvstrconsts.rsswsportmacro
+#, fuzzy
+msgctxt "simplewebsrvstrconsts.rsswsportmacro"
 msgid "Port, macro $(SWSPort)"
 msgstr "Порт, макрос $(SWSPort)"
 
