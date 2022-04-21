@@ -156,7 +156,7 @@ msgstr "Параметры (используйте макрос $(port))"
 
 #: simplewebsrvstrconsts.rsswport
 msgid "Port"
-msgstr ""
+msgstr "Порт"
 
 #: simplewebsrvstrconsts.rsswportalreadyused
 msgid "Port already used."
@@ -222,7 +222,6 @@ msgid "Path of compileserver, macro $(SWSExe)"
 msgstr "Путь к серверу компиляции, макрос $(SWSExe)"
 
 #: simplewebsrvstrconsts.rsswsportmacro
-#, fuzzy
 msgctxt "simplewebsrvstrconsts.rsswsportmacro"
 msgid "Port, macro $(SWSPort)"
 msgstr "Порт, макрос $(SWSPort)"
