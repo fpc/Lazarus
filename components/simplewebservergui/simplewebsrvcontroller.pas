@@ -176,7 +176,6 @@ type
     function GetLocationCount: integer;
     function GetLocations(Index: integer): TSWSLocation;
     function GetMainSrvExe: string;
-    function GetMainSrvExeUsed: string;
     function GetMainSrvExitCode: integer;
     function GetMainSrvPort: word;
     function GetMainSrvState: TSWebServerState;
@@ -216,7 +215,7 @@ type
     procedure HookMacros; virtual;
     procedure UnhookMacros; virtual;
   public
-    // main server
+    // main server where multiple locations share one port
     function StartMainServer(Interactive: boolean): boolean; virtual;
     function StopMainServer(Interactive: boolean): boolean; virtual;
     function AddLocation(Location, Path, Origin: string; Enable: boolean): TSWSLocation; virtual;
@@ -272,7 +271,6 @@ type
     property MainSrvAddr: string read FMainSrvAddr;
     property MainSrvError: TSWebServerError read FMainSrvError;
     property MainSrvExe: string read GetMainSrvExe;
-    property MainSrvExeUsed: string read GetMainSrvExeUsed;
     property MainSrvExitCode: integer read GetMainSrvExitCode;
     property MainSrvThread: TSWServerThread read GetMainSrvThread;
     property MainSrvState: TSWebServerState read GetMainSrvState;
@@ -281,7 +279,7 @@ type
     property ServerCount: integer read GetServerCount;
     property Servers[Index: integer]: TSWSInstance read GetServers;
     property Utility: TSimpleWebServerUtility read FUtility;
-    property ViewCaption: string read FViewCaption;
+    property ViewCaption: string read FViewCaption; // the title in the IDE's Messages window
   end;
 
 var
@@ -353,11 +351,6 @@ begin
 end;
 
 function TSimpleWebServerController.GetMainSrvExe: string;
-begin
-  Result:=FMainSrvInstance.Exe;
-end;
-
-function TSimpleWebServerController.GetMainSrvExeUsed: string;
 begin
   Result:=FMainSrvInstance.Exe;
 end;
@@ -986,7 +979,7 @@ begin
     SetServerState(Instance,swssStarting);
 
     // start process
-    AddIDEMessageInfo('20210909125756','run: '+MaybeQuote(MainSrvExeUsed)+' '+MergeCmdLineParams(Params));
+    AddIDEMessageInfo('20210909125756','run: '+MaybeQuote(ExeUsed)+' '+MergeCmdLineParams(Params));
 
     TheProcess := TProcess.Create(nil);
     try
@@ -1002,7 +995,7 @@ begin
     except
       on E: Exception do begin
         AddIDEMessageInfo('20210909125752',
-          'unable to run '+MaybeQuote(MainSrvExeUsed)+' '+MergeCmdLineParams(Params)+': '+E.Message);
+          'unable to run '+MaybeQuote(ExeUsed)+' '+MergeCmdLineParams(Params)+': '+E.Message);
         TheProcess.Free;
         exit;
       end;
