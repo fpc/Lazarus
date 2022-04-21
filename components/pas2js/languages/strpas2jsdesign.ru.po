@@ -163,7 +163,7 @@ msgstr "Выбранный исполнимый файл браузера для
 
 #: strpas2jsdesign.pjsdpas2jsselectedelectronexcutable
 msgid "Pas2JS selected Electron excutable"
-msgstr ""
+msgstr "Выбранный исполнимый файл Electron для Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
@@ -171,7 +171,7 @@ msgstr "Выбранный исполнимый файл NodeJS для Pas2JS"
 
 #: strpas2jsdesign.pjsdpathofelectronexecutablemacropas2jselectron
 msgid "Path of Electron executable, macro $(Pas2JSElectron)"
-msgstr ""
+msgstr "Путь к исполнимому файлу Electron, макрос $(Pas2JSElectron)"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
