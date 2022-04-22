@@ -18221,6 +18221,10 @@ msgstr "Dosyayı atla ve yüklemeye devam et"
 msgid "Skip loading last project"
 msgstr "Son proje yüklemeyi atla"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Bu uyarıları atla"

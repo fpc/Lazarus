@@ -18605,6 +18605,10 @@ msgstr "Tęsti įkrovą praleidžiant failą"
 msgid "Skip loading last project"
 msgstr "Neįkelti paskutinio naudoto projekto"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Praleisti šiuos įspėjimus"

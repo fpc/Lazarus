@@ -18285,6 +18285,10 @@ msgstr ""
 msgid "Skip loading last project"
 msgstr ""
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr ""

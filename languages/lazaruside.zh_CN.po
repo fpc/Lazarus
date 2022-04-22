@@ -18349,6 +18349,10 @@ msgstr "跳过文件继续加载"
 msgid "Skip loading last project"
 msgstr "跳过加载最后的(last)工程"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "跳过这些警告"

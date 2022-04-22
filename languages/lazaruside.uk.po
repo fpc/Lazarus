@@ -18341,6 +18341,10 @@ msgstr "Пропустити файл і продовжити завантаже
 msgid "Skip loading last project"
 msgstr "Пропустити завантаження останнього проєкту"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Пропустити ці попередження"

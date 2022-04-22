@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-03-12 01:00+0300\n"
+"PO-Revision-Date: 2022-04-23 00:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -18312,6 +18312,10 @@ msgstr "Пропустить файл и продолжить загрузку"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Пропустить загрузку предыдущего проекта"
+
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr "Пропустить выбранные проверки при запуске."
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"

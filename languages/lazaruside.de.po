@@ -18451,6 +18451,10 @@ msgstr "Datei übergehen und das Laden fortsetzen"
 msgid "Skip loading last project"
 msgstr "Das Laden des letzten Projekts übergehen"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Diese Warnungen überspringen"

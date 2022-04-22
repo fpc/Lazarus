@@ -18369,6 +18369,10 @@ msgstr "Ignorar arquivo e continuar carregando"
 msgid "Skip loading last project"
 msgstr "Ignorar carregamento do último projeto"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Ignorar estes avisos"

@@ -18924,6 +18924,10 @@ msgstr "Sla bestand over en vervolg het laden"
 msgid "Skip loading last project"
 msgstr "Sla het laden van het laatste project over"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr ""

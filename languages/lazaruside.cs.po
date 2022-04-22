@@ -18420,6 +18420,10 @@ msgstr "Přeskočit soubor a pokračovat v načítání"
 msgid "Skip loading last project"
 msgstr "Přeskočit načtení posledního projektu"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "Přeskočit tyto varování"

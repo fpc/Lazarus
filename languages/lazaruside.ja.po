@@ -18566,6 +18566,10 @@ msgstr "そのファイルをとばして読み込みを続行"
 msgid "Skip loading last project"
 msgstr "最後のプロジェクトの読み込みをスキップ"
 
+#: lazarusidestrconsts.lisskipstartupchecks
+msgid "Skip selected checks at startup."
+msgstr ""
+
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
 msgstr "これらの警告をスキップ"
