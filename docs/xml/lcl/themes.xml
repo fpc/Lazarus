@@ -1945,9 +1945,9 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 <short>Converts the numeric color value to color reference.</short>
 <descr/>
 <seealso>
-  <link id="#lcl.graphics.ColorToRGB"/>
-  <link id="#lcl.lcltype.TColorRef"/>
-  <link id="#lcl.lcltype.COLORREF"/>
+  <link id="#lcl.graphics.ColorToRGB">ColorToRGB</link>
+  <link id="#lcl.lcltype.TColorRef">TColorRef</link>
+  <link id="#lcl.lcltype.COLORREF">COLORREF</link>
 </seealso>
 </element>
 <element name="TThemeServices.InternalColorToRGB.Result">

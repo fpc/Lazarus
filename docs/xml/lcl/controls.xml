@@ -635,7 +635,7 @@
         <short>Alias for the TLMNCHitTest type.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.lmessages.TLMNCHitTest"/>
+          <link id="#lcl.lmessages.TLMNCHitTest">TLMNCHitTest</link>
         </seealso>
       </element>
 
@@ -643,7 +643,7 @@
         <short>Alias for the TLMMouse type.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.lmessages.TLMMouse"/>
+          <link id="#lcl.lmessages.TLMMouse">TLMMouse</link>
         </seealso>
       </element>
 
@@ -706,7 +706,7 @@
       <element name="TCMDialogChar">
         <short>Alias for the TLMKey type.</short>
         <seealso>
-          <link id="#lcl.lmessages.TLMKey"/>
+          <link id="#lcl.lmessages.TLMKey">TLMKey</link>
         </seealso>
         <notes><note>Used in LazReport controls.</note></notes>
       </element>
@@ -714,7 +714,7 @@
       <element name="TCMDialogKey">
         <short>Alias for the TLMKey type.</short>
         <seealso>
-          <link id="#lcl.lmessages.TLMKey"/>
+          <link id="#lcl.lmessages.TLMKey">TLMKey</link>
         </seealso>
         <notes><note>Used in the jvcllaz package.</note></notes>
       </element>
@@ -729,7 +729,7 @@
       <element name="TCMExit">
         <short>Alias for the TLMExit type.</short>
         <seealso>
-          <link id="#lcl.lmessages.TLMExit"/>
+          <link id="#lcl.lmessages.TLMExit">TLMExit</link>
         </seealso>
       </element>
 
@@ -2112,7 +2112,7 @@
         <descr/>
         <seealso>
           <link id="TDragImageList.DragHotSpot"/>
-          <link id="#lcl.imglist.TCustomImageList.GetHotSpot"/>
+          <link id="#lcl.imglist.TCustomImageList.GetHotSpot">TCustomImageList.GetHotSpot</link>
         </seealso>
       </element>
       <element name="TDragImageList.GetDragHotSpot.Result">
@@ -11311,8 +11311,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TComponent.BeforeDestruction"/>
-          <link id="#rtl.classes.TComponent.Destroying"/>
+          <link id="#rtl.classes.TComponent.BeforeDestruction">TComponent.BeforeDestruction</link>
+          <link id="#rtl.classes.TComponent.Destroying">TComponent.Destroying</link>
         </seealso>
       </element>
 
@@ -11608,9 +11608,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.forms.TCustomForm.FormIsUpdating"/>
-          <link id="#lcl.forms.TCustomForm.BeginFormUpdate"/>
-          <link id="#lcl.forms.TCustomForm.EndFormUpdate"/>
+          <link id="#lcl.forms.TCustomForm.FormIsUpdating">TCustomForm.FormIsUpdating</link>
+          <link id="#lcl.forms.TCustomForm.BeginFormUpdate">TCustomForm.BeginFormUpdate</link>
+          <link id="#lcl.forms.TCustomForm.EndFormUpdate">TCustomForm.EndFormUpdate</link>
         </seealso>
       </element>
       <element name="TControl.FormIsUpdating.Result">
@@ -12212,11 +12212,11 @@
           <link id="TControl.HelpType"/>
           <link id="TControl.HelpContext"/>
           <link id="TControl.HelpKeyword"/>
-          <link id="#lcl.forms.TApplication.HelpContext"/>
-          <link id="#lcl.forms.TApplication.HelpKeyword"/>
-          <link id="#lcl.forms.TApplication.ShowHelpForObject"/>
-          <link id="#lcl.forms.TApplicationProperties.HelpFile"/>
-          <link id="#lcl.forms.TCustomForm.HelpFile"/>
+          <link id="#lcl.forms.TApplication.HelpContext">TApplication.HelpContext</link>
+          <link id="#lcl.forms.TApplication.HelpKeyword">TApplication.HelpKeyword</link>
+          <link id="#lcl.forms.TApplication.ShowHelpForObject">TApplication.ShowHelpForObject</link>
+          <link id="#lcl.forms.TApplicationProperties.HelpFile">TApplicationProperties.HelpFile</link>
+          <link id="#lcl.forms.TCustomForm.HelpFile">TCustomForm.HelpFile</link>
         </seealso>
       </element>
 
@@ -13248,7 +13248,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </descr>
         <seealso>
           <link id="TControl.CalculateDockSizes"/>
-          <link id="#lcl.ldocktree.TLazDockTree.InsertControl"/>
+          <link id="#lcl.ldocktree.TLazDockTree.InsertControl">TLazDockTree.InsertControl</link>
         </seealso>
       </element>
 
@@ -16419,7 +16419,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </descr>
         <seealso>
           <link id="TWinControl.DoRemainingKeyDown"/>
-          <link id="#lcl.forms.TCustomForm.WantChildKey"/>
+          <link id="#lcl.forms.TCustomForm.WantChildKey">TCustomForm.WantChildKey</link>
         </seealso>
       </element>
       <element name="TWinControl.ChildKey.Result">

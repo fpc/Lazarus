@@ -921,7 +921,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TControl.ParentColor"/>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
         </seealso>
       </element>
 

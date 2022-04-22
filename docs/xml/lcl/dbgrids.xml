@@ -5187,10 +5187,9 @@
         <seealso>
           <link id="TDBGridOptions"/>
           <link id="TDBGridOption"/>
-          <link id="#lcl.grids.TGridOptions"/>
-          <link id="#lcl.grids.TGridOption"/>
-          <link id="#lcl.grids.TGridOptions2"/>
-          <link id="#lcl.grids.TGridOption2"/>
+          <link id="#lcl.grids.TGridOptions">TGridOptions</link>
+          <link id="#lcl.grids.TGridOption">TGridOption</link>
+          <link id="#lcl.grids.TGridOptions2">TGridOptions2</link>
         </seealso>
       </element>
 

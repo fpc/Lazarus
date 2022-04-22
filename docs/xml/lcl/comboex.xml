@@ -1208,7 +1208,7 @@
         </descr>
         <seealso>
           <link id="TCustomComboBoxEx.Images"/>
-          <link id="#lcl.controls.TControl.Notification"/>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
           <link id="#rtl.classes.TComponent">TComponent</link>
         </seealso>
       </element>

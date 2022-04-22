@@ -395,7 +395,7 @@
         </descr>
         <errors />
         <seealso>
-          <link id="#lazutils.lazconfigstorage.TConfigStorage"/>
+          <link id="#lazutils.lazconfigstorage.TConfigStorage">TConfigStorage</link>
         </seealso>
       </element>
 

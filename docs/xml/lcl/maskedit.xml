@@ -1361,7 +1361,7 @@
           <link id="TCustomMaskEdit.GetTextWithoutMask"/>
           <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.IsMasked"/>
-          <link id="#lcl.stdctrls.TCustomEdit.RealGetText"/>
+          <link id="#lcl.stdctrls.TCustomEdit.RealGetText">TCustomEdit.RealGetText</link>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.RealGetText.Result">

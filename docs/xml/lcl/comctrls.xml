@@ -8138,7 +8138,7 @@ end;
         <short>Gets the owner of the persistent object.</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TPersistent"/>
+          <link id="#rtl.classes.TPersistent">TPersistent</link>
         </seealso>
       </element>
       <element name="TListColumns.GetOwner.Result">
@@ -9057,7 +9057,7 @@ end;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomEdit.DoExit"/>
+          <link id="#lcl.stdctrls.TCustomEdit.DoExit">TCustomEdit.DoExit</link>
         </seealso>
       </element>
 
@@ -14156,7 +14156,7 @@ end;
         <seealso>
           <link id="TToolButton.Down"/>
           <link id="TToolButton.ImageIndex"/>
-          <link id="#lcl.actnlist.TCustomAction.Checked"/>
+          <link id="#lcl.actnlist.TCustomAction.Checked">TCustomAction.Checked</link>
           <link id="#lcl.controls.TControl.ActionChange">TControl.ActionChange</link>
         </seealso>
       </element>
@@ -15603,7 +15603,7 @@ end;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TCustomControl.Paint"/>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
         </seealso>
       </element>
 
@@ -23398,7 +23398,7 @@ AToolbar.ButtonHeight := 30;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.CreateWnd"/>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
 
@@ -23486,7 +23486,7 @@ AToolbar.ButtonHeight := 30;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.DestroyWnd"/>
+          <link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
         </seealso>
       </element>
 
@@ -26442,7 +26442,7 @@ OldExpanded.Free;
         <short>Gets the value for the DisplayName property.</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TCollectionItem.DisplayName"/>
+          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
         </seealso>
       </element>
       <element name="THeaderSection.Result">

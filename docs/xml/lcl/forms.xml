@@ -1205,7 +1205,7 @@
           <link id="TScrollingWinControl.HorzScrollBar"/>
           <link id="TScrollingWinControl.VertScrollBar"/>
           <link id="TScrollingWinControl.UpdateScrollBars"/>
-          <link id="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+          <link id="#lcl.forms.TScrollingWinControl.AutoScroll">TScrollingWinControl.AutoScroll</link>
         </seealso>
       </element>
       <element name="TScrollingWinControl.SetAutoScroll.Value">
@@ -1654,7 +1654,7 @@
           <link id="#lcl.controls.TControl.Constraints">TControl.Constraints</link>
           <link id="#lcl.controls.TControl.BorderSpacing">TControl.BorderSpacing</link>
           <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
-          <link id="#lcl.controls.TLayoutAdjustmentPolicy"/>
+          <link id="#lcl.controls.TLayoutAdjustmentPolicy">TLayoutAdjustmentPolicy</link>
         </seealso>
       </element>
       <element name="TCustomDesignControl.DoAutoAdjustLayout.AMode">
@@ -1957,7 +1957,7 @@
           <link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
           <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
           <link id="#lcl.controls.TControl.Color">TControl.Color</link>
-          <link id="#rtl.classes.TComponent.ComponentState"/>
+          <link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
         </seealso>
       </element>
       <element name="TCustomFrame.CMParentColorChanged.Message">
@@ -2132,7 +2132,7 @@
         <seealso>
           <link id="TFrame.LCLVersion"/>
           <link id="TCustomFrame.Create"/>
-          <link id="#lcl.lclversion.lcl_version"/>
+          <link id="#lcl.lclversion.lcl_version">lcl_version</link>
         </seealso>
       </element>
       <element name="TFrame.Create.TheOwner">
@@ -2168,8 +2168,8 @@
         <seealso>
           <link id="TForm.LCLVersion"/>
           <link id="TForm.Create"/>
-          <link id="#lcl.controls.TControl.Parent"/>
-          <link id="#lcl.lclversion.lcl_version"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+          <link id="#lcl.lclversion.lcl_version">lcl_version</link>
         </seealso>
       </element>
 
@@ -5024,7 +5024,7 @@
         </descr>
         <seealso>
           <link id="TCustomForm.AddHandlerCreate"/>
-          <link id="#rtl.classes.TNotifyEvent"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
         </seealso>
       </element>
       <element name="TCustomForm.RemoveHandlerCreate.OnCreateHandler">
@@ -10060,7 +10060,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           </p>
         </descr>
         <seealso>
-          <link id="#LazUtils.LazUTF8.ParamStrUTF8"/>
+          <link id="#lazutils.lazutf8.ParamStrUTF8">ParamStrUTF8</link>
         </seealso>
       </element>
       <element name="TApplication.GetExename.Result">
@@ -12626,7 +12626,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.lcltype.VK_LSHIFT"/>
+          <link id="#lcl.lcltype.VK_LSHIFT">VK_LSHIFT</link>
         </seealso>
       </element>
 

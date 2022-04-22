@@ -244,7 +244,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TBasicActionLink"/>
+          <link id="#rtl.classes.TBasicActionLink">TBasicActionLink</link>
         </seealso>
       </element>
       <element name="TMenuActionLink.IsOnExecuteLinked.Result">

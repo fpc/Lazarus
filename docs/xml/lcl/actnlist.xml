@@ -7,11 +7,12 @@
     ====================================================================
     -->
     <module name="ActnList">
-      <short>Defines classes for Actions and lists of Actions for use in LCL components.</short>
+      <short>
+        Defines classes for Actions and lists of Actions for use in LCL components.
+      </short>
       <descr>
         <p>
-          <file>actnlist.pas</file> contains classes which implements actions used in LCL components.
-          The following components are added to the Lazarus IDE component palette:
+          <file>actnlist.pas</file> contains classes which implements actions used in LCL components. The following components are added to the Lazarus IDE component palette:
         </p>
         <p>
           <b>Standard</b> Tab
@@ -173,8 +174,8 @@
         </descr>
         <seealso>
           <link id="TCustomActionList.ExecuteAction"/>
-          <link id="#lcl.forms.TApplication"/>
-          <link id="#lcl.lclproc.SendApplicationMessage"/>
+          <link id="#lcl.forms.TApplication">TApplication</link>
+          <link id="#lcl.lclproc.SendApplicationMessage">SendApplicationMessage</link>
           <link id="#rtl.classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
           <link id="#rtl.classes.TBasicAction.Execute">TBasicAction.Execute</link>
         </seealso>

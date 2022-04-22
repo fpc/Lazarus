@@ -2319,7 +2319,7 @@ end;
         <short>Finds the monitor which contains most of the specified window.</short>
         <descr/>
         <seealso>
-          <link id="#lcl.forms.TScreen.MonitorFromWindow"/>
+          <link id="#lcl.forms.TScreen.MonitorFromWindow">TScreen.MonitorFromWindow</link>
         </seealso>
       </element>
       <element name="MonitorFromWindow.Result">

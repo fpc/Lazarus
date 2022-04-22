@@ -12062,10 +12062,10 @@
           <link id="TCustomGrid.PrepareCanvas"/>
           <link id="TCustomGrid.OnPrepareCanvas"/>
           <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
-          <link id="#lcl.graphics.clBtnFace"/>
-          <link id="#lcl.graphics.clBtnText"/>
-          <link id="#lcl.graphics.clInactiveCaption"/>
-          <link id="#lcl.graphics.clInactiveCaptionText"/>
+          <link id="#lcl.graphics.clBtnFace">clBtnFace</link>
+          <link id="#lcl.graphics.clBtnText">clBtnText</link>
+          <link id="#lcl.graphics.clInactiveCaption">clInactiveCaption</link>
+          <link id="#lcl.graphics.clInactiveCaptionText">clInactiveCaptionText</link>
         </seealso>
       </element>
 
@@ -13144,7 +13144,7 @@
           <link id="TCustomGrid.Columns"/>
           <link id="TGridColumns"/>
           <link id="TGridColumn"/>
-          <link id="#lcl.controls.TControl.Font"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
           <link id="#lcl.controls.TControl.ScaleFontsPPI">TControl.ScaleFontsPPI</link>
         </seealso>
       </element>

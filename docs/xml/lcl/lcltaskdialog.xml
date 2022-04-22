@@ -577,12 +577,12 @@ end;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.lclstrconsts.rsMtWarning"/>
-          <link id="#lcl.lclstrconsts.rsMtError"/>
-          <link id="#lcl.lclstrconsts.rsMtInformation"/>
-          <link id="#lcl.lclstrconsts.rsMtConfirmation"/>
-          <link id="#lcl.lclstrconsts.rsMtAuthentication"/>
-          <link id="#lcl.lclstrconsts.rsMtCustom"/>
+          <link id="#lcl.lclstrconsts.rsMtWarning">rsMtWarning</link>
+          <link id="#lcl.lclstrconsts.rsMtError">rsMtError</link>
+          <link id="#lcl.lclstrconsts.rsMtInformation">rsMtInformation</link>
+          <link id="#lcl.lclstrconsts.rsMtConfirmation">rsMtConfirmation</link>
+          <link id="#lcl.lclstrconsts.rsMtAuthentication">rsMtAuthentication</link>
+          <link id="#lcl.lclstrconsts.rsMtCustom">rsMtCustom</link>
         </seealso>
       </element>
 

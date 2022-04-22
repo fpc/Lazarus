@@ -477,7 +477,7 @@
         <seealso>
           <link id="TCommonDialog.Execute"/>
           <link id="TCommonDialog.DoExecute"/>
-          <link id="#lazutils.uitypes.TModalResult"/>
+          <link id="#lazutils.uitypes.TModalResult">TModalResult</link>
         </seealso>
       </element>
 
@@ -1557,7 +1557,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           <link id="TCustomSpeedButton.Spacing"/>
           <link id="TCustomSpeedButton.Layout"/>
           <link id="TCustomSpeedButton.Margin"/>
-          <link id="#lcl.controls.TControl.Caption"/>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
         </seealso>
       </element>
       <element name="TColorButton.GetGlyphSize.Result">
@@ -1695,7 +1695,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           <link id="TCustomSpeedButton.Spacing"/>
           <link id="TCustomSpeedButton.Layout"/>
           <link id="TCustomSpeedButton.Margin"/>
-          <link id="#lcl.controls.TControl.Caption"/>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
         </seealso>
       </element>
 
@@ -3537,7 +3537,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <seealso>
           <link id="TCustomTaskDialog.ModalResult"/>
           <link id="TCustomTaskDialog.Button"/>
-          <link id="#lcl.lcltaskdialog.TTaskDialog"/>
+          <link id="#lcl.lcltaskdialog.TTaskDialog">TTaskDialog</link>
         </seealso>
       </element>
       <element name="TCustomTaskDialog.Execute.Result">
@@ -3641,7 +3641,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           <link id="TCustomTaskDialog.Flags"/>
           <link id="TTaskDialogFlags"/>
           <link id="TTaskDialogFlag"/>
-          <link id="#lcl.lcltype.TTranslateString"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
         </seealso>
       </element>
 
@@ -3671,14 +3671,16 @@ ADialog.ExpandedText := 'Please read the Terms of Service.'+#10+
           <link id="TCustomTaskDialog.Flags"/>
           <link id="TTaskDialogFlags"/>
           <link id="TTaskDialogFlag"/>
-          <link id="#lcl.lcltype.TTranslateString"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
         </seealso>
       </element>
 
       <element name="TCustomTaskDialog.Flags">
         <short>Set of options enabled for the Task dialog.</short>
         <descr>
-          Flags is a TTaskDialogFlags property with the set of options for the Task dialog. It contains values from the TTaskDialogFlag enumeration, and when included, enable the corresponding feature in the Task Dialog. The default value for the property is [tfAllowDialogCancellation] and allows the dialog to be cancelled.
+          <p>
+            Flags is a TTaskDialogFlags property with the set of options for the Task dialog. It contains values from the TTaskDialogFlag enumeration, and when included, enable the corresponding feature in the Task Dialog. The default value for the property is [tfAllowDialogCancellation] and allows the dialog to be cancelled.
+          </p>
         </descr>
         <seealso>
           <link id="TTaskDialogFlags"/>
@@ -3729,7 +3731,7 @@ ADialog.FooterText := '(c) Copyright 1960-2021, Acme Corporation LLC.' + #10 +
           <link id="TCustomTaskDialog.Flags"/>
           <link id="TTaskDialogFlags"/>
           <link id="TTaskDialogFlag"/>
-          <link id="#lcl.lcltype.TTranslateString"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
         </seealso>
       </element>
 
@@ -3838,7 +3840,7 @@ ADialog.Text := 'Please read and accept the &lt;a href="file://tos.pdf"&gt;Terms
           <link id="TCustomTaskDialog.Flags"/>
           <link id="TTaskDialogFlags"/>
           <link id="TTaskDialogFlag"/>
-          <link id="#lcl.lcltype.TTranslateString"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
         </seealso>
       </element>
 
@@ -4317,17 +4319,19 @@ uses
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-    btns: array[0..2] of LongInt = (idButtonOK, idButtonCancel, idButtonHelp);
-    res: LongInt;
+  btns: array[0..2] of LongInt = (idButtonOK, idButtonCancel, idButtonHelp);
+  res: LongInt;
 begin
-    res := DefaultPromptDialog('This is the caption', 'This is the message of this dialog', idDialogInfo, @btns, 3, 0, 1, true, 0, 0);
-    Caption := 'Dialog result is ' + IntToStr(res);
+  res := DefaultPromptDialog('This is the caption',
+    'This is the message of this dialog', idDialogInfo, @btns,
+    3, 0, 1, true, 0, 0);
+  Caption := 'Dialog result is ' + IntToStr(res);
 end;
 </code>
         </descr>
         <seealso>
-          <link id="#lcl.forms.TCustomForm.ShowModal"/>
-          <link id="#lcl.forms.TCustomForm.ModalResult"/>
+          <link id="#lcl.forms.TCustomForm.ShowModal">TCustomForm.ShowModal</link>
+          <link id="#lcl.forms.TCustomForm.ModalResult">TCustomForm.ModalResult</link>
           <link id="#lcl.interfacebase.PromptDialogFunction">PromptDialogFunction</link>
         </seealso>
       </element>

@@ -546,7 +546,7 @@
         <seealso>
           <link id="TCustomColorBox.Colors"/>
           <link id="TCustomColorBox.Style"/>
-          <link id="#lcl.stdctrls.TCustomComboBox.Items"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Items">TCustomComboBox.Items</link>
         </seealso>
       </element>
       <element name="TCustomColorBox.ColorNames.Index">
@@ -846,7 +846,7 @@ if iPos &lt;&gt; -1 then
           <link id="TColorListBox"/>
           <link id="TCustomColorBox"/>
           <link id="TColorBox"/>
-          <link id="#lcl.stdctrls.TCustomListBox"/>
+          <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
         </seealso>
       </element>
 
@@ -1066,7 +1066,7 @@ if iPos &lt;&gt; -1 then
         </descr>
         <seealso>
           <link id="TCustomColorListBox.ColorDialog"/>
-          <link id="#lcl.controls.TControl.Notification"/>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
           <link id="#rtl.classes.TComponent">TComponent</link>
         </seealso>
       </element>

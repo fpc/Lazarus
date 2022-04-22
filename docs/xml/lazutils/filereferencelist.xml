@@ -137,7 +137,7 @@
         </descr>
         <seealso>
           <link id="TFileReferenceList.TimeStamp"/>
-          <link id="#lazutils.lazfilecache.LUInvalidChangeStamp64"/>
+          <link id="#lazutils.lazfilecache.LUInvalidChangeStamp64">LUInvalidChangeStamp64</link>
         </seealso>
       </element>
 

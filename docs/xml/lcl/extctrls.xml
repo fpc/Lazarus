@@ -2468,7 +2468,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TGraphicControl.WSRegisterClass"/>
+          <link id="#lcl.controls.TGraphicControl.WSRegisterClass">TGraphicControl.WSRegisterClass</link>
         </seealso>
       </element>
 
@@ -6127,7 +6127,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.extctrls.TCustomFlowPanel.AutoWrap"/>
+          <link id="#lcl.extctrls.TCustomFlowPanel.AutoWrap">TCustomFlowPanel.AutoWrap</link>
         </seealso>
       </element>
 

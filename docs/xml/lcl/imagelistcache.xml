@@ -139,7 +139,7 @@ TImageCacheItems is used in the implementation of the
 <short>Notifies observers when a value in the container has been changed.</short>
 <descr/>
 <seealso>
-<link id="#rtl.classes.TList"/>
+<link id="#rtl.classes.TList">TList</link>
 </seealso>
 </element>
 
@@ -192,7 +192,7 @@ Items is the default property for the container.
 </p>
 </descr>
 <seealso>
-<link id="#rtl.classes.TList"/>
+<link id="#rtl.classes.TList">TList</link>
 </seealso>
 </element>
 

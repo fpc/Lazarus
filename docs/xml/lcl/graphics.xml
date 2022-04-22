@@ -3791,7 +3791,7 @@
         <descr/>
         <seealso>
           <link id="#lcl.lcltype.HRGN">HRGN</link>
-          <link id="#rtl.sysutils.THandle"/>
+          <link id="#rtl.sysutils.THandle">THandle</link>
         </seealso>
       </element>
       <element name="TRegion.Reference">

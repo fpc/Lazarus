@@ -688,7 +688,7 @@
         <seealso>
           <link id="TClipBoard.AddFormat"/>
           <link id="TClipBoard.Assign"/>
-          <link id="#lcl.lcltype.TClipboardFormat"/>
+          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->

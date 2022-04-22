@@ -5004,7 +5004,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.TabStop"/>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
         </seealso>
       </element>
 
@@ -6333,7 +6333,7 @@
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Text">TControl.Text</link>
-          <link id="#lcl.stdctrls.TEditCharCase"/>
+          <link id="#lcl.stdctrls.TEditCharCase">TEditCharCase</link>
         </seealso>
       </element>
 
@@ -7018,7 +7018,7 @@ end;
         <seealso>
           <link id="TCustomMemo.ScrollBars"/>
           <link id="TCustomMemo.WordWrap"/>
-          <link id="#lcl.controls.TWinControl.Loaded"/>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
 
@@ -8397,7 +8397,7 @@ end;
         </descr>
         <seealso>
           <link id="TCustomButton.UpdateDefaultCancel"/>
-          <link id="#lcl.controls.TWinControl.Loaded"/>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
 
@@ -8423,7 +8423,7 @@ end;
           <link id="TCustomButton.Active"/>
           <link id="TCustomButton.WSSetDefault"/>
           <link id="#lcl.forms.GetParentForm">GetParentForm</link>
-          <link id="#lcl.forms.TCustomForm.CancelControl"/>
+          <link id="#lcl.forms.TCustomForm.CancelControl">TCustomForm.CancelControl</link>
           <link id="#lcl.forms.TCustomForm.DefaultControl">TCustomForm.DefaultControl</link>
         </seealso>
       </element>
@@ -8725,7 +8725,7 @@ end;
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TWinControl.TabStop"/>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
         </seealso>
       </element>
 
