@@ -747,7 +747,7 @@ var
         if Sig = '/*' then
           bmp := TPixmap.Create
         else
-        if Sig = '%P' then
+        if Sig = #137'P' then
           bmp := TPortableNetworkGraphic.Create
         else
           raise EInvalidGraphicOperation.Create(rsInvalidStreamFormat);
