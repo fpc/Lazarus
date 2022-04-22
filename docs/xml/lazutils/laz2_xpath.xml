@@ -1555,7 +1555,7 @@
         <short>Implements a Namespace resolver for the XPath environment.</short>
         <descr>
           <p>
-            <var>TXPathNSResolver</var> is a class used to implement a Namespace resolver for the XPath environment. TXPathNSResolver performs namespace lookups for Qualified Names which include a prefix. Namespaces are resolved relative to the context node passed to the constructor for the class instance.
+            <var>TXPathNSResolver</var> is a class used to implement a Namespace resolver for the XPath environment. TXPathNSResolver performs namespace look-ups for Qualified Names which include a prefix. Namespaces are resolved relative to the context node passed to the constructor for the class instance.
           </p>
           <p>
             TXPathNSResolver is used in the implementation of TXPathScanner, TXPathExpression, and passed as an argument to the EvaluateXPathExpression routine.

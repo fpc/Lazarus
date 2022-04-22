@@ -1408,7 +1408,7 @@ ACfg.WriteXMLFile('/another/path/to/file.xml');
           <code>
 // write XML content to a stream
 AStream := TStream.Create;
-ACfg.WriteToSteam(ASteam);
+ACfg.WriteToSteam(AStream);
           </code>
           <code>
 ACfg := TXMLConfig.CreateClean('myappconfig.xml');

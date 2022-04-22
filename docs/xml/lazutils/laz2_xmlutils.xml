@@ -63,10 +63,10 @@
             <var>IsXmlName</var> is an overloaded <var>Boolean</var> function used to determine if <var>Value</var> contains a valid XML element name. It ensures that the name is valid using the <b>Name</b> production in the XML specifications.
           </p>
           <p>
-            In XML 1.0, the valid characters allowed in a name eas some restricted. It used the principle of "that which is not expressly permitted is prohibited."
+            In XML 1.0, the valid characters allowed in a name was restricted. It used the principle of "that which is not expressly permitted is prohibited."
           </p>
           <p>
-            The Xml11 flag indicates if the XML 1.1 element naming conventions are allowed. When set to True, the XML 1.1 naming convenients are used. XML 1.1 allows almost all Unicode characters in any position in the name except the NameStart character. When to False (the default value), XML 1.0 naming conventions are used.
+            The Xml11 flag indicates if the XML 1.1 element naming conventions are allowed. When set to True, the XML 1.1 naming conventions are used. XML 1.1 allows almost all Unicode characters in any position in the name except the NameStart character. When to False (the default value), XML 1.0 naming conventions are used.
           </p>
           <p>
             <b>Extensible Markup Language (XML) 1.0 (Fifth Edition)</b>

@@ -297,7 +297,7 @@
         </short>
         <descr>
           <p>
-            <var>FilenameHasPascalExt</var> is a <var>Boolean</var> function used to determine if the file name in the <var>Filename</var> argument uses a file extension recognized as a Pascal source code file. The <var>CompareText</var> routine is called to perform a case-insensitive comparision between the value in Filename and the recognized file extensions.
+            <var>FilenameHasPascalExt</var> is a <var>Boolean</var> function used to determine if the file name in the <var>Filename</var> argument uses a file extension recognized as a Pascal source code file. The <var>CompareText</var> routine is called to perform a case-insensitive comparison between the value in Filename and the recognized file extensions.
           </p>
            <p>
              The return value is <b>True</b> when Filename has one of the following file extensions:

@@ -235,7 +235,7 @@
         <short>Copies property values from Source into the current class instance.</short>
         <descr>
           <p>
-            <var>Assign</var> is an overridden method in <var>TMethodList</var> used to implement object persistence  for the TMethodList class type. Assign calls <var>Clear</var> ro reallocate memory for the <var>Items</var> in the class instance. Values from the Items property in <var>Source</var> are added to the current class instance.
+            <var>Assign</var> is an overridden method in <var>TMethodList</var> used to implement object persistence  for the TMethodList class type. Assign calls <var>Clear</var> to reallocate memory for the <var>Items</var> in the class instance. Values from the Items property in <var>Source</var> are added to the current class instance.
           </p>
         </descr>
         <seealso/>

@@ -24,7 +24,9 @@
       </element>
 
       <element name="TFreeNotifyingObject.FFreeNotificationList">
-        <short>List of notification methods called when the object is freed.</short>
+        <short>
+          List of notification methods called when the object is freed.
+        </short>
       </element>
 
       <element name="TFreeNotifyingObject.Destroy">
@@ -34,7 +36,9 @@
       </element>
 
       <element name="TFreeNotifyingObject.AddFreeNotification">
-        <short>Adds the specified method to the notification list in the class instance.</short>
+        <short>
+          Adds the specified method to the notification list in the class instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -52,7 +56,9 @@
       </element>
 
       <element name="TRefCountedObject">
-        <short>Implements a thread-safe reference-counted class which performs free notifications.</short>
+        <short>
+          Implements a thread-safe reference-counted class which performs free notifications.
+        </short>
         <descr>
           <p>
             Used in the implementation of logging classes and the debugger interface in Lazarus. Also used in the implementation of classes for TSynEdit.
@@ -117,7 +123,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the constructor for the class instance. It sets the default values for members used in the class instance.When WITH_REFCOUNT_DEBUG has been defined in the LCL, a critcal section used during debugging is initialized. Create calls the inherited constructor prior to exiting from the method.
+            Create is the constructor for the class instance. It sets the default values for members used in the class instance.When WITH_REFCOUNT_DEBUG has been defined in the LCL, a critical section used during debugging is initialized. Create calls the inherited constructor prior to exiting from the method.
           </p>
         </descr>
         <seealso>
@@ -146,7 +152,7 @@
           </p>
           <ul>
             <li>
-              The thread already holds a refernce (and no other thread will release that reference).
+              The thread already holds a reference (and no other thread will release that reference).
             </li>
             <li>
               The thread created the reference, and no other thread has access to the object (yet).
@@ -173,7 +179,7 @@
           </p>
           <ul>
             <li>
-              The thread already holds a refernce (and no other thread will release that reference).
+              The thread already holds a reference (and no other thread will release that reference).
             </li>
             <li>
               The thread created the reference, and no other thread has access to the object (yet).
@@ -213,7 +219,9 @@
       </element>
 
       <element name="TRefCntObjList">
-        <short>Implements a list used to store TRefCountedObject instances.</short>
+        <short>
+          Implements a list used to store TRefCountedObject instances.
+        </short>
         <descr>
           <p>
             Provides a <var>Notify</var> method which increases or decreases the reference count for an object when it is added to or removed from the list.ist.

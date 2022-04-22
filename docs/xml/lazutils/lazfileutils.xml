@@ -534,7 +534,7 @@ D:\db\employee.fdb
 
       <element name="CheckIfFileIsSymlink">
         <short>
-          Checks whether the specified file name is a symbolc link on the local file system.
+          Checks whether the specified file name is a symbolic link on the local file system.
         </short>
         <descr>
           <p>
@@ -623,7 +623,7 @@ D:\db\employee.fdb
             <var>FileIsHardLink</var> is a <var>Boolean</var> function used to determine if the specified file name is represented by a file descriptor or handle on the local file system.
           </p>
           <p>
-            The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FPFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
+            The implementation of FileIsHardLink is platform- or OS-specific. For UNIX-like environments, a file handle is retrieved by calling the <var>FileOpenUTF8</var> function and passed to the <var>FpFStat</var> function to access the file information. For the Windows platform (excluding WinCE and Windows XP), the <var>GetFileInformationByHandle</var> Windows API routine is called to get information for the file handle. For the Amiga platform, FileIsHardLink always returns <b>False</b>.
           </p>
           <p>
             The return value is <b>False</b> if a file handle could not be accessed for the specified file name or it is actually a symbolic link on the local file system.

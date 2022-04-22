@@ -462,7 +462,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overloaded constructor for the class instance. Overloaded variants are provided which set the initial value in MinCapacity to either a default or a user-specified value. The parameterless version sets the initial value in MinCapacity to 10, but it is automagically increased to 137.
+            Create is the overloaded constructor for the class instance. Overloaded variants are provided which set the initial value in MinCapacity to either a default or a user-specified value. The parameter-less version sets the initial value in MinCapacity to 10, but it is automagically increased to 137.
           </p>
           <p>
             MaxCapacity is set to an arbitrarily large prime number defined in the implementation for class.
@@ -1055,7 +1055,7 @@ StrDispose(s);   </code>
       <!-- function Visibility: public -->
       <element name="TDynHashArrayItemMemManager.ConsistencyCheck">
         <short>
-          Ensures that Count mataches the actual number of entries in the free list.
+          Ensures that Count matches the actual number of entries in the free list.
         </short>
         <descr/>
         <errors/>
