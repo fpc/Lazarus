@@ -353,9 +353,6 @@ begin
       end;
     end;
 
-  if not WithDebug then
-    exit; // compile normally and run the run-parameters
-
   ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
   URL:=aProject.CustomData[PJSProjectURL];
   if (ServerPort<0) and (URL='') then
