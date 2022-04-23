@@ -91,12 +91,14 @@ type
   { TSWSInstance }
 
   TSWSInstance = class(TPersistent)
+  Private
+    FParams: TStrings;
+    procedure SetParams(AValue: TStrings);
   public
     Controller: TSimpleWebServerController;
 
     Exe: string; // may contain macros and not expanded
     ExeUsed: string; // resolved macros, expanded filename
-    Params: TStrings;
     Port: word;
 
     Path: string; // path on disk, can contain macros
@@ -107,8 +109,9 @@ type
     State: TSWebServerState;
     Thread: TSWServerThread;
     ExitCode: integer;
-
+    constructor Create;
     destructor Destroy; override;
+    Property Params : TStrings Read FParams Write SetParams;
   end;
 
   TSWServerLogEvent = procedure(Sender: TObject; OutLines: TStrings) of object;
@@ -332,9 +335,20 @@ end;
 
 { TSWSInstance }
 
+procedure TSWSInstance.SetParams(AValue: TStrings);
+begin
+  if FParams=AValue then Exit;
+  FParams.Assign(AValue);
+end;
+
+constructor TSWSInstance.Create;
+begin
+ FParams:=TStringList.Create;
+end;
+
 destructor TSWSInstance.Destroy;
 begin
-  FreeAndNil(Params);
+  FreeAndNil(FParams);
   inherited Destroy;
 end;
 
@@ -1908,6 +1922,7 @@ begin
   else
     begin
       FindDefaultBrowser(Result,Cmd);
+      Cmd:=Format(Cmd,[URL]);
       SplitCmdLineParams(Cmd,Params);
     end;
   end;
