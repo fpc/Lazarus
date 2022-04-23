@@ -23,13 +23,16 @@ type
     BMakePas2jsPoject: TButton;
     BResetRunCommand: TButton;
     BResetCompileCommand: TButton;
+    CBLocation: TComboBox;
     CBRunOnReady: TCheckBox;
     CBServerURL: TComboBox;
     CBUseBrowserConsole: TCheckBox;
     CBWebProject: TCheckBox;
     CBHTMLFile: TComboBox;
     CBMaintainHTMLFile: TCheckBox;
+    ComboBoxRunLocation: TComboBox;
     LCBProjectHTMLFile: TLabel;
+    RBLocation: TRadioButton;
     RBRunDefault: TRadioButton;
     RBStartServerAt: TRadioButton;
     RBUseURL: TRadioButton;
@@ -40,6 +43,7 @@ type
     procedure BResetRunCommandClick(Sender: TObject);
     procedure CBMaintainHTMLFileChange(Sender: TObject);
     procedure CBWebProjectChange(Sender: TObject);
+    procedure RBLocationChange(Sender: TObject);
     procedure RBStartServerAtChange(Sender: TObject);
     procedure RBUseURLChange(Sender: TObject);
   private
@@ -172,8 +176,11 @@ begin
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
 
   RunGroupBox.Caption:=pjsdRun;
+  RBLocation.Caption:=pjsdLocationOnSimpleWebServer;
+  RBLocation.Hint:=pjsdTheSimpleWebServerIsAutomaticallyStartedOnRunTheLo;
   RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
   RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
+  RBUseURL.Hint:=pjsdUseThisWhenYouStartYourOwnHttpServer;
   RBRunDefault.Caption:=pjsExecuteRunParameters;
 
   BResetRunCommand.Caption:=pjsdResetRunCommand;
@@ -184,6 +191,11 @@ end;
 procedure TPas2JSProjectOptionsFrame.CBWebProjectChange(Sender: TObject);
 begin
   CheckAllControls(CBWebProject.Checked);
+end;
+
+procedure TPas2JSProjectOptionsFrame.RBLocationChange(Sender: TObject);
+begin
+  UpdateRunControls;
 end;
 
 procedure TPas2JSProjectOptionsFrame.RBStartServerAtChange(Sender: TObject);
@@ -291,6 +303,7 @@ end;
 
 procedure TPas2JSProjectOptionsFrame.UpdateRunControls;
 begin
+  CBLocation.Enabled:=CBWebProject.Enabled and RBLocation.Enabled and RBLocation.Checked;
   SEPort.Enabled:=CBWebProject.Enabled and RBStartServerAt.Enabled and RBStartServerAt.Checked;
   CBServerURL.Enabled:=CBWebProject.Enabled and RBUseURL.Enabled and RBUseURL.Checked;
 end;
@@ -302,7 +315,7 @@ Var
   HFN : String;
   HTMLIdx : Integer;
   Port : Word;
-  URL : String;
+  URL , Location: String;
 
 begin
   if AOptions=nil then ;
@@ -320,11 +333,15 @@ begin
   CBUseBrowserConsole.Checked:=Prj.CustomData[PJSProjectUseBrowserConsole]='1';
   CBRunOnReady.Checked:=Prj.CustomData[PJSProjectRunAtReady]='1';
 
+  Location:=Prj.CustomData[PJSProjectLocation];
   Port:=StrToIntDef(Prj.CustomData[PJSProjectPort],0);
   URL:=Prj.CustomData[PJSProjectURL];
+  CBLocation.AddHistoryItem(Location,10,True,False);
   SEPort.Value:=Min(Max(0,Port),65535);
   CBServerURL.AddHistoryItem(URL,10,True,False);
-  if Prj.CustomData.Contains(PJSProjectPort) then
+  if Prj.CustomData.Contains(PJSProjectLocation) then
+    RBLocation.Checked:=true
+  else if Prj.CustomData.Contains(PJSProjectPort) then
     RBStartServerAt.Checked:=true
   else if Prj.CustomData.Contains(PJSProjectURL) then
     RBUseURL.Checked:=true
@@ -356,6 +373,7 @@ begin
     Remove(PJSProjectMaintainHTML);
     Remove(PJSProjectUseBrowserConsole);
     Remove(PJSProjectRunAtReady);
+    Remove(PJSProjectLocation);
     Remove(PJSProjectPort);
     Remove(PJSProjectURL);
     end;
@@ -373,7 +391,9 @@ begin
     DoBool(PJSProjectUseBrowserConsole,CBUseBrowserConsole.Checked);
     DoBool(PJSProjectRunAtReady,CBRunOnReady.Checked);
 
-    if RBStartServerAt.Checked and (SEPort.Value>=0) then
+    if RBLocation.Checked and (CBLocation.Text<>'') then
+      Prj.CustomData[PJSProjectLocation]:=CBLocation.Text
+    else if RBStartServerAt.Checked and (SEPort.Value>=0) then
       Prj.CustomData[PJSProjectPort]:=IntToStr(SEPort.Value)
     else if RBUseURL.Checked and (CBServerURL.Text<>'') then
       Prj.CustomData[PJSProjectURL]:=CBServerURL.Text;

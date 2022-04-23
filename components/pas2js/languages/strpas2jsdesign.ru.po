@@ -89,6 +89,10 @@ msgstr "Не найден исходный текст HTML"
 msgid "Let RTL show uncaught exceptions"
 msgstr "Разрешать RTL показывать необработанные исключения"
 
+#: strpas2jsdesign.pjsdlocationonsimplewebserver
+msgid "Location on Simple Web Server"
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr "Поддерживать страницу HTML"
@@ -269,6 +273,10 @@ msgstr "Программа pas2js, использующаяся в качест�
 msgid "Start HTTP Server on port"
 msgstr "Запускать сервер HTTP на порту"
 
+#: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
+msgid "The Simple Web Server is automatically started on Run. The location is like a sub folder in the URL serving the disk folder of the html file."
+msgstr ""
+
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
 msgstr "Использовать объект приложения для браузера"
@@ -284,6 +292,10 @@ msgstr "Использовать объект приложения для NodeJS
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
 msgstr "Использовать следующий адрес для запуска приложения"
+
+#: strpas2jsdesign.pjsdusethiswhenyoustartyourownhttpserver
+msgid "Use this when you start your own http server"
+msgstr ""
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject
 msgid "Run WebAssembly program:"

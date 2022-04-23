@@ -6,8 +6,8 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
   ClientHeight = 423
   ClientWidth = 750
   TabOrder = 0
-  DesignLeft = 1404
-  DesignTop = 244
+  DesignLeft = 261
+  DesignTop = 222
   object CBWebProject: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -144,25 +144,25 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 161
+    Height = 155
     Top = 175
     Width = 738
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Run'
-    ClientHeight = 145
+    ClientHeight = 139
     ClientWidth = 736
     TabOrder = 8
     object RBStartServerAt: TRadioButton
       AnchorSideLeft.Control = RunGroupBox
-      AnchorSideTop.Control = RunGroupBox
+      AnchorSideTop.Control = SEPort
+      AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 2
+      Top = 42
       Width = 168
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 2
       Caption = 'Start HTTP Server on port'
       Checked = True
       OnChange = RBStartServerAtChange
@@ -171,14 +171,15 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     end
     object SEPort: TSpinEdit
       AnchorSideLeft.Control = RBStartServerAt
-      AnchorSideTop.Control = RBStartServerAt
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CBLocation
       AnchorSideTop.Side = asrBottom
-      Left = 38
+      Left = 180
       Height = 30
-      Top = 27
+      Top = 38
       Width = 82
-      BorderSpacing.Left = 32
-      BorderSpacing.Top = 2
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       MaxValue = 65354
       MinValue = 1024
       TabOrder = 1
@@ -186,29 +187,28 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     end
     object RBUseURL: TRadioButton
       AnchorSideLeft.Control = RBStartServerAt
-      AnchorSideTop.Control = SEPort
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = CBServerURL
+      AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 59
+      Top = 78
       Width = 161
-      BorderSpacing.Top = 2
       Caption = 'Use this URL to start app'
       OnChange = RBUseURLChange
       TabOrder = 2
     end
     object CBServerURL: TComboBox
       AnchorSideLeft.Control = SEPort
-      AnchorSideTop.Control = RBUseURL
+      AnchorSideTop.Control = SEPort
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RunGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 38
+      Left = 180
       Height = 30
-      Top = 84
-      Width = 692
+      Top = 74
+      Width = 550
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 2
+      BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       ItemHeight = 0
       TabOrder = 3
@@ -218,14 +218,45 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 116
+      Top = 110
       Width = 162
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 2
+      BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'Execute Run Parameters'
       OnChange = RBStartServerAtChange
       TabOrder = 4
+    end
+    object CBLocation: TComboBox
+      AnchorSideLeft.Control = RBLocation
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RunGroupBox
+      AnchorSideRight.Control = RunGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 208
+      Height = 30
+      Top = 2
+      Width = 522
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      TabOrder = 5
+    end
+    object RBLocation: TRadioButton
+      AnchorSideLeft.Control = RunGroupBox
+      AnchorSideTop.Control = CBLocation
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 196
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 2
+      Caption = 'Location on Simple Web Server'
+      OnChange = RBLocationChange
+      TabOrder = 6
     end
   end
 end

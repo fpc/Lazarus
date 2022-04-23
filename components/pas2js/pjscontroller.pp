@@ -66,6 +66,7 @@ Const
   PJSProjectMaintainHTML = 'MaintainHTML';
   PJSProjectUseBrowserConsole = 'BrowserConsole';
   PJSProjectRunAtReady = 'RunAtReady';
+  PJSProjectLocation = 'PasJSLocation';
   PJSProjectPort = 'PasJSPort';
   PJSProjectURL = 'PasJSURL';
   PJSProjectHTMLBaseDir = 'HTMLDir';

@@ -86,6 +86,10 @@ msgstr ""
 msgid "Let RTL show uncaught exceptions"
 msgstr ""
 
+#: strpas2jsdesign.pjsdlocationonsimplewebserver
+msgid "Location on Simple Web Server"
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr ""
@@ -268,6 +272,10 @@ msgstr ""
 msgid "Start HTTP Server on port"
 msgstr ""
 
+#: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
+msgid "The Simple Web Server is automatically started on Run. The location is like a sub folder in the URL serving the disk folder of the html file."
+msgstr ""
+
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
 msgstr ""
@@ -282,6 +290,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdusethiswhenyoustartyourownhttpserver
+msgid "Use this when you start your own http server"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject

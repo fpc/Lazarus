@@ -1,7 +1,7 @@
 object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
-  Left = 1434
+  Left = 381
   Height = 490
-  Top = 765
+  Top = 232
   Width = 632
   Caption = 'Pas2JS Browser project options'
   ClientHeight = 490
@@ -39,7 +39,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   end
   object CBUseBrowserConsole: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = cbShowUncaughtExceptions
+    AnchorSideTop.Control = CBShowUncaughtExceptions
     AnchorSideTop.Side = asrBottom
     Left = 38
     Height = 23
@@ -92,7 +92,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 5
   end
-  object cbShowUncaughtExceptions: TCheckBox
+  object CBShowUncaughtExceptions: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
     AnchorSideTop.Control = CBRunOnReady
     AnchorSideTop.Side = asrBottom
@@ -157,38 +157,38 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 123
+    Height = 159
     Top = 274
     Width = 620
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Run'
-    ClientHeight = 107
+    ClientHeight = 143
     ClientWidth = 618
     TabOrder = 10
     object RBRunServerAt: TRadioButton
       AnchorSideLeft.Control = RunGroupBox
-      AnchorSideTop.Control = SEPort
+      AnchorSideTop.Control = SERunPort
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 10
+      Top = 46
       Width = 168
       BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       Caption = 'Start HTTP Server on port'
-      Checked = True
       OnChange = RBRunServerAtChange
       TabOrder = 4
-      TabStop = True
     end
-    object SEPort: TSpinEdit
+    object SERunPort: TSpinEdit
       AnchorSideLeft.Control = RBRunServerAt
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RunGroupBox
+      AnchorSideTop.Control = CBRunLocationOnSWS
+      AnchorSideTop.Side = asrBottom
       Left = 180
       Height = 30
-      Top = 6
+      Top = 42
       Width = 76
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -199,26 +199,26 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     end
     object RBRunBrowserWithURL: TRadioButton
       AnchorSideLeft.Control = RBRunServerAt
-      AnchorSideTop.Control = CBServerURL
+      AnchorSideTop.Control = CBRunServerURL
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 46
+      Top = 82
       Width = 138
       Caption = 'Use URL to start app'
       OnChange = RBRunBrowserWithURLChange
       TabOrder = 1
     end
-    object CBServerURL: TComboBox
+    object CBRunServerURL: TComboBox
       AnchorSideLeft.Control = RBRunBrowserWithURL
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = SEPort
+      AnchorSideTop.Control = SERunPort
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RunGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 150
       Height = 30
-      Top = 42
+      Top = 78
       Width = 462
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -229,11 +229,11 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       TabOrder = 2
     end
     object RBRunDefault: TRadioButton
-      AnchorSideTop.Control = CBServerURL
+      AnchorSideTop.Control = CBRunServerURL
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 78
+      Top = 114
       Width = 162
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -241,6 +241,43 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       Caption = 'Execute Run Parameters'
       OnChange = RBRunDefaultChange
       TabOrder = 3
+    end
+    object RBRunLocationOnSWS: TRadioButton
+      AnchorSideLeft.Control = RunGroupBox
+      AnchorSideTop.Control = CBRunLocationOnSWS
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 23
+      Top = 10
+      Width = 196
+      BorderSpacing.Left = 6
+      Caption = 'Location on Simple Web Server'
+      Checked = True
+      OnChange = RBRunLocationOnSWSChange
+      TabOrder = 6
+      TabStop = True
+    end
+    object CBRunLocationOnSWS: TComboBox
+      AnchorSideLeft.Control = RBRunLocationOnSWS
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RunGroupBox
+      AnchorSideRight.Control = RunGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 208
+      Height = 30
+      Top = 6
+      Width = 404
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        '$NameOnly($(ProjFile))'
+      )
+      TabOrder = 5
+      Text = '$NameOnly($(ProjFile))'
     end
   end
 end

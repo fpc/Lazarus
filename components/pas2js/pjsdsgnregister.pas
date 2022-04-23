@@ -47,6 +47,7 @@ type
                                baoUseWASI,           // Use WASI browser app object
                                baoUseBrowserConsole, // use browserconsole unit to display Writeln()
                                baoUseModule,         // include as module as opposed to regular script
+                               baoLocationOnSWS,       // add location
                                baoStartServer,       // Start simple server
                                baoUseURL             // Use this URL to run/show project in browser
                                );
@@ -58,6 +59,7 @@ type
     FMainSrcFileName: string;
     FMainSrcName: string;
     FOptions: TBrowserApplicationOptions;
+    FProjectLocation: string;
     FProjectPort: integer;
     FProjectURL: String;
     FProjectWasmURL : String;
@@ -86,8 +88,9 @@ type
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     property Options : TBrowserApplicationOptions read FOptions Write Foptions;
+    property ProjectLocation : string Read FProjectLocation Write FProjectLocation;
     property ProjectPort : integer Read FProjectPort Write FProjectPort;
-    property ProjectURL : String Read FProjectURL Write FProjectURL;
+    property ProjectURL : string Read FProjectURL Write FProjectURL;
     property MainSrcFileName: string read GetMainSrcFileName write FMainSrcFileName;
     property MainSrcName: string read GetMainSrcName write FMainSrcName;
     property HTMLFilename: string read GetHTMLFilename write FHTMLFilename;
@@ -376,6 +379,508 @@ begin
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@Pas2JSHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@Pas2JSHandler.OnPrjInspPopup);
+end;
+
+{ TProjectPas2JSWebApp }
+
+constructor TProjectPas2JSWebApp.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNamePas2JSWebApp;
+  Clear;
+end;
+
+procedure TProjectPas2JSWebApp.Clear;
+begin
+  // Reset options
+  Flags:=DefaultProjectNoApplicationFlags;
+  FMainSrcName:='Project1';
+  FOptions:=[baoCreateHtml,baoMaintainHTML,baoLocationOnSWS];
+  ProjectPort:=0;
+  ProjectURL:='';
+end;
+
+function TProjectPas2JSWebApp.GetNextPort : Word;
+
+begin
+  Result:=PJSOptions.StartAtPort;
+  if Result>=$ffff then
+    Result:=1024
+  else
+    inc(Result);
+  PJSOptions.StartAtPort:=Result;
+  PJSOptions.Save;
+end;
+
+function TProjectPas2JSWebApp.ShowOptionsDialog : TModalResult;
+
+  Function Co(o : TBrowserApplicationOption) : boolean;
+
+  begin
+    Result:=O in Options;
+  end;
+
+  Procedure So(AValue : Boolean; o : TBrowserApplicationOption);
+
+  begin
+    if AValue then
+      Include(Foptions,O)
+    else
+      Exclude(Foptions,O)
+  end;
+
+var
+  Frm: TWebBrowserProjectOptionsForm;
+begin
+  Frm:=TWebBrowserProjectOptionsForm.Create(Nil);
+  With Frm do
+    try
+      CreateHTML:=CO(baoCreateHtml);
+      MaintainHTML:=CO(baoCreateHtml) and Co(baoMaintainHTML);
+      UseRunOnReady:=CO(baoRunOnReady);
+      ShowUncaughtExceptions:=CO(baoShowException);
+      UseBrowserConsole:=CO(baoUseBrowserConsole);
+
+      UseBrowserApp:=CO(baoUseBrowserApp);
+      UseWASI:=CO(baoUseWASI);
+      WasmProgramURL:='';
+
+      UseModule:=CO(baoUseModule);
+
+      if CO(baoLocationOnSWS) then
+        RunLocation:=true
+      else if CO(baoStartServer) then
+        RunServerAtPort:=true
+      else if CO(baoUseURL) then
+        RunBrowserWithURL:=true
+      else
+        RunDefault:=true;
+
+      // We allocate the new port in all cases.
+      ServerPort:=GetNextPort;
+      URL:='';
+
+      Result:=ShowModalOptions(Frm);
+      if Result=mrOK then
+        begin
+        SO(CreateHTML,baoCreateHtml);
+        SO(MaintainHTML,baoCreateHtml);
+        SO(UseRunOnReady,baoRunOnReady);
+        SO(UseBrowserConsole,baoUseBrowserConsole);
+        SO(ShowUncaughtExceptions,baoShowException);
+
+        SO(UseBrowserApp,baoUseBrowserApp);
+        SO(UseWASI,baoUseWASI);
+        FProjectWasmURL:=WasmProgramURL;
+
+        SO(UseModule,baoUseModule);
+
+        SO(RunLocation,baoLocationOnSWS);
+        SO(RunServerAtPort,baoStartServer);
+        SO(RunBrowserWithURL,baoUseURL);
+        if baoLocationOnSWS in FOptions then
+          Self.ProjectLocation:=Location
+        else if baoStartServer in FOptions then
+          Self.ProjectPort:=ServerPort
+        else if baoUseURL in FOptions then
+          Self.ProjectURL:=URL;
+
+        end;
+    finally
+      Free;
+    end;
+end;
+
+function TProjectPas2JSWebApp.ShowModalOptions(
+  Frm: TWebBrowserProjectOptionsForm): TModalResult;
+begin
+  Result:=Frm.ShowModal;
+end;
+
+procedure TProjectPas2JSWebApp.EnableRunBrowser(AProject: TLazProject);
+begin
+  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
+  if baoLocationOnSWS in Options then
+    begin
+    AProject.CustomData.Values[PJSProjectLocation]:=ProjectLocation;
+    AProject.CustomData.Remove(PJSProjectPort);
+    AProject.CustomData.Remove(PJSProjectURL);
+    end
+  else if baoUseURL in Options then
+    begin
+    AProject.CustomData.Remove(PJSProjectLocation);
+    AProject.CustomData.Remove(PJSProjectPort);
+    AProject.CustomData.Values[PJSProjectURL]:=ProjectURL;
+    end
+  else
+    begin
+    AProject.CustomData.Remove(PJSProjectLocation);
+    AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
+    AProject.CustomData.Remove(PJSProjectURL);
+    end;
+  With AProject.CustomData do
+    begin
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectLocation,': ',Values[PJSProjectLocation]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
+    end;
+end;
+
+function TProjectPas2JSWebApp.DoInitDescriptor: TModalResult;
+begin
+  Clear;
+  Result:=ShowOptionsDialog;
+end;
+
+function TProjectPas2JSWebApp.GetLocalizedName: string;
+begin
+  Result:=pjsdWebApplication;
+end;
+
+function TProjectPas2JSWebApp.GetLocalizedDescription: string;
+begin
+  Result:=pjsdWebAppDescription;
+end;
+
+function TProjectPas2JSWebApp.GetMainSrcFileName: string;
+begin
+  if FMainSrcFileName='' then
+    FMainSrcFileName:=AnsiLowerCase(MainSrcName)+'.lpr';
+  Result:=FMainSrcFileName;
+end;
+
+function TProjectPas2JSWebApp.GetHTMLFilename: string;
+begin
+  if FHTMLFilename='' then
+    FHTMLFilename:=ChangeFileExt(MainSrcFileName,'.html');
+  Result:=FHTMLFilename;
+end;
+
+function TProjectPas2JSWebApp.GetMainSrcName: string;
+begin
+  if FMainSrcName='' then
+    FMainSrcName:='project1';
+  Result:=FMainSrcName;
+end;
+
+function TProjectPas2JSWebApp.GetScriptFilename: string;
+begin
+  if FScriptFilename='' then
+    FScriptFilename:=ChangeFileExt(MainSrcFileName,'.js');
+  Result:=FScriptFilename;
+end;
+
+procedure TProjectPas2JSWebApp.AddHTMLHead(Src: TStringList);
+begin
+  Src.Add('  <meta http-equiv="Content-type" content="text/html; charset=utf-8">');
+  Src.Add('  <title>'+MainSrcName+'</title>');
+  Src.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">');
+end;
+
+procedure TProjectPas2JSWebApp.AddBody(Src: TStringList);
+begin
+  Src.Add('  <script>');
+  if baoShowException in Options then
+    Src.Add('    rtl.showUncaughtExceptions=true;');
+  if baoRunOnReady in Options then
+    Src.Add('    window.addEventListener("load", rtl.run);')
+  else
+    Src.Add('    rtl.run();');
+  Src.Add('  </script>');
+  if baoUseBrowserConsole in Options then
+    Src.Add('  <div id="pasjsconsole"></div>');
+end;
+
+function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
+  aScriptFileName: String): TLazProjectFile;
+
+Var
+  HTMLFile: TLazProjectFile;
+  ScriptType: String;
+  Src: TStringList;
+begin
+  HTMLFile:=AProject.CreateProjectFile(HTMLFilename);
+  HTMLFile.IsPartOfProject:=true;
+  AProject.AddFile(HTMLFile,false);
+  ScriptType:='';
+  if baoUseModule in Options then
+    ScriptType:=' type="module"';
+  Src:=TStringList.Create;
+  try
+    Src.Add('<!doctype html>');
+    Src.Add('<html lang="en">');
+    Src.Add('<head>');
+    AddHTMLHead(Src);
+    Src.Add('  <script'+ScriptType+' src="'+aScriptFileName+'"></script>');
+    Src.Add('</head>');
+    Src.Add('<body>');
+    AddBody(Src);
+    Src.Add('</body>');
+    Src.Add('</html>');
+
+    HTMLFile.SetSourceText(Src.Text);
+  finally
+    Src.Free;
+  end;
+
+  HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
+  if baoMaintainHTML in Options then
+    AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
+  if baoUseBrowserConsole in Options then
+    AProject.CustomData[PJSProjectUseBrowserConsole]:='1';
+  if baoRunOnReady in options then
+    AProject.CustomData[PJSProjectRunAtReady]:='1';
+
+  Result:=HTMLFile;
+end;
+
+function TProjectPas2JSWebApp.CreateProjectSource : String;
+
+Var
+  Src : TStrings;
+  units : string;
+
+  Procedure Add(aLine : String);
+  begin
+    Src.Add(aLine);
+  end;
+
+  Procedure AddLn(aLine : String);
+  begin
+    if (aLine<>'') then
+      aLine:=aLine+';';
+    Add(aLine);
+  end;
+
+begin
+  Units:='';
+  if baoUseBrowserConsole in Options then
+    Units:=' BrowserConsole,';
+  if baoUseBrowserApp in Options then
+    begin
+    Units:=Units+' BrowserApp,' ;
+    if baoUseWASI in options then
+      Units:=Units+' WASIHostApp,' ;
+    end;
+  Units:=Units+' JS, Classes, SysUtils, Web';
+  Src:=TStringList.Create;
+  try
+    // create program source
+    AddLn('program '+MainSrcName);
+    AddLn('');
+    Add('{$mode objfpc}');
+    Add('');
+    Add('uses');
+    AddLn(units) ;
+    Add('');
+    if baoUseBrowserApp in Options then
+      begin
+      Add('Type');
+      if baoUseWASI in Options then
+        Add('  TMyApplication = Class(TWASIHostApplication)')
+      else
+        Add('  TMyApplication = Class(TBrowserApplication)');
+      Add('  protected');
+      AddLn('    procedure DoRun; override');
+      Add('  public');
+      AddLn('  end');
+      Add('');
+      AddLn('Procedure TMyApplication.DoRun');
+      Add('begin');
+      if ServiceWorkerJSFilename<>'' then
+        AddLn('  RegisterServiceWorker(''/ServiceWorker.js'')');
+      if baoUseWASI in Options then
+        begin
+        if FProjectWasmURL='' then
+          FProjectWasmURL:='yourwebassembly.wasm';
+        AddLn(Format('  StartWebAssembly(''%s'')',[FProjectWasmURL]));
+        end
+      else
+        Add('  // Your code here');
+      AddLn('end');
+      Add('');
+      Add('var');
+      AddLn('  Application : TMyApplication');
+      Add('');
+      end;
+    Add('begin');
+    if Not (baoUseBrowserApp in Options) then
+      Add('  // Your code here')
+    else
+      begin
+      AddLn('  Application:=TMyApplication.Create(Nil)');
+      AddLn('  Application.Initialize');
+      AddLn('  Application.Run');
+      end;
+    Add('end.');
+    Result:=Src.Text;
+  finally
+    Src.Free;
+  end;
+end;
+
+function TProjectPas2JSWebApp.InitProject(AProject: TLazProject): TModalResult;
+
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+
+begin
+  Result:=inherited InitProject(AProject);
+  debugln(['Info: [TProjectPas2JSWebApp.InitProject] MainSrcFileName=',MainSrcFileName]);
+  MainFile:=AProject.CreateProjectFile(MainSrcFileName);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultWebCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
+  if baoUseModule in Options then
+    CompOpts.TargetOS:='module';
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
+
+  EnableRunBrowser(AProject);
+
+  // create html source
+  if baoCreateHtml in Options then
+    begin
+    debugln(['Info: [TProjectPas2JSWebApp.InitProject] HTMLFilename=',HTMLFilename]);
+    CreateHTMLFile(AProject,ScriptFilename);
+    end;
+end;
+
+function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+var
+  MainFile: TLazProjectFile;
+begin
+  // open lpr in source editor
+  MainFile:=AProject.MainFile;
+  Result:=LazarusIDE.DoOpenEditorFile(MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+  if Result<>mrOK then
+     exit;
+
+  // open html in source editor
+  if baoCreateHtml in Options then
+    Result:=LazarusIDE.DoOpenEditorFile(HTMLFilename,-1,-1,
+                                        [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TProjectPas2JSServiceWorker }
+
+function TProjectPas2JSServiceWorker.CreateProjectSource: String;
+var
+  Src: TStringList;
+
+  procedure Add(const s: string);
+  begin
+    Src.Add(s);
+  end;
+
+begin
+  Src:=TStringList.Create;
+  try
+    Add('program ServiceWorker;');
+    Add('');
+    Add('{$mode objfpc}');
+    Add('');
+    Add('uses');
+    Add('  Classes, ServiceWorkerApp;');
+    Add('');
+    Add('const');
+    Add('  YourCacheName = ''v1''; // usually increased with every version');
+    Add('   // The cache is specific to your domain, so no need to include your app name.');
+    Add('');
+    Add('type');
+    Add('');
+    Add('  { TApplication }');
+    Add('');
+    Add('  TApplication = class(TServiceWorkerApplication)');
+    Add('  public');
+    Add('    constructor Create(AOwner: TComponent); override;');
+    Add('  end;');
+    Add('');
+    Add('{ TApplication }');
+    Add('');
+    Add('constructor TApplication.Create(AOwner: TComponent);');
+    Add('begin');
+    Add('  inherited Create(AOwner);');
+    Add('');
+    Add('  FCacheName:=YourCacheName;');
+    Add('  FResources:=[');
+    Add('    ''/images/error.png''');
+    Add('    ];');
+    Add('  FallbackURL := ''/images/error.png'';');
+    Add('end;');
+    Add('');
+    Add('var');
+    Add('  App: TApplication;');
+    Add('begin');
+    Add('  App:=TApplication.Create(nil);');
+    Add('  App.Run;');
+    Add('end.');
+    Result:=Src.Text;
+  finally
+    Src.Free;
+  end;
+end;
+
+function TProjectPas2JSServiceWorker.InitServiceWorkerProject(
+  AProject: TLazProject; LPRFilename: string): TModalResult;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+begin
+  MainFile:=AProject.CreateProjectFile(LPRFilename);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultServiceWorkerCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(LPRFilename);
+  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
+  AProject.CustomData.Values[PJSProject]:='1';
+  Result:=mrOk;
+end;
+
+constructor TProjectPas2JSServiceWorker.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNamePas2JSServiceWorker;
+  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+end;
+
+function TProjectPas2JSServiceWorker.GetLocalizedName: string;
+begin
+  Result:=pjsdServiceWorker;
+end;
+
+function TProjectPas2JSServiceWorker.GetLocalizedDescription: string;
+begin
+  Result:=pjsdServiceWorkerDescription;
+end;
+
+function TProjectPas2JSServiceWorker.InitProject(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=inherited InitProject(AProject);
+  if Result<>mrOk then
+    exit;
+  Result:=InitServiceWorkerProject(AProject,'ServiceWorker.lpr');
+end;
+
+function TProjectPas2JSServiceWorker.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+  if Result<>mrOK then
+     exit;
 end;
 
 { TMultiProjectPas2JSWebApp }
@@ -883,119 +1388,6 @@ begin
   Result:=mrOk;
 end;
 
-{ TProjectPas2JSServiceWorker }
-
-function TProjectPas2JSServiceWorker.CreateProjectSource: String;
-var
-  Src: TStringList;
-
-  procedure Add(const s: string);
-  begin
-    Src.Add(s);
-  end;
-
-begin
-  Src:=TStringList.Create;
-  try
-    Add('program ServiceWorker;');
-    Add('');
-    Add('{$mode objfpc}');
-    Add('');
-    Add('uses');
-    Add('  Classes, ServiceWorkerApp;');
-    Add('');
-    Add('const');
-    Add('  YourCacheName = ''v1''; // usually increased with every version');
-    Add('   // The cache is specific to your domain, so no need to include your app name.');
-    Add('');
-    Add('type');
-    Add('');
-    Add('  { TApplication }');
-    Add('');
-    Add('  TApplication = class(TServiceWorkerApplication)');
-    Add('  public');
-    Add('    constructor Create(AOwner: TComponent); override;');
-    Add('  end;');
-    Add('');
-    Add('{ TApplication }');
-    Add('');
-    Add('constructor TApplication.Create(AOwner: TComponent);');
-    Add('begin');
-    Add('  inherited Create(AOwner);');
-    Add('');
-    Add('  FCacheName:=YourCacheName;');
-    Add('  FResources:=[');
-    Add('    ''/images/error.png''');
-    Add('    ];');
-    Add('  FallbackURL := ''/images/error.png'';');
-    Add('end;');
-    Add('');
-    Add('var');
-    Add('  App: TApplication;');
-    Add('begin');
-    Add('  App:=TApplication.Create(nil);');
-    Add('  App.Run;');
-    Add('end.');
-    Result:=Src.Text;
-  finally
-    Src.Free;
-  end;
-end;
-
-function TProjectPas2JSServiceWorker.InitServiceWorkerProject(
-  AProject: TLazProject; LPRFilename: string): TModalResult;
-var
-  MainFile: TLazProjectFile;
-  CompOpts: TLazCompilerOptions;
-begin
-  MainFile:=AProject.CreateProjectFile(LPRFilename);
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-  CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultServiceWorkerCompileOptions(CompOpts);
-  CompOpts.TargetFilename:=ExtractFileNameOnly(LPRFilename);
-  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
-  AProject.MainFile.SetSourceText(CreateProjectSource,true);
-  AProject.CustomData.Values[PJSProject]:='1';
-  Result:=mrOk;
-end;
-
-constructor TProjectPas2JSServiceWorker.Create;
-begin
-  inherited Create;
-  Name:=ProjDescNamePas2JSServiceWorker;
-  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
-end;
-
-function TProjectPas2JSServiceWorker.GetLocalizedName: string;
-begin
-  Result:=pjsdServiceWorker;
-end;
-
-function TProjectPas2JSServiceWorker.GetLocalizedDescription: string;
-begin
-  Result:=pjsdServiceWorkerDescription;
-end;
-
-function TProjectPas2JSServiceWorker.InitProject(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=inherited InitProject(AProject);
-  if Result<>mrOk then
-    exit;
-  Result:=InitServiceWorkerProject(AProject,'ServiceWorker.lpr');
-end;
-
-function TProjectPas2JSServiceWorker.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
-                                      [ofProjectLoading,ofRegularFile]);
-  if Result<>mrOK then
-     exit;
-end;
-
 { TProjectPas2JSElectronWebApp }
 
 procedure TProjectPas2JSElectronWebApp.AddHTMLHead(Src: TStringList);
@@ -1287,7 +1679,7 @@ end;
 procedure TProjectPas2JSElectronWebApp.Clear;
 begin
   inherited Clear;
-  Options:=Options+[baoRunOnReady]-[baoUseBrowserApp,baoStartServer,baoUseURL];
+  Options:=Options+[baoRunOnReady]-[baoUseBrowserApp];
   PreloadLPR:='preload.lpr';
   RenderLPR:='render.lpr';
   HTMLFilename:='index.html';
@@ -1853,382 +2245,6 @@ begin
                                       [ofProjectLoading,ofRegularFile]);
 end;
 
-{ TProjectPas2JSWebApp }
-
-constructor TProjectPas2JSWebApp.Create;
-begin
-  inherited Create;
-  Name:=ProjDescNamePas2JSWebApp;
-  Clear;
-end;
-
-procedure TProjectPas2JSWebApp.Clear;
-begin
-  // Reset options
-  Flags:=DefaultProjectNoApplicationFlags;
-  FMainSrcName:='Project1';
-  FOptions:=[baoCreateHtml,baoMaintainHTML,baoStartServer];
-  ProjectPort:=0;
-  ProjectURL:='';
-end;
-
-function TProjectPas2JSWebApp.GetNextPort : Word;
-
-begin
-  Result:=PJSOptions.StartAtPort;
-  if Result>=$ffff then
-    Result:=1024
-  else
-    inc(Result);
-  PJSOptions.StartAtPort:=Result;
-  PJSOptions.Save;
-end;
-
-function TProjectPas2JSWebApp.ShowOptionsDialog : TModalResult;
-
-  Function Co(o : TBrowserApplicationOption) : boolean;
-
-  begin
-    Result:=O in Options;
-  end;
-
-  Procedure So(AValue : Boolean; o : TBrowserApplicationOption);
-
-  begin
-    if AValue then
-      Include(Foptions,O)
-    else
-      Exclude(Foptions,O)
-  end;
-
-var
-  Frm: TWebBrowserProjectOptionsForm;
-begin
-  Frm:=TWebBrowserProjectOptionsForm.Create(Nil);
-  With Frm do
-    try
-      CreateHTML:=CO(baoCreateHtml);
-      MaintainHTML:=CO(baoCreateHtml) and Co(baoMaintainHTML);
-      UseRunOnReady:=CO(baoRunOnReady);
-      ShowUncaughtExceptions:=CO(baoShowException);
-      UseBrowserConsole:=CO(baoUseBrowserConsole);
-
-      UseBrowserApp:=CO(baoUseBrowserApp);
-      UseWASI:=CO(baoUseWASI);
-      WasmProgramURL:='';
-
-      UseModule:=CO(baoUseModule);
-
-      if CO(baoStartServer) then
-        RunServerAtPort:=true
-      else if CO(baoUseURL) then
-        RunBrowserWithURL:=true
-      else
-        RunDefault:=true;
-
-      // We allocate the new port in all cases.
-      ServerPort:=GetNextPort;
-      URL:='';
-
-      Result:=ShowModalOptions(Frm);
-      if Result=mrOK then
-        begin
-        SO(CreateHTML,baoCreateHtml);
-        SO(MaintainHTML,baoCreateHtml);
-        SO(UseRunOnReady,baoRunOnReady);
-        SO(UseBrowserConsole,baoUseBrowserConsole);
-        SO(ShowUncaughtExceptions,baoShowException);
-
-        SO(UseBrowserApp,baoUseBrowserApp);
-        SO(UseWASI,baoUseWASI);
-        FProjectWasmURL:=WasmProgramURL;
-
-        SO(UseModule,baoUseModule);
-
-        Self.ProjectPort:=ServerPort;
-        SO(RunServerAtPort,baoStartServer);
-        SO(RunBrowserWithURL,baoUseURL);
-        if baoStartServer in FOptions then
-          DebugLN(['Info: Start server port: ', Self.ProjectPort,' from: ',ServerPort])
-        else if baoUseURL in FOptions then
-          FProjectURL:=URL;
-
-        end;
-    finally
-      Free;
-    end;
-end;
-
-function TProjectPas2JSWebApp.ShowModalOptions(
-  Frm: TWebBrowserProjectOptionsForm): TModalResult;
-begin
-  Result:=Frm.ShowModal;
-end;
-
-procedure TProjectPas2JSWebApp.EnableRunBrowser(AProject: TLazProject);
-begin
-  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
-  AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
-  if baoUseURL in Options then
-    begin
-    AProject.CustomData.Remove(PJSProjectPort);
-    AProject.CustomData.Values[PJSProjectURL]:=ProjectURL;
-    end
-  else
-    begin
-    AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
-    AProject.CustomData.Remove(PJSProjectURL);
-    end;
-  With AProject.CustomData do
-    begin
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
-    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
-    end;
-end;
-
-function TProjectPas2JSWebApp.DoInitDescriptor: TModalResult;
-begin
-  Clear;
-  Result:=ShowOptionsDialog;
-end;
-
-function TProjectPas2JSWebApp.GetLocalizedName: string;
-begin
-  Result:=pjsdWebApplication;
-end;
-
-function TProjectPas2JSWebApp.GetLocalizedDescription: string;
-begin
-  Result:=pjsdWebAppDescription;
-end;
-
-function TProjectPas2JSWebApp.GetMainSrcFileName: string;
-begin
-  if FMainSrcFileName='' then
-    FMainSrcFileName:=AnsiLowerCase(MainSrcName)+'.lpr';
-  Result:=FMainSrcFileName;
-end;
-
-function TProjectPas2JSWebApp.GetHTMLFilename: string;
-begin
-  if FHTMLFilename='' then
-    FHTMLFilename:=ChangeFileExt(MainSrcFileName,'.html');
-  Result:=FHTMLFilename;
-end;
-
-function TProjectPas2JSWebApp.GetMainSrcName: string;
-begin
-  if FMainSrcName='' then
-    FMainSrcName:='project1';
-  Result:=FMainSrcName;
-end;
-
-function TProjectPas2JSWebApp.GetScriptFilename: string;
-begin
-  if FScriptFilename='' then
-    FScriptFilename:=ChangeFileExt(MainSrcFileName,'.js');
-  Result:=FScriptFilename;
-end;
-
-procedure TProjectPas2JSWebApp.AddHTMLHead(Src: TStringList);
-begin
-  Src.Add('  <meta http-equiv="Content-type" content="text/html; charset=utf-8">');
-  Src.Add('  <title>'+MainSrcName+'</title>');
-  Src.Add('  <meta name="viewport" content="width=device-width, initial-scale=1">');
-end;
-
-procedure TProjectPas2JSWebApp.AddBody(Src: TStringList);
-begin
-  Src.Add('  <script>');
-  if baoShowException in Options then
-    Src.Add('    rtl.showUncaughtExceptions=true;');
-  if baoRunOnReady in Options then
-    Src.Add('    window.addEventListener("load", rtl.run);')
-  else
-    Src.Add('    rtl.run();');
-  Src.Add('  </script>');
-  if baoUseBrowserConsole in Options then
-    Src.Add('  <div id="pasjsconsole"></div>');
-end;
-
-function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
-  aScriptFileName: String): TLazProjectFile;
-
-Var
-  HTMLFile: TLazProjectFile;
-  ScriptType: String;
-  Src: TStringList;
-begin
-  HTMLFile:=AProject.CreateProjectFile(HTMLFilename);
-  HTMLFile.IsPartOfProject:=true;
-  AProject.AddFile(HTMLFile,false);
-  ScriptType:='';
-  if baoUseModule in Options then
-    ScriptType:=' type="module"';
-  Src:=TStringList.Create;
-  try
-    Src.Add('<!doctype html>');
-    Src.Add('<html lang="en">');
-    Src.Add('<head>');
-    AddHTMLHead(Src);
-    Src.Add('  <script'+ScriptType+' src="'+aScriptFileName+'"></script>');
-    Src.Add('</head>');
-    Src.Add('<body>');
-    AddBody(Src);
-    Src.Add('</body>');
-    Src.Add('</html>');
-
-    HTMLFile.SetSourceText(Src.Text);
-  finally
-    Src.Free;
-  end;
-
-  HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
-  if baoMaintainHTML in Options then
-    AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
-  if baoUseBrowserConsole in Options then
-    AProject.CustomData[PJSProjectUseBrowserConsole]:='1';
-  if baoRunOnReady in options then
-    AProject.CustomData[PJSProjectRunAtReady]:='1';
-
-  Result:=HTMLFile;
-end;
-
-function TProjectPas2JSWebApp.CreateProjectSource : String;
-
-Var
-  Src : TStrings;
-  units : string;
-
-  Procedure Add(aLine : String);
-  begin
-    Src.Add(aLine);
-  end;
-
-  Procedure AddLn(aLine : String);
-  begin
-    if (aLine<>'') then
-      aLine:=aLine+';';
-    Add(aLine);
-  end;
-
-begin
-  Units:='';
-  if baoUseBrowserConsole in Options then
-    Units:=' BrowserConsole,';
-  if baoUseBrowserApp in Options then
-    begin
-    Units:=Units+' BrowserApp,' ;
-    if baoUseWASI in options then
-      Units:=Units+' WASIHostApp,' ;
-    end;
-  Units:=Units+' JS, Classes, SysUtils, Web';
-  Src:=TStringList.Create;
-  try
-    // create program source
-    AddLn('program '+MainSrcName);
-    AddLn('');
-    Add('{$mode objfpc}');
-    Add('');
-    Add('uses');
-    AddLn(units) ;
-    Add('');
-    if baoUseBrowserApp in Options then
-      begin
-      Add('Type');
-      if baoUseWASI in Options then
-        Add('  TMyApplication = Class(TWASIHostApplication)')
-      else
-        Add('  TMyApplication = Class(TBrowserApplication)');
-      Add('  protected');
-      AddLn('    procedure DoRun; override');
-      Add('  public');
-      AddLn('  end');
-      Add('');
-      AddLn('Procedure TMyApplication.DoRun');
-      Add('begin');
-      if ServiceWorkerJSFilename<>'' then
-        AddLn('  RegisterServiceWorker(''/ServiceWorker.js'')');
-      if baoUseWASI in Options then
-        begin
-        if FProjectWasmURL='' then
-          FProjectWasmURL:='yourwebassembly.wasm';
-        AddLn(Format('  StartWebAssembly(''%s'')',[FProjectWasmURL]));
-        end
-      else
-        Add('  // Your code here');
-      AddLn('end');
-      Add('');
-      Add('var');
-      AddLn('  Application : TMyApplication');
-      Add('');
-      end;
-    Add('begin');
-    if Not (baoUseBrowserApp in Options) then
-      Add('  // Your code here')
-    else
-      begin
-      AddLn('  Application:=TMyApplication.Create(Nil)');
-      AddLn('  Application.Initialize');
-      AddLn('  Application.Run');
-      end;
-    Add('end.');
-    Result:=Src.Text;
-  finally
-    Src.Free;
-  end;
-end;
-
-function TProjectPas2JSWebApp.InitProject(AProject: TLazProject): TModalResult;
-
-var
-  MainFile: TLazProjectFile;
-  CompOpts: TLazCompilerOptions;
-
-begin
-  Result:=inherited InitProject(AProject);
-  debugln(['Info: [TProjectPas2JSWebApp.InitProject] MainSrcFileName=',MainSrcFileName]);
-  MainFile:=AProject.CreateProjectFile(MainSrcFileName);
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-  CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultWebCompileOptions(CompOpts);
-  CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
-  if baoUseModule in Options then
-    CompOpts.TargetOS:='module';
-  AProject.MainFile.SetSourceText(CreateProjectSource,true);
-
-  EnableRunBrowser(AProject);
-
-  // create html source
-  if baoCreateHtml in Options then
-    begin
-    debugln(['Info: [TProjectPas2JSWebApp.InitProject] HTMLFilename=',HTMLFilename]);
-    CreateHTMLFile(AProject,ScriptFilename);
-    end;
-end;
-
-function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-var
-  MainFile: TLazProjectFile;
-begin
-  // open lpr in source editor
-  MainFile:=AProject.MainFile;
-  Result:=LazarusIDE.DoOpenEditorFile(MainFile.Filename,-1,-1,
-                                      [ofProjectLoading,ofRegularFile]);
-  if Result<>mrOK then
-     exit;
-
-  // open html in source editor
-  if baoCreateHtml in Options then
-    Result:=LazarusIDE.DoOpenEditorFile(HTMLFilename,-1,-1,
-                                        [ofProjectLoading,ofRegularFile]);
-end;
-
 { ----------------------------------------------------------------------
   Module
   ----------------------------------------------------------------------}
@@ -2253,7 +2269,6 @@ Var
       Aline:=Aline+';';
     Add(Aline);
   end;
-
 
 begin
   Units:=' JS, Classes, SysUtils';
