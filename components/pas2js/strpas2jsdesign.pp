@@ -69,15 +69,15 @@ Resourcestring
   pjsdRun = 'Run';
   pjsdStartHTTPServerOnPort = 'Start HTTP Server on port';
   pjsdTheSimpleWebServerIsAutomaticallyStartedOnRunTheLo = 'The Simple Web '
-    +'Server is automatically started on Run. The location is like a sub '
-    +'folder in the URL serving the disk folder of the html file.';
+    +'Server is automatically started on Run. The location is like a subfolder '
+    +'in the URL serving the disk folder of the HTML file.';
   pjsdLocationOnSimpleWebServer = 'Location on Simple Web Server';
   pjsCreateAJavascriptModuleInsteadOfAScript = 'Create a javascript module '
     +'instead of a script';
   pjsdUseThisURLToStartApplication = 'Use this URL to start application';
   pjsExecuteRunParameters = 'Execute Run Parameters';
   pjsdUseThisWhenYouStartYourOwnHttpServer = 'Use this when you start your own'
-    +' http server';
+    +' HTTP server';
   pjsdResetRunCommand = 'Reset Run command';
   pjsdResetCompileCommand = 'Reset Compile command';
   pjsMakePas2jsProject = 'Make pas2js project';

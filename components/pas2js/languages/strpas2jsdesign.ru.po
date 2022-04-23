@@ -91,7 +91,7 @@ msgstr "Разрешать RTL показывать необработанные
 
 #: strpas2jsdesign.pjsdlocationonsimplewebserver
 msgid "Location on Simple Web Server"
-msgstr ""
+msgstr "Расположение на простом веб-сервере"
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
@@ -274,8 +274,8 @@ msgid "Start HTTP Server on port"
 msgstr "Запускать сервер HTTP на порту"
 
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
-msgid "The Simple Web Server is automatically started on Run. The location is like a sub folder in the URL serving the disk folder of the html file."
-msgstr ""
+msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
+msgstr "Простой веб-сервер вызывается автоматически при запуске. Расположение по поведению похоже на подкаталог в адресе, соответствующий каталогу файла HTML на диске."
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -294,8 +294,8 @@ msgid "Use this URL to start application"
 msgstr "Использовать следующий адрес для запуска приложения"
 
 #: strpas2jsdesign.pjsdusethiswhenyoustartyourownhttpserver
-msgid "Use this when you start your own http server"
-msgstr ""
+msgid "Use this when you start your own HTTP server"
+msgstr "Используйте этот параметр, если запускаете свой сервер HTTP"
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject
 msgid "Run WebAssembly program:"
