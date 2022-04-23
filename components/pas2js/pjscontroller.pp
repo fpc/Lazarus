@@ -39,6 +39,7 @@ Type
     function RunBrowserProject(aProject: TLazProject; WithDebug: boolean; var Handled: boolean): TModalResult;
     function RunNonBrowserProject(aProject: TLazProject; WithDebug: boolean; var Handled: boolean): TModalResult;
     function SaveHTMLFileToTestDir(aProject: TLazProject): boolean;
+    class function GetProjectHTMLLegacyFilename(aProject: TLazProject): string;
   Public
     Constructor Create;
     Destructor Destroy; override;
@@ -47,12 +48,12 @@ Type
     Procedure Hook; virtual;
     Procedure UnHook; virtual;
     // Determine project HTML file from custom data
+    class function GetProjectHTMLFile(aProject: TLazProject): TLazProjectFile;
     class function GetProjectHTMLFilename(aProject: TLazProject): string;
     // Get filename to show in browser when running
     function GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string; virtual;
-    // Return directory for webserver
-    function GetWebDir(aProject: TLazProject): string; virtual;
-    // Get project URL.
+    function GetWebDir(aProject: TLazProject): string; virtual; // disk directory for webserver
+    function GetProjectLocation(aProject: TLazProject): string; virtual;
     function GetProjectURL(aProject: TLazProject): string; virtual;
     Property OnRefresh : TNotifyEvent Read FOnRefresh Write FonRefresh;
   end;
@@ -198,54 +199,52 @@ begin
   Result:=RunProject(Sender,false,Handled);
 end;
 
+class function TPJSController.GetProjectHTMLFile(aProject: TLazProject
+  ): TLazProjectFile;
+var
+  HTMLFilename: String;
+  i: Integer;
+begin
+  for i:=0 to aProject.FileCount-1 do
+    begin
+    Result:=aProject.Files[i];
+    if Result.IsPartOfProject
+        and (Result.CustomData[PJSIsProjectHTMLFile]='1') then
+      exit;
+    end;
+  Result:=nil;
+
+  HTMLFilename:=GetProjectHTMLLegacyFilename(aProject);
+  if HTMLFilename<>'' then
+    Result:=aProject.FindFile(HTMLFilename,[pfsfOnlyProjectFiles]);
+end;
+
 class function TPJSController.GetProjectHTMLFilename(aProject: TLazProject): string;
 
 Var
-  I : Integer;
   aFile: TLazProjectFile;
 
 begin
-  Result:='';
-  I:=aProject.FileCount-1;
-  While (Result='') and (I>=0) do
-    begin
-    aFile:=aProject.Files[I];
-    if aFile.IsPartOfProject
-        and (aFile.CustomData[PJSIsProjectHTMLFile]='1') then
-      Result:=aFile.GetFullFilename;
-    Dec(I);
-  end;
-  if Result='' then
-    // Fallback
-    Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
+  aFile:=GetProjectHTMLFile(aProject);
+  if aFile<>nil then
+    Result:=aFile.GetFullFilename
+  else
+    Result:='';
 end;
 
 function TPJSController.GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string;
-
-var
-  HTMLFile: TLazProjectFile;
-
 begin
   Result:=GetProjectHTMLFileName(aProject);
   if Result='' then exit;
+  if FilenameIsAbsolute(Result) then exit;
+
   if aProject.IsVirtual then
     begin
-    HTMLFile:=aProject.FindFile(Result,[pfsfOnlyProjectFiles]);
-    if HTMLFile=nil then
-      exit('');
-    Result:=HTMLFile.Filename;
-    if (not FilenameIsAbsolute(Result)) and UseTestDir then
+    if UseTestDir then
       Result:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory)+Result;
     end
   else
-    begin
-    if not FilenameIsAbsolute(Result) then
-      Result:=ExtractFilePath(aProject.ProjectInfoFile)+Result;
-    HTMLFile:=aProject.FindFile(Result,[pfsfOnlyProjectFiles]);
-    if HTMLFile=nil then
-      exit('');
-    Result:=HTMLFile.Filename;
-    end;
+    Result:=TrimFilename(AppendPathDelim(aProject.Directory)+Result);
 end;
 
 function TPJSController.GetWebDir(aProject: TLazProject): string;
@@ -263,6 +262,12 @@ begin
       Result:=LazarusIDE.GetTestBuildDirectory
     else
       Result:=ExtractFilePath(aProject.ProjectInfoFile);
+end;
+
+function TPJSController.GetProjectLocation(aProject: TLazProject): string;
+begin
+  Result:=aProject.CustomData[PJSProjectLocation];
+  IDEMacros.SubstituteMacros(Result);
 end;
 
 function TPJSController.GetProjectURL(aProject: TLazProject): string;
@@ -334,8 +339,9 @@ function TPJSController.RunBrowserProject(aProject: TLazProject;
   WithDebug: boolean; var Handled: boolean): TModalResult;
 var
   ServerPort: Integer;
-  WebDir, HTMLFilename, URL, WorkDir: String;
+  WebDir, HTMLFilename, URL, WorkDir, Location: String;
   aServer: TSWSInstance;
+  SWSLocation: TSWSLocation;
 begin
   Result:=mrOk;
   aProject:=LazarusIDE.ActiveProject;
@@ -353,9 +359,10 @@ begin
       end;
     end;
 
+  Location:=aProject.CustomData[PJSProjectLocation];
   ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
   URL:=aProject.CustomData[PJSProjectURL];
-  if (ServerPort<0) and (URL='') then
+  if (Location='') and (ServerPort<0) and (URL='') then
     exit; // compile normally and run the run-parameters
 
   // Run webproject with Debug: build, start webserver, open browser
@@ -366,20 +373,39 @@ begin
   Result:=LazarusIDE.DoBuildProject(crRun,[]);
   if Result<>mrOk then exit;
 
-  if ServerPort>=0 then
+  if WithDebug then ;
+
+  if (Location<>'') or (ServerPort>=0) then
     begin
-    // start web server
+    // start http server
     WebDir:=GetWebDir(aProject);
     if WebDir='' then
       begin
       debugln(['Warning: TPJSController.RunProject missing webdir']);
       exit(mrCancel);
       end;
-    aServer:=SimpleWebServerController.AddProjectServer(aProject,ServerPort,WebDir,true);
-    if aServer=nil then
+    if WebDir='' then
       exit(mrCancel);
-    if aServer.ErrorDesc<>'' then
-      exit(mrCancel);
+
+    if Location<>'' then
+      begin
+      Location:=GetProjectLocation(aProject);
+      if Location='' then
+        Location:=ExtractFileNameOnly(aProject.MainFile.Filename);
+      SWSLocation:=SimpleWebServerController.AddProjectLocation(aProject,Location,WebDir,true);
+      if SWSLocation=nil then
+        exit(mrCancel);
+      if SWSLocation.ErrorDesc<>'' then
+        exit(mrCancel);
+      end
+    else
+      begin
+      aServer:=SimpleWebServerController.AddProjectServer(aProject,ServerPort,WebDir,true);
+      if aServer=nil then
+        exit(mrCancel);
+      if aServer.ErrorDesc<>'' then
+        exit(mrCancel);
+      end;
 
     // start browser
     HTMLFilename:=GetHTMLFilename(aProject,true);
@@ -388,8 +414,16 @@ begin
       debugln(['Info: TPJSController.RunProject missing htmlfile']);
       exit(mrCancel);
       end;
-    if not SimpleWebServerController.OpenBrowserWithServer(aServer,HTMLFilename) then
-      exit(mrCancel);
+    if SWSLocation<>nil then
+      begin
+      if not SimpleWebServerController.OpenBrowserWithLocation(SWSLocation,HTMLFilename) then
+        exit(mrCancel);
+      end
+    else
+      begin
+      if not SimpleWebServerController.OpenBrowserWithServer(aServer,HTMLFilename) then
+        exit(mrCancel);
+      end;
 
     end
   else
@@ -461,6 +495,16 @@ begin
   Result:=true;
 end;
 
+class function TPJSController.GetProjectHTMLLegacyFilename(aProject: TLazProject
+  ): string;
+begin
+  Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
+  if Result='' then exit;
+  DoDirSeparators(Result);
+  if (not aProject.IsVirtual) and (not FilenameIsAbsolute(Result)) then
+    Result:=TrimFilename(AppendPathDelim(aProject.Directory)+Result);
+end;
+
 constructor TPJSController.Create;
 begin
   // Nothing for the moment
@@ -498,4 +542,5 @@ end;
 finalization
   TPJSController.DoneInstance;
 end.
+
 

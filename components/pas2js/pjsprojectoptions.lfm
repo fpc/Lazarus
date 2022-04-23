@@ -198,16 +198,18 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
       TabOrder = 2
     end
     object CBServerURL: TComboBox
-      AnchorSideLeft.Control = SEPort
+      AnchorSideLeft.Control = RBUseURL
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SEPort
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RunGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 180
+      Left = 173
       Height = 30
       Top = 74
-      Width = 550
+      Width = 557
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       ItemHeight = 0
