@@ -25,7 +25,7 @@ msgstr "Добавить расположение"
 
 #: simplewebsrvstrconsts.rsswaddsimplewebserverlocation
 msgid "Add Simple Web Server Location"
-msgstr "Добавить расположение простого веб-сервера"
+msgstr "Добавить расположение на простом веб-сервере"
 
 #: simplewebsrvstrconsts.rsswanarbitrarynamefortheurlsubfolder
 msgid "An arbitrary name for the URL subfolder"
