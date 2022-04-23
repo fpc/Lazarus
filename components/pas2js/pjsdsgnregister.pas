@@ -990,6 +990,7 @@ begin
   // hide unsupported options
   Frm.HideWASM;
   Frm.HideModule;
+  Frm.HideRunLocation;
 
   Frm.Caption:=GetLocalizedName+' Options';
   Result:=inherited ShowModalOptions(Frm);
