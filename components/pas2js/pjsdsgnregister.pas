@@ -1044,7 +1044,6 @@ begin
   Result:=false;
 
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.Flags:=AProject.Flags-[pfRunnable];
 
   MainFile:=AProject.CreateProjectFile(PreloadLPR);
   MainFile.IsPartOfProject:=true;
@@ -1120,7 +1119,6 @@ begin
 
   AProject.ProjectInfoFile:=RenderLPI;
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.Flags:=AProject.Flags-[pfRunnable];
 
   MainFile:=AProject.CreateProjectFile(RenderLPR);
   MainFile.IsPartOfProject:=true;
@@ -1182,7 +1180,6 @@ begin
 
   AProject.ProjectInfoFile:=ChangeFileExt(MainSrcFileName,'.lpi');
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.Flags:=AProject.Flags+[pfRunnable];
 
   MainFile:=AProject.CreateProjectFile(MainSrcFileName);
   MainFile.IsPartOfProject:=true;
@@ -1313,7 +1310,7 @@ var
   CompOpts: TLazCompilerOptions;
   RunMode: TAbstractRunParamsOptionsMode;
 begin
-  AProject.Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+  AProject.Flags:=DefaultProjectNoApplicationFlags;
   AProject.CustomData.Values[PJSProject]:='1';
 
   // start with the preload project
@@ -1868,7 +1865,7 @@ end;
 procedure TProjectPas2JSWebApp.Clear;
 begin
   // Reset options
-  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+  Flags:=DefaultProjectNoApplicationFlags;
   FMainSrcName:='Project1';
   FOptions:=[baoCreateHtml,baoMaintainHTML,baoStartServer];
   ProjectPort:=0;
@@ -2283,7 +2280,6 @@ begin
     Src.Free;
   end;
 end;
-
 
 constructor TProjectPas2JSModuleApp.Create;
 begin
