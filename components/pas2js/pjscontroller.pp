@@ -204,19 +204,19 @@ Var
   aFile: TLazProjectFile;
 
 begin
-  Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
-  If Result='' then
+  Result:='';
+  I:=aProject.FileCount-1;
+  While (Result='') and (I>=0) do
     begin
-    I:=aProject.FileCount-1;
-    While (Result='') and (I>=0) do
-      begin
-      aFile:=aProject.Files[I];
-      if aFile.IsPartOfProject
-          and (aFile.CustomData[PJSIsProjectHTMLFile]='1') then
-        Result:=aFile.GetFullFilename;
-      Dec(I);
-      end;
-    end;
+    aFile:=aProject.Files[I];
+    if aFile.IsPartOfProject
+        and (aFile.CustomData[PJSIsProjectHTMLFile]='1') then
+      Result:=aFile.GetFullFilename;
+    Dec(I);
+  end;
+  if Result='' then
+    // Fallback
+    Result:=aProject.CustomData.Values[PJSProjectHTMLFile{%H-}];
 end;
 
 function TPJSController.GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string;
