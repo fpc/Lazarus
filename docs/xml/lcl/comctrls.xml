@@ -8787,7 +8787,6 @@ end;
           <link id="TCustomListView.OnCustomDrawItem"/>
           <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
           <link id="TCustomListView.IntfCustomDraw"/>
-          <link id="TCustomListView.CNNotify"/>
           <link id="TLVAdvancedCustomDrawItemEvent"/>
         </seealso>
       </element>
@@ -10806,8 +10805,8 @@ end;
         </descr>
         <seealso>
           <link id="TCustomListView.IsCustomDrawn"/>
-          <link id="TCustomListView.OnCustomDrawnSubItem"/>
-          <link id="TCustomListView.OnAdvancedCustomDrawnSubItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
           <link id="TCustomListView.IntfCustomDraw"/>
           <link id="TListItem.SubItems"/>
           <link id="TCustomDrawStage"/>
