@@ -5890,7 +5890,7 @@ end;
         <short>Draw one item (or line in report mode).</short>
       </element>
       <element name="TCustomDrawTarget.dtSubItem">
-        <short>Draw one subitem (except subitem 0 which is drawn by dtItem).</short>
+        <short>Draw one sub-item (except sub-item 0 which is drawn by dtItem).</short>
       </element>
 
       <element name="TCustomDrawStage">
@@ -6118,7 +6118,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TDisplayCode</var> is an enumerated type with values that denote how the item or subitem is displayed in a list view control. The values are passed as arguments to the <var>DisplayRect</var> and  <var>DisplayRectSubItem</var> methods in <var>TListItem</var>, and allows the widgetset to layout and rendering the list items for the platform.
+            <var>TDisplayCode</var> is an enumerated type with values that denote how the item or sub-item is displayed in a list view control. The values are passed as arguments to the <var>DisplayRect</var> and  <var>DisplayRectSubItem</var> methods in <var>TListItem</var>, and allows the widgetset to layout and rendering the list items for the platform.
           </p>
         </descr>
         <seealso>
@@ -8087,52 +8087,38 @@ end;
       </element>
 
       <element name="TListColumns">
+        <short>
           A collection for TListColumn instances defined for a multi-column list view control.
-          <short>
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TListColumns</var> is a <var>TCollection</var> descendant which implements a container for column definitions on a list view control. It provides properties and methods used to create, access, and maintain the TListColumn instances in its Items property.
+          </p>
+          <p>
+            Use methods like Add, Insert, Clear, Delete, and Move to maintain the column definitions in the collection.
+          </p>
+          <p>
+            TListColumns is the type used to implement the Columns property in TCustomListView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Columns"/>
+        </seealso>
       </element>
 
       <element name="TListColumns.FOwner"/>
       <element name="TListColumns.FItemNeedsUpdate"/>
       <element name="TListColumns.FNeedsUpdate"/>
 
-      <element name="TListColumns.GetItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumns.GetItem.Result">
-        <short/>
-      </element>
-      <element name="TListColumns.GetItem.AIndex">
-        <short/>
-      </element>
-
-      <element name="TListColumns.WSCreateColumns">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumns.SetItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumns.SetItem.AIndex">
-        <short/>
-      </element>
-      <element name="TListColumns.SetItem.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumns.DoFinalizeWnd">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <!-- private -->
+      <element name="TListColumns.GetItem"/>
+      <element name="TListColumns.GetItem.Result"/>
+      <element name="TListColumns.GetItem.AIndex"/>
+      <element name="TListColumns.WSCreateColumns"/>
+      <element name="TListColumns.SetItem"/>
+      <element name="TListColumns.SetItem.AIndex"/>
+      <element name="TListColumns.SetItem.AValue"/>
+      <element name="TListColumns.DoFinalizeWnd"/>
 
       <element name="TListColumns.GetOwner">
         <short>Gets the owner of the persistent object.</short>
@@ -8177,9 +8163,8 @@ end;
           <link id="#rtl.classes.TCollection">TCollection</link>
         </seealso>
       </element>
-
       <element name="TListColumns.Update.Item">
-        <short/>
+        <short>Collection item updated in the method.</short>
       </element>
 
       <element name="TListColumns.Add">
@@ -8192,7 +8177,9 @@ end;
         </seealso>
       </element>
       <element name="TListColumns.Add.Result">
-        <short/>
+        <short>
+          TListColumn instance created and added in the method.
+        </short>
       </element>
 
       <element name="TListColumns.Owner">
@@ -8224,32 +8211,50 @@ end;
 
       <element name="TListColumns.Assign">
         <short>
-          <var>Assign</var> checks that source is of correct type, then adds new columns and copies items from source into them; otherwise calls inherited <var>Assign</var> which probably raises an exception.
+          Adds column definitions in Source to the current class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Assign</var> checks that source is of correct type, then adds new columns and copies items from source into them; otherwise calls inherited <var>Assign</var> which probably raises an exception.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TCollection.Assign">TCollection.Assign</link>
         </seealso>
       </element>
       <element name="TListColumns.Assign.Source">
-        <short/>
+        <short>
+          Persistent object with the values stored in the current class instance.
+        </short>
       </element>
 
       <element name="TItemChange">
         <short>
-          <var>TItemChange</var> - enumerated type for kind of change: in text, in image or in state.
+          <var>TItemChange</var> - enumerated type for kind of change: in text, in image, or in state.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Values in the enumeration are passed as an argument to TLVChangeEvent event handler routines.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLVChangeEvent"/>
+        </seealso>
       </element>
       <element name="TItemChange.ctText">
-        <short/>
+        <short>
+          The text for the item was changed.
+        </short>
       </element>
       <element name="TItemChange.ctImage">
-        <short/>
+        <short>
+          The image for the item was changed.
+        </short>
       </element>
       <element name="TItemChange.ctState">
-        <short/>
+        <short>
+          The state for the item was changed.
+        </short>
       </element>
 
       <element name="TViewStyle">
@@ -8530,267 +8535,485 @@ end;
 
       <element name="TLVCompareEvent">
         <short>
-          <var>TLVCompareEvent</var> - generic event handler method for List View comparison.
+          Specifies an event handler signalled to compare two items in a List View control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVCompareEvent</var> is the type used to implement the <var>OnCompare</var> event handler in <var>TCustomListView</var>, and implements the <var>Sort</var> method for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnCompare"/>
+          <link id="TCustomListView.SortType"/>
+          <link id="TCustomListView.Sort"/>
+        </seealso>
       </element>
       <element name="TLVCompareEvent.Sender">
-        <short/>
+        <short>
+          Object generating the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVCompareEvent.Item1">
-        <short/>
+        <short>
+          First list item for the comparison.
+        </short>
       </element>
       <element name="TLVCompareEvent.Item2">
-        <short/>
+        <short>
+          Second list item for the comparison.
+        </short>
       </element>
       <element name="TLVCompareEvent.Data">
-        <short/>
+        <short>
+          Contains an Integer value indicating where the items or their data is used in the comparison. The value is normally 0 when signalled, indicating that the list items are used.
+        </short>
       </element>
       <element name="TLVCompareEvent.Compare">
-        <short/>
+        <short>
+          Indicates the relative order for the list items. Negative values indicate Item1 occurs first in the sort order. Positive values indicates Item2 occurs first in the sort order. Zero (0) indicates the list items have the same value.
+        </short>
       </element>
 
       <element name="TLVDeletedEvent">
         <short>
-          <var>TLVDeletedEvent</var> - generic event handler method for deleted items in List View.
+          Specifies an event handler signalled when a list view item is deleted.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVDeletedEvent</var> is the type used to implement the OnDeletion event handler in TCustomListView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnDeletion"/>
+        </seealso>
       </element>
       <element name="TLVDeletedEvent.Sender">
-        <short/>
+        <short>
+          Object (TCustomListView) for the event notification.
+        </short>
       </element>
       <element name="TLVDeletedEvent.Item">
-        <short/>
+        <short>
+          TListItem instance for the delete notification.
+        </short>
       </element>
 
       <element name="TLVEditingEvent">
         <short>
-          Specifies an event handler signalled when an edit action is started for an item in a list view control.
+          Specifies an event handler signalled when an edit action is started for an item on a list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVEditingEvent</var> is the type used to implement the <var>OnEditing</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnEditing"/>
+        </seealso>
       </element>
       <element name="TLVEditingEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVEditingEvent.Item">
-        <short/>
+        <short>
+          TListItem instance for the event notification.
+        </short>
       </element>
       <element name="TLVEditingEvent.AllowEdit">
-        <short/>
+        <short>
+          Set to <b>True</b> to allow the list item to be edited. Set to <var>False</var> to reject the edit request.
+        </short>
       </element>
 
       <element name="TLVEditedEvent">
         <short>
-          Specifies an event handler signalled when an edit action is completed for an item in a list view control.
+          Specifies an event handler signalled when an edit action is completed for an item on a list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVEditedEvent</var> is the type used to implement the <var>OnEdited</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnEdited"/>
+          <link id="TListItem.Caption"/>
+        </seealso>
       </element>
       <element name="TLVEditedEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVEditedEvent.Item">
-        <short/>
+        <short>
+          TListItem for the event notification.
+        </short>
       </element>
       <element name="TLVEditedEvent.AValue">
-        <short/>
+        <short>
+          The new value from the editor for the list item. Can be modified in the handler routine. Ultimately, it is assigned to the Caption for the list item.
+        </short>
       </element>
 
       <element name="TLVInsertEvent">
         <short>
-          <var>TLVInsertEvent</var> - generic event handler method for List View insertion.
+          Specifies an event handler signalled when a list item is added to a list view control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TLVInsertEvent</var> is an alias for the <var>TLVDeletedEvent</var> type, and uses the same arguments. TLVInsertEvent is the type used to implement the the <var>OnInsert</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
         <seealso>
           <link id="TLVDeletedEvent"/>
+          <link id="TCustomListView.OnInsert"/>
         </seealso>
       </element>
 
       <element name="TLVDataEvent">
-        <short>Alias to the TLVDeletedEvent type.</short>
-        <descr/>
+        <short>
+          Specifies an event handler signalled to get the arbitrary data for an item on a list view control.
+        </short>
+        <descr>
+          <p>
+            <var>TLVDataEvent</var> is an alias to the <var>TLVDeletedEvent</var> type, and uses the same arguments. TLVDataEvent is the type used to implement the <var>OnData</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
         <seealso>
           <link id="TLVDeletedEvent"/>
+          <link id="TCustomListView.OnData"/>
+          <link id="TCustomListView.OwnerData"/>
         </seealso>
       </element>
 
       <element name="TLVCheckedItemEvent">
         <short>
-          Specifies an event handler signalled when the checked state for an item in a list view control has been changed.
+          Specifies an event handler signalled when the checked state for an item on a list view control has been changed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVCheckedItemEvent</var> is the type used to implement the <var>OnItemChecked</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnItemChecked"/>
+          <link id="TListItem.Checked"/>
+        </seealso>
       </element>
       <element name="TLVCheckedItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVCheckedItemEvent.Item">
-        <short/>
+        <short>
+          List item for the event notification.
+        </short>
       </element>
 
       <element name="TLVSelectItemEvent">
         <short>
-          <var>TLVSelectItemEvent</var> - generic event handler method for List View selection.
+          Specifies an event handler signalled when the selected state is changed for an item on a list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVSelectItemEvent</var> is the type used to implement the <var>OnSelectItem</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnSelectItem"/>
+          <link id="TListItem.Checked"/>
+        </seealso>
       </element>
       <element name="TLVSelectItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVSelectItemEvent.Item">
-        <short/>
+        <short>
+          TListItem for the event notification,
+        </short>
       </element>
       <element name="TLVSelectItemEvent.Selected">
-        <short/>
+        <short>
+          <b>True</b> if the list item is selected.
+        </short>
       </element>
 
       <element name="TLVCustomDrawEvent">
         <short>
-          <var>TLVCustomDrawEvent</var> - generic event handler method for List View custom drawing.
+          Specifies an event handler signalled to custom draw a list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVCustomDrawEvent</var> is the type used to implement the <var>OnCustomDraw</var> event handler in <var>TCustomListView</var>. See <var>TLVAdvancedCustomDrawEvent</var> for the event handler signalled to draw a list view control with state.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLVAdvancedCustomDrawEvent"/>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+        </seealso>
       </element>
       <element name="TLVCustomDrawEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVCustomDrawEvent.ARect">
-        <short/>
+        <short>
+          Rectangle with the bounds for the list view control.
+        </short>
       </element>
       <element name="TLVCustomDrawEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVCustomDrawItemEvent">
         <short>
-          <var>TLVCustomDrawItemEvent</var> - generic event handling method for List View item drawing.
+          Specifies an event handler signalled to custom draw an item on a list view control.
         </short>
+        <descr>
+          <p>
+            <var>TLVCustomDrawItemEvent</var> is the type used to implement the <var>OnCustomDrawItem</var> event handler in <var>TCustomListView</var>. See <var>TLVAdvancedCustomDrawItemEvent</var> for the event signalled to draw a list item using a specific drawing state or stage.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TCustomListView.CNNotify"/>
+          <link id="TLVAdvancedCustomDrawItemEvent"/>
+        </seealso>
       </element>
       <element name="TLVCustomDrawItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVCustomDrawItemEvent.Item">
-        <short/>
+        <short>
+          List item for the event notification.
+        </short>
       </element>
       <element name="TLVCustomDrawItemEvent.State">
-        <short/>
+        <short>
+          Drawing state (like focused, selected, disabled) for the list item.
+        </short>
       </element>
       <element name="TLVCustomDrawItemEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVCustomDrawSubItemEvent">
         <short>
-          <var>TLVCustomDrawSubItemEvent</var> - generic event handling method for List View subitem drawing.
+          Specifies an event handler signalled to draw a SubItem value for a list item on a list view control.
         </short>
+        <descr>
+          <p>
+            <var>TLVCustomDrawSubItemEvent</var> is the type used to implement the <var>OnCustomDrawSubItem</var> event handler in <var>TCustomListView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
+          <link id="TCustomListView.CustomDrawSubItem"/>
+          <link id="TCustomListView.Columns"/>
+          <link id="TListItem.SubItems"/>
+        </seealso>
       </element>
       <element name="TLVCustomDrawSubItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVCustomDrawSubItemEvent.Item">
-        <short/>
+        <short>
+          TListItem for the event notification.
+        </short>
       </element>
       <element name="TLVCustomDrawSubItemEvent.SubItem">
-        <short/>
+        <short>
+          Ordinal position for the sub-item draw in handler routine.
+        </short>
       </element>
       <element name="TLVCustomDrawSubItemEvent.State">
-        <short/>
+        Drawing state for the sub-item (like selected, focused, disabled).
       </element>
       <element name="TLVCustomDrawSubItemEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVDrawItemEvent">
         <short>
-          Specifies an event handler signalled to draw an item in a list view control.
+          Specifies an event handler signalled to perform default drawing for an item on a list view control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TLVDrawItemEvent</var> is the type used to implement the <var>OnDrawItem</var> event handler in <var>TCustomListView</var>. See <var>TLVCustomDrawItemEvent</var> and <var>TLVAdvancedCustomDrawItemEvent</var> for event types  signalled for custom-drawn items on a list view control.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomListView.OnDrawItem"/>
+          <link id="TCustomListView.DrawItem"/>
+          <link id="TLVCustomDrawItemEvent"/>
+          <link id="TLVAdvancedCustomDrawItemEvent"/>
         </seealso>
       </element>
       <element name="TLVDrawItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVDrawItemEvent.AItem">
-        <short/>
+        <short>
+          TListItem for the event notification.
+        </short>
       </element>
       <element name="TLVDrawItemEvent.ARect">
-        <short/>
+        <short>
+          Rectangle with the bounds where the list item is drawn.
+        </short>
       </element>
       <element name="TLVDrawItemEvent.AState">
-        <short/>
+        <short>
+          Drawing state (like selected, focused, disabled) for the owner-drawn list item.
+        </short>
       </element>
 
       <element name="TLVAdvancedCustomDrawEvent">
         <short>
-          <var>TLVAdvancedCustomDrawEvent</var> - generic event handling method for List View custom drawing.
+          Specifies an event handler signalled to perform advanced custom drawing for an owner-drawn list view control.
         </short>
+        <descr>
+          <p>
+            <var>TLVAdvancedCustomDrawEvent</var> is the type used to implement the <var>OnAdvancedCustomDraw</var> event handler in <var>TCustomListView</var>. See <var>TLVDrawItemEvent</var> and <var>TLVAdvancedCustomDrawItemEvent</var> for event types signalled to draw items on a list view control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.CustomDraw"/>
+          <link id="TLVCustomDrawEvent"/>
+          <link id="TLVCustomDrawItemEvent"/>
+          <link id="TLVAdvancedCustomDrawItemEvent"/>
+          <link id="TCustomDrawStage"/>
+        </seealso>
       </element>
       <element name="TLVAdvancedCustomDrawEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawEvent.ARect">
-        <short/>
+        <short>
+          Rectangle with the bounds for the list view control.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawEvent.Stage">
-        <short/>
+        <short>
+          Drawing stage for the list view control. Generally not cdPrePaint.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVAdvancedCustomDrawItemEvent">
         <short>
           Specifies an event handler signalled to perform advanced custom drawing for a list view item with stage and state information.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVAdvancedCustomDrawItemEvent</var> is the type used to implement the <var>OnAdvancedCustomDrawItem</var> event handler in <var>TCustomListView</var>. See <var>TLVCustomDrawItemEvent</var> for the event type signalled to draw a list item in its pre-paint stage.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TLVCustomDrawItemEvent"/>
+        </seealso>
       </element>
       <element name="TLVAdvancedCustomDrawItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawItemEvent.Item">
-        <short/>
+        <short>
+          List item for the event notification.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawItemEvent.State">
-        <short/>
+        <short>
+          Custom drawing state for the list item (like Selected, Focused, Disabled).
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawItemEvent.Stage">
-        <short/>
+        <short>
+          Drawing stage for the list item. The advanced handler is interested in stages other than cdPrePaint.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawItemEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVAdvancedCustomDrawSubItemEvent">
         <short>
-          <var>TLVAdvancedCustomDrawSubItemEvent</var> - generic event handling method for List View custom subitem drawing.
+          Specifies an event handler signalled to perform advancing drawing for a list view sub-item with stage and state information.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TLVAdvancedCustomDrawSubItemEvent</var> is the type used to implement the OnAdvancedCustomDrawSubItem event handler in TCustomListView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+        </seealso>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be cast to the TCustomListView type to access properties or methods specific to the list view control.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.Item">
-        <short/>
+        <short>
+          List item for the event notification.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.SubItem">
-        <short/>
+        <short>
+          Ordinal position for the value in SubItem drawn in the handler.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.State">
-        <short/>
+        <short>
+          Drawing state for the custom-drawn sub-item.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.Stage">
-        <short/>
+        <short>
+          Drawing stage for the sub-item. The advanced handler is used for  stages other than cdPrePaint.
+        </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.DefaultDraw">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control.
+        </short>
       </element>
 
       <element name="TLVCreateItemClassEvent">
@@ -8995,7 +9218,9 @@ end;
       </element>
 
       <element name="TSortDirection">
-        <short>Represents the sort directions used for items in a list view control.</short>
+        <short>
+          Represents the sort direction used for items in a list view control.
+        </short>
         <descr/>
         <seealso>
           <link id="TCustomListView.SortDirection"/>
@@ -9013,7 +9238,9 @@ end;
       </element>
 
       <element name="TCustomListViewEditor">
-        <short>Provides multi-platform editing capabilities for a list view control.</short>
+        <short>
+          Provides multi-platform editing capabilities for a list view control.
+        </short>
         <descr>
           <p>
             Used to provide multi-platform editing capabilities for <var>TCustomListView</var>. It implements the internal editor control in TCustomListView.
@@ -9027,7 +9254,9 @@ end;
       <element name="TCustomListViewEditor.FItem"/>
 
       <element name="TCustomListViewEditor.ListViewEditorKeyDown">
-        <short>Implements the OnKeyDown event handler for the editor control.</short>
+        <short>
+          Implements the OnKeyDown event handler for the editor control.
+        </short>
         <descr>
           <p>
             Ensures that the VK_ESCAPE and VK_RETURN virtual key codes are handled for the editor. VK_ESCAPE causes the editor to be hidden, and focused is returned to the parent control. VK_RETURN does not hide the editor, but focus is returned to the parent control. In both cases, Key is set to 0 to indicate that the key was handled in the method.
@@ -9064,7 +9293,9 @@ end;
       <element name="TCustomListViewEditor.Create">
         <short>Constructor for the class instance.</short>
         <descr>
-          Create is the overridden constructor for the class instance, and calls the inherited method on entry.
+          <p>
+            Create is the overridden constructor for the class instance, and calls the inherited method on entry.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -9868,17 +10099,36 @@ end;
         <short>
           Implements the event handler signalled when the handle for an image list resolution is freed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ImageResolutionHandleDestroyed</var> is assigned (in the constructor) as the <var>OnDestroyResolutionHandle</var> event handler in the change links for image lists used in the list view control.
+          </p>
+          <p>
+            It ensures that the handle for the control is valid before the image lists are set to <b>Nil</b> in the widgetset class instance, and the application is notified of the change. No actions are performed in the method when the handle has not been allocated for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.SmallImages"/>
+          <link id="TCustomListView.LargeImages"/>
+          <link id="TCustomListView.StateImages"/>
+          <link id="TListViewImageList"/>
+          <link id="#lcl.imglist.TChangeLink.OnDestroyResolutionHandle">TChangeLink.OnDestroyResolutionHandle</link>
+        </seealso>
       </element>
       <element name="TCustomListView.ImageResolutionHandleDestroyed.Sender">
-        <short/>
+        <short>
+          Object for the event notification. It must be case to TCustomImageList to access properties and methods specific to the class instance.
+        </short>
       </element>
       <element name="TCustomListView.ImageResolutionHandleDestroyed.AWidth">
-        <short/>
+        <short>
+          Width for the image resolution being freed.
+        </short>
       </element>
       <element name="TCustomListView.ImageResolutionHandleDestroyed.AReferenceHandle">
-        <short/>
+        <short>
+          Reference to the handle for the image resolution being freed.
+        </short>
       </element>
 
       <element name="TCustomListView.SetImageListAsync">
@@ -10430,23 +10680,38 @@ end;
 
       <element name="TCustomListView.IsCustomDrawn">
         <short>
-          Returns <b>True</b> if a target has been custom drawn.
+          Returns <b>True</b> if a target is custom-drawn in the control.
         </short>
         <descr>
           <p>
             Indicates whether the control, items, or sub-items are custom-drawn using the event handlers available in the control.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
+          <link id="TCustomDrawTarget"/>
+          <link id="TCustomDrawStage"/>
+        </seealso>
       </element>
       <element name="TCustomListView.IsCustomDrawn.Result">
-        <short/>
+        <short>
+          <b>True</b> when Target is a custom-drawn using event handlers in the control.
+        </short>
       </element>
       <element name="TCustomListView.IsCustomDrawn.ATarget">
-        <short/>
+        <short>
+          Identifies which event handlers are checked for custom drawing routines.
+        </short>
       </element>
       <element name="TCustomListView.IsCustomDrawn.AStage">
-        <short/>
+        <short>
+          Identifies the drawing stage and the corresponding event handlers examined in the method. Advanced event handlers are checked when set to a value other than cdPrePaint.
+        </short>
       </element>
 
       <element name="TCustomListView.CustomDraw">
@@ -10477,7 +10742,7 @@ end;
       </element>
       <element name="TCustomListView.CustomDraw.Result">
         <short>
-          <b>True</b> if the control was drawn using the assigned event handlers.
+          <b>True</b> if default drawing should be performed in the list view control. <b>False</b> is default drawing was handled in an event handler and can be skipped by the control.
         </short>
       </element>
       <element name="TCustomListView.CustomDraw.ARect">
@@ -10503,48 +10768,81 @@ end;
         <seealso/>
       </element>
       <element name="TCustomListView.CustomDrawItem.Result">
-        <short/>
+        <short>
+          <b>True</b> if default drawing should be performed in the list view control. <b>False</b> if default drawing was performed in the event handler and can be skipped by the control.
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawItem.AItem">
-        <short/>
+        <short>
+          List item drawn using the event handlers for the control.
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawItem.AState">
-        <short/>
+        <short>
+          Drawing state for the list item (Selected, Focused, Disabled, et. al.).
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawItem.AStage">
-        <short/>
+        <short>
+          Drawing stage for the list item. A value other than cdPrePaint causes the advanced event handler to be used.
+        </short>
       </element>
 
       <element name="TCustomListView.CustomDrawSubItem">
         <short>
-          Custom draws the specified subitem and returns <b>True</b> on success.
+          Performs custom drawing for the specified sub-item using the event handlers for the control.
         </short>
         <descr>
           <p>
-            <var>CustomDrawSubItem</var> draws a sub-item on the list view control using the OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem event handlers (when assigned).
+            <var>CustomDrawSubItem</var> is a Boolean function used to
+            custom draw a sub-item on the list view control. The OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem event handlers are signalled (when assigned) to perform the drawing operations needed for the item, sub-item, stage, and state arguments.
+          </p>
+          <p>
+            OnCustomDrawSubItem is signalled when Stage contains cdPrePaint. OnAdvancedCustomDrawSubItem is signalled for any of the values in the TCustomDrawStage enumeration.
+          </p>
+          <p>
+            CustomDrawSubItem is called from the IntfCustomDraw method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.IsCustomDrawn"/>
+          <link id="TCustomListView.OnCustomDrawnSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawnSubItem"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TListItem.SubItems"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawState"/>
+        </seealso>
       </element>
       <element name="TCustomListView.CustomDrawSubItem.Result">
-        <short/>
+        <short>
+          <b>True</b> if default drawing for the sub-item needs to be performed in the list view control.
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawSubItem.AItem">
-        <short/>
+        <short>
+          List view item with the sub-item drawn in the method.
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawSubItem.ASubItem">
-        <short/>
+        <short>
+          Ordinal position for the sub-item drawn in the method.
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawSubItem.AState">
-        <short/>
+        <short>
+          Drawing state for the sub-item (selected, focused, disabled, et. al.).
+        </short>
       </element>
       <element name="TCustomListView.CustomDrawSubItem.AStage">
-        <short/>
+        <short>
+          Drawing stage for the sub-item. cdPrePaint allows the OnCustomDrawSubItem event handler to be signalled.
+        </short>
       </element>
 
       <element name="TCustomListView.IntfCustomDraw">
         <short>
-          <var>IntfCustomDraw</var> - uses the interface to perform custom drawing and returns a result of drawing.
+          <var>IntfCustomDraw</var> - uses the interface to perform custom drawing
         </short>
         <descr/>
         <seealso/>
@@ -10623,17 +10921,35 @@ end;
         <short>
           Signals the OnDataHint event handler (when assigned).
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            The AStartIndex and AEndIndex parameters are passed as arguments to the OnDataHint event handler.
+          </p>
+          <p>
+            The return value is <b>True</b> if the OnDataHint event handler has been assigned for the control.
+          </p>
+          <remark>
+            DoOwnerDataHint is not used in the current LCL implementation.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnDataHint"/>
+        </seealso>
       </element>
       <element name="TCustomListView.DoOwnerDataHint.Result">
-        <short/>
+        <short>
+          True if the OnDataHint event handler is assigned.
+        </short>
       </element>
       <element name="TCustomListView.DoOwnerDataHint.AStartIndex">
-        <short/>
+        <short>
+          First index position needed from the OwnerData for the control.
+        </short>
       </element>
       <element name="TCustomListView.DoOwnerDataHint.AEndIndex">
-        <short/>
+        <short>
+          First index position needed from the OwnerData for the control.
+        </short>
       </element>
 
       <element name="TCustomListView.DoOwnerDataStateChange">
@@ -10753,7 +11069,9 @@ end;
       </element>
 
       <element name="TCustomListView.DblClick">
-        <short>Performs actions needed when the control is double clicked.</short>
+        <short>
+          Performs actions needed when the control is double clicked.
+        </short>
         <descr>
           <p>
             Calls the inherited DblClick method. Ensures that ShowEditorQueued is set to <b>True</b> when the control has an assigned editor and is not marked as read-only.
@@ -23000,64 +23318,113 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.CustomDraw">
         <short>
-          <var>CustomDraw</var> - returns <b>True</b> if Custom Drawing is proceeding in the specified Rectangle.
+          Performs custom drawing using the assigned event handlers for the tree view control.
         </short>
         <descr>
           <p>
-            <var>CustomDraw</var> - returns <b>True</b> if Custom Drawing is proceeding in the specified Rectangle.
+            <var>CustomDraw</var> is a method used to perform custom drawing for the tree view using the event handlers assigned in the control. The OnCustomDraw or OnAdvancedCustomDraw event handlers are signalled depending on the drawing stage in Stage. OnCustomDraw is signalled only when Stage is set to cdPrePaint.
           </p>
           <p>
-            Stage indicates whether PrePaint, PostPaint, PreErase or PostErase.
+            The return value is True if default drawing should be performed in the tree view control, and was not performed by event handlers in the control.
+          </p>
+          <p>
+            CustomDraw is called from the DoPaint method and occurs after values in the States property have been updated.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.graphics.Progress">Progress</link>
+          <link id="TCustomTreeView.IsCustomDrawn"/>
+          <link id="TCustomTreeView.OnCustomDraw"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDraw"/>
+          <link id="TCustomTreeView.DoPaint"/>
+          <link id="TCustomTreeView.States"/>
+          <link id="TCustomDrawStage"/>
         </seealso>
       </element>
       <element name="TCustomTreeView.CustomDraw.Result">
-        <short/>
+        <short>
+          <b>True</b> if default drawing must be performed by the tree view control. <b>False</b> if default drawing was performed in one of the event handlers.
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDraw.ARect">
-        <short/>
+        <short>
+          Bounds rectangle for the tree view control.
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDraw.Stage">
-        <short/>
+        <short>
+          Drawing stage for the tree view control. cdPrePaint allows the OnCustomDraw event handler to be signalled.
+        </short>
       </element>
 
       <element name="TCustomTreeView.CustomDrawItem">
         <short>
-          <var>CustomDrawItem</var> - returns <b>True</b> if Custom Image drawing is proceeding at the specified TreeNode.
+          Performs custom drawing for a tree node using the event handlers in the control.
         </short>
         <descr>
           <p>
-            <var>CustomDrawItem</var> - returns <b>True</b> if Custom Image drawing is proceeding at the specified TreeNode.
+            <var>CustomDrawItem</var> is a <var>Boolean</var> function used to perform custom drawing for the specified tree node using the event handlers for the control.
+          </p>
+          <p>
+            The OnCustomDrawItem and OnAdvancedCustomDrawItem event handlers are signalled to perform the custom drawing actions needed for the tree node. OnCustomDrawItem is signalled (when assigned) only when Stage contains the value cdPrePaint. OnCustomDrawItem is signalled (when assigned) for any of the values in the TCustomDrawStage enumeration.
           </p>
           <p>
             State denotes one of <var>Selected, Grayed, Disabled, Checked, Focused, Default, Hot, Marked or Indeterminate</var>.
           </p>
-          <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase.</p>
-          <p>If <var>PaintImages</var> is <b>True</b>, Images should be painted as well as text.</p>
+          <p>
+            If <var>PaintImages</var> is <b>True</b>, images should be painted as well as text in the event handler routine.
+          </p>
+          <p>
+            The return value indicates whether default drawing for the tree node needs to be performed in the tree view control. <b>True</b> indicates that the control is responsible for default drawing, and the event handlers did not perform the action. <b>False</b> indicates that a handler routine performed default drawing, and it can be skipped in the tree view control.
+          </p>
+          <p>
+            CustomDrawItem is called from the DoPaintNode method. It occurs after StateImages, drawing state, and the display rectangle for the tree node has been determined.
+          </p>
+          <p>
+            See <var>CustomDraw</var> for the actions performed when drawing the entire tree view control.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.OnCustomDrawItem"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TCustomTreeView.CustomDraw"/>
+          <link id="TCustomTreeView.OnCustomDraw"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDraw"/>
+          <link id="TTreeNode"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawState"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.CustomDrawItem.Result">
-        <short/>
+        <short>
+          <b>True</b> if default drawing needs to be performed in the tree view control.
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDrawItem.Node">
-        <short/>
+        <short>
+          Tree node drawn in the method.
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDrawItem.State">
-        <short/>
+        <short>
+          State for the tree node (selected, focused, disabled, et. al.).
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDrawItem.Stage">
-        <short/>
+        <short>
+          Drawing stage for the tree view item. cdPrePaint allows the OnCustomDrawItem event handler to be signalled.
+        </short>
       </element>
       <element name="TCustomTreeView.CustomDrawItem.PaintImages">
-        <short/>
+        <short>
+          <b>True</b> if images should be drawn in the OnAdvancedCustomDrawItem event handler.
+        </short>
       </element>
 
       <element name="TCustomTreeView.DefaultItemHeightIsStored">
-        <short>Implements the storage specifier for the DefaultItemHeight property.</short>
+        <short>
+          Implements the storage specifier for the DefaultItemHeight property.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -23087,7 +23454,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.ExpandSignSizeIsStored">
-        <short>Implements the storage specifier for the ExpandSignSize property.</short>
+        <short>
+          Implements the storage specifier for the ExpandSignSize property.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -23098,7 +23467,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.GetBuiltinIconSize">
-        <short>Gets the default size for icons when Images has not been assigned.</short>
+        <short>
+          Gets the default size for icons when Images has not been assigned.
+        </short>
         <descr>
           <p>
             The <var>TSize</var> instance contains 0 (zero) in both the Width and Height members.
@@ -23228,11 +23599,15 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeDrawAreaHeight.Result">
-        <short>Calculated usable client height after borders are removed.</short>
+        <short>
+          Calculated usable client height after borders are removed.
+        </short>
       </element>
 
       <element name="TCustomTreeView.GetNodeDrawAreaWidth">
-        <short>Gets the width for the usable drawing area in the control.</short>
+        <short>
+          Gets the width for the usable drawing area in the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -23241,7 +23616,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.IndentIsStored">
-        <short>Implements the storage specifier for the Indent property.</short>
+        <short>
+          Implements the storage specifier for the Indent property.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -23253,7 +23630,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.IsCustomDrawn">
         <short>
-          <var>IsCustomDrawn</var> - returns <b>True</b> if the specified target is custom drawn.
+          Returns <b>True</b> if the specified target is custom-drawn.
         </short>
         <descr/>
         <seealso>
@@ -23317,7 +23694,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.MoveSelection">
-        <short>Makes the specified node selected in the tree view control.</short>
+        <short>
+          Makes the specified node become selected in the tree view control.
+        </short>
         <descr>
           <p>
             <var>MoveSelection</var> is a method used to make the tree node in <var>ANewNode</var> a selected node in the tree view control. The actions performed depend on the multi-selection setting for the control. When <var>tvoAllowMultiSelect</var> has been included in the <var>Options</var> property, the node is included in <var>Selections</var> when <var>ASelect</var> is <b>True</b>.
@@ -23365,7 +23744,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.Collapse">
-        <short>Performs actions needed when the specified tree node is collapsed.</short>
+        <short>
+          Performs actions needed when the specified tree node is collapsed.
+        </short>
         <descr>
           <p>
             <var>Collapse</var> is a method used to perform actions needed when the tree node in <var>Node</var> is collapsed. Collapse updates the visibility and position for the scroll bars in the control. The <var>OnCollapsed</var> event handler is signalled (when assigned) for the tree node in Node.
@@ -23391,7 +23772,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.CreateWnd">
-        <short>Performs actions needed when the handle for the control is (re-)created.</short>
+        <short>
+          Performs actions needed when the handle for the control is created.
+        </short>
         <descr>
           <p>
             <var>CreateWnd</var> is an overridden method in <var>TCustomTreeView</var> used to perform actions needed when the handle for the control is created or re-created. CreateWnd ensures that the <var>States</var> property is updated to remove the value <var>tvsStateChanging</var>. The internal flags for scroll bar visibility are reset, and the inherited method is called.
@@ -23435,7 +23818,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.TripleClick">
-        <short>Performs actions needed when the Left mouse is triple clicked on the tree view control.</short>
+        <short>
+          Performs actions needed when the Left mouse is triple clicked on the tree view control.
+        </short>
         <descr>
           <p>
             <var>TripleClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when the mouse event occurs on a node with an expand / collapse indicator. TripleClick is called when the mouse up event is handled for the corresponding mouse down event.
@@ -27382,15 +27767,18 @@ OldExpanded.Free;
       </element>
 
       <element name="TCN_SELCHANGE">
-        <short>Represents the selection changed notification message for tab controls.</short>
+        <short>
+          Represents the selection changed notification message for tab controls.
+        </short>
         <seealso>
           <link id="TCustomTabControl.CNNotify"/>
         </seealso>
       </element>
 
       <element name="TCN_SELCHANGING">
-        <short>Represents the selection changing notification message for tab controls.</short>
-        <short/>
+        <short>
+          Represents the selection changing notification message for tab controls.
+        </short>
         <seealso>
           <link id="TCustomTabControl.CNNotify"/>
         </seealso>
