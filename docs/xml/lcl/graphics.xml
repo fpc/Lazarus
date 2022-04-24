@@ -2457,21 +2457,36 @@
         </descr>
         <seealso/>
       </element>
+
       <element name="TFont.Height">
         <short>Height for the font (in pixels).</short>
         <descr>
           <p>
-            <var>Height</var> is an
-            <var>Integer</var> property which contains the height for the font in pixels. The property value is not stored during LCL streaming operations when its value is the same as the value in
-            <var>DefFontData</var>.
+            <var>Height</var> is an <var>Integer</var> property which contains the height for the font in pixels. The property value is not stored during LCL streaming operations when its value is the same as the value in <var>DefFontData</var>.
           </p>
-          <p>Setting a new value for the property causes the font handle in <var>Reference</var> to be re-created. <var>Size</var> is also updated with the new property value converted to Points (1/72 of an inch). <var>Changed</var> is called to signal the <var>OnChange</var> event handler (when assigned).
+          <p>
+            Setting a new value for the property causes the font handle in <var>Reference</var> to be re-created. <var>Size</var> is also updated with the new property value converted to Points (1/72 of an inch). The formula for the conversion is:
           </p>
-          <p>Use Size to read or write the height for the font as a number of Points (1/72 inch).
+<code>
+Size := -MulDiv(AValue, 72, FPixelsPerInch);
+</code>
+          <p>
+            <var>Changed</var> is called to signal the <var>OnChange</var> event handler (when assigned).
+          </p>
+          <p>
+            When a value is assigned to Height, the value in Size is represented as a negative number. Conversely, when a value is assigned to Size, the value in Height is represented as a negative number.
+          </p>
+          <p>
+            Use Size to read or write the height for the font as a number of Points (1/72 inch).
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFont.Size"/>
+          <link id="TFont.Reference"/>
+          <link id="TFont.PixelsPerInch"/>
+        </seealso>
       </element>
+
       <element name="TFont.Name">
         <short>Name of the font.</short>
         <descr>
@@ -2552,18 +2567,33 @@
           <link id="TFontData"/>
         </seealso>
       </element>
+
       <element name="TFont.Size">
         <short>Vertical size for the font in Points.</short>
         <descr>
           <p>
-            <var>Size</var> is an
-            <var>Integer</var> property which contains the height for the font in Points (1/72 of an inch). The value in Size is calculated using the logical font height, and is not read or written in LCL component streaming.
+            <var>Size</var> is an <var>Integer</var> property which contains the height for the font in Points (1/72 of an inch). The value in Size is calculated using the logical font height, and is not read or written in LCL component streaming.
           </p>
-          <p>Setting a new value for the property causes the font Reference to be re-created for the class instance. The new value is stored by calling <var>SetSize</var> in the ancestor class. The new value is also converted to pixels (using <var>PixelsPerInch</var>) and stored in the <var>Height</var> property.
+          <p>
+            Setting a new value for the property causes the font Reference to be re-created for the class instance. The new property value is stored by calling <var>SetSize</var> in the ancestor class. The value is also converted to pixels (using <var>PixelsPerInch</var>) and stored in the <var>Height</var> property. The formula used for the conversion is:
+          </p>
+<code>
+FHeight := -MulDiv(AValue, FPixelsPerInch, 72);
+</code>
+          <p>
+            When a value is assigned to Size, the value in Height is represented as a negative number. Conversely, when a value is assigned to Height, the value in Size is represented as a negative number.
+          </p>
+          <p>
+            Use the Height property to set the vertical size for the font as a number of pixels.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFont.Height"/>
+          <link id="TFont.PixelsPerInch"/>
+          <link id="TFont.Reference"/>
+        </seealso>
       </element>
+
       <element name="TFont.Style">
         <short>Styles applied to the font face.</short>
         <descr>
