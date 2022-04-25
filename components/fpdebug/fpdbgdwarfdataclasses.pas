@@ -504,9 +504,9 @@ type
   protected
     procedure Init; virtual;
   public
-    constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry);
+    constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry); overload;
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry;
-                       AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation);
+                       AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation); overload;
     destructor Destroy; override;
 
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
@@ -515,6 +515,26 @@ type
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
   end;
   TDbgDwarfSymbolBaseClass = class of TDbgDwarfSymbolBase;
+
+  { TFpSymbolDwarfDataLineInfo }
+  // Not strictly a Symbol...
+
+  TFpSymbolDwarfDataLineInfo = class(TDbgDwarfSymbolBase)
+  private
+    FLine, FNextLine: Cardinal;
+    FLineStartAddress, FLineEndAddress: TDBGPtr;
+    FFile: String;
+    FFound: Boolean;
+  protected
+    function GetFlags: TDbgSymbolFlags; override;
+    //function GetColumn: Cardinal; override;
+    function GetFile: String; override;
+    function GetLine: Cardinal; override;
+    function GetLineStartAddress: TDBGPtr; override;
+    function GetLineEndAddress: TDBGPtr; override;
+  public
+    constructor Create(AnAddress: TDbgPtr; AStateMachine: TDwarfLineInfoStateMachine; ACU: TDwarfCompilationUnit);
+  end;
 
   { TFpSymbolDwarfClassMap
     Provides Symbol and VAlue evaluation classes depending on the compiler
@@ -652,6 +672,7 @@ type
       StateMachines: TFPObjectList; // list of state machines to be freed
     end;
     {$IFDEF DwarfTestAccess} private {$ENDIF}
+    FInitialStateMachine: TDwarfLineInfoStateMachine;
 
     FLineNumberMap: TStringListUTF8Fast;
 
@@ -717,6 +738,7 @@ type
     // Get start/end addresses of proc
     function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
+    function HasAddress(AAddress: TDbgPtr; ABuildAddrMap: Boolean = False): Boolean; inline;
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
     property UnitName: String read GetUnitName;
@@ -770,7 +792,8 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
-    function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
+    function FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
+    function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; override;
 
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
@@ -3721,19 +3744,13 @@ var
   CU: TDwarfCompilationUnit;
   Iter: TLockedMapIterator;
   Info: PDwarfAddressInfo;
-  MinMaxSet: boolean;
 begin
   Result := nil;
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    CU.WaitForScopeScan;
-    if not CU.Valid then Continue;
-    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
-    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
-    then Continue;
-
-    CU.BuildAddressMap;
+    if not CU.HasAddress(AAddress, True) then
+      Continue;
 
     Iter := TLockedMapIterator.Create(CU.FAddressMap);
     try
@@ -3766,19 +3783,82 @@ function TFpDwarfInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
-  MinMaxSet: boolean;
 begin
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    CU.WaitForScopeScan;
-    if not CU.Valid then Continue;
-    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
-    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
-    then Continue;
+    if not CU.HasAddress(AAddress, True) then
+      Continue;
 
     Result := CU.GetProcStartEnd(AAddress, AStartPC, AEndPC);
     if Result then exit;
+  end;
+end;
+
+function TFpDwarfInfo.FindLineInfo(AAddress: TDbgPtr): TFpSymbol;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  Iter: TLockedMapIterator;
+  Info: PDwarfAddressInfo;
+  SM: TDwarfLineInfoStateMachine;
+begin
+  Result := nil;
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    if not CU.HasAddress(AAddress, True) then
+      Continue;
+
+    Iter := TLockedMapIterator.Create(CU.FAddressMap);
+    try
+      if not Iter.Locate(AAddress)
+      then begin
+        if not Iter.BOM
+        then Iter.Previous;
+      end;
+
+      SM := nil;
+      if not Iter.BOM then begin
+        // iter is at the closest defined address before AAddress
+        Info := Iter.DataPtr;
+
+        if AAddress <= Info^.EndPC then begin
+          // TDbgDwarfProcSymbol
+          Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress, Self);
+          if Result<>nil then
+            break;
+        end;
+
+        CU.BuildLineInfo(Info, False);
+        SM := Info^.StateMachine;
+      end
+      else
+      if (CU.FMinPC <> CU.FMaxPC) and (CU.FMinPC<>0) and (CU.FMaxPC <> 0) and
+         (AAddress >= CU.FMinPC) and (AAddress < CU.FMaxPC) and
+         (CU.FInitialStateMachine <> nil)
+      then begin
+        Iter.First;
+        if not Iter.BOM then begin
+          Info := Iter.DataPtr;
+          if (AAddress >= Info^.StartPC) then
+            continue;
+        end;
+        if (AAddress >= CU.FInitialStateMachine.Address)
+        then
+          SM := CU.FInitialStateMachine;
+      end;
+
+      if SM <> nil then begin
+        SM := SM.Clone;
+        Result := TFpSymbolDwarfDataLineInfo.Create(AAddress, SM, CU);
+        if not (sfHasLine in Result.Flags) then
+          ReleaseRefAndNil(Result);
+        Break;
+      end;
+    finally
+      Iter.Free;
+    end;
   end;
 end;
 
@@ -3995,6 +4075,84 @@ function TDbgDwarfSymbolBase.CreateSymbolScope(
   ): TFpDbgSymbolScope;
 begin
   Result := nil;
+end;
+
+{ TFpSymbolDwarfDataLineInfo }
+
+function TFpSymbolDwarfDataLineInfo.GetFlags: TDbgSymbolFlags;
+begin
+  Result := [];
+  if FFound then
+    Result := Result + [sfHasLine, sfHasLineAddrRng];
+end;
+
+function TFpSymbolDwarfDataLineInfo.GetFile: String;
+begin
+  Result := FFile;
+end;
+
+function TFpSymbolDwarfDataLineInfo.GetLine: Cardinal;
+begin
+  Result := FLine;
+  if Result = 0 then
+    Result := FNextLine;
+end;
+
+function TFpSymbolDwarfDataLineInfo.GetLineStartAddress: TDBGPtr;
+begin
+  Result := FLineStartAddress;
+end;
+
+function TFpSymbolDwarfDataLineInfo.GetLineEndAddress: TDBGPtr;
+begin
+  Result := FLineEndAddress;
+end;
+
+constructor TFpSymbolDwarfDataLineInfo.Create(AnAddress: TDbgPtr;
+  AStateMachine: TDwarfLineInfoStateMachine; ACU: TDwarfCompilationUnit);
+var
+  SM2: TDwarfLineInfoStateMachine;
+  SM2val: Boolean;
+begin
+  inherited Create('', skNone, TargetLoc(AnAddress));
+  FCU := ACU;
+  //Init;
+
+
+  if AStateMachine = nil then
+    exit;
+
+  if AnAddress < AStateMachine.Address
+  then begin
+    AStateMachine.Free;
+    Exit;    // The address we want to find is before the start pos ??
+  end;
+
+  SM2 := AStateMachine.Clone;
+
+  repeat
+    SM2val := SM2.NextLine;
+    if (not AStateMachine.EndSequence) and
+       ( (AnAddress = AStateMachine.Address) or
+         ( (AnAddress > AStateMachine.Address) and
+           SM2val and (AnAddress < SM2.Address)
+         )
+       )
+    then begin
+      // found
+      FFound := True;
+      FFile := AStateMachine.FileName;
+      FLine := AStateMachine.Line;
+      FNextLine := SM2.Line;
+      FLineStartAddress := AStateMachine.Address;
+      FLineEndAddress := SM2.Address;
+
+      break;
+    end;
+  until not AStateMachine.NextLine;
+
+  AStateMachine.Free;
+  SM2.Free;
 end;
 
 { TDwarfLineInfoStateMachine }
@@ -4691,6 +4849,10 @@ begin
       end;
     end;
   end;
+  if FLineInfo.StateMachine <> nil then
+    FInitialStateMachine := FLineInfo.StateMachine.Clone;
+    if FInitialStateMachine <> nil then
+      FInitialStateMachine.NextLine;
 
   if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
   then ReadAddressValue(Attrib, Form, FMinPC);
@@ -4724,6 +4886,7 @@ begin
   FreeAndNil(FAbbrevList);
   FreeAndNil(FAddressMap);
   FreeLineNumberMap;
+  FreeAndNil(FInitialStateMachine);
   FreeAndNil(FLineInfo.StateMachines);
   FreeAndNil(FLineInfo.StateMachine);
   FreeAndNil(FLineInfo.Directories);
@@ -4996,6 +5159,28 @@ begin
   finally
     Iter.Free;
   end;
+end;
+
+function TDwarfCompilationUnit.HasAddress(AAddress: TDbgPtr;
+  ABuildAddrMap: Boolean): Boolean;
+begin
+  Result := Valid and
+            ( (FMinPC = FMaxPC) or
+              ((AAddress >= FMinPC) and (AAddress <= FMaxPC))
+            );
+
+  if not Result then
+    exit;
+
+  if not ABuildAddrMap then
+    exit;
+
+  WaitForScopeScan;
+  Result := Valid;
+  if not Result then
+    exit;
+
+  BuildAddressMap;
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;

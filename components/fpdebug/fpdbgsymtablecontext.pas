@@ -20,8 +20,18 @@ type
   { TFpSymbolTableProc }
 
   TFpSymbolTableProc = class(TFpSymbol)
+  private
+    FLineSym: TFpSymbol;
+  protected
+    function GetFlags: TDbgSymbolFlags; override;
+    function GetLine: Cardinal; override;
+    function GetLineStartAddress: TDBGPtr; override;
+    function GetLineEndAddress: TDBGPtr; override;
+    function GetFile: String; override;
   public
     constructor Create(const AName: String; AnAddr: TDbgPtr);
+    destructor Destroy; override;
+    procedure SetLineSym(ASym: TFpSymbol);
   end;
 
   TFpSymbolInfo = class;
@@ -58,12 +68,60 @@ implementation
 
 { TFpSymbolTableProc }
 
+function TFpSymbolTableProc.GetFlags: TDbgSymbolFlags;
+begin
+  Result := inherited GetFlags;
+  if FLineSym <> nil then
+    Result := Result + FLineSym.Flags * [sfHasLine, sfHasLineAddrRng];
+end;
+
+function TFpSymbolTableProc.GetLine: Cardinal;
+begin
+  Result := inherited GetLine;
+  if FLineSym <> nil then
+    Result := FLineSym.Line;
+end;
+
+function TFpSymbolTableProc.GetLineStartAddress: TDBGPtr;
+begin
+  Result := inherited GetLineStartAddress;
+  if FLineSym <> nil then
+    Result := FLineSym.LineStartAddress;
+end;
+
+function TFpSymbolTableProc.GetLineEndAddress: TDBGPtr;
+begin
+  Result := inherited GetLineEndAddress;
+  if FLineSym <> nil then
+    Result := FLineSym.LineEndAddress;
+end;
+
+function TFpSymbolTableProc.GetFile: String;
+begin
+  Result := inherited GetFile;
+  if FLineSym <> nil then
+    Result := FLineSym.FileName;
+end;
+
 constructor TFpSymbolTableProc.Create(const AName: String; AnAddr: TDbgPtr);
 begin
   inherited Create(AName);
   SetAddress(TargetLoc(AnAddr));
   SetKind(skProcedure);
   SetSymbolType(stType);
+end;
+
+destructor TFpSymbolTableProc.Destroy;
+begin
+  inherited Destroy;
+  FLineSym.ReleaseReference;
+end;
+
+procedure TFpSymbolTableProc.SetLineSym(ASym: TFpSymbol);
+begin
+  FLineSym := ASym;
+  if FLineSym <> nil then
+    FLineSym.AddReference;
 end;
 
 { TFpSymbolContext }

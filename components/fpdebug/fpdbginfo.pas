@@ -72,7 +72,9 @@ type
     sfOut,
     sfpropGet,
     sfPropSet,
-    sfPropStored
+    sfPropStored,
+    sfHasLine,
+    sfHasLineAddrRng
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 
@@ -362,6 +364,8 @@ type
     function GetFile: String; virtual;
     function GetFlags: TDbgSymbolFlags; virtual;
     function GetLine: Cardinal; virtual;
+    function GetLineEndAddress: TDBGPtr; virtual;
+    function GetLineStartAddress: TDBGPtr; virtual;
     function GetParent: TFpSymbol; virtual;
 
     function GetValueObject: TFpValue; virtual;
@@ -408,6 +412,8 @@ type
     // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
+    property LineStartAddress: TDBGPtr read GetLineStartAddress;
+    property LineEndAddress: TDBGPtr read GetLineEndAddress;
     property Column: Cardinal read GetColumn;
     // Methods for structures (record / class / enum)
     //         array: each member represents an index (enum or subrange) and has low/high bounds
@@ -599,6 +605,7 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
+    function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; virtual;
 
     function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; virtual;
 
@@ -1376,6 +1383,16 @@ begin
   Result := FSymbolType;
 end;
 
+function TFpSymbol.GetLineEndAddress: TDBGPtr;
+begin
+  Result := 0;
+end;
+
+function TFpSymbol.GetLineStartAddress: TDBGPtr;
+begin
+  Result := 0;
+end;
+
 function TFpSymbol.GetHasOrdinalValue: Boolean;
 begin
   Result := False;
@@ -1748,6 +1765,11 @@ begin
 end;
 
 function TDbgInfo.FindProcSymbol(const AName: String): TFpSymbol;
+begin
+  Result := nil;
+end;
+
+function TDbgInfo.FindLineInfo(AAddress: TDbgPtr): TFpSymbol;
 begin
   Result := nil;
 end;

@@ -943,8 +943,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
     FDwarf: TFpDwarfInfo;
-    function GetLineEndAddress: TDBGPtr;
-    function GetLineStartAddress: TDBGPtr;
+    function GetLineEndAddress: TDBGPtr; override;
+    function GetLineStartAddress: TDBGPtr; override;
     function GetLineUnfixed: TDBGPtr;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
@@ -975,8 +975,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; virtual; // so it can be overriden by the fpc classes
 
     // Contineous (sub-)part of the line
-    property LineStartAddress: TDBGPtr read GetLineStartAddress;
-    property LineEndAddress: TDBGPtr read GetLineEndAddress;
     property LineUnfixed: TDBGPtr read GetLineUnfixed; // with 0 lines
   end;
 
@@ -5982,6 +5980,8 @@ var
   flg: TDbgSymbolFlags;
 begin
   Result := inherited GetFlags;
+  if StateMachineValid then
+    Result := Result + [sfHasLine, sfHasLineAddrRng];
   if ReadVirtuality(flg) then
     Result := Result + flg;
 end;

@@ -1727,13 +1727,23 @@ begin
 end;
 
 function TDbgInstance.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
+var
+  LI: TFpSymbol;
 begin
   {$PUSH}{$R-}{$Q-}
   AAdress := AAdress;
   {$POP}
-  Result := FDbgInfo.FindProcSymbol(AAdress);
-  if not assigned(Result) then
-    result := FSymbolTableInfo.FindProcSymbol(AAdress);
+  Result := nil;
+  LI := FDbgInfo.FindLineInfo(AAdress);
+  if (LI <> nil) and (LI.Kind in [skFunction, skProcedure]) then begin
+    Result := LI;
+  end
+  else begin
+    Result := FSymbolTableInfo.FindProcSymbol(AAdress);
+    if (Result <> nil) and (Result is TFpSymbolTableProc) then
+      TFpSymbolTableProc(Result).SetLineSym(LI);
+    LI.ReleaseReference;
+  end;
 end;
 
 function TDbgInstance.FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC,
@@ -2844,9 +2854,11 @@ begin
     FStoreStepSrcFilename:=sym.FileName;
     FStoreStepFuncAddr:=sym.Address.Address;
     FStoreStepFuncName:=sym.Name;
+    if sfHasLineAddrRng in sym.Flags then begin
+      FStoreStepStartAddr := sym.LineStartAddress;
+      FStoreStepEndAddr := sym.LineEndAddress;
+    end;
     if sym is TFpSymbolDwarfDataProc then begin
-      FStoreStepStartAddr := TFpSymbolDwarfDataProc(sym).LineStartAddress;
-      FStoreStepEndAddr := TFpSymbolDwarfDataProc(sym).LineEndAddress;
       FStoreStepSrcLineNo := TFpSymbolDwarfDataProc(sym).LineUnfixed;
     end
     else
