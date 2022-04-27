@@ -200,6 +200,7 @@ type
     class function GetFirstSelected(const ALV: TCustomListView): TListItem; override;
     class procedure InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean); override;
     class procedure UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); override;
+    class function MustHideEditor(const ALV: TCustomListView; ASelectedIdx: Integer): Boolean; override;
   end;
 
   { TWin32WSListView }

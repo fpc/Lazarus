@@ -331,11 +331,13 @@ begin
           // checkbox
           if Checkboxes then
             DoItemChecked(Item);
-                       
+                
           // end editing
-          if IsEditing then
-            HideEditor;
-
+          if (IsEditing and OwnerData) then
+           if (nm^.iItem = -1) And (FSelectedIdx<>-1) then
+             if TWSCustomListViewClass(WidgetSetClass).MustHideEditor(self, FSelectedIdx) then
+               HideEditor;
+           
           // focus
           if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED) then
           begin

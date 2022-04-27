@@ -60,6 +60,7 @@ var
   ListViewWindProcInfo: record
     ActiveListView: TCustomListView;
     NoMouseUp: Boolean;
+    ClickedIdx: Integer;
   end;
 
 function ListViewParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
@@ -833,6 +834,12 @@ begin
         ListView := TListView(WindowInfo^.WinControl);
         ListItem := ListView.GetItemAt(GET_X_LPARAM(LParam), GET_Y_LPARAM(LParam));
 
+        if (Msg = WM_LBUTTONDOWN) or (Msg = WM_RBUTTONDOWN) then
+          if ListItem = nil then
+            ListViewWindProcInfo.ClickedIdx := -1
+          else
+            ListViewWindProcInfo.ClickedIdx := ListItem.Index;
+        
         if Msg = WM_LBUTTONDOWN
         then AMsg := LM_LBUTTONUP
         else AMsg := LM_RBUTTONUP;
@@ -1506,5 +1513,11 @@ end;
 
 class procedure TWin32WSCustomListView.UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); 
 begin
+end;
+
+class function TWin32WSCustomListView.MustHideEditor(const ALV: TCustomListview; 
+  ASelectedIdx: Integer): Boolean;
+begin
+  result := ASelectedIdx <> ListViewWindProcInfo.ClickedIdx;
 end;
 

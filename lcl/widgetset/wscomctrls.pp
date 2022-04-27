@@ -183,6 +183,8 @@ type
     class function GetFirstSelected(const ALV: TCustomListView): TListItem; virtual;
     class procedure InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean); virtual;
     class procedure UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); virtual;
+    
+    class function MustHideEditor(const ALV: TCustomListView; ASelectedIdx: Integer): Boolean; virtual;
   end;
 
   TWSCustomListViewClass = class of TWSCustomListView;
@@ -900,6 +902,12 @@ begin
       if idx > -1 then FMultiSelList.Delete(idx);
     end;
   end;
+end;
+
+class function TWSCustomListView.MustHideEditor(const ALV: TCustomListView;
+  ASelectedIdx: Integer): Boolean;
+begin
+  Result := false;
 end;
 
 
