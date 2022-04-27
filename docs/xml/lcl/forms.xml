@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          <file>forms.pp</file> contains classes, types, and routines used to implement forms, which are used as the basis a graphical user interface in the Lazarus Component Library (<b>LCL</b>).
+          <file>forms.pp</file> contains classes, types, and routines used to implement forms, which are the basis for the graphical user interface in the Lazarus Component Library (<b>LCL</b>).
         </p>
         <p>
           The following components are added to the Lazarus IDE component palette:
@@ -3126,10 +3126,10 @@
         <short>Handles the CM_BIDIMODECHANGED control message for the form.</short>
         <descr>
           <p>
-            Re-implements the method from the ancestor class. Calls the inherited method on entry using the value in Message to set the BiDi and adjust the size for the control.
+            Re-implements the method from the ancestor class. Calls the inherited method on entry using the value in Message to set the BiDiMode and adjust the size for the control.
           </p>
           <p>
-            Ensures that all components owned by the form are notified of the change to the BiDiMode property. This is needed for menus on the form. A TLMessage instance is constructed with the CM_PARENTBIDIMODECHANGED message and displatched to all of the Components on the form not derived from TWinControl. TWinControl handles the notification for its descendants. Alignment is temporarily disabled during the process, and re-enabled prior to exiting from the method.
+            Ensures that all components owned by the form are notified of the change to the BiDiMode property. This is needed for menus on the form. A TLMessage instance is constructed with the CM_PARENTBIDIMODECHANGED message and dispatched to all of the Components on the form not derived from TWinControl. TWinControl handles the notification for its descendants. Alignment is temporarily disabled during the process, and re-enabled prior to exiting from the method.
           </p>
         </descr>
         <seealso/>
@@ -3719,7 +3719,9 @@
       </element>
 
       <element name="TCustomForm.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize">
-        <short>Here: clip width and height of a top-level form to the monitor WorkArea.</short>
+        <short>
+          Here: clip width and height of a top-level form to the monitor WorkArea.
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -4545,7 +4547,9 @@
       </element>
 
       <element name="TCustomForm.GetRolesForControl">
-        <short>The role(s) for the control in a modal form (default or cancel button).</short>
+        <short>
+          The role(s) for the control in a modal form (default or cancel button).
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -5299,14 +5303,10 @@
             Use BorderStyle to get or set the appearance of the form's border.
           </p>
           <p>
-            By default it is a sizeable window, but it could, for example, be a dialog form
-            or a tool window, or could be non-sizeable.
+            By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable.
           </p>
           <p>
-            This property is slightly different (has a different base type) from the
-            <var>TCustomControl.BorderStyle</var> property. When the form is put into
-            another control the window borders depend on the widgetset. There are no
-            borders under GTK.
+            This property is slightly different (has a different base type) from the <var>TCustomControl.BorderStyle</var> property. When the form is put into another control the window borders depend on the widgetset. There are no borders under GTK.
           </p>
         </descr>
         <seealso>
@@ -5395,7 +5395,7 @@
 
       <element name="TCustomForm.EffectiveShowInTaskBar">
         <short>
-          Value from ShowInTaskBar adjusted for the default taskbar behavior in the application.
+          Value from ShowInTaskBar adjusted for the default task bar behavior in the application.
         </short>
         <descr/>
         <seealso/>
@@ -5430,10 +5430,13 @@
             <dt>fsNormal </dt>
             <dd>Usual style.</dd>
             <dt>fsStayOnTop</dt>
-            <dd>Form is positioned above all application's forms, except those which have
-              fsStayOnTop style.</dd>
+            <dd>
+              Form is positioned above all application's forms, except those which have fsStayOnTop style.
+            </dd>
             <dt>fsSystemStayOnTop</dt>
-            <dd>Form is positioned above all OS windows, except other OS top-level windows.</dd>
+            <dd>
+              Form is positioned above all OS windows, except other OS top-level windows.
+            </dd>
             <dt>fsSplash</dt>
             <dd>Form is border-less.</dd>
             <dt>fsMDIForm</dt>
@@ -6298,7 +6301,41 @@
       <element name="TForm.PopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
       <element name="TForm.PopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
       <element name="TForm.Position" link="#lcl.forms.TCustomForm.Position"/>
-      <element name="TForm.SessionProperties" link="#lcl.controls.TControl.SessionProperties"/>
+
+      <element name="TForm.SessionProperties">
+        <short>
+          Delimited list of form and / or component properties saved to and restored from an external storage mechanism.
+        </short>
+        <descr>
+          <p>
+            SessionProperties is a String property with the names of properties, in the form instance or its child components. It allows published property values to be saved to and restored from an external storage mechanism like: TIniPropStorage, TXMLPropStorage, or TJSONPropStorage.
+          </p>
+          <p>
+            Values in the property are delimited using the ';' (SemiColon) character. Component properties require both the component and property names using dotted notation like 'Image1.Visible'. The values can be assigned at design-time using a dialog in the Lazarus IDE, or by setting the property value at run-time.
+          </p>
+          <p>
+            For example:
+          </p>
+<code>
+// var AForm: TForm;
+AForm.SessionProperties := 'Top;Left;WindowState;Image1.Visible;Image1.Transparent';
+</code>
+          <p>
+            At design-time, the selection dialog is limited to published properties since RTTI is used to display and access the property values. Use the event handlers in the storage mechanism, or its StoredValues property, to save or restore properties with lesser visibility. Use the Save and Restore methods in the storage mechanism to read and write the property values.
+          </p>
+          <p>
+            TForm sets the visibility for SessionProperties, introduced in TControl, to published.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.SessionProperties"/>
+          <link id="#lcl.propertystorage.TCustomPropertyStorage">TCustomPropertyStorage</link>
+          <link id="#lcl.inipropstorage.TIniPropStorage">TIniPropStorage</link>
+          <link id="#lcl.xmlpropstorage.TXMLPropStorage">TXMLPropStorage</link>
+          <link id="#lcl.jsonpropstorage.TJSONPropStorage">TJSONPropStorage</link>
+        </seealso>
+      </element>
+
       <element name="TForm.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TForm.ShowInTaskBar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
       <element name="TForm.UseDockManager" link="#lcl.controls.TWinControl.UseDockManager"/>
@@ -6315,17 +6352,25 @@
       </element>
 
       <element name="TForm.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
-      <element name="TForm.Visible" link="#lcl.controls.TControl.Visible"/>
+      <element name="TForm.Visible" link="#lcl.forms.TCustomForm.Visible"/>
       <element name="TForm.WindowState" link="#lcl.forms.TCustomForm.WindowState"/>
 
-      <element name="TFormClass" link="#lcl.forms.TForm">
-        <short>Class of <var>TForm</var>.</short>
-        <descr/>
-        <seealso/>
+      <element name="TFormClass">
+        <short>
+          Class type used to create new TForm instances.
+        </short>
+        <descr>
+          <p>
+            Class type used to create new TForm instances. Used in the <file>CustomForm</file> package to register a custom form type, unit, or package.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TForm"/>
+        </seealso>
       </element>
 
       <element name="TCustomDockForm">
-        <short>A floating DockSite, usable to make TControls float.</short>
+        <short>A floating DockSite used to make TControls float.</short>
         <descr/>
         <seealso/>
       </element>
@@ -6336,7 +6381,7 @@
         </short>
         <descr>
           <p>
-            DoAddDockClient is an overridden method used to add the control in Client to the docked form. It calls the inherited method on entry to set the Parent in Client to the current class instance. It sets the Align property in Client to alAlign to align the control to the bounds for the docked form. Values in the BorderSpacing property in Client are reset to 0; the current class instance provides the BorderSpacing values for the docked control. At run-time, the Visible property is set to True to display the docked form after the Client has been added.
+            <var>DoAddDockClient</var> is an overridden method used to add the control in Client to the docked form. It calls the inherited method on entry to set the Parent in Client to the current class instance. It sets the Align property in Client to alAlign to align the control to the bounds for the docked form. Values in the BorderSpacing property in Client are reset to 0; the current class instance provides the BorderSpacing values for the docked control. At run-time, the Visible property is set to True to display the docked form after the Client has been added.
           </p>
         </descr>
         <seealso>
@@ -6381,8 +6426,7 @@
 
       <element name="TCustomDockForm.Loaded">
         <short>
-          Tries to make all child controls dockclients. This is of little use in practice,
-          a floating hostdocksite should have no child controls.
+          Tries to make all child controls dockclients. This is of little use in practice, a floating host docksite should have no child controls.
         </short>
         <descr/>
         <seealso>
@@ -6414,14 +6458,14 @@
 
       <element name="TCustomDockForm.AutoScroll">
         <short>
-          Indicates if the form can automatically show or hide scroll bars.
+          Indicates if the form can automatically show or hide its scroll bars.
         </short>
         <descr>
           <p>
-            AutoScroll is a Boolean property which indicates if the form can automatically show or hide its scroll bars. The default valule for the property is False in TCustomDockForm.
+            <var>AutoScroll</var> is a <var>Boolean</var> property which indicates if the form can automatically show or hide its scroll bars. The default value for the property is <b>False</b> in <var>TCustomDockForm</var>.
           </p>
           <p>
-            AutoScroll can only be True when the BorderStyle for the form is bsSizeable or bsSizeToolWin , and may be changed to False at run-time when BorderStyle is changed to another value.
+            AutoScroll can only be <b>True</b> when the BorderStyle for the form is bsSizeable or bsSizeToolWin, and may be changed to <b>False</b> at run-time when BorderStyle is changed to another value.
           </p>
         </descr>
         <seealso>
@@ -6588,7 +6632,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="THintWindow.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="THintWindow.WMNCHitTest">
-        <short>Handles the WM_NCHITTEST window message for the hint window.</short>
+        <short>
+          Handles the WM_NCHITTEST window message for the hint window.
+        </short>
         <descr>
           <p>
             Sets the result in <var>Message</var> to <var>HTTRANSPARENT</var>. This forces the message to be forwarded to other windowed controls in the Z-Order until a value other than HTTRANSPARENT is returned.
@@ -6601,7 +6647,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="THintWindow.ActivateSub">
-        <short>Sets the bounds for the hint window and configures the auto-hide timer.</short>
+        <short>
+          Sets the bounds for the hint window and configures the auto-hide timer.
+        </short>
         <descr>
           <p>
             Sets the bounds for the hint window to the values in the <var>HintRect</var> property, and makes the window <var>Visible</var>. The internal auto-hide timer is enabled when <var>AutoHide</var> contains <b>True</b>.
@@ -6854,16 +6902,22 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
       </element>
       <element name="THintWindow.OffsetHintRect.AOffset">
-        <short>TPoint with the horizontal and vertical offsets for the hint display.</short>
+        <short>
+          TPoint with the horizontal and vertical offsets for the hint display.
+        </short>
       </element>
       <element name="THintWindow.OffsetHintRect.dy">
         <short>Additional vertical offset applied to the hint rectangle.</short>
       </element>
       <element name="THintWindow.OffsetHintRect.KeepWidth">
-        <short>Indicates the width for the hint rectangle must be maintained.</short>
+        <short>
+          Indicates the width for the hint rectangle must be maintained.
+        </short>
       </element>
       <element name="THintWindow.OffsetHintRect.KeepHeight">
-        <short>Indicates the height for the hint rectangle must be maintained.</short>
+        <short>
+          Indicates the height for the hint rectangle must be maintained.
+        </short>
       </element>
 
       <element name="THintWindow.InitializeWnd" link="#lcl.forms.TCustomForm.InitializeWnd"/>
@@ -6904,7 +6958,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="THintWindow.SetBounds">
-        <short>Applies the argument values to the bounds for the control.</short>
+        <short>
+          Applies the argument values to the bounds for the control.
+        </short>
         <descr>
           <p>
             <var>SetBounds</var> is an overridden method in <var>THintWindow</var>. It calls the inherited method on entry to apply the argument values to the bounds for the class instance. It calls the UpdateRegion method to set the window region, or apply a background theme when enabled.
@@ -6983,8 +7039,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="THintWindow.AutoHide">
         <short>Does the hint disappear (get hidden) after a while?</short>
         <descr>
-          If <var>AutoHide</var> is TRUE, the hint disappears after an interval specified by
-          <link id="THintWindow.HideInterval">HideInterval</link>.
+          <p>
+            If <var>AutoHide</var> is TRUE, the hint disappears after an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -7008,7 +7065,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="THintWindowRendered">
-        <short>For a rendered hint with a child control added by an external provider.</short>
+        <short>
+          For a rendered hint with a child control added by an external provider.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7028,7 +7087,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="THintWindowRendered.ActivateRendered">
-        <short>Shows hint contents are rendered by a provider on child control.</short>
+        <short>
+          Shows hint contents are rendered by a provider on child control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7084,9 +7145,19 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Value for the property.</short>
       </element>
 
-      <element name="TMonitor.GetHeight" link="#lcl.forms.TMonitor.Height"/>
+      <element name="TMonitor.GetHeight">
+        <short>
+          Gets the value for the Height property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.Height"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetHeight.Result">
-        <short/>
+        <short>
+          Value for the Height property.
+        </short>
       </element>
 
       <element name="TMonitor.GetPixelsPerInch">
@@ -7100,29 +7171,79 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Value for the property.</short>
       </element>
 
-      <element name="TMonitor.GetTop" link="#lcl.forms.TMonitor.Top"/>
+      <element name="TMonitor.GetTop">
+        <short>
+          Gets the value for the Top property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.Top"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetTop.Result">
-        <short/>
+        <short>
+          Value for the Top property.
+        </short>
       </element>
 
-      <element name="TMonitor.GetWidth" link="#lcl.forms.TMonitor.Width"/>
+      <element name="TMonitor.GetWidth">
+        <short>
+          Gets the value for the Width property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.Width"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetWidth.Result">
-        <short/>
+        <short>
+          Value for the Width property.
+        </short>
       </element>
 
-      <element name="TMonitor.GetBoundsRect" link="#lcl.forms.TMonitor.BoundsRect"/>
+      <element name="TMonitor.GetBoundsRect">
+        <short>
+          Gets the value for the BoundsRect property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.BoundsRect"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetBoundsRect.Result">
-        <short/>
+        <short>
+          Value for the BoundsRect property.
+        </short>
       </element>
 
-      <element name="TMonitor.GetWorkareaRect" link="#lcl.forms.TMonitor.WorkareaRect"/>
+      <element name="TMonitor.GetWorkareaRect">
+        <short>
+          Gets the value for the WorkareaRect property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.WorkareaRect"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetWorkareaRect.Result">
-        <short/>
+        <short>
+          Value for the WorkareaRect property.
+        </short>
       </element>
 
-      <element name="TMonitor.GetPrimary" link="#lcl.forms.TMonitor.Primary"/>
+      <element name="TMonitor.GetPrimary">
+        <short>
+          Gets the value for the Primary property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TMonitor.Primary"/>
+        </seealso>
+      </element>
       <element name="TMonitor.GetPrimary.Result">
-        <short/>
+        <short>
+          Value for the Primary property.
+        </short>
       </element>
 
       <element name="TMonitor.Handle">
@@ -7130,44 +7251,157 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TMonitor.MonitorNum">
-        <short>Index of the monitor in the <link id="TScreen.Monitors"/> list.</short>
+        <short>
+          Index of the monitor in the <link id="TScreen.Monitors"/> list.
+        </short>
+        <descr>
+          <p>
+            <var>MonitorNum</var> is a read-only Integer property with the ordinal position where the class instance is stored in a list of Monitors. The value for the property is assigned in the UpdateMonitors method in TScreen when the monitor class instance is created and stored.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.Monitors"/>
+          <link id="TScreen.UpdateMonitors"/>
+        </seealso>
       </element>
 
       <element name="TMonitor.Left">
-        <short>The leftmost screen coordinate of the display.</short>
+        <short>The left-most screen coordinate for the display.</short>
+        <descr>
+          <p>
+            <var>Left</var> is a read-only Integer property with the coordinate for the left edge of the monitor. It contains the value from the Left member in BoundsRect.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMonitor.BoundsRect"/>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.Height">
-        <short>The height of the display.</short>
+        <short>
+          The height for the display.
+        </short>
+        <descr>
+          <p>
+            <var>Height</var> is a read-only Integer property with the height for the monitor in pixels. The property value is calculated as the difference between the Bottom and Top members in BoundsRect.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMonitor.BoundsRect"/>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.Top">
-        <short>The top-most screen coordinate of the display.</short>
+        <short>
+          The top-most screen coordinate for the display.
+        </short>
+        <descr>
+          <p>
+            <var>Top</var> is a read-only Integer property with the top coordinate for the monitor. It contains the value from the Top member in BoundsRect.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMonitor.BoundsRect"/>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.Width">
-        <short>The width of the display.</short>
+        <short>
+          The width for the display.
+        </short>
+        <descr>
+          <p>
+            Width is a read-only Integer property with the width for the monitor. It is calculated as the difference between the Right and Left members in BoundsRect.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMonitor.BoundsRect"/>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.BoundsRect">
-        <short>The logical dimensions of the monitor, within the desktop.
+        <short>
+          Rectangle with the dimensions for the monitor.
         </short>
+        <descr>
+          <p>
+            <var>BoundsRect</var> is a read-only TRect property which contains the bounds for the display device. The property value is assigned from TMonitorInfo information retrieved using the platform-specific GetMonitorInfo routine. The rectangle can be empty (where all members have the value 0) if monitor information was not successfully retrieved from the widgetset.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lclintf.GetMonitorInfo">GetMonitorInfo</link>
+          <link id="#lcl.lcltype.TMonitorInfo">TMonitorInfo</link>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.WorkareaRect">
-        <short>The usable display area, excluding a taskbar etc.</short>
+        <short>
+          The usable display area on the monitor excluding the system task bar.
+        </short>
+        <descr>
+          <p>
+            <var>WorkareaRect</var> is a read-only TRect property with the bounds for the usable display area on the monitor. This does not include any space covered by the system task bar.
+          </p>
+          <p>
+            The property value is assigned from TMonitorInfo information retrieved using the platform-specific GetMonitorInfo routine. The rectangle can be empty (where all members have the value 0) if monitor information was not successfully retrieved from the widgetset.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lclintf.GetMonitorInfo">GetMonitorInfo</link>
+          <link id="#lcl.lcltype.TMonitorInfo">TMonitorInfo</link>
+          <link id="#rtl.types.TRect">TRect</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.Primary">
-        <short>True if this is the primary monitor of the system.</short>
+        <short>
+          Contains <b>True</b> if this is the primary monitor for the system.
+        </short>
+        <descr>
+          <p>
+            <var>Primary</var> is a read-only Boolean property which indicates if the monitor is the primary display in a list of monitors. The property value is determined using flag values in the TMonitorInfo retrieved using GetMonitorInfo for the platform or operating system. It is set to <b>True</b> when the monitor information contains MONITORINFOF_PRIMARY in its flags.
+          </p>
+          <p>
+            Primary is used when the value for the PrimaryMonitor property is retrieved in the TScreen class. It indicates which TMonitor instance is used as the value for the PrimaryMonitor property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.PrimaryMonitor"/>
+          <link id="#lcl.lclintf.GetMonitorInfo">GetMonitorInfo</link>
+          <link id="#lcl.lcltype.TMonitorInfo">TMonitorInfo</link>
+        </seealso>
       </element>
 
       <element name="TMonitor.PixelsPerInch">
-        <short>Contains the Pixels Per Inch or display density for the monitor.</short>
+        <short>
+          Contains the Pixels Per Inch (or display density) for the monitor.
+        </short>
+        <descr>
+          <p>
+            PixelsPerInch is a read-only Integer property with the display density for the monitor. The property value is determined by calling the GetDpiForMonitor routine for the widgetset to retrieve the effective dots-per-inch for both horizontal and vertical dimensions. The horizontal density is used in the property value.
+          </p>
+          <p>
+            If the GetDpiForMonitor routine does not complete successfully, the PixelsPerInch property in TScreen is used as the property value.
+          </p>
+          <p>
+            PixelsPerInch can be used at run-time to ensure that the display density for a Font or Canvas matches the setting in a specific monitor. It is used in the Show and AutoScale methods in TCustomForm to apply an auto-adjust layout policy. It is also used in the form designer for the Lazarus IDE to perform similar actions during component streaming.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TCustomForm.Show">TCustomForm.Show</link>
+          <link id="#lcl.forms.TCustomForm.AutoScale">TCustomForm.AutoScale</link>
+        </seealso>
       </element>
 
       <element name="TMonitorList">
-        <short>A list of monitors available on the system.</short>
+        <short>
+          A list of monitors available on the system.
+        </short>
         <descr>
           <p>
             <var>TMonitorList</var> is a <var>TList</var> descendant used to store <var>TMonitor</var> class instances representing the physical monitors attached to the system. It provides an indexed <var>Items</var> property that can be used to access monitor information by an ordinal position in the list. It also provides an overridden Notify method to free a TMonitor instance when the <var>lnDeleted</var> list notification is received.
@@ -7256,7 +7490,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreenFormEvent">
-        <short>Type used for a screen notification handler, for form related events.</short>
+        <short>
+          Type used for a screen notification handler for form-related events.
+        </short>
         <descr/>
         <seealso>
           <link id="TScreenNotification"/>
@@ -7271,7 +7507,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreenControlEvent">
-        <short>Type for a screen notification handler used for control related events.</short>
+        <short>
+          Type for a screen notification handler used for control-related events.
+        </short>
         <descr/>
         <seealso>
           <link id="TScreenFormEvent"/>
@@ -7329,7 +7567,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen">
-        <short>Provides information about the screen display in an application.</short>
+        <short>
+          Provides information about screen displays in an application.
+        </short>
         <descr>
           <p>
             <var>TScreen</var> is a <var>TLCLComponent</var> descendant which provides information about multiple monitors in an LCL application. TScreen allows the GUI for an application to be managed on multiple monitors. It includes the size and resolution for a screen, and allows mapping the virtual Desktop and Workareas to the physical Monitors known to the application.
@@ -7464,14 +7704,18 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.GetCustomFormsZOrdered">
-        <short>Gets the value for the indexed CustomFormsZOrdered property.</short>
+        <short>
+          Gets the value for the indexed CustomFormsZOrdered property.
+        </short>
         <descr/>
         <seealso>
           <link id="TScreen.CustomFormsZOrdered"/>
         </seealso>
       </element>
       <element name="TScreen.GetCustomFormsZOrdered.Result">
-        <short>TCustomForm instance at the specified position in the Z-Order.</short>
+        <short>
+          TCustomForm instance at the specified position in the Z-Order.
+        </short>
       </element>
       <element name="TScreen.GetCustomFormsZOrdered.Index">
         <short>
@@ -7592,7 +7836,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Value for the property.</short>
       </element>
       <element name="TScreen.GetForms.Index">
-        <short>Ordinal position for the form instance in the property value.</short>
+        <short>
+          Ordinal position for the form instance in the property value.
+        </short>
       </element>
 
       <element name="TScreen.GetHeight">
@@ -7610,31 +7856,75 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Value for the property.</short>
       </element>
 
-      <element name="TScreen.GetMonitor" link="#lcl.forms.TScreen.Monitors"/>
+      <element name="TScreen.GetMonitor">
+        <short>
+          Gets the value for the indexed Monitors property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.Monitors"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetMonitor.Result">
-      <short/>
+        <short>
+          Value for the indexed Monitors property.
+        </short>
       </element>
       <element name="TScreen.GetMonitor.Index">
-        <short/>
+        <short>
+          Ordinal position for the TMonitor instance in the property value.
+        </short>
       </element>
 
-      <element name="TScreen.GetMonitorCount" link="#lcl.forms.TScreen.MonitorCount"/>
+      <element name="TScreen.GetMonitorCount">
+        <short>
+          Gets the value for the MonitorCount property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.MonitorCount"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetMonitorCount.Result">
-        <short/>
+        <short>
+          Value for the MonitorCount property.
+        </short>
       </element>
 
-      <element name="TScreen.GetPrimaryMonitor" link="#lcl.forms.TScreen.PrimaryMonitor"/>
+      <element name="TScreen.GetPrimaryMonitor">
+        <short>
+          Gets the value for the PrimaryMonitor property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.PrimaryMonitor"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetPrimaryMonitor.Result">
-        <short/>
+        <short>
+          Value for the PrimaryMonitor property.
+        </short>
       </element>
 
-      <element name="TScreen.GetWidth" link="#lcl.forms.TScreen.Width"/>
+      <element name="TScreen.GetWidth">
+        <short>
+          Gets the value for the Width property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.Width"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWidth.Result">
-        <short/>
+        <short>
+          Value for the Width property.
+        </short>
       </element>
 
       <element name="TScreen.AddForm">
-        <short>Internal notification handler, adds a new form to the lists.</short>
+        <short>
+          Internal notification handler which adds a new form to the list of forms on the screen.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7643,7 +7933,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.RemoveForm">
-        <short>Internal notification handler, removes the form from the lists.</short>
+        <short>
+          Internal notification handler which removes the specified form from the form list.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7651,58 +7943,150 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Form instance removed from the list.</short>
       </element>
 
-      <element name="TScreen.SetFocusedForm" link="#lcl.forms.TScreen.FocusedForm"/>
+      <element name="TScreen.SetFocusedForm">
+        <short>
+          Handles form deactivation and activation changes, and makes the specified form the FocusedForm on the screen.
+        </short>
+        <descr>
+          <p>
+            <var>SetFocusedForm</var> ensures that the form in AForm becomes the <var>FocusedForm</var> in the class instance when needed. No actions are performed in the method, and the return value is set to <b>True</b>, when AForm and FocusedForm have the same values.
+          </p>
+          <p>
+            SetFocusedForm sends a CM_DEACTIVATE message to the form instance in FocusedForm (when assigned).
+          </p>
+          <p>
+            The return value indicates if the focus state has changed during form deactivation, and may return False if deactivation failed. FocusedForm is set to <b>Nil</b> if deactivation failed.
+          </p>
+          <p>
+            Otherwise, AForm is saved to the FocusedForm property and a CM_ACTIVATE message is performed. The return value is <b>False</b> if the activation failed.
+          </p>
+          <p>
+            SetFocuseForm is called from the <var>SetFocusedControl</var> method in <var>TCustomForm</var> when a new control becomes focused on a form other than FocusedForm.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.FocusedForm"/>
+          <link id="TCustomForm.SetFocusedControl"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetFocusedForm.Result">
-        <short/>
+        <short>
+          False if activation or deactivation fails. True on success or when no action is needed.
+        </short>
       </element>
       <element name="TScreen.SetFocusedForm.AForm">
-        <short/>
+        <short>
+          Form instance to become the FocusedForm in the class instance.
+        </short>
       </element>
 
-      <element name="TScreen.SetCursor" link="#lcl.forms.TScreen.Cursor"/>
+      <element name="TScreen.SetCursor">
+        <short>
+          Sets the value for the Cursor property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.Cursor"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetCursor.AValue">
-        <short/>
+        <short>
+          New value for the Cursor property.
+        </short>
       </element>
 
-      <element name="TScreen.SetCursors" link="#lcl.forms.TScreen.Cursors"/>
+      <element name="TScreen.SetCursors">
+        <short>
+          Sets the value for the indexed Cursors property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.Cursors"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetCursors.AIndex">
-        <short/>
+        <short>
+          Ordinal position for the cursor handle stored in the indexed property.
+        </short>
       </element>
       <element name="TScreen.SetCursors.AValue">
-        <short/>
+        <short>
+          New cursor handle stored in the property.
+        </short>
       </element>
 
-      <element name="TScreen.SetHintFont" link="#lcl.forms.TScreen.HintFont"/>
+      <element name="TScreen.SetHintFont">
+        <short>
+          Sets the value for the HintFont property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.HintFont"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetHintFont.AValue">
-        <short/>
+        <short>
+          New value for the HintFont property.
+        </short>
       </element>
 
-      <element name="TScreen.SetIconFont" link="#lcl.forms.TScreen.IconFont"/>
+      <element name="TScreen.SetIconFont">
+        <short>
+          Sets the value for the IconFont property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.IconFont"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetIconFont.AValue">
-        <short/>
+        <short>
+          New value for the IconFont property.
+        </short>
       </element>
 
-      <element name="TScreen.SetMenuFont" link="#lcl.forms.TScreen.MenuFont"/>
+      <element name="TScreen.SetMenuFont">
+        <short>
+          Sets the value for the MenuFont property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.MenuFont"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetMenuFont.AValue">
-        <short/>
+        <short>
+          New value for the MenuFont property.
+        </short>
       </element>
 
-      <element name="TScreen.SetSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
+      <element name="TScreen.SetSystemFont">
+        <short>
+          Sets the value for the SystemFont property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.SystemFont"/>
+        </seealso>
+      </element>
       <element name="TScreen.SetSystemFont.AValue">
-        <short/>
+        <short>
+          New value for the SystemFont property.
+        </short>
       </element>
 
       <element name="TScreen.UpdateLastActive">
         <short>
-          Stores the currently active form and control in the last active members.
-          Notifies all registered handlers of eventual changes.
+          Stores the currently active form and control in the last active members. Notifies all registered handlers of changes.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TScreen.RestoreLastActive">
-        <short>Moves the Focus back to the previously focused control.</short>
+        <short>
+          Moves the Focus back to the previously focused control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -7757,7 +8141,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TScreen.RemoveHandler">
         <short>
-          Removes a screen notification handler with the specified type.
+          Removes a screen notification handler using the specified type.
         </short>
         <descr/>
         <seealso>
@@ -7824,29 +8208,79 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Form instance for the notification.</short>
       </element>
 
-      <element name="TScreen.GetWorkAreaHeight" link="#lcl.forms.TScreen.WorkAreaHeight"/>
+      <element name="TScreen.GetWorkAreaHeight">
+        <short>
+          Gets the value for the WorkAreaHeight property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.WorkAreaHeight"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWorkAreaHeight.Result">
-        <short/>
+        <short>
+          Value for the WorkAreaHeight property.
+        </short>
       </element>
 
-      <element name="TScreen.GetWorkAreaLeft" link="#lcl.forms.TScreen.WorkAreaLeft"/>
+      <element name="TScreen.GetWorkAreaLeft">
+        <short>
+          Gets the value for the WorkAreaLeft property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.WorkAreaLeft"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWorkAreaLeft.Result">
-        <short/>
+        <short>
+          Value for the WorkAreaLeft property.
+        </short>
       </element>
 
-      <element name="TScreen.GetWorkAreaRect" link="#lcl.forms.TScreen.WorkAreaRect"/>
+      <element name="TScreen.GetWorkAreaRect">
+        <short>
+          Gets the value for the WorkAreaRect property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.WorkAreaRect"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWorkAreaRect.Result">
-        <short/>
+        <short>
+          Value for the WorkAreaRect property.
+        </short>
       </element>
 
-      <element name="TScreen.GetWorkAreaTop" link="#lcl.forms.TScreen.WorkAreaTop"/>
+      <element name="TScreen.GetWorkAreaTop">
+        <short>
+          Gets the value for the WorkAreaTop property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.WorkAreaTop"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWorkAreaTop.Result">
-        <short/>
+        <short>
+          Value for the WorkAreaTop property.
+        </short>
       </element>
 
-      <element name="TScreen.GetWorkAreaWidth" link="#lcl.forms.TScreen.WorkAreaWidth"/>
+      <element name="TScreen.GetWorkAreaWidth">
+        <short>
+          Gets the value for the WorkAreaWidth property.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TScreen.WorkAreaWidth"/>
+        </seealso>
+      </element>
       <element name="TScreen.GetWorkAreaWidth.Result">
-        <short/>
+        <short>
+          Value for the WorkAreaWidth property.
+        </short>
       </element>
 
       <element name="TScreen.GetHintFont">
@@ -7908,8 +8342,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry.
         </p>
           <p>
-            Create allocates resources needed for properties, including: <var>Fonts</var>, <var>Monitors</var>, <var>CustomForms</var>, <var>CustomFormsZOrdered</var>, and
-            <var>DataModules</var>. Resources for internal members are also allocated.
+            Create allocates resources needed for properties, including: <var>Fonts</var>, <var>Monitors</var>, <var>CustomForms</var>, <var>CustomFormsZOrdered</var>, and <var>DataModules</var>. Resources for internal members are also allocated.
           </p>
           <p>
             Create gets the default value used for the <var>PixelsPerInch</var> property from the <var>ScreenInfo</var> variable in the LCL interface.
@@ -7939,7 +8372,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.CustomFormIndex">
-        <short>Gets the ordinal position in CustomForms for the requested form.</short>
+        <short>
+          Gets the ordinal position in CustomForms for the requested form.
+        </short>
         <descr>
           <p>
             <var>CustomFormIndex</var> is an <var>Integer</var> function used to get the position in <var>CustomForms</var> for the specified <var>TCustomForm</var> instance. It iterates over the values in CustomForms in reverse order. The return value contains the ordinal position in CustomForms where the TCustomForm instance in <var>AForm</var> was found, or -1 when AForm does not exist in CustomForms.
@@ -7962,7 +8397,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.FormIndex">
-        <short>Gets the ordinal position in Forms for the requested form.</short>
+        <short>
+          Gets the ordinal position in Forms for the requested form.
+        </short>
         <descr>
           <p>
             <var>FormIndex</var> is an <var>Integer</var> function used to get the position in <var>Forms</var> where the specified <var>TForm</var> instance in located. It iterates over the values in Forms in reverse order. The return value contains the ordinal position in Forms where the TForm instance in <var>AForm</var> was found, or -1 when AForm does not exist in Forms.
@@ -8294,10 +8731,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TScreen.AddHandlerActiveControlChanged.OnActiveControlChanged">
-        <short>Active control changed notification handler added in the method.</short>
+        <short>
+          Active control changed notification handler added in the method.
+        </short>
       </element>
       <element name="TScreen.AddHandlerActiveControlChanged.AsFirst">
-        <short>True if the handler should be the first in the list for the type.</short>
+        <short>
+          True if the handler should be the first in the list for the type.
+        </short>
       </element>
 
       <element name="TScreen.RemoveHandlerActiveControlChanged">
@@ -8318,7 +8759,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Active form changed handler added in the method.</short>
       </element>
       <element name="TScreen.AddHandlerActiveFormChanged.AsFirst">
-        <short>True if the handler should be the first in the list for the type.</short>
+        <short>
+          True if the handler should be the first in the list for the type.
+        </short>
       </element>
 
       <element name="TScreen.RemoveHandlerActiveFormChanged">
@@ -8339,7 +8782,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Form visible changed handler added in the method.</short>
       </element>
       <element name="TScreen.AddHandlerFormVisibleChanged.AsFirst">
-        <short>True if the handler should be the first in the list for the type.</short>
+        <short>
+          True if the handler should be the first in the list for the type.
+        </short>
       </element>
 
       <element name="TScreen.RemoveHandlerFormVisibleChanged">
@@ -8432,7 +8877,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.MonitorFromRect">
-        <short>Finds the monitor where the specified rectangle is located.</short>
+        <short>
+          Finds the monitor where the specified rectangle is located.
+        </short>
         <descr>
           <p>
             <var>MonitorFromRect</var> is a <var>TMonitor</var> function used to get the monitor where the coordinates in the specified rectangle are located.
@@ -8706,7 +9153,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.Cursors">
-        <short>Provides indexed access to the available mouse cursor shapes for the screen.</short>
+        <short>
+          Provides indexed access to the available mouse cursor shapes for the screen.
+        </short>
         <descr>
           <p>
             <var>Cursors</var> is an indexed <var>HCURSOR</var> property which provides access to the handle for a mouse cursor shape by its numeric value. The cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
@@ -8729,7 +9178,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.CustomFormCount">
-        <short>Number of TCustomForm form instances in the CustomForms property.</short>
+        <short>
+          Number of TCustomForm form instances in the CustomForms property.
+        </short>
         <descr>
           <p>
             <var>CustomFormCount</var> is a read-only <var>Integer</var> property which contains the number of <var>TCustomForm</var> instances stored in the <var>CustomForms</var> property. Read access for the property value is redirected to the <var>Count</var> property in CustomForms.
@@ -8770,7 +9221,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.CustomFormsZOrdered">
-        <short>The list of Custom Forms, indexed by Z-order (zero is top-most).</short>
+        <short>
+          The list of Custom Forms, indexed by Z-order (zero is top-most).
+        </short>
         <descr>
           <p>
             <var>CustomFormsZOrdered</var> is a read-only indexed <var>TCustomForm</var> property which provides access to a custom form by its ordinal position in the Z-Order for the screen. The form at position <b>0</b> (<b>zero</b>) is displayed at the top of the Z-Order, and overlaps any form with a higher Z-Order value.
@@ -8830,7 +9283,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>The left-most coordinate of the desktop.</short>
         <descr>
           <p>
-            <var>DesktopLeft</var> is a read-only <var>Integer</var> property with the left coordinate for the desktop. The property value contains the virtual screen size returned from <var>GetSystemMetrics</var> for the <var>SM_XVIRTUALSCREEN</var> parameter.
+            <var>DesktopLeft</var> is a read-only <var>Integer</var> property with the left coordinate for the desktop. The property value contains the virtual screen coordinate returned from <var>GetSystemMetrics</var> for the <var>SM_XVIRTUALSCREEN</var> parameter.
           </p>
           <p>
             DesktopLeft is used in the <var>MoveToDefaultPosition</var> method in <var>TCustomForm</var>. The values in <var>DesktopLeft</var>, <var>DesktopTop</var>, <var>DesktopWidth</var> and <var>DesktopHeight</var> are also assigned to members in the <var>DesktopRect</var> property.
@@ -8846,7 +9299,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>The top-most coordinate for the desktop.</short>
         <descr>
           <p>
-            <var>DesktopTop</var> is a read-only <var>Integer</var> property with the top coordinate for the desktop. The property value contains the virtual screen size returned from <var>GetSystemMetrics</var> for the <var>SM_YVIRTUALSCREEN</var> parameter.
+            <var>DesktopTop</var> is a read-only <var>Integer</var> property with the top coordinate for the desktop. The property value contains the virtual screen coordinate returned from <var>GetSystemMetrics</var> for the <var>SM_YVIRTUALSCREEN</var> parameter.
           </p>
           <p>
             DesktopTop is used in the <var>MoveToDefaultPosition</var> method in <var>TCustomForm</var>. The values in <var>DesktopLeft</var>, <var>DesktopTop</var>, <var>DesktopWidth</var> and <var>DesktopHeight</var> are also assigned to members in the <var>DesktopRect</var> property.
@@ -9041,7 +9494,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <descr/>
         <seealso/>
         <notes>
-          <note>Currently used only in FindFontName in the TurboPower IPro package.</note>
+          <note>
+            Currently used only in FindFontName in the TurboPower IPro package.
+          </note>
         </notes>
       </element>
 
@@ -9115,7 +9570,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TScreen.Monitors.Index">
-        <short>Ordinal position for the TMonitor instance in the property value.</short>
+        <short>
+          Ordinal position for the TMonitor instance in the property value.
+        </short>
       </element>
 
       <element name="TScreen.PixelsPerInch">
@@ -9137,7 +9594,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.PrimaryMonitor">
-        <short>The primary monitor which typically includes the task bar area.</short>
+        <short>
+          The primary monitor which typically includes the task bar area.
+        </short>
         <descr>
           <p>
             <var>PrimaryMonitor</var> is a read-only <var>TMonitor</var> property with the primary monitor for the system. The property value is determined by checking for the <var>TMonitor</var> instance in <var>Monitors</var> with its <var>Primary</var> property set to <b>True</b>. The property value is <b>Nil</b> if a monitor is not found with its Primary property set to <b>True</b>.
@@ -9163,7 +9622,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Use <var>Height</var> to get height for the primary monitor.
           </p>
           <p>
-            Use <var>DesktopWidth</var> to get the usable width for the desktop minus the area reserved for a task bar.
+            Use <var>DesktopWidth</var> to get the usable width for the entire desktop.
           </p>
         </descr>
         <seealso>
@@ -9173,17 +9632,34 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.WorkAreaRect">
-        <short>The usable display area on the primary monitor excluding the task bar.</short>
+        <short>
+          The usable display area on the primary monitor excluding the task bar.
+        </short>
         <descr>
+          <p>
+            <var>WorkAreaRect</var> is a read-only <var>TRect</var> property with the bounds for the usable display area on the primary monitor. It excludes the area covered by the system task bar. The return value is the result from the platform-specific SystemParametersInfo routine in the LCL interface using the SPI_GETWORKAREA parameter constant.
+          </p>
+          <p>
+            Use DesktopRect to get the bounds for the entire desktop spanning all monitors.
+          </p>
+          <p>
+            Use the Monitors property to access screen information for a specific monitor.
+          </p>
         </descr>
         <seealso>
           <link id="TScreen.DesktopRect"/>
+          <link id="TScreen.Monitors"/>
         </seealso>
       </element>
 
       <element name="TScreen.WorkAreaHeight">
-        <short>The usable height of the primary monitor excluding the task bar.</short>
+        <short>
+          The usable height of the primary monitor excluding the system task bar.
+        </short>
         <descr>
+          <p>
+            The property value is calculated as the difference between the <var>Bottom</var> and <var>Top</var> members in <var>WorkAreaRect</var>.
+          </p>
         </descr>
         <seealso>
         </seealso>
@@ -9192,6 +9668,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TScreen.WorkAreaLeft">
         <short>The usable left coordinate on the primary monitor.</short>
         <descr>
+          <p>
+            The property value contains the <var>Left</var> member from <var>WorkAreaRect</var>.
+          </p>
         </descr>
         <seealso>
           <link id="TScreen.WorkareaRect"/>
@@ -9221,7 +9700,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Returns the difference between the <var>Right</var> and <var>Left</var> members in <var>WorkAreaRect</var>.
           </p>
           <p>
-            Use <var>DesktopWidth</var> to get the width for the primary monitor including the task bar area.
+            Use <var>DesktopWidth</var> to get the width for the entire desktop spanning all monitors.
           </p>
         </descr>
         <seealso>
@@ -9379,7 +9858,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TDataEvent">
-        <short>Specifies the type used for an asynchronous callback method.</short>
+        <short>
+          Specifies the type used for an asynchronous callback method.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplication.QueueAsyncCall"/>
@@ -9448,17 +9929,25 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>The hint timer is off.</short>
       </element>
       <element name="TAppHintTimerType.ahttShowHint">
-        <short>Waiting to show a hint; used when a hint timer is started.</short>
+        <short>
+          Waiting to show a hint; used when a hint timer is started.
+        </short>
       </element>
       <element name="TAppHintTimerType.ahttHideHint">
-        <short>Waiting to hide an hint; used when the hint control is changed or the mouse leaves a hint rectangle.</short>
+        <short>
+          Waiting to hide an hint; used when the hint control is changed or the mouse leaves a hint rectangle.
+        </short>
       </element>
       <element name="TAppHintTimerType.ahttReshowHint">
-        <short>Waiting to show the next hint; used when the hide hint timer is started.</short>
+        <short>
+          Waiting to show the next hint; used when the hide hint timer is started.
+        </short>
       </element>
 
       <element name="TShowHintEvent">
-        <short>Defines an event handler signalled to perform hint display.</short>
+        <short>
+          Defines an event handler signalled to perform hint display.
+        </short>
         <descr>
           <p>
             <var>TShowHintEvent</var> is an object procedure type which defines an event handler signalled to perform hint display. It is the type used for the <var>TApplication.OnShowHint</var> event handler property.
@@ -9558,7 +10047,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplicationFlags">
-        <short>Set type used to store values from the TApplicationFlag enumeration.</short>
+        <short>
+          Set type used to store values from the TApplicationFlag enumeration.
+        </short>
         <descr>
           <p>
             <var>TApplicationFlags</var> is the type used for the <var>Flags</var> property in <var>TApplication</var>.
@@ -9583,11 +10074,13 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplicationNavigationOption.anoTabToSelectNext">
-        <short>The Tab key moves the Focus to the next (or previous) control in TabOrder.
+        <short>
+          The Tab key moves the Focus to the next (or previous) control in TabOrder.
         </short>
       </element>
       <element name="TApplicationNavigationOption.anoReturnForDefaultControl">
-        <short>The Enter key triggers the default action.
+        <short>
+          The Enter key triggers the default action.
         </short>
       </element>
       <element name="TApplicationNavigationOption.anoEscapeForCancelControl">
@@ -9621,7 +10114,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Application idle state is ending.</short>
       </element>
       <element name="TApplicationHandlerType.ahtKeyDownBefore">
-        <short>Handler for KeyDown events, invoked before interface and LCL handlers.</short>
+        <short>
+          Handler for KeyDown events, invoked before interface and LCL handlers.
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtKeyDownAfter">
         <short>
@@ -9637,7 +10132,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TApplicationHandlerType.ahtUserInput">
         <short>Handler invoked on user input.</short>
         <notes>
-          <note>Used in NotifyUserInputHandler; implemented in Sparta MDI package</note>
+          <note>
+            Used in NotifyUserInputHandler; implemented in Sparta MDI package
+          </note>
         </notes>
       </element>
       <element name="TApplicationHandlerType.ahtException">
@@ -9801,7 +10298,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplicationShowGlyphs">
-        <short>Describes the policy for the application of how to show menu and button glyphs.</short>
+        <short>
+          Indicates the application policy for displaying glyphs on menus and buttons.
+        </short>
         <descr>
           <p>
             <var>TApplicationShowGlyphs</var> is an enumerated type with values that indicate the policy for displaying glyphs on menus and buttons. TApplicationShowGlyphs is the type used to implement the <var>ShowButtonGlyphs</var> and <var>ShowMenuGlyphs</var> properties in both <var>TApplication</var> and <var>TApplicationProperties</var>.
@@ -9874,7 +10373,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Application management and configuration for a GUI application.</short>
         <descr>
           <p>
-            <var>TApplication</var> is a <var>TCustomApplication</var> descendant which provides facilities used  to manage and configure a GUI application. Properties, methods, and event handlers are provided which allow a program to create, execute, monitor, maintain and destroy an application and its forms. Every GUI application contains an Application variable that represents the TApplication or descendent class instance.
+            <var>TApplication</var> is a <var>TCustomApplication</var> descendant which provides facilities used to manage and configure a GUI application. Properties, methods, and event handlers are provided which allow a program to create, execute, monitor, maintain and destroy an application and its forms. Every GUI application contains an Application variable that represents the TApplication or descendent class instance.
           </p>
           <p>
             TApplication provides a message processing loop that includes hooks for event handlers and exception handling, and supports dispatching messages for <var>TCustomAction</var> instances used in application forms. TApplication provides support for hints and content-sensitive help for forms and controls used in the application. Convenience methods, like <var>MessageBox</var>, are provided to simplify access to dialogs and error messages in the application.
@@ -9886,7 +10385,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.FApplicationHandlers">
-        <short>Holds the registered handler routines for the application.</short>
+        <short>
+          Holds the registered handler routines for the application.
+        </short>
       </element>
       <element name="TApplication.FApplicationType" link="#lcl.forms.TApplication.ApplicationType"/>
       <element name="TApplication.FCaptureExceptions" link="#lcl.forms.TApplication.CaptureExceptions"/>
@@ -13508,7 +14009,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="DefaultApplicationBiDiMode">
-        <short>Contains the default BiDiMode value used for the current LCL version.</short>
+        <short>
+          Contains the default BiDiMode value used for the current LCL version.
+        </short>
         <descr>
           <p>
             The default value is <var>bdLeftToRight</var>.
@@ -13541,14 +14044,16 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="DefHintHidePause">
         <short>
-          The default pause before a hint is hidden (in milliseconds).
+          The default pause (in milliseconds) before a hint is hidden.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="DefHintHidePausePerChar">
-        <short>The default pause added to DefHintHidePause (in milliseconds).</short>
+        <short>
+          The default pause (in milliseconds) added to DefHintHidePause.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14620,13 +15125,19 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="GetParentForm.Result">
-        <short>Form instance that is the parent for the specified control.</short>
+        <short>
+          Form instance that is the parent for the specified control.
+        </short>
       </element>
       <element name="GetParentForm.Control">
-        <short>Control used to locate the parent form in the control hierarchy.</short>
+        <short>
+          Control used to locate the parent form in the control hierarchy.
+        </short>
       </element>
       <element name="GetParentForm.TopForm">
-        <short>True if the top-most form instance in the control hierarchy is needed.</short>
+        <short>
+          True if the top-most form instance in the control hierarchy is needed.
+        </short>
       </element>
 
       <element name="GetDesignerForm">
@@ -14654,7 +15165,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="GetFirstParentForm">
-        <short>Does a recursive search for the first Parent of type TCustomForm.</short>
+        <short>
+          Performs a recursive search for the first Parent of type TCustomForm.
+        </short>
         <descr>
           <p>
             <var>GetFirstParentForm</var> is a <var>TCustomForm</var> function used to find the first form instance in the Parents for the specified <var>Control</var>. GetFirstParentForm calls the <var>GetParentForm</var> routine to get the form instance used as the return value. The return value is <b>Nil</b> when Control has not been assigned, or a form is not found in GetParentForm.
@@ -14668,10 +15181,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="GetFirstParentForm.Result">
-        <short>The first custom form instance found by ascending the control hierarchy.</short>
+        <short>
+          The first custom form instance found by ascending the control hierarchy.
+        </short>
       </element>
       <element name="GetFirstParentForm.Control">
-        <short>TControl instance where the search for a parent form is started.</short>
+        <short>
+          TControl instance where the search for a parent form is started.
+        </short>
       </element>
 
       <element name="GetTopFormSkipNonDocked">
@@ -14753,7 +15270,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            Calls <var>GetParentDesignControl</var> to get the return value for the function. Raises an <var>EInvalidOperation</var> exception if a <var>TCustomDesignControl</var> instance is not found for the specififed control.
+            Calls <var>GetParentDesignControl</var> to get the return value for the function. Raises an <var>EInvalidOperation</var> exception if a <var>TCustomDesignControl</var> instance is not found for the specified control.
           </p>
           <p>
             Used in methods which perform scaling operations for <var>TCustomForm</var> or <var>TControl</var> instances.
@@ -14769,10 +15286,18 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="IsAccel">
-        <short>Searches for the given virtual key, used as an accelerator.</short>
+        <short>
+          Determines whether the specified virtual key is used as an accelerator (short cut) in the given caption string.
+        </short>
         <descr>
           <p>
             An accelerator consists of an ampersand followed by the accelerator key. Duplicate ampersands are ignored; they denote a literal (displayed) ampersand character (<b>&amp;</b>).
+          </p>
+          <p>
+            <var>IsAccel</var> calls UTF8Pos to locate all occurrences of a single Ampersand character in Str. The character immediately following the Ampersand is the short cut character for the accelerator, and it is compared to the numeric value in VK. If one of the short cut characters matches the value in VK, the return value is set to <b>True</b> and the routine is exited. If none of the short cut characters match VK, or an accelerator is not present in Str, the return value is <b>False</b>.
+          </p>
+          <p>
+            IsAccel is called from controls which implement overridden CMDialogChar or DialogChar methods. It is also called when widgetset classes handle menu item selection and execution in an application.
           </p>
         </descr>
         <seealso/>
@@ -14788,9 +15313,24 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="NotifyApplicationUserInput">
-        <short>Invokes all application user input handlers.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Signals all user input handlers for the application using the specified message.
+        </short>
+        <descr>
+          <p>
+            Calls the NotifyUserInputHandler method in the Application singleton when it has been assigned using Msg as an argument.
+          </p>
+          <p>
+            NotifyApplicationUserInput is used as a callback routine in widgetset classes. It allows the widget to notify the application when a mouse or a keyboard event is pending in the LCL interface.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TApplication.NotifyUserInputHandler"/>
+          <link id="TApplication.OnUserInput"/>
+          <link id="TApplication.DoOnMouseMove"/>
+          <link id="TApplication.ActivateHint"/>
+          <link id="Application"/>
+        </seealso>
       </element>
       <element name="NotifyApplicationUserInput.Msg">
         <short>The message to process.</short>
@@ -14800,30 +15340,48 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Returns the short version of a Hint string.</short>
         <descr>
           <p>
-            A short Hint is separated from the long Hint by a '|' character. When no such character is found, the whole Hint is returned.
+            A short Hint is separated from the long Hint by a '|' character. If the character is not found, the whole Hint string is returned.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="GetLongHint"/>
+          <link id="TControl.Hint"/>
+          <link id="TControl.DialogChar"/>
+        </seealso>
       </element>
       <element name="GetShortHint.Result">
-        <short>The short (or complete) Hint.</short>
+        <short>The short version of the Hint text (when available).</short>
       </element>
       <element name="GetShortHint.Hint">
-        <short>The string containing both a short and long Hint.</short>
+        <short>
+          The string containing both short and long Hint text in the format: 'Short Hint|This is the Long Hint for a control.'
+        </short>
       </element>
 
       <element name="GetLongHint">
         <short>Returns the long version of a Hint string.</short>
-        <descr/>
+        <descr>
+          <p>
+            A long Hint is the part of the text which appears after a '|' character in Str. For example:
+          </p>
+          <code>'Short Hint|This is the Long Hint for a control.'</code>
+          <p>
+            If the '|' character is not found, the value in Str is returned.
+          </p>
+        </descr>
         <seealso>
           <link id="GetShortHint"/>
+          <link id="TControl.Hint"/>
+          <link id="TControl.DialogChar"/>
         </seealso>
       </element>
       <element name="GetLongHint.Result">
-        <short/>
+        <short>The long variant of the specified hint text.</short>
       </element>
       <element name="GetLongHint.Hint">
-        <short/>
+        <short>
+          The string containing both short and long Hint text in the format: 'Short Hint|This is the Long Hint for a control.'
+        </short>
       </element>
 
       <element name="Application">
@@ -14844,14 +15402,26 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="Screen">
         <short>The TScreen singleton for the application.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Screen</var> is a unit global <var>TScreen</var> variable which provides information about the display devices attached to the system. It allows access to the physical attributes for the monitors available in the application, as well logical attributes for the Desktop. It can also be used to access information about the Forms, DataModules, Fonts, and Cursor shapes used on the displays.
+          </p>
+          <p>
+            See TScreen for more information about the properties, methods and events in the class instance.
+          </p>
+          <p>
+            Screen is allocated in the initialization section for the <file>forms.pp</file> unit. It is freed in the finalization section for the unit.
+          </p>
+        </descr>
         <seealso>
           <link id="TScreen"/>
         </seealso>
       </element>
 
       <element name="ExceptionObject">
-        <short>Variable representing the current exception object in an application.</short>
+        <short>
+          Variable representing the current exception object in an application.
+        </short>
         <descr>
           <p>
             Used in the implementation of the TApplication.HandleException method.
@@ -14863,7 +15433,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="HintWindowClass">
-        <short>The class type used to create hint window instances for an application.</short>
+        <short>
+          The class type used to create hint window instances for an application.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14991,11 +15563,15 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="CreateWidgetset.AWidgetsetClass">
-        <short>TWidgetsetClass class type for the desired widgetset implementation.</short>
+        <short>
+          TWidgetsetClass class type for the desired widgetset implementation.
+        </short>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="FreeWidgetSet">
-        <short>Destroys singletons for the Screen, Application, and WidgetSet.</short>
+        <short>
+          Destroys singletons for the Screen, Application, and WidgetSet.
+        </short>
         <descr>
           <p>
             <var>FreeWidgetSet</var> is a procedure used to free resources allocated to the <var>Screen</var>, <var>Application</var>, <var>Clipboards</var>, and <var>WidgetSet</var> singletons.
@@ -15019,7 +15595,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Registers components declared in this unit.</short>
         <descr>
           <p>
-            <var>Register</var> is a procedure used to register components declared in the <file>forms.pp</file> unit for use in the Lazarus IDE.  The following components are added to the component palette in the Lazarus IDE:
+            <var>Register</var> is a procedure used to register components declared in the <file>forms.pp</file> unit for use in the Lazarus IDE. The following components are added to the component palette in the Lazarus IDE:
           </p>
           <p>
             <b>Standard</b> Tab
