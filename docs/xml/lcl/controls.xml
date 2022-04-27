@@ -9824,10 +9824,22 @@
 
       <element name="TControl.SessionProperties">
         <short>
-          The stored (saved) properties of the current session, expressed as a string.
+          Delimited list of property or sub-component property names saved to and restored from an external storage mechanism.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            SessionProperties is a String property with the names of properties, in the class instance or its child Components. SessionProperties allows published property values to be saved to and restored from an external storage mechanism like: TIniPropStorage, TXMLPropStorage, or TJSONPropStorage.
+          </p>
+          <p>
+            Values in the property are delimited using the ';' (SemiColon) character. Component properties require both the component and property names using dotted notation like 'Image1.Visible'. In the TForm descendent class, the values can be assigned at design-time using a dialog in the Lazarus IDE, or by setting the property value at run-time.
+          </p>
+          <p>
+            In TControl, SessionProperties has protected visibility; it is elevated to published visibility in the TForm descendant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TForm.SessionProperties">TForm.SessionProperties</link>
+        </seealso>
       </element>
 
       <element name="TControl.Text">
@@ -11304,7 +11316,7 @@
         </short>
         <descr>
           <p>
-            BeforeDestruction is a method which performs notifications when an object instance is about to be freed. It allows tasks to be performed which maintain a persistent object instance and its  obervers before it is destroyed.
+            BeforeDestruction is a method which performs notifications when an object instance is about to be freed. It allows tasks to be performed which maintain a persistent object instance and its  observers before it is destroyed.
           </p>
           <p>
             BeforeDestruction is an overridden method in TControl, and calls the inherited method on entry to ensure that csDestroying is included in the ComponentState property for the control and any of its child components. It extends the inherited method by calling DoCallNotifyHandler for any handler routines using the chtOnBeforeDestruction type.
@@ -17470,7 +17482,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TWinControl.DockSite">
         <short>
-          Allows controls to be drag-dock'd into this control.
+          Allows controls to be drag-dock-ed into this control.
         </short>
         <descr>
           <p>
@@ -17862,7 +17874,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             The return value is a <var>TControlAutoSizePhases</var> set type. It is populated with values from the <var>TControlAutoSizePhase</var> enumeration based on window control flags and other internal members in the class instance. When Parent has been assigned, the values are derived by calling AutoSizePhases in Parent.
           </p>
           <p>
-            AutoSizePhases is called from methods like DoAutoSize and UpdateShowing. It is also called from window messgae handlers like WMMove, WMSize, and WMWindowPosChanged.
+            AutoSizePhases is called from methods like DoAutoSize and UpdateShowing. It is also called from window message handlers like WMMove, WMSize, and WMWindowPosChanged.
           </p>
         </descr>
         <seealso>
