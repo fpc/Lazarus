@@ -268,7 +268,15 @@ constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject;
   ALoadedTargetImageAddr: TDBGPtr);
 begin
   FFileName := AFileName;
-  FFileLoader := TDbgFileLoader.Create(AFileName);
+  try
+    FFileLoader := TDbgFileLoader.Create(AFileName);
+  except
+    // When the creation of the FileLoader fails, it is not possible to find
+    // a suiteable ImageReader. So skip that step.
+    // This happens on Linux when the shared memory is file-mapped to
+    // a SysV IPC shm segment (SYSV00000000), or the file is deleted (or both)
+    Exit;
+  end;
   FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
