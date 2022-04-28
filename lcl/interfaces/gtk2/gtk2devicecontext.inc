@@ -733,6 +733,7 @@ begin
 
   SelectedColors := dcscCustom;
   PenPos := ASource.PenPos;
+  Self.BkMode:=ASource.BkMode;
 
   if FHasTransf then
   begin

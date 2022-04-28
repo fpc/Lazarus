@@ -407,6 +407,13 @@ begin
       (ACustomForm.FormStyle in fsAllStayOnTop) then
       gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
 
+    case ACustomForm.WindowState of
+    wsMaximized: gtk_window_maximize(PGtkWindow(P));
+    wsMinimized: gtk_window_iconify(PGtkWindow(P));
+    wsFullscreen: gtk_window_fullscreen(PGtkWindow(P));
+    else
+    end;
+
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
       Gtk2WidgetSet.SetClipboardWidget(P);

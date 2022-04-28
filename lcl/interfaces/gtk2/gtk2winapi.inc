@@ -9598,6 +9598,7 @@ begin
       gtk_widget_show(PGtkWidget(GtkWindow))
     else
     begin
+      gtk_widget_realize(PGtkWidget(GtkWindow));
       AWindow := PGtkWidget(GtkWindow)^.window;
       if GDK_IS_WINDOW(AWindow) then
       begin
@@ -9606,7 +9607,8 @@ begin
           gtk_window_deiconify(GtkWindow);
         if AFlags and GDK_WINDOW_STATE_FULLSCREEN <> 0 then
           gtk_window_unfullscreen(GtkWindow);
-        gtk_window_maximize(GtkWindow);
+        if Aflags and GDK_WINDOW_STATE_MAXIMIZED = 0 then
+          gtk_window_maximize(GtkWindow);
       end;
     end;
 
