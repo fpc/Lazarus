@@ -649,6 +649,7 @@ type
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
+    FEnvOptsCfgExisted: boolean; // tracks if a local or user specific environment options configuration file existed
 
     FIdentifierWordCompletion: TSourceEditorWordCompletion;
     FIdentifierWordCompletionWordList: TStringList;
@@ -1199,7 +1200,6 @@ procedure TMainIDE.LoadGlobalOptions;
   end;
 
 var
-  EnvOptsCfgExisted: boolean;
   s, LastCalled: String;
   OldVer: String;
   NowVer: String;
@@ -1212,7 +1212,6 @@ begin
 
   with EnvironmentOptions do
   begin
-    EnvOptsCfgExisted := FileExistsCached(GetDefaultConfigFilename);
     OnBeforeRead := @EnvironmentOptionsBeforeRead;
     OnBeforeWrite := @EnvironmentOptionsBeforeWrite;
     OnAfterWrite := @EnvironmentOptionsAfterWrite;
@@ -1300,8 +1299,8 @@ begin
 
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=GetLazarusVersionString;
-  //debugln(['TMainIDE.LoadGlobalOptions ',EnvOptsCfgExisted,' diff=',OldVer<>NowVer,' Now=',NowVer,' Old=',OldVer,' Comp=',CompareLazarusVersion(NowVer,OldVer)]);
-  if EnvOptsCfgExisted and (OldVer<>NowVer) then
+  //debugln(['TMainIDE.LoadGlobalOptions ',FEnvOptsCfgExisted,' diff=',OldVer<>NowVer,' Now=',NowVer,' Old=',OldVer,' Comp=',CompareLazarusVersion(NowVer,OldVer)]);
+  if FEnvOptsCfgExisted and (OldVer<>NowVer) then
   begin
     IsUpgrade:=CompareLazarusVersion(NowVer,OldVer)>0;
     if OldVer='' then
@@ -1387,7 +1386,6 @@ var
   CfgCache: TPCTargetConfigCache;
   OldLazDir: String;
   Note: string;
-  OI: TSimpleWindowLayout;
   ConfigFile: string;
 begin
   {$IFDEF DebugSearchFPCSrcThread}
@@ -1466,10 +1464,6 @@ begin
       Application.Terminate;
       exit;
     end;
-    // show OI with empty configuration
-    OI := IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(DefaultObjectInspectorName);
-    if OI<>nil then
-      OI.Visible := True;
     EnvironmentOptions.Save(true);
     if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
       // fetch new translations
@@ -1509,6 +1503,9 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
   MainBuildBoss.SetupTransferMacros;
+
+  // set flag to track if a local or user specific environment options configuration file existed
+  FEnvOptsCfgExisted := FileExistsCached(EnvironmentOptions.GetDefaultConfigFilename);
 
   // load options
   CreatePrimaryConfigPath;
@@ -2127,6 +2124,8 @@ begin
 end;
 
 procedure TMainIDE.SetupObjectInspector;
+var
+  OIWindowLayout: TSimpleWindowLayout;
 begin
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
@@ -2135,6 +2134,15 @@ begin
 
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
   ShowTabOrderEditor:=@mnuViewTabOrderClicked;
+
+  // always show the object inspector in case no local or user specific environment
+  // options configuration file existed
+  if not FEnvOptsCfgExisted then
+  begin
+    OIWindowLayout := IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(DefaultObjectInspectorName);
+    if OIWindowLayout <> nil then
+      OIWindowLayout.Visible := True;
+  end;
 end;
 
 procedure TMainIDE.SetupFormEditor;
