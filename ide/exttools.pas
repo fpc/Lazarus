@@ -1754,7 +1754,7 @@ var
   fs: TFileStream;
   i: Integer;
 begin
-  s:='['+IntToStr(GetThreadID)+'] ';
+  s:='['+IntToStr(PtrUint(GetThreadID))+'] ';
   for i:=low(Args) to High(Args) do
     s:=s+Args[i];
   s:=s+sLineBreak;
