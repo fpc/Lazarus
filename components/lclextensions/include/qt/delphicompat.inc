@@ -31,15 +31,8 @@ end;
 {$i ../generic/unicodefunctions.inc}
 
 function GetBkColor(DC:HDC):COLORREF;
-var
-  Color: PQColor;
 begin
-  if QtWidgetSet.IsValidDC(DC) then
-  begin
-    Color := TQtDeviceContext(DC).BackgroundBrush.getColor;
-    TQColorToColorRef(Color^, Result);
-  end else
-    Result := CLR_INVALID;
+  Result := LCLIntf.GetBkColor(DC);
 end;
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc,
@@ -51,17 +44,7 @@ end;
 
 function GetCurrentObject(hdc: HDC; uObjectType: UINT): HGDIOBJ;
 begin
-  Result := 0;
-  if QtWidgetSet.IsValidDC(hdc) then
-  with TQtDeviceContext(hdc) do
-  begin      {TODO: FIXME}
-    case uObjectType of
-      OBJ_BITMAP: Result := HGDIOBJ(vImage);
-      OBJ_BRUSH: Result := HGDIOBJ(vBrush);
-      OBJ_FONT: Result := HGDIOBJ(vFont);
-      OBJ_PEN: Result := HGDIOBJ(vPen);
-    end;
-  end;
+  Result := LCLIntf.GetCurrentObject(hdc, uObjectType);
 end;
 
 function GetDoubleClickTime: UINT;
@@ -73,7 +56,7 @@ function GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
   var Size: TSize): BOOL;
 begin
-  Result := QtWidgetSet.GetTextExtentExPoint(DC, Str, Count, MaxWidth, MaxCount, PartialWidths, Size);
+  Result := LCLIntf.GetTextExtentExPoint(DC, Str, Count, MaxWidth, MaxCount, PartialWidths, Size);
 end;
 
 function GetTextAlign(hDC:HDC): LongWord;
@@ -102,8 +85,8 @@ begin
 end;
 
 function InvertRect(DC: HDC; const lprc: TRect): Boolean;
-var
-  {%H-}DCOrigin: TQtPoint;
+//var
+//  {%H-}DCOrigin: TQtPoint;
 begin
   //todo: see the windows result when rect is invalid
   Result := QtWidgetSet.IsValidDC(DC) and (lprc.Bottom > lprc.Top)
@@ -121,6 +104,9 @@ function OffsetRgn(hrgn:HRGN; nxOffset, nYOffset:longint):longint;
 var
   Region: TQtRegion;
 begin
+  Result := NULLREGION;
+  if hrgn = 0 then
+    Exit;
   Region := TQtRegion(hrgn);
   QRegion_translate(Region.FHandle, nxOffset, nYOffset);
   Result := Region.GetRegionType;
@@ -128,7 +114,7 @@ end;
 
 function RedrawWindow(hWnd:THandle; lprcUpdate:PRECT; hrgnUpdate:HRGN; flags:LongWord):BOOLEAN;
 begin
-  Result := QtWidgetSet.RedrawWindow(hWnd, lprcUpdate, hrgnUpdate, flags);
+  Result := LCLIntf.RedrawWindow(hWnd, lprcUpdate, hrgnUpdate, flags);
 end;
 
 function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT): Boolean;
@@ -172,6 +158,7 @@ type
     FID: UINT_PTR;
     FHandle: THandle;
     FControl: TWinControl;
+    FAppObject: QObjectH;
   public
     constructor Create(hWnd: THandle; nIDEvent: UINT_PTR; TimerFunc: TTimerNotify);
     destructor Destroy; override;
@@ -199,11 +186,6 @@ type
     function Get(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TQtTimerEx;
   end;
 
-  TQtWidgetSetHack = Class(TWidgetSet)
-  private
-    App: QApplicationH;
-  end;
-
 var
   FTimerList: TTimerList;
 
@@ -215,17 +197,18 @@ var
 begin
   inherited Create;
   FDeleteLater := True;
+  FAppObject := QCoreApplication_instance();
   FCallbackFunc := TimerFunc;
   FID := nIDEvent;
   FControl := FindControl(hWnd);
   FHandle := hWnd;
-  if hWnd <> 0 then
+  if QtWidgetSet.IsValidHandle(hWnd) then
   begin
     FWidgetHook := QObject_hook_create(TQtWidget(hWnd).TheObject);
     QObject_hook_hook_destroyed(FWidgetHook, @signalWidgetDestroyed);
   end;
   //very big ultra extreme hack to get the app from QtWidgetset
-  TheObject := QTimer_create({%H-}TQtWidgetSetHack(QtWidgetSet).App);
+  TheObject := QTimer_create(FAppObject);
   AName := 'tqttimerex';
   QObject_setObjectName(TheObject, @AName);
 
