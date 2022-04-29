@@ -203,7 +203,7 @@ begin
   FID := nIDEvent;
   FControl := FindControl(hWnd);
   FHandle := hWnd;
-  if hWnd <> 0 then
+  if QtWidgetSet.IsValidHandle(hWnd) then
   begin
     FWidgetHook := QObject_hook_create(TQtWidget(hWnd).TheObject);
     QObject_hook_hook_destroyed(FWidgetHook, @signalWidgetDestroyed);
