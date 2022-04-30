@@ -58,8 +58,8 @@ var
 
 function Intersect(p1, p2: TPoint; y: Integer): Integer;
 begin
-  if p1.x = p2.x then
-    Result := p1.x
+  if p1.y = p2.y then
+    Result := (p1.x + p2.x) div 2
   else
     Result := round((p2.x - p1.x) / (p2.y - p1.y) * (y - p1.y) + p1.x);
 end;
@@ -99,15 +99,14 @@ begin
   Chart.Drawer.Pen := Pen;
   yref := Chart.YGraphToImage(ReferenceLine.Position);
 
-  i := 0;
-  gp := DoublePoint(Data[i].X, Data[i].Y);
+  gp := DoublePoint(Data[0].X, Data[0].Y);
   p1 := Chart.GraphToImage(gp);
   if showDataPoints then begin
     Chart.Drawer.SetPenParams(psSolid, GetColor(p1.y, yref));
-    DrawCircle(p2, GetColor(p2.y, yref), RADIUS);
+    DrawCircle(p1, GetColor(p1.y, yref), RADIUS);
   end;
 
-  for i:=0 to High(Data)-1 do begin
+  for i := 1 to High(Data)-1 do begin
     gp := DoublePoint(Data[i].X, Data[i].Y);
     p2 := Chart.GraphToImage(gp);
     if (p2.y - yref) * (p1.y - yref) < 0 then begin
