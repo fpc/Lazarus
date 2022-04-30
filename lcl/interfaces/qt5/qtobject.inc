@@ -35,7 +35,8 @@ begin
     WStr := 'plugins';
     QCoreApplication_addLibraryPath(@WStr);
     {$ENDIF}
-    QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
+    // issue #39610
+    // QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
