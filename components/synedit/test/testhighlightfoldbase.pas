@@ -213,9 +213,9 @@ begin
     e := ExpTokens[c];
     //DebugLn([FTheHighLighter.GetToken,' (',FTheHighLighter.GetTokenKind ,') at ', FTheHighLighter.GetTokenPos]);
     if etiKind in e.Flags then
-      AssertEquals(Name + ' Kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c),  e.ExpKind, FTheHighLighter.GetTokenKind);
+      AssertEquals(Name + ' Kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+'Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),  e.ExpKind, FTheHighLighter.GetTokenKind);
     if etiAttr in e.Flags then
-      AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c),  AttrVal(e.ExpAttr), AttrVal(FTheHighLighter.GetTokenAttribute));
+      AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+'Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),  AttrVal(e.ExpAttr), AttrVal(FTheHighLighter.GetTokenAttribute));
 
     FTheHighLighter.Next;
     inc(c);
