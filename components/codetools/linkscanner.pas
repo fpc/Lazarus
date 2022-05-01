@@ -222,12 +222,13 @@ type
     cmsMultiHelpers,       { helpers can appear in multiple scopes simultaneously }
     cmsArray2dynarray,     { regular arrays can be implicitly converted to dynamic arrays }
     cmsPrefixedAttributes, { enable attributes that are defined before the type they belong to }
+    cmsUnderscoreisSeparator, { _ can be used as separator to group digits in numbers }
+    cmsImplicitFunctionSpecialization, { infer types on calls of generic functions }
 
     // not yet in FPC, supported by pas2js:
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
     cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
-    cmsImplicitFunctionSpecialization, { infer types on calls of generic functions }
     cmsMultiLineStrings    { pas2js: Multiline strings }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
@@ -315,11 +316,12 @@ const
     'MULTIHELPERS',
     'ARRAYTODYNARRAY',
     'PREFIXEDATTRIBUTES',
+    'UNDERSCOREISSEPARATOR',
+    'IMPLICITFUNCTIONSPECIALIZATION',
     // not yet in FPC, supported by pas2js:
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI',
-    'IMPLICITFUNCTIONSPECIALIZATION',
     'MULTILINESTRINGS'
     );
 
