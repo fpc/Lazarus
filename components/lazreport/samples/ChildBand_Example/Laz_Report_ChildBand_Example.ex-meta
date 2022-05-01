@@ -1,0 +1,5 @@
+{ "Laz_Report_ChildBand_Example" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","child","filter","TfrBand"],
+   "Description" : "Demonstrates filtering LazReport content using the Band approach.\n\nRequires the LazReport package be installed. \n"}
+}

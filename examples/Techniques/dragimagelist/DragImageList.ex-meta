@@ -1,0 +1,5 @@
+{ "DragImageList" : {
+   "Category" : "General",
+   "Keywords" : ["drag and drop","drag","Images", "Needs Work"],
+   "Description" : "This example demonstrates the usage of DragImageList. Or perhaps Drag and Drop.\n\nYou will see Button image cursor while drag.  This Button image is from the DragImageList. You can place any other image there to show it while drag operation.\n\nShould the cursor change when dragged image is over a valid target ?"}
+}

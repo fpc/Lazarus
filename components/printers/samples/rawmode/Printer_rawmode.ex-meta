@@ -1,0 +1,11 @@
+{
+  "Printer_rawmode" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Printer",
+      "raw",
+      "dot matrix"
+    ],
+    "Description" : "Shows how to write to a dot matrix in raw mode. Probably not very useful (or safe) on the more modern page orientated printers. So, please take care !"
+  }
+}

@@ -1,5 +1,5 @@
 { "cairocanvas_example" : {
-   "Category" : "Techniques",
+   "Category" : "General",
    "Keywords" : ["Cairo","PDF","Postscript","svg","png"],
-   "Description" : "Package for use libcairo in fpc. This example does NOT display a GUI, it writes out a number of files, PDF, PS, SVG and PNG the content of which generated within the example.\n\nThis cairocanvas example require the Cairo Graphics and Pango libraries.\n\nSee the associated readme.txt file.\n\n"}
+   "Description" : "Package for use libcairo in fpc. This example does NOT display a GUI, it writes out a number of files, PDF, PS, SVG and PNG the content of which are generated within the example.\n\nThis cairocanvas example require the Cairo Graphics and Pango libraries.\n\nSee the associated readme.txt file.\n\n"}
 }

@@ -1,5 +1,13 @@
-{ "AggPas_LCLDemo1_example" : {
-   "Category" : "Techniques",
-   "Keywords" : ["AggPas","2d vector","Graphics","AGG","Textout"],
-   "Description" : "Draws and writes some text on a AggLCLCanvas.\n\nAggPas is an Object Pascal port of the Anti-Grain Geometry library - AGG,  originally written by Maxim Shemanarev in industrially standard C++. \n AGG as well as AggPas is Open Source and free of charge 2D vector graphic\n library.\n\nFor further information, see the readme.txt file in <LazDir>/components/aggpas."}
+{
+  "AggPas_LCLDemo1_example" : {
+    "Category" : "General",
+    "Keywords" : [
+      "AggPas",
+      "2d vector",
+      "Graphics",
+      "AGG",
+      "Textout"
+    ],
+    "Description" : "Draws and writes some text on a AggLCLCanvas.\n\nAggPas is an Object Pascal port of the Anti-Grain Geometry library - AGG,  originally written by Maxim Shemanarev in industrially standard C++. \n AGG as well as AggPas is Open Source and free of charge 2D vector graphic\n library.\n\nFor further information, see the readme.txt file in <LazDir>/components/aggpas."
+  }
 }

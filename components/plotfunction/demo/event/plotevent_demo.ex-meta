@@ -1,5 +1,11 @@
-{ "plotevent_demo" : {
-   "Category" : "Components",
-   "Keywords" : ["plotpanel","event driven","plotting data"],
-   "Description" : "Demonstrates plotting data obtained from a procedure. That procedure could be a Lazarus Event (but is not in the example).\n"}
+{
+  "plotevent_demo" : {
+    "Category" : "General",
+    "Keywords" : [
+      "plotpanel",
+      "event driven",
+      "plotting data"
+    ],
+    "Description" : "Demonstrates plotting data obtained from a procedure. That procedure could be a Lazarus Event (but is not in the example).\n"
+  }
 }

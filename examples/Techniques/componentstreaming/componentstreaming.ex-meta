@@ -1,6 +1,10 @@
 {
-"ComponentStreaming" : {
-    "Category" : "Techniques",
-    "Keywords" : ["Stream", "Component"],
-    "Description" : "This example demonstrates how to stream a component to a stream in binary format and how to reconstruct the component from a stream. This technique can be used to save components to disk or to transfer them via network. Of course this also works for your own classes as long as they are descendants of TComponent."}
+  "ComponentStreaming" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Stream",
+      "Component"
+    ],
+    "Description" : "This example demonstrates how to stream a component to a stream in binary format and how to reconstruct the component from a stream. This technique can be used to save components to disk or to transfer them via network. Of course this also works for your own classes as long as they are descendants of TComponent."
+  }
 }

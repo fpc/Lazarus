@@ -1,5 +1,11 @@
-{ "designnonlcl" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Design", "non LCL", "Package"],
-   "Description" : "This package is an example how to to use the lazarus IDE form designer to design non LCL widgets like web pages, UML diagrams or other widgetsets like fpgui.\n\nIts a Package that must be installed, not a project."}
+{
+  "designnonlcl" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Design",
+      "non LCL",
+      "Package"
+    ],
+    "Description" : "This package is an example how to to use the lazarus IDE form designer to design non LCL widgets like web pages, UML diagrams or other widgetsets like fpgui.\n\nIts a Package that must be installed, not a project."
+  }
 }

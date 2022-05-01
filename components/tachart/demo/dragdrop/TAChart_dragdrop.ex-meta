@@ -1,0 +1,5 @@
+{ "TAChart_dragdrop" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "Drag and Drop", "DragDrop"],
+   "Description" : "Demonstrates dragging chart data points for both line and bar chart."}
+}

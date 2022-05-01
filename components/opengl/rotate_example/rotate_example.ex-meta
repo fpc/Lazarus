@@ -1,5 +1,11 @@
-{ "rotate_example" : {
-   "Category" : "Techniques",
-   "Keywords" : ["opengl", "graphics", "rotating cube"],
-   "Description" : "Demo, using OpenGL of the classic rotating colored cube. "}
+{
+  "rotate_example" : {
+    "Category" : "General",
+    "Keywords" : [
+      "opengl",
+      "graphics",
+      "rotating cube"
+    ],
+    "Description" : "Demo, using OpenGL of the classic rotating colored cube. "
+  }
 }

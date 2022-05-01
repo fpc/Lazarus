@@ -1,0 +1,5 @@
+{ "detail_reports" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","Interbase"],
+   "Description" : "Demonstrates importing data from databases and speadsheets into a LazReport.\n\nRequires lazReport, lr_OfficeImport,  lr_tdbf, lr_SqlDB packages.\nRequires FPSpreadsheet from OPM (yes, including dcpcrypt).\nRequires the Firebird libraries to run the Firebird part of demo but builds fine without.\n"}
+}

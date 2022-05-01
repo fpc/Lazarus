@@ -5,26 +5,26 @@ unit Unit1;
 interface
 
 uses
-    Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
 
 type
 
-    { TForm1 }
+  { TForm1 }
 
-    TForm1 = class(TForm)
-        ButtonHello: TButton;
-        ButtonClose: TButton;
-        Memo1: TMemo;
-        procedure ButtonCloseClick(Sender: TObject);
-        procedure ButtonHelloClick(Sender: TObject);
-    private
+  TForm1 = class(TForm)
+    ButtonHello: TButton;
+    ButtonClose: TButton;
+    Memo1: TMemo;
+    procedure ButtonCloseClick(Sender: TObject);
+    procedure ButtonHelloClick(Sender: TObject);
+  private
 
-    public
+  public
 
-    end;
+  end;
 
 var
-    Form1: TForm1;
+  Form1: TForm1;
 
 implementation
 
@@ -34,12 +34,12 @@ implementation
 
 procedure TForm1.ButtonHelloClick(Sender: TObject);
 begin
-    Memo1.Append('Hello World');
+  Memo1.Append('Hello');
 end;
 
 procedure TForm1.ButtonCloseClick(Sender: TObject);
 begin
-    close;
+  Close;
 end;
 
 end.

@@ -1,0 +1,5 @@
+{ "TAChart_sorted_source" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","sorting"],
+   "Description" : "Demonstrates sorting the data that is the source for a number of different chart plots."}
+}

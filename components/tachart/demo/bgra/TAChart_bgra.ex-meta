@@ -1,0 +1,5 @@
+{ "TAChart_bgra" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","bgra","bitmap","bgrabitmappack","TAGUIConnectorBGRA","BGRAGradients"],
+   "Description" : "Demonstrates using bgra to enhance the appearance of charts.\nThis demo requires both BGRABitmap from the OnLine Package Manager and TACharBGRA from the Lazarus supplied packages.\n"}
+}

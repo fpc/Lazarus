@@ -1,0 +1,5 @@
+{ "TAChart_nan" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "nan", "not a number"],
+   "Description" : "Demonstrates how TAChart deals with a data series that contain a nan (not a number). "}
+}

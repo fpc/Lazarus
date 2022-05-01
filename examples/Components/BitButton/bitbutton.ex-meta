@@ -1,7 +1,9 @@
 {
-"BitButton" : { 
-  "Category" : "Components", 
-  "Keywords" : ["TBitButton"], 
-  "Description" : "This example shows how a BitButton, that is a button with a small bitmap, can be used."}
+  "BitButton" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TBitButton"
+    ],
+    "Description" : "This example shows how a BitButton, that is a button with a small bitmap, can be used."
+  }
 }
- 

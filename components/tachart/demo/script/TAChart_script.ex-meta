@@ -1,0 +1,5 @@
+{ "TAChart_script" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "Pascal Script", "PSCompiler"],
+   "Description" : "Demonstrates plotting the output of a short Pascal Script. "}
+}

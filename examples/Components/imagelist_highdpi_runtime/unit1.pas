@@ -72,7 +72,8 @@ procedure TImageListHelper.AddLazarusPNGs(const aBaseFileName: string);
 var
   A: array of string;
 const
-  BaseDir = '..'+PathDelim+'..'+PathDelim+'images'+PathDelim+'menu'+PathDelim;
+  //BaseDir = '..'+PathDelim+'..'+PathDelim+'images'+PathDelim+'menu'+PathDelim;
+  BaseDir = '';
 begin
   SetLength(A, 3);
   A[0] := BaseDir+aBaseFileName+'.png';
@@ -103,7 +104,8 @@ begin
   IL.RegisterResolutions([16, 24, 32]);
   IL.AddLazarusPNGs('menu_undo');
   IL.AddLazarusPNGs('menu_redo');
-  IL.AddIconFromFile('..'+PathDelim+'..'+PathDelim+'images'+PathDelim+'mainiconproject.ico');
+  IL.AddIconFromFile('mainiconproject.ico');
+  //IL.AddIconFromFile('..'+PathDelim+'..'+PathDelim+'images'+PathDelim+'mainiconproject.ico');
   IL.OnGetWidthForPPI := @ILOnGetWidthForImagePPI;
   IL.Scaled := True;
 

@@ -1,0 +1,5 @@
+{ "CoolToolBar" : {
+   "Category" : "General",
+   "Keywords" : ["TCoolBar","TToolBar","TActionList","TAction","IniFile"],
+   "Description" : "Demonstrates TCoolBar and TToolBar in a number of modes. Also uses TAction and TActionList. Saves and loads the coolbar to and from an ini file."}
+}

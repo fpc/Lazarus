@@ -1,0 +1,5 @@
+{ "LazReport_sql_demo" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","Interbase","Firebird"],
+   "Description" : "Requires lr_tdbf, lr_SqlDB,  lr_dialogdesign packages to build.\nRequires InterBase / Firebird client libraries to run.\n"}
+}

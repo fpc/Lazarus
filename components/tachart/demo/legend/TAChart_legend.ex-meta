@@ -1,0 +1,5 @@
+{ "TAChart_legend" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Legend"],
+   "Description" : "Demonstrates various legend styles in a TAChart. Alignment, text attributes etc."}
+}

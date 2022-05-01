@@ -1,5 +1,5 @@
 { "lr_codereport_sample" : {
-   "Category" : "Components",
+   "Category" : "LazReport",
    "Keywords" : ["LazReport","CodeReport","PDF"],
-   "Description" : "Generates a report and can export it as a PDF.\nRequires LazReportPDFExport and lr_CodeReport\n\n "}
+   "Description" : "Generates a report and can export it as a PDF.\nRequires LazReportPDFExport and lr_CodeReport\nRequires  powerPDF from the OnLine Package Manager (OPM)."}
 }

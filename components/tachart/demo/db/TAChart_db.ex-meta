@@ -1,0 +1,5 @@
+{ "TAChart_db" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "dbase", "MemDataset"],
+   "Description" : "Demonstrates plotting a TAChart from data from a database."}
+}

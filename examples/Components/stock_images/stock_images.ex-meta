@@ -1,5 +1,5 @@
 { "stock_images" : {
-   "Category" : "Components",
-   "Keywords" : ["Images", "Dialog Images", "Button Images"],
+   "Category" : "General",
+   "Keywords" : ["Images","Dialog Images","Button Images", "TTrackBar"],
    "Description" : "Displayes, interactivly, the \"stock Images\" that Lazarus uses in Dialogs and Buttons."}
 }

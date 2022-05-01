@@ -1,0 +1,5 @@
+{ "TAChart_save" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","save file","PNG","SVG","BMP","JPG","JPEG"],
+   "Description" : "Shows how to save a chart as a BMP, SVG, JPEG or PNG."}
+}

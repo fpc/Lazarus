@@ -1,5 +1,13 @@
-{ "AggPasPango_example" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Pango","AGG","textout", "Anti-Grain Geometry", "2D Vector Graphics"],
-   "Description" : "Demonstrates using Pango to write text on a bitmap and display it in a Lazarus widget.\n\nAggPas is an Object Pascal port of the Anti-Grain Geometry library - AGG,\n originally written by Maxim Shemanarev in industrially standard C++. \n AGG as well as AggPas is Open Source and free of charge 2D vector graphic\n library.\n\nFor further information, see the readme.txt file in <LazDir>/components/aggpas."}
+{
+  "AggPasPango_example" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Pango",
+      "AGG",
+      "textout",
+      "Anti-Grain Geometry",
+      "2D Vector Graphics"
+    ],
+    "Description" : "Demonstrates using Pango to write text on a bitmap and display it in a Lazarus widget.\n\nAggPas is an Object Pascal port of the Anti-Grain Geometry library - AGG,\n originally written by Maxim Shemanarev in industrially standard C++. \n AGG as well as AggPas is Open Source and free of charge 2D vector graphic\n library.\n\nFor further information, see the readme.txt file in <LazDir>/components/aggpas."
+  }
 }

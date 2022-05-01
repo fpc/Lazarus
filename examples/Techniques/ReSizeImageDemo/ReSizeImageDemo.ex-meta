@@ -1,8 +1,11 @@
-{ "ReSizeImageDemo" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Needs Work", "Resize", "FormResize"],
-   "Description" : " LCL demo of redraw event order for images, panels and forms. it should work  for all widget sets eg Windows, qt, OSX, GTK etc.
-
-Note: I cannot quite understand what this is demonstrating, maybe someone else can improve the metadata ?  DRB
-"}
+{
+  "ReSizeImageDemo" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Needs Work",
+      "Resize",
+      "FormResize"
+    ],
+    "Description" : " LCL demo of redraw event order for images, panels and forms. it should work  for all widget sets eg Windows, qt, OSX, GTK etc.\n\nNote: I cannot quite understand what this is demonstrating, maybe someone else can improve the metadata ?  DRB\n"
+  }
 }

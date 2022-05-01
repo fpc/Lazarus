@@ -1,5 +1,12 @@
-{ "Google_calendar_demo" : {
-   "Category" : "Techniques",
-   "Keywords" : ["google api","calendar","Synapse", "Needs Work"],
-   "Description" : "Demonstrates access to the Google API, as long as Synapse is installed, compiles and starts up fine but not tested because I don't have a Google API Access Code. Its possible that Google no longer supports the OAuth mode that is used here as testing generates a Google Invalid Client rather than a signing request. And does not behave very well on a 'cancel'. \nRequires Synapse from OPM\nRequires the use of a Google API Access Code"}
+{
+  "Google_calendar_demo" : {
+    "Category" : "General",
+    "Keywords" : [
+      "google api",
+      "calendar",
+      "Synapse",
+      "Needs Work"
+    ],
+    "Description" : "Demonstrates access to the Google API, as long as Synapse is installed, compiles and starts up fine but not tested because I don't have a Google API Access Code. Its possible that Google no longer supports the OAuth mode that is used here as testing generates a Google Invalid Client rather than a signing request. And does not behave very well on a 'cancel'. \nRequires Synapse from OPM\nRequires the use of a Google API Access Code"
+  }
 }

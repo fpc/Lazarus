@@ -1,5 +1,5 @@
 { "jpeg" : {
-   "Category" : "Techniques",
+   "Category" : "General",
    "Keywords" : ["Images","jpeg","jpg","TOpenPictureDialog","TImage","TJPEGImage"],
-   "Description" : "Opens and saves a JPEG image. Note, the SRC has a mention of the need to open the JPEG page first but that appears no longer needed. Further it mentions a README.txt but thats apparently no longer here."}
+   "Description" : "Opens and saves a JPEG image. Note, the SRC has a mention of the need to open the JPEG page first but that appears no longer needed. Further it mentions a README.txt but that is apparently no longer here."}
 }

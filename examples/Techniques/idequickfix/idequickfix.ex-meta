@@ -1,5 +1,10 @@
-{ "IDEQuickFix" : {
-   "Category" : "Techniques",
-   "Keywords" : ["IDE", "Package"],
-   "Description" : "This is an example of how to make an IDE Package. Its not a project you can run, is a package you install."}
+{
+  "IDEQuickFix" : {
+    "Category" : "General",
+    "Keywords" : [
+      "IDE",
+      "Package"
+    ],
+    "Description" : "This is an example of how to make an IDE Package. Its not a project you can run, is a package you install."
+  }
 }

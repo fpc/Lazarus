@@ -1,0 +1,11 @@
+{
+  "test_lr_formstorage" : {
+    "Category" : "LazReport",
+    "Keywords" : [
+      "LazReport",
+      "prompt",
+      "input"
+    ],
+    "Description" : "Demonstrates prompting the end user for input that is used in a LazReport\n\nRequires lr_DialogDesign package be installed.\n"
+  }
+}

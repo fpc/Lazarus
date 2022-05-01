@@ -1,0 +1,5 @@
+{ "TAChart_basic" : {
+   "Category" : "Beginner",
+   "Keywords" : ["TAChart","basic"],
+   "Description" : "A good introduction to using TAChart, will draw a number of different charts (based on random data) in just over 300 lines of code.\n\nThere are more TAChart examples under the TAChart category."}
+}

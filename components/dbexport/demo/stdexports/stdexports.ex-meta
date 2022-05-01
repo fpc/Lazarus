@@ -1,5 +1,5 @@
 { "stdexports" : {
    "Category" : "DBase",
    "Keywords" : ["dbase","database","export","Needs work"],
-   "Description" : "Demonstrates exporting a small database in a number of formats. Accepts an input file of your choice s may even be a useful utility.\nSee also dbexport_demo.\nPlease see the associated readme.txt file.\nAppears to have some UTF8 issues, char may not be displayed correctly and some Pango errors reported to console."}
+   "Description" : "Demonstrates exporting a small database in a number of formats. Accepts an input file of your choice s may even be a useful utility.\nSee also dbexport_demo.\nPlease see the associated readme.txt file.\nAppears to have some UTF8 issues, char may not be displayed correctly and some Pango errors reported to console when opening its own test file."}
 }

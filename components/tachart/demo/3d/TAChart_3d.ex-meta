@@ -1,0 +1,5 @@
+{ "TAChart_3d" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","3d"],
+   "Description" : "Demonstrates some 3d charts using randomly generated data. Chart1 has three 'series' properties, each one has a data 'source' set to a TRandomChartSource."}
+}

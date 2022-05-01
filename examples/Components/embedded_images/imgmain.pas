@@ -98,9 +98,14 @@ uses
   Types, LCLIntf;
 
 const
-  JPEG_FILE = '../../../images/splash_source/cheetah.jpg';
-  PNG_FILE1 = '../../../images/codetoolsdefines/da_block.png';
-  PNG_FILE2 = '../../../images/icons/lazarus256x256.png';
+  //JPEG_FILE = '../../../images/splash_source/cheetah.jpg';
+  //PNG_FILE1 = '../../../images/codetoolsdefines/da_block.png';
+  //PNG_FILE2 = '../../../images/icons/lazarus256x256.png';
+
+  JPEG_FILE = 'cheetah.jpg';
+  PNG_FILE1 = 'da_block.png';
+  PNG_FILE2 = 'lazarus256x256.png';
+
 
 { TForm1 }
 

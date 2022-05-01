@@ -1,0 +1,5 @@
+{ "TAChart_distance" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "measure", "distance"],
+   "Description" : "How to measure distances on a chart using the mouse."}
+}

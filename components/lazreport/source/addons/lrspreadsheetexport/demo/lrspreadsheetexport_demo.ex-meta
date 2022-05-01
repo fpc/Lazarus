@@ -1,5 +1,11 @@
-{ "lrspreadsheetexport_demo" : {
-   "Category" : "Components",
-   "Keywords" : ["lazreport","spreadsheet","export"],
-   "Description" : "Demonstrates creating and exporting a spreadsheet in several formats, ODS, XLS, XLSX\n\nDepends on fpspreadsheet in OPM, install FIRST !\nDepends on lrSpreadSheetExport.\n\n"}
+{
+  "lrspreadsheetexport_demo" : {
+    "Category" : "General",
+    "Keywords" : [
+      "lazreport",
+      "spreadsheet",
+      "export"
+    ],
+    "Description" : "Demonstrates creating and exporting a spreadsheet in several formats, ODS, XLS, XLSX\n\nDepends on fpspreadsheet in OPM, install FIRST !\nDepends on lrSpreadSheetExport.\n\n"
+  }
 }

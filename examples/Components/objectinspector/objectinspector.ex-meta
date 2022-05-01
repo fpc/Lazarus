@@ -1,5 +1,11 @@
-{ "objectinspector" : {
-   "Category" : "Components",
-   "Keywords" : ["ObjectInspector", "TOIPropertyGrid", "IDE Components"],
-   "Description" : "Demonstrates how the ObjectInspector works, uses TOIPropertyGrid to display the attributes of its own form in an ObjectInspector mode. "}
+{
+  "objectinspector" : {
+    "Category" : "General",
+    "Keywords" : [
+      "ObjectInspector",
+      "TOIPropertyGrid",
+      "IDE Components"
+    ],
+    "Description" : "Demonstrates how the ObjectInspector works, uses TOIPropertyGrid to display the attributes of its own form in an ObjectInspector mode. "
+  }
 }

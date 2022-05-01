@@ -1,0 +1,13 @@
+object TestDaemon: TTestDaemon
+  OldCreateOrder = False
+  OnStart = DataModuleStart
+  OnStop = DataModuleStop
+  OnPause = DataModulePause
+  OnContinue = DataModuleContinue
+  AfterInstall = DataModuleAfterInstall
+  AfterUnInstall = DataModuleAfterUnInstall
+  Height = 150
+  HorizontalOffset = 371
+  VerticalOffset = 31
+  Width = 150
+end

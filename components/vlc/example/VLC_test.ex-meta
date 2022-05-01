@@ -1,0 +1,11 @@
+{
+  "VLC_test" : {
+    "Category" : "General",
+    "Keywords" : [
+      "VLC",
+      "video",
+      "mp4"
+    ],
+    "Description" : "Makes a small app that uses the VLC libraries, to display video content.\n\nNote that it generates a number of warnings to console and does not seem to be particularly happy working under the debugger in the IDE. \nNote that the Qt option is Qt4.\n\n"
+  }
+}

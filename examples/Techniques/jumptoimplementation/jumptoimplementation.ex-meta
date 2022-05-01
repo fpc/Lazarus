@@ -1,6 +1,10 @@
 {
-"JumpToImplementation" : {
-    "Category" : "Techniques",
-    "Keywords" : ["IDE", "Menu"],
-    "Description" : "Demonstrates how to add a new menu item to the IDE. Its not a project, see the individual files. This example adds the Jump To Implementation menu item."}
+  "JumpToImplementation" : {
+    "Category" : "General",
+    "Keywords" : [
+      "IDE",
+      "Menu"
+    ],
+    "Description" : "Demonstrates how to add a new menu item to the IDE. Its not a project, see the individual files. This example adds the Jump To Implementation menu item."
+  }
 }

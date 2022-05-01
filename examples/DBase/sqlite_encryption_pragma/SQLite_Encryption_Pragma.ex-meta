@@ -1,0 +1,5 @@
+{ "SQLite_Encryption_Pragma" : {
+   "Category" : "DBase",
+   "Keywords" : ["DBase","SQLite3","Encryption","Pragma","Needs Work"],
+   "Description" : "Simple SQLite3 Demo with Encryption and Pragma. Creation of an SQLite3 Database, Encrypting, Changing the key, Creating Tables, Index and adding rows, performing queries.\n\nIs, however, broken on Unix systems because its assumes the sqlite3 library is called sqlite3.dll !  Leaving it here for now as it probably works under Windows but needs fixing!\n\nSee the included readme.txt file.\n"}
+}

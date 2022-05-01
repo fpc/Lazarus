@@ -1,10 +1,12 @@
-{ "Cell_OverFlow" : {
-   "Category" : "Components",
-   "Keywords" : ["Grid", "Cell", "Overflow", "TStringGrid"],
-   "Description" : "This sample project implements overflowing text in a StringGrid descendant. This means that text which is longer than the width of the column is not truncated at the cell border, but is allowed to flow into adjacent empty cells.
-
-The code is based on a forum contribution by user Geepster 
-(http://forum.lazarus.freepascal.org/index.php/topic,35869.msg238079.html#msg238079)
-
-It was extended to correctly handle left, right and centered text alignments."}
+{
+  "Cell_OverFlow" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Grid",
+      "Cell",
+      "Overflow",
+      "TStringGrid"
+    ],
+    "Description" : "This sample project implements overflowing text in a StringGrid descendant. This means that text which is longer than the width of the column is not truncated at the cell border, but is allowed to flow into adjacent empty cells.\n\nThe code is based on a forum contribution by user Geepster \n(http://forum.lazarus.freepascal.org/index.php/topic,35869.msg238079.html#msg238079)\n\nIt was extended to correctly handle left, right and centered text alignments."
+  }
 }

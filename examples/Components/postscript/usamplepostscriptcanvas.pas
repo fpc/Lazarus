@@ -223,7 +223,8 @@ begin
 
     png := TPortableNetworkGraphic.Create;
     try
-      png.LoadFromFile('../../images/splash_logo.png');
+      png.LoadFromFile('splash_logo.png');
+      //png.LoadFromFile('../../images/splash_logo.png');
       StretchDraw(bounds(Sx(190), Sy(590), Sx(round(png.Width*0.60)),Sy(round(png.height*0.60))),png);
     finally
       png.Free;

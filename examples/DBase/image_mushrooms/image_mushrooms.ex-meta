@@ -1,7 +1,0 @@
-{ "Image_Mushrooms" : {
-   "Category" : "DBase",
-   "Keywords" : ["DBase","SQLIte3","DBNavigator","Images","SQLQuery","Firebird", "LazReport"],
-   "Description" : "Makes a small app that displays images of mushrooms and some text about each. Uses SQLite or Firebird, SqlDB, LazReport and FBAdmin. Demonstrates creating tables and running multiple SQLStatements.
-
-See the included readme.txt file."}
-}

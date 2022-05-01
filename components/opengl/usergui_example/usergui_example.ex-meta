@@ -1,5 +1,11 @@
-{ "usergui_example" : {
-   "Category" : "Techniques",
-   "Keywords" : ["opengl", "OpenGlContext", "Controls"],
-   "Description" : "Includes a unit, OpenGLContext that has a number of controls build using OpenGL and demonstrates a basic (and quite retro looking) user interface, buttons, sliders etc."}
+{
+  "usergui_example" : {
+    "Category" : "General",
+    "Keywords" : [
+      "opengl",
+      "OpenGlContext",
+      "Controls"
+    ],
+    "Description" : "Includes a unit, OpenGLContext that has a number of controls build using OpenGL and demonstrates a basic (and quite retro looking) user interface, buttons, sliders etc."
+  }
 }

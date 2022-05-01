@@ -1,6 +1,13 @@
-{ "postscript" : {
-   "Category" : "Components",
-   "Keywords" : ["Postscript", "png", "xpm", "bmp", "Drawing"],
-   "Description" : "How to create a Postscript file, displaying images, text and polygons on it.
-(Note that some functions don't work unless you have specific tools installed but creating the PS file requires nothing but Lazarus.)"}
+{
+  "postscript" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Postscript",
+      "png",
+      "xpm",
+      "bmp",
+      "Drawing"
+    ],
+    "Description" : "How to create a Postscript file, displaying images, text and polygons on it.\n(Note that some functions don't work unless you have specific tools installed but creating the PS file requires nothing but Lazarus.)"
+  }
 }

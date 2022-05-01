@@ -1,0 +1,5 @@
+{ "TAChart_axis" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "Axis"],
+   "Description" : "Demonstrates a range of styles and types of axis on a chart."}
+}
