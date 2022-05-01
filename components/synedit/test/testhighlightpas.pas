@@ -68,6 +68,14 @@ type
 
 implementation
 
+const
+  TK_Comma   = tkSymbol;
+  TK_Semi    = tkSymbol;
+  TK_Dot     = tkSymbol;
+  TK_Colon   = tkSymbol;
+  TK_Equal   = tkSymbol;
+  TK_Bracket = tkSymbol;
+
 operator := (a: TtkTokenKind) : TExpTokenInfo;
 begin
   result := default(TExpTokenInfo);
@@ -659,6 +667,88 @@ begin
       tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "write"
       tkSymbol
     ]);
+  {%endregion}
+
+  {%region property and default}
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type TFoo = class',
+         'default,default:default;',
+         'private type',
+         'default=integer;',
+         'private',
+         'a: default;',
+         'default:default.default;',
+ {8}     'function default(default:default):default;',
+ {9}     'function default(default:default.default):default.default;',
+{10}     'property default[default:default]:default read default write default; default;',
+{11}     'property default:default read default default default;',
+{12}     'property default:default index default read default default default-default+default;',
+         // property could read a field inside an embedded record
+{13}     'property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',
+         ''
+      ]);
+
+  CheckTokensForLine('FIELD: default,default:default;',  2,
+    [ tkIdentifier, TK_Comma, tkIdentifier,    // default , default
+      TK_Colon, tkIdentifier, TK_Semi                   // : default;
+    ]);
+
+  CheckTokensForLine('TYPE: default=integer;',  4,
+    [ tkIdentifier, TK_Equal, tkIdentifier, TK_Semi // default = integer ;
+    ]);
+
+  CheckTokensForLine('FIELD: default:default.default;',  7,
+    [ tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi   // default : default . default ;
+    ]);
+
+  CheckTokensForLine('function default(default:default):default;',  8,
+    [ tkKey, tkSpace, tkIdentifier,                         // function default
+      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,  // ( default : default )
+      TK_Colon, tkIdentifier, TK_Semi                       // : default;
+    ]);
+
+  CheckTokensForLine('function default(default:default.default):default.default;',  9,
+    [ tkKey, tkSpace, tkIdentifier,                           // function default
+      TK_Bracket, tkIdentifier, TK_Colon,                     // ( default :
+      tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,         // default . default )
+      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // : default . default;
+    ]);
+
+  CheckTokensForLine('property default[default:default]:default read default write default; default;',  10,
+    [ tkKey, tkSpace, tkIdentifier, TK_Bracket, tkIdentifier,     // property default[default
+      TK_Colon, tkIdentifier, TK_Bracket, TK_Colon, tkIdentifier, // :default]:default
+      tkSpace, tkKey, tkSpace, tkIdentifier,  // read default
+      tkSpace, tkKey, tkSpace, tkIdentifier,  // write default
+      TK_Semi, tkSpace, tkKey, TK_Semi // ; default;
+    ]);
+
+  CheckTokensForLine('property default:default read default default default;',  11,
+    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,   //property default:default
+      tkSpace, tkKey, tkSpace, tkIdentifier, // read default
+      tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi  // default default;
+    ]);
+
+  CheckTokensForLine('property default:default index default read default default default-default+default;',  12,
+    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,  // property default:default
+      tkSpace, tkKey, tkSpace, tkIdentifier, // index default
+      tkSpace, tkKey, tkSpace, tkIdentifier, // read default
+      tkSpace, tkKey, tkSpace, tkIdentifier, // default default
+      tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, TK_Semi // -default+default;
+    ]);
+
+  CheckTokensForLine('property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',  13,
+    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier,  // property default:default.default
+      tkSpace, tkKey, tkSpace, tkComment, tkSpace, // index (C}
+      tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
+      tkKey, tkSpace, tkComment, tkSpace,          // read (C}
+      tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
+      tkComment, tkSpace, // (C}
+      tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace,  // default default.default
+      tkSymbol, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi // * default.default;
+    ]);
+
   {%endregion}
 end;
 
