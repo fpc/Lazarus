@@ -196,8 +196,7 @@ uses LCLProc,
     lazfileutils, fileutil,
     jsonscanner,                        // these are the FPC JSON tools
     base64,
-    laz2_DOM, laz2_XMLRead            // just to get LazarusDirectory, remove if we find a better way !
-    {, IDEOptionsIntf} ;
+    laz2_DOM, laz2_XMLRead;            // just to get LazarusDirectory, remove if we find a better way !
 
 const
     LastUpDate = 'LastUpDate';              // Name of JSON item were we store last update date
@@ -304,6 +303,11 @@ end;
 //                     T     E X A M P L E   D A T A
 // =============================================================================
 
+// Address of this function is passed to a list sort call. We sort on category, Beginners at top
+function CategorySorter( Item1: Pointer;   Item2: Pointer) : Integer;
+begin
+    result := CompareStr(PExRec(Item1)^.Category, PExRec(Item2)^.Category);
+end;
 
 function TExampleData.Count: integer;
 begin
@@ -541,6 +545,7 @@ begin
                             ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
                          end;
     end;
+    ExList.Sort(@CategorySorter);
 //    if ExList.Count = 0 then begin
 //        debugln('TExampleData.LoadExData - found examples = ' + inttostr(ExList.Count));
 //        debugln('Lazarus Dir (ie source tree) = ' + GetLazDir());
