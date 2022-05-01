@@ -1,0 +1,5 @@
+{ "barseriesshapes" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "bar chart", "shapes"],
+   "Description" : "Demonstrates the different shapes that can be used to draw the bars in a bar chart."}
+}

@@ -1,51 +1,22 @@
 object Form1: TForm1
-  Left = 515
-  Height = 226
-  Top = 174
-  Width = 467
+  Left = 323
+  Height = 240
+  Top = 239
+  Width = 320
   Caption = 'Form1'
-  ClientHeight = 226
-  ClientWidth = 467
+  ClientHeight = 240
+  ClientWidth = 320
   LCLVersion = '2.3.0.0'
-  object ButtonHello: TButton
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 10
-    Height = 41
-    Top = 175
-    Width = 103
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 10
-    BorderSpacing.Bottom = 10
-    Caption = 'Say Hello'
-    OnClick = ButtonHelloClick
-    TabOrder = 0
-  end
-  object ButtonClose: TButton
-    AnchorSideRight.Control = Memo1
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonHello
-    AnchorSideBottom.Side = asrBottom
-    Left = 320
-    Height = 41
-    Top = 175
-    Width = 137
-    Anchors = [akRight, akBottom]
-    Caption = 'Close'
-    OnClick = ButtonCloseClick
-    TabOrder = 1
-  end
   object Memo1: TMemo
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonHello
+    AnchorSideBottom.Side = asrBottom
     Left = 10
-    Height = 155
+    Height = 174
     Top = 10
-    Width = 447
+    Width = 300
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 10
     BorderSpacing.Top = 10
@@ -54,7 +25,37 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo1'
     )
-    ScrollBars = ssAutoVertical
+    TabOrder = 0
+  end
+  object ButtonHello: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 30
+    Top = 200
+    Width = 118
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Bottom = 10
+    Caption = 'Say Hello'
+    OnClick = ButtonHelloClick
+    TabOrder = 1
+  end
+  object ButtonClose: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 176
+    Height = 30
+    Top = 200
+    Width = 134
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    Caption = 'Close'
+    OnClick = ButtonCloseClick
     TabOrder = 2
   end
 end

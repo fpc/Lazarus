@@ -1,5 +1,11 @@
-{ "imagelist" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Images", "ImageList", "Effects"],
-   "Description" : "Shows how to load an image and display it in several \"effects\" modes, greyed, hilite, shadowed and 1 bit."}
+{
+  "imagelist" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Images",
+      "ImageList",
+      "Effects"
+    ],
+    "Description" : "Shows how to load an image and display it in several \"effects\" modes, greyed, hilite, shadowed and 1 bit."
+  }
 }

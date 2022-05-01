@@ -1,7 +1,10 @@
-{ "SynAnyHighlighter" : {
-   "Category" : "Components",
-   "Keywords" : ["TSynEdit", "runtime"],
-   "Description" : "This example shows, how the the Keywords, Objects and Constants properties of the class TSynAnySyn can be controlled at runtime.  Text can be highlighted following a number of rules.
-
-"}
+{
+  "SynAnyHighlighter" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TSynEdit",
+      "runtime"
+    ],
+    "Description" : "This example shows, how the the Keywords, Objects and Constants properties of the class TSynAnySyn can be controlled at runtime.  Text can be highlighted following a number of rules.\n\n"
+  }
 }

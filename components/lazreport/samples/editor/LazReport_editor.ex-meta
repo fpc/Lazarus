@@ -1,0 +1,5 @@
+{ "LazReport_editor" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","editor","printing"],
+   "Description" : "A quite expansive demonstration of LazReport including preparing the report in a number of views and printing.\n\nRequires that LazReport, lr_tdbf,  lr_add_function and lr_extexp be installed before building.\nHas an extensive readme.txt file.\n\n"}
+}

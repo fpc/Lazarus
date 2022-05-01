@@ -1,0 +1,5 @@
+{ "TAChart_html" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "html", "export", "svg", "Needs Work"],
+   "Description" : "Draws a chart with some HTML components although its not clear why it does so. Can save or export that chart in WMF (Windows only) or SVG. Can copy that chart, as a bitmap to clipboard (but see below).\n\nHas problems on Linux (at least).\n1. When click the SVG button, fails to load a FreeType font when running in the IDE. OK when standalone.\n2. When click \"copy to clipboard\", a crash is triggered (it should copy a bitmap image).\n3. Horiz size needs to be increased."}
+}

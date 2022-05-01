@@ -1,5 +1,10 @@
-{ "TAChart_lazreport" : {
-   "Category" : "TAChart",
-   "Keywords" : ["TAChart","LazReport"],
-   "Description" : "Load a LazReport into a TAChart.\n\nRequires the package LazReport\n\n"}
+{
+  "TAChart_lazreport" : {
+    "Category" : "LazReport",
+    "Keywords" : [
+      "TAChart",
+      "LazReport"
+    ],
+    "Description" : "Load a LazReport into a TAChart.\n\nRequires the package LazReport\n\n"
+  }
 }

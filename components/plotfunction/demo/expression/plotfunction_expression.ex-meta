@@ -1,5 +1,11 @@
-{ "plotfunction_expression" : {
-   "Category" : "Components",
-   "Keywords" : ["fpexprpars", "plot", "expression"],
-   "Description" : "Plots a square function with adjustable values."}
+{
+  "plotfunction_expression" : {
+    "Category" : "General",
+    "Keywords" : [
+      "fpexprpars",
+      "plot",
+      "expression"
+    ],
+    "Description" : "Plots a square function with adjustable values."
+  }
 }

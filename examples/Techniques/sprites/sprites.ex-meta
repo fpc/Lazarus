@@ -1,5 +1,12 @@
-{ "sprites" : {
-   "Category" : "Techniques",
-   "Keywords" : ["TPicture", "Sprite", "Images", "png"],
-   "Description" : "Shows how to move a small bitmap (a sprite) over a background image. Moves randomly or under control of the mouse or keys."}
+{
+  "sprites" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TPicture",
+      "Sprite",
+      "Images",
+      "png"
+    ],
+    "Description" : "Shows how to move a small bitmap (a sprite) over a background image. Moves randomly or under control of the mouse or keys."
+  }
 }

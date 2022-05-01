@@ -1,0 +1,5 @@
+{ "TAChart_editor" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Chart Editor","Interactive","Attributes"],
+   "Description" : "Has a chart with several data series displayed, click on some aspect of it and see an interactive dialog allowing you to alter the relevant attributes. "}
+}

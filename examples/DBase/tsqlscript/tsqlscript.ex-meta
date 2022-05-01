@@ -1,7 +1,0 @@
-{ "TSQLScript" : {
-   "Category" : "DBase",
-   "Keywords" : ["DBase","TSQLScript","batch"],
-   "Description" : "This example shows how to use TSQLScript to run a batch of SQL statements.
-
-Further info in the included readme.txt file."}
-}

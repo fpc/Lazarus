@@ -1,0 +1,5 @@
+{ "SQLdBTutorial3" : {
+   "Category" : "DBase",
+   "Keywords" : ["DBase","SQLIte3","Tutorial","wiki"],
+   "Description" : "This directory has the accompanying code for -\nhttp://wiki.lazarus.freepascal.org/SQLdb_Tutorial3\nDoes not seem to connect flawlessly to sqlite3 so some reading of the wiki article might be a good idea. \n\nPlease see that article for instructions and requirements.\n"}
+}

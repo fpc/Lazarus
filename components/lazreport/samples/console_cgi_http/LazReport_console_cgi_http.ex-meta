@@ -1,0 +1,12 @@
+{
+  "LazReport_console_cgi_http" : {
+    "Category" : "LazReport",
+    "Keywords" : [
+      "LazReport",
+      "http server",
+      "console",
+      "powerpdf"
+    ],
+    "Description" : "Builds an http server and several versions of a client console app that  work with a database and LazReport. \n\nRequires the powerpdf package from On Line Package manager.\nNote: Select a build mode (other than 'Default') before building.\nNote: There is an extensive readme.txt that you almost certainly need to read.\n\n"
+  }
+}

@@ -1,13 +1,12 @@
-{ "scanline" : {
-   "Category" : "Techniques",
-   "Keywords" : ["pf24bit", "ScanLine", "Images", "Delphi"],
-   "Description" : "    This example demonstrates how to
-    - create an image with an internal format similar to Delphi's pf24bit
-    - convert it to current format and create a TBitmap from it
-    - use an approach similar to Delphi's TBitmap.ScanLine.
-    
-  Delphi's TBitmap implementation only supports windows formats. For example  the TBitmap.ScanLine function gives a direct pointer to the memory. This is not possible under all widget sets. And even those who supports it, uses different formats than windows. So Delphi code using TBitmap.ScanLine has to  be changed anyway. How much depends on how much speed is needed.
-  
- If the goal is to quickly port some Delphi code using TBitmap.Scanline, then  the this code gives some hints how to achieve it.
-"}
+{
+  "scanline" : {
+    "Category" : "General",
+    "Keywords" : [
+      "pf24bit",
+      "ScanLine",
+      "Images",
+      "Delphi"
+    ],
+    "Description" : "    This example demonstrates how to\n    - create an image with an internal format similar to Delphi's pf24bit\n    - convert it to current format and create a TBitmap from it\n    - use an approach similar to Delphi's TBitmap.ScanLine.\n    \n  Delphi's TBitmap implementation only supports windows formats. For example  the TBitmap.ScanLine function gives a direct pointer to the memory. This is not possible under all widget sets. And even those who supports it, uses different formats than windows. So Delphi code using TBitmap.ScanLine has to  be changed anyway. How much depends on how much speed is needed.\n  \n If the goal is to quickly port some Delphi code using TBitmap.Scanline, then  the this code gives some hints how to achieve it.\n"
+  }
 }

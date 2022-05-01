@@ -1,0 +1,5 @@
+{ "LazReport_userds" : {
+   "Category" : "Beginner",
+   "Keywords" : ["LazReport","userds"],
+   "Description" : "This sample demonstrates several LazReport features: how to build a custom Crosstab report using TfrUserDatasets only, using format script to control color and text content of cell report, and also how to use runtime events to modify report item look. See in app notes !\n\nIt requires the package LazReport be installed, from the Main Menu, 'Packages'->'Install/Uninstall Packages', enter 'LazReport' on RHS, select it in the list and click \"Install Selection\", 'Save and Rebuild IDE', 'Continue'. \n\nThere are more LazReport examples under the LazReport category.\n\n"}
+}

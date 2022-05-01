@@ -1,5 +1,11 @@
-{ "mrumenu_demo" : {
-   "Category" : "Techniques",
-   "Keywords" : ["MRU", "most recently used", "open"],
-   "Description" : "Appears to demonstrate a most recently used file open behaviour. Perhaps for Operating Systems that don't have that available in their normal file manager interface ?  "}
+{
+  "mrumenu_demo" : {
+    "Category" : "General",
+    "Keywords" : [
+      "MRU",
+      "most recently used",
+      "open"
+    ],
+    "Description" : "Appears to demonstrate a most recently used file open behaviour. Perhaps for Operating Systems that don't have that available in their normal file manager interface ?  "
+  }
 }

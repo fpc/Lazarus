@@ -1,6 +1,0 @@
-{
-"Address_book" : {
-    "Category" : "DBase",
-    "Keywords" : ["DBGrids", "DBCtrls"],
-    "Description" : "Demonstrates making a simple database based Address Book."}
-}

@@ -1,5 +1,11 @@
-{ "designerbaseclass" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Base Class", "LCL", "Package"],
-   "Description" : "demonstrates how you might provide a new Base Class. The demo requires  you install a package with that base class and the run a demo project. The demo project will not load if the Package has not been installed first.\n"}
+{
+  "designerbaseclass" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Base Class",
+      "LCL",
+      "Package"
+    ],
+    "Description" : "demonstrates how you might provide a new Base Class. The demo requires  you install a package with that base class and the run a demo project. The demo project will not load if the Package has not been installed first.\n"
+  }
 }

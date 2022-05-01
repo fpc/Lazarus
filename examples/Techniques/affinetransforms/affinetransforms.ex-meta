@@ -1,5 +1,20 @@
-{ "Affinetransforms" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Images", "bitmap","transforms","SetMapMode","MM_ANISOTROPIC","MM_ISOTROPIC","MM_LOENGLISH","MM_HIENGLISH","MM_LOMETRIC","MM_HIMETRIC","MM_TWIPS","MM_ANISOTROPIC"],
-   "Description" : "Demonstrates displaying a bitmap in a range of Map Modes."}
+{
+  "Affinetransforms" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Images",
+      "bitmap",
+      "transforms",
+      "SetMapMode",
+      "MM_ANISOTROPIC",
+      "MM_ISOTROPIC",
+      "MM_LOENGLISH",
+      "MM_HIENGLISH",
+      "MM_LOMETRIC",
+      "MM_HIMETRIC",
+      "MM_TWIPS",
+      "MM_ANISOTROPIC"
+    ],
+    "Description" : "Demonstrates displaying a bitmap in a range of Map Modes."
+  }
 }

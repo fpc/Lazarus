@@ -1,0 +1,5 @@
+{ "Printer_dialogs" : {
+   "Category" : "Beginner",
+   "Keywords" : ["Printer","dialogs","settings"],
+   "Description" : "Demonstrates how to display various printer dialogs and how to get printer data.\n\nAppears to be a issue in this project where you need to (manually) build before clicking run. \n\n"}
+}

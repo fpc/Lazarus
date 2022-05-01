@@ -1,0 +1,5 @@
+{ "TSQLScript" : {
+   "Category" : "DBase",
+   "Keywords" : ["DBase","TSQLScript","batch"],
+   "Description" : "This example shows how to use TSQLScript to run a batch of SQL statements.\n\nNot well tested and may have issues in connecting to (at least sqlite3). Further research indicated.\nFurther info in the included readme.txt file."}
+}

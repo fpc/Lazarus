@@ -47,6 +47,14 @@ begin
   {$else}
   Memo1.Append('No lcl version information available');
   {$endif}
+  {$ifdef LCLQT5} Memo1.Append('QT5 widget set');  {$endif}
+  {$ifdef LCLGTK3}Memo1.Append('GTK3 widget set'); {$endif}
+  {$ifdef LCLGTK2}Memo1.Append('GTK2 widget set'); {$endif}
+  Memo1.Append('CPU Target - ' +  {$i %FPCTARGETCPU%});
+  Memo1.Append('Operating System - ' + {$i %FPCTARGETOS%});
+  {$IFDEF LINUX}
+  Memo1.Append('Desktop - ' + GetEnvironmentVariable('XDG_CURRENT_DESKTOP'));
+  {$endif}
 end;
 
 procedure TVersionForm.Button1Click(Sender: TObject);

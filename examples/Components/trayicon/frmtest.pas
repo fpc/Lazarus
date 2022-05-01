@@ -13,7 +13,16 @@
  *****************************************************************************
 
  Author: Felipe Monteiro de Carvalho
+
+ Import Nate for Linux users.
+ Around 2020 Linux distributions started shipping systems either without a System
+ Tray or with one that has strictly limited capabilities. All in the name of
+ "reducing clutter". This means you may not be able to get different events
+ for Left and Right click, possibly no Hints or animated icons. See the FPC
+ wiki pages for more information.
+ DRB April, 2022
 }
+
 unit frmtest;
 
 {$ifdef fpc}

@@ -1,5 +1,11 @@
-{ "title_images" : {
-   "Category" : "Components",
-   "Keywords" : ["Grid", "TStringGrid", "Sort Indicator" ],
-   "Description" : "Demonstrates managing location and image of a String List's Sort Indicators."}
+{
+  "title_images" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Grid",
+      "TStringGrid",
+      "Sort Indicator"
+    ],
+    "Description" : "Demonstrates managing location and image of a String List's Sort Indicators."
+  }
 }

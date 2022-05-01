@@ -1,5 +1,11 @@
-{ "std_actions" : {
-   "Category" : "Components",
-   "Keywords" : ["TToolBar", "TActionList", "TToolButton"],
-   "Description" : "Demonstrates how a TToolBar can work with a TActionList to implement the standard editing actions (Copy, Paste, delete, find etc)."}
+{
+  "std_actions" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TToolBar",
+      "TActionList",
+      "TToolButton"
+    ],
+    "Description" : "Demonstrates how a TToolBar can work with a TActionList to implement the standard editing actions (Copy, Paste, delete, find etc)."
+  }
 }

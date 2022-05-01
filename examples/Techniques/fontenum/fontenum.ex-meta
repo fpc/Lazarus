@@ -1,5 +1,11 @@
-{ "FontEnum" : {
-   "Category" : "Techniques",
-   "Keywords" : ["fonts","monospace","character set"],
-   "Description" : "Application that demonstrates reading the existing fonts on your system and displaying styles and character sets. Can filter by, eg Monospace. "}
+{
+  "FontEnum" : {
+    "Category" : "General",
+    "Keywords" : [
+      "fonts",
+      "monospace",
+      "character set"
+    ],
+    "Description" : "Application that demonstrates reading the existing fonts on your system and displaying styles and character sets. Can filter by, eg Monospace. "
+  }
 }

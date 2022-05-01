@@ -1,0 +1,5 @@
+{ "LazReport_dbf_demo" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","DBf"],
+   "Description" : "Demonstrates a simple LazReport obtaining data from a DBf file.\n\nRequires  LazReport, lr_tdbf ,  lr_dialogdesign package to build."}
+}

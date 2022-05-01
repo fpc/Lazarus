@@ -1,0 +1,5 @@
+{ "Laz_report_url" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","URL"],
+   "Description" : "Demonstrates a basic report that contains several URLs. The person reading the report can click a URL and its content is acted on by the report. \n\nRequires the LazReport package.\n"}
+}

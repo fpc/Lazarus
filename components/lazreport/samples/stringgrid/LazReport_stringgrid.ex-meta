@@ -1,0 +1,5 @@
+{ "LazReport_stringgrid" : {
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","stringgrid","basic"],
+   "Description" : "A very basic LazReport project, no database and the data is not saved. But does demonstrate basic use of LazReport.\n\nDoes require the LazReport package.\n\n"}
+}

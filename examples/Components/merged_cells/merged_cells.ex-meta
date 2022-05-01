@@ -1,5 +1,10 @@
-{ "Merged_Cells" : {
-   "Category" : "Components",
-   "Keywords" : ["Grid","Merge Cells"],
-   "Description" : "In this sample project you'll find a derived stringgrid which allows to combine adjacent cells to a larger block (\"merge\") easily.\n\nSee the included readme.txt for details on how to use it.\n\n\n"}
+{
+  "Merged_Cells" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Grid",
+      "Merge Cells"
+    ],
+    "Description" : "In this sample project you'll find a derived stringgrid which allows to combine adjacent cells to a larger block (\"merge\") easily.\n\nSee the included readme.txt for details on how to use it.\n\n\n"
+  }
 }

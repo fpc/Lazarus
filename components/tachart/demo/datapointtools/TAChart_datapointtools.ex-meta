@@ -1,0 +1,5 @@
+{ "TAChart_datapointtools" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","data point tools","cross hair","hints"],
+   "Description" : "Demonstrates a number of tools that allow you to examine and alter data points for a range of plot types."}
+}

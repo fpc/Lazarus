@@ -1,0 +1,5 @@
+{ "Address_book" : {
+   "Category" : "DBase",
+   "Keywords" : ["DBGrids","DBCtrls"],
+   "Description" : "Demonstrates making a simple database based Address Book.\nOpen the demo datafile from the 'File' menu to see it work."}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_liveview" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "live view", "add data"],
+   "Description" : "Demonstrates adding data points to a chart, in this case from a user click and a random number but obvious how to do so from some other process. "}
+}

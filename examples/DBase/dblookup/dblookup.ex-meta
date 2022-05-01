@@ -1,5 +1,0 @@
-{ "dBLookup" : {
-   "Category" : "DBase",
-   "Keywords" : ["dbase","Tdbf","TBataSource"],
-   "Description" : "Demonstrates some basic database functions using Tdbf and TDataSource"}
-}

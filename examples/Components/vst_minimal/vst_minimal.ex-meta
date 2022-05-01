@@ -1,7 +1,10 @@
-{ "vst_minimal" : {
-   "Category" : "Components",
-   "Keywords" : ["TLazVirtualStringTree", "TVirtualTreeView"],
-   "Description" : "This is about TLazVirtualStringTree, a component renamed from TVirtualTreeView that exists in the LazControls Component Tab. 
-
-This example shows it most basic use."}
+{
+  "vst_minimal" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TLazVirtualStringTree",
+      "TVirtualTreeView"
+    ],
+    "Description" : "This is about TLazVirtualStringTree, a component renamed from TVirtualTreeView that exists in the LazControls Component Tab. \n\nThis example shows it most basic use."
+  }
 }

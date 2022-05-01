@@ -1,5 +1,11 @@
-{ "Completion" : {
-   "Category" : "Components",
-   "Keywords" : ["SynEdit", "Auto Completion", "TSynAutoComplete"],
-   "Description" : "Example for SynEdit's auto-completion features. As used in the Lazarus IDE, provides 2 different auto-completion features."}
+{
+  "Completion" : {
+    "Category" : "General",
+    "Keywords" : [
+      "SynEdit",
+      "Auto Completion",
+      "TSynAutoComplete"
+    ],
+    "Description" : "Example for SynEdit's auto-completion features. As used in the Lazarus IDE, provides 2 different auto-completion features."
+  }
 }

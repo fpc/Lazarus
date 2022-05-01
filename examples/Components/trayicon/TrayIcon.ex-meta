@@ -1,0 +1,5 @@
+{ "TrayIcon" : {
+   "Category" : "General",
+   "Keywords" : ["trayicon","systray"],
+   "Description" : "This project demonstrates how to use the TrayIcon, it places a small Icon in the System Tray that the user can use to interact with the application through. "}
+}

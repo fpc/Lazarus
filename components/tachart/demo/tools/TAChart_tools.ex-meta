@@ -1,0 +1,5 @@
+{ "TAChart_tools" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "Panning", "Zooming"],
+   "Description" : "Demonstrates some TAChart tools, zooming and panning in various modes."}
+}

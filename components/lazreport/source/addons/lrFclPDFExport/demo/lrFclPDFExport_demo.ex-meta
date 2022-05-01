@@ -1,5 +1,5 @@
 { "lrFclPDFExport_demo" : {
-   "Category" : "Components",
-   "Keywords" : ["LazReport","PDF","lrPDFExport","lr_pdfexport", "needs work"],
-   "Description" : "Demonstrates how to generate PDF reports from LazReport.\nRequires the package lr_PDFExport be installed before loading.\nNote that it generates an eror while starting up, clGray is not a valid integer. Its coming from the LRF file, needs fixing."}
+   "Category" : "LazReport",
+   "Keywords" : ["LazReport","PDF","lrPDFExport","lr_pdfexport"],
+   "Description" : "Demonstrates how to generate PDF reports from LazReport.\nRequires the package lr_PDFExport be installed before loading.\n"}
 }

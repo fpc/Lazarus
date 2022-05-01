@@ -1,19 +1,19 @@
 object VersionForm: TVersionForm
   Left = 290
-  Height = 300
+  Height = 316
   Top = 164
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
   ActiveControl = Memo1
   Caption = 'VersionForm'
-  ClientHeight = 300
+  ClientHeight = 316
   ClientWidth = 400
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object Memo1: TMemo
     Left = 29
-    Height = 130
+    Height = 253
     Top = 19
     Width = 349
     Lines.Strings = (
@@ -22,9 +22,9 @@ object VersionForm: TVersionForm
     TabOrder = 0
   end
   object Button1: TButton
-    Left = 36
+    Left = 29
     Height = 25
-    Top = 181
+    Top = 280
     Width = 75
     Caption = 'Button1'
     OnClick = Button1Click

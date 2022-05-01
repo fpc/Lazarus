@@ -1,5 +1,11 @@
-{ "SynGutterMarks" : {
-   "Category" : "Components",
-   "Keywords" : ["TSynEdit", "Gutter", "Bookmarks"],
-   "Description" : "Example for SynEdit's Bookmarks, SynEdit is the editor used by the Lazarus IDE. This example shows how to display Bookmarks and other marks/icons in the gutter of the editor."}
+{
+  "SynGutterMarks" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TSynEdit",
+      "Gutter",
+      "Bookmarks"
+    ],
+    "Description" : "Example for SynEdit's Bookmarks, SynEdit is the editor used by the Lazarus IDE. This example shows how to display Bookmarks and other marks/icons in the gutter of the editor."
+  }
 }

@@ -1,0 +1,5 @@
+{ "TAChart_events" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","events","OnBeforeDrawBackground","OnBeforeDrawBackWall","BeforeDrawBar"],
+   "Description" : "Demonstrates how to respond to some TAChart drawing events."}
+}

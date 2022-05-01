@@ -1,5 +1,5 @@
 { "dbexport_demo" : {
    "Category" : "DBase",
-   "Keywords" : ["dbase","database","export","Needs work"],
-   "Description" : "Demonstrates exporting a small database in a number of formats. Accepts an input file of your choice so may even be a useful utility.\nRequires the dbflaz package.\nSee also stdexports.\nAppears to have some UTF8 issues, char may not be displayed correctly and some Pango errors reported to console."}
+   "Keywords" : ["dbase","database","export"],
+   "Description" : "Demonstrates exporting a small database in a number of formats. Accepts an input file of your choice so may even be a useful utility.\nRequires the dbflaz package (part of bigide).\nRequires the package LazDBExport be installed.\nSee also stdexports.\n\n"}
 }

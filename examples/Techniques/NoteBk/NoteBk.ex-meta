@@ -1,0 +1,5 @@
+{ "NoteBk" : {
+   "Category" : "General",
+   "Keywords" : ["tabbed","notebook","No Object Inspector"],
+   "Description" : "This project was built without using the Lazarus IDE's Form designer because either the author preferred working that way or it was done before the Designer was available. It demonstrates how components can be placed on different pages of a notebook."}
+}

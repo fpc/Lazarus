@@ -1,0 +1,5 @@
+{ "TAChart_userdrawn" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "userdrawn"],
+   "Description" : "Demonstrates defining your own series draw method. The chart has a 'series' of type TUserDrawnSeries whose OnDraw event is set to call the  procedure  TMainForm.SeriesDraw. "}
+}

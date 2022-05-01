@@ -1,0 +1,7 @@
+{ 
+"Laz_Hello" : {
+    "Category" : "Beginner",
+    "Keywords" : ["Lazarus", "TDaemon", "Tutorial"],
+    "Description" : "Sample Code for the TDaemon Tutorial"
+    "WikiRef" : "https://wiki.lazarus.freepascal.org/Daemons_and_Services"
+}

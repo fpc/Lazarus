@@ -1,7 +1,10 @@
-{ "treeview" : {
-   "Category" : "Components",
-   "Keywords" : ["TTreeView", "Needs Work"],
-   "Description" : "Demonstrates adding and removing nodes from a TTreeView.
-
-Note that the readme.txt refers to a tutorial that no longer is available, can we find its new home ?"}
+{
+  "treeview" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TTreeView",
+      "Needs Work"
+    ],
+    "Description" : "Demonstrates adding and removing nodes from a TTreeView.\n\nNote that the readme.txt refers to a tutorial that no longer is available, can we find its new home ?"
+  }
 }

@@ -1,0 +1,5 @@
+{ "TDaemon" : {
+   "Category" : "General",
+   "Keywords" : ["TDaemom","Server"],
+   "Description" : "These are supporting files that relate to the https://wiki.freepascal.org/Daemons_and_Services tutorial. While useful as is, reading the wiki article is strongly suggested. \nRequires that the package, LazDaemon be installed."}
+}

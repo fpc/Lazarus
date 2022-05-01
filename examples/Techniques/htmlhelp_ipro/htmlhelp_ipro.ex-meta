@@ -1,5 +1,10 @@
-{ "htmlhelp_ipro" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Help","iPro Browser"],
-   "Description" : "This example demonstrates the html help components using the turbo power ipro browser component to show local html files.             "}
+{
+  "htmlhelp_ipro" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Help",
+      "iPro Browser"
+    ],
+    "Description" : "This example demonstrates the html help components using the turbo power ipro browser component to show local html files.             "
+  }
 }

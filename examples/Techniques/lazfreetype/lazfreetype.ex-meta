@@ -1,9 +1,10 @@
-{ "lazfreetype" : {
-   "Category" : "Techniques",
-   "Keywords" : ["Needs Work","Fonts"],
-   "Description" : "Appears to want to show nominated fonts on screen.
-
-However, defaults to Windows font names and does not seem to accept known locally available fonts on the command line as it claims it does.
-
-Probably fair to say it needs some work on its cross platform abilities and better error messages when something unexpected happens."}
+{
+  "lazfreetype" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Needs Work",
+      "Fonts"
+    ],
+    "Description" : "Appears to want to show nominated fonts on screen.\n\nHowever, defaults to Windows font names and does not seem to accept known locally available fonts on the command line as it claims it does.\n\nProbably fair to say it needs some work on its cross platform abilities and better error messages when something unexpected happens."
+  }
 }

@@ -1,0 +1,5 @@
+{ "LCLReport" : {
+   "Category" : "General",
+   "Keywords" : ["Report","PDF","fpReport","Needs Work"],
+   "Description" : "Demonstrates generating a report (from some dummy data), displaying it and converting it to a PDF.\n\nNote: on test, showed a significent memory leak.\n\nIf the program did not compile or run, look if you have the correct freetype-6.dll/.so and zlib1.dll/.so installed or copied in the directory.\nAF 2018"}
+}
