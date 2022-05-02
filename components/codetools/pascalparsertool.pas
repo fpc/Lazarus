@@ -1632,6 +1632,7 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
 // Examples:
 //   integer
 //   array of integer
+//   packed array of integer
 //   array of const
 //   file
 //   file of integer
@@ -1640,6 +1641,7 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
 //   univ longint  (only macpas)
 var
   Copying: boolean;
+  IsPackedType: Boolean;
   IsArrayType: Boolean;
   IsFileType: Boolean;
   NeedIdentifier: boolean;
@@ -1659,6 +1661,9 @@ begin
     ReadNextAtom;
   if CurPos.Flag in AllCommonAtomWords then begin
     NeedIdentifier:=true;
+    IsPackedType:=UpAtomIs('PACKED');
+    if IsPackedType then
+      Next;
     IsArrayType:=UpAtomIs('ARRAY');
     if IsArrayType then begin
       //DebugLn(['TPascalParserTool.ReadParamType is array ',MainFilename,' ',CleanPosToStr(curPos.StartPos)]);
@@ -1690,6 +1695,13 @@ begin
         Result:=true;
         exit;
       end;
+    end
+    else
+    if IsPackedType then begin
+      if ExceptionOnError then
+        SaveRaiseStringExpectedButAtomFound(20170421195440,'"array"')
+      else
+        exit;
     end;
     IsFileType:=UpAtomIs('FILE');
     if IsFileType then begin
