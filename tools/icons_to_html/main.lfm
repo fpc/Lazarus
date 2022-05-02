@@ -15,7 +15,7 @@ object MainForm: TMainForm
     AnchorSideRight.Control = btnSave
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 374
+    Left = 311
     Height = 25
     Top = 480
     Width = 95
@@ -26,7 +26,7 @@ object MainForm: TMainForm
     Caption = 'Create HTML'
     Default = True
     OnClick = btnCreateHTMLClick
-    TabOrder = 0
+    TabOrder = 1
   end
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
@@ -45,13 +45,13 @@ object MainForm: TMainForm
     BorderSpacing.Top = 10
     BorderSpacing.Right = 10
     MaxLength = 0
-    TabOrder = 3
+    TabOrder = 0
   end
   object btnSave: TButton
-    AnchorSideRight.Control = btnClose
+    AnchorSideRight.Control = btnShow
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 477
+    Left = 414
     Height = 25
     Top = 480
     Width = 50
@@ -61,7 +61,7 @@ object MainForm: TMainForm
     BorderSpacing.Bottom = 10
     Caption = 'Save'
     OnClick = btnSaveClick
-    TabOrder = 1
+    TabOrder = 2
   end
   object btnClose: TButton
     AnchorSideRight.Control = Owner
@@ -79,7 +79,7 @@ object MainForm: TMainForm
     Cancel = True
     Caption = 'Close'
     OnClick = btnCloseClick
-    TabOrder = 2
+    TabOrder = 4
   end
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
@@ -103,7 +103,7 @@ object MainForm: TMainForm
     Font.Quality = fqCleartype
     ParentColor = False
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 5
     Gutter.Width = 55
     Gutter.MouseActions = <>
     RightGutter.Width = 0
@@ -588,16 +588,32 @@ object MainForm: TMainForm
       end
     end
   end
+  object btnShow: TButton
+    AnchorSideRight.Control = btnClose
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 472
+    Height = 25
+    Top = 480
+    Width = 55
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 10
+    Caption = 'Show'
+    OnClick = btnShowClick
+    TabOrder = 3
+  end
   object TaskDialog: TTaskDialog
     Buttons = <>
     RadioButtons = <>
-    Left = 72
-    Top = 392
+    Left = 96
+    Top = 64
   end
   object SynHTMLSyn: TSynHTMLSyn
     DefaultFilter = 'HTML Document (*.htm,*.html)|*.htm;*.html'
     Enabled = False
-    Left = 304
-    Top = 224
+    Left = 176
+    Top = 64
   end
 end

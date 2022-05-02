@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
-  LazUTF8, LazFileUtils, UITypes, SynEdit, SynHighlighterHTML;
+  LazUTF8, LazFileUtils, LCLIntf, SynEdit, SynHighlighterHTML;
 
 type
 
@@ -16,6 +16,7 @@ type
     btnCreateHTML: TButton;
     btnSave: TButton;
     btnClose: TButton;
+    btnShow: TButton;
     DirectoryEdit: TDirectoryEdit;
     SynEdit: TSynEdit;
     SynHTMLSyn: TSynHTMLSyn;
@@ -23,6 +24,7 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure btnCreateHTMLClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure btnShowClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
 
@@ -99,8 +101,9 @@ begin
           if PixSizeStr = '_64' then
             SynEdit.Lines.Add('  </tr>');
         end;
-      end else
-      begin                   
+      end
+      else
+      begin
         SynEdit.Lines.Clear;
         TaskDialog.Caption := 'Error';
         TaskDialog.MainIcon := tdiError;
@@ -111,16 +114,16 @@ begin
         TaskDialog.Execute;
         exit;
       end;
-        
+
     finally
       FileList.Free;
       Screen.EndWaitCursor;
     end;
-  
+
     SynEdit.Lines.Add('</table>');
     SynEdit.Lines.Add('</body>');
     SynEdit.Lines.Add('</html>');
-    
+
   finally
     SynEdit.Lines.EndUpdate;
   end;
@@ -150,6 +153,15 @@ begin
   TaskDialog.DefaultButton := tcbOk;
   TaskDialog.Text := 'Saved as: ' + fn;
   TaskDialog.Execute;
+end;
+
+procedure TMainForm.btnShowClick(Sender: TObject);
+var
+  fn: String;
+begin
+  fn := AppendPathDelim(DirectoryEdit.Text) + 'IconTable.html';
+  if FileExists(fn) then
+    OpenURL(fn);
 end;
 
 procedure TMainForm.btnCloseClick(Sender: TObject);
