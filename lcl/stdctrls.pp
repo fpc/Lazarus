@@ -1606,12 +1606,11 @@ type
     function CalcFittingFontHeight(const TheText: string;
       MaxWidth, MaxHeight: Integer;
       out FontHeight, NeededWidth, NeededHeight: Integer): Boolean;
-    function ColorIsStored: boolean; override;
     function AdjustFontForOptimalFill: Boolean;
     procedure Paint; override;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     property AutoSize default True;
-    property Color default clDefault;
+    property Color nodefault;
   end;
 
 

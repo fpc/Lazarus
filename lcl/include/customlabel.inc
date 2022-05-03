@@ -394,11 +394,6 @@ begin
   end;
 end;
 
-function TCustomLabel.ColorIsStored: boolean;
-begin
-  Result := (Color <> clNone);
-end;
-
 {-------------------------------------------------------------------------------
   function TCustomLabel.AdjustFontForOptimalFill: Boolean;
   
@@ -433,7 +428,7 @@ const
 begin
   R := Rect(0,0,Width,Height);
   Canvas.Brush.Color := Color;
-  if (Color<>clNone) and not Transparent then
+  if not Transparent then
   begin
     Canvas.Brush.Style:=bsSolid;
     Canvas.FillRect(R);
