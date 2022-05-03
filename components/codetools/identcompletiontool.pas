@@ -230,6 +230,7 @@ type
   TIdentifierList = class
   private
     FContext: TFindContext;
+    FIdentComplIncludeKeywords: Boolean;
     FNewMemberVisibility: TCodeTreeNodeDesc;
     FContextFlags: TIdentifierListContextFlags;
     FOnGatherUserIdentifiersToFilteredList: TOnGatherUserIdentifiersToFilteredList;
@@ -296,6 +297,7 @@ type
     property StartContextPos: TCodeXYPosition
                                    read FStartContextPos write FStartContextPos;
     property ContainsFilter: Boolean read FContainsFilter write FContainsFilter;
+    property IdentComplIncludeKeywords: Boolean read FIdentComplIncludeKeywords write FIdentComplIncludeKeywords;
     property OnGatherUserIdentifiersToFilteredList: TOnGatherUserIdentifiersToFilteredList
       read FOnGatherUserIdentifiersToFilteredList write FOnGatherUserIdentifiersToFilteredList;
   end;
@@ -467,9 +469,6 @@ var
   CUnitNameSpaceIdentifierListItem: TUnitNameSpaceIdentifierListItemClass = TUnitNameSpaceIdentifierListItem;
 
 implementation
-
-uses
- CodeToolManager;
 
 const
   CompilerFuncHistoryIndex = 10;
@@ -2104,7 +2103,7 @@ begin
     ctnBeginBlock,ctnWithStatement,ctnOnStatement:
     //ctnInitialization,ctnFinalization: //AllPascalStatements
       begin
-        if CodeToolBoss.IdentComplIncludeKeywords and
+        if CurrentIdentifierList.IdentComplIncludeKeywords and
            (GatherContext.Node <> nil) and
            (GatherContext.Node.Desc in [ctnBeginBlock,ctnWithStatement,ctnOnStatement])
         then

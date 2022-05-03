@@ -2518,6 +2518,7 @@ begin
   {$ENDIF}
   try
     FIdentifierListUpdating:=true;
+    IdentifierList.IdentComplIncludeKeywords := IdentComplIncludeKeywords;
     try
       Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList);
     finally
