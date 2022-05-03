@@ -7639,7 +7639,9 @@ end;
       </element>
 
       <element name="TCustomStaticText.Notification">
-        <short>Handles a notification that a component used in the control has been added or removed.</short>
+        <short>
+          Handles a notification that a component used in the control has been added or removed.
+        </short>
         <descr>
           <p>
             <var>Notification</var> is an overridden method in <var>TCustomStaticText</var>, and calls the inherited method on entry. Notification ensures that <var>FocusControl</var> is set to <b>Nil</b> when it is the component for the <var>opRemove</var> <var>Operation</var>.
@@ -9962,18 +9964,6 @@ end;
         <short>Value for the Transparent property.</short>
       </element>
 
-      <element name="TCustomLabel.SetColor">
-        <short>Sets the value for the Color property.</short>
-        <descr/>
-        <seealso>
-          <link id="#lcl.controls.TControl.SetColor">TControl.SetColor</link>
-          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
-        </seealso>
-      </element>
-      <element name="TCustomLabel.SetColor.NewColor">
-        <short>New value for the Color property.</short>
-      </element>
-
       <element name="TCustomLabel.SetFocusControl">
         <short>Sets the value for the FocusControl property.</short>
         <descr/>
@@ -10119,19 +10109,10 @@ end;
         <short>Height needed for the text using the calculated font size.</short>
       </element>
 
-      <element name="TCustomLabel.ColorIsStored">
-        <short>Implements the storage specifier for the Color property.</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomLabel.Color"/>
-        </seealso>
-      </element>
-      <element name="TCustomLabel.ColorIsStored.Result">
-        <short>True when a value other than clNone has been assigned to the Color property.</short>
-      </element>
-
       <element name="TCustomLabel.AdjustFontForOptimalFill">
-        <short>Adjusts the font height for the control text to fill the available client area.</short>
+        <short>
+          Adjusts the font height for the control text to fill the available client area.
+        </short>
         <descr>
           <p>
             <var>AdjustFontForOptimalFill</var> is a <var>Boolean</var> function used to adjust the font height so that text in the label expands to fill the available client area for the control. AdjustFontForOptimalFill calls <var>CalcFittingFontHeight</var> to determine the font height needed to make the label text (caption) fill the Width for the control. The calculated font height is stored in the <var>Font</var> property.
@@ -10262,19 +10243,22 @@ end;
       </element>
 
       <element name="TCustomLabel.Color">
-        <short>Sets the color used for the background of the control.</short>
+        <short>Contains the color used for the background on the control.</short>
         <descr>
           <p>
-            The default value for the property is <var>clNone</var> in <var>TCustomLabel</var>. This value is used because labels, by default, are transparent in the LCL. Please note that this differs from the Delphi VCL where the default value for Transparent is <b>False</b>.
+            <var>Color</var> is <var>TColor</var> property with the background color for the control. Color is re-introduced in <var>TCustomLabel</var> to remove the default value for the property.
           </p>
           <p>
-            Changing the value in Color causes ControlStyle flags to be updated to include or exclude the value csOpaque as needed for the new property value. When set to clNone, the csOpaque flag is excluded from ControlStyle. Other values cause csOpaque to be included in ControlStyle.
+            Setting a new value for the property causes the value in ParentColor to be set to False. A CM_COLORCHANGED control message is performed, and the control is redrawn.
           </p>
           <p>
-            Color is updated when a new value is assigned to the Transparent property. When Transparent is set to <b>True</b>, clNone is assigned to Color. When Transparent is set to <b>False</b> and color contains clNone, Color is changed to clBackground.
+            Values in Color and Font are used when the background and text for the control are drawn in the Paint method. Color is used when Transparent is set to <b>False</b> and the color value is not clNone. Use the Font property to assign the typeface and color used for the text displayed on the control.
           </p>
+          <remark>
+            By default, label controls are transparent in the LCL. This differs from the Delphi VCL where the default value for Transparent is <b>False</b>.
+          </remark>
           <p>
-            Values in Color and Font are used when the background and text for the control are drawn in the Paint method. Use the Font property to assign the typeface and color used for the text displayed on the control.
+            Set Transparent to False to make the label opaque.
           </p>
         </descr>
         <seealso>
@@ -10282,7 +10266,6 @@ end;
           <link id="TCustomLabel.Transparent"/>
           <link id="#lcl.controls.TControl.Color">TControl.Color</link>
           <link id="#lcl.controls.TControl.Font">TControl.Font</link>
-          <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
         </seealso>
       </element>
 
@@ -10332,7 +10315,9 @@ end;
       </element>
 
       <element name="TCustomLabel.OptimalFill">
-        <short>If True, the font size is adjusted for optimal fill of the available space.</short>
+        <short>
+          If True, the font size is adjusted for optimal fill of the available space.
+        </short>
         <descr>
           <p>
             <var>OptimalFill</var> is a <var>Boolean</var> property which indicates that the <var>Font</var> height should be maximized to fill the available width in the control. The default value for the property is <b>False</b>.
@@ -10355,7 +10340,9 @@ end;
       </element>
 
       <element name="TCustomLabel.ShowAccelChar">
-        <short>Underlines the character in the label that acts as the accelerator or short cut key.</short>
+        <short>
+          Underlines the character in the label that acts as the accelerator or short cut key.
+        </short>
         <descr>
           <p>
             When <b>False</b>, an <b>Ampersand (&amp;)</b> character in the label caption is displayed as an ordinary character (as used in the Object Inspector).
@@ -10374,21 +10361,22 @@ end;
         <short>Indicates whether the viewer can see through the control.</short>
         <descr>
           <p>
-            When Transparent is set to <b>False</b>, the enclosing rectangle for the control is filled with the background Color for the label. If Color contains clNone, then clBackground is used in the Color property.
+            When Transparent is set to <b>False</b>, the enclosing rectangle for the control is filled with the background Color for the label. When set to True, Color is not used to fill the background for the control and the underlying control is visible.
           </p>
           <p>
-            When set to <b>True</b>, Color is changed to clNone and the background appears to be transparent (no opacity).
+            The property value is <b>True</b> when csOpaque has not been included in the style flags for the control. Changing the value for the property causes <var>ControlStyle</var> to be updated. When set to <b>True</b>, csOpaque is removed from ControlStyle. When set to <b>False</b>, csOpaque is included in ControlStyle. The control is redrawn when a new value is assigned to the property.
           </p>
           <p>
-            The default value for Transparent in the LCL is <b>True</b>, which differs from the default value in the Delphi VCL.
+            The default value for Transparent in the LCL is <b>True</b>. This differs from the default value in the Delphi VCL.
           </p>
           <p>
-            Values in Color, Transparent, and ParentColor are inter-dependent; changing the value in one property affects the values in the other properties. Use ParentColor to toggle values in Color and Transparent. Use Color to set an explicit background color for the control and toggle values in Transparent and ParentColor.
+            Values in Transparent and Color are used in the Paint method when the background and text for the control are drawn. When Transparent is <b>False</b> and Color has a value other than clNone, a solid brush is used to fill the display area with the value in Color.
           </p>
         </descr>
         <seealso>
           <link id="TCustomLabel.Color"/>
-          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="TCustomLabel.Paint"/>
+          <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
         </seealso>
       </element>
 
@@ -10846,7 +10834,9 @@ end;
             <li>
               Be aware that an <var>exception</var> may be raised by the <var>constructor</var> when  there is not enough memory to create an object, or something else goes wrong. If the <var>exception</var> is not handled inside the constructor, the object will be destroyed immediately. In this case <var>Destroy</var> will be called with a partially initialized object, so your destructor must check if the resources were really allocated before disposing of them.
             </li>
-            <li>Remember to call <var>Free</var> for all objects created on the constructor.</li>
+            <li>
+              Remember to call <var>Free</var> for all objects created in the constructor.
+            </li>
           </ul>
         </descr>
       </topic>
