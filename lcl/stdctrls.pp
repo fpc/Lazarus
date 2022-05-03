@@ -1586,7 +1586,6 @@ type
 
     function  GetLabelText: string; virtual;
     function  GetTransparent: boolean;
-    procedure SetColor(NewColor: TColor); override;
     procedure SetFocusControl(Value: TWinControl);
     procedure SetLayout(Value: TTextLayout);
     procedure SetShowAccelChar(Value: Boolean);
@@ -1612,7 +1611,7 @@ type
     procedure Paint; override;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     property AutoSize default True;
-    property Color default clNone;
+    property Color default clDefault;
   end;
 
 

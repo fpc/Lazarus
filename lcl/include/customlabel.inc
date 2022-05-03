@@ -226,7 +226,6 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   FShowAccelChar := True;
   FInternalSetBounds := False;
-  Color := clNone;
   AutoSize := True;
   // Accessibility
   AccessibleRole := larLabel;
@@ -234,18 +233,7 @@ end;
 
 function TCustomLabel.GetTransparent: boolean;
 begin
-  Result := Color = clNone;
-end;
-
-procedure TCustomLabel.SetColor(NewColor: TColor);
-begin
-  inherited;
-
-  // if color = clnone then transparent, so not opaque
-  if NewColor = clNone then
-    ControlStyle := ControlStyle - [csOpaque]
-  else
-    ControlStyle := ControlStyle + [csOpaque];
+  Result := not(csOpaque in ControlStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -268,10 +256,10 @@ begin
   if Transparent = NewTransparent then
     exit;
   if NewTransparent then
-    Color := clNone
+    ControlStyle := ControlStyle - [csOpaque]
   else
-  if Color = clNone then
-    Color := clBackground;
+    ControlStyle := ControlStyle + [csOpaque];
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------
