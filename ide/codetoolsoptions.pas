@@ -128,6 +128,7 @@ type
     FIdentComplAutoStartAfterPoint: boolean;
     FIdentComplAutoUseSingleIdent: boolean;
     FIdentComplUseContainsFilter: Boolean;
+    FIdentComplIncludeKeywords: Boolean;
     FIdentComplIncludeCodeTemplates: Boolean;
     FIdentComplIncludeWords: TIdentComplIncludeWords;
     FIdentComplShowIcons: Boolean;
@@ -269,6 +270,8 @@ type
                                            write FIdentComplAutoUseSingleIdent;
     property IdentComplUseContainsFilter: boolean read FIdentComplUseContainsFilter
                                            write FIdentComplUseContainsFilter;
+    property IdentComplIncludeKeywords: Boolean read FIdentComplIncludeKeywords
+                                           write FIdentComplIncludeKeywords;
     property IdentComplIncludeCodeTemplates: boolean read FIdentComplIncludeCodeTemplates
                                            write FIdentComplIncludeCodeTemplates;
     property IdentComplIncludeWords: TIdentComplIncludeWords read FIdentComplIncludeWords
@@ -597,6 +600,8 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',true);
     FIdentComplUseContainsFilter:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/UseContainsFilter',true);
+    FIdentComplIncludeKeywords:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/IncludeKeywords',false);
     FIdentComplIncludeCodeTemplates:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/IncludeCodeTemplates',true);
     FIdentComplIncludeWords:=IdentComplIncludeWordsNamesToEnum(XMLConfig.GetValue(
@@ -782,6 +787,8 @@ begin
       FIdentComplAutoUseSingleIdent,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/UseContainsFilter',
       FIdentComplUseContainsFilter,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/IncludeKeywords',
+      FIdentComplIncludeKeywords,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/IncludeCodeTemplates',
       FIdentComplIncludeCodeTemplates,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/IncludeWords',
@@ -942,6 +949,7 @@ begin
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
     FIdentComplAutoUseSingleIdent:=CodeToolsOpts.FIdentComplAutoUseSingleIdent;
     FIdentComplUseContainsFilter:=CodeToolsOpts.FIdentComplUseContainsFilter;
+    FIdentComplIncludeKeywords := CodeToolsOpts.FIdentComplIncludeKeywords;
     FIdentComplIncludeCodeTemplates:=CodeToolsOpts.FIdentComplIncludeCodeTemplates;
     FIdentComplShowIcons:=CodeToolsOpts.FIdentComplShowIcons;
     FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
@@ -1014,6 +1022,7 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
   FIdentComplAutoUseSingleIdent:=true;
   FIdentComplUseContainsFilter:=true;
+  FIdentComplIncludeKeywords := false;
   FIdentComplIncludeCodeTemplates:=true;
   FIdentComplShowIcons:=false;
   FIdentComplAddParameterBrackets:=true;
@@ -1105,6 +1114,7 @@ begin
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
     and (FIdentComplAutoUseSingleIdent=CodeToolsOpts.FIdentComplAutoUseSingleIdent)
     and (FIdentComplUseContainsFilter=CodeToolsOpts.FIdentComplUseContainsFilter)
+    and (FIdentComplIncludeKeywords=CodeToolsOpts.FIdentComplIncludeKeywords)
     and (FIdentComplIncludeCodeTemplates=CodeToolsOpts.FIdentComplIncludeCodeTemplates)
     and (FIdentComplShowIcons=CodeToolsOpts.FIdentComplShowIcons)
     and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
@@ -1174,6 +1184,8 @@ begin
     Boss.CursorBeyondEOL:=CursorBeyondEOL;
     Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
     Boss.CompleteProperties:=CompleteProperties;
+    Boss.IdentComplAutoInvokeOnType:=IdentComplAutoInvokeOnType;
+    Boss.IdentComplIncludeKeywords:=IdentComplIncludeKeywords;
 
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);

@@ -24,6 +24,9 @@
 
 (* Expectation in test-files
 
+  {%identcomplincludekeywords:on}
+    Enables CodeToolBoss.IdentComplIncludeKeywords
+
   {SELECT:TESTS=TEST(|TEST)*}
     Each "{" comment starting with a..z is a test instruction, or a list of test instructions separated by |
 
@@ -278,6 +281,11 @@ begin
   DoParseModule(MainCode,FMainTool);
   CommentP:=1;
   Src:=MainTool.Src;
+
+  CodeToolBoss.IdentComplIncludeKeywords := False;
+  if pos('{%identcomplincludekeywords:on}', LowerCase(Src)) > 0 then
+    CodeToolBoss.IdentComplIncludeKeywords := True;
+
   while CommentP<length(Src) do begin
     CommentP:=FindNextComment(Src,CommentP);
     if CommentP>length(Src) then break;
@@ -472,6 +480,7 @@ begin
     until CommentP >= CommentEnd;
   end;
   CheckReferenceMarkers;
+  CodeToolBoss.IdentComplIncludeKeywords := False;
 end;
 
 function TCustomTestFindDeclaration.GetMarkers(Index: integer): TFDMarker;
@@ -515,6 +524,7 @@ procedure TCustomTestFindDeclaration.SetUp;
 begin
   inherited SetUp;
   FMarkers:=TObjectList.Create(true);
+  CodeToolBoss.IdentComplIncludeKeywords := False;
 end;
 
 procedure TCustomTestFindDeclaration.TearDown;

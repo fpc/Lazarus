@@ -2066,6 +2066,7 @@ resourcestring
   dlgIncludeWordsToIdentCompl_IncludeFromAllUnits = 'from all units';
   dlgIncludeWordsToIdentCompl_IncludeFromCurrentUnit = 'from current unit';
   dlgIncludeWordsToIdentCompl_DontInclude = 'don''t include';
+  dlgIncludeKeywordsToIdentCompl = 'Include all keywords and operators';
   dlgIncludeCodeTemplatesToIdentCompl = 'Include code templates';
 
   dlgMarkupUserDefined = 'User defined markup';

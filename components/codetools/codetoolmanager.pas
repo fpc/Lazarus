@@ -140,6 +140,8 @@ type
     FPascalTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
     FTabWidth: integer;
     FUseTabs: boolean;
+    FIdentComplAutoInvokeOnType: Boolean;
+    FIdentComplIncludeKeywords: Boolean;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
@@ -324,6 +326,8 @@ type
                            read FVisibleEditorLines write SetVisibleEditorLines;
     property TabWidth: integer read FTabWidth write SetTabWidth;
     property UseTabs: boolean read FUseTabs write SetUseTabs;
+    property IdentComplAutoInvokeOnType: Boolean read FIdentComplAutoInvokeOnType write FIdentComplAutoInvokeOnType;
+    property IdentComplIncludeKeywords: Boolean read FIdentComplIncludeKeywords write FIdentComplIncludeKeywords;
     property CompleteProperties: boolean
                            read FCompleteProperties write SetCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -2514,6 +2518,7 @@ begin
   {$ENDIF}
   try
     FIdentifierListUpdating:=true;
+    IdentifierList.IdentComplIncludeKeywords := IdentComplIncludeKeywords;
     try
       Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList);
     finally
