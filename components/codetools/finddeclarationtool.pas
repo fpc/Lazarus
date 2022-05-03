@@ -875,6 +875,9 @@ type
       TermCleanPos: integer;
       AliasType: PFindContext = nil): string;
   protected
+    // find the declared type "TMyObject" of a generic-param "generic TFoo<_P1: TMyObject>"
+    function FindClassFromGenericParamType(GenParamNode: TCodeTreeNode;
+      ResultParams: TFindDeclarationParams): boolean;
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function FindDeclarationOfIdentAtParam(
@@ -7673,6 +7676,15 @@ begin
       Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
       if not FindIdentifierInContext(Params) then
         exit;
+
+      if (Params.NewNode.Desc in [ctnGenericParameter]) then
+      begin
+        Params.GenParams := ResultParams.GenParams;
+        if not Params.FindGenericParamType then
+          if not FindClassFromGenericParamType(Params.NewNode, Params) then
+            exit;
+      end;
+
       AncestorContext.Tool:=Params.NewCodeTool;
       AncestorContext.Node:=Params.NewNode;
     end;
@@ -13704,6 +13716,43 @@ begin
     DebugLn('TCodeCompletionCodeTool.FindExprTypeAsString ExprType=',
       ExprTypeToString(ExprType),' Alias=',FindContextToString(AliasType));
     RaiseTermNotSimple(20170421204705);
+  end;
+end;
+
+function TFindDeclarationTool.FindClassFromGenericParamType(
+  GenParamNode: TCodeTreeNode; ResultParams: TFindDeclarationParams): boolean;
+var
+  Params: TFindDeclarationParams;
+  TmpNode: TCodeTreeNode;
+begin
+  Result := False;
+  if (ResultParams = nil) or (GenParamNode.Desc <> ctnGenericParameter)
+  or (GenParamNode.Parent = nil) // or (GenParamNode.Parent.Parent = nil)
+  or (GenParamNode.LastChild = nil)
+  then
+    exit;
+
+  Result := True;
+  Params:=TFindDeclarationParams.Create(Self, GenParamNode.Parent);
+  try
+    Params.Flags:=fdfDefaultForExpressions;
+    Params.SetIdentifier(Self,@Src[GenParamNode.LastChild.StartPos],nil);
+    if not FindIdentifierInContext(Params) then
+      RaiseUnexpectedKeyWord(0);
+    ResultParams.NewCodeTool:=Params.NewCodeTool;
+    ResultParams.NewNode:=Params.NewNode;
+    Include(ResultParams.Flags,fdfDoNotCache);
+  finally
+    Params.Free;
+  end;
+
+  if ResultParams.NewNode.Desc in [ctnTypeDefinition] then begin
+    TmpNode:=ResultParams.NewCodeTool.FindTypeNodeOfDefinition(ResultParams.NewNode);
+    if (TmpNode<>nil)
+     then
+       ResultParams.NewNode := TmpNode;
+
+    Include(ResultParams.Flags,fdfDoNotCache);
   end;
 end;
 
