@@ -621,8 +621,8 @@ begin
 
   FillChar(SymbolList,sizeof(SymbolList),0);
   ////TL Added @ prefix
-  CaseFunct:=@CaseNone;
-  StringCaseFunct:=@StringCaseNone;
+  CaseFunct:=@UpCase;
+  StringCaseFunct:=@UpperCase;
 
   fPrepared:=false;
   fCloseOnTerm:=false;
@@ -835,16 +835,16 @@ end;
 procedure TSynRange.SetCaseSensitive(const Value: boolean);
 begin
  FCaseSensitive:=Value;
- if Value then // DiBo33 Removed not so correct function is set
+ if Value then
+ begin
+   CaseFunct:=@CaseNone;
+   StringCaseFunct:=@StringCaseNone;
+ end
+ else
  begin
    ////TL Added @ prefix
    CaseFunct:=@UpCase;
    StringCaseFunct:=@UpperCase;
- end
- else
- begin
-   CaseFunct:=@CaseNone;
-   StringCaseFunct:=@StringCaseNone;
  end;
 end;
 
@@ -2632,6 +2632,7 @@ begin
   xmlInfoTags := nil;
   try
     xmlInfoTags := TStringList.Create;
+    xmlInfoTags.Sorted := true;
     BuildXMLIndexes( xmlInfoTags );
     ////TL Added 3rd parameter
     if (not GetNextTag(CurTagIndex,Param,false)) or (CurTagIndex<>xitUniHighlighter) then
