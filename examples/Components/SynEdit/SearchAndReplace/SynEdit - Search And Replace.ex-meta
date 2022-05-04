@@ -1,0 +1,12 @@
+{
+  "SynEdit - Search And Replace" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TSynEdit",
+      "Search",
+      "Replace",
+      "SearchAndReplace"
+    ],
+    "Description" : "Demonstrates TSynEdit's Search and Replace capability, and the range of options it can use."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "SynEdit - SynAny Highlighter" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TSynEdit",
+      "runtime"
+    ],
+    "Description" : "TSynAnySyn allows one to highlight specific words in the text.\r\nIt can be used to highlight every occurrence of 'Lazarus' in a specific color.\r\nThis example shows, how the the Keywords, Objects and Constants properties of the class TSynAnySyn can be controlled at runtime.  Text can be highlighted following a number of rules.\r\n\r\n"
+  }
+}
