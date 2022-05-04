@@ -2367,6 +2367,10 @@ msgstr ""
 msgid "Include identifiers containing prefix"
 msgstr "Zahrnout identifikátory obsahující prefix"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Zahrnout systémové proměnné"

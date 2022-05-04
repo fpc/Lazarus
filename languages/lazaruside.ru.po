@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-04-23 00:26+0300\n"
+"PO-Revision-Date: 2022-05-05 00:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2341,6 +2341,10 @@ msgstr "Добавлять шаблоны кода"
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
 msgstr "Добавлять идентификаторы, содержащие префикс"
+
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr "Добавлять все ключевые слова и операторы"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

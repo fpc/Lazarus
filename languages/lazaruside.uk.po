@@ -2350,6 +2350,10 @@ msgstr "Включити шаблони коду"
 msgid "Include identifiers containing prefix"
 msgstr "Включити ідентифікатори, що містять префікс"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Включити системні змінні"

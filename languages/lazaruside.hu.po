@@ -2349,6 +2349,10 @@ msgstr "Kód sablonok belevétele"
 msgid "Include identifiers containing prefix"
 msgstr "Előtagokat tartalmazó azonosítókkal együtt"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Rendszer változókkal együtt"

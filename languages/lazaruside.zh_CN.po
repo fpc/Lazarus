@@ -2357,6 +2357,10 @@ msgstr "Include代码模板"
 msgid "Include identifiers containing prefix"
 msgstr "包括含有前缀标识符"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "包含系统变量"

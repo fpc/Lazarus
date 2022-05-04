@@ -2349,6 +2349,10 @@ msgstr "Inclure les modèles de code"
 msgid "Include identifiers containing prefix"
 msgstr "Inclure les identificateurs avec préfixe"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Inclure les variables système"

@@ -2313,6 +2313,10 @@ msgstr "Kod şablonlarını dahil et"
 msgid "Include identifiers containing prefix"
 msgstr "Önek içeren tanımlayıcılarını dahil et"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Sistem değişkenlerini dahil et"

@@ -2429,6 +2429,10 @@ msgstr ""
 msgid "Include identifiers containing prefix"
 msgstr "Incluir identificadores que contengan el prefijo"
 
+#: lazarusidestrconsts.dlgincludekeywordstoidentcompl
+msgid "Include all keywords and operators"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Incluir variables del sistema"
