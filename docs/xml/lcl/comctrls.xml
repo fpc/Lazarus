@@ -19112,13 +19112,17 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TAddMode">
         <short>
-          <var>TAddMode</var> - enumerated type containing a series of constants to determine the place where a node should be placed in a tree.
+          Enumerated type with values used to determine where a node should be placed in a tree.
         </short>
         <descr>
           <p>
-            This set is used in <var>TTreeNode.InternalMove</var> and <var>TTreeNodes.InternalAddObject</var>.
+            <var>TAddMode</var> is the type passed as an argument to methods in <var>TTreeNode</var> and <var>TTreeNodes</var>.
           </p>
         </descr>
+        <seealso>
+          <link id="TTreeNode.MoveTo"/>
+          <link id="TTreeNodes.InternalAddObject"/>
+        </seealso>
       </element>
       <element name="TAddMode.taAddFirst">
         <short>Adds the node as the first child.</short>
@@ -19127,20 +19131,28 @@ AToolbar.ButtonHeight := 30;
         <short>Adds the node as the last child.</short>
       </element>
       <element name="TAddMode.taInsert">
-        <short>Adds the node in front another node.</short>
+        <short>Adds the node in front a specified node.</short>
       </element>
 
       <element name="TMultiSelectStyles">
         <short>Represents available multi-select styles.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TMultiSelectStyles</var> is an enumerated type with values representing the multi-select options available in <var>TCustomTreeView</var> and <var>TTreeView</var>. The values control the tree nodes and their manner of selection in a multi-selection.
+          </p>
+          <p>
+            Values from TMultiSelectStyles are stored in the <var>TMultiSelectStyle</var> set type, and used to implement the <var>MultiSelectStyle</var> property in TCustomTreeView.
+          </p>
+        </descr>
         <seealso>
           <link id="TMultiSelectStyle"/>
           <link id="TCustomTreeView.MultiSelectStyle"/>
+          <link id="TCustomTreeView.MultiSelect"/>
         </seealso>
       </element>
       <element name="TMultiSelectStyles.msControlSelect">
         <short>
-          Enables multi-select using Ctrl+Click to select an additional item.
+          Enables multi-select using Ctrl+Click to add an additional item to an existing selection.
         </short>
       </element>
       <element name="TMultiSelectStyles.msShiftSelect">
@@ -19150,12 +19162,12 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TMultiSelectStyles.msVisibleOnly">
         <short>
-          Enables multi-select for visible (expanded) items only using Shift+Click.
+          Enables multi-select for visible (expanded) items only using Shift+Click. Can be used in conjunction with msSiblingOnly.A multi-selection does not include any child nodes unless the nodes are expanded and visible.
         </short>
       </element>
       <element name="TMultiSelectStyles.msSiblingOnly">
         <short>
-          Enables range multi-select for sibling items using Shift+Click.
+          Enables multi-select for only sibling tree nodes using Shift+Click. This excludes parent and/or child tree nodes.
         </short>
       </element>
 
@@ -19169,6 +19181,7 @@ AToolbar.ButtonHeight := 30;
         <seealso>
           <link id="TMultiSelectStyles"/>
           <link id="TCustomTreeView.MultiSelectStyle"/>
+          <link id="TCustomTreeView.MultiSelect"/>
         </seealso>
       </element>
 
@@ -24739,7 +24752,9 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.AutoExpand">
-        <short>Unfold a tree-item when user clicks it or an item activated by code.</short>
+        <short>
+          Expands a tree node when it is clicked or activated in code.
+        </short>
         <descr>
           <p>
             <var>AutoExpand</var> is a <var>Boolean</var> property which indicates if a tree node is automatically expanded when it is <var>Selected</var> using a mouse click or keyboard navigation. The default value for the property is <b>False</b>.
@@ -24768,7 +24783,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.HideSelection">
         <short>
-          Indicates if the current Selection is hidden when the control loses focus.
+          Indicates if the current selection is hidden when the control loses focus.
         </short>
         <descr>
           <p>
@@ -24872,9 +24887,40 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.OnAdvancedCustomDraw">
         <short>
-          <var>OnAdvancedCustomDraw</var> - event handler for advanced custom drawing.
+          Event handler signalled to custom draw the grid control using drawing stages.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>OnAdvancedCustomDraw</var> is a <var>TTVAdvancedCustomDrawEvent</var> property with the event handler signalled to paint the grid control. It is signalled (when assigned) from the CustomDraw method, and occurs when the control executes its Paint method.
+          </p>
+          <p>
+            <b>Drawing Stages</b>
+          </p>
+          <dl>
+            <dt>cdPrePaint</dt>
+            <dd>
+              Paint the control when scrollbars are updated. Called after the OnCustomDraw event handler.
+            </dd>
+            <dt>cdPostPaint</dt>
+            <dd>
+              Paint the control after borders have been drawn.
+            </dd>
+            <dt>cdPreErase</dt>
+            <dd>
+              Not used in TCustomTreeView. The control does not receive erase notifications.
+            </dd>
+            <dt>cdPostErase</dt>
+            <dd>
+              Not used in TCustomTreeView. The control does not receive erase notifications.
+            </dd>
+          </dl>
+          <p>
+            Use OnCustomDraw to paint the control when the drawing stage is cdPrePaint.
+          </p>
+          <p>
+            Use IsCustomDrawn to determine if a handler routine has been assigned to an event handler for a specific drawing target (the control or its items).
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -24896,9 +24942,22 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.OnChanging">
         <short>
-          <var>OnChanging</var> - specialized event handler while TreeView is being changed.
+          Event handler signalled before the selected node in the tree view control is changed.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>OnChanging</var> is a <var>TTVChangingEvent</var> property with the event handler signalled prior to changing the selected node on the tree view control. It allows an application to determine whether the new tree node can become the selected node for the control.
+          </p>
+          <p>
+            Node is the tree node to examine in the handler routine.
+          </p>
+          <p>
+            Set the AllowChange argument to <b>True</b> to allow the tree node to be the selected node on the control.
+          </p>
+          <p>
+            OnChanging is signalled from the CanChange method, and occurs when a new value is assigned to the Selection property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -25158,9 +25217,11 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.SortType">
-        <short>Allow to show items sorted: by caption, by Data property or both.</short>
+        <short>Allows items to be sorted by caption, by Data property, or both.</short>
         <descr>
-          Changing the Text or Data of a node will sort again. While adding nodes does not. Call TreeView1.AlphaSort to sort the whole tree. Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
+          <p>
+            Changing the Text or Data of a node will sort again. While adding nodes does not. Call TreeView1.AlphaSort to sort the whole tree. Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -25194,7 +25255,9 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
       <element name="TCustomTreeView.Create.AnOwner">
-        <short/>
+        <short>
+          Owner of the class instance.
+        </short>
       </element>
 
       <element name="TCustomTreeView.Destroy">
@@ -25265,7 +25328,9 @@ AToolbar.ButtonHeight := 30;
             <dt>FMaxRight member</dt>
             <dd>Raises the exception if FMaxRight has a negative value.</dd>
             <dt>IsEditing / Selected</dt>
-            <dd>Raises the exception if IsEditing is <b>True</b> and Selected is unassigned.</dd>
+            <dd>
+              Raises the exception if IsEditing is <b>True</b> and Selected is unassigned.
+            </dd>
             <dt>Selected</dt>
             <dd>Raises the exception if the node in Selected is not visible.</dd>
             <dt>Items</dt>
@@ -25639,18 +25704,26 @@ AToolbar.ButtonHeight := 30;
         <short>
           <var>GetFirstMultiSelected</var> - returns the first node from a multiple selection.
         </short>
-        <descr>This works only if tvoAllowMultiSelect is enabled. </descr>
+        <descr>
+          <p>
+            Uses the value from the internal member maintained in TTreeNodes. GetFirstMultiSelected is available when tvoAllowMultiSelect has been included in the Options for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetFirstMultiSelected.Result">
-        <short/>
+        <short>First tree node in a multi-selection.</short>
       </element>
 
       <element name="TCustomTreeView.GetLastMultiSelected">
         <short>
           Gets the last tree node added to a multi-selection in the Items for the controls.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Uses the value from the internal member maintained in TTreeNodes. GetLastMultiSelected is available when tvoAllowMultiSelect has been included in the Options for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetLastMultiSelected.Result">
@@ -25664,6 +25737,15 @@ AToolbar.ButtonHeight := 30;
         <descr>
           <p>
             <var>Select</var> is an overloaded method used to make a node, array of nodes, or list of nodes become selected in the tree view control.
+          </p>
+          <p>
+            The overloaded variant with a TShiftState value allows the specified node to be added to the existing multi-selection when Shift contains ssCtrl. If Shift does not include ssCtrl, ClearSelections is called prior to storing the node in Selected.
+          </p>
+          <p>
+            The variants which accept either an array or a list of nodes always call ClearSelections to reset the selected state for multi-selected nodes. The first TTreeNode instance in either is stored in Selected. When tvoAllowMultiSelect has been included in Options, the Selected property in each of the tree nodes is set to True.
+          </p>
+          <p>
+            Use ClearSelections to reset the state for any selected nodes on the tree view control.
           </p>
         </descr>
         <seealso/>
@@ -25682,9 +25764,22 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.SelectionVisible">
         <short>
-          Indicates whether a selected tree node on the control is visible.
+          Indicates whether selected tree node(s) on the control are visible.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SelectionVisible</var> is a <var>Boolean</var> function which indicates whether the selected tree node(s) for the control are in its visible display area. SelectionVisible checks both multi-selections and a single selection on the control.
+          </p>
+          <p>
+            For multi-selections, the GetFirstMultiSelected and GetNextMultiSelected methods are called to visit each of the tree nodes. The return value is set to <b>True</b> when the first tree node with its IsVisible property set to <b>True</b> is found.
+          </p>
+          <p>
+            When Items does not contain multi-selections, the value in Selected is used. The return value is <b>True</b> when the IsFullHeightVisible property in the tree node is set to <b>True</b>.
+          </p>
+          <p>
+            SelectionVisible is used in the MakeSelectionVisible method and controls whether the MakeVisible method is called for the first tree node in a selection.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.SelectionVisible.Result">
@@ -25822,7 +25917,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.BackgroundColor">
-        <short>Color of background area of control.</short>
+        <short>Color of the background area on the control.</short>
         <descr>
           <p>
             Contains the same value as the <var>Color</var> property.
@@ -25835,7 +25930,10 @@ AToolbar.ButtonHeight := 30;
         <short>Width of the line drawn as a border around the control.</short>
         <descr>
           <p>
-            The default value for the property is 0 in TCustomTreeView.
+            The default value for the property is 0 in TCustomTreeView. Changing the value for the property causes a CM_BORDERCHANGED control message to be performed.
+          </p>
+          <p>
+            BorderWidth is used when a tree node in Items calculates its display rectangle. It provides the value for the Left member in the TRect instance. It is used when expand/collapse indicators are displayed for the control. It is also used when the bounds rectangle for the Editor on the control is calculated.
           </p>
         </descr>
         <seealso>
@@ -26114,7 +26212,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
             <li>Insert</li>
           </ul>
           <p>
-              See <link id="TTreeNodes">TTreeNodes</link> for more information about the properties and methods in the container class.
+            See <link id="TTreeNodes">TTreeNodes</link> for more information about the properties and methods in the container class.
           </p>
         </descr>
         <seealso>
@@ -26125,16 +26223,59 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 
       <element name="TCustomTreeView.KeepCollapsedNodes">
         <short>
-          <var>KeepCollapsedNodes</var> - if <b>True</b>, the collapsed nodes are to be retained.
+          Indicates whether a node keeps its child nodes when it is collapsed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>KeepCollapsedNodes</var> is a <var>Boolean</var> property which indicates whether a tree node keeps its child nodes when the node is collapsed. When set to False (the default value), a tree node will free it child nodes when the node is collapsed.
+          </p>
+          <p>
+            KeepCollapsedNodes is assigned to the corresponding property in Items, and made available to TTreeNode instances in the container using their Owner property.
+          </p>
+          <p>
+            Changing the property value causes Options and Items to be updated. When set to True, tvoKeepCollapsedNodes is included in Options. Otherwise, tvoKeepCollapsedNodes is excluded from Options. The new value for the property is assigned to the KeepCollapsedNodes property in Items.
+          </p>
+          <p>
+            KeepCollapsedNodes is used in the DoExpand method in TTreeNode when the node is being collapsed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TTreeNodes.KeepCollapsedNodes"/>
+          <link id="TTreeNode.ExpandItem"/>
+          <link id="TTreeViewOption"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.MultiSelectStyle">
-        <short>Additional options for the MultiSelect property.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Multi-selection options enabled for the tree view control.
+        </short>
+        <descr>
+          <p>
+            <var>MultiSelectStyle</var> is a <var>TMultiSelectStyle</var> property which contains multi-selection options enabled for the tree view control. Values in the set type determine which nodes are available to be multi-selected, and the keys used to select them. The default value for the property is defined in the DefaultMultiSelectStyle constant, and enables use of the Ctrl key to add a tree node to a multi-selection.
+          </p>
+          <p>
+            See <link id="TMultiSelectStyles">TMultiSelectStyles</link> for the available values and their meanings.
+          </p>
+          <p>
+            Changing the value in MultiSelectStyle causes the new property value to be validated. If an empty set ([]) is assigned, the default value in DefaultMultiSelectStyle is used instead. There must be at least one TMultiSelectStyles enumeration value in the set type.
+          </p>
+          <p>
+            Use the Options property to enabled multi-selection by including the value tvoAllowMultiselect.
+          </p>
+          <p>
+            Values in MultiSelectStyle are used when the MouseDown method handles a click on the text or icon for a tree node.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.Items"/>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TTreeNodes.MultiSelect"/>
+          <link id="TMultiSelectStyles"/>
+          <link id="TMultiSelectStyle"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.Options">
@@ -26202,7 +26343,14 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>
           Color used to paint the background for the selected tree node in the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SelectionColor</var> is a <var>TColor</var> property with the color used to paint the background for the selected tree node. The default value for the property is clHighlight. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            SelectionColor is not currently used in the TCustomTreeView implementation.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -26224,9 +26372,15 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
       </element>
 
       <element name="TCustomTreeView.SelectionFontColor">
-        <short>Color used to draw the text for a selected item.</short>
-        <descr/>
-        <seealso/>
+        <short>Color used to draw the text for a (multi-)selected item when enabled.</short>
+        <descr>
+          <p>
+            Not used in the current LCL implementation. There is a SelectionFontColor property available in the Delphi VCL.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.SelectionFontColorUsed"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.SelectionFontColorUsed">
