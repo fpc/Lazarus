@@ -49,7 +49,7 @@ uses
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
-  ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources,
+  ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources, ComponentReg,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
@@ -6592,6 +6592,36 @@ var
     Result:=true;
   end;
 
+  function TryRegisteredClasses(aClassName: string;
+    out FoundComponentClass: TComponentClass;
+    out TheModalResult: TModalResult): boolean;
+  var
+    RegComp: TRegisteredComponent;
+  begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  TryRegisteredClasses aClassName="',aClassName,'"']);
+    {$ENDIF}
+    Result:=false;
+    TheModalResult:=mrCancel;
+    FoundComponentClass:=nil;
+    if AnUnitInfo.UnitResourceFileformat<>nil then
+      FoundComponentClass:=AnUnitInfo.UnitResourceFileformat.FindComponentClass(aClassName);
+    if FoundComponentClass=nil then
+    begin
+      RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
+      if (RegComp<>nil) and
+      not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+        FoundComponentClass:=RegComp.ComponentClass;
+    end;
+    if FoundComponentClass=nil then
+      FoundComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
+    if FoundComponentClass<>nil then begin
+      DebugLn(['SearchComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);
+      TheModalResult:=mrOk;
+      Result:=true;
+    end;
+  end;
+
   function TryLFM(const UnitFilename, AClassName: string;
     out TheModalResult: TModalResult): boolean;
   var
@@ -6704,10 +6734,8 @@ var
     NewTool: TFindDeclarationTool;
     InheritedNode: TCodeTreeNode;
     ClassNode: TCodeTreeNode;
-    {$IFDEF VerboseLFMSearch}
     AncestorNode: TCodeTreeNode;
     AncestorClassName: String;
-    {$ENDIF}
     Node: TCodeTreeNode;
     ok: Boolean;
   begin
@@ -6786,21 +6814,21 @@ var
         exit;
       end;
       StoreComponentClassDeclaration(NewTool.MainFilename);
-      {$IFDEF VerboseLFMSearch}
       AncestorNode:=InheritedNode.FirstChild;
       AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
-      {$ENDIF}
       //debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' ancestor="',AncestorClassName,'"']);
 
       // try unit component
       if TryUnitComponent(NewTool.MainFilename,TheModalResult) then
         exit(true);
 
-      // try lfm (dead, can be removed)
-      if TryLFM(NewTool.MainFilename,AComponentClassName,TheModalResult) then begin
-        Assert(False, 'TryFindDeclaration: TryLFM returned True!');
+      // try lfm
+      if TryLFM(NewTool.MainFilename,AComponentClassName,TheModalResult) then
         exit(true);
-      end;
+
+      // search ancestor in registered classes
+      if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
+        exit(true);
 
       {$IFDEF VerboseLFMSearch}
       debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' Ancestor="',AncestorClassName,'", but no lfm and no registered class found']);
@@ -6847,6 +6875,8 @@ var
       exit;
     end;
     StoreComponentClassDeclaration(UnitFilename);
+    if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
+      exit(true);
   end;
 
 var
@@ -6877,6 +6907,9 @@ begin
   if AnUnitInfo<>nil then begin
     if TryUnitComponent(AnUnitInfo.Filename,Result) then exit;
   end;
+
+  // then try registered global classes
+  if TryRegisteredClasses(AComponentClassName,AComponentClass,Result) then exit;
 
   // search in used units
   UsedUnitFilenames:=nil;
