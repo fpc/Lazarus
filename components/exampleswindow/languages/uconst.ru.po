@@ -96,6 +96,10 @@ msgstr "Не удалось скопировать файлы в"
 msgid "Found %d Example Projects"
 msgstr "Найдено примеров проектов: %d"
 
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr "Двойной щелчок обращает выбор"
+
 #: uconst.rsrefreshexistingexample
 msgid "Refresh Existing Example?"
 msgstr "Обновить уже имеющийся пример?"
