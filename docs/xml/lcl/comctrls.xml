@@ -26242,7 +26242,8 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <seealso>
           <link id="TCustomTreeView.Options"/>
           <link id="TTreeNodes.KeepCollapsedNodes"/>
-          <link id="TTreeNode.ExpandItem"/>
+          <link id="TTreeNode.Collapse"/>
+          <link id="TTreeNode.Expand"/>
           <link id="TTreeViewOption"/>
         </seealso>
       </element>
