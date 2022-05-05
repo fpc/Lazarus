@@ -46,6 +46,7 @@ resourcestring
     rsExampleKeyWords = 'Keywords';                         //  "
     rsExSearchingForExamples = 'Searching for Examples ...';
     rsFailedToCopyFilesTo = 'Failed to copy files to';        // Followed by a dir were we, apparently, cannot write
+    rsGroupHint = 'Double click inverts selection';
 
     // These are ObjectInspector set but I believe I cannot get OI literals i18n in a Package ??
     rsExampleOpen = 'Open';                                 // Button Caption

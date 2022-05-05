@@ -1,15 +1,15 @@
 object FormLazExam: TFormLazExam
-  Left = 55
-  Height = 500
-  Top = 143
-  Width = 976
+  Left = 88
+  Height = 400
+  Top = 155
+  Width = 781
   Caption = 'Prototype Lazarus Examples Window'
-  ClientHeight = 500
-  ClientWidth = 976
-  DesignTimePPI = 120
+  ClientHeight = 400
+  ClientWidth = 781
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  LCLVersion = '2.3.0.0'
   object Memo1: TMemo
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Splitter2
@@ -17,14 +17,14 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckGroupCategory
-    Left = 6
-    Height = 202
-    Top = 197
-    Width = 964
+    Left = 5
+    Height = 151
+    Top = 157
+    Width = 771
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
     Lines.Strings = (
       'Memo1'
     )
@@ -32,6 +32,7 @@ object FormLazExam: TFormLazExam
     ReadOnly = True
     ScrollBars = ssAutoVertical
     TabOrder = 1
+    TabStop = False
   end
   object ListView1: TListView
     AnchorSideLeft.Control = Owner
@@ -39,22 +40,22 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Splitter2
-    Left = 6
-    Height = 139
+    Left = 5
+    Height = 110
     Hint = 'Click for Info, Double Click to download'
-    Top = 46
-    Width = 964
+    Top = 37
+    Width = 771
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 5
     Columns = <    
       item
-        Width = 10
+        Width = 8
       end    
       item
-        Width = 10
+        Width = 8
       end    
       item
-        Width = 10
+        Width = 740
       end>
     ParentShowHint = False
     ReadOnly = True
@@ -62,6 +63,7 @@ object FormLazExam: TFormLazExam
     TabOrder = 0
     OnClick = ListView1Click
     OnDblClick = ListView1DblClick
+    OnKeyDown = ListView1KeyDown
     OnSelectItem = ListView1SelectItem
   end
   object CheckGroupCategory: TCheckGroup
@@ -69,16 +71,16 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
-    Left = 6
-    Height = 24
-    Top = 405
-    Width = 964
+    Left = 5
+    Height = 23
+    Top = 313
+    Width = 771
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
     AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
     Caption = 'Category'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -91,6 +93,8 @@ object FormLazExam: TFormLazExam
     Columns = 2
     OnDblClick = CheckGroupCategoryDblClick
     OnItemClick = CheckGroupCategoryItemClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
   end
   object Splitter2: TSplitter
@@ -101,18 +105,18 @@ object FormLazExam: TFormLazExam
     AnchorSideBottom.Control = Memo1
     Cursor = crVSplit
     Left = 0
-    Height = 6
-    Top = 191
-    Width = 976
+    Height = 5
+    Top = 152
+    Width = 781
     Align = alNone
     Anchors = [akLeft, akRight]
     ResizeAnchor = akTop
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 29
-    Top = 471
-    Width = 976
+    Height = 23
+    Top = 377
+    Width = 781
     Panels = <>
   end
   object ButtonDownload: TButton
@@ -121,13 +125,13 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 74
-    Height = 30
-    Top = 435
-    Width = 95
+    Left = 64
+    Height = 31
+    Top = 341
+    Width = 89
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Left = 6
+    BorderSpacing.Left = 5
     Caption = 'Download'
     OnClick = ButtonDownloadClick
     TabOrder = 5
@@ -138,13 +142,13 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 283
-    Height = 30
-    Top = 435
-    Width = 62
+    Left = 266
+    Height = 31
+    Top = 341
+    Width = 54
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Left = 6
+    BorderSpacing.Left = 5
     Caption = 'Close'
     OnClick = ButtonCloseClick
     TabOrder = 6
@@ -153,14 +157,14 @@ object FormLazExam: TFormLazExam
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
-    Left = 6
-    Height = 30
-    Top = 435
-    Width = 62
+    Left = 5
+    Height = 31
+    Top = 341
+    Width = 54
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Left = 5
+    BorderSpacing.Bottom = 5
     Caption = 'Open'
     OnClick = ButtonOpenClick
     TabOrder = 7
@@ -171,13 +175,13 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 175
-    Height = 30
-    Top = 435
-    Width = 102
+    Left = 158
+    Height = 31
+    Top = 341
+    Width = 103
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Left = 6
+    BorderSpacing.Left = 5
     Caption = 'ButtonView'
     OnClick = ButtonViewClick
     TabOrder = 8
@@ -187,15 +191,16 @@ object FormLazExam: TFormLazExam
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 6
-    Height = 28
+    Left = 5
+    Height = 29
     Hint = 'Searches for Keywords'
-    Top = 6
-    Width = 964
+    Top = 5
+    Width = 771
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    OnChange = EditSearchChange
     OnExit = EditSearchExit
     OnKeyUp = EditSearchKeyUp
     ParentShowHint = False

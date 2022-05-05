@@ -86,6 +86,10 @@ msgstr ""
 msgid "Found %d Example Projects"
 msgstr ""
 
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr ""
+
 #: uconst.rsrefreshexistingexample
 msgid "Refresh Existing Example?"
 msgstr ""
