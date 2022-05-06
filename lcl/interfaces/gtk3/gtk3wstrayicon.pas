@@ -55,7 +55,6 @@ uses gtk3objects;     // TGtk3Image
 const
   libappindicator_3 = 'libappindicator3.so.1';              // Unity or Canonical libappindicator3-1
   LibAyatanaAppIndicator = 'libayatana-appindicator3.so.1'; // Ayatana - typically called libayatana-appindicator3-1
-  IconThemePath = '/tmp/appindicators/';                    // We must write our icon to a file.
   IconType = 'png';
 
 type
@@ -76,6 +75,7 @@ type
   PAppIndicator = Pointer;
 
 var
+  IconThemePath : string;                    // We must write our icon to a file.
   { GlobalAppIndicator creation routines }
   app_indicator_get_type: function: GType; cdecl;
   app_indicator_new: function(id, icon_name: PGChar; category: TAppIndicatorCategory): PAppIndicator; cdecl;
@@ -148,7 +148,7 @@ begin
   if GlobalAppIndicator = nil then
     { It seems that icons can only come from files :( }
     GlobalAppIndicator := app_indicator_new_with_path(PChar(FName), PChar(FIconName),
-      APP_INDICATOR_CATEGORY_APPLICATION_STATUS, IconThemePath);
+      APP_INDICATOR_CATEGORY_APPLICATION_STATUS, PChar(IconThemePath));
   Update;
   {$ifdef DEBUGAPPIND}
   case app_indicator_get_status(GlobalAppIndicator) of
@@ -296,6 +296,8 @@ end;
 initialization
   GlobalAppIndicator := nil;
   GlobalIconPath := '';
+  IconThemePath := '/tmp/appindicators-' + GetEnvironmentVariable('USER') + '/';
+
 finalization
   if FileExists(GlobalIconPath) then
     DeleteFile(GlobalIconPath);
