@@ -149,7 +149,6 @@ type
   to load icons for AppIndicator is through files }
 
 const
-  IconThemePath = '/tmp/appindicators/';
   IconType = 'png';
 
 { It seems to me, and please tell me otherwise if untrue, that you can only
@@ -159,6 +158,7 @@ var
   GlobalAppIndicator: PAppIndicator;
   GlobalIcon: Pointer;
   GlobalIconPath: string;
+  IconThemePath : string;
 
 constructor TUnityTrayIconHandle.Create(TrayIcon: TCustomTrayIcon);
 var
@@ -188,7 +188,7 @@ begin
   if GlobalAppIndicator = nil then
     { It seems that icons can only come from files :( }
     GlobalAppIndicator := app_indicator_new_with_path(PChar(FName), PChar(FIconName),
-      APP_INDICATOR_CATEGORY_APPLICATION_STATUS, IconThemePath);
+      APP_INDICATOR_CATEGORY_APPLICATION_STATUS, PChar(IconThemePath));
   Update;
 end;
 
@@ -342,6 +342,8 @@ end;
 initialization
   GlobalAppIndicator := nil;
   GlobalIconPath := '';
+  IconThemePath := '/tmp/appindicators-' +  GetEnvironmentVariable('USER') + '/';
+
 finalization
   if FileExists(GlobalIconPath) then
     DeleteFile(GlobalIconPath);
