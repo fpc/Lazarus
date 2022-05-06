@@ -52,7 +52,6 @@ type
         EditSearch: TEdit;
         ListView1: TListView;
         Memo1: TMemo;
-        Panel1: TPanel;
         Splitter2: TSplitter;
         StatusBar1: TStatusBar;
         procedure ButtonCloseClick(Sender: TObject);
