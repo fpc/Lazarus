@@ -349,7 +349,6 @@ type
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   private
-    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
@@ -368,6 +367,7 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton); override;
     procedure MeasureDraw(Draw: boolean; PaintRect: TRect;
                           out PreferredWidth, PreferredHeight: integer);
     procedure MouseEnter; override;

@@ -1248,9 +1248,6 @@ type
     function IsVisibleStored: Boolean;
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
-    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
-                          Shift: TShiftState);
-    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetAccessibleName(AValue: TCaption);
     procedure SetAccessibleDescription(AValue: TCaption);
     procedure SetAccessibleValue(AValue: TCaption);
@@ -1421,6 +1418,8 @@ type
     procedure TripleClick; virtual;
     procedure QuadClick; virtual;
     function GetMousePosFromMessage(const MessageMousePos: TSmallPoint): TPoint;
+    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift: TShiftState); virtual;
+    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton); virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
