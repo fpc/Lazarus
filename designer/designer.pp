@@ -2042,14 +2042,23 @@ procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMContextMen
 var
   PopupPos: TPoint;
 begin
+  //debugln(['TDesigner.HandlePopupMenu ',DbgSName(Sender),' ',Message.XPos,',',Message.YPos]);
+  {$IFDEF EnableDesignerPopupRightClick}
   if Message.XPos = -1 then
+  {$ENDIF}
   begin
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
-    with Selection do
-      PopupPos := Point(Left + Width, Top);
-    with Form.ClientToScreen(PopupPos) do
-      FDesignerPopupMenu.Popup(X, Y);
+    if Message.XPos >=0 then
+    begin
+      PopupPos := Point(Message.XPos,Message.YPos);
+      FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
+    end else begin
+      with Selection do
+        PopupPos := Point(Left + Width, Top);
+      with Form.ClientToScreen(PopupPos) do
+        FDesignerPopupMenu.Popup(X, Y);
+    end;
   end;
   Message.Result := 1;
 end;
@@ -2435,7 +2444,10 @@ var
   SelectedPersistent: TSelectedControl;
   DesignSender, MouseDownControl: TControl;
   RubberBandWasActive, Handled: Boolean;
-  p, PopupPos: TPoint;
+  p: TPoint;
+  {$IFDEF EnableDesignerPopupRightClick}
+  PopupPos: TPoint;
+  {$ENDIF}
   i, j: Integer;
 begin
   FHintTimer.Enabled := False;
@@ -2569,12 +2581,16 @@ begin
     Selection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
     and (not Selection.IsSelected(MouseDownComponent))
-    and (Shift - [ssRight] = []) then    // select only the mouse down component
+    and (Shift - [ssRight] = []) then begin
+      // select only the mouse down component
       Selection.AssignPersistent(MouseDownComponent);
+    end;
+    {$IFDEF EnableDesignerPopupRightClick}
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
     PopupPos := Form.ClientToScreen(MouseUpPos);
     FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
+    {$ENDIF}
     Selection.BeginUpdate;
   end;
   Selection.RubberbandActive := False;
