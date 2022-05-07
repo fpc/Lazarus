@@ -139,16 +139,16 @@ function gtkdeleteCB({%H-}widget: PGtkWidget; {%H-}event: PGdkEvent;
                      data: gPointer): GBoolean; cdecl;
 function gtkresizeCB({%H-}widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
 function gtkMonthChanged({%H-}Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+
 procedure DeliverMouseMoveMessage({%H-}Widget:PGTKWidget; Event: PGDKEventMotion;
                                   AWinControl: TWinControl);
-
 function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
                          Data: gPointer): GBoolean; cdecl;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
                               data: gPointer): GBoolean; cdecl;
-
 function DeliverMouseDownMessage({%H-}widget: PGtkWidget; event: pgdkEventButton;
                                   AWinControl: TWinControl): PtrInt;
+function DeliverContextMenuMessage(Widget: PGtkWidget; CheckGtkPopupMenu: boolean): gboolean;
 
 function gtk2ScrollBarMouseBtnPress({%H-}widget: PGtkWidget; {%H-}event: pgdkEventButton;
   {%H-}data: gPointer): GBoolean; cdecl;

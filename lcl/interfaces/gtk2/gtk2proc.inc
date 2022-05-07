@@ -180,9 +180,8 @@ begin
   GDK2.gdk_region_xor(result, source2);
 end;
 
-Procedure gdk_text_extents(TheFont: TGtkIntfFont;
-  Str: PChar; StrLength: integer;
-  lbearing, rbearing, width, ascent, descent: Pgint);
+procedure gdk_text_extents(TheFont: TGtkIntfFont; Str: PChar;
+  StrLength: integer; lbearing, rbearing, width, ascent, descent: Pgint);
 var
   Layout : PPangoLayout;
   Extents : TPangoRectangle;
@@ -1490,7 +1489,7 @@ begin
   {$ENDIF}
 end;
 
-Procedure FreeGDIColor(GDIColor: PGDIColor);
+procedure FreeGDIColor(GDIColor: PGDIColor);
 begin
   if (cfColorAllocated in GDIColor^.ColorFlags) then begin
     if (GDIColor^.Colormap <> nil) then begin
