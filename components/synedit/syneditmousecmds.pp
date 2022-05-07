@@ -367,7 +367,7 @@ procedure RegisterExtraGetEditorMouseCommandValues(AProc: TGetEditorCommandValue
 procedure RegisterMouseCmdNameAndOptProcs(ANamesProc: TMouseCmdNameAndOptProcs; AOptProc: TMouseCmdNameAndOptProcs = nil);
 
 const
-  SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
+  SYNEDIT_LINK_MODIFIER = {$IFDEF Darwin}ssMeta{$ELSE}ssCtrl{$ENDIF};
 
 implementation
 
