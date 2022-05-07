@@ -1799,14 +1799,44 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
       Include(Info^.Flags, wwiTabWidgetFocusCheck);
   end;
 
+  function SendContextMenu: gboolean;
+  var
+    x, y: gint;
+    W: PGtkWidget;
+    Info: PWidgetInfo;
+    Old: TObject;
+    Msg: TLMContextMenu;
+  begin
+    Result:=CallBackDefaultReturn;
+    W := Widget;
+    gdk_display_get_pointer(gtk_widget_get_display(Widget), nil, @x, @y, nil);
+    Old := nil;
+    while W <> nil do
+    begin
+      Info := GetWidgetInfo(W);
+      if (Info <> nil) and (Info^.LCLObject <> Old) then
+      begin
+        Old := Info^.LCLObject;
+        FillChar(Msg{%H-}, SizeOf(Msg), #0);
+        Msg.Msg := LM_CONTEXTMENU;
+        Msg.hWnd := {%H-}HWND(W);
+        Msg.XPos := x;
+        Msg.YPos := y;
+
+        Result := DeliverMessage(Old, Msg) <> 0;
+        if Result then break;
+      end;
+      // check if widget has a standard popup menu
+      if (W = widget) and Assigned(GTK_WIDGET_GET_CLASS(W)^.popup_menu) then
+        break;
+      W := gtk_widget_get_parent(W);
+    end;
+  end;
+
 var
-  DesignOnlySignal: boolean;
-  Msg: TLMContextMenu;
-  x, y: gint;
-  W: PGtkWidget;
-  Info: PWidgetInfo;
-  Old: TObject;
+  DesignOnlySignal, StopSignal: boolean;
   Path: PGtkTreePath;
+  x, y: gint;
   Column: PGtkTreeViewColumn;
   {$IFDEF VerboseMouseBugfix}
   AWinControl: TWinControl;
@@ -1842,6 +1872,9 @@ begin
     exit(false);
   end;
   {$ENDIF}
+  //debugln('[gtkMouseBtnPress] called DeliverMouseDownMessage Result=',dbgs(Result));
+
+  StopSignal:=false;
 
   if not (csDesigning in TComponent(Data).ComponentState) then
   begin
@@ -1863,29 +1896,7 @@ begin
     // if LCL process LM_CONTEXTMENU then stop the event propagation
     if (Event^.button = 3) then
     begin
-      W := Widget;
-      gdk_display_get_pointer(gtk_widget_get_display(Widget), nil, @x, @y, nil);
-      Old := nil;
-      while W <> nil do
-      begin
-        Info := GetWidgetInfo(W);
-        if (Info <> nil) and (Info^.LCLObject <> Old) then
-        begin
-          Old := Info^.LCLObject;
-          FillChar(Msg{%H-}, SizeOf(Msg), #0);
-          Msg.Msg := LM_CONTEXTMENU;
-          Msg.hWnd := {%H-}HWND(W);
-          Msg.XPos := x;
-          Msg.YPos := y;
-
-          Result := DeliverMessage(Old, Msg) <> 0;
-          if Result then break;
-        end;
-        // check if widget has a standard popup menu
-        if (W = widget) and Assigned(GTK_WIDGET_GET_CLASS(W)^.popup_menu) then
-          break;
-        W := gtk_widget_get_parent(W);
-      end;
+      Result:=SendContextMenu;
 
       {emit selection change when right mouse button pressed
        otherwise LCL is not updated since ChangeLock = 1 in case
@@ -1901,7 +1912,7 @@ begin
           gtk_tree_view_set_cursor(GTK_TREE_VIEW(Widget), Path, Column, False);
           gtk_widget_queue_draw(Widget);
         end;
-        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+        StopSignal:=true;
       end;
 
     end;
@@ -1915,9 +1926,17 @@ begin
     begin
       // stop the signal, so that the widget does not auto react
       //DebugLn(['gtkMouseBtnPress stop signal']);
-      g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+      StopSignal:=true;
+    end;
+
+    if (Event^.button = 3) then
+    begin
+      Result:=SendContextMenu;
     end;
   end;
+  if StopSignal then
+    g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+
   {$IFDEF Gtk2CallMouseDownBeforeContext}
   {$ELSE}
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
