@@ -53,6 +53,7 @@ type
     procedure SetExtentY(const AValue: TChartLiveViewExtentY);
     procedure SetViewportSize(const AValue: Double);
   protected
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     procedure UpdateViewport; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -96,6 +97,16 @@ begin
   if (not FActive) or (FChart = nil) then
     exit;
   UpdateViewport;
+end;
+
+procedure TChartLiveView.Notification(AComponent: TComponent; AOperation: TOperation);
+begin
+  if (AOperation = opRemove) and (AComponent = FChart) then
+  begin
+    SetActive(false);
+    FChart := nil;
+  end;
+  inherited Notification(AComponent, AOperation);
 end;
 
 procedure TChartLiveView.RestoreAxisRange(Axis: TChartAxis);
@@ -195,6 +206,8 @@ procedure TChartLiveView.StoreAxisRanges;
 var
   i: Integer;
 begin
+  if FChart = nil then
+    exit;
   SetLength(FAxisRanges, FChart.AxisList.Count);
   for i := 0 to FChart.AxisList.Count-1 do
     StoreAxisRange(FChart.AxisList[i]);
