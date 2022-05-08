@@ -587,7 +587,7 @@ var
   itm : NSTabViewItem;
 begin
   itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
-  if Assigned(itm) then
+  if not Assigned(itm) then
   begin
     inherited mouseDown(event);
     Exit;
@@ -605,19 +605,46 @@ begin
 end;
 
 procedure TCocoaTabControl.mouseUp(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited mouseUp(event);
+    Exit;
+  end;
+
   if not Assigned(callback) then callback.MouseUpDownEvent(event);
   inherited mouseUp(event);
 end;
 
 procedure TCocoaTabControl.rightMouseDown(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited rightMouseDown(event);
+    Exit;
+  end;
+
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDown(event);
 end;
 
 procedure TCocoaTabControl.rightMouseUp(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited rightMouseUp(event);
+    Exit;
+  end;
+
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseUp(event);
 end;
@@ -629,13 +656,31 @@ begin
 end;
 
 procedure TCocoaTabControl.otherMouseDown(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited otherMouseDown(event);
+    Exit;
+  end;
+
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaTabControl.otherMouseUp(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited otherMouseUp(event);
+    Exit;
+  end;
+
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
 end;
@@ -653,7 +698,16 @@ begin
 end;
 
 procedure TCocoaTabControl.mouseMoved(event: NSEvent);
+var
+  itm : NSTabViewItem;
 begin
+  itm := self.tabViewItemAtPoint( self.convertPoint_fromView(event.locationInWindow, nil ));
+  if not Assigned(itm) then
+  begin
+    inherited mouseMoved(event);
+    Exit;
+  end;
+
   if Assigned(callback) then callback.MouseMove(event);
   inherited mouseMoved(event);
 end;
