@@ -591,6 +591,7 @@ begin
   FDown := false;
   inherited;
 end;
+
 procedure TChartListbox.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   if (AOperation = opRemove) and (AComponent = FChart) then
