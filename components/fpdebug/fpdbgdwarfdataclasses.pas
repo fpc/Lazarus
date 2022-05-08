@@ -4412,6 +4412,9 @@ function TFpThreadWorkerScanAll.FindCompileUnit: TDwarfScopeInfo;
 begin
   Result := FScanScopeList.BuildList(FCU.FAbbrevList, FCU.FInfoData, FCU.FLength,
     FCU.FAddressSize, FCU.IsDwarf64, FCU.Version, DW_TAG_compile_unit);
+
+  FCU.FScopeList := FScanScopeList;
+  Result.FScopeListPtr := @FCU.FScopeList;
 end;
 
 { TFpThreadWorkerComputeNameHashes }
