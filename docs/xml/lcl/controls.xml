@@ -6556,45 +6556,6 @@
         <short/>
       </element>
 
-      <element name="TControl.DoMouseDown">
-        <short>
-          Performs the message handler for mouse button down messages; calls the MouseDown handler.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TControl.DoMouseUp"/>
-          <link id="TControl.MouseDown"/>
-          <link id="TControl.OnMouseDown"/>
-        </seealso>
-      </element>
-      <element name="TControl.DoMouseDown.Message">
-        <short/>
-      </element>
-      <element name="TControl.DoMouseDown.Button">
-        <short/>
-      </element>
-      <element name="TControl.DoMouseDown.Shift">
-        <short/>
-      </element>
-
-      <element name="TControl.DoMouseUp">
-        <short>
-          Performs the message handler for mouse button up messages; calls the MouseUp handler.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TControl.DoMouseDown"/>
-          <link id="TControl.MouseUp"/>
-          <link id="TControl.OnMouseUp"/>
-        </seealso>
-      </element>
-      <element name="TControl.DoMouseUp.Message">
-        <short/>
-      </element>
-      <element name="TControl.DoMouseUp.Button">
-        <short/>
-      </element>
-
       <element name="TControl.SetAccessibleDescription">
          <short>Sets the value for the AccessibleDescription property.</short>
         <descr/>
@@ -7684,13 +7645,14 @@
             Sets MouseCapture to <b>True</b> when enabled in the ControlStyle property and the left mouse button is included in CaptureMouseButtons. Includes csClicked in ControlState when click events have been enabled in the ControlStyle property.
           </p>
           <p>
-            Calls the private DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
+            Calls the DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
           </p>
         </descr>
         <seealso>
           <link id="TControl.ControlStyle"/>
           <link id="TControl.MouseCapture"/>
           <link id="TControl.CaptureMouseButtons"/>
+          <link id="TControl.DoMouseDown"/>
           <link id="TControl.MouseDown"/>
           <link id="TControl.OnMouseDown"/>
           <link id="TMouseButton"/>
@@ -7709,7 +7671,7 @@
             Sets MouseCapture to <b>True</b> when enabled in the ControlStyle property and the right mouse button is included in CaptureMouseButtons.
           </p>
           <p>
-            Calls the private DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
+            Calls the DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
           </p>
         </descr>
         <seealso>
@@ -7717,6 +7679,7 @@
           <link id="TControl.MouseCapture"/>
           <link id="TControl.CaptureMouseButtons"/>
           <link id="TControl.MouseDown"/>
+          <link id="TControl.DoMouseDown"/>
           <link id="TControl.OnMouseDown"/>
           <link id="TMouseButton"/>
         </seealso>
@@ -7734,7 +7697,7 @@
             Sets MouseCapture to <b>True</b> when enabled in the ControlStyle property and the middle mouse button is included in CaptureMouseButtons.
           </p>
           <p>
-            Calls the private DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
+            Calls the DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
           </p>
         </descr>
         <seealso>
@@ -7742,6 +7705,7 @@
           <link id="TControl.MouseCapture"/>
           <link id="TControl.CaptureMouseButtons"/>
           <link id="TControl.MouseDown"/>
+          <link id="TControl.DoMouseDown"/>
           <link id="TControl.OnMouseDown"/>
           <link id="TMouseButton"/>
         </seealso>
@@ -7762,7 +7726,7 @@
             Sets MouseCapture to <b>True</b> when enabled in the ControlStyle property and the mouse button is included in CaptureMouseButtons.
           </p>
           <p>
-            Calls the private DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
+            Calls the DoMouseDown method to perform the mouse button event for the control, and to signal its OnMouseDown event handler (when assigned). No mouse down actions are performed when standard events are ignored by including csNoStdEvents in the ControlStyle property.
           </p>
         </descr>
         <seealso>
@@ -7770,6 +7734,7 @@
           <link id="TControl.MouseCapture"/>
           <link id="TControl.CaptureMouseButtons"/>
           <link id="TControl.MouseDown"/>
+          <link id="TControl.DoMouseDown"/>
           <link id="TControl.OnMouseDown"/>
           <link id="TMouseButton"/>
         </seealso>
@@ -8624,8 +8589,88 @@
         <short>TSmallPoint instance with the values converted in the method.</short>
       </element>
 
+      <element name="TControl.DoMouseUp">
+        <short>
+          Performs actions needed to handle a mouse up event for the control.
+        </short>
+        <descr>
+          <p>
+            <var>DoMouseUp</var> is a virtual method used to apply the mouse button up event in the Message and Button arguments. DoMouseUp checks the control style flags in ControlStyle to determine whether the control responds to standard mouse events.
+          </p>
+          <p>
+            No actions are performed in the method when csNoStdEvents has been included in ControlStyle. This indicates that mouse events are handled by the widgetset class instance for the control.
+          </p>
+          <p>
+            Otherwise, values in Message and Button are applied in the method. When DragManager is active for a drag and drop operation, the mouse coordinates in Message are converted to screen coordinates and applied using the DragManager. The Result member in Message is set to 1 to show that is has been handled.
+          </p>
+          <p>
+            The MouseUp method is called to signal the OnMouseUp event handler (when assigned).
+          </p>
+          <p>
+            DoMouseUp is called from methods like WMLButtonUp, WMRButtonUp, WMMButtonUp, and WMXButtonUp.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.ControlStyle"/>
+          <link id="TControl.MouseUp"/>
+          <link id="TControl.OnMouseUp"/>
+          <link id="TControl.WMLButtonUp"/>
+          <link id="TControl.WMRButtonUp"/>
+          <link id="TControl.WMMButtonUp"/>
+          <link id="TControl.WMXButtonUp"/>
+        </seealso>
+      </element>
+      <element name="TControl.DoMouseUp.Message">
+        <short>
+          Mouse message examined and handled in the method.
+        </short>
+      </element>
+      <element name="TControl.DoMouseUp.Button">
+        <short>
+          Mouse button for the message.
+        </short>
+      </element>
+
+      <element name="TControl.DoMouseDown">
+        <short>
+          Performs actions needed to handle a mouse down event for the control.
+        </short>
+        <descr>
+          <p>
+            <var>DoMouseDown</var> is a virtual method used to apply the mouse button down event in the Message and Button arguments. DoMouseDown checks the control style flags in ControlStyle to determine whether the control responds to standard mouse events.
+          </p>
+          <p>
+            No actions are performed in the method when csNoStdEvents has been included in ControlStyle. This indicates that mouse events are handled by the widgetset class instance for the control.
+          </p>
+          <p>
+            Otherwise, values in Message and Button are applied in the method. The mouse coordinates in Message are converted to screen coordinates, and the message is applied by calling the MouseDown method.
+          </p>
+          <p>
+            DoMouseDown is called from methods like: WMLButtonDown, WMRButtonDown, WMMButtonDown, and WMXButtonDown.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.ControlStyle"/>
+          <link id="TControl.MouseDown"/>
+          <link id="TControl.OnMouseDown"/>
+          <link id="TControl.WMLButtonDown"/>
+          <link id="TControl.WMRButtonDown"/>
+          <link id="TControl.WMMButtonDown"/>
+          <link id="TControl.WMXButtonDown"/>
+        </seealso>
+      </element>
+      <element name="TControl.DoMouseDown.Message">
+        <short>Mouse message examined and handled in the method.</short>
+      </element>
+      <element name="TControl.DoMouseDown.Button">
+        <short>Mouse button for the message.</short>
+      </element>
+      <element name="TControl.DoMouseDown.Shift">
+        <short>Ctrl, Shift, or Alt modifier for the mouse button event.</short>
+      </element>
+
       <element name="TControl.MouseDown">
-        <short>Handler for MouseDown events.</short>
+        <short>Handles a mouse down event for the control.</short>
         <descr>
           <p>
             Called by the <var>MouseDown</var> message handler. Handles Focus changes, and notifies the DragManager while dragging. Finally, it calls the <link id="TControl.OnMouseDown"/> handler.

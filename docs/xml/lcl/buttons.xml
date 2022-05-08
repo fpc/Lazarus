@@ -2273,20 +2273,6 @@
         <short></short>
       </element>
 
-      <element name="TCustomSpeedButton.DoMouseUp">
-        <short>
-          Performs actions needed when a Mouse Up message is received for the control.
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomSpeedButton.DoMouseUp.Message">
-        <short></short>
-      </element>
-      <element name="TCustomSpeedButton.DoMouseUp.Button">
-        <short></short>
-      </element>
-
       <element name="TCustomSpeedButton.WMLButtonDown" link="#lcl.controls.TControl.WMLButtonDown"/>
       <element name="TCustomSpeedButton.WMLButtonDown.Message"/>
 
@@ -2431,6 +2417,36 @@
       </element>
       <element name="TCustomSpeedButton.CalculatePreferredSize.WithThemeSpace">
         <short>Not used in the current implementation.</short>
+      </element>
+
+      <element name="TCustomSpeedButton.DoMouseUp">
+        <short>
+          Performs actions needed when a Mouse Up message is received for the control.
+        </short>
+        <descr>
+          <p>
+            <var>DoMouseUp</var> is an overridden method in <var>TCustomSpeedButton</var>. It re-implements the method from TControl and does not call the inherited method. DoMouseUp checks the flag values in ControlStyle. When csNoStdEvents is not included in the values, it calls the MouseUp method using Button and Message as arguments.
+          </p>
+          <p>
+            DoMouseUp is called when a LM_LBUTTONUP message is handled for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.MouseUp"/>
+          <link id="#lcl.controls.TControl.MouseUp">TControl.MouseUp</link>
+          <link id="#lcl.controls.TControl.OnMouseUp">TControl.OnMouseUp</link>
+          <link id="#lcl.controls.TControl.DoMouseUp">TControl.DoMouseUp</link>
+        </seealso>
+      </element>
+      <element name="TCustomSpeedButton.DoMouseUp.Message">
+        <short>
+          Mouse message examined in the method.
+        </short>
+      </element>
+      <element name="TCustomSpeedButton.DoMouseUp.Button">
+        <short>
+          Mouse button for the message.
+        </short>
       </element>
 
       <element name="TCustomSpeedButton.MeasureDraw">
