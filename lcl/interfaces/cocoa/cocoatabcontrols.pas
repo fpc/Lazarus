@@ -615,8 +615,8 @@ begin
     Exit;
   end;
 
-  if not Assigned(callback) then callback.MouseUpDownEvent(event);
-  inherited mouseUp(event);
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
 end;
 
 procedure TCocoaTabControl.rightMouseDown(event: NSEvent);
