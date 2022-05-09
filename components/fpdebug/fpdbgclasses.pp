@@ -2877,9 +2877,9 @@ begin
     if not OutSideFrame then begin
       {$PUSH}{$R-}{$Q-}
       StackPtr := FrameBase + 2 * Size; // After popping return-addr from "FrameBase + Size"
-      {$POP}
       if not Process.ReadData(FrameBase + Size, Size, Address) or (Address = 0) then Break;
       if not Process.ReadData(FrameBase, Size, FrameBase) then Break;
+      {$POP}
     end;
     AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
