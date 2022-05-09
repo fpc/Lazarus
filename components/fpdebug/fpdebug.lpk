@@ -17,7 +17,7 @@
           <ShowHints Value="False"/>
         </Verbosity>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx3057="True"/>
+          <IgnoredMessages idx6060="True" idx6058="True" idx3057="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
@@ -223,7 +223,7 @@ File(s) with other licenses (see also header in file(s):
       </Item>
       <Item>
         <Filename Value="fpwatchresultdata.pas"/>
-        <UnitName Value="fpwatchresultdata"/>
+        <UnitName Value="FpWatchResultData"/>
       </Item>
     </Files>
     <i18n>
