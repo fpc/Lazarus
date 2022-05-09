@@ -632,6 +632,9 @@ type
     FWaitForScopeScanSection: TWaitableSection;
     FWaitForComputeHashesSection: TWaitableSection;
     FBuildAddressMapSection: TWaitableSection;
+  private type
+    TWaitRequirement = (wrScan, wrAddrMap);
+    TWaitRequirements = set of TWaitRequirement;
   private
     FOwner: TFpDwarfInfo;
     FDebugFile: PDwarfDebugFile;
@@ -742,7 +745,7 @@ type
     // Get start/end addresses of proc
     function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
-    function HasAddress(AAddress: TDbgPtr; ABuildAddrMap: Boolean = False): Boolean; inline;
+    function HasAddress(AAddress: TDbgPtr; AWaitFor: TWaitRequirements = []): Boolean; inline;
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
     property UnitName: String read GetUnitName;
@@ -3753,7 +3756,7 @@ begin
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if not CU.HasAddress(AAddress, True) then
+    if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
     Iter := TLockedMapIterator.Create(CU.FAddressMap);
@@ -3791,7 +3794,7 @@ begin
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if not CU.HasAddress(AAddress, True) then
+    if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
     Result := CU.GetProcStartEnd(AAddress, AStartPC, AEndPC);
@@ -3811,7 +3814,7 @@ begin
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if not CU.HasAddress(AAddress, True) then
+    if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
     Iter := TLockedMapIterator.Create(CU.FAddressMap);
@@ -3871,21 +3874,14 @@ function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
-  MinMaxSet: boolean;
   InfoEntry: TDwarfInformationEntry;
 begin
   Result := nil;
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    CU.WaitForScopeScan;
-    if not CU.Valid then Continue;
-    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
-    if (not MinMaxSet) or ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
-    then Continue;
-
-    if not CU.Valid then // implies FCompUnitScope is ok
-      break;
+    if not CU.HasAddress(AAddress, [wrScan]) then
+      continue;
 
     InfoEntry := TDwarfInformationEntry.Create(CU, CU.FCompUnitScope);
     Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, InfoEntry, Self);
@@ -5184,7 +5180,7 @@ begin
 end;
 
 function TDwarfCompilationUnit.HasAddress(AAddress: TDbgPtr;
-  ABuildAddrMap: Boolean): Boolean;
+  AWaitFor: TWaitRequirements): Boolean;
 begin
   Result := Valid and
             ( (FMinPC = FMaxPC) or
@@ -5194,7 +5190,7 @@ begin
   if not Result then
     exit;
 
-  if not ABuildAddrMap then
+  if AWaitFor = [] then
     exit;
 
   WaitForScopeScan;
@@ -5202,7 +5198,8 @@ begin
   if not Result then
     exit;
 
-  BuildAddressMap;
+  if wrAddrMap in AWaitFor then
+    BuildAddressMap;
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
