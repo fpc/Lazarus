@@ -9798,6 +9798,11 @@ var
   end;
 
   procedure ResolvePoint;
+  var
+    CurDesc: TExpressionTypeDesc;
+    CurTool: TFindDeclarationTool;
+    CurNodeDesc: TCodeTreeNodeDesc;
+    CurNodeStart: Integer;
   begin
     // for example 'A.B'
     if fdfExtractOperand in Params.Flags then
@@ -9808,7 +9813,22 @@ var
       ReadNextAtom;
       RaiseIdentExpected(20191003163224);
     end;
+    CurDesc := ExprType.Desc;
+    CurTool := ExprType.Context.Tool;
+    CurNodeDesc := ExprType.Context.Node.Desc;
+    CurNodeStart := ExprType.Context.Node.StartPos-1;
     repeat
+      if (CurDesc = ExprType.Desc) and
+         (CurTool = ExprType.Context.Tool) and
+         (CurNodeDesc = ExprType.Context.Node.Desc) and
+         (CurNodeStart = ExprType.Context.Node.StartPos)
+      then
+        break;
+      CurDesc := ExprType.Desc;
+      CurTool := ExprType.Context.Tool;
+      CurNodeDesc := ExprType.Context.Node.Desc;
+      CurNodeStart := ExprType.Context.Node.StartPos;
+
       ResolveChildren;
       if ExprType.Desc in xtAllTypeHelperTypes then begin
         // Lazarus supports record helpers for basic types (string) as well (with TYPEHELPERS modeswitch!).
