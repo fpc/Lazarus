@@ -597,12 +597,15 @@ type
   { TFpThreadWorkerComputeNameHashes }
 
   TFpThreadWorkerComputeNameHashes = class(TFpThreadWorkerItem)
-  protected
+  strict private
     FCU: TDwarfCompilationUnit;
+    FScanScopeList: TDwarfScopeList;
     FReadyToRun: Cardinal;
+  protected
     procedure DoExecute; override;
   public
     constructor Create(CU: TDwarfCompilationUnit);
+    procedure SetScopeList(const AScanScopeList: TDwarfScopeList); // will queue to run on the 2nd call
     procedure MarkReadyToRun; // will queue to run on the 2nd call
   end;
 
@@ -617,7 +620,8 @@ type
     procedure DoExecute; override;
   public
     constructor Create(CU: TDwarfCompilationUnit; ACompNameHashWorker: TFpThreadWorkerComputeNameHashes);
-    function FindCompileUnit: TDwarfScopeInfo; // To be called ONLY before the thread starts
+    function  FindCompileUnit(var AScopeList: TDwarfScopeList): TDwarfScopeInfo; // To be called ONLY before the thread starts
+    procedure UpdateScopeList(var AScopeList: TDwarfScopeList); // To be called ONLY before the thread starts
   end;
 
   { TDwarfCompilationUnit }
@@ -4392,12 +4396,7 @@ begin
   FScanScopeList.BuildList(FCU.FAbbrevList, FCU.FInfoData, FCU.FLength,
     FCU.FAddressSize, FCU.IsDwarf64, FCU.Version);
 
-  // The other thread does WaitForScopeScan (if all is correct)
-  // We must write them now, for the CompNameHashWorker
-  FCU.FScopeList := FScanScopeList;
-  FCU.FFirstScope.Init(@FCU.FScopeList);
-  FCU.FFirstScope.Index := 0;
-
+  FCompNameHashWorker.SetScopeList(FScanScopeList);
   FCompNameHashWorker.MarkReadyToRun;
 end;
 
@@ -4408,23 +4407,32 @@ begin
   FCompNameHashWorker := ACompNameHashWorker;
 end;
 
-function TFpThreadWorkerScanAll.FindCompileUnit: TDwarfScopeInfo;
+function TFpThreadWorkerScanAll.FindCompileUnit(var AScopeList: TDwarfScopeList
+  ): TDwarfScopeInfo;
 begin
   Result := FScanScopeList.BuildList(FCU.FAbbrevList, FCU.FInfoData, FCU.FLength,
     FCU.FAddressSize, FCU.IsDwarf64, FCU.Version, DW_TAG_compile_unit);
 
-  FCU.FScopeList := FScanScopeList;
-  Result.FScopeListPtr := @FCU.FScopeList;
+  AScopeList := FScanScopeList;
+  Result.FScopeListPtr := @AScopeList;
+end;
+
+procedure TFpThreadWorkerScanAll.UpdateScopeList(var AScopeList: TDwarfScopeList
+  );
+begin
+  AScopeList := FScanScopeList;
 end;
 
 { TFpThreadWorkerComputeNameHashes }
 
 procedure TFpThreadWorkerComputeNameHashes.DoExecute;
 var
+  Scope: TDwarfScopeInfo;
   InfoEntry: TDwarfInformationEntry;
 begin
-  InfoEntry := TDwarfInformationEntry.Create(FCU, nil);
-  InfoEntry.ScopeIndex := FCU.FirstScope.Index;
+  Scope.Init(@FScanScopeList);
+  Scope.Index := 0;
+  InfoEntry := TDwarfInformationEntry.Create(FCU, Scope);
   InfoEntry.ComputeKnownHashes(@FCU.FKnownNameHashes);
   InfoEntry.ReleaseReference;
 end;
@@ -4432,6 +4440,12 @@ end;
 constructor TFpThreadWorkerComputeNameHashes.Create(CU: TDwarfCompilationUnit);
 begin
   FCU := CU;
+end;
+
+procedure TFpThreadWorkerComputeNameHashes.SetScopeList(
+  const AScanScopeList: TDwarfScopeList);
+begin
+  FScanScopeList := AScanScopeList;
 end;
 
 procedure TFpThreadWorkerComputeNameHashes.MarkReadyToRun;
@@ -4554,6 +4568,11 @@ begin
   if FWaitForScopeScanSection.EnterOrWait(CachedRtlEvent) then begin
     if FScanAllWorker <> nil then begin
       FOwner.WorkQueue.WaitForItem(FScanAllWorker);
+
+      FScanAllWorker.UpdateScopeList(FScopeList);
+      FFirstScope.Init(@FScopeList);
+      FFirstScope.Index := 0;
+
       FScanAllWorker.DecRef;
       FScanAllWorker := nil;
     end;
@@ -4809,7 +4828,7 @@ begin
   FScanAllWorker := TFpThreadWorkerScanAll.Create(Self, FComputeNameHashesWorker);
   FScanAllWorker.AddRef;
 
-  Scope := FScanAllWorker.FindCompileUnit;
+  Scope := FScanAllWorker.FindCompileUnit(FScopeList);
   if not Scope.IsValid then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     Exit;
