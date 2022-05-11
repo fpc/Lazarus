@@ -101,33 +101,41 @@
         <short>The action was on a button in the control.</short>
       </element>
       <element name="THitTest.htOnIcon">
-        <short/>
+        <short>The action was on the icon for an item.</short>
       </element>
       <element name="THitTest.htOnIndent">
-        <short/>
+        <short>The action was in the indent area prior to an expand/collapse indicator.</short>
       </element>
       <element name="THitTest.htOnLabel">
-        <short/>
+        <short>The action was on the display label for an item.</short>
       </element>
       <element name="THitTest.htOnRight">
-        <short/>
+        <short>The action was on the right edge of the display area for an item.</short>
       </element>
       <element name="THitTest.htOnStateIcon">
-        <short/>
+        <short>The action was on the state icon for an item.</short>
       </element>
       <element name="THitTest.htToLeft">
-        <short/>
+        <short>The action was to the left of the display area for an item.</short>
       </element>
       <element name="THitTest.htToRight">
-        <short/>
+        <short>The action was to the left of the display area for an item.</short>
       </element>
 
       <element name="THitTests">
         <short>
-          <var>THitTests</var> - set of <var>THitTest</var>.
+          Set type used to store values from the THitTest enumeration.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>THitTests</var> is the type returned from controls which implement the GetHitTestInfoAt method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTabControl.GetHitTestInfoAt"/>
+          <link id="TCustomListView.GetHitTestInfoAt"/>
+          <link id="TCustomTreeView.GetHitTestInfoAt"/>
+        </seealso>
       </element>
 
       <element name="TStatusPanelStyle">
@@ -1652,14 +1660,8 @@ end;
         <short><b>True</b> when the control is visible.</short>
       </element>
 
-      <element name="TCustomPage.HandleObjectShouldBeVisible" link="#lcl.controls.TControl.HandleObjectShouldBeVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPage.HandleObjectShouldBeVisible.Result">
-        <short/>
-      </element>
+      <element name="TCustomPage.HandleObjectShouldBeVisible" link="#lcl.controls.TControl.HandleObjectShouldBeVisible"/>
+      <element name="TCustomPage.HandleObjectShouldBeVisible.Result"/>
 
       <element name="TCustomPage.VisibleIndex">
         <short>
@@ -1987,7 +1989,9 @@ end;
       </element>
 
       <element name="TNBPages.GetCount">
-        <short/>
+        <short>
+          Gets the value for the Count property.
+        </short>
         <descr>
           <p>
             GetCount is an overridden method in TNBPages, and returns the number of items stored in <var>PageList</var>.
@@ -1998,11 +2002,13 @@ end;
         </seealso>
       </element>
       <element name="TNBPages.GetCount.Result">
-        <short>Gets the number of pages in the class instance.</short>
+        <short>Number of pages in the class instance.</short>
       </element>
 
       <element name="TNBPages.GetObject">
-        <short/>
+        <short>
+          Gets the value for the indexed Objects property.
+        </short>
         <descr>
           <p>
             <var>GetObject</var> is an overridden method in <var>TNBPages</var>, and redirects indexed object access to the <var>PageList</var> property. The return value is a <var>TObject</var> instance, and must be cast to <var>TCustomPage</var> to access its properties and methods.
@@ -2024,16 +2030,25 @@ end;
         <short>Ordinal position for the object requested in the method.</short>
       </element>
 
-      <element name="TNBPages.Put" link="#rtl.classes.TStringList.Put">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TNBPages.Put">
+        <short>
+          Re-implements the method used to store a string value at a specified position in the list.
+        </short>
+        <descr>
+          <p>
+            Stores the value in S to the Caption property for the TCustomPage instance in PageList.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TNBPages.PageList"/>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
       <element name="TNBPages.Put.Index">
-        <short/>
+        <short>Ordinal position where the string value is stored.</short>
       </element>
       <element name="TNBPages.Put.S">
-        <short/>
+        <short>String value stored at the specified position in the list.</short>
       </element>
 
       <element name="TNBPages.IndexOfPage">
@@ -2181,16 +2196,22 @@ end;
         <short>Name (Caption) used for the new page instance.</short>
       </element>
 
-      <element name="TNBPages.Move" link="#rtl.classes.TStrings.Move">
-        <short/>
+      <element name="TNBPages.Move">
+        <short>Moves a page from the current index to a new position in PageList.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Move">TStrings.Move</link>
+        </seealso>
       </element>
       <element name="TNBPages.Move.CurIndex">
-        <short/>
+        <short>
+          Current position in PageList where the page is stored.
+        </short>
       </element>
       <element name="TNBPages.Move.NewIndex">
-        <short/>
+        <short>
+          New position in PageList where the page is stored.
+        </short>
       </element>
 
       <element name="TNBNoPages">
@@ -2384,9 +2405,13 @@ end;
 
       <element name="TDrawTabEvent">
         <short>
-          <var>TDrawTabEvent</var> - generic event handling procedure for drawing a tab with given index at the specified rectangle.
+          Specifies an event handler signalled to draw the tab at the given index to a display rectangle on a tab control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            TDrawTabEvent is not used in the current LCL implementation.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TDrawTabEvent.Control">
@@ -3804,7 +3829,7 @@ end;
 
       <element name="TPageControl">
         <short>
-          <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component to allow selection of one of the pages (TTabSheet) of the component.
+          Implements a multi-page component with a series of tabs.
         </short>
         <descr>
           <p>
@@ -3832,7 +3857,7 @@ end;
 
       <element name="TPageControl.Clear">
         <short>
-          Clears the list of tab names of the control, and causes the associated tab sheets or pages to be freed.
+          Clears the list of tab names in the control, and frees the associated tab sheets or pages.
         </short>
         <descr>
           <p>
@@ -3907,7 +3932,7 @@ end;
 
       <element name="TPageControl.FindPageWithDockClient">
         <short>
-          Finds the tabsheet in the Pages property which is the parent for the control specified in Client.
+          Finds the tabsheet in the Pages property which is the parent for the control in Client.
         </short>
         <descr/>
         <seealso/>
@@ -3937,7 +3962,9 @@ end;
           <var>DoAddDockClient</var> creates a new TabSheet in the PageControl, places the client on it and aligns it.
         </short>
         <descr>
-          Client cannot be added to TPageControl itself but new TabSheet should be added and client placed onto it.
+          <p>
+            Client cannot be added directly to TPageControl, but a new TabSheet should be added and client placed on it.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TWinControl.DoAddDockClient">TWinControl.DoAddDockClient</link>
@@ -6348,11 +6375,12 @@ end;
             Methods are provided that allow the list item to interact with the control and the widgetset class.
           </p>
           <p>
-            TListItem is the type used in the TListItems container.
+            TListItem is the type stored in the TListItems container.
           </p>
         </descr>
         <seealso>
           <link id="TListItems"/>
+          <link id="TCustomListView.Items"/>
           <link id="#rtl.classes.TPersistent">TPersistent</link>
           <link id="#rtl.objects.TObject">TObject</link>
         </seealso>
@@ -6507,12 +6535,40 @@ end;
       </element>
 
       <element name="TListItem.WSUpdateAllowed">
-        <short/>
-        <descr/>
+        <short>
+          Determines whether the list item can be updated in a list view control and its widgetset class.
+        </short>
+        <descr>
+          <p>
+            WSUpdateAllowed is a Boolean function used to determine whether the list item can be modified based on internal flags and the state for the owner control. It checks the following to determine the return value:
+          </p>
+          <dl>
+            <dt>Internal TListItemsFlags</dt>
+            <dd>
+              Must include lifCreated, and must not include lifDestroying.
+            </dd>
+            <dt>Container which owns the list item.</dt>
+            <dd>
+              The Owner is the TListItems instance in the Items property for a TListView control. It must be assigned, meaning the list item is still stored there, and its WSUpdateAllowed method must also return True.
+            </dd>
+            <dt>List View control which owns the container and the list item.</dt>
+            <dd>
+              The Handle for the list view control must be allocated, and the component is not being freed.
+            </dd>
+          </dl>
+          <p>
+            When all of these conditions are met, the return value is set to True.
+          </p>
+          <p>
+            WSUpdateAllowed is called prior to reading or writing values for properties including: State, StateIndex, ImageIndex, Checked, Cut, DropTarget, Focused, and Selected.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TListItem.WSUpdateAllowed.Result">
-        <short/>
+        <short>
+          True if access to values in the list item is allowed.
+        </short>
       </element>
 
       <element name="TListItem.WSUpdateText">
@@ -6810,16 +6866,40 @@ end;
 
       <element name="TListItem.Delete">
         <short>Removes the list item from the container.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Delete</var> checks the internal <var>TListItemFlags</var> values for the class instance to ensure that Delete has not already been called for the list item.
+          </p>
+          <p>
+            If lifDestroying is not included in the flags, the Free method called to free the class instance. No actions are performed in the method if lifDestroying is already included in the flag values.
+          </p>
+          <p>
+            Delete is called from the Delete method in TListItems. It is also called when TListItems is notified that the list item has been freed in Destroy.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Destroy"/>
+          <link id="TListItems.Delete"/>
+          <link id="TListItemFlags"/>
+        </seealso>
       </element>
 
       <element name="TListItem.MakeVisible">
         <short>
-          Makes the item visible in the list view control which owns the container and the list item.
+          Makes the item visible in the list view control which owns the list item.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>MakeVisible</var> is a method used to make the list item partially or fully visible in a list view control. MakeVisible checks for valid Owners in both the <var>TListItems</var> container and the <var>TCustomListView</var> control. When both are available, and the handle for the list view control has been allocated, the widgetset class is notified to display the list item.
+          </p>
+          <p>
+            When <var>PartialOK</var> is set to <b>True</b>, the list item does not have to become fully visible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Owner"/>
+          <link id="TListItems.Owner"/>
+        </seealso>
       </element>
       <element name="TListItem.MakeVisible.PartialOK">
         <short>
@@ -6829,35 +6909,57 @@ end;
 
       <element name="TListItem.DisplayRect">
         <short>
-          <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item.
+          Gets the display rectangle for the specified region of the list item on its list view control.
         </short>
         <descr>
           <p>
-            <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item.
+            <var>DisplayRect</var> calls methods in the widgetset class to get the TRect instance with the coordinates for the item region in Code. Code can contain one of the values from the TDisplayCode type, including:
           </p>
-          <p>
-            Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>.
-          </p>
+          <dl>
+            <dt>drBounds</dt>
+            <dd>Bounds for the list item.</dd>
+            <dt>drIcon</dt>
+            <dd>Width and height for the icon on the list item.</dd>
+            <dt>drLabel</dt>
+            <dd>Text metrics for the label or caption on the list item.</dd>
+            <dt>drSelectBounds</dt>
+            <dd>Bounds for the selection rectangle on the list view control.</dd>
+          </dl>
         </descr>
       </element>
       <element name="TListItem.DisplayRect.Result">
-        <short/>
+        <short>TRect instance with the coordinates for the specified display region.</short>
       </element>
       <element name="TListItem.DisplayRect.Code">
-        <short/>
+        <short>Identifies the region for the coordinates in the return value.</short>
       </element>
 
       <element name="TListItem.DisplayRectSubItem">
         <short>
-          <var>DisplayRectSubItem</var> - returns the coordinates of a display rectangle for a specified sub-item.
+          Gets the the display rectangle coordinates for a region in the specified sub-item on its list view control.
         </short>
         <descr>
           <p>
-            <var>DisplayRectSubItem</var> - returns the coordinates of a display rectangle for a specified sub-item.
+            <var>DisplayRectSubItem</var> calls methods in the widgetset class to get the TRect instance with the coordinates for the sub-item region in Code. Code can contain one of the values from the TDisplayCode type, including:
           </p>
+          <dl>
+            <dt>drBounds</dt>
+            <dd>Bounds for the sub-item.</dd>
+            <dt>drIcon</dt>
+            <dd>Width and height for the icon on the sub-item.</dd>
+            <dt>drLabel</dt>
+            <dd>Text metrics for the label or caption on the sub-item.</dd>
+            <dt>drSelectBounds</dt>
+            <dd>
+              Bounds for the selection rectangle for the sub-item on the list view control.
+            </dd>
+          </dl>
           <p>
-            Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>.
+            SubItem contains the ordinal position in SubItems property with the text for the sub-item.
           </p>
+          <remark>
+            DisplayRectSubItem is not used in the current LCL implementation (2.2.0).
+          </remark>
         </descr>
       </element>
       <element name="TListItem.DisplayRectSubItem.Result">
@@ -6872,12 +6974,26 @@ end;
 
       <element name="TListItem.EditCaption">
         <short>
-          Makes the item the selection in the list view control and displays the editor when allowed.
+          Selects the list item and displays its editor when possible.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>EditCaption</var> is a <b>Boolean</b> function used to select the list item on its list view control, and display its Editor control. The return value is True if the list item is the Selected item for the control and the editor was successfully displayed.
+          </p>
+          <p>
+            EditCaption clears any existing selections in the list view control in Owner, and assigns the class instance to the Selected property. No additional action are performed in the method when the list view control is ReadOnly, or an Editor has not been assigned for the control. The return value is set to False.
+          </p>
+          <p>
+            EditCaption calls the private ShowEditor method in the list view control to display and set focus to the editor. The editor control may not become visible if the OnEditing event handler in the list view control indicates the list item cannot be edited.
+          </p>
+          <remark>
+            EditCaption is not used in the current LCL implementation (2.2.0).
+          </remark>
+        </descr>
         <seealso>
           <link id="TCustomListView.Selected"/>
           <link id="TCustomListView.ReadOnly"/>
+          <link id="TCustomListView.IsEditing"/>
         </seealso>
       </element>
       <element name="TListItem.EditCaption.Result">
@@ -6890,7 +7006,7 @@ end;
         <short>Returns all the states for the list item.</short>
         <descr>
           <p>
-            <var>GetStates</var> is a <var>TListItemStates</var> function used to get the state values for an item in a list view control. The state values are retrieved using methods in the widgetset class for the <var>TCustomListView</var> control which owns the list item. If the widgetset class does not return the values,  the return value contains the existing values in the States member for the <var>TListItem</var> instance.
+            <var>GetStates</var> is a <var>TListItemStates</var> function used to get the state values for an item in a list view control. The state values are retrieved using methods in the widgetset class for the <var>TCustomListView</var> control which owns the list item. If the widgetset class does not return the values, the return value contains the existing values in the States member for the <var>TListItem</var> instance.
           </p>
         </descr>
         <seealso/>
@@ -6903,76 +7019,225 @@ end;
         <short>
           <var>Caption</var> - the name given to this item on the list.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Caption</var> is a <var>String</var> property with the text displayed for the list item. It is also used as the Name displayed for the class instance in the Lazarus Object Inspector.
+          </p>
+          <p>
+            The property value is assigned when TCustomListView.AddItem creates the TListItem instance in its Items property. Changing the value for the property causes the list view control to be notified when WSUpdateAllowed returns <b>True</b>.
+          </p>
+          <p>
+            Caption is used in the <var>TCustomListView.DrawItem</var> method to draw the text for the list item. It provides the initial value displayed when the editor is activated for an item on the list view control, and is updated when editing is completed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.DrawItem"/>
+          <link id="TCustomListView.Edit"/>
+          <link id="TCustomListView.AddItem"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItems.AddItem"/>
+          <link id="TListItems.Add"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Checked">
         <short>
-          <var>Checked</var> - if <b>True</b>, a check mark is present beside the item implying it has been selected.
+          Displays a check mark to allow the list item to be include in list view operations.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Checked</var> is a <var>Boolean</var> property which indicates if a check mark is displayed for the list item. Checked allows specific list items to be marked for inclusion in methods for the list view control, such as Sort.
+          </p>
+          <p>
+            The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid and its Checkboxes property is set to <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Owner"/>
+          <link id="TListItems.Owner"/>
+          <link id="TCustomListView.CheckBoxes"/>
+          <link id="TCustomListView.Sort"/>
+          <link id="TCustomListView.SortType"/>
+          <link id="TCustomListView.OnItemChecked"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Cut">
         <short>
-          <var>Cut</var> this item from the list (but it can be placed on the clipboard).
+          Indicates if the list item has been cut from the list but it can be pasted to the clipboard.
         </short>
+        <descr>
+          <p>
+            <var>Cut</var> is a <var>Boolean</var> property which reflects whether the value lisCut has been included in the TListItemState flags for the list item. The property value is retrieved from and written to the widgetset class for the TCustomTreeView control when its handle has been allocated.
+          </p>
+        </descr>
       </element>
 
       <element name="TListItem.Data">
-        <short>Pointer to the Data associated with this item.</short>
+        <short>Pointer to arbitrary Data associated with the list item.</short>
+        <descr>
+          <p>
+            <var>Data</var> is an untyped <var>Pointer</var> property with a pointer to arbitrary data for the list item. The value for the property is stored when the list item is created in <var>TCustomListView.AddItem</var>.
+          </p>
+          <p>
+            Data can be used to order list items in <var>TCustomListView.Sort</var> when the <var>SortType</var> property is set to <var>[stData]</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.AddItem"/>
+          <link id="TCustomListView.FindData"/>
+          <link id="TCustomListView.Sort"/>
+          <link id="TCustomListView.SortType"/>
+          <link id="TListItems.FindData"/>
+        </seealso>
       </element>
 
       <element name="TListItem.DropTarget">
         <short>
-          <var>DropTarget</var> - returns <b>True</b> if this is a valid target on the list for dropping.
+          <b>True</b> if the list item is a highlighted drop target in the list view control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DropTarget</var> is a <var>Boolean</var> property which indicates if the list item is a highlighted drop target in the list view control. It value is <b>True</b> when the <var>TListItemState</var> values for the item contain <var>lisDropTarget</var>.
+          </p>
+          <p>
+            The property value is read from and written to the widgetset class instance for the list view control when its handle is valid. It is updated when the <var>TCustomListView.GetNextItem</var> method is called for the lisDropTarget state.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TListItem.Focused">
-        <short>Property is <b>True</b> if this item has Focus.</short>
-        <descr/>
+        <short>
+          <b>True</b> if the list item is focused on the list view control.
+        </short>
+        <descr>
+          <p>
+            <var>Focused</var> is a <var>Boolean</var> property which contains <b>True</b> when the list item is focused on the list view control. The property value is read from and written to the widgetset class instance for the list view control when its handle is valid. Changing the value for the Focused property in TCustomListView causes the value in the list item to be updated.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TListItem.Index">
-        <short>The index of this item in the list (integer).</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Ordinal position for the list item in its TListItems container.
+        </short>
+        <descr>
+          <p>
+            <var>Index</var> is a read-only <var>Integer</var> property with the position where the list item in stored in its TListItems container. The property value is retrieved by calling the IndexOf method in the Owner (TListItems) to locate the class instance. The property value is -1 if Owner has not been assigned, or the list was removed from the container.
+          </p>
+          <p>
+            Use the Move or Exchange methods in TListItems, or the sort routines in TCustomListView, to change the position where a list item is stored in its  container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.IndexOf"/>
+          <link id="TListItems.Move"/>
+          <link id="TListItems.Exchange"/>
+          <link id="TCustomListView.AutoSort"/>
+          <link id="TCustomListView.SortType"/>
+          <link id="TCustomListView.Sort"/>
+          <link id="TCustomListView.AlphaSort"/>
+          <link id="TCustomListView.CustomSort"/>
+        </seealso>
       </element>
 
       <element name="TListItem.ImageIndex">
-        <short>The index of the image associated with this Item in the list.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Ordinal position for the image displayed for the list item.
+        </short>
+        <descr>
+          <p>
+            <var>ImageIndex</var> is a <var>TImageIndex</var> property with the position for the image displayed for the list item. It is the ordinal position in the LargeImages or SmallImages properties in the ListView for the item.
+          </p>
+          <p>
+            The default value for the property is -1, and indicates that an explicit value has not been assigned. ImageIndex can be assigned at design-time in the Lazarus Object Inspector, or at run-time. Changing the property value causes the ListView widgetset class to be updated when its handle has been assigned.
+          </p>
+          <p>
+            Use StateIndex to specify the position for the state image used on the list item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.ListView"/>
+          <link id="TListItem.StateIndex"/>
+          <link id="TCustomListView.ViewStyle"/>
+          <link id="TCustomListView.SmallImages"/>
+          <link id="TCustomListView.LargeImages"/>
+          <link id="TCustomListView.StateImages"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Left">
         <short>The position of the Left side of the list item.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Left</var> is an <var>Integer</var> property which contains the coordinate for the left edge of the list item on its list view control. The property value is read from and written to the Position property in the list item; it represents the X member in the TPoint instance. Setting a new value for the property causes the TPoint instance in Position to be re-allocated, and the widgetset class is notified of the change to the value.
+          </p>
+          <p>
+            Values in Left and Top are used in the <var>TCustomListView.DrawItem</var> method to position the list item on the canvas for the list view control.
+          </p>
+          <p>
+            Use Top for the coordinate where the top edge of the list item is located.
+          </p>
+          <p>
+            Use Index to access the ordinal position for the list item in its TListItems container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Position"/>
+          <link id="TListItem.Top"/>
+          <link id="TListItem.Index"/>
+          <link id="TCustomListView.DrawItem"/>
+        </seealso>
       </element>
 
       <element name="TListItem.ListView">
         <short>The <var>ListView</var> in which this Item is found.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ListView</var> is a read-only <var>TCustomListView</var> property which provides access to the list view control where the list item is displayed. It allows the list item to access properties and methods in its owner control. The property value is determined by checking the TListItems owner for its TCustomListView owner.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Owner"/>
+          <link id="TListItems.Owner"/>
+          <link id="TCustomListView"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Owner">
-        <short>The Owner of the ListItem.</short>
-        <descr/>
-        <seealso/>
+        <short>Container that is the Owner of the list item.</short>
+        <descr>
+          <p>
+            <var>Owner</var> is a read-only <var>TListItems</var> property with the container where the list item is stored. The property value is assigned in the Create constructor to the TListItems instance passed as an argument. Owner allows the list item to access properties and methods in the container class instance from within its implementation. It also provides access to properties and methods in the list view control where the list item is displayed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems"/>
+          <link id="TListItems.Create"/>
+          <link id="TListItems.Owner"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Position">
-        <short>The coordinates of the position where the ListItem is located.</short>
-        <descr/>
-        <seealso/>
+        <short>The coordinates where the list item is located on its list view control.</short>
+        <descr>
+          <p>
+            <var>Position</var> is a <var>TPoint</var> property with the coordinates where the list item is displayed on its ListView control. The property value is read from and written to the widgetset class instance for the ListView control when its handle has been allocated. The X and Y members in the property are used as the values for the Top and Left properties (respectively). Changing the values in the X and Y members, or in Top and Left, cause the widgetset class to be notified of the new value(s).
+          </p>
+          <p>
+            Use Index to access the ordinal position for the list item in its container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Left"/>
+          <link id="TListItem.Top"/>
+          <link id="TListItem.Index"/>
+          <link id="TListItem.ListView"/>
+          <link id="TListItem.Owner"/>
+          <link id="TListItems"/>
+        </seealso>
       </element>
 
       <element name="TListItem.Selected">
@@ -6994,31 +7259,96 @@ end;
         <short>
           Ordinal position for the image used to represent the state for the list item.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>StateIndex</var> is a <var>TImageIndex</var> property with the position for the image used to represent the state for the list item. It is the position in the StateImages for the ListView control, or -1 when a value has not been explicitly assigned to the property. Changing the property values causes the widgetset class instance for the ListView control to be updated.
+          </p>
+          <p>
+            StateIndex is normally updated when the ListView control changes the usage context for the list item, and uses the set type returned from the GetStates method. StateIndex values and their TListItemStates equivalents:
+          </p>
+          <dl>
+            <dt>-1</dt>
+            <dd>A value has not been assigned.</dd>
+            <dt>0</dt>
+            <dd>Used when GetStates is an empty set ([]).</dd>
+            <dt>1</dt>
+            <dd>Used when GetStates contains lisCut. Cut is True.</dd>
+            <dt>2</dt>
+            <dd>Used when GetStates contains lisDropTarget. DropTarget is True.</dd>
+            <dt>3</dt>
+            <dd>Used when GetStates contains lisSelected. Selected is True.</dd>
+            <dt>4</dt>
+            <dd>Used when GetStates contains lisFocused. Focused is True.</dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TListItem.GetStates"/>
+          <link id="TCustomListView.StateImages"/>
+          <link id="TListItemState"/>
+        </seealso>
       </element>
 
       <element name="TListItem.SubItems">
-        <short>The list of <var>SubItems</var> associated with this ListItem.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains text displayed as additional columns on the list view control.
+        </short>
+        <descr>
+          <p>
+            <var>SubItems</var> is a <var>TStrings</var> property with text displayed for additional columns when the ListView control sets its ViewStyle property to vsReport. Column 0 always contains the Caption for the list item. Values in SubItems are displayed starting at column number 1 and continue through the number of columns defined on the list view control. In other words, column 1 is SubItems[0]. Column 2 is SubItems[1]. Ad infinitum.
+          </p>
+          <p>
+            Values in Subitems can assigned at design-time using the Items property editor in the Lazarus IDE. They can also be assigned at run-time. Maintain the Columns property in the ListView control to match the number of columns needed for the values in SubItems.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Caption"/>
+          <link id="TListItem.SubItemImages"/>
+          <link id="TCustomListView.Columns"/>
+          <link id="TCustomListView.ViewStyle"/>
+          <link id="TViewStyle"/>
+        </seealso>
       </element>
 
       <element name="TListItem.SubItemImages">
         <short>
-          <var>SubItemImages</var> - the list of Images associated with the SubItems.
+          Gets the ImageIndex for the sub-item at the specified position.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SubItemImages</var> is an indexed <var>Integer</var> property which gets the position for an image associated with the value in SubItems at the position specified in AIndex. The property value contains the ImageIndex for the sub-item assigned at design-time using the Items property editor in the Lazarus Object Inspector.
+          </p>
+          <p>
+            The property value is the position in SmallImages in the ListView control. The image is displayed to the left of the caption for the sub-item. -1 indicates that an image index value was not explicitly assigned for the sub-item.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TListItem.SubItemImages.AIndex">
-        <short/>
+        <short>Ordinal position in SubItems for the property value.</short>
       </element>
 
       <element name="TListItem.Top">
-        <short>The position of the <var>Top</var> of this ListItem.</short>
-        <descr/>
-        <seealso/>
+        <short>Top coordinate for the list item.</short>
+        <descr>
+          <p>
+            <var>Top</var> is an <var>Integer</var> property which contains the top coordinate for the list item on its list view control. The property value is read from and written to the Position property in the list item; it represents the Y member in the TPoint instance. Setting a new value for the property causes the TPoint instance in Position to be re-allocated, and the widgetset class is notified of the change to the value.
+          </p>
+          <p>
+            Values in Left and Top are used in the <var>TCustomListView.DrawItem</var> method to position the list item on the canvas for the list view control.
+          </p>
+          <p>
+            Use Left for the coordinate where the left edge of the list item is located.
+          </p>
+          <p>
+            Use Index to access the ordinal position for the list item in its TListItems container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Position"/>
+          <link id="TListItem.Index"/>
+          <link id="TListItem.Left"/>
+          <link id="TCustomListView.DrawItem"/>
+        </seealso>
       </element>
 
       <element name="TListItemClass">
@@ -7177,27 +7507,58 @@ end;
 
       <element name="TListItemsFlag">
         <short>Widgetset flags applied to the TListItems container.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Values from the <var>TListItemsFlag</var> enumeration are stored in the <var>TListItemFlags</var> set type, and used to implement the <var>Flags</var> property in <var>TListItems</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItemsFlags"/>
+          <link id="TListItems.Flags"/>
+        </seealso>
       </element>
       <element name="TListItemsFlag.lisfWSItemsCreated">
-        <short/>
+        <short>
+          Indicates the list items in the container have been created in the widgetset class.
+        </short>
       </element>
 
       <element name="TListItemsFlags">
         <short>Set type used to store TListItemsFlag enumeration values.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            TListItemsFlags is a set type used to store zero or more values from the <var>TListItemsFlag</var> enumeration. It is used to implement the <var>Flags</var> property in <var>TListItems</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItemFlag"/>
+          <link id="TListItems.Flags"/>
+        </seealso>
       </element>
 
       <element name="TListItems">
         <short>
-          <var>TListItems</var> - a list of items with a cache of the last accessed item.
+          Implements a container for list items on a list view control.
         </short>
         <descr>
-          <var>TListitems</var> has a built-in cache for the last accessed item. This will speed up interface updates since <var>Item.Index</var> is  often used for the same item updating more properties.  If <var>FCacheIndex</var> contains -1 then the cache is not valid.
+          <p>
+            TListItems is a TPersistent descendant which implements the container used to store TListItem instances used in a TCustomListView control. The Owner of the container is the TCustomListView control passed as an argument to the constructor.
+          </p>
+          <p>
+            TListItems is the type used to implement the Items property in TCustomListView.
+          </p>
+          <p>
+            TListItems provides properties and methods needed to maintain and access the TListItem instances stored in the list for the container. Item is the default property for the class instance and allows access to the list items by their ordinal position in the container. It also the target for an enumerator using the TListItemsEnumerator supported in the class instance.
+          </p>
+          <p>
+            <var>TListitems</var> has a built-in cache for the last accessed item. This will speed up interface updates since <var>Item.Index</var> is  often used for the same item updating more properties.  If <var>FCacheIndex</var> contains -1 then the cache is not valid.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItem"/>
+          <link id="TListItemsEnumerator"/>
+        </seealso>
       </element>
 
       <element name="TListItems.FOwner"/>
@@ -7206,59 +7567,19 @@ end;
       <element name="TListItems.FCacheIndex"/>
       <element name="TListItems.FCacheItem"/>
 
-      <element name="TListItems.WSCreateCacheItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListItems.WSUpdateAllowed">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.WSUpdateAllowed.Result">
-        <short/>
-      </element>
-
-      <element name="TListItems.WSUpdateAllowed">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.WSUpdateAllowed.Result">
-        <short/>
-      </element>
-
-      <element name="TListItems.WSUpdateItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.WSUpdateItem.AIndex">
-        <short/>
-      </element>
-      <element name="TListItems.WSUpdateItem.AValue">
-        <short/>
-      </element>
-
-      <element name="TListItems.WSSetItemsCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.WSSetItemsCount.ACount">
-        <short/>
-      </element>
-
-      <element name="TListItems.ItemDestroying">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.ItemDestroying.AItem">
-        <short/>
-      </element>
+      <!-- private -->
+      <element name="TListItems.WSCreateCacheItem"/>
+      <element name="TListItems.WSUpdateAllowed"/>
+      <element name="TListItems.WSUpdateAllowed.Result"/>
+      <element name="TListItems.WSUpdateAllowed"/>
+      <element name="TListItems.WSUpdateAllowed.Result"/>
+      <element name="TListItems.WSUpdateItem"/>
+      <element name="TListItems.WSUpdateItem.AIndex"/>
+      <element name="TListItems.WSUpdateItem.AValue"/>
+      <element name="TListItems.WSSetItemsCount"/>
+      <element name="TListItems.WSSetItemsCount.ACount"/>
+      <element name="TListItems.ItemDestroying"/>
+      <element name="TListItems.ItemDestroying.AItem"/>
 
       <element name="TListItems.ReadData">
         <short/>
@@ -7295,10 +7616,18 @@ end;
 
       <element name="TListItems.DefineProperties">
         <short>
-          <var>DefineProperties</var> - calls inherited method, then defines some specific binary properties.
+          Defines read and write routines used for binary Data in the list items for the container.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DefineProperties</var> is an overridden method in <var>TListItems</var>. It implements the virtual method defined in TPersistent. DefineProperties associates property names with the read and write routines used during LCL component streaming.
+          </p>
+          <p>
+            In TListItems, DefineProperties identifies the private methods used to read and write the binary values with support for 32- or 64-bit integer values and the pointer for the Data property (when used).
+          </p>
+        </descr>
         <seealso>
+          <link id="TListItem.Data"/>
           <link id="#rtl.classes.TPersistent">TPersistent</link>
         </seealso>
       </element>
@@ -7308,36 +7637,47 @@ end;
 
       <element name="TListItems.GetCount">
         <short>
-          <var>GetCount</var> - find the number of Items in the list.
+          Gets the value for the Count property.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TListItems.Count"/>
+        </seealso>
       </element>
       <element name="TListItems.GetCount.Result">
-        <short/>
+        <short>
+          Value for the Count property.
+        </short>
       </element>
 
       <element name="TListItems.GetItem">
         <short>
-          <var>GetItem</var> returns the <var>ListItem</var> specified by <var>AIndex</var>.
+          Gets the value for the indexed Item property.
         </short>.
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TListItems.Item"/>
+          <link id="TListItem"/>
+        </seealso>
       </element>
       <element name="TListItems.GetItem.Result">
-        <short/>
+        <short>TListItem instance at the specified position in the indexed property.</short>
       </element>
       <element name="TListItems.GetItem.AIndex">
-        <short/>
+        <short>Ordinal position in the list with the property value.</short>
       </element>
 
       <element name="TListItems.GetOwner">
-        <short>Gets the owner of the persistent object. </short>
+        <short>Gets the value for the Owner property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TListItems.Owner"/>
+          <link id="TListItems.Create"/>
+          <link id="TCustomListView"/>
+        </seealso>
       </element>
       <element name="TListItems.GetOwner.Result">
-        <short>TCustomListView instance that owns the list items.</short>
+        <short>TCustomListView instance that owns the container.</short>
       </element>
 
       <element name="TListItems.WSCreateItems">
@@ -7349,9 +7689,19 @@ end;
       </element>
 
       <element name="TListItems.DoFinalizeWnd">
-        <short>Updates flags in the class instance when the widgetset handle is freed.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Updates flags in the class instance when the widgetset handle is freed.
+        </short>
+        <descr>
+          <p>
+            Ensures that lisfWSItemsCreated is removed from the Flags property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.Flags"/>
+          <link id="TListItemsFlag"/>
+          <link id="TListItemsFlags"/>
+        </seealso>
       </element>
 
       <element name="TListItems.SetCount">
@@ -7367,213 +7717,473 @@ end;
 
       <element name="TListItems.SetItem">
         <short>
-          <var>SetItem</var> - writes the Index and content of a given Item to a local variable.
+          Set the value in the indexed Item property.
         </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListItems.SetItem.AIndex">
-        <short/>
-      </element>
-      <element name="TListItems.SetItem.AValue">
-        <short/>
-      </element>
-
-      <element name="TListItems.ClearSelection">
-        <short>Clears the selected state for all TListItem instances in the class.</short>
         <descr/>
         <seealso>
           <link id="TListItems.Item"/>
+          <link id="TListItem"/>
+        </seealso>
+      </element>
+      <element name="TListItems.SetItem.AIndex">
+        <short>
+          Ordinal position in the list for the property value updated in the method.
+        </short>
+      </element>
+      <element name="TListItems.SetItem.AValue">
+        <short>
+          New value for the indexed Item property.
+        </short>
+      </element>
+
+      <element name="TListItems.ClearSelection">
+        <short>
+          Clears the selected state for all TListItem instances in the container.
+        </short>
+        <descr>
+          <p>
+            <var>ClearSelection</var> iterates over the values in <var>Item</var> and updates a TListItem instance when its State flags include the value lisSelected. The lisSelected flag value is removed from the internal member for the TListItem instance(s). The OnSelectItem event handler for the list view control is signalled (when assigned) for each of the Item instances updated in the method.
+          </p>
+          <p>
+            Use SelectAll to select all of the list items in the container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.Item"/>
+          <link id="TListItems.SelectAll"/>
           <link id="TListItem.Selected"/>
+          <link id="TCustomListView.OnSelectItem"/>
         </seealso>
       </element>
 
       <element name="TListItems.SelectAll">
-        <short>Sets the selected state for all TListItem instances in the class.</short>
-        <descr/>
+        <short>
+          Sets the selected state to True for all TListItem instances in the container.
+        </short>
+        <descr>
+          <p>
+            SelectAll iterates over the Item values in the container, and enables the selected state for any TListItem instance not already selected.
+          </p>
+          <p>
+            SelectAll checks the internal state values for each of the list items to determine if lisSelected has been included in the flags. When not present, it is added to the TListItemStates set for a list item.
+          </p>
+          <p>
+            The OnSelectItem event handler in the list view control is signalled (when assigned) for each of the TListItem instances updated in the method.
+          </p>
+          <p>
+            Use ClearSelection to clear the selected state for all of the list items in the container.
+          </p>
+        </descr>
         <seealso>
           <link id="TListItems.Item"/>
+          <link id="TListItems.ClearSelection"/>
           <link id="TListItem.Selected"/>
+          <link id="TCustomListView.OnSelectItem"/>
         </seealso>
       </element>
 
       <element name="TListItems.Add">
         <short>
-          <var>Add</var> an Item to the Collection.
+          Adds a new list item to the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Add</var> is a <var>TListItem</var> function used to create a new list item instance and add it to the container. The return value contains the TListItem instance created in the method, and stored in the internal list for the container.
+          </p>
+          <p>
+            When a list view control has been assigned to Owner, its CreateListItem method is called to create the new list item. A custom item class can be provided using the OnCreateItemClass event handler in the list view control. Otherwise, TListItem.Create is called to create the list item using the container class instance as the Owner.
+          </p>
+          <p>
+            Add calls the AddItem method to store the new TListItem instance. The widgetset class is notified of the new cached item when its handle is available.            The ItemInserted method in Owner is called to execute an overridden InsertItem method (when available) or signal the OnInsert event handler for the list view control (when assigned).
+          </p>
+          <p>
+            Use Insert to create a new list item and store it at a specified position in the container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.AddItem"/>
+          <link id="TListItems.Insert"/>
+          <link id="TCustomListView.CreateListItem"/>
+          <link id="TCustomListView.OnCreateItemClass"/>
+          <link id="TCustomListView.InsertItem"/>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TCustomListView.OnInsert"/>
+        </seealso>
       </element>
       <element name="TListItems.Add.Result">
-        <short/>
+        <short>
+          The TListItem instance created and stored in the method.
+        </short>
       </element>
 
       <element name="TListItems.AddItem">
         <short>
-          <var>AddItem</var> - add the specified <var>AItem</var> to the collection.
+          Adds the specified list item to the storage for the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>AddItem</var> is method used to add the list item specified in AItem to the storage for the container.
+          </p>
+          <p>
+            The position for the list item in internal storage and the class instance are stored in local cache entries. The widgetset class for the list view control is notified when its handle is allocated of the updated cache values.
+          </p>
+          <p>
+            If a list view control has been assigned to Owner, its ItemInserted method is called. ItemInserted can execute an overridden InsertItem method (when available) or signal the OnInsert event handler for the list view control (when assigned).
+          </p>
+          <p>
+            Use InsertItem to store a list item at a specified position in the internal storage for the container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TCustomListView.InsertItem"/>
+          <link id="TCustomListView.OnInsert"/>
+        </seealso>
       </element>
       <element name="TListItems.AddItem.AItem">
-        <short/>
+        <short>
+          TListItem instance added to the container and its cache.
+        </short>
       </element>
 
       <element name="TListItems.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start the update process.
+          Starts an update process for the container and its list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            BeginUpdate calls the corresponding method for the list view control in Owner.
+          </p>
+          <p>
+            Use EndUpdate to finish an update process.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.EndUpdate"/>
+          <link id="TCustomListView.BeginUpdate"/>
+          <link id="TCustomListView.EndUpdate"/>
+        </seealso>
       </element>
 
       <element name="TListItems.Clear">
         <short>
-          <var>Clear</var> - remove all Items from the list.
+          Removes all list item instances stored in the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Clear</var> calls the Delete method to remove each of the TListItem class instances in the internal storage for the container.
+          </p>
+          <p>
+            <var>Clear</var> is called from the TCustomListView.Clear method. It is also called immediately before values are loaded into the container during LCL component streaming.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.Delete"/>
+          <link id="TCustomListView.Clear"/>
+        </seealso>
       </element>
 
       <element name="TListItems.Create">
         <short>
-          <var>Create</var> - constructor for <var>TListItems</var>: calls inherited <var>Create</var> then creates the list.
+          Constructor for the class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry. It allocates resources for the list used to store the items in the container. The value in AOwner is assigned to the Owner property, and the cache index is initialized.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TListItems.Create.AOwner">
-        <short/>
+        <short>
+          TCustomListView control that is the owner of the container.
+        </short>
       </element>
 
       <element name="TListItems.Destroy">
         <short>
-          <var>Destroy</var> destructor for <var>TListItems</var>: frees the individual items on the list, then calls inherited <var>Destroy</var>.
-        </short>.
-        <descr/>
+          Destructor for the class instance.
+        </short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance. It frees each of the TListItem instances in the internal storage for the container and removes the cache entries for the items. Resource allocated to the internal list are freed as well. Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
       <element name="TListItems.Delete">
-        <short>Remove the Item specified by <var>AIndex</var> from the collection.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Removes the list item specified in <var>AIndex</var> from the container.
+        </short>
+        <descr>
+          <p>
+            <var>Delete</var> accesses the list item in the internal storage, casts it to the TListItem type, and calls its Delete method to free the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.Delete"/>
+        </seealso>
       </element>
       <element name="TListItems.Delete.AIndex">
-        <short/>
+        <short>
+          Ordinal position in the container for the list item deleted in the method.
+        </short>
       </element>
 
       <element name="TListItems.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finish the update process.
+          Ends an update process for the container and its list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>EndUpdate</var> completes the update started in BeginUpdate. Endupdate calls the corresponding method for the list view control in Owner.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.BeginUpdate"/>
+          <link id="TCustomListView.EndUpdate"/>
+        </seealso>
       </element>
 
       <element name="TListItems.Exchange">
-        <short>Exchanges the list items stored at the specified positions.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Exchanges the positions for the specified list items in the container.
+        </short>
+        <descr>
+          <p>
+            <var>Exchange</var> is a method used to swap the positions for the list items specified in the AIndex1 and AIndex2 arguments. No actions are performed in the method when AIndex1 and AIndex2 have the same values.
+          </p>
+          <p>
+            An Exception is raised if AIndex1 or AIndex2 contain a value that is not a valid ordinal position in the container. (&amp;lt 1 or &amp;gt Count-1).
+          </p>
+          <p>
+            Values in the Selected and ItemFocused properties for the list view control are saved prior to swapping the list items. These properties are restored prior to exiting from the method. Flags in the list view control are updated to include lffItemsMoving when the operation is started. The flag value is removed when the operation is completed.
+          </p>
+          <p>
+            Exchange calls the <var>TFPList.Exchange</var> method to change the positions for the specified list items in the internal storage for the container. The list item in AIndex1 becomes the active cache item after the values have been swapped. The widgetset class for the list view control is notified of the change when its handle is allocated.
+          </p>
+          <p>
+            Use Move to relocate a list item to a specific ordinal position in the container.
+          </p>
+          <p>
+            Use InsertItem to insert a list item at a specific position in the container.
+          </p>
+        </descr>
+        <errors>
+          Raises an Exception with the message in rsListIndexExceedsBounds if AIndex1 or AIndex2 contain a value that is not a valid ordinal position in the container.
+        </errors>
+        <seealso>
+          <link id="TListItems.Move"/>
+          <link id="TListItems.InsertItem"/>
+          <link id="TCustomListView.Selected"/>
+          <link id="TCustomListView.ItemFocused"/>
+          <link id="TListViewFlag"/>
+          <link id="TListViewFlags"/>
+        </seealso>
       </element>
       <element name="TListItems.Exchange.AIndex1">
-        <short/>
+        <short>Ordinal position for a list item moved in the method.</short>
       </element>
       <element name="TListItems.Exchange.AIndex2">
-        <short/>
+        <short>Ordinal position for a list item moved in the method.</short>
       </element>
 
       <element name="TListItems.Move">
         <short>
-          Moves the list item at the specified position to a new position in the list.
+          Moves the list item at the specified position to a new position in the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Move</var> is a method used to relocated a list item at a specified position to a new position in the container. The original position is specified in AFromIndex. The new position is specified in AToIndex.
+          </p>
+          <p>
+            An Exception is raised if AFromIndex or AToIndex contain a value that is not a valid ordinal position in the container. (&amp;lt 1 or &amp;gt Count-1).
+          </p>
+          <p>
+            Values in the Selected and ItemFocused properties for the list view control are saved prior to moving the list item. These properties are restored prior to exiting from the method. Flags in the list view control are updated to include lffItemsMoving when the operation is started. The flag value is removed when the operation is completed.
+          </p>
+          <p>
+            Move calls the <var>TFPList.Move</var> method to change the positions for the specified list item in the internal storage for the container. The list item in AToIndex becomes the active cache item after the item has been moved. The widgetset class for the list view control is notified of the change when its handle is allocated.
+          </p>
+          <p>
+            Use Exchange to swap the positions for two list items in the container.
+          </p>
+          <p>
+            Use InsertItem to insert a list item at a specific position in the container.
+          </p>
+        </descr>
+        <errors>
+          Raises an Exception with the message in rsListIndexExceedsBounds if AFromIndex or AToIndex contain a value that is not a valid ordinal position in the container.
+        </errors>
+        <seealso>
+          <link id="TListItems.Exchange"/>
+          <link id="TListItems.InsertItem"/>
+          <link id="TCustomListView.Selected"/>
+          <link id="TCustomListView.ItemFocused"/>
+          <link id="TListViewFlag"/>
+          <link id="TListViewFlags"/>
+        </seealso>
       </element>
       <element name="TListItems.Move.AFromIndex">
-        <short/>
+        <short>
+          Ordinal position for the list item on entry.
+        </short>
       </element>
       <element name="TListItems.Move.AToIndex">
-        <short/>
+        <short>
+          Ordinal position for the list item after it has been relocated.
+        </short>
       </element>
 
       <element name="TListItems.FindCaption">
         <short>
-          <var>FindCaption</var> - returns the ListItem with the specified caption at the given starting place.
+          Locates a list item with the specified caption starting at given position in the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>FindCaption</var> is a <var>TListItem</var> function used to find the first list item in the container which matches the specified search criteria. The return value is the TListItem instance with a Caption that matches the specified Value, or Nil when a match is not found.
+          </p>
+          <p>
+            No actions are performed in the method, and the return value is Nil, when there are no list items in the container (Count = 0), or StartIndex is not valid.
+          </p>
+          <p>
+            FindCaption visits the TListItem entries in the container to compare Value to the Caption in the list item. Use Partial and PartStart to indicate if (and how) partial matches are performed. Case is significant in the comparison.
+          </p>
+          <p>
+            Use FindData to locate a list item which contains the specified binary value in its Data property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem"/>
+        </seealso>
       </element>
       <element name="TListItems.FindCaption.StartIndex">
-        <short/>
+        <short>
+          Position in the container where the search is started.
+        </short>
       </element>
       <element name="TListItems.FindCaption.Value">
-        <short/>
+        <short>
+          Value to locate in the captions for the list items. Case is significant.
+        </short>
       </element>
       <element name="TListItems.FindCaption.Partial">
-        <short/>
+        <short>
+          <b>True</b> when a partial match in the caption value is allowed. <b>False</b> when an exact match is required in the caption value.
+        </short>
       </element>
       <element name="TListItems.FindCaption.Inclusive">
-        <short/>
+        <short>
+          <b>True</b> if StartIndex is included in the search. <b>False</b> if the search starts at the position in the container.
+        </short>
       </element>
       <element name="TListItems.FindCaption.Wrap">
-        <short/>
+        <short>
+          <b>True</b> if the search can wrap to the first list item in the container when a match has not been found prior to the last item in the container.
+        </short>
       </element>
       <element name="TListItems.FindCaption.PartStart">
-        <short/>
+        <short>
+          <b>True</b> if a partial match must start at the beginning of the caption value.
+        </short>
       </element>
 
       <element name="TListItems.FindData">
         <short>
-          <var>FindData</var> - returns the ListItem associated with the specified data pointer.
+          Locates the list item which has the specified values in its Data property.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            FindData is an overloaded method used to find the first TListItem instance with a Data property that matches the specified value.
+          </p>
+          <p>
+            The overloaded variants allow either a pointer to the value to locate in Data, or use of a starting position and wrapping in the search criteria.
+          </p>
+          <p>
+            The variant with a Pointer argument checks the cached list item for a matching value. When found, no other actions are performed in the method.
+          </p>
+          <p>
+            Otherwise, each of the TListItem instances in Item is visited to compare the pointer value to the Data property in the list item. When a match is found, the list item becomes the active cache entry for the container.
+          </p>
+          <p>
+            The variant with search criteria works differently. It does not check the active cache entry before starting its search. Use StartIndex to specify the initial list item in the container checked as a match for the pointer in Value. Use Inclusive to specify whether StartIndex is included in the search, or the next list item is used. Set Wrap to <b>True</b> to allow the search to continue at the first item in the container when a match is not found. In this variant, the active cache entry is <b>not</b> updated when a match is found.
+          </p>
+          <p>
+            The return value is <b>Nil</b> if a list item is not found (in the cache or in Item) containing the specified value.
+          </p>
+          <p>
+            Use FindCaption to locate a list item with a specified value in its Caption.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItems.FindCaption"/>
+          <link id="TListItem.Data"/>
+        </seealso>
       </element>
       <element name="TListItems.FindData.Result">
-        <short/>
+        <short>
+          TListItem instance with the specified data, or <b>Nil</b> when not found.
+        </short>
       </element>
       <element name="TListItems.FindData.AData">
-        <short/>
+        <short>
+          Pointer with the values to locate in the Data property for the list items.
+        </short>
       </element>
       <element name="TListItems.FindData.StartIndex">
-        <short/>
+        <short>
+          Ordinal position in the container where the search is started.
+        </short>
       </element>
       <element name="TListItems.FindData.Value">
-        <short/>
+        <short>
+          Pointer with the values to locate in the Data for the list items.
+        </short>
       </element>
       <element name="TListItems.FindData.Inclusive">
-        <short/>
+        <short>
+          <b>True</b> if the list item at StartIndex is included in the search. <b>False</b> if the search starts at the next position in the container.
+        </short>
       </element>
       <element name="TListItems.FindData.Wrap">
-        <short/>
+        <short>
+          <b>True</b> if the search can wrap to the start of the container if a match is not found prior to the end of the container.
+        </short>
       </element>
 
       <element name="TListItems.GetEnumerator">
-        <short>Gets an enumerator for the Item values in the list.</short>
+        <short>Gets an enumerator for the list items in the container.</short>
         <descr/>
         <seealso>
           <link id="TListItemsEnumerator"/>
+          <link id="TListItem"/>
         </seealso>
       </element>
       <element name="TListItems.GetEnumerator.Result">
-        <short/>
+        <short>
+          TListItemsEnumerator instance used to access the item values in the container.
+        </short>
       </element>
 
       <element name="TListItems.IndexOf">
-        <short>Gets the ordinal position in the list for the specified list item.</short>
+        <short>Gets the ordinal position in the container for the specified list item.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListItems.IndexOf.Result">
-        <short/>
+        <short>
+          Ordinal position in the container for the specified list item, or -1 when not found.
+        </short>
       </element>
       <element name="TListItems.IndexOf.AItem">
-        <short/>
+        <short>
+          TListItem instance to locate in the container.
+        </short>
       </element>
 
       <element name="TListItems.Insert">
@@ -7618,26 +8228,56 @@ end;
 
       <element name="TListItems.Count">
         <short>
-          <var>Count</var> - the number of items in the collection.
+          The number of TListItem instances stored in the container.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TListItems.Item">
-        <short>An <var>Item</var> in the list, specified by its Index value.</short>
-        <descr/>
+        <short>
+          Provides indexed access to the TListItem instance in the container by their ordinal position.
+        </short>
+        <descr>
+          <p>
+            Item is an indexed TListItem property which allows access to the list items in the container by their ordinal position. AIndex specified the TListItem instance returned as the property value, and must be in the range 0..Count-1.
+          </p>
+          <p>
+            Item is also the default property for the class instance and the target for an enumerator.
+          </p>
+          <p>
+            Reading a property value causes the list item cache for the container to be checked. If the cached item has the index value in AIndex, it is used as the property value. Otherwise, the TListItem instance at AIndex is used. The cache is updated with the new list item and its index value.
+          </p>
+          <p>
+            Writing a new property value causes AIndex to validated. No actions are performed during property assignment if AIndex exceeds Count-1. In addition, no actions are needed when the new property value is the same TListItem instance as the existing property value.
+          </p>
+          <p>
+            Otherwise, the new list item is stored at the position in AIndex and the cache is updated with the list item and its index value. The widgetset class is notified of the changed values when its handle has been allocated. This includes changes to  Caption, ImageIndex, SubItemImages, and Checked properties, as well as internal state flags.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TListItems.Item.AIndex">
-        <short/>
+        <short>
+          Ordinal position for the requested list item.
+        </short>
       </element>
+
       <element name="TListItems.Owner">
         <short>
-          <var>Owner</var> - the ListView that owns this collection of ListItems.
+          List view control that is the owner of the container and its list items.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Owner</var> is a read-only <var>TCustomListView</var> property with the list view control that is the owner of the class instance and the list items stored in the container. Owner allows both the container and the list items in the container to access properties and methods in the list view control from within their methods.
+          </p>
+          <p>
+            The value for property is assigned in the Create constructor using the argument passed to the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView"/>
+        </seealso>
       </element>
 
       <element name="TOwnerDataListItems">
@@ -7693,10 +8333,13 @@ end;
       <element name="TWidth">
         <short>ImageIndex.</short>
         <descr>
-          TWidth is an Integer range type.
-          Range is 0..MaxInt.
+          <p>
+            <var>TWidth</var> is an <var>Integer</var> range type with values in the range <b>0..MaxInt</b>. TWidth is the type used to implement the WidthType, MinWidth, MaxWidth, and Width properties in TListColumn.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListColumn"/>
+        </seealso>
       </element>
 
       <element name="TSortIndicator">
@@ -7752,119 +8395,31 @@ end;
       <element name="TListColumn.FTag"/>
       <element name="TListColumn.FSortIndicator"/>
 
-      <element name="TListColumn.GetWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.GetWidth.Result">
-        <short/>
-      </element>
-
-      <element name="TListColumn.WSCreateColumn">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.WSDestroyColumn">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.WSUpdateAllowed">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.WSReadAllowed">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.SetVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetVisible.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetAutoSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetAutoSize.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetMinWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetMinWidth.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetMaxWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetMaxWidth.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetWidth.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetCaption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetCaption.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetAlignment">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetAlignment.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetImageIndex.AValue">
-        <short/>
-      </element>
-
-      <element name="TListColumn.SetSortIndicator">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TListColumn.SetSortIndicator.AValue">
-        <short/>
-      </element>
+      <!-- private -->
+      <element name="TListColumn.GetWidth"/>
+      <element name="TListColumn.GetWidth.Result"/>
+      <element name="TListColumn.WSCreateColumn"/>
+      <element name="TListColumn.WSDestroyColumn"/>
+      <element name="TListColumn.WSUpdateAllowed"/>
+      <element name="TListColumn.WSReadAllowed"/>
+      <element name="TListColumn.SetVisible"/>
+      <element name="TListColumn.SetVisible.AValue"/>
+      <element name="TListColumn.SetAutoSize"/>
+      <element name="TListColumn.SetAutoSize.AValue"/>
+      <element name="TListColumn.SetMinWidth"/>
+      <element name="TListColumn.SetMinWidth.AValue"/>
+      <element name="TListColumn.SetMaxWidth"/>
+      <element name="TListColumn.SetMaxWidth.AValue"/>
+      <element name="TListColumn.SetWidth"/>
+      <element name="TListColumn.SetWidth.AValue"/>
+      <element name="TListColumn.SetCaption"/>
+      <element name="TListColumn.SetCaption.AValue"/>
+      <element name="TListColumn.SetAlignment"/>
+      <element name="TListColumn.SetAlignment.AValue"/>
+      <element name="TListColumn.SetImageIndex"/>
+      <element name="TListColumn.SetImageIndex.AValue"/>
+      <element name="TListColumn.SetSortIndicator"/>
+      <element name="TListColumn.SetSortIndicator.AValue"/>
 
       <element name="TListColumn.SetIndex">
         <short>Sets the value for the Index property.</short>
@@ -7975,7 +8530,9 @@ end;
         </seealso>
       </element>
       <element name="TListColumn.Assign.ASource">
-        <short/>
+        <short>
+          Persistent object with values copied in the method.
+        </short>
       </element>
 
       <element name="TListColumn.WidthType">
@@ -7989,64 +8546,153 @@ end;
       </element>
 
       <element name="TListColumn.Alignment">
-        <short>Sets the horizontal alignment for the Caption text.</short>
+        <short>Sets the horizontal alignment for the text displayed in the column.</short>
         <descr>
           <p>
-            Left or right justified,  or centered.
+            <var>Alignment</var> is a <var>TAlignment</var> property with the horizontal alignment for the text displayed in the column. It affects both the column Caption and any list item or SubItem values in the column.
+          </p>
+          <p>
+            Use taRightJustify to align text values to the right edge for the column. Use taCenter to center text values in the width for the column.
+          </p>
+          <p>
+            The default value for the property is taLeftJustify. Changing the value for the property calls the Changed method to update the column in its Collection. The widgetset class for the list view control is notified of the new alignment value when its handle is valid.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TAlignment">TAlignment</link>
+          <link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.AutoSize">
+        <short>
+          Resizes the column to the width needed for the list view Items or SubItems displayed in the column.
+        </short>
+        <descr>
+          <p>
+            <var>AutoSize</var> is a <var>Boolean</var> property which indicates if the column is automatically resized to fit the longest text value displayed in the column. The default value for the property is <b>False</b>.
+          </p>
+          <p>
+            Set AutoSize to <b>True</b> to enable auto-sizing for the column. Values in the Width, MinWidth, and MaxWidth properties are ignored when AutoSize is enabled.
+          </p>
+          <p>
+            Changing the value in AutoSize causes the Changed method to be called to updated the column in its Collection. The widgetset class for the list view control is notified of the changed value when its handle has been allocated.
+          </p>
+          <p>
+            Please note that the length of the Caption is not taken into consideration when calculating the auto-sized width. This can result in the Caption being truncated when the calculated width is too small.
+          </p>
+          <p>
+            Use the TCustomListView.AutoWidthLastColumn property to resize the last column to fill the unused area on the list view control. You cannot use both for the last column in the collection. The last property enabled takes precedence.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.AutoWidthLastColumn"/>
+          <link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.Caption">
+        <short>Caption text (heading) for the column.</short>
+        <descr>
+          <p>
+            <var>Caption</var> is a <var>TTranslateString</var> property with the caption text or heading displayed for the column. When the list view control uses vsReport in its ViewStyle property and has enabled ShowColumnHeaders, Caption is displayed as the column header on the control.
+          </p>
+          <p>
+            Changing the value for the property causes the Changed method to be called to update the list column in its Collection. The widgetset class is notified of the changed value when its handle has been allocated. This includes forwarding the current value in AutoSize if it has been enabled.
+          </p>
+          <p>
+            Use of the TTranslateString type for the property allows the value to be translated using the i18n facilities in the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.ShowColumnHeaders"/>
+          <link id="TCustomListView.Columns"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
+          <link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.ImageIndex">
+        <short>
+          Ordinal position for the image displayed for the column.
+        </short>
+        <descr>
+          <p>
+            <var>ImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the image displayed for the column. It refers to a position in the SmallImages or LargeImages for the list view control. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property or that images are not available.
+          </p>
+          <p>
+            Changing the property values causes the Changed method to be called to update the list column in its Collection. The widgetset class for the list view control is notified of the new property value when its handle has been allocated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.ViewStyle"/>
+          <link id="TCustomListView.SmallImages"/>
+          <link id="TCustomListView.LargeImages"/>
+          <link id="TCustomListView.ShowColumnHeaders"/>
+          <link id="TCustomListView.Columns"/>
+          <link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.MaxWidth">
+        <short>Maximum width for the column in pixels.</short>
+        <descr>
+          <p>
+            MaxWidth is used to constrain the width for the column to a maximum number of pixels. It is used, along with MinWidth, to range limit the value in Width at design-time or when resized with a mouse.
+          </p>
+          <p>
+            MinWidth, MaxWidth, and Width are not used when AutoSize is enabled; the values are ignored and the column width is determined by the content in the column.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListColumn.Width"/>
+          <link id="TListColumn.MinWidth"/>
+          <link id="TListColumn.AutoSize"/>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.MinWidth">
+        <short>Minimum width for the column in pixels.</short>
+        <descr>
+          <p>
+            MixWidth is used to constrain the width for the column to a minimum number of pixels. It is used, along with MaxWidth, to range limit the value in Width at design-time or when resized with a mouse.
+          </p>
+          <p>
+            MinWidth, MaxWidth, and Width are not used when AutoSize is enabled; the values are ignored and the column width is determined by the content in the column.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListColumn.Width"/>
+          <link id="TListColumn.MaxWidth"/>
+          <link id="TListColumn.AutoSize"/>
+        </seealso>
+      </element>
+
+      <element name="TListColumn.Tag">
+        <short>Arbitrary Integer value with information about the column.</short>
+        <descr>
+          <p>
+            Tag has no predefined meaning or usage. It is available for any application-specific purpose. The Clipper cargo cult lives on.
           </p>
         </descr>
         <seealso/>
       </element>
 
-      <element name="TListColumn.AutoSize">
-        <short>
-          When other columns have fixed width, auto-calculate width of this column, to fill entire width.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.Caption">
-        <short>Caption text for the column.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.ImageIndex">
-        <short>Index of icon, inside ImageList object for columns of Listview.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.MaxWidth">
-        <short>Maximal width for this column.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.MinWidth">
-        <short>Minimal width for this column.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TListColumn.Tag">
-        <short>Int value, to store some info for this column.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
       <element name="TListColumn.Visible">
-        <short>Indicates whether the column is visible on the associated list view control.</short>
+        <short>
+          Indicates whether the column is visible on its list view control.
+        </short>
         <descr>
           <p>
             <var>Visible</var> is a <var>Boolean</var> property which indicates if the column is visible on the list view control where it is defined.  The default value for the property is <b>True</b>.
           </p>
           <p>
-            Changing the property value causes the item to updated in its collection, and any observers are notified of the change. The widgetset class instance is also notified when its handle has been allocated.
+            Changing the property value causes the item to updated in its collection, and any observers are notified of the change. The widgetset class instance is also notified of the change when its handle has been allocated.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.Columns"/>
+        </seealso>
       </element>
 
       <element name="TListColumn.Width">
@@ -8062,7 +8708,7 @@ end;
             The default value for the property is 50 (pixels). If the property is changed, the value is normalized to the range indicated by MinWidth and MaxWidth (when assigned). Default values are not assigned for the MinWidth and MaxWidth properties. The collection which owns the column instance is updated, and the list view and any observers are notified when the column is modified.
           </p>
           <p>
-            Set AutoSize to <b>True</b> to automatically resize the column to its content and the available space on the associated list view control.
+            Set AutoSize to <b>True</b> to automatically resize the column to its content and the available space on the associated list view control. Values in MinWidth, MaxWidth, and Width are ignored when AutoSize is enabled.
           </p>
         </descr>
         <seealso>
@@ -8078,11 +8724,24 @@ end;
         </short>
         <descr>
           <p>
-            Reflects the sort direction or order for the column on the associated list view control.
+            SortIndicator is a TSortIndicator property which indicates the sort direction or order for the content displayed in the column. The default value for the property is siNone, and means a sort indicator is not displayed for the column.
+          </p>
+          <p>
+            Changing the value for the property causes the Changed method to be called to update the column in its Collection. The widgetset class for the list view control is notified of the changed value when its handle has been allocated.
+          </p>
+          <p>
+            SortIndicator is used in conjunction with the SortColumn, SortType, AutoSort, and AutoSortIndicator properties in TCustomListView. The visual sort indicator is displayed in the column heading when the list view uses vsReport in its ViewStyle property.
+          </p>
+          <p>
+            Assigning a value other than siNone to the property causes the image in ImageIndex to be removed from the column heading. Nota bene: This is the observed behavior for the Windows platform. Other platforms may vary.
           </p>
         </descr>
         <seealso>
           <link id="TSortIndicator"/>
+          <link id="TCustomListView.SortColumn"/>
+          <link id="TCustomListView.SortType"/>
+          <link id="TCustomListView.AutoSort"/>
+          <link id="TCustomListView.AutoSortIndicator"/>
         </seealso>
       </element>
 
@@ -8133,52 +8792,87 @@ end;
 
       <element name="TListColumns.Create">
         <short>
-          <var>Create</var> - constructor for <var>TListColumns</var>: sets ownership then calls inherited <var>Create</var>.
+          Constructor for the class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and reimplements the inherited method. TheOwner contains the TCustomListView control that owns the collection, instead of the item class used in the ancestor. TheOwner is assigned as the value for the Owner property.
+          </p>
+          <p>
+            Create calls the inherited constructor using TListColumn as the item class type for the collection.
+          </p>
+        </descr>
         <seealso>
+          <link id="TListColumns.Owner"/>
+          <link id="TListColumn"/>
           <link id="#rtl.classes.TCollection.Create">TCollection.Create</link>
         </seealso>
       </element>
       <element name="TListColumns.Create.TheOwner">
-        <short/>
+        <short>
+          List view control that owns the column collection and its collection items.
+        </short>
       </element>
 
       <element name="TListColumns.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TListColumns</var>: calls inherited destructor.
+          Destructor for the class instance.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that BeginUpdate and EndUpdate are used to enclose actions performed in the method. Destroy calls the inherited destructor to clear and free the internal storage for the collection.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TCollection.Destroy">TCollection.Destroy</link>
+          <link id="#rtl.classes.TCollection.BeginUpdate">TCollection.BeginUpdate</link>
+          <link id="#rtl.classes.TCollection.EndUpdate">TCollection.EndUpdate</link>
         </seealso>
       </element>
 
       <element name="TListColumns.Update">
         <short>
-          <var>Update</var> checks if update is in fact required, then calls inherited method.
+          Checks whether the collection update is actually need and calls the inherited method.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Update</var> is an overridden method in <var>TListColumns</var>. It checks whether the update is actually needed for the collection when the value in Item is <b>Nil</b>. If the collection update is required, Item is set to the internal collection item that has been cached for the action. This occurs when the collection calls its Changed method with its AllItems argument set to True.
+          </p>
+          <p>
+            Update calls the inherited method using the value in Item as an argument.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TCollection">TCollection</link>
         </seealso>
       </element>
       <element name="TListColumns.Update.Item">
-        <short>Collection item updated in the method.</short>
+        <short>
+          Collection item (TListColumn) updated in the method, or <b>Nil</b>.
+        </short>
       </element>
 
       <element name="TListColumns.Add">
         <short>
-          <var>Add</var> calls the inherited method, then adjusts state flags.
+          Creates and returns a new TListColumn instance for the collection.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Add</var> is a <var>TListColumn</var> function used to create and return a new <var>TListColumn</var> instance. It calls the inherited method to create a new instance of the ItemClass for the collection, and casts it to the TListColumn type used in the return value.
+          </p>
+          <p>
+            At design-time, the form designer surface for Owner (TCustomListView) is notified of the change when Owner has been assigned.
+          </p>
+        </descr>
         <seealso>
+          <link id="TListColumns.Owner"/>
           <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
+          <link id="#rtl.classes.TCollection.ItemClass">TCollection.ItemClass</link>
         </seealso>
       </element>
       <element name="TListColumns.Add.Result">
         <short>
-          TListColumn instance created and added in the method.
+          TListColumn instance created in the method.
         </short>
       </element>
 
@@ -8198,15 +8892,27 @@ end;
         <short>Provides indexed access to the items in the column collection.</short>
         <descr>
           <p>
-            <var>Items</var> is the default property for the collection, and the target for an enumerator used with the class instance.
+            Items is a TListColumn property used to provide indexed access to TListColumn instances in the collection by their ordinal position. The read and write access specifiers for the property are reimplemented to use the TListColumn type used as the ItemClass in the collection.
+          </p>
+          <p>
+            <var>Items</var> is the default property for the collection, and the target for an enumerator created for the collection.
+          </p>
+          <p>
+            Use Add to create and store a new TListColumn instance in the collection.
+          </p>
+          <p>
+            Free a TListColumn instance to remove it from the values in Items.
           </p>
         </descr>
         <seealso>
+          <link id="TListColumns.Add"/>
+          <link id="TListColumn.Destroy"/>
           <link id="#rtl.classes.TCollection.Items">TCollection.Items</link>
+          <link id="#rtl.classes.TCollectionEnumerator">TCollectionEnumerator</link>
         </seealso>
       </element>
       <element name="TListColumns.Items.AIndex">
-        <short>Ordinal position for the indexed property value.</short>
+        <short>Ordinal position in the collection for the property value.</short>
       </element>
 
       <element name="TListColumns.Assign">
@@ -8813,7 +9519,7 @@ end;
 
       <element name="TLVCustomDrawSubItemEvent">
         <short>
-          Specifies an event handler signalled to draw a SubItem value for a list item on a list view control.
+          Specifies an event handler signalled to draw the SubItem value for a list item on a list view control.
         </short>
         <descr>
           <p>
@@ -9220,7 +9926,11 @@ end;
         <short>
           Represents the sort direction used for items in a list view control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            TSortDirection is the type used to implement the SortDirection property in TCustomListView.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomListView.SortDirection"/>
           <link id="TCustomListView.SortColumn"/>
@@ -9299,7 +10009,9 @@ end;
         <seealso/>
       </element>
       <element name="TCustomListViewEditor.Create.AOwner">
-        <short/>
+        <short>
+          Component (TCustomListView) which owns the class instance.
+        </short>
       </element>
 
       <element name="TCustomListViewEditor.Item">
@@ -11699,24 +12411,57 @@ end;
 
       <element name="TCustomListView.OnEdited">
         <short>
-          Event handler signalled when editing has been completed for a list item in the control.
+          Event handler signalled prior to updating a list item caption when it has been edited in the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnEdited</var> is a <var>TLVEditedEvent</var> property with the event handler signalled when the caption for a list item has been updated using the editor for the control. It occurs prior to saving the value in the AValue argument to the TListItem instance, and allows the new value to be validated and optionally modified.
+          </p>
+          <p>
+            OnEdit is signalled from the DoEndEdit method when an overridden Edit method is not used in the class instance, and the event handler has been assigned. It occurs when the private HideEditor method is called for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.DoEndEdit"/>
+          <link id="TCustomListView.Edit"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnEditing">
         <short>
-          Event handler signalled to determine if editing can be started for a list item in the control.
+          Event handler signalled to determine if editing can be performed for a list item in the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            OnEditing is a TLVEditingEvent property with the event handler used to determine if a list item can be edited in the control. Arguments passed to the event handler included the control (TCustomListView), the list item (TListItem), and an updatable Boolean argument which indicates if editing is allowed for the list item. Set the AllowEdit argument to False to prevent the list item from being edited.
+          </p>
+          <p>
+            OnEditing is signalled (when assigned) from the CanEdit method, and determines the return value for the function. It occurs when the private ShowEditor method is called for the list view control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.CanEdit"/>
+          <link id="TLVEditingEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnInsert">
-        <short>Called when a list item is inserted in program code.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a list item is added to or inserted in the Items for the control.
+        </short>
+        <descr>
+          <p>
+            <var>OnInsert</var> is a <var>TLVInsertEvent</var> property with the event handler signalled when a new TListItem instance is stored in the Items property. Arguments to the event handler include the object (TCustomListView) for the notification and the TListItem instance for the action.
+          </p>
+          <p>
+            OnInsert is signalled (when assigned) from the DoInsert method, and occurs when the ItemInserted method is called. This happens after the list item has been added to a TListItems container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.DoInsert"/>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TListItems.AddItem"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnItemChecked">
@@ -11752,20 +12497,109 @@ end;
       </element>
 
       <element name="TCustomListView.OnCustomDraw">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to perform custom drawing for the list view control.
+        </short>
+        <descr>
+          <p>
+            <var>OnCustomDraw</var> is a <var>TLVCustomDrawEvent</var> property with the event handler signalled when a custom draw operation is handled by the LCL interface. It is signalled from the CustomDraw method when the drawing stage for the control is cdPrePaint.
+          </p>
+          <p>
+            Arguments to the event handler include the control, the display rectangle for the operation, and a variable parameter that indicates whether default drawing is performed by the list view control.
+          </p>
+          <p>
+            OnCustomDraw occurs when the widgetset class for the control calls the IntfCustomDraw method and the list view control is the draw target.
+          </p>
+          <p>
+            Use OnAdvancedCustomDraw to perform custom drawing when the drawing state has a value other than cdPrePaint.
+          </p>
+          <p>
+            Use OnCustomDrawItem and OnAdvancedCustomDrawItem to perform custom drawing for the list items on the control.
+          </p>
+          <p>
+            Use OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem to perform custom drawing for the list sub-items on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.CustomDraw"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.IsCustomDrawn"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TLVCustomDrawEvent"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawTarget"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnCustomDrawItem">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
+        <short>
+          Event handler signalled to perform custom drawing for list items on the control.
+        </short>
+        <descr>
+          <p>
+            <var>OnCustomDrawItem</var> is a <var>TLVCustomDrawItemEvent</var> property with the event handler used to perform custom drawing for a list item on a list view control. It is signalled (when assigned) from the CustomDrawItem method when the drawing stage is cdPrePaint, and occurs when the IntfCustomDraw method handles callbacks from the widgetset class instance.
+          </p>
+          <p>
+            Arguments to the event handler include the list view control, the list item drawn in the handler, and a variable parameter which indicates whether default drawing is handled in the list view control.
+          </p>
+          <p>
+            Use OnAdvancedCustomDrawItem to perform custom drawing for list items when the drawing stage is a value other than cdPrePaint.
+          </p>
+          <p>
+            Custom drawing event handlers are used when the IntfCustomDraw method handles callbacks from the widgetset class instance.
+          </p>
+          <p>
+            Use OnCustomDraw and OnAdvancedCustomDraw to perform custom drawing for the entire list view control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomListView.OnCustomDrawSubItem">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
+        <short>
+          Event handler signalled to perform custom drawing for list sub-item on the control.
+        </short>
+        <descr>
+          <p>
+            <var>OnCustomDrawSubItem</var> is a <var>TLVCustomDrawSubItemEvent</var> property with the event handler used to perform custom drawing for sub-items on a list view control. These are the values found in the SubItems property for each of the  TListItem entries on the control.
+          </p>
+          <p>
+            OnCustomDrawSubItem is signalled (when assigned) from the CustomDrawSubItem method when the drawing stage is cdPrePaint, and occurs when the IntfCustomDraw method handles callbacks from the widgetset class instance.
+          </p>
+          <p>
+            Arguments to the event handler include:
+          </p>
+          <dl>
+            <dt>Sender</dt>
+            <dd>The list view control.</dd>
+
+            <dt>Item</dt>
+            <dd>The list item with values drawn in the handler.</dd>
+
+            <dt>SubItem</dt>
+            <dd>The ordinal position for the sub-item in Item.</dd>
+
+            <dt>State</dt>
+            <dd>The draw state for the value.</dd>
+
+            <dt>DefaultDraw</dt>
+            <dd>
+              Variable parameter which indicates whether default drawing is handled in the list view control.
+            </dd>
+          </dl>
+          <p>
+            Use OnAdvancedCustomDrawSubItem to perform custom drawing for list sub-items when the drawing stage is a value other than cdPrePaint.
+          </p>
+          <p>
+            Custom drawing event handlers are used when the IntfCustomDraw method handles callbacks from the widgetset class instance.
+          </p>
+          <p>
+            Use OnCustomDraw and OnAdvancedCustomDraw to perform custom drawing for the entire list view control.
+          </p>
+          <p>
+            Use OnCustomDrawItem and OnAdvancedCustomDrawItem  to perform custom drawing for the a list item on the list view control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -11775,30 +12609,179 @@ end;
           <p>
             <var>OnDrawItem</var> is a <var>TLVDrawItemEvent</var>  property which is the event handler signalled to render an owner drawn item. The event is triggered (when assigned) in the <var>DrawItem</var> method only when <var>OwnerDraw</var> is set to <b>True</b> and <var>ViewStyle</var> contains <var>vsReport</var>.
           </p>
+          <p>
+            Arguments to the event handler include:
+          </p>
+          <dl>
+            <dt>Sender</dt>
+            <dd>The TCustomListView control.</dd>
+            <dt>AItem</dt>
+            <dd>The TListItem to draw in the handler.</dd>
+            <dt>ARect</dt>
+            <dd>The display rectangle for the list item.</dd>
+            <dt>AState</dt>
+            <dd>The draw state for the list item.</dd>
+          </dl>
         </descr>
         <seealso>
           <link id="TCustomListView.OwnerDraw"/>
-          <link id="TCustomListView.ViewStyle"/>
           <link id="TCustomListView.DrawItem"/>
+          <link id="TCustomListView.ViewStyle"/>
         </seealso>
       </element>
 
       <element name="TCustomListView.OnAdvancedCustomDraw">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to custom draw the grid control when the draw state is not cdPrePaint.
+        </short>
+        <descr>
+          <p>
+            <var>OnAdvancedCustomDraw</var> is a <var>TLVAdvancedCustomDrawEvent</var> property with the event handler used to custom draw the grid control. It is signalled from the CustomDraw method when the draw stage is a value other than cdPrePaint, and occurs when the IntfCustomDraw method is called by the widgetset class instance.
+          </p>
+          <p>
+            Arguments to the event handler include:
+          </p>
+          <dl>
+            <dt>Sender</dt>
+            <dd>The TCustomListView for the event.</dd>
+            <dt>Item</dt>
+            <dd>The list item drawn in the handler.</dd>
+            <dt>State</dt>
+            <dd>The draw state for the list item.</dd>
+            <dt>Stage</dt>
+            <dd>The draw stage for the list item. Will not contain the value cdPrePaint.</dd>
+            <dt>DefaultDraw</dt>
+            <dd>
+              Variable parameter which indicates if default drawing is performed by the list view control.
+            </dd>
+          </dl>
+          <p>
+            Use OnCustomDraw to custom draw the control when the draw stage is cdPrePaint.
+          </p>
+          <p>
+            Use OnCustomDrawItem and OnAdvancedCustomDrawItem to custom draw a list item on the control.
+          </p>
+          <p>
+            Use OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem to custom draw a sub-item for a list item on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.CustomDraw"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
+          <link id="TCustomListView.IsCustomDrawn"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawTarget"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnAdvancedCustomDrawItem">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to custom draw a list item on the grid control when the draw state is not cdPrePaint.
+        </short>
+        <descr>
+          <p>
+            <var>OnAdvancedCustomDrawItem</var> is a <var>TLVAdvancedCustomDrawItemEvent</var> property with the event handler used to custom draw a list item on the grid control. It is signalled from the CustomDrawItem method when the draw stage is a value other than cdPrePaint, and occurs when the IntfCustomDraw method is called by the widgetset class instance.
+          </p>
+          <p>
+            Arguments to the event handler include:
+          </p>
+          <dl>
+            <dt>Sender</dt>
+            <dd>The TCustomListView for the event.</dd>
+            <dt>Item</dt>
+            <dd>The list item drawn in the handler.</dd>
+            <dt>State</dt>
+            <dd>The draw state for the list item.</dd>
+            <dt>Stage</dt>
+            <dd>The draw stage for the list item. Will not contain the value cdPrePaint.</dd>
+            <dt>DefaultDraw</dt>
+            <dd>
+              Variable parameter which indicates if default drawing is performed by the list view control.
+            </dd>
+          </dl>
+          <p>
+            Use OnCustomDrawItem to custom draw a list item when the draw stage is cdPrePaint.
+          </p>
+          <p>
+            Use OnCustomDraw and OnAdvancedCustomDraw to custom draw the list view control.
+          </p>
+          <p>
+            Use OnCustomDrawSubItem and OnAdvancedCustomDrawSubItem to custom draw a sub-item for a list item on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.CustomDrawItem"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawSubItem"/>
+          <link id="TCustomListView.IsCustomDrawn"/>
+          <link id="TListItem"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawState"/>
+          <link id="TCustomDrawTarget"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnAdvancedCustomDrawSubItem">
-        <short>Called for owner-draw mode.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to custom draw list sub-items when the draw stage is not cdPrePaint.
+        </short>
+        <descr>
+          <p>
+            OnAdvancedCustomDrawSubItem is a TLVAdvancedCustomDrawSubItemEvent property with the event handler signalled to draw the SubItems in a list item on the control. It is signalled from the CustomDrawSubItem method when the draw stage is a value other than cdPrePaint, and occurs when the IntfCustomDraw method is called by the widgetset class instance.
+          </p>
+          <p>
+            Arguments to the event handler include:
+          </p>
+          <dl>
+            <dt>Sender</dt>
+            <dd>The TCustomListView for the event.</dd>
+            <dt>Item</dt>
+            <dd>The list item drawn in the handler.</dd>
+            <dt>SubItem</dt>
+            <dd>The ordinal position in SubItems with the text drawn in the handler.</dd>
+            <dt>State</dt>
+            <dd>The draw state for the list item.</dd>
+            <dt>Stage</dt>
+            <dd>The draw stage for the list item. Will not contain the value cdPrePaint.</dd>
+            <dt>DefaultDraw</dt>
+            <dd>
+              Variable parameter which indicates if default drawing is performed by the list view control.
+            </dd>
+          </dl>
+          <p>
+            Use OnCustomDrawItem and OnAdvancedCustomDrawItem to custom draw the caption for a list item.
+          </p>
+          <p>
+            Use OnCustomDraw and OnAdvancedCustomDraw to custom draw the list view control.
+          </p>
+          <p>
+            Use OnCustomDrawSubItem to custom draw a sub-item for a list item on the control when the draw stage is cdPrePaint.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.CustomDrawSubItem"/>
+          <link id="TCustomListView.IntfCustomDraw"/>
+          <link id="TCustomListView.OnCustomDraw"/>
+          <link id="TCustomListView.OnCustomDrawItem"/>
+          <link id="TCustomListView.OnCustomDrawSubItem"/>
+          <link id="TCustomListView.OnAdvancedCustomDraw"/>
+          <link id="TCustomListView.OnAdvancedCustomDrawItem"/>
+          <link id="TCustomListView.IsCustomDrawn"/>
+          <link id="TListItem.SubItems"/>
+          <link id="TCustomDrawStage"/>
+          <link id="TCustomDrawState"/>
+          <link id="TCustomDrawTarget"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.Create">
@@ -11808,7 +12791,7 @@ end;
             <var>Create</var> is the overridden constructor for <var>TCustomListView</var>. It calls the inherited <var>Create</var> method, and allocates resources needed for the class instance.
           </p>
           <p>
-            Create sets the default values for properties and the control style flags. It creates a TChangeLink instance for the image lists in SmallImages, LargeImages, and StateImages. The change links are configured to use the ImageChange and ImageResolutionHandleDestroyed methods in their event handlers. It also creates the TCustomListViewEditor instance used to edit values in the list view control.
+            Create sets the default values for properties and control style flags. It creates TChangeLink instances for the image lists in SmallImages, LargeImages, and StateImages. The change links are configured to use the ImageChange and ImageResolutionHandleDestroyed methods in their event handlers. It also creates the TCustomListViewEditor instance used to edit values in the list view control.
           </p>
         </descr>
         <seealso>
@@ -11822,7 +12805,9 @@ end;
       <element name="TCustomListView.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
-          <var>Destroy</var> is the destructor for <var>TCustomListView</var>. It frees the Canvas, calls the inherited <var>Destroy</var>, and frees the columns and list items.
+          <p>
+            <var>Destroy</var> is the destructor for <var>TCustomListView</var>. It frees the Canvas, calls the inherited <var>Destroy</var>, and frees the columns and list items.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
@@ -11831,9 +12816,24 @@ end;
       </element>
 
       <element name="TCustomListView.AddItem">
-        <short>Adds a list item with the specified caption and optional object.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Adds a list item with the specified caption and optional object.
+        </short>
+        <descr>
+          <p>
+            <var>AddItem</var> is a method used to create and store a new <var>TListItem</var> instance in the Items container. AddItem calls the Add in Items to create the TListItem instance and store it in the list storage for the container.
+          </p>
+          <p>
+            Item contains the text used as the Caption for the list item. AObject is a object instance derived from TObject, and its address is stored in the Data property for the list item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TListItems.Add"/>
+          <link id="TListItems.AddItem"/>
+          <link id="TListItem.Caption"/>
+          <link id="TListItem.Data"/>
+        </seealso>
       </element>
       <element name="TCustomListView.AddItem.Item">
         <short>Caption for the new list item.</short>
@@ -11843,21 +12843,58 @@ end;
       </element>
 
       <element name="TCustomListView.AlphaSort">
-        <short>Sorts the first column for the list view in ascending order.</short>
+        <short>
+          Sorts the first column for the list view control in ascending alphabetic order.
+        </short>
         <descr>
-          Always sorts column 0 in sdAscending order.
+          <p>
+            <var>AlphaSort</var> is <var>Boolean</var> function used to apply an ascending alphabtic sort order to the list items in the control. The sort order is always applied to Column 0 (the list item and not its sub-items).
+          </p>
+          <p>
+            AlphaSort updates values in the SortDirection, SortType, and SortColumn properties. Flag values for the control are updated to include lffPreparingSorting prior to setting the property values; this suppresses reordering until the changes are completed.
+          </p>
+          <p>
+            SortDirection is toggled to force a new sort order to be applied. The final value is sdAscending.
+          </p>
+          <p>
+            SortType is set to stText to use the TListItem.Caption values to determine the order for the list items. In the default comparison routine. case is significant. Use OnCompare to implement an alternate comparison routine.
+          </p>
+          <p>
+            SortColumn is set to 0 to use the TListItem.Caption values to determine the order for the list items.
+          </p>
+          <p>
+            lffPreparingSorting is removed from the flag values to apply the sort criteria to the list items in the control.
+          </p>
+          <p>
+            The return value is set to <b>True</b> if the sort criteria is successfully applied to the list view control.
+          </p>
         </descr>
         <seealso/>
       </element>
       <element name="TCustomListView.AlphaSort.Result">
-        <short/>
+        <short>
+          <b>True</b> if the sort criteria is successfully applied to the control.
+        </short>
       </element>
 
       <element name="TCustomListView.Sort">
         <short>
-          Sorts the values in Items when SortType is not stNone and SortColumn is valid.
+          Sorts the values in Items using the SortType, SortColumn, and SortDirection for the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Sort</var> is a method used to reorder list items in the control using values in the SortType, SortColumn, and SortDirection properties. No actions are performed in the method when SortType is set to stNonem, or when SortColumn has a value which is not valid. SortColumn must be in the range <b>0..ColCount-1</b>.
+          </p>
+          <p>
+            Sort uses a comparison routine in the implementation section to order the values in Items. The comparison routine is passed as argument to the Sort method in Items. The routine calls the OnCompare event handler (when assigned) to determine the order for list items. If OnCompare has not been assigned, it uses the Caption or SubItems (depending on SortColumn) to determine the new order for the list items. The value in SortDirection is handled when ordering the Items.
+          </p>
+          <p>
+            Sort saves and restores Focused or Selected items on exit. Checked items are also restored when OwnerData (or virtual mode) is not enabled.
+          </p>
+          <p>
+            Sort is called when a column header on the list view control is clicked and AutoSort is enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -11865,49 +12902,110 @@ end;
         <short>
           Sorts the Items for the list view control using the specified procedure or the OnCompare event handler.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>CustomSort</var> is a <var>Boolean</var> function used to sort the list items on the control using a custom sort routine to order the items.
+          </p>
+          <p>
+            Use the ASortProc argument to specify the comparison routine needed for the custom sort. When omitted, the OnCompare event handler is used to determine the order for the list items.
+          </p>
+          <p>
+            Use AOptionalParam to specify a pointer to an optional Integer value passed as a parameter to the sort procedure.
+          </p>
+          <p>
+            No actions are performed when Items contains fewer than two list items, or when lffPreparingSorting has already been included in the flags for the control.
+          </p>
+          <p>
+            CustomSort saves and restores Focused or Selected items on exit. Checked items are also restored when OwnerData (or virtual mode) is not enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomListView.CustomSort.Result">
-        <short/>
+        <short>
+          <b>True</b> when either the sort routine or the OnCompare event handler has been assigned.
+        </short>
       </element>
       <element name="TCustomListView.CustomSort.ASortProc">
-        <short/>
+        <short>
+          Sort routine used to compare values in the list items to determine their order.
+        </short>
       </element>
       <element name="TCustomListView.CustomSort.AOptionalParam">
-        <short/>
+        <short>
+          An optional Pointer to an Integer value used the sort routine.
+        </short>
       </element>
 
       <element name="TCustomListView.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start updating the list view.
+          Starts an update process for the list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>BeginUpdate</var> is a method which increments an internal counter used to track active updates to the control. Use this method before performing a large number or changes to the control so that the interface will not show any single step until the counter reaches 0.
+          </p>
+          <p>
+            BeginUpdate includes the value lffPreparingSorting in the flags for the control. This suppresses reordering of list items using sort methods until the flag value is removed. When the internal update counter has the value 1, the corresponding method in the widgetset class is called when its handle has been allocated.
+          </p>
+          <p>
+            Use <var>EndUpdate</var> to decrement the internal counter when an update is completed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.EndUpdate"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.Clear">
         <short>
           Clears the Items for the list view.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Clears</var> calls the corresponding method in Items to delete and free each of the list item instances in the container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItems.Clear"/>
+          <link id="TListItems.Delete"/>
+          <link id="TListItem.Delete"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.EndUpdate">
         <short>
           Finishes an active update for the list view control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>EndUpdate</var> is a method which decrements the internal counter used to track active updates for the list view control. An catchable debugger exception is raised if EndUpdate is called when an the internal counter is already 0.
+          </p>
+          <p>
+            EndUpdate removes the value lffPreparingSorting from the flags for the control. This allows reordering of list items using sort methods to be performed. When the internal update counter reaches 0, the corresponding method in the widgetset class is called when its handle has been allocated.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomListView.Repaint">
         <short>
-          Updates the OwnerData (when used), and repaints the control.
+          Immediately redraws the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Repaint</var> is an overridden method in <var>TCustomListView</var>. It ensures that the data index for a list item is reset to -1 when the control is using OwnerDraw (or virtual) mode. Repaint calls the inherited method to request a repaint in the widgetset class instance when its handle has been allocated.
+          </p>
+          <p>
+            Repaint is used to implement the Refresh method for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="#lcl.controls.TWinControl.Repaint">TWinControl.Repaint</link>
+          <link id="#lcl.controls.TControl.Refresh">TControl.Refresh</link>
+        </seealso>
       </element>
 
       <element name="TCustomListView.FindCaption">
@@ -11987,7 +13085,7 @@ end;
         <short>Locates the list item closest to the specified position.</short>
         <descr>
           <p>
-            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item.If no item is found  <b>Nil</b> is returned.
+            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item. If no item is found  <b>Nil</b> is returned.
           </p>
         </descr>
         <seealso/>
@@ -12072,12 +13170,14 @@ end;
       <element name="TCustomListView.IsEditing">
         <short>Indicates if the editor is active in the list view control.</short>
         <descr>
-          Delphi compatible function which returns if our listview editor is active.
+          Delphi compatible function which returns <b>True</b> if the list view editor is active.
         </descr>
         <seealso/>
       </element>
       <element name="TCustomListView.IsEditing.Result">
-        <short/>
+        <short>
+          <b>True</b> if the editor control is active for the list view.
+        </short>
       </element>
 
       <element name="TCustomListView.BoundingRect">
@@ -12148,7 +13248,7 @@ end;
             Use the <var>Columns</var> property to add, change or delete a column definition.
           </p>
           <p>
-            Use the <var>Items</var> property to access the <var>TListItem</var> instances with the data displayed using the column definitions. The Caption in a given list item is the value display in Column[0]. Subsequent column values use the values in  SubItems; i. e. Column[1] is SubItem[0], etc.
+            Use the <var>Items</var> property to access the <var>TListItem</var> instances with the data displayed using the column definitions. The Caption in a given list item is the value display in Column[0]. Subsequent column values use the values in  SubItems; i. e. Column[1] is SubItem[0], Column[2] is SubItem[1], ad infinitum.
           </p>
         </descr>
         <seealso>
@@ -12209,14 +13309,16 @@ end;
 
       <element name="TCustomListView.FullDrag">
         <short>
-          Indicates whether column headers are redrawn during a drag / resizing operation.
+          Indicates whether column headers are redrawn during a column drag or resizing operations.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomListView.GridLines">
-        <short>Enables or disables grid lines between rows and columns on the control.</short>
+        <short>
+          Enables or disables grid lines between rows and columns on the control.
+        </short>
         <descr>
           <p>
             <var>GridLines</var> is a <var>Boolean</var> property used to enable or disable drawing of a 1-pixel grid line between rows and columns on the control. The default value for the property is <b>False</b>, and hides the grid lines. Changing the value for the property causes the widgetset class to be updated.
@@ -12397,7 +13499,7 @@ end;
             <var>OwnerData</var> is a <var>Boolean</var> property which enables or disables virtual mode for the list view control.
           </p>
           <p>
-            When set to <b>True</b>, the Items property does not contain the actual data displayed on the control. The display values are retrieved using the OnData, OnDataFind, and OnDataHint event handlers. Only the most recently accessed owner data item exists  in the list view control. This allows the list view to be used to display a large number of items with a minimal amount of overhead.
+            When set to <b>True</b>, the Items property does not contain the actual data displayed on the control. The display values are retrieved using the OnData, OnDataFind, and OnDataHint event handlers. Only the most recently accessed owner data item exists in the list view control. This allows the list view to be used to display a large number of items with a minimal amount of overhead.
           </p>
           <p>
             Set the value for the Count property in Items to indicate the number of owner data items available to the list view control. Assign a routine to OnData to populate an individual list item (and sub-items if needed) from the source for the owner data.
@@ -12430,10 +13532,36 @@ end;
 
       <element name="TCustomListView.RowSelect">
         <short>
-          In Report view, this highlights the entire selected row to the right edge of the list view control.
+          Indicates if the entire row is highlighted when selected on the list view control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            RowSelect is a Boolean property which indicates whether all columns in the row are  highlighted when the row is selected. The default value for RowSelect is False, and indicates that a single column/row value is displayed using the selected highlighting. RowSelect is used in report mode (ViewStyle = vsReport).
+          </p>
+          <p>
+            RowSelect is one of several properties represented as a TListViewProperty enumeration value (lvpRowSelect), and passed to the widgetset class in a TListViewProperties set type. Others properties represented in the set type include:
+          </p>
+          <ul>
+            <li>CheckBoxes</li>
+            <li>FlatScrollBars</li>
+            <li>FullDrag</li>
+            <li>GridLines</li>
+            <li>HotTrack</li>
+            <li>MultiSelect</li>
+            <li>ReadOnly</li>
+          </ul>
+          <p>
+            Changing the value for the property causes the widget to be notified of a change in the set when its handle has been allocated.
+          </p>
+          <p>
+            Use MultiSelect to enable multi-selection of rows and/or columns.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.MultiSelect"/>
+          <link id="TListViewProperty"/>
+          <link id="TListViewProperties"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.SelCount">
@@ -12520,11 +13648,14 @@ end;
 
       <element name="TCustomListView.TabStop">
         <short>
-          Allows the user to navigate to the control by pressing the Tab or Shift_Tab keys.
+          Allows navigation to and from the control by pressing the Tab or Shift+Tab keys.
         </short>
         <descr>
           <p>
-            The default value for the property is <b>True</b> in TCustomListView,
+            TabStop is a TabStop property which indicates if the control can be focused when using the Tab or Shift+Tab keys to navigate between controls on a form. TabStop is reintroduced in TCustomListView; the default value for the property is <b>True</b>. Changing the value for the property causes UpdateTabOrder to be called (in the ancestor class). A CM_TABSTOPCHANGED message is performed for the control.
+          </p>
+          <p>
+            TabStop is used in methods like FindNextControl, and may be updated in methods like Insert.
           </p>
         </descr>
         <seealso>
@@ -12533,16 +13664,36 @@ end;
       </element>
 
       <element name="TCustomListView.TopItem">
-        <short>Listview item, which is shown at the top edge of ListView.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The list item which is displayed at the top of the list view control.
+        </short>
+        <descr>
+          <p>
+            <var>TopItem</var> is a read-only <var>TListItem</var> property with the list item that appears at the top of the scrollable, non-fixed area on the control when ViewStyle is set to vsReport or vsList. TopItem contains <b>Nil</b> when ViewStyle is set to vsSmallIcon or vsIcon.
+          </p>
+          <p>
+            The property value is the TListItem entry in the Items container as reported by the widgetset class for the list view control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.ViewStyle"/>
+          <link id="TListItem"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.ViewOrigin">
         <short>
-          Coordinate with the left/top visible points in the control, updates when Listview scrolls.
+          Coordinate with the left/top visible point for the list items on the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            ViewOrigin is a TPoint property with the left and top coordinates for the area currently displayed in the list view control. The TPoint value is provided by the widgetset class instance when its handle has been allocated. Otherwise, the cached value for ViewOrigin is returned. Changing the value for the property causes the widget to notified.
+          </p>
+          <p>
+            ViewOrigin is updated when the list view control is scrolled.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -12617,7 +13768,7 @@ end;
         <short>Uses the Color from the Parent control, when enabled.</short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TListView.
+            <var>ParentColor</var> determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TListView.
           </p>
           <p>
             When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
