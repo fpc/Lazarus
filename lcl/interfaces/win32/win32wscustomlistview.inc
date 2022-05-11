@@ -232,6 +232,26 @@ var
     end;
   end;
 
+  { Workaround for issue #39715 to prevent the selection jumping to the first
+    item in virtual mode when a normal key is pressed (the listview probably
+    tries to perform an incremental search in this case which has not been 
+    implemented, yet (handler for OnDataFind). }
+  procedure HandleListViewFindItem(ALV: TCustomlistViewAccess);
+  var
+    FindInfo: PNMLVFindItem; 
+    listitem: TListItem;
+  begin
+    if ALV.OwnerData then
+    begin
+      FindInfo := PNMLVFindItem(NMHdr);
+      if Assigned(FindInfo) then
+      begin
+        MsgResult := -1;
+        WinProcess := false;
+      end;
+    end;
+  end;
+  
 begin
   Result := False;
   case Msg of
@@ -246,6 +266,8 @@ begin
             if ListViewWindProcInfo.ActiveListView = AWinControl then
               ListViewWindProcInfo.NoMouseUp := True;
           end;
+        LVN_ODFINDITEM:
+          HandleListViewFindItem(TCustomListViewAccess(AWinControl));
       end;
     end;
   end;
