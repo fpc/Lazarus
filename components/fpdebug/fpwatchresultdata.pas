@@ -31,6 +31,7 @@ type
     function StringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function WideStringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
+    function BoolToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function EnumToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function SetToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
@@ -206,6 +207,14 @@ begin
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 
+function TFpWatchResultConvertor.BoolToResData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+begin
+  Result := True;
+  AnResData.CreateBoolValue(AnFpValue.AsCardinal, SizeToFullBytes(AnFpValue.DataSize));
+  AddTypeNameToResData(AnFpValue, AnResData);
+end;
+
 function TFpWatchResultConvertor.EnumToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 var
@@ -307,7 +316,7 @@ begin
       skProcedureRef: ;
       skFunctionRef: ;
       skSimple: ;
-      skBoolean: ;
+      skBoolean:   Result := BoolToResData(AnFpValue, AnResData);
       skCurrency: ;
       skVariant: ;
       skEnum,

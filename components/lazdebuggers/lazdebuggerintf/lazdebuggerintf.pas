@@ -122,6 +122,7 @@ type
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
     procedure CreatePointerValue(AnAddrValue: TDbgPtr);
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+    procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
     procedure CreateSetValue(const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 

@@ -16,7 +16,7 @@ type
     rdkError, rdkPrePrinted,
     rdkString, rdkWideString, rdkChar,
     rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
-    rdkEnum, rdkEnumVal, rdkSet
+    rdkBool, rdkEnum, rdkEnumVal, rdkSet
   );
 
   TWatchResultData = class;
@@ -173,6 +173,15 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
   end;
 
+  { TWatchResultValueBoolean }
+
+  TWatchResultValueBoolean = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkBool;
+  protected
+    function GetAsString: String; inline;
+  end;
+
   { TWatchResultValueEnumBase }
 
   TWatchResultValueEnumBase = object(TWatchResultValueOrdNumBase)
@@ -228,6 +237,7 @@ type
     wdUNum,      // TWatchResultDataUnSignedNum
     wdPtr,       // TWatchResultDataPointer
     wdFloat,     // TWatchResultDataFloat
+    wdBool,      // TWatchResultDataBoolean
     wdEnum,      // TWatchResultDataEnum
     wdEnumVal,   // TWatchResultDataEnumVal
     wdSet,       // TWatchResultDataSet
@@ -402,6 +412,16 @@ type
     constructor Create(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
   end;
 
+  { TWatchResultDataBoolean }
+
+  TWatchResultDataBoolean = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueBoolean>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
+    constructor Create(ABoolValue: Boolean);
+  end;
+
   { TWatchResultDataEnum }
 
   TWatchResultDataEnum = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueEnum>)
@@ -508,6 +528,23 @@ function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDispl
        2: Result := QuoteWideText(WideChar(Word(AResValue.AsQWord)));
        else Result := '#' + PrintNumber(AResValue, False, wdfDecimal);
     end;
+  end;
+
+  function PrintBool: String;
+  var
+    c: QWord;
+  begin
+    c := AResValue.GetAsQWord;
+    if c = 0 then
+      Result := 'False'
+    else
+      Result := 'True';
+
+    if (ADispFormat in [wdfDecimal, wdfUnsigned, wdfHex, wdfBinary]) then
+      Result := Result + '(' + PrintNumber(AResValue, False, ADispFormat) + ')'
+    else
+    if (c > 1) then
+      Result := Result + '(' + PrintNumber(AResValue, False, wdfDecimal) + ')';
   end;
 
   function PrintEnum: String;
@@ -618,6 +655,7 @@ begin
     rdkChar:       Result := PrintChar;
     rdkString:     Result := QuoteText(AResValue.AsString);
     rdkWideString: Result := QuoteWideText(AResValue.AsWideString);
+    rdkBool:       Result := PrintBool;
     rdkEnum, rdkEnumVal:
                    Result := PrintEnum;
     rdkSet:        Result := PrintSet;
@@ -639,6 +677,7 @@ const
     TWatchResultDataUnSignedNum,   // wdUNum
     TWatchResultDataPointer,       // wdPtr
     TWatchResultDataFloat,         // wdFloat
+    TWatchResultDataBoolean,       // wdBool
     TWatchResultDataEnum,          // wdEnum
     TWatchResultDataEnumVal,       // wdEnumVal
     TWatchResultDataSet,           // wdSet
@@ -890,6 +929,16 @@ procedure TWatchResultTypeFloat.SaveDataToXMLConfig(const AConfig: TXMLConfig;
 begin
   inherited SaveDataToXMLConfig(AConfig, APath);
   AConfig.SetDeleteValue(APath + 'Prec', FFloatPrecission, ord(dfpSingle), TypeInfo(TLzDbgFloatPrecission));
+end;
+
+{ TWatchResultValueBoolean }
+
+function TWatchResultValueBoolean.GetAsString: String;
+begin
+  if FNumValue <> 0 then
+    Result := 'True'
+  else
+    Result := 'False';
 end;
 
 { TWatchResultValueEnumBase }
@@ -1258,6 +1307,31 @@ begin
   inherited Create;
   FData.FFloatValue := AFloatValue;
   FType.FFloatPrecission := APrecission;
+end;
+
+{ TWatchResultDataBoolean }
+
+function TWatchResultDataBoolean.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdBool;
+end;
+
+constructor TWatchResultDataBoolean.Create(AnOrdBoolValue: QWord;
+  AByteSize: Integer);
+begin
+  inherited Create;
+  FData.FNumValue    := AnOrdBoolValue;
+  FType.FNumByteSize := AByteSize;
+end;
+
+constructor TWatchResultDataBoolean.Create(ABoolValue: Boolean);
+begin
+  inherited Create;
+  if ABoolValue then
+    FData.FNumValue := 1
+  else
+    FData.FNumValue := 0;
+  FType.FNumByteSize := 0;
 end;
 
 { TWatchResultDataEnum }
