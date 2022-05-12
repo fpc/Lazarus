@@ -387,6 +387,7 @@ begin
     if WebDir='' then
       exit(mrCancel);
 
+    SWSLocation:=nil;
     if Location<>'' then
       begin
       Location:=GetProjectLocation(aProject);
@@ -414,6 +415,7 @@ begin
       debugln(['Info: TPJSController.RunProject missing htmlfile']);
       exit(mrCancel);
       end;
+
     if SWSLocation<>nil then
       begin
       if not SimpleWebServerController.OpenBrowserWithLocation(SWSLocation,HTMLFilename) then

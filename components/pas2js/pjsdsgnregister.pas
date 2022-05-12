@@ -840,7 +840,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultServiceWorkerCompileOptions(CompOpts);
+  SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(LPRFilename);
   SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);

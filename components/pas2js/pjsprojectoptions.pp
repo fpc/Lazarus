@@ -63,7 +63,6 @@ Procedure SetDefaultWebRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultServiceWorkerRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
-Procedure SetDefaultServiceWorkerCompileOptions(CompOpts: TLazCompilerOptions);
 Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 Procedure SetDefaultModuleCompileOptions(CompOpts: TLazCompilerOptions);
 
@@ -139,11 +138,6 @@ end;
 
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
 
-begin
-  SetPasJSCompileOptions(CompOpts,'browser','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
-end;
-
-procedure SetDefaultServiceWorkerCompileOptions(CompOpts: TLazCompilerOptions);
 begin
   SetPasJSCompileOptions(CompOpts,'browser','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
 end;
