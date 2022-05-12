@@ -337,9 +337,17 @@ type
     constructor Create(AStringVal: WideString);
   end;
 
+  { TGenericWatchResultDataSizedNum }
+
+  generic TGenericWatchResultDataSizedNum<_DATA> = class(specialize TGenericWatchResultDataWithType<_DATA, TWatchResultTypeOrdNum>)
+  protected
+    function GetAsQWord: QWord; override;
+    function GetAsInt64: Int64; override;
+  end;
+
   { TWatchResultDataSignedNum }
 
-  TWatchResultDataSignedNum = class(specialize TGenericWatchResultDataWithType<TWatchResultValueSignedNum, TWatchResultTypeOrdNum>)
+  TWatchResultDataSignedNum = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueSignedNum>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
@@ -348,7 +356,7 @@ type
 
   { TWatchResultDataUnSignedNum }
 
-  TWatchResultDataUnSignedNum = class(specialize TGenericWatchResultDataWithType<TWatchResultValueUnsignedNum, TWatchResultTypeOrdNum>)
+  TWatchResultDataUnSignedNum = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueUnsignedNum>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
@@ -377,7 +385,7 @@ type
 
   { TWatchResultDataEnum }
 
-  TWatchResultDataEnum = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnum, TWatchResultTypeOrdNum>)
+  TWatchResultDataEnum = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueEnum>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
@@ -386,7 +394,7 @@ type
 
   { TWatchResultDataEnumVal }
 
-  TWatchResultDataEnumVal = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnumVal, TWatchResultTypeOrdNum>)
+  TWatchResultDataEnumVal = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueEnumVal>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
@@ -457,7 +465,7 @@ function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDispl
       end;
       wdfBinary: begin
         n := HexDigicCount(ANumValue.AsQWord, ANumValue.ByteSize, AnIsPointer);
-        Result := '%'+IntToBin(ANumValue.AsInt64, n*4);
+        Result := '%'+IntToBin(Int64(ANumValue.AsQWord), n*4); // Don't get any extra leading 1
       end;
       wdfPointer: begin
         n := HexDigicCount(ANumValue.AsQWord, ANumValue.ByteSize, True);
@@ -1110,6 +1118,26 @@ constructor TWatchResultDataWideString.Create(AStringVal: WideString);
 begin
   inherited Create;
   FData.FWideText := AStringVal;
+end;
+
+{ TGenericWatchResultDataSizedNum }
+
+function TGenericWatchResultDataSizedNum.GetAsQWord: QWord;
+begin
+  Result := FData.GetAsQWord;
+  if (FType.GetByteSize > 0) and (FType.GetByteSize < 8) then
+    Result := Result and not(QWord(-1) << (FType.GetByteSize<<3));
+end;
+
+function TGenericWatchResultDataSizedNum.GetAsInt64: Int64;
+begin
+  Result := FData.GetAsInt64;
+  if (FType.GetByteSize > 0) and (FType.GetByteSize < 8) then begin
+    if Result and (1 << ((FType.GetByteSize<<3) - 1)) <> 0 then
+      Result := Result or (Int64(-1) << (FType.GetByteSize<<3))
+    else
+      Result := Result and not(Int64(-1) << (FType.GetByteSize<<3));
+  end;
 end;
 
 { TWatchResultDataSignedNum }
