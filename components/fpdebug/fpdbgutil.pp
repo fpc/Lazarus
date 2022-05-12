@@ -865,6 +865,7 @@ begin
       on E: Exception do begin
         WorkItem.FError := E;
         DebugLn(FQueue.FLogGroup or DBG_ERRORS, '%s!%s Thread-Workitem raised exception: "%s" => %s: "%s"', [dbgsThread, DbgSTime, WorkItem.DebugText, E.Classname, E.Message]);
+        DumpExceptionBackTrace(FQueue.FLogGroup or DBG_ERRORS);
       end;
     end;
     try
