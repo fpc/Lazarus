@@ -113,6 +113,7 @@ type
   TOnBeforeCompilePackages = function(aPkgList: TFPList): TModalResult of object;
   TOnCheckInterPkgFiles = function(IDEObject: TObject; PkgList: TFPList;
     out FilesChanged: boolean): boolean of object;
+  TSrcEditFileIsModifiedEvent = function(const SrcFilename: string): boolean of object;
 
   { TLazPkgGraphBuildItem }
 
@@ -204,6 +205,7 @@ type
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
     FOnEndUpdate: TPkgGraphEndUpdateEvent;
+    FOnSrcEditFileIsModified: TSrcEditFileIsModifiedEvent;
     FOnTranslatePackage: TPkgTranslate;
     FOnUninstallPackage: TPkgUninstall;
     FQuietRegistration: boolean;
@@ -270,6 +272,7 @@ type
     function MacroFunctionCTPkgOutDir(Data: Pointer): boolean;
     function GetPackageFromMacroParameter(const TheID: string;
                                           out APackage: TLazPackage): boolean;
+    function SrcEditFileIsModified(const SrcFilename: string): boolean;
   public
     // searching
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
@@ -502,6 +505,8 @@ type
                                                write FOnUninstallPackage;
     property OnBeforeCompilePackages: TOnBeforeCompilePackages read
                         FOnBeforeCompilePackages write FOnBeforeCompilePackages;
+    property OnSrcEditFileIsModified: TSrcEditFileIsModifiedEvent read FOnSrcEditFileIsModified
+                                                 write FOnSrcEditFileIsModified;
 
     // set during calling Register procedures
     property RegistrationFile: TPkgFile read FRegistrationFile;
@@ -1352,6 +1357,15 @@ begin
   end;
   PkgID.Free;
   Result:=APackage<>nil;
+end;
+
+function TLazPackageGraph.SrcEditFileIsModified(const SrcFilename: string
+  ): boolean;
+begin
+  if Assigned(OnSrcEditFileIsModified) then
+    Result:=OnSrcEditFileIsModified(SrcFilename)
+  else
+    Result:=false;
 end;
 
 function TLazPackageGraph.FindLowestPkgNodeByName(const PkgName: string
@@ -3373,6 +3387,12 @@ begin
         // probably an user unit reachable through a unit path in fpc.cfg
         continue;
       end;
+      if SrcEditFileIsModified(Filename) then begin
+        if ConsoleVerbosity>=0 then
+          debugln(['Hint: (lazarus) global unit "',Filename,'" of package ',ID,' is modified in source editor']);
+        Note+='Global unit "'+Filename+'" of '+ID+' is modified in source editor'+LineEnding;
+        exit(true);
+      end;
       if FileAgeCached(Filename)>StateFileAge then begin
         if ConsoleVerbosity>=0 then
           debugln(['Hint: (lazarus) global unit "',Filename,'" is newer than state file of package ',ID]);
@@ -3764,11 +3784,16 @@ begin
       exit(mrYes);
     end;
     if StateFileAge<FileAgeCached(SrcFilename) then begin
-      DebugLn('Hint: (lazarus) source file outdated of ',APackage.IDAsString,': ',SrcFilename);
-      Note+='Source file "'+SrcFilename+'" outdated:'+LineEnding
+      DebugLn('Hint: (lazarus) source disk file modified of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" modified:'+LineEnding
         +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
         +'  State file="'+Stats^.StateFileName+'"'+LineEnding
         +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
+      exit(mrYes);
+    end;
+    if SrcEditFileIsModified(SrcFilename) then begin
+      DebugLn('Hint: (lazarus) source editor file of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" modified in source editor.'+LineEnding;
       exit(mrYes);
     end;
     // check main source ppu file
@@ -3822,6 +3847,10 @@ begin
     CurFile:=APackage.Files[i];
     //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
     AFilename:=CurFile.GetFullFilename;
+    if SrcEditFileIsModified(AFilename) then begin
+      DebugLn('Hint: (lazarus) Source editor file is modified ',APackage.IDAsString,' ',CurFile.Filename);
+      Note+='';
+    end;
     if FileExistsCached(AFilename)
     and (StateFileAge<FileAgeCached(AFilename)) then begin
       DebugLn('Hint: (lazarus) Source file has changed ',APackage.IDAsString,' ',CurFile.Filename);

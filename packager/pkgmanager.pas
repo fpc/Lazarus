@@ -165,6 +165,8 @@ type
                                 Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+    function PackageGraphSrcEditFileIsModified(const SrcFilename: string
+      ): boolean;
   public
     // component palette
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
@@ -660,6 +662,15 @@ begin
     if APackage=nil then exit;
     AForm:=PackageEditors.CreateEditor(APackage,DoDisableAutoSizing);
   end;
+end;
+
+function TPkgManager.PackageGraphSrcEditFileIsModified(const SrcFilename: string
+  ): boolean;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(SrcFilename);
+  Result:=(SrcEdit<>nil) and SrcEdit.Modified;
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
@@ -2905,6 +2916,7 @@ begin
   PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
   PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
+  PackageGraph.OnSrcEditFileIsModified:=@PackageGraphSrcEditFileIsModified;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;
