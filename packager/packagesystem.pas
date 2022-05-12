@@ -3389,8 +3389,8 @@ begin
       end;
       if SrcEditFileIsModified(Filename) then begin
         if ConsoleVerbosity>=0 then
-          debugln(['Hint: (lazarus) global unit "',Filename,'" of package ',ID,' is modified in source editor']);
-        Note+='Global unit "'+Filename+'" of '+ID+' is modified in source editor'+LineEnding;
+          debugln(['Hint: (lazarus) global unit "',Filename,'" of package ',ID,' has been modified in source editor']);
+        Note+='Global unit "'+Filename+'" of '+ID+' has been modified in source editor'+LineEnding;
         exit(true);
       end;
       if FileAgeCached(Filename)>StateFileAge then begin
@@ -3848,7 +3848,7 @@ begin
     //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
     AFilename:=CurFile.GetFullFilename;
     if SrcEditFileIsModified(AFilename) then begin
-      DebugLn('Hint: (lazarus) Source editor file is modified ',APackage.IDAsString,' ',CurFile.Filename);
+      DebugLn('Hint: (lazarus) Source editor file has been modified ',APackage.IDAsString,' ',CurFile.Filename);
       Note+='';
     end;
     if FileExistsCached(AFilename)

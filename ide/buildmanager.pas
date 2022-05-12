@@ -48,7 +48,7 @@ uses
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
-  IDEDialogs, LazIDEIntf, IDEMsgIntf,
+  IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
@@ -1253,19 +1253,34 @@ end;
 function TBuildManager.DoCheckIfProjectNeedsCompilation(AProject: TProject;
   out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
 var
-  CompilerFilename, CompilerParams, SrcFilename: string;
+  DbgCap: String;
   StateFilename: String;
   StateFileAge: LongInt;
-  AnUnitInfo: TUnitInfo;
-  LFMFilename: String;
-  IcoRes: TProjectIcon;
-  aTargetFilename: String;
-  DbgCap: String;
 
-  function EditorFileHasChanged: boolean;
+  function EditorUnitInfoModified(AnUnitInfo: TUnitInfo): boolean;
+  var
+    EditComp: TSourceEditorInterface;
+  begin
+    Result:=false;
+    if AnUnitInfo=nil then exit;
+    if AnUnitInfo.EditorInfoCount=0 then exit;
+    EditComp:=AnUnitInfo.EditorInfo[0].EditorComponent;
+    Result:=(EditComp<>nil) and EditComp.Modified;
+  end;
+
+  function CheckNonProjectEditorFile(AnUnitInfo: TUnitInfo): boolean;
   begin
     Result:=false;
     if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then exit;
+
+    if EditorUnitInfoModified(AnUnitInfo) then
+    begin
+      if ConsoleVerbosity>=0 then
+        DebugLn(DbgCap,'Editor unit modified in source editor ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      Note+='Editor unit "'+AnUnitInfo.Filename+'" has been modified in source editor.'+LineEnding;
+      exit(true);
+    end;
+
     if not FileExistsCached(AnUnitInfo.Filename) then exit;
     if StateFileAge>=FileAgeCached(AnUnitInfo.Filename) then exit;
     if FilenameHasPascalExt(AnUnitInfo.Filename) then
@@ -1275,7 +1290,7 @@ var
       then begin
         Result:=true;
         if ConsoleVerbosity>=0 then
-          DebugLn(DbgCap,'Editor Unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+          DebugLn(DbgCap,'Editor unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='Editor unit "'+AnUnitInfo.Filename+'" in project''s unit search path is newer than state file:'+LineEnding
           +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
           +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1288,7 +1303,7 @@ var
     then begin
       Result:=true;
       if ConsoleVerbosity>=0 then
-        DebugLn(DbgCap,'Editor Src in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        DebugLn(DbgCap,'Editor file in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       Note+='Editor file "'+AnUnitInfo.Filename+'" in project''s include search path is newer than state file:'+LineEnding
         +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
         +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1297,6 +1312,12 @@ var
     end;
   end;
 
+var
+  CompilerFilename, CompilerParams, SrcFilename: string;
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  IcoRes: TProjectIcon;
+  aTargetFilename: String;
 begin
   NeedBuildAllFlag:=false;
   DbgCap:='Hint: (lazarus) Project needs building: ';
@@ -1342,6 +1363,14 @@ begin
   StateFileAge:=FileAgeCached(StateFilename);
 
   // check main source file
+  AnUnitInfo:=AProject.MainUnitInfo;
+  if EditorUnitInfoModified(AnUnitInfo) then
+  begin
+    if ConsoleVerbosity>=0 then
+      DebugLn(DbgCap,'Main src modified in source editor ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+    Note+='Main source "'+AnUnitInfo.Filename+'" has been modified in source editor.'+LineEnding;
+    exit(mrYes);
+  end;
   if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
     if ConsoleVerbosity>=0 then
@@ -1420,6 +1449,13 @@ begin
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
+    if EditorUnitInfoModified(AnUnitInfo) then
+    begin
+      if ConsoleVerbosity>=0 then
+        DebugLn(DbgCap,'Project file modified in source editor ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      Note+='Project file "'+AnUnitInfo.Filename+'" has been modified in source editor.'+LineEnding;
+      exit(mrYes);
+    end;
     if (not AnUnitInfo.IsVirtual) and FileExistsCached(AnUnitInfo.Filename) then
     begin
       if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
@@ -1452,7 +1488,7 @@ begin
   // to add them to the project)
   AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
-    if EditorFileHasChanged then
+    if CheckNonProjectEditorFile(AnUnitInfo) then
       exit(mrYes);
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
