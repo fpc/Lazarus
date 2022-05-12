@@ -1964,9 +1964,5 @@ initialization
     TX86AsmDecoder
   ));
 
-  KernelHandle := GetModuleHandle(KernelDLL);
-  if KernelHandle <> 0 then
-    GetThreadDescription := TGetThreadDescription(GetProcAddress(KernelHandle, 'GetThreadDescription'));
-
 end.
 
