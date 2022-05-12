@@ -659,6 +659,7 @@ type
     procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);// AnEncoding // "pchar data"
     procedure CreateWideString(AVal: WideString);
+    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0);
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
     procedure CreatePointerValue(AnAddrValue: TDbgPtr);
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
@@ -3195,6 +3196,13 @@ procedure TCurrentResData.CreateWideString(AVal: WideString);
 begin
   assert(FNewResultData=nil, 'TCurrentResData.CreateWideString: FNewResultData=nil');
   FNewResultData := TWatchResultDataWideString.Create(AVal);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateCharValue(ACharValue: QWord; AByteSize: Integer);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreateCharValue: FNewResultData=nil');
+  FNewResultData := TWatchResultDataChar.Create(ACharValue, AByteSize);
   AfterDataCreated;
 end;
 

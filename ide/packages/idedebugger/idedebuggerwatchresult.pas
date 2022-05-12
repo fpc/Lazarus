@@ -14,7 +14,7 @@ type
   TWatchResultDataKind = (
     rdkUnknown,
     rdkError, rdkPrePrinted,
-    rdkString, rdkWideString,
+    rdkString, rdkWideString, rdkChar,
     rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
     rdkEnum, rdkEnumVal, rdkSet
   );
@@ -122,6 +122,15 @@ type
     function GetAsString: String; inline;
   end;
 
+  { TWatchResultValueChar }
+
+  TWatchResultValueChar = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkChar;
+  protected
+    function GetAsString: String; inline;
+  end;
+
   { TWatchResultValuePointer }
 
   TWatchResultValuePointer = object(TWatchResultValueOrdNumBase)
@@ -214,6 +223,7 @@ type
     wdPrePrint,  // TWatchResultDataPrePrinted
     wdString,    // TWatchResultDataString
     wdWString,   // TWatchResultDataWideString
+    wdChar,      // TWatchResultDataChar
     wdSNum,      // TWatchResultDataSignedNum
     wdUNum,      // TWatchResultDataUnSignedNum
     wdPtr,       // TWatchResultDataPointer
@@ -343,6 +353,15 @@ type
   protected
     function GetAsQWord: QWord; override;
     function GetAsInt64: Int64; override;
+  end;
+
+  { TWatchResultDataChar }
+
+  TWatchResultDataChar = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueChar>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(ANumValue: QWord; AByteSize: Integer = 0);
   end;
 
   { TWatchResultDataSignedNum }
@@ -477,6 +496,20 @@ function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDispl
     end;
   end;
 
+  function PrintChar: String;
+  begin
+    if ADispFormat in [wdfDecimal, wdfUnsigned, wdfHex, wdfBinary] then begin
+      Result := '#' + PrintNumber(AResValue, False, ADispFormat);
+      exit;
+    end;
+    case AResValue.ByteSize of
+       //1: Result := QuoteText(SysToUTF8(char(Byte(AResValue.AsQWord))));
+       1: Result := QuoteText(char(Byte(AResValue.AsQWord)));
+       2: Result := QuoteWideText(WideChar(Word(AResValue.AsQWord)));
+       else Result := '#' + PrintNumber(AResValue, False, wdfDecimal);
+    end;
+  end;
+
   function PrintEnum: String;
   begin
     if (ADispFormat = wdfDefault) and (AResValue.ValueKind = rdkEnumVal) then
@@ -582,6 +615,7 @@ begin
         dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 15, 0);
       end;
     end;
+    rdkChar:       Result := PrintChar;
     rdkString:     Result := QuoteText(AResValue.AsString);
     rdkWideString: Result := QuoteWideText(AResValue.AsWideString);
     rdkEnum, rdkEnumVal:
@@ -600,6 +634,7 @@ const
     TWatchResultDataPrePrinted,    // wdPrePrint
     TWatchResultDataString,        // wdString
     TWatchResultDataWideString,    // wdWString
+    TWatchResultDataChar,          // wdChar
     TWatchResultDataSignedNum,     // wdSNum
     TWatchResultDataUnSignedNum,   // wdUNum
     TWatchResultDataPointer,       // wdPtr
@@ -768,7 +803,14 @@ end;
 
 function TWatchResultValueUnsignedNum.GetAsString: String;
 begin
-  Result := IntToStr(QWord(FNumValue))
+  Result := IntToStr(QWord(FNumValue));
+end;
+
+{ TWatchResultValueChar }
+
+function TWatchResultValueChar.GetAsString: String;
+begin
+  Result := WideChar(FNumValue);
 end;
 
 { TWatchResultValuePointer }
@@ -1138,6 +1180,20 @@ begin
     else
       Result := Result and not(Int64(-1) << (FType.GetByteSize<<3));
   end;
+end;
+
+{ TWatchResultDataChar }
+
+function TWatchResultDataChar.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdChar;
+end;
+
+constructor TWatchResultDataChar.Create(ANumValue: QWord; AByteSize: Integer);
+begin
+  inherited Create();
+  FData.FNumValue := QWord(ANumValue);
+  FType.FNumByteSize := AByteSize;
 end;
 
 { TWatchResultDataSignedNum }

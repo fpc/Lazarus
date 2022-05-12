@@ -27,6 +27,7 @@ type
     function PointerToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function NumToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
+    function CharToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function StringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function WideStringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
@@ -181,6 +182,14 @@ begin
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 
+function TFpWatchResultConvertor.CharToResData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+begin
+  Result := True;
+  AnResData.CreateCharValue(AnFpValue.AsCardinal, SizeToFullBytes(AnFpValue.DataSize));
+  AddTypeNameToResData(AnFpValue, AnResData);
+end;
+
 function TFpWatchResultConvertor.StringToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 begin
@@ -280,7 +289,7 @@ begin
       skCardinal: Result := NumToResData(AnFpValue, AnResData);
       skFloat:    Result := FloatToResData(AnFpValue, AnResData);
 
-      skChar: ;
+      skChar:       Result := CharToResData(AnFpValue, AnResData);
       skString,
       skAnsiString: Result := StringToResData(AnFpValue, AnResData);
       skWideString: Result := WideStringToResData(AnFpValue, AnResData);

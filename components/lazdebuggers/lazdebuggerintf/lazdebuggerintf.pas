@@ -118,6 +118,7 @@ type
     procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);// AnEncoding // "pchar data" // shortstring
     procedure CreateWideString(AVal: WideString);
+    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0);
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
     procedure CreatePointerValue(AnAddrValue: TDbgPtr);
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
