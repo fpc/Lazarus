@@ -1295,7 +1295,7 @@ begin
             exit;
           end;
 
-          TmpVal2 := TFpValueConstChar.Create(w[Offs]);
+          TmpVal2 := TFpValueConstWideChar.Create(w[Offs]);
         end;
       else
         begin

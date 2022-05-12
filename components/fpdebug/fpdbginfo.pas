@@ -246,22 +246,29 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
+    function GetAsCardinal: QWord; override;
+    function DoGetSize(out ASize: TFpDbgValueSize): Boolean; override;
   public
-    constructor Create(const AValue: AnsiString);
+    constructor Create(const AValue: Char);
   end;
 
   { TFpValueConstWideChar }
 
   TFpValueConstWideChar = class(TFpValue) // skChar / Not for strings
   private
-    FValue: String;
+    FValue: WideChar;
+    function GetValue: String;
+    procedure SetValue(AValue: String);
   protected
-    property Value: String read FValue write FValue;
+    property Value: String read GetValue write SetValue;
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
+    function GetAsCardinal: QWord; override;
+    function DoGetSize(out ASize: TFpDbgValueSize): Boolean; override;
   public
-    constructor Create(const AValue: AnsiString);
+    constructor Create(const AValue: WideChar);
   end;
 
   { TFpValueConstString }
@@ -776,7 +783,9 @@ end;
 
 function TFpValueConstChar.GetFieldFlags: TFpValueFieldFlags;
 begin
-  Result := [svfString]
+  Result := [svfString, svfSize];
+  if Length(FValue) = 1 then
+    Result := Result + [svfOrdinal];
 end;
 
 function TFpValueConstChar.GetAsString: AnsiString;
@@ -784,13 +793,43 @@ begin
   Result := Value;
 end;
 
-constructor TFpValueConstChar.Create(const AValue: AnsiString);
+function TFpValueConstChar.GetAsCardinal: QWord;
+begin
+  if Length(FValue) = 1 then
+    Result := ord(FValue[1])
+  else
+    Result := 0;
+end;
+
+function TFpValueConstChar.DoGetSize(out ASize: TFpDbgValueSize): Boolean;
+begin
+  ASize := SizeVal(1);
+  Result := True;
+end;
+
+constructor TFpValueConstChar.Create(const AValue: Char);
 begin
   inherited Create;
   FValue := AValue;
 end;
 
 { TFpValueConstWideChar }
+
+function TFpValueConstWideChar.GetValue: String;
+begin
+  Result := FValue;
+end;
+
+procedure TFpValueConstWideChar.SetValue(AValue: String);
+var
+  w: WideString;
+begin
+  w := AValue;
+  if w <> '' then
+    FValue := w[1]
+  else
+    FValue := #0;
+end;
 
 function TFpValueConstWideChar.GetKind: TDbgSymbolKind;
 begin
@@ -799,7 +838,7 @@ end;
 
 function TFpValueConstWideChar.GetFieldFlags: TFpValueFieldFlags;
 begin
-  Result := [svfWideString]
+  Result := [svfWideString, svfSize, svfOrdinal];
 end;
 
 function TFpValueConstWideChar.GetAsString: AnsiString;
@@ -807,7 +846,23 @@ begin
   Result := Value;
 end;
 
-constructor TFpValueConstWideChar.Create(const AValue: AnsiString);
+function TFpValueConstWideChar.GetAsWideString: WideString;
+begin
+  Result := FValue;
+end;
+
+function TFpValueConstWideChar.GetAsCardinal: QWord;
+begin
+  Result := ord(FValue);
+end;
+
+function TFpValueConstWideChar.DoGetSize(out ASize: TFpDbgValueSize): Boolean;
+begin
+  ASize := SizeVal(2);
+  Result := True;
+end;
+
+constructor TFpValueConstWideChar.Create(const AValue: WideChar);
 begin
   inherited Create;
   FValue := AValue;
@@ -872,7 +927,7 @@ end;
 
 function TFpValue.GetIndexType(AIndex: Integer): TFpSymbol;
 begin
-  Result := nil;;
+  Result := nil;
 end;
 
 function TFpValue.GetIndexTypeCount: Integer;
