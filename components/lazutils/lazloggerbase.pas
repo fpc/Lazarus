@@ -247,6 +247,7 @@ type
                           const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
     procedure DumpExceptionBackTrace;
+    procedure DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
   end;
 
   { TLazLoggerWithGroupParam
@@ -709,6 +710,12 @@ begin
   Frames:=ExceptFrames;
   for FrameNumber := 0 to FrameCount-1 do
     DumpAddr(Frames[FrameNumber]);
+end;
+
+procedure TLazLogger.DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
+begin
+  if not LogEnabled.Enabled then exit;
+  DumpExceptionBackTrace;
 end;
 
 procedure TLazLogger.DoFinish;

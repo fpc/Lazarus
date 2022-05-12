@@ -193,6 +193,8 @@ type
                           const {%H-}s13: string = ''; const {%H-}s14: string = ''; const {%H-}s15: string = '';
                           const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
+    procedure DumpExceptionBackTrace;
+    procedure DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
   end;
 
 
@@ -530,6 +532,16 @@ procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2:
   const s8: string; const s9: string; const s10: string; const s11: string; const s12: string;
   const s13: string; const s14: string; const s15: string; const s16: string;
   const s17: string; const s18: string);
+begin
+
+end;
+
+procedure TLazLogger.DumpExceptionBackTrace;
+begin
+
+end;
+
+procedure TLazLogger.DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
 begin
 
 end;

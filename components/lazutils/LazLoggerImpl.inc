@@ -625,6 +625,14 @@ begin
   {$ENDIF}
 end;
 
+procedure DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLn('  Stack trace:');
+  DebugLogger.DumpExceptionBackTrace(LogEnabled);
+  {$ENDIF}
+end;
+
 {$IFDEF USED_BY_LAZLOGGER_DUMMY}
   operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
   begin
