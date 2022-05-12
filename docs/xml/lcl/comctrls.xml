@@ -7049,7 +7049,7 @@ end;
             <var>Checked</var> is a <var>Boolean</var> property which indicates if a check mark is displayed for the list item. Checked allows specific list items to be marked for inclusion in methods for the list view control, such as Sort.
           </p>
           <p>
-            The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid and its Checkboxes property is set to <b>True</b>.
+            Checked is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid.
           </p>
         </descr>
         <seealso>
@@ -7059,6 +7059,8 @@ end;
           <link id="TCustomListView.Sort"/>
           <link id="TCustomListView.SortType"/>
           <link id="TCustomListView.OnItemChecked"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -9752,8 +9754,26 @@ end;
         </short>
         <descr>
           <p>
-            <var>TListViewProperty</var> is an enumerated type with values representing  Boolean properties used in TCustomListView.
+            <var>TListViewProperty</var> is an enumerated type with values representing  Boolean properties used in TCustomListView. This includes the following:
           </p>
+          <ul>
+            <li>ColumnClick</li>
+            <li>HideSelection</li>
+            <li>OwnerDraw</li>
+            <li>ShowColumnHeaders</li>
+            <li>ShowWorkAreas</li>
+            <li>ToolTips</li>
+            <li>CheckBoxes</li>
+            <li>FlatScrollBars</li>
+            <li>FullDrag</li>
+            <li>GridLines</li>
+            <li>HotTrack</li>
+            <li>MultiSelect</li>
+            <li>ReadOnly</li>
+            <li>RowSelect</li>
+            <li>AutoArrange</li>
+            <li>WrapText</li>
+          </ul>
           <p>
             Values from the enumeration are included in or excluded from the <var>TListViewProperties</var> set type. When a value is included in the set, the corresponding Boolean property has been set to <b>True</b>. When a value is excluded from the set, the corresponding Boolean property has been set to <var>False</var>.
           </p>
@@ -9818,8 +9838,26 @@ end;
             <var>TListViewProperties</var> is a set type used to store zero or more values from the <var>TListViewProperty</var> enumeration.
           </p>
           <p>
-            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the corresponding property in TCustomListView has been set to <b>True</b>. The value is excluded from the set when the corresponding property in TCustomListView is set to <b>False</b>.
+            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the corresponding property in TCustomListView has been set to <b>True</b>. The value is excluded from the set when the corresponding property in TCustomListView is set to <b>False</b>. The following properties in TCustomListView are presented in the set type:
           </p>
+          <ul>
+            <li>ColumnClick</li>
+            <li>HideSelection</li>
+            <li>OwnerDraw</li>
+            <li>ShowColumnHeaders</li>
+            <li>ShowWorkAreas</li>
+            <li>ToolTips</li>
+            <li>CheckBoxes</li>
+            <li>FlatScrollBars</li>
+            <li>FullDrag</li>
+            <li>GridLines</li>
+            <li>HotTrack</li>
+            <li>MultiSelect</li>
+            <li>ReadOnly</li>
+            <li>RowSelect</li>
+            <li>AutoArrange</li>
+            <li>WrapText</li>
+          </ul>
           <p>
             TListViewProperties is the type used to implement the internal FProperties member in TCustomListView.
           </p>
@@ -10233,6 +10271,8 @@ end;
             <li>MultiSelect</li>
             <li>ReadOnly</li>
             <li>RowSelect</li>
+            <li>AutoArrange</li>
+            <li>WrapText</li>
           </ul>
           <p>
             See <var>SetProperty</var> for the write access specifier equivalent.
@@ -10578,6 +10618,8 @@ end;
             <li>MultiSelect</li>
             <li>ReadOnly</li>
             <li>RowSelect</li>
+            <li>AutoArrange</li>
+            <li>WrapText</li>
           </ul>
           <p>
             This technique allows multiple Boolean properties to be represented using a single set type member variable. It avoids allocating a Boolean member for each of the property values.
@@ -11896,7 +11938,10 @@ end;
         </short>
         <descr>
           <p>
-            <var>ColumnClick</var> is an indexed <var>Boolean</var> property which controls whether the <var>OnColumnClick</var> event handler is signalled when a Report view column is clicked. The default value for the property is <b>True</b>. Changing the value for the property causes the widgetset class to be updated with the new property value.
+            <var>ColumnClick</var> is an indexed <var>Boolean</var> property which controls whether the <var>OnColumnClick</var> event handler is signalled when a Report view column is clicked. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            ColumnClick is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new property value.
           </p>
           <p>
             ColumnClick is used in the <var>ColClick</var> method, which is called when the LVN_COLUMNCLICK control notification message is handled for the list view control.
@@ -11905,6 +11950,8 @@ end;
         <seealso>
           <link id="TCustomListView.OnColumnClick"/>
           <link id="TCustomListView.ColClick"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -11958,16 +12005,19 @@ end;
         </short>
         <descr>
           <p>
-            <var>HideSelection</var> is a <var>Boolean</var> property which indicates if the selected item(s) for the list view are highlighted when the control loses focus. When set to <b>True</b>, the selected item(s) are redrawn to remove the selection highlighting. When set to <b>False</b>, the selection hightlighting is retained when the control loses focus.
+            <var>HideSelection</var> is a <var>Boolean</var> property which indicates if the selected item(s) for the list view are highlighted when the control loses focus. When set to <b>True</b>, the selected item(s) are redrawn to remove the selection highlighting. When set to <b>False</b>, the selection highlighting is retained when the control loses focus. The default value for the property is <b>True</b>.
           </p>
           <p>
-            The default value for the property is <b>True</b>. Changing the value for the property causes the widgetset class to be updated with the new value.
+            HideSelection is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <remark>
-            The Windows API documentation recommends setting HideSelection to <b>False</b> if the application uses Accessiblity roles and descriptions.
+            The Windows API documentation recommends setting HideSelection to <b>False</b> if the application uses Accessibility roles and descriptions.
           </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.HoverTime">
@@ -12023,11 +12073,16 @@ end;
           <p>
             When set to <b>True</b>, the OnDrawItem event handler is signalled to draw list items when the control is using the Report view style (ViewStyle = vsReport). The handler is signalled (when assigned) from the DrawItem method, and occurs when the CN_DRAWITEM control notification message is handled for the control. It should  handle all aspects of drawing the list item to the control Canvas. If OnDrawItem has not been assigned, a basic default drawing routine is used.
           </p>
+          <p>
+            OwnerDraw is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomListView.OnDrawItem"/>
           <link id="TCustomListView.DrawItem"/>
           <link id="TCustomListView.ViewStyle"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -12053,15 +12108,17 @@ end;
         <short>Show header area in ListView, which shows captions of columns.</short>
         <descr>
           <p>
-            <var>ShowColumnHeaders</var> is a <var>Boolean</var> property which indicates whether column headers are displayed for the Report view style (ViewStyle = vsReport). When enabled, the captions for the list <var>Items</var> are displayed as column headers.
+            <var>ShowColumnHeaders</var> is a <var>Boolean</var> property which indicates whether column headers are displayed for the Report view style (ViewStyle = vsReport). When enabled, the captions for the list <var>Items</var> are displayed as column headers. The default value for the property is <b>True</b>.
           </p>
           <p>
-            The default value for the property is <b>True</b>. Changing the value for the property causes the widgetset class to be updated when its Handle has been assigned.
+            ShowColumnHeaders is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
         </descr>
         <seealso>
           <link id="TCustomListView.Items"/>
           <link id="TListItem.Caption"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -12073,11 +12130,17 @@ end;
           <p>
             ShowWorkAreas is an indexed Boolean property used to configure whether work areas are displayed on the control.
           </p>
+          <p>
+            ShowWorkAreas is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
           <remark>
             Work areas are not implemented (for any platform) in the current LCL version.
           </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.SmallImages">
@@ -12221,13 +12284,30 @@ end;
 
       <element name="TCustomListView.ToolTips">
         <short>
-          Indicates if a hint (tool tip) is automatically displayed for an item under the mouse cursor.
+          Indicates if a hint (tool tip) is automatically displayed for the list item under the mouse cursor.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ToolTips</var> is a <b>Boolean</b> property which enables or disables display of a tool tip or hint window when the mouse pointer is hovered over a list item on the control. The default value for the property is <b>True</b>, and allows the tool tip to be displayed.
+          </p>
+          <p>
+            Use the Hint property for the text displayed in the hint window. Or, use the OnShowHint event handler to assign a custom value. For example:
+          </p>
+<code>procedure TForm1.ListView2ShowHint(Sender: TObject; HintInfo: PHintInfo);
+begin
+  HintInfo^.HintStr := 'This is the hint for ' + Sender.ClassName;
+end;</code>
+          <p>
+            ToolTips is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomListView.HoverTime"/>
           <link id="TCustomListView.OnDataHint"/>
           <link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
+          <link id="#lcl.controls.TControl.OnShowHint">TControl.OnShowHint</link>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -12848,7 +12928,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>AlphaSort</var> is <var>Boolean</var> function used to apply an ascending alphabtic sort order to the list items in the control. The sort order is always applied to Column 0 (the list item and not its sub-items).
+            <var>AlphaSort</var> is <var>Boolean</var> function used to apply an ascending alphabetic sort order to the list items in the control. The sort order is always applied to Column 0 (the list item and not its sub-items).
           </p>
           <p>
             AlphaSort updates values in the SortDirection, SortType, and SortColumn properties. Flag values for the control are updated to include lffPreparingSorting prior to setting the property values; this suppresses reordering until the changes are completed.
@@ -13223,7 +13303,11 @@ end;
         </short>
         <descr>
           <p>
-            <var>Checkboxes</var> is a <var>Boolean</var> property which indicates if check boxes are displayed next to list items on the control. The default value for the property is <b>False</b>. Changing the value for the property causes the widgetset class to be updated.
+            <var>Checkboxes</var> is a <var>Boolean</var> property which indicates if check boxes are displayed next to list items on the control. The default value for the property is <b>False</b>.
+          </p>
+
+          <p>
+            CheckBoxes is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <p>
             Use the OnItemChecked event handler to perform actions needed when the check state for a list item has been changed.
@@ -13298,21 +13382,34 @@ end;
         </short>
         <descr>
           <p>
-            FlatScrollBars is a Boolean property which indicates if scroll bars are drawn using a "flat" display style. Flat scroll bars are not drawn using raised 3-D relief with shadowing normally used for borders or edges on the control. It also applies color inversion when elements in the control are hovered under the mouse pointer.
+            FlatScrollBars is a Boolean property which indicates if scroll bars are drawn using a "flat" display style. Flat scroll bars are not drawn using raised 3-D relief with shadowing normally used for borders or edges on the control. It also applies color inversion when elements in the control are hovered under the mouse pointer. The default value for the property is <b>False</b>.
           </p>
           <p>
-            The default value for the property is <b>False</b>. Changing the value for the property causes the widgetset class to be updated.
+            FlatScrollBars is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.FullDrag">
         <short>
-          Indicates whether column headers are redrawn during a column drag or resizing operations.
+          Indicates whether column headers are redrawn during a column drag or resizing operation.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>FullDrag</var> is a <var>Boolean</var> property which indicates whether column headers are redrawn when a column drop or a column resize operation is in effect. The default value for the property is <b>False</b>.
+          </p>
+          <p>
+            FullDrag is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.GridLines">
@@ -13321,10 +13418,16 @@ end;
         </short>
         <descr>
           <p>
-            <var>GridLines</var> is a <var>Boolean</var> property used to enable or disable drawing of a 1-pixel grid line between rows and columns on the control. The default value for the property is <b>False</b>, and hides the grid lines. Changing the value for the property causes the widgetset class to be updated.
+            <var>GridLines</var> is a <var>Boolean</var> property used to enable or disable drawing of a 1-pixel grid line between rows and columns on the control. The default value for the property is <b>False</b>, and hides the grid lines.
+          </p>
+          <p>
+            GridLines is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.HotTrack">
@@ -13337,6 +13440,9 @@ end;
           </p>
           <p>
             When enabled, a list item is automatically selected (or de-selected) when the mouse pointer is hovered over a list item for a short period of time. It can be used in MultiSelect mode when the Shift, Ctrl, or Shift+Ctrl  keys are held while moving and hovering the mouse pointer.
+          </p>
+          <p>
+            HotTrack is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <p>
             Use HoverTime to specify the hover duration (in milliseconds) before a list item toggles its selected state.
@@ -13352,6 +13458,8 @@ end;
           <link id="TCustomListView.HotTrackStyles"/>
           <link id="TListHotTrackStyle"/>
           <link id="TListHotTrackStyles"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -13390,7 +13498,7 @@ end;
         <short>The list item which has focus on the control.</short>
         <descr>
           <p>
-            <var>ItemFocused</var> is a <var>ItemFocused</var> property which contains the list that has focus on the list view control. The property value is <b>Nil</b> if a list item has not been focued on the control. Changing the value in the property to a valid list item causes the widgetset class to be updated when its Handle has been assigned.
+            <var>ItemFocused</var> is a <var>ItemFocused</var> property which contains the list that has focus on the list view control. The property value is <b>Nil</b> if a list item has not been focused on the control. Changing the value in the property to a valid list item causes the widgetset class to be updated when its Handle has been assigned.
           </p>
           <p>
             ItemFocused is updated when a LVN_ITEMCHANGED notification message with a focus state change is handled for the list view control.
@@ -13471,6 +13579,9 @@ end;
             </dd>
           </dl>
           <p>
+            MultiSelect is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
+          <p>
             Use SelCount to get the number of selected items when MultiSelect is enabled. Use Items to access the list items to check the values in their Selected properties.
           </p>
           <p>
@@ -13487,6 +13598,8 @@ end;
           <link id="TCustomListView.SelectAll"/>
           <link id="TCustomListView.ClearSelection"/>
           <link id="TListItem.Selected"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -13507,6 +13620,10 @@ end;
           <p>
             When OwnerData is set to <b>False</b>, all values displayed on the list view control are maintained in the Items property.
           </p>
+
+          <p>
+            OwnerData is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomListView.Items"/>
@@ -13514,6 +13631,8 @@ end;
           <link id="TCustomListView.OnDataFind"/>
           <link id="TCustomListView.OnDataHint"/>
           <link id="TListItems.Count"/>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
         </seealso>
       </element>
 
@@ -13526,8 +13645,14 @@ end;
           <p>
             The default value for the property is <b>False</b>, and indicates that item editing is allowed.
           </p>
+          <p>
+            ReadOnly is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewProperties"/>
+          <link id="TListViewProperty"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.RowSelect">
@@ -13536,25 +13661,13 @@ end;
         </short>
         <descr>
           <p>
-            RowSelect is a Boolean property which indicates whether all columns in the row are  highlighted when the row is selected. The default value for RowSelect is False, and indicates that a single column/row value is displayed using the selected highlighting. RowSelect is used in report mode (ViewStyle = vsReport).
+            <var>RowSelect</var> is a <var>Boolean</var> property which indicates whether all columns in the row are highlighted when the row is selected. The default value for RowSelect is <b>False</b>, and indicates that only the row value in the first column is displayed using the selected highlighting. RowSelect is used in report mode (ViewStyle = vsReport).
           </p>
           <p>
-            RowSelect is one of several properties represented as a TListViewProperty enumeration value (lvpRowSelect), and passed to the widgetset class in a TListViewProperties set type. Others properties represented in the set type include:
-          </p>
-          <ul>
-            <li>CheckBoxes</li>
-            <li>FlatScrollBars</li>
-            <li>FullDrag</li>
-            <li>GridLines</li>
-            <li>HotTrack</li>
-            <li>MultiSelect</li>
-            <li>ReadOnly</li>
-          </ul>
-          <p>
-            Changing the value for the property causes the widget to be notified of a change in the set when its handle has been allocated.
+            RowSelect is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <p>
-            Use MultiSelect to enable multi-selection of rows and/or columns.
+            Use MultiSelect to enable multi-selection of rows and/or columns on the list view  control.
           </p>
         </descr>
         <seealso>
