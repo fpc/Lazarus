@@ -39,6 +39,7 @@ type
     procedure DistanceToolGetDistanceText(ASender: TDataPointDistanceTool;
       var AText: String);
     procedure FitSeriesFitComplete(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
   private
@@ -170,6 +171,13 @@ begin
     Params(p).
     Get;
   FitSeries.Title := '<font color="blue">Fitted:</font> ' + s;
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+  BottomPanel.Constraints.MinWidth := CbRotateXLabels.Left + CbRotateXLabels.Width +
+    BtnCopyToClipBoard.Width;
+  Constraints.MinWidth := BottomPanel.Constraints.MinWidth + BottomPanel.BorderSpacing.Left * 2;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
