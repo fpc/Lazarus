@@ -1,2 +1,2 @@
-The images in this folder are provided by Roland Hahn. 
-They can be used freely without any restrictions.
+The icon in this folder is provided by Roland Hahn. 
+It can be used freely without any restrictions.
