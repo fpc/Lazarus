@@ -293,7 +293,7 @@ begin
     end;
 //    LVN_GETDISPINFO:
 //    LVN_ODCACHEHINT:
-//    LVN_ODFINDITEM:
+//    LVN_ODFINDITEM:     implemented in win32 widgetset
 //    LVN_ODSTATECHANGED:
 //    LVN_BEGINLABELEDIT: implemented via TCustomListViewEditor
 //    LVN_ENDLABELEDIT:   implemented via TCustomListViewEditor
@@ -862,6 +862,16 @@ begin
   Result := Assigned(FOnDataStateChange);
   if Result then
     FOnDataStateChange(Self, AStartIndex, AEndIndex, AOldState, ANewState);
+end;
+
+function TCustomListView.DoOwnerDataFind(AFind: TItemFind; const AFindString: string;
+  const AFindPosition: TPoint; AFindData: Pointer; AStartIndex: Integer;
+  ADirection: TSearchDirection; AWrap: Boolean): Integer;
+begin
+  Result := -1;
+  if Assigned(FOnDataFind) then
+    FOnDataFind(Self, AFind, AFindString, AFindPosition, AFindData, AStartIndex,
+      ADirection, AWrap, Result);
 end;
 
 procedure TCustomListView.QueuedShowEditor(Data: PtrInt);

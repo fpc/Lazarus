@@ -231,22 +231,65 @@ var
         MsgResult := MsgResult or CDRFRESULT[ResultFlag];
     end;
   end;
-
-  { Workaround for issue #39715 to prevent the selection jumping to the first
-    item in virtual mode when a normal key is pressed (the listview probably
-    tries to perform an incremental search in this case which has not been 
-    implemented, yet (handler for OnDataFind). }
+  
+  { Implements incremental search for TCustomListView in virtual mode. 
+    See: 
+    - https://docs.microsoft.com/de-DE/windows/win32/api/commctrl/ns-commctrl-nmlvfinditema
+    - https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfoa }
   procedure HandleListViewFindItem(ALV: TCustomlistViewAccess);
   var
-    FindInfo: PNMLVFindItem; 
-    listitem: TListItem;
+    findItem: PNMLVFindItem; 
+    itemFind: TItemFind;
+    findStr: String = '';
+    findStrLen: Integer = 0;
+    findData: Pointer = nil;
+    findPt: TPoint = (X: 0; Y: 0);
+    findDir: TSearchDirection = sdAll;
+    findStart: Integer;
+    findWrap: Boolean;
   begin
     if ALV.OwnerData then
     begin
-      FindInfo := PNMLVFindItem(NMHdr);
-      if Assigned(FindInfo) then
+      findItem := PNMLVFindItem(NMHdr);
+      if Assigned(findItem) then
       begin
-        MsgResult := -1;
+        if findItem^.lvfi.flags and LVFI_PARAM <> 0 then
+          itemFind := ifData
+        else if findItem^.lvfi.flags and LVFI_PARTIAL <> 0 then
+          itemFind := ifPartialString
+        else if findItem^.lvfi.flags and LVFI_STRING <> 0 then
+          itemFind := ifExactString
+        else if findItem^.lvfi.flags and LVFI_NEARESTXY <> 0 then
+          itemFind := ifNearest
+        else
+          itemFind := ifData;
+        
+        case itemFind of
+          ifPartialString, ifExactString:
+            begin
+              findStrLen := SendMessage(ALV.Handle, LVM_GETISEARCHSTRING, 0, 0);
+              if findStrLen > 0 then
+              begin
+                SetLength(findStr, findStrLen);
+                ListView_GetISearchString(ALV.Handle, PChar(findStr));
+              end;    
+            end;
+          ifData:
+            findData := Pointer(PtrUInt(findItem^.lvfi.lParam));
+          ifNearest:
+            begin
+              findPt := findItem^.lvfi.pt;
+              case findItem^.lvfi.vkDirection of
+                VK_LEFT: findDir := sdLeft;
+                VK_UP: findDir := sdAbove;
+                VK_RIGHT: findDir := sdRight;
+                VK_DOWN: findDir := sdBelow;
+              end;        
+            end;
+        end;
+        findstart := findItem^.iStart;
+        findWrap := findItem^.lvfi.flags and LVFI_WRAP <> 0;
+        MsgResult := ALV.DoOwnerDataFind(itemFind, findStr, findPt, findData, findStart, findDir, findWrap);
         WinProcess := false;
       end;
     end;
