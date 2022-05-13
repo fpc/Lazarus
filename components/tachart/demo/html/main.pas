@@ -178,6 +178,7 @@ begin
   BottomPanel.Constraints.MinWidth := CbRotateXLabels.Left + CbRotateXLabels.Width +
     BtnCopyToClipBoard.Width;
   Constraints.MinWidth := BottomPanel.Constraints.MinWidth + BottomPanel.BorderSpacing.Left * 2;
+  Width := 0;  // enforce constraints
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

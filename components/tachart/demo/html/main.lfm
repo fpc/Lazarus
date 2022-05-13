@@ -182,7 +182,6 @@ object MainForm: TMainForm
         Title.TextFormat = tfHTML
         OnMarkToText = ChartAxisList1MarkToText
       end>
-    BackColor = clWhite
     Foot.Alignment = taLeftJustify
     Foot.Brush.Color = clBtnFace
     Foot.Brush.Style = bsClear
@@ -210,7 +209,6 @@ object MainForm: TMainForm
     Toolset = ChartTools
     Align = alClient
     BorderSpacing.Around = 8
-    Color = clWhite
     object DataSeries: TLineSeries
       Title = '<font color="red">Measured data points</font>'
       LinePen.Color = clRed

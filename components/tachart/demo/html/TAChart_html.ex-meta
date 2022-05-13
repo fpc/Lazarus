@@ -1,5 +1,5 @@
 { "TAChart_html" : {
    "Category" : "TAChart",
    "Keywords" : ["TAChart", "html", "export", "svg", "Needs Work"],
-   "Description" : "Draws a chart with HTML formatted text to enable sub-/superscripts or components although its not clear why it does so. Can save or export that chart in WMF (Windows only) or SVG. Can copy that chart, as a bitmap to clipboard (but see below).\n\nHas problems on Linux (at least).\n1. When click the SVG button, fails to load a FreeType font when running in the IDE. OK when standalone.\n2. When click \"copy to clipboard\", a crash is triggered (it should copy a bitmap image).\n3. Horiz size needs to be increased."}
+   "Description" : "Draws a chart with HTML formatted text to enable sub-/superscripts or unusually colored text. Can save or export that chart in WMF (Windows only) or SVG. Can copy that chart, as a bitmap to clipboard (but see below).\n\nHas problems on some Linux versions.\n1. When click the SVG button, fails to load a FreeType font when running in the IDE. OK when standalone. This is due to a defective FreeType font contained in some Linux versions and which our FreeType libs cannot cope with.\n2. When click \"copy to clipboard\", a crash is triggered (it should copy a bitmap image)."}
 }
