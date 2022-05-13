@@ -5881,14 +5881,14 @@ begin
   Result := FStateMachine <> nil;
   if Result then Exit;
 
+  Result := FAddressInfo <> nil;
+  if not result then exit;
+
   if FAddressInfo^.StateMachine = nil
   then begin
     CompilationUnit.BuildLineInfo(FAddressInfo, False);
     if FAddressInfo^.StateMachine = nil then Exit;
   end;
-
-  Result := FAddressInfo <> nil;
-  if not result then exit;
 
   // we cannot restore a statemachine to its current state
   // so we shouldn't modify FAddressInfo^.StateMachine
