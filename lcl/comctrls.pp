@@ -1545,6 +1545,9 @@ type
     function DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean; virtual;
     function DoOwnerDataStateChange(AStartIndex, AEndIndex: Integer; AOldState,
       ANewState: TListItemStates): Boolean; virtual;
+    function DoOwnerDataFind(AFind: TItemFind; const AFindString: string;
+      const AFindPosition: TPoint; AFindData: Pointer; AStartIndex: Integer;
+      ADirection: TSearchDirection; AWrap: Boolean): Integer; virtual;
 
   protected
     // Multiselection
