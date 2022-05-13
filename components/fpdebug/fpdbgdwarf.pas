@@ -5887,6 +5887,9 @@ begin
     if FAddressInfo^.StateMachine = nil then Exit;
   end;
 
+  Result := FAddressInfo <> nil;
+  if not result then exit;
+
   // we cannot restore a statemachine to its current state
   // so we shouldn't modify FAddressInfo^.StateMachine
   // so use clones to navigate
