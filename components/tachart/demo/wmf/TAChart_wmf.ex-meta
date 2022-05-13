@@ -1,5 +1,5 @@
 { "TAChart_wmf" : {
    "Category" : "TAChart",
    "Keywords" : ["TAChart","wmf","Windows Only","Needs work"],
-   "Description" : "Saves a chart to a file in WMF format.\nAppears usable only under Windows, not tested there yet.  May need editing to main.pas #41 to enable alt method of drawing."}
+   "Description" : "Saves a chart to a file in WMF format.\nRuns only on Windows. An alternative way to create WMF files is by using the fpvectorial drawer."}
 }

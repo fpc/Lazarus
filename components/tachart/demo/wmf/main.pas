@@ -2,6 +2,10 @@ unit Main;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF MSWindows}
+  This demo runs on Windows only.
+{$ENDIF} 
+
 interface
 
 uses
