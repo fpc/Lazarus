@@ -69,10 +69,30 @@ type
     procedure SetPenWidth(AWidth: Integer);
   end;
 
+procedure SwapRedBlue(AImg: TFPCustomImage);
+
+
 implementation
 
 uses
   Math, TAGeometry;
+
+procedure SwapRedBlue(AImg: TFPCustomImage);
+var
+  x, y: Integer;
+  clr: TFPColor;
+  tmp: Word;
+begin
+  for y := 0 to AImg.Height-1 do
+    for x := 0 to AImg.Width-1 do
+    begin
+      clr := AImg.Colors[x, y];
+      tmp := clr.Red;
+      clr.Red := clr.Blue;
+      clr.Blue := tmp;
+      AImg.Colors[x, y] := clr;
+    end;
+end;
 
 { TAggPasDrawer }
 

@@ -25,12 +25,13 @@ type
     FPixelFormat: TAggFPImgPixelFormat;
     procedure SetPixelFormat(AValue: TAggFPImgPixelFormat);
   public
+    constructor Create(AOwner: TComponent); override;
     procedure CreateDrawer(var AData: TChartGUIConnectorData); override;
     procedure SetBounds(var AData: TChartGUIConnectorData); override;
     procedure Display(var AData: TChartGUIConnectorData); override;
   published
     property PixelFormat: TAggFPImgPixelFormat
-      read FPixelFormat write SetPixelFormat default afpimRGB24;
+      read FPixelFormat write SetPixelFormat default afpimRGBA32;
   end;
 
 procedure Register;
@@ -40,8 +41,8 @@ implementation
 {$R taaggpas.res}
 
 uses
-  Agg_LCL, Graphics, SysUtils, TAChartUtils, TADrawerAggPas, TADrawerCanvas,
-  TAGeometry;
+  Agg_LCL, Graphics, GraphType, SysUtils, fpImage, IntfGraphics,
+  TAChartUtils, TADrawerAggPas, TADrawerCanvas, TAGeometry;
 
 type
   TAggPasOwnerDrawer = class(TAggPasDrawer)
@@ -61,6 +62,12 @@ begin
 end;
 
 { TChartGUIConnectorAggPas }
+
+constructor TChartGUIConnectorAggPas.Create(AOwner: TComponent); 
+begin
+  inherited;
+  FPixelFormat := afpimRGBA32;
+end;
 
 procedure TChartGUIConnectorAggPas.CreateDrawer(
   var AData: TChartGUIConnectorData);
@@ -108,12 +115,33 @@ begin
   FreeAndNil(FCanvas);
 end;
 
+
+{ The default settings of AggPas are for Windows. On Linux the color components
+  red and blue are interchanged. The following work-around creates an auxiliary
+  image in which R and B are interchanged to be compatible with AggPas. }
 procedure TAggPasOwnerDrawer.PaintOnCanvas(
   ACanvas: TCanvas; const ARect: TRect);
+{$IFDEF LCLWin32}
 begin
   FBitmap.LoadFromIntfImage(FCanvas.Image.IntfImg);
   ACanvas.Draw(ARect.Left, ARect.Top, FBitmap);
 end;
+{$ELSE}
+var
+  img: TLazIntfImage;
+  raw: TRawImage;
+begin
+  FCanvas.Image.IntfImg.GetRawImage(raw, false);
+  img := TLazIntfImage.Create(raw, false);
+  try
+    SwapRedBlue(img);
+    FBitmap.LoadFromIntfImage(img);
+  finally
+    img.Free;
+  end;
+  ACanvas.Draw(ARect.Left, ARect.Top, FBitmap);
+end;
+{$ENDIF}
 
 procedure TAggPasOwnerDrawer.SetSize(ASize: TPoint);
 begin

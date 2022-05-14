@@ -6,37 +6,37 @@ interface
 
 uses
   Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
-  Graphics, FPCanvas, Dialogs, Agg_LCL, TAGraph, TAGUIConnectorAggPas, TASeries,
-  TASources, TADrawerAggPas, TADrawUtils;
+  Graphics, FPCanvas, Dialogs, 
+  Agg_LCL, Agg_FPImage,
+  TAGraph, TAGUIConnectorAggPas, TASeries, TASources, TADrawerAggPas, TADrawUtils;
 
 type
 
-  { TForm1 }
+  { TMainForm }
 
-  TForm1 = class(TForm)
-    Chart1: TChart;
-    Chart1AreaSeries1: TAreaSeries;
-    Chart1BarSeries1: TBarSeries;
-    Chart1ConstantLine1: TConstantLine;
-    Chart1LineSeries1: TLineSeries;
-    Chart1PieSeries1: TPieSeries;
+  TMainForm = class(TForm)
+    Bevel1: TBevel;
     cbAggPas: TCheckBox;
-    ChartGUIConnectorAggPas1: TChartGUIConnectorAggPas;
-    PaintBox1: TPaintBox;
-    Panel1: TPanel;
-    RandomChartSource1: TRandomChartSource;
+    Chart: TChart;
+    ChartConstantLine: TConstantLine;
+    ChartLineSeries: TLineSeries;
+    ChartPieSeries: TPieSeries;
+    ChartGUIConnectorAggPas: TChartGUIConnectorAggPas;
+    ChartPaintBox: TPaintBox;
+    BottomPanel: TPanel;
+    RandomChartSource: TRandomChartSource;
     procedure cbAggPasClick(Sender: TObject);
     procedure Chart1AfterPaint(ASender: TChart);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure PaintBox1Paint(Sender: TObject);
+    procedure ChartPaintBoxPaint(Sender: TObject);
   private
     FAggCanvas: TAggLCLCanvas;
     FBmp: TBitmap;
   end;
 
 var
-  Form1: TForm1; 
+  MainForm: TMainForm; 
 
 implementation
 
@@ -45,49 +45,63 @@ implementation
 uses
   TAChartUtils, TADrawerCanvas;
 
-{ TForm1 }
+{ TMainForm }
 
-procedure TForm1.cbAggPasClick(Sender: TObject);
+procedure TMainForm.cbAggPasClick(Sender: TObject);
 begin
   if cbAggPas.Checked then
-    Chart1.GUIConnector := ChartGUIConnectorAggPas1
+    Chart.GUIConnector := ChartGUIConnectorAggPas
   else
-    Chart1.GUIConnector := nil;
+    Chart.GUIConnector := nil;
 end;
 
-procedure TForm1.Chart1AfterPaint(ASender: TChart);
+procedure TMainForm.Chart1AfterPaint(ASender: TChart);
 begin
   Unused(ASender);
-  PaintBox1.Invalidate;
+  ChartPaintBox.Invalidate;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FBmp := TBitmap.Create;
   FAggCanvas := TAggLCLCanvas.Create;
+  FAggCanvas.Image.PixelFormat := afpimRGBA32;
+  
+  {$IFDEF LCLWin32}
+  ChartLineSeries.Transparency := 128;
+  {$ENDIF}
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FAggCanvas.Free;
   FBmp.Free;
 end;
 
-procedure TForm1.PaintBox1Paint(Sender: TObject);
+procedure TMainForm.ChartPaintBoxPaint(Sender: TObject);
 var
   d: IChartDrawer;
 begin
-  FAggCanvas.Width := PaintBox1.Width;
-  FAggCanvas.Height := PaintBox1.Height;
-  Chart1.DisableRedrawing;
-  Chart1.Title.Text.Text := 'AggPas';
+  FAggCanvas.Width := ChartPaintBox.Width;
+  FAggCanvas.Height := ChartPaintBox.Height;
+
+  Chart.DisableRedrawing;
+  Chart.Title.Text.Text := 'AggPas';
   d := TAggPasDrawer.Create(FAggCanvas);
   d.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
-  Chart1.Draw(d, PaintBox1.Canvas.ClipRect);
-  Chart1.Title.Text.Text := 'Standard';
-  Chart1.EnableRedrawing;
+  Chart.Draw(d, ChartPaintBox.Canvas.ClipRect);
+  Chart.Title.Text.Text := 'Standard';
+  Chart.EnableRedrawing;
+
+  // On Windows the order of red, green and blue is blue-green-red, while on 
+  // others it is red-green-blue. In principle, AggPas can handle this, but
+  // since it is not maintained ATM, I chose the "easy way" to swap the red
+  // and blue bytes.
+  {$IFNDEF LCLWin32}
+  SwapRedBlue(FAggCanvas.Image.IntfImg);
+  {$ENDIF}
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
-  PaintBox1.Canvas.Draw(0, 0, FBmp);
+  ChartPaintBox.Canvas.Draw(0, 0, FBmp);
 end;
 
 end.
