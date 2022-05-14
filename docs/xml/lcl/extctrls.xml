@@ -1708,37 +1708,70 @@
         </seealso>
       </element>
 
-      <element name="TCustomSplitter.MouseMove" link="#lcl.controls.TControl.MouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomSplitter.MouseMove">
+        <short>
+          Applies a Shift+Drag operation for the splitter as a relative offset to the anchored control.
+        </short>
+        <descr>
+          <p>
+            <var>MouseMove</var> is an overridden method in <var>TCustomSplitter</var>. It calls the inherited method on entry to update the DragManager and signal the OnMouseMove event handler (when assigned).
+          </p>
+          <p>
+            It extends the ancestor method by calculating the offset needed to move the splitter relative to its anchor control. MouseMove calls the MoveSplitter method to apply the calculated offset to the Alignment edge for the splitter and resize the anchored control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseMove"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.MouseMove.Shift">
-        <short/>
+        <short>
+          Shift, Ctrl, or Alt modified for the mouse event.
+        </short>
       </element>
       <element name="TCustomSplitter.MouseMove.X">
-        <short/>
+        <short>
+          Horizontal coordinate for the mouse event.
+        </short>
       </element>
       <element name="TCustomSplitter.MouseMove.Y">
-        <short/>
+        <short>
+          Vertical  coordinate for the mouse event.
+        </short>
       </element>
 
-      <element name="TCustomSplitter.MouseUp" link="#lcl.controls.TControl.MouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomSplitter.MouseUp">
+        <short>
+          Handles a mouse up event for the splitter control.
+        </short>
+        <descr>
+          <p>
+            <var>MouseUp</var> is an overridden method in <var>TCustomSplitter</var>. It calls the inherited method on entry to signal the OnMouseUp event handler (when assigned). It ensures that the mouse pointer position is updated in the widgetset class, and calls StopSplitterMove to end the active splitter drag operation and signal the OnMove event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseUp"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.MouseUp.Button">
-        <short/>
+        <short>
+          Mouse button for the mouse event.
+        </short>
       </element>
       <element name="TCustomSplitter.MouseUp.Shift">
-        <short/>
+        <short>
+          Shift, Ctrl, or Alt modifier for the mouse event.
+        </short>
       </element>
       <element name="TCustomSplitter.MouseUp.X">
-        <short/>
+        <short>
+          Horizontal coordinate for the mouse event.
+        </short>
       </element>
       <element name="TCustomSplitter.MouseUp.Y">
-        <short/>
+        <short>
+          Vertical coordinate for the mouse event.
+        </short>
       </element>
 
       <element name="TCustomSplitter.Paint">
@@ -1904,10 +1937,14 @@
         </descr>
       </element>
       <element name="TCustomSplitter.AnchorSplitter.Kind">
-        <short/>
+        <short>
+          Indicates the edge of the splitter aligned to the opposite edge on the control.
+        </short>
       </element>
       <element name="TCustomSplitter.AnchorSplitter.AControl">
-        <short/>
+        <short>
+          The control to which the splitter is anchored.
+        </short>
       </element>
 
       <element name="TCustomSplitter.ResizeControl">
@@ -2948,7 +2985,7 @@
         <short>Draws the bevel so it appears lower than the surface for the control.</short>
       </element>
       <element name="TBevelStyle.bsRaised">
-        <short>Draws the bevel so it appears highter than the surface for the control.</short>
+        <short>Draws the bevel so it appears higher than the surface for the control.</short>
       </element>
 
       <element name="TBevelShape">
@@ -3286,7 +3323,7 @@
 
       <element name="TCustomRadioGroup.ItemEnter">
         <short>
-          Implements the OnEnter event handler assigned to radio buttons in the group.
+          Implements the OnEnter event handler for radio buttons in the group.
         </short>
         <descr/>
         <seealso/>
@@ -3459,27 +3496,62 @@
         <short>
           Calls the UpdateItems method to add or remove radio buttons for the grouped control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Called from the Changed method in Items when a string value is added to or removed from the property and EndUpdate has been called for the string list.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomRadioGroup.Items"/>
+          <link id="TCustomRadioGroup.UpdateAll"/>
+        </seealso>
       </element>
 
       <element name="TCustomRadioGroup.UpdateAll">
         <short>
           Updates the radio buttons and the number of radio buttons per line for the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Called from the Changed method in Items when EndUpdate has been called and the update count reaches 0.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomRadioGroup.Items"/>
+          <link id="TCustomRadioGroup.UpdateInternalObjectList"/>
+        </seealso>
       </element>
 
-      <element name="TCustomRadioGroup.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomRadioGroup.InitializeWnd">
+        <short>
+          Creates the visual components used in the radio group.
+        </short>
+        <descr>
+          <p>
+            <var>InitializeWnd</var> is an overridden method in <var>TCustomRadioGroup</var> used to initialize the TRadioButton instances which represent the Items on the control. A catchable debugger exception is raised, and no actions are performed, if InitializeWnd has already been called but has not yet been completed.
+          </p>
+          <p>
+            InitializeWnd recreates the TRadioButton instances in the internal storage for the class and configures their event handlers, Fonts, BorderSpacing, ControlStyle flags, TabStop and TabOrder settings, Caption, and Parent control. This includes the hidden radio button used (when needed for a widgetset) to allow all items in the group to become unchecked. The radio button representing the value in ItemIndex has its Checked property set to True, or the hidden radio button when ItemIndex is -1.
+          </p>
+          <p>
+            The inherited method is called to initial handles, window flags, text, and the enable state for the controls.
+          </p>
+          <p>
+            InitializeWnd is called from the CreateWnd method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomRadioGroup.Items"/>
+          <link id="TCustomRadioGroup.ItemIndex"/>
+          <link id="#lcl.stdctrls.TRadioButton">TRadioButton</link>
+          <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+        </seealso>
       </element>
 
       <element name="TCustomRadioGroup.UpdateRadioButtonStates">
         <short>
-          <var>UpdateRadioButtonStates</var> including implementing any pending changes.
+          <var>UpdateRadioButtonStates</var> including any pending changes.
         </short>
         <descr>
           <p>
@@ -3550,9 +3622,27 @@
 
       <element name="TCustomRadioGroup.CheckItemIndexChanged">
         <short>
-          <var>CheckItemIndexChanged</var> - find out if the index for an item has changes.
+          Checks whether ItemIndex has been changed since the previous call to the method.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            No actions are performed in the method for the following conditions:
+          </p>
+          <ul>
+            <li>The control has called, but not completed, the InitializeWnd method.</li>
+            <li>csDesigning or csDestroying is present in ComponentState.</li>
+            <li>ItemIndex has the same as the previous call to the method.</li>
+          </ul>
+          <p>
+            CheckItemIndexChanged calls UpdateRadioButtonStates to set the values in the Checked, TabStop, and TabOrder properties for the TRadioButton instances in the control. EditingDone is called to signal the OnEditingDone event handler (when assigned).
+          </p>
+          <p>
+            To maintain Delphi VCL compatibility, the OnClick event handler is signalled (when assigned) even when the change results from a direct assignment to ItemIndex. The more aptly named LCL event, OnSelectionChanged, is also signalled (when assigned).
+          </p>
+          <p>
+            CheckItemIndexChanged is called from the Clicked and Changed methods, and when a new value is assigned to the ItemIndex property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -4646,16 +4736,24 @@
       </element>
 
       <element name="TCustomLabeledEdit">
-        <short>Defines a edit control with a label bound to the control.</short>
+        <short>Defines an edit control with a label bound to the control.</short>
         <descr>
           <p>
-            <var>TCustomLabeledEdit</var> : The base type for <var>LabeledEdit</var>.
+            <var>TCustomLabeledEdit</var> is a TCustomEdit descendant which defines an edit control with a label bound to the control. TCustomLabeledEdit is the base type for <var>TLabeledEdit</var>.
           </p>
           <p>
             Note particularly the <link id="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.
           </p>
+          <p>
+            Use LabelPosition to specify the location where EditLabel is displayed relative to the edit box in the control. Use LabelSpacing to set the spacing between EditLabel and the edit control.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomLabeledEdit.EditLabel"/>
+          <link id="TCustomLabeledEdit.LabelPosition"/>
+          <link id="TCustomLabeledEdit.LabelSpacing"/>
+          <link id="TBoundLabel"/>
+          <link id="TLabelPosition"/>
           <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
           <link id="#lcl.StdCtrls.TCustomLabel">TCustomLabel</link>
         </seealso>
@@ -4882,19 +4980,28 @@
       </element>
 
       <element name="TLabeledEdit">
-        <short>Labelled Edit is an Edit Box with a permanently attached Label.</short>
+        <short>Implements an edit control with a label bound to the control.</short>
         <descr>
           <p>
-            <var>TLabeledEdit</var> is an Edit Box with a permanently attached Label.
+            <var>TLabeledEdit</var> is a <var>TCustomLabeledEdit</var> descendant which implements an edit control with a label bound to the control. It saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited.
           </p>
           <p>
-            Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited.
+            Note particularly the <link id="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.
+          </p>
+          <p>
+            Use LabelPosition to specify the location where EditLabel is displayed relative to the edit box in the control. Use LabelSpacing to set the spacing between EditLabel and the edit control.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomLabeledEdit.EditLabel"/>
+          <link id="TCustomLabeledEdit.LabelPosition"/>
+          <link id="TCustomLabeledEdit.LabelSpacing"/>
+          <link id="TBoundLabel"/>
+          <link id="TLabelPosition"/>
           <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
-          <link id="#lcl.ExtCtrls.TBoundLabel">TBoundLabel</link>
+          <link id="#lcl.StdCtrls.TCustomLabel">TCustomLabel</link>
         </seealso>
+
       </element>
 
       <element name="TLabeledEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
