@@ -9014,46 +9014,56 @@ end;
         </seealso>
       </element>
       <element name="TItemFind.ifData">
-        <short>Not used in the current implementation.</short>
+        <short>
+          Uses the Pointer to a data structure with the search values.
+        </short>
       </element>
       <element name="TItemFind.ifPartialString">
-        <short>Not used in the current implementation.</short>
+        <short>
+          Uses a partial string match to locate a list item.
+        </short>
       </element>
       <element name="TItemFind.ifExactString">
-        <short>Not used in the current implementation.</short>
+        <short>
+          Uses an exact string match to locate a list item.
+        </short>
       </element>
       <element name="TItemFind.ifNearest">
-        <short>Not used in the current implementation.</short>
+        <short>
+          Locates the list item that is the nearest match to a value in a specified search direction.
+        </short>
       </element>
 
       <element name="TSearchDirection">
         <short>
-          Represents search direction used to locate the list view item nearest to given  coordinates.
+          Represents a search direction used to locate the list view item that is the nearest match.
         </short>
         <descr>
           <p>
-            Values from TSearchDirection are passed as an argument to the GetNearestItem method in TCustomListView.
+            A value from TSearchDirection is passed as an argument to the GetNearestItem method and the OnDataFind event handler in TCustomListView.
           </p>
         </descr>
         <seealso>
           <link id="TCustomListView.GetNearestItem"/>
+          <link id="TCustomListView.OnDataFind"/>
+          <link id="TCustomListView.DoOwnerDataFind"/>
         </seealso>
       </element>
       <element name="TSearchDirection.sdLeft">
-        <short>Searches to the left of the specified list view coordinates.</short>
+        <short>Searches to the left of the specified list view item.</short>
       </element>
       <element name="TSearchDirection.sdRight">
-        <short>Searches to the right of the specified list view coordinates.</short>
+        <short>Searches to the right of the specified list view item.</short>
       </element>
       <element name="TSearchDirection.sdAbove">
-        <short>Searches above the specified list view coordinates.</short>
+        <short>Searches above the specified list view item.</short>
       </element>
       <element name="TSearchDirection.sdBelow">
-        <short>Searches below the specified list view coordinates.</short>
+        <short>Searches below the specified list view item.</short>
       </element>
       <element name="TSearchDirection.sdAll">
         <short>
-          Searches in all directions for the list view closest to the given coordinates.
+          Searches in all directions for the list view item that is the nearest match.
         </short>
       </element>
 
@@ -9085,36 +9095,61 @@ end;
       </element>
 
       <element name="TLVDataFindEvent">
-        <short>Not used in the current LCL implementation.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an envent handler used to locate a list view item using the specified search parameters and criteria.
+        </short>
+        <descr>
+          <p>
+            <var>TLVDataFindEvent</var> is the type used for the <var>OnDataFind</var> property in TCustomListView. Use the arguments to the handler to deterine the actions performed in its implementation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.OnDataFind"/>
+          <link id="TCustomListView.DoOwnerDataFind"/>
+        </seealso>
       </element>
       <element name="TLVDataFindEvent.Sender">
-        <short/>
+        <short>Object for the event notification. (TCustomListView)</short>
       </element>
       <element name="TLVDataFindEvent.AFind">
-        <short/>
+        <short>
+          TItemFInd value with the search type or strategy used in the handler routine.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AFindString">
-        <short/>
+        <short>
+          String value to locate in the list items.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AFindPosition">
-        <short/>
+        <short>
+          TPoint instance with the initial position for a find nearest search.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AFindData">
-        <short/>
+        <short>
+          Find parameter flag values used in the search. Includes the content provided by the widgetset class instance.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AStartIndex">
-        <short/>
+        <short>
+          Initial position in the list item storage where the search is started. The default value (0) starts at the first list item.
+        </short>
       </element>
       <element name="TLVDataFindEvent.ADirection">
-        <short/>
+        <short>
+          Indicates the search direction when using a find nearest search type.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AWrap">
-        <short/>
+        <short>
+          <b>True</b> if the search can continue at the beginning of the list item storage when a match is not found.
+        </short>
       </element>
       <element name="TLVDataFindEvent.AIndex">
-        <short/>
+        <short>
+          Returns the position where the matching list item was found, or -1 when no match is found.
+        </short>
       </element>
 
       <element name="TLVDataHintEvent">
@@ -11728,6 +11763,67 @@ end;
         <short/>
       </element>
 
+      <element name="TCustomListView.DoOwnerDataFind">
+        <short>
+          Implements incremental search in list items when OwnerData has been enabled.
+        </short>
+        <descr>
+          <p>
+            <var>DoOwnerDataFind</var> is an Integer function used to implement incremental search features in the list view control when OwnerData (or virtual mode) has been enabled. Incremental search is activated when normal data keys (not control or navigation keys) are pressed while the control is not editing a list item. DoOwnerDataFind is called when a LVN_ODFINDITEM message is received in the key handler for the list view control.
+          </p>
+          <p>
+            The arguments to the method specify the search parameters and criteria, and are passed to the OnDataFind event handler. The return value contains the ordinal position in the external virtual data where list item with the specified value was located, or -1 when a match is not found. An application must implement a handler routine in OnDataFind to perform the search using the specified values.
+          </p>
+          <p>
+            No actions are performed in the method, and the return value is -1, when OnDataFind has not been assigned.
+          </p>
+          <remark>
+            DoOwnerDataFind is implemented for the Windows platform only in the current LCL version.
+          </remark>
+        </descr>
+        <version>
+          Implemented in version 2.2.2 for the Windows platform.
+        </version>
+        <seealso>
+          <link id="TCustomListView.OnDataFind"/>
+        </seealso>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AFind">
+        <short>
+          Type of search, such as partial or exact string match or find nearest item.
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AFindString">
+        <short>
+          Value used to locate a list item in the owner data.
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AFindPosition">
+        <short>
+          TPoint instance with the initial position where the search is performed (used for find nearest item searches).
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AFindData">
+        <short>
+          Pointer to the data structure with the values used in the search.
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AStartIndex">
+        <short>
+          Ordinal position in the owner data where the search is started.
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.ADirection">
+        <short>
+          Indicates the search direction.
+        </short>
+      </element>
+      <element name="TCustomListView.DoOwnerDataFind.AWrap">
+        <short>
+          <b>True</b> if the search can continue to the beginning of the owner data if a match is not found.
+        </short>
+      </element>
+
       <element name="TCustomListView.FMultiSelList">
         <short>
           Member used to store the multi-selection list in the class instance.
@@ -12435,18 +12531,22 @@ end;</code>
 
       <element name="TCustomListView.OnDataFind">
         <short>
-          Event handler signalled to locate list item data in OwnerData (virtual) mode.
+          Event handler signalled to locate list item data when OwnerData (virtual) mode is enabled.
         </short>
         <descr>
           <p>
-            OnDataFind is a TLVDataFindEvent property with the event handler signalled to locate the data for a list item when OwnerData (or virtual mode) has been enabled.
+            <var>OnDataFind</var> is a <var>TLVDataFindEvent</var> property with the event handler signalled to locate a list item when OwnerData (or virtual mode) has been enabled. Arguments to the event handler define the search criteria and parameters used in the implementation of the handler routine.
           </p>
-          <remark>
-            The current LCL version does not signal the OnDataFind event handler. Use the OnData event handler instead.
-          </remark>
+          <p>
+            See <link id="TLVDataFindEvent">TLVDataFindEvent</link> for more information about the argument values.
+          </p>
+          <p>
+            OnDataFind is signalled from the DoOwnerDataFind method which is implemented for the Windows platform only in the current LCL version.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomListView.OwnerData"/>
+          <link id="TCustomListView.DoOwnerDataFind"/>
           <link id="TCustomListView.OnData"/>
           <link id="TLVDataFindEvent"/>
         </seealso>
