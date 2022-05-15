@@ -5,6 +5,6 @@
       "TTreeView",
       "Needs Work"
     ],
-    "Description" : "Demonstrates adding and removing nodes from a TTreeView.\n\nNote that the readme.txt refers to a tutorial that no longer is available, can we find its new home ?"
+    "Description" : "Demonstrates adding/removing nodes to/from a TTreeView."
   }
 }
