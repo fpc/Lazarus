@@ -22,6 +22,7 @@ type
 
   TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
+    FFontDir: String;
     function ApplyTransparency(AColor: TFPColor): TFPColor;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
@@ -67,6 +68,7 @@ type
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
     procedure SetPenWidth(AWidth: Integer);
+    property FontDir: String read FFontDir write FFontDir;
   end;
 
 procedure SwapRedBlue(AImg: TFPCustomImage);
@@ -289,12 +291,18 @@ procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);
 var
   f: TAggLCLFont;
   fontSize: Integer;
+  fontName: String;
 begin
-  f := FCanvas.Font;
+  if (AFont.Name = '') or (Lowercase(AFont.Name) = 'default') then
+    fontName := 'LiberationSans-Regular'
+  else
+    fontName := AFont.Name;
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  fontName := FFontDir + fontName + '.ttf';
+  {$ENDIF}
   fontSize := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
-  // This should be: FCanvas.Font.DoCopyProps(AFont);
-  f.LoadFromFile(
-    AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
+  f := FCanvas.Font;
+  f.LoadFromFile(fontName, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
   f.FPColor := ApplyTransparency(FPColorOrMono(AFont.FPColor));
   f.AggAngle := -OrientToRad(FGetFontOrientationFunc(AFont));
 end;
@@ -310,8 +318,7 @@ end;
 
 procedure TAggPasDrawer.SetPenColor(AColor: TChartColor);
 begin
-  FCanvas.Pen.FPColor :=
-    ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
+  FCanvas.Pen.FPColor := ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
 procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
@@ -319,8 +326,7 @@ procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor;
 begin
   FCanvas.Pen.Style := AStyle;
   FCanvas.Pen.Width := AWidth;
-  FCanvas.Pen.FPColor :=
-    ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
+  FCanvas.Pen.FPColor := ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
 procedure TAggpasDrawer.SetPenWidth(AWidth: Integer);
@@ -340,7 +346,7 @@ var
 begin
   h := SimpleTextExtent('Tg').y;
   p := RotatePoint(Point(0, h * 9 div 10), FCanvas.Font.AggAngle);
-    // * 9/10 fits to fit the text into bounding box
+    // * correction factor 9/10 needed to fit the text into bounding box
   FCanvas.TextOut(AX + p.X, AY + p.Y - h, AText);
     // -h to avoid rotated text drifting away
 end;

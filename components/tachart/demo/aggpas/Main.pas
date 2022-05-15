@@ -1,3 +1,11 @@
+{ Demonstrates how a chart can be painted by means of the AggPas library,
+  either directly or via the corresponding GUIConnector.
+  
+  Note that the AggPas version coming with Lazarus is unmaintained at the moment 
+  and rather buggy. Font support works fine only on Windows. On Linux, you must 
+  specify the directory with your fonts in the constant FONT_DIR defined below. 
+  On macOS (cocoa), text output is not supported at all. }
+
 unit Main;
 
 {$mode objfpc}{$H+}
@@ -45,6 +53,9 @@ implementation
 uses
   TAChartUtils, TADrawerCanvas;
 
+const
+  FONT_DIR = '/usr/share/fonts/truetype/';
+
 { TMainForm }
 
 procedure TMainForm.cbAggPasClick(Sender: TObject);
@@ -70,6 +81,9 @@ begin
   {$IFDEF LCLWin32}
   ChartLineSeries.Transparency := 128;
   {$ENDIF}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  ChartGUIConnectorAggPas.FontDir := FONT_DIR;
+  {$ENDIF}
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -89,6 +103,9 @@ begin
   Chart.Title.Text.Text := 'AggPas';
   d := TAggPasDrawer.Create(FAggCanvas);
   d.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  (d as TAggPasDrawer).FontDir := FONT_DIR;
+  {$ENDIF}
   Chart.Draw(d, ChartPaintBox.Canvas.ClipRect);
   Chart.Title.Text.Text := 'Standard';
   Chart.EnableRedrawing;
@@ -97,7 +114,7 @@ begin
   // others it is red-green-blue. In principle, AggPas can handle this, but
   // since it is not maintained ATM, I chose the "easy way" to swap the red
   // and blue bytes.
-  {$IFNDEF LCLWin32}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
   SwapRedBlue(FAggCanvas.Image.IntfImg);
   {$ENDIF}
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);

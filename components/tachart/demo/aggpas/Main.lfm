@@ -17,7 +17,7 @@ object MainForm: TMainForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BottomPanel
     Left = 400
-    Height = 332
+    Height = 333
     Top = 6
     Width = 379
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -26,14 +26,14 @@ object MainForm: TMainForm
   end
   object BottomPanel: TPanel
     Left = 6
-    Height = 20
-    Top = 344
+    Height = 19
+    Top = 345
     Width = 773
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 20
+    ClientHeight = 19
     ClientWidth = 773
     TabOrder = 0
     object cbAggPas: TCheckBox
@@ -42,7 +42,7 @@ object MainForm: TMainForm
       AnchorSideTop.Side = asrCenter
       Left = 0
       Height = 19
-      Top = 1
+      Top = 0
       Width = 193
       Caption = 'Use AggPas for standard drawing'
       OnClick = cbAggPasClick
@@ -55,7 +55,7 @@ object MainForm: TMainForm
     AnchorSideRight.Control = Bevel1
     AnchorSideBottom.Control = BottomPanel
     Left = 6
-    Height = 332
+    Height = 333
     Top = 6
     Width = 378
     AxisList = <    
@@ -78,7 +78,6 @@ object MainForm: TMainForm
     Margins.Left = 25
     Margins.Right = 25
     Title.Font.Color = clBlue
-    Title.Frame.Style = psClear
     Title.Text.Strings = (
       'Standard'
     )
@@ -122,11 +121,11 @@ object MainForm: TMainForm
     XMax = 10
     YMax = 10
     YMin = 1
-    Left = 312
-    Top = 352
+    Left = 496
+    Top = 168
   end
   object ChartGUIConnectorAggPas: TChartGUIConnectorAggPas
-    Left = 504
-    Top = 352
+    Left = 496
+    Top = 264
   end
 end

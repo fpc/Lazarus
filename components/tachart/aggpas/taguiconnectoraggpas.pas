@@ -22,6 +22,7 @@ uses
 type
   TChartGUIConnectorAggPas = class(TChartGUIConnector)
   private
+    FFontDir: String;
     FPixelFormat: TAggFPImgPixelFormat;
     procedure SetPixelFormat(AValue: TAggFPImgPixelFormat);
   public
@@ -30,6 +31,8 @@ type
     procedure SetBounds(var AData: TChartGUIConnectorData); override;
     procedure Display(var AData: TChartGUIConnectorData); override;
   published
+    property FontDir: String
+      read FFontDir write FFontDir;
     property PixelFormat: TAggFPImgPixelFormat
       read FPixelFormat write SetPixelFormat default afpimRGBA32;
   end;
@@ -74,12 +77,12 @@ procedure TChartGUIConnectorAggPas.CreateDrawer(
 begin
   AData.FDrawer := TAggPasOwnerDrawer.Create(TAggLCLCanvas.Create);
   AData.FDrawer.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  (AData.FDrawer as TAggPasOwnerDrawer).FontDir := FFontDir;
 end;
 
 procedure TChartGUIConnectorAggPas.Display(var AData: TChartGUIConnectorData);
 begin
-  (AData.FDrawer as TAggPasOwnerDrawer).PaintOnCanvas(
-    AData.FCanvas, AData.FBounds);
+  (AData.FDrawer as TAggPasOwnerDrawer).PaintOnCanvas(AData.FCanvas, AData.FBounds);
 end;
 
 procedure TChartGUIConnectorAggPas.SetBounds(var AData: TChartGUIConnectorData);
@@ -115,18 +118,18 @@ begin
   FreeAndNil(FCanvas);
 end;
 
-
-{ The default settings of AggPas are for Windows. On Linux the color components
-  red and blue are interchanged. The following work-around creates an auxiliary
-  image in which R and B are interchanged to be compatible with AggPas. }
 procedure TAggPasOwnerDrawer.PaintOnCanvas(
   ACanvas: TCanvas; const ARect: TRect);
-{$IFDEF LCLWin32}
+{$IF DEFINED(LCLWin32) or DEFINED(LCLCocoa)}
 begin
   FBitmap.LoadFromIntfImage(FCanvas.Image.IntfImg);
   ACanvas.Draw(ARect.Left, ARect.Top, FBitmap);
 end;
 {$ELSE}
+{ The default pixel settings of AggPas are correct for Windows. 
+  On Linux, however, the red and blue components are interchanged. 
+  The following work-around creates an auxiliary image in which R and B are 
+  swapped to be compatible with AggPas. }
 var
   img: TLazIntfImage;
   raw: TRawImage;
