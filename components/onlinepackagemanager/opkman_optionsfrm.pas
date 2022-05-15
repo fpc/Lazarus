@@ -124,6 +124,7 @@ type
     procedure cbSelectProfileChange(Sender: TObject);
     procedure edLocalRepositoryPackagesButtonClick(Sender:TObject);
     procedure edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
@@ -344,6 +345,17 @@ procedure TOptionsFrm.edRemoteRepositoryKeyPress(Sender: TObject; var Key: char)
 begin
   if Key = #13 then
     OKButtonClick(bpOptions.OKButton);
+end;
+
+procedure TOptionsFrm.FormActivate(Sender: TObject);
+var
+  h: Integer;
+  delta: Integer;
+begin
+  h := cbUseDefaultTheme.Top + cbUseDefaultTheme.Height + cbUseDefaultTheme.BorderSpacing.Bottom;
+  delta := h - pgOptions.ClientHeight;
+  ClientHeight := pgOptions.Top + pgOptions.Height + delta + pgOptions.BorderSpacing.Around + 
+    bpOptions.Height + bpOptions.BorderSpacing.Around;
 end;
 
 procedure TOptionsFrm.FormCreate(Sender: TObject);
