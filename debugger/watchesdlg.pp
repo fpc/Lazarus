@@ -934,7 +934,7 @@ begin
   end;
 
   InspectMemo.WordWrap := True;
-  InspectMemo.Text := d.Value;
+  InspectMemo.Text := DebugBoss.FormatValue(d.TypeInfo, PrintWatchValue(d.ResultData, d.DisplayFormat));
   finally
     DebugBoss.UnLockCommandProcessing;
   end;
