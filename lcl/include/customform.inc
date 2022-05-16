@@ -2379,6 +2379,32 @@ begin
 end;
 
 function TCustomForm.GetMonitor: TMonitor;
+{$IFDEF EnableGetMonitor}
+  function GetDefaultMonitor: TMonitor;
+  var
+    aForm: TCustomForm;
+  begin
+    case DefaultMonitor of
+      dmDesktop:
+        Result := Screen.MonitorFromPoint(point(0,0));
+      dmMainForm:
+        if (Application.MainForm<>Self) and (GetParentForm(Application.MainForm)<>Self) then
+          Result := Application.MainForm.Monitor
+        else
+          Result:=Screen.GetPrimaryMonitor;
+      dmActiveForm:
+        begin
+          aForm:=Screen.ActiveCustomForm;
+          if (aForm<>nil) and (aForm<>Self) and (GetParentForm(aForm)<>Self) then
+            Result:=aForm.Monitor
+          else
+            Result:=Screen.GetPrimaryMonitor;
+        end;
+    else
+      Result:=Screen.GetPrimaryMonitor;
+    end;
+  end;
+{$ENDIF}
 var
   ParentForm: TCustomForm;
 begin
@@ -2391,11 +2417,45 @@ begin
       Result := nil;
   end else
   begin
+    // get monitor from left,top
     if HandleAllocated then begin
-      // ensure widgetset has latest coordinates // invisible forms are not updated by DoSendBoundsToInterface
       if (not HandleObjectShouldBeVisible) then
-        TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
-      Result := Screen.MonitorFromWindow(Handle, mdNearest);
+      begin
+        {$IFDEF EnableGetMonitor}
+        // hidden forms are not updated by DoSendBoundsToInterface
+        if (fsFirstShow in FormState) then
+        begin
+          // first time showing, check Position and DefaultMonitor
+          case Position of
+            poDefault:
+              Result := Screen.MonitorFromWindow(Handle, mdNull);
+            poDesigned, poDefaultSizeOnly:
+              Result := Screen.MonitorFromPoint(point(Left,Top));
+            poMainFormCenter:
+              if (Application.MainForm<>Self) and (GetParentForm(Application.MainForm)<>Self) then
+                Result := Application.MainForm.Monitor
+              else
+                Result := GetDefaultMonitor;
+            poOwnerFormCenter:
+              if (Owner is TCustomForm) and (GetParentForm(TCustomForm(Owner))<>Self) then
+                Result := Application.MainForm.Monitor
+              else
+                Result := GetDefaultMonitor;
+          else
+            Result := GetDefaultMonitor;
+          end;
+        end else begin
+          // => ensure widgetset has latest coordinates
+          TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
+          Result := Screen.MonitorFromWindow(Handle, mdNearest);
+        end;
+        {$ELSE}
+        // ensure widgetset has latest coordinates // invisible forms are not updated by DoSendBoundsToInterface
+        if (not HandleObjectShouldBeVisible) then
+          TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
+        Result := Screen.MonitorFromWindow(Handle, mdNearest);
+        {$ENDIF}
+      end;
     end
     else
       Result := Screen.MonitorFromPoint(point(Left,Top));
