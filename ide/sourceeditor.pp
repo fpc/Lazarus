@@ -733,6 +733,7 @@ type
       var Accept: Boolean); override;
     procedure DragCanceled; override;
     procedure DoActiveEditorChanged;
+    function GetHistoryDlg: TBrowseEditorTabHistoryDialog;
   protected
     States: TSourceNotebookStates;
     procedure Activate; override;
@@ -6591,7 +6592,6 @@ begin
   FHistoryList := TFPList.Create;
   FSrcEditsSortedForFilenames := TAvlTree.Create(@CompareSrcEditIntfWithFilename);
 
-  FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
   FOnEditorPageCaptionUpdate := TMethodList.Create;
 
   OnDropFiles := @SourceNotebookDropFiles;
@@ -7832,6 +7832,11 @@ begin
   DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.DoActiveEditorChanged ']);
 end;
 
+function TSourceNotebook.GetHistoryDlg: TBrowseEditorTabHistoryDialog;
+begin
+  FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
+end;
+
 procedure TSourceNotebook.BeginIncrementalFind;
 var
   TempEditor: TSourceEditor;
@@ -9008,8 +9013,8 @@ begin
   case Command of
   ecNextEditor:           NextEditor;
   ecPrevEditor:           PrevEditor;
-  ecPrevEditorInHistory:  FHistoryDlg.Show(True);
-  ecNextEditorInHistory:  FHistoryDlg.Show(False);
+  ecPrevEditorInHistory:  GetHistoryDlg.Show(True);
+  ecNextEditorInHistory:  GetHistoryDlg.Show(False);
   ecMoveEditorLeft:       MoveActivePageLeft;
   ecMoveEditorRight:      MoveActivePageRight;
   ecMoveEditorLeftmost:   MoveActivePageFirst;
