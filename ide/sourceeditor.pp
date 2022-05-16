@@ -7834,7 +7834,9 @@ end;
 
 function TSourceNotebook.GetHistoryDlg: TBrowseEditorTabHistoryDialog;
 begin
-  FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
+  if FHistoryDlg=nil then
+    FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
+  Result:=FHistoryDlg;
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
