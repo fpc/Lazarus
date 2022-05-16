@@ -2387,6 +2387,7 @@ function TCustomForm.GetMonitor: TMonitor;
 var
   ParentForm: TCustomForm;
 begin
+  Result:=nil;
   if Assigned(Parent) then
   begin
     ParentForm := GetParentForm(Self);
@@ -2434,7 +2435,8 @@ begin
           TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
         Result := Screen.MonitorFromWindow(Handle, mdNearest);
         {$ENDIF}
-      end;
+      end else
+        Result := Screen.MonitorFromWindow(Handle, mdNearest);
     end
     else
       Result := Screen.MonitorFromPoint(point(Left,Top));
