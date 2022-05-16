@@ -2427,7 +2427,7 @@ begin
         begin
           // first time showing, check Position and DefaultMonitor
           case Position of
-            poDefault:
+            poDefault, poDefaultPosOnly:
               Result := Screen.MonitorFromWindow(Handle, mdNull);
             poDesigned, poDefaultSizeOnly:
               Result := Screen.MonitorFromPoint(point(Left,Top));
