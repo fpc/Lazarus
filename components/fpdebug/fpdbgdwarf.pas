@@ -5867,6 +5867,7 @@ begin
   Result := FAddressInfo <> nil;
   if not result then exit;
 
+  Result := False;
   if FAddressInfo^.StateMachine = nil
   then begin
     CompilationUnit.BuildLineInfo(FAddressInfo, False);
