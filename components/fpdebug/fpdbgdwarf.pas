@@ -398,9 +398,6 @@ type
   { TFpValueDwarfStructBase }
 
   TFpValueDwarfStructBase = class(TFpValueDwarf)
-  protected
-    function GetMember(AIndex: Int64): TFpValue; override;
-    function GetMemberByName(const AIndex: String): TFpValue; override;
   end;
 
   TFpValueDwarfStruct = class(TFpValueDwarfStructBase)
@@ -1083,20 +1080,6 @@ procedure TFpSymbolDwarfFunctionResult.Init;
 begin
   inherited Init;
   EvaluatedFields := EvaluatedFields + [sfiAddress];
-end;
-
-{ TFpValueDwarfStructBase }
-
-function TFpValueDwarfStructBase.GetMember(AIndex: Int64): TFpValue;
-begin
-  Result := inherited GetMember(AIndex);
-end;
-
-function TFpValueDwarfStructBase.GetMemberByName(const AIndex: String
-  ): TFpValue;
-begin
-  Result := inherited GetMemberByName(AIndex);
-
 end;
 
 { TFpValueDwarfSubroutine }
