@@ -420,6 +420,9 @@ begin
     Result := False;
     ExtractFromJSON('Category', jItem, Cat);        // An empty Cat is acceptable but undesirable.
     if not ExtractFromJSON('Description', jItem, Desc) then exit(False);
+    {$ifdef WINDOWS}
+    Desc := Desc.Replace(#10, #13#10, [rfReplaceAll]);
+    {$endif}
     KeyWords := TStringList.Create;
     ExtractArrayFromJSON('Keywords', jItem, Keywords);
     if AName <> '' then
@@ -442,23 +445,25 @@ function TExampleData.ScanLocalTree(Path : string; PathAbs : boolean) : boolean;
 var
    STL : TStringList = nil;
    FileContent : TStringList;
-   St : string;
+   St, DirN : string;
 begin
     STL := FindAllFiles(Path, '*' + MetaFileExt, True);
     try
         for St in STL do begin
-            if pos('master' + MetaFileExt, St) > 0 then continue;    // don't do master if you stumble across one
-            if pos(cExamplesDir, St) > 0 then continue;               // thats our downloaded location
+            if pos('master' + MetaFileExt, St) > 0 then continue;               // don't do master if you stumble across one
+            if pos(cExamplesDir, St) > 0 then continue;                         // thats our downloaded location
+            DirN := copy(St, 1, length(St) - length(ExtractFileName(St)) -1);   // now path without filename
+            if ExtractFileName(DirN) = 'backup' then continue;
             FileContent := TStringList.Create;
-            FileContent.LoadFromFile(St);                            // Thats contents of one individual metadata file
             try
+                FileContent.LoadFromFile(St);                        // That is contents of one individual metadata file
                 if PathAbs then
                     Result := ReadSingleJSON(FileContent, St)
                 else  Result := ReadSingleJSON(FileContent, copy(St, Path.Length+1, 1000));
                 if not Result then begin
                     debugln('Offending file is ' + St);
                     debugln(ErrorMsg);
-                    exit(False);
+                    //exit(False);                                   // process all the good ones anyway, hope thats good....
                 end;
             finally
                 FileContent.Free;
@@ -482,18 +487,20 @@ begin
                 jItem := jData.Items[0];
             except
                 on E: EJSONParser do begin
-                    ErrorMsg := 'ERROR EJSONParser- invalid JSON ' + E.Message;
+                    ErrorMsg := 'ERROR EJSONParser- invalid JSON in ' + PathToStore
+                                                 + ' ' + E.Message;
                     jData := Nil;                                           // Appears nothing is allocated if error  ?
                     exit(false);
                 end;
                 on E: EScannerError do begin                                // Thats in jsonscanner unit, Must doc on Wiki !!!
-                    ErrorMsg := 'ERROR EScanner- invalid JSON ' + E.Message;          // this is typically a single \
+                    ErrorMsg := 'ERROR EScanner- invalid JSON in ' + PathToStore     // this is typically a single \
+                                                 + ' ' + E.Message;
                     jData := Nil;                                           // Appears nothing is allocated if error  ?
                     exit(false);
                 end;
             end;
             if  TJSONObject(jItem).Count = 0 then begin
-                debugln('WARNING - file does not contain suitable JSON : ');
+                debugln('WARNING - file ' + PathToStore + ' does not contain suitable JSON : ');
                 exit(false);
             end;
             InsertJSONData(jItem, PathToStore, TJSONObject(jData).Names[0]);
