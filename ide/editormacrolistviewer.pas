@@ -394,11 +394,13 @@ end;
 
 procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
-  MacroListViewer.FIgnoreMacroChanges := True;
+  if MacroListView<>nil then
+    MacroListView.FIgnoreMacroChanges := True;
   try
     EditorMacroListProj.ReadFromXmlConf(XMLConfig, '');
   finally
-    MacroListViewer.FIgnoreMacroChanges := False;
+    if MacroListView<>nil then
+      MacroListView.FIgnoreMacroChanges := False;
   end;
 end;
 
@@ -415,7 +417,8 @@ var
   Filename: String;
   XMLConfig: TXMLConfig;
 begin
-  MacroListViewer.FIgnoreMacroChanges := True;
+  if MacroListView<>nil then
+    MacroListView.FIgnoreMacroChanges := True;
   Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
   try
     XMLConfig := TXMLConfig.Create(Filename);
@@ -429,7 +432,8 @@ begin
       DebugLn('[EditorMacroListViewer.LoadGlobalInfo]  error reading "',Filename,'": ',E.Message);
     end;
   end;
-  MacroListViewer.FIgnoreMacroChanges := False;
+  if MacroListView<>nil then
+    MacroListView.FIgnoreMacroChanges := False;
 end;
 
 procedure SaveGlobalInfo;
