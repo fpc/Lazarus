@@ -355,7 +355,6 @@ begin
   gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
                                PGtkStyleProvider(cssProvider),
                                GTK_STYLE_PROVIDER_PRIORITY_USER);
-
 end;
 
 destructor TGtk3WidgetSet.Destroy;
@@ -504,21 +503,55 @@ begin
     gtk_main_quit;
 end;
 
+
 procedure TGtk3WidgetSet.AppMinimize;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: TGtk3Widget;
 begin
-  DebugLn('TGtk3WidgetSet.AppMinimize missing');
+  if Screen=nil then exit;
+  for i:= 0 to Screen.CustomFormZOrderCount-1 do
+  begin
+    AForm := Screen.CustomFormsZOrdered[i];
+    if (AForm.Parent=nil) and AForm.HandleAllocated and
+      (TGtk3Widget(AForm.Handle).Visible) and
+      not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
+      not (AForm.BorderStyle in [bsNone]) then
+      begin
+        W := TGtk3Widget(AForm.Handle);
+        PGtkWindow(W.Widget)^.iconify;
+      end;
+  end;
 end;
 
+
 procedure TGtk3WidgetSet.AppRestore;
+var
+  i: Integer;
+  AForm: TCustomForm;
 begin
-  DebugLn('TGtk3WidgetSet.AppRestore missing');
+  if Screen=nil then exit;
+  for i:= Screen.CustomFormZOrderCount-1 downto 0 do
+  begin
+    AForm:=Screen.CustomFormsZOrdered[i];
+    if (AForm.Parent=nil) and AForm.HandleAllocated and
+      (TGtk3Widget(AForm.Handle).Visible) and
+      not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
+      not (AForm.BorderStyle in [bsNone]) then
+        PGtkWindow(TGtk3Window(AForm.Handle).Widget)^.deiconify;
+  end;
 end;
 
 procedure TGtk3WidgetSet.AppBringToFront;
 begin
-  DebugLn('TGtk3WidgetSet.AppBringToFront missing');
+  if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
+    TGtk3Window(Application.MainForm.Handle).raiseWidget;
+    gdk_window_focus(TGtk3Window(Application.MainForm.Handle).Widget^.window,
+                                gtk_get_current_event_time);
+  end;
 end;
-
 procedure TGtk3WidgetSet.AppSetIcon(const Small, Big: HICON);
 var
   DoDestroyIcon: Boolean;

@@ -706,6 +706,7 @@ var
       else
       begin
         theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
+        theRect.Bottom := theRect.Top + AP.cY;
         if (Flags and DT_VCENTER) > 0 then
         begin
           OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top)) div 2);
@@ -753,7 +754,7 @@ var
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + LineHeight;
       if NumLines>1 then
-        Inc(theRect.Bottom, (NumLines-1)*TM.tmDescent);// space between lines
+        Inc(theRect.Bottom, (NumLines-1)*TM.tmExternalLeading);// space between lines
 
       //DebugLn('TGtk3WidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),
       //        ' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
@@ -1001,7 +1002,7 @@ begin
       if theRect.Top > theRect.Bottom then Break;
 
       if  ((Flags and DT_EDITCONTROL) = DT_EDITCONTROL)
-      and (tm.tmHeight > (theRect.Bottom - theRect.Top))
+      and (tm.tmHeight > (theRect.Bottom - theRect.Top+1))
       then Break;
 
       if Lines[i] <> nil then
@@ -1015,7 +1016,7 @@ begin
       end
       else
         LineHeight := TM.tmHeight;
-      Inc(theRect.Top, LineHeight + TM.tmDescent); // space between lines
+      Inc(theRect.Top, LineHeight + TM.tmExternalLeading); // space between lines
     end;
 
   finally
