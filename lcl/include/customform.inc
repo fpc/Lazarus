@@ -2379,7 +2379,7 @@ begin
 end;
 
 function TCustomForm.GetMonitor: TMonitor;
-{$IFDEF EnableGetMonitor}
+
   function GetDefaultMonitor: TMonitor;
   var
     aForm: TCustomForm;
@@ -2404,7 +2404,7 @@ function TCustomForm.GetMonitor: TMonitor;
       Result:=Screen.GetPrimaryMonitor;
     end;
   end;
-{$ENDIF}
+
 var
   ParentForm: TCustomForm;
 begin
@@ -2422,7 +2422,6 @@ begin
     if HandleAllocated then begin
       if (not HandleObjectShouldBeVisible) then
       begin
-        {$IFDEF EnableGetMonitor}
         // hidden forms are not updated by DoSendBoundsToInterface
         if (fsFirstShow in FormState) then
         begin
@@ -2450,12 +2449,6 @@ begin
           TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
           Result := Screen.MonitorFromWindow(Handle, mdNearest);
         end;
-        {$ELSE}
-        // ensure widgetset has latest coordinates // invisible forms are not updated by DoSendBoundsToInterface
-        if (not HandleObjectShouldBeVisible) then
-          TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
-        Result := Screen.MonitorFromWindow(Handle, mdNearest);
-        {$ENDIF}
       end else
         Result := Screen.MonitorFromWindow(Handle, mdNearest);
     end
