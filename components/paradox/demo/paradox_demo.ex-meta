@@ -1,5 +1,5 @@
 { "paradox_demo" : {
    "Category" : "DBase",
-   "Keywords" : ["paradox","dbase","db","Needs Work"],
-   "Description" : "Appears to demonstrate basic use of Paradox Database.\nRequires the lazparadox package (in Laz SRC Tree) to be installed.\nRequires Paradox library on your system, eg on Debian pxlib1.\nGenerates a message \"unable to find TDatasource...\", probably looking for a design time component that it cannot find, neither can I.\n\nIt does compile and run fine, but you cannot view the form or see it in the Object Inspector. Needs fixing !\n\n"}
+   "Keywords" : ["paradox","dbase","db"],
+   "Description" : "Appears to demonstrate basic use of Paradox Database.\nRequires the lazparadox package (in Laz SRC Tree) to be installed.\nRequires Paradox library on your system, eg on Debian pxlib1.\n\nThere is an as yet unexplained issue with this demo, execute \"Clean up and Build\" if an error \"unable to find TDatasoruce\" is displayed when loading the project.\n"}
 }
