@@ -5207,7 +5207,8 @@ begin
   StateFile:=GetStateFilename;
   if (not FilenameIsAbsolute(StateFile)) or (not FileExistsUTF8(StateFile)) then
   begin
-    DebugLn('TProject.DoLoadStateFile Statefile not found: ',StateFile);
+    if ConsoleVerbosity>=0 then
+      DebugLn('TProject.DoLoadStateFile Statefile not found: ',StateFile);
     StateFlags:=StateFlags-[lpsfStateFileLoaded];
     Result:=mrOk;
     exit;

@@ -1602,7 +1602,7 @@ begin
   try
     Params.Add(Param);
     SplitCmdLineParams(Options,Params);
-    List:=RunTool(CompilerFilename,Params);
+    List:=RunTool(CompilerFilename,Params,'',CTConsoleVerbosity<0);
     if (List=nil) or (List.Count<1) then exit;
     Result:=List[0];
     if copy(Result,1,6)='Error:' then Result:='';
@@ -1913,7 +1913,7 @@ begin
     SplitCmdLineParams(Options,Params);
 
     //DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
-    List:=RunTool(CompilerFilename,Params,WorkDir);
+    List:=RunTool(CompilerFilename,Params,WorkDir,CTConsoleVerbosity<0);
     if (List=nil) or (List.Count=0) then begin
       debugln(['Warning: RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
       exit;

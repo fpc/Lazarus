@@ -48,7 +48,7 @@ interface
 uses
   SysUtils, Classes,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazUtilities,
   // Codetools
   DefineTemplates;
 
@@ -279,7 +279,8 @@ var
 begin
   NewExpValue:=ChompPathDelim(ExpandFileNameUTF8(NewValue));
   if NewExpValue=PrimaryConfigPath then exit;
-  debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(NewExpValue),'"');
+  if ConsoleVerbosity>=0 then
+    debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(NewExpValue),'"');
   PrimaryConfigPath := NewExpValue;
 end;
 
@@ -288,7 +289,8 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetSecondaryConfigPath(const NewValue: String);
 begin
-  debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
+  if ConsoleVerbosity>=0 then
+    debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
   SecondaryConfigPath := ChompPathDelim(ExpandFileNameUTF8(NewValue));
 end;
 
