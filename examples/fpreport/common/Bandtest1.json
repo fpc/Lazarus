@@ -1,0 +1,168 @@
+{
+  "Report" : {
+    "Name" : "",
+    "Title" : "",
+    "Author" : "",
+    "DateCreated" : "20180220T155357",
+    "Images" : {},
+    "Pages" : {
+      "0" : {
+        "Name" : "",
+        "Layout" : {
+          "Top" : 2.0000000000000000E+001,
+          "Left" : 2.0000000000000000E+001,
+          "Width" : 2.5700000000000000E+002,
+          "Height" : 3.8000000000000000E+002
+        },
+        "Frame" : {
+          "Color" : -2147483648,
+          "Pen" : "psSolid",
+          "Width" : 1,
+          "Shape" : "fsNone",
+          "Lines" : 0,
+          "BackgroundColor" : -2147483648
+        },
+        "Visible" : true,
+        "VisibleExpr" : "",
+        "StretchMode" : "smDontStretch",
+        "Orientation" : "poPortrait",
+        "PageSize.PaperName" : "A3",
+        "PageSize.Width" : 2.9700000000000000E+002,
+        "PageSize.Height" : 4.2000000000000000E+002,
+        "FontName" : "LiberationSans",
+        "FontSize" : 10,
+        "FontColor" : 0,
+        "Margins" : {
+          "Top" : 2.0000000000000000E+001,
+          "Left" : 2.0000000000000000E+001,
+          "Bottom" : 2.0000000000000000E+001,
+          "Right" : 2.0000000000000000E+001
+        },
+        "Children" : {
+          "0" : {
+            "PageHeaderBand" : {
+              "Name" : "Header",
+              "Layout" : {
+                "Top" : 5.0270833969116211E+000,
+                "Left" : 0.0000000000000000E+000,
+                "Width" : 2.5700000000000000E+002,
+                "Height" : 1.2054166793823242E+001
+              },
+              "Frame" : {
+                "Color" : -2147483648,
+                "Pen" : "psSolid",
+                "Width" : 1,
+                "Shape" : "fsNone",
+                "Lines" : 0,
+                "BackgroundColor" : -2147483648
+              },
+              "Visible" : true,
+              "VisibleExpr" : "",
+              "StretchMode" : "smDontStretch",
+              "UseParentFont" : true,
+              "BandPosition" : "bpNormal",
+              "Children" : {
+                "0" : {
+                  "Memo" : {
+                    "Name" : "HMemo",
+                    "Layout" : {
+                      "Top" : 2.3812499046325684E+000,
+                      "Left" : 9.9483329772949219E+001,
+                      "Width" : 7.2231246948242188E+001,
+                      "Height" : 8.2020835876464844E+000
+                    },
+                    "Frame" : {
+                      "Color" : -2147483648,
+                      "Pen" : "psSolid",
+                      "Width" : 1,
+                      "Shape" : "fsNone",
+                      "Lines" : 0,
+                      "BackgroundColor" : -2147483648
+                    },
+                    "Visible" : true,
+                    "VisibleExpr" : "",
+                    "StretchMode" : "smDontStretch",
+                    "Text" : "Head of the Report",
+                    "UseParentFont" : false,
+                    "FontName" : "LiberationSans",
+                    "FontSize" : 10,
+                    "FontColor" : 0,
+                    "LineSpacing" : 1.0000000000000000E+000,
+                    "LinkColor" : 255,
+                    "Options" : "",
+                    "TextAlignment" : {
+                      "Horizontal" : "taCentered",
+                      "Vertical" : "tlCenter",
+                      "LeftMargin" : 1.0000000000000000E+000,
+                      "RightMargin" : 1.0000000000000000E+000,
+                      "TopMargin" : 0.0000000000000000E+000,
+                      "BottomMargin" : 0.0000000000000000E+000
+                    }
+                  }
+                }
+              },
+              "VisibleOnPage" : "vpAll",
+              "KeepTogetherWithChildren" : true
+            }
+          },
+          "1" : {
+            "PageFooterBand" : {
+              "Name" : "PageFooter",
+              "Layout" : {
+                "Top" : 5.7710414886474609E+001,
+                "Left" : 0.0000000000000000E+000,
+                "Width" : 2.5700000000000000E+002,
+                "Height" : 1.1138957977294922E+002
+              },
+              "Frame" : {
+                "Color" : -2147483648,
+                "Pen" : "psSolid",
+                "Width" : 1,
+                "Shape" : "fsNone",
+                "Lines" : 0,
+                "BackgroundColor" : -2147483648
+              },
+              "Visible" : true,
+              "VisibleExpr" : "",
+              "StretchMode" : "smDontStretch",
+              "UseParentFont" : true,
+              "BandPosition" : "bpNormal",
+              "VisibleOnPage" : "vpAll",
+              "KeepTogetherWithChildren" : true
+            }
+          },
+          "2" : {
+            "ReportTitleBand" : {
+              "Name" : "ReportTitle",
+              "Layout" : {
+                "Top" : 2.5283332824707031E+001,
+                "Left" : 0.0000000000000000E+000,
+                "Width" : 2.5700000000000000E+002,
+                "Height" : 2.4224998474121094E+001
+              },
+              "Frame" : {
+                "Color" : -2147483648,
+                "Pen" : "psSolid",
+                "Width" : 1,
+                "Shape" : "fsNone",
+                "Lines" : 0,
+                "BackgroundColor" : -2147483648
+              },
+              "Visible" : true,
+              "VisibleExpr" : "",
+              "StretchMode" : "smDontStretch",
+              "UseParentFont" : true,
+              "BandPosition" : "bpNormal",
+              "VisibleOnPage" : "vpAll",
+              "KeepTogetherWithChildren" : true
+            }
+          }
+        }
+      }
+    }
+  },
+  "DesignData" : {
+    "datasets" : [
+    ]
+  }
+}
