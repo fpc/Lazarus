@@ -1,3 +1,14 @@
+{ Demo project showing how chart text elements can be formatted individually
+  by means of html code, e.g. sub-/superscript, dedicated colors, etc. 
+  
+  Shows also how to save the chart to wmf (Windows only) and svg files, and 
+  to copy it to the clipboard as a bitmap.
+  
+  NOTE:
+  The svg renderer may crash when a font is found which the FreeType routines
+  cannot read. To prevent a crash of the application add the exception type 
+  EFreeType to the "Language Exceptions" of the project. }
+
 unit main;
 
 {$mode objfpc}{$H+}

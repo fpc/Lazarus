@@ -61,7 +61,6 @@
     </SearchPaths>
     <Linking>
       <Debugging>
-        <DebugInfoType Value="dsDwarf2Set"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
@@ -72,7 +71,7 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -82,6 +81,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="EFreeType"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>
