@@ -6777,7 +6777,8 @@ begin
   {$ENDIF}
 
   if not Focused and not(csNoFocus in ControlStyle) then begin
-    SetFocus;
+    if CanFocus then
+      SetFocus;
     if not Focused then begin
       {$ifDef dbgGrid} DebugLnExit('TCustomGrid.MouseDown EXIT: Focus not allowed'); {$Endif}
       exit;
