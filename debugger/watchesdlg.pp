@@ -882,6 +882,7 @@ var
   i: integer;
   d: TIdeWatchValue;
   t: TDBGType;
+  s: String;
 begin
   if not nbInspect.Visible then exit;
   DebugBoss.LockCommandProcessing;
@@ -894,6 +895,12 @@ begin
   if Watch = nil then
     exit;
   InspectLabel.Caption := Watch.Expression;
+
+  if not(Watch.Enabled and Watch.HasAllValidParents(GetThreadId, GetStackframe)) then begin
+    InspectMemo.WordWrap := True;
+    InspectMemo.Text := '<evaluating>';
+    exit;
+  end;
 
   d := Watch.Values[GetThreadId, GetStackframe];
   if d = nil then begin
@@ -934,7 +941,11 @@ begin
   end;
 
   InspectMemo.WordWrap := True;
-  InspectMemo.Text := DebugBoss.FormatValue(d.TypeInfo, PrintWatchValue(d.ResultData, d.DisplayFormat));
+  if d.ResultData <> nil then
+    s := PrintWatchValue(d.ResultData, d.DisplayFormat)
+  else
+    s := d.Value;
+  InspectMemo.Text := DebugBoss.FormatValue(d.TypeInfo, s);
   finally
     DebugBoss.UnLockCommandProcessing;
   end;
