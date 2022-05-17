@@ -2120,25 +2120,28 @@ var
   ParentHandle: THandle;
 //  WindowInfo: PWindowInfo;
 begin
-  Result:=false;
+  Result:=False;
 //  WindowInfo := GetWindowInfo(Handle);
 //  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
 //    Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
-  if not Windows.GetWindowRect(Handle,@R) then exit;
+  if not Windows.GetWindowRect(Handle,@R) then Exit;
   LeftTop.X:=R.Left;
   LeftTop.Y:=R.Top;
-  ParentHandle:=Windows.GetParent(Handle);
-  if ParentHandle<>0 then
+  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD) <> 0 then
   begin
-    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
-    if not GetLCLClientBoundsOffset(ParentHandle, R) then
-      exit;
-    dec(LeftTop.X, R.Left);
-    dec(LeftTop.Y, R.Top);
+    ParentHandle:=Windows.GetParent(Handle);
+    if ParentHandle<>0 then
+    begin
+      if not Windows.ScreenToClient(ParentHandle,@LeftTop) then Exit;
+      if not GetLCLClientBoundsOffset(ParentHandle, R) then
+        Exit;
+      Dec(LeftTop.X, R.Left);
+      Dec(LeftTop.Y, R.Top);
+    end;
   end;
   Left:=LeftTop.X;
   Top:=LeftTop.Y;
-  Result:=true;
+  Result:=True;
 end;
 
 {------------------------------------------------------------------------------
