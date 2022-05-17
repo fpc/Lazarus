@@ -10633,10 +10633,10 @@
             MouseDown calls the inherited method to handle focus changes for the control and drag operations. The OnMouseDown event handler is signalled (when assigned) by the ancestor.
           </p>
           <p>
-            No additional actions are performed in the method at design-time, or when the mouse Button is not allowed in the grid control.
+            No additional actions are performed in the method at design-time, when the mouse Button is not allowed in the grid control, or when the control cannot receive focus.
           </p>
           <p>
-            MouseDown ensures that the grid control is focused and updates GCache with the coordinates for the mouse down event. The grid "hot" zone in the cached information determines the value assigned to GridState, GridFlags, CursorState and the actions performed for the mouse event.
+            MouseDown ensures that the grid control is focused when visible and enabled, and does not contain csNoFocus in the ControlStyle flags. MouseDown updates GCache with the coordinates for the mouse down event. The grid "hot" zone in the cached information determines the value assigned to GridState, GridFlags, CursorState and the actions performed for the mouse event.
           </p>
           <p>
             <b>gzFixedCells</b>
