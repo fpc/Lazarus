@@ -259,6 +259,33 @@ begin
   ResolveLinks;
 end;
 
+function PromptForFileName(var AFileName: string;
+                           const AFilter: string = '';
+                           const ADefaultExt: string = '';
+                           const ATitle: string = '';
+                           const AInitialDir: string = '';
+                           AIsSaveDialog: Boolean = False): Boolean;
+var
+  Dlg: TOpenDialog;
+begin
+  if AIsSaveDialog then
+    Dlg := TSaveDialog.Create(nil)
+  else
+    Dlg := TOpenDialog.Create(nil);
+  try
+    Dlg.FileName := AFileName;
+    Dlg.Filter := AFilter;
+    Dlg.DefaultExt := ADefaultExt;
+    Dlg.Title := ATitle;
+    Dlg.InitialDir := AInitialDir;
+    Result := Dlg.Execute;
+    if Result then
+      AFileName := Dlg.FileName;
+  finally
+    Dlg.Free;
+  end;
+end;
+
 
 //Helper function
 function GetExtensionFromFilterAtIndex(Filter: String; Index: Integer): String;

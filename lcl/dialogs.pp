@@ -730,6 +730,10 @@ function DefaultMessageBox(Text, Caption: PChar; Flags: Longint) : Integer;// wi
 function InputBox(const ACaption, APrompt, ADefault : string) : string;
 function PasswordBox(const ACaption, APrompt : string) : string;
 
+function PromptForFileName(var AFileName: string; const AFilter: string = ''; const ADefaultExt: string = '';
+                           const ATitle: string = ''; const AInitialDir: string = ''; AIsSaveDialog: Boolean = False): Boolean;
+
+
 type
   TCustomCopyToClipboardDialog = class(TForm)
   protected
