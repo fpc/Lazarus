@@ -876,7 +876,7 @@
         <short/>
       </element>
       <element name="TOpenOption.ofAllowMultiSelect">
-        <short>Enaboles multi-selection.</short>
+        <short>Enables multi-selection.</short>
       </element>
       <element name="TOpenOption.ofExtensionDifferent">
         <short/>
@@ -1875,7 +1875,9 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         </short>
       </element>
       <element name="TFontDialogOption.fdForceFontExist">
-        <short/>
+        <short>
+          Raises an error if a font or style is (some how) selected that does not exist in the font dialog.
+        </short>
       </element>
       <element name="TFontDialogOption.fdNoFaceSel">
         <short>Hides the font name selection list in the dialog.</short>
@@ -1931,11 +1933,18 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             TFontDialog displays selection lists for font name, size, style, and color. It can be configured to limit the available typefaces, sizes, and visual presentations using the Options, MinFontSize and MaxFontSize properties.
           </p>
           <p>
-            When the dialog is executed, the selected font is made available in the Font property. The OnApplyClicked event handler can be used to perform actions needed when the optional Apply button is clicked in the dialog.
+            At run-time, TFontDialog is mapped to the native font selection dialog used for a given platform. Use Options to enable or disable features or behaviors in the dialog. Enabling an option does not mean that it is automatically available. Some options may not be supported in the native dialog for a given platform.
+          </p>
+          <p>
+            When the dialog is executed, the selected font and its attributes is made available in the Font property. The OnApplyClicked event handler can be used to perform actions needed when the optional Apply button is clicked in the dialog.
           </p>
         </descr>
         <seealso>
+          <link id="TFontDialog.Font"/>
+          <link id="TFontDialog.Options"/>
+          <link id="TFontDialog.OnApplyClicked"/>
           <link id="TCommonDialog"/>
+          <link id="TFontDialogOptions"/>
           <link id="TFontDialogOption"/>
         </seealso>
       </element>
@@ -2008,7 +2017,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Contains the Font selected in the dialog.</short>
         <descr>
           <p>
-            <var>Font</var> is a <var>TFont</var> property with the font selected using the dialog. The value in Font is updated in widgetset classes when the <b>OK</b> or <b>Apply</b> button is clicked during execution of the dialog.
+            <var>Font</var> is a <var>TFont</var> property with the font selected using the dialog. The value in Font is updated in widgetset classes when the <b>OK</b> or <b>Apply</b> button is clicked during execution of the dialog. It includes any attributes applied to font in the native font selection dialog for the platform.
           </p>
           <p>
             Use the <var>OnApplyClicked</var> event handler to perform actions needed when the <b>Apply</b> button is enabled and clicked in the dialog.
@@ -2062,6 +2071,9 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           <p>
             Include or Exclude values for the property prior to calling the <var>Execute</var> method.
           </p>
+          <remark>
+            Enabling a value in Options does not mean that the feature or behavior is supported  in the native font selection dialog for the platform. Some options may not be available on a given platform.
+          </remark>
         </descr>
         <seealso>
           <link id="TFontDialogOptions"/>
@@ -2111,12 +2123,19 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       </element>
 
       <element name="TFindOption">
-        <short>A list of possible options which can be used in Find-dialogs.</short>
-        <descr>A list of possible options which can be used in Find-dialogs.</descr>
-        <seealso/>
+        <short>A list of possible options which can be used in Find dialogs.</short>
+        <descr>
+          <p>
+            <var>TFindOption</var> is an enumerated type with values representing options that can enabled in TFindDialog and descendants. Values from TFindOption are stored in the <var>TFindOptions</var> set type, and used to implement the <var>TFindDialog.Options</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindOptions"/>
+          <link id="TFindDialog.Options"/>
+        </seealso>
       </element>
       <element name="TFindOption.frDown">
-        <short>If set the "Down" radiobutton is selected.</short>
+        <short>If set the "Down" radio button is selected.</short>
       </element>
       <element name="TFindOption.frFindNext">
         <short>This option will be set when the user presses "Find Next"</short>
@@ -2128,7 +2147,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>If set the "Whole word" checkbox is hidden from the Find dialog.</short>
       </element>
       <element name="TFindOption.frHideUpDown">
-        <short>If set the "Up" and "Down" radiobuttons are hidden from the Find dialog.</short>
+        <short>If set the "Up" and "Down" radio buttons are hidden from the Find dialog.</short>
       </element>
       <element name="TFindOption.frMatchCase">
         <short>This flag is set when the user checks the "Match case" checkbox.</short>
@@ -2137,7 +2156,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>If set the "Match case" checkbox is disabled in the Find dialog.</short>
       </element>
       <element name="TFindOption.frDisableUpDown">
-        <short>If set the "Up" and "Down" radiobuttons are disabled in the Find dialog.</short>
+        <short>If set the "Up" and "Down" radio buttons are disabled in the Find dialog.</short>
       </element>
       <element name="TFindOption.frDisableWholeWord">
         <short>If set the "Whole word" checkbox is disabled in the Find dialog.</short>
@@ -2162,9 +2181,19 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       </element>
 
       <element name="TFindOptions">
-        <short>A set of TFindOption.</short>
-        <descr/>
-        <seealso/>
+        <short>Set type used to store TFindOption enumeration values.</short>
+        <descr>
+          <p>
+            <var>TFindOptions</var> is a set type used to store zero (0) or more values from the <var>TFindOption</var> enumeration type. Adding an enumeration value to the set indicates that the option is enabled.
+          </p>
+          <p>
+            TFindOptions is the type used to implement the TFindDialog.Options property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindOption"/>
+          <link id="TFindDialog.Options"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog">
@@ -2184,98 +2213,29 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         </seealso>
       </element>
 
+      <!-- private -->
       <element name="TFindDialog.FFormLeft"/>
       <element name="TFindDialog.FFormTop"/>
-
-      <element name="TFindDialog.GetReplaceText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.GetReplaceText.Result">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.GetFindText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.GetFindText.Result">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.GetLeft">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.GetLeft.Result">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.GetPosition">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.GetPosition.Result">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.GetTop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.GetTop.Result">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.SetFindText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.SetFindText.AValue">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.SetLeft">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.SetLeft.AValue">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.SetPosition">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.SetPosition.AValue">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.SetTop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.SetTop.AValue">
-        <short/>
-      </element>
-
-      <element name="TFindDialog.SetReplaceText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFindDialog.SetReplaceText.AValue">
-        <short/>
-      </element>
+      <element name="TFindDialog.GetReplaceText"/>
+      <element name="TFindDialog.GetReplaceText.Result"/>
+      <element name="TFindDialog.GetFindText"/>
+      <element name="TFindDialog.GetFindText.Result"/>
+      <element name="TFindDialog.GetLeft"/>
+      <element name="TFindDialog.GetLeft.Result"/>
+      <element name="TFindDialog.GetPosition"/>
+      <element name="TFindDialog.GetPosition.Result"/>
+      <element name="TFindDialog.GetTop"/>
+      <element name="TFindDialog.GetTop.Result"/>
+      <element name="TFindDialog.SetFindText"/>
+      <element name="TFindDialog.SetFindText.AValue"/>
+      <element name="TFindDialog.SetLeft"/>
+      <element name="TFindDialog.SetLeft.AValue"/>
+      <element name="TFindDialog.SetPosition"/>
+      <element name="TFindDialog.SetPosition.AValue"/>
+      <element name="TFindDialog.SetTop"/>
+      <element name="TFindDialog.SetTop.AValue"/>
+      <element name="TFindDialog.SetReplaceText"/>
+      <element name="TFindDialog.SetReplaceText.AValue"/>
 
       <element name="TFindDialog.FFindForm">
         <short>
@@ -2334,165 +2294,436 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       </element>
 
       <element name="TFindDialog.DefaultTitle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Returns the default title displayed on the dialog.
+        </short>
+        <descr>
+          <p>
+            <var>DefaultTitle</var> is an overridden String function in <var>TFindDialog</var>. It reimplements the method to return the value in the <var>rsFind</var> constant as the default caption or title for the dialog. The return value is assigned to the Title property in the inherited constructor for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCommonDialog.Title"/>
+          <link id="TCommonDialog.Create"/>
+          <link id="#lcl.lclstrconsts.rsFind">rsFind</link>
+        </seealso>
       </element>
       <element name="TFindDialog.DefaultTitle.Result">
-        <short/>
+        <short>
+          Default title for the find dialog.
+        </short>
       </element>
 
       <element name="TFindDialog.FindClick">
         <short>
-          <var>FindClick</var> - method for execution when the Find button is clicked.
+          Implements the OnClick event handler for the Find button on the dialog.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>FindClick</var> is a method which implements the event handler signalled when the Find button on the dialog form is clicked.
+          </p>
+          <p>
+            FindClick calls GetFormValues to update Options from the settings on the internal form instance for the dialog. It also ensures that Options contains only find-related enumeration values, and not those intended for a replace dialog.
+          </p>
+          <p>
+            FindClick calls Find to signal the OnFind event handler (when assigned).
+          </p>
+          <p>
+            The method is assigned to the OnClick event handler for the Find button in the CreateForm method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.GetFormValues"/>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindDialog.Find"/>
+          <link id="TFindDialog.OnFind"/>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="TFindOption"/>
+          <link id="#lcl.stdctrls.TButton.OnClick">TButton.OnClick</link>
+        </seealso>
       </element>
       <element name="TFindDialog.FindClick.Sender">
-        <short/>
+        <short>Object (TFindDialog) for the event notification.</short>
       </element>
 
       <element name="TFindDialog.HelpClick">
         <short>
-          <var>HelpClick</var> - method to execute when the Help button is clicked.
+          Implements the OnClick event handler for the Help button on the dialog.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>HelpClick</var> is a method which implements the event handler signalled when the Help button on the dialog form is clicked.
+          </p>
+          <p>
+            HelpClick calls the Help method to signal the OnHelpClicked event handler (when assigned).
+          </p>
+          <p>
+            The method is assigned to the OnClick event handler for the Help button in the CreateForm method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Help"/>
+          <link id="TFindDialog.OnHelpClicked"/>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="#lcl.stdctrls.TButton.OnClick">TButton.OnClick</link>
+        </seealso>
       </element>
       <element name="TFindDialog.HelpClick.Sender">
-        <short/>
+        <short>Object (TFindDialog) for the event notification.</short>
       </element>
 
       <element name="TFindDialog.CancelClick">
         <short>
-          <var>CancelClick</var> - method to execute when the Cancel button is clicked.
+          Implements the OnClick event handler for the Cancel button on the dialog.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CancelClick</var> is a method which implements the event handler signalled when the Cancel button on the dialog form is clicked.
+          </p>
+          <p>
+            CancelClick calls the CloseDialog method to close the internal form instance for the dialog (when assigned).
+          </p>
+          <p>
+            The method is assigned to the OnClick event handler for the Cancel button in the CreateForm method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.CloseDialog"/>
+          <link id="TFindDialog.DoCloseForm"/>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="TCommonDialog.OnClose"/>
+          <link id="TCommonDialog.OnCanClose"/>
+          <link id="#lcl.stdctrls.TButton.OnClick">TButton.OnClick</link>
+        </seealso>
       </element>
       <element name="TFindDialog.CancelClick.Sender">
-        <short/>
+        <short>Object (TFindDialog) for the event notification.</short>
       </element>
 
       <element name="TFindDialog.GetHeight">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Get the value for the Height property.
+        </short>
+        <descr>
+          <p>
+            <var>GetHeight</var> is an overridden method in <var>TFindDialog</var>. It checks whether the internal TForm instance has been assigned for the dialog, and returns the form height when it is available. Otherwise, the inherited method is called to get the value in the Height member.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCommonDialog.Height"/>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+        </seealso>
       </element>
       <element name="TFindDialog.GetHeight.Result">
-        <short/>
+        <short>
+          Value for the Height property.
+        </short>
       </element>
 
       <element name="TFindDialog.GetWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Gets the value for the Width property.
+        </short>
+        <descr>
+          <p>
+            <var>GetWidth</var> is an overridden method in <var>TFindDialog</var>. It checks whether the internal TForm instance has been assigned for the dialog, and returns the form width when it is available. Otherwise, the inherited method is called to get the value in the Width member.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCommonDialog.Width"/>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
+        </seealso>
       </element>
       <element name="TFindDialog.GetWidth.Result">
-        <short/>
+        <short>
+          Value for the Width property.
+        </short>
       </element>
 
       <element name="TFindDialog.DoCloseForm">
         <short>
-          <var>DoCloseForm</var> - execute the code for closing the Find/Replace dialog form.
+          Implements the OnClose event handler on the internal form displayed for the dialog.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoCloseForm</var> is a method which implements the event handler signalled when the internal form instance for the dialog is closed. No actions are performed in the method at design-time (csDesigning is in ComponentState property).
+          </p>
+          <p>
+            DoCloseForm stores the Left and Top coordinates from the form to the corresponding properties in the class instance. The property values are assigned as default values when a new form instance is created in CreateForm.
+          </p>
+          <p>
+            DoCloseForm is assigned to the OnClose event handler for the internal TForm instance when the Execute method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.CloseDialog"/>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.Top"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TCommonDialog.OnClose"/>
+          <link id="#lcl.forms.TCustomForm.Close">TCustomForm.Close</link>
+          <link id="#lcl.forms.TCustomForm.CloseQuery">TCustomForm.CloseQuery</link>
+          <link id="#lcl.forms.TForm.OnClose">TForm.OnClose</link>
+        </seealso>
       </element>
       <element name="TFindDialog.DoCloseForm.Sender">
-        <short/>
+        <short>Object (TFindDialog) for the event notification.</short>
       </element>
       <element name="TFindDialog.DoCloseForm.CloseAction">
-        <short/>
+        <short>
+          Not used in the current implementation.
+        </short>
+      </element>
+
+      <element name="TFindDialog.DoShowForm">
+        <short>
+          Implements the OnShow event handler on the internal form displayed for the dialog.
+        </short>
+        <descr>
+          <p>
+            <var>DoShowForm</var> is a method which implements the event handler signalled when the internal form instance for the dialog is displayed. No actions are performed in the method at design-time (csDesigning is in ComponentState property).
+          </p>
+          <p>
+            DoShowForm signals the OnShow event handler (when assigned) in TFindDialog to notify the dialog when the form calls its Show method.
+          </p>
+          <p>
+            DoShowForm is assigned to the OnShow event handler for the internal TForm instance when the Execute method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Execute"/>
+          <link id="TCommonDialog.OnShow"/>
+          <link id="#lcl.forms.TForm.OnShow">TForm.OnShow</link>
+          <link id="#lcl.forms.TCustomForm.Show">TCustomForm.Show</link>
+        </seealso>
+      </element>
+      <element name="TFindDialog.DoShowForm.Sender">
+        <short>Object (TFindDialog) for the event notification.</short>
       </element>
 
       <element name="TFindDialog.Find">
         <short>
-          <var>Find</var> - software emulation of the <var>OnFind</var> event.
+          Signals the OnFind event handler when the Find button is clicked on the dialog form.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Find is called from the <var>FindClick</var> method, and occurs when the dialog is executed. An application must assign a TNotifyEvent routine to <var>OnFind</var> to perform the actions needed for the dialog. No actions are performed in the method if an event handler routine has not been assigned to OnFind.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.FindClick"/>
+          <link id="TFindDialog.OnFind"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Help">
         <short>
-          <var>Help</var> - software emulation of the <var>OnHelpClicked</var> event.
+          Signals the OnHelpClicked event handler when the Help button on the dialog form is clicked.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Help</var> is a method used to perform actions needed when the Help button on the dialog form is clicked. Help signals the <var>OnHelpClicked</var> event handler (when assigned) to perform the required actions. An application must assign a <var>TNotifyEvent</var> handler routine to OnHelpClicked. No actions are performed in the method when OnHelpClicked has not been assigned.
+          </p>
+          <p>
+            Help is called from the HelpClick method, and occurs when the dialog is Executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.HelpClick"/>
+          <link id="TFindDialog.OnHelpClicked"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Replace">
         <short>
-          <var>Replace</var> - software emulation of the <var>OnReplace</var> event.
+          Signals the OnReplace event handler when the Replace button is clicked on the dialog form.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Replace is introduced in TFindDialog, but it is used in the implementation of the TReplaceDialog descendant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.OnReplace"/>
+          <link id="TFindDialog.ReplaceText"/>
+          <link id="TReplaceDialog.ReplaceText"/>
+          <link id="TReplaceDialog.OnReplace"/>
+          <link id="TReplaceDialog.ReplaceClick"/>
+          <link id="TReplaceDialog.ReplaceAllClick"/>
+          <link id="TReplaceDialog.CreateForm"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.CreateForm">
         <short>
-          <var>CreateForm</var> - function result returns the form that was created.
+          Creates and configures the internal form displayed for the dialog.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>CreateForm</var> is a <var>TForm</var> function used to create the form displayed for the dialog. The form class is defined in the implementation section. It contains the controls needed for the edits, labels, buttons, radio buttons, and check boxes displayed for the dialog. It includes the controls needed to represent the TFindOption values in the Options property.
+          </p>
+          <p>
+            CreateForm ensures that translated/localized resource strings are assigned to the captions for the form controls. OnClick event handlers are assigned for the Find, Help, and Cancel buttons on the form. The initial Left and Top coordinate are also assigned to the form.
+          </p>
+          <p>
+            Use the OnFind, OnHelpClicked, OnShow, and OnClose event handlers to implement the specific actions performed when the dialog is executed.
+          </p>
+          <p>
+            CreateForm is called from the Execute method when the form instance has not already been assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TFindDialog.CreateForm.Result">
-        <short/>
+        <short>TForm instance created and configured for the dialog.</short>
       </element>
 
       <element name="TFindDialog.SetFormValues">
         <short>
-          <var>SetFormValues</var> - specifies the values for the form.
+          Stores property values in the class instance to the controls on the dialog form.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>SetFormValues</var> copies values from the properties in the class instance to the controls displayed on the dialog form. This includes the values in <var>FindText</var> and <var>Options</var>.
+          </p>
+          <p>
+            Enumeration values in Options are examined and applied to the radio button or check box used to represent a specific value. The Help button on the dialog form is made visible when frShowHelp is included in Options. The Scope check box is made visible when frHideEntireScope is <b>not</b> present in Options.
+          </p>
+          <p>
+            SetFormValues ensures that the edit control for FindText is the active control on the form and its text content is selected.
+          </p>
+          <p>
+            SetFormValues is called from the Execute method, and occurs after the form instance has been created and positioned. It is called before the form is displayed and executed using its buttons.
+          </p>
+          <p>
+            See GetFormValues for the actions performed when the Find button is clicked on the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.FindText"/>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindDialog.GetFormValues"/>
+          <link id="TFindOptions"/>
+          <link id="TFindOption"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.GetFormValues">
         <short>
-          <var>GetFormValues</var> - finds the values for the form.
+          Retrieves values from the dialog form and stores them in the properties for the class instance.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GetFormValue</var> is used to update the dialog class instance with the values entered on the dialog form at run-time.
+          </p>
+          <p>
+            GetFormValue is called from the FindClick method which is used as the OnClick event handler for the Find button on the dialog form. It is called before the values in Options are sanitized and the Find method is called to perform the search.
+          </p>
+          <p>
+            See SetFormValues for the actions performed to load properties to the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.FindText"/>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.FindClick"/>
+          <link id="TFindDialog.Find"/>
+          <link id="TFindDialog.OnFind"/>
+          <link id="TFindDialog.SetFormValues"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.CalcPosition">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Determines the position for the dialog form and captures its coordinates.
+        </short>
+        <descr>
+          <p>
+            <var>CalcPosition</var> ensures that both the form and the class instance are updated with the location where the form is displayed. The Position property in the form instance is updated to display the form in the correct relative location.
+          </p>
+          <p>
+            At design-time, the dialog form is aligned to the center of the Screen (poScreenCenter).
+          </p>
+          <p>
+            At run-time, the dialog form is aligned to the center of the main form in the application (poMainFormCenter) when the Left and Top coordinates in the dialog are set to their unassigned values. The Left and Top coordinates are stored in the class instance for subsequent use in the CreateForm method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.Top"/>
+          <link id="#lcl.forms.TForm.Position">TForm.Position</link>
+          <link id="#lcl.controls.TControl.Left">TControl.Left</link>
+          <link id="#lcl.controls.TControl.Top">TControl.Top</link>
+        </seealso>
       </element>
       <element name="TFindDialog.CalcPosition.AForm">
-        <short/>
+        <short>
+          TForm instance examined in the method.
+        </short>
       </element>
 
       <element name="TFindDialog.ReplaceText">
         <short>
-          <var>ReplaceText</var> - the text string that is to be substituted for the Find text.
+          String with the value used to replace the value in FindText.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ReplaceText</var> is introduced in <var>TFindDialog</var>, but it is used in the implementation of the TReplaceDialog descendant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.FindText"/>
+          <link id="TFindDialog.OnReplace"/>
+          <link id="TReplaceDialog.ReplaceText"/>
+          <link id="TReplaceDialog.OnReplace"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.OnReplace">
         <short>
-          <var>OnReplace</var> - event handler for replacing text.
+          Event handler signalled to replace occurrence(s) of FindText with the value in ReplaceText.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            An application must implement and assign a TNotifyEvent handler routine to OnReplace which responds to the event notification.
+          </p>
+          <p>
+            The <var>Sender</var> argument contains the object instance with the <var>TFindDialog</var> or descendant for the event notification. It can be cast to a <var>TFindDialog</var> or a <var>TReplaceDialog</var> type to access properties and methods in the dialog class, including: FindText, ReplaceText, and Options.
+          </p>
+          <p>
+            OnReplace is introduced in TFindDialog, but it is used in the implementation of the TReplaceDialog descendant. Use TReplaceDialog when the additional controls and buttons implemented in the replace dialog are needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.FindText"/>
+          <link id="TFindDialog.ReplaceText"/>
+          <link id="TFindDialog.OnReplace"/>
+          <link id="TReplaceDialog.ReplaceText"/>
+          <link id="TReplaceDialog.OnReplace"/>
+          <link id="TReplaceDialog.CreateForm"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TFindDialog</var>, and calls the inherited <var>Create</var> method. It sets the initial option values for Find only.
+            <var>Create</var> is the constructor for <var>TFindDialog</var>, and calls the inherited <var>Create</var> method. It sets the initial value in Options to [frDown]. It also stores the unassigned value (-1) for both the Left and Top properties in the class instance.
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.Top"/>
+          <link id="TFindOptions"/>
+          <link id="TFindOption"/>
+          <link id="TCommonDialog.Create"/>
         </seealso>
       </element>
       <element name="TFindDialog.Create.AOwner">
@@ -2501,73 +2732,302 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
 
       <element name="TFindDialog.Destroy">
         <short>Destructor for the class instance.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that the internal <var>TForm</var> instance for the dialog form is freed (when assigned). Destroy calls the inherited destructor to perform and remove free notifications for the referenced counted component.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TFindDialog.CloseDialog">
         <short>
-          <var>CloseDialog</var> and returns its resources.
+          Closes the dialog form when its Cancel button is clicked.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            CloseDialog is called from the CancelClick method (the OnClick handler for the Cancel button on the dialog form). CloseDialog ensures that the internal TForm instance for the dialog class has been assigned, and calls its Close method. This initiates a series of method calls and event handler notifications needed to close the form.
+          </p>
+<pre>
+TCustomForm.Close ->
+  TCustomForm.OnClose ->
+    TFindDialog.DoCloseForm ->
+      TCommonDialog.OnClose
+</pre>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.CancelClick"/>
+          <link id="TFindDialog.DoCloseForm"/>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TCommonDialog.OnClose"/>
+          <link id="TCommonDialog.OnCanClose"/>
+          <link id="#lcl.forms.TCustomForm.Close">TCustomForm.Close</link>
+          <link id="#lcl.forms.TCustomForm.OnClose">TCustomForm.OnClose</link>
+        </seealso>
       </element>
 
-      <element name="TFindDialog.Execute" link="#lcl.dialogs.TCommonDialog.Execute">
-        <short/>
-        <descr/>
+      <element name="TFindDialog.Execute">
+        <short>
+          Displays the dialog form and responds to button clicks.
+        </short>
+        <descr>
+          <p>
+            <var>Execute</var> is an overridden <var>Boolean</var> function used to display the internal dialog form and respond to button clicks on the form. Execute reimplements the method defined in the ancestor class, and does <b>not</b> call the inherited method.
+          </p>
+          <p>
+            If a TForm instance already exists in the dialog class, it is reused. If not, CreateForm is called to create and configure the TForm instance displayed for the dialog. The return value is <b>False</b> if a TForm instance was not successfully created in CreateForm.
+          </p>
+          <p>
+            When a valid form exists for the dialog, it is positioned on the screen by calling CalcPosition. SetFormValues is called to transfer property values in the class instance to the dialog form. The Title, HelpContext, OnClose and OnShow properties in the form are updated and its Show method is called to display and execute the form. Values from the Height and Width properties in the form are stored in the dialog class for use as the default size.
+          </p>
+          <p>
+            The return value is <b>True</b> if the form was successfully configured and displayed in the method.
+          </p>
+          <p>
+            Use the OnFind, OnHelpClicked event handlers to perform actions needed when either the Find or the Help button on the dialog form is clicked. The Cancel button calls CloseDialog when the button is clicked.
+          </p>
+        </descr>
         <seealso>
+          <link id="TFindDialog.CreateForm"/>
+          <link id="TFindDialog.CalcPosition"/>
+          <link id="TFindDialog.SetFormValues"/>
+          <link id="TFindDialog.OnFind"/>
+          <link id="TFindDialog.OnHelpClicked"/>
+          <link id="TFindDialog.CloseDialog"/>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.Top"/>
+          <link id="TCommonDialog.Title"/>
+          <link id="TCommonDialog.HelpContext"/>
+          <link id="TCommonDialog.OnClose"/>
+          <link id="TCommonDialog.OnShow"/>
+          <link id="TCommonDialog.Height"/>
+          <link id="TCommonDialog.Width"/>
           <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
         </seealso>
       </element>
       <element name="TFindDialog.Execute.Result">
-        <short>True if the dialog was successfully completed.</short>
+        <short>
+          <b>True</b> if the dialog was successfully configured and displayed in the method.
+        </short>
       </element>
 
       <element name="TFindDialog.Left">
-        <short>The <var>Left</var> side of the dialog display.</short>
-        <descr/>
-        <seealso/>
+        <short>Coordinate for the <var>Left</var> side of the dialog form.</short>
+        <descr>
+          <p>
+            <var>Left</var> is an <var>Integer</var> property which contains the horizontal coordinate where the left edge of the dialog form is located. The default value for the property is -1 and represents the unassigned value.
+          </p>
+          <p>
+            The property value is read from the Left property in the internal TForm instance for the dialog (when assigned). Changing the value in the property causes the Left property in the dialog form to be updated with the new coordinate value. The value for the property is updated in the CalcPosition method when the dialog is executed.
+          </p>
+          <p>
+            Left and Top are used in the CreateForm method to set the default coordinates for the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Top"/>
+          <link id="TFindDialog.CalcPosition"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.CreateForm"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Position">
-        <short>The <var>Position</var> of the dialog display.</short>
-        <descr/>
-        <seealso/>
+        <short>The position for the dialog form.</short>
+        <descr>
+          <p>
+            <var>Position</var> is a <var>TPoint</var> property with the coordinates where the dialog is displayed. The X and Y members in the TPoint instance contain the values from the Left and Top properties (respectively). Changing the value for the property causes the Left and Top properties to be updated with the new member values.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.Top"/>
+          <link id="#rtl.classes.TPoint">TPoint</link>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Top">
-        <short>the <var>Top</var> of the dialog display.</short>
-        <descr/>
-        <seealso/>
+        <short>Coordinate for the <var>Top</var> edge of the dialog form.</short>
+        <descr>
+          <p>
+            <var>Top</var> is an <var>Integer</var> property which contains the vertical  coordinate where the top edge of the dialog form is located. The default value for the property is -1 and represents the unassigned value.
+          </p>
+          <p>
+            The property value is read from the Top property in the internal TForm instance for the dialog (when assigned). Changing the value in the property causes the Top  property in the dialog form to be updated with the new coordinate value. The value for the property is updated in the CalcPosition method when the dialog is executed.
+          </p>
+          <p>
+            Left and Top are used in the CreateForm method to set the default coordinates for the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Left"/>
+          <link id="TFindDialog.CalcPosition"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.CreateForm"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.FindText">
-        <short><var>FindText</var> - the text string that the dialog will try to find.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains the text to locate when the Find button is clicked on the dialog form.
+        </short>
+        <descr>
+          <p>
+            <var>FindText</var> is a <var>String</var> property with the value to locate when Find button is clicked on the dialog form. Changing the value for the property causes the corresponding edit control on the dialog form to be updated (when assigned) with the new value.
+          </p>
+          <p>
+            Use the OnFind event handler to perform the actions needed to located the value in FindText using the Options enabled for the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.OnFind"/>
+          <link id="TFindDialog.Options"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.Options">
-        <short>The current <var>Options</var> for the seeking and replacing process.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains the find / replace options enabled for the dialog.
+        </short>
+        <descr>
+          <p>
+            <var>Options</var> is a <var>TFindOptions</var> property which contains the set of find / replace options enabled for the dialog. The set type contains zero (0) or more values from the TFindOption enumeration. The default value for the property is [frDown] and indicates the search direction in the dialog.
+          </p>
+          <p>
+            Changing the values in the property causes the controls on the dialog form to be updated (when assigned). For example:
+          </p>
+          <dl>
+            <dt>frEntireScope</dt>
+            <dd>Causes the EntireScope check box to become checked.</dd>
+            <dt>frWholeWord</dt>
+            <dd>Causes the WholeWordsOnly check box to become checked.</dd>
+            <dt>frMatchCase</dt>
+            <dd>Causes the CaseSensitive check box to become checked.</dd>
+          </dl>
+          <p>
+            Other values in Options control whether controls on the dialog form are visible or enabled, and are applied when the SetFormValues method is called. These include:
+          </p>
+          <dl>
+            <dt>frDown</dt>
+            <dd>Causes the DirectionRadioGroup box to be set to the Down radio button.</dd>
+            <dt>frDisableWholeWord</dt>
+            <dd>
+              Causes the WholeWordsOnly check box to be disabled (Enabled = False) when present.
+            </dd>
+            <dt>frDisableMatchCase</dt>
+            <dd>
+              Causes the CaseSensitive check box to be disabled (Enabled = False) when present.
+            </dd>
+            <dt>frDisableUpDown</dt>
+            <dd>
+              Causes the Direction radio group be disabled (Enabled = False) when present.
+            </dd>
+            <dt>frHideWholeWord</dt>
+            <dd>
+              Causes the WholeWordsOnly check box be hidden (Visible = False) when present.
+            </dd>
+            <dt>frHideMatchCase</dt>
+            <dd>
+              Causes the CaseSensitive check box be hidden (Visible = False) when present.
+            </dd>
+            <dt>frHideUpDown</dt>
+            <dd>
+              Causes the Direction radio group to be hidden (Visible = False) when present.
+            </dd>
+            <dt>frShowHelp</dt>
+            <dd>
+              Causes the Help button to be displayed (Visible = True) when present.
+            </dd>
+            <dt>frHideEntireScope</dt>
+            <dd>
+              Causes the EntireScope check box to be hidden (Visible = False) when present.
+            </dd>
+          </dl>
+          <p>
+            Values in Options are updated in the GetFormValues method, which is called when the Find button is clicked on the dialog form. The Option values affected include:
+          </p>
+          <dl>
+            <dt>frDown</dt>
+            <dd>
+              Added or removed based the radio button select in the Direction radio group.
+            </dd>
+            <dt>frWholeWord</dt>
+            <dd>
+              Added or removed based on the checked state for the WholeWordsOnly check box.
+            </dd>
+            <dt>frMatchCase</dt>
+            <dd>
+              Added or removed based on the checked state for the CaseSensitive check box.
+            </dd>
+            <dt>frEntireScope</dt>
+            <dd>
+              Added or removed based on the checked state for the EntireScope check box.
+            </dd>
+          </dl>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.SetFormValues"/>
+          <link id="TFindDialog.GetFormValues"/>
+          <link id="TFindDialog.Execute"/>
+          <link id="TFindDialog.FindClick"/>
+          <link id="TFindOptions"/>
+          <link id="TFindOption"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.OnFind">
-        <short><var>OnFind</var> - event handler for a click on the Find button.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when the Find button is clicked on the dialog form.
+        </short>
+        <descr>
+          <p>
+            <var>OnFind</var> is a <var>TNotifyEvent</var> property with the event handler signalled to perform the find operation for the dialog. OnFind is signalled (when assigned) from the Find method, and occurs when the Find button is clicked on the dialog form.
+          </p>
+          <p>
+            An application must implement and assign a handler routine to the property to respond to the event notification.
+          </p>
+          <p>
+            The <var>Sender</var> argument is the object instance for the event notification. It can be cast to TFindDialog (or TReplaceDialog in the descendent class) to access the properties and methods in the dialog class instance. Use its FindText and Options properties to perform the actions needed in the handler routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.FindText"/>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindDialog.Find"/>
+          <link id="TFindDialog.FindClick"/>
+          <link id="TReplaceDialog.ReplaceText"/>
+        </seealso>
       </element>
 
       <element name="TFindDialog.OnHelpClicked">
-        <short><var>OnHelpClicked</var> - event handler for a click on the Help button.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when the Help button is clicked on the dialog form.
+        </short>
+        <descr>
+          <p>
+            <var>OnHelpClicked</var> is a <var>TNotifyEvent</var> property with the event handler signalled to display context help for the find dialog. It can be used to locate, format, and display the help associated with the dialog. OnHelpClicked is signalled from the Help method (when assigned), and occurs when the Help button is clicked on the dialog form.
+          </p>
+          <p>
+            An application can implement and assign a handler routine to the property to respond to the event notification. The Sender argument contains the object instance for the event notification. It can be cast to TFindDialog (or TReplaceDialog for the descendent class) to access properties and methods specific to the dialog class instance. The handler routine is responsible for all aspects of the context help display.
+          </p>
+          <p>
+            Include frShowHelp in the Options property to enable the Help button on the dialog form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFindDialog.Help"/>
+          <link id="TFindDialog.HelpClick"/>
+          <link id="TFindDialog.Options"/>
+          <link id="TFindOptions"/>
+          <link id="TFindOption"/>
+        </seealso>
       </element>
 
       <element name="TReplaceDialog">
-        <short>A dialog allowing the user to replace text.</short>
+        <short>
+          Implements a find and replace dialog.
+        </short>
         <descr>
           <p>
             The dialog appears and offers boxes for the user to enter text for searching and text to replace it, for example while editing a file or large piece of text.
@@ -4686,6 +5146,81 @@ var
       </element>
       <element name="PasswordBox.APrompt">
         <short>A prompt to ask for the users input.</short>
+      </element>
+
+      <element name="PromptForFileName">
+        <short>
+          Displays a file open or save dialog to select a file name for the operation.
+        </short>
+        <descr>
+          <p>
+            PromptForFileName is a Boolean function used to display an Open or Save dialog using the values passed as arguments to the routine. It creates a <var>TOpenDialog</var> or a <var>TSaveDialog</var> instance for use in the routine. The <var>AIsSaveDialog</var> argument determines which dialog class is used in the routine.
+          </p>
+          <p>
+            Argument values are assigned to the corresponding properties in the dialog class. The Execute method in the dialog class is called to perform file selection or creation as needed, and its return value is used as the return value for the routine. The return value is <b>True</b> when the Execute method for the dialog class returns <b>True</b>.
+          </p>
+          <p>
+            <var>AFilename</var> contains the initially selected file name in the dialog, and is updated with the value selected using the dialog. A default value is not provided for the argument. If the dialog returns True, the FileName property in the dialog class is assigned to the AFileName argument.
+          </p>
+          <p>
+            <var>AFilter</var> contains file masks that can be selected in the dialog. The default value is an empty string ('') and causes the all files mask ('*.*' or '*') to be used. See TFileDialog.Filter for more information about the notation allowed in the argument.
+          </p>
+          <p>
+            <var>ADefaultExt</var> contains the file extension used for the file name selected in the routine. The default value for the argument is an empty string ('') and indicates that a default file extension is not used. See TFileDialog.DefaultExt for more information about default extensions.
+          </p>
+          <p>
+            <var>ATitle</var> contains the caption displayed on the dialog. The default value is an empty string ('') and allows the default value provided by the dialog class to be used.
+          </p>
+          <p>
+            <var>AInitialDir</var> indicates the initial directory when the dialog is displayed. The default value is an empty string ('') and causes the current directory in the application to be used as the initial directory in the dialog.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileDialog.FileName"/>
+          <link id="TFileDialog.DefaultExt"/>
+          <link id="TFileDialog.Filter"/>
+          <link id="TFileDialog.FilterIndex"/>
+          <link id="TFileDialog.InitialDir"/>
+          <link id="TFileDialog.Title"/>
+          <link id="TOpenDialog"/>
+          <link id="TSaveDialog"/>
+          <link id="TCommonDialog.Execute"/>
+        </seealso>
+      </element>
+      <element name="PromptForFileName.Result">
+        <short>
+          True if a file name was selected using the dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.AFileName">
+        <short>
+          Updated to contain the file name selected in open or save dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.AFilter">
+        <short>
+          File masks used in the dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.ADefaultExt">
+        <short>
+          Default file extension for the file name selected in the dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.ATitle">
+        <short>
+          Title displayed on the dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.AInitialDir">
+        <short>
+          Initial directory displayed in the dialog.
+        </short>
+      </element>
+      <element name="PromptForFileName.AIsSaveDialog">
+        <short>
+          <b>True</b> to create a save dialog, <b>False</b> to create an open dialog.
+        </short>
       </element>
 
       <element name="TCustomCopyToClipboardDialog">
