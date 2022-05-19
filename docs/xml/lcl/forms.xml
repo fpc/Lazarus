@@ -5574,21 +5574,53 @@
       </element>
 
       <element name="TCustomForm.Monitor">
-        <short>The Monitor where the form is shown.</short>
+        <short>Contains the Monitor where the form is shown.</short>
         <descr>
           <p>
-            <var>Monitor</var> is a read-only <var>TMonitor</var> property which contains the monitor where the form was displayed. Monitor defaults to the <var>TMonitor</var> instance for the Parent form when it has been assigned.
+            <var>Monitor</var> is a read-only <var>TMonitor</var> property which contains the monitor where the form is displayed. Monitor defaults to the <var>TMonitor</var> instance for the Parent control (when it has been assigned). The return value is <b>Nil</b> if a TCustomForm instance is not found in the control hierarchy for an assigned Parent.
           </p>
           <p>
-            When the parent form has not been assigned, and a handle exists for the form instance, the widgetset class is notified of the current coordinates for the form. The <var>MonitorFromWindow</var> method in the <var>Screen</var> singleton is called to locate the window closest to the the form (using its handle).
+            When Parent has not been assigned, values from properties and methods in the class instance are checked. This includes Handle, FormState, Position, and DefaultMonitor.
           </p>
           <p>
-            When neither a parent form nor a window handle are available, the <var>MonitorFromPoint</var> method in the <var>Screen</var> singleton is used to locate the form located at the <var>Top</var> and <var>Left</var> coordinates for the form instance.
+            If the form is not visible and has never been displayed, the Position property is used to get the monitor instance. The value in Position determines how the monitor is retrieved, and DefaultMonitor is used as the fallback value.
+          </p>
+          <dl>
+            <dt>poDefault, poDefaultPosOnly</dt>
+            <dd>
+              Calls TScreen.MonitorFromWindow to get the monitor for the form Handle.
+            </dd>
+            <dt>poDesigned, poDefaultSizeOnly</dt>
+            <dd>
+              Calls TScreen.MonitorFromPoint to get the monitor where the Left and Top coordinates for the form are located.
+            </dd>
+            <dt>poMainFormCenter</dt>
+            <dd>
+              Uses the monitor in TApplication.MainForm when the form is not the main form for the application. If it is the main form, the value in DefaultMonitor is used as  the monitor where the form is located.
+            </dd>
+            <dt>poOwnerFormCenter</dt>
+            <dd>
+              When Owner is a different TCustomForm instance than the current class, the monitor in TApplication.MainForm is used.
+            </dd>
+          </dl>
+          <p>
+            If the form has been displayed previously, SetBounds in the widgetset class is called to update the current coordinates for the form with the values in Left, Top, Width, and Height. TScreen.MonitorFromWindow is called to locate the monitor nearest to the form Handle, and it is used as the return value.
+          </p>
+          <p>
+            When neither a parent form nor a form Handle are available, TScreen.MonitorFromPoint is called to get the monitor where the Left and Top coordinates for the form are found.
           </p>
         </descr>
+        <version>
+          The Monitor implementation was modified in version 2.2.4 to account for differences between WinCE and Win32 when the form position is poDefault or poDefaultPosOnly.
+        </version>
         <seealso>
+          <link id="TCustomForm.FormState"/>
+          <link id="TCustomForm.Position"/>
+          <link id="TCustomForm.DefaultMonitor"/>
           <link id="Screen"/>
           <link id="TScreen"/>
+          <link id="Application"/>
+          <link id="TApplication"/>
           <link id="TMonitor"/>
           <link id="GetParentForm"/>
         </seealso>
@@ -5596,7 +5628,7 @@
 
       <element name="TCustomForm.LastActiveControl">
         <short>
-          Tracks changes in the focus for the active form or the last active control for the current form.
+          Tracks focus changes for the active form or the last active control on the current form.
         </short>
         <descr>
           <p>
@@ -5610,7 +5642,7 @@
       </element>
 
       <element name="TCustomForm.PopupMode">
-        <short>Defines where popup menus are shown.</short>
+        <short>Defines where pop-up menus are shown.</short>
         <descr>
           <p>
             <var>PopupMode</var> is a <var>TPopupMode</var> property which controls the display policy for pop-up forms. The default value for the property is <var>pmNone</var>. See <var>TPopupMode</var> for more information about the values and meanings in the enumeration.
@@ -5639,7 +5671,7 @@
             <var>PopupParent</var> is a <var>TCustomForm</var> property which contains the parent form which owns the current form instance when displayed as a pop-up window.
           </p>
           <p>
-            Setting a new value for the property causes the existing pop-up parent form to be removed from the free notifications for the application. A new non-Nil pop-up parent is added to the free notification list, and its <var>PopupMode</var> property is set to <var>pmExplicit</var>.
+            Setting a new value for the property causes the existing pop-up parent form to be removed from the free notifications for the application. A new non-Nil pop-up Parent is added to the free notification list, and its <var>PopupMode</var> property is set to <var>pmExplicit</var>.
           </p>
           <p>
             At run-time, the widgetset class is notified of the change in the <var>PopupParent</var> property. The notification is not performed at design-time.
@@ -5661,13 +5693,13 @@
           </p>
         </descr>
         <seealso>
-          <link id="#LCL.Forms.TApplication.OnActivate">TApplication.OnActivate</link>
+          <link id="#lcl.forms.TApplication.OnActivate">TApplication.OnActivate</link>
         </seealso>
       </element>
 
       <element name="TCustomForm.OnClose">
         <short>
-          Handler called when the form is closed. It determines what happens to the form (destroy, hide...).
+          Handler called when the form is closed. It determines what happens to the form (destroy, hide, etc.).
         </short>
         <descr>
           <p>
