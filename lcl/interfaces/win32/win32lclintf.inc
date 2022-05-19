@@ -317,9 +317,7 @@ begin
     Here we get the callback WndMethod associated with this window
    ------------------------------------------------------------------------------}
   PMethod := {%H-}Pointer(Widgetset.GetWindowLong(ahwnd, GWL_USERDATA));
-
   if Assigned(PMethod) then PMethod^(Msg);
-   
   Windows.DefWindowProc(ahwnd, uMsg, wParam, lParam);
 end;
 
@@ -469,7 +467,12 @@ begin
 
     This memory is for the TMethod structure allocated on AllocateHWnd
    ------------------------------------------------------------------------------}
-  if Assigned(PMethod) then Freemem(PMethod);
+  if Assigned(PMethod) then
+  begin
+    Freemem(PMethod);
+    // remove the method pointer
+    Self.SetWindowLong(Wnd, GWL_USERDATA, {%H-}PtrInt(nil));
+  end;
 end;
 
 procedure TWin32WidgetSet.DestroyRubberBand(ARubberBand: HWND);
