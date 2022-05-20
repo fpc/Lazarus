@@ -10631,7 +10631,7 @@ begin
   EnqueueElement(Element);
 
   EnqueueElement(Owner.SoftLF);
-//  EnqueueElement(Owner.HardLF);  // LFs needed otherwise next element is too close
+  EnqueueElement(Owner.HardLF);  // LFs needed otherwise next element is too close
 {
   case Align of
   hiaTop,
