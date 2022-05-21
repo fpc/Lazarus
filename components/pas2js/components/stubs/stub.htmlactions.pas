@@ -2,7 +2,7 @@ unit stub.htmlactions;
 
 {$mode ObjFPC}
 {$H+}
-
+{$WARN 5024 off : Parameter "$1" not used}
 interface
 
 uses
@@ -50,15 +50,15 @@ Type
      procedure SetElementID(AValue: String);
      procedure SetIndex(AValue: Integer);
    Protected
-     function GetParentComponent: TComponent; override;
      procedure SetParentComponent(AParent: TComponent); override;
      procedure ReadState(Reader: TReader); override;
-     function HasParent: Boolean; override;
      Procedure BindElementEvents; virtual;
      Procedure DoBeforeBind;
      Procedure DoAfterBind;
    Public
      Destructor Destroy; override;
+     function GetParentComponent: TComponent; override;
+     function HasParent: Boolean; override;
      Procedure Bind; virtual;
      Procedure BindEvents(aEl : TJSElement); virtual;
      procedure HandleEvent(Event: TJSEvent); virtual;
@@ -111,13 +111,14 @@ Type
      function GetAction(aIndex: Integer): THTMLCustomElementAction;
      function GetActionsCount: Integer;
    Protected
-     class function CreateAction(aOwner : TComponent) : THTMLCustomElementAction; virtual;
+     class function CreateAction(aOwner: TComponent; aClass: THTMLCustomElementActionClass): THTMLCustomElementAction;
+  virtual;
      function GetActionIndex(aAction : THTMLCustomElementAction) : Integer;
      Procedure SetActionIndex(aAction : THTMLCustomElementAction; aValue : Integer);
      procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
      Procedure AddAction(aAction: THTMLCustomElementAction); virtual;
      Procedure RemoveAction(aAction: THTMLCustomElementAction); virtual;
-     Function ExecuteAction(aAction: THTMLCustomElementAction; aEvent : TJSEvent) : Boolean; virtual;
+     Function ExecuteAction(aAction: THTMLCustomElementAction; aEvent : TJSEvent) : Boolean; reintroduce;
    Public
      Constructor Create(aOwner : TComponent); override;
      Destructor Destroy; override;
@@ -125,7 +126,7 @@ Type
      Function IndexOfElementID(aID : String; StartAt : Integer = 0) : Integer;
      Function FindActionByElementID(aID : String; StartAt : Integer = 0) : THTMLCustomElementAction;
      Function GetActionsForElementID(aID : String) : THTMLCustomElementActionArray;
-     Function NewAction(aOwner: TComponent) : THTMLCustomElementAction;
+     Function NewAction(aOwner: TComponent; aClass : THTMLCustomElementActionClass = Nil) : THTMLCustomElementAction;
      Function ActionByName(aName : String) : THTMLCustomElementAction;
      Property Actions[aIndex: Integer] : THTMLCustomElementAction Read GetAction;
      Property ActionCount : Integer Read GetActionsCount;
@@ -141,7 +142,6 @@ Type
 
 implementation
 
-uses strutils;
 
 { ----------------------------------------------------------------------
   THTMLCustomElementActionList
@@ -273,6 +273,7 @@ Var
   Idx,aCount : Integer;
 
 begin
+  Result:=[];
   SetLength(Result,10);
   Idx:=IndexOfElementID(aID,0);
   aCount:=0;
@@ -287,17 +288,18 @@ begin
   SetLength(Result,aCount);
 end;
 
-function THTMLCustomElementActionList.NewAction(aOwner: TComponent
-  ): THTMLCustomElementAction;
+function THTMLCustomElementActionList.NewAction(aOwner: TComponent;
+  aClass: THTMLCustomElementActionClass): THTMLCustomElementAction;
 begin
-  Result:=CreateAction(aOwner);
+  Result:=CreateAction(aOwner,aClass);
   Result.ActionList:=Self;
 end;
 
-class function THTMLCustomElementActionList.CreateAction(aOwner: TComponent
-  ): THTMLCustomElementAction;
+class function THTMLCustomElementActionList.CreateAction(aOwner: TComponent;aClass : THTMLCustomElementActionClass): THTMLCustomElementAction;
 begin
-  Result:=THTMLElementAction.Create(aOwner);
+  if aClass=Nil then
+    aClass:=THTMLElementAction;
+  Result:=aClass.Create(aOwner);
 end;
 
 function THTMLCustomElementActionList.ActionByName(aName: String

@@ -2,11 +2,13 @@
 <CONFIG>
   <Package Version="5">
     <Name Value="pas2jscomponents"/>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
+        <IncludeFiles Value="stubs"/>
+        <OtherUnitFiles Value="stubs"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -28,11 +30,6 @@
         <UnitName Value="frmHTMLActionsEditor"/>
       </Item>
       <Item>
-        <Filename Value="htmlactions.pas"/>
-        <Type Value="Virtual Unit"/>
-        <UnitName Value="htmlactions"/>
-      </Item>
-      <Item>
         <Filename Value="htmleventnames.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="htmleventnames"/>
@@ -41,8 +38,89 @@
         <Filename Value="strpas2jscomponents.pas"/>
         <UnitName Value="strpas2jscomponents"/>
       </Item>
+      <Item>
+        <Filename Value="stubs/stub.htmlfragment.pas"/>
+        <UnitName Value="stub.htmlfragment"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.restdataset.pas"/>
+        <UnitName Value="stub.restdataset"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.htmlactions.pas"/>
+        <UnitName Value="stub.htmlactions"/>
+      </Item>
+      <Item>
+        <Filename Value="pas2jsrestutils.pas"/>
+        <UnitName Value="pas2jsrestutils"/>
+      </Item>
+      <Item>
+        <Filename Value="pas2jsrestcmd.pas"/>
+        <UnitName Value="pas2jsrestcmd"/>
+      </Item>
+      <Item>
+        <Filename Value="frmrestdata.pas"/>
+        <UnitName Value="frmRestData"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.webwidget.pas"/>
+        <UnitName Value="stub.webwidget"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.js.pas"/>
+        <UnitName Value="Stub.JS"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.web.pas"/>
+        <UnitName Value="stub.web"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.bootstrapwidgets.pas"/>
+        <UnitName Value="stub.bootstrapwidgets"/>
+      </Item>
+      <Item>
+        <Filename Value="frmpas2jsedithtml.pas"/>
+        <UnitName Value="frmpas2jsedithtml"/>
+      </Item>
+      <Item>
+        <Filename Value="p2jselementactions.pas"/>
+        <UnitName Value="p2jselementactions"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.data.htmlactions.pp"/>
+        <UnitName Value="Stub.Data.HTMLActions"/>
+      </Item>
+      <Item>
+        <Filename Value="frmselecthtmlactions.pas"/>
+        <UnitName Value="frmselecthtmlactions"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.jsondataset.pp"/>
+        <UnitName Value="stub.jsondataset"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.bootstraptablewidget.pas"/>
+        <UnitName Value="stub.bootstraptablewidget"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.dbwebwidget.pp"/>
+        <UnitName Value="stub.dbwebwidget"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.dbhtmlwidgets.pp"/>
+        <UnitName Value="stub.dbhtmlwidgets"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.htmlwidgets.pp"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEditDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
       <Item>
         <PackageName Value="Pas2JSDsgn"/>
       </Item>
@@ -51,6 +129,9 @@
       </Item>
       <Item>
         <PackageName Value="FCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

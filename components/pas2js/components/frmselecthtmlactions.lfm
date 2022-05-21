@@ -1,0 +1,68 @@
+object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
+  Left = 492
+  Height = 412
+  Top = 312
+  Width = 514
+  Caption = 'Add HTML Actions'
+  ClientHeight = 412
+  ClientWidth = 514
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object pnlTop: TPanel
+    Left = 0
+    Height = 34
+    Top = 0
+    Width = 514
+    Align = alTop
+    ClientHeight = 34
+    ClientWidth = 514
+    TabOrder = 0
+    object cbUseDBAware: TCheckBox
+      Left = 16
+      Height = 23
+      Top = 6
+      Width = 127
+      Caption = 'Use Data Actions'
+      OnChange = cbUseDBAwareChange
+      TabOrder = 0
+    end
+  end
+  object bpHTMLActions: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 368
+    Width = 502
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object VLEClasses: TValueListEditor
+    Left = 0
+    Height = 328
+    Top = 34
+    Width = 514
+    Align = alClient
+    DefaultColWidth = 200
+    FixedCols = 0
+    RowCount = 2
+    TabOrder = 2
+    KeyOptions = [keyUnique]
+    TitleCaptions.Strings = (
+      'Tag'
+      'Action Class'
+    )
+    OnGetPickList = VLEClassesGetPickList
+    ColWidths = (
+      200
+      312
+    )
+  end
+end

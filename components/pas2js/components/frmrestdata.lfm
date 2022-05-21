@@ -1,0 +1,61 @@
+object RestDataForm: TRestDataForm
+  Left = 608
+  Height = 496
+  Top = 379
+  Width = 651
+  Caption = 'Rest data'
+  ClientHeight = 496
+  ClientWidth = 651
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 200
+  LCLVersion = '2.3.0.0'
+  object navData: TDBNavigator
+    Left = 16
+    Height = 25
+    Top = 8
+    Width = 136
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
+    ClientHeight = 25
+    ClientWidth = 136
+    DataSource = dsData
+    Options = []
+    TabOrder = 0
+    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 452
+    Width = 639
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+  end
+  object grdData: TDBGrid
+    Left = 16
+    Height = 410
+    Top = 40
+    Width = 627
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWindow
+    Columns = <>
+    DataSource = dsData
+    TabOrder = 2
+  end
+  object dsData: TDataSource
+    Left = 213
+    Top = 39
+  end
+end

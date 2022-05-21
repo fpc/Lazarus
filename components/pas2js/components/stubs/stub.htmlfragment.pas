@@ -14,7 +14,6 @@ Type
 
   TCustomHTMLFragment = class(TDatamodule)
   private
-    FAppendToParent: Boolean;
     FHTMLFile: String;
     FOnAllowUnrender: TAllowUnrenderEvent;
     FOnHTMLLoaded: TNotifyEvent;
@@ -23,8 +22,9 @@ Type
     FOnUnRendered: TNotifyEvent;
     FParentID: String;
     FTemplateName: String;
-    FTemplate : String;
     FIsRendered : Boolean;
+    FUseProjectHTMLFile: Boolean;
+    procedure SetUseProjectHTMLFile(AValue: Boolean);
   Protected
     Property ParentID : String Read FParentID Write FParentID;
     Property TemplateName : String Read FTemplateName Write FTemplateName;
@@ -40,11 +40,13 @@ Type
     Procedure UnRender;
     Procedure Show;
     Procedure Hide;
+    Property UseProjectHTMLFile : Boolean Read FUseProjectHTMLFile Write SetUseProjectHTMLFile;
     Property IsRendered : Boolean Read FIsRendered;
   end;
 
   THTMLFragment = class(TCustomHTMLFragment)
   Published
+    Property UseProjectHTMLFile;
     Property ParentID;
     Property TemplateName;
     Property HTMLFileName;
@@ -60,6 +62,16 @@ implementation
 
 { TCustomHTMLFragment }
 
+procedure TCustomHTMLFragment.SetUseProjectHTMLFile(AValue: Boolean);
+begin
+  if FUseProjectHTMLFile=AValue then Exit;
+  FUseProjectHTMLFile:=AValue;
+  if FUseProjectHTMLFile then
+    begin
+    TemplateName:='';
+    HTMLFileName:='';
+    end;
+end;
 
 procedure TCustomHTMLFragment.Render;
 begin

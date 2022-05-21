@@ -53,14 +53,14 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     TabOrder = 1
     TopIndex = -1
   end
-  object ToolBar1: TToolBar
+  object tbActions: TToolBar
     Left = 0
     Height = 28
     Top = 0
     Width = 404
     ButtonHeight = 26
     ButtonWidth = 26
-    Caption = 'ToolBar1'
+    Caption = 'tbActions'
     EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
@@ -142,27 +142,32 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
       Caption = 'Add Missing tags'
       OnExecute = actAddMissingExecute
     end
+    object actAddMissingUsingDB: TAction
+      Caption = 'Add missing tags (Use Data-aware actions)'
+      OnExecute = actAddMissingDBExecute
+    end
   end
   object PopMenuActions: TPopupMenu
-    Left = 56
-    Top = 216
-    object mItemActListNewAction: TMenuItem
+    Left = 128
+    Top = 192
+    object mnuPopupNewAction: TMenuItem
       Action = ActNew
       Caption = 'New Action'
       OnClick = ActNewExecute
     end
-    object mItemActListNewStdAction: TMenuItem
+    object mnuPopupAddStdAction: TMenuItem
+      Caption = 'Add standard action'
       ShortCut = 16429
     end
     object MenuItem8: TMenuItem
       Caption = '-'
     end
-    object mItemActListMoveUpAction: TMenuItem
+    object mnuPopupMoveUpAction: TMenuItem
       Action = ActMoveUp
       Caption = 'Move Up'
       OnClick = ActMoveUpDownExecute
     end
-    object mItemActListMoveDownAction: TMenuItem
+    object mnuPopupMoveDownAction: TMenuItem
       Action = ActMoveDown
       Caption = 'Move Down'
       OnClick = ActMoveUpDownExecute
@@ -170,7 +175,7 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     object MenuItem6: TMenuItem
       Caption = '-'
     end
-    object mItemActListDelAction: TMenuItem
+    object mnuPopupDeleteAction: TMenuItem
       Action = ActDelete
       Caption = 'Delete'
       OnClick = ActDeleteExecute
@@ -178,31 +183,33 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     object MenuItem1: TMenuItem
       Caption = '-'
     end
-    object mItemActListPanelDescr: TMenuItem
+    object mnuPopupShowDescr: TMenuItem
       Action = ActPanelDescr
       AutoCheck = True
       OnClick = ActPanelDescrExecute
     end
-    object MenuItem2: TMenuItem
+    object mnuPopupShowToolbar: TMenuItem
       Action = ActPanelToolBar
       AutoCheck = True
       OnClick = ActPanelToolBarExecute
     end
   end
   object PopMenuToolBarActions: TPopupMenu
-    Left = 56
-    Top = 164
-    object mItemToolBarNewAction: TMenuItem
+    Left = 128
+    Top = 136
+    object mnuTBAddAction: TMenuItem
       Action = ActNew
       Default = True
       OnClick = ActNewExecute
     end
-    object mItemToolBarNewStdAction: TMenuItem
+    object mnuTBAddMissing: TMenuItem
       Action = actAddMissing
     end
-  end
-  object ActionList1: TActionList
-    Left = 61
-    Top = 106
+    object mnuTBAddMissingDB: TMenuItem
+      Caption = 'Add Missing tags (Data-aware)'
+    end
+    object mnuAddStdAction: TMenuItem
+      Caption = 'Add Standard Action'
+    end
   end
 end

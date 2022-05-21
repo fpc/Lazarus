@@ -1,21 +1,5 @@
-{ Copyright (C) 2004
-
- *****************************************************************************
-  See the file COPYING.modifiedLGPL.txt, included in this distribution,
-  for details about the license.
- *****************************************************************************
-
-
-  implementing ActionList Editor
-
-  authors:
-     Radek Cervinka, radek.cervinka@centrum.cz
-     Mattias Gaertner
-     Pawel Piwowar, alfapawel@tlen.pl
-
-  TODO:- multiselect for the actions and categories
-       - drag & drop for the actions and categories
-       - standard icon for "Standard Action"
+{
+  A
 }
 unit frmHTMLActionsEditor;
 
@@ -24,23 +8,31 @@ unit frmHTMLActionsEditor;
 interface
 
 uses
-  Classes, SysUtils, contnrs, htmlactions,
+  Classes, SysUtils, stub.htmlactions, p2jselementactions,
   // LCL
   LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
   Graphics, Menus, ComCtrls, ActnList,
   // IDEIntf
-  ObjInspStrConsts,  PropEdits, PropEditUtils, IDEWindowIntf,
+  PropEdits, PropEditUtils, IDEWindowIntf,
   IDEImagesIntf, ComponentEditors;
 
 type
 
+  { TActionMenuItem }
+
+  TActionMenuItem = Class(TMenuItem)
+  private
+    Faction: TRegisteredHTMLAction;
+  Public
+    Property Action : TRegisteredHTMLAction Read Faction Write FAction;
+  end;
 
   { THTMLActionListEditorForm }
 
   THTMLActionListEditorForm = class(TForm)
     ActDelete: TAction;
     actAddMissing: TAction;
-    ActionList1: TActionList;
+    actAddMissingUsingDB: TAction;
     ActPanelToolBar: TAction;
     ActPanelDescr: TAction;
     ActMoveUp: TAction;
@@ -50,27 +42,30 @@ type
     lblName: TLabel;
     lstActionName: TListBox;
     MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    mItemActListPanelDescr: TMenuItem;
-    mItemToolBarNewStdAction: TMenuItem;
-    mItemToolBarNewAction: TMenuItem;
-    mItemActListNewAction: TMenuItem;
-    mItemActListNewStdAction: TMenuItem;
-    mItemActListMoveUpAction: TMenuItem;
-    mItemActListMoveDownAction: TMenuItem;
+    mnuPopupShowToolbar: TMenuItem;
+    mnuTBAddMissingDB: TMenuItem;
+    mnuAddStdAction: TMenuItem;
+    mnuPopupShowDescr: TMenuItem;
+    mnuTBAddMissing: TMenuItem;
+    mnuTBAddAction: TMenuItem;
+    mnuPopupNewAction: TMenuItem;
+    mnuPopupAddStdAction: TMenuItem;
+    mnuPopupMoveUpAction: TMenuItem;
+    mnuPopupMoveDownAction: TMenuItem;
     MenuItem6: TMenuItem;
-    mItemActListDelAction: TMenuItem;
+    mnuPopupDeleteAction: TMenuItem;
     MenuItem8: TMenuItem;
     PanelDescr: TPanel;
     PopMenuActions: TPopupMenu;
     PopMenuToolBarActions: TPopupMenu;
-    ToolBar1: TToolBar;
+    tbActions: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
     ToolButton4: TToolButton;
     btnUp: TToolButton;
     btnDown: TToolButton;
     procedure actAddMissingExecute(Sender: TObject);
+    procedure actAddMissingDBExecute(Sender: TObject);
     procedure ActDeleteExecute(Sender: TObject);
     procedure ActDeleteUpdate(Sender: TObject);
     procedure ActMoveUpDownExecute(Sender: TObject);
@@ -81,18 +76,24 @@ type
     procedure ActPanelToolBarExecute(Sender: TObject);
     procedure ActionListEditorClose(Sender: TObject;
       var CloseAction: TCloseAction);
-    procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
+    procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure lstActionNameKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure lstActionNameMouseDown(Sender: TOBject; Button: TMouseButton;
-      {%H-}Shift: TShiftState; {%H-}X, Y: Integer);
+    procedure lstActionNameKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure lstActionNameMouseDown(Sender: TOBject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, Y: Integer);
     procedure lstActionNameClick(Sender: TObject);
     procedure lstActionNameDblClick(Sender: TObject);
+  private
+    FActionList: THTMLCustomElementActionList;
+    FCompDesigner: TComponentEditorDesigner;
+    FCompEditor: TComponentEditor;
+    procedure FillActions;
+    function AddActionComponent(aClass: THTMLCustomElementActionClass): THTMLCustomElementAction;
+    procedure AddStandardAction(Sender: TObject);
+    procedure AddStandardActionsToMenu;
+    procedure SetHTMLActionList(AActionList: THTMLCustomElementActionList);
   protected
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure OnComponentSelection(const NewSelection: TPersistentSelectionList);
@@ -101,12 +102,6 @@ type
     function GetSelectedAction: THTMLCustomElementAction;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
-  private
-    FActionList: THTMLCustomElementActionList;
-    FCompDesigner: TComponentEditorDesigner;
-    FCompEditor: TComponentEditor;
-    procedure FillActions;
-    procedure SetHTMLActionList(AActionList: THTMLCustomElementActionList);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -117,12 +112,12 @@ type
 
   { TActionListComponentEditor }
 
-Function CreateMissingActions(aEditor : TComponentEditor; aList : THTMLCustomElementActionList) : Integer;
+Function CreateMissingActions(aEditor : TComponentEditor; aList : THTMLCustomElementActionList; PreferDB : Boolean = False) : Integer;
 Function FindActionEditor(AList: THTMLCustomElementActionList): THTMLActionListEditorForm;
 
 implementation
 
-uses strpas2jscomponents, Types,idehtmltools;
+uses strpas2jscomponents, Types, idehtml2class, idehtmltools, frmselecthtmlactions;
 
 {$R *.lfm}
 
@@ -157,37 +152,46 @@ end;
 
 
 function CreateMissingActions(aEditor: TComponentEditor;
-  aList: THTMLCustomElementActionList): Integer;
+  aList: THTMLCustomElementActionList; PreferDB : Boolean = False): Integer;
 
 Var
-  aName, aTag, FN : String;
-  Tags : TStringDynArray;
+  aName, FN : String;
+  I : Integer;
+  Tags : TElementInfoList;
+  aEl : TElementInfo;
   aAction : THTMLCustomElementAction;
 
 begin
-  Result:=0;
+  Result:=-1;
   FN:=HTMLTools.GetHTMLFileForComponent(aList);
   if (FN='') then
-    begin
     ShowMessage(Format(rsErrNoHTMLFileNameForComponent,[aList.Name]));
-    exit(-1);
-    end;
-  Tags:=HTMLTools.GetTagIDs(FN);
-  Writeln('Found tags: ',Length(Tags));
-  For aTag in Tags do
-    if aList.FindActionByElementID(aTag)=Nil then
-    begin
-    Writeln('Creating action for tag ',aTag);
-    aAction:=aList.NewAction(aList.Owner);
-    aName:='act'+HTMLTools.TagToIdentifier(aTag);
-    if aList.Owner.FindComponent(aName)<>Nil then
-      aName:=aEditor.Designer.CreateUniqueComponentName(aName);
-    aAction.Name:=aName;
-    aAction.ElementID:=aTag;
-    aEditor.Designer.ClearSelection;
-    aEditor.Designer.PropertyEditorHook.PersistentAdded(aAction,True);
-    Inc(Result);
-    end;
+  Tags:=TElementInfoList.Create;
+  try
+    HTMLTools.GetTagIDs(FN,Tags,[eoExtraInfo]);
+    if SelectHTMLActionClasses(Tags,PreferDB) then
+      begin
+      Result:=0;
+      For I:=0 to Tags.Count-1 do
+        begin
+        aEl:=Tags[i];
+        if aList.FindActionByElementID(aEl.ElementID)=Nil then
+          begin
+          aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
+          aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
+          if aList.Owner.FindComponent(aName)<>Nil then
+            aName:=aEditor.Designer.CreateUniqueComponentName(aName);
+          aAction.Name:=aName;
+          aAction.ElementID:=aEl.ElementID;
+          aEditor.Designer.ClearSelection;
+          aEditor.Designer.PropertyEditorHook.PersistentAdded(aAction,True);
+          Inc(Result);
+          end;
+        end;
+      end;
+  finally
+    Tags.Free;
+  end;
   aEditor.Designer.Modified;
 end;
 
@@ -209,20 +213,20 @@ end;
 constructor THTMLActionListEditorForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Caption := oisActionListEditor;
-  lblName.Caption := oisAction;
-  ActNew.Hint := cActionListEditorNewAction;
-  ActDelete.Hint := cActionListEditorDeleteActionHint;
-  ActMoveUp.Hint := cActionListEditorMoveUpAction;
-  ActMoveDown.Hint := cActionListEditorMoveDownAction;
-  ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
-  ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
-  btnAdd.Hint := cActionListEditorNewAction;
-  mItemToolBarNewAction.Caption := cActionListEditorNewAction;
-  mItemActListNewAction.Caption := cActionListEditorNewAction;
-  mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
-  mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
-  mItemActListDelAction.Caption := cActionListEditorDeleteAction;
+  Caption := rsActionListEditor;
+  lblName.Caption := rsElementAction;
+  ActNew.Hint := rsActionListEditorNewAction;
+  ActDelete.Hint := rsActionListEditorDeleteActionHint;
+  ActMoveUp.Hint := rsActionListEditorMoveUpAction;
+  ActMoveDown.Hint := rsActionListEditorMoveDownAction;
+  ActPanelDescr.Caption := rsActionListEditorPanelDescrriptions;
+  ActPanelToolBar.Caption := rsActionListEditorPanelToolBar;
+  btnAdd.Hint := rsActionListEditorNewAction;
+  mnuTBAddAction.Caption := rsActionListEditorNewAction;
+  mnuPopupNewAction.Caption := rsActionListEditorNewAction;
+  mnuPopupMoveDownAction.Caption := rsActionListEditorMoveDownAction;
+  mnuPopupMoveUpAction.Caption := rsActionListEditorMoveUpAction;
+  mnuPopupDeleteAction.Caption := rsActionListEditorDeleteAction;
   AddActionEditor(Self);
 end;
 
@@ -234,14 +238,44 @@ begin
   inherited Destroy;
 end;
 
+
+
 procedure THTMLActionListEditorForm.FormCreate(Sender: TObject);
+
 begin
-  ToolBar1.Images := IDEImages.Images_16;
+  tbActions.Images := IDEImages.Images_16;
   btnAdd.ImageIndex := IDEImages.GetImageIndex('laz_add');
   btnDelete.ImageIndex := IDEImages.GetImageIndex('laz_delete');
   btnUp.ImageIndex := IDEImages.GetImageIndex('arrow_up');
   btnDown.ImageIndex := IDEImages.GetImageIndex('arrow_down');
   IDEDialogLayoutList.ApplyLayout(Self);
+  AddStandardActionsToMenu;
+end;
+
+procedure THTMLActionListEditorForm.AddStandardActionsToMenu;
+
+  Procedure AddMenuItem(aParent : TMenuItem; aAction : TRegisteredHTMLAction);
+
+  var
+    Mnu : TActionMenuItem;
+
+  begin
+    Mnu:=TActionMenuItem.Create(Self);
+    Mnu.Action:=aAction;
+    Mnu.OnClick:=@AddStandardAction;
+    Mnu.Caption:=aAction.ActionClass.ClassName+' ('+aAction.Description+')';
+    aParent.Add(Mnu);
+  end;
+
+Var
+  I : Integer;
+
+begin
+  For I:=0 to Pas2JSActionRegistry.ActionCount-1 do
+    begin
+    AddMenuItem(mnuAddStdAction,Pas2JSActionRegistry.Actions[I]);
+    AddMenuItem(mnuPopupAddStdAction,Pas2JSActionRegistry.Actions[I]);
+    end;
 end;
 
 procedure THTMLActionListEditorForm.ActionListEditorClose(Sender: TObject;
@@ -439,19 +473,11 @@ begin
 end;
 
 procedure THTMLActionListEditorForm.ActNewExecute(Sender: TObject);
-var
-  NewAction: THTMLCustomElementAction;
+
+
 begin
   if FActionList=nil then exit;
-  NewAction := FActionList.NewAction(FActionList.Owner);
-  NewAction.Name := FCompDesigner.CreateUniqueComponentName(NewAction.ClassName);
-
-  // Selection updates correctly when we first clear the selection in Designer
-  //  and in Object Inspector, then add a new item. Otherwise there is
-  //  a loop of back-and-forth selection updates and the new item does not show.
-  FCompDesigner.ClearSelection;
-  FCompDesigner.PropertyEditorHook.PersistentAdded(NewAction,True);
-  FCompDesigner.Modified;
+  AddActionComponent(THTMLElementAction);
 end;
 
 procedure THTMLActionListEditorForm.ActPanelDescrExecute(Sender: TObject);
@@ -461,7 +487,7 @@ end;
 
 procedure THTMLActionListEditorForm.ActPanelToolBarExecute(Sender: TObject);
 begin
-  ToolBar1.Visible := TAction(Sender).Checked;
+  tbActions.Visible := TAction(Sender).Checked;
 end;
 
 procedure THTMLActionListEditorForm.ActionListEditorKeyDown(Sender: TObject;
@@ -470,14 +496,15 @@ var
   MousePoint: TPoint;
 begin
   MousePoint := Self.ClientToScreen(Point(0,0));
-  if Key = VK_APPS
-  then PopMenuActions.PopUp(MousePoint.X, MousePoint.Y);
+  if (Key=VK_APPS) then
+    PopMenuActions.PopUp(MousePoint.X, MousePoint.Y);
 end;
 
 procedure THTMLActionListEditorForm.ActionListEditorKeyPress(Sender: TObject;
   var Key: char);
 begin
-  if Ord(Key) = VK_ESCAPE then Self.Close;
+  if Ord(Key) = VK_ESCAPE then
+    Close;
 end;
 
 
@@ -493,7 +520,6 @@ end;
 
 procedure THTMLActionListEditorForm.ActDeleteExecute(Sender: TObject);
 
-
 var
   iNameIndex: Integer;
   OldName: String;
@@ -507,8 +533,6 @@ begin
   lstActionName.Items.Delete(iNameIndex);
 
   OldAction := FActionList.ActionByName(OldName);
-
-  // be gone
   if Assigned(OldAction) then
   begin
     try
@@ -516,8 +540,8 @@ begin
       OldAction:=nil;
     except
       on E: Exception do begin
-        MessageDlg(oisErrorDeletingAction,
-          Format(oisErrorWhileDeletingAction, [LineEnding, E.Message]), mtError,
+        MessageDlg(rsErrorDeletingAction,
+          Format(rsErrorWhileDeletingAction, [LineEnding, E.Message]), mtError,
           [mbOk], 0);
       end;
     end;
@@ -535,6 +559,23 @@ begin
   FCompDesigner.SelectOnlyThisComponent(FActionList);
 end;
 
+procedure THTMLActionListEditorForm.actAddMissingDBExecute(Sender: TObject);
+
+Var
+  aCount : Integer;
+  CurAction: THTMLCustomElementAction;
+
+begin
+  aCount:=CreateMissingActions(Self.ComponentEditor,FActionList,True);
+  ShowMessage(Format(rsHTMLActionsCreated,[aCount]));
+  FillActions;
+  if FActionList.ActionCount>0 then
+    begin
+    CurAction:=FActionList.Actions[FActionList.ActionCount-1];
+    FCompDesigner.SelectOnlyThisComponent(CurAction);
+    end;
+end;
+
 procedure THTMLActionListEditorForm.actAddMissingExecute(Sender: TObject);
 
 Var
@@ -542,7 +583,7 @@ Var
   CurAction: THTMLCustomElementAction;
 
 begin
-  aCount:=CreateMissingActions(Self.ComponentEditor,FActionList);
+  aCount:=CreateMissingActions(Self.ComponentEditor,FActionList, False);
   ShowMessage(Format(rsHTMLActionsCreated,[aCount]));
   FillActions;
   if FActionList.ActionCount>0 then
@@ -620,14 +661,34 @@ begin
   end;
 end;
 
+Function THTMLActionListEditorForm.AddActionComponent(aClass : THTMLCustomElementActionClass) : THTMLCustomElementAction;
 
+begin
+  Result := FActionList.NewAction(FActionList.Owner,aClass);
+  Result.Name := FCompDesigner.CreateUniqueComponentName(Result.ClassName);
+
+  // Selection updates correctly when we first clear the selection in Designer
+  //  and in Object Inspector, then add a new item. Otherwise there is
+  //  a loop of back-and-forth selection updates and the new item does not show.
+  FCompDesigner.ClearSelection;
+  FCompDesigner.PropertyEditorHook.PersistentAdded(Result,True);
+  FCompDesigner.Modified;
+end;
+
+procedure THTMLActionListEditorForm.AddStandardAction(Sender: TObject);
+
+Var
+  aClass : THTMLCustomElementActionClass;
+
+begin
+  aClass:=(Sender as TActionMenuItem).Action.ActionClass;
+  AddActionComponent(aClass);
+end;
 
 
 
 initialization
-
   InitFormsList;
-
 
 finalization
   ReleaseFormsList;
