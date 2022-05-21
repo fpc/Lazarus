@@ -1247,6 +1247,7 @@ var
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
   OldFontQuality: TFontQuality;
+  wordIsInTable: Boolean;
 
   procedure saveCanvasProperties;
   begin
@@ -1278,6 +1279,7 @@ begin
   //if (LastOwner <> aCurWord.Owner) then LastPoint := P;
   saveCanvasProperties;
   TextStyle := FCanvas.TextStyle;
+  wordIsInTable := (aCurWord.Owner <> nil) and (aCurWord.Owner.ParentNode is TIpHtmlNodeTableHeaderOrCell);
   //debugln(['TIpHtmlNodeBlock.RenderQueue ',aCurWord.AnsiWord]);
   FIpHtml.PageRectToScreen(aCurWord.WordRect2, R);
   if aCurWord.IsSelected or FIpHtml.AllSelected then begin
@@ -1286,7 +1288,7 @@ begin
     FCanvas.brush.Color := clHighLight;
     FCanvas.FillRect(R);
   end
-  else if FCurProps.BgColor <> clNone then
+  else if not wordIsInTable and (FCurProps.BgColor <> clNone) then
   begin
     FCanvas.brush.Style := bsSolid;
     FCanvas.brush.Color := FCurProps.BgColor;
