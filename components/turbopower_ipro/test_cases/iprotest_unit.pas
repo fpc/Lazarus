@@ -13,9 +13,9 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Bevel1: TBevel;
-    Button1: TButton;
-    Button2: TButton;
+    btnRender: TButton;
+    btnShowInBrowser: TButton;
+    btnLoadFromFile: TButton;
     FileNameEdit1: TFileNameEdit;
     IpHtmlPanel1: TIpHtmlPanel;
     Label1: TLabel;
@@ -30,8 +30,9 @@ type
     SynEdit1: TSynEdit;
     SynHTMLSyn1: TSynHTMLSyn;
     TreeView1: TTreeView;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnRenderClick(Sender: TObject);
+    procedure btnShowInBrowserClick(Sender: TObject);
+    procedure btnLoadFromFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure TreeView1Deletion(Sender: TObject; Node: TTreeNode);
     procedure TreeView1SelectionChanged(Sender: TObject);
@@ -84,17 +85,36 @@ begin
     TTestCase(Node.Data).Free;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnRenderClick(Sender: TObject);
 begin
   IpHtmlPanel1.SetHtmlFromStr(SynEdit1.Lines.Text);
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnShowInBrowserClick(Sender: TObject);
 const
   TEST_FILE = 'test.html';
 begin
   SynEdit1.Lines.SaveToFile(TEST_FILE);
   OpenURL(TEST_FILE);
+end;
+
+procedure TForm1.btnLoadFromFileClick(Sender: TObject);
+begin
+  with TOpenDialog.Create(nil) do 
+    try
+      filter := 'HTML files (*.html; *.htm)|*.html;*.htm';
+      if FileName <> '' then
+        InitialDir := ExtractFileDir(FileName);
+      Options := Options + [ofFileMustExist];
+      if Execute then
+      begin
+        Memo1.Lines.Clear;
+        SynEdit1.Lines.LoadFromFile(FileName);
+        IpHtmlPanel1.SetHtmlFromStr(SynEdit1.Lines.Text);
+      end;
+    finally
+      Free;
+    end;
 end;
 
 procedure TForm1.TreeView1SelectionChanged(Sender: TObject);
@@ -138,8 +158,17 @@ begin
   
     node := TreeView1.Items.AddChild(nil, 'Text background');
     AddTest(node, TextWithBackgroundInBODY_title, TextWithBackgroundInBODY_descr, TextWithBackgroundInBODY_html);
+    AddTest(node, TextWithBackgroundInBODY_CSS_title, TextWithBackgroundInBODY_CSS_descr, TextWithBackgroundInBODY_CSS_html);
     AddTest(node, TextInColoredTableCell_title, TextInColoredTableCell_descr, TextInColoredTableCell_html);
     node.Expanded := true;
+    
+    node := TreeView1.Items.AddChild(nil, 'Text alignment');
+    AddTest(node, AlignInCell_title, AlignInCell_descr, AlignInCell_html);
+    AddTest(node, AlignInCellBold_title, AlignInCellBold_descr, AlignInCellBold_html);
+    AddTest(node, AlignInCell_CSS_title, AlignInCell_CSS_descr, AlignInCell_CSS_html);
+    AddTest(node, AlignInCellBold_CSS_title, AlignInCellBold_CSS_descr, AlignInCellBold_CSS_html);
+    node.Expanded := true;
+    
   finally
     TreeView1.Items.EndUpdate;
   end;

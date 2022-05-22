@@ -3,6 +3,7 @@ object Form1: TForm1
   Height = 620
   Top = 127
   Width = 866
+  ActiveControl = btnRender
   Caption = 'Form1'
   ClientHeight = 620
   ClientWidth = 866
@@ -10,15 +11,15 @@ object Form1: TForm1
   LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 6
-    Height = 608
-    Top = 6
+    Height = 577
+    Top = 37
     Width = 218
     Align = alLeft
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 608
+    ClientHeight = 577
     ClientWidth = 218
-    TabOrder = 0
+    TabOrder = 1
     object Label1: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
@@ -27,6 +28,8 @@ object Form1: TForm1
       Top = 0
       Width = 80
       Caption = 'html file name:'
+      Color = clDefault
+      ParentColor = False
     end
     object FileNameEdit1: TFileNameEdit
       AnchorSideLeft.Control = Panel1
@@ -45,23 +48,25 @@ object Form1: TForm1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       MaxLength = 0
-      TabOrder = 0
+      TabOrder = 1
     end
     object TreeView1: TTreeView
       Left = 0
-      Height = 608
+      Height = 577
       Top = 0
       Width = 218
       Align = alClient
-      TabOrder = 1
+      ReadOnly = True
+      TabOrder = 0
       OnDeletion = TreeView1Deletion
       OnSelectionChanged = TreeView1SelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object Panel2: TPanel
     Left = 238
-    Height = 608
-    Top = 6
+    Height = 577
+    Top = 37
     Width = 622
     Align = alClient
     BorderSpacing.Left = 3
@@ -69,9 +74,9 @@ object Form1: TForm1
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     BevelOuter = bvNone
-    ClientHeight = 608
+    ClientHeight = 577
     ClientWidth = 622
-    TabOrder = 1
+    TabOrder = 3
     object Splitter2: TSplitter
       Cursor = crVSplit
       Left = 0
@@ -83,7 +88,7 @@ object Form1: TForm1
     end
     object IpHtmlPanel1: TIpHtmlPanel
       Left = 0
-      Height = 260
+      Height = 229
       Top = 348
       Width = 622
       Align = alClient
@@ -100,7 +105,7 @@ object Form1: TForm1
       PrintSettings.Preview.Top = 270
       PrintSettings.Preview.Width = 1920
       PrintSettings.Preview.Height = 810
-      TabOrder = 1
+      TabOrder = 2
     end
     object Panel4: TPanel
       Left = 0
@@ -111,22 +116,11 @@ object Form1: TForm1
       BevelOuter = bvNone
       ClientHeight = 340
       ClientWidth = 622
-      TabOrder = 2
-      object Memo1: TMemo
-        Left = 0
-        Height = 50
-        Top = 0
-        Width = 622
-        Align = alTop
-        BorderSpacing.Bottom = 3
-        ScrollBars = ssAutoBoth
-        TabOrder = 0
-        WantReturns = False
-      end
+      TabOrder = 0
       inline SynEdit1: TSynEdit
         Left = 0
-        Height = 245
-        Top = 61
+        Height = 287
+        Top = 53
         Width = 622
         Align = alClient
         BorderSpacing.Top = 3
@@ -136,7 +130,7 @@ object Form1: TForm1
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
-        TabOrder = 1
+        TabOrder = 2
         Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
@@ -624,71 +618,86 @@ object Form1: TForm1
           end
         end
       end
-      object Panel3: TPanel
-        Left = 0
-        Height = 25
-        Top = 312
-        Width = 622
-        Align = alBottom
-        AutoSize = True
-        BorderSpacing.Top = 6
-        BorderSpacing.Bottom = 3
-        BevelOuter = bvNone
-        ClientHeight = 25
-        ClientWidth = 622
-        TabOrder = 2
-        object Button1: TButton
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = Panel3
-          AnchorSideRight.Control = Bevel1
-          Left = 230
-          Height = 25
-          Top = 0
-          Width = 75
-          Anchors = [akTop, akRight]
-          Caption = 'Render'
-          OnClick = Button1Click
-          TabOrder = 0
-        end
-        object Button2: TButton
-          AnchorSideLeft.Control = Bevel1
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = Panel3
-          Left = 317
-          Height = 25
-          Top = 0
-          Width = 113
-          AutoSize = True
-          Caption = 'Show in Browser'
-          OnClick = Button2Click
-          TabOrder = 1
-        end
-        object Bevel1: TBevel
-          AnchorSideLeft.Control = Panel3
-          AnchorSideLeft.Side = asrCenter
-          Left = 305
-          Height = 13
-          Top = 3
-          Width = 12
-          Shape = bsSpacer
-        end
-      end
       object Splitter3: TSplitter
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 53
+        Top = 45
         Width = 622
         Align = alTop
         ResizeAnchor = akTop
+      end
+      object Memo1: TMemo
+        Left = 0
+        Height = 42
+        Top = 0
+        Width = 622
+        Align = alTop
+        BorderSpacing.Bottom = 3
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WantReturns = False
       end
     end
   end
   object Splitter1: TSplitter
     Left = 230
-    Height = 620
-    Top = 0
+    Height = 583
+    Top = 37
     Width = 5
+  end
+  object Panel3: TPanel
+    Left = 6
+    Height = 25
+    Top = 6
+    Width = 854
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 25
+    ClientWidth = 854
+    TabOrder = 0
+    object btnRender: TButton
+      AnchorSideLeft.Control = btnLoadFromFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel3
+      Left = 115
+      Height = 25
+      Top = 0
+      Width = 75
+      BorderSpacing.Left = 6
+      Caption = 'Render'
+      OnClick = btnRenderClick
+      TabOrder = 1
+    end
+    object btnShowInBrowser: TButton
+      AnchorSideLeft.Control = btnRender
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel3
+      Left = 196
+      Height = 25
+      Top = 0
+      Width = 113
+      AutoSize = True
+      BorderSpacing.Left = 6
+      Caption = 'Show in Browser'
+      OnClick = btnShowInBrowserClick
+      TabOrder = 2
+    end
+    object btnLoadFromFile: TButton
+      AnchorSideLeft.Control = Panel3
+      AnchorSideTop.Control = Panel3
+      AnchorSideRight.Control = btnRender
+      Left = 0
+      Height = 25
+      Top = 0
+      Width = 109
+      AutoSize = True
+      Caption = 'Load from file...'
+      OnClick = btnLoadFromFileClick
+      TabOrder = 0
+    end
   end
   object SynHTMLSyn1: TSynHTMLSyn
     DefaultFilter = 'HTML Document (*.htm,*.html)|*.htm;*.html'

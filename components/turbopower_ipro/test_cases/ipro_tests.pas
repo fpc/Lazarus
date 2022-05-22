@@ -10,6 +10,10 @@ uses
 const
   LE = LineEnding;
   
+//------------------------------------------------------------------------------
+//   <BR> tag
+//------------------------------------------------------------------------------
+const
   BRinBODY_title = 
     '<BR> between two words in BODY';
   BRinBODY_html = 
@@ -114,9 +118,26 @@ const
   BRbetweenTwoP_descr =
     'There should be an empty line between the two lines.';
 
+  
+// -----------------------------------------------------------------------------
+//   Background color
+//------------------------------------------------------------------------------
+const
   TextWithBackgroundInBODY_title =
     'Text with background in BODY';
   TextWithBackgroundInBODY_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '  <font style="background-color: yellow;" color="red">Testing backcolor</font>' + LE +
+    '</body>' + LE +
+    '</html>';
+  TextWithBackgroundInBODY_descr =
+    'This test should show red text on yellow background.';
+
+  
+  TextWithBackgroundInBODY_CSS_title =
+    'Text with background in BODY (with CSS)';
+  TextWithBackgroundInBODY_CSS_html =
     '<html>' + LE +
     '<head>' + LE +
     '  <style type="text/css">' + LE +
@@ -130,7 +151,7 @@ const
     '  <p class="class1">Testing backcolor</p>' + LE +
     '</body>' + LE +
     '</html>';
-  TextWithBackgroundInBODY_descr =
+  TextWithBackgroundInBODY_CSS_descr =
     'This test should show red text on yellow background.';
 
   TextInColoredTableCell_title =
@@ -149,6 +170,108 @@ const
     '</html>';
   TextInColoredTableCell_descr =
     'The left and center cells should have yellow, the right cell uniform red background.';
+
+//------------------------------------------------------------------------------
+//   Text Alignment
+//------------------------------------------------------------------------------
+const
+  AlignInCell_title =
+    'Left-/right-aligned and centered text in a table cell';
+  AlignInCell_descr =
+    'The text in the left, center and right cell should be left-aligned, centered, right-aligned, respectively.';
+  AlignInCell_html =
+    '<html>' + LE +
+    '<body>' + LE + 
+    '  <table border="1" cellspacing="0">' + LE +
+    '    <tr>' + LE +
+    '      <th>left</td>' + LE +
+    '      <th>centered</td>' + LE +
+    '      <th>right</td>' + LE +
+    '    </tr>'+ LE +
+    '    <tr>' + LE +
+    '      <td align="left">a</td>' + LE +
+    '      <td align="center">b</td>' + LE +
+    '      <td align="right">c</td>' + LE +
+    '    </tr>'+ LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  AlignInCellBold_title =
+    'Left-/right-aligned and centered BOLD text in a table cell';
+  AlignInCellBold_descr =
+    'The text in the left, center and right cell should be left-aligned, centered, right-aligned, respectively.';
+  AlignInCellBold_html =
+    '<html>' + LE +
+    '<body>' + LE + 
+    '  <table border="1" cellspacing="0">' + LE +
+    '    <tr>' + LE +
+    '      <th>left</td>' + LE +
+    '      <th>centered</td>' + LE +
+    '      <th>right</td>' + LE +
+    '    </tr>'+ LE +
+    '    <tr>' + LE +
+    '      <td align="left"><b>a</b></td>' + LE +
+    '      <td align="center"><b>b</b></td>' + LE +
+    '      <td align="right"><b>c</b></td>' + LE +
+    '    </tr>'+ LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  AlignInCell_CSS_title =
+    'Left-/right-aligned and centered text in a table cell, using body style';
+  AlignInCell_CSS_descr =
+    'The text in the left, center and right cell should be left-aligned, centered, right-aligned, respectively.';
+  AlignInCell_CSS_html =
+    '<html>' + LE +
+    '<head>' + LE +
+    '  <style type="text/css">' + LE +
+    '    body { font-size:9pt; font-family:Arial, Helvetica, sans-serif }' + LE +
+    '  </style>' + LE +
+    '</head>' + LE +
+    '<body>' + LE + 
+    '  <table border="1" cellspacing="0" style="font-size:9pt; font-family:Arial, Helvetica, sans-serif;">' + LE +
+    '    <tr>' + LE +
+    '      <th>left</td>' + LE +
+    '      <th>centered</td>' + LE +
+    '      <th>right</td>' + LE +
+    '    </tr>'+ LE +
+    '    <tr>' + LE +
+    '      <td align="left">a</td>' + LE +
+    '      <td align="center">b</td>' + LE +
+    '      <td align="right">c</td>' + LE +
+    '    </tr>'+ LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  AlignInCellBold_CSS_title =
+    'Left-/right-aligned and centered BOLD text in a table cell, using body style';
+  AlignInCellBold_CSS_descr =
+    'The text in the left, center and right cell should be left-aligned, centered, right-aligned, respectively.';
+  AlignInCellBold_CSS_html =
+    '<html>' + LE +
+    '<head>' + LE +
+    '  <style type="text/css">' + LE +
+    '    body { font-size:9pt; font-family:Arial, Helvetica, sans-serif }' + LE +
+    '  </style>' + LE +
+    '</head>' + LE +
+    '<body>' + LE + 
+    '  <table border="1" cellspacing="0" style="font-size:9pt; font-family:Arial, Helvetica, sans-serif;">' + LE +
+    '    <tr>' + LE +
+    '      <th>left</td>' + LE +
+    '      <th>centered</td>' + LE +
+    '      <th>right</td>' + LE +
+    '    </tr>'+ LE +
+    '    <tr>' + LE +
+    '      <td align="left"><b>a</b></td>' + LE +
+    '      <td align="center"><b>b</b></td>' + LE +
+    '      <td align="right"><b>c</b></td>' + LE +
+    '    </tr>'+ LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
 
 
 implementation
