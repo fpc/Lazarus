@@ -315,6 +315,7 @@ var
   {$IFDEF VerboseMultiSampling}
   samp_buf, visual_id, red_size, blue_size, green_size, alpha_size: integer;
   {$ENDIF}
+  SharedContext: TGLXContext;
 begin
   if WSPrivate=nil then ;
   AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers, MultiSampling);
@@ -356,6 +357,14 @@ begin
     NewQtWidget.GetGLXDrawable;
 
     {$ENDIF}
+
+    { SharedContext will be passed to various glX routines,
+      to enable sharing OpenGL resources with SharedControl. }
+    if SharedControl <> nil then
+      SharedContext := TQtGLWidget(SharedControl.Handle).GLXContext
+    else
+      SharedContext := nil;
+
     {$IFDEF ModernGL}
     if GLX_version_1_3(NewQtWidget.xdisplay) then
     begin
@@ -455,21 +464,13 @@ begin
 		    Context3X[4] := GLX_CONTEXT_FLAGS_ARB;
 		    Context3X[5] := AttrList.ContextFlags;
 		    Context3X[6] := None;
-		    //if (ShareList<>nil) then begin
-		    //	NewQtWidget.glxcontext:=glXCreateContextAttribsARB(NewQtWidget.xdisplay, FBConfig,PrivateShareList^.glxcontext, direct, Context3X);
-	      //end else begin
-		    NewQtWidget.glxcontext := glXCreateContextAttribsARB(NewQtWidget.xdisplay, FBConfig, Nil, direct, Context3X);
-		    //end;
+		    NewQtWidget.glxcontext := glXCreateContextAttribsARB(NewQtWidget.xdisplay, FBConfig, SharedContext, direct, Context3X);
         //raise Exception.Create('key '+inttostr(BestFBConfig));
 		    // restore default error handler
 		    XSetErrorHandler(nil);
       end else
       begin
-		    //if (ShareList<>nil) then begin
-		    //	NewQtWidget.glxcontext:=glXCreateNewContext(NewQtWidget.xdisplay, FBConfig, GLX_RGBA_TYPE,PrivateShareList^.glxcontext, direct)
-		    //end else begin
-        NewQtWidget.glxcontext := glXCreateNewContext(NewQtWidget.xdisplay, FBConfig, GLX_RGBA_TYPE, Nil, direct);
-		    //end;
+        NewQtWidget.glxcontext := glXCreateNewContext(NewQtWidget.xdisplay, FBConfig, GLX_RGBA_TYPE, SharedContext, direct);
 	    end;
 	    if FBConfigs<>nil then
 		    XFree(FBConfigs);
@@ -477,7 +478,7 @@ begin
     end else
     {$ENDIF}
       NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,
-        NewQtWidget.visual, nil, direct);
+        NewQtWidget.visual, SharedContext, direct);
     //123:
     NewQtWidget.ref_count := 1;
 
