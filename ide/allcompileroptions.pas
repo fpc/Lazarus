@@ -347,6 +347,7 @@ begin
   if (FEffectiveFilter = edOptionsFilter.Text)
   and (FEffectiveShowModified = cbShowModified.Checked) then Exit;
   Container := sbAllOptions;
+  Container.Perform(CM_PARENTFONTCHANGED, 0, 0);
   Container.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TfrmAllCompilerOptions.RenderAndFilterOptions'){$ENDIF};
   try
     // First filter and set Visible flag.
