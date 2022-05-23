@@ -413,6 +413,7 @@ End;
 
 Constructor TIndentedStringList.Create;
 Begin
+  inherited Create;
   FIndent := '';
   FIndentSteps := '  ';
 End;
