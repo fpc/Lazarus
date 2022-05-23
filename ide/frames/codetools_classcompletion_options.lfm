@@ -16,7 +16,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     Left = 6
     Height = 19
     Top = 93
-    Width = 213
+    Width = 211
     BorderSpacing.Left = 6
     Caption = 'MixMethodsAndPropertiesCheckBox'
     TabOrder = 0
@@ -28,7 +28,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     Left = 6
     Height = 19
     Top = 143
-    Width = 196
+    Width = 194
     BorderSpacing.Around = 6
     Caption = 'ClassHeaderCommentsCheckBox'
     TabOrder = 2
@@ -41,14 +41,14 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 172
+    Height = 196
     Top = 193
     Width = 575
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'PropertyCompletionGroupBox'
-    ClientHeight = 152
+    ClientHeight = 176
     ClientWidth = 571
     TabOrder = 4
     object PropertyCompletionCheckBox: TCheckBox
@@ -57,7 +57,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       Left = 6
       Height = 19
       Top = 6
-      Width = 180
+      Width = 178
       BorderSpacing.Around = 6
       Caption = 'PropertyCompletionCheckBox'
       TabOrder = 0
@@ -69,71 +69,77 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       AnchorSideRight.Control = PropertyCompletionGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 115
+      Height = 139
       Top = 31
       Width = 559
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
       BevelOuter = bvNone
+      ChildSizing.VerticalSpacing = 6
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 5
-      ClientHeight = 115
+      ClientHeight = 139
       ClientWidth = 559
       TabOrder = 1
       object PrivateVariablePrefixLabel: TLabel
-        Left = 35
+        Left = 34
         Height = 15
         Top = 4
-        Width = 134
+        Width = 135
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'PrivateVariablePrefixLabel'
+        Color = clDefault
         ParentColor = False
       end
       object PropertyStoredIdentPostfixLabel: TLabel
         Left = 0
         Height = 15
-        Top = 27
+        Top = 33
         Width = 169
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'PropertyStoredIdentPostfixLabel'
+        Color = clDefault
         ParentColor = False
       end
       object PropertyWriteIdentPrefixLabel: TLabel
         Left = 12
         Height = 15
-        Top = 50
+        Top = 62
         Width = 157
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'PropertyWriteIdentPrefixLabel'
+        Color = clDefault
         ParentColor = False
       end
       object PropertyReadIdentPrefixLabel: TLabel
         Left = 14
         Height = 15
-        Top = 73
+        Top = 91
         Width = 155
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'PropertyReadIdentPrefixLabel'
+        Color = clDefault
         ParentColor = False
       end
       object SetPropertyVariablenameLabel: TLabel
-        Left = 9
+        Left = 8
         Height = 15
-        Top = 96
-        Width = 160
+        Top = 120
+        Width = 161
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'SetPropertyVariablenameLabel'
+        Color = clDefault
         ParentColor = False
         ParentShowHint = False
         ShowHint = True
@@ -149,7 +155,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object PropertyStoredIdentPostfixEdit: TEdit
         Left = 175
         Height = 23
-        Top = 23
+        Top = 29
         Width = 80
         TabOrder = 1
         Text = 'PropertyStoredIdentPostfixEdit'
@@ -157,7 +163,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object PropertyWriteIdentPrefixEdit: TEdit
         Left = 175
         Height = 23
-        Top = 46
+        Top = 58
         Width = 80
         TabOrder = 2
         Text = 'PropertyWriteIdentPrefixEdit'
@@ -165,7 +171,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object PropertyReadIdentPrefixEdit: TEdit
         Left = 175
         Height = 23
-        Top = 69
+        Top = 87
         Width = 80
         TabOrder = 3
         Text = 'PropertyReadIdentPrefixEdit'
@@ -173,7 +179,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       object SetPropertyVariablenameEdit: TEdit
         Left = 175
         Height = 23
-        Top = 92
+        Top = 116
         Width = 80
         ParentShowHint = False
         ShowHint = True
@@ -187,8 +193,8 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         AnchorSideTop.Side = asrCenter
         Left = 265
         Height = 19
-        Top = 94
-        Width = 212
+        Top = 118
+        Width = 210
         BorderSpacing.Left = 10
         Caption = 'SetPropertyVariableIsPrefixCheckBox'
         ParentShowHint = False
@@ -200,10 +206,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = SetPropertyVariablenameEdit
         AnchorSideTop.Side = asrCenter
-        Left = 487
+        Left = 485
         Height = 19
-        Top = 94
-        Width = 225
+        Top = 118
+        Width = 223
         BorderSpacing.Left = 10
         Caption = 'SetPropertyVariableUseConstCheckBox'
         ParentShowHint = False
@@ -219,7 +225,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     Left = 6
     Height = 19
     Top = 168
-    Width = 243
+    Width = 241
     BorderSpacing.Around = 6
     Caption = 'ClassImplementationCommentsCheckBox'
     TabOrder = 3
@@ -231,7 +237,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
     Left = 6
     Height = 19
     Top = 118
-    Width = 221
+    Width = 219
     BorderSpacing.Around = 6
     Caption = 'UpdateAllMethodSignaturesCheckBox'
     TabOrder = 1
@@ -260,6 +266,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'ClassPartInsertPolicyLabel'
+      Color = clDefault
       ParentColor = False
       ParentShowHint = False
       ShowHint = True
@@ -283,6 +290,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'MethodInsertPolicyLabel'
+      Color = clDefault
       ParentColor = False
       ParentShowHint = False
       ShowHint = True
@@ -305,6 +313,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       Width = 147
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'MethodDefaultSectionLabel'
+      Color = clDefault
       ParentColor = False
       ParentShowHint = False
       ShowHint = True
