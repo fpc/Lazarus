@@ -14,7 +14,6 @@
     Mouse:
       the TLCLCommonCallback mouse handlers check Owner.isEnabled, which
       for a NSView always returns false.
-    SharedControl
 }
 unit GLCocoaNSContext;
 
@@ -67,7 +66,6 @@ type
   TCocoaOpenGLView = objcclass(NSOpenGLView)
   public
     Owner: TWinControl;
-    //nsGL: NSOpenGLContext;
     callback: TLCLCommonCallback;
     backingScaleFactor: Single;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -189,8 +187,7 @@ var
   PixFmt: NSOpenGLPixelFormat;
   p: NSView;
   ns: NSRect;
-  aNSOpenGLContext: NSOpenGLContext;
-  CGLContext: CGLContextObj;
+  aNSOpenGLContext, SharedContext: NSOpenGLContext;
 begin
   Result:=0;
   p := nil;
@@ -204,7 +201,12 @@ begin
   Attrs:=CreateOpenGLContextAttrList(DoubleBuffered,MajorVersion,MinorVersion, MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     PixFmt:=NSOpenGLPixelFormat(NSOpenGLPixelFormat.alloc).initWithAttributes(Attrs);
-    aNSOpenGLContext:=NSOpenGLContext(NSOpenGLContext.alloc).initWithFormat_shareContext(PixFmt,nil);
+    { Use SharedControl to share OpenGL resources with another TOpenGLControl instance }
+    if SharedControl <> nil then
+      SharedContext := TCocoaOpenGLView(SharedControl.Handle).openGLContext
+    else
+      SharedContext := nil;
+    aNSOpenGLContext:=NSOpenGLContext(NSOpenGLContext.alloc).initWithFormat_shareContext(PixFmt,SharedContext);
     if aNSOpenGLContext  = nil then
     	debugln(['LOpenGLCreateContext Error']);
     View := TCocoaOpenGLView(TCocoaOpenGLView.alloc).initWithFrame_pixelFormat(ns,PixFmt);
@@ -217,7 +219,9 @@ begin
     p.addSubview(View);
   SetViewDefaults(View);
   View.Owner:=AWinControl;
-  //View.nsGL := aNSOpenGLContext;
+  { If we wouldn't set View.openGLContext, it would get automatically created.
+    But then aNSOpenGLContext is ignored, and so SharedContext and SharedControl don't work. }
+  View.setOpenGLContext(aNSOpenGLContext);
   View.callback:=TLCLCommonCallback.Create(View, AWinControl);
   LSetWantsBestResolutionOpenGLSurface(AMacRetinaMode, HWND(View));
   //View.setPixelFormat(PixFmt);
