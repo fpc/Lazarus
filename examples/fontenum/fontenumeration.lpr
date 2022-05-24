@@ -10,6 +10,8 @@ uses
 {$R *.res}
 
 begin
+  Application.Scaled:=True;
+  Application.Title:='project1';
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;

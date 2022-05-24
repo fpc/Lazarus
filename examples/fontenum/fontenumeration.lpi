@@ -11,8 +11,12 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="project1"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -49,10 +53,6 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf3"/>
-        <UseExternalDbgSyms Value="True"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
