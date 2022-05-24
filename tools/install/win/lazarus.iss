@@ -74,6 +74,12 @@ DisableWelcomePage=no
 DisableDirPage=no
 
 
+[Types]
+Name: "default"; Description: {cm:InstallTypeDefault}
+Name: "all";    Description: {cm:InstallTypeFull}
+Name: "compact"; Description: {cm:InstallTypeCompact}
+Name: "custom";  Description: {cm:InstallTypeCustom}; Flags: iscustom
+
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:CleanUp};  Flags: unchecked 
@@ -82,44 +88,44 @@ Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:Clea
 [Components]
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
-Name: installhelp; Description: {cm:InstallChm}; Types: custom full
+Name: installhelp; Description: {cm:InstallChm}; Types: custom default all
 #endif
 #endif
 
 #if FPCTargetOS=="win32"
 ;// #if IDEWidgetSet!="qt"
-Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full; Flags: checkablealone
+Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom default all; Flags: checkablealone
 ;// #else
-;//Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom full compact; Flags: checkablealone fixed
+;//Name: install4qtintfdll; Description: {cm:InstallQtLocal}; Types: custom default all compact; Flags: checkablealone fixed
 ;// #endif
-Name: install4qtintfdll/global; Description: {cm:InstallQt}; Types: full; Flags: dontinheritcheck
+Name: install4qtintfdll/global; Description: {cm:InstallQt}; Types: all; Flags: dontinheritcheck
 #endif
 
 #ifdef HasQT5
 #if HasQT5!=""
 #if IDEWidgetSet!="qt"
-Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full; Flags: checkablealone
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom default all; Flags: checkablealone
 #else
-Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom full compact; Flags: checkablealone fixed
+Name: install5qtintfdll; Description: {cm:InstallQt5Local}; Types: custom default all compact; Flags: checkablealone fixed
 #endif
-Name: install5qtintfdll/global; Description: {cm:InstallQt5Global}; Types: full; Flags: dontinheritcheck
+Name: install5qtintfdll/global; Description: {cm:InstallQt5Global}; Types: all; Flags: dontinheritcheck
 #endif
 #endif
 
 #ifdef HasOpenSSL
 #if HasOpenSSL!=""
-Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
-Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: full; Flags: dontinheritcheck
+Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom default all compact; Flags: checkablealone
+Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: all; Flags: dontinheritcheck
 #endif
 #endif
-Name: association; Description: {cm:AssociateGroup}; Types: custom full
-Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
-Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
-Name: association/associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
-Name: association/associatelpr; Description: {code:GetAssociateDesc|.lpr}; Types: custom full
-Name: association/associateinc; Description: {code:GetAssociateDesc|.inc}; Types: custom full
-Name: association/associatepas; Description: {code:GetAssociateDesc|.pas}; Types: custom full
-Name: association/associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
+Name: association; Description: {cm:AssociateGroup}; Types: custom default all
+Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom default all
+Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom default all
+Name: association/associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom default all
+Name: association/associatelpr; Description: {code:GetAssociateDesc|.lpr}; Types: custom default all
+Name: association/associateinc; Description: {code:GetAssociateDesc|.inc}; Types: custom default all
+Name: association/associatepas; Description: {code:GetAssociateDesc|.pas}; Types: custom default all
+Name: association/associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom default all
 
 [InstallDelete]
 Name: {code:GetPCPForDelete}*.xml; Type: files; Tasks: delusersettings
