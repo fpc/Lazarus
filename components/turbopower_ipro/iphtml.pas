@@ -13088,7 +13088,6 @@ end;
 procedure TIpHtmlNodeTableHeaderOrCell.Render(RenderProps: TIpHtmlProps);
 begin
   FLayouter.Render(RenderProps);
-  debugln(classname+ ': Props.Alignmene=' + IntToStr(ord(Props.Alignment)));
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.SetAlign(const Value: TIpHtmlAlign);

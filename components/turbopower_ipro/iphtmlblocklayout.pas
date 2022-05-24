@@ -485,8 +485,6 @@ end;
 
 procedure TIpNodeBlockLayouter.ApplyQueueProps(aCurElem: PIpHtmlElement; var aPrefor: Boolean);
 begin
-  //DebugLn(acurelem.AnsiWord + ': acurelem.Props.Alignment=' + IntToStr(ord(acurElem.Props.Alignment)));
-  
   with aCurElem.Props do begin
     if (FCurProps = nil) or not AIsEqualTo(FCurProps) then begin
       UpdSpaceHyphenSize(aCurElem.Props);
@@ -508,8 +506,6 @@ begin
     end;
   end;
   FCurProps := aCurElem.Props;
-  
-  //DebugLn('  FCurProps.Alignment=' + IntToStr(ord(FCurProps.Alignment)));
 end;
 
 procedure TIpNodeBlockLayouter.DoQueueElemWord(aCurElem: PIpHtmlElement);
