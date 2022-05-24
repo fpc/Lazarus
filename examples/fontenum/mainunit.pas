@@ -120,10 +120,19 @@ begin
   if LStyles.IndexOf(s)<0 then begin
     // encode bold (bit 0), italic (bit 1) -- see SelectFont
     n := 0;
+    {$IFDEF LCLWin32}
     if (eLogFont.elfLogFont.lfItalic <> 0) then
       n := n or 1;
     if (eLogFont.elfLogFont.lfWeight > FW_MEDIUM) then
       n := n or 2;
+    {$ENDIF}
+    {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+    s := Lowercase(s);
+    if (pos('italic', s) <> 0) or (pos('oblique', s) <> 0) then
+      n := n or 1;
+    if (pos('bold', s) <> 0) then
+      n := n or 2;
+    {$ENDIF}
     LStyles.AddObject(eLogFont.elfStyle, TObject(ptrint(n)));
   end;
   
