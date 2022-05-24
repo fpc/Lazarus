@@ -141,7 +141,7 @@ object frmMain: TfrmMain
     Left = 591
     Height = 19
     Top = 312
-    Width = 67
+    Width = 65
     Caption = 'Strikeout'
     OnChange = chkStrikeChange
     TabOrder = 8
@@ -150,7 +150,7 @@ object frmMain: TfrmMain
     Left = 592
     Height = 19
     Top = 336
-    Width = 74
+    Width = 72
     Caption = 'UnderLine'
     OnChange = chkUnderLineChange
     TabOrder = 9
@@ -178,7 +178,7 @@ object frmMain: TfrmMain
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goThumbTracking, goSmoothScroll]
     TabOrder = 11
     ColWidths = (
-      368
+      364
     )
   end
   object FontDialog1: TFontDialog

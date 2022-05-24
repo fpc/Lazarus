@@ -121,7 +121,9 @@ begin
     // encode bold, italic
     n := eLogFont.elfLogFont.lfItalic;
     if eLogFont.elfLogFont.lfWeight > FW_MEDIUM then
-      n := n or 2;
+      n := n or 2
+    else
+      n := n and not 2;
     LStyles.AddObject(eLogFont.elfStyle, TObject(ptrint(n)));
   end;
   // collect sizes

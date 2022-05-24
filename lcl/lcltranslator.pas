@@ -586,7 +586,7 @@ begin
   DefaultLang := Result;
 
   if lcfn<>'' then
-    TranslateLCLResourceStrings(Lang, lcfn);
+    TranslateLCLResourceStrings(Result, lcfn);
 
   if LocalTranslator<>nil then
   begin
