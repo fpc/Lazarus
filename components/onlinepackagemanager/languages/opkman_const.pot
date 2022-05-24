@@ -1294,7 +1294,7 @@ msgid "Do not ask this question again"
 msgstr ""
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
-msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+msgid "In order to work properly, OPM needs the OpenSSL libraries."
 msgstr ""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
@@ -1577,6 +1577,10 @@ msgstr ""
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
+msgstr ""
+
+#: opkman_const.rsoptions_rbopenssl_caption
+msgid "OpenSSL libraries (required for connection to remote repository)"
 msgstr ""
 
 #: opkman_const.rsoptions_rbopenssl_item0

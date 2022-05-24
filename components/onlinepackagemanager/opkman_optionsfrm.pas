@@ -561,7 +561,7 @@ begin
   edProxyUser.Text := Options.ProxyUser;
   edProxyPassword.Text := Options.ProxyPassword;
 
-  rbOpenSSL.Caption := rsOpenSSLFrm_lbMessage1_Caption;
+  rbOpenSSL.Caption := rsOptions_rbOpenSSL_Caption;
   rbOpenSSL.Items.Clear;
   rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item0);
   rbOpenSSL.Items.Add(rsOptions_rbOpenSSL_Item1);

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -1324,8 +1324,8 @@ msgid "Do not ask this question again"
 msgstr "Не спрашивать в следующий раз"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
-msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr "Для корректной работы диспетчера требуется наличие библиотек OpenSSL: \"libeay32.dll\" и \"ssleay32.dll\""
+msgid "In order to work properly, OPM needs the OpenSSL libraries."
+msgstr "Для корректной работы диспетчера требуется наличие библиотек OpenSSL."
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
@@ -1608,6 +1608,10 @@ msgstr "Показывается по SHIFT, перемещается за ку�
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
 msgstr "Выключена"
+
+#: opkman_const.rsoptions_rbopenssl_caption
+msgid "OpenSSL libraries (required for connection to remote repository)"
+msgstr "Библиотеки OpenSSL (требуются для соединения с удалённым репозиторием)"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""

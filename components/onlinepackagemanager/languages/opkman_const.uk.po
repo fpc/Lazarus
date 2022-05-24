@@ -1325,7 +1325,9 @@ msgid "Do not ask this question again"
 msgstr "Більше не питати про це"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
-msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+#, fuzzy
+#| msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
+msgid "In order to work properly, OPM needs the OpenSSL libraries."
 msgstr "Для правильної роботи OPM потребує бібліотек OpenSSL: \"libeay32.dll\" і \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
@@ -1609,6 +1611,10 @@ msgstr "Перемикається SHIFT, рухається мишею"
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
 msgstr "Вимкнути"
+
+#: opkman_const.rsoptions_rbopenssl_caption
+msgid "OpenSSL libraries (required for connection to remote repository)"
+msgstr ""
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""

@@ -340,6 +340,7 @@ resourcestring
   rsOptions_InputBox_Info1 = 'Please select a folder!';
   rsOptions_InputBox_Conf0 = 'Delete selected extension ("%s")?';
   rsOptions_InputBox_Conf1 = 'Delete selected folder ("%s")?';
+  rsOptions_rbOpenSSL_Caption = 'OpenSSL libraries (required for connection to remote repository)';
   rsOptions_rbOpenSSL_Item0 = 'Automatically download files from "https://packages.lazarus-ide.org/"';
   rsOptions_rbOpenSSL_Item1 = 'Show confirmation dialog before download';
   rsOptions_rbOpenSSL_Item2 = 'Never download files';
@@ -538,7 +539,7 @@ resourcestring
   rsOpenSSLFrm_Bp_OKButton_Caption = 'Yes';
   rsOpenSSLFrm_Bp_CancelButton_Caption = 'No';
   rsOpenSSLFrm_chPermanent_Caption = 'Do not ask this question again';
-  rsOpenSSLFrm_lbMessage1_Caption = 'In order to work properly, OPM needs the OpenSSL libraries';
+  rsOpenSSLFrm_lbMessage1_Caption = 'In order to work properly, OPM needs the OpenSSL libraries.';
   rsOpenSSLFrm_lbMessage2_Caption = 'Download these files from "https://packages.lazarus-ide.org/"?';
 
 
