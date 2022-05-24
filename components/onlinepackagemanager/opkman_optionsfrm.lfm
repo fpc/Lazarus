@@ -572,7 +572,7 @@ object OptionsFrm: TOptionsFrm
         BorderSpacing.Left = 10
         BorderSpacing.Top = 10
         BorderSpacing.Right = 10
-        Caption = 'In order to work properly, OPM needs the OpenSSL libraries: "libeay32.dll" and "ssleay32.dll"'
+        Caption = 'In order to work properly, OPM needs the OpenSSL libraries'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
         ChildSizing.EnlargeVertical = crsHomogenousChildResize

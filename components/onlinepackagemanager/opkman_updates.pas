@@ -36,7 +36,7 @@ uses
   opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
   opkman_OpenSSLfrm,
   {$IF FPC_FULLVERSION>=30200}
-  zipper, fphttpclient, opensslsockets;
+  zipper, fphttpclient, opensslsockets, openssl;
   {$ELSE}
   opkman_zip, opkman_httpclient;
   {$ENDIF}
@@ -316,25 +316,6 @@ end;
 
 procedure TUpdates.CheckForOpenSSL;
 {$IFDEF MSWINDOWS}
-  function SystemFolder: String;
-  var
-    SysPath: WideString;
-  begin
-    SetLength({%H-}SysPath, Windows.MAX_PATH);
-    SetLength(SysPath, Windows.GetSystemDirectoryW(PWideChar(SysPath), Windows.MAX_PATH));
-    Result := AppendPathDelim(String(SysPath));
-  end;
-
-  function IsOpenSSLAvailable: Boolean;
-  var
-    ParamPath, SysPath: String;
-  begin
-    ParamPath := ExtractFilePath(ParamStr(0));
-    SysPath := SystemFolder;
-    Result := (FileExists(ParamPath + 'libeay32.dll') and FileExists(ParamPath + 'ssleay32.dll')) or
-              (FileExists(SysPath + 'libeay32.dll') and FileExists(SysPath + 'ssleay32.dll'));
-  end;
-
 var
   ZipFile: String;
   UnZipper: TUnZipper;
@@ -342,7 +323,8 @@ var
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
-  FOpenSSLAvailable := IsOpenSSLAvailable;
+  InitSSLInterface;
+  FOpenSSLAvailable := IsSSLloaded;
   if not FOpenSSLAvailable then
   begin
     case Options.OpenSSLDownloadType of
@@ -387,7 +369,8 @@ begin
           UnZipper.Free;
         end;
         DeleteFile(ZipFile);
-        FOpenSSLAvailable := IsOpenSSLAvailable;
+        InitSSLInterface;
+        FOpenSSLAvailable := IsSSLloaded;
       end;
     end;
   end;
