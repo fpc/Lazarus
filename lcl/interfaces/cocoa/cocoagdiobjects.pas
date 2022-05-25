@@ -230,9 +230,10 @@ type
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
     constructor Create(const AFont: NSFont; AGlobal: Boolean = False); overload;
+    constructor Create(const AFont: NSFont; const AExtraStyle: TCocoaFontStyle;  AGlobal: Boolean = False); overload;
     destructor Destroy; override;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
-    procedure SetHandle(ANewHandle: NSFont);
+    procedure SetHandle(ANewHandle: NSFont; const AExtraStyle: TCocoaFontStyle = []);
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
     property Name: String read FName;
@@ -702,8 +703,14 @@ end;
 
 constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean = False);
 begin
+  Create(AFont, [], AGlobal);
+end;
+
+constructor TCocoaFont.Create(const AFont: NSFont; const AExtraStyle: TCocoaFontStyle;
+  AGlobal: Boolean = False); overload;
+begin
   inherited Create(AGlobal);
-  SetHandle(AFont);
+  SetHandle(AFont, AExtraStyle);
 end;
 
 destructor TCocoaFont.Destroy;
@@ -730,7 +737,7 @@ begin
   end;
 end;
 
-procedure TCocoaFont.SetHandle(ANewHandle: NSFont);
+procedure TCocoaFont.SetHandle(ANewHandle: NSFont; const AExtraStyle: TCocoaFontStyle = []);
 var
   pool: NSAutoreleasePool;
   lsymTraits: NSFontSymbolicTraits;
@@ -751,6 +758,7 @@ begin
     Include(FStyle, cfs_Bold);
   if (lsymTraits and NSFontItalicTrait) <> 0 then
     Include(FStyle, cfs_Italic);
+  FStyle := FStyle + AExtraStyle;
 
   FAntialiased := True;
   Pool.release;

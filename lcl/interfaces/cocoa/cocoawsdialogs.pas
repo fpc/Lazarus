@@ -160,6 +160,7 @@ var
 
 procedure FontToDict(src: TFont; dst: NSMutableDictionary);
 procedure DictToFont(src: NSDictionary; dst: TFont);
+function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
 
 implementation
 
@@ -646,6 +647,24 @@ begin
   dst.Color := cl;
 end;
 
+
+function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
+begin
+  Result := [];
+  if (src = nil) then Exit;
+
+  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(Result, cfs_Underline)
+  else
+    Include(Result, cfs_Underline);
+
+  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(Result, cfs_Strikeout)
+  else
+    Include(Result, cfs_Strikeout);
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWSFontDialog.ShowModal
   Params:  ACommonDialog - LCL font dialog
@@ -811,9 +830,9 @@ begin
   if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
     newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * FontDialog.Font.PixelsPerInch / 72);
 
-  newHandle := TCocoaFont.Create(newFont);
+  newHandle := TCocoaFont.Create(newFont, DictToCocoaFontStyle( FontAttr ));
   FontDialog.Font.Handle := HFONT(newHandle);
-  DictToFont( FontAttr, FontDialog.Font);
+  DictToFont( FontAttr, FontDialog.Font );
 end;
 
 function TFontPanelDelegate.validModesForFontPanel(afontPanel: NSFontPanel
