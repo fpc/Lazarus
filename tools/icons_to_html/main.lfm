@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1036
+  Left = 1163
   Height = 515
-  Top = 208
+  Top = 323
   Width = 600
   Caption = 'IconTable'
   ClientHeight = 515
@@ -10,6 +10,7 @@ object MainForm: TMainForm
   Constraints.MinWidth = 600
   OnShow = FormShow
   Position = poScreenCenter
+  ShowHint = True
   LCLVersion = '2.3.0.0'
   object btnCreateHTML: TButton
     AnchorSideRight.Control = btnSave
@@ -17,6 +18,7 @@ object MainForm: TMainForm
     AnchorSideBottom.Side = asrBottom
     Left = 311
     Height = 25
+    Hint = 'Create a html page for the images found in the selected directory'
     Top = 480
     Width = 95
     Anchors = [akRight, akBottom]
@@ -25,8 +27,9 @@ object MainForm: TMainForm
     BorderSpacing.Bottom = 10
     Caption = 'Create HTML'
     Default = True
+    Enabled = False
     OnClick = btnCreateHTMLClick
-    TabOrder = 1
+    TabOrder = 2
   end
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
@@ -35,6 +38,7 @@ object MainForm: TMainForm
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 23
+    Hint = 'Folder with images for which the html preview should be created'
     Top = 10
     Width = 580
     ShowHidden = False
@@ -46,6 +50,7 @@ object MainForm: TMainForm
     BorderSpacing.Right = 10
     MaxLength = 0
     TabOrder = 0
+    OnChange = DirectoryEditChange
   end
   object btnSave: TButton
     AnchorSideRight.Control = btnShow
@@ -53,6 +58,7 @@ object MainForm: TMainForm
     AnchorSideBottom.Side = asrBottom
     Left = 414
     Height = 25
+    Hint = 'Save the generated html text as file "IconTable.html" in the specified folder'
     Top = 480
     Width = 50
     Anchors = [akRight, akBottom]
@@ -60,8 +66,9 @@ object MainForm: TMainForm
     BorderSpacing.Right = 8
     BorderSpacing.Bottom = 10
     Caption = 'Save'
+    Enabled = False
     OnClick = btnSaveClick
-    TabOrder = 2
+    TabOrder = 3
   end
   object btnClose: TButton
     AnchorSideRight.Control = Owner
@@ -70,6 +77,7 @@ object MainForm: TMainForm
     AnchorSideBottom.Side = asrBottom
     Left = 535
     Height = 25
+    Hint = 'Closes the application'
     Top = 480
     Width = 55
     Anchors = [akRight, akBottom]
@@ -79,7 +87,7 @@ object MainForm: TMainForm
     Cancel = True
     Caption = 'Close'
     OnClick = btnCloseClick
-    TabOrder = 4
+    TabOrder = 5
   end
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
@@ -103,7 +111,8 @@ object MainForm: TMainForm
     Font.Quality = fqCleartype
     ParentColor = False
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 1
+    TabStop = False
     Gutter.Width = 55
     Gutter.MouseActions = <>
     RightGutter.Width = 0
@@ -552,6 +561,7 @@ object MainForm: TMainForm
     MouseLinkColor.Foreground = clBlue
     LineHighlightColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    WantTabs = False
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
@@ -594,6 +604,7 @@ object MainForm: TMainForm
     AnchorSideBottom.Side = asrBottom
     Left = 472
     Height = 25
+    Hint = 'Displays the generated html file in the browser.'
     Top = 480
     Width = 55
     Anchors = [akRight, akBottom]
@@ -601,8 +612,9 @@ object MainForm: TMainForm
     BorderSpacing.Right = 8
     BorderSpacing.Bottom = 10
     Caption = 'Show'
+    Enabled = False
     OnClick = btnShowClick
-    TabOrder = 3
+    TabOrder = 4
   end
   object TaskDialog: TTaskDialog
     Buttons = <>
