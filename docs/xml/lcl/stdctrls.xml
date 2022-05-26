@@ -261,7 +261,9 @@
       <element name="TCustomScrollBar.FOnScroll"/>
 
       <element name="TCustomScrollBar.DoScroll">
-        <short>Performs actions needed to translate and apply scrollbar notification messages.</short>
+        <short>
+          Performs actions needed to translate and apply scrollbar notification messages.
+        </short>
       </element>
       <element name="TCustomScrollBar.DoScroll.Message">
         <short>Message examined and applied in the method.</short>
@@ -271,7 +273,7 @@
         <short>Always returns </short>
       </element>
       <element name="TCustomScrollBar.NotRightToLeft.Result">
-        <short>Always returns True.</short>
+        <short>Always returns <b>True</b>.</short>
       </element>
 
       <element name="TCustomScrollBar.SetKind">
@@ -504,7 +506,7 @@
           </p>
           <dl>
             <dt>TabStop</dt>
-            <dd>Set to True.</dd>
+            <dd>Set to <b>True</b>.</dd>
             <dt>ControlStyle </dt>
             <dd>
               Includes the values: [csFramed, csDoubleClicks, csOpaque]. Excludes the values: [csAcceptsControls, csDoubleClicks, csCaptureMouse, csSetCaption].
@@ -683,10 +685,10 @@
       </element>
 
       <element name="TCustomScrollBar.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control by pressing the Tab or Shift+Tab keys. The default value for the property is True in TCustomScrollBar.
+            Allows the user to navigate to this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TCustomScrollBar.
           </p>
         </descr>
         <seealso>
@@ -1227,7 +1229,7 @@
         <short>Style values after adding or removing the edit box.</short>
       </element>
       <element name="TComboBoxStyleHelper.SetEditBox.AHasEditBox">
-        <short>True enables the edit box; False disables the edit box.</short>
+        <short>True enables the edit box; <b>False</b> disables the edit box.</short>
       </element>
 
       <element name="TComboBoxStyleHelper.IsOwnerDrawn">
@@ -1567,7 +1569,7 @@
             When NotifyCode is <var>CBN_DROPDOWN</var>, the following actions are performed:
           </p>
           <ul>
-            <li>DroppedDown is set to True.</li>
+            <li>DroppedDown is set to <b>True</b>.</li>
             <li>Calls DropDown to signal the OnDropDown event handler (when assigned).</li>
             <li>Calls AdjustDropDown to configure the height and width for the drop down list.</li>
           </ul>
@@ -1575,7 +1577,7 @@
             When NotifyCode is <var>CBN_CLOSEUP</var>, the following actions are performed:
           </p>
           <ul>
-            <li>DroppedDown is set to False.</li>
+            <li>DroppedDown is set to <b>False</b>.</li>
             <li>Calls CloseUp to signal the OnCloseUp event handler (when assigned).</li>
           </ul>
         </descr>
@@ -2436,7 +2438,7 @@
         <short>Indicates if the width and/or height for the control can be adjusted by a layout policy.</short>
         <descr>
           <p>
-            <var>ShouldAutoAdjust</var> is an overridden method in <var>TCustomComboBox</var>. It sets the values in the <var>AWidth</var> and <var>AHeight</var> parameters to indicate if the control can adjust the bound(s) when a layout policy is applied to the control. True indicates the value for the property can be adjusted.
+            <var>ShouldAutoAdjust</var> is an overridden method in <var>TCustomComboBox</var>. It sets the values in the <var>AWidth</var> and <var>AHeight</var> parameters to indicate if the control can adjust the bound(s) when a layout policy is applied to the control. <b>True</b> indicates the value for the property can be adjusted.
           </p>
           <p>
             ShouldAutoAdjust is used in the implementation of the <var>DoAutoAdjustLayout</var> method.
@@ -2448,7 +2450,7 @@
         </seealso>
       </element>
       <element name="TCustomComboBox.ShouldAutoAdjust.AWidth">
-        <short>Always set to True in the method.</short>
+        <short>Always set to <b>True</b> in the method.</short>
       </element>
       <element name="TCustomComboBox.ShouldAutoAdjust.AHeight">
         <short>True when AutoSize is not enabled for the control.</short>
@@ -2664,10 +2666,10 @@
         <short>Uses the Color from the Parent control, when enabled.</short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TCustomComboBox.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TCustomComboBox.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -2703,16 +2705,16 @@
             <dt>DropDownCunt</dt>
             <dd>Set to display 8 items by default.</dd>
             <dt>ArrowKeysTraverseList</dt>
-            <dd>Set to True to enable cursor key navigation in the control.</dd>
+            <dd>Set to <b>True</b> to enable cursor key navigation in the control.</dd>
             <dt>AutoCompleteText</dt>
             <dd>Set to the values in the DefaultComboBoxAutoCompleteText constant.</dd>
             <dt>AutoSelect</dt>
-            <dd>Set to True.</dd>
+            <dd>Set to <b>True</b>.</dd>
             <dt>CharCase</dt>
             <dd>Set to ecNormal.</dd>
             <dt>AutoSize</dt>
             <dd>
-              Set to True. AutoSize must be true by default since some widgetsets (win32, wince) ignore the combo-box height and others (gtk2) look ugly with a very small height.
+              Set to <b>True</b>. AutoSize must be <b>True</b> by default since some widgetsets (win32, wince) ignore the combo-box height and others (gtk2) look ugly with a very small height.
             </dd>
           </dl>
         </descr>
@@ -2809,11 +2811,13 @@
         <short>The maximum number of items that can be added to the history.</short>
       </element>
       <element name="TCustomComboBox.AddHistoryItem.SetAsText">
-        <short>When True the string also is copied into the edit box for the control.</short>
+        <short>
+          When <b>True</b> the string also is copied into the edit box for the control.
+        </short>
       </element>
       <element name="TCustomComboBox.AddHistoryItem.CaseSensitive">
         <short>
-          True means that the list can contain multiple items with the same text, differing in case.
+          <b>True</b> means that the list can contain multiple items with the same text, differing in case.
         </short>
       </element>
       <element name="TCustomComboBox.AddHistoryItem.AnObject">
@@ -3277,10 +3281,10 @@
       </element>
 
       <element name="TCustomComboBox.TabStop">
-        <short>Enables or disables navigation using the Tab key.</short>
+        <short>Enables or disables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control, by pressing the Tab key. The default value for the property is True in TCustomComboBox.
+            Allows the user to navigate to or from this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TCustomComboBox.
           </p>
         </descr>
         <seealso>
@@ -3480,7 +3484,7 @@
         <short>The list box control for the notification.</short>
       </element>
       <element name="TSelectionChangeEvent.User">
-        <short>True if the user changed the selection, False if changed by code.</short>
+        <short>True if the user changed the selection, <b>False</b> if changed by code.</short>
       </element>
 
       <element name="TListBoxOption">
@@ -3651,7 +3655,7 @@
         <short>Ordinal position for the item.</short>
       </element>
       <element name="TCustomListBox.SendItemSelected.IsSelected">
-        <short>True when the item is selected; False when it is not selected.</short>
+        <short>True when the item is selected; <b>False</b> when it is not selected.</short>
       </element>
 
       <element name="TCustomListBox.ClearSelectedCache">
@@ -4382,7 +4386,7 @@
       </element>
 
       <element name="TCustomListBox.ItemVisible">
-        <short>Returns True if the item is at least partially visible in the scrollable list.</short>
+        <short>Returns <b>True</b> if the item is at least partially visible in the scrollable list.</short>
         <descr>
           <p>
             <var>ItemVisible</var> is a <var>Boolean</var> function used to determine if the item at the position in <var>Index</var> is at least partially visible in the list box control. The return value is <b>False</b> for the following conditions:
@@ -4410,7 +4414,7 @@
       </element>
 
       <element name="TCustomListBox.ItemFullyVisible">
-        <short>Returns True if the item is fully visible in the scrollable list.</short>
+        <short>Returns <b>True</b> if the item is fully visible in the scrollable list.</short>
         <descr>
           <p>
             <var>ItemFullyVisible</var> is a <var>Boolean</var> function used to determine the item at the position in <var>Index</var> is fully visible in the list box control. The return value is <b>False</b> under the following conditions:
@@ -4567,7 +4571,7 @@
         <short>Ordinal position for the final item changed in the method.</short>
       </element>
       <element name="TCustomListBox.SelectRange.ASelected">
-        <short>True if the items are selected; False when they are unselected.</short>
+        <short>True if the items are selected; <b>False</b> when they are unselected.</short>
       </element>
 
       <element name="TCustomListBox.DeleteSelected">
@@ -4675,7 +4679,7 @@
 
       <element name="TCustomListBox.ExtendedSelect">
         <short>
-          True when a contiguous range of items can be selected by a Shift+Click. Default is True.
+          <b>True</b> when a contiguous range of items can be selected using Shift+Click. The default value is <b>True</b>.
         </short>
         <descr>
           <p>
@@ -4857,10 +4861,10 @@
         <short>Use the Color from the Parent control, when enabled.</short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TCustomListBox.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TCustomListBox.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -4996,7 +5000,7 @@
       <element name="TCustomListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
       <element name="TCustomListBox.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
             Allows the user to navigate to this control, by pressing the Tab or Shift+Tab keys.
@@ -5412,11 +5416,11 @@
            <dt>ES_CENTER</dt>
            <dd>Included when Alignment contains taCenter.</dd>
            <dt>ES_READONLY</dt>
-           <dd>Included when ReadOnly is set to True.</dd>
+           <dd>Included when ReadOnly is set to <b>True</b>.</dd>
            <dt>ES_NUMBER</dt>
-           <dd>Included when NumbersOnly is set to True.</dd>
+           <dd>Included when NumbersOnly is set to <b>True</b>.</dd>
            <dt>ES_NOHIDESEL</dt>
-           <dd>Included when HideSelection is set to False.</dd>
+           <dd>Included when HideSelection is set to <b>False</b>.</dd>
          </dl>
        </descr>
        <seealso>
@@ -5524,7 +5528,7 @@
 
       <element name="TCustomEdit.DoEnter" >
         <short>
-          Signals the OnEnter event handler, and selects the entire text when AutoSelect is True.
+          Signals the OnEnter event handler, and selects the entire text when AutoSelect is <b>True</b>.
         </short>
         <descr>
           <p>
@@ -5893,7 +5897,7 @@
             <var>ShouldAutoAdjust</var> is an overridden method in <var>TCustomEdit</var> used to determine if the control can auto-adjust its Height and/or Width.
           </p>
           <p>
-            <var>AWidth</var> and <var>AHeight</var> are variable Boolean parameters which indicate if the corresponding property can be auto-sized. AWidth is always set to True for TCustomEdit. AHeight is set to the inverse of the value in <var>AutoSize</var>.
+            <var>AWidth</var> and <var>AHeight</var> are variable Boolean parameters which indicate if the corresponding property can be auto-sized. AWidth is always set to <b>True</b> for TCustomEdit. AHeight is set to the inverse of the value in <var>AutoSize</var>.
           </p>
           <p>
             ShouldAutoAdjust does <b>NOT</b> call the inherited method.
@@ -5963,7 +5967,7 @@
       </element>
 
       <element name="TCustomEdit.AutoSelected">
-        <short>Set to True when the text selection was made automatically.</short>
+        <short>Set to <b>True</b> when the text selection was made automatically.</short>
         <descr>
           <p>
             <var>AutoSelected</var> is a <var>Boolean</var> property which indicates if the text selection in the control was made automatically after handling key press or mouse events.
@@ -5993,10 +5997,10 @@
         <short>Uses the Color from the Parent control, when enabled.</short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value is False in TCustomEdit.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value is <b>False</b> in TCustomEdit.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
           <p>
             Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
@@ -6248,7 +6252,7 @@
         </short>
         <descr>
           <p>
-            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is True in TCustomEdit. and enables auto-sizing the control instance to its content.
+            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is <b>True</b> in TCustomEdit. and enables auto-sizing the control instance to its content.
           </p>
         </descr>
         <seealso>
@@ -6379,7 +6383,7 @@
             <var>HideSelection</var> is a <var>Boolean</var> property which determines whether the selected text in the control is hidden when the control does not have focus.
           </p>
           <p>
-            HideSelection negates the default behavior in the edit control. The default behavior hides the selection when the control loses focus, and displays the text selection when the control receives focus. When set to False, the selected text (if any) is <b>always</b> displayed in the selected state - even when the control loses focus.
+            HideSelection negates the default behavior in the edit control. The default behavior hides the selection when the control loses focus, and displays the text selection when the control receives focus. When set to <b>False</b>, the selected text (if any) is <b>always</b> displayed in the selected state - even when the control loses focus.
           </p>
           <p>
             The default value for the property is <b>True</b>.
@@ -6596,7 +6600,7 @@
       <element name="TCustomEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
       <element name="TCustomEdit.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
             Allows the user to navigate to this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in <var>TCustomEdit</var>.
@@ -6714,7 +6718,7 @@
             This is important if an <var>OnChange</var> event handler is used to detect changes to the value in the control, and you need to identify whether the change was performed in program code. You can identify a programmatic change by manipulating the value in Modified.
           </p>
           <p>
-            For changes in program code, set Modified to False before setting the value using the Text property. If Modified is False when OnChange is signalled, the change occurred in program code. Modified can be set as desired in your program code after the value is assigned to Text. For example:
+            For changes in program code, set Modified to <b>False</b> before setting the value using the Text property. If Modified is <b>False</b> when OnChange is signalled, the change occurred in program code. Modified can be set as desired in your program code after the value is assigned to Text. For example:
           </p>
 <code>
 // use Modified and Text to track program changes
@@ -6734,7 +6738,7 @@ begin
 end;
 </code>
           <p>
-            Changes entered by the user are applied when methods update the Lines property in the control. As a result, Modified is set to True. If Modified is True in OnChange, the change was triggered by user interaction with the control.
+            Changes entered by the user are applied when methods update the Lines property in the control. As a result, Modified is set to <b>True</b>. If Modified is <b>True</b> in OnChange, the change was triggered by user interaction with the control.
           </p>
           <p>
             The value in Modified is retained when the control gains or loses focus whether by keyboard navigation or by using the mouse.
@@ -6792,7 +6796,7 @@ end;
             <var>CreateParams</var> is overridden in <var>TCustomMemo</var>, and calls the inherited method on entry. CreateParams ensures that style flags needed for the multi-line control are included in the <var>Style</var> property in the <var>Params</var> argument.
           </p>
           <p>
-            Values from the <var>ScrollBars</var> and <var>WordWrap</var> properties are checked, and flags are added as needed. ScrollBars causes window style flags to be added like WS_HSCROLL and/or WS_VSCROLL. When <var>WordWrap</var> is set to True, the WS_HSCROLL window style is removed from the creation parameters. Otherwise, the edit style ES_AUTOHSCROLL is added to the creation parameters.
+            Values from the <var>ScrollBars</var> and <var>WordWrap</var> properties are checked, and flags are added as needed. ScrollBars causes window style flags to be added like WS_HSCROLL and/or WS_VSCROLL. When <var>WordWrap</var> is set to <b>True</b>, the WS_HSCROLL window style is removed from the creation parameters. Otherwise, the edit style ES_AUTOHSCROLL is added to the creation parameters.
           </p>
         </descr>
         <seealso>
@@ -6873,7 +6877,7 @@ end;
 
       <element name="TCustomMemo.GetCachedText" link="#lcl.controls.TControl.GetCachedText"/>
       <element name="TCustomMemo.GetCachedText.Result">
-        <short>Always False, a cache is not implemented in TCustomMemo.</short>
+        <short>Always <b>False</b>; a cache is not implemented in TCustomMemo.</short>
       </element>
       <element name="TCustomMemo.GetCachedText.CachedText">
         <short>TCaption instance with the cached value for the control.</short>
@@ -6900,10 +6904,10 @@ end;
         <short>Handles Key Up events forwarded from the LCL interface.</short>
         <descr>
         <p>
-          <var>KeyUpAfterInterface</var> handles the <var>VK_RETURN</var> key code for the control when WantReturns is set to True. It sets the value in Key to 0 to indicate that the key code does not finish editing in the control.
+          <var>KeyUpAfterInterface</var> handles the <var>VK_RETURN</var> key code for the control when WantReturns is set to <b>True</b>. It sets the value in Key to 0 to indicate that the key code does not finish editing in the control.
           </p>
           <p>
-            It calls the inherited method prior to exit to handle the key code normally when WantReturns is set to False.
+            It calls the inherited method prior to exit to handle the key code normally when WantReturns is set to <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -7195,7 +7199,7 @@ end;
             sContent := AMemo.Lines.Text;
           </code>
           <p>
-            Changing the values in Lines causes the Modified property to be set to True. Use Text to make changes to the control value that do not cause the Modified property to be updated.
+            Changing the values in Lines causes the Modified property to be set to <b>True</b>. Use Text to make changes to the control value that do not cause the Modified property to be updated.
           </p>
           <p>
             Use the <var>Append</var> method to add a line of text to the end of the values in Lines.
@@ -7417,7 +7421,7 @@ end;
             This is important if an <var>OnChange</var> event handler is used to detect changes to the value in the control, and you need to identify whether the change was performed in program code. You can identify a programmatic change by manipulating the value in Modified.
           </p>
           <p>
-            For changes in program code, set Modified to False before setting the value using the Text property. If Modified is False when OnChange is signalled, the change occurred in program code. Modified can be set as desired in your program code after the value is assigned to Text. For example:
+            For changes in program code, set Modified to <b>False</b> before setting the value using the Text property. If Modified is <b>False</b> when OnChange is signalled, the change occurred in program code. Modified can be set as desired in your program code after the value is assigned to Text. For example:
           </p>
 <code>
 // use Modified and Text to track program changes
@@ -7437,7 +7441,7 @@ begin
 end;
 </code>
           <p>
-            Changes entered by the user are applied when methods update the Lines property in the control. As a result, Modified is set to True. If Modified is True in OnChange, the change was triggered by user interaction with the control.
+            Changes entered by the user are applied when methods update the Lines property in the control. As a result, Modified is set to <b>True</b>. If Modified is <b>True</b> in OnChange, the change was triggered by user interaction with the control.
           </p>
           <p>
             The value in Modified is retained when the control gains or loses focus whether by keyboard navigation or by using the mouse.
@@ -7685,7 +7689,7 @@ end;
         <short>Handles an accelerator key for the control.</short>
         <descr>
           <p>
-            <var>DialogChar</var> is an overridden method in <var>TCustomStaticText</var>.  It checks the character code in <var>Message</var> to determine if it is used as the accelerator (shortcut) in the <var>Caption</var> for the control. When the character code is found, the <var>FocusControl</var> is given focus and the return value is set to True.
+            <var>DialogChar</var> is an overridden method in <var>TCustomStaticText</var>.  It checks the character code in <var>Message</var> to determine if it is used as the accelerator (shortcut) in the <var>Caption</var> for the control. When the character code is found, the <var>FocusControl</var> is given focus and the return value is set to <b>True</b>.
           </p>
           <p>
             If the character code is not found, the inherited method is called to broadcast the Message to child controls and get the return value.
@@ -7798,7 +7802,7 @@ end;
       </element>
 
       <element name="TCustomStaticText.Transparent">
-        <short>Makes the background color for the control transparent when True.</short>
+        <short>Makes the background color for the control transparent when <b>True</b>.</short>
         <descr>
           <p>
             The property value is <b>True</b> when the <var>csOpaque</var> flag is not present in the <var>ControlStyle</var> property. Changing the value for the property causes ControlStyle to be updated accordingly, and the control is redrawn. The default value for the property is <b>True</b>.
@@ -8218,7 +8222,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomButton.UpdateFocus.AFocused">
-        <short>True when the button is focused, False when it loses focus.</short>
+        <short>True when the button is focused, <b>False</b> when it loses focus.</short>
       </element>
 
       <element name="TCustomButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -8443,9 +8447,9 @@ end;
             <dt>Color</dt>
             <dd>Set to clDefault or clBtnFace (depending on the platform or widgetset).</dd>
             <dt>ParentColor</dt>
-            <dd>Set to False.</dd>
+            <dd>Set to <b>False</b>.</dd>
             <dt>TabStop</dt>
-            <dd>Set to True.</dd>
+            <dd>Set to <b>True</b>.</dd>
             <dt>Align</dt>
             <dd>Set to alNone.</dd>
           </dl>
@@ -8530,10 +8534,10 @@ end;
             <var>ActiveDefaultControlChanged</var> is an overridden method used to update properties in the control and/or parent form when active default control has been changed. <var>NewControl</var> contains the control which is the <var>ActiveControl</var> given focus on the parent form, or <b>Nil</b> when a button control loses focus.
           </p>
           <p>
-            When NewControl is the current class instance, its Active property is set to True to reflect the active focused control status. The ActiveDefaultControl property in the parent form is set to the current control to indicate it is also the active default control for the form.
+            When NewControl is the current class instance, its Active property is set to <b>True</b> to reflect the active focused control status. The ActiveDefaultControl property in the parent form is set to the current control to indicate it is also the active default control for the form.
           </p>
           <p>
-            When NewControl is assigned, but a different control than the current instance, the button control is not focused and its Active property is set to False.
+            When NewControl is assigned, but a different control than the current instance, the button control is not focused and its Active property is set to <b>False</b>.
           </p>
           <p>
             When NewControl is unassigned (<b>Nil</b>), the button control has just lost focus and Active is set to the value in the Default property. The control is also removed as the ActiveDefaultControl in the parent form (when needed).
@@ -8719,11 +8723,10 @@ end;
       </element>
 
       <element name="TCustomButton.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control, by pressing the Tab key.
-            The default value for the property is True in TCustomButton.
+            Allows the user to navigate to or from this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TCustomButton.
           </p>
         </descr>
         <seealso>
@@ -8844,7 +8847,7 @@ end;
         <short>The base class for a check box component.</short>
         <descr>
           <p>
-            <var>TCustomCheckBox</var> is a <var>TButtonControl</var> descendant which specifies an interface used for a check box component. It is the common ancestor for <var>TCheckBox</var>, <var>TToggleBox</var>, <var>TRadioButton</var>, and <var>TDBCheckBox</var> descendants.
+            <var>TCustomCheckBox</var> is a <var>TButtonControl</var> descendant which specifies an interface used for a check box control. It is the common ancestor for <var>TCheckBox</var>, <var>TToggleBox</var>, <var>TRadioButton</var>, and <var>TDBCheckBox</var> descendants.
           </p>
           <p>
             A check box control allows the user to choose the state for the control independent of other check box controls (unlike a radio button). TCustomCheckBox introduces the <var>State</var> property which contains the check, unchecked, or grayed state for the control. The <var>AllowGrayed</var> property indicates if the grayed state is allowed in the control; otherwise only checked and unchecked are used. The <var>Checked</var> property allows the value in State to be updated by setting a <var>Boolean</var> value that indicates the check or unchecked state for the control.
@@ -8905,7 +8908,7 @@ end;
         <short>Performs actions when the control is clicked.</short>
         <descr>
           <p>
-            Overridden in <var>TCustomCheckBox</var> to ignore mouse up event notifications.
+            <var>Click</var> is an overridden method in <var>TCustomCheckBox</var>, and ignores mouse up event notifications. It does not call the inherited method; the click action is performed in the DoClickOnChange method when the inherited ClicksDisabled property is <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -8919,13 +8922,13 @@ end;
         <short>Implements the Click behavior for the control.</short>
         <descr>
           <p>
-            <var>DoClickOnChange</var> is a procedure used to signal event handler(s) when the <b>LC_CHANGED</b> message is handled for the control. DoClickOnChange calls the <var>Changed</var> method to dispatch the control message. DoClickOnChange uses the value in <var>ClicksDisabled</var> to determine the event handler(s) signalled in the method.
+            <var>DoClickOnChange</var> is a procedure used to signal event handler(s) when the <b>LC_CHANGED</b> message is handled for the control. DoClickOnChange calls the <var>Changed</var> method to dispatch the control message.
           </p>
           <p>
-            When ClicksDisabled is <b>False</b>, the inherited <var>Click</var> method is called. When set to <b>True</b>, the <var>DoOnChange</var> method is called to signal the <var>OnEditingDone</var> and <var>OnChange</var> event handlers. This emulates the <var>OnClick</var> behavior in the Delphi VCL.
+            DoClickOnChange uses the value from the inherited <var>ClicksDisabled</var> property to determine the event handler(s) signalled in the method. When ClicksDisabled is <b>False</b>, the inherited <var>Click</var> method is called. When set to <b>True</b>, the <var>DoOnChange</var> method is called to signal the <var>OnEditingDone</var> and <var>OnChange</var> event handlers. This emulates the <var>OnClick</var> behavior in the Delphi VCL.
           </p>
           <p>
-            DoClickOnChange is called from the <var>DoChange</var> method after the value in <var>State</var> has been updated. It is also called when a new value is assigned to the <var>Checked</var> property.
+            DoClickOnChange is called when a new value is assigned to the <var>Checked</var> property. DoClickOnChange is also called from the DoChange method after the value in State has been retrieved for the control. Please note that DoChange is not used in the current LCL implementation.
           </p>
         </descr>
         <seealso>
@@ -8938,6 +8941,7 @@ end;
           <link id="#lcl.controls.TControl.Changed">TControl.Changed</link>
           <link id="#lcl.controls.TControl.EditingDone">TControl.EditingDone</link>
           <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+          <link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
         </seealso>
       </element>
 
@@ -9073,7 +9077,9 @@ end;
       </element>
 
       <element name="TCustomCheckBox.TextChanged">
-        <short>Performs actions needed when the CM_TEXTCHANGED message is handled for the control.</short>
+        <short>
+          Performs actions needed when the CM_TEXTCHANGED message is handled for the control.
+        </short>
         <descr>
           <p>
             <var>TextChanged</var> is an overridden method in <var>TCustomCheckBox</var> used to perform actions needed when the <var>CM_TEXTCHANGED</var> control message is handled for the control.
@@ -9133,20 +9139,37 @@ end;
         <short>Allows the check box to use a "grayed" state.</short>
         <descr>
           <p>
-            If <var>AllowGrayed</var> is set to <b>True</b>, the check box has three possible states: checked, unchecked and grayed. If <var>AllowGrayed</var> is set to <b>False</b>, the check box has only two possible states: checked and unchecked.
+            If <var>AllowGrayed</var> is set to <b>True</b>, the check box has three possible values in the State property: checked, unchecked and grayed. If <var>AllowGrayed</var> is set to <b>False</b>, the check box has only two possible states: checked and unchecked.
           </p>
         </descr>
         <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
+        <seealso>
+          <link id="TCustomCheckBox.State"/>
+          <link id="TButtonControl.Checked"/>
+        </seealso>
       </element>
 
       <element name="TCustomCheckBox.State">
         <short>The check, unchecked, or grayed state for the control.</short>
         <descr>
           <p>
-            Indicates whether the check box is checked (selected), unchecked (deselected) or grayed (disabled). See <var>TCheckBoxState</var> for the possible values in <var>State</var>.
+            <var>State</var> is a <var>TCheckBoxState</var> property which indicates whether the check box is checked, unchecked or grayed (disabled). The default value for the property is cbUnchecked. State allows the control to be set to the indeterminate (grayed) state when AllowGrayed is set to <b>True</b>. Otherwise, it is the same as using the Checked property.
+          </p>
+          <!--
+          TODO: DoClickOnChange needed after ApplyChanges? A patch was submitted but never applied.
+          -->
+          <p>
+            Reading the property value calls RetrieveState to get the value from the widgetset class when its handle has been allocated. Otherwise, the existing value for the member is used. Changing the value for the property causes ApplyChanges to be called to send the new property value to the widget.
+          </p>
+          <p>
+            See <var>TCheckBoxState</var> for the available enumeration values and their meanings in the <var>State</var> property.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomCheckBox.RetrieveState"/>
+          <link id="TCustomCheckBox.ApplyChanges"/>
+          <!-- link id="TCustomCheckBox.DoClickOnChange"/ -->
+          <link id="TButtonControl.Checked"/>
           <link id="TCheckBoxState"/>
         </seealso>
         <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
@@ -9159,7 +9182,7 @@ end;
             <var>ShortCut</var> is a <var>TShortCut</var> property with the primary shortcut key or accelerator key for the control. The property value contains both the virtual key code and the shift modifier for the short cut key.
           </p>
           <p>
-            The value in ShortCut is automatically updated when a caption is assigned for the control which includes an accelerator key. The accelerator key is designated using an Ampersand (&amp;) character before the character used as the short cut. A value assigned in this manner always includes the ssCtrl modifier in the short cut value by default.
+            The value in ShortCut is automatically updated when a caption is assigned for the control which includes an accelerator key. The accelerator key is designated using an Ampersand (&amp;) character before the value used as the short cut. A value assigned in this manner always includes the ssCtrl modifier in the short cut value by default.
           </p>
           <p>
             Use the <var>ShortCut</var> and <var>ShortCutToKey</var> routines in the <file>menu.pp</file> unit to convert to and from virtual key codes with shift modifiers.
@@ -9213,7 +9236,7 @@ end;
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance, and calls the inherited method on entry. Creates sets the internal component style for the control to <var>csCheckbox</var>, and sets the default values for properties including <var>TabStop</var> (<b>True</b>) and <var>AutoSize</var> (<b>True</b>).
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry. Creates sets the internal component style for the control to <var>csCheckbox</var>, and sets the default values for properties including <var>TabStop</var> (<b>True</b>) and <var>AutoSize</var> (<b>True</b>).
           </p>
         </descr>
         <seealso/>
@@ -9234,7 +9257,7 @@ end;
         </short>
         <descr>
           <p>
-            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is True in TCheckBox, and enables auto-sizing for the control instance.
+            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is <b>True</b> in TCheckBox, and enables auto-sizing of the text displayed for the control instance.
           </p>
         </descr>
         <seealso>
@@ -9290,11 +9313,10 @@ end;
       <element name="TCheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
       <element name="TCheckBox.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control, by pressing the Tab key.
-            The default value for the property is True in TCheckBox.
+            Allows the user to navigate to or from this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TCheckBox.
           </p>
         </descr>
         <seealso>
@@ -9340,7 +9362,7 @@ end;
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance, and calls the inherited method using <var>TheOwner</var> as the owner for the new class instance. Create ensures that the internal component style for the control is set to <var>csToggleBox</var>,  and sets the default values for the TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method using <var>TheOwner</var> as the owner for the new class instance. Create ensures that the internal component style for the control is set to <var>csToggleBox</var>,  and sets the default values for the TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
           </p>
         </descr>
         <seealso/>
@@ -9394,11 +9416,10 @@ end;
       <element name="TToggleBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
       <element name="TToggleBox.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control, by pressing the Tab key.
-            The default value for the property is True in TToggleBox.
+            Allows the user to navigate to or from this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TToggleBox.
           </p>
         </descr>
         <seealso>
@@ -9467,7 +9488,7 @@ end;
             <var>DialogChar</var> is an overridden <var>Boolean</var> function in <var>TRadioButton</var> which handles accelerator keys in messages for the control. The return value is set to <b>True</b> when the radio button is successfully toggled in the method.
           </p>
           <p>
-            <var>Message</var> is the TLMKey instance with the key code examined in the method. When the key code matches the accelerator key in <var>Caption</var>, the control is focused and the return value is set to True. If the control cannot be focused, or Message does not represent an accelerator key code, the inherited method is called to get the return value.
+            <var>Message</var> is the TLMKey instance with the key code examined in the method. When the key code matches the accelerator key in <var>Caption</var>, the control is focused and the return value is set to <b>True</b>. If the control cannot be focused, or Message does not represent an accelerator key code, the inherited method is called to get the return value.
           </p>
           <p>
             This method is called even if the control is disabled or hidden. Provided for Delphi VCL compatibility.
@@ -9607,11 +9628,10 @@ end;
       <element name="TRadioButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
       <element name="TRadioButton.TabStop">
-        <short>Enables navigation using the Tab key.</short>
+        <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
         <descr>
           <p>
-            Allows the user to navigate to this control, by pressing the Tab key.
-            The default value for the property is True in TRadioButton.
+            Allows the user to navigate to or from this control by pressing the Tab or Shift+Tab keys. The default value for the property is <b>True</b> in TRadioButton.
           </p>
         </descr>
         <seealso>
@@ -9675,7 +9695,7 @@ end;
       <element name="TCustomLabel.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomLabel.CanTab">
-        <short>Always False, since you cannot tab into a label control.</short>
+        <short>Always <b>False</b>, since you cannot tab into a label control.</short>
         <descr>
           <p>
             <var>CanTab</var> is an overridden method in <var>TCustomLabel</var>. The return value is always <b>False</b> since the <b>Tab</b> key cannot be used to give focus to the control.
@@ -9686,7 +9706,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomLabel.CanTab.Result">
-        <short>Always False in TCustomLabel.</short>
+        <short>Always <b>False</b> in TCustomLabel.</short>
       </element>
 
       <element name="TCustomLabel.DoDrawText">
@@ -9821,7 +9841,9 @@ end;
       </element>
 
       <element name="TCustomLabel.TextChanged" link="#lcl.controls.TControl.TextChanged">
-        <short>Performs actions when the CM_TEXTCHANGED message is handled for the control.</short>
+        <short>
+          Performs actions when the CM_TEXTCHANGED message is handled for the control.
+        </short>
         <descr>
           <p>
             <var>TextChanged</var> is an overridden method used to perform actions needed when the <var>CM_TEXTCHANGED</var> message is handled for the control. TextChanged calls <var>Invalidate</var> to force the control to be redrawn. <var>UpdateSize</var> is called to perform auto-sizing,  and recalculate the dimensions for the control and its font.
@@ -10020,7 +10042,9 @@ end;
       </element>
 
       <element name="TCustomLabel.Loaded">
-        <short>Performs actions when the component has been loaded using LCL component streaming.</short>
+        <short>
+          Performs actions when the component has been loaded using LCL component streaming.
+        </short>
         <descr>
           <p>
             <var>Loaded</var> is overridden in <var>TCustomLabel</var>, and calls the inherited method on Entry. Loaded calls the <var>AdjustSize</var> method to handle delayed calls to <var>AutoSize</var> during component streaming.
@@ -10035,7 +10059,9 @@ end;
       </element>
 
       <element name="TCustomLabel.UpdateSize">
-        <short>Adjusts the size for the control based on settings in AutoSize and OptimalFill.</short>
+        <short>
+          Adjusts the size for the control based on settings in AutoSize and OptimalFill.
+        </short>
         <descr>
           <p>
             <var>UpdateSize</var> is a method used to adjust the size for the control based on settings in the <var>AutoSize</var> and <var>OptimalFill</var> properties. UpdateSize calls <var>InvalidatePreferredSize</var>.
@@ -10067,7 +10093,9 @@ end;
       </element>
 
       <element name="TCustomLabel.CalcFittingFontHeight">
-        <short>Calculates the font height needed to fill the specified width and height constraints.</short>
+        <short>
+          Calculates the font height needed to fill the specified width and height constraints.
+        </short>
         <descr>
           <p>
             <var>CalcFittingFontHeight</var> is a <var>Boolean</var> function used to calculate the maximum font height needed to make the specified string fill the available space, given the MaxWidth and MaxHeight constraints.
@@ -10201,7 +10229,9 @@ end;
       </element>
 
       <element name="TCustomLabel.Alignment">
-        <short>Horizontal text justification in the control (centered, left- or right-justified).</short>
+        <short>
+          Horizontal text justification in the control (centered, left- or right-justified).
+        </short>
         <descr>
           <p>
             <var>Alignment</var> is a <var>TAlignment</var> property which controls the horizontal justification of the text displayed in the control. The default value for the property is <var>taLeftJustify</var>. When a new value is assigned to the Alignment property, the <var>Invalidate</var> method is called to repaint the control.
@@ -10249,7 +10279,7 @@ end;
             <var>Color</var> is <var>TColor</var> property with the background color for the control. Color is re-introduced in <var>TCustomLabel</var> to remove the default value for the property.
           </p>
           <p>
-            Setting a new value for the property causes the value in ParentColor to be set to False. A CM_COLORCHANGED control message is performed, and the control is redrawn.
+            Setting a new value for the property causes the value in ParentColor to be set to <b>False</b>. A CM_COLORCHANGED control message is performed, and the control is redrawn.
           </p>
           <p>
             Values in Color and Font are used when the background and text for the control are drawn in the Paint method. Color is used when Transparent is set to <b>False</b> and the color value is not clNone. Use the Font property to assign the typeface and color used for the text displayed on the control.
@@ -10258,7 +10288,7 @@ end;
             By default, label controls are transparent in the LCL. This differs from the Delphi VCL where the default value for Transparent is <b>False</b>.
           </remark>
           <p>
-            Set Transparent to False to make the label opaque.
+            Set Transparent to <b>False</b> to make the label opaque.
           </p>
         </descr>
         <seealso>
@@ -10270,7 +10300,9 @@ end;
       </element>
 
       <element name="TCustomLabel.FocusControl">
-        <short>The control associated with the label and its accelerator key (AccelChar).</short>
+        <short>
+          The control associated with the label and its accelerator key (AccelChar).
+        </short>
         <descr>
           <p>
             Set <var>FocusControl</var> to the control which is focused when the accelerator key in the label is pressed.
@@ -10316,7 +10348,7 @@ end;
 
       <element name="TCustomLabel.OptimalFill">
         <short>
-          If True, the font size is adjusted for optimal fill of the available space.
+          If <b>True</b>, the font size is adjusted for optimal fill of the available space.
         </short>
         <descr>
           <p>
@@ -10361,7 +10393,7 @@ end;
         <short>Indicates whether the viewer can see through the control.</short>
         <descr>
           <p>
-            When Transparent is set to <b>False</b>, the enclosing rectangle for the control is filled with the background Color for the label. When set to True, Color is not used to fill the background for the control and the underlying control is visible.
+            When Transparent is set to <b>False</b>, the enclosing rectangle for the control is filled with the background Color for the label. When set to <b>True</b>, Color is not used to fill the background for the control and the underlying control is visible.
           </p>
           <p>
             The property value is <b>True</b> when csOpaque has not been included in the style flags for the control. Changing the value for the property causes <var>ControlStyle</var> to be updated. When set to <b>True</b>, csOpaque is removed from ControlStyle. When set to <b>False</b>, csOpaque is included in ControlStyle. The control is redrawn when a new value is assigned to the property.
