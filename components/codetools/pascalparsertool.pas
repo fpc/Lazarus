@@ -252,12 +252,12 @@ type
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     procedure ReadAnsiStringParams(Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
-    function ReadClosure(ExceptionOnError: boolean): boolean;
+    function ReadAnonymousFunction(ExceptionOnError: boolean): boolean;
     function SkipTypeReference(ExceptionOnError: boolean): boolean;
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
     function AllowAttributes: boolean; inline;
-    function AllowClosures: boolean; inline;
+    function AllowAnonymousFunctions: boolean; inline;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -1094,8 +1094,8 @@ begin
           SaveRaiseEndOfSourceExpected(20170421195401);
       end else if UpAtomIs('WITH') then
         ReadWithStatement(true,true)
-      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')) and AllowClosures then
-        ReadClosure(true);
+      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')) and AllowAnonymousFunctions then
+        ReadAnonymousFunction(true);
     until false;
   except
     {$IFDEF ShowIgnoreErrorAfter}
@@ -3056,8 +3056,8 @@ begin
     and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
     end else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
-    and AllowClosures then begin
-      ReadClosure(true);
+    and AllowAnonymousFunctions then begin
+      ReadAnonymousFunction(true);
     end else begin
       // check for unexpected keywords
       case BlockType of
@@ -4997,7 +4997,7 @@ end;
 
 function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
 begin
-  if (Scanner.CompilerModeSwitches*[cmsClosures,cmsCBlocks]<>[])
+  if (Scanner.CompilerModeSwitches*[cmsFunctionReferences,cmsCBlocks]<>[])
   or (Scanner.PascalCompiler=pcPas2js) then begin
     CreateChildNode;
     CurNode.Desc:=ctnReferenceTo;
@@ -6132,7 +6132,7 @@ begin
   until false;
 end;
 
-function TPascalParserTool.ReadClosure(ExceptionOnError: boolean): boolean;
+function TPascalParserTool.ReadAnonymousFunction(ExceptionOnError: boolean): boolean;
 { parse parameter list, result type, calling convention, begin..end
 
  examples:
@@ -6301,9 +6301,9 @@ begin
   Result:=Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
 end;
 
-function TPascalParserTool.AllowClosures: boolean;
+function TPascalParserTool.AllowAnonymousFunctions: boolean;
 begin
-  Result:=(cmsClosures in Scanner.CompilerModeSwitches)
+  Result:=(cmsAnonymousFunctions in Scanner.CompilerModeSwitches)
     or (Scanner.PascalCompiler=pcPas2js);
 end;
 
