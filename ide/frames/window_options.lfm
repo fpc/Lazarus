@@ -129,4 +129,17 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ShowHint = True
     TabOrder = 7
   end
+  object ProjectInspectorShowPropsCheckBox: TCheckBox
+    AnchorSideLeft.Control = AutoAdjustIDEHeightFullCompPalCheckBox
+    AnchorSideTop.Control = AutoAdjustIDEHeightFullCompPalCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 211
+    Width = 295
+    Caption = 'ProjectInspectorShowPropsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
 end
