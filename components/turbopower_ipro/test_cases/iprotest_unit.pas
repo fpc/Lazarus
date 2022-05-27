@@ -180,6 +180,12 @@ begin
     AddTest(node1, TableColSpan_title, TableColSpan_descr, TableColSpan_html);
     AddTest(node1, TableRowSpan_title, TableRowSpan_descr, TableRowSpan_html);
     node1.Expanded := true;
+    node1 := TreeView1.Items.AddChild(node, 'Column widths');
+    AddTest(node1, ColWidth_auto_title, ColWidth_auto_descr, ColWidth_auto_html);
+    AddTest(node1, ColWidth_100perc_title, ColWidth_100perc_descr, ColWidth_100perc_html);
+    AddTest(node1, ColWidth_30perc_70perc_title, ColWidth_30perc_70perc_descr, ColWidth_30perc_70perc_html);
+    AddTest(node1, ColWidth_200px_total100perc_title, ColWidth_200px_total100perc_descr, ColWidth_200px_total100perc_html);
+    node1.Expanded := true;
     node.Expanded := true;
     
     node := TreeView1.Items.AddChild(nil, 'Lists');
@@ -197,6 +203,10 @@ begin
     node := TreeView1.Items.AddChild(nil, 'Special cases in file structure');
     AddTest(node, NoHtmlTag_title, NoHtmlTag_descr, NoHtmlTag_html);
     AddTest(node, NoBodyTag_title, NoBodyTag_descr, NoBodyTag_html);
+    node.Expanded := true;
+    
+    node := TreeView1.Items.AddChild(nil, 'Localization, right-to-left');
+    AddTest(node, Arab_title, Arab_descr, Arab_html);
     node.Expanded := true;
     
   finally

@@ -588,6 +588,16 @@ var
                     FRowSp[CurCol] := CellNode.RowSpan - 1;
                     Inc(CurCol);
                   end;
+                  
+                  { mirroring for RTL reading }
+                  if FOwner.Dir = hdRTL then
+                  begin
+                    CellNode.Dir := hdRTL;
+                    CellRect1 := CellNode.PadRect;
+                    CellRect1.SetLocation(FTableWidth - CellRect1.Right, CellRect1.Top);
+                    CellNode.PadRect := CellRect1;
+                    CellNode.Layouter.Layout(RenderProps, CellRect1);
+                  end;                  
                 end;
 
               maxYY := 0;

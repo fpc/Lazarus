@@ -357,10 +357,13 @@ type
 
   { TIpHtmlNodeCore }
 
+  TIpHtmlDirection = (hdLTR, hdRTL);
+
   TIpHtmlNodeCore = class(TIpHtmlNodeMulti)
   private
     FInlineCSSProps: TCSSProps;  // props from the style attribute
     FCombinedCSSProps: TCSSProps; // props from all matching CSS selectors plus inline CSS combined
+    FDir: TIpHtmlDirection;
     FHoverPropsLookupDone: Boolean;
     FHoverPropsRef: TCSSProps; // props for :hover (this is only a cached reference, we don't own it)
     FElementName: String;
@@ -389,6 +392,7 @@ type
     property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     property Align: TIpHtmlAlign read GetAlign write SetAlign;
     property ClassId : string read FClassId write FClassId;
+    property Dir : TIpHtmlDirection read FDir write FDir;
     property Id : string read FId write SetId;
     property Style : string read FStyle write FStyle;
     property Title : string read FTitle write FTitle;
@@ -502,17 +506,14 @@ type
     property TextColor : TColor read FTextColor write SetTextColor;
   end;
 
-  TIpHtmlDirection = (hdLTR, hdRTL);
   TIpHtmlNodeHEAD = class(TIpHtmlNodeMulti)
   private
     FProfile: string;
     FLang: string;
-    FDir: TIpHtmlDirection;
   public
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
     property Profile : string read FProfile write FProfile;
   end;
@@ -12473,13 +12474,28 @@ end;
 procedure TIpHtmlNodeCore.ParseBaseProps(aOwner : TIpHtml);
 var
   Commands: TStringList;
+  s: String;
 begin
-  with aOwner do begin
-    Id := FindAttribute(htmlAttrID);
-    ClassId := FindAttribute(htmlAttrCLASS);
-    Title := FindAttribute(htmlAttrTITLE);
-    Style := FindAttribute(htmlAttrSTYLE);
-  end;
+  Id := aOwner.FindAttribute(htmlAttrID);
+  ClassId := aOwner.FindAttribute(htmlAttrCLASS);
+  Title := aOwner.FindAttribute(htmlAttrTITLE);
+  Style := aOwner.FindAttribute(htmlAttrSTYLE);
+  s := aOwner.FindAttribute(htmlAttrDIR);
+  if (s = '') then 
+  begin
+    if (ParentNode is TIpHtmlNodeCore) then
+      Dir := TIpHtmlNodeCore(ParentNode).Dir
+    else 
+    if (ParentNode is TIpHtmlNodeHtml) then
+      Dir := TIpHtmlNodeHtml(ParentNode).Dir;
+  end
+  else
+  if s = 'RTL' then 
+    Dir := hdRTL 
+  else 
+  if s = 'LTR' then 
+    Dir := hdLTR;
+
   if Style <> '' then
   begin
     if InlineCSS = nil then

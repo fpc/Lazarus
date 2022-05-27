@@ -439,6 +439,86 @@ const
     '</body>' + LE +
     '</html>';
   
+  ColWidth_auto_title =
+    'Column width auto';
+  ColWidth_auto_descr =
+    'Column widths should fit text width in cells';
+  ColWidth_auto_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <th>Column A</th>' + LE +
+    '    <th>Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+    
+  ColWidth_100perc_title =
+    'Table width 100%';
+  ColWidth_100perc_descr =
+    'Table expands over available space, equal column widths';
+  ColWidth_100perc_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1" width="100%">' + LE +
+    '  <tr>' + LE +
+    '    <th>Column A</th>' + LE +
+    '    <th>Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  ColWidth_30perc_70perc_title =
+    'Table width 100%, 1st column 30%';
+  ColWidth_30perc_70perc_descr =
+    'Table expands over available space, 1st column has 30%';
+  ColWidth_30perc_70perc_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1" width="100%">' + LE +
+    '  <tr>' + LE +
+    '    <th width="30%">Column A</th>' + LE +
+    '    <th width="70%">Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  ColWidth_200px_total100perc_title =
+    'Table width 100%, 1st column 200px';
+  ColWidth_200px_total100perc_descr =
+    'Table expands over available space, 1st column has 200px, 2nd column rest';
+  ColWidth_200px_total100perc_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1" width="100%">' + LE +
+    '  <tr>' + LE +
+    '    <th width="200px">Column A</th>' + LE +
+    '    <th>Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
 //------------------------------------------------------------------------------
 //    Lists
 //------------------------------------------------------------------------------
@@ -595,6 +675,25 @@ const
     '  <li>line 1</li>' + LE +
     '  <li>line 2</li>' + LE +
     '</ol>';
+
+  
+//------------------------------------------------------------------------------
+//   Localization / Right-to-left
+//------------------------------------------------------------------------------
+const
+  Arab_title =
+    'Arabian text';
+  Arab_descr =
+    '...';
+  Arab_html =
+    '<html lang="ar" dir="rtl">' + LE +
+    '<head>' + LE +
+    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' + LE +
+    '</head>' + LE +
+    '<body>' + LE +
+      '<div> لماذا ترتيب الكلمات معكوس </div> ' + LE +
+    '</body>' + LE +
+    '</html>';
 
 implementation
 

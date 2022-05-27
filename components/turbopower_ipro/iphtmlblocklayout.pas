@@ -445,6 +445,11 @@ begin
         Dec(WMod);
       end else
         OffsetRect(R, dx + WDelta, 0);
+      
+      { mirroring for RTL reading }
+      if FOwner.Dir = hdRTL then
+        R.SetLocation(FPageRect.Right - R.Right + FPageRect.Left, R.Top);
+
       SetWordRect(CurElem, R);
     end else
       SetWordRect(CurElem, NullRect);
@@ -1299,7 +1304,10 @@ begin
     TextStyle.Opaque := False;
     FCanvas.Brush.Style := bsClear;
   end;
-
+  
+  if (FOwner.Dir = hdRTL) then
+    TextStyle.RightToLeft := true;
+  
   if aCurWord.Owner.ParentNode = aCurTabFocus then
     FCanvas.DrawFocusRect(R);
   if FCanvas.Font.Color = clNone then

@@ -1202,9 +1202,9 @@ var
 begin
   Result := hdLTR;
   S := UpperCase(FindAttribute(htmlAttrDIR));
-  if (Length(S) = 0) or (S = 'LTR') then
-  else
-  if (S = 'RTL') then
+  if (S = '') or (S = 'LTR') then
+    Result := hdLTR
+  else if (S = 'RTL') then
     Result := hdRTL
   else
     if FlagErrors then
