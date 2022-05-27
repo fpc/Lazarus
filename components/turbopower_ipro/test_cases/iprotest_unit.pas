@@ -169,6 +169,25 @@ begin
     AddTest(node1, AlignInCell_CSS_title, AlignInCell_CSS_descr, AlignInCell_CSS_html);
     AddTest(node1, AlignInCellBold_CSS_title, AlignInCellBold_CSS_descr, AlignInCellBold_CSS_html);
     node1.Expanded := true;
+    node1 := TreeView1.Items.AddChild(node, 'Background colors');
+    AddTest(node1, TableCellBkColor_title, TableCellBkColor_descr, TableCellBkColor_html);
+    AddTest(node1, TableCellBkColor_style_title, TableCellBkColor_style_descr, TableCellBkColor_style_html);
+    AddTest(node1, TableRowBkColor_title, TableRowBkColor_descr, TableRowBkColor_html);
+    AddTest(node1, TableRowBkColor_style_title, TableRowBkColor_style_descr, TableRowBkColor_style_html);
+    AddTest(node1, TableColBkColor_style_title, TableColBkColor_style_descr, TableColBkColor_style_html);
+    node1.Expanded := true;
+    node1 := TreeView1.Items.AddChild(node, 'Merged cells');
+    AddTest(node1, TableColSpan_title, TableColSpan_descr, TableColSpan_html);
+    AddTest(node1, TableRowSpan_title, TableRowSpan_descr, TableRowSpan_html);
+    node1.Expanded := true;
+    node.Expanded := true;
+    
+    node := TreeView1.Items.AddChild(nil, 'Lists');
+    AddTest(node, OL_title, OL_descr, OL_html);
+    AddTest(node, UL_title, UL_descr, UL_html);
+    AddTest(node, UL_style_title, UL_style_descr, UL_style_html);
+    AddTest(node, UL_3lev_title, UL_3lev_descr, UL_3lev_html);
+    AddTest(node, OUL_3lev_title, OUL_3lev_descr, OUL_3lev_html);
     node.Expanded := true;
     
     node := TreeView1.Items.AddChild(nil, 'CSS');

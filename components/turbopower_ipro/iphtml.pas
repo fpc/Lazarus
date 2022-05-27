@@ -80,9 +80,6 @@ type
 
 {$I iphtmlgenerated.inc}
 
-type
-  TParmValueArray = array[TIpHtmlAttributesSet] of string; 
-
 const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
   MAXINTS = 4096; {buffer size - this should be way more than needed}
@@ -3774,7 +3771,7 @@ end;
 
 procedure TIpHtmlLength.DoChange;
 begin
-  if assigned(FChange) then
+  if Assigned(FChange) then
     FChange(Self);
 end;
 
@@ -9864,32 +9861,36 @@ var
   SaveColor : Tcolor;
 begin
   if PageRectToScreen(GrossDrawRect, R) then
+  begin
+    SaveColor := Owner.Target.Brush.Color;
     case ListType of
-    ulDisc :
-      begin
-        SaveColor := Owner.Target.Brush.Color;
-        Owner.Target.Brush.Color := Props.FontColor;
-        if ScaleBitmaps then
-          Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
-        else
-          Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
-        Owner.Target.Brush.Color := SaveColor;
+      ulDisc :
+        begin
+          Owner.Target.Brush.Color := Props.FontColor;
+          if ScaleBitmaps then
+            Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
+          else
+            Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
+          Owner.Target.Brush.Color := SaveColor;
+        end;
+      ulSquare :
+        begin
+          Owner.Target.Brush.Color := Props.FontColor;
+          if ScaleBitmaps then
+            Owner.Target.Rectangle(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
+          else
+            Owner.Target.Rectangle(R.Left, R.Top, R.Left + 7, R.Top + 7);
+          Owner.Target.Brush.Color := SaveColor;
+        end;
+      ulCircle :
+        begin
+          if ScaleBitmaps then
+            Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
+          else
+            Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
+        end;
       end;
-    ulSquare :
-      begin
-        if ScaleBitmaps then
-          Owner.Target.Rectangle(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
-        else
-          Owner.Target.Rectangle(R.Left, R.Top, R.Left + 7, R.Top + 7);
-      end;
-    ulCircle :
-      begin
-        if ScaleBitmaps then
-          Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
-        else
-          Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
-      end;
-    end;
+  end;
 end;
 
 procedure TIpHtmlNodeLI.SetProps(const RenderProps: TIpHtmlProps);

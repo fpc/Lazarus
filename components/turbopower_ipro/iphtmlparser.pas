@@ -36,7 +36,7 @@ type
     FOwner: TIpHtml;
     FParmBuf: PChar;
     FParmBufSize: Integer;
-    FParmValueArray: TParmValueArray;
+    FParmValueArray: array[TIpHtmlAttributesSet] of string;
 //    FStartPos: Integer;
     FTitleNode : TIpHtmlNodeTITLE;
     FTokenBuffer: TIpHtmlToken;
@@ -178,7 +178,6 @@ type
     property FrameSet: TIpHtmlNodeFRAMESET read FCurFrameSet;
     property HasFrames: Boolean read FHasFrames;
     property TitleNode: TIpHtmlNodeTITLE read FTitleNode;
-    property ParmValueArray: TParmValueArray read FParmValueArray;
   end;
   
 implementation
@@ -2899,15 +2898,15 @@ var
 begin
   Result := ADefault;
   S := UpperCase(FindAttribute(htmlAttrTYPE));
-  if Length(S) = 0 then exit;
-  case S[1] of
-    'C': if S = 'CIRCLE' then Result := ulCircle;
-    'D': if S = 'DISC' then Result := ulDisc;
-    'S': if S = 'SQUARE' then Result := ulSquare;
-    else
-      if FlagErrors then
-        ReportError(SHtmlInvType);
-  end;
+  if S <> '' then
+    case S[1] of
+      'C': if S = 'CIRCLE' then Result := ulCircle;
+      'D': if S = 'DISC' then Result := ulDisc;
+      'S': if S = 'SQUARE' then Result := ulSquare;
+      else
+        if FlagErrors then
+          ReportError(SHtmlInvType);
+    end;
 end;
 
 procedure TIpHtmlParser.ParseUnorderedList(AParent: TIpHtmlNode;

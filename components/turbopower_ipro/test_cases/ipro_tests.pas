@@ -172,7 +172,7 @@ const
     'The left and center cells should have yellow, the right cell uniform red background.';
 
 //------------------------------------------------------------------------------
-//   Text Alignment
+//   Tables: Text Alignment
 //------------------------------------------------------------------------------
 const
   AlignInCell_title =
@@ -273,6 +273,280 @@ const
     '</body>' + LE +
     '</html>';
 
+  
+//------------------------------------------------------------------------------
+//    Tables: Merged cells
+//------------------------------------------------------------------------------
+const
+  TableColSpan_title = 
+    'Merged columns (colspan)';
+  TableColSpan_descr =
+    'The last row must contain a singe (merged) cell.';
+  TableColSpan_html =
+    '<html>' + LE +
+    '<body>' + LE + 
+    '  <table border="1">' + LE +
+    '    <tr>' + LE +
+    '      <th>Month</th>' + LE +
+    '      <th>Savings</th>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td>January</td>' + LE +
+    '      <td>$100</td>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td>February</td>' + LE +
+    '      <td>$80</td>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td colspan="2">Sum: $180</td>' + LE +
+    '    </tr>' + LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  TableRowSpan_title =
+    'Merged rows (rowspan)';
+  TableRowSpan_descr =
+    'The last column must contain a single (merged) cell.';
+  TablerowSpan_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '  <table border="1">' + LE +
+    '    <tr>' + LE +
+    '      <th>Month</th>' + LE +
+    '      <th>Savings</th>' + LE +
+    '      <th>Savings for holiday!</th>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td>January</td>' + LE +
+    '      <td>$100</td>' + LE +
+    '      <td rowspan="2">$50</td>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td>February</td>' + LE +
+    '      <td>$80</td>' + LE +
+    '    </tr>' + LE +
+    '  </table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+//------------------------------------------------------------------------------
+//    Tables: background color
+//------------------------------------------------------------------------------
+const
+  TableCellBkColor_title =
+    'Cell background color';
+  TableCellBkColor_descr =
+    'The cell text must describe the cell background color.';
+  TableCellBkColor_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <td bgcolor="red">red</td>' + LE +
+    '    <td bgcolor="yellow">yellow</td>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td bgcolor="green">green</td>' + LE +
+    '    <td bgcolor="skyblue">skyblue</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  TableCellBkColor_style_title =
+    'Cell background color (inline style)';
+  TableCellBkColor_style_descr =
+    'The cell text must describe the cell background color.';
+  TableCellBkColor_style_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <td style="background-color:red">red</td>' + LE +
+    '    <td style="background-color:yellow">yellow</td>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td style="background-color:green">green</td>' + LE +
+    '    <td style="background-color:skyblue">skyblue</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  TableRowBkColor_title =
+    'Row background color';
+  TableRowBkColor_descr =
+    'The cells in the 1st and 2nd row must have a yellow and an orange background, respectively.';
+  TableRowBkColor_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr bgcolor="yellow">' + LE +
+    '    <td>Cell A</td>' + LE +
+    '    <td>Cell B</td>' + LE +
+    '  </tr>' + LE +
+    '  <tr bgcolor="orange">' + LE +
+    '    <td>Cell C</td>' + LE +
+    '    <td>Cell D</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  TableRowBkColor_style_title =
+    'Row background color (inline style)';
+  TableRowBkColor_style_descr =
+    'The cells in the 1st and 2nd row must have a yellow and an orange background, respectively.';
+  TableRowBkColor_style_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr style="background-color:yellow">' + LE +
+    '    <td>Cell A</td>' + LE +
+    '    <td>Cell B</td>' + LE +
+    '  </tr>' + LE +
+    '  <tr style="background-color:orange">' + LE +
+    '    <td>Cell C</td>' + LE +
+    '    <td>Cell D</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  TableColBkColor_style_title =
+    'Column background color';
+  TableColBkColor_style_descr = 
+    'The 1st column must have red, the second column a yellow background color.';
+  TableColBkColor_style_html = 
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <colgroup>' + LE +
+    '    <col style="background-color:red">' + LE +
+    '    <col style="background-color:yellow">' + LE +
+    '  </colgroup>' + LE +
+    '  <tr>' + LE +
+    '    <th>Column A</th>' + LE +
+    '    <th>Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+//------------------------------------------------------------------------------
+//    Lists
+//------------------------------------------------------------------------------
+const
+  OL_title =
+    'Ordered list';
+  OL_descr =
+    'The lines should be numbered 1, 2, 3.';
+  OL_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol>' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  UL_title =
+    'Unordered list';
+  UL_descr =
+    'The lines should begin with a filled circle as bullet point.';
+  UL_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul>' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  UL_3lev_title =
+    'Unordered list (3 levels)';
+  UL_3lev_descr =
+    'The indented 2nd and 3rd item levels should have an open circle and a filled square as bullet symbol.';
+  UL_3lev_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul>' + LE +
+    '  <li>Coffee' + LE +
+    '    <ul>' + LE +
+    '      <li>with sugar' + LE +
+    '        <ul>'+ LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ul>' + LE +
+    '      </li>' + LE +
+    '      <li>no sugar' + LE +
+    '        <ul>' + LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ul>' + LE +
+    '      </li>' + LE +
+    '    </ul>' + LE +
+    '  </li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  UL_style_title =
+    'Unordered list (inline style)';
+  UL_style_descr =
+    'The lines should begin with an open circle.';
+  UL_style_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul style="list-style-type:circle">' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  OUL_3lev_title =
+    'Mixed list (3 levels)';
+  OUL_3lev_descr =
+    'The outer level should be numbered, the inner levels bulleted with filled and open circles.';
+  OUL_3lev_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol>' + LE +
+    '  <li>Coffee' + LE +
+    '    <ul>' + LE +
+    '      <li>with sugar' + LE +
+    '        <ul>'+ LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ul>' + LE +
+    '      </li>' + LE +
+    '      <li>no sugar' + LE +
+    '        <ul>' + LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ul>' + LE +
+    '      </li>' + LE +
+    '    </ul>' + LE +
+    '  </li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  
 //------------------------------------------------------------------------------
 //    CSS
 //------------------------------------------------------------------------------
