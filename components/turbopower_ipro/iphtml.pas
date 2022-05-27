@@ -72,13 +72,16 @@ uses
   {$ENDIF}
   TypInfo,
   GraphUtil, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
-  IpConst, IpStrms, IpUtils, iphtmlprop, IpMsg;
+  IpConst, IpStrms, IpUtils, iphtmlprop, IpMsg, IpCSS, IpHtmlUtils;
 
 type
   {Note: Some of the code below relies on the fact that
    the end tag (when present) immediately follows the start tag.}
 
 {$I iphtmlgenerated.inc}
+
+type
+  TParmValueArray = array[TIpHtmlAttributesSet] of string; 
 
 const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
@@ -102,12 +105,12 @@ type
   end;
 
   TIpHtml = class;
-
+  
   TIpAbstractHtmlDataProvider = class;
 
-  {$DEFINE CSS_INTERFACE}
-{$I ipcss.inc}
-  {$UNDEF CSS_INTERFACE}
+//  {$DEFINE CSS_INTERFACE}
+//{$I ipcss.inc}
+//  {$UNDEF CSS_INTERFACE}
 
   TIpHtmlInteger = class(TPersistent)
   { Integer property which can be scaled}
@@ -373,19 +376,19 @@ type
     procedure AddArea(const R: TRect);
     procedure BuildAreaList; virtual;
     procedure ClearAreaList; virtual;
-    procedure ParseBaseProps(aOwner : TIpHtml);
     function SelectCSSFont(const aFont: string): string;
     procedure ApplyCSSProps(const ACSSProps: TCSSProps; const props: TIpHtmlProps);
-    function ElementName: String;
     function GetAlign: TIpHtmlAlign; virtual;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
     procedure SetAlign(const Value: TIpHtmlAlign); virtual;
     procedure SetId(const Value: string); virtual;
+    property ElementName: String read FElementName write FElementName;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure LoadAndApplyCSSProps; virtual;
     procedure MakeVisible; override;
+    procedure ParseBaseProps(aOwner : TIpHtml);
     property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     property Align: TIpHtmlAlign read GetAlign write SetAlign;
     property ClassId : string read FClassId write FClassId;
@@ -569,10 +572,10 @@ type
     procedure SetFace(const Value: string);
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-    procedure SizeChanged(Sender: TObject);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    procedure SizeChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -616,6 +619,7 @@ type
     procedure Enqueue; override;
     procedure LoadAndApplyCSSProps; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
+    property ElementName;
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -750,10 +754,10 @@ type
     FVersion: string;
     FDir: TIpHtmlDirection;
   protected
-    function HasBodyNode : Boolean;
     procedure CalcMinMaxHtmlWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer);
     function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
   public
+    function HasBodyNode : Boolean;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect);
     procedure Render(RenderProps: TIpHtmlProps);
   {$IFDEF HTML_RTTI}
@@ -874,9 +878,9 @@ type
     function Successful: Boolean; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
     procedure Reset; override;
-    procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+    procedure WidthChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1041,7 +1045,6 @@ type
     SizeWidth : TIpHtmlPixels;
     FDim : TSize;
     function GrossDrawRect: TRect;
-    procedure WidthChanged(Sender: TObject);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1049,6 +1052,7 @@ type
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     procedure Enqueue; override;
     function GetDim(ParentWidth: Integer): TSize; override;
+    procedure WidthChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1160,7 +1164,6 @@ type
     procedure UnloadImage;
     function GrossDrawRect: TRect;
     function GetHint: string; override;
-    procedure DimChanged(Sender: TObject);
     procedure InvalidateSize; override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1170,6 +1173,7 @@ type
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     function GetDim(ParentWidth: Integer): TSize; override;
     procedure ImageChange(NewPicture : TPicture); override;
+    procedure DimChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1202,9 +1206,9 @@ type
     FAlignment: TIpHtmlImageAlign;
   protected
     function GetHint: string; override;
-    procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+    procedure WidthChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1242,9 +1246,9 @@ type
     FVSpace: Integer;
     FWidth: TIpHtmlLength;
   protected
-    procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+    procedure WidthChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1456,7 +1460,6 @@ type
     procedure SetRect(TargetRect: TRect); override;
     procedure InvalidateSize; override;
     function GetColCount: Integer;
-    procedure WidthChanged(Sender: TObject);
   public
     FCaption : TIpHtmlNodeCAPTION;
     BorderRect : TRect;
@@ -1470,6 +1473,7 @@ type
     procedure Enqueue; override;
     function GetDim(ParentWidth: Integer): TSize; override;
     procedure LoadAndApplyCSSProps; override;
+    procedure WidthChanged(Sender: TObject);
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1622,7 +1626,6 @@ type
     FVAlign: TIpHtmlVAlign3;
   protected
     procedure AppendSelection(var S: String; var Completed: Boolean); override;
-    procedure DimChanged(Sender: TObject);
     function GetAlign: TIpHtmlAlign; override;
     procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
@@ -1633,6 +1636,7 @@ type
     procedure LoadAndApplyCSSProps; override;
     procedure Render(RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxPropWidth(RenderProps: TIpHtmlProps; var Min, Max: Integer); override;
+    procedure DimChanged(Sender: TObject);
   public
     property PadRect : TRect read FPadRect write FPadRect;
   {$IFDEF HTML_RTTI}
@@ -1869,6 +1873,12 @@ type
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
+  TIpHtmlBasicParser = class
+  public
+    function Execute: Boolean; virtual; abstract;
+    function FindAttribute(const AttrNameSet: TIpHtmlAttributesSet): string; virtual; abstract;
+  end;
+  
   TIpHtmlRenderDevice = (rdScreen, rdPrinter, rdPreview);
 
   TWriteCharProvider = procedure(C : AnsiChar) of object;
@@ -1945,23 +1955,24 @@ type
     FRenderDev: TIpHtmlRenderDevice;
     FCSS: TCSSGlobalProps;
     FDocCharset: string;
-    FHasBOM: boolean;
+//    FHasBOM: boolean;
     FTabList: TIpHtmlTabList;
     FNeedResize: Boolean;
+    FParser: TIpHtmlBasicParser;
   protected
     CharStream : TStream;
-    CurToken : TIpHtmlToken;
-    ParmValueArray : array[TIpHtmlAttributesSet] of string;
+//    CurToken : TIpHtmlToken;
+//    ParmValueArray: TParmValueArray;
     FHtml : TIpHtmlNodeHtml;
-    CharStack : array [0..7] of AnsiChar;
-    LastWasSpace: Boolean;
-    LastWasClose: Boolean;
-    CharSP : Integer;
+//    CharStack : array [0..7] of AnsiChar;
+//    LastWasSpace: Boolean;
+//    LastWasClose: Boolean;
+//    CharSP : Integer;
     FFlagErrors : Boolean;
-    IndexPhrase : string;
-    TokenBuffer : TIpHtmlToken;
+//    IndexPhrase : string;
+//    TokenBuffer : TIpHtmlToken;
     FPageRect : TRect;
-    HaveToken : Boolean;
+//    HaveToken : Boolean;
     FClientRect : TRect;   {the coordinates of the paint rectangle}
     FPageViewRect : TRect; {the current section of the page}
     FPageViewBottom : Integer; {the lower end of the page, may be different from PageViewRect.Bottom }
@@ -1982,17 +1993,17 @@ type
     NameList : TStringList;
     IdList: TStringList;
     GifQueue : TFPList;
-    InPre : Integer;
-    InBlock : Integer;
+//    InPre : Integer;
+//    InBlock : Integer;
     MapList : TFPList;
     AreaList : TFPList;
     DefaultImage : TPicture;
     MapImgList : TFPList;
-    GlobalPos, LineNumber, LineOffset : Integer;
+//    GlobalPos, LineNumber, LineOffset : Integer;
     PaintBufferBitmap : TBitmap;
     PaintBuffer : TCanvas;
-    TokenStringBuf : PChar; {array[16383] of AnsiChar;}
-    TBW : Integer;
+//    TokenStringBuf : PChar; {array[16383] of AnsiChar;}
+//    TBW : Integer;
     Destroying : Boolean;
     FAllSelected : Boolean;
     RectList : TFPList;
@@ -2002,17 +2013,17 @@ type
     FControlList : TFPList;
     FCurURL : string;
     DoneLoading : Boolean;
-    ListLevel : Integer;
+//    ListLevel : Integer;
     PropACache : TIpHtmlPropsAList;
     PropBCache : TIpHtmlPropsBList;
     RenderCanvas : TCanvas;
     FPageHeight : Integer;
-    StartPos : Integer;
+//    StartPos : Integer;
     FFixedTypeface: string;
     FDefaultTypeFace: string;
     FDefaultFontSize: integer;
-    ParmBuf: PChar;
-    ParmBufSize: Integer;
+//    ParmBuf: PChar;
+//    ParmBufSize: Integer;
     FControlParent: TWinControl;
     procedure ResetCanvasData;
     procedure ResetWordLists;
@@ -2022,123 +2033,123 @@ type
     function CheckKnownURL(URL: string): boolean;
     procedure ReportReference(URL: string);
     procedure PaintSelection;
-    function IsWhiteSpace: Boolean;
-    function GetTokenString: string;
-    procedure ReportError(const ErrorMsg: string);
-    procedure ReportExpectedError(const ErrorMsg: string);
-    procedure ReportExpectedToken(const Token: TIpHtmlToken);
-    procedure EnsureClosure(const EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
+//    function IsWhiteSpace: Boolean;
+//    function GetTokenString: string;
+//    procedure ReportError(const ErrorMsg: string);
+//    procedure ReportExpectedError(const ErrorMsg: string);
+//    procedure ReportExpectedToken(const Token: TIpHtmlToken);
+//    procedure EnsureClosure(const EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
     function NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
     function BuildStandardEntry(EType: TElementType): PIpHtmlElement;
     function BuildLinefeedEntry(EType: TElementType; AHeight: Integer): PIpHtmlElement;
-    function ParseDir: TIpHtmlDirection;
-    procedure ParseSPAN(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseQ(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseINS(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseDEL(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseTABLE(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseTableBody(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseTableRows(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseColGroup(Parent: TIpHtmlNode);
-    function ParseFrameScrollingProp: TIpHtmlFrameScrolling;
-    function ParseObjectValueType: TIpHtmlObjectValueType;
-    procedure ParseFrameSet(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseFrame(Parent : TIpHtmlNode);
-    procedure ParseIFrame(Parent : TIpHtmlNode);
-    procedure ParseNOFRAMES(Parent : TIpHtmlNode);
-    function ParseButtonType: TIpHtmlButtonType;
-    procedure ParseNoscript(Parent: TIpHtmlNode);
-    procedure ParseLEFT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseBLINK(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseRIGHT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure PutToken(Token: TIpHtmlToken);
-    procedure ParseParagraph(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseListItems(Parent : TIpHtmlNodeCore;
-        EndToken: TIpHtmlToken; const EndTokens : TIpHtmlTokenSet;
-        DefaultListStyle : TIpHtmlULType);
-    procedure ParseUnorderedList(Parent: TIpHtmlNode;
-          EndToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseOrderedList(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
-    procedure ParseDefinitionList(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseDefListItems(Parent: TIpHtmlNode;
-        const EndTokens: TIpHtmlTokenSet);
-    procedure ParsePre(ParentNode : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseDIV(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseCENTER(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseBLOCKQUOTE(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseHR(Parent: TIpHtmlNode);
-    procedure ParseFontStyle(Parent: TIpHtmlNode;
-      StartToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
-    procedure ParsePhraseElement(Parent: TIpHtmlNode;
-      StartToken, EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseAnchor(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
-    procedure ParseIMG(Parent : TIpHtmlNode);
-    procedure ParseApplet(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
-    procedure ParseOBJECT(Parent : TIpHtmlNode);
-    procedure ParseBasefont(Parent: TIpHtmlNode);
-    procedure ParseBR(Parent : TIpHtmlNode);
-    procedure ParseNOBR(Parent: TIpHtmlNode);
-    procedure ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    function ParseDir: TIpHtmlDirection;
+//    procedure ParseSPAN(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseQ(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseINS(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseDEL(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseTABLE(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseTableBody(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseTableRows(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseColGroup(Parent: TIpHtmlNode);
+//    function ParseFrameScrollingProp: TIpHtmlFrameScrolling;
+//    function ParseObjectValueType: TIpHtmlObjectValueType;
+//    procedure ParseFrameSet(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseFrame(Parent : TIpHtmlNode);
+//    procedure ParseIFrame(Parent : TIpHtmlNode);
+//    procedure ParseNOFRAMES(Parent : TIpHtmlNode);
+//    function ParseButtonType: TIpHtmlButtonType;
+//    procedure ParseNoscript(Parent: TIpHtmlNode);
+//    procedure ParseLEFT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseBLINK(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseRIGHT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure PutToken(Token: TIpHtmlToken);
+//    procedure ParseParagraph(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseListItems(Parent : TIpHtmlNodeCore;
+//        EndToken: TIpHtmlToken; const EndTokens : TIpHtmlTokenSet;
+//        DefaultListStyle : TIpHtmlULType);
+//    procedure ParseUnorderedList(Parent: TIpHtmlNode;
+//          EndToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseOrderedList(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    procedure ParseDefinitionList(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseDefListItems(Parent: TIpHtmlNode;
+//        const EndTokens: TIpHtmlTokenSet);
+//    procedure ParsePre(ParentNode : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseDIV(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseCENTER(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseBLOCKQUOTE(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseHR(Parent: TIpHtmlNode);
+//    procedure ParseFontStyle(Parent: TIpHtmlNode;
+//      StartToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParsePhraseElement(Parent: TIpHtmlNode;
+//      StartToken, EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseAnchor(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    procedure ParseIMG(Parent : TIpHtmlNode);
+//    procedure ParseApplet(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    procedure ParseOBJECT(Parent : TIpHtmlNode);
+//    procedure ParseBaseFont(Parent: TIpHtmlNode);
+//    procedure ParseBR(Parent : TIpHtmlNode);
+//    procedure ParseNOBR(Parent: TIpHtmlNode);
+//    procedure ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     function FindAttribute(const AttrNameSet: TIpHtmlAttributesSet): string;
-    function ColorFromString(S: string): TColor;
-    function ParseAlignment: TIpHtmlAlign;
-    function ParseCellAlign(Default : TIpHtmlAlign) : TIpHtmlAlign;
-    function ParseFrameProp(Default: TIpHtmlFrameProp) : TIpHtmlFrameProp;
-    function ParseRules(Default : TIpHtmlRules) : TIpHtmlRules;
-    function ParseULStyle(Default : TIpHtmlULType): TIpHtmlULType;
-    function ParseBoolean(const AttrNameSet: TIpHtmlAttributesSet): Boolean;
-    function ParseInteger(const AttrNameSet: TIpHtmlAttributesSet;
-      aDefault : Integer): Integer;
-    function ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
-      aDefault: Integer): TIpHtmlInteger;
-    function ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlPixels;
-    function ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlLength;
-    function ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlMultiLength;
-    function ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlMultiLengthList;
-    function ParseOLStyle(Default: TIpHtmlOLStyle): TIpHtmlOLStyle;
-    function ParseImageAlignment(aDefault: TIpHtmlImageAlign): TIpHtmlImageAlign;
-    function ParseVAlignment : TIpHtmlVAlign;
-    function ParseVAlignment2 : TIpHtmlVAlignment2;
-    function ParseVAlignment3 : TIpHtmlVAlign3;
-    function ParseRelSize{(const Default: string)}: TIpHtmlRelSize;
-    function ParseBRClear: TIpHtmlBreakClear;
-    function ParseShape: TIpHtmlMapShape;
-    function NextChar : AnsiChar;
+//    function ColorFromString(S: string): TColor;
+//    function ParseAlignment: TIpHtmlAlign;
+//    function ParseCellAlign(Default : TIpHtmlAlign) : TIpHtmlAlign;
+//    function ParseFrameProp(Default: TIpHtmlFrameProp) : TIpHtmlFrameProp;
+//    function ParseRules(Default : TIpHtmlRules) : TIpHtmlRules;
+//    function ParseULStyle(Default : TIpHtmlULType): TIpHtmlULType;
+//    function ParseBoolean(const AttrNameSet: TIpHtmlAttributesSet): Boolean;
+//    function ParseInteger(const AttrNameSet: TIpHtmlAttributesSet;
+//      aDefault : Integer): Integer;
+//    function ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
+//      aDefault: Integer): TIpHtmlInteger;
+//    function ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
+//      const aDefault: string): TIpHtmlPixels;
+//    function ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
+//      const aDefault: string): TIpHtmlLength;
+//    function ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
+//      const aDefault: string): TIpHtmlMultiLength;
+//    function ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
+//      const aDefault: string): TIpHtmlMultiLengthList;
+//    function ParseOLStyle(Default: TIpHtmlOLStyle): TIpHtmlOLStyle;
+//    function ParseImageAlignment(aDefault: TIpHtmlImageAlign): TIpHtmlImageAlign;
+//    function ParseVAlignment : TIpHtmlVAlign;
+//    function ParseVAlignment2 : TIpHtmlVAlignment2;
+//    function ParseVAlignment3 : TIpHtmlVAlign3;
+//    function ParseRelSize{(const Default: string)}: TIpHtmlRelSize;
+//    function ParseBRClear: TIpHtmlBreakClear;
+//    function ParseShape: TIpHtmlMapShape;
+//    function NextChar : AnsiChar;
     procedure Parse;
-    procedure ParseHtml;
-    function GetChar: AnsiChar;
-    procedure ClearParmValueArray;
-    procedure ParmValueArrayAdd(const sName, sValue: string);
-    function HtmlTokenListIndexOf(const TokenString: PAnsiChar): integer;
-    procedure NextToken;
-    procedure PutChar(Ch: AnsiChar);
-    procedure ParseHead(Parent : TIpHtmlNode);
-    procedure ParseHeadItems(Parent : TIpHtmlNode);
-    procedure ParseTitle(Parent: TIpHtmlNode);
-    procedure ParseScript(Parent : TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
-    procedure ParseStyle(ParentNode : TIpHtmlNode);
-    procedure ParseIsIndex;
-    procedure ParseBase;
-    procedure ParseLink(Parent : TIpHtmlNode);
-    procedure ParseMeta(Parent : TIpHtmlNode);
-    procedure ParseBody(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
-    procedure ParseBodyText(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseBlock(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseInline(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
-    procedure ParseText(const EndTokens: TIpHtmlTokenSet; Parent: TIpHtmlNode);
-    procedure ParseFont(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseAddress(Parent: TIpHtmlNode);
-    procedure ParseForm(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    function ParseMethod: TIpHtmlFormMethod;
-    procedure ParseTableRow(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
-    function ParseInputType : TIpHtmlInputType;
-    procedure ParseFormFields(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    procedure ParseHtml;
+//    function GetChar: AnsiChar;
+//    procedure ClearParmValueArray;
+//    procedure ParmValueArrayAdd(const sName, sValue: string);
+//    function HtmlTokenListIndexOf(const TokenString: PAnsiChar): integer;
+//    procedure NextToken;
+//    procedure PutChar(Ch: AnsiChar);
+//    procedure ParseHead(Parent : TIpHtmlNode);
+//    procedure ParseHeadItems(Parent : TIpHtmlNode);
+//    procedure ParseTitle(Parent: TIpHtmlNode);
+//    procedure ParseScript(Parent : TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    procedure ParseStyle(ParentNode : TIpHtmlNode);
+//    procedure ParseIsIndex;
+//    procedure ParseBase;
+//    procedure ParseLink(Parent : TIpHtmlNode);
+//    procedure ParseMeta(Parent : TIpHtmlNode);
+//    procedure ParseBody(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
+//    procedure ParseBodyText(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseBlock(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseInline(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
+//    procedure ParseText(const EndTokens: TIpHtmlTokenSet; Parent: TIpHtmlNode);
+//    procedure ParseFont(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    procedure ParseAddress(Parent: TIpHtmlNode);
+//    procedure ParseForm(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+//    function ParseMethod: TIpHtmlFormMethod;
+//    procedure ParseTableRow(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+//    function ParseInputType : TIpHtmlInputType;
+//    procedure ParseFormFields(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
     procedure InvalidateRect(R : TRect);
     procedure SetDefaultProps;
     function BuildPath(const Ext: string): string;
@@ -2148,11 +2159,11 @@ type
     procedure ClearGifQueue;
     procedure StartGifPaint(Target: TCanvas);
     procedure ClearAreaLists;
-    procedure NextRealToken;
-    procedure SkipTextTokens;
+//    procedure NextRealToken;
+//    procedure SkipTextTokens;
     procedure BuildAreaList;
     procedure ClearAreaList;
-    procedure NextNonBlankToken;
+//    procedure NextNonBlankToken;
     procedure Get(const URL: string);
     procedure Post(const URL: string; FormData: TIpFormDataEntity);
     procedure ClearRectList;
@@ -2212,7 +2223,6 @@ type
     procedure CheckImage(Picture: TPicture);
     {$ENDIF}
     function GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
-    property CSS: TCSSGlobalProps read FCSS write FCSS;
     function getControlCount:integer;
     function getControl(i:integer):TIpHtmlNode;
   public
@@ -2221,6 +2231,7 @@ type
     function PagePtToScreen(const Pt: TPoint): TPoint;
     function PageRectToScreen(const Rect: TRect; var ScreenRect: TRect): Boolean;
     procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
+    procedure FixMissingBodyTag;
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
@@ -2233,6 +2244,8 @@ type
     {$ENDIF}
     property AllSelected : Boolean read FAllSelected;
     property Body: TIpHtmlNodeBODY read FBody;
+    property CSS: TCSSGlobalProps read FCSS write FCSS;
+    property DataProvider: TIpAbstractHtmlDataProvider read FDataProvider;
     property FlagErrors : Boolean read FFlagErrors write FFlagErrors;
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
     property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
@@ -2400,9 +2413,6 @@ type
   protected
     function DoGetHtmlStream(const URL: string;
       PostData: TIpFormDataEntity) : TStream; virtual; abstract;
-    function DoGetStream(const URL: string): TStream; virtual; abstract;
-    {-provider assumes ownership of returned TStream and will free it when
-      done using it.}
     function DoCheckURL(const URL: string;
       var ContentType: string): Boolean; virtual; abstract;
     procedure DoLeave(Html: TIpHtml); virtual; abstract;
@@ -2410,8 +2420,13 @@ type
     procedure DoGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture); virtual; abstract;
     function CanHandle(const URL: string): Boolean; virtual; abstract;
-    // renamed New,Old to NewURL, OldURL
+  public
+    // The following methods were protected in the original but had to be made
+    // public to cooperate with the TIpHtmlParser
     function BuildURL(const OldURL, NewURL: string): string; virtual; abstract;
+    { provider assumes ownership of returned TStream and will free it when
+      done using it. }
+    function DoGetStream(const URL: string): TStream; virtual; abstract;
   end;
 
   TIpHtmlEnumerator = procedure(Document: TIpHtml) of object;
@@ -2835,8 +2850,6 @@ type
 
   TIdFindNodeCriteria = function(ACurrNode: TIpHtmlNodeCore; const AParamStr: string): Boolean;
 
-const
-  NAnchorChar = #3 ; {character used to represent an Anchor }
 var
   // true during print preview only, public to let print preview unit access it
   ScaleFonts : Boolean = False;
@@ -2856,7 +2869,8 @@ function NoBreakToSpace(const S: string): string;
 procedure SetWordRect(Element: PIpHtmlElement; const Value: TRect);
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;
-function GetAlignmentForStr(str: string; pDefault: TIpHtmlAlign = haDefault): TIpHtmlAlign;
+//function GetAlignmentForStr(str: string; pDefault: TIpHtmlAlign = haDefault): TIpHtmlAlign;
+procedure TrimFormatting(const S: string; Target: PAnsiChar; PreFormatted: Boolean = False);
 function dbgs(et: TElementType): string; overload;
 
 function GetNextSiblingNode(ANode: TIpHtmlNode): TIpHtmlNode;
@@ -2877,11 +2891,11 @@ uses
   {$IFDEF Html_Print}
   Printers, PrintersDlgs, IpHtmlPv,
   {$ENDIF}
-  ipHtmlBlockLayout, ipHtmlTableLayout;
+  ipHtmlParser, ipHtmlBlockLayout, ipHtmlTableLayout;
 
 {$R *.res}
 
-{$I ipcss.inc}
+//{$I ipcss.inc}
 
 var
   FlatSB_GetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
@@ -2896,9 +2910,9 @@ var
 
 const
   MaxElements = 1024*1024;
-  ShyChar = #1; {character used to represent soft-hyphen in strings}
-  NbspChar = #2; {character used to represent no-break space in strings}
-  NbspUtf8 = #194#160;  {utf8 code of no-break space character}
+//  ShyChar = #1; {character used to represent soft-hyphen in strings}
+//  NbspChar = #2; {character used to represent no-break space in strings}
+//  NbspUtf8 = #194#160;  {utf8 code of no-break space character}
   WheelDelta = 8;
 
 const
@@ -3168,7 +3182,7 @@ begin
     end;
   end;
 end;
-*)
+
 
 function GetAlignmentForStr(str: string;
          pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
@@ -3191,7 +3205,7 @@ begin
     else Result := pDefault;
   end;
 end;
-
+*)
 {$IFDEF Html_Print}
 procedure GetRelativeAspect(PrinterDC : hDC);
 var
@@ -3283,7 +3297,7 @@ begin
   end;
 end;
 *)
-
+     (*
 const
   CodeCount = 126;
   {Sorted by Size where size is Length(Name).
@@ -3474,7 +3488,7 @@ begin {'Complete boolean eval' must be off}
     until (Index1 >= CodeCount) or (Codes[Index1].Size > Size1);
   end;
 end;
-
+  
 procedure ExpandEscapes(var S: string);
 {- returns the string with & escapes expanded}
 var
@@ -3521,7 +3535,7 @@ begin
   if P <> 0 then
     ExpandEscapes(Result);
 end;
-
+*)
 function NoBreakToSpace(const S: string): string;
 var
   P, n : Integer;
@@ -4784,7 +4798,7 @@ begin
   FHtml := TIpHtmlNodeHtml.Create(nil);
   FHtml.FOwner := Self;
 end;
-
+                (*
 function TIpHtml.NextChar : AnsiChar;
 begin
   Result:=#0;
@@ -4800,7 +4814,9 @@ begin
     {write(Result);}
   end;
 end;
+*)
 
+(*
 procedure TIpHtml.ReportError(const ErrorMsg: string);
 begin
   raise Exception.CreateFmt(SHtmlLineError, [ErrorMsg, LineNumber, LineOffset]);
@@ -4822,7 +4838,7 @@ begin
          break;
       end;
 end;
-
+*)
 procedure TIpHtml.ReportReferences(Node : TIpHtmlNode);
 var
   i : Integer;
@@ -4849,9 +4865,11 @@ begin
     FHasFrames := False;
     Clear;
     CharStream := S;
+    {
     GlobalPos := 0;
     LineNumber := 1;
     LineOffset := 0;
+    }
     Parse;
     ReportReferences(HtmlNode);
   finally
@@ -4860,6 +4878,7 @@ begin
   end;                      
 end;
 
+(*
 function TIpHtml.GetChar : AnsiChar;
 var
   Trimming,
@@ -4895,7 +4914,9 @@ begin
   until Done;
   LastWasClose := Result = '>';
 end;
+*)
 
+(*
 procedure TIpHtml.PutChar(Ch : AnsiChar);
 begin
   if (CharSP >= sizeof(CharStack)) then
@@ -4903,7 +4924,7 @@ begin
   CharStack[CharSP] := Ch;
   Inc(CharSP);
 end;
-
+*)
 function AnsiToEscape(const S: string): string;
 {- returns the string with & escapes}
 var
@@ -4929,7 +4950,7 @@ begin
     Dec(i);
   end;
 end;
-
+  (*
 procedure TIpHtml.PutToken(Token : TIpHtmlToken);
 begin
   if HaveToken then
@@ -4948,7 +4969,7 @@ begin
       Exit;
   Result := True;
 end;
-
+                  *)
 procedure TrimFormatting(const S: string; Target: PAnsiChar; PreFormatted: Boolean = False);
 var
   R, W : Integer;
@@ -4991,13 +5012,13 @@ begin
   end;
   Target[w] := #0;
 end;
-
+          (*        
 function TIpHtml.GetTokenString: string;
 begin
   TokenStringBuf[TBW] := #0;
   Result := StrPas(TokenStringBuf);
 end;
-
+             
 procedure TIpHtml.ClearParmValueArray;
 var
   n: TIpHtmlAttributesSet;
@@ -5005,7 +5026,8 @@ begin
   for n:=Low(ParmValueArray) to High(ParmValueArray) do
     setLength(ParmValueArray[n],0);
 end;
-
+          *)
+          (*
 procedure TIpHtml.ParmValueArrayAdd(const sName, sValue: string);
 var
   vFirst, vLast, vPivot: Integer;
@@ -5033,7 +5055,9 @@ begin
       vFirst := Succ(vPivot);
   end;
 end;
-
+ *)
+ 
+ (*
 function TIpHtml.HtmlTokenListIndexOf(const TokenString: PAnsiChar): integer;
 var
   vFirst: Integer;
@@ -5066,7 +5090,7 @@ begin
       vFirst := vPivot + 1;
   end;
 end;
-
+   
 procedure TIpHtml.NextToken;
 var
   ParmName : string;
@@ -5385,13 +5409,13 @@ begin
   until (CurToken <> IpHtmlTagText)
   or not IsWhiteSpace;
 end;
-
+                    
 procedure TIpHtml.SkipTextTokens;
 begin
   while CurToken = IpHtmlTagText do
     NextToken;
 end;
-
+                          
 procedure TIpHtml.EnsureClosure(const EndToken : TIpHtmlToken;
   const EndTokens : TIpHtmlTokenSet);
 begin
@@ -5403,7 +5427,7 @@ begin
     if FlagErrors then
       ReportExpectedToken(EndToken);
 end;
-
+                     
 procedure TIpHtml.ParseTitle(Parent: TIpHtmlNode);
 var
   B : PAnsiChar;
@@ -5449,7 +5473,7 @@ begin
   else
     if FlagErrors then
       ReportExpectedToken(IpHtmlTagSTYLEend);
-end;
+end;            
 
 procedure TIpHtml.ParseScript(Parent : TIpHtmlNode;
   const EndTokens : TIpHtmlTokenSet);
@@ -5463,7 +5487,7 @@ begin
       or (CurToken in EndTokens);
   EnsureClosure(IpHtmlTagSCRIPTend, EndTokens);
 end;
-
+                
 procedure TIpHtml.ParseNoscript(Parent : TIpHtmlNode);
 var
   CurScript : TIpHtmlNodeNOSCRIPT;
@@ -5479,19 +5503,19 @@ begin
   else
     if FlagErrors then
       ReportExpectedToken(IpHtmlTagNOSCRIPTend);
-end;
+end;             
 
 procedure TIpHtml.ParseIsIndex;
 begin
   IndexPhrase := FindAttribute(htmlAttrPROMPT);
   NextToken;
 end;
-
+      
 procedure TIpHtml.ParseBase;
 begin
   NextToken;
 end;
-
+                           
 procedure TIpHtml.ParseMeta;
 var
   i,j: Integer;
@@ -5522,8 +5546,8 @@ begin
     Scheme := FindAttribute(htmlAttrSCHEME);
   end;
   NextToken;
-end;
-
+end;    
+                  
 procedure TIpHtml.ParseLink(Parent : TIpHtmlNode);
 begin
   with TIpHtmlNodeLINK.Create(Parent) do begin
@@ -5565,7 +5589,7 @@ begin
     end;
   end;
 end;
-
+                 
 procedure TIpHtml.ParseHead(Parent : TIpHtmlNode);
 var
   Lst: TStringListUTF8Fast;
@@ -5582,7 +5606,7 @@ begin
   if Lst.IndexOf(FDocCharset) = 0 then  // clear for UTF-8 to avoid conversion
     FDocCharset := '';
   Lst.Free;
-end;
+end;               
 
 procedure TIpHtml.ParseFont(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
@@ -5602,7 +5626,7 @@ begin
   ParseBodyText(CurFONT, EndTokens + [IpHtmlTagFONTend]);
   EnsureClosure(IpHtmlTagFONTend, EndTokens);
 end;
-
+                      
 procedure TIpHtml.ParsePre(ParentNode : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurContainer : TIpHtmlNodePRE;
@@ -5615,7 +5639,7 @@ begin
   Dec(InPre);
   EnsureClosure(IpHtmlTagPREend, EndTokens);
 end;
-
+                
 procedure TIpHtml.ParseText(const EndTokens : TIpHtmlTokenSet; Parent: TIpHtmlNode);
 var
   CurContainer : TIpHtmlNodeText;
@@ -5635,7 +5659,7 @@ begin
       NextToken;
     end;
   end;
-end;
+end;              
 
 procedure TIpHtml.ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
 var
@@ -5652,7 +5676,7 @@ begin
     NextToken
   else if FlagErrors then
     ReportExpectedToken(EndToken);
-end;
+end;               
 
 procedure TIpHtml.ParseParagraph(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
@@ -5671,6 +5695,7 @@ begin
     if FlagErrors then
       ReportExpectedToken(IpHtmlTagPend);
 end;
+
 
 procedure TIpHtml.ParseAddress(Parent : TIpHtmlNode);
 var
@@ -5716,7 +5741,7 @@ begin
     end;
   end;
 end;
-
+              
 procedure TIpHtml.ParseUnorderedList(Parent: TIpHtmlNode;
   EndToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
 var
@@ -5742,7 +5767,7 @@ begin
                  NewList.ListType);
   Dec(ListLevel);
   EnsureClosure(EndToken, EndTokens);
-end;
+end;   
 
 procedure TIpHtml.ParseOrderedList(Parent: TIpHtmlNode;
   const EndTokens : TIpHtmlTokenSet);
@@ -5757,7 +5782,7 @@ begin
   ParseListItems(NewList, IpHtmlTagOLend, EndTokens + [IpHtmlTagOLend], ulDisc);
   EnsureClosure(IpHtmlTagOLend, EndTokens);
 end;
-
+       
 const
   TIpHtmlButtonTypeNames : array[TIpHtmlButtonType] of string = (
     'SUBMIT','RESET','BUTTON');
@@ -5780,7 +5805,7 @@ begin
       ReportError(SHtmlInvType);
   end;
 end;
-
+    
 function TIpHtml.ParseButtonType : TIpHtmlButtonType;
 var
   S : string;
@@ -5795,7 +5820,7 @@ begin
       ReportError(SHtmlInvType);
   end;
 end;
-
+  
 procedure TIpHtml.ParseFormFields(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurSelect : TIpHtmlNodeSELECT;
@@ -5999,7 +6024,7 @@ begin
     end;
   end;
 end;
-
+                        
 procedure TIpHtml.ParseForm(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   NewForm : TIpHtmlNodeFORM;
@@ -6022,7 +6047,7 @@ begin
   ParseBodyText(NewForm, EndTokens + [IpHtmlTagFORMend]);
   EnsureClosure(IpHtmlTagFORMend, EndTokens);
 end;
-
+                     
 procedure TIpHtml.ParseDefListItems(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurDT : TIpHtmlNodeDT;
@@ -6053,7 +6078,7 @@ begin
     end;
   end;
 end;
-
+          
 procedure TIpHtml.ParseDefinitionList(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   NewDL : TIpHtmlNodeDL;
@@ -6065,7 +6090,7 @@ begin
   ParseDefListItems(NewDL, EndTokens + [IpHtmlTagDLend]);
   EnsureClosure(IpHtmlTagDLend, EndTokens);
 end;
-
+        
 procedure TIpHtml.ParseDIV(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 var
@@ -6080,7 +6105,7 @@ begin
   ParseBodyText(CurDIV, EndTokens + [IpHtmlTagDIVend]);
   EnsureClosure(IpHtmlTagDIVend, EndTokens);
 end;
-
+               
 procedure TIpHtml.ParseSPAN(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurSPAN : TIpHtmlNodeSPAN;
@@ -6094,6 +6119,7 @@ begin
   ParseBodyText(CurSPAN, EndTokens + [IpHtmlTagSPANend]);
   EnsureClosure(IpHtmlTagSPANend, EndTokens);
 end;
+
 
 procedure TIpHtml.ParseCENTER(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
@@ -6140,7 +6166,7 @@ begin
   ParseBodyText(CurBlink, EndTokens + [IpHtmlTagBLINKend]);
   EnsureClosure(IpHtmlTagBLINKend, EndTokens);
 end;
-
+                 
 procedure TIpHtml.ParseBLOCKQUOTE(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeBLOCKQUOTE;
@@ -6151,7 +6177,7 @@ begin
   ParseBodyText(BQ, EndTokens + [IpHtmlTagBLOCKQUOTEend]);
   EnsureClosure(IpHtmlTagBLOCKQUOTEend, EndTokens);
 end;
-
+                   
 procedure TIpHtml.ParseQ(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeQ;
@@ -6161,7 +6187,7 @@ begin
   NextToken;
   ParseBodyText(BQ, EndTokens + [IpHtmlTagQend]);
   EnsureClosure(IpHtmlTagQend, EndTokens);
-end;
+end;               
 
 procedure TIpHtml.ParseINS(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
@@ -6188,7 +6214,7 @@ begin
   ParseBodyText(BQ, EndTokens + [IpHtmlTagDELend]);
   EnsureClosure(IpHtmlTagDELend, EndTokens);
 end;
-
+                     
 procedure TIpHtml.ParseFontStyle(Parent : TIpHtmlNode;
   StartToken : TIpHtmlToken; const EndTokens : TIpHtmlTokenSet);
 var
@@ -6221,7 +6247,7 @@ begin
   NextToken;
   ParseBodyText(CurStyle, EndTokens);
   EnsureClosure(succ(StartToken), EndTokens);
-end;
+end;    
 
 procedure TIpHtml.ParseHR(Parent : TIpHtmlNode);
 var
@@ -6240,7 +6266,7 @@ begin
   end;
   NextToken;
 end;
-
+        
 procedure TIpHtml.ParseBR(Parent : TIpHtmlNode);
 var
   BR : TIpHtmlNodeBR;
@@ -6253,7 +6279,7 @@ begin
   BR.Style :=FindAttribute(htmlAttrSTYLE);
   NextToken;
 end;
-
+      
 procedure TIpHtml.ParseNOBR(Parent : TIpHtmlNode);
 begin
   NextToken;
@@ -6263,7 +6289,7 @@ begin
   else
     if FlagErrors then
       ReportExpectedToken(IpHtmlTagNOBRend);
-end;
+end;       
 
 procedure TIpHtml.ParsePhraseElement(Parent : TIpHtmlNode;
   StartToken, EndToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
@@ -6304,7 +6330,7 @@ begin
     if FlagErrors then
       ReportExpectedToken(EndToken);
 end;
-
+           
 procedure TIpHtml.ParseAnchor(Parent : TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurAnchor : TIpHtmlNodeA;
@@ -6361,7 +6387,8 @@ begin
     Name := FindAttribute(htmlAttrNAME);
   end;
   NextToken;
-end;
+end;    
+
 
 procedure TIpHtml.ParseApplet(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
@@ -6457,7 +6484,7 @@ begin
     if FlagErrors then
       ReportExpectedToken(IpHtmlTagOBJECTend);
 end;
-
+                            
 procedure TIpHtml.ParseTableRow(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurHeader : TIpHtmlNodeTH;
@@ -6671,7 +6698,7 @@ begin
       NextToken;
   end;
 end;
-
+      
 procedure TIpHtml.ParseTABLE(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurTable : TIpHtmlNodeTABLE;
@@ -6728,7 +6755,7 @@ begin
   SkipTextTokens;
   EnsureClosure(IpHtmlTagTABLEend, EndTokens);
 end;
-
+       
 procedure TIpHtml.ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurMap : TIpHtmlNodeMAP;
@@ -6762,7 +6789,7 @@ begin
   end;
   EnsureClosure(IpHtmlTagMAPend, EndTokens);
 end;
-
+  
 procedure TIpHtml.ParseBasefont(Parent : TIpHtmlNode);
 var
   CurBasefont : TIpHtmlNodeBASEFONT;
@@ -6772,7 +6799,7 @@ begin
   CurBasefont.Size := ParseInteger(htmlAttrSIZE, 3);
   NextToken;
 end;
-
+                   
 procedure TIpHtml.ParseInline(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
@@ -6828,7 +6855,7 @@ begin
     NextToken;
   end;
 end;
-
+              
 procedure TIpHtml.ParseBlock(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
@@ -6861,7 +6888,7 @@ begin
       NextToken;
   end;
 end;
-
+      
 procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
@@ -6885,7 +6912,7 @@ begin
       StyleStream.Free;
     end;
 end;
-
+                           
 procedure TIpHtml.ParseBodyText(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   Inc(InBlock);
@@ -6934,12 +6961,15 @@ begin
     Dec(InBlock);
   end;
 end;
-
+            *)        
 function TIpHtml.FindAttribute(const AttrNameSet : TIpHtmlAttributesSet) : string;
 begin
-  Result := ParmValueArray[AttrNameSet];
+  if FParser <> nil then
+    Result := FParser.FindAttribute(AttrNameSet)
+  else
+    Result := '';
 end;
-
+              (*        
 function TIpHtml.ParseInteger(const AttrNameSet: TIpHtmlAttributesSet; aDefault : Integer): Integer;
 var
   S : string;
@@ -6968,7 +6998,7 @@ function TIpHtml.ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
 begin
   Result := TIpHtmlInteger.Create(ParseInteger(AttrNameSet, aDefault));
 end;
-
+    
 function TIpHtml.ParseRelSize{(const Default : string)} : TIpHtmlRelSize;
 var
   S : string;
@@ -6995,6 +7025,7 @@ begin
       ReportError(SHtmlInvInt);
 end;
 
+
 function TIpHtml.ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlPixels;
 var
@@ -7018,7 +7049,7 @@ begin
     end;
   end;
 end;
-
+    *
 function TIpHtml.ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlLength;
 var
@@ -7048,7 +7079,7 @@ begin
     and (Result.LengthValue > 100) then
       Result.LengthValue := 100;
 end;
-
+                  
 function TIpHtml.ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlMultiLength;
 var
@@ -7081,7 +7112,7 @@ begin
       Result.LengthType := hmlUndefined;
   end;
 end;
-
+                
 function TIpHtml.ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlMultiLengthList;
 var
@@ -7130,7 +7161,7 @@ begin
     B := E + 1;
   end;
 end;
-
+                   *)
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;
 var
@@ -7202,11 +7233,12 @@ begin
       end;
   until S = 0;
 end;
-
+                      (*
 function TIpHtml.ParseBoolean(const AttrNameSet: TIpHtmlAttributesSet): Boolean;
 begin
   Result := length(ParmValueArray[AttrNameSet]) > 0;
 end;
+
 
 const
   TIpHtmlOLStyleNames : array[TIpHtmlOLStyle] of char = (
@@ -7226,7 +7258,7 @@ begin
       ReportError(SHtmlInvType);
   end;
 end;
-
+            
 function TIpHtml.ParseULStyle(Default : TIpHtmlULType) : TIpHtmlULType;
 var
   S : string;
@@ -7242,14 +7274,14 @@ begin
       if FlagErrors then
         ReportError(SHtmlInvType);
   end;
-end;
+end;          
 
 function TIpHtml.ParseAlignment : TIpHtmlAlign;
 begin
   Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haDefault); //haLeft);
 //  if FlagErrors then
 //    ReportError(SHtmlInvAlign);
-end;
+end;          
 
 function TIpHtml.ParseVAlignment : TIpHtmlVAlign;
 var
@@ -7286,6 +7318,7 @@ begin
   end;
 end;
 
+
 const
   TIpHtmlImageAlignNames : array[TIpHtmlImageAlign] of string = (
     'TOP', 'MIDDLE', 'BOTTOM', 'LEFT', 'RIGHT', 'CENTER');
@@ -7319,7 +7352,7 @@ begin
         ReportError(SHtmlInvValType);
   end;
 end;
-
+              
 function TIpHtml.ParseShape : TIpHtmlMapShape;
 var
   S : string;
@@ -7371,7 +7404,7 @@ begin
         ReportError(SHtmlInvAlign);
   end;
 end;
-
+               
 function TIpHtml.ParseDir : TIpHtmlDirection;
 var
   S : string;
@@ -7386,7 +7419,7 @@ begin
     if FlagErrors then
       ReportError(SHtmlInvDir);
 end;
-
+             
 function TIpHtml.ColorFromString(S : string) : TColor;
 var
   R, G, B, Err : Integer;
@@ -7452,7 +7485,7 @@ begin
     ParseBaseProps(Self);
   end;
   NextToken;
-end;
+end;     
 
 procedure TIpHtml.ParseIFrame(Parent : TIpHtmlNode);
 var
@@ -7479,7 +7512,7 @@ begin
   if CurToken = IpHtmlTagIFRAMEend then
     NextToken;
 end;
-
+            
 procedure TIpHtml.ParseNOFRAMES(Parent : TIpHtmlNode);
 var
   CurNoFrames : TIpHtmlNodeNOFRAMES;
@@ -7490,7 +7523,7 @@ begin
   if CurToken = IpHtmlTagNOFRAMESend then
     NextToken;
 end;
-
+         
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
@@ -7568,7 +7601,7 @@ begin
       NextToken;
   end;
 end;
-
+       
 procedure TIpHtml.ParseHtml;
 begin
   {lead token is optional}
@@ -7589,7 +7622,49 @@ begin
     ParseBody(HtmlNode, [IpHtmlTagEof]); {may not be present}
   end;
 end;
-
+          *)
+          
+procedure TIpHtml.FixMissingBodyTag;
+var
+  i: Integer;
+  node: TIpHtmlNode;
+begin
+  { Does the HTML include a body node? }
+  if not FHtml.HasBodyNode then
+    { No. Create a body node under FHtml. }
+    with FHtml do
+    begin
+      with TIpHtmlNodeBODY.Create(FHtml) do
+        LoadAndApplyCSSProps;
+      { Make each of FHtml's current children the children of the Body node. }
+      for i := Pred(ChildCount) downto 0 do
+      begin
+        node := ChildNode[i];
+        if node <> Body then
+        begin
+          FChildren.Remove(node);
+          node.FParentNode := Body;
+          Body.FChildren.Insert(0, node);
+        end;
+      end;
+    end;
+end;
+      
+procedure TIpHtml.Parse;
+begin
+  FParser := TIpHtmlParser.Create(Self, CharStream);
+  try
+    if FParser.Execute then begin
+      FTitleNode := TIpHtmlParser(FParser).TitleNode;
+      FCurFrameSet := TIpHtmlParser(FParser).FrameSet;
+      FDocCharSet := TIpHtmlParser(FParser).DocCharSet;
+      FHasFrames := TIpHtmlParser(FParser).HasFrames;
+    end;
+  finally
+    FreeAndNil(FParser);
+  end;
+end;
+                   (*
 procedure TIpHtml.Parse;
 var
   ch1,ch2,ch3: AnsiChar;
@@ -7649,7 +7724,7 @@ begin
     end;
   end;
 end;
-
+*)
 constructor TIpHtml.Create;
 var
   TmpBitmap: TGraphic;
@@ -7799,7 +7874,7 @@ begin
   PropBCache.Free;
   inherited;
 end;
-
+                      (*
 function TIpHtml.ParseFrameProp(Default : TIpHtmlFrameProp): TIpHtmlFrameProp;
 var
   S : string;
@@ -7827,7 +7902,7 @@ begin
         ReportError(SHtmlInvFrame);
   end;
 end;
-
+             
 function TIpHtml.ParseRules(Default : TIpHtmlRules): TIpHtmlRules;
 var
   S : string;
@@ -7849,14 +7924,14 @@ begin
       if FlagErrors then
         ReportError(SHtmlInvRule);
   end;
-end;
+end;      
 
 function TIpHtml.ParseCellAlign(Default : TIpHtmlAlign): TIpHtmlAlign;
 begin
   Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), Default);
 //  if FlagErrors then
 //    ReportError(SHtmlInvAlign);
-end;
+end;      
 
 function TIpHtml.ParseFrameScrollingProp: TIpHtmlFrameScrolling;
 var
@@ -7873,7 +7948,7 @@ begin
       if FlagErrors then
         ReportError(SHtmlInvScroll);
   end;
-end;
+end;      
 
 function TIpHtml.ParseVAlignment3: TIpHtmlVAlign3;
 var
@@ -7896,6 +7971,7 @@ begin
         ReportError(SHtmlInvAlign);
   end;
 end;
+*)
 
 procedure TIpHtml.SetDefaultProps;
 begin
@@ -8577,7 +8653,7 @@ begin
   if FDataProvider <> nil then
     Result := FDataProvider.BuildURL(FCurURL,Ext)
   else
-  Result :=  BuildURL(FCurURL, Ext);
+    Result :=  BuildURL(FCurURL, Ext);
 end;
 
 function TIpHtml.NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
@@ -9062,7 +9138,7 @@ end;
 
 function FindInnerBlock(Node : TIpHTMLNode): TIpHtmlNodeBlock;
 begin
-  while not (Node is TIpHtmlNodeBlock) do
+  while (Node <> nil) and not (Node is TIpHtmlNodeBlock) do
     Node := Node.FParentNode;
   Result := TIpHtmlNodeBlock(Node);
 end;
@@ -9078,6 +9154,8 @@ var
 begin
   FEscapedText := Value;
   Block := FindInnerBlock(Self);
+  if Block = nil then
+    exit;
 
   {we need to clear the queue so that it will be built again}
   Block.FLayouter.ClearWordList;
@@ -12405,7 +12483,7 @@ begin
   begin
     if InlineCSS = nil then
       InlineCSS := TCSSProps.Create;
-    Commands := SeperateCommands(Style);
+    Commands := SeparateCommands(Style);
     InlineCSS.ReadCommands(Commands);
     Commands.Free;
   end;
@@ -12606,11 +12684,6 @@ begin
 
     props.DelayCache:=False;
   end;
-end;
-
-function TIpHtmlNodeCore.ElementName: String;
-begin
-  Result := FElementName;
 end;
 
 function TIpHtmlNodeCore.GetAlign: TIpHtmlAlign;

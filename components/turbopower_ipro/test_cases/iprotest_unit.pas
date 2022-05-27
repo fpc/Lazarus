@@ -139,7 +139,7 @@ end;
 
 procedure TForm1.PopulateTests;
 var
-  node: TTreeNode;
+  node, node1: TTreeNode;
 begin
   TreeView1.Items.BeginUpdate;
   try
@@ -162,11 +162,22 @@ begin
     AddTest(node, TextInColoredTableCell_title, TextInColoredTableCell_descr, TextInColoredTableCell_html);
     node.Expanded := true;
     
-    node := TreeView1.Items.AddChild(nil, 'Text alignment');
-    AddTest(node, AlignInCell_title, AlignInCell_descr, AlignInCell_html);
-    AddTest(node, AlignInCellBold_title, AlignInCellBold_descr, AlignInCellBold_html);
-    AddTest(node, AlignInCell_CSS_title, AlignInCell_CSS_descr, AlignInCell_CSS_html);
-    AddTest(node, AlignInCellBold_CSS_title, AlignInCellBold_CSS_descr, AlignInCellBold_CSS_html);
+    node := TreeView1.Items.AddChild(nil, 'Tables');
+    node1 := TreeView1.Items.AddChild(node, 'Text alignment');
+    AddTest(node1, AlignInCell_title, AlignInCell_descr, AlignInCell_html);
+    AddTest(node1, AlignInCellBold_title, AlignInCellBold_descr, AlignInCellBold_html);
+    AddTest(node1, AlignInCell_CSS_title, AlignInCell_CSS_descr, AlignInCell_CSS_html);
+    AddTest(node1, AlignInCellBold_CSS_title, AlignInCellBold_CSS_descr, AlignInCellBold_CSS_html);
+    node1.Expanded := true;
+    node.Expanded := true;
+    
+    node := TreeView1.Items.AddChild(nil, 'CSS');
+    AddTest(node, HTMLCommentInCSS_title, HTMLCommentInCSS_descr, HTMLCommentInCSS_html);
+    node.Expanded := true;
+    
+    node := TreeView1.Items.AddChild(nil, 'Special cases in file structure');
+    AddTest(node, NoHtmlTag_title, NoHtmlTag_descr, NoHtmlTag_html);
+    AddTest(node, NoBodyTag_title, NoBodyTag_descr, NoBodyTag_html);
     node.Expanded := true;
     
   finally

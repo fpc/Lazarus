@@ -10,7 +10,7 @@ interface
 uses
   IpAnim, IpConst, Ipfilebroker, Iphttpbroker, IpHtml, IpMsg, IpStrms, 
   IpUtils, IpHtmlTabList, iphtmlprop, ipHtmlBlockLayout, ipHtmlTableLayout, 
-  LazarusPackageIntf;
+  IpHtmlParser, IpHtmlUtils, IpCSS, LazarusPackageIntf;
 
 implementation
 
@@ -24,4 +24,3 @@ end;
 initialization
   RegisterPackage('TurboPowerIPro', @Register);
 end.
-

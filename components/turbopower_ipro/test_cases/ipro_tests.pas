@@ -273,6 +273,54 @@ const
     '</body>' + LE +
     '</html>';
 
+//------------------------------------------------------------------------------
+//    CSS
+//------------------------------------------------------------------------------
+const
+  HTMLCommentInCSS_title =
+    'HTML comment in CSS section';
+  HTMLCommentInCSS_descr =
+    'The text must be red.';
+  HTMLCommentInCSS_html =
+    '<html>' + LE +
+    '<head>' + LE +
+    '  <style type="text/css">' + LE +
+    '    <!--' + LE + 
+    '    body { color: red; }' + LE +
+    '    -->' + LE +
+    '  </style>' + LE +
+    '</head>' + LE +
+    '<body>' + LE +
+    '  <p>abc</p>' + LE +
+    '</body>' + LE +
+    '</html>';
+    
+//------------------------------------------------------------------------------
+//   Special cases in file structure
+//------------------------------------------------------------------------------
+const
+  NoHtmlTag_title =
+    'No <html> tag';
+  NoHtmlTag_descr =
+    'You should see an ordered list with two items "line 1" and "line 2".';
+  NoHtmlTag_html = 
+    '<body>' + LE +
+    '  <ol>' + LE + 
+    '    <li>line 1</li>' + LE +
+    '    <li>line 2</li>' + LE +
+    '  </ol>' + LE +
+    '</body>';
+  
+const
+  NoBodyTag_title =
+    'No <body> tag';
+  NoBodyTag_descr =
+    'You should see an ordered list with two items "line 1" and "line 2".';
+  NoBodyTag_html =
+    '<ol>' + LE +
+    '  <li>line 1</li>' + LE +
+    '  <li>line 2</li>' + LE +
+    '</ol>';
 
 implementation
 

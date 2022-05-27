@@ -1,4 +1,4 @@
-unit iphtmlprop;
+unit IpHtmlProp;
 
 {$mode objfpc}{$H+}
 

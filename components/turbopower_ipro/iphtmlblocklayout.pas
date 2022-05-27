@@ -7,7 +7,7 @@ interface
 
 uses
   types, Classes, SysUtils, LCLPRoc, LCLIntf, Graphics,
-  IpUtils, IpHtml, iphtmlprop;
+  IpUtils, IpHtml, IpHtmlProp, IpHtmlUtils;
 
 type
 
