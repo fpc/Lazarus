@@ -522,7 +522,7 @@ end;
 procedure TSQLDBRestSchemaComponentEditor.ExecuteVerb(Index: Integer);
 
 Const
-  idxSave = 2;
+  idxSave = 1;
 
 Var
   FN : UTF8String;
@@ -536,7 +536,7 @@ begin
       begin
       FN:=Component.Name+'.json';
       if GetFileName(FN, Format(SJSONFilesFilter, [allFilesMask]), Index=idxSave) then
-        if idxSave=2 then
+        if idxSave=Index then
           S.SaveToFile(FN)
         else
           begin
