@@ -21,8 +21,9 @@ function TryColorFromString(S: String; out AColor: TColor; out AErrMsg: String):
 
 function GetAlignmentForStr(S: string; ADefault: TIpHtmlAlign = haDefault): TIpHtmlAlign;
 
+function AnsiToEscape(const S: string): string;
 function EscapeToAnsi(const S: string): string;
-//procedure TrimFormatting(const S: string; Target: PAnsiChar; PreFormatted: Boolean = False);
+function NoBreakToSpace(const S: string): string;
 
 implementation
 
@@ -544,49 +545,55 @@ begin
   if P <> 0 then
     ExpandEscapes(Result);
 end;
-                     (*
-procedure TrimFormatting(const S: string; Target: PAnsiChar; PreFormatted: Boolean = False);
-var
-  r, w: Integer;
 
-  procedure CopyChar(ch: AnsiChar);
+{ Returns the string with & escapes}
+function AnsiToEscape(const S: string): string;
+var
+  i : Integer;
+  procedure replaceCharBy(newStr: string);
   begin
-    Target[w] := ch;
-    Inc(w);
+    Result[i] := '&';
+    Insert(newStr, Result, i + 1);
   end;
 
 begin
-  r := 1;
-  w := 0;
-  while r <= Length(S) do begin
-    case S[r] of
-      #0..#8, #11..#12, #14..#31 :
-        ;
-      #9 :
-        if PreFormatted then
-          CopyChar(' ');
-      #13 :
-        if PreFormatted then
-          CopyChar(LF);
-      #10 :
-        if PreFormatted then begin
-          if (w = 0) or (Target[w-1] <> LF) then
-            CopyChar(LF);
-        end
-        else begin
-          if w > 1 then
-            CopyChar(' ');
-        end;
-      ' ' :
-        if PreFormatted or (w = 0) or (Target[w-1] <> ' ') then
-          CopyChar(' ');
-      else
-        CopyChar(S[r]);
+  Result := S;
+  i := length(Result);
+  while i > 0 do begin
+    case Result[i] of
+    ShyChar : replaceCharBy('shy;');
+    NbspChar : replaceCharBy('nbsp;');
+    '"' : replaceCharBy('quot;');
+    '&' : replaceCharBy('amp;');
+    '<' : replaceCharBy('lt;');
+    '>' : replaceCharBy('gt;');
     end;
-    Inc(r);
+    Dec(i);
   end;
-  Target[w] := #0;
-end;    *)
+end;
+
+function NoBreakToSpace(const S: string): string;
+var
+  P, n : Integer;
+begin
+  SetLength(Result, Length(S));
+  n := 0;
+  P := 1;
+  while P <= Length(S) do
+  begin
+    inc(n);
+    if S[P] = NbspChar then
+      Result[n] := ' '
+    else if (P < Length(S)) and (S[P] = NbspUtf8[1]) and (S[P+1] = NbspUtf8[2]) then
+    begin
+      Result[n] := ' ';
+      inc(P);
+    end else
+      Result[n] := S[P];
+    inc(P);
+  end;
+  SetLength(Result, n);
+end;
 
 end.
 

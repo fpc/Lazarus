@@ -11,11 +11,9 @@ uses
 type  
   TIpHtmlParser = class(TIpHtmlBasicParser)
   private
-//    FBody: TIpHtmlNodeBODY;
     FCharSP: Integer;
     FCharStack: array [0..7] of AnsiChar;
     FCharStream: TStream;
-//    FCSS: TCSSGlobalProps;
     FCurFrameSet: TIpHtmlNodeFRAMESET;
     FCurToken: TIpHtmlToken;
     FCurURL: string;
@@ -24,7 +22,6 @@ type
     FHasBOM: Boolean;
     FHasFrames: Boolean;
     FHaveToken: Boolean;
-//    FHtml: TIpHtmlNodeHtml;
     FInBlock: Integer;
     FIndexPhrase: string;
     FInPre: Integer;
@@ -37,7 +34,6 @@ type
     FParmBuf: PChar;
     FParmBufSize: Integer;
     FParmValueArray: array[TIpHtmlAttributesSet] of string;
-//    FStartPos: Integer;
     FTitleNode : TIpHtmlNodeTITLE;
     FTokenBuffer: TIpHtmlToken;
     FTokenStringBuf: PChar; {array[16383] of AnsiChar;}
@@ -952,9 +948,6 @@ end;
 
 procedure TIpHtmlParser.ParseBody(AParent: TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
-var
-  i: Integer;
-  Node: TIpHtmlNode;
 begin
   if FCurToken = IpHtmlTagFRAMESET then begin
     ParseFrameSet(AParent, EndTokens);
