@@ -276,6 +276,8 @@ const
      cmsISOLike_Mod]
     );
   cmAllModesWithGeneric = [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
+  Pas2jsFixedModeswitches = [cmsArray2dynarray,cmsArrayOperators,
+    cmsFunctionReferences,cmsAnonymousFunctions];
 
   // upper case (see fpc/compiler/globtype.pas  modeswitchstr )
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of string=(
@@ -4666,6 +4668,8 @@ begin
   FCompilerMode:=AValue;
   OldModeSwitches:=FCompilerModeSwitches;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
+  if FPascalCompiler=pcPas2js then
+    FCompilerModeSwitches:=FCompilerModeSwitches+Pas2jsFixedModeswitches;
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
   Values.Variables[CompilerModeVars[FCompilerMode]]:='1';
 
