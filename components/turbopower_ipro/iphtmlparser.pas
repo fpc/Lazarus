@@ -1705,8 +1705,9 @@ end;
 function TIpHtmlParser.ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
   const ADefault: string): TIpHtmlLength;
 var
-  S: string;
-  n, P, Err: Integer;
+  S, units: string;
+  n: Double;
+  P, Err: Integer;
 begin
   Result := TIpHtmlLength.Create;
   Result.LengthType := hlUndefined;
@@ -1724,8 +1725,18 @@ begin
     Delete(S, P, 1);
   end else
     Result.LengthType := hlAbsolute;
+  // Remove non-numeric appendix
+  units := '';
+  for P := Length(S) downto 1 do
+    if not (S[P] in ['0'..'9', '+', '-', '.']) then
+      units := S[P] + units
+    else begin
+      SetLength(S, P);
+      break;
+    end;
   val(S, n, Err);
-  Result.LengthValue := n;
+  if n < 0 then n := 0;
+  Result.LengthValue := round(n);
   if (Err <> 0) or (Result.LengthValue < 0) then begin
     if FlagErrors then
       ReportError(SHtmlInvInt)
@@ -1739,8 +1750,9 @@ end;
 function TIpHtmlParser.ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
   const ADefault: string): TIpHtmlMultiLength;
 var
-  S : string;
-  n, P, Err: Integer;
+  S, units: string;
+  n: Double;
+  P, Err: Integer;
 begin
   Result := TIpHtmlMultiLength.Create;
   Result.LengthType := hmlUndefined;
@@ -1764,8 +1776,20 @@ begin
     end else
       Result.LengthType := hmlAbsolute;
   end;
+  
+  // Remove non-numeric appendix
+  units := '';
+  for P := Length(S) downto 1 do
+    if not (S[P] in ['0'..'9', '+', '-', '.']) then
+      units := S[P] + units
+    else begin
+      SetLength(S, P);
+      break;
+    end;
+
   val(s, n, Err);
-  Result.LengthValue := n;
+  if n < 0 then n := 0;
+  Result.LengthValue := round(n);
   if (Err <> 0) or (Result.LengthValue < 0) then begin
     if FlagErrors then
       ReportError(SHtmlInvInt)
@@ -1777,8 +1801,9 @@ end;
 function TIpHtmlParser.ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
   const ADefault: string): TIpHtmlMultiLengthList;
 var
-  S, S2: string;
-  B, E, P, Err, n: Integer;
+  S, S2, units: string;
+  B, E, P, Err: Integer;
+  n: Double;
   NewEntry: TIpHtmlMultiLength;
 begin
   Result := TIpHtmlMultiLengthList.Create;
@@ -1814,8 +1839,18 @@ begin
     if S2 = '' then
       newEntry.LengthValue := 0
     else begin
+      // Remove non-numeric appendix
+      units := '';
+      for P := Length(S2) downto 1 do
+        if not (S2[P] in ['0'..'9', '+', '-', '.']) then
+          units := S2[P] + units
+        else begin
+          SetLength(S2, P);
+          break;
+        end;
       val(S2, n, Err);
-      newEntry.LengthValue := n;
+      if n < 0 then n := 0;
+      newEntry.LengthValue := round(n);
       if (Err <> 0) or (NewEntry.LengthValue < 0) then begin
         if FlagErrors then
           ReportError(SHtmlInvInt)

@@ -459,6 +459,26 @@ const
     '</body>' + LE +
     '</html>';
     
+  ColWidth_fixed_title =
+    'Column widths specified, total width automatic';
+  ColWidth_fixed_descr =
+    'The 1st column should be 150 pixels, the 2nd column 300 pixels wide.';
+  ColWidth_fixed_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <th width="150">Column A</th>' + LE +
+    '    <th width="300">Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+    
   ColWidth_100perc_title =
     'Table width 100%';
   ColWidth_100perc_descr =
@@ -508,7 +528,7 @@ const
     '<body>' + LE +
     '<table border="1" width="100%">' + LE +
     '  <tr>' + LE +
-    '    <th width="200px">Column A</th>' + LE +
+    '    <th width="200px">Column A</th>' + LE +  // "px" must be removed by parser
     '    <th>Column B</th>' + LE +
     '  </tr>' + LE +
     '  <tr>' + LE +
@@ -519,6 +539,32 @@ const
     '</body>' + LE +
     '</html>';
 
+  ColGroup_ColWidth_200px_total100perc_title =
+    'Table using ColGroup, table width 100%, 1st column 200px, 2nd column covers rest';
+  ColGroup_ColWidth_200px_total100perc_descr =
+    'Table expands over available space, 1st column has 200px, 2nd column covers rest';
+  ColGroup_ColWidth_200px_total100perc_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1" width="100%">' + LE +
+    '  <colgroup>' + LE +
+    '    <col span="1" width="200px">' + LE +      // "px" must be removed by parser
+    '    <col span="1">' + LE + 
+    '  </colgroup>' + LE +
+    '  <tbody>' + LE +
+    '    <tr>' + LE +
+    '      <th>Column A</th>' + LE +
+    '      <th>Column B</th>' + LE +
+    '    </tr>' + LE +
+    '    <tr>' + LE +
+    '      <td>Cell 1</td>' + LE +
+    '      <td>Cell 2</td>' + LE +
+    '    </tr>' + LE +
+    '  </tbody>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
 //------------------------------------------------------------------------------
 //    Lists
 //------------------------------------------------------------------------------

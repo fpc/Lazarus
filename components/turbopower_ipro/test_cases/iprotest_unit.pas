@@ -182,9 +182,11 @@ begin
     node1.Expanded := true;
     node1 := TreeView1.Items.AddChild(node, 'Column widths');
     AddTest(node1, ColWidth_auto_title, ColWidth_auto_descr, ColWidth_auto_html);
+    AddTest(node1, ColWidth_fixed_title, ColWidth_fixed_descr, ColWidth_fixed_html);
     AddTest(node1, ColWidth_100perc_title, ColWidth_100perc_descr, ColWidth_100perc_html);
     AddTest(node1, ColWidth_30perc_70perc_title, ColWidth_30perc_70perc_descr, ColWidth_30perc_70perc_html);
     AddTest(node1, ColWidth_200px_total100perc_title, ColWidth_200px_total100perc_descr, ColWidth_200px_total100perc_html);
+    AddTest(node1, ColGroup_ColWidth_200px_total100perc_title, ColGroup_ColWidth_200px_total100perc_descr, ColGroup_ColWidth_200px_total100perc_html);
     node1.Expanded := true;
     node.Expanded := true;
     
