@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Contnrs, SysUtils, Graphics,
-  IpHtmlProp, IpHtmlUtils;
+  IpHtmlTypes, IpHtmlUtils;
 
 type
   TCSSGroup = class

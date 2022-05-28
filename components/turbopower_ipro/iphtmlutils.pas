@@ -6,15 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
-  IpHtmlProp;
-
-const
-  ShyChar = #1; {character used to represent soft-hyphen in strings}
-  NbspChar = #2; {character used to represent no-break space in strings}
-  NAnchorChar = #3 ; {character used to represent an Anchor }
-  NbspUtf8 = #194#160;  {utf8 code of no-break space character}
-  LF = #10;
-  CR = #13;
+  IpHtmlTypes, IpHtmlProp;
   
 function ColorFromString(S: String): TColor;
 function TryColorFromString(S: String; out AColor: TColor; out AErrMsg: String): Boolean;

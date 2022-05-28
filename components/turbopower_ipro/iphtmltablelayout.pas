@@ -6,7 +6,8 @@ unit ipHtmlTableLayout;
 interface
 
 uses
-  types, Classes, LCLType, LCLIntf, IpHtml, iphtmlprop;
+  types, Classes, LCLType, LCLIntf, 
+  IpHtmlTypes, IpHtmlProp, IpHtml, IpHtmlClasses;
 
 type
 

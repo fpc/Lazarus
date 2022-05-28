@@ -6,19 +6,9 @@ interface
 
 uses
   Classes, SysUtils, types, contnrs, Graphics,
-  IpConst, IpUtils;
+  IpConst, IpUtils, IpHtmlTypes;
 
 type
-
-  TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar, haUnknown);
-  TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
-  TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
-
-  TIpHtmlElemMarginStyle = (
-    hemsAuto, // use default
-    hemsPx    // pixel
-    );
-
   TIpHtmlElemMargin = record
     Style: TIpHtmlElemMarginStyle;
     Size: single; // negative values are not yet supported

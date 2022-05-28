@@ -9,8 +9,9 @@ interface
 
 uses
   IpAnim, IpConst, Ipfilebroker, Iphttpbroker, IpHtml, IpMsg, IpStrms, 
-  IpUtils, IpHtmlTabList, iphtmlprop, ipHtmlBlockLayout, ipHtmlTableLayout, 
-  IpHtmlParser, IpHtmlUtils, IpCSS, LazarusPackageIntf;
+  IpUtils, IpHtmlTabList, IpHtmlProp, ipHtmlBlockLayout, ipHtmlTableLayout, 
+  IpHtmlParser, IpHtmlUtils, IpCSS, IpHtmlClasses, IpHtmlTypes, 
+  LazarusPackageIntf;
 
 implementation
 

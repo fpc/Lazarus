@@ -10,8 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, iprotest_unit, ipro_tests
-  { you can add units after this };
+  Forms, iprotest_unit, ipro_tests;
 
 {$R *.res}
 

@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
-  ipConst, ipUtils, ipHtmlUtils, ipHtmlProp, ipHtml, ipCSS;
+  ipConst, ipUtils, ipHtmlTypes, ipHtmlUtils, ipHtmlProp, ipCSS, ipHtmlClasses,
+  ipHtml;
 
 type  
   TIpHtmlParser = class(TIpHtmlBasicParser)
