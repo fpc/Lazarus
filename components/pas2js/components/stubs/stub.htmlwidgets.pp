@@ -20,7 +20,7 @@ unit stub.htmlwidgets;
 interface
 
 uses
-  Classes, SysUtils, stub.webwidget, stub.js, stub.web;
+  Classes, SysUtils, stub.webwidget, stub.web;
 
 Type
   TTextMode = (tmText,tmHTML);

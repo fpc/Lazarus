@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, ProjectIntf, PropEdits, ComponentEditors, fpjsondataset, dbpropedits,
   db, stub.htmlfragment, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
-  stub.webwidget, stub.bootstrapwidgets, stub.bootstraptablewidget,
+  stub.webwidget, stub.bootstrapwidgets, stub.bootstraptablewidget, stub.bulmawidgets,
   stub.templateloader, stub.jsondataset, stub.dbwebwidget, stub.dbhtmlwidgets;
 
 Type
@@ -237,6 +237,13 @@ Type
     Procedure RequiredUnits(Units: TStrings); override;
   end;
 
+  { TBulmaWidgetRequirements }
+
+  TBulmaWidgetRequirements = Class(TComponentRequirements)
+  public
+    Procedure RequiredUnits(Units: TStrings); override;
+  end;
+
   { TLogBridge }
 
   TLogBridge = Class(TObject)
@@ -279,6 +286,8 @@ begin
   RegisterComponentRequirements(TDBHTMLButtonElementAction,TDBElementActionRequirements);
   RegisterComponentRequirements(TBootstrapModal,THTMLBootstrapWidgetRequirements);
   RegisterComponentRequirements(TBootstrapToastWidget,THTMLBootstrapWidgetRequirements);
+  RegisterComponentRequirements(TBulmaModal,TBulmaWidgetRequirements);
+  RegisterComponentRequirements(TBulmaToastWidget,TBulmaWidgetRequirements);
   RegisterComponentRequirements(TTemplateLoader,TRTLTemplateLoaderRequirements);
   RegisterComponentRequirements(TLocalJSONDataset,TJSONDatasetRequirements);
   RegisterComponentRequirements(TDBBootstrapTableWidget,TDBBootstrapTableWidgetRequirements);
@@ -321,6 +330,13 @@ begin
   RegisterPropertyEditor(TypeInfo(string),TBSTableColumn, 'FieldName', TBSColumnFieldProperty);
   RegisterPropertyEditor(TypeInfo(string),TBSTableColumn, 'WidthUnits', TWidthUnitsProperty);
   RegisterPropertyEditor(TypeInfo(string),TBSTableColumn, 'ButtonURLTarget', TTargetProperty);
+  //
+  RegisterPropertyEditor(TypeInfo(String),TBulmaModal,'ParentID',TElementIDPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TBulmaModal,'ElementID',TElementIDPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TBulmaModal,'Template',TTemplatePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TBulmaToastWidget,'Header',TTemplatePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TBulmaToastWidget,'Body',TTemplatePropertyEditor);
+
   // Maybe make a THTMLFragmentString = type string
   // Same for ElementID/ParentID : TDOMIDString = type string
   RegisterPropertyEditor(TypeInfo(String),TCustomLoopTemplateWidget,'HeaderTemplate',THTMLFragmentPropertyEditor);
@@ -366,6 +382,7 @@ procedure register;
 
 begin
   RegisterComponents('Pas2js',[THTMLElementActionList,TBootstrapModal,TBootstrapToastWidget,TTemplateLoader]);
+  RegisterComponents('Pas2js Bulma',[TBulmaModal,TBulmaToastWidget]);
   RegisterComponents('Pas2js Data Access',[TSQLDBRestConnection,TSQLDBRestDataset,TLocalJSONDataset]);
   RegisterComponents('Pas2js Data Controls',[TDBBootstrapTableWidget,TDBLoopTemplateWidget,TDBSelectWidget]);
   RegisterClasses([TJSONDateField, TJSONTimeField, TJSONDateTimeField]);
@@ -376,6 +393,13 @@ begin
   RegisterPropertyEditors;
   RegisterHTMLFragmentHandling;
   RegisterRESTHandling;
+end;
+
+{ TBulmaWidgetRequirements }
+
+procedure TBulmaWidgetRequirements.RequiredUnits(Units: TStrings);
+begin
+  Units.text:='bulmawidgets';
 end;
 
 { TSelectFieldProperty }

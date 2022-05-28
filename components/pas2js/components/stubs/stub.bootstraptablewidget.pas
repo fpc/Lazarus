@@ -545,7 +545,6 @@ function TDataTablesFieldMap.GetValueByName(S: String): JSValue;
 begin
   if S<>'' then;
   Result:='';
-  //
 end;
 
 end.

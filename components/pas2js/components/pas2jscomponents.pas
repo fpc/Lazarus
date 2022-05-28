@@ -14,7 +14,7 @@ uses
   stub.web, stub.bootstrapwidgets, frmpas2jsedithtml, p2jselementactions, 
   Stub.Data.HTMLActions, frmselecthtmlactions, stub.jsondataset, 
   stub.bootstraptablewidget, stub.dbwebwidget, stub.dbhtmlwidgets, 
-  stub.htmlwidgets, LazarusPackageIntf;
+  stub.htmlwidgets, stub.bulmawidgets, LazarusPackageIntf;
 
 implementation
 

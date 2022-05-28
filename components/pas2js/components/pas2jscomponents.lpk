@@ -112,6 +112,11 @@
       </Item>
       <Item>
         <Filename Value="stubs/stub.htmlwidgets.pp"/>
+        <UnitName Value="stub.htmlwidgets"/>
+      </Item>
+      <Item>
+        <Filename Value="stubs/stub.bulmawidgets.pas"/>
+        <UnitName Value="stub.bulmawidgets"/>
       </Item>
     </Files>
     <RequiredPkgs>

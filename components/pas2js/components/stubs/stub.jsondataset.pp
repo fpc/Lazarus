@@ -5,7 +5,7 @@ unit stub.jsondataset;
 interface
 
 uses
-  Classes, SysUtils, db, fpjsondataset;
+  Classes, SysUtils,  fpjsondataset;
 
 Type
   { TCustomLocalJSONDataset }
