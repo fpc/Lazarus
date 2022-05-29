@@ -564,11 +564,6 @@ msgstr "ערך דגל לא חוקי \"%s\" עבור הוראה s%"
 msgid "invalid mode \"%s\""
 msgstr "מצב לא חוקי  \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "מתג מצב לא חוקי  \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

@@ -559,11 +559,6 @@ msgstr "valore flag non valido \"%s\" per la direttiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modalità non valida \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "selettore di modo \"%s\" non valido"
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

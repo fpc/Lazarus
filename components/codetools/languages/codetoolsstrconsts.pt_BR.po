@@ -561,11 +561,6 @@ msgstr "valor \"flag\" inválido \"%s\" para diretiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modo inválido \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "opção \"modo\" inválida \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

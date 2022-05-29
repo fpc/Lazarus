@@ -562,11 +562,6 @@ msgstr ""
 msgid "invalid mode \"%s\""
 msgstr "无效模式\"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "无效模式开关\"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

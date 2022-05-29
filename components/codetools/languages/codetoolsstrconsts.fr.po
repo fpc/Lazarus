@@ -562,11 +562,6 @@ msgstr "valeur bascule \"%s\" incorrecte pour la directive %s"
 msgid "invalid mode \"%s\""
 msgstr "mode \"%s\" incorrect"
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "commutateur de mode \"%s\" incorrect"
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

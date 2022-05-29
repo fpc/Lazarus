@@ -559,11 +559,6 @@ msgstr "valor de indicador inválido \"%s\" para directiva %s"
 msgid "invalid mode \"%s\""
 msgstr "modo inválido \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "interruptor de modo no válido \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

@@ -562,11 +562,6 @@ msgstr "błędna wartość flagi \"%s\" dla dyrektywy %s"
 msgid "invalid mode \"%s\""
 msgstr "błędny tryb \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr ""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

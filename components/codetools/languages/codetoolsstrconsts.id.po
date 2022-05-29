@@ -565,11 +565,6 @@ msgstr "Nilai tanda tidak benar \"%s\" untuk direktif %s"
 msgid "invalid mode \"%s\""
 msgstr "Mode tidak benar \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr ""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

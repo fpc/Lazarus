@@ -562,11 +562,6 @@ msgstr "klaidinga vėliavėlės reikšmė „%s“ direktyvai %s"
 msgid "invalid mode \"%s\""
 msgstr "„%s“ veiksena yra klaidinga"
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "veiksenos perjungiklis „%s“ yra klaidingas"
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

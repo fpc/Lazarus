@@ -562,11 +562,6 @@ msgstr "ungültiges Flag \"%s\" bei Direktive %s"
 msgid "invalid mode \"%s\""
 msgstr "ungültiger Mode \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "Ungültiger Modus-Schalter \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

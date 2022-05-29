@@ -564,11 +564,6 @@ msgstr "неправильне значення прапорця \"%s\" для �
 msgid "invalid mode \"%s\""
 msgstr "неправильний режим \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "неправильний перемикач режиму \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

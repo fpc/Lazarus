@@ -562,11 +562,6 @@ msgstr "%s yönergesi için geçersiz bayrak değeri \"%s\""
 msgid "invalid mode \"%s\""
 msgstr "geçersiz mod \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "geçersiz mod anahtarı \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

@@ -561,11 +561,6 @@ msgstr "neplatná hodnota vlajky \"%s\" pro směrnici %s"
 msgid "invalid mode \"%s\""
 msgstr "neplatný režim \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "neplatný přepínač režimu \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

@@ -554,11 +554,6 @@ msgstr "Kelvoton lipun arvo \"%s\" ohjeelle %s"
 msgid "invalid mode \"%s\""
 msgstr "Kelvoton moodi \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "Kelvoton moodin valitsin \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

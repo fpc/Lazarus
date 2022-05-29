@@ -3590,7 +3590,7 @@ begin
       exit;
     end;
   end;
-  RaiseExceptionFmt(20170422130125,ctsInvalidModeSwitch,[GetIdentifier(ValStart)]);
+  // no error on unknown modeswitch
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;

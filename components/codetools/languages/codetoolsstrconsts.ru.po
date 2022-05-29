@@ -561,11 +561,6 @@ msgstr "неверное значение флага \"%s\" для директ�
 msgid "invalid mode \"%s\""
 msgstr "неверный режим \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "неверный переключатель режима \"%s\""
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"

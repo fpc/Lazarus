@@ -561,11 +561,6 @@ msgstr "érvénytelen jelzőérték: \"%s\" a(z) %s direktíva számára"
 msgid "invalid mode \"%s\""
 msgstr "érvénytelen mód: \"%s\""
 
-#: codetoolsstrconsts.ctsinvalidmodeswitch
-#, object-pascal-format
-msgid "invalid mode switch \"%s\""
-msgstr "érvénytelen mód kapcsoló: %s"
-
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"
