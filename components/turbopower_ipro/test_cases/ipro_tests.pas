@@ -753,7 +753,7 @@ const
   Arab_title =
     'Arabian text';
   Arab_descr =
-    'Text should begin at right. The left-most character should be the period (.).';
+    'Text should begin at right.';
   Arab_html =
     '<html lang="ar" dir="rtl">' + LE +
     '<head>' + LE +
