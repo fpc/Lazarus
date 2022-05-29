@@ -450,7 +450,8 @@ begin
       
       { mirroring for RTL reading }
       isRTL := (FOwner.Dir = hdRTL);
-      if (CurElem.Owner.ParentNode <> nil) and (CurElem.Owner.ParentNode is TIpHTMLNodeCORE) then
+      if (CurElem.Owner <> nil) and (CurElem.Owner.ParentNode <> nil) and 
+         (CurElem.Owner.ParentNode is TIpHTMLNodeCORE) then
       begin
         rtlNode := TIpHtmlNodeCORE(CurElem.Owner.ParentNode);
         if isRTL and (rtlNode.Dir = hdLTR) then
