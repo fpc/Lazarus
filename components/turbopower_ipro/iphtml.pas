@@ -4593,7 +4593,7 @@ begin
   ClassId := aOwner.FindAttribute(htmlAttrCLASS);
   Title := aOwner.FindAttribute(htmlAttrTITLE);
   Style := aOwner.FindAttribute(htmlAttrSTYLE);
-  s := aOwner.FindAttribute(htmlAttrDIR);
+  s := Uppercase(aOwner.FindAttribute(htmlAttrDIR));
   if (s = '') then 
   begin
     if (ParentNode is TIpHtmlNodeCore) then

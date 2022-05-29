@@ -257,8 +257,12 @@ begin
     AddTest(node, NoBodyTag_title, NoBodyTag_descr, NoBodyTag_html);
     node.Expanded := true;
     
-    node := TestTree.Items.AddChild(nil, 'Localization, right-to-left');
+    node := TestTree.Items.AddChild(nil, 'Right-to-left');
     AddTest(node, Arab_title, Arab_descr, Arab_html);
+    AddTest(node, Hebrew_title, Hebrew_descr, Hebrew_html);
+    AddTest(node, Hebrew_bodyRTL_title, Hebrew_bodyRTL_descr, Hebrew_bodyRTL_html);
+    AddTest(node, Hebrew_divRTL_title, Hebrew_divRTL_descr, Hebrew_divRTL_html);
+    AddTest(node, Hebrew_pRTL_title, Hebrew_pRTL_descr, Hebrew_pRTL_html);
     node.Expanded := true;
     
     LoadResults;

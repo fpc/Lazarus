@@ -404,6 +404,8 @@ var
     CoreNode: TIpHtmlNodeCore;
     TrNode: TIpHtmlNodeTR;
     CellNode: TIpHtmlNodeTableHeaderOrCell;
+    isRTL: Boolean;
+    rtlNode: TIpHtmlNodeCORE;
   begin
     RowSp2 := TIntArr.Create;
     try
@@ -591,7 +593,17 @@ var
                   end;
                   
                   { mirroring for RTL reading }
-                  if FOwner.Dir = hdRTL then
+                  isRTL := (FOwner.Dir = hdRTL);
+                  if (CellNode is TIpHTMLNodeCORE) then
+                  begin
+                    rtlNode := TIpHtmlNodeCORE(CellNode);
+                    if isRTL and (rtlNode.Dir = hdLTR) then
+                      isRTL := false
+                    else
+                    if not isRTL and (rtlNode.Dir = hdRTL) then
+                      isRTL := true;
+                  end;
+                  if isRTL then
                   begin
                     CellNode.Dir := hdRTL;
                     CellRect1 := CellNode.PadRect;

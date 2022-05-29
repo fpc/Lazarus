@@ -396,6 +396,8 @@ var
   R : TRect;
   CurElem : PIpHtmlElement;
   CurWordInfo : PWordInfo;
+  isRTL: Boolean;
+  rtlNode: TIpHtmlNodeCORE;
 begin
   dx := CalcDelta;
   ph := FIpHtml.PageHeight;
@@ -447,7 +449,17 @@ begin
         OffsetRect(R, dx + WDelta, 0);
       
       { mirroring for RTL reading }
-      if FOwner.Dir = hdRTL then
+      isRTL := (FOwner.Dir = hdRTL);
+      if (CurElem.Owner.ParentNode <> nil) and (CurElem.Owner.ParentNode is TIpHTMLNodeCORE) then
+      begin
+        rtlNode := TIpHtmlNodeCORE(CurElem.Owner.ParentNode);
+        if isRTL and (rtlNode.Dir = hdLTR) then
+          isRTL := false
+        else
+        if not isRTL and (rtlNode.Dir = hdRTL) then
+          isRTL := true;
+      end;
+      if isRTL then
         R.SetLocation(FPageRect.Right - R.Right + FPageRect.Left, R.Top);
 
       SetWordRect(CurElem, R);
@@ -1247,6 +1259,8 @@ var
   P : TPoint;
   R : TRect;
   TextStyle: TTextStyle;
+  isRTL: Boolean;
+  rtlNode: TIpHtmlNodeCORE;
   OldBrushcolor: TColor;
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
@@ -1305,8 +1319,17 @@ begin
     FCanvas.Brush.Style := bsClear;
   end;
   
-  if (FOwner.Dir = hdRTL) then
-    TextStyle.RightToLeft := true;
+  isRTL := (FOwner.Dir = hdRTL);
+  if (aCurWord.Owner.ParentNode <> nil) and (aCurWord.Owner.ParentNode is TIpHTMLNodeCORE) then
+  begin
+    rtlNode := TIpHtmlNodeCORE(aCurWord.Owner.ParentNode);
+    if isRTL and (rtlNode.Dir = hdLTR) then
+      isRTL := false
+    else
+    if not isRTL and (rtlNode.Dir = hdRTL) then
+      isRTL := true;
+  end;
+  TextStyle.RightToLeft := isRTL;
   
   if aCurWord.Owner.ParentNode = aCurTabFocus then
     FCanvas.DrawFocusRect(R);

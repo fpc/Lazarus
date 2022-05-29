@@ -747,7 +747,7 @@ const
 
   
 //------------------------------------------------------------------------------
-//   Localization / Right-to-left
+//   Right-to-left
 //------------------------------------------------------------------------------
 const
   Arab_title =
@@ -760,9 +760,63 @@ const
     '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' + LE +
     '</head>' + LE +
     '<body>' + LE +
-      '<div> لماذا ترتيب الكلمات معكوس </div> ' + LE +
+    '  <div> لماذا ترتيب الكلمات معكوس </div> ' + LE +
     '</body>' + LE +
     '</html>';
+  
+  Hebrew_title =
+    'Hebrew text (RTL in <html> tag)';
+  Hebrew_descr =
+    'Text should begin at right. Terminating period must be at left of last word.';
+  Hebrew_html =
+    '<html lang="he-IL" dir="rtl">' + LE +
+    '<body>' + LE +
+    '  <div>אנא פנאי בהבנה צרפתית גם. בה ויקי פיסיקה חפש, מפתח המשפט אתה על. כתב ב ליצירתה ויקימדיה, בדף על בקרבת ייִדיש ליצירתה. גם אנא עקרונות התפתחות פוליטיקה, יוני מיותר בחירות אנא מה. או שנורו בישול ארץ, עזרה וקשקש קצרמרים או שער. מה זאת מיזם מדעי סטטיסטיקה. זכר אל היסטוריה אקטואליה, את כלים מיזמי מונחים מדע.</div>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  Hebrew_bodyRTL_title =
+    'Hebrew text (RTL in <body> tag)';
+  Hebrew_bodyRTL_descr =
+    'Text should begin at right. Terminating period must be at left of last word.';
+  Hebrew_bodyRTL_html =
+    '<html lang="he-IL">' + LE +
+    '<head>' + LE +
+    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' + LE +
+    '</head>' + LE +
+    '<body dir="rtl">' + LE +
+    '  <div>אנא פנאי בהבנה צרפתית גם. בה ויקי פיסיקה חפש, מפתח המשפט אתה על. כתב ב ליצירתה ויקימדיה, בדף על בקרבת ייִדיש ליצירתה. גם אנא עקרונות התפתחות פוליטיקה, יוני מיותר בחירות אנא מה. או שנורו בישול ארץ, עזרה וקשקש קצרמרים או שער. מה זאת מיזם מדעי סטטיסטיקה. זכר אל היסטוריה אקטואליה, את כלים מיזמי מונחים מדע.</div>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  Hebrew_divRTL_title =
+    'Hebrew text (RTL in <div> tag)';
+  Hebrew_divRTL_descr =
+    'Text should begin at right. Terminating period must be at left of last word.';
+  Hebrew_divRTL_html =
+    '<html>' + LE +
+    '<head>' + LE +
+    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' + LE +
+    '</head>' + LE +
+    '<body>' + LE +
+    '  <div dir="rtl">אנא פנאי בהבנה צרפתית גם. בה ויקי פיסיקה חפש, מפתח המשפט אתה על. כתב ב ליצירתה ויקימדיה, בדף על בקרבת ייִדיש ליצירתה. גם אנא עקרונות התפתחות פוליטיקה, יוני מיותר בחירות אנא מה. או שנורו בישול ארץ, עזרה וקשקש קצרמרים או שער. מה זאת מיזם מדעי סטטיסטיקה. זכר אל היסטוריה אקטואליה, את כלים מיזמי מונחים מדע.</div>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  Hebrew_pRTL_title =
+    'Hebrew text (RTL in <p> tag)';
+  Hebrew_pRTL_descr =
+    'Text should begin at right. Terminating period must be at left of last word.';
+  Hebrew_pRTL_html =
+    '<html>' + LE +
+    '<head>' + LE +
+    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' + LE +
+    '</head>' + LE +
+    '<body>' + LE +
+    '  <p dir="rtl">אנא פנאי בהבנה צרפתית גם. בה ויקי פיסיקה חפש, מפתח המשפט אתה על. כתב ב ליצירתה ויקימדיה, בדף על בקרבת ייִדיש ליצירתה. גם אנא עקרונות התפתחות פוליטיקה, יוני מיותר בחירות אנא מה. או שנורו בישול ארץ, עזרה וקשקש קצרמרים או שער. מה זאת מיזם מדעי סטטיסטיקה. זכר אל היסטוריה אקטואליה, את כלים מיזמי מונחים מדע.</p>' + LE +
+    '</body>' + LE +
+    '</html>';
+
 
 implementation
 
