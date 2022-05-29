@@ -119,6 +119,29 @@ const
     'There should be an empty line between the two lines.';
 
   
+//------------------------------------------------------------------------------
+//   <PRE>
+//------------------------------------------------------------------------------
+const
+  PRE_title =
+    'Formatting with <PRE> tag';
+  PRE_descr =
+    'All lines should have normal spacing.';
+  PRE_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<p>Normal text before.</p>' + LE +
+    '<pre>' + LE +
+    'program Test;' + LE +
+    'begin' + LE + 
+    '  Run;' + LE +
+    'end.' + LE +
+    '</pre>' + LE +
+    '<p>Normal text after.</p>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  
 // -----------------------------------------------------------------------------
 //   Background color
 //------------------------------------------------------------------------------
@@ -730,7 +753,7 @@ const
   Arab_title =
     'Arabian text';
   Arab_descr =
-    '...';
+    'Text should begin at right. The left-most character should be the period (.).';
   Arab_html =
     '<html lang="ar" dir="rtl">' + LE +
     '<head>' + LE +

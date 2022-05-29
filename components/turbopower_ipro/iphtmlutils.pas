@@ -5,8 +5,8 @@ unit IpHtmlUtils;
 interface
 
 uses
-  Classes, SysUtils, Graphics,
-  IpHtmlTypes, IpHtmlProp;
+  Classes, SysUtils, Graphics, Forms, 
+  IpHtmlTypes;
   
 function ColorFromString(S: String): TColor;
 function TryColorFromString(S: String; out AColor: TColor; out AErrMsg: String): Boolean;
@@ -16,6 +16,12 @@ function GetAlignmentForStr(S: string; ADefault: TIpHtmlAlign = haDefault): TIpH
 function AnsiToEscape(const S: string): string;
 function EscapeToAnsi(const S: string): string;
 function NoBreakToSpace(const S: string): string;
+
+function FindFontName(const AFontList: string): string;
+
+function MaxI2(const I1, I2: Integer) : Integer;
+function MinI2(const I1, I2: Integer) : Integer;
+
 
 implementation
 
@@ -586,6 +592,71 @@ begin
   end;
   SetLength(Result, n);
 end;
+
+function FindFontName(const AFontList: string): string;
+
+  function CheckFonts(ATestFontList: array of String): String;
+  var
+    i: Integer;
+  begin
+    for i:=0 to High(ATestFontList) do begin
+      Result := ATestFontList[i];
+      if Screen.Fonts.IndexOf(Result) > -1 then
+        exit;
+    end;
+    Result := '';
+  end;
+
+var
+  L: TStringList;
+  i: Integer;
+begin
+  L := TStringList.Create;
+  try
+    L.CommaText := AFontList;
+    for i:=0 to L.Count-1 do begin
+      Result := L[i];
+      if Screen.Fonts.IndexOf(Result) > -1 then
+        exit;
+      if SameText(Result, 'sans-serif') then begin
+        Result := Checkfonts(['Arial', 'Helvetica', 'Liberation Sans']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+      if SameText(Result, 'serif') then begin
+        Result := CheckFonts(['Times', 'Times New Roman', 'Liberation Serif']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+      if SameText(Result, 'monospace') then begin
+        Result := CheckFonts(['Courier New', 'Courier', 'Liberation Mono']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+        Result := Screen.MenuFont.Name;
+    end;
+  finally
+    L.Free;
+  end;
+end;
+
+function MaxI2(const I1, I2: Integer) : Integer;
+begin
+  Result := I1;
+  if I2 > I1 then
+    Result := I2;
+end;
+
+function MinI2(const I1, I2: Integer) : Integer;
+begin
+  Result := I1;
+  if I2 < I1 then
+    Result := I2;
+end;
+
 
 end.
 

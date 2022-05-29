@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes, Registry,
   LCLType, LCLIntf, LMessages, Controls, ComCtrls,
-  GraphType, LazFileUtils, LazStringUtils;
+  LazFileUtils, LazStringUtils;
 
 const
   InternetProfessionalVersion = 1.15;

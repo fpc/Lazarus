@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
-  ipConst, ipUtils, ipHtmlTypes, ipHtmlUtils, ipHtmlProp, ipCSS, ipHtmlClasses,
-  ipHtml;
+  ipConst, ipUtils, ipHtmlTypes, ipHtmlUtils, ipCSS, ipHtmlClasses, ipHtml;
 
 type  
   TIpHtmlParser = class(TIpHtmlBasicParser)
@@ -180,7 +179,8 @@ type
 implementation
 
 uses
-  LConvEncoding, LazUTF8, LazStringUtils, Translations;
+  LConvEncoding, LazUTF8, LazStringUtils, Translations,
+  IpHtmlNodes;
 
 { TIpHtmlParser }
 

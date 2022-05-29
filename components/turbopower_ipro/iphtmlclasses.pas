@@ -5,7 +5,7 @@ unit IpHtmlClasses;
 interface
 
 uses
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Graphics, Forms,
   IpHtmlTypes;
  
 type
@@ -135,6 +135,56 @@ type
     procedure Delete(Index: Integer);
   end;
 
+  TIpHtmlPreviewSettings = class(TPersistent)
+  private
+    FAntiAliasingMode: TAntiAliasingMode;
+    FPosition: TPosition;
+    FMaximized: Boolean;
+    FLeft: Integer;
+    FTop: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FZoom: Integer;
+  public
+    constructor Create;
+  published
+    property AntiAliasingMode: TAntiAliasingMode
+      read FAntiAliasingMode write FAntiAliasingMode default amDontCare;
+    property Position: TPosition
+      read FPosition write FPosition default poScreenCenter;
+    property Maximized: Boolean
+      read FMaximized write FMaximized default false;
+    property Left: Integer
+      read FLeft write FLeft;
+    property Top: Integer
+      read FTop write FTop;
+    property Width: Integer
+      read FWidth write FWidth;
+    property Height: Integer
+      read FHeight write FHeight;
+    property Zoom: integer
+      read FZoom write FZoom default 100;
+  end;
+
+  TIpHtmlPrintSettings = class(TPersistent)
+  private
+    FPreview: TIpHtmlPreviewSettings;
+    FMarginTop: Double;
+    FMarginLeft: Double;
+    FMarginBottom: Double;
+    FMarginRight: Double;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  published
+    property MarginLeft: Double read FMarginLeft write FMarginLeft;
+    property MarginTop: Double read FMarginTop write FMarginTop;
+    property MarginRight: Double read FMarginRight write FMarginRight;
+    property MarginBottom: Double read FMarginBottom write FMarginBottom;
+    property Preview: TIpHtmlPreviewSettings read FPreview write FPreview;
+  end;
+ 
+  
 implementation
 
 { TIpHtmlInteger }
@@ -440,6 +490,39 @@ begin
     end;
   end else
     Result := nil;
+end;
+
+
+{ TIpHtmlPreviewSettings }
+
+constructor TIpHtmlPreviewSettings.Create;
+begin
+  inherited;
+  FPosition := poScreenCenter;
+  FZoom := 100;
+  FWidth := Screen.Width * 3 div 4;
+  FHeight := Screen.Height * 3 div 4;
+  FLeft := Screen.Width div 4;
+  FTop := Screen.Height div 4;
+end;
+
+
+{ TIpHtmlPrintSettings }
+
+constructor TIpHtmlPrintSettings.Create;
+begin
+  inherited;
+  FPreview := TIpHtmlPreviewSettings.Create;
+  FMarginLeft := DEFAULT_PRINTMARGIN;
+  FMarginTop := DEFAULT_PRINTMARGIN;
+  FMarginRight := DEFAULT_PRINTMARGIN;
+  FMarginBottom := DEFAULT_PRINTMARGIN;
+end;
+
+destructor TIpHtmlPrintSettings.Destroy;
+begin
+  FPreview.Free;
+  inherited;
 end;
 
 end.

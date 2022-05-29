@@ -25,7 +25,7 @@
     <License Value="MPL - Mozilla public license
 "/>
     <Version Major="1"/>
-    <Files Count="22">
+    <Files Count="23">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -116,8 +116,12 @@
       </Item21>
       <Item22>
         <Filename Value="iphtmltypes.pas"/>
-        <UnitName Value="iphtmltypes"/>
+        <UnitName Value="IpHtmlTypes"/>
       </Item22>
+      <Item23>
+        <Filename Value="iphtmlnodes.pas"/>
+        <UnitName Value="IpHtmlNodes"/>
+      </Item23>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>

@@ -10,7 +10,7 @@ interface
 uses
   IpAnim, IpConst, Ipfilebroker, Iphttpbroker, IpHtml, IpMsg, IpStrms, 
   IpUtils, IpHtmlTabList, IpHtmlProp, ipHtmlBlockLayout, ipHtmlTableLayout, 
-  IpHtmlParser, IpHtmlUtils, IpCSS, IpHtmlClasses, IpHtmlTypes, 
+  IpHtmlParser, IpHtmlUtils, IpCSS, IpHtmlClasses, IpHtmlTypes, IpHtmlNodes, 
   LazarusPackageIntf;
 
 implementation

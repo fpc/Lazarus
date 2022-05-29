@@ -144,18 +144,7 @@ begin
   TreeView1.Items.BeginUpdate;
   try
     TreeView1.Items.Clear;
-    
-    node := TreeView1.Items.AddChild(nil, '<BR>');
-    AddTest(node, BRinBODY_title, BRinBODY_descr, BRinBODY_html);
-    AddTest(node, TwoBRinBODY_title, TwoBRinBODY_descr, TwoBRinBODY_html);
-    AddTest(node, BRinP_title, BRinP_descr, BRinP_html);
-    AddTest(node, TwoBRinP_title, TwoBRinP_descr, TwoBRinP_html);
-    AddTest(node, BRinTableCell_title, BRinTableCell_descr, BRinTableCell_html);
-    AddTest(node, TwoBRinTableCell_title, TwoBRinTableCell_descr, TwoBRinTableCell_html);
-    AddTest(node, BRbetweenTwoP_title, BRbetweenTwoP_descr, BRbetweenTwoP_html);
-    AddTest(node, BRbetweenTwoTables_title, BRbetweenTwoTables_descr, BRbetweenTwoTables_html);
-    node.Expanded := true;
-  
+      
     node := TreeView1.Items.AddChild(nil, 'Text background');
     AddTest(node, TextWithBackgroundInBODY_title, TextWithBackgroundInBODY_descr, TextWithBackgroundInBODY_html);
     AddTest(node, TextWithBackgroundInBODY_CSS_title, TextWithBackgroundInBODY_CSS_descr, TextWithBackgroundInBODY_CSS_html);
@@ -202,6 +191,22 @@ begin
     AddTest(node, HTMLCommentInCSS_title, HTMLCommentInCSS_descr, HTMLCommentInCSS_html);
     node.Expanded := true;
     
+    node := TreeView1.Items.AddChild(nil, 'Special tags');
+    node1 := TreeView1.Items.AddChild(node, '<BR>');
+    AddTest(node1, BRinBODY_title, BRinBODY_descr, BRinBODY_html);
+    AddTest(node1, TwoBRinBODY_title, TwoBRinBODY_descr, TwoBRinBODY_html);
+    AddTest(node1, BRinP_title, BRinP_descr, BRinP_html);
+    AddTest(node1, TwoBRinP_title, TwoBRinP_descr, TwoBRinP_html);
+    AddTest(node1, BRinTableCell_title, BRinTableCell_descr, BRinTableCell_html);
+    AddTest(node1, TwoBRinTableCell_title, TwoBRinTableCell_descr, TwoBRinTableCell_html);
+    AddTest(node1, BRbetweenTwoP_title, BRbetweenTwoP_descr, BRbetweenTwoP_html);
+    AddTest(node1, BRbetweenTwoTables_title, BRbetweenTwoTables_descr, BRbetweenTwoTables_html);
+    node1.Expanded := true;
+    node1 := TreeView1.Items.AddChild(node, '<PRE>');
+    AddTest(node1, PRE_title, PRE_descr, PRE_html);
+    node1.Expanded := true;
+    node.Expanded := true;
+
     node := TreeView1.Items.AddChild(nil, 'Special cases in file structure');
     AddTest(node, NoHtmlTag_title, NoHtmlTag_descr, NoHtmlTag_html);
     AddTest(node, NoBodyTag_title, NoBodyTag_descr, NoBodyTag_html);
