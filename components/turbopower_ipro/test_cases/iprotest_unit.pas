@@ -225,11 +225,23 @@ begin
     node.Expanded := true;
     
     node := TestTree.Items.AddChild(nil, 'Lists');
-    AddTest(node, OL_title, OL_descr, OL_html);
-    AddTest(node, UL_title, UL_descr, UL_html);
-    AddTest(node, UL_style_title, UL_style_descr, UL_style_html);
-    AddTest(node, UL_3lev_title, UL_3lev_descr, UL_3lev_html);
-    AddTest(node, OUL_3lev_title, OUL_3lev_descr, OUL_3lev_html);
+    node1 := TestTree.Items.AddChild(node, 'Ordered');
+    AddTest(node1, OL_title, OL_descr, OL_html);
+    AddTest(node1, OL_typeA_title, OL_typeA_descr, OL_typeA_html);
+    AddTest(node1, OL_typeA_style_title, OL_typeA_style_descr, OL_typeA_style_html);
+    AddTest(node1, OL_2lev_title, OL_2lev_descr, OL_2lev_html);
+    AddTest(node1, OL_3lev_title, OL_3lev_descr, OL_3lev_html);
+    node1.Expanded := true;
+    node1 := TestTree.Items.AddChild(node, 'Unordered');
+    AddTest(node1, UL_title, UL_descr, UL_html);
+    AddTest(node1, UL_square_title, UL_square_descr, UL_square_html);
+    AddTest(node1, UL_style_title, UL_style_descr, UL_style_html);
+    AddTest(node1, UL_2lev_title, UL_2lev_descr, UL_2lev_html);
+    AddTest(node1, UL_3lev_title, UL_3lev_descr, UL_3lev_html);
+    node1.Expanded := true;
+    node1 := TestTree.Items.AddChild(node, 'Mixed');
+    AddTest(node1, OUL_3lev_title, OUL_3lev_descr, OUL_3lev_html);
+    node1.Expanded := true;
     node.Expanded := true;
     
     node := TestTree.Items.AddChild(nil, 'CSS');

@@ -607,6 +607,87 @@ const
     '</body>' + LE +
     '</html>';
   
+  OL_typeA_title =
+    'Ordered list (type "A")';
+  OL_typeA_descr =
+    'The lines should begin with an upper-case letter (A, B, C).';
+  OL_typeA_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol type="A">' + LE +         // allowed: "1", "A", "a", "I", "i"
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  OL_typeA_style_title =
+    'Ordered list (type "a", in "style" attribute)';
+  OL_typeA_style_descr =
+    'The lines should begin with a lower-case letter (a, b, c).';
+  OL_typeA_style_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol style="list-style-type:lower-alpha">' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  OL_2lev_title =
+    'Ordered list (2 levels)';
+  OL_2lev_descr =
+    'Each level should be numbered (1, 2).';
+  OL_2lev_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol>' + LE +
+    '  <li>' + LE +
+    '    Coffee' + LE +
+    '    <ol type="a">' + LE +
+    '      <li>with sugar and milk</li>' + LE +
+    '      <li>with sugar, no milk</li>' + LE +
+    '      <li>no sugar, with milk</li>' + LE +
+    '      <li>no sugar, no milk</li>' + LE +
+    '    </ol>' + LE +
+    '  </li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  OL_3lev_title =
+    'Ordered list (3 levels)';
+  OL_3lev_descr =
+    'Each level should be numbered (1, 2, 3).';
+  OL_3lev_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol>' + LE +
+    '  <li>Coffee' + LE +
+    '    <ol>' + LE +
+    '      <li>with sugar' + LE +
+    '        <ol>'+ LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ol>' + LE +
+    '      </li>' + LE +
+    '      <li>no sugar' + LE +
+    '        <ol>' + LE +
+    '          <li>with milk</li>' + LE +
+    '          <li>no milk</li>' + LE +
+    '        </ol>' + LE +
+    '      </li>' + LE +
+    '    </ol>' + LE +
+    '  </li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
   UL_title =
     'Unordered list';
   UL_descr =
@@ -622,6 +703,28 @@ const
     '</body>' + LE +
     '</html>';
   
+  UL_2lev_title =
+    'Unordered list (2 levels)';
+  UL_2lev_descr =
+    '1st level should have filled, 2nd level open circles as bullet symbols.';
+  UL_2lev_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul>' + LE +
+    '  <li>' + LE +
+    '    Coffee' + LE +
+    '    <ul type="circle">' + LE +
+    '      <li>with sugar and milk</li>' + LE +
+    '      <li>with sugar, no milk</li>' + LE +
+    '      <li>no sugar, with milk</li>' + LE +
+    '      <li>no sugar, no milk</li>' + LE +
+    '    </ul>' + LE +
+    '  </li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+
   UL_3lev_title =
     'Unordered list (3 levels)';
   UL_3lev_descr =
@@ -651,8 +754,23 @@ const
     '</body>' + LE +
     '</html>';
 
+  UL_square_title =
+    'Unordered list (type "square")';
+  UL_square_descr =
+    'The lines should begin with an filled square.';
+  UL_square_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul type="square">' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
   UL_style_title =
-    'Unordered list (inline style)';
+    'Unordered list (inline style, type "circle")';
   UL_style_descr =
     'The lines should begin with an open circle.';
   UL_style_html =

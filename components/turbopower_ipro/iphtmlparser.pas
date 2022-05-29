@@ -144,7 +144,8 @@ type
     procedure ParseNoFrames(AParent: TIpHtmlNode);
     procedure ParseNoScript(AParent: TIpHtmlNode);
     procedure ParseObject(AParent: TIpHtmlNode);
-    procedure ParseOrderedList(AParent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseOrderedList(AParent: TIpHtmlNode; EndToken: TIpHtmlToken; 
+      const EndTokens: TIpHtmlTokenSet);
     procedure ParseParagraph(AParent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParsePhraseElement(AParent: TIpHtmlNode; StartToken, EndToken: TIpHtmlToken; 
       const EndTokens: TIpHtmlTokenSet);
@@ -906,7 +907,7 @@ begin
     IpHtmlTagDL: 
       ParseDefinitionList(AParent, EndTokens);
     IpHtmlTagOL: 
-      ParseOrderedList(AParent, EndTokens);
+      ParseOrderedList(AParent, IpHtmlTagOLend, EndTokens);
     IpHtmlTagPRE: 
       ParsePre(AParent, EndTokens);
     IpHtmlTagBLOCKQUOTE: 
@@ -2334,17 +2335,28 @@ begin
 end;
 
 procedure TIpHtmlParser.ParseOrderedList(AParent: TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+  EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
 var
   newList: TIpHtmlNodeOL;
 begin
   newList := TIpHtmlNodeOL.Create(AParent);
+  newList.ParseBaseProps(FOwner);
   newList.Style := ParseOLStyle(olArabic);
   newList.Start := ParseInteger(htmlAttrSTART, 1);
-  newList.Compact := ParseBoolean(htmlAttrCOMPACT);
+  newList.Compact :=ParseBoolean(htmlAttrCOMPACT);
+  
   NextToken;
-  ParseListItems(newList, IpHtmlTagOLend, EndTokens + [IpHtmlTagOLend], ulDisc);
-  EnsureClosure(IpHtmlTagOLend, EndTokens);
+  
+  Inc(FListLevel);
+  ParseListItems(
+    newList, 
+    EndToken, 
+    EndTokens + [EndToken] - [IpHtmlTagP, IpHtmlTagLI],
+    ulDisc  // this argument is not used by the OL node.
+  );
+  Dec(FListLevel);
+  
+  EnsureClosure(EndToken, EndTokens);
 end;
 
 procedure TIpHtmlParser.ParseParagraph(AParent: TIpHtmlNode; 

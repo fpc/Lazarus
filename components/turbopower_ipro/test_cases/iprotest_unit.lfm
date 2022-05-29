@@ -637,6 +637,7 @@ object TestForm: TTestForm
         Width = 622
         Align = alTop
         BorderSpacing.Bottom = 3
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
         WantReturns = False
