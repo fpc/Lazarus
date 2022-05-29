@@ -1281,7 +1281,7 @@ begin
       exit;
     end;
     // fpdoc directory found
-    Result:=AppendPathDelim(NewPath)+lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+    Result:=AppendPathDelim(NewPath)+ExtractFileNameOnly(SrcFilename)+'.xml';
     Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
     // get unitname
     CurUnitName:=ExtractFileNameOnly(SrcFilename);
@@ -1756,7 +1756,7 @@ begin
 
     // first check if the file is owned by any project/package
     SearchedPaths:='';
-    FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+    FPDocName:=ExtractFileNameOnly(SrcFilename)+'.xml';
     if (not CheckUnitOwners(false,Result)) // first check if file is owned by a package/project
     and (not CheckUnitOwners(true,Result))// then check if the file is in a source directory of a package/project
     and (not CheckIfInLazarus(Result))
@@ -2002,7 +2002,7 @@ function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
     Result:='';
     if BaseDir='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
-    FPDocFilename:=lowercase(AUnitName)+'.xml';
+    FPDocFilename:=AUnitName+'.xml';
     Result:=SearchFileInPath(FPDocFilename,'',SearchPath,';',ctsfcDefault);
   end;
   
