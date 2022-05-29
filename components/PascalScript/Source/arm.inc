@@ -122,7 +122,7 @@ load_regs:
 	(* branch to the proc pointer *)
 	ldr	r4, [r11, #-52]
 
-{$ifdef FPC_abi_eabi}
+{$if defined(CPUARM_HAS_BLX)}
 	blx	r4
 {$else}
 	mov	r14, r15
