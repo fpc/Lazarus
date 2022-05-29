@@ -9,7 +9,8 @@ uses Classes;
 type
 // Target information, could be different from host debugger
   TMachineType = (mtNone, mtSPARC, mt386, mt68K, mtPPC, mtPPC64, mtARM, mtARM64,
-                  mtOLD_ALPHA, mtIA_64, mtX86_64, mtAVR8, mtALPHA);
+                  mtOLD_ALPHA, mtIA_64, mtX86_64, mtAVR8, mtALPHA,
+                  mtMIPS, mtMIPSEL);
   TBitness = (bNone, b32, b64);
   TByteOrder = (boNone, boLSB, boMSB);
   TOperatingSystem = (osNone, osBSD, osDarwin, osEmbedded, osLinux, osUnix, osMac, osWindows);
@@ -44,6 +45,9 @@ begin
                    {$elseif defined(CPUAARCH64)} mtARM64
                    {$elseif defined(CPUARM)} mtARM
                    {$elseif defined(CPUPOWERPC)} mtPPC
+                   {$elseif defined(CPUMIPS)} mtMIPS
+                   {$elseif defined(CPUMIPSEL)} mtMIPSEL
+                   {$elseif defined(CPU68K)} mt68K
                    {$else} mtNone
                    {$endif};
     bitness     := {$if defined(CPU64)} b64 {$elseif defined(CPU32)} b32 {$else} bNone {$endif};
