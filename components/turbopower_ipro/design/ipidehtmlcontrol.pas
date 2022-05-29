@@ -17,7 +17,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls, Menus,
-  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf, ObjInspStrConsts;
+  IpMsg, Ipfilebroker, IpHtml, IpHtmlNodes,
+  IDEHelpIntf, LazHelpIntf, LazIDEIntf, ObjInspStrConsts;
 
 type
   TLazIPHtmlControl = class;
@@ -28,8 +29,9 @@ type
   private
     FControl: TLazIPHtmlControl;
   protected
-    function DoGetStream(const URL: string): TStream; override;
+    //
   public
+    function DoGetStream(const URL: string): TStream; override;
     property Control: TLazIPHtmlControl read FControl;
   end;
 
