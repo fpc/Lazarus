@@ -89,6 +89,8 @@ type
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
+  { TColorPanelDelegate }
+
   TColorPanelDelegate = objcclass(NSObject, NSWindowDelegateProtocol)
   public
     colorPanel: NSColorPanel;
@@ -102,17 +104,29 @@ type
     procedure exit; message 'exit'; // button action
   end;
 
+  { TFontPanelDelegate }
+
   TFontPanelDelegate = objcclass(NSObject, NSWindowDelegateProtocol)
   public
     FontPanel: NSFontPanel;
     FontDialog: TFontDialog;
     DontSelectFontOnClose: Boolean;
+    FontAttr : NSMutableDictionary;
+
+    function init: id; override;
+    procedure dealloc; override;
+
     // NSWindowDelegateProtocol
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     //
     procedure doSelectFont; message 'doSelectFont';
     procedure selectFont; message 'selectFont'; // button action
     procedure exit; message 'exit'; // button action
+
+    procedure changeAttributes (sender: id); message 'changeAttributes:';
+    procedure changeFont (sender: id); override;
+
+    function validModesForFontPanel(afontPanel: NSFontPanel): NSUInteger; override;
   end;
 
   { TCocoaFilterComboBox }
@@ -143,6 +157,10 @@ var
   // "false" is forces the dialog to use panel_shouldEnableURL. It's a slower
   // check (due to security implications), but it's LCL compatible
   CocoaUseUTIFilter : Boolean = false;
+
+procedure FontToDict(src: TFont; dst: NSMutableDictionary);
+procedure DictToFont(src: NSDictionary; dst: TFont);
+function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
 
 implementation
 
@@ -573,6 +591,80 @@ end;
 
 { TCocoaWSFontDialog }
 
+procedure FontToDict(src: TFont; dst: NSMutableDictionary);
+const
+  UndStyle : array [boolean] of Integer = (NSUnderlineStyleNone, NSUnderlineStyleSingle);
+  StkStyle : array [boolean] of Integer = (NSUnderlineStyleNone, NSUnderlineStyleSingle);
+begin
+  if (src = nil) or (dst = nil) then Exit;
+  dst.setObject_forKey(
+    NSNumber.numberWithInt( UndStyle[fsUnderline in src.Style]),
+    NSUnderlineStyleAttributeName);
+  dst.setObject_forKey(
+    NSNumber.numberWithInt( StkStyle[fsStrikeOut in src.Style]),
+    NSStrikethroughStyleAttributeName);
+  if (src.Color <> clDefault) then
+    dst.setObject_forKey(ColorToNSColor(src.Color), NSForegroundColorAttributeName);
+end;
+
+function ObjToNum(obj: NSObject; defVal: integer): Integer;
+begin
+  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
+    Result := defVal
+  else
+    Result := Integer(NSNumber(obj).integerValue);
+end;
+
+procedure DictToFont(src: NSDictionary; dst: TFont);
+var
+  obj : NSObject;
+  fs  : TFontStyles;
+  clr : NSColor;
+  cl  : TColor;
+begin
+  if (src = nil) or (dst = nil) then Exit;
+
+  fs := dst.Style;
+  cl := dst.Color;
+
+  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(fs, fsUnderline)
+  else
+    Include(fs, fsUnderline);
+
+  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(fs, fsStrikeOut)
+  else
+    Include(fs, fsStrikeOut);
+
+  obj := src.objectForKey(NSForegroundColorAttributeName);
+  if (Assigned(obj) and obj.isKindOfClass(NSColor)) then
+  begin
+    cl := NSColorToColorRef(NSColor(obj));
+  end;
+
+  dst.Style := fs;
+  dst.Color := cl;
+end;
+
+
+function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
+begin
+  Result := [];
+  if (src = nil) then Exit;
+
+  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(Result, cfs_Underline)
+  else
+    Include(Result, cfs_Underline);
+
+  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+    Exclude(Result, cfs_Strikeout)
+  else
+    Include(Result, cfs_Strikeout);
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWSFontDialog.ShowModal
   Params:  ACommonDialog - LCL font dialog
@@ -591,6 +683,7 @@ var
   okButton, cancelButton: NSButton;
   fn : NSFont;
   isMenuOn: Boolean;
+  fm : NSFontManager;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFontDialog.ShowModal for ' + ACommonDialog.Name);
@@ -598,6 +691,7 @@ begin
 
   ACommonDialog.UserChoice := mrCancel;
 
+  fm := NSFontManager.sharedFontManager;
   fontPanel := NSFontPanel.sharedFontPanel();
   if (fontPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
     fontPanel.setRestorable(false);
@@ -615,6 +709,13 @@ begin
   FontDelegate := TFontPanelDelegate.alloc.init();
   FontDelegate.FontPanel := FontPanel;
   FontDelegate.FontDialog := FontDialog;
+
+
+  FontToDict(FontDialog.Font, FontDelegate.FontAttr);
+
+  NSFontManager.sharedFontManager.setSelectedAttributes_isMultiple(FontDelegate.FontAttr, false);
+
+  //fm.setDelegate(FontDelegate);
 
   // setup panel and its accessory view
   lRect := GetNSRect(0, 0, 220, 30);
@@ -657,6 +758,7 @@ begin
   try
     FontPanel.makeKeyAndOrderFront(FontDelegate);
     NSApp.runModalForWindow(FontPanel);
+    fm.setDelegate(nil);
   finally
     ToggleAppMenu(isMenuOn);
   end;
@@ -674,12 +776,12 @@ begin
   NSApp.stopModal();
 end;
 
-procedure TColorPanelDelegate.doPickColor();
+procedure TColorPanelDelegate.doPickColor;
 begin
   ColorDialog.Color := NSColorToColorRef(colorPanel.color);
 end;
 
-procedure TColorPanelDelegate.pickColor();
+procedure TColorPanelDelegate.pickColor;
 begin
   ColorDialog.UserChoice := mrCancel;
   didPickColor := True;
@@ -687,12 +789,24 @@ begin
   exit();
 end;
 
-procedure TColorPanelDelegate.exit();
+procedure TColorPanelDelegate.exit;
 begin
   colorPanel.close();
 end;
 
 { TFontPanelDelegate }
+
+function TFontPanelDelegate.init: id;
+begin
+  Result:=inherited init;
+  FontAttr := NSMutableDictionary.alloc.init;
+end;
+
+procedure TFontPanelDelegate.dealloc;
+begin
+  FontAttr.release;
+  inherited dealloc;
+end;
 
 procedure TFontPanelDelegate.windowWillClose(notification: NSNotification);
 begin
@@ -704,7 +818,7 @@ begin
   NSApp.stopModal();
 end;
 
-procedure TFontPanelDelegate.doSelectFont();
+procedure TFontPanelDelegate.doSelectFont;
 var
   oldHandle, newHandle: TCocoaFont;
   oldFont, newFont: NSFont;
@@ -715,11 +829,25 @@ begin
   newFont := FontPanel.panelConvertFont(oldFont);
   if (FontDialog.Font.PixelsPerInch<>72) and (FontDialog.Font.PixelsPerInch<>0) then
     newFont := NSFont.fontWithDescriptor_size(newFont.fontDescriptor, newFont.pointSize * FontDialog.Font.PixelsPerInch / 72);
-  newHandle := TCocoaFont.Create(newFont);
+
+  newHandle := TCocoaFont.Create(newFont, DictToCocoaFontStyle( FontAttr ));
   FontDialog.Font.Handle := HFONT(newHandle);
+  DictToFont( FontAttr, FontDialog.Font );
 end;
 
-procedure TFontPanelDelegate.selectFont();
+function TFontPanelDelegate.validModesForFontPanel(afontPanel: NSFontPanel
+  ): NSUInteger;
+begin
+  Result := NSFontPanelFaceModeMask
+    or NSFontPanelSizeModeMask
+    or NSFontPanelCollectionModeMask
+    or NSFontPanelUnderlineEffectModeMask
+    or NSFontPanelStrikethroughEffectModeMask
+    or NSFontPanelTextColorEffectModeMask;
+end;
+
+
+procedure TFontPanelDelegate.selectFont;
 begin
   FontDialog.UserChoice := mrCancel;
   DontSelectFontOnClose := True;
@@ -727,11 +855,38 @@ begin
   exit();
 end;
 
-procedure TFontPanelDelegate.exit();
+procedure TFontPanelDelegate.exit;
 begin
   FontDialog.UserChoice := mrOk;
   DontSelectFontOnClose := True;
   FontPanel.close();
+end;
+
+procedure TFontPanelDelegate.changeAttributes(sender: id);
+var
+  d : NSDictionary;
+begin
+  d:=NSFontManager.sharedFontManager.convertAttributes(FontAttr);
+  if (d <> FontAttr) then
+  begin
+    FontAttr.release;
+    FontAttr := NSMutableDictionary.alloc.initWithDictionary(d);
+  end;
+  NSFontManager.sharedFontManager.setSelectedAttributes_isMultiple(FontAttr, false);
+end;
+
+procedure TFontPanelDelegate.changeFont(sender: id);
+var
+  fp : NSFontPanel;
+  oldFont : NSFont;
+  newFont : NSFont;
+begin
+  fp := NSFontPanel.sharedFontPanel;
+  oldFont := TCocoaFont(FontDialog.Font.Handle).Font;
+  newFont := fp.panelConvertFont(oldFont);
+  fp.setPanelFont_isMultiple(
+    newFont,
+    False);
 end;
 
 { TCocoaFilterComboBox }

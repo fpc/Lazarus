@@ -873,6 +873,10 @@ begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_CDECL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // often used for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -910,6 +914,10 @@ begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_CDECL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DISCARDRESULT',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -955,6 +963,10 @@ begin
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_CDECL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -980,6 +992,10 @@ begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASYNC'        ,{$ifdef FPC}@{$endif}AllwaysTrue); // pas2js
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_CDECL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
     Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -998,6 +1014,10 @@ begin
   KeyWordLists.Add(IsKeyWordCallingConvention);
   with IsKeyWordCallingConvention do begin
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_CDECL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SYSV_ABI_DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);

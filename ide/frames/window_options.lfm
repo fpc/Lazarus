@@ -117,13 +117,13 @@ object WindowOptionsFrame: TWindowOptionsFrame
   end
   object AutoAdjustIDEHeightFullCompPalCheckBox: TCheckBox
     AnchorSideLeft.Control = AutoAdjustIDEHeightCheckBox
-    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = AutoAdjustIDEHeightCheckBox
-    Left = 205
+    AnchorSideTop.Side = asrBottom
+    Left = 0
     Height = 19
-    Top = 129
+    Top = 148
     Width = 253
-    BorderSpacing.Left = 20
+    BorderSpacing.Left = 0
     Caption = 'AutoAdjustIDEHeightFullCompPalCheckBox'
     ParentShowHint = False
     ShowHint = True

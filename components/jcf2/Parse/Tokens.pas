@@ -540,12 +540,12 @@ type
   end;
 
 const
-  { the longest token 'resourcestring' = 14 chars  }
-  LONGEST_KEYWORD_LEN = 14;
+  { the longest token 'sysv_abi_default' = 16 chars  }
+  LONGEST_KEYWORD_LEN = 16;
 
   { a value larger than the number of keywords,
     used as an initial size for the dynamic array }
-  INITIAL_MAX_KEYWORDS = 230;
+  INITIAL_MAX_KEYWORDS = 234;
 
 var
   { final number of keywords added }
@@ -695,6 +695,10 @@ begin
   AddKeyword('public', wtReservedWordDirective, ttPublic);
   AddKeyword('virtual', wtReservedWordDirective, ttVirtual);
   AddKeyword('cdecl', wtReservedWordDirective, ttCdecl);
+  AddKeyword('ms_abi_default', wtReservedWordDirective, ttCdecl);
+  AddKeyword('ms_abi_cdecl', wtReservedWordDirective, ttCdecl);
+  AddKeyword('sysv_abi_default', wtReservedWordDirective, ttCdecl);
+  AddKeyword('sysv_abi_cdecl', wtReservedWordDirective, ttCdecl);
   AddKeyword('message', wtReservedWordDirective, ttMessage);
   AddKeyword('published', wtReservedWordDirective, ttPublished);
   AddKeyword('write', wtReservedWordDirective, ttWrite);
