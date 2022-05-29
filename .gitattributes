@@ -11112,7 +11112,7 @@ lcl/interfaces/win32/win32wscustomlistview.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32wsdialogs.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextctrls.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextdlgs.pp svneol=native#text/pascal
-lcl/interfaces/win32/win32wsextdlgs.rc svneol=CRLF#text/plain eol=crlf
+lcl/interfaces/win32/win32wsextdlgs.rc svneol=native#text/pascal
 lcl/interfaces/win32/win32wsextdlgs.res -text
 lcl/interfaces/win32/win32wsfactory.pas svneol=native#text/pascal
 lcl/interfaces/win32/win32wsforms.pp svneol=native#text/pascal
