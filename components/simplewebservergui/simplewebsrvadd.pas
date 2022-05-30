@@ -87,8 +87,8 @@ begin
   Caption:=rsSWAddSimpleWebServerLocation;
 
   // add location page
+  LocationTabSheet.Caption:=rsSWLocation;
   LocationLabel.Caption:=rsSWLocation;
-  LocationComboBox.TextHint:='location';
   LocationComboBox.Hint:=rsSWAnArbitraryNameForTheURLSubfolder;
 
   LocationDirLabel.Caption:=rsSWLocalDirectory;
@@ -98,6 +98,7 @@ begin
   LocButtonPanel.OKButton.Caption:=rsSWAddLocation;
 
   // add server page
+  ServerTabSheet.Caption:=rsSWCustomServer;
   SrvPortLabel.Caption:=rsSWPort;
   SrvPortComboBox.Hint:=rsSWTCPPort102465535YouCanUseMacroPortForBelowParams;
   SrvExeLabel.Caption:=rsSWExecutable;

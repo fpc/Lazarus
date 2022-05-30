@@ -333,6 +333,20 @@ begin
 
   UpdateButtons;
   UpdateLocationsView;
+
+  Caption:=rsSWSTitle;
+  ConfigureButton.Caption:=rsSWConfigure;
+  AddButton.Caption:=rsSWAdd;
+  DeleteButton.Caption:=rsSWDelete2;
+
+  LocationsListView.Columns[0].Caption:=rsSWLocation;
+  LocationsListView.Columns[1].Caption:=rsSWWorkingDirectory;
+  LocationsListView.Columns[2].Caption:=rsSWOrigin;
+  LocationsListView.Columns[3].Caption:=rsSWNote;
+
+  CopyLocationMenuItem.Caption:=rsSWCopyLocation;
+  CopyDirectoryPathMenuItem.Caption:=rsSWCopyWorkingDirectoryPath;
+  CopyOriginMenuItem.Caption:=rsSWCopyOrigin;
 end;
 
 procedure TSimpleWebServerWindow.ConfigureButtonClick(Sender: TObject);

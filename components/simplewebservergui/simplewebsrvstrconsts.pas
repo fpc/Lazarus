@@ -12,8 +12,14 @@ resourcestring
   rsSWTCPPort102465535YouCanUseMacroPortForBelowParams = 'TCP Port 1024..65535'
     +' (you can use macro $(port) for below params)';
   rsSWPort = 'Port';
+  rsSWCustomServer = 'Custom Server';
   rsSWExecutable = 'Executable';
   rsSWWorkingDirectory = 'Working Directory';
+  rsSWOrigin = 'Origin';
+  rsSWNote = 'Note';
+  rsSWCopyLocation = 'Copy Location';
+  rsSWCopyWorkingDirectoryPath = 'Copy Working Directory Path';
+  rsSWCopyOrigin = 'Copy Origin';
   rsSWParametersPleaseUseMacroPort = 'Parameters (please use macro $(port))';
   rsSWCommandLineParameters = 'Command line parameters';
   rsSWAddCustomServer = 'Add Custom Server';
@@ -81,6 +87,9 @@ resourcestring
   rsSWStopServer = 'Stop Server';
   rsSWDelete = 'Delete?';
   rsSWDeleteServerAt = 'Delete server at "%s"?';
+  rsSWConfigure = 'Configure';
+  rsSWAdd = 'Add';
+  rsSWDelete2 = 'Delete';
   rsSWDeleteLocation = 'Delete location "%s"?';
 
 implementation

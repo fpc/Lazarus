@@ -11,6 +11,10 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
+#: simplewebsrvstrconsts.rsswadd
+msgid "Add"
+msgstr "Добавить"
+
 #: simplewebsrvstrconsts.rsswaddcustomserver
 msgid "Add Custom Server"
 msgstr "Добавить пользовательский сервер"
@@ -47,9 +51,33 @@ msgstr "Невозможно найти браузер. Смотрите"
 msgid "Command line parameters"
 msgstr "Параметры командной строки"
 
+#: simplewebsrvstrconsts.rsswconfigure
+msgid "Configure"
+msgstr "Настроить"
+
+#: simplewebsrvstrconsts.rsswcopylocation
+msgid "Copy Location"
+msgstr "Копировать расположение"
+
+#: simplewebsrvstrconsts.rsswcopyorigin
+msgid "Copy Origin"
+msgstr "Копировать происхождение"
+
+#: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
+msgid "Copy Working Directory Path"
+msgstr "Копировать путь к рабочему каталогу"
+
+#: simplewebsrvstrconsts.rsswcustomserver
+msgid "Custom Server"
+msgstr "Пользовательский сервер"
+
 #: simplewebsrvstrconsts.rsswdelete
 msgid "Delete?"
 msgstr "Удалить?"
+
+#: simplewebsrvstrconsts.rsswdelete2
+msgid "Delete"
+msgstr "Удалить"
 
 #: simplewebsrvstrconsts.rsswdeletelocation
 #, object-pascal-format
@@ -149,6 +177,14 @@ msgstr "Отсутствует расположение."
 #: simplewebsrvstrconsts.rsswmissingserverexecutable
 msgid "Missing server executable."
 msgstr "Отсутствует исполнимый файл сервера."
+
+#: simplewebsrvstrconsts.rsswnote
+msgid "Note"
+msgstr "Примечание"
+
+#: simplewebsrvstrconsts.rssworigin
+msgid "Origin"
+msgstr "Происхождение"
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
 msgid "Parameters (please use macro $(port))"

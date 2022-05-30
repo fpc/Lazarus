@@ -1,6 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: simplewebsrvstrconsts.rsswadd
+msgid "Add"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswaddcustomserver
 msgid "Add Custom Server"
 msgstr ""
@@ -37,8 +41,32 @@ msgstr ""
 msgid "Command line parameters"
 msgstr ""
 
+#: simplewebsrvstrconsts.rsswconfigure
+msgid "Configure"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswcopylocation
+msgid "Copy Location"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswcopyorigin
+msgid "Copy Origin"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
+msgid "Copy Working Directory Path"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswcustomserver
+msgid "Custom Server"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswdelete
 msgid "Delete?"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswdelete2
+msgid "Delete"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswdeletelocation
@@ -138,6 +166,14 @@ msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingserverexecutable
 msgid "Missing server executable."
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswnote
+msgid "Note"
+msgstr ""
+
+#: simplewebsrvstrconsts.rssworigin
+msgid "Origin"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
