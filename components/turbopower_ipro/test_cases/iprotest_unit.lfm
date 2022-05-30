@@ -4,21 +4,20 @@ object TestForm: TTestForm
   Top = 127
   Width = 866
   ActiveControl = btnRender
-  Caption = 'TestForm'
+  Caption = 'Test Form'
   ClientHeight = 620
   ClientWidth = 866
-  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 6
-    Height = 577
-    Top = 37
+    Height = 576
+    Top = 38
     Width = 218
     Align = alLeft
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 577
+    ClientHeight = 576
     ClientWidth = 218
     TabOrder = 1
     object Label1: TLabel
@@ -53,7 +52,7 @@ object TestForm: TTestForm
     end
     object TestTree: TTreeView
       Left = 0
-      Height = 577
+      Height = 576
       Top = 0
       Width = 218
       Align = alClient
@@ -68,8 +67,8 @@ object TestForm: TTestForm
   end
   object Panel2: TPanel
     Left = 238
-    Height = 577
-    Top = 37
+    Height = 576
+    Top = 38
     Width = 622
     Align = alClient
     BorderSpacing.Left = 3
@@ -77,7 +76,7 @@ object TestForm: TTestForm
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     BevelOuter = bvNone
-    ClientHeight = 577
+    ClientHeight = 576
     ClientWidth = 622
     TabOrder = 3
     object Splitter2: TSplitter
@@ -91,7 +90,7 @@ object TestForm: TTestForm
     end
     object IpHtmlPanel1: TIpHtmlPanel
       Left = 0
-      Height = 229
+      Height = 228
       Top = 348
       Width = 622
       Align = alClient
@@ -585,6 +584,7 @@ object TestForm: TTestForm
         MouseLinkColor.Foreground = clBlue
         LineHighlightColor.Background = clNone
         LineHighlightColor.Foreground = clNone
+        OnChange = SynEdit1Change
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
             Width = 24
@@ -646,27 +646,26 @@ object TestForm: TTestForm
   end
   object Splitter1: TSplitter
     Left = 230
-    Height = 583
-    Top = 37
+    Height = 582
+    Top = 38
     Width = 5
   end
   object Panel3: TPanel
     Left = 6
-    Height = 25
+    Height = 26
     Top = 6
     Width = 854
     Align = alTop
-    AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 25
+    ClientHeight = 26
     ClientWidth = 854
     TabOrder = 0
     object btnRender: TButton
-      AnchorSideLeft.Control = btnLoadFromFile
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel3
-      Left = 115
+      AnchorSideLeft.Control = Panel3
+      AnchorSideTop.Control = btnPassed
+      AnchorSideTop.Side = asrCenter
+      Left = 6
       Height = 25
       Top = 0
       Width = 75
@@ -678,8 +677,9 @@ object TestForm: TTestForm
     object btnShowInBrowser: TButton
       AnchorSideLeft.Control = btnRender
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel3
-      Left = 196
+      AnchorSideTop.Control = btnPassed
+      AnchorSideTop.Side = asrCenter
+      Left = 87
       Height = 25
       Top = 0
       Width = 113
@@ -689,30 +689,32 @@ object TestForm: TTestForm
       OnClick = btnShowInBrowserClick
       TabOrder = 2
     end
-    object btnLoadFromFile: TButton
-      AnchorSideLeft.Control = Panel3
-      AnchorSideTop.Control = Panel3
-      AnchorSideRight.Control = btnRender
-      Left = 0
+    object btnLoadHtmlFromFile: TButton
+      AnchorSideLeft.Control = btnSaveResults
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnPassed
+      AnchorSideTop.Side = asrCenter
+      Left = 500
       Height = 25
       Top = 0
-      Width = 109
+      Width = 137
       AutoSize = True
-      Caption = 'Load from file...'
-      OnClick = btnLoadFromFileClick
+      BorderSpacing.Left = 24
+      Caption = 'Load html from file...'
+      OnClick = btnLoadHtmlFromFileClick
       TabOrder = 0
     end
     object btnPassed: TBitBtn
-      AnchorSideTop.Control = btnLoadFromFile
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = btnFailed
-      Left = 689
+      AnchorSideLeft.Control = btnShowInBrowser
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnLoadHtmlFromFile
+      Left = 224
       Height = 26
       Top = -1
       Width = 82
-      Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Right = 6
+      BorderSpacing.Left = 24
+      BorderSpacing.Right = 3
       Caption = 'Passed'
       HotImageIndex = 1
       Images = ImageList1
@@ -721,15 +723,14 @@ object TestForm: TTestForm
       TabOrder = 3
     end
     object btnFailed: TBitBtn
-      AnchorSideTop.Control = btnLoadFromFile
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = Panel3
+      AnchorSideLeft.Control = btnPassed
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnLoadHtmlFromFile
       AnchorSideRight.Side = asrBottom
-      Left = 777
+      Left = 309
       Height = 26
-      Top = -1
+      Top = 0
       Width = 77
-      Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'Failed'
       HotImageIndex = 0
@@ -737,6 +738,21 @@ object TestForm: TTestForm
       ImageIndex = 0
       OnClick = btnTestResultClick
       TabOrder = 4
+    end
+    object btnSaveResults: TButton
+      AnchorSideLeft.Control = btnFailed
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnPassed
+      AnchorSideTop.Side = asrCenter
+      Left = 389
+      Height = 25
+      Top = 0
+      Width = 87
+      AutoSize = True
+      BorderSpacing.Left = 3
+      Caption = 'Save results'
+      OnClick = btnSaveResultsClick
+      TabOrder = 5
     end
   end
   object SynHTMLSyn1: TSynHTMLSyn

@@ -120,7 +120,7 @@ type
   );
   
   TIpHtmlULType = (
-    ulDisc, ulSquare, ulCircle
+    ulUndefined, ulDisc, ulSquare, ulCircle
   );
   
   TIpHtmlVAlign = (

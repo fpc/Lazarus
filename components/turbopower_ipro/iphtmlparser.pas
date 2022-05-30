@@ -137,7 +137,7 @@ type
     procedure ParseLeft(AParent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseLink(AParent: TIpHtmlNode);
     procedure ParseListItems(AParent: TIpHtmlNodeCore; EndToken: TIpHtmlToken; 
-      const EndTokens: TIpHtmlTokenSet; ADefaultListStyle: TIpHtmlULType);
+      const EndTokens: TIpHtmlTokenSet);
     procedure ParseMap(AParent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseMeta(AParent: TIpHtmlNode);
     procedure ParseNOBR(AParent: TIpHtmlNode);
@@ -2098,8 +2098,7 @@ begin
 end;
 
 procedure TIpHtmlParser.ParseListItems(AParent: TIpHtmlNodeCore;
-  EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet;
-  ADefaultListStyle: TIpHtmlULType);
+  EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
 var
   newListItem: TIpHtmlNodeLI;
 begin
@@ -2109,8 +2108,7 @@ begin
         begin
           newListItem := TIpHtmlNodeLI.Create(AParent);
           newListItem.ParseBaseProps(FOwner);
-          // newListItem.DefListType := DefaultListStyle;
-          newListItem.ListType := ParseULStyle(ADefaultListStyle);
+          newListItem.ListType := ParseULStyle(ulUndefined);
           newListItem.Value := ParseInteger(htmlAttrVALUE, -1);
           newListItem.Compact := ParseBoolean(htmlAttrCOMPACT);
           NextToken;
@@ -2341,9 +2339,9 @@ var
 begin
   newList := TIpHtmlNodeOL.Create(AParent);
   newList.ParseBaseProps(FOwner);
-  newList.Style := ParseOLStyle(olArabic);
   newList.Start := ParseInteger(htmlAttrSTART, 1);
-  newList.Compact :=ParseBoolean(htmlAttrCOMPACT);
+  newList.Compact := ParseBoolean(htmlAttrCOMPACT);
+  newList.Style := ParseOLStyle(olArabic);
   
   NextToken;
   
@@ -2351,8 +2349,7 @@ begin
   ParseListItems(
     newList, 
     EndToken, 
-    EndTokens + [EndToken] - [IpHtmlTagP, IpHtmlTagLI],
-    ulDisc  // this argument is not used by the OL node.
+    EndTokens + [EndToken] - [IpHtmlTagP, IpHtmlTagLI]
   );
   Dec(FListLevel);
   
@@ -2964,8 +2961,7 @@ begin
       {IpHtmlTagUL : }
       newList := TIpHtmlNodeUL.Create(AParent);
   end;
-  
-  newList.ParseBaseProps(FOwner);
+  newList.ParseBaseProps(FOwner); 
   case FListLevel of
     0 : newList.ListType := ParseULStyle(ulDisc);
     1 : newList.ListType := ParseULStyle(ulCircle);
@@ -2973,13 +2969,15 @@ begin
         newList.ListType := ParseULStyle(ulSquare);
   end;
   newList.Compact := ParseBoolean(htmlAttrCOMPACT);
-  
+    
   NextToken;
   
   Inc(FListLevel);
-  ParseListItems(newList,
-                 EndToken, EndTokens + [EndToken] - [IpHtmlTagP, IpHtmlTagLI],
-                 newList.ListType);
+  ParseListItems(
+    newList,
+    EndToken, 
+    EndTokens + [EndToken] - [IpHtmlTagP, IpHtmlTagLI]
+  );
   Dec(FListLevel);
   
   EnsureClosure(EndToken, EndTokens);

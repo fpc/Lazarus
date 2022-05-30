@@ -24,6 +24,9 @@ type
                      cmsPx,  // pixel
                      cmsPt, cmsEm, cmsPercent // currently not supported
                      );
+  TCSSListType    = (ltNone, ltULCircle, ltULDisc, ltULSquare, 
+                     ltOLDecimal, ltOLLowerAlpha, ltOLUpperAlpha, ltOLLowerRoman, ltOLUpperRoman
+                    ); 
 
   TCSSMargin = record
     Style: TCSSMarginStyle;
@@ -83,6 +86,7 @@ type
     FColor: TColor;
     FFont: TCSSFont;
     FAlignment: TIpHtmlAlign;
+    FListType: TCSSListType;
     FMarginBottom: TCSSMargin;
     FMarginLeft: TCSSMargin;
     FMarginRight: TCSSMargin;
@@ -97,6 +101,7 @@ type
     property MarginRight: TCSSMargin read FMarginRight write FMarginRight;
     property Width: TCSSLength read FWidth write FWidth;
   published
+    property Alignment: TIpHtmlAlign read FAlignment write FAlignment;
     property Font: TCSSFont read  FFont write FFont;
     property Color: TColor read FColor write FColor;
     property BGColor: TColor read FBGColor write FBGColor;
@@ -105,7 +110,7 @@ type
     property BorderLeft: TCSSBorderStyle read FBorderLeft write FBorderLeft;
     property BorderBottom: TCSSBorderStyle read FBorderBottom write FBorderBottom;
     property BorderRight: TCSSBorderStyle read FBorderRight write FBorderRight;
-    property Alignment: TIpHtmlAlign read FAlignment write FAlignment;
+    property ListType: TCSSListType read FListType write FListType;
   public
     constructor Create;
     destructor Destroy; override;
@@ -214,7 +219,7 @@ begin
     Result.Add(Command);
   end;
 end;
-  
+   
 function FontWeightFromString(S: String): TCSSFontWeight;
 begin
   Result := cfwNormal;
@@ -309,6 +314,32 @@ begin
   end;
 end;
 
+function ListTypeFromString(S: String): TCSSListType;
+begin
+  Result := ltNone;
+  if S <> '' then
+  begin
+    S := UpperCase(S);
+    case S[1] of
+      'C': if S = 'CIRCLE' then 
+             Result := ltULCircle;
+      'D': if S = 'DISC' then 
+             Result := ltULDisc
+           else if S = 'DECIMAL' then 
+             Result := ltOLDecimal;
+      'L': if S = 'LOWER-ALPHA' then
+             Result := ltOLLowerAlpha
+           else if S = 'LOWER-ROMAN' then
+             Result := ltOLLowerRoman;
+      'S': if S = 'SQUARE' then 
+             Result := ltULSquare;
+      'U': if S = 'UPPER-ALPHA' then 
+             Result := ltOLUpperAlpha
+           else if S = 'UPPER-ROMAN' then
+             Result := ltOLUpperRoman;
+    end;
+  end;
+end;
 
 { TCSSReader }
 
@@ -639,6 +670,9 @@ begin
            begin
              if Args.Count > 0 then Border.Style := BorderStyleFromString(Args[0]);
            end;
+           
+      'l': if Cmd = 'list-style-type' then
+             if Args.Count > 0 then FListType := ListTypeFromString(Args[0]);
 
       'm':
         if Cmd = 'margin-top' then begin
@@ -740,6 +774,9 @@ begin
   if AProps.MarginTop.Size <> 0 then
     FMarginTop.Size := AProps.MarginTop.Size;
 
+  if AProps.ListType <> ltNone then
+    FListType := AProps.ListType;
+  
   if AProps.Width.LengthType <> cltUndefined then
     FWidth := AProps.Width;
 end;
@@ -831,6 +868,5 @@ begin
   FStyle := cbsNone;
 end;
 
-end.
 end.
 

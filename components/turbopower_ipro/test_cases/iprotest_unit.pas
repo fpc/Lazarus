@@ -17,7 +17,8 @@ type
     btnFailed: TBitBtn;
     btnRender: TButton;
     btnShowInBrowser: TButton;
-    btnLoadFromFile: TButton;
+    btnLoadHtmlFromFile: TButton;
+    btnSaveResults: TButton;
     FileNameEdit1: TFileNameEdit;
     ImageList1: TImageList;
     IpHtmlPanel1: TIpHtmlPanel;
@@ -33,12 +34,13 @@ type
     SynEdit1: TSynEdit;
     SynHTMLSyn1: TSynHTMLSyn;
     TestTree: TTreeView;
+    procedure btnSaveResultsClick(Sender: TObject);
     procedure btnTestResultClick(Sender: TObject);
     procedure btnRenderClick(Sender: TObject);
     procedure btnShowInBrowserClick(Sender: TObject);
-    procedure btnLoadFromFileClick(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure btnLoadHtmlFromFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure SynEdit1Change(Sender: TObject);
     procedure TestTreeDeletion(Sender: TObject; Node: TTreeNode);
     procedure TestTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TestTreeSelectionChanged(Sender: TObject);
@@ -96,6 +98,12 @@ begin
   PopulateTests;
 end;
 
+procedure TTestForm.SynEdit1Change(Sender: TObject);
+begin
+  btnPassed.Enabled := false;
+  btnFailed.Enabled := false;
+end;
+
 procedure TTestForm.TestTreeDeletion(Sender: TObject; Node: TTreeNode);
 begin
   if (TObject(Node.Data) is TTestCase) then
@@ -129,6 +137,11 @@ begin
   end;
 end;
 
+procedure TTestForm.btnSaveResultsClick(Sender: TObject);
+begin
+  SaveResults;
+end;
+
 procedure TTestForm.btnShowInBrowserClick(Sender: TObject);
 const
   TEST_FILE = 'test.html';
@@ -137,7 +150,7 @@ begin
   OpenURL(TEST_FILE);
 end;
 
-procedure TTestForm.btnLoadFromFileClick(Sender: TObject);
+procedure TTestForm.btnLoadHtmlFromFileClick(Sender: TObject);
 begin
   with TOpenDialog.Create(nil) do 
     try
@@ -150,16 +163,12 @@ begin
         Memo1.Lines.Clear;
         SynEdit1.Lines.LoadFromFile(FileName);
         IpHtmlPanel1.SetHtmlFromStr(SynEdit1.Lines.Text);
+        btnPassed.Enabled := false;
+        btnFailed.Enabled := false;
       end;
     finally
       Free;
     end;
-end;
-
-procedure TTestForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  if CanClose then
-    SaveResults;
 end;
 
 procedure TTestForm.TestTreeSelectionChanged(Sender: TObject);
@@ -174,11 +183,15 @@ begin
     Memo1.Lines.Text := testCase.Description;
     Synedit1.Lines.Text := testCase.html;
     IpHtmlPanel1.SetHtmlFromStr(testCase.html);
+    btnPassed.Enabled := true;
+    btnFailed.Enabled := true;
   end else
   begin
     Memo1.Lines.Clear;
     SynEdit1.Lines.Clear;
     IpHtmlPanel1.SetHtml(nil);
+    btnPassed.Enabled := false;
+    btnFailed.Enabled := false;
   end;
 end;
 
@@ -228,14 +241,18 @@ begin
     node1 := TestTree.Items.AddChild(node, 'Ordered');
     AddTest(node1, OL_title, OL_descr, OL_html);
     AddTest(node1, OL_typeA_title, OL_typeA_descr, OL_typeA_html);
+    AddTest(node1, OL_typeA_inline_title, OL_typeA_inline_descr, OL_typeA_inline_html);
     AddTest(node1, OL_typeA_style_title, OL_typeA_style_descr, OL_typeA_style_html);
+    AddTest(node1, OL_start_title, OL_start_descr, OL_start_html);
     AddTest(node1, OL_2lev_title, OL_2lev_descr, OL_2lev_html);
     AddTest(node1, OL_3lev_title, OL_3lev_descr, OL_3lev_html);
     node1.Expanded := true;
     node1 := TestTree.Items.AddChild(node, 'Unordered');
     AddTest(node1, UL_title, UL_descr, UL_html);
     AddTest(node1, UL_square_title, UL_square_descr, UL_square_html);
+    AddTest(node1, UL_inline_title, UL_inline_descr, UL_inline_html);
     AddTest(node1, UL_style_title, UL_style_descr, UL_style_html);
+    AddTest(node1, UL_individual_title, UL_individual_descr, UL_individual_html);
     AddTest(node1, UL_2lev_title, UL_2lev_descr, UL_2lev_html);
     AddTest(node1, UL_3lev_title, UL_3lev_descr, UL_3lev_html);
     node1.Expanded := true;

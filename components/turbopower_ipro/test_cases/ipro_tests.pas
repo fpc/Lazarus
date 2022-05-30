@@ -593,7 +593,7 @@ const
 //------------------------------------------------------------------------------
 const
   OL_title =
-    'Ordered list';
+    'Default';
   OL_descr =
     'The lines should be numbered 1, 2, 3.';
   OL_html =
@@ -608,7 +608,7 @@ const
     '</html>';
   
   OL_typeA_title =
-    'Ordered list (type "A")';
+    'Type "A"';
   OL_typeA_descr =
     'The lines should begin with an upper-case letter (A, B, C).';
   OL_typeA_html =
@@ -622,11 +622,11 @@ const
     '</body>' + LE +
     '</html>';
 
-  OL_typeA_style_title =
-    'Ordered list (type "a", in "style" attribute)';
-  OL_typeA_style_descr =
+  OL_typeA_inline_title =
+    'Type "a" as inline "style" attribute';
+  OL_typeA_inline_descr =
     'The lines should begin with a lower-case letter (a, b, c).';
-  OL_typeA_style_html =
+  OL_typeA_inline_html =
     '<html>' + LE +
     '<body>' + LE +
     '<ol style="list-style-type:lower-alpha">' + LE +
@@ -637,8 +637,41 @@ const
     '</body>' + LE +
     '</html>';
 
+  OL_typeA_style_title =
+    'Type "a" as in <style> node';
+  OL_typeA_style_descr =
+    'The lines should begin with a lower-case letter (a, b, c).';
+  OL_typeA_style_html =
+    '<html>' + LE +
+    '  <style type="text/css">' + LE +
+    '    ol { list-style-type:lower-alpha }' + LE +
+    '  </style>' + LE +
+    '<body>' + LE +
+    '<ol>' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  OL_start_title =
+    'Start value';
+  OL_start_descr =
+    'The lines should be numbered 10, 11, 12.';
+  OL_start_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ol start="10">' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ol>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
   OL_2lev_title =
-    'Ordered list (2 levels)';
+    '2 levels, default style';
   OL_2lev_descr =
     'Each level should be numbered (1, 2).';
   OL_2lev_html =
@@ -660,7 +693,7 @@ const
     '</html>';
 
   OL_3lev_title =
-    'Ordered list (3 levels)';
+    '3 levels, default style';
   OL_3lev_descr =
     'Each level should be numbered (1, 2, 3).';
   OL_3lev_html =
@@ -689,7 +722,7 @@ const
     '</html>';
 
   UL_title =
-    'Unordered list';
+    'Default';
   UL_descr =
     'The lines should begin with a filled circle as bullet point.';
   UL_html =
@@ -704,7 +737,7 @@ const
     '</html>';
   
   UL_2lev_title =
-    'Unordered list (2 levels)';
+    '2 levels, default styles';
   UL_2lev_descr =
     '1st level should have filled, 2nd level open circles as bullet symbols.';
   UL_2lev_html =
@@ -726,7 +759,7 @@ const
     '</html>';
 
   UL_3lev_title =
-    'Unordered list (3 levels)';
+    '3 levels, default styles';
   UL_3lev_descr =
     'The indented 2nd and 3rd item levels should have an open circle and a filled square as bullet symbol.';
   UL_3lev_html =
@@ -755,9 +788,9 @@ const
     '</html>';
 
   UL_square_title =
-    'Unordered list (type "square")';
+    'Type "square"';
   UL_square_descr =
-    'The lines should begin with an filled square.';
+    'The lines should begin with a filled square.';
   UL_square_html =
     '<html>' + LE +
     '<body>' + LE +
@@ -769,11 +802,11 @@ const
     '</body>' + LE +
     '</html>';
   
-  UL_style_title =
-    'Unordered list (inline style, type "circle")';
-  UL_style_descr =
+  UL_inline_title =
+    'Type "circle", as inline style';
+  UL_inline_descr =
     'The lines should begin with an open circle.';
-  UL_style_html =
+  UL_inline_html =
     '<html>' + LE +
     '<body>' + LE +
     '<ul style="list-style-type:circle">' + LE +
@@ -784,8 +817,42 @@ const
     '</body>' + LE +
     '</html>';
   
+  UL_style_title =
+    'Type "circle", as <style> node';
+  UL_style_descr =
+    'The lines should begin with an open circle.';
+  UL_style_html =
+    '<html>' + LE +
+    '  <style type="text/css">' + LE +
+    '    ul { list-style-type:circle }' + LE +
+    '  </style>' + LE +
+    '<body>' + LE +
+    '<ul>' + LE +
+    '  <li>Coffee</li>' + LE + 
+    '  <li>Tea</li>' + LE +
+    '  <li>Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+  
+  UL_individual_title =
+    'Individual styles per item';
+  UL_individual_descr =
+    'The 1st line should begin with an open circe, the 2nd line with a filled circle, ' +
+    'and the 3rd line with a filled square.';
+  UL_individual_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<ul>' + LE +
+    '  <li type="circle">Coffee</li>' + LE + 
+    '  <li type="disc">Tea</li>' + LE +
+    '  <li type="square">Milk</li>' + LE +
+    '</ul>' + LE +
+    '</body>' + LE +
+    '</html>';
+
   OUL_3lev_title =
-    'Mixed list (3 levels)';
+    '3 levels, default styles';
   OUL_3lev_descr =
     'The outer level should be numbered, the inner levels bulleted with filled and open circles.';
   OUL_3lev_html =

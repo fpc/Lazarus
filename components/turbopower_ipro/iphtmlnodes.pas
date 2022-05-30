@@ -617,6 +617,7 @@ type
     procedure SetListType(const Value: TIpHtmlULType);
   public
     procedure Enqueue; override;
+    procedure LoadAndApplyCSSProps; override;
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -801,7 +802,9 @@ type
     Counter: Integer;
     function GetNumString: string;
   public
+    constructor Create(ParentNode: TIpHtmlNode);
     procedure Enqueue; override;
+    procedure LoadAndApplyCSSProps; override;
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -987,7 +990,11 @@ type
   { Descendants of TIpHtmlNodeList <-- TIpHtmlNodeInline <-- TIpHtmlNodeCore 
       <-- TIpHtmlNodeMulti <-- TIpHtmlNode}
   
-  TIpHtmlNodeUL = class(TIpHtmlNodeList);
+  TIpHtmlNodeUL = class(TIpHtmlNodeList)
+  public
+    constructor Create(ParentNode: TIpHtmlNode);
+  end;
+  
   TIpHtmlNodeDIR = class(TIpHtmlNodeList);
   TIpHtmlNodeMENU = class(TIpHtmlNodeList);
   
@@ -2437,6 +2444,23 @@ begin
   EnqueueElement(lOwner.SoftLF);
 end;
 
+procedure TIpHtmlNodeList.LoadAndApplyCSSProps;
+var
+  i: Integer;
+begin
+  inherited;
+  if FCombinedCSSProps <> nil then
+    case FCombinedCSSProps.ListType of
+      ltULCircle: FListType := ulCircle;
+      ltULDisc: FListType := ulDisc;
+      ltULSquare: FListType := ulSquare;
+    end;
+  for i := 0 to ChildCount-1 do
+    if ChildNode[i] is TIpHtmlNodeLI then
+      if TIpHtmlNodeLI(ChildNode[i]).ListType = ulUndefined then
+        TIpHtmlNodeLI(ChildNode[i]).ListType := FListType
+end;  
+
 procedure TIpHtmlNodeList.SetListType(const Value: TIpHtmlULType);
 begin
   if Value <> FListType then begin
@@ -3150,6 +3174,12 @@ end;
 
 { TIpHtmlNodeOL }
 
+constructor TIpHtmlNodeOL.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  ElementName := 'ol';
+end;
+
 procedure TIpHtmlNodeOL.Enqueue;
 var
   i: Integer;
@@ -3166,7 +3196,7 @@ begin
   lParentNode.EnqueueElement(lOwner.FLIndent);
   for i := 0 to Pred(ChildCount) do
     if ChildNode[i] is TIpHtmlNodeLI then begin
-      Counter := i + 1;
+      Counter := Start + i;
       TIpHtmlNodeLI(ChildNode[i]).Enqueue;
       lParentNode.EnqueueElement(lOwner.SoftLF);
     end else
@@ -3209,6 +3239,20 @@ begin
   olUpperRoman :
     Result := IntToRomanStr(Counter);
   end;
+end;
+
+procedure TIpHtmlNodeOL.LoadAndApplyCSSProps;
+begin
+  inherited;
+  // Override list style by CSS
+  if FCombinedCSSProps <> nil then
+    case FCombinedCSSProps.ListType of
+      ltOLDecimal   : FOLStyle := olArabic;
+      ltOLLowerAlpha: FOLStyle := olLowerAlpha;
+      ltOLUpperAlpha: FOLStyle := olUpperAlpha;
+      ltOLLowerRoman: FOLStyle := olLowerRoman;
+      ltOLUpperRoman: FOLStyle := olUpperRoman;
+    end;
 end;
 
 procedure TIpHtmlNodeOL.SetStart(const Value: Integer);
@@ -3852,6 +3896,17 @@ end;
 procedure TIpHtmlNodeSPAN.SetAlign(const Value: TIpHtmlAlign);
 begin
   FAlign := Value;
+end;
+
+
+{-------------------------------------------------------------------------------
+                     Descendants of TIpHtmlNodeList
+-------------------------------------------------------------------------------}
+
+constructor TIpHtmlNodeUL.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  ElementName := 'ul';
 end;
 
 
