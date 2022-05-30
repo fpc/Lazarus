@@ -254,6 +254,8 @@ var
 
   CocoaHideFocusNoBorder : Boolean = true;
 
+  CocoaUseLocalizedFontName : Boolean = false; // some localized named might be too long to be returned properly by APIs
+
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
   // The flag is checked in Menus to avoid "double" Cmd+Q menu

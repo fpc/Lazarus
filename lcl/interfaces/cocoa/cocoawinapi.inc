@@ -696,6 +696,30 @@ begin
   Result:=inherited EndPaint(Handle, PS);
 end;
 
+function TrimStrToBytes(const nm: string; maxBytes: integer): string;
+var
+  w : WideString;
+  i : integer;
+  l : integer;
+begin
+  if (nm ='') then
+  begin
+    Result :='';
+    Exit;
+  end;
+  l := 0;
+  Result := nm;
+  if length(Result)<=maxBytes then Exit;
+
+  w := UTF8Decode(Result);
+  l := length(w);
+  if (l = 0) then Exit;
+  repeat
+    dec(l);
+    Result := UTF8Encode(Copy(w, 1, l));
+  until (l<0) or (length(Result)<=maxBytes);
+end;
+
 function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
 var
@@ -703,10 +727,33 @@ var
   ELogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontName: AnsiString;
+  sub: NSArray;
+  nm : NSString;
+  fm : NSFontManager;
+  sysname : NSString;
+  nm8 : AnsiString;
+  w   : CGFloat;
+  t   : Integer;
+
+  pitchFilter : Integer;
+const
+  FW_MAX = FW_HEAVY;
 begin
   Result := 0;
   if not Assigned(Callback) then Exit;
-  for fname in NSFontManager.sharedFontManager.availableFontFamilies do
+
+  pitchFilter := 0;
+  if Assigned(lpLogFont) then
+  begin
+    pitchFilter := lpLogFont^.lfPitchAndFamily;
+    if pitchFilter = MONO_FONT then pitchFilter := FIXED_PITCH;
+    if (pitchFilter < 0) or (pitchFilter > VARIABLE_PITCH) then
+      pitchFilter := 0;
+  end;
+
+
+  fm := NSFontManager.sharedFontManager;
+  for fname in fm.availableFontFamilies do
   begin
     try
       FontName := NSStringToString(fname);
@@ -714,9 +761,50 @@ begin
       FillChar(Metric, SizeOf(Metric), #0);
       ELogFont.elfLogFont.lfFaceName := FontName;
       ELogFont.elfFullName := FontName;
-      //todo: read the data from all fonts of the fontfamily
-      Result := CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
-      if Result = 0 then Break;
+
+      for sub in fm.availableMembersOfFontFamily(fname) do
+      begin
+        ELogFont.elfLogFont.lfWeight:=FW_NORMAL;
+        ELogFont.elfLogFont.lfItalic:=0;
+
+        // See apple's documentation for "availableMembersOfFontFamily:"
+        // for the contents of "sub" NSArray
+        sysname := NSString(sub.objectAtIndex(1));
+        if CocoaUseLocalizedFontName then
+        begin
+          nm := fm.localizedNameForFamily_face(fname, sysname);
+          if not Assigned(nm) then
+            nm := sysname;
+        end else
+          nm := sysname;
+        nm8 := NSStringToString(nm);
+        ELogFont.elfStyle := TrimStrToBytes(nm8, LF_FACESIZE-1);
+
+        // the Apple's weight seems to be
+        // 5.0 - for normal (where LCL = 400 is normal)
+        // 9.0 - for bold (whre LCL = 800 is bold)
+        w := NSNumber(sub.objectAtIndex(2)).floatValue;
+        t := NSNumber(sub.objectAtIndex(3)).integerValue;
+
+        ELogFont.elfLogFont.lfWeight:=Round((w-1)*100);
+        if ELogFont.elfLogFont.lfWeight >= FW_MAX then
+          ELogFont.elfLogFont.lfWeight := FW_MAX
+        else if ELogFont.elfLogFont.lfWeight < 0 then
+          ELogFont.elfLogFont.lfWeight := 00;
+
+        if (t and NSFontItalicTrait) <> 0 then
+          ELogFont.elfLogFont.lfItalic:=1;
+
+        if (t and NSFontMonoSpaceTrait) <> 0 then
+          ELogFont.elfLogFont.lfPitchAndFamily:=FIXED_PITCH
+        else
+          ELogFont.elfLogFont.lfPitchAndFamily:=VARIABLE_PITCH;
+
+        if (pitchFilter <> 0) and (ELogFont.elfLogFont.lfPitchAndFamily <> pitchFilter) then
+          continue;
+        Result := CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
+        if Result = 0 then Break;
+      end;
     except
       Break;
     end;
