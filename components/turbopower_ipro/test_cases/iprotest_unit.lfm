@@ -95,6 +95,7 @@ object TestForm: TTestForm
       Width = 622
       Align = alClient
       BorderSpacing.Top = 3
+      DataProvider = IpHtmlDataProvider
       FixedTypeface = 'Courier New'
       DefaultTypeFace = 'default'
       DefaultFontSize = 12
@@ -667,7 +668,7 @@ object TestForm: TTestForm
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 25
-      Top = 0
+      Top = 1
       Width = 75
       BorderSpacing.Left = 6
       Caption = 'Render'
@@ -681,7 +682,7 @@ object TestForm: TTestForm
       AnchorSideTop.Side = asrCenter
       Left = 87
       Height = 25
-      Top = 0
+      Top = 1
       Width = 113
       AutoSize = True
       BorderSpacing.Left = 6
@@ -696,7 +697,7 @@ object TestForm: TTestForm
       AnchorSideTop.Side = asrCenter
       Left = 500
       Height = 25
-      Top = 0
+      Top = 1
       Width = 137
       AutoSize = True
       BorderSpacing.Left = 24
@@ -707,10 +708,10 @@ object TestForm: TTestForm
     object btnPassed: TBitBtn
       AnchorSideLeft.Control = btnShowInBrowser
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = btnLoadHtmlFromFile
+      AnchorSideTop.Control = Panel3
       Left = 224
       Height = 26
-      Top = -1
+      Top = 0
       Width = 82
       AutoSize = True
       BorderSpacing.Left = 24
@@ -725,7 +726,7 @@ object TestForm: TTestForm
     object btnFailed: TBitBtn
       AnchorSideLeft.Control = btnPassed
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = btnLoadHtmlFromFile
+      AnchorSideTop.Control = Panel3
       AnchorSideRight.Side = asrBottom
       Left = 309
       Height = 26
@@ -746,7 +747,7 @@ object TestForm: TTestForm
       AnchorSideTop.Side = asrCenter
       Left = 389
       Height = 25
-      Top = 0
+      Top = 1
       Width = 87
       AutoSize = True
       BorderSpacing.Left = 3
@@ -812,5 +813,10 @@ object TestForm: TTestForm
       36129D73915EA4A16AAFD1E4304B3B7516CF52E25EECEF69E54E7B333A179A7A
       EF52FFE12E6960A0025FC697C5E2
     }
+  end
+  object IpHtmlDataProvider: TIpHtmlDataProvider
+    OnGetImage = IpHtmlDataProviderGetImage
+    Left = 384
+    Top = 488
   end
 end

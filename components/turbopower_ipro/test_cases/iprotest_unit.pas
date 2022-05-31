@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  EditBtn, ComCtrls, Buttons, SynEdit, SynHighlighterHTML, IpHtml;
+  EditBtn, ComCtrls, Buttons, SynEdit, SynHighlighterHTML, IpHtml, Ipfilebroker;
 
 type
   
@@ -21,6 +21,7 @@ type
     btnSaveResults: TButton;
     FileNameEdit1: TFileNameEdit;
     ImageList1: TImageList;
+    IpHtmlDataProvider: TIpHtmlDataProvider;
     IpHtmlPanel1: TIpHtmlPanel;
     Label1: TLabel;
     Memo1: TMemo;
@@ -40,6 +41,8 @@ type
     procedure btnShowInBrowserClick(Sender: TObject);
     procedure btnLoadHtmlFromFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure IpHtmlDataProviderGetImage(Sender: TIpHtmlNode; 
+      const URL: string; var Picture: TPicture);
     procedure SynEdit1Change(Sender: TObject);
     procedure TestTreeDeletion(Sender: TObject; Node: TTreeNode);
     procedure TestTreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
@@ -96,6 +99,16 @@ procedure TTestForm.FormCreate(Sender: TObject);
 begin
   SynEdit1.Font.Quality := fqCleartype;
   PopulateTests;
+end;
+
+procedure TTestForm.IpHtmlDataProviderGetImage(Sender: TIpHtmlNode; 
+  const URL: string; var Picture: TPicture);
+begin
+  if FileExists(URL) then
+  begin
+    Picture := TPicture.Create;
+    Picture.LoadFromFile(URL);
+  end;
 end;
 
 procedure TTestForm.SynEdit1Change(Sender: TObject);
@@ -233,6 +246,7 @@ begin
     AddTest(node1, ColWidth_100perc_title, ColWidth_100perc_descr, ColWidth_100perc_html);
     AddTest(node1, ColWidth_30perc_70perc_title, ColWidth_30perc_70perc_descr, ColWidth_30perc_70perc_html);
     AddTest(node1, ColWidth_200px_total100perc_title, ColWidth_200px_total100perc_descr, ColWidth_200px_total100perc_html);
+    AddTest(node1, ColWidth_colspan_fixed_total100perc_title, ColWidth_colspan_fixed_total100perc_descr, ColWidth_colspan_fixed_total100perc_html);
     AddTest(node1, ColGroup_ColWidth_200px_total100perc_title, ColGroup_ColWidth_200px_total100perc_descr, ColGroup_ColWidth_200px_total100perc_html);
     node1.Expanded := true;
     node.Expanded := true;

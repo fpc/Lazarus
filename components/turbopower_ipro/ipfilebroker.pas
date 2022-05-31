@@ -25,7 +25,7 @@
 
 (* Part of Ipbroker.pas allowing to use local files  Armin <diehl@nordrhein.de> Jun 2006 *)
 
-unit Ipfilebroker;
+unit IpFileBroker;
 
 {$I ipdefine.inc}
 
