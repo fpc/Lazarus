@@ -294,7 +294,7 @@ type
       CodeIndex: integer;
       Value: String;
       Size: TOperandSize;
-      ByteCount: Byte;
+      ByteCount: Word;
       ByteCount2: Byte;
       FormatFlags: THexValueFormatFlags;
       Flags: TOperandFlags;
@@ -448,8 +448,8 @@ type
     procedure AddModReg(AType: TRegisterType; ASize: TOperandSize);
     procedure AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
     procedure AddVexReg(AType: TRegisterType; ASize: TOperandSize);
-    procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte=0; AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]; AByteCount2: Byte=0);
-    procedure AddOperand(const AValue: String; AByteCount: Byte=0;  AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]);
+    procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Word=0; AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]; AByteCount2: Byte=0);
+    procedure AddOperand(const AValue: String; AByteCount: Word=0;  AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]);
     procedure AddStdOperands(AIndex: Byte);
 
     procedure Check32;
@@ -577,7 +577,7 @@ var
 
 const
   ADDRESS_BYTES: array[TAddressSize] of Byte = (2, 4, 8);
-  OPERAND_BYTES: array[TOperandSize] of Byte = (0, 1,  2,  4,  8,   6, 10,  16,  32,  64,  512);
+  OPERAND_BYTES: array[TOperandSize] of Word = (0, 1,  2,  4,  8,   6, 10,  16,  32,  64,  512);
   OPERAND_BITS:  array[TOperandSize] of Word = (0, 8, 16, 32, 64,  48, 80, 128, 256, 512, 4096);
   ADDRESS_SIZE:  array[TAddressSize] of TOperandSize = (os16, os32, os64);
   REXOFFSET: array[Boolean] of Byte = (0, 8);
@@ -952,7 +952,7 @@ end;
 
 
 
-procedure TX86Disassembler.AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
+procedure TX86Disassembler.AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Word = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
 var
   idx: Byte;
 begin
@@ -976,7 +976,7 @@ begin
   Instruction^.Operand[OperIdx].Flags := AFlags;
 end;
 
-procedure TX86Disassembler.AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
+procedure TX86Disassembler.AddOperand(const AValue: String; AByteCount: Word = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
 begin
   AddOperand(AValue, OperandSize, AByteCount, AFormatFlags, AFlags);
 end;
