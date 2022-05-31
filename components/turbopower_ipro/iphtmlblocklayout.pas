@@ -536,7 +536,7 @@ begin
     lAlign := FAl;
     node := aCurElem.Owner.ParentNode;
     while Assigned(node) do begin
-      if (node is TIpHtmlNodeCore) then
+      if (node is TIpHtmlNodeP) or (node is TIpHtmlNodeDIV) or (node is TIpHtmlNodeTableHeaderOrCell) then
         lAlign := TIpHtmlNodeCore(node).Align
       else
         break;
