@@ -1762,9 +1762,17 @@ end;
 procedure TIpHtmlNodeTableHeaderOrCell.LoadAndApplyCSSProps;
 begin
   inherited;
-  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
-    Align := FCombinedCSSProps.Alignment;
-  // wp: what about VAlign?
+  if Assigned(FCombinedCSSProps) then
+  begin
+    if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+      Align := FCombinedCSSProps.Alignment;
+    // wp: what about VAlign?
+    if FCombinedCSSProps.Width.LengthType <> cltUndefined then
+    begin
+      Width.LengthType := TIpHtmlLengthType(FCombinedCSSProps.Width.LengthType);
+      Width.LengthValue := FCombinedCSSProps.Width.LengthValue;
+    end;
+  end;
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.DimChanged(Sender: TObject);

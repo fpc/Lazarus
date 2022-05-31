@@ -502,6 +502,49 @@ const
     '</body>' + LE +
     '</html>';
     
+  ColWidth_fixed_inline_title =
+    'Column widths specified by inline style, total width automatic';
+  ColWidth_fixed_inline_descr =
+    'The 1st column should be 150 pixels, the 2nd column 300 pixels wide.';
+  ColWidth_fixed_inline_html =
+    '<html>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <th style="width:150">Column A</th>' + LE +
+    '    <th style="width:300">Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
+  ColWidth_fixed_style_title =
+    'Column widths specified by <style> tag, total width automatic';
+  ColWidth_fixed_style_descr =
+    'Both columns should be 75 pixels wide.';
+  ColWidth_fixed_style_html =
+    '<html>' + LE +
+    '  <style type="text/css">' + LE +
+    '    th,td { width:75 }' + LE +
+    '  </style>' + LE +
+    '<body>' + LE +
+    '<table border="1">' + LE +
+    '  <tr>' + LE +
+    '    <th>Column A</th>' + LE +
+    '    <th>Column B</th>' + LE +
+    '  </tr>' + LE +
+    '  <tr>' + LE +
+    '    <td>Cell 1</td>' + LE +
+    '    <td>Cell 2</td>' + LE +
+    '  </tr>' + LE +
+    '</table>' + LE +
+    '</body>' + LE +
+    '</html>';
+
   ColWidth_100perc_title =
     'Table width 100%';
   ColWidth_100perc_descr =
