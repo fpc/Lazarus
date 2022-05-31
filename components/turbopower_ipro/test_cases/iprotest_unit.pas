@@ -246,7 +246,8 @@ begin
     AddTest(node1, ColWidth_100perc_title, ColWidth_100perc_descr, ColWidth_100perc_html);
     AddTest(node1, ColWidth_30perc_70perc_title, ColWidth_30perc_70perc_descr, ColWidth_30perc_70perc_html);
     AddTest(node1, ColWidth_200px_total100perc_title, ColWidth_200px_total100perc_descr, ColWidth_200px_total100perc_html);
-    AddTest(node1, ColWidth_colspan_fixed_total100perc_title, ColWidth_colspan_fixed_total100perc_descr, ColWidth_colspan_fixed_total100perc_html);
+    AddTest(node1, ColWidth_colspan200px_title, ColWidth_colspan200px_descr, ColWidth_colspan200px_html);
+    AddTest(node1, ColWidth_colspan200px_100perc_title, ColWidth_colspan200px_100perc_descr, ColWidth_colspan200px_100perc_html);
     AddTest(node1, ColGroup_ColWidth_200px_total100perc_title, ColGroup_ColWidth_200px_total100perc_descr, ColGroup_ColWidth_200px_total100perc_html);
     node1.Expanded := true;
     node.Expanded := true;
@@ -306,6 +307,7 @@ begin
     AddTest(node, Hebrew_bodyRTL_title, Hebrew_bodyRTL_descr, Hebrew_bodyRTL_html);
     AddTest(node, Hebrew_divRTL_title, Hebrew_divRTL_descr, Hebrew_divRTL_html);
     AddTest(node, Hebrew_pRTL_title, Hebrew_pRTL_descr, Hebrew_pRTL_html);
+    AddTest(node, Table_RTL_title, Table_RTL_descr, Table_RTL_html);
     node.Expanded := true;
     
     LoadResults;

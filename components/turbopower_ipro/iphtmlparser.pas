@@ -1197,7 +1197,9 @@ var
 begin
   Result := hdLTR;
   S := UpperCase(FindAttribute(htmlAttrDIR));
-  if (S = '') or (S = 'LTR') then
+  if (S = '') then
+    Result := hdNone
+  else if (S = 'LTR') then
     Result := hdLTR
   else if (S = 'RTL') then
     Result := hdRTL

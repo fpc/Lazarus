@@ -51,7 +51,7 @@ type
   );
 
   TIpHtmlDirection = (
-    hdLTR, hdRTL
+    hdNone, hdLTR, hdRTL
   );
 
   TIpHtmlElemMarginStyle = (

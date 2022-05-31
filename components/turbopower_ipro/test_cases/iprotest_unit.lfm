@@ -695,7 +695,7 @@ object TestForm: TTestForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnPassed
       AnchorSideTop.Side = asrCenter
-      Left = 500
+      Left = 474
       Height = 25
       Top = 1
       Width = 137
@@ -712,11 +712,11 @@ object TestForm: TTestForm
       Left = 224
       Height = 26
       Top = 0
-      Width = 82
+      Width = 69
       AutoSize = True
       BorderSpacing.Left = 24
       BorderSpacing.Right = 3
-      Caption = 'Passed'
+      Caption = 'Pass'
       HotImageIndex = 1
       Images = ImageList1
       ImageIndex = 1
@@ -728,12 +728,12 @@ object TestForm: TTestForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
       AnchorSideRight.Side = asrBottom
-      Left = 309
+      Left = 296
       Height = 26
       Top = 0
-      Width = 77
+      Width = 64
       AutoSize = True
-      Caption = 'Failed'
+      Caption = 'Fail'
       HotImageIndex = 0
       Images = ImageList1
       ImageIndex = 0
@@ -745,7 +745,7 @@ object TestForm: TTestForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnPassed
       AnchorSideTop.Side = asrCenter
-      Left = 389
+      Left = 363
       Height = 25
       Top = 1
       Width = 87
