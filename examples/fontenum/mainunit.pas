@@ -120,7 +120,7 @@ begin
   if LStyles.IndexOf(s)<0 then begin
     // encode bold (bit 0), italic (bit 1) -- see SelectFont
     n := 0;
-    {$IFDEF LCLWin32}
+    {$IF DEFINED(LCLWin32) or DEFINED(LCLCocoa) }
     if (eLogFont.elfLogFont.lfItalic <> 0) then
       n := n or 1;
     if (eLogFont.elfLogFont.lfWeight > FW_MEDIUM) then
