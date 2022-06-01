@@ -48,6 +48,8 @@ function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
 function NSStringUtf8(const s: String): NSString;
+function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
+function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inline;
 function NSStringToString(ns: NSString): String;
 
 function GetNSObjectWindow(obj: NSObject): NSWindow;
@@ -810,6 +812,18 @@ begin
     w:=UTF8Decode(s);
     Result := NSString.alloc.initWithCharacters_length(@w[1], length(w));
   end;
+end;
+
+function StrToNSString(const s: string; AutoRelease: Boolean): NSString;
+begin
+  Result := NSStringUtf8(s);
+  if Assigned(Result) and AutoRelease then
+    Result := Result.autorelease;
+end;
+
+function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inline;
+begin
+  Result := StrToNSString(s, AutoRelease);
 end;
 
 function NSStringToString(ns: NSString): String;
