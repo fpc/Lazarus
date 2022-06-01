@@ -17010,6 +17010,10 @@ msgstr "Projekti Include polku"
 msgid "Project info file detected"
 msgstr "Tunnistettiin 'Project Info'-tiedostoksi"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekti on ajettavissa"

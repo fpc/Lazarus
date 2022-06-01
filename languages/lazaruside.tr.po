@@ -17006,6 +17006,10 @@ msgstr "Projeyi yola dahil et"
 msgid "Project info file detected"
 msgstr "Proje bilgi dosyası algılandı"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Proje çalıştırılabilir"

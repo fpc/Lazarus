@@ -18084,6 +18084,10 @@ msgstr "פרוייקט כולל נתיב"
 msgid "Project info file detected"
 msgstr "התגלה קובץ המידע של הפרויקט"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "הפרויקט בר ריצה"

@@ -17109,6 +17109,10 @@ msgstr "Шляхи, що включені до проєкту"
 msgid "Project info file detected"
 msgstr "Виявлено info-файл проєкту"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Проєкт є виконуваним"

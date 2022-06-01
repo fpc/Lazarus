@@ -17315,6 +17315,10 @@ msgstr "Ścieżka dołączanych plików projektu"
 msgid "Project info file detected"
 msgstr "Wykryto plik z informacją o projekcie"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekt jest wykonywalny"

@@ -17128,6 +17128,10 @@ msgstr "Caminho inclusões do projeto"
 msgid "Project info file detected"
 msgstr "Arquivo de informações de projeto detectado"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projeto é executável"

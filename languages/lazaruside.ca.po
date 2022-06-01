@@ -17575,6 +17575,10 @@ msgstr "Trajectòria dels inclosos del projecte"
 msgid "Project info file detected"
 msgstr "S'ha detectat fitxer d'informacó del projecte"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "El projecte és executable"

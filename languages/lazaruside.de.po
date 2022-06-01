@@ -17216,6 +17216,10 @@ msgstr "Projekt-Include-Pfad"
 msgid "Project info file detected"
 msgstr "Projekteinstellungsdatei gefunden"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekt ist lauffähig"

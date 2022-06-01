@@ -17783,6 +17783,10 @@ msgstr "Path Include Proyek"
 msgid "Project info file detected"
 msgstr "File info proyek dideteksi"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Proyek bisa dijalankan"

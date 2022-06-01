@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-05-25 03:47+0300\n"
+"PO-Revision-Date: 2022-06-02 01:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17080,6 +17080,10 @@ msgstr "Путь поиска включаемых файлов проекта"
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Обнаружен файл сведений о проекте"
+
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr "Показывать панель свойств в инспекторе проекта"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"

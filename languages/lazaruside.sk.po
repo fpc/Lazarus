@@ -17458,6 +17458,10 @@ msgstr "Cesta k include projektu"
 msgid "Project info file detected"
 msgstr "Informačný súbor projektu zistený"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekt je spustiteľný"

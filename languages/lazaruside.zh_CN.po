@@ -17126,6 +17126,10 @@ msgstr "工程包含路径"
 msgid "Project info file detected"
 msgstr "工程信息文件检测"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "工程是可执行的"

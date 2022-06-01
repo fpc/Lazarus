@@ -17107,6 +17107,10 @@ msgstr ""
 msgid "Project info file detected"
 msgstr "Projek informasie lêer is geskrap"
 
+#: lazarusidestrconsts.lisprojectinspectorshowprops
+msgid "Show properties pane in Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projek is hardloopbaar"
