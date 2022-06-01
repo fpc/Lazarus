@@ -91,7 +91,6 @@ begin
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
   ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
   ProjectInspectorShowPropsCheckBox.Caption:=lisProjectInspectorShowProps;
-  ProjectInspectorShowPropsCheckBox.Hint:=lisProjectInspectorShowPropsHint;
 end;
 
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
