@@ -208,6 +208,7 @@ type
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
     function CreateDivider: TToolButton;
+    procedure OptionsChanged(Sender: TObject; {%H-}Restore: boolean);
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetLazProject(const AValue: TProject);
@@ -1297,6 +1298,12 @@ begin
   Result.Parent := ToolBar;
 end;
 
+procedure TProjectInspectorForm.OptionsChanged(Sender: TObject; Restore: boolean);
+begin
+  PropsGroupBox.Visible := EnvironmentOptions.Desktop.ProjectInspectorShowProps;
+  Splitter1.Visible := PropsGroupBox.Visible;
+end;
+
 procedure TProjectInspectorForm.SetupComponents;
 begin
   ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
@@ -1341,6 +1348,9 @@ begin
     FDependenciesNode.ImageIndex:=FPropGui.ImageIndexRequired;
     FDependenciesNode.SelectedIndex:=FDependenciesNode.ImageIndex;
   end;
+
+  EnvironmentOptions.AddHandlerAfterWrite(@OptionsChanged);
+  OptionsChanged(Nil, False);
 end;
 
 function TProjectInspectorForm.TreeViewGetImageIndex(Str: String; Data: TObject;
@@ -1704,16 +1714,16 @@ end;
 procedure TProjectInspectorForm.UpdateProperties(Immediately: boolean);
 var
   CurDependency, SingleSelectedDep: TPkgDependency;
-  TVNode, SingleSelectedDirectory: TTreeNode;
+  TVNode, DepHeaderNode, SingleSelectedDirectory: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
   i, SelFileCount, SelDepCount, SelUnitCount, SelDirCount: Integer;
   SingleSelectedRemoved: Boolean;
 begin
   if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
-  //GuiToFileOptions(False);
 
   // check selection
+  DepHeaderNode:=nil;
   SingleSelectedDep:=nil;
   SingleSelectedDirectory:=nil;
   SingleSelectedRemoved:=false;
@@ -1735,11 +1745,11 @@ begin
         SingleSelectedDep:=CurDependency;
         SingleSelectedRemoved:=NodeData.Removed;
       end;
-    end else if IsDirectoryNode(TVNode) or (TVNode=FFilesNode) then begin
+    end else if IsDirectoryNode(TVNode) then begin
       inc(SelDirCount);
       SingleSelectedDirectory:=TVNode;
-    end //else if TVNode=FRequiredPackagesNode then
-      // DebugLn('UpdatePEProperties: Required packages selected');
+    end else if TVNode=FDependenciesNode then
+      DepHeaderNode:=TVNode;
   end;
 
   if (SelFileCount+SelDepCount+SelDirCount>1) then begin
@@ -1768,12 +1778,15 @@ begin
       FPropGui.UpdateApplyDependencyButton;
     end
     else if SingleSelectedDirectory<>nil then begin
-      //PropsGroupBox.Enabled:=true;
-      //PropsGroupBox.Caption:=lisPckEditFileProperties;
+      PropsGroupBox.Enabled:=true;
+      PropsGroupBox.Caption:=lisPckEditFileProperties;
     end
     else begin
       PropsGroupBox.Enabled:=false;
-      PropsGroupBox.Caption:=lisPckEditDependencyProperties;
+      if Assigned(DepHeaderNode) then
+        PropsGroupBox.Caption:=lisPckEditDependencyProperties
+      else
+        PropsGroupBox.Caption:=lisPckEditFileProperties;
     end;
   finally
     EnableAlign;
