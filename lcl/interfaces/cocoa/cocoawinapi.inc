@@ -735,25 +735,28 @@ var
   w   : CGFloat;
   t   : Integer;
 
-  pitchFilter : Integer;
+  names : NSArray;
+  nameFilter : string;
 const
   FW_MAX = FW_HEAVY;
 begin
   Result := 0;
   if not Assigned(Callback) then Exit;
 
-  pitchFilter := 0;
+  names := nil;
   if Assigned(lpLogFont) then
   begin
-    pitchFilter := lpLogFont^.lfPitchAndFamily;
-    if pitchFilter = MONO_FONT then pitchFilter := FIXED_PITCH;
-    if (pitchFilter < 0) or (pitchFilter > VARIABLE_PITCH) then
-      pitchFilter := 0;
+    nameFilter := lpLogFont^.lfFaceName;
+    if nameFilter<>'' then
+      names := NSArray.arrayWithObject( StrToNSStr(nameFilter) );
   end;
 
 
   fm := NSFontManager.sharedFontManager;
-  for fname in fm.availableFontFamilies do
+  if not Assigned(names) then
+    names := fm.availableFontFamilies;
+
+  for fname in names do
   begin
     try
       FontName := NSStringToString(fname);
@@ -800,8 +803,6 @@ begin
         else
           ELogFont.elfLogFont.lfPitchAndFamily:=VARIABLE_PITCH;
 
-        if (pitchFilter <> 0) and (ELogFont.elfLogFont.lfPitchAndFamily <> pitchFilter) then
-          continue;
         Result := CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
         if Result = 0 then Break;
       end;
