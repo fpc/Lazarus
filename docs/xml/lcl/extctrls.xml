@@ -7923,15 +7923,31 @@
       </element>
 
       <element name="TCustomControlBar.CalcBandHeight">
-        <short>Calculates the vertical space needed for the control bar.</short>
-        <descr/>
-        <seealso/>
+        <short>Calculates the vertical space needed for a band the control bar.</short>
+        <descr>
+          <p>
+            <var>CalcBandHeight</var> is an <var>Integer</var> function used to calculate the vertical size for a TCtrlBand instance on the control bar.
+          </p>
+          <p>
+            The return value is normally assigned to the TCtrlBand.Height property when the band is created and aligned. When RowSnap is enabled for the control bar, the CalcBandHeightSnapped method is called to get the return value. Otherwise, the return value is calculated as the Height for the specified Control less the space needed for its vertical borders.
+          </p>
+          <p>
+            CalcBandHeight is called from the InitializeBand method and when the control is loaded using the LCL streaming mechanism.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.CalcBandHeightSnapped"/>
+          <link id="TCustomControlBar.InitializeBand"/>
+          <link id="TCustomControlBar.Loaded"/>
+          <link id="TCtrlBand.Height"/>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CalcBandHeight.Result">
         <short>Number of pixels need for the height of the control bar.</short>
       </element>
       <element name="TCustomControlBar.CalcBandHeight.AControl">
-        <short>Toolbar or Toolbutton control examined in the method.</short>
+        <short>The band Control examined in the method.</short>
       </element>
 
       <element name="TCustomControlBar.CalcBandHeightSnapped">
@@ -7940,10 +7956,16 @@
         </short>
         <descr>
           <p>
-            Space is reserved for borders on the band (cBandBorderV). The remaining Height for the control in aControl is evenly allocated for RowSize and used as the return value.
+            <var>CalcBandHeightSnapped</var> is an <var>Integer</var> function used to calculate the height for the bands on the control bar when RowSnap is enabled.
           </p>
           <p>
-            Called property when RowSnap is set to <b>True</b> from the CalcBandHeight method and when a new value is assigned to the RowSize property. Called from CheckBandsSizeAndVisibility for each of the visible bands on the control bar.
+            The RowSize property contains the height for an individual band, and is used as a divisor to determine the number of visible bands given the overall height for the Control. Space is reserved for borders on each band using the cBandBorderV constant.
+          </p>
+          <p>
+            The return value contains the space required for the number of visible bands using the calculated row size.
+          </p>
+          <p>
+            CalcBandHeightSnapped is a called from the CalcBandHeight method when RowSnap is enabled for the control. It is also called from CheckBandsSizeAndVisibility for each of the visible bands on the control bar.
           </p>
         </descr>
         <seealso>
@@ -7958,7 +7980,9 @@
         <short>Number of pixels needed for the specified band when RowSnap is enabled.</short>
       </element>
       <element name="TCustomControlBar.CalcBandHeightSnapped.AControl">
-        <short>Control bar band examined and updated in the method.</short>
+        <short>
+          Control on the TCtrlBand instance with the total height used in the method.
+        </short>
       </element>
 
       <element name="TCustomControlBar.CalcInnerBevelWidth">
