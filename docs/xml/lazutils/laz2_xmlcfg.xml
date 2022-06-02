@@ -673,7 +673,7 @@
         </short>
         <descr>
           <p>
-            <var>GetValue is</var> an overloaded function used to get the value stored in a DOM node at the path specified in <var>APath</var>. Overloaded variants are provided to return <var>String</var>, <var>Integer</var>, <var>Int64</var>, <var>Boolean</var>, and <var>TRect</var> data types.
+            <var>GetValue is</var> an overloaded function used to get the value stored in a DOM node at the path specified in <var>APath</var>. Overloaded variants are provided to return <var>String</var>, <var>Integer</var>, <var>Int64</var>, <var>Boolean</var>, and <var>TRect</var> data types. Other variants allow the arguments to be represented as various data types including untyped constants.
           </p>
           <p>
             <var>APath</var> contain the path specifier that represents the hierarchy of elements and attributes in <var>Document</var> where the value is stored. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
@@ -687,9 +687,6 @@
           <p>
             Use <var>GetExtendedValue</var> to get the value for a DOM node as an <var>Extended</var> (or <var>Float</var>) data type.
           </p>
-          <!--
-          TODO: describe recently added type information and output variable
-          -->
         </descr>
         <seealso>
           <link id="TXMLConfig.GetExtendedValue"/>
@@ -755,9 +752,6 @@
           <p>
             Use SetExtendedValue to store an Extended data type in a specified DOM node.
           </p>
-          <!--
-          TODO: describe recently added type information
-          -->
         </descr>
         <seealso>
           <link id="TXMLConfig.SetExtendedValue"/>
@@ -781,9 +775,18 @@
       <element name="TXMLConfig.SetDeleteValue">
         <short>Updates or removes the value at the specified path </short>
         <descr>
-          <!-- TODO: description needed. -->
+          <p>
+            <var>SetDeleteValue</var> is an overloaded method used to update or remove the node at the path specified in APath. The AValue and DefValue arguments determine whether the node is updated, or removed by calling DeletePath. When AValue and DefValue are equal, this indicates the node value is the default or unassigned value for the node and DeletePath is called to remove the node at APath. Otherwise, SetValue is called to store AValue to the node path.
+          </p>
+          <p>
+            The overloaded variants allow the AValue and DefValue arguments to contain various data types including String, Int64, Boolean, TRect, or untyped constants.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TXmlConfig.SetDeleteExtendedValue"/>
+          <link id="TXmlConfig.DeleteValue"/>
+          <link id="TXmlConfig.GetValue"/>
+        </seealso>
       </element>
       <element name="TXMLConfig.SetDeleteValue.APath">
         <short>Path specifier for the value affected in the method.</short>
@@ -801,7 +804,6 @@
           Pointer to the RTTI type information for the value / default value.
         </short>
       </element>
-
 
       <element name="TXMLConfig.SetExtendedValue">
         <short>
@@ -821,6 +823,7 @@
         <seealso>
           <link id="TXMLConfig.SetValue"/>
           <link id="TXMLConfig.ExtendedToStr"/>
+          <link id="TXMLConfig.DeletePath"/>
           <link id="TXMLConfig-PathSyntax"/>
         </seealso>
       </element>
@@ -834,7 +837,13 @@
       <element name="TXMLConfig.SetDeleteExtendedValue">
         <short>Updates or removes the Extended value at the specified path.</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TXmlConfig.SetDeleteValue"/>
+          <link id="TXmlConfig.DeleteValue"/>
+          <link id="TXMLConfig.DeletePath"/>
+          <link id="TXmlConfig.GetValue"/>
+          <link id="TXmlConfig.SetValue"/>
+        </seealso>
       </element>
       <element name="TXMLConfig.SetDeleteExtendedValue.APath">
         <short>Path specifier to the node affected in the method.</short>
@@ -1458,7 +1467,7 @@ ACfg.Free;
 ACfg.SetValue('list/items/item[0]/name', 'itemA');
 ACfg.SetValue('list/items/item[0]/value', 'valueA');
 ACfg.SetValue('list/items/item[1]/name', 'itemB');
-ACfg.SetValue('list/items/item[1]/value', 'ValueB');
+ACfg.SetValue('list/items/item[1]/value', 'valueB');
 ACfg.SetValue('list/items/item[2]/name', 'itemC');
 ACfg.SetValue('list/items/item[2]/value', 'valueC');
           </code>
