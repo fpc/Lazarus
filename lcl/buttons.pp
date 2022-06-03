@@ -367,7 +367,6 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton); override;
     procedure MeasureDraw(Draw: boolean; PaintRect: TRect;
                           out PreferredWidth, PreferredHeight: integer);
     procedure MouseEnter; override;

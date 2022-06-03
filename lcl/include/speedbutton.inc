@@ -914,20 +914,9 @@ begin
     Images := nil;
 end;
 
-{------------------------------------------------------------------------------
-       TCustomSpeedButton DoMouseUp  "Event Handler"
-------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-begin
-  if not (csNoStdEvents in ControlStyle) then
-    with Message do
-      MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
-end;
-
 procedure TCustomSpeedButton.WMLButtonDown(var Message: TLMLButtonDown);
 begin
   inherited;
-  
   // because csClickEvents is not set no csClicked is set in the inherited method
   Include(FControlState, csClicked);
 end;
