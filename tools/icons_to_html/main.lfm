@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1163
+  Left = 450
   Height = 515
-  Top = 323
+  Top = 214
   Width = 600
   Caption = 'IconTable'
   ClientHeight = 515
@@ -29,7 +29,7 @@ object MainForm: TMainForm
     Default = True
     Enabled = False
     OnClick = btnCreateHTMLClick
-    TabOrder = 2
+    TabOrder = 3
   end
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
@@ -68,7 +68,7 @@ object MainForm: TMainForm
     Caption = 'Save'
     Enabled = False
     OnClick = btnSaveClick
-    TabOrder = 3
+    TabOrder = 4
   end
   object btnClose: TButton
     AnchorSideRight.Control = Owner
@@ -87,7 +87,7 @@ object MainForm: TMainForm
     Cancel = True
     Caption = 'Close'
     OnClick = btnCloseClick
-    TabOrder = 5
+    TabOrder = 6
   end
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
@@ -614,7 +614,18 @@ object MainForm: TMainForm
     Caption = 'Show'
     Enabled = False
     OnClick = btnShowClick
-    TabOrder = 4
+    TabOrder = 5
+  end
+  object cbDarkMode: TCheckBox
+    AnchorSideTop.Control = btnCreateHTML
+    AnchorSideTop.Side = asrCenter
+    Left = 24
+    Height = 19
+    Top = 483
+    Width = 76
+    Caption = 'Dark Mode'
+    OnChange = cbDarkModeChange
+    TabOrder = 2
   end
   object TaskDialog: TTaskDialog
     Buttons = <>
