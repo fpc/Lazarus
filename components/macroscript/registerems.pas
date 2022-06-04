@@ -29,67 +29,67 @@ begin
 
   if not EMSSupported then {%H-}exit;
 
-  if GetSkipCheckByKey('MacroScript') or GetSkipCheckByKey('All') then
-    exit;
+  if not (GetSkipCheckByKey('MacroScript') or GetSkipCheckByKey('All')) then begin
 
-  conf := GetEMSConf;
-  try
-    conf.Load;
-  except
+    conf := GetEMSConf;
     try
+      conf.Load;
+    except
+      try
+        conf.SelfTestFailed := EMSVersion;
+        conf.SelfTestActive := False;
+        conf.SelfTestError := 'load error';
+        conf.Save;
+      except
+      end;
+      MessageDlg(EmsSelfTestErrCaption,
+                 format(EmsSelfTestFailedLastTime, [LineEnding]),
+                 mtError, [mbOK], 0);
+      MacroListViewerWarningText := EMSNotActiveVerbose;
+      exit;
+    end;
+
+    if conf.SelfTestActive then begin
       conf.SelfTestFailed := EMSVersion;
       conf.SelfTestActive := False;
-      conf.SelfTestError := 'load error';
+      conf.SelfTestError := 'failed last time';
       conf.Save;
+      MessageDlg(EmsSelfTestErrCaption,
+                 format(EmsSelfTestFailedLastTime, [LineEnding]),
+                 mtError, [mbOK], 0);
+    end;
+    if conf.SelfTestFailed >= EMSVersion then begin
+      MacroListViewerWarningText := EMSNotActiveVerbose;
+      exit;
+    end;
+
+    conf.SelfTestActive := True;
+    conf.Save;
+
+    ok := False;
+    try
+      ok := DoSelfTest;
     except
     end;
-    MessageDlg(EmsSelfTestErrCaption,
-               format(EmsSelfTestFailedLastTime, [LineEnding]),
-               mtError, [mbOK], 0);
-    MacroListViewerWarningText := EMSNotActiveVerbose;
-    exit;
-  end;
 
-  if conf.SelfTestActive then begin
-    conf.SelfTestFailed := EMSVersion;
+    if not ok then begin
+      conf.SelfTestFailed := EMSVersion;
+      conf.SelfTestActive := False;
+      conf.SelfTestError := SelfTestErrorMsg;
+      conf.Save;
+      MessageDlg(EmsSelfTestErrCaption,
+                 format(EmsSelfTestFailed, [LineEnding, SelfTestErrorMsg]),
+                 mtError, [mbOK], 0);
+
+      MacroListViewerWarningText := EMSNotActiveVerbose;
+      exit;
+    end;
+
     conf.SelfTestActive := False;
-    conf.SelfTestError := 'failed last time';
+    conf.SelfTestError := '';
+    conf.SelfTestFailed := 0;
     conf.Save;
-    MessageDlg(EmsSelfTestErrCaption,
-               format(EmsSelfTestFailedLastTime, [LineEnding]),
-               mtError, [mbOK], 0);
   end;
-  if conf.SelfTestFailed >= EMSVersion then begin
-    MacroListViewerWarningText := EMSNotActiveVerbose;
-    exit;
-  end;
-
-  conf.SelfTestActive := True;
-  conf.Save;
-
-  ok := False;
-  try
-    ok := DoSelfTest;
-  except
-  end;
-
-  if not ok then begin
-    conf.SelfTestFailed := EMSVersion;
-    conf.SelfTestActive := False;
-    conf.SelfTestError := SelfTestErrorMsg;
-    conf.Save;
-    MessageDlg(EmsSelfTestErrCaption,
-               format(EmsSelfTestFailed, [LineEnding, SelfTestErrorMsg]),
-               mtError, [mbOK], 0);
-
-    MacroListViewerWarningText := EMSNotActiveVerbose;
-    exit;
-  end;
-
-  conf.SelfTestActive := False;
-  conf.SelfTestError := '';
-  conf.SelfTestFailed := 0;
-  conf.Save;
 
   EditorMacroPlayerClass := TEMSEditorMacro;
 end;
