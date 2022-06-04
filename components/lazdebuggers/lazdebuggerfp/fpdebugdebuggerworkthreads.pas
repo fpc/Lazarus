@@ -564,7 +564,7 @@ procedure TFpThreadWorkerPrepareCallStackEntryList.DoExecute;
 var
   t: TDbgThread;
 begin
-  if FRequiredMinCount < 0 then
+  if FRequiredMinCount < -1 then
     exit;
   if FThread = nil then begin
     for t in FDebugger.FDbgController.CurrentProcess.ThreadMap do begin

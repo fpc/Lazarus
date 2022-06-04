@@ -779,7 +779,7 @@ begin
   FCallstack := ACallstack;
   FCallstack.AddFreeNotification(@DoCallstackFreed_DecRef);
   if not ADebugger.FDbgController.CurrentProcess.GetThread(FCallstack.ThreadId, AThread) then
-    ARequiredMinCount := -1;  // error
+    ARequiredMinCount := -2;  // error
   inherited Create(ADebugger, ARequiredMinCount, AThread);
 end;
 
