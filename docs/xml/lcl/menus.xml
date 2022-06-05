@@ -65,10 +65,15 @@
 
       <element name="TGlyphShowMode">
         <short>
-          <var>TGlyphShowMode</var> indicates if the glyph image of a menu or button should shown or not and in which circumstances.
+          <var>TGlyphShowMode</var> indicates if the glyph image for a menu or button should be shown, and in which circumstances.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TGlyphShowMode</var> is the type used to implement the TMenuItem.GlyphShowMode property.
+          </p>
+        </descr>
         <seealso>
+          <link id="TMenuItem.GlyphShowMode"/>
           <link id="#lcl.forms.TApplication.ShowMenuGlyphs">TApplication.ShowMenuGlyphs</link>
           <link id="#lcl.forms.TApplicationShowGlyphs">TApplicationShowGlyphs</link>
           <link id="#lcl.buttons.TCustomBitBtn.GlyphShowMode">TCustomBitBtn.GlyphShowMode</link>
@@ -114,7 +119,7 @@
         <short>Menu or menu item where the change occurred.</short>
       </element>
       <element name="TMenuChangeEvent.Rebuild">
-        <short>True to rebuild the menu item hierarchy.</short>
+        <short><b>True</b> to rebuild the menu item hierarchy.</short>
       </element>
 
       <element name="TMenuActionLink">
@@ -131,16 +136,24 @@
         <short>Stored a reference to the menu item for the link.</short>
       </element>
 
-      <element name="TMenuActionLink.AssignClient" link="#rtl.classes.TBasicActionLink.AssignClient">
-        <short/>
+      <element name="TMenuActionLink.AssignClient">
+        <short>
+          Stores the specified value as the client for the linked action.
+        </short>
         <descr>
           <p>
             Overridden in <var>TMenuActionLink</var> to ensure that the value in <var>AClient</var> is cast to the <var>TMenuItem</var> type used for the internal client.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TBasicActionLink">TBasicActionLink</link>
+        </seealso>
       </element>
-      <element name="TMenuActionLink.AssignClient.AClient" link="#rtl.classes.TBasicActionLink.AssignClient"/>
+      <element name="TMenuActionLink.AssignClient.AClient">
+        <short>
+          Object instance which is the client for the linked action in the menu.
+        </short>
+      </element>
 
       <element name="TMenuActionLink.IsAutoCheckLinked">
         <short>
@@ -150,7 +163,7 @@
         <seealso/>
       </element>
       <element name="TMenuActionLink.IsAutoCheckLinked.Result">
-        <short>True when  AutoCheck is the same in the menu item and the action.</short>
+        <short><b>True</b> when  AutoCheck is the same in the menu item and the action.</short>
       </element>
 
       <element name="TMenuActionLink.IsCaptionLinked" link="#lcl.actnlist.TActionLink.IsCaptionLinked">
@@ -240,7 +253,7 @@
         </short>
         <descr>
           <p>
-            <var>IsOnExecuteLinked</var> always returns true in <var>TBasicActionLink</var>. Descendent classes can override this method to provide a different result.
+            <var>IsOnExecuteLinked</var> always returns <b>True</b> in <var>TBasicActionLink</var>. Descendent classes can override this method to provide a different result.
           </p>
         </descr>
         <seealso>
@@ -422,7 +435,7 @@
         </seealso>
       </element>
       <element name="TMenuItemEnumerator.MoveNext.Result">
-        <short>True if another value is available for the enumerator.</short>
+        <short><b>True</b> if another value is available for the enumerator.</short>
       </element>
 
       <element name="TMenuItemEnumerator.Current">
@@ -898,7 +911,7 @@
         <seealso/>
       </element>
       <element name="TMenuItem.DoDrawItem.Result">
-        <short>True if the menu item was rendered using an OnDrawItem event handler.</short>
+        <short><b>True</b> if the menu item was rendered using an OnDrawItem event handler.</short>
       </element>
       <element name="TMenuItem.DoDrawItem.ACanvas">
         <short>Canvas where the menu item is drawn.</short>
@@ -929,7 +942,7 @@
         <seealso/>
       </element>
       <element name="TMenuItem.DoMeasureItem.Result">
-        <short>True if the size was calculated using an OnMeasureItem event handler.</short>
+        <short><b>True</b> if the size was calculated using an OnMeasureItem event handler.</short>
       </element>
       <element name="TMenuItem.DoMeasureItem.ACanvas">
         <short>Canvas used to get size information for the menu item.</short>
@@ -1122,7 +1135,7 @@
         <seealso/>
       </element>
       <element name="TMenuItem.MenuChanged.Rebuild">
-        <short>True to rebuild the child menu items.</short>
+        <short><b>True</b> to rebuild the child menu items.</short>
       </element>
 
       <element name="TMenuItem.SetAction">
@@ -1452,7 +1465,7 @@
       </element>
       <element name="TMenuItem.GetIsRightToLeft.Result">
         <short>
-          True when the menu item has a parent menu with a BiDiMode other than bdLeftToRight.
+          <b>True</b> when the menu item has a parent menu with a BiDiMode other than bdLeftToRight.
         </short>
       </element>
 
@@ -1464,26 +1477,28 @@
         <seealso/>
       </element>
       <element name="TMenuItem.HandleAllocated.Result">
-        <short>True when Handle has a non-zero value.</short>
+        <short><b>True</b> when Handle has a non-zero value.</short>
       </element>
 
       <element name="TMenuItem.HasIcon">
         <short>
-          True when a bitmap is configured and available for the menu item.
+          <b>True</b> when a bitmap is configured and available for the menu item.
         </short>
         <descr>
           <p>
             <var>HasIcon</var> is a <var>Boolean</var> function which indicates if a <var>Bitmap</var> is configured and available for the menu item. The menu item is configured to display a bitmap using the <var>GlyphShowMode</var> and <var>ImageIndex</var> properties, or by assigning a <var>TBitmap</var> value to the Bitmap property.
           </p>
           <p>
-            The return value is False for the following conditions:
+            The return value is <b>False</b> for the following conditions:
           </p>
           <ul>
             <li>GlyphShowMode is set to gsmNever.</li>
             <li>
               GlyphShowMode is set to gsmApplication and TApplication.ShowMenuGlyphs is set to sbgNever.
             </li>
-            <li>GlyphShowMode is set to gsmSystem and SystemShowGlyphMenus returns False.</li>
+            <li>
+              GlyphShowMode is set to gsmSystem and SystemShowGlyphMenus returns <b>False</b>.
+            </li>
             <li>An image list is not available or ImageIndex contains an invalid index.</li>
             <li>Bitmap has an empty image.</li>
           </ul>
@@ -1500,7 +1515,7 @@
       </element>
       <element name="TMenuItem.HasIcon.Result">
         <short>
-          True when a bitmap is configured and available for the menu item.
+          <b>True</b> when a bitmap is configured and available for the menu item.
         </short>
       </element>
 
@@ -1508,7 +1523,7 @@
         <short>Indicates if the menu item has a parent menu item.</short>
         <descr>
           <p>
-            Returns True if the menu item has a parent responsible for streaming. Overridden to check for an assigned value in the Parent property. Does not call the inherited method.
+            Returns <b>True</b> if the menu item has a parent responsible for streaming. Overridden to check for an assigned value in the Parent property. Does not call the inherited method.
           </p>
         </descr>
         <seealso>
@@ -1516,7 +1531,7 @@
         </seealso>
       </element>
       <element name="TMenuItem.HasParent.Result">
-        <short>True when a Parent menu item has been assigned for the menu item.</short>
+        <short><b>True</b> when a Parent menu item has been assigned for the menu item.</short>
       </element>
 
       <element name="TMenuItem.InitiateAction">
@@ -1640,12 +1655,12 @@
             Be aware that adding an child menu item that is a Separator may crash the application on non-Windows platforms. Use the AddSeparator method instead.
           </p>
         </descr>
-        <notes>
-          <note>
-            Does this admonition still apply today? By non-Windows do we actually mean Mac OS Carbon?
-          </note>
-        </notes>
-        <seealso/>
+        <seealso>
+          <link id="TMenuItem.Insert"/>
+          <link id="TMenuItem.Count"/>
+          <link id="TMenuItem.Caption"/>
+          <link id="TMenuItem.AddSeparator"/>
+        </seealso>
       </element>
       <element name="TMenuItem.Add.Item">
         <short>Menu item added to the child Items.</short>
@@ -1722,10 +1737,35 @@
 
       <element name="TMenuItem.Insert">
         <short>
-          <var>Insert</var> a new item at the location marked by <var>Index</var>.
+          <var>Insert</var> stores the specified menu item at the location indicated by <var>Index</var>.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            No actions are performed in the method when Item is unassigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            A catchable debugger exception is raised if the Parent in Item is already assigned. The exception message is 'Menu inserted twice'.
+          </p>
+          <p>
+            Insert ensures that the TMenuItems storage has been allocated for the TMenuItem instances in the Items property.
+          </p>
+          <p>
+            Insert modifies Item to use the current class as the Parent for the menu item, and assigns the private method used in the OnChange handler in Item. If Item is Visible, its handle is allocated when not already assigned.
+          </p>
+          <p>
+            MenuChanged is called to signal the OnChange event handler when assigned.
+          </p>
+          <p>
+            Insert is called from the Add method, and when the Parent menu item is changed after setting a new value in the MenuIndex property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMenuItem.Items"/>
+          <link id="TMenuItem.Parent"/>
+          <link id="TMenuItem.Visible"/>
+          <link id="TMenu.OnChange"/>
+          <link id="TMenuItems"/>
+        </seealso>
       </element>
       <element name="TMenuItem.Insert.Index">
         <short>Ordinal position in Items where the menu item is inserted.</short>
@@ -1768,9 +1808,25 @@
 
       <element name="TMenuItem.UpdateImage">
         <short>
-          Updates the image associated with the menu item, particularly if it has changed.
+          Updates the image associated with the menu item.
         </short>
         <descr>
+          <p>
+            No actions are performed in the method during LCL component streaming, or when the class instance is freed.
+          </p>
+          <p>
+            UpdateImage calls GetImageList to retrieve the list of images used in the menu item, its Parent, or its sub-menu items.
+          </p>
+
+          <p>
+            An image assigned directly to the Bitmap property is freed and invalidated when both the image list and the ImageIndex have been assigned.
+          </p>
+          <p>
+            If the handle for the menu item has been allocated, the UpdateWSIcon method in the widgetset class is called to apply the Bitmap or Image to the widget.
+          </p>
+          <p>
+            UpdateImage is called when a new value is assigned to the GlyphShowMode property, and from the UpdateImages method.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1787,24 +1843,51 @@
         <short>
           Indicates if the menu item is configured as a check box or a radio button item.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>IsCheckItem</var> is a <var>Boolean</var> function which returns <b>True</b> when one of the following properties is set to <b>True</b>:
+          </p>
+          <ul>
+            <li>Checked</li>
+            <li>RadioItem</li>
+            <li>AutoCheck</li>
+            <li>ShowAlwaysCheckable</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TMenuItem.Checked"/>
+          <link id="TMenuItem.RadioItem"/>
+          <link id="TMenuItem.AutoCheck"/>
+          <link id="TMenuItem.ShowAlwaysCheckable"/>
+        </seealso>
       </element>
       <element name="TMenuItem.IsCheckItem.Result">
-        <short/>
+        <short>
+          <b>True</b> if the menu item is configured as a check box or radio button item.
+        </short>
       </element>
 
       <element name="TMenuItem.IsLine">
         <short>
-          True if the menu item is configured as a separator line.
+          <b>True</b> if the menu item is configured as a separator line.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>IsLine</var> is a Boolean function which indicates if the menu item is configured as a separator line on its Parent. The return value is <b>True</b> when Caption contains the value from the cLineCaption constant.
+          </p>
+          <p>
+            IsLine is used by the widgetset class instance to determine the menu flags for the menu item, and to perform layout and drawing operations.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMenuItem.Caption"/>
+          <link id="cLineCaption"/>
+        </seealso>
       </element>
 
       <element name="TMenuItem.IsInMenuBar">
         <short>
-          True if the menu item has a main menu bar as its parent.
+          <b>True</b> if the menu item has a TMainMenu instance as its Parent.
         </short>
         <descr/>
         <seealso>
@@ -1815,7 +1898,7 @@
       </element>
       <element name="TMenuItem.IsInMenuBar.Result">
         <short>
-          True if the menu item has a main menu bar as its parent.
+          <b>True</b> if the menu item has a main menu bar as its parent.
         </short>
       </element>
 
@@ -1842,7 +1925,7 @@
       </element>
       <element name="TMenuItem.HasBitmap.Result">
         <short>
-          True if a TBitmap instance has been assigned to the Bitmap property.
+          <b>True</b> if a TBitmap instance has been assigned to the Bitmap property.
         </short>
       </element>
 
@@ -1871,13 +1954,19 @@
         </short>
       </element>
 
-      <element name="TMenuItem.RemoveAllHandlersOfObject" link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject">
-        <short/>
+      <element name="TMenuItem.RemoveAllHandlersOfObject">
+        <short>
+          Removes all handlers for the specified object instance from the internal list of handlers.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject"/>
+        </seealso>
       </element>
       <element name="TMenuItem.RemoveAllHandlersOfObject.AnObject">
-        <short/>
+        <short>
+          Object instance with the handler routines removed in the method.
+        </short>
       </element>
 
       <element name="TMenuItem.AddHandlerOnDestroy">
@@ -1891,7 +1980,7 @@
         <short>Routine added to the handlers for the menu item.</short>
       </element>
       <element name="TMenuItem.AddHandlerOnDestroy.AsFirst">
-        <short>True if the handler is the first in the list of OnDestroy handlers.</short>
+        <short><b>True</b> if the handler is the first in the list of OnDestroy handlers.</short>
       </element>
 
       <element name="TMenuItem.RemoveHandlerOnDestroy">
@@ -1919,7 +2008,7 @@
         <short>Event handler routine added to the list of handlers.</short>
       </element>
       <element name="TMenuItem.AddHandler.AsFirst">
-        <short>True if the handler is the first for the given type.</short>
+        <short><b>True</b> if the handler is the first for the given type.</short>
       </element>
 
       <element name="TMenuItem.RemoveHandler">
@@ -1937,13 +2026,18 @@
       </element>
 
       <element name="TMenuItem.Merged">
-        <short>Contains a menu item and its children merged into the current class instance.</short>
+        <short>
+          Menu item where the class instance and its children have been merged.
+        </short>
         <descr>
           <p>
-            <var>Merged</var> is a read-only <var>TMenuItem</var> property with the menu item merged into the Items for the current class instance.
+            <var>Merged</var> is a read-only <var>TMenuItem</var> property with the menu item where the menu item and its child menu items have been merged.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TMenuItem.MergedItems"/>
+          <link id="TMenuItem.MergedParent"/>
+        </seealso>
       </element>
 
       <element name="TMenuItem.MergedWith">
@@ -1953,7 +2047,11 @@
             <var>MergedWith</var> is a read-only <var>TMenuItem</var> property with the menu item where the current class instance was merged.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TMenuItem.Merged"/>
+          <link id="TMenuItem.MergedItems"/>
+          <link id="TMenuItem.MergedParent"/>
+        </seealso>
       </element>
 
       <element name="TMenuItem.Count">
@@ -2017,8 +2115,15 @@
         <short>
           Returns the visible and invisible child items taking the merged menu into account.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>MergedItems</var> is a read-only <var>TMergedMenuItems</var> property which contains a list of merged menu items for the class instance. Either visible or  invisible menu items can be accessed in the list.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMergedMenuItems"/>
+          <link id="TMenuItem"/>
+        </seealso>
       </element>
 
       <element name="TMenuItem.MenuIndex">
@@ -2053,8 +2158,18 @@
 
       <element name="TMenuItem.Parent">
         <short>The parent menu item for the class instance.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Parent</var> is a read-only <var>TMenuItem</var> property where the menu item is hosted and displayed. The property value is assigned in the Insert method when the menu item is added to to the parent menu or menu item. It contain contain <b>Nil</b> if the menu item has not been added to (or has been removed from) a parent menu or menu item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMenuItem.Insert"/>
+          <link id="TMenuItem.Delete"/>
+          <link id="TMenuItem.Destroy"/>
+          <link id="TMenuItem.GetParentComponent"/>
+          <link id="TMenuItem.GetParentMenu"/>
+        </seealso>
       </element>
 
       <element name="TMenuItem.MergedParent">
@@ -2094,10 +2209,18 @@
 
       <element name="TMenuItem.Action">
         <short>
-          <var>Action</var> - the default action associated with this Menu Item.
+          <var>Action</var> is the default action associated with the menu item.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            The value for the property is read from the Action member in ActionLink when it has been assigned. Otherwise, the property value is <b>Nil</b>. Setting a new value for the property causes the TMenuActionLink class instance in ActionLink to be created and configured as needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMenuItem.ActionLink"/>
+          <link id="TMenuActionLink"/>
+          <link id="#rtl.classes.TBasicAction">TBasicAction</link>
+        </seealso>
       </element>
 
       <element name="TMenuItem.AutoCheck">
@@ -2150,7 +2273,7 @@
           Indicates if the menu item can be selected and executed.
         </short>
         <descr>
-          When Enabled is set to False, the menu item is normally displayed using a "greyed" style.
+          When Enabled is set to <b>False</b>, the menu item is normally displayed using a "greyed" style.
         </descr>
         <seealso/>
       </element>
@@ -2249,7 +2372,7 @@
         </short>
         <descr>
           <p>
-            The default value for the property is False, and causes the menu item caption to use left-justification.
+            The default value for the property is <b>False</b>, and causes the menu item caption to use left-justification.
           </p>
         </descr>
         <seealso/>
@@ -2278,7 +2401,7 @@
 
       <element name="TMenuItem.ShowAlwaysCheckable">
         <short>
-          <var>ShowAlwaysCheckable</var> - if True, Item is always shown as checkable.
+          <var>ShowAlwaysCheckable</var> - if <b>True</b>, Item is always shown as checkable.
         </short>
         <descr/>
         <seealso/>
@@ -2286,7 +2409,7 @@
 
       <element name="TMenuItem.SubMenuImages">
         <short>
-          <var>SubMenuImages</var> - will images be shown for sub-menu items as well as the main item?
+          <var>SubMenuImages</var> indicates if images are shown for sub-menu items as well as the main item.
         </short>
       </element>
 
@@ -2294,7 +2417,7 @@
         <short>Width for the bitmaps in the SubMenuImages property.</short>
         <descr>
           <p>
-            SubMenuImagesWidth is an Integer property with the width for the bitmaps in the SubMenuImages property. The default value for the property is 0 (zero), and indicates that an explicit value has not been assigned for the property. This causes the width from the SubMenuImages image list to be used.
+            <var>SubMenuImagesWidth</var> is an <var>Integer</var> property with the width for the bitmaps in the SubMenuImages property. The default value for the property is 0 (zero), and indicates that an explicit value has not been assigned for the property. This causes the width from the SubMenuImages image list to be used.
           </p>
         </descr>
         <seealso/>
@@ -2302,7 +2425,7 @@
 
       <element name="TMenuItem.Visible">
         <short>
-          Indicates whether the menu item is visible (or hidden).
+          Indicates whether the menu item is visible (<b>True</b>) or hidden (<b>False</b>).
         </short>
         <descr/>
         <seealso/>
@@ -2316,6 +2439,7 @@
         <seealso>
           <link id="TMenuItem.Action"/>
           <link id="TMenuItem.ActionLink"/>
+          <link id="TMenuActionLink"/>
           <link id="#rtl.classes.TBasicAction">TBasicAction</link>
         </seealso>
       </element>
@@ -2338,13 +2462,16 @@
         </short>
         <descr>
           <p>
-            OnMeasureItem is a TMenuMeasureItemEvent property with the event handler signalled to calculate the width and height for the menu item on the specified Canvas.
+            <var>OnMeasureItem</var> is a <var>TMenuMeasureItemEvent</var> property with the event handler signalled to calculate the width and height for the menu item. The ACanvas argument contains the TCanvas instance used to get the width and height for the font used on the menu item, and is returned by the widgetset class instance. AWidth and AHeight are variable arguments updated with the dimensions for the menu item as returned by the widget.
+          </p>
+          <p>
+            OnMeasureItem is signalled (when assigned) from the DoMeasureItem method, and occurs when the MenuItemSize routine is called for the platform / widgetset.
           </p>
         </descr>
-        <seealso/>
-        <notes>
-          <note>Does the rectangle argument encompass the entire menu item or just its caption?</note>
-        </notes>
+        <seealso>
+          <link id="TMenuItem.DoMeasureItem"/>
+          <link id="TMenuMeasureItemEvent"/>
+        </seealso>
       </element>
 
       <element name="TMenuItemClass">
@@ -2445,7 +2572,7 @@
         <seealso/>
       </element>
       <element name="TMenu.IsBiDiModeStored.Result">
-        <short>True when BiDiMode contains a value other than the default.</short>
+        <short><b>True</b> when BiDiMode contains a value other than the default.</short>
       </element>
 
       <element name="TMenu.ImageListChange">
@@ -2564,7 +2691,7 @@
         <short>Menu item where the change occurred.</short>
       </element>
       <element name="TMenu.DoChange.Rebuild">
-        <short>True to rebuild the child menu items.</short>
+        <short><b>True</b> to rebuild the child menu items.</short>
       </element>
 
       <element name="TMenu.GetHandle">
@@ -2622,7 +2749,7 @@
         <short>Menu item for the change notification.</short>
       </element>
       <element name="TMenu.MenuChanged.Rebuild">
-        <short>True to rebuild the visible child menu items in Source.</short>
+        <short><b>True</b> to rebuild the visible child menu items in Source.</short>
       </element>
 
       <element name="TMenu.AssignTo">
@@ -2798,7 +2925,9 @@
         <short>Command or Handle to locate in the menu items for the menu.</short>
       </element>
       <element name="TMenu.GetHelpContext.ByCommand">
-        <short>True to search Command values, False to search Handle values.</short>
+        <short>
+          <b>True</b> to search Command values, <b>False</b> to search Handle values.
+        </short>
       </element>
 
       <element name="TMenu.IsShortcut">
@@ -2819,7 +2948,7 @@
         <seealso/>
       </element>
       <element name="TMenu.IsShortcut.Result">
-        <short>True when the message matches a menu item shortcut in Items.</short>
+        <short><b>True</b> when the message matches a menu item shortcut in Items.</short>
       </element>
       <element name="TMenu.IsShortcut.Message">
         <short>Control message examined in the method.</short>
@@ -2827,13 +2956,13 @@
 
       <element name="TMenu.HandleAllocated">
         <short>
-          Returns True if a Handle has been allocated for the menu.
+          Returns <b>True</b> if a Handle has been allocated for the menu.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TMenu.HandleAllocated.Result">
-        <short>True if a Handle has been allocated for the menu.</short>
+        <short><b>True</b> if a Handle has been allocated for the menu.</short>
       </element>
 
       <element name="TMenu.IsRightToLeft">
@@ -2853,7 +2982,7 @@
 
       <element name="TMenu.UseRightToLeftAlignment">
         <short>
-          <var>UseRightToLeftAlignment</var> - returns True if Right-Left alignment is being used.
+          <var>UseRightToLeftAlignment</var> - returns <b>True</b> if Right-Left alignment is being used.
         </short>
         <descr/>
         <seealso/>
@@ -2917,7 +3046,7 @@
         </seealso>
       </element>
       <element name="TMenu.DispatchCommand.Result">
-        <short>True if a menu item with the specified command was found and executed.</short>
+        <short><b>True</b> if a menu item with the specified command was found and executed.</short>
       </element>
       <element name="TMenu.DispatchCommand.ACommand">
         <short>Numeric command value to locate in the menu items for the menu.</short>
@@ -3145,7 +3274,7 @@
         <short>Menu item for the change notification.</short>
       </element>
       <element name="TMainMenu.MenuChanged.Rebuild">
-        <short>True to rebuild the child menu items for the menu.</short>
+        <short><b>True</b> to rebuild the child menu items for the menu.</short>
       </element>
 
       <element name="TMainMenu.Create">
@@ -3314,7 +3443,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TPopupMenu</var>, and calls the inherited <var>Create</var>, sets style to <var>PopupMenu</var>, sets <var>AutoPopup</var> to True.
+            <var>Create</var> is the constructor for <var>TPopupMenu</var>, and calls the inherited <var>Create</var>, sets style to <var>PopupMenu</var>, sets <var>AutoPopup</var> to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -3613,7 +3742,7 @@
       </element>
       <element name="NewPopupMenu.AutoPopup">
         <short>
-          True if the pop-up menu is automatically displayed when the mouse is hovered over the component.
+          <b>True</b> if the pop-up menu is automatically displayed when the mouse is hovered over the component.
         </short>
       </element>
       <element name="NewPopupMenu.Items">
@@ -3650,7 +3779,7 @@
         <short>Array of menu items for the new sub-menu.</short>
       </element>
       <element name="NewSubMenu.TheEnabled">
-        <short>True if the menu item for the sub-menu is enabled.</short>
+        <short><b>True</b> if the menu item for the sub-menu is enabled.</short>
       </element>
 
       <element name="NewItem">
@@ -3681,10 +3810,10 @@
         <short>Short cut for the new menu item.</short>
       </element>
       <element name="NewItem.AChecked">
-        <short>True if the new menu item is checked.</short>
+        <short><b>True</b> if the new menu item is checked.</short>
       </element>
       <element name="NewItem.TheEnabled">
-        <short>True if the new menu item is enabled.</short>
+        <short><b>True</b> if the new menu item is enabled.</short>
       </element>
       <element name="NewItem.TheOnClick">
         <short>OnClick handler for the new menu item.</short>
