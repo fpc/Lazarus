@@ -13,7 +13,8 @@ uses
 
 type
   TTypeNameFlag = (
-    tnfOnlyDeclared    // do not return a substitute with ^ symbol
+    tnfOnlyDeclared,    // do not return a substitute with ^ symbol
+    tnfNoSubstitute     // do not return "{record}" if debug info has no type name
   );
   TTypeNameFlags = set of TTypeNameFlag;
 
@@ -125,6 +126,8 @@ begin
       exit;
     end;
   end;
+  if tnfNoSubstitute in AFlags then
+    exit;
 
   Result := True;
   case ADbgSymbol.Kind of

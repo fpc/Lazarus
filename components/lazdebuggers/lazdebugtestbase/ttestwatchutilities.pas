@@ -10,7 +10,7 @@ interface
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpPascalBuilder, LazLoggerBase, Forms, IdeDebuggerBase, IdeDebuggerUtils,
-  IdeDebuggerWatchResult, RegExpr,
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, RegExpr,
   TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, TestOutputLogger;
 
@@ -209,6 +209,7 @@ type
 
   TWatchExpectationList = class
   private
+    FWatchResultPrinter: TWatchResultPrinter;
     FAcceptSkSimple: TDbgSymbolKinds;
     FTest: TDBGTestCase;
     FList: array of TWatchExpectation;
@@ -260,7 +261,7 @@ type
     function CheckResultRecord(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultClass(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultObject(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
-    function CheckResultInstance(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultInterface(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
 
     property Compiler: TTestDbgCompiler read GetCompiler;
     property Debugger: TTestDbgDebugger read GetDebugger;
@@ -1169,10 +1170,12 @@ begin
     if AFoundCount < Length(Result) then
       Result[AFoundCount] := copy(AVal, 1, i-1);
     inc(AFoundCount);
+    while (i < length(AVal)) and (AVal[i+1] in [#1..#32]) do
+      inc(i);
     delete(AVal, 1, i);
     i := 1;
-    if (length(AVal) > 0) and (AVal[1] = ' ') then
-      delete(AVal, 1, 1);
+    //if (length(AVal) > 0) and (AVal[1] = ' ') then
+    //  delete(AVal, 1, 1);
   end;
 end;
 
@@ -1425,7 +1428,7 @@ begin
     rkClass:       Result := CheckResultClass(AContext, AnIgnoreRsn);
     rkObject:      Result := CheckResultObject(AContext, AnIgnoreRsn);
     rkRecord:      Result := CheckResultRecord(AContext, AnIgnoreRsn);
-    rkInterface:   Result := CheckResultInstance(AContext, AnIgnoreRsn);
+    rkInterface:   Result := CheckResultInterface(AContext, AnIgnoreRsn);
     rkStatArray:   Result := CheckResultArray(AContext, AnIgnoreRsn);
     rkDynArray:    Result := CheckResultArray(AContext, AnIgnoreRsn);
   end;
@@ -1569,7 +1572,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestMatches('Data', Expect.ExpTextData, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+    Result := TestMatches('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1591,7 +1594,7 @@ begin
       else
         s := IntToStr(Expect.expIntValue);
 
-      Result := TestEquals('Data', s, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', s, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
     end
     else begin
       if IsCardinal then begin
@@ -1624,7 +1627,7 @@ begin
     Expect := AContext.Expectation;
 
     WriteStr(s, Expect.ExpBoolValue);
-    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
     if AContext.Expectation.ExpResultKind = rkSizedBool then begin
       i := pos('(', v);
       if i > 1 then
@@ -1645,7 +1648,7 @@ begin
     Expect := AContext.Expectation;
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), PrintWatchValue(AContext.WatchRes, wdfDefault), EqIgnoreCase, AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), EqIgnoreCase, AContext, AnIgnoreRsn);
     end
     else begin
       Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkFloatVal, AContext, AnIgnoreRsn);
@@ -1663,7 +1666,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', Expect.ExpTextData, PrintWatchValue(AContext.WatchRes, wdfDefault), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
+    Result := TestEquals('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1679,7 +1682,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
 
     if (v='') or (v[1] <> '[') or (v[length(v)] <> ']') then begin
       Result := TestTrue('elements are in [...]', False, AContext, AnIgnoreRsn);
@@ -1717,7 +1720,7 @@ begin
     else
       e := QuoteText(Expect.ExpTextData);
 
-    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
     if ehCharFromIndex in ehf then begin
       if v <> e then begin
 //AnIgnoreRsn := AnIgnoreRsn + 'char from index not implemented';
@@ -1746,7 +1749,7 @@ begin
     Expect := AContext.Expectation;
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+      v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
       ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
       // in dwarf 2 ansistring are pchar
@@ -1833,7 +1836,7 @@ begin
       else
         e := QuoteText(Expect.ExpTextData);
 
-      Result := TestEquals('Data', e, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', e, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
     end
     else begin
       Result := TestTrue('ValueKind', AContext.WatchRes.ValueKind = rdkString, AContext, AnIgnoreRsn);
@@ -1857,7 +1860,7 @@ begin
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      g := PrintWatchValue(AContext.WatchRes, wdfDefault);
+      g := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
 
       e := '(\$[0-9a-fA-F]*|nil)';
       tn := GetExpTypeNameAsRegEx(Expect);
@@ -1990,7 +1993,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
 
     if CompareText(v, 'nil') = 0 then begin
@@ -2033,28 +2036,24 @@ function TWatchExpectationList.CheckStructureFields(const AnIgnoreRsn: String;
 var
   Expect: TWatchExpectationResult;
   ehf: TWatchExpErrorHandlingFlags;
-  i, j, e, a: Integer;
-  parsed: TStringArray;
+  i, j, a: Integer;
   SubContext: TWatchExpTestCurrentData;
   sr: TWatchExpectationResult;
   n, v: String;
+  lastidx: integer;
 begin
   Result := True;
   with AContext.WatchExp do begin
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
     delete(v, 1, pos('(', v));
     delete(v, length(v), 1);
 
-    parsed := ParseCommaList(v, e, -1, ';');
-    TestTrue('FieldParser len', e <= Length(parsed), AContext, AnIgnoreRsn);
-    e := min(e, Length(parsed));
-
-
     n := FTest.TestBaseName;
     SubContext := AContext;
+    lastidx := -1;
     for i := 0 to length(Expect.ExpSubResults) - 1 do begin
       sr := Expect.ExpSubResults[i];
       if not TestTrue('field name ' + IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
@@ -2076,31 +2075,37 @@ begin
         TestTrue('EvalCallResDBGType has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
       end;
 
-      j := parsed.IndexOfFieldName(sr.ExpFieldName, e);
-      if not TestTrue('field exists ' + IntToStr(i), j >= 0, AContext, AnIgnoreRsn) then
-        Continue;
+
+      v := LowerCase(sr.ExpFieldName);
+      j := AContext.WatchRes.FieldCount-1;
+      while (j >= 0) and (LowerCase(AContext.WatchRes.Fields[j].FieldName) <> v) do
+        dec(j);
+
+      TestTrue('found field '+v, j >= 0, AContext, AnIgnoreRsn);
+(*
       if not(ehNoFieldOrder in ehf) then begin
         if ehMissingFields in ehf then begin
-          dec(e, j);
-          parsed.delete(0, j);
-          j := 0;
+          TestTrue('field in order ' + IntToStr(lastidx) + ' ' + IntToStr(j), j > lastidx, AContext, AnIgnoreRsn);
+          lastidx := j;
+        end
+        else begin
+          inc(lastidx);
+          TestTrue('field in order ' + IntToStr(lastidx) + ' ' + IntToStr(j), j = lastidx, AContext, AnIgnoreRsn);
         end;
+      end;
+*)
 
-        if not TestTrue('field in order ' + IntToStr(i) + ' ' + IntToStr(j), j = 0, AContext, AnIgnoreRsn) then
-          Continue;
+      if j >= 0 then begin
+        SubContext.WatchRes := TWatchResultDataPrePrinted.Create(
+          FWatchResultPrinter.PrintWatchValue(AContext.WatchRes.Fields[j].Field, wdfDefault)
+        );
+        FTest.TestBaseName := n + ' Idx=' + IntToStr(i);
+        SubContext.Expectation := sr;
+        Result := CheckData(SubContext, AnIgnoreRsn);
+
+        FreeAndNil(SubContext.WatchRes);
       end;
 
-      SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed.ValueOfFieldName(j));
-      FTest.TestBaseName := n + ' Idx=' + IntToStr(i);
-
-      dec(e);
-      parsed.delete(j, 1);
-
-      //SubContext.WatchExp.TstExpected := sr;
-      SubContext.Expectation := sr;
-      Result := CheckData(SubContext, AnIgnoreRsn);
-
-      FreeAndNil(SubContext.WatchRes);
     end;
     FTest.TestBaseName := n;
   end;
@@ -2109,27 +2114,16 @@ end;
 function TWatchExpectationList.CheckResultRecord(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
-  Expect: TWatchExpectationResult;
-  v, tn: String;
-  ehf: TWatchExpErrorHandlingFlags;
+  v: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
-    Expect := AContext.Expectation;
-    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
-debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
-    //if (LowerCase(v) = 'nil') then
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
-    //if not TestMatches('Is record', '^record .* end$', v, False, AContext, AnIgnoreRsn) then
-    //  exit;
-    //delete(v, 1, 7);
-    //delete(v, length(v)-2, 3);
-
-    tn := GetExpTypeNameAsRegEx(Expect);
-    if not TestMatches('Is record', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
-      exit;
+    TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
+    TestTrue('dstRecord', AContext.WatchRes.StructType = dstRecord, AContext, AnIgnoreRsn);
 
     Result := CheckStructureFields(AnIgnoreRsn, AContext);
   end;
@@ -2138,21 +2132,16 @@ end;
 function TWatchExpectationList.CheckResultClass(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
-  v, tn: String;
-  ehf: TWatchExpErrorHandlingFlags;
-  Expect: TWatchExpectationResult;
+  v: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
-    Expect := AContext.Expectation;
-    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
-    //if (LowerCase(v) = 'nil') then
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
-    tn := GetExpTypeNameAsRegEx(Expect);
-    if not TestMatches('Is class ', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
-      exit;
+    TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
+    TestTrue('dstClass', AContext.WatchRes.StructType = dstClass, AContext, AnIgnoreRsn);
 
     Result := CheckStructureFields(AnIgnoreRsn, AContext);
   end;
@@ -2160,18 +2149,46 @@ end;
 
 function TWatchExpectationList.CheckResultObject(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  v: String;
 begin
-  Result := CheckResultRecord(AContext, AnIgnoreRsn);
+  with AContext.WatchExp do begin
+    Result := True;
+
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
+
+    TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
+    if AContext.WatchRes.StructType in [dstClass, dstRecord] then
+      TestTrue('dstObject', AContext.WatchRes.StructType = dstObject, AContext, 'Ignored')
+    else
+      TestTrue('dstObject', AContext.WatchRes.StructType = dstObject, AContext, AnIgnoreRsn);
+
+    Result := CheckStructureFields(AnIgnoreRsn, AContext);
+  end;
 end;
 
-function TWatchExpectationList.CheckResultInstance(
+function TWatchExpectationList.CheckResultInterface(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  v: String;
 begin
-  Result := CheckResultClass(AContext, AnIgnoreRsn);
+  with AContext.WatchExp do begin
+    Result := True;
+
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
+
+    TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
+    TestTrue('dstInterface', AContext.WatchRes.StructType = dstInterface, AContext, AnIgnoreRsn);
+
+    Result := CheckStructureFields(AnIgnoreRsn, AContext);
+  end;
 end;
 
 constructor TWatchExpectationList.Create(ATest: TDBGTestCase);
 begin
+  FWatchResultPrinter := TWatchResultPrinter.Create;
   FTest := ATest;
   FTypeNameAliases := TStringList.Create;
   inherited Create;
@@ -2181,6 +2198,7 @@ destructor TWatchExpectationList.Destroy;
 begin
   Clear;
   FTypeNameAliases.Free;
+  FWatchResultPrinter.Free;
   inherited Destroy;
 end;
 

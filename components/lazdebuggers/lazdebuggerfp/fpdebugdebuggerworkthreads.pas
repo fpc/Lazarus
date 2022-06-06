@@ -1021,13 +1021,12 @@ begin
       exit;
     end;
 
-    if (FWatchValue <> nil) and
-       (ResValue <> nil) and (not IsError(ResValue.LastError)) and
-       (ADispFormat <> wdfMemDump) and (FWatchValue.RepeatCount <= 0)  // TODO
+    if (FWatchValue <> nil) and (ResValue <> nil) and
+       (ADispFormat <> wdfMemDump)   // TODO
     then begin
       WatchResConv := TFpWatchResultConvertor.Create(FExpressionScope.LocationContext);
       ResData := FWatchValue.ResData;
-      Result := WatchResConv.WriteWatchResultData(ResValue, ResData);
+      Result := WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
 
       if Result and APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
       // TODO: Only dwarf 2
@@ -1036,7 +1035,7 @@ begin
           APasExpr.FixPCharIndexAccess := True;
           APasExpr.ResetEvaluation;
           ResValue := APasExpr.ResultValue;
-          WatchResConv.WriteWatchResultData(ResValue, ResData);
+          WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
         end;
       end;
 

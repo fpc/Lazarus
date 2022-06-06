@@ -52,6 +52,10 @@
         <Filename Value="idedebuggerwatchresult.pas"/>
         <UnitName Value="IdeDebuggerWatchResult"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggerwatchresprinter.pas"/>
+        <UnitName Value="idedebuggerwatchresprinter"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

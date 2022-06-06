@@ -868,7 +868,7 @@ for i := StartIdx to t.Count-1 do
 
 
 StartIdxClassConst := t.Count;
-    t.Add(AName, p+'FiveRec'+e,            weMatch('a *=.*b *= *44',skRecord))
+    t.Add(AName, p+'FiveRec'+e,            weMatch('a *:.*b *: *44',skRecord))
       .SkipIf(ALoc = tlPointerAny);
     t.Add(AName, p+'FiveRec'+e,     weRecord([weInteger(-22-n).N('a'), weInteger(44).N('b')], 'TRecordFive'))
       .SkipIf(ALoc = tlPointerAny);
@@ -1011,7 +1011,7 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
     t.Add(AName, p+'SomeFunc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeFunc1: *function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunctionRef) );
     t.Add(AName, '@'+p+'SomeFunc1Ref'+e,     wePointer('^TFunc1') ).AddFlag(ehIgnPointerDerefData);
     t.Add(AName, p+'SomeProc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeProc1: *procedure *\(\) *$', skProcedureRef) );
-    t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('TMeth1.*Proc *= *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*=.*', skRecord) );
+    t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('Proc *: *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*:.*', skRecord) );
     t.Add(AName, p+'SomeMeth1Ref'+e+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
 for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc in [tlConst, tlPointerAny]);
@@ -1993,19 +1993,19 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
       v := t2.Tests[0]^.TstWatch.Values[Thread, 0].ResultData.AsQWord;
       val := '$'+IntToHex(v, 16);
       t.Add(AName+' Int', 'PtrUInt('+p+'Instance1'+e+')',   weCardinal(v, 'PtrUInt', -1));
-      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',            weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1('+val+')',                            weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1(Pointer('+p+'Instance1_Int'+e+'))',   weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' TClass1', 'TClass1(Pointer('+val+'))',                   weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+p+'Instance1_Int'+e+')',            weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1('+val+')',                            weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+p+'Instance1_Int'+e+'))',   weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' TClass1', 'TClass1(Pointer('+val+'))',                   weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
 
       if ALoc <> tlConst then
         TestTrue('got rdkNum 1', t2.Tests[1]^.TstWatch.Values[Thread, 0].ResultData.ValueKind in [rdkSignedNumVal, rdkUnsignedNumVal]);
       v := t2.Tests[1]^.TstWatch.Values[Thread, 0].ResultData.AsQWord;
       val := '$'+IntToHex(v, 16);
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(@'+p+'Instance1'+e+')^',           weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1('+val+')^',                        weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer(@'+p+'Instance1'+e+'))^',  weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
-      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer('+val+'))^',               weMatch('FAnsi *=[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(@'+p+'Instance1'+e+')^',           weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1('+val+')^',                        weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer(@'+p+'Instance1'+e+'))^',  weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
+      t.Add(AName+' PTxInstance1', 'PTxInstance1(Pointer('+val+'))^',               weMatch('FAnsi *:[ $0-9A-F()]*\^?:? *'''+AChr1+'T', skClass));
 
 
       if ALoc <> tlConst then
@@ -2069,14 +2069,14 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
         TestTrue('got rdkNum 6', t2.Tests[6]^.TstWatch.Values[Thread, 0].ResultData.ValueKind in [rdkSignedNumVal, rdkUnsignedNumVal]);
       v := t2.Tests[6]^.TstWatch.Values[Thread, 0].ResultData.AsQWord;
       val := '$'+IntToHex(v, 16);
-      t.Add(AName, 'PTxFiveRec(@'+p+'FiveRec'+e+')^',                  weMatch('a *=.*b *= *44',skRecord));
-      t.Add(AName, 'PTxFiveRec('+val+')^',                             weMatch('a *=.*b *= *44',skRecord));
-      t.Add(AName, 'PTxFiveRec(Pointer(@'+p+'FiveRec'+e+'))^',         weMatch('a *=.*b *= *44',skRecord));
-      t.Add(AName, 'PTxFiveRec(Pointer('+val+'))^',                    weMatch('a *=.*b *= *44',skRecord));
-      t.Add(AName, 'PTxFiveRec(PtrUInt(@'+p+'FiveRec'+e+'))^',         weMatch('a *=.*b *= *44',skRecord));
-      t.Add(AName, 'PTxFiveRec(PtrUInt('+val+'))^',                    weMatch('a *=.*b *= *44',skRecord));
+      t.Add(AName, 'PTxFiveRec(@'+p+'FiveRec'+e+')^',                  weMatch('a *:.*b *: *44',skRecord));
+      t.Add(AName, 'PTxFiveRec('+val+')^',                             weMatch('a *:.*b *: *44',skRecord));
+      t.Add(AName, 'PTxFiveRec(Pointer(@'+p+'FiveRec'+e+'))^',         weMatch('a *:.*b *: *44',skRecord));
+      t.Add(AName, 'PTxFiveRec(Pointer('+val+'))^',                    weMatch('a *:.*b *: *44',skRecord));
+      t.Add(AName, 'PTxFiveRec(PtrUInt(@'+p+'FiveRec'+e+'))^',         weMatch('a *:.*b *: *44',skRecord));
+      t.Add(AName, 'PTxFiveRec(PtrUInt('+val+'))^',                    weMatch('a *:.*b *: *44',skRecord));
       if p='gv' then
-        t.Add(AName, 'PTxFiveRec(gvp_'+'FiveRec'+e+')^',               weMatch('a *=.*b *= *44',skRecord));
+        t.Add(AName, 'PTxFiveRec(gvp_'+'FiveRec'+e+')^',               weMatch('a *:.*b *: *44',skRecord));
 
 for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc = tlConst);
@@ -2125,7 +2125,7 @@ end;
     t.Add(AName+' Cardinal', 'Cardinal('+p+'Rec3S'+e+')',  weMatch('.', skSimple)).ExpectError();
     t.Add(AName+' QWord', 'QWord('+p+'Rec3S'+e+')',        weMatch('.', skSimple)).ExpectError();
 
-    t.Add(AName+' QWord', 'TRecord3QWord('+p+'Rec3S'+e+')',        weMatch('a *=.*18446744073709551594.*b *=.*44.*c *= .', skRecord));
+    t.Add(AName+' QWord', 'TRecord3QWord('+p+'Rec3S'+e+')',        weMatch('a *:.*18446744073709551594.*b *:.*44.*c *: .', skRecord));
 
   end;
 

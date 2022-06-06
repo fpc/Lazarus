@@ -9,7 +9,8 @@ interface
 
 uses
   IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
-  IdeDebuggerUtils, IdeDebuggerWatchResult, LazarusPackageIntf;
+  IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
+  LazarusPackageIntf;
 
 implementation
 

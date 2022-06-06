@@ -45,7 +45,7 @@ uses
   DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
-  StrUtils, IdeDebuggerWatchResult;
+  StrUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter;
 
 type
 
@@ -152,6 +152,7 @@ type
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
   private
+    FWatchPrinter: TWatchResultPrinter;
     FWatchesInView: TIdeWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FInEndUpdate: Boolean;
@@ -221,6 +222,7 @@ end;
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FWatchPrinter := TWatchResultPrinter.Create;
   FWatchesInView := nil;
   FStateFlags := [];
   nbInspect.Visible := False;
@@ -299,6 +301,7 @@ begin
   if FQueuedUnLockCommandProcessing then
     DebugBoss.UnLockCommandProcessing;
   FQueuedUnLockCommandProcessing := False;
+  FreeAndNil(FWatchPrinter);
 
   inherited Destroy;
 end;
@@ -942,7 +945,7 @@ begin
 
   InspectMemo.WordWrap := True;
   if d.ResultData <> nil then
-    s := PrintWatchValue(d.ResultData, d.DisplayFormat)
+    s := FWatchPrinter.PrintWatchValue(d.ResultData, d.DisplayFormat)
   else
     s := d.Value;
   InspectMemo.Text := DebugBoss.FormatValue(d.TypeInfo, s);
@@ -1032,7 +1035,7 @@ begin
          ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
       then begin
         if (WatchValue.Validity = ddsValid) and (WatchValue.ResultData <> nil) then begin
-          WatchValueStr := PrintWatchValue(WatchValue.ResultData, WatchValue.DisplayFormat);
+          WatchValueStr := FWatchPrinter.PrintWatchValue(WatchValue.ResultData, WatchValue.DisplayFormat);
           WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValueStr));
           if (WatchValue.TypeInfo <> nil) and
              (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and

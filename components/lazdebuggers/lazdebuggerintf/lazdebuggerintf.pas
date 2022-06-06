@@ -104,14 +104,33 @@ type
 
 
   TLzDbgFloatPrecission = (dfpSingle, dfpDouble, dfpExtended);
+//  TLzDbgSetData = bitpacked array [0..255] of boolean;
+  TLzDbgStructType      = (dstUnknown, dstRecord, dstObject, dstClass, dstInterface);
+  TLzDbgArrayType       = (datUnknown, datDynArray, datStatArray);
+  TLzDbgFieldVisibility = (dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
+  TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor);
+  TLzDbgFieldFlags = set of TLzDbgFieldFlag;
 
   { TLzDbgWatchDataIntf:
     - Interface for providing result-data.
-    - The backend must call one of the "Create...." methods, before setting/adding
-      any other data.
-    - The backend must call exactly one of the "Create...." methods (one and only one).
-      Except for:
-      - CreateError may be called even if one of the non-erroc "Create..." had been called before
+    - REQUIREMENTS (for the backend)
+      ** INIT with Create...." **
+         First call must be to one of the "Create...." methods.
+         Other data can only be set/added after that.
+      ** INIT exactly ONCE **
+         Only one "Create...." method can be called.
+         The type can't be changed after that.
+         - Except for:
+           CreateError may be called even if one of the non-erroc "Create..." had been called before
+      ** All ARRAY elements must have the same type **
+         - All entries of an array (added with "SetNextArrayData") must have the
+           same type (i.e., be initialized using the same "Create...." method)
+         - This includes all *nested* types (e.g. pointer deref)
+      ** SetPCharShouldBeStringValue
+         - Like array elements: The 2nd value must have the same type as the first.
+         - Not allowed to be called on nested elements
+    - Adding nested data (calling any method returning a new TLzDbgWatchDataIntf)
+      The Frontend may return "nil" to indicate it does not want this particular data.
   }
 
   TLzDbgWatchDataIntf = interface
@@ -124,8 +143,25 @@ type
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
     procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
+//    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
     procedure CreateSetValue(const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
+//    // CreateSetValue: "ASetVal" only has "length(ANames)" entries. Any higher value will be ignored / should be zero
+//    procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 
+    // Returns Intf for setting element-type => for empty array
+    function CreateArrayValue(AnArrayType: TLzDbgArrayType;
+                              ATotalCount: Integer = 0;
+                              ALowIdx: Integer = 0
+                             ): TLzDbgWatchDataIntf;
+    //procedure CreateDynArrayValue(ATotalCount: Integer = 0);
+    //procedure CreateStatArrayValue(ATotalCount: Integer = 0);
+    // low/high
+
+    procedure CreateStructure(AStructType: TLzDbgStructType;
+                              ADataAddress: TDBGPtr = 0
+                              //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
+                              //ARecurseFieldCount: Integer = 0 // Fields including anchestors
+                             );
     procedure CreateError(AVal: String);
 
     // For all Values
@@ -137,8 +173,27 @@ type
     // For all Values (except error)
     procedure SetTypeName(ATypeName: String);
 
+    // For Array
+    procedure SetDataAddress(AnAddr: TDbgPtr);
+
     // For Pointers:
     function  SetDerefData: TLzDbgWatchDataIntf;
+
+    // For Arrays
+    (* - The returned TLzDbgWatchDataIntf is only valid until the next call of SetNextItemData.
+         For nested arrays, this includes calls to any outer arrays SetNextItemData.
+       - Type related (ASigned, AByteSize, APrecission, ...) are taken from the
+         proto-type or the  first Item only. They are ignored on subsequent items
+    *)
+    function  SetNextArrayData: TLzDbgWatchDataIntf;
+
+    // For structures:
+    function  SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf; // Only: object, class, interface
+    function  AddField(AFieldName: String;
+                       AVisibility: TLzDbgFieldVisibility;
+                       AFlags: TLzDbgFieldFlags
+//                       AnAnchestor: TLzDbgWatchDataIntf  // nil => unknown
+                      ): TLzDbgWatchDataIntf;
   end;
 
   { TWatchValueIntf }

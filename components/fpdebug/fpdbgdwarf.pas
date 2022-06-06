@@ -3646,6 +3646,7 @@ function TFpSymbolDwarf.ReadMemberVisibility(out
 var
   Val: Integer;
 begin
+  AMemberVisibility := svUnknown;
   Result := InformationEntry.ReadValue(DW_AT_external, Val);
   if Result and (Val <> 0) then begin
     AMemberVisibility := svPublic;

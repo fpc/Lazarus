@@ -38,7 +38,7 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, math, Types,
+  TypInfo, Classes, SysUtils, math, Types, fgl,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList,
@@ -644,38 +644,87 @@ type
   { TCurrentResData }
 
   TCurrentResData = class(TObject, TLzDbgWatchDataIntf)
+  private type
+    TCurrentResDataFlag = (
+      crfDone, crfWasDone, crfSubDataCreated,
+      crfFreeResData, crfFreeErrResData,
+      crfIsArrayEntry, crfArrayProtoSet,
+      crfIsAnchestor
+    );
+    TCurrentResDataFlags = set of TCurrentResDataFlag;
+    TCurrentResDataList = specialize TFPGObjectList<TCurrentResData>;
   private
     FNewResultData: TWatchResultDataEx;
-    FSubCurrentData,     // Deref
-    FSubCurrentDataSecond, // String(in PCharOrString)
-    FOwnerCurrentData: TCurrentResData;
+    FStoredResultData, FStoredErrorResultData: TWatchResultDataEx;
 
-    procedure AfterDataCreated;
-    procedure AfterSubDataCreated;
+    FSubCurrentData,       // Deref, Array-Element, PChar(in PCharOrString)
+    FSubCurrentDataSecond, // String(in PCharOrString)
+    FAnchestorCurrentData,
+    FOwnerCurrentData: TCurrentResData;
+    FCurrentFields: TCurrentResDataList;
+    FFLags: TCurrentResDataFlags;
+    FCurrentIdx, FArrayCount: Integer;
+
+    procedure BeforeCreateValue; inline; // Before creating any non-error
+    procedure BeforeCreateError; inline;
+    procedure AfterDataCreated; virtual;
+    procedure AfterSubDataCreated(ASubData: TCurrentResData);
+    procedure FinishCurrentArrayElement;
     function  InternalPCharShouldBeStringValue(APCharResult: TCurrentResData): TLzDbgWatchDataIntf;
+    procedure WriteFieldsToRes(AStartIdx: Integer; AClassResData: TWatchResultDataEx);
+
+    function  CreateSubCurrentResData: TCurrentResData; inline;
+    procedure InitSubCurrentResData(ANewCurData: TCurrentResData); inline;
+    procedure MarkResDataAsUsedByOwner;
+    procedure FreeResultAndSubData;
+    procedure FreeResultAndSubDataAndDestroy;
   public
     destructor Destroy; override;
     procedure Done;
     function  RootResultData: TCurrentResData;
     property  NewResultData: TWatchResultDataEx read FNewResultData;
+
+    procedure DebugPrint(AText: String);
   public
-    procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
-    procedure CreateString(AVal: String);// AnEncoding // "pchar data"
-    procedure CreateWideString(AVal: WideString);
-    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0);
-    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
-    procedure CreatePointerValue(AnAddrValue: TDbgPtr);
-    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+    {%region ***** TLzDbgWatchDataIntf ***** }
+    procedure CreatePrePrinted(AVal: String);  virtual; // ATypes: TLzDbgWatchDataTypes);
+    procedure CreateString(AVal: String);  virtual;// AnEncoding // "pchar data"
+    procedure CreateWideString(AVal: WideString); virtual;
+    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0); virtual;
+    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0); virtual;
+    procedure CreatePointerValue(AnAddrValue: TDbgPtr); virtual;
+    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); virtual;
+    function  CreateArrayValue(AnArrayType: TLzDbgArrayType;
+                               ATotalCount: Integer = 0;
+                               ALowIdx: Integer = 0
+                              ): TLzDbgWatchDataIntf; virtual;
     procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
+//    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
     procedure CreateSetValue(const ANames: TStringDynArray);
+    //procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
+    procedure CreateStructure(AStructType: TLzDbgStructType;
+                              ADataAddress: TDBGPtr = 0
+                              //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
+                              //ARecurseFieldCount: Integer = 0 // Fields including anchestors
+                             );
 
-    procedure CreateError(AVal: String);
+    procedure CreateError(AVal: String); virtual;
 
     function  SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
     procedure SetTypeName(ATypeName: String);
 
     function  SetDerefData: TLzDbgWatchDataIntf;
+    procedure SetDataAddress(AnAddr: TDbgPtr);
+    function  SetNextArrayData: TLzDbgWatchDataIntf;
+
+    function  SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf;
+    function  AddField(AFieldName: String;
+                       AVisibility: TLzDbgFieldVisibility;
+                       AFlags: TLzDbgFieldFlags
+//                       AnAnchestor: TLzDbgWatchDataIntf  // nil => unknown
+                      ): TLzDbgWatchDataIntf;
+    {%endregion ***** TLzDbgWatchDataIntf ***** }
   end;
 
   { TCurrentWatchValue }
@@ -2076,7 +2125,7 @@ end;
 
 function TDebuggerUnitInfo.GetLocationFullFile: String;
 begin
-  Result := FLocationFullFile;;
+  Result := FLocationFullFile;
 end;
 
 function TDebuggerUnitInfo.GetLocationName: String;
@@ -3045,7 +3094,7 @@ end;
 
 function TIdeLocalsMonitor.GetCurrentLocalsList: TCurrentLocalsList;
 begin
-  Result := TCurrentLocalsList(LocalsList);;
+  Result := TCurrentLocalsList(LocalsList);
 end;
 
 procedure TIdeLocalsMonitor.DoStateEnterPause;
@@ -3157,18 +3206,87 @@ end;
 
 { TCurrentResData }
 
-procedure TCurrentResData.AfterDataCreated;
+procedure TCurrentResData.BeforeCreateValue;
 begin
-  if FOwnerCurrentData <> nil then
-    FOwnerCurrentData.AfterSubDataCreated;
+  if (FNewResultData <> nil) and (FNewResultData.ValueKind = rdkError) then begin
+    assert(crfIsArrayEntry in FFLags, 'TCurrentResData.BeforeCreateValue: crfIsArrayEntry in FFLags');
+    assert((FStoredErrorResultData=nil) or (FStoredErrorResultData=FNewResultData), 'TCurrentResData.BeforeCreateValue: (FStoredErrorResultData=nil) or (FStoredErrorResultData=FNewResultData)');
+    FStoredErrorResultData := FNewResultData;
+    FNewResultData := FStoredResultData
+  end;
 end;
 
-procedure TCurrentResData.AfterSubDataCreated;
+procedure TCurrentResData.BeforeCreateError;
+begin
+  if crfIsArrayEntry in FFLags then begin
+    if (FNewResultData <> nil) and (FNewResultData.ValueKind <> rdkError) then begin
+      assert((FStoredResultData=nil) or (FStoredResultData=FNewResultData), 'TCurrentResData.BeforeCreateError: (FStoredResultData=nil) or (FStoredResultData=FNewResultData)');
+      FStoredResultData := FNewResultData;
+      FNewResultData := FStoredErrorResultData;
+    end;
+  end
+  else
+  if (FNewResultData <> nil) and (FNewResultData.ValueKind <> rdkError) then begin
+    FreeResultAndSubData;
+  end;
+end;
+
+procedure TCurrentResData.AfterDataCreated;
+begin
+  if crfIsArrayEntry in FFLags then
+    Exclude(FFLags, crfDone);
+  assert(FFLags * [crfWasDone, crfIsArrayEntry] <> [crfWasDone], 'TCurrentResData.AfterDataCreated: FFLags * [crfWasDone, crfIsArrayEntry] <> [crfWasDone]');
+  assert((not (crfIsAnchestor in FFLags)) or (FNewResultData.ValueKind=rdkStruct), 'TCurrentResData.AfterDataCreated: (not (crfIsAnchestor in FFLags)) or (FNewResultData.ValueKind=rdkStruct)');
+
+  if FOwnerCurrentData <> nil then
+    FOwnerCurrentData.AfterSubDataCreated(Self);
+end;
+
+procedure TCurrentResData.AfterSubDataCreated(ASubData: TCurrentResData);
 begin
   assert(FNewResultData <> nil, 'TCurrentResData.AfterSubDataCreated: FNewResultData <> nil');
-  if FNewResultData is TWatchResultDataPointer then begin
-    TWatchResultDataPointer(FNewResultData).SetDerefData(FSubCurrentData.FNewResultData);
+  Include(FFLags, crfSubDataCreated);
+end;
+
+procedure TCurrentResData.FinishCurrentArrayElement;
+begin
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray), 'TCurrentResData.FinishCurrentArrayElement: (FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray)');
+  assert((FSubCurrentData<>nil) and (FSubCurrentData is TCurrentResData), 'TCurrentResData.FinishCurrentArrayElement: (FSubCurrentData<>nil) and (FSubCurrentData is TCurrentResData)');
+
+  FSubCurrentData.Done;
+
+  if not (crfSubDataCreated in FFLags) then begin
+    // Empty array / No type-info set.
+    FNewResultData.SetEntryCount(0);
+    assert(FCurrentIdx < 0, 'TCurrentResData.FinishCurrentArrayElement: FCurrentIdx < 0');
+    exit;
   end;
+
+  if (not(crfArrayProtoSet in FFLags)) and
+     (FSubCurrentData.FNewResultData <> nil)
+  then begin
+    assert(FCurrentIdx <= 0, 'TCurrentResData.FinishCurrentArrayElement: FCurrentIdx <= 0');
+    Include(FFLags, crfArrayProtoSet);
+
+    FNewResultData.SetEntryPrototype(FSubCurrentData.FNewResultData);
+  end;
+
+  if (FCurrentIdx = 0) and (FArrayCount > 0) then
+    FNewResultData.SetEntryCount(Min(FArrayCount, 1000));
+
+
+  if FCurrentIdx >= 0 then begin
+    if FCurrentIdx >= FNewResultData.Count then begin // XXXXX entrycount
+      FNewResultData.SetEntryCount(
+        FCurrentIdx +
+        Max(50, Min(FNewResultData.Count div 8, 500))
+      );
+    end;
+
+      FNewResultData.WriteValueToStorage(FCurrentIdx, FSubCurrentData.FNewResultData)
+  end;
+
+  Exclude(FFLags, crfSubDataCreated);
 end;
 
 function TCurrentResData.InternalPCharShouldBeStringValue(
@@ -3180,24 +3298,142 @@ begin
   // AfterDataCreated;
 
   FSubCurrentData := APCharResult;
-  FSubCurrentData.FOwnerCurrentData := Self;
+  InitSubCurrentResData(FSubCurrentData);
 
-  FSubCurrentDataSecond := TCurrentResData.Create;
-  FSubCurrentDataSecond.FOwnerCurrentData := Self;
+  FSubCurrentDataSecond := CreateSubCurrentResData;
   Result := FSubCurrentDataSecond;
+end;
+
+procedure TCurrentResData.WriteFieldsToRes(AStartIdx: Integer;
+  AClassResData: TWatchResultDataEx);
+var
+  i: Integer;
+begin
+  if FCurrentFields = nil then
+    exit;
+
+  FNewResultData.SetFieldCount(FCurrentFields.Count);
+  for i := 0 to FCurrentFields.Count - 1 do begin
+    AClassResData.SetFieldData(AStartIdx + i, TCurrentResData(FCurrentFields[i]).FNewResultData);
+    TCurrentResData(FCurrentFields[i]).Done;
+    TCurrentResData(FCurrentFields[i]).MarkResDataAsUsedByOwner;
+  end;
+end;
+
+function TCurrentResData.CreateSubCurrentResData: TCurrentResData;
+begin
+  Result := TCurrentResData.Create;
+  InitSubCurrentResData(Result);
+end;
+
+procedure TCurrentResData.InitSubCurrentResData(ANewCurData: TCurrentResData);
+begin
+  ANewCurData.FOwnerCurrentData := Self;
+  ANewCurData.FFLags := ANewCurData.FFLags +
+                        FFLags * [crfIsArrayEntry] +
+                        [crfFreeResData, crfFreeErrResData];
+  if (FNewResultData <> nil) and (FNewResultData.ValueKind = rdkArray) then
+    Include(ANewCurData.FFLags, crfIsArrayEntry);
+end;
+
+procedure TCurrentResData.MarkResDataAsUsedByOwner;
+begin
+  assert(FNewResultData<>nil, 'TCurrentResData.MarkResDataAsUsedByOwner: FNewResultData<>nil');
+  if FNewResultData.ValueKind = rdkError then begin
+    Exclude(FFLags, crfFreeErrResData);
+    Include(FFLags, crfFreeResData);
+  end
+  else begin
+    Exclude(FFLags, crfFreeResData);
+    Include(FFLags, crfFreeErrResData);
+  end;
+end;
+
+procedure TCurrentResData.FreeResultAndSubData;
+begin
+  if Self = nil then
+    exit;
+
+  if FStoredResultData = FNewResultData then
+    FStoredResultData := nil;
+  if FStoredErrorResultData = FNewResultData then
+    FStoredErrorResultData := nil;
+
+  FSubCurrentData.FreeResultAndSubDataAndDestroy;
+  FSubCurrentData := nil;
+  FSubCurrentDataSecond.FreeResultAndSubDataAndDestroy;
+  FSubCurrentDataSecond := nil;
+  FAnchestorCurrentData.FreeResultAndSubDataAndDestroy;
+  FAnchestorCurrentData := nil;
+  FreeAndNil(FCurrentFields);
+
+  if (FOwnerCurrentData = nil) or (crfFreeResData in FFLags) then
+    FreeAndNil(FStoredResultData);
+  if (FOwnerCurrentData = nil) or (crfFreeErrResData in FFLags) then
+    FreeAndNil(FStoredErrorResultData);
+
+  if ( (FNewResultData <> nil) and
+       ( (FNewResultData.ValueKind = rdkError) and (crfFreeErrResData in FFLags) or
+         (FNewResultData.ValueKind <> rdkError) and (crfFreeResData in FFLags)
+       )
+     ) or (FOwnerCurrentData = nil)
+  then
+  FreeAndNil(FNewResultData);
+end;
+
+procedure TCurrentResData.FreeResultAndSubDataAndDestroy;
+begin
+  if Self = nil then
+    exit;
+  FreeResultAndSubData;
+  Destroy;
 end;
 
 destructor TCurrentResData.Destroy;
 begin
-  // Do NOT destroy FNewResultData;
+  if FStoredResultData = FNewResultData then
+    FStoredResultData := nil;
+  if FStoredErrorResultData = FNewResultData then
+    FStoredErrorResultData := nil;
+
   FSubCurrentData.Free;
   FSubCurrentDataSecond.Free;
+  FAnchestorCurrentData.Free;
+  FCurrentFields.Free;
+
+  if crfFreeResData in FFLags then
+    FreeAndNil(FStoredResultData);
+  if crfFreeErrResData in FFLags then
+    FreeAndNil(FStoredErrorResultData);
+
+  if (FNewResultData <> nil) and
+     ( (FNewResultData.ValueKind = rdkError) and (crfFreeErrResData in FFLags) or
+       (FNewResultData.ValueKind <> rdkError) and (crfFreeResData in FFLags)
+     )
+  then
+    FreeAndNil(FNewResultData);
+
   inherited Destroy;
 end;
 
 procedure TCurrentResData.Done;
+var
+  i: Integer;
 begin
+  if crfDone in FFLags then
+    exit;
+
+  Include(FFLags, crfDone);
+
+  if FAnchestorCurrentData <> nil then
+    FAnchestorCurrentData.Done;
+  if FCurrentFields <> nil then
+    for i := 0 to FCurrentFields.Count-1 do
+      FCurrentFields[i].Done;
+
   if (FNewResultData <> nil) then begin
+    Include(FFLags, crfWasDone);
+
     if (FNewResultData is TWatchResultDataPCharOrString) then begin
       FSubCurrentData.Done;
       FSubCurrentDataSecond.Done;
@@ -3207,10 +3443,31 @@ begin
       TWatchResultDataPCharOrString(FNewResultData).WriteValueToStorage(0, FSubCurrentData.FNewResultData);
 
       TWatchResultDataPCharOrString(FNewResultData).WriteValueToStorage(1, FSubCurrentDataSecond.FNewResultData);
-      FreeAndNil(FSubCurrentData.FNewResultData);
-      FreeAndNil(FSubCurrentDataSecond.FNewResultData);
+//      FreeAndNil(FSubCurrentData.FNewResultData);
+//      FreeAndNil(FSubCurrentDataSecond.FNewResultData);
 
       FNewResultData.SetSelectedIndex(0);
+    end
+    else
+    if FNewResultData is TWatchResultDataPointer then begin
+      if FSubCurrentData <> nil then begin
+        FSubCurrentData.Done;
+        FNewResultData.SetDerefData(FSubCurrentData.FNewResultData);
+        FSubCurrentData.MarkResDataAsUsedByOwner;
+
+        //if not (crfIsArrayEntry in FSubCurrentData.FFLags) then
+        //  FSubCurrentData.FNewResultData := nil;
+      end;
+    end
+    else
+    if (FNewResultData.ValueKind = rdkArray) then begin
+      FinishCurrentArrayElement;
+      if (FCurrentIdx >= 0) and (FNewResultData.Count > FCurrentIdx + 1) then
+        FNewResultData.SetEntryCount(FCurrentIdx + 1);
+    end
+    else
+    if (FNewResultData.ValueKind in [rdkStruct]) then begin
+        WriteFieldsToRes(0, FNewResultData);
     end;
   end;
 end;
@@ -3224,91 +3481,234 @@ begin
     Result := Result.FOwnerCurrentData;
 end;
 
+procedure TCurrentResData.DebugPrint(AText: String);
+begin
+  if Self = nil then exit;
+  DebugLnEnter(['>> ',AText]);
+  debugln(['Flags: ', dbghex(longint(FFLags))]);
+  if FNewResultData <> nil then
+  debugln(['NewRes: ', dbghex(ptrint(FNewResultData)),' ',DbgSName(FNewResultData), ' >> ', FNewResultData.TypeName, ' > ',FNewResultData.AsString]);
+  if FStoredResultData <> nil then
+  debugln(['Stored: ', dbghex(ptrint(FStoredResultData)),' ',DbgSName(FStoredResultData), ' >> ', FStoredResultData.TypeName, ' > ',FStoredResultData.AsString]);
+  if FStoredErrorResultData <> nil then
+  debugln(['St-Err: ', dbghex(ptrint(FStoredErrorResultData)),' ',DbgSName(FNewResultData), ' >> ', FNewResultData.TypeName, ' > ',FNewResultData.AsString]);
+  debugln(['Owner:  ', dbghex(ptrint(FOwnerCurrentData))]);
+  FSubCurrentData.DebugPrint('SubCurrent');
+  FSubCurrentDataSecond.DebugPrint('SubCurrent Second');
+  FAnchestorCurrentData.DebugPrint('Anchestor');
+  DebugLnExit(['<<']);
+end;
+
 procedure TCurrentResData.CreatePrePrinted(AVal: String);
 begin
-  FNewResultData.Free; // ONLY TEMP: fallback for unsuported types  // This frees: FOwnerCurrentData.FNewResultData.DerefData
-  //assert(FNewResultData=nil, 'TCurrentResData.SetPrePrinted: FNewResultData=nil');
-  FNewResultData := TWatchResultDataPrePrinted.Create(AVal);
+  //// TEMP: fallback for unsuported types  // This frees: FOwnerCurrentData.FNewResultData.DerefData
+  if FOwnerCurrentData = nil then  FreeResultAndSubData;
+
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkPrePrinted), 'TCurrentResData.CreatePrePrinted: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkPrePrinted)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataPrePrinted.Create(AVal)
+  else
+    TWatchResultDataPrePrinted(FNewResultData).Create(AVal);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateString(AVal: String);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateString: FNewResultData=nil');
-  FNewResultData := TWatchResultDataString.Create(AVal);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkString), 'TCurrentResData.CreateString: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataString.Create(AVal)
+  else
+    TWatchResultDataString(FNewResultData).Create(AVal);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateWideString(AVal: WideString);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateWideString: FNewResultData=nil');
-  FNewResultData := TWatchResultDataWideString.Create(AVal);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkWideString), 'TCurrentResData.CreateWideString: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataWideString.Create(AVal)
+  else
+    TWatchResultDataWideString(FNewResultData).Create(AVal);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateCharValue(ACharValue: QWord; AByteSize: Integer);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateCharValue: FNewResultData=nil');
-  FNewResultData := TWatchResultDataChar.Create(ACharValue, AByteSize);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkChar), 'TCurrentResData.CreateCharValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataChar.Create(ACharValue, AByteSize)
+  else
+    TWatchResultDataChar(FNewResultData).Create(ACharValue, AByteSize);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateNumValue(ANumValue: QWord; ASigned: Boolean;
   AByteSize: Integer);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.SetNumValue: FNewResultData=nil');
-  if ASigned then
-    FNewResultData := TWatchResultDataSignedNum.Create(Int64(ANumValue), AByteSize)
-  else
-    FNewResultData := TWatchResultDataUnSignedNum.Create(ANumValue, AByteSize);
+  BeforeCreateValue;
+  assert((FNewResultData = nil) or (FNewResultData.ValueKind in [rdkSignedNumVal, rdkUnsignedNumVal]), 'TCurrentResData.CreateNumValue: (FNewResultData = nil) or (FNewResultData.ValueKind in [rdkSignedNumVal, rdkUnsignedNumVal])');
+  if FNewResultData = nil then begin
+    if ASigned then
+      FNewResultData := TWatchResultDataSignedNum.Create(Int64(ANumValue), AByteSize)
+    else
+      FNewResultData := TWatchResultDataUnSignedNum.Create(ANumValue, AByteSize);
+  end
+  else begin
+    if ASigned then
+      TWatchResultDataSignedNum(FNewResultData).Create(Int64(ANumValue), AByteSize)
+    else
+      TWatchResultDataUnSignedNum(FNewResultData).Create(ANumValue, AByteSize);
+  end;
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreatePointerValue(AnAddrValue: TDbgPtr);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreatePointerValue: FNewResultData=nil');
-  FNewResultData := TWatchResultDataPointer.Create(AnAddrValue);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkPointerVal), 'TCurrentResData.CreatePointerValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkPointerVal)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataPointer.Create(AnAddrValue)
+  else
+    TWatchResultDataPointer(FNewResultData).Create(AnAddrValue);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateFloatValue(AFloatValue: Extended;
   APrecission: TLzDbgFloatPrecission);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.SetFloatValue: FNewResultData=nil');
-  FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkFloatVal), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission)
+  else
+    TWatchResultDataFloat(FNewResultData).Create(AFloatValue, APrecission);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateBoolValue(AnOrdBoolValue: QWord;
   AByteSize: Integer);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateBoolValue: FNewResultData=nil');
-  FNewResultData := TWatchResultDataBoolean.Create(AnOrdBoolValue, AByteSize);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkBool), 'TCurrentResData.CreateBoolValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataBoolean.Create(AnOrdBoolValue, AByteSize)
+  else
+    TWatchResultDataBoolean(FNewResultData).Create(AnOrdBoolValue, AByteSize);
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateEnumValue(ANumValue: QWord; AName: String;
   AByteSize: Integer; AnIsEnumIdent: Boolean);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateEnumValue: FNewResultData=nil');
-  if AnIsEnumIdent then
-    FNewResultData := TWatchResultDataEnumVal.Create(ANumValue, AName, AByteSize)
-  else
-    FNewResultData := TWatchResultDataEnum.Create(ANumValue, AName, AByteSize);
+  BeforeCreateValue;
+  if AnIsEnumIdent then begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkEnumVal), 'TCurrentResData.CreateEnumValue: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkEnumVal]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataEnumVal.Create(ANumValue, AName, AByteSize)
+    else
+      TWatchResultDataEnumVal(FNewResultData).Create(ANumValue, AName, AByteSize);
+  end
+  else begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkEnum), 'TCurrentResData.CreateEnumValue: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkEnum]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataEnum.Create(ANumValue, AName, AByteSize)
+    else
+      TWatchResultDataEnum(FNewResultData).Create(ANumValue, AName, AByteSize);
+  end;
   AfterDataCreated;
 end;
 
 procedure TCurrentResData.CreateSetValue(const ANames: TStringDynArray);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.CreateSetValue: FNewResultData=nil');
-  FNewResultData := TWatchResultDataSet.Create(ANames);
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkSet), 'TCurrentResData.CreateSetValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkPointerVal)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataSet.Create(ANames)
+  else
+    TWatchResultDataSet(FNewResultData).Create(ANames);
   AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateStructure(AStructType: TLzDbgStructType;
+  ADataAddress: TDBGPtr);
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkStruct), 'TCurrentResData.CreateStructure: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkPointerVal)');
+  if FNewResultData = nil then begin
+    if AStructType in [dstClass, dstInterface] then
+      FNewResultData := TWatchResultDataRefStruct.Create(AStructType, ADataAddress)
+    else
+      FNewResultData := TWatchResultDataStruct.Create(AStructType);
+  end
+  else begin
+    if AStructType in [dstClass, dstInterface] then
+      TWatchResultDataRefStruct(FNewResultData).Create(AStructType, ADataAddress)
+    else
+      TWatchResultDataStruct(FNewResultData).Create(AStructType);
+  end;
+  FCurrentIdx := 0;
+  AfterDataCreated;
+end;
+
+function TCurrentResData.CreateArrayValue(AnArrayType: TLzDbgArrayType;
+  ATotalCount: Integer; ALowIdx: Integer): TLzDbgWatchDataIntf;
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or ((FNewResultData=nil) or (FNewResultData.ValueKind=rdkArray)), 'TCurrentResData.CreateArrayValue: (FNewResultData=nil) or ((FNewResultData=nil) or (FNewResultData.ValueKind=rdkArray))');
+  if FNewResultData = nil then begin
+    assert(FSubCurrentData=nil, 'TCurrentResData.CreateArrayValue: FSubCurrentData=nil');
+    assert(FFLags*[crfSubDataCreated]=[], 'TCurrentResData.CreateArrayValue: FFLags*[crfSubDataCreated]=[]');
+    assert((AnArrayType<>datDynArray) or (ALowIdx=0), 'TCurrentResData.CreateArrayValue: (AnArrayType<>datDynArray) or (ALowIdx=0)');
+
+    case AnArrayType of
+      datUnknown:   FNewResultData := TWatchResultDataArray.Create(ATotalCount, ALowIdx);
+      datDynArray:  FNewResultData := TWatchResultDataDynArray.Create(ATotalCount);
+      datStatArray: FNewResultData := TWatchResultDataStatArray.Create(ATotalCount, ALowIdx);
+    end;
+
+    FCurrentIdx := -1; // xxxxxxxxx lowbound
+    FArrayCount := ATotalCount;
+
+    FSubCurrentData := CreateSubCurrentResData;
+  end
+
+  else begin
+
+    case AnArrayType of
+      datUnknown:   begin
+        assert(FNewResultData is TWatchResultDataArray, 'TCurrentResData.CreateArrayValue: FNewResultData is TWatchResultDataArray');
+        TWatchResultDataArray(FNewResultData).Create(ATotalCount, ALowIdx);
+      end;
+      datDynArray:  begin
+        assert(FNewResultData is TWatchResultDataDynArray, 'TCurrentResData.CreateArrayValue: FNewResultData is TWatchResultDataDynArray');
+        TWatchResultDataDynArray(FNewResultData).Create(ATotalCount);
+      end;
+      datStatArray: begin
+        assert(FNewResultData is TWatchResultDataStatArray, 'TCurrentResData.CreateArrayValue: FNewResultData is TWatchResultDataStatArray');
+        assert(ATotalCount=FArrayCount, 'TCurrentResData.CreateArrayValue: ATotalCount=FArrayCount');
+        TWatchResultDataStatArray(FNewResultData).Create(ATotalCount, ALowIdx);
+      end;
+    end;
+
+    FCurrentIdx := -1; // xxxxxxxxx lowbound
+    FArrayCount := ATotalCount;
+  end;
+
+  AfterDataCreated;
+  Result := FSubCurrentData;
 end;
 
 procedure TCurrentResData.CreateError(AVal: String);
 begin
-  FNewResultData.Free; // This frees: FOwnerCurrentData.FNewResultData.DerefData
-  FNewResultData := TWatchResultDataError.Create(AVal);
+  BeforeCreateError;
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataError.Create(AVal)
+  else
+    TWatchResultDataError(FNewResultData).Create(AVal);
   AfterDataCreated;
 end;
 
@@ -3330,11 +3730,84 @@ end;
 function TCurrentResData.SetDerefData: TLzDbgWatchDataIntf;
 begin
   assert((FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer), 'TCurrentResData.SetDerefData: (FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer)');
-  if FSubCurrentData = nil then begin
-    FSubCurrentData := TCurrentResData.Create;
-    FSubCurrentData.FOwnerCurrentData := Self;
-  end;
+  if FSubCurrentData = nil then
+    FSubCurrentData := CreateSubCurrentResData;
   Result := FSubCurrentData;
+end;
+
+procedure TCurrentResData.SetDataAddress(AnAddr: TDbgPtr);
+begin
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray), 'TCurrentResData.SetDataAddress: (FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray)');
+  FNewResultData.SetDataAddress(AnAddr);
+end;
+
+function TCurrentResData.SetNextArrayData: TLzDbgWatchDataIntf;
+begin
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray), 'TCurrentResData.SetNextArrayData: (FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray)');
+
+  FinishCurrentArrayElement;
+  inc(FCurrentIdx);
+  Result := FSubCurrentData;
+end;
+
+function TCurrentResData.SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf;
+begin
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in  [rdkStruct]), 'TCurrentResData.SetAnchestor: (FNewResultData<>nil) and (FNewResultData.ValueKind in  [rdkStruct])');
+  assert(FSubCurrentData=nil, 'TCurrentResData.SetAnchestor: FSubCurrentData=nil');
+
+  if (FAnchestorCurrentData <> nil) then begin
+    assert(crfIsArrayEntry in FFLags, 'TCurrentResData.BeforeCreateValue: crfIsArrayEntry in FFLags');
+    FAnchestorCurrentData.CreateStructure(FNewResultData.StructType);
+    Result := FAnchestorCurrentData;
+    exit;
+  end;
+
+  assert(FAnchestorCurrentData=nil, 'TCurrentResData.SetAnchestor: FAnchestorCurrentData=nil');
+
+  FAnchestorCurrentData := CreateSubCurrentResData;
+  Include(FAnchestorCurrentData.FFLags, crfIsAnchestor);
+  if crfIsAnchestor in FFLags then
+    FAnchestorCurrentData.FOwnerCurrentData := FOwnerCurrentData; // Top level parent
+  FAnchestorCurrentData.CreateStructure(FNewResultData.StructType);
+
+  FAnchestorCurrentData.SetTypeName(ATypeName);
+  FNewResultData.SetAnchestor(FAnchestorCurrentData.FNewResultData);
+  FAnchestorCurrentData.MarkResDataAsUsedByOwner;
+
+  Result := FAnchestorCurrentData;
+end;
+
+function TCurrentResData.AddField(AFieldName: String;
+  AVisibility: TLzDbgFieldVisibility; AFlags: TLzDbgFieldFlags
+  ): TLzDbgWatchDataIntf;
+var
+  NewField: TCurrentResData;
+begin
+  Result := nil;
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct]), 'TCurrentResData.AddField: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct])');
+
+  if FCurrentFields = nil then begin
+    FCurrentFields := TCurrentResDataList.Create(True);
+    Exclude(FFLags, crfWasDone);
+  end;
+
+  if FCurrentIdx < FCurrentFields.Count then begin
+    Result := FCurrentFields[FCurrentIdx];
+    inc(FCurrentIdx);
+
+    exit;
+  end;
+
+  NewField := CreateSubCurrentResData;
+  FCurrentFields.Add(NewField);
+
+  if FCurrentIdx >= FNewResultData.DirectFieldCount then
+    FNewResultData.SetFieldCount(FCurrentIdx+50);
+
+  FNewResultData.SetField(FCurrentIdx, AFieldName, AVisibility, AFlags, nil);
+  inc(FCurrentIdx);
+
+  Result := NewField;
 end;
 
 { TCurrentWatchValue }
@@ -3395,6 +3868,7 @@ end;
 
 function TCurrentWatchValue.ResData: TLzDbgWatchDataIntf;
 begin
+  assert(FUpdateCount > 0, 'TCurrentWatchValue.ResData: FUpdateCount > 0');
   if FCurrentResData = nil then
     FCurrentResData := TCurrentResData.Create;
   Result := FCurrentResData;
@@ -3464,7 +3938,10 @@ destructor TCurrentWatchValue.Destroy;
 var
   e: TMethodList;
 begin
+  assert(FUpdateCount=0, 'TCurrentWatchValue.Destroy: FUpdateCount=0');
   FCurrentResData := FCurrentResData.RootResultData;
+  if (FCurrentResData <> nil) and (FResultData = nil) then
+    FCurrentResData.FreeResultAndSubData;
   FCurrentResData.Free;
   for e in FEvents do
     e.Free;

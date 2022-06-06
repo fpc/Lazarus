@@ -54,6 +54,7 @@ type
   );
 
   TDbgSymbolMemberVisibility =(
+    svUnknown,
     svPrivate,
     svProtected,
     svPublic
