@@ -253,6 +253,7 @@ end;
 
 function TWatchValue.GetExpression: String;
 begin
+  Result := '';
   if FWatch <> nil then
     Result := FWatch.Expression;
 end;

@@ -128,6 +128,12 @@ type
 
     procedure CreateError(AVal: String);
 
+    // For all Values
+    (* SetPCharShouldBeStringValue:
+       - Current Res should be "PChar-based"
+       - Result of this function should be used for "String-based"
+    *)
+    function  SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
     // For all Values (except error)
     procedure SetTypeName(ATypeName: String);
 

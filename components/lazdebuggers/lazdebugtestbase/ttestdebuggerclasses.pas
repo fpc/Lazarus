@@ -388,6 +388,7 @@ begin
   if (FUpdateCount = 0) then begin
     NewValid := ddsValid;
 
+    FCurrentResData := FCurrentResData.RootResultData;
     if (FCurrentResData <> nil) and (FCurrentResData.NewResultData <> nil) then begin
       FCurrentResData.Done;
       SetResultData(FCurrentResData.NewResultData);

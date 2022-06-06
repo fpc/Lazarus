@@ -645,16 +645,19 @@ type
 
   TCurrentResData = class(TObject, TLzDbgWatchDataIntf)
   private
-    FNewResultData: TWatchResultData;
+    FNewResultData: TWatchResultDataEx;
     FSubCurrentData,     // Deref
+    FSubCurrentDataSecond, // String(in PCharOrString)
     FOwnerCurrentData: TCurrentResData;
 
     procedure AfterDataCreated;
     procedure AfterSubDataCreated;
+    function  InternalPCharShouldBeStringValue(APCharResult: TCurrentResData): TLzDbgWatchDataIntf;
   public
     destructor Destroy; override;
     procedure Done;
-    property  NewResultData: TWatchResultData read FNewResultData;
+    function  RootResultData: TCurrentResData;
+    property  NewResultData: TWatchResultDataEx read FNewResultData;
   public
     procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);// AnEncoding // "pchar data"
@@ -669,6 +672,7 @@ type
 
     procedure CreateError(AVal: String);
 
+    function  SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
     procedure SetTypeName(ATypeName: String);
 
     function  SetDerefData: TLzDbgWatchDataIntf;
@@ -3167,15 +3171,57 @@ begin
   end;
 end;
 
+function TCurrentResData.InternalPCharShouldBeStringValue(
+  APCharResult: TCurrentResData): TLzDbgWatchDataIntf;
+begin
+  assert(FNewResultData = nil, 'TCurrentResData.InternalPCharShouldBeStringValue: FNewResultData = nil');
+
+  FNewResultData := TWatchResultDataPCharOrString.Create;
+  // AfterDataCreated;
+
+  FSubCurrentData := APCharResult;
+  FSubCurrentData.FOwnerCurrentData := Self;
+
+  FSubCurrentDataSecond := TCurrentResData.Create;
+  FSubCurrentDataSecond.FOwnerCurrentData := Self;
+  Result := FSubCurrentDataSecond;
+end;
+
 destructor TCurrentResData.Destroy;
 begin
   // Do NOT destroy FNewResultData;
   FSubCurrentData.Free;
+  FSubCurrentDataSecond.Free;
   inherited Destroy;
 end;
 
 procedure TCurrentResData.Done;
 begin
+  if (FNewResultData <> nil) then begin
+    if (FNewResultData is TWatchResultDataPCharOrString) then begin
+      FSubCurrentData.Done;
+      FSubCurrentDataSecond.Done;
+
+      TWatchResultDataPCharOrString(FNewResultData).SetEntryPrototype(FSubCurrentData.FNewResultData);
+      TWatchResultDataPCharOrString(FNewResultData).SetEntryCount(2);
+      TWatchResultDataPCharOrString(FNewResultData).WriteValueToStorage(0, FSubCurrentData.FNewResultData);
+
+      TWatchResultDataPCharOrString(FNewResultData).WriteValueToStorage(1, FSubCurrentDataSecond.FNewResultData);
+      FreeAndNil(FSubCurrentData.FNewResultData);
+      FreeAndNil(FSubCurrentDataSecond.FNewResultData);
+
+      FNewResultData.SetSelectedIndex(0);
+    end;
+  end;
+end;
+
+function TCurrentResData.RootResultData: TCurrentResData;
+begin
+  Result := Self;
+  if Result = nil then
+    exit;
+  while (Result.FOwnerCurrentData <> nil) do
+    Result := Result.FOwnerCurrentData;
 end;
 
 procedure TCurrentResData.CreatePrePrinted(AVal: String);
@@ -3266,6 +3312,15 @@ begin
   AfterDataCreated;
 end;
 
+function TCurrentResData.SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
+begin
+  assert(FNewResultData<>nil, 'TCurrentResData.SetPCharShouldBeStringValue: FNewResultData<>nil');
+  assert(FOwnerCurrentData=nil, 'TCurrentResData.SetPCharShouldBeStringValue: FOwnerCurrentData=nil');
+
+  FOwnerCurrentData := TCurrentResData.Create;
+  Result := FOwnerCurrentData.InternalPCharShouldBeStringValue(Self);
+end;
+
 procedure TCurrentResData.SetTypeName(ATypeName: String);
 begin
   assert(FNewResultData<>nil, 'TCurrentResData.SetTypeName: FNewResultData<>nil');
@@ -3301,6 +3356,7 @@ begin
   if (FUpdateCount = 0) then begin
     NewValid := ddsValid;
 
+    FCurrentResData := FCurrentResData.RootResultData;
     if (FCurrentResData <> nil) and (FCurrentResData.FNewResultData <> nil) then begin
       FCurrentResData.Done;
       SetResultData(FCurrentResData.FNewResultData);
@@ -3408,6 +3464,7 @@ destructor TCurrentWatchValue.Destroy;
 var
   e: TMethodList;
 begin
+  FCurrentResData := FCurrentResData.RootResultData;
   FCurrentResData.Free;
   for e in FEvents do
     e.Free;
