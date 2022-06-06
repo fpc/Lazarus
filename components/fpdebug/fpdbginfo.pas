@@ -392,6 +392,7 @@ type
     procedure SetTypeInfo(ASymbol: TFpSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
 
+    function GetInternalTypeInfo: TFpSymbol; virtual;
     procedure KindNeeded; virtual;
     procedure NameNeeded; virtual;
     procedure SymbolTypeNeeded; virtual;
@@ -416,6 +417,7 @@ type
     // stValue (Variable): Type
     // stType: Pointer: type pointed to / Array: Element Type / Func: Result / Class: itheritance
     property TypeInfo: TFpSymbol read GetTypeInfo;
+    property InternalTypeInfo: TFpSymbol read GetInternalTypeInfo; // Not modified by any dwarf modifier
     // Location
     property FileName: String read GetFile;
     property Line: Cardinal read GetLine;
@@ -1436,6 +1438,11 @@ begin
   if not(sfiSymType in FEvaluatedFields) then
     SymbolTypeNeeded;
   Result := FSymbolType;
+end;
+
+function TFpSymbol.GetInternalTypeInfo: TFpSymbol;
+begin
+  Result := Self;
 end;
 
 function TFpSymbol.GetLineEndAddress: TDBGPtr;

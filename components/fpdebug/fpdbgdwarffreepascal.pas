@@ -134,6 +134,7 @@ type
     function GetIsInternalPointer: Boolean; inline;
     function IsInternalDynArrayPointer: Boolean; inline;
   protected
+    function GetInternalTypeInfo: TFpSymbol; override;
     procedure TypeInfoNeeded; override;
     procedure KindNeeded; override;
     function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; override;
@@ -814,6 +815,14 @@ begin
   Result := ti is TFpSymbolDwarfTypeArray;
   if Result then
     Result := (sfDynArray in ti.Flags);
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.GetInternalTypeInfo: TFpSymbol;
+begin
+  if IsInternalPointer then
+    Result := NestedTypeInfo.InternalTypeInfo
+  else
+    Result := inherited GetInternalTypeInfo;
 end;
 
 procedure TFpSymbolDwarfFreePascalTypePointer.TypeInfoNeeded;
