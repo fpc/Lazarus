@@ -30,7 +30,7 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
   private
-    FLazImgDir: String;
+    ImgDir: String;
     procedure ErrorMsg(const AMsg: String);
     function GetDestFileName: String;
     procedure InfoMsg(const AMsg: String);
@@ -49,17 +49,17 @@ implementation
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  FLazImgDir := CleanAndExpandDirectory('../../images/general_purpose/');
-  if DirectoryExists(FLazImgDir) then
-    DirectoryEdit.Text := FLazImgDir
+  ImgDir := CleanAndExpandDirectory('../../images/general_purpose/');
+  if DirectoryExists(ImgDir) then
+    DirectoryEdit.Text := ImgDir
   else
     DirectoryEdit.Text := CleanAndExpandDirectory(GetCurrentDir);
 end;
 
 procedure TMainForm.cbDarkModeChange(Sender: TObject);
 begin
-  btnSave.Enabled := false;
-  btnShow.Enabled := false;
+  btnSave.Enabled := False;
+  btnShow.Enabled := False;
 end;
 
 procedure TMainForm.DirectoryEditChange(Sender: TObject);
@@ -76,6 +76,7 @@ var
   IcoNameList: TStringList;
   IcoSizeList: TStringList;
   PixSizeList: TStringList;
+  InfoTxtList: TStringList;
   LineStr: String;
   SizeStr: String;
   TempStr: String;
@@ -85,6 +86,9 @@ var
   ips: Integer;
   isl: Integer;
   StartIdx: Integer = 0;
+  BodyFontColor: String = ' color: #000000;';
+  BodyBackColor: String = ' background-color: #ffffff;';
+  InfoBackColor: String = ' background-color: #ffffe0;';
 begin
   try
     AllFileList := TStringList.Create;
@@ -95,11 +99,13 @@ begin
     Screen.BeginWaitCursor;
     SynEdit.Lines.BeginUpdate;
 
-    FindAllFiles(AllFileList, DirectoryEdit.Text, '*.png', False);
+    ImgDir := CleanAndExpandDirectory(DirectoryEdit.Text);
+
+    FindAllFiles(AllFileList, ImgDir, '*.png', False);
 
     if AllFileList.Count = 0 then
     begin
-      ErrorMsg('No png image files found in ' + DirectoryEdit.Text);
+      ErrorMsg('No png image files found in ' + ImgDir);
       Exit;
     end;
 
@@ -125,8 +131,15 @@ begin
 
     if IcoFileList.Count = 0 then
     begin
-      ErrorMsg('No matching png image files found in ' + DirectoryEdit.Text);
+      ErrorMsg('No matching png image files found in ' + ImgDir);
       Exit;
+    end;
+
+    if cbDarkMode.Checked then
+    begin
+      BodyFontColor := ' color: #ffffff;';
+      BodyBackColor := ' background-color: #303030;';
+      InfoBackColor := ' background-color: #000000;';
     end;
 
     SynEdit.Lines.Clear;
@@ -136,22 +149,12 @@ begin
     SynEdit.Lines.Add('<title>Icons</title>');
     SynEdit.Lines.Add('<meta charset="UTF-8">');
     SynEdit.Lines.Add('<style media="all">');
-    if cbDarkMode.Checked then
-    begin
-      SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px; background-color: #303030; color: #ffffff;}');
-      SynEdit.Lines.Add('  td.topleft {border-bottom: 5px solid #ddd; padding: 15px; text-align: left; background-color: #000000;}');
-      SynEdit.Lines.Add('  td.topcenter {border-bottom: 5px solid #ddd; padding: 15px; text-align: center; background-color: #000000;}');
-      SynEdit.Lines.Add('  .info_container {margin: 0 auto; width: 500px; background-color: #000000; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 15px; margin-top: 30px;}');
-    end
-    else
-    begin
-      SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px; background-color: #ffffff; color: #000000;}');
-      SynEdit.Lines.Add('  td.topleft {border-bottom: 5px solid #ddd; padding: 15px; text-align: left; background-color: #ffffe0;}');
-      SynEdit.Lines.Add('  td.topcenter {border-bottom: 5px solid #ddd; padding: 15px; text-align: center; background-color: #ffffe0;}');
-      SynEdit.Lines.Add('  .info_container {margin: 0 auto; width: 500px; background-color: #f7f7f7; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 15px; margin-top: 30px;}');
-    end;
+    SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px;' + BodyBackColor + BodyFontColor + '}');
+    SynEdit.Lines.Add('  td.topleft {border-bottom: 5px solid #ddd; padding: 15px; text-align: left;' + InfoBackColor + '}');
+    SynEdit.Lines.Add('  td.topcenter {border-bottom: 5px solid #ddd; padding: 15px; text-align: center;' + InfoBackColor + '}');
     SynEdit.Lines.Add('  table {border-collapse: collapse; margin-left: auto; margin-right: auto;}');
     SynEdit.Lines.Add('  td {border-bottom: 1px solid #ddd; padding: 15px; text-align: left;}');
+    SynEdit.Lines.Add('  .info_container {margin: 0 auto; width: 500px; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 15px; margin-top: 30px;' + InfoBackColor + '}');
     SynEdit.Lines.Add('</style>');
     SynEdit.Lines.Add('</head>');
     SynEdit.Lines.Add('<body>');
@@ -186,18 +189,17 @@ begin
 
     SynEdit.Lines.Add('</table>');
 
-    if DirectoryEdit.Text = FLazImgDir then
+    if FileExists(ImgDir + 'lazarus_general_purpose_images.txt') then
     begin
       SynEdit.Lines.Add('<div class="info_container">');
-      SynEdit.Lines.Add('The images in this folder can be used in Lazarus applications as toolbar or button icons.<br><br>');
-      SynEdit.Lines.Add('The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:<br><br>');
-      SynEdit.Lines.Add('- 16x16, 24x24 and 32x32 pixels for "small" images, and<br>');
-      SynEdit.Lines.Add('- 24x24, 36x36 and 48x48 pixels for "medium" sized images, and<br>');
-      SynEdit.Lines.Add('- 32x32, 48x48 and 64x64 pixels for "large" images.<br><br>');
-      SynEdit.Lines.Add('The images were kindly provided by Roland Hahn.<br><br>');
-      SynEdit.Lines.Add('License:<br>');
-      SynEdit.Lines.Add('Creative Commons CC0 1.0 Universal<br>');
-      SynEdit.Lines.Add('(freely available, no restrictions in usage)');
+      try
+        InfoTxtList := TStringList.Create;
+        InfoTxtList.LoadFromFile(ImgDir + 'lazarus_general_purpose_images.txt');
+        for i := 0 to InfoTxtList.Count - 1 do
+          SynEdit.Lines.Add(InfoTxtList[i] + '<br>');
+      finally
+        InfoTxtList.Free;
+      end;
       SynEdit.Lines.Add('</div>');
     end;
 
@@ -261,7 +263,7 @@ end;
 
 function TMainForm.GetDestFileName: String;
 begin
-  Result := AppendPathDelim(DirectoryEdit.Text) + 'IconTable.html';  
+  Result := AppendPathDelim(DirectoryEdit.Text) + 'IconTable.html';
 end;
 
 procedure TMainForm.InfoMsg(const AMsg: String);

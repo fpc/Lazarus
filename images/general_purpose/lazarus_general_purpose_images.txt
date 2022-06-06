@@ -1,0 +1,13 @@
+The images in this folder can be used in Lazarus applications as toolbar or button icons.
+
+The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:
+
+- 16x16, 24x24 and 32x32 pixels for "small" images, and
+- 24x24, 36x36 and 48x48 pixels for "medium" sized images, and
+- 32x32, 48x48 and 64x64 pixels for "large" images.
+
+The images were kindly provided by Roland Hahn.
+
+License:
+Creative Commons CC0 1.0 Universal
+(freely available, no restrictions in usage)
