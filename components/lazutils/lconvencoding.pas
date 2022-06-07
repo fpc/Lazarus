@@ -80,6 +80,7 @@ const
   EncodingCPIso1 = 'iso88591';
   EncodingCPIso2 = 'iso88592';
   EncodingCPIso9 = 'iso88599';
+  EncodingCPIso14 = 'iso885914';
   EncodingCPIso15 = 'iso885915';
 
 //signatures in ansi
@@ -347,6 +348,11 @@ end;
 function ISO_8859_1ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayISO_8859_1ToUTF8);
+end;
+
+function ISO_8859_14ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayISO_8859_14ToUTF8);
 end;
 
 function ISO_8859_15ToUTF8(const s: string): string;
@@ -1109,6 +1115,58 @@ begin
   $011F: Result:= $F0;
   $0131: Result:= $FD;
   $015F: Result:= $FE;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToISO_8859_14(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..$A0: Result:=Unicode;
+  $A3,
+  $A7,
+  $A9,
+  $AD,
+  $AE,
+  $B6: Result:= Unicode;
+  $1E02: Result:= $A1;
+  $1E03: Result:= $A2;
+  $10A: Result:= $A4;
+  $10B: Result:= $A5;
+  $1E0A: Result:= $A6;
+  $1E80: Result:= $A8;
+  $1E82: Result:= $AA;
+  $1E0B: Result:= $AB;
+  $1EF2: Result:= $AC;
+  $178: Result:= $AF;
+  $1E1E: Result:= $B0;
+  $1E1F: Result:= $B1;
+  $120: Result:= $B2;
+  $121: Result:= $B3;
+  $1E40: Result:= $B4;
+  $1E41: Result:= $B5;
+  $1E56: Result:= $B7;
+  $1E81: Result:= $B8;
+  $1E57: Result:= $B9;
+  $1E83: Result:= $BA;
+  $1E60: Result:= $BB;
+  $1EF3: Result:= $BC;
+  $1E84: Result:= $BD;
+  $1E85: Result:= $BE;
+  $1E61: Result:= $BF;
+  $C0..$CF: Result:= Unicode;
+  $174: Result:= $D0;
+  $D1..$D6: Result:= Unicode;
+  $1E6A: Result:= $D7;
+  $D8..$DD: Result:= Unicode;
+  $176: Result:= $DE;
+  $DF..$EF: Result:= Unicode;
+  $175: Result:= $F0;
+  $F1..$F6: Result:= Unicode;
+  $1E6B: Result:= $F7;
+  $F8..$FD: Result:= Unicode;
+  $177: Result:= $FE;
+  $FF: Result:= $FF;
   else Result:=-1;
   end;
 end;
@@ -1984,6 +2042,11 @@ begin
   InternalUTF8ToCP(s,28599,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_9{$endif},Result);
 end;
 
+function UTF8ToISO_8859_14(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28604,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_14{$endif},Result);
+end;
+
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
   InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_15{$endif},Result);
@@ -2394,6 +2457,7 @@ begin
 
   if ATo=EncodingUTF8BOM then begin Result:=UTF8ToUTF8BOM(s); exit; end;
   if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCPIso14 then begin Result:=UTF8ToISO_8859_14(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso9 then begin Result:=UTF8ToISO_8859_9(s,SetTargetCodePage); exit; end;
@@ -2442,6 +2506,7 @@ begin
 
   if AFrom=EncodingUTF8BOM then begin Result:=UTF8BOMToUTF8(s); exit; end;
   if AFrom=EncodingCPIso1 then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
+  if AFrom=EncodingCPIso14 then begin Result:=ISO_8859_14ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso15 then begin Result:=ISO_8859_15ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso2 then begin Result:=ISO_8859_2ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso9 then begin Result:=ISO_8859_9ToUTF8(s); exit; end;
