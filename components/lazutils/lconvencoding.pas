@@ -125,9 +125,10 @@ var
 
 function UTF8BOMToUTF8(const s: string): string; // UTF8 with BOM
 function ISO_8859_1ToUTF8(const s: string): string; // central europe
-function ISO_8859_15ToUTF8(const s: string): string; // Western European languages
 function ISO_8859_2ToUTF8(const s: string): string; // eastern europe
 function ISO_8859_9ToUTF8(const s: string): string; // Turkish
+function ISO_8859_14ToUTF8(const s: string): string;
+function ISO_8859_15ToUTF8(const s: string): string; // Western European languages
 function CP1250ToUTF8(const s: string): string; // central europe
 function CP1251ToUTF8(const s: string): string; // cyrillic
 function CP1252ToUTF8(const s: string): string; // latin 1
@@ -155,6 +156,7 @@ function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
 function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean = false): RawByteString; // eastern europe
 function UTF8ToISO_8859_9(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Turkish
+function UTF8ToISO_8859_14(const s: string; SetTargetCodePage: boolean = false): RawByteString;
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Western European languages
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean = false): RawByteString; // cyrillic
