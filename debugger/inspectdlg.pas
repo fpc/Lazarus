@@ -570,6 +570,7 @@ begin
       Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected, goThumbTracking,
                           goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
                           goTabs,goRowSelect];
+      MouseWheelOption := mwGrid;
       Align:=alClient;
       TitleFont.Style:=[fsBold];
       ExtendedSelect:=false;
@@ -606,6 +607,7 @@ begin
       Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected, goThumbTracking,
                           goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
                           goTabs,goRowSelect];
+      MouseWheelOption := mwGrid;
       Align:=alClient;
       TitleFont.Style:=[fsBold];
       ExtendedSelect:=false;
