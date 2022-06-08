@@ -1855,6 +1855,10 @@ var
   var
     BracketPart: TFpPascalExpressionPartBracket;
   begin
+    if (CurPart=nil) then begin
+      SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)]);
+      exit;
+    end;
     BracketPart := CurPart.SurroundingBracket;
     if BracketPart = nil then begin
       SetError('Closing bracket found without opening')
@@ -1920,7 +1924,7 @@ var
 
   procedure HandleComma;
   begin
-    if not CurPart.HandleSeparator(ppstComma) then
+    if (CurPart=nil) or (not CurPart.HandleSeparator(ppstComma)) then
       SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)]);
   end;
 
