@@ -1058,7 +1058,8 @@ begin
         if DoDelayedDelete then
           exit;
 
-        HasChildren := (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0);
+        HasChildren := ((TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0)) or
+                       ((WatchValue.ResultData <> nil) and (WatchValue.ResultData.FieldCount > 0));
         tvWatches.HasChildren[VNode] := HasChildren;
         if HasChildren and (WatchValue.Validity = ddsValid) and tvWatches.Expanded[VNode] then begin
           (* The current "AWatch" should be done. Allow UpdateItem for nested entries *)
@@ -1100,22 +1101,27 @@ var
   NewWatch, AWatch: TIdeWatch;
   TypInfo: TDBGType;
   i: Integer;
+  ResData: TWatchResultData;
   ExistingNode, nd: PVirtualNode;
+  ChildInfo: TWatchResultDataFieldInfo;
 begin
   ChildCount := 0;
-  TypInfo := AWatchValue.TypeInfo;
-  AWatch := AWatchValue.Watch;
 
-  if (TypInfo <> nil) and (TypInfo.Fields <> nil) then begin
-    ChildCount := TypInfo.Fields.Count;
+  if (AWatchValue.ResultData <> nil) and (AWatchValue.ResultData.FieldCount > 0) then begin
+    ResData := AWatchValue.ResultData;
+    ChildCount := ResData.FieldCount;
+    AWatch := AWatchValue.Watch;
     ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
 
-    for i := 0 to TypInfo.Fields.Count-1 do begin
-      NewWatch := AWatch.ChildrenByName[TypInfo.Fields[i].Name];
+    for i := 0 to ResData.FieldCount-1 do begin
+      ChildInfo := ResData.Fields[i];
+
+      NewWatch := AWatch.ChildrenByName[ChildInfo.FieldName];
       if NewWatch = nil then begin
         dec(ChildCount);
         continue;
       end;
+
       if AWatch is TCurrentWatch then begin
         NewWatch.DisplayFormat := wdfDefault;
         NewWatch.Enabled       := AWatch.Enabled;
@@ -1133,6 +1139,41 @@ begin
       end;
       UpdateItem(nd, NewWatch);
     end;
+
+  end
+  else begin
+    // Old Interface
+    TypInfo := AWatchValue.TypeInfo;
+    AWatch := AWatchValue.Watch;
+
+    if (TypInfo <> nil) and (TypInfo.Fields <> nil) then begin
+      ChildCount := TypInfo.Fields.Count;
+      ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
+
+      for i := 0 to TypInfo.Fields.Count-1 do begin
+        NewWatch := AWatch.ChildrenByName[TypInfo.Fields[i].Name];
+        if NewWatch = nil then begin
+          dec(ChildCount);
+          continue;
+        end;
+        if AWatch is TCurrentWatch then begin
+          NewWatch.DisplayFormat := wdfDefault;
+          NewWatch.Enabled       := AWatch.Enabled;
+          if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+            NewWatch.EvaluateFlags := [defClassAutoCast];
+        end;
+
+        if ExistingNode <> nil then begin
+          tvWatches.NodeItem[ExistingNode] := NewWatch;
+          nd := ExistingNode;
+          ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
+        end
+        else begin
+          nd := tvWatches.AddChild(VNode, NewWatch);
+        end;
+        UpdateItem(nd, NewWatch);
+      end;
+    end;
   end;
 
   tvWatches.ChildCount[VNode] := ChildCount;
@@ -1140,6 +1181,7 @@ end;
 
 procedure TWatchesDlg.tvWatchesInitChildren(Sender: TBaseVirtualTree;
   Node: PVirtualNode; var ChildCount: Cardinal);
+// VTV.OnInitChildren
 var
   VNdWatch: TIdeWatch;
   WatchValue: TIdeWatchValue;

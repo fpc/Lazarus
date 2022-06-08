@@ -6205,6 +6205,9 @@ begin
     Result := '(' + FParentWatch.GetFullExpression(AThreadId, AStackFrame) + ').' + Result;
     if (defClassAutoCast in FParentWatch.FEvaluateFlags) then begin
       wv := GetAnyValidParentWatchValue(AThreadId, AStackFrame);
+      if wv.ResultData <> nil then
+        Result := wv.ResultData.TypeName + Result
+      else
       if wv <> nil then
         Result := wv.TypeInfo.TypeName + Result;
     end;
@@ -6231,7 +6234,9 @@ begin
     (vl.EntriesByIdx[i].Validity <> ddsValid) or
     (vl.EntriesByIdx[i].ThreadId <> AThreadId) or
     (vl.EntriesByIdx[i].StackFrame <> AStackFrame) or
-    (vl.EntriesByIdx[i].TypeInfo = nil)
+    ( (vl.EntriesByIdx[i].TypeInfo = nil) and
+      (vl.EntriesByIdx[i].ResultData = nil)
+    )
   ) do
     dec(i);
   if i >= 0 then
