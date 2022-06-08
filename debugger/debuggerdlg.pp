@@ -269,8 +269,10 @@ begin
     FSnapshotManager := AValue;
     if (FSnapshotManager <> nil) and (FSnapshotNotification <> nil)
     then FSnapshotManager.AddNotification(FSnapshotNotification);
-    if assigned(FSnapshotNotification.OnChange) then FSnapshotNotification.OnChange(nil);
-    if assigned(FSnapshotNotification.OnCurrent) then FSnapshotNotification.OnCurrent(nil);
+    if assigned(FSnapshotNotification) then begin
+      if assigned(FSnapshotNotification.OnChange) then FSnapshotNotification.OnChange(nil);
+      if assigned(FSnapshotNotification.OnCurrent) then FSnapshotNotification.OnCurrent(nil);
+    end;
   finally
     EndUpdate;
   end;
@@ -286,8 +288,10 @@ begin
     FThreadsMonitor := AValue;
     if (FThreadsMonitor <> nil) and (FThreadsNotification <> nil)
     then FThreadsMonitor.AddNotification(FThreadsNotification);
-    if assigned(FThreadsNotification.OnChange) then FThreadsNotification.OnChange(nil);
-    if assigned(FThreadsNotification.OnCurrent) then FThreadsNotification.OnCurrent(nil);
+    if assigned(FThreadsNotification) then begin
+      if assigned(FThreadsNotification.OnChange) then FThreadsNotification.OnChange(nil);
+      if assigned(FThreadsNotification.OnCurrent) then FThreadsNotification.OnCurrent(nil);
+    end;
   finally
     EndUpdate;
   end;
@@ -303,8 +307,10 @@ begin
     FCallStackMonitor := AValue;
     if (FCallStackMonitor <> nil) and (FCallStackNotification <> nil)
     then FCallStackMonitor.AddNotification(FCallStackNotification);
-    if assigned(FCallStackNotification.OnChange) then FCallStackNotification.OnChange(nil);
-    if assigned(FCallStackNotification.OnCurrent) then FCallStackNotification.OnCurrent(nil);
+    if assigned(FCallStackNotification) then begin
+      if assigned(FCallStackNotification.OnChange) then FCallStackNotification.OnChange(nil);
+      if assigned(FCallStackNotification.OnCurrent) then FCallStackNotification.OnCurrent(nil);
+    end;
   finally
     EndUpdate;
   end;
@@ -320,7 +326,9 @@ begin
     FLocalsMonitor := AValue;
     if (FLocalsMonitor <> nil) and (FLocalsNotification <> nil)
     then FLocalsMonitor.AddNotification(FLocalsNotification);
-    if assigned(FLocalsNotification.OnChange) then FLocalsNotification.OnChange(nil);
+    if assigned(FLocalsNotification) then begin
+      if assigned(FLocalsNotification.OnChange) then FLocalsNotification.OnChange(nil);
+    end;
   finally
     EndUpdate;
   end;
