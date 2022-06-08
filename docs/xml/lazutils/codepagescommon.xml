@@ -11,7 +11,9 @@
       </descr>
 
       <element name="TCharToUTF8Table">
-        <short/>
+        <short>
+          Array type which provides indexed access to UTF-8 codepoint pointers.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -35,6 +37,18 @@
         </descr>
         <seealso>
           <link id="#lazutils.lconvencoding.ISO_8859_9ToUTF8">ISO_8859_9ToUTF8</link>
+        </seealso>
+      </element>
+
+      <element name="ArrayISO_8859_14ToUTF8">
+        <short>Provides a mapping for ISO-8859-14 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-14">ISO/IEC 8859-14</url>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lconvencoding.ISO_8859_14ToUTF8">ISO_8859_14ToUTF8</link>
         </seealso>
       </element>
 
