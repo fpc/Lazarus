@@ -69,7 +69,8 @@ type
                         AValue: TFpValue;
                         ADisplayFormat: TWatchDisplayFormat = wdfDefault;
                         ARepeatCount: Integer = -1;
-                        AOptions: TFpPrettyPrintOptions = []
+                        AOptions: TFpPrettyPrintOptions = [];
+                        AFlags: TFpPrettyPrintValueFlags = []
                        ): Boolean;
     function PrintValue(out APrintedValue: String;
                         out ADBGTypeInfo: TDBGType;
@@ -1346,12 +1347,12 @@ begin
   FAddressSize := AnAddressSize;
 end;
 
-function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; AValue: TFpValue;
-  ADisplayFormat: TWatchDisplayFormat; ARepeatCount: Integer;
-  AOptions: TFpPrettyPrintOptions): Boolean;
+function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String;
+  AValue: TFpValue; ADisplayFormat: TWatchDisplayFormat; ARepeatCount: Integer;
+  AOptions: TFpPrettyPrintOptions; AFlags: TFpPrettyPrintValueFlags): Boolean;
 begin
   Result := InternalPrintValue(APrintedValue, AValue,
-                               AddressSize, [], 0, '', ADisplayFormat, ARepeatCount, nil, AOptions);
+                               AddressSize, AFlags, 0, '', ADisplayFormat, ARepeatCount, nil, AOptions);
 end;
 
 function TFpPascalPrettyPrinter.PrintValue(out APrintedValue: String; out

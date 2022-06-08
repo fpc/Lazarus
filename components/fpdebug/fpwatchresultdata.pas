@@ -312,7 +312,7 @@ begin
     EntryRes := AnResData.CreateArrayValue(datUnknown, Cnt, LowBnd);
   end
   else
-  if sfDynArray in ti.Flags then begin
+  if (sfDynArray in ti.Flags) or (LowBnd = 0) then begin // LowBnd = 0 => there is some bug, reporting some dyn arrays as stat.
     EntryRes := AnResData.CreateArrayValue(datDynArray, Cnt, 0);
     Addr := 0;
     if AnFpValue.FieldFlags * [svfInteger, svfCardinal] <> [] then
@@ -509,6 +509,9 @@ end;
 
 function TFpWatchResultConvertor.DoWriteWatchResultData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
+var
+  PrettyPrinter: TFpPascalPrettyPrinter;
+  s: String;
 begin
   // FRecurseCnt should be handled by the caller
   Result := FRecurseCnt > MAX_RECURSE_LVL;
@@ -563,7 +566,16 @@ begin
       skAddress: ;
     end;
     if Result then
-      CheckError(AnFpValue, AnResData);
+      CheckError(AnFpValue, AnResData)
+    else
+    if FRecurseCnt > 0 then begin
+      PrettyPrinter := TFpPascalPrettyPrinter.Create(Context.SizeOfAddress);
+      PrettyPrinter.Context := Context;
+      PrettyPrinter.PrintValue(s, AnFpValue, wdfDefault, 1, [], [ppvSkipClassBody]);
+      AnResData.CreatePrePrinted(s);
+      PrettyPrinter.Free;
+      Result := True;
+    end;
   finally
     dec(FRecurseCnt);
   end;
