@@ -19490,6 +19490,7 @@ begin
         end;
       end;
       QEventPaint: SlotDesignControlPaint(Sender, Event);
+      QEventContextMenu: SlotContextMenu(Sender, Event);
     end;
   finally
     EndEventProcessing;
