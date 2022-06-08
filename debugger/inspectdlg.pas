@@ -803,6 +803,8 @@ begin
   Localize;
 
 
+  ThreadsMonitor := DebugBoss.Threads;
+  CallStackMonitor := DebugBoss.CallStack;
   ThreadsNotification.OnCurrent := @ContextChanged;
   CallstackNotification.OnCurrent := @ContextChanged;
 
