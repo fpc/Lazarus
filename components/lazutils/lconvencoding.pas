@@ -2306,6 +2306,8 @@ begin
 
   List.Add('ISO-8859-1');
   List.Add('ISO-8859-2');
+  List.Add('ISO-8859-9');
+  List.Add('ISO-8859-14');
   List.Add('ISO-8859-15');
 
   List.Add('KOI8-R');
