@@ -10,7 +10,7 @@
       <short>Implements a resizable 2-D array of Pointers.</short>
       <descr>
       <p>
-        <file>dynamicarray.pas</file>implements a resizable 2-D array of Pointers. It is used in the implementation of <var>TCustomGrid</var>, <var>TDrawGrid</var> and <var>TStringGrid</var>.
+        <file>dynamicarray.pas</file>implements a resizable 2-D array of Pointers. It is used to implement the Cells, Cols, and Rows properties in <var>TCustomGrid</var>, <var>TDrawGrid</var> and <var>TStringGrid</var>.
       </p>
       <p>
         This file is part of the <file>LazUtils</file> package.
@@ -71,245 +71,229 @@
       <element name="TOnExchangeItem.WithIndex">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TArray">
-        <short>It implements a resizable 2d array.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TArray.FCols">
-        <short>It contains the first dimension of the array.</short>
+
+      <element name="TPointerPointerArray">
+        <short>
+          Implements a resizable two-dimensional array using Pointers to column and row values.
+        </short>
         <descr/>
         <seealso/>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TArray.FOnDestroyItem">
-       <short>A user-defined function to be called when an item is destroyed.</short>
-        <descr>This can happen in ClearCol,Clear,SetLength</descr>
+
+      <!-- private -->
+      <element name="TPointerPointerArray.FCols"/>
+      <element name="TPointerPointerArray.FOnDestroyItem"/>
+      <element name="TPointerPointerArray.FOnNewItem"/>
+      <element name="TPointerPointerArray.GetArr"/>
+      <element name="TPointerPointerArray.GetArr.Result"/>
+      <element name="TPointerPointerArray.GetArr.Col"/>
+      <element name="TPointerPointerArray.GetArr.Row"/>
+      <element name="TPointerPointerArray.SetArr"/>
+      <element name="TPointerPointerArray.SetArr.Col"/>
+      <element name="TPointerPointerArray.SetArr.Row"/>
+      <element name="TPointerPointerArray.SetArr.AValue"/>
+      <element name="TPointerPointerArray.ClearCol"/>
+      <element name="TPointerPointerArray.ClearCol.L"/>
+      <element name="TPointerPointerArray.ClearCol.Col"/>
+      <element name="TPointerPointerArray.Aumentar_Rows"/>
+      <element name="TPointerPointerArray.Aumentar_Rows.Col"/>
+      <element name="TPointerPointerArray.Aumentar_Rows.Rows"/>
+      <element name="TPointerPointerArray.Aumentar_Rows.L"/>
+      <element name="TPointerPointerArray.DestroyItem"/>
+      <element name="TPointerPointerArray.DestroyItem.Col"/>
+      <element name="TPointerPointerArray.DestroyItem.Row"/>
+      <element name="TPointerPointerArray.DestroyItem.P"/>
+
+      <!-- public -->
+      <element name="TPointerPointerArray.Create">
+        <short>
+          Constructor for the class instance.
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> allocates resources for the internal TFPList used to store the values in the indexed Arr property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPointerPointerArray.Arr"/>
+          <link id="#rtl.classes.TFPList">TFPList</link>
+        </seealso>
+      </element>
+
+      <element name="TPointerPointerArray.Destroy">
+        <short>
+          Destructor for the class instance.
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> calls the Clear method to ensure that nested TFPList instances and Pointers in the Arr property are freed. The TFPList resource allocated for the Arr property is also freed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPointerPointerArray.Arr"/>
+          <link id="TPointerPointerArray.Clear"/>
+          <link id="#rtl.classes.TFPList">TFPList</link>
+        </seealso>
+      </element>
+
+      <element name="TPointerPointerArray.SetLength">
+        <short>
+          Sets the dimensions for the array to the specified number of columns and rows.
+        </short>
+        <descr>
+          <p>
+            <var>SetLength</var> ensures that columns and/or rows are adjusted when the the new size values are smaller than the existing dimensions for the array. The OnDestroyItem event handler is signalled (when assigned) to perform actions needed for Pointers removed from the array elements.
+          </p>
+          <p>
+            Cols contains the new number of columns for the array.
+          </p>
+          <p>
+            Rows contains the new number of rows for the array.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPointerPointerArray.OnDestroyItem"/>
+          <link id="TPointerPointerArray.Arr"/>
+          <link id="#rtl.classes.TFPList">TFPList</link>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
+      </element>
+      <element name="TPointerPointerArray.SetLength.Cols">
+        <short>
+          Number of columns for the two-dimensional array.
+        </short>
+      </element>
+      <element name="TPointerPointerArray.SetLength.Rows">
+        <short>
+          Number of rows for the two-dimensional array.
+        </short>
+      </element>
+
+      <element name="TPointerPointerArray.DeleteColRow">
+        <short>
+          Deletes a column or row at the specified ordinal position in the array.
+        </short>
+        <descr>
+          <p>
+            <var>DeleteColRow</var> is a method used to delete the specified column or row from the two-dimensional array. DeleteColRow signals the OnDestroyItem event handler (when assigned) to perform actions needed for the Pointers in the array elements.
+          </p>
+        </descr>
         <seealso/>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TArray.FOnNewItem">
-        <short>A user-defined function to be called when a new item is created.</short>
+      <element name="TPointerPointerArray.DeleteColRow.IsColumn">
+        <short>
+          <b>True</b> if a column is removed. <b>False</b> if a row is removed.
+        </short>
+      </element>
+      <element name="TPointerPointerArray.DeleteColRow.Index">
+        <short>
+          Ordinal position for the column or row deleted in the method.
+        </short>
+      </element>
+
+      <element name="TPointerPointerArray.MoveColRow">
+        <short>
+          Moves a column or row at the specified ordinal position to a new location in the array.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TFPList.Move">TFPList.Move</link>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- function Visibility: private -->
-      <element name="TArray.Getarr">
-        <short>Returns the stored item(actually pointer) in array.</short>
+      <element name="TPointerPointerArray.MoveColRow.IsColumn">
+        <short>
+          <b>True</b> if a column is moved in the method. <b>False</b> if a row is moved.
+        </short>
+      </element>
+      <element name="TPointerPointerArray.MoveColRow.FromIndex">
+        <short>
+          Ordinal position for the column or row moved in the method.
+        </short>
+      </element>
+      <element name="TPointerPointerArray.MoveColRow.ToIndex">
+        <short>
+          New ordinal position where the column or row is stored.
+        </short>
+      </element>
+
+      <element name="TPointerPointerArray.ExchangeColRow">
+        <short>
+          Exchanges values for array elements in the specified columns or rows in the array.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TFPList.Move">TFPList.Move</link>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TArray.Getarr.Result">
-        <short>the stored item,pointer.</short>
+      <element name="TPointerPointerArray.ExchangeColRow.IsColumn">
+        <short>
+          <b>True</b> if a values in columns are exchanged in the method. <b>False</b> if values in rows are exchanged.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Getarr.Col">
-        <short>the first dimension of the array.</short>
+      <element name="TPointerPointerArray.ExchangeColRow.Index">
+        <short>
+          Ordinal position for a column or row affected in the method.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Getarr.Row">
-        <short>the second dimension of the array.</short>
+      <element name="TPointerPointerArray.ExchangeColRow.WithIndex">
+        <short>
+          Ordinal position for a column or row affected in the method.
+        </short>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TArray.Setarr">
-        <short>Sets an item in the array [col][row].</short>
+
+      <element name="TPointerPointerArray.Clear">
+        <short>
+          Removes pointers and frees resources for all columns and rows in the two-dimensional array.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPointerPointerArray.OnDestroyItem"/>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Setarr.Col">
-         <short>the first dimension of the array.</short>
+
+      <element name="TPointerPointerArray.Arr">
+        <short>
+          Provides indexed access Pointer values in the elements for the array.
+        </short>
+        <descr>
+          <p>
+            <var>Arr</var> is an indexed Pointer property which provides access to array elements by their ordinal column and row positions. Array is the default property for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TFPList">TFPList</link>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Setarr.Row">
-        <short>the second dimension of the array.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Setarr.Avalue">
-        <short>the value to be stored.</short>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TArray.ClearCol">
-        <short>Clears the given TList.</short>
-        <descr>The given TList is assumed to be the COL of the array.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.ClearCol.L">
-        <short>Tlist to be cleared.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.ClearCol.Col">
-        <short>the first dimension of the array.</short>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TArray.Aumentar_Rows">
-         <short>Extends a row to its new size(Rows).</short>
+
+      <element name="TPointerPointerArray.OnDestroyItem">
+        <short>
+          Performs actions needed when the Pointer in an array element is removed from the array.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TPointerPointerArray.SetLength"/>
+          <link id="TPointerPointerArray.DeleteColRow"/>
+          <link id="TPointerPointerArray.Clear"/>
+          <link id="TOnNotifyItem"/>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Aumentar_Rows.col">
-        <short>current column.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Aumentar_Rows.Rows">
-        <short>new row size.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Aumentar_Rows.L">
-        <short>The row to be operated on.</short>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TArray.DestroyItem">
-        <short>event handler called when an item is destroyed.</short>
+
+      <element name="TPointerPointerArray.OnNewItem">
+        <short>
+          Performs actions needed when a new Pointer is needed for an array element added to a column or row in the array.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.DestroyItem.Col">
-        <short>the column of the destroyed item.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.DestroyItem.Row">
-        <short>the row of the destroyed item.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.DestroyItem.P">
-        <short>the item itself before it is unlinked.</short>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TArray.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TArray.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TArray.SetLength">
-        <short>Resizes the array.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.SetLength.Cols">
-        <short>new column size.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.SetLength.Rows">
-        <short>new row size.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TArray.DeleteColRow">
-        <short>Deletes a column or a row of an array.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.DeleteColRow.IsColumn">
-        <short>Do you want to delete a column?</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.DeleteColRow.Index">
-        <short>index of a row or a column.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TArray.MoveColRow">
-        <short>Moves a column to another column or a row to another row.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.MoveColRow.IsColumn">
-        <short>Do you want to move a column?</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.MoveColRow.FromIndex">
-        <short>source.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.MoveColRow.ToIndex">
-        <short>destination.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TArray.ExchangeColRow">
-        <short>Swaps two rows or two columns.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.ExchangeColRow.IsColumn">
-         <short>Do you want to move a column?</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.ExchangeColRow.Index">
-        <short>index of row or column.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.ExchangeColRow.WithIndex">
-        <short>index of row or column.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TArray.Clear">
-        <short>Removes all elements from the array.</short>
-        <descr/>
-        <errors/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TArray.Arr">
-        <short>Reads/Writes an element from the array.</short>
-        <descr/>
-        <seealso/>
-        <example file="dynamicarray/tarrayexample.pas"/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Arr.Col">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArray.Arr.Row">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TArray.OnDestroyItem">
-        <short>User-defined function which is called when an item is destroyed.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TArray.OnNewItem">
-        <short>User-defined function which is called when an item is created.</short>
-        <descr/>
-        <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TPointerPointerArray.SetLength"/>
+        </seealso>
+        <example file="examples/dynamicarray/tarrayexample.pas"/>
       </element>
     </module>
     <!-- DynamicArray -->

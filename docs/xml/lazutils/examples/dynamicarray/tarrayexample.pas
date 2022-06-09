@@ -24,11 +24,11 @@ end;
 
 
 var
-  FCols: Tarray;
+  FCols: TPointerPointerArray;
   ex: TArrayExampleClass;
 
 begin
-  FCols := TArray.Create;
+  FCols := TPointerPointerArray.Create;
   ex    := TArrayExampleClass.Create;
   FCols.OnDestroyItem := @ex.doDestroyItem;
 
@@ -78,4 +78,3 @@ begin
   ex.Destroy;
   readln;
 end.
-
