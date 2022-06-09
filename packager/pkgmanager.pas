@@ -4501,7 +4501,8 @@ function TPkgManager.GetUnitsAndDepsForComps(ComponentClasses: TClassList;
 var
   CurPackages, AllPackages: TStringList;
 
-  procedure AddPkgDep(CurCompReq: TComponentRequirements; PkgFile: TPkgFile);
+  procedure AddPkgDep(CurCompReq: TComponentRequirements; PkgFile: TPkgFile;
+    OnlyDesigntime: boolean);
   var
     RequiredPackage: TLazPackageID;
     Helper: TPackageIterateHelper;
@@ -4510,6 +4511,9 @@ var
     RequiredPackage:=PkgFile.LazPackage;
     RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
     if RequiredPackage=nil then exit;
+    if OnlyDesigntime and (TIDEPackage(RequiredPackage).PackageType<>lptDesignTime) then
+      exit;
+
     if CurPackages=nil then
     begin
       CurPackages:=TStringListUTF8Fast.Create;
@@ -4586,10 +4590,10 @@ begin
           CurUnitName:=CurUnitNames[CurUnitIdx];
           UnitList.Add(CurUnitName);
           PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
-          AddPkgDep(CurCompReq,PkgFile);
+          AddPkgDep(CurCompReq,PkgFile,false);
           if TPkgComponent(CurRegComp).PkgFile<>PkgFile then
             // e.g. a designtime package has registered the componentclass
-            AddPkgDep(CurCompReq,TPkgComponent(CurRegComp).PkgFile);
+            AddPkgDep(nil,TPkgComponent(CurRegComp).PkgFile,true);
         end;  // for CurUnitIdx:=
       end;
     end;  // for CurClassID:=...
