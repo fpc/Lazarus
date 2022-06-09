@@ -1549,6 +1549,8 @@ begin
           FilterStr := FilterStr + '|';
         FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
       end;
+      if TfrReport(Doc).DefExportFilterClass = FilterInfo.ClassRef.ClassName then
+        Index:=i+2;
     end;
 
     SaveDialog.Filter := FilterStr;
