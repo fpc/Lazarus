@@ -91,6 +91,8 @@ const
 
 type
 
+  TDebuggerStateChangeNotification = procedure(ADebugger: TDebuggerIntf; AnOldState: TDBGState) of object;
+
   { TBaseDebugManager }
   
   TDebugManagerState = (
@@ -222,6 +224,9 @@ type
     procedure ViewDisassembler(AnAddr: TDBGPtr;
                               BringToFront: Boolean = True; Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false); virtual; abstract;
+
+    procedure RegisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); virtual; abstract;
+    procedure UnregisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Destroying: boolean read FDestroying;

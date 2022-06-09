@@ -28,17 +28,18 @@ unit InspectDlg;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
   // DebuggerIntf
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazDebuggerIntf,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
   // IDE
-  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
-  Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
+  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, DebuggerDlg,
+  DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -94,25 +95,29 @@ type
     //FDataGrid,
     //FPropertiesGrid,
     //FMethodsGrid: TOIDBGGrid;
-    FExpression: ansistring;
+    FExpression, FAlternateExpression: ansistring;
+    FWatchPrinter: TWatchResultPrinter;
+    FInspectWatches: TCurrentWatches;
+    FCurrentWatchValue: TIdeWatchValue;
     FHumanReadable: ansistring;
-    FDBGInfo: TDBGType;
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
-    FUpdateLock, FUpdateNeeded, FExpressionWasEvaluated: Boolean;
-    FTestUpdateLock: Boolean;
-    FRowClicked: Integer;
+    FExpressionWasEvaluated: Boolean;
     FHistory: TStringList;
     FHistoryIndex: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
 
-    procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
-      ResultText: String; ResultDBGType: TDBGType);
-    procedure EvaluateTestCallback(Sender: TObject; ASuccess: Boolean;
-      {%H-}ResultText: String; ResultDBGType: TDBGType);
+    procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
+    procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure Localize;
     function  ShortenedExpression: String;
     procedure ContextChanged(Sender: TObject);
+    procedure InspectResDataSimple;
+    procedure InspectResDataPointer;
+    procedure InspectResDataEnum;
+    procedure InspectResDataSet;
+    procedure InspectResDataArray;
+    procedure InspectResDataStruct;
     procedure InspectClass;
     procedure InspectRecord;
     procedure InspectVariant;
@@ -209,6 +214,196 @@ begin
   UpdateData;
 end;
 
+procedure TIDEInspectDlg.InspectResDataSimple;
+var
+  Res: TWatchResultData;
+  v: String;
+begin
+  Res := FCurrentWatchValue.ResultData;
+
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+  FGridData.Columns[0].Visible := False;
+  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[4].Visible := False;
+  btnUseInstance.Enabled := False;
+  btnColClass.Enabled := False;
+  btnColType.Enabled := True;
+  btnColVisibility.Enabled := False;
+
+  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+
+  GridDataSetup;
+  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[2,1]:=Res.TypeName;
+  FGridData.Cells[3,1]:=v;
+end;
+
+procedure TIDEInspectDlg.InspectResDataPointer;
+var
+  Res: TWatchResultData;
+  v: String;
+begin
+  Res := FCurrentWatchValue.ResultData;
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+  FGridData.Columns[0].Visible := False;
+  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[4].Visible := False;
+  btnUseInstance.Enabled := False;
+  btnColClass.Enabled := False;
+  btnColType.Enabled := True;
+  btnColVisibility.Enabled := False;
+
+  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+
+  GridDataSetup;
+  v := FWatchPrinter.PrintWatchValue(Res, wdfPointer);
+  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[2,1]:=Res.TypeName;
+  FGridData.Cells[3,1]:=v;
+
+  Res := Res.DerefData;
+  if Res <> nil then begin
+    FGridData.RowCount := 3;
+    FGridData.Cells[1,2]:=Format(lisInspectPointerTo, ['']);
+    FGridData.Cells[2,2]:=Res.TypeName;
+    FGridData.Cells[3,2]:=FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  end;
+end;
+
+procedure TIDEInspectDlg.InspectResDataEnum;
+var
+  Res: TWatchResultData;
+  v: String;
+begin
+  Res := FCurrentWatchValue.ResultData;
+
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+  FGridData.Columns[0].Visible := False; // anchestor
+  FGridData.Columns[2].Visible := btnColType.Down; // typename
+  FGridData.Columns[4].Visible := False;
+  btnUseInstance.Enabled := False;
+  btnColClass.Enabled := False;
+  btnColType.Enabled := True;
+  btnColVisibility.Enabled := False;
+
+  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+
+  GridDataSetup;
+  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[2,1]:=Res.TypeName;
+  // TODO: show declaration (all elements)
+  FGridData.Cells[3,1]:=v;
+end;
+
+procedure TIDEInspectDlg.InspectResDataSet;
+begin
+  InspectEnum;
+end;
+
+procedure TIDEInspectDlg.InspectResDataArray;
+var
+  Res, Entry: TWatchResultData;
+  v: String;
+  b: Int64;
+  i: Integer;
+begin
+  Res := FCurrentWatchValue.ResultData;
+
+  DataPage.TabVisible:=true;
+  PropertiesPage.TabVisible:=false;
+  MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+  FGridData.Columns[0].Visible := False;
+  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[4].Visible := False;
+  btnUseInstance.Enabled := False;
+  btnColClass.Enabled := False;
+  btnColType.Enabled := True;
+  btnColVisibility.Enabled := False;
+
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = Len:' + IntToStr(Res.Count);
+
+  GridDataSetup;
+  if Res.Count > 0 then begin
+    FGridData.RowCount:=Res.Count+1;
+    b := Res.LowBound;
+    for i := 0 to Res.Count-1 do begin
+      Res.SetSelectedIndex(i);
+      Entry := Res.SelectedEntry;
+      FGridData.Cells[1,i+1] := IntToStr(b+i);
+      FGridData.Cells[2,i+1] := Entry.TypeName;
+      FGridData.Cells[3,i+1] := FWatchPrinter.PrintWatchValue(Entry, wdfDefault);
+    end;
+  end;
+end;
+
+procedure TIDEInspectDlg.InspectResDataStruct;
+const
+  FieldLocationNames: array[TLzDbgFieldVisibility] of string = //(dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
+    ('', 'Private', 'Protected', 'Public', 'Published');
+var
+  Res: TWatchResultData;
+  cnt, i: Integer;
+  FldInfo: TWatchResultDataFieldInfo;
+  AnchType: String;
+begin
+  Res := FCurrentWatchValue.ResultData;
+
+  DataPage.TabVisible :=true;
+  PropertiesPage.TabVisible :=false;
+  MethodsPage.TabVisible := False; // TODO
+  //if not (PageControl.ActivePage = MethodsPage) then
+  PageControl.ActivePage := DataPage;
+
+  FGridData.Columns[0].Visible := (Res.StructType in [dstClass, dstObject]) and btnColClass.Down; // anchestor
+  FGridData.Columns[2].Visible := btnColType.Down; // typename
+  FGridData.Columns[4].Visible := (Res.StructType in [dstClass, dstObject]) and btnColVisibility.Down; // class-visibility
+  btnUseInstance.Enabled   := Res.StructType in [dstClass];
+  btnColClass.Enabled      := Res.StructType in [dstClass, dstObject];
+  btnColType.Enabled       := True;
+  btnColVisibility.Enabled := Res.StructType in [dstClass, dstObject];
+
+  AnchType := '';
+  if Res.Anchestor <> nil then
+    AnchType := Res.Anchestor.TypeName;
+  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, Res.TypeName, AnchType]);
+
+  GridDataSetup;
+  cnt := Res.FieldCount; // TODO: filter method vs field
+  FGridData.RowCount := max(cnt+1, 2);
+  for i := 1 to cnt do begin
+    FldInfo := Res.Fields[i-1];
+
+    FGridData.Cells[1,i] := FldInfo.FieldName;
+    if FldInfo.Field <> nil
+    then FGridData.Cells[2,i] := FldInfo.Field.TypeName
+    else FGridData.Cells[2,i] := '';
+    if FldInfo.Field <> nil
+    then FGridData.Cells[3,i] := FWatchPrinter.PrintWatchValue(FldInfo.Field, wdfDefault)
+    else FGridData.Cells[3,i] := '<error>';
+    if FldInfo.Owner <> nil
+    then FGridData.Cells[0,i] := FldInfo.Owner.TypeName
+    else FGridData.Cells[0,i] := '';
+    FGridData.Cells[4,i] := FieldLocationNames[FldInfo.FieldVisibility];
+
+  end;
+
+  //GridMethodsSetup;
+  //ShowMethodsFields;
+end;
+
 procedure TIDEInspectDlg.DataGridMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -219,78 +414,85 @@ end;
 
 procedure TIDEInspectDlg.FormShow(Sender: TObject);
 begin
+  ReleaseRefAndNil(FCurrentWatchValue);
+  FInspectWatches.Clear;
   UpdateData;
-end;
-
-procedure TIDEInspectDlg.EvaluateTestCallback(Sender: TObject;
-  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-begin
-  FTestUpdateLock := False;
-  if ASuccess and (ResultDBGType <> nil) then begin
-    if pos('Cannot access memory at address', ResultDBGType.Value.AsString) = 1 then begin
-      FreeAndNil(ResultDBGType);
-      Execute(FGridData.Cells[2, FRowClicked] + '(' + FExpression + ')[0]');
-      exit;
-    end;
-    FreeAndNil(ResultDBGType);
-  end;
-  Execute('(' + FExpression + ')^');
 end;
 
 procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
 var
   i: Integer;
-  s: String;
-  TestOpts: TWatcheEvaluateFlags;
+  s, t: String;
 begin
-  if FTestUpdateLock then
-    exit;
+  if (FCurrentWatchValue = nil) or (FExpression = '') then exit;
 
-  if (FDBGInfo = nil) or (FExpression = '') then exit;
+  if FCurrentWatchValue.TypeInfo <> nil then begin
 
-  if (FDBGInfo.Kind in [skClass, skRecord, skObject]) then begin
-    i := FGridData.Row;
-    if (i < 1) or (i >= FGridData.RowCount) then exit;
-    s := FGridData.Cells[1, i];
-
-    if btnUseInstance.Down and (FDBGInfo.Kind = skClass) then
-      Execute(FGridData.Cells[0, i] + '(' + FExpression + ').' + s)
-    else
-      Execute(FExpression + '.' + s);
-    exit;
-  end;
-
-  if (FDBGInfo.Kind in [skPointer]) then begin
-    FTestUpdateLock := true;
-    try
-
-      FRowClicked := FGridData.Row;
-      if (FRowClicked < 1) or (FRowClicked >= FGridData.RowCount) then exit;
-      s := FGridData.Cells[1, FRowClicked];
-
-      //TestOpts := [defFullTypeInfo];
-      TestOpts := [];
-      if btnUseInstance.Down then
-        include(TestOpts, defClassAutoCast);
-
-      if not DebugBoss.Evaluate('(' + FExpression + ')^', @EvaluateTestCallback, TestOpts) then
-        EvaluateTestCallback(nil, False, '', nil);
-      except
-        FTestUpdateLock := False;
-      end;
-    exit;
-  end;
-
-  if (FDBGInfo.Kind in [skSimple]) and (FDBGInfo.Attributes*[saArray,saDynArray] <> []) then begin
-    if FDBGInfo.Len < 1 then exit;
-    if FDBGInfo.Fields.Count > 0 then begin
+    if (FCurrentWatchValue.TypeInfo.Kind in [skClass, skRecord, skObject]) then begin
       i := FGridData.Row;
       if (i < 1) or (i >= FGridData.RowCount) then exit;
       s := FGridData.Cells[1, i];
-      Execute(FExpression + '[' + s + ']');
-    end
-    else begin
-      //
+
+      if btnUseInstance.Down and (FCurrentWatchValue.TypeInfo.Kind = skClass) then
+        Execute(FGridData.Cells[0, i] + '(' + FExpression + ').' + s)
+      else
+        Execute(FExpression + '.' + s);
+      exit;
+    end;
+
+    if (FCurrentWatchValue.TypeInfo.Kind in [skPointer]) then begin
+      i := FGridData.Row;
+      if (i < 1) or (i >= FGridData.RowCount) then exit;
+      s := FGridData.Cells[1, i];
+      t := FGridData.Cells[2, i];
+      Execute('(' + FExpression + ')^');
+      if not FExpressionWasEvaluated then
+        FAlternateExpression := t + '(' + FExpression + ')[0]';
+      exit;
+    end;
+
+    if (FCurrentWatchValue.TypeInfo.Kind in [skSimple]) and (FCurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> []) then begin
+      if FCurrentWatchValue.TypeInfo.Len < 1 then exit;
+      if FCurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
+        i := FGridData.Row;
+        if (i < 1) or (i >= FGridData.RowCount) then exit;
+        s := FGridData.Cells[1, i];
+        Execute(FExpression + '[' + s + ']');
+      end
+      else begin
+        //
+      end;
+    end;
+
+  end
+  else
+  if FCurrentWatchValue.ResultData <> nil then begin
+    case FCurrentWatchValue.ResultData.ValueKind of
+      rdkPointerVal: begin
+          i := FGridData.Row;
+          if (i < 1) or (i >= FGridData.RowCount) then exit;
+          s := FGridData.Cells[1, i];
+          t := FGridData.Cells[2, i];
+          Execute('(' + FExpression + ')^');
+          if not FExpressionWasEvaluated then
+            FAlternateExpression := t + '(' + FExpression + ')[0]';
+        end;
+      rdkArray: begin
+          i := FGridData.Row;
+          if (i < 1) or (i >= FGridData.RowCount) then exit;
+          s := FGridData.Cells[1, i];
+          Execute(FExpression + '[' + s + ']');
+        end;
+      rdkStruct: begin
+          i := FGridData.Row;
+          if (i < 1) or (i >= FGridData.RowCount) then exit;
+          s := FGridData.Cells[1, i];
+
+          if btnUseInstance.Down and (FCurrentWatchValue.ResultData.StructType in [dstClass, dstObject]) then
+            Execute(FGridData.Cells[0, i] + '(' + FExpression + ').' + s)
+          else
+            Execute(FExpression + '.' + s);
+        end;
     end;
   end;
 
@@ -298,9 +500,13 @@ end;
 
 procedure TIDEInspectDlg.btnColClassClick(Sender: TObject);
 begin
-  if (FDBGInfo = nil) then exit;
+  if (FCurrentWatchValue = nil) then exit;
 
-  if (FDBGInfo.Kind = skClass) then begin
+  if ( (FCurrentWatchValue.TypeInfo = nil) and
+       (FCurrentWatchValue.TypeInfo.Kind = skClass)
+     ) or
+     ( FCurrentWatchValue.ResultData.StructType in [dstClass, dstObject] )
+  then begin
     FGridData.Columns[0].Visible := btnColClass.Down;
     FGridData.Columns[4].Visible := btnColVisibility.Down;
   end;
@@ -318,6 +524,8 @@ begin
   if btnPower.Down
   then begin
     btnPower.ImageIndex := FPowerImgIdx;
+    ReleaseRefAndNil(FCurrentWatchValue);
+    FInspectWatches.Clear;
     UpdateData;
   end
   else begin
@@ -400,10 +608,11 @@ begin
   btnColVisibility.Enabled := True;
 
 
-  if not Assigned(FDBGInfo) then exit;
-  if not Assigned(FDBGInfo.Fields) then exit;
-  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FDBGInfo.
-    TypeName, FDBGInfo.Ancestor]);
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo.Fields) then exit;
+  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FCurrentWatchValue.TypeInfo.
+    TypeName, FCurrentWatchValue.TypeInfo.Ancestor]);
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(1);
@@ -428,12 +637,13 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
   StatusBar1.SimpleText:=ShortenedExpression+' : Variant';
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
   FGridData.Cells[2,1]:='Variant';
-  FGridData.Cells[3,1]:=FDBGInfo.Value.AsString;
+  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(1);
 end;
 
@@ -451,9 +661,10 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
-  if not Assigned(FDBGInfo.Fields) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo.Fields) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName;
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(2);
@@ -476,19 +687,20 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
   GridDataSetup;
 
-  if FDBGInfo.Attributes*[saArray,saDynArray] <> [] then begin
-    if FDBGInfo.Len >= 0 then
-      StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = Len:' + IntToStr(FDBGInfo.Len) + ' ' + FDBGInfo.Value.AsString
+  if FCurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> [] then begin
+    if FCurrentWatchValue.TypeInfo.Len >= 0 then
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = Len:' + IntToStr(FCurrentWatchValue.TypeInfo.Len) + ' ' + FCurrentWatchValue.TypeInfo.Value.AsString
     else
-      StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
 
-    if FDBGInfo.Fields.Count > 0 then begin
-      FGridData.RowCount:=FDBGInfo.Fields.Count+1;
-      for j := 0 to FDBGInfo.Fields.Count-1 do begin
-        fld := FDBGInfo.Fields[j];
+    if FCurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
+      FGridData.RowCount:=FCurrentWatchValue.TypeInfo.Fields.Count+1;
+      for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+        fld := FCurrentWatchValue.TypeInfo.Fields[j];
         FGridData.Cells[1,j+1]:=fld.Name; // index
         FGridData.Cells[2,j+1]:=fld.DBGType.TypeName;
         FGridData.Cells[3,j+1]:=fld.DBGType.Value.AsString;
@@ -497,11 +709,11 @@ begin
     end;
   end
   else
-    StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
 
   FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FDBGInfo.TypeName;
-  FGridData.Cells[3,1]:=FDBGInfo.Value.AsString;
+  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
+  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -519,15 +731,16 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FDBGInfo.TypeName;
-  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeDeclaration <> '')
+  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
+  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeDeclaration <> '')
   then FGridData.Cells[2,1] := FGridData.Cells[2,1] + ' = ';
-  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FDBGInfo.TypeDeclaration;
-  FGridData.Cells[3,1]:=FDBGInfo.Value.AsString;
+  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FCurrentWatchValue.TypeInfo.TypeDeclaration;
+  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -545,15 +758,16 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FDBGInfo.TypeName;
-  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeDeclaration <> '')
+  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
+  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeDeclaration <> '')
   then FGridData.Cells[2,1] := FGridData.Cells[2,1] + ' = ';
-  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FDBGInfo.TypeDeclaration;
-  FGridData.Cells[3,1]:=FDBGInfo.Value.AsString;
+  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FCurrentWatchValue.TypeInfo.TypeDeclaration;
+  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -571,16 +785,17 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  if not Assigned(FDBGInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  if not Assigned(FCurrentWatchValue) then exit;
+  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[1,1]:=FExpression;
-  if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
-  then FGridData.Cells[2, 1]:=Format(lisInspectPointerTo, [copy(FDBGInfo.
-    TypeName, 2, length(FDBGInfo.TypeName))])
-  else FGridData.Cells[2,1]:=FDBGInfo.TypeName;
+  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeName[1] = '^')
+  then FGridData.Cells[2, 1]:=Format(lisInspectPointerTo, [copy(FCurrentWatchValue.TypeInfo.
+    TypeName, 2, length(FCurrentWatchValue.TypeInfo.TypeName))])
+  else FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
   {$PUSH}{$RANGECHECKS OFF}
-  FGridData.Cells[3,1]:=format('$%x',[{%H-}PtrUInt(FDBGInfo.Value.AsPointer)]);
+  FGridData.Cells[3,1]:=format('$%x',[{%H-}PtrUInt(FCurrentWatchValue.TypeInfo.Value.AsPointer)]);
   {$POP}
   //FGridData.AutoSizeColumn(2);
 end;
@@ -661,8 +876,8 @@ var
   fld: TDBGField;
 begin
   k:=0;
-  for j := 0 to FDBGInfo.Fields.Count-1 do begin
-    case FDBGInfo.Fields[j].DBGType.Kind of
+  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skSimple,skRecord,skVariant,skPointer: inc(k);
     end;
   end;
@@ -670,8 +885,8 @@ begin
   if k<2 Then k:=2;
   FGridData.RowCount:=k;
   k:=0;
-  for j := 0 to FDBGInfo.Fields.Count-1 do begin
-    fld := FDBGInfo.Fields[j];
+  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    fld := FCurrentWatchValue.TypeInfo.Fields[j];
     case fld.DBGType.Kind of
       skSimple:
         begin
@@ -734,8 +949,8 @@ var
   j,k: SizeInt;
 begin
   k:=0;
-  for j := 0 to FDBGInfo.Fields.Count-1 do begin
-    case FDBGInfo.Fields[j].DBGType.Kind of
+  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skProcedure,skFunction,skProcedureRef, skFunctionRef: inc(k);
     end;
   end;
@@ -743,13 +958,13 @@ begin
   if k<2 Then k:=2;
   FGridMethods.RowCount:=k;
   k:=0;
-  for j := 0 to FDBGInfo.Fields.Count-1 do begin
-    case FDBGInfo.Fields[j].DBGType.Kind of
+  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skProcedure, skProcedureRef:
         begin
           inc(k);
-          FGridMethods.Cells[0,k]:=FDBGInfo.Fields[j].Name;
-          if ffDestructor in FDBGInfo.Fields[j].Flags then begin
+          FGridMethods.Cells[0,k]:=FCurrentWatchValue.TypeInfo.Fields[j].Name;
+          if ffDestructor in FCurrentWatchValue.TypeInfo.Fields[j].Flags then begin
             FGridMethods.Cells[1,k]:='Destructor';
           end else begin
             FGridMethods.Cells[1,k]:='Procedure';
@@ -760,14 +975,14 @@ begin
       skFunction, skFunctionRef:
         begin
           inc(k);
-          FGridMethods.Cells[0,k]:=FDBGInfo.Fields[j].Name;
-          if ffConstructor in FDBGInfo.Fields[j].Flags then begin
+          FGridMethods.Cells[0,k]:=FCurrentWatchValue.TypeInfo.Fields[j].Name;
+          if ffConstructor in FCurrentWatchValue.TypeInfo.Fields[j].Flags then begin
             FGridMethods.Cells[1,k]:='Constructor';
           end else begin
             FGridMethods.Cells[1,k]:='Function';
           end;
-          if Assigned(FDBGInfo.Fields[j].DBGType.Result) then begin
-            FGridMethods.Cells[2,k]:=FDBGInfo.Fields[j].DBGType.Result.TypeName;
+          if Assigned(FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Result) then begin
+            FGridMethods.Cells[2,k]:=FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Result.TypeName;
           end else begin
             FGridMethods.Cells[2,k]:='';
           end;
@@ -824,15 +1039,20 @@ constructor TIDEInspectDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FUpdateLock := False;
-  FUpdateNeeded := False;
   Localize;
-
 
   ThreadsMonitor := DebugBoss.Threads;
   CallStackMonitor := DebugBoss.CallStack;
+  WatchesMonitor := DebugBoss.Watches;
+  WatchesNotification.OnUpdate    := @DoWatchUpdated;
+
+  FWatchPrinter := TWatchResultPrinter.Create;
+  FInspectWatches := TCurrentWatches.Create(WatchesMonitor);
+
   ThreadsNotification.OnCurrent := @ContextChanged;
   CallstackNotification.OnCurrent := @ContextChanged;
+
+  DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
 
   FHistory := TStringList.Create;
 
@@ -877,12 +1097,16 @@ end;
 
 destructor TIDEInspectDlg.Destroy;
 begin
-  FreeAndNil(FDBGInfo);
+  DebugBoss.UnregisterStateChangeHandler(@DoDebuggerState);
+  ReleaseRefAndNil(FCurrentWatchValue);
   FreeAndNil(FHistory);
+  FreeAndNil(FWatchPrinter);
   //FreeAndNil(FDataGridHook);
   //FreeAndNil(FPropertiesGridHook);
   //FreeAndNil(FMethodsGridHook);
   inherited Destroy;
+
+  FreeAndNil(FInspectWatches);
 end;
 
 procedure TIDEInspectDlg.InternalExecute(const AExpression: ansistring);
@@ -931,98 +1155,175 @@ begin
   UpdateData;
 end;
 
-procedure TIDEInspectDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;
-  ResultText: String; ResultDBGType: TDBGType);
+
+procedure TIDEInspectDlg.DoWatchUpdated(const ASender: TIdeWatches;
+  const AWatch: TIdeWatch);
 begin
-  FUpdateLock := False;
-  if FUpdateNeeded then begin
-    Clear;
-    UpdateData;
+  if (FCurrentWatchValue = nil) or
+     not (FCurrentWatchValue.Validity in [ddsError, ddsInvalid, ddsValid])
+  then
+    exit;
+  if (AWatch <> FCurrentWatchValue.Watch) or
+     (ASender <> FInspectWatches)
+  then
+    exit;
+
+  if (FCurrentWatchValue.Validity in [ddsError, ddsInvalid]) and
+     (FAlternateExpression <> '')
+  then begin
+    if (FHistoryIndex = FHistory.Count - 1) and
+       (FHistory[FHistoryIndex] = FExpression)
+    then begin
+      FHistory.Delete(FHistoryIndex);
+      dec(FHistoryIndex);
+    end;
+    Execute(FAlternateExpression);
+    FAlternateExpression := '';
     exit;
   end;
 
+  FAlternateExpression := '';
   FExpressionWasEvaluated := True;
+  FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentWatchValue.ResultData, wdfStructure);
 
-  FHumanReadable := ResultText;
-  FDBGInfo := ResultDBGType;
-
-  if not ASuccess or not assigned(FDBGInfo) then
-  begin
-    FreeAndNil(FDBGInfo);
-    Clear;
-    StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
-    ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
-    PageControl.ActivePage := ErrorPage;
-    Exit;
-  end;
-  case FDBGInfo.Kind of
-    skClass, skObject, skInterface: InspectClass();
-    skRecord: InspectRecord();
-    skVariant: InspectVariant();
-    skEnum: InspectEnum;
-    skSet: InspectSet;
-    skProcedure, skProcedureRef: InspectSimple;
-    skFunction, skFunctionRef: InspectSimple;
-    skSimple,
-    skInteger,
-    skCardinal, skBoolean, skChar, skFloat: InspectSimple();
-    skArray: InspectSimple();
-    skPointer: InspectPointer();
-    skString, skAnsiString, skWideString: InspectSimple;
-  //  skDecomposable: ;
-    else begin
-        Clear;
-        StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
-        ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
-        PageControl.ActivePage := ErrorPage;
+  if FCurrentWatchValue.Validity = ddsValid then begin
+    if FCurrentWatchValue.TypeInfo <> nil then begin
+      case FCurrentWatchValue.TypeInfo.Kind of
+        skClass, skObject, skInterface: InspectClass();
+        skRecord: InspectRecord();
+        skVariant: InspectVariant();
+        skEnum: InspectEnum;
+        skSet: InspectSet;
+        skProcedure, skProcedureRef: InspectSimple;
+        skFunction, skFunctionRef: InspectSimple;
+        skSimple,
+        skInteger,
+        skCardinal, skBoolean, skChar, skFloat: InspectSimple();
+        skArray: InspectSimple();
+        skPointer: InspectPointer();
+        skString, skAnsiString, skWideString: InspectSimple;
+      //  skDecomposable: ;
+        else begin
+            Clear;
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            PageControl.ActivePage := ErrorPage;
+          end;
       end;
+    end
+    else begin
+    // resultdata
+      case FCurrentWatchValue.ResultData.ValueKind of
+        //rdkError: ;
+        rdkPrePrinted,
+        rdkString,
+        rdkWideString,
+        rdkChar,
+        rdkSignedNumVal,
+        rdkUnsignedNumVal,
+        rdkFloatVal,
+        rdkBool,
+        rdkPCharOrString: InspectResDataSimple;
+        rdkPointerVal:    InspectResDataPointer;
+        rdkEnum:          InspectResDataEnum;
+        rdkEnumVal:       InspectResDataEnum;
+        rdkSet:           InspectResDataSet;
+        rdkArray:         InspectResDataArray;
+        rdkStruct:        InspectResDataStruct;
+        else begin
+            Clear;
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            PageControl.ActivePage := ErrorPage;
+          end;
+      end;
+    end;
+
+    exit
+  end;
+
+  Clear;
+  StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+  ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+  PageControl.ActivePage := ErrorPage;
+end;
+
+procedure TIDEInspectDlg.DoDebuggerState(ADebugger: TDebuggerIntf;
+  AnOldState: TDBGState);
+begin
+  if (ADebugger.State = dsPause) and (AnOldState <> dsPause) then begin
+    ReleaseRefAndNil(FCurrentWatchValue);
+    FInspectWatches.Clear;
+    UpdateData;
   end;
 end;
 
 procedure TIDEInspectDlg.UpdateData;
 var
   Opts: TWatcheEvaluateFlags;
+  AWatch: TCurrentWatch;
+  tid, idx: Integer;
+  stack: TIdeCallStack;
+  expr: String;
 begin
   FExpressionWasEvaluated := False;
-  if DebugBoss.State in [dsRun, dsStop, dsIdle] then begin
-    // No request can be running
-    FUpdateLock := False;
-    FTestUpdateLock := False;
-  end;
+  FAlternateExpression := '';
 
-  if FUpdateLock then begin
-    FUpdateNeeded := True;
-    exit;
-  end;
-
-  if FExpression = '' then begin
+  expr := trim(FExpression);
+  if expr = '' then begin
+    ReleaseRefAndNil(FCurrentWatchValue);
     Clear;
     StatusBar1.SimpleText := '';
     exit;
   end;
 
-  FUpdateLock := True;
-  FUpdateNeeded := False;
-  try
-    FreeAndNil(FDBGInfo);
+  InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
+  if EdInspect.Items.IndexOf(FExpression) = -1
+  then EdInspect.Items.Insert(0, FExpression);
 
-    InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
-    if EdInspect.Items.IndexOf(FExpression) = -1
-    then EdInspect.Items.Insert(0, FExpression);
 
-    Opts := [defFullTypeInfo];
-    if btnUseInstance.Down then
-      include(Opts, defClassAutoCast);
+  if (CallStackMonitor = nil) or (ThreadsMonitor = nil) or
+     (DebugBoss.State <> dsPause)
+  then
+    exit;
 
-    if not DebugBoss.Evaluate(FExpression, @EvaluateCallback, Opts) then
-      EvaluateCallback(nil, False, '', nil);
+  tid    := ThreadsMonitor.CurrentThreads.CurrentThreadId;
+  stack  := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
+  idx := 0;
+  if stack <> nil then
+    idx := stack.CurrentIndex;
 
-  except
-    FUpdateLock := False;
+  Opts := [defFullTypeInfo];
+  if btnUseInstance.Down then
+    include(Opts, defClassAutoCast);
+
+  if (FCurrentWatchValue <> nil) and
+     (FCurrentWatchValue.Expression = expr) and
+     (FCurrentWatchValue.EvaluateFlags = Opts) and
+     (FCurrentWatchValue.ThreadId = tid) and
+     (FCurrentWatchValue.StackFrame = idx)
+  then begin
+    FCurrentWatchValue.Value;
+    DoWatchUpdated(nil, FCurrentWatchValue.Watch);
+    exit;
   end;
 
-  if FUpdateNeeded then
-    UpdateData;
+  ReleaseRefAndNil(FCurrentWatchValue);
+
+  FInspectWatches.BeginUpdate;
+  AWatch := FInspectWatches.Find(expr);
+  if AWatch = nil then begin
+    FInspectWatches.Clear;
+    AWatch := FInspectWatches.Add(expr);
+  end;
+  AWatch.EvaluateFlags := Opts;
+  AWatch.Enabled := True;
+  FInspectWatches.EndUpdate;
+  FCurrentWatchValue := AWatch.Values[tid, idx];
+  if FCurrentWatchValue <> nil then begin
+    FCurrentWatchValue.AddReference;
+    FCurrentWatchValue.Value;
+  end;
 end;
 
 initialization
