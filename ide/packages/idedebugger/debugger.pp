@@ -694,6 +694,8 @@ type
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0); virtual;
     procedure CreatePointerValue(AnAddrValue: TDbgPtr); virtual;
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); virtual;
+    function  CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+    function  CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
     function  CreateArrayValue(AnArrayType: TLzDbgArrayType;
                                ATotalCount: Integer = 0;
                                ALowIdx: Integer = 0
@@ -3592,6 +3594,53 @@ begin
   else
     TWatchResultDataFloat(FNewResultData).Create(AFloatValue, APrecission);
   AfterDataCreated;
+end;
+
+function TCurrentResData.CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean;
+  ALoc, ADesc: String): TLzDbgWatchDataIntf;
+begin
+  BeforeCreateValue;
+  if AnIsFunction then begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkFunction), 'TCurrentResData.CreateProcedure: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkFunction]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataFunc.Create(AVal, ALoc, ADesc)
+    else
+      TWatchResultDataFunc(FNewResultData).Create(AVal, ALoc, ADesc);
+  end
+  else begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkProcedure), 'TCurrentResData.CreateProcedure: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkProcedure]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataProc.Create(AVal, ALoc, ADesc)
+    else
+      TWatchResultDataProc(FNewResultData).Create(AVal, ALoc, ADesc);
+  end;
+  AfterDataCreated;
+
+  Result := nil;
+end;
+
+function TCurrentResData.CreateProcedureRef(AVal: TDBGPtr;
+  AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+begin
+  BeforeCreateValue;
+  if AnIsFunction then begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkFunctionRef), 'TCurrentResData.CreateProcedureRef: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkFunctionRef]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataFuncRef.Create(AVal, ALoc, ADesc)
+    else
+      TWatchResultDataFuncRef(FNewResultData).Create(AVal, ALoc, ADesc);
+  end
+  else begin
+    assert((FNewResultData=nil) or (FNewResultData.ValueKind = rdkProcedureRef), 'TCurrentResData.CreateProcedureRef: (FNewResultData=nil) or (FNewResultData.ValueKind = rdkProcedureRef]');
+    if FNewResultData = nil then
+      FNewResultData := TWatchResultDataProcRef.Create(AVal, ALoc, ADesc)
+    else
+      TWatchResultDataProcRef(FNewResultData).Create(AVal, ALoc, ADesc);
+  end;
+  AfterDataCreated;
+
+
+  Result := nil;
 end;
 
 procedure TCurrentResData.CreateBoolValue(AnOrdBoolValue: QWord;

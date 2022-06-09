@@ -19,6 +19,7 @@ type
     function PrintNumber(ANumValue: TWatchResultData; AnIsPointer: Boolean; ADispFormat: TWatchDisplayFormat): String;
     function PrintArray(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
     function PrintStruct(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+    function PrintProc(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
 
     function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
   public
@@ -204,6 +205,35 @@ begin
   end;
 end;
 
+function TWatchResultPrinter.PrintProc(AResValue: TWatchResultData;
+  ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+var
+  s: String;
+begin
+  if AResValue.AsQWord = 0 then
+    Result := 'nil'
+  else
+    Result := PrintNumber(AResValue, True, wdfHex);
+
+  if AResValue.AsString <> '' then
+    Result := Result + ' = ' + AResValue.AsString;
+
+  if ANestLvl > 0 then begin
+    s := AResValue.TypeName;
+  end
+  else begin
+    s := AResValue.AsDesc;
+    if s = '' then
+      s := AResValue.TypeName;
+  end;
+
+  if s <> '' then
+    if AResValue.ValueKind in [rdkFunctionRef, rdkProcedureRef] then
+      Result := Result + ': '+s
+    else
+      Result := s + ' AT ' +Result;
+end;
+
 function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
   ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
 
@@ -312,11 +342,18 @@ begin
       end;
     end;
     rdkPointerVal: begin
+      PtrDeref :=  PointerValue.DerefData;
       ResTypeName := '';
       if (ADispFormat = wdfStructure) or
          ((ADispFormat = wdfDefault) and (PointerValue.DerefData = nil))
-      then
+      then begin
         ResTypeName := AResValue.TypeName;
+        if (ResTypeName = '') and (PtrDeref <> nil) then begin
+          ResTypeName := PtrDeref.TypeName;
+          if ResTypeName <> '' then
+            ResTypeName := '^'+ResTypeName;
+        end;
+      end;
 
       if (ADispFormat in [wdfDefault, wdfStructure, wdfPointer]) and (AResValue.AsQWord = 0)
       then begin
@@ -333,7 +370,6 @@ begin
       if ResTypeName <> '' then
         Result := ResTypeName + '(' + Result + ')';
 
-      PtrDeref :=  PointerValue.DerefData;
       if PtrDeref <> nil then begin
         while (PtrDeref.ValueKind = rdkPointerVal) and (PtrDeref.DerefData <> nil) do begin
           Result := Result + '^';
@@ -365,6 +401,10 @@ begin
     end;
     rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl);
     rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl);
+    rdkFunction,
+    rdkProcedure,
+    rdkFunctionRef,
+    rdkProcedureRef: Result := PrintProc(AResValue, ADispFormat, ANestLvl);
   end;
 end;
 

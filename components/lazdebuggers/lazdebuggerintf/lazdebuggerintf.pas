@@ -148,14 +148,15 @@ type
 //    // CreateSetValue: "ASetVal" only has "length(ANames)" entries. Any higher value will be ignored / should be zero
 //    procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 
+    //temporary
+    function CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+    function CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+
     // Returns Intf for setting element-type => for empty array
     function CreateArrayValue(AnArrayType: TLzDbgArrayType;
                               ATotalCount: Integer = 0;
                               ALowIdx: Integer = 0
                              ): TLzDbgWatchDataIntf;
-    //procedure CreateDynArrayValue(ATotalCount: Integer = 0);
-    //procedure CreateStatArrayValue(ATotalCount: Integer = 0);
-    // low/high
 
     procedure CreateStructure(AStructType: TLzDbgStructType;
                               ADataAddress: TDBGPtr = 0

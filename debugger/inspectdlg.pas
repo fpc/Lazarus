@@ -38,8 +38,8 @@ uses
   LazDebuggerIntfBaseTypes,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
-  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, DebuggerDlg,
-  DebuggerStrConst, EnvironmentOpts;
+  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
+  DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -316,7 +316,6 @@ end;
 procedure TIDEInspectDlg.InspectResDataArray;
 var
   Res, Entry: TWatchResultData;
-  v: String;
   b: Int64;
   i: Integer;
 begin
@@ -355,18 +354,12 @@ const
   FieldLocationNames: array[TLzDbgFieldVisibility] of string = //(dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
     ('', 'Private', 'Protected', 'Public', 'Published');
 var
-  Res: TWatchResultData;
-  cnt, i: Integer;
+  Res, Fld, Fld2: TWatchResultData;
+  i, FldCnt, MethCnt, f, m: Integer;
   FldInfo: TWatchResultDataFieldInfo;
   AnchType: String;
 begin
   Res := FCurrentWatchValue.ResultData;
-
-  DataPage.TabVisible :=true;
-  PropertiesPage.TabVisible :=false;
-  MethodsPage.TabVisible := False; // TODO
-  //if not (PageControl.ActivePage = MethodsPage) then
-  PageControl.ActivePage := DataPage;
 
   FGridData.Columns[0].Visible := (Res.StructType in [dstClass, dstObject]) and btnColClass.Down; // anchestor
   FGridData.Columns[2].Visible := btnColType.Down; // typename
@@ -382,27 +375,97 @@ begin
   StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, Res.TypeName, AnchType]);
 
   GridDataSetup;
-  cnt := Res.FieldCount; // TODO: filter method vs field
-  FGridData.RowCount := max(cnt+1, 2);
-  for i := 1 to cnt do begin
+  FldCnt := 0;
+  MethCnt := 0;
+
+  if Res.StructType in [dstClass, dstObject] then begin
+    for i := 1 to Res.FieldCount do begin
+      FldInfo := Res.Fields[i-1];
+      if (FldInfo.Field <> nil) and
+         ( (FldInfo.Field.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
+           (ExtractProcResFromMethod(FldInfo.Field) <> nil)
+         )
+      then
+        inc(MethCnt)
+      else
+        inc(FldCnt);
+    end;
+  end
+  else
+    FldCnt := Res.FieldCount;
+
+  DataPage.TabVisible := FldCnt > 0;
+  PropertiesPage.TabVisible :=false;
+  MethodsPage.TabVisible := MethCnt > 0;
+  if not (PageControl.ActivePage = MethodsPage) then
+    PageControl.ActivePage := DataPage;
+
+  FGridData.RowCount    := max(FldCnt+1, 2);
+  FGridMethods.RowCount := max(MethCnt+1, 2);
+  f := 1;
+  m := 1;
+  for i := 1 to Res.FieldCount do begin
     FldInfo := Res.Fields[i-1];
 
-    FGridData.Cells[1,i] := FldInfo.FieldName;
-    if FldInfo.Field <> nil
-    then FGridData.Cells[2,i] := FldInfo.Field.TypeName
-    else FGridData.Cells[2,i] := '';
-    if FldInfo.Field <> nil
-    then FGridData.Cells[3,i] := FWatchPrinter.PrintWatchValue(FldInfo.Field, wdfDefault)
-    else FGridData.Cells[3,i] := '<error>';
-    if FldInfo.Owner <> nil
-    then FGridData.Cells[0,i] := FldInfo.Owner.TypeName
-    else FGridData.Cells[0,i] := '';
-    FGridData.Cells[4,i] := FieldLocationNames[FldInfo.FieldVisibility];
+    Fld := FldInfo.Field;
+    Fld2 := ExtractProcResFromMethod(Fld);
+    if (MethCnt > 0) and
+       (Fld <> nil) and
+       ( (Fld.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
+         (Fld2 <> nil)
+       )
+    then begin
+      if Fld2 = nil then Fld2 := Fld;
 
+      FGridMethods.Cells[0,m] := FldInfo.FieldName;
+
+      if Fld <> nil then begin
+        if Fld2.ValueKind in [rdkFunction, rdkProcedure] then begin
+          if dffConstructor in FldInfo.FieldFlags
+          then FGridMethods.Cells[1,m] := 'Constructor'
+          else if dffDestructor in FldInfo.FieldFlags
+          then FGridMethods.Cells[1,m] := 'Destructor'
+          else if Fld2.ValueKind = rdkFunction
+          then FGridMethods.Cells[1,m] := 'Function'
+          else if Fld2.ValueKind = rdkPCharOrString
+          then FGridMethods.Cells[1,m] := 'Procedure'
+          else FGridMethods.Cells[1,m] := '';
+        end
+        else
+          FGridMethods.Cells[1,m] := Fld.TypeName;
+      end
+      else
+        FGridMethods.Cells[1,m] := '';
+
+      FGridMethods.Cells[2,m] := '';
+
+      if Fld2 = nil then Fld2 := Fld;
+      if Fld2 <> nil
+      then FGridMethods.Cells[3,m] := IntToHex(Fld2.AsQWord, 16)
+      else FGridMethods.Cells[3,m] := '';
+
+      inc(m);
+    end
+    else begin
+      if FldInfo.Owner <> nil
+      then FGridData.Cells[0,f] := FldInfo.Owner.TypeName
+      else FGridData.Cells[0,f] := '';
+
+      FGridData.Cells[1,f] := FldInfo.FieldName;
+
+      if Fld <> nil
+      then FGridData.Cells[2,f] := Fld.TypeName
+      else FGridData.Cells[2,f] := '';
+
+      if Fld <> nil
+      then FGridData.Cells[3,f] := FWatchPrinter.PrintWatchValue(Fld, wdfDefault)
+      else FGridData.Cells[3,f] := '<error>';
+
+      FGridData.Cells[4,f] := FieldLocationNames[FldInfo.FieldVisibility];
+
+      inc(f);
+    end;
   end;
-
-  //GridMethodsSetup;
-  //ShowMethodsFields;
 end;
 
 procedure TIDEInspectDlg.DataGridMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1226,7 +1289,11 @@ begin
         rdkUnsignedNumVal,
         rdkFloatVal,
         rdkBool,
-        rdkPCharOrString: InspectResDataSimple;
+        rdkPCharOrString,
+        rdkFunction,
+        rdkProcedure,
+        rdkFunctionRef,
+        rdkProcedureRef:  InspectResDataSimple;
         rdkPointerVal:    InspectResDataPointer;
         rdkEnum:          InspectResDataEnum;
         rdkEnumVal:       InspectResDataEnum;

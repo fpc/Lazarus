@@ -19,7 +19,9 @@ type
     rdkBool, rdkEnum, rdkEnumVal, rdkSet,
     rdkPCharOrString,
     rdkArray,
-    rdkStruct
+    rdkStruct,
+    rdkFunction, rdkProcedure,
+    rdkFunctionRef, rdkProcedureRef
   );
   TWatchResultData = class;
   TWatchResultDataError = class;
@@ -454,6 +456,40 @@ type
   end;
 
 
+  { TWatchResultTypeProc }
+
+  TWatchResultTypeProc = object(TWatchResultValue)
+  private
+    FText: String;
+    FLoc: String;
+  protected
+    property GetAsString: String read FText;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+  end;
+
+  TWatchResultValueFunc = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkFunction;
+  end;
+
+  TWatchResultValueProc = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkProcedure;
+  end;
+
+  TWatchResultValueFuncRef = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkFunctionRef;
+  end;
+
+  TWatchResultValueProcRef = object(TWatchResultValueOrdNumBase)
+  protected const
+    VKind = rdkProcedureRef;
+  end;
 
 
 
@@ -555,6 +591,10 @@ type
     wdStatA,     // TWatchResultDataStatArray
     wdStruct,    // TWatchResultDataStruct
     wdStructRef, // TWatchResultDataRefStruct
+    wdFunc,      // TWatchResultDataFunc,
+    wdProc,      // TWatchResultDataProc,
+    wdFuncRef,   // TWatchResultDataFuncRef,
+    wdProcRef,   // TWatchResultDataProcRef,
     wdErr        // TWatchResultDataError
   );
 
@@ -599,6 +639,7 @@ type
   protected
     function GetValueKind: TWatchResultDataKind; virtual; //abstract;
     function GetAsString: String; virtual; abstract;
+    function GetAsDesc: String; virtual; abstract;
     function GetAsWideString: WideString; virtual; abstract;
     function GetAsQWord: QWord; virtual; abstract;
     function GetAsInt64: Int64; virtual; abstract;
@@ -646,6 +687,7 @@ type
     property TypeName: String read FTypeName;
 
     property AsString: String read GetAsString;
+    property AsDesc: String read GetAsDesc;
     property AsWideString: WideString read GetAsWideString;
     property AsQWord: QWord read GetAsQWord;
     property AsInt64: Int64 read GetAsInt64;
@@ -824,6 +866,7 @@ type
   protected
     function GetValueKind: TWatchResultDataKind; override;
     function GetAsString: String; override;
+    function GetAsDesc: String; override;
     function GetAsWideString: WideString; override;
     function GetAsQWord: QWord; override;
     function GetAsInt64: Int64; override;
@@ -1208,6 +1251,48 @@ type
 
 
 
+
+  { TGenericWatchResultDataProc }
+
+  generic TGenericWatchResultDataProc<_DATA> = class(specialize TGenericWatchResultDataWithType<_DATA, TWatchResultTypeProc>)
+  protected
+    function GetAsString: String; override; // TODO
+    function GetAsDesc: String; override;
+  public
+    constructor Create(AnAddr: QWord; ALoc, ADesc: String);
+  end;
+
+  { TWatchResultDataFunc }
+
+  TWatchResultDataFunc = class(specialize TGenericWatchResultDataProc<TWatchResultValueProc>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  end;
+
+  { TWatchResultDataProc }
+
+  TWatchResultDataProc = class(specialize TGenericWatchResultDataProc<TWatchResultValueProc>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  end;
+
+  { TWatchResultDataFuncRef }
+
+  TWatchResultDataFuncRef = class(specialize TGenericWatchResultDataProc<TWatchResultValueProcRef>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  end;
+
+  { TWatchResultDataProcRef }
+
+  TWatchResultDataProcRef = class(specialize TGenericWatchResultDataProc<TWatchResultValueProcRef>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  end;
+
+
+
+
   { TWatchResultDataError }
 
   TWatchResultDataError = class(specialize TGenericWatchResultData<TWatchResultValueError>)
@@ -1260,6 +1345,10 @@ const
     TWatchResultDataStatArray,     // wdStatA,
     TWatchResultDataStruct,        // wdStruct
     TWatchResultDataRefStruct,     // wdStructRef
+    TWatchResultDataFunc,          // wdFunc
+    TWatchResultDataProc,          // wdProc
+    TWatchResultDataFuncRef,       // wdFuncRef
+    TWatchResultDataProcRef,       // wdProcRef
     TWatchResultDataError          // wdErr
   );
 
@@ -1903,6 +1992,24 @@ begin
     FFieldData[i].Field.Free;
   FFieldData := nil;
   FAnchestor.Free;
+end;
+
+{ TWatchResultTypeProc }
+
+procedure TWatchResultTypeProc.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+  FText := AConfig.GetValue(APath + 'Desc', '');
+
+end;
+
+procedure TWatchResultTypeProc.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; AnAsProto: Boolean);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
+  AConfig.SetValue(APath + 'Desc', FText);
 end;
 
 { TWatchResultStorageOverrides }
@@ -2670,6 +2777,11 @@ end;
 function TGenericWatchResultData.GetAsString: String;
 begin
   Result := FData.GetAsString;
+end;
+
+function TGenericWatchResultData.GetAsDesc: String;
+begin
+  Result := '';
 end;
 
 function TGenericWatchResultData.GetAsWideString: WideString;
@@ -3893,6 +4005,55 @@ constructor TWatchResultDataRefStruct.Create(AStructType: TLzDbgStructType;
 begin
   FData.FDataAddress := ADataAddress;
   inherited Create(AStructType);
+end;
+
+{ TGenericWatchResultDataProc }
+
+function TGenericWatchResultDataProc.GetAsString: String;
+begin
+  Result := FType.FLoc;
+end;
+
+function TGenericWatchResultDataProc.GetAsDesc: String;
+begin
+  Result := FType.FText;
+end;
+
+constructor TGenericWatchResultDataProc.Create(AnAddr: QWord; ALoc,
+  ADesc: String);
+begin
+  FType.FText := ADesc;
+  FType.FLoc := ALoc;
+  FData.FNumValue := AnAddr;
+  inherited Create();
+end;
+
+{ TWatchResultDataFunc }
+
+function TWatchResultDataFunc.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdFunc;
+end;
+
+{ TWatchResultDataProc }
+
+function TWatchResultDataProc.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdProc;
+end;
+
+{ TWatchResultDataFuncRef }
+
+function TWatchResultDataFuncRef.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdFuncRef;
+end;
+
+{ TWatchResultDataProcRef }
+
+function TWatchResultDataProcRef.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdProcRef;
 end;
 
 { TWatchResultDataError.TErrorDataStorage }

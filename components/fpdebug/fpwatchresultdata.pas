@@ -6,7 +6,8 @@ interface
 
 uses
   FpDbgInfo, FpPascalBuilder, FpdMemoryTools, FpErrorMessages, FpDbgDwarf,
-  DbgIntfBaseTypes, fgl, SysUtils, LazDebuggerIntf;
+  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, fgl, Math, SysUtils,
+  LazDebuggerIntf;
 
 type
 
@@ -42,6 +43,8 @@ type
     function ArrayToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
     function StructToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+
+    function ProcToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
     function DoWriteWatchResultData(AnFpValue: TFpValue;
                                   AnResData: TLzDbgWatchDataIntf
@@ -507,6 +510,54 @@ begin
   end;
 end;
 
+function TFpWatchResultConvertor.ProcToResData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+var
+  addr: TDBGPtr;
+  s, LocName, TpName: String;
+  t, sym: TFpSymbol;
+  proc: TFpSymbolDwarf;
+  par: TFpValueDwarf;
+begin
+  Result := True;
+  addr := AnFpValue.DataAddress.Address;
+
+  LocName := '';
+  if AnFpValue.Kind in [skFunctionRef, skProcedureRef] then begin
+    t := AnFpValue.TypeInfo;
+    sym := AnFpValue.DbgSymbol;
+    proc := nil;
+    if (sym <> nil) and (sym is TFpSymbolDwarfDataProc) then
+      proc := TFpSymbolDwarf(sym)
+    else
+    if t <> nil then
+      proc := TFpSymbolDwarf(TDbgDwarfSymbolBase(t).CompilationUnit.Owner.FindProcSymbol(addr));
+
+    if proc <> nil then begin
+      LocName := proc.Name;
+      if (proc is TFpSymbolDwarfDataProc) then begin
+        par := TFpSymbolDwarfDataProc(proc).GetSelfParameter; // Has no Context set, but we only need TypeInfo.Name
+        if (par <> nil) and (par.TypeInfo <> nil) then
+          LocName := par.TypeInfo.Name + '.' + LocName;
+        par.ReleaseReference;
+      end;
+      ReleaseRefAndNil(proc);
+    end;
+  end
+  else
+    t := AnFpValue.DbgSymbol;
+
+  GetTypeAsDeclaration(s, t);
+
+  case AnFpValue.Kind of
+    skProcedure:    AnResData.CreateProcedure(addr, False, LocName, s);
+    skFunction:     AnResData.CreateProcedure(addr, True, LocName, s);
+    skProcedureRef: AnResData.CreateProcedureRef(addr, False, LocName, s);
+    skFunctionRef:  AnResData.CreateProcedureRef(addr, True, LocName, s);
+  end;
+  AddTypeNameToResData(AnFpValue, AnResData);
+end;
+
 function TFpWatchResultConvertor.DoWriteWatchResultData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 var
@@ -550,10 +601,10 @@ begin
       skType: ;
       skInstance: ;
       skUnit: ;
-      skProcedure: ;
-      skFunction: ;
-      skProcedureRef: ;
-      skFunctionRef: ;
+      skProcedure,
+      skFunction,
+      skProcedureRef,
+      skFunctionRef: Result := ProcToResData(AnFpValue, AnResData);
       skSimple: ;
       skBoolean:   Result := BoolToResData(AnFpValue, AnResData);
       skCurrency: ;

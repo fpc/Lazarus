@@ -54,7 +54,11 @@
       </Item>
       <Item>
         <Filename Value="idedebuggerwatchresprinter.pas"/>
-        <UnitName Value="idedebuggerwatchresprinter"/>
+        <UnitName Value="IdeDebuggerWatchResPrinter"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggerwatchresutils.pas"/>
+        <UnitName Value="IdeDebuggerWatchResUtils"/>
       </Item>
     </Files>
     <RequiredPkgs>
