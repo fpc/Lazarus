@@ -62,6 +62,8 @@ type
     btnUseInstance: TToolButton;
     btnBackward: TToolButton;
     BtnAddWatch: TToolButton;
+    btnPower: TToolButton;
+    btnSeparator1: TToolButton;
     ToolButton2: TToolButton;
     btnColClass: TToolButton;
     btnColType: TToolButton;
@@ -73,6 +75,7 @@ type
     procedure btnBackwardClick(Sender: TObject);
     procedure btnColClassClick(Sender: TObject);
     procedure btnForwardClick(Sender: TObject);
+    procedure btnPowerClick(Sender: TObject);
     procedure btnUseInstanceClick(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -83,6 +86,7 @@ type
     procedure DataGridDoubleClick(Sender: TObject);
     procedure DataGridMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
+    procedure FormShow(Sender: TObject);
   private
     //FDataGridHook,
     //FPropertiesGridHook,
@@ -100,6 +104,8 @@ type
     FRowClicked: Integer;
     FHistory: TStringList;
     FHistoryIndex: Integer;
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
+
     procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure EvaluateTestCallback(Sender: TObject; ASuccess: Boolean;
@@ -197,6 +203,9 @@ end;
 
 procedure TIDEInspectDlg.ContextChanged(Sender: TObject);
 begin
+  FExpressionWasEvaluated := False;
+  if (not btnPower.Down) or (not Visible) then exit;
+
   UpdateData;
 end;
 
@@ -206,6 +215,11 @@ begin
   if Button = mbExtra1 then btnBackwardClick(nil)
   else
   if Button = mbExtra2 then btnForwardClick(nil);
+end;
+
+procedure TIDEInspectDlg.FormShow(Sender: TObject);
+begin
+  UpdateData;
 end;
 
 procedure TIDEInspectDlg.EvaluateTestCallback(Sender: TObject;
@@ -297,6 +311,18 @@ end;
 procedure TIDEInspectDlg.btnForwardClick(Sender: TObject);
 begin
   GotoHistory(FHistoryIndex + 1);
+end;
+
+procedure TIDEInspectDlg.btnPowerClick(Sender: TObject);
+begin
+  if btnPower.Down
+  then begin
+    btnPower.ImageIndex := FPowerImgIdx;
+    UpdateData;
+  end
+  else begin
+    btnPower.ImageIndex := FPowerImgIdxGrey;
+  end;
 end;
 
 procedure TIDEInspectDlg.btnBackwardClick(Sender: TObject);
@@ -831,6 +857,12 @@ begin
   btnForward.ImageIndex := IDEImages.LoadImage('arrow_right');
   btnForward.Caption := '';
   BtnAddWatch.Caption:=lisInspectAddWatch;
+
+  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
+  btnPower.ImageIndex := FPowerImgIdx;
+  btnPower.Caption := '';
+  btnPower.Hint := lisDbgWinPowerHint;
 
   btnUseInstance.Enabled := False;
   btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
