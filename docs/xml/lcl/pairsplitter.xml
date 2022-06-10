@@ -9,7 +9,7 @@
     <module name="PairSplitter">
       <short>
         Defines the TPairSplitter component.
-        </short>
+      </short>
       <descr>
         <p>
           <file>pairsplitter.pas</file> defines the <var>TPairSplitter</var> component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
@@ -27,7 +27,7 @@
           <li>TPairSplitter</li>
         </ul>
         <p>
-          <b>Registered</b> but not displayed:
+          <b>Registered</b> but not displayed on the component palette:
         </p>
         <ul>
           <li>TPairSplitterSide</li>
@@ -51,7 +51,7 @@
         </short>
         <descr>
           <p>
-            <var>TPairSplitterSide</var> is a <var>TWinControl</var> descendant that represents the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide alters the visibility of inherited properties to match their intended usage.
+            <var>TPairSplitterSide</var> is a <var>TWinControl</var> descendant that represents the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide changes the visibility of inherited properties to match their intended usage.
           </p>
         </descr>
         <seealso>
@@ -97,19 +97,45 @@
 
       <element name="TPairSplitterSide.WMPaint">
         <short>
-          Provides custom handling for WMPaint messages.
+          Provides custom handling for LM_PAINT messages in the control.
         </short>
+        <descr>
+          <p>
+            <var>WMPaint</var> is an overridden method in <var>TPairSplitterSide</var> used to handle a LM_PAINT message received in the default handler for the control.
+          </p>
+          <p>
+            WMPaint ensures that the ControlState property is updated to include the csCustomPaint enumeration value. The inherited method is called to dispatch the message, draw the background for the control, and perform the paint message for the device context. The Paint method is called to draw the frame used for the control at design-time. csCustomPaint is removed from ControlState prior to exiting from the method.
+          </p>
+          <p>
+            No actions are performed in the method if the handle has not been allocated for the control, or when it is being freed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPairSplitterSide.Paint"/>
+          <link id="#lcl.controls.TWinControl.DefaultHandler">TWinControl.DefaultHandler</link>
+          <link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+          <link id="#lcl.controls.TControlStateType">TControlStateType</link>
+          <link id="#lcl.controls.TControlState">TControlState</link>
+        </seealso>
       </element>
       <element name="TPairSplitterSide.WMPaint.PaintMessage">
-        <short>WM_PAINT message for the control.</short>
-        <descr></descr>
-        <seealso/>
+        <short>LM_PAINT message handled for the control.</short>
       </element>
 
       <element name="TPairSplitterSide.Paint">
-        <short>Renders the control on its Canvas.</short>
-        <descr></descr>
-        <seealso/>
+        <short>Renders the frame for the control on its Canvas at design-time.</short>
+        <descr>
+          <p>
+            <var>Paint</var> is a method used to draw the frame for the control at design-time. Paint creates a temporary TControlCanvas instance with the Canvas that is used to perform the drawing operation. A frame is drawn using a dashed-line style around the Width and Height for the control. The dashed-line frame is omitted at run-time.
+          </p>
+          <p>
+            Paint is called from the WMPaint method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPairSplitterSide.WMPaint"/>
+          <link id="#lcl.controls.TControlCanvas">TControlCanvas</link>
+        </seealso>
       </element>
 
       <element name="TPairSplitterSide.Align" link="#lcl.controls.TControl.Align"/>
@@ -134,7 +160,7 @@
         </short>
         <descr>
           <p>
-            Destroy if the destructor for the class instance, and calls the inherited destructor.
+            Destroy is the overridden destructor for the class instance, and calls the inherited destructor.
           </p>
         </descr>
         <seealso/>
@@ -407,7 +433,7 @@
         </short>
         <descr>
           <p>
-            <var>ChildClassAllowed</var> is an overridden <var>Boolean</var> function used to determine if the specified class is inherited from a specific ancestor class. ChildClassAllowed calls the ChildClass.InheritsFrom method. The return value is True when it is derived from the TPairSplitterSide or TSplitter classes.
+            <var>ChildClassAllowed</var> is an overridden <var>Boolean</var> function used to determine if the specified class is inherited from a specific ancestor class. ChildClassAllowed calls the ChildClass.InheritsFrom method. The return value is <b>True</b> when it is derived from the TPairSplitterSide or TSplitter classes.
           </p>
         </descr>
         <seealso/>
@@ -416,7 +442,7 @@
         <short>Class to compare in the method`</short>
       </element>
       <element name="TCustomPairSplitter.ChildClassAllowed.Result">
-        <short>True if the class has a specific ancestor.</short>
+        <short><b>True</b> if the class has a specific ancestor.</short>
       </element>
 
       <element name="TCustomPairSplitter.Cursor">
@@ -556,7 +582,7 @@
             <li>TPairSplitter</li>
           </ul>
           <p>
-            <b>Registered</b> but not displayed:
+            <b>Registered</b> but not displayed on the component palette:
           </p>
           <ul>
             <li>TPairSplitterSide</li>
