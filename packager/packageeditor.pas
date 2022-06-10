@@ -1347,7 +1347,7 @@ procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 begin
   if OPMInterface <> nil then
     OPMInterface.RemovePackageListNotification(@PackageListAvailable);
-  IdleConnected:=true;
+  IdleConnected:=false;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
