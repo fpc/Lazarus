@@ -31,15 +31,16 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
+  ExtCtrls, Buttons, Spin,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
   // DebuggerIntf
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, LazDebuggerIntf,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, SpinEx, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
-  DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
+  IdeDebuggerBase, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -51,33 +52,49 @@ type
   { TIDEInspectDlg }
 
   TIDEInspectDlg = class(TDebuggerDlg)
+    btnArrayPageInc: TSpeedButton;
+    btnArrayEnd: TSpeedButton;
+    btnArrayStart: TSpeedButton;
+    btnArrayPageDec: TSpeedButton;
+    edArrayPageSize: TSpinEditEx;
     EdInspect: TComboBox;
     ErrorLabel: TLabel;
+    Label1: TLabel;
     PageControl: TPageControl;
+    pnlArrayNav: TPanel;
+    btnArrayFastUp: TSpeedButton;
+    btnArrayFastDown: TSpeedButton;
+    edArrayStart: TSpinEditEx;
     StatusBar1: TStatusBar;
     DataPage: TTabSheet;
     PropertiesPage: TTabSheet;
     MethodsPage: TTabSheet;
     ErrorPage: TTabSheet;
+    TimerClearData: TTimer;
     ToolBar1: TToolBar;
     btnUseInstance: TToolButton;
     btnBackward: TToolButton;
     BtnAddWatch: TToolButton;
     btnPower: TToolButton;
-    btnSeparator1: TToolButton;
-    ToolButton2: TToolButton;
+    tbDiv1: TToolButton;
+    tbDiv5: TToolButton;
+    tbDiv3: TToolButton;
     btnColClass: TToolButton;
     btnColType: TToolButton;
     btnColVisibility: TToolButton;
     btnForward: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
+    tbDiv4: TToolButton;
+    tbDiv2: TToolButton;
     procedure BtnAddWatchClick(Sender: TObject);
+    procedure BtnArrayNavClicked(Sender: TObject);
+    procedure BtnArrayPageClicked(Sender: TObject);
     procedure btnBackwardClick(Sender: TObject);
     procedure btnColClassClick(Sender: TObject);
     procedure btnForwardClick(Sender: TObject);
     procedure btnPowerClick(Sender: TObject);
     procedure btnUseInstanceClick(Sender: TObject);
+    procedure edArrayPageSizeEditingDone(Sender: TObject);
+    procedure edArrayStartEditingDone(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
@@ -88,6 +105,7 @@ type
     procedure DataGridMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure TimerClearDataTimer(Sender: TObject);
   private
     //FDataGridHook,
     //FPropertiesGridHook,
@@ -96,6 +114,7 @@ type
     //FPropertiesGrid,
     //FMethodsGrid: TOIDBGGrid;
     FExpression, FAlternateExpression: ansistring;
+    FUpdatedData: Boolean;
     FWatchPrinter: TWatchResultPrinter;
     FInspectWatches: TCurrentWatches;
     FCurrentWatchValue: TIdeWatchValue;
@@ -207,6 +226,16 @@ begin
   UpdateData;
 end;
 
+procedure TIDEInspectDlg.edArrayPageSizeEditingDone(Sender: TObject);
+begin
+  InspectResDataArray;
+end;
+
+procedure TIDEInspectDlg.edArrayStartEditingDone(Sender: TObject);
+begin
+  InspectResDataArray;
+end;
+
 procedure TIDEInspectDlg.ContextChanged(Sender: TObject);
 begin
   FExpressionWasEvaluated := False;
@@ -316,11 +345,12 @@ end;
 procedure TIDEInspectDlg.InspectResDataArray;
 var
   Res, Entry: TWatchResultData;
-  b: Int64;
-  i: Integer;
+  LowBnd: Int64;
+  i, SubStart: Integer;
+  WVal: TWatchValue;
+  CurIndexOffs, ResIdxOffs: Int64;
+  CurPageCount: Integer;
 begin
-  Res := FCurrentWatchValue.ResultData;
-
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
@@ -333,18 +363,48 @@ begin
   btnColType.Enabled := True;
   btnColVisibility.Enabled := False;
 
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = Len:' + IntToStr(Res.Count);
+  Res := FCurrentWatchValue.ResultData;
+  StatusBar1.SimpleText:=ShortenedExpression+': '+Res.TypeName + '  Len: ' + IntToStr(Res.ArrayLength);
+
+  LowBnd := Res.LowBound;
+  if FUpdatedData then begin
+    edArrayStart.Value := LowBnd;
+    FUpdatedData := False;
+  end;
+
+  CurIndexOffs := edArrayStart.Value - LowBnd;
+  CurPageCount := edArrayPageSize.Value;
+  if (CurIndexOffs >= 0) and (CurIndexOffs < res.ArrayLength) then
+    CurPageCount := Max(1, Min(CurPageCount, res.ArrayLength - CurIndexOffs));
+
+  WVal:= FCurrentWatchValue.Watch.ValueList.GetEntriesForRange(
+    FCurrentWatchValue.ThreadId,
+    FCurrentWatchValue.StackFrame,
+    CurIndexOffs,
+    CurPageCount
+  );
+  WVal.Value;
+  if WVal.Validity <> ddsValid then begin
+    TimerClearData.Enabled := True;
+    exit;
+  end;
+  FCurrentWatchValue.Watch.ValueList.ClearRangeEntries(5);
+
+  Res := WVal.ResultData;
 
   GridDataSetup;
   if Res.Count > 0 then begin
-    FGridData.RowCount:=Res.Count+1;
-    b := Res.LowBound;
-    for i := 0 to Res.Count-1 do begin
+    ResIdxOffs := WVal.FirstIndexOffs;
+    SubStart := CurIndexOffs - ResIdxOffs;
+    CurPageCount := Min(CurPageCount, Res.Count - SubStart);
+
+    FGridData.RowCount:= CurPageCount + 1;
+    for i := SubStart to SubStart+CurPageCount-1 do begin
       Res.SetSelectedIndex(i);
       Entry := Res.SelectedEntry;
-      FGridData.Cells[1,i+1] := IntToStr(b+i);
-      FGridData.Cells[2,i+1] := Entry.TypeName;
-      FGridData.Cells[3,i+1] := FWatchPrinter.PrintWatchValue(Entry, wdfDefault);
+      FGridData.Cells[1,i+1-SubStart] := IntToStr(LowBnd + ResIdxOffs + i);
+      FGridData.Cells[2,i+1-SubStart] := Entry.TypeName;
+      FGridData.Cells[3,i+1-SubStart] := FWatchPrinter.PrintWatchValue(Entry, wdfDefault);
     end;
   end;
 end;
@@ -481,6 +541,12 @@ begin
   ReleaseRefAndNil(FCurrentWatchValue);
   FInspectWatches.Clear;
   UpdateData;
+end;
+
+procedure TIDEInspectDlg.TimerClearDataTimer(Sender: TObject);
+begin
+  TimerClearData.Enabled := False;
+  Clear;
 end;
 
 procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
@@ -625,6 +691,47 @@ begin
     DebugBoss.Watches.CurrentWatches.EndUpdate;
   end;
 
+end;
+
+procedure TIDEInspectDlg.BtnArrayNavClicked(Sender: TObject);
+begin
+  if (FCurrentWatchValue = nil) or (FCurrentWatchValue.ResultData=nil) then
+    exit;
+  if Sender = btnArrayStart then
+    edArrayStart.Value := FCurrentWatchValue.ResultData.LowBound
+  else
+  if Sender = btnArrayFastUp then
+    edArrayStart.Value := max(edArrayStart.Value - edArrayPageSize.Value,
+                              FCurrentWatchValue.ResultData.LowBound)
+  else
+  if Sender = btnArrayFastDown then
+    edArrayStart.Value := min(edArrayStart.Value + edArrayPageSize.Value,
+                              Max(FCurrentWatchValue.ResultData.LowBound,
+                                  FCurrentWatchValue.ResultData.LowBound
+                                  + FCurrentWatchValue.ResultData.ArrayLength
+                                  - edArrayPageSize.Value)
+                              )
+  else
+  if Sender = btnArrayEnd then
+    edArrayStart.Value :=  Max(FCurrentWatchValue.ResultData.LowBound,
+                               FCurrentWatchValue.ResultData.LowBound
+                               + FCurrentWatchValue.ResultData.ArrayLength
+                               - edArrayPageSize.Value)
+  ;
+  InspectResDataArray;
+end;
+
+procedure TIDEInspectDlg.BtnArrayPageClicked(Sender: TObject);
+begin
+  if (FCurrentWatchValue = nil) or (FCurrentWatchValue.ResultData=nil) then
+    exit;
+  if Sender = btnArrayPageDec then
+    edArrayPageSize.Value := Max(10, edArrayPageSize.Value - 10)
+  else
+  if Sender = btnArrayPageInc then
+    edArrayPageSize.Value := Min(5000, edArrayPageSize.Value + 10)
+  ;
+  InspectResDataArray;
 end;
 
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1157,6 +1264,9 @@ begin
   btnBackward.Enabled := FHistoryIndex > 0;
   btnForward.Enabled := FHistoryIndex < FHistory.Count - 1;
 
+  edArrayStart.Hint := dlgInspectIndexOfFirstItemToShow;
+  edArrayPageSize.Hint := dlgInspectAmountOfItemsToShow;
+
   Clear;
 end;
 
@@ -1217,6 +1327,7 @@ begin
     exit;
 
   FExpression:=FHistory[FHistoryIndex];
+  edArrayStart.Value := 0;
   EdInspect.Text := FExpression;
   UpdateData;
 end;
@@ -1247,6 +1358,8 @@ begin
     FAlternateExpression := '';
     exit;
   end;
+
+  TimerClearData.Enabled := False;
 
   FAlternateExpression := '';
   FExpressionWasEvaluated := True;
@@ -1279,6 +1392,7 @@ begin
     end
     else begin
     // resultdata
+      pnlArrayNav.Visible := FCurrentWatchValue.ResultData.ValueKind = rdkArray;
       case FCurrentWatchValue.ResultData.ValueKind of
         //rdkError: ;
         rdkPrePrinted,
@@ -1347,6 +1461,7 @@ var
 begin
   FExpressionWasEvaluated := False;
   FAlternateExpression := '';
+  FUpdatedData := True;
 
   expr := trim(FExpression);
   if expr = '' then begin
@@ -1394,9 +1509,11 @@ begin
   if AWatch = nil then begin
     FInspectWatches.Clear;
     AWatch := FInspectWatches.Add(expr);
+    edArrayStart.Value := 0;
   end;
   AWatch.EvaluateFlags := Opts;
   AWatch.Enabled := True;
+  AWatch.RepeatCount := edArrayPageSize.Value;
   FInspectWatches.EndUpdate;
   FCurrentWatchValue := AWatch.Values[tid, idx];
   if FCurrentWatchValue <> nil then begin

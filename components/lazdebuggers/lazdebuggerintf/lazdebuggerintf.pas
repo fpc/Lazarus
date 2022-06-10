@@ -85,7 +85,6 @@ type
     ( defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable
       defAllowFunctionCall, //
       defExtraDepth,        // Evaluate 1 extra level of sub-elements => i.e., evaluate each nested sub-item
-
       // deprecated
       defNoTypeInfo,        // No Typeinfo object will be returned // for structures that means a printed value will be returned
       defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
@@ -239,6 +238,7 @@ type
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetExpression: String;
+    function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
@@ -250,6 +250,7 @@ type
 
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
+    property FirstIndexOffs: Int64 read GetFirstIndexOffs;
     property RepeatCount: Integer read GetRepeatCount;
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;

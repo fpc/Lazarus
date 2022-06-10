@@ -16,6 +16,7 @@ type
   { TWatchValue }
 
   TWatchValue = class(TRefCountedObject)
+  private
   protected
     FWatch: TWatch;
     FTypeInfo: TDBGType;
@@ -25,6 +26,7 @@ type
     procedure SetWatch(AValue: TWatch); virtual;
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
+    function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
@@ -40,6 +42,7 @@ type
     FDisplayFormat: TWatchDisplayFormat;
     FEvaluateFlags: TWatcheEvaluateFlags;
     FRepeatCount: Integer;
+    FFirstIndexOffs: Int64;
     FStackFrame: Integer;
     FThreadId: Integer;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
@@ -53,6 +56,7 @@ type
     procedure Assign(AnOther: TWatchValue); virtual;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
+    property FirstIndexOffs: Int64 read GetFirstIndexOffs;
     property RepeatCount: Integer read GetRepeatCount;
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;
@@ -81,6 +85,9 @@ type
     constructor Create(AOwnerWatch: TWatch);
     destructor Destroy; override;
     procedure Add(AnEntry: TWatchValue);
+    function GetEntriesForRange(const AThreadId: Integer; const AStackFrame: Integer;
+                                const AFirstIndexOffs: Int64; const ARepeatCount: Integer): TWatchValue;
+    procedure ClearRangeEntries(AKeepMostRecentCount: integer = 0);
     procedure Clear; virtual;
     function Count: Integer;
     property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
@@ -93,11 +100,13 @@ type
 
   TWatch = class(TDelayedUdateItem)
   private
+    FFirstIndexOffs: Int64;
 
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
     procedure SetEnabled(AValue: Boolean);
     procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
     procedure SetExpression(AValue: String);
+    procedure SetFirstIndexOffs(AValue: Int64);
     procedure SetRepeatCount(AValue: Integer);
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
@@ -123,9 +132,11 @@ type
     property Expression: String read FExpression write SetExpression;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat write SetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
+    property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
+    property ValueList: TWatchValueList read FValueList;
   end;
   TWatchClass = class of TWatch;
 
@@ -198,6 +209,11 @@ procedure TWatchValue.SetResultData(AResultData: TWatchResultData);
 begin
   assert(FResultData=nil, 'TWatchValue.SetResultData: FResultData=nil');
   FResultData := AResultData;
+end;
+
+function TWatchValue.GetFirstIndexOffs: Int64;
+begin
+  Result := FFirstIndexOffs;
 end;
 
 procedure TWatchValue.SetWatch(AValue: TWatch);
@@ -337,10 +353,20 @@ begin
   end;
 end;
 
+procedure TWatch.SetFirstIndexOffs(AValue: Int64);
+begin
+  if FFirstIndexOffs = AValue then Exit;
+  FFirstIndexOffs := AValue;
+  //FValueList.Clear;
+  Changed;
+  DoModified;
+end;
+
 procedure TWatch.SetRepeatCount(AValue: Integer);
 begin
   if FRepeatCount = AValue then Exit;
   FRepeatCount := AValue;
+  //FValueList.Clear;
   Changed;
   DoModified;
 end;
@@ -378,6 +404,7 @@ begin
     TWatch(Dest).FExpression    := FExpression;
     TWatch(Dest).FEnabled       := FEnabled;
     TWatch(Dest).FDisplayFormat := FDisplayFormat;
+    TWatch(Dest).FFirstIndexOffs    := FFirstIndexOffs;
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
     TWatch(Dest).FValueList.Assign(FValueList);
@@ -464,12 +491,57 @@ begin
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
        (Result.DisplayFormat = FWatch.DisplayFormat) and
        (Result.RepeatCount = FWatch.RepeatCount) and
+       (Result.FirstIndexOffs = FWatch.FirstIndexOffs) and
        (Result.EvaluateFlags = FWatch.EvaluateFlags)
     then
       exit;
     dec(i);
   end;
   Result := CreateEntry(AThreadId, AStackFrame);
+end;
+
+function TWatchValueList.GetEntriesForRange(const AThreadId: Integer;
+  const AStackFrame: Integer; const AFirstIndexOffs: Int64;
+  const ARepeatCount: Integer): TWatchValue;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    Result := TWatchValue(FList[i]);
+    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
+       (Result.DisplayFormat = FWatch.DisplayFormat) and
+       (Result.EvaluateFlags = FWatch.EvaluateFlags) and
+       (Result.FFirstIndexOffs <= AFirstIndexOffs) and
+       (Result.FFirstIndexOffs + Result.FRepeatCount  > AFirstIndexOffs) and
+       (Result.FRepeatCount >= ARepeatCount + (AFirstIndexOffs - Result.FFirstIndexOffs))
+    then
+      exit;
+    dec(i);
+  end;
+  Result := CreateEntry(AThreadId, AStackFrame); // XXXXXXXXXXXXX No Snapshot
+  Result.FFirstIndexOffs  := AFirstIndexOffs;
+  Result.FRepeatCount := ARepeatCount;
+end;
+
+procedure TWatchValueList.ClearRangeEntries(AKeepMostRecentCount: integer);
+var
+  Val: TWatchValue;
+  i, FirstIdx, RCnt: Integer;
+begin
+  i := FList.Count - 1;
+  FirstIdx := Watch.FirstIndexOffs;
+  RCnt := Watch.RepeatCount;
+  while i >= 0 do begin
+    Val := TWatchValue(FList[i]);
+    if (Val.FFirstIndexOffs <>  FirstIdx) or (Val.FRepeatCount <> RCnt) then begin
+      if AKeepMostRecentCount > 0 then
+        dec(AKeepMostRecentCount)
+      else
+        FList.Delete(i);
+    end;
+    dec(i);
+  end;
 end;
 
 function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;

@@ -1026,6 +1026,7 @@ begin
     then begin
       WatchResConv := TFpWatchResultConvertor.Create(FExpressionScope.LocationContext);
       WatchResConv.ExtraDepth := defExtraDepth in FWatchValue.EvaluateFlags;
+      WatchResConv.FirstIndexOffs := FWatchValue.FirstIndexOffs;
       ResData := FWatchValue.ResData;
       Result := WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
 

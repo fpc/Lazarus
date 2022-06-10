@@ -4223,6 +4223,7 @@ begin
   FDisplayFormat := Watch.DisplayFormat;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
+  FFirstIndexOffs    := Watch.FirstIndexOffs;
 end;
 
 constructor TIdeWatchValue.Create(AOwnerWatch: TIdeWatch; const AThreadId: Integer;

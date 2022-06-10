@@ -149,7 +149,8 @@ begin
       exit;
     end;
 
-    if (ADispFormat = wdfPointer) then begin
+    if (ADispFormat = wdfPointer) or (AResValue.FieldCount = 0)
+    then begin
       Result := '$'+IntToHex(AResValue.DataAddress, HexDigicCount(AResValue.DataAddress, 4, True));
 
       if tn <> '' then

@@ -23,6 +23,7 @@ type
   private
     FContext: TFpDbgLocationContext;
     FExtraDepth: Boolean;
+    FFirstIndexOffs: Integer;
     FRecurseCnt, FRecurseCntLow,
     FRecursePointerCnt,
     FRecurseInstanceCnt, FRecurseDynArray: integer;
@@ -73,6 +74,8 @@ type
 
     property Context: TFpDbgLocationContext read FContext write FContext;
     property ExtraDepth: Boolean read FExtraDepth write FExtraDepth;
+    property FirstIndexOffs: Integer read FFirstIndexOffs write FFirstIndexOffs;
+    //property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
   end;
 
 
@@ -311,7 +314,7 @@ const
   MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH = 3500; // reset
 var
   Cnt, i, CurRecurseDynArray, OuterIdx: Integer;
-  LowBnd: Int64;
+  LowBnd, StartIdx: Int64;
   Addr: TDBGPtr;
   ti: TFpSymbol;
   EntryRes: TLzDbgWatchDataIntf;
@@ -358,6 +361,11 @@ begin
     then
       exit;
 
+    StartIdx := 0;
+    If (FOuterArrayIdx < 0) and (FRecurseCnt = FRecurseCntLow) then
+      StartIdx := FFirstIndexOffs;
+    Cnt := max(1, Cnt - StartIdx);
+
     if (Context.MemManager.MemLimits.MaxArrayLen > 0) and (Cnt > Context.MemManager.MemLimits.MaxArrayLen) then
       Cnt := Context.MemManager.MemLimits.MaxArrayLen;
 
@@ -373,7 +381,7 @@ begin
     // Bound types
 
     inc(FTotalArrayCnt, Cnt);
-    for i := 0 to Cnt - 1 do begin
+    for i := StartIdx to StartIdx + Cnt - 1 do begin
       if (FRecurseCnt < 0) and (FTotalArrayCnt > MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH) then
         FTotalArrayCnt := MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH;
       if i > FOuterArrayIdx then
