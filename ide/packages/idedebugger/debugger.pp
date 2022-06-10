@@ -3338,7 +3338,8 @@ end;
 
 procedure TCurrentResData.MarkResDataAsUsedByOwner;
 begin
-  assert(FNewResultData<>nil, 'TCurrentResData.MarkResDataAsUsedByOwner: FNewResultData<>nil');
+  if FNewResultData = nil then
+    exit;
   if FNewResultData.ValueKind = rdkError then begin
     Exclude(FFLags, crfFreeErrResData);
     Include(FFLags, crfFreeResData);
