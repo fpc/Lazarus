@@ -133,7 +133,7 @@ procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
   if (Key in ['.',',']) then Key := DefaultFormatSettings.Decimalseparator;
-  if not (Key in ['0'..'9', DefaultFormatSettings.DecimalSeparator,'+','-',#8,#9,^C,^X,^V,^Z]) then Key := #0;
+  if not (Key in ['0'..'9', DefaultFormatSettings.DecimalSeparator,'+','-','e','E',#8,#9,^C,^X,^V,^Z]) then Key := #0;
   if (Key = DefaultFormatSettings.DecimalSeparator) and (FDecimals = 0) then Key := #0;
 end;
 
