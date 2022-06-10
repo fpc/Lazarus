@@ -227,6 +227,8 @@ type
 
     procedure RegisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); virtual; abstract;
     procedure UnregisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); virtual; abstract;
+    procedure RegisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); virtual; abstract;
+    procedure UnregisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Destroying: boolean read FDestroying;

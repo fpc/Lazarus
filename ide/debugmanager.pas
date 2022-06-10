@@ -143,7 +143,7 @@ type
     FCurrentBreakpoint: TIDEBreakpoint;
     FAutoContinueTimer: TTimer;
     FIsInitializingDebugger: Boolean;
-    FStateNotificationList: TMethodList;
+    FStateNotificationList, FWatchesInvalidatedNotificationList: TMethodList;
 
     // When a source file is not found, the user can choose one
     // here are all choices stored
@@ -194,6 +194,7 @@ type
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     function AttachDebugger: TModalResult;
+    procedure CallWatchesInvalidatedHandlers(ASender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -288,6 +289,8 @@ type
 
     procedure RegisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); override;
     procedure UnregisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); override;
+    procedure RegisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); override;
+    procedure UnregisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); override;
   end;
 
 function DBGDateTimeFormatter(const aValue: string): string;
@@ -1763,6 +1766,18 @@ begin
   FStateNotificationList.Remove(TMethod(AHandler));
 end;
 
+procedure TDebugManager.RegisterWatchesInvalidatedHandler(AHandler: TNotifyEvent
+  );
+begin
+  FWatchesInvalidatedNotificationList.Add(TMethod(AHandler));
+end;
+
+procedure TDebugManager.UnregisterWatchesInvalidatedHandler(
+  AHandler: TNotifyEvent);
+begin
+  FWatchesInvalidatedNotificationList.Remove(TMethod(AHandler));
+end;
+
 procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);
 begin
   if FDialogs[ADialogType] = nil then Exit;
@@ -1921,6 +1936,7 @@ begin
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TIdeWatchesMonitor.Create;
+  FWatches.OnWatchesInvalidated := @CallWatchesInvalidatedHandlers;
   FThreads := TIdeThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
   FSignals := TIDESignals.Create;
@@ -1938,6 +1954,7 @@ begin
   FSnapshots.UnitInfoProvider := FUnitInfoProvider;
 
   FStateNotificationList := TMethodList.Create;
+  FWatchesInvalidatedNotificationList := TMethodList.Create;
   FUserSourceFiles := TStringList.Create;
 
   FAutoContinueTimer := TTimer.Create(Self);
@@ -1997,6 +2014,7 @@ begin
   FreeAndNil(FHiddenDebugOutputLog);
   FreeAndNil(FUnitInfoProvider);
   FreeAndNil(FStateNotificationList);
+  FreeAndNil(FWatchesInvalidatedNotificationList);
 
   inherited Destroy;
 end;
@@ -3249,6 +3267,11 @@ begin
     end;
     Result:=mrOk;
   end;
+end;
+
+procedure TDebugManager.CallWatchesInvalidatedHandlers(ASender: TObject);
+begin
+  FWatchesInvalidatedNotificationList.CallNotifyEvents(Self);
 end;
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;

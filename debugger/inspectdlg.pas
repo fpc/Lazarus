@@ -108,6 +108,7 @@ type
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
 
     procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
+    procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure Localize;
     function  ShortenedExpression: String;
@@ -1053,6 +1054,7 @@ begin
   CallstackNotification.OnCurrent := @ContextChanged;
 
   DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
+  DebugBoss.RegisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
 
   FHistory := TStringList.Create;
 
@@ -1098,6 +1100,7 @@ end;
 destructor TIDEInspectDlg.Destroy;
 begin
   DebugBoss.UnregisterStateChangeHandler(@DoDebuggerState);
+  DebugBoss.UnregisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
   ReleaseRefAndNil(FCurrentWatchValue);
   FreeAndNil(FHistory);
   FreeAndNil(FWatchPrinter);
@@ -1251,11 +1254,20 @@ end;
 procedure TIDEInspectDlg.DoDebuggerState(ADebugger: TDebuggerIntf;
   AnOldState: TDBGState);
 begin
+  if (not btnPower.Down) or (not Visible) then exit;
   if (ADebugger.State = dsPause) and (AnOldState <> dsPause) then begin
     ReleaseRefAndNil(FCurrentWatchValue);
     FInspectWatches.Clear;
     UpdateData;
   end;
+end;
+
+procedure TIDEInspectDlg.DoWatchesInvalidated(Sender: TObject);
+begin
+  if (not btnPower.Down) or (not Visible) then exit;
+  ReleaseRefAndNil(FCurrentWatchValue);
+  FInspectWatches.Clear;
+  UpdateData;
 end;
 
 procedure TIDEInspectDlg.UpdateData;

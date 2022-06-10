@@ -838,6 +838,7 @@ type
     FWatches: TWatches;
     FSnapshots: TDebuggerDataSnapShotList;
     FOnModified: TNotifyEvent;
+    FOnWatchesInvalidated: TNotifyEvent;
     FIgnoreModified: Integer;
     FNotificationList: TWatchesNotificationList;
     function GetCurrentWatches: TCurrentWatches;
@@ -874,6 +875,7 @@ type
     procedure BeginIgnoreModified;
     procedure EndIgnoreModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;       // user-modified / xml-storable data modified
+    property OnWatchesInvalidated: TNotifyEvent read FOnWatchesInvalidated write FOnWatchesInvalidated;       // user-modified / xml-storable data modified
   end;
 
   {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -4237,6 +4239,8 @@ begin
   inherited InvalidateWatchValues;
   if Watches <> nil then
     Watches.ClearValues;
+  if FOnWatchesInvalidated <> nil then
+    FOnWatchesInvalidated(Self);
 end;
 
 procedure TIdeWatchesMonitor.NotifyAdd(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
