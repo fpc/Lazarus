@@ -4670,22 +4670,31 @@ begin
   OperIdx := 0;
   SimdOpcode := soInvalid;
 
-  DoDisassemble;
+  try
+    DoDisassemble;
 
-  Instruction^.OperCnt := OperIdx;
-  Instruction^.ParseFlags := Flags;
-  Instruction^.MaskIndex := Vex.MaskIndex;
+    Instruction^.OperCnt := OperIdx;
+    Instruction^.ParseFlags := Flags;
+    Instruction^.MaskIndex := Vex.MaskIndex;
 
-  if flagModRM in Flags then Inc(CodeIdx);
-  if flagSib in Flags then Inc(CodeIdx);
+    if flagModRM in Flags then Inc(CodeIdx);
+    if flagSib in Flags then Inc(CodeIdx);
 
-  for n := 1 to OperIdx do
-  begin
-    AnInstruction.Operand[n].CodeIndex := CodeIdx;
-    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount);
-    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount2);
+    for n := 1 to OperIdx do
+    begin
+      AnInstruction.Operand[n].CodeIndex := CodeIdx;
+      Inc(CodeIdx, AnInstruction.Operand[n].ByteCount);
+      Inc(CodeIdx, AnInstruction.Operand[n].ByteCount2);
+    end;
+    Inc(AAddress, CodeIdx);
+  except
+    Instruction := @AnInstruction;
+    SetOpcode(OPX_Invalid);
+    Instruction^.Flags := [];
+    Instruction^.Segment := '';
+    Instruction^.OperCnt := 0;
+    inc(AAddress,1);
   end;
-  Inc(AAddress, CodeIdx);
 end;
 
 { TX86AsmInstruction }
