@@ -767,6 +767,8 @@ type
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue; override;
     property SnapShot: TIdeWatchValueList read FSnapShot write SetSnapShot;
+  public
+    procedure Clear; override;
   end;
 
   { TCurrentWatch }
@@ -3990,6 +3992,13 @@ begin
     TCurrentWatchValue(Result).SnapShot := R;
   end;
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataMonitor: <<EXIT: TCurrentWatchValueList.CreateEntry']); end;
+end;
+
+procedure TCurrentWatchValueList.Clear;
+begin
+  inherited Clear;
+  if FSnapShot <> nil then
+    FSnapShot.Clear;
 end;
 
 { TWatchValueList }
