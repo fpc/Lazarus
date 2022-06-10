@@ -728,7 +728,6 @@ begin
   if Screen.GetCurrentModalForm<>nil then
     exit;
   FIDEStarted:=true;
-  debugln(['TIDEProjectGroupManager.OnIdle OpenLastGroupOnStart=',Options.OpenLastGroupOnStart,' LastGroupFile="',Options.LastGroupFile,'"']);
   if (CurrentProjectGroup=nil)
       and Options.OpenLastGroupOnStart
       and (Options.LastGroupFile<>'')
