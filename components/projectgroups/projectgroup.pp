@@ -231,7 +231,7 @@ type
     FProjectGroup: TIDEProjectGroup;
   protected
     function GetCurrentProjectGroup: TProjectGroup; override;
-    function ShowProjectGroupEditor: Boolean;
+    function ShowProjectGroupEditor(BringToFront: boolean): Boolean;
     procedure TargetDeleting(Group: TIDEProjectGroup; Index: integer);
     function GroupExists(Group: TIDEProjectGroup): boolean;
   public
@@ -250,7 +250,7 @@ type
     function CanRedo: boolean; override;
     procedure Undo; override;
     procedure Redo; override;
-    function NewProjectGroup(AddActiveProject: boolean): boolean; override;
+    function NewProjectGroup(AddActiveProject: boolean; BringToFront: boolean = true): boolean; override;
     function LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions): boolean; override;
     function SaveProjectGroup: boolean; override;
     function GetSrcPaths: string; override;
@@ -260,9 +260,9 @@ type
     property OnEditorOptionsChanged: TNotifyEvent read FOnEditorOptionsChanged write FOnEditorOptionsChanged;
   end;
 
-  TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup);
+  TEditProjectGroupHandler = procedure(Sender: TObject; AProjectGroup: TProjectGroup; BringToFront: boolean);
   // Method variant.
-  TEditProjectGroupEvent = procedure(Sender: TObject; AProjectGroup: TProjectGroup) of object;
+  TEditProjectGroupEvent = procedure(Sender: TObject; AProjectGroup: TProjectGroup; BringToFront: boolean) of object;
 
 var
   OnShowProjectGroupEditor: TEditProjectGroupHandler; // Takes precedence
@@ -549,15 +549,16 @@ begin
   Result:=FProjectGroup;
 end;
 
-function TIDEProjectGroupManager.ShowProjectGroupEditor: Boolean;
+function TIDEProjectGroupManager.ShowProjectGroupEditor(BringToFront: boolean
+  ): Boolean;
 begin
   Result:=Assigned(FProjectGroup);
   if Result then
   begin
     if Assigned(OnShowProjectGroupEditor) then
-      OnShowProjectGroupEditor(FProjectGroup,FProjectGroup)
+      OnShowProjectGroupEditor(FProjectGroup,FProjectGroup,BringToFront)
     else if Assigned(OnShowProjectGroupEditorEvent) then
-      OnShowProjectGroupEditorEvent(FProjectGroup,FProjectGroup)
+      OnShowProjectGroupEditorEvent(FProjectGroup,FProjectGroup,BringToFront)
     else
       Result:=False;
   end;
@@ -727,6 +728,7 @@ begin
   if Screen.GetCurrentModalForm<>nil then
     exit;
   FIDEStarted:=true;
+  debugln(['TIDEProjectGroupManager.OnIdle OpenLastGroupOnStart=',Options.OpenLastGroupOnStart,' LastGroupFile="',Options.LastGroupFile,'"']);
   if (CurrentProjectGroup=nil)
       and Options.OpenLastGroupOnStart
       and (Options.LastGroupFile<>'')
@@ -967,8 +969,8 @@ begin
 
 end;
 
-function TIDEProjectGroupManager.NewProjectGroup(AddActiveProject: boolean
-  ): boolean;
+function TIDEProjectGroupManager.NewProjectGroup(AddActiveProject: boolean;
+  BringToFront: boolean): boolean;
 var
   AProject: TLazProject;
   aTarget: TIDECompileTarget;
@@ -992,7 +994,7 @@ begin
     end;
   end;
 
-  ShowProjectGroupEditor;
+  ShowProjectGroupEditor(BringToFront);
 end;
 
 function TIDEProjectGroupManager.LoadProjectGroup(AFileName: string;
@@ -1010,7 +1012,7 @@ begin
   if not Result then
     exit;
   if not (pgloSkipDialog in AOptions) then
-    ShowProjectGroupEditor;
+    ShowProjectGroupEditor(pgloBringToFront in AOptions);
   MnuCmdSaveProjectGroupAs.Enabled:=true;
 
   Result:=true;

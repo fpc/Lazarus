@@ -83,7 +83,7 @@ end;
 
 procedure ViewProjectGroupsClicked(Sender: TObject);
 begin
-  ShowProjectGroupEditor(Sender,IDEProjectGroupManager.CurrentProjectGroup);
+  ShowProjectGroupEditor(Sender,IDEProjectGroupManager.CurrentProjectGroup,true);
 end;
 
 procedure Register;

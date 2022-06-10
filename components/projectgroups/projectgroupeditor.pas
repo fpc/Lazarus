@@ -270,7 +270,7 @@ var
 
 const
   ProjectGroupEditorName = 'ProjectGroupEditor';
-procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup; BringToFront: boolean);
 procedure CreateProjectGroupEditor(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 procedure SetProjectGroupEditorCallBack;
@@ -286,9 +286,9 @@ const
   piTargetCount  = 0;
   piActiveTarget = 1;
 
-procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup);
+procedure ShowProjectGroupEditor(Sender: TObject; AProjectGroup: TProjectGroup; BringToFront: boolean);
 begin
-  IDEWindowCreators.ShowForm(ProjectGroupEditorCreator.FormName,true);
+  IDEWindowCreators.ShowForm(ProjectGroupEditorCreator.FormName,BringToFront);
   if AProjectGroup<>nil then
     ProjectGroupEditorForm.ProjectGroup:=AProjectGroup;
 end;

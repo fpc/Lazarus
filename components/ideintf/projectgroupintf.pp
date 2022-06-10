@@ -199,8 +199,9 @@ Type
     pgloRemoveInvalid, // Remove non-existing targets from group automatically while loading
     pgloSkipInvalid, // Mark non-existing as Missing.
     pgloErrorInvalid, // Stop with error on non-existing.
+    pgloLoadRecursively, // load all sub nodes
     pgloSkipDialog, // do not show Project Group editor.
-    pgloLoadRecursively // load all sub nodes
+    pgloBringToFront // when showing editor, bring it to front
   );
   TProjectGroupLoadOptions = set of TProjectGroupLoadOption;
 
@@ -225,7 +226,7 @@ Type
   public
     constructor Create;
     destructor Destroy; override;
-    function NewProjectGroup(AddActiveProject: boolean): boolean; virtual; abstract;
+    function NewProjectGroup(AddActiveProject: boolean; BringToFront: boolean = true): boolean; virtual; abstract;
     function LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions): boolean; virtual; abstract;
     function SaveProjectGroup: boolean; virtual; abstract;
     function GetSrcPaths: string; virtual; abstract;
