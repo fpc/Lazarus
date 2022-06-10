@@ -123,14 +123,14 @@
         <short>Implements the storage specifier for the MaxValue property.</short>
       </element>
       <element name="TCustomFloatSpinEdit.MaxValueStored.Result">
-        <short>True if an explicit value has been assigned to MaxValue.</short>
+        <short><b>True</b> if an explicit value has been assigned to MaxValue.</short>
       </element>
 
       <element name="TCustomFloatSpinEdit.IncrementStored">
         <short>Implements the storage specifier for the Increment property.</short>
       </element>
       <element name="TCustomFloatSpinEdit.IncrementStored.Result">
-        <short>True if an explicit value has been assigned to Increment.</short>
+        <short><b>True</b> if an explicit value has been assigned to Increment.</short>
       </element>
 
       <element name="TCustomFloatSpinEdit.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -165,7 +165,7 @@
             EditingDone calls the UpdateControl method to normalize and validate the control Value using the assigned range in MinValue and MaxValue. This includes calling GetLimitedValue to update the control Value when  both MinValue and MaxValue contain a valid range. The value in the widgetset class is updated when component streaming is not active, and the control is not being freed.
           </p>
           <p>
-            EditingDone calls the inherited method to signal the OnEditingDone event handler (when assigned) when  ReadOnly is False.
+            EditingDone calls the inherited method to signal the OnEditingDone event handler (when assigned) when ReadOnly is <b>False</b>.
           </p>
           <p>
             EditingDone is called from the KeyUpAfterInterface method in TCustomEdit when the Enter (VK_RETURN) key code is handled for the control. It also occurs when the focused control has been changed.
@@ -317,7 +317,7 @@
             <var>KeyPress</var> is an overridden method used to handle key press events for the control. KeyPress calls the inherited method on entry. If the character in <var>Key</var> is not handled in the ancestor class, the argument  is examined to determine if it is valid for the control. If Key is not a valid character, it is set to <b>#0</b> to ignore  the key press event.
           </p>
           <p>
-            KeyPress disallows any value in Key that is not a numeric digit, sign character ('+' or '-'), or decimal point character ('.' or ','). The decimal point is automatically converted to the value used in the <var>DefaultFormatSettings</var> variable from the RTL. The decimal point is not allowed when <var>Decimals</var> is set to <b>0</b> (<b>zero</b>).
+            KeyPress disallows any value in Key that is not a numeric digit, sign character ('+' or '-'), scientific exponentiation symbol ('E' or 'e'), or decimal point character ('.' or ','). The decimal point is automatically converted to the value used in the <var>DefaultFormatSettings</var> variable from the RTL. The decimal point is not allowed when <var>Decimals</var> is set to <b>0</b> (<b>zero</b>).
           </p>
           <p>
             KeyPress does not ensure that the value in Key is valid for a specific position in the control value. It does not guarantee that sign indicators are used only at the start of the control value. Nor does it guarantee that a decimal point character is not used more than once in the entered value. This is implemented in a manner that is Delphi compatible.
