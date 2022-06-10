@@ -1372,7 +1372,7 @@ begin
   if stack <> nil then
     idx := stack.CurrentIndex;
 
-  Opts := [defFullTypeInfo];
+  Opts := [defExtraDepth, defFullTypeInfo];
   if btnUseInstance.Down then
     include(Opts, defClassAutoCast);
 
