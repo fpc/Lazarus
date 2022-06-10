@@ -220,7 +220,9 @@
       </element>
 
       <element name="TButtonGlyph.ResetExternalImageIndexes">
-        <short>Initializes values in the internal array of image indexes used in property values.</short>
+        <short>
+          Initializes values in the internal array of image indexes used in property values.
+        </short>
         <descr>
           <p>
             Sets all byte values in the storage for an internal array of image indexes to the value $FF. Called from the Create constructor, and when a new bitmap is assigned to the Glyph property.
@@ -243,7 +245,9 @@
         </seealso>
       </element>
       <element name="TButtonGlyph.SetExternalImageIndex.AState">
-        <short>Ordinal position in the array of image indexes updated with the new value for the property.</short>
+        <short>
+          Ordinal position in the array of image indexes updated with the new value for the property.
+        </short>
       </element>
       <element name="TButtonGlyph.SetExternalImageIndex.AExternalImageIndex">
         <short>New value for the ExternalImageIndex property.</short>
@@ -308,7 +312,7 @@
         <short>Removes the references to Images for the button states.</short>
         <descr>
           <p>
-            ClearImages is a procedure used to remove index references to Images used for button states in the glyph. ClearImages sets the values in an internal member to -1 to indicate that the image for the corresponding TButtonState is not used.
+            <var>ClearImages</var> is a procedure used to remove index references to Images used for button states in the glyph. ClearImages sets the values in an internal member to -1 to indicate that the image for the corresponding TButtonState is not used.
           </p>
         </descr>
         <seealso>
@@ -408,7 +412,7 @@
             <dt>gsmAlways</dt>
             <dd>Return value is True</dd>
             <dt>gsmNever</dt>
-            <dd>Return value is False</dd>
+            <dd>Return value is <b>False</b></dd>
             <dt>gsmApplication</dt>
             <dd>
               Uses the Application.ShowButtonGlyphs property to determine the return value
@@ -430,14 +434,14 @@
         </seealso>
       </element>
       <element name="TButtonGlyph.CanShow.Result">
-        <short>True when the glyph can be displayed on the button.</short>
+        <short><b>True</b> when the glyph can be displayed on the button.</short>
       </element>
 
       <element name="TButtonGlyph.CanShowGlyph">
         <short>Determines if an image is available for the button glyph.</short>
         <descr>
           <p>
-            CanShowGlyph is a Boolean function used to determine if an image is available for the button glyph. The return value is True when an image has been specified using one of the following mechanisms (in the order of precedence):
+            CanShowGlyph is a Boolean function used to determine if an image is available for the button glyph. The return value is <b>True</b> when an image has been specified using one of the following mechanisms (in the order of precedence):
           </p>
           <ul>
             <li>Images is assigned and contains valid button state images</li>
@@ -452,7 +456,7 @@
         </seealso>
       </element>
       <element name="TButtonGlyph.CanShowGlyph.Result">
-        <short>True when a glyph image is available.</short>
+        <short><b>True</b> when a glyph image is available.</short>
       </element>
 
       <element name="TButtonGlyph.DoChange">
@@ -536,7 +540,7 @@
         </short>
         <descr>
           <p>
-            If you drop a component on the form in the form editor,  you don't need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+            If you drop a component on the form in the form editor, you don't need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
           </p>
           <p>
             However, if you create the component by code, don't forget to free it when it is no longer needed. Constructors allocate memory and system resources needed by the object. They also call the constructor for any sub-objects present in the class.
@@ -696,7 +700,7 @@
         <short>Button state.</short>
       </element>
       <element name="TButtonGlyph.Draw.Transparent">
-        <short>True if the glyph is drawn transparently.</short>
+        <short><b>True</b> if the glyph is drawn transparently.</short>
       </element>
       <element name="TButtonGlyph.Draw.BiDiFlags">
         <short>Not used in the current implementation.</short>
@@ -881,7 +885,7 @@
         <short>Ordinal position for the bitmap in ExternalImages displayed when the button is Up (not pressed).</short>
         <descr>
           <p>
-            ExternalImageIndex is a Integer property with the ordinal position for the bitmap drawn on the control when the button is in the Up (not pressed) state. ExternalImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+            <var>ExternalImageIndex</var> is a <var>Integer</var> property with the ordinal position for the bitmap drawn on the control when the button is in the Up (not pressed) state. ExternalImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
           </p>
         </descr>
         <version>
@@ -1208,7 +1212,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.IsGlyphStored.Result">
-        <short>True when the glyph image is stored in the LCL component stream.</short>
+        <short><b>True</b> when the glyph image is stored in the LCL component stream.</short>
       </element>
 
       <element name="TCustomBitBtn.SetGlyph">
@@ -1335,7 +1339,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.RealizeKind.ForceDefaults">
-        <short>True if the default values for properties are used in the control.</short>
+        <short><b>True</b> if the default values for properties are used in the control.</short>
       </element>
 
       <element name="TCustomBitBtn.SetDefaultCaption">
@@ -1468,13 +1472,13 @@
         </short>
         <descr>
           <p>
-            ActionChange is overridden in TCustomBitBtn to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
+            <var>ActionChange</var> is overridden in TCustomBitBtn to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
           </p>
           <p>
             Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
           </p>
           <p>
-            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to False, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is <b>True</b>.
           </p>
           <p>
             ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in ImageIndex and Images are also updated with the values from the action (when assigned).
@@ -1487,7 +1491,7 @@
       </element>
       <element name="TCustomBitBtn.ActionChange.CheckDefaults">
         <short>
-          True to use existing properties as default values, False to use properties from the new action.
+          <b>True</b> to use existing properties as default values, <b>False</b> to use properties from the new action.
         </short>
       </element>
 
@@ -1519,7 +1523,7 @@
       </element>
       <element name="TCustomBitBtn.IsCaptionStored.Result">
         <short>
-          True when a value for the property is included in the LCL component streaming mechanism.
+          <b>True</b> when a value for the property is included in the LCL component streaming mechanism.
         </short>
       </element>
 
@@ -1680,7 +1684,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.CanShowGlyph.Result">
-        <short>True when the Glyph image can be displayed for the control.</short>
+        <short><b>True</b> when the Glyph image can be displayed for the control.</short>
       </element>
       <element name="TCustomBitBtn.CanShowGlyph.AWithShowMode">
         <short>Indicates if the ShowMode for the glyph is examined in the method.</short>
@@ -1708,7 +1712,7 @@
         <short>Indicates if Caption contains the default value for the button Kind.</short>
         <descr>
           <p>
-            Changing the property value to True causes a resource string with the caption text for the button ID to be assigned to the Caption property when Kind is not bkCustom.
+            Changing the property value to <b>True</b> causes a resource string with the caption text for the button ID to be assigned to the Caption property when Kind is not bkCustom.
           </p>
         </descr>
         <seealso>
@@ -1769,7 +1773,9 @@
       </element>
 
       <element name="TCustomBitBtn.HotImageIndex">
-        <short>Ordinal position for the bitmap displayed when the button control is hot (hovered).</short>
+        <short>
+          Ordinal position for the bitmap displayed when the button control is hot (hovered).
+        </short>
         <descr>
           <p>
             <var>HotImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is hot (under the mouse cursor - hovered). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
@@ -1792,10 +1798,12 @@
       </element>
 
       <element name="TCustomBitBtn.ImageIndex">
-        <short>Ordinal position for the default bitmap displayed when the button control is up (not pressed).</short>
+        <short>
+          Ordinal position for the default bitmap displayed when the button control is up (not pressed).
+        </short>
         <descr>
           <p>
-            ImageIndex is a TImageIndex property with the ordinal position for the bitmap displayed on the button when it is in its default state (up). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+            <var>ImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is in its default state (up). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
           </p>
         </descr>
         <version>
@@ -1878,7 +1886,7 @@
         <short>A Button with a small image attached.</short>
         <descr>
           <p>
-            TBitBtn is a TCustomBitBtn descendant which provides the interface used to display a button with a glyph (or image) and a caption. It performs an action when the button is clicked.
+            <var>TBitBtn</var> is a <var>TCustomBitBtn</var> descendant which provides the interface used to display a button with a glyph (or image) and a caption. It performs an action when the button is clicked.
           </p>
           <p>
             TBitBtn sets the visibility for properties introduced in ancestor classes.
@@ -2073,7 +2081,9 @@
       </element>
 
       <element name="TSpeedButtonActionLink.IsImageIndexLinked">
-        <short>Determines whether the action link can update the image index for the associated control.</short>
+        <short>
+          Determines whether the action link can update the image index for the associated control.
+        </short>
         <descr>
           <p>
             <var>IsImageIndexLinked</var> is an overridden <var>Boolean</var> function used to determine if the Action Link can update the image in its associated <var>TSpeedButton</var> control. The return value is <b>True</b> when the <var>Action</var> is derived from <var>TCustomAction</var> and the <var>ImageIndex</var> values in the TSpeedButton and the Action currently have the same values.
@@ -2088,7 +2098,7 @@
         </seealso>
       </element>
       <element name="TSpeedButtonActionLink.IsImageIndexLinked.Result">
-        <short>Returns True when the action is can update the image in the associated control.</short>
+        <short>Returns <b>True</b> when the action is can update the image in the associated control.</short>
       </element>
 
       <element name="TCustomSpeedButton">
@@ -2148,7 +2158,7 @@
       </element>
       <element name="TCustomSpeedButton.IsGlyphStored.Result">
         <short>
-          True when a value for the Glyph property is included in the LCL component streaming mechanism.
+          <b>True</b> when a value for the Glyph property is included in the LCL component streaming mechanism.
         </short>
       </element>
 
@@ -2458,7 +2468,7 @@
             No additional actions are performed in the method at design-time.
           </p>
           <p>
-            If the Left mouse button was pressed when the control is Enabled, Down is set to True (when needed) and the Action for the control is unchecked. An internal flag for a pending drag operation in MouseMove is set prior to exiting from the method.
+            If the Left mouse button was pressed when the control is Enabled, Down is set to <b>True</b> (when needed) and the Action for the control is unchecked. An internal flag for a pending drag operation in MouseMove is set prior to exiting from the method.
           </p>
         </descr>
         <seealso>
@@ -2699,28 +2709,32 @@
             Called from the <var>MeasureDraw</var> method. The return value can be an enumeration value from either <var>TThemedToolBar</var> or <var>TThemedButton</var> depending on the value in the <var>Flat</var> property.
           </p>
           <p>
-            When Flat is True, one of the following TThemedToolBar values is returned:
+            When Flat is <b>True</b>, one of the following TThemedToolBar values is returned:
           </p>
           <dl>
             <dt>ttbButtonDisabled</dt>
-            <dd>Used when IsEnabled is False.</dd>
+            <dd>Used when IsEnabled is <b>False</b>.</dd>
             <dt>ttbButtonChecked</dt>
-            <dd>Used when Down is True and the mouse pointer is not over the control.</dd>
+            <dd>Used when Down is <b>True</b> and the mouse pointer is not over the control.</dd>
             <dt>ttbButtonCheckedHot</dt>
-            <dd>Used when Down is True and the mouse pointer is hovered over the control.</dd>
+            <dd>Used when Down is <b>True</b> and the mouse pointer is hovered over the control.</dd>
             <dt>ttbButtonPressed</dt>
-            <dd>Used when Down is False and the mouse is hovered over a grouped button control.</dd>
+            <dd>
+              Used when Down is <b>False</b> and the mouse is hovered over a grouped button control.
+            </dd>
             <dt>ttbButtonHot</dt>
-            <dd>Used when Down is False and the mouse is hovered over a non-grouped button control.</dd>
+            <dd>
+              Used when Down is <b>False</b> and the mouse is hovered over a non-grouped button control.
+            </dd>
             <dt>ttbButtonNormal</dt>
             <dd>Default state for the control.</dd>
           </dl>
           <p>
-            When Flat is False, one of the following TThemedButton values is returned:
+            When Flat is <b>False</b>, one of the following TThemedButton values is returned:
           </p>
           <dl>
             <dt>tbPushButtonDisabled</dt>
-            <dd>Used when IsEnabled is False.</dd>
+            <dd>Used when IsEnabled is <b>False</b>.</dd>
             <dt>tbPushButtonPressed</dt>
             <dd>Used when a grouped button control is Down.</dd>
             <dt>tbPushButtonHot</dt>
@@ -2736,7 +2750,7 @@
 
       <element name="TCustomSpeedButton.MouseInControl">
         <short>
-          Returns True if the mouse pointer is in the display area for the control.
+          Returns <b>True</b> if the mouse pointer is in the display area for the control.
         </short>
         <descr>
           <p>
@@ -2763,7 +2777,7 @@
             Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
           </p>
           <p>
-            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to False, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
           </p>
           <p>
             ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in GroupIndex, ImageIndex, and Images are also updated with the values from the action.
@@ -2778,7 +2792,7 @@
       </element>
       <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
         <short>
-          True to use existing properties as default values, False to use properties from the new action.
+          <b>True</b> to use existing properties as default values, <b>False</b> to use properties from the new action.
         </short>
       </element>
 
@@ -2831,7 +2845,7 @@
         <short>TSize instance with the width (CX) and height ( CY) for the glyph .</short>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.Drawing">
-        <short>True if the control is drawing, False if the control is measuring its components.</short>
+        <short><b>True</b> if the control is drawing, <b>False</b> if the control is measuring its components.</short>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.PaintRect">
         <short>Client rectangle for the control.</short>
@@ -2902,7 +2916,7 @@
         <short>Button state drawn for the control.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.ATransparent">
-        <short>True if the glyph image is drawn with transparency.</short>
+        <short><b>True</b> if the glyph image is drawn with transparency.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.BiDiFlags">
         <short>Not used in the current implementation.</short>
@@ -3069,7 +3083,7 @@
         <short>Ordinal position for the image displayed when the control is disabled.</short>
         <descr>
           <p>
-            <var>DisabledImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed when Enabled is set to False. It indicates the position in Images or Glyph where the image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+            <var>DisabledImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed when Enabled is set to <b>False</b>. It indicates the position in Images or Glyph where the image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
           </p>
           <p>
             The property value is read from and written to the image index members in ButtonGlyph.
@@ -3093,7 +3107,7 @@
         <short>Indicates if the button has been set to the Down state.</short>
         <descr>
           <p>
-            <var>Down</var> is a <var>Boolean</var> property which indicates whether the button control is in the down (or pressed) state. The default value for the property is False. Changing the value for the property causes the control to be redrawn.
+            <var>Down</var> is a <var>Boolean</var> property which indicates whether the button control is in the down (or pressed) state. The default value for the property is <b>False</b>. Changing the value for the property causes the control to be redrawn.
           </p>
           <p>
             The value in Down is toggled in the DialogChar method when ShowAccelChar has been enabled and the accelerator key in Caption is received for the control. This also calls the Click method to execute the OnClick event handler or the action for the control.
@@ -3112,7 +3126,7 @@
             Set <var>Flat</var> to <b>True</b> to draw the control without relief, elevation, or a three-dimensional appearance. The default value for the property is <b>False</b>. Changing the value for the property causes the control to be redrawn.
           </p>
           <p>
-            Flat is used in the <var>GetDrawDetails</var> method to select the theme element details applied to the control for its current state. When set to False, TThemedButton element details are used. When set to True, TThemedToolBar element details are used. See <link id="TCustomSpeedButton.GetDrawDetails">GetDrawDetails</link> for more information about the values used for specific button states.
+            Flat is used in the <var>GetDrawDetails</var> method to select the theme element details applied to the control for its current state. When set to <b>False</b>, TThemedButton element details are used. When set to True, TThemedToolBar element details are used. See <link id="TCustomSpeedButton.GetDrawDetails">GetDrawDetails</link> for more information about the values used for specific button states.
           </p>
         </descr>
         <seealso>
@@ -3266,7 +3280,7 @@
         </short>
         <descr>
           <p>
-            PressedImageIndex is a TImageIndex property with the ordinal position for the glyph bitmap displayed when the Down property is True. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+            <var>PressedImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the glyph bitmap displayed when the Down property is True. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
           </p>
           <p>
             The property value is read from and written to the image index members in ButtonGlyph.
@@ -3311,7 +3325,7 @@
             <var>ShowAccelChar</var> is a <var>Boolean</var> property which controls whether an accelerator key in Caption is displayed as an underlined character. The accelerator (or shortcut) key in Caption is identified by the '&amp;' character, with the subsequent character used as the accelerator key.
           </p>
           <p>
-            When set to False, the underlined character is not drawn in Caption and the accelerator key is not handled in the DialogChar method.
+            When set to <b>False</b>, the underlined character is not drawn in Caption and the accelerator key is not handled in the DialogChar method.
           </p>
           <p>
             The default value for ShowAccelChar is <b>True</b>. Changing the value for the property causes the control to be redrawn.
@@ -3354,7 +3368,7 @@
             <var>Transparent</var> is a <var>Boolean</var> property which indicates whether the control is drawn with transparency. Changing the value for the property causes the ControlStyle property to be updated to include or exclude the csOpaque flag as needed, and the control is redrawn.  The property value is read from and written to the TransparentMode property in ButtonGlyph.
           </p>
           <p>
-            The property value is passed as an argument to the DrawGlyph method when MeasureDraw is executed. When set to False, the PaintBackground method fills the display area with the background Color when theme element details have transparent areas.
+            The property value is passed as an argument to the DrawGlyph method when MeasureDraw is executed. When set to <b>False</b>, the PaintBackground method fills the display area with the background Color when theme element details have transparent areas.
           </p>
         </descr>
         <seealso></seealso>
@@ -3449,7 +3463,7 @@
         </short>
         <descr>
           <p>
-            The Visible property indicates whether a visual control is displayed. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets Visible to True. Setting Visible to False is equivalent to calling the Hide method.
+            The <var>Visible</var> property indicates whether a visual control is displayed. If Visible is <b>True</b> the control is shown, otherwise it is hidden. Calling Show sets Visible to <b>True</b>. Setting Visible to <b>False</b> is equivalent to calling the Hide method.
           </p>
           <remark>
             The Visible property does not use the visibility for the parent control. Use the IsVisible method to get the realized visibility.
@@ -3688,7 +3702,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
         <short>Adjusted glyph layout needed for the value in IsRightToLeft.</short>
       </element>
       <element name="BidiAdjustButtonLayout.IsRightToLeft">
-        <short>True when BiDiMode has any value other than bdLeftToRight.</short>
+        <short><b>True</b> when BiDiMode has any value other than bdLeftToRight.</short>
       </element>
       <element name="BidiAdjustButtonLayout.Layout">
         <short>Glyph layout needed for the button using the specified BiDi setting.</short>
@@ -3753,7 +3767,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
         <short>Registers components for use in the Lazarus IDE.</short>
         <descr>
           <p>
-            Register is the procedure used to register components for us in the Lazarus IDE. The following components are added to the Lazarus IDE:
+            Register is the procedure used to register components for use in the Lazarus IDE. The following components are added to the Lazarus IDE component palette:
           </p>
            <p>
              <b>Additional</b> Tab
