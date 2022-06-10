@@ -30,10 +30,11 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
   private
+    fn: String;
     ImgDir: String;
-    procedure ErrorMsg(const AMsg: String);
     function GetDestFileName: String;
     procedure InfoMsg(const AMsg: String);
+    procedure ErrorMsg(const AMsg: String);
   public
 
   end;
@@ -86,6 +87,7 @@ var
   ips: Integer;
   isl: Integer;
   StartIdx: Integer = 0;
+  IconGroups: Integer = 0;
   BodyFontColor: String = ' color: #000000;';
   BodyBackColor: String = ' background-color: #ffffff;';
   InfoBackColor: String = ' background-color: #ffffe0;';
@@ -184,24 +186,27 @@ begin
         end;
         SynEdit.Lines.Add('  </tr>');
         StartIdx := i + 1;
+        IconGroups := IconGroups + 1;
       end;
     end;
 
     SynEdit.Lines.Add('</table>');
 
+    SynEdit.Lines.Add('<div class="info_container">');
+    SynEdit.Lines.Add('This folder contains ' + IntToStr(IcoFileList.Count) + ' icons in ' + IntToStr(IconGroups) + ' icon groups with ' + IntToStr(PixSizeList.Count) + LineEnding + ' icon sizes.');
     if FileExists(ImgDir + 'lazarus_general_purpose_images.txt') then
     begin
-      SynEdit.Lines.Add('<div class="info_container">');
       try
         InfoTxtList := TStringList.Create;
         InfoTxtList.LoadFromFile(ImgDir + 'lazarus_general_purpose_images.txt');
+        SynEdit.Lines.Add('<hr>');
         for i := 0 to InfoTxtList.Count - 1 do
           SynEdit.Lines.Add(InfoTxtList[i] + '<br>');
       finally
         InfoTxtList.Free;
       end;
-      SynEdit.Lines.Add('</div>');
     end;
+    SynEdit.Lines.Add('</div>');
 
     SynEdit.Lines.Add('</body>');
     SynEdit.Lines.Add('</html>');
@@ -221,8 +226,6 @@ begin
 end;
 
 procedure TMainForm.btnSaveClick(Sender: TObject);
-var
-  fn: String;
 begin
   fn := GetDestFileName;
   try
@@ -236,8 +239,6 @@ begin
 end;
 
 procedure TMainForm.btnShowClick(Sender: TObject);
-var
-  fn: String;
 begin
   fn := GetDestFileName;
   if FileExists(fn) then
@@ -250,17 +251,6 @@ begin
   Close;
 end;
 
-procedure TMainForm.ErrorMsg(const AMsg: String);
-begin
-  TaskDialog.Caption := 'Error';
-  TaskDialog.MainIcon := tdiError;
-  TaskDialog.Title := 'Error';
-  TaskDialog.CommonButtons := [tcbOk];
-  TaskDialog.DefaultButton := tcbOk;
-  TaskDialog.Text := AMsg;
-  TaskDialog.Execute;
-end;
-
 function TMainForm.GetDestFileName: String;
 begin
   Result := AppendPathDelim(DirectoryEdit.Text) + 'IconTable.html';
@@ -271,6 +261,17 @@ begin
   TaskDialog.Caption := 'Information';
   TaskDialog.MainIcon := tdiInformation;
   TaskDialog.Title := 'Information';
+  TaskDialog.CommonButtons := [tcbOk];
+  TaskDialog.DefaultButton := tcbOk;
+  TaskDialog.Text := AMsg;
+  TaskDialog.Execute;
+end;
+
+procedure TMainForm.ErrorMsg(const AMsg: String);
+begin
+  TaskDialog.Caption := 'Error';
+  TaskDialog.MainIcon := tdiError;
+  TaskDialog.Title := 'Error';
   TaskDialog.CommonButtons := [tcbOk];
   TaskDialog.DefaultButton := tcbOk;
   TaskDialog.Text := AMsg;

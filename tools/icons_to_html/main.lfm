@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 450
+  Left = 1029
   Height = 515
-  Top = 214
+  Top = 221
   Width = 600
   Caption = 'IconTable'
   ClientHeight = 515
