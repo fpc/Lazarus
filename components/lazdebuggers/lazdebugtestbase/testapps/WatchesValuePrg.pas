@@ -447,7 +447,7 @@ type
   PMyTestRec = ^TMyTestRec;
 
 var
-  MyClass1: TMyClass;
+  MyClass1, MyClassBadMem: TMyClass;
   MyNilClass1: TMyClass;
   MyClass2: TMyBaseClass; (* LOCATION: field, requires typecast of containing class *)
   MyPClass1: PMyClass;
@@ -502,6 +502,10 @@ var
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
   // gvp2_Byte: ^Byte; // gvp2_Byte := @gvaByte[1];
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvp2_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+(* LOCATION: global var  pointer <each type> *)  // unreadable mem
+  // gvpX_Byte: $00000001;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gvpX_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 
 (* LOCATION: global var  TYPE alias // NO PRE-ASSIGNED VALUE *)
   // gvp_Byte: PxByte;
@@ -964,6 +968,8 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mbc, ADD=3, CHR1='D', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyClass1.mc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
+  MyClassBadMem := TMyClass(Pointer(1));
+
   MyNilClass1 := nil;
 
 (* INIT: field in class / baseclass // typecast *)
@@ -1018,6 +1024,7 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp_, _OP_={, _O2_={, _pre3_=@gv, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp2_, _OP_={, _O2_={, _pre3_=@gva, "//@@=} :=", {e3}=[1], _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
 
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvpX_, _OP_={, _O2_={, "_pre3_=Pointer(1); //", "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
 
   RecursePtrA1  := @RecursePtrA2;
   RecursePtrA2  := @RecursePtrA1;

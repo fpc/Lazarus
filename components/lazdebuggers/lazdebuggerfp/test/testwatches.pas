@@ -986,7 +986,7 @@ StartIdxClassConst := t.Count;
     t.Add(AName, p+'Enum16A'+e, weEnum('ExValX5', 'TEnum16'));
 
     t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
-    t.Add(AName, p+'Set2'+e, weSet(['EnVal1', 'EnVal4'], '{set}')).Skip([stDwarf])
+    t.Add(AName, p+'Set2'+e, weSet(['EnVal1', 'EnVal4'])).Skip([stDwarf])
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
 
     t.Add(AName, p+'Set4'+e, weSet(['E4Val02', 'E4Val0A'], 'TSet4')).Skip([stDwarf]);
@@ -997,7 +997,7 @@ StartIdxClassConst := t.Count;
 
     t.Add(AName, p+'SmallSet'+e, weSet(['22', '24', '25'], 'TSmallRangeSet')).Skip([stDwarf])
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-    t.Add(AName, p+'SmallSet2'+e, weSet(['21', '24', '25'], '{set}')).Skip([stDwarf])
+    t.Add(AName, p+'SmallSet2'+e, weSet(['21', '24', '25'])).Skip([stDwarf])
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
 
 
@@ -1212,8 +1212,8 @@ begin
 
     t.Add('SomeFunc1',    weMatch('^function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN *AT *\$[0-9A-F]+', skFunction) );
     t.Add('SomeProc1',    weMatch('^procedure *\(\) *AT *\$[0-9A-F]+', skProcedure) );
-    t.Add('@SomeFunc1',   weMatch('^\^function.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
-    t.Add('@SomeProc1',   weMatch('^\^procedure.*\(\$[0-9A-F]+\)'{' = SomeFunc1'}, skPointer {skProcedureRef}) );
+    t.Add('@SomeFunc1',   weMatch('\^.*function.*\$[0-9A-F]+'{' = SomeFunc1'}, skPointer {skFunctionRef}) );
+    t.Add('@SomeProc1',   weMatch('\^.*procedure.*\$[0-9A-F]+'{' = SomeFunc1'}, skPointer {skProcedureRef}) );
 
     // TODO: TClass1 must not contain "<unknown>"
     // '    _vptr$TOBJECT: Pointer'
@@ -1351,6 +1351,12 @@ if Compiler.Version < 030300 then
 
     t.EvaluateWatches;
     t.CheckResults;
+
+    // Pointer(1)
+    // Do not check values. // Just ensure no crash occurs
+    AddWatches(t, 'glop bad pointer - no crash', 'gvpX_', 001, 'B');
+    AddWatches(t, 'glob MyClassBadMemc - no crash',   'MyClassBadMem.mc',  001, 'c');
+    t.EvaluateWatches;
 
 
     RunToPause(BrkFooBegin);
