@@ -1399,7 +1399,10 @@ begin
     exit;
 
   GetDwarfDataAddress(Addr);
-  if (not IsValidLoc(Addr)) and (svfOrdinal in TypeCastSourceValue.FieldFlags) then
+  if (not IsValidLoc(Addr)) and
+     (HasTypeCastInfo) and
+     (svfOrdinal in TypeCastSourceValue.FieldFlags)
+  then
     Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
   if not IsReadableLoc(Addr) then
     exit;
