@@ -25,7 +25,7 @@ unit ToDoListStrConsts;
 interface
 
 const
-  csvHeader = 'Done,Description,Priority,Module,Line,Owner,Category';
+  csvHeader = 'Type,Description,Priority,Module,Line,Owner,Category';
 
 resourcestring
   lisTodolistRefresh='Refresh todo items';
