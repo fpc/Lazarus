@@ -857,7 +857,10 @@ begin
 
       for k := 0 to MaskList.Count - 1 do begin
         aMask:=UTF8ToSys(MaskList.Strings[k]);
-        gtk_file_filter_add_pattern(GtkFilter, PChar(aMask));
+        if pos('/',aMask)>0 then
+          gtk_file_filter_add_mime_type(GtkFilter, PChar(aMask))
+        else
+          gtk_file_filter_add_pattern(GtkFilter, PChar(aMask));
       end;
 
       gtk_file_filter_set_name(GtkFilter, FilterEntry.Description);

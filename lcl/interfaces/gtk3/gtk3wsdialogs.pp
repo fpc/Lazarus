@@ -1108,6 +1108,9 @@ begin
       MaskList.DelimitedText := FilterEntry.Mask;
 
       for k := 0 to MaskList.Count - 1 do
+      if pos('/',MaskList.Strings[k])>0 then
+        gtk_file_filter_add_mime_type(GtkFilter, PgChar(MaskList.Strings[k]))
+      else
         gtk_file_filter_add_pattern(GtkFilter, PgChar(MaskList.Strings[k]));
       gtk_file_filter_set_name(GtkFilter, PgChar(FilterEntry.Description));
 
