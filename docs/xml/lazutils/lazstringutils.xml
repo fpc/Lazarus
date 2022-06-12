@@ -99,7 +99,7 @@
         </seealso>
       </element>
       <element name="LazStartsStr.Result">
-        <short>True when the string starts with the specified sub-text.</short>
+        <short><b>True</b> when the string starts with the specified sub-text.</short>
       </element>
       <element name="LazStartsStr.ASubText">
         <short>Value to look for at the start of the text.</short>
@@ -127,7 +127,7 @@
         </seealso>
       </element>
       <element name="LazEndsStr.Result">
-        <short>True when the string ends with the specified value.</short>
+        <short><b>True</b> when the string ends with the specified value.</short>
       </element>
       <element name="LazEndsStr.ASubText">
         <short>Text to look for at the end of the string.</short>
@@ -155,7 +155,7 @@
         </seealso>
       </element>
       <element name="LazStartsText.Result">
-        <short>True when the sub-text is at the start of the string value.</short>
+        <short><b>True</b> when the sub-text is at the start of the string value.</short>
       </element>
       <element name="LazStartsText.ASubText">
         <short>Value to locate at the start of the string.</short>
@@ -174,7 +174,7 @@
             LazEndsText casts the values in <var>ASubText</var> and <var>AText</var> to PChar types, and calls <var>StrLIComp</var> to perform a case-insensitive comparison for the number of characters in ASubText at the end of the value in AText.
           </p>
           <p>
-            The return value is <b>True</b> when AText ends with the value in ASubText. The return value is <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. It is False when StrLIComp returns a non-zero value, or when ASubText is longer than AText.
+            The return value is <b>True</b> when AText ends with the value in ASubText. The return value is <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. It is <b>False</b> when StrLIComp returns a non-zero value, or when ASubText is longer than AText.
           </p>
         </descr>
         <seealso>
@@ -183,7 +183,7 @@
         </seealso>
       </element>
       <element name="LazEndsText.Result">
-        <short>True when the sub-text is at the end of the string value.</short>
+        <short><b>True</b> when the sub-text is at the end of the string value.</short>
       </element>
       <element name="LazEndsText.ASubText">
         <short>Value to locate at the end of the string.</short>
@@ -227,12 +227,12 @@
       </element>
 
       <element name="IsNumber">
-        <short>True when characters in S are in the range <b>'0'..'9'</b></short>
+        <short><b>True</b> when characters in S are in the range <b>'0'..'9'</b></short>
         <descr/>
         <seealso/>
       </element>
       <element name="IsNumber.Result">
-        <short>True when characters in S are in the range '0'..'9'</short>
+        <short><b>True</b> when characters in S are in the range '0'..'9'</short>
       </element>
       <element name="IsNumber.s">
         <short>String with values examined in the routine.</short>
@@ -334,7 +334,7 @@
         <seealso/>
       </element>
       <element name="TabsToSpaces.Result">
-        <short>String  value after converting Tab characters to spaces.</short>
+        <short>String value after converting Tab characters to spaces.</short>
       </element>
       <element name="TabsToSpaces.s">
         <short>String with values updated in the routine.</short>
@@ -343,7 +343,7 @@
         <short>Number of space characters to use for each Tab character.</short>
       </element>
       <element name="TabsToSpaces.UseUTF8">
-        <short>True when UTF-8 codepoints are used to convert individual characters.</short>
+        <short><b>True</b> when UTF-8 codepoints are used to convert individual characters.</short>
       </element>
 
       <element name="CommentText">
@@ -388,7 +388,9 @@
       </element>
 
       <element name="SimpleSyntaxToRegExpr">
-        <short>Creates a regular expression from a filter expression used in IDE dialogs.</short>
+        <short>
+          Creates a regular expression from a filter expression used in IDE dialogs.
+        </short>
         <descr>
           <p>
             Ensures that characters in <var>Src</var> are converted to the notation needed for regular expressions, including '.', ',', ';', '*', '+', '?', and '\'. The return value is enclosed in a regex single line expression ('^(...)$').
@@ -438,7 +440,7 @@
         <short>String examined and converted in the routine.</short>
       </element>
       <element name="SpecialCharsToSpaces.FixUTF8">
-        <short>True when invalid UTF-8 codepoints are repaired in the string.</short>
+        <short><b>True</b> when invalid UTF-8 codepoints are repaired in the string.</short>
       </element>
 
       <element name="ShortDotsLine">
@@ -483,7 +485,7 @@
             <var>Y</var> represents the column number in the context for the message.
           </p>
           <p>
-            <var>Line</var> contains the context for the formatted message.  The <var>ShortDotsLine</var> routine is called to shorten and "ellipsify" the message in Line when needed.
+            <var>Line</var> contains the context for the formatted message. The <var>ShortDotsLine</var> routine is called to shorten and "ellipsify" the message in Line when needed.
           </p>
           <p>
             BeautifyLineXY is used in the implementation of Jump History and Search Result views in the Lazarus IDE.
@@ -549,7 +551,9 @@
         <short>Maximum length of lines in the converted value.</short>
       </element>
       <element name="BreakString.Indent">
-        <short>Number of Space characters prepended as an indent for lines in the converted value.</short>
+        <short>
+          Number of Space characters prepended as an indent for lines in the converted value.
+        </short>
       </element>
 
       <element name="SplitString">
@@ -572,11 +576,15 @@
         <short>TStrings instance where lines of text are stored.</short>
       </element>
       <element name="SplitString.ClearList">
-        <short>True to clear the string list; False to append lines to existing values.</short>
+        <short>
+          <b>True</b> to clear the string list; <b>False</b> to append lines to existing values.
+        </short>
       </element>
 
       <element name="StringListToText">
-        <short>Gets a string with the lines of text from the specified TStrings instance.</short>
+        <short>
+          Gets a string with the lines of text from the specified TStrings instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -590,7 +598,7 @@
         <short>End-of-Line sequence used to delimit lines of text in the result value.</short>
       </element>
       <element name="StringListToText.IgnoreEmptyLines">
-        <short>True to omit empty lines in the string list from the return value.</short>
+        <short><b>True</b> to omit empty lines in the string list from the return value.</short>
       </element>
 
       <element name="StringListPartToText">
@@ -756,7 +764,7 @@
         </seealso>
       </element>
       <element name="HasDelimitedItem.Result">
-        <short>True when the specified item is found in the list.</short>
+        <short><b>True</b> when the specified item is found in the list.</short>
       </element>
       <element name="HasDelimitedItem.List">
         <short>Values checked for the specified item.</short>
@@ -984,23 +992,25 @@
         <short>Determines the selector in the return value </short>
       </element>
       <element name="StringCase.AnIgnoreCase">
-        <short>True if case is ignored in the comparison.</short>
+        <short><b>True</b> if case is ignored in the comparison.</short>
       </element>
       <element name="StringCase.APartial">
-        <short>True is a partial match at the start of the selector is a match.</short>
+        <short><b>True</b> is a partial match at the start of the selector is a match.</short>
        </element>
 
       <element name="SamePChar">
-        <short>Returns True if P1 and P2 have the same content.</short>
+        <short>Returns <b>True</b> if P1 and P2 have the same content.</short>
         <descr>
           <p>
-            Returns <var>False</var> if either <var>P1</var> or <var>P2</var> are unassigned (contain <b>Nil</b>).
+            Returns <b>False</b> if either <var>P1</var> or <var>P2</var> are unassigned (contain <b>Nil</b>).
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="SamePChar.Result">
-        <short>True when P1 and P2 have the same content, or are the same pointer.</short>
+        <short>
+          <b>True</b> when P1 and P2 have the same content, or are the same pointer.
+        </short>
       </element>
       <element name="SamePChar.P1">
         <short>Pointer to characters compared in the routine.</short>
@@ -1069,16 +1079,16 @@
         </seealso>
       </element>
       <element name="LazIsValidIdent.Result">
-        <short>True if the specified value is a valid identifier name.</short>
+        <short><b>True</b> if the specified value is a valid identifier name.</short>
       </element>
       <element name="LazIsValidIdent.Ident">
         <short>Identifier name examined in the routine.</short>
       </element>
       <element name="LazIsValidIdent.AllowDots">
-        <short>True if period characters are allowed in the identifier name.</short>
+        <short><b>True</b> if period characters are allowed in the identifier name.</short>
       </element>
       <element name="LazIsValidIdent.StrictDots">
-        <short>True if the position of a period character is validated.</short>
+        <short><b>True</b> if the position of a period character is validated.</short>
       </element>
 
       <element name="MaxTextLen">
