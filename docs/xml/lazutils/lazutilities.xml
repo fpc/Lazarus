@@ -66,9 +66,9 @@
             <dt>0</dt>
             <dd>Returned when b1 and b2 have the same value.</dd>
             <dt>1</dt>
-            <dd>Returned when b1 is True.</dd>
+            <dd>Returned when b1 is <b>True</b>.</dd>
             <dt>-1</dt>
-            <dd>Returned as the default value (when b1 is False ).</dd>
+            <dd>Returned as the default value (when b1 is <b>False</b>).</dd>
           </dl>
         </descr>
         <seealso/>
@@ -90,7 +90,7 @@
             <var>GetEnumValueDef</var> is an <var>Integer</var> function used to get the ordinal position in the specified enumeration type insformation for the value with the given name.
           </p>
           <p>
-            The return value contains the ordinal position in <var>TypeInfo</var> for the enumeration value with the given <var>Name</var>. GetEnumValueDef calls <var>GetEnumValue</var> to find the value in Name in the type information. If the  return value is <b>-1</b>, an enumeration value with the specified name is not found in TypeInfo and the value in <var>DefaultValue</var> is used as the return value.
+            The return value contains the ordinal position in <var>TypeInfo</var> for the enumeration value with the given <var>Name</var>. GetEnumValueDef calls <var>GetEnumValue</var> to find the value in Name in the type information. If the return value is <b>-1</b>, an enumeration value with the specified name is not found in TypeInfo and the value in <var>DefaultValue</var> is used as the return value.
           </p>
         </descr>
         <seealso>
