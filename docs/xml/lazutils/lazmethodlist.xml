@@ -25,7 +25,7 @@
             <var>TMethodList</var> is class which implements a list of TMethod entries. TMethodList is implemented using an array of TMethod references that provide access to the Items in the list. Methods are provided to Add, Insert, Delete, and Move items in the list. Enumerators (forward and reverse) are also available for methods in the list.
           </p>
           <p>
-            TMethodList is used in the Lazarus IDE, plugins, and utilities such as: TComponentEditorDesigner, TCodeToolManager, TLazIDEInterface, TLazCompilerOptions, TDebuggerIntf, TGUITestRunner. It is also used in the implementation of Classes and Components like: TFreeNotifyingObject, TApplication, TCustomForm, TControl, TDateTimePicker, TLazSynTextArea,  TSynCustomHighlighter, TSynGutterBase,  and many more.
+            TMethodList is used in the Lazarus IDE, plugins, and utilities such as: TComponentEditorDesigner, TCodeToolManager, TLazIDEInterface, TLazCompilerOptions, TDebuggerIntf, TGUITestRunner. It is also used in the implementation of Classes and Components like: TFreeNotifyingObject, TApplication, TCustomForm, TControl, TDateTimePicker, TLazSynTextArea, TSynCustomHighlighter, TSynGutterBase, and many more.
           </p>
         </descr>
         <seealso>
@@ -138,7 +138,7 @@
         <short>Raises an index out of bounds exception.</short>
         <descr>
           <p>
-            <var>RaiseIndexOutOfBounds</var> is a procedure which raises an <var>EListError</var> exception when an invalid index position is used when accessing the Items in the method list. Index is the invalid  ordinal position requested, and is included in the exception message.
+            <var>RaiseIndexOutOfBounds</var> is a procedure which raises an <var>EListError</var> exception when an invalid index position is used when accessing the Items in the method list. Index is the invalid ordinal position requested, and is included in the exception message.
           </p>
         </descr>
         <errors>
@@ -235,7 +235,7 @@
         <short>Copies property values from Source into the current class instance.</short>
         <descr>
           <p>
-            <var>Assign</var> is an overridden method in <var>TMethodList</var> used to implement object persistence  for the TMethodList class type. Assign calls <var>Clear</var> to reallocate memory for the <var>Items</var> in the class instance. Values from the Items property in <var>Source</var> are added to the current class instance.
+            <var>Assign</var> is an overridden method in <var>TMethodList</var> used to implement object persistence for the TMethodList class type. Assign calls <var>Clear</var> to reallocate memory for the <var>Items</var> in the class instance. Values from the Items property in <var>Source</var> are added to the current class instance.
           </p>
         </descr>
         <seealso/>
@@ -299,7 +299,7 @@
         <short>Adds the specified method to the list.</short>
         <descr>
           <p>
-            <var>Add</var> is an overloaded procedure used to add the TMethod instance specified in AMethod to the Items in the list. Add uses the value in AllowDuplicates to determine if the Items in the list need to be checked for duplicates prior to adding the specified  method. When AllowDuplicates is <var>False</var>, the IndexOf method is used to locate an existing entry in Items with the method in AMethod. If the method does not exist in Items, or AllowDuplicates is <var>True</var>, the method in AMethod is appended to the end of the memory allocated to the Items property. ReAllocMem is used to set the new size for the memory allocation.
+            <var>Add</var> is an overloaded procedure used to add the TMethod instance specified in AMethod to the Items in the list. Add uses the value in AllowDuplicates to determine if the Items in the list need to be checked for duplicates prior to adding the specified method. When AllowDuplicates is <var>False</var>, the IndexOf method is used to locate an existing entry in Items with the method in AMethod. If the method does not exist in Items, or AllowDuplicates is <var>True</var>, the method in AMethod is appended to the end of the memory allocated to the Items property. ReAllocMem is used to set the new size for the memory allocation.
           </p>
           <p>
             Add ensures the the internal member used for the Count function is incremented when necessary.
