@@ -1103,19 +1103,17 @@ begin
     for i := 0 to ListOfFileSelFilterEntry.Count-1 do
     begin
       GtkFilter := gtk_file_filter_new();
-
       FilterEntry := TFileSelFilterEntry(ListOfFileSelFilterEntry[i]);
       MaskList.DelimitedText := FilterEntry.Mask;
 
       for k := 0 to MaskList.Count - 1 do
-      if pos('/',MaskList.Strings[k])>0 then
-        gtk_file_filter_add_mime_type(GtkFilter, PgChar(MaskList.Strings[k]))
-      else
-        gtk_file_filter_add_pattern(GtkFilter, PgChar(MaskList.Strings[k]));
+        if pos('/',MaskList.Strings[k])>0 then
+          gtk_file_filter_add_mime_type(GtkFilter, PgChar(MaskList.Strings[k]))
+        else
+          gtk_file_filter_add_pattern(GtkFilter, PgChar(MaskList.Strings[k]));
+
       gtk_file_filter_set_name(GtkFilter, PgChar(FilterEntry.Description));
-
       gtk_file_chooser_add_filter(Chooser, GtkFilter);
-
       if j = FilterIndex then
         GtkSelFilter := GtkFilter;
 
