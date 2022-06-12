@@ -255,7 +255,7 @@
         <short>Performs action needed when properties in the component are being updated.</short>
         <descr>
           <p>
-            <var>Changing</var> is a method used to perform actions needed when property values in the component are being updated. It mimics the Changing behavior implemented in <var>TStringList</var>, where methods call Changing prior to updates to the  <var>Strings</var> or <var>Objects</var> properties.
+            <var>Changing</var> is a method used to perform actions needed when property values in the component are being updated. It mimics the Changing behavior implemented in <var>TStringList</var>, where methods call Changing prior to updates to the <var>Strings</var> or <var>Objects</var> properties.
           </p>
           <p>
             In <var>TTextStrings</var>, the method signals the <var>OnChanging</var> event handler (when assigned) if there are no updates already in progress.
@@ -362,7 +362,7 @@
         <short>Ordinal position for the line examined in the method.</short>
       </element>
       <element name="TTextStrings.GetLineLen.IncludeNewLineChars">
-        <short>True to include end-of-line characters in the line length.</short>
+        <short><b>True</b> to include end-of-line characters in the line length.</short>
       </element>
 
       <element name="TTextStrings.GetLineEnd">
@@ -381,7 +381,7 @@
         <short>Ordinal position for the line examined in the method.</short>
       </element>
       <element name="TTextStrings.GetLineEnd.IncludeNewLineChars">
-        <short>True to include end-of-line character(s) in the return value.</short>
+        <short><b>True</b> to include end-of-line character(s) in the return value.</short>
       </element>
 
       <element name="TTextStrings.CountLineEndings">
@@ -488,7 +488,7 @@
             Insert calls <var>BuildArrays</var> to populate the array of TTextLineRange instances when the internal validity flag is not set. It also ensures that the internal array is re-allocated when the number of lines reaches the line capacity. Line capacity starts at eight (<b>8</b>), and doubles each time the capacity is filled.
           </p>
           <p>
-            Memory allocated for the TTextLineRange instances is shifted when Index is not the last line of text in the component. The text in S, and the start and end  positions in Text are stored in the line range information. The range information for lines after Index is adjusted to reflect the length of the inserted text.
+            Memory allocated for the TTextLineRange instances is shifted when Index is not the last line of text in the component. The text in S, and the start and end positions in Text are stored in the line range information. The range information for lines after Index is adjusted to reflect the length of the inserted text.
           </p>
           <p>
             Insert re-implements the method defined in the ancestor, and does <b>not</b> call the inherited method.
@@ -607,7 +607,7 @@
         <short>Starts an update process for the component.</short>
         <descr>
           <p>
-            <var>BeginUpdate</var> is a method used to start an update process for the component. It increments an internal update counter used to consolidate <var>OnChanging</var> and <var>OnChange</var>  event notifications. The counter value is used in the <var>Changing</var> and <var>Changed</var> methods, and controls when the event notifications are enabled and performed.
+            <var>BeginUpdate</var> is a method used to start an update process for the component. It increments an internal update counter used to consolidate <var>OnChanging</var> and <var>OnChange</var> event notifications. The counter value is used in the <var>Changing</var> and <var>Changed</var> methods, and controls when the event notifications are enabled and performed.
           </p>
           <p>
             Use EndUpdate to decrement the internal update counter.
@@ -750,7 +750,7 @@
         <short>Loads the content in the string list from the specified file name.</short>
         <descr>
           <p>
-            Creates a temporary <var>TFileStream</var> instance for the <var>FileName</var> argument.  The file handle is opened for reading, and shared write access is denied. The inherited <var>LoadFromStream</var> method is called to load the values in the string list from the file stream.
+            Creates a temporary <var>TFileStream</var> instance for the <var>FileName</var> argument. The file handle is opened for reading, and shared write access is denied. The inherited <var>LoadFromStream</var> method is called to load the values in the string list from the file stream.
           </p>
         </descr>
         <seealso>
@@ -814,7 +814,7 @@
         <short>Event handler signalled before properties are updated in the component.</short>
         <descr>
           <p>
-            <var>OnChanging</var> is a <var>TNotifyEvent</var> property with the event handler signalled before the  <var>Strings</var> or <var>Objects</var> properties are updated in the component.
+            <var>OnChanging</var> is a <var>TNotifyEvent</var> property with the event handler signalled before the <var>Strings</var> or <var>Objects</var> properties are updated in the component.
           </p>
           <p>
             OnChanging is signalled from the <var>Changing</var> method when an update process in not already active.
