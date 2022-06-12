@@ -135,9 +135,9 @@ var
 begin
   Result := nil;
   if OPMInterface = Nil then Exit;
-  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
+  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.PackageName);
   if Assigned(PackageLink) and (PackageLink.Origin = ploOnline)
-  and (ADependency.IsCompatible(PackageLink.Version)) then
+  and ADependency.IsCompatible(PackageLink.Version) then
   begin
     ADependency.LoadPackageResult := lprAvailableOnline;
     Result := PackageLink;
