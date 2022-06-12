@@ -613,7 +613,7 @@
       <!-- class Visibility: default -->
       <element name="EDOMNamespace">
         <short>
-          Exception raised when an object is changed in a way that is invalid for its  Namespaces.
+          Exception raised when an object is changed in a way that is invalid for its Namespaces.
         </short>
         <descr>
           <p>
@@ -769,7 +769,7 @@
         </short>
         <descr>
           <p>
-            <var>TDOMNodeAllChildEnumerator</var> is a class used to implement an enumerator for a specified DOM node that visits all child nodes in its sub-tree. The enumerator  uses the GetNextNode method in TDOMNode to get the value in the <var>Current</var> property. This means it will recursively descend into <var>ChildNodes</var>, and is halted when the next sibling for the specified DOM node is reached.
+            <var>TDOMNodeAllChildEnumerator</var> is a class used to implement an enumerator for a specified DOM node that visits all child nodes in its sub-tree. The enumerator uses the GetNextNode method in TDOMNode to get the value in the <var>Current</var> property. This means it will recursively descend into <var>ChildNodes</var>, and is halted when the next sibling for the specified DOM node is reached.
           </p>
           <p>
             Use the <var>MoveNext</var> method to get the next DOM node for the enumerator. Use the <var>Current</var> property to access the currently selected DOM node.
@@ -1532,7 +1532,7 @@
         <short>Gets the first child node for the current node.</short>
         <descr>
           <p>
-            <var>FirstChild</var> is a read-only <var>TDOMNode</var> property that represents the first child node for this DOM node. In TDOMNode, the value for the property is always <b>Nil</b> (not assigned). The read access specifier is re-implemented in a descendent class (TDOMNode_WithChildren) to  provide direct support for child node access.
+            <var>FirstChild</var> is a read-only <var>TDOMNode</var> property that represents the first child node for this DOM node. In TDOMNode, the value for the property is always <b>Nil</b> (not assigned). The read access specifier is re-implemented in a descendent class (TDOMNode_WithChildren) to provide direct support for child node access.
           </p>
         </descr>
         <seealso>
@@ -1545,7 +1545,7 @@
         <short>Gets the last child node for the current node.</short>
         <descr>
           <p>
-            <var>LastChild</var> is a read-only <var>TDOMNode</var> property that represents the last child node for this DOM node. In TDOMNode, the value for the property is always <b>Nil</b> (not assigned). The read access specifier is re-implemented in a descendent class (TDOMNode_WithChildren) to  provide direct support for child node access.
+            <var>LastChild</var> is a read-only <var>TDOMNode</var> property that represents the last child node for this DOM node. In TDOMNode, the value for the property is always <b>Nil</b> (not assigned). The read access specifier is re-implemented in a descendent class (TDOMNode_WithChildren) to provide direct support for child node access.
           </p>
         </descr>
         <seealso>
@@ -1584,7 +1584,7 @@
           </p>
         </descr>
         <seealso>
-          <link  id="TDOMNode.NextSibling"/>
+          <link id="TDOMNode.NextSibling"/>
         </seealso>
       </element>
 
@@ -1600,7 +1600,7 @@
           </p>
         </descr>
         <seealso>
-          <link  id="TDOMNode.PreviousSibling"/>
+          <link id="TDOMNode.PreviousSibling"/>
         </seealso>
       </element>
 
@@ -1612,7 +1612,7 @@
             <var>Attributes</var> is a read-only <var>TDOMNamedNodeMap</var> property that contains attributes for the DOM node. Use the properties and methods in Attributes to access the DOM nodes by their name or ordinal position. Attributes also includes properties and methods that provide support for Namespace URIs and QualifiedNames as defined in the DOM specification.
           </p>
           <p>
-            While specified in TDOMNode, Attributes are valid only in the  TDOMElement node type. For all other DOM node types the Attributes property is unassigned (contains <b>Nil</b>).
+            While specified in TDOMNode, Attributes are valid only in the TDOMElement node type. For all other DOM node types the Attributes property is unassigned (contains <b>Nil</b>).
           </p>
         </descr>
         <seealso>
@@ -1711,7 +1711,7 @@
             The return value contains the TDOMNode that is the <var>NextSibling</var> for the current node, and can actually contain a previous sibling if NextSibling is unassigned. The return value is <b>Nil</b> when NextSibling is unassigned for both the current node and <var>ParentNode</var>.
           </p>
           <p>
-            GetNextNodeSkipChildren is used in the implementation of the <var>TDOMNodeAllChildEnumerator.Create</var> method, and called from the  <var>TDOMNode.GetNextNode</var> method.
+            GetNextNodeSkipChildren is used in the implementation of the <var>TDOMNodeAllChildEnumerator.Create</var> method, and called from the <var>TDOMNode.GetNextNode</var> method.
           </p>
         </descr>
         <seealso>
@@ -1905,7 +1905,7 @@
         <short>Appends the specified node as a child in the current node.</short>
         <descr>
           <p>
-            <var>AppendChild</var> is a <var>TDOMNode</var> function  used to append the node specified in <var>NewChild</var> as a child node in the hierarchy for the current class instance. AppendChild calls the <var>InsertBefore</var> method to make the specified node the first child node in the DOM hierarchy.
+            <var>AppendChild</var> is a <var>TDOMNode</var> function used to append the node specified in <var>NewChild</var> as a child node in the hierarchy for the current class instance. AppendChild calls the <var>InsertBefore</var> method to make the specified node the first child node in the DOM hierarchy.
           </p>
           <p>
             The return value contains the TDOMNode instance in NewChild after the node relationship in <var>ParentNode</var>, <var>FirstChild</var>, <var>PreviousSibling</var>, and <var>NextSibling</var> have been updated.
@@ -2103,7 +2103,7 @@
         <short>Name without the NameSpace prefix assigned to the DOM Node.</short>
         <descr>
           <p>
-            <var>LocalName</var> is a read-only <var>DOMString</var> property with the local part of the qualified name for the node. A qualified name consists of a delimited namespace <var>Prefix</var> and the name for the element or attribute in the node.  Local name contains only the element or attribute name, without the Prefix for the namespace.
+            <var>LocalName</var> is a read-only <var>DOMString</var> property with the local part of the qualified name for the node. A qualified name consists of a delimited namespace <var>Prefix</var> and the name for the element or attribute in the node. Local name contains only the element or attribute name, without the Prefix for the namespace.
           </p>
           <p>
             For the following Qualified Names:
@@ -2232,7 +2232,7 @@
             LookupNamespaceURI compares the value in the <var>Prefix</var> property to the argument in <var>APrefix</var>. When a match is found, the <var>NamespaceURI</var> for the node is used as the return value. When a namespace is not found for the prefix, the return value is an empty DOMString ('').
           </p>
           <remark>
-            This method is not fully compatible with the DOM Level 3 specification which  allows the APrefix argument to contain a Null value. Lazarus cannot represent the DOMString type in that manner, so it uses an empty DOMString ('').
+            This method is not fully compatible with the DOM Level 3 specification which allows the APrefix argument to contain a Null value. Lazarus cannot represent the DOMString type in that manner, so it uses an empty DOMString ('').
           </remark>
         </descr>
         <seealso>
@@ -2316,10 +2316,10 @@
         <short>Finds the Child Node with the specified name.</short>
         <descr>
           <p>
-            <var>FindNode</var> is a <var>TDOMNode</var> function used to locate a child node in the class instance with the value in <var>ANodeName</var> in its <var>NodeName</var> property. The return value contains the TDOMNode instance with the specified name, or <b>Nil</b> if a node is not found with the  specified name.
+            <var>FindNode</var> is a <var>TDOMNode</var> function used to locate a child node in the class instance with the value in <var>ANodeName</var> in its <var>NodeName</var> property. The return value contains the TDOMNode instance with the specified name, or <b>Nil</b> if a node is not found with the specified name.
           </p>
           <p>
-            FindNode always returns <b>Nil</b> in TDOMNode since physical storage is not  allocated in TDOMNode for child node instances. It must be overridden in a descendent class to performs actions needed for the DOM node specialization.
+            FindNode always returns <b>Nil</b> in TDOMNode since physical storage is not allocated in TDOMNode for child node instances. It must be overridden in a descendent class to performs actions needed for the DOM node specialization.
           </p>
         </descr>
         <seealso>
@@ -2606,7 +2606,7 @@
             <var>NewChild</var> contains the Node inserted into the DOM sub-tree for the current DOM Node. <var>RefChild</var> contains the Node that establishes the position where the NewChild Node is inserted in the DOM sub-tree. When RefChild is not assigned (contains <b>Nil</b>), the new child node is appended as a sibling in the DOM sub-tree. No actions are performed in the method when NewChild and RefChild contains the same DOM node.
           </p>
           <p>
-            InsertBefore uses the value in the <var>NodeType</var> property for the NewChild node to determine the actions needed to add the node to the DOM sub-tree.  NodeType determines if NewChild requires additional processing before it is added to the DOM sub-tree. Some DOM Node types cannot be added directly to the sub-tree. Only their child nodes are added. No actions are performed for these DOM Node specialization when they do not contain child nodes. InsertBefore raises an EDOMHierarchyRequest exception if ChildNode is not a valid child node type for the current DOM node.
+            InsertBefore uses the value in the <var>NodeType</var> property for the NewChild node to determine the actions needed to add the node to the DOM sub-tree. NodeType determines if NewChild requires additional processing before it is added to the DOM sub-tree. Some DOM Node types cannot be added directly to the sub-tree. Only their child nodes are added. No actions are performed for these DOM Node specialization when they do not contain child nodes. InsertBefore raises an EDOMHierarchyRequest exception if ChildNode is not a valid child node type for the current DOM node.
           </p>
           <p>
             InsertBefore updates the parent, sibling, and child relationships in DOM nodes as they are inserted (or appended) to the DOM sub-tree. The return value contains the NewChild argument with updated values in its ParentNode, PreviousSibling and NextSibling properties.
@@ -2618,7 +2618,7 @@
             InsertBefore calls the Changing method to ensure that neither the current DOM Node nor its ancestor have their read-only Flags set. An exception is raised in Changing if Flags contains the value nfReadonly in either DOM Node.
           </p>
           <p>
-            When the NodeType is DOCUMENT_TYPE_NODE, the OwnerDocument property is examined. An  EDOMWrongDocument exception is raised when the NewChild has an assigned value in the OwnerDocument property.
+            When the NodeType is DOCUMENT_TYPE_NODE, the OwnerDocument property is examined. An EDOMWrongDocument exception is raised when the NewChild has an assigned value in the OwnerDocument property.
           </p>
         </descr>
         <errors>
@@ -2847,7 +2847,7 @@
         <short>Implements an ordered list of DOM Nodes.</short>
         <descr>
           <p>
-            <var>TDOMNodeList</var> is a class used to Implement an ordered list of DOM nodes, as required in the DOM specification. TDOMNodeList provides internal storage for  <var>TDOMNode</var> instances that are children of a specified DOM node. DOM nodes stored in TDOMNodeList are "live"; changes made to a DOM node in the list are automatically propagated to the DOM Document tree.
+            <var>TDOMNodeList</var> is a class used to Implement an ordered list of DOM nodes, as required in the DOM specification. TDOMNodeList provides internal storage for <var>TDOMNode</var> instances that are children of a specified DOM node. DOM nodes stored in TDOMNodeList are "live"; changes made to a DOM node in the list are automatically propagated to the DOM Document tree.
           </p>
         </descr>
         <seealso>
@@ -2888,7 +2888,7 @@
             <var>GetItem</var> is a <var>TDOMNode</var> function used to get the value for the indexed <var>Item</var> property. Index contains the ordinal position in the list for the property value.
           </p>
           <p>
-            GetItem ensures that items in the internal <var>TFPList</var> instance are up-to-date. When the revision number for the list differs from the revision number for  the node that owns the list, the <var>BuildList</var> method is called to refresh its contents and apply the node filtering mechanism for the container.
+            GetItem ensures that items in the internal <var>TFPList</var> instance are up-to-date. When the revision number for the list differs from the revision number for the node that owns the list, the <var>BuildList</var> method is called to refresh its contents and apply the node filtering mechanism for the container.
           </p>
           <p>
             The return value contains the TDOMNode instance at the specified position in the list. The return value is <b>Nil</b> when Index contains a value not present in the internal list.
@@ -3112,13 +3112,13 @@
 
       <!-- function Visibility: protected -->
       <element name="TDOMElementList.NodeFilter">
-        <short>Determines if the node can be used in the DOM element  list.</short>
+        <short>Determines if the node can be used in the DOM element list.</short>
         <descr>
           <p>
             <var>NodeFilter</var> is an overridden <var>TFilterResult</var> function used to determine if the DOM node specified in <var>ANode</var> can be included in the DOM Element list. The return value indicates whether the node is allowed in the element list.
           </p>
           <p>
-            NodeFilter re-implements the method defined in the ancestor class to check whether  the DOM Node in ANode has <var>ELEMENT_NODE</var> in its <var>NodeType</var> property.
+            NodeFilter re-implements the method defined in the ancestor class to check whether the DOM Node in ANode has <var>ELEMENT_NODE</var> in its <var>NodeType</var> property.
           </p>
           <p>
             If the Element list was created with a Namespace URI argument, the Namespace Information for the list is used to get the return value. It is set to <b>True</b> when the <var>LocalName</var> for the node matches the qualified name in the Namespace Information.
@@ -3354,7 +3354,7 @@
             RestoreDefault ensures the Node type for the map is set to <var>ATTRIBUTE_NODE</var>. No actions performed in the method if the Node type for the map is not set to Attribute nodes. In addition, no actions are performed when the owner node does not have namespace information with the default value for the specified attribute name.
           </p>
           <p>
-            RestoreDefault calls the <var>GetAttributeNode</var> method in the owner Element  to retrieve the attribute with the specified name. When assigned, and the attribute default value is "fixed" or "specified", it is re-applied to the attribute.
+            RestoreDefault calls the <var>GetAttributeNode</var> method in the owner Element to retrieve the attribute with the specified name. When assigned, and the attribute default value is "fixed" or "specified", it is re-applied to the attribute.
           </p>
         </descr>
         <seealso>
@@ -3481,7 +3481,7 @@
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that DOM nodes in internal TFPList instances in the class are  freed. It also frees the TFPList class instances. Destroy calls the inherited destructor prior to exiting from the method.
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that DOM nodes in internal TFPList instances in the class are freed. It also frees the TFPList class instances. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
         <seealso>
@@ -3522,7 +3522,7 @@
             <var>SetNamedItem</var> is a <var>TDOMNode</var> function used to store the named node in <var>arg</var> in the node map. This may require inserting a new entry or updating an existing one.
           </p>
           <p>
-            SetNamedItem calls <var>ValidateInsert</var> to determine whether the node is valid, and the  parent for the node map is updatable. If the response code contains a non-zero value, an <var>EDOMError</var> exception is raised with the response code as the error constant.
+            SetNamedItem calls <var>ValidateInsert</var> to determine whether the node is valid, and the parent for the node map is updatable. If the response code contains a non-zero value, an <var>EDOMError</var> exception is raised with the response code as the error constant.
           </p>
           <p>
             SetNamedItem calls the <var>FindSorted</var> method to get the ordinal position for the node in arg. If a node with the same name already exists, it is replaced. Otherwise, the node is inserted at the position needed in the sorted node list.
@@ -3534,7 +3534,7 @@
             The return value is set to <b>Nil</b> if the node in arg was added to the map. Otherwise, the return value contains the node which was replaced.
           </p>
           <p>
-            SetNamedItem is called from methods like <var>SetAttributeNode</var> and <var>SetAttributeNodeNS</var>  in <var>TDOMElement</var>.
+            SetNamedItem is called from methods like <var>SetAttributeNode</var> and <var>SetAttributeNodeNS</var> in <var>TDOMElement</var>.
           </p>
           <p>
             Use <var>GetNamedItem</var> to retrieve a node from the map with a specified name.
@@ -3984,7 +3984,7 @@
             CreateDocumentType returns a TDOMDocumentType instance with the values from the QualifiedName, PublicID, and SystemID parameters assigned to its Name, PublicID, and SystemID properties.
           </p>
           <p>
-            Use CreateDocumentType to create the optional DTD instance passed as an argument to the CreateDocument method, and assigned  as the DocType property in the new Document.
+            Use CreateDocumentType to create the optional DTD instance passed as an argument to the CreateDocument method, and assigned as the DocType property in the new Document.
           </p>
         </descr>
         <errors>
@@ -4029,7 +4029,7 @@
             CreateDocument implements the method defined for the DOMImplementation interface in the DOM Level 2 specification. It creates a <var>TXMLDocument</var> instance that is used as the return value for the method.
           </p>
           <p>
-            The <var>NamespaceURI</var> and <var>QualifiedName</var> arguments provide the  namespace, prefix, and tag name used for the root Element in the document instance.
+            The <var>NamespaceURI</var> and <var>QualifiedName</var> arguments provide the namespace, prefix, and tag name used for the root Element in the document instance.
           </p>
           <p>
             <var>doctype</var> contains the optional <var>TDOMDocumentType</var> instance (or DTD) for the new document. When doctype is assigned, its <var>OwnerDocument</var> property is set to the new document instance created in the method.
@@ -4076,10 +4076,10 @@
 
       <!-- class Visibility: default -->
       <element name="TDOMDocumentFragment">
-        <short>Implements the  DocumentFragment interface from the DOM specification.</short>
+        <short>Implements the DocumentFragment interface from the DOM specification.</short>
         <descr>
           <p>
-            <var>TDOMDocumentFragment</var> is a <var>TDOMNode_WithChildren</var> descendant that implements the  DocumentFragment interface from the DOM Level 2 specification. TDOMDocumentFragment is a "lightweight" or "minimal" Document object. It is often used as a temporary work area before applying changes to a TDOMDocument instance. Its content does not have to represent a well-formed XML document, but does require its child nodes to be well-formed XML parsed entities.
+            <var>TDOMDocumentFragment</var> is a <var>TDOMNode_WithChildren</var> descendant that implements the DocumentFragment interface from the DOM Level 2 specification. TDOMDocumentFragment is a "lightweight" or "minimal" Document object. It is often used as a temporary work area before applying changes to a TDOMDocument instance. Its content does not have to represent a well-formed XML document, but does require its child nodes to be well-formed XML parsed entities.
           </p>
         </descr>
         <seealso>
@@ -4191,7 +4191,7 @@
             <var>TDOMDocument</var> is a <var>TDOMNode_WithChildren</var> descendant that implements the DOM Document interface from the DOM specification. TDOMDocument is the container that represents the content for the entire HTML or XML document. It acts as the root of the DOM tree.
           </p>
           <p>
-            TDOMDocument provides factory methods needed to create elements, attributes, text nodes, comments, processing instructions, etc.  These items cannot exist without an owner document. It also provides methods used to import nodes created in another document or document fragment.
+            TDOMDocument provides factory methods needed to create elements, attributes, text nodes, comments, processing instructions, etc. These items cannot exist without an owner document. It also provides methods used to import nodes created in another document or document fragment.
           </p>
           <p>
             TDOMDocument provides support for XML Namespaces introduced in DOM Level 2. The following namespace prefixes and URIs are always assigned in TDOMDocument:
@@ -4672,7 +4672,7 @@
         <short>Gets the root element for the document.</short>
         <descr>
           <p>
-            <var>DocumentElement</var> is a read-only <var>TDOMElement</var> property that represents the root  element for the document. DocumentElement is derived using the top-level child nodes found in the document. The return value contains the first DOM Node located that contains the value <var>ELEMENT_NODE</var> in its NodeType property.
+            <var>DocumentElement</var> is a read-only <var>TDOMElement</var> property that represents the root element for the document. DocumentElement is derived using the top-level child nodes found in the document. The return value contains the first DOM Node located that contains the value <var>ELEMENT_NODE</var> in its NodeType property.
           </p>
         </descr>
         <seealso>
@@ -5673,7 +5673,7 @@
             <var>TDOMElement</var> is a <var>TDOMNode_NS</var> descendant that implements the DOM Element interface from the DOM specification. TDOMElement represents an element in an HTML or XML document. It inherits the capabilities defined in ancestor classes, and provides additional methods and properties need for the DOM Element interface.
           </p>
           <p>
-            Methods are provided to access Attributes using the Node interface defined in TDOMNode, or as a simple string value. Namespaces are supported for both the element and its attributes. The Normalize method is overridden to include  normalization for values  in the Attributes property.
+            Methods are provided to access Attributes using the Node interface defined in TDOMNode, or as a simple string value. Namespaces are supported for both the element and its attributes. The Normalize method is overridden to include normalization for values in the Attributes property.
           </p>
         </descr>
         <seealso>
@@ -6287,7 +6287,7 @@
         <short>Implements the DOM Text interface from the DOM specification.</short>
         <descr>
           <p>
-            <var>TDOMText</var> is a <var>TDOMCharacterData</var> descendant that implements the DOM Text interface from the DOM specification. TDOMText represents the textual content (called  character data in XML) for a DOM Element or Attribute. It provides overridden methods which implement the NodeName and NodeValue properties as required for the DOM Node specialization.
+            <var>TDOMText</var> is a <var>TDOMCharacterData</var> descendant that implements the DOM Text interface from the DOM specification. TDOMText represents the textual content (called character data in XML) for a DOM Element or Attribute. It provides overridden methods which implement the NodeName and NodeValue properties as required for the DOM Node specialization.
           </p>
           <p>
             Adjacent TDOMText nodes may be combined when the Normalize method is called for the ParentNode, and Text nodes with only whitespace in their content may be removed. This is the case when the DOM node has the value <var>nfIgnorableWS</var> in its Flags property.
@@ -6392,7 +6392,7 @@
 
       <!-- function result Visibility: default -->
       <element name="TDOMText.IsElementContentWhitespace.Result">
-        <short>True when nfIgnorableWS  is included in the Flags for the DOM node.</short>
+        <short>True when nfIgnorableWS is included in the Flags for the DOM node.</short>
       </element>
 
       <!-- class Visibility: default -->
@@ -6470,7 +6470,7 @@
 
       <!-- class Visibility: default -->
       <element name="TDOMCDATASection">
-        <short>Implements the DOM CDataSection  interface from the DOM specification.</short>
+        <short>Implements the DOM CDataSection interface from the DOM specification.</short>
         <descr>
           <p>
             <var>TDOMCDATASection</var> is a <var>TDOMText</var> descendant that implements the DOM CDATASection interface from the DOM specification. TDOMCDATASection provides overridden methods needed to implement the NodeType and NodeName properties as required for the DOM Node specialization.
@@ -6736,7 +6736,7 @@
             <var>PublicID</var> is a read-only <var>DOMString</var> property which contains the public identifier for the external subset in the document type declaration. It contains the value passed as an argument to the CreateDocumentType method in TDOMImplementation, and stored in the new class instance.
           </p>
           <p>
-            PublicID was introduced in the SGML specifications (the predecessor of XML), and had an elaborate Formal Public Identifier format. For DOM and XML, the content has generally been simplified to an organization identifier  and URL where the DTD is located. For example:
+            PublicID was introduced in the SGML specifications (the predecessor of XML), and had an elaborate Formal Public Identifier format. For DOM and XML, the content has generally been simplified to an organization identifier and URL where the DTD is located. For example:
           </p>
 <code>
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -6803,7 +6803,7 @@
         <short>Implements the DOM Notation interface from the DOM specification.</short>
         <descr>
           <p>
-            <var>TDOMNotation</var> is a <var>TDOMNode</var> descendant which implements the Notation interface from the DOM specification. It declares the name and format for an unparsed entity declared in a Document Type Declaration (DTD). It can also be used to set the target for a processing instruction that handles the notation. Notations are a vestige of the older SGML standard, and  provided for migration purposes. They are seldom used (if at all) in modern XML processing implementations.
+            <var>TDOMNotation</var> is a <var>TDOMNode</var> descendant which implements the Notation interface from the DOM specification. It declares the name and format for an unparsed entity declared in a Document Type Declaration (DTD). It can also be used to set the target for a processing instruction that handles the notation. Notations are a vestige of the older SGML standard, and provided for migration purposes. They are seldom used (if at all) in modern XML processing implementations.
           </p>
         </descr>
         <seealso>
@@ -6950,7 +6950,7 @@
             <var>CloneNode</var> is an overridden <var>TDOMNode</var> function in <var>TDOMEntity</var> used to make a copy of the node with <var>ACloneOwner</var> as the owner document for the new node. It re-implements the method from the ancestor class.
           </p>
           <p>
-            CloneNode allocates a new TDOMEntity instance in the node pool for ACloneOwner, and creates the DOM Entity node in the return value. Values from the <var>PublicID</var>, <var>SystemID</var>, and <var>NotationName</var> properties are copied to the new node. The internal name for the Entity (set when the owner document was de-serialized) is also copied to the new node. When deep is <b>True</b>, the <var>CloneChildren</var> method is called to copy the <var>ChildNodes</var> (when assigned) to the  new node.
+            CloneNode allocates a new TDOMEntity instance in the node pool for ACloneOwner, and creates the DOM Entity node in the return value. Values from the <var>PublicID</var>, <var>SystemID</var>, and <var>NotationName</var> properties are copied to the new node. The internal name for the Entity (set when the owner document was de-serialized) is also copied to the new node. When deep is <b>True</b>, the <var>CloneChildren</var> method is called to copy the <var>ChildNodes</var> (when assigned) to the new node.
           </p>
           <p>
             CloneNode calls <var>SetReadOnly</var> to ensure that the new node cannot be modified. The cloned node does not have a parent node.
@@ -7224,7 +7224,7 @@
         <short>Implements the default attribute node introduced in DOM Level 2.</short>
         <descr>
           <p>
-            <var>TDOMAttrDef</var> is a <var>TDOMAttr</var> descendant which implements the  default attribute node as specified in the DOM Level 2 specification. A default attribute is associated with an Element of a given type in a Document Type Declaration (whether internal or external). It can have a value which is either explicitly specified, implied from the DTD, or fixed to given value. Its value can also be limited to only those values specified in the attribute definition.
+            <var>TDOMAttrDef</var> is a <var>TDOMAttr</var> descendant which implements the default attribute node as specified in the DOM Level 2 specification. A default attribute is associated with an Element of a given type in a Document Type Declaration (whether internal or external). It can have a value which is either explicitly specified, implied from the DTD, or fixed to given value. Its value can also be limited to only those values specified in the attribute definition.
           </p>
           <p>
             TDOMAttrDef is the type returned from the <var>TDOMDocument.CreateAttributeDef</var> method. It is also used to update attribute value for an Element in methods like: <var>TDOMNamedNodeMap.RestoreDefault</var> and <var>TDOMElement.AttachDefaultAttrs</var>.
