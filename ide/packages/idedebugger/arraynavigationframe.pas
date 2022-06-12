@@ -87,15 +87,23 @@ begin
   if Sender = btnArrayStart then
     edArrayStart.Value := FLowBound
   else
-  if Sender = btnArrayFastDown then
-    edArrayStart.Value := max(edArrayStart.Value - edArrayPageSize.Value,
-                              FLowBound)
+  if Sender = btnArrayFastDown then begin
+    if (v < FLowBound) or (v > FHighBound) then
+      edArrayStart.Value := edArrayStart.Value - edArrayPageSize.Value
+    else
+      edArrayStart.Value := max(edArrayStart.Value - edArrayPageSize.Value,
+                                FLowBound);
+  end
   else
-  if Sender = btnArrayFastUp then
-    edArrayStart.Value := min(edArrayStart.Value + edArrayPageSize.Value,
-                              Max(FLowBound,
-                                  FHighBound + 1 - edArrayPageSize.Value)
-                              )
+  if Sender = btnArrayFastUp then begin
+    if (v < FLowBound) or (v > FHighBound) then
+      edArrayStart.Value := edArrayStart.Value + edArrayPageSize.Value
+    else
+      edArrayStart.Value := min(edArrayStart.Value + edArrayPageSize.Value,
+                                Max(FLowBound,
+                                    FHighBound + 1 - edArrayPageSize.Value)
+                                );
+  end
   else
   if Sender = btnArrayEnd then
     edArrayStart.Value :=  Max(FLowBound,
