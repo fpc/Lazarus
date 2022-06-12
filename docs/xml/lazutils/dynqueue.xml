@@ -69,7 +69,7 @@
             <var>TDynamicDataQueue</var> provides overloaded <var>Push</var> and <var>Pop</var> methods used to enqueue or dequeue data using an untyped buffer or a <var>TStream</var> instance. Use the <var>Top</var> method to peek at data in the queue without removing it.
           </p>
           <p>
-            Internally, <var>TDynamicDataQueue</var> maintains a ring queue for pointers to  chunks of data using the <var>TDynamicQueueItem</var> type. It is optimized to reduce the amount of data movement required when adding or removing items.
+            Internally, <var>TDynamicDataQueue</var> maintains a ring queue for pointers to chunks of data using the <var>TDynamicQueueItem</var> type. It is optimized to reduce the amount of data movement required when adding or removing items.
           </p>
           <p>
             <var>TDynamicDataQueue</var> is used to implement storage for the <var>TCustomLazComponentQueue</var> component in the <file>lresources.pp</file> unit in the Lazarus Component Library (LCL).
@@ -176,7 +176,7 @@
             <var>CalculateItemSize</var> is an <var>Integer</var> function used to calculate the memory block size needed for a new item added to the queue.
           <p>
           </p>
-          <var>ItemSize</var> contains the size requested for the data structure and its arbitrary content, and is used by default as the return value for the method.  CalculateItemSize ensures that the return value is in the range defined by the  <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> properties.
+          <var>ItemSize</var> contains the size requested for the data structure and its arbitrary content, and is used by default as the return value for the method. CalculateItemSize ensures that the return value is in the range defined by the <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> properties.
           </p>
           <p>
             CalculateItemSize is used in the implementation of the private <var>PushInternal</var> method.
@@ -519,10 +519,10 @@
         </short>
         <descr>
           <p>
-            <var>MaximumBlockSize</var> is an <var>Integer</var> property which indicates the largest  memory block size allocated for an item added to the queue. <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> are used in the <var>CalculateItemSize</var> method to derive the actual block size allocated for a queue item and its arbitrary data.
+            <var>MaximumBlockSize</var> is an <var>Integer</var> property which indicates the largest memory block size allocated for an item added to the queue. <var>MinimumBlockSize</var> and <var>MaximumBlockSize</var> are used in the <var>CalculateItemSize</var> method to derive the actual block size allocated for a queue item and its arbitrary data.
           </p>
           <p>
-            The default value for MaximumBlockSize is <b>4096</b>, as set in the <var>Create</var> constructor. MaximumBlockSize cannot be set to a value smaller than  MinimumBlockSize.
+            The default value for MaximumBlockSize is <b>4096</b>, as set in the <var>Create</var> constructor. MaximumBlockSize cannot be set to a value smaller than MinimumBlockSize.
           </p>
         </descr>
         <seealso>
