@@ -212,7 +212,7 @@
         <short>Total number of items used in the doubly linked list.</short>
         <descr>
           <p>
-            <var>Count</var> is a read-only <var>Integer</var> property which contains the number of traversal nodes  in the doubly linked list. The value in Count is updated in method like <var>Unbind</var> and <var>AddAsLast</var>.
+            <var>Count</var> is a read-only <var>Integer</var> property which contains the number of traversal nodes in the doubly linked list. The value in Count is updated in method like <var>Unbind</var> and <var>AddAsLast</var>.
           </p>
         </descr>
         <seealso>
@@ -291,7 +291,9 @@
       <element name="TLinkList.Create">
         <short>Constructor for the class instance.</short>
         <descr>
-          Create calls the inherited constructor.
+          <p>
+            Create calls the inherited constructor.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
