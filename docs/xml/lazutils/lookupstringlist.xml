@@ -113,7 +113,7 @@
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy frees the internal  <var>TStringMap</var> instance allocated in the constructor, and calls the inherited Destroy method.
+            <var>Destroy</var> is the destructor for the class instance. Destroy frees the internal <var>TStringMap</var> instance allocated in the constructor, and calls the inherited Destroy method.
           </p>
         </descr>
         <seealso>
@@ -194,7 +194,7 @@
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.Add.Result">
         <short>
-          Ordinal position for the new value, or -1 when duplicates are not  allowed.
+          Ordinal position for the new value, or -1 when duplicates are not allowed.
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -251,7 +251,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.Contains.Result">
-        <short>True when the value is already stored in the TStringMap for the class.</short>
+        <short><b>True</b> when the value is already stored in the TStringMap for the class.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLookupStringList.Contains.S">
@@ -277,7 +277,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.Find.Result">
-        <short>True when the value is located in the Strings property.</short>
+        <short><b>True</b> when the value is located in the Strings property.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLookupStringList.Find.S">
