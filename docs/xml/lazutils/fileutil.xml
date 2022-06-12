@@ -236,7 +236,7 @@
         </short>
         <descr>
           <p>
-            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the macOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/MacOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
+            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the macOS operating system. It calls ProgramDirectory to get the return value, and removes the bundle post-fix ('.app/Contents/MacOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
           </p>
         </descr>
         <seealso>
@@ -752,7 +752,7 @@ ShowMessage('File: ' + sFile + LineEnding +
         </short>
         <descr>
           <p>
-            <var>FindDiskFilename</var> is a String function used to get the file name which most closely matches the value in the <var>FileName</var> argument.  It does not use case-sensitivity when comparing file names - regardless of the platform. In addition, the file must exist on the local file system.
+            <var>FindDiskFilename</var> is a String function used to get the file name which most closely matches the value in the <var>FileName</var> argument. It does not use case-sensitivity when comparing file names - regardless of the platform. In addition, the file must exist on the local file system.
           </p>
           <p>
             FileName can include a fully-qualified path including a drive letter on Windows platforms. A drive letter in the value is always converted to uppercase. The path to the file is extracted and sanitized to resolve relative path references.
@@ -862,7 +862,7 @@ AResult := FindDiskFileName(AFileName);
       <element name="TFileIterator.FSearching"/>
 
       <element name="TFileIterator.GetFileName">
-        <short>Gets the value for the  FileName property.</short>
+        <short>Gets the value for the FileName property.</short>
         <descr/>
         <seealso>
           <link id="TFileIterator.FileName"/>
@@ -1478,7 +1478,7 @@ AResult := FindDiskFileName(AFileName);
             <var>FindAllFiles</var> is an overloaded routine used to populate a <var>TStringList</var> class instance with a list of files match the specified search criteria. The procedure variant uses an existing TStringList class instance to store the matching file names. The function variant creates the TStringList class instance used as the return value for the method.
           </p>
           <remark>
-            The function variant of <var>FindAllFiles</var> creates the string list internally. This may seem  very convenient at first, but it is very easy to create memory leaks if string list instances are not freed properly.
+            The function variant of <var>FindAllFiles</var> creates the string list internally. This may seem very convenient at first, but it is very easy to create memory leaks if string list instances are not freed properly.
           </remark>
         </descr>
         <seealso/>
