@@ -13,7 +13,7 @@
           <file>DynHashArray.pp</file> extends the functionality of Pascal by
           offering alternative data structure: set like array (the order is not kept)
           with fast find/delete. Its size can change automatically during the
-          execution of the program.  The price is that it is somewhat slower than
+          execution of the program. The price is that it is somewhat slower than
           a number indexes access of an array.
         </p>
         <p>
@@ -206,7 +206,7 @@
         <short>Name of the class that store all functions and data for an hashed array.</short>
         <descr>
           <p>
-            TDynHashArray is a class which is similar to TList which allows both pointers and objects to be maintained in its internal storage. It includes common methods like Add, Remove, Contains, First, Count and Clear. Because of its hashing nature,  the add, remove, and find operations are done in constant time on average.
+            TDynHashArray is a class which is similar to TList which allows both pointers and objects to be maintained in its internal storage. It includes common methods like Add, Remove, Contains, First, Count and Clear. Because of its hashing nature, the add, remove, and find operations are done in constant time on average.
           </p>
           <p>
             <b>Inner structure:</b>
