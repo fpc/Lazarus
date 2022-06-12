@@ -727,7 +727,7 @@ var
   end;
 
 var
-  Writable: Boolean;
+  OpenItemEnable, Writable: Boolean;
   OpenItemCapt: String;
 begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',ItemsPopupMenu.Items.Count]);
@@ -737,6 +737,7 @@ begin
   try
     CollectSelected;
     OpenItemCapt := lisOpen;  // May be changed later.
+    OpenItemEnable := True;
     Writable := not LazPackage.ReadOnly;
 
     // items for Files node and for selected files, under section PkgEditMenuSectionFile
@@ -789,10 +790,14 @@ begin
       if Assigned(SingleSelectedDep) then
         case SingleSelectedDep.LoadPackageResult of
           lprAvailableOnline:
-            OpenItemCapt:=lisPckEditInstall;
+            OpenItemCapt := lisPckEditInstall;
           lprNotFound:
             if Assigned(OPMInterface) and not OPMInterface.IsPackageListLoaded then
-              OpenItemCapt:=lisPckEditCheckAvailabilityOnline;
+              OpenItemCapt := lisPckEditCheckAvailabilityOnline
+            else begin
+              //OpenItemCapt := lisUENotFound;
+              OpenItemEnable := False;
+            end;
         end;
       SetItem(PkgEditMenuRemoveDependency, @RemoveBitBtnClick,
               pstdep in UserSelection, Writable);
@@ -808,6 +813,7 @@ begin
               Assigned(LazPackage.FirstRequiredDependency), Writable);
     end;
     PkgEditMenuOpenFile.MenuItem.Caption := OpenItemCapt;
+    PkgEditMenuOpenFile.MenuItem.Enabled := OpenItemEnable;
   finally
     //PackageEditorMenuRoot.EndUpdate;
     SingleSelectedFile := Nil;
