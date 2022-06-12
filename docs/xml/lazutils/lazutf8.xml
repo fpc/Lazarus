@@ -36,7 +36,7 @@
             <var>NeedRTLAnsi</var> is a <var>Boolean</var> function that indicates if the OS requires use of <var>AnsiToUTF8</var> and <var>UTF8ToAnsi</var> for the RTL. AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and Mac OSX. Normally these OS's use UTF-8 as the system encoding so the <var>WideStringManager</var> is not needed.
           </p>
           <p>
-            For the Windows environment, NeedRTLAnsi is <b>True</b> if the default system code page is not <var>CP_UTF8</var>. For UNIX-like environments, NeedRTLAnsi is <b>True</b> when any of the  <b>LC_ALL</b>, <b>LC_MESSAGES</b>, or <b>LANG</b> environment variables contain a language code other than UTF-8.
+            For the Windows environment, NeedRTLAnsi is <b>True</b> if the default system code page is not <var>CP_UTF8</var>. For UNIX-like environments, NeedRTLAnsi is <b>True</b> when any of the <b>LC_ALL</b>, <b>LC_MESSAGES</b>, or <b>LANG</b> environment variables contain a language code other than UTF-8.
           </p>
         </descr>
         <seealso>
@@ -143,11 +143,11 @@
 
       <element name="UTF8ToConsole">
         <short>
-          Converts a UTF-8-encoded  string to console (OEM) encoding.
+          Converts a UTF-8-encoded string to console (OEM) encoding.
         </short>
         <descr>
           <p>
-            <var>UTF8ToConsole</var> converts a UTF-8-encoded string to console (OEM) encoding as used in <var>Write</var> and  <var>WriteLn</var>. The implementation is platform specific.
+            <var>UTF8ToConsole</var> converts a UTF-8-encoded string to console (OEM) encoding as used in <var>Write</var> and <var>WriteLn</var>. The implementation is platform specific.
           </p>
           <p>
             For the Windows environment, either <var>UTF8ToSys</var> or <var>UTF8ToWinCP</var> is used to convert the value to the codepage or character set needed in RTL. The Windows <var>CharToOem</var> API is used to prepare the return value. In UNIX-like environments, <var>UTF8ToSys</var> is used to get the return value .
@@ -189,7 +189,7 @@
         </short>
         <descr>
           <p>
-            Converts the UTF-8-encoded string to the Windows code page encoding Used by <var>Write</var>  and <var>WriteLn</var>.
+            Converts the UTF-8-encoded string to the Windows code page encoding Used by <var>Write</var> and <var>WriteLn</var>.
           </p>
         </descr>
         <seealso/>
@@ -207,7 +207,7 @@
         </short>
         <descr>
           <p>
-            <var>ParamStrUTF8</var> is a <var>String</var> function used to convert the specified command line parameter to a UTF-8-encoded string. The implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like environments, SysToUTF8 is called to convert the value for the command line parameter at the position in Param. For Windows platforms like WinCE,  the stub for the Ansi or WideString version of ParamStr is called.
+            <var>ParamStrUTF8</var> is a <var>String</var> function used to convert the specified command line parameter to a UTF-8-encoded string. The implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like environments, SysToUTF8 is called to convert the value for the command line parameter at the position in Param. For Windows platforms like WinCE, the stub for the Ansi or WideString version of ParamStr is called.
           </p>
         </descr>
         <seealso>
@@ -456,7 +456,7 @@ end;
             <var>UTF8LengthFast</var> is an overloaded <var>PtrInt</var> function used to get the length of a UTF-8-encoded string in codepoints. UTF8LengthFast is the fast version of <var>UTF8Length</var>. It does not call the UTF8CodepointSize function. The UTF-8-encoded string data is assumed to be valid. The native data size for the CPU is used to process blocks of UTF-8-encoded data. For a 64-bit CPU, this means that 8 bytes are read and processed at once.
           </p>
           <p>
-            The overloaded variants allow the UTF-8-encoded data to be specified as either a String type, or a null-terminated PChar type.  Internally, the String-based variant casts its data to a PChar type and calls the overloaded variant.
+            The overloaded variants allow the UTF-8-encoded data to be specified as either a String type, or a null-terminated PChar type. Internally, the String-based variant casts its data to a PChar type and calls the overloaded variant.
           </p>
           <p>
             UTF8LengthFast is a Free Pascal implementation of the C routine provided by Colin Percival:
@@ -727,7 +727,7 @@ end;
             <var>Utf8TryFindCodepointStart</var> is a <var>Boolean</var> function which tries to find the start of a valid UTF-8 codepoint at the specified position in <var>AString</var>.
           </p>
           <p>
-            The return value contains True if the bytes at the specified position are a valid UTF-8 codepoint (1 - 4 bytes). When the return value is True, the value in CurPos is updated to contain the position in AString where the UTF-8 codepoint begins. Otherwise, the value in CurPos is unchanged. Please note, when CurPos points beyond the end of AString you will get a crash!
+            The return value contains <b>True</b> if the bytes at the specified position are a valid UTF-8 codepoint (1 - 4 bytes). When the return value is <b>True</b>, the value in CurPos is updated to contain the position in AString where the UTF-8 codepoint begins. Otherwise, the value in CurPos is unchanged. Please note, when CurPos points beyond the end of AString you will get a crash!
           </p>
           <remark>
             UTF8CodepointStrictSize will <b>NOT</b> "look" beyond the terminating #0 in a PChar, so this is safe with AnsiString values.
@@ -917,7 +917,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>UTF8CStringToUTF8String</var> is a <var>String</var> function used to copy the specified number of  characters (codepoints) from a C-style string with UTF-8 encoding. The return value is a UTF-encoded string with C-style specials characters converted to their common equivalents. The following C-style quoted characters are handled in the function:
+            <var>UTF8CStringToUTF8String</var> is a <var>String</var> function used to copy the specified number of characters (codepoints) from a C-style string with UTF-8 encoding. The return value is a UTF-encoded string with C-style specials characters converted to their common equivalents. The following C-style quoted characters are handled in the function:
           </p>
           <dl>
             <dt>\t</dt>
@@ -998,7 +998,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>UTF8Copy</var> is a <var>String</var> function used copy to UTF-8-encoded values from <var>s</var> starting at the position in <var>StartCharIndex</var>. <var>CharCount</var> specifies the number of multi-byte characters (or codepoints) to include in the return value. The return value is an empty string ('') when s is not a  valid UTF-8-encoded string.
+            <var>UTF8Copy</var> is a <var>String</var> function used copy to UTF-8-encoded values from <var>s</var> starting at the position in <var>StartCharIndex</var>. <var>CharCount</var> specifies the number of multi-byte characters (or codepoints) to include in the return value. The return value is an empty string ('') when s is not a valid UTF-8-encoded string.
           </p>
           <p>
             UTF8Copy behaves like a substring function.
@@ -1034,7 +1034,7 @@ end;
             The value in <var>s</var> is updated directly in the function.
           </p>
           <p>
-            An overloaded variant of the procedure is provided for platforms where the Win1252 code page is used. On these platforms, raw byte values values in s  are converted to the UTF-8 code page prior to performing the delete operation.
+            An overloaded variant of the procedure is provided for platforms where the Win1252 code page is used. On these platforms, raw byte values values in s are converted to the UTF-8 code page prior to performing the delete operation.
           </p>
         </descr>
         <seealso/>
@@ -1284,7 +1284,7 @@ end;
             Deprecated. Use FindInvalidUTF8Codepoint instead.
           </remark>
           <p>
-            It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk. If StopOnNonUTF8 is false it will ignore undefined codes. For example #128. By default it stops on such codes.
+            It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk. If StopOnNonUTF8 is <b>False</b> it will ignore undefined codes. For example #128. By default it stops on such codes.
           </p>
         </descr>
         <seealso/>
@@ -1700,7 +1700,7 @@ end;
             Utf8EscapeControlChars calls <var>FindInvalidUTF8Codepoint</var> to see if <var>S</var> contains any invalid codepoints for the UTF-8 encoding. <var>UTF8FixBroken</var> is called to repair the input value.
           </p>
           <p>
-            Utf8EscapeControlChars iterates over the characters in S, and converts any character value in the eligible range using an internal lookup table for the value in EscapeMode. All other character  values (or values in multi-byte UTF-8 code points) are included in the return value in their unmodified form.
+            Utf8EscapeControlChars iterates over the characters in S, and converts any character value in the eligible range using an internal lookup table for the value in EscapeMode. All other character values (or values in multi-byte UTF-8 code points) are included in the return value in their unmodified form.
           </p>
           <p>
             Mainly used as a diagnostic or logging tool.
@@ -2365,7 +2365,7 @@ end;
         <short>Removes country information from a language ID.</short>
         <descr>
           <p>
-            <var>LazGetShortLanguageID</var> strips country information from the language ID, making it simpler to use. Ideally the resulting ID should conform to ISO 639-1, or ISO 639-2 when the  language code is not in ISO 639-1.
+            <var>LazGetShortLanguageID</var> strips country information from the language ID, making it simpler to use. Ideally the resulting ID should conform to ISO 639-1, or ISO 639-2 when the language code is not in ISO 639-1.
           </p>
         </descr>
         <seealso/>
