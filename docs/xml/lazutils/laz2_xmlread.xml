@@ -12,7 +12,7 @@
         </short>
       <descr>
         <p>
-          <var>laz2_xmlread.pas</var> provides routines used to read XML content from a file, text file, or stream. It is copied from the FCL unit xmlread.pp (SVN  revision 15251), and adapted to use UTF-8 instead of widestrings by Mattias Gaertner.
+          <var>laz2_xmlread.pas</var> provides routines used to read XML content from a file, text file, or stream. It is copied from the FCL unit xmlread.pp (SVN revision 15251), and adapted to use UTF-8 instead of widestrings by Mattias Gaertner.
         </p>
         <p>
           Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org <br/>
@@ -466,7 +466,7 @@
         </short>
         <descr>
           <p>
-            <var>TXMLErrorEvent</var> is an object procedure type that specifies an event signalled when an error occurs while reading and parsing XML content. TXMLErrorEvent is the type used for the TDOMParsser.OnError event handler, and allows the parser and  its TXMLReader class instance to share error information and control.
+            <var>TXMLErrorEvent</var> is an object procedure type that specifies an event signalled when an error occurs while reading and parsing XML content. TXMLErrorEvent is the type used for the TDOMParsser.OnError event handler, and allows the parser and its TXMLReader class instance to share error information and control.
           </p>
         </descr>
         <seealso>
@@ -512,7 +512,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the overloaded constructor for the class instance.  The variants allow the content for the input source to be assigned using a String or a TStream descendant. Both variants call the inherited constructor to initialize the class instance. The values in AStringData and AStream are assigned to their corresponding properties.
+            <var>Create</var> is the overloaded constructor for the class instance. The variants allow the content for the input source to be assigned using a String or a TStream descendant. Both variants call the inherited constructor to initialize the class instance. The values in AStringData and AStream are assigned to their corresponding properties.
           </p>
         </descr>
         <seealso></seealso>
@@ -762,10 +762,10 @@
         </short>
         <descr>
           <p>
-            <var>ParseWithContext</var> is a <var>TDOMNode</var> function used to read and process XML content in the specified XML input source. ParseWithContext creates DOM nodes needed to  represent the XML content.
+            <var>ParseWithContext</var> is a <var>TDOMNode</var> function used to read and process XML content in the specified XML input source. ParseWithContext creates DOM nodes needed to represent the XML content.
           </p>
           <p>
-            The newly created DOM nodes are accumulated in a temporary DOM Document Fragment, and its child nodes are ultimately added to the DOM node in Context. The insertion point  for the new nodes is determined using the Action argument. When Action contains xaAppendAsChildren or xaReplaceChildren, the nodes are added (or replaced) as child nodes in Context. When Action contains xaInsertBefore, xaInsertAfter, or xaReplace,  the nodes are added (or replaced) as child nodes in the parent node for Context.
+            The newly created DOM nodes are accumulated in a temporary DOM Document Fragment, and its child nodes are ultimately added to the DOM node in Context. The insertion point for the new nodes is determined using the Action argument. When Action contains xaAppendAsChildren or xaReplaceChildren, the nodes are added (or replaced) as child nodes in Context. When Action contains xaInsertBefore, xaInsertAfter, or xaReplace, the nodes are added (or replaced) as child nodes in the parent node for Context.
           </p>
           <p>
             ParseWithContext creates a TXMLReader that is used to convert and process the XML content in the XML input source. The return value contains the first child node in the DOM Document Fragment created in the method.
