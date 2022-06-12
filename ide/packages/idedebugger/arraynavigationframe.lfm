@@ -107,4 +107,13 @@ object ArrayNavigationBar: TArrayNavigationBar
     Flat = True
     OnClick = BtnChangeSizeClicked
   end
+  object lblBounds: TLabel
+    Left = 252
+    Height = 26
+    Top = 0
+    Width = 1
+    Align = alLeft
+    BorderSpacing.Left = 10
+    Visible = False
+  end
 end

@@ -41,11 +41,12 @@ uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, LazUTF8, Clipbrd,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
-  IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger,
+  LMessages, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger,
   DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees,
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
-  StrUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter;
+  StrUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
+  ArrayNavigationFrame;
 
 type
 
@@ -151,6 +152,7 @@ type
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
+    procedure WatchNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
   private
     FWatchPrinter: TWatchResultPrinter;
     FWatchesInView: TIdeWatches;
@@ -168,6 +170,8 @@ type
 
     procedure UpdateInspectPane;
     procedure UpdateItem(const VNode: PVirtualNode; const AWatch: TIdeWatch);
+    procedure UpdateArraySubItems(const VNode: PVirtualNode;
+      const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
     procedure UpdateSubItems(const VNode: PVirtualNode;
       const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
     procedure UpdateAll;
@@ -175,6 +179,7 @@ type
     function  GetSelectedSnapshot: TSnapshot;
     property Watches: TIdeWatches read GetWatches;
   protected
+    function IsShortcut(var Message: TLMKey): Boolean; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DoWatchesChanged; override;
@@ -495,6 +500,12 @@ var
   s: String;
   NewWatch: TCurrentWatch;
 begin
+  if (ActiveControl <> nil) and (
+       (ActiveControl is TCustomEdit) or (ActiveControl is TCustomSpinEditEx)
+     )
+  then
+    exit;
+
   if (Shift * [ssShift, ssAlt, ssAltGr, ssCtrl] = [ssCtrl]) and (Key = VK_V)
   then begin
     Key := 0;
@@ -696,6 +707,28 @@ begin
     UpdateAll;
   finally
     EndUpdate;
+  end;
+end;
+
+procedure TWatchesDlg.WatchNavChanged(Sender: TArrayNavigationBar; AValue: Int64
+  );
+var
+  VNode: PVirtualNode;
+  AWatch: TIdeWatch;
+  WatchValue: TIdeWatchValue;
+  c: LongWord;
+begin
+  if Sender.OwnerData = nil then
+    exit;
+
+  AWatch := TIdeWatch(Sender.OwnerData);
+  if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
+    VNode := tvWatches.FindNodeForItem(AWatch);
+    if VNode = nil then
+      exit;
+
+    WatchValue := AWatch.Values[GetThreadId, GetStackframe];
+    UpdateSubItems(VNode, WatchValue, c);
   end;
 end;
 
@@ -1058,8 +1091,11 @@ begin
         if DoDelayedDelete then
           exit;
 
-        HasChildren := ((TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0)) or
-                       ((WatchValue.ResultData <> nil) and (WatchValue.ResultData.FieldCount > 0));
+        HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
+                       ( (WatchValue.ResultData <> nil) and
+                         ( (WatchValue.ResultData.FieldCount > 0) or
+                           ( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
+                       ) );
         tvWatches.HasChildren[VNode] := HasChildren;
         if HasChildren and (WatchValue.Validity = ddsValid) and tvWatches.Expanded[VNode] then begin
           (* The current "AWatch" should be done. Allow UpdateItem for nested entries *)
@@ -1095,6 +1131,93 @@ begin
   end;
 end;
 
+procedure TWatchesDlg.UpdateArraySubItems(const VNode: PVirtualNode;
+  const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
+var
+  NewWatch, AWatch: TIdeWatch;
+  i, TotalCount: Integer;
+  ResData: TWatchResultData;
+  ExistingNode, nd: PVirtualNode;
+  Nav: TArrayNavigationBar;
+  Idx: String;
+  Offs, KeepCnt, KeepBelow: Int64;
+begin
+  ChildCount := 0;
+  ResData := AWatchValue.ResultData;
+  if (ResData = nil) then
+    exit;
+
+  TotalCount := ResData.ArrayLength;
+  if (ResData.ValueKind <> rdkArray) or (TotalCount = 0) then
+    TotalCount := ResData.Count;
+
+  AWatch := AWatchValue.Watch;
+  ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
+  if ExistingNode = nil then
+    ExistingNode := tvWatches.AddChild(VNode, nil)
+  else
+    tvWatches.NodeItem[ExistingNode] := nil;
+
+  Nav := TArrayNavigationBar(tvWatches.NodeControl[ExistingNode]);
+  if Nav = nil then begin
+    Nav := TArrayNavigationBar.Create(Self);
+    Nav.ParentColor := False;
+    Nav.ParentBackground := False;
+    Nav.Color := tvWatches.Colors.BackGroundColor;
+    Nav.LowBound := ResData.LowBound;
+    Nav.HighBound := ResData.LowBound + TotalCount - 1;
+    Nav.ShowBoundInfo := True;
+    Nav.Index := ResData.LowBound;
+    Nav.PageSize := 10;
+    Nav.OwnerData := AWatch;
+    Nav.OnIndexChanged := @WatchNavChanged;
+    Nav.OnPageSize := @WatchNavChanged;
+    tvWatches.NodeControl[ExistingNode] := Nav;
+    tvWatches.NodeText[ExistingNode, 0] := ' ';
+    tvWatches.NodeText[ExistingNode, 1] := ' ';
+  end;
+  ChildCount := Nav.LimitedPageSize;
+
+  ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
+
+  Offs := Nav.Index;
+  for i := 0 to ChildCount do begin
+    Idx := IntToStr(Offs +  i);
+
+    NewWatch := AWatch.ChildrenByName[Idx];
+    if NewWatch = nil then begin
+      dec(ChildCount);
+      continue;
+    end;
+
+    if AWatch is TCurrentWatch then begin
+      NewWatch.DisplayFormat := wdfDefault;
+      NewWatch.Enabled       := AWatch.Enabled;
+      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+        NewWatch.EvaluateFlags := [defClassAutoCast];
+    end;
+
+    if ExistingNode <> nil then begin
+      tvWatches.NodeItem[ExistingNode] := NewWatch;
+      nd := ExistingNode;
+      ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
+    end
+    else begin
+      nd := tvWatches.AddChild(VNode, NewWatch);
+    end;
+    UpdateItem(nd, NewWatch);
+  end;
+
+  if AWatch is TCurrentWatch then begin
+    KeepCnt := Nav.PageSize;
+    KeepBelow := KeepCnt;
+    KeepCnt := Max(Max(50, KeepCnt+10),
+             Min(KeepCnt*10, 500) );
+    KeepBelow := Min(KeepBelow, KeepCnt - Nav.PageSize);
+    AWatch.LimitChildWatchCount(KeepCnt, ResData.LowBound + KeepBelow);
+  end;
+end;
+
 procedure TWatchesDlg.UpdateSubItems(const VNode: PVirtualNode;
   const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
 var
@@ -1112,6 +1235,8 @@ begin
     ChildCount := ResData.FieldCount;
     AWatch := AWatchValue.Watch;
     ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
+    if ExistingNode <> nil then
+      tvWatches.NodeControl[ExistingNode].Free;
 
     for i := 0 to ResData.FieldCount-1 do begin
       ChildInfo := ResData.Fields[i];
@@ -1140,6 +1265,13 @@ begin
       UpdateItem(nd, NewWatch);
     end;
 
+  end
+  else
+  if (AWatchValue.ResultData <> nil) and
+  (AWatchValue.ResultData.ValueKind = rdkArray) and
+  (AWatchValue.ResultData.ArrayLength > 0)
+  then begin
+    UpdateArraySubItems(VNode, AWatchValue, ChildCount);
   end
   else begin
     // Old Interface
@@ -1256,6 +1388,17 @@ begin
   Result := nil;
   if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
+end;
+
+function TWatchesDlg.IsShortcut(var Message: TLMKey): Boolean;
+begin
+  Result := false;
+  if (ActiveControl <> nil) and (
+       (ActiveControl is TCustomEdit) or (ActiveControl is TCustomSpinEditEx)
+     )
+  then
+    exit;
+  Result := inherited IsShortcut(Message);
 end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);

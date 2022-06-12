@@ -609,6 +609,7 @@ type
 
     procedure BeginChildUpdate;
     procedure EndChildUpdate;
+    procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64));
     property ChildrenByName[AName: String]: TIdeWatch read GetChildrenByName;
     function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer): boolean;
     property ParentWatch: TIdeWatch read FParentWatch;
@@ -6230,6 +6231,23 @@ begin
     FChildWatches.EndUpdate;
 end;
 
+procedure TIdeWatch.LimitChildWatchCount(AMaxCnt: Integer;
+  AKeepIndexEntriesBelow: Int64);
+var
+  w: TIdeWatch;
+  x: int64;
+  i: Integer;
+begin
+  i := 0;
+  while (FChildWatches.Count > AMaxCnt) and (i < FChildWatches.Count) do begin
+    w := FChildWatches[i];
+    if TryStrToInt64(w.Expression, x) and (x < AKeepIndexEntriesBelow) then
+      inc(i)
+    else
+      FChildWatches.Delete(0);
+  end;
+end;
+
 function TIdeWatch.HasAllValidParents(AThreadId: Integer; AStackFrame: Integer
   ): boolean;
 begin
@@ -6266,7 +6284,10 @@ var
 begin
   Result := Expression;
   if FParentWatch <> nil then begin
-    Result := '(' + FParentWatch.GetFullExpression(AThreadId, AStackFrame) + ').' + Result;
+    if (Result <> '') and (Result[1] in ['0'..'9']) then
+      Result := '(' + FParentWatch.GetFullExpression(AThreadId, AStackFrame) + ')[' + Result+']'
+    else
+      Result := '(' + FParentWatch.GetFullExpression(AThreadId, AStackFrame) + ').' + Result;
     if (defClassAutoCast in FParentWatch.FEvaluateFlags) then begin
       wv := GetAnyValidParentWatchValue(AThreadId, AStackFrame);
       if wv.ResultData <> nil then
@@ -6463,7 +6484,14 @@ end;
 destructor TCurrentWatch.Destroy;
 var
   w: TCurrentWatches;
+  s: TIdeWatch;
 begin
+  if FSnapShot <> nil then begin
+    s := FSnapShot;
+    SnapShot := Nil;
+    FreeAndNil(s);
+  end;
+
   if (TCurrentWatches(Collection) <> nil)
   then begin
     TCurrentWatches(Collection).NotifyRemove(Self);

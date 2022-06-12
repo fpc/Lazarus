@@ -10,6 +10,7 @@ interface
 resourcestring
   dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
   dlgInspectAmountOfItemsToShow = 'Amount of items to show';
+  dlgInspectBoundsDD = 'Bounds: %d .. %d';
 
 implementation
 

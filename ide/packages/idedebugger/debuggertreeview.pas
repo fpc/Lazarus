@@ -5,13 +5,14 @@ unit DebuggerTreeView;
 interface
 
 uses
-  Classes, SysUtils, laz.VirtualTrees, LMessages;
+  Classes, SysUtils, laz.VirtualTrees, SpinEx, LMessages, Controls;
 
 type
 
   TDbgTreeNodeData = record
-    Item: TObject;
+    Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
     CachedText: Array of String;
+    Control: TControl;
   end;
   PDbgTreeNodeData = ^TDbgTreeNodeData;
 
@@ -19,11 +20,14 @@ type
 
   TDbgTreeView = class(TLazVirtualStringTree)
   private
+    function GetNodeControl(Node: PVirtualNode): TControl;
     function GetNodeItem(Node: PVirtualNode): TObject;
     function GetNodeText(Node: PVirtualNode; AColumn: integer): String;
+    procedure SetNodeControl(Node: PVirtualNode; AValue: TControl);
     procedure SetNodeItem(Node: PVirtualNode; AValue: TObject);
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
   protected
+    function DoCollapsing(Node: PVirtualNode): Boolean; override;
     procedure ValidateNodeDataSize(var Size: Integer); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DetermineLineImageAndSelectLevel(Node: PVirtualNode;
@@ -31,6 +35,7 @@ type
     procedure HandleMouseDblClick(var Message: TLMMouse; const HitInfo: THitInfo); override;
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var AText: String); override;
+    procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
   public
     function GetNodeData(Node: PVirtualNode): PDbgTreeNodeData; reintroduce;
 
@@ -44,11 +49,22 @@ type
 
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
+    property NodeControl[Node: PVirtualNode]: TControl read GetNodeControl write SetNodeControl;
   end;
 
 implementation
 
 { TDbgTreeView }
+
+function TDbgTreeView.GetNodeControl(Node: PVirtualNode): TControl;
+var
+  Data: PDbgTreeNodeData;
+begin
+  Result := nil;
+  Data := GetNodeData(Node);
+  if Data <> nil then
+    Result := Data^.Control;
+end;
 
 function TDbgTreeView.GetNodeItem(Node: PVirtualNode): TObject;
 var
@@ -68,6 +84,25 @@ begin
   Data := GetNodeData(Node);
   if (Data <> nil) and (AColumn < Length(Data^.CachedText)) then
     Result := Data^.CachedText[AColumn];
+end;
+
+procedure TDbgTreeView.SetNodeControl(Node: PVirtualNode; AValue: TControl);
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  if Data = nil then
+    exit;
+  if Data^.Control = AValue then
+    exit;
+
+  Data^.Control.Free;
+  Data^.Control := AValue;
+  if AValue <> nil then begin
+    AValue.Visible := False;
+    AValue.Parent := Self;
+    AValue.AutoSize := False;
+  end;
 end;
 
 procedure TDbgTreeView.SetNodeItem(Node: PVirtualNode; AValue: TObject);
@@ -92,6 +127,33 @@ begin
   end;
 end;
 
+function TDbgTreeView.DoCollapsing(Node: PVirtualNode): Boolean;
+  procedure RecursivelyHideControls(N: PVirtualNode);
+  var
+    N2: PVirtualNode;
+    NData: PDbgTreeNodeData;
+  begin
+    NData := GetNodeData(N);
+    if NData^.Control <> nil then
+      NData^.Control.Visible := False;
+
+    while N <> nil do begin
+      N2 := GetFirstChildNoInit(N);
+      if N2 <> nil then
+        RecursivelyHideControls(N2);
+      N := GetNextSiblingNoInit(N);
+    end;
+  end;
+var
+  n: PVirtualNode;
+begin
+  n := GetFirstChildNoInit(Node);
+  if n <> nil then
+    RecursivelyHideControls(n);
+
+  Result := inherited DoCollapsing(Node);
+end;
+
 procedure TDbgTreeView.ValidateNodeDataSize(var Size: Integer);
 begin
   Size := SizeOf(TDbgTreeNodeData);
@@ -99,6 +161,7 @@ end;
 
 procedure TDbgTreeView.DoFreeNode(Node: PVirtualNode);
 begin
+  PDbgTreeNodeData(GetNodeData(Node))^.Control.Free;
   PDbgTreeNodeData(GetNodeData(Node))^ := Default(TDbgTreeNodeData);
   inherited DoFreeNode(Node);
 end;
@@ -132,6 +195,29 @@ begin
   else begin
     AText := NodeText[Node, Column];
   end;
+end;
+
+procedure TDbgTreeView.DoPaintNode(var PaintInfo: TVTPaintInfo);
+var
+  NData: PDbgTreeNodeData;
+  r: TRect;
+begin
+  NData := GetNodeData(PaintInfo.Node);
+  if NData^.Control <> nil then begin
+    if PaintInfo.Column = 0 then begin
+      r := GetDisplayRect(PaintInfo.Node, 0, True, False);
+      r.Right := ClientWidth - r.Left - 1;
+      NData^.Control.BoundsRect := r;
+      NData^.Control.Visible := True;
+      if (r.Top < (r.Bottom - r.Height) * 2 + 5) or
+         (r.Bottom > ClientHeight - (r.Bottom - r.Height) * 2 - 5)
+      then
+        NData^.Control.Invalidate;
+    end;
+    exit;
+  end;
+
+  inherited DoPaintNode(PaintInfo);
 end;
 
 function TDbgTreeView.GetNodeData(Node: PVirtualNode): PDbgTreeNodeData;
