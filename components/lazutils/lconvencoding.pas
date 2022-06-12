@@ -82,6 +82,7 @@ const
   EncodingCPIso9 = 'iso88599';
   EncodingCPIso14 = 'iso885914';
   EncodingCPIso15 = 'iso885915';
+  EncodingCPIso16 = 'iso885916';
 
 //signatures in ansi
 const
@@ -129,6 +130,7 @@ function ISO_8859_2ToUTF8(const s: string): string; // eastern europe
 function ISO_8859_9ToUTF8(const s: string): string; // Turkish
 function ISO_8859_14ToUTF8(const s: string): string;
 function ISO_8859_15ToUTF8(const s: string): string; // Western European languages
+function ISO_8859_16ToUTF8(const s: string): string;
 function CP1250ToUTF8(const s: string): string; // central europe
 function CP1251ToUTF8(const s: string): string; // cyrillic
 function CP1252ToUTF8(const s: string): string; // latin 1
@@ -158,6 +160,7 @@ function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean = false): 
 function UTF8ToISO_8859_9(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Turkish
 function UTF8ToISO_8859_14(const s: string; SetTargetCodePage: boolean = false): RawByteString;
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Western European languages
+function UTF8ToISO_8859_16(const s: string; SetTargetCodePage: boolean = false): RawByteString;
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean = false): RawByteString; // cyrillic
 function UTF8ToCP1252(const s: string; SetTargetCodePage: boolean = false): RawByteString; // latin 1
@@ -360,6 +363,11 @@ end;
 function ISO_8859_15ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayISO_8859_15ToUTF8);
+end;
+
+function ISO_8859_16ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayISO_8859_16ToUTF8);
 end;
 
 function ISO_8859_2ToUTF8(const s: string): string;
@@ -1186,6 +1194,54 @@ begin
   339: Result:=189;
   376: Result:=190;
   else Result:=-1;
+  end;
+end;
+
+function UnicodeToISO_8859_16(Unicode: cardinal): integer;
+begin
+  case Unicode of
+    0..255: Result:=Unicode;
+    $104: Result:= $A1;
+    $105: Result:= $A2;
+    $141: Result:= $A3;
+    $20AC: Result:= $A4;
+    $201E: Result:= $A5;
+    $160: Result:= $A6;
+    $161: Result:= $A8;
+    $218: Result:= $AA;
+    $179: Result:= $AC;
+    $17A: Result:= $AE;
+    $17B: Result:= $AF;
+    $10C: Result:= $B2;
+    $142: Result:= $B3;
+    $17D: Result:= $B4;
+    $201D: Result:= $B5;
+    $17E: Result:= $B8;
+    $10D: Result:= $B9;
+    $219: Result:= $BA;
+    $152: Result:= $BC;
+    $153: Result:= $BD;
+    $178: Result:= $BE;
+    $17C: Result:= $BF;
+    $102: Result:= $C3;
+    $106: Result:= $C5;
+    $110: Result:= $D0;
+    $143: Result:= $D1;
+    $150: Result:= $D5;
+    $15A: Result:= $D7;
+    $170: Result:= $D8;
+    $118: Result:= $DD;
+    $21A: Result:= $DE;
+    $103: Result:= $E3;
+    $107: Result:= $E5;
+    $111: Result:= $F0;
+    $144: Result:= $F1;
+    $151: Result:= $F5;
+    $15B: Result:= $F7;
+    $171: Result:= $F8;
+    $119: Result:= $FD;
+    $21B: Result:= $FE;
+    else Result:=-1;
   end;
 end;
 
@@ -2054,6 +2110,11 @@ begin
   InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_15{$endif},Result);
 end;
 
+function UTF8ToISO_8859_16(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28606,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_16{$endif},Result);
+end;
+
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
   // system conversion fails for character #129 -> using table
@@ -2309,6 +2370,7 @@ begin
   List.Add('ISO-8859-9');
   List.Add('ISO-8859-14');
   List.Add('ISO-8859-15');
+  List.Add('ISO-8859-16');
 
   List.Add('KOI8-R');
   List.Add('KOI8-U');
@@ -2461,10 +2523,11 @@ begin
 
   if ATo=EncodingUTF8BOM then begin Result:=UTF8ToUTF8BOM(s); exit; end;
   if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s,SetTargetCodePage); exit; end;
-  if ATo=EncodingCPIso14 then begin Result:=UTF8ToISO_8859_14(s,SetTargetCodePage); exit; end;
-  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso9 then begin Result:=UTF8ToISO_8859_9(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCPIso14 then begin Result:=UTF8ToISO_8859_14(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCPIso16 then begin Result:=UTF8ToISO_8859_16(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s,SetTargetCodePage); exit; end;
@@ -2510,10 +2573,11 @@ begin
 
   if AFrom=EncodingUTF8BOM then begin Result:=UTF8BOMToUTF8(s); exit; end;
   if AFrom=EncodingCPIso1 then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
-  if AFrom=EncodingCPIso14 then begin Result:=ISO_8859_14ToUTF8(s); exit; end;
-  if AFrom=EncodingCPIso15 then begin Result:=ISO_8859_15ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso2 then begin Result:=ISO_8859_2ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso9 then begin Result:=ISO_8859_9ToUTF8(s); exit; end;
+  if AFrom=EncodingCPIso14 then begin Result:=ISO_8859_14ToUTF8(s); exit; end;
+  if AFrom=EncodingCPIso15 then begin Result:=ISO_8859_15ToUTF8(s); exit; end;
+  if AFrom=EncodingCPIso16 then begin Result:=ISO_8859_16ToUTF8(s); exit; end;
   if AFrom=EncodingCP1250 then begin Result:=CP1250ToUTF8(s); exit; end;
   if AFrom=EncodingCP1251 then begin Result:=CP1251ToUTF8(s); exit; end;
   if AFrom=EncodingCP1252 then begin Result:=CP1252ToUTF8(s); exit; end;
