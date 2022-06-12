@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
-  ExtCtrls, Buttons, Spin,
+  ExtCtrls, Buttons, Spin, Clipbrd,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
   // DebuggerIntf
@@ -56,7 +56,9 @@ type
     ArrayNavigationBar1: TArrayNavigationBar;
     EdInspect: TComboBox;
     ErrorLabel: TLabel;
+    menuCopyValue: TMenuItem;
     PageControl: TPageControl;
+    PopupMenu1: TPopupMenu;
     StatusBar1: TStatusBar;
     DataPage: TTabSheet;
     PropertiesPage: TTabSheet;
@@ -93,6 +95,7 @@ type
     procedure DataGridMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure menuCopyValueClick(Sender: TObject);
     procedure TimerClearDataTimer(Sender: TObject);
   private
     //FDataGridHook,
@@ -511,10 +514,27 @@ end;
 
 procedure TIDEInspectDlg.DataGridMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  g: TStringGrid;
+  Cur: TPoint;
 begin
   if Button = mbExtra1 then btnBackwardClick(nil)
   else
-  if Button = mbExtra2 then btnForwardClick(nil);
+  if Button = mbExtra2 then btnForwardClick(nil)
+  else
+  if Button = mbRight then begin
+    if (PageControl.ActivePage = DataPage) then
+      g := FGridData
+    else
+    if (PageControl.ActivePage = MethodsPage) then
+      g := FGridMethods
+    else
+      exit;
+
+    Cur:= g.MouseToCell(Point(x,y));
+    if (Cur.Y > 0) and (Cur.Y < g.RowCount) then
+      g.Row := Cur.Y;
+  end;
 end;
 
 procedure TIDEInspectDlg.FormShow(Sender: TObject);
@@ -522,6 +542,27 @@ begin
   ReleaseRefAndNil(FCurrentWatchValue);
   FInspectWatches.Clear;
   UpdateData;
+end;
+
+procedure TIDEInspectDlg.menuCopyValueClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if (PageControl.ActivePage = DataPage) then begin
+    i := FGridData.Row;
+    if (i < 1) or (i >= FGridData.RowCount) then exit;
+    Clipboard.AsText := FGridData.Cells[3, i];
+  end
+  else
+  if (PageControl.ActivePage = MethodsPage) then begin
+    i := FGridMethods.Row;
+    if (i < 1) or (i >= FGridMethods.RowCount) then exit;
+    Clipboard.AsText := FGridMethods.Cells[3, i];
+  end
+  else
+  if (PageControl.ActivePage = ErrorPage) then begin
+    Clipboard.AsText := ErrorLabel.Caption;
+  end;
 end;
 
 procedure TIDEInspectDlg.TimerClearDataTimer(Sender: TObject);
@@ -1185,7 +1226,9 @@ begin
 
   FGridData.OnDblClick := @DataGridDoubleClick;
   FGridData.OnMouseDown := @DataGridMouseDown;
+  FGridData.PopupMenu := PopupMenu1;
   FGridMethods.OnMouseDown := @DataGridMouseDown;
+  FGridMethods.PopupMenu := PopupMenu1;
 
   ToolBar1.Images := IDEImages.Images_16;
   btnBackward.ImageIndex := IDEImages.LoadImage('arrow_left');
@@ -1207,6 +1250,8 @@ begin
   btnColVisibility.Enabled := False;
   btnBackward.Enabled := FHistoryIndex > 0;
   btnForward.Enabled := FHistoryIndex < FHistory.Count - 1;
+
+  menuCopyValue.Caption := lisLocalsDlgCopyValue;
 
   Clear;
 end;

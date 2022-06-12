@@ -51,6 +51,7 @@ object IDEInspectDlg: TIDEInspectDlg
       ClientHeight = 497
       ClientWidth = 553
       OnMouseDown = DataGridMouseDown
+      PopupMenu = PopupMenu1
       TabVisible = False
       object ErrorLabel: TLabel
         Left = 0
@@ -60,6 +61,7 @@ object IDEInspectDlg: TIDEInspectDlg
         Align = alTop
         Color = clDefault
         ParentColor = False
+        PopupMenu = PopupMenu1
         OnMouseDown = DataGridMouseDown
       end
     end
@@ -200,10 +202,10 @@ object IDEInspectDlg: TIDEInspectDlg
       Width = 242
       ClientHeight = 23
       ClientWidth = 242
-      inherited btnArrayFastUp: TSpeedButton
+      inherited btnArrayFastDown: TSpeedButton
         Height = 23
       end
-      inherited btnArrayFastDown: TSpeedButton
+      inherited btnArrayFastUp: TSpeedButton
         Height = 23
       end
       inherited edArrayStart: TSpinEditEx
@@ -235,5 +237,13 @@ object IDEInspectDlg: TIDEInspectDlg
     OnTimer = TimerClearDataTimer
     Left = 441
     Top = 10
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 186
+    Top = 211
+    object menuCopyValue: TMenuItem
+      Caption = 'menuCopyValue'
+      OnClick = menuCopyValueClick
+    end
   end
 end
