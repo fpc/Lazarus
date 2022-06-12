@@ -7,7 +7,9 @@
     ====================================================================
     -->
     <module name="UTF8Process">
-      <short>Implements a version of the FCL TProcess component that allows UTF-8-encoded arguments.</short>
+      <short>
+        Implements a version of the FCL TProcess component that allows UTF-8-encoded arguments.
+      </short>
       <descr>
         <p>
           <file>utf8process.pp</file> implements the <var>TProcessUTF8</var> component which provides a TProcess descendant that allows UTF-8-encoded values in its properties. The TProcessUTF8 component is added to the <b>System</b> tab in the Lazarus IDE Component Palette.
@@ -50,7 +52,7 @@
             <var>TProcessUTF8</var> is a <var>TProcess</var> descendant which implements a version of TProcess that accepts and processes UTF-8-encoded arguments. It includes a <var>ParseCmdLine</var> method used to separate a command line into the <var>Executable</var> name and <var>Parameters</var> used in the class instance.
           </p>
           <p>
-            The TProcessUTF8 interface includes additional methods for the Microsoft Windows platform. An overridden <var>Execute</var> method is provided, and protected methods to assign IDs and Handles for the process and its thread. These methods handle Windows-specific nuances required for the CreateProcessW API.  This includes security and thread attributes, pipe creation, and any quoting required for file names or parameters with space characters.
+            The TProcessUTF8 interface includes additional methods for the Microsoft Windows platform. An overridden <var>Execute</var> method is provided, and protected methods to assign IDs and Handles for the process and its thread. These methods handle Windows-specific nuances required for the CreateProcessW API. This includes security and thread attributes, pipe creation, and any quoting required for file names or parameters with space characters.
           </p>
           <p>
             TProcessUTF8 is used in the implementation of the Lazarus IDE and related tools like the Debugger, HTML Help viewer, external tools, and the FP Doc Editor. Use TAsyncProcess for a process which receives asynchronous notifications during process execution.
@@ -120,7 +122,7 @@
             Executes sets the value in <var>Running</var> to <b>True</b>, and frees memory allocated to the pointer for the <var>Environment</var> in the process.
           </p>
           <p>
-            At run-time,  Execute calls <var>WaitOnExit</var> to detect completion of the process and to set values in the <var>ExitStatus</var> and <var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is included in the Options for the process, and <var>poRunSuspended</var> is <b>not</b> included in the Options. WaitOnExit is never called at design-time to prevent hanging the IDE.
+            At run-time, Execute calls <var>WaitOnExit</var> to detect completion of the process and to set values in the <var>ExitStatus</var> and <var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is included in the Options for the process, and <var>poRunSuspended</var> is <b>not</b> included in the Options. WaitOnExit is never called at design-time to prevent hanging the IDE.
           </p>
           <p>
             Please note: The overridden Execute method in TProcessUTF8 does not call the inherited method.
@@ -148,7 +150,7 @@
             <var>ParseCmdLine</var> is used to separate the values in the CmdLine argument into the values used for the Executable and Parameters properties.
           </p>
           <p>
-            <var>ReadBackSlash</var> indicates if the <b>BackSlash</b> character (<b>\</b>) is used to quote a character value in the command line. The default value for the argument is False.
+            <var>ReadBackSlash</var> indicates if the <b>BackSlash</b> character (<b>\</b>) is used to quote a character value in the command line. The default value for the argument is <b>False</b>.
           </p>
           <p>
             ParseCmdLine creates an internal <var>TStringList</var> instance used to store values returned from the <var>SplitCmdLineParams</var> routine in <file>lazfileutils.pas</file>. The first value in the string list (when present) is stored in the <var>Executable</var> property. The remaining values are stored in the <var>Parameters</var> property.
@@ -167,7 +169,9 @@
         <short>Command line examined and parsed in the method.</short>
       </element>
       <element name="TProcessUTF8.ParseCmdLine.ReadBackslash">
-        <short>When True, the BackSlash character is used to quote character values.</short>
+        <short>
+          When <b>True</b>, the BackSlash character is used to quote character values.
+        </short>
       </element>
 
       <element name="RunCmdFromPath">
@@ -183,7 +187,7 @@
             An exception is raised if the program file cannot be located, or cannot be executed.
           </p>
           <p>
-            RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance which is used to execute the program file.  <var>ProgramFilename</var> contains the qualified executable file name for the process. If the argument contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters before it is assigned to the class instance. <var>CmdLineParameters</var> contains optional parameters values for the executable file. It is assumed that parameter values with embedded spaces are already quoted when passed to the routine. CmdLineParameters is included in the class instance when the value is not an empty string (<b>''</b>).
+            RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance which is used to execute the program file. <var>ProgramFilename</var> contains the qualified executable file name for the process. If the argument contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters before it is assigned to the class instance. <var>CmdLineParameters</var> contains optional parameters values for the executable file. It is assumed that parameter values with embedded spaces are already quoted when passed to the routine. CmdLineParameters is included in the class instance when the value is not an empty string (<b>''</b>).
           </p>
           <p>
             RunCmdFromPath calls the <var>Execute</var> method in the TProcessUTF8 instance to execute the specified program file name with the specified parameter values.
@@ -229,7 +233,7 @@
             <var>FindFilenameOfCmd</var> is a <var>String</var> function used to get the full path for the executable file specified in the <var>ProgramFilename</var> argument. FindFilenameOfCmd calls the <var>FilenameIsAbsolute</var> routine to determine if a relative path in ProgramFilename needs to be resolved. <var>FindDefaultExecutablePath</var> is called to search the <b>PATH</b> environment when path information is not used in ProgramFilename.
           </p>
           <p>
-            The return value contains the absolute path and file name.  If the file does not exist on the local file system, the return value is an empty string ('').
+            The return value contains the absolute path and file name. If the file does not exist on the local file system, the return value is an empty string ('').
           </p>
         </descr>
         <seealso>
