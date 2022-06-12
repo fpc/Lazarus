@@ -79,7 +79,7 @@
             <var>LoadFromCSVStream</var> is a procedure used to read and process delimited values from the stream specified in <var>AStream</var>.
           </p>
           <p>
-            The procedure name is actually a misnomer; the routine uses the value in  <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
+            The procedure name is actually a misnomer; the routine uses the value in <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
           </p>
           <p>
             LoadFromCSVStream reads lines of data from the stream, and calls nested routines to handle character encodings for the byte values. Each line is terminated with one or more line-ending characters (#13, #10).
@@ -88,7 +88,7 @@
             The position in AStream is <b>not</b> maintained in the routine. Processing is started using the stream position on entry. The stream position on exit is after the last line of text successfully processed from the stream, and is normally at the end of the stream.
           </remark>
           <p>
-            The value in <var>CSVEncoding</var> indicates the encoding for the byte values read from the stream. <var>ceAuto</var> is the default value for the argument, and indicates that the encoding is auto-detected in the routine using the BOM (Byte Order Mark) at the beginning of the processed byte values.  The nested routines convert non-UTF-8 encodings to the UTF-8 encoding needed for the native String type.
+            The value in <var>CSVEncoding</var> indicates the encoding for the byte values read from the stream. <var>ceAuto</var> is the default value for the argument, and indicates that the encoding is auto-detected in the routine using the BOM (Byte Order Mark) at the beginning of the processed byte values. The nested routines convert non-UTF-8 encodings to the UTF-8 encoding needed for the native String type.
           </p>
           <p>
             Leading spaces in a line of text read from the stream are discarded. Field values in the line of text can be enclosed in Quotation (") marks if the delimiter character appears in the field content. Nested Quotation marks are allowed when used in a balanced pair.
@@ -136,7 +136,7 @@
             <var>LoadFromCSVFile</var> is a procedure used to read and process delimited values from the file specified in the <var>AFilename</var> argument.
           </p>
           <p>
-            The procedure name is actually a misnomer; the routine uses the value in  <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
+            The procedure name is actually a misnomer; the routine uses the value in <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
           </p>
           <p>
             LoadFromCSVFile reads lines of data from the file, and converts the encoded byte values to fields which are processed and applied using the procedure in <var>AProc</var>. Internally, it creates a temporary <var>TFileStream</var> instance for the specified file name. The <var>LoadFromCSVStream</var> routine is called to read and apply the content using the arguments in <var>AProc</var>, <var>ADelimiter</var>, and <var>CSVEncoding</var>.
