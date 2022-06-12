@@ -78,10 +78,10 @@
             Please note that sharing is advisory on Unix-like platforms.
           </p>
           <p>
-            Rights is the file rights for the specified file. The default value is 438 (Decimal) or &amp;666 (Octal) and indicates that the owner,  group, and others  can read and/or write to the file. The value in Rights is ignored on the Windows platform.
+            Rights is the file rights for the specified file. The default value is 438 (Decimal) or &amp;666 (Octal) and indicates that the owner, group, and others can read and/or write to the file. The value in Rights is ignored on the Windows platform.
           </p>
           <p>
-            Create  instantiates a THandleStream (owned by the current class instance) which uses the valid file handle.
+            Create instantiates a THandleStream (owned by the current class instance) which uses the valid file handle.
           </p>
           <remark>
             Please note that Create can raise an exception if the file handle from FileCreateUTF8 or FileOpenUTF8 is invalid (contains feInvalidHandle).
@@ -159,7 +159,7 @@
         </short>
         <descr>
           <p>
-            DoCompareText is PtrInt function used to compare the specified values using UTF-8 string comparison routines. DoCompareText uses the value in CaseSensitive to determine the routine used for the comparison. When CaseSensitive contains True, the UTF8CompareStr is used. Otherwise, UTF8CompareText is called. The return value contains the result from the routine.
+            DoCompareText is PtrInt function used to compare the specified values using UTF-8 string comparison routines. DoCompareText uses the value in CaseSensitive to determine the routine used for the comparison. When CaseSensitive contains <b>True</b>, the UTF8CompareStr is used. Otherwise, UTF8CompareText is called. The return value contains the result from the routine.
           </p>
         </descr>
         <seealso></seealso>
