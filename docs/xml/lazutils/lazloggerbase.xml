@@ -10,7 +10,7 @@ LazLoggerBase
 <short>Defines base logging classes used in the Lazarus IDE.</short>
 <descr>
   <p>
-    <file>lazloggerbase.pas</file> contains classes, types, and routines used to implement the base logging mechanisms used in the Lazarus IDE. Its primary usage, when used along with the LazLogger unit,  is to provide output to the debugger in the Lazarus IDE.
+    <file>lazloggerbase.pas</file> contains classes, types, and routines used to implement the base logging mechanisms used in the Lazarus IDE. Its primary usage, when used along with the LazLogger unit, is to provide output to the debugger in the Lazarus IDE.
   </p>
   <p>
     Logger classes (and routines) are found in units like:
@@ -18,7 +18,7 @@ LazLoggerBase
   <dl>
     <dt>LazLoggerBase.pas</dt>
     <dd>
-      Provides the base TLazLogger class used as the common ancestor for other logger classes. Use this unit when you want to use the debugln routine. What LazLoggerBase does depends on whether the unit LazLogger is used in any other unit of your application. If  LazLogger is not used, LazLoggerBase will install a "blackhole logger" that discards all log messages. If LazLogger is used anywhere, then all units using LazLoggerBase will write the log messages as described under "Logging Output"
+      Provides the base TLazLogger class used as the common ancestor for other logger classes. Use this unit when you want to use the debugln routine. What LazLoggerBase does depends on whether the unit LazLogger is used in any other unit of your application. If LazLogger is not used, LazLoggerBase will install a "blackhole logger" that discards all log messages. If LazLogger is used anywhere, then all units using LazLoggerBase will write the log messages as described under "Logging Output"
     </dd>
     <dt>LazLogger.pas</dt>
     <dd>
@@ -26,7 +26,7 @@ LazLoggerBase
     </dd>
     <dt>LazLoggerProfiling.pas</dt>
     <dd>
-      Provides a logger class which  captures memory usage and execution times.
+      Provides a logger class which captures memory usage and execution times.
     </dd>
     <dt>LazLoggerDummy.pas</dt>
     <dd>
@@ -151,7 +151,7 @@ LazLoggerBase
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.Enabled">
-  <short>True if the log group is enabled.</short>
+  <short><b>True</b> if the log group is enabled.</short>
   <descr/>
   <seealso/>
 </element>
@@ -292,7 +292,7 @@ LazLoggerBase
   <short>Case-insensitive name for the log group added in the method.</short>
 </element>
 <element name="TLazLoggerLogGroupList.Add.ADefaulEnabled">
-  <short>True if enabled by default.</short>
+  <short><b>True</b> if enabled by default.</short>
 </element>
 
 <!-- function Visibility: protected -->
@@ -322,7 +322,7 @@ LazLoggerBase
   <short>Removes a log group from the container.</short>
   <descr>
     <p>
-      Remove is overloaded to allow the group to be located using a pointer to the TLazLoggerLogGroup entry, or by a specified name. Remove calls Dispose to release  resource allocated for the log group, and frees it from the internal list in the container.No actions are performed if a log group cannot be located in the method.
+      Remove is overloaded to allow the group to be located using a pointer to the TLazLoggerLogGroup entry, or by a specified name. Remove calls Dispose to release resource allocated for the log group, and frees it from the internal list in the container.No actions are performed if a log group cannot be located in the method.
     </p>
   </descr>
   <seealso/>
@@ -1270,7 +1270,7 @@ LazLoggerBase
   <short>Writes a message to the log.</short>
   <descr>
     <p>
-      Calls the DebuglnStack method for the  logger class instance.
+      Calls the DebuglnStack method for the logger class instance.
     </p>
   </descr>
   <seealso/>
@@ -1716,7 +1716,7 @@ LazLoggerBase
     </p>
     <code>TObject.ClassName</code>
     <p>
-      If the LazLogger_Dummy unit has been included in the application, the  return value is an empty string.
+      If the LazLogger_Dummy unit has been included in the application, the return value is an empty string.
     </p>
   </descr>
   <seealso/>
@@ -1834,7 +1834,7 @@ LazLoggerBase
 
 <element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
   <short>
-    Implements the Assign (':=') operator using a Pointer to a logger group for the  TLazLoggerLogEnabled type.
+    Implements the Assign (':=') operator using a Pointer to a logger group for the TLazLoggerLogEnabled type.
   </short>
   <descr/>
   <seealso/>
@@ -1842,7 +1842,7 @@ LazLoggerBase
 
 <element name="operator assign(boolean): tlazloggerlogenabled">
   <short>
-    Implements the Assign (':=') operator using a Boolean argument for the  TLazLoggerLogEnabled type.
+    Implements the Assign (':=') operator using a Boolean argument for the TLazLoggerLogEnabled type.
   </short>
   <descr/>
   <seealso/>
