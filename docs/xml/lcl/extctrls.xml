@@ -105,7 +105,7 @@
         <short>Specifies an event handler signalled to draw the background for an image.</short>
         <descr>
           <p>
-            <var>TImagePaintBackgroundEvent</var> is an object procedure  which specifies an event handler signalled to draw the background for a <var>TImage</var> class instance. TImagePaintBackgroundEvent is the type used to implement the <var>OnPaintBackground</var> event handler in <var>TCustomImage</var>.
+            <var>TImagePaintBackgroundEvent</var> is an object procedure which specifies an event handler signalled to draw the background for a <var>TImage</var> class instance. TImagePaintBackgroundEvent is the type used to implement the <var>OnPaintBackground</var> event handler in <var>TCustomImage</var>.
           </p>
         </descr>
         <seealso>
@@ -355,7 +355,7 @@
         <short>Ensures that the index value is valid before accessing the TPage object.</short>
         <descr>
           <p>
-            <var>Put</var> is overridden in <var>TUNBPages</var> to set the name for the page object at the specified position. Put ensures that the value in Index is valid. Index must contain a value in the range 0 to the number of defined pages - 1. An exception is raised  when Index contains an invalid value.
+            <var>Put</var> is overridden in <var>TUNBPages</var> to set the name for the page object at the specified position. Put ensures that the value in Index is valid. Index must contain a value in the range 0 to the number of defined pages - 1. An exception is raised when Index contains an invalid value.
           </p>
           <p>
             Put sets the name in the <var>TPage</var> object at the specified position to the value in <var>S</var>.
@@ -483,7 +483,7 @@
         <short>Moves the active page to a position in the page list.</short>
         <descr>
           <p>
-            <var>Move</var> is an overridden procedure in <var>TUNBPages</var>.  It re-implements the method defined in the <var>TStrings</var> ancestor class. Move is used to relocate the active page in a NoteBook control to a new position in the page list.
+            <var>Move</var> is an overridden procedure in <var>TUNBPages</var>. It re-implements the method defined in the <var>TStrings</var> ancestor class. Move is used to relocate the active page in a NoteBook control to a new position in the page list.
           </p>
           <p>
             Move uses the internal <var>TNotebook</var> member that is the owner of the class instance to retrieve the current page and its ordinal position.
@@ -656,7 +656,7 @@
         <short>Displays the specified control (page object).</short>
         <descr>
           <p>
-            <var>ShowControl</var> is an overridden procedure used to display the control specified in <var>AControl</var>. ShowControl checks the internal list of pages for the value specified in AControl. The ordinal position for the page object, when found, is assigned to  the <var>PageIndex</var> property and causes the page object to become visible.
+            <var>ShowControl</var> is an overridden procedure used to display the control specified in <var>AControl</var>. ShowControl checks the internal list of pages for the value specified in AControl. The ordinal position for the page object, when found, is assigned to the <var>PageIndex</var> property and causes the page object to become visible.
           </p>
           <p>
             ShowControl calls the inherited method prior to exit.
@@ -693,7 +693,7 @@
         <short>Gets the name for the active page object in the notebook control.</short>
         <descr>
           <p>
-            <var>ActivePage</var> is a read-only <var>String</var> property which provides the name for the active page object in the notebook control. The value in <var>PageIndex</var> is used to access the page object instance in the <var>Page</var> property. Its <var>Name</var> property is used as the property  value.
+            <var>ActivePage</var> is a read-only <var>String</var> property which provides the name for the active page object in the notebook control. The value in <var>PageIndex</var> is used to access the page object instance in the <var>Page</var> property. Its <var>Name</var> property is used as the property value.
           </p>
           <p>
             Use <var>ActivePageComponent</var> to get the <var>TPage</var> instance representing the active page object.
@@ -744,7 +744,7 @@
         <short>Indicates the number of page objects defined for the notebook control.</short>
         <descr>
           <p>
-            <var>PageCount</var> is a read-only Integer property that indicates the number of page objects defined for the notebook control. The value in PageCount is  determined by the total number of entries stored in the list of Pages.
+            <var>PageCount</var> is a read-only Integer property that indicates the number of page objects defined for the notebook control. The value in PageCount is determined by the total number of entries stored in the list of Pages.
           </p>
           <p>
             Use methods and properties in Pages to maintain the page names used in the notebook control.
@@ -763,7 +763,7 @@
             A value assigned to the property must must be in the range -1 to the number of defined <var>Pages</var> - 1. No actions are performed in the method when the new value for PageIndex is not in the required range.
           </remark>
           <p>
-            Setting the value in the property causes the active page object to be hidden; it is hidden at run-time and design-time using the <var>Visible</var> and <var>ControlStyle</var> properties. The <var>OnBeforeShow</var> event handler in the newly selected page object is signalled (when assigned). The page object is displayed by updating its Visible, ControlStyle, and <var>Align</var>  properties.
+            Setting the value in the property causes the active page object to be hidden; it is hidden at run-time and design-time using the <var>Visible</var> and <var>ControlStyle</var> properties. The <var>OnBeforeShow</var> event handler in the newly selected page object is signalled (when assigned). The page object is displayed by updating its Visible, ControlStyle, and <var>Align</var> properties.
           </p>
           <p>
             The default value for the property is <b>-1</b>, and indicates that a page is not currently selected or available.
@@ -920,7 +920,7 @@
             No assignments are made to the Application singleton at design-time, or when the component is being loaded or destroyed.
           </remark>
           <p>
-            When AutoEnabled is <b>False</b>,  the event handler routines are disconnected from the Application singleton.
+            When AutoEnabled is <b>False</b>, the event handler routines are disconnected from the Application singleton.
           </p>
           <remark>
             No actions are performed when handlers have not been previously assigned to Application, or Application has not been assigned (contains <b>Nil</b>).
@@ -968,7 +968,9 @@
         <short>Object for the event notification.</short>
       </element>
       <element name="TCustomIdleTimer.DoOnIdle.Done">
-        <short><b>True</b> if the idle timer has already executed its OnTimer event handler.</short>
+        <short>
+          <b>True</b> if the idle timer has already executed its OnTimer event handler.
+        </short>
       </element>
 
       <element name="TCustomIdleTimer.DoOnIdleEnd">
@@ -1018,7 +1020,7 @@
           </p>
           <dl>
             <dt>AutoEnabled</dt>
-            <dd>Set to False</dd>
+            <dd>Set to <b>False</b></dd>
             <dt>AutoStartEvent</dt>
             <dd>Set to itaOnIdle</dd>
             <dt>AutoEndEvent</dt>
@@ -1047,7 +1049,7 @@
         <short>Controls whether the idle timer can be automatically enabled or disabled.</short>
         <descr>
           <p>
-            <var>AutoEnabled</var> is a <var>Boolean</var> property  which controls whether the idle timer can be automatically Enabled (or disabled) in event handler routines. The default value for the property is <b>False</b>, and indicates that event handlers in the timer are not assigned to the <var>Application</var> singleton in the <var>UpdateHandlers</var> method.
+            <var>AutoEnabled</var> is a <var>Boolean</var> property which controls whether the idle timer can be automatically Enabled (or disabled) in event handler routines. The default value for the property is <b>False</b>, and indicates that event handlers in the timer are not assigned to the <var>Application</var> singleton in the <var>UpdateHandlers</var> method.
           </p>
           <p>
             The value in AutoEnabled is used in the <var>DoOnIdle</var>, <var>DoOnIdleEnd</var>, and <var>DoOnUserInput</var> methods. When AutoEnabled contains <b>False</b>, these routines do not perform actions which toggle the value in the <var>Enabled</var> property.
@@ -1380,7 +1382,7 @@
         <short>Indicates the geometric shape drawn in the control.</short>
         <descr>
           <p>
-            <var>Shape</var> is a <var>TShapeType</var> property that specifies the geometric shape drawn in the control.  See <link id="TShapeType"/> for the values that can be assigned to the property.
+            <var>Shape</var> is a <var>TShapeType</var> property that specifies the geometric shape drawn in the control. See <link id="TShapeType"/> for the values that can be assigned to the property.
           </p>
         </descr>
         <seealso>
@@ -1397,7 +1399,7 @@
         </short>
         <descr>
           <p>
-            <var>TResizeStyle</var> is an enumerated type with the drawing styles and actions available when  resizing using a splitter. TResizeStyle is the type used to implement the <var>ResizeStyle</var> property in <var>TCustomSplitter</var>.
+            <var>TResizeStyle</var> is an enumerated type with the drawing styles and actions available when resizing using a splitter. TResizeStyle is the type used to implement the <var>ResizeStyle</var> property in <var>TCustomSplitter</var>.
           </p>
         </descr>
         <seealso>
@@ -1423,7 +1425,7 @@
         </short>
         <descr>
           <p>
-            <var>TCanOffsetEvent</var> is the type used to implement the <var>OnCanOffset</var> property in <var>TCustomSplitter</var>.  It is signalled from the <var>CheckOffset</var> method when the splitter is moved.
+            <var>TCanOffsetEvent</var> is the type used to implement the <var>OnCanOffset</var> property in <var>TCustomSplitter</var>. It is signalled from the <var>CheckOffset</var> method when the splitter is moved.
           </p>
         </descr>
         <seealso>
@@ -1448,7 +1450,7 @@
         </short>
         <descr>
           <p>
-            <var>TCanResizeEvent</var> specifies an event handler signalled when a control is resized.  Use to the arguments to the event handler to access the new size for the control and to set a flag that indicates if the new value is acceptable.
+            <var>TCanResizeEvent</var> specifies an event handler signalled when a control is resized. Use to the arguments to the event handler to access the new size for the control and to set a flag that indicates if the new value is acceptable.
           </p>
           <p>
             TCanResizeEvent is the type used to implement the <var>OnCanResize</var> event handler in <var>TCustomSplitter</var> and <var>TCustomControlBar</var>.
@@ -1594,7 +1596,7 @@
         </short>
         <descr>
           <p>
-            <var>CheckNewSize</var> signals the OnCanResize event handler (when assigned) to examine and validate the value in <var>NewSize</var>. The values in  <var>NewSize</var> and <var>Result</var> can be updated in the event handler as needed. <b>True</b> indicates that the value in NewSize is acceptable.
+            <var>CheckNewSize</var> signals the OnCanResize event handler (when assigned) to examine and validate the value in <var>NewSize</var>. The values in <var>NewSize</var> and <var>Result</var> can be updated in the event handler as needed. <b>True</b> indicates that the value in NewSize is acceptable.
           </p>
           <p>
             CheckNewSize is used in the implementation of the <var>MoveSplitter</var> method.
@@ -1631,7 +1633,8 @@
 
       <element name="TCustomSplitter.FindAlignControl">
         <short>
-          <var>FindAlignControl</var> returns the main alignment control.</short>
+          <var>FindAlignControl</var> returns the main alignment control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1736,7 +1739,7 @@
       </element>
       <element name="TCustomSplitter.MouseMove.Y">
         <short>
-          Vertical  coordinate for the mouse event.
+          Vertical coordinate for the mouse event.
         </short>
       </element>
 
@@ -1915,7 +1918,7 @@
             <li>ResizeStyle</li>
             <li>Width</li>
             <li>AccessibleRole</li>
-            <li>AccessibleDescription  </li>
+            <li>AccessibleDescription</li>
           </ul>
         </descr>
         <seealso>
@@ -2070,7 +2073,7 @@
         </short>
         <descr>
           <p>
-            Signalled from the CheckOffset method when the splitter control is dragged. The Accept argument can be set to False to reject the offset value for the splitter, and prevent the resize operation.
+            Signalled from the CheckOffset method when the splitter control is dragged. The Accept argument can be set to <b>False</b> to reject the offset value for the splitter, and prevent the resize operation.
           </p>
         </descr>
         <seealso>
@@ -2103,7 +2106,7 @@
         </short>
         <descr>
           <p>
-            <var>OnMoved</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the  splitter control has been dragged / moved. It is signalled (when assigned) from the <var>StopSplitterMove</var> method when the mouse button is released to end the drag operation. It occurs after the splitter has been moved using the <var>MoveSplitter</var> method.
+            <var>OnMoved</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the splitter control has been dragged / moved. It is signalled (when assigned) from the <var>StopSplitterMove</var> method when the mouse button is released to end the drag operation. It occurs after the splitter has been moved using the <var>MoveSplitter</var> method.
           </p>
         </descr>
         <seealso>
@@ -2125,7 +2128,7 @@
             Changing the value for the property causes the UpdateCursor method to be called to set the cursor shape displayed when the splitter control is dragged.
           </p>
           <p>
-            ResizeAnchor is linked to the Align property in TCustomSplitter. Changing the value in Align causes  ResizeAnchor (and Cursor) to be updated with corresponding values as needed.
+            ResizeAnchor is linked to the Align property in TCustomSplitter. Changing the value in Align causes ResizeAnchor (and Cursor) to be updated with corresponding values as needed.
           </p>
           <p>
             ResizeAnchor is used in the MoveSplitter method to determine the size for the splitter control and the limits for the resize operation. It is used in MouseMove to determine the starting position and offset used when the control is dragged.
@@ -2162,7 +2165,7 @@
 
       <element name="TSplitter">
         <short>
-          <var>TSplitter</var> : A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally.
+          <var>TSplitter</var> is a vertical or horizontal bar placed on a panel or form to separate sub-panels functionally.
         </short>
         <descr>
           <p>
@@ -2531,7 +2534,9 @@
       </element>
 
       <element name="TCustomImage.CalculatePreferredSize">
-        <short>Gets the preferred width and height used as the default size for the control.</short>
+        <short>
+          Gets the preferred width and height used as the default size for the control.
+        </short>
         <descr>
           <p>
             <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomImage</var>. It calculates the preferred width and height for the control, which is used by the LCL auto-sizing algorithms as the default size. In TCustomImage, the values in the PreferredWidth and PreferredHeight arguments are set to the Width and Height used in the <var>Picture</var> property. The WithThemeSpace argument is not used in the method.
@@ -2580,7 +2585,7 @@
             <var>Paint</var> is an overridden procedure used to draw the image to the control <var>Canvas</var>. At design-time, a dashed black line is drawn around the image as a frame to mark the dimensions for its content.
          </p>
          <remark>
-           No additional actions are performed in the method when a  <var>TGraphic</var>  instance has not been assigned to the <var>Graphic</var> property in <var>Picture</var>.
+           No additional actions are performed in the method when a <var>TGraphic</var> instance has not been assigned to the <var>Graphic</var> property in <var>Picture</var>.
          </remark>
          <p>
            Paint uses the Canvas from the ancestor class as the target for the drawing operation. The value in <var>AntialiasingMode</var> is assigned to the corresponding property in the Canvas. The rectangle returned from    <var>DestRect</var> is used as the drawing area.
@@ -2610,7 +2615,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the  constructor for <var>TCustomImage</var>, and calls the  inherited <var>Create</var> method. It then sets the default values for the style, bounds and other local variables. Creates allocates resources for the <var>Picture</var> property.
+            <var>Create</var> is the constructor for <var>TCustomImage</var>, and calls the inherited <var>Create</var> method. It then sets the default values for the style, bounds and other local variables. Creates allocates resources for the <var>Picture</var> property.
           </p>
         </descr>
         <seealso>
@@ -2823,7 +2828,7 @@
         <short>Indicates if the image has a clear, non-opaque background.</short>
         <descr>
           <p>
-            <var>Transparent</var> is a <var>Boolean</var> property which indicates if the image uses a clear, non-opaque background. The value for the property is used in the <var>PictureChanged</var> method to set the transparency for the bitmap in  <var>Picture</var>. Changing the value for the property causes PictureChanged to be called to update the image data assigned to Picture and to repaint the control.
+            <var>Transparent</var> is a <var>Boolean</var> property which indicates if the image uses a clear, non-opaque background. The value for the property is used in the <var>PictureChanged</var> method to set the transparency for the bitmap in <var>Picture</var>. Changing the value for the property causes PictureChanged to be called to update the image data assigned to Picture and to repaint the control.
           </p>
           <p>
             The default value for the property is <b>False</b>.
@@ -2844,7 +2849,7 @@
         <short><b>True</b> if image is proportional.</short>
         <descr>
           <p>
-            <var>Proportional</var> is a <var>Boolean</var> property which indicates if the proportions (the ratio of width to  height) for an image are maintained when it is resized. When set to <b>True</b>, a change to the image size maintains the ratio of width to height for the original image. Proportional is used (along with <var>Stretch</var>) in the <var>DestRect</var> method to determine the rectangle needed to render the image in the control.
+            <var>Proportional</var> is a <var>Boolean</var> property which indicates if the proportions (the ratio of width to height) for an image are maintained when it is resized. When set to <b>True</b>, a change to the image size maintains the ratio of width to height for the original image. Proportional is used (along with <var>Stretch</var>) in the <var>DestRect</var> method to determine the rectangle needed to render the image in the control.
           </p>
           <p>
             Changing the value for the property causes the <var>PictureChanged</var> method to be called.
@@ -3087,10 +3092,10 @@
             <var>Paint</var> is an overridden procedure used to perform paint requests received by the parent control.
           </p>
           <p>
-            Paint checks the value in <var>Style</var> to determine the <var>Pen</var> colors  used to draw the bevel. The <var>Shape</var> property determines the drawing primitives used to render the bevel to its <var>Canvas</var>.
+            Paint checks the value in <var>Style</var> to determine the <var>Pen</var> colors used to draw the bevel. The <var>Shape</var> property determines the drawing primitives used to render the bevel to its <var>Canvas</var>.
           </p>
           <remark>
-            No actions are performed in the method when Shape contains the value  <var>bsSpacer</var>.
+            No actions are performed in the method when Shape contains the value <var>bsSpacer</var>.
           </remark>
           <p>
             Paint calls the inherited method to trigger the <var>OnPaint</var> event handler (when assigned).
@@ -3119,7 +3124,9 @@
             <dt>Shape</dt>
             <dd>Set to the value bsBox.</dd>
             <dt>Bounds</dt>
-            <dd>Calls SetInitialBounds to store the values from GetControlClassDefaultSize in  Bounds.</dd>
+            <dd>
+              Calls SetInitialBounds to store the values from GetControlClassDefaultSize in Bounds.
+            </dd>
           </dl>
         </descr>
         <seealso>
@@ -3247,7 +3254,7 @@
         </short>
         <descr>
           <p>
-            <var>TColumnLayout</var> is an enumerated type which determines the layout direction used to arranged data in columns. TColumnLayout is the type used to implement the <var>ColumnLayout</var> property in <var>TCustomRadioGroup</var> and  <var>TCustomCheckGroup</var>.
+            <var>TColumnLayout</var> is an enumerated type which determines the layout direction used to arranged data in columns. TColumnLayout is the type used to implement the <var>ColumnLayout</var> property in <var>TCustomRadioGroup</var> and <var>TCustomCheckGroup</var>.
           </p>
         </descr>
         <seealso>
@@ -3329,7 +3336,7 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemEnter.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemExit">
@@ -3340,7 +3347,7 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemExit.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemKeyDown">
@@ -3370,13 +3377,13 @@
         </seealso>
       </element>
       <element name="TCustomRadioGroup.ItemKeyDown.Sender">
-        <short/>
+        <short>Object for the key down event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemKeyDown.Key">
-        <short/>
+        <short>Key code for the key down event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemKeyDown.Shift">
-        <short/>
+        <short>Shift, Alt, or Ctrl modifier for the key down event.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemKeyUp">
@@ -3390,13 +3397,13 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemKeyUp.Sender">
-        <short/>
+        <short>Object for the key event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemKeyUp.Key">
-        <short/>
+        <short>Key code for the event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemKeyUp.Shift">
-        <short/>
+        <short>Shift, Alt, Ctrl modifier for the key up event.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemKeyPress">
@@ -3409,10 +3416,10 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemKeyPress.Sender">
-        <short/>
+        <short>Object for the key press event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemKeyPress.Key">
-        <short/>
+        <short>Character code for the key press event.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemUTF8KeyPress">
@@ -3425,10 +3432,10 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemUTF8KeyPress.Sender">
-        <short/>
+        <short>Object for the key press event.</short>
       </element>
       <element name="TCustomRadioGroup.ItemUTF8KeyPress.UTF8Key">
-        <short/>
+        <short>Character code for the event.</short>
       </element>
 
       <element name="TCustomRadioGroup.ItemResize">
@@ -3531,7 +3538,7 @@
             <var>InitializeWnd</var> is an overridden method in <var>TCustomRadioGroup</var> used to initialize the TRadioButton instances which represent the Items on the control. A catchable debugger exception is raised, and no actions are performed, if InitializeWnd has already been called but has not yet been completed.
           </p>
           <p>
-            InitializeWnd recreates the TRadioButton instances in the internal storage for the class and configures their event handlers, Fonts, BorderSpacing, ControlStyle flags, TabStop and TabOrder settings, Caption, and Parent control. This includes the hidden radio button used (when needed for a widgetset) to allow all items in the group to become unchecked. The radio button representing the value in ItemIndex has its Checked property set to True, or the hidden radio button when ItemIndex is -1.
+            InitializeWnd recreates the TRadioButton instances in the internal storage for the class and configures their event handlers, Fonts, BorderSpacing, ControlStyle flags, TabStop and TabOrder settings, Caption, and Parent control. This includes the hidden radio button used (when needed for a widgetset) to allow all items in the group to become unchecked. The radio button representing the value in ItemIndex has its Checked property set to <b>True</b>, or the hidden radio button when ItemIndex is -1.
           </p>
           <p>
             The inherited method is called to initial handles, window flags, text, and the enable state for the controls.
@@ -3677,7 +3684,7 @@
         <short>Indicates if modification of the RadioGroup is permitted.</short>
         <descr>
           <p>
-            <var>CanModify</var> is a <var>Boolean</var> function which indicates if modification of the RadioGroup is permitted.  CanModify always returns <b>True</b> in <var>TCustomRadioGroup</var>.
+            <var>CanModify</var> is a <var>Boolean</var> function which indicates if modification of the RadioGroup is permitted. CanModify always returns <b>True</b> in <var>TCustomRadioGroup</var>.
           </p>
         </descr>
         <seealso/>
@@ -3800,10 +3807,10 @@
         <short>Fill direction for columns on the grouped control.</short>
         <descr>
           <p>
-            <var>ColumnLayout</var> is a <var>TColumnLayout</var> property which indicates the direction used to fill columns in the group control.  The default value for the property is <var>clHorizontalThenVertical</var>, and causes columns to filled horizontally before advancing to the next row.
+            <var>ColumnLayout</var> is a <var>TColumnLayout</var> property which indicates the direction used to fill columns in the group control. The default value for the property is <var>clHorizontalThenVertical</var>, and causes columns to filled horizontally before advancing to the next row.
           </p>
           <p>
-            Use <var>Columns</var> to specify the number of columns displayed for the Items on the grouped  control.
+            Use <var>Columns</var> to specify the number of columns displayed for the Items on the grouped control.
           </p>
         </descr>
         <seealso>
@@ -3893,7 +3900,7 @@
             <var>TRadioGroup</var>: A group of related but mutually exclusive radio buttons, requiring the user to select one of a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.
           </p>
           <p>
-            To Use this control, place it in the required position on the form, then in the Object Inspector select <var>Items</var> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor).
+            To use this control, place it in the required position on the form, then in the Object Inspector select <var>Items</var> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor).
           </p>
           <p>
             Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>.
@@ -3905,7 +3912,7 @@
             In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> stringlist.
           </p>
           <p>
-            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
+            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var> are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
           </p>
           <p>
             The example shows the difference between the use of <var>TRadioButton</var> and <var>TRadioGroup</var>.
@@ -4280,7 +4287,7 @@
         <short>Sets the value for the Columns property.</short>
         <descr>
           <p>
-            Raises an <var>Exception</var> if the new property value is less than 1. At minimum,  a single column is required.
+            Raises an <var>Exception</var> if the new property value is less than 1. At minimum, a single column is required.
           </p>
           <p>
             Re-displays the control using the required number of <var>Columns</var>.
@@ -4296,7 +4303,8 @@
 
       <element name="TCustomCheckGroup.DefineProperties">
         <short>
-          <var>DefineProperties</var> - overrides the method inherited from TComponent, defines the top, left properties.</short>
+          <var>DefineProperties</var> - overrides the method inherited from TComponent, defines the top, left properties.
+        </short>
         <descr/>
         <seealso>
           <link id="#rtl.Classes.TComponent">TComponent</link>
@@ -4359,7 +4367,7 @@
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is the overridden destructor for <var>TCustomCheckGroup</var>. It  frees items and check boxes in the control, and calls the inherited    <var>Destroy</var> method.
+            <var>Destroy</var> is the overridden destructor for <var>TCustomCheckGroup</var>. It frees items and check boxes in the control, and calls the inherited <var>Destroy</var> method.
           </p>
         </descr>
         <seealso>
@@ -4422,7 +4430,9 @@
       </element>
 
       <element name="TCustomCheckGroup.Items">
-        <short>String list with the captions for the check boxes in the grouped edit control.</short>
+        <short>
+          String list with the captions for the check boxes in the grouped edit control.
+        </short>
         <descr>
           <p>
             <var>Items</var> is a <var>TStrings</var> property which stores the captions for the check boxes on the grouped edit control. Items also determines the number of <var>TCheckBox</var> controls created and displayed for the control. Setting a new value for the property causes the list of check boxes and the columns in the control to be updated.
@@ -4717,7 +4727,7 @@
 
       <element name="TLabelPosition">
         <short>
-          <var>TLabelPosition</var> is an enumerated type with values that represent the  position of a label relative to an associated control: i. e. above, below, left, or right.
+          <var>TLabelPosition</var> is an enumerated type with values that represent the position of a label relative to an associated control: i. e. above, below, left, or right.
         </short>
         <descr/>
         <seealso/>
@@ -4828,7 +4838,7 @@
         </short>
         <descr>
           <p>
-            Loaded is overridden in TCustomLabeledEdit to position the EditLabel by calling the  DoPositionLabel method. Loaded calls the inherited method.
+            Loaded is overridden in TCustomLabeledEdit to position the EditLabel by calling the DoPositionLabel method. Loaded calls the inherited method.
           </p>
         </descr>
         <seealso>
@@ -4905,25 +4915,11 @@
         <short>Message handled in the method.</short>
       </element>
 
-      <element name="TCustomLabeledEdit.CMVisibleChanged" link="#lcl.controls.TWinControl.CMVisibleChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TCustomLabeledEdit.CMVisibleChanged.Msg">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.CMVisibleChanged" link="#lcl.controls.TWinControl.CMVisibleChanged"/>
+      <element name="TCustomLabeledEdit.CMVisibleChanged.Msg"/>
 
-      <element name="TCustomLabeledEdit.CMEnabledChanged" link="#lcl.controls.TWinControl.CMEnabledChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TCustomLabeledEdit.CMEnabledChanged.Msg">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.CMEnabledChanged" link="#lcl.controls.TWinControl.CMEnabledChanged"/>
+      <element name="TCustomLabeledEdit.CMEnabledChanged.Msg"/>
 
       <element name="TCustomLabeledEdit.CreateInternalLabel">
         <short>
@@ -5248,26 +5244,16 @@
         <short>TSize value with the default dimensions for new class instances.</short>
       </element>
 
-      <element name="TCustomPanel.CMParentColorChanged" link="#lcl.controls.TControl.CMParentColorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPanel.CMParentColorChanged.Message">
-        <short/>
-      </element>
+      <element name="TCustomPanel.CMParentColorChanged" link="#lcl.controls.TControl.CMParentColorChanged"/>
+      <element name="TCustomPanel.CMParentColorChanged.Message"/>
 
-      <element name="TCustomPanel.GetDefaultDockCaption" link="#lcl.controls.TControl.GetDefaultDockCaption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPanel.GetDefaultDockCaption.Result">
-        <short/>
-      </element>
+      <element name="TCustomPanel.GetDefaultDockCaption" link="#lcl.controls.TControl.GetDefaultDockCaption"/>
+      <element name="TCustomPanel.GetDefaultDockCaption.Result"/>
 
       <element name="TCustomPanel.Loaded">
-        <short>Performs actions needed when the component has finished loading in the LCL  streaming mechanism.</short>
+        <short>
+          Performs actions needed when the component has finished loading in the LCL streaming mechanism.
+        </short>
         <descr>
           <p>
             <var>Loaded</var> is an overridden procedure used to perform actions needed when the component has finished loading in the LCL component streaming mechanism. Loaded calls the inherited method, and calls <var>UpdateParentColorChange</var> to adjust the <var>ControlStyle</var> when <var>ParentColor</var> is in use.
@@ -5297,13 +5283,15 @@
       </element>
 
       <element name="TCustomPanel.Paint">
-        <short>Paints the panel including the bevels and caption defined for the control.</short>
+        <short>
+          Paints the panel including the bevels and caption defined for the control.
+        </short>
         <descr>
           <p>
             <var>Paint</var> is an overridden procedure which paints the panel including the bevels and caption defined for the control. Paint calls <var>GetClientRect</var> to get the rectangle used to draw the control. <var>PaintBevel</var> is called to draw both the inner and outer bevels for the control (when used).
           </p>
           <p>
-            When <var>Caption</var> contains a String value (other than an empty string), the <var>Canvas</var> for the control is used to render the text.  Values in the <var>BiDiMode</var>, <var>WordWrap</var>, and <var>Layout</var> properties are applied to the text as needed.
+            When <var>Caption</var> contains a String value (other than an empty string), the <var>Canvas</var> for the control is used to render the text. Values in the <var>BiDiMode</var>, <var>WordWrap</var>, and <var>Layout</var> properties are applied to the text as needed.
           </p>
           <p>
             Paint calls the inherited Paint method prior to exit.
@@ -5403,7 +5391,7 @@
             </dd>
             <dt>alBottom</dt>
             <dd>
-              Aligns the control to the bottom of the parent control, and adjusts its Width  to fill the parent control.
+              Aligns the control to the bottom of the parent control, and adjusts its Width to fill the parent control.
             </dd>
             <dt>alLeft</dt>
             <dd>
@@ -5511,7 +5499,7 @@
             When <var>ParentBackground</var> is <b>True</b>, the control uses the background from the parent color (including any theme drawing features from ThemeServices).
           </p>
           <p>
-            ParentBackground is used in conjunction with the <var>ControlStyle</var> property. Changing the value in ParentBackground causes the ControlStyle property to be updated to reflect the property setting. When the property is set to <b>True</b>, the value <var>csOpaque</var> is excluded from ControlStyle to allow the default background to be drawn. When the property is set to <b>False</b>,  the value <var>csOpaque</var> is included in the ControlStyle property.
+            ParentBackground is used in conjunction with the <var>ControlStyle</var> property. Changing the value in ParentBackground causes the ControlStyle property to be updated to reflect the property setting. When the property is set to <b>True</b>, the value <var>csOpaque</var> is excluded from ControlStyle to allow the default background to be drawn. When the property is set to <b>False</b>, the value <var>csOpaque</var> is included in the ControlStyle property.
           </p>
           <p>
             The default value for the property is <b>True</b>.
@@ -6104,12 +6092,16 @@
         <short/>
       </element>
 
-      <element name="TCustomFlowPanel.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize">
-        <short/>
+      <element name="TCustomFlowPanel.CalculatePreferredSize">
+        <short>Calculates the preferred size for the control.</short>        
         <descr>
-          CalculatePreferredSize is an overridden procedure used to calculate the preferred height and width for the flow panel. CalculatePreferredSize calls the inherited method.
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden procedure used to calculate the preferred height and width for the flow panel. CalculatePreferredSize calls the inherited method.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+        </seealso>
       </element>
       <element name="TCustomFlowPanel.CalculatePreferredSize.PreferredWidth">
         <short/>
@@ -6201,7 +6193,7 @@
 
       <element name="TCustomFlowPanel.FlowLayout">
         <short>
-          Use FlowLayout to set the layout (alignment) for the non-flow coordinate. The default value is tlTop.
+          Use FlowLayout to set the layout (alignment) for the non-flowed coordinate. The default value is tlTop.
         </short>
         <descr>
           <p>
@@ -6417,7 +6409,7 @@
             <var>InternalShow</var> is called when the <var>Show</var> method is executed during LCL component streaming. InternalShow sets a flag to enable delayed display when <var>csLoading</var> is in the <var>ComponentState</var> property. No additional actions are performed in the method during LCL component streaming.
           </p>
           <p>
-            The return value contains the result from the Show method in <var>WidgetSetClass</var>.  Visible is updated to reflect the state indicated in the widget set class. The value in <var>Animate</var> is used to enable or disable the animation timer for the class instance.
+            The return value contains the result from the Show method in <var>WidgetSetClass</var>. Visible is updated to reflect the state indicated in the widget set class. The value in <var>Animate</var> is used to enable or disable the animation timer for the class instance.
           </p>
         </descr>
         <seealso>
@@ -6527,7 +6519,9 @@
       </element>
 
       <element name="TCustomTrayIcon.HandleNotifierTimeout">
-        <short>Implements the event handler signalled when the timer in the tray icon has expired.</short>
+        <short>
+          Implements the event handler signalled when the timer in the tray icon has expired.
+        </short>
         <descr>
           <p>
             <var>HandleNotifierTimeout</var> is a procedure which implements an event handler used to disabled the timer and to close the pop-up notifier for the tray icon. HandleNotifierTimeout is used as the <var>OnTimer</var> event handler in the <var>TTimer</var> class instance used in the component.
@@ -6963,7 +6957,7 @@
         <short>Hint text displayed when the mouse is hovered over the tray icon.</short>
         <descr>
           <p>
-            <var>Hint</var> is a <var>String</var> property  with the text displayed when the mouse is hovered over the tray icon in the system tray. Changing the value for the property causes the <var>InternalUpdate</var> method to be called when the control is <var>Visible</var>.
+            <var>Hint</var> is a <var>String</var> property with the text displayed when the mouse is hovered over the tray icon in the system tray. Changing the value for the property causes the <var>InternalUpdate</var> method to be called when the control is <var>Visible</var>.
           </p>
           <p>
             Hint is separate and distinct from the value in <var>BalloonHint</var>, which is displayed (on supported platforms) when the <var>ShowBalloonHint</var> method is called.
@@ -7187,7 +7181,7 @@
         </short>
         <descr>
           <p>
-            OnPaint is a TNotifyEvent property with the event handler used to implement custom drawing for the tray icon. It is signalled when the widgetset class executes its internal paint routine. The handle  in Canvas is valid when OnPaint is executed, and can be used to perform drawing operations for the control Icon.
+            OnPaint is a TNotifyEvent property with the event handler used to implement custom drawing for the tray icon. It is signalled when the widgetset class executes its internal paint routine. The handle in Canvas is valid when OnPaint is executed, and can be used to perform drawing operations for the control Icon.
           </p>
           <remark>
             OnPaint is <b>not</b> implemented for the Win32 platform.
@@ -8211,7 +8205,7 @@
         <short>Performs actions needed when component loading has been completed.</short>
         <descr>
           <p>
-            Calls the inherited method on entry to determine the parent color and opacity for the control. Loaded creates, configures, and stores a TCtrlBand instance for each of the child Controls on the control bar. CalcBandHeight is called to determine the height for the child Controls.  Space is reserved on the bands for the grabber and borders, and the Width properties for the bands are updated. The Top and Left values for the bands are also assigned.
+            Calls the inherited method on entry to determine the parent color and opacity for the control. Loaded creates, configures, and stores a TCtrlBand instance for each of the child Controls on the control bar. CalcBandHeight is called to determine the height for the child Controls. Space is reserved on the bands for the grabber and borders, and the Width properties for the bands are updated. The Top and Left values for the bands are also assigned.
           </p>
         </descr>
         <seealso>
@@ -8417,7 +8411,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.WMSize.Message">
-        <short>Window message handled  in the method.</short>
+        <short>Window message handled in the method.</short>
       </element>
 
       <element name="TCustomControlBar.FUpdateCount">
@@ -8712,7 +8706,7 @@
         </short>
         <descr>
           <p>
-            <var>RowSnap</var> is a <var>Boolean</var> property which indicates if a band or row of bands snaps to the height for the control bar. The default value for the property is <b>True</b>. When set to <b>False</b>, each band on the control bar  calcuates its own height and allocates additional space for bevels.
+            <var>RowSnap</var> is a <var>Boolean</var> property which indicates if a band or row of bands snaps to the height for the control bar. The default value for the property is <b>True</b>. When set to <b>False</b>, each band on the control bar calculates its own height and allocates additional space for bevels.
           </p>
           <p>
             Used in the <var>CalcBandHeight</var> method, and when a new value is assigned to the <var>RowSize</var> property.
@@ -8748,7 +8742,7 @@
         </short>
         <descr>
           <p>
-            <var>OnBandInfo</var> is a <var>TBandInfoEvent</var> property with the event handler signalled to get the insets rectangles, preferred size, and row count for the control bar. Called from  the <var>GetControlInfo</var> method (if assigned) when a new control is added to the control bar.
+            <var>OnBandInfo</var> is a <var>TBandInfoEvent</var> property with the event handler signalled to get the insets rectangles, preferred size, and row count for the control bar. Called from the <var>GetControlInfo</var> method (if assigned) when a new control is added to the control bar.
           </p>
         </descr>
         <seealso>
@@ -9024,7 +9018,7 @@
             The properties <var>CanTab</var>, <var>TabStop</var> and <var>TabOrder</var> refer to the use of the <b>TAB</b> key to navigate to the relevant control.
           </p>
           <p>
-            Properties such as <var>Tabs</var>, <var>TabIndex</var>, <var>IndexOfTabAt()</var>, <var>TabIndexAtClientPos()</var>,  <var>TabPosition</var>, <var>TabHeight</var>, <var>TabWidth</var>, <var>TabVisible</var>, <var>OnCloseTabClicked</var> refer to the use for <var>Page</var> selection.
+            Properties such as <var>Tabs</var>, <var>TabIndex</var>, <var>IndexOfTabAt()</var>, <var>TabIndexAtClientPos()</var>, <var>TabPosition</var>, <var>TabHeight</var>, <var>TabWidth</var>, <var>TabVisible</var>, <var>OnCloseTabClicked</var> refer to the use for <var>Page</var> selection.
           </p>
           <p>
             <var>TTabControl</var> and <var>TPageControl</var> are both descended from <var>TCustomNoteBook</var> (which is in turn descended from <var>TWinControl</var>) and have many inherited properties in common. <var>TPageControl</var> has, in general, more advanced features and is probably intended to replace <var>TNoteBook</var>.
@@ -9090,9 +9084,7 @@
             <tr>
               <td>Sensing position of Tab</td>
               <td>None</td>
-              <td>
-                <var>TabPosition</var>, <var>OnGetSiteInfo</var>
-              </td>
+              <td><var>TabPosition</var>, <var>OnGetSiteInfo</var></td>
             </tr>
             <tr>
               <td>Options</td>
@@ -9120,16 +9112,16 @@
             To add Tabs or Pages to the controls, select the control with a left mouse click or by selecting from the Component menu in the Object Inspector, then right-click on the component to get a pop-up menu, whose first item will be 'Add Page' or 'Add Tab'.
           </p>
           <p>
-            The Tabs in <var>TTabControl</var> can be edited by selecting 'Tabs' in the Object Inspector, clicking on the ellipsis (...) and using the string editor that pops up.
+            The Tabs in <var>TTabControl</var> can be edited by selecting 'Tabs' in the Object Inspector, clicking on the ellipsis (...) and using the pop-up string editor to maintain the tab/page names.
           </p>
           <p>
             The pages in<var>TNoteBook</var> or <var>TPageControl</var> can be edited by selecting the <var>ActivePage</var> in the Object Inspector and then editing the properties of the individual page.
           </p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customized mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the  <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customized mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.
           </p>
           <p>
-            When the control is first selected from the Component Palette and placed on  a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a StringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted.
+            When the control is first selected from the Component Palette and placed on a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a StringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted.
           </p>
           <p>
             In a typical application a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together, and code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.
