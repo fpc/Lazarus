@@ -359,7 +359,7 @@ Laz_XMLStreaming
 <seealso/>
 </element>
 <element name="TXMLObjectWriter.WriteWideString.Value">
-<short>WideString value written in  the method.</short>
+<short>WideString value written in the method.</short>
 </element>
 
 <element name="TXMLObjectWriter.WriteSignature">
@@ -434,10 +434,10 @@ Laz_XMLStreaming
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectWriter.Doc">
-<short>TDOMDocument  used to create and store elements in the XML object writer.</short>
+<short>TDOMDocument used to create and store elements in the XML object writer.</short>
 <descr>
   <p>
-    <var>Doc</var> is a read-only <var>TDOMDocument</var> property which contains the DOM document used to create and store the DOM elements written in XML object writer.  The value in Doc is assigned in the <var>Create</var> constructor, and uses the TDOMDocument instance passed as an argument to the constructor.
+    <var>Doc</var> is a read-only <var>TDOMDocument</var> property which contains the DOM document used to create and store the DOM elements written in XML object writer. The value in Doc is assigned in the <var>Create</var> constructor, and uses the TDOMDocument instance passed as an argument to the constructor.
   </p>
 </descr>
 <seealso/>
