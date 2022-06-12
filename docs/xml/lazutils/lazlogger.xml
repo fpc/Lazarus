@@ -47,7 +47,7 @@
         <short>Writes a message to the log.</short>
         <descr>
           <p>
-            Calls the DebuglnStack method for the  logger class instance.
+            Calls the DebuglnStack method for the logger class instance.
           </p>
         </descr>
         <seealso/>
@@ -493,7 +493,7 @@
           </p>
           <code>TObject.ClassName</code>
           <p>
-            If the LazLogger_Dummy unit has been included in the application, the  return value is an empty string.
+            If the LazLogger_Dummy unit has been included in the application, the return value is an empty string.
           </p>
         </descr>
         <seealso/>
@@ -611,7 +611,7 @@
 
       <element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
         <short>
-          Implements the Assign (':=') operator using a Pointer to a logger group for the  TLazLoggerLogEnabled type.
+          Implements the Assign (':=') operator using a Pointer to a logger group for the TLazLoggerLogEnabled type.
         </short>
         <descr/>
         <seealso/>
@@ -619,7 +619,7 @@
 
       <element name="operator assign(boolean): tlazloggerlogenabled">
         <short>
-          Implements the Assign (':=') operator using a Boolean argument for the  TLazLoggerLogEnabled type.
+          Implements the Assign (':=') operator using a Boolean argument for the TLazLoggerLogEnabled type.
         </short>
         <descr/>
         <seealso/>
@@ -742,7 +742,7 @@
 
       <element name="TLazLoggerFileHandle.OpenFIle">
         <short>
-          Opens the output handle for the logger when CloseLogFileBetweenWrites is False.
+          Opens the output handle for the logger when CloseLogFileBetweenWrites is <b>False</b>.
         </short>
         <descr>
           <p>
@@ -751,13 +751,13 @@
           <ul>
             <li>ActiveLogText has already been assigned.</li>
             <li>Previous access to the output handle has failed.</li>
-            <li>LogName is an empty string ('') and UseStdOut is set to False.</li>
+            <li>LogName is an empty string ('') and UseStdOut is set to <b>False</b>.</li>
           </ul>
           <p>
             To use an output file, set LogName to a valid file path and name which allows write access prior to calling OpenFile.
           </p>
           <p>
-            To use the stdout device, set LogName to an empty string and UseStdOut to True prior to calling OpenFile.
+            To use the stdout device, set LogName to an empty string and UseStdOut to <b>True</b> prior to calling OpenFile.
           </p>
           <p>
             RTL routines like Assign, Append, or Rewrite are called to associate the Text handle for the logger and to establish the FileMode for write access. On successful completion of the method, ActiveLogText is updated with the TextRec for the file name or stdout device in Output. If an exception occurs, it is caught and an error message is written to the stdout device.
@@ -793,7 +793,7 @@
             The RTL Write routine is called to write the value in S to the output handle for the TextRec. The Flush routine is called when needed for the platform.
           </p>
           <p>
-            When CloseLogFileBetweenWrites is set to True, the output handle is closed and released.
+            When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is closed and released.
           </p>
           <p>
             If an exception occurs during output to the handle, it is caught and the values in WriteFailedCount and LastWriteFailed are updated to reflect the error condition.
@@ -823,7 +823,7 @@
             The RTL WriteLn routine is called to write the value in S to the output handle for the TextRec.
           </p>
           <p>
-            When CloseLogFileBetweenWrites is set to True, the output handle is closed and released.
+            When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is closed and released.
           </p>
           <p>
             If an exception occurs during output to the handle, it is caught and the values in WriteFailedCount and LastWriteFailed are updated to reflect the error condition.
@@ -1058,7 +1058,7 @@
             Use the UseStdOut property to indicate that the STDOUT device is used (instead of a file name) to output the log messages for the class instance. Set LogName to an empty string ('') to ensure that STDOUT is used.
           </p>
           <p>
-            Use CloseLogFileBetweenWrites to force the output handle to be closed and released  when a write operation is completed. This is the default behavior for the WinCE platform.
+            Use CloseLogFileBetweenWrites to force the output handle to be closed and released when a write operation is completed. This is the default behavior for the WinCE platform.
           </p>
         </descr>
         <seealso/>
@@ -1205,7 +1205,7 @@
       </element>
       <element name="TLazLoggerFile.FileHandle">
         <short>
-          TLazLoggerFileHandle  instance representing the file or device where log messages are written.
+          TLazLoggerFileHandle instance representing the file or device where log messages are written.
         </short>
         <descr>
           <p>
@@ -1340,7 +1340,7 @@
         </short>
         <descr>
           <p>
-            OnDebugLn allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation.  A Handled variable parameter  is also provided that can be set to True to prevent the default action (writing to log) from being performed in the DoDebugLn method.
+            OnDebugLn allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation. A Handled variable parameter is also provided that can be set to <b>True</b> to prevent the default action (writing to log) from being performed in the DoDebugLn method.
           </p>
         </descr>
         <seealso/>
@@ -1352,7 +1352,7 @@
         </short>
         <descr>
           <p>
-            OnDbgOut allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation.  A Handled variable parameter  is also provided that can be set to True to prevent the default action (writing to log) from being performed in the DoDbgOut method.
+            OnDbgOut allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation. A Handled variable parameter is also provided that can be set to <b>True</b> to prevent the default action (writing to log) from being performed in the DoDbgOut method.
           </p>
         </descr>
         <seealso/>
