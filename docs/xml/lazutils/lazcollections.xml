@@ -58,7 +58,7 @@
       <element name="TWaitableSection.SECTION_ENTERED_INDICATOR"/>
 
       <element name="TWaitableSection.GetCachedOrNewEvent">
-        <short>Gets or creates the RTL event  for the synchronization object.</short>
+        <short>Gets or creates the RTL event for the synchronization object.</short>
         <descr/>
         <seealso>
           <link id="#rtl.system.RTLEventCreate">RTLEventCreate</link>
@@ -837,7 +837,7 @@ TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
             AItem is an output parameter used to return the item removed from the thread-safe queue.
           </p>
           <p>
-            <var>Timeout</var> specifies the number of ticks (milliseconds) to wait for successful completion of the dequeue request. When Timeout contains the value <var>INFINITE</var>, a  timeout is not used in the method. Instead, an internal RTL event is signalled to wait for an available item in the queue. When Timeout contains <b>0</b>, the request returns immediately after the first failed attempt to dequeue an item.
+            <var>Timeout</var> specifies the number of ticks (milliseconds) to wait for successful completion of the dequeue request. When Timeout contains the value <var>INFINITE</var>, a timeout is not used in the method. Instead, an internal RTL event is signalled to wait for an available item in the queue. When Timeout contains <b>0</b>, the request returns immediately after the first failed attempt to dequeue an item.
           </p>
           <p>
             When <var>ShutDown</var> contains <b>True</b>, the method updates the return value to indicate that the request was abandoned.
@@ -854,7 +854,7 @@ TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
       </element>
       <!-- function result Visibility: public -->
       <element name="TLazThreadedQueue.PopItemTimeout.Result">
-        <short>Contains  the status for the dequeue request.</short>
+        <short>Contains the status for the dequeue request.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLazThreadedQueue.PopItemTimeout.AItem">
