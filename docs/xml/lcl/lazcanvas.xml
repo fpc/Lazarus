@@ -247,7 +247,7 @@
         </seealso>
       </element>
       <element name="TLazCanvas.GetAssignedBrush.Result">
-        <short>Value for the property.</short>
+        <short>Value for the AssignedBrush property.</short>
       </element>
 
       <!-- function Visibility: private -->
@@ -259,7 +259,7 @@
         </seealso>
       </element>
       <element name="TLazCanvas.GetAssignedPen.Result">
-        <short>Value for the property.</short>
+        <short>Value for the AssignedPen property.</short>
       </element>
 
       <!-- function Visibility: private -->
@@ -271,7 +271,7 @@
         </seealso>
       </element>
       <element name="TLazCanvas.GetAssignedFont.Result">
-        <short>Value for the property.</short>
+        <short>Value for the AssignedFont property.</short>
       </element>
 
       <!-- function Visibility: private -->
@@ -283,7 +283,7 @@
         </seealso>
       </element>
       <element name="TLazCanvas.GetWindowOrg.Result">
-        <short>Value for the property.</short>
+        <short>Value for the WindowOrg property.</short>
       </element>
 
       <!-- procedure Visibility: private -->
@@ -295,7 +295,7 @@
         </seealso>
       </element>
       <element name="TLazCanvas.SetWindowOrg.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the WindowOrg property.</short>
       </element>
 
       <!-- procedure Visibility: protected -->
@@ -400,7 +400,7 @@
       </element>
 
       <element name="TLazCanvas.DoCopyRect">
-        <short>Copies a source rectangle to the specified canvas.</short>
+        <short>Copies a source rectangle for the specified canvas.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -725,7 +725,7 @@
         <seealso></seealso>
       </element>
       <element name="TLazCanvas.AssignPenData.APen">
-        <short></short>
+        <short>Pen data stored in the method.</short>
       </element>
 
       <!-- procedure Visibility: public -->
@@ -740,12 +740,12 @@
         <seealso></seealso>
       </element>
       <element name="TLazCanvas.AssignBrushData.ABrush">
-        <short></short>
+        <short>Brush data stored in the method.</short>
       </element>
 
       <!-- procedure Visibility: public -->
       <element name="TLazCanvas.AssignFontData">
-        <short>Srts the Font data for the canvas.</short>
+        <short>Sets the Font data for the canvas.</short>
         <descr>
           <p>
             Utilized by <var>LCLIntf.SelectObject</var> and by the <var>RestoreState</var> method. This is needed because calling <var>Assign</var> for the <var>Pen</var>, <var>Brush</var>, or <var>Font</var> properties raises exceptions.
