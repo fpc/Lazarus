@@ -82,7 +82,7 @@
         <short>Token contains the + operator.</short>
       </element>
       <element name="TXPathToken.tkComma">
-        <short>Token contains the ,  expression separator.</short>
+        <short>Token contains the , (Comma) expression separator.</short>
       </element>
       <element name="TXPathToken.tkMinus">
         <short>Token contains the - operator.</short>
@@ -2746,7 +2746,7 @@
             </url>
           </p>
           <p>
-            AContextNode is a DOM node in an existing XML document, and provides the node tree searched in the routine. It may be be the root element in an XML document, but  may also contain one the child nodes in a document to perform a limited search.
+            AContextNode is a DOM node in an existing XML document, and provides the node tree searched in the routine. It may be be the root element in an XML document, but may also contain one the child nodes in a document to perform a limited search.
           </p>
           <p>
             <var>AResolver</var> is a <var>TXPathNSResolver</var> instance which allows namespace prefixes and URLs to be validated while evaluating the XPath expression. It is an optional argument (the default value is Nil), and when omitted causes only the namespaces defined in AContextNode to be considered valid. The resolver instance must be created (when needed) using a DOM node which contains the namespace declarations for node prefixes that can be included in the XPath expression, and the nodes in the result set.
@@ -2755,7 +2755,7 @@
             EvaluateXPathExpression creates a <var>TXPathScanner</var> instance used to parse and process the XPath expression, and to compare DOM nodes for inclusion in a result set. It is passed as an argument a <var>TXPathExpression</var> instance also created in the routine, and used to build the DOM tree that is the return value for the function. The evaluator is configured to perform a complete evaluation of the XPath expression, including phrases which are non-deterministic. It also returns the <var>TXPathVariable</var> instance with the DOM node(s) which match the evaluated expression.
           </p>
           <p>
-            The TXPathVariable return value may be cast to a type expected in the application using methods like <var>AsNodeSet</var>, <var>AsBoolean</var>, or <var>AsText</var>. It may also be cast to a specific class type like <var>TXPathNodeSetVariable</var>, <var>TXPathBooleanVariable</var>, <var>TXPathNumberVariable</var>,  or <var>TXPathStringVariable</var>.
+            The TXPathVariable return value may be cast to a type expected in the application using methods like <var>AsNodeSet</var>, <var>AsBoolean</var>, or <var>AsText</var>. It may also be cast to a specific class type like <var>TXPathNodeSetVariable</var>, <var>TXPathBooleanVariable</var>, <var>TXPathNumberVariable</var>, or <var>TXPathStringVariable</var>.
           </p>
         </descr>
         <seealso></seealso>
