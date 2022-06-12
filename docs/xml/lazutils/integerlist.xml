@@ -75,7 +75,7 @@
             <var>TWordList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Word values. Internally, it provides a TFPGListEnumerator which is specialized for the Word type used in the implementation.
           </p>
           <p>
-            Use the properties and methods defined in the ancestor class to perform common operations for Word  values, including:
+            Use the properties and methods defined in the ancestor class to perform common operations for Word values, including:
           </p>
           <ul>
             <li>Add</li>
