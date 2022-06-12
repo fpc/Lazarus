@@ -417,7 +417,7 @@ any given Eccentric Angle.
 Use EllipseRadialLength to get the Radial-Length of non-rotated ellipse at
 any given Eccentric( aka Radial ) Angle. It is primarily for use in other
 routines such as RadialPoint. The Eccentric angle is in 1/16th of a degree.
-For example, a full circle equals 5760 (16*360).  Zero degrees is at the 3
+For example, a full circle equals 5760 (16*360). Zero degrees is at the 3
 o&apos;clock position.
 </p>
 </descr>
@@ -569,7 +569,7 @@ calling to ReallocMem(Points, 0).
 
 <element name="Quadrant">
 <short>
-Determine the <var>Quadrant</var>  of any point, given the Center.
+Determine the <var>Quadrant</var> of any point, given the Center.
 </short>
 <descr>
 <p>
@@ -603,7 +603,7 @@ rotated ellipse.
 Use RadialPoint to get the Radial-Point at any given Eccentric(aka Radial)
 angle on any non-rotated ellipse. It is primarily for use in Angles2Coords.
 The EccentricAngle is in 1/16th of a degree. For example, a full circle
-equals 5760 (16*360).  Zero degrees is at the 3 o&apos;clock position.
+equals 5760 (16*360). Zero degrees is at the 3 o&apos;clock position.
 </p>
 </descr>
 <seealso/>
