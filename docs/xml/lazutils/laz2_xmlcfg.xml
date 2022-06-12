@@ -77,7 +77,7 @@
         <short>Sets the default format settings used in the class instance.</short>
         <descr>
           <p>
-            <var>InitFormatSettings</var> is a procedure which sets the default format settings used in the class instance. InitFormatSettings updates an internal <var>TFormatSettings</var> member to  the values returned by <var>DefaultFormatSettings</var>. It also specifies that the decimal separator is '.' (Period), and the thousands separator is ',' (Comma).
+            <var>InitFormatSettings</var> is a procedure which sets the default format settings used in the class instance. InitFormatSettings updates an internal <var>TFormatSettings</var> member to the values returned by <var>DefaultFormatSettings</var>. It also specifies that the decimal separator is '.' (Period), and the thousands separator is ',' (Comma).
           </p>
           <remark>
             While this may not agree with format settings for some locales, it is the format expected in the XML data files for the class instance.
@@ -289,7 +289,7 @@
         </short>
         <descr>
           <p>
-            <var>ReadXMLFile</var> is a procedure used to read the XML content in <var>AFilename</var> into the  <var>TXMLDocument</var> instance returned in <var>ADoc</var>. ReadXMLFile calls <var>InvalidatePathCache</var> to remove cached DOM nodes in the class instance. ReadXMLFile calls the <var>ReadXMLFile</var> method in the <file>Laz2_XMLRead</file> unit to load the file content into the XML document instance.
+            <var>ReadXMLFile</var> is a procedure used to read the XML content in <var>AFilename</var> into the <var>TXMLDocument</var> instance returned in <var>ADoc</var>. ReadXMLFile calls <var>InvalidatePathCache</var> to remove cached DOM nodes in the class instance. ReadXMLFile calls the <var>ReadXMLFile</var> method in the <file>Laz2_XMLRead</file> unit to load the file content into the XML document instance.
           </p>
           <p>
             Use <var>ReadFromStream</var> to load the XML content in the class from a <var>TStream</var> instance.
@@ -319,7 +319,7 @@
         </short>
         <descr>
           <p>
-            <var>WriteXMLFile</var> is a procedure used to write the XML content in the <var>Document</var> property to the file specified in <var>AFilename</var>. WriteXMLFile calls the <var>WriteXMLFile</var> routine in <file>LazUtils</file> to write the XML content using the <var>WriteFlags</var> defined in the class instance. The <var>InvalidateFileStateCache</var> routine is called to invalidate a file cache entry for the  specified file name.
+            <var>WriteXMLFile</var> is a procedure used to write the XML content in the <var>Document</var> property to the file specified in <var>AFilename</var>. WriteXMLFile calls the <var>WriteXMLFile</var> routine in <file>LazUtils</file> to write the XML content using the <var>WriteFlags</var> defined in the class instance. The <var>InvalidateFileStateCache</var> routine is called to invalidate a file cache entry for the specified file name.
           </p>
           <p>
             Use <var>WriteToSteam</var> to store the XML content in <var>Document</var> to a <var>TStream</var> instance.
@@ -415,7 +415,7 @@
             <var>InvalidateCacheTilEnd</var> iterates over the <var>TNodeCache</var> items in <var>PathNodeCache</var> stating at the position in <var>StartIndex</var>, and sets the node references to Nil to invalidate the DOM node in the cache.
           </p>
           <p>
-            <var>InvalidateCacheTilEnd</var> is used in the implementation of the <var>InvalidatePathCache</var>,  <var>SetPathNodeCache</var>, and <var>FindChildNode</var> methods.
+            <var>InvalidateCacheTilEnd</var> is used in the implementation of the <var>InvalidatePathCache</var>, <var>SetPathNodeCache</var>, and <var>FindChildNode</var> methods.
           </p>
         </descr>
         <seealso>
@@ -435,7 +435,7 @@
         </short>
         <descr>
           <p>
-            <var>InternalFindNode</var> is a <var>TDOMNode</var> function used to locate the node stored at the path specified in <var>Document</var>. <var>InternalFindNode</var> ensures that the node cache for the class is updated to include the <var>TDOMNode</var> at <var>APath</var> when it is accessed in the method. It also ensures that all element nodes for the specifier in APath are included in the cache as well. The <var>FindChildNode</var> method is used to locate  <var>TDOMNodes</var> in the hierarchy. When <var>CreateNodes</var> is <b>True</b>, any missing DOM nodes in the hierarchy are created.
+            <var>InternalFindNode</var> is a <var>TDOMNode</var> function used to locate the node stored at the path specified in <var>Document</var>. <var>InternalFindNode</var> ensures that the node cache for the class is updated to include the <var>TDOMNode</var> at <var>APath</var> when it is accessed in the method. It also ensures that all element nodes for the specifier in APath are included in the cache as well. The <var>FindChildNode</var> method is used to locate <var>TDOMNodes</var> in the hierarchy. When <var>CreateNodes</var> is <b>True</b>, any missing DOM nodes in the hierarchy are created.
           </p>
           <p>
             <var>InternalFindNode</var> is used in the implementation of the <var>GetValue</var>, <var>SetValue</var>, <var>GetListItemCount</var>, <var>DeletePath</var>, and <var>FindNode</var> methods.
@@ -597,7 +597,7 @@
             Flush calls the <var>WriteXMLFile</var> method to store Document to the required Filename. The value in Modified is set to False when the Document has been written to the local file system.
           </p>
           <remark>
-            No  actions are performed in the method when <var>Modified</var> is False, or when <var>Filename</var> contains an empty string ('').
+            No actions are performed in the method when <var>Modified</var> is False, or when <var>Filename</var> contains an empty string ('').
           </remark>
           <p>
             Flush is used in the implementation of methods like <var>Destroy</var> and <var>SetFilename</var>.
@@ -859,7 +859,7 @@
         <short>Deletes the DOM node at the specified path in the Document.</short>
         <descr>
           <p>
-            <var>DeletePath</var> is a procedure used to delete the DOM node at the specified path in the <var>Document</var>. <var>APath</var> contains the path specifier that describes the hierarchy of elements and attributes needed to access the DOM node.  See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
+            <var>DeletePath</var> is a procedure used to delete the DOM node at the specified path in the <var>Document</var>. <var>APath</var> contains the path specifier that describes the hierarchy of elements and attributes needed to access the DOM node. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
           </p>
           <p>
             <var>DeletePath</var> calls <var>InternalFindNode</var> to get the node removed in the method. The node is removed from its parent DOM node, and the value in <var>Modified</var> is set to <b>True</b>. The <var>InvalidatePathCache</var> method is called to reflect the change in the Document. <var>InternalCleanNode</var> is called to ensure that the node is removed from the parent DOM node in <var>Document</var>.
@@ -884,7 +884,7 @@
         <short>Deletes the value stored in the DOM node at the specified path.</short>
         <descr>
           <p>
-            <var>DeleteValue</var> is a procedure used to remove the value for a DOM node stored at the path specified in <var>APath</var>.  <var>APath</var> contains the path specifier which describes the hierarchy of elements and attributes needed to access the DOM node. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
+            <var>DeleteValue</var> is a procedure used to remove the value for a DOM node stored at the path specified in <var>APath</var>. <var>APath</var> contains the path specifier which describes the hierarchy of elements and attributes needed to access the DOM node. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for details about path specifiers.
           </p>
           <p>
             DeleteValue calls the <var>FindNode</var> method to get the DOM node updated in the method.
@@ -1033,7 +1033,7 @@
         </short>
         <descr>
           <p>
-            <var>GetListItemXPath</var> is a <var>String</var> class function used to get the path specifier used to access a list item at the specified position in the Document. The return value contains the path specifier constructed for the  list item. For example:
+            <var>GetListItemXPath</var> is a <var>String</var> class function used to get the path specifier used to access a list item at the specified position in the Document. The return value contains the path specifier constructed for the list item. For example:
           </p>
           <code>
 'item0'
@@ -1087,7 +1087,7 @@
         <short>Indicates if the XML content in the class has been modified.</short>
         <descr>
           <p>
-            <var>Modified</var> is a <var>Boolean</var> property used to indicate if the XML content in <var>Document</var> has been altered since it was loaded or created. The value in <var>Modified</var> is updated in methods like <var>CreateClean</var>, <var>Flush</var>,  <var>SetValue</var>, <var>DeletePath</var>, <var>DeleteValue</var>, and <var>InternalCleanNode</var>.
+            <var>Modified</var> is a <var>Boolean</var> property used to indicate if the XML content in <var>Document</var> has been altered since it was loaded or created. The value in <var>Modified</var> is updated in methods like <var>CreateClean</var>, <var>Flush</var>, <var>SetValue</var>, <var>DeletePath</var>, <var>DeleteValue</var>, and <var>InternalCleanNode</var>.
           </p>
         </descr>
         <seealso>
@@ -1145,7 +1145,7 @@
         <short>XML document used for the class instance.</short>
         <descr>
           <p>
-            <var>Document</var> is a read-only <var>TXMLDocument</var> property which contains  the XML content in the configuration file. <var>Document</var> is a hierarchical sequence of DOM nodes which represent the paths and values for configuration data. DOM nodes are added and deleted in <var>Document</var> using a path specifier which represents the hierarchical structure for the XML content. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
+            <var>Document</var> is a read-only <var>TXMLDocument</var> property which contains the XML content in the configuration file. <var>Document</var> is a hierarchical sequence of DOM nodes which represent the paths and values for configuration data. DOM nodes are added and deleted in <var>Document</var> using a path specifier which represents the hierarchical structure for the XML content. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
           </p>
           <p>
             The <var>TXMLDocument</var> instance in Document is created and freed in methods like <var>Clear</var>, <var>FreeDoc</var>, <var>CreateConfigNode</var>, and <var>SetFilename</var>.
@@ -1215,7 +1215,7 @@
             <var>TRttiXMLConfig</var> is a <var>TXMLConfig</var> descendant which implements support for reading and writing objects and their property values using RTTI (Run-Time Type Information). TRttiXMLConfig extends the ancestor class to include methods used to read and write objects, or just specific properties, using path specifiers supported in the class. See the <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> topic for more information about path specifiers in TXMLConfig.
           </p>
           <p>
-            Type information provided by RTTI (Run-Time Type Information) is used to determine the value and formatting used  for supported data types. Supported RTTI type kinds include:
+            Type information provided by RTTI (Run-Time Type Information) is used to determine the value and formatting used for supported data types. Supported RTTI type kinds include:
           </p>
           <ul>
             <li>tkChar</li>
@@ -1377,7 +1377,7 @@
             Using TXMLConfig is easier than building DOM nodes, child nodes, and attribute values in a TXMLDocument instance. This ease of use is made possible by its use of path specifiers to describe the hierarchy of elements and attributes in the XML document. See <link id="TXMLConfig-PathSyntax">TXMLConfig Path Syntax</link> for a description of the path specifier syntax.
           </p>
           <p>
-            Path specifiers are passed as arguments to the GetValue and SetValue methods which  read and write values in the XML document. The methods are overloaded to support  the use of String, Integer, Boolean, and TRect data types in the value.
+            Path specifiers are passed as arguments to the GetValue and SetValue methods which read and write values in the XML document. The methods are overloaded to support the use of String, Integer, Boolean, and TRect data types in the value.
           </p>
           <p>
             <b>Creating Instances of TXMLConfig</b>
