@@ -313,7 +313,7 @@
         </short>
         <descr>
           <p>
-            <var>Delete</var> is a procedure  used to deletes an item/object association stored at the specified position in the <var>List</var>. When List has a length greater than the value in <var>Index</var><b>+1</b>, the Move routine in the <file>System.pp</file> unit is called to relocate any associations that occur after the position requested.
+            <var>Delete</var> is a procedure used to deletes an item/object association stored at the specified position in the <var>List</var>. When List has a length greater than the value in <var>Index</var><b>+1</b>, the Move routine in the <file>System.pp</file> unit is called to relocate any associations that occur after the position requested.
           </p>
           <p>
             Delete decrements the value in <var>Count</var>. The <var>Shrink</var> method is called when <var>Capacity</var> is larger than four (<b>4</b>) times the new value in Count.
@@ -483,7 +483,7 @@
             <var>Move</var> is a procedure used to relocate the association stored at the position in <var>CurIndex</var> to the position in <var>NewIndex</var>. No actions are performed in the method when CurIndex and Index contain the same value.
           </p>
           <p>
-            Move gets the <var>T2Pointer</var> stored at the position in CurIndex from the <var>List</var>. Move call the Move routine in the <file>System.pp</file> unit to relocate any associations  stored between the positions in CurIndex and NewIndex. The relocated associations are moved towards the end of List when CurIndex is greater than NewIndex.
+            Move gets the <var>T2Pointer</var> stored at the position in CurIndex from the <var>List</var>. Move call the Move routine in the <file>System.pp</file> unit to relocate any associations stored between the positions in CurIndex and NewIndex. The relocated associations are moved towards the end of List when CurIndex is greater than NewIndex.
           </p>
           <p>
             The T2Pointer is reassigned to the position in NewIndex.
@@ -589,7 +589,7 @@
             <var>Count</var> is an <var>Integer</var> property which indicates the number of item/object associations currently stored in the <var>List</var>. Changing the value in Count causes <var>Capacity</var> to be updated when Count exceeds the value in Capacity.
           </p>
           <p>
-            The value in Count is maintained in method which add or remove item/object associations in List, such as: <var>Add</var>, <var>AddObject</var>,  <var>Insert</var>, <var>InsertObject</var>, <var>Delete</var>, <var>Remove</var>, <var>Clear</var> and <var>Pack</var>.
+            The value in Count is maintained in method which add or remove item/object associations in List, such as: <var>Add</var>, <var>AddObject</var>, <var>Insert</var>, <var>InsertObject</var>, <var>Delete</var>, <var>Remove</var>, <var>Clear</var> and <var>Pack</var>.
           </p>
         </descr>
         <seealso>
