@@ -143,10 +143,10 @@
         <short>Appends text to the plaint-text output for the renderer.</short>
         <descr>
           <p>
-            <var>AddOutput</var> is a <var>Boolean</var> function used to append the value specified in <var>aText</var> to the output  for the renderer.
+            <var>AddOutput</var> is a <var>Boolean</var> function used to append the value specified in <var>aText</var> to the output for the renderer.
           </p>
           <p>
-            AddOutput ensures that a space character is included for wrapped lines in the HTML when there are no pending new lines . Otherwise, the required number of line ending sequences are appended to the output for the render and the line count is increased accordingly.  If the line count exceeds the maximum number allowed in <var>Render</var>, the value in <var>MoreMark</var> is appended to the output.
+            AddOutput ensures that a space character is included for wrapped lines in the HTML when there are no pending new lines . Otherwise, the required number of line ending sequences are appended to the output for the render and the line count is increased accordingly. If the line count exceeds the maximum number allowed in <var>Render</var>, the value in <var>MoreMark</var> is appended to the output.
           </p>
           <p>
             Pending new line(s) also cause indentation spaces to be appended to the output.
@@ -177,7 +177,7 @@
         <short>Handles an HTML tag and its attributes values.</short>
         <descr>
           <p>
-            <var>HtmlTag</var> is a <var>Boolean</var> function used to locate and process an HTML start or end tag,  and any attribute name/value pairs present in the tag. HtmlTag handles the following HTML tag and attribute/value names:
+            <var>HtmlTag</var> is a <var>Boolean</var> function used to locate and process an HTML start or end tag, and any attribute name/value pairs present in the tag. HtmlTag handles the following HTML tag and attribute/value names:
           </p>
           <dl>
             <dt>HTML</dt>
@@ -275,7 +275,7 @@
             <dt>LineEndMark</dt>
             <dd>Set to the value in the LineEnding constant for the platform or OS.</dd>
             <dt>TitleMark</dt>
-            <dd>Set to  the UTF-8 character '◈' (#9672 or #x25C8)</dd>
+            <dd>Set to the UTF-8 character '◈' (#9672 or #x25C8)</dd>
             <dt>HorzLineMark</dt>
             <dd>Set to the UTF-8 characters '——————————————————'.</dd>
             <dt>LinkBeginMark</dt>
@@ -385,7 +385,7 @@
         <short>Represents an A end tag in the plain text output.</short>
         <descr>
           <p>
-            <var>LinkEndMark</var> is a <var>String</var> property used to represent the end  of the plain text output for an HTML A tag. <var>LinkBeginMark</var> is used to represent the start of the anchor. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
+            <var>LinkEndMark</var> is a <var>String</var> property used to represent the end of the plain text output for an HTML A tag. <var>LinkBeginMark</var> is used to represent the start of the anchor. The value is added to the plain text output for the renderer in the <var>HtmlTag</var> method.
           </p>
         </descr>
         <seealso>
@@ -431,7 +431,7 @@
         <short>Converts the specified HTML content to a plain text value.</short>
         <descr>
           <p>
-            <var>RenderHTML2Text</var> is a <var>String</var> function used to convert the HTML content specified in <var>AHTML</var> to a string with the plain text for the content.  RenderHTML2Text creates a temporary <var>THTML2TextRenderer</var> instance (using its default configuration values) to remove any HTML mark-up found in the AHTML argument by calling its <var>Render</var> method.
+            <var>RenderHTML2Text</var> is a <var>String</var> function used to convert the HTML content specified in <var>AHTML</var> to a string with the plain text for the content. RenderHTML2Text creates a temporary <var>THTML2TextRenderer</var> instance (using its default configuration values) to remove any HTML mark-up found in the AHTML argument by calling its <var>Render</var> method.
           </p>
           <p>
             RenderHTML2Text is a convenience routine; use a THTML2TextRenderer instance when the HTML content is stored in a TStream instance, or to override the default configuration settings for the class instance.
