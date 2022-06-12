@@ -568,8 +568,6 @@ type
       AnIsOutsideFrame: Boolean): Boolean; override;
   end;
 
-  EDisassemblerError = class(Exception);
-
 implementation
 
 var
@@ -2247,6 +2245,8 @@ procedure TX86Disassembler.DoGroup1;
 const
   OPC: array[0..7] of TOpCode = (OPadd, OPor, OPadc, OPsbb, OPand, OPsub, OPxor, OPcmp);
 begin
+  Assert(Code[CodeIdx] in [$80..$83,$8F], 'Not group 1');
+
   DecodeModRM;
 
   // group 1a
@@ -2270,7 +2270,6 @@ begin
     $82: begin AddEb; AddIb; Check32; end;
     $83: begin AddEv; AddIb; end;
   else
-    raise EDisassemblerError.Create('Not group 1');
     Exit;
   end;
   if (ModRM.Index <> 7)
@@ -2281,6 +2280,8 @@ procedure TX86Disassembler.DoGroup2;
 const
   OPC: array[0..7] of TOpCode = (OProl, OPror, OPrcl, OPrcr, OPshl, OPshr, OPsal, OPsar);
 begin
+  Assert(Code[CodeIdx] in [$C0, $C1, $D0..$D3], 'Not group 2');
+
   DecodeModRM;
 
   SetOpcode(OPC[ModRM.Index]);
@@ -2292,7 +2293,7 @@ begin
     $D2: begin AddEb; AddReg(regGeneral, os8, REG_C); end;
     $D3: begin AddEv; AddReg(regGeneral, os8, REG_C); end;
   else
-    raise EDisassemblerError.Create('Not group 2');
+    Exit;
   end;
 end;
 
@@ -2300,7 +2301,7 @@ procedure TX86Disassembler.DoGroup3;
 const
   OPC: array[0..7] of TOpCode = (OPtest, OPtest, OPnot, OPneg, OPmul, OPimul, OPdiv, OPidiv);
 begin
-  if not (Code[CodeIdx] in [$F6,$F7]) then raise EDisassemblerError.Create('Not group 3');
+  Assert(Code[CodeIdx] in [$F6,$F7], 'Not group 3');
 
   DecodeModRM;
 
@@ -2331,7 +2332,7 @@ end;
 
 procedure TX86Disassembler.DoGroup4;
 begin
-  if Code[CodeIdx] <> $FE then raise EDisassemblerError.Create('Not group 4');
+  Assert(Code[CodeIdx] = $FE, 'Not group 4');
 
   DecodeModRM;
 
@@ -2348,7 +2349,7 @@ end;
 
 procedure TX86Disassembler.DoGroup5;
 begin
-  if Code[CodeIdx] <> $FF then raise EDisassemblerError.Create('Not group 5');
+  Assert(Code[CodeIdx] = $FF, 'Not group 5');
 
   DecodeModRM;
 
@@ -2367,7 +2368,7 @@ end;
 
 procedure TX86Disassembler.DoGroup6;
 begin
-  if Code[CodeIdx] <> $00 then raise EDisassemblerError.Create('Not group 6');
+  Assert(Code[CodeIdx] = $00, 'Not group 6');
 
   DecodeModRM;
 
@@ -2404,7 +2405,7 @@ const
   RM2: array [0..7] of TOpCode = (OPgetbv, OPsetbv, OPX_Group7, OPX_Group7, OPvmfunc, OPxend, OPxtest, OPenclu);
   RM3: array [0..7] of TOpCode = (OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga);
 begin
-  if Code[CodeIdx] <> $01 then raise EDisassemblerError.Create('Not group 7');
+  Assert(Code[CodeIdx] = $01, 'Not group 7');
 
   DecodeModRM;
 
@@ -2509,7 +2510,7 @@ procedure TX86Disassembler.DoGroup8;
 const
   RM8: array [0..7] of TOpCode = (OPX_Group8, OPX_Group8, OPX_Group8, OPX_Group8, OPbt, OPbts, OPbtr, OPbtc);
 begin
-  if Code[CodeIdx] <> $BA then raise EDisassemblerError.Create('Not group 8');
+  Assert(Code[CodeIdx] = $BA, 'Not group 8');
 
   DecodeModRM;
 
@@ -2524,7 +2525,7 @@ end;
 
 procedure TX86Disassembler.DoGroup9;
 begin
-  if Code[CodeIdx] <> $C7 then raise EDisassemblerError.Create('Not group 9');
+  Assert(Code[CodeIdx] = $C7, 'Not group 9');
 
   DecodeModRM;
 
@@ -2584,7 +2585,7 @@ end;
 
 procedure TX86Disassembler.DoGroup10;
 begin
-  if Code[CodeIdx] <> $B9 then raise EDisassemblerError.Create('Not group 10');
+  Assert(Code[CodeIdx] = $B9, 'Not group 10');
 
   DecodeModRM;
 
@@ -2594,7 +2595,7 @@ end;
 
 procedure TX86Disassembler.DoGroup11;
 begin
-  if not (Code[CodeIdx] in [$C6,$C7]) then raise EDisassemblerError.Create('Not group 11');
+  Assert(Code[CodeIdx] in [$C6,$C7], 'Not group 11');
 
   DecodeModRM;
 
@@ -2623,7 +2624,7 @@ procedure TX86Disassembler.DoGroup12;
 const
   OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrl, OPX_Invalid, OPpsra, OPX_Invalid, OPpsll, OPX_Invalid);
 begin
-  if Code[CodeIdx] <> $71 then raise EDisassemblerError.Create('Not group 12');
+  Assert(Code[CodeIdx] = $71, 'Not group 12');
 
   DecodeModRM;
 
@@ -2644,7 +2645,7 @@ procedure TX86Disassembler.DoGroup13;
 const
   OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrl, OPX_Invalid, OPpsra, OPX_Invalid, OPpsll, OPX_Invalid);
 begin
-  if Code[CodeIdx] <> $72 then raise EDisassemblerError.Create('Not group 13');
+  Assert(Code[CodeIdx] = $72, 'Not group 13');
 
   DecodeModRM;
 
@@ -2666,7 +2667,7 @@ const
   OPC: array[0..7] of TOpCode       = (OPX_Invalid, OPX_Invalid, OPpsrl, OPpsrl,  OPX_Invalid, OPX_Invalid, OPpsll, OPpsrl);
   OPS: array[0..7] of TOpCodeSuffix = (OPSnone,     OPSnone,     OPSx_q, OPSx_dq, OPSnone,     OPSnone,     OPSx_q, OPSx_dq);
 begin
-  if Code[CodeIdx] <> $73 then raise EDisassemblerError.Create('Not group 14');
+  Assert(Code[CodeIdx] = $73, 'Not group 14');
 
   DecodeModRM;
   SetOpcode(OPX_Group14);
@@ -2689,7 +2690,7 @@ end;
 
 procedure TX86Disassembler.DoGroup15;
 begin
-  if Code[CodeIdx] <> $AE then raise EDisassemblerError.Create('Not group 15');
+  Assert(Code[CodeIdx] = $AE, 'Not group 15');
 
   DecodeModRM;
   DecodeSIMD([soNone, soF3]);
@@ -2738,7 +2739,7 @@ procedure TX86Disassembler.DoGroup16;
 const
   OPS: array[0..3] of TOpCodeSuffix = (OPSp_nta, OPSp_t0, OPSp_t1, OPSp_t2);
 begin
-  if Code[CodeIdx] <> $18 then raise EDisassemblerError.Create('Not group 16');
+  Assert(Code[CodeIdx] = $18, 'Not group 16');
 
   DecodeModRM;
 
@@ -2752,7 +2753,7 @@ end;
 
 procedure TX86Disassembler.DoGroup17;
 begin
-  if Code[CodeIdx] <> $F3 then raise EDisassemblerError.Create('Not group 17');
+  Assert(Code[CodeIdx] = $F3, 'Not group 17');
 
   DecodeModRM;
 
@@ -2769,7 +2770,7 @@ end;
 
 procedure TX86Disassembler.DoGroupP;
 begin
-  if Code[CodeIdx] <> $F3 then raise EDisassemblerError.Create('Not group P');
+  Assert(Code[CodeIdx] = $0D, 'Not group P');
 
   DecodeModRM;
 
@@ -3859,6 +3860,8 @@ const
 var
   idx, mm: Byte;
 begin
+  Assert(ASize in [2..4], Format('Invalid VEX size: %u', [ASize]));
+
   // remove rexRXBW flags, they are illegal. the presence of flagRex wil signal this
   Flags := Flags - [rexR, rexX, rexB, rexW];
 
@@ -3915,7 +3918,7 @@ begin
       Include(Flags, flagEvex);
     end;
   else
-    raise EDisassemblerError.CreateFmt('invalid VEX size: %u', [ASize]);
+    Exit;
   end;
 
   Include(Flags, flagVex);
