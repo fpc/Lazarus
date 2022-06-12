@@ -81,7 +81,7 @@
         <short>Constant that indicates the size of a signed Pointer in the map.</short>
         <descr>
           <p>
-            itsPtrSize is a constant TMapIdType data type that indicates the size used for  a signed Pointer in the map. The definition is CPU-specific. For a 64-bit CPU, it is defined as its8 in TMapIdType (or Int64). For all other CPUs, it is defines as its4 in TMapIdType (or LongInt).
+            itsPtrSize is a constant TMapIdType data type that indicates the size used for a signed Pointer in the map. The definition is CPU-specific. For a 64-bit CPU, it is defined as its8 in TMapIdType (or Int64). For all other CPUs, it is defines as its4 in TMapIdType (or LongInt).
           </p>
           <p>
             Use ituPtrSize to get the length of an unsigned Pointer in the map.
@@ -486,7 +486,7 @@
         </short>
         <descr>
           <p>
-            InternalGetData is a Boolean function used to get the data stored in the specified map item. AItem is the map item examined in the method, and must contain a valid pointer. The return value is set to False, and no actions are performed in the method, when AItem contains <var>Nil</var>. The return value is True when a pointer has been assigned to AItem.
+            InternalGetData is a Boolean function used to get the data stored in the specified map item. AItem is the map item examined in the method, and must contain a valid pointer. The return value is set to False, and no actions are performed in the method, when AItem contains <var>Nil</var>. The return value is <b>True</b> when a pointer has been assigned to AItem.
           </p>
           <p>
             InternalGetData skips the ID value in AItem, and stores the Data for the map item in AData. The size arguments passed in the constructor are used when reading the ID and Data values. Please note that no validation is performed for the arbitrary byte values read into AData.
@@ -500,7 +500,7 @@
         </seealso>
       </element>
       <element name="TBaseMap.InternalGetData.Result">
-        <short>True when the specified map item is a valid pointer.</short>
+        <short><b>True</b> when the specified map item is a valid pointer.</short>
       </element>
       <element name="TBaseMap.InternalGetData.AItem">
         <short>Map item to examine n the method.</short>
@@ -542,7 +542,7 @@
         </short>
         <descr>
           <p>
-            InternalGetId is a Boolean function used to get the ID value for the specified map item. AItem is a Pointer to the map item examined in the method. The return value is False if AItem has not been assigned (contains <var>Nil</var>), and no actions are performed in the method.
+            InternalGetId is a Boolean function used to get the ID value for the specified map item. AItem is a Pointer to the map item examined in the method. The return value is <b>False</b> if AItem has not been assigned (contains <var>Nil</var>), and no actions are performed in the method.
           </p>
           <p>
             InternalGetId stores the ID value from AItem in the AID parameter. The number of bytes used for the ID is specified using a TMapIdType value in the constructor for the class.
@@ -553,7 +553,7 @@
         </descr>
       </element>
       <element name="TBaseMap.InternalGetId.Result">
-        <short>False if the specified map item is not a valid Pointer.</short>
+        <short><b>False</b> if the specified map item is not a valid Pointer.</short>
       </element>
       <element name="TBaseMap.InternalGetId.AItem">
         <short>Map item examined in the method.</short>
@@ -674,9 +674,9 @@
             <dt>Current</dt>
             <dd>Set to the first map item in the linked list</dd>
             <dt>BOM</dt>
-            <dd>Set to True when Current is <var>Nil</var></dd>
+            <dd>Set to <b>True</b> when Current is <var>Nil</var></dd>
             <dt>EOM</dt>
-            <dd>Set to True when Current is <var>Nil</var></dd>
+            <dd>Set to <b>True</b> when Current is <var>Nil</var></dd>
           </dl>
           <p>
             InternalCreate is called from the Create method for the class instance.
@@ -689,23 +689,23 @@
 
       <element name="TBaseMapIterator.InternalLocate">
         <short>
-          True when a matching map item is found.
+          <b>True</b> when a matching map item is found.
         </short>
         <descr>
           <p>
-            InternalLocate is a Boolean function used to locate the specified map item in the AVL Tree for the map. AID contains a pointer to the map item and its ID and Data values. The return value is True when a matching map item is found.
+            InternalLocate is a Boolean function used to locate the specified map item in the AVL Tree for the map. AID contains a pointer to the map item and its ID and Data values. The return value is <b>True</b> when a matching map item is found.
           </p>
           <p>
             InternalLocate calls ValidateMap to ensure that the map is still valid for the iterator. An EInvalidOperation is raised in ValidateMap if the structure is not assigned (contains <var>Nil</var>).
           </p>
           <p>
-            InternalLocate compares the map item in AId to the nodes in the AVL Tree for the map. The internal Invalid flag is set to True if a map item in the linked list has been removed, or when the map has been freed. The values in the following properties are updated to reflect the position and state for the iterator:
+            InternalLocate compares the map item in AId to the nodes in the AVL Tree for the map. The internal Invalid flag is set to <b>True</b> if a map item in the linked list has been removed, or when the map has been freed. The values in the following properties are updated to reflect the position and state for the iterator:
           </p>
           <dl>
             <dt>BOM</dt>
-            <dd>True when the item in Current is <var>Nil</var></dd>
+            <dd><b>True</b> when the item in Current is <var>Nil</var></dd>
             <dt>EOM</dt>
-            <dd>True when the item in Current  is <var>Nil</var></dd>
+            <dd><b>True</b> when the item in Current is <var>Nil</var></dd>
             <dt>Current</dt>
             <dd>
               Node in the AVL Tree where the item is stored, or the value from Last when the item is not found
@@ -717,7 +717,7 @@
         </descr>
       </element>
       <element name="TBaseMapIterator.InternalLocate.Result">
-        <short>True when the map item exists in the map.</short>
+        <short><b>True</b> when the map item exists in the map.</short>
       </element>
       <element name="TBaseMapIterator.InternalLocate.AId">
         <short>Map item to locate in the method.</short>
@@ -802,17 +802,17 @@
         <short>Indicates if the map for the iterator has been freed.</short>
         <descr>
           <p>
-            Valid is a Boolean function used to determine if the map for the iterator is still valid. The return value is False when the map class instance has been freed (contains <var>Nil</var>).
+            Valid is a Boolean function used to determine if the map for the iterator is still valid. The return value is <b>False</b> when the map class instance has been freed (contains <var>Nil</var>).
           </p>
         </descr>
       </element>
       <!-- function result Visibility: public -->
       <element name="TBaseMapIterator.Valid.Result">
-        <short>False when the map for the iterator has been freed.</short>
+        <short><b>False</b> when the map for the iterator has been freed.</short>
       </element>
 
       <element name="TBaseMapIterator.BOM">
-        <short>True when the iterator is at the beginning of the linked list for the map.</short>
+        <short><b>True</b> when the iterator is at the beginning of the linked list for the map.</short>
         <descr>
           <p>
             BOM is a read-only Boolean property that indicates if the iterator is at the beginning of the linked list for the map, or the value in Current is <var>Nil</var>. The value in BOM is updated when navigation methods for the iterator are used, such as: First, Next, Previous, Last, and Locate.
@@ -821,7 +821,7 @@
       </element>
 
       <element name="TBaseMapIterator.EOM">
-        <short>True when the iterator is at the end of the linked list for the map.</short>
+        <short><b>True</b> when the iterator is at the end of the linked list for the map.</short>
         <descr/>
       </element>
 
@@ -861,12 +861,12 @@
         </short>
         <descr>
           <p>
-            <var>HasId</var> is a <var>Boolean</var> function used to locate the specified map item in the AVL Tree for the map. HasId calls the FindNode method to located the value in AId. The return value is True when FindNode returns a value other than <var>Nil</var>.
+            <var>HasId</var> is a <var>Boolean</var> function used to locate the specified map item in the AVL Tree for the map. HasId calls the FindNode method to located the value in AId. The return value is <b>True</b> when FindNode returns a value other than <var>Nil</var>.
           </p>
         </descr>
       </element>
       <element name="TMap.HasId.Result">
-        <short>True when the AVL Tree contains a node for the specified map item.</short>
+        <short><b>True</b> when the AVL Tree contains a node for the specified map item.</short>
       </element>
       <element name="TMap.HasId.AID">
         <short>Map item to locate in the AVL Tree.</short>
