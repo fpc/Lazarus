@@ -149,7 +149,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="IsCombining.Result">
-        <short>True when the codepoint represents a Unicode combining character.</short>
+        <short><b>True</b> when the codepoint represents a Unicode combining character.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="IsCombining.AChar">
@@ -240,7 +240,7 @@
           Copies byte values for the Current character (codepoint).
         </short>
         <descr>
-          Copies byte values used in Current for the character (codepoint) when MoveNext  is called to go to the next character. aCount contains the number of byte values needed for the Unicode codepoint. UpdateCurrent increments the internal pointer used to access values in the enumerator by the number of bytes in aCount.
+          Copies byte values used in Current for the character (codepoint) when MoveNext is called to go to the next character. aCount contains the number of byte values needed for the Unicode codepoint. UpdateCurrent increments the internal pointer used to access values in the enumerator by the number of bytes in aCount.
         </descr>
         <errors>
           <p>
@@ -298,7 +298,7 @@
           Base class for a Unicode codepoint enumerator.
         </short>
         <descr>
-          Base class for a Unicode codepoint enumerator. TCodePointEnumerator allows traversal of Unicode codepoints. Uses UTF-8 or UTF-16 encodings depending on value in <var>$ModeSwitch</var>. Extends the ancestor class to provide  navigation in the enumerator using the MoveNext method.
+          Base class for a Unicode codepoint enumerator. TCodePointEnumerator allows traversal of Unicode codepoints. Uses UTF-8 or UTF-16 encodings depending on value in <var>$ModeSwitch</var>. Extends the ancestor class to provide navigation in the enumerator using the MoveNext method.
         </descr>
         <seealso></seealso>
       </element>
@@ -309,13 +309,13 @@
           Provides navigation to the next codepoint in the enumerator.
         </short>
         <descr>
-          Provides navigation to the next Unicode codepoint in the enumerator. The return value contains True when more characters (codepoints) are available to the enumerator. UpdateCurrent is called using the value from CodePointSize to store the value for the Current property.
+          Provides navigation to the next Unicode codepoint in the enumerator. The return value contains <b>True</b> when more characters (codepoints) are available to the enumerator. UpdateCurrent is called using the value from CodePointSize to store the value for the Current property.
         </descr>
         <seealso></seealso>
       </element>
       <!-- function result Visibility: public -->
       <element name="TCodePointEnumerator.MoveNext.Result">
-        <short>True when more characters (codepoints) are available.</short>
+        <short><b>True</b> when more characters (codepoints) are available.</short>
       </element>
 
       <!-- class Visibility: default -->
@@ -350,7 +350,7 @@
         </short>
         <descr>
           <p>
-            MoveNext is an overridden method which adds support for combining diacritical marks when moving to the next codepoint for the enumerator. The return value is True when more characters (codepoints) are available to the enumerator. MoveNext updates the value in CurrentCodeUnitCount, and includes combining diacritical marks in the byte count. MoveNext calls UpdateCurrent to store the value for the Current property.
+            MoveNext is an overridden method which adds support for combining diacritical marks when moving to the next codepoint for the enumerator. The return value is <b>True</b> when more characters (codepoints) are available to the enumerator. MoveNext updates the value in CurrentCodeUnitCount, and includes combining diacritical marks in the byte count. MoveNext calls UpdateCurrent to store the value for the Current property.
           </p>
           <remark>
             MoveNext does not call the inherited method.
@@ -360,7 +360,9 @@
       </element>
       <!-- function result Visibility: public -->
       <element name="TUnicodeCharacterEnumerator.MoveNext.Result">
-        <short>True when more characters (codepoints) are available to the enumerator.</short>
+        <short>
+          <b>True</b> when more characters (codepoints) are available to the enumerator.
+        </short>
       </element>
 
       <!-- operator Visibility: default -->
