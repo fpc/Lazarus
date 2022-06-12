@@ -257,7 +257,7 @@
         <short>Represents types of Windows-specific quirks for file and directory masks.</short>
         <descr>
           <p>
-            TWindowsQuirk is an enumerated type used to represent ways in which a Windows/DOS mask works differently than a regular mask. Windows/DOS masks have many quirks and corner cases inherited from CP/M, then adapted to DOS (8.3) file names,  and adapted again for long file names.
+            TWindowsQuirk is an enumerated type used to represent ways in which a Windows/DOS mask works differently than a regular mask. Windows/DOS masks have many quirks and corner cases inherited from CP/M, then adapted to DOS (8.3) file names, and adapted again for long file names.
           </p>
         </descr>
         <seealso/>
@@ -274,7 +274,7 @@
       </element>
       <element name="TWindowsQuirks.wqExtension3More">
         <short>
-          Anything.abc  matches "Anything.abc" but also "Anything.abc*" (3 char extension). Anything.ab matches "Anything.ab" and never "anything.abcd".
+          Anything.abc matches "Anything.abc" but also "Anything.abc*" (3 char extension). Anything.ab matches "Anything.ab" and never "anything.abcd".
         </short>
       </element>
       <element name="TWindowsQuirks.wqEmptyIsAny">
@@ -635,7 +635,7 @@
         </short>
         <descr>
           <p>
-            Exception_MissingCloseChar is a class procedure used to raise an EMaskError exception when the closing ']' character is omitted from a set or range expression. The exception message is determined by the value in the aOffset argument. When aOffset is a positive value (or zero),  the value in rsMissingCloseCharMaskAt is used as the exception message. Otherwise, the value in rsMissingCloseCharMask is used.
+            Exception_MissingCloseChar is a class procedure used to raise an EMaskError exception when the closing ']' character is omitted from a set or range expression. The exception message is determined by the value in the aOffset argument. When aOffset is a positive value (or zero), the value in rsMissingCloseCharMaskAt is used as the exception message. Otherwise, the value in rsMissingCloseCharMask is used.
           </p>
           <p>
             Exception_MissingCloseChar is called from the private CompileRange method in TMaskUTF8 when the range or set expression is not closed.
@@ -696,7 +696,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overloaded constructor for the class instance. One variant allows case sensitivity for mask expressions and the allowed op codes to be specified as arguments. The other variant accepts  an argument  with the set of mask options for the class instance.
+            Create is the overloaded constructor for the class instance. One variant allows case sensitivity for mask expressions and the allowed op codes to be specified as arguments. The other variant accepts an argument with the set of mask options for the class instance.
           </p>
           <p>
             Create the sets the initial values for the CaseSensitive, AutoReverseRange, and EscapeChar properties.
@@ -708,7 +708,7 @@
         <seealso/>
       </element>
       <element name="TMaskBase.Create.aCaseSensitive">
-        <short>True if the mask expression is case sensitive.</short>
+        <short><b>True</b> if the mask expression is case sensitive.</short>
       </element>
       <element name="TMaskBase.Create.aOpcodesAllowed">
         <short>Op codes allowed for the compiled mask expression.</short>
@@ -721,7 +721,7 @@
         <short>Indicates if the mask expression is case sensitive.</short>
         <descr>
           <p>
-            CaseSensitive is a Boolean property which indicates if character in a mask expression are handle with case sensitivity. Its value is determined by an  explicit argument passed to the Create method, or the presence of moCaseSensitive in the TMaskOptions passed to the constructor.
+            CaseSensitive is a Boolean property which indicates if character in a mask expression are handle with case sensitivity. Its value is determined by an explicit argument passed to the Create method, or the presence of moCaseSensitive in the TMaskOptions passed to the constructor.
           </p>
           <p>
             Changing the value for the property causes Compile to be called when the Matches method in descendent classes is executed. When set to <b>False</b>, both the mask expression and the compared values are converted to lowercase for the comparison performed in Matches.
@@ -784,7 +784,7 @@
         <short>Contains the set of mask op codes enabled for the class instance.</short>
         <descr>
           <p>
-            MaskOpCodes is a TMaskOpCodes property with the set of op codes enabled for the Mask expression in the class instance. MaskOpCodes is populated with enumeration values from TMaskOpCode when characters in the mask expression are  examined in the Compile method. The allowed values in the set can be specified as an argument to the Create constructor.
+            MaskOpCodes is a TMaskOpCodes property with the set of op codes enabled for the Mask expression in the class instance. MaskOpCodes is populated with enumeration values from TMaskOpCode when characters in the mask expression are examined in the Compile method. The allowed values in the set can be specified as an argument to the Create constructor.
           </p>
           <p>
             Values in MaskOpCodes are used when the Matches method is called to compare a string value to the Mask expression.
@@ -806,7 +806,7 @@
 
       <element name="TMaskUTF8">
         <short>
-          Implements a class used to define, evaluate, and compare  a mask expression using UNIX file system mask conventions.
+          Implements a class used to define, evaluate, and compare a mask expression using UNIX file system mask conventions.
         </short>
         <descr>
           <p>
@@ -873,7 +873,7 @@
         <seealso/>
       </element>
       <element name="TMaskUTF8.IsSpecialChar.Result">
-        <short>Always returns False in TMaskUTF8.</short>
+        <short>Always returns <b>False</b> in TMaskUTF8.</short>
       </element>
       <element name="TMaskUTF8.IsSpecialChar.AChar">
         <short>Character value examined in the method.</short>
@@ -938,7 +938,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overloaded constructor for the class instance. It includes an AMask argument which contains the expression stored in the Mask property. Variants of the method also allow the value in CaseSensitive to be set. Set arguments can be provided which contain the TMaskOpCode values or the TMaskOption values used in  the class instance.
+            Create is the overloaded constructor for the class instance. It includes an AMask argument which contains the expression stored in the Mask property. Variants of the method also allow the value in CaseSensitive to be set. Set arguments can be provided which contain the TMaskOpCode values or the TMaskOption values used in the class instance.
           </p>
           <remark>
             The variant which includes a TMaskOptions parameter has been deprecated in version 2.3, and will be removed in version 2.5. Use the variant which includes a TMaskOpCodes parameter.
@@ -950,7 +950,7 @@
         <short>Mask expression for the class instance.</short>
       </element>
       <element name="TMaskUTF8.Create.aCaseSensitive">
-        <short>True if comparisons are performed with case sensitivity.</short>
+        <short><b>True</b> if comparisons are performed with case sensitivity.</short>
       </element>
       <element name="TMaskUTF8.Create.aOpcodesAllowed">
         <short>Set of op codes allowed for the compiled mask expression.</short>
@@ -1004,7 +1004,7 @@
         </seealso>
       </element>
       <element name="TMaskUTF8.Matches.Result">
-        <short>True when the specified value matches the Mask expression.</short>
+        <short><b>True</b> when the specified value matches the Mask expression.</short>
       </element>
       <element name="TMaskUTF8.Matches.aStringToMatch">
         <short>Value to compare to the Mask expression.</short>
@@ -1028,7 +1028,7 @@
       </element>
       <element name="TMaskUTF8.MatchesWindowsMask.Result">
         <short>
-          True if the specified file name matches the Windows-specific Mask expression.
+          <b>True</b> if the specified file name matches the Windows-specific Mask expression.
         </short>
       </element>
       <element name="TMaskUTF8.MatchesWindowsMask.AFileName">
@@ -1152,12 +1152,16 @@
       </element>
 
       <element name="TWindowsMaskUTF8.IsSpecialChar">
-        <short>Returns True if the specified character contains a Null character (#0) (ASCII NUL).</short>
+        <short>
+          Returns <b>True</b> if the specified character contains a Null character (#0) (ASCII NUL).
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWindowsMaskUTF8.IsSpecialChar.Result">
-        <short>True if the specified character contains a Null character (#0) (ASCII NUL).</short>
+        <short>
+          <b>True</b> if the specified character contains a Null character (#0) (ASCII NUL).
+        </short>
       </element>
       <element name="TWindowsMaskUTF8.IsSpecialChar.AChar">
         <short>Character value examined in the method.</short>
@@ -1189,7 +1193,7 @@
       </element>
       <element name="TWindowsMaskUTF8.SplitFileNameExtension.aIsMask">
         <short>
-          True if the source file name is treated as a mask specification for a file name and not a file extension; such as '.foo'.
+          <b>True</b> if the source file name is treated as a mask specification for a file name and not a file extension; such as '.foo'.
         </short>
       </element>
 
@@ -1206,7 +1210,7 @@
         <short>Mask expression for the class instance.</short>
       </element>
       <element name="TWindowsMaskUTF8.Create.aCaseSensitive">
-        <short>True if masks are compared with case sensitivity.</short>
+        <short><b>True</b> if masks are compared with case sensitivity.</short>
       </element>
       <element name="TWindowsMaskUTF8.Create.aOpcodesAllowed">
         <short>Set of TMaskOpCode values allowed in the class instance.</short>
@@ -1269,7 +1273,7 @@
         </seealso>
       </element>
       <element name="TWindowsMaskUTF8.Matches.Result">
-        <short>True when the specified value matches the Mask expression.</short>
+        <short><b>True</b> when the specified value matches the Mask expression.</short>
       </element>
       <element name="TWindowsMaskUTF8.Matches.aFileName">
         <short>Value examined and compared to the Mask expression.</short>
@@ -1526,7 +1530,7 @@
         </seealso>
       </element>
       <element name="TMaskList.Matches.Result">
-        <short>True when the file name matches one of the mask items.</short>
+        <short><b>True</b> when the file name matches one of the mask items.</short>
       </element>
       <element name="TMaskList.Matches.AFileName">
         <short>File name examined in the method.</short>
@@ -1545,7 +1549,7 @@
         <seealso/>
       </element>
       <element name="TMaskList.MatchesWindowsMask.Result">
-        <short>True if the file name matches one the masks in the list.</short>
+        <short><b>True</b> if the file name matches one the masks in the list.</short>
       </element>
       <element name="TMaskList.MatchesWindowsMask.AFileName">
         <short>File name examined in the method.</short>
@@ -1745,7 +1749,7 @@
         <short>Delimiter used between mask expressions in AValue.</short>
       </element>
       <element name="TWindowsMaskList.Create.CaseSensitive">
-        <short>True if the mask expression(s) are case sensitive.</short>
+        <short><b>True</b> if the mask expression(s) are case sensitive.</short>
       </element>
       <element name="TWindowsMaskList.Create.AOpcodesAllowed">
         <short>Set of TMaskOpCode values enabled for the class instance.</short>
@@ -1767,7 +1771,7 @@
         <seealso/>
       </element>
       <element name="TWindowsMaskList.MatchesWindowsMask.Result">
-        <short>True if the specified file name matches one of the mask in the list.</short>
+        <short><b>True</b> if the specified file name matches one of the mask in the list.</short>
       </element>
       <element name="TWindowsMaskList.MatchesWindowsMask.AFileName">
         <short>File name compared to the mask instances in the list.</short>
@@ -1814,7 +1818,9 @@
         </seealso>
       </element>
       <element name="MatchesMask.Result">
-        <short>True when the file name matches the mask value using the specified options.</short>
+        <short>
+          <b>True</b> when the file name matches the mask value using the specified options.
+        </short>
       </element>
       <element name="MatchesMask.FileName">
         <short>File name compared to the mask value.</short>
@@ -1823,7 +1829,7 @@
         <short>Mask used to perform the comparison.</short>
       </element>
       <element name="MatchesMask.CaseSensitive">
-        <short>True when case sensitivity should be used in the comparison.</short>
+        <short><b>True</b> when case sensitivity should be used in the comparison.</short>
       </element>
       <element name="MatchesMask.Options">
         <short>Set of options enabled for the comparison.</short>
@@ -1843,7 +1849,7 @@
           <dl>
             <dt>foo*.*</dt>
             <dd>
-              Matches all files starting with 'foo' regardless of the file extension. Same as  foo* using the Matches method.
+              Matches all files starting with 'foo' regardless of the file extension. Same as foo* using the Matches method.
             </dd>
             <dt>foo*.</dt>
             <dd>Matches foo* but must not include a file extension.</dd>
@@ -1878,7 +1884,9 @@
         </seealso>
       </element>
       <element name="MatchesWindowsMask.Result">
-        <short>True when the file name matches the mask value using the specified options.</short>
+        <short>
+          <b>True</b> when the file name matches the mask value using the specified options.
+        </short>
       </element>
       <element name="MatchesWindowsMask.FileName">
         <short>File name compared to the mask value.</short>
@@ -1887,7 +1895,7 @@
         <short>Mask used to perform the comparison.</short>
       </element>
       <element name="MatchesWindowsMask.CaseSensitive">
-        <short>True when case sensitivity should be used in the comparison.</short>
+        <short><b>True</b> when case sensitivity should be used in the comparison.</short>
       </element>
       <element name="MatchesWindowsMask.Options">
         <short>Set of options enabled for the comparison.</short>
@@ -1954,7 +1962,7 @@
         </seealso>
       </element>
       <element name="MatchesMaskList.Result">
-        <short>True when Filename matches at least one of the masks in the list.</short>
+        <short><b>True</b> when Filename matches at least one of the masks in the list.</short>
       </element>
       <element name="MatchesMaskList.FileName">
         <short>File name compared to the file masks in Mask.</short>
@@ -1966,7 +1974,7 @@
         <short>Character(s) used as a separator between mask expressions in Mask.</short>
       </element>
       <element name="MatchesMaskList.CaseSensitive">
-        <short>True if the file name to mask comparison is case sensitive.</short>
+        <short><b>True</b> if the file name to mask comparison is case sensitive.</short>
       </element>
       <element name="MatchesMaskList.Options">
         <short>TMaskOption values which enable or disable features in the comparison.</short>
@@ -1986,7 +1994,7 @@
           <dl>
             <dt>foo*.*</dt>
             <dd>
-              Matches all files starting with 'foo' regardless of the file extension. Same as  foo* using MatchesMaskList.
+              Matches all files starting with 'foo' regardless of the file extension. Same as foo* using MatchesMaskList.
             </dd>
             <dt>foo*.</dt>
             <dd>Matches foo* but must not include a file extension.</dd>
@@ -2037,7 +2045,8 @@
       </element>
       <element name="MatchesWindowsMaskList.Result">
         <short>
-          <b>True</b> when Filename matches at least one of the masks in the list.</short>
+          <b>True</b> when Filename matches at least one of the masks in the list.
+        </short>
       </element>
       <element name="MatchesWindowsMaskList.FileName">
         <short>File name compared to the file masks in Mask.</short>
@@ -2049,7 +2058,7 @@
         <short>Character(s) used as a separator between mask expressions in Mask.</short>
       </element>
       <element name="MatchesWindowsMaskList.CaseSensitive">
-        <short>True if the file name to mask comparison is case sensitive.</short>
+        <short><b>True</b> if the file name to mask comparison is case sensitive.</short>
       </element>
       <element name="MatchesWindowsMaskList.Options">
         <short>TMaskOption values which enable or disable features in the comparison.</short>
@@ -2118,7 +2127,7 @@
             <b>Sets of Characters</b>
           </p>
           <p>
-            A set begins with an opening Square Bracket character (<b>[</b>) and ends with a closing Square Bracket character (<b>]</b>). Values between the brackets represent the characters which are considered a match in that position. For  example: 'a[bcd]e.txt' would match 'abe.txt', 'ace.txt', or 'ade.txt'. It would not match 'afe.txt'.
+            A set begins with an opening Square Bracket character (<b>[</b>) and ends with a closing Square Bracket character (<b>]</b>). Values between the brackets represent the characters which are considered a match in that position. For example: 'a[bcd]e.txt' would match 'abe.txt', 'ace.txt', or 'ade.txt'. It would not match 'afe.txt'.
           </p>
           <p>
             <b>Ranges of Characters</b>
@@ -2130,7 +2139,7 @@
             <b>Negated Sets and Ranges</b>
           </p>
           <p>
-            When using set or range notation, character values can be excluded using negation. This is expressed using an Exclamation Point character (<b>!</b>) in front of the set or range specification.  For example: '[!0-9]' or '[!0123456789]'. In both examples, any character at the given position <b>except</b> the values in the set or range would be considered a match.
+            When using set or range notation, character values can be excluded using negation. This is expressed using an Exclamation Point character (<b>!</b>) in front of the set or range specification. For example: '[!0-9]' or '[!0123456789]'. In both examples, any character at the given position <b>except</b> the values in the set or range would be considered a match.
           </p>
           <p>
             <b>Wildcards</b>
@@ -2154,13 +2163,13 @@
             They are other Windows-specific behaviors originating from its CP/M and MS DOS heritage. These are implemented in TWindowsMask as Quirks, and can be enabled or disabled in the class instance.
           </p>
           <p>
-            Please refer to the documentation for the <link id="TMask">TMask</link> and <link id="TWindowsMask">TWindowsMask</link> for more information about mask expressions and their usage in  the respective classes.
+            Please refer to the documentation for the <link id="TMask">TMask</link> and <link id="TWindowsMask">TWindowsMask</link> for more information about mask expressions and their usage in the respective classes.
           </p>
           <p>
             <b>Configurable Settings</b>
           </p>
           <p>
-            The Mask classes also contain configurable settings which can affect their behavior in their Matches method. For example: CaseSensitive, AutoReverseRange, EscapeChar, and MaskOpCodes. The initial value for these settings can be passed as arguments to the class constructors, or they can be specified using properties in the class instances. MaskOpCodes is particularly important; it determines the  behavior of wildcards and escape characters in the mask expression.
+            The Mask classes also contain configurable settings which can affect their behavior in their Matches method. For example: CaseSensitive, AutoReverseRange, EscapeChar, and MaskOpCodes. The initial value for these settings can be passed as arguments to the class constructors, or they can be specified using properties in the class instances. MaskOpCodes is particularly important; it determines the behavior of wildcards and escape characters in the mask expression.
           </p>
           <p>
             <b>Mask Expression Examples</b>
