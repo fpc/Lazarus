@@ -193,114 +193,39 @@ object IDEInspectDlg: TIDEInspectDlg
       Caption = 'tbDiv5'
       Style = tbsDivider
     end
-    object pnlArrayNav: TPanel
+    inline ArrayNavigationBar1: TArrayNavigationBar
       Left = 285
       Height = 23
       Top = 2
       Width = 242
-      AutoSize = True
-      BevelOuter = bvNone
       ClientHeight = 23
       ClientWidth = 242
-      TabOrder = 0
-      Visible = False
-      object btnArrayFastUp: TSpeedButton
-        Left = 23
+      inherited btnArrayFastUp: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '<<'
-        Flat = True
-        OnClick = BtnArrayNavClicked
       end
-      object btnArrayFastDown: TSpeedButton
-        Left = 106
+      inherited btnArrayFastDown: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '>>'
-        Flat = True
-        OnClick = BtnArrayNavClicked
       end
-      object edArrayStart: TSpinEditEx
-        Left = 46
+      inherited edArrayStart: TSpinEditEx
         Height = 23
-        Top = 0
-        Width = 60
-        Align = alLeft
-        MaxLength = 0
-        TabOrder = 0
-        OnEditingDone = edArrayStartEditingDone
-        Increment = 10
-        NullValue = 0
-        UpDownVisible = False
-        Value = 0
       end
-      object btnArrayStart: TSpeedButton
-        Left = 0
+      inherited btnArrayStart: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '|<'
-        Flat = True
-        OnClick = BtnArrayNavClicked
       end
-      object btnArrayEnd: TSpeedButton
-        Left = 129
+      inherited btnArrayEnd: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '>|'
-        Flat = True
-        OnClick = BtnArrayNavClicked
       end
-      object Label1: TLabel
-        Left = 152
+      inherited Label1: TLabel
         Height = 23
-        Top = 0
-        Width = 4
-        Align = alLeft
-        AutoSize = False
       end
-      object btnArrayPageDec: TSpeedButton
-        Left = 156
+      inherited btnArrayPageDec: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '-'
-        Flat = True
-        OnClick = BtnArrayPageClicked
       end
-      object edArrayPageSize: TSpinEditEx
-        Left = 179
+      inherited edArrayPageSize: TSpinEditEx
         Height = 23
-        Top = 0
-        Width = 40
-        Align = alLeft
-        MaxLength = 0
-        TabOrder = 1
-        OnEditingDone = edArrayPageSizeEditingDone
-        Increment = 10
-        MaxValue = 5000
-        MinValue = 10
-        NullValue = 0
-        UpDownVisible = False
-        Value = 200
       end
-      object btnArrayPageInc: TSpeedButton
-        Left = 219
+      inherited btnArrayPageInc: TSpeedButton
         Height = 23
-        Top = 0
-        Width = 23
-        Align = alLeft
-        Caption = '+'
-        Flat = True
-        OnClick = BtnArrayPageClicked
       end
     end
   end

@@ -78,9 +78,6 @@ resourcestring
   drsLen = 'Len=%d: ';
   synfNewValueIsEmpty = '"New value" is empty.';
   synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value.';
-  dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
-  dlgInspectAmountOfItemsToShow = 'Amount of items to show';
-
 
 implementation
 

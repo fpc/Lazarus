@@ -40,7 +40,8 @@ uses
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
-  IdeDebuggerBase, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
+  IdeDebuggerBase, ArrayNavigationFrame, DebuggerDlg, DebuggerStrConst,
+  EnvironmentOpts;
 
 type
 
@@ -52,19 +53,10 @@ type
   { TIDEInspectDlg }
 
   TIDEInspectDlg = class(TDebuggerDlg)
-    btnArrayPageInc: TSpeedButton;
-    btnArrayEnd: TSpeedButton;
-    btnArrayStart: TSpeedButton;
-    btnArrayPageDec: TSpeedButton;
-    edArrayPageSize: TSpinEditEx;
+    ArrayNavigationBar1: TArrayNavigationBar;
     EdInspect: TComboBox;
     ErrorLabel: TLabel;
-    Label1: TLabel;
     PageControl: TPageControl;
-    pnlArrayNav: TPanel;
-    btnArrayFastUp: TSpeedButton;
-    btnArrayFastDown: TSpeedButton;
-    edArrayStart: TSpinEditEx;
     StatusBar1: TStatusBar;
     DataPage: TTabSheet;
     PropertiesPage: TTabSheet;
@@ -86,15 +78,11 @@ type
     tbDiv4: TToolButton;
     tbDiv2: TToolButton;
     procedure BtnAddWatchClick(Sender: TObject);
-    procedure BtnArrayNavClicked(Sender: TObject);
-    procedure BtnArrayPageClicked(Sender: TObject);
     procedure btnBackwardClick(Sender: TObject);
     procedure btnColClassClick(Sender: TObject);
     procedure btnForwardClick(Sender: TObject);
     procedure btnPowerClick(Sender: TObject);
     procedure btnUseInstanceClick(Sender: TObject);
-    procedure edArrayPageSizeEditingDone(Sender: TObject);
-    procedure edArrayStartEditingDone(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
@@ -126,6 +114,7 @@ type
     FHistoryIndex: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
 
+    procedure ArrayNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
     procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
@@ -224,16 +213,6 @@ end;
 procedure TIDEInspectDlg.btnUseInstanceClick(Sender: TObject);
 begin
   UpdateData;
-end;
-
-procedure TIDEInspectDlg.edArrayPageSizeEditingDone(Sender: TObject);
-begin
-  InspectResDataArray;
-end;
-
-procedure TIDEInspectDlg.edArrayStartEditingDone(Sender: TObject);
-begin
-  InspectResDataArray;
 end;
 
 procedure TIDEInspectDlg.ContextChanged(Sender: TObject);
@@ -368,12 +347,14 @@ begin
 
   LowBnd := Res.LowBound;
   if FUpdatedData then begin
-    edArrayStart.Value := LowBnd;
+    ArrayNavigationBar1.LowBound := LowBnd;
+    ArrayNavigationBar1.HighBound := LowBnd + Res.ArrayLength - 1;
+    ArrayNavigationBar1.Index := LowBnd;
     FUpdatedData := False;
   end;
 
-  CurIndexOffs := edArrayStart.Value - LowBnd;
-  CurPageCount := edArrayPageSize.Value;
+  CurIndexOffs := ArrayNavigationBar1.Index - LowBnd;
+  CurPageCount := ArrayNavigationBar1.PageSize;
   if (CurIndexOffs >= 0) and (CurIndexOffs < res.ArrayLength) then
     CurPageCount := Max(1, Min(CurPageCount, res.ArrayLength - CurIndexOffs));
 
@@ -691,47 +672,6 @@ begin
     DebugBoss.Watches.CurrentWatches.EndUpdate;
   end;
 
-end;
-
-procedure TIDEInspectDlg.BtnArrayNavClicked(Sender: TObject);
-begin
-  if (FCurrentWatchValue = nil) or (FCurrentWatchValue.ResultData=nil) then
-    exit;
-  if Sender = btnArrayStart then
-    edArrayStart.Value := FCurrentWatchValue.ResultData.LowBound
-  else
-  if Sender = btnArrayFastUp then
-    edArrayStart.Value := max(edArrayStart.Value - edArrayPageSize.Value,
-                              FCurrentWatchValue.ResultData.LowBound)
-  else
-  if Sender = btnArrayFastDown then
-    edArrayStart.Value := min(edArrayStart.Value + edArrayPageSize.Value,
-                              Max(FCurrentWatchValue.ResultData.LowBound,
-                                  FCurrentWatchValue.ResultData.LowBound
-                                  + FCurrentWatchValue.ResultData.ArrayLength
-                                  - edArrayPageSize.Value)
-                              )
-  else
-  if Sender = btnArrayEnd then
-    edArrayStart.Value :=  Max(FCurrentWatchValue.ResultData.LowBound,
-                               FCurrentWatchValue.ResultData.LowBound
-                               + FCurrentWatchValue.ResultData.ArrayLength
-                               - edArrayPageSize.Value)
-  ;
-  InspectResDataArray;
-end;
-
-procedure TIDEInspectDlg.BtnArrayPageClicked(Sender: TObject);
-begin
-  if (FCurrentWatchValue = nil) or (FCurrentWatchValue.ResultData=nil) then
-    exit;
-  if Sender = btnArrayPageDec then
-    edArrayPageSize.Value := Max(10, edArrayPageSize.Value - 10)
-  else
-  if Sender = btnArrayPageInc then
-    edArrayPageSize.Value := Min(5000, edArrayPageSize.Value + 10)
-  ;
-  InspectResDataArray;
 end;
 
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1226,6 +1166,10 @@ begin
   DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
   DebugBoss.RegisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
 
+  ArrayNavigationBar1.OnIndexChanged := @ArrayNavChanged;
+  ArrayNavigationBar1.OnPageSize := @ArrayNavChanged;
+  ArrayNavigationBar1.Visible := False;
+
   FHistory := TStringList.Create;
 
   FGridData:=TStringGrid.Create(DataPage);
@@ -1263,9 +1207,6 @@ begin
   btnColVisibility.Enabled := False;
   btnBackward.Enabled := FHistoryIndex > 0;
   btnForward.Enabled := FHistoryIndex < FHistory.Count - 1;
-
-  edArrayStart.Hint := dlgInspectIndexOfFirstItemToShow;
-  edArrayPageSize.Hint := dlgInspectAmountOfItemsToShow;
 
   Clear;
 end;
@@ -1327,7 +1268,7 @@ begin
     exit;
 
   FExpression:=FHistory[FHistoryIndex];
-  edArrayStart.Value := 0;
+  ArrayNavigationBar1.Index := 0;
   EdInspect.Text := FExpression;
   UpdateData;
 end;
@@ -1366,6 +1307,7 @@ begin
   FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentWatchValue.ResultData, wdfStructure);
 
   if FCurrentWatchValue.Validity = ddsValid then begin
+      ArrayNavigationBar1.Visible := False;
     if FCurrentWatchValue.TypeInfo <> nil then begin
       case FCurrentWatchValue.TypeInfo.Kind of
         skClass, skObject, skInterface: InspectClass();
@@ -1392,7 +1334,7 @@ begin
     end
     else begin
     // resultdata
-      pnlArrayNav.Visible := FCurrentWatchValue.ResultData.ValueKind = rdkArray;
+      ArrayNavigationBar1.Visible := FCurrentWatchValue.ResultData.ValueKind = rdkArray;
       case FCurrentWatchValue.ResultData.ValueKind of
         //rdkError: ;
         rdkPrePrinted,
@@ -1441,6 +1383,12 @@ begin
     FInspectWatches.Clear;
     UpdateData;
   end;
+end;
+
+procedure TIDEInspectDlg.ArrayNavChanged(Sender: TArrayNavigationBar;
+  AValue: Int64);
+begin
+  InspectResDataArray;
 end;
 
 procedure TIDEInspectDlg.DoWatchesInvalidated(Sender: TObject);
@@ -1509,11 +1457,11 @@ begin
   if AWatch = nil then begin
     FInspectWatches.Clear;
     AWatch := FInspectWatches.Add(expr);
-    edArrayStart.Value := 0;
+    ArrayNavigationBar1.Index := 0;
   end;
   AWatch.EvaluateFlags := Opts;
   AWatch.Enabled := True;
-  AWatch.RepeatCount := edArrayPageSize.Value;
+  AWatch.RepeatCount := ArrayNavigationBar1.PageSize;
   FInspectWatches.EndUpdate;
   FCurrentWatchValue := AWatch.Values[tid, idx];
   if FCurrentWatchValue <> nil then begin

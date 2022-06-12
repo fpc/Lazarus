@@ -305,7 +305,6 @@ var
   PointerValue: TWatchResultDataPointer absolute AResValue;
   ResTypeName: String;
   PtrDeref: TWatchResultData;
-  i: Integer;
 begin
   inc(ANestLvl);
   if ANestLvl > MAX_ALLOWED_NEST_LVL then

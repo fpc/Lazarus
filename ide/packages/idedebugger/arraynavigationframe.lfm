@@ -1,0 +1,110 @@
+object ArrayNavigationBar: TArrayNavigationBar
+  Left = 0
+  Height = 26
+  Top = 0
+  Width = 320
+  AutoSize = True
+  ClientHeight = 26
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 518
+  DesignTop = 777
+  object btnArrayFastDown: TSpeedButton
+    Left = 23
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '<<'
+    Flat = True
+    OnClick = BtnChangePageClicked
+  end
+  object btnArrayFastUp: TSpeedButton
+    Left = 106
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '>>'
+    Flat = True
+    OnClick = BtnChangePageClicked
+  end
+  object edArrayStart: TSpinEditEx
+    Left = 46
+    Height = 26
+    Top = 0
+    Width = 60
+    Align = alLeft
+    MaxLength = 0
+    TabOrder = 0
+    OnEditingDone = edArrayStartEditingDone
+    Increment = 10
+    NullValue = 0
+    UpDownVisible = False
+    Value = 0
+  end
+  object btnArrayStart: TSpeedButton
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '|<'
+    Flat = True
+    OnClick = BtnChangePageClicked
+  end
+  object btnArrayEnd: TSpeedButton
+    Left = 129
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '>|'
+    Flat = True
+    OnClick = BtnChangePageClicked
+  end
+  object Label1: TLabel
+    Left = 152
+    Height = 26
+    Top = 0
+    Width = 4
+    Align = alLeft
+    AutoSize = False
+  end
+  object btnArrayPageDec: TSpeedButton
+    Left = 156
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '-'
+    Flat = True
+    OnClick = BtnChangeSizeClicked
+  end
+  object edArrayPageSize: TSpinEditEx
+    Left = 179
+    Height = 26
+    Top = 0
+    Width = 40
+    Align = alLeft
+    MaxLength = 0
+    TabOrder = 1
+    OnEditingDone = edArrayPageSizeEditingDone
+    Increment = 10
+    MaxValue = 5000
+    MinValue = 10
+    NullValue = 0
+    UpDownVisible = False
+    Value = 200
+  end
+  object btnArrayPageInc: TSpeedButton
+    Left = 219
+    Height = 26
+    Top = 0
+    Width = 23
+    Align = alLeft
+    Caption = '+'
+    Flat = True
+    OnClick = BtnChangeSizeClicked
+  end
+end

@@ -10,7 +10,8 @@ interface
 uses
   IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
   IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
-  IdeDebuggerWatchResUtils, LazarusPackageIntf;
+  IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
+  LazarusPackageIntf;
 
 implementation
 
