@@ -307,8 +307,9 @@ begin
   if FQueuedUnLockCommandProcessing then
     DebugBoss.UnLockCommandProcessing;
   FQueuedUnLockCommandProcessing := False;
-  FreeAndNil(FWatchPrinter);
 
+  FreeAndNil(FWatchPrinter);
+  tvWatches.Clear; // Must clear all nodes before any owned "Nav := TArrayNavigationBar" are freed;
   inherited Destroy;
 end;
 
