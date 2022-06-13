@@ -20,6 +20,7 @@ type
 
   TDbgTreeView = class(TLazVirtualStringTree)
   private
+    FLastVisibleBeforeExpanding: PVirtualNode;
     function GetNodeControl(Node: PVirtualNode): TControl;
     function GetNodeItem(Node: PVirtualNode): TObject;
     function GetNodeText(Node: PVirtualNode; AColumn: integer): String;
@@ -28,6 +29,8 @@ type
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
   protected
     function DoCollapsing(Node: PVirtualNode): Boolean; override;
+    function DoExpanding(Node: PVirtualNode): Boolean; override;
+    procedure DoExpanded(Node: PVirtualNode); override;
     procedure ValidateNodeDataSize(var Size: Integer); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DetermineLineImageAndSelectLevel(Node: PVirtualNode;
@@ -154,6 +157,30 @@ begin
   Result := inherited DoCollapsing(Node);
 end;
 
+function TDbgTreeView.DoExpanding(Node: PVirtualNode): Boolean;
+begin
+  FLastVisibleBeforeExpanding := GetLastVisibleNoInit(Node);
+  Result := inherited DoExpanding(Node);
+end;
+
+procedure TDbgTreeView.DoExpanded(Node: PVirtualNode);
+var
+  N: PVirtualNode;
+  NData: PDbgTreeNodeData;
+begin
+  N := GetLastVisibleNoInit(Node);
+  while (N <> nil) do begin
+    NData := GetNodeData(N);
+    if NData^.Control <> nil then
+      NData^.Control.Visible := False;
+
+    if N = FLastVisibleBeforeExpanding then
+      break;
+    N := GetNextNoInit(N);
+  end;
+  inherited DoExpanded(Node);
+end;
+
 procedure TDbgTreeView.ValidateNodeDataSize(var Size: Integer);
 begin
   Size := SizeOf(TDbgTreeNodeData);
@@ -161,7 +188,7 @@ end;
 
 procedure TDbgTreeView.DoFreeNode(Node: PVirtualNode);
 begin
-  PDbgTreeNodeData(GetNodeData(Node))^.Control.Free;
+  FreeAndNil(PDbgTreeNodeData(GetNodeData(Node))^.Control);
   PDbgTreeNodeData(GetNodeData(Node))^ := Default(TDbgTreeNodeData);
   inherited DoFreeNode(Node);
 end;
@@ -206,7 +233,7 @@ begin
   if NData^.Control <> nil then begin
     if PaintInfo.Column = 0 then begin
       r := GetDisplayRect(PaintInfo.Node, 0, True, False);
-      r.Right := ClientWidth - r.Left - 1;
+      r.Right := ClientWidth - 1;
       NData^.Control.BoundsRect := r;
       NData^.Control.Visible := True;
       if (r.Top < (r.Bottom - r.Height) * 2 + 5) or
