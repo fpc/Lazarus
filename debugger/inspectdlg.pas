@@ -654,7 +654,7 @@ procedure TIDEInspectDlg.btnColClassClick(Sender: TObject);
 begin
   if (FCurrentWatchValue = nil) then exit;
 
-  if ( (FCurrentWatchValue.TypeInfo = nil) and
+  if ( (FCurrentWatchValue.TypeInfo <> nil) and
        (FCurrentWatchValue.TypeInfo.Kind = skClass)
      ) or
      ( FCurrentWatchValue.ResultData.StructType in [dstClass, dstObject] )
