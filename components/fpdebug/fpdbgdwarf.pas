@@ -1319,8 +1319,10 @@ begin
   InfoEntry := TDwarfInformationEntry.Create(CU, nil);
   InfoEntry.ScopeIndex := CU.FirstScope.Index;
 
-  if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then
+  if not InfoEntry.AbbrevTag = DW_TAG_compile_unit then begin
+    InfoEntry.ReleaseReference;
     exit;
+  end;
   // compile_unit can not have startscope
 
   s := CU.UnitName;
