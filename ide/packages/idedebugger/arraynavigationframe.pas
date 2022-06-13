@@ -156,7 +156,7 @@ var
 begin
   Result := edArrayPageSize.Value;
   idx := edArrayStart.Value;
-  if (idx >= FLowBound) and (idx < FHighBound) then
+  if (idx >= FLowBound) and (idx <= FHighBound) then
     Result := Max(1, Min(Result, FHighBound + 1 - idx));
 end;
 

@@ -39,6 +39,7 @@ object WatchesDlg: TWatchesDlg
     OnChange = tvWatchesChange
     OnDragOver = tvWatchesDragOver
     OnDragDrop = tvWatchesDragDrop
+    OnExpanded = tvWatchesExpanded
     OnFocusChanged = tvWatchesFocusChanged
     OnInitChildren = tvWatchesInitChildren
     OnNodeDblClick = tvWatchesNodeDblClick
@@ -164,13 +165,14 @@ object WatchesDlg: TWatchesDlg
         Width = 200
         Align = alTop
         Caption = '...'
+        Color = clDefault
         ParentColor = False
       end
     end
   end
   object mnuPopup: TPopupMenu
-    left = 100
-    top = 96
+    Left = 100
+    Top = 96
     object popAdd: TMenuItem
       Action = actAddWatch
     end

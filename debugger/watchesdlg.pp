@@ -133,6 +133,7 @@ type
     procedure tvWatchesDragOver(Sender: TBaseVirtualTree; Source: TObject;
       Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord; var Accept: Boolean);
+    procedure tvWatchesExpanded(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvWatchesFocusChanged(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex);
     procedure tvWatchesInitChildren(Sender: TBaseVirtualTree;
@@ -482,6 +483,20 @@ procedure TWatchesDlg.tvWatchesDragOver(Sender: TBaseVirtualTree;
 begin
   Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
             ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') );
+end;
+
+procedure TWatchesDlg.tvWatchesExpanded(Sender: TBaseVirtualTree;
+  Node: PVirtualNode);
+var
+  AWatch: TIdeWatch;
+begin
+  Node := tvWatches.GetFirstChildNoInit(Node);
+  while Node <> nil do begin
+    AWatch := TIdeWatch(tvWatches.NodeItem[Node]);
+    if AWatch <> nil then
+      UpdateItem(Node, AWatch);
+    Node := tvWatches.GetNextSiblingNoInit(Node);
+  end;
 end;
 
 procedure TWatchesDlg.tvWatchesFocusChanged(Sender: TBaseVirtualTree;
@@ -1181,7 +1196,7 @@ begin
   ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
 
   Offs := Nav.Index;
-  for i := 0 to ChildCount do begin
+  for i := 0 to ChildCount - 1 do begin
     Idx := IntToStr(Offs +  i);
 
     NewWatch := AWatch.ChildrenByName[Idx];
@@ -1193,8 +1208,8 @@ begin
     if AWatch is TCurrentWatch then begin
       NewWatch.DisplayFormat := wdfDefault;
       NewWatch.Enabled       := AWatch.Enabled;
-      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
-        NewWatch.EvaluateFlags := [defClassAutoCast];
+      if (defClassAutoCast in AWatch.EvaluateFlags) then
+        NewWatch.EvaluateFlags := NewWatch.EvaluateFlags + [defClassAutoCast];
     end;
 
     if ExistingNode <> nil then begin
@@ -1207,6 +1222,8 @@ begin
     end;
     UpdateItem(nd, NewWatch);
   end;
+
+  inc(ChildCount); // for the nav row
 
   if AWatch is TCurrentWatch then begin
     KeepCnt := Nav.PageSize;
