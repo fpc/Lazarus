@@ -22,6 +22,8 @@ object WatchesDlg: TWatchesDlg
     Width = 295
     Align = alClient
     DefaultText = 'Node'
+    DragMode = dmAutomatic
+    DragType = dtVCL
     Header.AutoSizeIndex = 0
     Header.Columns = <    
       item
@@ -33,7 +35,8 @@ object WatchesDlg: TWatchesDlg
     Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
     PopupMenu = mnuPopup
     TabOrder = 0
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toFullRepaintOnResize, toInitOnSave, toWheelPanning]
+    TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
     TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
     OnChange = tvWatchesChange

@@ -35,6 +35,8 @@ type
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DetermineLineImageAndSelectLevel(Node: PVirtualNode;
       var LineImage: TLineImage): Integer; override;
+    function DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
+      var NodeRect: TRect): TDropMode; override;
     procedure HandleMouseDblClick(var Message: TLMMouse; const HitInfo: THitInfo); override;
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var AText: String); override;
@@ -202,6 +204,25 @@ begin
   else
   if (Length(LineImage) > 0) and (LineImage[0] <> ltNone) then
     LineImage[0] := ltRight;
+end;
+
+function TDbgTreeView.DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
+  var NodeRect: TRect): TDropMode;
+var
+  ImageHit: Boolean;
+  LabelHit: Boolean;
+  ItemHit: Boolean;
+
+begin
+  if Assigned(HitInfo.HitNode) then
+  begin
+    if ((NodeRect.Top + NodeRect.Bottom) div 2) > P.Y then
+      Result := dmAbove
+    else
+      Result := dmBelow;
+  end
+  else
+    Result := dmNowhere;
 end;
 
 procedure TDbgTreeView.HandleMouseDblClick(var Message: TLMMouse;

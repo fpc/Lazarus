@@ -850,7 +850,6 @@ type
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
-    procedure DoModified; override;
     procedure InvalidateWatchValues; override;
     //procedure NotifyChange
     procedure NotifyAdd(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
@@ -871,6 +870,7 @@ type
     property Snapshots[AnID: Pointer]: TIdeWatches read GetSnapshot;
   public
     procedure Clear;
+    procedure DoModified; override;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
       const ALegacyList: Boolean);

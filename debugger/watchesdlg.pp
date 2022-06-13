@@ -459,7 +459,86 @@ procedure TWatchesDlg.tvWatchesDragDrop(Sender: TBaseVirtualTree;
 var
   s: String;
   NewWatch: TCurrentWatch;
+  Nodes: TNodeArray;
+  Target, N, NTarget: PVirtualNode;
+  AWatch, ATargetWatch: TIdeWatch;
+  NewIdx: Integer;
 begin
+  if Source = tvWatches then begin
+    if (not (FWatchesInView is TCurrentWatches)) or (GetSelectedSnapshot <> nil) then
+      exit;
+
+    Nodes := tvWatches.GetSortedSelection(True);
+    Target := tvWatches.GetNodeAt(Pt);
+    if (Target = nil) then
+      exit;
+
+    if Mode = dmAbove then begin
+      // Insert above
+      if tvWatches.Selected[Target] then begin
+        NTarget := tvWatches.GetPreviousSiblingNoInit(Target);
+        while (NTarget <> nil) and tvWatches.Selected[NTarget] do begin
+          Target := NTarget;
+          NTarget := tvWatches.GetPreviousSiblingNoInit(Target);
+        end;
+      end;
+      if Target <> nil then
+        Target := tvWatches.GetPreviousSiblingNoInit(Target);
+    end
+    else
+    if tvWatches.Selected[Target] then begin
+      // Insert below
+      NTarget := tvWatches.GetNextSiblingNoInit(Target);
+      while (NTarget <> nil) and tvWatches.Selected[NTarget] do begin
+        Target := NTarget;
+        NTarget := tvWatches.GetNextSiblingNoInit(Target);
+      end;
+    end;
+    if Target = nil then
+      NTarget := tvWatches.GetFirstChildNoInit(nil)
+    else
+      NTarget := tvWatches.GetNextSiblingNoInit(Target);
+
+    BeginUpdate;
+    try
+
+    for N in Nodes do begin
+      if tvWatches.NodeParent[N] = nil then begin
+        // Move top/outer node
+        if (N = Target) or (N = NTarget) then
+          continue; // already in place
+
+        if Target = nil then
+          tvWatches.MoveTo(N, Target, amAddChildFirst, False)
+        else
+          tvWatches.MoveTo(N, Target, amInsertAfter, False);
+
+        AWatch := TIdeWatch(tvWatches.NodeItem[N]);
+        assert(AWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: AWatch <> nil');
+        if AWatch <> nil then begin
+          NewIdx := 0;
+          if Target <> nil then begin
+            ATargetWatch := TIdeWatch(tvWatches.NodeItem[Target]);
+            assert(ATargetWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: ATargetWatch <> nil');
+            if ATargetWatch <> nil then
+              NewIdx := ATargetWatch.Index+1;
+          end;
+          AWatch.Index := NewIdx;
+        end;
+
+        Target := N;
+        NTarget := tvWatches.GetNextSiblingNoInit(Target);
+      end;
+    end;
+
+    DebugBoss.Watches.DoModified;
+    finally
+      EndUpdate;
+    end;
+
+    exit;
+  end;
+
   s := '';
   if (Source is TSynEdit) then s := TSynEdit(Source).SelText;
   if (Source is TCustomEdit) then s := TCustomEdit(Source).SelText;
@@ -481,9 +560,38 @@ end;
 procedure TWatchesDlg.tvWatchesDragOver(Sender: TBaseVirtualTree;
   Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint;
   Mode: TDropMode; var Effect: LongWord; var Accept: Boolean);
+var
+  N, Target: PVirtualNode;
 begin
   Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
-            ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') );
+            ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') ) or
+            ( (Source = tvWatches) and (tvWatches.SelectedCount > 0) and
+              (GetSelectedSnapshot = nil)
+            )
+            ;
+
+  if Accept and (Source = tvWatches) then begin
+    Target := tvWatches.GetNodeAt(Pt);
+    Accept := (Target <> nil) and (tvWatches.NodeParent[Target] = nil);
+    if Accept then
+      case Mode of
+        dmAbove: ;
+        dmBelow: Accept := not tvWatches.Expanded[Target];
+        else     Accept := false;
+      end;
+    if not Accept then
+      exit;
+
+
+    for N in tvWatches.SelectedNodes(True) do begin
+      if (tvWatches.NodeItem[N] = nil) or
+         (tvWatches.NodeParent[N] <> nil)
+      then begin
+        Accept := False;
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TWatchesDlg.tvWatchesExpanded(Sender: TBaseVirtualTree;
