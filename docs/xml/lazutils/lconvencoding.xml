@@ -173,6 +173,9 @@
       <element name="EncodingCPIso2">
         <short>Encoding name for ISO 8859-2 Code Page.</short>
       </element>
+      <element name="EncodingCPIso5">
+        <short>Encoding name for ISO 8859-5 Code Page.</short>
+      </element>
       <element name="EncodingCPIso9">
         <short>Encoding name for ISO 8859-9 Code Page.</short>
       </element>
@@ -261,6 +264,8 @@
             <dd>UTF8ToISO_8859_1</dd>
             <dt>EncodingCPIso2 ('iso88592')</dt>
             <dd>UTF8ToISO_8859_2</dd>
+            <dt>EncodingCPIso5 ('iso88595')</dt>
+            <dd>UTF8ToISO_8859_5</dd>
             <dt>EncodingCPIso9 ('iso88599')</dt>
             <dd>UTF8ToISO_8859_9</dd>
             <dt>EncodingCPIso14 ('iso885914')</dt>
@@ -333,6 +338,8 @@
             <dd>ISO_8859_1ToUTF8</dd>
             <dt>EncodingCPIso2 ('iso88592')</dt>
             <dd>ISO_8859_2ToUTF8</dd>
+            <dt>EncodingCPIso5 ('iso88595')</dt>
+            <dd>ISO_8859_5ToUTF8</dd>
             <dt>EncodingCPIso9 ('iso88599')</dt>
             <dd>ISO_8859_9ToUTF8</dd>
             <dt>EncodingCPIso14 ('iso885914')</dt>
@@ -727,6 +734,22 @@
       </element>
       <element name="ISO_8859_2ToUTF8.s">
         <short>String with the value in ISO 8859-2 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_5ToUTF8">
+        <short>Converts an ISO 8859-5-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_5ToUTF8.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_5ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_5ToUTF8.s">
+        <short>String with the value in ISO 8859-5 encoding.</short>
       </element>
 
       <element name="ISO_8859_9ToUTF8">
@@ -1312,6 +1335,40 @@
         <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToISO_8859_2.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_5">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-5.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_5</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-5 (Latin/Cyrllic) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-5 code page (28595). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_5 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_5 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_5.Result">
+        <short>String value after conversion to ISO 8859-5.</short>
+      </element>
+      <element name="UTF8ToISO_8859_5.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_5.SetTargetCodePage">
         <short>
           <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
         </short>
@@ -2259,6 +2316,7 @@
           <ul>
             <li>'ISO-8859-1'</li>
             <li>'ISO-8859-2'</li>
+            <li>'ISO-8859-5'</li>
             <li>'ISO-8859-9'</li>
             <li>'ISO-8859-14'</li>
             <li>'ISO-8859-15'</li>

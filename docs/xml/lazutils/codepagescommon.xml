@@ -89,6 +89,18 @@
         <seealso/>
       </element>
 
+      <element name="ArrayISO_8859_5ToUTF8">
+        <short>Provides a mapping for ISO-8859-5 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT">
+              https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT
+            </url>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="ArrayCP1250ToUTF8">
         <short>Provides a mapping for Code Page 1250 characters to UTF-8 codepoints.</short>
         <descr>
