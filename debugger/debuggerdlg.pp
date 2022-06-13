@@ -465,34 +465,36 @@ end;
 
 destructor TDebuggerDlg.Destroy;
 begin
-  if FSnapshotNotification <> nil then begin;
+  FUpdateCount := 99; // Don't trigger begin/endupdate
+
+  if FSnapshotNotification <> nil then begin
     FSnapshotNotification.OnChange := nil;
     FSnapshotNotification.OnCurrent := nil;
   end;
   SetSnapshotManager(nil);
   ReleaseRefAndNil(FSnapshotNotification);
 
-  if FThreadsNotification <> nil then begin;
+  if FThreadsNotification <> nil then begin
     FThreadsNotification.OnChange := nil;
     FThreadsNotification.OnCurrent := nil;
   end;
   SetThreadsMonitor(nil);
   ReleaseRefAndNil(FThreadsNotification);
 
-  if FCallStackNotification <> nil then begin;
+  if FCallStackNotification <> nil then begin
     FCallStackNotification.OnChange := nil;
     FCallStackNotification.OnCurrent := nil;
   end;
   SetCallStackMonitor(nil);
   ReleaseRefAndNil(FCallStackNotification);
 
-  if FLocalsNotification <> nil then begin;
+  if FLocalsNotification <> nil then begin
     FLocalsNotification.OnChange := nil;
   end;
   SetLocalsMonitor(nil);
   ReleaseRefAndNil(FLocalsNotification);
 
-  if FWatchesNotification <> nil then begin;
+  if FWatchesNotification <> nil then begin
     FWatchesNotification.OnAdd := nil;
     FWatchesNotification.OnRemove := nil;
     FWatchesNotification.OnUpdate := nil;
@@ -500,13 +502,13 @@ begin
   SetWatchesMonitor(nil);
   ReleaseRefAndNil(FWatchesNotification);
 
-  if FRegistersNotification <> nil then begin;
+  if FRegistersNotification <> nil then begin
     FRegistersNotification.OnChange := nil;
   end;
   SetRegistersMonitor(nil);
   ReleaseRefAndNil(FRegistersNotification);
 
-  if FBreakpointsNotification <> nil then begin;
+  if FBreakpointsNotification <> nil then begin
     FBreakpointsNotification.OnAdd := nil;
     FBreakpointsNotification.OnRemove := nil;
     FBreakpointsNotification.OnUpdate := nil;
