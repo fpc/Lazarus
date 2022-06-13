@@ -241,7 +241,7 @@ procedure TQtTimerEx.signalWidgetDestroyed; cdecl;
 begin
   Stop;
   FTimerList.Delete(FHandle, FID);
-  Destroy;
+  Release;
 end;
 
 procedure TQtTimerEx.signalTimeout; cdecl;
