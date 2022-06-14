@@ -1,6 +1,8 @@
 unit stubs.web;
 
-uses stubs.js;
+interface
+
+uses stub.js;
 
 Type
   TEventListenerEvent = class (TJSObject);
