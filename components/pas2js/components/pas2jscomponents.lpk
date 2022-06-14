@@ -118,8 +118,23 @@
         <Filename Value="stubs/stub.bulmawidgets.pas"/>
         <UnitName Value="stub.bulmawidgets"/>
       </Item>
+      <Item>
+        <Filename Value="stubs/stub.fprpcclient.pp"/>
+        <UnitName Value="stub.fprpcclient"/>
+      </Item>
+      <Item>
+        <Filename Value="iderpccodegen.pp"/>
+        <UnitName Value="iderpccodegen"/>
+      </Item>
+      <Item>
+        <Filename Value="frmcreaterpcserviceclient.pas"/>
+        <UnitName Value="frmcreaterpcserviceclient"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="weblaz"/>
+      </Item>
       <Item>
         <PackageName Value="SynEditDsgn"/>
       </Item>

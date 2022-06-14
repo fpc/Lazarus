@@ -1,0 +1,200 @@
+object CreateRPCClientServiceForm: TCreateRPCClientServiceForm
+  Left = 653
+  Height = 427
+  Top = 282
+  Width = 565
+  Caption = 'Create Service Client Form'
+  ClientHeight = 427
+  ClientWidth = 565
+  LCLVersion = '2.3.0.0'
+  object edtURL: TEdit
+    Left = 88
+    Height = 27
+    Top = 13
+    Width = 437
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    TextHint = 'URL to get API from'
+  end
+  object lblURL: TLabel
+    AnchorSideTop.Control = edtURL
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtURL
+    Left = 39
+    Height = 16
+    Top = 18
+    Width = 41
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'URL'
+    FocusControl = edtURL
+  end
+  object lblUnitName: TLabel
+    AnchorSideTop.Control = edtUnitName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtUnitName
+    Left = 16
+    Height = 16
+    Top = 53
+    Width = 64
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'Unit name'
+    FocusControl = edtUnitName
+  end
+  object edtUnitName: TEdit
+    AnchorSideTop.Control = edtURL
+    AnchorSideTop.Side = asrBottom
+    Left = 88
+    Height = 27
+    Top = 48
+    Width = 437
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    OnEditingDone = edtUnitNameEditingDone
+    TabOrder = 1
+    TextHint = 'Name of unit to generate'
+  end
+  object bpForm: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 383
+    Width = 553
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object edtFileName: TFileNameEdit
+    AnchorSideTop.Control = edtUnitName
+    AnchorSideTop.Side = asrBottom
+    Left = 88
+    Height = 27
+    Top = 84
+    Width = 437
+    DialogKind = dkSave
+    DialogTitle = 'Specify a file to save the unit to'
+    Filter = 'Pascal files|*.pp;*.pas|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = '.pp'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 9
+    MaxLength = 0
+    TabOrder = 3
+    TextHint = 'Filename to save to'
+  end
+  object lblFileName: TLabel
+    AnchorSideTop.Control = edtFileName
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtFileName
+    Left = 26
+    Height = 16
+    Top = 89
+    Width = 54
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'Filename'
+  end
+  object cbForceJSValueResult: TCheckBox
+    AnchorSideTop.Control = cbPreferNativeInt
+    AnchorSideTop.Side = asrBottom
+    Left = 88
+    Height = 23
+    Top = 150
+    Width = 181
+    BorderSpacing.Top = 8
+    Caption = 'Force JSValue Result type'
+    TabOrder = 4
+  end
+  object cbPreferNativeInt: TCheckBox
+    AnchorSideTop.Control = edtFileName
+    AnchorSideTop.Side = asrBottom
+    Left = 88
+    Height = 23
+    Top = 119
+    Width = 199
+    BorderSpacing.Top = 8
+    Caption = 'Prefer NativeInt for numbers'
+    TabOrder = 5
+  end
+  object mPreview: TMemo
+    AnchorSideTop.Control = cbForceJSValueResult
+    AnchorSideTop.Side = asrBottom
+    Left = 94
+    Height = 133
+    Top = 181
+    Width = 431
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 8
+    Lines.Strings = (
+      'mPreview'
+    )
+    TabOrder = 6
+  end
+  object btnPreview: TButton
+    AnchorSideTop.Control = cbForceJSValueResult
+    AnchorSideTop.Side = asrCenter
+    Left = 441
+    Height = 25
+    Top = 149
+    Width = 84
+    Anchors = [akTop, akRight]
+    Caption = 'Preview'
+    OnClick = btnPreviewClick
+    TabOrder = 7
+  end
+  object lblPreview: TLabel
+    AnchorSideTop.Control = mPreview
+    AnchorSideRight.Control = mPreview
+    Left = 19
+    Height = 16
+    Top = 181
+    Width = 67
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'Preview'
+  end
+  object cbCopyToClipBoard: TCheckBox
+    AnchorSideLeft.Control = mPreview
+    Left = 94
+    Height = 23
+    Top = 350
+    Width = 283
+    Anchors = [akLeft, akBottom]
+    Caption = 'Copy source to clipBoard in addition to file'
+    TabOrder = 8
+  end
+  object cbAddToProject: TCheckBox
+    AnchorSideLeft.Control = mPreview
+    Left = 94
+    Height = 23
+    Top = 323
+    Width = 139
+    Anchors = [akLeft, akBottom]
+    Caption = 'Add unit to project'
+    TabOrder = 9
+  end
+  object APIClient: TFPHTTPClient
+    KeepConnection = False
+    IOTimeout = 0
+    ConnectTimeout = 3000
+    HTTPversion = '1.1'
+    AllowRedirect = True
+    Left = 24
+    Top = 271
+  end
+end

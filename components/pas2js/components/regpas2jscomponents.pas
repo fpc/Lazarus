@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, ProjectIntf, PropEdits, ComponentEditors, fpjsondataset, dbpropedits,
   db, stub.htmlfragment, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
   stub.webwidget, stub.bootstrapwidgets, stub.bootstraptablewidget, stub.bulmawidgets,
-  stub.templateloader, stub.jsondataset, stub.dbwebwidget, stub.dbhtmlwidgets;
+  stub.templateloader, stub.jsondataset, stub.dbwebwidget, stub.dbhtmlwidgets,
+  stub.fprpcclient;
 
 Type
 
@@ -48,6 +49,22 @@ Type
     function GetVerb({%H-}Index: Integer): string; override;
     procedure ExecuteVerb({%H-}Index: Integer); override;
   end;
+
+
+  { TPas2JSRPCClientComponentEditor }
+
+  TPas2JSRPCClientComponentEditor = class(TComponentEditor)
+  private
+    FClient : TPas2JSRPCClient;
+  protected
+    Procedure CreateServiceClient;
+  public
+    property Client : TPas2JSRPCClient read FClient write FClient;
+    function GetVerbCount: Integer; override;
+    function GetVerb({%H-}Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+  end;
+
 
   { TElementIDPropertyEditor }
   // Get element ID list from HTML file associated with component
@@ -244,6 +261,13 @@ Type
     Procedure RequiredUnits(Units: TStrings); override;
   end;
 
+  { TFPRPCClientRequirements }
+
+  TFPRPCClientRequirements = Class(TComponentRequirements)
+  public
+    Procedure RequiredUnits(Units: TStrings); override;
+  end;
+
   { TLogBridge }
 
   TLogBridge = Class(TObject)
@@ -260,11 +284,12 @@ implementation
 
 uses
   // LCL/Lazarus
-  Types, IDEWindowIntf, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
+  Types, IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
   // Pas2jsDesign
   pjscontroller, idehtmltools,
   // pas2jscomponents
-  frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, frmpas2jsedithtml, p2jselementactions;
+  frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, frmpas2jsedithtml, p2jselementactions,
+  frmcreaterpcserviceclient;
 
 {$r pas2jsc_images.res}
 
@@ -293,7 +318,7 @@ begin
   RegisterComponentRequirements(TDBBootstrapTableWidget,TDBBootstrapTableWidgetRequirements);
   RegisterComponentRequirements(TDBLoopTemplateWidget,TDBWebWidgetRequirements);
   RegisterComponentRequirements(TDBSelectWidget,TDBHTMLWebWidgetRequirements);
-
+  RegisterComponentRequirements(TPas2jsRPCClient,TFPRPCClientRequirements);
 end;
 
 Procedure RegisterStandardHTMLActions;
@@ -310,6 +335,7 @@ Procedure RegisterComponentEditors;
 begin
   RegisterComponentEditor(THTMLElementActionList,THTMLElementActionListComponentEditor);
   RegisterComponentEditor(TBootstrapModal,TBootstrapModalComponentEditor);
+  RegisterComponentEditor(TPas2JSRPCClient,TPas2JSRPCClientComponentEditor);
 end;
 
 Procedure RegisterPropertyEditors;
@@ -381,7 +407,7 @@ end;
 procedure register;
 
 begin
-  RegisterComponents('Pas2js',[THTMLElementActionList,TBootstrapModal,TBootstrapToastWidget,TTemplateLoader]);
+  RegisterComponents('Pas2js',[THTMLElementActionList,TBootstrapModal,TBootstrapToastWidget,TTemplateLoader,TPas2jsRPCClient]);
   RegisterComponents('Pas2js Bulma',[TBulmaModal,TBulmaToastWidget]);
   RegisterComponents('Pas2js Data Access',[TSQLDBRestConnection,TSQLDBRestDataset,TLocalJSONDataset]);
   RegisterComponents('Pas2js Data Controls',[TDBBootstrapTableWidget,TDBLoopTemplateWidget,TDBSelectWidget]);
@@ -393,6 +419,81 @@ begin
   RegisterPropertyEditors;
   RegisterHTMLFragmentHandling;
   RegisterRESTHandling;
+end;
+
+{ TPas2JSRPCClientComponentEditor }
+
+procedure TPas2JSRPCClientComponentEditor.CreateServiceClient;
+
+Var
+  aFile,aSvcFile : TLazProjectFile;
+  aFileName : string;
+  frm : TCreateRPCClientServiceForm;
+
+begin
+  aFileName:='';
+  aFile:=LazarusIDE.GetProjectFileWithRootComponent(Client.Owner);
+  if Assigned(aFile) then
+    aFileName:=aFile.CustomData[Client.Name+'_filename'];
+  if aFileName<>'' then
+    begin
+    aSvcFile:=LazarusIDE.ActiveProject.FindFile(aFileName,[pfsfOnlyProjectFiles]);
+    // look harder - not sure if the IDE does not do this by itself.
+    if aSvcFile=Nil then
+      aSvcFile:=LazarusIDE.ActiveProject.FindFile(ExtractFileName(aFileName),[pfsfOnlyProjectFiles]);
+    end;
+  frm:=TCreateRPCClientServiceForm.Create(Application);
+  try
+    frm.Client:=Self.Client;
+    frm.ProjectDir:=ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
+    if (aFileName<>'') then
+      begin
+      frm.UnitFileName:=aFileName;
+      frm.ServiceUnitName:=ChangeFileExt(ExtractFileName(aFileName),'');
+      frm.AllowAddUnitToProject:=(aSvcFile=Nil);
+      end;
+    if (frm.ShowModal=mrOK) and (frm.UnitFileName<>'') and FileExists(frm.UnitFileName) then
+      begin
+      if Assigned(aFile) then
+        aFile.CustomData[Client.Name+'_filename']:=frm.UnitFileName;
+      Modified;
+      if frm.AddUnitToProject then
+        LazarusIDE.DoOpenEditorFile(frm.UnitFileName,0,0,[ofAddToProject]);
+      end;
+  finally
+    frm.Free;
+  end;
+end;
+
+function TPas2JSRPCClientComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
+function TPas2JSRPCClientComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Case Index of
+    0 : Result:=rsCreateServiceClient;
+  else
+    Result:=inherited GetVerb(Index);
+  end;
+end;
+
+procedure TPas2JSRPCClientComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  FClient:=GetComponent as TPas2jsRPCClient;
+  case Index of
+    0 : CreateServiceClient;
+  else
+    inherited ExecuteVerb(Index);
+  end;
+end;
+
+{ TFPRPCClientRequirements }
+
+procedure TFPRPCClientRequirements.RequiredUnits(Units: TStrings);
+begin
+  Units.text:='fprpcclient';
 end;
 
 { TBulmaWidgetRequirements }

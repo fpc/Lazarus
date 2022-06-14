@@ -42,6 +42,8 @@ Resourcestring
   rsErrorWhileDeletingAction = 'An error occurred when deleting element action:%s%s';
   rsAddHTMLElementActions = 'Add HTML Element actions';
   rsUseDBAwareActions = 'Use Data-Aware actions';
+  rsCreateServiceClient = 'Create Service client component';
+  rsInvalidAPIReturned = 'The service URL "%s" returned an invalid API: %s';
 
 implementation
 
