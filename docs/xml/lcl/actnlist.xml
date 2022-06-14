@@ -151,7 +151,7 @@
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is the overridden destructor for the class instance.  When <var>ActionList</var> has been assigned, its <var>RemoveAction</var> method is called to delete the current class instance.
+            <var>Destroy</var> is the overridden destructor for the class instance. When <var>ActionList</var> has been assigned, its <var>RemoveAction</var> method is called to delete the current class instance.
           </p>
           <p>
             Destroy calls the inherited method to free the class instance and unregister any action link clients.
@@ -183,7 +183,7 @@
       <!-- function result Visibility: default -->
       <element name="TContainedAction.Execute.Result">
         <short>
-          True if the action was executed using one of the available execution options.
+          <b>True</b> if the action was executed using one of the available execution options.
         </short>
       </element>
       <!-- function Visibility: public -->
@@ -224,7 +224,8 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TContainedAction.HasParent.Result">
-        <short>True when the parent component has been assigned.</short>
+        <short><b>True</b> when the parent component has been assigned.
+      </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TContainedAction.Update">
@@ -238,7 +239,9 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TContainedAction.Update.Result">
-        <short>True if an OnUpdate event handler was found and executed for the Action.</short>
+        <short>
+          <b>True</b> if an OnUpdate event handler was found and executed for the Action.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TContainedAction.ActionList">
@@ -308,7 +311,7 @@
       </element>
       <element name="TActionListEnumerator.MoveNext.Result">
         <short>
-          True if the next value was available. False when no more values exist for the enumerator.
+          <b>True</b> if the next value was available. <b>False</b> when no more values exist for the enumerator.
         </short>
       </element>
 
@@ -316,7 +319,7 @@
         <short>Current value for the enumerator.</short>
         <descr>
           <p>
-            Current is a read-only TContainedAction property with the current value for the enumerator. The property value is retrieved from Actions using the position in an  internal member.
+            Current is a read-only TContainedAction property with the current value for the enumerator. The property value is retrieved from Actions using the position in an internal member.
           </p>
         </descr>
         <seealso/>
@@ -343,7 +346,9 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TActionEvent.Handled">
-        <short>True if the action was executed in the action list for t he handler.</short>
+        <short>
+          <b>True</b> if the action was executed in the action list for t he handler.
+        </short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TActionListState">
@@ -540,7 +545,7 @@
         <short>Set the order for the specified child (Action).</short>
         <descr>
           <p>
-            <var>SetChildOrder</var> is an overridden method in <var>TCustomActionList</var>. It sets the ordinal position for the action in <var>Component</var> to the value specified in <var>Order</var>.  The <var>IndexOf</var> method in <var>Actions</var> is called to get the current position for Component. The value in Order is assigned to the <var>Index</var> property in the <var>TContainedAction</var> when it exists in Actions. No actions are performed in the method when Component is not stored in the Actions for the action list.
+            <var>SetChildOrder</var> is an overridden method in <var>TCustomActionList</var>. It sets the ordinal position for the action in <var>Component</var> to the value specified in <var>Order</var>. The <var>IndexOf</var> method in <var>Actions</var> is called to get the current position for Component. The value in Order is assigned to the <var>Index</var> property in the <var>TContainedAction</var> when it exists in Actions. No actions are performed in the method when Component is not stored in the Actions for the action list.
           </p>
         </descr>
         <seealso>
@@ -1058,7 +1063,7 @@
           </p>
         </descr>
         <errors>
-          Raises an EConvertError exception if the current class cannot be assigned to the  persistent class instance in Dest.
+          Raises an EConvertError exception if the current class cannot be assigned to the persistent class instance in Dest.
         </errors>
         <seealso>
           <link id="#rtl.classes.TPersistent">TPersistent</link>
@@ -1087,7 +1092,7 @@
       <!-- function Visibility: protected -->
       <element name="TCustomAction.HandleShortCut">
         <short>
-          Returns True if there if the action is enabled and executed successfully.
+          Returns <b>True</b> if there if the action is enabled and executed successfully.
         </short>
         <descr/>
         <seealso/>
@@ -1130,29 +1135,31 @@
       <!-- function Visibility: public -->
       <element name="TCustomAction.DoHint">
         <short>
-          <var>DoHint</var> - method for displaying the hint contained in <var>HintStr</var> if True value is returned.</short>
+          <var>DoHint</var> - method for displaying the hint contained in <var>HintStr</var> if <b>True</b> value is returned.
+        </short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomAction.DoHint.Result">
-        <short>True if hint is to be displayed.</short>
+        <short><b>True</b> if hint is to be displayed.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomAction.DoHint.HintStr">
         <short>
-          <var>HintStr</var> - the text-string for display as a hint.</short>
+          <var>HintStr</var> - the text-string for display as a hint.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomAction.Execute">
         <short>Executes the action using an available OnExecute event handler.</short>
         <descr>
           <p>
-            <var>Execute</var> is an overridden method in TCustomAction.  It checks the State for the ActionList to ensure that it is not suspended. No actions are performed in the method when ActionList.State contains a value other than asNormal.
+            <var>Execute</var> is an overridden method in TCustomAction. It checks the State for the ActionList to ensure that it is not suspended. No actions are performed in the method when ActionList.State contains a value other than asNormal.
           </p>
           <p>
             Execute calls Update to signal an available OnUpdate event handler in the ActionList, the Application singleton, or the class instance. It toggles the value in the Checked property when AutoCheck is enabled. The inherited Execute method is called when the class instance is Enabled.
           </p>
           <p>
-            The return value is True if the action was executed in the method.
+            The return value is <b>True</b> if the action was executed in the method.
           </p>
         </descr>
         <seealso>
@@ -1163,7 +1170,7 @@
 
       <!-- function result Visibility: default -->
       <element name="TCustomAction.Execute.Result">
-        <short>True if action is to be performed.</short>
+        <short><b>True</b> if action is to be performed.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.AutoCheck">
@@ -1176,7 +1183,9 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.Checked">
-        <short>Whether the CheckBox associated with the action is <var>Checked</var> (default False).</short>
+        <short>
+          Whether the CheckBox associated with the action is <var>Checked</var> (default <b>False</b>).
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.DisableIfNoHandler">
@@ -1397,7 +1406,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetAutoCheck">
         <short>
-          <var>SetAutoCheck</var> - specifies the value of AutoCheck, whether True or False.
+          <var>SetAutoCheck</var> - specifies the value of AutoCheck, whether <b>True</b> or <b>False</b>.
         </short>
         <descr/>
         <seealso/>
@@ -1419,7 +1428,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetChecked">
         <short>
-          <var>SetChecked</var> - specifies the value of the Checked property: True or False.
+          <var>SetChecked</var> - specifies the value of the Checked property: <b>True</b> or <b>False</b>.
         </short>
         <descr/>
         <seealso/>
@@ -1431,7 +1440,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetEnabled">
         <short>
-          <var>SetEnabled</var> - specifies the value of the <var>Enabled</var> property: True or False.
+          <var>SetEnabled</var> - specifies the value of the <var>Enabled</var> property: <b>True</b> or <b>False</b>.
         </short>
         <descr/>
         <seealso/>
@@ -1818,7 +1827,7 @@
         <short>Registers components for use in the Lazarus IDE.</short>
         <descr>
           <p>
-            Register is the procedure used to register components in the unit for use in the Lazarus IDE.  The following components are added to the Lazarus IDE component palette:
+            Register is the procedure used to register components in the unit for use in the Lazarus IDE. The following components are added to the Lazarus IDE component palette:
           </p>
           <p>
             <b>Standard</b> Tab
