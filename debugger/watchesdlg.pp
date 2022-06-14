@@ -846,7 +846,7 @@ begin
     exit;
 
   AWatch := TIdeWatch(Sender.OwnerData);
-  if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
+  if AWatch.Enabled then begin
     VNode := tvWatches.FindNodeForItem(AWatch);
     if VNode = nil then
       exit;
@@ -1056,7 +1056,7 @@ begin
     exit;
   InspectLabel.Caption := Watch.Expression;
 
-  if not(Watch.Enabled and Watch.HasAllValidParents(GetThreadId, GetStackframe)) then begin
+  if not(Watch.Enabled) then begin
     InspectMemo.WordWrap := True;
     InspectMemo.Text := '<evaluating>';
     exit;
@@ -1185,8 +1185,8 @@ begin
     FWatchInUpDateItem := AWatch.TopParentWatch;
   FCurrentWatchInUpDateItem := AWatch;
   try
-    tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.Expression;
-    if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
+    tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.DisplayName;
+    if AWatch.Enabled then begin
       WatchValue := AWatch.Values[GetThreadId, GetStackframe];
       if (WatchValue <> nil) and
          ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
@@ -1263,7 +1263,6 @@ var
   ResData: TWatchResultData;
   ExistingNode, nd: PVirtualNode;
   Nav: TArrayNavigationBar;
-  Idx: String;
   Offs, KeepCnt, KeepBelow: Int64;
 begin
   ChildCount := 0;
@@ -1306,9 +1305,7 @@ begin
 
   Offs := Nav.Index;
   for i := 0 to ChildCount - 1 do begin
-    Idx := IntToStr(Offs +  i);
-
-    NewWatch := AWatch.ChildrenByName[Idx];
+    NewWatch := AWatch.ChildrenByNameAsArrayEntry[Offs +  i];
     if NewWatch = nil then begin
       dec(ChildCount);
       continue;
@@ -1353,6 +1350,7 @@ var
   ResData: TWatchResultData;
   ExistingNode, nd: PVirtualNode;
   ChildInfo: TWatchResultDataFieldInfo;
+  AnchClass: String;
 begin
   ChildCount := 0;
 
@@ -1364,10 +1362,10 @@ begin
     if ExistingNode <> nil then
       tvWatches.NodeControl[ExistingNode].Free;
 
+    AnchClass := ResData.TypeName;
     for i := 0 to ResData.FieldCount-1 do begin
       ChildInfo := ResData.Fields[i];
-
-      NewWatch := AWatch.ChildrenByName[ChildInfo.FieldName];
+      NewWatch := AWatch.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
       if NewWatch = nil then begin
         dec(ChildCount);
         continue;
@@ -1408,8 +1406,9 @@ begin
       ChildCount := TypInfo.Fields.Count;
       ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
 
+      AnchClass := TypInfo.TypeName;
       for i := 0 to TypInfo.Fields.Count-1 do begin
-        NewWatch := AWatch.ChildrenByName[TypInfo.Fields[i].Name];
+        NewWatch := AWatch.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
         if NewWatch = nil then begin
           dec(ChildCount);
           continue;
