@@ -22,7 +22,7 @@
         </ul>
       </descr>
 
-      <!-- unresolved  references -->
+      <!-- unresolved references -->
       <element name="Classes"/>
       <element name="Process"/>
       <element name="FileUtil"/>
@@ -58,7 +58,7 @@
         </short>
         <descr>
           <p>
-            <var>GetNumBytesAvailable</var> is a <var>dword</var> function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value from  <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
+            <var>GetNumBytesAvailable</var> is a <var>dword</var> function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value from <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
           </p>
           <p>
             Use <var>NumBytesAvailable</var> to access the value for the property.
@@ -83,7 +83,7 @@
         </short>
         <descr>
           <p>
-            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous  notifications which occur during execution of the process. HandlePipeInput is assigned using <var>AddPipeEventHandler</var> when <var>Execute</var> is called.
+            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous notifications which occur during execution of the process. HandlePipeInput is assigned using <var>AddPipeEventHandler</var> when <var>Execute</var> is called.
           </p>
           <p>
             HandlePipeInput examines values in <var>AReasons</var> to determine the action for the notification. When AReasons includes the value <var>prBroken</var>, the pipe has been closed and <var>UnhookPipeHandle</var> is called. When <var>prDataAvailable</var> is included in AReasons, the <var>OnReadData</var> event handler is signalled (when assigned).
@@ -198,7 +198,7 @@
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the overridden destructor  for the class instance. Destroy calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> to remove the handler(s) for the class instance. Destroy calls the inherited method to free resources allocated in the class instance and perform free notifications.
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> to remove the handler(s) for the class instance. Destroy calls the inherited method to free resources allocated in the class instance and perform free notifications.
           </p>
         </descr>
         <seealso>
@@ -273,8 +273,7 @@
         <short>Registers components for use in the Lazarus IDE.</short>
         <descr>
           <p>
-            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE.
-            The following components are added to the Lazarus IDE component palette:
+            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE. The following components are added to the Lazarus IDE component palette:
           </p>
           <p>
             <b>System</b> Tab
