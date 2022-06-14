@@ -21,7 +21,7 @@ unit stub.restdataset;
 interface
 
 uses
-  Classes, SysUtils, db, fpJSONDataset;
+  Classes, SysUtils, db, fpJSONDataset, stub.web;
 
 Type
 
@@ -33,6 +33,7 @@ Type
 
   TRestGetURLEvent = Procedure (Sender : TComponent; aRequest : TDataRequest; Var aURL : String) of Object;
   TRestUpdateURLEvent = Procedure (Sender : TComponent; aRequest : TRecordUpdateDescriptor; Var aURL : String) of Object;
+  TSetupHTTPRequestEvent = Procedure  (Sender : TComponent; aHTTPRequest : TJSXMLHttpRequest) of Object;
 
   TSQLDBRestConnection = Class(TComponent)
   private
@@ -44,6 +45,7 @@ Type
     FMetaDataResourceName: String;
     FonGetResources: TNotifyEvent;
     FOnGetURL: TRestGetURLEvent;
+    FOnSetupHTTPRequest: TSetupHTTPRequestEvent;
     FOnUpdateURL: TRestUpdateURLEvent;
     FPageParam: String;
     FPassword: String;
@@ -78,6 +80,8 @@ Type
     Property OnGetURL : TRestGetURLEvent Read FOnGetURL Write FOnGetURL;
     // callback to get the REST Update/Post url
     Property OnUpdateURL : TRestUpdateURLEvent Read FOnUpdateURL Write FOnUpdateURL;
+    // Property to perform additional setup
+    Property OnSetupHTTPRequest : TSetupHTTPRequestEvent Read FOnSetupHTTPRequest Write FOnSetupHTTPRequest;
   end;
 
 
