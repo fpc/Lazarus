@@ -20,7 +20,7 @@ type
 
   TDbgTreeView = class(TLazVirtualStringTree)
   private
-    FLastVisibleBeforeExpanding: PVirtualNode;
+    FFirstVisibleBeforeExpanding, FLastVisibleBeforeExpanding: PVirtualNode;
     function GetNodeControl(Node: PVirtualNode): TControl;
     function GetNodeItem(Node: PVirtualNode): TObject;
     function GetNodeText(Node: PVirtualNode; AColumn: integer): String;
@@ -37,6 +37,7 @@ type
       var LineImage: TLineImage): Integer; override;
     function DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
       var NodeRect: TRect): TDropMode; override;
+    procedure HandleMouseDown(var Message: TLMMouse; var HitInfo: THitInfo); override;
     procedure HandleMouseDblClick(var Message: TLMMouse; const HitInfo: THitInfo); override;
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var AText: String); override;
@@ -161,6 +162,7 @@ end;
 
 function TDbgTreeView.DoExpanding(Node: PVirtualNode): Boolean;
 begin
+  FFirstVisibleBeforeExpanding := GetFirstVisibleNoInit(Node);
   FLastVisibleBeforeExpanding := GetLastVisibleNoInit(Node);
   Result := inherited DoExpanding(Node);
 end;
@@ -170,7 +172,9 @@ var
   N: PVirtualNode;
   NData: PDbgTreeNodeData;
 begin
-  N := GetLastVisibleNoInit(Node);
+  N := FFirstVisibleBeforeExpanding;
+  if N = nil then
+    N := GetFirstNoInit;
   while (N <> nil) do begin
     NData := GetNodeData(N);
     if NData^.Control <> nil then
@@ -223,6 +227,16 @@ begin
   end
   else
     Result := dmNowhere;
+end;
+
+procedure TDbgTreeView.HandleMouseDown(var Message: TLMMouse;
+  var HitInfo: THitInfo);
+begin
+  if Message.Msg = LM_LBUTTONDOWN then
+    DragMode := dmAutomatic
+  else
+    DragMode := dmManual;
+  inherited HandleMouseDown(Message, HitInfo);
 end;
 
 procedure TDbgTreeView.HandleMouseDblClick(var Message: TLMMouse;
