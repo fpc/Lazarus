@@ -273,7 +273,7 @@ var
   i   : integer;
 begin
   xml := nil;
-  dlg := TSaveDialog.Create(Self);
+  dlg := TOpenDialog.Create(Self);
   exp := TKeyCommandRelationList.Create;
   try
     if not dlg.Execute then Exit;
