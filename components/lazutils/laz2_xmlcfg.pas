@@ -990,6 +990,7 @@ var
   cmp, BrPos: Integer;
   NodeName: string;
 begin
+  Result := nil;
   BrPos := Pos('[', aName);
   if (Length(aName)>=BrPos+2) and (aName[Length(aName)]=']')
   and TryStrToInt(Trim(Copy(aName, BrPos+1, Length(aName)-BrPos-1)), m) then
