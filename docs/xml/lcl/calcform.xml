@@ -189,7 +189,7 @@
         <short>Finds the calculator button which handles the specified key character.</short>
         <descr>
           <p>
-            <var>Key</var> contains  a character value to locate in the button captions on the panel. Keys which are not represented by buttons, like <b>Enter</b> (#13) and <b>Escape</b> (#27), are translated to the value used for the target button. In addition, when ',' is used as the decimal separator on the system, it is translated into the '.' decimal notation.
+            <var>Key</var> contains a character value to locate in the button captions on the panel. Keys which are not represented by buttons, like <b>Enter</b> (#13) and <b>Escape</b> (#27), are translated to the value used for the target button. In addition, when ',' is used as the decimal separator on the system, it is translated into the '.' decimal notation.
           </p>
           <p>
             FindButton iterates through the <var>Controls</var> on the panel to locate the button using the associated Key. The return value is <b>Nil</b> when a button is not located for the value in Key.
