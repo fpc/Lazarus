@@ -158,13 +158,16 @@ begin
 end;
 
 { TSQLDBRestSchemaComponentEditor }
+
 Function GetFileName(var aFileName : UTF8String; aFilters : UTF8String; ForSave : Boolean = False) : Boolean;
 
 
 Var
   Dlg : TFileDialog;
+  aDir : String;
 
 begin
+  aDir:=ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
   if forSave then
     begin
     DLG:=TSaveDialog.Create(Application);
@@ -178,6 +181,7 @@ begin
       Options:=Options+[ofFileMustExist];
     end;
   try
+    DLG.InitialDir:=aDir;
     DLG.FileName:=aFileName;
     DLG.Filter:=aFilters;
     DLG.DefaultExt:=ExtractFileExt(aFileName);
