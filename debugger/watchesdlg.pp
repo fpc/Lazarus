@@ -759,12 +759,17 @@ end;
 procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);
 var
   Node: PVirtualNode;
+  AWatch: TIdeWatch;
 begin
   Node := tvWatches.GetFocusedNode;
   if Node = nil then
     exit;
   Clipboard.Open;
-  Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_EXPR-1];
+  AWatch := TIdeWatch(tvWatches.NodeItem[Node]);
+  if AWatch <> nil then
+    Clipboard.AsText := AWatch.Expression
+  else
+    Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_EXPR-1];
   Clipboard.Close;
 end;
 
