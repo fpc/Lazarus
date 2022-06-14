@@ -331,9 +331,14 @@ function TIDEHTMLTools.GetHTMLFileForComponent(aComponent: TComponent): String;
 Var
   aFile : TLazProjectFile;
 begin
+  // See if a handler is registered for the component.
   Result:=GetNameFromComponent(aComponent);
   if Result='' then
+    // try a handler for the form on which the component is dropped
+    Result:=GetNameFromComponent(aComponent.Owner);
+  if Result='' then
     begin
+    // Now try settings stored in project
     aFile:=LazarusIDE.GetProjectFileWithRootComponent(aComponent.Owner);
     if aFile=Nil then
       aFile:=LazarusIDE.GetProjectFileWithRootComponent(aComponent);
