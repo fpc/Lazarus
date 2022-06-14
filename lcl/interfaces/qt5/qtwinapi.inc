@@ -7023,12 +7023,12 @@ begin
   begin
     if SrcQDC.Parent <> nil then
     begin
-      AWidgetID := QWidget_winId(SrcQDC.Parent);
       AWindow := QWidget_windowHandle(SrcQDC.Parent);
-      if AWindow <> nil then
-        AScreen := QWindow_screen(AWindow)
-      else
-        AScreen := QGuiApplication_primaryScreen();
+      if AWindow = nil then
+        exit(False);
+
+      AWidgetID := QWindow_winId(AWindow);
+      AScreen := QWindow_screen(AWindow);
 
       if (Rop = SRCCOPY) and not ((DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top)) then
       begin
