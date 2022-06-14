@@ -224,7 +224,7 @@
         <short>Contains the Left pixel coordinate for the button.</short>
         <descr>
           <p>
-            <var>Left</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the  parent control for the component.
+            <var>Left</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the parent control for the component.
           </p>
         </descr>
         <seealso></seealso>
@@ -234,7 +234,7 @@
         <short>Contains the Top pixel coordinate for the button.</short>
         <descr>
           <p>
-            <var>Top</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the  parent control for the component.
+            <var>Top</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the parent control for the component.
           </p>
         </descr>
         <seealso></seealso>
@@ -244,7 +244,7 @@
         <short>Contains the Width in pixels for the button.</short>
         <descr>
           <p>
-            <var>Width</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the  parent control for the component.
+            <var>Width</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the parent control for the component.
           </p>
         </descr>
         <seealso></seealso>
@@ -254,7 +254,7 @@
         <short>Contains the Height in pixels for the button.</short>
         <descr>
           <p>
-            <var>Height</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the  parent control for the component.
+            <var>Height</var> is not a stored property value in the LCL component streaming mechanism. Its value it always calculated the button position relative to the parent control for the component.
           </p>
         </descr>
         <seealso></seealso>
@@ -287,7 +287,7 @@
         <short>Defines the base class for TButtonPanel.</short>
         <descr>
           <p>
-            <var>TCustomButtonPanel</var> is a <var>TCustomPanel</var> descendant which defines the base class for <var>TButtonPanel</var>,  a panel containing buttons with glyph images. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
+            <var>TCustomButtonPanel</var> is a <var>TCustomPanel</var> descendant which defines the base class for <var>TButtonPanel</var>, a panel containing buttons with glyph images. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
           </p>
           <p>
             Applications should not create instances of <var>TCustomButtonPanel</var>; use the <var>TButtonPanel</var> ancestor which specifies the visibility of properties (including event handlers).
@@ -544,7 +544,7 @@
         <short>Sets the Tab order for visible buttons on the panel.</short>
         <descr>
           <p>
-            <var>UpdateButtonOrder</var> is a procedure used to set the tab order for visible buttons on the panel. It sets the <var>TabOrder</var> property in each of the  <var>TPanelBitBtn</var> instances using the <var>ButtonOrder</var> for the panel.
+            <var>UpdateButtonOrder</var> is a procedure used to set the tab order for visible buttons on the panel. It sets the <var>TabOrder</var> property in each of the <var>TPanelBitBtn</var> instances using the <var>ButtonOrder</var> for the panel.
           </p>
           <p>
             <var>UpdateButtonOrder</var> calls the <var>AdjustSize</var> method to resize the panel and its controls.
@@ -652,7 +652,7 @@
         </seealso>
       </element>
       <element name="TCustomButtonPanel.IsLastButton.Result">
-        <short>True when the specified button is the last in the button order.</short>
+        <short><b>True</b> when the specified button is the last in the button order.</short>
       </element>
       <element name="TCustomButtonPanel.IsLastButton.AControl">
         <short>Control compared to the buttons on the panel.</short>
@@ -1079,7 +1079,7 @@ AButtonPanel.ShowGlyphs := [pbOk, pbCancel];
         <short>Indicates the panel buttons displayed with Glyphs (small images).</short>
         <descr>
           <p>
-            <var>ShowGlyphs</var> contains values from the <var>TPanelButton</var> enumeration,  and defines which panel buttons in <var>ShowButtons</var> are displayed with glyph images. The default value for the property is defined in the <var>DefShowGlyphs</var> constant.
+            <var>ShowGlyphs</var> contains values from the <var>TPanelButton</var> enumeration, and defines which panel buttons in <var>ShowButtons</var> are displayed with glyph images. The default value for the property is defined in the <var>DefShowGlyphs</var> constant.
           </p>
           <p>
             Changing the values in the property causes the panel and its buttons to be re-sized and re-drawn.
