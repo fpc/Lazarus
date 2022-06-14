@@ -208,6 +208,34 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         Caption = 'CommandLabel'
         ParentColor = False
       end
+      object ExportButton: TButton
+        AnchorSideLeft.Control = ClearButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ClearButton
+        AnchorSideTop.Side = asrCenter
+        Left = 288
+        Height = 25
+        Top = 0
+        Width = 75
+        BorderSpacing.Left = 20
+        Caption = 'ExportButton'
+        OnClick = ExportButtonClick
+        TabOrder = 3
+      end
+      object ImportButton: TButton
+        AnchorSideLeft.Control = ExportButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ExportButton
+        AnchorSideTop.Side = asrCenter
+        Left = 369
+        Height = 25
+        Top = 0
+        Width = 75
+        BorderSpacing.Left = 6
+        Caption = 'ImportButton'
+        OnClick = ImportButtonClick
+        TabOrder = 4
+      end
     end
   end
   object PopupMenu1: TPopupMenu

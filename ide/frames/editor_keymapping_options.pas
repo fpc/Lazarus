@@ -37,7 +37,7 @@ uses
   IDEOptEditorIntf, IDEImagesIntf, SrcEditorIntf, IDECommands,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options,
-  KeymapSchemeDlg, KeyMapping, KeyMapShortCutDlg;
+  KeymapSchemeDlg, KeyMapping, KeyMapShortCutDlg, Laz2_XMLCfg;
 
 type
 
@@ -45,6 +45,8 @@ type
 
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnPanel: TPanel;
+    ExportButton: TButton;
+    ImportButton: TButton;
     ChooseSchemeButton: TBitBtn;
     ClearButton: TBitBtn;
     EditButton: TBitBtn;
@@ -67,6 +69,8 @@ type
     procedure EditMenuItemClick(Sender: TObject);
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
+    procedure ExportButtonClick(Sender: TObject);
+    procedure ImportButtonClick(Sender: TObject);
     procedure FilterEditAfterFilter(Sender: TObject);
     function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
@@ -229,6 +233,72 @@ begin
   ClearCommandMapping(TreeView.Selected)
 end;
 
+procedure TEditorKeymappingOptionsFrame.ExportButtonClick(Sender: TObject);
+var
+  dlg : TSaveDialog;
+  xml : TXMLConfig;
+  exp : TKeyCommandRelationList;
+  i   : integer;
+begin
+  xml := nil;
+  dlg := TSaveDialog.Create(Self);
+  exp := TKeyCommandRelationList.Create;
+  try
+    if not dlg.Execute then Exit;
+    xml := TXMLConfig.CreateClean(dlg.FileName);
+    exp.Assign(FEditingKeyMap);
+    for i:=0 to exp.RelationCount-1 do begin
+      exp.Relations[i].SkipSaving := false;
+      // default must be reset to zero, otherwise it will not be saved by SaveToXmlConfig
+      // aveToXMLConfig omits any shortcuts matching defaults
+      exp.Relations[i].DefaultShortcutA := CleanIDEShortCut;
+      exp.Relations[i].DefaultShortcutB := CleanIDEShortCut;
+    end;
+    exp.SaveToXMLConfig(xml, 'KeyMapping/');
+  finally
+    exp.Free;
+    dlg.Free;
+    xml.Free;
+  end;
+end;
+
+
+procedure TEditorKeymappingOptionsFrame.ImportButtonClick(Sender: TObject);
+var
+  dlg : TOpenDialog;
+  xml : TXMLConfig;
+  exp : TKeyCommandRelationList;
+  src : TKeyCommandRelation;
+  dst : TKeyCommandRelation;
+  i   : integer;
+begin
+  xml := nil;
+  dlg := TSaveDialog.Create(Self);
+  exp := TKeyCommandRelationList.Create;
+  try
+    if not dlg.Execute then Exit;
+    xml := TXMLConfig.Create(dlg.FileName);
+    exp.DefineCommandCategories; // default Relations
+    exp.LoadFromXMLConfig(xml, 'KeyMapping/');
+    for i:=0 to exp.RelationCount-1 do begin
+      src := exp.Relations[i];
+      dst := FEditingKeyMap.FindByCommand(src.Command);
+      if Assigned(dst) then begin
+        dst.ShortcutA := src.ShortcutA;
+        dst.ShortcutB := src.ShortcutB;
+      end;
+    end;
+    FillKeyMappingTreeView;
+    fModified:=True;
+    UpdateSchemeLabel;
+    UpdateConflictTree;
+  finally
+    exp.Free;
+    dlg.Free;
+    xml.Free;
+  end;
+end;
+
 function TEditorKeymappingOptionsFrame.FilterEditFilterItem(ItemData: Pointer;
   out Done: Boolean): Boolean;
 var
@@ -388,6 +458,8 @@ begin
   ClearButton.Caption := lisClear;
   EditMenuItem.Caption := lisEdit;
   ClearMenuItem.Caption := lisClear;
+  ImportButton.Caption := lisImport;
+  ExportButton.Caption := lisExport;
 
   TreeView.Images := IDEImages.Images_16;
   ConflictsTreeView.Images := IDEImages.Images_16;
