@@ -132,10 +132,10 @@
         <short>Represents an image that can be attached to a button.</short>
         <descr>
           <p>
-            <var>TButtonGlyph</var> is a <var>TObject</var> descendant used to represent the image with the symbol or pictograph displayed on a button, or in a column in a grid.  Use the properties and methods in the class to specify the image displayed in the glyph, and the display settings required for the image.
+            <var>TButtonGlyph</var> is a <var>TObject</var> descendant used to represent the image with the symbol or pictograph displayed on a button, or in a column in a grid. Use the properties and methods in the class to specify the image displayed in the glyph, and the display settings required for the image.
           </p>
           <p>
-            <var>Images</var> and <var>ExternalImages</var> are image lists with the content that can be displayed in the glyph. <var>Glyph</var> contains the bitmap, scaled to the necessary display density, used in the class instance.  <var>Width</var> and <var>Height</var> represent the dimensions for the <var>Glyph</var>.
+            <var>Images</var> and <var>ExternalImages</var> are image lists with the content that can be displayed in the glyph. <var>Glyph</var> contains the bitmap, scaled to the necessary display density, used in the class instance. <var>Width</var> and <var>Height</var> represent the dimensions for the <var>Glyph</var>.
           </p>
           <p>
             <var>ShowMode</var> determines when the image is displayed, just like its usage in <var>TMenu</var> and <var>TMenuItem</var>.
@@ -410,7 +410,7 @@
           </p>
           <dl>
             <dt>gsmAlways</dt>
-            <dd>Return value is True</dd>
+            <dd>Return value is <b>True</b></dd>
             <dt>gsmNever</dt>
             <dd>Return value is <b>False</b></dd>
             <dt>gsmApplication</dt>
@@ -481,7 +481,7 @@
             GlyphChanged is procedure which provides the default implementation for the OnChange event handler. Sender is the TObject instance for the change notification, and normally receives a reference to the current TButtonGlyph class instance.
           </p>
           <p>
-            GlyphChanged ensures that the internal ImagesCache member is set to Nil, and the ClearImages methods is called to remove images stored in the Images property. When CanShow returns True, the internal ImagesCache member is re-populated and registered to listen for changes to the Glyph property.
+            GlyphChanged ensures that the internal ImagesCache member is set to Nil, and the ClearImages methods is called to remove images stored in the Images property. When CanShow returns <b>True</b>, the internal ImagesCache member is re-populated and registered to listen for changes to the Glyph property.
           </p>
           <p>
             GlyphChanged is assigned to the OnChange event handler when the class instance is created, and when a bitmap is assigned to the Glyph property.
@@ -589,10 +589,10 @@
             <var>GetImageIndexAndEffect</var> is a procedure used to get the ordinal position for the image used to render the <var>Glyph</var> for the class instance. In addition, it returns the image resolution for the specified display density and the drawing effect for the button <var>State</var>.
           </p>
           <p>
-            <var>GetImageIndexAndEffect</var> uses <var>ThemeServices</var> to determine if drawing effects are automatically applied to glyph images, and captures the  effect in the <var>AEffect</var> output argument.
+            <var>GetImageIndexAndEffect</var> uses <var>ThemeServices</var> to determine if drawing effects are automatically applied to glyph images, and captures the effect in the <var>AEffect</var> output argument.
           </p>
           <p>
-            <var>GetImageIndexAndEffect</var> determines the image source and the ordinal position for the  image used for the button glyph. <var>ExternalImages</var> and <var>ExternalImageIndex</var> are used (when assigned). The next available source is the resource name specified in <var>LCLGlyphResourceName</var> (when specified). Finally, the <var>Images</var> property is used (when assigned). When the image source has been determined, the correct image resolution for the value in <var>APPI</var> is selected and stored in <var>AImageResolution</var>. <var>ImageIndexes</var> is used to get the position for the image with the specified button <var>State</var>.
+            <var>GetImageIndexAndEffect</var> determines the image source and the ordinal position for the image used for the button glyph. <var>ExternalImages</var> and <var>ExternalImageIndex</var> are used (when assigned). The next available source is the resource name specified in <var>LCLGlyphResourceName</var> (when specified). Finally, the <var>Images</var> property is used (when assigned). When the image source has been determined, the correct image resolution for the value in <var>APPI</var> is selected and stored in <var>AImageResolution</var>. <var>ImageIndexes</var> is used to get the position for the image with the specified button <var>State</var>.
           </p>
           <p>
             <var>GetImageIndexAndEffect</var> is used in in the implementation of the <var>Draw</var> method in <var>TButtonGlyph</var>, and in the <var>GetGlyphSize</var> method in <var>TCustomSpeedButton</var>.
@@ -667,7 +667,7 @@
             By default, the LCL Glyph resource is used when the button is created. Setting values for the corresponding properties changes the source for the glyph image.
           </p>
           <p>
-            Draw calls <var>GetImageIndexAndEffect</var> to get the image resolution needed for the value in PPI, and the index for the image drawn in the method. The  <var>TScaledImageListResolution.Draw</var> method is called to render the selected glyph in the resolution to the Canvas using the Client, Offset, and derived graphics drawing effect.
+            Draw calls <var>GetImageIndexAndEffect</var> to get the image resolution needed for the value in PPI, and the index for the image drawn in the method. The <var>TScaledImageListResolution.Draw</var> method is called to render the selected glyph in the resolution to the Canvas using the Client, Offset, and derived graphics drawing effect.
           </p>
           <p>
             No actions are performed in the method when an bitmap has not been assigned to the Glyph property, when the coordinates in Client are invalid, or when an image resolution / image index was not found.
@@ -1478,7 +1478,7 @@
             Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
           </p>
           <p>
-            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is <b>True</b>.
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if the properties in the control are unassigned - even when CheckDefaults is <b>True</b>.
           </p>
           <p>
             ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in ImageIndex and Images are also updated with the values from the action (when assigned).
@@ -1622,7 +1622,7 @@
             If Kind has any other value, the inherited Click method is called to determine the ModalResult and signal the OnChange event handler (when assigned).
           </p>
           <p>
-            Click is called when the DialogChar method handles an accelerator key for the control, when the Action for the control is executed, and when a mouse click event  is handled for the control.
+            Click is called when the DialogChar method handles an accelerator key for the control, when the Action for the control is executed, and when a mouse click event is handled for the control.
           </p>
         </descr>
         <seealso>
@@ -1955,7 +1955,7 @@
         </short>
         <descr>
           <p>
-            <var>OnKeyPress</var> differs from <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.
+            <var>OnKeyPress</var> differs from <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
           </p>
         </descr>
         <seealso>
@@ -2108,7 +2108,7 @@
             <var>TCustomSpeedButton</var> is a <var>TGraphicControl</var> descendant, and the ancestor for <var>TSpeedButton</var>. If you want to define your own speed button class, you should derive it from TCustomSpeedButton.
           </p>
           <p>
-            A speed button is designed to automatically perform a process when it is pressed or clicked.  The user can push the button to start an action or set a mode. When a user clicks on a speed button, focus is not shifted; a speed button never receives focus. The button may have a descriptive glyph (symbol or pictograph), and has state (checked, unchecked, Up, Down, Hovered, Selected, Disabled).
+            A speed button is designed to automatically perform a process when it is pressed or clicked. The user can push the button to start an action or set a mode. When a user clicks on a speed button, focus is not shifted; a speed button never receives focus. The button may have a descriptive glyph (symbol or pictograph), and has state (checked, unchecked, Up, Down, Hovered, Selected, Disabled).
           </p>
         </descr>
       </element>
@@ -2537,7 +2537,7 @@
 
       <element name="TCustomSpeedButton.Notification">
         <short>
-          Performs action needed when a sub-component is added or removed for the control.
+          Performs actions needed when a sub-component is added or removed for the control.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -2559,7 +2559,7 @@
             Paint calls UpdateState to ensure that the internal TButtonState for the control is updated to reflect its current condition. No additional actions are performed in the method when a bitmap has not been assigned in the Glyph property.
           </p>
           <p>
-            When a Glyph is available,  additional actions are performed to draw the control to its client rectangle. MeasureDraw is called to draw the background, Glyph, and Caption using the layout and state for the control.
+            When a Glyph is available, additional actions are performed to draw the control to its client rectangle. MeasureDraw is called to draw the background, Glyph, and Caption using the layout and state for the control.
           </p>
           <p>
             Paint calls the inherited method prior to exit to signal the OnPaint event handler (when assigned).
@@ -2692,7 +2692,9 @@
           Updates internal members used to track state changes in the control.
         </short>
         <descr>
-          <var>UpdateState</var> brings the state up to date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True.
+          <p>
+            <var>UpdateState</var> brings the state up to date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is <b>True</b>.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -2777,7 +2779,7 @@
             Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
           </p>
           <p>
-            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to <b>False</b>, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if the properties in the control are unassigned - even when CheckDefaults is <b>True</b>.
           </p>
           <p>
             ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in GroupIndex, ImageIndex, and Images are also updated with the values from the action.
@@ -3126,7 +3128,7 @@
             Set <var>Flat</var> to <b>True</b> to draw the control without relief, elevation, or a three-dimensional appearance. The default value for the property is <b>False</b>. Changing the value for the property causes the control to be redrawn.
           </p>
           <p>
-            Flat is used in the <var>GetDrawDetails</var> method to select the theme element details applied to the control for its current state. When set to <b>False</b>, TThemedButton element details are used. When set to True, TThemedToolBar element details are used. See <link id="TCustomSpeedButton.GetDrawDetails">GetDrawDetails</link> for more information about the values used for specific button states.
+            Flat is used in the <var>GetDrawDetails</var> method to select the theme element details applied to the control for its current state. When set to <b>False</b>, TThemedButton element details are used. When set to <b>True</b>, TThemedToolBar element details are used. See <link id="TCustomSpeedButton.GetDrawDetails">GetDrawDetails</link> for more information about the values used for specific button states.
           </p>
         </descr>
         <seealso>
@@ -3139,7 +3141,7 @@
         <short>The bitmap with the glyph image(s) displayed for button states.</short>
         <descr>
           <p>
-            <var>Glyph</var> is a <var>TBitmap</var> property with the image drawn for the button control. Read and write access to the property value are redirected to an internal <var>TButtonGlyph</var> instance for the control.  This allows a single image to be specified for Glyph, or multiple bitmaps for various button states using the Images property.
+            <var>Glyph</var> is a <var>TBitmap</var> property with the image drawn for the button control. Read and write access to the property value are redirected to an internal <var>TButtonGlyph</var> instance for the control. This allows a single image to be specified for Glyph, or multiple bitmaps for various button states using the Images property.
           </p>
           <p>
             Changing the value for the property cause the control to be redrawn.
@@ -3280,7 +3282,7 @@
         </short>
         <descr>
           <p>
-            <var>PressedImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the glyph bitmap displayed when the Down property is True. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+            <var>PressedImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the glyph bitmap displayed when the Down property is <b>True</b>. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
           </p>
           <p>
             The property value is read from and written to the image index members in ButtonGlyph.
@@ -3342,10 +3344,10 @@
         <short>Indicates if the Caption for the speed button is displayed.</short>
         <descr>
           <p>
-            The default value for the property is True. Changing the value for the property causes the control to be redrawn.
+            The default value for the property is <b>True</b>. Changing the value for the property causes the control to be redrawn.
           </p>
           <p>
-            ShowCaption is used in the MeasureDraw method. When set to True, the text extent for Caption is  displayed using the Font and Layout for the control. It is also used in the GetTextSize method when the text extent is calculated.
+            ShowCaption is used in the MeasureDraw method. When set to <b>True</b>, the text extent for Caption is displayed using the Font and Layout for the control. It is also used in the GetTextSize method when the text extent is calculated.
           </p>
         </descr>
         <seealso/>
@@ -3365,7 +3367,7 @@
         <short>Indicates if the control is drawn with transparency.</short>
         <descr>
           <p>
-            <var>Transparent</var> is a <var>Boolean</var> property which indicates whether the control is drawn with transparency. Changing the value for the property causes the ControlStyle property to be updated to include or exclude the csOpaque flag as needed, and the control is redrawn.  The property value is read from and written to the TransparentMode property in ButtonGlyph.
+            <var>Transparent</var> is a <var>Boolean</var> property which indicates whether the control is drawn with transparency. Changing the value for the property causes the ControlStyle property to be updated to include or exclude the csOpaque flag as needed, and the control is redrawn. The property value is read from and written to the TransparentMode property in ButtonGlyph.
           </p>
           <p>
             The property value is passed as an argument to the DrawGlyph method when MeasureDraw is executed. When set to <b>False</b>, the PaintBackground method fills the display area with the background Color when theme element details have transparent areas.
@@ -3378,7 +3380,7 @@
         <short>A Button used to represent states (checked or unchecked).</short>
         <descr>
           <p>
-            The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode.
+            The Speed Button is designed to automate a process when it is selected. An user pushes a button to start an action or set a mode.
           </p>
           <p>
             When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc).
@@ -3566,7 +3568,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
             <var>LoadGlyphFromResourceName</var> is a procedure used to load a bitmap into the specified <var>Glyph</var> from a named resource. <var>AGlyph</var> is the <var>TButtonGlyph</var> where the bitmap is stored. <var>Instance</var> is a <var>THandle</var> for the resource instance accessed in the routine. <var>AName</var> contains the name for the resource loaded in the routine.
           </p>
           <p>
-            <var>LoadGlyphFromResourceName</var> calls <var>CreateBitmapFromResourceName</var> to retrieve a <var>TCustomBitmap</var> using the specified handle and resource name. The bitmap is assigned to the <var>TButtonGlyph</var>  in <var>AGlyph</var>. When <var>AName</var> is an empty string (<b>''</b>), the Glyph image in AGlyph is set to <b>Nil</b>.
+            <var>LoadGlyphFromResourceName</var> calls <var>CreateBitmapFromResourceName</var> to retrieve a <var>TCustomBitmap</var> using the specified handle and resource name. The bitmap is assigned to the <var>TButtonGlyph</var> in <var>AGlyph</var>. When <var>AName</var> is an empty string (<b>''</b>), the Glyph image in AGlyph is set to <b>Nil</b>.
           </p>
           <p>
             <var>LoadGlyphFromResourceName</var> is used in the implementation of the <var>LoadGlyphFromResourceName</var> method in both <var>TCustomBitBtn</var> and <var>TCustomSpeedButton</var>.
@@ -3690,7 +3692,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
             Adjusts the layout for button glyphs to reflect the settings in <var>IsRightToLeft</var>. Uses an implementation constant to get the <var>TButtonLayout</var> value needed for the setting in IsRightLeft.
           </p>
           <p>
-            In general, when IsRightToLeft is <b>True</b> the value in <var>Layout</var> is reversed and used as the return value.  <var>blGlyphLeft</var> becomes <var>blGlyphRight</var>, <var>blGlyphTop</var> becomes <var>blGlyphBottom</var>, etc.
+            In general, when IsRightToLeft is <b>True</b> the value in <var>Layout</var> is reversed and used as the return value. <var>blGlyphLeft</var> becomes <var>blGlyphRight</var>, <var>blGlyphTop</var> becomes <var>blGlyphBottom</var>, etc.
           </p>
           <p>
             When IsRightToLeft is <var>False</var>, the value in Layout is used.
