@@ -35,7 +35,7 @@
         </short>
         <descr>
           <p>
-            <var>TReturnDateEvent</var> specifies an event handler signalled when a date is selected on a pop-up calendar form. TReturnDateEvent is the type used to implement the <var>OnReturnDate</var> event handler in    <var>TCalendarPopupForm</var>. Applications must implement an object procedure used to respond to the event notification. It is passed as an argument to the <var>ShowCalendarPopup</var> routine.
+            <var>TReturnDateEvent</var> specifies an event handler signalled when a date is selected on a pop-up calendar form. TReturnDateEvent is the type used to implement the <var>OnReturnDate</var> event handler in <var>TCalendarPopupForm</var>. Applications must implement an object procedure used to respond to the event notification. It is passed as an argument to the <var>ShowCalendarPopup</var> routine.
           </p>
         </descr>
         <seealso>
@@ -93,7 +93,7 @@
         </short>
         <descr>
           <p>
-            <var>CalendarDblClick</var> ensures that the mouse event is within the bounds for the <var>Calendar</var> control by calling its <var>HitTest</var> method.  When the mouse event occurs on the Month or Year calendar parts, the <var>ReturnDate</var> method is called to signal the <var>OnReturnDate</var> event handler and close the form.
+            <var>CalendarDblClick</var> ensures that the mouse event is within the bounds for the <var>Calendar</var> control by calling its <var>HitTest</var> method. When the mouse event occurs on the Month or Year calendar parts, the <var>ReturnDate</var> method is called to signal the <var>OnReturnDate</var> event handler and close the form.
           </p>
         </descr>
         <seealso>
