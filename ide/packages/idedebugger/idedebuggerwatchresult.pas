@@ -3809,6 +3809,8 @@ begin
     exit;
 
   assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
+  if (AStorage = nil) or (AStorage^ = nil) then
+    exit;
   for i := 0 to Length(FType.FFieldData) - 1 do begin
     Store := AStorage;
     if (Store <> nil) and (Store^ <> nil) then
