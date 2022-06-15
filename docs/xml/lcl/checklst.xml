@@ -55,7 +55,7 @@
 
       <element name="TCustomCheckListBox">
         <short>
-          The base class for TCheckListBox, a list box  with check box items.
+          The base class for TCheckListBox, a list box with check box items.
         </short>
         <descr>
           <p>
@@ -203,7 +203,9 @@
         <short>Ordinal position in Items for the affected entry.</short>
       </element>
       <element name="TCustomCheckListBox.SendItemHeader.AHeader">
-        <short>True when the item is a header; False when it is a check box.</short>
+        <short>
+          <b>True</b> when the item is a header; <b>False</b> when it is a check box.
+        </short>
       </element>
 
       <element name="TCustomCheckListBox.DoChange">
@@ -238,7 +240,7 @@
       </element>
       <element name="TCustomCheckListBox.SetHeader.AValue">
         <short>
-          Value for the property; True indicates a header, and False indicates a check box.
+          Value for the property; <b>True</b> indicates a header, and <b>False</b> indicates a check box.
         </short>
       </element>
 
@@ -254,7 +256,7 @@
       </element>
       <element name="TCustomCheckListBox.SetItemEnabled.AValue">
         <short>
-          New value for the property; True indicates a header, and False indicates a check box.
+          New value for the property; <b>True</b> indicates a header, and <b>False</b> indicates a check box.
         </short>
       </element>
 
@@ -710,7 +712,7 @@
         </short>
         <descr>
           <p>
-            <var>ItemEnabled</var> is an indexed <var>Boolean</var> property which provides access to the enabled state for Items in the control. When the property value is True, the item can be selected to change its <var>State</var> or <var>Checked</var> values. When it is False,  it behaves as if the check box has been disabled for the item.
+            <var>ItemEnabled</var> is an indexed <var>Boolean</var> property which provides access to the enabled state for Items in the control. When the property value is <b>True</b>, the item can be selected to change its <var>State</var> or <var>Checked</var> values. When it is <b>False</b>, it behaves as if the check box has been disabled for the item.
           </p>
           <p>
             Reading the value for the property cause the <var>CheckIndex</var> method to be called to validate the value in Index. If a handle has been allocated for the control, the GetItemEnabled method in the widget set class is called to get the value for the property. Otherwise, the disabled state in cached item data is examined to get the property value.
@@ -774,7 +776,7 @@
             Applications must implement and assign a procedure using the TNotifyEvent signature to respond to the notification. The Sender argument contains the TCheckListBox instance for the notification, and allows access to its properties and methods.
           </p>
           <p>
-            <var>OnClickCheck</var> is signalled (when assigned) from the <var>ClickCheck</var> method. ClickCheck is called from methods like <var>DoChange</var> (private) and  <var>KeyDown</var>. This causes OnClickCheck to be signalled when the mouse is clicked on a check box, and when the value for the current item is Toggled using the Space key.
+            <var>OnClickCheck</var> is signalled (when assigned) from the <var>ClickCheck</var> method. ClickCheck is called from methods like <var>DoChange</var> (private) and <var>KeyDown</var>. This causes OnClickCheck to be signalled when the mouse is clicked on a check box, and when the value for the current item is Toggled using the Space key.
           </p>
           <p>
             OnClickCheck is signalled before other event handlers like <var>OnItemClick</var>, <var>OnSelectionChange</var>, and <var>OnClick</var>.
@@ -802,7 +804,7 @@
         </short>
         <descr>
           <p>
-            <var>OnItemClick</var> is a <var>TCheckListClicked</var> property with the event handler signalled when the check box state has been changed for a specific item  in the check list control.
+            <var>OnItemClick</var> is a <var>TCheckListClicked</var> property with the event handler signalled when the check box state has been changed for a specific item in the check list control.
           </p>
           <p>
             <var>OnItemClick</var> can be used to perform actions needed when the check box <var>State</var> has been toggled. Arguments passed to the event handler identify the check list control (Sender) and the position of the check box (Index) in the Items for the control.
@@ -937,7 +939,9 @@
       <element name="Register">
         <short>Adds TCheckListBox to the Lazarus IDE.</short>
         <descr>
-          <var>Register</var> is a procedure used to add the <var>TCheckListBox</var> class to the <b>Additional</b> tab in the Lazarus IDE.
+          <p>
+            <var>Register</var> is a procedure used to add the <var>TCheckListBox</var> class to the <b>Additional</b> tab in the Lazarus IDE.
+          </p>
         </descr>
         <seealso/>
       </element>
