@@ -187,7 +187,7 @@
         </short>
         <descr>
           <p>
-            <var>TPanelPart</var> is an enumerated type listing the possible parts that make up  a status panel.
+            <var>TPanelPart</var> is an enumerated type listing the possible parts that make up a status panel.
           </p>
         </descr>
         <seealso/>
@@ -296,8 +296,8 @@
       </element>
 
       <element name="TStatusPanel.FIntfFlag">
-        <short>Field used  by Widgetset classes. Do not use it in the LCL.</short>
-        <descr>Field used  by Widgetset classes. Do not use it in the LCL.</descr>
+        <short>Field used by Widgetset classes. Do not use it in the LCL.</short>
+        <descr>Field used by Widgetset classes. Do not use it in the LCL.</descr>
         <seealso/>
       </element>
 
@@ -352,7 +352,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TStatusPanel</var>. It  sets default values for the width, alignment and bevel, calls the inherited <var>Create</var> method, and loads the class instance into StatusBar.
+            <var>Create</var> is the constructor for <var>TStatusPanel</var>. It sets default values for the width, alignment and bevel, calls the inherited <var>Create</var> method, and loads the class instance into StatusBar.
           </p>
         </descr>
         <seealso>
@@ -988,7 +988,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for <var>TStatusBar</var>. It  frees the Canvas and panels, and calls the inherited <var>Destroy</var> method.
+            <var>Destroy</var> is the destructor for <var>TStatusBar</var>. It frees the Canvas and panels, and calls the inherited <var>Destroy</var> method.
           </p>
         </descr>
         <seealso>
@@ -1069,7 +1069,7 @@ end;
       </element>
       <element name="TStatusBar.GetPanelIndexAt.Y">
         <short>
-          Vertical  coordinate to locate in the Panels for the status bar.
+          Vertical coordinate to locate in the Panels for the status bar.
         </short>
       </element>
 
@@ -1273,7 +1273,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>OnCreatePanelClass</var> is signalled (when assigned) in the <var>CreatePanel</var> method to get  the class used to create new panels in the status bar. Assign an object procedure using the signature in <var>TSBCreatePanelClassEvent</var> to the property to override the value provided by the <var>GetPanelClass</var> method.
+            <var>OnCreatePanelClass</var> is signalled (when assigned) in the <var>CreatePanel</var> method to get the class used to create new panels in the status bar. Assign an object procedure using the signature in <var>TSBCreatePanelClassEvent</var> to the property to override the value provided by the <var>GetPanelClass</var> method.
           </p>
         </descr>
       </element>
@@ -1443,7 +1443,7 @@ end;
       </element>
 
       <element name="TCustomPage.CMHitTest">
-        <short>Handles the CM_HITTEST control  message.</short>
+        <short>Handles the CM_HITTEST control message.</short>
         <descr>
           <p>
             CMHitTest checks the type for the Parent control to determine whether the Message is ignored or forwarded to the inherited method. When Parent is a TCustomTabControl descendant, the class instance must be the active page in the parent control. When it is not, the Message result is set to 0 and the message is ignored. Otherwise, the inherited method is called to handle the Message.
@@ -2968,7 +2968,7 @@ end;
             <var>KeyDown</var> is overridden in TCustomTabControl to handle use of the <b>Tab</b> key (<b>VK_TAB</b>) to change the active page in the tabbed control.
           </p>
           <p>
-            The <var>Options</var> property must contain the value    <var>nboKeyboardTabSwitch</var> to enable the tab switching feature. Pressing <b>Ctrl+Tab</b> switches to the next page by incrementing the <var>PageIndex</var> value. Pressing <b>Ctrl+Shift+Tab</b>  switches to the previous  page by decrementing the <var>PageIndex</var> value.
+            The <var>Options</var> property must contain the value <var>nboKeyboardTabSwitch</var> to enable the tab switching feature. Pressing <b>Ctrl+Tab</b> switches to the next page by incrementing the <var>PageIndex</var> value. Pressing <b>Ctrl+Shift+Tab</b> switches to the previous page by decrementing the <var>PageIndex</var> value.
           </p>
           <p>
             If <var>Key</var> is not the <b>VK_TAB</b> virtual key code, the inherited method is called to handle the values in <var>Key</var> and <var>Shift</var>.
@@ -3445,7 +3445,7 @@ end;
         <short>Gets the real page index for the specified tab.</short>
         <descr>
           <p>
-            <var>TabToPageIndex</var> is an <var>Integer</var> function used to get the page index for the tab at the specified position.  The tab index value in <var>AIndex</var> does not include any non-visible tabs. TabToPageIndex adjusts the index value to include any <var>TCustomPage</var> instances in <var>Page</var> with its <var>TabVisible</var> property set to <b>False</b>.
+            <var>TabToPageIndex</var> is an <var>Integer</var> function used to get the page index for the tab at the specified position. The tab index value in <var>AIndex</var> does not include any non-visible tabs. TabToPageIndex adjusts the index value to include any <var>TCustomPage</var> instances in <var>Page</var> with its <var>TabVisible</var> property set to <b>False</b>.
           </p>
           <p>
             The return value contains the value specified in AIndex after adding any non-visible pages proper to the requested position.
@@ -3564,10 +3564,10 @@ end;
 
       <element name="TCustomTabControl.Options">
         <short>
-          The set of  <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs.
+          The set of <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs.
         </short>
         <descr>
-          <p>The set of  <var>Options</var> for the Notebook: </p>
+          <p>The set of <var>Options</var> for the Notebook: </p>
           <p>
             <var>nboShowCloseButtons</var> (display a little Close Button on the Tab next to the label to allow a user to close that tab),</p>
           <p>
@@ -4114,7 +4114,7 @@ end;
             <var>ActivePage</var> - the currently selected active page (<var>TTabSheet</var>).
           </p>
           <remark>
-            Please note that the property is implemented with a type that differs from   <var>TCustomTabControl</var>, where <var>ActivePage</var> is defined as a <var>String</var>.
+            Please note that the property is implemented with a type that differs from <var>TCustomTabControl</var>, where <var>ActivePage</var> is defined as a <var>String</var>.
           </remark>
         </descr>
         <seealso/>
@@ -4302,7 +4302,7 @@ end;
           <var>Create</var> - constructor for <var>TTabControlStrings</var>: calls inherited <var>Create</var> then sets many local defaults.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TTabControlStrings</var>. It calls  the inherited <var>Create</var> method then sets default values in the class instance.
+            <var>Create</var> is the constructor for <var>TTabControlStrings</var>. It calls the inherited <var>Create</var> method then sets default values in the class instance.
           </p>
           <p>Among the defaults set are:</p>
           <p>
@@ -5922,7 +5922,7 @@ end;
 
       <element name="TCustomDrawStage">
         <short>
-          <var>TCustomDrawStage</var>  a series of constants to define the drawing stages.
+          <var>TCustomDrawStage</var> a series of constants to define the drawing stages.
         </short>
         <descr/>
       </element>
@@ -6145,7 +6145,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TDisplayCode</var> is an enumerated type with values that denote how the item or sub-item is displayed in a list view control. The values are passed as arguments to the <var>DisplayRect</var> and  <var>DisplayRectSubItem</var> methods in <var>TListItem</var>, and allows the widgetset to layout and rendering the list items for the platform.
+            <var>TDisplayCode</var> is an enumerated type with values that denote how the item or sub-item is displayed in a list view control. The values are passed as arguments to the <var>DisplayRect</var> and <var>DisplayRectSubItem</var> methods in <var>TListItem</var>, and allows the widgetset to layout and rendering the list items for the platform.
           </p>
         </descr>
         <seealso>
@@ -6351,7 +6351,7 @@ end;
         <short>Indicates if the caption for a list item can wrap into multiple lines.</short>
         <descr>
           <p>
-            WrapText is a Boolean property which indicates if the Caption for a list view item  can be wrapped into multiple lines. The default value for the property is <b>True</b>.
+            WrapText is a Boolean property which indicates if the Caption for a list view item can be wrapped into multiple lines. The default value for the property is <b>True</b>.
           </p>
           <p>
             The Caption for the item is wrapped when its length exceeds the width for the icon in the list item.
@@ -6567,7 +6567,7 @@ end;
       </element>
       <element name="TListItem.WSUpdateAllowed.Result">
         <short>
-          True if access to values in the list item is allowed.
+          <b>True</b> if access to values in the list item is allowed.
         </short>
       </element>
 
@@ -6978,7 +6978,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>EditCaption</var> is a <b>Boolean</b> function used to select the list item on its list view control, and display its Editor control. The return value is True if the list item is the Selected item for the control and the editor was successfully displayed.
+            <var>EditCaption</var> is a <b>Boolean</b> function used to select the list item on its list view control, and display its Editor control. The return value is <b>True</b> if the list item is the Selected item for the control and the editor was successfully displayed.
           </p>
           <p>
             EditCaption clears any existing selections in the list view control in Owner, and assigns the class instance to the Selected property. No additional action are performed in the method when the list view control is ReadOnly, or an Editor has not been assigned for the control. The return value is set to False.
@@ -7130,7 +7130,7 @@ end;
             <var>Index</var> is a read-only <var>Integer</var> property with the position where the list item in stored in its TListItems container. The property value is retrieved by calling the IndexOf method in the Owner (TListItems) to locate the class instance. The property value is -1 if Owner has not been assigned, or the list was removed from the container.
           </p>
           <p>
-            Use the Move or Exchange methods in TListItems, or the sort routines in TCustomListView, to change the position where a list item is stored in its  container.
+            Use the Move or Exchange methods in TListItems, or the sort routines in TCustomListView, to change the position where a list item is stored in its container.
           </p>
         </descr>
         <seealso>
@@ -7553,7 +7553,7 @@ end;
             TListItems provides properties and methods needed to maintain and access the TListItem instances stored in the list for the container. Item is the default property for the class instance and allows access to the list items by their ordinal position in the container. It also the target for an enumerator using the TListItemsEnumerator supported in the class instance.
           </p>
           <p>
-            <var>TListitems</var> has a built-in cache for the last accessed item. This will speed up interface updates since <var>Item.Index</var> is  often used for the same item updating more properties.  If <var>FCacheIndex</var> contains -1 then the cache is not valid.
+            <var>TListitems</var> has a built-in cache for the last accessed item. This will speed up interface updates since <var>Item.Index</var> is often used for the same item updating more properties. If <var>FCacheIndex</var> contains -1 then the cache is not valid.
           </p>
         </descr>
         <seealso>
@@ -7760,7 +7760,7 @@ end;
 
       <element name="TListItems.SelectAll">
         <short>
-          Sets the selected state to True for all TListItem instances in the container.
+          Sets the selected state to <b>True</b> for all TListItem instances in the container.
         </short>
         <descr>
           <p>
@@ -7796,7 +7796,7 @@ end;
             When a list view control has been assigned to Owner, its CreateListItem method is called to create the new list item. A custom item class can be provided using the OnCreateItemClass event handler in the list view control. Otherwise, TListItem.Create is called to create the list item using the container class instance as the Owner.
           </p>
           <p>
-            Add calls the AddItem method to store the new TListItem instance. The widgetset class is notified of the new cached item when its handle is available.            The ItemInserted method in Owner is called to execute an overridden InsertItem method (when available) or signal the OnInsert event handler for the list view control (when assigned).
+            Add calls the AddItem method to store the new TListItem instance. The widgetset class is notified of the new cached item when its handle is available. The ItemInserted method in Owner is called to execute an overridden InsertItem method (when available) or signal the OnInsert event handler for the list view control (when assigned).
           </p>
           <p>
             Use Insert to create a new list item and store it at a specified position in the container.
@@ -8254,7 +8254,7 @@ end;
             Writing a new property value causes AIndex to validated. No actions are performed during property assignment if AIndex exceeds Count-1. In addition, no actions are needed when the new property value is the same TListItem instance as the existing property value.
           </p>
           <p>
-            Otherwise, the new list item is stored at the position in AIndex and the cache is updated with the list item and its index value. The widgetset class is notified of the changed values when its handle has been allocated. This includes changes to  Caption, ImageIndex, SubItemImages, and Checked properties, as well as internal state flags.
+            Otherwise, the new list item is stored at the position in AIndex and the cache is updated with the list item and its index value. The widgetset class is notified of the changed values when its handle has been allocated. This includes changes to Caption, ImageIndex, SubItemImages, and Checked properties, as well as internal state flags.
           </p>
         </descr>
         <seealso/>
@@ -8364,7 +8364,7 @@ end;
         <short>Uses an ascending sort indicator for the list column.</short>
       </element>
       <element name="TSortIndicator.siDescending">
-        <short>Uses a  descending sort indicator for the list column.</short>
+        <short>Uses a descending sort indicator for the list column.</short>
       </element>
 
       <element name="TListColumn">
@@ -8427,7 +8427,7 @@ end;
         <short>Sets the value for the Index property.</short>
         <descr>
           <p>
-            Calls the inherited  method to move the collection item to the position indicated in the property value. Calls the <var>ColumnMove</var> method in the widgetset class to reorder the column in the control.
+            Calls the inherited method to move the collection item to the position indicated in the property value. Calls the <var>ColumnMove</var> method in the widgetset class to reorder the column in the control.
           </p>
         </descr>
         <seealso>
@@ -8442,7 +8442,7 @@ end;
         <short>Gets the value for the DisplayName property.</short>
         <descr>
           <p>
-            <var>GetDisplayName</var> returns the <var>Caption</var> for the control, and when  blank, calls the inherited method to the property value.
+            <var>GetDisplayName</var> returns the <var>Caption</var> for the control, and when blank, calls the inherited method to the property value.
           </p>
         </descr>
         <seealso>
@@ -8686,7 +8686,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>Visible</var> is a <var>Boolean</var> property which indicates if the column is visible on the list view control where it is defined.  The default value for the property is <b>True</b>.
+            <var>Visible</var> is a <var>Boolean</var> property which indicates if the column is visible on the list view control where it is defined. The default value for the property is <b>True</b>.
           </p>
           <p>
             Changing the property value causes the item to updated in its collection, and any observers are notified of the change. The widgetset class instance is also notified of the change when its handle has been allocated.
@@ -8980,7 +8980,7 @@ end;
       </element>
       <element name="TViewStyle.vsIcon">
         <short>
-          Displays a large icon and the caption for each list view item.  The icon is centered above the caption text.
+          Displays a large icon and the caption for each list view item. The icon is centered above the caption text.
         </short>
       </element>
       <element name="TViewStyle.vsSmallIcon">
@@ -9239,7 +9239,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TLVCompare</var> is a routine used to determine the relative sort order for the list items passed in the Item1 and Item2, and allows an  optional Integer parameter value used in the comparison. The return value  is the relative sort order for the <var>TListItem</var> instances. For example:
+            <var>TLVCompare</var> is a routine used to determine the relative sort order for the list items passed in the Item1 and Item2, and allows an optional Integer parameter value used in the comparison. The return value is the relative sort order for the <var>TListItem</var> instances. For example:
           </p>
           <dl>
             <dt>-1</dt>
@@ -9601,7 +9601,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TLVDrawItemEvent</var> is the type used to implement the <var>OnDrawItem</var> event handler in <var>TCustomListView</var>. See <var>TLVCustomDrawItemEvent</var> and <var>TLVAdvancedCustomDrawItemEvent</var> for event types  signalled for custom-drawn items on a list view control.
+            <var>TLVDrawItemEvent</var> is the type used to implement the <var>OnDrawItem</var> event handler in <var>TCustomListView</var>. See <var>TLVCustomDrawItemEvent</var> and <var>TLVAdvancedCustomDrawItemEvent</var> for event types signalled for custom-drawn items on a list view control.
           </p>
         </descr>
         <seealso>
@@ -9749,7 +9749,7 @@ end;
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.Stage">
         <short>
-          Drawing stage for the sub-item. The advanced handler is used for  stages other than cdPrePaint.
+          Drawing stage for the sub-item. The advanced handler is used for stages other than cdPrePaint.
         </short>
       </element>
       <element name="TLVAdvancedCustomDrawSubItemEvent.DefaultDraw">
@@ -9789,7 +9789,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TListViewProperty</var> is an enumerated type with values representing  Boolean properties used in TCustomListView. This includes the following:
+            <var>TListViewProperty</var> is an enumerated type with values representing Boolean properties used in TCustomListView. This includes the following:
           </p>
           <ul>
             <li>ColumnClick</li>
@@ -10633,7 +10633,7 @@ end;
             <var>SetProperty</var> is a method used to set the Boolean value for the property represented by the value in <var>ALvpOrd</var>.
           </p>
           <p>
-            <var>ALvpOrd</var> contains a value from the <var>TListViewProperty</var> enumeration which identifies the property updated in the method.  <var>AIsSet</var> contains the new Boolean value for the property.
+            <var>ALvpOrd</var> contains a value from the <var>TListViewProperty</var> enumeration which identifies the property updated in the method. <var>AIsSet</var> contains the new Boolean value for the property.
           </p>
           <p>
             SetProperty is used as the write access specifier for several properties in <var>TCustomListView</var>, including:
@@ -10874,7 +10874,7 @@ end;
         <short>Clears the current selection for the control.</short>
         <descr>
           <p>
-            <var>InvalidateSelected</var> is a method used to clear the current selection for the control. It sets the value in the Selected property to  <b>Nil</b>, and resets the internal member used to track the selected item in OwnerData mode. It also updates the control flags to remove the value lffSelectedValid.
+            <var>InvalidateSelected</var> is a method used to clear the current selection for the control. It sets the value in the Selected property to <b>Nil</b>, and resets the internal member used to track the selected item in OwnerData mode. It also updates the control flags to remove the value lffSelectedValid.
           </p>
           <p>
             InvalidateSelected is called when a list item is deleted which is the current value in Selected, or when all list items are deleted for the control. It is also called when a new value is assigned to Selected.
@@ -11000,7 +11000,7 @@ end;
             <var>ItemDeleted</var> is a method called when the specified list item is removed from the Items for the control.
           </p>
           <p>
-            ItemDeleted ensures that the list item in AItem is not referenced as a selected or focused item on the control. If AItem is the value in Selected, Selected is set to  <b>Nil</b> and the control flags are updated to removed the valid selection flag (ffSelectedValid). If AItem is the focused list item on the control, the focus reference is set to  <b>Nil</b>.
+            ItemDeleted ensures that the list item in AItem is not referenced as a selected or focused item on the control. If AItem is the value in Selected, Selected is set to <b>Nil</b> and the control flags are updated to removed the valid selection flag (ffSelectedValid). If AItem is the focused list item on the control, the focus reference is set to <b>Nil</b>.
           </p>
           <p>
             ItemDeleted is called when the TListItem instance in AItem is freed from the container in Items. ItemDeleted calls DoDeletion to execute the Delete method in TCustomListView (when not overridden) or signal the OnDeletion event handler (when assigned).
@@ -11454,7 +11454,7 @@ end;
         </short>
         <descr>
           <p>
-            Ensures that members for the LargeImages, SmallImages, and StateImages are set to  <b>Nil</b> when the corresponding image list is removed.
+            Ensures that members for the LargeImages, SmallImages, and StateImages are set to <b>Nil</b> when the corresponding image list is removed.
           </p>
         </descr>
         <seealso/>
@@ -11726,7 +11726,7 @@ end;
       </element>
       <element name="TCustomListView.DoOwnerDataHint.Result">
         <short>
-          True if the OnDataHint event handler is assigned.
+          <b>True</b> if the OnDataHint event handler is assigned.
         </short>
       </element>
       <element name="TCustomListView.DoOwnerDataHint.AStartIndex">
@@ -11935,7 +11935,7 @@ end;
         <short>Handles key down messages for the control.</short>
         <descr>
           <p>
-            Handles an F2 function key pressed when the control has focus. Ensures that the editor is displayed when the control is not marked  as ReadOnly. The keystroke is digested (set to zero).
+            Handles an F2 function key pressed when the control has focus. Ensures that the editor is displayed when the control is not marked as ReadOnly. The keystroke is digested (set to zero).
           </p>
           <p>
             If the control is marked as ReadOnly, or Key is not the unshifted F2 function key, the inherited KeyDown method is called to handle the values in Key and Shift.
@@ -11969,7 +11969,7 @@ end;
             <var>AutoSort</var> is a <var>Boolean</var> property used to determine whether the sort column and order indicator are automatically updated when a Report view column header on the control is clicked. The default value for the property is <b>True</b>.
           </p>
           <p>
-            When enabled, the value in SortColumn is set to the position for the clicked column header. Use AutoSortIndicator to control whether the sort indicator is  automatically updated for the Columns defined for the control.
+            When enabled, the value in SortColumn is set to the position for the clicked column header. Use AutoSortIndicator to control whether the sort indicator is automatically updated for the Columns defined for the control.
           </p>
           <p>
             AutoSort has no effect when SortType is set to stNone.
@@ -12015,7 +12015,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>AutoWidthLastColumn</var> is a <var>Boolean</var> property which indicates if the last visible column is expanded to fill any unused display area for the list view control. When set to <b>True</b>, the affected column is located  its Width is calculated and applied.
+            <var>AutoWidthLastColumn</var> is a <var>Boolean</var> property which indicates if the last visible column is expanded to fill any unused display area for the list view control. When set to <b>True</b>, the affected column is located its Width is calculated and applied.
           </p>
           <p>
             AutoWidthLastColumn is relevant when <var>ViewStyle</var> contains <var>vsList</var> or <var>vsReport</var>, and the <var>Columns</var> property has been populated for the list view control.
@@ -12167,7 +12167,7 @@ end;
             <var>OwnerDraw</var> is a <var>Boolean</var> property which indicates if the control implements is own drawing routines instead of using the default drawing routines for list items on the control. The default value for the property is <b>False</b>.
           </p>
           <p>
-            When set to <b>True</b>, the OnDrawItem event handler is signalled to draw list items when the control is using the Report view style (ViewStyle = vsReport). The handler is signalled (when assigned) from the DrawItem method, and occurs when the CN_DRAWITEM control notification message is handled for the control. It should  handle all aspects of drawing the list item to the control Canvas. If OnDrawItem has not been assigned, a basic default drawing routine is used.
+            When set to <b>True</b>, the OnDrawItem event handler is signalled to draw list items when the control is using the Report view style (ViewStyle = vsReport). The handler is signalled (when assigned) from the DrawItem method, and occurs when the CN_DRAWITEM control notification message is handled for the control. It should handle all aspects of drawing the list item to the control Canvas. If OnDrawItem has not been assigned, a basic default drawing routine is used.
           </p>
           <p>
             OwnerDraw is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
@@ -12372,7 +12372,7 @@ end;
         <short>Width of the images in the StateImages property.</short>
         <descr>
           <p>
-            <var>StateImagesWidth</var> is an <var>Integer</var> property that  represents the width used for state images displayed in the list view. The default value for the property is zero (0) and indicates that a default image width has not been specified.
+            <var>StateImagesWidth</var> is an <var>Integer</var> property that represents the width used for state images displayed in the list view. The default value for the property is zero (0) and indicates that a default image width has not been specified.
           </p>
         </descr>
         <seealso/>
@@ -12445,10 +12445,10 @@ end;</code>
         <short>Event handler signalled when a column header for the control is clicked.</short>
         <descr>
           <p>
-            <var>OnColumnClick</var> is a <var>TLVColumnClickEvent</var> property with the event handler signalled  when a column header for the list view control has been clicked. OnColumnClick is signalled (when assigned) from the <var>ColClick</var> method when <var>ColumnClick</var> has been enabled for the control.
+            <var>OnColumnClick</var> is a <var>TLVColumnClickEvent</var> property with the event handler signalled when a column header for the list view control has been clicked. OnColumnClick is signalled (when assigned) from the <var>ColClick</var> method when <var>ColumnClick</var> has been enabled for the control.
           </p>
           <p>
-            Arguments passed to the event handler identify the list view control and the <var>TListColumn</var> instance clicked in the control.  It is signalled before values in <var>SortType</var>, <var>SortColumn</var>, and <var>SortDirection</var> are checked or updated. It is commonly used to enabled or disable <var>AutoSort</var> or <var>AutoSortIndicator</var> when a specific column is clicked.
+            Arguments passed to the event handler identify the list view control and the <var>TListColumn</var> instance clicked in the control. It is signalled before values in <var>SortType</var>, <var>SortColumn</var>, and <var>SortDirection</var> are checked or updated. It is commonly used to enabled or disable <var>AutoSort</var> or <var>AutoSortIndicator</var> when a specific column is clicked.
           </p>
         </descr>
         <seealso>
@@ -12613,7 +12613,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            OnEditing is a TLVEditingEvent property with the event handler used to determine if a list item can be edited in the control. Arguments passed to the event handler included the control (TCustomListView), the list item (TListItem), and an updatable Boolean argument which indicates if editing is allowed for the list item. Set the AllowEdit argument to False to prevent the list item from being edited.
+            OnEditing is a TLVEditingEvent property with the event handler used to determine if a list item can be edited in the control. Arguments passed to the event handler included the control (TCustomListView), the list item (TListItem), and an updatable Boolean argument which indicates if editing is allowed for the list item. Set the AllowEdit argument to <b>False</b> to prevent the list item from being edited.
           </p>
           <p>
             OnEditing is signalled (when assigned) from the CanEdit method, and determines the return value for the function. It occurs when the private ShowEditor method is called for the list view control.
@@ -12741,7 +12741,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            <var>OnCustomDrawSubItem</var> is a <var>TLVCustomDrawSubItemEvent</var> property with the event handler used to perform custom drawing for sub-items on a list view control. These are the values found in the SubItems property for each of the  TListItem entries on the control.
+            <var>OnCustomDrawSubItem</var> is a <var>TLVCustomDrawSubItemEvent</var> property with the event handler used to perform custom drawing for sub-items on a list view control. These are the values found in the SubItems property for each of the TListItem entries on the control.
           </p>
           <p>
             OnCustomDrawSubItem is signalled (when assigned) from the CustomDrawSubItem method when the drawing stage is cdPrePaint, and occurs when the IntfCustomDraw method handles callbacks from the widgetset class instance.
@@ -12777,7 +12777,7 @@ end;</code>
             Use OnCustomDraw and OnAdvancedCustomDraw to perform custom drawing for the entire list view control.
           </p>
           <p>
-            Use OnCustomDrawItem and OnAdvancedCustomDrawItem  to perform custom drawing for the a list item on the list view control.
+            Use OnCustomDrawItem and OnAdvancedCustomDrawItem to perform custom drawing for the a list item on the list view control.
           </p>
         </descr>
         <seealso/>
@@ -12787,7 +12787,7 @@ end;</code>
         <short>Event handler signalled to render an owner drawn item.</short>
         <descr>
           <p>
-            <var>OnDrawItem</var> is a <var>TLVDrawItemEvent</var>  property which is the event handler signalled to render an owner drawn item. The event is triggered (when assigned) in the <var>DrawItem</var> method only when <var>OwnerDraw</var> is set to <b>True</b> and <var>ViewStyle</var> contains <var>vsReport</var>.
+            <var>OnDrawItem</var> is a <var>TLVDrawItemEvent</var> property which is the event handler signalled to render an owner drawn item. The event is triggered (when assigned) in the <var>DrawItem</var> method only when <var>OwnerDraw</var> is set to <b>True</b> and <var>ViewStyle</var> contains <var>vsReport</var>.
           </p>
           <p>
             Arguments to the event handler include:
@@ -13265,7 +13265,7 @@ end;</code>
         <short>Locates the list item closest to the specified position.</short>
         <descr>
           <p>
-            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item. If no item is found  <b>Nil</b> is returned.
+            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item. If no item is found <b>Nil</b> is returned.
           </p>
         </descr>
         <seealso/>
@@ -13432,7 +13432,7 @@ end;</code>
             Use the <var>Columns</var> property to add, change or delete a column definition.
           </p>
           <p>
-            Use the <var>Items</var> property to access the <var>TListItem</var> instances with the data displayed using the column definitions. The Caption in a given list item is the value display in Column[0]. Subsequent column values use the values in  SubItems; i. e. Column[1] is SubItem[0], Column[2] is SubItem[1], ad infinitum.
+            Use the <var>Items</var> property to access the <var>TListItem</var> instances with the data displayed using the column definitions. The Caption in a given list item is the value display in Column[0]. Subsequent column values use the values in SubItems; i. e. Column[1] is SubItem[0], Column[2] is SubItem[1], ad infinitum.
           </p>
         </descr>
         <seealso>
@@ -13539,7 +13539,7 @@ end;</code>
             <var>HotTrack</var> is a <var>Boolean</var> property used to enable or disable the hot tracking selection feature for the items in the list view control. HotTrack is one of the extended list view styles represented by the LVS_EX_TRACKSELECT constant.
           </p>
           <p>
-            When enabled, a list item is automatically selected (or de-selected) when the mouse pointer is hovered over a list item for a short period of time. It can be used in MultiSelect mode when the Shift, Ctrl, or Shift+Ctrl  keys are held while moving and hovering the mouse pointer.
+            When enabled, a list item is automatically selected (or de-selected) when the mouse pointer is hovered over a list item for a short period of time. It can be used in MultiSelect mode when the Shift, Ctrl, or Shift+Ctrl keys are held while moving and hovering the mouse pointer.
           </p>
           <p>
             HotTrack is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
@@ -13604,7 +13604,7 @@ end;</code>
             ItemFocused is updated when a LVN_ITEMCHANGED notification message with a focus state change is handled for the list view control.
           </p>
           <p>
-            Use <var>Selected</var>  to access the list item which is selected on the list view control.
+            Use <var>Selected</var> to access the list item which is selected on the list view control.
           </p>
         </descr>
         <seealso/>
@@ -13623,7 +13623,7 @@ end;</code>
             Setting a new value for the property causes the Selected property to be updated. In OwnerData mode, this causes the internal member to be updated and the virtual item is retrieved to set its Selected property to <b>True</b>. If Virtual mode is not enabled, the Selected property is set to corresponding value in Items.
           </p>
           <p>
-            If the new property value is -1, the value in Selected is set to  <b>Nil</b>. Setting a new property value when MultiSelect is enabled also causes Selected to be set to  <b>Nil</b>.
+            If the new property value is -1, the value in Selected is set to <b>Nil</b>. Setting a new property value when MultiSelect is enabled also causes Selected to be set to <b>Nil</b>.
           </p>
           <p>
             An Exception is raised if the new property value is not a value index position in Items, or -1.
@@ -13767,7 +13767,7 @@ end;</code>
             RowSelect is one of the TListViewProperty values included in the TListViewProperties set type and exchanged with the widgetset class. The property value is read from and written to the TCustomTreeview widgetset class instance when its handle is valid. Changing the value for the property causes the widgetset class to be updated with the new value.
           </p>
           <p>
-            Use MultiSelect to enable multi-selection of rows and/or columns on the list view  control.
+            Use MultiSelect to enable multi-selection of rows and/or columns on the list view control.
           </p>
         </descr>
         <seealso>
@@ -13813,7 +13813,7 @@ end;</code>
             When OwnerData (or Virtual Mode) is enabled, Selected refers to the most recent owner data item retrieved when the value in ItemIndex was changed. If the item index was set to <b>-1</b>, the property value is <b>Nil</b>.
           </p>
           <p>
-            When both OwnerData and MultiSelect are enabled, Selected refers to the first entry in Items with its Selected property set to <b>True</b>. If none of the list items has its Selected property set to <b>True</b>,  the property value is <b>Nil</b>.
+            When both OwnerData and MultiSelect are enabled, Selected refers to the first entry in Items with its Selected property set to <b>True</b>. If none of the list items has its Selected property set to <b>True</b>, the property value is <b>Nil</b>.
           </p>
           <p>
             Setting a new value for Selected causes the affected list item(s) in the Items property to be updated. In single select mode (MultiSelect = <b>False</b>), the Selected property in the current list item is set to <b>False</b> prior to updating the property value. In MultiSelect mode, a list item assigned as the new property value causes its Selected property to be set to <b>True</b> in the Items for the control.
@@ -14763,7 +14763,7 @@ end;</code>
         <short>Indicates if the control depends on access to its WidgetSet class.</short>
         <descr>
           <p>
-            FUseWS is a private Boolean member used to indicate if the control depends on  access to its WidgetSet class instance. The value in FUseWS is set in the constructor for the class instance.
+            FUseWS is a private Boolean member used to indicate if the control depends on access to its WidgetSet class instance. The value in FUseWS is set in the constructor for the class instance.
           </p>
           <p>
             FUseWS is used in the constructor to ensure that buttons are created for Prev and Next values when they are not part of the widgetset class implementation.
@@ -14984,7 +14984,7 @@ end;</code>
         <short/>
         <descr>
           <p>
-            InitializeWnd is an overridden method used to initialize the widgetset class  for the control. InitializeWnd calls the inherited method. When the FUseWS member contains <b>False</b>, no additional actions are performed in the method. When it contains <b>True</b>, methods in its widgetset class are called to synchronize values in the Min, Max, Position, Increment, Wrap, Orientation, and UseArrowKeys properties.
+            InitializeWnd is an overridden method used to initialize the widgetset class for the control. InitializeWnd calls the inherited method. When the FUseWS member contains <b>False</b>, no additional actions are performed in the method. When it contains <b>True</b>, methods in its widgetset class are called to synchronize values in the Min, Max, Position, Increment, Wrap, Orientation, and UseArrowKeys properties.
           </p>
         </descr>
         <version>Introduced in LCL version 2.1.0.</version>
@@ -15360,7 +15360,7 @@ end;</code>
 
       <element name="TCustomUpDown.Wrap">
         <short>
-          If <b>True</b>, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrementing beyond the extreme value.
+          If <b>True</b>, displayed control or value starts again from minimum or maximum value if clicking a button would cause incrementing or decrementing beyond the extreme value.
         </short>
         <descr/>
         <seealso/>
@@ -15828,7 +15828,7 @@ end;</code>
             The <var>Sender</var> argument is the new <var>TCustomAction</var> instance assigned to the Action property for the tool button.
           </p>
           <p>
-            <var>CheckDefaults</var> indicates when values from the action are copied into the control. When set to <b>True</b>, the values in the Action are applied only when its  property value has been assigned.
+            <var>CheckDefaults</var> indicates when values from the action are copied into the control. When set to <b>True</b>, the values in the Action are applied only when its property value has been assigned.
           </p>
           <p>
             ActionChange calls the inherited method on entry to copy properties from Sender to the control. It provides support for translating the <var>Checked</var> property in the action to the <var>Down</var> property used in the tool button. It also changes the value in <var>ImageIndex</var> only when a valid image index has been assigned in the Action.
@@ -15854,7 +15854,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            <var>AssignTo</var> is an overridden method used to implement object persistence for the <var>TToolButton</var> class type. It allows properties in the class instance to be stored to  the persistent object in <var>Dest</var> when it is a <var>TCustomAction</var> instance.
+            <var>AssignTo</var> is an overridden method used to implement object persistence for the <var>TToolButton</var> class type. It allows properties in the class instance to be stored to the persistent object in <var>Dest</var> when it is a <var>TCustomAction</var> instance.
           </p>
           <p>
             AssignTo calls the inherited method on entry to transfer common TCustomAction values to Dest. Additional properties in the tool button, like Down and ImageIndex, are handled as well.
@@ -16266,7 +16266,7 @@ end;</code>
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TToolButton</var>. It calls the inherited <var>Create</var> method, and sets the initial bounds for the control.  Default values for style-related properties are also assigned.
+            <var>Create</var> is the constructor for <var>TToolButton</var>. It calls the inherited <var>Create</var> method, and sets the initial bounds for the control. Default values for style-related properties are also assigned.
           </p>
         </descr>
         <seealso>
@@ -16282,7 +16282,7 @@ end;</code>
         <short>Checks for and executes a drop-down menu for the tool button.</short>
         <descr>
           <p>
-            <var>CheckMenuDropdown</var> is a <var>Boolean</var> function used to check whether a drop-down menu can be displayed and executed for the tool button.  The menu can be represented using either the <var>DropDownMenu</var> property (with  its <var>AutoPopUp</var> property set to <b>True</b>) or the <var>MenuItem</var> property.
+            <var>CheckMenuDropdown</var> is a <var>Boolean</var> function used to check whether a drop-down menu can be displayed and executed for the tool button. The menu can be represented using either the <var>DropDownMenu</var> property (with its <var>AutoPopUp</var> property set to <b>True</b>) or the <var>MenuItem</var> property.
           </p>
           <p>
             No actions are performed in the method at design-time, when the parent tool bar has not been assigned, or when neither DropDownMenu nor MenuItem has been assigned.
@@ -16354,7 +16354,7 @@ end;</code>
             </dd>
             <dt>gdeShadowed</dt>
             <dd>
-              Images are drawn using the shadowed effect when the button or drop-down indicator is  pressed.
+              Images are drawn using the shadowed effect when the button or drop-down indicator is pressed.
             </dd>
             <dt>gdeHighlighted</dt>
             <dd>
@@ -16521,7 +16521,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            <var>Enabled</var> is a <var>Boolean</var> property which determines whether the tool button can respond to mouse click events at run-time. Enabled, along with <var>Down</var>, <var>Style</var>,  and values in the tool bar flags influence how the button is rendered in the <var>Paint</var> method.
+            <var>Enabled</var> is a <var>Boolean</var> property which determines whether the tool button can respond to mouse click events at run-time. Enabled, along with <var>Down</var>, <var>Style</var>, and values in the tool bar flags influence how the button is rendered in the <var>Paint</var> method.
           </p>
           <p>
             The value for the property may be changed in the <var>CopyPropertiesFromMenuItem</var> method, or when the <var>CM_ENABLEDCHANGED</var> control message is handled for the button.
@@ -16605,7 +16605,7 @@ end;</code>
             <var>Marked</var> is a <var>Boolean</var> property which indicates if the tool button is marked. The default value for the property is <b>False</b>.
           </p>
           <p>
-            Marked is  provided for Delphi code compatibility; it is not used in the implementation of <var>TToolButton</var> or <var>TToolBar</var>.
+            Marked is provided for Delphi code compatibility; it is not used in the implementation of <var>TToolButton</var> or <var>TToolBar</var>.
           </p>
         </descr>
         <seealso/>
@@ -16819,7 +16819,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            <var>TToolBar</var> is <var>TToolWindow</var> descendant which implements a control used to arrange and  display buttons and other controls. The buttons are used to provide direct access to features or functions in the application, much like a menu.
+            <var>TToolBar</var> is <var>TToolWindow</var> descendant which implements a control used to arrange and display buttons and other controls. The buttons are used to provide direct access to features or functions in the application, much like a menu.
           </p>
           <p>
             A tool bar is normally aligned to an edge for the parent control so that it spans its width or height. The default alignment places the tool bar along the top edge of the parent control.
@@ -17280,7 +17280,7 @@ end;</code>
         <short>Draws the tool bar on the Canvas for the control.</short>
         <descr>
           <p>
-            <var>Paint</var> is an overridden procedure used to display the tool bar.  At design-time, a Red rectangle is drawn as a frame for the control. Paint calls the inherited Paint method to draw the inner and outer borders defined for the control. Paint signals the <var>OnPaint</var> event handler (when assigned) to perform drawing operations required for the tool bar.
+            <var>Paint</var> is an overridden procedure used to display the tool bar. At design-time, a Red rectangle is drawn as a frame for the control. Paint calls the inherited Paint method to draw the inner and outer borders defined for the control. Paint signals the <var>OnPaint</var> event handler (when assigned) to perform drawing operations required for the tool bar.
           </p>
         </descr>
         <seealso>
@@ -17412,7 +17412,7 @@ end;</code>
         <short>Finishes an update process for the tool bar.</short>
         <descr>
           <p>
-            Calls the inherited method on entry. Updates the size and layout for <var>Buttons</var> when the internal update counter is <b>0</b> (<b>zero</b>) and <var>tbfUpdateVisibleBarNeeded</var>  has been included in the flags for the control.
+            Calls the inherited method on entry. Updates the size and layout for <var>Buttons</var> when the internal update counter is <b>0</b> (<b>zero</b>) and <var>tbfUpdateVisibleBarNeeded</var> has been included in the flags for the control.
           </p>
         </descr>
         <seealso>
@@ -17457,7 +17457,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            SetButtonSize is a convenience method used to assign values for the ButtonWidth and ButtonHeight properties in a single method call. It is called when a new value is assigned to the <var>ButtonWidth</var> or  <var>ButtonHeight</var> properties.
+            SetButtonSize is a convenience method used to assign values for the ButtonWidth and ButtonHeight properties in a single method call. It is called when a new value is assigned to the <var>ButtonWidth</var> or <var>ButtonHeight</var> properties.
           </p>
           <p>
             For example:
@@ -17813,7 +17813,7 @@ AToolbar.ButtonHeight := 30;
         <short>Width for the images displayed on the tool bar.</short>
         <descr>
           <p>
-            <var>ImagesWidth</var> is an <var>Integer</var> property which indicates the width  for images displayed on the tool bar.  The default value for the property is zero (0).
+            <var>ImagesWidth</var> is an <var>Integer</var> property which indicates the width for images displayed on the tool bar. The default value for the property is zero (0).
           </p>
           <p>
             Changing the value in the property causes the private <var>UpdateVisibleBar</var> method to be called to update control flags, and to resize both the control and its <var>Buttons</var>.
@@ -17873,7 +17873,7 @@ AToolbar.ButtonHeight := 30;
         <short>Indicates whether captions are displayed on tool bar buttons.</short>
         <descr>
           <p>
-            <var>ShowCaptions</var> is a <var>Boolean</var> property which indicates whether  caption text is displayed on tool bar buttons. The default value for the property is <b>False</b>. Changing the value for the property causes the tool bar to be redrawn.
+            <var>ShowCaptions</var> is a <var>Boolean</var> property which indicates whether caption text is displayed on tool bar buttons. The default value for the property is <b>False</b>. Changing the value for the property causes the tool bar to be redrawn.
           </p>
           <p>
             ShowCaptions is used in the <var>Paint</var> method for the tool buttons on the control. When set to <b>True</b>, the caption text for a button is centered aligned at the bottom edge of the button. The icon for a button is drawn center aligned at the top edge of the button.
@@ -18314,7 +18314,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCoolBand.FTextWidth">
-        <short>Width (pixels) for  the value in the Text property.</short>
+        <short>Width (pixels) for the value in the Text property.</short>
       </element>
 
       <element name="TCoolBand.CalcControlLeft">
@@ -18520,7 +18520,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCoolBand.Bitmap">
-        <short>Bitmap image displayed  for the band.</short>
+        <short>Bitmap image displayed for the band.</short>
         <descr/>
         <seealso/>
       </element>
@@ -18698,7 +18698,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>Update</var> is an overridden method in <var>TCoolBands</var>. It calls the inherited method on entry to notify observers that the collection item has  changed. If a TCoolBar instance was assigned as the owner for the collection, its CalculateAndAlign method is called to layout and resize the visible bands for the control. The cool bar control is redrawn prior to exiting from the method.
+            <var>Update</var> is an overridden method in <var>TCoolBands</var>. It calls the inherited method on entry to notify observers that the collection item has changed. If a TCoolBar instance was assigned as the owner for the collection, its CalculateAndAlign method is called to layout and resize the visible bands for the control. The cool bar control is redrawn prior to exiting from the method.
           </p>
         </descr>
         <seealso/>
@@ -18713,7 +18713,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>Notify</var> is an overridden method in TCoolBands, and calls the inherited method on entry to notify observers of the change to the  collection item. If the collection item was added, its owner is set to the TCoolBar instance that owns the collection.
+            <var>Notify</var> is an overridden method in TCoolBands, and calls the inherited method on entry to notify observers of the change to the collection item. If the collection item was added, its owner is set to the TCoolBar instance that owns the collection.
           </p>
         </descr>
         <seealso>
@@ -18859,7 +18859,7 @@ AToolbar.ButtonHeight := 30;
             <var>TCustomCoolBar</var> is a <var>TToolWindow</var> descendant which defines a control like the Windows Rebar control. It provides a collection of windowed controls which are displayed in movable, resizable bands.
           </p>
           <p>
-            Each band (or <var>TCoolBand</var>) on the control can have a configurable sizing grip (or grabber), a bitmap, a text label, and a single windowed control. The CoolBar handles the size and position for the control when its band is moved.  Each band can have a fixed size, or can automatically re-size to the contained control. Bands can be displayed one band per line, or re-sized and positioned to fill the available width or height for the CoolBar control.
+            Each band (or <var>TCoolBand</var>) on the control can have a configurable sizing grip (or grabber), a bitmap, a text label, and a single windowed control. The CoolBar handles the size and position for the control when its band is moved. Each band can have a fixed size, or can automatically re-size to the contained control. Bands can be displayed one band per line, or re-sized and positioned to fill the available width or height for the CoolBar control.
           </p>
           <p>
             A common use case is hosting multiple toolbars in an application. Separate TToolbar instance are created and configured with event handlers or actions as needed. Each toolbar is assigned as the control for a band. A perfect example is the Lazarus IDE, which uses TCoolbar to host the file, view and run toolbars in its interface.
@@ -19709,7 +19709,7 @@ AToolbar.ButtonHeight := 30;
             TCoolBar is a TCustomCoolBar descendant which implements a control like the Windows Rebar control. It provides a collection of windowed controls which are displayed in movable, resizable bands.
           </p>
           <p>
-            Each band (or <var>TCoolBand</var>) on the control can have a configurable sizing grip (or grabber), a bitmap, a text label, and a single windowed control. The CoolBar handles the size and position for the control when its band is moved.  Each band can have a fixed size, or can automatically re-size to the contained control. Bands can be displayed one band per line, or re-sized and positioned to fill the available width or height for the CoolBar control.
+            Each band (or <var>TCoolBand</var>) on the control can have a configurable sizing grip (or grabber), a bitmap, a text label, and a single windowed control. The CoolBar handles the size and position for the control when its band is moved. Each band can have a fixed size, or can automatically re-size to the contained control. Bands can be displayed one band per line, or re-sized and positioned to fill the available width or height for the CoolBar control.
           </p>
           <p>
             A common use case is hosting multiple toolbars in an application. Separate TToolbar instance are created and configured with event handlers or actions as needed. Each toolbar is assigned as the Control for a band on the cool bar control. A perfect example is the Lazarus IDE, which uses TCoolbar to host the file, view and run toolbars in its interface.
@@ -20434,7 +20434,7 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TNodeState.nsValidHasChildren">
         <short>
-          The  tree node has child nodes and a value assigned to its HasChildren property.
+          The tree node has child nodes and a value assigned to its HasChildren property.
         </short>
       </element>
 
@@ -21202,7 +21202,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            A <var>TTreeNode</var> implements a node which is part a hierarchical tree structure displayed in a  <var>TTreeView</var> control.
+            A <var>TTreeNode</var> implements a node which is part a hierarchical tree structure displayed in a <var>TTreeView</var> control.
           </p>
           <p>
             TTreeNode has properties with the content displayed for the tree node like: Text, Data, ImageIndex, and OverlayIndex. It has properties which indicate the the the state for the node on the tree view control like: Cut, Deleting, Expanded, Focused, IsVisible, Selected, MultiSelected, States, Visible, and Enabled. It also includes properties that represent its relationship and position in the hierarchical tree structure like: TreeView, Owner / TreeNodes, Parent, Items, Level, Index, and AbsoluteIndex.
@@ -22166,7 +22166,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Collapse">
         <short>
-          Collapses the current tree node, and optionally collapses any descendent  nodes.
+          Collapses the current tree node, and optionally collapses any descendent nodes.
         </short>
         <descr/>
         <seealso/>
@@ -22187,7 +22187,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.Delete">
         <short>
-          Frees  the current tree node when the Deleting property is not <b>True</b>.
+          Frees the current tree node when the Deleting property is not <b>True</b>.
         </short>
         <descr>
           <p>
@@ -22363,7 +22363,7 @@ AToolbar.ButtonHeight := 30;
             Data is a Pointer property with a pointer to the custom data for the node. Data can contain any arbitrary data type, and must be cast to the correct types when used in an application.
           </p>
           <p>
-            Setting a new value for the property causes the associated TreeView (when assigned) to sort the parent node or all of the TreeNodes when needed and allowed.  It is needed when the tree view uses SortType stData or stBoth. It is allowed if the node is not being deleted and is bound to other tree nodes (States).
+            Setting a new value for the property causes the associated TreeView (when assigned) to sort the parent node or all of the TreeNodes when needed and allowed. It is needed when the tree view uses SortType stData or stBoth. It is allowed if the node is not being deleted and is bound to other tree nodes (States).
           </p>
           <p>
             The Changed method is called with the ncDataChanged node change reason.
@@ -22477,7 +22477,7 @@ AToolbar.ButtonHeight := 30;
             Setting a new value for the property causes the <var>States</var> property in the associated TreeView control to be updated (when assigned). The values <var>tvsScrollbarChanged</var> and <var>tvsTopsNeedsUpdate</var> are included in the control States. The <var>Update</var> method is called to force the TreeView to be redrawn. The <var>Changed</var> method is called with the <var>ncHeightChanged</var> node change reason.
           </p>
           <p>
-            Height is used along with <var>Top</var> to calculate the return value for the <var>Bottom</var> method. It is also used in the implementation of methods like <var>DisplayRect</var> and  <var>DisplayExpandSignRect</var>.
+            Height is used along with <var>Top</var> to calculate the return value for the <var>Bottom</var> method. It is also used in the implementation of methods like <var>DisplayRect</var> and <var>DisplayExpandSignRect</var>.
           </p>
         </descr>
         <seealso/>
@@ -22489,7 +22489,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>ImageIndex</var> is an <var>Integer</var> property with the ordinal position for the image displayed for the node. It refers to a bitmap stored in the <var>Images</var> property of the associated <var>TreeView</var> control.  The default value for the property is <b>-1</b>, and indicates that an image has not been assigned.
+            <var>ImageIndex</var> is an <var>Integer</var> property with the ordinal position for the image displayed for the node. It refers to a bitmap stored in the <var>Images</var> property of the associated <var>TreeView</var> control. The default value for the property is <b>-1</b>, and indicates that an image has not been assigned.
           </p>
           <p>
             Setting a new value for the property causes the <var>Update</var> method to be called to redraw the associated tree view control. The <var>Changed</var> method is called with the <var>ncImageIndex</var> node change reason.
@@ -22744,7 +22744,7 @@ AToolbar.ButtonHeight := 30;
             <var>Top</var> is a read-only <var>Integer</var> property with the vertical coordinate for the top of the tree node. Top contains an Y-axis offset where the tree node is located in the display area for the associated <var>TreeView</var> control.
           </p>
           <p>
-            The property value is calculated by calling the <var>UpdateAllTops</var> method in the TreeView control.  The value contains the accumulated <var>Height</var> for all preceding <var>TreeNodes</var> starting at the first visible node in the control, and reflects their <var>Visible</var> and <var>Expanded</var> settings. The value is calculated in UpdateAllTops when <var>tvsTopsNeedsUpdate</var> has been included in the <var>States</var> property for the TreeView control.
+            The property value is calculated by calling the <var>UpdateAllTops</var> method in the TreeView control. The value contains the accumulated <var>Height</var> for all preceding <var>TreeNodes</var> starting at the first visible node in the control, and reflects their <var>Visible</var> and <var>Expanded</var> settings. The value is calculated in UpdateAllTops when <var>tvsTopsNeedsUpdate</var> has been included in the <var>States</var> property for the TreeView control.
           </p>
           <p>
             Use <var>Height</var> to get height for the text, images, and indicators used in a tree node. Use <var>Bottom</var> to get the vertical coordinate for the bottom of the tree node.
@@ -22805,7 +22805,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>Visible</var> is a  <var>Boolean</var> property which indicates if the tree node is visible in the associated <var>TreeView</var> control. Its value is <b>True</b> when <var>nsVisible</var> has been included in the <var>States</var> property for the tree node. The default value for the property is <b>True</b>.
+            <var>Visible</var> is a <var>Boolean</var> property which indicates if the tree node is visible in the associated <var>TreeView</var> control. Its value is <b>True</b> when <var>nsVisible</var> has been included in the <var>States</var> property for the tree node. The default value for the property is <b>True</b>.
           </p>
           <p>
             Setting a new value for the property causes the States property to be updated. <var>Selected</var> is set to <b>False</b> when the value in Visible is changed.
@@ -22827,7 +22827,7 @@ AToolbar.ButtonHeight := 30;
             Read and write access to the property value are redirected to the <var>States</var> property. Enabled is <b>True</b> when <var>nsEnabled</var> is included in the States property. It is <b>False</b> if the value is omitted from States.
           </p>
           <p>
-            Changing the property value causes States to be updated to include or exclude nsEnabled as needed.  Selected is set to <b>False</b> for any change to the property value, and the <var>Update</var> method is called to redrawn the Node on the tree view control. The <var>Changed</var> method is called to notify the tree view control of the reason for the update (<var>ncEnablement</var>).
+            Changing the property value causes States to be updated to include or exclude nsEnabled as needed. Selected is set to <b>False</b> for any change to the property value, and the <var>Update</var> method is called to redrawn the Node on the tree view control. The <var>Changed</var> method is called to notify the tree view control of the reason for the update (<var>ncEnablement</var>).
           </p>
           <p>
             Enabled also affects the visual display for the tree node. When set to <b>False</b>, the text for the node is drawn using either the <var>DisabledFontColor</var> (when assigned) or theme element details for the tree view control.
@@ -22856,7 +22856,7 @@ AToolbar.ButtonHeight := 30;
         <short>Implements an enumerator for items in the TTreeNodes container.</short>
         <descr>
           <p>
-            Implements the Current property and MoveNext method used to navigate the tree nodes in the container.  The nodes in the container are passed as an argument to the Create constructor.
+            Implements the Current property and MoveNext method used to navigate the tree nodes in the container. The nodes in the container are passed as an argument to the Create constructor.
           </p>
         </descr>
         <seealso/>
@@ -22957,13 +22957,13 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>TTreeNodes</var> is a <var>TPersistent</var> descendant which implements a container used to store <var>TTreeNode</var> instances.  TTreeNodes provides properties and methods used to create, store, access, and maintain nodes in a hierarchical tree structure.
+            <var>TTreeNodes</var> is a <var>TPersistent</var> descendant which implements a container used to store <var>TTreeNode</var> instances. TTreeNodes provides properties and methods used to create, store, access, and maintain nodes in a hierarchical tree structure.
           </p>
           <p>
             The indexed <var>Item</var> property provides access to the nodes in the container by their ordinal position. An enumerator can also be used to access tree nodes in the container. Use TopLvlItems to access the tree nodes that are the top-level sibling nodes in the container.
           </p>
           <p>
-            TTreeNodes has methods that are used to create, store, locate, and maintain the tree nodes in the container; for example: Add, AddChild, Insert, Delete, Clear, FindNodeWithText, GetFirstNode,  et. al.
+            TTreeNodes has methods that are used to create, store, locate, and maintain the tree nodes in the container; for example: Add, AddChild, Insert, Delete, Clear, FindNodeWithText, GetFirstNode, et. al.
           </p>
           <p>
             Internally, it maintains a node cache for its tree node instances. A list of selected (or multi-selected) tree nodes is also maintained.
@@ -24011,7 +24011,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>TTreeViewOptions</var> is a set type used to store zero (0) or more values from the TTreeViewOption enumeration. Values included in the set indicate that a  feature or behavior is enabled for a tree view control.
+            <var>TTreeViewOptions</var> is a set type used to store zero (0) or more values from the TTreeViewOption enumeration. Values included in the set indicate that a feature or behavior is enabled for a tree view control.
           </p>
           <p>
             TTreeViewOptions is the type used for the <var>TCustomTreeView.Options</var> property.
@@ -24653,7 +24653,7 @@ AToolbar.ButtonHeight := 30;
         <short><b>True</b> if the specified tree node can be expanded.</short>
         <descr>
           <p>
-            <var>CanExpand</var> is a <var>Boolean</var> function used to determine if the tree node specified in <var>Node</var> can be expanded. CanExpand signals the <var>OnExpanding</var> event handler (when assigned) to get  the return value for the method.
+            <var>CanExpand</var> is a <var>Boolean</var> function used to determine if the tree node specified in <var>Node</var> can be expanded. CanExpand signals the <var>OnExpanding</var> event handler (when assigned) to get the return value for the method.
           </p>
           <p>
             The return value can be set to <b>True</b> when Node is visible and contains child nodes. The return value is always <b>True</b> if the OnExpanding event handler has not been assigned.
@@ -24701,7 +24701,7 @@ AToolbar.ButtonHeight := 30;
             <var>CustomDraw</var> is a method used to perform custom drawing for the tree view using the event handlers assigned in the control. The OnCustomDraw or OnAdvancedCustomDraw event handlers are signalled depending on the drawing stage in Stage. OnCustomDraw is signalled only when Stage is set to cdPrePaint.
           </p>
           <p>
-            The return value is True if default drawing should be performed in the tree view control, and was not performed by event handlers in the control.
+            The return value is <b>True</b> if default drawing should be performed in the tree view control, and was not performed by event handlers in the control.
           </p>
           <p>
             CustomDraw is called from the DoPaint method and occurs after values in the States property have been updated.
@@ -25025,7 +25025,7 @@ AToolbar.ButtonHeight := 30;
         <short>Drawing target examined in the method.</short>
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Stage">
-        <short>Drawing stage  examined in the method.</short>
+        <short>Drawing stage examined in the method.</short>
       </element>
 
       <element name="TCustomTreeView.IsNodeVisible">
@@ -25104,7 +25104,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            Change is a method used to perform actions needed when the selection in the control has been changed. Node contains the tree node  that was used in the control selection. Change signals the OnChange event handler (when assigned).
+            Change is a method used to perform actions needed when the selection in the control has been changed. Node contains the tree node that was used in the control selection. Change signals the OnChange event handler (when assigned).
           </p>
           <p>
             Change is called from the event handler used for the internal timer activated when a new selection is made and the control synchronizes the tree nodes to the visual display.
@@ -25303,7 +25303,7 @@ AToolbar.ButtonHeight := 30;
         <short>Performs actions to handle a horizontal mouse wheel message.</short>
         <descr>
           <p>
-            <var>DoMouseWheelHorz</var> is an overridden method used to perform actions needed to handle a horizontal mouse wheel message. It calls the inherited method to signal the <var>OnMouseWheelHorz</var> event handler (when assigned), or other chtOnMouseWheelHorz  handlers registered in the application. If the message is not handled in the ancestor, the value in <var>ScrolledLeft</var> is updated to apply the delta value in <var>WheelDelta</var>. The position for a tool tip (or hint) is also updated using the coordinates in Mouse.
+            <var>DoMouseWheelHorz</var> is an overridden method used to perform actions needed to handle a horizontal mouse wheel message. It calls the inherited method to signal the <var>OnMouseWheelHorz</var> event handler (when assigned), or other chtOnMouseWheelHorz handlers registered in the application. If the message is not handled in the ancestor, the value in <var>ScrolledLeft</var> is updated to apply the delta value in <var>WheelDelta</var>. The position for a tool tip (or hint) is also updated using the coordinates in Mouse.
           </p>
         </descr>
         <seealso>
@@ -25379,7 +25379,7 @@ AToolbar.ButtonHeight := 30;
             The text color is determined using the Enabled properties in both the tree view control and the tree Node. When theme services are enabled in Options (using tvoThemedDraw), theme element details provide the color and font style for the enabled state. Otherwise, the color value in DisabledFontColor or Font is used.
           </p>
           <p>
-            DoPaintNode retrieves scaled image resolutions needed for the Images and StateImages in the control. The images sizes  are determined by applying the scaling factor in Canvas to the current PixelsPerInch setting in Font.
+            DoPaintNode retrieves scaled image resolutions needed for the Images and StateImages in the control. The images sizes are determined by applying the scaling factor in Canvas to the current PixelsPerInch setting in Font.
           </p>
           <p>
             Use of multi-stage custom drawing is supported. If event handlers are provided for the cdPrePaint and cdPostPaint stages, the CustomDraw and CustomDrawItem methods are used to render the node with the drawing state for the node.
@@ -25453,7 +25453,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>DrawBuiltInIcon</var> is a virtual method which is used to draw the a built-in icon for the specified tree node. A built-in icon is provided by the operating system or platform when an image list has not been provided or populated in the <var>Images</var>  property.
+            <var>DrawBuiltInIcon</var> is a virtual method which is used to draw the a built-in icon for the specified tree node. A built-in icon is provided by the operating system or platform when an image list has not been provided or populated in the <var>Images</var> property.
           </p>
           <p>
             The return value contains a <var>TSize</var> instance with the dimensions for the built-in image. In TCustomTreeView, the method returns an empty TSize instance (CX and CY are both set to 0). The method must be overridden in a descendent class (like <var>TShellTreeView</var>) to use the icon(s) appropriate for the implementation.
@@ -25661,7 +25661,7 @@ AToolbar.ButtonHeight := 30;
         <short>Performs actions needed when LCL component streaming has been completed.</short>
         <descr>
           <p>
-            Loaded is an overridden method in TCustomTreeView, and calls the inherited method on entry. AT  design-time, the FullExpand method is called to expand all of the tree nodes on the control. The UpdateDefaultItemHeight method is called to set property values when tvoAutoItemHeight has been included in the Options for the control.
+            Loaded is an overridden method in TCustomTreeView, and calls the inherited method on entry. At design-time, the FullExpand method is called to expand all of the tree nodes on the control. The UpdateDefaultItemHeight method is called to set property values when tvoAutoItemHeight has been included in the Options for the control.
           </p>
           <p>
             Loaded is called when the control has been loaded from a resource, transfers the loaded property values to the widget.
@@ -25972,7 +25972,7 @@ AToolbar.ButtonHeight := 30;
             <dt>SB_LEFT</dt>
             <dd>Sets ScrolledLeft to 0.</dd>
             <dt>SB_RIGHT</dt>
-            <dd>Sets ScrolledLeft to its  largest value for the visible control area.</dd>
+            <dd>Sets ScrolledLeft to its largest value for the visible control area.</dd>
             <dt>SB_LINERIGHT</dt>
             <dd>
               Increments ScrolledLeft by one-half of the default ItemHeight for the control. (?)
@@ -26524,7 +26524,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            ScrolledLeft is an Integer Property with the horizontal coordinate for the origin of  the visible display area in the tree view control.
+            ScrolledLeft is an Integer Property with the horizontal coordinate for the origin of the visible display area in the tree view control.
           </p>
           <p>
             Use ScrolledTop for the vertical coordinate for the origin of the visible display area.
@@ -26539,7 +26539,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            ScrolledTop is an Integer Property with the vertical coordinate for the origin of  the visible display area in the tree view control.
+            ScrolledTop is an Integer Property with the vertical coordinate for the origin of the visible display area in the tree view control.
           </p>
           <p>
             Use ScrolledLeft for the horizontal coordinate for the origin of the visible display area.
@@ -26558,7 +26558,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.ShowLines">
         <short>
-          Enables the horizontal and vertical  lines which join nodes in the tree hierarchy.
+          Enables the horizontal and vertical lines which join nodes in the tree hierarchy.
         </short>
         <descr/>
         <seealso/>
@@ -26648,10 +26648,10 @@ AToolbar.ButtonHeight := 30;
         <short>Clears the selection in the tree view control.</short>
         <descr>
           <p>
-            <var>ClearSelection</var> is a method used to clear tree nodes selected in the tree view control.  ClearSelection uses the value in <var>MultiSelect</var> to determine the actions needed to clear the selected nodes.
+            <var>ClearSelection</var> is a method used to clear tree nodes selected in the tree view control. ClearSelection uses the value in <var>MultiSelect</var> to determine the actions needed to clear the selected nodes.
           </p>
           <p>
-            If <var>MultiSelect</var> has  been enabled in the <var>Options</var> for the control,  the ClearMultiSelection method is called to clear the selected nodes.
+            If <var>MultiSelect</var> has been enabled in the <var>Options</var> for the control, the ClearMultiSelection method is called to clear the selected nodes.
           </p>
           <p>
             <var>KeepPrimary</var> indicates whether the first tree node in a multi-selection is retained. When set to <b>False</b>, all selected nodes are removed from the Selections property. Otherwise, the tree node in Selected is retained.
@@ -27332,7 +27332,7 @@ AToolbar.ButtonHeight := 30;
             <var>DefaultItemHeight</var> is an <var>Integer</var> property with the default height for tree nodes displayed in the control. The default value for the property is defined in the DefaultTreeNodeHeight constant, and assigned in the constructor for the class instance.
           </p>
           <p>
-            When tvoAutoItemHeight has been included in the Options for the control, the property value is  determined using the Font and the images for the control. A new value assigned to the property is ignored when automatic item height has been enabled.
+            When tvoAutoItemHeight has been included in the Options for the control, the property value is determined using the Font and the images for the control. A new value assigned to the property is ignored when automatic item height has been enabled.
           </p>
           <p>
             The value may be changed when a layout adjustment policy is applied in DoAutoAdjustLayout, or when the UpdateDefaultItemHeight method is called. It is also updated (if needed) when values are assigned to the Images or StateImages properties.
@@ -27374,7 +27374,7 @@ AToolbar.ButtonHeight := 30;
             <var>ExpandSignColor</var> is a <var>TColor</var> property with the color used to paint the expand / collapse indicators for tree nodes on the control. The default value for the property is <var>clWindowFrame</var>.
           </p>
           <p>
-            ExpandSignColor is used in the DoPaintNode method to render a TTreeNode instance with child node(s). It is assigned as the Pen color in Canvas, and controls the color of the lines drawn for the indicator. When ExpandSignType  is set to tvestArrowFill, it is assigned as the Brush color in Canvas, and controls the fill color for the indicator.
+            ExpandSignColor is used in the DoPaintNode method to render a TTreeNode instance with child node(s). It is assigned as the Pen color in Canvas, and controls the color of the lines drawn for the indicator. When ExpandSignType is set to tvestArrowFill, it is assigned as the Brush color in Canvas, and controls the fill color for the indicator.
           </p>
         </descr>
         <seealso>
@@ -27391,7 +27391,7 @@ AToolbar.ButtonHeight := 30;
         <short>Size of the expand / collapse (fold / unfold) indicators for tree nodes.</short>
         <descr>
           <p>
-            <var>ExpandSignSize</var> is an <var>Integer</var> property with the dimensions for the expand / collapse indicator drawn for tree nodes on the control. The default value for the property is -1, and indicates that an explicit  value has not been assigned. When set to a positive non-zero value, it is scaled to the PPI (Pixels Per Inch) setting for the current Font. The value may be scaled in the DoAutoAdjustLayout method when specific layout policies are applied.
+            <var>ExpandSignSize</var> is an <var>Integer</var> property with the dimensions for the expand / collapse indicator drawn for tree nodes on the control. The default value for the property is -1, and indicates that an explicit value has not been assigned. When set to a positive non-zero value, it is scaled to the PPI (Pixels Per Inch) setting for the current Font. The value may be scaled in the DoAutoAdjustLayout method when specific layout policies are applied.
           </p>
           <p>
             Use 0 to enable auto-sizing for the expand / collapse indicator.
@@ -27472,7 +27472,7 @@ AToolbar.ButtonHeight := 30;
             ExpandSignType is used in the DoPaintNode method to determine the drawing style for the expand / collapse indicator for a tree node that has child nodes. It also determines the scaling mechanism needed for themed versus non-themed drawing styles.
           </p>
           <p>
-            Use ExpandSignSize to set the default dimensions for the indicator before it is scaled for the theme or font size. Use  ExpandSignColor to set the fill color for a filled arrow-style indicator. Use ExpandSignWidth to set the line width used for a chevron or angle bracket-style indicator.
+            Use ExpandSignSize to set the default dimensions for the indicator before it is scaled for the theme or font size. Use ExpandSignColor to set the fill color for a filled arrow-style indicator. Use ExpandSignWidth to set the line width used for a chevron or angle bracket-style indicator.
           </p>
         </descr>
         <seealso>
@@ -27591,7 +27591,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         </short>
         <descr>
           <p>
-            <var>KeepCollapsedNodes</var> is a <var>Boolean</var> property which indicates whether a tree node keeps its child nodes when the node is collapsed. When set to False (the default value), a tree node will free it child nodes when the node is collapsed.
+            <var>KeepCollapsedNodes</var> is a <var>Boolean</var> property which indicates whether a tree node keeps its child nodes when the node is collapsed. When set to <b>False</b> (the default value), a tree node will free it child nodes when the node is collapsed.
           </p>
           <p>
             KeepCollapsedNodes is assigned to the corresponding property in Items, and made available to TTreeNode instances in the container using their Owner property.
@@ -27680,13 +27680,13 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>The selected tree node in the control.</short>
         <descr>
           <p>
-            <var>Selected</var> is a <var>TTreeNode</var> property which contains the selected  tree node in the control. A tree node is selected when the Left or Right mouse button is clicked on the code. It can also be selected by assigning a <var>TTreeNode</var> instance to the property.
+            <var>Selected</var> is a <var>TTreeNode</var> property which contains the selected tree node in the control. A tree node is selected when the Left or Right mouse button is clicked on the code. It can also be selected by assigning a <var>TTreeNode</var> instance to the property.
           </p>
           <p>
             When a tree node is selected or unselected, the Selected property in the TTreeNode instance is updated. Use the <var>OnChanging</var> event handler to determine if a specific tree node can become the selected node in the control. Use the <var>OnChange</var> event handler to perform actions needed after the tree node is made the Selected node in the control.
           </p>
           <p>
-            Selecting a tree node forces it to become fully visible in the control. This includes expanding parent nodes to ensure that the node is visible.  The <var>OnExpanding</var> and <var>OnExpanded</var> event handlers are signalled before and after actions to a given tree node.
+            Selecting a tree node forces it to become fully visible in the control. This includes expanding parent nodes to ensure that the node is visible. The <var>OnExpanding</var> and <var>OnExpanded</var> event handlers are signalled before and after actions to a given tree node.
           </p>
           <p>
             Use the <var>Selections</var> property to access the list of selected tree nodes when multi-selection has been enabled in the <var>Options</var> for the control. Use the <var>SelectionCount</var> property to get the number of tree nodes in the Selections property.
@@ -27860,7 +27860,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>Style of the TPen used to draw lines used to connect nodes in the control.</short>
         <descr>
           <p>
-            <var>TreeLinePenStyle</var> is a <var>TPenStyle</var>  property which contains the pen style used to draw lines connecting the nodes in the tree. TreeLinePenStyle can contain one of the following vales:
+            <var>TreeLinePenStyle</var> is a <var>TPenStyle</var> property which contains the pen style used to draw lines connecting the nodes in the tree. TreeLinePenStyle can contain one of the following vales:
           </p>
           <ul>
             <li>psSolid</li>
@@ -27886,7 +27886,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <short>Enables or disables navigation using the Tab key.</short>
         <descr>
           <p>
-            <var>TabStop</var> is a <var>Boolean</var> property which enables or disables keyboard navigation for the control. When set to <b>True</b>, the control can be entered and exited using the Tab and Shift+Tab keys. When set to <b>False</b>, the control does not respond to these keystrokes, and cannot be entered or exited using the keyboard to  navigate the tab order for controls on a form.
+            <var>TabStop</var> is a <var>Boolean</var> property which enables or disables keyboard navigation for the control. When set to <b>True</b>, the control can be entered and exited using the Tab and Shift+Tab keys. When set to <b>False</b>, the control does not respond to these keystrokes, and cannot be entered or exited using the keyboard to navigate the tab order for controls on a form.
           </p>
           <p>
             The default value for the property is <b>True</b> in TCustomTreeView.
@@ -27899,7 +27899,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 
       <element name="TTreeView">
         <short>
-          <var>TTreeView</var>  is a control that displays a hierarchical list of items.
+          <var>TTreeView</var> is a control that displays a hierarchical list of items.
         </short>
         <descr>
           <p>
@@ -28174,7 +28174,7 @@ OldExpanded.Free;
         <short>Event handler signalled to get the text for the specified tree node.</short>
         <descr>
           <p>
-            OnGetNodeText is a TTVGetNodeText property with the event handler signalled to get the text for the tree node passed as an argument.  It is signalled from the CreateChildNodes method when the tree node has a parent node, or when expanding its  child nodes. It is also signalled from the Apply method to get the text for an expanded child node.
+            OnGetNodeText is a TTVGetNodeText property with the event handler signalled to get the text for the tree node passed as an argument. It is signalled from the CreateChildNodes method when the tree node has a parent node, or when expanding its child nodes. It is also signalled from the Apply method to get the text for an expanded child node.
           </p>
         </descr>
         <seealso/>
@@ -28357,7 +28357,7 @@ OldExpanded.Free;
         <descr>
           <p>
             <var>Create</var> is the overridden constructor for THeaderSection, and
-            calls the inherited <var>Create</var> method on entry.  The value in ACollection is used as the Owner of the collection item. Create sets the default values for properties in the class instance.
+            calls the inherited <var>Create</var> method on entry. The value in ACollection is used as the Owner of the collection item. Create sets the default values for properties in the class instance.
           </p>
         </descr>
         <seealso>
@@ -28426,7 +28426,7 @@ OldExpanded.Free;
         <short>Indicates if the section is visible in the header control.</short>
         <descr>
           <p>
-            <var>Visible</var> is a <var>Boolean</var> property which indicates if the header section is visible in the header control. When set to <b>False</b>,  the section cannot be drawn using the TCustomHeaderControl.PaintSection method.
+            <var>Visible</var> is a <var>Boolean</var> property which indicates if the header section is visible in the header control. When set to <b>False</b>, the section cannot be drawn using the TCustomHeaderControl.PaintSection method.
           </p>
           <p>
             The default value for the property is <b>True</b>, as set in the constructor for the class instance.
@@ -28562,7 +28562,7 @@ OldExpanded.Free;
         </short>
         <descr>
           <p>
-            The <var>THeaderSection</var> instance in <var>Item</var> is created when the argument value is <b>Nil</b> (unassigned). The return value contains the new header section  instance, or the existing value in Item when it is assigned.
+            The <var>THeaderSection</var> instance in <var>Item</var> is created when the argument value is <b>Nil</b> (unassigned). The return value contains the new header section instance, or the existing value in Item when it is assigned.
           </p>
         </descr>
       </element>
@@ -28878,7 +28878,7 @@ OldExpanded.Free;
         </short>
         <descr>
           <p>
-            Signals the <var>OnSectionTrack</var> event handler (when assigned). Called from the <var>MouseDown</var>, <var>MouseMove</var>, and  <var>MouseUp</var> methods when mouse tracking is active for a section in the header control.
+            Signals the <var>OnSectionTrack</var> event handler (when assigned). Called from the <var>MouseDown</var>, <var>MouseMove</var>, and <var>MouseUp</var> methods when mouse tracking is active for a section in the header control.
           </p>
         </descr>
         <seealso>
@@ -29040,7 +29040,7 @@ OldExpanded.Free;
             <var>GetSectionAt</var> is an <var>Integer</var> function used to get the position for the header section found at the coordinates in P.
           </p>
           <p>
-            GetSectionAt iterates over the <var>THeaderSection</var> instances in <var>Sections</var> to find a  matching collection item. A match is found when the X- axis coordinate in P is within the Left and Right  values for the header section.
+            GetSectionAt iterates over the <var>THeaderSection</var> instances in <var>Sections</var> to find a matching collection item. A match is found when the X- axis coordinate in P is within the Left and Right values for the header section.
           </p>
           <p>
             The return value contains the ordinal position in Sections where the header section is stored, or -1 if a header section was not found for the coordinates.
@@ -29093,7 +29093,7 @@ OldExpanded.Free;
             <var>Index</var> contains the ordinal position for the <var>THeaderSection</var> instance in the <var>Sections</var> collection. No actions are performed in the method if the header section is not <var>Visible</var>.
           </p>
           <p>
-            PaintSection draws the header section using the <var>Left</var> and <var>Right</var> properties in the THeaderSection instance. The value in its <var>State</var> property is used to render the section by calling methods in ThemeServices. When Images have been assigned in the control, and the header section  has an assigned image index, it is drawn to the Canvas.  When Text contains a non-empty value, it is also rendered to the Canvas using the DrawText method in ThemeServices.
+            PaintSection draws the header section using the <var>Left</var> and <var>Right</var> properties in the THeaderSection instance. The value in its <var>State</var> property is used to render the section by calling methods in ThemeServices. When Images have been assigned in the control, and the header section has an assigned image index, it is drawn to the Canvas. When Text contains a non-empty value, it is also rendered to the Canvas using the DrawText method in ThemeServices.
           </p>
         </descr>
         <seealso/>
