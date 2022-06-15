@@ -43,7 +43,10 @@ type
       cdErrPre,
       cdPtr_ErrNum, cdErrPtr_Num,
       cdPtr_Ptr_ErrNum, cdPtr_ErrPtr_Num, cdErrPtr_Ptr_Num,
-      cdErrArr_Num, cdPtr_ErrArr_Num
+      cdErrArr_Num, cdArr_EmptyNum,
+      cdPtr_ErrArr_Num,
+//      cdErrStruct,
+      cdStruct_ErrField
     );
   const
     SecondType: array [TTestCreateDataKind] of array [0..1] of TTestCreateDataKind = (
@@ -54,8 +57,10 @@ type
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdPtr_Ptr_ErrNum,
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdPtr_ErrPtr_Num,
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdErrPtr_Ptr_Num
-      (cdErrArr_Num,     cdErrArr_Num),        // cdErrArr_Num
-      (cdPtr_ErrArr_Num, cdPtr_ErrArr_Num)     // cdPtr_ErrArr_Num
+      (cdErrArr_Num,     cdArr_EmptyNum),      // cdErrArr_Num
+      (cdErrArr_Num,     cdArr_EmptyNum),      // cdArr_EmptyNum
+      (cdPtr_ErrArr_Num, cdPtr_ErrArr_Num),    // cdPtr_ErrArr_Num
+      (cdStruct_ErrField,cdStruct_ErrField)
     );
   protected
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TWatchResultDataKind); overload;
@@ -134,6 +139,11 @@ type
       ExpTypeName: String = #1;
       ASaveLoad: Boolean = True; ACreateCopy: Boolean = True
     );
+    procedure AssertEmptyArrayOfNumData(const AMessage: string; IdeRes: TWatchResultData;
+      ExpNum: Int64;
+      ExpTypeName: String = #1;
+      ASaveLoad: Boolean = True; ACreateCopy: Boolean = True
+    );
     procedure AssertPtrArrayOfNumData(const AMessage: string; IdeRes: TWatchResultData;
       ExpNum: Int64;
       ExpTypeName: String = #1;
@@ -181,7 +191,8 @@ type
                           WithAnch1Fld, WithAnch2Fld: Boolean;
                           aEntryType1, aEntryType2: TTestCreateDataKind;
                           aErr1, aErr2: Boolean;
-                          aNil: Boolean = False
+                          aNil: Boolean = False;
+                          ExpTypeName: String = ''
                          );
 
     function SaveLoad(ARes: TWatchResultData): TWatchResultData;
@@ -194,6 +205,7 @@ type
     function CreatePtrPtrNum(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     function CreatePtrPtrErr(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
     function CreateArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    function CreateEmptyArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     function CreatePtrArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     procedure CreateStruct(ResIntf: TLzDbgWatchDataIntf;
                           StrctTyp: TLzDbgStructType;
@@ -234,6 +246,7 @@ type
     procedure TestWatchStuct;
     procedure TestWatchStuctNested;
     procedure TestWatchArrayStuct;
+    procedure TestWatchArrayStuctArrayStuct;
 
   end;
 
@@ -568,6 +581,26 @@ begin
   end;
 end;
 
+procedure TTestIdeDebuggerWatchResult.AssertEmptyArrayOfNumData(
+  const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
+  ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
+var
+  t: TWatchResultData;
+begin
+  AssertArrayData(AMessage, IdeRes, datDynArray, 0, 0, ExpTypeName);
+
+  if ASaveLoad and not SkipSubTestSave then begin
+    t := SaveLoad(IdeRes);
+    AssertEmptyArrayOfNumData(AMessage, IdeRes, ExpNum, ExpTypeName, False, False);
+    t.Free;
+  end;
+  if ACreateCopy and not SkipSubTestCopy then begin
+    t := IdeRes.CreateCopy;
+    AssertEmptyArrayOfNumData(AMessage, IdeRes, ExpNum, ExpTypeName, False, False);
+    t.Free;
+  end;
+end;
+
 procedure TTestIdeDebuggerWatchResult.AssertPtrArrayOfNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -738,12 +771,15 @@ end;
 procedure TTestIdeDebuggerWatchResult.AssertStruct(const AMessage: string;
   IdeRes: TWatchResultData; StrctTyp: TLzDbgStructType; WithFld: Boolean;
   WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
-  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean);
+  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
+  ExpTypeName: String);
 var
   ExpCnt, ExpOffs: Integer;
 begin
+  if ExpTypeName = '' then
+    ExpTypeName := 'TMyStruct';
   if aNil then begin
-    AssertStructData('', IdeRes, StrctTyp, 0, -1, 'TMyStruct');
+    AssertStructData('', IdeRes, StrctTyp, 0, -1, ExpTypeName);
     exit;
   end;
 
@@ -752,18 +788,18 @@ begin
   if WithAnch1Fld and (WithAnch >= 1) then ExpCnt := ExpCnt + 2;
   if WithAnch2Fld and (WithAnch >= 2) then ExpCnt := ExpCnt + 1;
 
-  AssertStructData('', IdeRes, StrctTyp, 700, ExpCnt, 'TMyStruct');
+  AssertStructData('', IdeRes, StrctTyp, 700, ExpCnt, ExpTypeName);
   ExpOffs := 0;
   if WithFld then begin
     if aErr1 and not aErr2 then
       AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad')
     else
-      AssertStructField('', IdeRes, ExpOffs+0, 'Foo', dfvProtected, [], 'TMyStruct', 'TMyFoo');
+      AssertStructField('', IdeRes, ExpOffs+0, 'Foo', dfvProtected, [], ExpTypeName, 'TMyFoo');
 
-    AssertStructField('', IdeRes, ExpOffs+1, 'Abc', dfvPublic,    [], 'TMyStruct', #1, rdkError);
+    AssertStructField('', IdeRes, ExpOffs+1, 'Abc', dfvPublic,    [], ExpTypeName, #1, rdkError);
     AssertErrData('', IdeRes.Fields[ExpOffs+1].Field, 'ouch');
 
-    AssertStructField('', IdeRes, ExpOffs+2, 'Bar', dfvPublic,    [], 'TMyStruct', 'TMyBar');
+    AssertStructField('', IdeRes, ExpOffs+2, 'Bar', dfvPublic,    [], ExpTypeName, 'TMyBar');
     AssertData('', IdeRes.Fields[ExpOffs+2].Field, aEntryType2, aErr2, 'TMyBar', 301, 1201);
 
     ExpOffs := ExpOffs + 3;
@@ -901,6 +937,15 @@ begin
   dat.CreateNumValue(ANum+7, True, 2);
 end;
 
+function TTestIdeDebuggerWatchResult.CreateEmptyArrayOfNum(
+  ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
+var
+  p, dat: TLzDbgWatchDataIntf;
+begin
+  Result.NestNum := ResIntf.CreateArrayValue(datDynArray, 2);
+//  Result.NestNum.CreateNumValue(ANum, True, 2); // proto
+end;
+
 function TTestIdeDebuggerWatchResult.CreatePtrArrayOfNum(
   ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 begin
@@ -993,8 +1038,11 @@ begin
                         CreatePtrErr   (ResIntf, AnAddr, AnErrPreFix+'out of cheese');
       cdErrPtr_Ptr_Num: ResIntf.CreateError(AnErrPreFix+'ouch');
       cdErrArr_Num:     ResIntf.CreateError(AnErrPreFix+'ouch');
+      cdArr_EmptyNum:   Result :=
+                        CreateEmptyArrayOfNum(ResIntf, ANumVal);
       cdPtr_ErrArr_Num: Result.NestNum :=
                         CreatePtrErr   (ResIntf, AnAddr, AnErrPreFix+'argh');
+      cdStruct_ErrField:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, True, True);
     end
   else
     case AKind of
@@ -1008,8 +1056,11 @@ begin
                         CreatePtrPtrNum(ResIntf, AnAddr, ANumVal, 2);
       cdErrArr_Num:     Result :=
                         CreateArrayOfNum(ResIntf, ANumVal);
+      cdArr_EmptyNum:   Result :=
+                        CreateArrayOfNum(ResIntf, ANumVal);
       cdPtr_ErrArr_Num: Result :=
                         CreatePtrArrayOfNum(ResIntf, ANumVal);
+      cdStruct_ErrField:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False);
     end;
 
   if ATypeName <> '' then
@@ -1030,7 +1081,9 @@ begin
           cdPtr_ErrPtr_Num: AssertPointerToErrData   (AMessage, IdeRes, AnAddr, AnErrPreFix+'out of cheese');
           cdErrPtr_Ptr_Num: AssertErrData            (AMessage, IdeRes, AnErrPreFix+'ouch');
           cdErrArr_Num:     AssertErrData            (AMessage, IdeRes, AnErrPreFix+'ouch');
+          cdArr_EmptyNum:   AssertEmptyArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
           cdPtr_ErrArr_Num: AssertPointerToErrData   (AMessage, IdeRes, AnAddr, AnErrPreFix+'argh');
+          cdStruct_ErrField:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, True, True, False, ATypeName);
         end
       else
         case AKind of
@@ -1041,7 +1094,9 @@ begin
           cdPtr_Ptr_ErrNum..
           cdErrPtr_Ptr_Num: AssertPtrPointerToSignedNumData(AMessage, IdeRes, AnAddr, AnAddr+1, ANumVal, 2, ATypeName, 'TFooPtr', 'TFooNum');
           cdErrArr_Num:     AssertArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
+          cdArr_EmptyNum:   AssertArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
           cdPtr_ErrArr_Num: AssertPtrArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
+          cdStruct_ErrField:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
         end;
 end;
 
@@ -1612,7 +1667,6 @@ begin
   for aErrIdx := -1 to aInnerLen-1 do
   for aErrIdx2 := -1 to aInnerLen2-1 do
   begin
-
     t.Init;
     ProtoIntf := t.ResIntf.CreateArrayValue(datDynArray, aLen, 0);
     t.ResIntf.SetTypeName('TMyArray');
@@ -2048,6 +2102,238 @@ begin
           aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb);
       end;
     end;
+
+
+    if x > 0 then
+      Res.Free
+    else
+      t.Done;
+  end;
+end;
+
+procedure TTestIdeDebuggerWatchResult.TestWatchArrayStuctArrayStuct;
+var
+  t: TTestWatchResWrapper;
+  Res, EntryRes, FieldRes, InnerEntryRes, InnerFieldRes: TWatchResultData;
+  x, InnerEntryCnt_0, InnerEntryCnt_1: Integer;
+  aEntryType1, aEntryType1Second: TTestCreateDataKind;
+  EntryIntf, FieldIntf, InnerEntryIntf, InnerFieldIntf: TLzDbgWatchDataIntf;
+  aErr_0_Fi1, aErr_1_Fi1: Boolean;
+begin
+  for x :=  0 to 2 do
+  for InnerEntryCnt_0 := 0 to 2 do
+  for InnerEntryCnt_1 := 0 to 2 do
+  for aEntryType1 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
+  for aEntryType1Second := SecondType[aEntryType1][0] to SecondType[aEntryType1][1] do
+  for aErr_0_Fi1 := low(Boolean) to high(Boolean) do
+  for aErr_1_Fi1 := low(Boolean) to high(Boolean) do
+  begin
+//if x <> 1 then continue;
+//if InnerEntryCnt_0 <> 1 then continue;
+//if InnerEntryCnt_1 <> 2 then continue;
+//if aEntryType1 <> cdErrNum then continue;
+//if aEntryType1Second <> cdErrNum then continue;
+//if aErr_0_Fi1 <> True then continue;
+//if aErr_1_Fi1 <> False then continue;
+
+    if (InnerEntryCnt_0 = 1) and
+       ( aErr_1_Fi1 or (aEntryType1Second <> aEntryType1) )
+    then
+      Continue;
+
+    t.Init;
+
+    t.ResIntf.CreateArrayValue(datDynArray, 2, 0);
+    t.ResIntf.SetTypeName('TMyArray');
+
+      //[0]
+      EntryIntf := t.ResIntf.SetNextArrayData;
+      EntryIntf.CreateStructure(dstRecord);
+      EntryIntf.SetTypeName('TMyStruct');
+
+        // [0].F1
+        FieldIntf := EntryIntf.AddField('F1', dfvProtected, []);
+        CreateData(FieldIntf, aEntryType1, False, 'TF1');
+
+        // [0].F2
+        FieldIntf := EntryIntf.AddField('F2', dfvProtected, []);
+        FieldIntf.CreateArrayValue(datDynArray, 2, 0);
+        FieldIntf.SetTypeName('TMyInnerArray');
+
+        if InnerEntryCnt_0 > 0 then begin
+          // [0].F2[0]
+          InnerEntryIntf := FieldIntf.SetNextArrayData;
+          InnerEntryIntf.CreateStructure(dstClass, 1100);
+          InnerEntryIntf.SetTypeName('TMyInnerStruct');
+          // [0].F2[0].Fi1
+          InnerFieldIntf := InnerEntryIntf.AddField('Fi1', dfvProtected, []);
+          CreateData(InnerFieldIntf, aEntryType1, aErr_0_Fi1, 'TFi1', 200, 990, 'EFi1');
+          // [0].F2[0].Fi2
+          InnerFieldIntf := InnerEntryIntf.AddField('Fi2', dfvProtected, []);
+          CreateData(InnerFieldIntf, aEntryType1, False, 'TFi2', 202, 992, 'EFi2');
+
+
+          if InnerEntryCnt_0 > 1 then begin
+            // [0].F2[1]
+            InnerEntryIntf := FieldIntf.SetNextArrayData;
+            InnerEntryIntf.CreateStructure(dstClass, 1200);
+            // [0].F2[1].Fi1
+            InnerFieldIntf := InnerEntryIntf.AddField('Fi1', dfvProtected, []);
+            CreateData(InnerFieldIntf, aEntryType1Second, aErr_1_Fi1, 'TFi1', 210, 910, 'EFi1');
+            // [0].F2[1].Fi2
+            InnerFieldIntf := InnerEntryIntf.AddField('Fi2', dfvProtected, []);
+            CreateData(InnerFieldIntf, aEntryType1, False, 'TFi2', 212, 912, 'EFi2');
+          end;
+        end;
+
+
+      //[1]
+      EntryIntf := t.ResIntf.SetNextArrayData;
+      EntryIntf.CreateStructure(dstRecord);
+      EntryIntf.SetTypeName('TMyStruct');
+
+        // [1].F1
+        FieldIntf := EntryIntf.AddField('F1', dfvProtected, []);
+        CreateData(FieldIntf, aEntryType1, False);
+
+        // [1].F2
+        FieldIntf := EntryIntf.AddField('F2', dfvProtected, []);
+        FieldIntf.CreateArrayValue(datDynArray, 3, 0);
+        FieldIntf.SetTypeName('TMyInnerArray');
+
+        if InnerEntryCnt_1 > 0 then begin
+          // [1].F2[0]
+          InnerEntryIntf := FieldIntf.SetNextArrayData;
+          InnerEntryIntf.CreateStructure(dstClass, 2100);
+          InnerEntryIntf.SetTypeName('TMyInnerStruct');
+          // [1].F2[0].Fi1
+          InnerFieldIntf := InnerEntryIntf.AddField('Fi1', dfvProtected, []);
+          CreateData(InnerFieldIntf, aEntryType1, aErr_0_Fi1, 'TFi1', 2200, 2990, 'E1Fi1');
+          // [1].F2[0].Fi2
+          InnerFieldIntf := InnerEntryIntf.AddField('Fi2', dfvProtected, []);
+          CreateData(InnerFieldIntf, aEntryType1, False, 'TFi2', 2202, 2992, 'E1Fi2');
+
+
+          if InnerEntryCnt_1 > 1 then begin
+            // [1].F2[1]
+            InnerEntryIntf := FieldIntf.SetNextArrayData;
+            InnerEntryIntf.CreateStructure(dstClass, 2200);
+            // [1].F2[1].Fi1
+            InnerFieldIntf := InnerEntryIntf.AddField('Fi1', dfvProtected, []);
+            CreateData(InnerFieldIntf, aEntryType1Second, aErr_1_Fi1, 'TFi1', 2210, 2910, 'E1Fi1');
+            // [1].F2[1].Fi2
+            InnerFieldIntf := InnerEntryIntf.AddField('Fi2', dfvProtected, []);
+            CreateData(InnerFieldIntf, aEntryType1, False, 'TFi2', 2212, 2912, 'E1Fi2');
+          end;
+        end;
+
+
+    Res := t.GetIdeRes;
+    case x of
+      1: Res := SaveLoad(Res);
+      2: Res := Res.CreateCopy;
+    end;
+    if x > 0 then
+      t.Done;
+
+
+    AssertValKind('', Res, rdkArray);
+    AssertArrayData('', Res, datDynArray, 2, 0, 'TMyArray');
+
+      // [0]
+      res.SetSelectedIndex(0);
+      EntryRes := Res.SelectedEntry;
+
+      AssertStructData('[0]', EntryRes, dstRecord, 0, 2, 'TMyStruct');
+
+        // [0].F1
+        AssertStructField('[0].F1', EntryRes, 0, 'F1', dfvProtected, []);
+        FieldRes := EntryRes.Fields[0].Field;
+        AssertData('[0].F1',FieldRes, aEntryType1, False, 'TF1');
+
+        // [0].F2
+        AssertStructField('[0].F2', EntryRes, 1, 'F2', dfvProtected, []);
+        FieldRes := EntryRes.Fields[1].Field;
+        /// len =1 as only one is set
+        AssertArrayData('[0].F2', FieldRes, datDynArray, InnerEntryCnt_0, 0, 'TMyInnerArray');
+
+        if InnerEntryCnt_0 > 0 then begin
+          // [0].F2[0]
+          FieldRes.SetSelectedIndex(0);
+          InnerEntryRes := FieldRes.SelectedEntry;
+          AssertStructData('[0].F2[0]', InnerEntryRes, dstClass, 1100, 2, 'TMyInnerStruct');
+          // [0].F2[0].Fi1
+          AssertStructField('[0].F2[0].Fi1', InnerEntryRes, 0, 'Fi1', dfvProtected, []);
+          InnerFieldRes := InnerEntryRes.Fields[0].Field;
+          AssertData('[0].F2[0].Fi1',InnerFieldRes, aEntryType1, aErr_0_Fi1, 'TFi1', 200, 990, 'EFi1');
+          // [0].F2[0].Fi2
+          AssertStructField('[0].F2[0].Fi2', InnerEntryRes, 1, 'Fi2', dfvProtected, []);
+          InnerFieldRes := InnerEntryRes.Fields[1].Field;
+          AssertData('[0].F2[0].Fi2',InnerFieldRes, aEntryType1, False, 'TFi2', 202, 992, 'EFi2');
+
+          // [0].F2[1]
+          if InnerEntryCnt_0 > 1 then begin
+            FieldRes.SetSelectedIndex(1);
+            InnerEntryRes := FieldRes.SelectedEntry;
+            AssertStructData('[0].F2[1]', InnerEntryRes, dstClass, 1200, 2, 'TMyInnerStruct');
+            // [0].F2[1].Fi1
+            AssertStructField('[0].F2[1].Fi1', InnerEntryRes, 0, 'Fi1', dfvProtected, []);
+            InnerFieldRes := InnerEntryRes.Fields[0].Field;
+            AssertData('[0].F2[1].Fi1',InnerFieldRes, aEntryType1Second, aErr_1_Fi1, 'TFi1', 210, 910, 'EFi1');
+            // [0].F2[1].Fi2
+            AssertStructField('[0].F2[1].Fi2', InnerEntryRes, 1, 'Fi2', dfvProtected, []);
+            InnerFieldRes := InnerEntryRes.Fields[1].Field;
+            AssertData('[0].F2[1].Fi2',InnerFieldRes, aEntryType1, False, 'TFi2', 212, 912, 'EFi2');
+          end;
+        end;
+
+
+      // [1]
+      res.SetSelectedIndex(1);
+      EntryRes := Res.SelectedEntry;
+
+      AssertStructData('[0]', EntryRes, dstRecord, 0, 2, 'TMyStruct');
+
+        // [1].F1
+        AssertStructField('[1].F1', EntryRes, 0, 'F1', dfvProtected, []);
+        FieldRes := EntryRes.Fields[0].Field;
+        AssertData('[1].F1',FieldRes, aEntryType1, False, 'TF1');
+
+        // [1].F2
+        AssertStructField('[1].F2', EntryRes, 1, 'F2', dfvProtected, []);
+        FieldRes := EntryRes.Fields[1].Field;
+        /// len =1 as only one is set
+        AssertArrayData('[1].F2', FieldRes, datDynArray, InnerEntryCnt_1, 0, 'TMyInnerArray');
+
+        if InnerEntryCnt_1 > 0 then begin
+         // [1].F2[0]
+          FieldRes.SetSelectedIndex(0);
+          InnerEntryRes := FieldRes.SelectedEntry;
+          AssertStructData('[1].F2[0]', InnerEntryRes, dstClass, 2100, 2, 'TMyInnerStruct');
+          // [1].F2[0].Fi1
+          AssertStructField('[1].F2[0].Fi1', InnerEntryRes, 0, 'Fi1', dfvProtected, []);
+          InnerFieldRes := InnerEntryRes.Fields[0].Field;
+          AssertData('[1].F2[0].Fi1',InnerFieldRes, aEntryType1, aErr_0_Fi1, 'TFi1', 2200, 2990, 'E1Fi1');
+          // [1].F2[0].Fi2
+          AssertStructField('[1].F2[0].Fi2', InnerEntryRes, 1, 'Fi2', dfvProtected, []);
+          InnerFieldRes := InnerEntryRes.Fields[1].Field;
+          AssertData('[1].F2[0].Fi2',InnerFieldRes, aEntryType1, False, 'TFi2', 2202, 2992, 'E1Fi2');
+
+          // [1].F2[1]
+          if InnerEntryCnt_1 > 1 then begin
+            FieldRes.SetSelectedIndex(1);
+            InnerEntryRes := FieldRes.SelectedEntry;
+            AssertStructData('[1].F2[1]', InnerEntryRes, dstClass, 2200, 2, 'TMyInnerStruct');
+            // [1].F2[1].Fi1
+            AssertStructField('[1].F2[1].Fi1', InnerEntryRes, 0, 'Fi1', dfvProtected, []);
+            InnerFieldRes := InnerEntryRes.Fields[0].Field;
+            AssertData('[1].F2[1].Fi1',InnerFieldRes, aEntryType1Second, aErr_1_Fi1, 'TFi1', 2210, 2910, 'E1Fi1');
+            // [1].F2[1].Fi2
+            AssertStructField('[1].F2[1].Fi2', InnerEntryRes, 1, 'Fi2', dfvProtected, []);
+            InnerFieldRes := InnerEntryRes.Fields[1].Field;
+            AssertData('[1].F2[1].Fi2',InnerFieldRes, aEntryType1, False, 'TFi2', 2212, 2912, 'E1Fi2');
+          end;
+        end;
 
 
     if x > 0 then

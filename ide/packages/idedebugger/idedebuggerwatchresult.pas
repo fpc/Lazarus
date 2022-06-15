@@ -624,7 +624,8 @@ type
     function MaybeUpdateProto(var AProtoData: TWatchResultData;
                               var AnOverrideTemplate: TOverrideTemplateData;
                               AStorage: PWatchResultStorage;
-                              ARecurse: boolean = False
+                              ARecurse: boolean = False;
+                              ASkipStorage: boolean = False
                              ): boolean; virtual; abstract;
 
     procedure AfterSaveToIndex(AStorage: TWatchResultStorage; AnIndex: Integer;
@@ -860,7 +861,8 @@ type
     function MaybeUpdateProto(var AProtoData: TWatchResultData;
                               var AnOverrideTemplate: TOverrideTemplateData;
                               AStorage: PWatchResultStorage;
-                              ARecurse: boolean = False
+                              ARecurse: boolean = False;
+                              ASkipStorage: boolean = False
                              ): boolean; override;
     procedure ClearData; override;
   protected
@@ -1008,7 +1010,8 @@ type
     function CreateStorage: TWatchResultStorage; override;
     function MaybeUpdateProto(var AProtoData: TWatchResultData;
       var AnOverrideTemplate: TOverrideTemplateData;
-      AStorage: PWatchResultStorage; ARecurse: boolean = False): boolean;
+      AStorage: PWatchResultStorage; ARecurse: boolean = False;
+      ASkipStorage: boolean = False): boolean;
       override;
     procedure AfterSaveToIndex(AStorage: TWatchResultStorage; AnIndex: Integer;
                                var AnEntryTemplate: TWatchResultData;
@@ -1084,7 +1087,8 @@ type
 
     function MaybeUpdateProto(var AProtoData: TWatchResultData;
       var AnOverrideTemplate: TOverrideTemplateData;
-      AStorage: PWatchResultStorage; ARecurse: boolean = False): boolean;
+      AStorage: PWatchResultStorage; ARecurse: boolean = False;
+      ASkipStorage: boolean = False): boolean;
       override;
     procedure AfterSaveToIndex(AStorage: TWatchResultStorage; AnIndex: Integer;
       var AnEntryTemplate: TWatchResultData;
@@ -1196,7 +1200,8 @@ type
     function CreateStorage: TWatchResultStorage; override;
     function MaybeUpdateProto(var AProtoData: TWatchResultData;
       var AnOverrideTemplate: TOverrideTemplateData;
-      AStorage: PWatchResultStorage; ARecurse: boolean = False): boolean;
+      AStorage: PWatchResultStorage; ARecurse: boolean = False;
+      ASkipStorage: boolean = False): boolean;
       override;
     procedure AfterSaveToIndex(AStorage: TWatchResultStorage; AnIndex: Integer;
       var AnEntryTemplate: TWatchResultData;
@@ -2483,7 +2488,7 @@ end;
 procedure TGenericWatchResultData.TGenericWatchResultStorage.SetCount( AValue: integer);
 begin
   if AValue < Count then
-    FErrorStore.Clear(FDataArray, AValue-1);
+    FErrorStore.Clear(FDataArray, AValue);
   inherited SetCount(AValue);
   FErrorStore.AfterLastAdd; // TODO: TRIM, once only finished // TODO maybe only explicit
 end;
@@ -2560,9 +2565,13 @@ var
   i: Integer;
   e: _ERROR_DATA;
   PathNst, p: String;
+  AllErr: Boolean;
 begin
   PathNst := '';
   if ANestLvl > 0 then PathNst := 'N'+IntToStr(ANestLvl);
+
+  AllErr := (AConfig.GetValue(APath+TWatchResultStorage.TAG_ALL_ERR, -1) = 0) and
+            (AnEntryTemplate.ValueKind <> rdkError);
 
   l := AConfig.GetValue(APath+TAG_CNT+PathNst, 0);
   SetLength(FDataArray, l);
@@ -2571,7 +2580,7 @@ begin
   for i := 0 to Length(FDataArray) - 1 do begin
     p := APath+'E'+IntToStr(i)+'/'+PathNst;
 
-    if AConfig.GetValue(p+TAG_ERR, 0) = 1 then begin
+    if AllErr or (AConfig.GetValue(p+TAG_ERR, 0) = 1) then begin
       e := Default(_ERROR_DATA);
       e.LoadDataFromXMLConfig(AConfig, p, AnEntryTemplate, AnOverrideTemplate, False);
       FErrorStore.Add(i, FDataArray[i], e);
@@ -2745,7 +2754,7 @@ end;
 function TGenericWatchResultData.MaybeUpdateProto(
   var AProtoData: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AStorage: PWatchResultStorage;
-  ARecurse: boolean): boolean;
+  ARecurse: boolean; ASkipStorage: boolean): boolean;
 begin
   Result := (Self <> nil) and
             ( (AProtoData = nil) or
@@ -2759,7 +2768,7 @@ begin
     end;
     AProtoData := Self.CreateCopy(True);
 
-    if (AStorage <> nil) and (AStorage^ <> nil) then
+    if not ASkipStorage and (AStorage <> nil) and (AStorage^ <> nil) then
       UpdateStorage(AStorage, Self, AnOverrideTemplate);
   end;
 end;
@@ -3208,12 +3217,12 @@ end;
 function TWatchResultDataPointer.MaybeUpdateProto(
   var AProtoData: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AStorage: PWatchResultStorage;
-  ARecurse: boolean): boolean;
+  ARecurse: boolean; ASkipStorage: boolean): boolean;
 var
   APtrProtoData: TWatchResultDataPointer absolute AProtoData;
   Store: PWatchResultStorage;
 begin
-  Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse);
+  Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse, ASkipStorage);
   if (not Result) and (AProtoData is TWatchResultDataPointer) and
      ARecurse and (FType.FDerefData <> nil)
   then begin
@@ -3221,7 +3230,7 @@ begin
     if (Store <> nil) and (Store^ <> nil) then
       Store := Store^.NestedStoragePtr;
     Result := FType.FDerefData.MaybeUpdateProto(APtrProtoData.FType.FDerefData, AnOverrideTemplate,
-      Store, ARecurse);
+      Store, ARecurse, ASkipStorage);
   end;
 end;
 
@@ -3424,13 +3433,13 @@ end;
 function TWatchResultDataArrayBase.MaybeUpdateProto(
   var AProtoData: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AStorage: PWatchResultStorage;
-  ARecurse: boolean): boolean;
+  ARecurse: boolean; ASkipStorage: boolean): boolean;
 var
   AnArrayProtoData: TWatchResultDataArrayBase absolute AProtoData;
   Store: PWatchResultStorage;
 begin
   Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate,
-    AStorage, ARecurse);
+    AStorage, ARecurse, ASkipStorage);
   if (not Result) and (AProtoData is TWatchResultDataArrayBase) and
      ARecurse and (FType.FEntryTemplate <> nil)
   then begin
@@ -3438,7 +3447,7 @@ begin
     if (Store <> nil) and (Store^ <> nil) then
       Store := Store^.NestedStoragePtr;
     Result := FType.FEntryTemplate.MaybeUpdateProto(AnArrayProtoData.FType.FEntryTemplate, AnOverrideTemplate,
-      Store, ARecurse);
+      Store, ARecurse, ASkipStorage);
   end;
 end;
 
@@ -3461,7 +3470,8 @@ begin
     FType.FEntryTemplate.MaybeUpdateProto(
       AnArrayEntryTemplate.FType.FEntryTemplate,
       AnOverrideTemplate,
-      nil,
+      @FData.FEntries,
+      True,
       True
     );
   end;
@@ -3797,34 +3807,46 @@ end;
 function TGenericWatchResultDataStruct.MaybeUpdateProto(
   var AProtoData: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AStorage: PWatchResultStorage;
-  ARecurse: boolean): boolean;
+  ARecurse: boolean; ASkipStorage: boolean): boolean;
 var
   AStructProtoData: TGenericWatchResultDataStruct absolute AProtoData;
-  Store: PWatchResultStorage;
-  FieldStore: PNestedFieldsWatchResultStorage absolute Store;
+  FieldStore: PNestedFieldsWatchResultStorage absolute AStorage;
+  dummy: TOverrideTemplateData;
   i: Integer;
 begin
-  Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse);
+  Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse, ASkipStorage);
   if Result or not ARecurse then
     exit;
 
   assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
-  if (AStorage = nil) or (AStorage^ = nil) then
+  if (AStorage = nil) or (AStorage^ = nil)
+  then begin
+    if (ARecurse) then begin  // or "if not ASkipStorage and " ??
+      dummy := nil;
+      for i := 0 to Length(FType.FFieldData) - 1 do begin
+        FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
+          dummy, nil, ARecurse, ASkipStorage);
+        assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
+      end;
+
+      if FType.FAnchestor <> nil then begin
+        FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, dummy,
+          nil, ARecurse, ASkipStorage);
+        assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
+      end;
+    end;
+
     exit;
+  end;
+
   for i := 0 to Length(FType.FFieldData) - 1 do begin
-    Store := AStorage;
-    if (Store <> nil) and (Store^ <> nil) then
-      Store := FieldStore^.NestedStoragePtr[i];
     FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
-      FieldStore^.FOverrideTempl[i], Store, ARecurse);
+      FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
   end;
 
   if FType.FAnchestor <> nil then begin
-    Store := AStorage;
-    if (Store <> nil) and (Store^ <> nil) then
-      Store := FieldStore^.NestedStoragePtr[-1];
     FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, AnOverrideTemplate,
-      Store, ARecurse);
+      FieldStore^.NestedStoragePtr[-1], ARecurse, ASkipStorage);
   end;
 end;
 
@@ -3837,8 +3859,7 @@ var
   AStore: TNestedFieldsWatchResultStorage absolute AStorage;
   i: Integer;
 begin
-  inherited AfterSaveToIndex(AStorage, AnIndex, AnEntryTemplate,
-    AnOverrideTemplate);
+  inherited AfterSaveToIndex(AStorage, AnIndex, AnEntryTemplate, AnOverrideTemplate);
 
   if (FType.FAnchestor <> nil) then begin
     assert(AnEntryTemplate is TGenericWatchResultDataStruct, 'TGenericWatchResultDataStruct.AfterSaveToIndex: AnEntryTemplate is TGenericWatchResultDataStruct');
