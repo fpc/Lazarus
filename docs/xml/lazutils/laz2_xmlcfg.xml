@@ -484,6 +484,46 @@
         <short>DOM Node to remove from the Document.</short>
       </element>
 
+      <element name="TXMLConfig.FindChildNode">
+        <short>
+          Finds (and optionally caches) a child node starting at the specified index position using the specified XPath node name and position.
+        </short>
+        <descr>
+          <p>
+            <var>FindChildNode</var> is a <var>TDOMNode</var> function used to retrieve (and optionally cache) a DOM node which matches the XPATH expression in AName.
+          </p>
+          <p>
+            PathIndex contains the ordinal position for the first child node examined in the list of child nodes. It is a 0-based value.
+          </p>
+          <p>
+            AName can contain the name for a child and and a predicate with the index position in the list of nodes. For example: 'NodeName[4]'. Please note that positions in XPATH start at 1 instead of 0 as used in Pascal.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfig.InternalFindNode"/>
+        </seealso>
+      </element>
+      <element name="TXMLConfig.FindChildNode.Result">
+        <short>
+          Child DOM node which matches the expression and position indicated in the function arguments.
+        </short>        
+      </element>
+      <element name="TXMLConfig.FindChildNode.PathIndex">
+        <short>
+          Position for the first child node in the list of nodes examined in the method.          
+        </short>        
+      </element>
+      <element name="TXMLConfig.FindChildNode.AName">
+        <short>
+          XPATH expression which indicates the node name and the predicate which indicates the position for the selected child node.
+        </short>
+      </element>
+      <element name="TXMLConfig.FindChildNode.CreateNodes">
+        <short>
+          <b>True</b> if cache entries are created for the node(s) which match the arguments to the function.          
+        </short>        
+      </element>    
+
       <element name="TXMLConfig.Create">
         <short>Constructor for the class instance.</short>
         <descr>
