@@ -146,7 +146,7 @@
       <!-- enumeration value Visibility: default -->
       <element name="TCalendarPart.cpTitleYear">
         <short>
-          Mouse click occurred on the year number  heading in the calendar control.
+          Mouse click occurred on the year number heading in the calendar control.
         </short>
       </element>
 
@@ -185,7 +185,7 @@
         <short>Represents days of the week used in TCalendar.</short>
         <descr>
           <p>
-            <var>TCalDayOfWeek</var> is an enumerated type with values which represent the day  used as the first day of the week in <var>TCustomCalendar</var> and descendants.
+            <var>TCalDayOfWeek</var> is an enumerated type with values which represent the day used as the first day of the week in <var>TCustomCalendar</var> and descendants.
           </p>
         </descr>
         <seealso>
@@ -445,7 +445,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TCustomCalendar</var>. Create  calls the inherited <var>Create</var> method, and sets the style, initial bounds, and display settings for the calendar. Create sets the default date / time value to Now.
+            <var>Create</var> is the constructor for <var>TCustomCalendar</var>. Create calls the inherited <var>Create</var> method, and sets the style, initial bounds, and display settings for the calendar. Create sets the default date / time value to Now.
           </p>
         </descr>
         <seealso>
@@ -490,7 +490,7 @@
         </short>
         <descr>
           <p>
-            <var>Date</var> is a String property that represents the value in DateTime as a string data type.  Reading the value in Date calls the GetProps method to get the current value for DateTime, and converts it to its string representation. Setting the value in Date calls the SetProps method to store the new value for both Date and DateTime.
+            <var>Date</var> is a String property that represents the value in DateTime as a string data type. Reading the value in Date calls the GetProps method to get the current value for DateTime, and converts it to its string representation. Setting the value in Date calls the SetProps method to store the new value for both Date and DateTime.
           </p>
         </descr>
         <errors>
