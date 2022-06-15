@@ -128,19 +128,10 @@
             <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting.
           </p>
           <p>
-            The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object:
-              <link id="PrimarySelection">PrimarySelection</link>,
-              <link id="SecondarySelection">SecondarySelection</link> and
-              <link id="Clipboard">Clipboard</link>.
-              There is no difference between the three objects except their type.
+            The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection">PrimarySelection</link>, <link id="SecondarySelection">SecondarySelection</link> and <link id="Clipboard">Clipboard</link>. There is no difference between the three objects except their type.
           </p>
           <p>
-            A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
-            <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>,
-            <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>,
-            <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-            <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-            <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+            A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>, <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>, <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
           </p>
         </descr>
         <errors/>
@@ -385,7 +376,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.AddFormat.Result">
-        <short>True if format added correctly.</short>
+        <short><b>True</b> if format added correctly.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.AddFormat.FormatID">
@@ -457,7 +448,8 @@
       <!-- argument Visibility: default -->
       <element name="TClipboard.Create.AClipboardType">
         <short>
-          <var>AClipboardType</var> - optional argument specifying type of clipboard to be created.</short>
+          <var>AClipboardType</var> - optional argument specifying type of clipboard to be created.
+        </short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TClipboard.Destroy">
@@ -472,7 +464,8 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.FindPictureFormatID">
         <short>
-          <var>FindPictureFormatID</var> - search for the first format ID that is a graphic.</short>
+          <var>FindPictureFormatID</var> - search for the first format ID that is a graphic.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -484,7 +477,8 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.FindFormatID">
         <short>
-          <var>FindFormatID</var> - find a Format ID that has the specified name.</short>
+          <var>FindFormatID</var> - find a Format ID that has the specified name.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -500,7 +494,8 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.GetComponent">
         <short>
-          <var>GetComponent</var> - reads a component from the clipboard.</short>
+          <var>GetComponent</var> - reads a component from the clipboard.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -520,14 +515,15 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.GetFormat">
         <short>
-          <var>GetFormat</var> - read information on format from the clipboard.</short>
+          <var>GetFormat</var> - read information on format from the clipboard.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.GetFormat.Result">
-        <short>True if Format found.</short>
+        <short><b>True</b> if Format found.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.GetFormat.FormatID">
@@ -540,7 +536,8 @@
       <!-- procedure Visibility: public -->
       <element name="TClipboard.SupportedFormats">
         <short>
-          <var>SupportedFormats</var> - fills a stringlist with the names of the supported MIME types.</short>
+          <var>SupportedFormats</var> - fills a stringlist with the names of the supported MIME types.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -560,7 +557,8 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.GetTextBuf">
         <short>
-          <var>GetTextBuf</var> - reads text from the clipboard and returns the number of characters.</short>
+          <var>GetTextBuf</var> - reads text from the clipboard and returns the number of characters.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -580,14 +578,15 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.HasFormat">
         <short>
-          <var>HasFormat</var> - look up the list to see if the format is supported. If a <var>TPicture</var> format is specified, all graphic formats are searched.</short>
+          <var>HasFormat</var> - look up the list to see if the format is supported. If a <var>TPicture</var> format is specified, all graphic formats are searched.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.HasFormat.Result">
-        <short>True if format is supported.</short>
+        <short><b>True</b> if format is supported.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.HasFormat.FormatID">
@@ -603,7 +602,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.HasFormatName.Result">
-        <short>True if named format found.</short>
+        <short><b>True</b> if named format found.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.HasFormatName.FormatName">
@@ -612,14 +611,15 @@
       <!-- function Visibility: public -->
       <element name="TClipboard.HasPictureFormat">
         <short>
-          <var>HasPictureFormat</var> - checks whether data are formatted as a picture.</short>
+          <var>HasPictureFormat</var> - checks whether data are formatted as a picture.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.HasPictureFormat.Result">
-        <short>True if formatted as picture.</short>
+        <short><b>True</b> if formatted as picture.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TClipboard.Open">
@@ -665,7 +665,7 @@
       </element>
       <element name="TClipboard.SetComponentAsText.Result">
         <short>
-          True when no other updates are pending for the clipboard, and its ownership has not changed.
+          <b>True</b> when no other updates are pending for the clipboard, and its ownership has not changed.
         </short>
       </element>
 
@@ -772,19 +772,20 @@
       </element>
       <element name="TClipboard.SetAsHtml.PlainText">
         <short>Optional plain text (string) representation of the HTML.</short>
-        <descr>The optional string parameter PlainText is meant to be a plain text representation
-               of the HTML string. The user is responsible for the contents of this variable.
-               The value of PlainText can later be retrieved via the
-               <link id="#TClipBoard.AsText">AsText</link> property.
-               If PlainText is an empty string, no plain text is added to the ClipBoard, nor is the
-               current plain text content of the ClipBoard cleared.</descr>
+        <descr>
+          <p>
+            The optional string parameter PlainText is meant to be a plain text representation of the HTML string. The user is responsible for the contents of this variable. The value of PlainText can later be retrieved via the <link id="#TClipBoard.AsText">AsText</link> property. If PlainText is an empty string, no plain text is added to the ClipBoard, nor is the current plain text content of the ClipBoard cleared.
+          </p>
+        </descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TClipboard.GetAsHtml">
         <short>Retrieves the HTML content of the clipboard (if available).</short>
-        <descr>Retrieves the HTML content of the clipboard (if available).
-               On Windows it will automatically remove the clipboard header that Windows inserts.
-               The resulting HTML string will be UTF-8 encoded.</descr>
+        <descr>
+          <p>
+            Retrieves the HTML content of the clipboard (if available). On Windows it will automatically remove the clipboard header that Windows inserts. The resulting HTML string will be UTF-8 encoded.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -812,9 +813,14 @@
           <var>Formats</var> - the formats being used in the current clipboard.</short>
         <descr>
           <p>
-            <var>Formats</var> - the formats being used in the current clipboard</p>
-          <p>You can read the formats with this property one by one. But this will result in many requests, which can be very slow (especially on terminals).</p>
-          <p>Better use "SupportedFormats". </p>
+            <var>Formats</var> - the formats being used in the current clipboard.
+          </p>
+          <p>
+            You can read the formats with this property one by one. But this will result in many requests, which can be very slow (especially on terminals).
+          </p>
+          <p>
+            Better to use "SupportedFormats".
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -832,9 +838,9 @@
             <var>OnRequest</var> - event handler for a request for clipboard data.
           </p>
           <p>
-            If the clipboard has the ownership,  this event will be called each time data are requested from the clipboard by the application or another application.
+            If the clipboard has the ownership, this event will be called each time data are requested from the clipboard by the application or another application.
           </p>
-          <p>There is one special case: </p>
+          <p>There is one special case:</p>
           <p>
             If the clipboard loses ownership the <var>OnRequest</var> event will be called with FormatID=0. This event will be erased on lost of ownership.
           </p>
@@ -898,12 +904,14 @@
       <!-- argument Visibility: default -->
       <element name="Clipboard.ClipboardType">
         <short>
-          <var>ClipboardType</var> - optional argument to specify type of clipboard.</short>
+          <var>ClipboardType</var> - optional argument to specify type of clipboard.
+        </short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetClipboard">
         <short>
-          <var>SetClipboard</var> - sets up and returns a <var>NewClipboard</var>, with an optional type specifier.</short>
+          <var>SetClipboard</var> - sets up and returns a <var>NewClipboard</var>, with an optional type specifier.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -920,12 +928,14 @@
       <!-- argument Visibility: default -->
       <element name="SetClipboard.NewClipboard">
         <short>
-          <var>NewClipboard</var> - the new clipboard to be set up.</short>
+          <var>NewClipboard</var> - the new clipboard to be set up.
+        </short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="FreeAllClipboards">
         <short>
-          <var>FreeAllClipboards</var> - frees all existing clipboards, releasing their resources.</short>
+          <var>FreeAllClipboards</var> - frees all existing clipboards, releasing their resources.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -933,7 +943,8 @@
       <!-- function Visibility: default -->
       <element name="RegisterClipboardFormat">
         <short>
-          <var>RegisterClipboardFormat</var> add the supplied format name to the register of clipboard formats.</short>
+          <var>RegisterClipboardFormat</var> add the supplied format name to the register of clipboard formats.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -948,7 +959,8 @@
       </element>
       <element name="TClipboard.GetComponentAsText">
         <short>
-          <var>GetComponentAsText</var> - read the component as text, if supported.</short>
+          <var>GetComponentAsText</var> - read the component as text, if supported.
+        </short>
       </element>
     </module>
     <!-- Clipbrd -->
