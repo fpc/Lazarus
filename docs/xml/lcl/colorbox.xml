@@ -40,7 +40,9 @@
       <element name="LazStringUtils"/>
 
       <element name="cDefaultColorRectWidth">
-        <short>Default width for the color sample (swatch) in a color combo-box or list box.</short>
+        <short>
+          Default width for the color sample (swatch) in a color combo-box or list box.
+        </short>
         <descr/>
         <seealso>
           <link id="TCustomColorBox.ColorRectWidth"/>
@@ -64,7 +66,9 @@
       </element>
 
       <element name="TColorBoxStyles">
-        <short>Represents the available colors and the name display style used in color controls.</short>
+        <short>
+          Represents the available colors and the name display style used in color controls.
+        </short>
         <descr>
           <p>
             <var>TColorBoxStyles</var> is an enumerated type with values that represent the available colors and the display style used in color controls like <var>TColorBox</var> and <var>TColorListBox</var>. Values from TColorBoxStyles are stored in the <var>TColorBoxStyle</var> set type.
@@ -238,7 +242,7 @@
         </seealso>
       </element>
       <element name="TCustomColorBox.ColorRectWidthStored.Result">
-        <short>True when the property has a value other than the default value.</short>
+        <short><b>True</b> when the property has a value other than the default value.</short>
       </element>
 
       <element name="TCustomColorBox.DrawItem">
@@ -371,7 +375,7 @@
             PickCustomColor is used when cbCustomColor is included in the Style for the control and ItemIndex is set to 0. This position was reserved for a custom color when the list of colors was loaded for the Style settings in the control.
           </p>
           <p>
-            PickCustomColor uses an existing value in ColorDialog when assigned, or creates the ColorDialog when needed. It  executes the ColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to <b>True</b> and the control is redrawn.
+            PickCustomColor uses an existing value in ColorDialog when assigned, or creates the ColorDialog when needed. It executes the ColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to <b>True</b> and the control is redrawn.
           </p>
           <p>
             The color selection dialog is not displayed at design-time, and the return value is always set to <b>False</b>.
@@ -383,7 +387,7 @@
         </seealso>
       </element>
       <element name="TCustomColorBox.PickCustomColor.Result">
-        <short>True when a custom color was selected in the method.</short>
+        <short><b>True</b> when a custom color was selected in the method.</short>
       </element>
 
       <element name="TCustomColorBox.Notification">
@@ -432,7 +436,9 @@
       </element>
 
       <element name="TCustomColorBox.ColorRectWidth">
-        <short>Width for the color sample (swatch) displayed for colors in the item list.</short>
+        <short>
+          Width for the color sample (swatch) displayed for colors in the item list.
+        </short>
         <descr>
           <p>
             ColorRectWidth is an Integer property which contains the number of pixels used to draw the color sample (or swatch) for each of the Colors in the combo-box control. The height is determined using the item height for the combo-box control.
@@ -480,7 +486,9 @@
               4 extended colors (as defined in graphics.pp); like clMoneyGreen, clSkyBlue, et. al.
             </dd>
             <dt>cbSystemColors</dt>
-            <dd>System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.</dd>
+            <dd>
+              System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.
+            </dd>
             <dt>cbIncludeNone</dt>
             <dd>Includes clNone in the list of colors.</dd>
             <dt>cbIncludeDefault</dt>
@@ -897,7 +905,7 @@ if iPos &lt;&gt; -1 then
         </seealso>
       </element>
       <element name="ColorRectWidthStored.Result">
-        <short>True when the property has a value other than the default.</short>
+        <short><b>True</b> when the property has a value other than the default.</short>
       </element>
 
       <element name="TCustomColorListBox.DrawItem">
@@ -1017,7 +1025,7 @@ if iPos &lt;&gt; -1 then
             The User parameter indicates the origin of the change. When User is <b>True</b>, the change occurred due to user interaction with the control. When User is <b>False</b>, the change occurred when the ItemIndex property was updated by another method in the control.
           </p>
           <p>
-            When User is <b>True</b>, the Style property is examined to see if a custom color can be   used in the Colors for the control. When Style includes the value cbCustomColor, and ItemIndex is set to 0, the PickCustomColor method is called to select a custom color using a color dialog. If a custom color was successfully selected, the TColor value in Colors for the ItemIndex  is stored in the Selected property.
+            When User is <b>True</b>, the Style property is examined to see if a custom color can be used in the Colors for the control. When Style includes the value cbCustomColor, and ItemIndex is set to 0, the PickCustomColor method is called to select a custom color using a color dialog. If a custom color was successfully selected, the TColor value in Colors for the ItemIndex is stored in the Selected property.
           </p>
           <p>
             The color dialog is not displayed, and Selected is not updated when User is set to <b>False</b>.
@@ -1052,7 +1060,7 @@ if iPos &lt;&gt; -1 then
         <seealso/>
       </element>
       <element name="TCustomColorListBox.PickCustomColor.Result">
-        <short>True when a custom color was selected in the color dialog.</short>
+        <short><b>True</b> when a custom color was selected in the color dialog.</short>
       </element>
 
       <element name="TCustomColorListBox.Notification">
@@ -1101,10 +1109,12 @@ if iPos &lt;&gt; -1 then
       </element>
 
       <element name="TCustomColorListBox.ColorRectWidth">
-        <short>Width for the color sample (swatch) displayed for colors in the item list.</short>
+        <short>
+          Width for the color sample (swatch) displayed for colors in the item list.
+        </short>
         <descr>
           <p>
-            ColorRectWidth is an Integer property which contains the number of pixels used to draw the color sample (or swatch) for each of the Colors in the list box control. The height for the list Item is in the ItemHeight property.
+            <var>ColorRectWidth</var> is an <var>Integer</var> property which contains the number of pixels used to draw the color sample (or swatch) for each of the Colors in the list box control. The height for the list Item is in the ItemHeight property.
           </p>
           <p>
             If an explicit value has not been assigned to ColorRectWidth, the value in cDefaultColorRectWidth is scaled to the current display density and used as the property value.
@@ -1123,7 +1133,7 @@ if iPos &lt;&gt; -1 then
         <short>Number of pixels between the color sample and the color name.</short>
         <descr>
           <p>
-            ColorRectOffset is an Integer property with the number of pixels used to separate the color sample (or swatch) and the color name displayed for the Items in the control. The default value for the property is cDefaultColorRectOffset.
+            <var>ColorRectOffset</var> is an <var>Integer</var> property with the number of pixels used to separate the color sample (or swatch) and the color name displayed for the Items in the control. The default value for the property is cDefaultColorRectOffset.
           </p>
           <p>
             Setting a new value for the property causes the control to be redrawn.
@@ -1136,10 +1146,12 @@ if iPos &lt;&gt; -1 then
       </element>
 
       <element name="TCustomColorListBox.Style">
-        <short>Settings which determine the colors available in the control and their display style.</short>
+        <short>
+          Settings which determine the colors available in the control and their display style.
+        </short>
         <descr>
           <p>
-            Style is a TColorBoxStyle property with settings to determine the colors available in the control and their display style. Include values from the TColorBoxStyles enumeration to enable a particular setting. For instance:
+            <var>Style</var> is a <var>TColorBoxStyle</var> property with settings to determine the colors available in the control and their display style. Include values from the TColorBoxStyles enumeration to enable a particular setting. For instance:
           </p>
           <dl>
             <dt>cbStandardColors</dt>
@@ -1149,7 +1161,9 @@ if iPos &lt;&gt; -1 then
               4 extended colors (as defined in graphics.pp); like clMoneyGreen, clSkyBlue, et. al.
             </dd>
             <dt>cbSystemColors</dt>
-            <dd>System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.</dd>
+            <dd>
+              System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.
+            </dd>
             <dt>cbIncludeNone</dt>
             <dd>Includes clNone in the list of colors.</dd>
             <dt>cbIncludeDefault</dt>
@@ -1179,7 +1193,7 @@ if iPos &lt;&gt; -1 then
         <short>Provides indexed access to the TColor value for items in the control.</short>
         <descr>
           <p>
-            Colors is an indexed TColor property which provides access to the colors in the control by their ordinal position in the list of Items. Setting a new TColor value in the indexed  property causes the control to be redrawn.
+            <var>Colors</var> is an indexed <var>TColor</var> property which provides access to the colors in the control by their ordinal position in the list of Items. Setting a new TColor value in the indexed property causes the control to be redrawn.
           </p>
           <p>
             Values in Colors and ColorNames are used in the DrawItem method when the color sample and the color name for an item is drawn on the control Canvas.
@@ -1198,7 +1212,7 @@ if iPos &lt;&gt; -1 then
       </element>
 
       <element name="TCustomColorListBox.ColorNames">
-        <short>Provides indexed access to the names for the Colors used in the control </short>
+        <short>Provides indexed access to the names for the Colors used in the control.</short>
         <descr>
           <p>
             <var>ColorNames</var> is a String property which provides indexed access to the names for the values stored in Colors property. Setting a new value for the indexed property causes the control to be redrawn.
