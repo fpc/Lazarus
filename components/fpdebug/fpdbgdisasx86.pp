@@ -4672,6 +4672,7 @@ begin
   CodeIdx := 0;
   OperIdx := 0;
   SimdOpcode := soInvalid;
+  Vex.MaskIndex := 0;
 
   DoDisassemble;
 
