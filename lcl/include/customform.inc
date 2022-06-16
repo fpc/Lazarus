@@ -131,6 +131,7 @@ begin
     FreeIconHandles;
     Screen.RemoveForm(Self);
     FreeThenNil(FActionLists);
+    FreeThenNil(FSnapOptions);
     for HandlerType:=Low(FFormHandlers) to High(FFormHandlers) do
       FreeThenNil(FFormHandlers[HandlerType]);
     //DebugLn('[TCustomForm.Destroy] B ',Name,':',ClassName);
@@ -2083,6 +2084,7 @@ begin
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   FAllowDropFiles := False;
+  FSnapOptions:= TWindowMagnetOptions.Create;
 
   if ParentBiDiMode then
     BiDiMode := Application.BidiMode;
