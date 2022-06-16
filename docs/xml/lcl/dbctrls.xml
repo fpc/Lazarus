@@ -131,7 +131,7 @@
         </short>
       </element>
       <element name="TFieldDataLink.IsKeyField.Result">
-        <short>True when the name for the field is present in KeyFields.</short>
+        <short><b>True</b> when the name for the field is present in KeyFields.</short>
       </element>
       <element name="TFieldDataLink.IsKeyField.aField">
         <short>Field definition to locate in the KeyFields for the data link.</short>
@@ -357,7 +357,7 @@
         </seealso>
       </element>
       <element name="TFieldDataLink.Edit.Result">
-        <short>True if the linked dataset is in an edit state.</short>
+        <short><b>True</b> if the linked dataset is in an edit state.</short>
       </element>
       <element name="TFieldDataLink.Modified">
         <short>Updates the class when the linked dataset enters an edit state.</short>
@@ -1340,7 +1340,7 @@
         </seealso>
       </element>
       <element name="TDBEdit.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBEdit.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -1367,7 +1367,7 @@
         </seealso>
       </element>
       <element name="TDBEdit.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TDBEdit.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -1589,7 +1589,7 @@
         </short>
         <descr>
           <p>
-            <var>DataChange</var> is used to perform actions needed when the linked dataset for the control has been changed. In TDBText, this requires setting the <var>Caption</var> property for the control. DataChange uses the <var>Field</var> property (when assigned) to get the display text for the field.  At design--time, the <var>Name</var> property is used when Field is unassigned. At run-time, an empty string (
+            <var>DataChange</var> is used to perform actions needed when the linked dataset for the control has been changed. In TDBText, this requires setting the <var>Caption</var> property for the control. DataChange uses the <var>Field</var> property (when assigned) to get the display text for the field. At design-time, the <var>Name</var> property is used when Field is unassigned. At run-time, an empty string (
             <b>''</b>) is used when Field is unassigned.
           </p>
           <p>
@@ -2210,7 +2210,7 @@
       </element>
 
       <element name="TCustomDBListBox.ExecuteAction.Result">
-        <short>True when the action is performed in the method.</short>
+        <short><b>True</b> when the action is performed in the method.</short>
       </element>
       <element name="TCustomDBListBox.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -2233,7 +2233,7 @@
         </seealso>
       </element>
       <element name="TCustomDBListBox.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TCustomDBListBox.UpdateAction.AAction">
         <short>Action updated in the method.</short>
@@ -2640,7 +2640,7 @@
             <var>DataChange</var> is an overridden method in <var>TDBLookupListBox</var>. It implements the abstract virtual method defined in the ancestor class, and provides support for setting the value in <var>ItemIndex</var> when the value for <var>KeyField</var> in the lookup dataset has changed.
           </p>
           <p>
-            DataChange uses the internal <var>TFieldDataLink</var> instance in the control to determine if the linked dataset has been opened. If the dataset is active, the value in <var>ItemIndex</var> is set to the key index position from the lookup dataset. If the linked dataset is not active, the value in ItemIndex is set to   <b>-1</b> (indicating no item is selected in the control).
+            DataChange uses the internal <var>TFieldDataLink</var> instance in the control to determine if the linked dataset has been opened. If the dataset is active, the value in <var>ItemIndex</var> is set to the key index position from the lookup dataset. If the linked dataset is not active, the value in ItemIndex is set to <b>-1</b> (indicating no item is selected in the control).
           </p>
           <p>
             DataChange is used as the <var>OnDataChange</var> event handler for the internal <var>TFieldDataLink</var> instance in the control, and called from the <var>DoSelectionChange</var> method.
@@ -2723,7 +2723,7 @@
             <var>Key</var> is the virtual key code examined in the method. <var>Shift</var> is the modifier for the virtual key code.
           </p>
           <p>
-            KeyDown ensures that the <var>NullValueKey</var> shortcut defined for the control is applied to the control and its lookup dataset in the internal   <var>TDBLookup</var> instance. This causes the value in <var>ItemIndex</var> to be set to <b>-1</b> to clear the selection in the listbox.
+            KeyDown ensures that the <var>NullValueKey</var> shortcut defined for the control is applied to the control and its lookup dataset in the internal <var>TDBLookup</var> instance. This causes the value in <var>ItemIndex</var> to be set to <b>-1</b> to clear the selection in the listbox.
           </p>
           <p>
             KeyDown calls the inherited method prior to exit.
@@ -2796,7 +2796,7 @@
         </seealso>
       </element>
       <element name="TDBLookupListBox.IsUnbound.Result">
-        <short>True when the control does not store the current selection in the linked dataset.
+        <short><b>True</b> when the control does not store the current selection in the linked dataset.
         </short>
       </element>
       <element name="TDBLookupListBox.Create">
@@ -2917,7 +2917,7 @@
             <var>ListSource</var> is a <var>TDataSource</var> property which contains the datasource component used to access the lookup dataset for the control.
           </p>
           <p>
-            Read and write access to the property value is redirected to the    <var>DataSource</var> property in the internal <var>TDBLookup</var> instance used in the control. Assigning a new value to the property causes the <var>UpdateLookup</var> method to be called to re-initialize the TDBLookup instance and the value in the <var>ItemIndex</var> property.
+            Read and write access to the property value is redirected to the <var>DataSource</var> property in the internal <var>TDBLookup</var> instance used in the control. Assigning a new value to the property causes the <var>UpdateLookup</var> method to be called to re-initialize the TDBLookup instance and the value in the <var>ItemIndex</var> property.
           </p>
           <p>
             Use <var>ListField</var> or <var>ListFieldIndex</var> to specify the field with the descriptive value displayed in the control. Use <var>KeyField</var> to specify the field with the value stored in the <var>DataField</var> for the control.
@@ -3079,8 +3079,7 @@
           <p>
             <var>DataChange</var> is used to perform actions needed when the linked dataset for the control has been repositioned. In TDBRadioGroup, this requires setting the
             <var>Value</var> property for the control. DataChange uses the
-            <var>Field</var> property (when assigned) to get the display text for the field.  Value is set to an empty string
-            <b>('')</b> when Field has not been assigned.
+            <var>Field</var> property (when assigned) to get the display text for the field. Value is set to an empty string <b>('')</b> when Field has not been assigned.
           </p>
           <p>
             DataChange is used as the <var>OnDataChange</var> event handler in the internal <var>TFieldDataLink</var> instance in the class. It is called directly when values are assigned to the Items and Value properties, and when UpdateRadioButtonStates is used to update tab navigation and the current selection index in the control.
@@ -3264,7 +3263,7 @@
         </seealso>
       </element>
       <element name="TDBRadioGroup.ExecuteAction.Result">
-        <short>True when the action was executed in the method.</short>
+        <short><b>True</b> when the action was executed in the method.</short>
       </element>
       <element name="TDBRadioGroup.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -3290,7 +3289,7 @@
         </seealso>
       </element>
       <element name="TDBRadioGroup.UpdateAction.Result">
-        <short>True when the action was updated in the method.</short>
+        <short><b>True</b> when the action was updated in the method.</short>
       </element>
       <element name="TDBRadioGroup.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -3874,7 +3873,7 @@
         </seealso>
       </element>
       <element name="TDBCheckBox.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBCheckBox.ExecuteAction.AAction">
         <short>Action examined an executed in the method.</short>
@@ -3886,7 +3885,7 @@
             <var>UpdateAction</var> is overridden in <var>TDBCheckBox</var>, and checks the action specified in <var>AAction</var> to ensure that the current control is a target for the action.
           </p>
           <p>
-            UpdateAction calls the inherited method to determine if the control is a target for the action. If it is not handled (or updated), the internal   <var>TFieldDataLink</var> instance calls its <var>UpdateAction</var> method. The action is supported when the <var>DataSource</var> is the target for the action.
+            UpdateAction calls the inherited method to determine if the control is a target for the action. If it is not handled (or updated), the internal <var>TFieldDataLink</var> instance calls its <var>UpdateAction</var> method. The action is supported when the <var>DataSource</var> is the target for the action.
           </p>
           <p>
             No actions are performed in the method, and the return value is <b>False</b>, when the field data link has not been assigned. The return value is <b>True</b> when the action is supported for the control, and successfully updated in the method.
@@ -3901,7 +3900,7 @@
         </seealso>
       </element>
       <element name="TDBCheckBox.UpdateAction.Result">
-        <short>True when the action is supported and updated in the method.</short>
+        <short><b>True</b> when the action is supported and updated in the method.</short>
       </element>
       <element name="TDBCheckBox.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -3988,7 +3987,7 @@
             <var>DataField</var> is a <var>String</var> property which specifies the name of the field in the linked dataset where the value for the data-aware control is stored. Read and write access to the property value is redirected to the <var>FieldName</var> property in the internal <var>TFieldDataLink</var> instance used in the class.
           </p>
           <p>
-            The field can use either a <var>Boolean</var> or a <var>String</var> data type. For a String field type,  use either the <var>ValueChecked</var> or <var>ValueUnchecked</var> property to define the value stored in the dataset for the corresponding control <var>State</var>.
+            The field can use either a <var>Boolean</var> or a <var>String</var> data type. For a String field type, use either the <var>ValueChecked</var> or <var>ValueUnchecked</var> property to define the value stored in the dataset for the corresponding control <var>State</var>.
           </p>
           <p>
             Use <var>DataSource</var> to specify the linked dataset for the data-aware control.
@@ -4218,7 +4217,7 @@
         <seealso/>
       </element>
       <element name="TCustomDBComboBox.DoEdit.Result">
-        <short>True if the field was edited in the linked data set.</short>
+        <short><b>True</b> if the field was edited in the linked data set.</short>
       </element>
 
       <element name="TCustomDBComboBox.DoOnCloseUp">
@@ -4433,7 +4432,7 @@
         <short>Action examined and executed in the method.</short>
       </element>
       <element name="TCustomDBComboBox.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TCustomDBComboBox.UpdateAction">
         <short>
@@ -4460,7 +4459,7 @@
         <short>Action examined and updated in the method.</short>
       </element>
       <element name="TCustomDBComboBox.UpdateAction.Result">
-        <short>True when the action was updated in the method.</short>
+        <short><b>True</b> when the action was updated in the method.</short>
       </element>
       <element name="TCustomDBComboBox.EditingDone">
         <short>
@@ -4636,7 +4635,7 @@
         </short>
         <descr>
           <p>
-            <var>UpdateData</var> is an overridden method which implements the abstract virtual method defined in <var>TCustomDBComboBox</var>.  UpdateData is used to applying pending changes in the control value to the field in the linked dataset. The value in the Text property for the control is stored to the Field defined in the internal TFieldDataLink instance in the class.
+            <var>UpdateData</var> is an overridden method which implements the abstract virtual method defined in <var>TCustomDBComboBox</var>. UpdateData is used to applying pending changes in the control value to the field in the linked dataset. The value in the Text property for the control is stored to the Field defined in the internal TFieldDataLink instance in the class.
           </p>
           <p>
             UpdateData is assigned as the OnUpdateData event handler in the internal TFieldDataLink instance used in the control.
@@ -4847,7 +4846,7 @@
         </seealso>
       </element>
       <element name="TDBLookupComboBox.DoEdit.Result">
-        <short>True if the field was edited in the linked data set.</short>
+        <short><b>True</b> if the field was edited in the linked data set.</short>
       </element>
 
       <element name="TDBLookupComboBox.DoAutoCompleteSelect">
@@ -5594,7 +5593,7 @@
         </seealso>
       </element>
       <element name="TDBMemo.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBMemo.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -5621,7 +5620,7 @@
         </seealso>
       </element>
       <element name="TDBMemo.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TDBMemo.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -5962,7 +5961,7 @@
         </seealso>
       </element>
       <element name="TDBGroupBox.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBGroupBox.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -5988,7 +5987,7 @@
         </seealso>
       </element>
       <element name="TDBGroupBox.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TDBGroupBox.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -6543,7 +6542,7 @@
         </seealso>
       </element>
       <element name="TDBImage.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBImage.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -6569,7 +6568,7 @@
         </seealso>
       </element>
       <element name="TDBImage.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TDBImage.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -6884,7 +6883,7 @@
         </short>
         <descr>
           <p>
-            <var>TDBCalendar</var> is a <var>TCalendar</var> descendant which implements a data-aware calendar control used to select a date and store its value in a database field. <var>TDBCalendar</var>, like its ancestor,  displays a calendar which can be used to navigate through years, months, and days to select the Date value for the control. When Date has been assigned, it is stored in the field identified by the name in DataField.
+            <var>TDBCalendar</var> is a <var>TCalendar</var> descendant which implements a data-aware calendar control used to select a date and store its value in a database field. <var>TDBCalendar</var>, like its ancestor, displays a calendar which can be used to navigate through years, months, and days to select the Date value for the control. When Date has been assigned, it is stored in the field identified by the name in DataField.
           </p>
           <p>
             Use Field to access the definition and metadata for the field where the Date value is stored.
@@ -7099,7 +7098,7 @@
         </seealso>
       </element>
       <element name="TDBCalendar.ExecuteAction.Result">
-        <short>True if the action was executed in the method.</short>
+        <short><b>True</b> if the action was executed in the method.</short>
       </element>
       <element name="TDBCalendar.ExecuteAction.AAction">
         <short>Action examined and executed in the method.</short>
@@ -7126,7 +7125,7 @@
         </seealso>
       </element>
       <element name="TDBCalendar.UpdateAction.Result">
-        <short>True if the action was updated in the method.</short>
+        <short><b>True</b> if the action was updated in the method.</short>
       </element>
       <element name="TDBCalendar.UpdateAction.AAction">
         <short>Action examined and updated in the method.</short>
@@ -8207,7 +8206,7 @@
             To make the connection with the database: first place a <var>DataBase</var> Connection on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <var>TDataSource</var> from the Data Access tab of the Component Palette, and perhaps items such as <var>TSQLTransaction</var> and <var>TSQLQuery</var>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <var>Transaction</var> property of a database connector to the appropriate transaction component, and linking the <var>DataBase</var> property of the Transaction component back to the database connector; link the DataSource's <var>DataSet</var> property to the appropriate SQLQuery or other set of data, and its Transaction property to the transaction component.
           </p>
           <p>
-            Each data-aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, color and font,  etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed.
+            Each data-aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, color and font, etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed.
           </p>
           <p>
             Most of the components operate on a single Row or record of the database, but the <var>TDBGrid</var> is capable of displaying and operating on multiple rows and columns, in a <var>StringGrid</var> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.
