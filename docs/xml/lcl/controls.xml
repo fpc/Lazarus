@@ -21,7 +21,7 @@
           <li>TImageList</li>
         </ul>
         <p>
-          The following components are registered but not displayed on the  Lazarus IDE component palette:
+          The following components are registered but not displayed on the Lazarus IDE component palette:
         </p>
         <ul>
           <li>TCustomControl</li>
@@ -477,7 +477,7 @@
         </short>
         <descr>
           <p>
-            <var>ModalResultStr</var> is an indexed <var>ShortString</var> property used to get the string representation for the specified TModalResult constant. The read access specifier for the property has been deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit  directly.
+            <var>ModalResultStr</var> is an indexed <var>ShortString</var> property used to get the string representation for the specified TModalResult constant. The read access specifier for the property has been deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit directly.
           </p>
         </descr>
         <seealso>
@@ -526,7 +526,7 @@
         <short>Defines the key used for shortcuts on different platforms.</short>
         <descr>
           <p>
-            <var>ssModifier</var> is a constant which defines the modifier for keyboard shortcuts,  like Ctrl+C (Copy), Ctrl+Z (UnDo), Ctrl+X (Cut), and Ctrl+V (paste). Mac and iOS use the Meta key (instead of the Ctrl key) for those shortcuts.
+            <var>ssModifier</var> is a constant which defines the modifier for keyboard shortcuts, like Ctrl+C (Copy), Ctrl+Z (UnDo), Ctrl+X (Cut), and Ctrl+V (paste). Mac and iOS use the Meta key (instead of the Ctrl key) for those shortcuts.
           </p>
         </descr>
         <seealso/>
@@ -631,7 +631,7 @@
         </short>
       </element>
 
-      <element  name="TCMHitTest">
+      <element name="TCMHitTest">
         <short>Alias for the TLMNCHitTest type.</short>
         <descr/>
         <seealso>
@@ -639,7 +639,7 @@
         </seealso>
       </element>
 
-      <element  name="TCMDesignHitTest">
+      <element name="TCMDesignHitTest">
         <short>Alias for the TLMMouse type.</short>
         <descr/>
         <seealso>
@@ -964,7 +964,7 @@
             <dt>crVSplit</dt>
             <dd>TCursor(-15)</dd>
           </dl>
-          <p><b>Other  Cursors</b></p>
+          <p><b>Other Cursors</b></p>
           <dl>
             <dt>crUpArrow</dt>
             <dd>TCursor(-10)</dd>
@@ -1420,7 +1420,7 @@
         <short>State flags of a Control.</short>
         <descr>
           <p>
-            TControlStateType is an enumeration type which contains values that represent  state information for control class instances, including:
+            TControlStateType is an enumeration type which contains values that represent state information for control class instances, including:
           </p>
           <ul>
             <li>csLButtonDown</li>
@@ -1464,7 +1464,7 @@
         <short>Introduced for Delphi compatibility; not used in LCL.</short>
       </element>
       <element name="TControlStateType.csPaintCopy">
-        <short>Indicates a device context was copied  in PaintControls.</short>
+        <short>Indicates a device context was copied in PaintControls.</short>
       </element>
       <element name="TControlStateType.csCustomPaint">
         <short>
@@ -1496,7 +1496,7 @@
         </short>
         <descr>
           <p>
-            <var>TControlCanvas</var> is a <var>TCanvas</var> descendant that implements the base class which provides a canvas used in graphic controls. TControlCanvas extends the ancestor class  by including a property representing the <var>TControl</var> associated with the canvas, a window handle for the associated control, and the device context for the handle.
+            <var>TControlCanvas</var> is a <var>TCanvas</var> descendant that implements the base class which provides a canvas used in graphic controls. TControlCanvas extends the ancestor class by including a property representing the <var>TControl</var> associated with the canvas, a window handle for the associated control, and the device context for the handle.
           </p>
           <p>
             TControlCanvas is used in the implementation of classes like <var>TGraphicControl</var> and <var>TCustomControl</var>, and other visual controls.
@@ -1553,7 +1553,7 @@
         <short>Gets the color value used for clDefault.</short>
         <descr>
           <p>
-            <var>GetDefaultColor</var> is used to resolve the default color (<var>clDefault</var>) to the TColor value used for the brush or font on the canvas. The <var>ADefaultColorType</var> argument indicates which value is needed in  the return value. See <var>TDefaultColorType</var> for the values available in the argument.
+            <var>GetDefaultColor</var> is used to resolve the default color (<var>clDefault</var>) to the TColor value used for the brush or font on the canvas. The <var>ADefaultColorType</var> argument indicates which value is needed in the return value. See <var>TDefaultColorType</var> for the values available in the argument.
           </p>
           <p>
             GetDefaultColor is overridden in <var>TControlCanvas</var> to ensure that the <var>Control</var> is used (when assigned) to retrieve the default color by calling its GetDefaultColor method. If Control is not assigned, the inherited method is called to get the default color value (unresolved in the ancestor class).
@@ -2216,7 +2216,7 @@
         <short>Hides the drag image without unlocking the window.</short>
         <descr>
           <p>
-            Calls the <var>HideDragImage</var> method in <var>DraggingResolution</var>. No actions are performed in the method when an image resolution is not available in  the DraggingResolution property.
+            Calls the <var>HideDragImage</var> method in <var>DraggingResolution</var>. No actions are performed in the method when an image resolution is not available in the DraggingResolution property.
           </p>
         </descr>
         <seealso/>
@@ -2244,7 +2244,7 @@
         <short>Displays the drag image.</short>
         <descr>
           <p>
-            Calls the <var>ShowDragImage</var> method in <var>DraggingResolution</var>. No actions are performed in the method when an image resolution is not available in  the DraggingResolution property.
+            Calls the <var>ShowDragImage</var> method in <var>DraggingResolution</var>. No actions are performed in the method when an image resolution is not available in the DraggingResolution property.
           </p>
         </descr>
         <seealso/>
@@ -2641,7 +2641,7 @@
             An OnEndDrag event is sent for a dragged control, when the drag operation is finished. This happens regardless of whether the operation was drag-drop or drag-dock, and whether the operation ended with a drop or was cancelled.
           </p>
           <p>
-            Check for an unassigned value in Target  to distinguish between a drop and a cancelled operation (Nil).
+            Check for an unassigned value in Target to distinguish between a drop and a cancelled operation (Nil).
           </p>
         </descr>
         <seealso>
@@ -2669,7 +2669,7 @@
             Every dragging operation has an associated DragObject, holding references to the source and target controls, and other parameters for the customization of the visual user feedback.
           </p>
           <p>
-            A default <var>DragObject</var> is created automatically when a dragging operation starts, and is destroyed when the operation has ended;  you do not need to  maintain it. But an application can provide a customized <var>DragObject</var> in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> handlers for the source control (the one being dragged).
+            A default <var>DragObject</var> is created automatically when a dragging operation starts, and is destroyed when the operation has ended;  you do not need to maintain it. But an application can provide a customized <var>DragObject</var> in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> handlers for the source control (the one being dragged).
           </p>
           <remark>
             AutoCreated DragObjects imply different behavior in the DragOver and DragDrop events, where the Source becomes the dragged control, while the DragObject itself is passed as Source.
@@ -3253,7 +3253,7 @@
          <short>Checks for an assigned OnDrawDockImage event handler.</short>
         <descr>
           <p>
-            <var>HasOnDrawImage</var> is a <var>Boolean</var> function used to determine if an event handler has been assigned to the <var>OnDrawDockImage</var> property. The return value is <b>True</b> if a routine has been assigned to the property. If an event handler has not been supplied,  the <var>HintDockImage</var> routine is assigned to the event handler, and the return value is set to <b>True</b>.
+            <var>HasOnDrawImage</var> is a <var>Boolean</var> function used to determine if an event handler has been assigned to the <var>OnDrawDockImage</var> property. The return value is <b>True</b> if a routine has been assigned to the property. If an event handler has not been supplied, the <var>HintDockImage</var> routine is assigned to the event handler, and the return value is set to <b>True</b>.
           </p>
           <p>
             For platforms where the Alpha blending is not enabled for Forms, the return value is always <b>False</b> (determined by calling <var>GetSystemMetrics</var> for the <var>SM_LCLHasFormAlphaBlend</var> metric in the widgetset class).
@@ -4745,7 +4745,7 @@
             <var>AutoAdjustLayout</var> is a procedure used to automatically adjust the size of the control using the specified proportions.
           </p>
           <p>
-            <var>AXProportion</var> and <var>AYProportion</var> are <var>Double</var> values which contain the scaling factor applied to width and height values in  corresponding properties. For example, 1.25 indicates an increase to 125% of the original value, and 0.5 indicates a 50% decrease in the original value.
+            <var>AXProportion</var> and <var>AYProportion</var> are <var>Double</var> values which contain the scaling factor applied to width and height values in corresponding properties. For example, 1.25 indicates an increase to 125% of the original value, and 0.5 indicates a 50% decrease in the original value.
           </p>
           <p>
             <var>AutoAdjustLayout</var> scales the value in width and height for properties, including:
@@ -5431,7 +5431,7 @@
         </short>
         <descr>
           <p>
-            <var>ELayoutException</var> is an <var>Exception</var> descendant that implements  the exception raised when a loop is detected when adjusting the size for controls, or when an invalid value is assigned to the control width or height.
+            <var>ELayoutException</var> is an <var>Exception</var> descendant that implements the exception raised when a loop is detected when adjusting the size for controls, or when an invalid value is assigned to the control width or height.
           </p>
         </descr>
         <seealso>
@@ -6125,7 +6125,7 @@
         <short>The base class for visible controls.</short>
         <descr>
           <p>
-            <var>TControl</var> is a <var>TLCLComponent</var> descendant which implements the base class for visual controls in the <b>LCL</b> (<b>Lazarus Component Library</b>).  TControl extends ancestor classes, like TLCLComponent and TComponent, with properties and methods needed to configure the appearance and behavior for the visual control and handle user interactions at run-time.
+            <var>TControl</var> is a <var>TLCLComponent</var> descendant which implements the base class for visual controls in the <b>LCL</b> (<b>Lazarus Component Library</b>). TControl extends ancestor classes, like TLCLComponent and TComponent, with properties and methods needed to configure the appearance and behavior for the visual control and handle user interactions at run-time.
           </p>
           <p>
             Some properties and methods are in all of its descendent classes. Others are implemented as needed in descendent classes. The properties and methods fall into categories like:
@@ -6276,7 +6276,7 @@
       </element>
 
       <element name="TControl.DoActionChange">
-        <short>Implements the  OnChange handler routine assigned to the ActionLink.</short>
+        <short>Implements the OnChange handler routine assigned to the ActionLink.</short>
         <descr>
           <p>
             When an Action is assigned to the control, related properties are updated using <link id="TControl.ActionChange">ActionChange</link>.
@@ -6793,7 +6793,7 @@
             VisibleChanging is called to notify event handler routines for the control. The Perform method is used to send a CM_VISIBLECHANGED control message to the processing loop for the control.
           </p>
           <p>
-            Preferred width and  height values in the control, and its children (when derived from TWinControl), are invalidated. To minimize the overhead from the DoAutoSize method, auto-sizing is temporarily disabled when the control is updated. The AdjustSize method is called to perform the equivalent of DoAutoSize without the extra overhead of getting the preferred sizes from the widgetset class. If the control is not Visible but has a Parent control, the AdjustSize method in Parent is called.
+            Preferred width and height values in the control, and its children (when derived from TWinControl), are invalidated. To minimize the overhead from the DoAutoSize method, auto-sizing is temporarily disabled when the control is updated. The AdjustSize method is called to perform the equivalent of DoAutoSize without the extra overhead of getting the preferred sizes from the widgetset class. If the control is not Visible but has a Parent control, the AdjustSize method in Parent is called.
           </p>
           <p>
             VisibleChanged is called to notify event handler routines for the control.
@@ -6967,7 +6967,7 @@
         <short>Performs actions needed when value(s) in Constraints have been changed.</short>
         <descr>
           <p>
-            DoConstraintsChange calls AdjustSize to ensure that the control and any children are sized and positioned to  the new Constraints for the control. The method is overridden in descendent classes, like TWinControl, to perform actions needed for the class instance.
+            DoConstraintsChange calls AdjustSize to ensure that the control and any children are sized and positioned to the new Constraints for the control. The method is overridden in descendent classes, like TWinControl, to perform actions needed for the class instance.
           </p>
           <p>
             Called from the TSizeConstraints.Change method before it signals the OnChange event handler in the constraints class instance.
@@ -7037,7 +7037,7 @@
       </element>
 
       <element name="TControl.ConstrainedResize">
-        <short>Signals  the OnConstrainedResize handler.</short>
+        <short>Signals the OnConstrainedResize handler.</short>
         <descr>
           <p>
             <var>ConstrainedResize</var> is a method used to signal the <var>OnConstrainedResize</var> event handler (when assigned) for the control.
@@ -7242,7 +7242,7 @@
             It also updates FClientWidth and FClientHeight accordingly.
           </p>
           <p>
-            Override this to update the content layout within the control, for example scroll bars. As always: do not paint here, but call Invalidate and paint using the OnPaint handler or an overridden  Paint method.
+            Override this to update the content layout within the control, for example scroll bars. As always: do not paint here, but call Invalidate and paint using the OnPaint handler or an overridden Paint method.
           </p>
         </descr>
       </element>
@@ -7398,7 +7398,7 @@
       </element>
       <element name="TControl.IsAParentAligning.Result">
         <short>
-          <b>True</b> if a Parent control is actively aligning its descendent  controls.
+          <b>True</b> if a Parent control is actively aligning its descendent controls.
         </short>
       </element>
 
@@ -7997,12 +7997,12 @@
         <seealso/>
       </element>
       <element name="TControl.CMChanged.Message">
-        <short>Control message handled  in the method.</short>
+        <short>Control message handled in the method.</short>
       </element>
 
       <element name="TControl.LMCaptureChanged">
         <short>
-          Message handler signalled when the mouse capture has been  changed.
+          Message handler signalled when the mouse capture has been changed.
         </short>
         <descr/>
         <seealso/>
@@ -8902,7 +8902,7 @@
 
       <element name="TControl.AssignTo">
         <short>
-          Implements assignment of the control to an Action object, or  calls the inherited method.
+          Implements assignment of the control to an Action object, or calls the inherited method.
         </short>
         <descr>
           <p>
@@ -9060,7 +9060,7 @@
             The Delphi VCL implementation relies on the virtual GetTextBuf and SetTextBuf methods to exchange text for controls.. This requires a lot of (unnecessary) copies to move values between Text and Caption.
           </p>
           <p>
-            The LCL uses strings to exchange text values because it is more efficient. To maintain VCL compatibility, the virtual RealGetText and RealSetText methods were  introduced. These functions use the LCLInterface. The default GetTextBuf and SetTextBuf implementations calls the RealGetText and RealSetText methods as needed. As long as the GetTextBuf and/or SetTextBuf aren't overridden, GetText and SetText call RealGetText and RealSetText to avoid copying PChar values.
+            The LCL uses strings to exchange text values because it is more efficient. To maintain VCL compatibility, the virtual RealGetText and RealSetText methods were introduced. These functions use the LCLInterface. The default GetTextBuf and SetTextBuf implementations calls the RealGetText and RealSetText methods as needed. As long as the GetTextBuf and/or SetTextBuf aren't overridden, GetText and SetText call RealGetText and RealSetText to avoid copying PChar values.
           </p>
           <p>
             To keep things optimal, LCL implementations should always override RealGetText and RealSetText. GetTextBuf and SetTextBuf are only kept for compatibility with Delphi code.
@@ -9104,7 +9104,7 @@
         <short>Sets the value for the Action property.</short>
         <descr>
           <p>
-            Ensures that ActionLink is updated when the value for the property is updated. When Value is unassigned (Nil), ActionLink is freed and set to Nil. The control style flags are also updated to remove the value csActionClient. Otherwise, a new ActionLink class instance is created for ActionLink and Value is assigned to its  Action property. Its OnChange handler is assigned, and the ActionChange method is called to apply values from the action to the control.
+            Ensures that ActionLink is updated when the value for the property is updated. When Value is unassigned (Nil), ActionLink is freed and set to Nil. The control style flags are also updated to remove the value csActionClient. Otherwise, a new ActionLink class instance is created for ActionLink and Value is assigned to its Action property. Its OnChange handler is assigned, and the ActionChange method is called to apply values from the action to the control.
           </p>
         </descr>
         <seealso>
@@ -9582,7 +9582,7 @@
         <short>Signals the OnContextPopup handler.</short>
         <descr>
           <p>
-            DoContextPopup is a method used to signal the OnContextPopup event handler (when assigned). The control instance is used as the Sender argument.  Values in MousePos and Handled are also passed as parameters to the event handler. Handled should be set to <b>True</b> in the handler routine if the context pop-up was displayed and a menu item was executed.
+            DoContextPopup is a method used to signal the OnContextPopup event handler (when assigned). The control instance is used as the Sender argument. Values in MousePos and Handled are also passed as parameters to the event handler. Handled should be set to <b>True</b> in the handler routine if the context pop-up was displayed and a menu item was executed.
           </p>
         </descr>
         <seealso/>
@@ -9753,7 +9753,7 @@
         <short>Indicates if the desktop (system) font is used for the text displayed on this control.</short>
         <descr>
           <p>
-            <var>DesktopFont</var> is a <var>Boolean</var> property which indicates whether the default desktop (or system) font is used to display the text on the control. The default value for the property is  set to <b>True</b> in the Create constructor, and indicates that an explicit assignment has not been made to the Font property. When set to <b>True</b>, the System font in Screen is loaded into the Font property.
+            <var>DesktopFont</var> is a <var>Boolean</var> property which indicates whether the default desktop (or system) font is used to display the text on the control. The default value for the property is set to <b>True</b> in the Create constructor, and indicates that an explicit assignment has not been made to the Font property. When set to <b>True</b>, the System font in Screen is loaded into the Font property.
           </p>
           <p>
             Changing the property value causes a CM_SYSFONTCHANGED message to be performed for the control. DesktopFont is set to <b>False</b> when an explicit TFont value is assigned to the Font property.
@@ -10094,7 +10094,7 @@
             <var>OnMouseLeave</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the mouse pointer has left the bounds for the control. OnMouseLeave is signalled from the MouseLeave method (when assigned), and occurs after the Parent control has been notified of the event. The Sender argument contains the control for the notification, and must be cast to a TControl type to access the properties or values specific to the class type.
           </p>
           <p>
-            Use OnMouseEnter to perform actions needed when the mouse pointer has entered  the bounds for the control.
+            Use OnMouseEnter to perform actions needed when the mouse pointer has entered the bounds for the control.
           </p>
         </descr>
         <seealso>
@@ -10258,7 +10258,7 @@
           </p>
           <p>
             The interpretation of ControlSide depends on the DockManager of NewDockSite,
-            or on the OnDockDrop handler in an unmanaged  docksite.
+            or on the OnDockDrop handler in an unmanaged docksite.
           </p>
           <p>
             A tree docking manager (TDockTree) should interpret alCustom as NoteBook docking, i.e. a tabbed notebook is created in place of DropControl, and both DropControl and this control are docked into pages of this notebook.
@@ -10336,7 +10336,7 @@
         <short>Indicates if the control has a host dock site.</short>
         <descr>
           <p>
-            Docked is a Boolean function which indicates if the control instance is docked to a host  docking site. The return value is <b>True</b> when all of the following conditions are met:
+            Docked is a Boolean function which indicates if the control instance is docked to a host docking site. The return value is <b>True</b> when all of the following conditions are met:
           </p>
           <ul>
             <li>Parent is assigned (not Nil).</li>
@@ -11072,7 +11072,7 @@
         <short>Message handler for preferred size changed.</short>
         <descr>
           <p>
-            Called by the LCL interface, when something changed that effects the  interface values for GetPreferredSize.
+            Called by the LCL interface, when something changed that effects the interface values for GetPreferredSize.
           </p>
         </descr>
       </element>
@@ -11155,7 +11155,7 @@
         </short>
         <descr>
           <p>
-            <var>ReadBounds</var> is a read-only <var>TRect</var> property used when the values for the Top, Left, Height and Width properties are set during LCL component streaming. When ComponentState contains <var>csLoading</var>, changes to these properties cause the new values to be applied to ReadBounds prior to calling the SetBounds method. The internal ControlFlags are also updated to indicate that the property value has been loaded using LCL component  streaming.
+            <var>ReadBounds</var> is a read-only <var>TRect</var> property used when the values for the Top, Left, Height and Width properties are set during LCL component streaming. When ComponentState contains <var>csLoading</var>, changes to these properties cause the new values to be applied to ReadBounds prior to calling the SetBounds method. The internal ControlFlags are also updated to indicate that the property value has been loaded using LCL component streaming.
           </p>
         </descr>
         <seealso>
@@ -11253,7 +11253,7 @@
         <short>Corrects the font size for High-DPI-aware applications.</short>
         <descr>
           <p>
-            FixDesignFontsPPI is a method used to adjust the font size when the design-time PPI (Pixels per Inch) setting differs from the run-time PPI setting for the font in the control.  It calls DoFixDesignFontPPI to restore the value in ADesignTimePPI to the Font reference passed as an argument to to the method. The font height is scaled using the factor represented by TFont.PixelsPerInch/ADesignTimePPI.
+            FixDesignFontsPPI is a method used to adjust the font size when the design-time PPI (Pixels per Inch) setting differs from the run-time PPI setting for the font in the control. It calls DoFixDesignFontPPI to restore the value in ADesignTimePPI to the Font reference passed as an argument to to the method. The font height is scaled using the factor represented by TFont.PixelsPerInch/ADesignTimePPI.
           </p>
           <p>
             This method does not trigger a CM_PARENTFONTCHANGED message in the Parent control.
@@ -11361,7 +11361,7 @@
         </short>
         <descr>
           <p>
-            BeforeDestruction is a method which performs notifications when an object instance is about to be freed. It allows tasks to be performed which maintain a persistent object instance and its  observers before it is destroyed.
+            BeforeDestruction is a method which performs notifications when an object instance is about to be freed. It allows tasks to be performed which maintain a persistent object instance and its observers before it is destroyed.
           </p>
           <p>
             BeforeDestruction is an overridden method in TControl, and calls the inherited method on entry to ensure that csDestroying is included in the ComponentState property for the control and any of its child components. It extends the inherited method by calling DoCallNotifyHandler for any handler routines using the chtOnBeforeDestruction type.
@@ -11521,7 +11521,7 @@
             GetTopParent visits each of the control instances in the Parent property. The return value is set to control where Parent is unassigned (<b>Nil</b>). The return value is the current control instance (Self) if Parent has not been assigned.
           </p>
           <p>
-            GetTopParent is used in methods like ChangeBounds where the parent handles layout or sizing for its child controls. The method is also used in descendent classes, like TWinControl, when  messages are handled which resized, move, or otherwise reposition the windowed control.
+            GetTopParent is used in methods like ChangeBounds where the parent handles layout or sizing for its child controls. The method is also used in descendent classes, like TWinControl, when messages are handled which resized, move, or otherwise reposition the windowed control.
           </p>
         </descr>
         <seealso/>
@@ -11565,7 +11565,7 @@
         </short>
         <descr>
           <p>
-            <var>IsVisible</var> calls <var>IsControlVisible</var> to determine if the control has its Visible property set to True. At design-time, ControlStyle is also checked  to ensure that csNoDesignVisible is not used in the style flags. Each of the Parent controls in the hierarchy call their IsVisible method to determine the return value for the method.
+            <var>IsVisible</var> calls <var>IsControlVisible</var> to determine if the control has its Visible property set to True. At design-time, ControlStyle is also checked to ensure that csNoDesignVisible is not used in the style flags. Each of the Parent controls in the hierarchy call their IsVisible method to determine the return value for the method.
           </p>
           <p>
             Use IsEnabled to get the effective enabled state for the control and all of its Parent controls.
@@ -11620,7 +11620,7 @@
       </element>
       <element name="TControl.IsEnabled.Result">
         <short>
-          <b>True</b> when the control and  all Parent controls are enabled.
+          <b>True</b> when the control and all Parent controls are enabled.
         </short>
       </element>
 
@@ -12071,7 +12071,7 @@
             ClientToParent calls the IsParentOf method in AParent to determine if the control is a child control for AParent. An EInvalidOperation exception is raised if the return value from IsParentOf is <b>False</b>.
           </p>
           <p>
-            ClientToParent calls ClientToScreen to get the absolute screen  coordinates for the values in Point. The return value is the TPoint instance returned by converting the client coordinates to screen coordinates, and asking the parent control to convert the values back to client-relative  coordinates for the parent control.
+            ClientToParent calls ClientToScreen to get the absolute screen coordinates for the values in Point. The return value is the TPoint instance returned by converting the client coordinates to screen coordinates, and asking the parent control to convert the values back to client-relative coordinates for the parent control.
           </p>
           <p>
             ClientToParent is used, for instance, in the TScrollingWinControl.ScrollInView method.
@@ -12139,7 +12139,7 @@
         </short>
         <descr>
           <p>
-            Show calls the ShowControl method in the Parent control (when assigned) to ensure that the control instance is visible on the Parent control. Show sets the value in the Visible property to <b>True</b>. The value in the Visible property is not changed at design-time or when csNoDesignVisible  has not been included in the ControlStyle property.
+            Show calls the ShowControl method in the Parent control (when assigned) to ensure that the control instance is visible on the Parent control. Show sets the value in the Visible property to <b>True</b>. The value in the Visible property is not changed at design-time or when csNoDesignVisible has not been included in the ControlStyle property.
           </p>
           <p>
             Use the Hide method to hide the control on its Parent.
@@ -12549,7 +12549,7 @@
             Conversely, a TControlActionLink instance is created for a non-empty action assignment. Its OnChange event handler is set to the private DoActionChange method in the class instance. Control style flags are updated to include the value csActionClient.
           </p>
           <p>
-            Action is used in the Click method to signal its OnExecute event handler when assigned and enabled. Preference is given to the OnClick in the control (when  assigned).
+            Action is used in the Click method to signal its OnExecute event handler when assigned and enabled. Preference is given to the OnClick in the control (when assigned).
           </p>
           <p>
             Values in the Caption, Enabled, HelpType, and Hint properties can be linked to the Action through the property values in the ActionLink.
@@ -12588,7 +12588,7 @@
             </dd>
             <dt>alBottom</dt>
             <dd>
-              Aligns the control to the bottom of the Parent control, and adjusts its Width  to fill the Parent control.
+              Aligns the control to the bottom of the Parent control, and adjusts its Width to fill the Parent control.
             </dd>
             <dt>alLeft</dt>
             <dd>
@@ -12658,7 +12658,7 @@
             Values in Anchors are used (along with Align) in the DoAutoAdjustLayout method. They control whether values in Left, Top, Bottom, and Right are calculated using the ClientWidth and ClientHeight for the Parent control. The values in Anchors also used in the HeightIsAnchored and WidthIsAnchored methods.
           </p>
           <p>
-            Values in Anchors may be updated when a new value is assigned to the Align property which conflicts with the existing values in the property. They may also be updated when values are assigned to  AnchorSide which cause vertical or horizontal centering to a sibling control (AnchorVerticalCenterTo, AnchorHorizontalCenterTo) or alignment to a companion control (AnchorToCompanion).
+            Values in Anchors may be updated when a new value is assigned to the Align property which conflicts with the existing values in the property. They may also be updated when values are assigned to AnchorSide which cause vertical or horizontal centering to a sibling control (AnchorVerticalCenterTo, AnchorHorizontalCenterTo) or alignment to a companion control (AnchorToCompanion).
           </p>
         </descr>
         <seealso>
@@ -12761,7 +12761,7 @@
         <short>The text displayed for the control.</short>
         <descr>
           <p>
-            Caption is a TCaption property with the text displayed for the control. By default, <var>Caption</var> has the same value as the <var>Name</var> property used for the control. An explicit value can be assigned at design-time using  the Object Inspector, or by the developer in program code.
+            Caption is a TCaption property with the text displayed for the control. By default, <var>Caption</var> has the same value as the <var>Name</var> property used for the control. An explicit value can be assigned at design-time using the Object Inspector, or by the developer in program code.
           </p>
           <p>
             Controls normally use the Caption or Text properties (they are equivalent in TControl) to read or write their textual value. The property value is retrieved using either the RealGetText method, or the GetTextBuf method when it has been overridden in a descendent class. Conversely, the property value is stored using either RealSetText, or an overridden SetTextBuf method in a descendent class.
@@ -12850,7 +12850,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </short>
         <descr>
           <p>
-            Only <var>TWinControl</var> has a client area. For other controls, ClientOrigin is the same as <var>ControlOrigin</var>. Uses the corresponding property in the <var>Parent</var> control to get the property value, and includes the values in <var>Left</var> and <var>Top</var> to get the effective  origin for the control.
+            Only <var>TWinControl</var> has a client area. For other controls, ClientOrigin is the same as <var>ControlOrigin</var>. Uses the corresponding property in the <var>Parent</var> control to get the property value, and includes the values in <var>Left</var> and <var>Top</var> to get the effective origin for the control.
           </p>
           <p>
             An <var>EInvalidOperation</var> exception is raised if Parent has not been assigned when reading the value for the property.
@@ -12875,7 +12875,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Size of the client area for the control.</short>
         <descr>
           <p>
-            Contains  the size for the visual client area in the control. For example, the inner size of a TGroupBox. For a TScrollBox it is the visual size, and not the logical size.
+            Contains the size for the visual client area in the control. For example, the inner size of a TGroupBox. For a TScrollBox it is the visual size, and not the logical size.
           </p>
           <p>
             The property value is a TRect instance with the Top and Left members set to 0, and the Height and Width members set to the corresponding property values for the control.
@@ -13031,13 +13031,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </short>
         <descr>
           <p>
-            <var>Font</var> is a <var>TFont</var> property with the typeface and display attributes used for  textual values on the control. Use properties in the TFont instance to change attributes like Name (for the typeface), Charset, Color, Height, Orientation (rotation degrees), Pitch, Quality, Size, and Style. Assigning a new TFont instance to the property causes the control to be redrawn.
+            <var>Font</var> is a <var>TFont</var> property with the typeface and display attributes used for textual values on the control. Use properties in the TFont instance to change attributes like Name (for the typeface), Charset, Color, Height, Orientation (rotation degrees), Pitch, Quality, Size, and Style. Assigning a new TFont instance to the property causes the control to be redrawn.
           </p>
           <remark>
             Some Font attributes may be ignored in TControl descendants. It depends on the drawing style for the specific control, and whether theme services are enabled for text on the control.
           </remark>
           <p>
-            The PixelsPerInch property in Font is used to perform font size scaling in methods like Scale96ToFont,  ScaleFontTo96, ScaleScreenToFont, and ScaleFontToScreen.
+            The PixelsPerInch property in Font is used to perform font size scaling in methods like Scale96ToFont, ScaleFontTo96, ScaleScreenToFont, and ScaleFontToScreen.
           </p>
         </descr>
         <seealso>
@@ -13117,7 +13117,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             The action performed for a click can be specified by a user supplied method, or by selecting an <var>Action</var> from a supplied <var>ActionList</var>.
           </p>
           <p>
-            OnClick is signalled (when assigned) from the Click method. It occurs when an Action has not been assigned using the ActionLink for the control. When Action is assigned, the Execute method in  the ActionLink is called.
+            OnClick is signalled (when assigned) from the Click method. It occurs when an Action has not been assigned using the ActionLink for the control. When Action is assigned, the Execute method in the ActionLink is called.
           </p>
         </descr>
         <seealso>
@@ -13450,7 +13450,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TControl.AnchorSideLeft">
         <short>
-          Contains anchor aligment information used to position the control with its left edge  anchored to another control.
+          Contains anchor aligment information used to position the control with its left edge anchored to another control.
         </short>
         <descr>
           <p>
@@ -13468,11 +13468,11 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TControl.AnchorSideTop">
         <short>
-          Contains anchor aligment information used to position the control with its top edge  anchored to another control.
+          Contains anchor aligment information used to position the control with its top edge anchored to another control.
         </short>
         <descr>
           <p>
-            AnchorSideTop is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideTop  provides access to the array element in AnchorSide stored at the position in akTop.
+            AnchorSideTop is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideTop provides access to the array element in AnchorSide stored at the position in akTop.
           </p>
         </descr>
         <seealso>
@@ -13486,11 +13486,11 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TControl.AnchorSideRight">
         <short>
-          Contains anchor aligment information used to position the control with its right  edge anchored to another control.
+          Contains anchor aligment information used to position the control with its right edge anchored to another control.
         </short>
         <descr>
           <p>
-            AnchorSideRight is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideRight  provides access to the array element in AnchorSide stored at the position in akRight.
+            AnchorSideRight is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideRight provides access to the array element in AnchorSide stored at the position in akRight.
           </p>
         </descr>
         <seealso>
@@ -13504,11 +13504,11 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TControl.AnchorSideBottom">
         <short>
-          Contains anchor aligment information used to position the control with its bottom  edge anchored to another control.
+          Contains anchor aligment information used to position the control with its bottom edge anchored to another control.
         </short>
         <descr>
           <p>
-            AnchorSideTop is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideTop  provides access to the array element in AnchorSide stored at the position in akTop.
+            AnchorSideTop is a TAnchorSide property with information about the side, type, alignment, and control used to anchor align the class instance. AnchorSideTop provides access to the array element in AnchorSide stored at the position in akTop.
           </p>
         </descr>
         <seealso>
@@ -13592,7 +13592,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>The text to show in the Hint window for the control.</short>
         <descr>
           <p>
-            Hint is a TTranslateString property with hint text displayed in a pop-up window when the mouse is hovered over the control. The pop-up window is displayed when the  ShowHint property is set to <b>True</b>.
+            Hint is a TTranslateString property with hint text displayed in a pop-up window when the mouse is hovered over the control. The pop-up window is displayed when the ShowHint property is set to <b>True</b>.
           </p>
           <p>
             Assign a value to Hint to describe the usage or formatting conventions used for the value entered in the control. For example:
@@ -14337,7 +14337,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Type of an OnAlignPosition handler.</short>
         <descr>
           <p>
-            Specified an event handler which positions the Control using the specified coordinates and  alignment information.
+            Specified an event handler which positions the Control using the specified coordinates and alignment information.
           </p>
         </descr>
         <seealso>
@@ -14984,7 +14984,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </short>
         <descr>
           <p>
-            DoAlignChildControls always returns False in TWinControl. It can be overridden in descendent classes to perform any actions needed, and to set the return value to True to avoid the default handling performed in AlignControls.
+            DoAlignChildControls always returns <b>False</b> in TWinControl. It can be overridden in descendent classes to perform any actions needed, and to set the return value to <b>True</b> to avoid the default handling performed in AlignControls.
           </p>
         </descr>
         <seealso>
@@ -15343,7 +15343,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </short>
         <descr>
           <p>
-            Iterates the value in Controls to locate any controls where Root is the Owner of the control  instance. Calls the procedure in Proc using the control instance as an argument. An application must implement an object procedure using the signature in TGetChildProc, and pass the procedure in the Proc argument.
+            Iterates the value in Controls to locate any controls where Root is the Owner of the control instance. Calls the procedure in Proc using the control instance as an argument. An application must implement an object procedure using the signature in TGetChildProc, and pass the procedure in the Proc argument.
           </p>
         </descr>
         <seealso>
@@ -15360,7 +15360,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Checks whether the specified class type is allowed as a child control.</short>
         <descr>
           <p>
-            ChildClassAllowed is an overridden method in TWinControl used to determine if instances of the class type in ClassType are allowed as child controls. Returns <b>True</b> if the specified  class type is allowed as a child control in the Controls property.
+            ChildClassAllowed is an overridden method in TWinControl used to determine if instances of the class type in ClassType are allowed as child controls. Returns <b>True</b> if the specified class type is allowed as a child control in the Controls property.
           </p>
           <p>
             In TWinControl, the return value is <b>True</b> when ChildClass has been assigned (not <b>Nil</b>) and the class type is derived from TControl.
@@ -15392,7 +15392,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             Controls which do <b>not</b> descend from <var>TWinControl</var> have no handle of their own; they are repainted when the parent control is redrawn.
           </p>
           <p>
-            No actions are performed in the method when the device context in DC is unassigned (0),  the Handle has not been allocated for the control, or an internal TFPList has not been created to store the child controls in the Controls property.
+            No actions are performed in the method when the device context in DC is unassigned (0), the Handle has not been allocated for the control, or an internal TFPList has not been created to store the child controls in the Controls property.
           </p>
           <p>
             PaintControls tries to locate and paint controls (starting with the control in First) not derived from TWinControl. When First is omitted (<b>Nil</b>) or not found in the internal list, all child controls in the list are examined. The control must be Visible and within the visible client area on the Parent to be painted.
@@ -15426,7 +15426,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             PaintHandler checks the list of child controls if any of the items are visible, opaque TControl class instances which need to be drawn using the Handle for the control. When found, a clipping rectangle for the child control is calculated on the device context.
           </p>
           <p>
-            PaintHandler calls the PaintSite method in the DockManager (when assigned and enabled) to paint the DockSite to the device context. The  PaintControls method is called to force the all child controls to be painted to the device context.
+            PaintHandler calls the PaintSite method in the DockManager (when assigned and enabled) to paint the DockSite to the device context. The PaintControls method is called to force the all child controls to be painted to the device context.
           </p>
           <p>
             PaintHandler calls the EndPaint routine in the LCL interface to free the device context prior to exiting from the method.
@@ -15490,7 +15490,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             <var>ScaleControls</var> is a method used to scale the child controls in the Controls property using the specified multiplier and divisor. ScaleControls visits each of the class instances in Controls and calls its ChangeScale method using Multiplier and Divider as arguments.
           </p>
           <p>
-            ScaleControls is called from the overridden ChangeScale method. This causes all controls in the hierarchy to apply the scaling factor to values in their Constraints, Font, Left, Top, Right and Bottom properties. For top-level Forms, the values in Left and Top are <b>not</b>  scaled.
+            ScaleControls is called from the overridden ChangeScale method. This causes all controls in the hierarchy to apply the scaling factor to values in their Constraints, Font, Left, Top, Right and Bottom properties. For top-level Forms, the values in Left and Top are <b>not</b> scaled.
           </p>
         </descr>
         <seealso>
@@ -15515,7 +15515,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             ChangeScale is an overridden method in TWinControl used to ensure that child controls are scaled using the values in the Multiplier and Divider arguments.
           </p>
           <p>
-            ChangeScale extends the inherited method by calling DisableAlign before applying the scaling factor. It calls the ScaleControls method to apply Multiplier and Divider to the child controls. It calls the inherited method to apply  scaling to the Bounds, Constraints, and Font in the control.
+            ChangeScale extends the inherited method by calling DisableAlign before applying the scaling factor. It calls the ScaleControls method to apply Multiplier and Divider to the child controls. It calls the inherited method to apply scaling to the Bounds, Constraints, and Font in the control.
           </p>
           <p>
             ChangeScale visits each of the control instances in Controls, and calls their UpdateAnchorRules method to update the BaseBounds in the control as needed.
@@ -15544,7 +15544,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             CMBiDiModeChanged is an overridden method in TWinControl used to handle a CM_BIDIMODECHANGED control message received for the control. It calls the inherited method on entry to invalidate the control when needed. It extends the inherited method to notify child controls of the change using a CM_PARENTBIDIMODECHANGED message.
           </p>
           <p>
-            If a handle has been allocated in the widgetset class instance, its SetBiDiMode method is called to reflect the values from UseRightToLeftAlignment, UseRightToLeftReading, and  UseRightToLeftScrollBar.
+            If a handle has been allocated in the widgetset class instance, its SetBiDiMode method is called to reflect the values from UseRightToLeftAlignment, UseRightToLeftReading, and UseRightToLeftScrollBar.
           </p>
           <p>
             AdjustSize is called to update the sizes for parent and child controls after the property value has been changed.
@@ -15739,10 +15739,10 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
       </element>
 
       <element name="TWinControl.WMKillFocus">
-        <short>Handles the LM_KILLFOCUS  message for the control.</short>
+        <short>Handles the LM_KILLFOCUS message for the control.</short>
         <descr>
           <p>
-            <var>WMKillFocus</var> is a method used to handle the LM_KILLFOCUS  control message  received when a control loses focus. WMKillFocus ensures that the <var>EditingDone</var> method is called for the control when the parent form has been assigned and is Active.
+            <var>WMKillFocus</var> is a method used to handle the LM_KILLFOCUS control message received when a control loses focus. WMKillFocus ensures that the <var>EditingDone</var> method is called for the control when the parent form has been assigned and is Active.
           </p>
           <p>
             No actions are performed in the method at design-time, or when the control is being freed.
@@ -16152,7 +16152,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Return information about this dock site (InfluenceRect).</short>
         <descr>
           <p>
-            The <var>InfluenceRect</var> determines the screen coordinates, within which a drop is accepted. The <var>InfluenceRect</var> is the slightly inflated <var>WindowRect</var> for the dock site, and can be adjusted in the  <var>OnGetSiteInfo</var> event handler.
+            The <var>InfluenceRect</var> determines the screen coordinates, within which a drop is accepted. The <var>InfluenceRect</var> is the slightly inflated <var>WindowRect</var> for the dock site, and can be adjusted in the <var>OnGetSiteInfo</var> event handler.
           </p>
         </descr>
       </element>
@@ -16326,7 +16326,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             Finally, the <link id="TWinControl.OnKeyDown"/> user handler is invoked.
           </p>
           <p>
-            If none of the  handlers accept / respond to the key, the widgetset class is used to process  the key.
+            If none of the handlers accept / respond to the key, the widgetset class is used to process the key.
           </p>
         </descr>
         <seealso>
@@ -16505,7 +16505,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
       </element>
 
       <element name="TWinControl.DialogChar">
-        <short>Handles the specified key in Message as an accelerator or shortcut  key.</short>
+        <short>Handles the specified key in Message as an accelerator or shortcut key.</short>
         <descr>
           <p>
             DialogChar is an overridden Boolean function in TWinControl used to handle a character code in Message as an accelerator (or shortcut) key for a control. It re-implements the inherited method which always returns False. In TWinControl, the Message is sent to each of the children in Controls until one of them indicates that it responds to the accelerator key.
@@ -16536,7 +16536,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Handles key down events for special navigation keys used in a control.</short>
         <descr>
           <p>
-            <var>ControlKeyDown</var> is a method used to detect and handle key down events for navigation keys used in the control. ControlKeyDown calls the corresponding method in TApplication to determine the actions needed for the key and modifier. The application handles Tab and cursor  keys which may affect control or form focus.
+            <var>ControlKeyDown</var> is a method used to detect and handle key down events for navigation keys used in the control. ControlKeyDown calls the corresponding method in TApplication to determine the actions needed for the key and modifier. The application handles Tab and cursor keys which may affect control or form focus.
           </p>
           <p>
             ControlKeyDown is called from the DoRemainingKeyDown method to handle keys not otherwise handled by a control or its parent forms.
@@ -17080,7 +17080,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Notifies the parent Form when the control cannot be focused.</short>
         <descr>
           <p>
-            <var>RemoveFocus</var> is a method used to notify the parent form when the control cannot be focused. RemoveFocus is called from methods like Destroy and RemoveControl, where the control will no  longer exist on the parent form. It is also called from methods like CMEnabledChanged and CMVisibleChanged, where the parent form should no longer allow the control to be focused.
+            <var>RemoveFocus</var> is a method used to notify the parent form when the control cannot be focused. RemoveFocus is called from methods like Destroy and RemoveControl, where the control will no longer exist on the parent form. It is also called from methods like CMEnabledChanged and CMVisibleChanged, where the parent form should no longer allow the control to be focused.
           </p>
           <p>
             RemoveFocus calls GetParentForm to get the parent form instance, and calls its DefocusControl method to ensure that the control is removed as the ActiveControl (when assigned).
@@ -17097,7 +17097,9 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </seealso>
       </element>
       <element name="TWinControl.RemoveFocus.Removing">
-        <short>True if the control is being freed, False when it is not enabled or not visible.</short>
+        <short>
+          <b>True</b> if the control is being freed, <b>False</b> when it is not enabled or not visible.
+        </short>
       </element>
 
       <element name="TWinControl.SendMoveSizeMessages">
@@ -17205,7 +17207,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </short>
         <descr>
           <p>
-            Calls AdjustSize when the Handle has been allocated for the control and the control is  logically visible in the client area for the parent. This causes DoAllAutoSize and UpdateShowing to be called. If the control is not visible, UpdateShowing is called to hide the control.
+            Calls AdjustSize when the Handle has been allocated for the control and the control is logically visible in the client area for the parent. This causes DoAllAutoSize and UpdateShowing to be called. If the control is not visible, UpdateShowing is called to hide the control.
           </p>
           <p>
             Called from the SetParentWindow method.
@@ -17427,7 +17429,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </short>
         <descr>
           <p>
-            ChildSizing is a TControlChildSizing property which contains the class used to apply sizing and layout for  child controls in the control instance.
+            ChildSizing is a TControlChildSizing property which contains the class used to apply sizing and layout for child controls in the control instance.
           </p>
         </descr>
         <seealso>
@@ -17460,7 +17462,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             <var>Controls</var> is a read-only indexed <var>TControl</var> property which provides access to child controls by their ordinal position in the list.
           </p>
           <p>
-            The Index argument contains the ordinal position for the requested child control, and must be in the range 0..ControlCount-1. The index also indicates the display or tab order for the child controls. The physical order for the controls  in the list my be changed when the FixupTabList method is called during LCL component streaming.
+            The Index argument contains the ordinal position for the requested child control, and must be in the range 0..ControlCount-1. The index also indicates the display or tab order for the child controls. The physical order for the controls in the list my be changed when the FixupTabList method is called during LCL component streaming.
           </p>
         </descr>
         <seealso>
@@ -17507,10 +17509,10 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>The docking layout manager for this control.</short>
         <descr>
           <p>
-            A <var>DockSite</var> can be managed (using a <var>DockManager</var>),  or unmanaged (positioning docked controls in the event handlers). The <var>DockManager</var> determines the placement for docked controls by setting <var>DropOnControl</var> and <var>DropAlign</var> before the drop, and by resizing and positioning the control when it's dropped.
+            A <var>DockSite</var> can be managed (using a <var>DockManager</var>), or unmanaged (positioning docked controls in the event handlers). The <var>DockManager</var> determines the placement for docked controls by setting <var>DropOnControl</var> and <var>DropAlign</var> before the drop, and by resizing and positioning the control when it's dropped.
           </p>
           <p>
-            A <var>DockManager</var> is used only when <var>UseDockManager</var> is set to <b>True</b>. Setting <var>UseDockManager</var> to <b>True</b> creates the  <var>DockManager</var> using the <var>DefaultDockManagerClass</var> for this DockSite, if not previously assigned.
+            A <var>DockManager</var> is used only when <var>UseDockManager</var> is set to <b>True</b>. Setting <var>UseDockManager</var> to <b>True</b> creates the <var>DockManager</var> using the <var>DefaultDockManagerClass</var> for this DockSite, if not previously assigned.
           </p>
           <p>
             An unmanaged DockSite, without a DockManager, can handle the placement of dropped controls in the <var>OnDockOver</var> and <var>OnDockDrop</var> event handlers.
@@ -17771,7 +17773,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
             <var>OnUnDock</var> is a <var>TUnDockEvent</var> property with the event handler signalled before a control is undocked from its DockSite. The event handler arguments identify the control with the DockSite, the client control which will become undocked, the control that has the new dock site, and a Boolean which indicates if the operation is allowed.
           </p>
           <p>
-            The event handler can be used to disallow undocking by setting the Boolean argument to False in the handler routine.
+            The event handler can be used to disallow undocking by setting the Boolean argument to <b>False</b> in the handler routine.
           </p>
           <p>
             OnUnDock is signalled from the DoUnDock method.
@@ -17884,7 +17886,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TWinControl.DesignerDeleting">
         <short>
-          Indicates whether the wcfDesignerDeleting flag is included  in the flags for the control.
+          Indicates whether the wcfDesignerDeleting flag is included in the flags for the control.
         </short>
         <descr>
           <p>
@@ -17898,7 +17900,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         <short>Indicates if the control has the wcfSpecialSubControl control flag.</short>
         <descr>
           <p>
-            <var>IsSpecialSubControl</var> is a read-only <var>Boolean</var> property. Its vale is <b>True</b>  when wcfSpecialSubControl has been included in the WinControlFlags for the control. Used in <var>TCustomPairSplitter</var> only.
+            <var>IsSpecialSubControl</var> is a read-only <var>Boolean</var> property. Its vale is <b>True</b> when wcfSpecialSubControl has been included in the WinControlFlags for the control. Used in <var>TCustomPairSplitter</var> only.
           </p>
         </descr>
         <seealso/>
@@ -17943,10 +17945,10 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
         </short>
         <descr>
           <p>
-            <var>AutoSizeDelayed</var> is an overridden Boolean function in TWinControl. It returns True when auto-sizing cannot or should not be performed at the current time, or when the value in  Showing cannot be changed.
+            <var>AutoSizeDelayed</var> is an overridden Boolean function in TWinControl. It returns <b>True</b> when auto-sizing cannot or should not be performed at the current time, or when the value in Showing cannot be changed.
           </p>
           <p>
-            In TWinControl, it checks the ControlState flags for the value csDestroyingHandle when determining the return value for the method. AutoSizeDelayed calls the inherited method, and sets the return value to True if either condition is True.
+            In TWinControl, it checks the ControlState flags for the value csDestroyingHandle when determining the return value for the method. AutoSizeDelayed calls the inherited method, and sets the return value to <b>True</b> if either condition is True.
           </p>
           <p>
             The value from AutoSizeDelayed is used in methods like DoAllAutoSize and UpdateShowing.
@@ -17977,7 +17979,7 @@ Button1.Parent := Form1; // set parent as last, the LCL now applies all properti
 
       <element name="TWinControl.BeginUpdateBounds">
         <short>
-          Starts an update to the Bounds property; disables SetBounds by incrementing  BoundsLockCount.
+          Starts an update to the Bounds property; disables SetBounds by incrementing BoundsLockCount.
         </short>
         <descr/>
         <seealso>
@@ -18445,7 +18447,7 @@ if MyControl.CanSetFocus then
         <short>Checks whether the control has focus.</short>
         <descr>
           <p>
-            <var>Focused</var> is a <var>Boolean</var> function which indicates whether the control can be and is the currently focused control. The return value is True when the control can become focused during tab order navigation, has a valid Handle, and is the currently focused control in the widgetset class instance.
+            <var>Focused</var> is a <var>Boolean</var> function which indicates whether the control can be and is the currently focused control. The return value is <b>True</b> when the control can become focused during tab order navigation, has a valid Handle, and is the currently focused control in the widgetset class instance.
           </p>
         </descr>
         <seealso>
@@ -18854,7 +18856,7 @@ if MyControl.CanSetFocus then
             When TBitmap is used, the widgetset class calls its SetShape method to apply the TBitmap handle to the handle for the widget. No actions are performed in the method when a handle has not been allocated for the widgetset class.
           </p>
           <p>
-            When TRegion is used,  SetWindowRgn in the LCL interface is called to apply the region in AShape to the handle for the control.
+            When TRegion is used, SetWindowRgn in the LCL interface is called to apply the region in AShape to the handle for the control.
           </p>
         </descr>
         <seealso/>
@@ -18869,7 +18871,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            <var>TGraphicControl</var> supports simple lightweight controls that do not need the ability to accept keyboard input,  and do not contain other controls. Since lightweight controls do not wrap GUI widgets, they use fewer resources than controls based on <var>TWinControl</var>. If you want to accept keyboard input, or need to support child controls, use a <var>TCustomControl</var> instead.
+            <var>TGraphicControl</var> supports simple lightweight controls that do not need the ability to accept keyboard input, and do not contain other controls. Since lightweight controls do not wrap GUI widgets, they use fewer resources than controls based on <var>TWinControl</var>. If you want to accept keyboard input, or need to support child controls, use a <var>TCustomControl</var> instead.
           </p>
           <p>
             <var>TGraphicControl</var> provides a <var>Canvas</var> property for access to the control's drawing surface and a virtual <var>Paint</var> method and an <var>OnPaint</var> handler, called in response to paint requests received by the parent control.
@@ -18999,7 +19001,7 @@ if MyControl.CanSetFocus then
         <short>Handles the CM_CURSORCHANGED message for the control.</short>
         <descr>
           <p>
-            CMCursorChanged is an overridden method in TGraphicControl.  It ensures that the control is Visible before the temporary cursor shape is changed.
+            CMCursorChanged is an overridden method in TGraphicControl. It ensures that the control is Visible before the temporary cursor shape is changed.
           </p>
           <p>
             <var>Visible</var> must be set to <b>True</b>, and the <var>Parent</var> control (with the window handle) must be assigned before the control can be displayed. No actions are performed in the method if Visible is <b>False</b>, or Parent is <b>Nil</b>.
@@ -19038,7 +19040,7 @@ if MyControl.CanSetFocus then
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            Destroy is the overridden destructor for the class instance. It  ensures that resources allocated for the Canvas property are freed. It calls the inherited destructor prior to exiting from the method.
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that resources allocated for the Canvas property are freed. It calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
         <seealso>
@@ -19151,7 +19153,7 @@ if MyControl.CanSetFocus then
         <short>Performs actions needed when the Font for the control has been changed.</short>
         <descr>
           <p>
-            FontChanged is an overridden method in TCustomControl used to perform actions needed when the Font for the control has been changed. It is the routine used as the OnChange event handler for the Font property, and is assigned in the inherited constructor for the class instance.
+            <var>FontChanged</var> is an overridden method in <var>TCustomControl</var> used to perform actions needed when the Font for the control has been changed. It is the routine used as the OnChange event handler for the Font property, and is assigned in the inherited constructor for the class instance.
           </p>
           <p>
             Sender contains the object instance for the event notification, and is provided to maintain compatibility with the TNotifyEvent signature for the event handler. It is not used in TGraphicControl, but is passed as an argument to the inherited method.
@@ -19175,7 +19177,7 @@ if MyControl.CanSetFocus then
         <short>Sets the value for the Color property</short>
         <descr>
           <p>
-            SetColor is an overridden method in TCustomControl used to set the value in the Color property. It calls the inherited method on entry, and applies the new color value to the Brush in the control Canvas.
+            <var>SetColor</var> is an overridden method in <var>TCustomControl</var> used to set the value in the Color property. It calls the inherited method on entry, and applies the new color value to the Brush in the control Canvas.
           </p>
         </descr>
         <seealso>
@@ -19193,7 +19195,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            Paint is a method which causes the control to be drawn using the drawing mechanism for the control. In TCustomControl, like TGraphicControl, the OnPaint event handler is used (when assigned). Assign a routine to the OnPaint handler to perform the drawing operations needed for the control.
+            <var>Paint</var> is a method which causes the control to be drawn using the drawing mechanism for the control. In TCustomControl, like TGraphicControl, the OnPaint event handler is used (when assigned). Assign a routine to the OnPaint handler to perform the drawing operations needed for the control.
           </p>
           <p>
             Paint called from the PaintWindow method, and occurs when a LM_PAINT message is handled for the control.
@@ -19210,7 +19212,7 @@ if MyControl.CanSetFocus then
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create allocates resources for the TControlCanvas instance used in the Canvas property.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create allocates resources for the TControlCanvas instance used in the Canvas property.
           </p>
         </descr>
         <seealso>
@@ -19226,7 +19228,7 @@ if MyControl.CanSetFocus then
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            Destroy is the overridden destructor for the class instance.
+            <var>Destroy</var> is the overridden destructor for the class instance.
           </p>
           <p>
             It calls RemoveFocus to prevent the Parent control from giving focus to the free control. It destroys the Handle for the control, and ensures that the control is removed as a Parent or DockSite for its child controls. It does not free the child controls; they are freed by their owner.
@@ -19249,7 +19251,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            Canvas is a TCanvas property which contains the drawing surface for the control. Resources for the property are allocated in the constructor for the class instance. A TControlCanvas descendant is created and assigned to the member for the property. The Handle for the Canvas is updated when PaintWindow is called for a specific device context.
+            <var>Canvas</var> is a <var>TCanvas</var> property which contains the drawing surface for the control. Resources for the property are allocated in the constructor for the class instance. A TControlCanvas descendant is created and assigned to the member for the property. The Handle for the Canvas is updated when PaintWindow is called for a specific device context.
           </p>
           <p>
             Changing values in the Font or Color properties causes settings in Canvas to be updated. A new value assigned to Font is also assigned to the Canvas in the control, and includes the PixelsPerInch setting for the Font. A new value assigned to Color is applied to the Brush in Canvas. A value assigned to BorderStyle must be handled in the routine assigned to the OnPaint event handler.
@@ -19273,7 +19275,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            OnPaint is a TNotifyEvent property with the event handler signalled to draw the control on its Canvas. An object procedure which draws all aspects of the control must be implemented and assigned to the property.
+            <var>OnPaint</var> is a <var>TNotifyEvent</var> property with the event handler signalled to draw the control on its Canvas. An object procedure which draws all aspects of the control must be implemented and assigned to the property.
           </p>
           <p>
             The Sender argument provides access to properties and methods for the control instance. It must be cast to a TCustomControl to access members for the class type.
@@ -19300,7 +19302,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            TImageList is a TDragImageList descendant, and sets the visibility for properties in ancestor classes (like TCustomImageList). As a <link id="TDragImageList">TDragImageList</link> descendant, it provides support for using images in the list during drag-and-drop or drag-and-dock operations. Most of the features and functionality for the list are inherited from the <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link> class.
+            <var>TImageList</var> is a <var>TDragImageList</var> descendant, and sets the visibility for properties in ancestor classes (like TCustomImageList). As a <link id="TDragImageList">TDragImageList</link> descendant, it provides support for using images in the list during drag-and-drop or drag-and-dock operations. Most of the features and functionality for the list are inherited from the <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link> class.
           </p>
         </descr>
         <seealso>
@@ -19526,7 +19528,7 @@ if MyControl.CanSetFocus then
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Stores values passed in the TheTree and TheChild arguments to the Tree and ChildControl property. Sets the initial bounds for the dock zone to an empty rectangle.  This causes the Top, Left, Width, and Height properties to contain 0 (zero).
+            Stores values passed in the TheTree and TheChild arguments to the Tree and ChildControl property. Sets the initial bounds for the dock zone to an empty rectangle. This causes the Top, Left, Width, and Height properties to contain 0 (zero).
           </p>
         </descr>
         <seealso/>
@@ -21044,7 +21046,7 @@ var
             <var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space
           </p>
           <p>
-            Many controls call  <link id="#lcl.controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing.
+            Many controls call <link id="#lcl.controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing.
           </p>
           <p>
             IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.
@@ -21062,7 +21064,7 @@ var
             During loading and handle creation the calls are delayed.
           </p>
           <p>
-            This method is essentially the same as <link id="#lcl.controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden in descendent components,  it is not useful to perform all tests, which can result in too much overhead. To reduce the overhead, the LCL  calls <var>AdjustSize</var> instead.
+            This method is essentially the same as <link id="#lcl.controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>. But since <var>DoAutoSize</var> is commonly overridden in descendent components, it is not useful to perform all tests, which can result in too much overhead. To reduce the overhead, the LCL calls <var>AdjustSize</var> instead.
           </p>
           <p>
             When setting <var>AutoSize</var> to <b>True</b>, the LCL auto-sizes the width and height for the control. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start with a simple scenario:
@@ -21094,7 +21096,7 @@ var
           <p><b>Properties / Methods</b></p>
           <p><b>Left and Top</b></p>
           <p>
-            If <var>Parent</var> is not <b>Nil</b> then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users, some VCL controls like TGroupbox define the client area as the whole control including the frame.  Others do not. The LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widgetsets define a minimum, and maximum somewhere around 10,000 pixels or more.
+            If <var>Parent</var> is not <b>Nil</b> then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users, some VCL controls like TGroupbox define the client area as the whole control including the frame. Others do not. The LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widgetsets define a minimum, and maximum somewhere around 10,000 pixels or more.
           </p>
           <p>
             When the client area is scrolled the Left and Top are kept unchanged.
@@ -21103,11 +21105,11 @@ var
             During resizing, or when moving, the Left and Top coordinates are not always in sync with the coordinates for the Handle object.
           </p>
           <p>
-            When Parent is unassigned (contains Nil),  Left and Top depend on the widgetset and the window manager. Until Lazarus 0.9.25,  this is typically the screen coordinate of the left, top of the client area for the form. This is Delphi incompatible. It is planned to change this to the Left, Top of the window.
+            When Parent is unassigned (contains Nil), Left and Top depend on the widgetset and the window manager. Until Lazarus 0.9.25, this is typically the screen coordinate of the left, top of the client area for the form. This is Delphi incompatible. It is planned to change this to the Left, Top of the window.
           </p>
           <p><b>Hint:</b></p>
           <p>
-            Each time you change Left and Top, the LCL starts the movement  instantly. If you want to change both Left and Top, use the following instead:
+            Each time you change Left and Top, the LCL starts the movement instantly. If you want to change both Left and Top, use the following instead:
           </p>
 <code>
 with Button1 do
