@@ -50,7 +50,7 @@
             <var>TDataSetAction</var> provides an overridden Notification method to perform component notifications when the <var>DataSource</var> is removed for the action. A virtual <var>GetDataSet</var> method is implemented to ensure that a <var>DataSource</var> is cast to a <var>TDataSource</var> class instance prior to accessing its dataset. The <var>HandlesTarget</var> method is overridden to determine if the class includes both a valid datasource and a dataset for a specified target.
           </p>
           <p>
-            Applications do not use instances of <var>TDataSetAction</var>; use one of the descendent  classes that perform a specific action for a dataset.
+            Applications do not use instances of <var>TDataSetAction</var>; use one of the descendent classes that perform a specific action for a dataset.
           </p>
         </descr>
         <seealso>
@@ -86,7 +86,7 @@
         </short>
         <descr>
           <p>
-            <var>Notification</var> is an overridden procedure  used to perform a notification message when the specified component is removed. <var>AComponent</var> contains the component for the notification message. <var>Operation</var> contains the operation for the notification message.
+            <var>Notification</var> is an overridden procedure used to perform a notification message when the specified component is removed. <var>AComponent</var> contains the component for the notification message. <var>Operation</var> contains the operation for the notification message.
           </p>
           <p>
             <var>Notification</var> calls the inherited method. When <var>Operation</var> contains the value <var>opRemove</var> and <var>AComponent</var> contains the same class instance as the <var>DataSource</var> property, the <var>DataSource</var> property is set to <b>Nil</b>.
@@ -121,7 +121,7 @@
         <seealso/>
       </element>
       <element name="TDataSetAction.HandlesTarget.Result">
-        <short>True when a valid DataSource and DataSet exist in the Target.</short>
+        <short><b>True</b> when a valid DataSource and DataSet exist in the Target.</short>
       </element>
       <element name="TDataSetAction.HandlesTarget.Target">
         <short>Object instance examined in the method.</short>
@@ -202,7 +202,7 @@
             <var>TDataSetLast</var> is a <var>TDataSetAction</var> descendant which moves to the last record in the dataset for a DataSource. TDataSetLast can be added to an action list and assigned to controls which perform the corresponding action.
           </p>
           <p>
-            <var>TDataSetLast</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetLast</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
@@ -259,7 +259,7 @@
             <var>TDataSetNext</var> is a <var>TDataSetAction</var> descendant which moves to the next record in the dataset for a DataSource. TDataSetNext can be added to an action list and assigned to controls which perform the corresponding action.
           </p>
           <p>
-            <var>TDataSetNext</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which uses the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetNext</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which uses the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
@@ -316,7 +316,7 @@
             <var>TDataSetPrior</var> is a <var>TDataSetAction</var> descendant which moves to the previous record in the dataset for a DataSource. TDataSetPrior can be added to an action list and assigned to controls which perform the corresponding action.
           </p>
           <p>
-            <var>TDataSetPrior</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetPrior</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
@@ -373,7 +373,7 @@
             <var>TDataSetRefresh</var> is a <var>TDataSetAction</var> descendant which refreshes the record content in the dataset for a DataSource. TDataSetRefresh can be added to an action list and assigned to controls which perform the corresponding action.
           </p>
           <p>
-            <var>TDataSetRefresh</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetRefresh</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
@@ -429,7 +429,7 @@
             <var>TDataSetCancel</var> is a <var>TDataSetAction</var> descendant which cancels the current edit mode for a dataset record in its DataSource. This includes restoring the values in records to their pre-editing content, updating the record display, and removing any edit mode(s) assigned to the State property in the dataset. TDataSetCancel can be added to an action list and assigned to controls which perform the corresponding action.
           </p>
           <p>
-            <var>TDataSetCancel</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetCancel</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
@@ -489,7 +489,7 @@
             Delete behavior is dependent on the underlying database engine. Datasets using the DBF engine simply mark a record for deletion; it is not physically removed until the database engine packs the storage structure. Other datasets, such SQL-based ones, may require that changes be committed before they are flushed to the database engine.
           </p>
           <p>
-            <var>TDataSetDelete</var>  publishes the <var>DataSource</var> property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the <var>UpdateTarget</var> and <var>HandlesTarget</var> methods.
+            <var>TDataSetDelete</var> publishes the <var>DataSource</var> property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the <var>UpdateTarget</var> and <var>HandlesTarget</var> methods.
           </p>
         </descr>
         <seealso>
@@ -546,7 +546,7 @@
             <var>TDataSetEdit</var> is a <var>TDataSetAction</var> descendant which edits the current record in the dataset for the target DataSource. TDataSetEdit ensures that the dataset is placed in edit mode (when available) by calling the Edit method for the dataset. Edit behavior is dependent on the underlying database engine.
           </p>
           <p>
-            <var>TDataSetEdit</var>  publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
+            <var>TDataSetEdit</var> publishes the DataSource property which explicitly declares the target for the database action. The DataSource may be determined by examining a data-aware control which used the database action, and passed an an argument to the UpdateTarget and HandlesTarget methods.
           </p>
         </descr>
         <seealso>
