@@ -28,7 +28,7 @@
         <short>Implements a database login dialog form.</short>
         <descr>
           <p>
-            <var>TLoginDialog</var> is a <var>TForm</var> descendant which implements a database login form. TLoginDialog contains labels and edits used to display and/or edit Database Name, User Name, and Password values. Database Name is read-only and cannot be changed on the form. The User Name can optionally be read-only. It  also has a button panel with Login and Cancel buttons.
+            <var>TLoginDialog</var> is a <var>TForm</var> descendant which implements a database login form. TLoginDialog contains labels and edits used to display and/or edit Database Name, User Name, and Password values. Database Name is read-only and cannot be changed on the form. The User Name can optionally be read-only. It also has a button panel with Login and Cancel buttons.
           </p>
           <p>
             Use <var>LoginDialogEx</var> to create, configure, and display an instance of TLoginDialog using the arguments passed to the routine.
@@ -98,7 +98,7 @@
             <var>LoginDialogEx</var> is a <var>Boolean</var> function used to create, configure, and display a <var>TLoginDialog</var> dialog form. The return value contains <b>True</b> when the <var>ModalResult</var> for the form display contains the value <var>mrOk</var>.
           </p>
           <p>
-            LoginDialogEx creates an instance of TLoginDialog, and sets the values in the controls used on the form. The arguments in <var>ADatabaseName</var>, <var>AUserName</var>, and <var>APassword</var> are assigned to the corresponding controls. <var>UserNameReadOnly</var> indicates whether the edit control for  UserName can be modified; the default value is <b>False</b>.
+            LoginDialogEx creates an instance of TLoginDialog, and sets the values in the controls used on the form. The arguments in <var>ADatabaseName</var>, <var>AUserName</var>, and <var>APassword</var> are assigned to the corresponding controls. <var>UserNameReadOnly</var> indicates whether the edit control for UserName can be modified; the default value is <b>False</b>.
           </p>
           <p>
             LoginDialogEx calls <var>ShowModal</var> to display the form as a modal dialog, and captures the <var>ModalResult</var>. When ModalResult contains <var>mrOk</var>, the return value is set to <b>True</b>.
@@ -110,7 +110,7 @@
         <seealso/>
       </element>
       <element name="LoginDialogEx.Result">
-        <short>True when the ModalResult for the form is mrOk.</short>
+        <short><b>True</b> when the ModalResult for the form is mrOk.</short>
       </element>
       <element name="LoginDialogEx.ADatabaseName">
         <short>Database name displayed on the form.</short>
@@ -122,7 +122,7 @@
         <short>Password edited on the form.</short>
       </element>
       <element name="LoginDialogEx.UserNameReadOnly">
-        <short>True if the User Name cannot be changed in the form.</short>
+        <short><b>True</b> if the User Name cannot be changed in the form.</short>
       </element>
 
       <element name="rsDBLogDlgCaption">
