@@ -67,7 +67,7 @@
             <var>DataChange</var> is a procedure used to get the value for the control when the value in its Field has changed. <var>DataLink</var> must contain a value (not Nil) to access the Field. When DataLink is unassigned, the value in Text is set to an empty string <var>('')</var>.
           </p>
           <p>
-            DataChange stores the value from the <var>TField</var> instance in DataLink in the <var>Date</var> property. If the control is Focused and AutoSelect is enabled,  the SelectAll method is called to select the content in the control.
+            DataChange stores the value from the <var>TField</var> instance in DataLink in the <var>Date</var> property. If the control is Focused and AutoSelect is enabled, the SelectAll method is called to select the content in the control.
           </p>
           <p>
             DataChange is assigned as the OnDataChange event handler for DataLink in Create.
@@ -161,7 +161,7 @@
         </short>
         <descr>
           <p>
-            <var>SetDataField</var> is a procedure used to set the value in the <var>DataField</var> property.  SetDataField is the write access specifier for the property value. SetDataField stores the specified new Value in the <var>FieldName</var> property for <var>DataLink</var>.
+            <var>SetDataField</var> is a procedure used to set the value in the <var>DataField</var> property. SetDataField is the write access specifier for the property value. SetDataField stores the specified new Value in the <var>FieldName</var> property for <var>DataLink</var>.
           </p>
           <p>
             Use <var>DataField</var> to read or write the value for the property.
@@ -270,7 +270,7 @@
         </short>
         <descr>
           <p>
-            <var>EditCanModify</var> is an overridden Boolean function which indicates if the control can modify the content for the control. EditCanModify is set to the value from CanModify in DataLink. The return value is True when the control accept new values.
+            <var>EditCanModify</var> is an overridden Boolean function which indicates if the control can modify the content for the control. EditCanModify is set to the value from CanModify in DataLink. The return value is <b>True</b> when the control accept new values.
           </p>
         </descr>
         <seealso>
@@ -278,7 +278,7 @@
       </element>
       <!-- function result Visibility: protected -->
       <element name="TDBDateEdit.EditCanModify.Result">
-        <short>True when the control value can be changed.</short>
+        <short><b>True</b> when the control value can be changed.</short>
       </element>
 
       <!-- procedure Visibility: protected -->
@@ -291,7 +291,7 @@
             <var>EditEnter</var> is an overridden procedure used to perform actions required when the Enter key is pressed on the control. EditEnter calls the inherited method.
           </p>
           <p>
-            EditEnter uses the value from Editing in DataLink to determine if there are any pending changes in the control value. When Editing contains False, the Reset method in DataLink is called to cancel changes to the field. Reset also calls the OnDataChange event handler.
+            EditEnter uses the value from Editing in DataLink to determine if there are any pending changes in the control value. When Editing contains <b>False</b>, the Reset method in DataLink is called to cancel changes to the field. Reset also calls the OnDataChange event handler.
           </p>
         </descr>
         <seealso>
@@ -315,7 +315,7 @@
 
             <dt>VK_DELETE or VK_BACK</dt>
             <dd>
-              Removes Delete and Backspace keys if editing is not active.Changes Key to  the value VK_UNKNOWN when editing is not active.
+              Removes Delete and Backspace keys if editing is not active.Changes Key to the value VK_UNKNOWN when editing is not active.
             </dd>
           </dl>
         </descr>
@@ -338,10 +338,10 @@
         </short>
         <descr>
           <p>
-            <var>EditKeyPress</var> is an overridden procedure which processes the character value in Key. EditKeyPress calls the inherited method.  EditKeyPress checks the value in Key to see if it contains data (as opposed to control characters) in the range Decimal 32 to Decimal 255. The Field property in DataLink also calls its IsValidChar method to see if Key is valid for the data type in the Field.
+            <var>EditKeyPress</var> is an overridden procedure which processes the character value in Key. EditKeyPress calls the inherited method. EditKeyPress checks the value in Key to see if it contains data (as opposed to control characters) in the range Decimal 32 to Decimal 255. The Field property in DataLink also calls its IsValidChar method to see if Key is valid for the data type in the Field.
           </p>
           <p>
-            EditKeyPress requires DataLink to have both a valid TField instance in its Field property and its Edit property set to True. The value in Key is set to <var>#0 (Decimal 0)</var> if either condition is not met.
+            EditKeyPress requires DataLink to have both a valid TField instance in its Field property and its Edit property set to <b>True</b>. The value in Key is set to <var>#0 (Decimal 0)</var> if either condition is not met.
           </p>
         </descr>
         <seealso>
@@ -458,7 +458,7 @@
         </short>
         <descr>
           <p>
-            <var>ExecuteAction</var> is an overridden Boolean function which implements support for using TBasicAction to perform the default action for the control. ExecuteAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to performs its ExecuteAction method with the specified action value. The return value is True if the action is handled by the ancestor or DataLink.
+            <var>ExecuteAction</var> is an overridden Boolean function which implements support for using TBasicAction to perform the default action for the control. ExecuteAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to performs its ExecuteAction method with the specified action value. The return value is <b>True</b> if the action is handled by the ancestor or DataLink.
           </p>
         </descr>
         <seealso>
@@ -468,7 +468,7 @@
       </element>
       <!-- function result Visibility: public -->
       <element name="TDBDateEdit.ExecuteAction.Result">
-        <short>True if the action is successfully handled.</short>
+        <short><b>True</b> if the action is successfully handled.</short>
       </element>
       <!-- argument Visibility: public -->
       <element name="TDBDateEdit.ExecuteAction.AAction">
@@ -480,7 +480,7 @@
         <short>Updates the action when it handles the specified operation.</short>
         <descr>
           <p>
-            <var>UpdateAction</var> is an overridden Boolean function which implements support for using TBasicAction to update the value in the control from its dataset. UpdateAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to perform its UpdateAction method with the specified action value. The return value is True if the action is handled by the ancestor or DataLink.
+            <var>UpdateAction</var> is an overridden Boolean function which implements support for using TBasicAction to update the value in the control from its dataset. UpdateAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to perform its UpdateAction method with the specified action value. The return value is <b>True</b> if the action is handled by the ancestor or DataLink.
           </p>
         </descr>
         <seealso>
@@ -489,7 +489,7 @@
       </element>
       <!-- function result Visibility: public -->
       <element name="TDBDateEdit.UpdateAction.Result">
-        <short>True if the action is successfully handled.</short>
+        <short><b>True</b> if the action is successfully handled.</short>
       </element>
       <!-- argument Visibility: public -->
       <element name="TDBDateEdit.UpdateAction.AAction">
@@ -554,7 +554,7 @@
       </element>
 
       <element name="Register">
-        <short>Registers components for use  in the Lazarus IDE.</short>
+        <short>Registers components for use in the Lazarus IDE.</short>
         <descr>
           <p>
             The following components are added to the Lazarus IDE component palette:
