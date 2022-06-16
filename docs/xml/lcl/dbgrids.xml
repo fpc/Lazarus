@@ -76,7 +76,7 @@
             <var>TDBGridOption</var> is an enumerated type containing options available for a database grid control. Each enumeration value indicates if the associated feature or behavior is enabled in a database grid control.
           </p>
           <p>
-            Values from the enumeration are stored  in the  <var>TDBGridOptions</var> set type, and are used in the <var>TDBGrid.Options</var> property.
+            Values from the enumeration are stored in the <var>TDBGridOptions</var> set type, and are used in the <var>TDBGrid.Options</var> property.
           </p>
         </descr>
         <seealso>
@@ -181,7 +181,7 @@
       </element>
       <element name="TDBGridOption.dgDisableDelete">
         <short>
-          Indicates if deleting records with <var><b>Ctrl + Delete</b></var>  is disabled.
+          Indicates if deleting records with <b>Ctrl+Delete</b> is disabled.
         </short>
       </element>
       <element name="TDBGridOption.dgDisableInsert">
@@ -201,7 +201,7 @@
       </element>
       <element name="TDBGridOption.dgCellEllipsis">
         <short>
-          Indicates if an Ellipsis character is added to the end of cells longer than the display area for  the cell.
+          Indicates if an Ellipsis character is added to the end of cells longer than the display area for the cell.
         </short>
       </element>
       <element name="TDBGridOption.dgRowHighlight">
@@ -216,7 +216,7 @@
       </element>
       <element name="TDBGridOption.dgDblClickAutoSize">
         <short>
-          Indicates if double clicking on borders or headers for a column causes it to be automatically  resized to its contents.
+          Indicates if double clicking on borders or headers for a column causes it to be automatically resized to its contents.
         </short>
       </element>
       <element name="TDBGridOption.dgDisplayMemoText">
@@ -230,7 +230,7 @@
           Stores values from the <var>TDbGridOption</var> enumeration.
         </short>
         <descr>
-          <var>TDbGridOptions</var> is a set type used to store values from the <var>TDbGridOption</var> enumeration. <var>TDbGridOptions</var> is the type used for the <var>Options</var> property in  <var>TDBGrid</var>.
+          <var>TDbGridOptions</var> is a set type used to store values from the <var>TDbGridOption</var> enumeration. <var>TDbGridOptions</var> is the type used for the <var>Options</var> property in <var>TDBGrid</var>.
         </descr>
         <seealso>
           <link id="TDBGridOption">TDBGridOption</link>
@@ -240,11 +240,11 @@
 
       <element name="TDbGridExtraOption">
         <short>
-          Enumerated type that specifies  extra options available in a  database grid.
+          Enumerated type that specifies extra options available in a database grid.
         </short>
         <descr>
           <p>
-            <var>TDbGridExtraOption</var> is an enumerated type that specifies extra options available in a  database grid. Values from TDbGridExtraOption are stored in the  <var>TDbGridExtraOptions</var> set type, and used in the <var>OptionsExtra</var> property in <var>TDBGrid</var>.
+            <var>TDbGridExtraOption</var> is an enumerated type that specifies extra options available in a database grid. Values from TDbGridExtraOption are stored in the <var>TDbGridExtraOptions</var> set type, and used in the <var>OptionsExtra</var> property in <var>TDBGrid</var>.
           </p>
         </descr>
         <seealso>
@@ -280,11 +280,11 @@
 
       <element name="TDbGridStatusItem">
         <short>
-          Enumerated type with values for status  messages used in a database grid.
+          Enumerated type with values for status messages used in a database grid.
         </short>
         <descr>
           <p>
-            <var>TDbGridStatusItem</var> is an  enumerated type with values for status  messages used in a database grid. Values from TDbGridStatusItem are stored in <var>TDbGridStatus</var>, and used in the <var>GridStatus</var> property in <var>TCustomDBGrid</var>.
+            <var>TDbGridStatusItem</var> is an enumerated type with values for status messages used in a database grid. Values from TDbGridStatusItem are stored in <var>TDbGridStatus</var>, and used in the <var>GridStatus</var> property in <var>TCustomDBGrid</var>.
           </p>
         </descr>
         <seealso>
@@ -329,7 +329,7 @@
         </short>
         <descr>
           <p>
-            <var>TDbGridStatus</var> is a  set type used to store <var>TDbGridStatusItem</var> enumeration values.  Values added to TDbGridStatus indicate that a feature or behavior has been enabled in a TDBGrid control.
+            <var>TDbGridStatus</var> is a set type used to store <var>TDbGridStatusItem</var> enumeration values. Values added to TDbGridStatus indicate that a feature or behavior has been enabled in a TDBGrid control.
           </p>
           <p>
             TDbGridStatus is used to implement the <var>GridStatus</var> property in <var>TCustomDBGrid</var> and descendent classes.
@@ -347,7 +347,7 @@
         </short>
         <descr>
           <p>
-            <var>TDatasetScrolledEvent</var> specifies an event handler signalled after scrolling a dataset. TDatasetScrolledEvent can be used to perform actions  required when the position in the DataSet has changed.
+            <var>TDatasetScrolledEvent</var> specifies an event handler signalled after scrolling a dataset. TDatasetScrolledEvent can be used to perform actions required when the position in the DataSet has changed.
           </p>
           <p>
             DataSet is the TDataset instance for the event notification.
@@ -366,10 +366,10 @@
             <dd>Scroll toward the end of the DataSet </dd>
           </dl>
           <p>
-             TDatasetScrolledEvent is the type used for the OnDataSetScrolled property in  TComponentDataLink.
+             TDatasetScrolledEvent is the type used for the OnDataSetScrolled property in TComponentDataLink.
           </p>
           <p>
-            See the TCustomDBGrid.OnDataSetScrolled procedure for an example  implementation of TDatasetScrolledEvent.
+            See the TCustomDBGrid.OnDataSetScrolled procedure for an example implementation of TDatasetScrolledEvent.
           </p>
         </descr>
         <seealso></seealso>
@@ -404,7 +404,7 @@
         </short>
         <descr>
           <p>
-            <var>TDBGridClickEvent</var> specifies an event handler signalled when  a column in the database grid is clicked
+            <var>TDBGridClickEvent</var> specifies an event handler signalled when a column in the database grid is clicked
           </p>
         </descr>
         <seealso></seealso>
@@ -415,11 +415,11 @@
 
       <element name="TMovedEvent">
         <short>
-          Specifies an event handler signalled when the display order of rows or columns  is changed.
+          Specifies an event handler signalled when the display order of rows or columns is changed.
         </short>
         <descr>
           <p>
-            <var>TMovedEvent</var>  specifies an event handler signalled when the display order of rows or columns is changed. TMovedEvent is the type used for the  OnColumnMoved and OnRowMoved properties in TDBGrid.
+            <var>TMovedEvent</var> specifies an event handler signalled when the display order of rows or columns is changed. TMovedEvent is the type used for the OnColumnMoved and OnRowMoved properties in TDBGrid.
           </p>
         </descr>
         <seealso>
@@ -443,7 +443,7 @@
         </short>
         <descr>
           <p>
-            <var>TDrawColumnCellEvent</var> specifies an event handler used to draw a cell in a column for a  grid control. TDrawColumnCellEvent is the type used for the OnDrawColumnCell property in TDBGrid, and signalled from its DrawCell method.
+            <var>TDrawColumnCellEvent</var> specifies an event handler used to draw a cell in a column for a grid control. TDrawColumnCellEvent is the type used for the OnDrawColumnCell property in TDBGrid, and signalled from its DrawCell method.
           </p>
         </descr>
         <seealso>
@@ -473,7 +473,7 @@
         </short>
         <descr>
           <p>
-            <var>TGetDbEditMaskEvent</var> specifies an event handler used to get  the Edit Mask for a cell in a database grid control. TGetDbEditMaskEvent can be used to provide an edit mask for the specified Field. TGetDbEditMaskEvent is the type used for the OnFieldEditMask property in TDBGrid.
+            <var>TGetDbEditMaskEvent</var> specifies an event handler used to get the Edit Mask for a cell in a database grid control. TGetDbEditMaskEvent can be used to provide an edit mask for the specified Field. TGetDbEditMaskEvent is the type used for the OnFieldEditMask property in TDBGrid.
           </p>
         </descr>
         <seealso>
@@ -521,7 +521,7 @@
         </short>
         <descr>
           <p>
-            <var>TPrepareDbGridCanvasEvent</var> specifies an event handler used to prepare the canvas which draws the content in a database grid. TPrepareDbGridCanvasEvent allows an application to override or enhance the  drawing behavior of cells in a database grid.
+            <var>TPrepareDbGridCanvasEvent</var> specifies an event handler used to prepare the canvas which draws the content in a database grid. TPrepareDbGridCanvasEvent allows an application to override or enhance the drawing behavior of cells in a database grid.
           </p>
           <p>
             <var>TPrepareDbGridCanvasEvent</var> is used to implement the <var>OnPrepareCanvas</var> event handler in <var>TDBGrid</var>.
@@ -650,7 +650,7 @@
         <seealso></seealso>
       </element>
       <element name="TBookmarkedRecordEnumerator.Create.bookList">
-        <short>Bookmark  list for the enumerator.</short>
+        <short>Bookmark list for the enumerator.</short>
       </element>
       <element name="TBookmarkedRecordEnumerator.Create.aGrid">
         <short>Grid control for the enumerator.</short>
@@ -665,10 +665,10 @@
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy uses values in the Options property to perform actions needed before  the class instance is freed, including:
+            <var>Destroy</var> is the destructor for the class instance. Destroy uses values in the Options property to perform actions needed before the class instance is freed, including:
           </p>
           <ul>
-            <li>Restore the dataset to the position in  Bookmark</li>
+            <li>Restore the dataset to the position in Bookmark</li>
             <li>Re-enable controls attached to the dataset if disabled</li>
           </ul>
           <p>
@@ -687,16 +687,16 @@
             <var>MoveNext</var> is a Boolean function used to move the enumerator to the next item in the bookmark list. Move next increments the value in BookmarkIndex, and examines the Options property to see if any actions are required, such as: setting the value of the Current Bookmark before navigation, or disabling controls attached to the dataset.
           </p>
           <p>
-            MoveNext updates the current bookmark and checks the dataset to see if the bookmark is still valid. The return value is False if the record for the bookmark no longer exists in the dataset and Options indicates the enumerator should halt for an invalid bookmark. False is also returned when the value in BookmarkIndex exceeds the number of items in the BookmarkList.
+            MoveNext updates the current bookmark and checks the dataset to see if the bookmark is still valid. The return value is <b>False</b> if the record for the bookmark no longer exists in the dataset and Options indicates the enumerator should halt for an invalid bookmark. <b>False</b> is also returned when the value in BookmarkIndex exceeds the number of items in the BookmarkList.
           </p>
           <p>
-            The return value is True when the action has been performed successfully.
+            The return value is <b>True</b> when the action has been performed successfully.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TBookmarkedRecordEnumerator.MoveNext.Result">
-        <short>True when the action has been performed successfully.</short>
+        <short><b>True</b> when the action has been performed successfully.</short>
       </element>
 
       <element name="TBookmarkedRecordEnumerator.GetEnumerator">
@@ -754,7 +754,7 @@
         </short>
         <descr>
           <p>
-            <var>TBookmarkList</var> is a class used to implement a list of Bookmarks in a database grid.  TBookmarkList is the type used for the <var>SelectedRows</var> property in <var>TCustomDBGrid</var> and descendent classes.
+            <var>TBookmarkList</var> is a class used to implement a list of Bookmarks in a database grid. TBookmarkList is the type used for the <var>SelectedRows</var> property in <var>TCustomDBGrid</var> and descendent classes.
           </p>
         </descr>
         <seealso>
@@ -773,7 +773,7 @@
           Gets the value for the Count property.
         </short>
         <descr>
-          <var>GetCount</var> is an Integer function used to get the value for the Count property.  Use the Items property to access TBookmark instances stored in the list.
+          <var>GetCount</var> is an Integer function used to get the value for the Count property. Use the Items property to access TBookmark instances stored in the list.
         </descr>
         <seealso></seealso>
       </element>
@@ -790,7 +790,7 @@
             <var>GetCurrentRowSelected</var> is a <var>Boolean</var> function used to get the value for the <var>CurrentRowSelected</var> property. GetCurrentRowSelected calls the CheckActive method to ensure that the Dataset for the list is properly configured. See CheckActive for more information.
           </p>
           <p>
-            The return value is True when a TBookmark instance for the current row already exists in the list.
+            The return value is <b>True</b> when a TBookmark instance for the current row already exists in the list.
           </p>
         </descr>
         <seealso>
@@ -798,7 +798,7 @@
         </seealso>
       </element>
       <element name="TBookmarkList.GetCurrentRowSelected.Result">
-        <short>True when a bookmark for the current row already exists in the list.</short>
+        <short><b>True</b> when a bookmark for the current row already exists in the list.</short>
       </element>
 
       <element name="TBookmarkList.GetItem">
@@ -807,7 +807,7 @@
         </short>
         <descr>
           <p>
-            <var>GetItem</var> is a TBookmark function that implements the read access specifier for the Items property. GetItems returns the bookmark stored at the specified ordinal position in the list.  AIndex is the ordinal position to  retrieve in the range <var>0 .. Count - 1</var>. Use the Items property to access the bookmarks stored in the list.
+            <var>GetItem</var> is a TBookmark function that implements the read access specifier for the Items property. GetItems returns the bookmark stored at the specified ordinal position in the list. AIndex is the ordinal position to retrieve in the range <var>0 .. Count - 1</var>. Use the Items property to access the bookmarks stored in the list.
           </p>
         </descr>
         <seealso></seealso>
@@ -825,14 +825,14 @@
         </short>
         <descr>
           <p>
-            <var>SetCurrentRowSelected</var> is a procedure which provides write access for the CurrentRowSelected property. SetCurrentRowSelected gets a bookmark for the current row, and calls Find to determine if the bookmark already exists in the list. When AValue contains False, an existing  bookmark is freed and removed from the bookmark list. A Bookmark not in the list is created and added when AValue is True.
+            <var>SetCurrentRowSelected</var> is a procedure which provides write access for the CurrentRowSelected property. SetCurrentRowSelected gets a bookmark for the current row, and calls Find to determine if the bookmark already exists in the list. When AValue contains <b>False</b>, an existing bookmark is freed and removed from the bookmark list. A Bookmark not in the list is created and added when AValue is <b>True</b>.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TBookmarkList.SetCurrentRowSelected.AValue">
         <short>
-          True to select the current row. False to de-selected the current row.
+          <b>True</b> to select the current row. <b>False</b> to de-selected the current row.
         </short>
       </element>
 
@@ -842,10 +842,10 @@
         </short>
         <descr>
           <p>
-            CheckActive is a procedure used to ensure that the bookmark list is active and properly configured.  CheckActive examines the DataLink for the Grid to determine if it is active. An EInvalidGridOperation exception is raised if the dataset is not already active.
+            CheckActive is a procedure used to ensure that the bookmark list is active and properly configured. CheckActive examines the DataLink for the Grid to determine if it is active. An EInvalidGridOperation exception is raised if the dataset is not already active.
           </p>
           <p>
-            CheckActive compares the dataset in the  bookmark list to the the dataset in the associated Grid control. If they are the same Dataset, no additional processing is performed in the method. Otherwise, the Dataset for the bookmark list is set to the Dataset from the associated Grid control.
+            CheckActive compares the dataset in the bookmark list to the the dataset in the associated Grid control. If they are the same Dataset, no additional processing is performed in the method. Otherwise, the Dataset for the bookmark list is set to the Dataset from the associated Grid control.
           </p>
           <p>
             CheckActive sets the value for the internal flag which indicates if a binary search can be used to locate bookmarks. Hint: Binary search is not used for TSQLQuery and TBufDataset descendants.
@@ -864,11 +864,11 @@
 
       <element name="TBookmarkList.Create">
         <short>
-          <var>Create</var> is the  constructor for TBookmarkList.
+          <var>Create</var> is the constructor for TBookmarkList.
         </short>
         <descr>
           <p>
-            <var>Create</var> is the  constructor for the TBookmarkList class instance. Create calls the inherited constructor. Create  stores the AGrid argument internally to keep an association to the grid for the Bookmarks. Finally, Create initializes the internal list used to store Bookmarks added to the class instance.
+            <var>Create</var> is the constructor for the TBookmarkList class instance. Create calls the inherited constructor. Create stores the AGrid argument internally to keep an association to the grid for the Bookmarks. Finally, Create initializes the internal list used to store Bookmarks added to the class instance.
           </p>
         </descr>
         <seealso>
@@ -881,7 +881,7 @@
 
       <element name="TBookmarkList.Destroy">
         <short>
-          <var>Destroy</var>  is the destructor for  <var>TBookmarkList</var>.
+          <var>Destroy</var> is the destructor for <var>TBookmarkList</var>.
         </short>
         <descr>
           <p>
@@ -914,7 +914,7 @@
         </short>
         <descr>
           <p>
-            <var>Delete</var> is a procedure used to delete rows in the Dataset represented by bookmarks in the list. Delete processes the Items in the  list in reverse order. Each bookmark is located in the Dataset and the TDataset.Delete method is called to remove the data from the dataset. The Dataset.FreeBookmark method is called to free the Bookmark, and it is removed from the Items in the list.
+            <var>Delete</var> is a procedure used to delete rows in the Dataset represented by bookmarks in the list. Delete processes the Items in the list in reverse order. Each bookmark is located in the Dataset and the TDataset.Delete method is called to remove the data from the dataset. The Dataset.FreeBookmark method is called to free the Bookmark, and it is removed from the Items in the list.
           </p>
         </descr>
         <seealso></seealso>
@@ -942,7 +942,7 @@
         </seealso>
       </element>
       <element name="TBookmarkList.Find.Result">
-        <short>True when the bookmark is located in the list.</short>
+        <short><b>True</b> when the bookmark is located in the list.</short>
       </element>
       <element name="TBookmarkList.Find.Item">
         <short>Bookmark to locate.</short>
@@ -957,7 +957,7 @@
         </short>
         <descr>
           <p>
-            <var>IndexOf</var> is an Integer function used to get the ordinal position in the list for  the specified Bookmark. The return value contains the position in the list where the TBookmark instance was located. IndexOf calls Find to locate the bookmark and to capture the return value for the method. The return value is in the range <var>0..Count-1</var> when the bookmark exists in the list or <var>-1</var> when the bookmark is not found.
+            <var>IndexOf</var> is an Integer function used to get the ordinal position in the list for the specified Bookmark. The return value contains the position in the list where the TBookmark instance was located. IndexOf calls Find to locate the bookmark and to capture the return value for the method. The return value is in the range <var>0..Count-1</var> when the bookmark exists in the list or <var>-1</var> when the bookmark is not found.
           </p>
         </descr>
         <seealso></seealso>
@@ -975,14 +975,14 @@
         </short>
         <descr>
           <p>
-            <var>Refresh</var> searches for and removes invalid Bookmarks in the list. The return value is True if an invalid TBookmark instance was found and removed in the method; it also indicates that the Invalidate method in the associated Grid control was called prior to exiting from the method.
+            <var>Refresh</var> searches for and removes invalid Bookmarks in the list. The return value is <b>True</b> if an invalid TBookmark instance was found and removed in the method; it also indicates that the Invalidate method in the associated Grid control was called prior to exiting from the method.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TBookmarkList.Refresh.Result">
         <short>
-          True when the bookmark list was updated and the grid was refreshed.
+          <b>True</b> when the bookmark list was updated and the grid was refreshed.
         </short>
       </element>
 
@@ -992,7 +992,7 @@
         </short>
         <descr>
           <p>
-            <var>GetEnumerator</var> is a TBookmarkedRecordEnumerator function used to get an enumerator for bookmarked records in the list. GetEnumerator creates an instance of TBookmarkedRecordEnumerator with the specified arguments,  and uses the instance as the return value for the method.
+            <var>GetEnumerator</var> is a TBookmarkedRecordEnumerator function used to get an enumerator for bookmarked records in the list. GetEnumerator creates an instance of TBookmarkedRecordEnumerator with the specified arguments, and uses the instance as the return value for the method.
           </p>
         </descr>
         <seeslo>
@@ -1024,10 +1024,10 @@
         </short>
         <descr>
           <p>
-            <var>CurrentRowSelected</var> is a Boolean property which  indicates if the current row in the Dataset is selected.
+            <var>CurrentRowSelected</var> is a Boolean property which indicates if the current row in the Dataset is selected.
           </p>
           <p>
-            GetCurrentRowSelected is the read access specifier for the property value.  GetCurrentRowSelected checks to see if the Bookmark for the current row exists in BookmarkList.
+            GetCurrentRowSelected is the read access specifier for the property value. GetCurrentRowSelected checks to see if the Bookmark for the current row exists in BookmarkList.
           </p>
           <p>
             SetCurrentRowSelected is the write access specifier for the property value. SetCurrentRowSelected tries to locate a Bookmark for the current row in the Dataset, and adds or removes the Bookmark based on the AValue argument. The Grid control is redrawn after changing the selection state for the row.
@@ -1043,7 +1043,7 @@
         </short>
         <descr>
           <p>
-            <var>Items</var> is a read-only TBookmark property that provides indexed  access to Bookmarks in the list. Bookmarks can be accessed by their ordinal position in the list (in the range <var>0..Count-1</var>).
+            <var>Items</var> is a read-only TBookmark property that provides indexed access to Bookmarks in the list. Bookmarks can be accessed by their ordinal position in the list (in the range <var>0..Count-1</var>).
           </p>
           <p>
             GetItem is the read access specifier for the Items property, and retrieves the TBookmark stored at the specified position in the list.
@@ -1120,7 +1120,7 @@
         </short>
         <descr>
           <p>
-            <var>GetFields</var> is a TField function that implements read access for the Fields property. GetFields returns the TField instance at the specified position in the Fields for the dataset. The return value is <var><b>Nil</b></var> if Index is not in the range  <var>0..FieldCount-1</var>.
+            <var>GetFields</var> is a TField function that implements read access for the Fields property. GetFields returns the TField instance at the specified position in the Fields for the dataset. The return value is <var><b>Nil</b></var> if Index is not in the range <var>0..FieldCount-1</var>.
           </p>
           <p>
             Use Fields to read or write values in the property.
@@ -1159,7 +1159,7 @@
         </short>
         <descr>
           <p>
-            <var>RecordChanged</var> is an overridden procedure used to signal the  OnRecordChanged event handler when the specified Field is changed. RecordChanged calls the event handler when it has been assigned in the class instance. No action is performed when OnRecordChanged has not been assigned.
+            <var>RecordChanged</var> is an overridden procedure used to signal the OnRecordChanged event handler when the specified Field is changed. RecordChanged calls the event handler when it has been assigned in the class instance. No action is performed when OnRecordChanged has not been assigned.
           </p>
         </descr>
         <seealso>
@@ -1168,7 +1168,7 @@
         </seealso>
       </element>
       <element name="TComponentDataLink.RecordChanged.Field">
-        <short>Modified Field  for the event notification.</short>
+        <short>Modified Field for the event notification.</short>
       </element>
 
       <element name="TComponentDataLink.DatasetChanged">
@@ -1195,10 +1195,10 @@
             <var>ActiveChanged</var> is a procedure used to call event handlers when the value in Active is changed.
           </p>
           <p>
-            When Active contains True, the Dataset for the  class is read and compared to the value in the DatasetName property. When it differs from the stored value the change is for a new dataset, and the OnNewDataset event handler is signalled. If DatasetName is the same as the stored value, the OnDataseOpen event handler is signalled.
+            When Active contains <b>True</b>, the Dataset for the class is read and compared to the value in the DatasetName property. When it differs from the stored value the change is for a new dataset, and the OnNewDataset event handler is signalled. If DatasetName is the same as the stored value, the OnDataseOpen event handler is signalled.
           </p>
           <p>
-            When Active contains False, the Datasource and Dataset are checked to ensure that the contain valid class instances. If Datasource is unassigned, the  OnInvalidDataSource event handler is signalled. If Dataset is unassigned, the  Dataset is being freed, and the OnInvalidDataSet event handler is signalled. If Dataset is assigned, the dataset has been closed and the OnDataSetClose event handler is signalled.
+            When Active contains <b>False</b>, the Datasource and Dataset are checked to ensure that the contain valid class instances. If Datasource is unassigned, the OnInvalidDataSource event handler is signalled. If Dataset is unassigned, the Dataset is being freed, and the OnInvalidDataSet event handler is signalled. If Dataset is assigned, the dataset has been closed and the OnDataSetClose event handler is signalled.
           </p>
         </descr>
         <seealso>
@@ -1500,7 +1500,7 @@
             <var>TColumn</var> is a <var>TGridColumn</var> descendant that represents a display column in a database grid control. TColumn extends the ancestor class to provide support for using TField for data access, display formatting, alignment, as well as use of checkbox and lookuplist Fields. TColumn also implements support for features in TDBGrid like: automatic rows, and design-time vs run-time column ordering.
           </p>
           <p>
-            TColumn provides properties and methods needed to access and maintain the Dataset, Field, FieldName, and DisplayFormat for the column.  TColumn provides overridden functions which implement facilities from the ancestor class.
+            TColumn provides properties and methods needed to access and maintain the Dataset, Field, FieldName, and DisplayFormat for the column. TColumn provides overridden functions which implement facilities from the ancestor class.
           </p>
           <p>
             TColumn instances can be created at run-time or design-time;  properties are provided to indicate when the instance was created. The display order for columns need not correspond to the order of the Fields in the dataset, nor do all Fields in the dataset need to be represented by a display column.
@@ -1534,10 +1534,10 @@
         </short>
         <descr>
           <p>
-            <var>ApplyDisplayFormat</var> is a procedure used to apply a new value in  DisplayFormat to the Field used to get data for the column. Field must contain a valid TField instance, or no actions are performed in the method.
+            <var>ApplyDisplayFormat</var> is a procedure used to apply a new value in DisplayFormat to the Field used to get data for the column. Field must contain a valid TField instance, or no actions are performed in the method.
           </p>
           <p>
-            ApplyDisplayFormat ensures that the new value for DisplayFormat is properly applied to Fields using the TNumericField or TDateTimeField class types.  ApplyDisplayFormat is used in the implementation of the LinkField method.
+            ApplyDisplayFormat ensures that the new value for DisplayFormat is properly applied to Fields using the TNumericField or TDateTimeField class types. ApplyDisplayFormat is used in the implementation of the LinkField method.
           </p>
         </descr>
         <seealso>
@@ -1546,10 +1546,10 @@
       </element>
 
       <element name="TColumn.GetDataset">
-        <short>Gets the  Dataset for the column.</short>
+        <short>Gets the Dataset for the column.</short>
         <descr>
           <p>
-            <var>GetDataset</var> is a TDataset function used to get the dataset which provides data for the column. GetDataset uses Grid (cast to a TCustomDBGrid  instance) to access its DataLink and get the DataSet for the column definition. The return value is <var><b>Nil</b></var> if Grid has not been assigned for the column.
+            <var>GetDataset</var> is a TDataset function used to get the dataset which provides data for the column. GetDataset uses Grid (cast to a TCustomDBGrid instance) to access its DataLink and get the DataSet for the column definition. The return value is <var><b>Nil</b></var> if Grid has not been assigned for the column.
           </p>
         </descr>
         <seealso>
@@ -1608,7 +1608,7 @@
         </short>
         <descr>
           <p>
-            <var>GetIsDesignColumn</var> is a Boolean function used to get the value for the IsDesignColumn property. The return value is True when DesignIndex contains a value in the range <var>0..9999</var>.
+            <var>GetIsDesignColumn</var> is a Boolean function used to get the value for the IsDesignColumn property. The return value is <b>True</b> when DesignIndex contains a value in the range <var>0..9999</var>.
           </p>
           <p>
             The upper range for DesignIndex is a result of the value assigned in Create. The value <var>10000</var> is used in the property when Grid has not assigned for the collection, or Grid includes csLoading in its ComponentState property.
@@ -1633,14 +1633,14 @@
         </short>
         <descr>
           <p>
-            <var>IsDisplayFormatStored</var> is a Boolean function used as the storage specifier for the DisplayFormat property. The return value is True if the member variable for the DisplayFormat property is different than the one used for the Field.
+            <var>IsDisplayFormatStored</var> is a Boolean function used as the storage specifier for the DisplayFormat property. The return value is <b>True</b> if the member variable for the DisplayFormat property is different than the one used for the Field.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TColumn.IsDisplayFormatStored.Result">
         <short>
-          True when DisplayFormat is different the one used for the Field.
+          <b>True</b> when DisplayFormat is different the one used for the Field.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -1652,7 +1652,7 @@
         </short>
         <descr>
           <p>
-            <var>SetDisplayFormat</var> is a procedure used to set the value in the DisplayFormat property.  SetDisplayFormat compares the value stored in the member variable to the new value for the property. If they are different, the new value is stored and a flag is set to indicate that the display format has changed. SetDisplayFormat calls the ColumnChanged method to indicate that the column definition has been updated.
+            <var>SetDisplayFormat</var> is a procedure used to set the value in the DisplayFormat property. SetDisplayFormat compares the value stored in the member variable to the new value for the property. If they are different, the new value is stored and a flag is set to indicate that the display format has changed. SetDisplayFormat calls the ColumnChanged method to indicate that the column definition has been updated.
           </p>
           <p>
             No actions are performed in the method when the DisplayFormat has not been changed.
@@ -1804,7 +1804,7 @@
         </short>
         <descr>
           <p>
-            <var>GetDefaultVisible</var> is an overridden Boolean function that indicates if the Field for the column is Visible. GetDefaultVisible uses Field to get its Visible property for use as the return value in the method. If Field has not been assigned in the column, the return value is True.
+            <var>GetDefaultVisible</var> is an overridden Boolean function that indicates if the Field for the column is Visible. GetDefaultVisible uses Field to get its Visible property for use as the return value in the method. If Field has not been assigned in the column, the return value is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -1812,7 +1812,7 @@
         </seealso>
       </element>
       <element name="TColumn.GetDefaultVisible.Result">
-        <short>True when the Field for the column is visible.</short>
+        <short><b>True</b> when the Field for the column is visible.</short>
       </element>
 
       <element name="TColumn.GetDisplayName">
@@ -1821,7 +1821,7 @@
         </short>
         <descr>
           <p>
-            <var>GetDisplayName</var>  is an overridden String function used to get the display name for the column. The display name is used at design-time to get the name for the collection item, and at run-time when a dataset for the column has not been assigned or opened.
+            <var>GetDisplayName</var> is an overridden String function used to get the display name for the column. The display name is used at design-time to get the name for the collection item, and at run-time when a dataset for the column has not been assigned or opened.
           </p>
           <p>
             The value in FieldName is used as the return value for the method, when it has been assigned in the column. Otherwise, the inherited GetDisplayName method is called to get the return value.
@@ -1845,7 +1845,7 @@
         </short>
         <descr>
           <p>
-            <var>GetDefaultReadOnly</var> is an overridden Boolean function which gets the default value for the ReadOnly property. GetDefaultReadOnly combines  the ReadOnly values found in both the Grid and the Field for the dataset to derive the value for the method. The return value is True when Grid or Field is not assigned for the column.
+            <var>GetDefaultReadOnly</var> is an overridden Boolean function which gets the default value for the ReadOnly property. GetDefaultReadOnly combines the ReadOnly values found in both the Grid and the Field for the dataset to derive the value for the method. The return value is <b>True</b> when Grid or Field is not assigned for the column.
           </p>
         </descr>
         <seealso>
@@ -1887,7 +1887,7 @@
             <var>GetPickList</var> is an overridden TStrings function which gets the values in the pick list for the column. GetPickList calls the inherited method, and provides support for Lookup Fields in the column definition.
           </p>
           <p>
-            When Field is assigned and contains a Lookup Field (fkLookup in its FieldKind property),  values from the LookupList or the LookupDataset are included in the return value. When LookupDataset is used, the result includes values from the LookupResultField for each of the rows in the dataset.
+            When Field is assigned and contains a Lookup Field (fkLookup in its FieldKind property), values from the LookupList or the LookupDataset are included in the return value. When LookupDataset is used, the result includes values from the LookupResultField for each of the rows in the dataset.
           </p>
         </descr>
         <seealso>
@@ -1905,7 +1905,7 @@
         </short>
         <descr>
           <p>
-            <var>IsAutomaticColumn</var> is a read-only Boolean property that indicates if the column was automatically added to the collection at run-time.  The value in IsAutomaticColumn is updated when TDBGrid.AddAutomaticColumns and  TDBGridColumns.RemoveAutoColumns add or remove items in the collection.
+            <var>IsAutomaticColumn</var> is a read-only Boolean property that indicates if the column was automatically added to the collection at run-time. The value in IsAutomaticColumn is updated when TDBGrid.AddAutomaticColumns and TDBGridColumns.RemoveAutoColumns add or remove items in the collection.
           </p>
           <p>
             Use IsDesignColumn to determine if the column was added at design-time. Use TDBGridColumns.HasAutomaticColumns to determine if any automatic columns are stored in the collection. Use TDBGrid.OptionsExtra to enable or disable automatically columns in a database grid control.
@@ -2009,7 +2009,7 @@
         </short>
         <descr>
           <p>
-            <var>IsDefault</var>  is an overridden Boolean function that indicates if the column uses its default display format. The return value is True when the value in the DisplayFormat property has not been changed. IsDefault calls the inherited method to get the return value for the method.
+            <var>IsDefault</var> is an overridden Boolean function that indicates if the column uses its default display format. The return value is <b>True</b> when the value in the DisplayFormat property has not been changed. IsDefault calls the inherited method to get the return value for the method.
           </p>
         </descr>
         <seealso>
@@ -2017,7 +2017,7 @@
         </seealso>
       </element>
       <element name="TColumn.IsDefault.Result">
-        <short>True when DisplayFormat has been changed.</short>
+        <short><b>True</b> when DisplayFormat has been changed.</short>
       </element>
 
       <element name="TColumn.DesignIndex">
@@ -2206,7 +2206,7 @@
         </short>
         <descr>
           <p>
-            <var>HasAutomaticColumns</var> is a Boolean function that indicates if any items in the collection are an automatic column added at run-time. Automatic columns are a feature in TDBGrid enabled by adding the appropriate value to its OptionsExtra property. HasAutomaticColumns returns True if a TColumn instance in the Items property has its IsAutomaticColumn property set.
+            <var>HasAutomaticColumns</var> is a Boolean function that indicates if any items in the collection are an automatic column added at run-time. Automatic columns are a feature in TDBGrid enabled by adding the appropriate value to its OptionsExtra property. HasAutomaticColumns returns <b>True</b> if a TColumn instance in the Items property has its IsAutomaticColumn property set.
           </p>
         </descr>
         <seealso>
@@ -2215,7 +2215,7 @@
         </seealso>
       </element>
       <element name="TDBGridColumns.HasAutomaticColumns.Result">
-        <short>True when automatic columns are stored in the collection.</short>
+        <short><b>True</b> when automatic columns are stored in the collection.</short>
       </element>
 
       <element name="TDBGridColumns.HasDesignColumns">
@@ -2224,7 +2224,7 @@
         </short>
         <descr>
           <p>
-            <var>HasDesignColumns</var> is a Boolean function that indicates if the collection contains any items explicitly added at design-time. HasDesignColumns returns True if Items contains a TColumn instance with its IsDesignColumn property set.
+            <var>HasDesignColumns</var> is a Boolean function that indicates if the collection contains any items explicitly added at design-time. HasDesignColumns returns <b>True</b> if Items contains a TColumn instance with its IsDesignColumn property set.
           </p>
         </descr>
         <seealso>
@@ -2234,7 +2234,7 @@
         </seealso>
       </element>
       <element name="TDBGridColumns.HasDesignColumns.Result">
-        <short>True an item has its IsDesignColumn property set.</short>
+        <short><b>True</b> an item has its IsDesignColumn property set.</short>
       </element>
 
       <element name="TDBGridColumns.RemoveAutoColumns">
@@ -2246,7 +2246,7 @@
             <var>RemoveAutoColumns</var> is a procedure used to remove any automatic columns in the collection. RemoveAutoColumns uses HasAutomaticColumns to determine if any action is required.
           </p>
           <p>
-              When HasAutomaticColumns returns True the Grid updates its GridStatus to include the value gsRemovingAutoColumns. RemoveAutoColumns calls the Delete method for any column having its IsAutomaticColumn property set to True. gsRemovingAutoColumns is removed from the GridStatus property in the Grid prior to exiting from the method.
+              When HasAutomaticColumns returns <b>True</b> the Grid updates its GridStatus to include the value gsRemovingAutoColumns. RemoveAutoColumns calls the Delete method for any column having its IsAutomaticColumn property set to <b>True</b>. gsRemovingAutoColumns is removed from the GridStatus property in the Grid prior to exiting from the method.
             </p>
             <p>
               Applications do not normally call the RemoveAutoColumns method. Use OptionsExtra in TDBGrid to disable the automatic columns feature for the grid control.
@@ -2260,7 +2260,7 @@
 
       <element name="TDBGridColumns.Add">
         <short>
-          <var>Add</var> creates and stores a new item  in the collection.
+          <var>Add</var> creates and stores a new item in the collection.
         </short>
         <descr>
           <p>
@@ -2338,11 +2338,11 @@
           <dl>
             <dt>coDesignOrder</dt>
             <dd>
-              TColumn.DesignIndex (when available) is used to order  collection items.
+              TColumn.DesignIndex (when available) is used to order collection items.
             </dd>
             <dt>coFieldIndex</dt>
             <dd>
-              The index for the TColumn.Field (when available) is used to order  collection items.
+              The index for the TColumn.Field (when available) is used to order collection items.
             </dd>
           </dl>
           <p>
@@ -2361,7 +2361,7 @@
         </short>
         <descr>
           <p>
-            <var>Items</var> is a TColumn property that provides indexed access to columns in  the collection by their ordinal position (in the range <var>0..Count-1</var>).  Read and write access to columns in the Items property are cast to the TColumn class type used in the collection. Write access calls the Assign method in  the TColumn instance stored at the specified position.
+            <var>Items</var> is a TColumn property that provides indexed access to columns in the collection by their ordinal position (in the range <var>0..Count-1</var>). Read and write access to columns in the Items property are cast to the TColumn class type used in the collection. Write access calls the Assign method in the TColumn instance stored at the specified position.
           </p>
           <p>
             Items is the default property for the collection.
@@ -2379,13 +2379,13 @@
         </short>
         <descr>
           <p>
-            <var>TCustomDBGrid</var> is  a <var>TCustomGrid</var> descendant and the base class for <var>TDBGrid</var>. TCustomDBGrid adds capabilities needed to implement a database-aware grid control. One key feature is the TComponentDataLink in DataLink used to coordinate access and event handlers between the grid control and its linked dataset. Another key feature is the use of the Options and OptionsExtra properties to enable/disable features or behaviors in the grid control.
+            <var>TCustomDBGrid</var> is a <var>TCustomGrid</var> descendant and the base class for <var>TDBGrid</var>. TCustomDBGrid adds capabilities needed to implement a database-aware grid control. One key feature is the TComponentDataLink in DataLink used to coordinate access and event handlers between the grid control and its linked dataset. Another key feature is the use of the Options and OptionsExtra properties to enable/disable features or behaviors in the grid control.
           </p>
           <p>
             TCustomDBGrid overrides certain features from the ancestor class to provide consistent use with Fields, Field kinds, and values in TDataset.
           </p>
           <p>
-            Applications should use the TDBGrid descendant which sets the scope of  properties, methods, and event handlers to public or published.
+            Applications should use the TDBGrid descendant which sets the scope of properties, methods, and event handlers to public or published.
           </p>
         </descr>
         <seealso>
@@ -2503,7 +2503,7 @@
         </short>
         <descr>
           <p>
-            <var>GetDataSource</var> is a TDataSource function used to get the value for  the DataSource property. GetDataSource is the read access specifier for the DataSource property. GetDataSource gets the DataSource property stored in DataLink as the return value for the method.
+            <var>GetDataSource</var> is a TDataSource function used to get the value for the DataSource property. GetDataSource is the read access specifier for the DataSource property. GetDataSource gets the DataSource property stored in DataLink as the return value for the method.
           </p>
           <p>
             Use DataSource to read or write values in the property.
@@ -2587,7 +2587,7 @@
         </short>
         <descr>
           <p>
-            <var>OnRecordChanged</var> is a procedure which provides a default  implementation for the OnRecordChanged event handler in TComponentDataLink. OnRecordChanged ensures that the grid control and the linked dataset are synchronized when refreshing the active record, selecting the current column, and re-enabling the edit control when EditMode is active.
+            <var>OnRecordChanged</var> is a procedure which provides a default implementation for the OnRecordChanged event handler in TComponentDataLink. OnRecordChanged ensures that the grid control and the linked dataset are synchronized when refreshing the active record, selecting the current column, and re-enabling the edit control when EditMode is active.
           </p>
         </descr>
         <seealso></seealso>
@@ -2602,7 +2602,7 @@
         </short>
         <descr>
           <p>
-            <var>OnDatasetChanged</var> is a procedure which provides a default  implementation for the OnDatasetChanged event handler in TComponentDataLink.
+            <var>OnDatasetChanged</var> is a procedure which provides a default implementation for the OnDatasetChanged event handler in TComponentDataLink.
           </p>
         </descr>
         <seealso></seealso>
@@ -2770,7 +2770,7 @@
         </short>
         <descr>
           <p>
-            <var>SetCurrentField</var> is a procedure used to set the value in the SelectedField property. SetCurrentField is the write access specifier for the SelectedField property. SetCurrentField calls GetGridColumnFromField to    ensure that the Field in AValue becomes the current column in the control. No actions are performed in the method when AValue contains the  same value as the SelectedField property.
+            <var>SetCurrentField</var> is a procedure used to set the value in the SelectedField property. SetCurrentField is the write access specifier for the SelectedField property. SetCurrentField calls GetGridColumnFromField to ensure that the Field in AValue becomes the current column in the control. No actions are performed in the method when AValue contains the same value as the SelectedField property.
           </p>
           <p>
             Use SelectedField to read or write the value for the property.
@@ -2808,7 +2808,7 @@
         </short>
         <descr>
           <p>
-            <var>SetExtraOptions</var> is a procedure used as the write access specifier for the <var>ExtraOptions</var> property. SetExtraOptions ensures that new <var>TDBGridExtraOption</var> values in AValue are properly applied to the grid control.  This includes repainting the control when  Checkbox columns are enabled or disabled, and when adding or removing the automatic columns option. SetExtraOptions calls <var>UpdateActive</var> when automatic columns have been added or removed.
+            <var>SetExtraOptions</var> is a procedure used as the write access specifier for the <var>ExtraOptions</var> property. SetExtraOptions ensures that new <var>TDBGridExtraOption</var> values in AValue are properly applied to the grid control. This includes repainting the control when Checkbox columns are enabled or disabled, and when adding or removing the automatic columns option. SetExtraOptions calls <var>UpdateActive</var> when automatic columns have been added or removed.
           </p>
           <p>
             Use ExtraOptions to read or write values in the property.
@@ -2888,7 +2888,7 @@
         </short>
         <descr>
           <p>
-            <var>SetSelectedIndex</var> is a procedure  used as the write access specifier for the <var>SelectedIndex</var> property. SetSelectedIndex updates  the ordinal position of the currently selected column to the specified value.
+            <var>SetSelectedIndex</var> is a procedure used as the write access specifier for the <var>SelectedIndex</var> property. SetSelectedIndex updates the ordinal position of the currently selected column to the specified value.
           </p>
           <p>
             Use SelectedIndex to read or write values for the property.
@@ -2906,7 +2906,7 @@
         </short>
         <descr>
           <p>
-            <var>UpdateBufferCount</var> is a procedure used to set the number of records buffered for the linked dataset. UpdateBufferCount requires that DataLink be marked as Active to set the  buffer count. If DataLink.Active contains False, no actions are performed in the method.
+            <var>UpdateBufferCount</var> is a procedure used to set the number of records buffered for the linked dataset. UpdateBufferCount requires that DataLink be marked as Active to set the buffer count. If DataLink.Active contains <b>False</b>, no actions are performed in the method.
           </p>
           <p>
             UpdateBufferCount calls GetBufferCount to determine the number of rows that can be displayed in the control with the DefaultRowHeight. When Options includes the value dgTitles, the buffer count is decreased by 1 to account for the fixed title row. UpdateBufferCount stores the new value in the BufferCount property in DataLink.
@@ -2960,10 +2960,10 @@
         </short>
         <descr>
           <p>
-            <var>UpdateGridColumnSizes</var> is a procedure used to update the sizes for automatically sized columns in the grid control. UpdateGridColumnSizes requires DefaultColWidths to be in use for the grid. No actions are performed in the method when DefaultColWidths contains False.
+            <var>UpdateGridColumnSizes</var> is a procedure used to update the sizes for automatically sized columns in the grid control. UpdateGridColumnSizes requires DefaultColWidths to be in use for the grid. No actions are performed in the method when DefaultColWidths contains <b>False</b>.
           </p>
           <p>
-            UpdateGridColumnSizes also requires the Options property to include the value  dgAutoSizeColumns which enables the auto-sized columns feature. No actions are performed if the feature has not been enable for the grid control.
+            UpdateGridColumnSizes also requires the Options property to include the value dgAutoSizeColumns which enables the auto-sized columns feature. No actions are performed if the feature has not been enable for the grid control.
           </p>
           <p>
             UpdateGridColumnSizes calls the UpdateAutoSizeColumns method to calculate the widths for the auto-sized columns.
@@ -2989,7 +2989,7 @@
             <var>DoLayoutChanged</var> is a procedure used to update the grid and its scrollbars when the layout for the control has changed. No actions are performed in the method when the control is freed (contains csDestroying in its ComponentState).
           </p>
           <p>
-            DoLayoutChanged calls BeginUpdate to signal changes to the control, and UpdateGridCounts to determine the number of rows for the update. When  UpdateGridCounts returns 0, the EmptyGrid method is called to clear the grid control. DoLayoutChanged calls EndUpdate to allow pending changes to be applied to the control. DoLayoutChanged calls UpdateScrollbarRange to update scrollbars (when used) for the control.
+            DoLayoutChanged calls BeginUpdate to signal changes to the control, and UpdateGridCounts to determine the number of rows for the update. When UpdateGridCounts returns 0, the EmptyGrid method is called to clear the grid control. DoLayoutChanged calls EndUpdate to allow pending changes to be applied to the control. DoLayoutChanged calls UpdateScrollbarRange to update scrollbars (when used) for the control.
           </p>
           <p>
             DoLayoutChanged is called from the EndLayout method.
@@ -3004,7 +3004,7 @@
         </short>
         <descr>
           <p>
-            <var>RestoreEditor</var> is a procedure used to re-enable the editor control in the grid after processing scrollbar messages. RestoreEditor is used when EditorMode contains True. No actions are performed in the method when EditorMode contains False. RestoreEditor toggles the value in EditorMode to force the editor to be refreshed and redrawn.
+            <var>RestoreEditor</var> is a procedure used to re-enable the editor control in the grid after processing scrollbar messages. RestoreEditor is used when EditorMode contains <b>True</b>. No actions are performed in the method when EditorMode contains <b>False</b>. RestoreEditor toggles the value in EditorMode to force the editor to be refreshed and redrawn.
           </p>
         </descr>
         <seealso></seealso>
@@ -3016,7 +3016,7 @@
         </short>
         <descr>
           <p>
-            <var>ISEOF</var> is a Boolean function used to indicate if the linked dataset is positioned at the end-of-file. ISEOF uses the DataLink for the control to access its Active and Dataset properties. DataLink must be Active (contains True) to access its Dataset. The return value is True when the TDataset.EOF method returns True. The return value is False when DataLink is not Active, or TDataset.EOF returns False.
+            <var>ISEOF</var> is a Boolean function used to indicate if the linked dataset is positioned at the end-of-file. ISEOF uses the DataLink for the control to access its Active and Dataset properties. DataLink must be Active (contains <b>True</b>) to access its Dataset. The return value is <b>True</b> when the TDataset.EOF method returns <b>True</b>. The return value is <b>False</b> when DataLink is not Active, or TDataset.EOF returns <b>False</b>.
           </p>
           <p>
             ISEOF is used in the KeyDown and MouseDown methods.
@@ -3034,7 +3034,7 @@
         </short>
         <descr>
           <p>
-            ValidDataSet is a Boolean function used to indicate if the DataLink for the control contains a valid and active Dataset. The return value is True when DataLink has a Dataset assigned to the property, and it has been marked as Active.
+            ValidDataSet is a Boolean function used to indicate if the DataLink for the control contains a valid and active Dataset. The return value is <b>True</b> when DataLink has a Dataset assigned to the property, and it has been marked as Active.
           </p>
           <p>
             ValidDataSet is used in the implementation of various methods including KeyDown, MouseDown, and DoExit.
@@ -3043,7 +3043,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.ValidDataset.Result">
-        <short>True when the control points to a valid dataset.</short>
+        <short><b>True</b> when the control points to a valid dataset.</short>
       </element>
 
       <element name="TCustomDBGrid.InsertCancelable">
@@ -3052,7 +3052,7 @@
         </short>
         <descr>
           <p>
-            InsertCancelable is a Boolean function that indicates if the dataset for the control can cancel an active insert operation. InsertCancelable uses the DataSet in DataLink to ensure that the State contains dsInsert. The return value is False if DataSet state has any value other than dsInsert.  InsertCancelable also examines both DataSet and DataLink to see if either of their Modified properties has been set. The return value is False when either has been modified.
+            InsertCancelable is a Boolean function that indicates if the dataset for the control can cancel an active insert operation. InsertCancelable uses the DataSet in DataLink to ensure that the State contains dsInsert. The return value is <b>False</b> if DataSet state has any value other than dsInsert. InsertCancelable also examines both DataSet and DataLink to see if either of their Modified properties has been set. The return value is <b>False</b> when either has been modified.
           </p>
           <p>
             InsertCancelable is used in the implementation of methods like KeyDown, MouseDown, and DoExit.
@@ -3061,7 +3061,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.InsertCancelable.Result">
-        <short>True when the insert can be cancelled.</short>
+        <short><b>True</b> when the insert can be cancelled.</short>
       </element>
 
       <element name="TCustomDBGrid.StartUpdating">
@@ -3070,7 +3070,7 @@
         </short>
         <descr>
           <p>
-            StartUpdating is a procedure used to prepare the grid control for updates to its display area. StartUpdating checks the value from UpdatingData to see if the procedure has already been called. No actions are performed in the method when UpdatingData returns True.
+            StartUpdating is a procedure used to prepare the grid control for updates to its display area. StartUpdating checks the value from UpdatingData to see if the procedure has already been called. No actions are performed in the method when UpdatingData returns <b>True</b>.
            </p>
            <p>
              StartUpdating updates the GridStatus property to include the value gsUpdatingData. The value in the ControlStyle property is also updated to include the value csActionClient. Finally, the LockEditor method is called to prevent changes in the editor control while the update is in progress.
@@ -3103,13 +3103,13 @@
         </short>
         <descr>
           <p>
-            UpdatingData is a Boolean function that indicates if the UpdateData method has already been called for the grid control. UpdatingData returns True if the GridStatus property contains the value gsUpdatingData. The GridStatus value is added in the StartUpdating method. UpdatingData prevents multiple calls to UpdateData.
+            UpdatingData is a Boolean function that indicates if the UpdateData method has already been called for the grid control. UpdatingData returns <b>True</b> if the GridStatus property contains the value gsUpdatingData. The GridStatus value is added in the StartUpdating method. UpdatingData prevents multiple calls to UpdateData.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.UpdatingData.Result">
-        <short>True when UpdateData has been called for the control.</short>
+        <short><b>True</b> when UpdateData has been called for the control.</short>
       </element>
 
       <element name="TCustomDBGrid.SwapCheckBox">
@@ -3147,7 +3147,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.SelectRecord.AValue">
-        <short>True when the current record should be selected.</short>
+        <short><b>True</b> when the current record should be selected.</short>
       </element>
 
       <element name="TCustomDBGrid.GetScrollbarParams">
@@ -3243,13 +3243,13 @@
             AddAutomaticColumns requires an active dataset to access the Fields that must be added to the grid control. No actions are performed if the dataset in DataLink has not been assigned or marked as Active.
           </p>
           <p>
-            AddAutomaticColumns cannot be performed when GridStatus contains either gsRemovingAutoColumns or gsLoadingGrid.  No actions are performed in the method when these values are included in the GridStatus property.
+            AddAutomaticColumns cannot be performed when GridStatus contains either gsRemovingAutoColumns or gsLoadingGrid. No actions are performed in the method when these values are included in the GridStatus property.
           </p>
           <p>
             AddAutomaticColumns is enabled by including the value dgeAutoColumns in the OptionsExtra property. No actions are performed in the method when the feature has not been included in the OptionsExtra property.
           </p>
           <p>
-            AddAutomaticColumns uses DataLink to get the Fields for the dataset, and checks the Columns collection to see if a column already exists for each Field. If the Field is already in the collection, it is skipped to avoid duplicate Fields. Missing Fields are added to Columns using its Add method, and sets the IsAutomaticColumn and Visible properties to True for each. When missing Fields have been added, the ResetColumnsOrder method in Columns is called using the coFieldIndexOrder column ordering option.
+            AddAutomaticColumns uses DataLink to get the Fields for the dataset, and checks the Columns collection to see if a column already exists for each Field. If the Field is already in the collection, it is skipped to avoid duplicate Fields. Missing Fields are added to Columns using its Add method, and sets the IsAutomaticColumn and Visible properties to <b>True</b> for each. When missing Fields have been added, the ResetColumnsOrder method in Columns is called using the coFieldIndexOrder column ordering option.
           </p>
           <p>
             AddAutomaticColumns updates the GridStatus property prior to adding columns to include the value gsAddingAutoColumns. The value is removed from GridStatus when adding columns has completed. This prevents the TDBGridColumns.Add method from removing automatic columns while the add operation is still active.
@@ -3375,7 +3375,7 @@
         </short>
         <descr>
           <p>
-            <var>CheckDisplayMemo</var> is a Boolean function used to determine if the specified field is a Memo field that needs to be displayed in the grid control. The return value is True when the specified field has the value ftMemo in its DataType property, and the Options property includes the value dgDisplayMemoText.
+            <var>CheckDisplayMemo</var> is a Boolean function used to determine if the specified field is a Memo field that needs to be displayed in the grid control. The return value is <b>True</b> when the specified field has the value ftMemo in its DataType property, and the Options property includes the value dgDisplayMemoText.
           </p>
           <p>
             CheckDisplayMemo is called from various methods which measure or render the content for the grid, including:
@@ -3399,7 +3399,7 @@
       </element>
       <element name="TCustomDBGrid.CheckDisplayMemo.Result">
         <short>
-          True if the field is a memo field type and the display memo text option is enabled.
+          <b>True</b> if the field is a memo field type and the display memo text option is enabled.
         </short>
       </element>
 
@@ -3421,7 +3421,7 @@
         </short>
         <descr>
           <p>
-            <var>ColRowMoved</var> is an overridden procedure used to signal event handlers when a row or a column is moved in the grid control.  When IsColumn contains False, the OnRowMoved event handler is signalled (when assigned). When IsColumn contains True, the OnColumnMoved event handler is signalled (when assigned) if Columns have not been Enabled in the grid control. If Columns have been Enabled, the inherited ColRowMoved method is called.
+            <var>ColRowMoved</var> is an overridden procedure used to signal event handlers when a row or a column is moved in the grid control. When IsColumn contains <b>False</b>, the OnRowMoved event handler is signalled (when assigned). When IsColumn contains <b>True</b>, the OnColumnMoved event handler is signalled (when assigned) if Columns have not been Enabled in the grid control. If Columns have been Enabled, the inherited ColRowMoved method is called.
           </p>
         </descr>
         <seealso>
@@ -3444,13 +3444,13 @@
         </short>
         <descr>
           <p>
-            <var>ColumnEditorStyle</var> is a TColumnButtonStyle function used to get the button style for the specified column number or Field in the grid control.  ColumnEditorStyle assumes the default button style is cbsAuto unless overridden  by settings in the  Columns collection or by the Field definition in the dataset.
+            <var>ColumnEditorStyle</var> is a TColumnButtonStyle function used to get the button style for the specified column number or Field in the grid control. ColumnEditorStyle assumes the default button style is cbsAuto unless overridden by settings in the Columns collection or by the Field definition in the dataset.
           </p>
           <p>
-            ColumnEditorStyle calls ColumnFromGridColumn to get the TColumn instance for the specified column number. Its ButtonStyle property is used as the return value if Columns has been Enabled. Otherwise, DefaultEditorStyle is called for the specified TField to get the return value for the method.  DefaultEditorStyle will use cbsCheckBoxColumn as the button style when  dgeCheckboxColumn has been included in the OptionsExtra property.
+            ColumnEditorStyle calls ColumnFromGridColumn to get the TColumn instance for the specified column number. Its ButtonStyle property is used as the return value if Columns has been Enabled. Otherwise, DefaultEditorStyle is called for the specified TField to get the return value for the method. DefaultEditorStyle will use cbsCheckBoxColumn as the button style when dgeCheckboxColumn has been included in the OptionsExtra property.
           </p>
           <p>
-            ColumnEditorStyle is used in the implementation of various methods including: CellClick, DefaultDrawCell, DefaultDrawColumnCell, EditorByStyle, KeyDown  and MouseDown.
+            ColumnEditorStyle is used in the implementation of various methods including: CellClick, DefaultDrawCell, DefaultDrawColumnCell, EditorByStyle, KeyDown and MouseDown.
           </p>
         </descr>
         <seealso></seealso>
@@ -3569,7 +3569,7 @@
         </short>
         <descr>
           <p>
-            <var>DoCopyToClipboard</var> is an overridden method in <var>TCustomDBGrid</var> used to copy the field value for the selected column and row in the grid to the clipboard. No actions are performed in the method when the linked  dataset is not active.
+            <var>DoCopyToClipboard</var> is an overridden method in <var>TCustomDBGrid</var> used to copy the field value for the selected column and row in the grid to the clipboard. No actions are performed in the method when the linked dataset is not active.
           </p>
           <p>
             DoCopyToClipboard calls <var>GetFieldFromGridColumn</var> to get the field definition for the current column in the grid. If the field is not <b>Nil</b> (unassigned), the String value for the field is stored to the global <var>Clipboard</var> instance using its <var>AsText</var> method.
@@ -3587,7 +3587,7 @@
         </short>
         <descr>
           <p>
-            <var>DoExit</var> is an overridden procedure in TCustomDBGrid used to close the editor and the datalink for the control. A valid dataset must be assigned in the DataLink property and inserts must be cancellable for the dataset.   The Options property must include the dgCancelOnExit enumeration value for the grid.  If any of these conditions are not met, no actions are performed in the method on either the dataset or the Field editor.
+            <var>DoExit</var> is an overridden procedure in TCustomDBGrid used to close the editor and the datalink for the control. A valid dataset must be assigned in the DataLink property and inserts must be cancellable for the dataset. The Options property must include the dgCancelOnExit enumeration value for the grid. If any of these conditions are not met, no actions are performed in the method on either the dataset or the Field editor.
           </p>
           <p>
             DoExit calls the inherited method to perform any actions implemented in the ancestor class.
@@ -3604,7 +3604,7 @@
         </short>
         <descr>
           <p>
-            <var>DoMouseWheelDown</var> is an overridden Boolean function used to handle mouse wheel down events in the grid control. The return value is True when the mouse wheel event has been handled in the method. DoMouseWheelDown signals the OnMouseWheelDown event handler when it has been assigned to handle the mouse event. If OnMouseWheelDown cannot handle the mouse event, and the DataLink is marked as Active, DataLink calls its MoveBy method.
+            <var>DoMouseWheelDown</var> is an overridden Boolean function used to handle mouse wheel down events in the grid control. The return value is <b>True</b> when the mouse wheel event has been handled in the method. DoMouseWheelDown signals the OnMouseWheelDown event handler when it has been assigned to handle the mouse event. If OnMouseWheelDown cannot handle the mouse event, and the DataLink is marked as Active, DataLink calls its MoveBy method.
           </p>
         </descr>
         <seealso>
@@ -3612,7 +3612,7 @@
         </seealso>
       </element>
       <element name="TCustomDBGrid.DoMouseWheelDown.Result">
-        <short>True when the mouse event is handled in the method.</short>
+        <short><b>True</b> when the mouse event is handled in the method.</short>
       </element>
       <element name="TCustomDBGrid.DoMouseWheelDown.Shift">
         <short>Shift state for the mouse wheel event.</short>
@@ -3627,13 +3627,13 @@
         </short>
         <descr>
           <p>
-            <var>DoMouseWheelUp</var> is an overridden Boolean function used to handle mouse wheel up events in the grid control. The return value is True when the mouse wheel event has been handled in the method. DoMouseWheelUp signals the OnMouseWheelUp event handler when it has been assigned to handle the mouse event. If OnMouseWheelUp cannot handle the mouse event, and the DataLink is marked as Active, DataLink calls its MoveBy method.
+            <var>DoMouseWheelUp</var> is an overridden Boolean function used to handle mouse wheel up events in the grid control. The return value is <b>True</b> when the mouse wheel event has been handled in the method. DoMouseWheelUp signals the OnMouseWheelUp event handler when it has been assigned to handle the mouse event. If OnMouseWheelUp cannot handle the mouse event, and the DataLink is marked as Active, DataLink calls its MoveBy method.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.DoMouseWheelUp.Result">
-        <short>True when the mouse event is handled in the method.</short>
+        <short><b>True</b> when the mouse event is handled in the method.</short>
       </element>
       <element name="TCustomDBGrid.DoMouseWheelUp.Shift">
         <short>Shift state for the mouse wheel event.</short>
@@ -3658,7 +3658,7 @@
         </short>
         <descr>
           <p>
-            <var>DoPrepareCanvas</var> is an overridden procedure used to prepare the Canvas to draw a cell in the grid control. DoPrepareCanvas applies to data cells and performs no actions in the method when aRow refers to a fixed row in the control. In addition, DoPrepareCanvas applies only when DefaultDrawing contains False. No actions are performed in the method when DefaultDrawing is enabled.
+            <var>DoPrepareCanvas</var> is an overridden procedure used to prepare the Canvas to draw a cell in the grid control. DoPrepareCanvas applies to data cells and performs no actions in the method when aRow refers to a fixed row in the control. In addition, DoPrepareCanvas applies only when DefaultDrawing contains <b>False</b>. No actions are performed in the method when DefaultDrawing is enabled.
           </p>
           <p>
             DoPrepareCanvas calls GetSelectedState to determine if the Canvas is updated with brush and font colors used to draw in the specified state. DoPrepareCanvas signals the OnPrepareCanvas event handler (when assigned) using the specified column number and drawing state.
@@ -3752,14 +3752,14 @@
 
       <element name="TCustomDBGrid.DrawFocusRect">
         <short>
-          Draws the current selection  in the grid in a focused state.
+          Draws the current selection in the grid in a focused state.
         </short>
         <descr>
           <p>
-            DrawFocusRect is an overridden procedure used to draw the current selection  in the grid in a focused state.
+            DrawFocusRect is an overridden procedure used to draw the current selection in the grid in a focused state.
           </p>
           <p>
-            The grid control must have focus before the current selection can be drawn. In addition the DataLink for the control must refer to  an active dataset. DrawFocusRect checks the Options property to ensure that dgAlwaysShowSelection has been included for the control. Finally DefaultDrawing must be enabled to allow drawing of the focus rectangle using the rubber band style on the Canvas for the control.
+            The grid control must have focus before the current selection can be drawn. In addition the DataLink for the control must refer to an active dataset. DrawFocusRect checks the Options property to ensure that dgAlwaysShowSelection has been included for the control. Finally DefaultDrawing must be enabled to allow drawing of the focus rectangle using the rubber band style on the Canvas for the control.
           </p>
           <p>
             If any of the previous conditions are not met, no actions are performed in the method.
@@ -3794,7 +3794,7 @@
              ARow contains the row number to be drawn and refers to an ordinal position relative to the FixedRows for the control. When ARows contains a value that would be in the FixedRows the state flags that track drawing an active record or multi-selection are reset. DrawRow also requires that DataLink refer to an active dataset. No actions are performed in the method if these conditions are not satisfied.
           </p>
           <p>
-            DrawRow sets the active record in DataLink for selected rows in the control and updates the DrawingActiveRecord and DrawingMultiSelRecord flags as needed.  The Options property must include the value dgMultiSelect to enable drawing of multiple selections in the control.
+            DrawRow sets the active record in DataLink for selected rows in the control and updates the DrawingActiveRecord and DrawingMultiSelRecord flags as needed. The Options property must include the value dgMultiSelect to enable drawing of multiple selections in the control.
           </p>
           <p>
             DrawRow calls the inherited method to perform any actions implemented in the ancestor class.
@@ -3974,7 +3974,7 @@
             <var>EditingColumn</var> is a procedure used to set or reset the column being edited in the control .
           </p>
           <p>
-            aCol indicates the ordinal column number and is stored internally for use in other methods of the control. Ok indicates that editing is active when set and causes the DataLink to set its Modified flag to true.  When Ok contains False the internal column number is reset to its default value indicating that no column is currently being edited.
+            aCol indicates the ordinal column number and is stored internally for use in other methods of the control. Ok indicates that editing is active when set and causes the DataLink to set its Modified flag to <b>True</b>. When Ok contains <b>False</b> the internal column number is reset to its default value indicating that no column is currently being edited.
           </p>
           <p>
             EditingColumn is used in the implementation of other methods in the grid control such as UpdateData, EditorCancelEditing, EditorIsReadOnly, and DoExit.
@@ -4000,7 +4000,7 @@
         </short>
         <descr>
           <p>
-            <var>EditorCancelEditing</var> is a procedure used to  cancel pending changes
+            <var>EditorCancelEditing</var> is a procedure used to cancel pending changes
             and to halt the editing process.
           </p>
           <p>
@@ -4037,8 +4037,8 @@
         </short>
         <descr>
           <p>
-            <var>EditorCanAcceptKey</var>  is an overridden Boolean function
-            which  determines if the cell editor can accept the character specified in <var>ch</var>. EditorCanAcceptKey requires that the linked dataset be active to access the SelectedField for the control. The Field cannot be an AutoIncrement, Lookup, Calculated, or Blob Field type. The return value is False if any of these conditions are not satisfied.
+            <var>EditorCanAcceptKey</var> is an overridden Boolean function
+            which determines if the cell editor can accept the character specified in <var>ch</var>. EditorCanAcceptKey requires that the linked dataset be active to access the SelectedField for the control. The Field cannot be an AutoIncrement, Lookup, Calculated, or Blob Field type. The return value is <b>False</b> if any of these conditions are not satisfied.
           </p>
           <p>
             EditorCanAcceptKey calls the IsValidChar routine to determine if the UTF8-encoded value in ch can be applied to the dataset for the control.
@@ -4052,7 +4052,7 @@
         <short>Key to examine in the method.</short>
       </element>
       <element name="TCustomDBGrid.EditorCanAcceptKey.Result">
-        <short>True when the character can be applied to the field.</short>
+        <short><b>True</b> when the character can be applied to the field.</short>
       </element>
 
       <element name="TCustomDBGrid.EditorIsReadOnly">
@@ -4065,10 +4065,10 @@
             editor can be enabled for the selected cell in the control.
           </p>
           <p>
-            EditorIsReadOnly calls the inherited method to ensure that requirements from the ancestor class  are respected. If the ancestor class returns True no actions are performed  in the method.
+            EditorIsReadOnly calls the inherited method to ensure that requirements from the ancestor class are respected. If the ancestor class returns <b>True</b> no actions are performed in the method.
           </p>
           <p>
-            EditorIsReadOnly locates the TField used to store data for the selected cell,  and calls its CanModify method to determine if the Field can be modified. Additional logic is applied for lookup Fields; the TField.KeyFields for the Field are also examined to determine if any of them are marked as read-only.
+            EditorIsReadOnly locates the TField used to store data for the selected cell, and calls its CanModify method to determine if the Field can be modified. Additional logic is applied for lookup Fields; the TField.KeyFields for the Field are also examined to determine if any of them are marked as read-only.
           </p>
           <p>
             EditorIsReadOnly ensures the dataset in DataLink is in edit mode. The GridStatus property is updated to include gsStartEditing prior to changing the dataset state, and removed from GridStatus after the dataset state has changed.
@@ -4082,7 +4082,7 @@
         </seealso>
       </element>
       <element name="TCustomDBGrid.EditorIsReadOnly.Result">
-        <short>True when an editor cannot modify the select cell.</short>
+        <short><b>True</b> when an editor cannot modify the select cell.</short>
       </element>
 
       <element name="TCustomDBGrid.EditorTextChanged">
@@ -4159,7 +4159,7 @@
         </short>
         <descr>
           <p>
-            <var>GetBufferCount</var> is a virtual Integer function used to get the number of rows to buffer for display in the grid control. The return value contains the number of rows that can be displayed using the  DefaultRowHeight for the control. The return value is decreased by 1 when column titles are enabled in the Options property with the dgTitles enumeration value.
+            <var>GetBufferCount</var> is a virtual Integer function used to get the number of rows to buffer for display in the grid control. The return value contains the number of rows that can be displayed using the DefaultRowHeight for the control. The return value is decreased by 1 when column titles are enabled in the Options property with the dgTitles enumeration value.
           </p>
           <p>
             GetBufferCount is called from the UpdateBufferCount method.
@@ -4238,7 +4238,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.GetDefaultColumnReadOnly.Result">
-        <short>True when the column cannot  be modified.</short>
+        <short><b>True</b> when the column cannot be modified.</short>
       </element>
       <element name="TCustomDBGrid.GetDefaultColumnReadOnly.Column">
         <short>Column number to examine.</short>
@@ -4268,7 +4268,7 @@
         </short>
         <descr>
           <p>
-            <var>GetDefaultRowHeight</var> is an overridden Integer function used to get the default row height for records displayed in the grid control. GetDefaultRowHeight calls the inherited GetDefaultRowHeight method to get the return value for the method. The calculated row height is decreased by 2 pixels to allow space for borders on  the editors overlaid onto the grid control.
+            <var>GetDefaultRowHeight</var> is an overridden Integer function used to get the default row height for records displayed in the grid control. GetDefaultRowHeight calls the inherited GetDefaultRowHeight method to get the return value for the method. The calculated row height is decreased by 2 pixels to allow space for borders on the editors overlaid onto the grid control.
           </p>
         </descr>
         <seealso>
@@ -4306,7 +4306,7 @@
             <var>GetEditMask</var> is an overridden String function used to get the EditMask for the TField that reads and writes data for specified Row and Column.
           </p>
           <p>
-            The linked dataset for the grid control must be active to access the Field definition at the specified column number. GetEditMask calls the  GetFieldFromGridColumn method to get the TField instance with the EditMask for the column.
+            The linked dataset for the grid control must be active to access the Field definition at the specified column number. GetEditMask calls the GetFieldFromGridColumn method to get the TField instance with the EditMask for the column.
           </p>
           <p>
             The return value can contain an empty string ('') is the dataset is not active, or a Field cannot be located for the specified column, or the EditMask has not been assigned in the Field definition.
@@ -4338,7 +4338,7 @@
             <var>GetEditText</var> is an overridden String function used to get the Text value for the Field at the specified Row and Column.
           </p>
           <p>
-            GetEditText requires that the linked dataset for the control be active to access its Field definitions. GetEditText calls the GetFieldFromGridColumn method to get the TField instance that provides the textual representation of the value for  the Field. GetEditText calls the CheckDisplayMemo method to determine if a Field with the ftMemo data type displays its content or the string literal in its Text property <var>'(Memo)'</var>.
+            GetEditText requires that the linked dataset for the control be active to access its Field definitions. GetEditText calls the GetFieldFromGridColumn method to get the TField instance that provides the textual representation of the value for the Field. GetEditText calls the CheckDisplayMemo method to determine if a Field with the ftMemo data type displays its content or the string literal in its Text property <var>'(Memo)'</var>.
           </p>
         </descr>
         <seealso></seealso>
@@ -4373,11 +4373,11 @@
 
       <element name="TCustomDBGrid.GetGridColumnFromField">
         <short>
-          <var>GetGridColumnFromField</var> - gets the  corresponding grid column for the given Field.
+          <var>GetGridColumnFromField</var> - gets the corresponding grid column for the given Field.
         </short>
         <descr>
           <p>
-            <var>GetGridColumnFromField</var> - gets the  corresponding grid column for the given Field.
+            <var>GetGridColumnFromField</var> - gets the corresponding grid column for the given Field.
           </p>
         </descr>
         <seealso></seealso>
@@ -4395,7 +4395,7 @@
         </short>
         <descr>
           <p>
-            GetImageForCheckBox is an overridden TBitmap function used to get the bitmap displayed for a Checkbox at the specified location in the grid control.  GetImageForCheckBox calls the inherited GetImageForCheckBox method using the passed arguments to get the return value. GetImageForCheckBox signals the  OnUserCheckboxBitmap event handler when it has been assigned in the control to allow overriding the TBitmap used for the desired TCheckboxState.
+            GetImageForCheckBox is an overridden TBitmap function used to get the bitmap displayed for a Checkbox at the specified location in the grid control. GetImageForCheckBox calls the inherited GetImageForCheckBox method using the passed arguments to get the return value. GetImageForCheckBox signals the OnUserCheckboxBitmap event handler when it has been assigned in the control to allow overriding the TBitmap used for the desired TCheckboxState.
           </p>
         </descr>
         <seealso></seealso>
@@ -4428,7 +4428,7 @@
         </short>
         <descr>
             <p>
-              <var>GetIsCellSelected</var> is an overridden Boolean function  used to determine if the cell at the specified location is currently selected. GetIsCellSelected calls the inherited method to get the return value, and also examines the value in DrawingMultiSelRecord. The return value is True when the cell is either selected or multi-selected (when enabled).
+              <var>GetIsCellSelected</var> is an overridden Boolean function used to determine if the cell at the specified location is currently selected. GetIsCellSelected calls the inherited method to get the return value, and also examines the value in DrawingMultiSelRecord. The return value is <b>True</b> when the cell is either selected or multi-selected (when enabled).
             </p>
         </descr>
         <seealso>
@@ -4436,7 +4436,7 @@
         </seealso>
       </element>
       <element name="TCustomDBGrid.GetIsCellSelected.Result">
-        <short>True when the specified cell is selected or multi-selected.</short>
+        <short><b>True</b> when the specified cell is selected or multi-selected.</short>
       </element>
       <element name="TCustomDBGrid.GetIsCellSelected.aCol">
         <short>Column number to examine.</short>
@@ -4509,7 +4509,7 @@
 
       <element name="TCustomDBGrid.GridCanModify">
         <short>
-          <var>GridCanModify</var>  indicates if the DataLink is active  and allows editing.
+          <var>GridCanModify</var> indicates if the DataLink is active and allows editing.
         </short>
         <descr>
           <p>
@@ -4519,7 +4519,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.GridCanModify.Result">
-        <short>True when the grid can be modified.</short>
+        <short><b>True</b> when the grid can be modified.</short>
       </element>
 
       <element name="TCustomDBGrid.GetSBVisibility">
@@ -4528,7 +4528,7 @@
         </short>
         <descr>
           <p>
-            GetSBVisibility is an overridden procedure used to determine the visibility of horizontal and vertical scroll bars for the control. GetSBVisibility calls the inherited method to use the logic implemented in the ancestor class. GetSBVisibility overrides the value used for the vertical scroll bar; it is set to True when ScrollBars contains ssVertical or ssBoth. ScrollBarAutomatic is called when the vertical scroll bar is not visible, and the GetScrollbarParams method is used to update the vertical scrollbar settings.
+            GetSBVisibility is an overridden procedure used to determine the visibility of horizontal and vertical scroll bars for the control. GetSBVisibility calls the inherited method to use the logic implemented in the ancestor class. GetSBVisibility overrides the value used for the vertical scroll bar; it is set to <b>True</b> when ScrollBars contains ssVertical or ssBoth. ScrollBarAutomatic is called when the vertical scroll bar is not visible, and the GetScrollbarParams method is used to update the vertical scrollbar settings.
           </p>
         </descr>
         <seealso>
@@ -4592,10 +4592,10 @@
         </short>
         <descr>
           <p>
-            <var>HeaderSized</var> is an overridden procedure which updates the Columns for the control when a header cell is resized. If IsColumn contains False the resize operation was for the height of a header row and no action is performed in the method. When IsColumn contains True the request applies to the width of the column with the Field at the position specified in Index.
+            <var>HeaderSized</var> is an overridden procedure which updates the Columns for the control when a header cell is resized. If IsColumn contains <b>False</b> the resize operation was for the height of a header row and no action is performed in the method. When IsColumn contains <b>True</b> the request applies to the width of the column with the Field at the position specified in Index.
           </p>
           <p>
-            HeaderSized calls the ColumnIndexFromGridColumn method to determine the position in the Columns collection for the Field specified in Index. The width in Columns is updated with the corresponding value from ColWidths. HeaderSized sets the value in DefaultColWidths to False to indicate that custom column sizing has been applied to the control.
+            HeaderSized calls the ColumnIndexFromGridColumn method to determine the position in the Columns collection for the Field specified in Index. The width in Columns is updated with the corresponding value from ColWidths. HeaderSized sets the value in DefaultColWidths to <b>False</b> to indicate that custom column sizing has been applied to the control.
           </p>
           <p>
             HeaderSized signals the OnColumnSized event handler when assigned for the control.
@@ -4628,7 +4628,7 @@
 
       <element name="TCustomDBGrid.IsValidChar">
         <short>
-          <var>IsValidChar</var> indicates if the  specified Field contains the specified UTF-8  character.
+          <var>IsValidChar</var> indicates if the specified Field contains the specified UTF-8 character.
         </short>
         <descr>
             <p>
@@ -4638,7 +4638,7 @@
               Please note that TField does not contain a method which verifies a Unicode character. This routine converts a multi-byte Unicode character using UTF8ToSys and calls the TField.IsValidChar method to validate.
             </p>
             <p>
-              IsValidChar returns True when TField.IsValidChar returns the same or when AChar contains the <var>BackSace (Decimal 8)</var> character.
+              IsValidChar returns <b>True</b> when TField.IsValidChar returns the same or when AChar contains the <var>BackSace (Decimal 8)</var> character.
             </p>
         </descr>
       </element>
@@ -4662,8 +4662,8 @@
             </dd>
             <dt><var><b>Return</b></var></dt>
             <dd>
-              Enables the editor for the cell when  dgEditing is included in Options.
-              Otherwise  advances to the next column.
+              Enables the editor for the cell when dgEditing is included in Options.
+              Otherwise advances to the next column.
             </dd>
             <dt><var><b>Ctrl + Delete</b></var></dt>
             <dd>
@@ -4675,23 +4675,23 @@
             </dd>
             <dt><var><b>Down</b></var></dt>
             <dd>
-              Moves to the next row in the dataset. The currently selected column remains the same. Appends a new row when positioned at  the end of the dataset and dgDisableInsert has <b>not</b> been included in Options.
+              Moves to the next row in the dataset. The currently selected column remains the same. Appends a new row when positioned at the end of the dataset and dgDisableInsert has <b>not</b> been included in Options.
             </dd>
             <dt><var><b>Shift + Up</b></var></dt>
             <dd>
-              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the preceding row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is  selected.
+              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the preceding row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is selected.
             </dd>
             <dt><var><b>Shift + Down</b></var></dt>
             <dd>
-              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the next row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is  selected.
+              When dgMultiSelect and dgPersistentMultiSelect have been included in the grid Options, SelectedRows is extended to include a bookmark to the next row in the grid control (when available). If multi-select has not been enabled in Options, the current selection in the control is cleared and the new row is selected.
             </dd>
             <dt><var><b>Page Up</b></var></dt>
             <dd>
-              Moves towards the beginning of the dataset  by the number of rows specified in VisibleRows.
+              Moves towards the beginning of the dataset by the number of rows specified in VisibleRows.
             </dd>
             <dt><var><b>Page Down</b></var></dt>
             <dd>
-              Moves towards the end of the dataset  by the number of rows specified in VisibleRows.
+              Moves towards the end of the dataset by the number of rows specified in VisibleRows.
             </dd>
             <dt><var><b>Escape</b></var></dt>
             <dd>
@@ -4730,7 +4730,7 @@
             <var>KeyDown</var> reads and writes values in GridFlags as needed while handling cell editors and performing dataset navigation.
           </p>
           <p>
-            <var>KeyDown</var> calls the inherited <var>KeyDown</var> method to process  keys not explicitly handled by the data-aware control.
+            <var>KeyDown</var> calls the inherited <var>KeyDown</var> method to process keys not explicitly handled by the data-aware control.
           </p>
           <p>
             <var>KeyDown</var> signals the <var>OnKeyDown</var> event handler when it has been assigned for the control.
@@ -4751,16 +4751,16 @@
         </short>
         <descr>
           <p>
-            <var>LinkActive</var> is a procedure which updates the control when the state of its DataLink is changing. Value contains False when the dataset for the DataLink will be closed.  The state change causes updates to other control properties like SelectedRows which tracks the selected rows in the linked dataset. LinkActive calls RemoveAutomaticColumns to remove automatic columns added to the control when the DataLink became active. The LayoutChanged method is called to refresh the control after updates to the  Columns property.
+            <var>LinkActive</var> is a procedure which updates the control when the state of its DataLink is changing. Value contains <b>False</b> when the dataset for the DataLink will be closed. The state change causes updates to other control properties like SelectedRows which tracks the selected rows in the linked dataset. LinkActive calls RemoveAutomaticColumns to remove automatic columns added to the control when the DataLink became active. The LayoutChanged method is called to refresh the control after updates to the Columns property.
           </p>
           <p>
-            No actions are performed in the method when Value contains True.
+            No actions are performed in the method when Value contains <b>True</b>.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomDBGrid.LinkActive.Value">
-        <short>True when the dataset is open.</short>
+        <short><b>True</b> when the dataset is open.</short>
       </element>
 
       <element name="TCustomDBGrid.LayoutChanged">
@@ -4772,7 +4772,7 @@
             <var>LayoutChanged</var> is a virtual procedure used to link Columns to the Fields which read and write the values used in the control. LayoutChanged calls the TDBGridColumns.LinkFields method establish the column-to-field association. If Columns have not been explicitly defined the AddAutomaticColumns method is called to add a column for each Field in the linked dataset.
           </p>
           <p>
-            LayoutChanged calls the  BeginLayout and EndLayout methods to minimize the number of times the OnLayoutChange event is signalled during updates to the control.
+            LayoutChanged calls the BeginLayout and EndLayout methods to minimize the number of times the OnLayoutChange event is signalled during updates to the control.
           </p>
           <p>
             LayoutChanged performs no actions when ComponentState indicates the control is being destroyed (contains csDestroying).
@@ -4815,7 +4815,7 @@
         </short>
         <descr>
           <p>
-            <var>MoveSelection</var> causes the current selection in the control to be changed.  MoveSelection calls the inherited MoveSelection method. If the selection change causes a different column to become active, the OnColEnter event handler is signalled (when assigned). MoveSelection calls the UpdateActive method to ensure that the correct row and/or column are drawn in the control.
+            <var>MoveSelection</var> causes the current selection in the control to be changed. MoveSelection calls the inherited MoveSelection method. If the selection change causes a different column to become active, the OnColEnter event handler is signalled (when assigned). MoveSelection calls the UpdateActive method to ensure that the correct row and/or column are drawn in the control.
           </p>
         </descr>
         <seealso>
@@ -4843,7 +4843,7 @@
         </short>
         <descr>
           <p>
-            <var>MouseDown</var> handles mouse button clicks (when allowed) in the control. MouseDown ensures that the specified Button and State are correctly applied to the control similar to the processing  provided in KeyDown method. MouseDown translates screen coordinates into the row and column numbers used in the control and performs actions needed for focus selection, editing or navigation.
+            <var>MouseDown</var> handles mouse button clicks (when allowed) in the control. MouseDown ensures that the specified Button and State are correctly applied to the control similar to the processing provided in KeyDown method. MouseDown translates screen coordinates into the row and column numbers used in the control and performs actions needed for focus selection, editing or navigation.
           </p>
           <p>
             No actions are performed in the method at design-time, when GridStatus contains gsUpdatingData, or when the specified Button is not allowed by the grid Options or the linked dataset state.
@@ -4856,7 +4856,7 @@
               Left Mouse Button (or any mouse button when dgAnyButtonCanSelect is in Options)
             </dt>
             <dd>Clears the row Selection if already selected in the grid. </dd>
-            <dt>Right  Mouse Button</dt>
+            <dt>Right Mouse Button</dt>
             <dd>Toggles the selected row in the control, or opens the PopupMenu when assigned.</dd>
             <dt>Ctrl + Left Mouse Button</dt>
             <dd>Toggles the row in the current SelectedRows.</dd>
@@ -4883,7 +4883,7 @@
         </short>
         <descr>
           <p>
-            <var>MouseMove</var> is an overridden procedure used to signal the <var>OnMouseMove</var> event handler for the grid control. It signals the OnMouseMove event handler when <var>GridState</var> contains the value <var>gsSelecting</var>, and the Dragging flag has not been set.  Otherwise, the inherited <var>MouseMove</var> method is called in the method.
+            <var>MouseMove</var> is an overridden procedure used to signal the <var>OnMouseMove</var> event handler for the grid control. It signals the OnMouseMove event handler when <var>GridState</var> contains the value <var>gsSelecting</var>, and the Dragging flag has not been set. Otherwise, the inherited <var>MouseMove</var> method is called in the method.
           </p>
         </descr>
         <seealso>
@@ -4932,13 +4932,13 @@
         </short>
         <descr>
           <p>
-            <var>RemoveAutomaticColumns</var> is a procedure used to remove automatic columns added to the grid control in the AddAutomaticColumns method.      Automatic columns are generated at run-time when the value dgeAutoColumns is included in the OptionsExtra property. The feature cannot be enabled at design-time. No actions are performed in the method at design-time.
+            <var>RemoveAutomaticColumns</var> is a procedure used to remove automatic columns added to the grid control in the AddAutomaticColumns method. Automatic columns are generated at run-time when the value dgeAutoColumns is included in the OptionsExtra property. The feature cannot be enabled at design-time. No actions are performed in the method at design-time.
           </p>
           <p>
             RemoveAutomaticColumns uses the Columns property to execute its RemoveAutoColumns method which removes the automatic columns in the collection.
           </p>
           <p>
-            RemoveAutomaticColumns is used in the implementation of the LinkActive and   the SetExtraOptions methods.
+            RemoveAutomaticColumns is used in the implementation of the LinkActive and the SetExtraOptions methods.
           </p>
           <p>
             Use the OptionsExtra property to control adding and removing automatic columns at run-time.
@@ -4964,7 +4964,7 @@
         </short>
         <descr>
           <p>
-            <var>SelectEditor</var> is a procedure used to get the editor used for the SelectedField in the control. SelectEditor requires an active dataset in DataLink to access properties and methods in SelectedField.  SelectEditor uses SelectedField to get the maximum length of the Field in the dataset and stores the value in the Editor for the control.
+            <var>SelectEditor</var> is a procedure used to get the editor used for the SelectedField in the control. SelectEditor requires an active dataset in DataLink to access properties and methods in SelectedField. SelectEditor uses SelectedField to get the maximum length of the Field in the dataset and stores the value in the Editor for the control.
           </p>
           <p>
             SelectEditor calls the Inherited SelectEditor method to initialize the class used in the Editor property. SelectEditor signals the OnSelectEditor event handler (when assigned) to get a custom value for the Editor property. Please note that Editor is set to <var><b>Nil</b></var> if the OnSelectEditor event handler is not assigned for the control.
@@ -5015,11 +5015,11 @@
 
       <element name="TCustomDBGrid.UpdateActive">
         <short>
-          <var>UpdateActive</var>  redraws the control when the active row in the dataset is changed.
+          <var>UpdateActive</var> redraws the control when the active row in the dataset is changed.
         </short>
         <descr>
           <p>
-            <var>UpdateActive</var>  forces the control to be redrawn when the active row in the linked dataset is changed. UpdateActive requires an active dataset in DataLink with a selected record. No actions are performed in the method when the dataset is closed or contains no rows.  UpdateActive  calls InvalidateCell when the selected row in the control has changed. InvaidateRow is called to update the selected row in the control.
+            <var>UpdateActive</var> forces the control to be redrawn when the active row in the linked dataset is changed. UpdateActive requires an active dataset in DataLink with a selected record. No actions are performed in the method when the dataset is closed or contains no rows. UpdateActive calls InvalidateCell when the selected row in the control has changed. InvaidateRow is called to update the selected row in the control.
           </p>
         </descr>
         <seealso></seealso>
@@ -5042,7 +5042,7 @@
             <var>UpdateData</var> is a virtual procedure used to perform pending updates for the selected cell to its Field in the grid Dataset. No action is performed if the selected cell has not been modified (or cannot be modified) or the Dataset is not in edit mode.
             </p>
             <p>
-              UpdateData ensures that the appropriate method is used to update Field data based on the TField.FieldKind for the modified column. Special handling is provided for lookup Fields to check the cached lookup list or to retrieve the  lookup result using its key Fields.
+              UpdateData ensures that the appropriate method is used to update Field data based on the TField.FieldKind for the modified column. Special handling is provided for lookup Fields to check the cached lookup list or to retrieve the lookup result using its key Fields.
             </p>
             <p>
               UpdateData calls the EditingColumn method to disable the editing flag for the column prior to exit.
@@ -5128,7 +5128,7 @@
         </short>
         <descr>
           <p>
-            <var>GridStatus</var> is a TDBGridStatus property  which stores status information for the grid control. GridStatus is a set type that can contain 0 (zero) or more values from the TDbGridStatusItem enumeration, and indicate operations occurring in the control at run-time. Values in GridStatus are added and removed in several methods for the grid control to prevent duplicate calls the method while the operation is active.
+            <var>GridStatus</var> is a TDBGridStatus property which stores status information for the grid control. GridStatus is a set type that can contain 0 (zero) or more values from the TDbGridStatusItem enumeration, and indicate operations occurring in the control at run-time. Values in GridStatus are added and removed in several methods for the grid control to prevent duplicate calls the method while the operation is active.
           </p>
           <p>
             See TDbGridStatusItem for more information about the values in the enumeration and their meanings.
@@ -5199,10 +5199,10 @@
         </short>
         <descr>
           <p>
-            <var>OptionsExtra</var> is a TDBGridExtraOptions property used to store extra options enabled for the grid control. OptionsExtra is a set data type which can contain 0 (zero) or more values from the TDBGridExtraOption enumeration. The default values in  the property include dgeAutoColumns and dgeCheckboxColumn. These values enable the use of automatic columns definitions from the linked dataset and displaying checkboxes for Boolean columns.
+            <var>OptionsExtra</var> is a TDBGridExtraOptions property used to store extra options enabled for the grid control. OptionsExtra is a set data type which can contain 0 (zero) or more values from the TDBGridExtraOption enumeration. The default values in the property include dgeAutoColumns and dgeCheckboxColumn. These values enable the use of automatic columns definitions from the linked dataset and displaying checkboxes for Boolean columns.
           </p>
           <p>
-            SetExtraOptions is the write access specifier for the property, and ensures  that the grid control is updated to reflect values added to or removed from the set.
+            SetExtraOptions is the write access specifier for the property, and ensures that the grid control is updated to reflect values added to or removed from the set.
           </p>
         </descr>
         <seealso>
@@ -5229,7 +5229,7 @@
         </short>
         <descr>
           <p>
-            <var>SelectedRows</var> is a read-only TBookmarkList property used to store TBookmark instance for one or more rows selected in the grid control. SelectedRows will normally contain a single TBookmark entry in its Items property for a  selected row. However, multiples entry can exist when multi-selection is enabled by including the value dgMultiSelect in the Options property.
+            <var>SelectedRows</var> is a read-only TBookmarkList property used to store TBookmark instance for one or more rows selected in the grid control. SelectedRows will normally contain a single TBookmark entry in its Items property for a selected row. However, multiples entry can exist when multi-selection is enabled by including the value dgMultiSelect in the Options property.
           </p>
           <p>
             SelectedRows is updated when methods which perform record navigation call the DrawRow, SelectRecord or ToggleSelectedRow methods.
@@ -5302,7 +5302,7 @@
         </short>
         <descr>
           <p>
-            <var>OnColumnSized</var> is a TNotifyEvent property that implements the event  handler signalled when a column has been resized. OnColumnSized allows the application to perform actions required after the column has been resized. Assign a procedure to the event handler to respond to the event notification.
+            <var>OnColumnSized</var> is a TNotifyEvent property that implements the event handler signalled when a column has been resized. OnColumnSized allows the application to perform actions required after the column has been resized. Assign a procedure to the event handler to respond to the event notification.
           </p>
           <p>
             OnColumnSized is triggered from the HeaderSized method when a change to a column width was requested.
@@ -5397,7 +5397,7 @@
         </short>
         <descr>
           <p>
-            <var>OnSelectEditor</var> is a TDbGridSelEditorEvent property that implements the event handler signalled when an editor control is selected for the current Field in the grid.  OnSelectEditor is used to modify or override the editor control for SelectedField in the grid control.
+            <var>OnSelectEditor</var> is a TDbGridSelEditorEvent property that implements the event handler signalled when an editor control is selected for the current Field in the grid. OnSelectEditor is used to modify or override the editor control for SelectedField in the grid control.
           </p>
           <p>
             OnSelectEditor is signalled in the SelectEditor method after the default editor control has be chosen and its maximum length has been set. Assign a procedure to the event handler which modifies or assigns the control in the Editor argument.
@@ -5427,7 +5427,7 @@
         </short>
         <descr>
             <p>
-              <var>OnUserCheckboxBitmap</var> is a property that implements the <var>TDBGridCheckboxBitmapEvent</var> event handler signalled to get the image used for a checkbox entry on the grid. OnUserCheckboxBitmap allows the application to override the TBitmap provided by the GetImageForCheckBox method. Assign a procedure to the event handler that implements the  TDBGridCheckboxBitmapEvent interface to enable the event handler.
+              <var>OnUserCheckboxBitmap</var> is a property that implements the <var>TDBGridCheckboxBitmapEvent</var> event handler signalled to get the image used for a checkbox entry on the grid. OnUserCheckboxBitmap allows the application to override the TBitmap provided by the GetImageForCheckBox method. Assign a procedure to the event handler that implements the TDBGridCheckboxBitmapEvent interface to enable the event handler.
             </p>
             <p>
               The user is encouraged to provide bitmaps to represent the three states for
@@ -5462,7 +5462,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the <var>TCustomDBGrid</var> instance. Create calls the inherited <var>Create</var> method, and allocates resources for properties in the class instance.  Create sets the default event handlers used in DataLink to the corresponding procedures in the class:
+            <var>Create</var> is the constructor for the <var>TCustomDBGrid</var> instance. Create calls the inherited <var>Create</var> method, and allocates resources for properties in the class instance. Create sets the default event handlers used in DataLink to the corresponding procedures in the class:
           </p>
           <ul>
             <li>OnDataSetChanged</li>
@@ -5513,7 +5513,7 @@
             The value of the AutoAdvance property is set to aaRightDown, indicating the cell navigation is from left-to-right and then top-to-bottom in the grid control.
           </p>
           <p>
-            Create sets the value in ScrollBars to ssBoth indicating that both horizontal and vertical scroll bars are needed, and sets AllowOutboundEvents to False to prevent forwarding of event notifications to the ancestor class.
+            Create sets the value in ScrollBars to ssBoth indicating that both horizontal and vertical scroll bars are needed, and sets AllowOutboundEvents to <b>False</b> to prevent forwarding of event notifications to the ancestor class.
           </p>
         </descr>
         <seealso>
@@ -5555,7 +5555,7 @@
             <var>DefaultDrawColumnCell</var> is the default method used for drawing cells in a column. DefaultDrawColumnCell uses the specified column to get the Field and the editor style needed to render the cell.
           </p>
           <p>
-            Checkbox columns are drawn by calling the DrawCheckBoxBitmaps method. Other editor styles use the DisplayText for the TField as the value drawn using the DrawCellText method. Please note that Fields with a data type of ftBlob are always rendered as the string literal  <var><b>'(blob)'</b></var>.
+            Checkbox columns are drawn by calling the DrawCheckBoxBitmaps method. Other editor styles use the DisplayText for the TField as the value drawn using the DrawCellText method. Please note that Fields with a data type of ftBlob are always rendered as the string literal <var><b>'(blob)'</b></var>.
           </p>
           <p>
             Use the OnDrawColumnCell event handler to render a cell when DefaultDrawing is not enabled for the grid control.
@@ -5602,10 +5602,10 @@
         </short>
         <descr>
           <p>
-            <var>ResetColWidths</var> is a procedure used to restore column widths in the grid to their default values. ResetColWidths uses the value in DefaultColWidths to determine if default column widths are already in use. When DefaultColWidths contains True, no actions are performed in the method.
+            <var>ResetColWidths</var> is a procedure used to restore column widths in the grid to their default values. ResetColWidths uses the value in DefaultColWidths to determine if default column widths are already in use. When DefaultColWidths contains <b>True</b>, no actions are performed in the method.
           </p>
           <p>
-            ResetColWidths calls the RenewColWidths method to restore the column widths.  The LayoutChanged method is called to refresh the grid control after the column layouts are altered.
+            ResetColWidths calls the RenewColWidths method to restore the column widths. The LayoutChanged method is called to refresh the grid control after the column layouts are altered.
           </p>
         </descr>
        <seealso></seealso>
@@ -5663,7 +5663,7 @@
         </seealso>
       </element>
       <element name="TCustomDBGrid.ExecuteAction.Result">
-        <short>True DataLink is assigned, and the action was executed.</short>
+        <short><b>True</b> DataLink is assigned, and the action was executed.</short>
       </element>
       <element name="TCustomDBGrid.ExecuteAction.AAction">
         <short>Action executed in the method.</short>
@@ -5677,7 +5677,7 @@
         </seealso>
       </element>
       <element name="TCustomDBGrid.UpdateAction.Result">
-        <short>True if DataLink is assigned, and the action was updated in the method.</short>
+        <short><b>True</b> if DataLink is assigned, and the action was updated in the method.</short>
       </element>
       <element name="TCustomDBGrid.UpdateAction.AAction">
         <short>Action updated in the method.</short>
@@ -5756,7 +5756,7 @@
         </short>
         <descr>
           <p>
-            <var>SelectedIndex</var> is an Integer property that represents the ordinal position of the selected column in the grid control. The property value contains the result from ColumnIndexFromGridColumn when the Columns collection is enabled in the control. Otherwise, the value from  FieldIndexFromGridColumn is used as the property value.
+            <var>SelectedIndex</var> is an Integer property that represents the ordinal position of the selected column in the grid control. The property value contains the result from ColumnIndexFromGridColumn when the Columns collection is enabled in the control. Otherwise, the value from FieldIndexFromGridColumn is used as the property value.
           </p>
           <p>
             GetSelectedIndex is the read access specifier for the property value. SetSelectedIndex is the write access specifier for the property.
@@ -5771,7 +5771,7 @@
         </short>
         <descr>
           <p>
-            <var>SelectedColumn</var> is a read-only TColumn property that represents the currently  selected column in the grid control. SelectedColumn contains a value only when the Columns collection has been enabled (or contains visible columns) for the control. Otherwise, SelectedColumn returns the value <var><b>Nil</b></var>.
+            <var>SelectedColumn</var> is a read-only TColumn property that represents the currently selected column in the grid control. SelectedColumn contains a value only when the Columns collection has been enabled (or contains visible columns) for the control. Otherwise, SelectedColumn returns the value <var><b>Nil</b></var>.
           </p>
           <p>
             GetCurrentColumn is the read access specifier for the property value, and returns the TColumn instance in Columns at the position specified in SelectedIndex.
@@ -5915,7 +5915,7 @@
             Do not confuse Grid columns (in the display) with the SQL usage of COLUMNS  (Fields in our environment). The Fields consist of a series of cells arranged in Records which contain the actual data which are to be displayed and operated upon.
           </p>
           <p>
-            It is entirely possible that Fields in the dataset are not displayed, and the  result is that Field order in a dataset may not correspond directly to the   column order in a database grid; in fact the <var>Columns</var> property  allows the user to configure which data Field is to be displayed in each  column.
+            It is entirely possible that Fields in the dataset are not displayed, and the result is that Field order in a dataset may not correspond directly to the column order in a database grid; in fact the <var>Columns</var> property allows the user to configure which data Field is to be displayed in each column.
           </p>
         </descr>
         <seealso>
@@ -5931,7 +5931,7 @@
         <short>Default height for rows drawn in the grid control.</short>
         <descr>
           <p>
-            <var>DefaultRowHeight</var> is an <var>Integer</var> property that contains the default height used for rows drawn in the grid control. If new rows of the grid are created by changing the <var>RowCount</var>  property, the height of these new rows will be set to the value of the <var>DefaultRowHeight</var> property.
+            <var>DefaultRowHeight</var> is an <var>Integer</var> property that contains the default height used for rows drawn in the grid control. If new rows of the grid are created by changing the <var>RowCount</var> property, the height of these new rows will be set to the value of the <var>DefaultRowHeight</var> property.
           </p>
           <p>
             When the <var>Options</var> property includes the appropriate value, the row height may be changed at run-time.
@@ -5982,10 +5982,10 @@
         </short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TDBGrid.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TDBGrid.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
           <p>
             Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
@@ -6049,7 +6049,7 @@
         </short>
         <descr>
           <p>
-            The <var>Visible</var> property controls the ability to see a visual control. If Visible is True the control is shown otherwise it is hidden. Calling Show sets among other properties Visible to True. Setting Visible to <b>False</b> is equivalent to calling Hide method.
+            The <var>Visible</var> property controls the ability to see a visual control. If Visible is <b>True</b> the control is shown otherwise it is hidden. Calling Show sets among other properties Visible to <b>True</b>. Setting Visible to <b>False</b> is equivalent to calling Hide method.
           </p>
           <remark>
             The Visible property does not depend on control's parent visibility. Use
@@ -6108,7 +6108,7 @@
           </p>
           <p>
             <var>OnKeyPress</var> differs from
-            <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key  needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
+            <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var> the key may have already been down when the control received focus.
           </p>
         </descr>
         <seealso>
