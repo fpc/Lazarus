@@ -520,8 +520,11 @@ begin
           if Target <> nil then begin
             ATargetWatch := TIdeWatch(tvWatches.NodeItem[Target]);
             assert(ATargetWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: ATargetWatch <> nil');
-            if ATargetWatch <> nil then
-              NewIdx := ATargetWatch.Index+1;
+            if ATargetWatch <> nil then begin
+              NewIdx := ATargetWatch.Index;
+              if NewIdx < AWatch.Index then
+                inc(NewIdx);
+            end;
           end;
           AWatch.Index := NewIdx;
         end;
