@@ -1214,14 +1214,17 @@ begin
         if (WatchValue.Validity = ddsValid) and (WatchValue.ResultData <> nil) then begin
           WatchValueStr := FWatchPrinter.PrintWatchValue(WatchValue.ResultData, WatchValue.DisplayFormat);
           WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValueStr));
+          if (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0)
+          then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.ResultData.ArrayLength]) + WatchValueStr
+          else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
+        end
+        else begin
           if (WatchValue.TypeInfo <> nil) and
              (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
              (WatchValue.TypeInfo.Len >= 0)
-          then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValueStr
-          else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
-        end
-        else
-          tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValue.Value;
+          then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValue.Value
+          else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValue.Value;
+        end;
       end
       else
         tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
