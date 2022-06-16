@@ -174,7 +174,9 @@ begin
       FldOwner := FldInfo.Owner;
       vis := '';
 
-      if (ADispFormat = wdfStructure) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) then begin
+      if (ADispFormat = wdfStructure) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
+         (AResValue.StructType in [dstClass, dstInterface, dstObject]) // record has no inheritance
+      then begin
         if (Length(Result) > 0) then
           Result := Result + sep;
         Result := Result + indent + '{' + FldOwner.TypeName + '}';
@@ -204,6 +206,14 @@ begin
     //Delete(Result, Length(Result), 1)
     //Result := Result + sep + ')';
   end;
+
+  tn := AResValue.TypeName;
+  if (tn <> '') and (ANestLvl=0) and
+     ( (ADispFormat = wdfStructure) or
+       (AResValue.StructType in [dstClass, dstInterface])
+     )
+  then
+    Result := tn + Result;
 end;
 
 function TWatchResultPrinter.PrintProc(AResValue: TWatchResultData;
