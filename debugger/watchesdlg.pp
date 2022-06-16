@@ -46,7 +46,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
-  ArrayNavigationFrame;
+  ArrayNavigationFrame, IdeDebuggerUtils;
 
 type
 
@@ -78,6 +78,8 @@ type
     ActionList1: TActionList;
     actProperties: TAction;
     InspectLabel: TLabel;
+    ToolButton1: TToolButton;
+    btnShowDataAddr: TToolButton;
     tvWatches: TDbgTreeView;
     InspectMemo: TMemo;
     MenuItem1: TMenuItem;
@@ -123,6 +125,7 @@ type
     procedure actInspectExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure actToggleInspectSiteExecute(Sender: TObject);
+    procedure btnShowDataAddrClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
@@ -207,8 +210,9 @@ var
 const
   COL_WATCH_EXPR  = 1;
   COL_WATCH_VALUE = 2;
+  COL_WATCH_DATAADDR = 4;
   COL_SPLITTER_INSPECT = 3;
-  COL_WIDTHS: Array[0..2] of integer = ( 100,  200, 200);
+  COL_WIDTHS: Array[1..4] of integer = ( 100,  200, 300, 150);
 
 function WatchesDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -293,12 +297,16 @@ begin
   actInspect.Caption := lisInspect;
   actEvaluate.Caption := lisEvaluateModify;
 
+  btnShowDataAddr.ImageIndex := IDEImages.LoadImage('ce_implementation');
+
   Caption:=liswlWatchList;
 
   tvWatches.Header.Columns[0].Text := liswlExpression;
   tvWatches.Header.Columns[1].Text := dlgValueColor;
+  tvWatches.Header.Columns[2].Text := dlgValueDataAddr;
   tvWatches.Header.Columns[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
   tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
+  tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
 end;
 
 destructor TWatchesDlg.Destroy;
@@ -696,6 +704,14 @@ begin
     UpdateInspectPane;
 end;
 
+procedure TWatchesDlg.btnShowDataAddrClick(Sender: TObject);
+begin
+  if btnShowDataAddr.Down then
+    tvWatches.Header.Columns[2].Options := tvWatches.Header.Columns[2].Options + [coVisible]
+  else
+    tvWatches.Header.Columns[2].Options := tvWatches.Header.Columns[2].Options - [coVisible];
+end;
+
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
@@ -939,12 +955,17 @@ function TWatchesDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean
 begin
   if AColId = COL_SPLITTER_INSPECT then begin
     ASize := nbInspect.Width;
-    Result := ASize <> COL_WIDTHS[AColId - 1];
+    Result := ASize <> COL_WIDTHS[AColId];
   end
   else
-  if (AColId - 1 >= 0) and (AColId - 1 < tvWatches.Header.Columns.Count) then begin
+  if (AColId = COL_WATCH_DATAADDR) then begin
+    ASize := tvWatches.Header.Columns[2].Width;
+    Result := ASize <> COL_WIDTHS[AColId];
+  end
+  else
+  if (AColId >= 1) and (AColId <= tvWatches.Header.Columns.Count) then begin
     ASize := tvWatches.Header.Columns[AColId - 1].Width;
-    Result := ASize <> COL_WIDTHS[AColId - 1];
+    Result := ASize <> COL_WIDTHS[AColId];
   end
   else
     Result := False;
@@ -955,6 +976,7 @@ begin
   case AColId of
     COL_WATCH_EXPR:  tvWatches.Header.Columns[0].Width := ASize;
     COL_WATCH_VALUE: tvWatches.Header.Columns[1].Width := ASize;
+    COL_WATCH_DATAADDR: tvWatches.Header.Columns[2].Width := ASize;
     COL_SPLITTER_INSPECT: nbInspect.Width := ASize;
   end;
 end;
@@ -1186,6 +1208,7 @@ var
   TypInfo: TDBGType;
   HasChildren, IsOuterUpdate: Boolean;
   c: LongWord;
+  da: TDBGPtr;
 begin
   if (not ToolButtonPower.Down) or (not Visible) then exit;
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
@@ -1206,6 +1229,7 @@ begin
   FCurrentWatchInUpDateItem := AWatch;
   try
     tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.DisplayName;
+    tvWatches.NodeText[VNode, 2] := '';
     if AWatch.Enabled then begin
       WatchValue := AWatch.Values[GetThreadId, GetStackframe];
       if (WatchValue <> nil) and
@@ -1217,6 +1241,15 @@ begin
           if (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0)
           then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.ResultData.ArrayLength]) + WatchValueStr
           else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
+          if (WatchValue.ResultData.ValueKind  in [rdkPointerVal]) or
+             (WatchValue.ResultData.StructType in [dstClass, dstInterface]) or
+             (WatchValue.ResultData.ArrayType  in [datDynArray])
+          then begin
+            da := WatchValue.ResultData.DataAddress;
+            if da = 0
+            then tvWatches.NodeText[VNode, 2] := 'nil'
+            else tvWatches.NodeText[VNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+          end
         end
         else begin
           if (WatchValue.TypeInfo <> nil) and
@@ -1613,6 +1646,7 @@ initialization
   WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  @drsColWidthExpression);
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, @drsColWidthValue);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchDataAddr', COL_WATCH_DATAADDR, @drsColWidthValue);
   WatchWindowCreator.DividerTemplate.Add('SplitterWatchInspect', COL_SPLITTER_INSPECT, @drsWatchSplitterInspect);
   WatchWindowCreator.CreateSimpleLayout;
 

@@ -30,6 +30,11 @@ object WatchesDlg: TWatchesDlg
         Position = 0
       end    
       item
+        Position = 2
+      end    
+      item
+        MaxWidth = 300
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coEditable]
         Position = 1
       end>
     Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
@@ -128,6 +133,20 @@ object WatchesDlg: TWatchesDlg
       Left = 200
       Top = 2
       Action = actToggleInspectSite
+      Style = tbsCheck
+    end
+    object ToolButton1: TToolButton
+      Left = 246
+      Height = 22
+      Top = 2
+      ShowCaption = False
+      Style = tbsDivider
+    end
+    object btnShowDataAddr: TToolButton
+      Left = 251
+      Top = 2
+      Caption = '$^'
+      OnClick = btnShowDataAddrClick
       Style = tbsCheck
     end
   end
