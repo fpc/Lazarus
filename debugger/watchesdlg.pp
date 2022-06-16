@@ -45,7 +45,7 @@ uses
   DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
-  StrUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
   ArrayNavigationFrame;
 
 type
@@ -180,7 +180,6 @@ type
     function  GetSelectedSnapshot: TSnapshot;
     property Watches: TIdeWatches read GetWatches;
   protected
-    function IsShortcut(var Message: TLMKey): Boolean; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DoWatchesChanged; override;
@@ -189,6 +188,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function IsShortcut(var Message: TLMKey): Boolean; override;
     property WatchesMonitor;
     property ThreadsMonitor;
     property CallStackMonitor;
@@ -460,8 +460,8 @@ var
   s: String;
   NewWatch: TCurrentWatch;
   Nodes: TNodeArray;
-  Target, N, NTarget: PVirtualNode;
-  AWatch, ATargetWatch: TIdeWatch;
+  Target, N, NTarget, NewNode: PVirtualNode;
+  AWatch, ASourceWatch, ATargetWatch: TIdeWatch;
   NewIdx: Integer;
 begin
   if Source = tvWatches then begin
@@ -508,30 +508,44 @@ begin
         if (N = Target) or (N = NTarget) then
           continue; // already in place
 
-        if Target = nil then
-          tvWatches.MoveTo(N, Target, amAddChildFirst, False)
-        else
-          tvWatches.MoveTo(N, Target, amInsertAfter, False);
-
         AWatch := TIdeWatch(tvWatches.NodeItem[N]);
-        assert(AWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: AWatch <> nil');
-        if AWatch <> nil then begin
-          NewIdx := 0;
-          if Target <> nil then begin
-            ATargetWatch := TIdeWatch(tvWatches.NodeItem[Target]);
-            assert(ATargetWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: ATargetWatch <> nil');
-            if ATargetWatch <> nil then begin
-              NewIdx := ATargetWatch.Index;
-              if NewIdx < AWatch.Index then
-                inc(NewIdx);
-            end;
-          end;
-          AWatch.Index := NewIdx;
-        end;
+        NewNode := N;
+      end
+      else begin
+        // Copy child node
+        ASourceWatch := TIdeWatch(tvWatches.NodeItem[N]);
+        assert(ASourceWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: ASourceWatch <> nil');
+        if ASourceWatch = nil then
+          Continue;
 
-        Target := N;
-        NTarget := tvWatches.GetNextSiblingNoInit(Target);
+        AWatch := FWatchesInView.Add(ASourceWatch.Expression);
+        AWatch.Assign(ASourceWatch);
+
+        NewNode := tvWatches.FindNodeForItem(AWatch);
       end;
+
+      if Target = nil then
+        tvWatches.MoveTo(NewNode, Target, amAddChildFirst, False)
+      else
+        tvWatches.MoveTo(NewNode, Target, amInsertAfter, False);
+
+      assert(AWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: AWatch <> nil');
+      if AWatch = nil then
+        Continue;
+      NewIdx := 0;
+      if Target <> nil then begin
+        ATargetWatch := TIdeWatch(tvWatches.NodeItem[Target]);
+        assert(ATargetWatch <> nil, 'TWatchesDlg.tvWatchesDragDrop: ATargetWatch <> nil');
+        if ATargetWatch <> nil then begin
+          NewIdx := ATargetWatch.Index;
+          if NewIdx < AWatch.Index then
+            inc(NewIdx);
+        end;
+      end;
+      AWatch.Index := NewIdx;
+
+      Target := NewNode;
+      NTarget := tvWatches.GetNextSiblingNoInit(Target);
     end;
 
     DebugBoss.Watches.DoModified;
@@ -587,11 +601,9 @@ begin
 
 
     for N in tvWatches.SelectedNodes(True) do begin
-      if (tvWatches.NodeItem[N] = nil) or
-         (tvWatches.NodeParent[N] <> nil)
-      then begin
+      if tvWatches.NodeItem[N] = nil then begin
         Accept := False;
-        break;
+        exit;
       end;
     end;
   end;
