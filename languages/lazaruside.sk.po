@@ -4172,6 +4172,10 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Hodnota"
 
+#: lazarusidestrconsts.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Výrečnosť počas prekladu:"

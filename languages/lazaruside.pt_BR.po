@@ -4123,6 +4123,10 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Valor"
 
+#: lazarusidestrconsts.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Detalhes durante a compilação:"
