@@ -1214,6 +1214,9 @@ begin
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
   if GetStackframe < 0 then exit; // TODO need dedicated validity property
 
+  if not tvWatches.FullyVisible[VNode] then
+    exit;
+
   if wdsfUpdating in FStateFlags then begin
     if FCurrentWatchInUpDateItem <> AWatch then  // The watch got data while we requested it, that is fine
       FUpdateAllNeeded := True;
