@@ -2143,7 +2143,7 @@ begin
     if not WordIsTermOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos)
     then begin
-      // not a operator
+      // not an operator
       break;
     end;
     // operator => read further

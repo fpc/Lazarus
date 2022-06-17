@@ -526,7 +526,7 @@ procedure TTestPascalParser.TestParseProcAnoAssign;
 begin
   Add([
   'program test1;',
-  '{$modeswitch closures}',
+  '{$modeswitch anonymousfunctions}',
   'procedure DoIt;',
   'begin',
   '  p:=procedure begin end;',
@@ -550,7 +550,7 @@ begin
   Add([
   'program test1;',
   '{$mode objfpc}',
-  '{$modeswitch closures}',
+  '{$modeswitch anonymousfunctions}',
   'procedure DoIt;',
   'begin',
   '  DoIt(procedure begin end);',
@@ -574,7 +574,7 @@ begin
   Add([
   'program test1;',
   '{$mode objfpc}',
-  '{$modeswitch closures}',
+  '{$modeswitch anonymousfunctions}',
   'procedure DoIt;',
   'begin',
   '  DoIt(',

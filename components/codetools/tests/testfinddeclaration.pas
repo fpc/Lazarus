@@ -1076,7 +1076,8 @@ procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc;
 begin
   StartProgram;
   Add([
-  '{$mode objfpc}{$modeswitch closures}',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
   'type',
   '  int = word;',
   '  TFunc = function(i: int): int;',
@@ -1106,7 +1107,8 @@ procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc_ExprDot;
 begin
   StartProgram;
   Add([
-  '{$mode objfpc}{$modeswitch closures}',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
   'type',
   '  int = word;',
   '  TFunc = function(i: int): int;',

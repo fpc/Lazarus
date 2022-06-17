@@ -1503,7 +1503,7 @@ var
       '.':
         if (not FoundFloat)
             and (CurPos.StartPos>2)
-            and (LastChar in ['0'..'9'])
+            and (LastChar in ['0'..'9','e','E'])
             and (Src[CurPos.StartPos-2] in ['0'..'9']) then
         begin
           // float

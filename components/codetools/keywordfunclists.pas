@@ -198,7 +198,7 @@ var i, l, l2: integer;
   pSrc, pDest: PWord;
 begin
   l:=length(s);
-  SetLength(Result,l);
+  SetLength(Result{%H-},l);
   if l>0 then begin
     pDest:=PWord(@Result[1]);
     pSrc:=PWord(@s[1]);
@@ -853,6 +853,7 @@ begin
     IsIdentChar[c]:=c in ['a'..'z','A'..'Z','_','0'..'9'];
     IsDottedIdentChar[c]:=c in ['.','a'..'z','A'..'Z','_','0'..'9'];
     IsNumberChar[c]:=c in ['0'..'9'];
+    IsNumberOrSepChar[c]:=c in ['0'..'9','_'];
     IsCommentStartChar[c]:=c in ['/','{','('];
     IsCommentEndChar[c]:=c in ['}',')',#13,#10];
     IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
