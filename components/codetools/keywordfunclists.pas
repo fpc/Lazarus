@@ -171,6 +171,7 @@ var
   IsIdentChar,       // ['a'..'z','A'..'Z','_','0'..'9']
   IsDottedIdentChar, // ['.','a'..'z','A'..'Z','_','0'..'9']
   IsNumberChar,      // ['0'..'9']
+  IsNumberOrSepChar, // ['0'..'9','_']
   IsCommentStartChar,
   IsCommentEndChar,
   IsHexNumberChar,   // ['0'..'9','a'..'f','A'..'F']

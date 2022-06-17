@@ -221,7 +221,7 @@ type
     cmsMultiHelpers,       { helpers can appear in multiple scopes simultaneously }
     cmsArray2dynarray,     { regular arrays can be implicitly converted to dynamic arrays }
     cmsPrefixedAttributes, { enable attributes that are defined before the type they belong to }
-    cmsUnderscoreisSeparator, { _ can be used as separator to group digits in numbers }
+    cmsUnderscoreIsSeparator, { _ can be used as separator to group digits in numbers }
     cmsImplicitFunctionSpecialization, { infer types on calls of generic functions }
     cmsFunctionReferences, { allow "reference to" function types }
     cmsAnonymousFunctions, { allow anonymous functions }
@@ -245,16 +245,16 @@ const
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
-     cmsPrefixedAttributes,cmsArrayOperators,cmsFunctionReferences,
-     cmsAnonymousFunctions],
+     cmsPrefixedAttributes,cmsArrayOperators,cmsUnderscoreIsSeparator,
+     cmsFunctionReferences,cmsAnonymousFunctions],
     // cmDELPHIUNICODE
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
      cmsSystemcodepage,cmsDefault_unicodestring,
-     cmsPrefixedAttributes,cmsArrayOperators,cmsFunctionReferences,
-     cmsAnonymousFunctions],
+     cmsPrefixedAttributes,cmsArrayOperators,cmsUnderscoreIsSeparator,
+     cmsFunctionReferences,cmsAnonymousFunctions],
     // cmGPC
     [cmsTp_procvar],
     // cmTP
@@ -2003,18 +2003,22 @@ begin
     begin
       TokenType:=lsttNone;
       inc(p);
-      while IsNumberChar[p^] do
+      while IsNumberOrSepChar[p^] do
         inc(p);
       if (p^='.') and (p[1]<>'.') then begin
         // real type number
         inc(p);
-        while IsNumberChar[p^] do
+        if IsNumberChar[p^] then
+          inc(p);
+        while IsNumberOrSepChar[p^] do
           inc(p);
         if (p^ in ['E','e']) then begin
           // read exponent
           inc(p);
           if (p^ in ['-','+']) then inc(p);
-          while IsNumberChar[p^] do
+          if IsNumberChar[p^] then
+            inc(p);
+          while IsNumberOrSepChar[p^] do
             inc(p);
         end;
       end;

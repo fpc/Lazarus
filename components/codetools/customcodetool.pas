@@ -868,7 +868,7 @@ begin
   Result:=false;
   i:=CurPos.StartPos;
   if (i<=SrcLen) and (IsNumberChar[Src[i]]) then begin
-    while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
+    while (i<=SrcLen) and (IsNumberOrSepChar[Src[i]]) do
       inc(i);
     if (i<SrcLen) and (Src[i]='.') and (IsNumberChar[Src[i+1]]) then
       Result:=true;
@@ -1271,19 +1271,21 @@ begin
   '0'..'9':
     begin
       inc(p);
-      while IsNumberChar[p^] do
+      while IsNumberOrSepChar[p^] do
         inc(p);
       if (p^='.') and IsAfterFloatPointChar[p[1]] then begin
         // real type number
         inc(p);
-        while IsNumberChar[p^] do
+        while IsNumberOrSepChar[p^] do
           inc(p);
       end;
       if p^ in ['e','E'] then begin
         // read exponent
         inc(p);
         if p^ in ['-','+'] then inc(p);
-        while IsNumberChar[p^] do
+        if IsNumberChar[p^] then
+          inc(p);
+        while IsNumberOrSepChar[p^] do
           inc(p);
       end;
       CurPos.EndPos:=p-PChar(Src)+1;
@@ -1470,7 +1472,77 @@ var
       end;
     end;
   end;
-  
+
+  procedure ReadeNumberBackward;
+  var
+    FoundExponent, FoundFloat: Boolean;
+    LastChar, c: Char;
+    p, AtomStart, StartP: PChar;
+    MaxP: Pointer;
+  begin
+    FoundExponent:=false;
+    FoundFloat:=false;
+    LastChar:=#0;
+    while (CurPos.StartPos>1) do begin
+      c:=Src[CurPos.StartPos-1];
+      case c of
+      '0'..'9','a'..'z','A'..'Z','_': dec(CurPos.StartPos);
+      '+','-':
+        if (not FoundExponent)
+            and (not FoundFloat)
+            and (CurPos.StartPos>3)
+            and (Src[CurPos.StartPos-2] in ['e','E'])
+            and (LastChar in ['+','-','0'..'9'])
+            and (Src[CurPos.StartPos-3] in ['0'..'9']) then
+        begin
+          // exponent
+          FoundExponent:=true;
+          dec(CurNode.StartPos,3);
+        end else
+          break;
+      '.':
+        if (not FoundFloat)
+            and (CurPos.StartPos>2)
+            and (LastChar in ['0'..'9'])
+            and (Src[CurPos.StartPos-2] in ['0'..'9']) then
+        begin
+          // float
+          FoundFloat:=true;
+          dec(CurNode.StartPos,2);
+        end else
+          break;
+      '&','$','%':
+        begin
+          dec(CurPos.StartPos);
+          break;
+        end;
+      '@':
+        begin
+          if (CurPos.StartPos>2) and (Src[CurPos.StartPos-2]='@') then
+            dec(CurPos.StartPos,2);
+          break;
+        end;
+      '#':
+        begin
+          ReadStringConstantBackward;
+          break;
+        end
+      else
+        break;
+      end;
+      LastChar:=c;
+    end;
+
+    StartP:=PChar(Src);
+    p:=StartP+CurPos.StartPos-1;
+    MaxP:=StartP+CurPos.EndPos-1;
+    repeat
+      ReadRawNextPascalAtom(p,AtomStart);
+      if AtomStart<MaxP then
+        CurPos.StartPos:=AtomStart-StartP+1;
+    until (p>MaxP) or (p=AtomStart);
+  end;
+
   procedure ReadBackTilCodeLineEnd;
   begin
     dec(CurPos.StartPos);
@@ -1591,17 +1663,7 @@ var
     until PrePos>=CurPos.StartPos;
   end;
 
-type
-  TNumberType = (ntDecimal, ntHexadecimal, ntBinary, ntIdentifier,
-    ntCharConstant, ntFloat, ntFloatWithExponent);
-  TNumberTypes = set of TNumberType;
-
-const
-  AllNumberTypes: TNumberTypes = [ntDecimal, ntHexadecimal, ntBinary,
-    ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
-
 var c1, c2: char;
-  ForbiddenNumberTypes: TNumberTypes;
 begin
   if LastAtoms.HasPrior then begin
     LastAtoms.GoBack(CurPos);
@@ -1686,7 +1748,7 @@ begin
   end;
   c2:=Src[CurPos.StartPos];
   case c2 of
-    '_','A'..'Z','a'..'z':
+    'A'..'Z','a'..'z':
       begin
         // identifier or keyword or hexnumber
         while (CurPos.StartPos>1) do begin
@@ -1695,9 +1757,9 @@ begin
           else begin
             case UpChars[Src[CurPos.StartPos-1]] of
             '@':
-              // assembler label
               if (CurPos.StartPos>2)
               and (Src[CurPos.StartPos-2]='@') then
+                // assembler label
                 dec(CurPos.StartPos,2);
             '$':
               // hex number
@@ -1722,108 +1784,12 @@ begin
         inc(CurPos.StartPos);
         ReadStringConstantBackward;
       end;
-    '0'..'9':
+    '0'..'9','_':
       begin
-        // could be a decimal number, an identifier, a hex number,
-        // a binary number, a char constant, a float, a float with exponent
-        ForbiddenNumberTypes:=[];
-        while true do begin
-          case UpChars[Src[CurPos.StartPos]] of
-          '0'..'1':
-            ;
-          '2'..'9':
-            ForbiddenNumberTypes:=ForbiddenNumberTypes+[ntBinary];
-          'A'..'D','F':
-            ForbiddenNumberTypes:=ForbiddenNumberTypes
-               +[ntBinary,ntDecimal,ntCharConstant,ntFloat,ntFloatWithExponent];
-          'E':
-            ForbiddenNumberTypes:=ForbiddenNumberTypes
-               +[ntBinary,ntDecimal,ntCharConstant,ntFloat];
-          'G'..'Z','_':
-            ForbiddenNumberTypes:=AllNumberTypes-[ntIdentifier];
-          '.':
-            begin
-              // could be the point of a float
-              if (ntFloat in ForbiddenNumberTypes)
-              or (CurPos.StartPos<=1) or (Src[CurPos.StartPos-1]='.') then begin
-                inc(CurPos.StartPos);
-                break;
-              end;
-              dec(CurPos.StartPos);
-              // this was the part of a float after the point
-              //  -> read decimal in front
-              ForbiddenNumberTypes:=AllNumberTypes-[ntDecimal];
-            end;
-          '+','-':
-            begin
-              // could be part of an exponent
-              if (ntFloatWithExponent in ForbiddenNumberTypes)
-              or (CurPos.StartPos<=1)
-              or (not (Src[CurPos.StartPos-1] in ['e','E']))
-              then begin
-                inc(CurPos.StartPos);
-                break;
-              end;
-              dec(CurPos.StartPos);
-              // this was the exponent of a float -> read the float
-              ForbiddenNumberTypes:=AllNumberTypes-[ntFloat];
-            end;
-          '#': // char constant found
-            begin
-              if (ntCharConstant in ForbiddenNumberTypes) then
-                inc(CurPos.StartPos);
-              ReadStringConstantBackward;
-              break;
-            end;
-          '$':
-            begin
-              // hexadecimal number found
-              if (ntHexadecimal in ForbiddenNumberTypes) then
-                inc(CurPos.StartPos);
-              break;
-            end;
-          '%':
-            begin
-              // binary number found
-              if (ntBinary in ForbiddenNumberTypes) then
-                inc(CurPos.StartPos);
-              break;
-            end;
-          '@':
-            begin
-              if (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
-              or (([ntIdentifier,ntDecimal]*ForbiddenNumberTypes)=[]) then
-                // atom start found
-                inc(CurPos.StartPos)
-              else
-                // label found
-                dec(CurPos.StartPos);
-              break;
-            end;
-          else
-            begin
-              inc(CurPos.StartPos);
-              break;
-            end;
-          end;
-          if ForbiddenNumberTypes=AllNumberTypes then begin
-            inc(CurPos.StartPos);
-            break;
-          end;
-          if CurPos.StartPos<=1 then break;
-          dec(CurPos.StartPos);
-        end;
-        if IsIdentStartChar[Src[CurPos.StartPos]] then begin
-          // it is an identifier
-          CurPos.Flag:=cafWord;
-          case UpChars[Src[CurPos.StartPos]] of
-          'E':
-            if CompareSrcIdentifiers(CurPos.StartPos,'END') then
-              CurPos.Flag:=cafEnd;
-          end;
-        end;
+        // could be a decimal number, identifier, hex/binary/octal number,
+        // char constant, float, float with exponent
+        ReadeNumberBackward;
       end;
-      
     ';': CurPos.Flag:=cafSemicolon;
     ':': CurPos.Flag:=cafColon;
     ',': CurPos.Flag:=cafComma;

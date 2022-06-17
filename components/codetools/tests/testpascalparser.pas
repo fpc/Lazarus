@@ -57,6 +57,7 @@ type
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
     procedure TestParseMultilineString;
+    procedure TestParseUnderscoreIsSeparator;
   end;
 
 implementation
@@ -629,6 +630,20 @@ begin
   '`#10`',
   'line`;',
   '  c = ''''``;',
+  'begin',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseUnderscoreIsSeparator;
+begin
+  Add([
+  'program test1;',
+  '{$modeswitch underscoreisseparator}',
+  'const',
+  '  a = 1_000;',
+  '  b = 1__0;',
+  '  c = 1_0.3_4E5_6;',
   'begin',
   '']);
   ParseModule;

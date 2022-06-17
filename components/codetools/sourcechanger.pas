@@ -1475,22 +1475,26 @@ begin
           CurAtomType:=atNumber;
           repeat
             inc(CurPos);
-          until (CurPos>SrcLen) or (not IsNumberChar[Src[CurPos]]);
+          until (CurPos>SrcLen) or (not IsNumberOrSepChar[Src[CurPos]]);
           if (CurPos<SrcLen)
           and (Src[CurPos]='.') and (Src[CurPos+1]<>'.') then
           begin
             // real type number
             inc(CurPos);
-            while (CurPos<=SrcLen) and (IsNumberChar[Src[CurPos]])
+            if (CurPos<=SrcLen) and (IsNumberChar[Src[CurPos]]) then
+              inc(CurPos);
+            while (CurPos<=SrcLen) and (IsNumberOrSepChar[Src[CurPos]])
             do
               inc(CurPos);
             if (CurPos<=SrcLen) and (Src[CurPos] in ['e','E'])
             then begin
               // read exponent
               inc(CurPos);
-              if (CurPos<=SrcLen) and (Src[CurPos] in ['-','+'])
-              then inc(CurPos);
-              while (CurPos<=SrcLen) and (IsNumberChar[Src[CurPos]])
+              if (CurPos<=SrcLen) and (Src[CurPos] in ['-','+']) then
+                inc(CurPos);
+              if (CurPos<=SrcLen) and (IsNumberChar[Src[CurPos]]) then
+                inc(CurPos);
+              while (CurPos<=SrcLen) and (IsNumberOrSepChar[Src[CurPos]])
               do
                 inc(CurPos);
             end;
