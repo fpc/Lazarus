@@ -59,10 +59,10 @@
         <seealso/>
       </element>
       <element name="TGEEdit.PerformTab.Result">
-        <short>True when the Tab key has been handled.</short>
+        <short><b>True</b> when the Tab key has been handled.</short>
       </element>
       <element name="TGEEdit.PerformTab.ForwardTab">
-        <short>True forwards the key to the ancestor class.</short>
+        <short><b>True</b> forwards the key to the ancestor class.</short>
       </element>
 
       <element name="TGEEditClass">
@@ -1083,7 +1083,7 @@
         <short>Creates the TControl instance assigned to the Buddy property.</short>
         <descr>
           <p>
-            <var>CreateBuddy</var> is a <var>TControl</var> function used to create the <var>TControl</var> instance assigned to the <var>Buddy</var> property. CreateBuddy calls <var>GetBuddyClassType</var> to get the class reference used to create new instances of the control, and calls its Create method using the current class  instance as the owner for the TControl instance.
+            <var>CreateBuddy</var> is a <var>TControl</var> function used to create the <var>TControl</var> instance assigned to the <var>Buddy</var> property. CreateBuddy calls <var>GetBuddyClassType</var> to get the class reference used to create new instances of the control, and calls its Create method using the current class instance as the owner for the TControl instance.
           </p>
           <p>
             CreateBuddy is used the <var>Create</var> constructor.
@@ -1113,7 +1113,7 @@
         <short>Gives focus to the control, and optionally selects text in its editor.</short>
         <descr>
           <p>
-            <var>FocusAndMaybeSelectAll</var> is a procedure used to give focus to the control, and to optionally select text in its editor.  FocusAndMaybeSelectAll calls the <var>SetFocus</var> method in <var>BaseEditor</var> to ensure that the editor portion of the grouped edit control has focus.
+            <var>FocusAndMaybeSelectAll</var> is a procedure used to give focus to the control, and to optionally select text in its editor. FocusAndMaybeSelectAll calls the <var>SetFocus</var> method in <var>BaseEditor</var> to ensure that the editor portion of the grouped edit control has focus.
           </p>
           <p>
             The value in <var>AutoSelect</var> is used to determine the selected text in the BaseEditor control. When AutoSelect is set to <b>True</b>, the <var>SelectAll</var> method in BaseEditor is called to select all of the content in the control. When <b>False</b>, the <var>SelStart</var> method in BaseEditor is set to the maximum value for an <var>Integer</var>, ensuring that the caret position is located at the end of the control value.
@@ -1244,7 +1244,7 @@
         </seealso>
       </element>
       <element name="TCustomAbstractGroupedEdit.GetBuddyVisible.Result">
-        <short>True if the Buddy control is visible.</short>
+        <short><b>True</b> if the Buddy control is visible.</short>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.SetBuddyCaption">
@@ -1299,7 +1299,7 @@
         </seealso>
       </element>
       <element name="TCustomAbstractGroupedEdit.SetBuddyVisible.AValue">
-        <short>True to display the Buddy control, False to hide it.</short>
+        <short><b>True</b> to display the Buddy control, <b>False</b> to hide it.</short>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.BuddyClick">
@@ -1312,7 +1312,7 @@
             <var>BuddyClick</var> uses the value in <var>ReadOnly</var> to determine if the grouped edit control should respond to a Click event from the <var>Buddy</var> control. When ReadOnly is <b>True</b>, no actions are performed in the method.
           </p>
           <p>
-            BuddyClick signals the <var>OnBuddyEvent</var> handler (when assigned). When the BuddyClick code points to this method (and not an overridden one in a descendant),  the <var>FocusOnBuddyClick</var> method is called to determine if focus and selection changes are handled by the current class instance.
+            BuddyClick signals the <var>OnBuddyEvent</var> handler (when assigned). When the BuddyClick code points to this method (and not an overridden one in a descendant), the <var>FocusOnBuddyClick</var> method is called to determine if focus and selection changes are handled by the current class instance.
           </p>
           <p>
             Derived controls may override <var>BuddyClick</var> to run a dialog after calling the inherited method. In this scenario, selecting the text in this method is most likely premature. It is the responsibility of the derived control to implement focus changes and selection as needed.
@@ -1341,7 +1341,7 @@
         <short>Signals the OnEditChange event handler, when assigned.</short>
         <descr>
           <p>
-            <var>EditChange</var> is a procedure used to signals the <var>OnEditChange</var> event handler, when assigned. EditChange is used in the implementation of the <var>InternalOnEditChange</var> method, which is assigned as the    <var>OnChange</var> event handler in the <var>BaseEditor</var> property.
+            <var>EditChange</var> is a procedure used to signals the <var>OnEditChange</var> event handler, when assigned. EditChange is used in the implementation of the <var>InternalOnEditChange</var> method, which is assigned as the <var>OnChange</var> event handler in the <var>BaseEditor</var> property.
           </p>
         </descr>
         <seealso>
@@ -1369,7 +1369,7 @@
         <short>Mouse coordinates for the context pop-up.</short>
       </element>
       <element name="TCustomAbstractGroupedEdit.EditContextPopup.Handled">
-        <short>True if the pop-up was handled for the control.</short>
+        <short><b>True</b> if the pop-up was handled for the control.</short>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.EditDblClick">
@@ -1737,7 +1737,9 @@
       <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust">
         <short>Indicates if the height or width is affected during auto-adjust.</short>
         <descr>
-          AWidth is set to True in TCustomAbstractGroupedEdit. AHeight is set to False when AutoSize is True, and vice-versa.
+          <p>
+            AWidth is set to <b>True</b> in TCustomAbstractGroupedEdit. AHeight is set to <b>False</b> when AutoSize is <b>True</b>, and vice-versa.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1861,10 +1863,12 @@
       </element>
 
       <element name="TCustomAbstractGroupedEdit.FocusOnBuddyClick">
-        <short>Determines if the control receives focus when the Buddy control is clicked.</short>
+        <short>
+          Determines if the control receives focus when the Buddy control is clicked.
+        </short>
         <descr>
           <p>
-            <var>FocusOnBuddyClick</var> is a <var>Boolean</var> property which determines if the control receives focus (and a potential change to the text selection in the editor) when the <var>Buddy</var> control is clicked. The default value for the property is False.
+            <var>FocusOnBuddyClick</var> is a <var>Boolean</var> property which determines if the control receives focus (and a potential change to the text selection in the editor) when the <var>Buddy</var> control is clicked. The default value for the property is <b>False</b>.
           </p>
           <p>
             FocusOnBuddyClick is used in the implementation of the BuddyClick method.
@@ -1913,10 +1917,10 @@
       </element>
 
       <element name="TCustomAbstractGroupedEdit.Spacing">
-        <short>Spacing used  between the BaseEditor and the Buddy controls.</short>
+        <short>Spacing used between the BaseEditor and the Buddy controls.</short>
         <descr>
           <p>
-            <var>Spacing</var> is an <var>Integer</var> property that contains the spacing used  between the <var>BaseEditor</var> and the <var>Buddy</var> controls.
+            <var>Spacing</var> is an <var>Integer</var> property that contains the spacing used between the <var>BaseEditor</var> and the <var>Buddy</var> controls.
           </p>
         </descr>
         <seealso/>
@@ -1980,7 +1984,7 @@
         <short>Performs actions needed when the control receives focus.</short>
         <descr>
           <p>
-            <var>Focused</var> is an overridden <var>Boolean</var> function used to perform actions needed when the control receives focus. Focused calls the    <var>Focused</var> method in the <var>BaseEditor</var> for the control.
+            <var>Focused</var> is an overridden <var>Boolean</var> function used to perform actions needed when the control receives focus. Focused calls the <var>Focused</var> method in the <var>BaseEditor</var> for the control.
           </p>
         </descr>
         <seealso>
@@ -1989,7 +1993,7 @@
         </seealso>
       </element>
       <element name="TCustomAbstractGroupedEdit.Focused.Result">
-        <short>True when the control has focus.</short>
+        <short><b>True</b> when the control has focus.</short>
       </element>
 
       <element name="TCustomAbstractGroupedEdit.Clear">
@@ -2047,7 +2051,7 @@
         <short>Performs actions needed to validate the value for the control.</short>
         <descr>
           <p>
-            <var>ValidateEdit</var> is a procedure used to perform actions needed to validate the value for the control. The method calls the ValidateEdit method in the <var>BaseEditor</var> member to validate its Text against the edit mask assigned to  the property.
+            <var>ValidateEdit</var> is a procedure used to perform actions needed to validate the value for the control. The method calls the ValidateEdit method in the <var>BaseEditor</var> member to validate its Text against the edit mask assigned to the property.
           </p>
         </descr>
         <seealso>
@@ -2077,14 +2081,14 @@
 
       <element name="TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight">
         <short>
-          Indicates if the height for  BaseEditor is used as the height for the control when autosizing.
+          Indicates if the height for BaseEditor is used as the height for the control when autosizing.
         </short>
         <descr>
           <p>
             <var>AutoSizeHeightIsEditHeight</var> is a <var>Boolean</var> property which indicates if the height for <var>BaseEditor</var> is used as the height for the control when autosizing is enabled. The default value for the property is <b>True</b>.
           </p>
           <p>
-            AutoSizeHeightIsEditHeight is used in the implementation of the <var>CalculatePreferredSize</var> method called when CanAutoSize is True.
+            AutoSizeHeightIsEditHeight is used in the implementation of the <var>CalculatePreferredSize</var> method called when CanAutoSize is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -2130,7 +2134,7 @@
             <var>CharCase</var> is a <var>TEditCharCase</var> property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is <var>ecNormal</var>, and indicates that no case conversion is used. See <link id="#lcl.stdctrls.TEditCharCase">TEditCharCase</link> for more information about the enumeration values supported for the type.
           </p>
           <p>
-            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control.
+            Read and write access to the property value are redirected to the <var>BaseEditor</var> control.
           </p>
           <remark>
             The value in CharCase can automatically be changed to ecNormal when an edit mask is assigned to the control.
@@ -2148,10 +2152,10 @@
         <short>Indicates if the color in the Parent control is used.</short>
         <descr>
           <p>
-            <var>ParentColor</var> is a <var>Boolean</var> property which indicates if the <var>Color</var> from the <var>Parent</var> control is used instead the value  assigned to the control. When this property is True, all changes to Color  in the parent will also be applied to the Color in the control, ensuring that they both contain the same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            <var>ParentColor</var> is a <var>Boolean</var> property which indicates if the <var>Color</var> from the <var>Parent</var> control is used instead the value assigned to the control. When this property is <b>True</b>, all changes to Color in the parent will also be applied to the Color in the control, ensuring that they both contain the same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
           <p>
-            Read and write access to the property value are redirected to the   <var>BaseEditor</var> control. The default value for the property is <b>False</b>.
+            Read and write access to the property value are redirected to the <var>BaseEditor</var> control. The default value for the property is <b>False</b>.
           </p>
           <p>
             Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
@@ -2272,7 +2276,7 @@
         <short>Event handler signalled when the value for the control is changed.</short>
         <descr>
           <p>
-            <var>OnChange</var> is a <var>TNotifyEvent</var> property that contains the event handler signalled when the value for the control is changed.  OnChange is triggered from the <var>EditChange</var> method called when the   <var>BaseEditor</var> control has modified its value.
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property that contains the event handler signalled when the value for the control is changed. OnChange is triggered from the <var>EditChange</var> method called when the <var>BaseEditor</var> control has modified its value.
           </p>
         </descr>
         <seealso>
