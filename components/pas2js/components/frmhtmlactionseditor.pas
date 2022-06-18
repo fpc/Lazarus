@@ -165,28 +165,38 @@ begin
   Result:=-1;
   FN:=HTMLTools.GetHTMLFileForComponent(aList);
   if (FN='') then
+    begin
     ShowMessage(Format(rsErrNoHTMLFileNameForComponent,[aList.Name]));
+    exit;
+    end;
   Tags:=TElementInfoList.Create;
   try
     HTMLTools.GetTagIDs(FN,Tags,[eoExtraInfo]);
+    // Remove existing
+    for I:=Tags.Count-1 downto 0 do
+      if aList.FindActionByElementID(Tags[i].ElementID)<>Nil then
+        Tags.Delete(I);
+    if Tags.Count=0 then
+      begin
+      ShowMessage(rsAllTagsHaveAction);
+      exit;
+      end;
+    // Now select
     if SelectHTMLActionClasses(Tags,PreferDB) then
       begin
       Result:=0;
       For I:=0 to Tags.Count-1 do
         begin
         aEl:=Tags[i];
-        if aList.FindActionByElementID(aEl.ElementID)=Nil then
-          begin
-          aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
-          aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
-          if aList.Owner.FindComponent(aName)<>Nil then
-            aName:=aEditor.Designer.CreateUniqueComponentName(aName);
-          aAction.Name:=aName;
-          aAction.ElementID:=aEl.ElementID;
-          aEditor.Designer.ClearSelection;
-          aEditor.Designer.PropertyEditorHook.PersistentAdded(aAction,True);
-          Inc(Result);
-          end;
+        aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
+        aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
+        if aList.Owner.FindComponent(aName)<>Nil then
+          aName:=aEditor.Designer.CreateUniqueComponentName(aName);
+        aAction.Name:=aName;
+        aAction.ElementID:=aEl.ElementID;
+        aEditor.Designer.ClearSelection;
+        aEditor.Designer.PropertyEditorHook.PersistentAdded(aAction,True);
+        Inc(Result);
         end;
       end;
   finally
