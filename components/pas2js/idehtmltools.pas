@@ -223,12 +223,13 @@ end;
 function TIDEHTMLTools.GetTagIDs(const aFileName: string; aOptions : TExtractOptions = []): TStringArray;
 
 Var
-  aList : TStrings;
+  aList : TStringList;
 
 begin
   aList:=TStringList.Create;
   try
     GetTagIDS(aFileName,aList,aOptions);
+    aList.Sort;
     Result:=aList.ToStringArray;
   finally
     aList.Free;
