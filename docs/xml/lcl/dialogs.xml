@@ -255,7 +255,7 @@
         <short>Object for the event notification.</short>
       </element>
       <element name="TDialogResultEvent.Success">
-        <short>True if the dialog was successfully executed.</short>
+        <short><b>True</b> if the dialog was successfully executed.</short>
       </element>
 
       <element name="TCommonDialog">
@@ -311,7 +311,7 @@
         </seealso>
       </element>
       <element name="TCommonDialog.IsTitleStored.Result">
-        <short>True when an explicit value has been assigned to Title.</short>
+        <short><b>True</b> when an explicit value has been assigned to Title.</short>
       </element>
 
       <element name="TCommonDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -322,7 +322,7 @@
         <seealso/>
       </element>
       <element name="TCommonDialog.DoExecute.Result">
-        <short>Returns True if the correct exit button was pressed.</short>
+        <short>Returns <b>True</b> if the correct exit button was pressed.</short>
       </element>
 
       <element name="TCommonDialog.DefaultTitle">
@@ -410,7 +410,7 @@
             <var>OnDialogResult</var> is a <var>TDialogResultEvent</var> property with the event handler signalled when a result is available for the dialog.
           </p>
           <p>
-            OnDialogResult is a platform-specific  property, and may not be used in all widgetsets. It provides a way for platforms which use native dialogs in their  implementation to notify the dialog that a result is available.
+            OnDialogResult is a platform-specific property, and may not be used in all widgetsets. It provides a way for platforms which use native dialogs in their implementation to notify the dialog that a result is available.
           </p>
         </descr>
         <seealso>
@@ -444,7 +444,7 @@
             Use the Execute method to display the dialog and capture the result.
           </p>
           <p>
-            Execute notifies the Application that a modal display is started, and disables the  current form. The widgetset handle is allocated for the dialog, and the <var>DoExecute</var> method is called to process the modal dialog. The form is re-enabled and its active control is re-selected. The Application is notified that the modal display is completed.
+            Execute notifies the Application that a modal display is started, and disables the current form. The widgetset handle is allocated for the dialog, and the <var>DoExecute</var> method is called to process the modal dialog. The form is re-enabled and its active control is re-selected. The Application is notified that the modal display is completed.
           </p>
           <p>
             The return value is set to <b>True</b> if the <b>OK</b> button was pressed to exit the dialog.
@@ -458,7 +458,7 @@
         </seealso>
       </element>
       <element name="TCommonDialog.Execute.Result">
-        <short>Returns True if the user pressed the OK button.</short>
+        <short>Returns <b>True</b> if the user pressed the OK button.</short>
       </element>
 
       <element name="TCommonDialog.Handle">
@@ -491,7 +491,7 @@
             No actions are performed in the method if a Handle is not allocated for the dialog, or the Close method has already been called.
           </p>
           <p>
-            Close is called from the <var>Execute</var> method when the <var>DoExecute</var> method has been completed, and occurs before the active form is re-enabled  and focused.
+            Close is called from the <var>Execute</var> method when the <var>DoExecute</var> method has been completed, and occurs before the active form is re-enabled and focused.
           </p>
         </descr>
         <seealso>
@@ -542,7 +542,7 @@
         </seealso>
       </element>
       <element name="TCommonDialog.DoCanClose.CanClose">
-        <short>True if the OnCanClose event handler determines the dialog can be closed.</short>
+        <short><b>True</b> if the OnCanClose event handler determines the dialog can be closed.</short>
       </element>
 
       <element name="TCommonDialog.DoClose">
@@ -565,14 +565,14 @@
       </element>
 
       <element name="TCommonDialog.HandleAllocated">
-        <short>Returns True if a widgetset handle has been allocated for the dialog.</short>
+        <short>Returns <b>True</b> if a widgetset handle has been allocated for the dialog.</short>
         <descr/>
         <seealso>
           <link id="TCommonDialog.Handle"/>
         </seealso>
       </element>
       <element name="TCommonDialog.HandleAllocated.Result">
-        <short>True if a widgetset handle has been allocated for the dialog.</short>
+        <short><b>True</b> if a widgetset handle has been allocated for the dialog.</short>
       </element>
 
       <element name="TCommonDialog.Width">
@@ -721,7 +721,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TFileDialog</var>, and calls the inherited <var>Create</var> method. It  allocates resources needed for the files and history, and initializes the filter index.
+            <var>Create</var> is the constructor for <var>TFileDialog</var>, and calls the inherited <var>Create</var> method. It allocates resources needed for the files and history, and initializes the filter index.
           </p>
         </descr>
         <seealso>
@@ -1013,7 +1013,7 @@
 
       <element name="TOpenDialog.CheckFileMustExist">
         <short>
-          <var>CheckFileMustExist</var> returns True if a file with the specified name exists.
+          <var>CheckFileMustExist</var> returns <b>True</b> if a file with the specified name exists.
         </short>
         <descr/>
         <seealso/>
@@ -1027,7 +1027,7 @@
 
       <element name="TOpenDialog.CheckAllFiles">
         <short>
-          Calls <var>CheckFile</var> for each selected file, returns True if all are OK.
+          Calls <var>CheckFile</var> for each selected file, returns <b>True</b> if all are OK.
         </short>
         <descr/>
         <seealso/>
@@ -1254,7 +1254,7 @@
       </element>
 
       <element name="TColorDialog.FColor">
-        <short>Internal member used to store the value for he selected  color.</short>
+        <short>Internal member used to store the value for he selected color.</short>
       </element>
 
       <element name="TColorDialog.FCustomColors">
@@ -1287,7 +1287,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TColorDialog</var>, and calls the inherited <var>Create</var> method. Create allocates resources and initializes  the Color and CustomColors properties.
+            <var>Create</var> is the constructor for <var>TColorDialog</var>, and calls the inherited <var>Create</var> method. Create allocates resources and initializes the Color and CustomColors properties.
           </p>
         </descr>
         <seealso>
@@ -1324,7 +1324,7 @@
         <short>Color selected by the user in the color dialog.</short>
         <descr>
           <p>
-            <var>Color</var>  is a TColor property with the color selected using the dialog. A value can be pre-set and may be accepted, but a new value may also be chosen. When the Color dialog is displayed and the user pressed OK, the Color property contains the chosen color.
+            <var>Color</var> is a TColor property with the color selected using the dialog. A value can be pre-set and may be accepted, but a new value may also be chosen. When the Color dialog is displayed and the user pressed OK, the Color property contains the chosen color.
           </p>
           <p>
             Use CustomColors to define a palette with color names and their hexadecimal values available in the dialog.
@@ -1404,7 +1404,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <seealso/>
       </element>
       <element name="TColorButton.IsButtonColorAutoSizeStored.Result">
-        <short>True when ButtonColorAutoSize is set to False.</short>
+        <short><b>True</b> when ButtonColorAutoSize is set to False.</short>
       </element>
 
       <element name="TColorButton.SetBorderWidth">
@@ -1537,7 +1537,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         </short>
         <descr>
           <p>
-            <var>GetGlyphSize</var> is an overridden  <var>TSize</var> function used to get the dimensions for the glyph (color block / swatch) displayed on the button control. Values in ButtonColorAutoSize and ButtonColorSize determine the height and width used for the color block displayed on the control.
+            <var>GetGlyphSize</var> is an overridden <var>TSize</var> function used to get the dimensions for the glyph (color block / swatch) displayed on the button control. Values in ButtonColorAutoSize and ButtonColorSize determine the height and width used for the color block displayed on the control.
           </p>
           <p>
             When ButtonColorAutoSize is set to True, the color block is auto-sized to fill the unused client area for the control specified in the PaintRect argument. Space is reserved for the Caption (color name), Spacing, BorderWidth, and Margin properties assigned to the control.
@@ -1564,7 +1564,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>TSize instance with the dimensions for the glyph (color block).</short>
       </element>
       <element name="TColorButton.GetGlyphSize.Drawing">
-        <short>True if a drawing operation is active; never set to False in LCL code.</short>
+        <short><b>True</b> if a drawing operation is active; never set to <b>False</b> in LCL code.</short>
       </element>
       <element name="TColorButton.GetGlyphSize.PaintRect">
         <short>TRect instance with the display area for the button control.</short>
@@ -1667,7 +1667,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
 
       <element name="TColorButton.ButtonColorAutoSize">
         <short>
-          True if the color block for the button can be automatically resized to fill the unused client area.
+          <b>True</b> if the color block for the button can be automatically resized to fill the unused client area.
         </short>
         <descr>
           <p>
@@ -1680,7 +1680,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             When set to False, the value in ButtonColorSize is used as both the height and width for the color block or swatch.
           </p>
           <p>
-            The default value for the property is True as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is True, setting a new value for BorderWidth also causes the control to be redrawn.
+            The default value for the property is <b>True</b> as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is True, setting a new value for BorderWidth also causes the control to be redrawn.
           </p>
           <p>
             ButtonColorAutoSize and ButtonColorSize are used in the GetGlyphSize method.
@@ -1780,7 +1780,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             The Layout property determines the order of the Caption and color block values on the button surface. Layout refers to the alignment for the glyph (color block).
           </p>
           <p>
-            Set ButtonColorAutoSize to True to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is False.
+            Set ButtonColorAutoSize to <b>True</b> to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is False.
           </p>
         </descr>
         <seealso>
@@ -2072,7 +2072,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             Include or Exclude values for the property prior to calling the <var>Execute</var> method.
           </p>
           <remark>
-            Enabling a value in Options does not mean that the feature or behavior is supported  in the native font selection dialog for the platform. Some options may not be available on a given platform.
+            Enabling a value in Options does not mean that the feature or behavior is supported in the native font selection dialog for the platform. Some options may not be available on a given platform.
           </remark>
         </descr>
         <seealso>
@@ -2116,7 +2116,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>PreviewText</var> is a <var>String</var> property with a short snippet of text to display using the currently selected font in the dialog. It acts as a WYSIWYG preview mechanism.
           </p>
           <p>
-            Please note that use of PreviewText is dependent on platform / widgetset support. For instance, Windows does render PreviewText. It uses its own "Sample", and renders the font name in the selection list using the typeface. QT and QT5 have  the same behavior as Windows. It is implemented for the GTK, GTK2 and MUI widgetsets.
+            Please note that use of PreviewText is dependent on platform / widgetset support. For instance, Windows does render PreviewText. It uses its own "Sample", and renders the font name in the selection list using the typeface. QT and QT5 have the same behavior as Windows. It is implemented for the GTK, GTK2 and MUI widgetsets.
           </p>
         </descr>
         <seealso/>
@@ -2851,10 +2851,10 @@ TCustomForm.Close ->
         <short>Coordinate for the <var>Top</var> edge of the dialog form.</short>
         <descr>
           <p>
-            <var>Top</var> is an <var>Integer</var> property which contains the vertical  coordinate where the top edge of the dialog form is located. The default value for the property is -1 and represents the unassigned value.
+            <var>Top</var> is an <var>Integer</var> property which contains the vertical coordinate where the top edge of the dialog form is located. The default value for the property is -1 and represents the unassigned value.
           </p>
           <p>
-            The property value is read from the Top property in the internal TForm instance for the dialog (when assigned). Changing the value in the property causes the Top  property in the dialog form to be updated with the new coordinate value. The value for the property is updated in the CalcPosition method when the dialog is executed.
+            The property value is read from the Top property in the internal TForm instance for the dialog (when assigned). Changing the value in the property causes the Top property in the dialog form to be updated with the new coordinate value. The value for the property is updated in the CalcPosition method when the dialog is executed.
           </p>
           <p>
             Left and Top are used in the CreateForm method to set the default coordinates for the dialog form.
@@ -3097,7 +3097,7 @@ TCustomForm.Close ->
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TReplaceDialog</var>, and calls the  inherited <var>Create</var> method. It sets the initial option values for find and replace.
+            <var>Create</var> is the constructor for <var>TReplaceDialog</var>, and calls the inherited <var>Create</var> method. It sets the initial option values for find and replace.
           </p>
         </descr>
         <seealso>
@@ -3380,7 +3380,7 @@ TCustomForm.Close ->
         <short>Set type used to store values from TTaskDialogCommonButton.</short>
         <descr>
           <p>
-            <var>TTaskDialogCommonButtons</var> is the type used for the <var>CommonButtons</var> property  in <var>TCustomTaskDialog</var>.
+            <var>TTaskDialogCommonButtons</var> is the type used for the <var>CommonButtons</var> property in <var>TCustomTaskDialog</var>.
           </p>
         </descr>
         <seealso>
@@ -3408,7 +3408,7 @@ TCustomForm.Close ->
         <short>Modal result for the clicked button.</short>
       </element>
       <element name="TTaskDlgClickEvent.ACanClose">
-        <short>True if the dialog can close.</short>
+        <short><b>True</b> if the dialog can close.</short>
       </element>
 
       <element name="TTaskDialogIcon">
@@ -3535,7 +3535,7 @@ TCustomForm.Close ->
         <short>Modal result value returned when the button is clicked.</short>
         <descr>
           <p>
-            The default value for the property is assigned when the button item is created and is based in its ID value + 100. The value can  be changed to any reasonable value that is unique for the context.
+            The default value for the property is assigned when the button item is created and is based in its ID value + 100. The value can be changed to any reasonable value that is unique for the context.
           </p>
           <p>
             ModalResult is used when a Task dialog is executed and a button is clicked on the dialog. Its value for the clicked button is assigned to the ModalResult property in the TCustomTaskDialog instance.
@@ -3694,7 +3694,7 @@ TCustomForm.Close ->
         </seealso>
       </element>
       <element name="TTaskDialogButtonsEnumerator.MoveNext.Result">
-        <short>True if another button was available in the collection.</short>
+        <short><b>True</b> if another button was available in the collection.</short>
       </element>
 
       <element name="TTaskDialogButtonsEnumerator.Current">
@@ -3762,7 +3762,7 @@ TCustomForm.Close ->
         </short>
         <descr>
           <p>
-            <var>FindButton</var> enumerates values in the <var>Items</var> property to find  the first button using the modal result value in AModalResult. The return value is Nil if a button using the modal result value is not found.
+            <var>FindButton</var> enumerates values in the <var>Items</var> property to find the first button using the modal result value in AModalResult. The return value is Nil if a button using the modal result value is not found.
           </p>
         </descr>
         <seealso>
@@ -3827,7 +3827,7 @@ TCustomForm.Close ->
         <short>Defines a configurable, modal task dialog at run-time.</short>
         <descr>
           <p>
-            <var>TCustomTaskDialog</var> is a <var>TComponent</var> descendant which defines a configurable, modal task dialog. It is a non-visual component which creates modal dialogs at run-time, with rich UI elements. It is a wrapper for <var>LCLTaskDialog.TTaskDialog</var>  which implements the Windows TaskDialog API.
+            <var>TCustomTaskDialog</var> is a <var>TComponent</var> descendant which defines a configurable, modal task dialog. It is a non-visual component which creates modal dialogs at run-time, with rich UI elements. It is a wrapper for <var>LCLTaskDialog.TTaskDialog</var> which implements the Windows TaskDialog API.
           </p>
           <p>
             TCustomTaskDialog provides properties which can be used to configure the class instance at design-time in the object inspector. At run-time, the <var>Execute</var> method handles converting properties and calling routines in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
@@ -3914,7 +3914,7 @@ TCustomForm.Close ->
         <seealso/>
       </element>
       <element name="TCustomTaskDialog.DoExecute.Result">
-        <short>True if a valid button identifier was clicked in the dialog.</short>
+        <short><b>True</b> if a valid button identifier was clicked in the dialog.</short>
       </element>
       <element name="TCustomTaskDialog.DoExecute.ParentWnd">
         <short>Handle for the Parent Window of the dialog.</short>
@@ -3935,7 +3935,9 @@ TCustomForm.Close ->
         <short>Modal result value signalled for the button click notification.</short>
       </element>
       <element name="TCustomTaskDialog.DoOnButtonClicked.ACanClose">
-        <short>True if the dialog should be closed, or False to continue execution.</short>
+        <short>
+          <b>True</b> if the dialog should be closed, or <b>False</b> to continue execution.
+        </short>
       </element>
 
       <element name="TCustomTaskDialog.Create">
@@ -4001,7 +4003,7 @@ TCustomForm.Close ->
         </seealso>
       </element>
       <element name="TCustomTaskDialog.Execute.Result">
-        <short>True if a valid button identifier was selected in the dialog.</short>
+        <short><b>True</b> if a valid button identifier was selected in the dialog.</short>
       </element>
       <element name="TCustomTaskDialog.Execute.ParentWnd">
         <short>
@@ -4023,7 +4025,7 @@ TCustomForm.Close ->
         <short>Collection with the buttons for the Task dialog.</short>
         <descr>
           <p>
-            <var>Buttons</var> is a <var>TTaskDialogButtons</var> property with the collection that contains the buttons for the Task dialog. Values in Buttons and <var>CommonButtons</var> are used in the <var>DoExecute</var> method to define the button identifiers and modal result values  available in the <file>LCLTaskDialog</file> wrapper.
+            <var>Buttons</var> is a <var>TTaskDialogButtons</var> property with the collection that contains the buttons for the Task dialog. Values in Buttons and <var>CommonButtons</var> are used in the <var>DoExecute</var> method to define the button identifiers and modal result values available in the <file>LCLTaskDialog</file> wrapper.
           </p>
         </descr>
         <seealso/>
@@ -4046,7 +4048,7 @@ TCustomForm.Close ->
         <short>Set of common buttons displayed on the Task dialog.</short>
         <descr>
           <p>
-            <var>CommonButtons</var> is a <var>TTaskDialogCommonButtons</var> property with the set of common buttons displayed on the Task dialog. Values from the <var>TTaskDialogCommonButton</var> enumeration are included in the set to make buttons visible. Values are excluded from the set to remove the buttons. The default value for the property is <var>[tcbOk, tcbCancel]</var>,  and enables the <b>OK</b> and <b>Cancel</b> buttons for the Task dialog.
+            <var>CommonButtons</var> is a <var>TTaskDialogCommonButtons</var> property with the set of common buttons displayed on the Task dialog. Values from the <var>TTaskDialogCommonButton</var> enumeration are included in the set to make buttons visible. Values are excluded from the set to remove the buttons. The default value for the property is <var>[tcbOk, tcbCancel]</var>, and enables the <b>OK</b> and <b>Cancel</b> buttons for the Task dialog.
           </p>
           <p>
             CommonButtons is used in conjunction with the <var>Buttons</var> collection, which contains custom button definitions that do not fit the common button definitions. Both CommonButtons and Buttons are used in <var>DoExecute</var>, and passed as arguments to the wrapper in <file>LCLTaskDialog</file>.
@@ -4515,7 +4517,7 @@ end;
             <li>mbYesNoCancel</li>
           </ul>
           <p>
-            Or,  you can make your own set.
+            Or, you can make your own set.
           </p>
         </descr>
       </element>
@@ -4712,7 +4714,7 @@ end;
         <short>Widgetset-independent implementation of a prompt dialog.</short>
         <descr>
           <p>
-            DefaultPromptDialog is a LongInt function which implements a widgetset-independent prompt dialog. It is uses a  LCL TForm instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified using the arguments passed to the routine, including:
+            <var>DefaultPromptDialog</var> is a <var>LongInt</var> function which implements a widgetset-independent prompt dialog. It is uses a LCL TForm instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified using the arguments passed to the routine, including:
           </p>
           <dl>
             <dt>
@@ -4737,7 +4739,7 @@ end;
               Buttons
             </dt>
             <dd>
-              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and  idButtonShield are not implemented in the current LCL version. The values for each of the buttons indicate the default icon and text for the button, as well as its modal result value.
+              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and idButtonShield are not implemented in the current LCL version. The values for each of the buttons indicate the default icon and text for the button, as well as its modal result value.
             </dd>
             <dt>
               ButtonCount
@@ -4823,7 +4825,7 @@ end;
       </element>
       <element name="DefaultPromptDialog.UseDefaultPos">
         <short>
-          True to use the default position for the dialog form, False to use the values in X and Y as the Top and Left coordinates.
+          <b>True</b> to use the default position for the dialog form, <b>False</b> to use the values in X and Y as the Top and Left coordinates.
         </short>
       </element>
       <element name="DefaultPromptDialog.X">
@@ -4839,7 +4841,7 @@ end;
         </short>
         <descr>
           <p>
-            QuestionDlg has the same functionality as MessageDlg except for the parameter <var>Buttons</var> which is of a different type. You can define your own captions and return values of this function.
+            <var>QuestionDlg</var> has the same functionality as MessageDlg except for the <var>Buttons</var> parameter which is of a different type. You can define your own captions and return values for this function.
           </p>
           <p>
             <var>Buttons</var> contains an array of integer identifiers and optional strings. For each number a button is created. Usually the identifiers are selected as the <var>TModalResult</var> constants <var>[mrNone..mrYesLast]</var> in <link id="Controls"/>); the corresponding buttons will be decorated by an associated icon. Any other integers can be used as well, but their buttons will have no icon. The identifier number of the clicked button is returned by the <var>QuestionDlg()</var> function. The order of the buttons on the dialog form will be the same as the order of the array elements.
@@ -5189,7 +5191,7 @@ var
       </element>
       <element name="PromptForFileName.Result">
         <short>
-          True if a file name was selected using the dialog.
+          <b>True</b> if a file name was selected using the dialog.
         </short>
       </element>
       <element name="PromptForFileName.AFileName">
@@ -5275,7 +5277,7 @@ var
         <short>Copies the content from the specified dialog to the clipboard.</short>
         <descr>
           <p>
-            Content from the dialog is stored as text in the clipboard. No actions are performed in the routine if Key and Shift contain values for keys other than Ctrl+C or Ctrl+Ins. The clipboard will contain lines with the Caption and Message text for the dialog, as well as the captions (sans accelerator keys) for  controls displayed on the dialog.
+            Content from the dialog is stored as text in the clipboard. No actions are performed in the routine if Key and Shift contain values for keys other than Ctrl+C or Ctrl+Ins. The clipboard will contain lines with the Caption and Message text for the dialog, as well as the captions (sans accelerator keys) for controls displayed on the dialog.
           </p>
         </descr>
         <seealso/>
@@ -5355,7 +5357,7 @@ var
         <short>Array of values which can be displayed in the event handler.</short>
       </element>
       <element name="TInputCloseQueryEvent.ACanClose">
-        <short>True if the InputQuery can be closed, False to continue execution of the dialog.</short>
+        <short><b>True</b> if the InputQuery can be closed, <b>False</b> to continue execution of the dialog.</short>
       </element>
 
       <element name="SelectDirectory">
@@ -5431,7 +5433,7 @@ var
       </element>
       <element name="InputQuery.Result">
         <short>
-          Returns True of OK button was pressed, False if Cancel was pressed or abnormal exit.
+          Returns <b>True</b> of OK button was pressed, <b>False</b> if Cancel was pressed or abnormal exit.
         </short>
         <descr>
           Result is <b>True</b> if the user pressed OK or hit RETURN in the dialog box. If the user pressed Cancel or the dialog was closed without pressing a button the result will be <b>False</b>.
@@ -5446,7 +5448,7 @@ var
       <element name="InputQuery.MaskInput">
         <short>Determines if the dialog shows * characters instead of the actual input.</short>
         <descr>
-          Set MaskInput to true if you want to hide the input and display asterisks.
+          Set MaskInput to <b>True</b> if you want to hide the input and display asterisks.
         </descr>
       </element>
       <element name="InputQuery.Value">
@@ -5463,7 +5465,9 @@ var
         <short>Array with strings values used as labels on the input dialog.</short>
       </element>
       <element name="InputQuery.AValues">
-        <short>Arrays with string values used in edit controls for the associated labels.</short>
+        <short>
+          Arrays with string values used in edit controls for the associated labels.
+        </short>
       </element>
 
       <element name="DefaultInputDialog">
@@ -5474,7 +5478,7 @@ var
         </seealso>
       </element>
       <element name="DefaultInputDialog.Result">
-        <short>True if the Ok button was clicked during execution of the dialog.</short>
+        <short><b>True</b> if the Ok button was clicked during execution of the dialog.</short>
       </element>
       <element name="DefaultInputDialog.InputCaption">
         <short>Caption displayed as the title for the dialog.</short>
@@ -5483,7 +5487,7 @@ var
         <short>Label displayed on the dialog form.</short>
       </element>
       <element name="DefaultInputDialog.MaskInput">
-        <short>True if the edit control displays '*' characters to mask the input value.</short>
+        <short><b>True</b> if the edit control displays '*' characters to mask the input value.</short>
       </element>
       <element name="DefaultInputDialog.Value">
         <short>
@@ -5579,7 +5583,7 @@ var
         <short>List of values displayed in the combo-box control.</short>
       </element>
       <element name="InputComboEx.AllowCustomText">
-        <short>True to allow new values to be added to the combo-box control.</short>
+        <short><b>True</b> to allow new values to be added to the combo-box control.</short>
       </element>
 
       <element name="ExtractColorIndexAndColor">
@@ -5590,7 +5594,9 @@ var
         <seealso/>
       </element>
       <element name="ExtractColorIndexAndColor.Result">
-        <short>True on success, false if the list does not use the correct format.</short>
+        <short>
+          <b>True</b> on success, <b>False</b> if the list does not use the correct format.
+        </short>
       </element>
       <element name="ExtractColorIndexAndColor.AColorList">
         <short>List of colors in COLORID=VALUE format.</short>
