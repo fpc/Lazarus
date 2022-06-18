@@ -8,6 +8,7 @@ Resourcestring
   rsActionListComponentEditor = 'HTM&L Element Actionlist Editor...';
   rsActionListCreateMissing = 'Create &actions for HTML tags...';
   rsErrNoHTMLFileNameForComponent = 'No HTML filename found for component %s';
+  rsAllTagsHaveAction = 'All HTML tags with IDs already have a corresponding Action component.';
   rsHTMLActionsCreated = '%d HTML Element Action components were created';
   rsHTMLFragment = 'Pas2JS HTML Fragment Module';
   rsHTMLFragmentDescr = 'A Pas2JS datamodule to load and show a HTML fragment in the browser.';
