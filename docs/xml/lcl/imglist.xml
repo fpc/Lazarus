@@ -9,7 +9,7 @@
     <module name="ImgList">
       <short>
         Contains classes and types used in TCustomImageList, the base class for TImageList.
-        </short>
+      </short>
       <descr>
         <p>
           <file>imglist.pp</file> implements <var>TImageList</var> and <var>TChangelink</var> in the Lazarus Component Library (<b>LCL</b>).
@@ -172,7 +172,7 @@
         </short>
         <descr>
           <p>
-            <var>TDrawingStyle</var> is an enumerated type with values that control the drawing style  used for images in TCustomImageList. TDrawingStyle affects the blending of the image with its background color when a mask is used in the image. These values have no significance when a mask is not present in the image. TDrawingStyle corresponds to the style values used in the WIN ImageList_Draw API.
+            <var>TDrawingStyle</var> is an enumerated type with values that control the drawing style used for images in TCustomImageList. TDrawingStyle affects the blending of the image with its background color when a mask is used in the image. These values have no significance when a mask is not present in the image. TDrawingStyle corresponds to the style values used in the WIN ImageList_Draw API.
           </p>
         </descr>
         <seealso/>
@@ -471,7 +471,7 @@
             <var>GetFullRawImage</var> is a procedure used to store raw image data for all images in the resolution to the specified raw image.
           </p>
           <p>
-            Image is the <var>TRawImage</var> output parameter where the raw image data is stored. GetFullRawImage calls the Init method in Image to set the default values used in the Description, Data,  Mask, and Palette for the object instance.
+            Image is the <var>TRawImage</var> output parameter where the raw image data is stored. GetFullRawImage calls the Init method in Image to set the default values used in the Description, Data, Mask, and Palette for the object instance.
           </p>
           <p>
             No additional actions are performed in the method when the Count property contains 0 (<b>zero</b>).
@@ -535,7 +535,7 @@
             <var>ReadData</var> is a procedure used to read the raw image data for all images in the resolution from the specified stream.
           </p>
           <p>
-            <var>AStream</var> contains the <var>TStream</var> class instance with the raw image data read in the method.  The current position in AStream is used when values are read in the method. The stream is positioned immediately after the raw image values when values are  read in the method.
+            <var>AStream</var> contains the <var>TStream</var> class instance with the raw image data read in the method. The current position in AStream is used when values are read in the method. The stream is positioned immediately after the raw image values when values are read in the method.
           </p>
           <p>
             ReadData calls the <var>Clear</var> method to remove any existing image data stored in the resolution.
@@ -576,7 +576,7 @@
            </dd>
           </dl>
           <p>
-            If an image list signature is not found, it was created using the Delphi 2 image list format which did not include a signature. In this scenario, the stream in AStream is moved to its original position prior to reading  image data from the stream.
+            If an image list signature is not found, it was created using the Delphi 2 image list format which did not include a signature. In this scenario, the stream in AStream is moved to its original position prior to reading image data from the stream.
           </p>
           <p>
             ReadData is used in the implementation of the <var>TCustomImageList.ReadData</var> method.
@@ -710,7 +710,7 @@
             <dd>0</dd>
           </dl>
           <p>
-            FillDescription is used in the implementation of the GetFullRawImage and  GetRawImage methods.
+            FillDescription is used in the implementation of the GetFullRawImage and GetRawImage methods.
           </p>
         </descr>
         <seealso>
@@ -848,13 +848,13 @@
             <var>Image</var> is a <var>TRawImage</var> class instance used to store the raw image data for the specified image.
           </p>
           <p>
-            GetRawImage calls <var>CheckIndex</var> to ensure that Index contains a valid position in  the image resolution. An exception is raised in CheckIndex if the requested position is invalid. No actions are performed in the method when Count contains <b>0</b> (<b>zero</b>).
+            GetRawImage calls <var>CheckIndex</var> to ensure that Index contains a valid position in the image resolution. An exception is raised in CheckIndex if the requested position is invalid. No actions are performed in the method when Count contains <b>0</b> (<b>zero</b>).
           </p>
           <p>
             GetRawImage stores image metadata in Image by calling the <var>FillDescription</var> method. The 32-bit RGBA raw image data at the specified Index in the resolution is stored in Image. Its DataSize property is updated to reflect the number of pixels (<b>Width * Height * 32b</b>) stored in the class instance.
           </p>
           <p>
-            GetRawImage is used in the implementation of the <var>GetBitmap</var>, <var>GetFullBitmap</var>,  <var>GetIcon</var>, and <var>ReadData</var> methods. It is also used in the <var>AddImages</var> and <var>GetRawImage</var> methods in <var>TCustomImageList</var>.
+            GetRawImage is used in the implementation of the <var>GetBitmap</var>, <var>GetFullBitmap</var>, <var>GetIcon</var>, and <var>ReadData</var> methods. It is also used in the <var>AddImages</var> and <var>GetRawImage</var> methods in <var>TCustomImageList</var>.
           </p>
         </descr>
         <seealso>
@@ -882,7 +882,7 @@
             ACanvas contains the <var>TCanvas</var> instance used to render the requested image.
           </p>
           <p>
-            AX and AY contain <var>Integer</var> values representing the horizontal and vertical  offsets from the canvas origin where the image is drawn.
+            AX and AY contain <var>Integer</var> values representing the horizontal and vertical offsets from the canvas origin where the image is drawn.
           </p>
           <p>
             AIndex contains the ordinal position for the requested image in the resolution.
@@ -986,7 +986,7 @@
         <short>Draws the specified image with the given overlay.</short>
         <descr>
           <p>
-            <var>DrawOverlay</var> is an overloaded procedure used to draw the specified image with an overlay. An overlay is an masked image drawn transparently over another image. The overlay image is generally used to convey state or status information about the image it adorns. The overlay images are stored in the image list  resolution just like the images they decorate.
+            <var>DrawOverlay</var> is an overloaded procedure used to draw the specified image with an overlay. An overlay is an masked image drawn transparently over another image. The overlay image is generally used to convey state or status information about the image it adorns. The overlay images are stored in the image list resolution just like the images they decorate.
           </p>
           <p>
             <var>ACanvas</var> is the <var>TCanvas</var> instance where the image and the overlay are rendered.
@@ -1019,7 +1019,7 @@
             DrawOverlay requires a valid <var>Reference</var> instance to access the handles used for the image list and the resolution. The reference class calls its Draw method to render the base image represented by the value in AIndex to the specified canvas. Arguments passed to the method determine the drawing style or drawing effect applied to the rendered image.
           </p>
           <p>
-            The reference class is also used to render an overlay image indicated by the  AOverlay parameter. The overlay image is drawn to the canvas at the offsets in AX and AY using the Width and Height for images in the resolution. The overlay image is not drawn if AOverlay contains a value outside the range allowed in TOverlay, or does not map to a valid image index in the image list.
+            The reference class is also used to render an overlay image indicated by the AOverlay parameter. The overlay image is drawn to the canvas at the offsets in AX and AY using the Width and Height for images in the resolution. The overlay image is not drawn if AOverlay contains a value outside the range allowed in TOverlay, or does not map to a valid image index in the image list.
           </p>
         </descr>
         <seealso/>
@@ -1143,7 +1143,7 @@
         </short>
         <descr>
           <p>
-            <var>AutoCreatedInDesignTime</var> is a <var>Boolean</var> property which indicates if the image resolution was automatically created at design-time. The value in AutoCreatedInDesignTime is set to <b>True</b> when the Lazarus IDE creates an image resolution in its  ImageListEditor dialog using the Resolutions container for the ImageList. It is set to <b>False</b> when the <var>TCustomImageList.RegisterResolutions</var> method is called at run-time.
+            <var>AutoCreatedInDesignTime</var> is a <var>Boolean</var> property which indicates if the image resolution was automatically created at design-time. The value in AutoCreatedInDesignTime is set to <b>True</b> when the Lazarus IDE creates an image resolution in its ImageListEditor dialog using the Resolutions container for the ImageList. It is set to <b>False</b> when the <var>TCustomImageList.RegisterResolutions</var> method is called at run-time.
           </p>
           <p>
             AutoCreatedInDesignTime is used in the <var>TCustomImageList.DefineProperties</var> method to determine the values read and written using the LCL component streaming mechanism.
@@ -1166,7 +1166,7 @@
             <var>Reference</var> is a read-only <var>TWSCustomImageListReference</var> property that represents the reference class for an image list implementation in the current widgetset. Reading the value in the property causes the reference class for the resolution to be created if it has not already been allocated.
           </p>
           <p>
-            Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in  <var>TWSCustomImageListResolutionClass</var> methods.
+            Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in <var>TWSCustomImageListResolutionClass</var> methods.
           </p>
         </descr>
         <seealso>
@@ -1378,7 +1378,7 @@
         <short>Position for the overlay image applied in the method.</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AEnabled">
-        <short>True when the image is drawn in the enabled state (default).</short>
+        <short><b>True</b> when the image is drawn in the enabled state (default).</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ADrawEffect">
         <short>TGraphicsDrawEffect value applied to the image.</short>
@@ -1432,7 +1432,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomImageListResolutions</var> is a class used to implement support for multiple image sizes (or resolutions) in <var>TCustomImageList</var>. TCustomImageListResolutions maintains an internal list with <var>TCustomImageListResolution</var> class instances representing each of the image sizes (and the raw image data for the size) available in the TCustomImageList instance. In essence, it  allows TCustomImageList to treat each image resolution as a distinct parallel image list.
+            <var>TCustomImageListResolutions</var> is a class used to implement support for multiple image sizes (or resolutions) in <var>TCustomImageList</var>. TCustomImageListResolutions maintains an internal list with <var>TCustomImageListResolution</var> class instances representing each of the image sizes (and the raw image data for the size) available in the TCustomImageList instance. In essence, it allows TCustomImageList to treat each image resolution as a distinct parallel image list.
           </p>
           <p>
             The <var>ImageLists</var> property provides access to the image list for a specific image width (or resolution), and performs image scaling when needed. New image resolutions are dynamically created and added to the container when a size is requested that is not already present.
@@ -1470,12 +1470,12 @@
             The return Value is <b>True</b> when an image resolution is located with the value specified in AImageWidth. The return value is <b>False</b> if an image resolution is not found using the specified image width.
           </p>
           <p>
-            <var>Index</var> is an output parameter used to store the ordinal position of the image resolution that uses the specified image width. Index contains the closest  (but larger) resolution when the return value is False.
+            <var>Index</var> is an output parameter used to store the ordinal position of the image resolution that uses the specified image width. Index contains the closest  (but larger) resolution when the return value is <b>False</b>.
           </p>
         </descr>
       </element>
       <element name="TCustomImageListResolutions.Find.Result">
-        <short>True when the image resolution exists in the Items property.</short>
+        <short><b>True</b> when the image resolution exists in the Items property.</short>
       </element>
       <element name="TCustomImageListResolutions.Find.AImageWidth">
         <short>Image width desired from the Items property.</short>
@@ -1494,7 +1494,7 @@
             The return value contains the TCustomImageListResolution class instance which represents images with the specified width. If an image resolution with the requested size does not already exist, it is created and populated with resized images for the resolution.
           </p>
           <p>
-            Use the ImageLists property to access a specific image resolution available in the container.  Use the Items property to access existing resolutions by their ordinal position in the container.
+            Use the ImageLists property to access a specific image resolution available in the container. Use the Items property to access existing resolutions by their ordinal position in the container.
           </p>
         </descr>
         <seealso>
@@ -1682,7 +1682,7 @@
             <var>ImageLists</var> is a read-only indexed <var>TCustomImageListResolution</var> property which provides access to the image resolution which uses the image width in AImageWidth.
           </p>
           <p>
-            <var>GetImageLists</var> is the read access specifier for the property value. An overloaded variant of the method is used to Find an existing image resolution that uses the requested image size. If an image resolution with the requested size does not already exist, a new resolution class instance is created and populated with images scaled to the required size. The new image resolution is inserted in the container at the position where the image size should be located. This ensures that the image resolutions are ordered in  ascending image size order as expected in <var>TCustomImageList</var> methods.
+            <var>GetImageLists</var> is the read access specifier for the property value. An overloaded variant of the method is used to Find an existing image resolution that uses the requested image size. If an image resolution with the requested size does not already exist, a new resolution class instance is created and populated with images scaled to the required size. The new image resolution is inserted in the container at the position where the image size should be located. This ensures that the image resolutions are ordered in ascending image size order as expected in <var>TCustomImageList</var> methods.
           </p>
           <p>
             Use the <var>Items</var> property to access existing resolutions by their ordinal position in the container.
@@ -1870,7 +1870,7 @@
         </seealso>
       </element>
       <element name="TCustomImageListResolutionEnumerator.MoveNext.Result">
-        <short>True when another image resolution is available in the enumerator.</short>
+        <short><b>True</b> when another image resolution is available in the enumerator.</short>
       </element>
 
       <element name="TCustomImageListResolutionEnumerator.Current">
@@ -1898,7 +1898,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomImageListGetWidthForPPI</var> is an object procedure which specifies an event  handler used to get image widths for a specific display density (PPI). TCustomImageListGetWidthForPPI allows an application to override the value returned in the <var>WidthForPPI</var> property (or when calling the <var>GetWidthForPPI</var> method) in <var>TCustomImageList</var>.
+            <var>TCustomImageListGetWidthForPPI</var> is an object procedure which specifies an event handler used to get image widths for a specific display density (PPI). TCustomImageListGetWidthForPPI allows an application to override the value returned in the <var>WidthForPPI</var> property (or when calling the <var>GetWidthForPPI</var> method) in <var>TCustomImageList</var>.
           </p>
           <p>
             <var>Sender</var> contains the <var>TCustomImageList</var> instance triggering the event notification.
@@ -1949,7 +1949,7 @@
             Starting with LCL version 1.9, the concept of multiple image resolutions (or sizes) was introduced in TCustomImageList. This allowed the image list to contain multiple sizes for a given image. Multiple resolutions are implemented as parallel image lists, with images of the same size stored in a single image list. Image scaling was also introduced in TCustomImageList using its new support classes, and allowed resizing of images for high PPI (pixels per inch) displays.
           </p>
           <p>
-            Images stored in TCustomImageList are represented using 32-bit RGBA (Red Green Blue Alpha) raw image data. Transparency is implemented using the Alpha channel in the raw image data,  but not all platforms/widgetsets support an 8-bit Alpha channel. Any image type descended from <var>TCustomBitmap</var> can be added to an image list, including:
+            Images stored in TCustomImageList are represented using 32-bit RGBA (Red Green Blue Alpha) raw image data. Transparency is implemented using the Alpha channel in the raw image data, but not all platforms/widgetsets support an 8-bit Alpha channel. Any image type descended from <var>TCustomBitmap</var> can be added to an image list, including:
           </p>
           <ul>
             <li>TBitmap</li>
@@ -1962,7 +1962,7 @@
             <li>TPixMap</li>
           </ul>
           <remark>
-            Starting with Lazarus 2.2,  binary bitmap data stored for the image list in an LFM file uses ZLib compression. While this makes both the LFM and the EXE smaller, it also prevents Lazarus versions prior to 2.0 from opening the LFM file. If you need to maintain a Version 2.X project in an older Lazarus version, you first have to open it in Lazarus 2.0 and resave any forms with a TImageList. Then you can open these resaved LFMs in Lazarus 1versions prior to 2.0.
+            Starting with Lazarus 2.2, binary bitmap data stored for the image list in an LFM file uses ZLib compression. While this makes both the LFM and the EXE smaller, it also prevents Lazarus versions prior to 2.0 from opening the LFM file. If you need to maintain a Version 2.X project in an older Lazarus version, you first have to open it in Lazarus 2.0 and resave any forms with a TImageList. Then you can open these resaved LFMs in Lazarus 1versions prior to 2.0.
           </remark>
           <p>
             Use the <var>Width</var> and <var>Height</var> properties to set the default resolution (or size) used for images in the image list. If an image with a size different than the values in Width and Height is added to the default resolution, it is scaled the dimensions required for the resolution. The Width and Height properties also establish the image size used at the 100% scaling level on a 96 PPI display.
@@ -1977,10 +1977,10 @@
             Use the <var>Resolutions</var> or <var>ResolutionsDesc</var> methods to access enumerators (ascending and descending respectively) for the image resolutions stored in the container.
           </p>
           <p>
-            Each image Resolution (or size) is represented using a  <var>TCustomImageListResolution</var> class instance. Like previous versions of TCustomImageList, it provides properties and methods needed to access and maintain images using a common height and width. It also provides access to the 32-bit RGBA raw image data for images in the resolution. The <var>Draw</var>, <var>StretchDraw</var>, and <var>DrawOverlay</var> methods are provided to render an image to a <var>TCanvas</var> instance.
+            Each image Resolution (or size) is represented using a <var>TCustomImageListResolution</var> class instance. Like previous versions of TCustomImageList, it provides properties and methods needed to access and maintain images using a common height and width. It also provides access to the 32-bit RGBA raw image data for images in the resolution. The <var>Draw</var>, <var>StretchDraw</var>, and <var>DrawOverlay</var> methods are provided to render an image to a <var>TCanvas</var> instance.
           </p>
           <p>
-            Use the indexed <var>Resolution</var> property to access the image list with a specific image width.  Use <var>ResolutionByIndex</var> to get an image resolution using its position in the image resolutions container. Use <var>ResolutionForPPI</var> to get a dynamically scaled image resolution using a specific image width, display density,  and scaling factor.
+            Use the indexed <var>Resolution</var> property to access the image list with a specific image width. Use <var>ResolutionByIndex</var> to get an image resolution using its position in the image resolutions container. Use <var>ResolutionForPPI</var> to get a dynamically scaled image resolution using a specific image width, display density, and scaling factor.
           </p>
           <p>
             The <var>FindResolution</var> method can be used to locate the image list which uses a specific image width. Use the <var>RegisterResolutions</var> method to pre-define the image sizes supported in the image list.
@@ -1989,10 +1989,10 @@
             Use the <var>Scaled</var> property to indicate if images are automatically scaled to a Resolution not stored in the image list. Setting Scaled to <b>True</b> enables the automatic scaling features in TCustomImageList, and allows images to be scaled for use on high PPI displays. When an image list is selected using the Resolution property, or by calling GetResolutionForPPI, images will automatically be scaled from a suitable candidate resolution to the requested value. Set Scaled to <b>False</b> to use the closest image size in the list. Use the <var>OnGetWidthForPPI</var> event handler to perform image size substitution based on pixel display density.
           </p>
           <p>
-            Use the <var>Masked</var> property to determine if images in the list have a mask applied to define the transparent areas in images. Use the <var>Add</var> method to store an image with the combined values from its source data and optional mask. Use <var>AddMasked</var> to store an image using <var>MaskColor</var> to represent its transparent areas. Use <var>AddMultipleResolutions</var> to scale and store an array of bitmaps to  each of the Resolutions defined for the image list. Use <var>AddSlice</var> and <var>AddSliced</var> to store one or many images using the native image list storage format. Use <var>ImageType</var> to indicate whether the image list contains images or image masks.
+            Use the <var>Masked</var> property to determine if images in the list have a mask applied to define the transparent areas in images. Use the <var>Add</var> method to store an image with the combined values from its source data and optional mask. Use <var>AddMasked</var> to store an image using <var>MaskColor</var> to represent its transparent areas. Use <var>AddMultipleResolutions</var> to scale and store an array of bitmaps to each of the Resolutions defined for the image list. Use <var>AddSlice</var> and <var>AddSliced</var> to store one or many images using the native image list storage format. Use <var>ImageType</var> to indicate whether the image list contains images or image masks.
           </p>
           <p>
-            Please note that inserting or moving images will affect the index position for  all following images in the resolution, and may cause problems when constant index positions are expected. In such cases a bitmap collection may better fit your needs.
+            Please note that inserting or moving images will affect the index position for all following images in the resolution, and may cause problems when constant index positions are expected. In such cases a bitmap collection may better fit your needs.
           </p>
           <remark>
             Due to its use of multiple resolutions and dynamic scaling, TCustomImageList is not suitable for use as a generic TBitmap collection. If fast storage of bitmaps is needed, you can create your own container using an array or TList class instance.
@@ -2147,7 +2147,7 @@
              ACanvasScaleFactor contains the value used to adjust the image sizes when Scaled is set to <b>True</b>. The value in ACanvasScaleFactor is not used when Scaled is set to <b>False</b>.
            </p>
            <p>
-             The return value is a TScaledImageListResolution class instance that contains  images resized using the constraints in the parameter values.
+             The return value is a TScaledImageListResolution class instance that contains images resized using the constraints in the parameter values.
            </p>
            <p>
              GetResolutionForPPI calls GetWidthForPPI to calculate the image width used at the target PPI value. When Scaled is <b>True</b>, ACanvasScaleFactor is used as a multiplier for the APPI value. When Scaled is <b>False</b>, the value 1.0 is used as the multiplier. GetResolutionForPPI calls GetResolution to retrieve the image list passed to the constructor for the TScaledImageListResolution class.
@@ -2216,7 +2216,7 @@
              <var>GetHeightForWidth</var> is an <var>Integer</var> function used to get the vertical size for images using the image width specified in <var>AWidth</var>. When AWidth contains a non-zero value, it is used to calculate the proportional image height using the values in the <var>Height</var> and <var>Width</var> properties.
            </p>
            <p>
-             The return value contains the image height required for the specified image width,  or <b>0</b> (<b>zero</b>) when AWidth contain <b>0</b> (<b>zero</b>).
+             The return value contains the image height required for the specified image width, or <b>0</b> (<b>zero</b>) when AWidth contain <b>0</b> (<b>zero</b>).
            </p>
            <p>
              GetHeightForWidth is used in the implementation of the <var>GetHeightForPPI</var> method, and in the <var>GetImageLists</var> method in <var>TCustomImageListResolutions</var>.
@@ -2300,7 +2300,7 @@
              This methods requires the icons in AIcon to be sorted in ascending icon size order. <b>The selection logic will fail if the icon sizes are not sorted</b>.
            </remark>
            <p>
-             GetBestIconIndexForSize is used in the implementation of the <var>InsertIcon</var> and  <var>ReplaceIcon</var> methods.
+             GetBestIconIndexForSize is used in the implementation of the <var>InsertIcon</var> and <var>ReplaceIcon</var> methods.
            </p>
          </descr>
          <seealso>
@@ -2413,7 +2413,7 @@
         </short>
         <descr>
           <p>
-            <var>GetResolution</var> is a <var>TCustomImageListResolution</var> function used to get the image resolution which uses the image width specified in <var>AImageWidth</var>.  When AImageWidth contains <b>0</b> (<b>zero</b>) or a negative value, the  value in the <var>Width</var> property is used in the argument.
+            <var>GetResolution</var> is a <var>TCustomImageListResolution</var> function used to get the image resolution which uses the image width specified in <var>AImageWidth</var>. When AImageWidth contains <b>0</b> (<b>zero</b>) or a negative value, the value in the <var>Width</var> property is used in the argument.
           </p>
           <p>
             GetResolution uses the internal <var>TCustomImageListResolutions</var> member in the class to access its ImageLists property. If an image list using the request image width does not exist, it is created and populated by copying the images from the best candidate resolution.
@@ -2485,7 +2485,9 @@
         <short>Index position validated in the method.</short>
       </element>
       <element name="TCustomImageList.CheckIndex.AForInsert">
-        <short>True when the index position is used for insertion (default is False).</short>
+        <short>
+          <b>True</b> when the index position is used for insertion (default is <b>False</b>).
+        </short>
       </element>
 
       <element name="TCustomImageList.Initialize">
@@ -2494,7 +2496,7 @@
         </short>
         <descr>
           <p>
-            <var>Initialize</var> is a procedure used to perform the in ital set up for the image list. Initialize creates the internal <var>TCustomImageListResolutions</var> class instance used to store image resolutions in the image list. The internal list used for <var>TChangeLink</var> notifications is also created. The internal allocation block count  is set to <b>4</b>.
+            <var>Initialize</var> is a procedure used to perform the in ital set up for the image list. Initialize creates the internal <var>TCustomImageListResolutions</var> class instance used to store image resolutions in the image list. The internal list used for <var>TChangeLink</var> notifications is also created. The internal allocation block count is set to <b>4</b>.
           </p>
           <p>
             Initialize sets the default values for the following properties:
@@ -2862,13 +2864,13 @@
         </short>
         <descr>
           <p>
-            <var>ReadData</var> is a procedure  used to read image data for the default resolution from the stream specified in <var>AStream</var>. ReadData allows image data written using the <var>WriteData</var> method to be stored in the image list.
+            <var>ReadData</var> is a procedure used to read image data for the default resolution from the stream specified in <var>AStream</var>. ReadData allows image data written using the <var>WriteData</var> method to be stored in the image list.
           </p>
           <p>
             ReadData calls <var>BeginUpdate</var> to suspend <var>OnChange</var> notifications when loading the image data from the stream. <var>EndUpdate</var> is called when the image data has been loaded from the stream.
           </p>
           <p>
-            ReadData calls the <var>GetResolution</var> method to locate the  <var>TCustomImageListResolution</var> class instance which uses the image width in the <var>Width</var> property. The ReadData method in TCustomImageListResolution is used to read image data from the stream in AStream.
+            ReadData calls the <var>GetResolution</var> method to locate the <var>TCustomImageListResolution</var> class instance which uses the image width in the <var>Width</var> property. The ReadData method in TCustomImageListResolution is used to read image data from the stream in AStream.
           </p>
           <p>
             ReadData updates the internal Changed flag for the image list, and calls the <var>Change</var> method to perform change notifications.
@@ -3020,7 +3022,7 @@
         </seealso>
       </element>
       <element name="TCustomImageList.Equals.Result">
-        <short>True when the image lists are equivalent.</short>
+        <short><b>True</b> when the image lists are equivalent.</short>
       </element>
       <element name="TCustomImageList.Equals.Obj">
         <short>The image list object used for the comparison.</short>
@@ -3032,7 +3034,7 @@
         </short>
         <descr>
           <p>
-            Use <var>BeginUpdate</var>  when an update to the image list is started to block execution of the OnChange event handler.
+            Use <var>BeginUpdate</var> when an update to the image list is started to block execution of the OnChange event handler.
           </p>
           <p>
             <var>BeginUpdate</var> is used, along with <var>EndUpdate</var>, to speed up the insertion of images in an image list. Every call to BeginUpdate must be matched by a call to EndUpdate; i. e. update operations can be nested.
@@ -3057,7 +3059,7 @@
             <var>EndUpdate</var> is used to finish an update to images in the list. EndUpdate is used, along with <var>BeginUpdate</var>, to speed up image list updates by blocking execution of the <var>OnChange</var> event handler.
           </p>
           <p>
-            BeginUpdate increments an internal counter in the class instance each time the method is called. EndUpdate decrements the internal counter when called. When the counter contains a positive non-zero value, the OnChange event handler is not executed when the image list is changed. When the counter reaches zero (<b>0</b>),  the Change method is called to perform OnChange notifications.
+            BeginUpdate increments an internal counter in the class instance each time the method is called. EndUpdate decrements the internal counter when called. When the counter contains a positive non-zero value, the OnChange event handler is not executed when the image list is changed. When the counter reaches zero (<b>0</b>), the Change method is called to perform OnChange notifications.
           </p>
           <p>
             EndUpdate cannot be called more often than the BeginUpdate method. If the method would cause the internal counter to contain a negative value, the <var>RaiseGDBException</var> method is called to raise an exception for the condition.
@@ -3212,7 +3214,7 @@
             <var>AddSlice</var> is an Integer function used to add a portion of an image to each of the resolutions in the image list.
           </p>
           <p>
-            Image is a TCustomBitmap instance which contains the image added in the method. Image can contain a single image, or multiple combined images like the format returned from <var>GetFullBitmap</var>. No actions are performed in the method when Image has not been assigned (contains <b>Nil</b>),  and the return value is set to -1.
+            Image is a TCustomBitmap instance which contains the image added in the method. Image can contain a single image, or multiple combined images like the format returned from <var>GetFullBitmap</var>. No actions are performed in the method when Image has not been assigned (contains <b>Nil</b>), and the return value is set to -1.
           </p>
           <p>
             AImageRect is a TRect type that specifies the area in Image added to the resolutions in the image list. When Image contains a single image, the image rectangle should match the dimensions for the entire image. When Image consists of multiple images, the image rectangle defines the portion (or slice) added to the image list.
@@ -3321,7 +3323,7 @@
             AddImages uses the <var>ResolutionsDesc</var> enumerator in AValue to process images resolutions stored in the source image list. AddImages assumes that the first Resolution in the descending enumerator contains the largest image sizes.
           </p>
           <p>
-            For this resolution, all images are copied and added to the current class instance using their <var>TBitmap</var> image data. For the remaining resolutions (if any), the <var>TCustomImageListResolutions.Find</var> method is used to locate the  resolution in the current class with compatible images (similar width and height values) as the resolution in AValue. Each of the source images for the resolution are stored in the current class instance using their raw image data.
+            For this resolution, all images are copied and added to the current class instance using their <var>TBitmap</var> image data. For the remaining resolutions (if any), the <var>TCustomImageListResolutions.Find</var> method is used to locate the resolution in the current class with compatible images (similar width and height values) as the resolution in AValue. Each of the source images for the resolution are stored in the current class instance using their raw image data.
           </p>
         </descr>
         <seealso/>
@@ -3353,7 +3355,7 @@
         <short>The bitmap to be added to the image list.</short>
       </element>
       <element name="TCustomImageList.AddMasked.MaskColor">
-        <short>The color used as the transparent  pixels in the image(s).</short>
+        <short>The color used as the transparent pixels in the image(s).</short>
       </element>
 
       <element name="TCustomImageList.AddLazarusResource">
@@ -3415,7 +3417,7 @@
             AddResourceName calls the <var>CreateGraphicFromResourceName</var> routine to get the image for the resource name specified in ResourceName. The return value may be either a TGraphic or a TCustomBitmap class instance.
           </p>
           <p>
-            When the image  is a TCustomBitmap, the value in MaskColor is stored in the bitmap and transparency is enabled when the color is not clNone. MaskColor is not used when the return value is a TGraphic instance; TGraphic does not support transparency.
+            When the image is a TCustomBitmap, the value in MaskColor is stored in the bitmap and transparency is enabled when the color is not clNone. MaskColor is not used when the return value is a TGraphic instance; TGraphic does not support transparency.
           </p>
           <p>
             AddResourceName calls the appropriate method to store the image type in the image list. When TCustomBitmap is used, the <var>Add</var> method is called. When TGraphic is used, the <var>AddIcon</var> method is called. The return value contains the ordinal position in the image list where the image was stored.
@@ -3538,7 +3540,7 @@
             ACanvas contains the <var>TCanvas</var> instance used to render the requested image.
           </p>
           <p>
-            AX and AY contain <var>Integer</var> values representing the horizontal and vertical  offsets from the canvas origin where the image is drawn.
+            AX and AY contain <var>Integer</var> values representing the horizontal and vertical offsets from the canvas origin where the image is drawn.
           </p>
           <p>
             AIndex contains the ordinal position for the requested image in the image list. No actions are performed in the method when AIndex contains a value that is an invalid position for images in the image list.
@@ -3578,7 +3580,7 @@
         <short>Position in the list for the image drawn to the canvas.</short>
       </element>
       <element name="TCustomImageList.Draw.AEnabled">
-        <short>If False, the image is drawn disabled (dithered).</short>
+        <short>If <b>False</b>, the image is drawn disabled (dithered).</short>
       </element>
       <element name="TCustomImageList.Draw.ADrawEffect">
         <short>Drawing effect applied to the rendered image.</short>
@@ -3795,7 +3797,7 @@
         </short>
         <descr>
           <p>
-            <var>GetFullBitmap</var> is a procedure used to get a bitmap with all of the images stored in the default resolution. GetFullBitmap mimics the image list storage format used in previous versions of TCustomImageList.  This means that the combined image data for the resolution uses the value in the <var>Height</var> property as its vertical size, and the horizontal size is determined by the value from <b>Width * Count</b>.
+            <var>GetFullBitmap</var> is a procedure used to get a bitmap with all of the images stored in the default resolution. GetFullBitmap mimics the image list storage format used in previous versions of TCustomImageList. This means that the combined image data for the resolution uses the value in the <var>Height</var> property as its vertical size, and the horizontal size is determined by the value from <b>Width * Count</b>.
           </p>
           <p>
             <var>Image</var> is the <var>TCustomBitmap</var> instance where the image data is stored in the method.
@@ -4016,7 +4018,7 @@
         </short>
         <descr>
           <p>
-            <var>Move</var> is a procedure used to relocate images stored at the  position in <var>CurIndex</var> to the position in <var>NewIndex</var> for each of the resolutions in the image list. No actions are performed in the method when ACurIndex and ANewIndex contain the same value.
+            <var>Move</var> is a procedure used to relocate images stored at the position in <var>CurIndex</var> to the position in <var>NewIndex</var> for each of the resolutions in the image list. No actions are performed in the method when ACurIndex and ANewIndex contain the same value.
           </p>
           <p>
             Move calls CheckIndex to verify that the values in ANewIndex and ACurIndex are valid index positions in the image list. An exception is raised in CheckIndex if either value is invalid for the bounds in the image list.
@@ -4025,7 +4027,7 @@
             Move uses the Resolutions enumerator to visit each of the image resolutions in the image list. The InternalMove method in the TCustomImageListResolution instance is called to relocate image data using the specified positions. If the handle for the image resolution has been allocated, the widgetset class calls its Move method to mirror the change to the image list.
           </p>
           <p>
-            Move sets the value in the internal Changed flag to True, and calls the Change method to perform notifications for the change event.
+            Move sets the value in the internal Changed flag to <b>True</b>, and calls the Change method to perform notifications for the change event.
           </p>
         </descr>
         <seealso>
@@ -4123,7 +4125,7 @@
             <var>AMask</var> is a TCustomBitmap type that contains the image mask which defines the transparent areas in the image. When AMask is omitted, the image is drawn opaque.
           </p>
           <p>
-            <var>AllResolutions</var> indicates if the image at the specified position is replaced in all resolutions for the image list. When AllResolutions is False, the only resolution updated is the one which uses the width in AImage. When AllResolutions is True, the <var>Resolutions</var> enumerator is used to update each of the <var>TCustomImageListResolution</var> instances in the image list.
+            <var>AllResolutions</var> indicates if the image at the specified position is replaced in all resolutions for the image list. When AllResolutions is <b>False</b>, the only resolution updated is the one which uses the width in AImage. When AllResolutions is <b>True</b>, the <var>Resolutions</var> enumerator is used to update each of the <var>TCustomImageListResolution</var> instances in the image list.
           </p>
           <p>
             The <var>ScaleImage</var> method is called to resize the image and its mask to the width required for an image resolution. The <var>InternalReplace</var> method in the image resolution is called to update the scaled 32-bit raw image data stored at the position in AIndex.
@@ -4164,7 +4166,7 @@
             <var>AImageRect</var> is a TRect type that defined the top, left, bottom, and right coordinates for the image data used in the method.
           </p>
           <p>
-            <var>AllResolutions</var> indicates if the image stored at the specified position is updated in all of the image resolutions for the image list. When AllResolutions contains False, only the image resolution using the width defined in ARect is updated in the method. When AllResolutions is True, the <var>Resolutions</var> enumerator is used to update each of the image resolutions used in the image list.
+            <var>AllResolutions</var> indicates if the image stored at the specified position is updated in all of the image resolutions for the image list. When AllResolutions contains <b>False</b>, only the image resolution using the width defined in ARect is updated in the method. When AllResolutions is <b>True</b>, the <var>Resolutions</var> enumerator is used to update each of the image resolutions used in the image list.
           </p>
           <p>
             The <var>ScaleImage</var> method is called to resize the Image rectangle to the height and width required for the image resolution(s). The <var>InternalReplace</var> method in each image resolution is called to store the scaled 32-bit RGBA raw image data.
@@ -4207,7 +4209,7 @@
             <var>Image</var> is a TCustomBitmap instance that contains the image data store in the image list.
           </p>
           <p>
-            <var>AllResolutions</var> indicates if all image resolutions are updated in the method. When AllResolutions is False, only the image resolution using the image width in AImageWidth is updated in the method. When AllResolutions is True, the image stored at the specified position is updates in all <var>Resolutions</var> for the image list.
+            <var>AllResolutions</var> indicates if all image resolutions are updated in the method. When AllResolutions is <b>False</b>, only the image resolution using the image width in AImageWidth is updated in the method. When AllResolutions is <b>True</b>, the image stored at the specified position is updates in all <var>Resolutions</var> for the image list.
           </p>
           <p>
             ReplaceSliceCentered calls the <var>ReplaceSlice</var> method to update the image at the specified position using the parameters passed to the method.
@@ -4280,7 +4282,7 @@
             <var>MaskColor</var> contains a TColor value that represents transparent pixels in the image. Every pixel in the image using the color in MaskColor is converted to a transparent pixel.
           </p>
           <p>
-            <var>AllResolutions</var> indicates if all resolutions in the image list are affected in the method. When AllResolutions contains False, only the resolution using the Width in NewImage is updated with the new image data. When AllResolutions contains True, the <var>Resolutions</var> enumerator is used to scale and store the image for each <var>TCustomImageListResolution</var> instance.
+            <var>AllResolutions</var> indicates if all resolutions in the image list are affected in the method. When AllResolutions contains <b>False</b>, only the resolution using the Width in NewImage is updated with the new image data. When AllResolutions contains <b>True</b>, the <var>Resolutions</var> enumerator is used to scale and store the image for each <var>TCustomImageListResolution</var> instance.
           </p>
           <p>
             ReplaceMasked creates a temporary TBitmap instance that is used to update the TransparentColor and Transparent properties for the image. It is also used when the image is scaled for the various image resolutions.
@@ -4320,7 +4322,7 @@
             No actions are performed when Value is unassigned (contains <b>Nil</b>) or when it has already been added to the internal list of subscribers.
           </p>
           <p>
-            Value, and other subscribers the internal list, receive change notifications when the Reference class for an image resolution is freed and when the private  <var>NotifyChangeLink</var> method is called.
+            Value, and other subscribers the internal list, receive change notifications when the Reference class for an image resolution is freed and when the private <var>NotifyChangeLink</var> method is called.
           </p>
           <p>
             Use <var>UnRegisterChanges</var> to remove a TChangeLink instance from the internal list of subscribers.
@@ -4412,7 +4414,7 @@
             <var>RegisterResolutions</var> is a procedure used to register image resolutions (or sizes) used in the image list. RegisterResolutions allows <var>TCustomImageListResolution</var> instances to be created and stored in the image resolution container for the image list.
           </p>
           <p>
-            <var>AResolutionWidths</var> is an array of Integer values that contains the icon widths for the image resolutions used in the image list. Each image width is passed as an argument to the <var>GetResolution</var> method. This locates the image resolution class instance if it already exists, or creates a new one when needed. The <var>AutoCreatedInDesignTime</var> property in the image resolution is set to False to show that the resolution was created at run-time.
+            <var>AResolutionWidths</var> is an array of Integer values that contains the icon widths for the image resolutions used in the image list. Each image width is passed as an argument to the <var>GetResolution</var> method. This locates the image resolution class instance if it already exists, or creates a new one when needed. The <var>AutoCreatedInDesignTime</var> property in the image resolution is set to <b>False</b> to show that the resolution was created at run-time.
           </p>
           <p>
             Use <var>RegisterResolutions</var> prior to adding images to the image list at run-time.
@@ -4453,16 +4455,16 @@
         </short>
         <descr>
           <p>
-            <var>FindResolution</var> is a Boolean function used to find the image resolution with  the image width specified in AImageWidth.
+            <var>FindResolution</var> is a Boolean function used to find the image resolution with the image width specified in AImageWidth.
           </p>
           <p>
             AResolution is a <var>TCustomImageListResolution</var> output parameter used to return the image resolution using the specified image width. AResolution contains Nil when the image width is not used in the resolutions for the image list.
           </p>
           <p>
-            FindResolution calls the <var>Find</var> method for the internal <var>TCustomImageListResolutions</var> container. The return value is True when an image resolution using the specified image width is found in the resolutions for the image list. The <var>ResolutionByIndex</var> property is used to get the class instance for AResolution when the return value is True.
+            FindResolution calls the <var>Find</var> method for the internal <var>TCustomImageListResolutions</var> container. The return value is <b>True</b> when an image resolution using the specified image width is found in the resolutions for the image list. The <var>ResolutionByIndex</var> property is used to get the class instance for AResolution when the return value is <b>True</b>.
           </p>
           <p>
-            FindResolution is used in the implementation of the <var>Replace</var>, <var>ReplaceMasked</var>,  <var>ReplaceSlice</var>, and <var>ReplaceSliceCentered</var> methods.
+            FindResolution is used in the implementation of the <var>Replace</var>, <var>ReplaceMasked</var>, <var>ReplaceSlice</var>, and <var>ReplaceSliceCentered</var> methods.
           </p>
         </descr>
         <seealso>
@@ -4475,7 +4477,7 @@
         </seealso>
       </element>
       <element name="TCustomImageList.FindResolution.Result">
-        <short>True when an image resolution using the specified width is found.</short>
+        <short><b>True</b> when an image resolution using the specified width is found.</short>
       </element>
       <element name="TCustomImageList.FindResolution.AImageWidth">
         <short>Image width for the resolution requested in the method.</short>
@@ -4685,7 +4687,7 @@
             <var>APPI</var> is an Integer value that contains the display density used to calculate the width of images.
           </p>
           <p>
-            Reading the value for the property causes the image width to be calculated using the specified parameter values. If AWidth is 0 (zero) or a negative number, the value in the <var>Width</var> property is used as the initial image width. When <var>Scaled</var> contains True,  the image width is calculated using the following formula:
+            Reading the value for the property causes the image width to be calculated using the specified parameter values. If AWidth is 0 (zero) or a negative number, the value in the <var>Width</var> property is used as the initial image width. When <var>Scaled</var> contains <b>True</b>, the image width is calculated using the following formula:
           </p>
           <code>(AImageWidth * APPI) / 96</code>
           <p>
@@ -4714,7 +4716,7 @@
           </p>
           <code>AImageWidth * Factor div 100</code>
           <p>
-            When <var>Scaled</var> is False, image width scaling is not performed and the value in AImageWidth is used as the property value.
+            When <var>Scaled</var> is <b>False</b>, image width scaling is not performed and the value in AImageWidth is used as the property value.
           </p>
           <p>
             The <var>OnGetWidthForPPI</var> event handler is signalled (when assigned) to allow overriding the calculated image width. Applications can provide a <var>TCustomImageListGetWidthForPPI</var> procedure which uses custom scaling logic, or performs simple image width substitution for given display densities.
@@ -4790,10 +4792,10 @@
         </short>
         <descr>
           <p>
-            <var>Masked</var> is a Boolean property which indicates if images in the image list contain an image mask that defines the transparent areas in the image. The default value for the property is False.
+            <var>Masked</var> is a Boolean property which indicates if images in the image list contain an image mask that defines the transparent areas in the image. The default value for the property is <b>False</b>.
           </p>
           <p>
-            Set the value in Masked to True if the <var>AddMasked</var> or <var>ReplaceMasked</var> method was used to store a masked bitmap image to the image list.
+            Set the value in Masked to <b>True</b> if the <var>AddMasked</var> or <var>ReplaceMasked</var> method was used to store a masked bitmap image to the image list.
           </p>
         </descr>
         <seealso>
@@ -4811,7 +4813,7 @@
             <var>Reference</var> is an indexed read-only TWSCustomImageListReference property which provides access to the class instance for a resolution using the specified image width. Reading the value in the property causes the image resolution and its reference class to be created if it has not already been allocated.
           </p>
           <p>
-            Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in  <var>TWSCustomImageListResolutionClass</var> methods.
+            Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in <var>TWSCustomImageListResolutionClass</var> methods.
           </p>
         </descr>
         <seealso>
@@ -4859,7 +4861,7 @@
             <var>Resolution</var> is an indexed read-only <var>TCustomImageListResolution</var> property which provides access to an image resolution using the image width specified in AImageWidth.
           </p>
           <p>
-            <var>GetResolution</var> is the read access specifier for the Resolution property. It retrieves an  image list using the specified image width. When AImageWidth is 0 (zero) or a negative value, the value in the Width property is used to locate the image resolution.
+            <var>GetResolution</var> is the read access specifier for the Resolution property. It retrieves an image list using the specified image width. When AImageWidth is 0 (zero) or a negative value, the value in the Width property is used to locate the image resolution.
           </p>
           <p>
             Use <var>ResolutionByIndex</var> to get a resolution using its ordinal position in the resolutions for the image list.
@@ -5001,7 +5003,7 @@
         </short>
         <descr>
           <p>
-            <var>ResolutionsDesc</var> is a  <var>TCustomImageListResolutionEnumerator</var> function that provides access to the descending enumerator for image resolutions in the image list. Images resolutions are accessed in descending image size order in the enumerator.
+            <var>ResolutionsDesc</var> is a <var>TCustomImageListResolutionEnumerator</var> function that provides access to the descending enumerator for image resolutions in the image list. Images resolutions are accessed in descending image size order in the enumerator.
           </p>
         </descr>
         <seealso>
@@ -5043,11 +5045,11 @@
 
       <element name="TCustomImageList.ShareImages">
         <short>
-          True when the handle for the image list is shared.
+          <b>True</b> when the handle for the image list is shared.
         </short>
         <descr>
           <p>
-            <var>ShareImages</var> is a <var>Boolean</var> property that indicates if the handle for an image list is shared. When ShareImages contains False, the handle to the image list is freed when the the image list is destroyed.
+            <var>ShareImages</var> is a <var>Boolean</var> property that indicates if the handle for an image list is shared. When ShareImages contains <b>False</b>, the handle to the image list is freed when the the image list is destroyed.
           </p>
           <p>
             This property exists only for Delphi compatibility. ShareImages is not used in the current implementation of TCustomImageList.
