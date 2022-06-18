@@ -592,6 +592,7 @@ type
     procedure InitChildWatches;
     function CreateChildWatches: TIdeWatches; virtual;
     procedure SetParentWatch(AValue: TIdeWatch); virtual;
+    procedure AssignTo(Dest: TPersistent); override;
 
     function CreateValueList: TWatchValueList; override;
     procedure DoEnableChange; override;
@@ -6278,6 +6279,13 @@ procedure TIdeWatch.SetParentWatch(AValue: TIdeWatch);
 begin
   if FParentWatch = AValue then Exit;
   FParentWatch := AValue;
+end;
+
+procedure TIdeWatch.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if Dest is TIdeWatch then
+    TIdeWatch(Dest).FDisplayName := FDisplayName;
 end;
 
 procedure TIdeWatch.InitChildWatches;
