@@ -63,7 +63,7 @@
         <short>Pointer to a pipe event handler routine.</short>
         <descr>
           <p>
-            PPipeEventHandler is an alias to the Pointer type. It is used in widgetset class to  add or remove pipe event handlers in the class instance.
+            PPipeEventHandler is an alias to the Pointer type. It is used in widgetset class to add or remove pipe event handlers in the class instance.
           </p>
         </descr>
         <seealso/>
@@ -198,7 +198,7 @@
         </short>
         <descr>
           <p>
-            <var>TPipeEvent</var> is an object procedure type which specifies an event handler signalled for a pipe handle in a widgetset object. It is used for asynchronous process event  notifications. The parameters contain a pointer to the data for the event, and the reason for the event notification.
+            <var>TPipeEvent</var> is an object procedure type which specifies an event handler signalled for a pipe handle in a widgetset object. It is used for asynchronous process event notifications. The parameters contain a pointer to the data for the event, and the reason for the event notification.
           </p>
           <p>
             TPipeEvent is the type passed as an argument to the <var>TWidgetSet.AddPipeEventHandler</var> method.
@@ -247,7 +247,7 @@
       <element name="TLCLCapability">
         <short>Represents capabilities used in the LCL.</short>
         <descr>
-          <var>TLCLCapability</var> is an enumerated type with values that represent capabilities used  in the Lazarus Component Library (<b>LCL</b>). The enumeration values identify features or behaviors that may be implemented in a given widgetset object. The enumeration values can be passed to the <var>TWidgetSet.GetLCLCapability</var> method to determine whether the feature or behavior is implemented for the platform.
+          <var>TLCLCapability</var> is an enumerated type with values that represent capabilities used in the Lazarus Component Library (<b>LCL</b>). The enumeration values identify features or behaviors that may be implemented in a given widgetset object. The enumeration values can be passed to the <var>TWidgetSet.GetLCLCapability</var> method to determine whether the feature or behavior is implemented for the platform.
         </descr>
         <seealso>
           <link id="TWidgetSet.GetLCLCapability"/>
@@ -442,7 +442,7 @@
       </element>
 
       <element name="TDialogButton.Cancel">
-        <short>True if the button is the Cancel button.</short>
+        <short><b>True</b> if the button is the Cancel button.</short>
         <descr>
           <p>
             <var>Cancel</var> is a <var>Boolean</var> property which indicates if the button is used as the Cancel button in the dialog.
@@ -465,7 +465,7 @@
       </element>
 
       <element name="TDialogButton.Default">
-        <short>True if the button is the default button.</short>
+        <short><b>True</b> if the button is the default button.</short>
         <descr>
           <p>
             <var>Default</var> is a <var>Boolean</var> property which indicates if the button is the default button for the dialog.
@@ -706,7 +706,7 @@
             <var>TWidgetSet</var> is a <var>TObject</var> descendant which implements an application helper class that provides access to platform-specific operating system and drawing interfaces. A number of methods are declared as abstract virtual, and must be implemented in descendent classes. Other methods are declared as virtual to allow them to be overridden for a specific platform.
           </p>
           <p>
-            TWidgetSet is used as the ancestor for platform-specific implementations like <var>TWin32WidgetSet</var>, <var>TGTKWidgetSet</var>, <var>TQtWidgetSet</var>,  <var>TCarbonWidgetSet</var>, <var>TCocoaWidgetSet</var>, et. al.
+            TWidgetSet is used as the ancestor for platform-specific implementations like <var>TWin32WidgetSet</var>, <var>TGTKWidgetSet</var>, <var>TQtWidgetSet</var>, <var>TCarbonWidgetSet</var>, <var>TCocoaWidgetSet</var>, et. al.
           </p>
           <p>
             The <var>WidgetSet</var> variable provides access to the TWidgetSet singleton for the current widgetset implementation.
@@ -905,7 +905,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
         <short/>
@@ -1036,7 +1036,7 @@
         <short>Redraws the device context for the specified canvas handle.</short>
         <descr>
           <p>
-            Used in the implementation of the TCanvas.RealizeAutoRedraw method called when its  AutoRedraw property is changed.
+            Used in the implementation of the TCanvas.RealizeAutoRedraw method called when its AutoRedraw property is changed.
           </p>
           <p>
             Implemented for Gtk, Gtk2, Carbon, and Cocoa widgetsets.
@@ -1061,7 +1061,7 @@
         <short>Canvas handle with the device context updated in the method.</short>
       </element>
       <element name="TWidgetSet.DCSetAntialiasing.AEnabled">
-        <short>True to enable anti-aliasing for the device context.</short>
+        <short><b>True</b> to enable anti-aliasing for the device context.</short>
       </element>
 
       <element name="TWidgetSet.SetDesigning">
@@ -1079,7 +1079,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.InitStockFont.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.InitStockFont.AFont">
         <short>The font to initialize.</short>
@@ -1094,7 +1094,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.IsHelpKey.Result">
-        <short>True when this is a Help key.</short>
+        <short><b>True</b> when this is a Help key.</short>
       </element>
       <element name="TWidgetSet.IsHelpKey.Key">
         <short>The virtual key.</short>
@@ -1133,7 +1133,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.DestroyTimer.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyTimer.TimerHandle">
         <short>The timer ID.</short>
@@ -1163,7 +1163,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.Arc.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.Arc.DC">
         <short/>
@@ -1200,7 +1200,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.AngleChord.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.AngleChord.DC">
         <short/>
@@ -1296,7 +1296,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.BitBlt.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.BitBlt.DestDC">
         <short>The destination Device Context.</short>
@@ -1377,7 +1377,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ClientToScreen.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ClientToScreen.Handle">
         <short>The window with the client area.</short>
@@ -1477,7 +1477,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.CreateCaret.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.CreateCaret.Handle">
         <short>The window that owns the caret.</short>
@@ -1785,7 +1785,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.DeleteDC.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DeleteDC.hDC">
         <short/>
@@ -1799,7 +1799,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DeleteObject.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DeleteObject.GDIObject">
         <short/>
@@ -1811,7 +1811,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DestroyCaret.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyCaret.Handle">
         <short>Handle of the window with the caret.</short>
@@ -1823,7 +1823,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DestroyCursor.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyCursor.Handle">
         <short>The cursor Handle.</short>
@@ -1835,7 +1835,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DestroyIcon.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyIcon.Handle">
         <short/>
@@ -1847,7 +1847,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DPtoLP.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DPtoLP.DC">
         <short>The device context, containing the coordinate mapping information.</short>
@@ -1881,7 +1881,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DrawFrameControl.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DrawFrameControl.DC">
         <short>The window frame device context.</short>
@@ -1915,7 +1915,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DrawFocusRect.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DrawFocusRect.DC">
         <short>Almost a screen DC.</short>
@@ -1930,7 +1930,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.DrawEdge.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.DrawEdge.DC">
         <short>Device context for the drawing operation.</short>
@@ -1986,7 +1986,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.EnableScrollBar.Result">
-        <short>False when nothing was changed.</short>
+        <short><b>False</b> when nothing was changed.</short>
       </element>
       <element name="TWidgetSet.EnableScrollBar.Wnd">
         <short>The window or control handle.</short>
@@ -2006,13 +2006,13 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.EnableWindow.Result">
-        <short>True when the window was disabled before.</short>
+        <short><b>True</b> when the window was disabled before.</short>
       </element>
       <element name="TWidgetSet.EnableWindow.hWnd">
         <short>Handle for the window.</short>
       </element>
       <element name="TWidgetSet.EnableWindow.bEnable">
-        <short>True to enable the window, False to disable the window.</short>
+        <short><b>True</b> to enable the window, <b>False</b> to disable the window.</short>
       </element>
 
       <element name="TWidgetSet.EndPaint">
@@ -2052,7 +2052,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.hdc">
         <short/>
@@ -2126,7 +2126,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.Ellipse.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.Ellipse.DC">
         <short/>
@@ -2210,7 +2210,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ExtTextOut.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.DC">
         <short>The Device Context.</short>
@@ -2282,7 +2282,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.FillRect.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.FillRect.DC">
         <short/>
@@ -2333,7 +2333,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.FloodFill.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.FloodFill.DC">
         <short>The device context.</short>
@@ -2429,7 +2429,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetCaretPos.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetCaretPos.lpPoint">
         <short>Receives the coordinates.</short>
@@ -2448,7 +2448,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetClientRect.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetClientRect.handle">
         <short>The window handle.</short>
@@ -2510,7 +2510,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetCursorPos.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetCursorPos.lpPoint">
         <short>Receives the mouse coordinates.</short>
@@ -2524,7 +2524,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetCharABCWidths.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetCharABCWidths.DC">
         <short>The device context.</short>
@@ -2649,7 +2649,8 @@
       </element>
 
       <element name="TWidgetSet.GetFocus">
-        <short>Returns the handle of the window that has the focus in the current thread.
+        <short>
+          Returns the handle of the window that has the focus in the current thread.
         </short>
         <descr/>
         <seealso/>
@@ -2746,7 +2747,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.hMonitor">
         <short>The monitor handle.</short>
@@ -2864,7 +2865,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Handle">
         <short>The handle of a ScrollBar, or of a window containing scrollbars.</short>
@@ -2998,7 +2999,9 @@
         <short>The number of requested entries.</short>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.PaletteEntries">
-        <short>Receives the color information. When Nil, the total number of palette entries is returned.</short>
+        <short>
+          Receives the color information. When Nil, the total number of palette entries is returned.
+        </short>
       </element>
 
       <element name="TWidgetSet.GetSystemMetrics">
@@ -3126,7 +3129,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.DC">
         <short>The device context.</short>
@@ -3143,9 +3146,9 @@
         <short>The maximum display width, in logical units.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxCount">
-        <short>Receives the number of
-          <b>logical</b>
-          (UTF) characters that can be displayed. When Nil, MaxWidth is ignored.</short>
+        <short>
+          Receives the number of <b>logical</b> (UTF) characters that can be displayed. When Nil, MaxWidth is ignored.
+        </short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.PartialWidths">
         <short>Receives the widths for every partial sequence of characters. Can be Nil.</short>
@@ -3164,7 +3167,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.DC">
         <short>The display DC.</short>
@@ -3173,9 +3176,9 @@
         <short>The text.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Count">
-        <short>The number of
-          <b>bytes</b>
-          in Str, -1 for automatic detection.</short>
+        <short>
+          The number of <b>bytes</b> in Str, -1 for automatic detection.
+        </short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Size">
         <short>Receives the total width and height of the required display area.</short>
@@ -3211,7 +3214,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetTextMetrics.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetTextMetrics.DC">
         <short>The device context, where the font is selected.</short>
@@ -3229,7 +3232,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.Result">
-        <short>False (zero) on failure.</short>
+        <short><b>False</b> (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.DC">
         <short/>
@@ -3247,7 +3250,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.Result">
-        <short>False (zero) on failure.</short>
+        <short><b>False</b> (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.DC">
         <short/>
@@ -3262,7 +3265,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.Result">
-        <short>False (zero) on failure.</short>
+        <short><b>False</b> (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.DC">
         <short/>
@@ -3320,7 +3323,8 @@
       </element>
 
       <element name="TWidgetSet.GetWindowRect">
-        <short>Retrieves the bounding rectangle of a window, in screen coordinates.
+        <short>
+          Retrieves the bounding rectangle of a window, in screen coordinates.
         </short>
         <descr/>
         <seealso/>
@@ -3345,7 +3349,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowSize.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Handle">
         <short>The window handle.</short>
@@ -3381,7 +3385,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GradientFill.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GradientFill.DC">
         <short>The device context.</short>
@@ -3412,7 +3416,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.HideCaret.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.HideCaret.hWnd">
         <short>The window handle, can be zero.</short>
@@ -3482,7 +3486,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.InvalidateRect.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.InvalidateRect.aHandle">
         <short>The window handle.</short>
@@ -3491,7 +3495,7 @@
         <short>The client coordinates of the area.</short>
       </element>
       <element name="TWidgetSet.InvalidateRect.bErase">
-        <short>True forces a repaint of the background, before further painting.</short>
+        <short><b>True</b> forces a repaint of the background, before further painting.</short>
       </element>
 
       <element name="TWidgetSet.InvalidateRgn">
@@ -3502,7 +3506,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Handle">
         <short>The window handle.</short>
@@ -3511,7 +3515,7 @@
         <short>The region to repaint.</short>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Erase">
-        <short>True forces a repaint of the background, before further painting.</short>
+        <short><b>True</b> forces a repaint of the background, before further painting.</short>
       </element>
 
       <element name="TWidgetSet.IsDBCSLeadByte">
@@ -3520,19 +3524,21 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.Result">
-        <short>True when the character code is the first of a double-byte character sequence.</short>
+        <short>
+          <b>True</b> when the character code is the first of a double-byte character sequence.
+        </short>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.TestChar">
         <short>The character code to test.</short>
       </element>
 
       <element name="TWidgetSet.IsIconic">
-        <short>True when the window is minimized.</short>
+        <short><b>True</b> when the window is minimized.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWidgetSet.IsIconic.Result">
-        <short>True when the window is minimized.</short>
+        <short><b>True</b> when the window is minimized.</short>
       </element>
       <element name="TWidgetSet.IsIconic.handle">
         <short>The window handle.</short>
@@ -3544,7 +3550,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.IsWindow.Result">
-        <short>True when handle is a valid window handle.</short>
+        <short><b>True</b> when handle is a valid window handle.</short>
       </element>
       <element name="TWidgetSet.IsWindow.handle">
         <short>The handle to test.</short>
@@ -3558,7 +3564,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.IsWindowEnabled.Result">
-        <short>True when the window is enabled (and visible).</short>
+        <short><b>True</b> when the window is enabled (and visible).</short>
       </element>
       <element name="TWidgetSet.IsWindowEnabled.handle">
         <short>The window handle.</short>
@@ -3570,21 +3576,21 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.IsWindowVisible.Result">
-        <short>True when the window and all its parents are visible.</short>
+        <short><b>True</b> when the window and all its parents are visible.</short>
       </element>
       <element name="TWidgetSet.IsWindowVisible.handle">
         <short/>
       </element>
 
       <element name="TWidgetSet.IsZoomed">
-        <short>True when the window is maximized.</short>
+        <short><b>True</b> when the window is maximized.</short>
         <descr/>
         <seealso>
           <link id="TWidgetSet.IsIconic"/>
         </seealso>
       </element>
       <element name="TWidgetSet.IsZoomed.Result">
-        <short>True when the window is maximized.</short>
+        <short><b>True</b> when the window is maximized.</short>
       </element>
       <element name="TWidgetSet.IsZoomed.handle">
         <short>The window handle.</short>
@@ -3611,7 +3617,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.LineTo.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.LineTo.DC">
         <short>The device context.</short>
@@ -3629,7 +3635,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.LPtoDP.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.LPtoDP.DC">
         <short>The device context.</short>
@@ -3661,7 +3667,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.MaskBlt.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.DestDC">
         <short>The destination device context.</short>
@@ -3795,7 +3801,7 @@
         <short>Finds a monitor from the screen coordinates.</short>
         <descr>
           <p>
-            The return value contains the handle for the monitor, or a value determined using  Flags when a monitor does not apply.
+            The return value contains the handle for the monitor, or a value determined using Flags when a monitor does not apply.
           </p>
           <dl>
             <dt>MONITOR_DEFAULTTONEAREST</dt>
@@ -3866,7 +3872,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.MoveToEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.MoveToEx.DC">
         <short>The device context.</short>
@@ -3940,7 +3946,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.Pie.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.Pie.DC">
         <short>The device context.</short>
@@ -3995,7 +4001,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.PolyBezier.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.DC">
         <short>The device context.</short>
@@ -4007,10 +4013,10 @@
         <short>The number of points in Points.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.Filled">
-        <short>True draws a Polygon.</short>
+        <short><b>True</b> draws a Polygon.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.Continuous">
-        <short>True uses the end-point as the starting point of the next segment.</short>
+        <short><b>True</b> uses the end-point as the starting point of the next segment.</short>
       </element>
 
       <element name="TWidgetSet.Polygon">
@@ -4035,7 +4041,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.Polygon.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.Polygon.DC">
         <short>The device context.</short>
@@ -4079,7 +4085,8 @@
       </element>
 
       <element name="TWidgetSet.PostMessage">
-        <short>Sends a message to a window, without waiting for the message result.
+        <short>
+          Sends a message to a window, without waiting for the message result.
         </short>
         <descr>
           <remark>
@@ -4127,7 +4134,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.PtInRegion.Result">
-        <short>True when the point lies in the region.</short>
+        <short><b>True</b> when the point lies in the region.</short>
       </element>
       <element name="TWidgetSet.PtInRegion.RGN">
         <short>The region.</short>
@@ -4161,7 +4168,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.Rectangle.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.Rectangle.DC">
         <short>The device context.</short>
@@ -4185,7 +4192,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.RectVisible.Result">
-        <short>True when (part of) the rectangle is visible.</short>
+        <short><b>True</b> when (part of) the rectangle is visible.</short>
       </element>
       <element name="TWidgetSet.RectVisible.dc">
         <short>The device context.</short>
@@ -4221,7 +4228,7 @@
             <dd>Force WM_PAINT even if the update region is empty.</dd>
           </dl>
           <p>
-            Validation is not implemented for all platforms. To validate, specify RDW_VALIDATE  and optionally one of the following:
+            Validation is not implemented for all platforms. To validate, specify RDW_VALIDATE and optionally one of the following:
           </p>
           <dl>
               <dt>RDW_NOERASE</dt>
@@ -4256,7 +4263,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RedrawWindow.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.RedrawWindow.Wnd">
         <short>The window to redraw.</short>
@@ -4279,7 +4286,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ReleaseCapture.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
 
       <element name="TWidgetSet.ReleaseDC">
@@ -4322,7 +4329,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RestoreDC.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.RestoreDC.DC">
         <short>The device context.</short>
@@ -4341,7 +4348,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.RoundRect.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.RoundRect.DC">
         <short>The device context.</short>
@@ -4385,7 +4392,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ScreenToClient.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ScreenToClient.Handle">
         <short>The handle of the window with the client area.</short>
@@ -4418,7 +4425,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.hWnd">
         <short>The window handle.</short>
@@ -4496,7 +4503,7 @@
         <short>The palette to select.</short>
       </element>
       <element name="TWidgetSet.SelectPalette.ForceBackground">
-        <short>True to select the background palette.</short>
+        <short><b>True</b> to select the background palette.</short>
       </element>
 
       <element name="TWidgetSet.SendMessage">
@@ -4618,7 +4625,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetCaretPos.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetCaretPos.X">
         <short>The new caret position.</short>
@@ -4633,7 +4640,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.handle">
         <short>The window handle.</short>
@@ -4666,7 +4673,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetCursorPos.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetCursorPos.X">
         <short>The new screen coordinates.</short>
@@ -4695,7 +4702,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetForegroundWindow.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetForegroundWindow.hWnd">
         <short>The window handle.</short>
@@ -4749,7 +4756,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetMenu.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetMenu.AWindowHandle">
         <short>The window handle.</short>
@@ -4781,7 +4788,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetProp.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetProp.Handle">
         <short>The window handle.</short>
@@ -4888,7 +4895,7 @@
         <short>Contains the new values.</short>
       </element>
       <element name="TWidgetSet.SetScrollInfo.Redraw">
-        <short>True forces a repaint of the ScrollBar.</short>
+        <short><b>True</b> forces a repaint of the ScrollBar.</short>
       </element>
 
       <element name="TWidgetSet.SetStretchBltMode">
@@ -4934,7 +4941,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetSysColors.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetSysColors.cElements">
         <short>The number of colors to change, size of the arrays.</short>
@@ -4985,7 +4992,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.DC">
         <short>The Device Context.</short>
@@ -5011,7 +5018,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.DC">
         <short>The Device Context.</short>
@@ -5035,7 +5042,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.DC">
         <short>The Device Context.</short>
@@ -5076,7 +5083,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetWindowOrgEx.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowOrgEx.dc">
         <short>The device context.</short>
@@ -5178,7 +5185,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SetWindowRgn.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowRgn.hWnd">
         <short>The window handle.</short>
@@ -5187,7 +5194,7 @@
         <short>The window region handle.</short>
       </element>
       <element name="TWidgetSet.SetWindowRgn.bRedraw">
-        <short>True forces a repaint of the window.</short>
+        <short><b>True</b> forces a repaint of the window.</short>
       </element>
 
       <element name="TWidgetSet.ShowCaret">
@@ -5211,7 +5218,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.ShowCaret.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ShowCaret.hWnd">
         <short>The window handle.</short>
@@ -5225,7 +5232,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.ShowScrollBar.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ShowScrollBar.Handle">
         <short>The window or ScrollBar handle.</short>
@@ -5234,7 +5241,7 @@
         <short>The scrollbar type (SB_CTL, SB_HORZ...).</short>
       </element>
       <element name="TWidgetSet.ShowScrollBar.bShow">
-        <short>True shows, <b>False</b> hides the ScrollBar.</short>
+        <short><b>True</b> shows, <b>False</b> hides the ScrollBar.</short>
       </element>
 
       <element name="TWidgetSet.ShowWindow">
@@ -5273,7 +5280,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ShowWindow.Result">
-        <short>True when the window was already visible.</short>
+        <short><b>True</b> when the window was already visible.</short>
       </element>
       <element name="TWidgetSet.ShowWindow.hWnd">
         <short>The window handle.</short>
@@ -5294,7 +5301,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.StretchBlt.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.StretchBlt.DestDC">
         <short>The destination device context.</short>
@@ -5566,7 +5573,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.uiAction">
         <short>The parameter and action.</short>
@@ -5589,7 +5596,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.TextOut.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.TextOut.DC">
         <short>The Device Context.</short>
@@ -5613,7 +5620,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.UpdateWindow.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.UpdateWindow.Handle">
         <short>The window handle.</short>
@@ -5709,7 +5716,7 @@
         </short>
         <descr>
           <p>
-            AskUser uses the native facilities provided by the platform or operating system to display a dialog, and captures the modal result value. This method is overridden  in descendent class to implement the platform-specific dialog.
+            AskUser uses the native facilities provided by the platform or operating system to display a dialog, and captures the modal result value. This method is overridden in descendent class to implement the platform-specific dialog.
           </p>
           <p>
             The implementation in <var>TWidgetSet</var> is used as a fallback when no other mechanism is available. It uses the routine assigned to <var>QuestionDialogFunction</var> to execute the dialog and capture the modal result value. No default actions are peformed when QuestionDialogFunction has not been assigned (contains <b>Nil</b>).
@@ -5771,7 +5778,7 @@
       </element>
       <element name="TWidgetSet.ClipboardGetData.Result">
         <short>
-          True if clipboard data was successfully retrieved and stored in the method.
+          <b>True</b> if clipboard data was successfully retrieved and stored in the method.
         </short>
       </element>
       <element name="TWidgetSet.ClipboardGetData.ClipboardType">
@@ -5790,7 +5797,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ClipboardGetFormats.Result">
-        <short>True on success.</short>
+        <short><b>True</b> on success.</short>
       </element>
       <element name="TWidgetSet.ClipboardGetFormats.ClipboardType">
         <short>The clipboard operation type.</short>
@@ -5810,7 +5817,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.ClipboardGetOwnerShip.Result">
-        <short>True on success.</short>
+        <short><b>True</b> on success.</short>
       </element>
       <element name="TWidgetSet.ClipboardGetOwnerShip.ClipboardType">
         <short>Type of clipboard type for the request.</short>
@@ -5997,7 +6004,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.ExtUTF8Out.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.ExtUTF8Out.DC">
         <short>The Device Context.</short>
@@ -6159,7 +6166,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetControlConstraints.Result">
-        <short>False on failure.</short>
+        <short><b>False</b> on failure.</short>
       </element>
       <element name="TWidgetSet.GetControlConstraints.Constraints">
         <short>Should be a TSizeConstraints.</short>
@@ -6957,7 +6964,7 @@
       </element>
       <element name="MemSizeLessThan.Result">
         <short>
-          Returns True when AMemSize has been assigned and is smaller than AThen. Returns False when AMemSize is zero.
+          Returns <b>True</b> when AMemSize has been assigned and is smaller than AThen. Returns <b>False</b> when AMemSize is zero (0).
         </short>
       </element>
       <element name="MemSizeLessThan.AMemSize">
