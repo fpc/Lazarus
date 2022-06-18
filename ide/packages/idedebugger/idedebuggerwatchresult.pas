@@ -177,6 +177,7 @@ type
     VKind = rdkPointerVal;
   protected
     function GetAsString: String; inline;
+    property GetDataAddress: TDBGPtr read FNumValue;
   end;
 
   { TWatchResultTypePointer }
