@@ -247,6 +247,8 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
+    procedure SetAsCardinal(AValue: QWord); override;
+    function GetAsCardinal: QWord; override;
   public
     property DynamicCodePage: TSystemCodePage read GetCodePage;
   end;
@@ -1533,6 +1535,25 @@ function TFpValueDwarfV3FreePascalString.GetAsWideString: WideString;
 begin
   // todo: widestring, but currently that is encoded as PWideChar
   Result := GetAsString;
+end;
+
+procedure TFpValueDwarfV3FreePascalString.SetAsCardinal(AValue: QWord);
+begin
+  if not Context.WriteUnsignedInt(Address, SizeVal(AddressSize), AValue) then begin
+    SetLastError(Context.LastMemError);
+  end;
+  FValueDone := False;
+end;
+
+function TFpValueDwarfV3FreePascalString.GetAsCardinal: QWord;
+var
+  d: TFpDbgMemLocation;
+begin
+  d := DataAddress;
+  if IsTargetAddr(d) then
+    Result := DataAddress.Address
+  else
+    Result := inherited GetAsCardinal;
 end;
 
 function TFpValueDwarfV3FreePascalString.ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out

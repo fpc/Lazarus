@@ -1607,11 +1607,12 @@ end;
 
 function TFpSymbolForwarder.GetForwardToSymbol: TFpSymbol;
 begin
-  if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TFpSymbolForwarder.ForwardToSymbolNeeded) then
-    exit(nil);
+  if not(sfiForwardToSymbol in EvaluatedFields) then begin
+    if TMethod(@ForwardToSymbolNeeded).Code = Pointer(@TFpSymbolForwarder.ForwardToSymbolNeeded) then
+      exit(nil);
 
-  if not(sfiForwardToSymbol in EvaluatedFields) then
     ForwardToSymbolNeeded;
+  end;
   Result := FForwardToSymbol;
 end;
 

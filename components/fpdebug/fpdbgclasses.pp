@@ -212,6 +212,7 @@ type
     FStoreStepStartAddr, FStoreStepEndAddr: TDBGPtr;
     FStoreStepSrcLineNo: integer;
     FStoreStepFuncAddr: TDBGPtr;
+    FStackBeforeAlloc: TDBGPtr;
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
@@ -239,7 +240,11 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
+    procedure SetStackPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+
+    function AllocStackMem(ASize: Integer): TDbgPtr; virtual;
+    procedure RestoreStackMem;
 
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     function  FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
@@ -2983,6 +2988,22 @@ end;
 function TDbgThread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 begin
   Result := TDbgStackFrameInfo.Create(Self);
+end;
+
+function TDbgThread.AllocStackMem(ASize: Integer): TDbgPtr;
+begin
+  Result := GetStackPointerRegisterValue;
+  if FStackBeforeAlloc = 0 then
+    FStackBeforeAlloc := Result;
+  dec(Result, ASize);
+  SetStackPointerRegisterValue(Result);
+end;
+
+procedure TDbgThread.RestoreStackMem;
+begin
+  if FStackBeforeAlloc <> 0 then
+    SetStackPointerRegisterValue(FStackBeforeAlloc);
+  FStackBeforeAlloc := 0;
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);

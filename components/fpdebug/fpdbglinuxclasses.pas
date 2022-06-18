@@ -296,6 +296,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
   end;
 
@@ -806,6 +807,16 @@ begin
     result := FUserRegs.regs64[rbp];
 end;
 
+procedure TDbgLinuxThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
+begin
+  if not FHasThreadState then
+    exit;
+  if Process.Mode=dm32 then
+    FUserRegs.regs32[UESP] := AValue
+  else
+    FUserRegs.regs64[rsp] := AValue;
+end;
+
 function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
   //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackPointerRegisterValue');{$ENDIF}
@@ -827,6 +838,8 @@ begin
     case AName of
       'eip': FUserRegs.regs32[eip] := AValue;
       'eax': FUserRegs.regs32[eax] := AValue;
+      'ecx': FUserRegs.regs32[ecx] := AValue;
+      'edx': FUserRegs.regs32[edx] := AValue;
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;

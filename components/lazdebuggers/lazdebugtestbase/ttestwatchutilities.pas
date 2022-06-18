@@ -141,6 +141,7 @@ type
     TstTestName: String;
     TstWatch: TTestWatch;
 
+    SkipEvalCall: Boolean;
     EvalCallTestFlags: TWatcheEvaluateFlags;
     EvalCallResReceived: Boolean;
     EvalCallResSuccess: Boolean;
@@ -175,6 +176,7 @@ type
 
     function Skip(ASymTypes: TSymbolTypes = []): PWatchExpectation;
     function SkipIf(ACond: Boolean; ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function SkipEval: PWatchExpectation;
 
     function IgnAll(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function IgnData(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
@@ -297,6 +299,7 @@ type
     function Count: Integer;
     procedure EvaluateWatches;
     procedure CheckResults;
+    procedure EvalAndCheck;
 
     procedure AddTypeNameAlias(ATypeName, AnAliases: String);
     property AcceptSkSimple: TDbgSymbolKinds read FAcceptSkSimple write FAcceptSkSimple ; // skSimple for skInteger,skChar,...
@@ -1005,6 +1008,12 @@ begin
     Result := Self;
 end;
 
+function TWatchExpectationHelper.SkipEval: PWatchExpectation;
+begin
+  Self^.SkipEvalCall := True;
+  Result := Self;
+end;
+
 function TWatchExpectationHelper.IgnAll(ASymTypes: TSymbolTypes; ACond: Boolean
   ): PWatchExpectation;
 begin
@@ -1235,6 +1244,9 @@ var
   i: Integer;
 begin
   Result := true;
+  if AWatchExp^.SkipEvalCall then
+    exit;
+
   if AWatchExp^.EvalCallTestFlags <> [] then begin
     with CurLoc do
       FTest.LogText('###### ' + AWatchExp^.TstTestName + ' // ' + AWatchExp^.TstWatch.Expression +
@@ -1335,8 +1347,9 @@ begin
 
   with AnWatchExp do begin
     try
-      with Debugger.CurLocation do
-        FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' WATCH: '+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
+      if Debugger.LazDebugger.State in [dsPause, dsInternalPause] then
+        with Debugger.CurLocation do
+          FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' WATCH: '+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
       if TstStackFrame > 0 then
         FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
       if not VerifyDebuggerState then
@@ -1386,7 +1399,7 @@ begin
           Context.HasTypeInfo := True;
       end;
 
-      if EvalCallTestFlags <> [] then begin
+      if (EvalCallTestFlags <> []) and not SkipEvalCall then begin
         TestTrue('Got eval res', EvalCallResReceived, Context, AnIgnoreRsn);
         TestTrue('Got eval success', EvalCallResSuccess, Context, AnIgnoreRsn);
 //        if (Context.WatchRes.ValueKind in [rdkUnknown, rdkPrePrinted, rdkError]) then
@@ -2363,6 +2376,12 @@ var
 begin
   for i := 0 to Length(FList)-1 do
     CheckResult(FList[i]);
+end;
+
+procedure TWatchExpectationList.EvalAndCheck;
+begin
+  EvaluateWatches;
+  CheckResults;
 end;
 
 end.

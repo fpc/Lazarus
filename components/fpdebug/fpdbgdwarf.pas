@@ -204,7 +204,7 @@ type
     // Address of the data (followed type deref, location, ...)
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDataAddress: TFpDbgMemLocation; override;
-    function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean;
+    function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean; virtual;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
                                           ATargetType: TFpSymbolDwarfType = nil): Boolean;
 

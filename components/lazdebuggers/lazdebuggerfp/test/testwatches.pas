@@ -25,6 +25,7 @@ type
     procedure TestWatchesScope;
     procedure TestWatchesValue;
     procedure TestWatchesFunctions;
+    procedure TestWatchesFunctionsWithString;
     procedure TestWatchesAddressOf;
     procedure TestWatchesTypeCast;
     procedure TestWatchesExpression;
@@ -36,7 +37,7 @@ implementation
 
 var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchFunct,
-  ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
+  ControlTestWatchFunctStr, ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
   ControlTestExpression, ControlTestErrors: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint;
@@ -1499,6 +1500,13 @@ begin
     t.Add('MyClass1.SomeFuncIntResAdd(3)',     weInteger(80)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('MyClass1.SomeFuncIntRes()',     weInteger(80+999)).AddEvalFlag([defAllowFunctionCall]);
 
+    // Error wrong param count
+    t.Add('SomeFuncIntRes(1)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).ExpectError;
+    t.Add('SomeFuncIntRes(1,2)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).ExpectError;
+    t.Add('FuncIntAdd()',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).ExpectError;
+    t.Add('FuncIntAdd(1)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).ExpectError;
+    t.Add('FuncIntAdd(1,2,3)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).ExpectError;
+
     t.EvaluateWatches;
     t.CheckResults;
 
@@ -1511,6 +1519,178 @@ begin
 
     AssertTestErrors;
   end;
+end;
+
+procedure TTestWatches.TestWatchesFunctionsWithString;
+var
+  MemUsed, PrevMemUsed: Int64;
+  t2: TWatchExpectationList;
+
+  procedure UpdateMemUsed;
+  var
+    Thread: Integer;
+    WtchVal: TWatchValue;
+  begin
+    PrevMemUsed := MemUsed;
+    MemUsed := -1;
+    t2.Clear;
+    t2.AddWithoutExpect('', 'CurMemUsed');
+    t2.EvaluateWatches;
+    Thread := Debugger.Threads.Threads.CurrentThreadId;
+    WtchVal := t2.Tests[0]^.TstWatch.Values[Thread, 0];
+    if (WtchVal <> nil) and (WtchVal.ResultData <> nil) then
+      MemUsed := WtchVal.ResultData.AsInt64;
+    TestTrue('MemUsed <> 0', MemUsed > 0);
+  end;
+  procedure CheckMemUsed;
+  begin
+    Debugger.RunToNextPause(dcStepOver);
+    UpdateMemUsed;
+    TestEquals('MemUsed not changed', PrevMemUsed, MemUsed);
+  end;
+var
+  ExeName, tbn: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg: TDBGBreakPoint;
+  i: Integer;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchFunctStr) then exit;
+  if not (Compiler.SymbolType in [stDwarf3, stDwarf4]) then exit;
+  if Compiler.HasFlag('SkipStringFunc') then exit;
+  tbn := TestBaseName;
+
+  try
+  for i := 0 to 2 do begin
+    TestBaseName := tbn;
+    TestBaseName := TestBaseName + ' -O'+IntToStr(i);
+
+    Src := GetCommonSourceFor(AppDir + 'WatchesFuncStringPrg.pas');
+    case i of
+      0: TestCompile(Src, ExeName, '_O0', '-O-');
+      1: TestCompile(Src, ExeName, '_O1', '-O-1');
+      2: TestCompile(Src, ExeName, '_O2', '-O-2');
+    end;
+
+    t := nil;
+    t2 := nil;
+
+    AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+    try
+      t := TWatchExpectationList.Create(Self);
+      t2 := TWatchExpectationList.Create(Self);
+      t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+        skString, skAnsiString, skCurrency, skVariant, skWideString,
+        skInterface, skEnumValue];
+      t.AddTypeNameAlias('integer', 'integer|longint');
+
+
+      BrkPrg         := Debugger.SetBreakPoint(Src, 'main');
+      AssertDebuggerNotInErrorState;
+
+      (* ************ Nested Functions ************* *)
+
+      RunToPause(BrkPrg);
+
+      UpdateMemUsed;
+
+      t.Clear;
+      t.Add('TestStrRes()',     weAnsiStr('#0')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestStrRes()',     weAnsiStr('#1')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestIntToStrRes(33)',     weAnsiStr('$00000021')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestIntToStrRes(SomeInt)',     weAnsiStr('$0000007E')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestIntSumToStrRes(10,20)',     weAnsiStr('$0000001E')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestIntSumToStrRes(SomeInt,3)',     weAnsiStr('$00000081')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+
+
+      t.Clear;
+      t.Add('TestStrToIntRes(s1)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s1',     weAnsiStr('')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestStrToIntRes(s2)',     weInteger(4)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s2',     weAnsiStr('A')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestStrToIntRes(s3)',     weInteger(3)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s3',     weAnsiStr('abc')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+
+      t.Clear;
+      t.Add('TestStrToStrRes(s1)',     weAnsiStr('"0"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s1',     weAnsiStr('')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestStrToStrRes(s2)',     weAnsiStr('"4"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s2',     weAnsiStr('A')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('TestStrToStrRes(s3)',     weAnsiStr('"3"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('s3',     weAnsiStr('abc')).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+
+      t.Clear;
+      t.Add('conc(s1, s2)',     weAnsiStr('A')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+      t.Clear;
+      t.Add('conc(s3, s4)',     weAnsiStr('abcdef')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.EvalAndCheck;
+      CheckMemUsed;
+
+
+    finally
+      Debugger.RunToNextPause(dcStop);
+      FreeAndNil(t);
+      FreeAndNil(t2);
+      Debugger.ClearDebuggerMonitors;
+      Debugger.FreeDebugger;
+    end;
+
+  end;
+  finally
+    AssertTestErrors;
+  end;
+
 end;
 
 procedure TTestWatches.TestWatchesAddressOf;
@@ -3061,6 +3241,7 @@ initialization
   ControlTestWatchScope     := TestControlRegisterTest('Scope', ControlTestWatch);
   ControlTestWatchValue     := TestControlRegisterTest('Value', ControlTestWatch);
   ControlTestWatchFunct     := TestControlRegisterTest('Function', ControlTestWatch);
+  ControlTestWatchFunctStr  := TestControlRegisterTest('FunctionString', ControlTestWatch);
   ControlTestWatchAddressOf := TestControlRegisterTest('AddressOf', ControlTestWatch);
   ControlTestWatchTypeCast  := TestControlRegisterTest('TypeCast', ControlTestWatch);
   ControlTestModify         := TestControlRegisterTest('Modify', ControlTestWatch);

@@ -83,6 +83,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
 
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); override;
@@ -503,6 +504,10 @@ begin
   ReadDebugReg(28, lval);
   ReadDebugReg(29, hval);
   result := byte(lval) + (byte(hval) shl 8);
+end;
+
+procedure TDbgAvrThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
+begin
 end;
 
 function TDbgAvrThread.GetStackPointerRegisterValue: TDbgPtr;

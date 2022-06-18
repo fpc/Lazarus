@@ -504,6 +504,7 @@ type
   protected
     procedure Init; virtual;
   public
+    constructor Create(const AName: String); overload;
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry); overload;
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry;
                        AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation); overload;
@@ -4039,6 +4040,12 @@ end;
 procedure TDbgDwarfSymbolBase.Init;
 begin
   //
+end;
+
+constructor TDbgDwarfSymbolBase.Create(const AName: String);
+begin
+  inherited Create(AName);
+  Init;
 end;
 
 constructor TDbgDwarfSymbolBase.Create(const AName: String;

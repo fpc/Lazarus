@@ -454,6 +454,7 @@ function RegisterLoc(ARegNum: Cardinal): TFpDbgMemLocation; inline;
 function SelfLoc(AnAddress: TDbgPtr): TFpDbgMemLocation; inline;
 function SelfLoc(AnAddress: Pointer): TFpDbgMemLocation; inline;
 function ConstLoc(AValue: QWord): TFpDbgMemLocation; inline;
+function ConstDerefLoc(AValue: QWord): TFpDbgMemLocation; inline;
 
 function AddBitOffset(const AnAddr: TFpDbgMemLocation; ABitOffset: Int64): TFpDbgMemLocation; inline;
 
@@ -560,6 +561,13 @@ begin
   Result := Default(TFpDbgMemLocation);
   Result.Address := AValue;
   Result.MType := mlfConstant;
+end;
+
+function ConstDerefLoc(AValue: QWord): TFpDbgMemLocation;
+begin
+  Result := Default(TFpDbgMemLocation);
+  Result.Address := AValue;
+  Result.MType := mlfConstantDeref;
 end;
 
 function AddBitOffset(const AnAddr: TFpDbgMemLocation; ABitOffset: Int64

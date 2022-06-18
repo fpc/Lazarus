@@ -162,6 +162,7 @@ type
     procedure RestoreRegisters; override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
     property Process;
   end;
@@ -1718,8 +1719,8 @@ end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
+  inherited;
   if ID = MDebugEvent.dwThreadId then begin
-    inherited;
 
     {$ifdef cpux86_64}
     if (TDbgWinProcess(Process).FBitness = b32) then begin
@@ -1834,6 +1835,8 @@ begin
       'rax': FCurrentContext^.def.Rax := AValue;
       'rcx': FCurrentContext^.def.Rcx := AValue;
       'rdx': FCurrentContext^.def.Rdx := AValue;
+      'r8': FCurrentContext^.def.R8 := AValue;
+      'r9': FCurrentContext^.def.R9 := AValue;
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;
@@ -1892,6 +1895,21 @@ begin
   else
     Result := FCurrentContext^.def.Rbp;
 {$endif}
+end;
+
+procedure TDbgWinThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
+begin
+  if FCurrentContext = nil then
+    exit;
+{$ifdef cpui386}
+  FCurrentContext^.def.Esp := AValue;
+{$else}
+  if (TDbgWinProcess(Process).FBitness = b32) then
+    FCurrentContext^.WOW.Esp := AValue
+  else
+    FCurrentContext^.def.Rsp := AValue;
+{$endif}
+  FThreadContextChanged:=True;
 end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;

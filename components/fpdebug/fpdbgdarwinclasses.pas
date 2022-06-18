@@ -123,6 +123,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
+    procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
   end;
 
@@ -559,6 +560,10 @@ begin
     result := FThreadState32.__esp
   else
     result := FThreadState64.__rsp;
+end;
+
+procedure TDbgDarwinThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
+begin
 end;
 
 function TDbgDarwinThread.GetStackBasePointerRegisterValue: TDbgPtr;
