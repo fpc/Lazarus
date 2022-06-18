@@ -8,7 +8,7 @@
     -->
     <module name="Forms">
       <short>
-        Implements Forms, which are the basis for the Lazarus Graphical User Interface.
+        Implements Forms, which are the basis for the LCL Graphical User Interface.
       </short>
       <descr>
         <p>
@@ -165,7 +165,9 @@
         <short>Neither maximized nor minimized.</short>
       </element>
       <element name="TWindowState.wsMinimized">
-        <short>The window is minimized and is not shown in the screen, but only in the taskbar.</short>
+        <short>
+          The window is minimized and is not shown in the screen, but only in the taskbar.
+        </short>
       </element>
       <element name="TWindowState.wsMaximized">
         <short>
@@ -354,7 +356,7 @@
       </element>
       <element name="TControlScrollBar.GetAutoScroll.Result">
         <short>
-          True when the Control for the class instance has set its AutoScroll property.
+          <b>True</b> when the Control for the class instance has set its AutoScroll property.
         </short>
       </element>
 
@@ -425,7 +427,9 @@
       </element>
 
       <element name="TControlScrollBar.HandleAllocated">
-        <short>True when the associated TScrollingWinControl and its handle are valid.</short>
+        <short>
+          <b>True</b> when the associated TScrollingWinControl and its handle are valid.
+        </short>
         <descr>
           <p>
             Used in methods which call LCL interface routines to avoid exceptions resulting from an unassigned control or an invalid handle value.
@@ -434,7 +438,9 @@
         <seealso/>
       </element>
       <element name="TControlScrollBar.HandleAllocated.Result">
-        <short>True when the associated TScrollingWinControl and its handle are valid.</short>
+        <short>
+          <b>True</b> when the associated TScrollingWinControl and its handle are valid.
+        </short>
       </element>
 
       <element name="TControlScrollBar.IsRangeStored">
@@ -446,7 +452,7 @@
         </seealso>
       </element>
       <element name="TControlScrollBar.IsRangeStored.Result">
-        <short>True when AutoScroll is enabled for the scroll bar.</short>
+        <short><b>True</b> when AutoScroll is enabled for the scroll bar.</short>
       </element>
 
       <element name="TControlScrollBar.ControlUpdateScrollBars">
@@ -465,7 +471,7 @@
         <short>Validates and applies the specified Range and updates the scroll bars.</short>
         <descr>
           <p>
-            Ensures that <var>AValue</var> is not less than zero (<b>0</b>). Applies the range limited value to the member for the <var>Range</var> property,  and calls <var>ControlUpdateScrollBars</var> to refresh the scroll bars for the associated <var>TScrollingWinControl</var> instance.
+            Ensures that <var>AValue</var> is not less than zero (<b>0</b>). Applies the range limited value to the member for the <var>Range</var> property, and calls <var>ControlUpdateScrollBars</var> to refresh the scroll bars for the associated <var>TScrollingWinControl</var> instance.
           </p>
           <p>
             InternalSetRange is called when the <var>SetRange</var> method updates the value for the Range property.
@@ -501,7 +507,7 @@
             <dd>Sets Position to the value in the Pos member in Message.</dd>
             <dt>SB_THUMBTRACK</dt>
             <dd>
-              Sets Position to the value in the Pos member in Message when Tracking is enabled. No actions are performed when Tracking is set to False.
+              Sets Position to the value in the Pos member in Message when Tracking is enabled. No actions are performed when Tracking is set to <b>False</b>.
             </dd>
             <dt>SB_TOP</dt>
             <dd>Sets Position to 0 (zero).</dd>
@@ -637,7 +643,7 @@
         </seealso>
       </element>
       <element name="TControlScrollBar.ScrollBarShouldBeVisible.Result">
-        <short>True when Visible, and Range is larger than the Page size.</short>
+        <short><b>True</b> when Visible, and Range is larger than the Page size.</short>
       </element>
 
       <element name="TControlScrollBar.Create">
@@ -657,9 +663,9 @@
             <dt>Position and Range</dt>
             <dd>Set to 0 (zero).</dd>
             <dt>Smooth and Tracking</dt>
-            <dd>Set to False.</dd>
+            <dd>Set to <b>False</b>.</dd>
             <dt>Visible</dt>
-            <dd>Set to True.</dd>
+            <dd>Set to <b>True</b>.</dd>
           </dl>
         </descr>
         <seealso>
@@ -679,7 +685,7 @@
         </short>
         <descr>
           <p>
-            Assigns the contents of the source object to the current object; in particular finds the Increment, Position, Range and whether smooth scrolling is to  be feature and whether the scroll bar is visible.
+            Assigns the contents of the source object to the current object; in particular finds the Increment, Position, Range and whether smooth scrolling is to be feature and whether the scroll bar is visible.
           </p>
         </descr>
         <seealso>
@@ -710,7 +716,7 @@
         <seealso/>
       </element>
       <element name="TControlScrollBar.IsScrollBarVisible.Result">
-        <short>True if the scroll bar is visible.</short>
+        <short><b>True</b> if the scroll bar is visible.</short>
       </element>
 
       <element name="TControlScrollBar.ScrollPos">
@@ -775,7 +781,7 @@
             <dd>Returns the client height from the associated control.</dd>
           </dl>
           <p>
-            ClientSize is used in methods like <var>ClientSizeWithBar</var> and    <var>ClientSizeWithoutBar</var> to get the size for the scroll bar adjusted for scroll bar spacing returned from <var>GetSystemMetrics</var>.
+            ClientSize is used in methods like <var>ClientSizeWithBar</var> and <var>ClientSizeWithoutBar</var> to get the size for the scroll bar adjusted for scroll bar spacing returned from <var>GetSystemMetrics</var>.
           </p>
         </descr>
         <seealso>
@@ -945,7 +951,7 @@
         <short>Gives feedback while the slider is dragged.</short>
         <descr>
           <p>
-            When it takes a significant amount of time to repaint the parent control at a new position, Tracking should be False to prevent flicker. This causes the control to be updated only when the slider is released.
+            When it takes a significant amount of time to repaint the parent control at a new position, Tracking should be <b>False</b> to prevent flicker. This causes the control to be updated only when the slider is released.
           </p>
         </descr>
         <seealso>
@@ -953,13 +959,13 @@
       </element>
 
       <element name="TControlScrollBar.Visible">
-        <short>Hides the scroll bar when False (default True).</short>
+        <short>Hides the scroll bar when <b>False</b> (default <b>True</b>).</short>
         <descr>
           <p>
             The scroll bar widget is visible only if (Visible=True) <b>and</b> (Range&gt;Page).
           </p>
           <p>
-            Set Visible to False to disallow the user to scroll the content, while the content still can be scrolled by code.
+            Set Visible to <b>False</b> to disallow the user to scroll the content, while the content still can be scrolled by code.
           </p>
           <p>
             Use IsScrollBarVisible to get the current visible state of the widget.
@@ -996,7 +1002,9 @@
       <element name="TScrollingWinControl.FAutoScroll"/>
 
       <element name="TScrollingWinControl.FIsUpdating">
-        <short>Prevents recursive updates, True while an update is already in progress.</short>
+        <short>
+          Prevents recursive updates, <b>True</b> while an update is already in progress.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.SetHorzScrollBar"/>
@@ -1049,11 +1057,16 @@
         </seealso>
       </element>
       <element name="TScrollingWinControl.AutoScrollEnabled.Result">
-        <short>True when not automatically resized or used as a dock site.</short>
+        <short><b>True</b> when not automatically resized or used as a dock site.</short>
       </element>
+
       <element name="TScrollingWinControl.CalculateAutoRanges">
         <short>Sets or resets the ranges used for scroll bars in the control.</short>
-        <descr>Used in the implementation of the ComputeScrollbars method.</descr>
+        <descr>
+          <p>
+            Used in the implementation of the ComputeScrollbars method.
+          </p>
+        </descr>
         <seealso>
           <link id="TScrollingWinControl.ComputeScrollbars"/>
           <link id="TScrollingWinControl.HorzScrollBar"/>
@@ -1183,14 +1196,14 @@
 
       <element name="TScrollingWinControl.ComputeScrollbars">
         <short>
-          Updates Page, AutoRange, IsScrollBarVisible, and returns True when changed.
+          Updates Page, AutoRange, IsScrollBarVisible, and returns <b>True</b> when changed.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TScrollingWinControl.ComputeScrollbars.Result">
         <short>
-          True when something has been changed in the scroll bar settings.
+          <b>True</b> when something has been changed in the scroll bar settings.
         </short>
       </element>
 
@@ -1525,10 +1538,10 @@
         </short>
         <descr>
           <p>
-            ParentBackground is a Boolean property which indicates if the background for the Parent control is drawn as the background for the current control instance. The default value in TScrollBox is False.
+            ParentBackground is a Boolean property which indicates if the background for the Parent control is drawn as the background for the current control instance. The default value in TScrollBox is <b>False</b>.
           </p>
           <p>
-            ParentBackground is True when csParentBackground is included in the ControlStyle property. Setting the value in ParentBackground causes ControlStyle to be updated to include or exclude the csParentBackground enumeration value; it is included when True.
+            ParentBackground is <b>True</b> when csParentBackground is included in the ControlStyle property. Setting the value in ParentBackground causes ControlStyle to be updated to include or exclude the csParentBackground enumeration value; it is included when <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -1579,7 +1592,9 @@
       <element name="TScrollBox.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
 
       <element name="TCustomDesignControl">
-        <short>Provides a designer surface for scaling and layout of its child controls.</short>
+        <short>
+          Provides a designer surface for scaling and layout of its child controls.
+        </short>
         <descr>
           <p>
             <var>TCustomDesignControl</var> is a <var>TScrollingWinControl</var> descendant which provides a designer surface used for scaling and layout of its child controls.
@@ -1646,7 +1661,7 @@
             <var>DoAutoAdjustLayout</var> adjusts the height and width for the design surface by the specified scaling factors. Similarly, the <var>BorderSpacing</var> and <var>Constraints</var> in the control are adjusted using the scaling factors. Finally, the <var>SetBounds</var> method is called to apply the new values for Height and Width to the design surface.
           </p>
           <remark>
-            No actions are performed in the method when the Parent property has not been assigned (contains <b>Nil</b>). In addition, no actions are performed when <var>AMode</var> omits the <var>lapAutoAdjustWithoutHorizontalScrolling</var> and <var>lapAutoAdjustForDPI</var>  enumeration values.
+            No actions are performed in the method when the Parent property has not been assigned (contains <b>Nil</b>). In addition, no actions are performed when <var>AMode</var> omits the <var>lapAutoAdjustWithoutHorizontalScrolling</var> and <var>lapAutoAdjustForDPI</var> enumeration values.
           </remark>
         </descr>
         <seealso>
@@ -1769,10 +1784,10 @@
         <short>The base type for <var>TFrame</var>.</short>
         <descr>
           <p>
-            <var>TCustomFrame</var> is a <var>TCustomDesignControl</var> descendant which implements the base class for <var>TFrame</var>.  A Frame is a named container for related components. Groups of  controls can be place on a frame, and re-used in your applications.
+            <var>TCustomFrame</var> is a <var>TCustomDesignControl</var> descendant which implements the base class for <var>TFrame</var>. A Frame is a named container for related components. Groups of controls can be place on a frame, and re-used in your applications.
           </p>
           <p>
-            A Frame has behavior very similar to a Form. Their unique ability is that they can be embedded into forms or other frames in the designer.  Like forms, they are stored in two separate files: the code is stored in a .pas unit file, and the design is stored in a .lfm file.
+            A Frame has behavior very similar to a Form. Their unique ability is that they can be embedded into forms or other frames in the designer. Like forms, they are stored in two separate files: the code is stored in a .pas unit file, and the design is stored in a .lfm file.
           </p>
           <p>
             Frames can be created and designed in the Lazarus IDE by creating a new Frame module, and using the unit in your application. An existing frame can be added using the TFrame component on the Standard tab in the Lazarus IDE; you will be prompted for the TFrame class to use for the component.
@@ -1788,14 +1803,16 @@
       </element>
 
       <element name="TCustomFrame.AddActionList">
-        <short>Adds the specified list of Actions to the Parent form for the frame class.</short>
+        <short>
+          Adds the specified list of Actions to the Parent form for the frame class.
+        </short>
         <descr>
           <remark>
             No actions are performed in the method when a Parent form has not been assigned for the class instance.
           </remark>
-           <p>
-             AddActionList is called from the Notification method when a TCustomActionList instance has been added to the control. This occurs when a new Parent is assigned for the frame instance.
-           </p>
+          <p>
+           AddActionList is called from the Notification method when a TCustomActionList instance has been added to the control. This occurs when a new Parent is assigned for the frame instance.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomFrame.Notification"/>
@@ -1934,7 +1951,7 @@
         <short>Sets the value for the ParentBackground property.</short>
         <descr>
           <p>
-            Ensures that Color is changed to the value in the Parent control when the property is set to True. Color is set to clDefault when the property is set to False. Calls UpdateOpaque to ensure that the csOpaque style flag is applied to the ControlStyle property as needed.
+            Ensures that Color is changed to the value in the Parent control when the property is set to <b>True</b>. Color is set to clDefault when the property is set to <b>False</b>. Calls UpdateOpaque to ensure that the csOpaque style flag is applied to the ControlStyle property as needed.
           </p>
         </descr>
         <seealso>
@@ -1949,7 +1966,7 @@
         <short>Handles the CM_PARENTCOLORCHANGED message for the control.</short>
         <descr>
           <p>
-            CMParentColorChanged is an overridden method in TCustomFrame. It calls the inherited method on entry to update the values in Color and ParentColor. If the control has finished loading using the LCL component streaming mechanism, the UpdateOpaque method is called to update flag values in the ControlStyle property. ControlStyle is not updated if csLoading is included in the ComponentState property.
+            <var>CMParentColorChanged</var> is an overridden method in TCustomFrame. It calls the inherited method on entry to update the values in Color and ParentColor. If the control has finished loading using the LCL component streaming mechanism, the UpdateOpaque method is called to update flag values in the ControlStyle property. ControlStyle is not updated if csLoading is included in the ComponentState property.
           </p>
         </descr>
         <seealso>
@@ -1982,7 +1999,9 @@
       </element>
 
       <element name="TCustomFrame.CalculatePreferredSize">
-        <short>Gets the preferred height and width for the control used during auto-sizing.</short>
+        <short>
+          Gets the preferred height and width for the control used during auto-sizing.
+        </short>
         <descr>
           <p>
             <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomFrame</var>. It ensures that the inherited method is <b>not</b> called when the frame is an un-parented component and visible on the form designer. This allows the dimensions to be freely resized on the design surface. Values in the PreferredWidth, PreferredHeight, and WithThemeSpace arguments are not modified at design-time.
@@ -2002,7 +2021,9 @@
         <short>Preferred height for the control.</short>
       </element>
       <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace">
-        <short>True if additional space is reserved in the width or height for theme details.</short>
+        <short>
+          <b>True</b> if additional space is reserved in the width or height for theme details.
+        </short>
       </element>
 
       <element name="TCustomFrame.UpdateOpaque">
@@ -2073,7 +2094,7 @@
             The write access specifier is overridden in <var>TCustomFrame</var>. It calls the inherited method on entry.
           </p>
           <p>
-            If the new property value is <b>True</b> and ParentColor is <b>True</b>,  the color assigned to the <var>Parent</var> control is stored in the <var>Color</var> property. Otherwise, Color is set to the value <var>clDefault</var>. The <var>UpdateOpaque</var> method is called to adjust the control style flags for the control.
+            If the new property value is <b>True</b> and ParentColor is <b>True</b>, the color assigned to the <var>Parent</var> control is stored in the <var>Color</var> property. Otherwise, Color is set to the value <var>clDefault</var>. The <var>UpdateOpaque</var> method is called to adjust the control style flags for the control.
           </p>
           <p>
             The default value for the property is <b>True</b>.
@@ -2101,10 +2122,10 @@
         </short>
         <descr>
           <p>
-            <var>TFrame</var> is a <var>TCustomFrame</var> descendant which implements a named container for related components. Groups of  controls can be place on a frame, and re-used in your applications.
+            <var>TFrame</var> is a <var>TCustomFrame</var> descendant which implements a named container for related components. Groups of controls can be place on a frame, and re-used in your applications.
           </p>
           <p>
-            A Frame has behavior very similar to a Form. Their unique ability is that they can be embedded into forms or other frames in the designer.  Like forms, they are stored in two separate files: the code is stored in a .pas unit file, and the design is stored in a .lfm file.
+            A Frame has behavior very similar to a Form. Their unique ability is that they can be embedded into forms or other frames in the designer. Like forms, they are stored in two separate files: the code is stored in a .pas unit file, and the design is stored in a .lfm file.
           </p>
           <p>
             Frames can be created and designed in the Lazarus IDE by creating a new Frame module, and using the unit in your application. An existing frame can be added using the TFrame component on the Standard tab in the Lazarus IDE; you will be prompted for the TFrame class to use for the component.
@@ -2257,11 +2278,15 @@
             <dt>dmPrimary</dt>
             <dd>On the primary monitor</dd>
             <dt>dmMainForm</dt>
-            <dd>On the same monitor as the main form; if there is no main form then use
-              dmPrimary behavior</dd>
+            <dd>
+              On the same monitor as the main form; if there is no main form then use
+              dmPrimary behavior
+            </dd>
             <dt>dmActiveForm</dt>
-            <dd>On the same monitor as the currently active form; if there is no active form
-              then use dmMainForm behavior</dd>
+            <dd>
+              On the same monitor as the currently active form; if there is no active form
+              then use dmMainForm behavior
+            </dd>
           </dl>
         </descr>
       </element>
@@ -2479,7 +2504,7 @@
         <short>The form that received an Close request.</short>
       </element>
       <element name="TCloseQueryEvent.CanClose">
-        <short>Set to False to deny closing.</short>
+        <short>Set to <b>False</b> to deny closing.</short>
       </element>
 
       <element name="TDropFilesEvent">
@@ -2520,7 +2545,7 @@
       </element>
       <element name="THelpEvent.Result">
         <short>
-          Indicates if the help request is satisfied by the event handler; False causes the default help handler for the application to be used.
+          Indicates if the help request is satisfied by the event handler; <b>False</b> causes the default help handler for the application to be used.
         </short>
       </element>
       <element name="THelpEvent.Command">
@@ -2530,7 +2555,7 @@
         <short>Context data for the help request.</short>
       </element>
       <element name="THelpEvent.CallHelp">
-        <short>False suppresses help display.</short>
+        <short><b>False</b> suppresses help display.</short>
       </element>
 
       <element name="TShortCutEvent">
@@ -2546,7 +2571,7 @@
         <short>The key event message.</short>
       </element>
       <element name="TShortCutEvent.Handled">
-        <short>Set Handled to True to prevent further processing of the key.</short>
+        <short>Set Handled to <b>True</b> to prevent further processing of the key.</short>
       </element>
 
       <element name="TModalDialogFinished">
@@ -2704,7 +2729,7 @@
       </element>
       <element name="TCustomForm.IsForm.Result">
         <short>
-          True when the value for the various properties should be included in the LCL streaming mechanism.
+          <b>True</b> when the value for the various properties should be included in the LCL streaming mechanism.
         </short>
       </element>
       <element name="TCustomForm.IsIconStored" link="#lcl.forms.TCustomForm.Icon"/>
@@ -2765,7 +2790,7 @@
             <var>DelayedEvent</var> discards duplicate calls to the method; only the most recent message is processed. It is used in conjunction with the <var>QueueAsyncCall</var> method in <var>TApplication</var>. DelayedEvent decrements an internal counter used to track the number of pending delayed event messages. When the counter reaches zero (0), the message is applied.
           </p>
           <p>
-            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored. For delayed <var>OnChangeBounds</var>  and <var>OnChangeBounds</var> messages,  the <var>DoOnShow</var> and/or <var>Activate</var> methods are called when the form is <var>Active</var>. If the form has not already been displayed and activated, the DoOnResize or the DoOnChangeBounds method is called for the corresponding delayed message.
+            When <var>WindowState</var> is changed to <var>wsNormal</var>, the window origin or size is restored. For delayed <var>OnChangeBounds</var> and <var>OnChangeBounds</var> messages, the <var>DoOnShow</var> and/or <var>Activate</var> methods are called when the form is <var>Active</var>. If the form has not already been displayed and activated, the DoOnResize or the DoOnChangeBounds method is called for the corresponding delayed message.
           </p>
         </descr>
         <seealso>
@@ -2929,7 +2954,7 @@
         </descr>
         <errors>
           <p>
-            Raises a catchable exception if the Code property has not been assigned for the TMethod instance in  Handler. Raised with the message 'TCustomForm.AddHandler'.
+            Raises a catchable exception if the Code property has not been assigned for the TMethod instance in Handler. Raised with the message 'TCustomForm.AddHandler'.
           </p>
         </errors>
         <seealso>
@@ -3013,7 +3038,7 @@
               When the form has a Parent control, or has been configured as a MDI Child form (FormStyle is fsMDIChild).
             </li>
             <li>
-              The form has not been made visible (Showing is False).
+              The form has not been made visible (Showing is <b>False</b>).
             </li>
           </ul>
         </descr>
@@ -3024,7 +3049,7 @@
         <short>Handles the LM_ACTIVATE message which activates or deactivates the form.</short>
         <descr>
           <p>
-            Calls SetActive to update the value in the Active property to reflect the value for  the Active member in Message.
+            Calls SetActive to update the value in the Active property to reflect the value for the Active member in Message.
           </p>
           <p>
             When the form is being de-activated, the Deactivate method in Application is called. Otherwise, the Activate method in Application is called. The UpdateShowInTaskBar method is called ShowInTaskBar to determine the effective visibility for the form in the task bar.
@@ -3142,7 +3167,7 @@
         <short>Handles the CM_PARENTBIDIMODECHANGED control message for the form.</short>
         <descr>
           <p>
-            Sets the BidiMode property to the value in Parent when ParentBiDiMode is True and Parent has been assigned. When Parent has not been assigned, the BiDiMode property in Application is copied to the form instance.
+            Sets the BidiMode property to the value in Parent when ParentBiDiMode is <b>True</b> and Parent has been assigned. When Parent has not been assigned, the BiDiMode property in Application is copied to the form instance.
           </p>
         </descr>
         <seealso/>
@@ -3310,7 +3335,7 @@
         <short>Notifies the OnActivate event handler.</short>
         <descr>
           <p>
-            <var>Activate</var> is a procedure used to signal the <var>OnActivate</var> event handler (if  assigned) when the form is activated. Activate is called when the <b>CM_Activate</b> message is handled for the form.
+            <var>Activate</var> is a procedure used to signal the <var>OnActivate</var> event handler (if assigned) when the form is activated. Activate is called when the <b>CM_Activate</b> message is handled for the form.
           </p>
           <p>
             Activate uses an internal member to determine whether the form is being displayed for the first time, or following a change of focus between forms. No actions are performed in the method when the form is being displayed for the first time and the <var>WindowState</var> property contains <var>wsMaximized</var> or <var>wsFullScreen</var>.
@@ -3334,7 +3359,9 @@
       <element name="TCustomForm.ActiveChanged">
         <short>An empty implementation in TCustomForm.</short>
         <descr>
-          Can be implemented in a descendant to perform actions needed when the active form is changed. Just like Delphi VCL.
+          <p>
+            Can be implemented in a descendant to perform actions needed when the active form is changed. Just like Delphi VCL.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -3381,7 +3408,7 @@
         </seealso>
       </element>
       <element name="TCustomForm.ColorIsStored.Result">
-        <short>True when Color has value other than clDefault or clBtnFace.</short>
+        <short><b>True</b> when Color has value other than clDefault or clBtnFace.</short>
       </element>
 
       <element name="TCustomForm.CreateParams">
@@ -3542,7 +3569,9 @@
       <element name="TCustomForm.EndFormUpdate">
         <short>Unlocks form updates; used with BeginFormUpdate.</short>
         <descr>
-          When the update counter reaches zero, FormEndUpdated is invoked to realize the pending changes.
+          <p>
+            When the update counter reaches zero, FormEndUpdated is invoked to realize the pending changes.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomForm.BeginFormUpdate"/>
@@ -3556,7 +3585,7 @@
         </short>
         <descr>
           <p>
-            <var>HandleCreateException</var> is a <var>Boolean</var> function which indicates if an exception raised in the <var>OnCreate</var> event handler is handled in the form instance. The return value is <b>True</b> when the <var>Application.CaptureExceptions</var> property is set to <b>True</b>; the <var>HandleException</var> method in <var>Application</var> is called to notify its exception handlers of the exception. When the return value is False, the exception is re-raised in the caller.
+            <var>HandleCreateException</var> is a <var>Boolean</var> function which indicates if an exception raised in the <var>OnCreate</var> event handler is handled in the form instance. The return value is <b>True</b> when the <var>Application.CaptureExceptions</var> property is set to <b>True</b>; the <var>HandleException</var> method in <var>Application</var> is called to notify its exception handlers of the exception. When the return value is <b>False</b>, the exception is re-raised in the caller.
           </p>
           <p>
             HandleCreateException is called from the DoCreate method.
@@ -3568,12 +3597,16 @@
         </seealso>
       </element>
       <element name="TCustomForm.HandleCreateException.Result">
-        <short>True when the exception is handled by the application.</short>
+        <short><b>True</b> when the exception is handled by the application.</short>
       </element>
 
       <element name="TCustomForm.HandleDestroyException">
         <short>Placeholder for exception handlers in derived classes.</short>
-        <descr>By default the Application exception handler is invoked.</descr>
+        <descr>
+          <p>
+            By default the Application exception handler is invoked.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.HandleException"/>
           <link id="TApplication.CaptureExceptions"/>
@@ -3581,18 +3614,22 @@
       </element>
 
       <element name="TCustomForm.HandleDestroyException.Result">
-        <short>True when the exception was handled.</short>
+        <short><b>True</b> when the exception was handled.</short>
       </element>
       <element name="TCustomForm.HandleShowHideException">
         <short>Placeholder for exception handlers in derived classes.</short>
-        <descr>By default the Application exception handler is invoked.</descr>
+        <descr>
+          <p>
+            By default the Application exception handler is invoked.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.HandleException"/>
           <link id="TApplication.CaptureExceptions"/>
         </seealso>
       </element>
       <element name="TCustomForm.HandleShowHideException.Result">
-        <short>True when the exception was handled.</short>
+        <short><b>True</b> when the exception was handled.</short>
       </element>
 
       <element name="TCustomForm.InitializeWnd">
@@ -3612,7 +3649,7 @@
             <var>Loaded</var> is an overridden method in <var>TCustomForm</var>.
           </p>
           <p>
-            It disables alignment in the form, and adjusts the PixelsPerInch setting for the Font when it differs from the design-time setting. It is performed when <var>Scaled</var>  is enabled for the form and the Application. This action is also performed for any child Controls. Calls the inherited Loaded method, and re-enables alignment for the form instance.
+            It disables alignment in the form, and adjusts the PixelsPerInch setting for the Font when it differs from the design-time setting. It is performed when <var>Scaled</var> is enabled for the form and the Application. This action is also performed for any child Controls. Calls the inherited Loaded method, and re-enables alignment for the form instance.
           </p>
           <p>
             Ensures that the <var>ActiveControl</var> (when assigned) can receive focus. ActiveControl is set to <b>Nil</b> if the control cannot be focused for the form instance. Sets the <var>Visible</var> property to <var>True</var> when <var>FormState</var> contains the value <var>fsVisible</var>.
@@ -3630,7 +3667,7 @@
         </short>
         <descr>
           <p>
-            ChildHandlesCreated is called after all handles for child controls are created. When this is a top-level form (<var>Parent</var> is Nil),  the ParentFormHandleInitialized method is also called.
+            ChildHandlesCreated is called after all handles for child controls are created. When this is a top-level form (<var>Parent</var> is Nil), the ParentFormHandleInitialized method is also called.
           </p>
         </descr>
         <seealso>
@@ -3701,10 +3738,12 @@
           </p>
           <dl>
             <dt>wsMinimized</dt>
-            <dd>Calls the Minimize method in Application, or Restore if the Form is already minimized</dd>
+            <dd>
+              Calls the Minimize method in Application, or Restore if the Form is already minimized.
+            </dd>
           </dl>
           <p>
-            If the value in WindowState has been changed, the method honors the value in the Position property if it was set to maximized  at design-time. When the <var>OnWindowStateChange</var> event handler has been assigned for the form, it is signalled for the current class instance.
+            If the value in WindowState has been changed, the method honors the value in the Position property if it was set to maximized at design-time. When the <var>OnWindowStateChange</var> event handler has been assigned for the form, it is signalled for the current class instance.
           </p>
         </descr>
         <seealso>
@@ -3738,13 +3777,17 @@
       </element>
 
       <element name="TCustomForm.DoOnResize">
-        <short>Performs a delayed resize action using the DelayedEvent for the control.</short>
+        <short>
+          Performs a delayed resize action using the DelayedEvent for the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomForm.DoOnChangeBounds">
-        <short>Performs a delayed bounds change using the DelayedEvent for the control.</short>
+        <short>
+          Performs a delayed bounds change using the DelayedEvent for the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3755,7 +3798,7 @@
         <seealso/>
       </element>
       <element name="TCustomForm.SetZOrder.Topmost">
-        <short>True for BringToFront.</short>
+        <short><b>True</b> for BringToFront.</short>
       </element>
 
       <element name="TCustomForm.SetParent">
@@ -3790,7 +3833,7 @@
             <var>MoveToDefaultPosition</var> is a method used to move a form instance to the location specified in its <var>Position</var> property. It ensures that the form appears on the correct monitor for the values in the DefaultMonitor and Position properties.
           </p>
           <p>
-             DefaultMonitor is used to determine whether the form needs to be moved to a different monitor for  the value in Position. For instance:
+             DefaultMonitor is used to determine whether the form needs to be moved to a different monitor for the value in Position. For instance:
           </p>
           <dl>
             <dt>dmDesktop</dt>
@@ -3816,7 +3859,7 @@
           <dl>
             <dt>poOwnerFormCenter</dt>
             <dd>
-              Uses the Owner form to center align the relocated form instance. If the Owner is not a TCustomForm instance, Position is converted to poMainFormCenter to center the form to the MainForm  in the application.
+              Uses the Owner form to center align the relocated form instance. If the Owner is not a TCustomForm instance, Position is converted to poMainFormCenter to center the form to the MainForm in the application.
             </dd>
             <dt>poMainFormCenter</dt>
             <dd>
@@ -3877,7 +3920,7 @@
             UpdateShowing calls the inherited method to update the <var>Handle</var> for the form and the visibility for any child <var>Controls</var>.
           </p>
           <p>
-            If <var>ActiveControl</var> is not  assigned, and there is no <var>Parent</var> form, the <var>FindDefaultForActiveControl</var> method is called to locate the first visible and enabled child control on the form. Its Handle is used to focus the control using the LCL <var>SetFocus</var> routine.
+            If <var>ActiveControl</var> is not assigned, and there is no <var>Parent</var> form, the <var>FindDefaultForActiveControl</var> method is called to locate the first visible and enabled child control on the form. Its Handle is used to focus the control using the LCL <var>SetFocus</var> routine.
           </p>
           <p>
             Finally, the visibility of the form in the task bar is updated and passed to the widgetset class.
@@ -3936,7 +3979,7 @@
             Calls <var>CallNotifyEvents</var> in the internal method list for any methods using the <var>fhtFirstShow</var> handler type. The form instance is passed as an argument to the handler(s).
           </p>
           <p>
-            Called from the <var>UpdateShowing</var> method when the form is <var>Visible</var> and its <var>Showing</var> property is changed to <b>True</b>. Occurs after <var>MoveToDefaultPosition</var> has been to called to position the form on its  monitor, and after the value <var>fsFirstShow</var> has been included in the <var>FormState</var> property.
+            Called from the <var>UpdateShowing</var> method when the form is <var>Visible</var> and its <var>Showing</var> property is changed to <b>True</b>. Occurs after <var>MoveToDefaultPosition</var> has been to called to position the form on its monitor, and after the value <var>fsFirstShow</var> has been included in the <var>FormState</var> property.
           </p>
         </descr>
         <seealso>
@@ -3964,7 +4007,7 @@
         <short>Notifies all <var>VisibleChanging</var> handlers.</short>
         <descr>
           <p>
-            Calls the inherited method prior to exit. Called prior to setting the new value for  the Visible property in a control (or form) in the SetVisible method.
+            Calls the inherited method prior to exit. Called prior to setting the new value for the Visible property in a control (or form) in the SetVisible method.
           </p>
         </descr>
         <seealso>
@@ -3973,13 +4016,15 @@
       </element>
 
       <element name="TCustomForm.VisibleChanged">
-        <short>Notifies all handlers when the visibility for the form has been changed.</short>
+        <short>
+          Notifies all handlers when the visibility for the form has been changed.
+        </short>
         <descr>
           <p>
             Calls the inherited method on entry.
           </p>
           <p>
-            When the <var>Screen</var> singleton has been assigned,  its <var>NotifyScreenFormHandler</var> method is called to signal all <var>snFormVisibleChanged</var> handlers in the class instance.
+            When the <var>Screen</var> singleton has been assigned, its <var>NotifyScreenFormHandler</var> method is called to signal all <var>snFormVisibleChanged</var> handlers in the class instance.
           </p>
           <p>
             Called after a new value has been assigned to the <var>Visible</var> property for the control (or form).
@@ -4040,7 +4085,7 @@
         </seealso>
       </element>
       <element name="TCustomForm.VisibleIsStored.Result">
-        <short>True when the Visible property is set to True.</short>
+        <short><b>True</b> when the Visible property is set to <b>True</b>.</short>
       </element>
 
       <element name="TCustomForm.DoAutoSize" link="#lcl.controls.TControl.DoAutoSize"/>
@@ -4142,7 +4187,9 @@
       <element name="TCustomForm.ProcessResource">
         <short>Loads resources needed for the form.</short>
         <descr>
-          Calls <var>InitResourceComponent</var> to load resources for the current form instance.
+          <p>
+            Calls <var>InitResourceComponent</var> to load resources for the current form instance.
+          </p>
         </descr>
         <errors>
           Raises an <var>EResNotFound</var> exception if <var>RequireDerivedFormResource</var> is set for the application, and a resource is not found for the form.
@@ -4154,7 +4201,7 @@
         <short>Re-implements the auto-drag behavior for forms.</short>
         <descr>
           <p>
-            <var>BeginAutoDrag</var> is an overridden method in <var>TCustomForm</var> which re-implements the auto-drag and dock behavior for form instances. It allows form dragging only if it is docked (HostDockSite is assigned) to a site where a DockManager is not used (UseDockManager is False). It does <b>not</b> call the inherited method.
+            <var>BeginAutoDrag</var> is an overridden method in <var>TCustomForm</var> which re-implements the auto-drag and dock behavior for form instances. It allows form dragging only if it is docked (HostDockSite is assigned) to a site where a DockManager is not used (UseDockManager is <b>False</b>). It does <b>not</b> call the inherited method.
           </p>
         </descr>
         <seealso>
@@ -4173,7 +4220,7 @@
             <var>ARect</var> contains the bounds for the new dock site after resizing and alignment (when needed).
           </p>
           <p>
-            When a form is docked, its <var>BorderStyle</var> is set to <var>bsNone</var>. DoDock ensures that the value in the BorderStyle property is saved or restored for the form when the value in <var>HostDockSite</var> is changed. If NewDockSite has been assigned, the value in BorderStyle is saved to an internal member. If NewDockSite is Nil,  the value in BorderStyle is restored from the internal member.
+            When a form is docked, its <var>BorderStyle</var> is set to <var>bsNone</var>. DoDock ensures that the value in the BorderStyle property is saved or restored for the form when the value in <var>HostDockSite</var> is changed. If NewDockSite has been assigned, the value in BorderStyle is saved to an internal member. If NewDockSite is Nil, the value in BorderStyle is restored from the internal member.
           </p>
           <remark>
             Changes needed for the <var>Align</var> property must be handled in the DockManager.
@@ -4267,7 +4314,7 @@
         </descr>
       </element>
       <element name="TCustomForm.DoExecuteAction.Result">
-        <short>True when the action was handled.</short>
+        <short><b>True</b> when the action was handled.</short>
       </element>
       <element name="TCustomForm.DoExecuteAction.ExeAction">
         <short>Action to execute.</short>
@@ -4281,7 +4328,7 @@
         </seealso>
       </element>
       <element name="TCustomForm.DoUpdateAction.Result">
-        <short>True when the action was updated.</short>
+        <short><b>True</b> when the action was updated.</short>
       </element>
       <element name="TCustomForm.DoUpdateAction.TheAction">
         <short/>
@@ -4291,7 +4338,7 @@
         <short>Asks all components on the form to update their actions.</short>
         <descr>
           <p>
-            <var>UpdateActions</var> is a procedure used to update actions assigned to components on the form instance. No actions are performed in the method at design-time, or when the <var>Showing</var> property is set to False in the form instance.
+            <var>UpdateActions</var> is a procedure used to update actions assigned to components on the form instance. No actions are performed in the method at design-time, or when the <var>Showing</var> property is set to <b>False</b> in the form instance.
           </p>
           <p>
             UpdateActions applies updates for an assigned <var>Menu</var> in the form instance. Items on the Menu update their actions when the menu item is visible. Finally, all controls on the form instance are recursively searched; controls which are action clients update their actions when they are visible.
@@ -4344,10 +4391,10 @@
           <ul>
             <li>Sets the FormState to fsFirstShow and calls BeginFormUpdate.</li>
             <li>Sets the default BorderIcons for the form.</li>
-            <li>Sets the FormStyle, ControlsStyle,  and BorderStyle for the form.</li>
+            <li>Sets the FormStyle, ControlsStyle, and BorderStyle for the form.</li>
             <li>Calls the inherited Create constructor.</li>
             <li>Sets the default bounds for the form instance.</li>
-            <li>Sets Visible to False.</li>
+            <li>Sets Visible to <b>False</b>.</li>
             <li>Sets WindowState to wsNormal.</li>
             <li>Allocates resources for the Icon property but does not assign a bitmap.</li>
             <li>Sets the default value for Color.</li>
@@ -4470,7 +4517,7 @@
         <short>The control which will lose focus.</short>
       </element>
       <element name="TCustomForm.DefocusControl.Removing">
-        <short>True if the control is no longer the ActiveControl.</short>
+        <short><b>True</b> if the control is no longer the ActiveControl.</short>
       </element>
 
       <element name="TCustomForm.DestroyWnd" link="#lcl.controls.TWinControl.DestroyWnd"/>
@@ -4483,7 +4530,7 @@
         <seealso/>
       </element>
       <element name="TCustomForm.EnsureVisible.AMoveToTop">
-        <short>Bring the form to front if True.</short>
+        <short>Bring the form to front if <b>True</b>.</short>
       </element>
 
       <element name="TCustomForm.FocusControl">
@@ -4521,7 +4568,7 @@
       </element>
       <element name="TCustomForm.FormIsUpdating.Result">
         <short>
-          Returns True when the internal update counter for the form contains a positive
+          Returns <b>True</b> when the internal update counter for the form contains a positive
           non-zero value.
         </short>
       </element>
@@ -4533,7 +4580,7 @@
             <var>GetFormImage</var> is a <var>TBitmap</var> function used to get a bitmap image with the contents for the form instance. The return value must be managed by the caller to ensure that the image is freed.
           </p>
           <p>
-            GetFormImage sets the size for the TBitmap instance to the values in the <var>ClientWidth</var> and <var>ClientHeight</var> properties. The <var>GetWindowRect</var> routine in <file>lclintf</file> is called to get the  display rectangle for the form Handle. The <var>PaintTo</var> method is called to draw the rectangle to the <var>Canvas</var> in the bitmap.
+            GetFormImage sets the size for the TBitmap instance to the values in the <var>ClientWidth</var> and <var>ClientHeight</var> properties. The <var>GetWindowRect</var> routine in <file>lclintf</file> is called to get the display rectangle for the form Handle. The <var>PaintTo</var> method is called to draw the rectangle to the <var>Canvas</var> in the bitmap.
           </p>
           <p>
             The return value can be <b>Nil</b> if an <var>Exception</var> was raised and handled in the method.
@@ -4618,7 +4665,7 @@
         <seealso/>
       </element>
       <element name="TCustomForm.IsShortcut.Result">
-        <short>True when the specified Key was handled as a shortcut.</short>
+        <short><b>True</b> when the specified Key was handled as a shortcut.</short>
       </element>
       <element name="TCustomForm.IsShortcut.Message">
         <short>Control message examined in the method.</short>
@@ -4637,7 +4684,7 @@
             <var>UseWorkarea</var> indicates whether the work area for the target monitor is used. When set to <b>True</b>, the form uses the bounds established for the work area instead of the physical monitor. The default value for the parameter is <b>True</b>.
           </p>
           <remark>
-            The default value for UseWorkArea was changed from False to True in LCL version 2.3.0. This is the more sensible default value, and it is also Delphi-compatible.
+            The default value for UseWorkArea was changed from <b>False</b> to <b>True</b> in LCL version 2.3.0. This is the more sensible default value, and it is also Delphi-compatible.
           </remark>
         </descr>
         <seealso/>
@@ -4649,13 +4696,13 @@
       </element>
       <element name="TCustomForm.MakeFullyVisible.UseWorkarea">
         <short>
-          When True the form is adjusted to the bounds for the WorkArea for the monitor. Otherwise, the form is clipped to the monitor bounds.
+          When <b>True</b> the form is adjusted to the bounds for the WorkArea for the monitor. Otherwise, the form is clipped to the monitor bounds.
         </short>
       </element>
 
       <element name="TCustomForm.AutoSizeDelayedHandle">
         <short>
-          Returns True if an auto-size action should be skipped when a form handle is not available.
+          Returns <b>True</b> if an auto-size action should be skipped when a form handle is not available.
         </short>
         <descr>
           <p>
@@ -4675,7 +4722,7 @@
       </element>
       <element name="TCustomForm.AutoSizeDelayedHandle.Result">
         <short>
-          True if an auto-size action should be skipped when a form handle is not available.
+          <b>True</b> if an auto-size action should be skipped when a form handle is not available.
         </short>
       </element>
 
@@ -4711,7 +4758,7 @@
       </element>
 
       <element name="TCustomForm.CanFocus">
-        <short>True when the form can receive focus.</short>
+        <short><b>True</b> when the form can receive focus.</short>
         <descr>
           <p>
             <var>CanFocus</var> is an overridden <var>Boolean</var> function which indicates if the form instance can receive focus. The return value is <b>True</b> when the form is <var>Visible</var> and <var>Enabled</var>, or the inherited <var>CanFocus</var> method returns <b>True</b>.
@@ -4724,7 +4771,7 @@
         </seealso>
       </element>
       <element name="TCustomForm.CanFocus.Result">
-        <short>True when the form can receive focus in the application.</short>
+        <short><b>True</b> when the form can receive focus in the application.</short>
       </element>
 
       <element name="TCustomForm.SetFocus" link="#lcl.controls.TWinControl.SetFocus"/>
@@ -4735,7 +4782,7 @@
         <seealso/>
       </element>
       <element name="TCustomForm.SetFocusedControl.Result">
-        <short>False when the focused control cannot be changed.</short>
+        <short><b>False</b> when the focused control cannot be changed.</short>
       </element>
       <element name="TCustomForm.SetFocusedControl.Control">
         <short>The control with focus on the form.</short>
@@ -4770,7 +4817,7 @@
       </element>
       <element name="TCustomForm.SetRestoredBounds.ADefaultPosition">
         <short>
-          True if the form is moved to the monitor and location in the Position property.
+          <b>True</b> if the form is moved to the monitor and location in the Position property.
         </short>
       </element>
 
@@ -4870,7 +4917,7 @@
         <seealso/>
       </element>
       <element name="TCustomForm.WantChildKey.Result">
-        <short>Returns False in TCustomForm.</short>
+        <short>Returns <b>False</b> in TCustomForm.</short>
       </element>
       <element name="TCustomForm.WantChildKey.Child">
         <short>Control with the key message for the method.</short>
@@ -5069,7 +5116,7 @@
 
       <element name="TCustomForm.AutoScale">
         <short>
-          Sets scaled to True and calls AutoAdjustLayout with the current PPI for the monitor.
+          Sets scaled to <b>True</b> and calls AutoAdjustLayout with the current PPI for the monitor.
         </short>
         <descr>
           <p>
@@ -5120,7 +5167,7 @@
             <var>Exclude</var> contains a control which is omitted from the Caption values (when assigned). UpdateDockCaption iterates over the controls in <var>DockClients</var> to build the combined Caption for visible controls (other than the control in Exclude). Blank control captions are ignored. <var>UTF8FixBroken</var> is called to ensure that a given caption does not contain invalid UTF-8 characters. The caption for a <var>TMemo</var> control is truncated after 20 characters.
           </p>
           <p>
-            The Caption values for the controls are concatenated into a comma-delimited list of values which are assigned to the <var>Caption</var> property.  An empty string is never assigned to the Caption property.
+            The Caption values for the controls are concatenated into a comma-delimited list of values which are assigned to the <var>Caption</var> property. An empty string is never assigned to the Caption property.
           </p>
           <p>
             UpdateDockCaption is called when a new value is assigned to the <var>Text</var> property for a DockClient control with an assigned <var>HostDockSite</var>.
@@ -5164,7 +5211,7 @@
           <ul>
             <li>The current form instance.</li>
             <li>A control not parented by the current form instance.</li>
-            <li>A control that returns False from its CanFocus method.</li>
+            <li>A control that returns <b>False</b> from its CanFocus method.</li>
           </ul>
           <p>
             The <var>SetWindowFocus</var> method is called if the form is <var>Active</var>, and the <var>ActiveChanged</var> method is called.
@@ -5211,7 +5258,7 @@
             Use <var>AlphaBlendValue</var> to specify the degree of transparency and diffusion applied to the form content.
           </p>
           <p>
-            Changing the value in AlphaBlend causes the widgetset class to be notified of the  change at run-time when a handle has been allocated for the form instance.  A change to the property value is not rendered at design-time.
+            Changing the value in AlphaBlend causes the widgetset class to be notified of the change at run-time when a handle has been allocated for the form instance. A change to the property value is not rendered at design-time.
           </p>
           <p>
             AlphaBlend and AlphaBlendValue are used in the implementation of the <var>InitializeWnd</var> method, and passed as arguments to methods in the widgetset class when either of the values are changed.
@@ -5257,7 +5304,7 @@
         <short>Indicates if the form can automatically show or hide scroll bars.</short>
         <descr>
           <p>
-            <var>AutoScroll</var> is a <var>Boolean</var> property which indicates if the form can automatically show or hide its scroll bars. Set <var>AutoScroll</var> to <b>True</b> to enable scroll bars when the form size is too small to display its content in its entirety. AutoScroll can only be <b>True</b> when the <var>BorderStyle</var> for the form is <var>bsSizeable</var> or <var>bsSizeToolWin</var>, and may be changed to <b>False</b> at run-time when  BorderStyle is changed to another value.
+            <var>AutoScroll</var> is a <var>Boolean</var> property which indicates if the form can automatically show or hide its scroll bars. Set <var>AutoScroll</var> to <b>True</b> to enable scroll bars when the form size is too small to display its content in its entirety. AutoScroll can only be <b>True</b> when the <var>BorderStyle</var> for the form is <var>bsSizeable</var> or <var>bsSizeToolWin</var>, and may be changed to <b>False</b> at run-time when BorderStyle is changed to another value.
           </p>
         </descr>
         <seealso>
@@ -5345,7 +5392,9 @@
       <element name="TCustomForm.Color">
         <short>The background color for the form.</short>
         <descr>
-          <var>Color</var> is a <var>TColor</var> property with the background color used for the form. Color is re-declared in <var>TCustomForm</var> to use either <var>clDefault</var> or <var>clBtnFace</var> as the default value for the property. clDefault is used when the <var>UseCLDefault</var> compiler define exists, and indicates that the color is resolved to the value in a <var>Parent</var> control (when assigned).
+          <p>
+            <var>Color</var> is a <var>TColor</var> property with the background color used for the form. Color is re-declared in <var>TCustomForm</var> to use either <var>clDefault</var> or <var>clBtnFace</var> as the default value for the property. clDefault is used when the <var>UseCLDefault</var> compiler define exists, and indicates that the color is resolved to the value in a <var>Parent</var> control (when assigned).
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Color">TControl.Color</link>
@@ -5506,7 +5555,7 @@
             <var>MDIChildren</var> is a read-only indexed <var>TCustomForm</var> property which provides access to the child forms in a Multi-Document Interface (MDI) application. In an MDI application, one of the forms acts as the main form for the application, and is the container for its MDI child forms. In addition, an MDI child form can be nested in another MDI child form.
           </p>
           <remark>
-            Historically, support for MDI is dependent on the underlying widgetset or platform. Some widgetsets provide better support for MDI than others. The consensus is that the QT/QT5  widgetsets offers the best level of support for MDI applications.
+            Historically, support for MDI is dependent on the underlying widgetset or platform. Some widgetsets provide better support for MDI than others. The consensus is that the QT/QT5 widgetsets offers the best level of support for MDI applications.
           </remark>
           <p>
             The form role is determined by the value in the <var>FormStyle</var> property. <var>fsMDIForm</var> is used for the main form, and <var>fsMDIChild</var> for the child forms. <var>MDIChildren</var> is relevant when the current form instance uses one of these MDI form style values.
@@ -5596,7 +5645,7 @@
             </dd>
             <dt>poMainFormCenter</dt>
             <dd>
-              Uses the monitor in TApplication.MainForm when the form is not the main form for the application. If it is the main form, the value in DefaultMonitor is used as  the monitor where the form is located.
+              Uses the monitor in TApplication.MainForm when the form is not the main form for the application. If it is the main form, the value in DefaultMonitor is used as the monitor where the form is located.
             </dd>
             <dt>poOwnerFormCenter</dt>
             <dd>
@@ -5885,7 +5934,7 @@
             OnShortcut is a TShortcutEvent property that represents the event handler signalled (when assigned) to detect and handle a shortcut key for the form instance. OnShortcut is called from the IsShortcut method used to examine keystroke events intercepted and forwarded by the Application.
           </p>
           <p>
-            The Msg argument contains the key event examined in the handler. Handled indicates that the key is handled by the event when set to True.
+            The Msg argument contains the key event examined in the handler. Handled indicates that the key is handled by the event when set to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -5953,11 +6002,11 @@
         </short>
         <descr>
           <p>
-            If true, the Font will be the same as the one from the Parent.
+            If <b>True</b>, the Font will be the same as the one from the Parent.
             The default value for the property is <b>False</b> in <var>TCustomForm</var>.
           </p>
          <p>
-           While ParentFont is True, all changes to the font in the parent will also be applied to the font for the control. This synchronizes them, keeping them set to the same values. If changes are made directly to the Font property in the control, then ParentFont is automatically be set to False.
+           While ParentFont is <b>True</b>, all changes to the font in the parent will also be applied to the font for the control. This synchronizes them, keeping them set to the same values. If changes are made directly to the Font property in the control, then ParentFont is automatically be set to <b>False</b>.
          </p>
         </descr>
         <seealso>
@@ -6007,7 +6056,7 @@
         </short>
         <descr>
           <p>
-            <var>RestoredTop</var> is a read-only <var>Integer</var> property which contains the top  coordinate for the form when its size is altered in <var>WMSize</var> or <var>WMMove</var> message handlers. The property value is applied when the asynchronous queued event handler for the form is executed, and calls the <var>DoOnChangeBounds</var> method.
+            <var>RestoredTop</var> is a read-only <var>Integer</var> property which contains the top coordinate for the form when its size is altered in <var>WMSize</var> or <var>WMMove</var> message handlers. The property value is applied when the asynchronous queued event handler for the form is executed, and calls the <var>DoOnChangeBounds</var> method.
           </p>
         </descr>
         <seealso>
@@ -6071,7 +6120,7 @@
         </short>
         <descr>
           <p>
-            Re-declared in TCustomForm to use a different storage specifier than the ancestor class.  In TCustomForm, visibility is not tied to an Action or an ActionLink; it uses the value in the Visible property.
+            Re-declared in TCustomForm to use a different storage specifier than the ancestor class. In TCustomForm, visibility is not tied to an Action or an ActionLink; it uses the value in the Visible property.
           </p>
         </descr>
         <seealso>
@@ -6139,7 +6188,9 @@
           Creates an association between the class type and its widgetset class.
         </short>
         <descr>
-          WSRegisterClass is an overridden class procedure used to register the widgetset class used to create new instances of the form.
+          <p>
+            WSRegisterClass is an overridden class procedure used to register the widgetset class used to create new instances of the form.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.forms.TCustomForm.WSRegisterClass">TCustomForm.WSRegisterClass</link>
@@ -6413,7 +6464,7 @@ AForm.SessionProperties := 'Top;Left;WindowState;Image1.Visible;Image1.Transpare
         </short>
         <descr>
           <p>
-            <var>DoAddDockClient</var> is an overridden method used to add the control in Client to the docked form. It calls the inherited method on entry to set the Parent in Client to the current class instance. It sets the Align property in Client to alAlign to align the control to the bounds for the docked form. Values in the BorderSpacing property in Client are reset to 0; the current class instance provides the BorderSpacing values for the docked control. At run-time, the Visible property is set to True to display the docked form after the Client has been added.
+            <var>DoAddDockClient</var> is an overridden method used to add the control in Client to the docked form. It calls the inherited method on entry to set the Parent in Client to the current class instance. It sets the Align property in Client to alAlign to align the control to the bounds for the docked form. Values in the BorderSpacing property in Client are reset to 0; the current class instance provides the BorderSpacing values for the docked control. At run-time, the Visible property is set to <b>True</b> to display the docked form after the Client has been added.
           </p>
         </descr>
         <seealso>
@@ -6512,7 +6563,7 @@ AForm.SessionProperties := 'Top;Left;WindowState;Image1.Visible;Image1.Transpare
         </short>
         <descr>
          <p>
-           Use BorderStyle to get or set the appearance of the form's border.  The default value in TCustomDockForm is bsSizeToolWin.
+           Use BorderStyle to get or set the appearance of the form's border. The default value in TCustomDockForm is bsSizeToolWin.
          </p>
          <p>
            This property is slightly different (has a different base type) from the TCustomControl.BorderStyle property. When the form is put into another control the window borders depend on the widgetset. There are no borders under GTK.
@@ -6562,7 +6613,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="THintWindow.FActivating">
-        <short>True during ActivateHint.</short>
+        <short><b>True</b> during ActivateHint.</short>
       </element>
 
       <element name="THintWindow.FAlignment"/>
@@ -6738,7 +6789,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="THintWindow.UseBGThemes.Result">
-        <short>True when ThemeServices are used for the background.</short>
+        <short><b>True</b> when ThemeServices are used for the background.</short>
       </element>
 
       <element name="THintWindow.UseFGThemes">
@@ -6754,7 +6805,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="THintWindow.UseFGThemes.Result">
         <short>
-          True when ThemeServices are used to draw the foreground for the hint window.
+          <b>True</b> when ThemeServices are used to draw the foreground for the hint window.
         </short>
       </element>
 
@@ -6820,7 +6871,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <dt>HideInterval</dt>
             <dd>Set to 3000 milliseconds (3 seconds)</dd>
             <dt>AutoHide</dt>
-            <dd>Set to False</dd>
+            <dd>Set to <b>False</b></dd>
           </dl>
           <p>
             Create uses the default size from the class type for the control to set the initial bounds for the hint window.
@@ -6878,7 +6929,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            <var>ActivateHintData</var> is an extended version of <var>ActivateHint</var>. It provides the additional <var>AData</var> argument which contains a pointer to values which can be used to construct  the text displayed in the hint window.
+            <var>ActivateHintData</var> is an extended version of <var>ActivateHint</var>. It provides the additional <var>AData</var> argument which contains a pointer to values which can be used to construct the text displayed in the hint window.
            </p>
           <p>
             The implementation in <var>THintWindow</var> does not use the values in <var>AData</var>. The method must be overridden in a descendent class to use the additional hint data in <var>AData</var>.
@@ -6930,7 +6981,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="THintWindow.OffsetHintRect.Result">
         <short>
-          True when the hint rectangle was successfully moved by the specified amounts.
+          <b>True</b> when the hint rectangle was successfully moved by the specified amounts.
         </short>
       </element>
       <element name="THintWindow.OffsetHintRect.AOffset">
@@ -6970,7 +7021,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="THintWindow.IsHintMsg.Result">
         <short>
-          True if the message is used for hint windows, False for all other messages.
+          <b>True</b> if the message is used for hint windows, <b>False</b> for all other messages.
         </short>
       </element>
       <element name="THintWindow.IsHintMsg.Msg">
@@ -7072,7 +7123,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Does the hint disappear (get hidden) after a while?</short>
         <descr>
           <p>
-            If <var>AutoHide</var> is TRUE, the hint disappears after an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>.
+            If <var>AutoHide</var> is <b>True</b>, the hint disappears after an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>.
           </p>
         </descr>
         <seealso/>
@@ -7160,7 +7211,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TMonitor.GetInfo.Result">
-        <short>True when monitor information was successfully retrieved.</short>
+        <short><b>True</b> when monitor information was successfully retrieved.</short>
       </element>
       <element name="TMonitor.GetInfo.Info">
         <short>TMonitorInfo with values retrieved for the OS or platform.</short>
@@ -7987,7 +8038,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             SetFocusedForm sends a CM_DEACTIVATE message to the form instance in FocusedForm (when assigned).
           </p>
           <p>
-            The return value indicates if the focus state has changed during form deactivation, and may return False if deactivation failed. FocusedForm is set to <b>Nil</b> if deactivation failed.
+            The return value indicates if the focus state has changed during form deactivation, and may return <b>False</b> if deactivation failed. FocusedForm is set to <b>Nil</b> if deactivation failed.
           </p>
           <p>
             Otherwise, AForm is saved to the FocusedForm property and a CM_ACTIVATE message is performed. The return value is <b>False</b> if the activation failed.
@@ -8003,7 +8054,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TScreen.SetFocusedForm.Result">
         <short>
-          False if activation or deactivation fails. True on success or when no action is needed.
+          <b>False</b> if activation or deactivation fails. <b>True</b> on success or when no action is needed.
         </short>
       </element>
       <element name="TScreen.SetFocusedForm.AForm">
@@ -8132,7 +8183,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>AddHandler</var> is a procedure used to add a screen notification handler to the list of handlers in the TScreen instance.
           </p>
           <p>
-            <var>HandlerType</var> is a <var>TScreenNotification</var> enumeration value that defines the situation(s) where the screen  handler can be executed. See TScreenNotification for more information about values in the enumeration.
+            <var>HandlerType</var> is a <var>TScreenNotification</var> enumeration value that defines the situation(s) where the screen handler can be executed. See TScreenNotification for more information about values in the enumeration.
           </p>
           <p>
             <var>Handler</var> is a <var>TMethod</var> record with pointers to the code and optional data executed when the handler is invoked.
@@ -8370,9 +8421,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TScreen.Create">
         <short>Constructor for the class instance.</short>
         <descr>
-        <p>
+          <p>
             <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry.
-        </p>
+          </p>
           <p>
             Create allocates resources needed for properties, including: <var>Fonts</var>, <var>Monitors</var>, <var>CustomForms</var>, <var>CustomFormsZOrdered</var>, and <var>DataModules</var>. Resources for internal members are also allocated.
           </p>
@@ -8476,7 +8527,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>MoveFormToFocusFront</var> is a method used to move the form specified in <var>ACustomForm</var> to the top of the Z-order. This means that it appears on top of all other visible forms for the application.
           </p>
           <p>
-            MoveFormToFocusFront is called when the focused control is changed in the  <var>TCustomForm</var> instance. It is also called from the <var>ShowModal</var> method in TCustomForm.
+            MoveFormToFocusFront is called when the focused control is changed in the <var>TCustomForm</var> instance. It is also called from the <var>ShowModal</var> method in TCustomForm.
           </p>
           <p>
             It ensures that ACustomForm is moved to the first position in <var>CustomForms</var> (the top of the Z-order). When ACustomForm is a <var>TForm</var> instance, it is also moved to the first position in the <var>Forms</var> property. Calls <var>MoveFormToZFront</var> to ensure that the form is moved to the first position in the <var>CustomFormsZOrdered</var> property.
@@ -8563,7 +8614,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TScreen.CustomFormBelongsToActiveGroup.Result">
-        <short>True if the form is used on the screen.</short>
+        <short><b>True</b> if the form is used on the screen.</short>
       </element>
       <element name="TScreen.CustomFormBelongsToActiveGroup.AForm">
         <short>Form instance to locate in the Z-ordered forms for the screen.</short>
@@ -8720,7 +8771,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TScreen.AddHandlerFormAdded.AsFirst">
         <short>
-          True when OnFormAdded should be the first entry in the list of handlers for the type.
+          <b>True</b> when OnFormAdded should be the first entry in the list of handlers for the type.
         </short>
       </element>
 
@@ -8745,7 +8796,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Form remove handler added in the method.</short>
       </element>
       <element name="TScreen.AddHandlerRemoveForm.AsFirst">
-        <short>True if the handler should be stored as the first routine for the type.</short>
+        <short><b>True</b> if the handler should be stored as the first routine for the type.</short>
       </element>
 
       <element name="TScreen.RemoveHandlerRemoveForm">
@@ -8769,7 +8820,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TScreen.AddHandlerActiveControlChanged.AsFirst">
         <short>
-          True if the handler should be the first in the list for the type.
+          <b>True</b> if the handler should be the first in the list for the type.
         </short>
       </element>
 
@@ -8792,7 +8843,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TScreen.AddHandlerActiveFormChanged.AsFirst">
         <short>
-          True if the handler should be the first in the list for the type.
+          <b>True</b> if the handler should be the first in the list for the type.
         </short>
       </element>
 
@@ -8815,7 +8866,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TScreen.AddHandlerFormVisibleChanged.AsFirst">
         <short>
-          True if the handler should be the first in the list for the type.
+          <b>True</b> if the handler should be the first in the list for the type.
         </short>
       </element>
 
@@ -8949,7 +9000,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             MonitorFromWindow is a TMonitor function used to locate monitor where the form represented by the specified window Handle is displayed.
           </p>
           <p>
-            <var>MonitorDefault</var> is a <var>TMonitorDefaultTo</var> enumeration value which indicates the monitor used when the display area for the form is not found  on a monitor. See TMonitorDefaultTo for more information about the values in the enumeration and their meanings.
+            <var>MonitorDefault</var> is a <var>TMonitorDefaultTo</var> enumeration value which indicates the monitor used when the display area for the form is not found on a monitor. See TMonitorDefaultTo for more information about the values in the enumeration and their meanings.
           </p>
           <p>
             MonitorFromWindow calls MonitorFromWindow in the widgetset class to get a monitor handle used to locate the monitor in the Monitors property. The UpdatedMonitor method is called to ensure that Monitors contains up-to-date values for the available monitors.
@@ -9116,7 +9167,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>The TCustomForm instance which has the focus.</short>
         <descr>
           <p>
-            <var>ActiveCustomForm</var> is a read-only <var>TCustomForm</var> property which contains the active custom form instance which has focus on the screen. The property value is updated in TCustomForm methods like <var>SetFocusedControl</var> and <var>MoveToDefaultPosition</var>. It is also updated  in <var>TApplication</var> methods like <var>ControlDestroyed</var>.
+            <var>ActiveCustomForm</var> is a read-only <var>TCustomForm</var> property which contains the active custom form instance which has focus on the screen. The property value is updated in TCustomForm methods like <var>SetFocusedControl</var> and <var>MoveToDefaultPosition</var>. It is also updated in <var>TApplication</var> methods like <var>ControlDestroyed</var>.
           </p>
           <p>
             Use <var>ActiveForm</var> to get the <var>TForm</var> instance that has focus on the screen.
@@ -9176,7 +9227,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>RealCursor</var> is a read-only <var>TCursor</var> property which provides the current shape for the cursor taking temporary cursors into account.
           </p>
           <p>
-            Temporary cursors are added and removed using the <var>BeginTempCursor</var> and <var>EndTempCursor</var> methods. When a temporary cursor exists, RealCursor returns the most recent cursor shape added to the internal list using BeginTempCursor. If the internal list is empty, the value in Cursor is returned  as the property value.
+            Temporary cursors are added and removed using the <var>BeginTempCursor</var> and <var>EndTempCursor</var> methods. When a temporary cursor exists, RealCursor returns the most recent cursor shape added to the internal list using BeginTempCursor. If the internal list is empty, the value in Cursor is returned as the property value.
           </p>
           <p>
             The value from RealCursor is used in the <var>SetCursor</var> method to determine the value stored in the <var>Cursor</var> property, and passed as an argument to SetCursor in the widgetset class.
@@ -9634,7 +9685,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>PrimaryMonitor</var> is a read-only <var>TMonitor</var> property with the primary monitor for the system. The property value is determined by checking for the <var>TMonitor</var> instance in <var>Monitors</var> with its <var>Primary</var> property set to <b>True</b>. The property value is <b>Nil</b> if a monitor is not found with its Primary property set to <b>True</b>.
           </p>
           <p>
-            The property value is used in the <var>MoveToDefaultPosition</var> method in <var>TCustomForm</var>. It is also used in widgetset classes to select the  monitor for a dialog when the main form for an application has not been assigned.
+            The property value is used in the <var>MoveToDefaultPosition</var> method in <var>TCustomForm</var>. It is also used in widgetset classes to select the monitor for a dialog when the main form for an application has not been assigned.
           </p>
         </descr>
         <seealso>
@@ -9788,7 +9839,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TQueryEndSessionEvent.Cancel">
-        <short>Set Cancel to True to prevent the session from ending.</short>
+        <short>Set Cancel to <b>True</b> to prevent the session from ending.</short>
       </element>
 
       <element name="TExceptionEvent">
@@ -9848,7 +9899,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>Done</var> is a variable <var>Boolean</var> parameter which indicates if the event handler has finished processing. When set to <b>False</b>, subsequent idle event handlers can be called. When set to <b>True</b>, the idle state processing has been completed.
           </p>
           <p>
-            TIdleEvent is the type used for the <var>OnIdle</var> event handler in <var>TApplication</var>. The event handler is signalled when the application becomes idle. The event handler can return False in Done to allow other idle event handlers to be signalled. The idle event handlers are called repeatedly until Done is set to True.
+            TIdleEvent is the type used for the <var>OnIdle</var> event handler in <var>TApplication</var>. The event handler is signalled when the application becomes idle. The event handler can return <b>False</b> in Done to allow other idle event handlers to be signalled. The idle event handlers are called repeatedly until Done is set to <b>True</b>.
           </p>
           <p>
             Use the TIdleEvent event handler type to provide short duration event handlers which ensure that the application remains responsive.
@@ -9860,7 +9911,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Object for the event notification.</short>
       </element>
       <element name="TIdleEvent.Done">
-        <short>Set to True when processing is done.</short>
+        <short>Set to <b>True</b> when processing is done.</short>
       </element>
 
       <element name="TOnUserInputEvent">
@@ -9997,7 +10048,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Text for hint display event.</short>
       </element>
       <element name="TShowHintEvent.CanShow">
-        <short>True if the hint can be displayed.</short>
+        <short><b>True</b> if the hint can be displayed.</short>
       </element>
       <element name="TShowHintEvent.HintInfo">
         <short>Hint info structure for the hint.</short>
@@ -10260,7 +10311,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Management information for asynchronous callbacks.</short>
         <descr>
           <p>
-            Two queues are used in TAsyncCallQueues. New calls are added to the Next queue. Cur contains the  callbacks currently being processed in the queue.
+            Two queues are used in TAsyncCallQueues. New calls are added to the Next queue. Cur contains the callbacks currently being processed in the queue.
           </p>
           <p>
             When the application starts processing the calls, the Next queue becomes the Cur queue, and a new Next queue is created. This simplifies thread-safe addition in subsequent calls.
@@ -10391,7 +10442,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TApplicationDoubleBuffered.adbDefault">
         <short>
-          Widgetset dependent. For Windows, it is True unless in a remote desktop connection. For other widgetsets it is False.
+          Widgetset dependent. For Windows, it is <b>True</b> unless in a remote desktop connection. For other widgetsets it is <b>False</b>.
         </short>
       </element>
       <element name="TApplicationDoubleBuffered.adbFalse">
@@ -10572,7 +10623,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>GetCurrentHelpFile</var> is a <var>String</var> function used to get the help file name for the active form or application.
           </p>
           <p>
-            <var>GetCurrentHelpFile</var> checks for an active form in the <var>Screen</var>  singleton. If a form is active, the file name in its <var>HelpFile</var> property is used as the return value. If a form is not active, the <var>HelpFile</var> in the <var>Application</var> instance is used.
+            <var>GetCurrentHelpFile</var> checks for an active form in the <var>Screen</var> singleton. If a form is active, the file name in its <var>HelpFile</var> property is used as the return value. If a form is not active, the <var>HelpFile</var> in the <var>Application</var> instance is used.
           </p>
         </descr>
         <seealso>
@@ -10825,7 +10876,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TApplication.ValidateHelpSystem.Result">
-        <short>True when HelpManager is not Nil.</short>
+        <short><b>True</b> when HelpManager is not Nil.</short>
       </element>
 
       <element name="TApplication.WndProc" link="#lcl.controls.TControl.WndProc"/>
@@ -10840,7 +10891,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.DispatchAction.Result">
-        <short>True when the action was handled.</short>
+        <short><b>True</b> when the action was handled.</short>
       </element>
       <element name="TApplication.DispatchAction.Msg">
         <short/>
@@ -10985,16 +11036,16 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <descr/>
       </element>
       <element name="TApplication.Deactivate.Force">
-        <short>True when called from the widgetset.</short>
+        <short><b>True</b> when called from the widgetset.</short>
       </element>
 
       <element name="TApplication.GetConsoleApplication">
-        <short>Always returns False for a GUI application.</short>
+        <short>Always returns <b>False</b> for a GUI application.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplication.GetConsoleApplication.Result">
-        <short>False for a GUI application.</short>
+        <short><b>False</b> for a GUI application.</short>
       </element>
 
       <element name="TApplication.NotifyIdleHandler">
@@ -11007,7 +11058,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             The internal array of handlers is checked for a <var>TMethodList</var> which uses the application handler type. If it exists, each of the methods in the list are signalled, in reverse order, using the value in <var>Done</var> as a control flag. While Done is <b>True</b>, the handlers are continuously called in the loop. If any handler in the list sets Done to <b>False</b>, the method is exited.
           </p>
           <p>
-            NotifyIdleHandler is called from the <var>Idle</var> method. It occurs after the <var>ReleaseComponents</var> and  <var>ProcessAsyncCallQueue</var> methods have been called. It is also called after the <var>OnIdle</var> event handler in the TApplication has been signalled (when assigned) and when the Done argument to the event handler is <b>True</b>.
+            NotifyIdleHandler is called from the <var>Idle</var> method. It occurs after the <var>ReleaseComponents</var> and <var>ProcessAsyncCallQueue</var> methods have been called. It is also called after the <var>OnIdle</var> event handler in the TApplication has been signalled (when assigned) and when the Done argument to the event handler is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -11044,7 +11095,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Notifies all Activate handlers for the application.</short>
         <descr>
           <p>
-            <var>NotifyActivateHandler</var> signals the <var>OnActivate</var> event handler (when assigned) using the <var>TApplication</var> instance as the Sender for the notification event. The <var>CallNotifyEvents</var> method in the TMethodList is called to signal each of the routines  for the handler type.
+            <var>NotifyActivateHandler</var> signals the <var>OnActivate</var> event handler (when assigned) using the <var>TApplication</var> instance as the Sender for the notification event. The <var>CallNotifyEvents</var> method in the TMethodList is called to signal each of the routines for the handler type.
           </p>
           <p>
             NotifyActivateHandler is called when an application is initially executed, and when focus is acquired from a different application.
@@ -11063,7 +11114,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>NotifyDeactivateHandler</var> is a method used to signal all of the deactivate handlers for the application. OnDeactivate is signalled (when assigned) using the application instance as an argument.
           </p>
           <p>
-            CallNotifyEvents is executed for each of the handlers in the TMethodList for the ahtDeactivate notification type. Use AddOnDeactivateHandler and RemoveOnDeactivateHandler to maintain  an additional handler for the notification type.
+            CallNotifyEvents is executed for each of the handlers in the TMethodList for the ahtDeactivate notification type. Use AddOnDeactivateHandler and RemoveOnDeactivateHandler to maintain an additional handler for the notification type.
           </p>
           <p>
             NotifyDeactivateHandler is called from the Deactivate method, and occurs when focus is changed to another application or the application is closed.
@@ -11110,7 +11161,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TApplication.IsHintMsg.Result">
-        <short>Always returns False.</short>
+        <short>Always returns <b>False</b>.</short>
       </element>
       <element name="TApplication.IsHintMsg.Msg">
         <short>Not used in the implementation.</short>
@@ -11134,7 +11185,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.DoOnHelp.Result">
-        <short>True when the message was handled.</short>
+        <short><b>True</b> when the message was handled.</short>
       </element>
       <element name="TApplication.DoOnHelp.Command">
         <short>
@@ -11311,7 +11362,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Returns the command line argument at the specified position.</short>
         <descr>
           <p>
-            <var>GetParams</var> is an overridden <var>String</var> function in <var>TApplication</var> used to get the argument at the specified position in the command line.  It re-implements the read access specifier for the property from the ancestor class, and does not call the inherited method.
+            <var>GetParams</var> is an overridden <var>String</var> function in <var>TApplication</var> used to get the argument at the specified position in the command line. It re-implements the read access specifier for the property from the ancestor class, and does not call the inherited method.
           </p>
           <p>
             <var>Index</var> is the ordinal position for the requested parameter value. Index must be in the range <b>0..<var>ParamCount</var>-1</b> or an <var>EListError</var> exception is raised. Position <b>0</b> contains the name of the executable file for the application.
@@ -11370,7 +11421,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Hint display is cancelled and suppressed while the application is shutting down. The action component for the application is set to <b>Nil</b> to prevent execution of associated actions during shutdown.
           </p>
           <p>
-            Destroy frees resources allocated in the application instance, including the Icon and any Icon handles currently in use.  Handlers added to application instance are also freed.
+            Destroy frees resources allocated in the application instance, including the Icon and any Icon handles currently in use. Handlers added to application instance are also freed.
           </p>
           <p>
             Destroy calls the inherited destructor, and discards any pending asynchronous calls not previously handled for the application instance. Exception handling is restored to the state on entry to the Create constructor. Finally, the Application class instance is set to <b>Nil</b>.
@@ -11511,7 +11562,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             The method name is slightly misleading, and kept only for Delphi compatibility. The method can actually create any kind of component.
           </remark>
           <p>
-            CreateForm creates a Component instance of the given class, and sets the pointer to the component variable. If it is a form, it will be added to the list of forms  in the application.
+            CreateForm creates a Component instance of the given class, and sets the pointer to the component variable. If it is a form, it will be added to the list of forms in the application.
           </p>
           <p>
             A splash form is shown immediately.
@@ -11554,7 +11605,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.QueueAsyncCall">
         <short>Inserts an asynchronous call into the queue.</short>
-        <descr>This is thread safe.</descr>
+        <descr>
+          <p>
+            This is thread safe.
+          </p>
+        </descr>
         <errors>
           Exceptions on various inconsistencies of the queue.
         </errors>
@@ -11570,7 +11625,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.RemoveAsyncCalls">
         <short>Removes all calls added via QueueAsyncCall.</short>
-        <descr>This is thread safe.</descr>
+        <descr>
+          <p>
+            This is thread safe.
+          </p>
+        </descr>
         <errors>
           Exceptions on various inconsistencies of the queue.
         </errors>
@@ -11618,7 +11677,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.ExecuteAction.Result">
-        <short>True when the Action was handled in the event handler.</short>
+        <short><b>True</b> when the Action was handled in the event handler.</short>
       </element>
       <element name="TApplication.ExecuteAction.ExeAction">
         <short>The Action to execute in the event handler.</short>
@@ -11639,7 +11698,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.UpdateAction.Result">
-        <short>True if the action was updated in the event handler.</short>
+        <short><b>True</b> if the action was updated in the event handler.</short>
       </element>
       <element name="TApplication.UpdateAction.TheAction">
         <short>The action updated in the event handler.</short>
@@ -11709,13 +11768,13 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             If the help context was handled in DoOnHelp, not additional actions are performed in the method. Otherwise, the ShowHelpOrErrorForContext is called to handle the help request.
           </p>
           <p>
-            The return value is False if the help context could not be handled using any of these options.
+            The return value is <b>False</b> if the help context could not be handled using any of these options.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TApplication.HelpContext.Result">
-        <short>True if the help request was handled in the method.</short>
+        <short><b>True</b> if the help request was handled in the method.</short>
       </element>
       <element name="TApplication.HelpContext.Context">
         <short>Help context displayed in the method.</short>
@@ -11756,7 +11815,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="TApplication.HelpShowTableOfContents.Result">
         <short>
-          True if the Help Table of Contents was successfully displayed by the application.
+          <b>True</b> if the Help Table of Contents was successfully displayed by the application.
         </short>
       </element>
 
@@ -11774,7 +11833,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           Removes the StayOnTop attribute from all forms in the application.
         </short>
         <descr>
-          Builds a list of forms for use in the RestoreStayOnTop method.
+          <p>
+            Builds a list of forms for use in the RestoreStayOnTop method.
+          </p>
         </descr>
         <seealso>
           <link id="TApplication.RestoreStayOnTop"/>
@@ -11799,7 +11860,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.IsWaiting">
-        <short>True if the application is waiting for a message event.</short>
+        <short><b>True</b> if the application is waiting for a message event.</short>
         <descr>
           <p>
             The return value is <b>True</b> when <var>AppWaiting</var> has been included in the <var>Flags</var> for the application.
@@ -11808,7 +11869,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TApplication.IsWaiting.Result">
-        <short>True if the application is in AppWaiting state.</short>
+        <short><b>True</b> if the application is in AppWaiting state.</short>
       </element>
 
       <element name="TApplication.CancelHint">
@@ -11827,7 +11888,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.HintMouseMessage">
         <short>Called when the the mouse is over a control with a Hint.</short>
-        <descr>Does nothing.</descr>
+        <descr>
+          <p>
+            Does nothing.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.HintMouseMessage.Control">
@@ -11913,10 +11978,16 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           <p>
             Several constants are declared in the LCLType unit.
           </p>
-          <p>Add (better: OR) an icon constant and a buttons constant. For example:</p>
+          <p>
+            Add (better: OR) an icon constant and a buttons constant. For example:
+          </p>
           <code>MB_ABORTRETRYIGNORE + MB_ICONQUESTION</code>
-          <p>Causes the application to display a query (?) icon in a box with three buttons: ABORT RETRY IGNORE.</p>
-          <p>Buttons can be one of:</p>
+          <p>
+            Causes the application to display a query (?) icon in a box with three buttons: ABORT RETRY IGNORE.
+          </p>
+          <p>
+            Buttons can be one of:
+          </p>
           <ul>
             <li>MB_OK</li>
             <li>MB_OKCANCEL</li>
@@ -11925,7 +11996,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <li>MB_YESNO</li>
             <li>MB_RETRYCANCEL</li>
           </ul>
-          <p>The icon can be one of:</p>
+          <p>
+            The icon can be one of:
+          </p>
           <ul>
             <li>MB_ICONHAND</li>
             <li>MB_ICONQUESTION</li>
@@ -11950,7 +12023,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TApplication.ModalStarted">
         <short>Called when a modal form display is started.</short>
         <descr>
-          Invokes all OnModalBegin handlers when entering Modal state.
+          <p>
+            Invokes all OnModalBegin handlers when entering Modal state.
+          </p>
         </descr>
         <seealso>
           <link id="TApplication.ModalFinished"/>
@@ -11960,7 +12035,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TApplication.ModalFinished">
         <short>Called when a modal form is closed.</short>
         <descr>
-          Invokes all OnModalEnd handlers when exiting Modal state.
+          <p>
+            Invokes all OnModalEnd handlers when exiting Modal state.
+          </p>
         </descr>
         <seealso>
           <link id="TApplication.ModalStarted"/>
@@ -12024,7 +12101,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             The DoIdleActions method is called to update the actions for Visible and Enabled forms, and to hide visible splash screen forms (FormStyle is fsSplash).
           </p>
           <p>
-            When the Wait argument is set to True, the AppWaitMessage method in the widgetset class is called to capture an message on the handles for the application. This action is not performed when Wait is False.
+            When the Wait argument is set to <b>True</b>, the AppWaitMessage method in the widgetset class is called to capture an message on the handles for the application. This action is not performed when Wait is <b>False</b>.
           </p>
           <p>
             Idle calls the DoOnIdleEnd method to signal the OnIdleEnd event handler and any application handlers using the ahtIdleEnd handler type.
@@ -12872,7 +12949,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            The return value is set to True if the key code in the message is handled by the application or one of the enabled forms or controls in the application.
+            The return value is set to <b>True</b> if the key code in the message is handled by the application or one of the enabled forms or controls in the application.
           </p>
           <p>
             IsShortCut signals the OnShortcut event handler (when assigned) to determine if the accelerator is handled at the application level. If it is handled in OnShortcut, no additional actions are performed in the method.
@@ -12887,13 +12964,13 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Finally, the main form for the application is checked by calling its IsShortCut method.
           </p>
           <p>
-            The return value is False when the shortcut is not handled in any of the preceding calls to IsShortCut.
+            The return value is <b>False</b> when the shortcut is not handled in any of the preceding calls to IsShortCut.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TApplication.IsShortcut.Result">
-        <short>True when the shortcut is handled.</short>
+        <short><b>True</b> when the shortcut is handled.</short>
       </element>
       <element name="TApplication.IsShortcut.Message">
         <short>
@@ -12982,7 +13059,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            Calls <var>GetFormatSettingsUTF8</var> or <var>GetFormatSettings</var>, depending on use of UTF-8 in the RTL, when UpdateFormatSettings is set to True. This applies to Windows platforms only.
+            Calls <var>GetFormatSettingsUTF8</var> or <var>GetFormatSettings</var>, depending on use of UTF-8 in the RTL, when UpdateFormatSettings is set to <b>True</b>. This applies to Windows platforms only.
           </p>
         </descr>
         <seealso/>
@@ -13014,7 +13091,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TApplication.IsRTLLang.Result">
-        <short>True when the language code uses right-to-left reading.</short>
+        <short><b>True</b> when the language code uses right-to-left reading.</short>
       </element>
       <element name="TApplication.IsRTLLang.ALang">
         <short>ISO language code examined in the method.</short>
@@ -13093,7 +13170,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.Active">
-        <short>True if the application is focused.</short>
+        <short><b>True</b> if the application is focused.</short>
         <descr>
           <p>
             <var>Active</var> is a read-only <var>Boolean</var> property which indicates if the application is focused. Returns <b>True</b> if the <var>AppActive</var> flag has been included in the <var>Flags</var> for the application.
@@ -13140,7 +13217,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             The default value for the property is adbDefault and indicates that the application uses the default capabilities provided by the widgetset.
           </p>
           <remark>
-            DoubleBuffered is a platform-specific property. Only the Windows platform implements double buffering (at the widgetset level) in the current LCL version. Changing the value for the property to True has no effect if double buffering is not implemented for the widgetset used in the Application.
+            DoubleBuffered is a platform-specific property. Only the Windows platform implements double buffering (at the widgetset level) in the current LCL version. Changing the value for the property to <b>True</b> has no effect if double buffering is not implemented for the widgetset used in the Application.
           </remark>
         </descr>
         <seealso/>
@@ -13444,7 +13521,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Changing the value in the property causes the Widgetset class to be notified of the new property value.
           </p>
           <p>
-            MainFormOnTaskBar is a platform-dependent property. It may not be implemented for all platforms supported for the Lazarus application. In addition, some platforms which display task bar thumbnails (like Windows Vista) may require the property to be set to True.
+            MainFormOnTaskBar is a platform-dependent property. It may not be implemented for all platforms supported for the Lazarus application. In addition, some platforms which display task bar thumbnails (like Windows Vista) may require the property to be set to <b>True</b>.
           </p>
           <p>
             The default value for the property is normally set in the Lazarus project file (<b>.lpr</b>) used to compile the application.
@@ -13572,7 +13649,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Event handler signalled to update actions used in the application.</short>
         <descr>
           <p>
-            <var>OnActionUpdate</var> is a <var>TActionEvent</var> property with the event handler signalled to update actions used in the application. OnActionUpdate is signalled from the <var>UpdateAction</var> method called when the  <var>CM_UPDATEACTIONS</var> control message is handled in the application.
+            <var>OnActionUpdate</var> is a <var>TActionEvent</var> property with the event handler signalled to update actions used in the application. OnActionUpdate is signalled from the <var>UpdateAction</var> method called when the <var>CM_UPDATEACTIONS</var> control message is handled in the application.
           </p>
         </descr>
         <seealso/>
@@ -13684,7 +13761,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>OnIdleEnd</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the application leaves the <var>Idle</var> state.
           </p>
           <p>
-            It is signalled from the <var>DoOnIdleEnd</var> method,  and occurs after the <var>AppWaitMessage</var> method in the widgetset class has been completed. It occurs before the <var>NotifyIdleEndHandler</var> method is called to process other application handlers using the <var>ahtIdleEnd</var> type.
+            It is signalled from the <var>DoOnIdleEnd</var> method, and occurs after the <var>AppWaitMessage</var> method in the widgetset class has been completed. It occurs before the <var>NotifyIdleEndHandler</var> method is called to process other application handlers using the <var>ahtIdleEnd</var> type.
           </p>
           <p>
             Use <var>OnIdle</var> to perform actions needed when the application enters the idle state.
@@ -13753,7 +13830,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           Event handler signalled when a message dialog in the application has been completed.
         </short>
         <descr>
-          Used in the CustomDraw interface.
+          <p>
+            Used in the CustomDraw interface.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -14034,7 +14113,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <var>Scaled</var> is a <var>Boolean</var> property which indicates if the application can be scaled between differing display densities (Pixels per Inch) at run-time. The default value for the property is normally set in the project file used to compile the application and its forms and controls.
           </p>
           <p>
-            When Scaled is set to <b>True</b>,  the application allows the design-time PixelsPerInch value to be adjusted to reflect the run-time value. Forms, frames, image lists, and other controls also have a Scaled property which determines if the feature is enabled for that particular class type. If Scaled is set to <b>False</b> in TApplication, the feature is disabled for all of the other class types. Scaled (at the application-level) is normally checked before the component- or control-level setting.
+            When Scaled is set to <b>True</b>, the application allows the design-time PixelsPerInch value to be adjusted to reflect the run-time value. Forms, frames, image lists, and other controls also have a Scaled property which determines if the feature is enabled for that particular class type. If Scaled is set to <b>False</b> in TApplication, the feature is disabled for all of the other class types. Scaled (at the application-level) is normally checked before the component- or control-level setting.
           </p>
         </descr>
         <seealso/>
@@ -14663,7 +14742,8 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TIDesigner.IsDesignMsg">
         <short>
-          <var>IsDesignMsg</var> - receives a message from Sender, and returns True if it is a design message.</short>
+          <var>IsDesignMsg</var> - receives a message from Sender, and returns <b>True</b> if it is a design message.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14797,7 +14877,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            <var>TFormPropertyStorage</var> is a <var>TControlPropertyStorage</var> descendant which extends the ancestor class to read and write form values. It provides additional methods called when a form is created,  closed, or freed. TFormPropertyStorage is the base class for descendants like <var>TCustomIniPropStorage</var>, <var>TCustomJSONPropStorage</var>, and <var>TCustomXMLPropStorage</var>.
+            <var>TFormPropertyStorage</var> is a <var>TControlPropertyStorage</var> descendant which extends the ancestor class to read and write form values. It provides additional methods called when a form is created, closed, or freed. TFormPropertyStorage is the base class for descendants like <var>TCustomIniPropStorage</var>, <var>TCustomJSONPropStorage</var>, and <var>TCustomXMLPropStorage</var>.
           </p>
         </descr>
         <seealso/>
@@ -14935,7 +15015,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             <li>VK_RWIN</li>
           </ul>
           <p>
-            The return value is a set  type with the TShiftState values corresponding to the virtual key codes. It may be an empty set when none of the virtual keys are detected.
+            The return value is a set type with the TShiftState values corresponding to the virtual key codes. It may be an empty set when none of the virtual keys are detected.
           </p>
         </descr>
         <seealso/>
@@ -15102,7 +15182,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TIsFormDesignFunction">
         <short>
-          Specifies a Boolean function type used to implement the routine assigned to the  IsFormDesign variable.
+          Specifies a Boolean function type used to implement the routine assigned to the IsFormDesign variable.
         </short>
         <descr>
           TIsFormDesignFunction is a Boolean function type used in the IsFormDesign variable.
@@ -15112,7 +15192,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TIsFormDesignFunction.Result">
-        <short>Returns True when the form has csDesignInstance in its component state.</short>
+        <short>
+          Returns <b>True</b> when the form has csDesignInstance in its component state.
+        </short>
       </element>
       <element name="TIsFormDesignFunction.AForm">
         <short/>
@@ -15148,10 +15230,10 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Control is the <var>TControl</var> instance examined in the method. The <var>Parent</var> property is used to navigate to preceding parent controls until a <var>TCustomForm</var> instance is found.
           </p>
           <p>
-            <var>TopForm</var> indicates if the top-most form instance in the hierarchy is needed. When set to <b>False</b>, the first TCustomForm instance found in the control hierarchy is used. Otherwise,  all Parent controls in the hierarchy are examined until a Parent control has not been assigned.
+            <var>TopForm</var> indicates if the top-most form instance in the hierarchy is needed. When set to <b>False</b>, the first TCustomForm instance found in the control hierarchy is used. Otherwise, all Parent controls in the hierarchy are examined until a Parent control has not been assigned.
           </p>
           <p>
-            The return value can contain the value in Control if it is a TCustomForm descendant and no other form instances are used in the control  hierarchy. This is Delphi compatible.
+            The return value can contain the value in Control if it is a TCustomForm descendant and no other form instances are used in the control hierarchy. This is Delphi compatible.
           </p>
         </descr>
         <seealso/>
@@ -15168,7 +15250,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
       <element name="GetParentForm.TopForm">
         <short>
-          True if the top-most form instance in the control hierarchy is needed.
+          <b>True</b> if the top-most form instance in the control hierarchy is needed.
         </short>
       </element>
 
@@ -15259,7 +15341,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Control examined in the routine.</short>
       </element>
       <element name="ValidParentForm.TopForm">
-        <short>True if all parent forms are located in the routine.</short>
+        <short><b>True</b> if all parent forms are located in the routine.</short>
       </element>
 
       <element name="FindRootDesigner">
@@ -15335,7 +15417,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="IsAccel.Result">
-        <short>True when the key is used as an accelerator.</short>
+        <short><b>True</b> when the key is used as an accelerator.</short>
       </element>
       <element name="IsAccel.VK">
         <short>The virtual key (uppercase ASCII) to find.</short>
@@ -15474,14 +15556,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="RequireDerivedFormResource">
         <short>
-          When True every form must have a resource (e.g. a .res file). An exception is raised if the resource is missing when creating a form.
+          When <b>True</b> every form must have a resource (e.g. a .res file). An exception is raised if the resource is missing when creating a form.
         </short>
         <descr>
           <p>
-            The form resource is the <file>.lfm</file> file compiled into the executable of your application. For this flag, it does not matter if it was compiled via an <file>.lrs</file> file or via <file>fpcres</file>. The resource is automatically loaded by <var>TForm</var> and its descendants when created using the   <var>Create(Owner)</var> method.
+            The form resource is the <file>.lfm</file> file compiled into the executable of your application. For this flag, it does not matter if it was compiled via an <file>.lrs</file> file or via <file>fpcres</file>. The resource is automatically loaded by <var>TForm</var> and its descendants when created using the <var>Create(Owner)</var> method.
           </p>
           <p>
-            If the resource file is missing, there is something wrong with either a resource or the unit which contains the faulty form. If the flag is False, you will see a blank form and probably search a long time what is wrong. If you set this flag to True, you get an exception.
+            If the resource file is missing, there is something wrong with either a resource or the unit which contains the faulty form. If the flag is <b>False</b>, you will see a blank form and probably search a long time what is wrong. If you set this flag to <b>True</b>, you get an exception.
           </p>
           <p>
             For creating forms without resources, you have 3 options:
@@ -15489,15 +15571,13 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           <ul>
             <li>Create a TForm class (not a descendant).</li>
             <li>Construct your form using the CreateNew() constructor.</li>
-            <li>It is also possible to disable the exception by setting the global
-               variable RequireDerivedFormResource to False.</li>
+            <li>
+              It is also possible to disable the exception by setting the global
+               variable RequireDerivedFormResource to <b>False</b>.
+            </li>
           </ul>
           <p>
-            History:
-            Before 0.9.31 there was no exception. Therefore some resource-less forms
-            might use the standard constructor Create(Owner) and will now get
-            exceptions. This change is Delphi compatible and compatible with
-            TFrame and TDataModule components.
+            History: Before 0.9.31 there was no exception. Therefore some resource-less forms might use the standard constructor Create(Owner) and will now get exceptions. This change is Delphi compatible and compatible with TFrame and TDataModule components.
           </p>
         </descr>
         <seealso>
