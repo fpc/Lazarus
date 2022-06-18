@@ -340,7 +340,7 @@
         <short>Performs actions needed when the button for the control is clicked.</short>
         <descr>
           <p>
-            The implementation for <var>ButtonClick</var> is empty in    <var>TCustomEditButton</var>; use a descendent class which implements a specific functionality.
+            The implementation for <var>ButtonClick</var> is empty in <var>TCustomEditButton</var>; use a descendent class which implements a specific functionality.
           </p>
         </descr>
         <seealso/>
@@ -399,10 +399,10 @@
         <short>Indicates whether the Button for the control should be visible.</short>
         <descr>
           <p>
-            <var>CalcButtonVisible</var> is a <var>Boolean</var> function used to determine whether the <var>Button</var> for the control should be visible. The return value is True when the control is Visible and the Edit has focus, or the control is not configured to display its button only when focused.
+            <var>CalcButtonVisible</var> is a <var>Boolean</var> function used to determine whether the <var>Button</var> for the control should be visible. The return value is <b>True</b> when the control is Visible and the Edit has focus, or the control is not configured to display its button only when focused.
           </p>
           <remark>
-            The return value is always True at design-time.
+            The return value is always <b>True</b> at design-time.
           </remark>
           <p>
             CalcButtonVisible is used in the implementation of the <var>CheckButtonVisible</var> method.
@@ -439,10 +439,10 @@
         <short>Ensures the Button for the control is configured and its visibility is set.</short>
         <descr>
           <p>
-            <var>CheckButtonVisible</var> is a procedure which ensures that the     <var>Button</var> in the control is configured and its visibility is set. If Button has not been assigned (contains Nil), no actions are performed in the method.
+            <var>CheckButtonVisible</var> is a procedure which ensures that the <var>Button</var> in the control is configured and its visibility is set. If Button has not been assigned (contains Nil), no actions are performed in the method.
           </p>
           <p>
-            Otherwise, the <var>Visible</var> property in <var>Button</var> is set to the value returned by <var>CalcButtonVisible</var>. <var>UpdateSpacing</var> is called to adjust the space between <var>Edit</var> and <var>Button</var> as needed for its  visibility and <var>Layout</var>.
+            Otherwise, the <var>Visible</var> property in <var>Button</var> is set to the value returned by <var>CalcButtonVisible</var>. <var>UpdateSpacing</var> is called to adjust the space between <var>Edit</var> and <var>Button</var> as needed for its visibility and <var>Layout</var>.
           </p>
         </descr>
         <seealso>
@@ -500,7 +500,7 @@
 
       <element name="TCustomEditButton.ButtonOnlyWhenFocused">
         <short>
-          <var>ButtonOnlyWhenFocused</var> - if True, the SpeedButton only appears when focus is given to the EditButton control.
+          <var>ButtonOnlyWhenFocused</var> - if <b>True</b>, the SpeedButton only appears when focus is given to the EditButton control.
         </short>
         <descr/>
         <seealso/>
@@ -527,7 +527,8 @@
 
       <element name="TCustomEditButton.Flat">
         <short>
-          <var>Flat</var> - if True, SpeedButton appears flat rather than three-dimensional.</short>
+          When <b>True</b>, the SpeedButton has a flat appearance rather than a three-dimensional one.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -606,11 +607,11 @@
 
       <element name="TCustomEditButton.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomEditButton</var>: calls inherited <var>Create</var> then sets some defaults and initializes some variables.
+          Constructor for the class instance.
         </short>
         <descr>
           <p>
-            <var>Create</var> - constructor for <var>TCustomEditButton</var>: calls inherited <var>Create</var> then sets some defaults and initializes some variables.
+            <var>Create</var> is the constructor for <var>TCustomEditButton</var>. It calls the inherited <var>Create</var> method then sets default values and initializes variables.
           </p>
           <p>
             Initializes height and width, cursor, glyph, style, checks visibility, event handler for click.
@@ -640,7 +641,7 @@
         </short>
         <descr>
           <p>
-            <var>TEditButton</var> implements a grouped edit control with both an <var>Edit</var> and a <var>Button</var>. TEditButton is derived from the  <var>TCustomEditButton</var> class, and sets the visibility for properties declared in the ancestor classes.
+            <var>TEditButton</var> implements a grouped edit control with both an <var>Edit</var> and a <var>Button</var>. TEditButton is derived from the <var>TCustomEditButton</var> class, and sets the visibility for properties declared in the ancestor classes.
           </p>
         </descr>
         <seealso>
@@ -664,7 +665,7 @@
         </short>
         <descr>
           <p>
-            AutoSize is a Boolean property which allows the control to automatically adjustment its size to the content in the control. The default value for the property is True in TEditButton.
+            AutoSize is a Boolean property which allows the control to automatically adjustment its size to the content in the control. The default value for the property is <b>True</b> in TEditButton.
           </p>
         </descr>
         <seealso>
@@ -799,7 +800,9 @@
         </seealso>
       </element>
       <element name="TFilterItemEvent.Result">
-        <short>True if the item matches the filter implemented in the event handler.</short>
+        <short>
+          <b>True</b> if the item matches the filter implemented in the event handler.
+        </short>
       </element>
       <element name="TFilterItemEvent.ItemData">
         <short>Pointer to the data for the item examined in the event handler.</short>
@@ -814,7 +817,7 @@
         </short>
         <descr>
           <p>
-            <var>TFilterItemExEvent</var> is a <var>Boolean</var> object function type that specifies an event handler used to filter data items in <var>TCustomControlFilterEdit</var>. It is similar to       <var>TFilterItemEvent</var>, but provides an additional argument with the caption for the data item.
+            <var>TFilterItemExEvent</var> is a <var>Boolean</var> object function type that specifies an event handler used to filter data items in <var>TCustomControlFilterEdit</var>. It is similar to <var>TFilterItemEvent</var>, but provides an additional argument with the caption for the data item.
           </p>
           <p>
             The return value is <b>True</b> if an item matches a filter condition implemented in the event handler. <var>Done</var> can be updated to indicate if the item requires additional filtering on the title string in the data item; when it contains <b>True</b>, no additional filtering is needed.
@@ -830,7 +833,9 @@
         </seealso>
       </element>
       <element name="TFilterItemExEvent.Result">
-        <short>True if the item matches the filter implemented in the event handler.</short>
+        <short>
+          <b>True</b> if the item matches the filter implemented in the event handler.
+        </short>
       </element>
       <element name="TFilterItemExEvent.ACaption">
         <short>Caption or display name for the item examined in the event handler.</short>
@@ -857,7 +862,7 @@
         </seealso>
       </element>
       <element name="TCheckItemEvent.Result">
-        <short>True when the item is checked.</short>
+        <short><b>True</b> when the item is checked.</short>
       </element>
       <element name="TCheckItemEvent.Item">
         <short>Object examined in the method.</short>
@@ -940,13 +945,13 @@
         </descr>
         <short>
           <p>
-            The value is True when <var>TextHint</var> contains a value other than the <var>rsFilter</var> resource string.
+            The value is <b>True</b> when <var>TextHint</var> contains a value other than the <var>rsFilter</var> resource string.
           </p>.
         </short>
         <seealso></seealso>
       </element>
       <element name="TCustomControlFilterEdit.IsTextHintStored.Result">
-        <short>True when TextHint is included in the LCL component stream.</short>
+        <short><b>True</b> when TextHint is included in the LCL component stream.</short>
       </element>
 
       <element name="TCustomControlFilterEdit.fNeedUpdate">
@@ -998,7 +1003,7 @@
             Signals the OnFilterItemEx (preferred) or OnFilterItem (deprecated) event handlers (when assigned) to determine if the item meets the filter condition. Values in ACaption and ItemData are passed as arguments to the event handlers.
           </p>
           <p>
-            The return value is True when the item meets the filter condition(s) implemented in the event handlers. The DoDefaultFilterItem method is called when the return value is False, or the event handlers are not assigned in the class instance.
+            The return value is <b>True</b> when the item meets the filter condition(s) implemented in the event handlers. The DoDefaultFilterItem method is called when the return value is <b>False</b>, or the event handlers are not assigned in the class instance.
           </p>
         </descr>
         <seealso>
@@ -1008,7 +1013,7 @@
         </seealso>
       </element>
       <element name="TCustomControlFilterEdit.DoDefaultFilterItem.Result">
-        <short>True when the item meets the filter condition.</short>
+        <short><b>True</b> when the item meets the filter condition.</short>
       </element>
       <element name="TCustomControlFilterEdit.DoDefaultFilterItem.ACaption">
         <short>Caption for the item passed to DoDefaultFilterItem.</short>
@@ -1023,7 +1028,7 @@
         <seealso></seealso>
       </element>
       <element name="TCustomControlFilterEdit.DoFilterItem.Result">
-        <short>Returns True when the item meets the filter criterion.</short>
+        <short>Returns <b>True</b> when the item meets the filter criterion.</short>
       </element>
       <element name="TCustomControlFilterEdit.DoFilterItem.ACaption">
         <short>Caption for the item.</short>
@@ -1079,7 +1084,7 @@
         <short>Filters the data and updates the container.</short>
         <descr>
           <p>
-            Does its job at once when Immediately is set to True. Otherwise, it connects the  OnIdle event handler which applies the filter when the Application is idle.
+            Does its job at once when Immediately is set to <b>True</b>. Otherwise, it connects the OnIdle event handler which applies the filter when the Application is idle.
           </p>
         </descr>
       </element>
@@ -1173,7 +1178,9 @@
         <seealso></seealso>
       </element>
       <element name="TCustomControlFilterEdit.ReturnKeyHandled.Result">
-        <short>True if OnKeyPress is assigned and handles the VK_RETURN key code.</short>
+        <short>
+          <b>True</b> if OnKeyPress is assigned and handles the VK_RETURN key code.
+        </short>
       </element>
 
       <element name="TCustomControlFilterEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName"/>
@@ -1195,11 +1202,11 @@
             <dt>CharCase</dt>
             <dd>Set to ecLowerCase</dd>
             <dt>Button.Enabled</dt>
-            <dd>Set to False</dd>
+            <dd>Set to <b>False</b></dd>
             <dt>FilterOptions</dt>
             <dd>Set to an empty set</dd>
             <dt>FIsFirstUpdate, fIsFirstSetFormActivate</dt>
-            <dd>Set to True</dd>
+            <dd>Set to <b>True</b></dd>
             <dt>TextHint</dt>
             <dd>Set to rsFilter</dd>
           </dl>
@@ -1370,7 +1377,7 @@
 
       <element name="TCustomControlFilterEdit.OnFilterItem">
         <short>
-          An event handler to give extra conditions for filtering, in addition to the default behavior. Returns True if the passes the filter.
+          An event handler to give extra conditions for filtering, in addition to the default behavior. Returns <b>True</b> if the passes the filter.
         </short>
         <descr>
           This feature has, for example, enabled filtering the Options windows in Lazarus IDE based on captions for all controls on the options pages. Deprecated. Use OnFilterItemEx with a caption parameter instead.
@@ -1477,7 +1484,7 @@
         </short>
         <descr>
           <p>
-            <var>TDialogKind</var> is an enumerated type representing the dialog styles available for use in <var>TFileNameEdit</var>.  Values in the enumeration influence the common dialog type created for a control which displays a dialog when its button is clicked.
+            <var>TDialogKind</var> is an enumerated type representing the dialog styles available for use in <var>TFileNameEdit</var>. Values in the enumeration influence the common dialog type created for a control which displays a dialog when its button is clicked.
           </p>
           <p>
             TDialogKind is the type used to implement the <var>DialogKind</var> property in <var>TFileNameEdit</var>.
@@ -1541,7 +1548,7 @@
         <short>Gets the default glyph name used for the Button on the control.</short>
         <descr>
           <p>
-            The return value contains the resource ID in the <var>ResBtnFileOpen</var> constant. The value is used in the <var>LoadDefaultGlyph</var> method defined in  <var>TCustomEditButton</var>.
+            The return value contains the resource ID in the <var>ResBtnFileOpen</var> constant. The value is used in the <var>LoadDefaultGlyph</var> method defined in <var>TCustomEditButton</var>.
           </p>
         </descr>
         <seealso>
@@ -1604,7 +1611,7 @@
         </short>
         <descr>
           <p>
-            <var>SaveDialogResult</var> is a procedure used to capture the results from the  dialog when it has finished execution. The values are stored in the corresponding properties in the class instance, and depending on the DialogKind, may include:
+            <var>SaveDialogResult</var> is a procedure used to capture the results from the dialog when it has finished execution. The values are stored in the corresponding properties in the class instance, and depending on the DialogKind, may include:
           </p>
           <ul>
             <li>FilterIndex</li>
@@ -1642,7 +1649,9 @@
       </element>
 
       <element name="TFileNameEdit.EditChange">
-        <short>Performs actions needed when the value for the control  has been changed.</short>
+        <short>
+          Performs actions needed when the value for the control has been changed.
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -1745,7 +1754,7 @@
         </short>
         <descr>
           <p>
-            <var>DialogKind</var> is a <var>TDialogKind</var> property that indicates the type of dialog executed when the <var>Button</var> for the control is clicked. The default value for the property is <var>dkOpen</var>, as assigned in the constructor. Use one of the other TDialogKind enumeration values to perform its  corresponding action.
+            <var>DialogKind</var> is a <var>TDialogKind</var> property that indicates the type of dialog executed when the <var>Button</var> for the control is clicked. The default value for the property is <var>dkOpen</var>, as assigned in the constructor. Use one of the other TDialogKind enumeration values to perform its corresponding action.
           </p>
         </descr>
         <seealso>
@@ -1762,7 +1771,7 @@
         </short>
         <descr>
           <p>
-            <var>DialogTitle</var> is a <var>String</var> property that contains the title displayed on the dialog executed by clicking on Button. The value in DialogTitle is assigned to the TCommonDialog descendant created in the      <var>CreateDialog</var> method.
+            <var>DialogTitle</var> is a <var>String</var> property that contains the title displayed on the dialog executed by clicking on Button. The value in DialogTitle is assigned to the TCommonDialog descendant created in the <var>CreateDialog</var> method.
           </p>
         </descr>
         <seealso>
@@ -1816,7 +1825,7 @@
         <short>Hide directory name from edit.</short>
         <descr>
           <p>
-            If <var>HideDirectories</var> is set to true, the file name editor displays only a file name, without path.
+            If <var>HideDirectories</var> is set to <b>True</b>, the file name editor displays only a file name, without path.
           </p>
           <remark>
             This may be useful if application allows user to select files from a fixed directory with a long path.
@@ -2157,11 +2166,11 @@
 
       <element name="TDirectoryEdit.ShowHidden">
         <short>
-          <var>ShowHidden</var> - if True, display names of hidden directories.
+          <var>ShowHidden</var> - if <b>True</b>, display names of hidden directories.
         </short>
         <descr>
           <p>
-            <var>ShowHidden</var> - if True, display names of hidden directories. In Windows etc, show directories under 'Windows' and branches; in Linux etc show directories with preceding dot e.g. '.Lazarus'.
+            When <var>ShowHidden</var> is <b>True</b>, the names for hidden directories are displayed. In Windows, this show directories under 'Windows' and branches; in Linux, show directories with preceding dot e.g. '.Lazarus'.
           </p>
         </descr>
         <seealso/>
@@ -2182,7 +2191,9 @@
       </element>
 
       <element name="TDirectoryEdit.ButtonHint">
-        <short>Hint displayed when the mouse hovers over the button for the control.</short>
+        <short>
+          Hint displayed when the mouse hovers over the button for the control.
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -2282,7 +2293,7 @@
         <short>TDateTime value examined in the method.</short>
       </element>
       <element name="TAcceptDateEvent.AcceptDate">
-        <short>Indicates if the Date/Time can be accepted when True.</short>
+        <short>Indicates if the Date/Time can be accepted when <b>True</b>.</short>
       </element>
 
       <element name="TCustomDateEvent">
@@ -2664,7 +2675,7 @@
       <element name="TDateEdit.Button" link="#lcl.editbtn.TCustomEditButton.Button"/>
 
       <element name="TDateEdit.DroppedDown">
-        <short>Indicates the dialog for control is visible when True.</short>
+        <short>Indicates the dialog for control is visible when <b>True</b>.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -2701,10 +2712,12 @@
 
       <element name="TDateEdit.DefaultToday">
         <short>
-          <var>DefaultToday</var> - if True, the current date is offered as the default date (value is False by default).
+          When <b>True</b>, the current date is offered as the default date (value is <b>False</b> by default).
         </short>
         <descr>
-          Default value for the property is <b>False</b>.
+          <p>
+            The default value for the property is <b>False</b>.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -2724,7 +2737,7 @@
             <var>DateFormat</var> is a <var>String</var> property which contains the format used when converting the Date value to and from text. DateFormat is relevant when <var>DateOrder</var> contains the value <var>doNone</var>; when another <var>TDateOrder</var> value is used, the fixed format needed for the date order is automatically used.
           </p>
           <p>
-            DateFormat is used  in the implementation of the <var>TextToDate</var> and <var>DateToText</var> methods.
+            DateFormat is used in the implementation of the <var>TextToDate</var> and <var>DateToText</var> methods.
           </p>
         </descr>
         <seealso>
@@ -2821,7 +2834,7 @@
         <short>Time value examined in the method.</short>
       </element>
       <element name="TAcceptTimeEvent.AcceptTime">
-        <short>Indicates the time value is accepted when True.</short>
+        <short>Indicates the time value is accepted when <b>True</b>.</short>
       </element>
 
       <element name="TCustomTimeEvent">
