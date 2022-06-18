@@ -167,6 +167,14 @@ Type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+
+  { TDBHTMLElementActionFieldProperty }
+
+  TDBHTMLElementActionFieldProperty = Class(TFieldProperty)
+    procedure FillValues(const Values: TStringList); override;
+  end;
+
+
   { TBSColumnFieldProperty }
 
   TBSColumnFieldProperty = Class(TFieldProperty)
@@ -342,6 +350,7 @@ Procedure RegisterPropertyEditors;
 
 begin
   RegisterPropertyEditor(TypeInfo(String),THTMLCustomElementAction,'ElementID',TElementIDPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TDBHTMLInputElementAction,'FieldName',TDBHTMLElementActionFieldProperty);
   RegisterPropertyEditor(TypeInfo(String),TCustomHTMLFragment,'HTMLFileName',THTMLFileNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TCustomHTMLFragment,'ParentID',TProjectElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TSQLDBRestDataset,'ResourceName',TSQLDBRestResourceNamePropertyEditor);
@@ -419,6 +428,19 @@ begin
   RegisterPropertyEditors;
   RegisterHTMLFragmentHandling;
   RegisterRESTHandling;
+end;
+
+{ TDBHTMLElementActionFieldProperty }
+
+procedure TDBHTMLElementActionFieldProperty.FillValues(const Values: TStringList
+  );
+Var
+  Act : TDBHTMLInputElementAction;
+
+begin
+  Act:=TDBHTMLInputElementAction(GetComponent(0));
+  if Assigned(Act) and Assigned(Act.DataSource) then
+  ListDataSourceFields(Act.DataSource,Values)
 end;
 
 { TPas2JSRPCClientComponentEditor }
@@ -759,6 +781,7 @@ begin
   aList:=TStringList.Create;
   try
     IDERestUtils.GetConnectionList(aDataset.Connection,aList);
+    aList.Sort;
     For S in aList do
       Proc(S);
   finally
@@ -786,6 +809,7 @@ begin
   aList:=TStringList.Create;
   try
     IDERestUtils.GetResourceList(aDataset.Connection,aList);
+    aList.Sort;
     For S in aList do
       Proc(S);
   finally
@@ -865,6 +889,8 @@ begin
       if ExpandFileName(aHTMLFile)<>aHTMLFile then
         begin
         aHTMLFile:=IncludeTrailingPathDelimiter(HTMLBaseDir)+aHTMLFile;
+        if Not FileExists(aHTMLFile) then
+          aHTMLFile:='';
         end;
       end;
     end;
