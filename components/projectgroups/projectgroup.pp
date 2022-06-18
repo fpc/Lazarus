@@ -678,7 +678,7 @@ begin
   Item:=Sender as TIDEMenuCommand;
   aFilename:=Item.Caption;
   //debugln(['TIDEProjectGroupManager.DoOpenRecentClick ',aFilename]);
-  LoadProjectGroup(aFilename,[pgloLoadRecursively]);
+  LoadProjectGroup(aFilename,[pgloBringToFront, pgloLoadRecursively]);
 end;
 
 procedure TIDEProjectGroupManager.DoSaveClick(Sender: TObject);
