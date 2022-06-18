@@ -20,8 +20,8 @@ Type
   Protected
     Procedure DoLog(Const Msg : String); overload;
     Procedure DoLog(Const Fmt : String; Const Args : Array of const); overload;
-    Procedure LoadDataset(aDataset : TBufDataset; const aURL : String; const aUserName,aPassword : string);
-    procedure LoadDataset(aDataset: TBufDataset; aConnection: TSQLDBRestConnection; aResource: string);
+    function LoadDataset(aDataset : TBufDataset; const aURL : String; const aUserName,aPassword : string) : Boolean;
+    function LoadDataset(aDataset: TBufDataset; aConnection: TSQLDBRestConnection; aResource: string) : Boolean;
   Public
     Procedure GetResourceList(aConnection : TSQLDBRestConnection; aList : TStrings; {%H-}aScheme : String = '');
     Procedure GetConnectionList(aConnection : TSQLDBRestConnection; aList : TStrings; {%H-}aScheme : String = '');
@@ -71,8 +71,8 @@ begin
   DoLog(Format(Fmt,Args));
 end;
 
-procedure TPas2JSRestUtils.LoadDataset(aDataset: TBufDataset;
-  const aURL: String; const aUserName, aPassword: string);
+function TPas2JSRestUtils.LoadDataset(aDataset: TBufDataset;
+  const aURL: String; const aUserName, aPassword: string) : Boolean;
 
 Var
   C : TFPHTTPClient;
@@ -80,6 +80,7 @@ Var
   U : String;
 
 begin
+  Result:=False;
   DoLog('Loading data from URL %s (user: %s, password: %s)',[aURL,aUserName,StringOfChar('*',Length(aPAssword))]);
   U:=aURL;
   S:=Nil;
@@ -99,7 +100,7 @@ begin
       On E : Exception do
         begin
         DoLog('Exception %s when getting data from url "%s": %s',[E.ClassName,U,E.Message]);
-        Raise;
+        Exit;
         end;
     end;
     if FShowRaw then
@@ -111,13 +112,14 @@ begin
       end;
     S.Position:=0;
     aDataset.LoadFromStream(S,dfXML);
+    Result:=True;
   finally
     S.Free;
     C.Free;
   end;
 end;
 
-procedure TPas2JSRestUtils.LoadDataset(aDataset : TBufDataset; aConnection: TSQLDBRestConnection; aResource : string);
+function TPas2JSRestUtils.LoadDataset(aDataset : TBufDataset; aConnection: TSQLDBRestConnection; aResource : string) : Boolean;
 
 Var
   aURL : String;
@@ -125,7 +127,7 @@ Var
 begin
   aURL:=aConnection.BaseURL;
   aURL:=aURL+aResource;
-  LoadDataset(aDataset,aURL,aConnection.UserName,aConnection.Password);
+  Result:=LoadDataset(aDataset,aURL,aConnection.UserName,aConnection.Password);
 end;
 
 procedure TPas2JSRestUtils.GetResourceList(aConnection: TSQLDBRestConnection;
@@ -137,7 +139,8 @@ Var
 begin
   Buf:=TLocalBufDataset.Create(Self);
   try
-    LoadDataset(Buf,AConnection,aConnection.MetaDataResourceName);
+    if not LoadDataset(Buf,AConnection,aConnection.MetaDataResourceName) then
+      exit;
     if (aConnection.CustomViewResourceName<>'') then
       aList.Add(aConnection.CustomViewResourceName);
     if (aConnection.MetaDataResourceName<>'') then
