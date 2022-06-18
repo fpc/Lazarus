@@ -545,7 +545,7 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               const APath: string);
   public
-    constructor Create(AOwnerWatch: TIdeWatch);
+    constructor Create(AOwnerWatch: TWatch); override;
     constructor Create(AOwnerWatch: TIdeWatch;
                        const AThreadId: Integer;
                        const AStackFrame: Integer
@@ -563,7 +563,6 @@ type
     function GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
     function GetWatch: TIdeWatch;
   protected
-    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -4073,12 +4072,6 @@ begin
   Result := TIdeWatch(inherited Watch);
 end;
 
-function TIdeWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
-begin
-  Result := TIdeWatchValue.Create(Watch);
-  Result.Assign(AnEntry);
-end;
-
 procedure TIdeWatchValueList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   APath: string);
 var
@@ -4219,7 +4212,7 @@ begin
   end;
 end;
 
-constructor TIdeWatchValue.Create(AOwnerWatch: TIdeWatch);
+constructor TIdeWatchValue.Create(AOwnerWatch: TWatch);
 begin
   inherited Create(AOwnerWatch);
   Validity := ddsUnknown;

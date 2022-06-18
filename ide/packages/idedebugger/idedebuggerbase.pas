@@ -51,7 +51,7 @@ type
     function GetTypeInfo: TDBGType; virtual;
     function GetValue: String; virtual;
   public
-    constructor Create(AOwnerWatch: TWatch);
+    constructor Create(AOwnerWatch: TWatch); virtual;
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); virtual;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
@@ -68,6 +68,7 @@ type
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
     property ResultData: TWatchResultData read GetResultData;
   end;
+  TWatchValueClass = class of TWatchValue;
 
   { TWatchValueList }
 
@@ -79,7 +80,7 @@ type
     function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
     function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; virtual;
-    function CopyEntry(AnEntry: TWatchValue): TWatchValue; virtual;
+    function CopyEntry(AnEntry: TWatchValue): TWatchValue;
   public
     procedure Assign(AnOther: TWatchValueList);
     constructor Create(AOwnerWatch: TWatch);
@@ -557,7 +558,7 @@ end;
 
 function TWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
 begin
-  Result := TWatchValue.Create(FWatch);
+  Result := TWatchValueClass(AnEntry.ClassType).Create(FWatch);
   Result.Assign(AnEntry);
 end;
 
