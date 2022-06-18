@@ -116,8 +116,10 @@ Type
     FDatabaseConnection: String;
     FOnGetQueryParams: TGetQueryParamsEvent;
     FParams: TQueryParams;
+    FResourceID: String;
     FResourceName: String;
     FSQL: TStrings;
+    FAutoApplyUpdates : Boolean;
     function CreateQueryParams: TQueryParams;
     procedure SetConnection(AValue: TSQLDBRestConnection);
     procedure SetParams(AValue: TQueryParams);
@@ -138,6 +140,10 @@ Type
     Property Params : TQueryParams Read FParams Write SetParams;
     // Event to adapt parameters when issuing a request
     Property OnGetQueryParams : TGetQueryParamsEvent Read FOnGetQueryParams Write FOnGetQueryParams;
+    // If set, it will be appended to the URL in a GET operation.
+    Property ResourceID : String Read FResourceID Write FResourceID;
+    // Automatically call ApplyUpdates when a Post/Delete happens.
+    Property AutoApplyUpdates : Boolean Read FAutoApplyUpdates Write FAutoApplyUpdates;
   end;
 
 
