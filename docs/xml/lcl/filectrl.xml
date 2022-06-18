@@ -160,7 +160,7 @@
       </element>
       <element name="TCustomFileListBox.MaskIsStored.Result">
         <short>
-          True when a value other than the all directory entries mask (<b>'*'</b>) has been assigned to the property
+          <b>True</b> when a value other than the all directory entries mask (<b>'*'</b>) has been assigned to the property
         </short>
       </element>
 
@@ -232,11 +232,11 @@
 
       <element name="TCustomFileListBox.DoChangeFile">
         <short>
-          Performs actions needed when the selected file has changed in the control
+          Performs actions needed when the selected file has changed in the control.
         </short>
         <descr>
           <p>
-            <var>DoChangeFile</var> is a method used to change the file selection in the control. It signals  the <var>OnChange</var> event handler (when assigned).
+            <var>DoChangeFile</var> is a method used to change the file selection in the control. It signals the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <seealso>
@@ -264,7 +264,7 @@
         <short>Gets the ordinal position for the specified file name in Items.</short>
         <descr>
           <p>
-            <var>IndexOfFile</var> is an Integer function used to get the ordinal position for the specified  file name in the list of file names in the control. <var>AFilename</var> contains the file name to locate in the method.
+            <var>IndexOfFile</var> is an Integer function used to get the ordinal position for the specified file name in the list of file names in the control. <var>AFilename</var> contains the file name to locate in the method.
           </p>
           <p>
             IndexOfFile handles drive and volume entries that may be stored in <var>Items</var> by ignoring the square brackets (<b>[]</b>) used to surround values with the corresponding file attributes. The <var>CompareFileNames</var> routine from <file>LazFileUtils</file> is used to perform file name comparisons.
@@ -340,7 +340,7 @@
             <dt>MultiSelect</dt>
             <dd>Set to False</dd>
             <dt>Sorted</dt>
-            <dd>Set to True after files have been loaded in UpdateFileList</dd>
+            <dd>Set to <b>True</b> after files have been loaded in UpdateFileList</dd>
           </dl>
           <p>
             Create calls the <var>UpdateFileList</var> method to load the file and directory names for the current directory into the <var>Items</var> property.
@@ -374,7 +374,9 @@
       </element>
 
       <element name="TCustomFileListBox.Click">
-        <short>Performs actions needed when the mouse is clicked on the list box control.</short>
+        <short>
+          Performs actions needed when the mouse is clicked on the list box control.
+        </short>
         <descr>
           <p>
             <var>Click</var> is an overridden method in <var>TCustomFileListBox</var> used to perform actions needed when the mouse is clicked in the list box control. Click ensures that the value in the <var>FileName</var> property is updated to reflect the selected file name in <var>Items</var>. <var>ItemIndex</var> contains the position for the current selection in the list box.
@@ -419,7 +421,9 @@
       </element>
 
       <element name="TCustomFileListBox.Drive">
-        <short>The <var>Drive</var> on which the file is located (applies to Windows systems).</short>
+        <short>
+          The <var>Drive</var> on which the file is located (applies to Windows systems).
+        </short>
         <descr>
           <p>
             <var>Drive</var> is a Char property which indicates the current drive letter for the Directory in the list box control. Drive is relevant for file systems which use drive designations (Windows).
@@ -471,7 +475,8 @@
 
       <element name="TCustomFileListBox.FileName">
         <short>
-          <var>FileName</var> - the name of the selected file.</short>
+          <var>FileName</var> - the name of the selected file.
+        </short>
         <descr>
           <p>
             <var>FileName</var> is a <var>String</var> property which contains the file name for the currently selected item in the list box control. The value in FileName is updated when an item in the control is selected, or when a new value is assigned to the <var>ItemIndex</var> property.
@@ -492,7 +497,8 @@
 
       <element name="TCustomFileListBox.FileType">
         <short>
-          <var>FileType</var> - the type or attributes of the selected file.</short>
+          <var>FileType</var> - the type or attributes of the selected file.
+        </short>
         <descr>
           <p>
             <var>FileType</var> is a <var>TFileType</var> set property which contains zero (0) or more values from the <var>TFileAttr</var> enumeration. FileType determines the file system entries displayed in the list box control. See <link id="TFileAttr">TFileAttr</link> for more information about the enumeration values and their meanings.
@@ -536,7 +542,9 @@
       </element>
 
       <element name="TCustomFileListBox.OnChange">
-        <short>Event handler signalled when the selected file in the list box control is changed.</short>
+        <short>
+          Event handler signalled when the selected file in the list box control is changed.
+        </short>
         <descr>
           <p>
             <var>OnChange</var> is a <var>TNotifyEvent</var> property which contains the event handler signalled when the selected file for the control has been changed. This can occur when clicking on an entry in list box, when assigning a value directly to the <var>FileName</var> property, and when the list of file system entries in the control is reloaded.
@@ -556,7 +564,7 @@
         <short>Indicates if values in Items are sort in ascending alphanumeric order.</short>
         <descr>
           <p>
-            <var>Sorted</var> is a public property in <var>TCustomFileListBox</var>, and indicates if values stored in <var>Items</var> are sorted in ascending alphanumeric order.  The default value for the property is <b>True</b>.
+            <var>Sorted</var> is a public property in <var>TCustomFileListBox</var>, and indicates if values stored in <var>Items</var> are sorted in ascending alphanumeric order. The default value for the property is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -670,7 +678,7 @@
             TCustomFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the selected filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
-            TCustomFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
+            TCustomFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that some properties are not published for the control, so do they do not appear in the Object Inspector at design-time. For example: Mask.
           </p>
         </descr>
         <seealso>
@@ -706,7 +714,9 @@
       </element>
 
       <element name="TCustomFilterComboBox.Select">
-        <short>Performs actions needed when the selected item (ItemIndex) has been changed.</short>
+        <short>
+          Performs actions needed when the selected item (ItemIndex) has been changed.
+        </short>
         <descr>
           <p>
             <var>Select</var> is an overridden method in <var>TCustomFilterComboBox</var>. It ensures that the value in <var>Mask</var> is also applied to the <var>ShellListView</var> control (when assigned). This forces the ShellListView to reload the list of matching files displayed in the control.
@@ -805,10 +815,14 @@ Binaries (*.exe)</code>
         <short>Indicates if existing values in AStrings are cleared.</short>
       </element>
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddDescription">
-        <short>True if the filter description is included in the converted values.</short>
+        <short>
+          <b>True</b> if the filter description is included in the converted values.
+        </short>
       </element>
       <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddFilter">
-        <short>True if the filter mask expression is included in the converted values.</short>
+        <short>
+          <b>True</b> if the filter mask expression is included in the converted values.
+        </short>
       </element>
 
       <element name="TCustomFilterComboBox.Mask">
@@ -867,7 +881,7 @@ Binaries (*.exe)</code>
             TFilterComboBox includes a <var>ShellListView</var> property with the <var>TShellListView</var> instance used to display the list of files matching the selected filter. ShellListView is updated  (when assigned) in the <var>Select</var> method to use the value in <var>Mask</var> in the list view control. Set the <var>Root</var> property in ShellListView to control the directory displayed in the control.
           </p>
           <p>
-            TFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that Some properties are not published for the control, so do they do  not appear in the Object Inspector at design-time. For example: Mask.
+            TFilterComboBox sets the visibility for properties defined in an ancestor class, and does not introduce any new properties, methods, or events. Please note that Some properties are not published for the control, so do they do not appear in the Object Inspector at design-time. For example: Mask.
           </p>
         </descr>
         <seealso>
@@ -902,7 +916,7 @@ Binaries (*.exe)</code>
         <short>Contains one or more file filters used in the combo-box.</short>
         <descr>
           <p>
-            <var>Filter</var> is a <var>String</var> property which is published in <var>TFilterComboBox</var>. Filter contains the file filter(s) which are used in the <var>Items</var> property. Each filter value in the string  contains a textual description and mask. For example:
+            <var>Filter</var> is a <var>String</var> property which is published in <var>TFilterComboBox</var>. Filter contains the file filter(s) which are used in the <var>Items</var> property. Each filter value in the string contains a textual description and mask. For example:
           </p>
           <code>'Text files (*.txt *.pas)|*.txt;*.pas|Binaries (*.exe)|*.exe'.</code>
           <p>
@@ -967,7 +981,7 @@ Binaries (*.exe)</code>
             No actions are performed in the routine when path information is not included in FileName. The function normalizes all path delimiters in the file name to the first path delimiter found in the FileName argument.
           </p>
           <p>
-            MinimizeName uses the <var>Font</var> currently assigned to the <var>Canvas</var> argument to calculate the width (in pixels) for the file name.  When the width of the FileName argument is larger than the value in MaxWidth, directory names are dropped and replaced with a single <b>'...'</b> string value until the shortened file name fits within the specified width. Please note that the replacement characters are a string with three (3) Period ('.') characters, and <b>NOT</b> an Ellipsis (…)(#$2026) character.
+            MinimizeName uses the <var>Font</var> currently assigned to the <var>Canvas</var> argument to calculate the width (in pixels) for the file name. When the width of the FileName argument is larger than the value in MaxWidth, directory names are dropped and replaced with a single <b>'...'</b> string value until the shortened file name fits within the specified width. Please note that the replacement characters are a string with three (3) Period ('.') characters, and <b>NOT</b> an Ellipsis (…)(#$2026) character.
           </p>
         </descr>
       </element>
