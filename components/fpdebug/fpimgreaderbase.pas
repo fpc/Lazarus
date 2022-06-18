@@ -1,6 +1,7 @@
 unit FpImgReaderBase;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$modeswitch advancedrecords}
 
 interface

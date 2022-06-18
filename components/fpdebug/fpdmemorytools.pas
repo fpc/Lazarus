@@ -1,6 +1,7 @@
 unit FpdMemoryTools;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$HINT 5024 OFF}
 
 (* Tools to read data from Target or Own memory.

@@ -2,6 +2,7 @@ unit FpDbgDarwinClasses;
 
 {$mode objfpc}{$H+}
 {$linkframework Security}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 interface
 

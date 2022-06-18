@@ -33,6 +33,7 @@
 }
 unit FpDbgDisasX86;
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 interface
 
 {.$define debug_OperandSize}

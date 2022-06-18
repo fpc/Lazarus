@@ -34,6 +34,7 @@ unit FpDbgHardcodedFreepascalInfo;
   debug-information when the proper debug-information is not available. }
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 {$IF FPC_FULLVERSION>30100}
   {$DEFINE HasGenObjDict}

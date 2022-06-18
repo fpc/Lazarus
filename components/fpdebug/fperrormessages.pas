@@ -1,6 +1,7 @@
 unit FpErrorMessages;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 interface
 

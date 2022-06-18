@@ -22,6 +22,7 @@
 }
 unit FpDbgPETypes;
 {$mode objfpc}{$H+}{$inline on}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 interface
 {$ifdef windows}
 uses

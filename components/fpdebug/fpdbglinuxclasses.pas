@@ -1,6 +1,7 @@
 unit FpDbgLinuxClasses;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$packrecords c}
 {$modeswitch advancedrecords}
 {off $define DebuglnLinuxDebugEvents}

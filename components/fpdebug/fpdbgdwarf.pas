@@ -36,7 +36,7 @@ unit FpDbgDwarf;
 
 {$mode objfpc}{$H+}
 {$TYPEDADDRESS on}
-{off $INLINE OFF}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 (* Notes:
 

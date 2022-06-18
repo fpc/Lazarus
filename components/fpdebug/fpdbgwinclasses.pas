@@ -102,6 +102,7 @@
 unit FpDbgWinClasses;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {off $DEFINE DebuglnWinDebugEvents}
 
 interface
