@@ -1593,7 +1593,8 @@
 
       <element name="TLazIntfImage.SetSize">
         <short>
-          <var>SetSize</var> - define the height  and width of the image.</short>
+          <var>SetSize</var> - define the height and width of the image.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1648,7 +1649,9 @@
       </element>
 
       <element name="TLazIntfImage.CreateBitmaps">
-        <short><var>CreateBitmaps</var> - generates a Bitmap and an optional Mask for  the image data.</short>
+        <short>
+          <var>CreateBitmaps</var> - generates a Bitmap and an optional Mask for the image data.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1745,7 +1748,7 @@
         <short>Gets the alpha value from the mask if needed.</short>
         <descr>
           <p>
-            <var>AlphaFromMask</var>  gets the alpha value from the mask if <var>AKeepAlpha</var> is True (default condition).
+            <var>AlphaFromMask</var> gets the alpha value from the mask if <var>AKeepAlpha</var> is True (default condition).
           </p>
         </descr>
         <seealso/>
