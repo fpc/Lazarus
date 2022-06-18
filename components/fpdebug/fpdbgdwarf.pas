@@ -596,14 +596,6 @@ type
                                 AnInitLocParserData: PInitLocParserData): Boolean; override;
   end;
 
-  { TFpSymbolDwarfFunctionResult }
-
-  TFpSymbolDwarfFunctionResult = class(TFpSymbolDwarfDataWithLocation)
-  protected
-    function GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean; override;
-    procedure Init; override;
-  end;
-
   TFpSymbolDwarfThirdPartyExtension = class(TFpSymbolDwarf)
   end;
 
@@ -1067,20 +1059,6 @@ begin
   inherited Destroy;
   if FLocContext <> nil then
     FLocContext.ReleaseReference;
-end;
-
-{ TFpSymbolDwarfFunctionResult }
-
-function TFpSymbolDwarfFunctionResult.GetValueAddress(AValueObj: TFpValueDwarf; out AnAddress: TFpDbgMemLocation): Boolean;
-begin
-  AnAddress := Address;
-  Result := IsInitializedLoc(AnAddress);
-end;
-
-procedure TFpSymbolDwarfFunctionResult.Init;
-begin
-  inherited Init;
-  EvaluatedFields := EvaluatedFields + [sfiAddress];
 end;
 
 { TFpValueDwarfSubroutine }
