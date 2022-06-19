@@ -9,13 +9,13 @@
     <module name="LCLTranslator">
       <short>
         Performs string translation in the Lazarus IDE and LCL.
-        </short>
+      </short>
       <descr>
         <p>
           <var>lcltranslator.pas</var> contains classes and routines used to perform translation for strings used in Lazarus IDE and LCL (Lazarus Component Library). It searches for .po (Portable Object) and/or .mo (Machine Object) files used to perform I18n internationalization and L10n localization. The .po/.mo files are stored in the <b>languages</b> or <b>locale</b> directories. To access translation files from an alternate location, use the LResources unit and the LRSMoFile variable directly.
         </p>
         <p>
-          To enable string  translation, use this unit in your application and check the <b>Enable i18n</b> option in the <b>Project &gt; Project Options &gt; i18n</b> screen. You will need to call the SetDefaultLang routine in your code to activate the translation facility. If you want translation to be performed automatically, use the DefaultTranslator unit instead.
+          To enable string translation, use this unit in your application and check the <b>Enable i18n</b> option in the <b>Project &gt; Project Options &gt; i18n</b> screen. You will need to call the SetDefaultLang routine in your code to activate the translation facility. If you want translation to be performed automatically, use the DefaultTranslator unit instead.
         </p>
         <p>
           This unit also translates LCL string constants in the <file>lclstrconsts</file> file using files in the directory where program translation files are stored.
@@ -46,7 +46,7 @@
         </short>
         <descr>
           <p>
-            <var>TUpdateTranslator</var> is a TAbstractTranslator descendant used to perform string translations for persistent objects. TUpdateTranslator provides the UpdateTranslation method which updates any translatable  properties in Lazarus resources.
+            <var>TUpdateTranslator</var> is a TAbstractTranslator descendant used to perform string translations for persistent objects. TUpdateTranslator provides the UpdateTranslation method which updates any translatable properties in Lazarus resources.
           </p>
           <p>
             TUpdateTranslator is used as the ancestor for the TDefaultTranslator and TPOTranslator classes.
@@ -175,7 +175,7 @@
         </short>
         <descr>
           <p>
-            <var>TPOTranslator</var> is a <var>TUpdateTranslator</var> descendant used to translate string properties using the values defined in a .po (<b>Portable Object</b>) file. A .po file is the text format used for translation resources created for the <b>GNU gettext</b> program. TPOTranslator  implements the abstract TranslateStringProperty method defined in the ancestor class.
+            <var>TPOTranslator</var> is a <var>TUpdateTranslator</var> descendant used to translate string properties using the values defined in a .po (<b>Portable Object</b>) file. A .po file is the text format used for translation resources created for the <b>GNU gettext</b> program. TPOTranslator implements the abstract TranslateStringProperty method defined in the ancestor class.
           </p>
           <p>
             Use TDefaultTranslator to translate string properties using the .mo (<b>Machine Object</b>) file format.
@@ -262,7 +262,9 @@
       </element>
 
       <element name="TranslateLCLResourceStrings">
-        <short>Translates resource strings in <file>LCLStrConsts</file> to the specified language.</short>
+        <short>
+          Translates resource strings in <file>LCLStrConsts</file> to the specified language.
+        </short>
         <descr>
           <p>
             <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts</file> unit to the language identifier specified in the Lang argument.
@@ -303,10 +305,7 @@
             <var>SetDefaultLang</var> is a procedure used to the set the default language used for string translations.
           </p>
           <p>
-            <var>Lang</var> contains the Language ID to use for translated strings. Lang contains a language identifier defined in ISO 639, at:
-            <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">
-              ISO 639 - Codes for the Representation of Names of Languages
-            </url>
+            <var>Lang</var> contains the Language ID to use for translated strings. Lang contains a language identifier defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>
           </p>
           <p>
             The default value for the parameter is an empty string (<b>''</b>), and indicates that strings are not translated.
@@ -318,13 +317,13 @@
             <var>LocaleFileName</var> contain the localization file used for for strings. This file handles variations in grammar and spelling that occur in local dialects for a language. It contains a value like 'zh_cn' or 'pt_br'. The default value is an empty string (<b>''</b>), and indicates that localization is not preformed for resource strings.
           </p>
           <p>
-            <var>ForceUpdate</var> indicates if an immediate update to to the User Interface is performed when translations are loaded. Set ForceUpdate to False when SetDefaultLang is called from the initialization section for a unit. The default value is True.
+            <var>ForceUpdate</var> indicates if an immediate update to to the User Interface is performed when translations are loaded. Set ForceUpdate to <b>False</b> when SetDefaultLang is called from the initialization section for a unit. The default value is <b>True</b>.
           </p>
           <p>
             SetDefaultLang ensures that Language ID and Locale Codes are valid, and .po/.mo exist for the specified names before they are applied. SetDefaultLang calls the FindLocaleFileName function to get the file name used for translation resources. .po files are applied when they exist. Otherwise, .mo file are used to get the translated string values. LCL resource string constants are also translated when the default language code is assigned.
           </p>
           <p>
-            When ForceUpdate contains <b>True</b>, string properties used in Forms, Data Modules, Controls, Components and Persistent objects are translated. This action is performed for items with  RTTI (Run Time Type Information) and includes a setter (write access) procedure. TUpdateTranslator is used to perform the update to user interface elements.
+            When ForceUpdate contains <b>True</b>, string properties used in Forms, Data Modules, Controls, Components and Persistent objects are translated. This action is performed for items with RTTI (Run Time Type Information) and includes a setter (write access) procedure. TUpdateTranslator is used to perform the update to user interface elements.
           </p>
         </descr>
         <seealso>
@@ -354,7 +353,11 @@
 
       <element name="GetDefaultLang">
         <short>Deprecated.</short>
-        <descr>Deprecated. Use the result from the SetDefaultLang function instead.</descr>
+        <descr>
+          <p>
+            Deprecated. Use the result from the SetDefaultLang function instead.
+          </p>
+        </descr>
         <version>Deprecated in LCL version 2.1.0.</version>
         <seealso><link id="SetDefaultLang"/></seealso>
       </element>
