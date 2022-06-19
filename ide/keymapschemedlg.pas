@@ -47,6 +47,7 @@ type
   private
     function GetKeymapScheme: string;
     procedure SetKeymapScheme(const AValue: string);
+    procedure UpdateColumns;
   public
     property KeymapScheme: string read GetKeymapScheme write SetKeymapScheme;// untranslated
   end;
@@ -72,6 +73,8 @@ end;
 { TChooseKeySchemeDlg }
 
 procedure TChooseKeySchemeDlg.ChooseKeySchemeDlgCREATE(Sender: TObject);
+var
+  i : integer;
 begin
   Caption:=lisKMChooseKeymappingScheme;
   NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme;
@@ -89,6 +92,12 @@ begin
     Add(lisKMDefaultToOSX);
     // do not add custom
   end;
+  // searching configuration files on the main thread is not really good
+  LoadCustomKeySchemas;
+
+  for i:=0 to CustomKeySchemas.Count-1 do
+    SchemeRadiogroup.Items.Add(CustomKeySchemas[i]);
+  UpdateColumns;
 end;
 
 procedure TChooseKeySchemeDlg.HelpButtonClick(Sender: TObject);
@@ -109,15 +118,30 @@ end;
 procedure TChooseKeySchemeDlg.SetKeymapScheme(const AValue: string);
 var
   kms: TKeyMapScheme;
+  i : integer;
 begin
   kms:=KeySchemeNameToSchemeType(AValue);
   if kms=kmsCustom then begin
-    if SchemeRadiogroup.Items.Count<=ord(kms) then
-      SchemeRadiogroup.Items.Add(AValue)
-    else
-      SchemeRadiogroup.Items[SchemeRadiogroup.Items.Count-1]:=AValue;
-  end;
-  SchemeRadiogroup.ItemIndex:=ord(kms);
+    i := CustomKeySchemas.IndexOf(AValue);
+    if i < 0 then begin
+      if (SchemeRadiogroup.Items.IndexOf(AValue)<0) then
+        i := SchemeRadiogroup.Items.Add(AValue)
+      else
+        i := SchemeRadiogroup.Items.Count-1;
+    end else
+      i := i + Ord(kmsCustom);
+  end else
+    i := ord(kms);
+  SchemeRadiogroup.ItemIndex:=i;
+  UpdateColumns;
+end;
+
+procedure TChooseKeySchemeDlg.UpdateColumns;
+begin
+  if (SchemeRadiogroup.Items.Count>8) then
+    SchemeRadiogroup.Columns := 2
+  else
+    SchemeRadiogroup.Columns := 1;
 end;
 
 end.
