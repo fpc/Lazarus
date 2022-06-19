@@ -112,7 +112,7 @@
             <var>TLazCanvasState</var> is a class with public members that reflect the state for a <var>TLazCanvas</var> instance. A destructor is provided to ensure that resources allocated to members variables are freed before the class instance is destroyed.
           </p>
           <p>
-            Instances of <var>TLazCanvasState</var> are created, stored, and retrieved using  an internal list in <var>TLazCanvas</var> in its <var>SaveState</var> and <var>RestoreState</var> methods.
+            Instances of <var>TLazCanvasState</var> are created, stored, and retrieved using an internal list in <var>TLazCanvas</var> in its <var>SaveState</var> and <var>RestoreState</var> methods.
           </p>
         </descr>
         <seealso>
