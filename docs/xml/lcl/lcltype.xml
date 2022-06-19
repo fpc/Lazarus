@@ -52,7 +52,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TCriticalSection">
-        <short>Alias for the  PtrUInt type.</short>
+        <short>Alias for the PtrUInt type.</short>
         <descr>
           <p>
             <var>TCriticalSection</var> is the type used to protect access to resources in a multi-threaded application. Please note that the type is different than the <var>TRTLCriticalSection</var> type and the class by the same name implemented in the <file>syncobjs</file> unit in the FPC RTL (Run-Time Library).
@@ -595,7 +595,7 @@
       <element name="CS_VREDRAW">
         <short>
           Class style constant used to redraw the entire window when the height for the client area has been changed.
-          </short>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -603,7 +603,7 @@
       <element name="CS_HREDRAW">
         <short>
           Class style constant used to redraw the entire window when the width for the client area has been changed.
-          </short>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -611,8 +611,7 @@
       <!-- constant Visibility: default -->
       <element name="RGN_AND">
         <short>
-          <var>CombineRgn</var> mode:
-          intersection (r1 AND r2).
+          <var>CombineRgn</var> mode: intersection (r1 AND r2).
         </short>
         <descr/>
         <seealso/>
@@ -620,8 +619,7 @@
       <!-- constant Visibility: default -->
       <element name="RGN_OR">
         <short>
-          <var>CombineRgn</var> mode:
-          union (r1 OR r2).
+          <var>CombineRgn</var> mode: union (r1 OR r2).
         </short>
         <descr/>
         <seealso/>
@@ -629,8 +627,7 @@
       <!-- constant Visibility: default -->
       <element name="RGN_XOR">
         <short>
-          <var>CombineRgn</var> mode:
-          logical difference (r1 XOR r2).
+          <var>CombineRgn</var> mode: logical difference (r1 XOR r2).
         </short>
         <descr/>
         <seealso/>
@@ -638,8 +635,7 @@
       <!-- constant Visibility: default -->
       <element name="RGN_DIFF">
         <short>
-          <var>CombineRgn</var> mode:
-          arithmetic difference (r1 - r2).
+          <var>CombineRgn</var> mode: arithmetic difference (r1 - r2).
         </short>
         <descr/>
         <seealso/>
@@ -647,8 +643,7 @@
       <!-- constant Visibility: default -->
       <element name="RGN_COPY">
         <short>
-          <var>CombineRgn</var> mode:
-          copy of r1.
+          <var>CombineRgn</var> mode: copy of r1.
         </short>
         <descr/>
         <seealso/>
@@ -656,8 +651,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_TOP">
         <short>
-          <var>DrawText</var> formatting:
-           text justified to the top of the rectangle.
+          <var>DrawText</var> formatting: text justified to the top of the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -665,8 +659,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_LEFT">
         <short>
-          <var>DrawText</var> formatting:
-           text justified to the left of the rectangle.
+          <var>DrawText</var> formatting: text justified to the left of the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -674,8 +667,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_CENTER">
         <short>
-          <var>DrawText</var> formatting:
-           text centered horizontally within the rectangle.
+          <var>DrawText</var> formatting: text centered horizontally within the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -683,8 +675,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_RIGHT">
         <short>
-          <var>DrawText</var> formatting:
-           text justified to the right of the rectangle.
+          <var>DrawText</var> formatting: text justified to the right of the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -692,8 +683,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_VCENTER">
         <short>
-          <var>DrawText</var> formatting:
-           text centered vertically within the rectangle.
+          <var>DrawText</var> formatting: text centered vertically within the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -701,8 +691,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_BOTTOM">
         <short>
-          <var>DrawText</var> formatting:
-           text justified to the bottom of the rectangle.
+          <var>DrawText</var> formatting: text justified to the bottom of the rectangle.
         </short>
         <descr/>
         <seealso/>
@@ -710,8 +699,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_WORDBREAK">
         <short>
-          <var>DrawText</var> formatting:
-           text can wrap into multiple lines.
+          <var>DrawText</var> formatting: text can wrap into multiple lines.
         </short>
         <descr/>
         <seealso/>
@@ -719,8 +707,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_SINGLELINE">
         <short>
-          <var>DrawText</var> formatting:
-           text is drawn in a single line, regardless of embedded line endings.
+          <var>DrawText</var> formatting: text is drawn in a single line, regardless of embedded line endings.
         </short>
         <descr/>
         <seealso/>
@@ -728,8 +715,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_EXPANDTABS">
         <short>
-          <var>DrawText</var> formatting:
-           expand tab characters.
+          <var>DrawText</var> formatting: expand tab characters.
         </short>
         <descr/>
         <seealso/>
@@ -737,8 +723,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_NOCLIP">
         <short>
-          <var>DrawText</var> formatting:
-           text is drawn without clipping.
+          <var>DrawText</var> formatting: text is drawn without clipping.
         </short>
         <descr/>
         <seealso/>
@@ -746,8 +731,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_CALCRECT">
         <short>
-          <var>DrawText</var> formatting:
-           returns the required rectangle, without actually drawing.
+          <var>DrawText</var> formatting: returns the required rectangle, without actually drawing.
         </short>
         <descr/>
         <seealso/>
@@ -755,8 +739,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_NOPREFIX">
         <short>
-          <var>DrawText</var> formatting:
-           show embedded '&amp;' characters.
+          <var>DrawText</var> formatting: show embedded '&amp;' characters.
         </short>
         <descr/>
         <seealso/>
@@ -764,8 +747,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_INTERNAL">
         <short>
-          <var>DrawText</var> formatting:
-           uses the system font for calculations.
+          <var>DrawText</var> formatting: uses the system font for calculations.
         </short>
         <descr/>
         <seealso/>
@@ -773,8 +755,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_EDITCONTROL">
         <short>
-          <var>DrawText</var> formatting:
-           emulates the behavior of a multi-line edit control.
+          <var>DrawText</var> formatting: emulates the behavior of a multi-line edit control.
         </short>
         <descr/>
         <seealso/>
@@ -782,8 +763,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_END_ELLIPSIS">
         <short>
-          <var>DrawText</var> formatting:
-           appends an ellipsis when the text is truncated.
+          <var>DrawText</var> formatting: appends an ellipsis when the text is truncated.
         </short>
         <descr/>
         <seealso/>
@@ -791,8 +771,7 @@
       <!-- constant Visibility: default -->
       <element name="DT_MODIFYSTRING">
         <short>
-          <var>DrawText</var> formatting:
-           update the string to match the displayed text (possibly truncated).
+          <var>DrawText</var> formatting: update the string to match the displayed text (possibly truncated).
         </short>
         <descr/>
         <seealso/>
@@ -826,8 +805,7 @@
       <!-- constant Visibility: default -->
       <element name="DFC_CAPTION">
         <short>
-          <var>DrawFrameControl</var> control type:
-          title bar.
+          <var>DrawFrameControl</var> control type: title bar.
         </short>
         <descr/>
         <seealso/>
@@ -835,8 +813,7 @@
       <!-- constant Visibility: default -->
       <element name="DFC_MENU">
         <short>
-          <var>DrawFrameControl</var> control type:
-          menu bar.
+          <var>DrawFrameControl</var> control type: menu bar.
         </short>
         <descr/>
         <seealso/>
@@ -844,8 +821,7 @@
       <!-- constant Visibility: default -->
       <element name="DFC_SCROLL">
         <short>
-          <var>DrawFrameControl</var> control type:
-          scroll bar.
+          <var>DrawFrameControl</var> control type: scroll bar.
         </short>
         <descr/>
         <seealso/>
@@ -853,8 +829,7 @@
       <!-- constant Visibility: default -->
       <element name="DFC_BUTTON">
         <short>
-          <var>DrawFrameControl</var> control type:
-          button.
+          <var>DrawFrameControl</var> control type: button.
         </short>
         <descr/>
         <seealso/>
@@ -862,8 +837,7 @@
       <!-- constant Visibility: default -->
       <element name="DFC_POPUPMENU">
         <short>
-          <var>DrawFrameControl</var> control type:
-          menu item.
+          <var>DrawFrameControl</var> control type: menu item.
         </short>
         <descr/>
         <seealso/>
@@ -871,8 +845,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONCHECK">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          checkbox.
+          <var>DrawFrameControl</var> button control style: checkbox.
         </short>
         <descr/>
         <seealso/>
@@ -880,8 +853,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIOIMAGE">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          radio button image.
+          <var>DrawFrameControl</var> button control style: radio button image.
         </short>
         <descr/>
         <seealso/>
@@ -889,8 +861,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIOMASK">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          radio button mask.
+          <var>DrawFrameControl</var> button control style: radio button mask.
         </short>
         <descr/>
         <seealso/>
@@ -898,8 +869,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIO">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          radio button.
+          <var>DrawFrameControl</var> button control style: radio button.
         </short>
         <descr/>
         <seealso/>
@@ -907,8 +877,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTON3STATE">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          three-state button.
+          <var>DrawFrameControl</var> button control style: three-state button.
         </short>
         <descr/>
         <seealso/>
@@ -916,8 +885,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONPUSH">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          push button.
+          <var>DrawFrameControl</var> button control style: push button.
         </short>
         <descr/>
         <seealso/>
@@ -925,8 +893,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONCLOSE">
         <short>
-          <var>DrawFrameControl</var> caption control style:
-          Close button.
+          <var>DrawFrameControl</var> caption control style: Close button.
         </short>
         <descr/>
         <seealso/>
@@ -934,8 +901,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONMIN">
         <short>
-          <var>DrawFrameControl</var> caption control style:
-          Minimize button.
+          <var>DrawFrameControl</var> caption control style: Minimize button.
         </short>
         <descr/>
         <seealso/>
@@ -943,8 +909,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONMAX">
         <short>
-          <var>DrawFrameControl</var> caption control style:
-          Maximize button.
+          <var>DrawFrameControl</var> caption control style: Maximize button.
         </short>
         <descr/>
         <seealso/>
@@ -952,8 +917,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONRESTORE">
         <short>
-          <var>DrawFrameControl</var> caption control style:
-          Restore button.
+          <var>DrawFrameControl</var> caption control style: Restore button.
         </short>
         <descr/>
         <seealso/>
@@ -961,8 +925,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONHELP">
         <short>
-          <var>DrawFrameControl</var> caption control style:
-          Help button.
+          <var>DrawFrameControl</var> caption control style: Help button.
         </short>
         <descr/>
         <seealso/>
@@ -970,8 +933,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUARROW">
         <short>
-          <var>DrawFrameControl</var> menubar control style:
-          sub-menu arrow.
+          <var>DrawFrameControl</var> menubar control style: sub-menu arrow.
         </short>
         <descr/>
         <seealso/>
@@ -979,8 +941,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUCHECK">
         <short>
-          <var>DrawFrameControl</var> menubar control style:
-          check mark.
+          <var>DrawFrameControl</var> menubar control style: check mark.
         </short>
         <descr/>
         <seealso/>
@@ -988,8 +949,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUBULLET">
         <short>
-          <var>DrawFrameControl</var> menubar control style:
-          bullet.
+          <var>DrawFrameControl</var> menubar control style: bullet.
         </short>
         <descr/>
         <seealso/>
@@ -997,8 +957,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLDOWN">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          down arrow.
+          <var>DrawFrameControl</var> scrollbar control style: down arrow.
         </short>
         <descr/>
         <seealso/>
@@ -1006,8 +965,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLLEFT">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          left arrow.
+          <var>DrawFrameControl</var> scrollbar control style: left arrow.
         </short>
         <descr/>
         <seealso/>
@@ -1015,8 +973,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLRIGHT">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          right arrow.
+          <var>DrawFrameControl</var> scrollbar control style: right arrow.
         </short>
         <descr/>
         <seealso/>
@@ -1024,8 +981,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLCOMBOBOX">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          combobox scrollbar.
+          <var>DrawFrameControl</var> scrollbar control style: combobox scrollbar.
         </short>
         <descr/>
         <seealso/>
@@ -1033,8 +989,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLSIZEGRIP">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          size grip in the bottom-right window corner.
+          <var>DrawFrameControl</var> scrollbar control style: size grip in the bottom-right window corner.
         </short>
         <descr/>
         <seealso/>
@@ -1042,8 +997,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLUP">
         <short>
-          <var>DrawFrameControl</var> scrollbar control style:
-          up arrow.
+          <var>DrawFrameControl</var> scrollbar control style: up arrow.
         </short>
         <descr/>
         <seealso/>
@@ -1051,8 +1005,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_INACTIVE">
         <short>
-          <var>DrawFrameControl</var> control state:
-          inactive (grayed).
+          <var>DrawFrameControl</var> control state: inactive (grayed).
         </short>
         <descr/>
         <seealso/>
@@ -1060,8 +1013,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_PUSHED">
         <short>
-          <var>DrawFrameControl</var> button control state:
-          button pushed.
+          <var>DrawFrameControl</var> button control state: button pushed.
         </short>
         <descr/>
         <seealso/>
@@ -1069,8 +1021,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_CHECKED">
         <short>
-          <var>DrawFrameControl</var> button control state:
-          button checked.
+          <var>DrawFrameControl</var> button control state: button checked.
         </short>
         <descr/>
         <seealso/>
@@ -1078,8 +1029,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_TRANSPARENT">
         <short>
-          <var>DrawFrameControl</var> control style:
-          transparent (title bar...).
+          <var>DrawFrameControl</var> control style: transparent (title bar...).
         </short>
         <descr/>
         <seealso/>
@@ -1087,8 +1037,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_HOT">
         <short>
-          <var>DrawFrameControl</var> scrollbar control state:
-          button hot-tracked.
+          <var>DrawFrameControl</var> scrollbar control state: button hot-tracked.
         </short>
         <descr/>
         <seealso/>
@@ -1096,8 +1045,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_ADJUSTRECT">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          exclude frame.
+          <var>DrawFrameControl</var> button control style: exclude frame.
         </short>
         <descr/>
         <seealso/>
@@ -1105,8 +1053,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_FLAT">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          flat.
+          <var>DrawFrameControl</var> button control style: flat.
         </short>
         <descr/>
         <seealso/>
@@ -1114,8 +1061,7 @@
       <!-- constant Visibility: default -->
       <element name="DFCS_MONO">
         <short>
-          <var>DrawFrameControl</var> button control style:
-          monochrome border.
+          <var>DrawFrameControl</var> button control style: monochrome border.
         </short>
         <descr/>
         <seealso/>
@@ -2619,7 +2565,7 @@
       <!-- constant Visibility: default -->
       <element name="BDR_SUNKEN">
         <short>
-          Indicates whether a sunken  border (inner or outer) is in use for a control.
+          Indicates whether a sunken border (inner or outer) is in use for a control.
         </short>
         <descr/>
         <seealso/>
@@ -11794,7 +11740,7 @@
         <short>Represents the sources or dispositions for clipboard data.</short>
         <descr>
           <p>
-            Used for platforms / window  managers / desktop environments that support more than on clipboard. It appears to be inherently tied to the ICCCM protocol developed by  freedesktop.org. Values in the enumeration are used in widgetset classes as an index to access the different clipboard storages.
+            Used for platforms / window managers / desktop environments that support more than on clipboard. It appears to be inherently tied to the ICCCM protocol developed by freedesktop.org. Values in the enumeration are used in widgetset classes as an index to access the different clipboard storages.
           </p>
         </descr>
         <seealso/>
@@ -12941,7 +12887,7 @@
         </short>
         <descr>
           <p>
-            Values passed in the arguments to the routine are Integer types. Values in nNumber and nNumerator are cast to Int64 values for the multiplication operation.  MathRound is called to ensure that the result for the division operation is rounded for the Int64 type, and is cast to the Integer type used in the return value.
+            Values passed in the arguments to the routine are Integer types. Values in nNumber and nNumerator are cast to Int64 values for the multiplication operation. MathRound is called to ensure that the result for the division operation is rounded for the Int64 type, and is cast to the Integer type used in the return value.
           </p>
           <p>
             When nNumerator and nDenominator have the same value, the return value is set to nNumber. The return value is -1 if the value in nDenominator is 0 (zero).
