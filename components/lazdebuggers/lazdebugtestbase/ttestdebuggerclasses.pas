@@ -101,14 +101,13 @@ type
                        const AThreadId: Integer;
                        const AStackFrame: Integer
                       );
-    constructor Create(AOwnerWatch: TWatch);
+    constructor Create(AOwnerWatch: TWatch); override;
   end;
 
   { TTestWatchValueList }
 
   TTestWatchValueList = class(TWatchValueList)
   protected
-    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
     function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; override;
   end;
 
@@ -516,12 +515,6 @@ begin
 end;
 
 { TTestWatchValueList }
-
-function TTestWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
-begin
-  Result := TTestWatchValue.Create(Watch);
-  Result.Assign(AnEntry);
-end;
 
 function TTestWatchValueList.CreateEntry(const AThreadId: Integer;
   const AStackFrame: Integer): TWatchValue;
