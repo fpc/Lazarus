@@ -62,7 +62,7 @@
         </short>
         <descr>
           <p>
-            <var>IsEqual</var> is a <var>Boolean</var> function used to compare help query items. IsEqual compares the current class instance to the item specified in QueryItem by calling the AsString method for each item. The return value is True when the string representation for the help query items are the same.
+            <var>IsEqual</var> is a <var>Boolean</var> function used to compare help query items. IsEqual compares the current class instance to the item specified in QueryItem by calling the AsString method for each item. The return value is <b>True</b> when the string representation for the help query items are the same.
           </p>
         </descr>
         <seealso>
@@ -70,7 +70,7 @@
         </seealso>
       </element>
       <element name="THelpQueryItem.IsEqual.Result">
-        <short>True when the help query items are the same.</short>
+        <short><b>True</b> when the help query items are the same.</short>
       </element>
       <element name="THelpQueryItem.IsEqual.QueryItem">
         <short>Help query item compared to the current class instance.</short>
@@ -138,7 +138,7 @@
         </short>
         <descr>
           <p>
-            <var>TPascalHelpContextList</var> is a <var>THelpQueryItem</var> descendant used to access and maintain a list of Pascal help contexts.  TPascalHelpContextList provides methods used to add, insert, and compare Pascal help contexts in the list. Properties are provided to determine the number of items in the list, and to access individual TPascalHelpContext instances in the list.
+            <var>TPascalHelpContextList</var> is a <var>THelpQueryItem</var> descendant used to access and maintain a list of Pascal help contexts. TPascalHelpContextList provides methods used to add, insert, and compare Pascal help contexts in the list. Properties are provided to determine the number of items in the list, and to access individual TPascalHelpContext instances in the list.
           </p>
         </descr>
         <seealso>
@@ -229,7 +229,7 @@
         </seealso>
       </element>
       <element name="TPascalHelpContextList.IsEqual.Result">
-        <short>True the lists are equivalent.</short>
+        <short><b>True</b> the lists are equivalent.</short>
       </element>
       <element name="TPascalHelpContextList.IsEqual.QueryItem">
         <short>List of help contexts compared in the method.</short>
@@ -453,7 +453,7 @@
         <seealso/>
       </element>
       <element name="THelpNode.URLValid.Result">
-        <short>True if the URL was provided to the constructor for the help node.</short>
+        <short><b>True</b> if the URL was provided to the constructor for the help node.</short>
       </element>
 
       <element name="THelpNode.IDValid">
@@ -464,7 +464,7 @@
         <seealso/>
       </element>
       <element name="THelpNode.IDValid.Result">
-        <short>True if the ID was provided to the constructor for the help node.</short>
+        <short><b>True</b> if the ID was provided to the constructor for the help node.</short>
       </element>
 
       <element name="THelpNode.ContextValid">
@@ -476,7 +476,7 @@
       </element>
       <element name="THelpNode.ContextValid.Result">
         <short>
-          True if the help context was provided to the constructor for the help node.
+          <b>True</b> if the help context was provided to the constructor for the help node.
         </short>
       </element>
 
@@ -645,7 +645,7 @@
 
       <element name="THelpNodeQueryList.Add">
         <short>
-          Adds the specified help node, node query, and query item  to the Items in the list.
+          Adds the specified help node, node query, and query item to the Items in the list.
         </short>
         <descr/>
         <seealso/>
@@ -665,7 +665,7 @@
 
       <element name="THelpNodeQueryList.Delete">
         <short>
-          Deletes the help node  query at the specified ordinal position in the list.
+          Deletes the help node query at the specified ordinal position in the list.
         </short>
         <descr/>
         <seealso/>
@@ -781,7 +781,7 @@
         <seealso/>
       </element>
       <element name="THelpDBISourceFile.FileMatches.Result">
-        <short>True when the file name matches the Filename property.</short>
+        <short><b>True</b> when the file name matches the Filename property.</short>
       </element>
       <element name="THelpDBISourceFile.FileMatches.AFilename">
         <short>File name compared to the current class instance.</short>
@@ -1030,7 +1030,7 @@
         <short>Ensures that the LCL Help system has been initialized.</short>
         <descr>
           <p>
-            Calls CreateLCLHelpSystem if HelpDatabases has not been assigned. HelpDatabases, HelpManager, and HelpViewers are initialized when the LCL Help system is set up  in the Lazarus IDE.
+            Calls CreateLCLHelpSystem if HelpDatabases has not been assigned. HelpDatabases, HelpManager, and HelpViewers are initialized when the LCL Help system is set up in the Lazarus IDE.
           </p>
           <p>
             Sets Databases to the value in HelpDatabases.
@@ -1131,7 +1131,7 @@
       </element>
 
       <element name="THelpDatabase.ShowHelpFile">
-        <short>Displays a help topic with the specified  file name.</short>
+        <short>Displays a help topic with the specified file name.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1162,7 +1162,7 @@
         <seealso/>
       </element>
       <element name="THelpDatabase.SupportsMimeType.Result">
-        <short>True when the MIME type is in the list of supported MIME types.</short>
+        <short><b>True</b> when the MIME type is in the list of supported MIME types.</short>
       </element>
       <element name="THelpDatabase.SupportsMimeType.AMimeType">
         <short>MIME type to locate in the list of supported MIME types.</short>
@@ -1542,7 +1542,7 @@
 
       <element name="THelpDatabases.Count">
         <short>
-          \Gets the number of registered help database instances in the Items property.
+          Gets the number of registered help database instances in the Items property.
         </short>
         <descr/>
         <seealso/>
@@ -1772,7 +1772,11 @@
 
       <element name="THelpDatabases.SubstituteMacros">
         <short>Used to substitute macros.</short>
-        <descr>Always returns True in THelpDatabases.</descr>
+        <descr>
+          <p>
+            Always returns <b>True</b> in THelpDatabases.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="THelpDatabases.SubstituteMacros.Result">
@@ -2720,7 +2724,7 @@
         </short>
         <descr>
           <p>
-            <var>URLFilenameIsAbsolute</var> is a <var>Boolean</var> function used to determine if the URL specified in URLPath represents an absolute file. URLFilenameIsAbsolute calls URLPathToFilename to get the file name used in the URL. The return value is determined by calling FilenameIsAbsolute for the file name. The return value is True when the path to the file does <b>not</b> require resolution of "<b>.</b>" or "<b>..</b>" relative path markers.
+            <var>URLFilenameIsAbsolute</var> is a <var>Boolean</var> function used to determine if the URL specified in URLPath represents an absolute file. URLFilenameIsAbsolute calls URLPathToFilename to get the file name used in the URL. The return value is determined by calling FilenameIsAbsolute for the file name. The return value is <b>True</b> when the path to the file does <b>not</b> require resolution of "<b>.</b>" or "<b>..</b>" relative path markers.
           </p>
         </descr>
         <seealso>
@@ -2729,7 +2733,7 @@
         </seealso>
       </element>
       <element name="URLFilenameIsAbsolute.Result">
-        <short>True when the URL does not have relative file path information.</short>
+        <short><b>True</b> when the URL does not have relative file path information.</short>
       </element>
       <element name="URLFilenameIsAbsolute.URLPath">
         <short>URL examined in the function.</short>
@@ -2848,7 +2852,7 @@
         <seealso/>
       </element>
       <element name="IsFileURL.Result">
-        <short>True when 'file:' is included in the URL.</short>
+        <short><b>True</b> when 'file:' is included in the URL.</short>
       </element>
       <element name="IsFileURL.URL">
         <short>URL examined in the routine.</short>
