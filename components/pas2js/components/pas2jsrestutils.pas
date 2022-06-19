@@ -25,7 +25,8 @@ Type
   Public
     Procedure GetResourceList(aConnection : TSQLDBRestConnection; aList : TStrings; {%H-}aScheme : String = '');
     Procedure GetConnectionList(aConnection : TSQLDBRestConnection; aList : TStrings; {%H-}aScheme : String = '');
-    Procedure UpdateFieldDefs(aConnection : TSQLDBRestConnection; aResource : String; aFieldDefs : TFieldDefs);
+    function UpdateFieldDefs(aConnection: TSQLDBRestConnection; aResource: String;
+      aFieldDefs: TFieldDefs): Integer;
     Procedure GetDatasetData(aDataset : TSQLDBRestDataset; aBuf : TBufDataset);
     Function GetFullResourceName(aDataset : TSQLDBRestDataset) : String;
     Property OnLog : TLogEvent read FOnLog write FOnLog;
@@ -181,17 +182,21 @@ function TPas2JSRestUtils.GetFieldType(aType: String): TFieldType;
 begin
   Case lowerCase(aType) of
     'text' : Result:=ftString;
-    'date' : Result:=ftDateTime;
+    'datetime' : result:=ftDateTime;
+    'date' : Result:=ftDate;
+    'time' : Result:=ftTime;
     'float' : Result:=ftFloat;
     'bigint' : Result:=ftLargeInt;
     'int' : Result:=ftInteger;
+    'blob' : Result:=ftBlob;
+    'bool' : Result:=ftBoolean;
   else
     Result:=ftString;
   end;
 end;
 
-procedure TPas2JSRestUtils.UpdateFieldDefs(aConnection: TSQLDBRestConnection;
-  aResource: String; aFieldDefs: TFieldDefs);
+Function TPas2JSRestUtils.UpdateFieldDefs(aConnection: TSQLDBRestConnection;
+  aResource: String; aFieldDefs: TFieldDefs) : Integer;
 Var
   Buf : TBufDataset;
   aName : TField;
@@ -200,9 +205,11 @@ Var
   aRequired : TField;
 
 begin
+  Result:=0;
   Buf:=TLocalBufDataset.Create(Self);
   try
-    LoadDataset(Buf,AConnection,aConnection.MetaDataResourceName+'/'+aResource);
+    if not LoadDataset(Buf,AConnection,aConnection.MetaDataResourceName+'/'+aResource) then
+       Exit(-1);
     Buf.Open;
     aName:=Buf.FieldByName('name');
     aType:=Buf.FieldByName('type');
@@ -211,7 +218,11 @@ begin
     aFieldDefs.BeginUpdate;
     While not Buf.EOF do
       begin
-      aFieldDefs.Add(aName.AsString,GetFieldType(aType.AsString),aMaxLen.asInteger,aRequired.AsBoolean);
+      if aFieldDefs.Find(aName.AsString)=nil then
+        begin
+        aFieldDefs.Add(aName.AsString,GetFieldType(aType.AsString),aMaxLen.asInteger,aRequired.AsBoolean);
+        Inc(Result);
+        end;
       Buf.Next;
       end;
   finally
