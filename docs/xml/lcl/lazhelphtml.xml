@@ -9,10 +9,10 @@
     <module name="LazHelpHTML">
       <short>
         Contains types and classes used to integrate and access help files in HTML format.
-        </short>
+      </short>
       <descr>
         <p>
-          <file>lazhelphtml.pas</file> contains types and classes used to integrate and access help files in HTML format (.htm or .html file extensions). It registers <var>THTMLHelpDatabase</var> and  <var>THTMLBrowserHelpViewer</var> components on the <b>System</b> tab in the Lazarus IDE component palette.
+          <file>lazhelphtml.pas</file> contains types and classes used to integrate and access help files in HTML format (.htm or .html file extensions). It registers <var>THTMLHelpDatabase</var> and <var>THTMLBrowserHelpViewer</var> components on the <b>System</b> tab in the Lazarus IDE component palette.
         </p>
       </descr>
 
@@ -89,7 +89,7 @@
         </seealso>
       </element>
       <element name="THTMLHelpDatabase.IsBaseURLStored.Result">
-        <short>True when the property value is stored.</short>
+        <short><b>True</b> when the property value is stored.</short>
       </element>
 
       <element name="THTMLHelpDatabase.SetBaseURL">
@@ -118,7 +118,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for the class instance.  Create calls the inherited method using the value in <var>TheOwner</var> as the owner of the class instance. Create calls <var>AddSupportedMimeType</var> to ensure that the <b>'text/html'</b> MIME type is included the MIME types used for files in the HTML database.
+            <var>Create</var> is the overridden constructor for the class instance. Create calls the inherited method using the value in <var>TheOwner</var> as the owner of the class instance. Create calls <var>AddSupportedMimeType</var> to ensure that the <b>'text/html'</b> MIME type is included the MIME types used for files in the HTML database.
           </p>
           <p>
             Use Free to destroy instances of the HTML help database.
@@ -162,7 +162,7 @@
             Title contains the value displayed in the title bar for the help viewer.
           </p>
           <p>
-            The return value indicates the status of the requested operation, and contains the value shrSuccess when  the HTML help viewer successfully displays the topic for the help context. One of the following enumeration values from TShowHelpResult may be returned under certain circumstances:
+            The return value indicates the status of the requested operation, and contains the value shrSuccess when the HTML help viewer successfully displays the topic for the help context. One of the following enumeration values from TShowHelpResult may be returned under certain circumstances:
           </p>
           <dl>
             <dt>
@@ -336,7 +336,7 @@
         </short>
         <descr>
           <p>
-            <var>Load</var> is an overridden procedure in THTMLHelpDatabase, and calls the inherited method. Load ensures that the value for the <var>BaseURL</var> setting in Storage is used  as the value for the BaseURL property. If the setting does not exist in Storage, the value from <var>DefaultBaseURL</var> is used in BaseURL.
+            <var>Load</var> is an overridden procedure in THTMLHelpDatabase, and calls the inherited method. Load ensures that the value for the <var>BaseURL</var> setting in Storage is used as the value for the BaseURL property. If the setting does not exist in Storage, the value from <var>DefaultBaseURL</var> is used in BaseURL.
           </p>
           <p>
             Use Save to store the value from BaseURL to the configuration storage.
@@ -385,7 +385,7 @@
         </short>
         <descr>
           <p>
-            <var>AutoRegister</var> is a published <var>Boolean</var> property which indicates if the HTML help database is automatically registered at run-time. Changing the value in AutoRegister causes the RegisterSelf or UnregisterSelf methods to be called. RegisterSelf is called when the property is True; otherwise UnregisterSelf is called.
+            <var>AutoRegister</var> is a published <var>Boolean</var> property which indicates if the HTML help database is automatically registered at run-time. Changing the value in AutoRegister causes the RegisterSelf or UnregisterSelf methods to be called. RegisterSelf is called when the property is <b>True</b>; otherwise UnregisterSelf is called.
           </p>
         </descr>
         <seealso>
@@ -537,7 +537,7 @@
             ErrMsg is a variable parameter updated to describe an error condition occurring in the return value for the method, or an empty string when an error condition is not encountered.
           </p>
           <p>
-            When Node contains an invalid URL, the value in ErrMsg is set to 'THTMLBrowserHelpViewer.ShowNode Node.URLValid=false'. If Node has an empty URL, ErrMsg is set to the value 'THTMLBrowserHelpViewer.ShowNode Node.URL empty'. ErrMsg  may contain a constant value for other specific error conditions, such as:
+            When Node contains an invalid URL, the value in ErrMsg is set to 'THTMLBrowserHelpViewer.ShowNode Node.URLValid=false'. If Node has an empty URL, ErrMsg is set to the value 'THTMLBrowserHelpViewer.ShowNode Node.URL empty'. ErrMsg may contain a constant value for other specific error conditions, such as:
           </p>
           <ul>
             <li>
@@ -657,7 +657,7 @@
         </short>
         <descr>
           <p>
-            <var>OnFindDefaultBrowser</var> is a <var>TOnFindDefaultBrowser</var> property that represents the event handler  to find the default browser for the help viewer.
+            <var>OnFindDefaultBrowser</var> is a <var>TOnFindDefaultBrowser</var> property that represents the event handler to find the default browser for the help viewer.
           </p>
         </descr>
         <seealso>
@@ -724,7 +724,7 @@
         </short>
         <descr>
           <p>
-            <var>AutoRegister</var> is a published <var>Boolean</var> property in THTMLBrowserHelpViewer. AutoRegister determines whether the RegisterSelf or UnregisterSelf method for the help viewer is called at run-time. RegisterSelf is called when AutoRegister contains True; otherwise UnregisterSelf is called.
+            <var>AutoRegister</var> is a published <var>Boolean</var> property in THTMLBrowserHelpViewer. AutoRegister determines whether the RegisterSelf or UnregisterSelf method for the help viewer is called at run-time. RegisterSelf is called when AutoRegister contains <b>True</b>; otherwise UnregisterSelf is called.
           </p>
         </descr>
         <seealso>
