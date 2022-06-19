@@ -2,10 +2,10 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    LResources
-  ====================================================================
--->
+    ====================================================================
+      LResources
+    ====================================================================
+    -->
     <module name="LResources">
       <short>
         Maintains a global list of Lazarus resources, and provides methods and types used to stream components.
@@ -49,7 +49,8 @@
 
       <!-- constant Visibility: default -->
       <element name="LRSComment">
-        <short>Text of the "automatically generated..." warning in resource files.
+        <short>
+          Text of the "automatically generated..." warning in resource files.
         </short>
         <descr/>
         <seealso/>
@@ -283,7 +284,10 @@
       <!-- procedure Visibility: private -->
       <element name="TLazarusResourceStream.Initialize">
         <short>Initializes the resource descriptor.</short>
-        <descr>The descriptor must already exist.
+        <descr>
+          <p>
+            The descriptor must already exist.
+          </p>
         </descr>
         <errors>EResNotFound if the resource does not yet exist.
         </errors>
@@ -347,9 +351,13 @@
       <!-- function Visibility: public -->
       <element name="TLazarusResourceStream.Write">
         <short>Raises an error on an attempt to write to the stream.</short>
-        <descr>The stream data must be provided by the implemented constructors and methods.
+        <descr>
+          <p>
+            The stream data must be provided by the implemented constructors and methods.
+          </p>
         </descr>
-        <errors>EStreamError SCantWriteResourceStreamError.
+        <errors>
+          Raises a EStreamError exception with the message in SCantWriteResourceStreamError.
         </errors>
         <seealso/>
       </element>
@@ -451,7 +459,8 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TLRSORStackItem">
-        <short>Stack item for the <link id="TLRSObjectReader">nested resource reader</link>.
+        <short>
+          Stack item for the <link id="TLRSObjectReader">nested resource reader</link>.
         </short>
         <descr/>
         <seealso/>
@@ -492,7 +501,10 @@
       <!-- object Visibility: default -->
       <element name="TLRSObjectReader">
         <short>Reader for resource streams.</short>
-        <descr>Uses an stack for reading nested objects.
+        <descr>
+          <p>
+            Uses an stack for reading nested objects.
+          </p>
         </descr>
         <errors/>
         <seealso/>
@@ -579,7 +591,10 @@
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.Pop">
         <short>Pop an item, or decrement its PushCount.</short>
-        <descr>Called on EndList (vaNull) encountered
+        <descr>
+          <p>
+            Called on EndList (vaNull) encountered
+          </p>
         </descr>
         <errors/>
         <seealso/>
@@ -648,7 +663,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadValue">
-        <short>Reads the next ValueType. Pops or pushes a stack item if required (for list or collection).</short>
+        <short>
+          Reads the next ValueType. Pops or pushes a stack item if required (for list or collection).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -660,7 +677,8 @@
       <element name="TLRSObjectReader.BeginRootComponent">
         <short>Reads the filer signature from the input.</short>
         <descr/>
-        <errors>EReadError 'Invalid Filer Signature' on filer signature mismatch.
+        <errors>
+          EReadError 'Invalid Filer Signature' on filer signature mismatch.
         </errors>
         <seealso/>
       </element>
@@ -2026,7 +2044,7 @@
             <var>Create</var> is the constructor for the class instance.
           </p>
           <p>
-            Create allocates a 4K buffer used to store the values read from Stream. The buffer is examined in the methods for the class. It initializes internal members used in the parser implementation to their default  values. The internal buffer is loaded with the first 4K block of values in Stream, and the NextToken method is called to position the parser on the first token in the buffered values.
+            Create allocates a 4K buffer used to store the values read from Stream. The buffer is examined in the methods for the class. It initializes internal members used in the parser implementation to their default values. The internal buffer is loaded with the first 4K block of values in Stream, and the NextToken method is called to position the parser on the first token in the buffered values.
           </p>
         </descr>
         <seealso/>
