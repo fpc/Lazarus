@@ -2,6 +2,9 @@ unit stub.bootstraptablewidget;
 
 interface
 
+{$mode objfpc}
+{$h+}
+
 uses
   Stub.WebWidget, SysUtils, Classes, DB, Stub.JS;
 
