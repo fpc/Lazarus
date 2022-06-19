@@ -83,7 +83,7 @@
         </short>
         <descr>
           <p>
-            <var>ButtonPanel</var> is a <var>TButtonPanel</var> member that contains the buttons appropriate for the kind of Lazarus dialog. ButtonPanel is configured by default to display and respond to Ok and Cancel buttons in the Initialize method. Specialized  dialog types can alter the default buttons and their actions.
+            <var>ButtonPanel</var> is a <var>TButtonPanel</var> member that contains the buttons appropriate for the kind of Lazarus dialog. ButtonPanel is configured by default to display and respond to Ok and Cancel buttons in the Initialize method. Specialized dialog types can alter the default buttons and their actions.
           </p>
         </descr>
         <seealso>
@@ -263,13 +263,13 @@
         </short>
         <descr>
           <p>
-            <var>HandleCloseQuery</var> is a procedure used as the event handler for the <var>OnCloseQuery</var> event notification.  It is assigned in the Initialize method.
+            <var>HandleCloseQuery</var> is a procedure used as the event handler for the <var>OnCloseQuery</var> event notification. It is assigned in the Initialize method.
           </p>
           <p>
-            HandleCloseQuery ensures that the Lazarus dialog form can in fact be closed, and updates the value in FileName when needed. It sets the value in the CanClose parameter to False when the modal result for the dialog form is mrCancel. No additional actions are performed in the method if the dialog form cannot be closed.
+            HandleCloseQuery ensures that the Lazarus dialog form can in fact be closed, and updates the value in FileName when needed. It sets the value in the CanClose parameter to <b>False</b> when the modal result for the dialog form is mrCancel. No additional actions are performed in the method if the dialog form cannot be closed.
           </p>
           <p>
-            Additional actions are performed in the method to update FileName and CanClose based on the TLazFileDialogKind value used in the dialog form. For Save dialogs (where Kind is ldkSaveDesktop or ldkSavePDA), the value in the SaveEdit control cannot contain be an empty string (<b>''</b>). No additional actions are performed in the method when SaveEdit is empty.  Otherwise, the values from the selected item in ShellTreeView, PathDelimite, and SaveEdit are combined and assigned to FileName. CanClose is also set to True.
+            Additional actions are performed in the method to update FileName and CanClose based on the TLazFileDialogKind value used in the dialog form. For Save dialogs (where Kind is ldkSaveDesktop or ldkSavePDA), the value in the SaveEdit control cannot contain be an empty string (<b>''</b>). No additional actions are performed in the method when SaveEdit is empty. Otherwise, the values from the selected item in ShellTreeView, PathDelimite, and SaveEdit are combined and assigned to FileName. CanClose is also set to True.
           </p>
           <p>
             For Open dialogs (where Kind is ldkOpenDesktop or ldkOpenPDA), the selected item in ShellListView cannot be unassigned (<b>Nil</b>). No additional actions are performed in the method when the selected item in ShellListView is unassigned. Otherwise, the value in FileName is set to the path and file name for the selected item in ShellListView. CanClose is also set to True.
@@ -395,7 +395,7 @@
         </short>
         <descr>
           <p>
-            <var>DoExecute</var> is an overridden <var>Boolean</var> function used to execute the Lazarus File Open dialog. The return value is <b>True</b> when the ShowModal method in the dialog form is a value other than <var>mrCancel</var>. DoExecute also updates the FileName member to reflect the value  returned on the dialog form.
+            <var>DoExecute</var> is an overridden <var>Boolean</var> function used to execute the Lazarus File Open dialog. The return value is <b>True</b> when the ShowModal method in the dialog form is a value other than <var>mrCancel</var>. DoExecute also updates the FileName member to reflect the value returned on the dialog form.
           </p>
         </descr>
         <seealso>
@@ -406,7 +406,7 @@
       </element>
       <element name="TLazOpenDialog.DoExecute.Result">
         <short>
-          True when the file open dialog was not cancelled during execution.
+          <b>True</b> when the file open dialog was not cancelled during execution.
         </short>
       </element>
 
