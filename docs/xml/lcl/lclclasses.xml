@@ -23,7 +23,7 @@
         </short>
         <descr>
           <p>
-            <file>SysUtils</file> has a <var>LongRec</var> structure which uses an unsigned <var>Word</var> type for <var>Lo</var> and <var>Hi</var>. <var>LazLongRec</var>  provides a similar record with signed <var>SmallInt</var> members.
+            <file>SysUtils</file> has a <var>LongRec</var> structure which uses an unsigned <var>Word</var> type for <var>Lo</var> and <var>Hi</var>. <var>LazLongRec</var> provides a similar record with signed <var>SmallInt</var> members.
           </p>
         </descr>
         <seealso></seealso>
@@ -73,7 +73,7 @@
         <short>This method allows descendants to override the WidgetSetClass.</short>
         <descr>
           <p>
-            <var>GetWSComponentClass</var> is a <var>TWSLCLComponentClass</var> class function which allows descendants to override the <var>WidgetSetClass</var> class type  used to create instances of the component. When WidgetSetClass has not been assigned (contains Nil), the return value is set to the <var>TWSLCLComponent</var> type.
+            <var>GetWSComponentClass</var> is a <var>TWSLCLComponentClass</var> class function which allows descendants to override the <var>WidgetSetClass</var> class type used to create instances of the component. When WidgetSetClass has not been assigned (contains Nil), the return value is set to the <var>TWSLCLComponent</var> type.
           </p>
         </descr>
         <seealso>
@@ -113,7 +113,7 @@
       <!-- function Visibility: public -->
       <element name="TLCLComponent.NewInstance">
         <short>
-          Creates and registers a new instance of the class, and initializes the  WidgetSetClass property.
+          Creates and registers a new instance of the class, and initializes the WidgetSetClass property.
         </short>
         <descr/>
         <seealso>
@@ -281,7 +281,7 @@
       <element name="TLCLReferenceComponent.HandleAllocated" link="#lcl.lclclasses.TLCLReferenceComponent.ReferenceAllocated"/>
 
       <element name="TLCLReferenceComponent.ReferenceAllocated">
-        <short>If True, a Reference has been allocated for this component.</short>
+        <short>If <b>True</b>, a Reference has been allocated for this component.</short>
       </element>
 
     </module>
