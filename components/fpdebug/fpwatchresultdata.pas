@@ -341,7 +341,7 @@ begin
     EntryRes := AnResData.CreateArrayValue(datUnknown, Cnt, LowBnd);
   end
   else
-  if (sfDynArray in ti.Flags) or (LowBnd = 0) then begin // LowBnd = 0 => there is some bug, reporting some dyn arrays as stat.
+  if (sfDynArray in ti.Flags) and (LowBnd = 0) then begin // LowBnd = 0 => there is some bug, reporting some dyn arrays as stat.
     EntryRes := AnResData.CreateArrayValue(datDynArray, Cnt, 0);
     if AnFpValue.FieldFlags * [svfInteger, svfCardinal] <> [] then
       Addr := AnFpValue.AsCardinal

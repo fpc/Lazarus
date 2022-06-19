@@ -36,6 +36,7 @@ type
      ehIgnPointerDerefData,  // Ignore if a pointer has deref data or not
      ehIgnKind,           // Ignore skSimple, ....
      ehIgnKindPtr,        // Ignore skSimple, ONLY if got kind=skPointer
+     ehIgnKindArrayType,  // Ignore dyn vs stat array
      ehIgnTypeName,       // Ignore the typename
      ehIgnTypeNameInData, // Ignore any appearance of typename in data
      ehMatchTypeName,     // The typename is a regex
@@ -88,6 +89,7 @@ type
     function IgnData(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function IgnKind(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function IgnKindPtr(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
+    function IgnKindArrayType(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function IgnTypeName(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function MatchTypeName(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
 
@@ -204,6 +206,7 @@ type
     WatchTpInf: TDBGType; //deprecated;
     Expectation: TWatchExpectationResult;
     HasTypeInfo: Boolean;
+    IsNested: Boolean;
   end;
 
   { TWatchExpectationList }
@@ -242,7 +245,7 @@ type
     function TestFalse(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 
     function CheckResult(AnWatchExp: TWatchExpectation): Boolean;
-    function CheckData(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckData(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String; AnIsNested: Boolean = True): Boolean; virtual;
     function VerifyDebuggerState: Boolean; virtual;
     function VerifySymType(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function VerifyTypeName(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -892,6 +895,12 @@ begin
   Result := Self.AddFlag(ehIgnKindPtr, ASymTypes);
 end;
 
+function TWatchExpectationResult.IgnKindArrayType(ASymTypes: TSymbolTypes
+  ): TWatchExpectationResult;
+begin
+  Result := Self.AddFlag(ehIgnKindArrayType, ASymTypes);
+end;
+
 function TWatchExpectationResult.IgnTypeName(ASymTypes: TSymbolTypes
   ): TWatchExpectationResult;
 begin
@@ -1421,7 +1430,7 @@ begin
       if ehNotImplementedData in ehf then
         AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (Data)';
 
-      Result := CheckData(Context, AnIgnoreRsn);
+      Result := CheckData(Context, AnIgnoreRsn, False);
     finally
       FTest.TestBaseName := CurBaseName;
     end;
@@ -1429,8 +1438,9 @@ begin
 end;
 
 function TWatchExpectationList.CheckData(AContext: TWatchExpTestCurrentData;
-  AnIgnoreRsn: String): Boolean;
+  AnIgnoreRsn: String; AnIsNested: Boolean): Boolean;
 begin
+  AContext.IsNested := AnIsNested;
   case AContext.Expectation.ExpResultKind of
     rkMatch:       Result := CheckResultMatch(AContext, AnIgnoreRsn);
     rkInteger:     Result := CheckResultNum(AContext, False, AnIgnoreRsn);
@@ -2008,10 +2018,25 @@ var
   v, n: String;
   parsed: array of String;
   i, e: Integer;
+  ehf: TWatchExpErrorHandlingFlags;
+  PrePrint: Boolean;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
+    ehf := AContext.Expectation.ExpErrorHandlingFlags[Compiler.SymbolType];
+
+    PrePrint := AContext.WatchRes.ValueKind = rdkPrePrinted;
+
+    if (not (ehIgnKindArrayType in ehf)) and
+       (not (PrePrint and AContext.IsNested))
+    then begin
+      TestTrue('ValueKind is array', AContext.WatchRes.ValueKind = rdkArray, AContext, AnIgnoreRsn);
+      case AContext.Expectation.ExpResultKind of
+        rkStatArray: TestTrue('Is a static array', AContext.WatchRes.ArrayType = datStatArray, AContext, AnIgnoreRsn);
+        rkDynArray:  TestTrue('Is a dynamic array', AContext.WatchRes.ArrayType = datDynArray, AContext, AnIgnoreRsn);
+      end;
+    end;
 
     v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
@@ -2039,12 +2064,19 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     SubContext := AContext;
     for i := 0 to min(e, length(Expect.ExpSubResults)) - 1 do begin
       FTest.TestBaseName := n + ' Idx='+IntToStr(i);
-      SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed[i]);
+      AContext.WatchRes.SetSelectedIndex(i);
+
+      if PrePrint then
+        SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed[i])
+      else
+        SubContext.WatchRes := AContext.WatchRes.SelectedEntry;
       SubContext.Expectation := Expect.ExpSubResults[i];
 
-      Result := CheckData(SubContext, AnIgnoreRsn);
+      // if "not preprint" do treat this as non-nested
+      Result := CheckData(SubContext, AnIgnoreRsn, PrePrint);
 
-      FreeAndNil(SubContext.WatchRes);
+      if PrePrint then
+        FreeAndNil(SubContext.WatchRes);
     end;
     FTest.TestBaseName := n;
   end;

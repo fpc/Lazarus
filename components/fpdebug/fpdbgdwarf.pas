@@ -5551,7 +5551,7 @@ begin
 end;
 
 function TFpSymbolDwarfTypeArray.GetFlags: TDbgSymbolFlags;
-  function IsDynSubRange(m: TFpSymbolDwarf): Boolean;
+  function IsDynSubRange(m: TFpSymbolDwarf; lb: Int64): Boolean;
   begin
     Result := sfSubRange in m.Flags;
     if not Result then exit;
@@ -5559,8 +5559,11 @@ function TFpSymbolDwarfTypeArray.GetFlags: TDbgSymbolFlags;
       m := m.NestedTypeInfo;
     Result := m <> nil;
     if not Result then exit; // TODO: should not happen, handle error
-    Result := (TFpSymbolDwarfTypeSubRange(m).FHighBoundState = rfValue) // dynamic high bound // TODO:? Could be rfConst for locationExpr
-           or (TFpSymbolDwarfTypeSubRange(m).FHighBoundState = rfNotRead); // dynamic high bound (yet to be read)
+    // dynamic high bound (or yet to be read)
+    Result := (TFpSymbolDwarfTypeSubRange(m).FHighBoundState in [rfNotRead, rfValue, rfExpression]) and
+              ( (TFpSymbolDwarfTypeSubRange(m).FLowBoundState =  rfNotRead) or
+                (lb = 0)
+              );
   end;
 var
   m: TFpSymbol;
@@ -5571,7 +5574,7 @@ begin
     m := NestedSymbol[0];
     if (not m.GetValueBounds(nil, lb, hb)) or                // e.g. Subrange with missing upper bound
        (hb < lb) or
-       (IsDynSubRange(TFpSymbolDwarf(m)))
+       (IsDynSubRange(TFpSymbolDwarf(m), lb))
     then
       Result := Result + [sfDynArray]
     else
