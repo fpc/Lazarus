@@ -271,6 +271,7 @@ var
   src : TKeyCommandRelation;
   dst : TKeyCommandRelation;
   i   : integer;
+  nm  : string;
 begin
   xml := nil;
   dlg := TOpenDialog.Create(Self);
@@ -279,6 +280,8 @@ begin
     if not dlg.Execute then Exit;
     xml := TXMLConfig.Create(dlg.FileName);
     exp.DefineCommandCategories; // default Relations
+    nm := xml.GetValue('Name/Value','');
+    if nm = '' then nm := ExtractFileName(xml.FileName);
     exp.LoadFromXMLConfig(xml, 'KeyMapping/');
     for i:=0 to exp.RelationCount-1 do begin
       src := exp.Relations[i];
@@ -288,6 +291,7 @@ begin
         dst.ShortcutB := src.ShortcutB;
       end;
     end;
+    EditorOpts.KeyMappingScheme := Format(lisImported, [nm]);
     FillKeyMappingTreeView;
     fModified:=True;
     UpdateSchemeLabel;

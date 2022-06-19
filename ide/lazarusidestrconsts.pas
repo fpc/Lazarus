@@ -3051,6 +3051,7 @@ resourcestring
   lisThereAreNoConflictingKeys = 'There are no conflicting keys.';
   srkmEditForCmd = 'Edit keys of command';
   lisChooseAKey = 'Choose a key ...';
+  lisImported = '%s (imported)';
 
   //Commands
   srkmecLeft                  = 'Move cursor left';
