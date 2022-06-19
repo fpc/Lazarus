@@ -108,6 +108,7 @@ procedure TIDEPas2JSRestCommandHandler.CreateFieldDefs(Sender: TObject);
 
 Var
   DS : TSQLDBRestDataset;
+  aCount: Integer;
 
 begin
   DS:=GetDataset;
@@ -124,7 +125,14 @@ begin
     ShowMessage(rsNoResourceCannotCreateFieldDefs);
     Exit;
     end;
-  IDERestUtils.UpdateFieldDefs(DS.Connection,IDERestUtils.GetFullResourceName(DS),DS.FieldDefs);
+  aCount:=IDERestUtils.UpdateFieldDefs(DS.Connection,IDERestUtils.GetFullResourceName(DS),DS.FieldDefs);
+  if aCount=-1 then
+    ShowMessage(rsServerRequestFailedCannotCreateFieldDefs)
+  else if aCount=0 then
+    ShowMessage(rsCreateFieldDefsNoNew)
+  else
+    ShowMessage(Format(rsCreateFieldDefsCount,[aCount]))
+
 end;
 
 procedure TIDEPas2JSRestCommandHandler.ShowData(Sender: TObject);
