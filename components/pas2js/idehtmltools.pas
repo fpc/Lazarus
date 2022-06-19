@@ -55,6 +55,7 @@ Type
   Public
     class function GetDefaultHTMLDesignFile(aFile: TLazProjectFile): String;
     class function GetDefaultHTML2ClassFile(aFile: TLazProjectFile): String;
+    class function HTMLBaseDir: String;
   Public
     Constructor Create;
     Class Constructor Init;
@@ -353,8 +354,18 @@ begin
   FTagCache.Clear;
 end;
 
+class function TIDEHTMLTools.HTMLBaseDir: String;
+begin
+  Result:=LazarusIDE.ActiveProject.CustomData.Values[PJSProjectHTMLBaseDir];
+  if Result='' then
+    Result:=ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
+end;
+
+
 Initialization
   HTMLTools:=TIDEHTMLTools.Create;
+
+
 
 Finalization
   HTMLtools.Free;
