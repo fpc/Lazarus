@@ -11,7 +11,7 @@ LCLMemManager
 <descr>
 <p>
 <file>lclmemmanager.pas</file> contains classes and type used to define the base
-class for  various memory managers used in the Lazarus Component Library
+class for various memory managers used in the Lazarus Component Library
 (<b>LCL</b>) and its interfaces. An own memory manager is somewhat faster and
 makes debugging and profiling easier.
 </p>
