@@ -1939,7 +1939,7 @@ function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation;
 var
   Context: TFpDbgInfoCallContext;
 begin
-  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter);
+  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter, FCurrentProcess);
   Context.AddReference;
   InitializeCommand(TDbgControllerCallRoutineCmd.Create(self, FunctionAddress, Context));
   Result := Context;

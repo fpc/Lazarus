@@ -10,7 +10,7 @@ uses
   FpdMemoryTools,
   FpDbgDwarfDataClasses,
   FpDbgDwarf,
-  FpDbgClasses;
+  FpDbgClasses, FpErrorMessages;
 
 type
   { TFpSymbolDwarfFunctionResult }
@@ -28,8 +28,17 @@ type
   { TFpDbgInfoCallContext }
 
   TFpDbgInfoCallContext = class(TFpDbgAbstractCallContext)
+  private
+    FDbgProcess: TDbgProcess;
+    FLastError: TFpError;
   public
-    function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; ADbgProcess: TDbgProcess; AName: String = ''): TFpValue; virtual;
+    constructor Create(const ABaseContext: TFpDbgLocationContext;
+      AMemReader: TFpDbgMemReaderBase;
+      AMemConverter: TFpDbgMemConvertor;
+      ADbgProcess: TDbgProcess);
+    function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; AName: String = ''): TFpValue; virtual;
+    function AddParam(AParamIndex: Integer; AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+    property LastError: TFpError read FLastError;
   end;
 
 implementation
@@ -58,13 +67,21 @@ end;
 
 { TFpDbgInfoCallContext }
 
+constructor TFpDbgInfoCallContext.Create(
+  const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
+  AMemConverter: TFpDbgMemConvertor; ADbgProcess: TDbgProcess);
+begin
+  inherited Create(ABaseContext, AMemReader, AMemConverter);
+  FDbgProcess := ADbgProcess;
+end;
+
 function TFpDbgInfoCallContext.CreateParamSymbol(AParamIndex: Integer;
-  ASymbolType: TFpSymbol; ADbgProcess: TDbgProcess; AName: String): TFpValue;
+  ASymbolType: TFpSymbol; AName: String): TFpValue;
 var
   ParameterMemLocation: TFpDbgMemLocation;
   ParamSymbol: TFpSymbol;// TFpSymbolDwarfFunctionResult;
 begin
-  ParameterMemLocation := ADbgProcess.CallParamDefaultLocation(AParamIndex);
+  ParameterMemLocation := FDbgProcess.CallParamDefaultLocation(AParamIndex);
   if AName = '' then
     AName := ASymbolType.Name;
   ParamSymbol := TFpSymbolDwarfFunctionResult.Create(AName, ParameterMemLocation, ASymbolType.TypeInfo);
@@ -74,6 +91,22 @@ begin
     ParamSymbol.ReleaseReference;
   end;
   TFpValueDwarf(Result).Context := Self;
+end;
+
+function TFpDbgInfoCallContext.AddParam(AParamIndex: Integer;
+  AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+var
+  ParamSymbol: TFpValue;
+begin
+  Result := False;
+  ParamSymbol := CreateParamSymbol(AParamIndex, AParamSymbolType);
+  try
+    ParamSymbol.AsCardinal := AValue.AsCardinal;
+    Result := not IsError(ParamSymbol.LastError);
+    FLastError := ParamSymbol.LastError;
+  finally
+    ParamSymbol.ReleaseReference;
+  end;
 end;
 
 end.

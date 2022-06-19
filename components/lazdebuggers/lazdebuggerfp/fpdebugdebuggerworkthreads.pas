@@ -781,7 +781,7 @@ function TFpThreadWorkerEvaluate.DoWatchFunctionCall(
 var
   FunctionSymbolData, FunctionSymbolType, FunctionResultSymbolType,
   TempSymbol: TFpSymbol;
-  ParamSymbol, ExprParamVal: TFpValue;
+  ExprParamVal: TFpValue;
   ProcAddress: TFpDbgMemLocation;
   FunctionResultDataSize: TFpDbgValueSize;
   ParameterSymbolArr: array of TFpSymbol;
@@ -903,19 +903,15 @@ begin
 
     try
       for i := 0 to High(ParameterSymbolArr) do begin
-        ParamSymbol := CallContext.CreateParamSymbol(i, ParameterSymbolArr[i], FDebugger.FDbgController.CurrentProcess);
-        try
-          if (ASelfValue <> nil) and (i = 0) then
-            ParamSymbol.AsCardinal := ASelfValue.AsCardinal
-          else
-            ParamSymbol.AsCardinal := AParams.Items[i + ItemsOffs].ResultValue.AsCardinal;
-          if IsError(ParamSymbol.LastError) then begin
-            DebugLn('Internal error for arg %d ', [i]);
-            AnError := ParamSymbol.LastError;
-            exit;
-          end;
-        finally
-          ParamSymbol.ReleaseReference;
+        if (ASelfValue <> nil) and (i = 0) then
+          ExprParamVal := ASelfValue
+        else
+          ExprParamVal := AParams.Items[i + ItemsOffs].ResultValue;
+
+        if not CallContext.AddParam(i, ParameterSymbolArr[i], ExprParamVal) then begin
+          DebugLn('Internal error for arg %d ', [i]);
+          AnError := CallContext.LastError;
+          exit;
         end;
       end;
 
@@ -927,8 +923,7 @@ begin
         exit;
       end;
 
-      AResult := CallContext.CreateParamSymbol(-1, FunctionSymbolType,
-        FDebugger.FDbgController.CurrentProcess, FunctionSymbolData.Name);
+      AResult := CallContext.CreateParamSymbol(-1, FunctionSymbolType, FunctionSymbolData.Name);
       Result := AResult <> nil;
     finally
       CallContext.ReleaseReference;
