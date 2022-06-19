@@ -15,7 +15,7 @@ uses
   Stub.Data.HTMLActions, frmselecthtmlactions, stub.jsondataset, 
   stub.bootstraptablewidget, stub.dbwebwidget, stub.dbhtmlwidgets, 
   stub.htmlwidgets, stub.bulmawidgets, stub.fprpcclient, iderpccodegen, 
-  frmcreaterpcserviceclient, LazarusPackageIntf;
+  frmcreaterpcserviceclient, pas2jscompedits, LazarusPackageIntf;
 
 implementation
 

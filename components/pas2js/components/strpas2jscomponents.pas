@@ -21,6 +21,9 @@ Resourcestring
   rsNoMetaDataResourceCannotCreateFieldDefs = 'No metadata resource present, cannot get fielddefs';
   rsNoResourceCannotCreateFieldDefs = 'No resource present, cannot get fielddefs';
   rsNoResourceCannotShowData = 'No resource present, cannot show data';
+  rsServerRequestFailedCannotCreateFieldDefs = 'Server request failed, cannot update fielddefs';
+  rsCreateFieldDefsCount = 'Added %d fielddefs';
+  rsCreateFieldDefsNoNew = 'Fielddefs are up-to-date, no new fielddefs were added';
 
   rsEditingHTMLProp = 'Editing HTML property: %s';
   rsEditTemplate = 'Edit Template';

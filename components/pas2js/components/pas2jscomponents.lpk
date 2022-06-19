@@ -130,6 +130,10 @@
         <Filename Value="frmcreaterpcserviceclient.pas"/>
         <UnitName Value="frmcreaterpcserviceclient"/>
       </Item>
+      <Item>
+        <Filename Value="pas2jscompedits.pas"/>
+        <UnitName Value="pas2jscompedits"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
