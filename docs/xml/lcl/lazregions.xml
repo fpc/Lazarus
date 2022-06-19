@@ -78,7 +78,7 @@
         <short>Gets the rectangle with the Bounds for an area in a region.</short>
         <descr>
           <p>
-            <var>GetBoundingRect</var> is a <var>TRect</var> function used to get the rectangle with the Bounds for a  rectangular area in a region. In TLazRegionPart, the return value contains an empty rectangle (with zero assigned to its Left, Top, Right, Bottom, Width, and Height members).
+            <var>GetBoundingRect</var> is a <var>TRect</var> function used to get the rectangle with the Bounds for a rectangular area in a region. In TLazRegionPart, the return value contains an empty rectangle (with zero assigned to its Left, Top, Right, Bottom, Width, and Height members).
           </p>
         </descr>
         <seealso/>
@@ -99,7 +99,7 @@
       </element>
       <element name="TLazRegionPart.IsPointInPart.Result">
         <short>
-          True when the coordinates are located in the bounds for the rectangular area.
+          <b>True</b> when the coordinates are located in the bounds for the rectangular area.
         </short>
       </element>
       <element name="TLazRegionPart.IsPointInPart.AX">
@@ -149,7 +149,7 @@
       </element>
       <element name="TLazRegionRect.IsPointInPart.Result">
         <short>
-          True when the coordinates are located in the bounds rectangle for the region.
+          <b>True</b> when the coordinates are located in the bounds rectangle for the region.
         </short>
       </element>
       <element name="TLazRegionRect.IsPointInPart.AX">
@@ -213,7 +213,9 @@
         </seealso>
       </element>
       <element name="TLazRegionPolygon.IsPointInPart.Result">
-        <short>True when the point occurs inside the vertices for the polygonal region.</short>
+        <short>
+          <b>True</b> when the point occurs inside the vertices for the polygonal region.
+        </short>
       </element>
       <element name="TLazRegionPolygon.IsPointInPart.AX">
         <short>Horizontal coordinate for the point.</short>
@@ -276,7 +278,9 @@
         <seealso/>
       </element>
       <element name="TLazRegionEllipse.IsPointInPart.Result">
-        <short>True when the specified point is located inside the area for the ellipse.</short>
+        <short>
+          <b>True</b> when the specified point is located inside the area for the ellipse.
+        </short>
       </element>
       <element name="TLazRegionEllipse.IsPointInPart.AX">
         <short>Horizontal coordinate for the point.</short>
@@ -290,7 +294,7 @@
         <descr/>
         <seealso/>
         <version>
-          Defined for FPC version 2.6 or older. Defined in <file>fpcanvas.pp</file> in the FCL for later FPC  versions.
+          Defined for FPC version 2.6 or older. Defined in <file>fpcanvas.pp</file> in the FCL for later FPC versions.
         </version>
       </element>
 
@@ -299,38 +303,38 @@
         <descr/>
         <seealso/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
       <element name="TFPCustomRegion.GetBoundingRect.Result">
         <short/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
 
       <element name="TFPCustomRegion.IsPointInRegion">
         <short/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.Result">
         <short/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.AX">
         <short/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
       <element name="TFPCustomRegion.IsPointInRegion.AY">
         <short/>
         <version>
-          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC  versions.
+          Defined for FPC version 2.6. Defined in <file>fpcanvas.pp</file> for later FPC versions.
         </version>
       </element>
 
@@ -466,11 +470,11 @@
           <dl>
             <dt>COMPLEXREGION (3)</dt>
             <dd>
-              The region has more than one rectangle, polygon, or ellipse. Used when IsSimpleRectRegion is False.
+              The region has more than one rectangle, polygon, or ellipse. Used when IsSimpleRectRegion is <b>False</b>.
             </dd>
             <dt>SIMPLEREGION (2)</dt>
             <dd>
-              The region is a simple rectangle defined using the Rect member. Used when IsSimpleRectRegion is True, and Rect is not an empty rectangle (Left, Top, Bottom, and Right all contain zero).
+              The region is a simple rectangle defined using the Rect member. Used when IsSimpleRectRegion is <b>True</b>, and Rect is not an empty rectangle (Left, Top, Bottom, and Right all contain zero).
             </dd>
             <dt>NULLREGION (1)</dt>
             <dd>
@@ -495,7 +499,7 @@
       </element>
       <element name="TLazRegion.IsSimpleRectEmpty.Result">
         <short>
-          True when the dimensions for the rectangle are invalid.
+          <b>True</b> when the dimensions for the rectangle are invalid.
         </short>
       </element>
 
@@ -503,7 +507,7 @@
         <short>Adds the specified part as a subregion in the Parts member.</short>
         <descr>
           <p>
-            <var>AddPart</var> is a procedure used to add the specified <var>TLazRegionPart</var> in <var>APart</var> to the <var>Parts</var> member in the class instance. AddPart calls the <var>TFPList.Add</var> method to store the value in APart in the list. AddPart calls <var>DoChangeToComplexRegion</var> to update  <var>IsSimpleRectRegion</var> to reflect the current composition for the region.
+            <var>AddPart</var> is a procedure used to add the specified <var>TLazRegionPart</var> in <var>APart</var> to the <var>Parts</var> member in the class instance. AddPart calls the <var>TFPList.Add</var> method to store the value in APart in the list. AddPart calls <var>DoChangeToComplexRegion</var> to update <var>IsSimpleRectRegion</var> to reflect the current composition for the region.
           </p>
           <p>
             AddPart is used in the implementation of the <var>AddRectangle</var>, <var>AddPolygon</var>, and <var>AddEllipse</var> methods.
@@ -587,7 +591,7 @@
         <short>Horizontal coordinate for the endpoint of the major axis.</short>
       </element>
       <element name="TLazRegion.AddEllipse.AY1">
-        <short>Vertical  coordinate for the endpoint of the major axis.</short>
+        <short>Vertical coordinate for the endpoint of the major axis.</short>
       </element>
       <element name="TLazRegion.AddEllipse.AX2">
         <short>Horizontal coordinate for the endpoint of the minor axis.</short>
@@ -632,11 +636,11 @@
 
       <element name="TLazRegion.DoChangeToComplexRegion">
         <short>
-          Adds the value in Rect to the Parts member, and resets the value in  IsSimpleRectRegion.
+          Adds the value in Rect to the Parts member, and resets the value in IsSimpleRectRegion.
         </short>
         <descr>
           <p>
-            <var>DoChangeToComplexRegion</var> is a procedure used to change the region from a simple rectangle to a complex region as defined in the <var>Parts</var> member. DoChangeToComplexRegion uses the values from <var>IsSimpleRectRegion</var> and <var>IsSimpleRectEmpty</var> to determine if any actions are required in the method.  No actions are performed when IsSimpleRectRegion is <b>False</b>, or when IsSimpleRectEmpty returns <b>True</b>.
+            <var>DoChangeToComplexRegion</var> is a procedure used to change the region from a simple rectangle to a complex region as defined in the <var>Parts</var> member. DoChangeToComplexRegion uses the values from <var>IsSimpleRectRegion</var> and <var>IsSimpleRectEmpty</var> to determine if any actions are required in the method. No actions are performed when IsSimpleRectRegion is <b>False</b>, or when IsSimpleRectEmpty returns <b>True</b>.
           </p>
           <p>
             DoChangeToComplexRegion changes the value in IsSimpleRectRegion to <b>False</b>, and calls <var>AddRectangle</var> to store the value in <var>Rect</var> in the <var>Parts</var> member.
@@ -674,7 +678,7 @@
       </element>
       <element name="TLazRegion.IsPointInRegion.Result">
         <short>
-          True when the point is located inside the rectangle or one of the subregions that define the bounds for the region.
+          <b>True</b> when the point is located inside the rectangle or one of the subregions that define the bounds for the region.
         </short>
       </element>
       <element name="TLazRegion.IsPointInRegion.AX">
@@ -763,7 +767,7 @@
       </element>
       <element name="TLazRegionWithChilds.IsPointInRegion.Result">
         <short>
-          True when the point is within the bounds for one of the child areas in the region.
+          <b>True</b> when the point is within the bounds for one of the child areas in the region.
         </short>
       </element>
       <element name="TLazRegionWithChilds.IsPointInRegion.AX">
@@ -780,7 +784,7 @@
         </short>
         <descr>
           <p>
-            The function will return True if the point at AX, AY is inside the specified  polygon. Returns False if it is not.
+            The function will return <b>True</b> if the point at AX, AY is inside the specified polygon. Returns <b>False</b> if it is not.
           </p>
           <p>
             Original C code:
@@ -798,7 +802,7 @@
       </element>
       <element name="IsPointInPolygon.Result">
         <short>
-          True when the specified point is located within the polygon using the specified vertices.
+          <b>True</b> when the specified point is located within the polygon using the specified vertices.
         </short>
       </element>
       <element name="IsPointInPolygon.AX">
