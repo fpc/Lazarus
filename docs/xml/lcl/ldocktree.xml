@@ -57,7 +57,9 @@
       <element name="TLazDockZone.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
-          <var>Destroy</var> is the overridden destructor for <var>TLazDockZone</var>, It calls FreeSubComponents to free resources allocated to Page, Pages,  and Splitter. It calls the inherited destructor prior to exiting from the method.
+          <p>
+            <var>Destroy</var> is the overridden destructor for <var>TLazDockZone</var>, It calls FreeSubComponents to free resources allocated to Page, Pages, and Splitter. It calls the inherited destructor prior to exiting from the method.
+          </p>
         </descr>
         <seealso>
           <link id="TLazDockZone.FreeSubComponents"/>
@@ -674,7 +676,7 @@ RootZone (DockSite,doHorizontal)
 
       <element name="TLazDockForm.IsDockedControl">
         <short>
-          <var>IsDockedControl</var> - checks if control is a child, not a TLazDockSplitter and properly anchor docked; returns True if OK.
+          <var>IsDockedControl</var> - checks if control is a child, not a TLazDockSplitter and properly anchor docked; returns <b>True</b> if OK.
         </short>
       </element>
       <element name="TLazDockForm.IsDockedControl.Result">
@@ -683,7 +685,7 @@ RootZone (DockSite,doHorizontal)
 
       <element name="TLazDockForm.ControlHasTitle">
         <short>
-          <var>ControlHasTitle</var> - returns True if nominated control is visible, is a docked control and has a border spacing greater than zero.
+          <var>ControlHasTitle</var> - returns <b>True</b> if nominated control is visible, is a docked control and has a border spacing greater than zero.
         </short>
       </element>
       <element name="TLazDockForm.ControlHasTitle.Result">
