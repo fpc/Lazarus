@@ -36,13 +36,13 @@ uses
   // LCL
   Forms, LCLType, LCLProc,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, FileUtil,
   // SynEdit
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, SynPluginMultiCaret,
   // IdeIntf
   IDECommands,
   // IDE
-  LazarusIDEStrConsts, Debugger;
+  LazarusIDEStrConsts, LazConf, Debugger;
 
 type
   TKeyMapScheme = (
@@ -237,6 +237,12 @@ function CfgStrToShiftState(const s: string): TShiftState;
 function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
 function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer): integer;
 
+var
+  // always in alphabetical order
+  CustomKeySchemas : TStringList = nil; // of TKeyCommandRelationList
+
+procedure LoadCustomKeySchemasInDir(const dir: string; dst: TStringList);
+procedure LoadCustomKeySchemas;
 
 implementation
 
@@ -3926,10 +3932,28 @@ procedure TKeyCommandRelationList.LoadScheme(const SchemeName: string);
 var
   i: Integer;
   NewScheme: TKeyMapScheme;
+  exp : TKeyCommandRelationList;
+  src : TKeyCommandRelation;
+  dst : TKeyCommandRelation;
 begin
   NewScheme:=KeySchemeNameToSchemeType(SchemeName);
-  for i:=0 to Count-1 do                  // set all keys to new scheme
-    Relations[i].MapShortcut(NewScheme);
+  if NewScheme <> kmsCustom then begin
+    for i:=0 to Count-1 do                  // set all keys to new scheme
+      Relations[i].MapShortcut(NewScheme);
+  end else begin
+    i := CustomKeySchemas.IndexOf(SchemeName);
+    if i>=0 then begin
+      exp := TKeyCommandRelationList(CustomKeySchemas.Objects[i]);
+      for i:=0 to exp.RelationCount-1 do begin
+        src := exp.Relations[i];
+        dst := Self.FindByCommand(src.Command);
+        if Assigned(dst) then begin
+          dst.ShortcutA := src.ShortcutA;
+          dst.ShortcutB := src.ShortcutB;
+        end;
+      end;
+    end;
+  end;
 end;
 
 function TKeyCommandRelationList.CreateUniqueCategoryName(const AName: string): string;
@@ -4197,9 +4221,69 @@ begin
     ;
 end;
 
+procedure LoadCustomKeySchemasInDir(const dir: string; dst: TStringList);
+var
+  fn   : TStringList;
+  i    : integer;
+  exp  : TKeyCommandRelationList;
+  nm   : string;
+  xml  : TXMLConfig;
+begin
+  if not Assigned(dst) then Exit;
+
+  fn := FindAllFiles(
+    IncludeTrailingPathDelimiter(dir)+'keyschema', '*.xml', false);
+
+  if not Assigned(fn) then Exit;
+  try
+    for i:=0 to fn.Count-1 do begin
+      try
+        xml := TXMLConfig.Create(fn[i]);
+        exp := TKeyCommandRelationList.Create;
+        nm := xml.GetValue('Name/Value','');
+        if nm = '' then nm := ExtractFileName(fn[i]);
+        if (dst.IndexOf(nm)<0) then begin
+          exp.DefineCommandCategories; // default Relations
+          exp.LoadFromXMLConfig(xml, 'KeyMapping/');
+          dst.AddObject(nm, exp);
+        end;
+      except
+      end;
+    end;
+  finally
+    fn.Free;
+  end;
+end;
+
+procedure LoadCustomKeySchemas;
+var
+  p : string;
+  dir : TStringList;
+begin
+  dir := TStringList.Create;
+  try
+    p :=GetPrimaryConfigPath;
+    LoadCustomKeySchemasInDir(p, dir);
+    p := GetSecondaryConfigPath;
+    if p <> '' then
+      LoadCustomKeySchemasInDir(p, dir);
+    dir.Sort;
+
+    CustomKeySchemas.Clear;
+    CustomKeySchemas.Assign(dir);
+  finally
+    dir.Free;
+  end;
+end;
+
 initialization
   RegisterKeyCmdIdentProcs(@IdentToIDECommand,
                            @IDECommandToIdent);
+  CustomKeySchemas := TStringList.Create;
+  CustomKeySchemas.OwnsObjects := true;
+
+finalization
+  CustomKeySchemas.Free;
 
 end.
 
