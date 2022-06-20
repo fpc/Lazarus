@@ -173,11 +173,26 @@
       <element name="EncodingCPIso2">
         <short>Encoding name for ISO 8859-2 Code Page.</short>
       </element>
+      <element name="EncodingCPIso3">
+        <short>Encoding name for ISO 8859-3 Code Page.</short>
+      </element>
+      <element name="EncodingCPIso4">
+        <short>Encoding name for ISO 8859-4 Code Page.</short>
+      </element>
       <element name="EncodingCPIso5">
         <short>Encoding name for ISO 8859-5 Code Page.</short>
       </element>
+      <element name="EncodingCPIso7">
+        <short>Encoding name for ISO 8859-7 Code Page.</short>
+      </element>
       <element name="EncodingCPIso9">
         <short>Encoding name for ISO 8859-9 Code Page.</short>
+      </element>
+      <element name="EncodingCPIso10">
+        <short>Encoding name for ISO 8859-10 Code Page.</short>
+      </element>
+      <element name="EncodingCPIso13">
+        <short>Encoding name for ISO 8859-13 Code Page.</short>
       </element>
       <element name="EncodingCPIso14">
         <short>Encoding name for ISO 8859-14 Code Page.</short>
@@ -264,10 +279,20 @@
             <dd>UTF8ToISO_8859_1</dd>
             <dt>EncodingCPIso2 ('iso88592')</dt>
             <dd>UTF8ToISO_8859_2</dd>
+            <dt>EncodingCPIso3 ('iso88593')</dt>
+            <dd>UTF8ToISO_8859_3</dd>
+            <dt>EncodingCPIso4 ('iso88594')</dt>
+            <dd>UTF8ToISO_8859_4</dd>
             <dt>EncodingCPIso5 ('iso88595')</dt>
             <dd>UTF8ToISO_8859_5</dd>
+            <dt>EncodingCPIso7 ('iso88597')</dt>
+            <dd>UTF8ToISO_8859_7</dd>
             <dt>EncodingCPIso9 ('iso88599')</dt>
             <dd>UTF8ToISO_8859_9</dd>
+            <dt>EncodingCPIso10 ('iso885910')</dt>
+            <dd>UTF8ToISO_8859_10</dd>
+            <dt>EncodingCPIso13 ('iso885913')</dt>
+            <dd>UTF8ToISO_8859_13</dd>
             <dt>EncodingCPIso14 ('iso885914')</dt>
             <dd>UTF8ToISO_8859_14</dd>
             <dt>EncodingCPIso15 ('iso885915')</dt>
@@ -338,10 +363,20 @@
             <dd>ISO_8859_1ToUTF8</dd>
             <dt>EncodingCPIso2 ('iso88592')</dt>
             <dd>ISO_8859_2ToUTF8</dd>
+            <dt>EncodingCPIso3 ('iso88593')</dt>
+            <dd>ISO_8859_3ToUTF8</dd>
+            <dt>EncodingCPIso4 ('iso88594')</dt>
+            <dd>ISO_8859_4ToUTF8</dd>
             <dt>EncodingCPIso5 ('iso88595')</dt>
             <dd>ISO_8859_5ToUTF8</dd>
+            <dt>EncodingCPIso7 ('iso88597')</dt>
+            <dd>ISO_8859_7ToUTF8</dd>
             <dt>EncodingCPIso9 ('iso88599')</dt>
             <dd>ISO_8859_9ToUTF8</dd>
+            <dt>EncodingCPIso10 ('iso885910')</dt>
+            <dd>ISO_8859_9ToUTF10</dd>
+            <dt>EncodingCPIso13 ('iso885913')</dt>
+            <dd>ISO_8859_9ToUTF13</dd>
             <dt>EncodingCPIso14 ('iso885914')</dt>
             <dd>ISO_8859_14ToUTF8</dd>
             <dt>EncodingCPIso15 ('iso885915')</dt>
@@ -736,6 +771,38 @@
         <short>String with the value in ISO 8859-2 encoding.</short>
       </element>
 
+      <element name="ISO_8859_3ToUTF8">
+        <short>Converts an ISO 8859-3-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_3ToUTF8.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_3ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_3ToUTF8.s">
+        <short>String with the value in ISO 8859-3 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_4ToUTF8">
+        <short>Converts an ISO 8859-4-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_4ToUTF8.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_4ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_4ToUTF8.s">
+        <short>String with the value in ISO 8859-4 encoding.</short>
+      </element>
+
       <element name="ISO_8859_5ToUTF8">
         <short>Converts an ISO 8859-5-encoded string to UTF-8.</short>
         <descr>
@@ -752,6 +819,22 @@
         <short>String with the value in ISO 8859-5 encoding.</short>
       </element>
 
+      <element name="ISO_8859_7ToUTF8">
+        <short>Converts an ISO 8859-7-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_7ToUTF8.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_7ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_7ToUTF8.s">
+        <short>String with the value in ISO 8859-5 encoding.</short>
+      </element>
+
       <element name="ISO_8859_9ToUTF8">
         <short>Converts a string from its ISO 8859-9 (Turkish) encoding to UTF-8 encoding.</short>
         <descr/>
@@ -762,6 +845,30 @@
       </element>
       <element name="ISO_8859_9ToUTF8.s">
         <short>String with the value in ISO 8859-9 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_10ToUTF8">
+        <short>Converts a string from its ISO 8859-10 (Latin-6) encoding to UTF-8 encoding.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_10ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_10ToUTF8.s">
+        <short>String with the value in ISO 8859-10 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_13ToUTF8">
+        <short>Converts a string from its ISO 8859-13 (Latin-7) encoding to UTF-8 encoding.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_13ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_13ToUTF8.s">
+        <short>String with the value in ISO 8859-10 encoding.</short>
       </element>
 
       <element name="CP1250ToUTF8">
@@ -1057,9 +1164,9 @@
         <seealso>
           <link id="TCharToUTF8Table"/>
           <link id="#lazutils.codepagescommon.ArrayISO_8859_1ToUTF8">ArrayISO_8859_1ToUTF8</link>
+          <link id="#lazutils.codepagescommon.ArrayISO_8859_2ToUTF8">ArrayISO_8859_2ToUTF8</link>
           <link id="#lazutils.codepagescommon.ArrayISO_8859_15ToUTF8">ArrayISO_8859_14ToUTF8</link>
           <link id="#lazutils.codepagescommon.ArrayISO_8859_15ToUTF8">ArrayISO_8859_15ToUTF8</link>
-          <link id="#lazutils.codepagescommon.ArrayISO_8859_2ToUTF8">ArrayISO_8859_2ToUTF8</link>
           <link id="#lazutils.codepagescommon.ArrayCP1250ToUTF8">ArrayCP1250ToUTF8</link>
           <link id="#lazutils.codepagescommon.ArrayCP1251ToUTF8">ArrayCP1251ToUTF8</link>
           <link id="#lazutils.codepagescommon.ArrayCP1252ToUTF8">ArrayCP1252ToUTF8</link>
@@ -1340,6 +1447,74 @@
         </short>
       </element>
 
+      <element name="UTF8ToISO_8859_3">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-3.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_3</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-3 (Latin-3) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-3 code page (28593). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_3 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_3 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_3.Result">
+        <short>String value after conversion to ISO 8859-3.</short>
+      </element>
+      <element name="UTF8ToISO_8859_3.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_3.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_4">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-3.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_4</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-4 (Latin-4) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-4 code page (28594). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_4 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_4 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_4.Result">
+        <short>String value after conversion to ISO 8859-4.</short>
+      </element>
+      <element name="UTF8ToISO_8859_4.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_4.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
       <element name="UTF8ToISO_8859_5">
         <short>Converts a string from UTF-8 encoding to ISO 8859-5.</short>
         <descr>
@@ -1374,6 +1549,40 @@
         </short>
       </element>
 
+      <element name="UTF8ToISO_8859_7">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-7.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_7</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-7 (Latin/Greek) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-7 code page (28597). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_7 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_7 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_7.Result">
+        <short>String value after conversion to ISO 8859-7.</short>
+      </element>
+      <element name="UTF8ToISO_8859_7.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_7.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
       <element name="UTF8ToISO_8859_9">
         <short>Converts a string from UTF-8 encoding to ISO 8859-9 (Turkish) encoding.</short>
         <descr>
@@ -1403,6 +1612,74 @@
         <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToISO_8859_9.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_10">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-10 (Latin-6) encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_10</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-10 (Latin-6) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-10 code page (28600). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_10 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_10 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_10.Result">
+        <short>String value after conversion to ISO 8859-10.</short>
+      </element>
+      <element name="UTF8ToISO_8859_10.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_10.SetTargetCodePage">
+        <short>
+          <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_13">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-13 (Latin-7) encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_13</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-13 (Latin-7) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-13 code page (28603). If SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_13 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_13 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_13.Result">
+        <short>String value after conversion to ISO 8859-13.</short>
+      </element>
+      <element name="UTF8ToISO_8859_13.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_13.SetTargetCodePage">
         <short>
           <b>True</b> if the target code page is set in the return value, <b>False</b> if the default system code page (CP_ACP) is used.
         </short>
@@ -2004,7 +2281,13 @@
           <ul>
             <li>UTF8ToISO_8859_1</li>
             <li>UTF8ToISO_8859_2</li>
+            <li>UTF8ToISO_8859_3</li>
+            <li>UTF8ToISO_8859_4</li>
+            <li>UTF8ToISO_8859_5</li>
+            <li>UTF8ToISO_8859_7</li>
             <li>UTF8ToISO_8859_9</li>
+            <li>UTF8ToISO_8859_10</li>
+            <li>UTF8ToISO_8859_13</li>
             <li>UTF8ToISO_8859_14</li>
             <li>UTF8ToISO_8859_15</li>
             <li>UTF8ToCP1250</li>
@@ -2316,8 +2599,13 @@
           <ul>
             <li>'ISO-8859-1'</li>
             <li>'ISO-8859-2'</li>
+            <li>'ISO-8859-3'</li>
+            <li>'ISO-8859-4'</li>
             <li>'ISO-8859-5'</li>
+            <li>'ISO-8859-7'</li>
             <li>'ISO-8859-9'</li>
+            <li>'ISO-8859-10'</li>
+            <li>'ISO-8859-13'</li>
             <li>'ISO-8859-14'</li>
             <li>'ISO-8859-15'</li>
             <li>'ISO-8859-16'</li>

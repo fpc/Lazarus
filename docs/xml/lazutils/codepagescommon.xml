@@ -40,6 +40,30 @@
         </seealso>
       </element>
 
+      <element name="ArrayISO_8859_10ToUTF8">
+        <short>Provides a mapping for ISO-8859-10 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-10">ISO/IEC 8859-10</url>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lconvencoding.ISO_8859_10ToUTF8">ISO_8859_10ToUTF8</link>
+        </seealso>
+      </element>
+
+      <element name="ArrayISO_8859_13ToUTF8">
+        <short>Provides a mapping for ISO-8859-13 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-13">ISO/IEC 8859-13</url>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lconvencoding.ISO_8859_13ToUTF8">ISO_8859_13ToUTF8</link>
+        </seealso>
+      </element>
+
       <element name="ArrayISO_8859_14ToUTF8">
         <short>Provides a mapping for ISO-8859-14 characters to UTF-8 codepoints.</short>
         <descr>
@@ -89,12 +113,48 @@
         <seealso/>
       </element>
 
+      <element name="ArrayISO_8859_3ToUTF8">
+        <short>Provides a mapping for ISO-8859-3 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT">
+              https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT
+            </url>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_4ToUTF8">
+        <short>Provides a mapping for ISO-8859-4 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT">
+              https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT
+            </url>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="ArrayISO_8859_5ToUTF8">
         <short>Provides a mapping for ISO-8859-5 characters to UTF-8 codepoints.</short>
         <descr>
           <p>
             <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT">
               https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT
+            </url>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_7ToUTF8">
+        <short>Provides a mapping for ISO-8859-7 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT">
+              https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT
             </url>
           </p>
         </descr>
