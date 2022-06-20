@@ -177,7 +177,7 @@
         </seealso>
       </element>
       <element name="TEditAction.HandlesTarget.Result">
-        <short>True when the action can be applied to the target.</short>
+        <short><b>True</b> when the action can be applied to the target.</short>
       </element>
       <element name="TEditAction.HandlesTarget.Target">
         <short>Object instance with the target control for the action.</short>
@@ -316,7 +316,7 @@
         </short>
         <descr>
           <p>
-            <var>TEditPaste</var> is a <var>TEditAction</var> descendant which copies the contents of the clipboard editing action into the  specified <var>TCustomEdit</var> control. It re-implements the <var>UpdateTarget</var> and <var>ExecuteTarget</var> methods to use the TCustomEdit type for the affected control.
+            <var>TEditPaste</var> is a <var>TEditAction</var> descendant which copies the contents of the clipboard editing action into the specified <var>TCustomEdit</var> control. It re-implements the <var>UpdateTarget</var> and <var>ExecuteTarget</var> methods to use the TCustomEdit type for the affected control.
           </p>
         </descr>
         <seealso>
@@ -332,7 +332,7 @@
             <var>UpdateTarget</var> is an overridden method used to update values in the action based on settings in the specified <var>Target</var> control. UpdateTarget re-implements the method introduced in the ancestor class.
           </p>
           <p>
-            UpdateTarget sets the value in Enabled to True when values in the Clipboard includes the CF_TEXT content format.
+            UpdateTarget sets the value in Enabled to <b>True</b> when values in the Clipboard includes the CF_TEXT content format.
           </p>
           <p>
             UpdateTarget is called from the <var>UpdateActions</var> method in <var>TCustomForm</var> when actions and action lists are updated during an application idle state.
@@ -409,7 +409,7 @@
             <var>UpdateTarget</var> is an overridden method used to update values in the action based on settings in the specified <var>Target</var> control. UpdateTarget re-implements the method introduced in the ancestor class.
           </p>
           <p>
-            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and its Text property is checked for an existing text value. UpdateTarget sets the value in Enabled to True when Text is not an empty string ('').
+            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and its Text property is checked for an existing text value. UpdateTarget sets the value in Enabled to <b>True</b> when Text is not an empty string ('').
           </p>
           <p>
             UpdateTarget is called from the <var>UpdateActions</var> method in <var>TCustomForm</var> when actions and action lists are updated during an application idle state.
@@ -466,7 +466,7 @@
             <var>UpdateTarget</var> is an overridden method used to update values in the action based on settings in the specified <var>Target</var> control. UpdateTarget re-implements the method introduced in the ancestor class.
           </p>
           <p>
-            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and its CanUndo method is called  to get the value assigned to the Enabled property.
+            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and its CanUndo method is called to get the value assigned to the Enabled property.
           </p>
           <p>
             UpdateTarget is called from the <var>UpdateActions</var> method in <var>TCustomForm</var> when actions and action lists are updated during an application idle state.
@@ -523,7 +523,7 @@
             <var>UpdateTarget</var> is an overridden method used to update values in the action based on settings in the specified <var>Target</var> control. UpdateTarget re-implements the method introduced in the ancestor class.
           </p>
           <p>
-            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and sets Enabled to True when text is currently selected in the control.
+            Target is the object instance with values examined in the method. It is cast to the TCustomEdit type used in the Control property, and sets Enabled to <b>True</b> when text is currently selected in the control.
           </p>
           <p>
             UpdateTarget is called from the <var>UpdateActions</var> method in <var>TCustomForm</var> when actions and action lists are updated during an application idle state.
@@ -584,7 +584,7 @@
         </seealso>
       </element>
       <element name="THelpAction.HandlesTarget.Result">
-        <short>True if the action can be applied to the target control.</short>
+        <short><b>True</b> if the action can be applied to the target control.</short>
       </element>
       <element name="THelpAction.HandlesTarget.Target">
         <short>Object instance with the control examined in the method.</short>
@@ -697,7 +697,7 @@
         </short>
         <descr>
           <p>
-            Contains the class reference used to create new dialog instances in TCommonDialogAction. TCommonDialogClass  is the type returned from the GetDialogClass method in TCommonDialogAction.
+            Contains the class reference used to create new dialog instances in TCommonDialogAction. TCommonDialogClass is the type returned from the GetDialogClass method in TCommonDialogAction.
           </p>
         </descr>
         <seealso/>
@@ -777,7 +777,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry.  Create calls <var>CreateDialog</var> to create and configure a new instance of the dialog class type used in the implementation. It sets the value in <var>Enabled</var> to <b>True</b>.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry. Create calls <var>CreateDialog</var> to create and configure a new instance of the dialog class type used in the implementation. It sets the value in <var>Enabled</var> to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -814,8 +814,7 @@
 
       <element name="TCommonDialogAction.ExecuteResult">
         <short>
-          <var>ExecuteResult</var> - the result of the execution:
-          True if successful.
+          <var>ExecuteResult</var> - the result of the execution: <b>True</b> if successful.
         </short>
         <descr/>
         <seealso/>
@@ -823,8 +822,7 @@
 
       <element name="TCommonDialogAction.BeforeExecute">
         <short>
-          <var>BeforeExecute</var> - event handler for performance before
-          execution of the action.
+          <var>BeforeExecute</var> - event handler for performance before execution of the action.
         </short>
         <descr/>
         <seealso/>
@@ -1221,8 +1219,7 @@
       </element>
       <element name="TSearchAction.PerformSearch.Result">
         <short>
-          True when the search value is found in the text for the
-          internal Control.
+          <b>True</b> when the search value is found in the text for the internal Control.
         </short>
       </element>
 
