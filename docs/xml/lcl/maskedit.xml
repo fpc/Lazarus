@@ -232,7 +232,7 @@
       </element>
 
       <element name="MaskNoSave">
-        <short>Represents a character that is not stored  in a mask.</short>
+        <short>Represents a character that is not stored in a mask.</short>
         <descr>Can be changed at run-time.</descr>
         <seealso/>
       </element>
@@ -401,7 +401,7 @@
         </short>
         <descr>
           <p>
-            <var>TInternalMask</var> is an array type which contains up to 255 <var>TIntMaskRec</var>  values representing mask characters used in a <var>TCustomMaskEdit</var> control. It is used to implement internal members in TCustomMaskEdit, and realized using its <var>EditMask</var> property.
+            <var>TInternalMask</var> is an array type which contains up to 255 <var>TIntMaskRec</var> values representing mask characters used in a <var>TCustomMaskEdit</var> control. It is used to implement internal members in TCustomMaskEdit, and realized using its <var>EditMask</var> property.
           </p>
         </descr>
         <seealso>
@@ -578,10 +578,10 @@
             FOR ANYONE WHO CARES TO FIX / ENHANCE THIS CODE:
           </remark>
           <p>
-            Since we want total control over anything that is done to the text in the control,  we have to take into consideration the fact that currently we cannot prevent cutting/pasting/clearing or dragging selected text in the control. These operations are handled by the OS, and text is changed before we can prevent it. Not all widgetsets currently handle the messages for cut/paste/clear. Actually, we would like to have a LM_BEFORE_PASTE (etc.) message... If we allow the OS to cut/clear/paste etc. A situation can occur where mask-literals in the control are changed to random characters (which cannot be undone), or text is shorter or larger than the editmask calls for, which again cannot be undone.
+            Since we want total control over anything that is done to the text in the control, we have to take into consideration the fact that currently we cannot prevent cutting/pasting/clearing or dragging selected text in the control. These operations are handled by the OS, and text is changed before we can prevent it. Not all widgetsets currently handle the messages for cut/paste/clear. Actually, we would like to have a LM_BEFORE_PASTE (etc.) message... If we allow the OS to cut/clear/paste etc. A situation can occur where mask-literals in the control are changed to random characters (which cannot be undone), or text is shorter or larger than the editmask calls for, which again cannot be undone.
           </p>
           <p>
-            So, as a horrible hack, I decided  to only allow changing the text if we coded this change ourself. This is done by setting the FChangeAllowed field to True before any write action (in RealSetTextWhileMasked() ). We try to intercept the messages for cut/paste/copy/clear and perform the appropriate actions instead. If this fails, then in TextChanged we check and will see that FChangeAllowed = False and we will undo the changes made.
+            So, as a horrible hack, I decided to only allow changing the text if we coded this change ourself. This is done by setting the FChangeAllowed field to <b>True</b> before any write action (in RealSetTextWhileMasked() ). We try to intercept the messages for cut/paste/copy/clear and perform the appropriate actions instead. If this fails, then in TextChanged we check and will see that FChangeAllowed = False and we will undo the changes made.
           </p>
           <p>
             To make this undo possible, it is necessary to set FCurrentText every time you set the text in the control! This is achieved in RealSetTextWhileMasked() only.
@@ -645,7 +645,7 @@
         <short>Flag used in DoEnter. Set to mvemException by default.</short>
       </element>
       <element name="TCustomMaskEdit.FMaskIsPushed">
-        <short>True when the internal mask has been saved in DisableMask.</short>
+        <short><b>True</b> when the internal mask has been saved in DisableMask.</short>
       </element>
       <element name="TCustomMaskEdit.FSavedMask">
         <short>Saved internal mask.</short>
@@ -754,11 +754,11 @@
         <short>Set of characters found in the set notation.</short>
       </element>
       <element name="TCustomMaskEdit.ParseSet.IsNegative">
-        <short>True if the set has a negate operator.</short>
+        <short><b>True</b> if the set has a negate operator.</short>
       </element>
       <element name="TCustomMaskEdit.ParseSet.IsOptional">
         <short>
-          True if the character position for the set is optional, False when it is  required.
+          <b>True</b> if the character position for the set is optional, <b>False</b> when it is required.
         </short>
       </element>
 
@@ -845,7 +845,7 @@
         <short>Selects the first character in the edit control.</short>
         <descr>
           <p>
-            <var>SelectFirstChar</var> is a procedure used to move to and select the first character in the edit control. SelectFirstChar sets the value for the internal member used to track the cursor (or caret) position, and calls    <var>SetCursorPos</var> to update the cursor in the control.
+            <var>SelectFirstChar</var> is a procedure used to move to and select the first character in the edit control. SelectFirstChar sets the value for the internal member used to track the cursor (or caret) position, and calls <var>SetCursorPos</var> to update the cursor in the control.
           </p>
         </descr>
         <seealso/>
@@ -898,12 +898,12 @@
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.HasSelection.Result">
-        <short>True when characters are selected at the caret position.</short>
+        <short><b>True</b> when characters are selected at the caret position.</short>
       </element>
 
       <element name="TCustomMaskEdit.HasExtSelection">
         <short>
-          Returns True if more than one (1) character is selected in the value for the control.
+          Returns <b>True</b> if more than one (1) character is selected in the value for the control.
         </short>
         <descr>
           <p>
@@ -913,7 +913,7 @@
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.HasExtSelection.Result">
-        <short>True when the current selection in the control is more than one character.</short>
+        <short><b>True</b> when the current selection in the control is more than one character.</short>
       </element>
 
       <element name="TCustomMaskEdit.IsLiteral">
@@ -944,7 +944,7 @@
         </seealso>
       </element>
       <element name="TCustomMaskEdit.IsLiteral.Result">
-        <short>True if the specified character is a mask literal.</short>
+        <short><b>True</b> if the specified character is a mask literal.</short>
       </element>
       <element name="TCustomMaskEdit.IsLiteral.Index">
         <short>Character position examined in the method.</short>
@@ -963,7 +963,7 @@
         </seealso>
       </element>
       <element name="TCustomMaskEdit.TextIsValid.Result">
-        <short>True when the value is valid for the edit mask.</short>
+        <short><b>True</b> when the value is valid for the edit mask.</short>
       </element>
       <element name="TCustomMaskEdit.TextIsValid.Value">
         <short>Value examined in the method.</short>
@@ -984,7 +984,7 @@
             CharMatchesMask uses the internal TInternalMask instance to determine if the value in Ch matches the mask definition at the specified position. The return value is <b>True</b> when Ch contains a valid character value for the mask character type.
           </p>
           <p>
-            If an unrecognized mask character type is found in the in the EditMask, an <var>EDBEditError</var> exception is raised. It is not really a database exception; it's just an identifier, defined in this unit, with a confusingly  unfortunate name.
+            If an unrecognized mask character type is found in the in the EditMask, an <var>EDBEditError</var> exception is raised. It is not really a database exception; it's just an identifier, defined in this unit, with a confusingly unfortunate name.
           </p>
           <p>
             CharMatchesMask is used in the implementation of the <var>TextIsValid</var> method.
@@ -1003,7 +1003,7 @@
       </element>
       <element name="TCustomMaskEdit.CharMatchesMask.Result">
         <short>
-          True when the character value is valid for the corresponding position in the EditMask.
+          <b>True</b> when the character value is valid for the corresponding position in the EditMask.
         </short>
       </element>
       <element name="TCustomMaskEdit.CharMatchesMask.Ch">
@@ -1051,7 +1051,7 @@
             RealSetTextWhileMasked calls the inherited <var>RealGetText</var> to get the current value for the control. No actions are performed in the method when <var>Value</var> is the same as the current text assigned to the control.
           </p>
           <p>
-            RealSetTextWhileMasked set values in internal members used to protect against unhandled exceptions from an assigned <var>OnChange</var> event handler. This  ensures that the control is not left in an "unsafe" state after changes to the text value.
+            RealSetTextWhileMasked set values in internal members used to protect against unhandled exceptions from an assigned <var>OnChange</var> event handler. This ensures that the control is not left in an "unsafe" state after changes to the text value.
           </p>
           <p>
             RealSetTextWhileMasked calls the inherited <var>RealSetText</var> method to store Value in the Text for the control. Values in the internal members are reset prior to exiting from the method.
@@ -1101,16 +1101,16 @@
         </short>
         <descr>
           <p>
-            The value in Ch is converted to the case required for the mask type (when needed), and compared to value(s) permitted for the mask type. The return value is True when Ch contains a value permitted for the TMaskType.
+            The value in Ch is converted to the case required for the mask type (when needed), and compared to value(s) permitted for the mask type. The return value is <b>True</b> when Ch contains a value permitted for the TMaskType.
           </p>
           <p>
-            Special logic is used when Ch contains a Space (#32) character, and is being applied using Paste from Clipboard. Delphi allows the Space character during Paste - even when it is invalid for the mask character type. In this case, the return value is always set to True.
+            Special logic is used when Ch contains a Space (#32) character, and is being applied using Paste from Clipboard. Delphi allows the Space character during Paste - even when it is invalid for the mask character type. In this case, the return value is always set to <b>True</b>.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.CanInsertChar.Result">
-        <short>True when the character is valid for the mask character type.</short>
+        <short><b>True</b> when the character is valid for the mask character type.</short>
       </element>
       <element name="TCustomMaskEdit.CanInsertChar.Position">
         <short>Position in the control value and mask examined in the method.</short>
@@ -1151,7 +1151,7 @@
       </element>
       <element name="TCustomMaskEdit.DeleteChars.NextChar">
         <short>
-          When True the following character(s) are deleted; when False the preceding character(s) are deleted.
+          When <b>True</b> the following character(s) are deleted; when <b>False</b> the preceding character(s) are deleted.
         </short>
       </element>
 
@@ -1281,7 +1281,7 @@
         <short>Saves and disables the edit mask in the control.</short>
         <descr>
           <p>
-            <var>DisableMask</var> is a <var>Boolean</var> function used to save the current edit mask to an internal member, and then disables the edit mask in the control. This gives developers the opportunity to set any text in the control without affecting the control state. Whether or not the function succeeds, <var>NewText</var> will be set as the new Text in  the control. There is no need to retain the saved internal mask or trim type; they are only set in <var>SetEditMask</var>.
+            <var>DisableMask</var> is a <var>Boolean</var> function used to save the current edit mask to an internal member, and then disables the edit mask in the control. This gives developers the opportunity to set any text in the control without affecting the control state. Whether or not the function succeeds, <var>NewText</var> will be set as the new Text in the control. There is no need to retain the saved internal mask or trim type; they are only set in <var>SetEditMask</var>.
           </p>
           <p>
             Use <var>RestoreMask</var> to re-enable the saved edit mask for the control.
@@ -1291,7 +1291,7 @@
       </element>
       <element name="TCustomMaskEdit.DisableMask.Result">
         <short>
-          Returns True on success, or False when an edit mask is not used in the control.
+          Returns <b>True</b> on success, or <b>False</b> when an edit mask is not used in the control.
         </short>
       </element>
       <element name="TCustomMaskEdit.DisableMask.NewText">
@@ -1325,7 +1325,7 @@
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.RestoreMask.Result">
-        <short>True on success.</short>
+        <short><b>True</b> on success.</short>
       </element>
       <element name="TCustomMaskEdit.RestoreMask.NewText">
         <short>New value assigned to the Text property.</short>
@@ -1341,7 +1341,7 @@
             Setting the value in <var>Text</var> prior to completion of LCL component streaming has unwanted side-effects. To prevent the condition, RealSetText stores the text in <var>AValue</var> to an internal member that is applied in the <var>Loaded</var> method. No additional actions are performed in the method when <var>csLoading</var> is in the <var>ComponentState</var> property.
           </p>
           <p>
-            RealSetText uses the value from <var>IsMasked</var> to determine if an edit mask is used for the control. When <b>False</b>, the inherited <var>RealSetText</var> method is called to set the value in the <var>Text</var> property. When   <b>True</b>, the <var>SetTextApplyMask</var> method is called to store the content in AValue guided by the <var>EditMask</var> for the control.
+            RealSetText uses the value from <var>IsMasked</var> to determine if an edit mask is used for the control. When <b>False</b>, the inherited <var>RealSetText</var> method is called to set the value in the <var>Text</var> property. When <b>True</b>, the <var>SetTextApplyMask</var> method is called to store the content in AValue guided by the <var>EditMask</var> for the control.
           </p>
         </descr>
         <seealso/>
@@ -1420,7 +1420,7 @@
         </short>
         <descr>
           <p>
-            <var>SetEditText</var> sets the value for the Text displayed in the control. The new value for the text is padded (when needed) to the length defined in the edit mask. SetEditText calls <var>RealSetTextWhileMasked</var> to store the value in  the <var>Text</var> in the control.
+            <var>SetEditText</var> sets the value for the Text displayed in the control. The new value for the text is padded (when needed) to the length defined in the edit mask. SetEditText calls <var>RealSetTextWhileMasked</var> to store the value in the <var>Text</var> in the control.
           </p>
           <remark>
             This method is not Delphi compatible, but this is by design. Delphi allows setting the EditText to any length, which is extremely dangerous! This method ensures that the text assigned in the control does not exceed the length specified by its edit mask.
@@ -1437,7 +1437,7 @@
           Finds the starting and ending positions for the selection.
         </short>
         <descr>
-          <var>GetSel</var> finds the starting and ending positions for the selected text in the control. Calls GetSelStart to get the value for the _SelStart argument. Calls  GetSelLength to get the number of characters selected, and calculates the value for _SelStop.
+          <var>GetSel</var> finds the starting and ending positions for the selected text in the control. Calls GetSelStart to get the value for the _SelStart argument. Calls GetSelLength to get the number of characters selected, and calculates the value for _SelStop.
         </descr>
         <seealso/>
       </element>
@@ -1445,7 +1445,7 @@
         <short>Stating position for the text selected in the control.</short>
       </element>
       <element name="TCustomMaskEdit.GetSel._SelStop">
-        <short>Ending position for the text selected in the  control.</short>
+        <short>Ending position for the text selected in the control.</short>
       </element>
 
       <element name="TCustomMaskEdit.SetSel">
@@ -1478,10 +1478,10 @@
             </li>
           </ul>
           <p>
-            If one of these operations happen, then the internal logic for cursor positioning and character insertion can be invalid.  So, we simply restore the text value from an internal member used to track the current text value.
+            If one of these operations happen, then the internal logic for cursor positioning and character insertion can be invalid. So, we simply restore the text value from an internal member used to track the current text value.
           </p>
           <p>
-            The inherited TextChanged method is called when IsMasked is False, or when an internal update to the control value is performed. Otherwise, RealSetTextWhileMasked is called followed by SetCursorPos.
+            The inherited TextChanged method is called when IsMasked is <b>False</b>, or when an internal update to the control value is performed. Otherwise, RealSetTextWhileMasked is called followed by SetCursorPos.
           </p>
         </descr>
         <seealso>
@@ -1558,7 +1558,7 @@
             <var>SetNumbersOnly</var> is an overridden <var>Boolean</var> function used as the write access specifier for the <var>NumbersOnly</var> property.
           </p>
           <p>
-            SetNumbersOnly provides support use of an edit mask in the control. When <var>IsMasked</var> is <b>True</b>, setting NumbersOnly to True can interfere with the masking logic in the control; the property is automatically set to <b>False</b> when IsMasked is True. Otherwise, the inherited SetNumbersOnly method is called to set to the value for the property.
+            SetNumbersOnly provides support use of an edit mask in the control. When <var>IsMasked</var> is <b>True</b>, setting NumbersOnly to <b>True</b> can interfere with the masking logic in the control; the property is automatically set to <b>False</b> when IsMasked is <b>True</b>. Otherwise, the inherited SetNumbersOnly method is called to set to the value for the property.
           </p>
         </descr>
         <seealso>
@@ -1603,7 +1603,7 @@
       </element>
 
       <element name="TCustomMaskEdit.EditCanModify">
-        <short>If True, the Edit box is allowed to modify the contents.</short>
+        <short>If <b>True</b>, the Edit box is allowed to modify the contents.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1813,10 +1813,10 @@
         </short>
         <descr>
           <p>
-            Calls the inherited RealGetText method to get the value for the property. When a new value for the property is assigned, mask literals are restored for the new value to ensure that the control is in a recoverable state. EditText is truncated, or padded with ClearChar as needed, so that the value matches the length for the <var>EditMask</var>. These actions are not performed when <var>IsMasked</var> returns False (EditMask has not been assigned).
+            Calls the inherited RealGetText method to get the value for the property. When a new value for the property is assigned, mask literals are restored for the new value to ensure that the control is in a recoverable state. EditText is truncated, or padded with ClearChar as needed, so that the value matches the length for the <var>EditMask</var>. These actions are not performed when <var>IsMasked</var> returns <b>False</b> (EditMask has not been assigned).
           </p>
           <remark>
-            SetEditText is not Delphi compatible. Delphi allows any text value to be assigned to  the control, leaving the control in an unrecoverable state  where it is impossible to leave the control because the text can never be validated. The LCL implementation does not allow this.
+            SetEditText is not Delphi compatible. Delphi allows any text value to be assigned to the control, leaving the control in an unrecoverable state where it is impossible to leave the control because the text can never be validated. The LCL implementation does not allow this.
           </remark>
         </descr>
         <seealso/>
@@ -1824,7 +1824,7 @@
 
       <element name="TCustomMaskEdit.IsMasked">
         <short>
-          True if a non-empty value has been assigned to EditMask.
+          <b>True</b> if a non-empty value has been assigned to EditMask.
         </short>
         <descr/>
         <seealso/>
@@ -2075,7 +2075,7 @@
         </short>
         <descr>
           <p>
-            <var>ValidateEdit</var> is a procedure used to validate the text for the edit control using the assigned mask. ValidateEdit uses the value in     <var>IsMasked</var> to determine if a mask has been assigned in the control.
+            <var>ValidateEdit</var> is a procedure used to validate the text for the edit control using the assigned mask. ValidateEdit uses the value in <var>IsMasked</var> to determine if a mask has been assigned in the control.
           </p>
           <p>
             When IsMasked is <b>True</b>, the value for the control is validated. The <var>TextIsValid</var> method is called with the value from the <var>Text</var> property. If the Text is not valid, an <var>EDBEditError</var> exception is raised for the error condition.
@@ -2131,7 +2131,7 @@
         </short>
         <descr>
           <p>
-            <var>OnValidationError</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the value for the masked edit control is invalid for its  <var>EditMask</var>.
+            <var>OnValidationError</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the value for the masked edit control is invalid for its <var>EditMask</var>.
           </p>
         </descr>
         <seealso/>
@@ -2249,7 +2249,7 @@
         </short>
         <descr>
           <p>
-            Use the TabStop property to allow or disallow access to the control using the Tab key. If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.
+            Use the TabStop property to allow or disallow access to the control using the Tab key. If <var>TabStop</var> is <b>True</b>, the control is in the tab order. If <var>TabStop</var> is <b>False</b>, the control is not in the tab order and the user can't use the Tab key to move to the control.
           </p>
         </descr>
         <seealso>
@@ -2262,7 +2262,7 @@
         <short>Indicates if the control is visible or hidden.</short>
         <descr>
           <p>
-            The <var>Visible</var> property indicates the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets Visible to True. Setting Visible to False is equivalent to calling the Hide method.
+            The <var>Visible</var> property indicates the ability to see a visual control. If Visible is <b>True</b> the control is shown, otherwise it is hidden. Calling Show sets Visible to <b>True</b>. Setting Visible to <b>False</b> is equivalent to calling the Hide method.
           </p>
           <remark>
             The Visible property does not reflect the visibility for a parent control. Use the IsVisible method to consider this and get the effective visibility.
@@ -2366,10 +2366,10 @@
         <short>Applies an edit mask to the specified string value.</short>
         <descr>
           <p>
-            <var>FormatMaskText</var> is a <var>String</var> function used to apply an edit mask to the specified String value. FormatMaskText creates a temporary instance of <var>TCustomMaskEdit</var> that  is used to apply the edit mask in <var>AEditMask</var> when required. The value in AEditMask is assigned to the <var>EditMask</var> property in TCustomMaskEdit.
+            <var>FormatMaskText</var> is a <var>String</var> function used to apply an edit mask to the specified String value. FormatMaskText creates a temporary instance of <var>TCustomMaskEdit</var> that is used to apply the edit mask in <var>AEditMask</var> when required. The value in AEditMask is assigned to the <var>EditMask</var> property in TCustomMaskEdit.
           </p>
           <p>
-            The <var>Value</var> argument contains the data without any mask literals, escaped characters,  or space characters inserted by the editing mask. When the <var>IsMasked</var> method in the TCustomMaskEdit returns <b>True</b>, the <var>ApplyMaskToText</var> method is used to generate the return value for the routine. To maintain Delphi compatibility, the GetTextWithoutSpaceChar is also called to translate space characters represented using the character in the mask field to the Space character (decimal 32).
+            The <var>Value</var> argument contains the data without any mask literals, escaped characters, or space characters inserted by the editing mask. When the <var>IsMasked</var> method in the TCustomMaskEdit returns <b>True</b>, the <var>ApplyMaskToText</var> method is used to generate the return value for the routine. To maintain Delphi compatibility, the GetTextWithoutSpaceChar is also called to translate space characters represented using the character in the mask field to the Space character (decimal 32).
           </p>
           <p>
             When IsMasked is <b>False</b>, the unmodified content in <var>Value</var> is used as the return value.
@@ -2414,12 +2414,12 @@
             <dt>
               AMaskSave - Indicates if mask characters are included in the value for a control
             </dt>
-            <dd>False. Optional. Default value is True.</dd>
+            <dd>False. Optional. Default value is <b>True</b>.</dd>
             <dt>
               ASpaceChar - Character used to represent a space in the masked value
             </dt>
             <dd>
-              '_'. Optional. Default value is DefaultBlank. Not relevant when AMaskSave is False.
+              '_'. Optional. Default value is DefaultBlank. Not relevant when AMaskSave is <b>False</b>.
             </dd>
           </dl>
           <p>
