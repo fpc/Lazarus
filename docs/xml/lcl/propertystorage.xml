@@ -12,7 +12,7 @@
         </short>
       <descr>
         <p>
-          <file>propertystorage.pas</file> contains classes and types used to define a storage container for property values: <var>TCustomPropertyStorage</var>. This is a base class and contains abstract virtual methods which must be implemented in a descendent class.  For example: TControlPropertyStorage, TFormPropertyStorage, TIniPropStorage, TJSONPropStorage, and TXMLPropStorage.
+          <file>propertystorage.pas</file> contains classes and types used to define a storage container for property values: <var>TCustomPropertyStorage</var>. This is a base class and contains abstract virtual methods which must be implemented in a descendent class. For example: TControlPropertyStorage, TFormPropertyStorage, TIniPropStorage, TJSONPropStorage, and TXMLPropStorage.
         </p>
         <p>
           This file is part of the <b>Lazarus Component Library (LCL)</b>.
@@ -322,7 +322,7 @@
         <short>Implements a collection for TStoredValue collection items.</short>
         <descr>
           <p>
-            <var>TStoredValues</var> is a <var>TOwnedCollection</var> descendant which implements an owned collection  for <var>TStoredValue</var> collection items.
+            <var>TStoredValues</var> is a <var>TOwnedCollection</var> descendant which implements an owned collection for <var>TStoredValue</var> collection items.
           </p>
           <p>
             TStoredValues provides properties and methods used to access the TStoredValue collection items or their values. Use <var>Items</var> to read and write a collection item by its ordinal position in the collection. Use <var>Values</var> to read and write a collection item by its name. Use <var>StoredValue</var> to read and write the value for a collection item by its name.
@@ -656,13 +656,13 @@
       </element>
 
       <element name="TCustomPropertyStorage.FSaved">
-        <short>True when everything has been saved.</short>
+        <short><b>True</b> when everything has been saved.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomPropertyStorage.FRestored">
-        <short>True when everything has been restored.</short>
+        <short><b>True</b> when everything has been restored.</short>
         <descr/>
         <seealso/>
       </element>
@@ -726,7 +726,7 @@
         </short>
         <descr>
           <p>
-            <var>RootSection</var> is a <var>String</var> function which builds the path in the storage container where the property values  are located.
+            <var>RootSection</var> is a <var>String</var> function which builds the path in the storage container where the property values are located.
           </p>
           <p>
             RootSection uses the value in the <var>Root</var> property to determine the return value for the method. When Root is assigned and derived from <var>TComponent</var>, its <var>Name</var> or <var>ClassName</var> property is prepended to the return value. Preference is given to the value in its Name property.
@@ -780,7 +780,7 @@
         </short>
         <descr>
           <p>
-            <var>RestoreProperties</var> is a method used to load  property values stored in the container, and apply the values to the origin components / persistent object instances. Properties names and the corresponding object instances are loaded using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods.
+            <var>RestoreProperties</var> is a method used to load property values stored in the container, and apply the values to the origin components / persistent object instances. Properties names and the corresponding object instances are loaded using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods.
           </p>
           <p>
             A temporary <var>TPropsStorage</var> instance is created and configured to use <var>RootSection</var> and <var>DoReadString</var> from the class instance. The <var>LoadObjectsProps</var> method is called to get the property values and apply them to the object instances for the property list.
