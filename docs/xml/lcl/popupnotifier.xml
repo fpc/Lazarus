@@ -78,7 +78,7 @@
         </short>
         <descr>
           <p>
-            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages in the button. HandleMouseDown sets  the internal state and redraws the button when the left mouse button is clicked. No actions are performed in the method if Button contains a value other than mbLeft.
+            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages in the button. HandleMouseDown sets the internal state and redraws the button when the left mouse button is clicked. No actions are performed in the method if Button contains a value other than mbLeft.
           </p>
         </descr>
         <seealso>
@@ -97,7 +97,7 @@
         </short>
         <descr>
           <p>
-            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages for the button. HandleMouseDown sets  the internal state and redraws the button when the left mouse button is clicked. No actions are performed if the method if Button contains a value other than than mbLeft.
+            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages for the button. HandleMouseDown sets the internal state and redraws the button when the left mouse button is clicked. No actions are performed if the method if Button contains a value other than than mbLeft.
           </p>
         </descr>
         <seealso>
@@ -122,7 +122,7 @@
         </short>
         <descr>
           <p>
-            <var>HandleMouseUp</var> is a procedure which responds to mouse up messages in the button. HandleMouseUp sets  the internal state and redraws the button when the left mouse button is released.
+            <var>HandleMouseUp</var> is a procedure which responds to mouse up messages in the button. HandleMouseUp sets the internal state and redraws the button when the left mouse button is released.
           </p>
         </descr>
         <seealso>
@@ -664,7 +664,7 @@
         </short>
         <descr>
           <p>
-            <var>vNotifierForm</var> is a public <var>TNotifierForm</var> member which represents the form used to display the pop-up notification. vNotifierForm is instantiated in Create but not displayed; its Visible property is set to False. vNotifierForm is displayed using the Show or ShowAtPos methods. Use the Hide method to hide the form. vNotifierForm is freed in the Destroy method.
+            <var>vNotifierForm</var> is a public <var>TNotifierForm</var> member which represents the form used to display the pop-up notification. vNotifierForm is instantiated in Create but not displayed; its Visible property is set to <b>False</b>. vNotifierForm is displayed using the Show or ShowAtPos methods. Use the Hide method to hide the form. vNotifierForm is freed in the Destroy method.
           </p>
         </descr>
         <seealso>
@@ -684,7 +684,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the component instance. Create calls the inherited constructor using AOwner as the owner for the component instance. Create allocates resources needed for the vNotifierForm member, and sets the forms Visible property to False. When the Application singleton has been assigned, its BidiMode property is applied to the notifier form instance.
+            <var>Create</var> is the constructor for the component instance. Create calls the inherited constructor using AOwner as the owner for the component instance. Create allocates resources needed for the vNotifierForm member, and sets the forms Visible property to <b>False</b>. When the Application singleton has been assigned, its BidiMode property is applied to the notifier form instance.
           </p>
         </descr>
         <seealso>
@@ -959,7 +959,7 @@
         </short>
         <descr>
           <p>
-            <var>BGDrawn</var> is a Boolean constant with the value False.
+            <var>BGDrawn</var> is a Boolean constant with the value <b>False</b>.
           </p>
           <remark>
             BGDrawn is not used in the current implementation.
