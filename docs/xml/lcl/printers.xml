@@ -1364,7 +1364,7 @@
 
       <element name="TPrinter">
         <short>
-          <var>TPrinter</var>  defines a printer object used in Lazarus applications.
+          <var>TPrinter</var> defines a printer object used in Lazarus applications.
         </short>
         <descr>
           <p>
@@ -2998,7 +2998,7 @@
             <var>CanPrint</var> is a read-only <var>Boolean</var> property which indicates if the print device is enabled and ready to print.
           </p>
           <remark>
-            In <var>TPrinter</var>,  the property value is always <b>True</b>. The read access specifier (<var>GetCanPrint</var>) can be overridden in a descendnet class to use the facilities for the operating system /  widgetset / printer-related technology in the implementation.
+            In <var>TPrinter</var>, the property value is always <b>True</b>. The read access specifier (<var>GetCanPrint</var>) can be overridden in a descendnet class to use the facilities for the operating system /  widgetset / printer-related technology in the implementation.
           </remark>
         </descr>
         <seealso>
@@ -3435,7 +3435,7 @@ end;
             To change the printer programmatically either call the SetPrinter method or assign a new value to the PrinterIndex property. Both methods are based on the printers available in the Printers property.
           </p>
           <p>
-            PrinterIndex uses the printer name found at the indicated position in Printers,  and calls the SetPrinter method to make the printer with the given name the active one.
+            PrinterIndex uses the printer name found at the indicated position in Printers, and calls the SetPrinter method to make the printer with the given name the active one.
           </p>
 
 <code>
