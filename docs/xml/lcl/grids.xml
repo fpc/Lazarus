@@ -756,7 +756,7 @@
       </element>
       <element name="TColumnButtonStyle.cbsCheckboxColumn">
         <short>
-          Indicates a CheckBox is displayed as the editor for the grid column.
+          Indicates a check box is displayed as the editor for the grid column.
         </short>
       </element>
       <element name="TColumnButtonStyle.cbsButton">
@@ -1922,7 +1922,7 @@
         </short>
         <descr>
           <p>
-            <var>TOnPrepareCanvasEvent</var> specifies an event handler signalled when the canvas for a grid control is prepared for rendering. TOnPrepareCanvasEvent allows the canvas for the grid control to be altered prior to rendering cell data.
+            <var>TOnPrepareCanvasEvent</var> specifies an event handler signalled when the canvas for a grid control is prepared for rendering. TOnPrepareCanvasEvent allows the canvas for the grid control to be configured prior to rendering cell data.
           </p>
           <p>
             <var>Sender</var> is the grid control triggering the event notification.
@@ -1989,7 +1989,7 @@
 
       <element name="TUserCheckBoxImageEvent">
         <short>
-          Specifies the event handler used to get the image drawn for a Checkbox column.
+          Specifies the event handler used to get the image drawn for a check box column.
         </short>
         <descr>
           <p>
@@ -1999,10 +1999,10 @@
             <var>Sender</var> is the grid control generating the event notification.
           </p>
           <p>
-            <var>ACol</var> and <var>ARow</var> are the column and row numbers (respectively) for the cell where the Checkbox is drawn.
+            <var>ACol</var> and <var>ARow</var> are the column and row numbers (respectively) for the cell where the check box is drawn.
           </p>
           <p>
-            <var>CheckedState</var> indicates whether the Checkbox is drawn using the Checked state.
+            <var>CheckedState</var> indicates whether the check box is drawn using the Checked state.
           </p>
           <p>
             <var>ImageList</var> contains the images used for the Unchecked and Checked states.
@@ -2069,10 +2069,10 @@
       </element>
 
       <element name="TToggledCheckboxEvent">
-        <short>Specifies an event handler signalled when the value in a CheckBox cell is changed.</short>
+        <short>Specifies an event handler signalled when the value in a check box cell is changed.</short>
         <descr>
           <p>
-            <var>TToggledCheckboxEvent</var> specifies an event handler signalled when the value in CheckBox-style cell is changed in a grid. Arguments passed to the event handler identify the grid control for the event notification, the row and column numbers for the altered cell, and the state for a CheckBox cell editor.
+            <var>TToggledCheckboxEvent</var> specifies an event handler signalled when the value in CheckBox-style cell is changed in a grid. Arguments passed to the event handler identify the grid control for the event notification, the row and column numbers for the altered cell, and the state for a check box cell editor.
           </p>
           <p>
             <var>TToggledCheckboxEvent</var> is the type used to implement the <var>OnCheckboxToggled</var> in <var>TCustomGrid</var> and descendent classes. Applications must implement an object procedure using the signature for the event handler to respond to the event notification.
@@ -2093,7 +2093,7 @@
         <short>Row number for the altered cell.</short>
       </element>
       <element name="TToggledCheckboxEvent.aState">
-        <short>State for the CheckBox in the associated cell editor.</short>
+        <short>State for the check box in the associated cell editor.</short>
       </element>
 
       <element name="THeaderSizingEvent">
@@ -8757,26 +8757,26 @@
 
       <element name="TCustomGrid.DrawGridCheckboxBitmaps">
         <short>
-          Draws a checkbox bitmap which represents the given state in a cell.
+          Draws a check box bitmap which represents the given state in a cell.
         </short>
         <descr>
           <p>
-            <var>DrawGridCheckboxBitmaps</var> is used to draw a bitmap used for a checkbox at the cell coordinates in <var>ACol</var> and <var>aRow</var>. <var>AState</var> contains the checkbox state for the cell, and determines the image displayed in the specified cell.
+            <var>DrawGridCheckboxBitmaps</var> is used to draw a bitmap used for a check box at the cell coordinates in <var>ACol</var> and <var>aRow</var>. <var>AState</var> contains the check box state for the cell, and determines the image displayed in the specified cell.
           </p>
           <p>
-            GetImageForCheckBox is called to get the image list, image index, and/or bitmap used in the cell. Use the OnUserCheckBoxImage or OnUserCheckboxBitmap event handler to get a custom image or bitmap displayed for the value in AState. If GetImageForCheckBox is unable to find either a bitmap or an image, ThemeServices is used to get the theme element details for the checkbox state.
+            GetImageForCheckBox is called to get the image list, image index, and/or bitmap used in the cell. Use the OnUserCheckBoxImage or OnUserCheckboxBitmap event handler to get a custom image or bitmap displayed for the value in AState. If GetImageForCheckBox is unable to find either a bitmap or an image, ThemeServices is used to get the theme element details for the check box state.
           </p>
           <p>
             The bitmap/image/theme element may be scaled if the control Font uses a display density (PPI) different than the value used for the Screen.
           </p>
           <p>
-            When Columns has been Enabled, the GetColumnAlignment and GetColumnLayout methods are used to determine the image alignment and layout used for the checkbox cell. If Columns has not been enabled, the image is centered horizontally in the cell using the vertical alignment defined for text on the Canvas.
+            When Columns has been Enabled, the GetColumnAlignment and GetColumnLayout methods are used to determine the image alignment and layout used for the check box cell. If Columns has not been enabled, the image is centered horizontally in the cell using the vertical alignment defined for text on the Canvas.
           </p>
           <p>
             DrawGridCheckboxBitmaps adjusts ARect to use the cell padding for the control (varCellPadding) along with the size, alignment and layout needed for the grid column.
           </p>
           <p>
-            The checkbox bitmap is drawn using the mechanism needed for the image source; ThemeServices.DrawElement, Canvas.StretchDraw, or TScaledImageListResolution.StretchDraw.
+            The check box bitmap is drawn using the mechanism needed for the image source; ThemeServices.DrawElement, Canvas.StretchDraw, or TScaledImageListResolution.StretchDraw.
           </p>
           <p>
             DrawGridCheckboxBitmaps is called from the DrawCellCheckboxBitmaps method.
@@ -8791,10 +8791,10 @@
         </seealso>
       </element>
       <element name="TCustomGrid.DrawGridCheckboxBitmaps.aCol">
-        <short>Column number for the checkbox cell.</short>
+        <short>Column number for the check box cell.</short>
       </element>
       <element name="TCustomGrid.DrawGridCheckboxBitmaps.aRow">
-        <short>Row number for the checkbox cell.</short>
+        <short>Row number for the check box cell.</short>
       </element>
       <element name="TCustomGrid.DrawGridCheckboxBitmaps.aRect">
         <short>Rectangle with the bounds for the cell.</short>
@@ -9734,10 +9734,10 @@
       </element>
 
       <element name="TCustomGrid.GetImageForCheckBox">
-        <short>Gets the bitmap used to draw Checkbox columns in the grid.</short>
+        <short>Gets the bitmap used to draw check box columns in the grid.</short>
         <descr>
           <p>
-            <var>GetImageForCheckBox</var> signals the <var>OnUserCheckboxBitmap</var> event handler (when assigned) to get a bitmap used for the checkbox state. If a valid <var>TBitmap</var> instance is not assigned in the event handler, the <var>OnUserCheckBoxImage</var> event handler is signalled (when assigned) to get the <var>TImageList</var>, <var>TBitmap</var>, and <var>ImageIndex</var> used for the purpose.
+            <var>GetImageForCheckBox</var> signals the <var>OnUserCheckboxBitmap</var> event handler (when assigned) to get a bitmap used for the check box state. If a valid <var>TBitmap</var> instance is not assigned in the event handler, the <var>OnUserCheckBoxImage</var> event handler is signalled (when assigned) to get the <var>TImageList</var>, <var>TBitmap</var>, and <var>ImageIndex</var> used for the purpose.
           </p>
           <p>
             GetImageForCheckBox is used in the implementation of the <var>DrawGridCheckboxBitmaps</var> and <var>DrawCellText</var> methods in <var>TCustomGrid</var>.
@@ -9751,24 +9751,24 @@
         </seealso>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.aCol">
-        <short>Column number for the Checkbox cell.</short>
+        <short>Column number for the check box cell.</short>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.aRow">
-        <short>Row number for the Checkbox cell.</short>
+        <short>Row number for the check box cell.</short>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.CheckBoxView">
         <short>Checkbox state for the cell.</short>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.ImageList">
-        <short>Image list with images used for Checkbox drawing states.</short>
+        <short>Image list with images used for check box drawing states.</short>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.ImageIndex">
         <short>
-          Ordinal position of the image used for the corresponding Checkbox state.
+          Ordinal position of the image used for the corresponding check box state.
         </short>
       </element>
       <element name="TCustomGrid.GetImageForCheckBox.Bitmap">
-        <short>Bitmap with the image drawn for the Checkbox state.</short>
+        <short>Bitmap with the image drawn for the check box state.</short>
       </element>
 
       <element name="TCustomGrid.GetScrollBarPosition">
@@ -12514,26 +12514,28 @@
 
       <element name="TCustomGrid.DefaultDrawing">
         <short>
-          Indicates if the default drawing mechanism is used to draw the background for cells.
+          Indicates if the default drawing mechanism is used to draw the background and text for cells.
         </short>
         <descr>
           <p>
-            <var>DefaultDrawing</var> is a <var>Boolean</var> property which indicates if the default drawing mechanism is used to draw the background for cells. The default value for the property is <b>True</b>.
+            <var>DefaultDrawing</var> is a <var>Boolean</var> property which indicates if the default drawing mechanism is used to draw the background and text for the cells on the grid control. The default value for the property is <b>True</b>.
           </p>
           <p>
-            Normally, the grid prepares its canvas using the properties needed for the kind cell type that is being painted. DefaultDrawing indicates that the grid control handles drawing the background for the cell (including a visible cell <var>Editor</var>) using the relevant properties.
+            Normally, the grid prepares its canvas using the properties needed for the kind cell type that is being painted. DefaultDrawing indicates that the grid control handles drawing the background and text for the cell (including a visible cell <var>Editor</var>) using the relevant properties.
           </p>
           <p>
-            Use the <var>OnDrawCell</var> event handler to handle drawing the value for the cell. Set DefaultDrawing to <b>False</b> when the OnDrawCell event handler is responsible for both the background and content in the cell.
+            Use the <var>OnDrawCell</var> event handler to handle drawing a cell using an appearance different than the default provided in PrepareCanvas. When DefaultDrawing is set to <b>False</b>, the OnDrawCell event handler is responsible for both the background and text content in the cell.
           </p>
           <p>
             Changing the value for the property causes the <var>Invalidate</var> method to be called to redraw the control.
           </p>
           <p>
-            DefaultDrawing is used in the PrepareCanvas method to configure the control Canvas for a drawing operation.
+            DefaultDrawing is used in the PrepareCanvas method to configure the control Canvas for a drawing operation. It is also used in the DrawCell method in descendent classes.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomDrawGrid.DrawCell"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.DefaultTextStyle">
@@ -13706,7 +13708,7 @@
       </element>
 
       <element name="TCustomGrid.OnCheckboxToggled">
-        <short>Event handler signalled when the value for a Checkbox cell is toggled.</short>
+        <short>Event handler signalled when the value for a check box cell is toggled.</short>
         <descr>
           <p>
             <var>OnCheckboxToggled</var> is a <var>TToggledCheckboxEvent</var> property with the event handler signalled when the value for a check box-style cell is toggled. OnCheckboxToggled is triggered (when assigned) after the cell value has been changed and stored. OnCheckboxToggled is used descendent classes which implement a Toggle method, like TCustomDrawGrid.
@@ -13729,14 +13731,23 @@
       </element>
 
       <element name="TCustomGrid.OnPrepareCanvas">
-        <short>Event handler signalled to prepare the Canvas for drawing.</short>
+        <short>Event handler signalled to prepare the Canvas to draw the grid.</short>
         <descr>
           <p>
-            <var>OnPrepareCanvas</var> is a <var>TOnPrepareCanvasEvent</var> property with the event handler signalled to configure the control <var>Canvas</var> to draw a cell using a specific state. OnPrepareCanvas is signalled (when assigned) from the <var>PrepareCanvas</var> method. It allows the Pen, Brush, Font, and Color defaults assigned in PrepareCanvas to be overridden for a specified column, row, or TGridDrawState value.
+            <var>OnPrepareCanvas</var> is a <var>TOnPrepareCanvasEvent</var> property with the event handler signalled to configure the control <var>Canvas</var> to draw a cell at specified coordinates using a specific state. OnPrepareCanvas is signalled (when assigned) from the <var>DoPrepareCanvas</var> method.
+          </p>
+          <p>
+            OnPrepareCanvas allows the Pen, Brush, Font, and Color defaults assigned in PrepareCanvas to be overridden for a specified column and row to use a specific TGridDrawState value. It offers the last chance to change the appearance of a cell before it is drawn in the DrawCell or ShowCellHintWindow methods.
+          </p>
+          <p>
+            Use OnDrawCell (implemented in the TCustomDrawGrid descendant) to override the actions performed in the DefaultDrawCell method when DefaultDrawing is enabled.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TCustomGrid.ShowCellHintWindow"/>
+          <link id="TCustomGrid.DrawCell"/>
+          <link id="TCustomDrawGrid.OnDrawCell"/>
           <link id="TOnPrepareCanvasEvent"/>
           <link id="TGridDrawState"/>
         </seealso>
@@ -13746,22 +13757,23 @@
         <short>Event handler signalled to draw a cell in the grid control.</short>
         <descr>
           <p>
-            <var>OnDrawCell</var> is a <var>TOnDrawCell</var> property with the event handler signalled to render a cell in the grid control. Parameters passed to the event handler identify the column and row numbers for the cell, and the drawing state.
+            <var>OnDrawCell</var> is a <var>TOnDrawCell</var> property with the event handler signalled to render a cell in the grid control. Parameters passed to the event handler identify the column and row numbers for the cell, the drawing rectangle, and the grid draw state for the cell.
           </p>
           <p>
-            OnDrawCell can be used along with the default drawing mechanism for the grid control. Set the <var>DefaultDrawing</var> property to <b>True</b> to allow the grid to render the cell background, state, and focus. Use OnDrawCell to handle the text which appears in the specified cell.
+            OnDrawCell can be used to perform drawing operations which supplement or override the default drawing mechanism in the grid control. When <var>DefaultDrawing</var> property is <b>True</b>, the DefaultDrawCell method is called to render the cell background, state, text and focus in the default manner. Use OnDrawCell to perform drawing actions which differ from the default for the specified cell.
           </p>
           <p>
-            OnDrawCell can be used to render all aspects of a cell by setting DefaultDrawing to <b>False</b>. In this situation, the event handler must handle rendering the background, state, focus, and text for the cell.
+            OnDrawCell can be used to render all aspects of a cell when DefaultDrawing is set to <b>False</b>. In this situation, the event handler must handle rendering the background, state, text, and focus for the cell.
           </p>
           <p>
-            OnDrawCell is signalled (when assigned) from the <var>DrawCell</var> method at run-time. It is not signalled at design-time. OnDrawCell occurs after the canvas has been configured using <var>PrepareCanvas</var>, and after <var>DefaultDrawCell</var> when DefaultDrawing is <b>True</b>.
+            OnDrawCell is signalled (when assigned) from the <var>DrawCell</var> method at run-time. It is not signalled at design-time. OnDrawCell occurs after the canvas has been configured using <var>PrepareCanvas</var>, and after <var>DefaultDrawCell</var> has been called (when DefaultDrawing is <b>True</b>).
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.DrawCell"/>
-          <link id="TCustomGrid.DefaultDrawing"/>
           <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TCustomGrid.DefaultDrawing"/>
+          <link id="TCustomGrid.DrawCell"/>
+          <link id="TCustomGrid.DrawCellGrid"/>
           <link id="TOnDrawCell"/>
         </seealso>
       </element>
@@ -13809,8 +13821,19 @@
         <short>
           Event handler signalled when an item is selected from a pick list-style Editor control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnPickListSelect</var> is a <var>TNotifyEvent</var> property with the event handler signalled when a value is selected from a pick list-style Editor control. It is signalled (when assigned) from the PickListItemSelected method, and occurs after the editor applies the modified value to the cell.
+          </p>
+          <p>
+            OnPickListSelect can be used to perform actions needed when the cell value is changed as a result of the pick-list selection in the editor. An application must implement and assign an object procedure to the handler to respond to the event notification.
+          </p>
+        </descr>        
+        <seealso>
+          <link id="TCustomGrid.PickListItemSelected"/>
+          <link id="TPickListCellEditor.Select"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.OnSelection">
@@ -13820,17 +13843,35 @@
             The <var>Col</var> and <var>Row</var> parameters contain the column and the row of the highlighted cell.
           </p>
           <p>
-            Application developers can use the <var>OnSelection</var> and <var>OnBeforeSelection</var> events to react to focus changes. Component developers should use the ??? method instead.
+            Application developers can use the <var>OnSelection</var> and <var>OnBeforeSelection</var> events to react to focus changes.
           </p>
         </descr>
+        <notes>
+          <note>??? Component developers should use the ??? method instead.</note>
+        </notes>
+        
       </element>
 
       <element name="TCustomGrid.OnSelectEditor">
         <short>
           Event handler signalled to select an Editor control for the current cell.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnSelectEditor</var> is a <var>TSelectEditorEvent</var> property with the event handler signalled to select an editor control for a cell in the grid. Arguments to the event handler contain the column and row numbers for the cell, and a variable parameter used to return the editor control used for the specified cell.
+          </p>
+          <p>
+            OnSelectEditor is signalled (when assigned) from the SelectEditor method. It is not signalled if EditingAllowed returns <b>False</b> for the selected column in Col. It allows the default cell editor for the column (returned from GetDefaultEditor) to be overridden with a user-determined editor for a specific cell.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.EditingAllowed"/>
+          <link id="TCustomGrid.GetDefaultEditor"/>
+          <link id="TCustomGrid.SelectEditor"/>
+          <link id="TCustomGrid.SelectCell"/>
+          <link id="TSelectEditorEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.OnTopLeftChanged">
@@ -13843,7 +13884,7 @@
 
       <element name="TCustomGrid.OnUserCheckboxBitmap">
         <short>
-          Event handler signalled to get the user-defined bitmap used for a checkbox cell.
+          Event handler signalled to get the user-defined bitmap used for a check box cell.
         </short>
         <descr/>
         <seealso/>
@@ -13851,7 +13892,7 @@
 
       <element name="TCustomGrid.OnUserCheckboxImage">
         <short>
-          Event handler signalled to get the user-defined image used for a checkbox cell.
+          Event handler signalled to get the user-defined image used for a check box cell.
         </short>
         <descr>
         </descr>
@@ -15060,7 +15101,7 @@
 
       <element name="TGetCheckboxStateEvent">
         <short>
-          Specifies an event handler signalled to get the state for a Checkbox cell in a grid.
+          Specifies an event handler signalled to get the state for a check box cell in a grid.
         </short>
         <descr/>
         <seealso/>
@@ -15080,14 +15121,14 @@
 
       <element name="TSetCheckboxStateEvent">
         <short>
-          Specifies an event handler signalled to set the state for a Checkbox cell in a grid.
+          Specifies an event handler signalled to set the state for a check box cell in a grid.
         </short>
         <descr>
           <p>
-            <var>TSetCheckboxStateEvent</var> is an object procedure type which specifies an event handler signalled to set the state for a Checkbox cell in a grid control. TSetCheckboxStateEvent is the type used to implement the <var>OnSetCheckboxState</var> property in <var>TCustomDrawGrid</var>.
+            <var>TSetCheckboxStateEvent</var> is an object procedure type which specifies an event handler signalled to set the state for a check box cell in a grid control. TSetCheckboxStateEvent is the type used to implement the <var>OnSetCheckboxState</var> property in <var>TCustomDrawGrid</var>.
           </p>
           <p>
-            See <var>TGetCheckboxStateEvent</var> for the event handler signalled to get the value for a checkbox cell in a grid control.
+            See <var>TGetCheckboxStateEvent</var> for the event handler signalled to get the value for a check box cell in a grid control.
           </p>
         </descr>
         <seealso>
@@ -15105,7 +15146,7 @@
         <short>Row number for the modified cell.</short>
       </element>
       <element name="TSetCheckboxStateEvent.Value">
-        <short>New checkbox state for the cell.</short>
+        <short>New check box state for the cell.</short>
       </element>
 
       <element name="TCustomDrawGrid">
@@ -15147,14 +15188,14 @@
 
       <element name="TCustomDrawGrid.CellNeedsCheckboxBitmaps">
         <short>
-          Determines if the cell is valid and enabled, and uses the CheckBox button style.
+          Determines if the cell is valid and enabled, and uses the check box button style.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomDrawGrid.CellNeedsCheckboxBitmaps.Result">
         <short>
-          <b>True</b> when the specified cell is valid, enabled, and uses the CheckBox button style.
+          <b>True</b> when the specified cell is valid, enabled, and uses the check box button style.
         </short>
       </element>
       <element name="TCustomDrawGrid.CellNeedsCheckboxBitmaps.ACol">
@@ -15165,7 +15206,7 @@
       </element>
 
       <element name="TCustomDrawGrid.DrawCellCheckboxBitmaps">
-        <short>Draws a cell value using the bitmaps for the CheckBox button style.</short>
+        <short>Draws a cell value using the bitmaps for the check box button style.</short>
         <descr/>
         <seealso/>
       </element>
@@ -15205,7 +15246,7 @@
             <var>CellClick</var> is an overridden method used to handle a mouse click in the cell specified by the values in <var>ACol</var> and <var>ARow</var>. <var>Button</var> indicates the mouse button pressed for the click notification.
           </p>
           <p>
-            CellClick ensures that a left mouse button click causes the cell value in a column using the CheckBox button style to be toggled. When Button contains <var>mbLeft</var>, the column is examined to determine if it uses the CheckBox button style. When both conditions are met, the <var>ToggleCheckbox</var> method is called to update the cell value and display the correct bitmap for the CheckBox state.
+            CellClick ensures that a left mouse button click causes the cell value in a column using the check box button style to be toggled. When Button contains <var>mbLeft</var>, the column is examined to determine if it uses the check box button style. When both conditions are met, the <var>ToggleCheckbox</var> method is called to update the cell value and display the correct bitmap for the check box state.
           </p>
           <p>
             CellClick does not occur for a cell that is a fixed header for the column or the row.
@@ -15559,7 +15600,7 @@
         <short>Handles key down events for the grid control.</short>
         <descr>
           <p>
-            <var>KeyDown</var> is an overridden method in <var>TCustomDrawGrid</var>, and calls the inherited method on entry. KeyDown ensures that the Space (VK_SPACE) key code is properly applied to the control for a cell using the CheckBox button style.
+            <var>KeyDown</var> is an overridden method in <var>TCustomDrawGrid</var>, and calls the inherited method on entry. KeyDown ensures that the Space (VK_SPACE) key code is properly applied to the control for a cell using the check box button style.
           </p>
           <dl>
             <dt>VK_SPACE (Space)</dt>
@@ -15662,10 +15703,10 @@
       </element>
 
       <element name="TCustomDrawGrid.SetCheckboxState">
-        <short>Sets the value for a CheckBox in the specified cell to a given state.</short>
+        <short>Sets the value for a check box in the specified cell to a given state.</short>
         <descr>
           <p>
-            <var>SetCheckboxState</var> is a method used to set the checked, unchecked, or grayed state for a CheckBox in the cell specified by <var>ACol</var> and <var>ARow</var>.<var> AState</var> contains the state value applied to the cell.
+            <var>SetCheckboxState</var> is a method used to set the checked, unchecked, or grayed state for a check box in the cell specified by <var>ACol</var> and <var>ARow</var>.<var> AState</var> contains the state value applied to the cell.
           </p>
           <p>
             SetCheckboxState signals the <var>OnSetCheckboxState</var> event handler (when assigned) to perform the actions needed to change the value in the cell. If <var>DefaultDrawing</var> is enabled for the control, the <var>InvalidateCell</var> method is called to force the cell to be redrawn.
@@ -15751,11 +15792,11 @@
 
       <element name="TCustomDrawGrid.ToggleCheckbox">
         <short>
-          Toggles the state for a checkbox cell between the checked and unchecked values.
+          Toggles the state for a check box cell between the checked and unchecked values.
         </short>
         <descr>
           <p>
-            <var>ToggleCheckbox</var> is a method used to toggle the state for a checkbox located in the cell at <var>Col</var> and <var>Row</var> in the grid control.
+            <var>ToggleCheckbox</var> is a method used to toggle the state for a check box located in the cell at <var>Col</var> and <var>Row</var> in the grid control.
           </p>
           <p>
             No actions are performed in the method when Col is not an editable column in the grid. This can occur when <var>goEditing</var> has <b>not</b> been included in the <var>Options</var> for the control. It can also occur if the column definition in <var>Columns</var> has its <var>ReadOnly</var> property set to <b>True</b>.
@@ -15774,38 +15815,38 @@
       </element>
 
       <element name="TCustomDrawGrid.OnGetCheckboxState">
-        <short>Event handler signalled to get the state for a checkbox cell.</short>
+        <short>Event handler signalled to get the state for a check box cell.</short>
         <descr>
           <p>
-            <var>OnGetCheckboxState</var> is a <var>TGetCheckboxStateEvent</var> property with the event handler signalled to get the state for a checkbox cell. The <var>ACol</var> and <var>ARow</var> parameters contain the position for the cell. <var>Value</var> contains the <var>TCheckBoxState</var> value for the cell as assigned in the event handler.
+            <var>OnGetCheckboxState</var> is a <var>TGetCheckboxStateEvent</var> property with the event handler signalled to get the state for a check box cell. The <var>ACol</var> and <var>ARow</var> parameters contain the position for the cell. <var>Value</var> contains the <var>TCheckBoxState</var> value for the cell as assigned in the event handler.
           </p>
           <p>
-            OnGetCheckboxState provides the only mechanism to get the state value for a Checkbox cell in <var>TCustomDrawGrid</var> / <var>TDrawGrid</var>. This differs from <var>TCustomStringGrid</var> / <var>TStringGrid</var>, where the <var>TGridColumn</var> instance in Columns can is used (when enabled) to get the checked or unchecked value and determine the state for the cell. This approach can be implemented in the event handler; it is not provided by default.
+            OnGetCheckboxState provides the only mechanism to get the state value for a check box cell in <var>TCustomDrawGrid</var> / <var>TDrawGrid</var>. This differs from <var>TCustomStringGrid</var> / <var>TStringGrid</var>, where the <var>TGridColumn</var> instance in Columns can is used (when enabled) to get the checked or unchecked value and determine the state for the cell. This approach can be implemented in the event handler; it is not provided by default.
           </p>
           <p>
             OnGetCheckboxState is signalled (when assigned) from the GetCheckBoxState method.
           </p>
           <p>
-            Use <var>OnSetCheckboxState</var> to set the state for the CheckBox cell.
+            Use <var>OnSetCheckboxState</var> to set the state for the check box cell.
           </p>
         </descr>
         <seealso/>
       </element>
 
       <element name="TCustomDrawGrid.OnSetCheckboxState">
-        <short>Event handler signalled to set the state for a checkbox cell.</short>
+        <short>Event handler signalled to set the state for a check box cell.</short>
         <descr>
           <p>
-            <var>OnSetCheckboxState</var> is a <var>TSetCheckboxStateEvent</var> property with the event handler signalled to set the state for a checkbox cell. The <var>ACol</var> and <var>ARow</var> parameters contain the position for the cell. <var>Value</var> contains the <var>TCheckBoxState</var> value stored in the cell.
+            <var>OnSetCheckboxState</var> is a <var>TSetCheckboxStateEvent</var> property with the event handler signalled to set the state for a check box cell. The <var>ACol</var> and <var>ARow</var> parameters contain the position for the cell. <var>Value</var> contains the <var>TCheckBoxState</var> value stored in the cell.
           </p>
           <p>
-            OnSetCheckboxState provides the only mechanism to set the state value for a Checkbox cell in <var>TCustomDrawGrid</var> / <var>TDrawGrid</var>. This differs from <var>TCustomStringGrid</var> / <var>TStringGrid</var>, where the <var>TGridColumn</var> instance in Columns can is used (when enabled) to get the checked or unchecked value and determine the state value stored in the cell. This approach can be implemented in the event handler; it is not provided by default.
+            OnSetCheckboxState provides the only mechanism to set the state value for a check box cell in <var>TCustomDrawGrid</var> / <var>TDrawGrid</var>. This differs from <var>TCustomStringGrid</var> / <var>TStringGrid</var>, where the <var>TGridColumn</var> instance in Columns can is used (when enabled) to get the checked or unchecked value and determine the state value stored in the cell. This approach can be implemented in the event handler; it is not provided by default.
           </p>
           <p>
             OnSetCheckboxState is signalled (when assigned) from the SetCheckBoxState method.
           </p>
           <p>
-            Use <var>OnGetCheckboxState</var> to get the state for the CheckBox cell.
+            Use <var>OnGetCheckboxState</var> to get the state for the check box cell.
           </p>
         </descr>
         <seealso/>
@@ -16003,7 +16044,7 @@
               Draws fixed cells using the TitleStyle for the control. Calls DrawThemedCell when TitleStyle is set to tsNative. Otherwise, DrawFillRect is used.
             </li>
             <li>
-              Draws the bitmap needed for a cell using the CheckBox button style. Calls DrawCellCheckboxBitmaps to render the bitmap for the checkbox control.
+              Draws the bitmap needed for a cell using the check box button style. Calls DrawCellCheckboxBitmaps to render the bitmap for the check box control.
             </li>
             <li>
               Draws a cell using the Button style. Calls DrawButtonCell to render the button in the required state.
@@ -17169,7 +17210,7 @@
       </element>
 
       <element name="TCustomStringGrid.SetCheckboxState">
-        <short>Sets the checked state for a Checkbox in the specified cell.</short>
+        <short>Sets the checked state for a check box in the specified cell.</short>
         <descr/>
         <seealso/>
       </element>
@@ -17836,18 +17877,20 @@
             <tr>
               <td>BorderColor</td>
               <td>
-                Sets the grid's border color used when <var>Flat</var>=<b>True</b> and <var>BorderStyle</var>=bsSingle;
+                Sets the grid's border color used when <var>Flat</var>=<b>True</b> and <var>BorderStyle</var> is bsSingle.
               </td>
             </tr>
             <tr>
               <td>EditorBorderStyle</td>
               <td>
                 If set to <var>bsNone</var> under Windows the cell editors will not have the border, like in Delphi; set to <var>bsSingle</var> by default because the border can be theme specific in some widgetsets and to allow a uniform look.
-            </td>
+              </td>
             </tr>
             <tr>
               <td>FocusColor</td>
-              <td>The color used to draw the current focused cell if <var>UseXORFeatures</var> is not set; by default this is <var>clRed</var>.</td>
+              <td>
+                The color used to draw the current focused cell if <var>UseXORFeatures</var> is not set; by default this is <var>clRed</var>.
+              </td>
             </tr>
             <tr>
               <td>FocusRectVisible</td>
@@ -17869,12 +17912,14 @@
             </tr>
             <tr>
               <td>UseXORFeatures</td>
-              <td>If set, focus rect is drawn using XOR mode so it should make visible the focus rect in combination with any cell color background. It also affects the way that moving columns look.</td>
+              <td>
+                If set, focus rect is drawn using XOR mode so it should make visible the focus rect in combination with any cell color background. It also affects the way that moving columns look
+              </td>
             </tr>
             <tr>
               <td>DefaultDrawing</td>
               <td>
-                Normally the grid prepares its grid canvas using properties according to the kind of cell that is being painted. If the user has written an <var>OnDrawCell</var> event handler, <var>DefaultDrawing</var> (if set) also paints the cell background; if the user is taking full responsibility for drawing the cell it is better to turn off this so painting is not duplicated. In a StringGrid, if DefaultDrawing is set it draws the text in each cell.
+                Normally the grid prepares its grid canvas using properties according to the kind of cell that is being painted. If the user has written an <var>OnDrawCell</var> event handler, it is used to perform specified drawing operations for a given cell. <var>DefaultDrawing</var> (if set) also paints the cell background; if the user is taking full responsibility for drawing the cell it is better to turn off this so painting is not duplicated. In a StringGrid, if DefaultDrawing is set it draws the text in each cell.
             </td>
             </tr>
             <tr>
@@ -17883,7 +17928,9 @@
             </tr>
             <tr>
               <td>ExtendedColSizing</td>
-              <td>If <b>True</b>, the user can resize columns, not just at the headers, but anywhere along the column's height.</td>
+              <td>
+                If <b>True</b>, the user can resize columns, not just at the headers, but anywhere along the column's height.
+              </td>
             </tr>
           </table>
           <p>
@@ -18085,7 +18132,7 @@
             </li>
             <li>
               <p>
-                <b>cbsCheckboxColumn</b> - This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, <b>True</b>-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the appearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
+                <b>cbsCheckboxColumn</b> - This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, <b>True</b>-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the appearance of a column by using a check box representation that the user can toggle by using a mouse click or pressing the SPACE key.
               </p>
               <ul>
                 <li>
