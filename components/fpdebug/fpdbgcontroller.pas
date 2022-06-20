@@ -458,6 +458,8 @@ procedure TDbgControllerCallRoutineCmd.Init;
 begin
   inherited Init;
 
+  FCallContext.WriteStack;
+
   FStep := sSingleStep;
   StoreInstructionPointer;
   InsertCallInstructionCode;

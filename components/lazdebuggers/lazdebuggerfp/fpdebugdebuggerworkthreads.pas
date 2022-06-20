@@ -902,7 +902,7 @@ begin
           end;
           rk := ExprParamVal.Kind;
           if not(
-             (rk in [skInteger, {skCurrency,} skPointer, skEnum, skCardinal, skBoolean, skChar, skClass]) or
+             (rk in [skInteger, {skCurrency,} skPointer, skEnum, skCardinal, skBoolean, skChar, skClass, skRecord]) or
              ( (rk in [skString, skAnsiString, skWideString]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] <> []) )
           )
           then begin
