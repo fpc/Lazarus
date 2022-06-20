@@ -360,7 +360,7 @@
             Reading the value in PickList ensures that a TStringList class instance is assigned for the property. Its OnChange event handler is set to the private PickListChange method which adjusts the EditStyle to match the intended usage for the item. In other words, an EditStyle of esSimple is changed to esPickList when it contains values.
           </p>
           <p>
-            Assigning a new  TStringList to PickList causes existing values to be overwritten. The TValueListEditor (which owns the item) is redrawn when its EditorMode property is <b>True</b>.
+            Assigning a new TStringList to PickList causes existing values to be overwritten. The TValueListEditor (which owns the item) is redrawn when its EditorMode property is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -687,7 +687,7 @@
         <short>Gets the item definition for the specified key name or index position.</short>
         <descr>
           <p>
-            GetItemProp is a <var>TItemProp</var> function used to get an item definition for the specified key name or index position in the AKeyOrIndex argument. AKeyOrIndex is a variant type and contains the string with the name for a key, or the Integer row number  for the item.
+            GetItemProp is a <var>TItemProp</var> function used to get an item definition for the specified key name or index position in the AKeyOrIndex argument. AKeyOrIndex is a variant type and contains the string with the name for a key, or the Integer row number for the item.
           </p>
           <p>
             When a String value is used, the IndexOfName method is called to get the ordinal position for the key name. An Exception is raised if the key name does not exist in the string list.
@@ -740,7 +740,7 @@
         <short>Index for the non-title row in the associated grid control.</short>
       </element>
       <element name="TValueListStrings.CanHideShowingEditorAtIndex.Result">
-        <short>True when the cell editor for the control is visible but not focused.</short>
+        <short><b>True</b> when the cell editor for the control is visible but not focused.</short>
       </element>
 
       <element name="TValueListStrings.InsertItem">
@@ -850,7 +850,7 @@
         </short>
         <descr>
           <p>
-            <var>Clear</var> is an overridden procedure used to remove all item names, values,  and item definitions in the class instance. Clear uses the <var>TValueListEditor</var> which owns the class instance to clear its cached rows, and to hide a visible editor in the control. Clear calls the inherited method, and clears the internal list of item definitions for the class. TValueListEditor restores a visible editor when needed.
+            <var>Clear</var> is an overridden procedure used to remove all item names, values, and item definitions in the class instance. Clear uses the <var>TValueListEditor</var> which owns the class instance to clear its cached rows, and to hide a visible editor in the control. Clear calls the inherited method, and clears the internal list of item definitions for the class. TValueListEditor restores a visible editor when needed.
           </p>
         </descr>
         <seealso>
@@ -1085,7 +1085,7 @@
             Since version 2.2.0, Keys will no longer allow the name/value separator used in the Strings property to be entered as a value in the Key column. When entered, focus is moved to the Value column. If pasted into the Key column, the value is silently discarded.
           </remark>
           <p>
-            The ItemProps property is used to configure the cell editors used for the Keys and Values. This includes setting the editor style, edit mask, maximum length for the value, a list of selectable pick list values, and a read-only flag. Descriptive text for the Key name can also be stored  in the ItemProps.
+            The ItemProps property is used to configure the cell editors used for the Keys and Values. This includes setting the editor style, edit mask, maximum length for the value, a list of selectable pick list values, and a read-only flag. Descriptive text for the Key name can also be stored in the ItemProps.
           </p>
           <p>
             Features and behavior for the control can be specified using the Options, DisplayOptions, and KeyOptions properties.
@@ -1356,7 +1356,7 @@
         </short>
         <descr>
           <p>
-            <var>ShowColumnTitles</var> is a procedure used to assign and display the column titles for the Key and Value columns in the control. ShowColumnTitles requires  column titles to be enabled by including the value <var>doColumnTitles</var> in the <var>DisplayOptions</var> property. No actions are performed in the method if column titles have not been enabled.
+            <var>ShowColumnTitles</var> is a procedure used to assign and display the column titles for the Key and Value columns in the control. ShowColumnTitles requires column titles to be enabled by including the value <var>doColumnTitles</var> in the <var>DisplayOptions</var> property. No actions are performed in the method if column titles have not been enabled.
           </p>
           <p>
             The text used in column titles is derived from resource strings, or values in the <var>TitleCaptions</var> property (when assigned). The default column titles are:
@@ -1380,7 +1380,7 @@
             ShowColumnTitles stores the column titles to the first row in the grid control using the <var>Cells</var> property.
           </p>
           <p>
-            ShowColumnTitles is called automatically when the control is created,  and when values in <var>DisplayOptions</var> or <var>TitleCaptions</var> are changed.
+            ShowColumnTitles is called automatically when the control is created, and when values in <var>DisplayOptions</var> or <var>TitleCaptions</var> are changed.
           </p>
         </descr>
         <seealso>
@@ -1590,7 +1590,7 @@
             GetDefaultEditor saves the current contents in Cells for the selected Row number to allow use of RestoreCurrentRow. GetDefaultEditor calls the inherited method to enable the logic implemented in the ancestor class.
           </p>
           <p>
-            KeyOptions is used to determine if the <var>VK_Delete</var> key needs to be be handled in  the editor control. EditorOptions is updated to include or exclude the value <var>EO_HOOKKEYDOWN</var> based on the presence of KeyDelete in KeyOptions.
+            KeyOptions is used to determine if the <var>VK_Delete</var> key needs to be be handled in the editor control. EditorOptions is updated to include or exclude the value <var>EO_HOOKKEYDOWN</var> based on the presence of KeyDelete in KeyOptions.
           </p>
           <p>
             When Column contains 1 (the Value column), the item definition in ItemProps is used to configure the default editor. Its EditStyle is applied by calling the EditorByStyle method. For a PickList-style editor, pick list values in the item definition are assigned to the combo-box editor control and its drop-down row count is set to the value in DropDownRows. The OnGetPickList event handler is signalled (when assigned) to get user-defined values in the editor control. The read-only status for the editor is updated to reflect the value in the item definition.
@@ -1668,7 +1668,7 @@
             KeyPress is an overridden method in TValueListEditor which handles key press events for special characters used in the control.
           </p>
           <p>
-            It calls the inherited method on entry to handle the character value in Key.  If not handled in the ancestor class, it prevents the name/value separator used in Strings from being entered in the Name column for the control. If detected, Key is set to #0 and the focus is changed to the Value column and its editor is activated.
+            It calls the inherited method on entry to handle the character value in Key. If not handled in the ancestor class, it prevents the name/value separator used in Strings from being entered in the Name column for the control. If detected, Key is set to #0 and the focus is changed to the Value column and its editor is activated.
           </p>
         </descr>
         <seealso>
@@ -1837,7 +1837,7 @@
             <var>SetRowCount</var> is an overridden procedure used to set the value in the <var>RowCount</var> property. <var>AValue</var> contains the new value for the property.
           </p>
           <p>
-            AValue cannot contain a value smaller  than the number of <var>FixedRows</var> for the grid  control. An <var>EGridException</var> exception is raised when AValue is less than the number of FixedRows for the control.
+            AValue cannot contain a value smaller than the number of <var>FixedRows</var> for the grid control. An <var>EGridException</var> exception is raised when AValue is less than the number of FixedRows for the control.
           </p>
           <p>
             SetRowCount uses the <var>RowCount</var> value inherited from the grid to determine if any actions are required in the method. No actions are performed in the method when the inherited RowCount contains the same value as AValue.
@@ -1929,7 +1929,7 @@
         <short>The new value for the cell.</short>
       </element>
       <element name="TValueListEditor.ValidateEntry.Result">
-        <short>True if the cell value is valid.</short>
+        <short><b>True</b> if the cell value is valid.</short>
       </element>
 
       <element name="TValueListEditor.Create">
@@ -2019,7 +2019,7 @@
         </seealso>
       </element>
       <element name="TValueListEditor.DeleteColRow.IsColumn">
-        <short>True when a column is affected in the method.</short>
+        <short><b>True</b> when a column is affected in the method.</short>
       </element>
       <element name="TValueListEditor.DeleteColRow.Index">
         <short>Position of the row or column in the control.</short>
@@ -2102,7 +2102,7 @@
         <short>Relative row number for the specified key name.</short>
       </element>
       <element name="TValueListEditor.FindRow.Result">
-        <short>True when the key name exists in the control.</short>
+        <short><b>True</b> when the key name exists in the control.</short>
       </element>
 
       <element name="TValueListEditor.InsertColRow">
@@ -2132,7 +2132,7 @@
         </seealso>
       </element>
       <element name="TValueListEditor.InsertColRow.IsColumn">
-        <short>False if the insert operation is for a row.</short>
+        <short><b>False</b> if the insert operation is for a row.</short>
       </element>
       <element name="TValueListEditor.InsertColRow.Index">
         <short>Relative position for the inserted column.</short>
@@ -2166,13 +2166,13 @@
         </seealso>
       </element>
       <element name="TValueListEditor.InsertRow.KeyName">
-        <short>Key name to  use in the new row.</short>
+        <short>Key name to use in the new row.</short>
       </element>
       <element name="TValueListEditor.InsertRow.Value">
         <short>Value to use in the new row.</short>
       </element>
       <element name="TValueListEditor.InsertRow.Append">
-        <short>True if a row is inserted after the current row.</short>
+        <short><b>True</b> if a row is inserted after the current row.</short>
       </element>
       <element name="TValueListEditor.InsertRow.Result">
         <short>Relative row number for the inserted row.</short>
@@ -2231,7 +2231,7 @@
         <seealso></seealso>
       </element>
       <element name="TValueListEditor.ExchangeColRow.IsColumn">
-        <short>False when exchanging row values.</short>
+        <short><b>False</b> when exchanging row values.</short>
       </element>
       <element name="TValueListEditor.ExchangeColRow.Index">
         <short>Position for one of the exchanged values.</short>
@@ -2262,7 +2262,7 @@
         <short>Row number to examine in the method.</short>
       </element>
       <element name="TValueListEditor.IsEmptyRow.Result">
-        <short>True if the specified row has empty key name and value cells.</short>
+        <short><b>True</b> if the specified row has empty key name and value cells.</short>
       </element>
 
       <element name="TValueListEditor.LoadFromCSVStream">
@@ -2300,7 +2300,7 @@
         </short>
         <descr>
           <p>
-            <var>MoveColRow</var> is a procedure used to move the specified column or row to the new position. <var>IsColumn</var> indicates if the positions are in a column or in a row in the control. The two-column layout  in TValueListEditor prevents moving  column values. When IsColumn is <b>True</b>, an <var>EGridException</var> exception is raised with the message in <var>rsVLEInvalidRowColOperation</var>.
+            <var>MoveColRow</var> is a procedure used to move the specified column or row to the new position. <var>IsColumn</var> indicates if the positions are in a column or in a row in the control. The two-column layout in TValueListEditor prevents moving column values. When IsColumn is <b>True</b>, an <var>EGridException</var> exception is raised with the message in <var>rsVLEInvalidRowColOperation</var>.
           </p>
           <p>
             When IsColumn is <b>False</b>, the values in <var>Strings</var> stored at the relative position in <var>FromIndex</var> are deleted. The values are re-inserted in Strings at the relative position in <var>ToIndex</var>.
@@ -2312,7 +2312,7 @@
         </seealso>
       </element>
       <element name="TValueListEditor.MoveColRow.IsColumn">
-        <short>True if the operation affects a column.</short>
+        <short><b>True</b> if the operation affects a column.</short>
       </element>
       <element name="TValueListEditor.MoveColRow.FromIndex">
         <short>Original position of the row or column.</short>
@@ -2333,13 +2333,13 @@
             Values in the internal TKeyValuePair for the last row edited are restored in the Cells for the current Row. The EditorShow method is called to show the active editor after the row values are restored.
           </p>
           <p>
-            The return value is <b>True</b> if the pre-editing values were successfully restored in the current Row. The return is  <b>False</b> if values were not edited, or an editor was not assigned and focused in the control.
+            The return value is <b>True</b> if the pre-editing values were successfully restored in the current Row. The return is <b>False</b> if values were not edited, or an editor was not assigned and focused in the control.
           </p>
         </descr>
         <seealso></seealso>
       </element>
       <element name="TValueListEditor.RestoreCurrentRow.Result">
-        <short>True if the values were successfully restored in the current row.</short>
+        <short><b>True</b> if the values were successfully restored in the current row.</short>
       </element>
 
       <element name="TValueListEditor.Sort">
@@ -2515,10 +2515,10 @@
         </short>
         <descr>
           <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TValueListEditor.
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is <b>False</b> in TValueListEditor.
           </p>
           <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+            When this property is <b>True</b>, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to <b>False</b>.
           </p>
           <p>
             Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
@@ -2809,7 +2809,7 @@
              OnGetPickList is signalled from the <var>GetDefaultEditor</var> method when an item definition in <var>ItemProps</var> uses <var>esPickList</var> in its <var>EditStyle</var> property.
            </p>
            <p>
-             An application must implement and assign a routine to the event handler to respond to the notification. The arguments for the event handler include the control instance, the key name for the item, and a TStrings instance where the values for the pick list can be stored.  Existing values in the pick list can be modified or replaced entirely.
+             An application must implement and assign a routine to the event handler to respond to the notification. The arguments for the event handler include the control instance, the key name for the item, and a TStrings instance where the values for the pick list can be stored. Existing values in the pick list can be modified or replaced entirely.
            </p>
         </descr>
         <seealso>
@@ -2864,7 +2864,7 @@
         <short>Not used in the current implementation.</short>
         <descr>
           <p>
-            <var>OnValidate</var> is a <var>TOnValidateEvent</var> property that implements the event handler signalled to validate a modified value in the  grid. Not used in the current implementation.
+            <var>OnValidate</var> is a <var>TOnValidateEvent</var> property that implements the event handler signalled to validate a modified value in the grid. Not used in the current implementation.
           </p>
         </descr>
         <seealso>
