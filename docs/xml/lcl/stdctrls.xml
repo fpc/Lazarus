@@ -137,7 +137,7 @@
         <short>The scroll action type, as reported by the widget.</short>
         <descr>
           <p>
-            <var>TScrollCode</var> is an enumerated type with values that represent scroll actions received from the widgetset class for a scrollbar. The positions and values  in the enumeration correspond to the constants defined in the <file>LCLType</file> unit, and include:
+            <var>TScrollCode</var> is an enumerated type with values that represent scroll actions received from the widgetset class for a scrollbar. The positions and values in the enumeration correspond to the constants defined in the <file>LCLType</file> unit, and include:
           </p>
           <ul>
             <li>SB_LINEUP</li>
@@ -384,7 +384,7 @@
             <var>GetControlClassDefaultSize</var> is an overridden <var>TSize</var> class function used to get the default size for new instances of the class.
           </p>
           <p>
-            GetControlClassDefaultSize sets the values in members in the return value. The <var>CX</var> member contains the width for the new instance, and is set 121 (pixels).  The <var>CY</var> member contains the height for the new instance, and is set to the number of pixels returned from <var>GetSystemMetrics</var> for the <var>SM_CYHSCROLL</var> constant.
+            GetControlClassDefaultSize sets the values in members in the return value. The <var>CX</var> member contains the width for the new instance, and is set 121 (pixels). The <var>CY</var> member contains the height for the new instance, and is set to the number of pixels returned from <var>GetSystemMetrics</var> for the <var>SM_CYHSCROLL</var> constant.
           </p>
         </descr>
         <seealso>
@@ -492,7 +492,7 @@
         <short>Preferred height calculated for the control.</short>
       </element>
       <element name="TCustomScrollBar.CalculatePreferredSize.WithThemeSpace">
-        <short>True when space is reserved for theme element details in the calculated dimensions.</short>
+        <short><b>True</b> when space is reserved for theme element details in the calculated dimensions.</short>
       </element>
 
       <element name="TCustomScrollBar.Create">
@@ -679,7 +679,7 @@
             A small change occurs when the up or down buttons are clicked, or by up/down keyboard commands. It is typically used for scrolling by a few pixels, or by a single row or column of text.
           </p>
           <p>
-            Use LargeChange for the value applied when clicking the thumb in the scrollbar,  or when using the Home or End keys to navigate in the associated control.
+            Use LargeChange for the value applied when clicking the thumb in the scrollbar, or when using the Home or End keys to navigate in the associated control.
           </p>
         </descr>
       </element>
@@ -730,10 +730,10 @@
             <var>ScrollCode</var> contains the scroll command constant for the operation.
           </p>
           <p>
-            <var>ScrollPos</var> contains the new position for the scrollbar when the operation  is completed. The event handler can be used to override the value in ScrollPos before it is applied to the Position property in the class instance.
+            <var>ScrollPos</var> contains the new position for the scrollbar when the operation is completed. The event handler can be used to override the value in ScrollPos before it is applied to the Position property in the class instance.
           </p>
           <p>
-            OnScroll is signalled (when assigned) from the <var>Scroll</var> method, and occurs when control messages, like CNHScroll and CNVScroll,  are processed and applied.
+            OnScroll is signalled (when assigned) from the <var>Scroll</var> method, and occurs when control messages, like CNHScroll and CNVScroll, are processed and applied.
           </p>
           <p>
             Use the <var>OnChange</var> event to respond to programmatic changes to property values in the scrollbar.
@@ -1217,7 +1217,7 @@
         <seealso/>
       </element>
       <element name="TComboBoxStyleHelper.HasEditBox.Result">
-        <short>True if an selected item value is editable.</short>
+        <short><b>True</b> if an selected item value is editable.</short>
       </element>
 
       <element name="TComboBoxStyleHelper.SetEditBox">
@@ -1229,7 +1229,7 @@
         <short>Style values after adding or removing the edit box.</short>
       </element>
       <element name="TComboBoxStyleHelper.SetEditBox.AHasEditBox">
-        <short>True enables the edit box; <b>False</b> disables the edit box.</short>
+        <short><b>True</b> enables the edit box; <b>False</b> disables the edit box.</short>
       </element>
 
       <element name="TComboBoxStyleHelper.IsOwnerDrawn">
@@ -1238,7 +1238,7 @@
         <seealso/>
       </element>
       <element name="TComboBoxStyleHelper.IsOwnerDrawn.Result">
-        <short>True if the style includes an owner-drawn option.</short>
+        <short><b>True</b> if the style includes an owner-drawn option.</short>
       </element>
 
       <element name="TComboBoxStyleHelper.IsVariable">
@@ -1247,7 +1247,7 @@
         <seealso/>
       </element>
       <element name="TComboBoxStyleHelper.IsVariable.Result">
-        <short>True when the option is included for variable height list items.</short>
+        <short><b>True</b> when the option is included for variable height list items.</short>
       </element>
 
       <element name="TOwnerDrawState">
@@ -1644,7 +1644,7 @@
         <seealso/>
       </element>
       <element name="TCustomComboBox.CanShowEmulatedTextHint.Result">
-        <short>True when emulated TextHints are used, and the control state allows the hint display.</short>
+        <short><b>True</b> when emulated TextHints are used, and the control state allows the hint display.</short>
       </element>
 
       <element name="TCustomComboBox.CreateParams">
@@ -2253,7 +2253,7 @@
             <var>RealGetText</var> is an overridden method in <var>TCustomComboBox</var> which provides additional debugging support in the method. RealGetText ensures that a handle has been allocated for the control and the value in Text is available in the widgetset class prior to calling the inherited method.
           </p>
           <p>
-            The return value contains the Caption assigned to the control, or an empty string ('') when the  control handle is not available.
+            The return value contains the Caption assigned to the control, or an empty string ('') when the control handle is not available.
           </p>
         </descr>
         <seealso>
@@ -2428,7 +2428,7 @@
         </seealso>
       </element>
       <element name="TCustomComboBox.SelectItem.Result">
-        <short>True when a matching item was found and selected.</short>
+        <short><b>True</b> when a matching item was found and selected.</short>
       </element>
       <element name="TCustomComboBox.SelectItem.AnItem">
         <short>The text to find in Items.</short>
@@ -2453,7 +2453,7 @@
         <short>Always set to <b>True</b> in the method.</short>
       </element>
       <element name="TCustomComboBox.ShouldAutoAdjust.AHeight">
-        <short>True when AutoSize is not enabled for the control.</short>
+        <short><b>True</b> when AutoSize is not enabled for the control.</short>
       </element>
 
       <element name="TCustomComboBox.ItemHeight">
@@ -2831,7 +2831,7 @@
             <var>Clear</var> is a procedure used to remove all values stored in the <var>Items</var> property for the control. Clear calls the Clear method in Items to removed the strings and any associated objects stored in the <var>TStrings</var> property. Clear sets the value in <var>Text</var> to an empty string (<b>''</b>)  which forces the value in ItemIndex to be changed to <b>-1</b>.
           </p>
           <p>
-            Use the Clear method in Items to remove all of the the values stored in Items but  keep the current value in Text.
+            Use the Clear method in Items to remove all of the the values stored in Items but keep the current value in Text.
           </p>
           <p>
             Use ClearSelection to reset the value in ItemIndex and de-select the selected value in Items.
@@ -2847,13 +2847,13 @@
       </element>
 
       <element name="TCustomComboBox.ClearSelection">
-        <short>Removes the item selection in the list  box for the control.</short>
+        <short>Removes the item selection in the list box for the control.</short>
         <descr>
           <p>
             <var>ClearSelection</var> is a procedure used to remove the current item selection in the list box for the control. This causes the value in <var>ItemIndex</var> to be changed to <b>-1</b>, and the value in Text is set to an empty string ('').
           </p>
           <p>
-            Use SelStart, SelLength, and SelText to access or modify the text selection in the edit control.  Set <var>SelLength</var> to zero (<b>0</b>) to remove the text selection in  the edit box.
+            Use SelStart, SelLength, and SelText to access or modify the text selection in the edit control. Set <var>SelLength</var> to zero (<b>0</b>) to remove the text selection in the edit box.
           </p>
         </descr>
         <seealso>
@@ -3032,7 +3032,7 @@
       </element>
 
       <element name="TCustomComboBox.AutoSelected">
-        <short>True indicates that the selection was marked automatically by the control.</short>
+        <short><b>True</b> indicates that the selection was marked automatically by the control.</short>
         <descr>
           <p>
             <b>True</b> indicates that the combo-box control has just performed an <var>AutoSelect</var> operation so that subsequent mouse-clicks and keystrokes proceed normally without selecting the text.
@@ -3117,7 +3117,7 @@
             <var>EmulatedTextHintStatus</var> is a read-only <var>TEmulatedTextHintStatus</var> property which contains the status value for an emulated TextHint display in the control. EmulatedTextHintStatus is used when a value has been assigned to the <var>TextHint</var> property and the widgetset does not natively implement the capability. The LCL emulates the TextHint display by assigning the value in TextHint to the <var>Text</var> for the control.
           </p>
           <p>
-            EmulatedTextHintStatus is updated in the private <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
+            EmulatedTextHintStatus is updated in the private <var>ShowEmulatedTextHint</var> and <var>HideEmulatedTextHint</var> methods.
           </p>
         </descr>
         <seealso>
@@ -3484,7 +3484,7 @@
         <short>The list box control for the notification.</short>
       </element>
       <element name="TSelectionChangeEvent.User">
-        <short>True if the user changed the selection, <b>False</b> if changed by code.</short>
+        <short><b>True</b> if the user changed the selection, <b>False</b> if changed by code.</short>
       </element>
 
       <element name="TListBoxOption">
@@ -3495,7 +3495,7 @@
         </seealso>
       </element>
       <element name="TListBoxOption.lboDrawFocusRect">
-        <short>Draws a focus rectangle  when owner draw is enabled.</short>
+        <short>Draws a focus rectangle when owner draw is enabled.</short>
       </element>
 
       <element name="TListBoxOptions">
@@ -3655,7 +3655,7 @@
         <short>Ordinal position for the item.</short>
       </element>
       <element name="TCustomListBox.SendItemSelected.IsSelected">
-        <short>True when the item is selected; <b>False</b> when it is not selected.</short>
+        <short><b>True</b> when the item is selected; <b>False</b> when it is not selected.</short>
       </element>
 
       <element name="TCustomListBox.ClearSelectedCache">
@@ -3682,7 +3682,7 @@
         <seealso/>
       </element>
       <element name="TCustomListBox.GetSelectedCache.Result">
-        <short>True when the item is selected in the cache.</short>
+        <short><b>True</b> when the item is selected in the cache.</short>
       </element>
       <element name="TCustomListBox.GetSelectedCache.Index">
         <short>Ordinal position in Items for the cached item.</short>
@@ -4135,7 +4135,7 @@
         </seealso>
       </element>
       <element name="TCustomListBox.DoSelectionChange.User">
-        <short>True when the selection change results from user interaction with the control.</short>
+        <short><b>True</b> when the selection change results from user interaction with the control.</short>
       </element>
 
       <element name="TCustomListBox.SendItemIndex">
@@ -4366,7 +4366,7 @@
         <short>The item position.</short>
       </element>
       <element name="TCustomListBox.ItemAtPos.Existing">
-        <short>True when the index is requested for insertion of a new item.</short>
+        <short><b>True</b> when the index is requested for insertion of a new item.</short>
       </element>
 
       <element name="TCustomListBox.ItemRect">
@@ -4407,7 +4407,7 @@
         </seealso>
       </element>
       <element name="TCustomListBox.ItemVisible.Result">
-        <short>True when the specified item is at least partially visible in the control.</short>
+        <short><b>True</b> when the specified item is at least partially visible in the control.</short>
       </element>
       <element name="TCustomListBox.ItemVisible.Index">
         <short>Ordinal position for the item examined in the method.</short>
@@ -4435,7 +4435,7 @@
         </seealso>
       </element>
       <element name="TCustomListBox.ItemFullyVisible.Result">
-        <short>True when the specified item is fully visible in the list box control.</short>
+        <short><b>True</b> when the specified item is fully visible in the list box control.</short>
       </element>
       <element name="TCustomListBox.ItemFullyVisible.Index">
         <short>Ordinal position for the item examined in the method.</short>
@@ -4571,7 +4571,7 @@
         <short>Ordinal position for the final item changed in the method.</short>
       </element>
       <element name="TCustomListBox.SelectRange.ASelected">
-        <short>True if the items are selected; <b>False</b> when they are unselected.</short>
+        <short><b>True</b> if the items are selected; <b>False</b> when they are unselected.</short>
       </element>
 
       <element name="TCustomListBox.DeleteSelected">
@@ -4645,7 +4645,7 @@
             Delphi generates an <var>OnClick</var> event when the selection changes. The LCL adds a more specific <var>OnSelectionChange</var> event.
           </p>
           <p>
-            Set <var>ClickOnSelChange</var> to <b>False</b> when selection changes should be handled by  the OnSelectionChange event, and should not generate an OnClick event.  Setting  ClickOnSelChange to <b>True</b> gives the Delphi compatible behavior. The default value for the property is <b>True</b>.
+            Set <var>ClickOnSelChange</var> to <b>False</b> when selection changes should be handled by the OnSelectionChange event, and should not generate an OnClick event. Setting ClickOnSelChange to <b>True</b> gives the Delphi compatible behavior. The default value for the property is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -4880,7 +4880,7 @@
         <short>The virtual width of the list box, in pixels.</short>
         <descr>
           <p>
-            <var>ScrollWidth</var> is an <var>Integer</var> property with the logical horizontal extent for the list box, or the scrollable area inside the control.  When ScrollWidth is set to a value larger than <var>ClientWidth</var>, the horizontal scrollbar is displayed for the control.
+            <var>ScrollWidth</var> is an <var>Integer</var> property with the logical horizontal extent for the list box, or the scrollable area inside the control. When ScrollWidth is set to a value larger than <var>ClientWidth</var>, the horizontal scrollbar is displayed for the control.
           </p>
           <p>
             The value for ScrollWidth is read from the widgetset class (at run-time) when a Handle has been allocated for the control. Changing the value for the property causes the value in the widgetset class to be updated.
@@ -4936,7 +4936,7 @@
             The index value is the ordinal position in <var>Items</var> with the selection state value. Read and write access for the property value call the <var>CheckIndex</var> method to verify that the index is in bounds for the defined Items in the control. CheckIndex raises an exception if an index value is not in the required range.
           </p>
           <p>
-            Property values are read from the widgetset class when it has been created, or from the cached selection values when it has not. Write access ensures that <var>ItemIndex</var> is updated as  needed, and notifies the widgetset class and/or the item selection cache when a value is changed.
+            Property values are read from the widgetset class when it has been created, or from the cached selection values when it has not. Write access ensures that <var>ItemIndex</var> is updated as needed, and notifies the widgetset class and/or the item selection cache when a value is changed.
           </p>
           <p>
             Use <var>SelectAll</var> to set the selection state for all Items in the control.
@@ -5204,7 +5204,7 @@
       <element name="TCustomEdit.FEchoMode" link="#lcl.stdctrls.TCustomEdit.EchoMode"/>
 
       <element name="TCustomEdit.FEmulatedTextHintStatus">
-        <short>Status for  the emulated TextHint for the control.</short>
+        <short>Status for the emulated TextHint for the control.</short>
         <descr/>
         <seealso/>
       </element>
@@ -5236,13 +5236,13 @@
             <var>ShowEmulatedTextHint</var> is a method used to display an emulated Text hint using the hint font for the control. Emulated text hints are used for widgetsets that do not natively support the <var>TextHint</var> capability.
           </p>
           <p>
-            ShowEmulatedTextHint gets the Hint font for the display by calling <var>CreateEmulatedTextHintFont</var>, and passes the value to the widgetset class. The value in <var>Text</var> is set to the text in the TextHint property. The widgetset class is notified of the property changes,  and an internal flag used to track emulated hint display is set to <b>True</b>.
+            ShowEmulatedTextHint gets the Hint font for the display by calling <var>CreateEmulatedTextHintFont</var>, and passes the value to the widgetset class. The value in <var>Text</var> is set to the text in the TextHint property. The widgetset class is notified of the property changes, and an internal flag used to track emulated hint display is set to <b>True</b>.
           </p>
           <p>
             The compliment to ShowEmulatedTextHint is <var>HideEmulatedTextHint</var>.
           </p>
           <p>
-            ShowEmulatedTextHint is used in the implementation of the private  <var>ShowEmulatedTextHintIfYouCan</var> method.
+            ShowEmulatedTextHint is used in the implementation of the private <var>ShowEmulatedTextHintIfYouCan</var> method.
           </p>
         </descr>
         <seealso>
@@ -5373,7 +5373,7 @@
         </seealso>
       </element>
       <element name="TCustomEdit.CanShowEmulatedTextHint.Result">
-        <short>True when the emulated text hint can be displayed.</short>
+        <short><b>True</b> when the emulated text hint can be displayed.</short>
       </element>
 
       <element name="TCustomEdit.CalculatePreferredSize">
@@ -5394,7 +5394,7 @@
         <short>Preferred height calculated for the control.</short>
       </element>
       <element name="TCustomEdit.CalculatePreferredSize.WithThemeSpace">
-        <short>True when space is reserved for theme element details.</short>
+        <short><b>True</b> when space is reserved for theme element details.</short>
      </element>
 
      <element name="TCustomEdit.CreateParams">
@@ -5754,7 +5754,7 @@
         </seealso>
       </element>
       <element name="TCustomEdit.ChildClassAllowed.Result">
-        <short>True if a child control using the specified class type are allowed for the control.</short>
+        <short><b>True</b> if a child control using the specified class type are allowed for the control.</short>
       </element>
       <element name="TCustomEdit.ChildClassAllowed.ChildClass">
         <short>Class type for the child control.</short>
@@ -5790,7 +5790,7 @@
         <short>Uses the TextHint display status when getting the value for Text.</short>
         <descr>
           <p>
-            <var>RealGetText</var> is an overridden method in <var>TCustomEdit</var>. It ensures that an  emulated <var>TextHint</var> display status is considered when getting the value for the <var>Text</var> property. In other words, the inherited method is <b>not</b> called when the TextHint display is visible. The return value is an empty string (<b>''</b>) in this case.
+            <var>RealGetText</var> is an overridden method in <var>TCustomEdit</var>. It ensures that an emulated <var>TextHint</var> display status is considered when getting the value for the <var>Text</var> property. In other words, the inherited method is <b>not</b> called when the TextHint display is visible. The return value is an empty string (<b>''</b>) in this case.
           </p>
         </descr>
         <seealso>
@@ -5908,10 +5908,10 @@
         </seealso>
       </element>
       <element name="TCustomEdit.ShouldAutoAdjust.AWidth">
-        <short>True when Width can be auto-adjusted.</short>
+        <short><b>True</b> when Width can be auto-adjusted.</short>
       </element>
       <element name="TCustomEdit.ShouldAutoAdjust.AHeight">
-        <short>True when Height can be auto-adjusted.</short>
+        <short><b>True</b> when Height can be auto-adjusted.</short>
       </element>
 
       <element name="TCustomEdit.WMSetFocus">
@@ -6062,7 +6062,7 @@
             SelectAll checks the value in <var>Text</var> to ensure that content is available for the selection. No actions are performed in the method when Text is an empty string (<b>''</b>).
           </p>
           <p>
-            When Text is not empty, the values in <var>SelStart</var> and <var>SelLength</var> are updated to use the content in Text starting at the first UTF-8-encoded character.  UTF8Length is called to get the length for Text, and the value stored in SelLength.
+            When Text is not empty, the values in <var>SelStart</var> and <var>SelLength</var> are updated to use the content in Text starting at the first UTF-8-encoded character. UTF8Length is called to get the length for Text, and the value stored in SelLength.
           </p>
         </descr>
         <seealso>
@@ -6077,7 +6077,7 @@
         <short>Clears the current text selection in the edit control.</short>
         <descr>
           <p>
-            <var>ClearSelection</var> is a procedure used to clear the currently selected text in the edit control. ClearSelection sets the value in <var>SelText</var> to an empty string ('') to discard  selected value in the edit control. It does <b>not</b> affect the values in the <var>Text</var> property.
+            <var>ClearSelection</var> is a procedure used to clear the currently selected text in the edit control. ClearSelection sets the value in <var>SelText</var> to an empty string ('') to discard selected value in the edit control. It does <b>not</b> affect the values in the <var>Text</var> property.
           </p>
           <p>
             No actions are performed in the method when <var>SelLength</var> contains <b>0</b> (<b>zero</b>).
@@ -6209,7 +6209,7 @@
         <short>Event handler added in the method.</short>
       </element>
       <element name="TCustomEdit.AddHandlerOnChange.AsFirst">
-        <short>True if the handler is stored at the top of the method list for the handler type.</short>
+        <short><b>True</b> if the handler is stored at the top of the method list for the handler type.</short>
       </element>
 
       <element name="TCustomEdit.RemoveHandlerOnChange">
@@ -6264,7 +6264,7 @@
         <short>Indicates the line style drawn as a border around the control.</short>
         <descr>
           <p>
-            <var>BorderStyle</var> is a <var>TBorderStyle</var> property with the line style used for borders on the control.  The default value for the property is bsSingle in TCustomEdit, and causes the control to be drawn with the client edges style enabled. Use bsNone if borders are not needed for the control.
+            <var>BorderStyle</var> is a <var>TBorderStyle</var> property with the line style used for borders on the control. The default value for the property is bsSingle in TCustomEdit, and causes the control to be drawn with the client edges style enabled. Use bsNone if borders are not needed for the control.
           </p>
         </descr>
         <seealso>
@@ -6366,7 +6366,7 @@
             <var>EmulatedTextHintStatus</var> is a read-only <var>TEmulatedTextHintStatus</var> property which contains the status value for an emulated TextHint display in the control. EmulatedTextHintStatus is used when a value has been assigned to the <var>TextHint</var> property and the widgetset does not natively implement the capability. The LCL emulates the TextHint display by assigning the value in TextHint to the <var>Text</var> for the control.
           </p>
           <p>
-            EmulatedTextHintStatus is updated in the <var>ShowEmulatedTextHint</var> and  <var>HideEmulatedTextHint</var> methods.
+            EmulatedTextHintStatus is updated in the <var>ShowEmulatedTextHint</var> and <var>HideEmulatedTextHint</var> methods.
           </p>
         </descr>
         <seealso>
@@ -6418,7 +6418,7 @@
       </element>
 
       <element name="TCustomEdit.Modified">
-        <short>True when the value in Text has been changed.</short>
+        <short><b>True</b> when the value in Text has been changed.</short>
         <descr>
           <p>
             <var>Modified</var> is a <var>Boolean</var> property which indicates if the value in <var>Text</var> has been changed when a <b>CM_TEXTCHANGED</b> message is handled for the control. The value is set to <b>True</b> in the <var>TextChanged</var> method. The value is reset to <b>False</b> when <var>RealSetText</var> is called to store the value in Text to the buffer for the control.
@@ -6550,7 +6550,7 @@
             <var>SelStart</var> is an <var>Integer</var> property which contains the ordinal position in <var>Text</var> for the UTF-8-encoded character at the start of the current text selection. The current text selection includes the number of characters in <var>SelLength</var>. SelStart is a zero-based value.
           </p>
           <p>
-            The value for SelStart is read from the widgetset class when a handle has been allocated for the control. Otherwise, the value is read from the internal member for the property. Setting a new  value for the property notifies the widgetset class when a handle has been allocated for the control.
+            The value for SelStart is read from the widgetset class when a handle has been allocated for the control. Otherwise, the value is read from the internal member for the property. Setting a new value for the property notifies the widgetset class when a handle has been allocated for the control.
           </p>
           <p>
             Use <var>SelLength</var> for the number of UTF-8-encoded characters in the current text selection.
@@ -6615,7 +6615,7 @@
         <short>The text displayed and edited for the control.</short>
         <descr>
           <p>
-            <var>Text</var> is a <var>TCaption</var> property which contains the UTF-8-encoded characters maintained as the value for the edit control.  The value in Text is read and written using the <var>RealGetText</var> and <var>RealSetText</var> methods. Not only do they provide code compatibility with the Delphi VCL, they support use of emulated <var>TextHint</var> displays. The value in TextHint is assigned to Text when the inline hint text is displayed for the control.
+            <var>Text</var> is a <var>TCaption</var> property which contains the UTF-8-encoded characters maintained as the value for the edit control. The value in Text is read and written using the <var>RealGetText</var> and <var>RealSetText</var> methods. Not only do they provide code compatibility with the Delphi VCL, they support use of emulated <var>TextHint</var> displays. The value in TextHint is assigned to Text when the inline hint text is displayed for the control.
           </p>
           <p>
             The value in Text may be altered in the <var>TextChanged</var> method when the setting in <var>CharCase</var> requires case conversion for the value in the control.
@@ -6712,7 +6712,7 @@
     sContent := AMemo.Lines.Text;
 </code>
           <p>
-            Please note: There is a difference in TCustomMemo / TMemo between the <var>Text</var> and <var>Lines</var> properties. Text is actually the Caption for the control as inherited from TControl. Lines is the multi-line TStrings instance specific to the memo control.  Setting the control value using Text does <b>NOT</b> cause the <var>Modified</var> property to be updated. Setting the value using the Lines property does cause the Modified property to be updated.
+            Please note: There is a difference in TCustomMemo / TMemo between the <var>Text</var> and <var>Lines</var> properties. Text is actually the Caption for the control as inherited from TControl. Lines is the multi-line TStrings instance specific to the memo control. Setting the control value using Text does <b>NOT</b> cause the <var>Modified</var> property to be updated. Setting the value using the Lines property does cause the Modified property to be updated.
           </p>
           <p>
             This is important if an <var>OnChange</var> event handler is used to detect changes to the value in the control, and you need to identify whether the change was performed in program code. You can identify a programmatic change by manipulating the value in Modified.
@@ -6930,7 +6930,7 @@ end;
             <var>SetCaretPos</var> is an overridden method in <var>TCustomMemo</var> used to set the position for the editing cursor (or caret).
           </p>
           <p>
-            <var>AValue</var> is a <var>TPoint</var> instance with the character and line coordinates for the editing cursor.  The X member contains the 0-based relative column offset to the UTF-8-encoded character where the caret is positioned. 0 is immediately before the first character in the current line of text. The Y member contains the 0-based offset to the line where the caret is positioned.
+            <var>AValue</var> is a <var>TPoint</var> instance with the character and line coordinates for the editing cursor. The X member contains the 0-based relative column offset to the UTF-8-encoded character where the caret is positioned. 0 is immediately before the first character in the current line of text. The Y member contains the 0-based offset to the line where the caret is positioned.
           </p>
           <p>
             SetCaretPos ensures that the widgetset class is cast to a TWSCustomMemoClass instance, and calls its SetCaretPos method.
@@ -7068,7 +7068,7 @@ end;
             <var>UTF8KeyPress</var> is an overridden method in <var>TCustomMemo</var> which implements the handler for UTF-8-encoded key press events in the control.
           </p>
           <p>
-            UTF8KeyPress calls the inherited method on entry to signal the OnUTF8KeyPress event handler (when assigned). It ensures that a <b>Carriage Return</b> (decimal character 13) key is handled using the setting specified in the <var>WantReturns</var> property. When WantReturns is set to <b>False</b>,  the value in <var>UTF8Key</var> is set to an empty string (<b>''</b>) to discard the character.
+            UTF8KeyPress calls the inherited method on entry to signal the OnUTF8KeyPress event handler (when assigned). It ensures that a <b>Carriage Return</b> (decimal character 13) key is handled using the setting specified in the <var>WantReturns</var> property. When WantReturns is set to <b>False</b>, the value in <var>UTF8Key</var> is set to an empty string (<b>''</b>) to discard the character.
           </p>
         </descr>
         <seealso>
@@ -7097,7 +7097,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomMemo.CanShowEmulatedTextHint.Result">
-        <short>True when an emulated TextHint can be displayed for the control.</short>
+        <short><b>True</b> when an emulated TextHint can be displayed for the control.</short>
       </element>
 
       <element name="TCustomMemo.Create">
@@ -7192,7 +7192,7 @@ end;
             sContent := AMemo.Lines[2];
           </code>
           <p>
-            The Text property in Lines allows access to all of the values stored in Lines. Text lines are  separated by the <var>LineEnding</var> character sequence defined for the host platform or operating system. For example:
+            The Text property in Lines allows access to all of the values stored in Lines. Text lines are separated by the <var>LineEnding</var> character sequence defined for the host platform or operating system. For example:
           </p>
           <code>
             // var sContent: String;
@@ -7243,7 +7243,7 @@ end;
         <short>The vertical scrollbar for the control.</short>
         <descr>
           <p>
-            <var>VertScrollBar</var> is a <var>TMemoScrollBar</var> property which contains the vertical  scrollbar displayed for the control. Resources are allocated to the property in the constructor, and freed in the destructor.
+            <var>VertScrollBar</var> is a <var>TMemoScrollBar</var> property which contains the vertical scrollbar displayed for the control. Resources are allocated to the property in the constructor, and freed in the destructor.
           </p>
           <p>
             Use ScrollBars to determine the scrollbars visible for the control.
@@ -7415,7 +7415,7 @@ end;
     sContent := AMemo.Lines.Text;
 </code>
           <p>
-            Please note: There is a difference in TCustomMemo / TMemo between the <var>Text</var> and <var>Lines</var> properties. Text is actually the Caption for the control as inherited from TControl. Lines is the multi-line TStrings instance specific to the memo control.  Setting the control value using Text does <b>NOT</b> cause the <var>Modified</var> property to be updated. Setting the value using the Lines property does cause the Modified property to be updated.
+            Please note: There is a difference in TCustomMemo / TMemo between the <var>Text</var> and <var>Lines</var> properties. Text is actually the Caption for the control as inherited from TControl. Lines is the multi-line TStrings instance specific to the memo control. Setting the control value using Text does <b>NOT</b> cause the <var>Modified</var> property to be updated. Setting the value using the Lines property does cause the Modified property to be updated.
           </p>
           <p>
             This is important if an <var>OnChange</var> event handler is used to detect changes to the value in the control, and you need to identify whether the change was performed in program code. You can identify a programmatic change by manipulating the value in Modified.
@@ -7689,7 +7689,7 @@ end;
         <short>Handles an accelerator key for the control.</short>
         <descr>
           <p>
-            <var>DialogChar</var> is an overridden method in <var>TCustomStaticText</var>.  It checks the character code in <var>Message</var> to determine if it is used as the accelerator (shortcut) in the <var>Caption</var> for the control. When the character code is found, the <var>FocusControl</var> is given focus and the return value is set to <b>True</b>.
+            <var>DialogChar</var> is an overridden method in <var>TCustomStaticText</var>. It checks the character code in <var>Message</var> to determine if it is used as the accelerator (shortcut) in the <var>Caption</var> for the control. When the character code is found, the <var>FocusControl</var> is given focus and the return value is set to <b>True</b>.
           </p>
           <p>
             If the character code is not found, the inherited method is called to broadcast the Message to child controls and get the return value.
@@ -7704,7 +7704,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomStaticText.DialogChar.Result">
-        <short>True if the message was handled as an accelerator key.</short>
+        <short><b>True</b> if the message was handled as an accelerator key.</short>
       </element>
       <element name="TCustomStaticText.DialogChar.Message">
         <short>Message examined in the method.</short>
@@ -7886,7 +7886,7 @@ end;
         <short>Specifies a base class for button controls.</short>
         <descr>
           <p>
-            <var>TButtonControl</var> is a <var>TWinControl</var> descendant which specifies the base class used for controls with button-like behavior, such as: <var>TCustomButton</var>,  <var>TButton</var>, <var>TCustomCheckBox</var>, <var>TCheckBox</var>, <var>TToggleBox</var>, and <var>TRadioButton</var>.
+            <var>TButtonControl</var> is a <var>TWinControl</var> descendant which specifies the base class used for controls with button-like behavior, such as: <var>TCustomButton</var>, <var>TButton</var>, <var>TCustomCheckBox</var>, <var>TCheckBox</var>, <var>TToggleBox</var>, and <var>TRadioButton</var>.
           </p>
           <p>
             TButtonControl introduces properties, methods, and events needed to read and write the Checked state for the control, handle Click events, and perform actions using OnChange or an action link.
@@ -7904,7 +7904,7 @@ end;
 
       <element name="TButtonControl.IsCheckedStored" link="#lcl.stdctrls.TButtonControl.Checked"/>
       <element name="TButtonControl.IsCheckedStored.Result">
-        <short>True when the value in Checked is included in the LCL streaming mechanism.</short>
+        <short><b>True</b> when the value in Checked is included in the LCL streaming mechanism.</short>
       </element>
 
       <element name="TButtonControl.WMDefaultClicked">
@@ -8079,10 +8079,10 @@ end;
             TCustomButton / TButton are used to perform an action when the control is clicked. An <var>OnClick</var> event handler is provided to perform actions needed when the push button is clicked.
           </p>
           <p>
-            Properties are provided to control the appearance and behavior for the control. This includes  whether it is the Default or Cancel button on a modal form, and the modal result returned when the push button is clicked.
+            Properties are provided to control the appearance and behavior for the control. This includes whether it is the Default or Cancel button on a modal form, and the modal result returned when the push button is clicked.
           </p>
           <p>
-            The control displays a text-based caption and is drawn using a style appropriate for the platform or widgetset. An accelerator key can be defined in the caption which simulates clicking on the push button when the shortcut key is pressed. Support for TBasicAction from the FPC Run-time Library (RTL) is present, but not  published in the control.
+            The control displays a text-based caption and is drawn using a style appropriate for the platform or widgetset. An accelerator key can be defined in the caption which simulates clicking on the push button when the shortcut key is pressed. Support for TBasicAction from the FPC Run-time Library (RTL) is present, but not published in the control.
           </p>
           <p>
             Please note that the Caption is always center aligned on the push button. The values in properties like BiDiMode and UseRightToLeftAlignment are ignored in the control.
@@ -8165,7 +8165,7 @@ end;
         <short>Handles a set focus window message for the control.</short>
         <descr>
           <p>
-            <var>WMSetFocus</var> calls the inherited method in <var>TWinControl</var> on entry.  Calls <var>UpdateFocus</var> to make the button the active control in the parent form.
+            <var>WMSetFocus</var> calls the inherited method in <var>TWinControl</var> on entry. Calls <var>UpdateFocus</var> to make the button the active control in the parent form.
           </p>
         </descr>
         <seealso>
@@ -8181,7 +8181,7 @@ end;
         <short>Handles a kill focus message for the control.</short>
         <descr>
           <p>
-            <var>WMKillFocus</var> calls the inherited method in <var>TWinControl</var> on entry. When the window handle in <var>Message</var> is the <var>Handle</var> for the control, the <var>UpdateFocus</var> method is called to remove the button as the active default control in  the parent form.
+            <var>WMKillFocus</var> calls the inherited method in <var>TWinControl</var> on entry. When the window handle in <var>Message</var> is the <var>Handle</var> for the control, the <var>UpdateFocus</var> method is called to remove the button as the active default control in the parent form.
           </p>
         </descr>
         <seealso>
@@ -8222,7 +8222,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomButton.UpdateFocus.AFocused">
-        <short>True when the button is focused, <b>False</b> when it loses focus.</short>
+        <short><b>True</b> when the button is focused, <b>False</b> when it loses focus.</short>
       </element>
 
       <element name="TCustomButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -8291,7 +8291,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomButton.DialogChar.Result">
-        <short>True if the message was handled as an accelerator key.</short>
+        <short><b>True</b> if the message was handled as an accelerator key.</short>
       </element>
       <element name="TCustomButton.DialogChar.Message">
         <short>Message examined in the method.</short>
@@ -8299,7 +8299,7 @@ end;
 
       <element name="TCustomButton.ChildClassAllowed" link="#lcl.controls.TWinControl.ChildClassAllowed"/>
       <element name="TCustomButton.ChildClassAllowed.Result">
-        <short>True when the widgetset class indicates child controls are allowed.</short>
+        <short><b>True</b> when the widgetset class indicates child controls are allowed.</short>
       </element>
       <element name="TCustomButton.ChildClassAllowed.ChildClass">
         <short>Not used in the current implementation.</short>
@@ -8378,7 +8378,7 @@ end;
             <var>TextChanged</var> is an overridden method used to performs actions needed when the <var>CM_TEXTCHANGED</var> message is handled in the control.
           </p>
           <p>
-            TextChanged calls <var>InvalidatePreferredSize</var> to force the preferred height and width for the control to be recalculated. When <var>Parent</var> has been assigned and its <var>AutoSize</var> property is set to <b>True</b>, the <var>AdjustSize</var> method in Parent is called. The AdjustSize method  for the control is called to resize the control or update control flags when delayed auto-sizing is in use.
+            TextChanged calls <var>InvalidatePreferredSize</var> to force the preferred height and width for the control to be recalculated. When <var>Parent</var> has been assigned and its <var>AutoSize</var> property is set to <b>True</b>, the <var>AdjustSize</var> method in Parent is called. The AdjustSize method for the control is called to resize the control or update control flags when delayed auto-sizing is in use.
           </p>
           <p>
             TextChanged calls the inherited method prior to exit.
@@ -8562,7 +8562,7 @@ end;
       </element>
 
       <element name="TCustomButton.Active">
-        <short>True if the control is the Cancel or Default button.</short>
+        <short><b>True</b> if the control is the Cancel or Default button.</short>
         <descr>
           <p>
             <var>Active</var> is a read-only <var>Boolean</var> property which indicates if the control is the active default control for the parent form.
@@ -8579,7 +8579,7 @@ end;
       </element>
 
       <element name="TCustomButton.Cancel">
-        <short>True if the button is the modal Cancel button.</short>
+        <short><b>True</b> if the button is the modal Cancel button.</short>
         <descr>
           <p>
             <var>Cancel</var> is a <var>Boolean</var> property which indicates if the button is the modal Cancel button on a form. The default value for the property is <b>False</b>.
@@ -8616,7 +8616,7 @@ end;
       </element>
 
       <element name="TCustomButton.Default">
-        <short>True if the button is the default button in a modal form.</short>
+        <short><b>True</b> if the button is the default button in a modal form.</short>
         <descr>
           <p>
             <var>Default</var> is a <var>Boolean</var> property which indicates if the button can be used as the default button control on a form. Default is essentially a design-time setting that indicates an intent. At run-time, the default button is the ActiveDefaultControl on the form. The default value for the property is <b>False</b>.
@@ -8666,13 +8666,13 @@ end;
             <dt>mrNo</dt>
             <dd>The No button was clicked.</dd>
             <dt>mrAll</dt>
-            <dd>The All  button was clicked.</dd>
+            <dd>The All button was clicked.</dd>
             <dt>mrNoToAll</dt>
             <dd>The No To All button was clicked.</dd>
             <dt>mrYesToAll</dt>
             <dd>The Yes To All button was clicked.</dd>
             <dt>mrClose</dt>
-            <dd>The Close  button was clicked.</dd>
+            <dd>The Close button was clicked.</dd>
           </dl>
         </descr>
         <seealso/>
@@ -8694,7 +8694,7 @@ end;
         <short>Shortcut key for the control.</short>
         <descr>
           <p>
-            ShortCut is a TShortCut property with the primary shortcut key or accelerator key for the control. The property value contains both the virtual  key code and the shift modifier for the short cut  key.
+            ShortCut is a TShortCut property with the primary shortcut key or accelerator key for the control. The property value contains both the virtual key code and the shift modifier for the short cut key.
           </p>
           <p>
             The value in ShortCut is automatically updated when a caption is assigned for the control which includes an accelerator key. The accelerator key is designated using an Ampersand (&amp;) character before the character used as the short cut. A value assigned in this manner always includes the ssCtrl modifier in the short cut value by default.
@@ -8713,7 +8713,7 @@ end;
         <short>Secondary shortcut key for the control.</short>
         <descr>
           <p>
-            ShortCutKey2 is a TShortCut property with the secondary shortcut key or accelerator key for the control. The property value contains both the virtual  key code and the shift modifier for the short cut key. The property value (along with Shortcut) is passed to the widgetset class when the WSSetText method is called.
+            ShortCutKey2 is a TShortCut property with the secondary shortcut key or accelerator key for the control. The property value contains both the virtual key code and the shift modifier for the short cut key. The property value (along with Shortcut) is passed to the widgetset class when the WSSetText method is called.
           </p>
           <p>
             Use the <var>ShortCut</var> and <var>ShortCutToKey</var> routines in the <file>menu.pp</file> unit to convert to and from virtual key codes with shift modifiers.
@@ -8741,7 +8741,7 @@ end;
             <var>TButton</var> is a <var>TCustomButton</var> descendant which implements a push button control. TButton is used to perform an action when the control is clicked. An <var>OnClick</var> event handler is provided to perform actions needed when the push button is clicked. TButton provides support for the <var>TBasicAction</var> class defined in the FPC Run-time Library (RTL).
           </p>
           <p>
-            Properties are provided to control the appearance and behavior for the control. This includes  whether it is the Default or Cancel button on a modal form, and the modal result returned when the push button is clicked.
+            Properties are provided to control the appearance and behavior for the control. This includes whether it is the Default or Cancel button on a modal form, and the modal result returned when the push button is clicked.
           </p>
           <p>
             The control displays a text-based caption and is drawn using a style appropriate for the platform or widgetset. An accelerator key can be defined in the caption which simulates clicking on the push button when the shortcut key is pressed.
@@ -8949,10 +8949,10 @@ end;
         <short>Gets the checked state for the control from the widgetset class.</short>
         <descr>
           <p>
-            <var>RetrieveState</var> is a <var>TCheckBoxState</var> function used to get the checked, unchecked, or grayed state for the control from the widgetset class. Access to the widgetset class requires a valid handle in the control. If the handle has not been assigned, the return value is set to the existing value in  the <var>State</var> member.
+            <var>RetrieveState</var> is a <var>TCheckBoxState</var> function used to get the checked, unchecked, or grayed state for the control from the widgetset class. Access to the widgetset class requires a valid handle in the control. If the handle has not been assigned, the return value is set to the existing value in the <var>State</var> member.
           </p>
           <p>
-            RetrieveState calls the RetrieveState method in the widgetset class to get the return value for  the method.
+            RetrieveState calls the RetrieveState method in the widgetset class to get the return value for the method.
           </p>
           <p>
             RetrieveState is used to get the value for the <var>State</var> property. It is called from <var>DoChange</var> when the <var>LM_CHANGED</var> control message is handled for the control. It is also called when setting a new value for the <var>Checked</var> property.
@@ -9000,7 +9000,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomCheckBox.DialogChar.Result">
-        <short>True when the control state is toggled by the accelerator key.</short>
+        <short><b>True</b> when the control state is toggled by the accelerator key.</short>
       </element>
       <element name="TCustomCheckBox.DialogChar.Message">
         <short>Control message examined in the method.</short>
@@ -9195,7 +9195,7 @@ end;
         <short>Secondary shortcut key for the control.</short>
         <descr>
           <p>
-            <var>ShortCutKey2</var> is a <var>TShortCut</var> property with the secondary  shortcut key or accelerator key for the control. The property value contains both the virtual key code and the shift modifier combined to form the short cut key.
+            <var>ShortCutKey2</var> is a <var>TShortCut</var> property with the secondary shortcut key or accelerator key for the control. The property value contains both the virtual key code and the shift modifier combined to form the short cut key.
           </p>
           <p>
             The property value (along with Shortcut) is passed to the widgetset class when the WSSetText method is called.
@@ -9362,7 +9362,7 @@ end;
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method using <var>TheOwner</var> as the owner for the new class instance. Create ensures that the internal component style for the control is set to <var>csToggleBox</var>,  and sets the default values for the TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method using <var>TheOwner</var> as the owner for the new class instance. Create ensures that the internal component style for the control is set to <var>csToggleBox</var>, and sets the default values for the TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
           </p>
         </descr>
         <seealso/>
@@ -9445,7 +9445,7 @@ end;
             In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> stringlist.
           </p>
           <p>
-            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
+            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var> are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
           </p>
           <p>
             The example shows the difference between the use of <var>TRadioButton</var> and <var>TRadioGroup</var>.
@@ -9499,7 +9499,7 @@ end;
         </seealso>
       </element>
       <element name="TRadioButton.DialogChar.Result">
-        <short>True when the message is handled and the control is focused.</short>
+        <short><b>True</b> when the message is handled and the control is focused.</short>
       </element>
       <element name="TRadioButton.DialogChar.Message">
         <short>Message examined for the accelerator key.</short>
@@ -9757,7 +9757,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomLabel.HasMultiLine.Result">
-        <short>True when CR or LF characters are used in the text for the label.</short>
+        <short><b>True</b> when CR or LF characters are used in the text for the label.</short>
       </element>
 
       <element name="TCustomLabel.CalculatePreferredSize">
@@ -9787,7 +9787,7 @@ end;
         <short>Preferred height calculated for the control.</short>
       </element>
       <element name="TCustomLabel.CalculatePreferredSize.WithThemeSpace">
-        <short>True to reserve space for theme element details.</short>
+        <short><b>True</b> to reserve space for theme element details.</short>
       </element>
 
       <element name="TCustomLabel.CalculateSize">
@@ -9834,7 +9834,7 @@ end;
         <seealso/>
       </element>
       <element name="TCustomLabel.DialogChar.Result">
-        <short>True when the message is handled as an accelerator key.</short>
+        <short><b>True</b> when the message is handled as an accelerator key.</short>
       </element>
       <element name="TCustomLabel.DialogChar.Message">
         <short>Message examined in the method.</short>
@@ -9846,7 +9846,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>TextChanged</var> is an overridden method used to perform actions needed when the <var>CM_TEXTCHANGED</var> message is handled for the control. TextChanged calls <var>Invalidate</var> to force the control to be redrawn. <var>UpdateSize</var> is called to perform auto-sizing,  and recalculate the dimensions for the control and its font.
+            <var>TextChanged</var> is an overridden method used to perform actions needed when the <var>CM_TEXTCHANGED</var> message is handled for the control. TextChanged calls <var>Invalidate</var> to force the control to be redrawn. <var>UpdateSize</var> is called to perform auto-sizing, and recalculate the dimensions for the control and its font.
           </p>
           <p>
             TextChanged does <b>not</b> calls the inherited method.
@@ -10116,7 +10116,7 @@ end;
         <seealso/>
       </element>
       <element name="TCustomLabel.CalcFittingFontHeight.Result">
-        <short>True when the text fits within the size constraints in MaxWidth and MaxHeight.</short>
+        <short><b>True</b> when the text fits within the size constraints in MaxWidth and MaxHeight.</short>
       </element>
       <element name="TCustomLabel.CalcFittingFontHeight.TheText">
         <short>Text measured in the method.</short>
@@ -10162,7 +10162,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomLabel.AdjustFontForOptimalFill.Result">
-        <short>True when the font height was changed in the method.</short>
+        <short><b>True</b> when the font height was changed in the method.</short>
       </element>
 
       <element name="TCustomLabel.Paint">
@@ -10240,7 +10240,7 @@ end;
             Alignment (and other properties) are used in the <var>Paint</var> method when the text is rendered to the <var>Canvas</var> for the control. It is also used in <var>UpdateSize</var> when right alignment needs to be considered for an auto-sized or optimal-filled control.
           </p>
           <p>
-            Use the <var>Layout</var> property to control the vertical alignment of the text displayed in  the control.
+            Use the <var>Layout</var> property to control the vertical alignment of the text displayed in the control.
           </p>
           <p>
             Use <var>OptimalFill</var> to indicate if the font height can be adjust to fill the client area for the control.
@@ -10522,7 +10522,7 @@ end;
         <short>Registers components declared in the unit.</short>
         <descr>
           <p>
-            <var>Register</var> is a procedure used to register components in the <file>stdctrls.pp</file>  unit for use in the Lazarus IDE.
+            <var>Register</var> is a procedure used to register components in the <file>stdctrls.pp</file> unit for use in the Lazarus IDE.
           </p>
           <p>
             Register calls <var>RegisterComponents</var> to add the following components to the <b>Standard</b> tab in the IDE:
@@ -10594,7 +10594,7 @@ end;
             The components defined in these Units have several properties that are common to most of them, and other properties that are specific to the individual components. We shall describe the most common ones here. Unusual or control-specific properties will be described for the individual controls.
           </p>
           <p>
-            Additional Help can always be obtained by selecting a property or keyword,  in either the Object Inspector or the Source Editor, and pressing <b>F1</b>. You will be taken by your Help browser to the appropriate page in the documentation.
+            Additional Help can always be obtained by selecting a property or keyword, in either the Object Inspector or the Source Editor, and pressing <b>F1</b>. You will be taken by your Help browser to the appropriate page in the documentation.
           </p>
           <p>
             If the description of a property on that page is insufficient, you can navigate to the corresponding description in the ancestor classes, by selecting the links in the Inheritance listing or by selecting the ancestor Type in the declaration of the object.
@@ -10864,7 +10864,7 @@ end;
               Always call the inherited Destroy method as the last action in the destructor code.
             </li>
             <li>
-              Be aware that an <var>exception</var> may be raised by the <var>constructor</var> when  there is not enough memory to create an object, or something else goes wrong. If the <var>exception</var> is not handled inside the constructor, the object will be destroyed immediately. In this case <var>Destroy</var> will be called with a partially initialized object, so your destructor must check if the resources were really allocated before disposing of them.
+              Be aware that an <var>exception</var> may be raised by the <var>constructor</var> when there is not enough memory to create an object, or something else goes wrong. If the <var>exception</var> is not handled inside the constructor, the object will be destroyed immediately. In this case <var>Destroy</var> will be called with a partially initialized object, so your destructor must check if the resources were really allocated before disposing of them.
             </li>
             <li>
               Remember to call <var>Free</var> for all objects created in the constructor.
