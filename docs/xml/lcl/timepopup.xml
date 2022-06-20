@@ -247,7 +247,7 @@
             ReturnTime signals the internal <var>TReturnTimeEvent</var> event handler (when assigned) to validate/update the time value. The TReturnTimeEvent event handler is passed as an argument to the <var>ShowTimePopup</var> routine.
           </p>
           <p>
-            The <var>Close</var> method is called to close the form if it has not already been  hidden.
+            The <var>Close</var> method is called to close the form if it has not already been hidden.
           </p>
         </descr>
         <seealso>
@@ -364,7 +364,7 @@
       </element>
       <element name="ShowTimePopup.SimpleLayout">
         <short>
-          True indicates the simple (compact) layout is used for the Minute grid on the form.
+          <b>True</b> indicates the simple (compact) layout is used for the Minute grid on the form.
         </short>
       </element>
       <element name="ShowTimePopup.ACaller">
