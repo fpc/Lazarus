@@ -51,7 +51,7 @@
         </short>
         <descr>
           <p>
-            <var>TPairSplitterSide</var> is a <var>TWinControl</var> descendant that represents the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide changes the visibility of inherited properties to match their intended usage.
+            <var>TPairSplitterSide</var> is a <var>TWinControl</var> descendant that represents the child controls used in the TPairSplitter component. TPairSplitterSide behaves like a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide changes the visibility of inherited properties to match their intended usage.
           </p>
         </descr>
         <seealso>
