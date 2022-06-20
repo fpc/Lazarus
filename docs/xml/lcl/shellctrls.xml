@@ -155,7 +155,7 @@
         <short>Search record with information for the item added to the shell control.</short>
       </element>
       <element name="TAddItemEvent.CanAdd">
-        <short>True if the item can be added.</short>
+        <short><b>True</b> if the item can be added.</short>
       </element>
 
       <element name="TCustomShellTreeView">
@@ -297,7 +297,7 @@
         <short>Creates a new tree node for the shell control.</short>
         <descr>
           <p>
-            <var>CreateNode</var> is an overridden method used to create an new <var>TTreeNode</var>  instance for the shell control. CreateNode calls the inherited method to create the class instance used as the return value for the method.
+            <var>CreateNode</var> is an overridden method used to create an new <var>TTreeNode</var> instance for the shell control. CreateNode calls the inherited method to create the class instance used as the return value for the method.
           </p>
           <p>
             CreateNode ensures that the tree node is a <var>TShellTreeNode</var> class instance; the class type can be overridden in the <var>OnCreateNodeClass</var> event handler. If the new tree node is not derived from <var>TShellTreeNode</var>, an <var>EShellCtrl</var> exception is raised to indicate the invalid node type.
@@ -348,7 +348,7 @@
         </seealso>
       </element>
       <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.Result">
-        <short>Returns True if at least one item was added to the shell control.</short>
+        <short>Returns <b>True</b> if at least one item was added to the shell control.</short>
       </element>
       <element name="TCustomShellTreeView.PopulateTreeNodeWithFiles.ANode">
         <short>Initial tree node used when filling the Items for the shell control.</short>
@@ -370,7 +370,7 @@
             <var>Selected</var> contains the current tree node selected in the shell control, and is used to determine if the selection is a file, directory, or other device. When it is a directory, its path is assigned to the <var>Root</var> property in <var>ShellListView</var>.
           </p>
           <p>
-            If <var>Selected</var> does not represent a directory, the path refers to a file name that must exist on the local file system. An <var>EShellCtrl</var> exception is raised if the selected item does not exist. If <var>Selected</var> has a parent tree node, its path is assigned to the <var>Root</var> property in  <var>ShellListView</var>. If no parent is available, the <var>Root</var> property in <var>ShellListView</var> is set to an empty string (<b>''</b>).
+            If <var>Selected</var> does not represent a directory, the path refers to a file name that must exist on the local file system. An <var>EShellCtrl</var> exception is raised if the selected item does not exist. If <var>Selected</var> has a parent tree node, its path is assigned to the <var>Root</var> property in <var>ShellListView</var>. If no parent is available, the <var>Root</var> property in <var>ShellListView</var> is set to an empty string (<b>''</b>).
           </p>
         </descr>
         <errors>
@@ -446,7 +446,7 @@
         </seealso>
       </element>
       <element name="TCustomShellTreeView.CanExpand.Result">
-        <short>True when the tree node contains child nodes and be expanded.</short>
+        <short><b>True</b> when the tree node contains child nodes and be expanded.</short>
       </element>
       <element name="TCustomShellTreeView.CanExpand.Node">
         <short>Tree node examined in the method.</short>
@@ -522,10 +522,10 @@
              NodeHasChildren signals the OnHasChildren event handler (when assigned) to get the return value for the method. The shell tree view class instance and the value in Node are passed as arguments to the event handler.
            </p>
            <p>
-             When an event handler has not been assigned, the return value is set to True when the specified Node is a Directory on the local file system.
+             When an event handler has not been assigned, the return value is set to <b>True</b> when the specified Node is a Directory on the local file system.
            </p>
            <p>
-             The return value is also True when the path to the node can be accessed as a sub-directory in Node (when ObjectTypes does not include otNonFolders objects). Include otHidden in ObjectTypes to include hidden directories in the comparison.
+             The return value is also <b>True</b> when the path to the node can be accessed as a sub-directory in Node (when ObjectTypes does not include otNonFolders objects). Include otHidden in ObjectTypes to include hidden directories in the comparison.
            </p>
          </descr>
          <seealso>
@@ -536,7 +536,7 @@
        </element>
        <element name="TCustomShellTreeView.NodeHasChildren.Result">
          <short>
-           True when the node is a directory or contains non-folder objects at the given path.
+           <b>True</b> when the node is a directory or contains non-folder objects at the given path.
          </short>
        </element>
 
@@ -544,7 +544,7 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance.  Create calls the inherited method using the value in <var>AOwner</var> as the owner for the class instance. Create initializes an internal member used to monitor the <var>Root</var> property for changes to its value. Create sets the value in <var>ObjectTypes</var> to display folders.
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited method using the value in <var>AOwner</var> as the owner for the class instance. Create initializes an internal member used to monitor the <var>Root</var> property for changes to its value. Create sets the value in <var>ObjectTypes</var> to display folders.
           </p>
           <p>
             Please note: Values in the <var>Items</var> property are populated when the <var>Loaded</var> method is called during component streaming.
@@ -617,7 +617,7 @@
 
       <element name="TCustomShellTreeView.GetPathFromNode">
           <short>
-            Returns the path (including the file name) for the file system object represented in the specified  node.
+            Returns the path (including the file name) for the file system object represented in the specified node.
           </short>
           <descr>
             <p>
@@ -811,7 +811,7 @@
             Setting Root to an invalid path name causes an EInvalidPath exception to be raised at run-time. The error is ignored, and an exception is not raised, at design-time to prevent crashing the Lazarus IDE.
           </p>
           <p>
-            TShellTreeNode instances are created and added to the Items property using the  expanded fully qualified path name in Root.
+            TShellTreeNode instances are created and added to the Items property using the expanded fully qualified path name in Root.
           </p>
           <p>
             If ShellListView has been assigned for the control, its Root property is updated to match the new value for the property.
@@ -831,7 +831,7 @@
         <short>Path to the directory displayed in the shell control.</short>
         <descr>
           <p>
-            <var>Path</var> is a <var>String</var> property which represents the path on the local file system to the Selected tree node in the  control.
+            <var>Path</var> is a <var>String</var> property which represents the path on the local file system to the Selected tree node in the control.
           </p>
           <p>
             Reading the value for the property calls the <var>GetPathFromNode</var> method to derive the value for the property using the <var>Selected</var> tree node. The full path for the <var>TShellTreeNode</var> is used, with a path delimiter appended for a directory entry. If the path is not absolute, the base path name is prepended to the path value.
@@ -944,7 +944,7 @@
         <short>Enables navigation using the Tab key.</short>
         <descr>
           <p>
-            The default value for the properly is True in TShellTreeView.
+            The default value for the properly is <b>True</b> in TShellTreeView.
           </p>
         </descr>
         <seealso>
@@ -1021,7 +1021,7 @@
             <var>TCSLVFileAddedEvent</var> specifies the interface for an event handler signalled when a <var>TListItem</var> instance is added to <var>TCustomShellListView</var>. TCSLVFileAddedEvent is the type used to implement the <var>OnAddItem</var> property in <var>TCustomShellListView</var>.
           </p>
           <p>
-            Applications must implement and assign an object procedure using the event signature to respond to the notification. <var>Sender</var> must be cast to the correct class type to access properties and methods in the control for the notification. Or,  use the <var>ListView</var> property in the <var>Item</var> argument.
+            Applications must implement and assign an object procedure using the event signature to respond to the notification. <var>Sender</var> must be cast to the correct class type to access properties and methods in the control for the notification. Or, use the <var>ListView</var> property in the <var>Item</var> argument.
           </p>
         </descr>
         <seealso>
@@ -1205,7 +1205,7 @@
             <var>PopulateWithRoot</var> is a procedure used to fill the <var>Items</var> in the list view with file system entries for the <var>Root</var> directory.
           </p>
           <p>
-            No actions are performed in the method at design-time, or when <var>Root</var>  contains an empty string (<b>''</b>).
+            No actions are performed in the method at design-time, or when <var>Root</var> contains an empty string (<b>''</b>).
           </p>
           <p>
             <var>PopulateWithRoot</var> calls the internal <var>GetFilesInDir</var> helper to get a list of file system items for the path which match the <var>Mask</var> and <var>ObjectTypes</var> specified for the control. Each of the files in the list are passed to <var>DoAddItem</var> / <var>OnAddItem</var> to determine if they can be added to the <var>Items</var> in the control.
@@ -1214,7 +1214,7 @@
             A <var>TListItem</var> instance is added to Items to represent the files or directories. The <var>Data</var> property in the list item is used to store a pointer to the file size. Values are added to <var>SubItems</var> with the string representation for the file size, and the file extension.
           </p>
           <p>
-            When <var>UseBuiltInIcons</var> is set to <b>True</b>, the <var>GetBuiltInImageIndex</var> method is called to get the <var>ImageIndex</var> for the built-in icon for a list item. This action is performed using the path to the current file name when LargeImages  and/or SmallImages have not been assigned. The value in <var>ViewStyle</var> determines the image size requested. When ViewStyle is <var>vsIcon</var>, LargeImages is checked (when assigned). Otherwise, <var>SmalImages</var> is checked (when assigned). If an imagelist exists in either LargeImages or SmallImages, the existing ImageIndex in the list item is used.
+            When <var>UseBuiltInIcons</var> is set to <b>True</b>, the <var>GetBuiltInImageIndex</var> method is called to get the <var>ImageIndex</var> for the built-in icon for a list item. This action is performed using the path to the current file name when LargeImages and/or SmallImages have not been assigned. The value in <var>ViewStyle</var> determines the image size requested. When ViewStyle is <var>vsIcon</var>, LargeImages is checked (when assigned). Otherwise, <var>SmalImages</var> is checked (when assigned). If an imagelist exists in either LargeImages or SmallImages, the existing ImageIndex in the list item is used.
           </p>
           <p>
             The <var>OnFileAdded</var> event handler is signalled (when assigned) for each new entry added to Items.
@@ -1242,7 +1242,7 @@
         <short>Adjusts column widths when the control is resized.</short>
         <descr>
           <p>
-            Calls the inherited method, and calls AdjustColWidths to update the layout for  Columns.
+            Calls the inherited method, and calls AdjustColWidths to update the layout for Columns.
           </p>
         </descr>
         <seealso>
@@ -1311,7 +1311,7 @@
       </element>
       <element name="TCustomShellListView.DoAddItem.CanAdd">
         <short>
-          Set the argument to True to allow the item to be added; set to False to prevent adding the item.
+          Set the argument to <b>True</b> to allow the item to be added; set to False to prevent adding the item.
         </short>
       </element>
 
@@ -1353,7 +1353,7 @@
       <short>File name or path used to find the associated image.</short>
     </element>
     <element name="TCustomShellListView.GetBuiltinImageIndex.ALargeImage">
-      <short>True if the large image list is used for the image.</short>
+      <short><b>True</b> if the large image list is used for the image.</short>
     </element>
 
       <element name="TCustomShellListView.OnFileAdded">
@@ -1751,7 +1751,7 @@
             <var>TShellTreeNode</var> is a <var>TTreeNode</var> descendant which represents tree nodes in <var>TShellTreeView</var>. TShellTreeNode extends the ancestor class with properties and methods needed to work with files or directories on the local file system. It includes an internal <var>TSearchRec</var> instance for the file system object stored when the node is created by a Shell tree view control.
           </p>
           <p>
-            TShellTreeNode is the class type used to create new nodes in  the <var>TCustomShellTreeView.CreateNode</var> method.
+            TShellTreeNode is the class type used to create new nodes in the <var>TCustomShellTreeView.CreateNode</var> method.
           </p>
         </descr>
         <seealso>
@@ -1843,7 +1843,9 @@
         </seealso>
       </element>
       <element name="TShellTreeNode.IsDirectory.Result">
-        <short>True when the tree node represents a directory on the local file system.</short>
+        <short>
+          <b>True</b> when the tree node represents a directory on the local file system.
+        </short>
       </element>
 
       <element name="TShellTreeNode.BasePath">
