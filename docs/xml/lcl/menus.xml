@@ -163,7 +163,9 @@
         <seealso/>
       </element>
       <element name="TMenuActionLink.IsAutoCheckLinked.Result">
-        <short><b>True</b> when  AutoCheck is the same in the menu item and the action.</short>
+        <short>
+          <b>True</b> when AutoCheck is the same in the menu item and the action.
+        </short>
       </element>
 
       <element name="TMenuActionLink.IsCaptionLinked" link="#lcl.actnlist.TActionLink.IsCaptionLinked">
@@ -525,7 +527,7 @@
             <var>TMergedMenuItems</var> provides an internal array for visible and hidden menu items stored in the container. The array has two (2) elements; one for visible menu items, the other for hidden menu items. Each element is a <var>TList</var> instance where the corresponding <var>TMenuItem</var> instances are stored.
           </p>
           <p>
-            Use the indexed <var>VisibleItems</var> and <var>InvisibleItems</var> properties to access values stored  in the container.
+            Use the indexed <var>VisibleItems</var> and <var>InvisibleItems</var> properties to access values stored in the container.
           </p>
           <p>
             TMergedMenuItems is the type used for the MergedItems property in TMenuItem.
@@ -958,7 +960,7 @@
         <short>Gets the value for the Action property.</short>
         <descr>
           <p>
-            The value for the property is read from the <var>ActionLink</var> property (when assigned).  The property value is <b>Nil</b> when a <var>TMenuActionLink</var> instance has not been assigned to ActionLink.
+            The value for the property is read from the <var>ActionLink</var> property (when assigned). The property value is <b>Nil</b> when a <var>TMenuActionLink</var> instance has not been assigned to ActionLink.
           </p>
         </descr>
         <seealso>
@@ -1108,10 +1110,10 @@
         <short>Updates Actions in child menu items.</short>
         <descr>
           <p>
-            <var>InitiateActions</var> is a method used to update the actions for child menu items in the Items property. InitiateActions visits each of the <var>TMenuItem</var> instances in <var>Items</var> and calls its <var>InitiateAction</var> method. This allows the <var>ActionLink</var> in the menu item to  call its <var>Update</var> method for the associated <var>TBasicAction</var> instance.
+            <var>InitiateActions</var> is a method used to update the actions for child menu items in the Items property. InitiateActions visits each of the <var>TMenuItem</var> instances in <var>Items</var> and calls its <var>InitiateAction</var> method. This allows the <var>ActionLink</var> in the menu item to call its <var>Update</var> method for the associated <var>TBasicAction</var> instance.
           </p>
           <p>
-            InitiateActions is called from the <var>DoClicked</var> method prior to executing the <var>Click</var> method for the menu item. It is called from the <var>TMenu</var> class when shortcut (accelerator) keys are handled for the menu. It is also called from the <var>TPopupMenu.PopUp</var>  method  when the menu is displayed.
+            InitiateActions is called from the <var>DoClicked</var> method prior to executing the <var>Click</var> method for the menu item. It is called from the <var>TMenu</var> class when shortcut (accelerator) keys are handled for the menu. It is also called from the <var>TPopupMenu.PopUp</var> method when the menu is displayed.
           </p>
         </descr>
         <seealso/>
@@ -1119,7 +1121,7 @@
 
       <element name="TMenuItem.MenuChanged">
         <short>
-          Signals the OnChange event handler (when assigned) and optionally rebuilds child  menu items.
+          Signals the OnChange event handler (when assigned) and optionally rebuilds child menu items.
         </short>
         <descr>
           <p>
@@ -1276,7 +1278,7 @@
         <short>Updates the widgetset class with the values in HasIcon and Bitmap.</short>
         <descr>
           <p>
-            <var>UpdateWSIcon</var> is a method used to update the widgetset class to reflect the values from <var>HasIcon</var> and the <var>Bitmap</var> property.  HasIcon returns <b>True</b> when a bitmap is available and in use for the menu item. Bitmap contains the image displayed for the menu item, and may be <b>Nil</b> when HasIcon returns <b>False</b>.
+            <var>UpdateWSIcon</var> is a method used to update the widgetset class to reflect the values from <var>HasIcon</var> and the <var>Bitmap</var> property. HasIcon returns <b>True</b> when a bitmap is available and in use for the menu item. Bitmap contains the image displayed for the menu item, and may be <b>Nil</b> when HasIcon returns <b>False</b>.
           </p>
           <p>
             UpdateWSIcon requires a valid <var>Handle</var> for the menu item. No actions are performed in the method when Handle has not been allocated for the menu item.
@@ -1390,7 +1392,7 @@
             Use the <var>ImageIndex</var> property to specify which image is used for the menu item. Use <var>Bitmap</var> to access the image displayed for the menu item.
           </p>
           <p>
-            GetImageList is called when the value for the Bitmap property is read. The image list provides an  image resolution with the image for the Bitmap property. It is also called from the <var>HasIcon</var> and <var>GetIconSize</var> methods.
+            GetImageList is called when the value for the Bitmap property is read. The image list provides an image resolution with the image for the Bitmap property. It is also called from the <var>HasIcon</var> and <var>GetIconSize</var> methods.
           </p>
         </descr>
         <seealso/>
@@ -1794,7 +1796,7 @@
         <short>Removes the specified menu item from its Parent.</short>
         <descr>
           <p>
-            <var>Remove</var> is a method used to locate and delete the menu item specified in <var>Item</var>.  Remove call <var>IndexOf</var> to get the position in <var>Items</var> where the menu item is stored. An <var>EMenuError</var> exception is raised if the menu item in Item is not found in the Items property.
+            <var>Remove</var> is a method used to locate and delete the menu item specified in <var>Item</var>. Remove call <var>IndexOf</var> to get the position in <var>Items</var> where the menu item is stored. An <var>EMenuError</var> exception is raised if the menu item in Item is not found in the Items property.
           </p>
           <p>
             Remove calls the <var>Delete</var> method to free the handle and the menu item instance at the required position.
@@ -2117,7 +2119,7 @@
         </short>
         <descr>
           <p>
-            <var>MergedItems</var> is a read-only <var>TMergedMenuItems</var> property which contains a list of merged menu items for the class instance. Either visible or  invisible menu items can be accessed in the list.
+            <var>MergedItems</var> is a read-only <var>TMergedMenuItems</var> property which contains a list of merged menu items for the class instance. Either visible or invisible menu items can be accessed in the list.
           </p>
         </descr>
         <seealso>
@@ -2237,7 +2239,7 @@
         </short>
         <descr>
           <p>
-            Caption is a TTranslateString property which contains the text displayed for the menu item. Caption can include a prefixed character which is used as the accelerator key for the menu item.  Use the value in cHotkeyPrefix to identify the character used as the  ShortCut key for the menu item.
+            Caption is a TTranslateString property which contains the text displayed for the menu item. Caption can include a prefixed character which is used as the accelerator key for the menu item. Use the value in cHotkeyPrefix to identify the character used as the ShortCut key for the menu item.
           </p>
           <p>
             Changing the value in the property causes the widgetset class to be notified when the Handle has been allocated and the Parent property is assigned.
@@ -2263,7 +2265,7 @@
           Indicates if the menu item is the default selection.
         </short>
         <descr>
-          When <var>Default</var> is set to <b>True</b>,  the menu item is normally displayed in boldface and can be executed by pressing the <b>Enter</b> key.
+          When <var>Default</var> is set to <b>True</b>, the menu item is normally displayed in boldface and can be executed by pressing the <b>Enter</b> key.
         </descr>
         <seealso/>
       </element>
@@ -2344,7 +2346,7 @@
 
       <element name="TMenuItem.Hint">
         <short>
-          <var>Hint</var>: shown in a statusbar if the main window has one and if the statusbar has AutoHint = True.
+          <var>Hint</var>: shown in a statusbar if the main window has one and if the statusbar has AutoHint set to <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -2502,7 +2504,7 @@
         <short>Checks the Handle property in a menu item.</short>
       </element>
       <element name="TFindItemKind.fkShortCut">
-        <short>Checks the ShortCut  property in a menu item.</short>
+        <short>Checks the ShortCut property in a menu item.</short>
       </element>
 
       <element name="TMenu">
@@ -2629,7 +2631,7 @@
       </element>
 
       <element name="TMenu.SetParentBiDiMode">
-        <short>Sets the value for the Parent   BiDiMode   property.</short>
+        <short>Sets the value for the Parent BiDiMode property.</short>
         <descr/>
         <seealso>
           <link id="TMenu.ParentBiDiMode"/>
@@ -2790,7 +2792,7 @@
         <short>Performs action when ParentBiDiMode has been changed.</short>
         <descr>
           <p>
-            Performs actions needed when the value in <var>ParentBiDiMode</var> has been changed. When Parent   BiDiMode   is set to <b>True</b>, ParentBidiModeChanged ensures the <var>BiDiMode</var> from the <var>TCustomForm</var> instance in <var>AOwner</var> is used in the menu.
+            Performs actions needed when the value in <var>ParentBiDiMode</var> has been changed. When Parent BiDiMode is set to <b>True</b>, ParentBidiModeChanged ensures the <var>BiDiMode</var> from the <var>TCustomForm</var> instance in <var>AOwner</var> is used in the menu.
           </p>
           <p>
             ParentBidiModeChanged is called from the <var>Create</var> constructor, and when a new value is assigned to the <var>ParentBiDiMode</var> property.
@@ -2936,7 +2938,7 @@
         </short>
         <descr>
           <p>
-            Is  Shortcut is a Boolean function used to determine if the control message in Message contains a shortcut (accelerator) key used in the menu. It converts the CharCode and KeyData in Message to a shortcut value by calling the ShortCut routine.
+            Is Shortcut is a Boolean function used to determine if the control message in Message contains a shortcut (accelerator) key used in the menu. It converts the CharCode and KeyData in Message to a shortcut value by calling the ShortCut routine.
           </p>
           <p>
             The FindItem method is called to locate the menu item with the value in its Shortcut property. The ShortCutHandled property is updated to indicate whether the shortcut value exists in Items.
@@ -3177,7 +3179,7 @@
             <var>OwnerDraw</var> is a <var>Boolean</var> property which indicates if the menu items are drawn using the <var>OnDrawItem</var> event handler. The default value for the property is <b>False</b>.
           </p>
           <p>
-            OwnerDraw is used when the widgetset class renders the menu. If OwnerDraw is <b>False</b>,  the default drawing routines for the platform are used to draw the menu control. Otherwise, the <var>OnMeasureItem</var> and <var>OnDrawItem</var> event handlers are signalled for the purpose.
+            OwnerDraw is used when the widgetset class renders the menu. If OwnerDraw is <b>False</b>, the default drawing routines for the platform are used to draw the menu control. Otherwise, the <var>OnMeasureItem</var> and <var>OnDrawItem</var> event handlers are signalled for the purpose.
           </p>
         </descr>
         <seealso>
@@ -3478,7 +3480,7 @@
             No actions are performed in the method if a value has already been assigned to the <var>ActivePopupMenu</var> variable. <var>DoPopUp</var> is called to signal the <var>OnPopup</var> event handler (when assigned). No additional actions are performed in the method if menu items have not been defined in the Items property.
           </p>
           <p>
-            PopUp sets the value in ActivePopupMenu to the current class instance. The <var>InitiateActions</var> method is called for the menu <var>Items</var> to  ensure that the <var>ActionLink</var> for the component is updated. The handles for the menu and its sub-items are recreated, and the <var>OnMenuPopupHandler</var> event handler is signalled (when assigned).
+            PopUp sets the value in ActivePopupMenu to the current class instance. The <var>InitiateActions</var> method is called for the menu <var>Items</var> to ensure that the <var>ActionLink</var> for the component is updated. The handles for the menu and its sub-items are recreated, and the <var>OnMenuPopupHandler</var> event handler is signalled (when assigned).
           </p>
           <p>
             PopUpMenu calls the corresponding method in the widgetset class prior to exiting from the method.
@@ -3516,7 +3518,7 @@
         </short>
         <descr>
           <p>
-            <var>PopupPoint</var> is a read-only <var>TPoint</var> property which contains the coordinates where the pop-up menu is displayed. The value in PopupPoint is  updated when the PopUp method is called.
+            <var>PopupPoint</var> is a read-only <var>TPoint</var> property which contains the coordinates where the pop-up menu is displayed. The value in PopupPoint is updated when the PopUp method is called.
           </p>
         </descr>
         <seealso>
@@ -3698,7 +3700,7 @@
             <var>NewMenu</var> is a <var>TMainMenu</var> function used to create and configure a new menu instance using the values passed in the arguments to the routine. The return value is a TMainMenu instance created using the component in <var>Owner</var> as the owner for the class instance. The value in <var>AName</var> is used in the <var>Name</var> property for the new menu instance.
           </p>
           <p>
-            NewMenu calls an implementation routine to add the menu Items to the new menu  instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
+            NewMenu calls an implementation routine to add the menu Items to the new menu instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
           </p>
         </descr>
         <seealso/>
@@ -3723,7 +3725,7 @@
             <var>NewPopupMenu</var> is a <var>TPopUpMenu</var> function used to create and configure a new pop-menu with the values specified in the arguments to the routine. The return value is created using the component in Owner as the owner of the class instance. The value in <var>AName</var> is used in the <var>Name</var> property for the new menu instance. <var>AutoPopUp</var> and <var>Alignment</var> are assigned to the corresponding properties in the new pop-up menu instance.
           </p>
           <p>
-            NewPopupMenu calls an implementation routine to add the menu Items to the new menu  instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
+            NewPopupMenu calls an implementation routine to add the menu Items to the new menu instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
           </p>
         </descr>
         <seealso/>
@@ -3885,7 +3887,7 @@
       </element>
 
       <element name="cDialogSuffix">
-        <short>Not used in the current  LCL implementation.</short>
+        <short>Not used in the current LCL implementation.</short>
         <descr/>
         <seealso/>
       </element>
@@ -3914,7 +3916,7 @@
             Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Pop-up menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.
           </p>
           <p>
-            To see the Menu Editor, right-click on the Main Menu  or Pop-up Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.
+            To see the Menu Editor, right-click on the Main Menu or Pop-up Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.
           </p>
           <p>
             An Edit box is displayed, containing a Button labeled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.
