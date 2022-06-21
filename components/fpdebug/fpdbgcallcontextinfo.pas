@@ -213,16 +213,20 @@ function TFpDbgInfoCallContext.AddRecordParam(var ParamSymbol: TFpValue;
     FldLoc: TFpDbgMemLocation;
     FldSize: TFpDbgValueSize;
     RecAddr, FldOffs: TDBGPtr;
+    m: TFpValue;
   begin
     Result := False;
     RecAddr := AValue.Address.Address;
+    m := nil;
     for i := 0 to AValue.MemberCount - 1 do begin
-      FldLoc := AValue.Member[i].Address;
+      m.ReleaseReference;
+      m := AValue.Member[i];
+      FldLoc := m.Address;
       Result := FldLoc.BitOffset <> 0;
       if Result then
         break;
       FldOffs := FldLoc.Address - RecAddr;
-      FldSize := AValue.Member[i].DataSize;
+      FldSize := m.DataSize;
       Result := FldSize.BitSize <> 0;
       if Result then
         break;
@@ -230,10 +234,14 @@ function TFpDbgInfoCallContext.AddRecordParam(var ParamSymbol: TFpValue;
       if Result then
         break;
     end;
+    m.ReleaseReference;
   end;
 
 var
-  RecSize, i: Integer;
+  {$If defined(UNIX)}
+  i: Integer;
+  {$ENDIF}
+  RecSize: Integer;
   RecLoc: TFpDbgMemLocation;
   RecAddr, RecData: TDBGPtr;
   l: SizeInt;
@@ -335,11 +343,10 @@ end;
 function TFpDbgInfoCallContext.InternalAddStringResult: Boolean;
 var
   ParamSymbol: TFpValue;
+  RefSym: TFpSymbolCallParamStringByRef;
 begin
-  ParamSymbol := InternalCreateParamSymbol(FNextParamRegister,
-    TFpSymbolCallParamStringByRef.Create('', 0),
-    ''
-  );
+  RefSym := TFpSymbolCallParamStringByRef.Create('', 0);
+  ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
     Result := ParamSymbol <> nil;
     if not Result then
@@ -349,6 +356,7 @@ begin
     FLastError := ParamSymbol.LastError;
   finally
     ParamSymbol.ReleaseReference;
+    RefSym.ReleaseReference;
   end;
   inc(FNextParamRegister);
 end;
@@ -452,21 +460,21 @@ function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord): Boolean;
 var
   ParamSymbol: TFpValue;
   m: TDBGPtr;
+  RefSym: TFpSymbolCallParamStringByRef;
 begin
   m := AllocStack(32);
-  ParamSymbol := InternalCreateParamSymbol(FNextParamRegister,
-    TFpSymbolCallParamStringByRef.Create('', m),
-    ''
-  );
-  Result := ParamSymbol <> nil;
-  if not Result then
-    exit;
+  RefSym := TFpSymbolCallParamStringByRef.Create('', m);
+  ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
+    Result := ParamSymbol <> nil;
+    if not Result then
+      exit;
     ParamSymbol.AsCardinal := m;
     Result := not IsError(ParamSymbol.LastError);
     FLastError := ParamSymbol.LastError;
   finally
     ParamSymbol.ReleaseReference;
+    RefSym.ReleaseReference;
   end;
   inc(FNextParamRegister);
 end;
