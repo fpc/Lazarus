@@ -69,6 +69,10 @@
         <Filename Value="idedebuggerstringconstants.pas"/>
         <UnitName Value="IdeDebuggerStringConstants"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggeropts.pas"/>
+        <UnitName Value="IdeDebuggerOpts"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

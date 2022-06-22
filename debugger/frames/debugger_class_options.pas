@@ -37,7 +37,7 @@ uses
   GDBMIDebugger,
   // IDE
   TransferMacros, LazarusIDEStrConsts, PathEditorDlg, IDEProcs, DialogProcs,
-  InputHistory, EnvironmentOpts, BaseDebugManager, Debugger;
+  InputHistory, EnvironmentOpts, BaseDebugManager, Debugger, IdeDebuggerOpts;
 
 type
 

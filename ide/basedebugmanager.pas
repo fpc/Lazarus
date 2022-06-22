@@ -50,6 +50,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   LazDebuggerIntf,
+  IdeDebuggerOpts,
   // IDE
   Debugger, SourceMarks, Project, ProjectDefs, LazarusIDEStrConsts;
 
@@ -107,14 +108,6 @@ type
 
   TDbgInitFlag = (difInitForAttach);
   TDbgInitFlags = set of TDbgInitFlag;
-
-  { TDebuggerOptions }
-
-  TDebuggerOptions = class(TAbstractIDEEnvironmentOptions)
-  public
-    class function GetGroupCaption:string; override;
-    class function GetInstance: TAbstractIDEOptions; override;
-  end;
 
   TBaseDebugManager = class(TBaseDebugManagerIntf)
   protected
@@ -257,21 +250,8 @@ type
 
 var
   DebugBoss: TBaseDebugManager;
-  DebuggerOptions: TDebuggerOptions = nil;
 
 implementation
-
-{ TDebuggerOptions }
-
-class function TDebuggerOptions.GetGroupCaption: string;
-begin
-  Result := dlgGroupDebugger;
-end;
-
-class function TDebuggerOptions.GetInstance: TAbstractIDEOptions;
-begin
-  Result := DebuggerOptions;
-end;
 
 initialization
   RegisterIDEOptionsGroup(GroupDebugger, TDebuggerOptions);

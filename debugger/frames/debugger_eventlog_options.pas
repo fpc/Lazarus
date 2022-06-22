@@ -33,7 +33,8 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  Debugger, LazarusIDEStrConsts, EnvironmentOpts, BaseDebugManager;
+  Debugger, IdeDebuggerOpts, LazarusIDEStrConsts, EnvironmentOpts,
+  BaseDebugManager;
 
 type
   { TDebuggerEventLogOptionsFrame }

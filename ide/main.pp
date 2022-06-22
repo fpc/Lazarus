@@ -149,7 +149,7 @@ uses
   JumpHistoryView, DesktopManager, DiskDiffsDialog,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, InputhistoryWithSearchOpt, UnitDependencies,
-  IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
+  IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, InitialSetupDlgs,
   InitialSetupProc, NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog,
   FindInFilesDlg, CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,

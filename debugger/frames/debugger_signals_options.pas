@@ -31,7 +31,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, Debugger, BaseDebugManager;
+  LazarusIDEStrConsts, Debugger, IdeDebuggerOpts, BaseDebugManager;
 type
 
   { TDebuggerSignalsOptions }
