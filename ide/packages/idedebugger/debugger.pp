@@ -587,6 +587,7 @@ type
     function GetChildrenByNameAsField(AName, AClassName: String): TIdeWatch;
     function GetTopParentWatch: TIdeWatch;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
+    function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
     function GetWatchDisplayName: String;
   protected
     procedure InitChildWatches;
@@ -613,6 +614,7 @@ type
     procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64));
     property ChildrenByNameAsField[AName, AClassName: String]: TIdeWatch read GetChildrenByNameAsField;
     property ChildrenByNameAsArrayEntry[AName: Int64]: TIdeWatch read GetChildrenByNameAsArrayEntry;
+    function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer): boolean;
     property ParentWatch: TIdeWatch read FParentWatch;
     property TopParentWatch: TIdeWatch read GetTopParentWatch;
     property DisplayName: String read GetWatchDisplayName write FDisplayName;
@@ -6244,6 +6246,17 @@ begin
   end;
 end;
 
+function TIdeWatch.HasAllValidParents(AThreadId: Integer; AStackFrame: Integer
+  ): boolean;
+begin
+  Result := FParentWatch = nil;
+  if Result then
+    exit;
+
+  Result := (GetAnyValidParentWatchValue(AThreadId, AStackFrame) <> nil) and
+            FParentWatch.HasAllValidParents(AThreadId, AStackFrame);
+end;
+
 procedure TIdeWatch.DoEnableChange;
 begin
   Changed;
@@ -6267,6 +6280,26 @@ begin
   Result := TIdeWatchValue(inherited Values[AThreadId, AStackFrame]);
 end;
 
+function TIdeWatch.GetAnyValidParentWatchValue(AThreadId: Integer;
+  AStackFrame: Integer): TIdeWatchValue;
+var
+  i: Integer;
+  vl: TWatchValueList;
+begin
+  Result := nil;
+  if FParentWatch = nil then
+    exit;
+  vl := FParentWatch.FValueList;
+  i := vl.Count - 1;
+  while (i >= 0) and (
+    (vl.EntriesByIdx[i].Validity <> ddsValid) or
+    (vl.EntriesByIdx[i].ThreadId <> AThreadId) or
+    (vl.EntriesByIdx[i].StackFrame <> AStackFrame)
+  ) do
+    dec(i);
+  if i >= 0 then
+    Result := TIdeWatchValue(vl.EntriesByIdx[i]);
+end;
 function TIdeWatch.GetWatchDisplayName: String;
 begin
   if FDisplayName <> '' then
