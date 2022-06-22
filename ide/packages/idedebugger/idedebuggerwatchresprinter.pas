@@ -5,8 +5,8 @@ unit IdeDebuggerWatchResPrinter;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerWatchResult, IdeDebuggerUtils, LazDebuggerIntf,
-  LazUTF8, StrUtils;
+  Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils,
+  LazDebuggerIntf, LazUTF8, StrUtils;
 
 type
 
@@ -118,6 +118,10 @@ begin
       Result := Result + sep;
     AResValue.SetSelectedIndex(i);
     Result := Result + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl);
+    if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
+      Result := Result + sep +'...';
+      break;
+    end;
   end;
   if AResValue.Count < AResValue.ArrayLength then
     Result := Result + sep +'...';
@@ -196,6 +200,10 @@ begin
       Result := Result + sep;
     Result := Result + indent + FldInfo.FieldName + ': ' +
       PrintWatchValueEx(FldInfo.Field, wdfDefault, ANestLvl) + ';';
+    if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
+      Result := Result + sep +'...';
+      break;
+    end;
   end;
 
   if Result = '' then
