@@ -2,11 +2,6 @@
 
 [CustomMessages]
 
-InstallTypeDefault=Установка по умолчанию (всё, кроме общесистемных библиотек)
-InstallTypeFull=Полная установка
-InstallTypeCompact=Минимальная установка
-InstallTypeCustom=Выборочная установка
-
 
 DelUserConf=Удалить все уже имеющиеся каталоги настройки
 CleanUp=Очистка:
