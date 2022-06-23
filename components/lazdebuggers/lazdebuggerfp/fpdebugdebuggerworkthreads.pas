@@ -1116,7 +1116,7 @@ begin
         ValConv.AddReference;
       end;
 
-      if ValConv = nil then begin
+      if (ValConv = nil) and (ValConfig = nil) then begin
         ValConvList := ValueConverterConfigList;
         ValConvList.Lock;
         try

@@ -379,6 +379,7 @@ end;
 procedure TWatch.SetFpDbgConverter(AValue: TIdeFpDbgConverterConfig);
 begin
   if FFpDbgConverter = AValue then Exit;
+  FValueList.Clear;
 
   if FFpDbgConverter <> nil then
     FFpDbgConverter.RemoveFreeNotification(@FFpDbgConverterFreed);
