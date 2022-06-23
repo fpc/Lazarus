@@ -1270,7 +1270,7 @@ type
 
   { TWatchResultDataFunc }
 
-  TWatchResultDataFunc = class(specialize TGenericWatchResultDataProc<TWatchResultValueProc>)
+  TWatchResultDataFunc = class(specialize TGenericWatchResultDataProc<TWatchResultValueFunc>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   end;
@@ -1284,7 +1284,7 @@ type
 
   { TWatchResultDataFuncRef }
 
-  TWatchResultDataFuncRef = class(specialize TGenericWatchResultDataProc<TWatchResultValueProcRef>)
+  TWatchResultDataFuncRef = class(specialize TGenericWatchResultDataProc<TWatchResultValueFuncRef>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   end;
