@@ -2,11 +2,6 @@
 
 [CustomMessages]
 
-InstallTypeDefault=Default installation (all, except global/system-wide dll)
-InstallTypeFull=Full installation
-InstallTypeCompact=Compact installation
-InstallTypeCustom=Custom installation
-
 
 DelUserConf=Delete all user configuration files from previous installs
 CleanUp=Clean up:
