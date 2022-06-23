@@ -23,8 +23,8 @@ EnableISX=true
 #define QtInfDir GetEnv('QTINFDIR')
 #define HasQT5 GetEnv('HASQT5')
 #define Qt5InfDir GetEnv('QT5INFDIR')
-#define HasOpenSSL GetEnv('HASOPENSSL')
-#define OpenSSLDir GetEnv('OPENSSLDIR')
+;#define HasOpenSSL GetEnv('HASOPENSSL')
+;#define OpenSSLDir GetEnv('OPENSSLDIR')
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
 #define OutputFileName GetEnv('OutputFileName')
 #define CHMHELPFILES GetEnv('CHMHELPFILES')
@@ -106,12 +106,12 @@ Name: install5qtintfdll/global; Description: {cm:InstallQt5Global}; Types: full;
 #endif
 #endif
 
-#ifdef HasOpenSSL
-#if HasOpenSSL!=""
-Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
-Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: full; Flags: dontinheritcheck
-#endif
-#endif
+;#ifdef HasOpenSSL
+;#if HasOpenSSL!=""
+;Name: installopenssl; Description: {cm:InstallOpenSSL}; Types: custom full compact; Flags: checkablealone
+;Name: installopenssl/global; Description: {cm:InstallOpenSSLGlobal}; Types: full; Flags: dontinheritcheck
+;#endif
+;#endif
 Name: association; Description: {cm:AssociateGroup}; Types: custom full
 Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
 Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
@@ -173,12 +173,12 @@ Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; F
 #endif
 #endif
 
-#ifdef HasOpenSSL
-#if HasOpenSSL!=""
-Source: {#OpenSSLDir}\*.*; DestDir: {app}; Components: installopenssl; Flags: recursesubdirs
-Source: {#OpenSSLDir}\*.*; DestDir: {sys}; Components: installopenssl/global; Flags: sharedfile replacesameversion
-#endif
-#endif
+;#ifdef HasOpenSSL
+;#if HasOpenSSL!=""
+;Source: {#OpenSSLDir}\*.*; DestDir: {app}; Components: installopenssl; Flags: recursesubdirs
+;Source: {#OpenSSLDir}\*.*; DestDir: {sys}; Components: installopenssl/global; Flags: sharedfile replacesameversion
+;#endif
+;#endif
 
 [INI]
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
