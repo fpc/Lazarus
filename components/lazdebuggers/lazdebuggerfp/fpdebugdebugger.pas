@@ -836,15 +836,14 @@ begin
     FCallstackEntry.RemoveFreeNotification(@DoCallstackEntryFreed_DecRef);
 
     if FCallstackEntry.Validity = ddsRequested then begin
-      if FDbgCallStack = nil then
+      if not FValid then
         FCallstackEntry.Validity := ddsInvalid
       else begin
-        c := FDbgCallStack.SrcClassName;
+        c := FSrcClassName;
         if c <> '' then
           c := c + '.';
-        FCallstackEntry.Init(FDbgCallStack.AnAddress, nil,
-          c + FDbgCallStack.FunctionName + FParamAsString,
-          FDbgCallStack.SourceFile, '', FDbgCallStack.Line, ddsValid);
+        FCallstackEntry.Init(FAnAddress, nil, c + FFunctionName + FParamAsString,
+          FSourceFile, '', FLine, ddsValid);
       end;
     end;
 

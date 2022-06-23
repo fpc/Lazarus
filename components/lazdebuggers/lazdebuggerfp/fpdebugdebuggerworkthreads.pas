@@ -167,7 +167,10 @@ type
   TFpThreadWorkerCallEntry = class(TFpThreadWorkerPrepareCallStackEntryList)
   protected
     FCallstackIndex: Integer;
-    FDbgCallStack: TDbgCallstackEntry;
+    FValid: Boolean;
+    FSrcClassName, FFunctionName, FSourceFile: String;
+    FAnAddress: TDBGPtr;
+    FLine: Integer;
     FParamAsString: String;
     procedure UpdateCallstackEntry_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
@@ -598,11 +601,13 @@ procedure TFpThreadWorkerCallEntry.DoExecute;
 var
   PrettyPrinter: TFpPascalPrettyPrinter;
   Prop: TFpDebugDebuggerProperties;
+  DbgCallStack: TDbgCallstackEntry;
 begin
   inherited DoExecute;
 
-  FDbgCallStack := FThread.CallStackEntryList[FCallstackIndex];
-  if (FDbgCallStack <> nil) and (not StopRequested) then begin
+  DbgCallStack := FThread.CallStackEntryList[FCallstackIndex];
+  FValid := (DbgCallStack <> nil) and (not StopRequested);
+  if FValid then begin
     Prop := TFpDebugDebuggerProperties(FDebugger.GetProperties);
     PrettyPrinter := TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FDebugger.DbgController.CurrentProcess.Mode]);
     PrettyPrinter.Context := FDebugger.DbgController.DefaultContext;
@@ -611,7 +616,13 @@ begin
     FDebugger.MemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStackStringLen;
     FDebugger.MemManager.MemLimits.MaxNullStringSearchLen := Prop.MemLimits.MaxStackNullStringSearchLen;
 
-    FParamAsString := FDbgCallStack.GetParamsAsString(PrettyPrinter);
+    FSrcClassName := DbgCallStack.SrcClassName;
+    FAnAddress := DbgCallStack.AnAddress;
+    FFunctionName := DbgCallStack.FunctionName;
+    FSourceFile := DbgCallStack.SourceFile;
+    FLine := DbgCallStack.Line;
+
+    FParamAsString := DbgCallStack.GetParamsAsString(PrettyPrinter);
     PrettyPrinter.Free;
 
     FDebugger.MemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxArrayLen;
