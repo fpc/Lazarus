@@ -9,6 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="frames"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -70,11 +71,29 @@
         <UnitName Value="IdeDebuggerStringConstants"/>
       </Item>
       <Item>
+        <Filename Value="idedebuggerfpdbgvalueconv.pas"/>
+        <UnitName Value="IdeDebuggerFpDbgValueConv"/>
+      </Item>
+      <Item>
+        <Filename Value="idefpdbgvalueconvertersettingsframe.pas"/>
+        <UnitName Value="IdeFpDbgValueConverterSettingsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Item>
+      <Item>
+        <Filename Value="frames\idedebugger_fpvalconv_options.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDebugger_FpValConv_Options"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Item>
+      <Item>
         <Filename Value="idedebuggeropts.pas"/>
         <UnitName Value="IdeDebuggerOpts"/>
       </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazDebuggerFp"/>
+      </Item>
       <Item>
         <PackageName Value="LazControlDsgn"/>
       </Item>

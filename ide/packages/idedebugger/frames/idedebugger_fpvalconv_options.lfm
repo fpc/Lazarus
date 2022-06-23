@@ -1,0 +1,58 @@
+object IdeDbgFpValConvOptionsFrame: TIdeDbgFpValConvOptionsFrame
+  Left = 0
+  Height = 371
+  Top = 0
+  Width = 510
+  ClientHeight = 371
+  ClientWidth = 510
+  TabOrder = 0
+  DesignLeft = 471
+  DesignTop = 200
+  inline FpDbgValConvFrame1: TFpDbgValConvFrame
+    Height = 371
+    Width = 510
+    Align = alClient
+    ClientHeight = 371
+    ClientWidth = 510
+    inherited Panel1: TPanel
+      Width = 510
+      ClientWidth = 510
+      inherited lstConverters: TCheckListBox
+        Width = 330
+      end
+      inherited Panel2: TPanel
+        Left = 340
+      end
+    end
+    inherited pnlCurrentConv: TPanel
+      Height = 214
+      Width = 510
+      ClientHeight = 214
+      ClientWidth = 510
+      inherited Panel4: TPanel
+        Left = 340
+        Height = 194
+        ClientHeight = 194
+      end
+      inherited lblDesc: TLabel
+        Width = 500
+      end
+      inherited Panel5: TPanel
+        Height = 194
+        Width = 340
+        ClientHeight = 194
+        ClientWidth = 340
+        inherited lblTypeNames: TLabel
+          Width = 330
+        end
+        inherited memoTypeNames: TMemo
+          Height = 164
+          Width = 330
+        end
+      end
+    end
+    inherited Splitter1: TSplitter
+      Width = 510
+    end
+  end
+end

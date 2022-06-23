@@ -160,17 +160,17 @@ type
 
   TRttiXMLConfig = class(TXMLConfig)
   protected
-    procedure WriteProperty(Path: String; Instance: TPersistent;
-                            PropInfo: Pointer; DefInstance: TPersistent = nil;
+    procedure WriteProperty(Path: String; Instance: TObject;
+                            PropInfo: Pointer; DefInstance: TObject = nil;
                             OnlyProperty: String= '');
-    procedure ReadProperty(Path: String; Instance: TPersistent;
-                            PropInfo: Pointer; DefInstance: TPersistent = nil;
+    procedure ReadProperty(Path: String; Instance: TObject;
+                            PropInfo: Pointer; DefInstance: TObject = nil;
                             OnlyProperty: String= '');
   public
-    procedure WriteObject(Path: String; Obj: TPersistent;
-                          DefObject: TPersistent= nil; OnlyProperty: String= '');
-    procedure ReadObject(Path: String; Obj: TPersistent;
-                          DefObject: TPersistent= nil; OnlyProperty: String= '');
+    procedure WriteObject(Path: String; Obj: TObject;
+                          DefObject: TObject= nil; OnlyProperty: String= '');
+    procedure ReadObject(Path: String; Obj: TObject;
+                          DefObject: TObject= nil; OnlyProperty: String= '');
   end;
 
 
@@ -1113,8 +1113,8 @@ end;
 
 { TRttiXMLConfig }
 
-procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TPersistent;
-  DefObject: TPersistent; OnlyProperty: String = '');
+procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TObject;
+  DefObject: TObject; OnlyProperty: String);
 var
   PropCount,i : integer;
   PropList  : PPropList;
@@ -1131,8 +1131,8 @@ begin
 end;
 
 // based on FPC TWriter
-procedure TRttiXMLConfig.WriteProperty(Path: String; Instance: TPersistent;
-  PropInfo: Pointer; DefInstance: TPersistent; OnlyProperty: String= '');
+procedure TRttiXMLConfig.WriteProperty(Path: String; Instance: TObject;
+  PropInfo: Pointer; DefInstance: TObject; OnlyProperty: String);
 type
   tset = set of 0..31;
 var
@@ -1273,8 +1273,8 @@ begin
   end;
 end;
 
-procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TPersistent; PropInfo: Pointer;
-  DefInstance: TPersistent; OnlyProperty: String);
+procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TObject;
+  PropInfo: Pointer; DefInstance: TObject; OnlyProperty: String);
 type
   tset = set of 0..31;
 var
@@ -1414,8 +1414,8 @@ begin
   end;
 end;
 
-procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TPersistent; DefObject: TPersistent;
-  OnlyProperty: String);
+procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TObject;
+  DefObject: TObject; OnlyProperty: String);
 var
   PropCount,i : integer;
   PropList  : PPropList;

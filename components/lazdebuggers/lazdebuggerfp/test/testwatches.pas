@@ -5,11 +5,11 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, TestBase, TestDbgControl,
-  TestDbgTestSuites, TestOutputLogger, TTestWatchUtilities, TestCommonSources,
-  TestDbgConfig, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, Forms,
-  IdeDebuggerBase, IdeDebuggerWatchResult;
+  Classes, SysUtils, fpcunit, testregistry, TestBase, FpDebugValueConvertors,
+  TestDbgControl, TestDbgTestSuites, TestOutputLogger, TTestWatchUtilities,
+  TestCommonSources, TestDbgConfig, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes, Forms, IdeDebuggerBase,
+  IdeDebuggerWatchResult;
 
 type
 
@@ -27,6 +27,7 @@ type
     procedure TestWatchesFunctions;
     procedure TestWatchesFunctionsWithString;
     procedure TestWatchesFunctionsWithRecord;
+    procedure TestWatchesFunctionsSysVarToLStr;
     procedure TestWatchesAddressOf;
     procedure TestWatchesTypeCast;
     procedure TestWatchesExpression;
@@ -38,7 +39,7 @@ implementation
 
 var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchFunct,
-  ControlTestWatchFunctStr, ControlTestWatchFunctRec,
+  ControlTestWatchFunctStr, ControlTestWatchFunctRec, ControlTestWatchFunctVariant,
   ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
   ControlTestExpression, ControlTestErrors: Pointer;
 
@@ -1972,6 +1973,68 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesFunctionsSysVarToLStr;
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg: TDBGBreakPoint;
+  obj: TFpDbgConverterConfig;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchFunctVariant) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface, skEnumValue];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+    t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
+
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    RunToPause(BrkPrg);
+
+    obj := TFpDbgConverterConfig.Create(TFpDbgValueConverterVariantToLStr.Create);
+    obj.MatchKinds := [skRecord];
+    obj.MatchTypeNames.Add('variant');
+    ValueConverterConfigList.Add(obj);
+
+    t.Clear;
+    t.Add('variant to lstr', 'variant1',    weAnsiStr('102'))
+      .IgnTypeName
+      .IgnData([], Compiler.Version < 029999);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+
+
+  finally
+    ValueConverterConfigList.Clear;
+
+    Debugger.RunToNextPause(dcStop);
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 procedure TTestWatches.TestWatchesAddressOf;
 
   type
@@ -3522,6 +3585,7 @@ initialization
   ControlTestWatchFunct     := TestControlRegisterTest('Function', ControlTestWatch);
   ControlTestWatchFunctStr  := TestControlRegisterTest('FunctionString', ControlTestWatch);
   ControlTestWatchFunctRec  := TestControlRegisterTest('FunctionRecord', ControlTestWatch);
+  ControlTestWatchFunctVariant:= TestControlRegisterTest('FunctionSysVarToLstr', ControlTestWatch);
   ControlTestWatchAddressOf := TestControlRegisterTest('AddressOf', ControlTestWatch);
   ControlTestWatchTypeCast  := TestControlRegisterTest('TypeCast', ControlTestWatch);
   ControlTestModify         := TestControlRegisterTest('Modify', ControlTestWatch);

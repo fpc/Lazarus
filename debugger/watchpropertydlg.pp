@@ -41,7 +41,8 @@ interface
 uses
   Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel,
   LazarusIDEStrConsts, IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
-  Debugger, BaseDebugManager, EnvironmentOpts, DebuggerStrConst;
+  Debugger, IdeDebuggerOpts, BaseDebugManager, EnvironmentOpts,
+  DebuggerStrConst;
 
 type
 
@@ -52,6 +53,8 @@ type
     chkAllowFunc: TCheckBox;
     chkEnabled: TCheckBox;
     chkUseInstanceClass: TCheckBox;
+    dropFpDbgConv: TComboBox;
+    lblFpDbgConv: TLabel;
     lblDigits: TLabel;
     lblExpression: TLabel;
     lblRepCount: TLabel;
@@ -62,6 +65,7 @@ type
     txtRepCount: TEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure PanelTopClick(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
   private
     FWatch: TIdeWatch;
@@ -108,10 +112,25 @@ begin
     then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall];
     FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
 
+    if dropFpDbgConv.ItemIndex = 0 then
+      FWatch.FpDbgConverter := nil
+    else
+    if dropFpDbgConv.ItemIndex = 1 then
+      FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValConv]
+    else
+    if dropFpDbgConv.ItemIndex - 2 < DebuggerOptions.FpDbgConverterConfig.Count then begin
+      FWatch.FpDbgConverter := DebuggerOptions.FpDbgConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
+    end;
+
     FWatch.Enabled := chkEnabled.Checked;
   finally
     DebugBoss.Watches.CurrentWatches.EndUpdate;
   end;
+end;
+
+procedure TWatchPropertyDlg.PanelTopClick(Sender: TObject);
+begin
+
 end;
 
 procedure TWatchPropertyDlg.txtExpressionChange(Sender: TObject);
@@ -135,6 +154,8 @@ const
      5, 8, //wdfPointer, wdfMemDump
      9     //wdfBinary
     );
+var
+  i: Integer;
 begin
   FWatch := AWatch;
   inherited Create(AOwner);
@@ -180,6 +201,25 @@ begin
   rgStyle.Items[8]:= lisMemoryDump;
   rgStyle.Items[9]:= lisBinary;
   //rgStyle.Items[10]:= lisFloatingPoin;
+
+  lblFpDbgConv.Caption := dlgFpConvOptFpDebugConverter;
+  dropFpDbgConv.AddItem(dlgFpConvOptDefault, nil);
+  dropFpDbgConv.AddItem(dlgFpConvOptDisabled, nil);
+  for i := 0 to DebuggerOptions.FpDbgConverterConfig.Count - 1 do
+    dropFpDbgConv.AddItem(DebuggerOptions.FpDbgConverterConfig.IdeItems[i].Name, nil);
+
+  dropFpDbgConv.ItemIndex := 0;
+  if AWatch <> nil then begin
+    if defSkipValConv in AWatch.EvaluateFlags then begin
+      dropFpDbgConv.ItemIndex := 1;
+    end
+    else
+    if AWatch.FpDbgConverter <> nil then begin
+      i := DebuggerOptions.FpDbgConverterConfig.IndexOf(AWatch.FpDbgConverter);
+      if i >= 0 then
+        dropFpDbgConv.ItemIndex := i + 2;
+    end;
+  end;
 
   ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;

@@ -1,0 +1,186 @@
+object FpDbgValConvFrame: TFpDbgValConvFrame
+  Left = 0
+  Height = 519
+  Top = 0
+  Width = 512
+  ClientHeight = 519
+  ClientWidth = 512
+  TabOrder = 0
+  DesignLeft = 397
+  DesignTop = 58
+  object Panel1: TPanel
+    Left = 0
+    Height = 150
+    Top = 0
+    Width = 512
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 150
+    ClientWidth = 512
+    TabOrder = 0
+    object lstConverters: TCheckListBox
+      Left = 5
+      Height = 145
+      Top = 5
+      Width = 332
+      Align = alClient
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      ItemHeight = 0
+      OnClick = lstConvertersClick
+      OnItemClick = lstConvertersItemClick
+      TabOrder = 0
+    end
+    object Panel2: TPanel
+      Left = 342
+      Height = 150
+      Top = 0
+      Width = 170
+      Align = alRight
+      BevelOuter = bvNone
+      ChildSizing.LeftRightSpacing = 5
+      ChildSizing.TopBottomSpacing = 5
+      ChildSizing.HorizontalSpacing = 5
+      ChildSizing.VerticalSpacing = 5
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 150
+      ClientWidth = 170
+      TabOrder = 1
+      object btnAdd: TButton
+        Left = 5
+        Height = 25
+        Top = 5
+        Width = 160
+        Caption = 'btnAdd'
+        OnClick = btnAddClick
+        TabOrder = 0
+      end
+      object btnRemove: TButton
+        Left = 5
+        Height = 25
+        Top = 35
+        Width = 160
+        Caption = 'btnRemove'
+        OnClick = btnRemoveClick
+        TabOrder = 1
+      end
+    end
+  end
+  object pnlCurrentConv: TPanel
+    Left = 0
+    Height = 362
+    Top = 157
+    Width = 512
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 362
+    ClientWidth = 512
+    TabOrder = 2
+    object Panel4: TPanel
+      Left = 342
+      Height = 342
+      Top = 20
+      Width = 170
+      Align = alRight
+      BevelOuter = bvNone
+      ChildSizing.LeftRightSpacing = 5
+      ChildSizing.TopBottomSpacing = 5
+      ChildSizing.HorizontalSpacing = 5
+      ChildSizing.VerticalSpacing = 5
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 342
+      ClientWidth = 170
+      TabOrder = 1
+      object lblAction: TLabel
+        Left = 5
+        Height = 15
+        Top = 5
+        Width = 160
+        Caption = 'lblAction'
+      end
+      object dropAction: TComboBox
+        Left = 5
+        Height = 23
+        Top = 25
+        Width = 160
+        ItemHeight = 15
+        Style = csDropDownList
+        TabOrder = 0
+      end
+    end
+    object lblDesc: TLabel
+      Left = 5
+      Height = 15
+      Top = 5
+      Width = 502
+      Align = alTop
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'lblDesc'
+    end
+    object Panel5: TPanel
+      Left = 0
+      Height = 342
+      Top = 20
+      Width = 342
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 342
+      ClientWidth = 342
+      TabOrder = 0
+      object lblName: TLabel
+        Left = 5
+        Height = 15
+        Top = 5
+        Width = 332
+        Align = alTop
+        BorderSpacing.Around = 5
+        Caption = 'lblName'
+      end
+      object EdName: TEdit
+        Left = 5
+        Height = 23
+        Top = 25
+        Width = 332
+        Align = alTop
+        BorderSpacing.Around = 5
+        TabOrder = 0
+      end
+      object lblTypeNames: TLabel
+        Left = 5
+        Height = 15
+        Top = 53
+        Width = 332
+        Align = alTop
+        BorderSpacing.Around = 5
+        Caption = 'lblTypeNames'
+      end
+      object memoTypeNames: TMemo
+        Left = 5
+        Height = 264
+        Top = 73
+        Width = 332
+        Align = alClient
+        BorderSpacing.Around = 5
+        TabOrder = 1
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 7
+    Top = 150
+    Width = 512
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+end

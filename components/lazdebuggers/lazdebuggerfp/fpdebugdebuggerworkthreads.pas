@@ -45,26 +45,16 @@ unit FpDebugDebuggerWorkThreads;
 interface
 
 uses
-  FpDebugDebuggerUtils, DbgIntfDebuggerBase, DbgIntfBaseTypes, FpDbgClasses,
-  FpDbgUtil, FPDbgController, FpPascalBuilder, FpdMemoryTools, FpDbgInfo,
-  FpPascalParser, FpErrorMessages, FpDbgCallContextInfo, FpDbgDwarf,
-  FpDbgDwarfDataClasses, FpWatchResultData, LazDebuggerIntf,
-  Forms, fgl, math, Classes, sysutils, LazClasses,
+  FpDebugDebuggerUtils, FpDebugValueConvertors, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, FpDbgClasses, FpDbgUtil, FPDbgController, FpPascalBuilder,
+  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpErrorMessages, FpDebugDebuggerBase,
+  FpDbgCallContextInfo, FpDbgDwarf, FpDbgDwarfDataClasses, FpWatchResultData,
+  LazDebuggerIntf, Forms, fgl, math, Classes, sysutils, LazClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
 
   TFpDbgAsyncMethod = procedure() of object;
-
-  TFpDebugDebuggerBase = class(TDebuggerIntf)
-  protected
-    FDbgController: TDbgController;
-    FMemManager: TFpDbgMemManager;
-    FMemReader: TDbgMemReader;
-    FMemConverter: TFpDbgMemConvertorLittleEndian;
-    FLockList: TFpDbgLockList;
-    FWorkQueue: TFpThreadPriorityWorkerQueue;
-  end;
 
   { TFpDbgDebggerThreadWorkerItem }
 
@@ -367,7 +357,7 @@ end;
 procedure TFpDbgDebggerThreadWorkerItem.Queue(aMethod: TDataEvent; Data: PtrInt
   );
 begin
-  FDebugger.FLockList.Lock;
+  FDebugger.LockList.Lock;
   try
     if (FHasQueued <> hqBlocked) then begin
       assert(FHasQueued = hqNotQueued, 'TFpDbgDebggerThreadWorkerItem.Queue: FHasQueued = hqNotQueued');
@@ -376,7 +366,7 @@ begin
       Application.QueueAsyncCall(aMethod, 0);
     end;
   finally
-    FDebugger.FLockList.UnLock;
+    FDebugger.LockList.UnLock;
   end;
 end;
 
@@ -384,11 +374,11 @@ procedure TFpDbgDebggerThreadWorkerItem.UnQueue_DecRef(ABlockQueuing: Boolean);
 var
   HasQ: THasQueued;
 begin
-  FDebugger.FLockList.Lock;
+  FDebugger.LockList.Lock;
   HasQ := FHasQueued;
   if ABlockQueuing then begin
     FHasQueued := hqBlocked;
-    FDebugger.FLockList.UnLock; // unlock first.
+    FDebugger.LockList.UnLock; // unlock first.
     Application.RemoveAsyncCalls(Self);
   end
   else begin
@@ -396,7 +386,7 @@ begin
     try
       Application.RemoveAsyncCalls(Self);
     finally
-      FDebugger.FLockList.UnLock;
+      FDebugger.LockList.UnLock;
     end;
   end;
 
@@ -466,9 +456,9 @@ begin
     w := WorkItem;
     WorkItem := w.FNextWorker;
     if w.IsCancelled then
-      w.FDebugger.FWorkQueue.RemoveItem(w)
+      w.FDebugger.WorkQueue.RemoveItem(w)
     else
-      w.FDebugger.FWorkQueue.WaitForItem(w);
+      w.FDebugger.WorkQueue.WaitForItem(w);
     w.DoRemovedFromLinkedList;
     w.DecRef;
   end;
@@ -479,7 +469,7 @@ end;
 
 procedure TFpThreadWorkerControllerRun.DoExecute;
 begin
-  FStartSuccessfull := FDebugger.FDbgController.Run;
+  FStartSuccessfull := FDebugger.DbgController.Run;
   FWorkerThreadId := ThreadID;
 end;
 
@@ -492,7 +482,7 @@ end;
 
 procedure TFpThreadWorkerRunLoop.DoExecute;
 begin
-  FDebugger.FDbgController.ProcessLoop;
+  FDebugger.DbgController.ProcessLoop;
   Queue(@LoopFinished_DecRef);
 end;
 
@@ -544,7 +534,7 @@ begin
       exit;
   end;
 
-  FDebugger.FLockList.GetLockFor(ThreadCallStack);
+  FDebugger.LockList.GetLockFor(ThreadCallStack);
   try
     CurCnt := ThreadCallStack.Count;
     while (not StopRequested) and (FRequiredMinCount > CurCnt) and
@@ -557,7 +547,7 @@ begin
         exit;
     end;
   finally
-    FDebugger.FLockList.FreeLockFor(ThreadCallStack);
+    FDebugger.LockList.FreeLockFor(ThreadCallStack);
   end;
 end;
 
@@ -568,7 +558,7 @@ begin
   if FRequiredMinCount < -1 then
     exit;
   if FThread = nil then begin
-    for t in FDebugger.FDbgController.CurrentProcess.ThreadMap do begin
+    for t in FDebugger.DbgController.CurrentProcess.ThreadMap do begin
       PrepareCallStackEntryList(FRequiredMinCount, t);
       if StopRequested then
         break;
@@ -614,19 +604,19 @@ begin
   FDbgCallStack := FThread.CallStackEntryList[FCallstackIndex];
   if (FDbgCallStack <> nil) and (not StopRequested) then begin
     Prop := TFpDebugDebuggerProperties(FDebugger.GetProperties);
-    PrettyPrinter := TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FDebugger.FDbgController.CurrentProcess.Mode]);
-    PrettyPrinter.Context := FDebugger.FDbgController.DefaultContext;
+    PrettyPrinter := TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FDebugger.DbgController.CurrentProcess.Mode]);
+    PrettyPrinter.Context := FDebugger.DbgController.DefaultContext;
 
-    FDebugger.FMemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxStackArrayLen;
-    FDebugger.FMemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStackStringLen;
-    FDebugger.FMemManager.MemLimits.MaxNullStringSearchLen := Prop.MemLimits.MaxStackNullStringSearchLen;
+    FDebugger.MemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxStackArrayLen;
+    FDebugger.MemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStackStringLen;
+    FDebugger.MemManager.MemLimits.MaxNullStringSearchLen := Prop.MemLimits.MaxStackNullStringSearchLen;
 
     FParamAsString := FDbgCallStack.GetParamsAsString(PrettyPrinter);
     PrettyPrinter.Free;
 
-    FDebugger.FMemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxArrayLen;
-    FDebugger.FMemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStringLen;
-    FDebugger.FMemManager.MemLimits.MaxNullStringSearchLen := Prop.MemLimits.MaxNullStringSearchLen;
+    FDebugger.MemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxArrayLen;
+    FDebugger.MemManager.MemLimits.MaxStringLen           := Prop.MemLimits.MaxStringLen;
+    FDebugger.MemManager.MemLimits.MaxNullStringSearchLen := Prop.MemLimits.MaxNullStringSearchLen;
   end;
 
   Queue(@UpdateCallstackEntry_DecRef);
@@ -664,7 +654,7 @@ var
   i: Integer;
   r: TResultEntry;
 begin
-  LocalScope := FDebugger.FDbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
+  LocalScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
   if (LocalScope = nil) or (LocalScope.SymbolAtAddress = nil) then begin
     LocalScope.ReleaseReference;
     exit;
@@ -720,7 +710,7 @@ var
   c64: QWord;
 begin
   FSuccess := False;
-  ExpressionScope := FDebugger.FDbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
+  ExpressionScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
   if ExpressionScope = nil then
     exit;
 
@@ -779,13 +769,11 @@ function TFpThreadWorkerEvaluate.DoWatchFunctionCall(
   AnExpressionPart: TFpPascalExpressionPart; AFunctionValue,
   ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList; out
   AResult: TFpValue; var AnError: TFpError): boolean;
-const
-  NilData: array [0..0] of TDBGPtr = (0);
 var
   FunctionSymbolData, FunctionSymbolType, FunctionResultSymbolType,
   TempSymbol, StringDecRefSymbol, StringSymbol: TFpSymbol;
   ExprParamVal: TFpValue;
-  ProcAddress, StringLocation: TFpDbgMemLocation;
+  ProcAddress: TFpDbgMemLocation;
   FunctionResultDataSize: TFpDbgValueSize;
   ParameterSymbolArr: array of TFpSymbol;
   CallContext: TFpDbgInfoCallContext;
@@ -819,7 +807,7 @@ begin
 
   // TODO: pass a value object
   if (not FunctionResultSymbolType.ReadSize(nil, FunctionResultDataSize)) or
-     (FunctionResultDataSize >  FDebugger.FMemManager.RegisterSize(0))
+     (FunctionResultDataSize >  FDebugger.MemManager.RegisterSize(0))
   then begin
     DebugLn(['Error result size', dbgs(FunctionResultDataSize)]);
     //ReturnMessage := 'Unable to call function. The size of the function-result exceeds the content-size of a register.';
@@ -835,9 +823,9 @@ begin
     if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString])
     then begin
       if (FunctionResultSymbolType.Kind = skWideString) then
-        StringDecRefSymbol := FDebugger.FDbgController.CurrentProcess.FindProcSymbol('FPC_WIDESTR_DECR_REF')
+        StringDecRefSymbol := FDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_WIDESTR_DECR_REF')
       else
-        StringDecRefSymbol := FDebugger.FDbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
+        StringDecRefSymbol := FDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
       if (StringDecRefSymbol = nil) or (not IsTargetNotNil(StringDecRefSymbol.Address)) then begin
         DebugLn(['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
         AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
@@ -918,7 +906,7 @@ begin
             exit;
           end;
         end;
-        if not IsTargetOrRegNotNil(FDebugger.FDbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
+        if not IsTargetOrRegNotNil(FDebugger.DbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
           DebugLn('error to many args / not supported / arg > %d ', [FoundIdx]);
           AnError := CreateError(fpErrAnyError, ['too many parameter / not supported']);
           exit;
@@ -936,8 +924,8 @@ begin
     end;
 
 
-    CallContext := FDebugger.FDbgController.Call(ProcAddress, FExpressionScope.LocationContext,
-      FDebugger.FMemReader, FDebugger.FMemConverter);
+    CallContext := FDebugger.DbgController.Call(ProcAddress, FExpressionScope.LocationContext,
+      FDebugger.MemReader, FDebugger.MemConverter);
 
     try
       if (ASelfValue = nil) and (StringDecRefSymbol <> nil) then begin
@@ -977,7 +965,7 @@ begin
         exit;
       end;
 
-      FDebugger.FDbgController.ProcessLoop;
+      FDebugger.DbgController.ProcessLoop;
 
       if not CallContext.IsValid then begin
         DebugLn(['Error in call ',CallContext.Message]);
@@ -1006,24 +994,24 @@ begin
       end;
       Result := AResult <> nil;
     finally
-      FDebugger.FDbgController.AbortCurrentCommand;
+      FDebugger.DbgController.AbortCurrentCommand;
       CallContext.ReleaseReference;
     end;
 
     if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString]) and (StringAddr <> 0) then begin
-      CallContext := FDebugger.FDbgController.Call(StringDecRefSymbol.Address, FExpressionScope.LocationContext,
-        FDebugger.FMemReader, FDebugger.FMemConverter);
+      CallContext := FDebugger.DbgController.Call(StringDecRefSymbol.Address, FExpressionScope.LocationContext,
+        FDebugger.MemReader, FDebugger.MemConverter);
       try
         CallContext.AddOrdinalViaRefAsParam(StringAddr);
-        FDebugger.FDbgController.ProcessLoop;
+        FDebugger.DbgController.ProcessLoop;
       finally
-        FDebugger.FDbgController.AbortCurrentCommand;
+        FDebugger.DbgController.AbortCurrentCommand;
         CallContext.ReleaseReference;
       end;
     end;
 
   finally
-    FDebugger.FDbgController.CurrentThread.RestoreStackMem;
+    FDebugger.DbgController.CurrentThread.RestoreStackMem;
 
     for i := 0 to High(ParameterSymbolArr) do
       if ParameterSymbolArr[i] <> nil then
@@ -1040,16 +1028,22 @@ function TFpThreadWorkerEvaluate.EvaluateExpression(const AnExpression: String;
 var
   APasExpr, PasExpr2: TFpPascalExpression;
   PrettyPrinter: TFpPascalPrettyPrinter;
-  ResValue: TFpValue;
+  ResValue, NewRes: TFpValue;
   CastName, ResText2: String;
   WatchResConv: TFpWatchResultConvertor;
   ResData: TLzDbgWatchDataIntf;
+  ValConvList: TFpDbgConverterConfigList;
+  ValConv: TFpDbgValueConverter;
+  i: Integer;
+  ValConfig: TFpDbgConverterConfig;
 begin
   Result := False;
   AResText := '';
   ATypeInfo := nil;
+  NewRes := nil;
+  ValConv := nil;
 
-  FExpressionScope := FDebugger.FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
+  FExpressionScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
   if FExpressionScope = nil then begin
     if FWatchValue <> nil then
       FWatchValue.Validity := ddsInvalid;
@@ -1112,6 +1106,39 @@ begin
       exit;
     end;
 
+    if (FWatchValue <> nil) and (ADispFormat <> wdfMemDump) and
+       (not (defSkipValConv in AnEvalFlags)) and
+       (ResValue <> nil) and (ResValue.TypeInfo <> nil)
+    then begin
+      ValConfig := TFpDbgConverterConfig(FWatchValue.GetFpDbgConverter);
+      if (ValConfig <> nil) and (ValConfig.CheckMatch(ResValue)) then begin
+        ValConv := ValConfig.Converter;
+        ValConv.AddReference;
+      end;
+
+      if ValConv = nil then begin
+        ValConvList := ValueConverterConfigList;
+        ValConvList.Lock;
+        try
+          i := ValConvList.Count - 1;
+          while (i >= 0) and (not ValConvList[i].CheckMatch(ResValue)) do
+            dec(i);
+          if i >= 0 then begin
+            ValConv := ValConvList[i].Converter;
+            ValConv.AddReference;
+          end;
+        finally
+          ValConvList.Unlock;
+        end;
+      end;
+
+      if ValConv <> nil then begin
+        NewRes := ValConv.ConvertValue(ResValue, FDebugger, FExpressionScope);
+        if NewRes <> nil then
+          ResValue := NewRes;
+      end;
+    end;
+
     if (FWatchValue <> nil) and (ResValue <> nil) and
        (ADispFormat <> wdfMemDump)   // TODO
     then begin
@@ -1171,7 +1198,9 @@ begin
   finally
     PrettyPrinter.Free;
     APasExpr.Free;
+    NewRes.ReleaseReference;
     FExpressionScope.ReleaseReference;
+    ValConv.ReleaseReference;
   end;
 end;
 
@@ -1272,7 +1301,7 @@ end;
 procedure TFpThreadWorkerCmdEval.Abort;
 begin
   RequestStop;
-  FDebugger.FWorkQueue.RemoveItem(Self);
+  FDebugger.WorkQueue.RemoveItem(Self);
   DoCallback_DecRef;
 end;
 
@@ -1307,18 +1336,18 @@ var
 begin
   case FKind of
     bpkAddress:
-      FInternalBreakpoint := FDebugger.FDbgController.CurrentProcess.AddBreak(FAddress, True);
+      FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FAddress, True);
     bpkSource:
-      FInternalBreakpoint := FDebugger.FDbgController.CurrentProcess.AddBreak(FSource, FLine, True);
+      FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FSource, FLine, True);
     bpkData: begin
-      CurContext := FDebugger.FDbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
+      CurContext := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
       if CurContext <> nil then begin
         WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext);
         R := WatchPasExpr.ResultValue; // Address and Size
         // TODO: Cache current value
         if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
           // pass context
-          FInternalBreakpoint := FDebugger.FDbgController.CurrentProcess.AddWatch(R.Address.Address, SizeToFullBytes(s), FWatchKind, FWatchScope);
+          FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddWatch(R.Address.Address, SizeToFullBytes(s), FWatchKind, FWatchScope);
         end;
         WatchPasExpr.Free;
         CurContext.ReleaseReference;
@@ -1326,7 +1355,7 @@ begin
     end;
   end;
   if FResetBreakPoint then begin
-    FDebugger.FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+    FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
     FreeAndNil(FInternalBreakpoint);
   end;
   Queue(@UpdateBrkPoint_DecRef);
@@ -1366,8 +1395,8 @@ end;
 
 procedure TFpThreadWorkerBreakPointRemove.DoExecute;
 begin
-  if (FDebugger.FDbgController <> nil) and (FDebugger.FDbgController.CurrentProcess <> nil) then
-    FDebugger.FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+  if (FDebugger.DbgController <> nil) and (FDebugger.DbgController.CurrentProcess <> nil) then
+    FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
   FreeAndNil(FInternalBreakpoint);
 end;
 

@@ -246,7 +246,6 @@ var
   RecAddr, RecData: TDBGPtr;
   l: SizeInt;
 begin
-HasUnalignedFields;
   RecSize := SizeToFullBytes(AValue.DataSize);
   Result := not IsError(AValue.LastError);
   if Result then begin
@@ -428,7 +427,12 @@ var
   ParamSymbol: TFpValue;
 begin
   Result := False;
+  if AParamSymbolType = nil then
+    AParamSymbolType := TFpSymbolCallParamStringByRef.Create('', 0)
+  else
+    AParamSymbolType.AddReference;
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
+  AParamSymbolType.ReleaseReference;
   Result := ParamSymbol <> nil;
   if not Result then
     exit;

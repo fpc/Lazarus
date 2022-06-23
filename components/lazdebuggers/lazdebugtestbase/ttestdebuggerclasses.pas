@@ -90,6 +90,7 @@ type
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
       AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
+    function GetFpDbgConverter: TObject;
   protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
@@ -425,6 +426,11 @@ begin
   if FCurrentResData = nil then
     FCurrentResData := TCurrentResData.Create;
   Result := FCurrentResData;
+end;
+
+function TTestWatchValue.GetFpDbgConverter: TObject;
+begin
+  Result := nil;
 end;
 
 procedure TTestWatchValue.RequestData;

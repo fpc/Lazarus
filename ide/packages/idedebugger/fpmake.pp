@@ -1,10 +1,9 @@
 {
    File generated automatically by Lazarus Package Manager
-   Created with the Fppkgpackagemanager package installed
 
    fpmake.pp for IdeDebugger 0.0.1
 
-   This file was generated on 23/01/2022
+   This file was generated on 22/06/2022
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,6 +34,8 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('lazdebuggerfp');
+    D := P.Dependencies.Add('lazcontroldsgn');
     D := P.Dependencies.Add('laz.virtualtreeview_package');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('fcl');
@@ -47,18 +48,40 @@ begin
     P.Options.Add('-vewnhibq');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCLWidgetType)');
+    P.UnitPath.Add('frames');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('idedebuggerpackage.pas');
-    D := T.Dependencies.AddUnit('IdeDebuggerBase');
-    D := T.Dependencies.AddUnit('Debugger');
-    D := T.Dependencies.AddUnit('ProcessDebugger');
-    D := T.Dependencies.AddUnit('ProcessList');
-    D := T.Dependencies.AddUnit('DebuggerTreeView');
-    T := P.Targets.AddImplicitUnit('idedebuggerbase.pas');
-    T := P.Targets.AddImplicitUnit('debugger.pp');
-    T := P.Targets.AddImplicitUnit('processdebugger.pp');
-    T := P.Targets.AddImplicitUnit('processlist.pas');
-    T := P.Targets.AddImplicitUnit('debuggertreeview.pas');
+    t.Dependencies.AddUnit('idedebuggerbase');
+    t.Dependencies.AddUnit('debugger');
+    t.Dependencies.AddUnit('processdebugger');
+    t.Dependencies.AddUnit('processlist');
+    t.Dependencies.AddUnit('debuggertreeview');
+    t.Dependencies.AddUnit('idedebuggerutils');
+    t.Dependencies.AddUnit('idedebuggerwatchresult');
+    t.Dependencies.AddUnit('idedebuggerwatchresprinter');
+    t.Dependencies.AddUnit('idedebuggerwatchresutils');
+    t.Dependencies.AddUnit('arraynavigationframe');
+    t.Dependencies.AddUnit('idedebuggerstringconstants');
+    t.Dependencies.AddUnit('idedebuggerfpdbgvalueconv');
+    t.Dependencies.AddUnit('idefpdbgvalueconvertersettingsframe');
+    t.Dependencies.AddUnit('idedebugger_fpvalconv_options');
+    t.Dependencies.AddUnit('idedebuggeropts');
+
+    T:=P.Targets.AddUnit('idedebuggerbase.pas');
+    T:=P.Targets.AddUnit('debugger.pp');
+    T:=P.Targets.AddUnit('processdebugger.pp');
+    T:=P.Targets.AddUnit('processlist.pas');
+    T:=P.Targets.AddUnit('debuggertreeview.pas');
+    T:=P.Targets.AddUnit('idedebuggerutils.pas');
+    T:=P.Targets.AddUnit('idedebuggerwatchresult.pas');
+    T:=P.Targets.AddUnit('idedebuggerwatchresprinter.pas');
+    T:=P.Targets.AddUnit('idedebuggerwatchresutils.pas');
+    T:=P.Targets.AddUnit('arraynavigationframe.pas');
+    T:=P.Targets.AddUnit('idedebuggerstringconstants.pas');
+    T:=P.Targets.AddUnit('idedebuggerfpdbgvalueconv.pas');
+    T:=P.Targets.AddUnit('idefpdbgvalueconvertersettingsframe.pas');
+    T:=P.Targets.AddUnit('frames\idedebugger_fpvalconv_options.pas');
+    T:=P.Targets.AddUnit('idedebuggeropts.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeDebugger.compiled');

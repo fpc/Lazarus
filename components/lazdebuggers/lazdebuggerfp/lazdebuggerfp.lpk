@@ -36,6 +36,14 @@
         <Filename Value="fpdebugdebuggerworkthreads.pas"/>
         <UnitName Value="FpDebugDebuggerWorkThreads"/>
       </Item>
+      <Item>
+        <Filename Value="fpdebugvalueconvertors.pas"/>
+        <UnitName Value="FpDebugValueConvertors"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdebugdebuggerbase.pas"/>
+        <UnitName Value="FpDebugDebuggerBase"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

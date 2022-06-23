@@ -45,7 +45,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, Contnrs,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase,
-  IdeDebuggerWatchResult;
+  IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerFpDbgValueConv;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -742,6 +742,7 @@ type
     FCurrentExpression: String;
     FUpdateCount: Integer;
     FEvents: array [TWatcheEvaluateEvent] of TMethodList;
+    FFpDbgConverter: TIdeFpDbgConverterConfig;
 
   (* TWatchValueIntf *)
     procedure BeginUpdate;
@@ -749,6 +750,7 @@ type
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
+    function GetFpDbgConverter: TObject;
   private
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
@@ -3933,6 +3935,11 @@ begin
   Result := FCurrentResData;
 end;
 
+function TCurrentWatchValue.GetFpDbgConverter: TObject;
+begin
+  Result := FFpDbgConverter;
+end;
+
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
@@ -3973,6 +3980,9 @@ end;
 
 procedure TCurrentWatchValue.RequestData;
 begin
+  FFpDbgConverter.Free;
+  if Watch.FpDbgConverter <> nil then
+    FFpDbgConverter := TIdeFpDbgConverterConfig(Watch.FpDbgConverter.CreateCopy);
   TCurrentWatch(Watch).RequestData(self);
 end;
 
@@ -4004,6 +4014,7 @@ begin
   FCurrentResData.Free;
   for e in FEvents do
     e.Free;
+  FFpDbgConverter.Free;
   inherited Destroy;
 end;
 
@@ -6388,6 +6399,8 @@ begin
 end;
 
 procedure TIdeWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  s: String;
 begin
   FEnabled    := AConfig.GetValue(APath + 'Enabled', True);
   FExpression := AConfig.GetValue(APath + 'Expression', '');
@@ -6400,6 +6413,14 @@ begin
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
+
+  if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
+  then Include(FEvaluateFlags, defSkipValConv)
+  else Exclude(FEvaluateFlags, defSkipValConv);
+
+  s := AConfig.GetValue(APath + 'FpDbgConv', '');
+  if s <> '' then
+    FpDbgConverter := DebuggerOptions.FpDbgConverterConfig.IdeItemByName(s);
 
   TIdeWatchValueList(FValueList).LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -6415,6 +6436,10 @@ begin
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+
+  AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
+  if FpDbgConverter <> nil then
+    AConfig.SetDeleteValue(APath + 'FpDbgConv', FpDbgConverter.Name, '');
 
   TIdeWatchValueList(FValueList).SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -6522,6 +6547,7 @@ end;
 procedure TCurrentWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   i: Integer;
+  s: String;
 begin
   Expression := AConfig.GetValue(APath + 'Expression/Value', '');
   Enabled := AConfig.GetValue(APath + 'Enabled/Value', true);
@@ -6538,6 +6564,14 @@ begin
   then DisplayFormat := TWatchDisplayFormat(i)
   else DisplayFormat := wdfDefault;
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
+
+  if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
+  then Include(FEvaluateFlags, defSkipValConv)
+  else Exclude(FEvaluateFlags, defSkipValConv);
+
+  s := AConfig.GetValue(APath + 'FpDbgConv', '');
+  if s <> '' then
+    FpDbgConverter := DebuggerOptions.FpDbgConverterConfig.IdeItemByName(s);
 end;
 
 procedure TCurrentWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -6549,6 +6583,10 @@ begin
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+
+  AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
+  if FpDbgConverter <> nil then
+    AConfig.SetDeleteValue(APath + 'FpDbgConv', FpDbgConverter.Name, '');
 end;
 
 { =========================================================================== }

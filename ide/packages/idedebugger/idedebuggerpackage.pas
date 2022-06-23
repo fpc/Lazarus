@@ -11,12 +11,15 @@ uses
   IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
   IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
   IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
-  IdeDebuggerOpts, LazarusPackageIntf;
+  IdeDebuggerFpDbgValueConv, IdeFpDbgValueConverterSettingsFrame, 
+  IdeDebugger_FpValConv_Options, IdeDebuggerOpts, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
+  RegisterUnit('IdeDebugger_FpValConv_Options', 
+    @IdeDebugger_FpValConv_Options.Register);
 end;
 
 initialization

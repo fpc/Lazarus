@@ -9,7 +9,7 @@ interface
 
 uses
   FpDebugDebugger, FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, 
-  LazarusPackageIntf;
+  FpDebugValueConvertors, FpDebugDebuggerBase, LazarusPackageIntf;
 
 implementation
 

@@ -15,7 +15,7 @@ program WatchesValuePrg;
 {$warnings off}
 {$inline off}
 
-uses sysutils, Classes;
+uses sysutils, Classes, variants;
 
 function SomeFunc1(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
 begin result := SomeValue = 0; end;
@@ -74,6 +74,8 @@ var
   p: Pointer;
   pw: PWord; // ensure we have the type
   InterfacedObject, InterfacedObject2: TInterfacedObject;
+
+  variant1: variant;
 
 type
   TClass1 = class;
@@ -878,6 +880,7 @@ begin
   SomeFuncIntRes;
   FuncIntAdd(1,1);
   FuncTooManyArg(1,1,1,1,1,1,1,1,1,1,1,1);
+  variant1 := 102;
   {$if FPC_FULLVERSION >= 30000}
   dummy1 := nil;
   {$ENDIF}

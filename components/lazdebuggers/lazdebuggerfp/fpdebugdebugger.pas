@@ -36,7 +36,7 @@ uses
   Forms, Dialogs, syncobjs,
   Maps, LazLoggerBase, LazUTF8, lazCollections,
   DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
-  FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, LazDebuggerIntf,
+  FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase, LazDebuggerIntf,
   // FpDebug
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
