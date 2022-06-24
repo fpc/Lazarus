@@ -9,6 +9,18 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: debuggerstrconst.dlgfpconvoptdefault
+msgid "- Default -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptdisabled
+msgid "- Disabled -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptfpdebugconverter
+msgid "FpDebug Converter:"
+msgstr ""
+
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Colonna Azioni"

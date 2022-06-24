@@ -12,6 +12,18 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
+#: debuggerstrconst.dlgfpconvoptdefault
+msgid "- Default -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptdisabled
+msgid "- Disabled -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptfpdebugconverter
+msgid "FpDebug Converter:"
+msgstr ""
+
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Графа дії"

@@ -8,6 +8,20 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: debuggerstrconst.dlgfpconvoptdefault
+msgid "- Default -"
+msgstr "- По умолчанию -"
+
+#: debuggerstrconst.dlgfpconvoptdisabled
+msgid "- Disabled -"
+msgstr "- Отключено -"
+
+#: debuggerstrconst.dlgfpconvoptfpdebugconverter
+msgid "FpDebug Converter:"
+msgstr "Преобразование FpDebug:"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"

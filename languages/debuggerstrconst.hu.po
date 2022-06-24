@@ -11,6 +11,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: debuggerstrconst.dlgfpconvoptdefault
+msgid "- Default -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptdisabled
+msgid "- Disabled -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptfpdebugconverter
+msgid "FpDebug Converter:"
+msgstr ""
+
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Művelet oszlop"

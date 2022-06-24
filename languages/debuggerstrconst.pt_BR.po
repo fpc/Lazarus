@@ -11,6 +11,18 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.13\n"
 
+#: debuggerstrconst.dlgfpconvoptdefault
+msgid "- Default -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptdisabled
+msgid "- Disabled -"
+msgstr ""
+
+#: debuggerstrconst.dlgfpconvoptfpdebugconverter
+msgid "FpDebug Converter:"
+msgstr ""
+
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Coluna ações"
