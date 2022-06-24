@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-24 02:11+0300\n"
+"PO-Revision-Date: 2022-06-25 01:37+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: h2passtrconsts.h2padd
 msgid "&Add"
@@ -95,7 +95,7 @@ msgstr "-c  Компактный режим вывода, меньше проб�
 
 #: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
-msgstr "Конвертер файлов заголовков C"
+msgstr "Преобразование файлов заголовков C"
 
 #: h2passtrconsts.h2pcheaderfilehhallfiles
 #, object-pascal-format
