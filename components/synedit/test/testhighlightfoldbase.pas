@@ -42,7 +42,7 @@ type
     procedure InitTighLighterAttr; virtual;
     procedure SetUp; override;
     procedure TearDown; override;
-    procedure ReCreateEdit; reintroduce;
+    procedure ReCreateEdit; reintroduce; virtual;
 
     procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
     procedure CheckFoldLengths(Name: String; Expected: Array of TTestExpValuesForLine);
@@ -206,16 +206,25 @@ procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String;
 var
   c: Integer;
   e: TExpTokenInfo;
+  GotAttr: TSynHighlighterAttributes;
 begin
   FTheHighLighter.StartAtLineIndex(LineIdx);
   c := 0;
   while not FTheHighLighter.GetEol do begin
     e := ExpTokens[c];
     //DebugLn([FTheHighLighter.GetToken,' (',FTheHighLighter.GetTokenKind ,') at ', FTheHighLighter.GetTokenPos]);
+
     if etiKind in e.Flags then
-      AssertEquals(Name + ' Kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+'Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),  e.ExpKind, FTheHighLighter.GetTokenKind);
+      AssertEquals(Name + ' Kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+        e.ExpKind, FTheHighLighter.GetTokenKind);
+
+    GotAttr := FTheHighLighter.GetTokenAttribute;
     if etiAttr in e.Flags then
-      AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+'Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),  AttrVal(e.ExpAttr), AttrVal(FTheHighLighter.GetTokenAttribute));
+      AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+        AttrVal(e.ExpAttr), AttrVal(GotAttr))
+    else
+      AssertTrue(Name + ' Attr is NOT modifier @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+        (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) );
 
     FTheHighLighter.Next;
     inc(c);
