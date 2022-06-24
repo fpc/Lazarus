@@ -3678,7 +3678,8 @@ begin
   if FAnchestorStorage <> nil then
     FAnchestorStorage.SetCount(AValue);
   for i := 0 to Length(FFieldsStorage) - 1 do
-    FFieldsStorage[i].SetCount(AValue);
+    if FFieldsStorage[i] <> nil then
+      FFieldsStorage[i].SetCount(AValue);
 end;
 
 procedure TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.Assign(
@@ -3753,10 +3754,12 @@ begin
     AnOverrideTemplate, ANestLvl);
 
   for i := 0 to Length(FFieldsStorage) - 1 do begin
-    t := AnEntryTemplate;
-    if t <> nil then
-      t := TGenericWatchResultDataStruct(t).FType.FFieldData[i].Field;
-    FFieldsStorage[i].LoadDataFromXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', t, FOverrideTempl[i], ANestLvl);
+    if FFieldsStorage[i] <> nil then begin
+      t := AnEntryTemplate;
+      if t <> nil then
+        t := TGenericWatchResultDataStruct(t).FType.FFieldData[i].Field;
+      FFieldsStorage[i].LoadDataFromXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', t, FOverrideTempl[i], ANestLvl);
+    end;
   end;
 
   if FAnchestorStorage <> nil then begin
@@ -3776,7 +3779,8 @@ begin
   inherited SaveDataToXMLConfig(AConfig, APath, ANestLvl);
 
   for i := 0 to Length(FFieldsStorage) - 1 do
-    FFieldsStorage[i].SaveDataToXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', ANestLvl);
+    if FFieldsStorage[i] <> nil then
+      FFieldsStorage[i].SaveDataToXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', ANestLvl);
 
   if FAnchestorStorage <> nil then
     FAnchestorStorage.SaveDataToXMLConfig(AConfig, APath+'Anch/', ANestLvl);
@@ -3802,7 +3806,8 @@ begin
 
   Store.StoredFieldCount := Length(FType.FFieldData);
   for i := 0 to Length(FType.FFieldData) - 1 do
-    Store.NestedStorage[i] := FType.FFieldData[i].Field.CreateStorage;
+    if FType.FFieldData[i].Field <> nil then
+      Store.NestedStorage[i] := FType.FFieldData[i].Field.CreateStorage;
 end;
 
 function TGenericWatchResultDataStruct.MaybeUpdateProto(
@@ -3825,9 +3830,11 @@ begin
     if (ARecurse) then begin  // or "if not ASkipStorage and " ??
       dummy := nil;
       for i := 0 to Length(FType.FFieldData) - 1 do begin
-        FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
-          dummy, nil, ARecurse, ASkipStorage);
-        assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
+        if FType.FFieldData[i].Field <> nil then begin
+          FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
+            dummy, nil, ARecurse, ASkipStorage);
+          assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
+        end;
       end;
 
       if FType.FAnchestor <> nil then begin
@@ -3841,8 +3848,10 @@ begin
   end;
 
   for i := 0 to Length(FType.FFieldData) - 1 do begin
-    FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
-      FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
+    if FType.FFieldData[i].Field <> nil then begin
+      FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
+        FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
+    end;
   end;
 
   if FType.FAnchestor <> nil then begin
@@ -3890,19 +3899,21 @@ begin
       AStructEntryTemplate.FType.FFieldData[i].Field := nil;
   end;
   for i := 0 to Length(FType.FFieldData) - 1 do begin
-    FType.FFieldData[i].Field.MaybeUpdateProto(
-      AStructEntryTemplate.FType.FFieldData[i].Field,
-      AStore.FOverrideTempl[i],
-      AStore.NestedStoragePtr[i]
-    );
+    if FType.FFieldData[i].Field <> nil then begin
+      FType.FFieldData[i].Field.MaybeUpdateProto(
+        AStructEntryTemplate.FType.FFieldData[i].Field,
+        AStore.FOverrideTempl[i],
+        AStore.NestedStoragePtr[i]
+      );
 
-    if (AStore.NestedStorage[i] = nil) then
-      AStore.NestedStorage[i] := FType.FFieldData[i].Field.CreateStorage;
+      if (AStore.NestedStorage[i] = nil) then
+        AStore.NestedStorage[i] := FType.FFieldData[i].Field.CreateStorage;
 
-    AStore.NestedStorage[i].SaveToIndex(AnIndex,
-      FType.FFieldData[i].Field,
-      AStructEntryTemplate.FType.FFieldData[i].Field,
-      AStore.FOverrideTempl[i]);
+      AStore.NestedStorage[i].SaveToIndex(AnIndex,
+        FType.FFieldData[i].Field,
+        AStructEntryTemplate.FType.FFieldData[i].Field,
+        AStore.FOverrideTempl[i]);
+    end;
   end;
 end;
 
@@ -3924,8 +3935,9 @@ begin
 
   SetLength(FCurrentFields, Length(FType.FFieldData));
   for i := 0 to Length(FType.FFieldData) - 1 do begin
-    if (AStore.NestedStorage[i] <> nil) then
+    if (AStore.NestedStorage[i] <> nil) then begin
       AStore.NestedStorage[i].LoadFromIndex(AnIndex, FCurrentFields[i], FType.FFieldData[i].Field, AStore.FOverrideTempl[i]);
+    end
   end;
 end;
 
@@ -3939,7 +3951,8 @@ begin
     FType.FAnchestor.ClearData;
 
   for i := 0 to Length(FType.FFieldData) - 1 do
-    FType.FFieldData[i].Field.ClearData;
+    if (FType.FFieldData[i].Field <> nil) then
+      FType.FFieldData[i].Field.ClearData;
 end;
 
 function TGenericWatchResultDataStruct.GetFields(AnIndex: Integer
