@@ -52,6 +52,7 @@ type
     procedure TestFoldInfo;
     procedure TestExtendedKeywordsAndStrings;
     procedure TestContextForProcModifiers;
+    procedure TestContextForProcModifiers2;
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
     procedure TestContextForInterface;
@@ -576,6 +577,98 @@ begin
   {%endregion}
 end;
 
+procedure TTestHighlighterPas.TestContextForProcModifiers2;
+begin
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'cdecl=function(cdecl:cdecl):cdecl;cdecl;',
+         'type',
+         'Stdcall=class(cdecl)',
+         'function Stdcall(Stdcall:Stdcall):Stdcall;Stdcall;deprecated;',
+         'property cdecl:cdecl read cdecl;',
+         'end;',
+         '',
+         'cdecl=record',
+         'function cdecl(cdecl:cdecl):cdecl;cdecl;deprecated;',
+         'end;',
+         '',
+         'var',
+         'Stdcall:function(cdecl:cdecl):cdecl;cdecl;',
+         'var',
+         'cdecl:cdecl;',
+         '',
+         'function Stdcall(cdecl:cdecl):cdecl;cdecl;',
+         'var',
+         'cdecl:cdecl deprecated;',
+         'function Stdcall(cdecl:cdecl):cdecl;cdecl;deprecated;',
+         ''
+      ]);
+
+  CheckTokensForLine('type cdecl',  2,
+    [ tkIdentifier, TK_Equal, tkKey,  // cdecl=function
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+    ]);
+
+  CheckTokensForLine('StdCall=class',  4,
+    [ tkIdentifier, TK_Equal, tkKey,  // Stdcall=class
+      TK_Bracket, tkIdentifier, TK_Bracket  // (cdecl)
+    ]);
+
+  CheckTokensForLine('function/method cdecl',  5,
+    [ tkKey, tkSpace, tkIdentifier,  // function cdecl
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
+      tkKey, TK_Semi //deprecated;
+    ]);
+
+  CheckTokensForLine('property',  6,
+    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi ]);
+
+  CheckTokensForLine('StdCall=record',  9,
+    [ tkIdentifier, TK_Equal, tkKey  // Stdcall=record
+    ]);
+
+  CheckTokensForLine('funciton in recorld',  10,
+    [ tkKey, tkSpace, tkIdentifier,  // function cdecl
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
+      tkKey, TK_Semi //deprecated;
+    ]);
+
+  CheckTokensForLine('var cdecl functian',  14,
+    [ tkIdentifier, TK_Equal, tkKey,  // Stdcall:function
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+    ]);
+
+  CheckTokensForLine('var cdecl:cdecl',  16,
+    [ tkIdentifier, TK_Colon, tkIdentifier, TK_Semi  //cdecl:cdecl;
+    ]);
+
+  CheckTokensForLine('function',  18,
+    [ tkKey, tkSpace, tkIdentifier,  // function StdCall
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+    ]);
+
+  CheckTokensForLine('var cdecl deprecated:cdecl',  20,
+    [ tkIdentifier, TK_Colon, tkIdentifier,   //cdecl:cdecl
+      tkSpace, tkKey, TK_Semi //deprecated;
+    ]);
+
+  CheckTokensForLine('function deprecated',  21,
+    [ tkKey, tkSpace, tkIdentifier,  // function StdCall
+      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+      TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
+      tkKey, TK_Semi, // cdecl;
+      tkKey, TK_Semi //deprecated;
+    ]);
+
+end;
+
 procedure TTestHighlighterPas.TestContextForProperties;
 begin
   {%region property and index}
@@ -988,6 +1081,8 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           'type',
           s+' = '+s+' '+s+';',   // nameDEPRECATED = typeDEPRECATED deprecated;
           'procedure '+s+'('+s+': '+s+'); '+s+';',
+          'var',
+          s+':procedure '+s+';',
           ''
       ]);
     CheckTokensForLine('var', 2,
@@ -1001,6 +1096,8 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
       [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
        tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
       ]);
+    CheckTokensForLine('var a:procedure DEPRECATED;', 8,
+      [tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey {the one and only}, TK_Semi]);
 
 
     PushBaseName('class');
