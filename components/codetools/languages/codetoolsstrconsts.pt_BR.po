@@ -157,10 +157,6 @@ msgstr "Diretório Componentes"
 msgid "constant"
 msgstr "constante"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Diretório Conversor"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posição do cursor fora do código"
@@ -264,10 +260,6 @@ msgstr "esperado parâmetro \"dispid\", mas %s encontrado"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "especificador \"dispid\" redefinido"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Diretorio Editor Documentação"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

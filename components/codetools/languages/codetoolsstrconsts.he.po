@@ -156,10 +156,6 @@ msgstr "תיקיית הרכיבים"
 msgid "constant"
 msgstr "קבוע"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "תיקיית הממיר"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "מקום הסמן מחוץ לקוד"
@@ -263,10 +259,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr ""
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "תיקיית עורך המסמכים"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format, fuzzy, badformat

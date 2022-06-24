@@ -156,10 +156,6 @@ msgstr "Directori dels components"
 msgid "constant"
 msgstr "constant"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Directori del Conversor"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posició del cursor fora del codi"
@@ -263,10 +259,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr ""
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Directori de l'editor de documents"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

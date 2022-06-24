@@ -150,10 +150,6 @@ msgstr "Komponenttihakemisto"
 msgid "constant"
 msgstr "vakio"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Muuntimen hakemisto"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "kursori on koodin ulkopuolella"
@@ -257,10 +253,6 @@ msgstr "odotettiin dispid parametria, saatiin %s"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "dispid tarkenne määriteltiin uudestaan"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Doc Editor hakemisto"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

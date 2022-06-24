@@ -158,10 +158,6 @@ msgstr "Komponenčių aplankas"
 msgid "constant"
 msgstr "konstanta"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Konverterio aplankas"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "žymeklis už kodo ribų"
@@ -265,10 +261,6 @@ msgstr "tikėtasi parametro „dispid“, tačiau aptikta %s"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "specifikatorius „dispid“ apibrėžtas pakartotinai"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Dokumentacijos rengyklės aplankas"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

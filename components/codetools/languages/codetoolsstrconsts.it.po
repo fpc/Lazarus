@@ -155,10 +155,6 @@ msgstr "Cartella componenti"
 msgid "constant"
 msgstr "costante"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Cartella del convertitore"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posizione del cursore fuori dal codice"
@@ -262,10 +258,6 @@ msgstr "Era previsto parametro dispid, ma è stato trovato %s"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "ridefinito specificatore dispid"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Cartella di documentazione editor"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

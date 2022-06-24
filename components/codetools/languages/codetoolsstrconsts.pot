@@ -150,10 +150,6 @@ msgstr ""
 msgid "constant"
 msgstr ""
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr ""
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr ""
@@ -256,10 +252,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsduplicateidentifier

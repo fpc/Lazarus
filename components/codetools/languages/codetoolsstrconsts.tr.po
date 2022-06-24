@@ -158,10 +158,6 @@ msgstr "Bileşenler klasörü"
 msgid "constant"
 msgstr "sabit"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Dönüştürücü Dizini"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "imleç posizyonu kod dışında"
@@ -265,10 +261,6 @@ msgstr "dispid parametresi bekleniyor, ancak %s bulundu"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "dispid belirteci yeniden tanımlandı"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Belge Düzenleyici Dizini"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

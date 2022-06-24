@@ -160,10 +160,6 @@ msgstr "Тека компонентів"
 msgid "constant"
 msgstr "константа"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Тека конвертера"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "позиція курсора поза кодом"
@@ -267,10 +263,6 @@ msgstr "очікується параметр dispid, але знайдено %s
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "специфікатор dispid перевизначено"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Тека редактора документації"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

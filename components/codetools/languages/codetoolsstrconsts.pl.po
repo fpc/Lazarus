@@ -158,10 +158,6 @@ msgstr "Katalog komponentów"
 msgid "constant"
 msgstr "stała"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Katalog konwertera"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "Kursor jest poza kodem"
@@ -265,10 +261,6 @@ msgstr ""
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr ""
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Katalog edytora dokumentacji"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format

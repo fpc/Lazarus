@@ -157,10 +157,6 @@ msgstr "Adresář komponent"
 msgid "constant"
 msgstr "konstanta"
 
-#: codetoolsstrconsts.ctsconverterdirectory
-msgid "Converter Directory"
-msgstr "Adresář převaděče"
-
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "pozice ukazatele mimo kód"
@@ -264,10 +260,6 @@ msgstr "očekáván parametr dispid, ale %s nalezeno"
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
 msgstr "specifikátor dispid předefinován"
-
-#: codetoolsstrconsts.ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Adresář Doc Editoru"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format
