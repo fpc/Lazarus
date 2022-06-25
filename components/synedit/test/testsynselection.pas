@@ -1019,9 +1019,12 @@ procedure TTestSynSelection.ReplaceSelText;
                         Replace: Array of String; ExpCaretX, ExpCaretY: Integer;
                         ExpLineRepl: Array of Const; SkipUndo: Boolean = False);
   var
-    SkipUndo2: Boolean;
+    SkipUndo2, SkipRedo2: Boolean;
+    Text1: String;
   begin
     PushBaseName(Name);
+    SkipUndo2 := False;
+    SkipRedo2 := False;
 
     {%region }
     SetLines(TheText);
@@ -1061,12 +1064,15 @@ procedure TTestSynSelection.ReplaceSelText;
 
     {%region }
     // *** do in 2 steps, explicit set to empty
+    // SkipUndo2, SkipRedo2: If there is no text change, then there is no undo info. So if caret chages may be expected, they will not have happened
     SetLines(TheText);
     SetCaretAndSel(X1,Y1, X2,Y2);
     TestIsBlock    ('Sanity, selection at begin of test (2)', X1,Y1, X2,Y2, Before);
     SynEdit.SelText := '';
-    if SynEdit.TestFullText = LinesToText(TheText) then SkipUndo2 := True;       // Nothing changed, can not restore bloc in undo
+    if SynEdit.TestFullText = LinesToText(TheText) then SkipUndo2 := True;       // Nothing changed, can not restore block in undo
+    Text1 := SynEdit.TestFullText;
     SynEdit.TestSetSelText(LinesToText(Replace), SelInsertMode);
+    if SynEdit.TestFullText = Text1 then SkipRedo2 := True;       // Nothing changed, can not restore block in undo
     TestIsCaretPhys('After Replace (2 step)', ExpCaretX, ExpCaretY);
     TestIsNoBlock  ('After Replace (2 step)');
     TestIsFullText ('After Replace (2 step)', TheText, ExpLineRepl);
@@ -1079,9 +1085,10 @@ procedure TTestSynSelection.ReplaceSelText;
 
       SynEdit.Redo;
       SynEdit.Redo;
-      TestIsCaretPhys('After Redo (2 step)', ExpCaretX, ExpCaretY);
       TestIsNoBlock  ('After Redo (2 step)');
       TestIsFullText ('After Redo (2 step)', TheText, ExpLineRepl);
+      if not SkipRedo2 then
+        TestIsCaretPhys('After Redo (2 step)', ExpCaretX, ExpCaretY);
     end;
     {%endregion }
 
