@@ -443,8 +443,8 @@ type
 // these constants are missing from CocoaAll for some reason
 const
   NSTextAlignmentLeft      = 0;
-  NSTextAlignmentRight     = 1; // it's 2 for iOS and family
-  NSTextAlignmentCenter    = 2; // it's 1 for iOS and family
+  NSTextAlignmentRight     = {$ifdef USE_IOS_VALUES}2{$else}1{$endif}; // it's 2 for iOS and family
+  NSTextAlignmentCenter    = {$ifdef USE_IOS_VALUES}1{$else}2{$endif}; // it's 1 for iOS and family
   NSTextAlignmentJustified = 3;
   NSTextAlignmentNatural   = 4;
 
