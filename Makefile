@@ -3775,6 +3775,7 @@ basecomponents:
 	$(MAKE) -C components/lazcontrols/design
 	$(MAKE) -C components/lclextensions
 	$(MAKE) -C components/virtualtreeview
+	$(MAKE) -C components/fpdebug
 	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
 	$(MAKE) -C components bigide
