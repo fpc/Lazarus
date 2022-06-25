@@ -1452,7 +1452,6 @@ var
   begin
     // reset counters for following <FoldList>
     CntSum := 0;
-    LinesSum := 0;
 
     HideBit := 0;;
     case LastFoldType of
@@ -1473,7 +1472,7 @@ var
         exit;
       l1 := FWriteCache[AStartIndex].aY;
       if (ACount         > SEQMaxNodeCount) or
-         (ALines         > SEQMaxNodeCount) or
+         (ALines         > SEQMaxNodeCount) or  // TODO should this be SEQMaxLineDistEach ?
          (l1 - l2        > SEQMaxLineDistEach) or
          (l1 - FirstLine > SEQMaxLineDistTotal)
       then
@@ -1538,6 +1537,7 @@ begin
   end;
   i := 0;
   while i < FWriteCacheLen do begin
+    LinesSum := 0;
     WriteCachedNode(i);
 
     DeferredZero := False;   // special case at start, there may be 0 more folded nodes
@@ -1729,7 +1729,8 @@ begin
           end;
         end;
         dec(FReadCount);
-        inc(FReadSumLen, aLen);
+        if FReadType <> scftOpen then
+          inc(FReadSumLen, aLen);
         Result := FReadType;
       end;
 
