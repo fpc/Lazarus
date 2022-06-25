@@ -56,6 +56,12 @@ type
     function TestTextHide4: TStringArray;
     function TestTextPlain: TStringArray;
     function TestTextBug21473: TStringArray;
+    (* TestTextNodeDesc_FoldOpenFold_WithDistance
+       Encode repeated runs of: fold, not-fold, fold
+       With LineOffs > SEQMax** to force a 2nd "repeat-run" (and a " p<sum>" inbetween)
+       // Currently, if <sum> is wrong the current "repeat-run" is kept, but the next aborted.
+    *)
+    function TestTextNodeDesc_FoldOpenFold_WithDistance: TStringArray;
   protected
     procedure TstSetText(AName: String; AText: Array of String);
     procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
@@ -88,6 +94,7 @@ type
     procedure TestFold;
     procedure TestFoldEdit;
     procedure TestFoldStateFromText;
+    procedure TestFoldStateFromText_2;
     procedure TestFoldStateDesc;
     procedure TestFoldProvider;
     procedure TestNestedFoldsList;
@@ -681,6 +688,52 @@ begin
   Result[34] := '';
 end;
 
+function TTestFoldedView.TestTextNodeDesc_FoldOpenFold_WithDistance: TStringArray;
+begin
+  SetLength(Result, 6000);
+  Result[   0] := 'unit a';
+  Result[   1] := 'interface';
+  Result[   2] := 'implementation';
+  Result[   3] := '';
+  Result[   4] := 'procedure Foo0;';
+  Result[   5] := 'begin';
+  Result[   6] := '  //';
+  Result[   7] := 'end';
+  Result[   8] := '';
+  Result[   9] := 'procedure Foo1;';
+  Result[  10] := '';
+  Result[  11] := '  procedure Foo1Inner1;';
+  Result[  12] := '  begin';
+  Result[  13] := '  end;';
+  Result[  14] := '';
+  Result[  15] := '  procedure Foo1Inner2;';
+  Result[  16] := '  begin';
+  Result[  17] := '  //;';
+  Result[  18] := '  end;';
+  Result[  19] := '';
+  Result[  20] := 'begin';
+  Result[  21] := '  //';
+  Result[  22] := 'end;';
+  Result[  23] := '';
+  Result[  24] := '';
+  Result[  25] := 'procedure Foo2;';
+  Result[  26] := 'begin';
+  Result[  27] := '  //';
+  Result[  28] := 'end';
+  Result[  29] := '';
+  Result[  30] := 'procedure Foo3;';
+  Result[  31] := 'begin';
+  Result[  32] := '  //';
+  // Make this really long
+  Result[5983] := 'end';
+  Result[5984] := '';
+  Result[5985] := 'procedure Foo4;';
+  Result[5986] := 'begin';
+  Result[5987] := '  //';
+  Result[5988] := 'end';
+  Result[5989] := '';
+
+end;
 
 procedure TTestFoldedView.TestFold;
   procedure RunTest;
@@ -1659,6 +1712,103 @@ begin
   AssertEquals(FoldedView.ViewedCount, 4999);
   SynEdit.FoldState := ' T01A1 p0j*eA1i';
   AssertEquals(FoldedView.ViewedCount, 4999-2);
+end;
+
+procedure TTestFoldedView.TestFoldStateFromText_2;
+var
+  WithBeginEndEnabled, WithBeginFooZeroFolded,
+    WithBeginFooInnerOneFolded, WithUnfoldAll, WithFixAfterFolding: Boolean;
+  FoldInfoAsString: String;
+
+  procedure NewSyn;
+  begin
+    ReCreateEdit;
+    SetLines(TestTextNodeDesc_FoldOpenFold_WithDistance);
+
+    if WithBeginEndEnabled then
+      EnableFolds( [cfbtBeginEnd..cfbtNone], [], [cfbtBeginEnd..cfbtNone] - [cfbtTopBeginEnd, cfbtProcedure])
+    else
+      EnableFolds( [cfbtBeginEnd..cfbtNone], [], [cfbtBeginEnd..cfbtNone] - [cfbtProcedure]);
+  end;
+
+  procedure TestIsFolded(AIndex: Integer; AColIdx: Integer = 0);
+  begin
+    if not FoldedView.IsFoldedAtTextIndex(AIndex, AColIdx) then
+      TestFail('is folded', IntToStr(AIndex), 'Folded', 'Not folded');
+  end;
+  procedure TestIsUnfolded(AIndex: Integer; AColIdx: Integer = 0);
+  begin
+    if FoldedView.IsFoldedAtTextIndex(AIndex, AColIdx) then
+      TestFail('not folded', IntToStr(AIndex), 'Folded', 'Not folded');
+  end;
+  procedure TestFolded(ExpFolded: Boolean; AIndex: Integer; AColIdx: Integer = 0);
+  begin
+    if ExpFolded then
+      TestIsFolded(AIndex, AColIdx)
+    else
+      TestIsUnfolded(AIndex, AColIdx);
+  end;
+
+begin
+  for WithBeginEndEnabled := low(Boolean) to high(Boolean) do
+  for WithBeginFooZeroFolded := low(Boolean) to high(Boolean) do
+  for WithBeginFooInnerOneFolded := low(Boolean) to high(Boolean) do
+  for WithUnfoldAll := low(Boolean) to high(Boolean) do
+  for WithFixAfterFolding := low(Boolean) to high(Boolean) do
+  begin
+    NewSyn;
+
+    // The first run will have a repeated fold / rather than "len=0" (see "DeferredZero")
+    if WithBeginFooZeroFolded then
+      FoldedView.FoldAtTextIndex(4);     // Foo0
+    FoldedView.FoldAtTextIndex(   9);    // Foo1
+    if WithBeginFooInnerOneFolded then
+      FoldedView.FoldAtTextIndex(  11);  // FooInner1
+    FoldedView.FoldAtTextIndex(  25);    // Foo2
+    FoldedView.FoldAtTextIndex(  30);    // Foo3
+    FoldedView.FoldAtTextIndex(5985);    // Foo4
+
+    FoldInfoAsString := SynEdit.FoldState;
+
+    if WithFixAfterFolding then begin
+      FoldedView.FixFoldingAtTextIndex(0, SynEdit.Lines.Count-1);
+      TestCompareString('after FixFolding', FoldInfoAsString, SynEdit.FoldState);
+    end;
+    //tmp  := FoldedView.GetFoldDescription(0, 1, -1, -1, False, False);
+
+    if WithUnfoldAll then
+      SynEdit.UnfoldAll
+    else
+      NewSyn;
+
+    SynEdit.FoldState := FoldInfoAsString;
+
+    TestIsUnfolded( 0);
+    TestIsUnfolded( 1);
+    TestIsUnfolded( 2);
+    TestIsUnfolded( 3);
+    TestFolded(WithBeginFooZeroFolded, 4); // Foo0
+    TestIsUnfolded( 5);
+
+    TestIsUnfolded( 8);
+    TestIsFolded  ( 9); // Foo1
+    TestIsUnfolded(10);
+
+    TestFolded(WithBeginFooInnerOneFolded, 11); // Foo0
+    TestIsUnfolded(12);
+
+    TestIsUnfolded(24);
+    TestIsFolded  (25); // Foo2
+    TestIsUnfolded(26);
+
+    TestIsUnfolded(29);
+    TestIsFolded  (30); // Foo3
+    TestIsUnfolded(31);
+
+    TestIsUnfolded(5984);
+    TestIsFolded  (5985); // Foo4
+    TestIsUnfolded(5986);
+  end;
 end;
 
 procedure TTestFoldedView.TestFoldStateDesc;

@@ -45,7 +45,7 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <Item Name="O0t">
+      <Item Name="O0   NO-gt1">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -77,7 +77,7 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <Item Name="O0tt">
+      <Item Name="O0riota1  NO-gt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -109,7 +109,7 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <Item Name="O0ttt">
+      <Item Name="O0 -gt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -141,7 +141,71 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <Item Name="O0tttt">
+      <Item Name="O0 -gtt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <CPPInline Value="False"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-gt
+-dWithSynBiDi"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="O0 -gttt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <CPPInline Value="False"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-gt
+-dWithSynBiDi"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="O0 -gtttt &lt;nil>">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -429,21 +493,55 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <SharedMatrixOptions Count="14">
-        <Item1 ID="394047217475" Targets="SynEdit" Modes="O0riota,O0t,O0tt,O0ttt,O0tttt,O1riota,O2riota,O3riota,O4riota" Value="-CR"/>
-        <Item2 ID="832332610162" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O0t,O0tt,O0ttt,O0tttt,O1riota,O2riota,O3riota,O4riota" Value="-dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold"/>
-        <Item3 ID="476451423372" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0,O0riota,O0t,O0tt,O0ttt,O0tttt" Value="-O-"/>
-        <Item4 ID="353669118028" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1,O1riota" Value="-O-1"/>
+      <Item Name="O1 - SynFoldDebug SynFoldSaveDebug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <CPPInline Value="False"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-gt
+-dWithSynBiDi"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <SharedMatrixOptions Count="16">
+        <Item1 ID="394047217475" Targets="SynEdit" Modes="O0riota,O1riota,O2riota,O3riota,O4riota" Value="-CR"/>
+        <Item2 ID="832332610162" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold"/>
+        <Item3 ID="476451423372" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0,O0riota,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>,O0   NO-gt1" Value="-O-"/>
+        <Item4 ID="353669118028" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1,O1riota,O1 - SynFoldDebug SynFoldSaveDebug" Value="-O-1"/>
         <Item5 ID="705666282637" Targets="#project,SynEdit,LCL,LazUtils" Modes="O2,O2riota" Value="-O-2"/>
         <Item6 ID="139516671950" Targets="#project,SynEdit,LCL,LazUtils" Modes="O3,O3riota" Value="-O-3"/>
         <Item7 ID="951152446553" Targets="#project,SynEdit,LCL,LazUtils" Modes="O4,O4riota" Value="-O-4"/>
-        <Item8 ID="290834599239" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O0t,O0tt,O0ttt,O0tttt,O1riota,O2riota,O3riota,O4riota" Value="-Criot"/>
+        <Item8 ID="290834599239" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0 -gtttt &lt;nil>,O0 -gttt,O0 -gtt,O0 -gt,O0riota1  NO-gt" Value="-Criot"/>
         <Item9 ID="862413201644" Targets="#project,SynEdit,LCL,LazUtils" Value="-CR"/>
-        <Item10 ID="552061010909" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O0t,O0tt,O0ttt,O0tttt,O1riota,O2riota,O3riota,O4riota" Value="-Sa"/>
-        <Item11 ID="362454399046" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0t" Value="-Ct"/>
-        <Item12 ID="710122956011" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0tt" Value="-Ctt"/>
-        <Item13 ID="041078026067" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0ttt" Value="-Cttt"/>
-        <Item14 ID="961200635277" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0tttt" Value="-Ctttt"/>
+        <Item10 ID="552061010909" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-Sa"/>
+        <Item11 ID="362454399046" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1 - SynFoldDebug SynFoldSaveDebug,O0 -gt" Value="-gt- -gt"/>
+        <Item12 ID="710122956011" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtt" Value="-gt- -gtt"/>
+        <Item13 ID="041078026067" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gttt" Value="-gt- -gttt"/>
+        <Item14 ID="961200635277" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtttt &lt;nil>" Value="-gt- -gtttt"/>
+        <Item15 ID="901082361902" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota1  NO-gt,O0   NO-gt1,O4,O3,O2,O1" Value="-gt-"/>
+        <Item16 ID="058689630976" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1 - SynFoldDebug SynFoldSaveDebug" Value="-dSynFoldDebug -dSynFoldSaveDebug"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
