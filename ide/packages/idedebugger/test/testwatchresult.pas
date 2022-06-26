@@ -43,10 +43,12 @@ type
       cdErrPre,
       cdPtr_ErrNum, cdErrPtr_Num,
       cdPtr_Ptr_ErrNum, cdPtr_ErrPtr_Num, cdErrPtr_Ptr_Num,
-      cdErrArr_Num, cdArr_EmptyNum,
+      cdErrArr_Num, cdArr_EmptyNum, cdArr_ErrNum,
       cdPtr_ErrArr_Num,
-//      cdErrStruct,
-      cdStruct_ErrField
+      cdErrStruct, cdStruct_ErrField,
+      cdStruct_Nil,   // Instead of error, create struct, but no fields / no field-data
+      cdStruct_ErrEmptyFields
+      //cdStruct_EmptyFields // Add fields, but instead of error, do not create data for the fields
     );
   const
     SecondType: array [TTestCreateDataKind] of array [0..1] of TTestCreateDataKind = (
@@ -57,10 +59,15 @@ type
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdPtr_Ptr_ErrNum,
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdPtr_ErrPtr_Num,
       (cdPtr_Ptr_ErrNum, cdErrPtr_Ptr_Num),    // cdErrPtr_Ptr_Num
-      (cdErrArr_Num,     cdArr_EmptyNum),      // cdErrArr_Num
-      (cdErrArr_Num,     cdArr_EmptyNum),      // cdArr_EmptyNum
+      (cdErrArr_Num,     cdArr_ErrNum),        // cdErrArr_Num
+      (cdErrArr_Num,     cdArr_ErrNum),        // cdArr_EmptyNum
+      (cdErrArr_Num,     cdArr_ErrNum),        // cdArr_ErrNum
       (cdPtr_ErrArr_Num, cdPtr_ErrArr_Num),    // cdPtr_ErrArr_Num
-      (cdStruct_ErrField,cdStruct_ErrField)
+      (cdErrStruct,      cdStruct_Nil),        // cdErrStruct
+      (cdErrStruct,      cdStruct_Nil),        // cdStruct_ErrField
+      (cdErrStruct,      cdStruct_Nil),        // cdStruct_Nil
+      (cdStruct_ErrEmptyFields,cdStruct_ErrEmptyFields) //cdStruct_ErrEmptyFields
+      //(cdStruct_EmptyFields, cdStruct_EmptyFields)  // cdStruct_EmptyFields
     );
   protected
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TWatchResultDataKind); overload;
@@ -139,6 +146,10 @@ type
       ExpTypeName: String = #1;
       ASaveLoad: Boolean = True; ACreateCopy: Boolean = True
     );
+    procedure AssertArrayOfErrData(const AMessage: string; IdeRes: TWatchResultData;
+      ExpAnErr: String;
+      ASaveLoad: Boolean = True; ACreateCopy: Boolean = True
+    );
     procedure AssertEmptyArrayOfNumData(const AMessage: string; IdeRes: TWatchResultData;
       ExpNum: Int64;
       ExpTypeName: String = #1;
@@ -167,7 +178,8 @@ type
       ExpAnchTypeName: String = #1;
       ExpTypeName: String = #1;
       ExpKind: TWatchResultDataKind = rdkUnknown;
-      ASaveLoad: Boolean = True; ACreateCopy: Boolean = True
+      ASaveLoad: Boolean = True; ACreateCopy: Boolean = True;
+      aOnlyFieldData: Boolean = False
     );
 
     procedure AssertStructData(const AMessage: string; IdeRes: TWatchResultData;
@@ -192,7 +204,8 @@ type
                           aEntryType1, aEntryType2: TTestCreateDataKind;
                           aErr1, aErr2: Boolean;
                           aNil: Boolean = False;
-                          ExpTypeName: String = ''
+                          ExpTypeName: String = '';
+                          aOnlyFieldData: Boolean = False
                          );
 
     function SaveLoad(ARes: TWatchResultData): TWatchResultData;
@@ -205,6 +218,7 @@ type
     function CreatePtrPtrNum(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     function CreatePtrPtrErr(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
     function CreateArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    function CreateArrayOfErr(ResIntf: TLzDbgWatchDataIntf; AnErr: String): TTwoResRecord;
     function CreateEmptyArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     function CreatePtrArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
     procedure CreateStruct(ResIntf: TLzDbgWatchDataIntf;
@@ -214,7 +228,8 @@ type
                           WithAnch1Fld, WithAnch2Fld: Boolean;
                           aEntryType1, aEntryType2: TTestCreateDataKind;
                           aErr1, aErr2: Boolean;
-                          aNil: Boolean = False
+                          aNil: Boolean = False;
+                          aOnlyFieldData: Boolean = False
                          );
 
     function  CreateData(ResIntf: TLzDbgWatchDataIntf;
@@ -581,6 +596,28 @@ begin
   end;
 end;
 
+procedure TTestIdeDebuggerWatchResult.AssertArrayOfErrData(
+  const AMessage: string; IdeRes: TWatchResultData; ExpAnErr: String;
+  ASaveLoad: Boolean; ACreateCopy: Boolean);
+var
+  t: TWatchResultData;
+begin
+  AssertArrayData(AMessage, IdeRes, datDynArray, 1, 0);
+  IdeRes.SetSelectedIndex(0);
+  AssertErrData(AMessage, IdeRes.SelectedEntry, ExpAnErr);
+
+  if ASaveLoad and not SkipSubTestSave then begin
+    t := SaveLoad(IdeRes);
+    AssertArrayOfErrData(AMessage, IdeRes, ExpAnErr, False, False);
+    t.Free;
+  end;
+  if ACreateCopy and not SkipSubTestCopy then begin
+    t := IdeRes.CreateCopy;
+    AssertArrayOfErrData(AMessage, IdeRes, ExpAnErr, False, False);
+    t.Free;
+  end;
+end;
+
 procedure TTestIdeDebuggerWatchResult.AssertEmptyArrayOfNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -668,7 +705,7 @@ procedure TTestIdeDebuggerWatchResult.AssertStructField(const AMessage: string;
   IdeRes: TWatchResultData; TestFieldNum: Integer; ExpName: String;
   ExpVisibilty: TLzDbgFieldVisibility; ExpFlags: TLzDbgFieldFlags;
   ExpAnchTypeName: String; ExpTypeName: String; ExpKind: TWatchResultDataKind;
-  ASaveLoad: Boolean; ACreateCopy: Boolean);
+  ASaveLoad: Boolean; ACreateCopy: Boolean; aOnlyFieldData: Boolean);
 var
   t: TWatchResultData;
   FldData: TWatchResultDataFieldInfo;
@@ -677,18 +714,23 @@ begin
   AssertTrue(AMessage+': in range', IdeRes.FieldCount > TestFieldNum);
 
   FldData := IdeRes.Fields[TestFieldNum];
-  AssertTrue(AMessage+': Field not nil', FldData.Field <> nil);
+  if not aOnlyFieldData then
+    AssertTrue(AMessage+': Field not nil', FldData.Field <> nil);
   AssertTrue(AMessage+': Owner not nil', FldData.Owner <> nil);
 
   AssertEquals(AMessage+': Field Name',       ExpName, FldData.FieldName);
   AssertEquals(AMessage+': Field Visibility', ord(ExpVisibilty), ord(FldData.FieldVisibility));
   AssertTrue  (AMessage+': Field Flags',      ExpFlags = FldData.FieldFlags);
 
-  if ExpKind <> rdkUnknown then
+  if (ExpKind <> rdkUnknown) and
+     (not aOnlyFieldData)
+  then
     AssertEquals(AMessage + ': VKind',    ExpKind, FldData.Field.ValueKind);
 
   AssertTypeName(AMessage + ': Anch TypeName',   FldData.Owner, ExpAnchTypeName);
-  if FldData.Field.ValueKind <> rdkError then
+  if (not aOnlyFieldData) and
+     (FldData.Field.ValueKind <> rdkError)
+  then
     AssertTypeName(AMessage + ': Field TypeName',  FldData.Field, ExpTypeName);
 
 
@@ -772,7 +814,7 @@ procedure TTestIdeDebuggerWatchResult.AssertStruct(const AMessage: string;
   IdeRes: TWatchResultData; StrctTyp: TLzDbgStructType; WithFld: Boolean;
   WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
   aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
-  ExpTypeName: String);
+  ExpTypeName: String; aOnlyFieldData: Boolean);
 var
   ExpCnt, ExpOffs: Integer;
 begin
@@ -791,32 +833,46 @@ begin
   AssertStructData('', IdeRes, StrctTyp, 700, ExpCnt, ExpTypeName);
   ExpOffs := 0;
   if WithFld then begin
-    if aErr1 and not aErr2 then
-      AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad')
-    else
-      AssertStructField('', IdeRes, ExpOffs+0, 'Foo', dfvProtected, [], ExpTypeName, 'TMyFoo');
+    if aErr1 and not aErr2 then begin
+      if not aOnlyFieldData then
+        AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad');
+      end
+    else begin
+      AssertStructField('', IdeRes, ExpOffs+0, 'Foo', dfvProtected, [], ExpTypeName, 'TMyFoo',
+        rdkUnknown, True, True, aOnlyFieldData);
+    end;
 
-    AssertStructField('', IdeRes, ExpOffs+1, 'Abc', dfvPublic,    [], ExpTypeName, #1, rdkError);
-    AssertErrData('', IdeRes.Fields[ExpOffs+1].Field, 'ouch');
+    AssertStructField('', IdeRes, ExpOffs+1, 'Abc', dfvPublic,    [], ExpTypeName, #1, rdkError,
+      True, True, aOnlyFieldData);
+    if not aOnlyFieldData then
+      AssertErrData('', IdeRes.Fields[ExpOffs+1].Field, 'ouch');
 
-    AssertStructField('', IdeRes, ExpOffs+2, 'Bar', dfvPublic,    [], ExpTypeName, 'TMyBar');
-    AssertData('', IdeRes.Fields[ExpOffs+2].Field, aEntryType2, aErr2, 'TMyBar', 301, 1201);
+    AssertStructField('', IdeRes, ExpOffs+2, 'Bar', dfvPublic,    [], ExpTypeName, 'TMyBar',
+      rdkUnknown, True, True, aOnlyFieldData);
+    if not aOnlyFieldData then
+      AssertData('', IdeRes.Fields[ExpOffs+2].Field, aEntryType2, aErr2, 'TMyBar', 301, 1201);
 
     ExpOffs := ExpOffs + 3;
   end;
 
   if WithAnch1Fld and (WithAnch >= 1) then begin
-    AssertStructField('', IdeRes, ExpOffs+0, 'P1Abc', dfvPrivate,   [], 'TAnch1', #1, rdkError);
-    AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad');
+    AssertStructField('', IdeRes, ExpOffs+0, 'P1Abc', dfvPrivate,   [], 'TAnch1', #1, rdkError,
+      True, True, aOnlyFieldData);
+    if not aOnlyFieldData then
+      AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad');
 
-    AssertStructField('', IdeRes, ExpOffs+1, 'P1Foo', dfvProtected, [], 'TAnch1', 'TMyFoo');
-    AssertData('', IdeRes.Fields[ExpOffs+1].Field, aEntryType1, False, 'TMyFoo', 310, 1210);
+    AssertStructField('', IdeRes, ExpOffs+1, 'P1Foo', dfvProtected, [], 'TAnch1', 'TMyFoo',
+      rdkUnknown, True, True, aOnlyFieldData);
+    if not aOnlyFieldData then
+      AssertData('', IdeRes.Fields[ExpOffs+1].Field, aEntryType1, False, 'TMyFoo', 310, 1210);
     ExpOffs := ExpOffs + 2;
    end;
 
   if WithAnch2Fld and (WithAnch >= 2) then begin
-    AssertStructField('', IdeRes, ExpOffs+0, 'P2Foo', dfvProtected, [], 'TAnch2', 'TMyXyz');
-    AssertData('', IdeRes.Fields[ExpOffs+0].Field, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
+    AssertStructField('', IdeRes, ExpOffs+0, 'P2Foo', dfvProtected, [], 'TAnch2', 'TMyXyz',
+      rdkUnknown, True, True, aOnlyFieldData);
+    if not aOnlyFieldData then
+      AssertData('', IdeRes.Fields[ExpOffs+0].Field, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
     ExpOffs := ExpOffs + 1;
   end;
 
@@ -937,6 +993,17 @@ begin
   dat.CreateNumValue(ANum+7, True, 2);
 end;
 
+function TTestIdeDebuggerWatchResult.CreateArrayOfErr(
+  ResIntf: TLzDbgWatchDataIntf; AnErr: String): TTwoResRecord;
+var
+  dat: TLzDbgWatchDataIntf;
+begin
+  Result.NestPtr := ResIntf.CreateArrayValue(datDynArray, 2);
+
+  Result.NestNum := ResIntf.SetNextArrayData;
+  Result.NestNum.CreateError(AnErr);
+end;
+
 function TTestIdeDebuggerWatchResult.CreateEmptyArrayOfNum(
   ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 var
@@ -958,7 +1025,8 @@ end;
 procedure TTestIdeDebuggerWatchResult.CreateStruct(
   ResIntf: TLzDbgWatchDataIntf; StrctTyp: TLzDbgStructType; WithFld: Boolean;
   WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
-  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean);
+  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
+  aOnlyFieldData: Boolean);
 var
   ExpCnt: Integer;
   FldIntf, Anch1Intf: TLzDbgWatchDataIntf;
@@ -981,7 +1049,8 @@ begin
   ExpCnt := 0;
   if WithFld then begin
     FldIntf := ResIntf.AddField('Foo', dfvProtected, []);
-    CreateData(FldIntf, aEntryType1, aErr1, 'TMyFoo', 300, 1200);
+    if not aOnlyFieldData then
+      CreateData(FldIntf, aEntryType1, aErr1, 'TMyFoo', 300, 1200);
     //if aErr3 then
     if aErr1 and not aErr2 then
       FldIntf.CreateError('bad');
@@ -990,7 +1059,8 @@ begin
     FldIntf.CreateError('ouch');
 
     FldIntf := ResIntf.AddField('Bar', dfvPublic, []);
-    CreateData(FldIntf, aEntryType2, aErr2, 'TMyBar', 301, 1201);
+    if not aOnlyFieldData then
+      CreateData(FldIntf, aEntryType2, aErr2, 'TMyBar', 301, 1201);
     ExpCnt := ExpCnt + 3;
   end;
 
@@ -1001,7 +1071,8 @@ begin
       FldIntf.CreateError('bad');
 
       FldIntf := Anch1Intf.AddField('P1Foo', dfvProtected, []);
-      CreateData(FldIntf, aEntryType1, False, 'TMyFoo', 310, 1210);
+      if not aOnlyFieldData then
+        CreateData(FldIntf, aEntryType1, False, 'TMyFoo', 310, 1210);
       ExpCnt := ExpCnt + 2;
     end;
 
@@ -1010,7 +1081,8 @@ begin
 
       if WithAnch2Fld then begin
         FldIntf := Anch1Intf.AddField('P2Foo', dfvProtected, []);
-        CreateData(FldIntf, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
+        if not aOnlyFieldData then
+          CreateData(FldIntf, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
         ExpCnt := ExpCnt + 1;
       end;
     end;
@@ -1040,9 +1112,15 @@ begin
       cdErrArr_Num:     ResIntf.CreateError(AnErrPreFix+'ouch');
       cdArr_EmptyNum:   Result :=
                         CreateEmptyArrayOfNum(ResIntf, ANumVal);
+      cdArr_ErrNum:     Result :=
+                        CreateArrayOfErr(ResIntf, AnErrPreFix+'no');
       cdPtr_ErrArr_Num: Result.NestNum :=
                         CreatePtrErr   (ResIntf, AnAddr, AnErrPreFix+'argh');
+      cdErrStruct:      ResIntf.CreateError(AnErrPreFix+'bad-obj');
       cdStruct_ErrField:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, True, True);
+      cdStruct_Nil:     CreateStruct(ResIntf, dstObject, False, 0, False, False, cdErrNum, cdErrNum, False, False);
+      cdStruct_ErrEmptyFields:ResIntf.CreateError(AnErrPreFix+'f-ouch');
+      //cdStruct_EmptyFields:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False,False, True);
     end
   else
     case AKind of
@@ -1056,11 +1134,16 @@ begin
                         CreatePtrPtrNum(ResIntf, AnAddr, ANumVal, 2);
       cdErrArr_Num:     Result :=
                         CreateArrayOfNum(ResIntf, ANumVal);
-      cdArr_EmptyNum:   Result :=
+      cdArr_EmptyNum,
+      cdArr_ErrNum:     Result :=
                         CreateArrayOfNum(ResIntf, ANumVal);
       cdPtr_ErrArr_Num: Result :=
                         CreatePtrArrayOfNum(ResIntf, ANumVal);
-      cdStruct_ErrField:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False);
+      cdErrStruct,
+      cdStruct_ErrField,
+      cdStruct_Nil,
+      cdStruct_ErrEmptyFields:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False);
+      //cdStruct_EmptyFields:CreateStruct(ResIntf, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False);
     end;
 
   if ATypeName <> '' then
@@ -1082,8 +1165,13 @@ begin
           cdErrPtr_Ptr_Num: AssertErrData            (AMessage, IdeRes, AnErrPreFix+'ouch');
           cdErrArr_Num:     AssertErrData            (AMessage, IdeRes, AnErrPreFix+'ouch');
           cdArr_EmptyNum:   AssertEmptyArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
+          cdArr_ErrNum:     AssertArrayOfErrData     (AMessage, IdeRes, AnErrPreFix+'no');
           cdPtr_ErrArr_Num: AssertPointerToErrData   (AMessage, IdeRes, AnAddr, AnErrPreFix+'argh');
+          cdErrStruct:      AssertErrData            (AMessage, IdeRes, AnErrPreFix+'bad-obj');
           cdStruct_ErrField:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, True, True, False, ATypeName);
+          cdStruct_Nil:     AssertStruct(AMessage, IdeRes, dstObject, False, 0, False, False, cdErrNum, cdErrNum, False, False, True, ATypeName);
+          cdStruct_ErrEmptyFields:AssertErrData      (AMessage, IdeRes, AnErrPreFix+'f-ouch');
+          //cdStruct_EmptyFields:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName, True);
         end
       else
         case AKind of
@@ -1093,10 +1181,15 @@ begin
           cdErrPtr_Num:     AssertPointerToSignedNumData(AMessage, IdeRes, AnAddr, ANumVal, 2, ATypeName, 'TMyNum');
           cdPtr_Ptr_ErrNum..
           cdErrPtr_Ptr_Num: AssertPtrPointerToSignedNumData(AMessage, IdeRes, AnAddr, AnAddr+1, ANumVal, 2, ATypeName, 'TFooPtr', 'TFooNum');
-          cdErrArr_Num:     AssertArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
-          cdArr_EmptyNum:   AssertArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
+          cdErrArr_Num,
+          cdArr_EmptyNum,
+          cdArr_ErrNum:     AssertArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
           cdPtr_ErrArr_Num: AssertPtrArrayOfNumData(AMessage, IdeRes, ANumVal, ATypeName);
-          cdStruct_ErrField:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
+          cdErrStruct,
+          cdStruct_ErrField,
+          cdStruct_Nil,
+          cdStruct_ErrEmptyFields:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
+          //cdStruct_EmptyFields:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
         end;
 end;
 
@@ -1478,6 +1571,16 @@ var
   ResIntfStr, ProtoIntf: TLzDbgWatchDataIntf;
   Res, ResArray: TWatchResultData;
 begin
+  (*
+  - PCharOrString
+    0: Array[aLen]  OR  Err (AErrIdx=-2)
+       [0] Data-or-Err      (aErrIdx=0)
+       [1] Data-or-Err      (aErrIdx=1)
+    1: Array[aLen]  OR  Err (AErrIdxSecond=-2)
+       [0] Data-or-Err      (AErrIdxSecond=0)
+       [1] Data-or-Err      (AErrIdxSecond=1)
+
+  *)
   for  x :=  0 to 2 do
   for aEntryType := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
   for aLen          := 0 to 2 do

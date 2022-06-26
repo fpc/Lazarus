@@ -11,7 +11,39 @@
       <Icon Value="0"/>
     </General>
     <BuildModes>
-      <Item Name="Default" Default="True"/>
+      <Item Name="O1  Criot Sa gh gt" Default="True"/>
+      <Item Name="O1  Criot Sa gh gtttt&lt;nil>">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="TestIdeDebugger"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item>
       <Item Name="full test -O3">
         <CompilerOptions>
           <Version Value="11"/>
@@ -71,14 +103,19 @@
           </Linking>
         </CompilerOptions>
       </Item>
-      <SharedMatrixOptions Count="7">
-        <Item1 ID="512719448339" Targets="IdeDebugger" Modes="Default,full test -O3" Value="-Sa"/>
-        <Item2 ID="026959990514" Targets="IdeDebugger" Modes="Default,full test -O3" Value="-Criot"/>
-        <Item3 ID="149801562947" Targets="IdeDebugger" Modes="Default,full test -O3" Value="-gt"/>
-        <Item4 ID="337989334087" Targets="IdeDebugger" Modes="Default,full test -O3" Value="-O-1"/>
-        <Item5 ID="351599647225" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-O3"/>
-        <Item6 ID="654923802929" Targets="IdeDebugger" Modes="no assert/check -O3 -gh" Value="-Sa- -Cr- -Ci- -Co- -Ct-"/>
-        <Item7 ID="342603141025" Targets="IdeDebugger" Modes="no assert/check -O3 -gh" Value="-Si"/>
+      <SharedMatrixOptions Count="12">
+        <Item1 ID="354904912079" Targets="LazUtils" Modes="full test -O3,no assert/check -O3 -gh" Value="-O-4 -Sa- -Si -Cr- -Ci- -Co- -Ct- -gt-"/>
+        <Item2 ID="337989334087" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-O-1"/>
+        <Item3 ID="351599647225" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-O-3"/>
+        <Item4 ID="703841857666" Targets="IdeDebugger" Modes="no assert/check -O3 -gh" Value="-gt-"/>
+        <Item5 ID="149801562947" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt" Value="-gt- -gt"/>
+        <Item6 ID="565851929886" Targets="IdeDebugger" Modes="O1  Criot Sa gh gtttt&lt;nil>" Value="-gt- -gtttt"/>
+        <Item7 ID="538318268753" Targets="IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,full test -O3" Value="-gh"/>
+        <Item8 ID="512719448339" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-Sa"/>
+        <Item9 ID="026959990514" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-Criot"/>
+        <Item10 ID="654923802929" Targets="IdeDebugger" Modes="no assert/check -O3 -gh" Value="-Sa- -Cr- -Ci- -Co- -Ct- -gh-"/>
+        <Item11 ID="874538370462" Targets="IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-Si-"/>
+        <Item12 ID="342603141025" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-Si"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>

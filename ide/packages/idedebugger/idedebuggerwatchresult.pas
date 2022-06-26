@@ -453,6 +453,7 @@ type
     function GetFieldCount: Integer; inline;
     function GetFieldInfo(AnIndex: Integer): PWatchResultTypeStructFieldInfo;  inline;
     procedure AfterAssign(ATypeOnly: Boolean = False);
+    procedure CopyFieldsProtoFrom(const ASource: TWatchResultTypeStruct); inline;
     procedure DoFree;
   end;
 
@@ -1945,7 +1946,8 @@ begin
     FFieldData[i].FieldName := AConfig.GetValue(p + 'F-Name', '');
     AConfig.GetValue(p + 'F-Vis', int64(ord(dfvUnknown)), FFieldData[i].FieldVisibility, TypeInfo(TLzDbgFieldVisibility));
     AConfig.GetValue(p + 'F-Flg', Zero,                   FFieldData[i].FieldFlags, TypeInfo(TLzDbgFieldFlags));
-    FFieldData[i].Field := TWatchResultData.CreateFromXMLConfig(AConfig, p);
+    if AConfig.GetValue(p+'Empty', 0) = 0 then
+      FFieldData[i].Field := TWatchResultData.CreateFromXMLConfig(AConfig, p);
   end;
 end;
 
@@ -1965,7 +1967,12 @@ begin
     AConfig.SetDeleteValue(p + 'F-Name', FFieldData[i].FieldName, '');
     AConfig.SetDeleteValue(p + 'F-Vis', FFieldData[i].FieldVisibility, ord(dfvUnknown), TypeInfo(TLzDbgFieldVisibility));
     AConfig.SetDeleteValue(p + 'F-Flg', FFieldData[i].FieldFlags, 0, TypeInfo(TLzDbgFieldFlags));
-    FFieldData[i].Field.SaveDataToXMLConfig(AConfig, p, AnAsProto);
+    if FFieldData[i].Field <> nil then begin
+      FFieldData[i].Field.SaveDataToXMLConfig(AConfig, p, AnAsProto);
+      AConfig.DeleteValue(p+'Empty');
+    end
+    else
+      AConfig.SetValue(p+'Empty',1);
   end;
 end;
 
@@ -1988,6 +1995,17 @@ begin
   SetLength(FFieldData, Length(FFieldData));
   for i := 0 to Length(FFieldData) - 1 do
     FFieldData[i].Field := FFieldData[i].Field.CreateCopy(ATypeOnly);
+end;
+
+procedure TWatchResultTypeStruct.CopyFieldsProtoFrom(
+  const ASource: TWatchResultTypeStruct);
+var
+  i: Integer;
+begin
+  FFieldData := ASource.FFieldData;
+  SetLength(FFieldData, Length(FFieldData));
+  for i := 0 to Length(FFieldData) - 1 do
+    FFieldData[i].Field := ASource.FFieldData[i].Field.CreateCopy(True);
 end;
 
 procedure TWatchResultTypeStruct.DoFree;
@@ -3660,6 +3678,9 @@ procedure TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetStore
 var
   i: Integer;
 begin
+  if AValue = Length(FFieldsStorage) then
+    exit;
+
   for i := AValue to Length(FFieldsStorage) - 1 do
     FreeAndNil(FFieldsStorage[i]);
   SetLength(FFieldsStorage, AValue);
@@ -3725,10 +3746,14 @@ end;
 procedure TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage
   (AnIndex: Integer; AValue: TWatchResultStorage);
 begin
-  if AnIndex < 0 then
-    FAnchestorStorage := AValue
-  else
+  if AnIndex < 0 then begin
+    assert((FAnchestorStorage=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FAnchestorStorage=nil) or (AValue=nil)');
+    FAnchestorStorage := AValue;
+  end
+  else begin
+    assert((FFieldsStorage[AnIndex]=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FFieldsStorage[AnIndex]=nil) or (AValue=nil)');
     FFieldsStorage[AnIndex] := AValue;
+  end;
 
   if AValue <> nil then
     AValue.Count := Count;
@@ -3824,6 +3849,18 @@ begin
   if Result or not ARecurse then
     exit;
 
+  if (Length(AStructProtoData.FType.FFieldData) = 0) and
+     (Length(FType.FFieldData) > 0)
+  then
+    AStructProtoData.FType.CopyFieldsProtoFrom(FType);
+  assert((Length(FType.FFieldData)=0) or (Length(FType.FFieldData)=Length(AStructProtoData.FType.FFieldData)), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (Length(FType.FFieldData)=0) or (Length(FType.FFieldData)=Length(AStructProtoData.FType.FFieldData))');
+
+  if (AStructProtoData.FType.FAnchestor = nil) and
+     (FType.FAnchestor <> nil)
+  then
+    AStructProtoData.FType.FAnchestor := FType.FAnchestor.CreateCopy(True);
+
+
   assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
   if (AStorage = nil) or (AStorage^ = nil)
   then begin
@@ -3843,20 +3880,24 @@ begin
         assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
       end;
     end;
+  end
 
-    exit;
-  end;
+  else begin
+    if (FieldStore^.StoredFieldCount = 0) then
+      FieldStore^.StoredFieldCount := Length(FType.FFieldData);
+    assert((length(FType.FFieldData)=0) or (FieldStore^.StoredFieldCount = Length(FType.FFieldData)), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (length(FType.FFieldData)=0) or (FieldStore^.StoredFieldCount = Length(FType.FFieldData))');
 
-  for i := 0 to Length(FType.FFieldData) - 1 do begin
-    if FType.FFieldData[i].Field <> nil then begin
-      FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
-        FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
+    for i := 0 to Length(FType.FFieldData) - 1 do begin
+      if FType.FFieldData[i].Field <> nil then begin
+        FType.FFieldData[i].Field.MaybeUpdateProto(AStructProtoData.FType.FFieldData[i].Field,
+          FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
+      end;
     end;
-  end;
 
-  if FType.FAnchestor <> nil then begin
-    FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, AnOverrideTemplate,
-      FieldStore^.NestedStoragePtr[-1], ARecurse, ASkipStorage);
+    if FType.FAnchestor <> nil then begin
+      FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, AnOverrideTemplate,
+        FieldStore^.NestedStoragePtr[-1], ARecurse, ASkipStorage);
+    end;
   end;
 end;
 
@@ -3933,11 +3974,23 @@ begin
       AStore.NestedStorage[-1].LoadFromIndex(AnIndex, FCurrentAnchestor, FType.FAnchestor, AnOverrideTemplate);
   end;
 
-  SetLength(FCurrentFields, Length(FType.FFieldData));
-  for i := 0 to Length(FType.FFieldData) - 1 do begin
-    if (AStore.NestedStorage[i] <> nil) then begin
-      AStore.NestedStorage[i].LoadFromIndex(AnIndex, FCurrentFields[i], FType.FFieldData[i].Field, AStore.FOverrideTempl[i]);
+  if AStore.StoredFieldCount = 0 then begin
+    SetLength(FCurrentFields, 0);
+  end
+  else begin
+    assert(AStore.StoredFieldCount = Length(FType.FFieldData), 'TGenericWatchResultDataStruct.AfterLoadFromIndex: AStore.StoredFieldCount = Length(FType.FFieldData)');
+    SetLength(FCurrentFields, Length(FType.FFieldData));
+    if AStore.NestedStorage[0].Count = 0 then begin
+      for i := 0 to Length(FCurrentFields) - 1 do
+        FCurrentFields[i] := nil;
     end
+    else begin
+      for i := 0 to Length(FType.FFieldData) - 1 do begin
+        if (AStore.NestedStorage[i] <> nil) then begin
+          AStore.NestedStorage[i].LoadFromIndex(AnIndex, FCurrentFields[i], FType.FFieldData[i].Field, AStore.FOverrideTempl[i]);
+        end
+      end;
+    end;
   end;
 end;
 
