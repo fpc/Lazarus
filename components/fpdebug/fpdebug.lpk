@@ -225,6 +225,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpwatchresultdata.pas"/>
         <UnitName Value="FpWatchResultData"/>
       </Item>
+      <Item>
+        <Filename Value="fpdbgdwarfcfi.pas"/>
+        <UnitName Value="fpdbgdwarfcfi"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

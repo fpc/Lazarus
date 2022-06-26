@@ -6,7 +6,7 @@ unit FpDbgDwarfVerbosePrinter;
 interface
 
 uses
-  Classes, Math, SysUtils, FpDbgDwarf, FpDbgLoader, FpDbgDwarfConst, FpdMemoryTools,
+  Classes, Math, SysUtils, FpDbgDwarf, FpDbgLoader, FpDbgDwarfConst, FpdMemoryTools, FpDbgUtil,
   FpImgReaderBase, FpDbgDwarfDataClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, maps;
 
 type

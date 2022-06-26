@@ -9,6 +9,7 @@ interface
 uses
   Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo,
   FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
+  FpDbgClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   LazUTF8, LazClasses, LazDebuggerIntf;
 
@@ -88,10 +89,61 @@ type
 function GetTypeName(out ATypeName: String; ADbgSymbol: TFpSymbol; AFlags: TTypeNameFlags = []): Boolean;
 function GetTypeAsDeclaration(out ATypeDeclaration: String; ADbgSymbol: TFpSymbol;
   AFlags: TTypeDeclarationFlags = []; AnIndent: Integer = 0): Boolean;
+function GetParamsAsString(
+  AThread: TDbgThread;
+  ADbgCallStack: TDbgCallstackEntry;
+  AMemManager: TFpDbgMemManager;
+  ATargetWidth: Byte;
+  APrettyPrinter: TFpPascalPrettyPrinter): string;
 
 function QuoteText(AText: Utf8String): UTf8String;
 
 implementation
+
+function GetParamsAsString(
+  AThread: TDbgThread;
+  ADbgCallStack: TDbgCallstackEntry;
+  AMemManager: TFpDbgMemManager;
+  ATargetWidth: Byte;
+  APrettyPrinter: TFpPascalPrettyPrinter): string;
+var
+  ProcVal: TFpValue;
+  ProcSymbol: TFpSymbol;
+  AContext: TFpDbgLocationContext;
+  m: TFpValue;
+  v: String;
+  i: Integer;
+begin
+  result := '';
+  ProcSymbol := ADbgCallStack.ProcSymbol;
+  if assigned(ProcSymbol) then begin
+    ProcVal := ProcSymbol.Value;
+    if (ProcVal <> nil) then begin
+      AContext := TFpDbgSimpleLocationContext.Create(AMemManager,
+        LocToAddrOrNil(ProcSymbol.Address), ATargetWidth div 8, AThread.ID, ADbgCallStack.Index);
+
+      if AContext <> nil then begin
+        TFpValueDwarf(ProcVal).Context := AContext;
+        APrettyPrinter.Context := AContext;
+        APrettyPrinter.AddressSize := AContext.SizeOfAddress;
+        for i := 0 to ProcVal.MemberCount - 1 do begin
+          m := ProcVal.Member[i];
+          if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+            APrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+            if result <> '' then result := result + ', ';
+            result := result + v;
+          end;
+          m.ReleaseReference;
+        end;
+        TFpValueDwarf(ProcVal).Context := nil;
+        AContext.ReleaseReference;
+      end;
+      ProcVal.ReleaseReference;
+    end;
+    if result <> '' then
+      result := '(' + result + ')';
+  end;
+end;
 
 function GetTypeName(out ATypeName: String; ADbgSymbol: TFpSymbol;
   AFlags: TTypeNameFlags): Boolean;

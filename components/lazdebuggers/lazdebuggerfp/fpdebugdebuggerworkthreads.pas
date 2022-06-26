@@ -623,7 +623,7 @@ begin
     FSourceFile := DbgCallStack.SourceFile;
     FLine := DbgCallStack.Line;
 
-    FParamAsString := DbgCallStack.GetParamsAsString(PrettyPrinter);
+    FParamAsString := GetParamsAsString(FThread, DbgCallStack, FDebugger.MemManager, FDebugger.TargetWidth, PrettyPrinter);
     PrettyPrinter.Free;
 
     FDebugger.MemManager.MemLimits.MaxArrayLen            := Prop.MemLimits.MaxArrayLen;

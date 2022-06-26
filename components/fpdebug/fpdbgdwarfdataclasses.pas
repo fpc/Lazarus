@@ -45,7 +45,7 @@ uses
   Classes, Types, SysUtils, contnrs, Math, Maps, LazClasses, LazFileUtils,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   // FpDebug
-  FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, FpDbgCommon,
+  FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, FpDbgCommon, FpDbgDwarfCFI,
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes;
 
 type
@@ -131,7 +131,7 @@ type
     HeaderLength: QWord;
     Info: TDwarfLNPInfoHeader;
   end;
-  
+
   {$PACKRECORDS C}
 {%endregion Dwarf Header Structures }
 
@@ -784,6 +784,7 @@ type
   TFpDwarfInfo = class(TDbgInfo)
   strict private
     FCompilationUnits: TList; // any access must be guarded by Item[n].WaitForScopeScan
+    FCallFrameInformationList: TList;
     FWorkQueue: TFpGlobalThreadWorkerQueue;
     FFiles: array of TDwarfDebugFile;
   private
@@ -802,11 +803,13 @@ type
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
     function FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
     function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; override;
+    function FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean; virtual;
 
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
       AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
+    procedure LoadCallFrameInstructions;
     function LoadCompilationUnits: Integer;
     function CompilationUnitsCount: Integer; inline;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
@@ -875,9 +878,6 @@ type
     property IsDwAtFrameBase: Boolean read FIsDwAtFrameBase write FIsDwAtFrameBase;
     end;
 
-function ULEB128toOrdinal(var p: PByte): QWord;
-function SLEB128toOrdinal(var p: PByte): Int64;
-
 function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String; overload;
 function Dbgs(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): String; overload;
 function Dbgs(AInfoEntry: TDwarfInformationEntry; ACompUnit: TDwarfCompilationUnit): String; overload;
@@ -896,7 +896,7 @@ var
   FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
 var
-  TheDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList;
+  TheDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList = nil;
   CachedRtlEvent: PRTLEvent = nil;
 
 const
@@ -904,6 +904,8 @@ const
 
 function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList;
 begin
+  if not Assigned(TheDwarfSymbolClassMapList) then
+    TheDwarfSymbolClassMapList := TFpSymbolDwarfClassMapList.Create;
   Result := TheDwarfSymbolClassMapList;
 end;
 
@@ -965,40 +967,6 @@ begin
         LineEnding;
     end;
   end;
-end;
-
-function ULEB128toOrdinal(var p: PByte): QWord;
-var
-  n: Byte;
-  Stop: Boolean;
-begin
-  Result := 0;
-  n := 0;
-  repeat
-    Stop := (p^ and $80) = 0;
-    Result := Result + QWord(p^ and $7F) shl n;
-    Inc(n, 7);
-    Inc(p);
-  until Stop or (n > 128);
-end;
-
-function SLEB128toOrdinal(var p: PByte): Int64;
-var
-  n: Byte;
-  Stop: Boolean;
-begin
-  Result := 0;
-  n := 0;
-  repeat
-    Stop := (p^ and $80) = 0;
-    Result := Result + Int64(p^ and $7F) shl n;
-    Inc(n, 7);
-    Inc(p);
-  until Stop or (n > 128);
-
-  // sign extend when msbit = 1
-  if ((p[-1] and $40) <> 0) and (n < 64) // only supports 64 bit
-  then Result := Result or (Int64(-1) shl n);
 end;
 
 function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte; IsDwarf64: boolean; Version: word): Boolean; inline;
@@ -2219,30 +2187,6 @@ var
     Result := IsValidLoc(AValue);
     if not Result then
       SetError;
-  end;
-
-  function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
-  begin
-    case ASize of
-      1: Result := PByte(CurInstr)^;
-      2: Result := PWord(CurInstr)^;
-      4: Result := PLongWord(CurInstr)^;
-      8: Result := PQWord(CurInstr)^;
-      0: Result := ULEB128toOrdinal(CurInstr);
-    end;
-    inc(CurInstr, ASize);
-  end;
-
-  function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): TDbgPtr;
-  begin
-    case ASize of
-      1: Int64(Result) := PShortInt(CurInstr)^;
-      2: Int64(Result) := PSmallInt(CurInstr)^;
-      4: Int64(Result) := PLongint(CurInstr)^;
-      8: Int64(Result) := PInt64(CurInstr)^;
-      0: Int64(Result) := SLEB128toOrdinal(CurInstr);
-    end;
-    inc(CurInstr, ASize);
   end;
 
 var
@@ -3648,6 +3592,7 @@ begin
   inherited Create(ALoaderList, AMemManager);
   FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
+  FCallFrameInformationList := TObjectList.Create(True);
   FImageBase := ALoaderList.ImageBase;
   FRelocationOffset := ALoaderList.RelocationOffset;
 
@@ -3676,6 +3621,7 @@ begin
   for n := 0 to FCompilationUnits.Count - 1 do
     TObject(FCompilationUnits[n]).Free;
   FreeAndNil(FCompilationUnits);
+  FreeAndNil(FCallFrameInformationList);
 
   inherited Destroy;
 end;
@@ -3870,6 +3816,22 @@ begin
   end;
 end;
 
+function TFpDwarfInfo.FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean;
+var
+  n: Integer;
+  CFI: TDwarfCallFrameInformation;
+begin
+  Result := False;
+  for n := 0 to FCallFrameInformationList.Count - 1 do
+  begin
+    CFI := TDwarfCallFrameInformation(FCallFrameInformationList[n]);
+
+    Result := CFI.GetRow(FTargetInfo, AnAddress, CIE, Row);
+    if Result then
+      Break;
+  end;
+end;
+
 function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
   ): TDbgDwarfSymbolBase;
 var
@@ -3921,6 +3883,155 @@ begin
     if Result <> nil then Exit;
   end;
   Result := nil;
+end;
+
+procedure TFpDwarfInfo.LoadCallFrameInstructions;
+var
+  i: Integer;
+var
+  inf: TDwarfSectionInfo;
+
+  function LoadCiE(Version: Byte; Augmentation: PChar; SizeLeft: QWord): TDwarfCIE;
+  var
+    p: Pointer;
+    Instructions: TDwarfCallFrameInformationInstructions;
+  begin
+    if Version > 4 then
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Unsupported DWARF CFI version (' +IntToStr(Version)+ '). Only versions 1-4 are supported.']);
+
+    Result := TDwarfCIE.Create(Version, String(Augmentation));
+    p := Augmentation;
+    Inc(p, Length(Result.Augmentation)+1);
+    if Version > 3 then
+      begin
+      Result.AddressSize := PByte(p)^;
+      Inc(p);
+      Result.SegmentSize := PByte(p)^;
+      Inc(p);
+      end
+    else
+      begin
+      case TargetInfo.bitness of
+        b32: Result.AddressSize := 4;
+        b64: Result.AddressSize := 8;
+      end;
+      end;
+    Result.CodeAlignmentFactor := ULEB128toOrdinal(p);
+    Result.DataAlignmentFactor := SLEB128toOrdinal(p);
+    if Version < 3 then
+      begin
+      Result.ReturnAddressRegister := PByte(p)^;
+      Inc(p);
+      end
+    else
+      Result.ReturnAddressRegister := ULEB128toOrdinal(p);
+    // Calculate how many bytes are left. (DwarfDump calls this the 'bytes of
+    // initial instructions')
+    Dec(SizeLeft, p-Augmentation);
+    SetLength(Instructions, SizeLeft);
+    Move(p^, Instructions[0], SizeLeft);
+    Result.InitialInstructions := Instructions;
+  end;
+
+  function LoadFDE(CFI: TDwarfCallFrameInformation; CIEPointer: QWord; InitialLocationAddr: pointer; SizeLeft: QWord): TDwarfFDE;
+  var
+    Instr: TDwarfCallFrameInformationInstructions;
+    CIE: TDwarfCIE;
+    InitialLocation: TDBGPtr;
+    AddressRange, SegmentSelector: QWord;
+    p: pointer;
+  begin
+    p := InitialLocationAddr;
+    CIE := CFI.FindCIEForOffset(CIEPointer);
+    SegmentSelector := 0;
+    if Assigned(CIE) then
+      begin
+      if CIE.SegmentSize > 0 then
+        SegmentSelector := ReadUnsignedFromExpression(p, CIE.SegmentSize);
+      InitialLocation := ReadUnsignedFromExpression(p, CIE.AddressSize);
+      AddressRange := ReadUnsignedFromExpression(p, CIE.AddressSize);
+      end;
+
+    Result := TDwarfFDE.Create(CIEPointer, InitialLocation, SegmentSelector, AddressRange);
+
+    SetLength(Instr, InitialLocationAddr + SizeLeft - p);
+    if Length(Instr) > 0 then
+      Move(p^, Instr[0], InitialLocationAddr + SizeLeft - p);
+    Result.Instructions := Instr;
+  end;
+
+var
+  p, pe: Pointer;
+  CIE32: PDwarfCIEEntryHeader32 absolute p;
+  CIE64: PDwarfCIEEntryHeader64 absolute p;
+
+  FDE32: PDwarfFDEEntryHeader32 absolute p;
+  FDE64: PDwarfFDEEntryHeader64 absolute p;
+
+  CIE: TDwarfCIE;
+  FDE: TDwarfFDE;
+  Length: QWord;
+  CFI: TDwarfCallFrameInformation;
+
+begin
+  for i := 0 to high(FFiles) do
+    begin
+    inf := FFiles[i].Sections[dsFrame];
+    CFI := TDwarfCallFrameInformation.Create;
+    FCallFrameInformationList.Add(CFI);
+
+    p := inf.RawData;
+    pe := inf.RawData + inf.Size;
+    while (p <> nil) and (p < pe) do
+      begin
+      // The first fields in the CIE and FDE structures are the same.
+      // First check if it is a 64-bit format. Then
+      // detect whether it is a CIE or FDE.
+      if CIE64^.Signature = DWARF_HEADER64_SIGNATURE then
+        begin
+        if CIE64^.CIEId = QWord($ffffffffffffffff) then
+          begin
+          // It is a CIE
+          CIE := LoadCiE(CIE64^.Version, @CIE64^.Augmentation[0], @CIE64^.CIEId+CIE64^.Length-@CIE64^.Augmentation[0]);
+          CFI.AddCIE(p-inf.RawData, CIE);
+          end
+        else
+          begin
+          // It is a FDE
+          FDE := LoadFDE(CFI, FDE64^.CIEPointer, @FDE64^.InitialLocation, @FDE64^.CIEPointer+FDE64^.Length-@FDE64^.InitialLocation);
+          CFI.AddFDE(FDE);
+          end;
+        Length := CIE64^.Length;
+        p := @CIE64^.CIEId;
+        Inc(p, Length);
+        end
+      else
+        begin
+        if CIE32^.CIEId = $ffffffff then
+          begin
+          // It is a CIE
+          CIE := LoadCiE(CIE32^.Version, @CIE32^.Augmentation[0], @CIE32^.CIEId+CIE32^.Length-@CIE32^.Augmentation[0]);
+          CFI.AddCIE(p-inf.RawData, CIE);
+          end
+        else
+          begin
+          // It is a FDE
+          if FDE32^.Length > 0 then
+            begin
+            FDE := LoadFDE(CFI, FDE32^.CIEPointer, @FDE32^.InitialLocation, @FDE32^.CIEPointer+FDE32^.Length-@FDE32^.InitialLocation);
+            CFI.AddFDE(FDE);
+            end
+          else
+            // This should never happen, but it did and it leads to a range-check
+            // error. (Probably a fpc-bug though)
+            DebugLn(FPDBG_DWARF_WARNINGS, ['Read FDE with length 0. FDE is skipped.']);
+          end;
+        Length := CIE32^.Length;
+        p := @CIE32^.CIEId;
+        Inc(p, Length);
+        end;
+      end;
+    end;
 end;
 
 function TFpDwarfInfo.LoadCompilationUnits: Integer;
@@ -5460,8 +5571,6 @@ begin
 end;
 
 initialization
-  TheDwarfSymbolClassMapList := TFpSymbolDwarfClassMapList.Create;
-
   FPDBG_DWARF_ERRORS        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_ERRORS' {$IFDEF FPDBG_DWARF_ERRORS} , True {$ENDIF} );
   FPDBG_DWARF_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_WARNINGS' {$IFDEF FPDBG_DWARF_WARNINGS} , True {$ENDIF} );
   FPDBG_DWARF_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE' {$IFDEF FPDBG_DWARF_VERBOSE} , True {$ENDIF} );

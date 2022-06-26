@@ -215,15 +215,78 @@ property FpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue read GetFpDbgGlobalW
 function dbgsThread: String;
 function dbgsWorkItemState(AState: Integer): String;
 
+function ULEB128toOrdinal(var p: PByte): QWord;
+function SLEB128toOrdinal(var p: PByte): Int64;
+
+function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): QWord;
+function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): Int64;
+
 var
   ProcessMessagesProc: procedure of object; // Application.ProcessMessages, if needed. To be called while waiting.
 
 implementation
 
-
 var
   FPDBG_THREADS, DBG_VERBOSE, DBG_ERRORS: PLazLoggerLogGroup;
   TheFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue = nil;
+
+function ULEB128toOrdinal(var p: PByte): QWord;
+var
+  n: Byte;
+  Stop: Boolean;
+begin
+  Result := 0;
+  n := 0;
+  repeat
+    Stop := (p^ and $80) = 0;
+    Result := Result + QWord(p^ and $7F) shl n;
+    Inc(n, 7);
+    Inc(p);
+  until Stop or (n > 128);
+end;
+
+function SLEB128toOrdinal(var p: PByte): Int64;
+var
+  n: Byte;
+  Stop: Boolean;
+begin
+  Result := 0;
+  n := 0;
+  repeat
+    Stop := (p^ and $80) = 0;
+    Result := Result + Int64(p^ and $7F) shl n;
+    Inc(n, 7);
+    Inc(p);
+  until Stop or (n > 128);
+
+  // sign extend when msbit = 1
+  if ((p[-1] and $40) <> 0) and (n < 64) // only supports 64 bit
+  then Result := Result or (Int64(-1) shl n);
+end;
+
+function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): QWord;
+begin
+  case ASize of
+    1: Result := PByte(CurInstr)^;
+    2: Result := PWord(CurInstr)^;
+    4: Result := PLongWord(CurInstr)^;
+    8: Result := PQWord(CurInstr)^;
+    0: Result := ULEB128toOrdinal(CurInstr);
+  end;
+  inc(CurInstr, ASize);
+end;
+
+function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): Int64;
+begin
+  case ASize of
+    1: Result := PShortInt(CurInstr)^;
+    2: Result := PSmallInt(CurInstr)^;
+    4: Result := PLongint(CurInstr)^;
+    8: Result := PInt64(CurInstr)^;
+    0: Result := SLEB128toOrdinal(CurInstr);
+  end;
+  inc(CurInstr, ASize);
+end;
 
 function GetFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue;
 begin
