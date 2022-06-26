@@ -1204,82 +1204,171 @@
       <element name="TStringCellEditor.FRow"/>
 
       <element name="TStringCellEditor.WndProc">
-        <short>Window handling procedure for the cell editor.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Implements the message processing loop for the cell editor control.
+        </short>
+        <descr>
+          <p>
+            <var>WndProc</var> is an overridden method in <var>TStringCellEditor</var> which implements the message processing loop for the cell editor control.
+          </p>
+          <p>
+            WndProc ensures that the column for the cell in the grid control is not marked as read-only when handling cut (LM_CUT), paste (LM_PASTE), and clear (LM_CLEAR) messages in TheMessage argument. No actions are performed in the method when the EditorIsReadOnly method in the associated grid control returns <b>True</b>.
+          </p>
+          <p>
+            If the grid control has not been assigned, or TheMessage contains a different message identifier, the inherited method in TCustomEdit is called to handle the specified message.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TStringCellEditor.msg_GetGrid"/>
+          <link id="#lcl.grids.TCustomGrid.EditorIsReadOnly">TCustomGrid.EditorIsReadOnly</link>
+          <link id="#lcl.stdctrls.TCustomEdit.WndProc">TCustomEdit.WndProc</link>
+        </seealso>
       </element>
       <element name="TStringCellEditor.WndProc.TheMessage">
-        <short>LCL message for the window handling procedure.</short>
+        <short>LCL message handled in the method.</short>
       </element>
 
-      <element name="TStringCellEditor.Change" link="#lcl.stdctrls.TCustomEdit.Change"/>
+      <element name="TStringCellEditor.Change">
+        <short>
+          Performs actions needed when the value in the cell editor has been changed.
+        </short>
+        <descr>
+          <p>
+            <var>Change</var> is an overridden method in <var>TStringCellEditor</var> used to perform actions needed to apply the new value in the cell editor to the associated grid control.
+          </p>
+          <p>
+            Change calls the inherited method on entry to perform a change notification message for the control, and to signal any assigned OnChange event handler(s) in the component hierarchy. Please note that the OnChange event is suppressed when the initial value for cell editor is assigned; the handler is signalled when the value has been modified using the cell editor control.
+          </p>
+          <p>
+            If the associated grid control has been assigned, and the cell editor is Visible, the EditorTextChanged method in the grid control is called to apply the value in Text to the current cell in the grid.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.EditorTextChanged"/>
+          <link id="#lcl.maskedit.TCustomMaskEdit.Change">TCustomMaskEdit.Change</link>
+          <link id="#lcl.stdctrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+        </seealso>
+      </element>
 
-      <element name="TStringCellEditor.KeyDown" link="#lcl.controls.TWinControl.KeyDown"/>
+      <element name="TStringCellEditor.KeyDown">
+        <short>
+          Handles a key down event for the control.
+        </short>
+        <descr>
+          <p>
+            KeyDown is an overridden method in TStringCellEditor which handles a key down event for the cell editor. It calls the inherited method on entry to handle the virtual key codes normally supported in the TCustomMaskEdit control. It extends the inherited method to provide support for the following keys:
+          </p>
+          <dl>
+            <dt>F2</dt>
+            <dd>
+              Allows the grid control to handle the key. If editing is not enabled for the control, the current text selection in the editor is cleared. When editing is enabled and FastEditing is <b>True</b>, SelectAll is called select all of the content in Text.
+            </dd>
+            <dt>Delete, Backspace</dt>
+            <dd>
+              Discards the value in key when the grid control or the column is marked as read-only. Otherwise, the key is forwarded to the EditorKeyDown method in the grid control.
+            </dd>
+            <dt>Cursor Up, Cursor Down</dt>
+            <dd>
+              Forwards the key to the KeyDown method in the grid control.
+            </dd>
+            <dt>Cursor Left, Cursor Right</dt>
+            <dd>
+              Handles cell navigation for the grid control, and caret position changes for the cell editor. Uses SelStart to determine the position for the selected text in the editor. Forwards the key to the grid control or its Editor control as needed for the current selection.
+            </dd>
+            <dt>Escape</dt>
+            <dd>
+              Allows the grid control to handle the key. When not handled, the unedited value is restored to the cell and the EditorHide method for the grid is called to hide the editor control.
+            </dd>
+          </dl>
+          <p>
+            Other unhandled key codes are forwarded to the EditKeyDown method for the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.maskedit.TCustomMaskEdit.KeyDown">TCustomMaskEdit.KeyDown</link>
+        </seealso>
+      </element>
       <element name="TStringCellEditor.KeyDown.Key">
-        <short/>
+        <short>Key code handled in the method.</short>
       </element>
       <element name="TStringCellEditor.KeyDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier the key code.</short>
       </element>
 
       <element name="TStringCellEditor.msg_SetMask">
-        <short>Issues a message for specifying mask.</short>
+        <short>
+          Handles the message used to set the EditMask for the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_SetMask.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.msg_SetValue">
-        <short>Issues a message for specifying value.</short>
+        <short>
+          Handles the message used to set the Text and caret position in the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_SetValue.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.msg_GetValue">
-        <short>Issues a message for obtaining value.</short>
+        <short>
+          Handles the message used to store the coordinates and text for the cell to the specified grid message.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_GetValue.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
+
       <element name="TStringCellEditor.msg_SetGrid">
-        <short>Issues a message for specifying the grid for the editor.</short>
+        <short>
+          Handles the message used to store the associated grid and options for the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_SetGrid.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.msg_SelectAll">
-        <short>Issues a message for Selecting all content in the editor.</short>
+        <short>
+          Calls the SelectAll method when the GM_SELCTALL message is received.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_SelectAll.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.msg_SetPos">
-        <short>Issues a message for specifying the position for the editor.</short>
+        <short>
+          Stores the column and row numbers from the specified message to the cell editor.
+        </short>
       </element>
       <element name="TStringCellEditor.msg_SetPos.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.msg_GetGrid">
-        <short>Message used to get the grid control for the cell editor.</short>
+        <short>
+          Stores the associated grid control and its options to the specified message.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStringCellEditor.msg_GetGrid.Msg">
-        <short>Message for the control.</short>
+        <short>Grid message for the control.</short>
       </element>
 
       <element name="TStringCellEditor.Create">
@@ -1298,7 +1387,9 @@
       </element>
 
       <element name="TStringCellEditor.EditingDone">
-        <short>Performs actions needed when the cell editor has finished editing the value in a cell.</short>
+        <short>
+          Performs actions needed when the cell editor has finished editing the value in a cell.
+        </short>
         <descr>
           <p>
             <var>EditingDone</var> is an overridden procedure used to perform actions required when the cell editor has finished editing the value in a cell. EditingDone calls the inherited method, and calls the EditingDone method in the attached Grid control (when assigned) for the cell editor.
@@ -1309,27 +1400,14 @@
         </seealso>
       </element>
 
-      <element name="TStringCellEditor.EditText" link="#lcl.maskedit.TCustomMaskEdit.EditText">
-        <short/>
-        <descr>
-          EditText is a published property in TStringCellEditor.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStringCellEditor.OnEditingDone" link="#lcl.maskedit.TCustomMaskEdit.OnEditingDone">
-        <short/>
-        <descr>
-          OnEditingDone is a published property in TStringCellEditor.
-        </descr>
-        <seealso/>
-      </element>
+      <element name="TStringCellEditor.EditText" link="#lcl.maskedit.TCustomMaskEdit.EditText"/>
+      <element name="TStringCellEditor.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
 
       <element name="TButtonCellEditor">
-        <short>The editor used for button cells in a grid.</short>
+        <short>The editor used for button-style cells in a grid.</short>
         <descr>
           <p>
-            <var>TButtonCellEditor</var> is a <var>TButton</var> descendant which implements a grid cell editor which uses a button to activate the editor control. TButtonCellEditor maintains interval member variables for the TCustomGrid hosting the editor control. The row and column numbers for the underlying cell in editor control are available in the <var>Row</var> and <var>Col</var> properties. TButtonCellEditor includes methods used to perform LCL message passing using a <var>TGridMessage</var> message type.
+            <var>TButtonCellEditor</var> is a <var>TButton</var> descendant which implements a grid cell editor which uses a button to activate the editor control. TButtonCellEditor maintains internal member variables for the TCustomGrid hosting the editor control. The row and column numbers for the underlying cell in editor control are available in the <var>Row</var> and <var>Col</var> properties. TButtonCellEditor includes methods used to perform LCL message passing using a <var>TGridMessage</var> message type.
           </p>
         </descr>
         <seealso>
@@ -1345,49 +1423,64 @@
       <element name="TButtonCellEditor.FRow"/>
 
       <element name="TButtonCellEditor.msg_SetGrid">
-        <short>Issues a message to specify the grid for the editor.</short>
+        <short>
+          Handles the message which stores the associated grid and options used in the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TButtonCellEditor.msg_SetGrid.Msg">
-        <short/>
+        <short>Grid message for the cell editor.</short>
       </element>
 
       <element name="TButtonCellEditor.msg_SetBounds">
-        <short>Issues a message to specifying the bounds for the editor.</short>
-        </element>
+        <short>
+          Handles the message which sets the bounds for the cell rectangle in the cell editor.
+        </short>
+        <descr>
+          <p>
+            Adjusts the rectangle for the "rubberband" displayed around the cell, and ensures that space is reserved for the button displayed for the editor control.
+          </p>
+        </descr>
+      </element>
       <element name="TButtonCellEditor.msg_SetBounds.Msg">
-        <short/>
-        </element>
+        <short>Grid message for the cell editor.</short>
+      </element>
 
       <element name="TButtonCellEditor.msg_SetPos">
-        <short>Issues a message to specify the position for the editor.</short>
+        <short>
+          Handles the message used to save the column and row number to the cell editor control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TButtonCellEditor.msg_SetPos.Msg">
-        <short>LCL message for the grid control.</short>
+        <short>Grid message for the cell editor.</short>
       </element>
 
       <element name="TButtonCellEditor.msg_Ready">
-        <short>Issues a message when the editor is ready.</short>
+        <short>
+          Handles the message which sets the width for the editor when it is ready to edit in the cell.
+        </short>
       </element>
       <element name="TButtonCellEditor.msg_Ready.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
       <element name="TButtonCellEditor.msg_GetGrid">
-        <short>Issues a message to get the grid control for the button cell editor.</short>
+        <short>
+          Handles the message used to get the grid control and options for the cell editor.
+        </short>
       </element>
       <element name="TButtonCellEditor.msg_GetGrid.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
       <element name="TButtonCellEditor.Col">
-        <short>Column number for the grid cell editor.</short>
+        <short>Column number for the cell editor.</short>
         <descr>
           <p>
-            <var>Col</var> is a public read-only <var>Integer</var> which contains the column number for the cell hosting the editor control.
+            <var>Col</var> is a public read-only <var>Integer</var> property which contains the column number for the cell hosting the editor control.
           </p>
           <p>
             Use <var>Row</var> to access the row number for the cell hosting the editor control.
@@ -1399,10 +1492,10 @@
       </element>
 
       <element name="TButtonCellEditor.Row">
-        <short>Row number for the grid cell editor.</short>
+        <short>Row number for the cell editor.</short>
         <descr>
           <p>
-            <var>Row</var> is a public read-only <var>Integer</var> which contains the row number for the cell hosting the editor control.
+            <var>Row</var> is a public read-only <var>Integer</var> property which contains the row number for the cell hosting the editor control.
           </p>
           <p>
             Use <var>Col</var> to access the column number for the cell hosting the editor control.
@@ -1414,10 +1507,10 @@
       </element>
 
       <element name="TPickListCellEditor">
-        <short>Implements a cell editor control which displays a Pick List.</short>
+        <short>Implements a cell editor control which displays a pick list.</short>
         <descr>
           <p>
-            <var>TPickListCellEditor</var> is a <var>TCustomComboBox</var> descendant which implements a cell editor control that displays a Pick List. TPickListCellEditor provides overridden methods to alter the behavior of the TCustomComboBox ancestor.
+            <var>TPickListCellEditor</var> is a <var>TCustomComboBox</var> descendant which implements a cell editor control that displays a pick list. TPickListCellEditor provides overridden methods to alter the behavior of the TCustomComboBox ancestor.
           </p>
           <p>
             TPickListCellEditor has an internal member used to store the <var>TCustomGrid</var> for the cell editor. In addition, the <var>Row</var> and <var>Column</var> numbers for the underlying cell are stored in internal members. TPickListCellEditor provides methods needed to implement LCL message passing using the TGridMessage message type.
@@ -1432,22 +1525,109 @@
       <element name="TPickListCellEditor.FCol"/>
       <element name="TPickListCellEditor.FRow"/>
 
-      <element name="TPickListCellEditor.WndProc" link="#lcl.controls.TControl.WndProc"/>
+      <element name="TPickListCellEditor.WndProc">
+        <short>
+          Implements the message processing loop for the cell editor.
+        </short>
+        <descr>
+          <p>
+            <var>WndProc</var> is an overridden method in <var>TPickListCellEditor</var>. It ensures that an LM_KILLFOCUS message in TheMessage is ignored when the cell editor temporarily looses focus during an update to the control.
+          </p>
+          <p>
+            WndProc calls the inherited method prior to exit to respond to other window, mouse, and keyboard messages.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lmessages.TLMessage">TLMessage</link>
+          <link id="#lcl.controls.TWinControl.WndProc">TWinControl.WndProc</link>
+        </seealso>
+      </element>
       <element name="TPickListCellEditor.WndProc.TheMessage">
-        <short/>
+        <short>
+          LCL message examined and handled in the method.
+        </short>
       </element>
 
-      <element name="TPickListCellEditor.KeyDown" link="#lcl.controls.TWinControl.KeyDown"/>
+      <element name="TPickListCellEditor.KeyDown">
+        <short>
+          Handles a key down message for the cell editor.
+        </short>
+        <descr>
+          <p>
+            <var>KeyDown</var> is an overridden method in <var>TPickListCellEditor</var>. It extends the inherited method to ensure that specific key codes are applied to the grid or the editor control as needed.
+          </p>
+          <p>
+            KeyDown calls the inherited method on entry to handle Tab, Return, and Escape key code in the manner needed for the TCustomComboBox ancestor. It adds support for the following keys:
+          </p>
+          <dl>
+            <dt>F2</dt>
+            <dd>
+              Clears the selection length and moves the caret position to the end of the Text in the cell editor.
+            </dd>
+            <dt>Return</dt>
+            <dd>
+              Calls the EditorkeyDown method for the grid control, discards the key code, and closes the drop down in the editor control when it is expanded.
+            </dd>
+            <dt>Delete</dt>
+            <dd>
+              Discards the key code if the grid control or the editor cannot be modified.
+            </dd>
+            <dt>Cursor Up, Cursor Down</dt>
+            <dd>
+              Calls the KeyDown method for the grid control if the drop down is not expanded for the cell editor.
+            </dd>
+            <dt>Cursor Left, Cursor Right</dt>
+            <dd>
+              Handles cell navigation for the grid control, and caret position changes for the cell editor. Uses SelStart to determine the position for the selected text in the editor. Forwards the key to the grid control or its Editor control as needed for the current selection.
+            </dd>
+            <dt>Home, End</dt>
+            <dd>Ignored in the key down handler.</dd>
+            <dt>Escape</dt>
+            <dd>
+              Allows the grid control to handle the key. When not handled, the unedited value is restored to the cell and the EditorHide method for the grid is called to hide the editor control.
+            </dd>
+          </dl>
+          <p>
+            Other unhandled key codes are forwarded to the EditKeyDown method for the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.KeyDown">TCustomComboBox.KeyDown</link>
+        </seealso>
+      </element>
       <element name="TPickListCellEditor.KeyDown.Key">
-        <short/>
+        <short>Key code for the key down event.</short>
       </element>
       <element name="TPickListCellEditor.KeyDown.Shift">
-        <short/>
+        <short>Shift, Alt, or Ctrl modifier for the key down event.</short>
       </element>
 
       <element name="TPickListCellEditor.DropDown" link="#lcl.stdctrls.TCustomComboBox.DropDown"/>
       <element name="TPickListCellEditor.CloseUp" link="#lcl.stdctrls.TCustomComboBox.CloseUp"/>
-      <element name="TPickListCellEditor.Select" link="#lcl.stdctrls.TCustomComboBox.Select"/>
+
+      <element name="TPickListCellEditor.Select">
+        <short>
+          Applies a value selected from the pick list to the grid and signals its OnPickListSelect event handler.
+        </short>
+        <descr>
+          <p>
+            <var>Select</var> is an overridden method in <var>TPickListCellEditor</var> used to apply the value selected from the drop-down list in the editor to a cell in the grid.
+          </p>
+          <p>
+            When the associated grid for the cell editor has been assigned, its EditorTextChanged method is called to apply the Text in the editor to the cell. The PickListItemSelected in the grid control is called to signal the OnPickListSelect event handler (when assigned).
+          </p>
+          <p>
+            Select calls the inherited method prior to exit to signal the OnSelect event handler in the ancestor control (TCustomComboBox).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.EditorTextChanged"/>
+          <link id="TCustomGrid.PickListItemSelected"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Text">TCustomComboBox.Text</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.Select">TCustomComboBox.Select</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.OnSelect">TCustomComboBox.OnSelect</link>
+        </seealso>
+      </element>
 
       <element name="TPickListCellEditor.Change">
         <short>
@@ -1468,16 +1648,22 @@
       </element>
 
       <element name="TPickListCellEditor.msg_GetValue">
-        <short>Issues a message to find the value for the editor.</short>
+        <short>
+          Handles the message used to store the coordinates and text for the cell to the specified grid message.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.Text">TCustomComboBox.Text</link>
+        </seealso>
       </element>
       <element name="TPickListCellEditor.msg_GetValue.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
       <element name="TPickListCellEditor.msg_SetGrid">
-        <short>Issues a message to specify the grid for the editor.</short>
+        <short>
+          Handles the message used to store the associated grid and options for the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1486,7 +1672,9 @@
       </element>
 
       <element name="TPickListCellEditor.msg_SetValue">
-        <short>Issues a message to specify the value for the editor.</short>
+        <short>
+          Handles the message used to set the Text and caret position in the cell editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1495,73 +1683,264 @@
       </element>
 
       <element name="TPickListCellEditor.msg_SetPos">
-        <short>Issues a message to specify the position for the editor.</short>
+        <short>
+          Stores the column and row numbers from the specified message to the cell editor.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TPickListCellEditor.msg_SetPos.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
       <element name="TPickListCellEditor.msg_GetGrid">
-        <short>Issues a message to get the grid control for the editor.</short>
+        <short>
+          Stores the associated grid control and its options to the specified message.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TPickListCellEditor.msg_GetGrid.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
-      <element name="TPickListCellEditor.EditingDone" link="#lcl.controls.TControl.EditingDone"/>
+      <element name="TPickListCellEditor.EditingDone">
+        <short>
+          Performs actions needed to synchronize the grid and the editor when editing has been completed in the cell editor.
+        </short>
+        <descr>
+          <p>
+            <var>EditingDone</var> is an overridden method in <var>TPickListCellEditor</var>. It calls the inherited method on entry to signal the OnEditingDone event handler (when assigned). The EditingDone method in the associated grid control is called when the editor control is not already visible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPickListCellEditor.OnEditingDone"/>
+          <link id="TCustomGrid.EditingDone"/>
+          <link id="TCustomGrid.EditorShowing"/>
+          <link id="#lcl.controls.TControl.EditingDone">TControl.EditingDone</link>
+          <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+        </seealso>
+      </element>
+
       <element name="TPickListCellEditor.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TPickListCellEditor.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
 
       <element name="TEditorItem">
-        <short>A single item on which a Composite cell editor operates.</short>
+        <short>
+          Represents one of the editors used in a TCompositeCellEditor instance.
+        </short>
+        <descr>
+          <p>
+            <var>TEditorItem</var> is a record type used to maintain information about an editor control used a TCompositeCellEditor instance. Members in the record identify the editor control, its alignment, and a flag which indicates if the editor control is active.
+          </p>
+          <p>
+            TEditorItem instances are allocated when the AddEditor method in TCompositeCellEditor is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCompositeCellEditor.AddEditor"/>
+        </seealso>
       </element>
       <element name="TEditorItem.Editor">
         <short>The <var>Editor</var> to be used for this item.</short>
       </element>
       <element name="TEditorItem.Align">
-        <short>How this item is aligned.</short>
+        <short>
+          Alignment for the editor relative to the other controls in the composite editor.
+        </short>
       </element>
       <element name="TEditorItem.ActiveControl">
-        <short>Returns <b>True</b> if this item is part of an active control.</short>
+        <short>
+          <b>True</b> if Editor is the active control for a composite cell editor.
+        </short>
       </element>
 
       <element name="TCompositeCellEditor">
-        <short>A general purpose editor for cells in a grid.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Implements a composite cell editor with combines one or more of the predefined cell editors types.
+        </short>
+        <descr>
+          <p>
+            <var>TCompositeCellEditor</var> is a <var>TCustomControl</var> descendant which implements a cell editor composed of one or more of the cell editor types, such as:
+          </p>
+          <ul>
+            <li>TStringCellEditor</li>
+            <li>TButtonCellEditor</li>
+          </ul>
+          <p>
+            Editor controls of a specific type can be added to the class instance using the AddEditor method.
+          </p>
+          <p>
+            Use MaxLength to set the maximum number of characters allowed in the editor control derived from TCustomEdit in the composite editor.
+          </p>
+          <p>
+            Use ActiveControl to access the editor which is the focused control for the composite cell editor.
+          </p>
+          <p>
+            TCompositeCellEditor is the type used to implement the string cell editor in TCustomGrid / TGrid which includes a button to signal the OnEditButtonClick event for the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCompositeCellEditor.MaxLength"/>
+          <link id="TCompositeCellEditor.ActiveControl"/>
+          <link id="TCompositeCellEditor.AddEditor"/>
+          <link id="TCustomGrid.OnEditButtonClick"/>
+          <link id="TStringCellEditor"/>
+          <link id="TButtonCellEditor"/>
+          <link id="#lcl.controls.TCustomControl">TCustomControl</link>
+        </seealso>
       </element>
 
-      <element name="TCompositeCellEditor.DoUTF8KeyPress" link="#lcl.controls.TWinControl.DoUTF8KeyPress"/>
-      <element name="TCompositeCellEditor.SetFocus" link="#lcl.controls.TWinControl.SetFocus"/>
-      <element name="TCompositeCellEditor.VisibleChanging" link="#lcl.controls.TControl.VisibleChanging"/>
+      <element name="TCompositeCellEditor.DoUTF8KeyPress">
+        <short>
+          Performs actions to handle a key press events for a UTF-8-encoded character.
+        </short>
+        <descr>
+          <p>
+            <var>DoUTF8KeyPress</var> is an overridden method in <var>TCompositeCellEditor</var>. It calls the inherited method on entry to allow the key press to be previewed in Parent forms, or handled by the design surface at design-time. If the value in UTF8Key is not handled in the ancestor, the character is sent to (and optionally handled by) the ActiveControl in the composite cell editor.
+          </p>
+          <p>
+            The return value is <b>True</b> if the character in UTF8Key is handled in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCompositeCellEditor.ActiveControl"/>
+          <link id="#lcl.controls.TWinControl.DoUTF8KeyPress">TWinControl.DoUTF8KeyPress</link>
+          <link id="#lcl.forms.TCustomForm.KeyPreview">TCustomForm.KeyPreview</link>
+        </seealso>
+      </element>
+      <element name="TCompositeCellEditor.DoUTF8KeyPress.Result">
+        <short><b>True</b> if the key press is handled in the message.</short>
+      </element>
+      <element name="TCompositeCellEditor.DoUTF8KeyPress.UTF8Key">
+        <short>
+          UTF-8-encoded character value examined in the method.
+        </short>
+      </element>
 
       <element name="TCompositeCellEditor.msg_GetValue">
-        <short>Issues a message to get the value for the editor.</short>
+        <short>
+          Handles the message used to store the coordinates and text for the cell editor to the specified grid message.
+        </short>
+        <descr>
+          <p>
+            The message is dispatched to each of the editor controls in the composite editor until one of them reports a modified value.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_GetValue.Msg">
+        <short>Grid message updated in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SetGrid">
-        <short>Issues a message to specify grid for the editor.</short>
+        <short>
+          Handles the message used to store the associated grid and options for the cell editor.
+        </short>
+        <descr>
+          <p>
+            The message is dispatched to each of the editor controls in the composite editor.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_SetGrid.Msg">
+        <short>Grid message examined in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SetValue">
-        <short>Issues a message to specify the value for the editor.</short>
+        <short>
+          Handles the message used to set the Text and caret position in the composite cell editor.
+        </short>
+        <descr>
+          <p>
+            Dispatches the message to each of the editor controls in the composite cell editor.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_SetValue.Msg">
+        <short>Grid message processed in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SetBounds">
-        <short>Issues a message to specify the bounds for the editor.</short>
+        <short>
+          Handles the message which sets the bounds for the cell rectangle in the cell editor.
+        </short>
+        <descr>
+          <p>
+            Dispatches the message to each of the editor controls in the composite cell editor.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_SetBounds.Msg">
+        <short>Grid message examined in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SetMask">
-        <short>Issues a message to specify the mask for the editor.</short>
+        <short>
+          Handles the message used to set the EditMask for the cell editor.
+        </short>
+        <descr>
+          <p>
+            Dispatches the message to each of the editor controls in the composite editor.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_SetMask.Msg">
+        <short>Grid message examined in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SelectAll">
-        <short>Issues a message to Select all content in the editor.</short>
+        <short>
+          Calls the SelectAll method when the GM_SELCTALL message is received.
+        </short>
+        <descr>
+          <p>
+            Dispatches the message to each of the editor controls in the composite editor.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.msg_SelectAll.Msg">
+        <short>Grid message examined in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.CMControlChange">
-        <short>Issues a Control Message for a change in a control.</short>
+        <short>
+          Handles the CM_CONTROLCHANGE control message for the composite editor.
+        </short>
+        <descr>
+          <p>
+            Sets the align property to alNone in the control at the address in Message when it is not the active control.
+          </p>
+        </descr>
+        <seealso/>
       </element>
+      <element name="TCompositeCellEditor.CMControlChange.Message">
+        <short>Control message with the values examined in the method.</short>
+      </element>
+
       <element name="TCompositeCellEditor.msg_SetPos">
-        <short>Issues a message to specify the position for the editor.</short>
+        <short>
+          Stores the column and row numbers from the specified message to the cell editor.
+        </short>
+        <descr>
+          <p>
+            Dispatches the message to each of the editor controls for the composite cell editor.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCompositeCellEditor.msg_SetPos.Msg">
+        <short>Grid message handled in the method.</short>
       </element>
 
       <element name="TCompositeCellEditor.msg_GetGrid">
         <short>
-          Handles the message to get the Grid control for the composite cell editor.
+          Handles the message used to store the grid control and editor options in the specified grid message.
         </short>
         <descr/>
         <seealso/>
@@ -1572,25 +1951,52 @@
 
       <element name="TCompositeCellEditor.GetActiveControl">
         <short>
-          Gets the editor marked as the active control for the composite cell editor.
+          Gets the value for the ActiveControl property.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Gets the TWinControl-derived editor marked as the active control for the composite cell editor.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCompositeCellEditor.GetActiveControl.Result">
-        <short>TWinControl descendant that is the editor for an active control.</short>
+        <short>Value for the ActiveControl property</short>
+      </element>
+
+      <element name="TCompositeCellEditor.VisibleChanging">
+        <short>
+          Hides or displays editor controls when the value for the Visible property is changed.
+        </short>
+        <descr>
+          <p>
+            Calls the inherited method on entry to signal assigned OnVisbleChanging event handlers in the control or form hierarchy. Updates the Visible property in each of the editor controls to match the property value in the TCompositeCellEditor instance. When displaying the editor controls, their Parent property is also updated to use the TCompositeCellEditor instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.VisibleChanging">TControl.VisibleChanging</link>
+        </seealso>
       </element>
 
       <element name="TCompositeCellEditor.SendChar">
-        <short>Transmits the specified character and returns an integer status result.</short>
-        <descr>0 - failure, 1 - success</descr>
+        <short>
+          Sends the specified character to the active control and returns an integer status result.
+        </short>
+        <descr>
+          <p>
+            Gets the active editor control, and sends the specified character to its widgetset class instance when the handle has been allocated. The return value is <b>1</b> if the character was sent to the widgetset class. The return value is <b>0</b> if the active control could not be determined, or its handle is not available.
+          </p>
+        </descr>
+      </element>
+      <element name="TCompositeCellEditor.SendChar.AChar">
+        <short>UTF-8-encoded character applied in the method.</short>
       </element>
 
       <element name="TCompositeCellEditor.SetColor">
         <short>Sets the value for the Color property.</short>
         <descr>
           <p>
-            Overridden in TCompositeCellEditor to ensure that the new color value is also applied to the ActiveControl property (when assigned).
+            Overridden in TCompositeCellEditor to ensure that the new color value is also applied to the ActiveControl (when assigned) in the composite editor.
           </p>
         </descr>
         <seealso>
@@ -1601,7 +2007,23 @@
         <short>New value for the Color property.</short>
       </element>
 
-      <element name="TCompositeCellEditor.WndProc" link="#lcl.controls.TControl.WndProc"/>
+      <element name="TCompositeCellEditor.WndProc">
+        <short>Implements message processing for the composite cell editor.</short>
+        <descr>
+          <p>
+            <var>WndProc</var> is an overridden method in <var>TCompositeCellEditor</var>. It ensures that a LM_CHAR message in TheMessage is handled for the control. The character argument in the message is passed to the active control using the SendChar method.
+          </p>
+          <p>
+            No additional actions are performed in the method if the character is handled by one of the editor controls in the composite editor. If the character is not handled, or the message has a message constant other than LM_CHAR, the inherited method (in TWinControl) is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.WndProc">#lcl.controls.TControl.WndProc</link>
+        </seealso>
+      </element>
+      <element name="TCompositeCellEditor.WndProc.TheMessage">
+        <short>LCL message handled for the control.</short>
+      </element>
 
       <element name="TCompositeCellEditor.Destroy">
         <short>Destructor for the class instance.</short>
@@ -1617,11 +2039,20 @@
       </element>
 
       <element name="TCompositeCellEditor.CustomAlignPosition">
-        <short>Sets the position for the single editor in the composite control.</short>
+        <short>Sets the position for the editor in the composite control.</short>
         <descr>
           <p>
-            Overridden in TCompositeCellEditor to apply control alignment for the single control used in the composite editor. No provisions are made for calling CustomAlignInsertBefore() or sharing space with other editors in the control.
+            <var>CustomAlignPosition</var> is an overridden method in <var>TCompositeCellEditor</var> used to position and align the specified control in the composite editor. Currently there is only one aligned control in the composite editor; no provisions are made for calling CustomAlignInsertBefore() or sharing space with other editors in the control.
           </p>
+          <p>
+            The variable arguments are updated in the method to reflect the new position and size for the specified control, including:
+          </p>
+          <ul>
+            <li>ANewLeft</li>
+            <li>ANewTop</li>
+            <li>ANewWidth</li>
+            <li>ANewHeight</li>
+          </ul>
           <p>
             CustomAlignPosition does <b>not</b> call the inherited method.
           </p>
@@ -1631,37 +2062,67 @@
         </seealso>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.AControl">
-        <short/>
+        <short>Editor control positioned and aligned in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.ANewLeft">
-        <short/>
+        <short>New coordinate value derived in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.ANewTop">
-        <short/>
+        <short>New coordinate value derived in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.ANewWidth">
-        <short/>
+        <short>New size value derived in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.ANewHeight">
-        <short/>
+        <short>New size value derived in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.AlignRect">
-        <short/>
+        <short>Rectangle where the control is aligned. Not updated in the method.</short>
       </element>
       <element name="TCompositeCellEditor.CustomAlignPosition.AlignInfo">
-        <short/>
+        <short>Not used in the current implementation.</short>
       </element>
 
       <element name="TCompositeCellEditor.AddEditor">
         <short>
-          Adds the specified Editor with the given alignment and specified ActiveControl.
+          Adds the specified control to the composite cell editor using the given alignment and active state.
+        </short>
+        <descr>
+          <p>
+            <var>AddEditor</var> increases the capacity for the internal array of TEditorItem instances used in the control. It stores the parameter values to the Editor, Align, and ActiveControl members in the new TEditorItem instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TEditorItem"/>
+        </seealso>
+      </element>
+      <element name="TCompositeCellEditor.AddEditor.AEditor">
+        <short>Editor control added to the composite cell editor.</short>
+      </element>
+      <element name="TCompositeCellEditor.AddEditor.AAlign">
+        <short>Alignment for the control relative to other editors.</short>
+      </element>
+      <element name="TCompositeCellEditor.AddEditor.ActiveCtrl">
+        <short>
+          <b>True</b> if AEditor is the active control for the composite cell editor.
+        </short>
+      </element>
+
+      <element name="TCompositeCellEditor.SetFocus">
+        <short>
+          Focuses the active control for the composite editor when it is Visible.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.SetFocus">TWinControl.SetFocus</link>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+        </seealso>
       </element>
 
       <element name="TCompositeCellEditor.Focused">
-        <short>Indicates if the composite control and one of its editors are focused.</short>
+        <short>
+          Indicates if the composite cell editor and one of its editor controls are focused.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1681,18 +2142,49 @@
 
       <element name="TCompositeCellEditor.ActiveControl">
         <short>
-          Contains the active control in use in one of the editors for the composite control.
+          Contains the active editor control for the composite cell editor.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ActiveControl</var> is a read-only <var>TWinControl</var> property which contains the active editor control for the composite cell editor. The property value is retrieved from the internal list of TEditorItem instances added to the composite editor using the AddEditor method.
+          </p>
+          <p>
+            Each of the TEditorItem instances is visited until an editor with its ActiveControl property set to <b>True</b> is found. The return value contains the control found in the internal list, or <b>Nil</b> if none of the editor controls are the active editor in the composite cell editor.
+          </p>
+          <p>
+            ActiveControl is used in the implementations for properties and methods in the class, like:
+          </p>
+          <ul>
+            <li>Focused</li>
+            <li>MaxLenth</li>
+            <li>SetColor</li>
+            <li>SetFocus</li>
+            <li>SendChar</li>
+            <li>AddEditor</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCompositeCellEditor.MaxLength"/>
+          <link id="TCompositeCellEditor.SetFocus"/>
+          <link id="TCompositeCellEditor.SendChar"/>
+          <link id="TCompositeCellEditor.SetColor"/>
+          <link id="TCompositeCellEditor.AddEditor"/>
+          <link id="TEditorItem"/>
+        </seealso>
       </element>
 
       <element name="TOnDrawCell">
         <short>
           Defines the event handler signalled to draw a cell on a grid control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TOnDrawCell</var> is the type used to implement the OnDrawCell event handler in TCustomGrid.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.OnDrawCell"/>
+        </seealso>
       </element>
       <element name="TOnDrawCell.Sender">
         <short>Grid control for the event notification.</short>
@@ -2187,7 +2679,9 @@
       </element>
 
       <element name="TSaveColumnEvent">
-        <short>Specifies an event handler used to load/save the configuration for a grid column.</short>
+        <short>
+          Specifies an event handler used to load/save the configuration for a grid column.
+        </short>
         <descr>
           <p>
             <var>TSaveColumnEvent</var> is the type used to implement the <var>OnLoadColumn</var> and <var>OnSaveColumn</var> properties in <var>TCustomGrid</var>.
@@ -2218,7 +2712,9 @@
       </element>
 
       <element name="TVirtualGrid">
-        <short>Implements a grid with metadata where rows and columns are stored as Pointer arrays.</short>
+        <short>
+          Implements a grid with metadata where rows and columns are stored as Pointer arrays.
+        </short>
         <descr>
           <p>
             <var>TVirtualGrid</var> is a class used to represent a grid where the rows and columns containing grid metadata are stored as arrays of Pointers. Data stored in the grid includes the Size for data in a cell, and pointers to attributes for fixed and normal cell display.
@@ -2430,7 +2926,9 @@
       </element>
 
       <element name="TVirtualGrid.ExchangeColRow">
-        <short>Exchanges values for the current column or row with those at the specified position.</short>
+        <short>
+          Exchanges values for the current column or row with those at the specified position.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2545,10 +3043,12 @@
       </element>
 
       <element name="TVirtualGrid.GetDefaultColRow">
-        <short>Gets a pointer to the default values used in a new column and row properties instance.</short>
+        <short>
+          Gets a pointer to the default values used in the column and row properties when added to the instance.
+        </short>
         <descr>
           <p>
-            Used in the implementation of the doNewItem method called when a new column row is added to the virtual grid.
+            Used in the implementation of the doNewItem method called when a new column or row is added to the virtual grid.
           </p>
         </descr>
         <seealso>
@@ -3123,7 +3623,7 @@
       </element>
 
       <element name="TGridColumnTitle.Color">
-        <short>The <var>Color</var> for the column title.</short>
+        <short>The background <var>Color</var> for the column title.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4384,7 +4884,7 @@
         <short>Inserts a column at the specified index position.</short>
         <descr>
           <p>
-            InsertColumn calls the Add method to create a new column instance using the ItemClass for the collection. MoveColumn is called to relocate the newly stored column to the position in the Index argument.
+            <var>InsertColumn</var> calls the Add method to create a new column instance using the ItemClass for the collection. MoveColumn is called to relocate the newly stored column to the position in the Index argument.
           </p>
           <p>
             Use the Items property to access the new column by its index position.
@@ -4481,9 +4981,6 @@
         <descr>
         </descr>
         <seealso/>
-        <notes>
-          <note>What is the purpose of the NewCols compiler define?</note>
-        </notes>
       </element>
       <element name="TGridColumns.RealIndex.Result">
         <short/>
@@ -9531,7 +10028,7 @@
         <short>Gets the default horizontal alignment used for values in the grid control.</short>
         <descr>
           <p>
-            <var>GetDefaultColumnAlignment</var> is a <var>TAlignment</var> function which provides the default horizontal aligment for text in the columns for the grid control. It is used in the <var>GetColumnAlignment</var> method when <var>Columns</var> are not Enabled for the control. GetDefaultColumnAlignment returns the Alignment value from <var>DefaultTextStyle</var> as stored in the constructor for the class instance.
+            <var>GetDefaultColumnAlignment</var> is a <var>TAlignment</var> function which provides the default horizontal alignment for text in the columns for the grid control. It is used in the <var>GetColumnAlignment</var> method when <var>Columns</var> are not Enabled for the control. GetDefaultColumnAlignment returns the Alignment value from <var>DefaultTextStyle</var> as stored in the constructor for the class instance.
           </p>
         </descr>
         <seealso>
@@ -11417,7 +11914,7 @@
       </element>
       <element name="TCustomGrid.ScrollBarPage.aPage">
         <short>
-          New value for the page size used on the proportional thumbbar.
+          New value for the page size used on the proportional thumb bar.
         </short>
       </element>
 
@@ -12208,7 +12705,7 @@
             <var>AutoEdit</var> is a <var>Boolean</var> property which indicates if edit mode is automatically entered when a cell is selected in the grid control. The default value for the property is <b>True</b>.
           </p>
           <p>
-            When AutoEdit is set to <b>True</b>, the cell Editor is automatically displayed when a non-fixed cell is entered using keyboard navigtation or a mouse click. When AutoEdit is set to <b>False</b>, the cell Editor is not displayed until toggled. Use the F2 or Enter key to activate a cell Editor. Use a second mouse click in the active cell to display the cell Editor.
+            When AutoEdit is set to <b>True</b>, the cell Editor is automatically displayed when a non-fixed cell is entered using keyboard navigation or a mouse click. When AutoEdit is set to <b>False</b>, the cell Editor is not displayed until toggled. Use the F2 or Enter key to activate a cell Editor. Use a second mouse click in the active cell to display the cell Editor.
           </p>
           <p>
             AutoEdit does not allow a cell to be edited if the column definition in the Columns collection is defined as ReadOnly.
@@ -12896,7 +13393,7 @@
             <var>FixedHotColor</var> is a <var>TColor</var> property used to draw the background for a fixed cell that is under the mouse pointer (or hovered).The default value for the property is cl3DLight.
           </p>
           <p>
-            FixedHotColor is used in the PrepareCanvas method when header hot tracking is enabled in Options (goHeaderHotTracking) and gdHot is included in the drawing state for the specified cell. The proprety value is assigned as the brush color for the Canvas in the control.
+            FixedHotColor is used in the PrepareCanvas method when header hot tracking is enabled in Options (goHeaderHotTracking) and gdHot is included in the drawing state for the specified cell. The property value is assigned as the brush color for the Canvas in the control.
           </p>
         </descr>
         <seealso>
@@ -13553,7 +14050,7 @@
         <short>Indicates if strict sorting is used.</short>
         <descr>
           <p>
-            StrictSort controls whether the internal QuickSort routine can skip exchanging the position for items when they have the same sort values. It allows the sort routine operate more quickly. Set StrictSort to <b>False</b> to skip calling the exchange routine for the items with the same values. When set to <b>True</b>, the exchange operation is performed for all sorted items.
+            <var>StrictSort</var> controls whether the internal QuickSort routine can skip exchanging the position for items when they have the same sort values. It allows the sort routine operate more quickly. Set StrictSort to <b>False</b> to skip calling the exchange routine for the items with the same values. When set to <b>True</b>, the exchange operation is performed for all sorted items.
           </p>
         </descr>
         <seealso/>
@@ -13780,7 +14277,7 @@
 
       <element name="TCustomGrid.OnEditButtonClick">
         <short>
-          Event handler signalled when the button in an Editor is clicked.
+          Event handler signalled when the button in a cell Editor is clicked. <b>Deprecated</b>.
         </short>
         <descr>
           <p>
@@ -14820,7 +15317,7 @@
         <short>Saves grid information to a file with the specified name.</short>
         <descr>
           <p>
-            SaveToFile is a method used to store information from a grid control the file name specified in the FileName argument. FileName can include a fully-qualified path to the file. If the file aready exists on the local file system, it is deleted and re-created before writing values.
+            SaveToFile is a method used to store information from a grid control the file name specified in the FileName argument. FileName can include a fully-qualified path to the file. If the file already exists on the local file system, it is deleted and re-created before writing values.
           </p>
           <p>
             SaveToFile creates a temporary TXMLConfig instance that is used to write XML values to the specified file, and may include information about the text, layout, cell display settings, grid options, and range selections for the control.
@@ -17550,10 +18047,12 @@
       </element>
 
       <element name="TCustomStringGrid.Rows">
-        <short>Provides indexed access to the list of values for the specified row number.</short>
+        <short>
+          Provides indexed access to the list of column values for the specified row number.
+        </short>
         <descr>
           <p>
-            <var>Rows</var> is an indexed <var>TStrings</var> property which provides access to the list with the String values for the row number specified in <var>Index</var>. Calls <var>MapGetColsRows</var> to retrieve the <var>TStrings</var> instance used as the value for the property.
+            <var>Rows</var> is an indexed <var>TStrings</var> property which provides access to the list with the String values for the columns in the row number specified in <var>Index</var>. Calls <var>MapGetColsRows</var> to retrieve the <var>TStrings</var> instance used as the value for the property.
           </p>
         </descr>
         <seealso/>
@@ -17566,7 +18065,7 @@
       <element name="TCustomStringGrid.ValidateOnSetSelection" link="#lcl.grids.TCustomGrid.ValidateOnSetSelection"/>
 
       <element name="TStringGrid">
-        <short>Implements a specialized grid for displaying textual content.</short>
+        <short>Implements a grid specialized for textual content.</short>
         <descr>
           <p>
             <var>TStringGrid</var> is a <var>TCustomStringGrid</var> descendant which implements a specialized grid for displaying textual content in a matrix of columns and rows.
@@ -17634,7 +18133,7 @@
 
       <element name="TStringGrid.ParentColor">
         <short>
-          Uses the Color from the Parent control, when enabled.
+          Uses the Color from the Parent control when enabled.
         </short>
         <descr>
           <p>
@@ -17953,7 +18452,7 @@
               <var>goVertLine, goHorzLine</var>
             </dt>
             <dd>
-              The same as previous, but for the normal browseable area. A grid can be made to simulate the visual appearance of a listbox by removing both of these options.
+              The same as previous, but for the normal browseable area. A grid can be made to simulate the visual appearance of a list box by removing both of these options.
             </dd>
             <dt>
               <var>goDrawFocusSelected</var>
