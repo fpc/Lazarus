@@ -57,6 +57,9 @@ type
 
     function ProcToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
+    function DoValueToResData(AnFpValue: TFpValue;
+                              AnResData: TLzDbgWatchDataIntf
+                             ): Boolean; virtual;
     function DoWriteWatchResultData(AnFpValue: TFpValue;
                                   AnResData: TLzDbgWatchDataIntf
                                  ): Boolean;
@@ -64,6 +67,8 @@ type
                                   AnResData: TLzDbgWatchDataIntf;
                                   AnAddr: TDbgPtr
                                  ): Boolean;
+
+    property RecurseCnt: Integer read FRecurseCnt;
   public
     constructor Create(AContext: TFpDbgLocationContext);
     destructor Destroy; override;
@@ -590,11 +595,65 @@ begin
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 
-function TFpWatchResultConvertor.DoWriteWatchResultData(AnFpValue: TFpValue;
+function TFpWatchResultConvertor.DoValueToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 var
   PrettyPrinter: TFpPascalPrettyPrinter;
   s: String;
+begin
+  Result := False;
+  case AnFpValue.Kind of
+    skPointer:  Result := PointerToResData(AnFpValue, AnResData);
+    skInteger,
+    skCardinal: Result := NumToResData(AnFpValue, AnResData);
+    skFloat:    Result := FloatToResData(AnFpValue, AnResData);
+
+    skChar:       Result := CharToResData(AnFpValue, AnResData);
+    skString,
+    skAnsiString: Result := StringToResData(AnFpValue, AnResData);
+    skWideString: Result := WideStringToResData(AnFpValue, AnResData);
+
+    skRecord,
+    skObject,
+    skClass,
+    skInterface: Result := StructToResData(AnFpValue, AnResData);
+
+    skNone: ;
+    skType: ;
+    skInstance: ;
+    skUnit: ;
+    skProcedure,
+    skFunction,
+    skProcedureRef,
+    skFunctionRef: Result := ProcToResData(AnFpValue, AnResData);
+    skSimple: ;
+    skBoolean:   Result := BoolToResData(AnFpValue, AnResData);
+    skCurrency: ;
+    skVariant: ;
+    skEnum,
+    skEnumValue: Result := EnumToResData(AnFpValue, AnResData);
+    skSet:       Result := SetToResData(AnFpValue, AnResData);
+    skArray:     Result := ArrayToResData(AnFpValue, AnResData);
+    skRegister: ;
+    skAddress: ;
+  end;
+  if Result then
+    CheckError(AnFpValue, AnResData)
+  else
+  if FRecurseCnt > 0 then begin
+    PrettyPrinter := TFpPascalPrettyPrinter.Create(Context.SizeOfAddress);
+    PrettyPrinter.Context := Context;
+    PrettyPrinter.PrintValue(s, AnFpValue, wdfDefault, 1, [], [ppvSkipClassBody]);
+    AnResData.CreatePrePrinted(s);
+    PrettyPrinter.Free;
+    Result := True;
+  end;
+
+end;
+
+function TFpWatchResultConvertor.DoWriteWatchResultData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+var
   DidHaveEmbeddedPointer: Boolean;
 begin
   // FRecurseCnt should be handled by the caller
@@ -621,55 +680,9 @@ begin
       exit(True); // not an error
       // Allow only one level, after an embedded pointer (pointer nested in other data-type)
   end;
-
   FLastValueKind := AnFpValue.Kind;
   try
-    case AnFpValue.Kind of
-      skPointer:  Result := PointerToResData(AnFpValue, AnResData);
-      skInteger,
-      skCardinal: Result := NumToResData(AnFpValue, AnResData);
-      skFloat:    Result := FloatToResData(AnFpValue, AnResData);
-
-      skChar:       Result := CharToResData(AnFpValue, AnResData);
-      skString,
-      skAnsiString: Result := StringToResData(AnFpValue, AnResData);
-      skWideString: Result := WideStringToResData(AnFpValue, AnResData);
-
-      skRecord,
-      skObject,
-      skClass,
-      skInterface: Result := StructToResData(AnFpValue, AnResData);
-
-      skNone: ;
-      skType: ;
-      skInstance: ;
-      skUnit: ;
-      skProcedure,
-      skFunction,
-      skProcedureRef,
-      skFunctionRef: Result := ProcToResData(AnFpValue, AnResData);
-      skSimple: ;
-      skBoolean:   Result := BoolToResData(AnFpValue, AnResData);
-      skCurrency: ;
-      skVariant: ;
-      skEnum,
-      skEnumValue: Result := EnumToResData(AnFpValue, AnResData);
-      skSet:       Result := SetToResData(AnFpValue, AnResData);
-      skArray:     Result := ArrayToResData(AnFpValue, AnResData);
-      skRegister: ;
-      skAddress: ;
-    end;
-    if Result then
-      CheckError(AnFpValue, AnResData)
-    else
-    if FRecurseCnt > 0 then begin
-      PrettyPrinter := TFpPascalPrettyPrinter.Create(Context.SizeOfAddress);
-      PrettyPrinter.Context := Context;
-      PrettyPrinter.PrintValue(s, AnFpValue, wdfDefault, 1, [], [ppvSkipClassBody]);
-      AnResData.CreatePrePrinted(s);
-      PrettyPrinter.Free;
-      Result := True;
-    end;
+    Result := DoValueToResData(AnFpValue, AnResData);
   finally
     if FRecursePointerCnt > 0 then
       dec(FRecursePointerCnt)

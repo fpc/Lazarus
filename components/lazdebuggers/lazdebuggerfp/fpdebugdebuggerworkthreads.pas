@@ -47,9 +47,10 @@ interface
 uses
   FpDebugDebuggerUtils, FpDebugValueConvertors, DbgIntfDebuggerBase,
   DbgIntfBaseTypes, FpDbgClasses, FpDbgUtil, FPDbgController, FpPascalBuilder,
-  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpErrorMessages, FpDebugDebuggerBase,
-  FpDbgCallContextInfo, FpDbgDwarf, FpDbgDwarfDataClasses, FpWatchResultData,
-  LazDebuggerIntf, Forms, fgl, math, Classes, sysutils, LazClasses,
+  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpErrorMessages,
+  FpDebugDebuggerBase, FpDebuggerResultData, FpDbgCallContextInfo, FpDbgDwarf,
+  FpDbgDwarfDataClasses, FpWatchResultData, LazDebuggerIntf, Forms, fgl, math,
+  Classes, sysutils, LazClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -1039,20 +1040,16 @@ function TFpThreadWorkerEvaluate.EvaluateExpression(const AnExpression: String;
 var
   APasExpr, PasExpr2: TFpPascalExpression;
   PrettyPrinter: TFpPascalPrettyPrinter;
-  ResValue, NewRes: TFpValue;
+  ResValue: TFpValue;
   CastName, ResText2: String;
-  WatchResConv: TFpWatchResultConvertor;
+  WatchResConv: TFpLazDbgWatchResultConvertor;
   ResData: TLzDbgWatchDataIntf;
-  ValConvList: TFpDbgConverterConfigList;
-  ValConv: TFpDbgValueConverter;
   i: Integer;
   ValConfig: TFpDbgConverterConfig;
 begin
   Result := False;
   AResText := '';
   ATypeInfo := nil;
-  NewRes := nil;
-  ValConv := nil;
 
   FExpressionScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
   if FExpressionScope = nil then begin
@@ -1117,45 +1114,21 @@ begin
       exit;
     end;
 
-    if (FWatchValue <> nil) and (ADispFormat <> wdfMemDump) and
-       (not (defSkipValConv in AnEvalFlags)) and
-       (ResValue <> nil) and (ResValue.TypeInfo <> nil)
-    then begin
-      ValConfig := TFpDbgConverterConfig(FWatchValue.GetFpDbgConverter);
-      if (ValConfig <> nil) and (ValConfig.CheckMatch(ResValue)) then begin
-        ValConv := ValConfig.Converter;
-        ValConv.AddReference;
-      end;
-
-      if (ValConv = nil) and (ValConfig = nil) then begin
-        ValConvList := ValueConverterConfigList;
-        ValConvList.Lock;
-        try
-          i := ValConvList.Count - 1;
-          while (i >= 0) and (not ValConvList[i].CheckMatch(ResValue)) do
-            dec(i);
-          if i >= 0 then begin
-            ValConv := ValConvList[i].Converter;
-            ValConv.AddReference;
-          end;
-        finally
-          ValConvList.Unlock;
-        end;
-      end;
-
-      if ValConv <> nil then begin
-        NewRes := ValConv.ConvertValue(ResValue, FDebugger, FExpressionScope);
-        if NewRes <> nil then
-          ResValue := NewRes;
-      end;
-    end;
-
     if (FWatchValue <> nil) and (ResValue <> nil) and
        (ADispFormat <> wdfMemDump)   // TODO
     then begin
-      WatchResConv := TFpWatchResultConvertor.Create(FExpressionScope.LocationContext);
+      WatchResConv := TFpLazDbgWatchResultConvertor.Create(FExpressionScope.LocationContext);
       WatchResConv.ExtraDepth := defExtraDepth in FWatchValue.EvaluateFlags;
       WatchResConv.FirstIndexOffs := FWatchValue.FirstIndexOffs;
+      if not (defSkipValConv in AnEvalFlags) then begin
+        ValConfig := TFpDbgConverterConfig(FWatchValue.GetFpDbgConverter);
+        if ValConfig <> nil then
+          WatchResConv.ValConfig := ValConfig
+        else
+          WatchResConv.ValConvList := ValueConverterConfigList;
+        WatchResConv.Debugger := FDebugger;
+      end;
+      WatchResConv.ExpressionScope := FExpressionScope;
       ResData := FWatchValue.ResData;
       Result := WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
 
@@ -1209,9 +1182,7 @@ begin
   finally
     PrettyPrinter.Free;
     APasExpr.Free;
-    NewRes.ReleaseReference;
     FExpressionScope.ReleaseReference;
-    ValConv.ReleaseReference;
   end;
 end;
 

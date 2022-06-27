@@ -44,6 +44,10 @@
         <Filename Value="fpdebugdebuggerbase.pas"/>
         <UnitName Value="FpDebugDebuggerBase"/>
       </Item>
+      <Item>
+        <Filename Value="fpdebuggerresultdata.pas"/>
+        <UnitName Value="FpDebuggerResultData"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

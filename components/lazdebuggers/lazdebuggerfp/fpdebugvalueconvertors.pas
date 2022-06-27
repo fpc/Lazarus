@@ -299,21 +299,21 @@ var
   ProcLoc: TFpDbgMemLocation;
 begin
   Result := nil;
+  if (ASourceValue.Kind <> skRecord) //or
+     //(ASourceValue.MemberCount <> 2) or
+     //(SizeToFullBytes(ASourceValue.Member[0].DataSize) <> 2)
+  then
+    exit;
 
   ProcVal := nil;
   ProcSym := nil;
   StringDecRefSymbol := nil;
   try
 (*
-VARIANTS_$$_SYSVARTOLSTR$ANSISTRING$VARIANT
-U_$SYSTEM_$$_VARIANTMANAGER
+    //VARIANTS_$$_SYSVARTOLSTR$ANSISTRING$VARIANT
+    //U_$SYSTEM_$$_VARIANTMANAGER
+    //SYSTEM_$$_GETVARIANTMANAGER$TVARIANTMANAGER
 
-
-SYSTEM_$$_GETVARIANTMANAGER$TVARIANTMANAGER
-
-*)
-
-(*
     ProcVal := AnExpressionScope.FindSymbol('sysvartolstr', 'variants');
     if ProcVal <> nil then begin
       ProcSym := ProcVal.DbgSymbol;
@@ -330,6 +330,7 @@ SYSTEM_$$_GETVARIANTMANAGER$TVARIANTMANAGER
 
     ProcLoc := ProcSym.Address
 *)
+
     if not IsTargetAddr(ASourceValue.Address) then
       exit;
 
