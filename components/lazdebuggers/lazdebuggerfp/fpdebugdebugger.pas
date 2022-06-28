@@ -915,21 +915,21 @@ begin
       if Assigned(CallStack) and (CallStack.Count > 0) then begin
         c := CallStack.Items[0];
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, 'paused');
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, 'paused');
       end
       else begin
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, 'paused');
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(0, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, 'paused');
       end;
     end;
 

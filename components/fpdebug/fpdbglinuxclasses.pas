@@ -277,6 +277,7 @@ type
     function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
+    function GetName: String; override;
   protected
     function ReadThreadState: boolean;
 
@@ -539,6 +540,28 @@ begin
     result := true;
 end;
 
+function TDbgLinuxThread.GetName: String;
+var
+  fh: THandle;
+  n: array[0..30] of AnsiChar;
+  c: LongInt;
+begin
+  Result := '';
+  fh := FileOpen('/proc/' + IntToStr(Handle) + '/comm', fmOpenRead or fmShareDenyNone);
+  if fh <> THandle(-1) then begin
+    try
+      c := FileRead(fh, n, 30);
+      if c > 0 then begin
+        n[c] := #0;
+        Result := TrimRightSet(n, [' ', #10]);
+      end;
+    finally
+      FileClose(fh);
+    end;
+  end;
+  if Result = '' then
+    Result := inherited GetName;
+end;
 
 function TDbgLinuxThread.ReadThreadState: boolean;
 var
