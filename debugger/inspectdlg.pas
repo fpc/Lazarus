@@ -347,6 +347,11 @@ begin
   btnColVisibility.Enabled := False;
 
   Res := FCurrentResData;
+  if Res = nil then begin
+    TimerClearData.Enabled := True;
+    exit;
+  end;
+
   StatusBar1.SimpleText:=ShortenedExpression+': '+Res.TypeName + '  Len: ' + IntToStr(Res.ArrayLength);
 
   LowBnd := Res.LowBound;
@@ -569,6 +574,8 @@ end;
 
 procedure TIDEInspectDlg.TimerClearDataTimer(Sender: TObject);
 begin
+  if not TimerClearData.Enabled then
+    exit;
   TimerClearData.Enabled := False;
   Clear;
 end;
@@ -1351,14 +1358,14 @@ begin
 
   TimerClearData.Enabled := False;
 
-  FCurrentResData := nil;
   FAlternateExpression := '';
   FExpressionWasEvaluated := True;
+  FCurrentResData := FCurrentWatchValue.ResultData;
   FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentResData, wdfStructure);
 
   if FCurrentWatchValue.Validity = ddsValid then begin
-      ArrayNavigationBar1.Visible := False;
     if FCurrentWatchValue.TypeInfo <> nil then begin
+      ArrayNavigationBar1.Visible := False;
       case FCurrentWatchValue.TypeInfo.Kind of
         skClass, skObject, skInterface: InspectClass();
         skRecord: InspectRecord();
@@ -1383,7 +1390,6 @@ begin
       end;
     end
     else begin
-      FCurrentResData := FCurrentWatchValue.ResultData;
     // resultdata
 
       if (FCurrentResData.ValueKind = rdkStruct) and
@@ -1457,6 +1463,8 @@ end;
 procedure TIDEInspectDlg.ArrayNavChanged(Sender: TArrayNavigationBar;
   AValue: Int64);
 begin
+  if (FCurrentResData = nil) or (FCurrentResData.ValueKind <> rdkArray) then
+    exit;
   InspectResDataArray;
 end;
 
