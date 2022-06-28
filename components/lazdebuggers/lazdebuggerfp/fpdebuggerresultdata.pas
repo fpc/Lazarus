@@ -80,6 +80,7 @@ var
   CurConv: TFpDbgValueConverter;
 begin
   NewRes := nil;
+  Result := False;
   if RecurseCnt = 0 then
     FOuterKind := AnFpValue.Kind;
 
