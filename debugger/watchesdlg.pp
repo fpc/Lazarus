@@ -1276,7 +1276,8 @@ begin
 
         HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
                        ( (WatchValue.ResultData <> nil) and
-                         ( (WatchValue.ResultData.FieldCount > 0) or
+                         ( ( (WatchValue.ResultData.FieldCount > 0) and (WatchValue.ResultData.StructType <> dstInternal) )
+                           or
                            ( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
                        ) );
         tvWatches.HasChildren[VNode] := HasChildren;
@@ -1413,7 +1414,9 @@ var
 begin
   ChildCount := 0;
 
-  if (AWatchValue.ResultData <> nil) and (AWatchValue.ResultData.FieldCount > 0) then begin
+  if (AWatchValue.ResultData <> nil) and (AWatchValue.ResultData.FieldCount > 0) and
+     (AWatchValue.ResultData.StructType <> dstInternal)
+  then begin
     ResData := AWatchValue.ResultData;
     ChildCount := ResData.FieldCount;
     AWatch := AWatchValue.Watch;

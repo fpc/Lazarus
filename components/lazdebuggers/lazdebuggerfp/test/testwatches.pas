@@ -1980,6 +1980,7 @@ var
   Src: TCommonSource;
   BrkPrg: TDBGBreakPoint;
   obj: TFpDbgConverterConfig;
+  i, c: Integer;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchFunctVariant) then exit;
@@ -2014,9 +2015,39 @@ begin
     ValueConverterConfigList.Add(obj);
 
     t.Clear;
-    t.Add('variant to lstr', 'variant1',    weAnsiStr('102'))
-      .IgnTypeName
-      .IgnData([], Compiler.Version < 029999);
+    t.Add('variant1 to lstr', 'variant1',    weAnsiStr('102'));
+    t.Add('variant2 to lstr', 'variant2',    weAnsiStr('True'));
+
+    t.Add('rec variant1 to lstr', 'v_rec.variant1',    weAnsiStr('103'));
+    t.Add('rec variant2 to lstr', 'v_rec.variant2',    weAnsiStr('False'));
+
+    t.Add('array variant1 to lstr', 'v_array[3]',    weAnsiStr('104'));
+    t.Add('array variant2 to lstr', 'v_array[4]',    weAnsiStr('True'));
+
+
+    c := t.Count;
+    t.Add('Extra-depth: variant1 to lstr', 'variant1',    weAnsiStr('102'));
+    t.Add('Extra-depth: variant2 to lstr', 'variant2',    weAnsiStr('True'));
+
+    t.Add('Extra-depth: rec variant1 to lstr', 'v_rec.variant1',    weAnsiStr('103'));
+    t.Add('Extra-depth: rec variant2 to lstr', 'v_rec.variant2',    weAnsiStr('False'));
+
+    t.Add('Extra-depth: array variant1 to lstr', 'v_array[3]',    weAnsiStr('104'));
+    t.Add('Extra-depth: array variant2 to lstr', 'v_array[4]',    weAnsiStr('True'));
+
+    for i := c to t.Count-1 do
+      t.Tests[i]^.TstWatch.EvaluateFlags := t.Tests[i]^.TstWatch.EvaluateFlags + [defExtraDepth];
+
+
+    for i := 0 to t.Count-1 do
+      t.Tests[i].AddFlag(ehNoTypeInfo);
+
+    if Compiler.Version < 029999 then
+      for i := 0 to t.Count-1 do
+        t.Tests[i]
+          .IgnTypeName
+          .IgnData([], Compiler.Version < 029999);
+
     t.EvaluateWatches;
     t.CheckResults;
 

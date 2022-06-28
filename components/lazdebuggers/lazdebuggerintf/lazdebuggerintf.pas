@@ -108,7 +108,7 @@ type
 
   TLzDbgFloatPrecission = (dfpSingle, dfpDouble, dfpExtended);
 //  TLzDbgSetData = bitpacked array [0..255] of boolean;
-  TLzDbgStructType      = (dstUnknown, dstRecord, dstObject, dstClass, dstInterface);
+  TLzDbgStructType      = (dstUnknown, dstRecord, dstObject, dstClass, dstInterface, dstInternal);
   TLzDbgArrayType       = (datUnknown, datDynArray, datStatArray);
   TLzDbgFieldVisibility = (dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
   TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor);

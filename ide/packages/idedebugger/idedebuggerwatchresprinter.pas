@@ -142,6 +142,32 @@ var
 begin
   Result := '';
 
+  if (AResValue.ValueKind = rdkStruct) and
+     (AResValue.StructType = dstInternal)
+  then begin
+    if AResValue.FieldCount = 0 then
+      exit('Error: No result');
+
+    if (AResValue.FieldCount = 1) or
+       ( (AResValue.Fields[0].Field <> nil) and
+         ((AResValue.Fields[0].Field.ValueKind <> rdkError))
+       )
+    then begin
+      Result := PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl);
+      exit;
+    end;
+
+    if (AResValue.FieldCount > 1) then begin
+      Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl);
+      Result := Result + ' { '
+        + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl)
+        + ' }';
+      exit;
+    end;
+
+    exit('Error: No result');
+  end;
+
   if (AResValue.StructType in [dstClass, dstInterface])
   then begin
     tn := AResValue.TypeName;

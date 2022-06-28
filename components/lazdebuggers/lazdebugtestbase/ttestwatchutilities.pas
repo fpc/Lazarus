@@ -1366,6 +1366,13 @@ begin
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
       Context.WatchRes := WatchVal.ResultData;
+      if (Context.WatchRes <> nil) and
+         (Context.WatchRes.ValueKind = rdkStruct) and
+         (Context.WatchRes.StructType = dstInternal) and
+         (Context.WatchRes.FieldCount > 0)
+      then
+        Context.WatchRes := Context.WatchRes.Fields[0].Field;
+
       Context.WatchTpInf := WatchVal.TypeInfo;
 
       if not VerifyDebuggerState then

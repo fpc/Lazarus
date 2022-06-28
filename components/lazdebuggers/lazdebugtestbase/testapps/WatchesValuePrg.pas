@@ -76,6 +76,12 @@ var
   InterfacedObject, InterfacedObject2: TInterfacedObject;
 
   variant1: variant;
+  variant2: variant;
+  v_rec: record
+    variant1: variant;
+    variant2: variant;
+  end;
+  v_array: array [3..4] of variant;
 
 type
   TClass1 = class;
@@ -881,6 +887,12 @@ begin
   FuncIntAdd(1,1);
   FuncTooManyArg(1,1,1,1,1,1,1,1,1,1,1,1);
   variant1 := 102;
+  variant2 := True;
+  v_rec.variant1 := 103;
+  v_rec.variant2 := False;
+  v_array[3] := 104;
+  v_array[4] := True;
+
   {$if FPC_FULLVERSION >= 30000}
   dummy1 := nil;
   {$ENDIF}
@@ -1090,6 +1102,8 @@ begin
   MyClass1.MethFoo();
 
   MyClass2.BaseMethFoo();
+  variant1 := 102;
+  variant2 := True;
 
 end.
 

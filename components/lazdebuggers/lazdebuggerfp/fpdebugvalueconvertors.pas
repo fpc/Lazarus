@@ -292,18 +292,28 @@ function TFpDbgValueConverterVariantToLStr.ConvertValue(ASourceValue: TFpValue;
   AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
   ): TFpValue;
 var
-  NewResult, ProcVal: TFpValue;
+  NewResult, ProcVal, m: TFpValue;
   ProcSym, StringDecRefSymbol: TFpSymbol;
   CallContext: TFpDbgInfoCallContext;
   StringAddr, ProcAddr: TDbgPtr;
   ProcLoc: TFpDbgMemLocation;
+  r: Boolean;
 begin
   Result := nil;
-  if (ASourceValue.Kind <> skRecord) //or
-     //(ASourceValue.MemberCount <> 2) or
-     //(SizeToFullBytes(ASourceValue.Member[0].DataSize) <> 2)
+  if not (
+    (ASourceValue.Kind = skRecord) and
+    ( (ASourceValue.MemberCount = 0) or
+      (ASourceValue.MemberCount >= 2)
+  ) )
   then
     exit;
+  if (ASourceValue.MemberCount >= 2) then begin
+    m := ASourceValue.Member[0];
+    r := SizeToFullBytes(m.DataSize) <> 2;
+    m.ReleaseReference;
+    if r then
+      exit;
+  end;
 
   ProcVal := nil;
   ProcSym := nil;
@@ -349,7 +359,7 @@ begin
     try
       CallContext.AddStringResult;
       CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
-      CallContext.AddOrdinalParam(nil, ASourceValue.Address.Address);
+      CallContext.AddOrdinalParam(nil, ASourceValue.DataAddress.Address);
       AnFpDebugger.DbgController.ProcessLoop;
 
       if not CallContext.IsValid then
