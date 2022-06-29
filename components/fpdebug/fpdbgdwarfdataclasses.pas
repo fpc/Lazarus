@@ -837,6 +837,7 @@ type
     procedure Push(const AEntry: TFpDbgMemLocation);
     procedure PushCopy(AFromIndex: Integer);
     procedure PushConst(const AVal: TDBGPtr);
+    procedure PushSignedConst(const AVal: Int64); inline;
     procedure PushTargetMem(const AVal: TDBGPtr);
     procedure PushTargetRegister(const ARegNum: Cardinal);
     function  Peek: PFpDbgMemLocation;
@@ -2046,6 +2047,11 @@ begin
   inc(FCount);
 end;
 
+procedure TDwarfLocationStack.PushSignedConst(const AVal: Int64);
+begin
+  PushConst(TDBGPtr(AVal));
+end;
+
 procedure TDwarfLocationStack.PushTargetMem(const AVal: TDBGPtr);
 begin
   if Length(FList) <= FCount then
@@ -2250,11 +2256,11 @@ begin
       DW_OP_const4u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 4));
       DW_OP_const8u: FStack.PushConst(ReadUnsignedFromExpression(CurData, 8));
       DW_OP_constu:  FStack.PushConst(ReadUnsignedFromExpression(CurData, 0));
-      DW_OP_const1s: FStack.PushConst(ReadSignedFromExpression(CurData, 1));
-      DW_OP_const2s: FStack.PushConst(ReadSignedFromExpression(CurData, 2));
-      DW_OP_const4s: FStack.PushConst(ReadSignedFromExpression(CurData, 4));
-      DW_OP_const8s: FStack.PushConst(ReadSignedFromExpression(CurData, 8));
-      DW_OP_consts:  FStack.PushConst(ReadSignedFromExpression(CurData, 0));
+      DW_OP_const1s: FStack.PushSignedConst(ReadSignedFromExpression(CurData, 1));
+      DW_OP_const2s: FStack.PushSignedConst(ReadSignedFromExpression(CurData, 2));
+      DW_OP_const4s: FStack.PushSignedConst(ReadSignedFromExpression(CurData, 4));
+      DW_OP_const8s: FStack.PushSignedConst(ReadSignedFromExpression(CurData, 8));
+      DW_OP_consts:  FStack.PushSignedConst(ReadSignedFromExpression(CurData, 0));
       DW_OP_lit0..DW_OP_lit31: FStack.PushConst(CurInstr^-DW_OP_lit0);
 
       (* DW_OP_reg0..31 and DW_OP_regx
