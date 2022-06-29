@@ -9805,6 +9805,10 @@ var
     CurNodeStart: Integer;
   begin
     // for example 'A.B'
+    if (ExprType.Context.Node=nil) then
+      // 'a:array[0. '
+      // 'f:=1. '
+      exit;
     if fdfExtractOperand in Params.Flags then
       Params.AddOperandPart('.');
     if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
