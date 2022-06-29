@@ -3949,15 +3949,28 @@ var
       if CIE.SegmentSize > 0 then
         SegmentSelector := ReadUnsignedFromExpression(p, CIE.SegmentSize);
       InitialLocation := ReadUnsignedFromExpression(p, CIE.AddressSize);
-      AddressRange := ReadUnsignedFromExpression(p, CIE.AddressSize);
+      if InitialLocation > 0 then
+        begin
+        AddressRange := ReadUnsignedFromExpression(p, CIE.AddressSize);
+
+        Result := TDwarfFDE.Create(CIEPointer, InitialLocation, SegmentSelector, AddressRange);
+
+        SetLength(Instr, InitialLocationAddr + SizeLeft - p);
+        if Length(Instr) > 0 then
+          Move(p^, Instr[0], InitialLocationAddr + SizeLeft - p);
+        Result.Instructions := Instr;
+        end
+      else
+        begin
+        DebugLn(FPDBG_DWARF_WARNINGS, ['Read FDE but it''s initial location is 0. Skipped.']);
+        Result := nil;
+        end;
+      end
+    else
+      begin
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Read FDE but could not locate the corresponding CIE ['+HexStr(CIEPointer, 8)+'].']);
+      Result := nil;
       end;
-
-    Result := TDwarfFDE.Create(CIEPointer, InitialLocation, SegmentSelector, AddressRange);
-
-    SetLength(Instr, InitialLocationAddr + SizeLeft - p);
-    if Length(Instr) > 0 then
-      Move(p^, Instr[0], InitialLocationAddr + SizeLeft - p);
-    Result.Instructions := Instr;
   end;
 
 var
@@ -3999,7 +4012,8 @@ begin
           begin
           // It is a FDE
           FDE := LoadFDE(CFI, FDE64^.CIEPointer, @FDE64^.InitialLocation, @FDE64^.CIEPointer+FDE64^.Length-@FDE64^.InitialLocation);
-          CFI.AddFDE(FDE);
+          if Assigned(FDE) then
+            CFI.AddFDE(FDE);
           end;
         Length := CIE64^.Length;
         p := @CIE64^.CIEId;
@@ -4019,7 +4033,8 @@ begin
           if FDE32^.Length > 0 then
             begin
             FDE := LoadFDE(CFI, FDE32^.CIEPointer, @FDE32^.InitialLocation, @FDE32^.CIEPointer+FDE32^.Length-@FDE32^.InitialLocation);
-            CFI.AddFDE(FDE);
+            if Assigned(FDE) then
+              CFI.AddFDE(FDE);
             end
           else
             // This should never happen, but it did and it leads to a range-check
