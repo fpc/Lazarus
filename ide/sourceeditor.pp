@@ -2479,7 +2479,9 @@ Begin
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
       // '');
     end;
+    {$IFDEF VerboseIDECompletionBox}
     debugln(['TSourceEditCompletion.ccExecute ',DbgSName(SourceEditorManager.ActiveCompletionPlugin)]);
+    {$ENDIF}
     if (CurrentCompletionType=ctIdentCompletion)
     and (SourceEditorManager.ActiveCompletionPlugin=nil)
     then
