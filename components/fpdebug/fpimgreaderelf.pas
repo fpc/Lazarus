@@ -511,6 +511,8 @@ begin
       for i := 0 to SymbolCount-1 do
       begin
         begin
+          {$push}
+          {$R-}
           if SymbolArr32^[i].st_name<>0 then
             begin
             SectIdx := SymbolArr32^[i].st_shndx;
@@ -521,12 +523,11 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
-            {$push}
-            {$Q-}{$R-}
+          {$Q-}{$R-}
             AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+RelocationOffset),
               Sect^.Address + Sect^.Size+RelocationOffset);
-            {$pop}
             end;
+          {$pop}
         end
       end;
     end;
