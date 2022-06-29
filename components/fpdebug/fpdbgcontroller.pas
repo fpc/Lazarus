@@ -437,11 +437,6 @@ begin
   {$ENDIF}
   {$ENDIF}
 
-  {$IFDEF Linux}
-  if FController.CurrentProcess.Mode <> dm64 then
-    raise Exception.Create('Calling functions is only supported on 64-bits (x86_64)');
-  {$ENDIF}
-
   FRoutineAddress := LocToAddr(ARoutineAddress);
   FCallContext := ACallContext;
 
