@@ -1024,7 +1024,7 @@ begin
         if not (FLibMap.HasId(ProcMap.AddressFrom)) then
           begin
           // Add the library and trigger a deLoadLibrary event
-          AddLib(tDbgLinuxLibrary.Create(Self, ProcMap.FileName, ProcMap.Inode, ProcMap.AddressFrom));
+          AddLib(tDbgLinuxLibrary.Create(Self, ProcMap.FileName, THandle(ProcMap.Inode), TDBGPtr(ProcMap.AddressFrom)));
           Result := deLoadLibrary;
           end
         end;
@@ -1046,8 +1046,8 @@ function TDbgLinuxProcess.ObtainProcMaps: TDbgLinuxMemoryMappingList;
     try
       Parts := Line.Split([' '], TStringSplitOptions.ExcludeEmpty);
       Addresses := Parts[0].Split(['-']);
-      Mapping.AddressFrom:=Hex2Dec64(Addresses[0]);
-      Mapping.AddressTill:=Hex2Dec64(Addresses[1]);
+      Mapping.AddressFrom:=PtrInt(Hex2Dec64(Addresses[0]));
+      Mapping.AddressTill:=PtrInt(Hex2Dec64(Addresses[1]));
 
       Mapping.Rights:=Parts[1];
       Mapping.Offset:=Hex2Dec64(Parts[2]);
