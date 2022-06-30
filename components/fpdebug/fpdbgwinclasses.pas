@@ -185,7 +185,7 @@ type
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
-    procedure LogLastError;
+    procedure LogLastError(AMsg: String = '');
   protected
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); override;
     function GetHandle: THandle; override;
@@ -363,10 +363,10 @@ begin
   {$endif}
 end;
 
-procedure TDbgWinProcess.LogLastError;
+procedure TDbgWinProcess.LogLastError(AMsg: String);
 begin
   if not GotExitProcess then
-    DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s', [GetLastErrorText]);
+    DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s -> %s', [AMsg, GetLastErrorText]);
 end;
 
 procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr;
@@ -571,7 +571,7 @@ begin
   if Result then
     MaskBreakpointsInReadData(AAdress, ASize, AData)
   else
-    LogLastError;
+    LogLastError('ReadData '+dbghex(int64(AAdress))+' / '+dbgs(ASize) + '(done: '+dbgs(BytesRead)+' )');
 end;
 
 function TDbgWinProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
@@ -582,7 +582,8 @@ begin
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.WriteData: MDebugEvent.dwProcessId <> 0');
   Result := WriteProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
 
-  if not Result then LogLastError;
+  if not Result then
+    LogLastError('WriteData '+dbghex(int64(AAdress))+' / '+dbgs(ASize) + '(done: '+dbgs(BytesWritten)+' )');
 end;
 
 function TDbgWinProcess.ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean;
