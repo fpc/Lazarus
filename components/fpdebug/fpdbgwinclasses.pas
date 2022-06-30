@@ -133,6 +133,7 @@ type
 
   TDbgWinThread = class(TDbgThread)
   private
+    FHasExceptionCleared: boolean;
     FIsSuspended: Boolean;
     FIsSkippingBreakPoint: Boolean;
     FIsSkippingBreakPointAddress: TDBGPtr;
@@ -160,6 +161,8 @@ type
     procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
+    procedure ClearExceptionSignal; override;
+    property HasExceptionCleared: boolean read FHasExceptionCleared;
 
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     procedure StoreRegisters; override;
@@ -790,8 +793,11 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 
 var
   EventThread, t: TDbgThread;
+  HasExceptionCleared: Boolean;
 begin
 debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep]);
+  HasExceptionCleared := (AThread <> nil) and TDbgWinThread(AThread).FHasExceptionCleared;
+
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
     AThread := nil;
   end;
@@ -858,6 +864,9 @@ debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ']);
   AProcess.ThreadsBeforeContinue;
 if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);
 
+  if HasExceptionCleared then
+    result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE)
+  else
   if MDebugEvent.dwDebugEventCode = EXCEPTION_DEBUG_EVENT then
     case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
      EXCEPTION_BREAKPOINT, STATUS_WX86_BREAKPOINT,
@@ -940,7 +949,7 @@ begin
        and (MDebugEvent.dwDebugEventCode <> EXIT_THREAD_DEBUG_EVENT)
     then begin
       // Wait for the terminate event // Do not report any queued breakpoints
-      DebugLn(FPDBG_WINDOWS, ['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
+      DebugLn(FPDBG_WINDOWS, ['Terminating... Skipping event: ', dbgs(MDebugEvent)]);
       for TDbgThread(t) in FThreadMap do
         t.Suspend;
       Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
@@ -1760,6 +1769,7 @@ procedure TDbgWinThread.BeforeContinue;
 begin
   inherited;
   if ID = MDebugEvent.dwThreadId then begin
+    FHasExceptionCleared := False;
 
     {$ifdef cpux86_64}
     if (TDbgWinProcess(Process).FBitness = b32) then begin
@@ -1838,6 +1848,12 @@ begin
   //FThreadContextChanged := False; TODO: why was that not here?
   FThreadContextChangeFlags := [];
   FRegisterValueListValid:=False;
+end;
+
+procedure TDbgWinThread.ClearExceptionSignal;
+begin
+  inherited ClearExceptionSignal;
+  FHasExceptionCleared := True;
 end;
 
 procedure TDbgWinThread.SetRegisterValue(AName: string; AValue: QWord);
