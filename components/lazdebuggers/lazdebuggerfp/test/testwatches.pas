@@ -1449,6 +1449,7 @@ begin
     t.Add('SomeFuncInt()',     weInteger(1)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('SomeFuncInt()',     weInteger(2)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,5)',     weInteger(8)).AddEvalFlag([defAllowFunctionCall]);
+    t.Add('FuncIntAdd(-3,-5)',   weInteger(-8)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,15)',     weInteger(18)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,FuncIntAdd(4,5))',     weInteger(12)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,4) + FuncIntAdd(4,5)',     weInteger(16)).AddEvalFlag([defAllowFunctionCall]);

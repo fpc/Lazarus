@@ -90,7 +90,7 @@ var
   procedure CheckUIntRes(AName: String; AExp: int64);
   begin
     AssertTrue(FCurrentTestName + AName + 'Read OK', GotRes);
-    AssertEquals(FCurrentTestName + AName + 'Val', AExp, GotUInt);
+    AssertEquals(FCurrentTestName + AName + 'Val', QWord(AExp), GotUInt);
   end;
   procedure CheckAddrRes(AName: String; AExp: int64);
   begin
