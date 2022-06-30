@@ -101,8 +101,9 @@ uses
   Translations,
   // debugger
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
-  DebugManager, debugger, DebuggerDlg, DebugAttachDialog, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, LazDebuggerIntf, FpDebugValueConvertors,
+  DebugManager, debugger, DebuggerDlg, DebugAttachDialog, DebuggerStrConst,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, FpDebugValueConvertors,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
@@ -145,20 +146,20 @@ uses
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
-  IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros,
-  KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  JumpHistoryView, DesktopManager, DiskDiffsDialog,
-  BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
-  MiscOptions, InputHistory, InputhistoryWithSearchOpt, UnitDependencies,
-  IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, InitialSetupDlgs,
-  InitialSetupProc, NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog,
-  FindInFilesDlg, CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
-  FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
-  UseUnitDlg, FindOverloadsDlg, EditorFileManager,
-  CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
-  RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
-  IDEInstances, NotifyProcessEnd, WordCompletion,
+  IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros, KeyMapping,
+  IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
+  DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
+  BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions, InputHistory,
+  InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
+  IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
+  IdeDebuggerWatchResult, InitialSetupDlgs, InitialSetupProc, NewDialog,
+  MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer,
+  BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
+  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseUnitDlg,
+  FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm, AboutFrm,
+  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
+  IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer, SourceFileManager,
+  EditorToolbarStatic, IDEInstances, NotifyProcessEnd, WordCompletion,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -187,6 +188,7 @@ type
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
+    procedure OnHintWatchValidityChanged(Sender: TObject);
   public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -651,6 +653,13 @@ type
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
     FEnvOptsCfgExisted: boolean; // tracks if a local or user specific environment options configuration file existed
+    FHintWatchData: record
+      WatchValue: TCurrentWatchValue;
+      HintPos: TRect;
+      BaseURL, SmartHintStr, Expression: String;
+      AutoShown: Boolean;
+      SrcEdit: TSourceEditor;
+    end;
 
     FIdentifierWordCompletion: TSourceEditorWordCompletion;
     FIdentifierWordCompletionWordList: TStringList;
@@ -11348,123 +11357,59 @@ begin
     CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
-type
-
-  { TSrcNotebookHintCallback
-    ONLY used by SrcNotebookShowHintForSource
-  }
-
-  TSrcNotebookHintCallback = class
-  private
-    FExpression, FBaseURL, FSmartHintStr, FDebugResText: string;
-    FAutoShown: Boolean;
-    FSrcEdit: TSourceEditor;
-    FCaretPos: TPoint;
-    procedure ShowHint;
-  public
-    constructor Create(SrcEdit: TSourceEditor; CaretPos: TPoint; AnExpression, ABaseURL, ASmartHintStr: string; AAutoShown: Boolean);
-    procedure AddDebuggerResult(Sender: TObject; ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-    procedure AddDebuggerResultDeref(Sender: TObject; ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-  end;
-
-{ TSrcNotebookHintCallback }
-
-procedure TSrcNotebookHintCallback.ShowHint;
+procedure TMainIDE.OnHintWatchValidityChanged(Sender: TObject);
 var
-  AtomStartPos, AtomEndPos: integer;
   p: SizeInt;
-  AtomRect: TRect;
+  WatchPrinter: TWatchResultPrinter;
+  ResultText: String;
 begin
-  FExpression := FExpression + ' = ' + FDebugResText;
-  if FSmartHintStr<>'' then
-  begin
-    p:=PosI('<body>',FSmartHintStr);
-    if p>0 then
-      Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(FExpression)+'</div><br>',
-             FSmartHintStr, p+length('<body>'))
-    else
-      FSmartHintStr:=FExpression+LineEnding+LineEnding+FSmartHintStr;
-  end else
-    FSmartHintStr:=FExpression;
-
-  AtomRect := Rect(-1,-1,-1,-1);
-  FSrcEdit.EditorComponent.GetWordBoundsAtRowCol(FCaretPos, AtomStartPos, AtomEndPos);
-  AtomRect.TopLeft := FSrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, FCaretPos.y));
-  AtomRect.BottomRight := FSrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, FCaretPos.y+1));
-
-  FSrcEdit.ActivateHint(AtomRect, FBaseURL, FSmartHintStr, FAutoShown, False);
-  Destroy;
-end;
-
-constructor TSrcNotebookHintCallback.Create(SrcEdit: TSourceEditor;
-  CaretPos: TPoint; AnExpression, ABaseURL, ASmartHintStr: string;
-  AAutoShown: Boolean);
-begin
-  FExpression := AnExpression;
-  FSrcEdit := SrcEdit;
-  FCaretPos := CaretPos;
-  FBaseURL := ABaseURL;
-  FSmartHintStr := ASmartHintStr;
-  FAutoShown := AAutoShown;
-end;
-
-procedure TSrcNotebookHintCallback.AddDebuggerResult(Sender: TObject;
-  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-var
-  Opts: TWatcheEvaluateFlags;
-begin
-  try
-    if not ASuccess then begin
-      FDebugResText := '???';
-    end
-    else begin
-      // deference a pointer - maybe it is a class
-      if ASuccess and Assigned(ResultDBGType) and (ResultDBGType.Kind in [skPointer])
-      and not ( StringCase(ResultDBGType.TypeName,
-                    ['char', 'character', 'ansistring'], True, False) in [0..2] )
-      then
-      begin
-        if ResultDBGType.Value.AsPointer <> nil then
-        begin
-          Opts := [];
-          if EditorOpts.DbgHintAutoTypeCastClass
-          then Opts := [defClassAutoCast];
-
-          FDebugResText := ResultText;
-
-          if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then begin
-            FreeAndNil(ResultDBGType);
-            exit;
-          end;
-        end;
-      end else
-        FDebugResText := DebugBoss.FormatValue(ResultDBGType, ResultText);
-
-      FreeAndNil(ResultDBGType);
-    end;
-    ShowHint;
-  except
-    on E: Exception do
-    try
-      IDEMessageDialog('Error',E.Message,mtError,[mbCancel]);
-    except
-    end;
-  end;
-end;
-
-procedure TSrcNotebookHintCallback.AddDebuggerResultDeref(Sender: TObject;
-  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
-begin
-  if ASuccess and Assigned(ResultDBGType) and
-    ( (ResultDBGType.Kind <> skPointer) or
-      (StringCase(ResultDBGType.TypeName,
-                  ['char', 'character', 'ansistring'], True, False) in [0..2])
-    )
+  if (Sender <> FHintWatchData.WatchValue) or (FHintWatchData.WatchValue = nil) or
+     (SourceEditorManager = nil) or
+     (SourceEditorManager.FirstIndexOfSourceEditor(FHintWatchData.SrcEdit) < 0)
   then
-    FDebugResText := FDebugResText + LineEnding + LineEnding + '(' + FExpression + ')^ = ' + DebugBoss.FormatValue(ResultDBGType, ResultText);
+    exit;
 
-  FreeAndNil(ResultDBGType);
-  ShowHint;
+  if not(FHintWatchData.WatchValue.Validity in [ddsValid, ddsInvalid, ddsError]) then
+    exit;
+
+
+  ResultText := '';
+  WatchPrinter := TWatchResultPrinter.Create;
+  try
+    if FHintWatchData.WatchValue.Validity = ddsValid then begin
+      ResultText := WatchPrinter.PrintWatchValue(FHintWatchData.WatchValue.ResultData, wdfStructure);
+      if (FHintWatchData.WatchValue.ResultData <> nil) and
+         (FHintWatchData.WatchValue.ResultData.ValueKind = rdkArray) and (FHintWatchData.WatchValue.ResultData.ArrayLength > 0)
+      then
+        ResultText := Format(drsLen, [FHintWatchData.WatchValue.ResultData.ArrayLength]) + ResultText
+      else
+      if (FHintWatchData.WatchValue.TypeInfo <> nil) and
+         (FHintWatchData.WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+         (FHintWatchData.WatchValue.TypeInfo.Len >= 0)
+      then
+        ResultText := Format(drsLen, [FHintWatchData.WatchValue.TypeInfo.Len]) + ResultText;
+    end
+    else
+      ResultText := FHintWatchData.WatchValue.Value;
+
+
+    FHintWatchData.Expression := FHintWatchData.Expression + ' = ' + ResultText;
+    if FHintWatchData.SmartHintStr<>'' then
+    begin
+      p:=PosI('<body>',FHintWatchData.SmartHintStr);
+      if p>0 then
+        Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(FHintWatchData.Expression)+'</div><br>',
+               FHintWatchData.SmartHintStr, p+length('<body>'))
+      else
+        FHintWatchData.SmartHintStr:=FHintWatchData.Expression+LineEnding+LineEnding+FHintWatchData.SmartHintStr;
+    end else
+      FHintWatchData.SmartHintStr:=FHintWatchData.Expression;
+
+    FHintWatchData.SrcEdit.ActivateHint(FHintWatchData.HintPos, FHintWatchData.BaseURL, FHintWatchData.SmartHintStr, FHintWatchData.AutoShown, False);
+
+  finally
+    WatchPrinter.Free;
+  end;
 end;
 
 procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -11498,9 +11443,8 @@ var
   BaseURL, SmartHintStr, Expression: String;
   HasHint: Boolean;
   Opts: TWatcheEvaluateFlags;
-  AtomStartPos, AtomEndPos: integer;
-  AtomRect: TRect;
-  DebugHint: TSrcNotebookHintCallback;
+  AtomStartPos, AtomEndPos, tid: integer;
+  aWatch: TCurrentWatch;
 begin
   //DebugLn(['TMainIDE.SrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -11525,8 +11469,20 @@ begin
       HasHint:=true;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SrcNotebookShowHintForSource B');{$ENDIF}
   end;
-  if (ToolStatus = itDebugger) and EditorOpts.AutoToolTipExprEval then
+
+  if HasHint then
   begin
+    //Find start of identifier
+    FHintWatchData.HintPos := Rect(-1,-1,-1,-1);
+    SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
+    FHintWatchData.HintPos.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
+    FHintWatchData.HintPos.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y+1));
+  end;
+
+
+  if (ToolStatus = itDebugger) and EditorOpts.AutoToolTipExprEval and
+     (DebugBoss.State = dsPause)
+  then begin
     if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
     begin
       Expression := SrcEdit.GetText(True);
@@ -11538,28 +11494,35 @@ begin
     //DebugLn(['TMainIDE.SrcNotebookShowHintForSource Expression="',Expression,'"']);
 
     if Expression <> '' then begin
+      FHintWatchData.BaseURL      := BaseURL;
+      FHintWatchData.SmartHintStr := SmartHintStr;
+      FHintWatchData.Expression   := Expression;
+      FHintWatchData.AutoShown    := AutoShown;
+      FHintWatchData.SrcEdit      := SrcEdit;
+
       Opts := [];
       if EditorOpts.DbgHintAutoTypeCastClass
       then Opts := [defClassAutoCast];
 
-      DebugHint := TSrcNotebookHintCallback.Create(SrcEdit, CaretPos, Expression, BaseURL, SmartHintStr, AutoShown);
-      if DebugBoss.Evaluate(Expression, @DebugHint.AddDebuggerResult, Opts) then
-        exit;
+      DebugBoss.CurrentWatches.BeginUpdate;
+      aWatch := DebugBoss.CurrentWatches.Add(Expression);
+      aWatch.EvaluateFlags := Opts;
+      aWatch.Enabled := True;
+      DebugBoss.CurrentWatches.EndUpdate;
 
-      DebugHint.Free; // eval not available
-      // Add note to SmartHintStr: no debug result for expression
+      tid    := DebugBoss.Threads.CurrentThreads.CurrentThreadId;
+      FHintWatchData.WatchValue := aWatch.Values[tid, 0] as TCurrentWatchValue;
+      FHintWatchData.WatchValue.OnValidityChanged := @OnHintWatchValidityChanged;
+      FHintWatchData.WatchValue.Value;
+      OnHintWatchValidityChanged(FHintWatchData.WatchValue);
+      exit;
     end;
   end;
 
   if HasHint then
   begin
     //Find start of identifier
-    AtomRect := Rect(-1,-1,-1,-1);
-    SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
-    AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
-    AtomRect.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y+1));
-
-    SrcEdit.ActivateHint(AtomRect, BaseURL, SmartHintStr, AutoShown, False);
+    SrcEdit.ActivateHint(FHintWatchData.HintPos, BaseURL, SmartHintStr, AutoShown, False);
   end;
 end;
 

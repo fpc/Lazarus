@@ -752,6 +752,7 @@ type
     function ResData: TLzDbgWatchDataIntf;
     function GetFpDbgConverter: TObject;
   private
+    FOnValidityChanged: TNotifyEvent;
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
@@ -765,6 +766,7 @@ type
   public
     destructor Destroy; override;
     property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
+    property OnValidityChanged: TNotifyEvent read FOnValidityChanged write FOnValidityChanged;
   end;
 
   { TCurrentWatchValueList }
@@ -4001,6 +4003,9 @@ begin
     TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
+
+  if FOnValidityChanged <> nil then
+    FOnValidityChanged(Self);
 end;
 
 destructor TCurrentWatchValue.Destroy;

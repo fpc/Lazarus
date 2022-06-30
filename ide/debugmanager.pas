@@ -1299,6 +1299,9 @@ begin
     if FDialogs[DialogType] <> nil then
       FDialogs[DialogType].BeginUpdate;
 
+  if FDebugger.State <> dsPause then
+    FCurrentWatches.Clear;
+
   if FDebugger.State = dsInternalPause then exit; // set debug windows to ignore / no updating
 end;
 
@@ -1966,6 +1969,8 @@ begin
 
   FWatches.OnModified  := @DoProjectModified;
 
+  FCurrentWatches := TCurrentWatches.Create(FWatches);
+
   FIsInitializingDebugger:= False;
 
   inherited Create(TheOwner);
@@ -1996,6 +2001,7 @@ begin
 
   SetDebugger(nil);
 
+  FreeAndNil(FCurrentWatches);
   FreeAndNil(FEventLogManager);
   FreeAndNil(FSnapshots);
   FreeAndNil(FWatches);

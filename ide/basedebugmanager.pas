@@ -125,6 +125,7 @@ type
     FRegisters: TIdeRegistersMonitor;
     FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
+    FCurrentWatches: TCurrentWatches;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
     function GetPseudoTerminal: TPseudoTerminal; virtual; abstract;
@@ -245,6 +246,7 @@ type
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     property Debugger: TDebuggerIntf read GetDebugger;
     {$ENDIF}
+    property CurrentWatches: TCurrentWatches read FCurrentWatches; // for the hint
   end;
 
 
