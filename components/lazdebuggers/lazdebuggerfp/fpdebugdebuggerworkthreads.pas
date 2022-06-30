@@ -486,6 +486,7 @@ end;
 
 procedure TFpThreadWorkerRunLoop.DoExecute;
 begin
+  FDebugger.ClearCachedData;
   FDebugger.DbgController.ProcessLoop;
   Queue(@LoopFinished_DecRef);
 end;
@@ -783,7 +784,7 @@ function TFpThreadWorkerEvaluate.DoWatchFunctionCall(
   AResult: TFpValue; var AnError: TFpError): boolean;
 var
   FunctionSymbolData, FunctionSymbolType, FunctionResultSymbolType,
-  TempSymbol, StringDecRefSymbol, StringSymbol: TFpSymbol;
+  TempSymbol, StringSymbol: TFpSymbol;
   ExprParamVal: TFpValue;
   ProcAddress: TFpDbgMemLocation;
   FunctionResultDataSize: TFpDbgValueSize;
@@ -791,7 +792,7 @@ var
   CallContext: TFpDbgInfoCallContext;
   PCnt, i, FoundIdx, ItemsOffs: Integer;
   rk: TDbgSymbolKind;
-  StringAddr: TDBGPtr;
+  StringAddr, StringDecRefAddress: TDBGPtr;
 begin
   Result := False;
   if FExpressionScope = nil then
@@ -829,16 +830,19 @@ begin
 
   try
     ParameterSymbolArr := nil;
-    StringDecRefSymbol := nil;
+    StringDecRefAddress := 0;
     StringAddr := 0;
 
     if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString])
     then begin
+ // FCached_FPC_ANSISTR_DECR_REF  TFpThreadWorkerRunLoop.DoExecute
+
       if (FunctionResultSymbolType.Kind = skWideString) then
-        StringDecRefSymbol := FDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_WIDESTR_DECR_REF')
+        StringDecRefAddress := FDebugger.GetCached_FPC_WIDESTR_DECR_REF
       else
-        StringDecRefSymbol := FDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
-      if (StringDecRefSymbol = nil) or (not IsTargetNotNil(StringDecRefSymbol.Address)) then begin
+        StringDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
+
+      if (StringDecRefAddress = 0) then begin
         DebugLn(['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
         AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
         exit;
@@ -940,7 +944,7 @@ begin
       FDebugger.MemReader, FDebugger.MemConverter);
 
     try
-      if (ASelfValue = nil) and (StringDecRefSymbol <> nil) then begin
+      if (ASelfValue = nil) and (StringDecRefAddress <> 0) then begin
         if not CallContext.AddStringResult then begin
           DebugLn('Internal error for string result');
           AnError := CallContext.LastError;
@@ -963,7 +967,7 @@ begin
           exit;
         end;
 
-        if (ASelfValue <> nil) and (StringDecRefSymbol <> nil) and (i = 0) then begin
+        if (ASelfValue <> nil) and (StringDecRefAddress <> 0) and (i = 0) then begin
           if not CallContext.AddStringResult then begin
             DebugLn('Internal error for string result');
             AnError := CallContext.LastError;
@@ -1017,7 +1021,7 @@ begin
     end;
 
     if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString]) and (StringAddr <> 0) then begin
-      CallContext := FDebugger.DbgController.Call(StringDecRefSymbol.Address, FExpressionScope.LocationContext,
+      CallContext := FDebugger.DbgController.Call(TargetLoc(StringDecRefAddress), FExpressionScope.LocationContext,
         FDebugger.MemReader, FDebugger.MemConverter);
       try
         CallContext.AddOrdinalViaRefAsParam(StringAddr);
@@ -1034,7 +1038,6 @@ begin
     for i := 0 to High(ParameterSymbolArr) do
       if ParameterSymbolArr[i] <> nil then
         ParameterSymbolArr[i].ReleaseReference;
-    ReleaseRefAndNil(StringDecRefSymbol);
   end;
 
 end;

@@ -302,9 +302,9 @@ function TFpDbgValueConverterVariantToLStr.ConvertValue(ASourceValue: TFpValue;
   ): TFpValue;
 var
   NewResult, ProcVal, m: TFpValue;
-  ProcSym, StringDecRefSymbol: TFpSymbol;
+  ProcSym: TFpSymbol;
   CallContext: TFpDbgInfoCallContext;
-  StringAddr, ProcAddr: TDbgPtr;
+  StringAddr, ProcAddr, StringDecRefAddress: TDbgPtr;
   ProcLoc: TFpDbgMemLocation;
   r: Boolean;
 begin
@@ -330,7 +330,6 @@ begin
 
   ProcVal := nil;
   ProcSym := nil;
-  StringDecRefSymbol := nil;
   try
 (*
     //VARIANTS_$$_SYSVARTOLSTR$ANSISTRING$VARIANT
@@ -359,15 +358,19 @@ begin
       exit;
     end;
 
-    ProcAddr := GetProcAddrFromMgr(AnFpDebugger, AnExpressionScope);
+    ProcAddr := AnFpDebugger.GetCachedData(pointer(TFpDbgValueConverterVariantToLStr));
     if ProcAddr = 0 then begin
-      SetError(CreateError(fpErrAnyError, ['SysVarToLStr not found']));
-      exit;
+      ProcAddr := GetProcAddrFromMgr(AnFpDebugger, AnExpressionScope);
+      if ProcAddr = 0 then begin
+        SetError(CreateError(fpErrAnyError, ['SysVarToLStr not found']));
+        exit;
+      end;
+      AnFpDebugger.SetCachedData(pointer(TFpDbgValueConverterVariantToLStr), ProcAddr);
     end;
     ProcLoc := TargetLoc(ProcAddr);
 
-    StringDecRefSymbol := AnFpDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
-    if (StringDecRefSymbol = nil) or (not IsTargetAddr(StringDecRefSymbol.Address)) then begin
+    StringDecRefAddress := AnFpDebugger.GetCached_FPC_ANSISTR_DECR_REF;
+    if (StringDecRefAddress = 0) then begin
       SetError(CreateError(fpErrAnyError, ['STRING_DEC_REF not found']));
       exit;
     end;
@@ -405,7 +408,7 @@ begin
       AnFpDebugger.DbgController.AbortCurrentCommand;
       CallContext.ReleaseReference;
 
-      CallContext := AnFpDebugger.DbgController.Call(StringDecRefSymbol.Address, AnExpressionScope.LocationContext,
+      CallContext := AnFpDebugger.DbgController.Call(TargetLoc(StringDecRefAddress), AnExpressionScope.LocationContext,
         AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
       try
         CallContext.AddOrdinalViaRefAsParam(StringAddr);
@@ -419,7 +422,6 @@ begin
   finally
     ProcVal.ReleaseReference;
     ProcSym.ReleaseReference;
-    StringDecRefSymbol.ReleaseReference;
   end;
 end;
 
