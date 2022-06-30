@@ -147,7 +147,7 @@ type
     function FindLeftSideOperandByPrecedence({%H-}AnOperator: TFpPascalExpressionPartWithPrecedence):
                                              TFpPascalExpressionPart; virtual;
     function CanHaveOperatorAsNext: Boolean; virtual; // True
-    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; virtual; // False
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; virtual; // False
   public
     constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar = nil);
     destructor Destroy; override;
@@ -281,7 +281,7 @@ type
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
-    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   end;
 
 
@@ -296,7 +296,7 @@ type
   // a in [x, y, z]
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
-    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   end;
 
   { TFpPascalExpressionPartBracketIndex }
@@ -311,7 +311,7 @@ type
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
     procedure DoHandleEndOfExpression; override;
-    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   end;
 
   { TFpPascalExpressionPartOperator }
@@ -326,7 +326,7 @@ type
     function MaybeAddLeftOperand(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean;
     procedure DoHandleEndOfExpression; override;
-    function HandleSeparator(ASeparatorType: TSeparatorType): Boolean; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   public
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
   end;
@@ -1386,16 +1386,19 @@ begin
     SetError(fpErrPasParserMissingIndexExpression, [GetText]);
 end;
 
-function TFpPascalExpressionPartBracketIndex.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+function TFpPascalExpressionPartBracketIndex.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
 begin
   if (not (ASeparatorType = ppstComma)) or IsClosed then begin
-    Result := inherited HandleSeparator(ASeparatorType);
+    Result := inherited HandleSeparator(ASeparatorType, APart);
     exit;
   end;
 
   Result := (Count > FAfterComma) and (Count > 1); // First element is name of array (in front of "[")
-  if Result then
+  if Result then begin
     SetAfterCommaFlag;
+    APart := Self;
+  end;
 end;
 
 { TFpPascalExpressionPartBracketSet }
@@ -1413,16 +1416,19 @@ begin
   Add(APart);
 end;
 
-function TFpPascalExpressionPartBracketSet.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+function TFpPascalExpressionPartBracketSet.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
 begin
   if (not (ASeparatorType = ppstComma)) or IsClosed then begin
-    Result := inherited HandleSeparator(ASeparatorType);
+    Result := inherited HandleSeparator(ASeparatorType, APart);
     exit;
   end;
 
   Result := (Count > FAfterComma) and (Count > 0);
-  if Result then
+  if Result then begin
     SetAfterCommaFlag;
+    APart := Self;
+  end;
 end;
 
 { TFpPascalExpressionPartWithPrecedence }
@@ -1584,16 +1590,19 @@ begin
   Add(ALeftSide);
 end;
 
-function TFpPascalExpressionPartBracketArgumentList.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+function TFpPascalExpressionPartBracketArgumentList.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
 begin
   if (not (ASeparatorType = ppstComma)) or IsClosed then begin
-    Result := inherited HandleSeparator(ASeparatorType);
+    Result := inherited HandleSeparator(ASeparatorType, APart);
     exit;
   end;
 
   Result := (Count > FAfterComma) and (Count > 1); // First element is name of function (in front of "(")
-  if Result then
+  if Result then begin
     SetAfterCommaFlag;
+    APart := Self;
+  end;
 end;
 
 { TFpPascalExpressionPartBracketSubExpression }
@@ -1925,7 +1934,7 @@ var
 
   procedure HandleComma;
   begin
-    if (CurPart=nil) or (not CurPart.HandleSeparator(ppstComma)) then
+    if (CurPart=nil) or (not CurPart.HandleSeparator(ppstComma, CurPart)) then
       SetError(fpErrPasParserUnexpectedToken, [GetFirstToken(CurPtr), PosFromPChar(CurPtr)]);
   end;
 
@@ -2322,9 +2331,10 @@ begin
   Result := True;
 end;
 
-function TFpPascalExpressionPart.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+function TFpPascalExpressionPart.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
 begin
-  Result := (Parent <> nil) and Parent.HandleSeparator(ASeparatorType);
+  Result := (Parent <> nil) and Parent.HandleSeparator(ASeparatorType, APart);
 end;
 
 function TFpPascalExpressionPart.DebugText(AIndent: String; AWithResults: Boolean): String;
@@ -2620,9 +2630,10 @@ begin
     inherited DoHandleEndOfExpression;
 end;
 
-function TFpPascalExpressionPartOperator.HandleSeparator(ASeparatorType: TSeparatorType): Boolean;
+function TFpPascalExpressionPartOperator.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
 begin
-  Result := HasAllOperands and (inherited HandleSeparator(ASeparatorType));
+  Result := HasAllOperands and (inherited HandleSeparator(ASeparatorType, APart));
 end;
 
 function TFpPascalExpressionPartOperator.HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;

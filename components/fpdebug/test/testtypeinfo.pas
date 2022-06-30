@@ -202,8 +202,8 @@ begin
     svfDataAddress:       AssertEquals('VAlue for '+s, ExpValue, LocToAddrOrNil(AVal.DataAddress));
     svfDataSize:          AssertEquals('VAlue for '+s, ExpValue, AVal.DataSize.Size);
     svfInteger:           AssertEquals('VAlue for '+s, ExpValue, AVal.AsInteger);
-    svfCardinal:          AssertEquals('VAlue for '+s, ExpValue, AVal.AsCardinal);
-    svfOrdinal:           AssertEquals('VAlue for '+s, ExpValue, AVal.AsCardinal);
+    svfCardinal:          AssertEquals('VAlue for '+s, QWord(ExpValue), AVal.AsCardinal);
+    svfOrdinal:           AssertEquals('VAlue for '+s, QWord(ExpValue), AVal.AsCardinal);
     else                  AssertTrue('No test method avail', False);
   end;
 end;

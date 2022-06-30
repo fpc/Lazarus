@@ -5,7 +5,8 @@ unit TestPascalParser;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser, FpErrorMessages,
+  Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser,
+  FpErrorMessages, FpDbgInfo,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -72,13 +73,19 @@ var
   procedure CreateExpr(t: string; ExpValid: Boolean);
   var
     s: String;
+    ctx: TFpDbgSimpleLocationContext;
+    sc: TFpDbgSymbolScope;
   begin
+    ctx := TFpDbgSimpleLocationContext.Create(nil, 0, 4, 0, 0);
+    sc := TFpDbgSymbolScope.Create(ctx);
     FreeAndNil(CurrentTestExprObj);
     CurrentTestExprText := t;
-    CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText, nil);
+    CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText, sc);
 DebugLn(CurrentTestExprObj.DebugDump);
     s := ErrorHandler.ErrorAsString(CurrentTestExprObj.Error);
     AssertEquals('Valid '+s+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
+    ctx.ReleaseReference;
+    sc.ReleaseReference;
   end;
 
 begin
@@ -281,6 +288,14 @@ begin
     TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
     TestExpr([1],   TFpPascalExpressionPartIdentifier, 'a', 0);
     TestExpr([2],   TFpPascalExpressionPartIdentifier, 'b', 0);
+
+    CreateExpr('f(-a, -b)', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 3);
+    TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([1, 0],   TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([2],   TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+    TestExpr([2, 0],   TFpPascalExpressionPartIdentifier, 'b', 0);
 
     CreateExpr('f(a,b, c)', True);
     TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 4);

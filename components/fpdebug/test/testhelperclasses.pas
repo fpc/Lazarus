@@ -827,7 +827,7 @@ end;
 
 constructor TTestDummyFileSource.Create;
 begin
-  inherited Create(nil, nil, False);
+  inherited Create(nil, nil, 0, False);
   FSections := TStringList.Create;
 end;
 
