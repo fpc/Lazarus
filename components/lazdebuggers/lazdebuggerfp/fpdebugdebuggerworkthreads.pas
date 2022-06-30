@@ -982,6 +982,12 @@ begin
       if not CallContext.IsValid then begin
         DebugLn(['Error in call ',CallContext.Message]);
         //ReturnMessage := CallContext.Message;
+        AnError := CallContext.LastError;
+        if not IsError(AnError) then
+          if CallContext.Message <> '' then
+            AnError := CreateError(fpErrAnyError, [CallContext.Message])
+          else
+            AnError := CreateError(fpErrAnyError, ['Error in function execution']);
         exit;
       end;
 

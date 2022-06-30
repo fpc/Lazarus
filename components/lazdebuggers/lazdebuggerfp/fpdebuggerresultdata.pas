@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FpWatchResultData, FpDbgInfo, FpdMemoryTools,
-  DbgIntfBaseTypes, FpDebugValueConvertors, FpDebugDebuggerBase,
-  LazDebuggerIntf;
+  FpErrorMessages, DbgIntfBaseTypes, FpDebugValueConvertors,
+  FpDebugDebuggerBase, LazDebuggerIntf;
 
 type
 
@@ -125,7 +125,10 @@ begin
         Result := inherited DoValueToResData(NewFpVal, AnResFld);
       end
       else begin
-        AnResFld.CreateError('Conversion failed');
+        if IsError(CurConv.LastErrror) then
+          AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
+        else
+          AnResFld.CreateError('Conversion failed');
         Result := True;
       end;
       AnResData := AnResData.AddField('', dfvUnknown, []);

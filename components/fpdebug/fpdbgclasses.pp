@@ -50,7 +50,8 @@ type
     deLoadLibrary, deUnloadLibrary,
     deFinishedStep, deBreakpoint, deHardCodedBreakpoint,
     deException,
-    deInternalContinue);
+    deInternalContinue,
+    deFailed);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
   { TDbgRegisterValue }
@@ -798,7 +799,8 @@ const
     'deLoadLibrary', 'deUnloadLibrary',
     'deFinishedStep', 'deBreakpoint', 'deHardCodedBreakpoint',
     'deException',
-    'deInternalContinue'
+    'deInternalContinue',
+    'deFailed'
   );
 
 function GetDbgProcessClass(ATargetInfo: TTargetDescriptor): TOSDbgClasses;

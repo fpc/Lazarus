@@ -206,7 +206,7 @@ function TFpDbgInfoCallContext.AddRecordParam(var ParamSymbol: TFpValue;
       Move(d, Data, sz);
     end
     else begin
-      FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+      FLastError := CreateError(fpErrAnyError, ['failed to read record data from memory']);
     end;
   end;
 
@@ -334,11 +334,11 @@ begin
   else begin
     // 32bit linux
     Result := False;
-    FLastError := CreateError(fpErrAnyError, ['not supported']);
+    FLastError := CreateError(fpErrAnyError, ['record as parm are not supported']);
   end;
   {$Else}
     Result := False;
-    FLastError := CreateError(fpErrAnyError, ['not supported']);
+    FLastError := CreateError(fpErrAnyError, ['record as param are not supported']);
   {$ENDIF}
 end;
 
@@ -351,8 +351,9 @@ begin
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
     Result := ParamSymbol <> nil;
-    if not Result then
+    if not Result then begin
       exit;
+    end;
     ParamSymbol.AsCardinal := FStringResultMem;
     Result := not IsError(ParamSymbol.LastError);
     FLastError := ParamSymbol.LastError;
@@ -387,13 +388,14 @@ function TFpDbgInfoCallContext.WriteStack: Boolean;
 var
   m: TDBGPtr;
 begin
+  Result := True;
   if Length(FPreparedStack) = 0 then
     exit;
 
   m := AllocStack(Length(FPreparedStack));
   Result := FDbgProcess.WriteData(m, Length(FPreparedStack), FPreparedStack[0]);
   if not Result then
-    FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+    FLastError := CreateError(fpErrAnyError, ['failed to write call info to stack memory']);
 end;
 
 function TFpDbgInfoCallContext.CreateParamSymbol(AParamIndex: Integer;
@@ -457,7 +459,11 @@ begin
   Result := True;
   ANil := 0;
   FStringResultMem := AllocStack(32); // TODO: only Win64 needs 32 alignemnt
-  FDbgProcess.WriteData(FStringResultMem, FDbgProcess.PointerSize, ANil);
+  Result := FDbgProcess.WriteData(FStringResultMem, FDbgProcess.PointerSize, ANil);
+  if not Result then begin
+    FLastError := CreateError(fpErrAnyError, ['Error writing result param to stack memory']);
+    exit;
+  end;
 
   FNeedStringResInFinalize := FDbgProcess.Mode = dm32;
   if not FNeedStringResInFinalize then
@@ -499,7 +505,7 @@ function TFpDbgInfoCallContext.GetStringResultAsPointer(out
 begin
   Result := FDbgProcess.ReadAddress(FStringResultMem, AStringAsPtr);
   if not Result then
-    FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+    FLastError := CreateError(fpErrAnyError, ['failed to read result from stack mem']);
 end;
 
 function TFpDbgInfoCallContext.GetStringResult(out AVal: TFpValue;
@@ -520,7 +526,7 @@ begin
     AVal := TFpValueConstString.Create(ResSymbol.AsString);
     Result := IsError(ResSymbol.LastError);
     if not Result then
-      FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+      FLastError := ResSymbol.LastError;
     ReleaseRefAndNil(ResSymbol);
     exit;
   end;
@@ -535,7 +541,7 @@ begin
       SetLength(s,r);
     end;
     if not Result then begin
-      FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+      FLastError := CreateError(fpErrAnyError, ['failed to read result from mem']);
       exit;
     end;
   end;
@@ -560,7 +566,7 @@ begin
     AVal := TFpValueConstString.Create(ResSymbol.AsString);
     Result := IsError(ResSymbol.LastError);
     if not Result then
-      FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+      FLastError := ResSymbol.LastError;
     ReleaseRefAndNil(ResSymbol);
     exit;
   end;
@@ -575,7 +581,7 @@ begin
       SetLength(s,r);
     end;
     if not Result then begin
-      FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+      FLastError := CreateError(fpErrAnyError, ['failed to read result from mem']);
       exit;
     end;
   end;

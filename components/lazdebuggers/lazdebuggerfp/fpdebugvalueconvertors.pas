@@ -20,6 +20,8 @@ type
   *)
 
   TFpDbgValueConverter = class(TRefCountedObject)
+  private
+    FLastErrror: TFpError;
   public
     class function GetName: String; virtual; abstract;
     class function GetSupportedKinds: TDbgSymbolKinds; virtual;
@@ -29,6 +31,8 @@ type
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope
                          ): TFpValue; virtual; abstract;
+    procedure SetError(AnError: TFpError);
+    property LastErrror: TFpError read FLastErrror;
   end;
   TFpDbgValueConverterClass = class of TFpDbgValueConverter;
 
@@ -131,6 +135,11 @@ function TFpDbgValueConverter.CreateCopy: TFpDbgValueConverter;
 begin
   Result := TFpDbgValueConverterClass(ClassType).Create;
   Result.Assign(Self);
+end;
+
+procedure TFpDbgValueConverter.SetError(AnError: TFpError);
+begin
+  FLastErrror := AnError;
 end;
 
 class function TFpDbgValueConverter.GetSupportedKinds: TDbgSymbolKinds;
@@ -305,14 +314,18 @@ begin
     ( (ASourceValue.MemberCount = 0) or
       (ASourceValue.MemberCount >= 2)
   ) )
-  then
+  then begin
+    SetError(CreateError(fpErrAnyError, ['Value not a variant']));
     exit;
+  end;
   if (ASourceValue.MemberCount >= 2) then begin
     m := ASourceValue.Member[0];
     r := SizeToFullBytes(m.DataSize) <> 2;
     m.ReleaseReference;
-    if r then
+    if r then begin
+      SetError(CreateError(fpErrAnyError, ['Value not a variant']));
       exit;
+    end;
   end;
 
   ProcVal := nil;
@@ -341,17 +354,23 @@ begin
     ProcLoc := ProcSym.Address
 *)
 
-    if not IsTargetAddr(ASourceValue.Address) then
+    if not IsTargetAddr(ASourceValue.Address) then begin
+      SetError(CreateError(fpErrAnyError, ['Value not in memory']));
       exit;
+    end;
 
     ProcAddr := GetProcAddrFromMgr(AnFpDebugger, AnExpressionScope);
-    if ProcAddr = 0 then
+    if ProcAddr = 0 then begin
+      SetError(CreateError(fpErrAnyError, ['SysVarToLStr not found']));
       exit;
+    end;
     ProcLoc := TargetLoc(ProcAddr);
 
     StringDecRefSymbol := AnFpDebugger.DbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
-    if (StringDecRefSymbol = nil) or (not IsTargetAddr(StringDecRefSymbol.Address)) then
+    if (StringDecRefSymbol = nil) or (not IsTargetAddr(StringDecRefSymbol.Address)) then begin
+      SetError(CreateError(fpErrAnyError, ['STRING_DEC_REF not found']));
       exit;
+    end;
 
     StringAddr := 0;
     CallContext := AnFpDebugger.DbgController.Call(ProcLoc, AnExpressionScope.LocationContext,
@@ -362,16 +381,22 @@ begin
       CallContext.AddOrdinalParam(nil, ASourceValue.DataAddress.Address);
       AnFpDebugger.DbgController.ProcessLoop;
 
-      if not CallContext.IsValid then
+      if not CallContext.IsValid then begin
+        if (IsError(CallContext.LastError)) then
+          SetError(CallContext.LastError)
+        else
+        if (CallContext.Message <> '') then
+          SetError(CreateError(fpErrAnyError, [CallContext.Message]));
         exit;
+      end;
 
       if not CallContext.GetStringResultAsPointer(StringAddr) then begin
-        //AnError := CallContext.LastError;
+        SetError(CallContext.LastError);
         exit;
       end;
 
       if not CallContext.GetStringResult(NewResult) then begin
-        // error
+        SetError(CallContext.LastError);
         exit;
       end;
 
