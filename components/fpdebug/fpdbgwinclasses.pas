@@ -319,6 +319,7 @@ var
   _IsWow64Process: function (hProcess:HANDLE; WoW64Process: PBOOL):BOOL; stdcall = nil;
   _Wow64GetThreadContext: function (hThread: THandle; var   lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
   _Wow64SetThreadContext: function (hThread: THandle; const lpContext: WOW64_CONTEXT): BOOL; stdcall = nil;
+  _Wow64SuspendThread: function (hThread:HANDLE):DWORD; stdcall = nil;
   _DebugBreakProcess: function(Process:HANDLE): WINBOOL; stdcall = nil;
   _GetThreadDescription: function(hThread: THandle; ppszThreadDescription: PPWSTR): HResult; stdcall = nil;
 
@@ -343,6 +344,7 @@ begin
   Pointer(_IsWow64Process) := GetProcAddress(hMod, 'IsWow64Process');
   Pointer(_Wow64GetThreadContext) := GetProcAddress(hMod, 'Wow64GetThreadContext');
   Pointer(_Wow64SetThreadContext) := GetProcAddress(hMod, 'Wow64SetThreadContext');
+  Pointer(_Wow64SuspendThread) := GetProcAddress(hMod, 'Wow64SuspendThread');
   {$endif}
 
   DebugLn(DBG_WARNINGS and (DebugBreakAddr = nil), ['WARNING: Failed to get DebugBreakAddr']);
@@ -357,6 +359,7 @@ begin
   DebugLn(DBG_WARNINGS and (_IsWow64Process = nil), ['WARNING: Failed to get IsWow64Process']);
   DebugLn(DBG_WARNINGS and (_Wow64GetThreadContext = nil), ['WARNING: Failed to get Wow64GetThreadContext']);
   DebugLn(DBG_WARNINGS and (_Wow64SetThreadContext = nil), ['WARNING: Failed to get Wow64SetThreadContext']);
+  DebugLn(DBG_WARNINGS and (_Wow64SuspendThread = nil), ['WARNING: Failed to get _Wow64SuspendThread']);
   {$endif}
 end;
 
@@ -1650,6 +1653,11 @@ var
 begin
   if FIsSuspended then
     exit;
+  {$ifdef cpux86_64}
+  if (Process.Mode = dm32) and (_Wow64SuspendThread <> nil) then
+    r := _Wow64SuspendThread(Handle)
+  else
+  {$endif}
   r := SuspendThread(Handle);
   FIsSuspended := r <> DWORD(-1);
   debugln(DBG_WARNINGS and (r = DWORD(-1)), 'Failed to suspend Thread %d (handle: %d). Error: %s', [Id, Handle, GetLastErrorText]);
