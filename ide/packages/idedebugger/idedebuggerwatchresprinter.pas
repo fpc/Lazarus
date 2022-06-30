@@ -213,7 +213,7 @@ begin
       end;
     end;
 
-    if (ADispFormat = wdfStructure) then begin
+    if (ADispFormat = wdfStructure) and (AResValue.StructType in [dstClass, dstObject]) then begin
       if vis <> VisibilityNames[FldInfo.FieldVisibility] then begin
         vis := VisibilityNames[FldInfo.FieldVisibility];
         if (Length(Result) > 0) then
