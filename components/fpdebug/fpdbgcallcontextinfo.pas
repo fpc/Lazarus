@@ -93,6 +93,9 @@ type
 
 implementation
 
+var
+  FPDBG_FUNCCALL: PLazLoggerLogGroup;
+
 { TFpValueCallParamStringByRef }
 
 function TFpValueCallParamStringByRef.GetDwarfDataAddress(out
@@ -377,6 +380,7 @@ begin
 
   if FOrigStackPtr <> 0 then
     FDbgThread.SetStackPointerRegisterValue(FOrigStackPtr);
+  debugln(FPDBG_FUNCCALL, ['CallRoutine END (CTX DESTROY)']);
 end;
 
 function TFpDbgInfoCallContext.WriteStack: Boolean;
@@ -578,5 +582,7 @@ begin
   AVal := TFpValueConstString.Create(s);
 end;
 
+initialization
+  FPDBG_FUNCCALL := DebugLogger.FindOrRegisterLogGroup('FPDBG_FUNCCALL' {$IFDEF FPDBG_FUNCCALL} , True {$ENDIF} );
 end.
 

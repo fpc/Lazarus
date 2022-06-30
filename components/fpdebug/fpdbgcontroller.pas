@@ -421,7 +421,7 @@ uses
   FpImgReaderBase, FpDbgCommon;
 
 var
-  DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS, FPDBG_FUNCCALL: PLazLoggerLogGroup;
 
 { TDbgControllerCallRoutineCmd }
 
@@ -451,6 +451,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.Init;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine INIT - Cmd.Init - ProcessLoop starts']);
   inherited Init;
 
   FCallContext.WriteStack;
@@ -569,6 +570,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.RestoreOriginalCode;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- << Restore orig Code']);
   if not FProcess.WriteInstructionCode(FOriginalInstructionPointer, Length(FOriginalCode), FOriginalCode[0]) then
     raise Exception.Create('Failed to restore the original code at the instruction-pointer');
 end;
@@ -582,11 +584,13 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.StoreInstructionPointer;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- >> Store IP']);
   FOriginalInstructionPointer := FController.CurrentThread.GetInstructionPointerRegisterValue;
 end;
 
 procedure TDbgControllerCallRoutineCmd.RestoreInstructionPointer;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- << Restore IP']);
   {$ifdef cpui386}
   FController.CurrentThread.SetRegisterValue('eip', FOriginalInstructionPointer);
   {$else}
@@ -604,6 +608,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.RestoreRegisters;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- << RestoreRegisters']);
   FController.CurrentThread.RestoreRegisters;
 end;
 
@@ -614,6 +619,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.StoreRegisters;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- >> StoreRegisters']);
   FController.CurrentThread.StoreRegisters;
 end;
 
@@ -1937,6 +1943,7 @@ function TDbgController.Call(const FunctionAddress: TFpDbgMemLocation;
 var
   Context: TFpDbgInfoCallContext;
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine BEGIN']);
   Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter, FCurrentProcess, FCurrentThread);
   Context.AddReference;
   InitializeCommand(TDbgControllerCallRoutineCmd.Create(self, FunctionAddress, Context));
@@ -1947,6 +1954,7 @@ initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
+  FPDBG_FUNCCALL := DebugLogger.FindOrRegisterLogGroup('FPDBG_FUNCCALL' {$IFDEF FPDBG_FUNCCALL} , True {$ENDIF} );
 
 end.
 

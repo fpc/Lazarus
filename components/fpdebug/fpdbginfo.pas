@@ -632,6 +632,9 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
 
 implementation
 
+var
+  FPDBG_FUNCCALL: PLazLoggerLogGroup;
+
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
@@ -751,6 +754,7 @@ end;
 
 procedure TFpDbgAbstractCallContext.SetError(const Message: string);
 begin
+  debugln(FPDBG_FUNCCALL, ['CallRoutine -- !!! Ctx.SetError: ', Message]);
   FIsValid := False;
   FMessage := Message;
 end;
@@ -1859,5 +1863,7 @@ begin
   FHasInfo := True;
 end;
 
+initialization
+  FPDBG_FUNCCALL := DebugLogger.FindOrRegisterLogGroup('FPDBG_FUNCCALL' {$IFDEF FPDBG_FUNCCALL} , True {$ENDIF} );
 end.
 
