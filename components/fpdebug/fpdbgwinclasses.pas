@@ -1772,21 +1772,23 @@ begin
     exit;
 
   {$ifdef cpui386}
+    assert((AValue and QWord($ffffffff00000000) = 0) or (AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000)), 'TDbgWinThread.SetRegisterValue: ((AValue and QWord($ffffffff00000000) = 0) or ((AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000)');
     case AName of
-      'eip': FCurrentContext^.def.Eip := AValue;
-      'eax': FCurrentContext^.def.Eax := AValue;
-      'ecx': FCurrentContext^.def.Ecx := AValue;
-      'edx': FCurrentContext^.def.Edx := AValue;
+      'eip': FCurrentContext^.def.Eip := DWORD(AValue);
+      'eax': FCurrentContext^.def.Eax := DWORD(AValue);
+      'ecx': FCurrentContext^.def.Ecx := DWORD(AValue);
+      'edx': FCurrentContext^.def.Edx := DWORD(AValue);
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;
   {$else}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
+    assert((AValue and QWord($ffffffff00000000) = 0) or (AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000)), 'TDbgWinThread.SetRegisterValue: ((AValue and QWord($ffffffff00000000) = 0) or ((AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000)');
     case AName of
-      'eip': FCurrentContext^.WOW.Eip := AValue;
-      'eax': FCurrentContext^.WOW.Eax := AValue;
-      'ecx': FCurrentContext^.WOW.Ecx := AValue;
-      'edx': FCurrentContext^.WOW.Edx := AValue;
+      'eip': FCurrentContext^.WOW.Eip := DWORD(AValue);
+      'eax': FCurrentContext^.WOW.Eax := DWORD(AValue);
+      'ecx': FCurrentContext^.WOW.Ecx := DWORD(AValue);
+      'edx': FCurrentContext^.WOW.Edx := DWORD(AValue);
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;

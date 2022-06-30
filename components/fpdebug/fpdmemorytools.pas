@@ -1692,6 +1692,14 @@ begin
 
         move(ASource^, TmpVal, Min(SizeOf(TmpVal), Int64(ASourceSize))); // Little Endian only
 
+        if (DestWriteSize < 8) and
+           (TmpVal and (QWord($ffffffffffffffff) << (DestWriteSize*8)) <> 0) and
+           ( (AReadDataType <> rdtSignedInt) or
+             (TmpVal and (QWord($ffffffffffffffff) << (DestWriteSize*8)) <> (QWord($ffffffffffffffff) << (DestWriteSize*8)) )
+           )
+        then
+          exit; // failed
+
         if not FMemReader.WriteRegister(Cardinal(ADestLocation.Address), TmpVal, AContext) then
           exit; // failed
 

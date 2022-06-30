@@ -743,9 +743,12 @@ procedure TDbgLinuxThread.SetRegisterValue(AName: string; AValue: QWord);
 begin
   if Process.Mode=dm32 then
   begin
+    assert((AValue and QWord($ffffffff00000000) = 0) or (AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000)), 'TDbgLinuxThread.SetRegisterValue: (AValue and QWord($ffffffff00000000) = 0) or (AValue and QWord($ffffffff00000000) = QWord($ffffffff00000000))');
     case AName of
-      'eip': FUserRegs.regs32[eip] := AValue;
-      'eax': FUserRegs.regs32[eax] := AValue;
+      'eip': FUserRegs.regs32[eip] := cuint32(AValue);
+      'eax': FUserRegs.regs32[eax] := cuint32(AValue);
+      'ecx': FUserRegs.regs32[ecx] := cuint32(AValue);
+      'edx': FUserRegs.regs32[edx] := cuint32(AValue);
     else
       raise Exception.CreateFmt('Setting the [%s] register is not supported', [AName]);
     end;
