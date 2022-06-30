@@ -148,6 +148,10 @@ msgstr "履歴の底に添える"
 msgid "Insert result at top of history"
 msgstr "履歴の冒頭に挿入する"
 
+#: debuggerstrconst.dsrevalusefpdebugconverter
+msgid "Use FpDebug Converter"
+msgstr ""
+
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
 msgstr "\"新しい値\"は空です"

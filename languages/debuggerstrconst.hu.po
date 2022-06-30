@@ -158,6 +158,10 @@ msgstr "Eredmények az előzmények aljára"
 msgid "Insert result at top of history"
 msgstr "Eredmények az előzmények tetejére"
 
+#: debuggerstrconst.dsrevalusefpdebugconverter
+msgid "Use FpDebug Converter"
+msgstr ""
+
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
 msgstr "Az \"Új érték\" üres."

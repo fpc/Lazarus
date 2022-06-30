@@ -159,6 +159,10 @@ msgstr "Додавати результати внизу історії"
 msgid "Insert result at top of history"
 msgstr "Вставляти результат вгорі історії"
 
+#: debuggerstrconst.dsrevalusefpdebugconverter
+msgid "Use FpDebug Converter"
+msgstr ""
+
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
 msgstr "\"Нове значення\" порожнє."

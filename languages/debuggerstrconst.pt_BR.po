@@ -158,6 +158,10 @@ msgstr "Adicionar resultados ao final do histórico"
 msgid "Insert result at top of history"
 msgstr "Inserir resultados no ínicio do histórico"
 
+#: debuggerstrconst.dsrevalusefpdebugconverter
+msgid "Use FpDebug Converter"
+msgstr ""
+
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
 msgstr "\"Novo valor\" está vazio."
