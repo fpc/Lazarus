@@ -43,10 +43,11 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazDebuggerIntf,
+  DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
-  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
-  Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;
+  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, DebuggerDlg,
+  DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -57,6 +58,7 @@ type
 
   TEvaluateDlg = class(TDebuggerDlg)
     chkTypeCast: TCheckBox;
+    chkFpDbgConv: TCheckBox;
     cmbExpression: TComboBox;
     cmbNewValue: TComboBox;
     Label1: TLabel;
@@ -98,14 +100,18 @@ type
   private
     fSkipKeySelect: Boolean;
     fHistDirection:TEvalHistDirection;
-    procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
-      ResultText: String; ResultDBGType: TDBGType);
+    FWatchPrinter: TWatchResultPrinter;
+    FInspectWatches: TCurrentWatches;
+    FCurrentWatchValue: TCurrentWatchValue;
+
+    procedure DoWatchValidityChanged(Sender: TObject);
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
     procedure Evaluate;
     procedure Modify;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Execute(const AExpression: String);
     property FindText: string read GetFindText write SetFindText;
     procedure UpdateData;
@@ -128,6 +134,13 @@ constructor TEvaluateDlg.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
 
+  ThreadsMonitor := DebugBoss.Threads;
+  CallStackMonitor := DebugBoss.CallStack;
+  WatchesMonitor := DebugBoss.Watches;
+
+  FWatchPrinter := TWatchResultPrinter.Create;
+  FInspectWatches := TCurrentWatches.Create(WatchesMonitor);
+
   fSkipKeySelect := False;
   Caption := lisKMEvaluateModify;
   cmbExpression.Items.Assign(InputHistories.HistoryLists.
@@ -143,6 +156,7 @@ begin
   Label2.Caption := lisDBGEMResult;
   lblNewValue.Caption := lisDBGEMNewValue;
   chkTypeCast.Caption := drsUseInstanceClassType;
+  chkFpDbgConv.Caption := dsrEvalUseFpDebugConverter;
   fHistDirection:=EHDNone;
 
   ToolBar1.Images := IDEImages.Images_16;
@@ -155,6 +169,15 @@ begin
   mnuHistory.Items[0].Caption:=drsEvalHistoryNone;
   mnuHistory.Items[1].Caption:=dsrEvalHistoryUp;
   mnuHistory.Items[2].Caption:=dsrEvalHistoryDown;
+end;
+
+destructor TEvaluateDlg.Destroy;
+begin
+  ReleaseRefAndNil(FCurrentWatchValue);
+  FreeAndNil(FWatchPrinter);
+
+  inherited Destroy;
+  FreeAndNil(FInspectWatches);
 end;
 
 procedure TEvaluateDlg.Execute(const AExpression: String);
@@ -170,41 +193,62 @@ end;
 
 procedure TEvaluateDlg.UpdateData;
 begin
+  ReleaseRefAndNil(FCurrentWatchValue);
+  FInspectWatches.Clear;
   Evaluate;
 end;
 
-procedure TEvaluateDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;
-  ResultText: String; ResultDBGType: TDBGType);
+procedure TEvaluateDlg.DoWatchValidityChanged(Sender: TObject);
 var
-  S: TCaption;
+  expr: TCaption;
+  ResultText: String;
 begin
-  S := cmbExpression.Text;
+  if (FCurrentWatchValue = nil ) then begin
+    txtResult.Clear;
+    exit;
+  end;
 
-  if ASuccess then begin
-    if cmbExpression.Items.IndexOf(S) = -1
-    then cmbExpression.Items.Insert(0, S);
-    tbModify.Enabled := True;
+  if DebugBoss.State <> dsPause then
+    exit;
+  if not (FCurrentWatchValue.Validity in [ddsValid, ddsError, ddsInvalid]) then
+    exit;
 
-    if (ResultDBGType <> nil) and (ResultDBGType.Attributes * [saArray, saDynArray] <> []) and (ResultDBGType.Len >= 0)
-    then ResultText := Format(drsLen, [ResultDBGType.Len]) + LineEnding + ResultText;
+  expr := cmbExpression.Text;
+  ResultText := '';
 
+  if cmbExpression.Items.IndexOf(expr) = -1 then
+    cmbExpression.Items.Insert(0, expr);
+
+  if FCurrentWatchValue.Validity = ddsValid then begin
+    ResultText := FWatchPrinter.PrintWatchValue(FCurrentWatchValue.ResultData, wdfStructure);
+    if (FCurrentWatchValue.ResultData <> nil) and
+       (FCurrentWatchValue.ResultData.ValueKind = rdkArray) and (FCurrentWatchValue.ResultData.ArrayLength > 0)
+    then
+      ResultText := Format(drsLen, [FCurrentWatchValue.ResultData.ArrayLength]) + ResultText
+    else
+    if (FCurrentWatchValue.TypeInfo <> nil) and
+       (FCurrentWatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+       (FCurrentWatchValue.TypeInfo.Len >= 0)
+    then
+      ResultText := Format(drsLen, [FCurrentWatchValue.TypeInfo.Len]) + ResultText;
   end
   else
-    tbModify.Enabled := False;
+    ResultText := FCurrentWatchValue.Value;
 
-  FreeAndNil(ResultDBGType);
+  tbModify.Enabled := FCurrentWatchValue.Validity = ddsValid;
+
   if fHistDirection<>EHDNone then
     begin
     if txtResult.Lines.Text='' then
-      txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ ResultText + LineEnding
+      txtResult.Lines.Text := RESULTEVAL+ expr+':'+LineEnding+ ResultText + LineEnding
     else
       if fHistDirection=EHDUp then
-        txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ ResultText + LineEnding
+        txtResult.Lines.Text := RESULTEVAL+ expr+':'+LineEnding+ ResultText + LineEnding
            + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
       else
         begin
         txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
-           + RESULTEVAL+ S+':'+LineEnding+ ResultText+LineEnding;
+           + RESULTEVAL+ expr+':'+LineEnding+ ResultText+LineEnding;
         txtResult.SelStart:=length(txtResult.Lines.Text);
         end;
     end
@@ -214,18 +258,62 @@ end;
 
 procedure TEvaluateDlg.Evaluate;
 var
-  S: String;
+  expr: String;
   Opts: TWatcheEvaluateFlags;
+  tid, idx: Integer;
+  stack: TIdeCallStack;
+  AWatch: TCurrentWatch;
 begin
-  S := cmbExpression.Text;
-  if S = '' then Exit;
-  InputHistories.HistoryLists.Add(ClassName, S,rltCaseSensitive);
-  Opts := [];
+  if DebugBoss.State <> dsPause then
+    exit;
+
+  expr := trim(cmbExpression.Text);
+  if expr = '' then Exit;
+  InputHistories.HistoryLists.Add(ClassName, expr,rltCaseSensitive);
+  Opts := [defExtraDepth];
   if chkTypeCast.Checked then
-    Opts := [defClassAutoCast];
-  if not DebugBoss.Evaluate(S, @EvaluateCallback, Opts)
-  then
-    EvaluateCallback(nil, false, '', nil);
+    Opts := Opts + [defClassAutoCast];
+  if not chkFpDbgConv.Checked then
+    Opts := Opts + [defSkipValConv];
+
+  tid    := ThreadsMonitor.CurrentThreads.CurrentThreadId;
+  stack  := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
+  idx := 0;
+  if stack <> nil then
+    idx := stack.CurrentIndex;
+
+  if (FCurrentWatchValue <> nil) and
+     (FCurrentWatchValue.Validity in [ddsEvaluating, ddsRequested]) and
+     (FCurrentWatchValue.Expression = expr) and
+     (FCurrentWatchValue.EvaluateFlags = Opts) and
+     (FCurrentWatchValue.ThreadId = tid) and
+     (FCurrentWatchValue.StackFrame = idx)
+  then begin
+    FCurrentWatchValue.Value;
+    DoWatchValidityChanged(FCurrentWatchValue);
+    exit;
+  end;
+
+  ReleaseRefAndNil(FCurrentWatchValue);
+
+  FInspectWatches.Clear;
+  FInspectWatches.BeginUpdate;
+  AWatch := FInspectWatches.Find(expr);
+  if AWatch = nil then begin
+    FInspectWatches.Clear;
+    AWatch := FInspectWatches.Add(expr);
+  end;
+  AWatch.EvaluateFlags := Opts;
+  AWatch.Enabled := True;
+  FInspectWatches.EndUpdate;
+
+  FCurrentWatchValue := AWatch.Values[tid, idx] as TCurrentWatchValue;
+  if FCurrentWatchValue <> nil then begin
+    FCurrentWatchValue.OnValidityChanged := @DoWatchValidityChanged;
+    FCurrentWatchValue.AddReference;
+    FCurrentWatchValue.Value;
+    DoWatchValidityChanged(FCurrentWatchValue);
+  end;
 end;
 
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
@@ -350,7 +438,7 @@ begin
   if (Key = VK_ESCAPE) and not Docked then
     Close
   else
-    inherited;;
+    inherited;
 end;
 
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);

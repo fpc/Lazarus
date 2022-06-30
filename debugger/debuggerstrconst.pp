@@ -73,6 +73,7 @@ resourcestring
   drsEvalHistoryNone      = 'No history kept';
   dsrEvalHistoryUp        = 'Insert result at top of history';
   dsrEvalHistoryDown      = 'Append result at bottom of history';
+  dsrEvalUseFpDebugConverter = 'Use FpDebug Converter';
 
   drsUseInstanceClassType = 'Use Instance class type';
   drsLen = 'Len=%d: ';
