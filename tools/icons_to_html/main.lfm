@@ -13,7 +13,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '2.2.2.0'
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = sbtnLastDirs
@@ -37,7 +37,6 @@ object MainForm: TMainForm
     MaxLength = 0
     TabOrder = 0
     OnChange = DirectoryEditChange
-    OnEditingDone = DirectoryEditEditingDone
   end
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
@@ -491,6 +490,7 @@ object MainForm: TMainForm
     MouseTextActions = <>
     MouseSelActions = <>
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    RightEdge = -1
     SelectedColor.BackPriority = 50
     SelectedColor.ForePriority = 50
     SelectedColor.FramePriority = 50
@@ -554,7 +554,7 @@ object MainForm: TMainForm
     Height = 19
     Hint = 'Creates an html page with dark background'
     Top = 483
-    Width = 76
+    Width = 78
     BorderSpacing.Left = 15
     Caption = 'Dark Mode'
     OnChange = cbDarkModeChange

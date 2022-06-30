@@ -32,7 +32,6 @@ type
     procedure bbtnShowClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
     procedure DirectoryEditChange(Sender: TObject);
-    procedure DirectoryEditEditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -45,6 +44,7 @@ type
     LastDirsMax: Integer;
     procedure InfoMsg(const AMsg: String);
     procedure ErrorMsg(const AMsg: String);
+    procedure UpdateLastDirs(D: String);
   public
 
   end;
@@ -101,7 +101,7 @@ begin
   if (popLastDirs.Items[0].Caption = '') and (DirectoryExists(CleanAndExpandDirectory('../../images/general_purpose/'))) then
   begin
     popLastDirs.Items[0].Caption := CleanAndExpandDirectory('../../images/general_purpose/');
-    popLastDirs.Items[0].Visible := popLastDirs.Items[0].Caption > '';
+    popLastDirs.Items[0].Visible := True;
   end;
 
   if DirectoryExists(popLastDirs.Items[0].Caption) then
@@ -149,8 +149,9 @@ var
   PixSizeList: TStringList;
   InfoTxtList: TStringList;
   LineStr: String;
-  SizeStr: String;
-  TempStr: String;
+  IcoFile: String;
+  IcoSize: String;
+  IcoName: String;
   DPos: Integer;
   IntDummy: Integer;
   i: Integer;
@@ -158,12 +159,10 @@ var
   isl: Integer;
   StartIdx: Integer = 0;
   IconGroups: Integer = 0;
-  BodyFontColor: String = ' color: #000000;';
-  BodyBackColor: String = ' background-color: #ffffff;';
-  InfoFontColor: String = ' color: #000000;';
-  InfoBackColor: String = ' background-color: #ffffe0;';
-  HoverFontColor: String = ' color: #ffffff;';
-  HoverBackColor: String = ' background-color: #303030;';
+  ColorSet1: String = 'color: #000000; background-color: #ffffe0;}';
+  ColorSet2: String = 'color: #000000; background-color: #fbfba8;}';
+  BodyColors: String = 'color: #000000; background-color: #ffffff;}';
+  HoverColors: String = 'color: #ffffff; background-color: #303030;}';
 begin
   try
     AllFileList := TStringList.Create;
@@ -185,20 +184,23 @@ begin
     AllFileList.Sort;
     for i := 0 to AllFileList.Count - 1 do
     begin
-      TempStr := ChangeFileExt(ExtractFileName(AllFileList.Strings[i]), '');
-      DPos := LastDelimiter('_', TempStr);
-      if DPos > 0 then
-      begin
-        SizeStr := RightStr(TempStr, Utf8Length(TempStr) - DPos);
-        if TryStrToInt(SizeStr, IntDummy) then
-        begin
-          IcoFileList.Add(TempStr);
-          IcoNameList.Add(Utf8Copy(TempStr, 1, DPos - 1));
-          IcoSizeList.Add(SizeStr);
-          if PixSizeList.IndexOf(SizeStr) = -1 then
-            PixSizeList.Add(SizeStr);
-        end;
-      end;
+      IcoFile := ChangeFileExt(ExtractFileName(AllFileList.Strings[i]), '');
+      DPos := LastDelimiter('_', IcoFile);
+      IcoSize := RightStr(IcoFile, Utf8Length(IcoFile) - DPos);
+
+      if not TryStrToInt(IcoSize, IntDummy) then
+        IcoSize := '';
+
+      if IcoSize = '' then
+        IcoName := IcoFile
+      else
+        IcoName := Utf8Copy(IcoFile, 1, DPos - 1);
+
+      IcoFileList.Add(IcoFile);
+      IcoNameList.Add(IcoName);
+      IcoSizeList.Add(IcoSize);
+      if PixSizeList.IndexOf(IcoSize) = -1 then
+        PixSizeList.Add(IcoSize);
     end;
     PixSizeList.Sort;
 
@@ -210,12 +212,10 @@ begin
 
     if cbDarkMode.Checked then
     begin
-      BodyFontColor := ' color: #ffffff;';
-      BodyBackColor := ' background-color: #303030;';
-      InfoFontColor := ' color: #ffffff;';
-      InfoBackColor := ' background-color: #000000;';
-      HoverFontColor := ' color: #000000;';
-      HoverBackColor := ' background-color: #ffffff;';
+      ColorSet1 := 'color: #ffffff; background-color: #5c0000;}';
+      ColorSet2 := 'color: #ffffff; background-color: #000057;}';
+      BodyColors := 'color: #ffffff; background-color: #303030;}';
+      HoverColors := 'color: #000000; background-color: #ffffff;}';
     end;
 
     SynEdit.Lines.Clear;
@@ -225,21 +225,29 @@ begin
     SynEdit.Lines.Add('<title>Icons</title>');
     SynEdit.Lines.Add('<meta charset="UTF-8">');
     SynEdit.Lines.Add('<style media="all">');
-    SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px;' + BodyBackColor + BodyFontColor + '}');
+    SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px; ' + BodyColors);
     SynEdit.Lines.Add('  table {border-collapse: collapse; margin-left: auto; margin-right: auto;}');
-    SynEdit.Lines.Add('  tr:hover {' + HoverBackColor + HoverFontColor + '}');
-    SynEdit.Lines.Add('  td {border-bottom: 1px solid #ddd; padding: 15px; text-align: left;}');
-    SynEdit.Lines.Add('  td.topleft {border-bottom: 5px solid #ddd; padding: 15px; text-align: left;' + InfoBackColor + InfoFontColor + '}');
-    SynEdit.Lines.Add('  td.topcenter {border-bottom: 5px solid #ddd; padding: 15px; text-align: center;' + InfoBackColor + InfoFontColor + '}');
-    SynEdit.Lines.Add('  .info_container {margin: 0 auto; width: 500px; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 15px; margin-top: 30px;' + InfoBackColor + InfoFontColor + '}');
+    SynEdit.Lines.Add('  tr {border-bottom: 1px solid #ddd;}');
+    SynEdit.Lines.Add('  tr:hover {' + HoverColors);
+    SynEdit.Lines.Add('  td {padding: 10px 15px 10px 15px;}');
+    SynEdit.Lines.Add('  .colorset1 {' + ColorSet1);
+    SynEdit.Lines.Add('  .colorset2 {' + ColorSet2);
+    SynEdit.Lines.Add('  .text_center {text-align: center;}');
+    SynEdit.Lines.Add('  .right_border {border-right: 1px solid #ddd;}');
+    SynEdit.Lines.Add('  .no_border {border: 0;}');
+    SynEdit.Lines.Add('  .infobox {margin: 0 auto; width: 500px; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 10px 15px 10px 15px; margin-top: 30px;}');
     SynEdit.Lines.Add('</style>');
     SynEdit.Lines.Add('</head>');
     SynEdit.Lines.Add('<body>');
     SynEdit.Lines.Add('<table>');
+    SynEdit.Lines.Add('  <tr class="no_border">');
+    SynEdit.Lines.Add('    <td class="colorset1 right_border"></td>');
+    SynEdit.Lines.Add('    <td class="colorset2 text_center" colspan="' + IntToStr(PixSizeList.Count) + '">Appendix</td>');
+    SynEdit.Lines.Add('  </tr>');
     SynEdit.Lines.Add('  <tr>');
-    SynEdit.Lines.Add('    <td class="topleft">Name</td>');
+    SynEdit.Lines.Add('    <td class="colorset1 right_border">Name</td>');
     for i := 0 to PixSizeList.Count - 1 do
-      SynEdit.Lines.Add('    <td class="topcenter">' + PixSizeList[i] + '</td>');
+      SynEdit.Lines.Add('    <td class="colorset2">' + PixSizeList[i] + '</td>');
     SynEdit.Lines.Add('  </tr>');
 
     for i := 0 to IcoFileList.Count - 1 do
@@ -247,7 +255,7 @@ begin
       if (i = IcoFileList.Count - 1) or (IcoNameList[i + 1] <> IcoNameList[i]) then
       begin
         SynEdit.Lines.Add('  <tr>');
-        SynEdit.Lines.Add('    <td>' + IcoNameList[i] + '</td>');
+        SynEdit.Lines.Add('    <td class="right_border">' + IcoNameList[i] + '</td>');
         for ips := 0 to PixSizeList.Count - 1 do
         begin
           LineStr := '';
@@ -267,8 +275,8 @@ begin
 
     SynEdit.Lines.Add('</table>');
 
-    SynEdit.Lines.Add('<div class="info_container">');
-    SynEdit.Lines.Add('This folder contains ' + IntToStr(IcoFileList.Count) + ' icons in ' + IntToStr(IconGroups) + ' icon groups with ' + IntToStr(PixSizeList.Count) + LineEnding + ' icon sizes.');
+    SynEdit.Lines.Add('<div class="infobox colorset2">');
+    SynEdit.Lines.Add('This folder contains ' + IntToStr(IcoFileList.Count) + ' icons in ' + IntToStr(IconGroups) + ' icon groups with ' + IntToStr(PixSizeList.Count) + ' icon sizes.');
     if FileExists(ImgDir + 'lazarus_general_purpose_images.txt') then
     begin
       try
@@ -289,6 +297,7 @@ begin
     bbtnSave.Enabled := True;
     bbtnSave.SetFocus;
     bbtnShow.Enabled := False;
+    UpdateLastDirs(ImgDir);
   finally
     AllFileList.Free;
     IcoFileList.Free;
@@ -326,38 +335,27 @@ begin
   Close;
 end;
 
-procedure TMainForm.DirectoryEditEditingDone(Sender: TObject);
-var
-  i: Integer;
+procedure TMainForm.DirectoryEditChange(Sender: TObject);
 begin
   if DirectoryExists(DirectoryEdit.Directory) then
   begin
     ImgDir := CleanAndExpandDirectory(DirectoryEdit.Directory);
     bbtnCreateHTML.Enabled := True;
-
-    for i := 0 to LastDirsMax do
-      if ImgDir = popLastDirs.Items[i].Caption then
-      begin
-        popLastDirs.Items[i].MenuIndex := 0;
-        Exit;
-      end;
-
-    popLastDirs.Items[LastDirsMax].Caption := ImgDir;
-    popLastDirs.Items[LastDirsMax].MenuIndex := 0;
-  end;
-end;
-
-procedure TMainForm.DirectoryEditChange(Sender: TObject);
-begin
-  bbtnCreateHTML.Enabled := DirectoryExists(DirectoryEdit.Directory);
+  end
+  else
+    bbtnCreateHTML.Enabled := False;
 end;
 
 procedure TMainForm.LastDirClick(Sender: TObject);
 begin
   if DirectoryExists(TMenuItem(Sender).Caption) then
   begin
+    ImgDir := TMenuItem(Sender).Caption;
+    DirectoryEdit.Directory := ImgDir;
     TMenuItem(Sender).MenuIndex := 0;
-    DirectoryEdit.Directory := TMenuItem(Sender).Caption;
+    bbtnSave.Enabled := False;
+    bbtnShow.Enabled := False;
+    SynEdit.Clear;
   end;
 end;
 
@@ -367,6 +365,23 @@ var
 begin
   pt := sbtnLastDirs.ClientToScreen(Point(sbtnLastDirs.Width, sbtnLastDirs.Height));
   popLastDirs.PopUp(pt.X, pt.Y);
+end;
+
+procedure TMainForm.UpdateLastDirs(D: String);
+var
+  i: Integer;
+begin
+  for i := 0 to LastDirsMax do
+    if D = popLastDirs.Items[i].Caption then
+    begin
+      popLastDirs.Items[i].MenuIndex := 0;
+      Exit;
+    end;
+
+  popLastDirs.Items[LastDirsMax].Caption := D;
+  popLastDirs.Items[LastDirsMax].Visible := True;
+  popLastDirs.Items[LastDirsMax].MenuIndex := 0;
+  sbtnLastDirs.Enabled := True;
 end;
 
 procedure TMainForm.InfoMsg(const AMsg: String);
