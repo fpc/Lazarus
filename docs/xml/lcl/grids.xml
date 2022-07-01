@@ -294,7 +294,7 @@
       </element>
       <element name="TGridOption.goThumbTracking">
         <short>
-          Enables tracking of the thumb position in grid scrollbars.
+          Enables tracking of the thumb position in grid scroll bars.
         </short>
       </element>
       <element name="TGridOption.goColSpanning">
@@ -860,7 +860,7 @@
       </element>
       <element name="TGridFlagsOption.gfUpdatingScrollbar">
         <short>
-          Indicates the visibility of scrollbar(s) has been changed for a grid.
+          Indicates the visibility of scroll bar(s) has been changed for a grid.
         </short>
       </element>
 
@@ -5230,13 +5230,13 @@
       </element>
 
       <element name="TGridDataCache.ClientWidth">
-        <short>Width of the grid control minus the width for the vertical scrollbar.</short>
+        <short>Width of the grid control minus the width for the vertical scroll bar.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TGridDataCache.ClientHeight">
-        <short>Height of the grid control minus the width of the horizontal scrollbar.</short>
+        <short>Height of the grid control minus the width of the horizontal scroll bar.</short>
         <descr/>
         <seealso/>
       </element>
@@ -5254,7 +5254,7 @@
       </element>
 
       <element name="TGridDataCache.HScrollBarNetRange">
-        <short>Difference between the scrollbar range and the grid page size.</short>
+        <short>Difference between the scroll bar range and the grid page size.</short>
         <descr/>
         <seealso/>
       </element>
@@ -5451,7 +5451,7 @@
             The <link id="TCustomGrid.GridWidth">GridWidth</link> and <link id="TCustomGrid.GridHeight">GridHeight</link> properties contain the dimension of the entire grid.
           </p>
           <p>
-            The <link id="TCustomGrid.ScrollBars">ScrollBars</link> controls the creation of scrollbars for the grid.
+            The <link id="TCustomGrid.ScrollBars">ScrollBars</link> controls the creation of scroll bars for the grid.
           </p>
           <p>
             The <link id="TCustomGrid.LeftCol">LeftCol</link>, <link id="TCustomGrid.TopRow">TopRow</link>, <link id="TCustomGrid.VisibleColCount">VisibleColCount</link> and <link id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain information about the visible area of the grid.
@@ -5477,6 +5477,26 @@
           <p>
             Component developers must override the <link id="TCustomGrid.DrawCell">DrawCell</link> method in customized grid controls.
           </p>
+          <p>
+            Additional information about grid usage is available on the Lazarus wiki in the following pages:
+          </p>
+          <ul>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/Grids_Reference_Page">
+                Grids Reference Page
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TDrawGrid">
+                TDrawGrid
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TStringGrid">
+                TStringGrid
+              </url>
+            </li>
+          </ul>
         </descr>
         <seealso>
           <link id="TStringGrid"/>
@@ -5662,34 +5682,66 @@
       </element>
 
       <element name="TCustomGrid.CheckFixedCount">
-        <short>Ensures that column and row numbers for fixed cells are valid.</short>
-        <descr/>
+        <short>
+          Ensures that the specified column and row counts for fixed cells are valid.
+        </short>
+        <descr>
+          <p>
+            <var>CheckFixedCount</var> is called when new values are assigned to the ColCount, RowCount, FixedCols, or FixedRows properties. It raises an EGridException exception if argument value are not valid or not in range for the grid control.
+          </p>
+          <p>
+            See CheckCount for the actions performed to validate column and row count values.
+          </p>
+        </descr>
         <errors>
-          Raises an EGridException if values in column or row numbers for fixed cells contain negative values, or are not in range for the grid control.
+          Raises an EGridException if values in AFCol or AFRow contain negative values, or are not in range for the values specified in ACol or ARow.
         </errors>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.ColCount"/>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.FixedRows"/>
+          <link id="TCustomGrid.CheckCount"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.CheckFixedCount.aCol">
-        <short>Column number examined in the method.</short>
+        <short>Number of columns for the grid control.</short>
       </element>
       <element name="TCustomGrid.CheckFixedCount.aRow">
-        <short>Row number examined in the method.</short>
+        <short>Number of rows mined in the method</short>
       </element>
       <element name="TCustomGrid.CheckFixedCount.aFCol">
-        <short>Fixed column number examined in the method.</short>
+        <short>Number of fixed columns for the grid control.</short>
       </element>
       <element name="TCustomGrid.CheckFixedCount.aFRow">
-        <short>Fixed row number examined in the method.</short>
+        <short>Number of fixed rows for the grid control.</short>
       </element>
 
       <element name="TCustomGrid.CheckCount">
-        <short>Ensures that a handle exists for the grid before updates to column or row counts.</short>
+        <short>
+          Ensures that values in Col and Row are range limited to the corresponding arguments values.
+        </short>
         <descr>
           <p>
-            Ensures that a handle has been allocated for the grid prior to actions that affect the row or column count.
+            CheckCount is a method used to ensure that values in the Col and Row property are valid for the arguments specified in the ANewColCount and ANewRowCount arguments. If the existing Col or Row values would exceed the new values, they are adjusted to fall within the new range (0..n-1).
+          </p>
+          <p>
+            If either Col or Row is modified in the method, the visible top/left cell for the control is moved (when needed). FixEditor indicates whether the cell editor should be repositioned by calling MoveNextSelectable when the value in Col or Row has been changed. The default value for the argument is <b>True</b>.
+          </p>
+          <p>
+            No actions are performed in the method if the Handle has not been allocated for the widgetset class instance.
+          </p>
+          <p>
+            CheckCount is called when new values are assigned to the ColCount or RowCount properties, and when a delete operation is performed for a column or row in the grid. It occurs after the CheckFixedCount method has been called to validate new fixed column or row count values.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.ColCount"/>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.CheckTopLeft"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.CheckCount.aNewColCount">
         <short>New column count for the control.</short>
@@ -5780,14 +5832,35 @@
       </element>
 
       <element name="TCustomGrid.IsCellButtonColumn">
-        <short>Indicates if the specified cell is a non-fixed cell using a button-style column editor.</short>
-        <descr/>
+        <short>
+          Indicates if the specified cell is a non-fixed cell which contains a button for each row in the column.
+        </short>
+        <descr>
+          <p>
+            <var>IsCellButtonColumn</var> calls ColumnFromGridColumn to get the TGridColumn which represents the column number in ACell. The return value is <b>True</b> when the following conditions are met:
+          </p>
+          <ul>
+            <li>Columns has been enabled for the grid control.</li>
+            <li>The column number in ACell (X) is valid in the grid Columns.</li>
+            <li>The row number in ACell (Y) is not within the FixedRows for the grid.</li>
+            <li>
+              The column definition (TGridColumn) uses cbsButtonColumn in its ButtonStyle property.
+            </li>
+          </ul>
+          <p>
+            IsCellButtonColumn is used in the implementations for the PrepareCanvas, DefaultDrawCell, and IsMouseOverCellButton methods.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TCustomGrid.DefaultDrawCell"/>
+          <link id="TCustomGrid.IsMouseOverCellButton"/>
           <link id="TGridColumn.ButtonStyle"/>
         </seealso>
       </element>
       <element name="TCustomGrid.IsCellButtonColumn.Result">
-        <short><b>True</b> when the column exists and uses a button-style editor.</short>
+        <short><b>True</b> when the column exists and displays a button in its cells.</short>
       </element>
       <element name="TCustomGrid.IsCellButtonColumn.ACell">
         <short>TPoint instance with the column and row numbers for the cell.</short>
@@ -5801,29 +5874,29 @@
         </seealso>
       </element>
       <element name="TCustomGrid.GetSelectedColumn.Result">
-        <short>Value for the property.</short>
+        <short>Value for the SelectedColumn property.</short>
       </element>
 
       <element name="TCustomGrid.SetAlternateColor">
-        <short>Sets the value in the AlternateColor property.</short>
+        <short>Sets the value for the AlternateColor property.</short>
         <descr/>
         <seealso>
           <link id="TCustomGrid.AlternateColor"/>
         </seealso>
       </element>
       <element name="TCustomGrid.SetAlternateColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AlternateColor property.</short>
       </element>
 
       <element name="TCustomGrid.SetAutoFillColumns">
-        <short>Sets the value in the AutoFillColumns property.</short>
+        <short>Sets the value for the AutoFillColumns property.</short>
         <descr/>
         <seealso>
           <link id="TCustomGrid.AutoFillColumns"/>
         </seealso>
       </element>
       <element name="TCustomGrid.SetAutoFillColumns.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AutoFillColumns property.</short>
       </element>
 
       <element name="TCustomGrid.SetBorderColor">
@@ -5834,7 +5907,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetBorderColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the BorderColor property.</short>
       </element>
 
       <element name="TCustomGrid.SetColumnClickSorts">
@@ -5845,7 +5918,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetColumnClickSorts.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the ColumnClickSorts property.</short>
       </element>
 
       <element name="TCustomGrid.SetColumns">
@@ -5856,7 +5929,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetColumns.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Columns property.</short>
       </element>
 
       <element name="TCustomGrid.SetEditorOptions">
@@ -5867,7 +5940,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetEditorOptions.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the EditorOptions property.</short>
       </element>
 
       <element name="TCustomGrid.SetEditorBorderStyle">
@@ -5878,7 +5951,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetEditorBorderStyle.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the EditorBorderStyle property.</short>
       </element>
 
       <element name="TCustomGrid.SetAltColorStartNormal">
@@ -5889,7 +5962,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetAltColorStartNormal.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AltColorStartNormal property.</short>
       </element>
 
       <element name="TCustomGrid.SetFlat">
@@ -5900,7 +5973,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetFlat.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Flat property.</short>
       </element>
 
       <element name="TCustomGrid.SetFocusRectVisible">
@@ -5911,7 +5984,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetFocusRectVisible.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FocusRectVisible property.</short>
       </element>
 
       <element name="TCustomGrid.SetTitleImageList">
@@ -5922,7 +5995,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetTitleImageList.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the TitleImageList property.</short>
       </element>
 
       <element name="TCustomGrid.SetTitleImageListWidth">
@@ -5933,7 +6006,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetTitleImageListWidth.aTitleImageListWidth">
-        <short>New value for the property.</short>
+        <short>New value for the TitleImageListWidth property.</short>
       </element>
 
       <element name="TCustomGrid.SetTitleFont">
@@ -5944,7 +6017,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetTitleFont.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the TitleFont property.</short>
       </element>
 
       <element name="TCustomGrid.SetTitleStyle">
@@ -5955,7 +6028,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetTitleStyle.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the TitleStyle property.</short>
       </element>
 
       <element name="TCustomGrid.SetUseXorFeatures">
@@ -5966,7 +6039,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetUseXorFeatures.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the UseXorFeatures property.</short>
       </element>
 
       <element name="TCustomGrid.doColSizing">
@@ -6186,7 +6259,9 @@
       </element>
 
       <element name="TCustomGrid.EditorAlwaysShown">
-        <short>Indicates if a cell editor is always displayed for an active cell in the grid.</short>
+        <short>
+          Indicates if a cell editor is always displayed for an active non-fixed cell in the grid control.
+        </short>
         <descr>
           <p>
             The return value is <b>True</b> when editing is allowed for the cell, it is not a fixed cell, and <var>goAlwaysShowEditor</var> is included in the <var>Options</var> property.
@@ -6203,19 +6278,27 @@
       </element>
 
       <element name="TCustomGrid.FixPosition">
-        <short>Ensures that column and row positions, and selection(s) are valid for the grid.</short>
+        <short>
+          Ensures that column and row positions, and selection(s) are valid for the grid.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomGrid.FixPosition.IsColumn">
-        <short/>
+        <short>
+          <b>True</b> if the index value is for a column. <b>False</b> if the value is for a row.
+        </short>
       </element>
       <element name="TCustomGrid.FixPosition.aIndex">
-        <short/>
+        <short>
+          Position for the column or row in the grid control.
+        </short>
       </element>
 
       <element name="TCustomGrid.FixScroll">
-        <short>Ensures that scrollbars are updated to reflect the cached visible area in the grid.</short>
+        <short>
+          Ensures that scroll bars are updated to reflect the cached visible area in the grid.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -6521,7 +6604,9 @@
       </element>
 
       <element name="TCustomGrid.InternalSetColWidths">
-        <short>Performs internal actions needed to set a column width to the specified value.</short>
+        <short>
+          Performs internal actions needed to set a column width to the specified value.
+        </short>
         <descr/>
         <seealso>
           <link id="TCustomGrid.SetColWidths"/>
@@ -6536,7 +6621,9 @@
       </element>
 
       <element name="TCustomGrid.InternalUpdateColumnWidths">
-        <short>Performs internal actions needed to update columns widths from the grid Columns.</short>
+        <short>
+          Performs internal actions needed to update columns widths from the grid Columns.
+        </short>
         <descr>
           Not used in the current implementation.
         </descr>
@@ -6544,24 +6631,40 @@
       </element>
 
       <element name="TCustomGrid.InvalidateMovement">
-        <short/>
+        <short>
+          Invalidates the selection rectangle when a range Selection is expanded or shrunk on the grid control.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.Seleciton"/>
+          <link id="TCustomGrid.MoveExtend"/>
+          <link id="TCustomGrid.MoveNextSelectable"/>
+          <link id="TCustomGrid.MouseDown"/>
+          <link id="TCustomGrid.MouseUp"/>
+          <link id="TCustomGrid.MouseMove"/>
+          <link id="TCustomGrid.LoadContent"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.InvalidateMovement.DCol">
-        <short/>
+        <short>Destination column number with the end of the selection range.</short>
       </element>
       <element name="TCustomGrid.InvalidateMovement.DRow">
-        <short/>
+        <short>Destination row number with the end of the selection range.</short>
       </element>
       <element name="TCustomGrid.InvalidateMovement.OldRange">
-        <short/>
+        <short>Range selection rectangle on entry to the method.</short>
       </element>
 
       <element name="TCustomGrid.IsAltColorStored">
-        <short> Indicates if AlternateColor has a value different than the Color for the grid control.</short>
+        <short>
+          Indicates if AlternateColor has a value different than the Color for the grid control.
+        </short>
         <descr>
-          Used as the storage specifier for the AlternateColor property.
+          <p>
+            Used as the storage specifier for the AlternateColor property.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.AlternateColor"/>
@@ -6574,7 +6677,9 @@
       <element name="TCustomGrid.IsColumnsStored">
         <short>Indicates if Columns has been enabled for the grid control.</short>
         <descr>
-          Used as the storage specifier for the Columns property.
+          <p>
+            Used as the storage specifier for the Columns property.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.Columns"/>
@@ -7093,15 +7198,17 @@
       </element>
 
       <element name="TCustomGrid.TryScrollTo">
-        <short/>
+        <short>
+          Attempts to scroll the grid until the specified coordinates are at the origin for the grid control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomGrid.TryScrollTo.aCol">
-        <short/>
+        <short>Column number to become the first visible column on the grid.</short>
       </element>
       <element name="TCustomGrid.TryScrollTo.aRow">
-        <short/>
+        <short>Row number to become the first visible row on the grid.</short>
       </element>
 
       <element name="TCustomGrid.UpdateCachedSizes">
@@ -7111,7 +7218,7 @@
       </element>
 
       <element name="TCustomGrid.UpdateSBVisibility">
-        <short>Updates the visibility for horizontal and/or vertical scrollbars.</short>
+        <short>Updates the visibility for horizontal and/or vertical scroll bars.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7209,32 +7316,48 @@
 
       <element name="TCustomGrid.AddSelectedRange">
         <short>
-          Adds the current selection range to the array of rectangles in Selections.
+          Adds the current range selection to the array of selection rectangles for the control.
         </short>
         <descr>
           <p>
-            <var>AddSelectedRange</var> increases the length of the internal Selections member and appends the value in current selection rectangle. It is called from the MouseDown method when Options contains goRangeSelect and multi-select has been enabled by setting RangeSelectMode to rsmMulti.
+            <var>AddSelectedRange</var> is a method used to add the rectangle for the current range selection to the internal member used to store the selection rectangle(s). It increases the capacity for the member and appends the value for the current selection rectangle.
+          </p>
+          <p>
+            No actions are performed in the method if goRangeSelect has not been included in the  Options property, or when RangeSelectMode has a value other than rsmMulti.
+          </p>
+          <p>
+            Use ClearSelections to remove range selection rectangle(s) stored using AddSelectedRange.
+          </p>
+          <p>
+            AddSelectedRange is called from MouseDown when a Ctrl+Click or Meta+Click (macOS) mouse event occurs in the data area for the grid and range selection has been enabled for the control.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.RangeSelectMode"/>
           <link id="TCustomGrid.HasMultiSelection"/>
+          <link id="TCustomGrid.ClearSelections"/>
           <link id="TCustomGrid.MouseDown"/>
+          <link id="TGridOptions"/>
+          <link id="TGridOption"/>
         </seealso>
       </element>
 
       <element name="TCustomGrid.AdjustClientRect">
         <short>
-          Adjusts the client rectangle and sets the grid flag to reflect the change.
+          Adjusts the client rectangle and sets a grid flag to reflect the change.
         </short>
         <descr>
           <p>
-            <var>AdjustClientRect</var> is an overridden method used to adjust the client rectangle for the control, and set the grid flag to reflect the change. Calls the inherited method on entry. Updates the <var>GridFlags</var> property to included the value <var>gfClientRectChange</var>.
+            <var>AdjustClientRect</var> is an overridden method used to adjust the client rectangle for the control, and set the grid flag to reflect the change. It calls the inherited method on entry. AdjustClientRect updates the <var>GridFlags</var> property to included the value <var>gfClientRectChange</var>.
+          </p>
+          <p>
+            The method does not perform any real actions other than setting the flag value in GridFlags. gfClientRectChange indicates that the cached sizes for grid Columns needs to be recalculated for the visible area before the grid control is drawn.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.GridFlags"/>
+          <link id="TCustomGrid.Paint"/>
           <link id="TGridFlagsOption"/>
           <link id="#lcl.controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
         </seealso>
@@ -7274,7 +7397,7 @@
         <short>Signals the OnAfterSelection event handler.</short>
         <descr>
           <p>
-            <var>AfterMoveSelection</var> is a procedure used to signal the <var>OnAfterSelection</var> event handler when it has been assigned (does not contain <b>Nil</b>). Values in <var>prevCol</var> and <var>prevRow</var> are passed as arguments to the OnAfterSelection event handler.
+            <var>AfterMoveSelection</var> is a procedure used to signal the <var>OnAfterSelection</var> event handler when has been assigned (does not contain <b>Nil</b>). Values in <var>prevCol</var> and <var>prevRow</var> are passed as arguments to the OnAfterSelection event handler.
           </p>
           <p>
             AfterMoveSelection is called from the <var>MoveExtend</var> method when the move operation has been completed.
@@ -7363,13 +7486,18 @@
             <var>AutoAdjustColumn</var> is called from the <var>DblClick</var> method when the values <var>goColSizing</var> and <var>goDblClickAutoSize</var> have been included in the <var>Options</var> property.
           </p>
           <p>
-            <var>AutoAdjustColumn</var> has an empty implementation in <var>TCustomGrid</var>, and must be overridden in a descendent class.
+            <var>AutoAdjustColumn</var> has an empty implementation in <var>TCustomGrid</var>, and must be overridden in a descendent class like TCustomStringGrid.
+          </p>
+          <p>
+            AutoAdjustColumn is called from the AutoAdjustColumns method. It also occurs when the mouse is double-clicked on the cell header and column auto-sizing (goColSizing) has been enabled in the Options for the grid control.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.Options"/>
           <link id="TCustomGrid.DblClick"/>
+          <link id="TCustomGrid.AutoAdjustColumns"/>
           <link id="TCustomStringGrid.AutoAdjustColumn"/>
+          <link id="TGridOptions"/>
         </seealso>
       </element>
       <element name="TCustomGrid.AutoAdjustColumn.aCol">
@@ -7396,10 +7524,14 @@
         </seealso>
       </element>
       <element name="TCustomGrid.BeforeMoveSelection.DCol">
-        <short/>
+        <short>
+          Column number where the selection will be stored.
+        </short>
       </element>
       <element name="TCustomGrid.BeforeMoveSelection.DRow">
-        <short/>
+        <short>
+          Row number where the selection will be stored.
+        </short>
       </element>
 
       <element name="TCustomGrid.BeginAutoDrag">
@@ -7466,11 +7598,11 @@
 
       <element name="TCustomGrid.CalcAutoSizeColumn">
         <short>
-          Automatically calculates the size for the column at the specified position.
+          Calculates the size for an auto-sized column at the specified position.
         </short>
         <descr>
           <p>
-            <var>CalcAutoSizeColumn</var> sets the the value for the <var>aPriority</var> argument to 0 (zero). Other parameters values are not modified.
+            <var>CalcAutoSizeColumn</var> sets the value for the <var>aPriority</var> argument to 0 (zero). Other parameters values are not modified.
           </p>
           <remark>
             CalcAutoSizeColumn is not used in the current LCL implementation.
@@ -7503,7 +7635,7 @@
         <short>Deprecated.</short>
         <descr>
           <p>
-            This is an remnant from earlier LCL versions. Its has an empty implementation in the current LCL version.
+            This is a remnant from earlier LCL versions. Its has an empty implementation in the current LCL version.
           </p>
         </descr>
         <seealso/>
@@ -7554,18 +7686,20 @@
       </element>
 
       <element name="TCustomGrid.CalcMaxTopLeft">
-        <short>Updates cached grid information for the visible area and scrollbars in the control.</short>
+        <short>
+          Updates cached grid information for the visible area and scroll bars in the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomGrid.CalcScrollbarsRange">
         <short>
-          Updates the range, page, and thumb position for visible scrollbars.
+          Updates the range, page, and thumb position for visible scroll bars.
         </short>
         <descr>
           <p>
-            <var>CalcScrollbarsRange</var> is a procedure used to update the range, page, and thumb position for visible scrollbars in the grid control. CalcScrollbarsRange accesses the cached grid data in <var>GCache</var> to calculate values needed in the method. The visibility for both horizontal and vertical scrollbars is determined, and the range, page and thumb position is applied in the <var>UpdateHorzScrollBar</var> and <var>UpdateVertScrollbar</var> methods.
+            <var>CalcScrollbarsRange</var> is a procedure used to update the range, page, and thumb position for visible scroll bars in the grid control. CalcScrollbarsRange accesses the cached grid data in <var>GCache</var> to calculate values needed in the method. The visibility for both horizontal and vertical scroll bars is determined, and the range, page and thumb position is applied in the <var>UpdateHorzScrollBar</var> and <var>UpdateVertScrollbar</var> methods.
           </p>
           <p>
             CalcScrollbarsRange is used in the implementation of the <var>ScrollBy</var> and <var>UpdateSizes</var> methods in TCustomGrid.
@@ -7659,10 +7793,16 @@
         <short>Processes a mouse click in the cell at the given coordinates.</short>
         <descr>
           <p>
-            <var>CellClick</var> has an empty implementation in <var>TCustomGrid</var>.
+            <var>CellClick</var> is a virtual method with an empty implementation in <var>TCustomGrid</var>. It is overridden in descendent classes, like TCustomDrawGrid, to perform action needed in the implementation.
+          </p>
+          <p>
+            CellClick is called from the MouseUp method when a mouse click event occurs in the data area (non-fixed cells) for the grid control.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.MouseUp"/>
+          <link id="TCustomDrawGrid.CellClick"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.CellClick.aCol">
         <short>Column number for the click event.</short>
@@ -7824,7 +7964,7 @@
 
       <element name="TCustomGrid.ColRowExchanged">
         <short>
-          Performs a notification when column or row data is exchanged in the grid.
+          Performs a notification when column or row data at the specified positions are exchanged in the grid control.
         </short>
         <descr>
           <p>
@@ -7834,13 +7974,15 @@
         <seealso/>
       </element>
       <element name="TCustomGrid.ColRowExchanged.IsColumn">
-        <short/>
+        <short>
+          <b>True</b> if columns are affected in the method. <b>False</b> if rows are affected.
+        </short>
       </element>
       <element name="TCustomGrid.ColRowExchanged.Index">
-        <short/>
+        <short>Position for the initial column or row exchanged in the method.</short>
       </element>
       <element name="TCustomGrid.ColRowExchanged.WithIndex">
-        <short/>
+        <short>Position for the other column or row exchanged in the method.</short>
       </element>
 
       <element name="TCustomGrid.ColRowInserted">
@@ -7967,7 +8109,7 @@
 
       <element name="TCustomGrid.ColumnFromGridColumn">
         <short>
-          Returns the grid column definition at the specified position.
+          Returns the grid column definition at the specified position in Columns.
         </short>
         <descr>
           <p>
@@ -8083,7 +8225,7 @@
             <var>CreateWnd</var> is an overridden method in <var>TCustomGrid</var>. It calls the inherited method to allocate the <var>Handle</var> for the widgetset class.
           </p>
           <p>
-            CreateWnd ensures that internal flags used for horizontal and vertical scrollbar visibility are updated to reflect the states for the control Handle. The <var>CheckPosition</var> method is called to determine the cell selection in the grid. <var>VisualChange</var> is called to refresh the visible area and scrollbars in the control.
+            CreateWnd ensures that internal flags used for horizontal and vertical scroll bar visibility are updated to reflect the states for the control Handle. The <var>CheckPosition</var> method is called to determine the cell selection in the grid. <var>VisualChange</var> is called to refresh the visible area and scroll bars in the control.
           </p>
         </descr>
         <seealso>
@@ -8094,18 +8236,35 @@
         </seealso>
       </element>
 
-      <element name="TCustomGrid.CreateParams" link="#lcl.controls.TWinControl.CreateParams"/>
+      <element name="TCustomGrid.CreateParams">
+        <short>
+          Initializes the window creation parameters with the settings for the control.
+        </short>
+        <descr>
+        <p>
+          <var>CreateParams</var> is a procedure used to initialize and/or update creation parameters in the Params argument. CreateParams is called from the CreateWnd method when the window handle is allocated for the control.
+        </p>
+        <p>
+          CreateParams is an overridden method in TCustomGrid. It ensures that Params contains the values needed for the style and offset in the window class type.
+        </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#lcl.lcltype.TCreateParams">TCreateParams</link>
+        </seealso>
+      </element>
       <element name="TCustomGrid.CreateParams.Params">
         <short>Creation parameters updated in the method.</short>
       </element>
 
       <element name="TCustomGrid.Click">
         <short>
-          Performs actions when a mouse click occurs in the grid control.
+          Performs actions needed when a mouse click occurs in the grid control.
         </short>
         <descr>
           <p>
-            <var>Click</var> is an overridden method used to perform action needed when a mouse click occurs in the control. The grid control provides an internal flag to suppress mouse click handling when the event occurs in a "hot zone" (fixed header cells for columns or rows). Click checks the value in the internal flag, and calls the inherited method when the click occurs in the "normal" data cells for the grid.
+            <var>Click</var> is an overridden method used to perform actions needed when a mouse click occurs in the control. The grid control provides an internal flag to suppress mouse click handling when the event occurs in a "hot zone" (fixed header cells for columns or rows). Click checks the value in the internal flag, and calls the inherited method when the click occurs in the "normal" data cells for the grid.
           </p>
           <p>
             Click is called from methods like <var>SetCol</var>, <var>SetRow</var>, and <var>SetColRow</var> to emulate a mouse click when values are assigned to the <var>Col</var> and/or <var>Row</var> properties.
@@ -8161,7 +8320,9 @@
         <seealso/>
       </element>
       <element name="TCustomGrid.DefaultColWidthIsStored.Result">
-        <short/>
+        <short>
+          <b>True</b> when DefaultColWidth contains a positive non-zero value.
+        </short>
       </element>
 
       <element name="TCustomGrid.DefaultRowHeightIsStored">
@@ -8795,7 +8956,7 @@
             <var>DoOnChangeBounds</var> is an overridden method in <var>TCustomGrid</var>. It calls the inherited method on entry to signal any assigned OnChangeBounds event handlers and to update flag values for the control.
           </p>
           <p>
-            DoOnChangeBounds updates cached column and row sizes, and scrollbar information when the bounds for the control have been changed.
+            DoOnChangeBounds updates cached column and row sizes, and scroll bar information when the bounds for the control have been changed.
           </p>
         </descr>
         <seealso>
@@ -8805,8 +8966,55 @@
 
       <element name="TCustomGrid.DoOPDeleteColRow">
         <short>Performs a delete operation for a column or a row.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoOPDeleteColRow</var> is a method which performs actions needed to delete the specified column or row from the grid control.
+          </p>
+          <p>
+            IsColumn indicates whether a column or row is affected in the method. When set to <b>True</b>, the specified column number is deleted from the control. Otherwise, the specified row number is removed.
+          </p>
+          <p>
+            Use Index to specify the position for the column or row removed in the method.
+          </p>
+          <p>
+            Prior to removing the specified column or row, private methods are called to validate values used by or affected in the operation like:
+          </p>
+          <dl>
+            <dt>Index</dt>
+            <dd>
+              Checks whether the value in Index is a valid column or row number. An EGridException exception is raised if Index has an invalid index value for the grid control.
+            </dd>
+            <dt>FixedCols, FixedRows</dt>
+            <dd>
+              Ensures that new fixed column or row counts are valid for the number of columns or rows on the grid control. An EGridException is raised if the new values are not within the limits for the column or row count.
+            </dd>
+            <dt>Col, Row, ColCount, RowCount</dt>
+            <dd>
+              Ensures that values for Col or Row are range limited to the new column or row count for the control. Calls MoveNextSelectable to scroll the grid control to the new origin cell when needed.
+            </dd>
+          </dl>
+          <p>
+            DoOPDeleteColRow ensures that a visible cell editor in the column or row is deactivated by setting EditorMode to False.
+          </p>
+          <p>
+            The ColRowDeleted method is called when the affected data has been removed from the grid control and the cached values in GCache. In a descendent class (TCustomDrawGrid), the the OnColRowDeleted event handler is signalled (when assigned).
+          </p>
+          <p>
+            Col and Row are updated if the operation causes the selection range to be changed, and SelectCell is called to include the cell in Selection. Sizes for auto-filled columns are recalculated when needed. The cell Editor is updated when needed for the new selection and position on the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.ColRowDeleted"/>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.ColCount"/>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.FixedRows"/>
+          <link id="TCustomGrid.SelectCell"/>
+          <link id="TCustomGrid.Selection"/>
+          <link id="TCustomGrid.EditorMode"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.DoOPDeleteColRow.IsColumn">
         <short>
@@ -8815,15 +9023,37 @@
       </element>
       <element name="TCustomGrid.DoOPDeleteColRow.Index">
         <short>
-          Ordinal position for the column or row deleted in the method.
+          Position for the column or row deleted in the method.
         </short>
       </element>
 
       <element name="TCustomGrid.DoOPExchangeColRow">
         <short>
-          Performs an exchange for the columns or rows with the specified indexes.
+          Performs an exchange of values for the columns or rows with the specified indexes.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DoOPExchangeColRow</var> is used to exchange or swap column or row values at the specified positions in the grid control.
+          </p>
+          <p>
+            IsColumn indicates whether columns or rows are affected in the method. When set to <b>True</b>, Index and WithIndex refer to column positions. Otherwise, they refer to row positions.
+          </p>
+          <p>
+            TGridColumn instances in Columns are exchanged when the collection has been enabled in the control. Column widths in Cols, or row heights in Rows are also exchanged in the method.
+          </p>
+          <p>
+            DoOPExchangeColRow calls the ColRowExchanged method to perform the notification which informs the grid control to exchange their column or row data.
+          </p>
+          <p>
+            AdjustEditorBounds is called to reposition the cell Editor for the grid when the operation requires it to be moved.
+          </p>
+          <p>
+            When a value in Index or WithIndex is a sort column for the grid, the value in the SortColumn property is updated to reflect the (ex)changed value.
+          </p>
+          <p>
+            DoOPExchangeColRow is called from the Sort method when the StrictSort property is set to <b>False</b>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomGrid.DoOPExchangeColRow.IsColumn">
@@ -8833,12 +9063,12 @@
       </element>
       <element name="TCustomGrid.DoOPExchangeColRow.Index">
         <short>
-          Ordinal position for a column or row exchanged in the method.
+          Position for a column or row exchanged in the method.
         </short>
       </element>
       <element name="TCustomGrid.DoOPExchangeColRow.WithIndex">
         <short>
-          Ordinal position for the other column or row exchanged in the method.
+          Position for the other column or row exchanged in the method.
         </short>
       </element>
 
@@ -8856,7 +9086,7 @@
       </element>
       <element name="TCustomGrid.DoOPInsertColRow.Index">
         <short>
-          Ordinal position where a column or a row is inserted in the method.
+          Position where the column or row is inserted in the method.
         </short>
       </element>
 
@@ -8906,7 +9136,7 @@
         </short>
         <descr>
           <p>
-            Signals the <var>OnPrepareCanvas</var> event handler (when assigned) to prepare the Canvas to draw the specified cell using the specified state. Called from the PrepareCavas method. Allows the default actions performed in the caller to be overridden.
+            DoPrepareCanvas signals the <var>OnPrepareCanvas</var> event handler (when assigned) to prepare the Canvas to draw the specified cell using the specified state. It is called from the PrepareCanvas method, and allows the default actions performed in the caller to be overridden.
           </p>
         </descr>
         <seealso/>
@@ -8929,8 +9159,21 @@
 
       <element name="TCustomGrid.DoOnResize">
         <short>Performs actions needed when the grid control is resized.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            DoOnResize is an overridden method in TCustomGrid. It calls the inherited method on entry to signal the OnResize event handler(s) assigned to the control or its parents. If the active update counter is 0, the Invalidate method in the widgetset class instance is called to refresh the control.
+          </p>
+          <p>
+            DoOnResize is called from the Resize method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.BeginUpdate"/>
+          <link id="TCustomGrid.EndUpdate"/>
+          <link id="#lcl.controls.TControl.DoOnResize">TControl.DoOnResize</link>
+          <link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
+          <link id="#lcl.controls.TControl.Resize">TControl.Resize</link>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.DoSetBounds">
@@ -9899,7 +10142,14 @@
       <element name="TCustomGrid.GetColumnFont">
         <short>Gets the font used to render values for the specified column.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.ColumnFromGridColumn"/>
+          <link id="TCustomGrid.TitleFont"/>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TGridColumn"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+        </seealso>
       </element>
       <element name="TCustomGrid.GetColumnFont.Result">
         <short>TFont instance used to render values for the column.</short>
@@ -10269,10 +10519,10 @@
       </element>
 
       <element name="TCustomGrid.GetScrollBarPosition">
-        <short>Gets the position for the specified scrollbar.</short>
+        <short>Gets the position for the specified scroll bar.</short>
         <descr>
           <p>
-            <var>GetScrollBarPosition</var> is an <var>Integer</var> function used to get the position for the scrollbar specified in Which. GetScrollBarPosition calls the <var>GetScrollInfo</var> routine in the LCL interface to get the <var>TScrollInfo</var> structure with the position for the scrollbar in <var>Which</var>.
+            <var>GetScrollBarPosition</var> is an <var>Integer</var> function used to get the position for the scroll bar specified in Which. GetScrollBarPosition calls the <var>GetScrollInfo</var> routine in the LCL interface to get the <var>TScrollInfo</var> structure with the position for the scroll bar in <var>Which</var>.
           </p>
           <p>
             The return value contain the position from the TScrollInfo structure. The return value is <b>0</b> (<b>zero</b>) if the <var>Handle</var> for the grid control has not been allocated.
@@ -10284,10 +10534,10 @@
         </seealso>
       </element>
       <element name="TCustomGrid.GetScrollBarPosition.Result">
-        <short>Current position in the specified scrollbar.</short>
+        <short>Current position in the specified scroll bar.</short>
       </element>
       <element name="TCustomGrid.GetScrollBarPosition.Which">
-        <short>Indicates the scrollbar (horizontal or vertical) examined in the method.</short>
+        <short>Indicates the scroll bar (horizontal or vertical) examined in the method.</short>
       </element>
 
       <element name="TCustomGrid.GetSmoothScroll">
@@ -10307,21 +10557,21 @@
 
       <element name="TCustomGrid.GetSBVisibility">
         <short>
-          Gets the values for the scrollbar visibility flags in the control.
+          Gets the values for the scroll bar visibility flags in the control.
         </short>
         <descr/>
         <seealso/>
         <notes><note>?</note></notes>
       </element>
       <element name="TCustomGrid.GetSBVisibility.HsbVisible">
-        <short><b>True</b> if the horizontal scrollbar is visible.</short>
+        <short><b>True</b> if the horizontal scroll bar is visible.</short>
       </element>
       <element name="TCustomGrid.GetSBVisibility.VsbVisible">
-        <short><b>True</b> if the vertical scrollbar is visible.</short>
+        <short><b>True</b> if the vertical scroll bar is visible.</short>
       </element>
 
       <element name="TCustomGrid.GetSBRanges">
-        <short>Gets the range values for the scrollbars when visible.</short>
+        <short>Gets the range values for the scroll bars when visible.</short>
         <descr/>
         <seealso/>
       </element>
@@ -10405,7 +10655,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.GetFixedColor.Result">
-        <short>Value for the property.</short>
+        <short>Value for the FixedColor property.</short>
       </element>
 
       <element name="TCustomGrid.GetFirstVisibleColumn">
@@ -10840,7 +11090,7 @@
       </element>
 
       <element name="TCustomGrid.IsEmptyRow">
-        <short>Indicates if non-fixed cells in the specified row are empty.</short>
+        <short>Indicates if all non-fixed cells in the specified row are empty.</short>
         <descr/>
         <seealso>
           <link id="TCustomGrid.GetCells"/>
@@ -10854,16 +11104,16 @@
         </short>
       </element>
       <element name="TCustomGrid.IsEmptyRow.ARow">
-        <short>Row number examined in the method.</short>
+        <short>Row number for the cells examined in the method.</short>
       </element>
 
       <element name="TCustomGrid.IsMouseOverCellButton">
         <short>
-          Indicates if the specified mouse position is over a cell with a button-style cell editor.
+          Indicates if the specified mouse position is over a cell defined with a button column cell editor.
         </short>
         <descr>
           <p>
-            The return value is <b>True</b> when the mouse coordinates in <var>X</var> and <var>Y</var> are located over a cell which uses a button-style cell editor. IsMouseOverCellButton temporarily disables AllowOutBoundEvents while the return value is determined.
+            The return value is <b>True</b> when the mouse coordinates in <var>X</var> and <var>Y</var> are located over a cell which uses a button column cell editor. IsMouseOverCellButton temporarily disables AllowOutBoundEvents while the return value is determined.
           </p>
           <p>
             IsMouseOverCellButton is used in the implementation of the MouseDown method to determine if the cell needs to be drawn in a pushed state.
@@ -10878,7 +11128,9 @@
         </seealso>
       </element>
       <element name="TCustomGrid.IsMouseOverCellButton.Result">
-        <short/>
+        <short>
+          <b>True</b> when the mouse coordinates in <var>X</var> and <var>Y</var> are located over a cell which uses a button column cell editor.
+        </short>
       </element>
       <element name="TCustomGrid.IsMouseOverCellButton.X">
         <short>Horizontal screen coordinate for the mouse pointer.</short>
@@ -10992,7 +11244,7 @@
       <element name="TCustomGrid.KeyUp.Shift" link="#lcl.controls.TWinControl.KeyUp.Shift"/>
 
       <element name="TCustomGrid.KeyPress">
-        <short>Applies the specified key press to the control.</short>
+        <short>Applies the specified key press character to the control.</short>
         <descr>
         <p>
           <var> KeyPress</var> is a method used to apply the character in Key to the grid control. KeyPress is overridden to ensure that a key which originated from the grid control is applied properly to the cell <var>Editor</var> (when needed). It calls the inherited method on entry.
@@ -11118,7 +11370,7 @@
         <short>Locks the Editor so that it cannot accept input or changes.</short>
         <descr>
           <p>
-            Increments the value for an internal lock counter used to get the return value for the EditorLocked method. LockEditor is called from the MouseDown method when a mouse click occurs in the cell data for the grid control, and prevents a cell Editor from being displayed until the mouse event is handled. It is also called from the EditorHide method to prevent access to an Editor until the current one is hidden.
+            <var>LockEditor</var> increments the value for the internal lock counter used to get the return value for the EditorLocked method. LockEditor is called from the MouseDown method when a mouse click occurs in the cell data for the grid control, and prevents a cell Editor from being displayed until the mouse event is handled. It is also called from the EditorHide method to prevent access to an Editor until the current one is hidden.
           </p>
         </descr>
         <seealso/>
@@ -11746,13 +11998,17 @@
 
       <element name="TCustomGrid.RowHeightsChanged">
         <short>Performs actions needed when the values in RowHeights have been changed.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>RowHeightsChanged</var> has an empty implementation in the current version of the LCL. It is called when a new value is assigned to the RowHeights property and occurs after the cache, scroll bars, and cell editor position have been updated for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomGrid.SaveContent">
         <short>
-          Saves design-time configuration, column and row settings, and data to an XML file.
+          Saves design-time configuration, column and row settings, and data to the specified XML configuration file.
         </short>
         <descr>
           <p>
@@ -11796,13 +12052,13 @@
       </element>
 
       <element name="TCustomGrid.ScrollBarRange">
-        <short>Sets range information for the specified scrollbar.</short>
+        <short>Sets range information for the specified scroll bar.</short>
         <descr>
           <p>
-            <var>Which</var> contains an <var>Integer</var> value which indicates the scrollbar updated in the method. It corresponds to the SB_Horz, or SB_Vert values defined in the <file>lcltype.pp</file> unit. <var>ARange</var>, <var>APage</var>, and <var>APos</var> contain the values applied to the corresponding scrollbar.
+            <var>Which</var> contains an <var>Integer</var> value which indicates the scroll bar updated in the method. It corresponds to the SB_Horz, or SB_Vert values defined in the <file>lcltype.pp</file> unit. <var>ARange</var>, <var>APage</var>, and <var>APos</var> contain the values applied to the corresponding scroll bar.
           </p>
           <p>
-            ScrollBarRange allocates and initializes the <var>TScrollInfo</var> structure passed as an argument to the SetScrollInfo routine in the LCL interface. The value in the APos argument is translated for a horizontal scrollbar to be relative to ARange when right-to-left reading is used in the control.
+            ScrollBarRange allocates and initializes the <var>TScrollInfo</var> structure passed as an argument to the SetScrollInfo routine in the LCL interface. The value in the APos argument is translated for a horizontal scroll bar to be relative to ARange when right-to-left reading is used in the control.
           </p>
           <p>
             ScrollBarRange is called from the <var>UpdateHorzScrollBar</var> and <var>UpdateVertScrollbar</var> methods.
@@ -11812,12 +12068,12 @@
       </element>
       <element name="TCustomGrid.ScrollBarRange.Which">
         <short>
-          Integer constant which identifies the scrollbar updated in the method.
+          Integer constant which identifies the scroll bar updated in the method.
         </short>
       </element>
       <element name="TCustomGrid.ScrollBarRange.aRange">
         <short>
-          Maximum value for the scrollbar range.
+          Maximum value for the scroll bar range.
         </short>
       </element>
       <element name="TCustomGrid.ScrollBarRange.aPage">
@@ -11827,27 +12083,27 @@
       </element>
       <element name="TCustomGrid.ScrollBarRange.aPos">
         <short>
-          Current position in the scrollbar range.
+          Current position in the scroll bar range.
         </short>
       </element>
 
       <element name="TCustomGrid.ScrollBarPosition">
-        <short>Sets the position for the specified scrollbar to the given value.</short>
+        <short>Sets the position for the specified scroll bar to the given value.</short>
         <descr>
           <p>
-            <var>ScrollBarPosition</var> is a method used to set position for the scrollbar specified in <var>Which</var> to the new <var>Value</var>.
+            <var>ScrollBarPosition</var> is a method used to set position for the scroll bar specified in <var>Which</var> to the new <var>Value</var>.
           </p>
           <p>
-            Which contains either SB_Horz or SB_Vert, and identifies the scrollbar affected in the method.
+            Which contains either SB_Horz or SB_Vert, and identifies the scroll bar affected in the method.
           </p>
           <p>
-            Value contains the new position for the scrollbar.
+            Value contains the new position for the scroll bar.
           </p>
           <p>
-            ScrollBarPosition uses the SetScrollInfo routine to update the scrollbar position. It allocates the TScrollInfo structure and stores Value as the scrollbar position in the structure.
+            ScrollBarPosition uses the SetScrollInfo routine to update the scroll bar position. It allocates the TScrollInfo structure and stores Value as the scroll bar position in the structure.
           </p>
           <p>
-            ScrollBarPosition calls ScrollBarIsVisible to determine if the scrollbar in Which is visible. The visibility is used when calling SetScrollInfo.
+            ScrollBarPosition calls ScrollBarIsVisible to determine if the scroll bar in Which is visible. The visibility is used when calling SetScrollInfo.
           </p>
           <p>
             No actions are performed in the method if the Handle has not been allocated for the grid control.
@@ -11859,47 +12115,47 @@
         </seealso>
       </element>
       <element name="TCustomGrid.ScrollBarPosition.Which">
-        <short>Scrollbar updated in the method.</short>
+        <short>Scroll bar updated in the method.</short>
       </element>
       <element name="TCustomGrid.ScrollBarPosition.Value">
-        <short>New position for the scrollbar.</short>
+        <short>New position for the scroll bar.</short>
       </element>
 
       <element name="TCustomGrid.ScrollBarIsVisible">
-        <short>Returns <b>True</b> if the specified scrollbar is visible.</short>
+        <short>Returns <b>True</b> if the specified scroll bar is visible.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomGrid.ScrollBarIsVisible.Result">
         <short>
-          <b>True</b> if the specified scrollbar is visible.
+          <b>True</b> if the specified scroll bar is visible.
         </short>
       </element>
       <element name="TCustomGrid.ScrollBarIsVisible.Which">
         <short>
-          Identifies the scrollbar examined in the method (SB_Horz, SB_Vert).
+          Identifies the scroll bar examined in the method (SB_Horz, SB_Vert).
         </short>
       </element>
 
       <element name="TCustomGrid.ScrollBarPage">
-        <short>Updates the page size for the specified scrollbar.</short>
+        <short>Updates the page size for the specified scroll bar.</short>
         <descr>
           <p>
-            Allocates and populates a TScrollInfo structure used to update the scroll information for the specified scrollbar(s). Calls the SetScrollInfo routine in the LCL interface to apply to the scroll information with the new page size.
+            Allocates and populates a TScrollInfo structure used to update the scroll information for the specified scroll bar(s). Calls the SetScrollInfo routine in the LCL interface to apply to the scroll information with the new page size.
           </p>
           <p>
             No actions are performed in the method if the Handle has not been allocated for the grid control.
           </p>
           <p>
-            <var>Which</var> is an <var>Integer</var> argument that specifies the scrollbar(s) affected in the method, and can include the following constant values:
+            <var>Which</var> is an <var>Integer</var> argument that specifies the scroll bar(s) affected in the method, and can include the following constant values:
           </p>
           <dl>
             <dt>SB_HORZ</dt>
-            <dd>Horizontal scrollbar</dd>
+            <dd>Horizontal scroll bar</dd>
             <dt>SB_VERT</dt>
-            <dd>Vertical scrollbar</dd>
+            <dd>Vertical scroll bar</dd>
             <dt>SB_BOTH</dt>
-            <dd>Both horizontal and vertical scrollbars</dd>
+            <dd>Both horizontal and vertical scroll bars</dd>
           </dl>
           <remark>
             ScrollBarPage is not used in the current LCL implementation.
@@ -11909,7 +12165,7 @@
       </element>
       <element name="TCustomGrid.ScrollBarPage.Which">
         <short>
-          Identifies the scrollbar affected in the method.
+          Identifies the scroll bar affected in the method.
         </short>
       </element>
       <element name="TCustomGrid.ScrollBarPage.aPage">
@@ -11920,28 +12176,28 @@
 
       <element name="TCustomGrid.ScrollBarShow">
         <short>
-          Displays or hides scrollbar(s) for the grid control.
+          Displays or hides scroll bar(s) for the grid control.
         </short>
         <descr>
           <p>
-            <var>ScrollBarShow</var> is a procedure used to control the visibility of the scrollbars for the grid.
+            <var>ScrollBarShow</var> is a procedure used to control the visibility of the scroll bars for the grid.
           </p>
           <p>
-            <var>Which</var> is an <var>Integer</var> argument that specifies the scrollbar(s) affected in the method, and can include the following constant values:
+            <var>Which</var> is an <var>Integer</var> argument that specifies the scroll bar(s) affected in the method, and can include the following constant values:
           </p>
           <dl>
             <dt>SB_HORZ</dt>
-            <dd>Horizontal scrollbar</dd>
+            <dd>Horizontal scroll bar</dd>
             <dt>SB_VERT</dt>
-            <dd>Vertical scrollbar</dd>
+            <dd>Vertical scroll bar</dd>
             <dt>SB_BOTH</dt>
-            <dd>Both horizontal and vertical scrollbars</dd>
+            <dd>Both horizontal and vertical scroll bars</dd>
           </dl>
           <p>
-            <var>aValue</var> is a <var>Boolean</var> argument that indicates if the specified scrollbar(s) are visible or hidden. When aValue contains <b>True</b>, the corresponding scrollbar(s) are displayed. Otherwise, they are hidden.
+            <var>aValue</var> is a <var>Boolean</var> argument that indicates if the specified scroll bar(s) are visible or hidden. When aValue contains <b>True</b>, the corresponding scroll bar(s) are displayed. Otherwise, they are hidden.
           </p>
           <p>
-            No actions are performed in the method if a handle has not been allocated for the grid  (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow ensures that <var>gfUpdatingScrollbar</var> is included in the grid flags prior to calling the <var>ShowScrollBar</var> routine in the LCL interface. The flag value is removed immediately after updating the scrollbar display. Internal members used to track scrollbar visibility are set to the state requested in AValue.
+            No actions are performed in the method if a handle has not been allocated for the grid  (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow ensures that <var>gfUpdatingScrollbar</var> is included in the grid flags prior to calling the <var>ShowScrollBar</var> routine in the LCL interface. The flag value is removed immediately after updating the scroll bar display. Internal members used to track scroll bar visibility are set to the state requested in AValue.
           </p>
           <p>
             ScrollBarShow is called from the UpdateHorzScrollBar and UpdateVertScrollbar methods, as well as the private UpdateSBVisibility method.
@@ -11958,12 +12214,12 @@
         <short>Scrollbar(s) affected in the method.</short>
       </element>
       <element name="TCustomGrid.ScrollBarShow.aValue">
-        <short><b>True</b> indicates the scrollbar(s) are visible.</short>
+        <short><b>True</b> indicates the scroll bar(s) are visible.</short>
       </element>
 
       <element name="TCustomGrid.ScrollBarAutomatic">
         <short>
-          Indicates whether an automatic scrollbar of the given type is used on the grid control.
+          Indicates whether an automatic scroll bar of the given type is used on the grid control.
         </short>
         <descr>
           <p>
@@ -11977,7 +12233,7 @@
       </element>
       <element name="TCustomGrid.ScrollBarAutomatic.Result">
         <short>
-          <b>True</b> if an automatic scrollbar is used for the specified type.
+          <b>True</b> if an automatic scroll bar is used for the specified type.
         </short>
       </element>
       <element name="TCustomGrid.ScrollBarAutomatic.Which">
@@ -11991,7 +12247,7 @@
             Calls ScrollWindowEx to perform the scrolling operation for the non-fixed client area in the control. No scrolling is performed when both DeltaX and DeltaY contain 0 (zero).
           </p>
           <p>
-            Updates the visible grid area in the cached information for the control, and recalculates the scrollbar ranges.
+            Updates the visible grid area in the cached information for the control, and recalculates the scroll bar ranges.
           </p>
         </descr>
         <seealso>
@@ -12093,15 +12349,41 @@
       </element>
 
       <element name="TCustomGrid.SetColRow">
-        <short>Makes the specified column and row the selected cell in the grid.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Makes the specified column and row a selected cell in the grid control.
+        </short>
+        <descr>
+          <p>
+            ACol and ARow contain the coordinates for the cell affected in the method.
+          </p>
+          <p>
+             WithEvents indicates whether the specified cell is added to the Selections for the grid control, or if it becomes the selected cell.
+           </p>
+          <p>
+            When WithEvents is set to <b>True</b>, MoveExtend is called to add the cell to the current range. This also causes the Click method to be called to signal the OnClick event handler (when assigned).
+          </p>
+          <p>
+            When WithEvents is set to <b>False</b>, argument values are assigned to the Col and Row properties in the grid control. UpdateSelectionRange is called to update the cell rectangle for the cell or row selection.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.UpdateSelectionRange"/>
+          <link id="TCustomGrid.MoveExtend"/>
+          <link id="TCustomGrid.Click"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.SetColRow.ACol">
         <short>Column number for the selected cell.</short>
       </element>
       <element name="TCustomGrid.SetColRow.ARow">
         <short>Row number for the selected cell.</short>
+      </element>
+      <element name="TCustomGrid.SetColRow.withEvents">
+        <short>
+          <b>True</b> if the OnClick event handler is signalled for the change to the selected range.
+        </short>
       </element>
 
       <element name="TCustomGrid.SetCursor">
@@ -12154,7 +12436,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetBorderStyle.NewStyle">
-        <short>New value for the property.</short>
+        <short>New value for the BorderStyle property.</short>
       </element>
 
       <element name="TCustomGrid.SetFixedColor">
@@ -12165,7 +12447,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetFixedColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FixedColor property.</short>
       </element>
 
       <element name="TCustomGrid.SetFixedCols">
@@ -12176,7 +12458,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetFixedCols.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FixedCols property.</short>
       </element>
 
       <element name="TCustomGrid.SetFixedRows">
@@ -12187,7 +12469,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetFixedRows.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FixedRows property.</short>
       </element>
 
       <element name="TCustomGrid.SetRawColWidths">
@@ -12210,7 +12492,7 @@
         </seealso>
       </element>
       <element name="TCustomGrid.SetSelectedColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the SelectedColor property.</short>
       </element>
 
       <element name="TCustomGrid.SetFadeUnfocusedSelection">
@@ -12256,7 +12538,7 @@
 
       <element name="TCustomGrid.SizeChanged">
         <short>
-          Performs actions needed when the number or columns or rows has been changed.
+          Performs actions needed when the number of columns or rows has been changed.
         </short>
         <descr>
           <p>
@@ -12282,7 +12564,9 @@
         <seealso/>
       </element>
       <element name="TCustomGrid.Sort.ColSorting">
-        <short>Indicates if the sort is performed for a column or a row.</short>
+        <short>
+          <b>True</b> if a column is affected in the method. <b>False</b> if a row is affected.
+        </short>
       </element>
       <element name="TCustomGrid.Sort.Index">
         <short>
@@ -12403,11 +12687,11 @@
 
       <element name="TCustomGrid.UpdateHorzScrollBar">
         <short>
-          Updates the horizontal scrollbar to use the specified range, page, and position.
+          Updates the horizontal scroll bar to use the specified range, page, and position.
         </short>
         <descr>
           <p>
-            <var>UpdateHorzScrollBar</var> calls <var>ScrollBarShow</var> to updated the scrollbar visibility when it differs from the value in <var>aVisible</var>. The <var>ScrollBarRange</var> method is called to apply the values in ARange, APage, and APos to the horizontal scrollbar for the control. No actions are performed if the visibility has not been changed and the scrollbar is not visible.
+            <var>UpdateHorzScrollBar</var> calls <var>ScrollBarShow</var> to updated the scroll bar visibility when it differs from the value in <var>aVisible</var>. The <var>ScrollBarRange</var> method is called to apply the values in ARange, APage, and APos to the horizontal scroll bar for the control. No actions are performed if the visibility has not been changed and the scroll bar is not visible.
           </p>
           <p>
             UpdateHorzScrollBar is called from the CalcScrollbarsRange method when the visible area in the grid is scrolled.
@@ -12416,16 +12700,16 @@
         <seealso/>
       </element>
       <element name="TCustomGrid.UpdateHorzScrollBar.AVisible">
-        <short><b>True</b> if the scrollbar is visible.</short>
+        <short><b>True</b> if the scroll bar is visible.</short>
       </element>
       <element name="TCustomGrid.UpdateHorzScrollBar.ARange">
-        <short>Maximum position for the scrollbar.</short>
+        <short>Maximum position for the scroll bar.</short>
       </element>
       <element name="TCustomGrid.UpdateHorzScrollBar.APage">
-        <short>Page size for a thumb tab in the scrollbar.</short>
+        <short>Page size for a thumb tab in the scroll bar.</short>
       </element>
       <element name="TCustomGrid.UpdateHorzScrollBar.APos">
-        <short>Position for the scrollbar.</short>
+        <short>Position for the scroll bar.</short>
       </element>
 
       <element name="TCustomGrid.UpdateSelectionRange">
@@ -12453,11 +12737,11 @@
 
       <element name="TCustomGrid.UpdateVertScrollbar">
         <short>
-          Updates the vertical scrollbar to use the specified visibility, range, and page values.
+          Updates the vertical scroll bar to use the specified visibility, range, and page values.
         </short>
         <descr>
           <p>
-            <var>UpdateVertScrollbar</var> calls <var>ScrollBarShow</var> to updated the scrollbar visibility when it differs from the value in <var>aVisible</var>. The <var>ScrollBarRange</var> method is called to apply the values in ARange, APage, and APos to the vertical scrollbar for the control. No actions are performed if the visibility has not been changed and the scrollbar is not visible.
+            <var>UpdateVertScrollbar</var> calls <var>ScrollBarShow</var> to updated the scroll bar visibility when it differs from the value in <var>aVisible</var>. The <var>ScrollBarRange</var> method is called to apply the values in ARange, APage, and APos to the vertical scroll bar for the control. No actions are performed if the visibility has not been changed and the scroll bar is not visible.
           </p>
           <p>
             UpdateVertScrollbar is called from the CalcScrollbarsRange method when the visible area in the grid is scrolled.
@@ -12466,16 +12750,16 @@
         <seealso/>
       </element>
       <element name="TCustomGrid.UpdateVertScrollbar.AVisible">
-        <short><b>True</b> if the scrollbar should be visible.</short>
+        <short><b>True</b> if the scroll bar should be visible.</short>
       </element>
       <element name="TCustomGrid.UpdateVertScrollbar.ARange">
-        <short>Maximum position for the scrollbar.</short>
+        <short>Maximum position for the scroll bar.</short>
       </element>
       <element name="TCustomGrid.UpdateVertScrollbar.APage">
-        <short>Page size for a thumb tab in the scrollbar.</short>
+        <short>Page size for a thumb tab in the scroll bar.</short>
       </element>
       <element name="TCustomGrid.UpdateVertScrollbar.APos">
-        <short>Position for the scrollbar.</short>
+        <short>Position for the scroll bar.</short>
       </element>
 
       <element name="TCustomGrid.UpdateBorderStyle">
@@ -12554,7 +12838,7 @@
         <short>Handles a WM_SIZE window message for the control.</short>
         <descr>
           <p>
-            Ignores the message when updating scrollbars (gfUpdatingScrollbar in GridFlags). Otherwise, the inherited method is called to handle the window size message.
+            Ignores the message when updating scroll bars (gfUpdatingScrollbar in GridFlags). Otherwise, the inherited method is called to handle the window size message.
           </p>
         </descr>
         <seealso>
@@ -12616,7 +12900,7 @@
             WndProc is an overridden method in TCustomGrid. It extends the ancestor method to provide design-time support for the grid control. LM_HSCROLL and LM_VSCROLL messages are not processed at design-time.
           </p>
           <p>
-            For the Windows platform, message processing is halted when a LM_SIZE message is being processed. Windows sends WM_SIZE when showing or hiding scrollbars, and can occur during the DoOnChangeBounds method.
+            For the Windows platform, message processing is halted when a LM_SIZE message is being processed. Windows sends WM_SIZE when showing or hiding scroll bars, and can occur during the DoOnChangeBounds method.
           </p>
           <p>
             WndProc calls the inherited method to handle focus, mouse, key, and state change messages.
@@ -12632,7 +12916,7 @@
 
       <element name="TCustomGrid.AllowOutboundEvents">
         <short>
-          Allows a mouse click on an out-of-bounds cell, and moves the cursor to the nearest valid cell.
+          Allows a mouse click on unused space in the control, and moves the cursor to the nearest valid cell.
         </short>
         <descr>
           <p>
@@ -12925,16 +13209,41 @@
       </element>
 
       <element name="TCustomGrid.Columns">
-        <short>Definitions for the columns in the grid.</short>
+        <short>Definitions for the columns displayed the grid.</short>
         <descr>
           <p>
-            <var>Columns</var> is a <var>TGridColumns</var> used to represent column definitions for the grid control. Columns contains the <var>TGridColumn</var> instances which define the attributes for the column such as its Font, Color, Alignment, Layout, Editor style, auto-sizing priority, et. al. Properties and methods in Columns can be used at run-time to access and maintain the column definitions for the grid.
+            <var>Columns</var> is a <var>TGridColumns</var> which contains column definitions for the grid control. Columns stores the <var>TGridColumn</var> instances which define the attributes for each of the columns such as its Font, Color, Alignment, Layout, Editor style, auto-sizing priority, et. al. Properties and methods in Columns can be used at run-time to access and maintain the column definitions for the grid.
           </p>
           <p>
             See <link id="TGridColumn">TGridColumn</link> for more information about the items stored in the collection.
           </p>
           <p>
-            Columns should not be confused with the <i>COLUMNS</i> construct frequently used in <i>SQL</i> programming, which refer to <var>Fields</var> of data. The contents of Fields can be displayed as Columns in a Grid, but they must be seen as separate and distinct. It is irrelevant to refer to the color, font or width of a data field from a database, but these are all very relevant in specifying the appearance of a column in a grid.
+            Columns contains definitions for the non-fixed columns on the grid control. For a grid with 5 columns, and FixedCols set to 1, there would need to be 4 definitions added to the Columns collection. ColCount is automatically maintained when items are added to or deleted from Columns. When Columns is enabled, a value cannot be directly assigned to ColCount; it is calculated as:.
+          </p>
+          <code>ColCount := FixedCols + Columns.Count</code>
+          <p>
+            Values in the collection can be modified at run-time to add, delete, or modify column definitions. For example:
+          </p>
+<code>
+  var
+    c: TGridColumn;
+  begin
+    // add a custom column
+    c := Grid.Columns.Add;
+    // modify the new column
+    c.title.caption := 'Price';       // Set columns caption
+    c.align := taRightJustify;        // Align column content to the right
+    c.color := clMoneyGreen;          // Change default color to clMoneyGreen
+    c.Index := 0;                     // Make it the first column
+    // access an existing column
+    grid.columns[0].Width := 60;      // Change column 0 width to 60 pixels
+    // delete an existing column
+    grid.columns.delete(0);           // Delete column 0
+    ....
+  end;
+</code>
+          <p>
+            Columns should not be confused with the <b><i>COLUMNS</i></b> construct frequently used in <b><i>SQL</i></b> programming, which refer to <var>Fields</var> of data. The contents of Fields can be displayed as Columns in a Grid, but they must be seen as separate and distinct. It is irrelevant to refer to the color, font or width of a data field from a database, but these are all very relevant in specifying the appearance of a column in a grid.
           </p>
         </descr>
         <seealso>
@@ -12944,7 +13253,7 @@
       </element>
 
       <element name="TCustomGrid.ColWidths">
-        <short>Provides indexed access to the Width of the column in the grid.</short>
+        <short>Provides indexed access to the Width for a column in the grid.</short>
         <descr>
           <p>
             The column is specified with the <var>aCol</var> parameter. The <var>aCol</var> parameter must fall within the valid index range of 0 to <link id="TCustomGrid.ColCount">ColCount</link>-1.
@@ -12974,20 +13283,25 @@
       </element>
 
       <element name="TCustomGrid.DefaultColWidth">
-        <short>Default width used for newly created grid columns.</short>
+        <short>Default width used for grid columns.</short>
         <descr>
           <p>
-            If new columns of the grid are created by changing the <link id="TCustomGrid.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property.
+            DefaultColWidth is an Integer property with the default width for a new column added to the grid control. If new columns of the grid are created by changing the <link id="TCustomGrid.ColCount">ColCount</link> property, the width of these new columns will be set to the value in the <i>DefaultColWidth</i> property.
           </p>
           <p>
-            Use 0 for an auto-sized column width.
+            A negative non-zero value in the property member indicates that the value in the DEFCOLWIDTH constant is scaled to the PPI setting for the Font used on the control. Use 0 as the width for an auto-sized column. Changing the value for the property causes existing values in Cols to be reset to -1 to force the columns to be scaled and updated. The position for a visible Editor control is also updated when the property value is changed.
           </p>
           <p>
-            Use GetRealDefaultColWidth for the real value.
+            DefaultColWidth is used as the default when reading values from the indexed ColWidths property.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.DefaultRowHeight"/>
+          <link id="TCustomGrid.ResetDefaultColWidths"/>
+          <link id="TCustomGrid.EditorMode"/>
+          <link id="TCustomGrid.EditorWidthChanged"/>
+          <link id="TCustomGrid.ColWidths"/>
+          <link id="DEFCOLWIDTH"/>
         </seealso>
       </element>
 
@@ -12999,9 +13313,6 @@
           </p>
           <p>
             Use 0 for auto-sized row heights.
-          </p>
-          <p>
-            Use GetRealDefaultRowHeight for the real value.
           </p>
         </descr>
         <seealso>
@@ -13092,13 +13403,13 @@
       </element>
 
       <element name="TCustomGrid.Editor">
-        <short>The editor used to modify the value in the current cell.</short>
+        <short>The editor control used to modify the value in the current cell.</short>
         <descr>
           <p>
             <var>Editor</var> is a <var>TWinControl</var> descendant which contains the control used to edit the value in the current cell for the grid control.
           </p>
           <p>
-            There are several editor styles available for columns in the grid control: String, Button, Composite, and Pick List. Button editors display a button that can be clicked to perform actions which determine the value for the cell. A composite editor uses an editor for the string value and a button for additional actions. A pick list editor allows selection from one of the predetermined values for the cell. The String editor is essentially a TEdit control, and is the default editor style used in the grid control.
+            There are several editor styles available for columns on the grid control: String, Button, Composite, and Pick List. Button editors display a button that can be clicked to perform actions which determine the value for the cell. A composite editor uses an editor for the string value and a button to perform additional actions. A pick list editor allows selection from one of the predetermined values for the cell. The String editor is essentially a TEdit control, and is the default editor style used in the grid control.
           </p>
           <p>
             The Editor style is determined either by examining values in the column definition stored in the Columns property, or using the OnSelectEditor event handler. OnSelectEditor is signalled when Columns has not been Enabled in the grid.
@@ -13136,6 +13447,9 @@
           <p>
             Setting a new value for the property causes the BorderStyle for the Editor to be updated, and the EditorPos method is called to recalculate the editor bounds and position.
           </p>
+          <p>
+            Setting the property to bsSingle forces a border to be drawn inside the cell rectangle where the control is located. For some widgetsets, the border is drawn using theme services to maintain a uniform appearance for the platform.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -13149,7 +13463,7 @@
             <var>EditorMode</var> is a <var>Boolean</var> property which indicates whether the cell <var>Editor</var> has been enabled for the grid control. Set EditorMode to <b>True</b> to display the cell Editor for the control. Set it to <b>False</b> to hide the cell Editor.
           </p>
           <p>
-            The value in EditorMode is updated when handling key presses and mouse clicks, scrolling the visible area for the control, or changing the configuration of the grid.
+            The value in EditorMode is updated when handling key press and mouse click events, scrolling the visible area for the control, or changing the configuration settings for the grid.
           </p>
         </descr>
         <seealso>
@@ -13219,7 +13533,8 @@
 
       <element name="TCustomGrid.ExtendedColSizing">
         <short>Indicates if extended column sizing is enabled in the grid.</short>
-        <descr/>
+        <descr>
+        </descr>
         <seealso/>
       </element>
 
@@ -13238,7 +13553,7 @@
 
       <element name="TCustomGrid.ExtendedSelect">
         <short>
-          Indicates whether a selection can extend beyond the visible boundary for he grid.
+          Indicates whether a selection can extend beyond the visible boundary for the grid.
         </short>
         <descr/>
         <seealso/>
@@ -14035,7 +14350,7 @@
         <short>Scrollbars displayed for the grid control.</short>
         <descr>
           <p>
-            <var>ScrollBars</var> is a <var>TScrollStyle</var> property which indicates the scrollbars displayed for the grid control. The default value for the property is <var>ssAutoBoth</var> and causes vertical and horizontal scrollbars to be displayed when needed.
+            <var>ScrollBars</var> is a <var>TScrollStyle</var> property which indicates the scroll bars displayed for the grid control. The default value for the property is <var>ssAutoBoth</var> and causes vertical and horizontal scroll bars to be displayed when needed.
           </p>
           <p>
             See <var>TScrollStyle</var> for more information about values in the enumeration and their meanings.
@@ -14325,7 +14640,7 @@
           <p>
             OnPickListSelect can be used to perform actions needed when the cell value is changed as a result of the pick-list selection in the editor. An application must implement and assign an object procedure to the handler to respond to the event notification.
           </p>
-        </descr>        
+        </descr>
         <seealso>
           <link id="TCustomGrid.PickListItemSelected"/>
           <link id="TPickListCellEditor.Select"/>
@@ -14375,8 +14690,15 @@
         <short>
           Event handler signalled when the top left cell in the visible area of the control is changed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled (when assigned) from the TopLeftChanged method. It occurs when the origin cell is changed when the grid is scrolled, when the value in AutoFillColumns is changed to True, or when the position for the cell editor is updated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.TopLeftChanged"/>
+          <link id="TCustomGrid.AutoFillColumns"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.OnUserCheckboxBitmap">
@@ -15653,11 +15975,34 @@
             <var>TCustomDrawGrid</var> is a <var>TCustomGrid</var> descendant used as the base class for custom-drawn grids including <var>TDrawGrid</var> and <var>TStringGrid</var>. Applications should not create instance of TCustomDrawGrid; use one of the descendent classes like <var>TDrawGrid</var> or <var>TStringGrid</var>.
           </p>
           <p>
-            TCustomDrawGrid provides overridden methods needed to work with cells using the TVirtualGrid class instance in the Grid property. It displays information as a matrix of rows and columns, and is oriented towards rendering both graphical information and textual content.
+            TCustomDrawGrid provides overridden methods needed to work with cells using the TVirtualGrid class instance in the Grid property. It displays information as a matrix of rows and columns, but unlike TStringGrid, it does not rely on Cells which contain string values. Instead, a container is used to store the data displayed and maintained using the draw grid control. Information entered in a cell editor must update container items to reflect the changes in the grid.
           </p>
           <p>
             The OnDrawCell event handler is provided to render the cell content in the grid, and can be used to render images or directly access the Canvas for the control. Default cell drawing logic is also implemented using the properties and methods from the ancestor class, and may be accessed from within the OnDrawCell event handler.
           </p>
+          <p>
+            Other event handlers can be used to perform actions needed when a column or row value is accessed in the control. For instance: OnSelection, OnSelectCell, OnGetEditText, OnSetEditText, et. al.
+          </p>
+          <p>
+            Additional information about grid usage is available on the Lazarus wiki in the following pages:
+          </p>
+          <ul>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/Grids_Reference_Page">
+                Grids Reference Page
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TDrawGrid">
+                TDrawGrid
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TStringGrid">
+                TStringGrid
+              </url>
+            </li>
+          </ul>
         </descr>
         <seealso>
           <link id="TCustomGrid"/>
@@ -15796,57 +16141,185 @@
         <short/>
       </element>
 
-      <element name="TCustomDrawGrid.ColRowExchanged" link="#lcl.grids.TCustomGrid.ColRowExchanged"/>
+      <element name="TCustomDrawGrid.ColRowExchanged">
+        <short>
+          Performs actions needed when column or row data at the specified positions are exchanged in the grid control.
+        </short>
+        <descr>
+          <p>
+            <var>ColRowExchanged</var> is overridden in <var>TCustomDrawGrid</var> and implements the method defined in the ancestor class. It is used to perform actions needed when  column or row values are exchanged (swapped) in the grid control.
+          </p>
+          <p>
+            IsColumn indicates whether columns or rows are affected in the method. When set to <b>True</b>, column values at the specified positions are exchanged. When set to <b>False</b>, row values are exchanged.
+          </p>
+          <p>
+            If the Columns property has not been enabled, ColRowExchanged calls the ExchangeColRow method in the internal TVirtualGrid instance for the control.
+          </p>
+          <p>
+            ColRowExchanged signals the OnColRowExchanged event handler (when assigned).
+          </p>
+          <p>
+            ColRowExchanged is called from the DoOPExchangeColRow method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.OnColRowExchanged"/>
+          <link id="#lcl.grids.TCustomGrid.ColRowExchanged">TCustomGrid.ColRowExchanged</link>
+          <link id="#lcl.grids.TCustomGrid.DoOPExchangeColRow">TCustomGrid.DoOPExchangeColRow</link>
+        </seealso>
+      </element>
       <element name="TCustomDrawGrid.ColRowExchanged.IsColumn">
-        <short/>
+        <short>
+          <b>True</b> if column values are affected. <b>False</b> if row values are affected.
+        </short>
       </element>
       <element name="TCustomDrawGrid.ColRowExchanged.Index">
-        <short/>
+        <short>
+          Position for the first column or row swapped in the method.
+        </short>
       </element>
       <element name="TCustomDrawGrid.ColRowExchanged.WithIndex">
-        <short/>
+        <short>
+          Position for the other column or row swapped in the method.
+        </short>
       </element>
 
-      <element name="TCustomDrawGrid.ColRowInserted" link="#lcl.grids.TCustomGrid.ColRowInserted"/>
+      <element name="TCustomDrawGrid.ColRowInserted">
+        <short>
+          Performs actions needed when a column or row is inserted at the specified position in the grid control.
+        </short>
+        <descr>
+          <p>
+            <var>ColRowInserted</var> is overridden in <var>TCustomDrawGrid</var>, and implements the method introduced in the ancestor class. It is used to perform actions needed when column or row values are inserted into the grid control.
+          </p>
+          <p>
+            IsColumn indicates whether a column or a row is inserted in the method. When set to <b>True</b>, a new column is inserted at the specified position. When set to <b>False</b>, a new row is inserted.
+          </p>
+          <p>
+            Inserting a column when the Columns property has not been enabled causes the InsertColRow method in the internal TVirtualGrid instance to be called.
+          </p>
+          <p>
+            The NotifyColRowChange method is called to signal the OnColRowInserted event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.ColRowInserted">TCustomGrid.ColRowInserted</link>
+        </seealso>
+      </element>
       <element name="TCustomDrawGrid.ColRowInserted.IsColumn">
-        <short/>
+        <short>
+          <b>True</b> if a column is inserted in the method. <b>False</b> if a row is inserted.
+        </short>
       </element>
       <element name="TCustomDrawGrid.ColRowInserted.Index">
-        <short/>
+        <short>
+          Position where the new column or row is inserted in the control.
+        </short>
       </element>
 
-      <element name="TCustomDrawGrid.ColRowMoved" link="#lcl.grids.TCustomGrid.ColRowMoved"/>
+      <element name="TCustomDrawGrid.ColRowMoved">
+        <short>
+          Performs actions when a column or row is moved in the grid.
+        </short>
+        <descr>
+          <p>
+            <var>ColRowMoved</var> is overridden in <var>TCustomDrawGrid</var> to implement the virtual method defined in the ancestor class. It is used to perform actions when a column or a row is moved in the grid control.
+          </p>
+          <p>
+            ColRowMoved calls the MoveColRow method in the internal virtual grid  for the class to change the position for the column or row. The OnColRowMoved event handler is signalled (when assigned) prior to exiting from the method.
+          </p>
+          <p>
+            ColRowMoved is called from the DoOPMoveColRow method, and occurs after Columns has been updated (when needed and enabled). It occurs before VisualChange is called or the bounds for an editor control are adjusted.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.OnColRowMoved"/>
+          <link id="TCustomGrid.ColRowMoved"/>
+          <link id="TCustomGrid.DoOPMoveColRow"/>
+        </seealso>
+      </element>
       <element name="TCustomDrawGrid.ColRowMoved.IsColumn">
-        <short/>
+        <short>
+          <b>True</b> if a column is moved in the method. <b>False</b> if a row is moved.
+        </short>
       </element>
       <element name="TCustomDrawGrid.ColRowMoved.FromIndex">
-        <short/>
+        <short>
+          Position in the grid with the column or row values moved in the method.
+        </short>
       </element>
       <element name="TCustomDrawGrid.ColRowMoved.ToIndex">
-        <short/>
+        <short>
+          Position in the grid where the values are stored after they have been moved.
+        </short>
       </element>
 
       <element name="TCustomDrawGrid.CreateVirtualGrid">
-        <short>Creates and returns a virtual grid for the control.</short>
+        <short>Creates and returns the internal virtual grid instance for the control.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomDrawGrid.Create"/>
+          <link id="TVirtualGrid"/>
+        </seealso>
       </element>
       <element name="TCustomDrawGrid.CreateVirtualGrid.Result">
         <short/>
       </element>
 
-      <element name="TCustomDrawGrid.DrawCell" link="#lcl.grids.TCustomGrid.DrawCell"/>
+      <element name="TCustomDrawGrid.DrawCell">
+        <short>
+          Draws the the content for the cell specified in the ACol and ARow arguments.
+        </short>
+        <descr>
+          <p>
+            <var>DrawCell</var> is an overridden method in <var>TCustomDrawGrid</var>. It re-implements the method from the ancestor class, and does <b>not</b> call the inherited method. DrawCell is used to draw the content for the cell specified in the ACol and ARow arguments at the position in the ARect parameter. AState contains the grid drawing state applied to the cell.
+          </p>
+          <p>
+            DrawCell calls PrepareCanvas to initialize the Canvas for the control to the state in AState. This includes setting the default Color, Pen, Brush, and Font attributes used to render the cell content or editor control. The OnPrepareCanvas event handler is signalled to allow the default canvas settings to be overridden on a cell-by-cell basis.
+          </p>
+          <p>
+            At run-time, DefaultDrawCell is called to perform the default drawing routine for the cell when DefaultDrawing is set to <b>True</b>. DefaultDrawCell is always called at design-time.
+          </p>
+          <p>
+            At run-time, the OnDrawCell event handler is signalled (when assigned) to render the cell to the Canvas for the control using the grid draw state in the AState argument. When DefaultDrawing is <b>False</b>, OnDrawCell is responsible for all actions performed to draw the cell.
+          </p>
+          <p>
+            DrawCellGrid is called prior to exit to draw grid lines around the cell (when enabled).
+          </p>
+          <p>
+            DrawCell is called from the DrawRow method when it renders the visible cells in the grid row.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.DefaultDrawing"/>
+          <link id="TCustomDrawGrid.DefaultDrawCell"/>
+          <link id="TCustomDrawGrid.OnDrawCell"/>
+          <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TCustomGrid.DrawCellGrid"/>
+          <link id="TCustomGrid.DrawRow"/>
+          <link id="TCustomGrid.DrawCell"/>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+        </seealso>
+      </element>
       <element name="TCustomDrawGrid.DrawCell.aCol">
-        <short/>
+        <short>
+          Column number for the cell rendered in the method.
+        </short>
       </element>
       <element name="TCustomDrawGrid.DrawCell.aRow">
-        <short/>
+        <short>
+          Row number for the cell rendered in the method.
+        </short>
       </element>
       <element name="TCustomDrawGrid.DrawCell.aRect">
-        <short/>
+        <short>
+          Rectangle where the cell is drawn.
+        </short>
       </element>
       <element name="TCustomDrawGrid.DrawCell.aState">
-        <short/>
+        <short>
+          Grid drawing state for the cell content, editor control, or borders.
+        </short>
       </element>
 
       <element name="TCustomDrawGrid.DrawCellAutonumbering">
@@ -15910,14 +16383,25 @@
 
       <element name="TCustomDrawGrid.GetCells">
         <short>Gets the value for the specified cell.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>GetCells</var> is an overridden method in <var>TCustomDrawGrid</var> used to get the String value for the cell specified in the ACol and ARow arguments. It calls the inherited method on entry - which always returns an empty string ('') as the cell value.
+          </p>
+          <p>
+            When ACol and ARow contain the column and row coordinates for the cell Editor, the value for the cell is retrieved by dispatching a GM_GETVALUE message to the Editor control. This occurs when the control has been assigned and its Visible property is True. The value returned in the grid message is used as the return value for the method.
+          </p>
+          <p>
+            GetCells is called from EditorShow method.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomGrid.GetCells"/>
           <link id="TCustomGrid.Editor"/>
+          <link id="TCustomGrid.EditorShow"/>
         </seealso>
       </element>
       <element name="TCustomDrawGrid.GetCells.Result">
-        <short>Value for the cell.</short>
+        <short>Value for the specified cell.</short>
       </element>
       <element name="TCustomDrawGrid.GetCells.ACol">
         <short>Column number for the cell value.</short>
@@ -15948,15 +16432,35 @@
         <short>Check box state for the cell.</short>
       </element>
 
-      <element name="TCustomDrawGrid.GetEditMask" link="#lcl.grids.TCustomGrid.GetEditMask"/>
+      <element name="TCustomDrawGrid.GetEditMask">
+        <short>
+          Gets the edit mask for the specified cell.
+        </short>
+        <descr>
+          <p>
+            <var>GetEditMask</var> is an overridden method in <var>TCustomDrawGrid</var>. It re-implements the method from the ancestor class, and does not call the inherited method.
+          </p>
+          <p>
+            GetEditMask sets the return value to an empty string ('') by default. It signals the OnGetEditMask event handler (when assigned) to get the edit mask used in the editor for the grid cell.
+          </p>
+          <p>
+            GetEditMask is called from the EditorDoSetValue method in the ancestor class, and occurs when the editor control retrieves and validates the value for the specified cell.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.OnGetEditMask"/>
+          <link id="#lcl.grids.TCustomGrid.GetEditMask">TCustomGrid.GetEditMask</link>
+          <link id="#lcl.grids.TCustomGrid.EditorDoSetValue">TCustomGrid.EditorDoSetValue</link>
+        </seealso>
+      </element>
       <element name="TCustomDrawGrid.GetEditMask.Result">
-        <short/>
+        <short>Edit mask used for the specified cell.</short>
       </element>
       <element name="TCustomDrawGrid.GetEditMask.aCol">
-        <short/>
+        <short>Column for the cell.</short>
       </element>
       <element name="TCustomDrawGrid.GetEditMask.aRow">
-        <short/>
+        <short>Row number for the cell.</short>
       </element>
 
       <element name="TCustomDrawGrid.GetEditText">
@@ -16196,7 +16700,7 @@
         </seealso>
       </element>
       <element name="TCustomDrawGrid.SetColor.Value">
-        <short>New value for the property.</short>
+        <short>New value for the Color property.</short>
       </element>
 
       <element name="TCustomDrawGrid.SetCheckboxState">
@@ -16354,11 +16858,12 @@
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for <var>TCustomDrawGrid</var>. Creates the virtual grid used in the control, and calls the inherited constructor prior to exiting from the method.
+            <var>Create</var> is the overridden constructor for <var>TCustomDrawGrid</var>. Create allocates the virtual grid (TVirtualGrid) instance used in the control, and calls the inherited constructor prior to exiting from the method.
           </p>
         </descr>
         <seealso>
           <link id="TCustomGrid.Create"/>
+          <link id="TVirtualGrid"/>
         </seealso>
       </element>
       <element name="TCustomDrawGrid.Create.AOwner">
@@ -16374,6 +16879,7 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.Destroy"/>
+          <link id="TVirtualGrid"/>
         </seealso>
       </element>
 
@@ -16409,7 +16915,7 @@
       </element>
 
       <element name="TCustomDrawGrid.DeleteCol">
-        <short>Deletes the column at the specified position.</short>
+        <short>Deletes the column at the specified position on the grid control.</short>
         <descr>
           <p>
             Calls <var>DeleteColRow</var> to delete the column number specified in <var>Index</var>.
@@ -16424,7 +16930,7 @@
       </element>
 
       <element name="TCustomDrawGrid.DeleteRow">
-        <short>Deletes the row at the specified position.</short>
+        <short>Deletes the row at the specified position on the grid control.</short>
         <descr>
           <p>
             Calls <var>DeleteColRow</var> to delete the row number specified in <var>Index</var>.
@@ -16644,37 +17150,77 @@
       <element name="TCustomDrawGrid.VisibleColCount" link="#lcl.grids.TCustomGrid.VisibleColCount"/>
       <element name="TCustomDrawGrid.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount"/>
       <element name="TCustomDrawGrid.OnAfterSelection" link="#lcl.grids.TCustomGrid.OnAfterSelection"/>
-      <element name="TCustomDrawGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection" />
+      <element name="TCustomDrawGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection"/>
       <element name="TCustomDrawGrid.OnClick" link="#lcl.controls.TControl.OnClick"/>
 
       <element name="TCustomDrawGrid.OnColRowDeleted">
         <short>Event handler signalled when a grid column or row is deleted.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the NotifyColRowChange method (when assigned). It occurs after the column or row has been removed from the internal virtual grid for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.NotifyColRowChange"/>
+          <link id="TCustomDrawGrid.ColRowDeleted"/>
+          <link id="TVirtualGrid.DeleteColRow"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnColRowExchanged">
         <short>Event handler signalled when a column or row has been exchanged with another.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the ColRowExchanged method (when assigned). It occurs after the columns or rows have been swapped using the internal virtual grid for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.ColRowExchanged"/>
+          <link id="TVirtualGrid.ExchangeColRow"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnColRowInserted">
         <short>Event handler signalled when a column or row is inserted into the grid.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the NotifyColRowChange method (when assigned) when an insert notification is performed. It occurs after the column or row has been inserted by calling the InsertColRow method in the internal virtual grid for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.NotifyColRowChange"/>
+          <link id="TVirtualGrid.InsertColRow"/>
+          <link id="TGridOperationEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnColRowMoved">
         <short>Event handler signalled when a column or row in the grid is moved.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the ColRowMoved method (when assigned). It occurs after the column or row value have been moved using the MoveColRow method in the internal virtual grid for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.ColRowMoved"/>
+          <link id="TVirtualGrid.MoveColRow"/>
+          <link id="TGridOperationEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnCompareCells">
         <short>Event handler signalled to compare the content in cells </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the DoCompareCells method (when assigned) when the Sort method is executed for the grid control. It occurs before the DoOPExchangeColRow method has been called yo change the order for the Columns on the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.ExchangeColRow"/>
+          <link id="TCustomGrid.DoOPExchangeColRow"/>
+          <link id="TCustomGrid.DoCompareCells"/>
+          <link id="TCustomGrid.Sort"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -16691,34 +17237,83 @@
 
       <element name="TCustomDrawGrid.OnGetEditMask">
         <short>Event handler signalled to get the edit mask used for a grid cell.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the GetEditMask method (when assigned). It provides the value passed in a GM_SETMASK message to the cell Editor in the control when the EditorGetValue method is executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.GetEditMask"/>
+          <link id="TCustomGrid.EditorDoSetValue"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnGetEditText">
-        <short>Event handler signalled to get the value for a cell editor in the grid.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to get the value for a cell editor in the grid.
+        </short>
+        <descr>
+          <p>
+            <var>OnGetEditText</var> is a <var>TGetEditEvent</var> property with the event handler signalled to get the value for a cell editor on the grid control. It is signalled (when assigned) from the GetEditText method, and provides the value dispatched in a GM_SETVALUE message to the Editor control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.GetEditText"/>
+          <link id="TCustomGrid.EditorDoSetValue"/>
+          <link id="TGetEditEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnHeaderClick">
         <short>Event handler signalled when the fixed header for a column or row is clicked.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the HeaderClick method (when assigned). It occurs when a mouse up event or column accelerator key is handled for a header cell on the grid control. It occurs after the SortOrder and SortColumn have been updated and the Sort method has been called when ColumnClickSorts is enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.HeaderClick"/>
+          <link id="TCustomGrid.HeaderClick"/>
+          <link id="TCustomGrid.ColumnClickSorts"/>
+          <link id="TCustomGrid.SortOrder"/>
+          <link id="TCustomGrid.SortColumn"/>
+          <link id="TCustomGrid.Sort"/>
+          <link id="THdrEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnHeaderSized">
-        <short>Event handler signalled when a column or row header has been re-sized.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a column or row header has been resized.
+        </short>
+        <descr>
+          <p>
+            <var>OnHeaderSized</var> is a <var>THdrEvent</var> property with the event handler signalled when a column or a row on the grid has been resized. OnHeaderSized is signalled (when assigned) from the HeaderSized method. It occurs when a mouse up event is handled while column or row sizing is active. It occurs after ResizeColumn or ResizeRow has been called, and the scroll bars have been adjusted for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.HeaderSized"/>
+          <link id="TCustomGrid.MouseUp"/>
+          <link id="TCustomGrid.ResizeColumn"/>
+          <link id="TCustomGrid.ResizeRow"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnHeaderSizing">
-        <short>Event handler signalled when a column or row header sizing action is performed.</short>
-        <descr/>
+        <short>
+          Event handler signalled when a column or row header sizing action is started.
+        </short>
+        <descr>
+          <p>
+            <var>OnHeaderSizing</var> is a <var>THeaderSizingEvent</var> property with the event handler signalled when a column or row header sizing action is started. It is signalled (when assigned) from the HeaderSizing method, and occurs when MouseMove events are handled when the internal grid state is set to gsColSizing or gsRowSizing.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomDrawGrid.HeaderSizing"/>
           <link id="TCustomDrawGrid.OnHeaderSized"/>
+          <link id="TCustomGrid.MouseMove"/>
           <link id="THeaderSizingEvent"/>
+          <link id="TGridState"/>
         </seealso>
       </element>
 
@@ -16786,6 +17381,26 @@
           <p>
             TDrawGrid sets the visibility for properties introduced in the <var>TCustomDrawGrid</var> ancestor, and does not provide any new functionality.
           </p>
+          <p>
+            Additional information about grid usage is available on the Lazarus wiki in the following pages:
+          </p>
+          <ul>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/Grids_Reference_Page">
+                Grids Reference Page
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TDrawGrid">
+                TDrawGrid
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TStringGrid">
+                TStringGrid
+              </url>
+            </li>
+          </ul>
         </descr>
         <seealso>
           <link id="HowToUseGrids"/>
@@ -16939,7 +17554,9 @@
       <element name="TDrawGrid.OnValidateEntry" link="#lcl.grids.TCustomGrid.OnValidateEntry"/>
 
       <element name="TStringGridStrings">
-        <short>Represents strings used as the cell values in TCustomStringGrid / TStringGrid.</short>
+        <short>
+          Represents strings used as the cell values in TCustomStringGrid / TStringGrid.
+        </short>
         <descr>
           <p>
             <var>TStringGridStrings</var> is a <var>TStrings</var> descendant that represents the strings used to populate the cells in a <var>TStringGrid</var> instance.
@@ -16955,7 +17572,9 @@
       <element name="TStringGridStrings.FOwner"/>
 
       <element name="TStringGridStrings.ConvertIndexLineCol">
-        <short>Converts an index position to line and column numbers for the Cells in a grid.</short>
+        <short>
+          Converts an index position to line and column numbers for the Cells in a grid.
+        </short>
         <descr/>
         <seealso>
           <link id="TStringGridStrings.Add"/>
@@ -17119,9 +17738,9 @@
       <element name="TStringGridStrings.Delete">
         <short>Deletes a value stored in the class instance.</short>
         <descr>
-            <p>
-              <var>Delete</var> is overridden to prevent removing entries in the <var>Strings</var> property. It always raises an <var>EGridException</var> exception.
-            </p>
+          <p>
+            <var>Delete</var> is overridden to prevent removing entries in the <var>Strings</var> property. It always raises an <var>EGridException</var> exception.
+          </p>
         </descr>
         <errors>
           Raises an <var>EGridException</var> exception with the message <b>'Cannot delete value.'</b>
@@ -17137,7 +17756,9 @@
       <element name="TStringGridStrings.Insert">
         <short>Inserts a value in the class instance.</short>
         <descr>
-          Raises an <var>EGridException</var> exception with the message <b>'Cannot insert value.'</b>
+          <p>
+            Raises an <var>EGridException</var> exception with the message <b>'Cannot insert value'</b>.
+          </p>
         </descr>
         <seealso>
           <link id="#rtl.classes.TStrings.Insert">TStrings.Insert</link>
@@ -17159,6 +17780,26 @@
             <p>
               TCustomStringGrid provides the familiar tabular format used in grid controls, and is designed for use with string content stored in its cells. Internally, columns and rows in the class are mapped to <var>TStringGridStrings</var> instances used to store the values in the grid control. TCustomStringGrid also allows a TObject instance to be stored for each cell in the grid using the <var>Objects</var> property.
             </p>
+            <p>
+              Additional information about grid usage is available on the Lazarus wiki in the following pages:
+            </p>
+            <ul>
+              <li>
+                <url href="https://wiki.lazarus.freepascal.org/Grids_Reference_Page">
+                  Grids Reference Page
+                </url>
+              </li>
+              <li>
+                <url href="https://wiki.lazarus.freepascal.org/TDrawGrid">
+                  TDrawGrid
+                </url>
+              </li>
+              <li>
+                <url href="https://wiki.lazarus.freepascal.org/TStringGrid">
+                  TStringGrid
+                </url>
+              </li>
+            </ul>
         </descr>
         <seealso>
           <link id="TCustomStringGrid.Cells"/>
@@ -17563,7 +18204,7 @@
         <seealso/>
       </element>
       <element name="TCustomStringGrid.GetCells.Result">
-        <short>Value for the indexed property.</short>
+        <short>Value for the indexed Cells property.</short>
       </element>
       <element name="TCustomStringGrid.GetCells.ACol">
         <short>Column number for the cell.</short>
@@ -17616,7 +18257,9 @@
       </element>
 
       <element name="TCustomStringGrid.LoadContent">
-        <short>Loads configuration settings from the specified XML configuration file.</short>
+        <short>
+          Loads configuration settings from the specified XML configuration file.
+        </short>
         <descr>
           <p>
             Loads values for the <var>Cells</var> property when enabled in the configuration file.
@@ -17655,10 +18298,14 @@
       <element name="TCustomStringGrid.SelectionSetText">
         <short>Stores the specified Tab-separated values to the Selection in the grid.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomDrawGrid.Selection"/>
+        </seealso>
       </element>
       <element name="TCustomStringGrid.SelectionSetText.TheText">
-        <short/>
+        <short>
+          Text with the tab-separated values stored to the cells in Selection.
+        </short>
       </element>
 
       <element name="TCustomStringGrid.SelectionSetHTML">
@@ -17703,7 +18350,7 @@
         <short>Row number for the affected cell.</short>
       </element>
       <element name="TCustomStringGrid.SetCells.AValue">
-        <short>New value for the indexed property.</short>
+        <short>New value for the indexed Cells property.</short>
       </element>
 
       <element name="TCustomStringGrid.SetCheckboxState">
@@ -17788,17 +18435,36 @@
       </element>
 
       <element name="TCustomStringGrid.AutoSizeColumn">
-        <short>Automatically adjusts the width of a column to accommodate the widest text value.</short>
+        <short>
+          Automatically adjusts the width of a column to accommodate the widest text value in the column.
+        </short>
         <descr>
           <p>
             <var>AutoSizeColumn</var> sets the column width to the length of the widest text found in the column specified by <var>ACol</var>.
           </p>
           <p>
-            Tip: Use <var>goDblClickAutoSize</var> in Options to allow columns to be automatically resized when double Clicking on the column border.
+            AutoAdjustColumn is called to determine the width needed for the specified column number. The measurement includes optional title images and sort indicators for column headers, the text displayed for the cells using the Font or TitleFont for the control, and cell padding. Each row is visited to measure the content displayed in the column.
+          </p>
+          <p>
+            The calculated width is stored in ColWidths at the position in ACol.
+          </p>
+          <p>
+            Use AutoSizeColumns to calculated the sizes for all Columns on the grid control.
+          </p>
+          <p>
+            Include <var>goDblClickAutoSize</var> in the Options property to allow columns to be automatically resized when a mouse double Click occurs on the border in a cell header. In other words, when the resize cursor is visible.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomStringGrid.AutoAdjustColumn"/>
           <link id="TCustomStringGrid.AutoSizeColumns"/>
+          <link id="TCustomStringGrid.Cells"/>
+          <link id="TCustomDrawGrid.ColWidths"/>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.Options"/>
+          <link id="TGridColumn"/>
+          <link id="TGridOptions"/>
+          <link id="TGridOption"/>
         </seealso>
       </element>
       <element name="TCustomStringGrid.AutoSizeColumn.aCol">
@@ -17806,14 +18472,26 @@
       </element>
 
       <element name="TCustomStringGrid.AutoSizeColumns">
-        <short>Resizes all columns to fit in the longest text in each.</short>
+        <short>Resizes all columns to accommodate the longest text value in each column.</short>
         <descr>
           <p>
-            Automatically resizes all columns by adjusting them to fit in the longest text in each column. This is a quick way to perform the <var>AutoSizeColumn</var> method for every column in the grid.
+            Automatically resizes all columns by adjusting them to fit in the longest text in each column. This is a quick way to perform the <var>AutoAdjustColumn</var> method for every column in the grid.
+          </p>
+          <p>
+            AutoSizeColumns calls the AutoAdjustColumn method for column numbers in the range 0..ColCount-1. Calculated column widths are stored at the corresponding positions in the ColWidths property.
+          </p>
+          <p>
+            Use AutoSizeColumn to adjust the width for a single column on the grid control.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomStringGrid.AutoAdjustColumn"/>
           <link id="TCustomStringGrid.AutoSizeColumn"/>
+          <link id="TCustomStringGrid.Cells"/>
+          <link id="TCustomDrawGrid.ColWidths"/>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TCustomGrid.Options"/>
+          <link id="TGridColumn"/>
         </seealso>
       </element>
 
@@ -17824,16 +18502,33 @@
             Cleans all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region. See <link id="TGridZoneSet"/> for more information.
           </p>
           <p>
-            The cleaning operation does not change the number of rows and columns. It replaces the content for the affected cells with empty strings ('').
+            The cleaning operation does not change the number of rows and columns on the grid control. It replaces the content for the affected cells with empty strings ('').
           </p>
           <p>
             Some examples:
           </p>
-          <ul>
-            <li>Clean all cells: grid.Clean([]); (the same as grid.clean)</li>
-            <li>Clean all non-fixed cells: grid.Clean([gzNormal]);</li>
-            <li>Clean all cells except grid column headers: Grid.Clean([gzNormal, gzFixedRows]);</li>
-          </ul>
+          <p>
+            <b>Clean all cells:</b>
+          </p>
+<code>
+  // the same as grid.clean
+  grid.Clean([]);
+</code>
+          <p>
+            <b>Clean all non-fixed cells:</b>
+          </p>
+          <p>
+            text
+          </p>
+<code>
+  grid.Clean([gzNormal]);
+</code>
+          <p>
+            <b>Clean all cells except grid column headers:</b>
+          </p>
+<code>
+  grid.Clean([gzNormal, gzFixedRows]);
+</code>
         </descr>
         <seealso/>
       </element>
@@ -17857,14 +18552,19 @@
       </element>
 
       <element name="TCustomStringGrid.CopyToClipboard">
-        <short>Copies the selection cell range to the clipboard.</short>
+        <short>Copies the current Selection range to the clipboard.</short>
         <descr>
           <p>
-            <var>CopyToClipboard</var> will copy a range of cells into the clipboard; the cells values are TAB separated. The range is defined based on optional <var>AUseSelection</var> parameter (which is <b>False</b> by default) and indicates the range is set to the whole grid, including fixed cols/rows. If <var>AUseSelection</var> is <b>True</b>, the range of cells is set to the current <link id="TCustomGrid.Selection"/>.
+            <var>CopyToClipboard</var> will copy a range of cells into the clipboard. The cell values are stored in a Tab-delimited format. The cell selection range is based on the optional <var>AUseSelection</var> parameter (which is <b>False</b> by default) and indicates the range is set to the whole grid, including fixed columns and rows. If <var>AUseSelection</var> is <b>True</b>, the range of cells is set to the current values in the <link id="TCustomGrid.Selection"/> property.
           </p>
+          <remark>
+            TCustomStringGrid provides run-time support for pasting cell values from the clipboard, but is limited to a single selection range. Pasting multi-selections is problematic since the ranges can represent non-adjacent cell areas. For this reason, a PasteFromClipboard method is not implemented in TCustomStringGrid. No actions are performed when Ctrl+V is pressed and HasMultiSelection returns <b>True</b>.
+          </remark>
         </descr>
         <seealso>
           <link id="TCustomGrid.Selection"/>
+          <link id="TCustomStringGrid.DoPasteFromClipboard"/>
+          <link id="TCustomGrid.HasMultiSelection"/>
         </seealso>
       </element>
 
@@ -18006,11 +18706,54 @@
       </element>
 
       <element name="TCustomStringGrid.Cols">
-        <short>Provides indexed access to the list of values for the specified column number.</short>
+        <short>
+          Provides indexed access to the list of values for the specified column number.
+        </short>
         <descr>
           <p>
-            <var>Cols</var> is an indexed <var>TStrings</var> property which provides access to the list of values for the column number specified in Index. Calls MapGetColsRows to retrieve the TStrings instance used as the value for the property.
+            <var>Cols</var> is an indexed <var>TStrings</var> property which provides access to the list of values for the column number specified in Index. Read access calls MapGetColsRows to retrieve the TStrings instance used as the value for the property.
           </p>
+          <p>
+            The Cols implementation in Lazarus is different than the one in Delphi. In Lazarus, a new TStrings instance is created and used to retrieve the cell content. The programmer is responsible for freeing the object after use. Failure to do so will result in a memory leak.
+          </p>
+          <p>
+            Cast the property value to TStringList to use the features introduced in the descendent class. For example:
+          </p>
+          <p>
+            <b>Avoid a memory leak when updating column content:</b>
+          </p>
+<code>
+// this will cause a memory leak because the returned TStrings is not freed
+Grid.Cols[1].CommaText := '1,2,3,4,5';
+Grid.Cols[2].Text := 'a'+#13#10+'s'+#13#10+'d'+#13#10+'f'+#13#10+'g';
+
+// avoids the memory leak from above
+Lst := TStringList.Create;
+Lst.CommaText := '1,2,3,4,5';
+Grid.Cols[1] := Lst;
+Lst.Free;
+
+Lst := TStringList.Create;
+Grids.Text := 'a'+#13#10+'s'+#13#10+'d'+#13#10+'f'+#13#10+'g';
+Grid.Cols[2] := Lst;
+Lst.Free;
+</code>
+          <p>
+            <b>Store values from a string grid column to a list box:</b>
+          </p>
+<code>
+procedure TForm1.FillListBox1;
+var
+  StrTempList: TStringList;
+begin
+  StrTempList := TStringList(Grid.Cols[4]);
+  if StrTempList &lt;&gt; nil then
+  begin
+    ListBox1.Items.Assign(StrTempList);
+    StrTempList.Free;
+  end;
+end;
+</code>
         </descr>
         <seealso/>
       </element>
@@ -18026,7 +18769,7 @@
         <short>Provides indexed access to a TObject instance associated with the cell.</short>
         <descr/>
           <p>
-            Objects is an indexed TObject property which is used to associate an object instance with the cell specified in the ACol and ARow index values. The property value can be any TObject descendant. The application must allocate and free the object instance, and must ensure it is cast to the correct type when retrieved.
+            <var>Objects</var> is an indexed <var>TObject</var> property which is used to associate an object instance with the cell specified in the ACol and ARow index values. The property value can be any TObject descendant. The application must allocate and free the object instance, and must ensure it is cast to the correct type when retrieved.
           </p>
           <p>
             While values in Cells and Objects are related, they are handled independently. The value in Objects is not changed when a new value is assigned to Cells.
@@ -18054,6 +18797,48 @@
           <p>
             <var>Rows</var> is an indexed <var>TStrings</var> property which provides access to the list with the String values for the columns in the row number specified in <var>Index</var>. Calls <var>MapGetColsRows</var> to retrieve the <var>TStrings</var> instance used as the value for the property.
           </p>
+          <p>
+            The Rows implementation in Lazarus is different than the one in Delphi. In Lazarus, a new TStrings instance is created and used to retrieve the cell content. The programmer is responsible for freeing the object after use. Failure to do so will result in a memory leak.
+          </p>
+          <p>
+            Cast the property value to TStringList to use the features introduced in the descendent class. For example:
+          </p>
+          <p>
+            <b>Avoid a memory leak when updating column content:</b>
+          </p>
+<code>
+// this will cause a memory leak because the returned TStrings is not freed
+Grid.Rows[1].CommaText := '1,2,3,4,5';
+Grid.Rows[2].Text := 'a'+#13#10+'s'+#13#10+'d'+#13#10+'f'+#13#10+'g';
+
+// avoids the memory leak from above
+Lst := TStringList.Create;
+Lst.CommaText := '1,2,3,4,5';
+Grid.Rows[1] := Lst;
+Lst.Free;
+
+Lst := TStringList.Create;
+Grids.Text := 'a'+#13#10+'s'+#13#10+'d'+#13#10+'f'+#13#10+'g';
+Grid.Rows[2] := Lst;
+Lst.Free;
+</code>
+          <p>
+            <b>Store values from a string grid row to a list box:</b>
+          </p>
+<code>
+procedure TForm1.FillListBox1;
+var
+  StrTempList: TStringList;
+begin
+  StrTempList := TStringList(Grid.Rows[4]);
+  if StrTempList &lt;&gt; nil then
+  begin
+    ListBox1.Items.Assign(StrTempList);
+    StrTempList.Free;
+  end;
+end;
+</code>
+
         </descr>
         <seealso/>
       </element>
@@ -18076,6 +18861,26 @@
           <p>
             TStringGrid sets the visibility for properties defined in the ancestor class. It has an overridden <var>WSRegisterClass</var> method to register properties (from older LCL versions) which are no longer used in LCL component streaming.
           </p>
+          <p>
+            Additional information about grid usage is available on the Lazarus wiki in the following pages:
+          </p>
+          <ul>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/Grids_Reference_Page">
+                Grids Reference Page
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TDrawGrid">
+                TDrawGrid
+              </url>
+            </li>
+            <li>
+              <url href="https://wiki.lazarus.freepascal.org/TStringGrid">
+                TStringGrid
+              </url>
+            </li>
+          </ul>
         </descr>
         <seealso>
           <link id="TCustomStringGrid"/>
@@ -18322,7 +19127,7 @@
             <b>Customizing Grids</b>
           </p>
           <p>
-            Grids are components derived from the <var>TCustomControl</var> class and do not have a native widget associated with them. So they are not restricted by the look of the current interface theme. This can be both an advantage and a disadvantage: usually programmers want to create a uniform-look application. Lazarus grids are flexible enough to allow programmers to make them look similar to other native controls; alternatively they can customize the grid to obtain almost the same look in any platform or widget interface (with the exception of scrollbars, whose look is still determined by the current theme).
+            Grids are components derived from the <var>TCustomControl</var> class and do not have a native widget associated with them. So they are not restricted by the look of the current interface theme. This can be both an advantage and a disadvantage: usually programmers want to create a uniform-look application. Lazarus grids are flexible enough to allow programmers to make them look similar to other native controls; alternatively they can customize the grid to obtain almost the same look in any platform or widget interface (with the exception of scroll bars, whose look is still determined by the current theme).
           </p>
           <p>
             Some properties can affect the way the grid looks by acting when the cell is about to be painted in <var>PrepareCanvas/OnPrepareCanvas</var> by changing default canvas properties like brush color or font. Following is a list of such properties:
@@ -18530,7 +19335,7 @@
               </p>
               <ul>
                 <li>
-                  <b>PrepareCanvas</b>  - If the DefaultDrawing is set, the grid canvas is setup with default properties for brush and font based on current visual state. For several design and run-time properties, the text alignment is set to match programmer selection in custom columns if they exists. If DefaultDrawing is <b>False</b>, brush color is set to clWindow and Font color to clWindowText, the text alignment is set with grids defaultTextStyle value.
+                  <b>PrepareCanvas</b> - If DefaultDrawing is <b>True</b>, the grid canvas is setup with default properties for brush and font based on current visual state. For several design and run-time properties, the text alignment is set to match programmer selection in custom columns if they exists. If DefaultDrawing is <b>False</b>, brush color is set to clWindow and Font color to clWindowText, the text alignment is set to the DefaultTextStyle value.
                 </li>
                 <li>
                   <b>OnPrepareCanvas</b> -  If the programmer wrote an event handler for the
