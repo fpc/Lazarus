@@ -374,6 +374,7 @@ procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr;
 begin
   inherited AfterChangingInstructionCode(ALocation, ACount);
   FlushInstructionCache(Handle, Pointer(PtrUInt(ALocation)), 1);
+  //FlushInstructionCache(Handle, nil, 0);
 end;
 
 function TDbgWinProcess.GetFullProcessImageName(AProcessHandle: THandle): string;
@@ -1854,6 +1855,7 @@ begin
     exit;
 
   Result := GetFpThreadContext(_UnAligendContext, FCurrentContext, cfFull);
+  DebugLn((DBG_WARNINGS or DBG_VERBOSE) and (not Result), ['Failed to read thread-state for ', ID]);
   //FThreadContextChanged := False; TODO: why was that not here?
   FThreadContextChangeFlags := [];
   FRegisterValueListValid:=False;
