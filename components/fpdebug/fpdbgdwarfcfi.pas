@@ -267,7 +267,6 @@ begin
     Exit;
     end;
   Result := False;
-  if Instructions=nil then exit;
   p := @Instructions[0];
   CurrentLocation:=InitialAddress;
   while p < Length(Instructions)+@Instructions[0] do
