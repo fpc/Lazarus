@@ -11,7 +11,7 @@ resourcestring
   dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
   dlgInspectAmountOfItemsToShow = 'Amount of items to show';
   dlgInspectBoundsDD = 'Bounds: %d .. %d';
-  dlgFpConvOptAddNew = 'Add new';
+  dlgFpConvOptAddNew = 'Add';
   dlgFpConvOptRemove = 'Remove';
   dlgFpConvOptMatchTypesByName = 'Match types by name';
   dlgFpConvOptAction = 'Action';

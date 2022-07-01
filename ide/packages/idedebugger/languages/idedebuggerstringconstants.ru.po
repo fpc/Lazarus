@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: idedebuggerstringconstants.dlgfpconvoptaction
+msgid "Action"
+msgstr "Действие"
+
+#: idedebuggerstringconstants.dlgfpconvoptaddnew
+msgid "Add"
+msgstr "Добавить"
+
+#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
+msgid "FpDebug Options"
+msgstr "Параметры FpDebug"
+
+#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+msgid "Match types by name"
+msgstr "Сопоставлять типы по имени"
+
+#: idedebuggerstringconstants.dlgfpconvoptname
+msgid "Name"
+msgstr "Имя"
+
+#: idedebuggerstringconstants.dlgfpconvoptremove
+msgid "Remove"
+msgstr "Удалить"
+
+#: idedebuggerstringconstants.dlgidedbgdebugger
+msgid "Debugger"
+msgstr "Отладчик"
+
+#: idedebuggerstringconstants.dlgidedbgentername
+msgid "Enter name"
+msgstr "Введите имя"
+
+#: idedebuggerstringconstants.dlgidedbgnewitem
+msgid "New Item"
+msgstr "Новый элемент"
+
+#: idedebuggerstringconstants.dlginspectamountofitemstoshow
+msgid "Amount of items to show"
+msgstr "Количество показываемых элементов"
+
+#: idedebuggerstringconstants.dlginspectboundsdd
+#, object-pascal-format
+msgid "Bounds: %d .. %d"
+msgstr "Границы: %d .. %d"
+
+#: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
+msgid "Index of first item to show"
+msgstr "Индекс первого показываемого элемента"
+

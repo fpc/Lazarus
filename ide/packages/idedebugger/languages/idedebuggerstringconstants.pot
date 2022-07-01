@@ -1,0 +1,52 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: idedebuggerstringconstants.dlgfpconvoptaction
+msgid "Action"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgfpconvoptaddnew
+msgid "Add"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
+msgid "FpDebug Options"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+msgid "Match types by name"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgfpconvoptname
+msgid "Name"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgfpconvoptremove
+msgid "Remove"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgidedbgdebugger
+msgid "Debugger"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgidedbgentername
+msgid "Enter name"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgidedbgnewitem
+msgid "New Item"
+msgstr ""
+
+#: idedebuggerstringconstants.dlginspectamountofitemstoshow
+msgid "Amount of items to show"
+msgstr ""
+
+#: idedebuggerstringconstants.dlginspectboundsdd
+#, object-pascal-format
+msgid "Bounds: %d .. %d"
+msgstr ""
+
+#: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
+msgid "Index of first item to show"
+msgstr ""
+
