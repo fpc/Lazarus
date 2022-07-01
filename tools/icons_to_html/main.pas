@@ -247,7 +247,7 @@ begin
     SynEdit.Lines.Add('  <tr>');
     SynEdit.Lines.Add('    <td class="colorset1 right_border">Name</td>');
     for i := 0 to PixSizeList.Count - 1 do
-      SynEdit.Lines.Add('    <td class="colorset2">' + PixSizeList[i] + '</td>');
+      SynEdit.Lines.Add('    <td class="colorset2 text_center">' + PixSizeList[i] + '</td>');
     SynEdit.Lines.Add('  </tr>');
 
     for i := 0 to IcoFileList.Count - 1 do
@@ -371,12 +371,12 @@ procedure TMainForm.UpdateLastDirs(D: String);
 var
   i: Integer;
 begin
-  for i := 0 to LastDirsMax do
-    if D = popLastDirs.Items[i].Caption then
-    begin
-      popLastDirs.Items[i].MenuIndex := 0;
-      Exit;
-    end;
+  i := popLastDirs.Items.IndexOfCaption(D);
+  if i >-1 then
+  begin
+    popLastDirs.Items[i].MenuIndex := 0;
+    Exit;
+  end;
 
   popLastDirs.Items[LastDirsMax].Caption := D;
   popLastDirs.Items[LastDirsMax].Visible := True;
