@@ -261,6 +261,11 @@ var
   uparam1, uparam2: QWord;
   sparam: Int64;
 begin
+  if Length(Instructions) = 0 then
+    begin
+    Result := True;
+    Exit;
+    end;
   Result := False;
   if Instructions=nil then exit;
   p := @Instructions[0];

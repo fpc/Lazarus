@@ -3935,8 +3935,11 @@ var
     // initial instructions')
     Dec(SizeLeft, p-Augmentation);
     SetLength(Instructions, SizeLeft);
-    Move(p^, Instructions[0], SizeLeft);
-    Result.InitialInstructions := Instructions;
+    if SizeLeft > 0 then
+      begin
+      Move(p^, Instructions[0], SizeLeft);
+      Result.InitialInstructions := Instructions;
+      end;
   end;
 
   function LoadFDE(CFI: TDwarfCallFrameInformation; CIEPointer: QWord; InitialLocationAddr: pointer; SizeLeft: QWord): TDwarfFDE;
