@@ -33,7 +33,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts;
+  EditorOptions, LazarusIDEStrConsts, DebuggerStrConst;
 
 type
   { TEditorCodetoolsOptionsFrame }
@@ -54,6 +54,7 @@ type
     CompletionDropDownHintTrackBar: TTrackBar;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     AutoCompletionDelayLabel: TLabel;
+    DbgToolTipUseConverter: TCheckBox;
     ToolTipBevel: TBevel;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
@@ -93,6 +94,7 @@ begin
   AutoToolTipSymbToolsCheckBox.Caption := lisShowDeclarationHints;
   AutoToolTipExprEvalCheckBox.Caption := lisShowValueHintsWhileDebugging;
   DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
+  DbgToolTipUseConverter.Caption := dsrEvalUseFpDebugConverter;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
 
@@ -115,6 +117,7 @@ begin
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     DbgToolTipAutoCastClass.Checked := DbgHintAutoTypeCastClass;
+    DbgToolTipUseConverter.Checked := DbgHintUseFpDebugConverter;
     AutoCompletionDelayTrackBar.Position := AutoDelayInMSec;
     AutoHintDelayTrackBar.Position := AutoHintDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
@@ -135,6 +138,7 @@ begin
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     DbgHintAutoTypeCastClass := DbgToolTipAutoCastClass.Checked;
+    DbgHintUseFpDebugConverter := DbgToolTipUseConverter.Checked;
     AutoDelayInMSec := AutoCompletionDelayTrackBar.Position;
     AutoHintDelayInMSec := AutoHintDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;

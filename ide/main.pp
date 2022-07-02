@@ -11503,6 +11503,8 @@ begin
       Opts := [];
       if EditorOpts.DbgHintAutoTypeCastClass
       then Opts := [defClassAutoCast];
+      if not EditorOpts.DbgHintUseFpDebugConverter
+      then Opts := [defSkipValConv];
 
       DebugBoss.CurrentWatches.BeginUpdate;
       aWatch := DebugBoss.CurrentWatches.Add(Expression);

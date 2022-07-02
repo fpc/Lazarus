@@ -1401,6 +1401,7 @@ type
 
   TEditorOptionsBase = class(TIDEEditorOptions)
   private
+    fDbgHintUseFpDebugConverter: Boolean;
     FTabFont: String;
     FTabFontDisableAntialiasing: Boolean;
     FTabFontSize: Integer;
@@ -1471,6 +1472,8 @@ type
     // Code Tools options
     property DbgHintAutoTypeCastClass: Boolean              // declaration hints
       read fDbgHintAutoTypeCastClass write fDbgHintAutoTypeCastClass default True;
+    property DbgHintUseFpDebugConverter: Boolean              // declaration hints
+      read fDbgHintUseFpDebugConverter write fDbgHintUseFpDebugConverter default True;
     property CompletionLongLineHintType: TSynCompletionLongHintType
       read fCompletionLongLineHintType write fCompletionLongLineHintType
       default sclpExtendRightOnly;
@@ -4717,6 +4720,7 @@ begin
   fTopInfoView := True;
   // hints
   fDbgHintAutoTypeCastClass := True;
+  fDbgHintUseFpDebugConverter := True;
   // Code Tools options
   fCompletionLongLineHintType := DefaultCompletionLongLineHintType;
   // Code folding

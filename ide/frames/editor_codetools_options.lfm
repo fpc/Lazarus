@@ -18,10 +18,11 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = AutoCompletionDelayLabel
     Left = 172
     Height = 15
-    Top = 156
+    Top = 175
     Width = 83
     BorderSpacing.Left = 20
     Caption = 'AutoDelayLabel'
+    Color = clDefault
     ParentColor = False
   end
   object ToolTipBevel: TBevel
@@ -44,7 +45,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 19
     Top = 6
-    Width = 210
+    Width = 208
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoRemoveEmptyMethodsOnSave'
@@ -57,7 +58,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 19
     Top = 87
-    Width = 198
+    Width = 194
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoToolTipSymbToolsCheckBox'
@@ -70,7 +71,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 19
     Top = 31
-    Width = 179
+    Width = 178
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoCompleteBlockCheckBox'
@@ -83,7 +84,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 19
     Top = 112
-    Width = 182
+    Width = 180
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoToolTipExprEvalCheckBox'
@@ -97,7 +98,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 172
+    Top = 191
     Width = 622
     Frequency = 250
     Max = 4000
@@ -113,15 +114,16 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   end
   object AutoCompletionDelayLabel: TLabel
     AnchorSideLeft.Control = ToolTipBevel
-    AnchorSideTop.Control = DbgToolTipAutoCastClass
+    AnchorSideTop.Control = DbgToolTipUseConverter
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 156
+    Top = 175
     Width = 146
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoCompletionDelayLabel'
+    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownHintTrackBar: TTrackBar
@@ -132,7 +134,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 276
+    Top = 295
     Width = 622
     Frequency = 250
     Max = 4000
@@ -151,11 +153,12 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 260
+    Top = 279
     Width = 148
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'CompletionDropDownLabel'
+    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownDelayLabel: TLabel
@@ -164,10 +167,11 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = CompletionDropDownLabel
     Left = 174
     Height = 15
-    Top = 260
+    Top = 279
     Width = 177
     BorderSpacing.Left = 20
     Caption = 'CompletionDropDownDelayLabel'
+    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownHint: TComboBox
@@ -178,7 +182,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 308
+    Top = 327
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
@@ -193,10 +197,11 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 312
+    Top = 331
     Width = 171
     BorderSpacing.Around = 6
     Caption = 'CompletionDropDownHintLabel'
+    Color = clDefault
     ParentColor = False
   end
   object DbgToolTipAutoCastClass: TCheckBox
@@ -206,7 +211,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 26
     Height = 19
     Top = 131
-    Width = 159
+    Width = 155
     BorderSpacing.Left = 20
     Caption = 'DbgToolTipAutoCastClass'
     TabOrder = 8
@@ -217,7 +222,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Left = 6
     Height = 19
     Top = 62
-    Width = 191
+    Width = 190
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoDisplayFuncProtoCheckBox'
@@ -229,11 +234,12 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 208
+    Top = 227
     Width = 106
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoHintDelayLabel'
+    Color = clDefault
     ParentColor = False
   end
   object AutoHintDelayTrackBar: TTrackBar
@@ -244,7 +250,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 224
+    Top = 243
     Width = 622
     Frequency = 250
     Max = 4000
@@ -264,10 +270,23 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = AutoHintDelayLabel
     Left = 132
     Height = 15
-    Top = 208
+    Top = 227
     Width = 92
     BorderSpacing.Left = 20
     Caption = 'AutoHDelayLabel'
+    Color = clDefault
     ParentColor = False
+  end
+  object DbgToolTipUseConverter: TCheckBox
+    AnchorSideLeft.Control = AutoToolTipExprEvalCheckBox
+    AnchorSideTop.Control = DbgToolTipAutoCastClass
+    AnchorSideTop.Side = asrBottom
+    Left = 26
+    Height = 19
+    Top = 150
+    Width = 150
+    BorderSpacing.Left = 20
+    Caption = 'DbgToolTipUseConverter'
+    TabOrder = 10
   end
 end
