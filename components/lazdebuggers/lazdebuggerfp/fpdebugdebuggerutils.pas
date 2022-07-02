@@ -42,10 +42,10 @@ type
   const
     DEF_MaxMemReadSize              = 512*1024*1024;
     DEF_MaxStringLen                = 10000;
-    DEF_MaxArrayLen                 = 100*1024;
+    DEF_MaxArrayLen                 = 512;
     DEF_MaxNullStringSearchLen      = 10000;
     DEF_MaxStackStringLen           = 512;
-    DEF_MaxStackArrayLen            = 64;
+    DEF_MaxStackArrayLen            = 16;
     DEF_MaxStackNullStringSearchLen = 512;
   private
     FMaxArrayLen: QWord;

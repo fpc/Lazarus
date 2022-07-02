@@ -379,8 +379,7 @@ begin
     else if (FRecurseCnt > 1) and (FOuterArrayIdx >  10) and (Cnt >   10) then Cnt := 10
     else if (FRecurseCnt > 1) and (FOuterArrayIdx >   1) and (Cnt >   20) then Cnt := 20
     else if (FRecurseCnt > 0) and (FOuterArrayIdx > 100) and (Cnt >   10) then Cnt := 10
-    else if (FRecurseCnt > 0) and (FOuterArrayIdx >   1) and (Cnt >   50) then Cnt := 50
-    else if (Cnt > 1000) then Cnt := 1000;
+    else if (FRecurseCnt > 0) and (FOuterArrayIdx >   1) and (Cnt >   50) then Cnt := 50;
 
     /////////////////////
     // add mem read cache ??
