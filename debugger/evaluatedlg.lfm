@@ -1,30 +1,30 @@
 object EvaluateDlg: TEvaluateDlg
   Left = 470
-  Height = 362
+  Height = 290
   Top = 393
-  Width = 500
+  Width = 400
   ActiveControl = cmbExpression
   BorderStyle = bsSizeToolWin
   Caption = 'Evaluate/Modify'
-  ClientHeight = 362
-  ClientWidth = 500
-  Constraints.MinHeight = 250
-  Constraints.MinWidth = 375
-  DesignTimePPI = 120
+  ClientHeight = 290
+  ClientWidth = 400
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  LCLVersion = '2.3.0.0'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
-    Left = 8
-    Height = 20
-    Top = 58
-    Width = 73
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 4
+    Left = 6
+    Height = 15
+    Top = 47
+    Width = 59
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
     Caption = '&Expression:'
     Color = clDefault
     FocusControl = cmbExpression
@@ -34,12 +34,12 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = chkTypeCast
     AnchorSideTop.Side = asrBottom
-    Left = 8
-    Height = 20
-    Top = 146
-    Width = 43
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 8
+    Left = 6
+    Height = 15
+    Top = 116
+    Width = 35
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = '&Result:'
     Color = clDefault
     FocusControl = txtResult
@@ -48,13 +48,13 @@ object EvaluateDlg: TEvaluateDlg
   object lblNewValue: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = cmbNewValue
-    Left = 8
-    Height = 20
-    Top = 302
-    Width = 72
+    Left = 6
+    Height = 15
+    Top = 243
+    Width = 58
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 8
-    BorderSpacing.Bottom = 4
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 3
     Caption = '&New value:'
     Color = clDefault
     FocusControl = cmbNewValue
@@ -62,12 +62,12 @@ object EvaluateDlg: TEvaluateDlg
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 54
+    Height = 44
     Top = 0
-    Width = 500
+    Width = 400
     AutoSize = True
-    ButtonHeight = 50
-    ButtonWidth = 62
+    ButtonHeight = 40
+    ButtonWidth = 50
     Caption = 'ToolBar1'
     EdgeBorders = [ebTop, ebBottom]
     Indent = 2
@@ -75,7 +75,7 @@ object EvaluateDlg: TEvaluateDlg
     TabOrder = 0
     TabStop = True
     object tbInspect: TToolButton
-      Left = 190
+      Left = 154
       Top = 2
       Caption = '&Inspect'
       Enabled = False
@@ -83,7 +83,7 @@ object EvaluateDlg: TEvaluateDlg
       OnClick = tbInspectClick
     end
     object tbWatch: TToolButton
-      Left = 128
+      Left = 104
       Top = 2
       AllowAllUp = True
       Caption = '&Watch'
@@ -92,7 +92,7 @@ object EvaluateDlg: TEvaluateDlg
       OnClick = tbWatchClick
     end
     object tbModify: TToolButton
-      Left = 66
+      Left = 54
       Top = 2
       Caption = '&Modify'
       Enabled = False
@@ -108,14 +108,14 @@ object EvaluateDlg: TEvaluateDlg
       OnClick = tbEvaluateClick
     end
     object ToolButton1: TToolButton
-      Left = 252
-      Height = 50
+      Left = 204
+      Height = 40
       Top = 2
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object tbHistory: TToolButton
-      Left = 262
+      Left = 210
       Top = 2
       Caption = 'History'
       DropdownMenu = mnuHistory
@@ -128,15 +128,15 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 8
-    Height = 28
-    Top = 82
-    Width = 484
+    Left = 6
+    Height = 23
+    Top = 65
+    Width = 388
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 4
-    BorderSpacing.Right = 8
-    ItemHeight = 20
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    ItemHeight = 15
     OnChange = cmbExpressionChange
     OnKeyDown = cmbExpressionKeyDown
     OnKeyUp = cmbExpressionKeyUp
@@ -150,15 +150,15 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = lblNewValue
-    Left = 8
-    Height = 124
-    Top = 170
-    Width = 484
+    Left = 6
+    Height = 103
+    Top = 134
+    Width = 388
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 4
-    BorderSpacing.Right = 8
-    BorderSpacing.Bottom = 8
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ScrollBars = ssAutoVertical
     TabOrder = 3
   end
@@ -168,15 +168,15 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 8
-    Height = 28
-    Top = 326
-    Width = 484
+    Left = 6
+    Height = 23
+    Top = 261
+    Width = 388
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Left = 8
-    BorderSpacing.Right = 8
-    BorderSpacing.Bottom = 8
-    ItemHeight = 20
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 15
     OnKeyDown = cmbNewValueKeyDown
     TabOrder = 4
   end
@@ -184,14 +184,15 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = cmbExpression
     AnchorSideTop.Side = asrBottom
-    Left = 8
-    Height = 24
-    Top = 114
-    Width = 103
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 4
+    Left = 6
+    Height = 19
+    Top = 91
+    Width = 85
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
     Caption = 'chkTypeCast'
     Checked = True
+    OnChange = chkFpDbgConvChange
     State = cbChecked
     TabOrder = 1
   end
@@ -201,19 +202,20 @@ object EvaluateDlg: TEvaluateDlg
     AnchorSideTop.Control = chkTypeCast
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Side = asrBottom
-    Left = 119
-    Height = 24
-    Top = 114
-    Width = 121
-    BorderSpacing.Left = 8
+    Left = 97
+    Height = 19
+    Top = 91
+    Width = 100
+    BorderSpacing.Left = 6
     Caption = 'chkFpDbgConv'
     Checked = True
+    OnChange = chkFpDbgConvChange
     State = cbChecked
     TabOrder = 5
   end
   object mnuHistory: TPopupMenu
-    Left = 90
-    Top = 170
+    Left = 72
+    Top = 136
     object MenuItem1: TMenuItem
       Caption = 'None'
       OnClick = MenuItem1Click

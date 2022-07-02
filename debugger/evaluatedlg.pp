@@ -76,6 +76,7 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure chkFpDbgConvChange(Sender: TObject);
     procedure cmbExpressionKeyUp(Sender: TObject; var {%H-}Key: Word;
       {%H-}Shift: TShiftState);
     procedure cmbExpressionSelect(Sender: TObject);
@@ -419,6 +420,11 @@ procedure TEvaluateDlg.cmbExpressionKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   fSkipKeySelect := False;
+end;
+
+procedure TEvaluateDlg.chkFpDbgConvChange(Sender: TObject);
+begin
+  UpdateData;
 end;
 
 procedure TEvaluateDlg.cmbExpressionSelect(Sender: TObject);
