@@ -82,6 +82,7 @@ resourcestring
   dlgFpConvOptFpDebugConverter = 'FpDebug Converter:';
   dlgFpConvOptDefault = '- Default -';
   dlgFpConvOptDisabled = '- Disabled -';
+  dlgFpConvOptFpConverter = 'Converter';
 
 implementation
 

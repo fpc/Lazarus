@@ -26,8 +26,8 @@ object IDEInspectDlg: TIDEInspectDlg
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 525
-    Top = 48
+    Height = 503
+    Top = 70
     Width = 561
     ActivePage = ErrorPage
     Align = alClient
@@ -48,7 +48,7 @@ object IDEInspectDlg: TIDEInspectDlg
     end
     object ErrorPage: TTabSheet
       Caption = 'ErrorPage'
-      ClientHeight = 497
+      ClientHeight = 475
       ClientWidth = 553
       OnMouseDown = DataGridMouseDown
       PopupMenu = PopupMenu1
@@ -81,7 +81,7 @@ object IDEInspectDlg: TIDEInspectDlg
   object ToolBar1: TToolBar
     AnchorSideTop.Control = EdInspect
     Left = 0
-    Height = 25
+    Height = 47
     Top = 23
     Width = 561
     AutoSize = True
@@ -105,7 +105,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsDivider
     end
     object tbDiv3: TToolButton
-      Left = 134
+      Left = 194
       Height = 22
       Top = 2
       Caption = 'tbDiv3'
@@ -123,7 +123,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object btnColClass: TToolButton
-      Left = 139
+      Left = 199
       Hint = 'Show Class Column'
       Top = 2
       AllowAllUp = True
@@ -135,7 +135,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object btnColType: TToolButton
-      Left = 162
+      Left = 222
       Top = 2
       AllowAllUp = True
       Caption = 'T'
@@ -146,7 +146,7 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsCheck
     end
     object btnColVisibility: TToolButton
-      Left = 185
+      Left = 245
       Top = 2
       AllowAllUp = True
       Caption = 'V'
@@ -176,32 +176,32 @@ object IDEInspectDlg: TIDEInspectDlg
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 213
+      Left = 273
       Top = 2
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object tbDiv4: TToolButton
-      Left = 208
+      Left = 268
       Height = 22
       Top = 2
       Caption = 'tbDiv4'
       Style = tbsDivider
     end
     object tbDiv5: TToolButton
-      Left = 280
+      Left = 340
       Height = 22
       Top = 2
       Caption = 'tbDiv5'
       Style = tbsDivider
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 285
+      Left = 1
       Height = 23
-      Top = 2
-      Width = 242
+      Top = 24
+      Width = 253
       ClientHeight = 23
-      ClientWidth = 242
+      ClientWidth = 253
       inherited btnArrayFastDown: TSpeedButton
         Height = 23
       end
@@ -229,6 +229,21 @@ object IDEInspectDlg: TIDEInspectDlg
       inherited btnArrayPageInc: TSpeedButton
         Height = 23
       end
+      inherited lblBounds: TLabel
+        Height = 23
+      end
+    end
+    object btnUseConverter: TToolButton
+      Left = 134
+      Hint = 'Use Converter'
+      Top = 2
+      AllowAllUp = True
+      Caption = 'Converter'
+      Down = True
+      OnClick = btnUseConverterClick
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsCheck
     end
   end
   object TimerClearData: TTimer

@@ -54,6 +54,7 @@ type
 
   TIDEInspectDlg = class(TDebuggerDlg)
     ArrayNavigationBar1: TArrayNavigationBar;
+    btnUseConverter: TToolButton;
     EdInspect: TComboBox;
     ErrorLabel: TLabel;
     menuCopyValue: TMenuItem;
@@ -84,6 +85,7 @@ type
     procedure btnColClassClick(Sender: TObject);
     procedure btnForwardClick(Sender: TObject);
     procedure btnPowerClick(Sender: TObject);
+    procedure btnUseConverterClick(Sender: TObject);
     procedure btnUseInstanceClick(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -695,6 +697,11 @@ begin
   end;
 end;
 
+procedure TIDEInspectDlg.btnUseConverterClick(Sender: TObject);
+begin
+  UpdateData;
+end;
+
 procedure TIDEInspectDlg.btnBackwardClick(Sender: TObject);
 begin
   GotoHistory(FHistoryIndex - 1);
@@ -717,6 +724,8 @@ begin
          btnUseInstance.Down
       then
         w.EvaluateFlags := w.EvaluateFlags + [defClassAutoCast];
+      if not btnUseConverter.Down then
+        w.EvaluateFlags := w.EvaluateFlags + [defSkipValConv];
       DebugBoss.ViewDebugDialog(ddtWatches, False);
     end;
   finally
@@ -740,6 +749,8 @@ begin
 
   btnUseInstance.Caption := lisInspectUseInstance;
   btnUseInstance.Hint    := lisInspectUseInstanceHint;
+  btnUseConverter.Caption := dlgFpConvOptFpConverter;
+  btnUseConverter.Hint    := dsrEvalUseFpDebugConverter;
   btnColClass.Hint       := lisInspectShowColClass;
   btnColType.Hint        := lisInspectShowColType;
   btnColVisibility.Hint  := lisInspectShowColVisibility;
@@ -1517,6 +1528,8 @@ begin
   Opts := [defExtraDepth, defFullTypeInfo];
   if btnUseInstance.Down then
     include(Opts, defClassAutoCast);
+  if not btnUseConverter.Down then
+    include(Opts, defSkipValConv);
 
   if (FCurrentWatchValue <> nil) and
      (FCurrentWatchValue.Expression = expr) and
@@ -1549,6 +1562,7 @@ begin
     FCurrentWatchValue.AddReference;
     FCurrentWatchValue.Value;
   end;
+  DoWatchUpdated(FInspectWatches, AWatch);
 end;
 
 initialization
