@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FpWatchResultData, FpDbgInfo, FpdMemoryTools,
-  FpErrorMessages, DbgIntfBaseTypes, FpDebugValueConvertors,
+  FpErrorMessages, DbgIntfBaseTypes, LazClasses, FpDebugValueConvertors,
   FpDebugDebuggerBase, LazDebuggerIntf;
 
 type
@@ -20,14 +20,16 @@ type
     FValConvList: TFpDbgConverterConfigList;
     FValConfig: TFpDbgConverterConfig;
 
-    FOuterKind: TDbgSymbolKind;
-    FOuterKindLvl: Integer;
-    FMainValueIsArray: Boolean;
-    FArrayItemConv: TFpDbgValueConverter;
+    FExtraDephtLevelIsArray: Boolean; // defExtraDepth / RecurseCnt=-1
+    FExtraDephtLevelItemConv: TFpDbgValueConverter;
+    FLevelZeroKind: TDbgSymbolKind;
+    FLevelZeroArrayConv: TFpDbgValueConverter;   // All itens in array have same type / optimize and keep converter
+    FInArray: Boolean;
+    FMaxTotalConv, FMaxArrayConv, FCurMaxArrayConv: Integer;
 
     function GetValConv(AnFpValue: TFpValue): TFpDbgValueConverter; inline;
+    procedure SetMaxArrayConv(AValue: Integer);
   public
-    constructor Create(AContext: TFpDbgLocationContext);
     destructor Destroy; override;
 
     function DoValueToResData(AnFpValue: TFpValue;
@@ -36,6 +38,8 @@ type
     property ValConfig: TFpDbgConverterConfig read FValConfig write FValConfig;
     property Debugger: TFpDebugDebuggerBase read FDebugger write FDebugger;
     property ExpressionScope: TFpDbgSymbolScope read FExpressionScope write FExpressionScope;
+    property MaxArrayConv: Integer read FMaxArrayConv write SetMaxArrayConv;
+    property MaxTotalConv: Integer read FMaxTotalConv write FMaxTotalConv;
   end;
 
 implementation
@@ -70,17 +74,18 @@ begin
   end;
 end;
 
-constructor TFpLazDbgWatchResultConvertor.Create(AContext: TFpDbgLocationContext
-  );
+procedure TFpLazDbgWatchResultConvertor.SetMaxArrayConv(AValue: Integer);
 begin
-  inherited Create(AContext);
-  FOuterKindLvl := -99
+  if FMaxArrayConv = AValue then Exit;
+  FMaxArrayConv := AValue;
+  FCurMaxArrayConv := AValue;
 end;
 
 destructor TFpLazDbgWatchResultConvertor.Destroy;
 begin
   inherited Destroy;
-  FArrayItemConv.ReleaseReference;
+  FExtraDephtLevelItemConv.ReleaseReference;
+  FLevelZeroArrayConv.ReleaseReference;
 end;
 
 function TFpLazDbgWatchResultConvertor.DoValueToResData(AnFpValue: TFpValue;
@@ -89,31 +94,55 @@ var
   NewFpVal: TFpValue;
   CurConv: TFpDbgValueConverter;
   AnResFld: TLzDbgWatchDataIntf;
+  WasInArray: Boolean;
 begin
   Result := False;
-  if RecurseCnt <= 0 then begin
-    FOuterKind := AnFpValue.Kind;
-    FOuterKindLvl := RecurseCnt + 1;
+
+  if (RecurseCnt  = -1) and (AnFpValue.Kind in [skArray]) then
+    FExtraDephtLevelIsArray := True;
+
+  if RecurseCnt = 0 then begin
+    FLevelZeroKind := AnFpValue.Kind;
+    FCurMaxArrayConv := FMaxArrayConv;
+    if not FExtraDephtLevelIsArray then
+      ReleaseRefAndNil(FLevelZeroArrayConv);
   end;
 
-  if (RecurseCnt =-1) and (AnFpValue.Kind in [skArray]) then
-    FMainValueIsArray := True;
+  WasInArray := FInArray;
+  if (RecurseCnt >= 0) and (AnFpValue.Kind in [skArray]) then
+    FInArray := True;
+
 
   CurConv := nil;
   NewFpVal := nil;
   try
-    if (RecurseCnt = 0) and (FMainValueIsArray) then begin
-      if FArrayItemConv = nil then
-        FArrayItemConv := GetValConv(AnFpValue);
-      CurConv := FArrayItemConv;
+    if (RecurseCnt = 0) and (FExtraDephtLevelIsArray) then begin
+      if FExtraDephtLevelItemConv = nil then
+        FExtraDephtLevelItemConv := GetValConv(AnFpValue);
+      CurConv := FExtraDephtLevelItemConv;
     end
     else
-    if (not FMainValueIsArray) and
-       ( (RecurseCnt <= 0) or
-         ( (RecurseCnt = FOuterKindLvl) and (FOuterKind in [skClass, skRecord, skObject, skInstance, skInterface]) )
-       )
-    then begin
+    if (RecurseCnt = 1) and (FLevelZeroKind = skArray) then begin
+      if FLevelZeroArrayConv = nil then
+        FLevelZeroArrayConv := GetValConv(AnFpValue);
+      CurConv := FLevelZeroArrayConv;
+    end
+    else begin
       CurConv := GetValConv(AnFpValue);
+    end;
+
+    if (CurConv <> nil) then begin
+      if (FMaxTotalConv <= 0) then
+        CurConv := nil
+      else
+        dec(FMaxTotalConv);
+
+      if FInArray then begin
+        if (FCurMaxArrayConv <= 0) then
+          CurConv := nil
+        else
+          dec(FCurMaxArrayConv);
+      end;
     end;
 
     if (CurConv <> nil) then begin
@@ -134,13 +163,16 @@ begin
       AnResData := AnResData.AddField('', dfvUnknown, []);
     end;
   finally
-    if CurConv <> FArrayItemConv then
+    if (CurConv <> FExtraDephtLevelItemConv) and
+       (CurConv <> FLevelZeroArrayConv)
+    then
       CurConv.ReleaseReference;
     NewFpVal.ReleaseReference;
   end;
 
   if inherited DoValueToResData(AnFpValue, AnResData) then
     Result := True;
+  FInArray := WasInArray;
 end;
 
 end.

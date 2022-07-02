@@ -1127,6 +1127,8 @@ begin
        (ADispFormat <> wdfMemDump)   // TODO
     then begin
       WatchResConv := TFpLazDbgWatchResultConvertor.Create(FExpressionScope.LocationContext);
+      WatchResConv.MaxArrayConv := TFpDebugDebuggerProperties(FDebugger.GetProperties).MemLimits.MaxArrayConversionCnt;
+      WatchResConv.MaxTotalConv := TFpDebugDebuggerProperties(FDebugger.GetProperties).MemLimits.MaxTotalConversionCnt;
       WatchResConv.ExtraDepth := defExtraDepth in FWatchValue.EvaluateFlags;
       WatchResConv.FirstIndexOffs := FWatchValue.FirstIndexOffs;
       if not (defSkipValConv in AnEvalFlags) then begin

@@ -44,10 +44,13 @@ type
     DEF_MaxStringLen                = 10000;
     DEF_MaxArrayLen                 = 512;
     DEF_MaxNullStringSearchLen      = 10000;
+    DEF_MaxArrayConversionCnt       = 100;
+    DEF_MaxTotalConversionCnt       = 3000;
     DEF_MaxStackStringLen           = 512;
     DEF_MaxStackArrayLen            = 16;
     DEF_MaxStackNullStringSearchLen = 512;
   private
+    FMaxArrayConversionCnt: QWord;
     FMaxArrayLen: QWord;
     FMaxMemReadSize: QWord;
     FMaxNullStringSearchLen: QWord;
@@ -55,6 +58,8 @@ type
     FMaxStackNullStringSearchLen: QWord;
     FMaxStackStringLen: QWord;
     FMaxStringLen: QWord;
+    FMaxTotalConversionCnt: QWord;
+    function MaxArrayConversionCntIsStored: Boolean;
     function MaxArrayLenIsStored: Boolean;
     function MaxMemReadSizeIsStored: Boolean;
     function MaxNullStringSearchLenIsStored: Boolean;
@@ -62,6 +67,8 @@ type
     function MaxStackNullStringSearchLenIsStored: Boolean;
     function MaxStackStringLenIsStored: Boolean;
     function MaxStringLenIsStored: Boolean;
+    function MaxTotalConversionCntIsStored: Boolean;
+    procedure SetMaxArrayConversionCnt(AValue: QWord);
     procedure SetMaxArrayLen(AValue: QWord);
     procedure SetMaxMemReadSize(AValue: QWord);
     procedure SetMaxNullStringSearchLen(AValue: QWord);
@@ -69,6 +76,7 @@ type
     procedure SetMaxStackNullStringSearchLen(AValue: QWord);
     procedure SetMaxStackStringLen(AValue: QWord);
     procedure SetMaxStringLen(AValue: QWord);
+    procedure SetMaxTotalConversionCnt(AValue: QWord);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
@@ -78,6 +86,9 @@ type
     property MaxStringLen:           QWord read FMaxStringLen write SetMaxStringLen stored MaxStringLenIsStored default DEF_MaxStringLen;
     property MaxArrayLen:            QWord read FMaxArrayLen write SetMaxArrayLen  stored MaxArrayLenIsStored default DEF_MaxArrayLen;
     property MaxNullStringSearchLen: QWord read FMaxNullStringSearchLen write SetMaxNullStringSearchLen stored MaxNullStringSearchLenIsStored default DEF_MaxNullStringSearchLen;
+
+    property MaxArrayConversionCnt:       QWord read FMaxArrayConversionCnt write SetMaxArrayConversionCnt stored MaxArrayConversionCntIsStored default DEF_MaxArrayConversionCnt;
+    property MaxTotalConversionCnt:       QWord read FMaxTotalConversionCnt write SetMaxTotalConversionCnt stored MaxTotalConversionCntIsStored default DEF_MaxTotalConversionCnt;
 
     property MaxStackStringLen:           QWord read FMaxStackStringLen write SetMaxStackStringLen stored MaxStackStringLenIsStored default DEF_MaxStackStringLen;
     property MaxStackArrayLen:            QWord read FMaxStackArrayLen write SetMaxStackArrayLen stored MaxStackArrayLenIsStored default DEF_MaxStackArrayLen;
@@ -211,6 +222,11 @@ begin
   Result := FMaxArrayLen <> DEF_MaxArrayLen;
 end;
 
+function TFpDebugDebuggerPropertiesMemLimits.MaxArrayConversionCntIsStored: Boolean;
+begin
+  Result := FMaxArrayConversionCnt <> DEF_MaxArrayConversionCnt;
+end;
+
 function TFpDebugDebuggerPropertiesMemLimits.MaxMemReadSizeIsStored: Boolean;
 begin
   Result := FMaxMemReadSize <> DEF_MaxMemReadSize;
@@ -239,6 +255,18 @@ end;
 function TFpDebugDebuggerPropertiesMemLimits.MaxStringLenIsStored: Boolean;
 begin
   Result := FMaxStringLen <> DEF_MaxStringLen;
+end;
+
+function TFpDebugDebuggerPropertiesMemLimits.MaxTotalConversionCntIsStored: Boolean;
+begin
+  Result := FMaxTotalConversionCnt <> DEF_MaxTotalConversionCnt;
+end;
+
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxArrayConversionCnt(
+  AValue: QWord);
+begin
+  if FMaxArrayConversionCnt = AValue then Exit;
+  FMaxArrayConversionCnt := AValue;
 end;
 
 procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxNullStringSearchLen(AValue: QWord);
@@ -288,6 +316,13 @@ begin
   MaxNullStringSearchLen      := MaxNullStringSearchLen;
 end;
 
+procedure TFpDebugDebuggerPropertiesMemLimits.SetMaxTotalConversionCnt(
+  AValue: QWord);
+begin
+  if FMaxTotalConversionCnt = AValue then Exit;
+  FMaxTotalConversionCnt := AValue;
+end;
+
 constructor TFpDebugDebuggerPropertiesMemLimits.Create;
 begin
   inherited Create;
@@ -295,6 +330,8 @@ begin
   FMaxStringLen               := DEF_MaxStringLen;
   FMaxArrayLen                := DEF_MaxArrayLen;
   FMaxNullStringSearchLen     := DEF_MaxNullStringSearchLen ;
+  FMaxArrayConversionCnt      := DEF_MaxArrayConversionCnt;
+  FMaxTotalConversionCnt := DEF_MaxTotalConversionCnt;
   FMaxStackStringLen          := DEF_MaxStackStringLen;
   FMaxStackArrayLen           := DEF_MaxStackArrayLen;
   FMaxStackNullStringSearchLen:= DEF_MaxStackNullStringSearchLen;
@@ -307,6 +344,8 @@ begin
     FMaxStringLen               := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStringLen;
     FMaxArrayLen                := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxArrayLen;
     FMaxNullStringSearchLen     := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxNullStringSearchLen;
+    FMaxArrayConversionCnt      := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxArrayConversionCnt;
+    FMaxTotalConversionCnt      := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxTotalConversionCnt;
     FMaxStackStringLen          := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackStringLen;
     FMaxStackArrayLen           := TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackArrayLen;
     FMaxStackNullStringSearchLen:= TFpDebugDebuggerPropertiesMemLimits(Source).FMaxStackNullStringSearchLen;

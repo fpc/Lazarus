@@ -271,7 +271,7 @@ begin
   expr := trim(cmbExpression.Text);
   if expr = '' then Exit;
   InputHistories.HistoryLists.Add(ClassName, expr,rltCaseSensitive);
-  Opts := [defExtraDepth];
+  Opts := [];
   if chkTypeCast.Checked then
     Opts := Opts + [defClassAutoCast];
   if not chkFpDbgConv.Checked then
