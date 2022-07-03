@@ -19,6 +19,10 @@ msgstr "- По умолчанию -"
 msgid "- Disabled -"
 msgstr "- Отключено -"
 
+#: debuggerstrconst.dlgfpconvoptfpconverter
+msgid "Converter"
+msgstr "Преобразование"
+
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr "Преобразование FpDebug:"

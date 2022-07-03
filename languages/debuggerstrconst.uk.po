@@ -20,6 +20,10 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
+#: debuggerstrconst.dlgfpconvoptfpconverter
+msgid "Converter"
+msgstr ""
+
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
