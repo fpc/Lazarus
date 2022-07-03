@@ -26,9 +26,11 @@ type
     FLevelZeroArrayConv: TFpDbgValueConverter;   // All itens in array have same type / optimize and keep converter
     FInArray: Boolean;
     FMaxTotalConv, FMaxArrayConv, FCurMaxArrayConv: Integer;
+    FNoConvert: Boolean;
 
     function GetValConv(AnFpValue: TFpValue): TFpDbgValueConverter; inline;
     procedure SetMaxArrayConv(AValue: Integer);
+    procedure SetMaxTotalConv(AValue: Integer);
   public
     destructor Destroy; override;
 
@@ -39,7 +41,7 @@ type
     property Debugger: TFpDebugDebuggerBase read FDebugger write FDebugger;
     property ExpressionScope: TFpDbgSymbolScope read FExpressionScope write FExpressionScope;
     property MaxArrayConv: Integer read FMaxArrayConv write SetMaxArrayConv;
-    property MaxTotalConv: Integer read FMaxTotalConv write FMaxTotalConv;
+    property MaxTotalConv: Integer read FMaxTotalConv write SetMaxTotalConv;
   end;
 
 implementation
@@ -52,6 +54,11 @@ var
   i: Integer;
 begin
   Result := nil;
+  if (FNoConvert) or
+     (FInArray and (FMaxArrayConv <= 0))
+  then
+    exit;
+
   if (ValConfig <> nil) then begin
     if ValConfig.CheckMatch(AnFpValue) then
       Result := ValConfig.Converter;
@@ -79,6 +86,13 @@ begin
   if FMaxArrayConv = AValue then Exit;
   FMaxArrayConv := AValue;
   FCurMaxArrayConv := AValue;
+end;
+
+procedure TFpLazDbgWatchResultConvertor.SetMaxTotalConv(AValue: Integer);
+begin
+  if FMaxTotalConv = AValue then Exit;
+  FMaxTotalConv := AValue;
+  FNoConvert := FMaxTotalConv <= 0;
 end;
 
 destructor TFpLazDbgWatchResultConvertor.Destroy;
@@ -143,23 +157,26 @@ begin
         else
           dec(FCurMaxArrayConv);
       end;
-    end;
 
-    if (CurConv <> nil) then begin
       AnResData.CreateStructure(dstInternal);
       AnResFld := AnResData.AddField('', dfvUnknown, []);
+      if (CurConv <> nil) then begin
 
-      NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope);
-      if NewFpVal <> nil then begin
-        Result := inherited DoValueToResData(NewFpVal, AnResFld);
+        NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope);
+        if NewFpVal <> nil then begin
+          Result := inherited DoValueToResData(NewFpVal, AnResFld);
+        end
+        else begin
+          if IsError(CurConv.LastErrror) then
+            AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
+          else
+            AnResFld.CreateError('Conversion failed');
+          Result := True;
+        end;
       end
-      else begin
-        if IsError(CurConv.LastErrror) then
-          AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
-        else
-          AnResFld.CreateError('Conversion failed');
-        Result := True;
-      end;
+      else
+        AnResFld.CreateError('');
+
       AnResData := AnResData.AddField('', dfvUnknown, []);
     end;
   finally

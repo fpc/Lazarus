@@ -159,6 +159,10 @@ begin
 
     if (AResValue.FieldCount > 1) then begin
       Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl);
+      if (AResValue.Fields[0].Field = nil) or
+         (AResValue.Fields[0].Field.ValueKind <> rdkError) or
+         (AResValue.Fields[0].Field.AsString <> '')
+      then
       Result := Result + ' { '
         + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl)
         + ' }';
