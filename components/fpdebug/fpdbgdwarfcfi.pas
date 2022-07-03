@@ -647,6 +647,7 @@ var
   i: Integer;
   ReturnAddress, Value: TDbgPtr;
   FrameBase: TDBGPtr;
+  RegName: String;
 begin
   Result := False;
   NewCallStackEntry := nil;
@@ -706,7 +707,14 @@ begin
   for i := 0 to High(Row.RegisterArray) do
     begin
     if ProcessCFIColumn(Row, i, FrameBase, Size, CurrentCallStackEntry, Value) then
-      NewCallStackEntry.RegisterValueList.DbgRegisterAutoCreate[IntToStr(i)].SetValue(Value, IntToStr(Value),Size, i);
+      begin
+      Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(i);
+      if Assigned(Reg) then
+        RegName := Reg.Name
+      else
+        RegName := IntToStr(i);
+      NewCallStackEntry.RegisterValueList.DbgRegisterAutoCreate[RegName].SetValue(Value, IntToStr(Value),Size, i);
+      end;
     end;
 end;
 
