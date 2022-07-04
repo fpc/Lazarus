@@ -132,11 +132,12 @@ type
   { TDbgWinThread }
 
   TDbgWinThread = class(TDbgThread)
+  private type
+    TBreakPointState = (bsNone, bsInSingleStep);
   private
     FHasExceptionCleared: boolean;
     FIsSuspended: Boolean;
-    FIsSkippingBreakPoint: Boolean;
-    FIsSkippingBreakPointAddress: TDBGPtr;
+    FBreakPointState: TBreakPointState;
     FDoNotPollName: Boolean;
     FName: String;
   protected
@@ -153,7 +154,6 @@ type
     procedure Suspend;
     procedure SuspendForStepOverBreakPoint;
     procedure Resume;
-    procedure SetSingleStepOverBreakPoint;
     procedure EndSingleStepOverBreakPoint;
     procedure SetSingleStep;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
@@ -251,6 +251,11 @@ var
 const
   FLAG_TRACE_BIT = $100;
 {$endif}
+
+function dbgs(ABrkPointState: TDbgWinThread.TBreakPointState): String;
+begin
+  WriteStr(Result, ABrkPointState);
+end;
 
 function dbgs(AnDbgEvent: DEBUG_EVENT): String; overload;
 begin
@@ -790,18 +795,21 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
   begin
     Result := False;
     for t in FThreadMap do
-      if TDbgWinThread(t).FIsSkippingBreakPoint then begin
+      if TDbgWinThread(t).FBreakPointState = bsInSingleStep then begin
         Result := True;
         break;
       end;
+debugln(['HasThreadInSkippingBreak ',Result]);
   end;
 
 var
   EventThread, t: TDbgThread;
-  HasExceptionCleared: Boolean;
+  WinEventThread: TDbgWinThread absolute EventThread;
+  WinAThread: TDbgWinThread absolute AThread;
+  HasExceptionCleared, EventThreadNeedsTempBrkRemove: Boolean;
 begin
-debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep]);
-  HasExceptionCleared := (AThread <> nil) and TDbgWinThread(AThread).FHasExceptionCleared;
+debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep, ' # ', ' # ',DbgSTime]);
+  HasExceptionCleared := (WinAThread <> nil) and WinAThread.FHasExceptionCleared;
 
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
     AThread := nil;
@@ -813,61 +821,56 @@ debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep]);
      This may mean suspending the current thread.
   *)
 
+  (* AThread  versus  EventThread
+
+   * AThread:
+     - AThread is ONLY passed for the "SingleStep" parameter.
+
+     - If AThread is at breakpoint, and AThread is *not* the event-thread, then
+       AThread must still hit that breakpoint.
+       Only the event-thread has been checked for being at a breakpoint.
+
+   * EventThread
+     - The event-thread will have been checked for being at a breakpoint.
+       It therefore must always step-over, if it is at a breakpoint
+
+     - Except, if the event-thread is at a hardcoded breakpoint.
+       In that case:
+       ~ The controller has handled, the hardcoded breakpoint.
+       ~ The IP was *not* reset.
+         So the event-thread may already be at the *next* breakpoint.
+  *)
+
+  EventThreadNeedsTempBrkRemove := False;
   if AProcess.GetThread(MDebugEvent.dwThreadId, EventThread) then begin
-    if EventThread = AThread then
-      EventThread.NextIsSingleStep := SingleStep;
+    EventThreadNeedsTempBrkRemove :=
+      (not EventThread.PausedAtHardcodeBreakPoint) and
+      Process.HasInsertedBreakInstructionAtLocation(EventThread.GetInstructionPointerRegisterValue);
 
-    if HasInsertedBreakInstructionAtLocation(EventThread.GetInstructionPointerRegisterValue) then begin
-debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
-      TDbgWinThread(EventThread).SetSingleStepOverBreakPoint;
+    if EventThreadNeedsTempBrkRemove then
+      WinEventThread.FBreakPointState := bsInSingleStep;
 
-      for t in FThreadMap do
-        TDbgWinThread(t).SuspendForStepOverBreakPoint;
-    end
-    else begin
-      // EventThread does not need to skip a breakpoint;
-      if (EventThread = AThread) and (SingleStep) then
-        TDbgWinThread(EventThread).SetSingleStep;
-
-      if HasThreadInSkippingBreak then begin
-debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
-        // But other threads are still skipping
-        for t in FThreadMap do
-          if not (SingleStep and (t = AThread) and   // allow athread to single-step
-                  not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
-                 )
-          then
-            TDbgWinThread(t).SuspendForStepOverBreakPoint;
-      end;
-    end;
-
-    if (AThread = EventThread) or (assigned(AThread) and TDbgWinThread(AThread).FIsSuspended) then
-      AThread := nil; // Already handled, or suspended
-  end
-
-  else begin // EventThread is gone
-    if HasThreadInSkippingBreak then begin
-debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ']);
-      for t in FThreadMap do
-        if not (SingleStep and (t = AThread) and   // allow athread to single-step
-                not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
-               )
-        then
-          TDbgWinThread(t).SuspendForStepOverBreakPoint;
-    end;
-
-    if assigned(AThread) and (TDbgWinThread(AThread).FIsSuspended) then
-      AThread := nil; // no need for singlestep yet
+    if ( (EventThread = AThread) and SingleStep ) or
+       ( EventThreadNeedsTempBrkRemove )
+    then
+      WinEventThread.SetSingleStep;
+    assert((WinEventThread.FBreakPointState=bsNone) or WinEventThread.NextIsSingleStep, 'TDbgWinProcess.Continue: (WinEventThread.FBreakPointState=bsNone) or WinEventThread.NextIsSingleStep');
   end;
 
-  if assigned(AThread) then
-  begin
-    AThread.NextIsSingleStep:=SingleStep;
-    if SingleStep then
-      TDbgWinThread(AThread).SetSingleStep;
+  if (AThread <> nil) and (AThread <> EventThread) and SingleStep then
+    WinAThread.SetSingleStep;
+
+  if EventThreadNeedsTempBrkRemove or HasThreadInSkippingBreak then begin
+    debugln(FPDBG_WINDOWS or DBG_VERBOSE, '## Skip BrkPoint: EvntThread Nil=%s ISS=%s TmpRmBreak=%s / Thread Nil=%s ISS=%s ',
+      [ dbgs(EventThread <> nil), dbgs((EventThread<>nil) and EventThread.NextIsSingleStep), dbgs(EventThreadNeedsTempBrkRemove),
+        dbgs(AThread <> nil), dbgs((AThread<>nil) and AThread.NextIsSingleStep)  ]);
+    for t in FThreadMap do
+      TDbgWinThread(t).SuspendForStepOverBreakPoint;
   end;
+
+
   AProcess.ThreadsBeforeContinue;
-if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);
+  if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);
 
   if HasExceptionCleared then
     result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE)
@@ -992,10 +995,12 @@ begin
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
   {$IFDEF DebuglnWinDebugEvents}
-  DebugLn(FPDBG_WINDOWS, [dbgs(MDebugEvent), ' ', Result]);
+  DebugLn(FPDBG_WINDOWS, [dbgs(MDebugEvent), ' ', Result, ' # ',DbgSTime]);
   for TDbgThread(t) in FThreadMap do begin
   if t.ReadThreadState then
-    DebugLn(FPDBG_WINDOWS, 'Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
+    DebugLn(FPDBG_WINDOWS,
+      'Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d Susp: %s, ISS: %s BS:%s',
+      [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16), dbgs(t.FIsSuspended), dbgs(t.NextIsSingleStep), dbgs(t.FBreakPointState) ]);
   end;
   {$ENDIF}
 
@@ -1295,10 +1300,11 @@ begin
             else begin
               result := deBreakpoint;
               if AThread <> nil then
-                AThread.CheckAndResetInstructionPointerAfterBreakpoint;
+                TDbgWinThread(AThread).ResetInstructionPointerAfterBreakpoint; // This is always an int3 breakpoint
             end;
           end;
           EXCEPTION_SINGLE_STEP, STATUS_WX86_SINGLE_STEP: begin
+            // includes WatchPoints
             result := deBreakpoint;
           end;
           EXCEPTION_SET_THREADNAME: begin
@@ -1666,11 +1672,18 @@ begin
 end;
 
 procedure TDbgWinThread.SuspendForStepOverBreakPoint;
+var
+  t: TDBGPtr;
 begin
-  if FIsSkippingBreakPoint then begin
-    if GetInstructionPointerRegisterValue = FIsSkippingBreakPointAddress then
-      Process.TempRemoveBreakInstructionCode(FIsSkippingBreakPointAddress);
-    // else the single step should be done, and the event should be received next
+  t := GetInstructionPointerRegisterValue;
+  if (FBreakPointState = bsInSingleStep)
+//     or  (NextIsSingleStep)
+  then begin
+    Process.TempRemoveBreakInstructionCode(t);
+  end
+  else
+  if NextIsSingleStep and (not Process.HasInsertedBreakInstructionAtLocation(t)) then begin
+    // nothing / do the single step
   end
   else
     Suspend;
@@ -1687,20 +1700,15 @@ begin
   debugln(DBG_WARNINGS and (r = DWORD(-1)), 'Failed to resume Thread %d (handle: %d). Error: %s', [Id, Handle, GetLastErrorText]);
 end;
 
-procedure TDbgWinThread.SetSingleStepOverBreakPoint;
-begin
-  SetSingleStep;
-  FIsSkippingBreakPoint := True;
-  FIsSkippingBreakPointAddress := GetInstructionPointerRegisterValue;
-end;
-
 procedure TDbgWinThread.EndSingleStepOverBreakPoint;
 begin
-  FIsSkippingBreakPoint := False;
+  FBreakPointState := bsNone;
 end;
 
 procedure TDbgWinThread.SetSingleStep;
 begin
+  NextIsSingleStep := True;
+
   if FCurrentContext = nil then
     if not ReadThreadState then
       exit;
@@ -1818,7 +1826,7 @@ function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.ResetInstructionPointerAfterBreakpoint');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.ResetInstructionPointerAfterBreakpoint: MDebugEvent.dwProcessId <> 0');
-  assert(MDebugEvent.Exception.ExceptionRecord.ExceptionCode <> EXCEPTION_SINGLE_STEP, 'dec(IP) EXCEPTION_SINGLE_STEP');
+  assert((MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_BREAKPOINT) or (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = STATUS_WX86_BREAKPOINT), 'TDbgWinThread.ResetInstructionPointerAfterBreakpoint: (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_BREAKPOINT) or (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = STATUS_WX86_BREAKPOINT)');
 
   Result := False;
 
@@ -1826,13 +1834,16 @@ begin
     exit;
 
   {$ifdef cpui386}
-  dec(FCurrentContext^.def.Eip);
+  if not CheckForHardcodeBreakPoint(FCurrentContext^.def.Eip - 1) then
+    dec(FCurrentContext^.def.Eip);
   {$else}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
-    dec(FCurrentContext^.WOW.Eip);
+    if not CheckForHardcodeBreakPoint(FCurrentContext^.WOW.Eip - 1) then
+      dec(FCurrentContext^.WOW.Eip);
   end
   else begin
-    dec(FCurrentContext^.def.Rip);
+    if not CheckForHardcodeBreakPoint(FCurrentContext^.def.Rip - 1) then
+      dec(FCurrentContext^.def.Rip);
   end;
   {$endif}
 
