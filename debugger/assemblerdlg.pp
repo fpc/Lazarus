@@ -590,6 +590,9 @@ function TAssemblerDlg.GetLinMapEntryForLine(ALine: Integer; out
   AnEntry: TAsmDlgLineEntry): Boolean;
 begin
   AnEntry := Default(TAsmDlgLineEntry);
+  Result := ALine >= FTopLine;
+  if not Result then
+    exit;
   ALine := ALine - FTopLine;
   Result := (ALine > 0) and (ALine < length(FLineMap));
   if Result then
