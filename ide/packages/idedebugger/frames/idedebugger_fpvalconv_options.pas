@@ -34,7 +34,7 @@ implementation
 
 procedure Register;
 begin
-  //RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgFpValConvOptionsFrame, DbgOptionsFpDbgOpts);
+  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgFpValConvOptionsFrame, DbgOptionsFpDbgOpts);
 end;
 
 {$R *.lfm}
@@ -89,9 +89,6 @@ class function TIdeDbgFpValConvOptionsFrame.SupportedOptionsClass: TAbstractIDEO
 begin
   Result := TDebuggerOptions;
 end;
-
-initialization
-  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgFpValConvOptionsFrame, DbgOptionsFpDbgOpts);
 
 end.
 
