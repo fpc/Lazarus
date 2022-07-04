@@ -219,6 +219,7 @@ type
          detect the int3 (false positive)
     *)
     procedure CheckAndResetInstructionPointerAfterBreakpoint;
+    function CheckForHardcodeBreakPoint(AnAddr: TDBGPtr): boolean;
     procedure BeforeContinue; virtual;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); virtual;
     function DetectHardwareWatchpoint: Pointer; virtual;
@@ -2738,6 +2739,18 @@ begin
     if FProcess.ReadData(t-1, 1, OVal) then
       FPausedAtHardcodeBreakPoint := OVal = TDbgProcess.Int3;
   end;
+end;
+
+function TDbgThread.CheckForHardcodeBreakPoint(AnAddr: TDBGPtr): boolean;
+var
+  OVal: Byte;
+begin
+  Result := False;
+  if AnAddr = 0 then
+    exit;
+  if FProcess.ReadData(AnAddr, 1, OVal) then
+    FPausedAtHardcodeBreakPoint := OVal = TDbgProcess.Int3;
+  Result := FPausedAtHardcodeBreakPoint;
 end;
 
 procedure TDbgThread.BeforeContinue;

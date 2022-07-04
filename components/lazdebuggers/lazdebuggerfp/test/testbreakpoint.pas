@@ -12,19 +12,20 @@ uses
 type
 
   // Info used by tests based on TestBreakPointThreadPrg
+  TBreakThreadPrgInfoEntry = record
+    ID: Integer;
+    Address: TDBGPtr;
+    Line, PreviousLine: Integer;
+    Val, LastVal: int64;           // AX register
+    Loop, PreviousLoop: int64;         // BX register
+    IsCurrent: Boolean;
+    LastBrkLine, LastBrkLoop: Integer;
+    PreviousLastBrkLine, PreviousLastBrkLoop: Integer;
+  end;
   TBreakThreadPrgInfo = record
-    ThrLoopFirst, ThrLoopLast, ThrLoopLine0, ThrLoopInc: Integer;
+    ThrLoopFirst, ThrLoopLast, ThrLoopLine0, ThrLoopInc: Integer; // Linenumbers of the breakpoints
     // -1 => Main thread
-    Threads: array[-1..10] of record
-      ID: Integer;
-      Address: TDBGPtr;
-      Line, LastLine: Integer;
-      Val, LastVal: int64;
-      Loop, LastLoop: int64;
-      IsCurrent: Boolean;
-      LastBrkLine, LastBrkLoop: Integer;
-      PrevLastBrkLine, PrevLastBrkLoop: Integer;
-    end;
+    Threads: array[-1..10] of TBreakThreadPrgInfoEntry;
   end;
 
   { TTestBreakPoint }
@@ -35,7 +36,19 @@ type
     FThrPrgInfo: TBreakThreadPrgInfo;
     procedure ThrPrgInitializeThreads(ATestName: String);
     procedure ThrPrgUpdateThreads(ATestName: String);
+
+    (* ThrPrgCheckNoSkip
+       Check that AX is correct for the line.
+       Ensure the instruction restored from "int3" was executed
+    *)
     procedure ThrPrgCheckNoSkip(ATestName: String='');
+    (* ThrPrgInfoHasGoneThroughLine
+       Has gone over the line WITHOUT stopping at the breakpoint
+     - If the thread was NOT on the line, it has gone over it at least once.
+     - if the thread was AT the line,
+       ~ and had NOT reorted yet for the line => it as gone away from the line anyway
+       ~ and had reported for the line => it has gone OVER the line in the NEXT loop already
+    *)
     function  ThrPrgInfoHasGoneThroughLine(AIndex, ALine: Integer): boolean;
   protected
     Src: TCommonSource;
@@ -330,7 +343,10 @@ begin
     end;
 
     FThrPrgInfo.Threads[j].ID := t.ThreadId;
+    FThrPrgInfo.Threads[j].Line := -1;
+    FThrPrgInfo.Threads[j].Loop := -5;
     FThrPrgInfo.Threads[j].LastBrkLine := -1;
+    FThrPrgInfo.Threads[j].PreviousLastBrkLine := -1;
     debugln(['++ ADDED tid ',t.ThreadId]);
     inc(j);
     if j >= 11 then
@@ -372,9 +388,12 @@ begin
       if (lowercase(r.Entries[j].Name) = 'ebx') or (lowercase(r.Entries[j].Name) = 'rbx')
       then
         bx := r.Entries[j];
-    FThrPrgInfo.Threads[i].LastLine := FThrPrgInfo.Threads[i].Line;
+
+    FThrPrgInfo.Threads[i].IsCurrent := FThrPrgInfo.Threads[i].ID = dbg.Threads.CurrentThreads.CurrentThreadId;
+
+    FThrPrgInfo.Threads[i].PreviousLine := FThrPrgInfo.Threads[i].Line;
     FThrPrgInfo.Threads[i].LastVal  := FThrPrgInfo.Threads[i].Val;
-    FThrPrgInfo.Threads[i].LastLoop  := FThrPrgInfo.Threads[i].Loop;
+    FThrPrgInfo.Threads[i].PreviousLoop  := FThrPrgInfo.Threads[i].Loop;
     FThrPrgInfo.Threads[i].Address := t.TopFrame.Address;
     FThrPrgInfo.Threads[i].Line    := t.TopFrame.Line;
     if ax <> nil then
@@ -382,25 +401,23 @@ begin
     if bx <> nil then
       FThrPrgInfo.Threads[i].Loop   := StrToInt64Def(bx.Value,-1) and $7FFFFFFF;
 
-    FThrPrgInfo.Threads[i].IsCurrent := False;
     if FThrPrgInfo.Threads[i].ID = dbg.Threads.CurrentThreads.CurrentThreadId then begin
-      FThrPrgInfo.Threads[i].IsCurrent := True;
-
-      FThrPrgInfo.Threads[i].PrevLastBrkLine := FThrPrgInfo.Threads[i].LastBrkLine;
-      FThrPrgInfo.Threads[i].PrevLastBrkLoop := FThrPrgInfo.Threads[i].LastBrkLoop;
+      FThrPrgInfo.Threads[i].PreviousLastBrkLine := FThrPrgInfo.Threads[i].LastBrkLine;
+      FThrPrgInfo.Threads[i].PreviousLastBrkLoop := FThrPrgInfo.Threads[i].LastBrkLoop;
 
       FThrPrgInfo.Threads[i].LastBrkLine := FThrPrgInfo.Threads[i].Line;
       FThrPrgInfo.Threads[i].LastBrkLoop := FThrPrgInfo.Threads[i].Loop;
     end;
 
-    debugln('Thread %d %s (%x):   Line: %d (%d) (was %d)   Val: %d (was %d)  LOOP: %d (was %d)  Brk: %d %d (%d %d)', [
+    debugln('Thread %d: ID=%d Cur=%s (%x):   Line: %d (%d) (was %d)   Val: %d (was %d)  LOOP: %d (was %d)  Brk: %d %d (%d %d)', [
+      i,
       FThrPrgInfo.Threads[i].ID, dbgs(FThrPrgInfo.Threads[i].IsCurrent), FThrPrgInfo.Threads[i].Address,
       FThrPrgInfo.Threads[i].Line-FThrPrgInfo.ThrLoopLine0, FThrPrgInfo.Threads[i].Line,
-       FThrPrgInfo.Threads[i].LastLine-FThrPrgInfo.ThrLoopLine0,
+        FThrPrgInfo.Threads[i].PreviousLine-FThrPrgInfo.ThrLoopLine0,
       FThrPrgInfo.Threads[i].Val, FThrPrgInfo.Threads[i].LastVal,
-      FThrPrgInfo.Threads[i].Loop, FThrPrgInfo.Threads[i].LastLoop,
+      FThrPrgInfo.Threads[i].Loop, FThrPrgInfo.Threads[i].PreviousLoop,
       FThrPrgInfo.Threads[i].LastBrkLine, FThrPrgInfo.Threads[i].LastBrkLoop,
-      FThrPrgInfo.Threads[i].PrevLastBrkLine, FThrPrgInfo.Threads[i].PrevLastBrkLoop
+      FThrPrgInfo.Threads[i].PreviousLastBrkLine, FThrPrgInfo.Threads[i].PreviousLastBrkLoop
       ]);
   end;
 end;
@@ -409,43 +426,68 @@ procedure TTestBreakPoint.ThrPrgCheckNoSkip(ATestName: String);
 // Make sure no thread skipped any add. All EAX values must be correct
 var
   i, l: Integer;
+const
+  ExpVal: array[0..10] of integer = (
+      0,   1,   3,   7,  15,
+     31,  63, 127, 255, 511,
+   1023
+  );
 begin
   for i := 0 to 9 do begin
+    if FThrPrgInfo.Threads[i].Line = -1 then
+      continue;
     l := FThrPrgInfo.Threads[i].Line - FThrPrgInfo.ThrLoopLine0;
     TestTrue(ATestName+' line in range tid: '+inttostr(FThrPrgInfo.Threads[i].ID), (l>=-1) and (l<FThrPrgInfo.ThrLoopLast-FThrPrgInfo.ThrLoopLine0));
     if l > 9 then l := 10;
     if l < 0 then l := 10;
 
-    TestEquals(ATestName+' Reg val for '+inttostr(FThrPrgInfo.Threads[i].ID)+ ' / '+inttostr(FThrPrgInfo.Threads[i].Line - FThrPrgInfo.ThrLoopLine0), l, FThrPrgInfo.Threads[i].Val);
+    TestEquals(ATestName+' Reg val for '+inttostr(FThrPrgInfo.Threads[i].ID)+ ' / '+inttostr(FThrPrgInfo.Threads[i].Line - FThrPrgInfo.ThrLoopLine0),
+      ExpVal[l],
+      FThrPrgInfo.Threads[i].Val
+    );
   end;
 end;
 
 function TTestBreakPoint.ThrPrgInfoHasGoneThroughLine(AIndex, ALine: Integer): boolean;
 var
   LoopAdjust, LastLoopAdjust: Integer;
+  LoopDiff: Integer;
+  Entry: TBreakThreadPrgInfoEntry;
 begin
   Result := True;
   LoopAdjust := 0;
-  if FThrPrgInfo.Threads[AIndex].Line > FThrPrgInfo.ThrLoopInc then LoopAdjust := 1;
+  Entry := FThrPrgInfo.Threads[AIndex];
+
+  if Entry.Line > FThrPrgInfo.ThrLoopInc then LoopAdjust := 1;
   LastLoopAdjust := 0;
-  if FThrPrgInfo.Threads[AIndex].LastLine > FThrPrgInfo.ThrLoopInc then LastLoopAdjust := 1;
+  if Entry.PreviousLine > FThrPrgInfo.ThrLoopInc then LastLoopAdjust := 1;
+  LoopDiff :=
+      (Entry.Loop-LoopAdjust)
+    - (Entry.PreviousLoop-LastLoopAdjust);
+
   // Was in front of line,   and now after (or even in next loop)?
-  if (FThrPrgInfo.Threads[AIndex].LastLine < ALine) and
-     (  (FThrPrgInfo.Threads[AIndex].Line > ALine) or (FThrPrgInfo.Threads[AIndex].Loop-LoopAdjust <> FThrPrgInfo.Threads[AIndex].LastLoop-LastLoopAdjust) )
+  if (Entry.PreviousLine < ALine) and
+     (  (Entry.Line > ALine) or
+        (LoopDiff > 0)
+     )
   then
     exit;
+  // Was after line, and now after AND in next loop-LoopAdjust?
+  if (Entry.PreviousLine > ALine) and
+     (Entry.Line > ALine) and
+     (LoopDiff > 0)
+  then
+    exit;
+
   // Was exactly at line,    and now after AND in next loop-LoopAdjust?
-  if (FThrPrgInfo.Threads[AIndex].LastLine = ALine) and
-     (FThrPrgInfo.Threads[AIndex].Line > ALine) and (FThrPrgInfo.Threads[AIndex].Loop-LoopAdjust <> FThrPrgInfo.Threads[AIndex].LastLoop-LastLoopAdjust)
+  if (Entry.PreviousLine = ALine) and
+     (Entry.Line > ALine) and
+     (LoopDiff > 1)
   then
     exit;
-  // Was after front of line, and now after AND in next loop-LoopAdjust?
-  if (FThrPrgInfo.Threads[AIndex].LastLine < ALine) and
-     (FThrPrgInfo.Threads[AIndex].Line > ALine) and (FThrPrgInfo.Threads[AIndex].Loop-LoopAdjust <> FThrPrgInfo.Threads[AIndex].LastLoop-LastLoopAdjust)
-  then
-    exit;
+
   // More than one loop-LoopAdjust ...
-  if (FThrPrgInfo.Threads[AIndex].Loop-LoopAdjust > FThrPrgInfo.Threads[AIndex].LastLoop-LastLoopAdjust + 1)
+  if (LoopDiff > 1)
   then
     exit;
   Result := False;
@@ -462,16 +504,17 @@ procedure TTestBreakPoint.TestBreakThreadsNoSkip;
       if FThrPrgInfo.Threads[i].Line = ALine then
         inc(AtLine)
       else
-      if FThrPrgInfo.Threads[i].LastLine = ALine then // Current line moved on, stepped over break
+      if FThrPrgInfo.Threads[i].PreviousLine = ALine then // Current line moved on, stepped over break
         inc(AfterLine);
-    if AtLine > 1    then Inc(AManyAt);
-    if AfterLine > 1 then Inc(AManyAfter);
+    if AtLine    > 3 then Inc(AManyAt);
+    if AfterLine > 2 then Inc(AManyAfter);
   end;
 var
   ExeName: String;
   i, j: Integer;
   MainBrk, Brk1, Brk2, Brk3, Brk4, Brk5: TDBGBreakPoint;
   ManyAtBrk1, ManyAfterBrk1: Integer;
+  Entry: TBreakThreadPrgInfoEntry;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestThreadNoSkip) then exit;
@@ -501,26 +544,37 @@ begin
 
     Brk1 := Debugger.SetBreakPoint(Src, 'BrkThread1');
 
+    (* ManyAtBrk1 / ManyAfterBrk1
+       Cumulative count accross all "j" loop iterations.
+       ManyAtBrk1:    Count "j"-iterations with at least 3 threads have been at "Brk1"
+       ManyAfterBrk1: Count "j"-iterations with at least 3 threads just stepped/run away from "Brk1"
+    *)
     ManyAtBrk1 := 0;
     ManyAfterBrk1 := 0;
-    for j := 0 to 200 do begin
+
+    (* Each iteration the test checks that all "add eax, n" have been executed.
+    *)
+    for j := 0 to 300 do begin
       AssertDebuggerNotInErrorState;
       Debugger.RunToNextPause(dcRun);
       AssertDebuggerState(dsPause);
 
       ThrPrgUpdateThreads('loop fixed brk '+IntToStr(j));
-      ThrPrgCheckNoSkip('loop, fixed brk '+IntToStr(j));
+      ThrPrgCheckNoSkip('loop, fixed brk '+IntToStr(j));  // Compare AX with line
 
       for i := 0 to 9 do begin
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
+
         TestTrue('THread not gone over break 1 at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line)
           );
-
-        HasManyAtLine(Brk1.Line, ManyAtBrk1, ManyAfterBrk1);
       end;
 
-      if (i > 50) and (ManyAtBrk1 > 5) and (ManyAfterBrk1 > 5) then begin
-        DebugLn('~~~~~~~~~~~~~ End loop early i=%d  at=%d after=%d', [i, ManyAtBrk1, ManyAfterBrk1]);
+      HasManyAtLine(Brk1.Line, ManyAtBrk1, ManyAfterBrk1);
+      if (j > 50) and (ManyAtBrk1 > 20) and (ManyAfterBrk1 > 15) then begin
+        DebugLn('~~~~~~~~~~~~~ End loop early j=%d  at=%d after=%d', [j, ManyAtBrk1, ManyAfterBrk1]);
         break;
       end;
     end;
@@ -530,6 +584,11 @@ begin
     // Add more breaks
     Brk3 := Debugger.SetBreakPoint(Src, 'BrkThread5');
     Brk5 := Debugger.SetBreakPoint(Src, 'BrkThread9');
+    // clear values from last loop
+    for i := 0 to 9 do begin
+      FThrPrgInfo.Threads[i].LastBrkLine := -1;
+      FThrPrgInfo.Threads[i].PreviousLastBrkLine := -1;
+    end;
 
     for j := 0 to 100 do begin
       AssertDebuggerNotInErrorState;
@@ -540,21 +599,47 @@ begin
       ThrPrgCheckNoSkip('loop, fixed brk '+IntToStr(j));
 
       for i := 0 to 9 do begin
-        TestTrue('THread not gone over break 1 at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
+
+        TestTrue('THread not gone over break(n/3) 1 at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line)
           );
-        TestTrue('THread not gone over break 3 at line '+IntToStr(Brk3.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/3) 3 at line '+IntToStr(Brk3.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk3.Line)
           );
-        TestTrue('THread not gone over break 5 at line '+IntToStr(Brk5.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/3) 5 at line '+IntToStr(Brk5.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk5.Line)
           );
+
+        if Entry.PreviousLastBrkLine > 0 then begin
+          if Entry.LastBrkLine = Brk1.Line then begin
+            TestEquals('Previous break(n/3) before Brk1', Brk5.Line, Entry.PreviousLastBrkLine);
+            TestTrue  ('Previous break-loop(n/3) before Brk1', Entry.LastBrkLoop = Entry.PreviousLastBrkLoop + 1);
+          end
+          else
+          if Entry.LastBrkLine = Brk3.Line then begin
+            TestEquals('Previous break(n/3) before Brk3', Brk1.Line, Entry.PreviousLastBrkLine);
+            TestTrue  ('Previous break-loop(n/3) before Brk3', Entry.LastBrkLoop = Entry.PreviousLastBrkLoop);
+          end
+          else
+          if Entry.LastBrkLine = Brk5.Line then begin
+            TestEquals('Previous break(n/3) before Brk5', Brk3.Line, Entry.PreviousLastBrkLine);
+            TestTrue  ('Previous break-loop(n/3) before Brk5', Entry.LastBrkLoop = Entry.PreviousLastBrkLoop);
+          end;
+        end;
       end;
     end;
 
     // Add more breaks
     Brk2 := Debugger.SetBreakPoint(Src, 'BrkThread3');
     Brk4 := Debugger.SetBreakPoint(Src, 'BrkThread7');
+    // clear values from last loop
+    for i := 0 to 9 do begin
+      FThrPrgInfo.Threads[i].LastBrkLine := -1;
+      FThrPrgInfo.Threads[i].PreviousLastBrkLine := -1;
+    end;
 
     for j := 0 to 100 do begin
       AssertDebuggerNotInErrorState;
@@ -565,21 +650,26 @@ begin
       ThrPrgCheckNoSkip('loop, fixed brk '+IntToStr(j));
 
       for i := 0 to 9 do begin
-        TestTrue('THread not gone over break 1 at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
+
+        TestTrue('THread not gone over break(n/5) 1 at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line)
           );
-        TestTrue('THread not gone over break 2 at line '+IntToStr(Brk2.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/5) 2 at line '+IntToStr(Brk2.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk2.Line)
           );
-        TestTrue('THread not gone over break 3 at line '+IntToStr(Brk3.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/5) 3 at line '+IntToStr(Brk3.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk3.Line)
           );
-        TestTrue('THread not gone over break 4 at line '+IntToStr(Brk4.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/5) 4 at line '+IntToStr(Brk4.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk4.Line)
           );
-        TestTrue('THread not gone over break 5 at line '+IntToStr(Brk5.Line)+' '+IntToStr(i),
+        TestTrue('THread not gone over break(n/5) 5 at line '+IntToStr(Brk5.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk5.Line)
           );
+
       end;
     end;
 
@@ -598,6 +688,7 @@ var
   ExeName: String;
   i, j: Integer;
   MainBrk, Brk1: TDBGBreakPoint;
+  Entry: TBreakThreadPrgInfoEntry;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestThreadMove1) then exit;
@@ -633,6 +724,9 @@ begin
       ThrPrgCheckNoSkip('loop, one brk '+IntToStr(j));
 
       for i := 0 to 9 do begin
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
         TestTrue('THread not gone over break at line '+IntToStr(Brk1.Line)+' '+IntToStr(i),
                  not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line)
           );
@@ -657,6 +751,7 @@ var
   ExeName: String;
   i, j: Integer;
   MainBrk, Brk1, Brk2, Brk3, Brk4, Brk5: TDBGBreakPoint;
+  Entry: TBreakThreadPrgInfoEntry;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestThreadMove2) then exit;
@@ -702,6 +797,9 @@ begin
       ThrPrgCheckNoSkip('loop, changing brk '+IntToStr(j));
 
       for i := 0 to 9 do begin
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line) );
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk2.Line) );
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk3.Line) );
@@ -727,7 +825,7 @@ procedure TTestBreakPoint.TestBreakThreadsHitBreak;
   begin
     Result := True; // defaults to ok, if Line is not in this range.
     if FThrPrgInfo.Threads[AnIdx].LastBrkLine = -1 then exit;
-    if FThrPrgInfo.Threads[AnIdx].PrevLastBrkLine = -1 then exit;
+    if FThrPrgInfo.Threads[AnIdx].PreviousLastBrkLine = -1 then exit;
 
     if FThrPrgInfo.Threads[AnIdx].Line = BrkLine then begin
       if FThrPrgInfo.Threads[AnIdx].IsCurrent then
@@ -738,8 +836,8 @@ procedure TTestBreakPoint.TestBreakThreadsHitBreak;
     if FThrPrgInfo.Threads[AnIdx].Line = NextBrkLine then begin
       if (FThrPrgInfo.Threads[AnIdx].LastBrkLine = NextBrkLine) then
         Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLoop = FThrPrgInfo.Threads[AnIdx].Loop) and
-                  (FThrPrgInfo.Threads[AnIdx].PrevLastBrkLine = BrkLine)
-                  // PrevLastBrkLoop can be equal or 1 less
+                  (FThrPrgInfo.Threads[AnIdx].PreviousLastBrkLine = BrkLine)
+                  // PreviousLastBrkLoop can be equal or 1 less
       else
         Result := (FThrPrgInfo.Threads[AnIdx].LastBrkLine = BrkLine)
       ;
@@ -768,6 +866,7 @@ var
   ExeName: String;
   i, j: Integer;
   MainBrk, Brk1, Brk2, Brk3, Brk4, Brk5: TDBGBreakPoint;
+  Entry: TBreakThreadPrgInfoEntry;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestThreadHit) then exit;
@@ -802,6 +901,9 @@ begin
       ThrPrgCheckNoSkip('loop, changing brk '+IntToStr(j));
 
       for i := 0 to 9 do begin
+        Entry := FThrPrgInfo.Threads[i];
+        if Entry.PreviousLine < 0 then
+          continue;
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk1.Line) );
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk2.Line) );
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk3.Line) );
