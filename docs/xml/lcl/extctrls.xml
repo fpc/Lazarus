@@ -43,7 +43,7 @@
           <li>TIdleTimer</li>
         </ul>
         <p>
-          Register but not displayed
+          The following are registered but not displayed:
         </p>
         <ul>
           <li>TPage</li>
@@ -278,7 +278,7 @@
       <element name="TPage.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TUNBPages">
-        <short>Represents page names and class instances for a notebook.</short>
+        <short>Represents page names and page class instances for a notebook.</short>
         <descr>
           <p>
             <var>TUNBPages</var> is a <var>TStrings</var> descendant used to represent the names, <var>TPage</var> instances, and the owner class in <var>TNotebook</var>. TUNBPages extends the ancestor class by providing overridden methods needed to add, insert, delete and locate pages with a specified name or TPage class instance.
@@ -515,17 +515,20 @@
 
       <element name="TNotebook">
         <short>
-          <var>TNotebook</var> is a container for a series of <var>pages</var> placed together.
+          <var>TNotebook</var> is a container for a group of related pages.
         </short>
         <descr>
           <p>
-            <var>TNotebook</var> is a control which can hold a series of pages placed together. Only one page is shown at a time and this control is completely custom drawn, which means that it is available and looks the same in any widgetset which supports TCustomControl. The pages are containers which can hold controls. This control never has tabs. If you are looking for a control with tabs and pages, please see <var>TPageControl</var> instead.
+            <var>TNotebook</var> is a control which can hold a series of pages order by their position in the list of pages. Only one page is shown at a time.
+          </p>
+          <p>
+            This control is entirely custom drawn, which means that it is available - and looks the same - in any widgetset which supports TCustomControl. The pages are containers which can hold other controls. The page control does <b>not</b> display a tab which indicates the active page. If you are looking for a control with tabs representing each of the pages, please see <var>TPageControl</var> instead.
           </p>
           <p>
             To use a Notebook, select its icon from the 'Additional' tab of the Component Palette and place it on the Form. Adjust its size, position, alignment and anchoring as required, by moving the object on the Form or by using the Object Inspector.
           </p>
           <p>
-            Pages are added to the NoteBook by selecting the control and right-clicking with the mouse to get a pop-up menu whose first item is 'Add Page'. Pages already in the NoteBook can be edited by selecting the appropriate ActivePage in the Object Inspector and modifying its properties or adding additional components to that Page.
+            Pages are added to the NoteBook by selecting the control and right-clicking with the mouse to get a pop-up menu whose first item is 'Add Page', or by using the Pages property editor in the Object Inspector. Pages already in the NoteBook can be edited by selecting the appropriate ActivePage in the Object Inspector and modifying its properties or adding additional components to the Page.
           </p>
         </descr>
         <seealso>
@@ -546,7 +549,7 @@
         </seealso>
       </element>
       <element name="TNotebook.GetActivePage.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ActivePage property.</short>
       </element>
 
       <element name="TNotebook.GetActivePageComponent">
@@ -557,7 +560,7 @@
         </seealso>
       </element>
       <element name="TNotebook.GetActivePageComponent.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ActivePageComponent property.</short>
       </element>
 
       <element name="TNotebook.GetPage">
@@ -582,7 +585,7 @@
         </seealso>
       </element>
       <element name="TNotebook.GetPageCount.Result">
-        <short>Value for the property.</short>
+        <short>Value for the PageCount property.</short>
       </element>
 
       <element name="TNotebook.GetPageIndex">
@@ -593,7 +596,7 @@
         </seealso>
       </element>
       <element name="TNotebook.GetPageIndex.Result">
-        <short>Value for the property.</short>
+        <short>Value for the PageIndex property.</short>
       </element>
 
       <element name="TNotebook.SetPageIndex">
@@ -604,7 +607,7 @@
         </seealso>
       </element>
       <element name="TNotebook.SetPageIndex.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the PageIndex property.</short>
       </element>
 
       <element name="TNotebook.SetPages">
@@ -615,7 +618,7 @@
         </seealso>
       </element>
       <element name="TNotebook.SetPages.Items">
-        <short>New value for the property.</short>
+        <short>New value for the Pages property.</short>
       </element>
 
       <element name="TNotebook.Create">
@@ -646,7 +649,7 @@
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the internal page list member are freed. Destroy calls the inherited destructor prior to exiting from the method.
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to the internal page list are freed. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
         <seealso/>
@@ -712,7 +715,7 @@
 
       <element name="TNotebook.ActivePageComponent">
         <short>
-          Gets the TPage instance representing the active page in the notebook control.
+          Contains the TPage instance representing the active page in the notebook control.
         </short>
         <descr>
           <p>
@@ -731,7 +734,13 @@
         </short>
         <descr>
           <p>
-            Page is an indexed read-only TPage property used to access a page object for the notebook control by its ordinal position in the list of pages.
+            Page is an indexed read-only TPage property used to access a page object for the notebook control by its ordinal position in the list of pages. TPage values in the Page property are maintained when values are added to or removed from Pages.
+          </p>
+          <p>
+            Use IndexOf to get the position where a specific TPage instance is stored in the Page and Pages properties.
+          </p>
+          <p>
+            Use PageCount to get the number of pages defined in the Pages property. Use ActivePageComponent to get the TPage instance at the position in PageIndex. Use ActivePage to get the name of the page at the position in PageIndex.
           </p>
         </descr>
         <seealso/>
@@ -773,19 +782,70 @@
       </element>
 
       <element name="TNotebook.Pages">
-        <short>Contains the page names defined for the notebook control.</short>
+        <short>
+          Contains the page names and TPage instances defined for the notebook control.
+        </short>
         <descr>
           <p>
-            <var>Pages</var> is a <var>TStrings</var> property which contains the page names defined for the notebook control.
+            <var>Pages</var> is a <var>TStrings</var> property which contains the page names and associated TPage instances for the pages defined for the notebook control.
           </p>
           <p>
-            Setting a new value in Pages causes the new page names to be compared to the internal page objects in the notebook. New or altered pages are added or replaced in the notebook. An existing page object not present in the new page names is deleted; the Application singleton is notified that the page object is being released and allowed to process the message.
+            When the component is created, a TUNPages instance is created and assigned to the property member. It provides overridden methods which maintain the TPage instance associated with a given page name. You can use the Pages property editor in the Object Inspector to maintain the page names and their TPage instances.
           </p>
           <p>
-            The value in Pages is not assigned at design-time.
+            To add a page to Pages at run-time:
+          </p>
+<code>
+procedure TForm1.AddButtonClick(Sender: TObject);
+var
+  NewPageIndex: integer;
+  NewPage: TPage;
+  PageLabel: TLabel;
+begin
+  NewPageIndex := Notebook1.Pages.Add(Format('[Page %d]', [Notebook1.Pages.Count]));
+  NewPage := Notebook1.Page[NewPageIndex];
+  NewPage.Color := RgbToColor(Random(128)+127, Random(128)+127, Random(128)+127);
+  PageLabel := TLabel.Create(Self);
+  with PageLabel do
+  begin
+    Left := 20;
+    Top := 10 + NewPageIndex * 20;
+    Width := 500;
+    Height := 20;
+    Caption := Format('This is page [%d]',[NewPageIndex]);
+    Parent := NewPage;
+  end;
+  Label1.Caption := IntToStr(Notebook1.PageCount)+ ' pages total';
+end;
+</code>
+          <p>
+            Use the indexed Page property to access the TPage instance for a given page by its ordinal position. Use PageIndex to set the active page in the notebook control by its ordinal position in Pages. For example:
+          </p>
+<code>
+procedure TForm1.PrevButtonClick(Sender: TObject);
+begin
+  if Notebook1.PageIndex &gt; 0 then
+    Notebook1.PageIndex := Notebook1.PageIndex - 1;
+end;
+
+procedure TForm1.NextButtonClick(Sender: TObject);
+begin
+  if Notebook1.PageIndex &lt; Notebook1.PageCount-1 then
+    Notebook1.PageIndex := Notebook1.PageIndex + 1;
+end;
+</code>
+          <p>
+            Assigning a new TStrings value to Pages causes the new page names to be compared to the existing internal page objects (TPage) in the notebook. New or altered pages are added or replaced in the notebook as needed. An existing page object not present in the new page names is deleted. The Application singleton is notified that the page object is being released and allowed to process the message.
+          </p>
+          <p>
+            A new value assigned to Pages is not stored at design-time. Use the Object Inspector to maintain the values in the property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TPage"/>
+          <link id="TUNBPages"/>
+          <link id="#rtl.classes.TStrings">TStrings</link>
+        </seealso>
       </element>
 
       <element name="TNotebook.Align" link="#lcl.controls.TControl.Align"/>
@@ -1060,7 +1120,7 @@
 
       <element name="TCustomIdleTimer.AutoStartEvent">
         <short>
-          <var>AutoStartEvent</var> - the event that triggers autostart (either idle time-out or user input).
+          <var>AutoStartEvent</var> - the event that triggers auto-start (either idle time-out or user input).
         </short>
         <descr>
           <p>
@@ -1109,11 +1169,11 @@
 
       <element name="TIdleTimer">
         <short>
-          <var>TIdleTimer</var> : A timer to measure idle time between processes.
+          Implements a timer to measure idle time between processes.
         </short>
         <descr>
           <p>
-            <var>TIdleTimer</var>: A timer to measure idle time between processes.
+            <var>TIdleTimer</var> is a timer used to measure idle time between processes.
           </p>
         </descr>
       </element>
@@ -1516,7 +1576,7 @@
         </seealso>
       </element>
       <element name="TCustomSplitter.GetResizeControl.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ResizeControl property.</short>
       </element>
 
       <element name="TCustomSplitter.SetBeveled">
@@ -1527,7 +1587,7 @@
         </seealso>
       </element>
       <element name="TCustomSplitter.SetBeveled.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Beveled property.</short>
       </element>
 
       <element name="TCustomSplitter.SetMinSize">
@@ -1538,7 +1598,7 @@
         </seealso>
       </element>
       <element name="TCustomSplitter.SetMinSize.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the MinSize property.</short>
       </element>
 
       <element name="TCustomSplitter.CMEnabledChanged">
@@ -1592,11 +1652,11 @@
 
       <element name="TCustomSplitter.CheckNewSize">
         <short>
-          <var>CheckNewSize</var> ensures the new size is appropriate; returns <b>True</b> if successful.
+          Ensures the new size is acceptable for the aligned control on the splitter.
         </short>
         <descr>
           <p>
-            <var>CheckNewSize</var> signals the OnCanResize event handler (when assigned) to examine and validate the value in <var>NewSize</var>. The values in <var>NewSize</var> and <var>Result</var> can be updated in the event handler as needed. <b>True</b> indicates that the value in NewSize is acceptable.
+            <var>CheckNewSize</var> signals the OnCanResize event handler (when assigned) to validate the value in <var>NewSize</var>. The values in <var>NewSize</var> and <var>Result</var> can be updated in the event handler as needed. Setting the return value to <b>True</b> indicates that the value in NewSize is acceptable.
           </p>
           <p>
             CheckNewSize is used in the implementation of the <var>MoveSplitter</var> method.
@@ -1606,13 +1666,14 @@
         <seealso>
           <link id="TCustomSplitter.OnCanResize"/>
           <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.ResizeControl"/>
         </seealso>
       </element>
       <element name="TCustomSplitter.CheckNewSize.Result">
-        <short><b>True</b> when NewSize is an acceptable size for the splitter.</short>
+        <short><b>True</b> when NewSize is an acceptable size for the aligned control.</short>
       </element>
       <element name="TCustomSplitter.CheckNewSize.NewSize">
-        <short>New sized for the splitter.</short>
+        <short>New size for the aligned control in ResizeControl.</short>
       </element>
 
       <element name="TCustomSplitter.CheckOffset">
@@ -1620,45 +1681,77 @@
           Signals the OnCanOffset event handler to determine the offset used when aligning the control, and the success or failure of the calculation.
         </short>
         <descr>
-          Used in the implementation of the MoveSplitter method.
+          <p>
+            The return value is <b>True</b> by default, but it can be modified in the OnCanOffset event handler.
+          </p>
+          <p>
+            Used in the implementation of the MoveSplitter method.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomSplitter.OnCanOffset"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.CheckOffset.Result">
-        <short/>
+        <short>True if the offset was successfully determined for the splitter control.</short>
       </element>
       <element name="TCustomSplitter.CheckOffset.NewOffset">
-        <short/>
+        <short>Offset value to check and optionally update in the method.</short>
       </element>
 
       <element name="TCustomSplitter.FindAlignControl">
         <short>
-          <var>FindAlignControl</var> returns the main alignment control.
+          <var>FindAlignControl</var> returns the main alignment control for the splitter.
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>FindAlignControl</var> is a <var>TControl</var> function used to get the control to which the splitter is aligned.
+          </p>
+          <p>
+            Called from the GetResizeControl method which gets the value for the ResizeControl property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.FindAlignOtherControl"/>
+          <link id="TCustomSplitter.ResizeControl"/>
+          <link id="TCustomSplitter.Align"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.FindAlignControl.Result">
-        <short/>
+        <short>
+          TControl instance to which the splitter is aligned, or Nil when s sibling control is not found.
+        </short>
       </element>
 
       <element name="TCustomSplitter.FindAlignOtherControl">
         <short>
-          <var>FindAlignOtherControl</var> returns another alignment control (the splitter may have to align two controls)
+          <var>FindAlignOtherControl</var> returns the other (secondary) alignment control for the splitter.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>FindAlignOtherControl</var> is a <var>TControl</var> function used to get the other (secondary) control which is resized when the size for the primary control is changed.
+          </p>
+          <p>
+            Called from the GetOtherResizeControl and MoveSplitter methods when the position for the splitter control has been changed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.GetOtherResizeControl"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.FindAlignControl"/>
+          <link id="TCustomSplitter.Align"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.FindAlignOtherControl.Result">
-        <short/>
+        <short>The adjacent control which is resized when the splitter control s moved.</short>
       </element>
 
       <element name="TCustomSplitter.MouseDown">
         <short>Initiates the splitter movement operation.</short>
         <descr>
           <p>
-            Overridden in TCustomSplitter. Calls the inherited method, and ensures that the absolute mouse position is used when the left mouse button is depressed; The X and Y arguments are not valid during a resize operation.
+            <var>MouseDown</var> is overridden in <var>TCustomSplitter</var>. It calls the inherited method, and ensures that the absolute mouse position is used when the left mouse button is depressed; The X and Y arguments are not valid during a resize operation.
           </p>
           <p>
             Calls GetCursorPos to capture the mouse position, and calls StartSplitterMove to initiate the splitter movement operation.
@@ -1802,12 +1895,22 @@
         <short>Sets the value for the Align property.</short>
         <descr>
           <p>
-            Updates the value in ResizeAnchor to match the new value for the property. When set to a value other than alClient, the bounds for the control are adjusted to keep the width or height as needed for the new property value.
+            <var>SetAlign</var> is an overridden method in <var>TCustomSplitter</var> which sets the value for the Align property. It ensures that ResizeAnchor is updated to reflect the new value for the property. Values in Anchors are also updated to reflect the new alignment value in the property.
+          </p>
+          <p>
+            When Align has a value other than clClient and Anchors is not modified, the bounds for the control are adjusted to keep the existing Width or Height for the Align value.
           </p>
         </descr>
         <seealso>
           <link id="TCustomSplitter.Align"/>
+          <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="#lcl.controls.TWinControl.SetBounds">TWinControl.SetBounds</link>
           <link id="#lcl.controls.TControl.SetAlign">TControl.SetAlign</link>
+          <link id="#lcl.controls.TControl.Anchors">TControl.Anchors</link>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+          <link id="#lcl.controls.TAnchorKind">TAnchorKind</link>
+          <link id="#lcl.controls.TAnchors">TAnchors</link>
         </seealso>
       </element>
       <element name="TCustomSplitter.SetAlign.Value">
@@ -1826,41 +1929,90 @@
         </seealso>
       </element>
       <element name="TCustomSplitter.SetAnchors.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Anchors property.</short>
       </element>
 
       <element name="TCustomSplitter.SetResizeAnchor">
         <short>Sets the value for the ResizeAnchor property.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SetResizeAnchor</var> calls UpdateCursor to change the resize cursor to the value needed for the ResizeAnchor enabled for the control. The Align property is changed to alNone to allow the splitter control to be dragged when the MoveSplitter method is called.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="TCustomSplitter.UpdateCursor"/>
+          <link id="TCustomSplitter.Align"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
         </seealso>
       </element>
       <element name="TCustomSplitter.SetResizeAnchor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the ResizeAnchor property.</short>
       </element>
 
       <element name="TCustomSplitter.SetResizeControl">
         <short>Sets the value for the ResizeControl property.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SetResizeControl</var> ensures that the splitter control is repositioned so that it is guaranteed to be closest to the new control in AValue. It updates the Left or Top coordinate in the splitter based on the following values in the Align property:
+          </p>
+          <dl>
+            <dt>alLeft</dt>
+            <dd>Adjusts Left to be one pixel larger than the value in AValue.</dd>
+            <dt>alRight</dt>
+            <dd>Adjusts Left to be one pixel smaller than the value in AValue.</dd>
+            <dt>alTop</dt>
+            <dd>Adjusts Top to be one pixel larger than the value in AValue.</dd>
+            <dt>alBottom</dt>
+            <dd>Adjusts Top to be one pixel smaller than the value in AValue.</dd>
+            <dt>alClient</dt>
+            <dd>
+              No changes are made to Left or Top. AValue is assigned as the control for the AnchorSide at the position in ResizeAnchor.
+            </dd>
+          </dl>
+        </descr>
         <seealso>
           <link id="TCustomSplitter.ResizeControl"/>
+          <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="TCustomSplitter.Align"/>
+          <link id="#lcl.controls.TControl.AnchorSide">TControl.AnchorSide</link>
+          <link id="#lcl.controls.TControl.Left">TControl.Left</link>
+          <link id="#lcl.controls.TControl.Top">TControl.Top</link>
         </seealso>
       </element>
       <element name="TCustomSplitter.SetResizeControl.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the ResizeControl property.</short>
       </element>
 
       <element name="TCustomSplitter.StartSplitterMove">
         <short>
-          <var>StartSplitterMove</var> - method for starting movement of the splitter, given the mouse position <var>MouseXY</var>.
+          Method used to start a move operation for the splitter using the mouse position in <var>MouseXY</var>.
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr>
+          <p>
+            No actions are performed in the method if a splitter drag operation has already been started but has not been completed.
+          </p>
+          <p>
+            StartSplitterMove ensures that a brush is created to represent the ResizeStyle used for the control. The brush is applied to the rubberband drawn around the splitter control when ResizeStyle contains rsLine or RsPattern.
+          </p>
+          <p>
+            StartSplitterMove is called from the MouseDown method when the left mouse button is used to drag the splitter control.
+          </p>
+          <p>
+            See StopSplitterMove for the actions performed when the move operation for the splitter control is completed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.ResizeStyle"/>
+          <link id="TCustomSplitter.MouseDown"/>
+          <link id="TCustomSplitter.StopSplitterMove"/>
+          <link id="TCustomSplitter.Cursor"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.StartSplitterMove.MouseXY">
-        <short/>
+        <short>
+          TPoint instance with the mouse coordinates when the move operation is started.
+        </short>
       </element>
 
       <element name="TCustomSplitter.StopSplitterMove">
@@ -1878,12 +2030,14 @@
         <seealso/>
       </element>
       <element name="TCustomSplitter.StopSplitterMove.MouseXY">
-        <short>TPoint instance with the coordinates for the mouse pointer.</short>
+        <short>
+          TPoint instance with the coordinates for the mouse pointer.
+        </short>
       </element>
 
       <element name="TCustomSplitter.UpdateCursor">
         <short>
-          Updates the cursor to reflect the ResizeAnchor for the splitter.
+          Updates the cursor shape to reflect the ResizeAnchor for the splitter.
         </short>
         <descr>
           <p>
@@ -1952,7 +2106,7 @@
 
       <element name="TCustomSplitter.ResizeControl">
         <short>
-          Contains the anchored control that is re-sized when the splitter is moved.
+          Contains the aligned control that is resized when the splitter is moved.
         </short>
         <descr/>
         <seealso/>
@@ -1960,7 +2114,7 @@
 
       <element name="TCustomSplitter.GetOtherResizeControl">
         <short>
-          Gets the adjacent anchored control that is re-sized when the splitter is moved.
+          Gets the adjacent anchored control that is resized when the splitter is moved.
         </short>
         <descr/>
         <seealso/>
@@ -1975,35 +2129,61 @@
         </short>
       </element>
       <element name="TCustomSplitter.MoveSplitter.Offset">
-        <short/>
+        <short></short>
       </element>
 
       <element name="TCustomSplitter.SetSplitterPosition">
         <short>
-          <var>SetSplitterPosition</var> - to specified <var>NewPosition</var>.
+          Changes the position for the splitter to the specified <var>NewPosition</var>.
         </short>
+        <descr>
+          <p>
+            Calls MoveSplitter using the difference between NewPosition and the current splitter position as an argument.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.GetSplitterPosition"/>
+        </seealso>
       </element>
       <element name="TCustomSplitter.SetSplitterPosition.NewPosition">
-        <short/>
+        <short>
+          Coordinate where the splitter is moved in the orientation for the ResizeAnchor.
+        </short>
       </element>
 
       <element name="TCustomSplitter.GetSplitterPosition">
         <short>
           <var>GetSplitterPosition</var> returns the current position of the splitter.
         </short>
+        <descr>
+          <p>
+            GetSplitterPosition uses the value in ResizeAnchor to determine the return value for the method. For example:
+          </p>
+          <dl>
+            <dt>akLeft, akRight</dt>
+            <dd>The value in the Left property is used as the return value.</dd>
+            <dt>akTop, akBottom</dt>
+            <dd>The value in the Top property is used as the return value.</dd>
+          </dl>
+        </descr>
       </element>
       <element name="TCustomSplitter.GetSplitterPosition.Result">
         <short>Current position for the splitter.</short>
       </element>
 
       <element name="TCustomSplitter.Align">
-        <short>Specifies the placement of the control inside its Parent.</short>
+        <short>
+          Specifies the aligned edge for the splitter within its Parent and relative to ResizeControl.
+        </short>
         <descr>
           <p>
-            Align is a TAlign property which specifies how the control is aligned to its parent control. The default value for the property is <var>alLeft</var> in TCustomSplitter.
+            Align is a TAlign property which specifies how the splitter is aligned to the control in ResizeControl. The default value for the property is <var>alLeft</var> in TCustomSplitter, and causes the left edge of the splitter to align to the opposite edge for the ResizeControl.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomSplitter.ResizeControl"/>
+          <link id="TCustomSplitter.ResizeStyle"/>
           <link id="#lcl.controls.TControl.Align">TControl.Align</link>
         </seealso>
       </element>
@@ -2243,10 +2423,10 @@
         </descr>
         <seealso>
            <link id="TPaintBox.OnPaint"/>
-           <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
            <link id="TPaintBox.Font"/>
            <link id="TPaintBox.Color"/>
            <link id="TPaintBox.Canvas"/>
+           <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
         </seealso>
       </element>
 
@@ -3179,7 +3359,7 @@
 
       <element name="TBevel.Shape">
         <short>
-          <var>Shape</var>  - whether a box, a frame or a line along one of the edges.
+          <var>Shape</var> - whether a box, a frame or a line along one of the edges.
         </short>
         <descr>
           <p>
@@ -3450,7 +3630,7 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.ItemResize.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
 
       <element name="TCustomRadioGroup.SetAutoFill">
@@ -3909,10 +4089,10 @@
             <var>TRadioGroup</var> behaves differently from a group of <var>TRadioButton</var> controls placed arbitrarily around a form.
           </p>
           <p>
-            In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> stringlist.
+            In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> for the control.
           </p>
           <p>
-            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var> are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
+            <var>TRadioButton</var> is an entity unto itself with a number of additional properties. In contrast, the buttons within <var>TRadioGroup</var> are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>.
           </p>
           <p>
             The example shows the difference between the use of <var>TRadioButton</var> and <var>TRadioGroup</var>.
@@ -4594,7 +4774,7 @@
 
       <element name="TCheckGroup.Items">
         <short>
-          <var>Items</var>  - a string list containing the captions of the check boxes.
+          <var>Items</var> - a string list containing the captions of the check boxes.
         </short>
         <descr>
           <p>
@@ -5132,10 +5312,10 @@
         </seealso>
       </element>
       <element name="TCustomPanel.PaintBevel.ARect">
-        <short/>
+        <short>Rectangle with the coordinates where the bevel is drawn.</short>
       </element>
       <element name="TCustomPanel.PaintBevel.ABevel">
-        <short/>
+        <short>Drawing style for the bevel.</short>
       </element>
 
       <element name="TCustomPanel.SetAlignment">
@@ -5212,7 +5392,7 @@
         </short>
         <descr>
           <p>
-            <var>AdjustClientRect</var> is an overridden procedure used to adjust the drawing rectangle in <var>ARect</var> to account for borders and bevels used on the panel. AdjustClientRect calls the inherited method, and calculates the number of pixels required for the settings in <var>BorderWidth</var>, <var>BeveInner</var>, and <var>BevelOuter</var>. AdjustClientRect calls <var>InflateRect</var> to adjust ARect by the calcluated border and bevel widths.
+            <var>AdjustClientRect</var> is an overridden procedure used to adjust the drawing rectangle in <var>ARect</var> to account for borders and bevels used on the panel. AdjustClientRect calls the inherited method, and calculates the number of pixels required for the settings in <var>BorderWidth</var>, <var>BevelInner</var>, and <var>BevelOuter</var>. AdjustClientRect calls <var>InflateRect</var> to adjust ARect by the calculated border and bevel widths.
           </p>
           <p>
             AdjustClientRect is called when the control is autosize or aligned.
@@ -5453,7 +5633,7 @@
 
       <element name="TCustomPanel.BevelOuter">
         <short>
-          <var>BevelOuter</var>  - determines the nature of the Outer Bevel of the panel (whether raised, lowered etc)
+          <var>BevelOuter</var> - determines the nature of the Outer Bevel of the panel (whether raised, lowered etc)
         </short>
       </element>
 
@@ -6002,10 +6182,32 @@
 
       <element name="TCustomFlowPanel">
         <short>
-          The base class for <link id="TFlowPanel">TFlowPanel</link>.
+          The base class for TFlowPanel.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            TCustomFlowPanel is a TCustomPanel descendant used to automatically position controls added to the panel in a grid-like layout.
+          </p>
+          <p>
+            The FlowStyle property determines layout direction for controls added to the panel.
+          </p>
+          <p>
+            FlowLayout controls the vertical positioning for controls in given row on the panel.
+          </p>
+          <p>
+            The ControlList property provides a list of wrapper classes maintained for each of the controls on the panel. Its items maintain the position and wrapping options for each control using the FlowStyle and FlowLayout algorithms.
+          </p>
+          <p>
+            Adding a control to the panel causes it to be positioned at the next cell in the layout. The Left and Top coordinates for each control are adjusted to position the control within a cell using the FlowStyle and FlowLayout properties for the panel. The Anchors and Align properties for child controls are ignored. The BorderSpacing setting for the controls is used, however.
+          </p>
+          <p>
+            AutoWrap indicates whether the controls are automatically flowed into rows based on their settings in ControlList.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomPanel"/>
+          <link id="TFlowPanel"/>
+        </seealso>
       </element>
 
       <element name="TCustomFlowPanel.FControlList"/>
@@ -6021,7 +6223,7 @@
         </seealso>
       </element>
       <element name="TCustomFlowPanel.SetAutoWrap.AAutoWrap">
-        <short>New value for the property.</short>
+        <short>New value for the AutoWrap property.</short>
       </element>
 
       <element name="TCustomFlowPanel.SetControlList">
@@ -6032,7 +6234,7 @@
         </seealso>
       </element>
       <element name="TCustomFlowPanel.SetControlList.AControlList">
-        <short>New value for the property.</short>
+        <short>New value for the ControlList property.</short>
       </element>
 
       <element name="TCustomFlowPanel.SetFlowStyle">
@@ -6043,7 +6245,7 @@
         </seealso>
       </element>
       <element name="TCustomFlowPanel.SetFlowStyle.AFlowStyle">
-        <short>New value for the property.</short>
+        <short>New value for the FlowStyle property.</short>
       </element>
 
       <element name="TCustomFlowPanel.SetFlowLayout">
@@ -6054,7 +6256,7 @@
         </seealso>
       </element>
       <element name="TCustomFlowPanel.SetFlowLayout.aFlowLayout">
-        <short>New value for the property.</short>
+        <short>New value for the FlowLayout property.</short>
       </element>
 
       <element name="TCustomFlowPanel.CMControlChange">
@@ -6063,9 +6265,9 @@
           <p>
             Calls DisableAlign prior to adding (inserting) the control in ControlList. Calls ReAlign when the control is added, and calls EnableAlign prior to exit.
           </p>
-        <remark>
-          The CM_CONTROLCHANGE message is ignored when the component is being loaded using LCL steaming. No actions are performed in the method when csLoading is in the ComponentState property.
-        </remark>
+          <remark>
+            The CM_CONTROLCHANGE message is ignored when the component is being loaded using LCL steaming. No actions are performed in the method when csLoading is in the ComponentState property.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -6077,23 +6279,35 @@
         <short>Performs layout and alignment for flowed controls on the panel.</short>
         <descr>
           <p>
-            <var>AlignControls</var> is an overridden procedure used to perform layout and alignment for flowed controls on the panel.
+            <var>AlignControls</var> is an overridden procedure used to perform layout and alignment for flowed controls which are a child of the control specified in AControl. RemainingClientRect contains the unused client area where the controls are positioned and aligned.
+          </p>
+          <p>
+            No actions are performed in the method if child controls do not exist for the panel (ControlCount is 0).
+          </p>
+          <p>
+            AlignControls ensures space is reserved in the client rectangle for the borders on the panel. The value in FlowStyle determines the position in RemainingClientRect where alignment and layout for the controls is started. Each of the controls in ControlList is visited to adjust the client rectangle for the TControl instances based on the FlowStyle for the panel. SetBounds is called for the TControl instances to reposition / resize the control.
           </p>
           <remark>
-            AlignControls does <b>NOT</b> call the inherited method.
+            AlignControls does <b>not</b> call the inherited method.
           </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
+        </seealso>
       </element>
       <element name="TCustomFlowPanel.AlignControls.AControl">
-        <short/>
+        <short>
+          Control with the child controls aligned in the method.
+        </short>
       </element>
       <element name="TCustomFlowPanel.AlignControls.RemainingClientRect">
-        <short/>
+        <short>
+          Ununsed client area where the child controls are aligned.
+        </short>
       </element>
 
       <element name="TCustomFlowPanel.CalculatePreferredSize">
-        <short>Calculates the preferred size for the control.</short>        
+        <short>Calculates the preferred size for the control.</short>
         <descr>
           <p>
             <var>CalculatePreferredSize</var> is an overridden procedure used to calculate the preferred height and width for the flow panel. CalculatePreferredSize calls the inherited method.
@@ -6104,13 +6318,19 @@
         </seealso>
       </element>
       <element name="TCustomFlowPanel.CalculatePreferredSize.PreferredWidth">
-        <short/>
+        <short>
+          Preferred width for new instances of the control.
+        </short>
       </element>
       <element name="TCustomFlowPanel.CalculatePreferredSize.PreferredHeight">
-        <short/>
+        <short>
+          Preferred height for new instances of the control.
+        </short>
       </element>
       <element name="TCustomFlowPanel.CalculatePreferredSize.WithThemeSpace">
-        <short/>
+        <short>
+          True if additional space is reserved for theme element details.
+        </short>
       </element>
 
       <element name="TCustomFlowPanel.Create">
@@ -6159,7 +6379,7 @@
         </short>
       </element>
       <element name="TCustomFlowPanel.GetControlIndex.AControl">
-        <short>Flowed control to locate in ControlList.</short>
+        <short>Control to locate in the ControlList container.</short>
       </element>
 
       <element name="TCustomFlowPanel.SetControlIndex">
@@ -6178,13 +6398,13 @@
         <short>Determines if controls in TCustomFlowPanel are wrapped.</short>
         <descr>
           <p>
-            The default value for the property is <b>True</b> in TFlowPanel.
+            The default value for the property is <b>True</b> in TCustomFlowPanel.
           </p>
         </descr>
       </element>
 
       <element name="TCustomFlowPanel.ControlList">
-        <short>Collection used to stored TFlowPanelControl instances on the panel.</short>
+        <short>Container used to stored TFlowPanelControl instances on the panel.</short>
       </element>
 
       <element name="TCustomFlowPanel.FlowStyle">
@@ -6203,12 +6423,30 @@
       </element>
 
       <element name="TFlowPanel">
-        <short>Implements a container with flowed layout for its controls.</short>
+        <short>Implements a panel with flowed layout for its controls.</short>
         <descr>
           <p>
-            Use <var>TFloatPanel</var> if you need a container with a float layout. The Anchors and Align properties of child controls are ignored. The floating direction is determined with <link id="#LCL.extctrls.TCustomFlowPanel.FlowStyle">FlowStyle</link> property.
+            <var>TFlowPanel</var> is a TCustomFlowPanel descendant which implements a panel used to automatically position controls added to the panel in a grid-like layout.
+          </p>
+          <p>
+            The FlowStyle property determines layout direction for controls added to the panel.
+          </p>
+          <p>
+            FlowLayout controls the vertical positioning for controls in given row on the panel.
+          </p>
+          <p>
+            The ControlList property provides a list of wrapper classes maintained for each of the controls on the panel. Its items maintain the position and wrapping options for each control using the FlowStyle and FlowLayout algorithms.
+          </p>
+          <p>
+            Adding a control to the panel causes it to be positioned at the next cell in the layout. The Left and Top coordinates for each control are adjusted to position the control within a cell using the FlowStyle and FlowLayout properties for the panel. The Anchors and Align properties for child controls are ignored. The BorderSpacing setting for the controls is used, however.
+          </p>
+          <p>
+            AutoWrap indicates whether the controls are automatically flowed into rows based on their settings in ControlList.
           </p>
         </descr>
+        <seealso>
+          <link id="TCustomFlowPanel"/>
+        </seealso>
       </element>
 
       <element name="TFlowPanel.Align" link="#lcl.extctrls.TCustomPanel.Align"/>
@@ -6218,7 +6456,7 @@
 
       <element name="TFlowPanel.AutoWrap">
         <short>
-          Determines if child controls are automatically wrapped when needed.
+          Determines if child controls are automatically wrapped to a new row when needed.
         </short>
         <descr>
           <p>
@@ -6751,7 +6989,7 @@
           <link id="#lcl.popupnotifier.TPopupNotifier">TPopupNotifier</link>
         </seealso>
         <notes>
-          <note>TODO: Which platforms have native balloon hint support?</note>
+          <note>TODO: Which platforms actually have native balloon hint support?</note>
         </notes>
       </element>
 
@@ -7286,35 +7524,55 @@
         <short>Band is drawn using a gradient in the background color.</short>
       </element>
       <element name="TBandPaintOption.bpoRoundRect">
-        <short>Not used internally, but available to OnBandPaint.</short>
+        <short>Not used internally, but available to the OnBandPaint event in TControlBar.</short>
       </element>
 
       <element name="TBandPaintOptions">
-        <short>Stores values from the TBandPaintOption enumeration.</short>
-        <descr/>
+        <short>
+          Set type used to store values from the TBandPaintOption enumeration.
+        </short>
+        <descr>
+          <p>
+            <var>TBandPaintOptions</var> is the type passed as an argument in a <var>TBandPaintEvent</var> event handler. Values in the set determine the drawing style used to display a band on a TControlBar instance.
+          </p>
+        </descr>
         <seealso>
           <link id="TBandPaintOption"/>
+          <link id="TBandPaintEvent"/>
+          <link id="TCustomControlBar.DoBandPaint"/>
+          <link id="TCustomControlBar.Paint"/>
         </seealso>
       </element>
 
       <element name="TBandDragEvent">
-        <short>Specifies an event handler signalled when a control band is dragged.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled when a control on a band is dragged.
+        </short>
+        <descr>
+          <p>
+            TBandDragEvent is the type used to implement the OnBandDrag property in TCustomControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.OnBandDrag"/>
+          <link id="TCustomControlBar.DragControl"/>
+        </seealso>
       </element>
       <element name="TBandDragEvent.Sender">
-        <short/>
+        <short>Object (TCustomControlBar) for the event notification.</short>
       </element>
       <element name="TBandDragEvent.Control">
-        <short/>
+        <short>Control for the drag event.</short>
       </element>
       <element name="TBandDragEvent.Drag">
-        <short/>
+        <short>
+          <b>True</b> if the control can be dragged and the DragManager can be used to start the drag operation.
+        </short>
       </element>
 
       <element name="TBandInfoEvent">
         <short>
-          Specifies an event handler used to get layout and positioning information for control bands.
+          Specifies an event handler used to get layout and positioning information for a control on a band in TControlBar.
         </short>
         <descr>
           <p>
@@ -7323,37 +7581,54 @@
         </descr>
         <seealso>
           <link id="TCustomControlBar.OnBandInfo"/>
+          <link id="TCustomControlBar.GetControlInfo"/>
+          <link id="TCustomControlBar.InsertControl"/>
         </seealso>
       </element>
       <element name="TBandInfoEvent.Sender">
-        <short>Object for the notification event.</short>
+        <short>Object (TCustomControlBar) for the notification event.</short>
       </element>
       <element name="TBandInfoEvent.Control">
-        <short/>
+        <short>Control for the event notification.</short>
       </element>
       <element name="TBandInfoEvent.Insets">
-        <short/>
+        <short>Bounds rectangle for the specified control.</short>
       </element>
       <element name="TBandInfoEvent.PreferredSize">
-        <short/>
+        <short>
+          Default width for the control on entry. Can be updated in the handler routine.
+        </short>
       </element>
       <element name="TBandInfoEvent.RowCount">
-        <short/>
+        <short>
+          Number of rows that can be displayed based on the Height and RowSize for the control bar.
+        </short>
       </element>
 
       <element name="TBandMoveEvent">
         <short>Specifies an event handler signalled when a control band is moved.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TBandMoveEvent</var> is the type used to implement the OnBandMove property in TCustomControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.OnBandMove"/>
+          <link id="TCustomControlBar.DoBandMove"/>
+          <link id="TCustomControlBar.MoveBand"/>
+          <link id="TCustomControlBar.InitializeBand"/>
+        </seealso>
       </element>
       <element name="TBandMoveEvent.Sender">
-        <short>Object instance for the event notification.</short>
+        <short>Object (TCustomControlBar) for the event notification.</short>
       </element>
       <element name="TBandMoveEvent.Control">
         <short>Control for the event notification.</short>
       </element>
       <element name="TBandMoveEvent.ARect">
-        <short>Display rectangle for the event notification.</short>
+        <short>
+          Updated display rectangle for the control returned from the handler.
+        </short>
       </element>
 
       <element name="TBandPaintEvent">
@@ -7482,7 +7757,7 @@
         </seealso>
       </element>
       <element name="TCtrlBand.GetBandRect.Result">
-        <short>Value for the property.</short>
+        <short>Value for the BandRect property.</short>
       </element>
 
       <element name="TCtrlBand.GetBottom">
@@ -7493,7 +7768,7 @@
         </seealso>
       </element>
       <element name="TCtrlBand.GetBottom.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Bottom property.</short>
       </element>
 
       <element name="TCtrlBand.GetRight">
@@ -7504,7 +7779,7 @@
         </seealso>
       </element>
       <element name="TCtrlBand.GetRight.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Right property.</short>
       </element>
 
       <element name="TCtrlBand.SetBandRect">
@@ -7515,7 +7790,7 @@
         </seealso>
       </element>
       <element name="TCtrlBand.SetBandRect.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the BandRect property.</short>
       </element>
 
       <element name="TCtrlBand.SetRight">
@@ -7526,7 +7801,7 @@
         </seealso>
       </element>
       <element name="TCtrlBand.SetRight.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Right property.</short>
       </element>
 
       <element name="TCtrlBand.BandRect">
@@ -7545,7 +7820,9 @@
       <element name="TCtrlBand.Bottom">
         <short>Position of the bottom of the band control.</short>
         <descr>
-          <var>Bottom</var> is a read-only <var>Integer</var> property which contains the vertical position that is the bottom of the band control. The value in Bottom is derived using the Top and Height properties, which are updated when a value is assigned to the <var>BandRect</var> property.
+          <p>
+            <var>Bottom</var> is a read-only <var>Integer</var> property which contains the vertical position that is the bottom of the band control. The value in Bottom is derived using the Top and Height properties, which are updated when a value is assigned to the <var>BandRect</var> property.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -7577,7 +7854,9 @@
           Stored Left position for the Control used in comparisons during resizing.
         </short>
         <descr>
-          The value is updated in the AlignControlToBand method in TCustomControlBar, and provides convenient access to the property value in Control.
+          <p>
+            The value is updated in the AlignControlToBand method in TCustomControlBar, and provides convenient access to the property value in Control.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -7766,7 +8045,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetDrawingStyle.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the DrawingStyle property.</short>
       </element>
 
       <element name="TCustomControlBar.SetGradientDirection">
@@ -7777,7 +8056,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetGradientDirection.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the GradientDirection property.</short>
       </element>
 
       <element name="TCustomControlBar.SetGradientEndColor">
@@ -7788,7 +8067,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetGradientEndColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the GradientEndColor property.</short>
       </element>
 
       <element name="TCustomControlBar.SetGradientStartColor">
@@ -7799,7 +8078,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetGradientStartColor.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the GradientStartColor property.</short>
       </element>
 
       <element name="TCustomControlBar.SetPicture">
@@ -7810,7 +8089,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetPicture.aValue">
-        <short>New value for the property.</short>
+        <short>New value for the Picture property.</short>
       </element>
 
       <element name="TCustomControlBar.SetRowSize">
@@ -7821,7 +8100,7 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.SetRowSize.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the RowSize property.</short>
       </element>
 
       <element name="TCustomControlBar.cBandBorderH">
@@ -7895,25 +8174,58 @@
       </element>
 
       <element name="TCustomControlBar.AlignControlToBand">
-        <short>Aligns the control bar to the specified control band.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Aligns the control for the specified band and updates its coordinates for use in subsequent resize operations.
+        </short>
+        <descr>
+          <p>
+            <var>AlignControlToBand</var> updates values in ABand to ensure that the Control for the band is centered vertically within its bounds and positioned for the setting in ARightToLeft. Values from the Control are stored in the ControlLeft, ControlTop, ControlHeight, and ControlWidth properties in the control band. This allows the values to be used in subsequent resize operations.
+          </p>
+          <p>
+            AlignControlToBand is called from the AlignControlsToBands and InitializeBand methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.AlignControlsToBands"/>
+          <link id="TCustomControlBar.InitializeBand"/>
+          <link id="TCtrlBand.Control"/>
+          <link id="TCtrlBand.ControlLeft"/>
+          <link id="TCtrlBand.ControlTop"/>
+          <link id="TCtrlBand.ControlWidth"/>
+          <link id="TCtrlBand.ControlHeight"/>
+        </seealso>
       </element>
       <element name="TCustomControlBar.AlignControlToBand.ABand">
-        <short/>
+        <short>TCtrlBand with the control positioned and aligned in the method.</short>
       </element>
       <element name="TCustomControlBar.AlignControlToBand.ARightToLeft">
-        <short/>
+        <short>
+          <b>True</b> if right-to-left layout is used for the band decorations and control.
+        </short>
       </element>
 
       <element name="TCustomControlBar.AlignControlsToBands">
         <short>Aligns visible control bands in the container.</short>
         <descr>
           <p>
-            Temporarily disables AutoSizing during the alignment process. Restores AutoSizing prior to exiting from the method.
+            AlignControlsToBands calls the AlignControlToBand method to position and align the visible bands on the control bar.
+          </p>
+          <p>
+            It temporarily disables auto-sizing during the alignment process. Auto-sizing is restored prior to exit.
+          </p>
+          <p>
+            AlignControlsToBands is called from the CMBorderChanged, MoveBand, StickControls, and Resize methods. It is also called when a new value is assigned to the RowSize property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomControlBar.AlignControlToBand"/>
+          <link id="TCustomControlBar.AutoSize"/>
+          <link id="TCustomControlBar.Resize"/>
+          <link id="TCustomControlBar.RowSize"/>
+          <link id="TCustomControlBar.MoveBand"/>
+          <link id="TCustomControlBar.StickControls"/>
+          <link id="TCustomControlBar.CMBorderChanged"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.CalcBandHeight">
@@ -8013,22 +8325,47 @@
         <seealso/>
       </element>
       <element name="TCustomControlBar.CalcLowestBandBottomPx.Result">
-        <short/>
+        <short>Largest value in the Bottom property for bands on the control.</short>
       </element>
 
-      <element name="TCustomControlBar.CalculatePreferredSize" link="#lcl.controls.TWinControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomControlBar.CalculatePreferredSize">
+        <short>
+          Calculates the preferred height and width used during auto-sizing.
+        </short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomControlBar</var>. It re-implements the method from the ancestor class.
+          </p>
+          <p>
+            CheckBandsSizeAndVisibility is called to initialize the TCtrlBand instances on the control, and to order the bands which have visible controls by their display coordinates.
+          </p>
+          <p>
+            PreferredWidth and PreferredHeight are variable arguments which contain the preferred dimensions for a new instance of the control. In TCustomControlBar, PreferredWidth is set to 0 to trigger the auto-sizing feature specified in ControlStyle. PreferredHeight is set to the value from the CalcLowestBandBottomPx method, and actually contains the largest value in the Bottom property for the visible controls on the control bands. A positive non-zero value in PreferredHeight also include the space needed inner bevels on the control bands.
+          </p>
+          <p>
+            CalculatePreferredSize is called when LCL auto-sizing algorithms are executed for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+          <link id="TCustomControlBar.SortVisibleBands"/>
+          <link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CalculatePreferredSize.PreferredWidth">
-        <short/>
+        <short>
+          Preferred width for a new instance of the control, or 0 to enable auto-sizing.
+        </short>
       </element>
       <element name="TCustomControlBar.CalculatePreferredSize.PreferredHeight">
-        <short/>
+        <short>
+         Preferred height for a new instance of the control, or 0 to enable auto-sizing.
+        </short>
       </element>
       <element name="TCustomControlBar.CalculatePreferredSize.WithThemeSpace">
-        <short/>
+        <short>
+          Ignored in TCustomControlBar.
+        </short>
       </element>
 
       <element name="TCustomControlBar.ChangeCursor">
@@ -8066,60 +8403,122 @@
 
       <element name="TCustomControlBar.CMBiDiModeChanged">
         <short>Handles the CM_BIDIMODECHANGED message.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            CMBiDiModeChanged calls the inherited method on entry to notify child controls that the value in BidiMode has been changed. Each of the TCtrlBand instances on the control bar are updated so that the Left coordinate for the bands is correct for the Width of the control bar and the new value in BiDiMode. AutoSize is temporarily disabled while the bands are repositioned. 
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCtrlBands"/>
+          <link id="TCtrlBand.Left"/>
+          <link id="TCtrlBand.Width"/>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
+          <link id="#lcl.controls.TControl.DisableAutoSizing">TControl.DisableAutoSizing</link>
+          <link id="#lcl.controls.TControl.EnableAutoSizing">TControl.EnableAutoSizing</link>
+          <link id="#lcl.controls.TWinControl.CMBiDiModeChanged">TWinControl.CMBiDiModeChanged</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CMBiDiModeChanged.Message">
-        <short/>
+        <short>Control message handled in the method.</short>
       </element>
 
       <element name="TCustomControlBar.CMBorderChanged">
         <short>Handles the CM_BORDERCHANGED message.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CMBorderChanged</var> calls the inherited method on entry to adjust the client rectangle and control size when a border is added to or removed from the control.
+          </p>
+          <p>
+            CalcInnerBevelWidth is called to get the space reserved for the settings in BevelInner and BevelOuter. If the calculated value differs from the previous value, the Top coordinate for each of the TCtrlBand instances on the control are shifted to their new positions. AlignControlsToBands is called to align the controls for the bands to their new positions. If IsRightToLeft returns True, the Left coordinate in each of the bands is also shifted.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.CalcInnerBevelWidth"/>
+          <link id="TCtrlBands"/>
+          <link id="TCtrlBand.Top"/>
+          <link id="TCtrlBand.Left"/>
+          <link id="#lcl.controls.TWinControl.CMBorderChanged">TWinControl.CMBorderChanged</link>
+          <link id="#lcl.controls.TControl.IsRightToLeft">TControl.IsRightToLeft</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CMBorderChanged.Message">
-        <short/>
+        <short>Control message handled in the method.</short>
       </element>
 
       <element name="TCustomControlBar.CreateWnd">
         <short>
-          Ensures the default cursor and width values are assigned when the window handle is created.
+          Ensures the default values taken from Cursor and Width are assigned when the window handle is created.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CreateWnd</var> is an overridden method in <var>TCustomControlBar</var>. It calls the inherited method to update the window control flags and creation parameters when the handle is allocated for the control.
+          </p>
+          <p>
+            CreateWnd ensures that existing values in the Cursor and Width properties are applied to the internal default values used in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
+          <link id="#lcl.controls.TControl.Width">TControl.Width</link>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.DoBandMove">
         <short>
           Signals the OnBandMove event handler for the specified control and drawing rectangle.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoBandMove</var> is a method used to signal the OnBandMove event handler (when assigned) using the arguments passed to the method. AControl is the control displayed on the TCtrlBand instance moved in the method. ARect contains the display area for the control derived from the coordinates for the band.
+          </p>
+          <p>
+            DoBandMove is called from the InitializeBand and MoveBand methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.OnBandMove"/>
+          <link id="TCustomControlBar.InitializeBand"/>
+          <link id="TCustomControlBar.MoveBand"/>
+          <link id="TCtrlBand"/>
+        </seealso>
       </element>
       <element name="TCustomControlBar.DoBandMove.AControl">
-        <short/>
+        <short>
+          Control on the band moved in the method.
+        </short>
       </element>
       <element name="TCustomControlBar.DoBandMove.ARect">
-        <short/>
+        <short>
+          Display rectangle for the band moved in the method.
+        </short>
       </element>
 
       <element name="TCustomControlBar.DoBandPaint">
-        <short>Signals the OnBandPaint event handler using the arguments to the method.</short>
-        <descr/>
+        <short>Signals the OnBandPaint event handler using the specified arguments.</short>
+        <descr>
+          <p>
+            DoBandPaint is a method used to draw the specified control for a visible TCtrlBand to the Canvas for the control. It is called from the Paint method for each off the visible bands on the control.
+          </p>
+          <p>
+            Use the OnBandPaint event handler to perform actions needed to configure the Canvas or render the control instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomControlBar.DoBandPaint.AControl">
-        <short/>
+        <short>Control for the band rendered in the method.</short>
       </element>
       <element name="TCustomControlBar.DoBandPaint.ACanvas">
-        <short/>
+        <short>Canvas where the band (and the control) are drawn.</short>
       </element>
       <element name="TCustomControlBar.DoBandPaint.ARect">
-        <short/>
+        <short>Display area for the band and control drawn in the method.</short>
       </element>
       <element name="TCustomControlBar.DoBandPaint.AOptions">
-        <short/>
+        <short>
+          Set of TBandPaintOption value which control the decorations and drawing style for the band.
+        </short>
       </element>
 
       <element name="TCustomControlBar.DragControl">
@@ -8154,26 +8553,30 @@
 
       <element name="TCustomControlBar.GetControlInfo">
         <short>
-          Signals the OnBandInfo event handler to store control information in the arguments to the method.
+          Signals the OnBandInfo event handler to store control information to the arguments for the method.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>GetControlInfo</var> is called from the InsertControl method when the specified control is positioned, aligned, and added to the internal TCrtlBands container for the control bar. GetControlInfo signals the OnBandInfo event handler (when assigned) to store information about the bounds rectangle, width, and number of rows needed for the control  / band. Values are returned in the Insets, PreferredSize, and RowCount variable arguments.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomControlBar.GetControlInfo.AControl">
-        <short/>
+        <short>Control for the band examined in the method.</short>
       </element>
       <element name="TCustomControlBar.GetControlInfo.Insets">
-        <short/>
+        <short>Adjusted bounds rectangle for the control.</short>
       </element>
       <element name="TCustomControlBar.GetControlInfo.PreferredSize">
-        <short/>
+        <short>Adjusted width for the control.</short>
       </element>
       <element name="TCustomControlBar.GetControlInfo.RowCount">
-        <short/>
+        <short>Number of rows needed for the band / control using the default row height.</short>
       </element>
 
       <element name="TCustomControlBar.InitializeClass">
-        <short>Class constructor used to initial class constants.</short>
+        <short>Class constructor which initializes class constants.</short>
         <descr/>
         <seealso/>
       </element>
@@ -8182,7 +8585,8 @@
         <short>
           Configures a band and calculates its row position, order, and geometry including client decorations.
         </short>
-        <descr/>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomControlBar.InitializeBand.ABand">
@@ -8258,20 +8662,34 @@
       </element>
 
       <element name="TCustomControlBar.MouseMove">
-        <short>Handles a mouse move message while dragging a control band.</short>
-        <descr/>
+        <short>Handles a mouse move message including dragging a control band.</short>
+        <descr>
+          <p>
+            MouseMove is an overridden method in TCustomControlBar which handles a mouse move message at the specified X and Y position using the specified Shift modifier. It calls the inherited method on entry to update the mouse position for the DragManager (when active) and to signal the OnMouseMove event handler (when assigned).
+          </p>
+          <p>
+            MouseMove calls ChangeCursor to update the cursor shape when a band move operation is started. If the operation is already active and handled by the DragManager, the MoveBand method is called for the band under the mouse pointer. DragControl is called if the DragManager does not handle the action for the specified position.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomControlBar.ChangeCursor"/>
+          <link id="TCustomControlBar.MoveBand"/>
+          <link id="TCustomControlBar.DragControl"/>
+          <link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
           <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
+          <link id="#lcl.controls.TControl.WMMouseMove">TControl.WMMouseMove</link>
+          <link id="#lcl.controls.DragManager">DragManager</link>
+          <link id="#lcl.controls.TDragManager">TDragManager</link>
         </seealso>
       </element>
       <element name="TCustomControlBar.MouseMove.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the mouse event.</short>
       </element>
       <element name="TCustomControlBar.MouseMove.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short> 
       </element>
       <element name="TCustomControlBar.MouseMove.Y">
-        <short/>
+        <short>Vertical coordinate for the mouse pointer.</short> 
       </element>
 
       <element name="TCustomControlBar.MouseUp">
@@ -8296,9 +8714,13 @@
 
       <element name="TCustomControlBar.MoveBand">
         <short>
-          Determines the new position for a band moved using the mouse or by settings its coordinates, and rearranges adjacent bands (and rows) as needed.
+          Performs actions needed when a band is moved to new position.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Determines the new position for a band moved using the mouse or by settings its coordinates. Rearranges adjacent bands (and rows) as needed.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomControlBar.MoveBand.AMoveBand">
@@ -8336,10 +8758,14 @@
         </short>
         <descr>
           <p>
-            Assigned as the OnChange event handler for the Picture property.
+            Assigned as the OnChange event handler for the Picture property in the Create constructor.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomControlBar.Create"/>
+          <link id="TCustomControlBar.Picture"/>
+          <link id="#lcl.graphics.TPicture.OnChange">TPicture.OnChange</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.PictureChanged.Sender">
         <short/>
@@ -8347,11 +8773,23 @@
 
       <element name="TCustomControlBar.Resize">
         <short>
-          Signals the OnResize event handler (when assigned) and re-aligns bands and their controls when needed.
+          Signals the OnResize event handler (when assigned) and re-aligns bands and their controls.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Resize</var> is an overridden method in <var>TCustomControlBar</var>. It calls the inherited method on entry to handle delayed auto-sizing requests and signal the OnResize event handler (when assigned).
+          </p>
+          <p>
+            When AutoSize is <b>False</b>, the visible TCtrlBand instances on the control are initialized, aligned, and positioned. The controls on the bands are also aligned for each of visible bands. Invalidate is called to force the control to be redrawn.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomControlBar.AutoSize"/>
+          <link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+          <link id="TCustomControlBar.AlignControlsToBands"/>
           <link id="#lcl.controls.TControl.Resize">TControl.Resize</link>
+          <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+          <link id="#lcl.controls.TWinControl.DoAdjustClientRectChange">TWinControl.DoAdjustClientRectChange</link>
         </seealso>
       </element>
 
@@ -8365,6 +8803,7 @@
         <seealso>
           <link id="TCustomControlBar.ChangeCursor"/>
           <link id="#lcl.controls.TControl.SetCursor">TControl.SetCursor</link>
+          <link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
         </seealso>
       </element>
       <element name="TCustomControlBar.SetCursor.Value">
@@ -8498,7 +8937,7 @@
         <seealso/>
       </element>
       <element name="TCustomControlBar.FlipChildren.AllLevels">
-        <short>When <b>True</b> all descendent controls are flipped as well.</short>
+        <short>When <b>True</b> all child controls are flipped as well.</short>
       </element>
 
       <element name="TCustomControlBar.HitTest">
@@ -8522,7 +8961,7 @@
         <short>Creates and stores a new band for the specified control.</short>
         <descr>
           <p>
-            InsertControl is an overridden procedure used to create, initialize, and store a TCtrlBand for the specified control. InsertControl calls the method inherited from TWinControl, and creates and stores a new TCtrlBand instance for the control in AControl.
+            InsertControl is an overridden procedure used to create, initialize, and store a TCtrlBand instance for the specified control. InsertControl calls the method inherited from TWinControl, and creates and stores a new TCtrlBand instance for the control in AControl.
           </p>
         </descr>
         <seealso>
@@ -8546,7 +8985,9 @@
         </seealso>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.Result">
-        <short>TCtrlBand instance at the specified coordinates, or Nil when not on a visible band.</short>
+        <short>
+          TCtrlBand instance at the specified coordinates, or Nil when not on a visible band.
+        </short>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.X">
         <short>Horizontal coordinate for the mouse pointer.</short>
@@ -8559,19 +9000,34 @@
       </element>
 
       <element name="TCustomControlBar.RemoveControl">
-        <short>Removes the specified band from the control bar.</short>
-        <descr/>
+        <short>Removes the band with the specified control.</short>
+        <descr>
+          <p>
+            <var>RemoveControl</var> is an overridden method in <var>TCustomControlBar</var>. It performs additional actions when the Parent for the control in AControl has been set to Nil.
+          </p>
+          <p>
+            RemoveControl ensures that the TCtrlBand instance for the control is removed from the internal TCtrlBands container. When found, the Delete method in the list is called to remove the band.
+          </p>
+          <p>
+            RemoveControl calls the inherited method to remove the control specified in AControl.
+          </p>
+          <p>
+            If the control bar is not being freed, the Invalidate method is called to force the control to be redrawn.
+          </p>
+        </descr>
         <seealso>
           <link id="TCtrlBand"/>
           <link id="TCtrlBands"/>
+          <link id="#lcl.controls.TWinControl.RemoveControl">TWinControl.RemoveControl</link>
+          <link id="#lcl.controls.TWinControl.Invalidate">TWinControl.Invalidate</link>
         </seealso>
       </element>
       <element name="TCustomControlBar.RemoveControl.AControl">
-        <short>Band removed from the control bar.</short>
+        <short>Control removed from the control bar.</short>
       </element>
 
       <element name="TCustomControlBar.StickControls">
-        <short>Aligns controls for the bands to the control bar.</short>
+        <short>Aligns controls to both their bands and the control bar.</short>
         <descr>
           <p>
             Calls the AlignControlsToBands method to align / resize controls on the visible bands for the control bar.
@@ -8579,6 +9035,7 @@
         </descr>
         <seealso>
           <link id="TCustomControlBar.AlignControlsToBands"/>
+          <link id="TCustomControlBar.AlignControlToBand"/>
         </seealso>
       </element>
 
@@ -8612,14 +9069,16 @@
 
       <element name="TCustomControlBar.AutoSize">
         <short>
-          Indicates if bands are automatically sized and positioned for the control bar.
+          Indicates if bands are automatically sized and positioned on the control bar.
         </short>
         <descr>
           <p>
-            When AutoSize is <b>False</b>, the CheckBandsSizeAndVisibility method is called to Resize the bands in the control bar. When set to <b>False</b>, the inherited method is used. In addition, AutoSize determines if InvalidatePreferredSize is used when setting the value for the RowSize property.
+            When AutoSize is <b>False</b>, the CheckBandsSizeAndVisibility method is called to Resize the bands on the control bar. When set to <b>False</b>, the inherited method is used. In addition, AutoSize determines if InvalidatePreferredSize is called when setting the value for the RowSize property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.DockSite">
@@ -8640,10 +9099,21 @@
         <short>Fill style used for bands on the control bar.</short>
         <descr>
           <p>
-            DrawingStyle is a TBandDrawingStyle property which indicates the fill style applied to the control bar. The default value for the property is dsNormal. Set DrawingStyle to dsGradient to draw the control bar using a gradient defined by the values in GradientDirection, GradientStartColor, and GradientEndColor.
+            <var>DrawingStyle</var> is a <var>TBandDrawingStyle</var> property which indicates the fill style applied to the control bar. The default value for the property is dsNormal and causes the default background color for the control bar to be used.
+          </p>
+          <p>
+            Set DrawingStyle to dsGradient to draw the control bar using a gradient fill defined by the values in GradientDirection, GradientStartColor, and GradientEndColor. When clDefault is used in GradientStartColor, it is converted to clForm when the Paint method is called to draw the control. When clDefault is used in GradientEndColor, it is converted to cl3DHighlight in the Paint method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomControlBar.GradientDirection"/>
+          <link id="TCustomControlBar.GradientStartColor"/>
+          <link id="TCustomControlBar.GradientEndColor"/>
+          <link id="TCustomControlBar.Paint"/>
+          <link id="TCustomControlBar.OnBandPaint"/>
+          <link id="TBandDrawingStyle"/>
+          <link id="TBandPaintOptions"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.GradientDirection">
@@ -8755,7 +9225,7 @@
         <short>Event handler signalled when a control band is moved on the control bar.</short>
         <descr>
           <p>
-            Signalled from the DoBandMove method (when assigned) using the TCustomControlBar and TCtrlBand instances as arguments. It occurs when the visibility and size for bands on the control are updated.
+            Signalled from the DoBandMove method (when assigned) using the TCustomControlBar and TCtrlBand instances as arguments. It is also signalled when the visibility and size for bands on the control are updated in InitializeBand.
           </p>
         </descr>
         <seealso>
@@ -8824,7 +9294,10 @@
         </short>
         <descr>
           <p>
-            <var>TControlBar</var> implements a panel used to maintain and manage tool bars and toolbuttons on a form. <var>TControlBar</var> is a <var>TCustomControlBar</var> descendant, and sets the visibility for properties from the ancestor class.
+            <var>TControlBar</var> implements a panel used to maintain and manage tool bars and tool buttons on a form. <var>TControlBar</var> is a <var>TCustomControlBar</var> descendant, and sets the visibility for properties from the ancestor class.
+          </p>
+          <p>
+            Internally, it uses a TCtrlBands member to represent the <var>TToolBar</var>, <var>TToolButton</var>, or <var>TCoolBar</var> classes added to the container. Use <var>InsertControl</var> and <var>RemoveControl</var> to maintain items in the container at run-time, or use the design-time support provided in the Lazarus Form Designer.
           </p>
         </descr>
         <seealso>
@@ -8843,11 +9316,19 @@
         <short>Drawing style for the inner bevel on the control.</short>
         <descr>
           <p>
-            The default value for the property is bvRaised in TControlBar.
+            <var>BevelInner</var> is the bevel drawn inside the bounds for the control, and causes the control to have a raised or lowered appearance. The default value for the property is bvRaised in TControlBar.
+          </p>
+          <p>
+            Use BevelOuter to set the drawing style for the bevel drawn on the bounds for the control.
+          </p>
+          <p>
+            Use BevelWidth to set the width for the bevels in pixels.
           </p>
         </descr>
         <seealso>
+          <link id="#lcl.extctrls.TCustomPanel.BevelOuter">TCustomPanel.BevelOuter</link>
           <link id="#lcl.extctrls.TCustomPanel.BevelInner">TCustomPanel.BevelInner</link>
+          <link id="#lcl.extctrls.TCustomPanel.BevelWidth">TCustomPanel.BevelWidth</link>
         </seealso>
       </element>
 
@@ -8855,11 +9336,19 @@
         <short>Drawing style for the outer bevel on the control.</short>
         <descr>
           <p>
-            The default value for the property is bvLowered in TControlBar.
+            <var>BevelOuter</var> is the bevel drawn on the bounds for the control, and causes it have an over-all raised or lowered appearance when used. The default value for the property is bvLowered in TControlBar.
+          </p>
+          <p>
+            Use BevelInner to set the bevel drawn inside the bounds for the control.
+          </p>
+          <p>
+            Use BevelWidth to set the width for the bevels in pixels.
           </p>
         </descr>
         <seealso>
           <link id="#lcl.extctrls.TCustomPanel.BevelOuter">TCustomPanel.BevelOuter</link>
+          <link id="#lcl.extctrls.TCustomPanel.BevelInner">TCustomPanel.BevelInner</link>
+          <link id="#lcl.extctrls.TCustomPanel.BevelWidth">TCustomPanel.BevelWidth</link>
         </seealso>
       </element>
 
@@ -9021,14 +9510,16 @@
             Properties such as <var>Tabs</var>, <var>TabIndex</var>, <var>IndexOfTabAt()</var>, <var>TabIndexAtClientPos()</var>, <var>TabPosition</var>, <var>TabHeight</var>, <var>TabWidth</var>, <var>TabVisible</var>, <var>OnCloseTabClicked</var> refer to the use for <var>Page</var> selection.
           </p>
           <p>
-            <var>TTabControl</var> and <var>TPageControl</var> are both descended from <var>TCustomNoteBook</var> (which is in turn descended from <var>TWinControl</var>) and have many inherited properties in common. <var>TPageControl</var> has, in general, more advanced features and is probably intended to replace <var>TNoteBook</var>.
+            <var>TTabControl</var> and <var>TPageControl</var> are both descended from <var>TCustomNoteBook</var> (which is in turn descended from <var>TWinControl</var>) and have many inherited properties in common. <var>TPageControl</var> has more advanced features and provides a wrapper for the native page control supported for the platform.
           </p>
-            <p>
-              The following table summarizes the main differences between the two components.
-            </p>
-            <table>
+          <p>
+            The following table summarizes the main differences between the two components.
+          </p>
+          <table>
             <th>
-              <td>Property or method</td>
+              <td>
+                Property or method
+              </td>
               <td>
                 <var>TNoteBook</var>
               </td>
@@ -9121,10 +9612,10 @@
             <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customized mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.
           </p>
           <p>
-            When the control is first selected from the Component Palette and placed on a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a StringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted.
+            When the control is first selected from the Component Palette and placed on a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a TStringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted.
           </p>
           <p>
-            In a typical application a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together, and code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.
+            In a typical application, a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together. Code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.
           </p>
         </descr>
       </topic>
