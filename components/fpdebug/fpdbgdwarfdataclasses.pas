@@ -3926,10 +3926,13 @@ var
       end
     else
       begin
-      case TargetInfo.bitness of
-        b32: Result.AddressSize := 4;
-        b64: Result.AddressSize := 8;
-      end;
+      if TargetInfo.machineType = mtAVR8 then
+        Result.AddressSize := 2
+      else
+        case TargetInfo.bitness of
+          b32: Result.AddressSize := 4;
+          b64: Result.AddressSize := 8;
+        end;
       end;
     Result.CodeAlignmentFactor := ULEB128toOrdinal(p);
     Result.DataAlignmentFactor := SLEB128toOrdinal(p);
