@@ -2090,7 +2090,8 @@ begin
       begin
         TargetObject := GetPopMenuItemObject;
         // Check if the menu was the maximized icon menu for an MDI child window and ignore it in that case
-        if (LoWord(LParam)=0) and (lWinControl=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
+        if (LoWord(LParam)=0) and (lWinControl=Application.MainForm) and 
+           Assigned(Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
         begin
           MaximizedActiveChild := False;
           if SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, Windows.WPARAM(@MaximizedActiveChild)) <> 0 then
@@ -2112,7 +2113,8 @@ begin
     begin
       TargetObject := GetMenuItemObject((HIWORD(Integer(WParam)) and MF_POPUP) <> 0);
       // Check if the menu was the maximized icon menu for an MDI child window and ignore it in that case
-      if (LoWord(Integer(WParam))=0) and (lWinControl=Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
+      if (LoWord(Integer(WParam))=0) and (lWinControl=Application.MainForm) and 
+         Assigned(Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) then
       begin
         MaximizedActiveChild := False;
         if SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDIGETACTIVE, 0, Windows.WPARAM(@MaximizedActiveChild)) <> 0 then
