@@ -1832,7 +1832,7 @@ begin
       ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                  phpWithCallingSpecs,phpWithAssembler,phpDoNotAddSemicolon]);
+                  phpWithCallingSpecs,phpWithAssembler,phpDoNotAddSemicolon, phpWithEmptyParamList]);
       if ProcCode='' then
         RaiseException(20170421201518,'CompleteForwardProcs: unable to parse forward proc node');
       if ProcCode[length(ProcCode)]<>';' then begin
@@ -2912,7 +2912,7 @@ begin
       CodeCompleteSrcChgCache:=SourceChangeCache;
 
       // add method declaration
-      NewProcCode:=ExtractProcHead(BodyProcNode,ProcAttrCopyBodyToDef+[phpWithCallingSpecs]);
+      NewProcCode:=ExtractProcHead(BodyProcNode,ProcAttrCopyBodyToDef+[phpWithCallingSpecs,phpWithEmptyParamList]);
       CleanProcCode:=ExtractProcHead(BodyProcNode,
                        [phpWithoutClassKeyword,phpWithoutClassName,phpInUpperCase]);
       AddClassInsertion(CleanProcCode,NewProcCode,ProcName,ncpPrivateProcs);
@@ -8206,7 +8206,7 @@ begin
       ProcCode:=ExtractProcHead(ANode,[phpWithStart,
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                  phpWithProcModifiers,phpDoNotAddSemicolon]);
+                  phpWithProcModifiers,phpDoNotAddSemicolon,phpWithEmptyParamList]);
       if (ProcCode<>'') and (ProcCode[length(ProcCode)]<>';') then begin
         // add missing semicolon at end of procedure head
         UndoReadNextAtom;
@@ -8813,7 +8813,7 @@ var
     if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
+        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody+[phpWithEmptyParamList]);
         //debugln(['CreateCodeForMissingProcBody Definition="',ProcCode,'"']);
         TheNodeExt.ExtTxt3:=Beauty.BeautifyProc(ProcCode,Indent,true);
         //debugln(['CreateCodeForMissingProcBody Beautified="',TheNodeExt.ExtTxt3,'"']);

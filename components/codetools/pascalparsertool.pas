@@ -76,6 +76,7 @@ type
                            //    e.g 'Do   ;' normally becomes 'Do;'
                            //    with this option you get 'Do ;')
     phpWithoutBrackets,    // skip start- and end-bracket of parameter list
+    phpWithEmptyParamList, // don't remove "()" in  procedure foo();
     phpWithoutSemicolon,   // skip semicolon at end
     phpDoNotAddSemicolon,  // do not add missing semicolon at end
     // search attributes:
@@ -1501,7 +1502,10 @@ begin
       then begin             // empty brackets: extract also the closing bracket.
         ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
         if (not (phpWithoutBrackets in Attr)) and (CloseBracket=')') then // delete empty '()'
-          ExtractMemStream.Position:=ExtractMemStream.Position-2;
+        begin
+          if not (phpWithEmptyParamList in Attr) then
+            ExtractMemStream.Position:=ExtractMemStream.Position-2;
+        end;
         exit(true);
       end;
     end;
