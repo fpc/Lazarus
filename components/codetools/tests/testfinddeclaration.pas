@@ -143,6 +143,7 @@ type
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
+    procedure TestFindDeclaration_DirectiveWithIn;
   end;
 
 implementation
@@ -1244,6 +1245,29 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_LazTests;
 begin
   TestFiles('laztests');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  { optimizer }',
+  '  toptimizerswitch = (cs_opt_none,',
+  '    cs_opt_use_load_modify_store',
+  '  );',
+  '  toptimizerswitches = set of toptimizerswitch;',
+  'const',
+  '  supported_optimizerswitches = [cs_opt_use_load_modify_store];',
+  'var',
+  '  o: TObject;',
+  'begin',
+  '{$if (cs_opt_use_load_modify_store in supported_optimizerswitches)}',
+  '{$endif}',
+  '  o.classinfo{declaration:System.TObject.ClassInfo}',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 initialization

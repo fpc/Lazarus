@@ -1768,6 +1768,10 @@ var
             else
               SetOperandValueChar(Operand,'0');
           end;
+        'I': // IN
+          begin
+            SetOperandValueChar(Operand,'1'); // todo: evaluate in
+          end;
         'D': // DIV
           begin
             Number1:=EvalOperandToInt64(StackOperand^);
@@ -1885,6 +1889,7 @@ begin
             break;
           end;
         end;
+      'I': if CompareIdentifiers(AtomStart,'IN')=0 then OperatorLvl:=1;
       'D': if CompareIdentifiers(AtomStart,'DIV')=0 then OperatorLvl:=1;
       'M': if CompareIdentifiers(AtomStart,'MOD')=0 then OperatorLvl:=1;
       'S':
