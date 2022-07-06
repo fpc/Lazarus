@@ -40,6 +40,8 @@ type
     procedure TestCompleteProperty_GenericObjFPC;
     procedure TestCompleteProperty_GenericDelphi;
     procedure TestCompleteVariableWithSpecializedType;
+    procedure TestCompleteMethodSignature_Empty_Parentheses;
+    procedure TestCompleteMethodSignature_Without_Parentheses;
   end;
 
 implementation
@@ -854,6 +856,48 @@ begin
     'begin',
     '  List := TClass(Base).List;',
     'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Empty_Parentheses;
+begin
+  Test('TestCompleteMethodSignature_Empty_Parentheses',
+    ['unit SomeUnit;'
+    ,'{$MODE OBJFPC}'
+    ,'interface'
+    ,'procedure Foo();'
+    ,'implementation'
+    ,'end.'],
+    4,1,
+    ['unit SomeUnit;'
+    ,'{$MODE OBJFPC}'
+    ,'interface'
+    ,'procedure Foo();'
+    ,'implementation'
+    ,'procedure Foo();'
+    ,'begin'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Without_Parentheses;
+begin
+  Test('TestCompleteMethodSignature_Without_Parentheses',
+    ['unit SomeUnit;'
+    ,'{$MODE OBJFPC}'
+    ,'interface'
+    ,'procedure Foo;'
+    ,'implementation'
+    ,'end.'],
+    4,1,
+    ['unit SomeUnit;'
+    ,'{$MODE OBJFPC}'
+    ,'interface'
+    ,'procedure Foo;'
+    ,'implementation'
+    ,'procedure Foo;'
+    ,'begin'
+    ,'end;'
+    ,'end.']);
 end;
 
 
