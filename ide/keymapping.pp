@@ -196,8 +196,10 @@ type
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
-    function LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: String):boolean;
-    function SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: String):boolean;
+    function LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: String;
+      isCheckDefault: Boolean = true):boolean;
+    function SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: String;
+      IsHumanStr: Boolean = false):boolean;
     procedure AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
                        IDEWindowClass: TCustomFormClass;
                        ACommandOffsetOffset: Integer = 0);
@@ -243,6 +245,12 @@ var
 
 procedure LoadCustomKeySchemasInDir(const dir: string; dst: TStringList);
 procedure LoadCustomKeySchemas;
+
+function HumanKeyToStr(akey: Integer): string;
+function HumanShiftStateToStr(const ss: TShiftState): string;
+function HumanStrToKey(const v: string): Integer;
+function HumanStrToShiftState(const v: string): TShiftState;
+
 
 implementation
 
@@ -291,6 +299,100 @@ begin
   if (i and 4)<>0 then include(Result,ssAlt);
   if (i and 8)<>0 then include(Result,ssMeta);
   if (i and 16)<>0 then include(Result,ssSuper);
+end;
+
+function HumanKeyToStr(akey: Integer): string;
+var
+  err : Integer;
+  i   : Integer;
+  sc  : TShortCut;
+begin
+  if akey = VK_UNKNOWN then begin
+    Result := '';
+    Exit;
+  end;
+  sc := akey and $FF;
+  Result := ShortCutToTextRaw(sc);
+  Val(Result,i, err);
+  if err = 0 then
+    // plain numbers should not be exported as is. They must be prefixed with "#"
+    // in order to distinguish them from key codes
+    Result := '#'+Result;
+end;
+
+function HumanShiftStateToStr(const ss: TShiftState): string;
+var
+  sc : TShortCut;
+const
+  UnkKey = 'Unknown';
+begin
+  if ss = [] then begin
+    Result := '';
+    Exit;
+  end;
+  sc := 0;
+  if ssCtrl in ss then inc(sc, scCtrl);
+  if ssAlt in ss then inc(sc, scAlt);
+  if ssMeta in ss then inc(sc, scMeta);
+  if ssShift in ss then inc(sc, scShift);
+  Result := ShortCutToTextRaw(sc);
+  Result := StringReplace(Result, UnkKey, '', [rfReplaceAll, rfIgnoreCase]);
+  Result := Trim(StringReplace(Result, '+',' ', [rfReplaceAll]));
+end;
+
+function HumanStrToKey(const v: string): Integer;
+var
+  i, err : integer;
+  cs     : string;
+  cut    : TShortCut;
+begin
+  if v = '' then begin
+    Result := VK_UNKNOWN;
+    Exit;
+  end;
+  Val(v, i, err);
+  if err = 0 then begin
+    // default behaviour. Key is the whole number
+    Result := i;
+    Exit;
+  end;
+  cs := Trim(v);
+
+  // numbers are stored with prefix #
+  // in order to distinguish them key codes.
+  if (length(cs)>1) and (Pos('#', cs)=1) then begin
+    cs := Copy(cs, 2, length(cs)-1);
+    Val(cs, i, err);
+    if err <> 0 then
+      // it's something else, not the number. falling back
+      cs := Trim(v);
+  end;
+  cut := TextToShortCutRaw(cs);
+  Result := cut and $FF;
+end;
+
+function HumanStrToShiftState(const v: string): TShiftState;
+var
+  i, err : integer;
+  cs  : string;
+  cut : TShortCut;
+begin
+  if (v = '') then begin
+    Result := [];
+    Exit;
+  end;
+  Val(v, i, err);
+  if err = 0 then begin
+    Result := CfgStrToShiftState(v);
+    Exit;
+  end;
+  cs := StringReplace(Trim(v), ' ','+',[rfReplaceAll])+'+A';
+  cut := TextToShortCutRaw(cs);
+  Result := [];
+  if ((scMeta and cut) > 0) then Include(Result, ssMeta);
+  if ((scShift and cut) > 0)  then Include(Result, ssShift);
+  if ((scCtrl and cut) > 0) then Include(Result, ssCtrl);
+  if ((scAlt and cut) > 0) then Include(Result, ssAlt);
 end;
 
 // Compare functions for fCmdRelCache
@@ -3381,7 +3483,8 @@ begin
 end;
 
 function TKeyCommandRelationList.LoadFromXMLConfig(
-  XMLConfig:TXMLConfig; const Path: String):boolean;
+  XMLConfig:TXMLConfig; const Path: String;
+  isCheckDefault: Boolean):boolean;
 var
   a,b,p:integer;
   FileVersion: integer;
@@ -3428,14 +3531,14 @@ var
   procedure Load(SubPath: string; out Key, DefaultKey: TIDEShortCut);
   begin
     DefaultKey:=CleanIDEShortCut;
-    if XMLConfig.GetValue(SubPath+'Default',True) then begin
+    if (isCheckDefault) and XMLConfig.GetValue(SubPath+'Default',True) then begin
       Key:=CleanIDEShortCut;
     end else begin
       // not default
-      key.Key1:=XMLConfig.GetValue(SubPath+'Key1',VK_UNKNOWN);
-      key.Shift1:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift1',''));
-      key.Key2:=XMLConfig.GetValue(SubPath+'Key2',VK_UNKNOWN);
-      key.Shift2:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift2',''));
+      key.Key1:=HumanStrToKey(XMLConfig.GetValue(SubPath+'Key1',''));
+      key.Shift1:=HumanStrToShiftState(XMLConfig.GetValue(SubPath+'Shift1',''));
+      key.Key2:=HumanStrToKey(XMLConfig.GetValue(SubPath+'Key2',''));
+      key.Shift2:=HumanStrToShiftState(XMLConfig.GetValue(SubPath+'Shift2',''));
       if CompareIDEShortCuts(@Key,@CleanIDEShortCut)=0 then
         // this key is empty, mark it so that it differs from default
         key.Shift2:=[ssShift];
@@ -3546,22 +3649,26 @@ begin
 end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
-  XMLConfig:TXMLConfig; const Path: String): boolean;
+  XMLConfig:TXMLConfig; const Path: String;
+  IsHumanStr: Boolean): boolean;
 
   procedure Store(const SubPath: string; Key, DefaultKey: TIDEShortCut);
   var
     IsDefault: boolean;
     s: TShiftState;
   begin
-    IsDefault:=CompareIDEShortCuts(@Key,@DefaultKey)=0;
-    XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,True);
+    if not IsHumanStr then begin
+      IsDefault:=CompareIDEShortCuts(@Key,@DefaultKey)=0;
+      XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,True);
+    end else
+      isDefault := false;
     if IsDefault then begin
       // clear values
       XMLConfig.SetDeleteValue(SubPath+'Key1',0,0);
       XMLConfig.SetDeleteValue(SubPath+'Shift1','','');
       XMLConfig.SetDeleteValue(SubPath+'Key2',0,0);
       XMLConfig.SetDeleteValue(SubPath+'Shift2','','');
-    end else begin
+    end else if not IsHumanStr then begin
       // store values
       XMLConfig.SetDeleteValue(SubPath+'Key1',key.Key1,VK_UNKNOWN);
       if key.Key1=VK_UNKNOWN then
@@ -3575,6 +3682,19 @@ function TKeyCommandRelationList.SaveToXMLConfig(
       else
         s:=key.Shift2;
       XMLConfig.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
+    end else begin
+      XMLConfig.SetValue(SubPath+'Key1', HumanKeyToStr(key.Key1));
+      if key.Key1=VK_UNKNOWN then
+        s:=[]
+      else
+        s:=key.Shift1;
+      XMLConfig.SetValue(SubPath+'Shift1',HumanShiftStateToStr(s));
+      XMLConfig.SetValue(SubPath+'Key2', HumanKeyToStr(key.Key2));
+      if key.Key2=VK_UNKNOWN then
+        s:=[]
+      else
+        s:=key.Shift2;
+      XMLConfig.SetValue(SubPath+'Shift2',HumanShiftStateToStr(s));
     end;
   end;
 
@@ -3586,7 +3706,9 @@ var a: integer;
   SubPath: String;
 begin
   XMLConfig.SetValue(Path+'Version/Value',KeyMappingFormatVersion);
-  XMLConfig.SetDeleteValue(Path+'ExternalToolCount/Value',ExtToolCount,0);
+  if not IsHumanStr then
+    XMLConfig.SetDeleteValue(Path+'ExternalToolCount/Value',ExtToolCount,0);
+
   // save shortcuts to fLoadedKeyCommands
   for a:=0 to FRelations.Count-1 do begin
     Name:=Relations[a].Name;
@@ -3613,6 +3735,7 @@ begin
   while AVLNode<>nil do begin
     LoadedKey:=TLoadedKeyCommand(AVLNode.Data);
     if (not LoadedKey.IsShortcutADefault) or (not LoadedKey.IsShortcutBDefault)
+      or (IsHumanStr)
     then begin
       inc(Cnt);
       //DebugLn(['TKeyCommandRelationList.SaveToXMLConfig CUSTOM ',LoadedKey.AsString]);
@@ -4244,7 +4367,7 @@ begin
         if nm = '' then nm := ExtractFileName(fn[i]);
         if (dst.IndexOf(nm)<0) then begin
           exp.DefineCommandCategories; // default Relations
-          exp.LoadFromXMLConfig(xml, 'KeyMapping/');
+          exp.LoadFromXMLConfig(xml, 'KeyMapping/', true);
           dst.AddObject(nm, exp);
         end;
       except

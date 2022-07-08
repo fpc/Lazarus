@@ -37,7 +37,8 @@ uses
   IDEOptEditorIntf, IDEImagesIntf, SrcEditorIntf, IDECommands,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options,
-  KeymapSchemeDlg, KeyMapping, KeyMapShortCutDlg, Laz2_XMLCfg;
+  KeymapSchemeDlg, KeyMapping, KeyMapShortCutDlg, Laz2_XMLCfg,
+  FileUtil;
 
 type
 
@@ -244,6 +245,9 @@ begin
   dlg := TSaveDialog.Create(Self);
   exp := TKeyCommandRelationList.Create;
   try
+    dlg.DefaultExt:='xml';
+    dlg.Filter := dlgFilterXML + '|*.xml|' + dlgFilterAll +'|'+GetAllFilesMask;
+    dlg.FilterIndex := 0;
     if not dlg.Execute then Exit;
     xml := TXMLConfig.CreateClean(dlg.FileName);
     exp.Assign(FEditingKeyMap);
@@ -254,7 +258,7 @@ begin
       exp.Relations[i].DefaultShortcutA := CleanIDEShortCut;
       exp.Relations[i].DefaultShortcutB := CleanIDEShortCut;
     end;
-    exp.SaveToXMLConfig(xml, 'KeyMapping/');
+    exp.SaveToXMLConfig(xml, 'KeyMapping/', true);
   finally
     exp.Free;
     dlg.Free;
@@ -277,12 +281,14 @@ begin
   dlg := TOpenDialog.Create(Self);
   exp := TKeyCommandRelationList.Create;
   try
+    dlg.Filter := dlgFilterXML + '|*.xml|' + dlgFilterAll +'|'+GetAllFilesMask;
+    dlg.FilterIndex := 0;
     if not dlg.Execute then Exit;
     xml := TXMLConfig.Create(dlg.FileName);
     exp.DefineCommandCategories; // default Relations
     nm := xml.GetValue('Name/Value','');
     if nm = '' then nm := ExtractFileName(xml.FileName);
-    exp.LoadFromXMLConfig(xml, 'KeyMapping/');
+    exp.LoadFromXMLConfig(xml, 'KeyMapping/', true);
     for i:=0 to exp.RelationCount-1 do begin
       src := exp.Relations[i];
       dst := FEditingKeyMap.FindByCommand(src.Command);
