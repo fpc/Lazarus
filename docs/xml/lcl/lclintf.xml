@@ -178,7 +178,7 @@
           </p>
           <dl>
             <dt>BLACKNESS</dt>
-            <dd> Fills the destination rectangle with black</dd>
+            <dd>Fills the destination rectangle with black</dd>
             <dt>DSTINVERT</dt>
             <dd>Inverts the colors of the destination area</dd>
             <dt>MERGECOPY</dt>
@@ -204,17 +204,22 @@
             <dt>SRCINVERT</dt>
             <dd>Fills the destination area with (Dst xor Src)</dd>
             <dt>SRCPAINT</dt>
-            <dd>Combines the colors of the source and the destination using the operator OR on each pixel</dd>
+            <dd>
+              Combines the colors of the source and the destination using the operator OR on each pixel
+            </dd>
             <dt>WHITENESS</dt>
             <dd>Fills the destination rectangle with white</dd>
           </dl>
           <p>These flags can be added to above ROPs:</p>
           <dl>
-            <dt>CAPTUREBLTdt></dt>
-            <dd>Includes windows which are on top of the specified Canvas. This option is not recommended and is very hard to implement in all supported platforms.</dd>
+            <dt>CAPTUREBLT</dt>
+            <dd>
+              Includes windows which are on top of the specified Canvas. This option is not recommended and is very hard to implement in all supported platforms.
+            </dd>
             <dt>NOMIRRORBITMAP</dt>
-            <dd>Prevents the bitmap from being mirrored. (The coordinates are sorted before
-              painting?)</dd>
+            <dd>
+              Prevents the bitmap from being mirrored.
+            </dd>
           </dl>
         </descr>
         <seealso>
@@ -416,28 +421,45 @@
       </element>
 
       <element name="CreateCaret">
-        <short>Creates a Caret (text cursor).</short>
+        <short>Creates the Caret (text cursor) for the specified windowed control.</short>
         <descr>
           <p>
-            This description is taken from the WinAPI, no guarantee for other platforms.
+            <var>CreateCaret</var> is a <var>Boolean</var> function used to created the caret (or text cursor) displayed on a control when editing is active. CreateCaret calls the corresponding routine in the widgetset class to initialize the cursor with a given size, or a shape loaded from a bitmap image.
+          </p>
+          <p>
+            <var>Handle</var> is the HWND value representing the handle for the windowed control which owns and implements the caret.
+          </p>
+          <p>
+            <var>Bitmap</var> is the HBITMAP value with the handle for the bitmap image used as the caret shape. When Bitmap is set to 0, a handle is not available for the caret shape. When Bitmap is assigned, the values in the Height and Width arguments are ignored; the dimensions are determined by the bitmap image.
+          </p>
+          <p>
+            The Windows platform attaches special meanings to the values 0 and 1 in the Bitmap handle. 0 causes a solid black block with the dimensions in Height and Width to be used as the caret shape. 1 causes a solid gray block with the dimensions in Height and Width to be used as the caret shape.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="DestroyCaret"/>
+          <link id="ShowCaret"/>
+          <link id="HideCaret"/>
+          <link id="SetCaretPos"/>
+          <link id="SetCaretPosEx"/>
+        </seealso>
       </element>
       <element name="CreateCaret.Result">
         <short><b>False</b> on failure.</short>
       </element>
       <element name="CreateCaret.Handle">
-        <short>The window that owns the caret.</short>
+        <short>The handle for the windowed control that owns the caret.</short>
       </element>
       <element name="CreateCaret.Bitmap">
-        <short>Bitmap Handle, or zero for a solid (black) caret, 1 for a grey caret.</short>
+        <short>
+          The handle for the Bitmap with the caret shape, 0 for a solid (black) caret, or 1 for a gray caret.
+        </short>
       </element>
-      <element name="CreateCaret.width">
-        <short>The width of the caret, in logical units.</short>
+      <element name="CreateCaret.Width">
+        <short>The width of the caret.</short>
       </element>
       <element name="CreateCaret.Height">
-        <short>The height of the caret, in logical units.</short>
+        <short>The height of the caret.</short>
       </element>
 
       <element name="CreateCompatibleBitmap">
@@ -641,7 +663,11 @@
 
       <element name="CreatePolygonRgn">
         <short>Creates a polygonal region.</short>
-        <descr>The last point is connected to the first point, to close the region.</descr>
+        <descr>
+          <p>
+            The last point in Points is connected to the first point to close the region.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CreatePolygonRgn.Result">
@@ -682,7 +708,7 @@
         <short>Creates a rectangular region with rounded corners.</short>
         <descr>
           <p>
-            Creates a rectangular region with rounded corners. All parameters in logical units.
+            Creates a rectangular region with rounded corners.
           </p>
         </descr>
         <seealso/>
@@ -708,7 +734,7 @@
       <element name="CreateRoundRectRgn.nHeightEllipse">
         <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DeleteCriticalSection">
         <short>Deletes an un-owned critical section.</short>
         <descr/>
@@ -722,7 +748,7 @@
       </element>
 
       <element name="DeleteDC">
-        <short>Deletes a Device Context, created by CreateDC.</short>
+        <short>Deletes a device context created by CreateDC.</short>
         <descr/>
         <seealso>
           <link id="ReleaseDC"/>
@@ -739,7 +765,7 @@
         <short>Frees a GDI object.</short>
         <descr>
           <p>
-            The bitmap of a pattern brush is not destroyed with the brush.
+            The bitmap used in a pattern brush is not destroyed with the brush.
           </p>
         </descr>
         <errors>
@@ -755,7 +781,7 @@
       </element>
 
       <element name="DestroyCaret">
-        <short>Destroys the caret but doesn't free the bitmap.</short>
+        <short>Destroys the caret but does not free the bitmap.</short>
         <descr/>
         <seealso/>
       </element>
@@ -763,11 +789,11 @@
         <short><b>False</b> on failure.</short>
       </element>
       <element name="DestroyCaret.Handle">
-        <short>Handle of the window with the caret.</short>
+        <short>Handle for the windowed control with the caret.</short>
       </element>
 
       <element name="DestroyCursor">
-        <short>Destroys an mouse cursor.</short>
+        <short>Destroys a mouse cursor.</short>
         <descr/>
         <seealso/>
       </element>
@@ -809,7 +835,7 @@
       </element>
 
       <element name="DrawFrameControl">
-        <short>Draws a window frame for a control of the specified type and style.</short>
+        <short>Draws a window frame for a control of the specified type in a given state.</short>
         <descr/>
         <seealso/>
       </element>
@@ -830,7 +856,7 @@
       </element>
 
       <element name="DrawFocusRect">
-        <short>Determines if the focus rectangle is handled by the widgetset class.</short>
+        <short>Draws a focus rectangle on the specified device context.</short>
         <descr/>
         <seealso/>
       </element>
@@ -838,10 +864,12 @@
         <short/>
       </element>
       <element name="DrawFocusRect.DC">
-        <short>Device content for the operation.</short>
+        <short>Device context for the operation.</short>
       </element>
       <element name="DrawFocusRect.Rect">
-        <short/>
+        <short>
+          Coordinates on the device context used to draw the focus rectangle.
+        </short>
       </element>
 
       <element name="DrawEdge">
@@ -946,7 +974,7 @@
       <element name="EndPaint.PS">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="EnterCriticalSection">
         <short>Enters a critical section.</short>
         <descr/>
@@ -1655,7 +1683,9 @@ end;
       </element>
 
       <element name="GetRgnBox">
-        <short>Returns the bounding rectangle of a region, containing the entire region.</short>
+        <short>
+          Returns the bounding rectangle of a region, containing the entire region.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1682,7 +1712,8 @@ end;
       </element>
 
       <element name="GetScrollInfo">
-        <short>Returns all or selected information about a Scroll Bar.
+        <short>
+          Returns all or selected information about a Scroll Bar.
         </short>
         <descr/>
         <seealso>
@@ -1918,29 +1949,83 @@ end;
       </element>
 
       <element name="GetWindowLong">
-        <short>Returns attributes of a window.</short>
-        <descr/>
+        <short>Returns attributes for the specified window handle.</short>
+        <descr>
+          <p>
+            <var>GetWindowLong</var> is a <var>PtrInt</var> function used to retrieve specific attributes for the window represented by Handle. GetWindowLong provides access to the corresponding method in the widgetset class instances. GetWindowLong is Windows-specific; the implementation for other widgetsets simply returns a 0 value. 
+          </p>
+          <p>
+            <var>Handle</var> is the HWND value used as the handle for the Window examined in the routine.
+          </p>
+          <p>
+            <var>int</var> is an Integer value which contains the 0-based offset to the Cardinal values returned by the routine. 
+          </p>
+          <p>
+            The following values defined in <file>lcltype.pp</file> are allowed in the int argument:
+          </p>
+          <dl>
+            <dt>GWL_WNDPROC (-4)</dt>
+            <dd>
+              Gets the address or handle for the window procedure.
+            </dd>
+            <dt>GWL_HINSTANCE (-6)</dt>
+            <dd>
+              Gets the handle for the application.
+            </dd>
+            <dt>GWL_HWNDPARENT (-8)</dt>
+            <dd>
+              Gets the handle for the parent window (when available).
+            </dd>
+            <dt>GWL_ID (-12)</dt>
+            <dd>
+              Gets the identifier for the window.
+            </dd>
+            <dt>GWL_STYLE (-16)</dt>
+            <dd>
+              Gets the style flags for the window.
+            </dd>
+            <dt>GWL_EXSTYLE (-20)</dt>
+            <dd>
+              Gets the extended style flags for the window.
+            </dd>
+            <dt>GWL_USERDATA (-21)</dt>
+            <dd>
+              Gets arbitrary user-defined data for the window; the content and use of the data is application-specific. The default value is zero (0).
+            </dd>
+          </dl>
+          <p>
+            The return value contains the attributes for the value requested in <var>int</var>. If the function fails, the return value is zero (0). If SetWindowLong has not been called to store the specified values, GetWindowLong returns zero (0).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="GetWindowLong.Result">
-        <short/>
+        <short>
+          Pointer to the Integer value which represents the attributes for the specified window Handle.
+        </short>
       </element>
       <element name="GetWindowLong.Handle">
-        <short/>
+        <short>
+          Handle for the window with attributes retrieved in the routine.
+        </short>
       </element>
       <element name="GetWindowLong.int">
-        <short/>
+        <short>
+          Ordinal position for the attributes retrieved for the window handle.
+        </short>
       </element>
 
       <element name="GetWindowRect">
         <short>
-          Retrieves the bounding rectangle of a window, including the window decoration in screen coordinates.
+          Retrieves the bounding rectangle for a window, including the window decoration in screen coordinates.
         </short>
         <descr>
-          Retrieves the bounding rectangle of a window, including the window decoration. The
-          coordinates are given relative to the upper-left corner of the screen in screen.
-
-          After the call, Rect will be the control area in screen coordinates. That means, Left and Top will be the screen coordinate of the TopLeft pixel of the Handle object and Right and Bottom will be the screen coordinate of the BottomRight pixel.
+          <p>
+            Retrieves the bounding rectangle of a window, including the window decoration. The coordinates are given relative to the upper-left corner of the screen in screen.
+          </p>
+          <p>
+            After the call, Rect will be the control area in screen coordinates. That means, Left and Top will be the screen coordinate of the TopLeft pixel of the Handle object and Right and Bottom will be the screen coordinate of the BottomRight pixel.
+          </p>
         </descr>
         <seealso>
           <link id="GetWindowSize"/>
@@ -2176,7 +2261,7 @@ end;
       <element name="IsZoomed.handle">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="InitializeCriticalSection">
         <short>Initializes a Critical Section object.</short>
         <descr/>
@@ -2185,7 +2270,7 @@ end;
       <element name="InitializeCriticalSection.CritSection">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="LeaveCriticalSection">
         <short>Releases a critical section, for use by other threads.</short>
         <descr/>
@@ -2292,25 +2377,167 @@ end;
 
       <element name="MessageBox">
         <short>
-          The MessageBox function displays an modal dialog, with the given text, caption, icon and buttons.
+          Displays a modal dialog with the given text, caption, icon and buttons.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>MessageBox</var> is an <var>Integer</var> function used to display a modal dialog with the text, caption, icon and buttons specified using the arguments to the routine. It provides the common routine in the LCL interface used to access the platform-specific implementation of the routine for the widgetset class.
+          </p>
+          <p>
+            <var>hWnd</var> contains the handle for the window which is the owner of the dialog created and executed in the routine. The default value (0) indicates a handle is not available or not assigned for the owner window.
+          </p>
+          <p>
+            <var>lpText</var> is a PChar value with the text displayed on the modal dialog. Multi-line text can be used by embedding the end-of-line character sequence in the content.
+          </p>
+          <p>
+            <var>lpCaption</var> is a PChar value with the title displayed on the modal dialog.
+          </p>
+          <p>
+            <var>uType</var> is a Cardinal value which identifies the content and behavior for the modal dialog. It consists of flag values which can be OR'd together and passed to the widgetset implementation. uType can contain flag values from the following flag groups:
+          </p>
+          <p>
+            <b>Buttons</b> (defined in <file>lcltype.pp</file>)
+          </p>
+          <dl>
+            <dt>MB_OK ($00000000)</dt>
+            <dd>
+              Displays an OK button. This is the default behavior for the Windows platform.
+            </dd>
+            <dt>MB_OKCANCEL ($00000001)</dt>
+            <dd>
+              The message box contains two push buttons: OK and Cancel.
+            </dd>
+            <dt>MB_ABORTRETRYIGNORE ($00000002)</dt>
+            <dd>
+              Displays Abort, Retry, and Ignore buttons.
+            </dd>
+            <dt>MB_YESNOCANCEL ($00000003)</dt>
+            <dd>
+              Displays Yes, No, and Cancel buttons.
+            </dd>
+            <dt>MB_YESNO ($00000004)</dt>
+            <dd>
+              Displays Yes and No buttons.
+            </dd>
+            <dt>MB_RETRYCANCEL ($00000005)</dt>
+            <dd>
+              Displays Retry and Cancel buttons.
+            </dd>
+            <dt>MB_MB_CANCELTRYCONTINUE ($00000006)</dt>
+            <dd>
+              Not supported in the current LCL version.
+            </dd>
+            <dt>MB_HELP ($00004000)</dt>
+            <dd>
+              Displays a Help button on the dialog. Sends a help message to the owner window in hWnd when it has a non-zero value.
+            </dd>
+          </dl>
+          <p>
+            <b>Icons</b> (defined in <file>lcltype.pp</file>)
+          </p>
+          <dl>
+            <dt>MB_ICONSTOP, MB_ICONERROR, MB_ICONHAND ($00000010)</dt>
+            <dd>
+              Displays a stop sign icon on the dialog.
+            </dd>
+            <dt>MB_ICONQUESTION ($00000020)</dt>
+            <dd>
+              Displays a question mark icon on the dialog.
+            </dd>
+            <dt>MB_ICONEXCLAMATION, MB_ICONWARNING ($00000030)</dt>
+            <dd>
+              Displays an exclamation point icon on the dialog.
+            </dd>
+            <dt>MB_ICONINFORMATION, MB_ICONASTERISK ($00000040)</dt>
+            <dd>
+              Displays a lowercase "i" icon on the dialog.
+            </dd>
+          </dl>
+          <p>
+            <b>Default Buttons</b> (defined in <file>lcltype.pp</file>)
+          </p>
+          <dl>
+            <dt>MB_DEFBUTTON1 ($00000000)</dt>
+            <dd>
+              The first button is the default button. This is the default unless MB_DEFBUTTON2, MB_DEFBUTTON3, or MB_DEFBUTTON4 is specified.
+            </dd>
+            <dt>MB_DEFBUTTON2 ($00000100)</dt>
+            <dd>
+              The second button is the default button.
+            </dd>
+            <dt>MB_DEFBUTTON3 ($00000200)</dt>
+            <dd>
+              The third button is the default button.
+            </dd>
+            <dt>MB_DEFBUTTON4 ($00000300)</dt>
+            <dd>
+              The fourth button is the default button.
+            </dd>
+          </dl>
+          <p>
+            The return value indicates the button selected on the modal dialog, and can be identified using the following Integer constants defined in <file>lcltype.pp</file>:
+          </p>
+          <ul>
+            <li>IDOK, ID_OK (1)</li>
+            <li>IDCANCEL, ID_CANCEL (2)</li>
+            <li>IDABORT, ID_ABORT (3)</li>
+            <li>IDRETRY, ID_RETRY (4)</li>
+            <li>IDIGNORE, ID_IGNORE  (5)</li>
+            <li>IDYES, ID_YES (6)</li>
+            <li>IDNO, ID_NO (7)</li>
+            <li>IDCLOSE, ID_CLOSE (8)</li>
+            <li>IDHELP, ID_HELP (9)</li>
+          </ul>
+          <p>
+            For example:
+          </p>
+<code>uses LCLIntf, LCLType;
+// ...
+function ShowResourceNotAvailableMessageBox: Integer;
+begin
+  Result := MessageBox(0,
+    PChar('Resource not available.'+#10+'Try again?'),
+    PChar('Account Details'),
+    MB_ICONWARNING or MB_ABORTRETRYIGNORE or MB_DEFBUTTON2);
+
+  case Result of
+    IDABORT:  // TODO:
+    IDRETRY:  // TODO:
+    IDIGNORE: // TODO:
+  end;
+end;
+</code>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TApplication.MessageBox">TApplication.MessageBox</link>
+          <link id="#lcl.forms.MessageBoxFunction">MessageBoxFunction</link>
+          <link id="#lcl.dialogs.DefaultMessageBox">DefaultMessageBox</link>
+        </seealso>
       </element>
       <element name="MessageBox.Result">
-        <short/>
+        <short>
+          Integer value with the modal result for the dialog.
+        </short>
       </element>
       <element name="MessageBox.hWnd">
-        <short/>
+        <short>
+          Handle for the owner window, or 0 (default) when an owner is not available.
+        </short>
       </element>
       <element name="MessageBox.lpText">
-        <short/>
+        <short>
+          Pointer to the character values displayed in the content area for the dialog.
+        </short>
       </element>
       <element name="MessageBox.lpCaption">
-        <short/>
+        <short>
+          Pointer to the character values displayed as the title for the dialog.
+        </short>
       </element>
       <element name="MessageBox.uType">
-        <short/>
+        <short>
+          Flag values which indicate the icon, buttons, and behavior for the dialog.
+        </short>
       </element>
 
       <element name="MonitorFromPoint">
@@ -2378,7 +2605,9 @@ end;
       </element>
 
       <element name="OffsetRgn">
-        <short>Moves a region relative.</short>
+        <short>
+          Moves a region by the specified relative offset.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2592,7 +2821,9 @@ end;
       </element>
 
       <element name="PtInRegion">
-        <short/>
+        <short>
+          Determines whether the specified coordinates are within the given region handle.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2600,13 +2831,19 @@ end;
         <short/>
       </element>
       <element name="PtInRegion.RGN">
-        <short/>
+        <short>
+          Handle for the region examined in the routine.
+        </short>
       </element>
       <element name="PtInRegion.X">
-        <short/>
+        <short>
+          Horizontal coordinate examined in the routine.
+        </short>
       </element>
       <element name="PtInRegion.Y">
-        <short/>
+        <short>
+          Vertical coordinate examined in the routine.
+        </short>
       </element>
 
       <element name="RealizePalette">
@@ -2646,21 +2883,30 @@ end;
       </element>
 
       <element name="RectVisible">
-        <short/>
-        <descr/>
+        <short>
+          Indicates whether the specified rectangle in visible in the clipping region for the device context.
+        </short>
+        <descr>
+          <p>
+            Calls the RectVisible method in TWidgetSet to get the return value for the routine.
+          </p>
+        </descr>
         <seealso/>
       </element>
-
       <element name="RectVisible.Result">
-        <short/>
+        <short>
+          <b>True</b> if the rectangle is visible in the clipping region for the device context.
+        </short>
       </element>
-
       <element name="RectVisible.dc">
-        <short/>
+        <short>
+          Device context examined in the routine.
+        </short>
       </element>
-
       <element name="RectVisible.ARect">
-        <short/>
+        <short>
+          Rectangle with the coordinates examined on the device context.
+        </short>
       </element>
 
       <element name="RedrawWindow">
@@ -2728,37 +2974,41 @@ end;
       </element>
 
       <element name="RoundRect">
-        <short/>
-        <descr/>
+        <short>Draws a rectangle with rounded corners to the specified device context.</short>
+        <descr>
+          <p>
+            Calls the RoundRect method implemented in the TWidgetSet class.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="RoundRect.Result">
-        <short/>
+        <short>Returns <b>True</b> on successful completion of the routine.</short>
       </element>
       <element name="RoundRect.DC">
-        <short/>
+        <short>Device context where the drawing operation is performed.</short>
       </element>
       <element name="RoundRect.X1">
-        <short/>
+        <short>Coordinate on the device context for the rectangle.</short>
       </element>
       <element name="RoundRect.Y1">
-        <short/>
+        <short>Coordinate on the device context for the rectangle.</short>
       </element>
       <element name="RoundRect.X2">
-        <short/>
+        <short>Coordinate on the device context for the rectangle.</short>
       </element>
       <element name="RoundRect.Y2">
-        <short/>
+        <short>Coordinate on the device context for the rectangle.</short>
       </element>
       <element name="RoundRect.RX">
-        <short/>
+        <short>Length of the corner radius applied to the X-axis.</short>
       </element>
       <element name="RoundRect.RY">
-        <short/>
+        <short>Length of the corner radius applied to the Y-axis.</short>
       </element>
 
       <element name="RestoreDC">
-        <short>Restores an Device Context (DC) to an previously saved state.</short>
+        <short>Restores a Device Context (DC) to an previously saved state.</short>
         <descr/>
         <seealso/>
       </element>
@@ -2773,7 +3023,7 @@ end;
       </element>
 
       <element name="SaveDC">
-        <short>Saves the state of an Device Context in the context stack.</short>
+        <short>Saves the state of a Device Context in the context stack.</short>
         <descr/>
         <seealso/>
       </element>
@@ -2845,7 +3095,8 @@ end;
       </element>
 
       <element name="SendMessage">
-        <short>Sends a message directed to a window to the message pool of the application.
+        <short>
+          Sends a message directed to a specific window to the message pool for the application.
         </short>
         <descr>
           <p>
@@ -3103,25 +3354,21 @@ end;
         <descr/>
         <seealso/>
       </element>
-
       <element name="SelectPalette.Result">
         <short/>
       </element>
-
       <element name="SelectPalette.DC">
         <short/>
       </element>
-
       <element name="SelectPalette.Palette">
         <short/>
       </element>
-
       <element name="SelectPalette.ForceBackground">
         <short/>
       </element>
 
       <element name="SetFocus">
-        <short>Sets the keyboard input focus to the specified window.</short>
+        <short>Sets the keyboard input focus to the specified window handle.</short>
         <descr/>
         <seealso/>
       </element>
@@ -3187,7 +3434,9 @@ end;
       </element>
 
       <element name="SetSysColors">
-        <short>Sets the colors for one or more display elements of window borders and desktop.</short>
+        <short>
+          Sets the colors for one or more display elements of window borders and desktop.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3220,19 +3469,16 @@ end;
       </element>
 
       <element name="SetTextColor">
-        <short>Sets the text color in an device context.</short>
+        <short>Sets the text color on a device context.</short>
         <descr/>
         <seealso/>
       </element>
-
       <element name="SetTextColor.Result">
         <short/>
       </element>
-
       <element name="SetTextColor.DC">
         <short/>
       </element>
-
       <element name="SetTextColor.Color">
         <short/>
       </element>
@@ -3571,27 +3817,21 @@ end;
         <descr/>
         <seealso/>
       </element>
-
       <element name="TextOut.Result">
         <short/>
       </element>
-
       <element name="TextOut.DC">
         <short/>
       </element>
-
       <element name="TextOut.X">
         <short/>
       </element>
-
       <element name="TextOut.Y">
         <short/>
       </element>
-
       <element name="TextOut.Str">
         <short/>
       </element>
-
       <element name="TextOut.Count">
         <short/>
       </element>
@@ -3895,7 +4135,7 @@ end;
       <element name="GetBValue.RGB">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="GetRGBValues">
         <short>Extracts the red, green and blue color values from a COLORREF.</short>
         <descr/>
@@ -3913,7 +4153,7 @@ end;
       <element name="GetRGBValues.B">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="GetRGBIntValues">
         <short>Extracts the red, green and blue color values from a COLORREF.</short>
         <descr/>
@@ -3933,7 +4173,8 @@ end;
       </element>
 
       <element name="IndexToOverlayMask">
-        <short>Converts an imagelist index into an overlay index.
+        <short>
+          Converts an imagelist index into an overlay index.
         </short>
         <descr/>
         <seealso/>
@@ -3947,11 +4188,12 @@ end;
       </element>
 
       <element name="InflateRect">
-        <short>Inflates the rectangle in all directions.
+        <short>
+          Inflates the rectangle in all directions.
         </short>
         <descr>
           <p>
-            The deltas are applied to every side, i.e. the width and height increase by the double amount.
+            The deltas are applied to each side, i.e. the width and height increase by double delta amount.
           </p>
           <p>
             Positive values inflate, negative values deflate.
@@ -4307,7 +4549,8 @@ end;
       </element>
 
       <element name="SetScrollRange">
-        <short>Sets the minimum and maximum position values of an Scroll Bar.
+        <short>
+          Sets the minimum and maximum position values for a scroll bar.
         </short>
         <descr/>
         <seealso>
@@ -4368,7 +4611,7 @@ end;
       </element>
 
       <element name="SmallPointToPoint">
-        <short>Converts an TSmallPoint into an TPoint.</short>
+        <short>Converts a TSmallPoint value to a TPoint value.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4380,7 +4623,9 @@ end;
       </element>
 
       <element name="SubtractRect">
-        <short>Computes the bounding box of the geometric difference of two rectangles.</short>
+        <short>
+          Computes the bounding box with the geometric difference between two rectangles.
+        </short>
         <descr>
           <p>
             When the rectangles do not overlap completely in either x or y direction, the result is the first rectangle (lprcSrc1).
@@ -4530,7 +4775,7 @@ end;
       <element name="AskUser.HelpCtx">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="CallDefaultWndHandler">
         <short/>
         <descr/>
@@ -4717,15 +4962,13 @@ end;
         <descr/>
         <seealso/>
       </element>
-
       <element name="DCClipRegionValid.Result">
         <short/>
       </element>
-
       <element name="DCClipRegionValid.DC">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DeallocateHWnd">
         <short/>
         <descr/>
@@ -4734,7 +4977,7 @@ end;
       <element name="DeallocateHWnd.Wnd">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DestroyRubberBand">
         <short/>
         <descr/>
@@ -4743,7 +4986,7 @@ end;
       <element name="DestroyRubberBand.ARubberBand">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DrawDefaultDockImage">
         <short/>
         <descr/>
@@ -4758,23 +5001,37 @@ end;
       <element name="DrawDefaultDockImage.AOperation">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="DrawGrid">
-        <short/>
-        <descr/>
+        <short>
+          Draws the grid separator lines between columns and rows with the specified width and height.
+        </short>
+        <descr>
+          <p>
+            The current device context is saved on entry, and restored prior to exit.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="DrawGrid.DC">
-        <short/>
+        <short>
+          Device context where the drawing operation is performed.
+        </short>
       </element>
       <element name="DrawGrid.R">
-        <short/>
+        <short>
+          Rectangle with the bounds where the grid is drawn.
+        </short>
       </element>
       <element name="DrawGrid.DX">
-        <short/>
+        <short>
+          Width for the evenly-spaced columns in the grid.
+        </short>
       </element>
       <element name="DrawGrid.DY">
-        <short/>
+        <short>
+          Height for the evenly-spaced rows in the grid.
+        </short>
       </element>
 
       <element name="ExtUTF8Out">
@@ -4810,28 +5067,26 @@ end;
         <short/>
       </element>
 
-      <element name="FontCanUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="FontCanUTF8.Result">
-        <short/>
-      </element>
-      <element name="FontCanUTF8.Font">
-        <short/>
-      </element>
-
       <element name="FontIsMonoSpace">
-        <short/>
-        <descr/>
+        <short>
+          Indicates whether the specified font handle represents a fixed-pitch typeface.
+        </short>
+        <descr>
+          <remark>
+            <var>FontIsMonoSpace</var> is not implemented for all widgetsets. For example, GTK3 always returns <b>False</b> in the current LCL version (2.3.0). However, it is implemented for GTK2.
+          </remark>
+        </descr>
         <seealso/>
       </element>
       <element name="FontIsMonoSpace.Result">
-        <short/>
+        <short>
+          <b>True</b> when the font uses a fixed-pitch typeface.
+        </short>
       </element>
       <element name="FontIsMonoSpace.Font">
-        <short/>
+        <short>
+          Handle for the font examined in the routine.
+        </short>
       </element>
 
       <element name="Frame">
@@ -5481,7 +5736,7 @@ end;
       <element name="ReleaseDesignerDC.DC">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RemoveEventHandler">
         <short/>
         <descr/>
@@ -5490,7 +5745,7 @@ end;
       <element name="RemoveEventHandler.AHandler">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RemoveProcessEventHandler">
         <short/>
         <descr/>
@@ -5499,7 +5754,7 @@ end;
       <element name="RemoveProcessEventHandler.AHandler">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RemovePipeEventHandler">
         <short/>
         <descr/>
@@ -5514,27 +5769,22 @@ end;
         <descr/>
         <seealso/>
       </element>
-
       <element name="RequestInput.Result">
         <short/>
       </element>
-
       <element name="RequestInput.InputCaption">
         <short/>
       </element>
-
       <element name="RequestInput.InputPrompt">
         <short/>
       </element>
-
       <element name="RequestInput.MaskInput">
         <short/>
       </element>
-
       <element name="RequestInput.Value">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="SendCachedLCLMessages">
         <short/>
         <descr/>
@@ -5590,7 +5840,7 @@ end;
       <element name="SetComboMinDropDownSize.MinItemCount">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="SetEventHandlerFlags">
         <short/>
         <descr/>
@@ -5602,7 +5852,7 @@ end;
       <element name="SetEventHandlerFlags.NewFlags">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="SetRubberBandRect">
         <short/>
         <descr/>
@@ -5715,30 +5965,25 @@ end;
       <element name="ExcludeClipRgn.Result">
         <short/>
       </element>
-
       <element name="ExcludeClipRgn.dc">
         <short/>
       </element>
-
       <element name="ExcludeClipRgn.rgn">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="NotifyUser">
         <short/>
         <descr/>
         <seealso/>
       </element>
-
       <element name="NotifyUser.DialogMessage">
         <short/>
       </element>
-
       <element name="NotifyUser.DialogType">
         <short/>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="NotifyUserAtXY">
         <short/>
         <descr/>
@@ -5870,7 +6115,7 @@ end;
         <short>Number of ticks (milliseconds) elapsed since the computer was started.</short>
         <descr>
           <p>
-            GetTickCount64 is a QWord function used to get the number of ticks (milliseconds) elapsed since the computer was started. GetTickCount64 calls the GetTickCount64 function in LazSysUtils to get the return value.
+            <var>GetTickCount64</var> is a <var>QWord</var> function used to get the number of ticks (milliseconds) elapsed since the computer was started. GetTickCount64 calls the GetTickCount64 function in LazSysUtils to get the return value.
           </p>
         </descr>
         <seealso/>
@@ -5901,7 +6146,7 @@ end;
             The function uses FindDefaultBrowser to find the default browser for the platform. If it was found, it is started and the returns value is set to <b>True</b>.
           </p>
           <p>
-            AURL is passed as parameter to the browser application. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt. AURL is quoted when passed as an argument to ensure that space(s) in the path or file name are handled properly.
+            AURL is passed as parameter to the browser application. AURL must be a URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt. AURL is quoted when passed as an argument to ensure that space(s) in the path or file name are handled properly.
           </p>
         </descr>
       </element>
@@ -5918,10 +6163,10 @@ end;
         </short>
         <descr>
           <p>
-            OpenDocument is a Boolean function used to open the document specified in APath using the default application for the platform or widget set.
+            <var>OpenDocument</var> is a <var>Boolean</var> function used to open the document specified in APath using the default application for the platform or widget set.
           </p>
           <p>
-            The implementation of OpenDocument is platform- and/or WidgetSet-specific. On Windows, the OpenURL function is called to open the specified document. For UNIX-like platforms, the OpenDocumentWidgetsetImplementation is called when assigned. Otherwise, FindFIlenameOfCmd is used to check for common Desktop Environment applications for the platform. RunCmdFromPath is called to open the document using the requisite application.
+            The implementation of OpenDocument is platform- and/or WidgetSet-specific. On Windows, the OpenURL function is called to open the specified document. For UNIX-like platforms, the OpenDocumentWidgetsetImplementation is called when assigned. Otherwise, FindFilenameOfCmd is used to check for common Desktop Environment applications for the platform. RunCmdFromPath is called to open the document using the application.
           </p>
           <p>
             The return value contains <b>True</b> if an application is available to for the specified file name. The return value is <b>False</b> if an application cannot be found for the specified file, or the file does not exist in the given path.
