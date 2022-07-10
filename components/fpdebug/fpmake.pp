@@ -2,9 +2,9 @@
    File generated automatically by Lazarus Package Manager
    Created with the Fppkgpackagemanager package installed
 
-   fpmake.pp for fpdebug 0.9
+   fpmake.pp for fpdebug 1.0
 
-   This file was generated on 28-12-20
+   This file was generated on 10-07-22
 }
 
 {$ifndef ALLPACKAGES} 
@@ -25,7 +25,7 @@ begin
   with Installer do
     begin
     P:=AddPackage('fpdebug');
-    P.Version:='0.9.0-0';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
 
@@ -47,7 +47,7 @@ begin
     P.Options.Add('-l');
     P.Options.Add('-venibq');
     P.Options.Add('-vw-h-');
-    P.Options.Add('-vm3057');
+    P.Options.Add('-vm6060,6058,3057');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('fpdebug.pas');
     D := T.Dependencies.AddUnit('FpDbgClasses');
@@ -92,6 +92,8 @@ begin
     D := T.Dependencies.AddUnit('FpImgReaderWinPETypes');
     D := T.Dependencies.AddUnit('FpDbgHardcodedFreepascalInfo');
     D := T.Dependencies.AddUnit('FpDbgCallContextInfo');
+    D := T.Dependencies.AddUnit('FpWatchResultData');
+    D := T.Dependencies.AddUnit('FpDbgDwarfCFI');
     T := P.Targets.AddImplicitUnit('fpdbgclasses.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdisasx86.pp');
     T := P.Targets.AddImplicitUnit('fpdbgdwarf.pas');
@@ -134,6 +136,8 @@ begin
     T := P.Targets.AddImplicitUnit('fpimgreaderwinpetypes.pas');
     T := P.Targets.AddImplicitUnit('fpdbghardcodedfreepascalinfo.pas');
     T := P.Targets.AddImplicitUnit('fpdbgcallcontextinfo.pas');
+    T := P.Targets.AddImplicitUnit('fpwatchresultdata.pas');
+    T := P.Targets.AddImplicitUnit('fpdbgdwarfcfi.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('fpdebug.compiled');
