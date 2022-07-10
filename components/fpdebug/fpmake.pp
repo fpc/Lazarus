@@ -47,7 +47,7 @@ begin
     P.Options.Add('-l');
     P.Options.Add('-venibq');
     P.Options.Add('-vw-h-');
-    P.Options.Add('-vm6060,6058,3057');
+    //P.Options.Add('-vm6060,6058,3057');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('fpdebug.pas');
     D := T.Dependencies.AddUnit('FpDbgClasses');
