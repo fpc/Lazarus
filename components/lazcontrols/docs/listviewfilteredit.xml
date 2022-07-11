@@ -5,7 +5,7 @@
       <short>Implements an edit control used to filter an associated TListView control.</short>
       <descr>
         <p>
-          <file>ListViewFilterEdit</file> contains classes and types used to implement the <var>TListViewFilterEdit</var> control. It is used to filter the items displayed for an associated <var>TListView</var> control.
+          <file>ListViewFilterEdit</file> contains classes and types used to implement the <var>TListViewFilterEdit</var> control. It is used to filter the items displayed for an associated <var>TListView</var> control by the caption or sub-items in list item data.
         </p>
         <p>
           This file is part of the <file>LazControls</file> package.
@@ -30,22 +30,29 @@
         </short>
         <descr>
           <p>
-            TListViewDataItem is the typed maintained in TListViewDataList.
+            TListViewDataItem is the typed maintained in TListViewDataList, and passed an argument to the method in TListViewFilterEdit which finds matches for its Filter criteria.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewDataList"/>
+          <link id="TListViewFilterEdit.SortAndFilter"/>
+        </seealso>
       </element>
 
       <element name="TListViewDataItem.Data">
         <short>Pointer to the data for the list item.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.comctrls.TListItem.Data">TListItem.Data</link>
+        </seealso>
       </element>
 
       <element name="TListViewDataItem.StringArray">
         <short>Array of String values with the text displayed for the list item.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.sysutils.TStringArray">TStringArray</link>
+        </seealso>
       </element>
 
       <element name="TListViewDataItem.OperatorEqual">
@@ -60,7 +67,7 @@
         <seealso/>
       </element>
       <element name="TListViewDataItem.OperatorEqual.Result">
-        <short>True when the compared items have the same Data and StringArray values.</short>
+        <short><b>True</b> when the compared items have the same Data and StringArray values.</short>
       </element>
       <element name="TListViewDataItem.OperatorEqual.a">
         <short>TListViewDataItem instance for the comparison operator.</short>
@@ -83,12 +90,23 @@
       </element>
 
       <element name="TListViewFilterEdit">
-        <short>Implements a control used to filter an associated TListView control.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Implements a control used to filter list items in an associated TListView control.
+        </short>
+        <descr>
+          <p>
+            <var>TListViewFilterEdit</var> is a <var>TCustomControlFilterEdit</var> descendant which implements a control used to filter list item data from an associated TCustomListView control. It includes the FilteredListview property which provides the original list items and selections, and displays the filtered results. Overridden methods are provided to apply the filter and sort the list items for the associated list view control. The button on the edit control is used to clear the filter applied to the list items. Other overridden methods are provided to navigate between and select the filtered list items.
+          </p>
+          <remark>
+            TListViewFilterEdit requires FilteredListview to have list items available in its Items property. This prevents use of virtual mode (when OwnerData is <b>True</b>) in the associated list view control.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit">TCustomControlFilterEdit</link>
+        </seealso>
       </element>
 
-      <element name="TListViewFilterEdit.FFilteredListview">
+      <element name="TListViewFilterEdit.FFilteredListView">
         <short>TListView control showing the filtered data.</short>
       </element>
 
@@ -109,10 +127,10 @@
       </element>
 
       <element name="TListViewFilterEdit.MatchesFilter">
-        <short>True when the list view item matches a filter condition for the control.</short>
+        <short><b>True</b> when the list view item matches a filter condition for the control.</short>
       </element>
       <element name="TListViewFilterEdit.MatchesFilter.Result">
-        <short>True when the list view item matches a filter condition for the control.</short>
+        <short><b>True</b> when the list view item matches a filter condition for the control.</short>
       </element>
       <element name="TListViewFilterEdit.MatchesFilter.AData">
         <short/>
@@ -174,7 +192,7 @@
         <short>Ordinal position for the list item to select, multi-select, or de-select.</short>
       </element>
       <element name="TListViewFilterEdit.MoveTo.ASelect">
-        <short>True if the item is selected or included in a multi-selection.</short>
+        <short><b>True</b> if the item is selected or included in a multi-selection.</short>
       </element>
 
       <element name="TListViewFilterEdit.MoveNext">
@@ -199,7 +217,7 @@
       </element>
       <element name="TListViewFilterEdit.MoveNext.ASelect">
         <short>
-          True if the new list item should become selected, or added to the multi-selection for the list view control.
+          <b>True</b> if the new list item should become selected, or added to the multi-selection for the list view control.
         </short>
       </element>
 
@@ -211,18 +229,18 @@
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.MovePrev.ASelect">
-        <short>True if the list item should be become selected (or multi-selected).</short>
+        <short><b>True</b> if the list item should be become selected (or multi-selected).</short>
       </element>
 
       <element name="TListViewFilterEdit.MovePageUp">
         <short>
-          Moves the associated list view control towards the start of its list items by the  number of visible rows for the control.
+          Moves the associated list view control towards the start of its list items by the number of visible rows for the control.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.MovePageUp.ASelect">
-        <short>True if the list item should be become selected (or multi-selected).</short>
+        <short><b>True</b> if the list item should be become selected (or multi-selected).</short>
       </element>
 
       <element name="TListViewFilterEdit.MovePageDown">
@@ -233,7 +251,7 @@
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.MovePageDown.ASelect">
-        <short>True if the list item should be become selected (or multi-selected).</short>
+        <short><b>True</b> if the list item should be become selected (or multi-selected).</short>
       </element>
 
       <element name="TListViewFilterEdit.MoveHome">
@@ -244,7 +262,7 @@
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.MoveHome.ASelect">
-        <short>True if the list item should be become selected (or multi-selected).</short>
+        <short><b>True</b> if the list item should be become selected (or multi-selected).</short>
       </element>
 
       <element name="TListViewFilterEdit.MoveEnd">
@@ -255,19 +273,19 @@
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.MoveEnd.ASelect">
-        <short>True if the list item should be become selected (or multi-selected).</short>
+        <short><b>True</b> if the list item should be become selected (or multi-selected).</short>
       </element>
 
       <element name="TListViewFilterEdit.ReturnKeyHandled">
         <short>
-          Returns True if a Return or Enter key press was forwarded to the list view control.
+          Returns <b>True</b> if a Return or Enter key press was forwarded to the list view control.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListViewFilterEdit.ReturnKeyHandled.Result">
         <short>
-          True if a Return (Enter) key press was forwarded to the list view control.
+          <b>True</b> if a Return (Enter) key press was forwarded to the list view control.
         </short>
       </element>
 
@@ -335,28 +353,88 @@
 
       <element name="TListViewFilterEdit.StoreSelection">
         <short>
-          Clears the selection list for the control and stores any list items from FilteredListview with their Selected property set to True.
+          Clears the selection list for the control, and stores any list items from FilteredListview with their Selected property set to <b>True</b>.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>StoreSelection</var> is an overridden method in <var>TListViewFilterEdit</var>. It implements the abstract virtual method from the ancestor class. StoreSelection calls the Clear method in SelectionList to remove existing values in the list. When FilteredListview has selected items (SelCount &gt; 0), the Caption for each selected TListItem is added to SelectionList.
+          </p>
+          <p>
+            No actions are performed in the method if FilteredListview has not been assigned.
+          </p>
+          <p>
+            StoreSelection is used in the implementation for the ApplyFilter method in the ancestor class.
+          </p>
+          <p>
+            See RestoreSelection for the action performed to select the list items in SelectionList in the Items for the associated TListView control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListViewFilterEdit.SelectionList"/>
+          <link id="TListViewFilterEdit.RestoreSelection"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
+          <link id="#lcl.comctrls.TListItems">TListItems</link>
+          <link id="#lcl.comctrls.TListItem.Selected">TListItem.Selected</link>
+        </seealso>
       </element>
 
       <element name="TListViewFilterEdit.RestoreSelection">
         <short>
-          Restores the Selected property for list items in FilteredListview to the values captured in StoreSelection.
+          Restores the Selected property for list items in FilteredListview which are stored in StoreSelection.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>RestoreSelection</var> is an overridden method in <var>TListViewFilterEdit</var>. It implements the abstract virtual method from the ancestor class.
+          </p>
+          <p>
+            RestoreSelection locates and updates the Selected property for TListItem entries found in th associated TListView control. RestoreSelection visits each of the caption values in SelectionList and calls the IndexOf method for the Items in FilteredListview. When a caption value is located, the Selected property for the TListItem entry is set to True.
+          </p>
+          <p>
+            No actions are performed in the method when SelectionList does not contain any caption values (Count = 0) or when FilteredListview has not been assigned.
+          </p>
+          <p>
+            RestoreSelection is used in the implementation for the ApplyFilter method in the ancestor class.
+          </p>
+          <p>
+            See StoreSelection for the actions performed to store the selected items in FilteredListview to the SelectionList property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListViewFilterEdit.SelectionList"/>
+          <link id="TListViewFilterEdit.StoreSelection"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.RestoreSelection">TCustomControlFilterEdit.RestoreSelection</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
+          <link id="#lcl.comctrls.TListItems">TListItems</link>
+          <link id="#lcl.comctrls.TListItem.Selected">TListItem.Selected</link>
+        </seealso>
       </element>
 
       <element name="TListViewFilterEdit.SelectionList">
-        <short>Selected items restored after filtering.</short>
+        <short>Identifies the selected items in the associated TListView control.</short>
         <descr>
           <p>
-            The list of selected items in the list view control. They are restored after filtering is applied.
+            <var>SelectionList</var> is a read-only <var>TStringList</var> property which contains the list items which are marked as selected in FilteredListview. It contains the caption for the TListItem entries in FilteredListview which have their Selected property set to True.
+          </p>
+          <p>
+            Caption values are stored in the property when StoreSelection is called when the Filter value is applied to the associated list view control. SelectionList is cleared and reloaded each time StoreSelection is called.
+          </p>
+          <p>
+            RestoreSelection is used to re-apply the selected state for list items in FilteredListview when the Filter is cleared for the control.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListViewFilterEdit.FilteredListview"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
+          <link id="#lcl.comctrls.TCustomListView.SelCount">TCustomListView.SelCount</link>
+          <link id="#lcl.comctrls.TListItems">TListItems</link>
+          <link id="#lcl.comctrls.TListItem.Caption">TListItem.Caption</link>
+          <link id="#lcl.comctrls.TListItem.Selected">TListItem.Selected</link>
+        </seealso>
       </element>
 
       <element name="TListViewFilterEdit.Items">
@@ -366,16 +444,37 @@
       </element>
 
       <element name="TListViewFilterEdit.FilteredListview">
-        <short>The associated TListView for the filter edit control.</short>
-        <descr/>
-        <seealso/>
+        <short>The associated list view for the filtered edit control.</short>
+        <descr>
+          <p>
+            <var>FilteredListview</var> is a <var>TCustomListView</var> property with the list view control which contains the list item data and selections filtered in the control.
+          </p>
+          <p>
+            Applications must assign a value to the property to enable filtering in edit control. No actions are performed in the control when FilteredListview has not been assigned (contains Nil), or FilteredListView does not contain any list items in its Items property.
+          </p>
+          <p>
+            Changing the value in the property causes the value in Text to be assigned to the Filter property for the control. This causes the original list item data in FilteredListView to be stored to the Items property in the control.
+          </p>
+          <p>
+            Use ByAllFields to control whether SubItems in list item data are included in the filtered values for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListViewFilterEdit.ByAllFields"/>
+          <link id="TListViewFilterEdit.Items"/>
+          <link id="TListViewFilterEdit.ApplyFilterCore"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
+          <link id="#lcl.comctrls.TCustomListView">TCustomListView</link>
+        </seealso>
       </element>
 
       <element name="TListViewFilterEdit.ByAllFields">
         <short>Indicates if all fields are compared using the filter.</short>
         <descr>
           <p>
-            When set to <b>True</b>, all fields in the list view data areused when searching for a value that matches the filter. Otherwise, only the first field is used. The default value for the property is <b>False</b>.
+            When set to <b>True</b>, all fields in the list view data are used when searching for a value that matches the filter. Otherwise, only the Caption is used. The default value for the property is <b>False</b>.
           </p>
           <p>
             <var>ByAllFields</var> is used when <var>SortAndFilter</var> is called to select and order the filtered data for the control.
