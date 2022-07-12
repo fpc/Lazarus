@@ -63,8 +63,9 @@ begin
   s := GetComponent(0) as TCustomChartSeries;
   ch := s.ParentChart;
   AProc('-1 None');
-  for i := 0 to ch.AxisList.Count - 1 do
-    AProc(IntToStr(i) + ' ' + ch.AxisList[i].DisplayName);
+  if ch <> nil then
+    for i := 0 to ch.AxisList.Count - 1 do
+      AProc(IntToStr(i) + ' ' + ch.AxisList[i].DisplayName);
 end;
 
 function TAxisIndexPropertyEditor.OrdValueToVisualValue(
@@ -76,7 +77,7 @@ begin
   s := GetComponent(0) as TCustomChartSeries;
   ch := s.ParentChart;
   Result := IntToStr(AOrdValue) + ' ';
-  if InRange(AOrdValue, 0, ch.AxisList.Count - 1) then
+  if Assigned(ch) and InRange(AOrdValue, 0, ch.AxisList.Count - 1) then
     Result += ch.AxisList[AOrdValue].DisplayName
   else
     Result += 'None';
