@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
-  FpPascalBuilder, FpErrorMessages, FpDbgClasses, DbgIntfBaseTypes,
+  FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
   lazCollections, LazClasses, LCLProc, FpDebugDebuggerBase;
 
 type
@@ -309,23 +309,24 @@ var
   r: Boolean;
 begin
   Result := nil;
-  if not (
-    (ASourceValue.Kind = skRecord) and
-    ( (ASourceValue.MemberCount = 0) or
-      (ASourceValue.MemberCount >= 2)
-  ) )
+  if (ASourceValue.Kind <> skRecord) or
+     (AnFpDebugger.DbgController.CurrentProcess = nil) or
+     ( (AnFpDebugger.DbgController.CurrentProcess.Mode = dm32) and
+       (ASourceValue.DataSize.Size <> 16)
+     ) or
+     ( (AnFpDebugger.DbgController.CurrentProcess.Mode = dm64) and
+       (ASourceValue.DataSize.Size <> 24)
+     )
   then begin
     SetError(CreateError(fpErrAnyError, ['Value not a variant']));
     exit;
   end;
-  if (ASourceValue.MemberCount >= 2) then begin
-    m := ASourceValue.Member[0];
-    r := SizeToFullBytes(m.DataSize) <> 2;
-    m.ReleaseReference;
-    if r then begin
-      SetError(CreateError(fpErrAnyError, ['Value not a variant']));
-      exit;
-    end;
+  m := ASourceValue.MemberByName['vtype'];
+  r := (m = nil) or (SizeToFullBytes(m.DataSize) <> 2);
+  m.ReleaseReference;
+  if r then begin
+    SetError(CreateError(fpErrAnyError, ['Value not a variant']));
+    exit;
   end;
 
   ProcVal := nil;
