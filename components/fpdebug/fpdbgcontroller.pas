@@ -263,6 +263,7 @@ type
     FLastError: TFpError;
     FMemManager: TFpDbgMemManager;
     FDefaultContext: TFpDbgLocationContext;
+    FStoredDefaultContext: TFpDbgLocationContext; // while function eval calling
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
@@ -450,6 +451,7 @@ end;
 
 destructor TDbgControllerCallRoutineCmd.Destroy;
 begin
+  ReleaseRefAndNil(FController.FStoredDefaultContext);
   RemoveHiddenBreakpointAtReturnAddress;
   inherited Destroy;
 end;
@@ -458,6 +460,10 @@ procedure TDbgControllerCallRoutineCmd.Init;
 begin
   debugln(FPDBG_FUNCCALL, ['CallRoutine INIT - Cmd.Init - ProcessLoop starts']);
   inherited Init;
+
+  FController.FStoredDefaultContext := FController.FDefaultContext;
+  if FController.FStoredDefaultContext <> nil then
+    FController.FStoredDefaultContext.AddReference;
 
   FStep := sSingleStep;
   StoreInstructionPointer;
@@ -685,6 +691,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.RestoreState;
 begin
+  ReleaseRefAndNil(FController.FStoredDefaultContext);
   try
     RestoreOriginalCode;
     RestoreInstructionPointer();
@@ -1468,6 +1475,10 @@ end;
 
 function TDbgController.GetDefaultContext: TFpDbgLocationContext;
 begin
+  Result := FStoredDefaultContext;
+  if Result <> nil then
+    exit;
+
   if FDefaultContext = nil then begin
     FDefaultContext := TFpDbgSimpleLocationContext.Create(MemManager,
       FCurrentThread.GetInstructionPointerRegisterValue,
