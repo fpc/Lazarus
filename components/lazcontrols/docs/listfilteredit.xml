@@ -6,7 +6,7 @@
       <short>Implements a control used to filter an associated list box.</short>
       <descr>
         <p>
-          <file>ListFilterEdit.pas</file> contains classes and types used to implement the <var>TListFilterEdit</var> control, and filtered edit control for values in an associated list box.
+          <file>ListFilterEdit.pas</file> contains classes and types used to implement the <var>TListFilterEdit</var> control, an edit control which filters values found in an associated list box.
         </p>
         <p>
           This file is part of the <file>LazControls</file> package.
@@ -27,7 +27,7 @@
       <element name="AvgLvlTree"/>
 
       <element name="TImageIndexEvent">
-        <short>Not used in the current implementation.</short>
+        <short>Not used in the current LCL version.</short>
         <descr/>
         <seealso/>
       </element>
@@ -45,18 +45,31 @@
       </element>
 
       <element name="TListFilterEdit">
-        <short>Implements an edit control used to filter an associated ListBox.</short>
+        <short>
+          Implements an edit control used to filter items from an associated TListBox control.
+        </short>
         <descr>
           <p>
-            TListFilterEdit is a TCustomControlFilterEdit descendant which implements an edit control used to filter an associated TListBox control.
+            <var>TListFilterEdit</var> is a <var>TCustomControlFilterEdit</var> descendant which implements an edit control used to filter an associated TListBox control. It consists of an edit control used to located and optionally select item(s) in the list box control, and a button used to clear the filter value entered in the edit control.
+          </p>
+          <p>
+            TListFilterEdit introduces properties and methods needed to access the items and selections in the associated list box control. Use FilteredListbox to specify the TListBox instance with the values filtered in the control. You can also use other  TCustomListBox descendants in FilteredListbox; i. e. TCheckListBox. Use the Items property to access the list items for the filtered edit control. Use SelectionList to access the list of selected items in the list box control.
+          </p>
+          <p>
+            Overridden methods are provided to navigate between the values in the list box, store or remove selection(s) in for the control, and to apply the filter condition.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit">TCustomControlFilterEdit</link>
+          <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
+          <link id="#lcl.stdctrls.TListBox">TListBox</link>
+          <link id="#lcl.checklst.TCheckListBox">TCheckListBox</link>
+        </seealso>
       </element>
 
-      <!-- private members and methods -->
+      <!-- private -->
       <element name="TListFilterEdit.FFilteredListbox">
-        <short>The control showing the filtered data.</short>
+        <short>The list box control with the items for the control.</short>
       </element>
 
       <element name="TListFilterEdit.FSelectionList">
@@ -68,38 +81,55 @@
       </element>
 
       <element name="TListFilterEdit.FOriginalData">
-        <short>The original value supplied in the Data property.</short>
+        <short>The original item values from the associated list box control.</short>
       </element>
 
       <element name="TListFilterEdit.FSortedData">
-        <short>Sorted values from the Data property.</short>
+        <short>Item values sorted for viewing in the associated list box.</short>
       </element>
 
       <element name="TListFilterEdit.FCheckedItems">
-        <short>Contains the checked items for TCheckListBox.</short>
+        <short>Contains the checked items for an associated TCheckListBox control.</short>
       </element>
 
       <element name="TListFilterEdit.CompareFNs">
-        <short/>
+        <short>
+          Implements the routine used to order list Items when SortData is enabled.
+        </short>
+        <descr>
+          <p>
+            <var>CompareFNs</var> is an <var>Integer</var> function which implements the routine used to order the values in Items before they are stored in the sorted data for the control. CompareFNs calls the CompareFilenames routine in the <file>lazfileutils.pas</file> unit to perform a case-insensitive comparison for the specified caption values in Items and the internal sorted data. Contrary to the names for the arguments, the values are not file names.
+          </p>
+          <p>
+            The return value is 0 when SortData is not enabled, or when the captions contain the same value. A negative value indicates that AFilename1 comes before AFilename2 in the sort order. A Positive value indicates that AFilename1 comes after AFilename2 in the sort order.
+          </p>
+          <p>
+            CompareFNs is called from the SortAndFilter method and determines if a value (and its Object instance) in Items is relocated in the internal sorted data.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.SortAndFilter"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.SortData">TCustomControlFilterEdit.SortData</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.CompareFNs.Result">
-        <short/>
+        <short>Position for AFilename1 relative to AFilename2.</short>
       </element>
       <element name="TListFilterEdit.CompareFNs.AFilename1">
-        <short/>
+        <short>List item caption from Items compared in the method.</short>
       </element>
       <element name="TListFilterEdit.CompareFNs.AFilename2">
-        <short/>
+        <short>List item caption from the sorted data compared in the method.</short>
       </element>
 
       <element name="TListFilterEdit.SetFilteredListbox">
         <short>Sets the value for the FilteredListbox property.</short>
       </element>
       <element name="TListFilterEdit.SetFilteredListbox.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FilteredListbox property.</short>
       </element>
 
-      <!-- protected methods -->
+      <!-- protected -->
       <element name="TListFilterEdit.Notification">
         <short>
           Handles a notification when a component is added to or removed from the control.
@@ -119,7 +149,7 @@
         <short>Component for the notification.</short>
       </element>
       <element name="TListFilterEdit.Notification.Operation">
-        <short>Operation performed for the component.</short>
+        <short>Operation for the component notification.</short>
       </element>
 
       <element name="TListFilterEdit.MoveTo">
@@ -128,10 +158,10 @@
         <seealso/>
       </element>
       <element name="TListFilterEdit.MoveTo.AIndex">
-        <short/>
+        <short>New position in FilteredListbox.</short>
       </element>
       <element name="TListFilterEdit.MoveTo.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MoveNext">
@@ -142,7 +172,7 @@
         <seealso/>
       </element>
       <element name="TListFilterEdit.MoveNext.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MovePrev">
@@ -153,166 +183,360 @@
         <seealso/>
       </element>
       <element name="TListFilterEdit.MovePrev.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MovePageUp">
-        <short/>
+        <short>
+          Moves the position in FilteredListbox by one page towards the start of the list.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListFilterEdit.MovePageUp.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MovePageDown">
-        <short/>
+        <short>
+          Moves the position in FilteredListbox by one page towards the end of the list.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListFilterEdit.MovePageDown.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MoveHome">
-        <short/>
+        <short>Moves the position in FilteredListbox to the first entry in the list.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListFilterEdit.MoveHome.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.MoveEnd">
-        <short/>
+        <short>Moves the position in FilteredListbox to the last entry in the list.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TListFilterEdit.MoveEnd.ASelect">
-        <short/>
+        <short><b>True</b> to add the list item to Selected items in the list box.</short>
       </element>
 
       <element name="TListFilterEdit.ReturnKeyHandled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Returns <b>True</b> if a Return key press was forwarded to the list box.</short>
+        <descr>
+          <p>
+            <var>ReturnKeyHandled</var> is an overridden method in <var>TListFilterEdit</var>. It implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            ReturnKeyHandled passes a VK_RETURN virtual key code to the list box in FilteredListbox when it has been received by the edit control. The OnKeyPress event handler in FilteredListbox is signalled (when assigned) to respond to the key press event.
+          </p>
+          <p>
+            No actions are performed in the method if FilteredListbox or its OnKeyPress event handler have not been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.ReturnKeyHandled.Result">
-        <short/>
+        <short><b>True</b> if a Return key press was forwarded to the list box.</short>
       </element>
 
       <element name="TListFilterEdit.SortAndFilter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+           Copies string and object values from Items to SortData, and sorts and filters the item values.
+        </short>
+        <descr>
+          <p>
+            <var>SortAndFilter</var> is an overridden method in <var>TListFilterEdit</var>. It implements the abstract virtual method defined in the ancestor class. SortAndFilter is used to copy values found in Items to a list where the caption values are stored in sorted order. The existing list of sorted data is cleared on entry.
+          </p>
+          <p>
+            SortAndFilter iterates over the caption values in Items and calls DoFilterItem to determine the handler routine used filter each value in the list. If a caption matches the Filter value, the CompareFNs method is called to determine its order in the sorted list of data. SortAndFilter stores caption values and Object instances from Items to the sorted list.
+          </p>
+          <p>
+            SortAndFilter is called from the ApplyFilter method, and indirectly when the OnIdle handler applies a pending update for the control.
+          </p>
+          <p>
+            Use the OnFilterItemEx or OnFilterItem event handler to determine if a caption value is allowed for the Filter in the control. Use FilterOptions to control case-sensitivity and partial matches when the Filter value is applied. Use OnAfterFilter to perform actions needed when sorting and filtering are completed in the OnIdle handler for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.SortData">TCustomControlFilterEdit.SortData</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.DoFilterItem">TCustomControlFilterEdit.DoFilterItem</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.DoDefaultFilterItem">TCustomControlFilterEdit.DoDefaultFilterItem</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
       <element name="TListFilterEdit.ApplyFilterCore">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Copies filtered string and object values from sorted data to the Items in FilteredListbox.
+        </short>
+        <descr>
+          <p>
+            <var>ApplyFilterCore</var> is an overridden method in <var>TListFilterEdit</var> used to update the list box in FilteredListbox to display the items that match the value in Filter. It implements the abstract virtual method defined in the ancestor class.
+          </p>
+          <p>
+            No actions are performed in the method if FilteredListbox has not been assigned.
+          </p>
+          <p>
+            ApplyFilterCore calls the Clear method in FilteredListbox to remove existing Items in the list box control. It iterates over the values in the sorted data to store both the caption and object instance to the Items property in FilteredListbox.
+          </p>
+          <p>
+            If FilteredListbox is a TCheckListBox instance, the OnCheckItem event handler is signalled (when assigned) using the object instance for the list item. If OnCheckItem is not assigned, the internal list of checked items is applied to FilteredListbox.
+          </p>
+          <p>
+            If SimpleSelection is enabled, the MoveTo method is called to position and select the list box item in FilteredListbox using the Text or sorted data values in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="TListFilterEdit.SimpleSelection"/>
+          <link id="TListFilterEdit.MoveTo"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.OnCheckItem">TCustomControlFilterEdit.OnCheckItem</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilterCore">TCustomControlFilterEdit.ApplyFilterCore</link>
+        </seealso>
       </element>
 
       <element name="TListFilterEdit.GetDefaultGlyphName">
-        <short/>
+        <short>
+          Gets the name for the resource used as the default glyph in the control.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.editbtn.TCustomEditButton.Glyph">TCustomEditButton.Glyph</link>
+          <link id="#lcl.editbtn.TCustomEditButton.LoadDefaultGlyph">TCustomEditButton.LoadDefaultGlyph</link>
+          <link id="#lcl.editbtn.TCustomEditButton.GlyphChanged">TCustomEditButton.GlyphChanged</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.GetDefaultGlyphName.Result">
-        <short/>
+        <short>
+          Name of the resource with the default image used in Glyph.
+        </short>
       </element>
 
-      <!-- public methods -->
+      <!-- public -->
       <element name="TListFilterEdit.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance.
+            <var>Create</var> is the overridden constructor for the class instance. It calls the inherited method on entry to initialize the control and to set its default property values. Create allocates resources needed for the Items and SelectionList properties, as well as an internal member used to store sorted values in Items.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListFilterEdit.Items"/>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Create">TCustomControlFilterEdit.Create</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.Create.AOwner">
-        <short>Owner for the class instance.</short>
+        <short>Owner of the class instance.</short>
       </element>
 
       <element name="TListFilterEdit.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            Destroy is the overridden destructor for the class instance.
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that resources allocated to members in the class instance are freed, including:
+          </p>
+          <ul>
+            <li>Items</li>
+            <li>SelectionList</li>
+            <li>The internal member for sorted list item data.</li>
+            <li>The internal member for check box-style list items.</li>
+          </ul>
+          <p>
+            Destroy calls the inherited method prior to exit.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListFilterEdit.Items"/>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Destroy">TCustomControlFilterEdit.Destroy</link>
+        </seealso>
       </element>
 
       <element name="TListFilterEdit.RemoveItem">
-        <short>Removes the specified item from the Items property.</short>
-        <descr/>
-        <seealso/>
+        <short>Removes the specified string value from the Items property.</short>
+        <descr>
+          <p>
+            <var>RemoveItem</var> calls the IndexOf method in Items to get the ordinal position for the value in AItem. When found, the Delete method in Items is called to remove the list item. If FilteredListbox is a TCheckListBox instance, the value is also removed from the internal string map used for the check box item values.
+          </p>
+          <p>
+            No actions are performed in the method if AItem is not found in the Items property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.Items"/>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="#lcl.checklst.TCheckListBox">TCheckListBox</link>
+          <link id="#rtl.classes.TStringList.IndexOf">TStringList.IndexOf</link>
+          <link id="#rtl.classes.TStringList.Delete">TStringList.Delete</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.RemoveItem.AItem">
         <short>Item located and removed in the method.</short>
       </element>
 
       <element name="TListFilterEdit.ItemWasClicked">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Notifies the control when the checked state for an item has been changed.
+        </short>
+        <descr>
+          <p>
+            <var>ItemWasClicked</var> is significant when FilteredListbox contains a TCheckListBox instance. It is not used internally in the implementation for the control, but can be used to synchronize the control when a check box in the FilteredListbox is toggled.
+          </p>
+          <p>
+            An example of its usage can be found in the <file>ide/editorfilemanager.pas</file> unit in the Lazarus IDE.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="#lcl.checklst.TCheckListBox">TCheckListBox</link>
+        </seealso>
       </element>
       <element name="TListFilterEdit.ItemWasClicked.AItem">
-        <short/>
+        <short>
+          String with the list item changed in an associated checked list box control.
+        </short>
       </element>
       <element name="TListFilterEdit.ItemWasClicked.IsChecked">
-        <short/>
+        <short>
+          Checked state for the list box item.
+        </short>
       </element>
 
       <element name="TListFilterEdit.StoreSelection">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Stores the selected list item(s) in FilteredListbox to the SelectionList for the control.
+        </short>
+        <descr>
+          <p>
+            <var>StoreSelection</var> is an overridden method in <var>TListFilterEdit</var> used to load the values in SelectionList from the Selected items in FilteredListbox. No actions are performed in the method if FilteredListbox has not been assigned.
+          </p>
+          <p>
+            StoreSelection calls the Clear method in SelectionList to remove any existing values. It iterates over the Selected property values in FilteredListbox, and calls the Add method in SelectionList to store the caption for the selected list items.
+          </p>
+          <p>
+            StoreSelection is called from the ApplyFilter method. It occurs after the list items in FilteredListbox have been sorted and filtered in the sorted data and Items properties for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Selected">TCustomListBox.Selected</link>
+        </seealso>
       </element>
 
       <element name="TListFilterEdit.RestoreSelection">
-        <short/>
+        <short>
+          Restores values in SelectionList as the selected Items in FilteredListbox.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
-      <!-- public properties -->
       <element name="TListFilterEdit.SimpleSelection">
-        <short>Indicates whether a single selection has been made using the FilteredListbox for the control.</short>
+        <short>
+          Indicates whether a single selection has been made using the FilteredListbox for the control.
+        </short>
         <descr>
           <p>
-            The value is updated in StoreSelection. It is set to True when SelectionList contains a single entry. The property value is updated before the the items in SelectionList are checked.
+            The property value is updated in StoreSelection, and is set to <b>True</b> when SelectionList contains a single entry. The property value is updated before the items in SelectionList are checked.
           </p>
           <p>
-            Used in RestoreSelection to prevent unneeded updates to check boxes in SelectionList .
+            It is used in RestoreSelection to prevent un-needed updates to check boxes in SelectionList.
           </p>
           <p>
-            Used in the ApplyFilterCore method when checked values in the SelectionList are located and displayed in FilteredListbox.
+            It is also used in the ApplyFilterCore method when checked values in Items and SelectionList are located and displayed in the FilteredListbox control.
           </p>
         </descr>
         <seealso/>
       </element>
 
       <element name="TListFilterEdit.SelectionList">
-        <short>List of selected items. They are restored after filtering.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The list of selected list items for the FilteredListbox control.
+        </short>
+        <descr>
+          <p>
+            <var>SelectionList</var> is a read-only <var>TStringList</var> property with the list of items that are marked as Selected in the associated list box control. Values in SelectionList are cleared and reloaded in the StoreSelection method, and occurs before the Filter value and sorting are applied to the control.
+          </p>
+          <p>
+            Values is SelectionList are re-applied to the FilteredListbox control in the RestoreSelection method, and occurs after the Filter value and sorting are applied to the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.StoreSelection"/>
+          <link id="TListFilterEdit.RestoreSelection"/>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="TListFilterEdit.SortAndFilter"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Selected">TCustomListBox.Selected</link>
+        </seealso>
       </element>
 
       <element name="TListFilterEdit.Items">
-        <short>Maintains the data which is filtered and shown in the Listbox.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains the list items which are filtered and displayed for the associated list box control.
+        </short>
+        <descr>
+          <p>
+            <var>Items</var> is a read-only <var>TStringList</var> property with the list items available to the filter edit control. It contains the original list item data loaded from the associated list box control, and is populated when the value is assigned to the FilteredListbox property. Its content is modified when the RemoveItem method is called to delete a list item with a given caption. Values in Items are copied into the sorted data when the value in Filter is applied to the control.
+          </p>
+          <p>
+            Use SelectionList to access the list item(s) which are marked as Selected in associated list box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="TListFilterEdit.FilteredListbox"/>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
+        </seealso>
       </element>
 
-      <!-- published properties -->
+      <!-- published -->
       <element name="TListFilterEdit.FilteredListbox">
-        <short>The Listbox associated with the filter edit control.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The list box associated with the filtered edit control.
+        </short>
+        <descr>
+          <p>
+            <var>FilteredListbox</var> is a <var>TCustomListBox</var> property with the list box which provides the data for the filter edit control. TCustomListBox descendants other than TListBox can be assigned to the property; i. e. TCheckListBox. 
+          </p>
+          <p>
+            The Items and Selected properties in the list box instance are used to populate the Items, sorted data, and SelectionList properties in the control. FilteredListbox is also used to display the results after the Filter is applied to the Items in the edit control.
+          </p>
+          <p>
+            Assigning a new value to the property causes the Filter and Items properties to be updated for the control. Filter is set to the current value in the Text property. Items is reloaded from the Items property in FilteredListbox. When FilteredListbox is a TCheckListBox instance, the internal string map with the check box items on the control is created.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListFilterEdit.Items"/>
+          <link id="TListFilterEdit.SelectionList"/>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+          <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
+          <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
+          <link id="#lcl.stdctrls.TListBox">TListBox</link>
+          <link id="#lcl.checklst.TCheckListBox">TCheckListBox</link>
+        </seealso>
       </element>
 
     </module>
