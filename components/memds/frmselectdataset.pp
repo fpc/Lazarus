@@ -20,9 +20,15 @@ uses
   StdCtrls, Buttons, MemDS, ComponentEditors, PropEdits, LazarusPackageIntf;
 
 Type
+
+  { TMemDatasetEditor }
+
   TMemDatasetEditor = Class(TComponentEditor)
-    FStartIndex : Integer;
+  private
+    DefaultEditor: TBaseComponentEditor;
   Public
+    constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
+    destructor Destroy; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -84,33 +90,57 @@ end;
 
 { TMemDatasetEditor }
 
+constructor TMemDatasetEditor.Create(AComponent: TComponent;
+  ADesigner: TComponentEditorDesigner);
+var
+  CompClass: TClass;
+begin
+  inherited Create(AComponent, ADesigner);
+  CompClass := PClass(Acomponent)^;
+  try
+    PClass(AComponent)^ := TDataSet;
+    DefaultEditor := GetComponentEditor(AComponent, ADesigner);
+  finally
+    PClass(AComponent)^ := CompClass;
+  end;
+end;
+
+destructor TMemDatasetEditor.Destroy;
+begin
+  DefaultEditor.Free;
+  inherited Destroy;
+end;
+
 procedure TMemDatasetEditor.ExecuteVerb(Index: Integer);
 
 begin
-  If Index<FStartIndex then
-    inherited ExecuteVerb(Index)
+  if Index < DefaultEditor.GetVerbCount then
+    DefaultEditor.ExecuteVerb(Index)
   else
-    case (Index-FstartIndex) of
+  begin
+    case Index - DefaultEditor.GetVerbCount of
       0 : CreateTable;
       1 : CopyDataset;
     end;
+  end;
 end;
 
 function TMemDatasetEditor.GetVerb(Index: Integer): string;
 begin
-  If Index<FStartIndex then
-    Result:=inherited GetVerb(Index)
+  if Index < DefaultEditor.GetVerbCount then
+    Result := DefaultEditor.GetVerb(Index)
   else
-    case (Index-FstartIndex) of
+  begin
+    case Index - DefaultEditor.GetVerbCount of
       0 : Result:=SMenuCreateDataset;
       1 : Result:=SMenuCopyDataset;
     end;
+  end;
 end;
 
 function TMemDatasetEditor.GetVerbCount: Integer;
 begin
-  FStartIndex:=inherited GetVerbCount;
-  Result:=FStartIndex+2;
+  Result:=DefaultEditor.GetVerbCount + 2;
 end;
 
 function TMemDatasetEditor.GetMemDataset: TMemDataset;
