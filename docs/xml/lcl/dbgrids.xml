@@ -920,7 +920,7 @@
             <var>Clear</var> is a procedure used to remove all of the Items stored in the list. Clear calls the TDataset.FreeBookmark method for each of the TBookmark instances in Items. The length of the Bookmark is set to 0 to decrease the reference count for the memory allocation.
           </p>
           <p>
-            Clear uses the Invalidate method in the associated Grid control to force it to be redrawn.
+            Clear uses the Invalidate method in the associated Grid control and causes it to be redrawn.
           </p>
         </descr>
         <seealso></seealso>
@@ -2208,7 +2208,7 @@
         </short>
         <descr>
           <p>
-            <var>Update</var> causes the TDBGrid control which owns the column collection to be redrawn. The value in Grid must be assigned, or no actions are performed in the method. In addition, the Grid control will not be updated if component streaming is active (csLoading in its ComponentState). Update calls TDBGrid.LayoutChanged to force the Grid control to be redrawn.
+            <var>Update</var> causes the TDBGrid control which owns the column collection to be redrawn. The value in Grid must be assigned, or no actions are performed in the method. In addition, the Grid control will not be updated if component streaming is active (csLoading in its ComponentState). Update calls TDBGrid.LayoutChanged to cause the Grid control to be redrawn.
           </p>
         </descr>
         <seealso>
@@ -3466,7 +3466,7 @@
         </short>
         <descr>
           <p>
-            <var>InvalidateSizes</var> is a procedure used to force the grid to recalculate column sizes and to repaint its display area. InvalidateSizes updates the GridFlags for the control to include the value gfVisualChange.
+            <var>InvalidateSizes</var> is a procedure which causes the grid to recalculate column sizes and to repaint its display area. InvalidateSizes updates the GridFlags for the control to include the value gfVisualChange.
         </p>
         </descr>
         <seealso></seealso>
@@ -5270,7 +5270,7 @@
         </short>
         <descr>
           <p>
-            <var>UpdateActive</var> forces the control to be redrawn when the active row in the linked dataset is changed. UpdateActive requires an active dataset in DataLink with a selected record. No actions are performed in the method when the dataset is closed or contains no rows. UpdateActive calls InvalidateCell when the selected row in the control has changed. InvaidateRow is called to update the selected row in the control.
+            <var>UpdateActive</var> causes the control to be redrawn when the active row in the linked dataset is changed. UpdateActive requires an active dataset in DataLink with a selected record. No actions are performed in the method when the dataset is closed or contains no rows. UpdateActive calls InvalidateCell when the selected row in the control has changed. InvaidateRow is called to update the selected row in the control.
           </p>
         </descr>
         <seealso></seealso>

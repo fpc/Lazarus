@@ -296,7 +296,7 @@
         </short>
         <descr>
           <p>
-            <var>DoEnter</var> is an overridden method in <var>TCustomCheckBoxThemed</var>. It calls the inherited method on entry to signal the <var>OnEnter</var> event handler (when assigned). It calls <var>Invalidate</var> to force the control to be redrawn.
+            <var>DoEnter</var> is an overridden method in <var>TCustomCheckBoxThemed</var>. It calls the inherited method on entry to signal the <var>OnEnter</var> event handler (when assigned). It calls <var>Invalidate</var> to cause the control to be redrawn.
           </p>
         </descr>
         <seealso>

@@ -13034,7 +13034,7 @@ end;</code>
             AlphaSort updates values in the SortDirection, SortType, and SortColumn properties. Flag values for the control are updated to include lffPreparingSorting prior to setting the property values; this suppresses reordering until the changes are completed.
           </p>
           <p>
-            SortDirection is toggled to force a new sort order to be applied. The final value is sdAscending.
+            SortDirection is toggled to s a new sort order to be applied. The final value is sdAscending.
           </p>
           <p>
             SortType is set to stText to use the TListItem.Caption values to determine the order for the list items. In the default comparison routine. case is significant. Use OnCompare to implement an alternate comparison routine.
@@ -16062,7 +16062,7 @@ end;</code>
             <var>TextChanged</var> is an overridden method in <var>TToolButton</var> used to perform actions needed when the caption text for the tool button has been changed. No actions are performed in the method if the parent tool bar has not been assigned for the tool button.
           </p>
           <p>
-            When <var>ShowCaptions</var> is enabled, the <var>Invalidate</var> method is called to force the tool button to be redrawn.
+            When <var>ShowCaptions</var> is enabled, the <var>Invalidate</var> method is called to cause the tool button to be redrawn.
           </p>
           <p>
             TextChanged is called when the <var>CM_TEXTCHANGED</var> control message is handled for the control.
@@ -17292,7 +17292,7 @@ end;</code>
         <short>Repositions the tool button at the specified position in Buttons.</short>
         <descr>
           <p>
-            Forces the entire tool bar to be redrawn. Not used in the current implementation.
+            Causes the entire tool bar to be redrawn. Not used in the current implementation.
           </p>
         </descr>
         <seealso/>
@@ -17307,7 +17307,7 @@ end;</code>
         </short>
         <descr>
           <p>
-            Forces the entire tool bar to be redrawn. Not used in the current implementation.
+            Causes the entire tool bar to be redrawn. Not used in the current implementation.
           </p>
         </descr>
         <seealso/>
@@ -19467,7 +19467,7 @@ AToolbar.ButtonHeight := 30;
         <short>Ends an update process for the control.</short>
         <descr>
           <p>
-            EndUpdate is an overridden method in TCustomCoolBar. It calls the inherited method to decrement the internal update counter for the control. When the update counter reaches 0, the CalculateAndAlign method is called to size and layout the visible bands on the control. Temporarily disables auto-sizing while the control recalculates and aligns its bands. Calls Invalidate to force the control to be redrawn.
+            EndUpdate is an overridden method in TCustomCoolBar. It calls the inherited method to decrement the internal update counter for the control. When the update counter reaches 0, the CalculateAndAlign method is called to size and layout the visible bands on the control. Temporarily disables auto-sizing while the control recalculates and aligns its bands. Calls Invalidate to cause the control to be redrawn.
           </p>
         </descr>
         <seealso>
@@ -19479,7 +19479,7 @@ AToolbar.ButtonHeight := 30;
         <short>Causes the control to be redrawn.</short>
         <descr>
           <p>
-            <var>Invalidate</var> is an overridden method in <var>TCustomCoolBar</var> which forces the control to be redrawn using the settings in the <var>EdgeInner</var>, <var>EdgeOuter</var>, and <var>EdgeBorders</var> properties. <var>CalculateAndAlign</var> is called to size and layout the visible bands on the control. The inherited <var>Invalidate</var> method is called to update the widgetset class when its <var>Handle</var> has been allocated.
+            <var>Invalidate</var> is an overridden method in <var>TCustomCoolBar</var> which causes the control to be redrawn using the settings in the <var>EdgeInner</var>, <var>EdgeOuter</var>, and <var>EdgeBorders</var> properties. <var>CalculateAndAlign</var> is called to size and layout the visible bands on the control. The inherited <var>Invalidate</var> method is called to update the widgetset class when its <var>Handle</var> has been allocated.
           </p>
         </descr>
         <seealso>
@@ -22423,7 +22423,7 @@ AToolbar.ButtonHeight := 30;
             <var>Focused</var> is a <var>Boolean</var> property which indicates if the node has focus in the associated <var>TreeView</var> control. The value for the property is <b>True</b> when <var>nsFocused</var> has been included in the <var>States</var> property.
           </p>
           <p>
-            Setting a new value for the property causes the values in States to be updated. When set to <b>True</b>, nsFocused is included in States. When set to <b>False</b>, nsFocused is excluded from States. The <var>Update</var> method is called to force the TreeView control to be redrawn.
+            Setting a new value for the property causes the values in States to be updated. When set to <b>True</b>, nsFocused is included in States. When set to <b>False</b>, nsFocused is excluded from States. The <var>Update</var> method is called to redraw the TreeView control.
           </p>
         </descr>
         <seealso/>
@@ -22474,7 +22474,7 @@ AToolbar.ButtonHeight := 30;
             Height uses a default value if it contains <b>0</b> (<b>zero</b>) or a negative integer value. If an associated <var>TreeView</var> control has been assigned, the value in its <var>DefaultItemHeight</var> property is used as the property value. If TreeView in unassigned, the value in the <var>DefaultTreeNodeHeight</var> constant is used.
           </p>
           <p>
-            Setting a new value for the property causes the <var>States</var> property in the associated TreeView control to be updated (when assigned). The values <var>tvsScrollbarChanged</var> and <var>tvsTopsNeedsUpdate</var> are included in the control States. The <var>Update</var> method is called to force the TreeView to be redrawn. The <var>Changed</var> method is called with the <var>ncHeightChanged</var> node change reason.
+            Setting a new value for the property causes the <var>States</var> property in the associated TreeView control to be updated (when assigned). The values <var>tvsScrollbarChanged</var> and <var>tvsTopsNeedsUpdate</var> are included in the control States. The <var>Update</var> method is called to redraw the TreeView. The <var>Changed</var> method is called with the <var>ncHeightChanged</var> node change reason.
           </p>
           <p>
             Height is used along with <var>Top</var> to calculate the return value for the <var>Bottom</var> method. It is also used in the implementation of methods like <var>DisplayRect</var> and <var>DisplayExpandSignRect</var>.
@@ -22647,7 +22647,7 @@ AToolbar.ButtonHeight := 30;
             Setting a new value for the property causes the values in States to be updated. Similarly, the TreeView control is updated to used the node in the Selected or Selections property.
           </p>
           <p>
-            The <var>Update</var> method is called to force the TreeView control to be redrawn.
+            The <var>Update</var> method is called to redraw the TreeView control.
           </p>
         </descr>
         <seealso>
@@ -22811,7 +22811,7 @@ AToolbar.ButtonHeight := 30;
             Setting a new value for the property causes the States property to be updated. <var>Selected</var> is set to <b>False</b> when the value in Visible is changed.
           </p>
           <p>
-            Values are included in the States property for the associated TreeView control (when assigned) to indicate that the size and layout for the tree nodes in the control have been changed. The <var>Update</var> method is called to force the control to be refreshed. The <var>Changed</var> method is called with the <var>ncVisibility</var> node change reason.
+            Values are included in the States property for the associated TreeView control (when assigned) to indicate that the size and layout for the tree nodes in the control have been changed. The <var>Update</var> method is called to refresh the control. The <var>Changed</var> method is called with the <var>ncVisibility</var> node change reason.
           </p>
         </descr>
         <seealso/>
@@ -25484,7 +25484,7 @@ AToolbar.ButtonHeight := 30;
             The <var>OnEdited</var> event handler is signalled (when assigned) to validate or modify the new text value, and the text is stored in <var>Node</var>.
           </p>
           <p>
-            EndEditing calls the <var>Invalidate</var> method to force the control to be redrawn.
+            EndEditing calls the <var>Invalidate</var> method to redraw the control.
           </p>
         </descr>
         <seealso>
@@ -25913,7 +25913,7 @@ AToolbar.ButtonHeight := 30;
             GetImageSize is called to get the height needed for Images or StateImages used in the control. Values in ImageSize and StateImageSize are updated with the scaled image heights including default spacing. The calculated value is enlarged for the Image sizes if needed.
           </p>
           <p>
-            UpdateDefaultItemHeight updates the States property to include values that indicate the item height for nodes has changed. The Invalidate method is called to force the control to be redrawn.
+            UpdateDefaultItemHeight updates the States property to include values that indicate the item height for nodes has changed. The Invalidate method is called to redraw the control.
           </p>
           <p>
             UpdateDefaultItemHeight is called from methods like: InitializeWnd, Loaded, SetOptions, and DoPaint.
@@ -26025,7 +26025,7 @@ AToolbar.ButtonHeight := 30;
         <short>Handles the LM_SETFOCUS message for the control.</short>
         <descr>
           <p>
-            Calls the <var>Invalidate</var> method to force the control to be redrawn. Calls the inherited method prior to exit.
+            Calls the <var>Invalidate</var> method to redraw the control. Calls the inherited method prior to exit.
           </p>
         </descr>
         <seealso>

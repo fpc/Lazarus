@@ -11739,11 +11739,11 @@
 
       <element name="TControl.Invalidate">
         <short>
-          Force a delayed Repaint of the control, by marking its visible area of the control as invalid.
+          Causes a delayed Repaint of the control by marking its visible area of the control as invalid.
         </short>
         <descr>
           <p>
-            Calls the <var>InvalidateControl</var> method to invalidate the bounds rectangle for the control using the clipping rectangle for the Parent.
+            Calls the <var>InvalidateControl</var> method to invalidate the bounds rectangle for the control using the clipping rectangle for the Parent. The control is redrawn when there are no pending messages in the message queue.
           </p>
         </descr>
         <seealso>
@@ -18577,6 +18577,9 @@ if MyControl.CanSetFocus then
         <descr>
           <p>
             <var>Invalidate</var> is an overridden method in TWinControl. It re-implements the inherited method to call the Invalidate method in the widgetset class instance when its Handle has been allocated. It does not call the inherited method.
+          </p>
+          <p>
+            The control is redrawn when there are no pending window messages in the message queue.
           </p>
         </descr>
         <seealso>

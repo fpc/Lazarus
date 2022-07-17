@@ -5555,7 +5555,9 @@
       </element>
 
       <element name="TCustomEdit.EditingDone">
-        <short>Enforces the setting in the ReadOnly property when editing is finished in the control.</short>
+        <short>
+          Enforces the setting in the ReadOnly property when editing is finished in the control.
+        </short>
         <descr>
           <p>
             <var>EditingDone</var> is an overridden method in <var>TCustomEdit</var>. It ensures that the inherited method is <b>NOT</b> called when the value in <var>ReadOnly</var> is <b>True</b>. EditingDone is called from the <var>KeyUpAfterInterface</var> method when the <var>VK_RETURN</var> key code is handled.
@@ -8378,7 +8380,7 @@ end;
             <var>TextChanged</var> is an overridden method used to performs actions needed when the <var>CM_TEXTCHANGED</var> message is handled in the control.
           </p>
           <p>
-            TextChanged calls <var>InvalidatePreferredSize</var> to force the preferred height and width for the control to be recalculated. When <var>Parent</var> has been assigned and its <var>AutoSize</var> property is set to <b>True</b>, the <var>AdjustSize</var> method in Parent is called. The AdjustSize method for the control is called to resize the control or update control flags when delayed auto-sizing is in use.
+            TextChanged calls <var>InvalidatePreferredSize</var> and causes the preferred height and width for the control to be recalculated. When <var>Parent</var> has been assigned and its <var>AutoSize</var> property is set to <b>True</b>, the <var>AdjustSize</var> method in Parent is called. The AdjustSize method for the control is called to resize the control or update control flags when delayed auto-sizing is in use.
           </p>
           <p>
             TextChanged calls the inherited method prior to exit.
@@ -9840,19 +9842,24 @@ end;
         <short>Message examined in the method.</short>
       </element>
 
-      <element name="TCustomLabel.TextChanged" link="#lcl.controls.TControl.TextChanged">
+      <element name="TCustomLabel.TextChanged">
         <short>
           Performs actions when the CM_TEXTCHANGED message is handled for the control.
         </short>
         <descr>
           <p>
-            <var>TextChanged</var> is an overridden method used to perform actions needed when the <var>CM_TEXTCHANGED</var> message is handled for the control. TextChanged calls <var>Invalidate</var> to force the control to be redrawn. <var>UpdateSize</var> is called to perform auto-sizing, and recalculate the dimensions for the control and its font.
+            <var>TextChanged</var> is an overridden method used to perform actions needed when the <var>CM_TEXTCHANGED</var> message is handled for the control. TextChanged calls <var>Invalidate</var> to request the control to be redrawn. <var>UpdateSize</var> is called to perform auto-sizing, and recalculate the dimensions for the control. The font may be re-sized when OptimalFill is enabled.
           </p>
           <p>
-            TextChanged does <b>not</b> calls the inherited method.
+            TextChanged does <b>not</b> call the inherited method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomLabel.UpdateSize"/>
+          <link id="TCustomLabel.OptimalFill"/>
+          <link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+          <link id="#lcl.controls.TControl.TextChanged">TControl.TextChanged</link>
+        </seealso>
       </element>
 
       <element name="TCustomLabel.DoSetBounds">

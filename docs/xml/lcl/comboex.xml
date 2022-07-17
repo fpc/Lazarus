@@ -908,7 +908,9 @@
       <element name="TComboExItems.Update">
         <short>Updates the collection when the specified item has been changed.</short>
         <descr>
-          Forces the owner of the collection (the control) to be redrawn when needed.
+          <p>
+            Causes the owner of the collection (the control) to be redrawn when needed.
+          </p>
         </descr>
         <seealso/>
       </element>

@@ -6749,7 +6749,7 @@
             <var>OnTitleFontChanged</var> is a procedure which implements the event handler signalled when the <var>TitleFont</var> for fixed cells has been changed. OnTitleFontChanged is assigned to the <var>OnChange</var> event handler in TitleFont in the constructor for the class instance.
           </p>
           <p>
-            OnTitleFontChanged sets the value in <var>TitleFontIsDefault</var> to <b>False</b> to reflect the change in the font setting. When <var>Columns</var> have been enabled (<var>VisibleCount</var> contains a non-zero value), the <var>TitleFontChanged</var> method in Columns is called. The <var>ColumnsChanged</var> method is called to force the grid to be updated. If Columns have not been enabled, the <var>VisualChange</var> method is called to update the grid control.
+            OnTitleFontChanged sets the value in <var>TitleFontIsDefault</var> to <b>False</b> to reflect the change in the font setting. When <var>Columns</var> have been enabled (<var>VisibleCount</var> contains a non-zero value), the <var>TitleFontChanged</var> method in Columns is called. The <var>ColumnsChanged</var> method is called and causes the grid to be updated. If Columns have not been enabled, the <var>VisualChange</var> method is called to update the grid control.
           </p>
         </descr>
         <seealso>
@@ -8165,7 +8165,7 @@
         </short>
         <descr>
           <p>
-            <var>ColWidthsChanged</var> has an empty implementation in TCustomGrid. It is not currently used in any descendent classes in the LCL. It can be overridden in custom controls to perform any actions needed when one or more of the column widths has been changed. One common use is to invalidate the grid control to force it to be redrawn.
+            <var>ColWidthsChanged</var> has an empty implementation in TCustomGrid. It is not currently used in any descendent classes in the LCL. It can be overridden in custom controls to perform any actions needed when one or more of the column widths has been changed. One common use is to invalidate the grid control and cause it to be redrawn.
           </p>
           <p>
             ColWidthsChanged is called when a new value is specified for the indexed ColWidths property and Columns have been enabled for the control.
@@ -8591,7 +8591,7 @@
             DoEnter is an overridden method in TCustomGrid. The inherited DoEnter method is called on entry to signal the OnEnter event handler (when assigned).
           </p>
           <p>
-            It ensures that the active selection and optional editor control are restored when grid control receives focus. If the Editor is not locked for update, and is always visible, the Editor class is re-selected and it is displayed in the active cell. When the Editor is not always visible (goAlwaysShowEditor is not in Options), InvalidateFocused is called to force the active cell or row selection to be redrawn.
+            It ensures that the active selection and optional editor control are restored when grid control receives focus. If the Editor is not locked for update, and is always visible, the Editor class is re-selected and it is displayed in the active cell. When the Editor is not always visible (goAlwaysShowEditor is not in Options), InvalidateFocused is called to request the active cell or row selection to be redrawn.
           </p>
           <p>
             DoEnter is called from the CMEnter method when it handles the corresponding control message.
@@ -9970,7 +9970,7 @@
             <var>FontChanged</var> is an overridden method used to perform actions needed when the <var>Font</var> for the control has been changed.
           </p>
           <p>
-            FontChanged ensures that the internal default heights for rows and columns are reset to <b>0</b> (<b>zero</b>). This forces the default column and row heights to be recalculated when the <var>DoAutoAdjustLayout</var> method is called.
+            FontChanged ensures that the internal default heights for rows and columns are reset to <b>0</b> (<b>zero</b>). This causes the default column and row heights to be recalculated when the <var>DoAutoAdjustLayout</var> method is called.
           </p>
           <p>
             When <var>csCustomPaint</var> is included in <var>ControlState</var>, the Font is assigned to the <var>Canvas</var> for the control.
@@ -12821,7 +12821,7 @@
         <short>Updates the grid after changes to the visual properties in the control.</short>
         <descr>
           <p>
-            <var>VisualChange</var> is a procedure used to update the grid when visual aspects of the control have been changed. VisualChange calls <var>UpdateSizes</var> to refresh the size of cells in the grid, and calls <var>Invalidate</var> to force the control to be redrawn.
+            <var>VisualChange</var> is a procedure used to update the grid when visual aspects of the control have been changed. VisualChange calls <var>UpdateSizes</var> to refresh the size of cells in the grid, and calls <var>Invalidate</var> to cause the control to be redrawn.
           </p>
           <p>
             No actions are performed in the method when <var>BeginUpdate</var> has already been called to buffer updates to the grid. VisualChange will resume updates when <var>EndUpdate</var> has been called to disable update buffering.
@@ -13725,7 +13725,7 @@
             <var>Flat</var> is a <var>Boolean</var> property which indicates if the cells on the control are drawn using a "flat" drawing style. This causes the cells, including fixed headers, to have a thinner single-line border without any 3D relief regardless of the setting in TitleStyle.
           </p>
           <p>
-            The default value for the property is <b>False</b>. Changing the value in Flat causes the UpdateBorderStyle method to be called when BorderStyle is set to bsSingle. Invalidate is called to force the control to be redrawn.
+            The default value for the property is <b>False</b>. Changing the value in Flat causes the UpdateBorderStyle method to be called when BorderStyle is set to bsSingle. Invalidate is called and causes the control to be redrawn.
           </p>
           <p>
             Flat is used in the DrawBorder method to determine the border drawing style and Canvas settings needed for the control.
@@ -15395,7 +15395,7 @@
         </short>
         <descr>
           <p>
-            Calls the InvalidateRect routine to force the cells to be re-drawn. No actions are performed in the method if a Handle has not been allocated for the control.
+            Calls the InvalidateRect routine which causes the cells to be re-drawn. No actions are performed in the method if a Handle has not been allocated for the control.
           </p>
         </descr>
         <seealso/>
@@ -16692,7 +16692,7 @@
         <short>Sets the value for the Color property.</short>
         <descr>
           <p>
-            Calls Invalidate to force the grid control to be redrawn.
+            Calls Invalidate to request the grid control to be redrawn.
           </p>
         </descr>
         <seealso>
@@ -16710,7 +16710,7 @@
             <var>SetCheckboxState</var> is a method used to set the checked, unchecked, or grayed state for a check box in the cell specified by <var>ACol</var> and <var>ARow</var>.<var> AState</var> contains the state value applied to the cell.
           </p>
           <p>
-            SetCheckboxState signals the <var>OnSetCheckboxState</var> event handler (when assigned) to perform the actions needed to change the value in the cell. If <var>DefaultDrawing</var> is enabled for the control, the <var>InvalidateCell</var> method is called to force the cell to be redrawn.
+            SetCheckboxState signals the <var>OnSetCheckboxState</var> event handler (when assigned) to perform the actions needed to change the value in the cell. If <var>DefaultDrawing</var> is enabled for the control, the <var>InvalidateCell</var> method is called and causes the cell to be redrawn.
           </p>
           <p>
             No actions are performed in the method when OnSetCheckboxState has not been assigned.
