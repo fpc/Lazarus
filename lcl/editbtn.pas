@@ -1587,6 +1587,9 @@ procedure TDateEdit.ButtonClick;//or onClick
 var
   PopupOrigin: TPoint;
   ADate: TDateTime;
+  {$IFDEF WINDOWS}
+  CalendarMinDate,CalendarMaxDate: integer;
+  {$ENDIF}
 begin
   inherited ButtonClick;
 
@@ -1594,6 +1597,24 @@ begin
   ADate := GetDate;
   if ADate = NullDate then
     ADate := SysUtils.Date;
+  {$ifdef WINDOWS} // temporarily copied form TCustomCalendar, needs a proper fix
+  CalendarMinDate:=-53787;// 14 sep 1752, start of Gregorian calendar in England
+  CalendarMaxDate:=trunc(MaxDateTime);
+  if (ADate < CalendarMindate) then
+  begin
+    if FDefaultToday then
+      ADate := SysUtils.Date
+    else
+      ADate := CalendarMinDate
+  end
+  else if (ADate > CalendarMaxDate) then
+  begin
+    if FDefaultToday then
+      ADate := SysUtils.Date
+    else
+      ADate := CalendarMaxDate;
+  end;
+  {$endif}
   ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
                     @CalendarPopupReturnDate, @CalendarPopupShowHide, self);
   //Do this after the dialog, otherwise it just looks silly
