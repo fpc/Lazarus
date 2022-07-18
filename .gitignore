@@ -20,8 +20,8 @@
 /docs/chm/**/*.txt
 !**/patches/*.patch
 !**/patches/*.diff
-/libeay32.dll
-/ssleay32.dll
+/*.dll
+/*.dll
 /lazarus.cfg
 /lazarus
 /lazarus.old*
