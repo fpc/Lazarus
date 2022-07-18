@@ -1,4 +1,1 @@
-*.o
-*.or
-*.ppu
-*.rsj
+/gir2pascal
