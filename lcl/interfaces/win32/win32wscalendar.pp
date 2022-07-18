@@ -256,10 +256,11 @@ class procedure TWin32WSCustomCalendar.RemoveMinMaxDates(
   const ACalendar: TCustomCalendar);
 var
   ST: packed array[0..1] of TSystemTime;
-  res: LRESULT;
 begin
+  if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.RemoveMinMaxDates') then
+    Exit;
   FillChar(ST, SizeOf(ST), 0);
-  res := SendMessage(ACalendar.Handle, MCM_SETRANGE, Windows.WParam(GDTR_MIN or GDTR_MAX), Windows.LParam(@ST));
+  SendMessage(ACalendar.Handle, MCM_SETRANGE, Windows.WParam(GDTR_MIN or GDTR_MAX), Windows.LParam(@ST));
   RecreateWnd(ACalendar); //otherwise does not seem to work (BB)
 end;
 
