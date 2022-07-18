@@ -109,10 +109,17 @@
 
       <element name="TEditSpeedButton.GlyphChanged">
         <short>
-          Performs actions needed when the glyph has changed for the Button in TCustomEditButton.
+          Performs actions needed when the glyph has changed for the Button.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            Calls the corresponding method in the owner control when it is derived from TCustomEditButton.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.GlyphChanged">TCustomSpeedButton.GlyphChanged</link>
+          <link id="TCustomEditButton.GlyphChanged">TCustomEditButton.GlyphChanged</link>
+        </seealso>
       </element>
       <element name="TEditSpeedButton.GlyphChanged.Sender">
         <short>Object generating the event notification.</short>
@@ -146,7 +153,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetFocusOnButtonClick.Result">
-        <short>Value for the property.</short>
+        <short>Value for the FocusOnButtonClick property.</short>
       </element>
 
       <element name="TCustomEditButton.GetOnButtonClick">
@@ -157,7 +164,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetOnButtonClick.Result">
-        <short>Value for the property.</short>
+        <short>Value for the OnButtonClick property.</short>
       </element>
 
       <element name="TCustomEditButton.GetButton">
@@ -168,7 +175,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetButton.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Button property.</short>
       </element>
 
       <element name="TCustomEditButton.GetGlyph">
@@ -179,7 +186,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetGlyph.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Glyph property.</short>
       </element>
 
       <element name="TCustomEditButton.GetNumGlyphs">
@@ -190,7 +197,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetNumGlyphs.Result">
-        <short>Value for the property.</short>
+        <short>Value for the NumGlyphs property.</short>
       </element>
 
       <element name="TCustomEditButton.GetEdit">
@@ -201,7 +208,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetEdit.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Edit property.</short>
       </element>
 
       <element name="TCustomEditButton.SetFocusOnButtonClick">
@@ -212,7 +219,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetFocusOnButtonClick.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the FocusOnButtonClick property.</short>
       </element>
 
       <element name="TCustomEditButton.SetOnButtonClick">
@@ -223,7 +230,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetOnButtonClick.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the OnButtonClick property.</short>
       </element>
 
       <element name="TCustomEditButton.SetButtonOnlyWhenFocused">
@@ -234,7 +241,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetButtonOnlyWhenFocused.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the ButtonOnlyWhenFocused property.</short>
       </element>
 
       <element name="TCustomEditButton.SetFlat">
@@ -245,7 +252,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetFlat.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Flat property.</short>
       </element>
 
       <element name="TCustomEditButton.SetGlyph">
@@ -256,7 +263,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetGlyph.Pic">
-        <short>New value for the property.</short>
+        <short>New value for the Glyph property.</short>
       </element>
 
       <element name="TCustomEditButton.SetNumGlyphs">
@@ -267,7 +274,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetNumGlyphs.ANumber">
-        <short>New value for the property.</short>
+        <short>New value for the NumGlyphs property.</short>
       </element>
 
       <element name="TCustomEditButton.GetImages">
@@ -278,7 +285,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetImages.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Images property.</short>
       </element>
 
       <element name="TCustomEditButton.SetImages">
@@ -289,7 +296,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetImages.aImages">
-        <short>New value for the property.</short>
+        <short>New value for the Images property.</short>
       </element>
 
       <element name="TCustomEditButton.GetImageIndex">
@@ -300,7 +307,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetImageIndex.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ImageIndex property.</short>
       </element>
 
       <element name="TCustomEditButton.SetImageIndex">
@@ -311,7 +318,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetImageIndex.AImageIndex">
-        <short>New value for the property.</short>
+        <short>New value for the ImageIndex property.</short>
       </element>
 
       <element name="TCustomEditButton.GetImageWidth">
@@ -322,7 +329,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.GetImageWidth.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ImageWidth property.</short>
       </element>
 
       <element name="TCustomEditButton.SetImageWidth">
@@ -333,7 +340,7 @@
         </seealso>
       </element>
       <element name="TCustomEditButton.SetImageWidth.aImageWidth">
-        <short>New value for the property.</short>
+        <short>New value for the ImageWidth property.</short>
       </element>
 
       <element name="TCustomEditButton.ButtonClick">
@@ -347,9 +354,23 @@
       </element>
 
       <element name="TCustomEditButton.BuddyClick">
-        <short>Performs a button click for the associated control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Performs actions needed when the Button for the control is clicked.
+        </short>
+        <descr>
+          <p>
+          <var>BuddyClick</var> calls the inherited method on entry to signal the OnBuddyClick event handler (when assigned), and to perform focus and selection changes. It calls the ButtonClick method to forward the click event to the Edit control.
+          </p>
+          <p>
+            BuddyClick is called from the private InternalOnBuddyClick method used as the OnClick handler for the Button in the grouped edit control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomEditButton.Button"/>
+          <link id="TCustomEditButton.ButtonClick"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.BuddyClick">TCustomAbstractGroupedEdit.BuddyClick</link>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnBuddyClick">TCustomAbstractGroupedEdit.OnBuddyClick</link>
+        </seealso>
       </element>
 
       <element name="TCustomEditButton.GetEditorClassType">
@@ -396,7 +417,7 @@
       </element>
 
       <element name="TCustomEditButton.CalcButtonVisible">
-        <short>Indicates whether the Button for the control should be visible.</short>
+        <short>Determines whether the Button for the control should be visible.</short>
         <descr>
           <p>
             <var>CalcButtonVisible</var> is a <var>Boolean</var> function used to determine whether the <var>Button</var> for the control should be visible. The return value is <b>True</b> when the control is Visible and the Edit has focus, or the control is not configured to display its button only when focused.
@@ -455,46 +476,86 @@
 
       <element name="TCustomEditButton.LoadDefaultGlyph">
         <short>Loads the default glyph displayed on the Button for the control.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>LoadDefaultGlyph</var> calls GetDefaultGlyphName to get the name for the default glyph resource defined for the class instance. In TCustomEditButton, this is an empty string (''). In a descendent class, another value may be provided. If a glyph name is found, it is assigned to the ButtonGlyph in the Button for the control.
+          </p>
+          <p>
+            LoadDefaultGlyph is called when Nil assigned to the Glyph property in the control.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomEditButton.GlyphChanged">
-        <short>Performs action needed when the glyph assigned in Button has changed.</short>
+        <short>Performs action needed when the glyph assigned in Button has been changed.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <element name="TCustomEditButton.GlyphChanged.Sender">
-        <short></short>
+        <short>Object for the event notification.</short>
       </element>
 
       <element name="TCustomEditButton.Button">
         <short>
-          <var>Button</var> is the TSpeedButton that is attached to the grouped edit control.
+          TSpeedButton instance used on the edit control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Button</var> is a read-only <var>TSpeedButton</var> property with the Button displayed on edit control.
+          </p>
+          <p>
+            Use ButtonWidth, ButtonCaption, ButtonCursor, and ButtonHint to set the display attributes for the Button in the grouped edit control.
+          </p>
+          <p>
+            At run-time, Button is cast to the TEditSpeedButton type to access the default glyph name for the control. Use Glyph to assign a bitmap used as the glyph for the speed button. As an alternative, the Images property can be used along with ImageIndex and ImageWidth to define an image displayed on the Button.
+          </p>
+          <p>
+            Use the OnButtonClick event handler to implement the actions performed when the Button is clicked.
+          </p>
+          <p>
+            Use FocusOnButtonClick to define whether the Edit control receives focus when the Button is clicked.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomEditButton.ButtonCaption">
-        <short>Contains the caption used for the Button on the grouped edit control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Contains the caption used for the Button on the edit control.</short>
+        <descr>
+          <p>
+            The property is read from and written to the Caption property for the associated Button control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TSpeedButton.Caption">TSpeedButton.Caption</link>
+        </seealso>
       </element>
 
       <element name="TCustomEditButton.ButtonCursor">
         <short>
           Cursor shape displayed when the mouse hovers over the Button in the control.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>ButtonCursor</var> is a <var>TCursor</var> property with the cursor shape displayed when the mouse pointer is hovered over the Button for the edit control. The property value is read from and written to the Cursor property in the associated Button control.
+          </p>
+          <p>
+            The default value for the property is crDefault.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomEditButton.ButtonHint">
         <short>
-          <var>ButtonHint</var> is the hint that pops up when the mouse hovers over the button.
+          Text displayed in the pop-up hint window when the mouse hovers over the button.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            The property value is read from and written to the Hint property in the associated Button for the edit control.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
@@ -508,9 +569,13 @@
 
       <element name="TCustomEditButton.ButtonWidth">
         <short>
-          <var>ButtonWidth</var> is the width for the TSpeedButton used in the grouped edit control.
+          Width for the TSpeedButton on the edit control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            The property value is read from and written to the Width property in the associated Button on the edit control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -1039,18 +1104,41 @@
 
       <element name="TCustomControlFilterEdit.EditKeyDown">
         <short>Handles a KeyDown event for the Edit control.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            EditKeyDown is an overridden method in TCustomControlFilterEdit. It implements the OnKeyDown event handler for the Edit in the grouped edit control. It extends the inherited method to handle additional key down events, including:
+          </p>
+          <ul>
+            <li>Return</li>
+            <li>Up, Shift+Up</li>
+            <li>Down, Shift+Down</li>
+            <li>PageUp, Shift+PageUp</li>
+            <li>PageDn, Shift+PageDn</li>
+            <li>Home, Shift+Home, Ctrl+Home</li>
+            <li>End, Shift+End, Ctrl+End</li>
+          </ul>
+          <p>
+            The methods called to respond to the key down event are declared as abstract virtual methods in TCustomControlFilterEdit; they are implemented in descendent classes to call methods in the associated control for the filter edit control.
+          </p>
+          <p>
+            If the value in Key is handled in the method, Key is set to VK_UNKNOWN (0). Otherwise, the inherited methiod is called to handle the Key and Shift modifier.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomControlFilterEdit.EditKeyDown.Key">
-        <short></short>
+        <short>
+          Virtual key code for the key down event.
+        </short>
       </element>
       <element name="TCustomControlFilterEdit.EditKeyDown.Shift">
-        <short></short>
+        <short>
+          Shift, Alt, or Ctrl modifier for the key down event.
+        </short>
       </element>
 
       <element name="TCustomControlFilterEdit.EditChange">
-        <short>Performs actions needed when the Edit is changed.</short>
+        <short>Performs actions needed when the Edit for the control is changed.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -1064,7 +1152,7 @@
         </descr>
         <seealso>
           <link id="TCustomControlFilterEdit.Filter"/>
-          <link id="TCustomControlFilterEdit.FocusOnButtonClick"/>
+          ``<link id="TCustomControlFilterEdit.FocusOnButtonClick"/>
           <link id="TCustomEditButton.Edit"/>
           <link id="#lcl.controls.TControl.Text">TControl.Text</link>
         </seealso>
@@ -1097,7 +1185,9 @@
           Applies the Filter data to the container component.
         </short>
         <descr>
-          Method that actually filters data in the container component. ApplyFilterCore is a virtual abstract method, and must be implemented in a derived classes.
+          <p>
+            Method that actually filters data in the container component. ApplyFilterCore is a virtual abstract method, and must be implemented in a derived classes.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1116,7 +1206,9 @@
       <element name="TCustomControlFilterEdit.MovePrev">
         <short>Moves to the previous value matching the filter for the control.</short>
         <descr>
-          Abstract virtual method that must be implemented in a descendent class.
+          <p>
+            Abstract virtual method that must be implemented in a descendent class.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1138,7 +1230,9 @@
       <element name="TCustomControlFilterEdit.MovePageDown">
         <short>Moves one page of subsequent values matching the filter.</short>
         <descr>
-          Abstract virtual method that must be implemented in a descendent class.
+          <p>
+            Abstract virtual method that must be implemented in a descendent class.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1149,7 +1243,9 @@
       <element name="TCustomControlFilterEdit.MoveHome">
         <short>Moves to the first value matching the filter.</short>
         <descr>
-          Abstract virtual method that must be implemented in a descendent class.
+          <p>
+            Abstract virtual method that must be implemented in a descendent class.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1160,7 +1256,9 @@
       <element name="TCustomControlFilterEdit.MoveEnd">
         <short>Moves to the last value matching the filter.</short>
         <descr>
-          Abstract virtual method that must be implemented in a descendent class.
+          <p>
+            Abstract virtual method that must be implemented in a descendent class.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1173,7 +1271,9 @@
           Indicates whether an assigned OnKeyPress event handler handles the Return or Enter key in the KeyDown method for the Edit.
         </short>
         <descr>
-          Abstract virtual method that must be implemented in a descendent class.
+          <p>
+            Abstract virtual method that must be implemented in a descendent class.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -1225,15 +1325,25 @@
 
       <element name="TCustomControlFilterEdit.InvalidateFilter">
         <short>Should be called when data was changed and it must be filtered again.</short>
-        <descr>Connects to OnIdle handler which filters the data later.</descr>
+        <descr>
+          <p>
+            Connects to OnIdle handler which filters the data later.
+          </p>
+        </descr>
       </element>
 
       <element name="TCustomControlFilterEdit.ResetFilter">
         <short>Removes the filter text and shows all items in the container.</short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.ForceFilter">
-        <short>Applies a new filter immediately without waiting for idle. Returns the previous filter.</short>
+        <short>
+          Applies a new filter immediately without waiting for idle. Returns the previous filter.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.StoreSelection">
@@ -1269,7 +1379,9 @@
       <element name="TCustomControlFilterEdit.Filter">
         <short>The textual representation for the filter.</short>
         <descr>
-          Typically a user types it in the edit control but it can also be set in code. Filtering is done during idle time after the value of Filter text has changed.
+          <p>
+            Typically a user types it in the edit control but it can also be set in code. Filtering is done during idle time after the value of Filter text has changed.
+          </p>
         </descr>
       </element>
 
@@ -1325,12 +1437,16 @@
 
       <element name="TCustomControlFilterEdit.SortData">
         <short>Items can be sorted while they are filtered.</short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.SelectedPart">
         <short>
           For retaining selection in the filtered control. The actual type depends on the associated control.
         </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.CharCase">
@@ -1339,8 +1455,8 @@
         </short>
         <descr>
           <p>
-          CharCase is a TEditCharCase property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is ecLowerCase in TCustomControlFilterEdit, and indicates that characters are converted to lower case.
-        </p>
+            <var>CharCase</var> is a <var>TEditCharCase</var> property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is ecLowerCase in TCustomControlFilterEdit, and indicates that characters are converted to lower case.
+          </p>
           <p>
             See TEditCharCase for more information about the enumeration values supported for the type.
           </p>
@@ -1373,6 +1489,8 @@
 
       <element name="TCustomControlFilterEdit.OnAfterFilter">
         <short>Called after all items are filtered.</short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.OnFilterItem">
@@ -1380,7 +1498,9 @@
           An event handler to give extra conditions for filtering, in addition to the default behavior. Returns <b>True</b> if the passes the filter.
         </short>
         <descr>
-          This feature has, for example, enabled filtering the Options windows in Lazarus IDE based on captions for all controls on the options pages. Deprecated. Use OnFilterItemEx with a caption parameter instead.
+          <p>
+            This feature has, for example, enabled filtering the Options windows in Lazarus IDE based on captions for all controls on the options pages. Deprecated. Use OnFilterItemEx with a caption parameter instead.
+          </p>
         </descr>
       </element>
 
@@ -1388,14 +1508,16 @@
         <short>
           Event handler signalled to filter data in the control using its caption or item data.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.OnCheckItem">
         <short>
           Has effect when items in the filtered container can be checked. Typically a CheckListbox.
         </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomControlFilterEdit.ButtonCaption" link="#lcl.editbtn.TCustomEditButton.ButtonCaption"/>
@@ -1802,7 +1924,8 @@
 
       <element name="TFileNameEdit.Filter">
         <short>
-          <var>Filter</var> - the filtering string to help search for the required file.</short>
+          <var>Filter</var> - the filtering string to help search for the required file.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1822,7 +1945,7 @@
       </element>
 
       <element name="TFileNameEdit.HideDirectories">
-        <short>Hide directory name from edit.</short>
+        <short>Hides directory paths in the edit control.</short>
         <descr>
           <p>
             If <var>HideDirectories</var> is set to <b>True</b>, the file name editor displays only a file name, without path.
@@ -2358,7 +2481,7 @@
 
       <element name="TDateEdit">
         <short>
-          Implements a control with an edit box for a date value, with an attached speed button to display a date selection (calendar) dialog.
+          Implements a control with an edit box for a date value and an attached speed button to display a date selection (calendar) dialog.
         </short>
         <descr>
           <p>
@@ -2416,7 +2539,6 @@
         <short>Gets the value for the Date property.</short>
         <descr/>
         <seealso>
-          <link id="TDateEdit.SetDate"/>
           <link id="TDateEdit.Date"/>
         </seealso>
       </element>
@@ -2428,7 +2550,6 @@
         <short>Sets the value for the Date property.</short>
         <descr/>
         <seealso>
-          <link id="TDateEdit.GetDate"/>
           <link id="TDateEdit.Date"/>
         </seealso>
       </element>
@@ -2448,14 +2569,14 @@
             CalendarPopupReturnDate signals the <var>OnAcceptDate</var> event handler (when assigned) to accept or reject the value in <var>ADate</var>. The value in <var>ADate</var> is stored in the <var>Date</var> property when accepted in <var>OnAcceptDate</var>.
           </p>
           <p>
-            CalendarPopupReturnDate handles any exception which occurs in the method, or in the OnAcceptDate event handler, and displays a Message Dialog with the message from the exception.
+            CalendarPopupReturnDate handles any exception which occurs in the method, or in the OnAcceptDate event handler, and displays a dialog with the message from the exception.
           </p>
         </descr>
         <seealso>
           <link id="TDateEdit.ButtonClick"/>
           <link id="TDateEdit.OnAcceptDate"/>
           <link id="TDateEdit.Date"/>
-        <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
+          <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
         </seealso>
       </element>
       <element name="TDateEdit.CalendarPopupReturnDate.Sender">
@@ -2467,7 +2588,7 @@
 
       <element name="TDateEdit.CalendarPopupShowHide">
         <short>
-          Implements the event handler used to toggle the visibility of the dialog form for the control.
+          Implements the event handler which toggles the visibility of the dialog form for the control.
         </short>
         <descr>
           <p>
@@ -2497,7 +2618,7 @@
         </seealso>
       </element>
       <element name="TDateEdit.SetDateOrder.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the DateOrder property.</short>
       </element>
 
       <element name="TDateEdit.DateToText">
@@ -2507,7 +2628,7 @@
             <var>DateToText</var> is a <var>String</var> function used to convert the <var>TDateTime</var> value in the <var>Value</var> parameter to its textual representation. The return value is an empty String (<b>''</b>) when Value is equal to the <var>NullDate</var> constant.
           </p>
           <p>
-            DateToText uses <var>DefaultFormatSettings</var> to generate the return value when <var>DateOrder</var> is <var>doNone</var> using the short date format in the <var>DateFormat</var> property. When DateOrder contains another value from the enumeration, the edit mask for the fixed date format is used to generate the return value.
+            DateToText uses <var>DefaultFormatSettings</var> to generate the return value when <var>DateOrder</var> is <var>doNone</var> using the short date format in the <var>DateFormat</var> property. When DateOrder contains another value from the enumeration, the formatting mask for the date order is used to generate the return value; i. e. 'mm/dd/yyyy'.
           </p>
           <p>
             DateToText is used in the implementation of the <var>SetDate</var>, <var>RealSetText</var>, and <var>EditEditingDone</var> methods.
@@ -2553,11 +2674,36 @@
 
       <element name="TDateEdit.ButtonClick">
         <short>
-          Implements the handler executed when the Button for the control is clicked.
+          Displays a pop-up calendar dialog when the Button for the grouped edit control is clicked.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>ButtonClick</var> is an overridden method in <var>TDateEdit</var>. It implements the virtual method defined in the ancestor class, and is called when the Button for the grouped edit control is clicked.
+          </p>
+          <p>
+            ButtonClick creates, displays, and executes a pop-up calendar dialog used to get a TDateTime value. The value in the Date property is passed as the initial date displayed on the dialog form. If Date contains the NullDate value (0), the current system date is used.
+          </p>
+          <remark>
+            For the Windows platform, additional validation is performed to ensure that Date is within the range of values allowed for the native calendar control. The minimum date value is "1752-09-14" (September 14, 1752) for the start of the Gregorian calendar. The maximum date value is "9999-12-31" (December 31, 9999). This is done to prevent an exception when an invalid value is passed to the native calendar control. When DefaultToday is enabled, Date defaults to the current system date for a value outside this range. When not enabled, the minimum or maximum value is used to range limit the date.
+          </remark>
+          <p>
+            The ShowCalendarPopup routine is called to display and execute the dialog form. Set values in CalendarDisplaySettings and DefaultToday to control the appearance and behavior for the calendar on the dialog.
+          </p>
+          <p>
+            Assign a routine to the OnAcceptDate event handler to perform actions needed when a new date value is selected using the dialog. Enable FocusOnButtonClick to focus and optionally auto-select the value in the edit control after the dialog has been closed.
+          </p>
+        </descr>
         <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.CalendarDisplaySettings"/>
+          <link id="TDateEdit.DefaultToday"/>
+          <link id="TDateEdit.OnAcceptDate"/>
+          <link id="TDateEdit.FocusOnButtonClick"/>
+          <link id="TDateEdit.EditDblClick"/>
           <link id="TCustomEditButton.ButtonClick"/>
+          <link id="TCustomEditButton.Button"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll">TCustomAbstractGroupedEdit.FocusAndMaybeSelectAll</link>
+          <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
         </seealso>
       </element>
 
@@ -2576,16 +2722,32 @@
       </element>
 
       <element name="TDateEdit.EditEditingDone">
-        <short>Implement the OnEditingDone event handler for the Edit in the control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Implements the OnEditingDone event handler for the Edit in the control.</short>
+        <descr>
+          <p>
+            <var>EditEditingDone</var> is an overridden method in <var>TDateEdit</var>. It calls the inherited method on entry to signal the OnEditEditingDone event handler (when assigned).
+          </p>
+          <p>
+            If DirectInput is enabled, the value in Date is converted to a string and stored in the Text property. Values in DateOrder, DateFormat, or the default date format settings for the locale are used to determine the content for the converted value. An empty string ('') is assigned to Text when Date contains the NullDate value (0).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.DirectInput"/>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.DateFormat"/>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.Text"/>
+          <link id="TDateEdit.OnEditingDone"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditEditingDone">TCustomAbstractGroupedEdit.EditEditingDone</link>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditingDone">TCustomAbstractGroupedEdit.OnEditingDone</link>
+        </seealso>
       </element>
 
       <element name="TDateEdit.SetDirectInput">
         <short>Sets the value in the DirectInput property.</short>
         <descr>
           <p>
-            <var>SetDirectory</var> is overridden in <var>TDateEdit</var> to synchronize the values in the Text and Date properties when DirectInput is changed.
+            <var>SetDirectory</var> is overridden in <var>TDateEdit</var> to synchronize the value from the Text property to the Date property when DirectInput is changed.
           </p>
         </descr>
         <seealso>
@@ -2601,7 +2763,7 @@
       </element>
 
       <element name="TDateEdit.RealSetText">
-        <short>Sets the value for the control.</short>
+        <short>Sets the value for text in the control.</short>
         <descr>
           <p>
             <var>RealSetText</var> is overridden in <var>TDateEdit</var> to ensure that <var>DefaultToday</var> is used to set the <var>Date</var> when <var>Text</var> is an empty string. Calls the inherited RealSetText method.
@@ -2619,29 +2781,66 @@
 
       <element name="TDateEdit.SetDateMask">
         <short>
-          Applies a mask to the Edit control suitable for the DateOrder in the control.
+          Applies an EditMask based on the DateOrder for the control.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>SetDateMask</var> is a method used to update the EditMask for the control. It also updates the internal member where a FormatDateTime-compatible format string is stored. The mask value is determined by the DateOrder property, and uses the following TDateOrder and edit mask values:
+          </p>
+          <dl>
+            <dt>doNone</dt>
+            <dd>
+              EditMask is set to an empty string (''). The date format string is also an empty string.
+            </dd>
+            <dt>doDMY, doMDY</dt>
+            <dd>
+              EditMask is set to '99/99/9999;1;_'. The date format string is set to 'mm/dd/yyyy' (for doMDY) or 'dd/mm/yyyy' (for doDMY).
+            </dd>
+            <dt>doYMD</dt>
+            <dd>
+              EditMask is set to '9999/99/99;1;_'. The date format string is set to 'yyyy/mm/dd'.
+            </dd>
+          </dl>
+          <p>
+            SetDateMask retrieves and re-applies the current value in Date after the EditMask has been changed. This forces the display value in Text to be updated.
+          </p>
+          <p>
+            SetDateMask is called when a new value is assigned to the DateOrder property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.Date"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditMask">TCustomAbstractGroupedEdit.EditMask</link>
+        </seealso>
       </element>
 
       <element name="TDateEdit.Loaded">
         <short>
           Performs actions needed when the component has finished loading in the LCL streaming mechanism.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in <var>TDateEdit</var>, and calls the inherited method on entry. At run-time, SetDate is called to re-apply the current value in the Date property. This causes the value in Text to be updated with the string representation for the date value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.Text"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.Create">
         <short>
-          <var>Create</var> - constructor for <var>TDateEdit</var>: calls inherited <var>Create</var> and sets defaults.</short>
+          Constructor for the class instance.
+        </short>
         <descr>
           <p>
-            <var>Create</var> - constructor for <var>TDateEdit</var>: calls inherited <var>Create</var> and sets defaults.
+            <var>Create</var> is the constructor for <var>TDateEdit</var>. It calls the inherited <var>Create</var> method and sets the default values for properties in the class instance.
           </p>
           <p>
-            Initializes the dialog title, caption, display settings, and the default date.
+            Create initializes the dialog title, caption, display settings, and the default date.
           </p>
         </descr>
         <errors/>
@@ -2655,86 +2854,208 @@
 
       <element name="TDateEdit.GetDateFormat">
         <short>
-          <var>GetDateFormat</var> - returns the format for the date.
+          Gets the FormatDateTime-compatible format specification used for the current DateOrder in the control.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            GetDateFormat reads the member value assigned when the SetDateMask method is called. It contains the FormatDateTime-compatible format specification used to convert values in Text and Date when DateOrder has a value other than doNone.
+          </p>
+          <p>
+            GetDateFormat is not used in the current LCL version.
+          </p>
+          <p>
+            Use the DateFormat property for the format used when DateOrder is set to doNone.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.DateFormat"/>
+          <link id="TDateEdit.Text"/>
+          <link id="TDateEdit.SetDateMask"/>
+        </seealso>
       </element>
       <element name="TDateEdit.GetDateFormat.Result">
-        <short></short>
+        <short>
+          String with the fixed date format for the DateOrder in the control.
+        </short>
       </element>
 
       <element name="TDateEdit.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
 
       <element name="TDateEdit.Date">
         <short>Contains the TDateTime value for the control.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Date</var> is a <var>TDateTime</var> property with the date value for the control. The Time component in the value is ignored in TDateEdit.
+          </p>
+          <p>
+            Date provides the value displayed and updated using the Edit for the control when DirectInput is enabled. It is updated when the Button for the control is clicked and a new value is selected form the calendar dialog. Setting a new value for the property causes the new date value to be validated. An empty date is represented using the NullDate value (0). When DefaultToday is enabled, an empty date defaults to the current system date. The value in Text is updated when a new value is assigned to the property.
+          </p>
+          <p>
+            Use DateOrder to control the order of the date components displayed on the control and in the Text property. Use DateFormat to specify the FormatDateTime-compatible formatting string used when DateOrder is set to doNone. The default format settings for the locale are used to generate the value in Text when both DateOrder and DateFormat are not used.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Text"/>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.DateFormat"/>
+          <link id="TDateEdit.DefaultToday"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.Button" link="#lcl.editbtn.TCustomEditButton.Button"/>
 
       <element name="TDateEdit.DroppedDown">
-        <short>Indicates the dialog for control is visible when <b>True</b>.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Indicates the calendar dialog for the control is visible when <b>True</b>.
+        </short>
+        <descr>
+          <p>
+            <var>DroppedDown</var> is a read-only <var>Boolean</var> property which indicates if the calendar dialog form is visible for the control. The property value is updated when the calendar dialog form is displayed or hidden in the ButtonClick method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.ButtonClick"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.CalendarDisplaySettings">
         <short>
-          <var>CalendarDisplaySettings</var> - governs how the calendar dialog is displayed.
+          Display or behavior options enabled in the pop-up calendar dialog for the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CalendarDisplaySettings</var> is a <var>TDisplaySettings</var> property with the display and behavior options enabled in the calendar dialog for the grouped edit control. It contains zero or more values from the TDisplaySetting enumeration, and enables the features or behaviors in the calendar control. The default values in the set type are <b>[dsShowHeadings, dsShowDayNames]</b>.
+          </p>
+          <p>
+            See TDisplaySetting for more information about the values in the enumeration and their meanings.
+          </p>
+          <p>
+            The property value is passed as an argument to the ShowCalendarPopup routine when the Button is clicked for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.ButtonClick"/>
+          <link id="#lcl.calendar.TDisplaySettings">TDisplaySettings</link>
+          <link id="#lcl.calendar.TDisplaySetting">TDisplaySetting</link>
+          <link id="#lcl.calendar.TCustomCalendar.DisplaySettings">TCustomCalendar.DisplaySettings</link>
+          <link id="#lcl.calendarpopup.ShowCalendarPopup">ShowCalendarPopup</link>
+        </seealso>
       </element>
 
       <element name="TDateEdit.OnAcceptDate">
         <short>
-          <var>OnAcceptDate</var> - event handler for accepting the date selected in the calendar dialog.
+          Event handler signalled to accept or reject a new date value selected using the calendar dialog for the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnAcceptDate</var> is a <var>TAcceptDateEvent</var> property with the event handler signalled to accept or reject a new value for the Date property. The handler routine can perform actions to validate or update the TDateTime and Boolean arguments.
+          </p>
+          <p>
+            OnAcceptDate is signalled (when assigned) when the pop-up calendar dialog is displayed for the grouped edit control. The handler routine can update the value in the date argument if its value is not in an acceptable range. If the Boolean argument is <b>True</b> on exit from the handler, the date argument is stored to the Date property. Otherwise, the new date/time value is discarded.
+          </p>
+          <p>
+            An exception raised during execution of the pop-up calendar dialog is handled in the class instance; MessageDlg is called to display the exception message.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.ButtonClick"/>
+          <link id="TDateEdit.Date"/>
+          <link id="TAcceptDateEvent"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.OnCustomDate">
         <short>
           <var>OnCustomDate</var> - event handler for inserting a custom date.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>OnCustomDate</var> is a <var>TCustomDateEvent</var> property with the event handler signalled to validate or update a string value before it is converted to the TDateTime type. OnCustomDate is signalled (when assigned) when the value in Text is converted to the TDateTime type used in the Date property. It also occurs when a new value is assigned to DirectInput, and when reading the value for the Date property when DirectInput is enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.DateOrder"/>
+          <link id="TDateEdit.DirectInput"/>
+          <link id="TDateEdit.Text"/>
+        </seealso>
       </element>
 
-      <element name="TDateEdit.ReadOnly">
-        <short>Indicates if the value for the control can be changed.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+      <element name="TDateEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 
       <element name="TDateEdit.DefaultToday">
         <short>
-          When <b>True</b>, the current date is offered as the default date (value is <b>False</b> by default).
+          <b>True</b> to use the current system date when a Date value is not available.
         </short>
         <descr>
           <p>
-            The default value for the property is <b>False</b>.
+            <var>DefaultToday</var> is a <var>Boolean</var> property which indicates if the current system date is used when the Date property has not been assigned or contains an invalid date value. The default value for the property is <b>False</b>.
+          </p>
+          <p>
+            DefaultToday is used in the ButtonClick method, and causes SysUtils.Date to be used as the date value when set to True. This occurs when the date contains the NullDate value (0), or when the date is not within the date range allowed for a given platform. It is used when a new value is assigned to the DirectInput property and a valid date has not been assigned to the Date property. It is also used when a new value is assigned to Text and DirectInput has not been enabled for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TDateEdit.ButtonClick"/>
+          <link id="TDateEdit.DirectInput"/>
+          <link id="TDateEdit.Text"/>
+          <link id="NullDate"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.DateOrder">
         <short>
-          Controls the display order for Year, Month, and Day parts of the date value.
+          Controls the display order for Year, Month, and Day parts of the Date value.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>DateOrder</var> is a <var>TDateOrder</var> property which indicates the order of the Year, Month, and Day parts of the Date value. Values in the enumeration include:
+          </p>
+          <dl>
+            <dt>doNone</dt>
+            <dd>
+              No order is specified. The value in DateFormat is used instead. EditMask is set to ''.
+            </dd>
+            <dt>doMDY</dt>
+            <dd>
+              Displays values in Month, Day, Year order and uses the format specification 'mm/dd/yyyy'. EditMask is set to '99/99/9999;1;_'.
+            </dd>
+            <dt>doDMY</dt>
+            <dd>
+              Displays values in Day, Month, Year order and uses the format specification 'dd/mm/yyyy'. EditMask is set to '99/99/9999;1;_'.
+            </dd>
+            <dt>doYMD</dt>
+            <dd>
+              Displays values in Year, Month, Day order and uses the format specification 'yyyy/mm/dd'. EditMask is set to '9999/99/99;1;_'.
+            </dd>
+          </dl>
+          <p>
+            Setting a new value for the property causes SetDateMask to be called to update the EditMask for the control.
+          </p>
+          <p>
+            DateOrder is also used when the value in Date is converted to a String type and stored in the Text property.
+          </p>
+          <p>
+            Use DateFormat for the format specification used when DateOrder is doNone.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.DateFormat"/>
+          <link id="TDateEdit.SetDateMask"/>
+          <link id="TDateEdit.Text"/>
+          <link id="TDateOrder"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditMask">TCustomAbstractGroupedEdit.EditMask</link>
+        </seealso>
       </element>
 
       <element name="TDateEdit.DateFormat">
-        <short>Specifies the editing format used for the date value in the control.</short>
+        <short>Specifies the format string used for the date value in the control.</short>
         <descr>
           <p>
-            <var>DateFormat</var> is a <var>String</var> property which contains the format used when converting the Date value to and from text. DateFormat is relevant when <var>DateOrder</var> contains the value <var>doNone</var>; when another <var>TDateOrder</var> value is used, the fixed format needed for the date order is automatically used.
+            <var>DateFormat</var> is a <var>String</var> property which contains the format used when converting the Date value to and from text. DateFormat is used when <var>DateOrder</var> contains the value <var>doNone</var>; when another <var>TDateOrder</var> value is used, the fixed format needed for the date order is automatically used.
           </p>
           <p>
             DateFormat is used in the implementation of the <var>TextToDate</var> and <var>DateToText</var> methods.
