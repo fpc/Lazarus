@@ -56,7 +56,7 @@ type
     class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar;
       const ADayOfWeek: TCalDayOfWeek); virtual;
     class procedure SetMinMaxDate(const ACalendar: TCustomCalendar;
-      const AMinDate, AMaxDate: TDateTime); virtual;
+      AMinDate, AMaxDate: TDateTime); virtual;
     class procedure RemoveMinMaxDates(const ACalendar: TCustomCalendar); virtual;
   end;
   TWSCustomCalendarClass = class of TWSCustomCalendar;
@@ -101,7 +101,7 @@ begin
 end;
 
 class procedure TWSCustomCalendar.SetMinMaxDate(
-  const ACalendar: TCustomCalendar; const AMinDate, AMaxDate: TDateTime);
+  const ACalendar: TCustomCalendar; AMinDate, AMaxDate: TDateTime);
 begin
 end;
 
