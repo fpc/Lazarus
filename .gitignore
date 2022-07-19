@@ -21,7 +21,6 @@
 !**/patches/*.patch
 !**/patches/*.diff
 /*.dll
-/*.dll
 /lazarus.cfg
 /lazarus
 /lazarus.old*
