@@ -34,6 +34,7 @@ begin
   FBevelInner := bvNone;
   FBevelWidth := 1;
   FAlignment := taCenter;
+  FVertAlignment := taVerticalCenter;
   FFullRepaint := True;
   Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   with GetControlClassDefaultSize do
@@ -83,6 +84,15 @@ begin
   inherited;
 end;
 
+procedure TCustomPanel.SetVertAlignment(const Value: TVerticalAlignment);
+begin
+  if FVertAlignment <> Value then
+  begin
+    FVertAlignment := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TCustomPanel.SetWordwrap(const Value: Boolean);
 begin
   if FWordwrap <> Value then
@@ -126,7 +136,9 @@ begin
   // Note: Frame3D inflates ARect
 end;
 
-procedure TCustomPanel.Paint;
+procedure TCustomPanel.Paint;   
+const
+  VerticalAlignmentToTextLayout: array[TVerticalAlignment] of TTextLayout = (tlTop, tlBottom, tlCenter);
 var
   ARect: TRect;
   TS : TTextStyle;
@@ -143,7 +155,7 @@ begin
     TS.Alignment := BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment);
     if BiDiMode<>bdLeftToRight then
       TS.RightToLeft:= True;
-    TS.Layout:= tlCenter;
+    TS.Layout:= VerticalAlignmentToTextlayout[FVertAlignment];
     TS.Opaque:= false;
     TS.Clipping:= false;
     TS.SystemFont:=Canvas.Font.IsDefault;

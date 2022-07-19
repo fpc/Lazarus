@@ -1068,6 +1068,7 @@ type
     FBevelInner, FBevelOuter : TPanelBevel;
     FBevelWidth : TBevelWidth;
     FAlignment : TAlignment;
+    FVertAlignment: TVerticalAlignment;
     FFullRepaint: Boolean;
     FWordWrap: Boolean;
     procedure PaintBevel(var ARect: TRect; ABevel: TPanelBevel);
@@ -1076,6 +1077,7 @@ type
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+    procedure SetVertAlignment(const Value: TVerticalAlignment);
     procedure SetWordwrap(const Value: Boolean);
   protected
     class procedure WSRegisterClass; override;
@@ -1088,6 +1090,7 @@ type
     procedure Paint; override;
     procedure SetParentBackground(const AParentBackground: Boolean); override;
     procedure UpdateParentColorChange;
+    property VerticalAlignment: TVerticalAlignment read FVertAlignment write SetVertAlignment default taVerticalCenter;
     property WordWrap: Boolean read FWordwrap write SetWordwrap default false;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1146,6 +1149,7 @@ type
     property TabOrder;
     property TabStop;
     property UseDockManager default True;
+    property VerticalAlignment;
     property Visible;
     property Wordwrap;
     property OnChangeBounds;
