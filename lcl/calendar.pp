@@ -282,6 +282,12 @@ end;
 
 procedure TCustomCalendar.CheckRange(ADate, AMinDate, AMaxDate: TDateTime);
 begin
+  //otherwise you get a message like "Invalid Date: 31-12-9999. Must be between 1-1-0001 and 31-12-9999"
+  if (ADate < Trunc(SysUtils.MinDateTime)) then
+    raise EInvalidDate.CreateFmt(rsDateTooSmall, [DateToStr(SysUtils.MinDateTime)]);
+  if (ADate > Trunc(SysUtils.MaxDateTime)) then
+    raise EInvalidDate.CreateFmt(rsDateTooLarge, [DateToStr(SysUtils.MaxDateTime)]);
+
   if (ADate < AMinDate) or (ADate > AMaxDate) then
   raise EInvalidDate.CreateFmt(rsInvalidDateRangeHint, [DateToStr(ADate),
       DateToStr(AMinDate), DateToStr(AMaxDate)]);
