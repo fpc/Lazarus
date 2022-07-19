@@ -103,6 +103,8 @@ type
     procedure SetDate(const AValue: String);
     procedure SetFirstDayOfWeek(const AValue: TCalDayOfWeek);
     function IsLimited: Boolean;
+    procedure ApplyLimits(const AMin, AMax: TDateTime);
+    procedure RemoveLimits;
   protected
     class procedure WSRegisterClass; override;
     procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
@@ -340,6 +342,20 @@ begin
   Result := (CompareValue(FMinDate, FMaxDate, 1E-9) = LessThanValue);
 end;
 
+procedure TCustomCalendar.ApplyLimits(const AMin, AMax: TDateTime);
+begin
+  if (GetDateTime > AMax) then
+    SetDateTime(AMax)
+  else if (GetDateTime < AMin) then
+    SetDateTime(AMin);
+  TWSCustomCalendarClass(WidgetSetClass).SetMinMaxDate(Self,AMin, AMax);
+end;
+
+procedure TCustomCalendar.RemoveLimits;
+begin
+  TWSCustomCalendarClass(WidgetSetClass).RemoveMinMaxDates(Self);
+end;
+
 procedure TCustomCalendar.GetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -362,16 +378,12 @@ begin
   FMaxDate := AValue;
   if IsLimited then
   begin
-    if (GetDateTime > FMaxDate) then
-      SetDateTime(FMaxDate)
-    else if (GetDateTime < FMinDate) then
-      SetDateTime(FMinDate);
-    TWSCustomCalendarClass(WidgetSetClass).SetMinMaxDate(Self,FMinDate, FMaxDate);
+    ApplyLimits(FMinDate, FMaxDate);
   end
   else
   begin
     if OldIsLimited then
-      TWSCustomCalendarClass(WidgetSetClass).RemoveMinMaxDates(Self);
+      RemoveLimits;
   end;
 end;
 
@@ -384,17 +396,11 @@ begin
   OldIsLimited := IsLimited;
   FMinDate := AValue;
   if IsLimited then
-  begin
-    if (GetDateTime > FMaxDate) then
-      SetDateTime(FMaxDate)
-    else if (GetDateTime < FMinDate) then
-      SetDateTime(FMinDate);
-    TWSCustomCalendarClass(WidgetSetClass).SetMinMaxDate(Self,FMinDate, FMaxDate);
-  end
+    ApplyLimits(FMinDate, FMaxDate)
   else
   begin
     if OldIsLimited then
-      TWSCustomCalendarClass(WidgetSetClass).RemoveMinMaxDates(Self);
+      RemoveLimits;
   end;
 end;
 
