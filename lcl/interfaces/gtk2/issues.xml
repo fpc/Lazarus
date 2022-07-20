@@ -93,5 +93,13 @@
 		<issue name="TMenuItem.Default">
 			<short>Default property is not supported</short>
 		</issue>
+		<issue name="TCalendar.MinDate">
+			<short>MinDate property is not (fully) supported</short>
+      <descr>While programmatically setting a date is limited by MinDate/MaxDate, the calendar still allow to select dates that are out of that range</descr>
+		</issue>
+		<issue name="TCalendar.MinDate">
+			<short>MaxDate property is not (fully) supported</short>
+      <descr>While programmatically setting a date is limited by MinDate/MaxDate, the calendar still allow to select dates that are out of that range</descr>
+		</issue>
 	</widgetset>
 </package>
