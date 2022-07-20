@@ -5282,6 +5282,7 @@ end;
       <element name="TCustomPanel.FBevelOuter"/>
       <element name="TCustomPanel.FBevelWidth"/>
       <element name="TCustomPanel.FAlignment"/>
+      <element name="TCustomPanel.FVertAlignment"/>
       <element name="TCustomPanel.FFullRepaint"/>
       <element name="TCustomPanel.FWordWrap"/>
 
@@ -5373,6 +5374,19 @@ end;
         <short>New value for the property.</short>
       </element>
 
+      <element name="TCustomPanel.SetVertAlignment">
+        <short>Sets the value for the VerticalAlignment property.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomPanel.VerticalAlignment"/>
+        </seealso>
+      </element>
+      <element name="TCustomPanel.SetVertAlignment.Value">
+        <short>
+          New value for the VerticalAlignment property.
+        </short>
+      </element>
+
       <element name="TCustomPanel.SetWordWrap">
         <short>Sets the value for the WordWrap property.</short>
         <descr/>
@@ -5388,7 +5402,7 @@ end;
 
       <element name="TCustomPanel.AdjustClientRect">
         <short>
-          Adjusts the specified rectangle to account for border and bevels used in the control.
+          Adjusts the specified rectangle to account for borders and bevels used on the control.
         </short>
         <descr>
           <p>
@@ -5410,7 +5424,7 @@ end;
       </element>
 
       <element name="TCustomPanel.GetControlClassDefaultSize">
-        <short>Gets the size used for new instance of the class type.</short>
+        <short>Gets the size used for a new instance of the class type.</short>
         <descr>
           <p>
             <var>GetControlClassDefaultSize</var> is overridden to provide the default size for new instances of the class type. The return value is a <var>TSize</var> type which contains the dimensions for the new control. The CX member contains the Width for the panel, and defaults to 170 pixels. The CY member contains the Height for the panel, and defaults to 50 pixels.
@@ -5468,13 +5482,13 @@ end;
         </short>
         <descr>
           <p>
-            <var>Paint</var> is an overridden procedure which paints the panel including the bevels and caption defined for the control. Paint calls <var>GetClientRect</var> to get the rectangle used to draw the control. <var>PaintBevel</var> is called to draw both the inner and outer bevels for the control (when used).
+            <var>Paint</var> is an overridden procedure which draws the panel including the bevels and caption defined for the control. Paint calls <var>GetClientRect</var> to get the rectangle used to draw the control. PaintBevel is called to draw both the inner and outer bevels for the control (when used).
           </p>
           <p>
-            When <var>Caption</var> contains a String value (other than an empty string), the <var>Canvas</var> for the control is used to render the text. Values in the <var>BiDiMode</var>, <var>WordWrap</var>, and <var>Layout</var> properties are applied to the text as needed.
+            When Caption contains a String value (other than an empty string), the Canvas for the control is used to render the text. Values in the Alignment, VerticalAlignment, UseRightToLeft, and WordWrap properties are applied to the Canvas properties as needed. The font color on the canvas is updated for the Enabled state in the control and use of theme services. The TextRect method in Canvas is called to output the Caption text to the client rectangle for the control.
           </p>
           <p>
-            Paint calls the inherited Paint method prior to exit.
+            Paint calls the inherited method prior to exit to signal the OnPaint event handler (when assigned).
           </p>
         </descr>
         <seealso>
@@ -5517,6 +5531,39 @@ end;
         </descr>
         <errors/>
         <seealso/>
+      </element>
+
+      <element name="TCustomPanel.VerticalAlignment">
+        <short>
+          Vertical alignment for the caption text displayed on the panel.
+        </short>
+        <descr>
+          <p>
+            <var>VerticalAlignment</var> is a <var>TVerticalAlignment</var> property which controls the vertical alignment for the Caption displayed on the panel. The default value for the property is taVerticalCenter, and causes the caption text to be centered vertically on the panel. Use taAlignTop to align caption text to the top of the panel. Use taAlignBottom to align caption text to the bottom of the panel.
+          </p>
+          <p>
+            Changing the value for the property causes the Invalidate method to be called, and the panel is redrawn.
+          </p>
+          <p>
+            VerticalAlignment is used in the Paint method to determine the text layout/style applied when the value in Caption is drawn on the Canvas for the control.
+          </p>
+          <p>
+            Use Alignment to control the horizontal alignment for the Caption text displayed for the panel.
+          </p>
+          <p>
+            Use Align to position the panel along one of the edges on the parent control or form.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomPanel.Align"/>
+          <link id="TCustomPanel.Alignment"/>
+          <link id="TCustomPanel.Paint"/>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+          <link id="#rtl.classes.TVerticalAlignment">TVerticalAlignment</link>
+        </seealso>
+        <version>
+          Added in LCL version 2.3, and available since LCL version 2.4.0.
+        </version>
       </element>
 
       <element name="TCustomPanel.WordWrap">
@@ -5789,6 +5836,7 @@ end;
         </seealso>
       </element>
 
+      <element name="TPanel.VerticalAlignment" link="#lcl.extctrls.TCustomPanel.VerticalAlignment"/>
       <element name="TPanel.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TPanel.WordWrap" link="#lcl.extctrls.TCustomPanel.WordWrap"/>
       <element name="TPanel.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
