@@ -102,56 +102,56 @@
       </element>
 
       <element name="mtWarning">
-        <short>Alias to the TMsgDlgType enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mtError">
-        <short>Alias to the TMsgDlgType enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mtInformation">
-        <short>Alias to the TMsgDlgType enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mtConfirmation">
-        <short>Alias to the TMsgDlgType enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mtCustom">
-        <short>Alias to the TMsgDlgType enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.</short>
       </element>
 
       <element name="mbYes">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbNo">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbOK">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbCancel">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbAbort">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbRetry">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbIgnore">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbAll">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbNoToAll">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbYesToAll">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbHelp">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
       <element name="mbClose">
-        <short>Alias to the TMsgDlgBtn enumeration value in uitypes.</short>
+        <short>Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.</short>
       </element>
 
       <element name="mbYesNoCancel">
@@ -1404,7 +1404,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <seealso/>
       </element>
       <element name="TColorButton.IsButtonColorAutoSizeStored.Result">
-        <short><b>True</b> when ButtonColorAutoSize is set to False.</short>
+        <short><b>True</b> when ButtonColorAutoSize is set to <b>False</b>.</short>
       </element>
 
       <element name="TColorButton.SetBorderWidth">
@@ -1516,7 +1516,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Gets a bitmap with the disabled pattern for the control.</short>
         <descr>
           <p>
-            GetDisabledPattern is a TBitmap function used to get the bitmap with the disabled pattern drawn on the control. It is used when the Enabled property (in the control or one of its parents) is set to False.
+            GetDisabledPattern is a TBitmap function used to get the bitmap with the disabled pattern drawn on the control. It is used when the Enabled property (in the control or one of its parents) is set to <b>False</b>.
           </p>
           <p>
             GetDisabledPattern ensures that a TBitmap instance has been created and assigned to an internal member for the class instance. The bitmap contains a pattern with dotted lines that indicate the control cannot accept input values. The allocated bitmap is freed (when assigned) in the destructor for the class instance.
@@ -1540,10 +1540,10 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>GetGlyphSize</var> is an overridden <var>TSize</var> function used to get the dimensions for the glyph (color block / swatch) displayed on the button control. Values in ButtonColorAutoSize and ButtonColorSize determine the height and width used for the color block displayed on the control.
           </p>
           <p>
-            When ButtonColorAutoSize is set to True, the color block is auto-sized to fill the unused client area for the control specified in the PaintRect argument. Space is reserved for the Caption (color name), Spacing, BorderWidth, and Margin properties assigned to the control.
+            When ButtonColorAutoSize is set to <b>True</b>, the color block is auto-sized to fill the unused client area for the control specified in the PaintRect argument. Space is reserved for the Caption (color name), Spacing, BorderWidth, and Margin properties assigned to the control.
           </p>
           <p>
-            When ButtonColorAutoSize is False, ButtonColorSize is used as both the width and height for the color block.
+            When ButtonColorAutoSize is <b>False</b>, ButtonColorSize is used as both the width and height for the color block.
           </p>
           <p>
             The return value is a TSize instance where the width and height for the color block are stored in the CX and CY members (respectively). Layout determines whether spacing is reserved in the horizontal (blGlyphLeft, blGlyphRight) or vertical (blGlyphTop, blGlyphBottom) dimensions.
@@ -1677,10 +1677,10 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             When set to <b>True</b>, the client area is examined to determine the dimensions for the color block. Space is reserved using the Caption, BorderWidth, Spacing, and Margin properties defined for the control. The unused area in the client rectangle is drawn using a frame filled with the selected ButtonColor for the control.
           </p>
           <p>
-            When set to False, the value in ButtonColorSize is used as both the height and width for the color block or swatch.
+            When set to <b>False</b>, the value in ButtonColorSize is used as both the height and width for the color block or swatch.
           </p>
           <p>
-            The default value for the property is <b>True</b> as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is True, setting a new value for BorderWidth also causes the control to be redrawn.
+            The default value for the property is <b>True</b> as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is <b>True</b>, setting a new value for BorderWidth also causes the control to be redrawn.
           </p>
           <p>
             ButtonColorAutoSize and ButtonColorSize are used in the GetGlyphSize method.
@@ -1780,7 +1780,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             The Layout property determines the order of the Caption and color block values on the button surface. Layout refers to the alignment for the glyph (color block).
           </p>
           <p>
-            Set ButtonColorAutoSize to <b>True</b> to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is False.
+            Set ButtonColorAutoSize to <b>True</b> to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -2091,7 +2091,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>OnApplyClicked</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the Apply button is clicked in the font dialog. The Apply button must be enabled in the Options property to receive the event notification.
           </p>
           <p>
-            OnApplyClicked allows the application to perform actions needed when a Font has been applied. This can include assigning the value in Font to another control. Similar actions need to be performed when the Execute method returns True, indicating that the OK button was clicked.
+            OnApplyClicked allows the application to perform actions needed when a Font has been applied. This can include assigning the value in Font to another control. Similar actions need to be performed when the Execute method returns <b>True</b>, indicating that the OK button was clicked.
           </p>
           <p>
             OnApplyClicked is signalled from the ApplyClicked method, and triggered directly from methods in widgetset classes.
@@ -3242,7 +3242,7 @@ TCustomForm.Close ->
       </element>
 
       <element name="TCustomPrintDialog.PrintToFile">
-        <short>When True, printing is spooled to a file instead of the printer.</short>
+        <short>When <b>True</b>, printing is spooled to a file instead of the printer.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4763,7 +4763,7 @@ end;
               UseDefaultPos
             </dt>
             <dd>
-              Indicates if the dialog is displayed using the default position for the dialog form. When set to True, the value poDesigned is used in the Position property for the dialog form. When set to False, the values in the X and Y parameters are used in the Left and Top properties for the dialog form.
+              Indicates if the dialog is displayed using the default position for the dialog form. When set to <b>True</b>, the value poDesigned is used in the Position property for the dialog form. When set to <b>False</b>, the values in the X and Y parameters are used in the Left and Top properties for the dialog form.
             </dd>
           </dl>
           <p>
@@ -4847,7 +4847,7 @@ end;
             <var>ACaption</var> contains the text displayed as the title for the dialog form.
           </p>
           <p>
-            AMsg contains the text displayed within the content area for the dialog form. It represents the question to be answered using the dialog.
+            <var>AMsg</var> contains the text displayed within the content area for the dialog form. It represents the question to be answered using the dialog.
           </p>
           <p>
             <var>DlgType</var> contains a value from the TMsgDlgType enumeration, and determines the icon displayed on the dialog form. See <link id="TMsgDlgType">TMsgDlgType</link> for the values in the enumeration and their meanings.
@@ -5158,7 +5158,7 @@ var
             PasswordBox is a specialized form of InputQuery. The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.
           </p>
           <p>
-            Behaves very similarly to the InputQuery function with MaskInput set to TRUE; the difference is that the password that was typed in is returned as the result of the function (like InputBox).
+            Behaves very similarly to the InputQuery function with MaskInput set to <b>True</b>; the difference is that the password that was typed in is returned as the result of the function (like InputBox).
           </p>
         </descr>
         <seealso>
@@ -5188,7 +5188,7 @@ var
             Argument values are assigned to the corresponding properties in the dialog class. The Execute method in the dialog class is called to perform file selection or creation as needed, and its return value is used as the return value for the routine. The return value is <b>True</b> when the Execute method for the dialog class returns <b>True</b>.
           </p>
           <p>
-            <var>AFilename</var> contains the initially selected file name in the dialog, and is updated with the value selected using the dialog. A default value is not provided for the argument. If the dialog returns True, the FileName property in the dialog class is assigned to the AFileName argument.
+            <var>AFilename</var> contains the initially selected file name in the dialog, and is updated with the value selected using the dialog. A default value is not provided for the argument. If the dialog returns <b>True</b>, the FileName property in the dialog class is assigned to the AFileName argument.
           </p>
           <p>
             <var>AFilter</var> contains file masks that can be selected in the dialog. The default value is an empty string ('') and causes the all files mask ('*.*' or '*') to be used. See TFileDialog.Filter for more information about the notation allowed in the argument.
