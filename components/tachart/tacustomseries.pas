@@ -2015,7 +2015,8 @@ begin
       if Marks.DistanceToCenter then
         dist := dist div 2;
 
-      m[dir] := Max(m[dir], dist + scMarksDistance);
+      if MarkPositions <> lmpInside then
+        m[dir] := Max(m[dir], dist + scMarksDistance);
 
       if (Source.YCount > 1) and (j = 0) then begin
         if FStacked then begin
