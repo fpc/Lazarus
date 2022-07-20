@@ -4837,39 +4837,77 @@ end;
 
       <element name="QuestionDlg">
         <short>
-          Shows a question to the user and gets a response. Similar to MessageDlg, but allows to use custom button captions and any response values.
+          Shows a question to the user and gets a response. Similar to MessageDlg, but allows to use custom button captions and user-specified response values.
         </short>
         <descr>
           <p>
-            <var>QuestionDlg</var> has the same functionality as MessageDlg except for the <var>Buttons</var> parameter which is of a different type. You can define your own captions and return values for this function.
+            <var>QuestionDlg</var> has the same functionality as MessageDlg except for the <var>Buttons</var> parameter which is of a different type. You can define your own captions,  return values, and optional flags in Buttons using this function.
           </p>
           <p>
-            <var>Buttons</var> contains an array of integer identifiers and optional strings. For each number a button is created. Usually the identifiers are selected as the <var>TModalResult</var> constants <var>[mrNone..mrYesLast]</var> in <link id="Controls"/>); the corresponding buttons will be decorated by an associated icon. Any other integers can be used as well, but their buttons will have no icon. The identifier number of the clicked button is returned by the <var>QuestionDlg()</var> function. The order of the buttons on the dialog form will be the same as the order of the array elements.
+            <var>ACaption</var> contains the text displayed as the title for the dialog form.
           </p>
           <p>
-            Each string following the button identifier in the <var>Buttons</var> array denotes the caption of the button. When the button identifier is one of the default <var>TModalResult</var> values defined in controls.pp (<var>mrNone..mrLast</var>) the caption can be omitted, and the default caption will be used. For non-<var>TModalResult</var> identifiers, the caption MUST be specified. Empty strings are not allowed as captions, they will create a run-time error.
+            AMsg contains the text displayed within the content area for the dialog form. It represents the question to be answered using the dialog.
           </p>
           <p>
-            You can mark one default button by adding the 'IsDefault' option after the caption string. When the user presses 'Return' this button is triggered.
+            <var>DlgType</var> contains a value from the TMsgDlgType enumeration, and determines the icon displayed on the dialog form. See <link id="TMsgDlgType">TMsgDlgType</link> for the values in the enumeration and their meanings.
           </p>
           <p>
-            Some widgetsets provide an Escape key and/or a close button. This results in <var>mrCancel</var> even if it is not in the given button list. Use the 'IsCancel' option after the caption string to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
+            <var>Buttons</var> is defined as an array of const values, and contains the numeric identifiers and optional captions and flags for the buttons displayed on the dialog. QuestionDlg examines the values in Buttons, and creates a button instance for each numeric identifier in the array. Usually, the button identifiers are specified using <var>TModalResult</var> constants like mrOk or mrCancel (defined in <link id="Controls"/>); these buttons will be decorated with an icon associated with the modal result value. Other integer values can be used as well, but their buttons will not have an icon. The order of the buttons on the dialog form will be the same as the order of the numeric values in the array elements.
           </p>
           <p>
-            <b>Example</b>
+            Each string following a numeric button identifier denotes the caption for the button. When the button identifier is one of the default <var>TModalResult</var> values defined in controls.pp (<var>mrNone..mrLast</var>), the caption can be omitted and the default caption will be used. For non-<var>TModalResult</var> identifiers, the caption <b>MUST</b> be specified. An empty string is not allowed as a caption; it will raise a run-time error.
+          </p>
+          <p>
+            You can mark one button as the default button by adding the 'IsDefault' option after the caption string. When the user presses the Return key, this button is triggered. An exception is raised if more than one button has the 'IsDefault' designation.
+          </p>
+          <p>
+            Some widgetsets provide an Escape key and/or a close button for the dialog. This results in <var>mrCancel</var> in the return value, even if it is not in the given button list. Use the 'IsCancel' option after the caption string to cause the button to close the dialog. An exception is raised if more than one button has the 'IsCancel' designation.
+          </p>
+          <p>
+            You can use both 'IsDefault' and 'IsCancel' flags values for a given button by including both strings as arguments following the caption value. Values in button flags are case-insensitive; 'IsDefault' is considered the same as 'isdefault'.
+          </p>
+          <p>
+            The numeric identifier for the button clicked on the dialog is returned by the <var>QuestionDlg()</var> function.
+          </p>
+          <p>
+            The overloaded routines allow a help topic to be displayed when the F1 key is pressed. <var>HelpCtx</var> is the numeric identifier for the help topic passed as an argument to the AskUser routine in the widgetset. <var>HelpKeyword</var> is a string value that identifies the help topic. Please note that HelpKeyword is not implemented in the current LCL version; the numeric help context 0 is always used in the overloaded routine.
+          </p>
+          <p>
+            <b>Examples:</b>
           </p>
 <code>
 var
   res: TModalResult;
-...
-  res := case QuestionDlg('COPYING', 'Abort?', mtConfirmation, [mrNo,'&amp;No','IsDefault', mrYes,'&amp;Yes'], 0)
-  case res of
-    mrYes : ShowMessage('You clicked Yes');
-    mrNo : ShowMessage('You clicked No');
-  else
-    // mrCancel
-    ShowMessage('You cancelled the dialog.');
-  end;
+//...
+
+// OK, Cancel dialog using default button captions
+res := QuestionDlg('Confirm', 'Delete all files and directories?', mtConfirmation,
+  [mrOK, mrCancel], 0);
+//...
+
+
+// OK, Cancel dialog with custom button captions and accelerator keys
+res := QuestionDlg('Confirm', 'Delete all files and directories?', mtConfirmation,
+  [mrOK, '&amp;Do it!', mrCancel, '&amp;Nope'], 0);
+//...
+
+// custom modal result values and captions
+res := QuestionDlg('Question', 'Is it Okay?', mtConfirmation,
+ [400, 'Yes!!!', 401, 'Not cool', 402, 'My mistake'], 0);  
+//...
+
+// Yes, No, Cancel with custom captions and button flags
+res := QuestionDlg('COPYING', 'Abort?', mtConfirmation,
+  [mrNo,'&amp;No', mrYes,'&amp;Yes', mrCancel, '&amp;Cancel', 'IsDefault', 'IsCancel'], 0);
+
+case res of
+  mrYes: ShowMessage('You clicked Yes');
+  mrNo: ShowMessage('You clicked No');
+else
+  // mrCancel
+  ShowMessage('You cancelled the dialog.');
+end;
 </code>
         </descr>
         <seealso>
@@ -4880,41 +4918,30 @@ var
       </element>
       <element name="QuestionDlg.Result">
         <short>
-          The result of this function is the identifier number of the button that the user had pressed to close the dialog.
+          The result of this function is the identifier number for the button that the user pressed to close the dialog.
         </short>
       </element>
       <element name="QuestionDlg.aCaption">
-        <short>Used to set the caption of the question dialog.</short>
-        <descr>Set the caption of the question dialog shown by this function.</descr>
+        <short>Caption displayed as the title for the question dialog.</short>
       </element>
       <element name="QuestionDlg.aMsg">
-        <short>The question to be shown.</short>
-        <descr>The question the user has to answer.</descr>
+        <short>Contains the question the user has to answer using the dialog.</short>
       </element>
       <element name="QuestionDlg.DlgType">
-        <short>The type of dialog, it determines which icon will be shown.</short>
+        <short>The type of dialog. It determines which icon is displayed on the dialog.</short>
       </element>
       <element name="QuestionDlg.Buttons">
         <short>
-          An array of return values and captions for the buttons on the question dialog.
+          An array of return values, captions and optional flags for the buttons on the question dialog.
         </short>
-        <descr>
-          <p>
-            <var>Buttons</var> is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists only of predefined return values like <var>mrOK</var> and <var>mrCancel</var>, the standard OK and Cancel buttons will be shown. The strength of this function, however, is that you can fill the array with arbitrary button identifiers and captions:
-          </p>
-          <code>[400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake']</code>
-          <p>
-            This will create a dialog with three buttons; the captions for the buttons will be the strings values given in the array after the numeric return values. The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.
-          </p>
-        </descr>
       </element>
       <element name="QuestionDlg.HelpCtx">
-        <short>HelpCtx specifies the help topic that should be shown when F1 is pressed.</short>
-        <descr>HelpCtx specifies the help topic that should be shown when F1 is pressed.</descr>
+        <short>HelpCtx specifies the numeric identifier for the help topic shown when F1 is pressed.</short>
       </element>
       <element name="QuestionDlg.HelpKeyword">
-        <short>HelpKeyword specifies the help topic that should be shown when F1 is pressed.</short>
-        <descr>HelpKeyword specifies the help topic that should be shown when F1 is pressed.</descr>
+        <short>
+          HelpKeyword specifies the help topic shown when F1 is pressed. The string argument is not used in the current LCL version, and the numeric HelpContext is always 0.
+        </short>
       </element>
 
       <element name="DefaultQuestionDialog">
@@ -5014,7 +5041,6 @@ var
       </element>
       <element name="DefaultQuestionDialog.HelpCtx">
         <short>HelpCtx specifies the help topic that should be shown when F1 is pressed.</short>
-        <descr>HelpCtx specifies the help topic that should be shown when F1 is pressed.</descr>
       </element>
 
       <element name="ShowMessage">
