@@ -4367,7 +4367,7 @@ begin
         if nm = '' then nm := ExtractFileName(fn[i]);
         if (dst.IndexOf(nm)<0) then begin
           exp.DefineCommandCategories; // default Relations
-          exp.LoadFromXMLConfig(xml, 'KeyMapping/', true);
+          exp.LoadFromXMLConfig(xml, 'KeyMapping/', false);
           dst.AddObject(nm, exp);
         end;
       except

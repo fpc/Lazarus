@@ -288,7 +288,7 @@ begin
     exp.DefineCommandCategories; // default Relations
     nm := xml.GetValue('Name/Value','');
     if nm = '' then nm := ExtractFileName(xml.FileName);
-    exp.LoadFromXMLConfig(xml, 'KeyMapping/', true);
+    exp.LoadFromXMLConfig(xml, 'KeyMapping/', false);
     for i:=0 to exp.RelationCount-1 do begin
       src := exp.Relations[i];
       dst := FEditingKeyMap.FindByCommand(src.Command);
