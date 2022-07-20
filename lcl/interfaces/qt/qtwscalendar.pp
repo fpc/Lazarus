@@ -44,6 +44,7 @@ type
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ADisplaySettings: TDisplaySettings); override;
     class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
     class procedure SetMinMaxDate(const ACalendar: TCustomCalendar; AMinDate, AMaxDate: TDateTime); override;
+    class procedure RemoveMinMaxDates(const ACalendar: TCustomCalendar); override;
   end;
 
 
@@ -146,6 +147,17 @@ begin
   QtCalendar.BeginUpdate;
   QtCalendar.MinDate := AMinDate;
   QtCalendar.MaxDate := AMaxDate;
+  QtCalendar.EndUpdate;
+end;
+
+class procedure TQtWSCustomCalendar.RemoveMinMaxDates(const ACalendar: TCustomCalendar);
+var
+  QtCalendar: TQtCalendar;
+begin
+  QtCalendar := TQtCalendar(ACalendar.Handle);
+  QtCalendar.BeginUpdate;
+  QtCalendar.MinDate := MinDateTime;
+  QtCalendar.MaxDate := MaxDateTime;
   QtCalendar.EndUpdate;
 end;
 
