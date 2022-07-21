@@ -147,6 +147,8 @@ type
     property DoubleBuffered;
     property FirstDayOfWeek;
     property Hint;
+    property MinDate;
+    property MaxDate;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
