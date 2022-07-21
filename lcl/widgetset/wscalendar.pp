@@ -55,6 +55,9 @@ type
       const ADisplaySettings: TDisplaySettings); virtual;
     class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar;
       const ADayOfWeek: TCalDayOfWeek); virtual;
+    class procedure SetMinMaxDate(const ACalendar: TCustomCalendar;
+      AMinDate, AMaxDate: TDateTime); virtual;
+    class procedure RemoveMinMaxDates(const ACalendar: TCustomCalendar); virtual;
   end;
   TWSCustomCalendarClass = class of TWSCustomCalendar;
 
@@ -96,6 +99,17 @@ class procedure TWSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCale
   const ADayOfWeek: TCalDayOfWeek);
 begin
 end;
+
+class procedure TWSCustomCalendar.SetMinMaxDate(
+  const ACalendar: TCustomCalendar; AMinDate, AMaxDate: TDateTime);
+begin
+end;
+
+class procedure TWSCustomCalendar.RemoveMinMaxDates(
+  const ACalendar: TCustomCalendar);
+begin
+end;
+
 
 { WidgetSetRegistration }
 

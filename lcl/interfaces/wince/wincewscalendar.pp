@@ -44,6 +44,8 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
     class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
+    class procedure SetMinMaxDate(const ACalendar: TCustomCalendar; const AMinDate, AMaxDate: TDateTime); override;
+    class procedure RemoveMinMaxDates(const ACalendar: TCustomCalendar); override;
   end;
 
 implementation
@@ -158,6 +160,35 @@ end;
 class procedure TWinCEWSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek);
 begin
   // MonthCal_SetFirstDayOfWeek not supported by WinCE
+end;
+
+class procedure TWinCEWSCustomCalendar.SetMinMaxDate(
+  const ACalendar: TCustomCalendar; const AMinDate, AMaxDate: TDateTime);
+var
+  ST: packed array[0..1] of TSystemTime;
+const
+  WinMinDate = TDateTime(-109205.50000000000000000); // 1601-01-01
+begin
+  if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetMinMaxDate') then
+    Exit;
+  //Windows won't set the limits if AMin < WinMin, and previous limits will then still apply
+  if (AMinDate < WinMinDate) then
+    AMinDate := WinMinDate;
+  DecodeDate(AMinDate, ST[0].Year, ST[0].Month, ST[0].Day);
+  DecodeDate(AMaxDate, ST[1].Year, ST[1].Month, ST[1].Day);
+  SendMessage(ACalendar.Handle, MCM_SETRANGE, Windows.WParam(GDTR_MIN or GDTR_MAX), Windows.LParam(@ST));
+end;
+
+class procedure TWinCEWSCustomCalendar.RemoveMinMaxDates(
+  const ACalendar: TCustomCalendar);
+var
+  ST: packed array[0..1] of TSystemTime;
+begin
+  if not WSCheckHandleAllocated(ACalendar, 'TWinCEWSCustomCalendar.RemoveMinMaxDates') then
+    Exit;
+  FillChar(ST, SizeOf(ST), 0);
+  SendMessage(ACalendar.Handle, MCM_SETRANGE, Windows.WParam(GDTR_MIN or GDTR_MAX), Windows.LParam(@ST));
+  RecreateWnd(ACalendar); //otherwise does not seem to work (BB)
 end;
 
 end.

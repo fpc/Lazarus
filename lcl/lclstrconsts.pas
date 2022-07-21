@@ -238,6 +238,8 @@ resourceString
   rsScrollBarOutOfRange = 'ScrollBar property out of range';
   rsInvalidDate = 'Invalid Date : %s';
   rsInvalidDateRangeHint = 'Invalid Date: %s. Must be between %s and %s';
+  rsDateTooLarge = 'Date cannot be past %s';
+  rsDateTooSmall = 'Date cannot be before %s';
   rsErrorOccurredInAtAddressFrame = 'Error occurred in %s at %sAddress %s%s'
     +' Frame %s';
   rsException = 'Exception';

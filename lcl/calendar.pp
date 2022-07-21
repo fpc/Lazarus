@@ -30,7 +30,8 @@ interface
 
 uses
   {$IFDEF VerboseCalenderSetDate}LCLProc,{$ENDIF}
-  Types, SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
+  Types, SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources,
+  Math;
 
 type
   TDisplaySetting = (
@@ -80,20 +81,31 @@ type
     FDate: TDateTime; // last valid date
     FDisplaySettings : TDisplaySettings;
     FFirstDayOfWeek: TCalDayOfWeek;
+    FMinDate: TDateTime;
+    FMaxDate: TDateTime;
     FOnChange: TNotifyEvent;
     FDayChanged: TNotifyEvent;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
-    FPropsChanged: boolean;
+    FPropsChanged: Boolean;
+    FLimitsChanged: Boolean;
+    procedure CheckRange(ADate, AMinDate, AMaxDate: TDateTime);
     function GetDateTime: TDateTime;
+    function GetMaxDateStored: Boolean;
+    function GetMixDateStored: Boolean;
     procedure SetDateTime(const AValue: TDateTime);
     procedure GetProps;
+    procedure SetMaxDate(AValue: TDateTime);
+    procedure SetMinDate(AValue: TDateTime);
     procedure SetProps;
     function GetDisplaySettings: TDisplaySettings;
     procedure SetDisplaySettings(const AValue: TDisplaySettings);
     function GetDate: String;
     procedure SetDate(const AValue: String);
     procedure SetFirstDayOfWeek(const AValue: TCalDayOfWeek);
+    function IsLimited: Boolean;
+    procedure ApplyLimits;
+    procedure RemoveLimits;
   protected
     class procedure WSRegisterClass; override;
     procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
@@ -113,6 +125,8 @@ type
     property DisplaySettings: TDisplaySettings read GetDisplaySettings
       write SetDisplaySettings default DefaultDisplaySettings;
     property FirstDayOfWeek: TCalDayOfWeek read FFirstDayOfWeek write SetFirstDayOfWeek default dowDefault;
+    property MaxDate: TDateTime read FMaxDate write SetMaxDate stored GetMaxDateStored;
+    property MinDate: TDateTime read FMinDate write SetMinDate stored GetMixDateStored;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
@@ -181,6 +195,8 @@ end;
 { TCustomCalendar }
 
 constructor TCustomCalendar.Create(AOwner: TComponent);
+var
+  WSMinDate, WSMaxDate: TDateTime;
 begin
   inherited Create(AOwner);
   fCompStyle := csCalendar;
@@ -188,6 +204,9 @@ begin
   FDisplaySettings := DefaultDisplaySettings;
   FFirstDayOfWeek := dowDefault;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
+  FMinDate := 0.0;
+  FMaxDate := 0.0;
+  FLimitsChanged := False;
   DateTime := Now;
 end;
 
@@ -265,10 +284,33 @@ begin
   SetProps;
 end;
 
+procedure TCustomCalendar.CheckRange(ADate, AMinDate, AMaxDate: TDateTime);
+begin
+  //otherwise you get a message like "Invalid Date: 31-12-9999. Must be between 1-1-0001 and 31-12-9999"
+  if (ADate < SysUtils.MinDateTime) then
+    raise EInvalidDate.CreateFmt(rsDateTooSmall, [DateToStr(SysUtils.MinDateTime)]);
+  if (ADate > SysUtils.MaxDateTime) then
+    raise EInvalidDate.CreateFmt(rsDateTooLarge, [DateToStr(SysUtils.MaxDateTime)]);
+
+  if (ADate < AMinDate) or (ADate > AMaxDate) then
+  raise EInvalidDate.CreateFmt(rsInvalidDateRangeHint, [DateToStr(ADate),
+      DateToStr(AMinDate), DateToStr(AMaxDate)]);
+end;
+
 function TCustomCalendar.GetDateTime: TDateTime;
 begin
   GetProps;
   Result:=FDate;
+end;
+
+function TCustomCalendar.GetMaxDateStored: Boolean;
+begin
+  Result := not SameValue(FMaxDate, Double(0.0), 1E-9);
+end;
+
+function TCustomCalendar.GetMixDateStored: Boolean;
+begin
+  Result := not SameValue(FMinDate, Double(0.0), 1E-9);
 end;
 
 procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
@@ -278,13 +320,10 @@ var
 {$ENDIF}
 begin
   if AValue=FDate then exit;
-  {$IFDEF WINDOWS} // TODO: move this test to the win32 interface?
-  CalendarMinDate:=-53787;// 14 sep 1752, start of Gregorian calendar in England
-  CalendarMaxDate:=trunc(MaxDateTime);
-  if not ((AValue>=CalendarMinDate)and(AValue<=CalendarMaxDate)) then
-    raise EInvalidDate.CreateFmt(rsInvalidDateRangeHint, [DateToStr(AValue),
-        DateToStr(CalendarMinDate), DateToStr(CalendarMaxDate)]);
-  {$ENDIF}
+  if IsLimited then
+    CheckRange(AValue, FMinDate, FMaxDate)
+  else
+    CheckRange(AValue, SysUtils.MinDateTime, SysUtils.MaxDateTime);
   FDate:=AValue;
   FDateAsString:=FormatDateTime(DefaultFormatSettings.ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
@@ -300,6 +339,27 @@ begin
   SetProps;
 end;
 
+function TCustomCalendar.IsLimited: Boolean;
+begin
+  Result := (CompareValue(FMinDate, FMaxDate, 1E-9) = LessThanValue);
+end;
+
+procedure TCustomCalendar.ApplyLimits;
+begin
+  if (GetDateTime > FMaxDate) then
+    SetDateTime(FMaxDate)
+  else if (GetDateTime < FMinDate) then
+    SetDateTime(FMinDate);
+  FLimitsChanged := True;
+  SetProps;
+end;
+
+procedure TCustomCalendar.RemoveLimits;
+begin
+  FLimitsChanged := True;
+  SetProps;
+end;
+
 procedure TCustomCalendar.GetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
@@ -309,6 +369,42 @@ begin
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.GetProps A ',DateToStr(FDate),' ',FDateAsString);
     {$ENDIF}
+  end;
+end;
+
+procedure TCustomCalendar.SetMaxDate(AValue: TDateTime);
+var
+  OldIsLimited: Boolean;
+begin
+  if (FMaxDate = AValue) then Exit;
+  CheckRange(AValue, SysUtils.MinDateTime, SysUtils.MaxDateTime);
+  OldIsLimited := IsLimited;
+  FMaxDate := AValue;
+  if IsLimited then
+  begin
+    ApplyLimits;
+  end
+  else
+  begin
+    if OldIsLimited then
+      RemoveLimits;
+  end;
+end;
+
+procedure TCustomCalendar.SetMinDate(AValue: TDateTime);
+var
+  OldIsLimited: Boolean;
+begin
+  if (FMinDate = AValue) then Exit;
+  CheckRange(AValue, SysUtils.MinDateTime, SysUtils.MaxDateTime);
+  OldIsLimited := IsLimited;
+  FMinDate := AValue;
+  if IsLimited then
+    ApplyLimits
+  else
+  begin
+    if OldIsLimited then
+      RemoveLimits;
   end;
 end;
 
@@ -323,6 +419,14 @@ begin
     TWSCustomCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
     TWSCustomCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
     TWSCustomCalendarClass(WidgetSetClass).SetFirstDayOfWeek(Self, FFirstDayOfWeek);
+    if FLimitsChanged then //avoid settting limits on each SetProps
+    begin
+      if IsLimited then
+        TWSCustomCalendarClass(WidgetSetClass).SetMinMaxDate(Self,FMinDate, FMaxDate)
+      else
+        TWSCustomCalendarClass(WidgetSetClass).RemoveMinMaxDates(Self);
+      FLimitsChanged := False;
+    end;
   end
   else
     FPropsChanged := True;
@@ -335,7 +439,6 @@ var
   NewDay, NewMonth, NewYear: word;
 begin
   NewDate := TWSCustomCalendarClass(WidgetSetClass).GetDateTime(Self);
-  if (NewDate=FDate) then exit;
   DecodeDate(NewDate, NewYear, NewMonth, NewDay);
   DecodeDate(FDate, OldYear, OldMonth, OldDay);
   FDate:= NewDate;
