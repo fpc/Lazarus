@@ -3881,23 +3881,30 @@ end;
 function TGenericWatchResultDataStruct.TWatchResultDataStructEnumerator.MoveNext: Boolean;
 begin
   if FSubEnumerator <> nil then begin
-    if FSubEnumerator.MoveNext then
+    Result := FSubEnumerator.MoveNext;
+    if Result then
       exit
     else
       FreeAndNil(FSubEnumerator);
   end;
 
-  inc(FIndex);
-  Result := FIndex < FSource.FieldCount;
+  repeat
+    inc(FIndex);
+    Result := FIndex < FSource.FieldCount;
 
-  if Result and (dffVariant in FSource.Fields[FIndex].FieldFlags) then begin
-    FSubOwner := FSource.Fields[FIndex].Owner;
-    FSubEnumerator := TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.Create(
-      FSource.Fields[FIndex].Field
-    );
-    if not FSubEnumerator.MoveNext then
-      FreeAndNil(FSubEnumerator);
-  end;
+    if Result and (dffVariant in FSource.Fields[FIndex].FieldFlags) then begin
+      FSubOwner := FSource.Fields[FIndex].Owner;
+      FSubEnumerator := TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.Create(
+        FSource.Fields[FIndex].Field
+      );
+      if not FSubEnumerator.MoveNext then begin
+        FreeAndNil(FSubEnumerator);
+        Continue;
+      end;
+    end;
+
+    break;
+  until True;
 end;
 
 { TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage }
