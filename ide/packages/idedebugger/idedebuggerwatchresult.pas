@@ -637,12 +637,15 @@ type
   TWatchResultDataEnumerator = class
   private
     FSource: TWatchResultData;
+    FIndex: Integer;
     function GetCurrent: TWatchResultDataFieldInfo; virtual;
   public
     constructor Create(ARes: TWatchResultData);
     function MoveNext: Boolean; virtual;
     property Current: TWatchResultDataFieldInfo read GetCurrent;
   end;
+
+  //TWatchResultDataEnumerator = class
 
   { TWatchResultData }
 
@@ -719,6 +722,11 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean = False); virtual;
     procedure Assign(ASource: TWatchResultData; ATypeOnly: Boolean = False); virtual;
     function  CreateCopy(ATypeOnly: Boolean = False): TWatchResultData;
+
+    (* HandleExpressionSuffix
+       if a value other than "self" is returned, the caller is responsible to free it
+    *)
+    function HandleExpressionSuffix(ASuffix: String): TWatchResultData; virtual;
 
     function GetEnumerator: TWatchResultDataEnumerator; virtual;
   public
@@ -1217,8 +1225,6 @@ type
     { TWatchResultDataStructVariantEnumerator }
 
     TWatchResultDataStructVariantEnumerator = class(TWatchResultDataEnumerator)
-    private
-      FIndex: Integer;
     protected
       function GetCurrent: TWatchResultDataFieldInfo; override;
     public
@@ -1231,7 +1237,6 @@ type
 
     TWatchResultDataStructEnumerator = class(TWatchResultDataEnumerator)
     private
-      FIndex: Integer;
       FSubEnumerator: TWatchResultDataStructVariantEnumerator;
       FSubOwner: TWatchResultData;
     protected
@@ -2347,17 +2352,19 @@ end;
 
 function TWatchResultDataEnumerator.GetCurrent: TWatchResultDataFieldInfo;
 begin
-  Result := Default(TWatchResultDataFieldInfo);
+  Result := FSource.Fields[FIndex];
 end;
 
 constructor TWatchResultDataEnumerator.Create(ARes: TWatchResultData);
 begin
   FSource := ARes;
+  FIndex := -1;
 end;
 
 function TWatchResultDataEnumerator.MoveNext: Boolean;
 begin
-  Result := False;
+  inc(FIndex);
+  Result := FIndex < FSource.FieldCount;
 end;
 
 { TWatchResultData }
@@ -2445,6 +2452,14 @@ begin
     exit(nil);
   Result := TWatchResultData(ClassType.Create);
   Result.Assign(Self, ATypeOnly);
+end;
+
+function TWatchResultData.HandleExpressionSuffix(ASuffix: String
+  ): TWatchResultData;
+begin
+  Result := Self;
+  if ASuffix <> '' then
+    Result := TWatchResultDataError.Create('Can''t evaluate: ' + ASuffix);
 end;
 
 function TWatchResultData.GetEnumerator: TWatchResultDataEnumerator;

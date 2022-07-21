@@ -152,6 +152,8 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FQueuedUnLockCommandProcessing: Boolean;
+    procedure DoItemRemovedFromView(Sender: TDbgTreeView; AnItem: TObject;
+      ANode: PVirtualNode);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
@@ -308,6 +310,8 @@ begin
   tvWatches.Header.Columns[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
   tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
   tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
+
+  tvWatches.OnItemRemoved := @DoItemRemovedFromView;
 end;
 
 destructor TWatchesDlg.Destroy;
@@ -915,6 +919,13 @@ begin
   DebugBoss.UnLockCommandProcessing;
 end;
 
+procedure TWatchesDlg.DoItemRemovedFromView(Sender: TDbgTreeView;
+  AnItem: TObject; ANode: PVirtualNode);
+begin
+  if AnItem <> nil then
+    TWatch(AnItem).ClearDisplayData;
+end;
+
 procedure TWatchesDlg.DoBeginUpdate;
 begin
   inherited DoBeginUpdate;
@@ -1283,7 +1294,8 @@ begin
                        ( (WatchValue.ResultData <> nil) and
                          ( ( (WatchValue.ResultData.FieldCount > 0) and (WatchValue.ResultData.StructType <> dstInternal) )
                            or
-                           ( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
+                           //( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
+                           (WatchValue.ResultData.ArrayLength > 0)
                        ) );
         tvWatches.HasChildren[VNode] := HasChildren;
         if HasChildren and tvWatches.Expanded[VNode] then begin
@@ -1365,6 +1377,7 @@ begin
     Nav.OwnerData := AWatch;
     Nav.OnIndexChanged := @WatchNavChanged;
     Nav.OnPageSize := @WatchNavChanged;
+    Nav.HardLimits := not(ResData.ValueKind = rdkArray);
     tvWatches.NodeControl[ExistingNode] := Nav;
     tvWatches.NodeText[ExistingNode, 0] := ' ';
     tvWatches.NodeText[ExistingNode, 1] := ' ';
@@ -1375,7 +1388,7 @@ begin
 
   Offs := Nav.Index;
   for i := 0 to ChildCount - 1 do begin
-    NewWatch := AWatch.ChildrenByNameAsArrayEntry[Offs +  i];
+    NewWatch := AWatchValue.ChildrenByNameAsArrayEntry[Offs +  i];
     if NewWatch = nil then begin
       dec(ChildCount);
       continue;
@@ -1435,7 +1448,7 @@ begin
 
     AnchClass := ResData.TypeName;
     for ChildInfo in ResData do begin
-      NewWatch := AWatch.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
+      NewWatch := AWatchValue.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
       if NewWatch = nil then begin
         continue;
       end;
@@ -1462,7 +1475,7 @@ begin
   end
   else
   if (AWatchValue.ResultData <> nil) and
-  (AWatchValue.ResultData.ValueKind = rdkArray) and
+  //(AWatchValue.ResultData.ValueKind = rdkArray) and
   (AWatchValue.ResultData.ArrayLength > 0)
   then begin
     UpdateArraySubItems(VNode, AWatchValue, ChildCount);
@@ -1478,7 +1491,7 @@ begin
 
       AnchClass := TypInfo.TypeName;
       for i := 0 to TypInfo.Fields.Count-1 do begin
-        NewWatch := AWatch.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
+        NewWatch := AWatchValue.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
         if NewWatch = nil then begin
           dec(ChildCount);
           continue;

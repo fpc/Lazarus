@@ -9,6 +9,8 @@ uses
 
 type
 
+  TDbgTreeView = class;
+
   TDbgTreeNodeData = record
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
     CachedText: Array of String;
@@ -16,11 +18,14 @@ type
   end;
   PDbgTreeNodeData = ^TDbgTreeNodeData;
 
+  TItemRemovedEvent = procedure (Sender: TDbgTreeView; AnItem: TObject; ANode: PVirtualNode) of object;
+
   { TDbgTreeView }
 
   TDbgTreeView = class(TLazVirtualStringTree)
   private
     FFirstVisibleBeforeExpanding, FLastVisibleBeforeExpanding: PVirtualNode;
+    FOnItemRemoved: TItemRemovedEvent;
     function GetNodeControl(Node: PVirtualNode): TControl;
     function GetNodeItem(Node: PVirtualNode): TObject;
     function GetNodeText(Node: PVirtualNode; AColumn: integer): String;
@@ -56,6 +61,8 @@ type
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
     property NodeControl[Node: PVirtualNode]: TControl read GetNodeControl write SetNodeControl;
+
+    property OnItemRemoved: TItemRemovedEvent read FOnItemRemoved write FOnItemRemoved;
   end;
 
 implementation
@@ -116,8 +123,14 @@ var
   Data: PDbgTreeNodeData;
 begin
   Data := GetNodeData(Node);
-  if Data <> nil then
+
+  if Data <> nil then begin
+
+    if (FOnItemRemoved <> nil) and (Data^.Item <> nil) and (Data^.Item <> AValue) then
+      FOnItemRemoved(Self, Data^.Item, Node);
+
     Data^.Item := AValue;
+  end;
 end;
 
 procedure TDbgTreeView.SetNodeText(Node: PVirtualNode; AColumn: integer;
@@ -193,9 +206,18 @@ begin
 end;
 
 procedure TDbgTreeView.DoFreeNode(Node: PVirtualNode);
+var
+  NData: PDbgTreeNodeData;
 begin
-  FreeAndNil(PDbgTreeNodeData(GetNodeData(Node))^.Control);
-  PDbgTreeNodeData(GetNodeData(Node))^ := Default(TDbgTreeNodeData);
+  NData := GetNodeData(Node);
+  if NData <> nil then begin
+    if (FOnItemRemoved <> nil) and (NData^.Item <> nil) then
+      FOnItemRemoved(Self, NData^.Item, Node);
+
+    FreeAndNil(NData^.Control);
+    NData^ := Default(TDbgTreeNodeData);
+  end;
+
   inherited DoFreeNode(Node);
 end;
 
@@ -212,11 +234,6 @@ end;
 
 function TDbgTreeView.DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
   var NodeRect: TRect): TDropMode;
-var
-  ImageHit: Boolean;
-  LabelHit: Boolean;
-  ItemHit: Boolean;
-
 begin
   if Assigned(HitInfo.HitNode) then
   begin
@@ -341,6 +358,7 @@ begin
   if Node = nil then
     exit;
   Item := GetNodeItem(Node);
+
   DeleteNode(Node, Reindex);
   if FreeItem then
     Item.Free;

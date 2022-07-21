@@ -32,6 +32,7 @@ type
     procedure edArrayPageSizeEditingDone(Sender: TObject);
     procedure edArrayStartEditingDone(Sender: TObject);
   private
+    FHardLimits: Boolean;
     FHighBound: int64;
     FLowBound: int64;
     FOnIndexChanged: TArrayNavChangeEvent;
@@ -42,15 +43,16 @@ type
     function GetIndexOffs: int64;
     function GetLimitedPageSize: int64;
     function GetPageSize: int64;
+    procedure SetHardLimits(AValue: Boolean);
     procedure SetHighBound(AValue: int64);
     procedure SetIndex(AValue: int64);
     procedure SetLowBound(AValue: int64);
     procedure SetPageSize(AValue: int64);
-    procedure Loaded; override;
     procedure SetShowBoundInfo(AValue: Boolean);
     procedure UpdateBoundsInfo;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure Loaded; override;
     property LowBound: int64 read FLowBound write SetLowBound;
     property HighBound: int64 read FHighBound write SetHighBound;
     property ShowBoundInfo: Boolean read FShowBoundInfo write SetShowBoundInfo;
@@ -64,6 +66,7 @@ type
   published
     property OnIndexChanged: TArrayNavChangeEvent read FOnIndexChanged write FOnIndexChanged;
     property OnPageSize: TArrayNavChangeEvent read FOnPageSize write FOnPageSize;
+    property HardLimits: Boolean read FHardLimits write SetHardLimits;
   end;
 
 implementation
@@ -165,6 +168,12 @@ begin
   Result := edArrayPageSize.Value;
 end;
 
+procedure TArrayNavigationBar.SetHardLimits(AValue: Boolean);
+begin
+  FHardLimits := AValue;
+  UpdateBoundsInfo;
+end;
+
 procedure TArrayNavigationBar.SetIndex(AValue: int64);
 begin
   edArrayStart.Value := AValue;
@@ -199,10 +208,23 @@ end;
 
 procedure TArrayNavigationBar.UpdateBoundsInfo;
 begin
-  if not FShowBoundInfo then
-    exit;
+  if FHardLimits then begin
+    edArrayPageSize.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
+    btnArrayPageInc.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
+    btnArrayPageDec.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
+    edArrayStart.MinValue := FLowBound;
+    edArrayStart.MaxValue := FHighBound;
+  end
+  else begin
+    edArrayPageSize.Visible := True;
+    btnArrayPageInc.Visible := True;
+    btnArrayPageDec.Visible := True;
+    edArrayStart.MaxValue := 0;
+    edArrayStart.MinValue := 0;
+  end;
 
-  lblBounds.Caption := format(dlgInspectBoundsDD, [FLowBound, FHighBound]);
+  if FShowBoundInfo then
+    lblBounds.Caption := format(dlgInspectBoundsDD, [FLowBound, FHighBound]);
 end;
 
 constructor TArrayNavigationBar.Create(TheOwner: TComponent);

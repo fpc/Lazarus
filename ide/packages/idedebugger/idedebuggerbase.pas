@@ -6,9 +6,9 @@ interface
 
 uses
   Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
-  IdeDebuggerFpDbgValueConv, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes,
-  FpDebugValueConvertors;
+  IdeDebuggerFpDbgValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, LazDebuggerIntf, LazDebuggerTemplate,
+  LazDebuggerIntfBaseTypes, FpDebugValueConvertors;
 
 type
 
@@ -23,6 +23,8 @@ type
     FTypeInfo: TDBGType;
     FValidity: TDebuggerDataState;
     FResultData: TWatchResultData;
+    FResultDataSpecialised: TWatchResultData;
+    FResultDataContent: (rdcNotAnalysed, rdcNotSpecial, rdcJSon);
 
     procedure SetWatch(AValue: TWatch); virtual;
     function GetDisplayFormat: TWatchDisplayFormat;
@@ -49,12 +51,15 @@ type
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
 
     function GetExpression: String; virtual;
+    function GetBackendExpression: String;
+    function GetFrontendExpressionSuffix: String;
     function GetTypeInfo: TDBGType; virtual;
     function GetValue: String; virtual;
   public
     constructor Create(AOwnerWatch: TWatch); virtual;
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); virtual;
+    procedure ClearDisplayData; // keep only what's needed for the snapshot
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
     property FirstIndexOffs: Int64 read GetFirstIndexOffs;
@@ -91,6 +96,7 @@ type
                                 const AFirstIndexOffs: Int64; const ARepeatCount: Integer): TWatchValue;
     procedure ClearRangeEntries(AKeepMostRecentCount: integer = 0);
     procedure Clear; virtual;
+    procedure ClearDisplayData; // keep only what's needed for the snapshot
     function Count: Integer;
     property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
     property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
@@ -128,10 +134,14 @@ type
     procedure DoDisplayFormatChanged; virtual;
     procedure AssignTo(Dest: TPersistent); override;
     function CreateValueList: TWatchValueList; virtual;
+
+    function GetBackendExpression: String;
+    function GetFrontendExpressionSuffix: String;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure ClearValues; virtual;
+    procedure ClearDisplayData; // keep only what's needed for the snapshot
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
@@ -207,8 +217,68 @@ begin
 end;
 
 function TWatchValue.GetResultData: TWatchResultData;
+  function IsMaybeJson(const s: String): boolean;
+  var
+    l: SizeInt;
+    i: Integer;
+  begin
+    Result := False;
+    l := Length(s);
+    if l = 0 then
+      exit;
+
+    while (l > 1) and (s[l] in [' ', #9]) do
+      dec(l);
+    if not(s[l] in [']', '}']) then
+      exit;
+
+    i := 1;
+    while (i < l) and (s[i] in [' ', #9]) do
+      inc(i);
+    if not(s[i] in ['[', '{']) then
+      exit;
+
+    Result := True;
+  end;
+
 begin
   Result := FResultData;
+
+  if (FResultDataContent = rdcNotSpecial) or (Result = nil) then
+    exit;
+
+  if FResultDataSpecialised <> nil then begin
+    Result := FResultDataSpecialised;
+    exit;
+  end;
+
+  case FResultDataContent of
+    rdcJSon:
+      FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
+
+    else begin
+      FResultDataContent := rdcNotSpecial;
+
+      if (Result.ValueKind in [rdkString, rdkPrePrinted]) and (IsMaybeJson(Result.AsString)) then begin
+        FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
+        if (FResultDataSpecialised.Count > 0) or (FResultDataSpecialised.FieldCount > 0) then
+          FResultDataContent := rdcJSon;
+      end;
+
+      if FResultDataContent = rdcNotSpecial then
+        FResultDataSpecialised := nil;
+    end;
+  end;
+
+  Result := FResultData;
+  if FResultDataSpecialised <> nil then
+    Result := FResultDataSpecialised;
+
+  Result := Result.HandleExpressionSuffix(GetFrontendExpressionSuffix);
+  if (Result <> FResultDataSpecialised) and (Result <> FResultData) then begin
+    FResultDataSpecialised.Free;
+    FResultDataSpecialised := Result;
+  end;
 end;
 
 procedure TWatchValue.SetResultData(AResultData: TWatchResultData);
@@ -280,15 +350,32 @@ begin
     Result := FWatch.Expression;
 end;
 
+function TWatchValue.GetBackendExpression: String;
+begin
+  Result := '';
+  if FWatch <> nil then
+    Result := FWatch.GetBackendExpression;
+end;
+
+function TWatchValue.GetFrontendExpressionSuffix: String;
+begin
+  Result := '';
+  if FWatch <> nil then
+    Result := FWatch.GetFrontendExpressionSuffix;
+end;
+
 function TWatchValue.GetTypeInfo: TDBGType;
 begin
   Result := FTypeInfo;
 end;
 
 function TWatchValue.GetValue: String;
+var
+  rd: TWatchResultData;
 begin
-  if FResultData <> nil then
-    Result := FResultData.AsString
+  rd := ResultData;
+  if rd <> nil then
+    Result := rd.AsString
   else
     Result := '';
 end;
@@ -305,6 +392,7 @@ begin
   inherited Destroy;
   FreeAndNil(FTypeInfo);
   FreeAndNil(FResultData);
+  FreeAndNil(FResultDataSpecialised);
 end;
 
 procedure TWatchValue.Assign(AnOther: TWatchValue);
@@ -321,6 +409,11 @@ begin
   FValidity      := AnOther.FValidity;
   FResultData.Free;
   FResultData := AnOther.FResultData.CreateCopy;
+end;
+
+procedure TWatchValue.ClearDisplayData;
+begin
+  FreeAndNil(FResultDataSpecialised);
 end;
 
 { TWatch }
@@ -448,6 +541,42 @@ begin
   Result := TWatchValueList.Create(Self);
 end;
 
+function TWatch.GetBackendExpression: String;
+var
+  i, l: Integer;
+  InQuote: Boolean;
+begin
+  Result := Expression;
+  l := Length(Result);
+  if l = 0 then
+    exit;
+
+  while (l > 0) and (Result[l] in [' ', #9])
+    do dec(l);
+
+  if Result[l] <> '}' then
+    exit;
+
+  i := 1;
+  InQuote := False;
+  while i < l do begin
+    if Result[i] = '''' then
+      InQuote := not InQuote;
+      if (not InQuote) and (Result[i] = '{') then
+        exit(copy(Result, 1 , i-1));
+    inc(i);
+  end;
+end;
+
+function TWatch.GetFrontendExpressionSuffix: String;
+var
+  l: SizeInt;
+begin
+  Result := Expression;
+  l := Length(GetBackendExpression);
+  Result := copy(Result, 1 + l, Length(Result));
+end;
+
 constructor TWatch.Create(ACollection: TCollection);
 begin
   FEnabled := False;
@@ -468,6 +597,11 @@ end;
 procedure TWatch.ClearValues;
 begin
   FValueList.Clear;
+end;
+
+procedure TWatch.ClearDisplayData;
+begin
+  FValueList.ClearDisplayData;
 end;
 
 { TWatches }
@@ -631,6 +765,17 @@ begin
     TWatchValue(FList[0]).Watch := nil;
     TWatchValue(FList[0]).ReleaseReference;
     FList.Delete(0);
+  end;
+end;
+
+procedure TWatchValueList.ClearDisplayData;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    TWatchValue(FList[i]).ClearDisplayData;
+    dec(i);
   end;
 end;
 

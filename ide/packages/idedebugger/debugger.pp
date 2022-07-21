@@ -43,7 +43,7 @@ uses
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, Contnrs,
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerFpDbgValueConv;
 
@@ -533,11 +533,12 @@ type
 
   TIdeWatchValue = class(TWatchValue)
   private
+    function GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
+    function GetChildrenByNameAsField(AName, AClassName: String): TIdeWatch;
     function GetWatch: TIdeWatch;
   protected
     function GetTypeInfo: TDBGType; override;
     function GetValue: String; override;
-    function GetExpression: String; override;
 
     procedure RequestData; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -551,8 +552,14 @@ type
                        const AStackFrame: Integer
                       );
     procedure Assign(AnOther: TWatchValue); override;
-
     property Watch: TIdeWatch read GetWatch;
+
+    function ExpressionForChildField(AName: String; AClassName: String = ''): String;
+    function ExpressionForChildEntry(AnIndex: Int64): String;
+    function ExpressionForChildEntry(AnIndex: String): String;
+
+    property ChildrenByNameAsField[AName, AClassName: String]: TIdeWatch read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64]: TIdeWatch read GetChildrenByNameAsArrayEntry;
   end;
 
   { TIdeWatchValueList }
@@ -583,6 +590,7 @@ type
     FDisplayName: String;
     FParentWatch: TIdeWatch;
 
+    function GetChildWatch(ADispName, AnExpr: String): TIdeWatch;
     function GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
     function GetChildrenByNameAsField(AName, AClassName: String): TIdeWatch;
     function GetTopParentWatch: TIdeWatch;
@@ -740,7 +748,7 @@ type
   TCurrentWatchValue = class(TIdeWatchValue, TWatchValueIntf)
   private
     FCurrentResData: TCurrentResData;
-    FCurrentExpression: String;
+    FCurrentBackEndExpression: String;
     FUpdateCount: Integer;
     FEvents: array [TWatcheEvaluateEvent] of TMethodList;
     FFpDbgConverter: TIdeFpDbgConverterConfig;
@@ -759,11 +767,12 @@ type
   protected
     procedure SetValue(AValue: String); override; // TODO: => one per DisplayFormat???
     procedure SetWatch(AValue: TWatch); override;
-    function GetExpression: String; override;
+    function GetBackendExpression: String; reintroduce;
     function GetValidity: TDebuggerDataState; override;
     procedure RequestData; override;
     procedure CancelRequestData;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
+    function TWatchValueIntf.GetExpression = GetBackendExpression;
   public
     destructor Destroy; override;
     property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
@@ -3906,7 +3915,7 @@ procedure TCurrentWatchValue.BeginUpdate;
 begin
   AddReference;
   if FUpdateCount = 0 then
-    FCurrentExpression := Expression;
+    FCurrentBackEndExpression := GetBackendExpression;
   inc(FUpdateCount);
 end;
 
@@ -3991,12 +4000,12 @@ begin
   inherited SetWatch(AValue);
 end;
 
-function TCurrentWatchValue.GetExpression: String;
+function TCurrentWatchValue.GetBackendExpression: String;
 begin
   if FUpdateCount > 0 then
-    Result := FCurrentExpression
+    Result := FCurrentBackEndExpression
   else
-    Result := inherited GetExpression;
+    Result := inherited GetBackendExpression;
 end;
 
 function TCurrentWatchValue.GetValidity: TDebuggerDataState;
@@ -4159,6 +4168,8 @@ var
   i: Integer;
 begin
   Result := '';
+  if Watch = nil then
+    exit;
   if not Watch.Enabled then
     exit('<disabled>');
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
@@ -4178,9 +4189,33 @@ begin
 
 end;
 
-function TIdeWatchValue.GetExpression: String;
+function TIdeWatchValue.GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
 begin
-  Result := Watch.Expression;
+  Result := nil;
+  if FWatch = nil then
+    exit;
+
+  if FResultDataContent = rdcJSon then begin
+    Result := Watch.GetChildWatch(IntToStr(AName), Expression + '{' + IntToStr(AName) + '}');
+    exit;
+  end;
+
+  Result := Watch.ChildrenByNameAsArrayEntry[AName];
+end;
+
+function TIdeWatchValue.GetChildrenByNameAsField(AName, AClassName: String
+  ): TIdeWatch;
+begin
+  Result := nil;
+  if FWatch = nil then
+    exit;
+
+  if FResultDataContent = rdcJSon then begin
+    Result := Watch.GetChildWatch(AName, Expression + '{"' + AName + '"}');
+    exit;
+  end;
+
+  Result := Watch.ChildrenByNameAsField[AName, AClassName];
 end;
 
 function TIdeWatchValue.GetWatch: TIdeWatch;
@@ -4193,7 +4228,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  if not Watch.Enabled then
+  if (Watch = nil) or (not Watch.Enabled) then
     exit;
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
@@ -4282,6 +4317,36 @@ begin
   FThreadId      := TIdeWatchValue(AnOther).FThreadId;
   FStackFrame    := TIdeWatchValue(AnOther).FStackFrame;
   FDisplayFormat := TIdeWatchValue(AnOther).FDisplayFormat;
+end;
+
+function TIdeWatchValue.ExpressionForChildField(AName: String;
+  AClassName: String): String;
+begin
+  Result := '';
+  if FResultDataContent = rdcJSon then
+    Result := Expression + '{"' + AName + '"}'
+  else
+  if ResultData.ValueKind = rdkStruct then begin
+    Result := Expression;
+    if AClassName <> '' then
+      Result := AClassName + '(' + Result + ')';
+    Result := Result + '.' + AName;
+  end;
+end;
+
+function TIdeWatchValue.ExpressionForChildEntry(AnIndex: Int64): String;
+begin
+  Result := ExpressionForChildEntry(IntToStr(AnIndex));
+end;
+
+function TIdeWatchValue.ExpressionForChildEntry(AnIndex: String): String;
+begin
+  Result := '';
+  if FResultDataContent = rdcJSon then
+    Result := Expression + '{' + AnIndex + '}'
+  else
+  if ResultData.ValueKind = rdkArray then
+    Result := Expression + '[' + AnIndex + ']';
 end;
 
 { TIdeWatchesMonitor }
@@ -6380,24 +6445,26 @@ begin
     Result := Result.FParentWatch;
 end;
 
-function TIdeWatch.GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
-var
-  Expr: String;
+function TIdeWatch.GetChildWatch(ADispName, AnExpr: String): TIdeWatch;
 begin
-  Expr := Expression + '[' + IntToStr(AName) + ']';
   if FChildWatches <> nil then begin
-    Result := FChildWatches.Find(Expr);
+    Result := FChildWatches.Find(AnExpr);
     if Result <> nil then
       exit;
   end;
 
   BeginChildUpdate;
-  Result := FChildWatches.Add(Expr);
+  Result := FChildWatches.Add(AnExpr);
   Result.SetParentWatch(Self);
   Result.Enabled       := Enabled;
   Result.DisplayFormat := DisplayFormat;
-  Result.FDisplayName := IntToStr(AName);
+  Result.FDisplayName := ADispName;
   EndChildUpdate;
+end;
+
+function TIdeWatch.GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
+begin
+  Result := GetChildWatch(IntToStr(AName), Expression + '[' + IntToStr(AName) + ']');
 end;
 
 function TIdeWatch.GetChildrenByNameAsField(AName, AClassName: String
@@ -6409,20 +6476,7 @@ begin
   if AClassName <> '' then
     Expr := AClassName + '(' + Expr + ')';
   Expr := Expr + '.' + AName;
-
-  if FChildWatches <> nil then begin
-    Result := FChildWatches.Find(Expr);
-    if Result <> nil then
-      exit;
-  end;
-
-  BeginChildUpdate;
-  Result := FChildWatches.Add(Expr);
-  Result.SetParentWatch(Self);
-  Result.Enabled       := Enabled;
-  Result.DisplayFormat := DisplayFormat;
-  Result.FDisplayName := AName;
-  EndChildUpdate;
+  Result := GetChildWatch(AName, Expr);
 end;
 
 function TIdeWatch.CreateChildWatches: TIdeWatches;

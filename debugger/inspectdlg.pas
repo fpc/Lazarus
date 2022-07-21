@@ -654,6 +654,23 @@ begin
           else
             Execute(FExpression + '.' + s);
         end;
+
+      otherwise begin
+          i := FGridData.Row;
+          if (i < 1) or (i >= FGridData.RowCount) then exit;
+
+          if FCurrentResData.ArrayLength > 0 then begin
+            s := FCurrentWatchValue.ExpressionForChildEntry(FGridData.Cells[1, i]);
+            if s <> '' then
+              Execute(s);
+          end
+          else
+          if FCurrentResData.FieldCount > 0 then begin
+            s := FCurrentWatchValue.ExpressionForChildField(FGridData.Cells[1, i]);
+            if s <> '' then
+              Execute(s);
+          end;
+        end;
     end;
   end;
 
@@ -1417,7 +1434,18 @@ begin
       end;
 
 
-      ArrayNavigationBar1.Visible := FCurrentResData.ValueKind = rdkArray;
+      ArrayNavigationBar1.Visible := (FCurrentResData.ValueKind = rdkArray) or
+        (FCurrentResData.ArrayLength > 0);
+      ArrayNavigationBar1.HardLimits := (FCurrentResData.ValueKind <> rdkArray);
+
+      if FCurrentResData.ArrayLength > 0 then
+        InspectResDataArray
+
+      else
+      if FCurrentResData.FieldCount > 0 then
+        InspectResDataStruct
+
+      else
       case FCurrentResData.ValueKind of
         //rdkError: ;
         rdkPrePrinted,

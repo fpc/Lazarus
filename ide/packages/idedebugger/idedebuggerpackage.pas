@@ -12,7 +12,8 @@ uses
   IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
   IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
   IdeDebuggerFpDbgValueConv, IdeFpDbgValueConverterSettingsFrame, 
-  IdeDebugger_FpValConv_Options, IdeDebuggerOpts, LazarusPackageIntf;
+  IdeDebugger_FpValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -89,6 +89,10 @@
         <Filename Value="idedebuggeropts.pas"/>
         <UnitName Value="IdeDebuggerOpts"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggerwatchresultjson.pas"/>
+        <UnitName Value="idedebuggerwatchresultjson"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

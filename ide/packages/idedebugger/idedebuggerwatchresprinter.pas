@@ -135,9 +135,8 @@ const
     '', 'private', 'protected', 'public', 'published'
   );
 var
-  j: Integer;
   FldInfo: TWatchResultDataFieldInfo;
-  FldOwner, VarField: TWatchResultData;
+  FldOwner: TWatchResultData;
   vis, indent, sep, tn: String;
   InclVisSect: Boolean;
 begin
