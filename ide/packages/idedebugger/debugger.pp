@@ -4009,7 +4009,7 @@ end;
 
 procedure TCurrentWatchValue.RequestData;
 begin
-  FFpDbgConverter.Free;
+  FreeAndNil(FFpDbgConverter);
   if Watch.FpDbgConverter <> nil then
     FFpDbgConverter := TIdeFpDbgConverterConfig(Watch.FpDbgConverter.CreateCopy);
   TCurrentWatch(Watch).RequestData(self);
