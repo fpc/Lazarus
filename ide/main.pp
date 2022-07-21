@@ -11443,8 +11443,9 @@ var
   BaseURL, SmartHintStr, Expression: String;
   HasHint: Boolean;
   Opts: TWatcheEvaluateFlags;
-  AtomStartPos, AtomEndPos, tid: integer;
+  AtomStartPos, AtomEndPos, tid, st: integer;
   aWatch: TCurrentWatch;
+  CStack: TIdeCallStack;
 begin
   //DebugLn(['TMainIDE.SrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -11512,8 +11513,12 @@ begin
       aWatch.Enabled := True;
       DebugBoss.CurrentWatches.EndUpdate;
 
-      tid    := DebugBoss.Threads.CurrentThreads.CurrentThreadId;
-      FHintWatchData.WatchValue := aWatch.Values[tid, 0] as TCurrentWatchValue;
+      tid := DebugBoss.Threads.CurrentThreads.CurrentThreadId;
+      st := 0;
+      CStack := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[tid];
+      if CStack <> nil then
+        st := CStack.CurrentIndex;
+      FHintWatchData.WatchValue := aWatch.Values[tid, st] as TCurrentWatchValue;
       FHintWatchData.WatchValue.OnValidityChanged := @OnHintWatchValidityChanged;
       FHintWatchData.WatchValue.Value;
       OnHintWatchValidityChanged(FHintWatchData.WatchValue);
