@@ -13,6 +13,7 @@ inherited Form2: TForm2
     Top = 16
     Width = 57
     Caption = 'LblTodayIs'
+    Color = clDefault
     ParentColor = False
   end
   object LblMoney: TLabel[1]
@@ -21,6 +22,7 @@ inherited Form2: TForm2
     Top = 40
     Width = 53
     Caption = 'LblMoney'
+    Color = clDefault
     ParentColor = False
     ParentFont = False
   end
@@ -93,6 +95,7 @@ inherited Form2: TForm2
       Width = 231
       AutoSize = False
       Caption = 'LblSum'
+      Color = clDefault
       ParentColor = False
     end
   end

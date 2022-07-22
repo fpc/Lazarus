@@ -83,9 +83,9 @@ begin
     method here to get that label translated. }
   CalculateSum;
 
-  { There is a complication for the labels LblTodayIs which displays the current
-    date, and with LblMoney which displays some amount of money with the currency
-    sign.
+  { In old versions there was a complication for the labels LblTodayIs which 
+    displays the current date, and with LblMoney which displays some amount of 
+    money with the currency sign.
     Formatting for these data is extracted from the DefaultFormatSettings.
     The resulting strings are encoded in ansi and do not display locale-specific
     characters. To get this right they have to be converted to UTF8.
@@ -94,16 +94,31 @@ begin
     typical code pages. Therefore, we use'll a more general procedure based on
     ConvertEncoding which allows to specify the source code page which had been
     determined when UpdateFormatSettings had been called in the LocalizedForms
-    unit. }
+    unit. 
+    
+    This has been changed since Laz 2.2.0. The old conversion code is left
+    here commented for comparison. 
+  }
+  s := FormatDateTime(DefaultFormatSettings.LongDateFormat, Date());
+  {
   s := ConvertEncoding(
-    FormatDateTime(DefaultFormatSettings.LongDateFormat, date),  // string to convert
+    FormatDateTime(DefaultFormatSettings.LongDateFormat, d),  // string to convert
     CodePage,      // source encoding as defined by "CodePage"
     EncodingUTF8   // destination encoding - UTF8
   );
-  LblTodayIs.Caption := Format(rsTodayIs, [s]);
+  }
   { Note: "ConvertEncoding" requires the unit LConvEncoding in the uses clause. }
+  LblTodayIs.Caption := Format(rsTodayIs, [s]);
 
+  s := DefaultFormatSettings.CurrencyString;
+  
   { Now the same with LblMoney... }
+  LblMoney.Caption := Format('%.*n %s', [
+    DefaultFormatSettings.CurrencyDecimals, 
+    10.0e6, 
+    DefaultFormatSettings.CurrencyString
+  ]);
+  {
   LblMoney.Caption := ConvertEncoding(
     Format('%.*n %s', [
       DefaultFormatSettings.CurrencyDecimals,
@@ -112,6 +127,7 @@ begin
     ]),
     CodePage, EncodingUTF8
   );
+  }
 
   { The items of TRadiogroup are not translated automatically. }
   with RadioGroup do begin
