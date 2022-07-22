@@ -163,6 +163,7 @@ type
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FInEndUpdate: Boolean;
     FWatchInUpDateItem, FCurrentWatchInUpDateItem: TIdeWatch;
+    FExpandingWatch: TIdeWatch;
     FStateFlags: TWatchesDlgStateFlags;
     function GetSelected: TIdeWatch; // The focused Selected Node
     function  GetThreadId: Integer;
@@ -730,7 +731,8 @@ begin
     for VNode in tvWatches.SelectedNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
-      VNdWatch.Enabled := True;
+      if VNdWatch <> nil then
+        VNdWatch.Enabled := True;
     end;
   finally
     EndUpdate;
@@ -766,7 +768,8 @@ begin
     for VNode in tvWatches.SelectedNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
-      VNdWatch.Enabled := False;
+      if VNdWatch <> nil then
+        VNdWatch.Enabled := False;
     end;
   finally
     EndUpdate;
@@ -996,7 +999,7 @@ begin
     while VNode <> nil do begin
       NNode := tvWatches.GetNextSelected(VNode);
       w := TIdeWatch(tvWatches.NodeItem[VNode]);
-      if w = w.TopParentWatch then begin
+      if (w <> nil) and (w = w.TopParentWatch) then begin
         if tvWatches.NodeItem[VNode] = FWatchInUpDateItem then
           Include(FStateFlags, wdsfNeedDeleteCurrent)
         else
@@ -1022,7 +1025,8 @@ begin
     for VNode in tvWatches.NoInitNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
-      VNdWatch.Enabled := False;
+      if VNdWatch <> nil then
+        VNdWatch.Enabled := False;
     end;
   finally
     EndUpdate;
@@ -1040,7 +1044,8 @@ begin
     for VNode in tvWatches.NoInitNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
-      VNdWatch.Enabled := True;
+      if VNdWatch <> nil then
+        VNdWatch.Enabled := True;
     end;
   finally
     EndUpdate;
@@ -1281,15 +1286,20 @@ begin
                            ( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
                        ) );
         tvWatches.HasChildren[VNode] := HasChildren;
-        if HasChildren and (WatchValue.Validity = ddsValid) and tvWatches.Expanded[VNode] then begin
-          (* The current "AWatch" should be done. Allow UpdateItem for nested entries *)
-          exclude(FStateFlags, wdsfUpdating);
-          FCurrentWatchInUpDateItem := nil;
+        if HasChildren and tvWatches.Expanded[VNode] then begin
+          if (WatchValue.Validity = ddsValid) then begin
+            (* The current "AWatch" should be done. Allow UpdateItem for nested entries *)
+            exclude(FStateFlags, wdsfUpdating);
+            FCurrentWatchInUpDateItem := nil;
 
-          //AWatch.BeginChildUpdate;
-          UpdateSubItems(VNode, WatchValue, c);
-          //AWatch.EndChildUpdate; // This would currently trigger "UpdateAll" even when nothing changed, causing an endless loop
-        end;
+            //AWatch.BeginChildUpdate;
+            UpdateSubItems(VNode, WatchValue, c);
+            //AWatch.EndChildUpdate; // This would currently trigger "UpdateAll" even when nothing changed, causing an endless loop
+          end;
+        end
+        else
+        if AWatch <> FExpandingWatch then
+          tvWatches.DeleteChildren(VNode, False);
       end;
     end
     else
@@ -1505,6 +1515,7 @@ var
 begin
   ChildCount := 0;
   VNdWatch := TIdeWatch(tvWatches.NodeItem[Node]);
+  FExpandingWatch := VNdWatch;
 
   DebugBoss.LockCommandProcessing;
   DebugBoss.Watches.CurrentWatches.BeginUpdate;
@@ -1518,6 +1529,7 @@ begin
     if not FQueuedUnLockCommandProcessing then
       Application.QueueAsyncCall(@DoUnLockCommandProcessing, 0);
     FQueuedUnLockCommandProcessing := True;
+    FExpandingWatch := nil;
   end;
 end;
 
