@@ -164,6 +164,10 @@ msgstr "Перетаскивание величины"
 msgid "Data point hint"
 msgstr "Всплывающая подсказка для величины"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Удалить"

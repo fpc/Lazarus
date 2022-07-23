@@ -352,6 +352,8 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
+    function IsPointInLabel(ADrawer: IChartDrawer; const APoint: TPoint; 
+      var APointIndex, AYIndex: Integer): Boolean;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
       const ANewPos: TDoublePoint); override;
@@ -1321,6 +1323,135 @@ begin
   end;
 end;
 
+function TBasicPointSeries.IsPointInLabel(ADrawer: IChartDrawer; 
+  const APoint: TPoint; var APointIndex, AYIndex: Integer): Boolean;
+const
+  OFFSETS: array [TLabelDirection] of TPoint = (
+    (X: -1; Y: 0), 
+    (X: 0; Y: -1), 
+    (X: 1; Y: 0), 
+    (X: 0; Y: 1)
+  );
+var
+  y, ysum: Double;
+  g: TDoublePoint;
+  pt: TPoint;
+  i, si: Integer;
+  style: TChartStyle;
+  lfont: TFont;
+  curr, prev: Double;
+  ext: TDoubleRect;
+  yIsNaN: Boolean;
+  centerLvl: Double;
+  center: TPoint;
+  dir: TLabelDirection;
+  txt: String;
+begin
+  Result := false;
+  if not Marks.IsMarkLabelsVisible then exit;
+
+  lfont := TFont.Create;
+  try
+    lfont.Assign(Marks.LabelFont);
+    ext := Extent;
+    centerLvl := AxisToGraphY((ext.a.y + ext.b.y) * 0.5);
+    UpdateLabelDirectionReferenceLevel(0, 0, centerLvl);
+    
+    for i := FLoBound to FUpBound do begin
+      if SkipMissingValues(i) then
+        continue;
+      prev := IfThen(FSupportsZeroLevel, GetZeroLevel, 0.0);
+      for si := 0 to Source.YCount - 1 do begin
+        g := GetLabelDataPoint(i, si);
+        if FStacked then begin
+          if si = 0 then begin
+            y := Source[i]^.Y;
+            yIsNaN := IsNaN(y);
+            ysum := IfThen(yIsNaN, prev, y);
+          end else begin
+            y := Source[i]^.YList[si-1];
+            yIsNaN := IsNaN(y);
+            if yIsNaN then y := 0.0;
+            if Stacked then begin
+              ysum += y;
+              y := ysum;
+            end;
+          end;
+          if IsRotated then
+            g.X := AxisToGraphY(y)
+            // Axis-to-graph transformation is independent of axis rotation ->
+            // Using AxisToGraph_Y_ is correct!
+          else
+            g.Y := AxisToGraphY(y);
+        end else
+          yIsNaN := IsNaN(g.y);
+
+        txt := FormattedMark(i, '', si);
+        if txt = '' then
+          continue;
+
+        curr := TDoublePointBoolArr(g)[not IsRotated];
+        if FMarkPositionCentered then begin
+          if IsRotated then
+            g := DoublePoint((curr + prev) * 0.5, g.y)
+          else
+            g := DoublePoint(g.x, (curr + prev) * 0.5);
+        end;
+        if Stacked then
+          prev := curr;
+
+        // check only the requested y index
+        if (AYIndex >= 0) then begin
+          if si < AYIndex then
+            Continue
+          else if si > AYIndex then
+            break;
+        end;
+
+        with ParentChart do
+          if
+            ((Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si)) and
+            IsPointInViewPort(g) and (not yIsNaN)
+          then begin
+            if Styles <> nil then begin
+              style := Styles.StyleByIndex(si);
+              if style.UseFont then
+                Marks.LabelFont.Assign(style.Font)
+              else
+                Marks.LabelFont.Assign(lfont);
+            end;
+            UpdateLabelDirectionReferenceLevel(i, si, centerLvl);
+            dir := GetLabelDirection(IfThen(IsRotated, g.X, g.Y), centerLvl);
+            pt := GraphToImage(g);
+            if Marks.RotationCenter = rcCenter then
+              center := pt + OFFSETS[dir] * Marks.CenterOffset(ADrawer, txt)
+            else 
+              center := pt + OFFSETS[dir] * Marks.CenterHeightOffset(ADrawer, txt);
+            
+            Result := Marks.IsPointInLabel(
+              ADrawer, 
+              APoint,
+              pt,
+              center,
+              txt
+            );
+            if Result then
+            begin
+              APointIndex := i;
+              AYIndex := si;
+              exit;
+            end;
+          end;
+      end;
+    end;
+
+  finally
+    Marks.LabelFont.Assign(lfont);
+    ParentChart.EnableRedrawing;
+    lfont.Free;
+  end;
+end;
+    
 procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer; AYIndex: Integer = -1);
 // Using AYIndex is workaround for issue #35077
 var

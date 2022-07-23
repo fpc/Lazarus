@@ -352,7 +352,7 @@ type
     destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
-    function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean; override;
+    function GetAxisBounds({%H-}AAxis: TChartAxis; out {%H-}AMin, {%H-}AMax: Double): Boolean; override;
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;

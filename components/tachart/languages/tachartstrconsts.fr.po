@@ -164,6 +164,10 @@ msgstr "Glissement de point de donnée"
 msgid "Data point hint"
 msgstr "Indicateur de point de données"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Supprimer"

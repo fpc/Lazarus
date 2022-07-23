@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: tachartlazaruspkg\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 2.4.2\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: tachartstrconsts.descolor
@@ -166,6 +166,10 @@ msgstr "Datenpunkt verschieben"
 msgid "Data point hint"
 msgstr "Datenpunkt-Hinweis"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr "Klick auf Datenpunkt-Markierungen"
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Entf"
@@ -217,7 +221,7 @@ msgstr "Der Typ des Ausdrucksergebnisses muss integer oder float sein, ist aber 
 
 #: tachartstrconsts.rserrnumericaloverflow
 msgid "Numerical overflow."
-msgstr ""
+msgstr "Numerischer Überlauf."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
@@ -281,7 +285,7 @@ msgstr "Gesamte Quadratsumme (SST)"
 
 #: tachartstrconsts.rsfittvalue
 msgid "t value"
-msgstr ""
+msgstr "t-Wert"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
@@ -492,7 +496,7 @@ msgstr "Editierbare Chart-Datenquelle erforderlich"
 #: tachartstrconsts.rssourcesorterror
 #, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
-msgstr ""
+msgstr "Die ausgewählten Sortier-Parameter werden von %s nicht unterstützt."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
@@ -552,4 +556,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

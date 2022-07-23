@@ -154,6 +154,10 @@ msgstr ""
 msgid "Data point hint"
 msgstr ""
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr ""

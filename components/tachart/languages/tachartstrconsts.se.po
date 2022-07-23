@@ -167,6 +167,10 @@ msgstr "Flytta datapunkt"
 msgid "Data point hint"
 msgstr "Datapunkt tips"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Radera"

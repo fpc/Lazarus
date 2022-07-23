@@ -164,6 +164,10 @@ msgstr "Adatpont húzása"
 msgid "Data point hint"
 msgstr "Adatpont tipp"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Törlés"

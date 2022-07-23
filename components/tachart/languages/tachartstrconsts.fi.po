@@ -154,6 +154,10 @@ msgstr "Datapisteen vetäminen"
 msgid "Data point hint"
 msgstr "Datapisteen vihje"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Poista"

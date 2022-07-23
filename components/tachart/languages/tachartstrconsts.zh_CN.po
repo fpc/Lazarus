@@ -165,6 +165,10 @@ msgstr "数据点拖拽"
 msgid "Data point hint"
 msgstr "数据点提示"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "删除"

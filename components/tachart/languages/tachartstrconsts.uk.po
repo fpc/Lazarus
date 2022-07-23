@@ -167,6 +167,10 @@ msgstr "Перетягування точки даних"
 msgid "Data point hint"
 msgstr "Спливна підказка точки даних"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Видалити"

@@ -97,6 +97,8 @@ type
     function GetLabelPolygon(
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function GetTextRect: TRect;
+    function IsPointInLabel(ADrawer: IChartDrawer; 
+      const APoint, ADataPoint, ALabelCenter: TPoint; const AText: String): Boolean;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
     function MeasureLabelHeight(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure SetInsideDir(dx, dy: Double);
@@ -495,6 +497,24 @@ begin
   textdir.y := lSin;
   textdir.x := lCos;
   Result := DotProduct(textdir, FInsideDir) > 0;
+end;
+
+function TChartTextElement.IsPointInLabel(ADrawer: IChartDrawer; 
+  const APoint, ADataPoint, ALabelCenter: TPoint; const AText: String): Boolean;
+var
+  labelPoly: TPointArray;
+  ptText: TPoint;
+  i: Integer;
+begin
+  ApplyLabelFont(ADrawer);
+  ptText := ADrawer.TextExtent(AText, FTextFormat);
+  labelPoly := GetLabelPolygon(ADrawer, ptText);
+  for i := 0 to High(labelPoly) do
+    labelPoly[i] += ALabelCenter;
+  if CalloutAngle > 0 then
+    labelPoly := MakeCallout(labelPoly, ALabelCenter, ADataPoint, OrientToRad(CalloutAngle));
+  
+  Result := IsPointInPolygon(APoint, labelPoly);
 end;
 
 function TChartTextElement.IsMarginRequired: Boolean;

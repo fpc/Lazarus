@@ -165,6 +165,10 @@ msgstr "Duomenų taško vilkimas"
 msgid "Data point hint"
 msgstr "Duomenų taško sufleris"
 
+#: tachartstrconsts.rsdatapointmarksclicktool
+msgid "Data point marks click"
+msgstr ""
+
 #: tachartstrconsts.rsdelete
 msgid "Delete"
 msgstr "Naikinti"

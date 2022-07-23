@@ -69,6 +69,7 @@ resourcestring
   rsDataPointDrag = 'Data point drag';
   rsDataPointHint = 'Data point hint';
   rsDataPointCrossHair = 'Data point crosshair';
+  rsDataPointMarksClickTool = 'Data point marks click';
   rsUserDefinedTool = 'User-defined';
   rsDistanceMeasurement = 'Distance measurement';
   rsAxisClickTool = 'Axis click';

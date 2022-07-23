@@ -22,7 +22,7 @@ uses
   Controls, CustomTimer, {GraphMath,} Forms, LCLPlatformDef, InterfaceBase,
   LCLType, LCLIntf,
   // TAChart
-  TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TAGraph,
+  TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TACustomSeries, TAGraph,
   TATypes, TATextElements;
 
 type
@@ -427,7 +427,7 @@ type
     FXIndex: Integer;
     FYIndex: Integer;
     FSeries: TBasicChartSeries;
-    procedure FindNearestPoint(APoint: TPoint);
+    procedure FindNearestPoint(APoint: TPoint); virtual;
     property MouseInsideOnly: Boolean
       read FMouseInsideOnly write FMouseInsideOnly default false;
     property Targets: TNearestPointTargets
@@ -481,6 +481,7 @@ type
       read FOnDragStart write FOnDragStart;
   end;
 
+    
   { TDataPointClickTool }
 
   TDataPointClickTool = class(TDataPointTool)
@@ -497,6 +498,14 @@ type
       read FOnPointClick write FOnPointClick;
   end;
 
+    
+  { TDataPointMarksClickTool }
+    
+  TDataPointMarksClickTool = class(TDataPointClickTool)
+  strict protected
+    procedure FindNearestPoint(APoint: TPoint); override;
+  end;
+  
   TDataPointHintTool = class;
 
   TChartToolHintEvent = procedure (
@@ -583,9 +592,9 @@ type
     property MouseInsideOnly;
   end;
 
-  TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
-
   { TDataPointCrossHairTool }
+
+  TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
 
   TDataPointCrosshairTool = class(TDataPointDrawTool)
   strict private
@@ -609,7 +618,10 @@ type
     property Size: Integer read FSize write FSize default -1;
     property Targets;
   end;
-
+   
+    
+  { TAxisClickTool }
+  
   TAxisClickEvent = procedure (ASender: TChartTool; Axis: TChartAxis;
     AHitInfo: TChartAxisHitTests) of object;
 
@@ -630,6 +642,8 @@ type
     property OnClick: TAxisClickEvent read FOnClick write FOnClick;
   end;
 
+  { TTitleFootClickTool }
+  
   TTitleFootClickEvent = procedure (ASender: TChartTool;
     ATitle: TChartTitle) of object;
 
@@ -647,6 +661,8 @@ type
     property OnClick: TTitleFootClickEvent read FOnClick write FOnClick;
   end;
 
+  { TLegendClickTool }
+  
   TLegendClickEvent = procedure  (ASender: TChartTool;
     ALegend: TChartLegend) of object;
   TLegendSeriesClickEvent = procedure (ASender: TChartTool;
@@ -681,7 +697,7 @@ implementation
 
 uses
   LResources,
-  TAChartStrConsts, TACustomSeries, TAEnumerators, TAGeometry, TAMath;
+  TAChartStrConsts, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -1997,6 +2013,34 @@ begin
   Handled;
 end;
 
+
+{ TDataPointMarksClickTool }
+
+procedure TDataPointMarksClickTool.FindNearestPoint(APoint: TPoint); 
+var
+  ser: TBasicPointSeries;
+  i: Integer;
+begin
+  FSeries := nil;
+  FPointIndex := -1;
+  FYIndex := -1;
+  
+  for i := 0 to FChart.SeriesCount-1 do
+  begin
+    if not (FChart.Series[i] is TBasicChartSeries) then
+      continue;
+    ser := TBasicPointSeries(FChart.Series[i]);
+    if ser.Active and ser.IsPointInLabel(FChart.Drawer, APoint, FPointIndex, FYIndex) then
+    begin
+      FSeries := ser;
+      FXIndex := 0;  // to do: fix X index
+      FNearestGraphPoint := FChart.ImageToGraph(APoint);
+      exit;
+    end;
+  end;
+end;
+
+
 { TDataPointHintTool }
 
 constructor TDataPointHintTool.Create(AOwner: TComponent);
@@ -2421,6 +2465,7 @@ initialization
   RegisterChartToolClass(TDataPointDragTool, @rsDataPointDrag);
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
+  RegisterChartToolClass(TDataPointMarksClickTool, @rsDataPointMarksClickTool);
   RegisterChartToolClass(TAxisClickTool, @rsAxisClickTool);
   RegisterChartToolClass(TTitleFootClickTool, @rsHeaderFooterClickTool);
   RegisterChartToolClass(TLegendClickTool, @rsLegendClickTool);
