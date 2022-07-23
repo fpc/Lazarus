@@ -1865,6 +1865,8 @@ type
     function GetDateTime: TDateTime;
     procedure SetDateTime(const AValue: TDateTime);
     procedure SetSelectedDate(const AValue: QDateH);
+    procedure SetMinDate(AMinDate: TDateTime);
+    procedure SetMaxDate(AMaxDate: TDateTime);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -1886,6 +1888,8 @@ type
     procedure SignalSelectionChanged; cdecl;
     procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
     property DateTime: TDateTime read GetDateTime write SetDateTime;
+    property MinDate: TDateTime write SetMinDate;
+    property MaxDate: TDateTime write SetMaxDate;
   end;
   
   // for page control / notebook
@@ -17780,6 +17784,26 @@ end;
 procedure TQtCalendar.SetSelectedDate(const AValue: QDateH);
 begin
   QCalendarWidget_setSelectedDate(QCalendarWidgetH(Widget), AValue);
+end;
+
+procedure TQtCalendar.SetMinDate(AMinDate: TDateTime);
+var
+  Date: QDateH;
+begin
+  DecodeDate(AMinDate, AYear, AMonth, ADay);
+  Date := QDate_create(AYear, AMonth, ADay);
+  QCalendarWidget_setMinimumDate(QCalendarWidgetH(Widget),Date);
+  QDate_destroy(Date);
+end;
+
+procedure TQtCalendar.SetMaxDate(AMaxDate: TDateTime);
+var
+  Date: QDateH;
+begin
+  DecodeDate(AMaxDate, AYear, AMonth, ADay);
+  Date := QDate_create(AYear, AMonth, ADay);
+  QCalendarWidget_setMaximumDate(QCalendarWidgetH(Widget),Date);
+  QDate_destroy(Date);
 end;
 
 {------------------------------------------------------------------------------
