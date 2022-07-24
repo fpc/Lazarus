@@ -84,6 +84,8 @@ type
     FWatch: TWatch;
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
     function GetEntryByIdx(AnIndex: integer): TWatchValue;
+    function GetExistingEntry(const AThreadId: Integer;
+      const AStackFrame: Integer): TWatchValue;
   protected
     function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; virtual;
     function CopyEntry(AnEntry: TWatchValue): TWatchValue;
@@ -101,6 +103,8 @@ type
     property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
     property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetEntry; default;
+    property ExistingEntries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
+             read GetExistingEntry;
     property Watch: TWatch read FWatch;
   end;
 
@@ -650,22 +654,10 @@ end;
 
 function TWatchValueList.GetEntry(const AThreadId: Integer;
   const AStackFrame: Integer): TWatchValue;
-var
-  i: Integer;
 begin
-  i := FList.Count - 1;
-  while i >= 0 do begin
-    Result := TWatchValue(FList[i]);
-    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       (Result.DisplayFormat = FWatch.DisplayFormat) and
-       (Result.RepeatCount = FWatch.RepeatCount) and
-       (Result.FirstIndexOffs = FWatch.FirstIndexOffs) and
-       (Result.EvaluateFlags = FWatch.EvaluateFlags)
-    then
-      exit;
-    dec(i);
-  end;
-  Result := CreateEntry(AThreadId, AStackFrame);
+  Result := GetExistingEntry(AThreadId, AStackFrame);
+  if Result = nil then
+    Result := CreateEntry(AThreadId, AStackFrame);
 end;
 
 function TWatchValueList.GetEntriesForRange(const AThreadId: Integer;
@@ -715,6 +707,26 @@ end;
 function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;
 begin
   Result := TWatchValue(FList[AnIndex]);
+end;
+
+function TWatchValueList.GetExistingEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TWatchValue;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    Result := TWatchValue(FList[i]);
+    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
+       (Result.DisplayFormat = FWatch.DisplayFormat) and
+       (Result.RepeatCount = FWatch.RepeatCount) and
+       (Result.FirstIndexOffs = FWatch.FirstIndexOffs) and
+       (Result.EvaluateFlags = FWatch.EvaluateFlags)
+    then
+      exit;
+    dec(i);
+  end;
+  Result := nil;
 end;
 
 function TWatchValueList.CreateEntry(const AThreadId: Integer;

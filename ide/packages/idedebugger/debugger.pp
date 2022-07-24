@@ -558,6 +558,8 @@ type
     function ExpressionForChildEntry(AnIndex: Int64): String;
     function ExpressionForChildEntry(AnIndex: String): String;
 
+    function MaybeCopyResult(ASourceWatch: TIdeWatch): boolean;
+
     property ChildrenByNameAsField[AName, AClassName: String]: TIdeWatch read GetChildrenByNameAsField;
     property ChildrenByNameAsArrayEntry[AName: Int64]: TIdeWatch read GetChildrenByNameAsArrayEntry;
   end;
@@ -4021,6 +4023,11 @@ begin
   FreeAndNil(FFpDbgConverter);
   if Watch.FpDbgConverter <> nil then
     FFpDbgConverter := TIdeFpDbgConverterConfig(Watch.FpDbgConverter.CreateCopy);
+
+  if (Watch.ParentWatch <> nil) and (Watch.ParentWatch.FpDbgConverter = Watch.FpDbgConverter) then
+    if MaybeCopyResult(Watch.ParentWatch) then
+      exit;
+
   TCurrentWatch(Watch).RequestData(self);
 end;
 
@@ -4347,6 +4354,27 @@ begin
   else
   if ResultData.ValueKind = rdkArray then
     Result := Expression + '[' + AnIndex + ']';
+end;
+
+function TIdeWatchValue.MaybeCopyResult(ASourceWatch: TIdeWatch): boolean;
+var
+  ASrcValue: TIdeWatchValue;
+begin
+  Result := (ASourceWatch.GetBackendExpression = GetBackendExpression) and
+            (ASourceWatch.DisplayFormat  = FWatch.DisplayFormat) and
+            (ASourceWatch.RepeatCount    = FWatch.RepeatCount) and
+            (ASourceWatch.FirstIndexOffs = FWatch.FirstIndexOffs) and
+            (ASourceWatch.EvaluateFlags  = FWatch.EvaluateFlags);
+  if not Result then
+    exit;
+
+  ASrcValue := TIdeWatchValue(ASourceWatch.FValueList.ExistingEntries[ThreadId, StackFrame]);
+  Result := (ASrcValue <> nil) and (ASrcValue.Validity = ddsValid) and (ASrcValue.FResultData <> nil);
+  if not Result then
+    exit;
+
+  FResultData := ASrcValue.FResultData.CreateCopy;
+  SetValidity(ddsValid);
 end;
 
 { TIdeWatchesMonitor }
