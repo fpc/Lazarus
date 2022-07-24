@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -166,7 +166,7 @@ msgstr "Всплывающая подсказка для величины"
 
 #: tachartstrconsts.rsdatapointmarksclicktool
 msgid "Data point marks click"
-msgstr ""
+msgstr "Щелчок по отметке величины"
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
