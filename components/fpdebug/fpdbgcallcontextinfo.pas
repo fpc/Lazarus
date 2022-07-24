@@ -14,16 +14,17 @@ uses
 
 type
 
-  { TFpValueCallParamStringByRef }
+  { TFpSymbolCallParamOrdinalOrPointer }
 
-  TFpValueCallParamStringByRef = class(TFpValueDwarfPointer)
-    function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
-      ATargetType: TFpSymbolDwarfType = nil): Boolean; override;
-  end;
+  TFpSymbolCallParamOrdinalOrPointer = class(TFpSymbolDwarfTypeBasic) // act as pointer
+  private type
+    { TFpValueCallParamStringByRef }
 
-  { TFpSymbolCallParamStringByRef }
+    TFpValueCallParamStringByRef = class(TFpValueDwarfPointer)
+      function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
+        ATargetType: TFpSymbolDwarfType = nil): Boolean; override;
+    end;
 
-  TFpSymbolCallParamStringByRef = class(TFpSymbolDwarfTypeBasic) // act as pointer
   protected
     procedure KindNeeded; override;
     procedure Init; override;
@@ -96,35 +97,35 @@ implementation
 var
   FPDBG_FUNCCALL: PLazLoggerLogGroup;
 
-{ TFpValueCallParamStringByRef }
+{ TFpSymbolCallParamOrdinalOrPointer.TFpValueCallParamStringByRef }
 
-function TFpValueCallParamStringByRef.GetDwarfDataAddress(out
-  AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
+function TFpSymbolCallParamOrdinalOrPointer.TFpValueCallParamStringByRef.GetDwarfDataAddress
+  (out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
   AnAddress := Address;
   Result := IsReadableLoc(AnAddress);
 end;
 
-{ TFpSymbolCallParamStringByRef }
+{ TFpSymbolCallParamOrdinalOrPointer }
 
-procedure TFpSymbolCallParamStringByRef.KindNeeded;
+procedure TFpSymbolCallParamOrdinalOrPointer.KindNeeded;
 begin
   SetKind(skPointer);
 end;
 
-procedure TFpSymbolCallParamStringByRef.Init;
+procedure TFpSymbolCallParamOrdinalOrPointer.Init;
 begin
   inherited Init;
   EvaluatedFields := EvaluatedFields + [sfiAddress];
 end;
 
-function TFpSymbolCallParamStringByRef.GetTypedValueObject(ATypeCast: Boolean;
+function TFpSymbolCallParamOrdinalOrPointer.GetTypedValueObject(ATypeCast: Boolean;
   AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
 begin
   Result := TFpValueCallParamStringByRef.Create(AnOuterType);
 end;
 
-constructor TFpSymbolCallParamStringByRef.Create(AName: String;
+constructor TFpSymbolCallParamOrdinalOrPointer.Create(AName: String;
   AStringVarAddress: TDBGPtr);
 begin
   inherited Create(AName, skPointer, TargetLoc(AStringVarAddress));
@@ -345,9 +346,9 @@ end;
 function TFpDbgInfoCallContext.InternalAddStringResult: Boolean;
 var
   ParamSymbol: TFpValue;
-  RefSym: TFpSymbolCallParamStringByRef;
+  RefSym: TFpSymbolCallParamOrdinalOrPointer;
 begin
-  RefSym := TFpSymbolCallParamStringByRef.Create('', 0);
+  RefSym := TFpSymbolCallParamOrdinalOrPointer.Create('', 0);
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
     Result := ParamSymbol <> nil;
@@ -434,7 +435,7 @@ var
 begin
   Result := False;
   if AParamSymbolType = nil then
-    AParamSymbolType := TFpSymbolCallParamStringByRef.Create('', 0)
+    AParamSymbolType := TFpSymbolCallParamOrdinalOrPointer.Create('', 0)
   else
     AParamSymbolType.AddReference;
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
@@ -474,10 +475,10 @@ function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord): Boolean;
 var
   ParamSymbol: TFpValue;
   m: TDBGPtr;
-  RefSym: TFpSymbolCallParamStringByRef;
+  RefSym: TFpSymbolCallParamOrdinalOrPointer;
 begin
   m := AllocStack(32);
-  RefSym := TFpSymbolCallParamStringByRef.Create('', m);
+  RefSym := TFpSymbolCallParamOrdinalOrPointer.Create('', m);
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
     Result := ParamSymbol <> nil;
