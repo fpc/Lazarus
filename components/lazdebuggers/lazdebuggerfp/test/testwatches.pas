@@ -1212,11 +1212,13 @@ begin
 
     t.Add('U8Data1',    weAnsiStr(#$E2#$89#$A7, 'Utf8String'))
     //t.Add('U8Data1',    weAnsiStr(''''#$2267'''', 'Utf8String'))
+     .IgnData([], Compiler.HasFlag('Dwarf2'))
      .NoCharQuoting
      .IgnTypeName.IgnKind
      .skipIf(Compiler.Version < 030000);
     t.Add('U8Data2',    weAnsiStr(#$E2#$89#$A7'X', 'Utf8String'))
     //t.Add('U8Data2',    weAnsiStr(''''#$2267'X''', 'Utf8String'))
+     .IgnData([], Compiler.HasFlag('Dwarf2'))
      .NoCharQuoting
      .IgnTypeName.IgnKind
      .skipIf(Compiler.Version < 030000);
@@ -1559,9 +1561,31 @@ var
     UpdateMemUsed;
     TestEquals('MemUsed not changed', PrevMemUsed, MemUsed);
   end;
+
+var
+  t: TWatchExpectationList;
+  TstSkipAll: Boolean;
+
+  procedure CheckAndClear;
+  var
+    i: Integer;
+  begin
+    for i := 0 to t.Count - 1 do begin
+      t.Tests[i]
+        .AddEvalFlag([defAllowFunctionCall])
+        .IgnTypeName
+        .SkipEval;
+      if TstSkipAll then
+        t.Tests[i].IgnAll;
+    end;
+    t.EvalAndCheck;
+    CheckMemUsed;
+
+    t.Clear;
+  end;
+
 var
   ExeName, tbn: String;
-  t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg: TDBGBreakPoint;
   i: Integer;
@@ -1570,6 +1594,7 @@ begin
   if not TestControlCanTest(ControlTestWatchFunctStr) then exit;
   if not (Compiler.SymbolType in [stDwarf3, stDwarf4]) then exit;
   if Compiler.HasFlag('SkipStringFunc') then exit;
+  if Compiler.HasFlag('Dwarf2') then exit;
   tbn := TestBaseName;
 
   try
@@ -1606,87 +1631,140 @@ begin
       RunToPause(BrkPrg);
 
       UpdateMemUsed;
-
       t.Clear;
-      t.Add('TestStrRes()',     weAnsiStr('#0')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
+      TstSkipAll := False;
 
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestStrRes()',     weAnsiStr('#1')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestIntToStrRes(33)',     weAnsiStr('$00000021')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestIntToStrRes(SomeInt)',     weAnsiStr('$0000007E')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestIntSumToStrRes(10,20)',     weAnsiStr('$0000001E')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestIntSumToStrRes(SomeInt,3)',     weAnsiStr('$00000081')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
+      t.Add('TestStrRes()',     weAnsiStr('#0'));
+      CheckAndClear;
+      t.Add('TestStrRes()',     weAnsiStr('#1'));
+      CheckAndClear;
+      t.Add('TestIntToStrRes(33)',     weAnsiStr('$00000021'));
+      CheckAndClear;
+      t.Add('TestIntToStrRes(SomeInt)',     weAnsiStr('$0000007E'));
+      CheckAndClear;
+      t.Add('TestIntSumToStrRes(10,20)',     weAnsiStr('$0000001E'));
+      CheckAndClear;
+      t.Add('TestIntSumToStrRes(SomeInt,3)',     weAnsiStr('$00000081'));
+      CheckAndClear;
 
 
+      t.Add('TestStrToIntRes(s1)',     weInteger(0));
+      t.Add('s1',     weAnsiStr(''));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(s2)',     weInteger(4));
+      t.Add('s2',     weAnsiStr('A'));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(s3)',     weInteger(3));
+      t.Add('s3',     weAnsiStr('abc'));
+      CheckAndClear;
 
-      t.Clear;
-      t.Add('TestStrToIntRes(s1)',     weInteger(0)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s1',     weAnsiStr('')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestStrToIntRes(s2)',     weInteger(4)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s2',     weAnsiStr('A')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestStrToIntRes(s3)',     weInteger(3)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s3',     weAnsiStr('abc')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-
-      t.Clear;
-      t.Add('TestStrToStrRes(s1)',     weAnsiStr('"0"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s1',     weAnsiStr('')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestStrToStrRes(s2)',     weAnsiStr('"4"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s2',     weAnsiStr('A')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
-
-      t.Clear;
-      t.Add('TestStrToStrRes(s3)',     weAnsiStr('"3"')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.Add('s3',     weAnsiStr('abc')).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
+      t.Add('TestStrToIntRes('''')',     weInteger(0));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(''abcde'')',     weInteger(5));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(''a'')',     weInteger(4));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(TestIntToStrRes(111))',     weInteger(9));
+      CheckAndClear;
+      t.Add('TestStrToIntRes(TestIntToStrRes(111)+''abc'')',     weInteger(12));
+      CheckAndClear;
 
 
-      t.Clear;
-      t.Add('conc(s1, s2)',     weAnsiStr('A')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
+      t.Add('TestStrToStrRes(s1)',     weAnsiStr('"0"'));
+      t.Add('s1',     weAnsiStr(''));
+      CheckAndClear;
+      t.Add('TestStrToStrRes(s2)',     weAnsiStr('"4"'));
+      t.Add('s2',     weAnsiStr('A'));
+      CheckAndClear;
+      t.Add('TestStrToStrRes(s3)',     weAnsiStr('"3"'));
+      t.Add('s3',     weAnsiStr('abc'));
+      CheckAndClear;
 
-      t.Clear;
-      t.Add('conc(s3, s4)',     weAnsiStr('abcdef')).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
-      t.EvalAndCheck;
-      CheckMemUsed;
+
+      t.Add('conc(s1, s2)',     weAnsiStr('A'));
+      CheckAndClear;
+      t.Add('conc(s3, s4)',     weAnsiStr('abcdef'));
+      CheckAndClear;
+      t.Add('conc('''', s4)',     weAnsiStr('def'));
+      CheckAndClear;
+      t.Add('conc(''A'', s4)',     weAnsiStr('Adef'));
+      CheckAndClear;
+      t.Add('conc(''AB'', s4)',     weAnsiStr('ABdef'));
+      CheckAndClear;
+
+      // widestring
+(* TODO: FpDebug currenly reports PWideChar *)
+
+      {$IFnDEF WINDOWS}
+      TstSkipAll := True;
+      {$ENDIF}
+      if Compiler.Version >= 030200 then begin
+        t.Add('wTestStrRes()',     weWideStr('#2'));
+        CheckAndClear;
+        t.Add('wTestStrRes()',     weWideStr('#3'));
+        CheckAndClear;
+        t.Add('wTestIntToStrRes(33)',     weWideStr('$00000021'));
+        CheckAndClear;
+        t.Add('wTestIntToStrRes(SomeInt)',     weWideStr('$0000007E'));
+        CheckAndClear;
+        t.Add('wTestIntSumToStrRes(10,20)',     weWideStr('$0000001E'));
+        CheckAndClear;
+        t.Add('wTestIntSumToStrRes(SomeInt,3)',     weWideStr('$00000081'));
+        CheckAndClear;
+      end;
+
+
+      t.Add('wTestStrToIntRes(ws1)',     weInteger(0));
+      t.Add('ws1',     weWideStr(''));
+      CheckAndClear;
+      t.Add('wTestStrToIntRes(ws2)',     weInteger(4));
+      t.Add('ws2',     weWideStr('A'));
+      CheckAndClear;
+      t.Add('wTestStrToIntRes(ws3)',     weInteger(3));
+      t.Add('ws3',     weWideStr('abc'));
+      CheckAndClear;
+
+      t.Add('wTestStrToIntRes('''')',     weInteger(0))
+        .IgnData([], Compiler.Version < 030200);
+      CheckAndClear;
+      t.Add('wTestStrToIntRes(''abcde'')',     weInteger(5))
+        .IgnData([], Compiler.Version < 030200);
+      CheckAndClear;
+      t.Add('wTestStrToIntRes(''a'')',     weInteger(4))
+        .IgnData([], Compiler.Version < 030200);
+      CheckAndClear;
+      if Compiler.Version >= 030200 then begin
+        t.Add('wTestStrToIntRes(wTestIntToStrRes(111))',     weInteger(9));
+        CheckAndClear;
+        t.Add('wTestStrToIntRes(wTestIntToStrRes(111)+''abc'')',     weInteger(12));
+        CheckAndClear;
+      end;
+
+
+      if Compiler.Version >= 030200 then begin
+        t.Add('wTestStrToStrRes(ws1)',     weWideStr('"0"'));
+        t.Add('ws1',     weWideStr(''));
+        CheckAndClear;
+        t.Add('wTestStrToStrRes(ws2)',     weWideStr('"4"'));
+        t.Add('ws2',     weWideStr('A'));
+        CheckAndClear;
+        t.Add('wTestStrToStrRes(ws3)',     weWideStr('"3"'));
+        t.Add('ws3',     weWideStr('abc'));
+        CheckAndClear;
+
+
+        t.Add('wconc(ws1, ws2)',     weWideStr('A'));
+        CheckAndClear;
+        t.Add('wconc(ws3, ws4)',     weWideStr('abcdef'));
+        CheckAndClear;
+        t.Add('wconc('''', ws4)',     weWideStr('def'));
+        CheckAndClear;
+        t.Add('wconc(''A'', ws4)',     weWideStr('Adef'));
+        CheckAndClear;
+        t.Add('wconc(''AB'', ws4)',     weWideStr('ABdef'));
+        CheckAndClear;
+      end;
+
 
 
     finally

@@ -248,6 +248,7 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
     function GetAsCardinal: QWord; override;
     function DoGetSize(out ASize: TFpDbgValueSize): Boolean; override;
   public
@@ -283,6 +284,7 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
   public
     constructor Create(const AValue: AnsiString);
   end;
@@ -776,6 +778,11 @@ begin
   Result := Value;
 end;
 
+function TFpValueConstString.GetAsWideString: WideString;
+begin
+  Result := GetAsString;
+end;
+
 constructor TFpValueConstString.Create(const AValue: AnsiString);
 begin
   inherited Create;
@@ -799,6 +806,11 @@ end;
 function TFpValueConstChar.GetAsString: AnsiString;
 begin
   Result := Value;
+end;
+
+function TFpValueConstChar.GetAsWideString: WideString;
+begin
+  Result := GetAsString;
 end;
 
 function TFpValueConstChar.GetAsCardinal: QWord;

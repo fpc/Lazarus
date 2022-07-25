@@ -409,16 +409,7 @@ begin
       AnFpDebugger.DbgController.AbortCurrentCommand;
       CallContext.ReleaseReference;
 
-      CallContext := AnFpDebugger.DbgController.Call(TargetLoc(StringDecRefAddress), AnExpressionScope.LocationContext,
-        AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
-      try
-        CallContext.AddOrdinalViaRefAsParam(StringAddr);
-        CallContext.FinalizeParams;
-        AnFpDebugger.DbgController.ProcessLoop;
-      finally
-        AnFpDebugger.DbgController.AbortCurrentCommand;
-        CallContext.ReleaseReference;
-      end;
+      AnFpDebugger.CallTargetFuncStringDecRef(StringDecRefAddress, StringAddr, AnExpressionScope.LocationContext);
     end;
   finally
     ProcVal.ReleaseReference;

@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, fgl, FPDbgController, FpdMemoryTools, FpDbgClasses,
-  FpDbgUtil, FpDbgInfo, DbgIntfDebuggerBase, LazLoggerBase,
-  FpDebugDebuggerUtils, LazDebuggerIntfBaseTypes;
+  FpDbgUtil, FpDbgInfo, FpDbgCallContextInfo, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, LazLoggerBase, FpDebugDebuggerUtils,
+  LazDebuggerIntfBaseTypes;
 
 type
 
@@ -26,17 +27,41 @@ type
 
     FCached_FPC_ANSISTR_DECR_REF: TDbgPtr;
     FCached_FPC_WIDESTR_DECR_REF: TDbgPtr;
+    FCached_FPC_ANSISTR_SETLENGTH: TDbgPtr;
+    FCached_FPC_WIDESTR_SETLENGTH: TDbgPtr;
     FCached_Data: TCachedDbgPtrMap;
+
+    function GetCached_FPC_Func_Addr(var ACacheVar: TDbgPtr; const AName: String): TDbgPtr;
   public
     destructor Destroy; override;
 
     // All caches must only be accessed it the debug-thread
-    function GetCached_FPC_ANSISTR_DECR_REF: TDBGPtr;
-    function GetCached_FPC_WIDESTR_DECR_REF: TDBGPtr;
+    function GetCached_FPC_ANSISTR_DECR_REF: TDBGPtr; inline;
+    function GetCached_FPC_WIDESTR_DECR_REF: TDBGPtr; inline;
+    function GetCached_FPC_ANSISTR_SETLENGTH: TDBGPtr; inline;
+    function GetCached_FPC_WIDESTR_SETLENGTH: TDBGPtr; inline;
     procedure SetCachedData(AKey: Pointer; AValue: TDBGPtr);
     function GetCachedData(AKey: Pointer): TDBGPtr;
     procedure ClearCachedData;
 
+    procedure CallTargetFuncStringDecRef(const AProcAddr: TDbgPtr;
+      const AStringDataAddr: TDBGPtr;
+      const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase = nil; AMemConverter: TFpDbgMemConvertor = nil);
+    function CallTargetFuncStringSetLength(const ASetLengthProcAddr: TDbgPtr;
+      out AStringDataAddr: TDBGPtr;
+      const AStringLen: cardinal;
+      const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase = nil; AMemConverter: TFpDbgMemConvertor = nil
+    ): Boolean;
+    function CreateAnsiStringInTarget(const ASetLengthProcAddr: TDbgPtr;
+      out AStringDataAddr: TDBGPtr;
+      const AStringContent: String;
+      const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase = nil; AMemConverter: TFpDbgMemConvertor = nil
+    ): Boolean;
+    function CreateWideStringInTarget(const ASetLengthProcAddr: TDbgPtr;
+      out AStringDataAddr: TDBGPtr;
+      const AStringContent: WideString;
+      const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase = nil; AMemConverter: TFpDbgMemConvertor = nil
+    ): Boolean;
 
     property DbgController: TDbgController read FDbgController;
     property MemManager:    TFpDbgMemManager read FMemManager;
@@ -51,6 +76,24 @@ implementation
 
 { TFpDebugDebuggerBase }
 
+function TFpDebugDebuggerBase.GetCached_FPC_Func_Addr(var ACacheVar: TDbgPtr;
+  const AName: String): TDbgPtr;
+var
+  FunctSymbol: TFpSymbol;
+begin
+  Result := ACacheVar;
+  if Result <> 0 then
+    exit;
+
+  FunctSymbol := DbgController.CurrentProcess.FindProcSymbol(AName);
+
+  if (FunctSymbol <> nil) and (IsTargetNotNil(FunctSymbol.Address)) then
+    ACacheVar := FunctSymbol.Address.Address;
+
+  FunctSymbol.ReleaseReference;
+  Result := ACacheVar;
+end;
+
 destructor TFpDebugDebuggerBase.Destroy;
 begin
   inherited Destroy;
@@ -58,37 +101,23 @@ begin
 end;
 
 function TFpDebugDebuggerBase.GetCached_FPC_ANSISTR_DECR_REF: TDBGPtr;
-var
-  StringDecRefSymbol: TFpSymbol;
 begin
-  Result := FCached_FPC_ANSISTR_DECR_REF;
-  if Result <> 0 then
-    exit;
-
-  StringDecRefSymbol := DbgController.CurrentProcess.FindProcSymbol('FPC_ANSISTR_DECR_REF');
-
-  if (StringDecRefSymbol <> nil) and (IsTargetNotNil(StringDecRefSymbol.Address)) then
-    FCached_FPC_ANSISTR_DECR_REF := StringDecRefSymbol.Address.Address;
-
-  StringDecRefSymbol.ReleaseReference;
-  Result := FCached_FPC_ANSISTR_DECR_REF;
+  Result := GetCached_FPC_Func_Addr(FCached_FPC_ANSISTR_DECR_REF, 'FPC_ANSISTR_DECR_REF');
 end;
 
 function TFpDebugDebuggerBase.GetCached_FPC_WIDESTR_DECR_REF: TDBGPtr;
-var
-  StringDecRefSymbol: TFpSymbol;
 begin
-  Result := FCached_FPC_WIDESTR_DECR_REF;
-  if Result <> 0 then
-    exit;
+  Result := GetCached_FPC_Func_Addr(FCached_FPC_WIDESTR_DECR_REF, 'FPC_WIDESTR_DECR_REF');
+end;
 
-  StringDecRefSymbol := DbgController.CurrentProcess.FindProcSymbol('FPC_WIDESTR_DECR_REF');
+function TFpDebugDebuggerBase.GetCached_FPC_ANSISTR_SETLENGTH: TDBGPtr;
+begin
+  Result := GetCached_FPC_Func_Addr(FCached_FPC_ANSISTR_SETLENGTH, 'FPC_ANSISTR_SETLENGTH');
+end;
 
-  if (StringDecRefSymbol <> nil) and (IsTargetNotNil(StringDecRefSymbol.Address)) then
-    FCached_FPC_WIDESTR_DECR_REF := StringDecRefSymbol.Address.Address;
-
-  StringDecRefSymbol.ReleaseReference;
-  Result := FCached_FPC_WIDESTR_DECR_REF;
+function TFpDebugDebuggerBase.GetCached_FPC_WIDESTR_SETLENGTH: TDBGPtr;
+begin
+  Result := GetCached_FPC_Func_Addr(FCached_FPC_WIDESTR_SETLENGTH, 'FPC_WIDESTR_SETLENGTH');
 end;
 
 procedure TFpDebugDebuggerBase.SetCachedData(AKey: Pointer; AValue: TDBGPtr);
@@ -114,8 +143,117 @@ procedure TFpDebugDebuggerBase.ClearCachedData;
 begin
   FCached_FPC_ANSISTR_DECR_REF := 0;
   FCached_FPC_WIDESTR_DECR_REF := 0;
+  FCached_FPC_ANSISTR_SETLENGTH := 0;
   if FCached_Data <> nil then
     FCached_Data.Clear;
+end;
+
+procedure TFpDebugDebuggerBase.CallTargetFuncStringDecRef(
+  const AProcAddr: TDbgPtr; const AStringDataAddr: TDBGPtr;
+  const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
+  AMemConverter: TFpDbgMemConvertor);
+var
+  CallContext: TFpDbgInfoCallContext;
+begin
+  if AStringDataAddr = 0 then
+    exit;
+  if AMemReader = nil then
+    AMemReader := MemReader;
+  if AMemConverter = nil then
+    AMemConverter := MemConverter;
+
+  CallContext := DbgController.Call(TargetLoc(AProcAddr), ABaseContext, AMemReader, AMemConverter);
+  try
+    CallContext.AddOrdinalViaRefAsParam(AStringDataAddr);
+    CallContext.FinalizeParams;
+    DbgController.ProcessLoop;
+  finally
+    DbgController.AbortCurrentCommand;
+    CallContext.ReleaseReference;
+  end;
+end;
+
+function TFpDebugDebuggerBase.CallTargetFuncStringSetLength(
+  const ASetLengthProcAddr: TDbgPtr; out AStringDataAddr: TDBGPtr;
+  const AStringLen: cardinal; const ABaseContext: TFpDbgLocationContext;
+  AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor): Boolean;
+var
+  CallContext: TFpDbgInfoCallContext;
+  AParamAddr: TDBGPtr;
+begin
+  if AMemReader = nil then
+    AMemReader := MemReader;
+  if AMemConverter = nil then
+    AMemConverter := MemConverter;
+
+  Result := False;
+  CallContext := DbgController.Call(TargetLoc(ASetLengthProcAddr), ABaseContext, AMemReader, AMemConverter);
+  try
+    if not CallContext.AddOrdinalViaRefAsParam(0, AParamAddr) then
+      exit;
+    if not CallContext.AddOrdinalParam(AStringLen) then
+      exit;
+    // Some versions may take a TCodePage // Lazarus defaults to utf-8 // CP_UTF8 = 65001;
+    // This value is ignored if not needed
+    if not CallContext.AddOrdinalParam(65001) then
+      exit;
+    CallContext.FinalizeParams;
+    DbgController.ProcessLoop;
+
+    if not CallContext.IsValid then
+      exit;
+
+    Result := DbgController.CurrentProcess.ReadAddress(AParamAddr, AStringDataAddr);
+  finally
+    DbgController.AbortCurrentCommand;
+    CallContext.ReleaseReference;
+  end;
+end;
+
+function TFpDebugDebuggerBase.CreateAnsiStringInTarget(
+  const ASetLengthProcAddr: TDbgPtr; out AStringDataAddr: TDBGPtr;
+  const AStringContent: String; const ABaseContext: TFpDbgLocationContext;
+  AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor): Boolean;
+begin
+  if AStringContent = '' then begin
+    AStringDataAddr := 0;
+    Result := True;
+    exit;
+  end;
+
+  Result := CallTargetFuncStringSetLength(ASetLengthProcAddr, AStringDataAddr, length(AStringContent),
+    ABaseContext, AMemReader, AMemConverter);
+  if not Result then
+    exit;
+
+  Result := AStringDataAddr <> 0;
+  if not Result then
+    exit;
+
+  DbgController.CurrentProcess.WriteData(AStringDataAddr, Length(AStringContent), AStringContent[1]);
+end;
+
+function TFpDebugDebuggerBase.CreateWideStringInTarget(
+  const ASetLengthProcAddr: TDbgPtr; out AStringDataAddr: TDBGPtr;
+  const AStringContent: WideString; const ABaseContext: TFpDbgLocationContext;
+  AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor): Boolean;
+begin
+  if AStringContent = '' then begin
+    AStringDataAddr := 0;
+    Result := True;
+    exit;
+  end;
+
+  Result := CallTargetFuncStringSetLength(ASetLengthProcAddr, AStringDataAddr, length(AStringContent),
+    ABaseContext, AMemReader, AMemConverter);
+  if not Result then
+    exit;
+
+  Result := AStringDataAddr <> 0;
+  if not Result then
+    exit;
+
+  DbgController.CurrentProcess.WriteData(AStringDataAddr, Length(AStringContent) * 2, AStringContent[1]);
 end;
 
 end.

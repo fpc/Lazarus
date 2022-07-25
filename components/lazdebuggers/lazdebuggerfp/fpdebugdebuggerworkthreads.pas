@@ -788,11 +788,21 @@ var
   ExprParamVal: TFpValue;
   ProcAddress: TFpDbgMemLocation;
   FunctionResultDataSize: TFpDbgValueSize;
-  ParameterSymbolArr: array of TFpSymbol;
+
+  SelfTypeSym: TFpSymbol;
+  ParameterSymbolArr: array of record
+    ParamVal: TFpValue;
+    TypeSym: TFpSymbol;
+    TempAnsiStringDataAddr: TDbgPtr;
+    TempWideStringDataAddr: TDbgPtr;
+  end;
   CallContext: TFpDbgInfoCallContext;
-  PCnt, i, FoundIdx, ItemsOffs: Integer;
+  PCnt, i, FoundIdx: Integer;
   rk: TDbgSymbolKind;
-  StringAddr, StringDecRefAddress: TDBGPtr;
+  StringResultAddr, StringResultDecRefAddress: TDBGPtr;
+  StringAnsiSetLenAddress, StringAnsiDecRefAddress: TDBGPtr;
+  StringWideSetLenAddress, StringWideDecRefAddress: TDBGPtr;
+  ParRes: Boolean;
 begin
   Result := False;
   if FExpressionScope = nil then
@@ -830,19 +840,22 @@ begin
 
   try
     ParameterSymbolArr := nil;
-    StringDecRefAddress := 0;
-    StringAddr := 0;
+    StringResultDecRefAddress := 0; // Wide OR Ansi-DecRef
+    StringAnsiDecRefAddress := 0;
+    StringWideDecRefAddress := 0;
+    StringAnsiSetLenAddress := 0;
+    StringWideSetLenAddress := 0;
+    StringResultAddr := 0;
+    SelfTypeSym := nil;
 
     if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString])
     then begin
- // FCached_FPC_ANSISTR_DECR_REF  TFpThreadWorkerRunLoop.DoExecute
-
       if (FunctionResultSymbolType.Kind = skWideString) then
-        StringDecRefAddress := FDebugger.GetCached_FPC_WIDESTR_DECR_REF
+        StringResultDecRefAddress := FDebugger.GetCached_FPC_WIDESTR_DECR_REF
       else
-        StringDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
+        StringResultDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
 
-      if (StringDecRefAddress = 0) then begin
+      if (StringResultDecRefAddress = 0) then begin
         DebugLn(['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
         AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
         exit;
@@ -871,32 +884,34 @@ begin
     end;
 
     PCnt := AParams.Count;
-    ItemsOffs := 0;
-    if ASelfValue <> nil then begin
-      inc(PCnt);
-      ItemsOffs := -1; // In the loop "i = 0" is the self object. So "i = 1" should be AParams[0]
-    end;
+    FoundIdx := 0;
+    if ASelfValue <> nil then
+      FoundIdx := -1;
 
     SetLength(ParameterSymbolArr, PCnt);
-      for i := 0 to High(ParameterSymbolArr) do
-        ParameterSymbolArr[i] := nil;
-    FoundIdx := 0;
+    for i := 0 to High(ParameterSymbolArr) do begin
+      ParameterSymbolArr[i].ParamVal := nil;
+      ParameterSymbolArr[i].TypeSym  := nil;
+      ParameterSymbolArr[i].TempAnsiStringDataAddr:= 0;
+      ParameterSymbolArr[i].TempWideStringDataAddr:= 0;
+    end;
+
     for i := 0 to FunctionSymbolType.NestedSymbolCount - 1 do begin
       TempSymbol := FunctionSymbolType.NestedSymbol[i];
       if sfParameter in TempSymbol.Flags then begin
         if FoundIdx >= PCnt then begin
-          DebugLn(['Error param count']);
-          AnError := CreateError(fpErrAnyError, ['wrong amount of parameters']);
-          exit;
-          //ReturnMessage := Format('Unable to call function%s. Not enough parameters supplied.', [OutputFunctionName]);
+          FoundIdx := -2; // error
+          break;
         end;
+
         // Type Compatibility
-        // TODO: more checks for type compatibility
-        if (ASelfValue <> nil) and (FoundIdx = 0) then begin
+        if FoundIdx = -1 then begin
           // TODO: check self param
+          SelfTypeSym := TempSymbol;
+          SelfTypeSym.AddReference;
         end
         else begin
-          ExprParamVal := AParams.Items[FoundIdx + ItemsOffs].ResultValue;
+          ExprParamVal := AParams.Items[FoundIdx].ResultValue;
           if (ExprParamVal = nil) then begin
             DebugLn('Internal error for arg %d ', [FoundIdx]);
             AnError := AnExpressionPart.Expression.Error;
@@ -904,16 +919,48 @@ begin
               AnError := CreateError(fpErrAnyError, ['internal error, computing parameter']);
             exit;
           end;
+
           rk := ExprParamVal.Kind;
-          if not(
-             (rk in [skInteger, {skCurrency,} skPointer, skEnum, skCardinal, skBoolean, skChar, skClass, skRecord]) or
-             ( (rk in [skString, skAnsiString, skWideString]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] <> []) )
-          )
+          if not(rk in [skInteger, {skCurrency,} skPointer, skEnum, skCardinal, skBoolean, skChar, skClass, skRecord, skString, skAnsiString, skWideString])
           then begin
             DebugLn('Error not supported kind arg %d : %s ', [FoundIdx, dbgs(rk)]);
             AnError := CreateError(fpErrAnyError, ['parameter type not supported']);
             exit;
           end;
+          // Handle string/char - literals, constants, expression-results
+          if (rk in [skString, skAnsiString, skChar]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] = []) and
+             (TempSymbol.Kind in [skString, skAnsiString])
+          then begin
+            StringAnsiDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
+            StringAnsiSetLenAddress := FDebugger.GetCached_FPC_ANSISTR_SETLENGTH;
+            if (StringAnsiDecRefAddress = 0) or (StringAnsiSetLenAddress = 0) or
+               (not FDebugger.CreateAnsiStringInTarget(StringAnsiSetLenAddress,
+                    ParameterSymbolArr[FoundIdx].TempAnsiStringDataAddr,
+                    ExprParamVal.AsString, FExpressionScope.LocationContext) )
+            then begin
+              AnError := CreateError(fpErrAnyError, ['constant string failed']);
+              ParameterSymbolArr[FoundIdx].TempAnsiStringDataAddr := 0;
+              exit;
+            end;
+          end
+          else
+          // Handle wide-string/char - literals, constants, expression-results
+          if (rk in [skWideString, skString, skAnsiString, skChar]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] = []) and
+             (TempSymbol.Kind in [skWideString])
+          then begin
+            StringWideDecRefAddress := FDebugger.GetCached_FPC_WIDESTR_DECR_REF;
+            StringWideSetLenAddress := FDebugger.GetCached_FPC_WIDESTR_SETLENGTH;
+            if (StringWideDecRefAddress = 0) or (StringWideSetLenAddress = 0) or
+               (not FDebugger.CreateWideStringInTarget(StringWideSetLenAddress,
+                    ParameterSymbolArr[FoundIdx].TempWideStringDataAddr,
+                    ExprParamVal.AsWideString, FExpressionScope.LocationContext) )
+            then begin
+              AnError := CreateError(fpErrAnyError, ['constant string failed']);
+              ParameterSymbolArr[FoundIdx].TempWideStringDataAddr := 0;
+              exit;
+            end;
+          end
+          else
           if (TempSymbol.Kind <> rk) and
              ( (TempSymbol.Kind in [skInteger, skCardinal]) <> (rk in [skInteger, skCardinal]) )
           then begin
@@ -921,19 +968,21 @@ begin
             AnError := CreateError(fpErrAnyError, ['wrong type for parameter']);
             exit;
           end;
+
+          TempSymbol.AddReference;
+          ParameterSymbolArr[FoundIdx].ParamVal := ExprParamVal;
+          ParameterSymbolArr[FoundIdx].TypeSym  := TempSymbol;
         end;
         if not IsTargetOrRegNotNil(FDebugger.DbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
           DebugLn('error to many args / not supported / arg > %d ', [FoundIdx]);
           AnError := CreateError(fpErrAnyError, ['too many parameter / not supported']);
           exit;
         end;
-        TempSymbol.AddReference;
-        ParameterSymbolArr[FoundIdx] := TempSymbol;
         inc(FoundIdx)
       end;
     end;
 
-    if FoundIdx <> PCnt then begin
+    if (FoundIdx <> PCnt) then begin
       DebugLn(['Error param count']);
       AnError := CreateError(fpErrAnyError, ['wrong amount of parameters']);
       exit;
@@ -944,7 +993,15 @@ begin
       FDebugger.MemReader, FDebugger.MemConverter);
 
     try
-      if (ASelfValue = nil) and (StringDecRefAddress <> 0) then begin
+      if (ASelfValue <> nil) then begin
+        if not CallContext.AddParam(SelfTypeSym.TypeInfo, ASelfValue) then begin
+          DebugLn('Internal error for self');
+          AnError := CallContext.LastError;
+          exit;
+        end;
+      end;
+
+      if (StringResultDecRefAddress <> 0) then begin
         if not CallContext.AddStringResult then begin
           DebugLn('Internal error for string result');
           AnError := CallContext.LastError;
@@ -952,29 +1009,21 @@ begin
         end;
       end;
 
-      ItemsOffs := 0;
       for i := 0 to High(ParameterSymbolArr) do begin
-        if (ASelfValue <> nil) and (i = 0) then begin
-          ExprParamVal := ASelfValue;
-          dec(ItemsOffs);
-        end
+        if ParameterSymbolArr[i].TempAnsiStringDataAddr <> 0 then
+          ParRes := CallContext.AddOrdinalParam(ParameterSymbolArr[i].TempAnsiStringDataAddr)
         else
-          ExprParamVal := AParams.Items[i + ItemsOffs].ResultValue;
-
-        if not CallContext.AddParam(ParameterSymbolArr[i].TypeInfo, ExprParamVal) then begin
+        if ParameterSymbolArr[i].TempWideStringDataAddr <> 0 then
+          ParRes := CallContext.AddOrdinalParam(ParameterSymbolArr[i].TempWideStringDataAddr)
+        else
+          ParRes := CallContext.AddParam(ParameterSymbolArr[i].TypeSym.TypeInfo, ParameterSymbolArr[i].ParamVal);
+        if not ParRes then begin
           DebugLn('Internal error for arg %d ', [i]);
           AnError := CallContext.LastError;
           exit;
         end;
-
-        if (ASelfValue <> nil) and (StringDecRefAddress <> 0) and (i = 0) then begin
-          if not CallContext.AddStringResult then begin
-            DebugLn('Internal error for string result');
-            AnError := CallContext.LastError;
-            exit;
-          end;
-        end;
       end;
+
       if not CallContext.FinalizeParams then begin
         DebugLn('Internal error after params');
         AnError := CallContext.LastError;
@@ -996,7 +1045,7 @@ begin
       end;
 
       if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString]) then begin
-        if not CallContext.GetStringResultAsPointer(StringAddr) then begin
+        if not CallContext.GetStringResultAsPointer(StringResultAddr) then begin
           AnError := CallContext.LastError;
         end
         else
@@ -1020,24 +1069,22 @@ begin
       CallContext.ReleaseReference;
     end;
 
-    if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString]) and (StringAddr <> 0) then begin
-      CallContext := FDebugger.DbgController.Call(TargetLoc(StringDecRefAddress), FExpressionScope.LocationContext,
-        FDebugger.MemReader, FDebugger.MemConverter);
-      try
-        CallContext.AddOrdinalViaRefAsParam(StringAddr);
-        FDebugger.DbgController.ProcessLoop;
-      finally
-        FDebugger.DbgController.AbortCurrentCommand;
-        CallContext.ReleaseReference;
-      end;
+    if (FunctionResultSymbolType.Kind in [skString, skAnsiString, skWideString]) and (StringResultAddr <> 0) then begin
+      FDebugger.CallTargetFuncStringDecRef(StringResultDecRefAddress, StringResultAddr, FExpressionScope.LocationContext);
     end;
 
   finally
     FDebugger.DbgController.CurrentThread.RestoreStackMem;
 
-    for i := 0 to High(ParameterSymbolArr) do
-      if ParameterSymbolArr[i] <> nil then
-        ParameterSymbolArr[i].ReleaseReference;
+    SelfTypeSym.ReleaseReference;
+    for i := 0 to High(ParameterSymbolArr) do begin
+      if ParameterSymbolArr[i].TypeSym <> nil then
+        ParameterSymbolArr[i].TypeSym.ReleaseReference;
+      if ParameterSymbolArr[i].TempAnsiStringDataAddr <> 0 then
+        FDebugger.CallTargetFuncStringDecRef(StringAnsiDecRefAddress, ParameterSymbolArr[i].TempAnsiStringDataAddr, FExpressionScope.LocationContext);
+      if ParameterSymbolArr[i].TempWideStringDataAddr <> 0 then
+        FDebugger.CallTargetFuncStringDecRef(StringWideDecRefAddress, ParameterSymbolArr[i].TempWideStringDataAddr, FExpressionScope.LocationContext);
+      end;
   end;
 
 end;

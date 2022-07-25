@@ -7,6 +7,7 @@ var
   CurMemUsed: ptruint;
   SomeInt: Integer;
   s1, s2, s3, s4, x: String;
+  ws1, ws2, ws3, ws4, wx: WideString;
 
 
 function UsedMem: ptruint;
@@ -69,6 +70,50 @@ begin
   Result := AVal + BVal;
 end;
 
+// Widestring
+
+function WTestStrRes: WideString;
+begin
+  Result := '#'+IntToStr(Cnt);
+  inc(Cnt);
+end;
+
+function WTestIntToStrRes(AVal: Integer): WideString;
+begin
+  Result := '$'+IntToHex(AVal, 8);
+end;
+
+function WTestIntSumToStrRes(AVal, AVal2: Integer): WideString;
+begin
+  Result := '$'+IntToHex(AVal+AVal2, 8);
+end;
+
+function WTestStrToIntRes(AVal: WideString): Integer;
+begin
+  if Length(AVal) = 1 then
+    AVal := AVal + 'abc'
+  else
+  if AVal <> '' then
+    AVal[1] := 'X';
+
+  Result := Length(AVal);
+end;
+
+function WTestStrToStrRes(AVal: WideString): WideString;
+begin
+  if Length(AVal) = 1 then
+    AVal := AVal + 'abc'
+  else
+  if AVal <> '' then
+    AVal[1] := 'X';
+
+  Result := '"' + IntToStr(Length(AVal)) + '"';
+end;
+
+function Wconc(AVal, BVal: WideString): WideString;
+begin
+  Result := AVal + BVal;
+end;
 
 
 begin
@@ -80,12 +125,24 @@ begin
   TestStrToStrRes('a');
   conc('a', 'b');
 
+  wTestStrRes;
+  wTestIntToStrRes(1);
+  wTestIntSumToStrRes(1,2);
+  wTestStrToIntRes('a');
+  wTestStrToStrRes('a');
+  wconc('a', 'b');
+
   Cnt := 0;
   SomeInt := 126;
   s1 := '';
   s2 := 'A';
   s3 := 'abc';
   s4 := 'def';
+
+  ws1 := '';
+  ws2 := 'A';
+  ws3 := 'abc';
+  ws4 := 'def';
 
   // After each test the debugger can check the memusage
   CurMemUsed := UsedMem;
@@ -232,5 +289,11 @@ begin
   TestStrToIntRes(s2);
   TestStrToIntRes(s3);
   TestStrToIntRes(s4);
+
+  TestStrToIntRes(ws1);
+  TestStrToIntRes(ws2);
+  TestStrToIntRes(ws3);
+  TestStrToIntRes(ws4);
+
 
 end.

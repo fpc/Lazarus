@@ -76,12 +76,17 @@ type
 
     function AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
     function AddOrdinalParam(AParamSymbolType: TFpSymbol; AValue: QWord): Boolean;
+    function AddOrdinalParam(AValue: QWord): Boolean; inline;
+    (* AddOrdinalViaRefAsParam
+       TODO: need size of the ordinal -- currently using SizeOfAddr in target
+    *)
+    function AddOrdinalViaRefAsParam(AValue: QWord): Boolean; inline;  // For string dec-ref
+    function AddOrdinalViaRefAsParam(AValue: QWord; out ATargetParamAddr: TDBGPtr): Boolean;
     (* AddStringResult:
        Must be called before any AddParam.
        Except for "Self": In case of a method, AddParm(self) must be set before the StringResult
      *)
     function AddStringResult: Boolean;
-    function AddOrdinalViaRefAsParam(AValue: QWord): Boolean;  // For string dec-ref
     function FinalizeParams: Boolean;
 
     // The caller must take care to call DecRef for the result
@@ -453,6 +458,11 @@ begin
   inc(FNextParamRegister);
 end;
 
+function TFpDbgInfoCallContext.AddOrdinalParam(AValue: QWord): Boolean;
+begin
+  AddOrdinalParam(nil, AValue);
+end;
+
 function TFpDbgInfoCallContext.AddStringResult: Boolean;
 var
   ANil: QWord;
@@ -473,18 +483,32 @@ end;
 
 function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord): Boolean;
 var
-  ParamSymbol: TFpValue;
   m: TDBGPtr;
+begin
+  AddOrdinalViaRefAsParam(AValue, m);
+end;
+
+function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord; out
+  ATargetParamAddr: TDBGPtr): Boolean;
+var
+  ParamSymbol: TFpValue;
   RefSym: TFpSymbolCallParamOrdinalOrPointer;
 begin
-  m := AllocStack(32);
-  RefSym := TFpSymbolCallParamOrdinalOrPointer.Create('', m);
+  ATargetParamAddr := AllocStack(32);
+  // TODO: need size of the ordinal
+  Result := FDbgProcess.WriteData(ATargetParamAddr, FDbgProcess.PointerSize, AValue);
+  if not Result then begin
+    FLastError := CreateError(fpErrAnyError, ['Error writing param param to stack memory']);
+    exit;
+  end;
+
+  RefSym := TFpSymbolCallParamOrdinalOrPointer.Create('', ATargetParamAddr);
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, RefSym, '');
   try
     Result := ParamSymbol <> nil;
     if not Result then
       exit;
-    ParamSymbol.AsCardinal := m;
+    ParamSymbol.AsCardinal := ATargetParamAddr;
     Result := not IsError(ParamSymbol.LastError);
     FLastError := ParamSymbol.LastError;
   finally
