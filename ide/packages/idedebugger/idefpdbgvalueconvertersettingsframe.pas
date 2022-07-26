@@ -191,8 +191,10 @@ begin
      (EdName.Text <> FCurValConv.Name)
   then begin
     FValConvList.Changed := True;
-    if (dropAction.ItemIndex <> AvailClass.IndexOf(TFpDbgValueConverterClass(FCurValConv.Converter.ClassType))) then
+    if (dropAction.ItemIndex <> AvailClass.IndexOf(TFpDbgValueConverterClass(FCurValConv.Converter.ClassType))) then begin
       FCurValConv.Converter := AvailClass[dropAction.ItemIndex].Create;
+      FCurValConv.MatchKinds := FCurValConv.Converter.GetSupportedKinds;
+    end;
     FCurValConv.MatchTypeNames.Text := memoTypeNames.Text;
     FCurValConv.Name := EdName.Text
   end;

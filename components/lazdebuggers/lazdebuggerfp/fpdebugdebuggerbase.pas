@@ -5,7 +5,7 @@ unit FpDebugDebuggerBase;
 interface
 
 uses
-  Classes, SysUtils, fgl, FPDbgController, FpdMemoryTools, FpDbgClasses,
+  Classes, SysUtils, fgl, Math, FPDbgController, FpdMemoryTools, FpDbgClasses,
   FpDbgUtil, FpDbgInfo, FpDbgCallContextInfo, DbgIntfDebuggerBase,
   DbgIntfBaseTypes, LazLoggerBase, FpDebugDebuggerUtils,
   LazDebuggerIntfBaseTypes;
@@ -62,6 +62,8 @@ type
       const AStringContent: WideString;
       const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase = nil; AMemConverter: TFpDbgMemConvertor = nil
     ): Boolean;
+
+    function ReadAnsiStringFromTarget(AStringAddr: TDBGPtr; out AString: String): boolean;
 
     property DbgController: TDbgController read FDbgController;
     property MemManager:    TFpDbgMemManager read FMemManager;
@@ -254,6 +256,40 @@ begin
     exit;
 
   DbgController.CurrentProcess.WriteData(AStringDataAddr, Length(AStringContent) * 2, AStringContent[1]);
+end;
+
+function TFpDebugDebuggerBase.ReadAnsiStringFromTarget(AStringAddr: TDBGPtr;
+  out AString: String): boolean;
+var
+  CurProcess: TDbgProcess;
+  l: TDBGPtr;
+  r: Cardinal;
+begin
+  AString := '';
+  Result := AStringAddr = 0;
+  if Result then
+    exit;
+
+  CurProcess := DbgController.CurrentProcess;
+  Result := CurProcess <> nil;
+  if not Result then
+    exit;
+
+  {$PUSH}{$Q-}{$R-}
+  Result := CurProcess.ReadAddress(AStringAddr - CurProcess.PointerSize, l);
+  if not Result then
+    exit;
+
+  l := Min(l, MemManager.MemLimits.MaxStringLen);
+  if (not MemManager.CheckDataSize(l)) then
+    exit;
+
+  SetLength(AString, l);
+  if l > 0 then begin
+    Result := CurProcess.ReadData(AStringAddr, l, AString[1], r);
+    SetLength(AString,r);
+  end;
+  {$POP}
 end;
 
 end.

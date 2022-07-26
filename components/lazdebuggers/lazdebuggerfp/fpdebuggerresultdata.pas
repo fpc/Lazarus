@@ -24,7 +24,7 @@ type
     FExtraDephtLevelItemConv: TFpDbgValueConverter;
     FLevelZeroKind: TDbgSymbolKind;
     FLevelZeroArrayConv: TFpDbgValueConverter;   // All itens in array have same type / optimize and keep converter
-    FInArray: Boolean;
+    FInArray, FInNonConvert: Boolean;
     FMaxTotalConv, FMaxArrayConv, FCurMaxArrayConv: Integer;
     FNoConvert: Boolean;
 
@@ -108,7 +108,7 @@ var
   NewFpVal: TFpValue;
   CurConv: TFpDbgValueConverter;
   AnResFld: TLzDbgWatchDataIntf;
-  WasInArray: Boolean;
+  WasInArray, WasInNonConvert: Boolean;
 begin
   Result := False;
 
@@ -123,73 +123,78 @@ begin
   end;
 
   WasInArray := FInArray;
+  WasInNonConvert := FInNonConvert;
   if (RecurseCnt >= 0) and (AnFpValue.Kind in [skArray]) then
     FInArray := True;
 
 
-  CurConv := nil;
-  NewFpVal := nil;
-  try
-    if (RecurseCnt = 0) and (FExtraDephtLevelIsArray) then begin
-      if FExtraDephtLevelItemConv = nil then
-        FExtraDephtLevelItemConv := GetValConv(AnFpValue);
-      CurConv := FExtraDephtLevelItemConv;
-    end
-    else
-    if (RecurseCnt = 1) and (FLevelZeroKind = skArray) then begin
-      if FLevelZeroArrayConv = nil then
-        FLevelZeroArrayConv := GetValConv(AnFpValue);
-      CurConv := FLevelZeroArrayConv;
-    end
-    else begin
-      CurConv := GetValConv(AnFpValue);
-    end;
-
-    if (CurConv <> nil) then begin
-      if (FMaxTotalConv <= 0) then
-        CurConv := nil
-      else
-        dec(FMaxTotalConv);
-
-      if FInArray then begin
-        if (FCurMaxArrayConv <= 0) then
-          CurConv := nil
-        else
-          dec(FCurMaxArrayConv);
-      end;
-
-      AnResData.CreateStructure(dstInternal);
-      AnResFld := AnResData.AddField('', dfvUnknown, []);
-      if (CurConv <> nil) then begin
-
-        NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope);
-        if NewFpVal <> nil then begin
-          Result := inherited DoValueToResData(NewFpVal, AnResFld);
-        end
-        else begin
-          if IsError(CurConv.LastErrror) then
-            AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
-          else
-            AnResFld.CreateError('Conversion failed');
-          Result := True;
-        end;
+  if not FInNonConvert then begin
+    CurConv := nil;
+    NewFpVal := nil;
+    try
+      if (RecurseCnt = 0) and (FExtraDephtLevelIsArray) then begin
+        if FExtraDephtLevelItemConv = nil then
+          FExtraDephtLevelItemConv := GetValConv(AnFpValue);
+        CurConv := FExtraDephtLevelItemConv;
       end
       else
-        AnResFld.CreateError('');
+      if (RecurseCnt = 1) and (FLevelZeroKind = skArray) then begin
+        if FLevelZeroArrayConv = nil then
+          FLevelZeroArrayConv := GetValConv(AnFpValue);
+        CurConv := FLevelZeroArrayConv;
+      end
+      else begin
+        CurConv := GetValConv(AnFpValue);
+      end;
 
-      AnResData := AnResData.AddField('', dfvUnknown, []);
+      if (CurConv <> nil) then begin
+        if (FMaxTotalConv <= 0) then
+          CurConv := nil
+        else
+          dec(FMaxTotalConv);
+
+        if FInArray then begin
+          if (FCurMaxArrayConv <= 0) then
+            CurConv := nil
+          else
+            dec(FCurMaxArrayConv);
+        end;
+
+        AnResData.CreateStructure(dstInternal);
+        AnResFld := AnResData.AddField('', dfvUnknown, []);
+        if (CurConv <> nil) then begin
+          FInNonConvert := True;
+
+          NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope);
+          if NewFpVal <> nil then begin
+            Result := inherited DoValueToResData(NewFpVal, AnResFld);
+          end
+          else begin
+            if IsError(CurConv.LastErrror) then
+              AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
+            else
+              AnResFld.CreateError('Conversion failed');
+            Result := True;
+          end;
+        end
+        else
+          AnResFld.CreateError('');
+
+        AnResData := AnResData.AddField('', dfvUnknown, []);
+      end;
+    finally
+      if (CurConv <> FExtraDephtLevelItemConv) and
+         (CurConv <> FLevelZeroArrayConv)
+      then
+        CurConv.ReleaseReference;
+      NewFpVal.ReleaseReference;
     end;
-  finally
-    if (CurConv <> FExtraDephtLevelItemConv) and
-       (CurConv <> FLevelZeroArrayConv)
-    then
-      CurConv.ReleaseReference;
-    NewFpVal.ReleaseReference;
   end;
 
   if inherited DoValueToResData(AnFpValue, AnResData) then
     Result := True;
   FInArray := WasInArray;
+  FInNonConvert := WasInNonConvert;
 end;
 
 end.

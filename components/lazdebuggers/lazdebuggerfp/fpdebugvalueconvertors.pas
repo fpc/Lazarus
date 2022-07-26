@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, fgl, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
   FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
-  lazCollections, LazClasses, LCLProc, FpDebugDebuggerBase;
+  lazCollections, LazClasses, LCLProc, FpDebugDebuggerBase,
+  LazDebuggerIntfBaseTypes;
 
 type
   TDbgSymbolKinds = set of TDbgSymbolKind;
@@ -83,6 +84,20 @@ type
   TFpDbgValueConverterVariantToLStr = class(TFpDbgValueConverter)
   private
     function GetProcAddrFromMgr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDbgPtr;
+  public
+    class function GetName: String; override;
+    class function GetSupportedKinds: TDbgSymbolKinds; override;
+    function ConvertValue(ASourceValue: TFpValue;
+                          AnFpDebugger: TFpDebugDebuggerBase;
+                          AnExpressionScope: TFpDbgSymbolScope
+                         ): TFpValue; override;
+  end;
+
+  { TFpDbgValueConverterJsonForDebug }
+
+  TFpDbgValueConverterJsonForDebug = class(TFpDbgValueConverter)
+  private
+    function GetProcAddr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDBGPtr;
   public
     class function GetName: String; override;
     class function GetSupportedKinds: TDbgSymbolKinds; override;
@@ -417,8 +432,181 @@ begin
   end;
 end;
 
+{ TFpDbgValueConverterJsonForDebug }
+
+function TFpDbgValueConverterJsonForDebug.GetProcAddr(
+  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
+  ): TDBGPtr;
+var
+  CurProc: TDbgProcess;
+  ProcSymVal: TFpValue;
+  ProcSym: TFpSymbol;
+begin
+  Result := AnFpDebugger.GetCachedData(pointer(TFpDbgValueConverterJsonForDebug));
+  if Result <> 0 then
+    exit;
+
+  CurProc := AnFpDebugger.DbgController.CurrentProcess;
+  if CurProc = nil then
+    exit;
+
+  ProcSymVal := AnExpressionScope.FindSymbol('JsonForDebug');
+  if ProcSymVal <> nil then begin
+    if (ProcSymVal.Kind = skProcedure) and IsTargetAddr(ProcSymVal.DataAddress) then begin
+      Result := ProcSymVal.DataAddress.Address;
+      AnFpDebugger.SetCachedData(pointer(TFpDbgValueConverterJsonForDebug), Result);
+      ProcSymVal.ReleaseReference;
+      exit;
+    end;
+    Result := 0;
+    Result := ProcSymVal.DataAddress.Address;
+  end;
+
+  ProcSym := CurProc.FindProcSymbol('JsonForDebug');
+  if (ProcSym <> nil) and (ProcSym.Kind = skProcedure) and
+     (IsTargetAddr(ProcSym.Address))
+  then begin
+    Result := ProcSym.Address.Address;
+    AnFpDebugger.SetCachedData(pointer(TFpDbgValueConverterJsonForDebug), Result);
+  end;
+  ProcSym.ReleaseReference;
+end;
+
+class function TFpDbgValueConverterJsonForDebug.GetName: String;
+begin
+  Result := 'Call JsonForDebug';
+end;
+
+class function TFpDbgValueConverterJsonForDebug.GetSupportedKinds: TDbgSymbolKinds;
+begin
+  Result := [low(Result)..high(Result)];
+end;
+
+function TFpDbgValueConverterJsonForDebug.ConvertValue(ASourceValue: TFpValue;
+  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
+  ): TFpValue;
+var
+  CurProccess: TDbgProcess;
+  TpName, JsonText: String;
+  ProcAddr, SetLenProc, DecRefProc,
+  TpNameAddr, TpNewNameAddr, TpNameRefAddr, TextAddr, TextRefAddr: TDbgPtr;
+  CallContext: TFpDbgInfoCallContext;
+  r: Boolean;
+  AddrSize: Integer;
+begin
+  Result := nil;
+
+  if (not (svfAddress in ASourceValue.FieldFlags)) or
+     (not IsTargetAddr(ASourceValue.Address))
+  then begin
+    SetError(CreateError(fpErrAnyError, ['Value not in memory']));
+    exit;
+  end;
+
+  TpName := '';
+  if ASourceValue.TypeInfo <> nil then
+    TpName := ASourceValue.TypeInfo.Name;
+
+  if TpName = '' then begin
+    SetError(CreateError(fpErrAnyError, ['no typename']));
+    exit;
+  end;
+
+  ProcAddr := GetProcAddr(AnFpDebugger, AnExpressionScope);
+  if ProcAddr = 0 then begin
+    SetError(CreateError(fpErrAnyError, ['JsonForDebug not found']));
+    exit;
+  end;
+
+  CurProccess := AnFpDebugger.DbgController.CurrentProcess;
+  SetLenProc := AnFpDebugger.GetCached_FPC_ANSISTR_SETLENGTH;
+  DecRefProc := AnFpDebugger.GetCached_FPC_ANSISTR_DECR_REF;
+  if (SetLenProc = 0) or (DecRefProc = 0) or (CurProccess = nil)
+  then begin
+    SetError(CreateError(fpErrAnyError, ['internal error']));
+    exit;
+  end;
+
+
+  TpNameAddr := 0;
+  TpNewNameAddr := 0;
+  TpNameRefAddr := 0;
+  TextAddr := 0;
+  TextRefAddr := 0;
+  try
+    if (not AnFpDebugger.CreateAnsiStringInTarget(SetLenProc, TpNameAddr, TpName, AnExpressionScope.LocationContext)) or
+       (TpNameAddr = 0)
+    then begin
+      TpNameAddr := 0;
+      SetError(CreateError(fpErrAnyError, ['failed to set param']));
+      exit;
+    end;
+
+
+    CallContext := AnFpDebugger.DbgController.Call(TargetLoc(ProcAddr), AnExpressionScope.LocationContext,
+      AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
+
+    if (not CallContext.AddOrdinalParam(ASourceValue.Address.Address)) or
+       (not CallContext.AddOrdinalViaRefAsParam(TpNameAddr, TpNameRefAddr)) or
+       (not CallContext.AddOrdinalViaRefAsParam(0, TextRefAddr))
+    then begin
+      SetError(CreateError(fpErrAnyError, ['failed to set param']));
+      exit;
+    end;
+
+    CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
+
+    AnFpDebugger.DbgController.ProcessLoop;
+
+    if not CallContext.IsValid then begin
+      if (IsError(CallContext.LastError)) then
+        SetError(CallContext.LastError)
+      else
+      if (CallContext.Message <> '') then
+        SetError(CreateError(fpErrAnyError, [CallContext.Message]));
+      exit;
+    end;
+
+    r := True;
+    if not CurProccess.ReadAddress(TpNameRefAddr, TpNewNameAddr) then begin
+      r := False;
+      TpNewNameAddr := 0;
+    end;
+    if not CurProccess.ReadAddress(TextRefAddr, TextAddr) then begin
+      r := False;
+      TextAddr:= 0;
+    end;
+
+    if not AnFpDebugger.ReadAnsiStringFromTarget(TpNewNameAddr, TpName) then
+      r := False;
+    if not AnFpDebugger.ReadAnsiStringFromTarget(TextAddr, JsonText) then
+      r := False;
+
+    if not r then begin
+      SetError(CreateError(fpErrAnyError, ['failed to get result']));
+      exit;
+    end;
+
+
+    AnFpDebugger.DbgController.AbortCurrentCommand;
+    CallContext.ReleaseReference;
+
+    Result := TFpValueConstString.Create(JsonText);
+    TFpValueConstString(Result).SetTypeName(TpName);
+
+  finally
+    if TpNewNameAddr <> 0 then
+      TpNameAddr := TpNewNameAddr;
+    if TpNameAddr <> 0 then
+      AnFpDebugger.CallTargetFuncStringDecRef(DecRefProc, TpNameAddr, AnExpressionScope.LocationContext);
+    if TextAddr <> 0 then
+      AnFpDebugger.CallTargetFuncStringDecRef(DecRefProc, TextAddr, AnExpressionScope.LocationContext);
+  end;
+end;
+
 initialization
   ValueConverterClassList.Add(TFpDbgValueConverterVariantToLStr);
+  ValueConverterClassList.Add(TFpDbgValueConverterJsonForDebug);
 
 finalization;
   FreeAndNil(TheValueConverterClassList);
