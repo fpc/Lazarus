@@ -549,6 +549,7 @@ begin
     FThread.ClearExceptionSignal;
     RestoreState;
     Finished := True;
+    exit;
   end;
 
   case FStep of
@@ -2019,7 +2020,9 @@ begin
       OnHitBreakpointEvent(continue, nil, deInternalContinue, False);
   end;
 
-  if (not &continue) and (FCommand <> nil) then begin
+  if (not &continue) and (FCommand <> nil) and
+     not (FCommand is TDbgControllerCallRoutineCmd)
+  then begin
     assert(FCommandToBeFreed=nil, 'TDbgController.SendEvents: FCommandToBeFreed=nil');
     FCommandToBeFreed := FCommand;
     FCommand := nil;

@@ -420,7 +420,7 @@ type
     function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
       CurAddr: TDBGPtr = 0): TDBGPtr;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
-    procedure StopAllWorkers;
+    procedure StopAllWorkers(AWait: Boolean = False);
     function IsPausedAndValid: boolean; // ready for eval watches/stack....
 
     procedure DoProcessMessages;
@@ -735,15 +735,19 @@ begin
       else begin
         FCallstack.SetHasAtLeastCountInfo(ddsValid, CList.Count);
       end;
+
+(* TODO: this creates a new worker in RequestEntries
+   We need to get the entries directly, without issuing a request.
+   Then set, address and (if avail) proc-name, line and unit. Arguments are not avail
+*)
+      //// save whatever we have to history // limit to reduce time
+      //if StopRequested and (CList <> nil) then
+      //  FCallstack.PrepareRange(0, Min(CList.Count, 10));
     end
     else begin
       FCallstack.SetCountValidity(ddsInvalid);
       FCallstack.SetHasAtLeastCountInfo(ddsInvalid);
     end;
-
-    // save whatever we have to history // limit to reduce time
-    if StopRequested and (CList <> nil) then
-      FCallstack.PrepareRange(0, Min(CList.Count, 10));
 
     FCallstack := nil;
   end;
@@ -3548,6 +3552,7 @@ begin
   end
   else begin
     if State <> dsPause then begin
+      FDbgController.AbortCurrentCommand; // remove FCommand, in case any watch runs a TDbgControllerCallRoutineCmd
       SetState(dsPause);
       DoCurrent(ALocationAddr);
     end;
@@ -3663,6 +3668,12 @@ begin
     end;
     StartDebugLoop(dsInit);
     exit;
+  end;
+
+  if ACommand in [dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr,
+                  dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcDetach]
+  then begin
+    StopAllWorkers(True);
   end;
 
   Cmd := ACommand;
@@ -4148,7 +4159,7 @@ begin
   Result := FCacheContext;
 end;
 
-procedure TFpDebugDebugger.StopAllWorkers;
+procedure TFpDebugDebugger.StopAllWorkers(AWait: Boolean);
 begin
   TFPThreads(Threads).StopWorkes;
   TFPCallStackSupplier(CallStack).StopWorkes;
@@ -4156,8 +4167,17 @@ begin
   TFPLocals(Locals).StopWorkes;
   if FEvalWorkItem <> nil then begin
     FEvalWorkItem.Abort;
+    if AWait then
+      WorkQueue.RemoveItem(FEvalWorkItem);
     FEvalWorkItem.DecRef;
     FEvalWorkItem := nil;
+  end;
+
+  if AWait then begin
+    TFPThreads(Threads).FThreadWorkers.WaitForWorkers(True);
+    TFPCallStackSupplier(CallStack).FCallStackWorkers.WaitForWorkers(True);
+    TFPWatches(Watches).FWatchEvalWorkers.WaitForWorkers(True);
+    TFPLocals(Locals).FLocalWorkers.WaitForWorkers(True);
   end;
 end;
 
