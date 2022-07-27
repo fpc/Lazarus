@@ -456,13 +456,13 @@
         <short>Draws the Shell Icon for the specified tree node.</short>
         <descr>
           <p>
-            <var>DrawBuiltInIcon</var> is an overridden <var>TSize</var> function used draw an icon in the tree using the Shell icon for the file name in <var>ANode</var>. It re-implements the method in the <var>TCustomTreeView</var> ancestor, and does <b>not</b> call the inherited method.
+            <var>DrawBuiltInIcon</var> is an overridden <var>TSize</var> function used draw an icon in the tree using the Shell icon for the file or folder name in <var>ANode</var>. It re-implements the method in the <var>TCustomTreeView</var> ancestor, and does <b>not</b> call the inherited method.
           </p>
           <p>
             When <var>UseBuiltinIcons</var> is <b>True</b>, the internal <var>GetShellIcon</var> routine is called to get the icon used for the file. The icon is drawn on the control <var>Canvas</var> using the rectangle in <var>ARect</var>. The icon is centered vertically in the specified rectangle.
           </p>
           <p>
-            The return value contains the dimensions for the icon as a <var>TSize</var> instance. When UseBuiltinIcons is <b>False</b>, the return value always contains a TSize instance with both the <var>Width</var> (<var>CX</var>) and <var>Height</var> (<var>CY</var>)  are set to <b>0</b> (<b>zero</b>).
+            The return value contains the dimensions for the icon as a <var>TSize</var> instance. When UseBuiltinIcons is <b>False</b>, the return value always contains a TSize instance with both the <var>Width</var> (<var>CX</var>) and <var>Height</var> (<var>CY</var>) are set to <b>0</b> (<b>zero</b>). The size may also be empty (0, 0) if an icon was not found or returned for the file system entry by the widgetset class instance. This can occur when the file represented by ANode has been removed from the file system.
           </p>
           <remark>
             DrawBuiltInIcon is defined for the Windows platform only; it requires use of the <var>SHGetFileInfoW</var> routine in the FPC <file>ShellApi.pp</file> unit.
