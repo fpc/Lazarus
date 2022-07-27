@@ -82,6 +82,11 @@ var
 begin
   fileName := WideString(ATreeView.GetPathFromNode(ANode));
   ico := GetShellIcon(fileName);
+  if ico = nil then
+  begin
+    Result := Types.Size(0, 0);
+    exit;
+  end;
   try
     ATreeView.Canvas.Draw(ARect.Left, (ARect.Top + ARect.Bottom - ico.Height) div 2, ico);
     Result := Types.Size(ico.Width, ico.Height);
