@@ -3,15 +3,23 @@
   <package name="lcl">
     <!-- Buttons -->
     <module name="Buttons">
-      <short>Contains types and classes used to implement specialized buttons.</short>
+      <short>
+        Contains types and classes used to implement specialized buttons.
+      </short>
       <descr>
         <p>
-          <file>buttons.pp</file> contains classes, types, and routines used to implements specialized button controls. It registers the following components on the <b>Additional</b> tab in the Lazarus IDE component palette:
+          <file>buttons.pp</file> contains classes, types, and routines used to implements specialized button controls. It registers the following components in the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Additional</b> Tab
         </p>
         <ul>
           <li>TBitBtn</li>
           <li>TSpeedButton</li>
         </ul>
+        <p>
+          <file>buttons.pp</file> is part of the LCL (Lazarus Component Library).
+        </p>
       </descr>
 
       <!-- unresolved references -->
@@ -229,7 +237,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TButtonGlyph.Create"/>
@@ -844,7 +852,7 @@
             Bitmaps in ExternalImages (or Glyph) are stored in the Images property, and used in the GetImageIndexAndEffect method to determine the image resolution and bitmap used for the glyph and the button state.
           </p>
           <p>
-            Use ExternalImageWidth to specify the width of the images in the ExternalImages container.
+            Use ExternalImageWidth to specify the Width of the images in the ExternalImages container.
           </p>
         </descr>
         <seealso>
@@ -867,7 +875,7 @@
         <short>Width for the images in the ExternalImages property.</short>
         <descr>
           <p>
-            <var>ExternalImageWidth</var> is an <var>Integer</var> property with the width for the images in the ExternalImages property. The property value is used to determine the image resolution needed for the Images displayed in the GetImageIndexAndEffect method.
+            <var>ExternalImageWidth</var> is an <var>Integer</var> property with the Width for the images in the ExternalImages property. The property value is used to determine the image resolution needed for the Images displayed in the GetImageIndexAndEffect method.
           </p>
            <p>
              Changing the value for the property causes the OnChange event handler to be signalled (when assigned).
@@ -908,7 +916,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TButtonGlyph.ExternalImages"/>
@@ -927,7 +935,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TButtonGlyph.ExternalImages"/>
@@ -946,7 +954,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TButtonGlyph.ExternalImages"/>
@@ -967,7 +975,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TButtonGlyph.ExternalImages"/>
@@ -979,10 +987,10 @@
       </element>
 
       <element name="TButtonGlyph.Width">
-        <short>The width of the Glyph image.</short>
+        <short>The Width of the Glyph image.</short>
         <descr>
           <p>
-            <var>Width</var> is an <var>Integer</var> property with the width for bitmaps displayed in the class instance. When Images has been assigned, its Width is used as the property value. Otherwise, the property value is 0.
+            <var>Width</var> is an <var>Integer</var> property with the Width for bitmaps displayed in the class instance. When Images has been assigned, its Width is used as the property value. Otherwise, the property value is 0.
           </p>
           <p>
             Width is used when a value is assigned to the Glyph property, and determines if multiple images are present in the bitmap loaded into the Images property.
@@ -1063,7 +1071,7 @@
         </short>
         <descr>
           <p>
-            <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons. Values in <var>TBitBtnKind</var> are used to select the appropriate image displayed as the glyph for <var>TBitBtn</var> class instances. <var>TBitBtnKind</var> is the type used to implement the <var>Kind</var> property in <var>TCustomBitBtn</var>.
+            <var>TBitBtnKind</var> is an enumerated type with values which indicate the intended use for a TCustomBitBtn / TBitBtn instance. Values in <var>TBitBtnKind</var> are used to select the appropriate image displayed as the glyph for <var>TBitBtn</var> class instances. <var>TBitBtnKind</var> is the type used to implement the <var>Kind</var> property in <var>TCustomBitBtn</var>.
           </p>
         </descr>
         <seealso>
@@ -1071,7 +1079,7 @@
         </seealso>
       </element>
       <element name="TBitBtnKind.bkCustom">
-        <short>Uses a custom image assigned in the button.</short>
+        <short>Uses a custom image on a button.</short>
       </element>
       <element name="TBitBtnKind.bkOK">
         <short>Uses the OK button image.</short>
@@ -1130,7 +1138,7 @@
             <var>TCustomBitBtn</var> is a <var>TCustomButton</var> descendant, and the ancestor for <var>TBitBtn</var>. It provides the interface used to display a button with a glyph (or image) and a caption. It performs an action when the button is clicked.
           </p>
           <p>
-            If you want to define your own bitbutton class, you should derive it from this class.
+            If you want to define your own bitmap button class, you should derive it from this class.
           </p>
         </descr>
       </element>
@@ -1150,7 +1158,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetGlyph.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Glyph property.</short>
       </element>
 
       <element name="TCustomBitBtn.GetGlyphShowMode">
@@ -1161,7 +1169,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetGlyphShowMode.Result">
-        <short>Value for the property.</short>
+        <short>Value for the GlyphShowMode property.</short>
       </element>
 
       <element name="TCustomBitBtn.GetNumGlyphs">
@@ -1172,11 +1180,13 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetNumGlyphs.Result">
-        <short>Value for the property.</short>
+        <short>Value for the NumGlyphs property.</short>
       </element>
 
       <element name="TCustomBitBtn.ImageListChange">
-        <short>Perform a change notification when Images for the control are updated.</short>
+        <short>
+          Performs a change notification when Images for the control are updated.
+        </short>
         <descr>
           <p>
             <var>ImageListChange</var> is a procedure used to perform a change notification when the <var>Images</var> for the control have been updated.
@@ -1223,7 +1233,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetGlyph.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Glyph property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetGlyphShowMode">
@@ -1234,7 +1244,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetGlyphShowMode.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the GlyphShowMode property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetKind">
@@ -1245,7 +1255,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetKind.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Kind property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetLayout">
@@ -1256,7 +1266,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetLayout.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Layout property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetMargin">
@@ -1267,7 +1277,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetMargin.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Margin property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetNumGlyphs">
@@ -1278,7 +1288,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetNumGlyphs.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the NumGlyphs property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetSpacing">
@@ -1289,11 +1299,13 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetSpacing.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Spacing property.</short>
       </element>
 
       <element name="TCustomBitBtn.RealizeKind">
-        <short></short>
+        <short>
+          Loads and configures properties for the Kind value in the control.
+        </short>
         <descr>
           <p>
             <var>RealizeKind</var> is a procedure used to load and configure properties for the control. <var>RealizeKind</var> ensures that the <var>Glyph</var> displayed on the control contains a valid image for the value in the <var>Kind</var> property. When <var>Kind</var> contains <b>bkCustom</b>, it is assumed that the image was assigned directly to the <var>Glyph</var> property. For all other values, the following logic is used to derive the <var>Glyph</var> image:
@@ -1385,7 +1397,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetImages.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Images property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetImages">
@@ -1396,7 +1408,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetImages.AImages">
-        <short>New value for the property.</short>
+        <short>New value for the Images property.</short>
       </element>
 
       <element name="TCustomBitBtn.GetImageIndex">
@@ -1407,7 +1419,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetImageIndex.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ImageIndex property.</short>
       </element>
       <element name="TCustomBitBtn.GetImageIndex.AState">
         <short></short>
@@ -1420,11 +1432,11 @@
           <link id="TCustomBitBtn.ImageIndex"/>
         </seealso>
       </element>
+      <element name="TCustomBitBtn.SetImageIndex.AImageIndex">
+        <short>New value for the ImageIndex property.</short>
+      </element>
       <element name="TCustomBitBtn.SetImageIndex.AState">
         <short></short>
-      </element>
-      <element name="TCustomBitBtn.SetImageIndex.AImageIndex">
-        <short>New value for the property.</short>
       </element>
 
       <element name="TCustomBitBtn.GetImageWidth">
@@ -1435,7 +1447,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.GetImageWidth.Result">
-        <short>Value for the property.</short>
+        <short>Value for the ImageWidth property.</short>
       </element>
 
       <element name="TCustomBitBtn.SetImageWidth">
@@ -1446,7 +1458,7 @@
         </seealso>
       </element>
       <element name="TCustomBitBtn.SetImageWidth.AImageWidth">
-        <short>New value for the property.</short>
+        <short>New value for the ImageWidth property.</short>
       </element>
 
       <element name="TCustomBitBtn.FButtonGlyph">
@@ -1464,7 +1476,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomBitBtn.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomBitBtn.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomBitBtn.ActionChange">
         <short>
@@ -1531,29 +1543,50 @@
         <short>
           Performs actions needed when the component has been loaded using LCL component streaming.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden method in <var>TCustomBitBtn</var>, and calls the inherited method on entry. It ensures that properties in the class instance are updated when a value other than bkCustom is used in the Kind property. This includes loading the Glyph image and setting values in Caption, ModalResult, Default, Cancel, ImageIndex, and DefaultCaption.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Kind"/>
+          <link id="#lcl.stdctrls.TCustomButton.Loaded">TCustomButton.Loaded</link>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.Notification">
         <short>
           Performs actions needed when a sub-component is added or removed in the class instance.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            Ensures that a TCustomImageList reference in the button glyph is <b>Nil</b>'d when the image list is freed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+        </seealso>
       </element>
       <element name="TCustomBitBtn.Notification.AComponent">
         <short>Component for the notification message.</short>
-        <descr></descr>
-        <seealso></seealso>
       </element>
       <element name="TCustomBitBtn.Notification.Operation">
         <short>Operation performed for the notification message.</short>
-        <descr></descr>
-        <seealso></seealso>
       </element>
 
-      <element name="TCustomBitBtn.TextChanged" link="#lcl.controls.TControl.TextChanged"/>
+      <element name="TCustomBitBtn.TextChanged">
+        <short>
+          Performs actions needed when the CM_TEXTCHANGED control message is handled for the control.
+        </short>
+        <descr>
+          <p>
+            <var>TextChanged</var> is an overridden method in <var>TCustomBitBtn</var>. It ensures that the control is updated when the value in the Caption property has been changed. AdjustSize is called to auto-size a visible control and its parent. The value in DefaultCaption is set to <b>False</b> after the new value has been assigned for the Caption property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.TextChanged">TControl.TextChanged</link>
+        </seealso>
+      </element>
 
       <element name="TCustomBitBtn.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomBitBtn.GetControlClassDefaultSize.Result">
@@ -1616,7 +1649,9 @@
           </p>
           <ul>
             <li>ModalResult is set to mrNone, or</li>
-            <li>ModalResult is mrCancel and the parent form is displayed as a modal dialog.</li>
+            <li>
+              ModalResult is mrCancel and the parent form is displayed as a modal dialog.
+            </li>
           </ul>
           <p>
             If Kind has any other value, the inherited Click method is called to determine the ModalResult and signal the OnChange event handler (when assigned).
@@ -1633,28 +1668,30 @@
       </element>
 
       <element name="TCustomBitBtn.LoadGlyphFromResourceName">
-        <short>Loads the Glyph image with the specified named from a resource instance.</short>
+        <short>
+          Loads the Glyph image with the specified named from a resource instance.
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <element name="TCustomBitBtn.LoadGlyphFromResourceName.Instance">
-        <short></short>
+        <short>
+          Handle for the resource instance where the glyph is stored.
+        </short>
       </element>
       <element name="TCustomBitBtn.LoadGlyphFromResourceName.AName">
-        <short>Resource name for the image loaded in the method.</short>
+        <short>Resource name for the glyph loaded in the method.</short>
       </element>
 
       <element name="TCustomBitBtn.LoadGlyphFromLazarusResource">
         <short>
-          <var>LoadGlyphFromLazarusResource</var> - method for loading the glyph from a Lazarus resource file (.lrs).
+          Loads a glyph image from the Lazarus resource file (.lrs).
         </short>
         <descr></descr>
         <seealso></seealso>
       </element>
       <element name="TCustomBitBtn.LoadGlyphFromLazarusResource.AName">
         <short>Name for the resource loaded from the Lazarus resource file.</short>
-        <descr></descr>
-        <seealso></seealso>
       </element>
 
       <element name="TCustomBitBtn.LoadGlyphFromStock">
@@ -1691,7 +1728,9 @@
       </element>
 
       <element name="TCustomBitBtn.Caption">
-        <short>Contains the descriptive text displayed for the Bitmap button control.</short>
+        <short>
+          Contains the descriptive text displayed for the Bitmap button control.
+        </short>
         <descr>
           <p>
             <var>Caption</var> is a public <var>TCaption</var> property which contains the descriptive text displayed for the Bitmap button control. Assign a value to Caption when the <var>Kind</var> property is set to <var>bkCustom</var>. When Kind contains one of the other <var>TBitBtnKind</var> enumeration values, the Caption is normally set using the <var>GetCaptionOfKind</var> method.
@@ -1709,7 +1748,9 @@
       </element>
 
       <element name="TCustomBitBtn.DefaultCaption">
-        <short>Indicates if Caption contains the default value for the button Kind.</short>
+        <short>
+          Indicates if Caption contains the default value for the button Kind.
+        </short>
         <descr>
           <p>
             Changing the property value to <b>True</b> causes a resource string with the caption text for the button ID to be assigned to the Caption property when Kind is not bkCustom.
@@ -1722,14 +1763,16 @@
       </element>
 
       <element name="TCustomBitBtn.DisabledImageIndex">
-        <short>Ordinal position for the image displayed when the button is Disabled.</short>
+        <short>
+          Ordinal position for the image displayed when the button is Disabled.
+        </short>
         <descr>
           <p>
             <var>DisabledImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is Disabled. It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso/>
       </element>
@@ -1741,7 +1784,7 @@
             <var>Glyph</var> is a <var>TBitmap</var> property with bitmap(s) displayed on the button control. The bitmap is stored internally in a TButtonGlyph instance that is populated when a glyph resource is used for image(s) on the control. A bitmap can be assigned directly to the property. Or, it can be loaded when the LoadGlyphFromResourceName, LoadGlyphFromLazarusResource, or LoadGlyphFromStock method is called.
           </p>
           <p>
-            Glyph can contain a bitmap with multiple adjacent images representing the states for the button control. Use ImageWidth to define the width for individual images in the combined bitmap. If the bitmap has a width that is larger than ImageWidth, it is split into separate bitmaps for use in the internal TButtonGlyph instance. Use ImageIndex, DisabledImageIndex, HotImageIndex, and PressedImageIndex to indicate which bitmap is used for the corresponding button state.
+            Glyph can contain a bitmap with multiple adjacent images representing the states for the button control. Use ImageWidth to define the Width for individual images in the combined bitmap. If the bitmap has a Width that is larger than ImageWidth, it is split into separate bitmaps for use in the internal TButtonGlyph instance. Use ImageIndex, DisabledImageIndex, HotImageIndex, and PressedImageIndex to indicate which bitmap is used for the corresponding button state.
           </p>
           <remark>
             Unlike TCustomSpeedButton, SelectedImageIndex is not available in TCustomBitBtn; it cannot receive input focus, so a selected image is neither needed nor implemented.
@@ -1762,7 +1805,7 @@
         <short>The number of glyph bitmaps available for the control.</short>
         <descr>
           <p>
-            <var>NumGlyphs</var> is a <var>TNumGlyphs</var> property with the number of images in the bitmap assigned to the Glyph property. The property value is read from and written to the internal TButtonGlyph instance for the control. Changing the value for the property causes the original image to be re-examined and split into separate images based on the width specified in the ImageWidth property.
+            <var>NumGlyphs</var> is a <var>TNumGlyphs</var> property with the number of images in the bitmap assigned to the Glyph property. The property value is read from and written to the internal TButtonGlyph instance for the control. Changing the value for the property causes the original image to be re-examined and split into separate images based on the Width specified in the ImageWidth property.
           </p>
         </descr>
         <seealso>
@@ -1782,19 +1825,39 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso/>
       </element>
 
       <element name="TCustomBitBtn.Images">
-        <short>Contains images available for the control.</short>
+        <short>
+          Contains the list of images available for use as the glyph on a custom button control.
+        </short>
         <descr>
           <p>
-            <var>Images</var> is a <var>TCustomImageList</var> property with the images displayed for the various states used on the button control.
+            <var>Images</var> is a <var>TCustomImageList</var> property with the images which can be displayed as the glyph for the various states on the button control. Images provides an alternative to assigning a bitmap to the Glyph property, and is used when the Kind property is set to bkCustom.
+          </p>
+          <p>
+            Use ImageWidth to set the image resolution size used when a value is retrieved from the Images property.
+          </p>
+          <p>
+            Use ImageIndex to specify the ordinal position for the value in Images displayed as the glyph for the button control.
+          </p>
+          <p>
+            Use the HotImageIndex, PressedImageIndex, and DisabledImageIndex properties to specify the position for the image displayed for the corresponding button states.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TCustomBitBtn.Kind"/>
+          <link id="TCustomBitBtn.ImageWidth"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+          <link id="TCustomBitBtn.HotImageIndex"/>
+          <link id="TCustomBitBtn.PressedImageIndex"/>
+          <link id="TCustomBitBtn.DisabledImageIndex"/>
+          <link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.ImageIndex">
@@ -1807,49 +1870,129 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso></seealso>
       </element>
 
       <element name="TCustomBitBtn.ImageWidth">
-        <short>Display width for the glyph image on the control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Width for the value in Images displayed on the button control.
+        </short>
+        <descr>
+          <p>
+            <var>ImageWidth</var> is an <var>Integer</var> property with the Width in pixels for the TCustomImage instances stored in the Images property. The default value for the property is 0, and indicates that an explicit value has not been assigned for the property. This causes the Width property in the TCustomImageList to be used for an image retrieved from the list.
+          </p>
+          <p>
+            Changing the property value causes the internal TButtonGlyph instance in the class to be updated with the new value. InvalidatePreferredSize is called to recalculate the preferred dimensions for the class instance. AdjustSize is called to auto-size a visible control and its parent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Images"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TButtonGlyph"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.Kind">
-        <short>What kind of BitButton? Custom, OK, Cancel, Yes, No etc.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Specifies the button kind including the default bitmap and caption for the button control.
+        </short>
+        <descr>
+          <p>
+            <var>Kind</var> is a <var>TBitBtnKind</var> property which identifies the intended usage for the button control. The enumeration value indicates the default values used in the Glyph and Caption for the control. The default value for the property is bkCustom, and causes values in Glyph (or the image in ImageIndex) and Caption to be displayed on the button surface.
+          </p>
+          <p>
+            Changing the property value causes other values in the class instance to be updated. When Kind has a value other than bkCustom, the default Glyph is retrieved and stored using the GetDefaultBitBtnGlyph, ThemeServices, or resources from BitBtnImages and BitBtnResNames. Values in Caption, ModalResult, Default, Cancel and DefaultCaption are updated as needed for the new value in Kind.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TBitBtnKind"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.Layout">
-        <short>Layout of button - Glyph at top, bottom, left or right.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Layout or alignment for the glyph bitmap and caption on the control.
+        </short>
+        <descr>
+          <p>
+            <var>Layout</var> is a <var>TButtonLayout</var> property which indicates the alignment used for the Glyph (or image) and the Caption on the button control. The default value for the property is blGlyphLeft. It causes the Margin, Glyph (or image), Spacing, and Caption to be aligned to the left edge of the button surface.
+          </p>
+          <p>
+            Changing the property value causes the widgetset class instance to be updated when its handle has been allocated. InvalidatePreferredSize is called to recalculate the preferred dimensions for the control. AdjustSize is called to auto-size a visible control and its parent.
+          </p>
+          <p>
+            The property value is used in the InitializeWnd method to set the initial value in the widget class instance.
+          </p>
+          <p>
+            Use Margin to set the space reserved prior to the glyph bitmap on the aligned edge of the control. Use Spacing to set the space reserved between the Glyph image and the Caption relative to the aligned edge of the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Caption"/>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TCustomBitBtn.Images"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+          <link id="TCustomBitBtn.Margin"/>
+          <link id="TCustomBitBtn.Spacing"/>
+          <link id="TButtonLayout"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.Margin">
-        <short>The margin to be left around glyphs.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          The space prior to the glyph bitmap on the aligned edge of the button layout.
+        </short>
+        <descr>
+          <p>
+            <var>Margin</var> is an <var>Integer</var> property with the space reserved prior to the Glyph or image displayed on the button control. It occurs on the aligned edge specified in Layout, and generally refers to a number of pixels. The value -1 has special meaning; it causes the glyph and caption to be centered on the button surface.
+          </p>
+          <p>
+            The default value for the property is -1. Changing the property value causes the widgetset class instance to be updated when its handle has been allocated. AdjustSize is called to auto-size a visible control and its parent. At design-time, the Invalidate method is called to redraw the control.
+          </p>
+          <p>
+            The property value is used in the InitializeWnd method to set the initial value in the widget class.
+          </p>
+          <p>
+            Use Layout to specify the edge on the button control to which the glyph bitmap and caption are aligned.
+          </p>
+          <p>
+            Use Spacing to set the space reserved between the glyph bitmap and the caption for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Caption"/>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TCustomBitBtn.Images"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+          <link id="TCustomBitBtn.Layout"/>
+          <link id="TCustomBitBtn.Spacing"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.PressedImageIndex">
-        <short>Ordinal position for the bitmap displayed when the button control is pressed (down).</short>
+        <short>
+          Ordinal position for the bitmap displayed when the button control is pressed (down).
+        </short>
         <descr>
           <p>
-            PressedImageIndex is a TImageIndex property with the ordinal position for the bitmap displayed on the button when it is pressed (down). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+            <var>PressedImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is pressed (down). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomBitBtn.Images"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+        </seealso>
       </element>
 
       <!--
+      currently commented out in TCustomBitBtn
+
       <element name="TCustomBitBtn.SelectedImageIndex">
         <short>Ordinal position for the image displayed on the control.</short>
         <descr>
@@ -1866,9 +2009,37 @@
       -->
 
       <element name="TCustomBitBtn.Spacing">
-        <short>The spacing around the BitButton.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          The space reserved between the bitmap and the caption on the button control.
+        </short>
+        <descr>
+          <p>
+            <var>Spacing</var> is an <var>Integer</var> property with the number of pixels used to separate the Glyph (or image) displayed on the button and its Caption. The default value for the property is 4 pixels.
+          </p>
+          <p>
+            The number of pixels in Spacing is always displayed - even when the Caption is an empty string. To suppress drawing of the additional space, set the property to 0.
+          </p>
+          <p>
+            Changing the value for the property causes the widgetset instance to be updated when its handle has been allocated. AdjustSize is called to auto-size a visible control and its parent. At design-time, the Invalidate method is called to redraw the control.
+          </p>
+          <p>
+            The property value is used in the InitializeWnd method to set the initial value in the widget class.
+          </p>
+          <p>
+            Use Layout to specify the edge on the button control to which the glyph bitmap is aligned.
+          </p>
+          <p>
+            Use Margin to set the space reserved on the aligned edge prior to the glyph bitmap.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Caption"/>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TCustomBitBtn.Images"/>
+          <link id="TCustomBitBtn.ImageIndex"/>
+          <link id="TCustomBitBtn.Layout"/>
+          <link id="TCustomBitBtn.Margin"/>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.GlyphShowMode">
@@ -1883,7 +2054,7 @@
       </element>
 
       <element name="TBitBtn">
-        <short>A Button with a small image attached.</short>
+        <short>A button with a small image attached.</short>
         <descr>
           <p>
             <var>TBitBtn</var> is a <var>TCustomBitBtn</var> descendant which provides the interface used to display a button with a glyph (or image) and a caption. It performs an action when the button is clicked.
@@ -2070,12 +2241,12 @@
         <short>Ordinal position for the image selected in the speed button control.</short>
       </element>
 
-      <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked"/>
+      <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#lcl.actnlist.TActionLink.IsCheckedLinked"/>
       <element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
         <short></short>
       </element>
 
-      <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#LCL.ActnList.TActionLink.IsGroupIndexLinked"/>
+      <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#lcl.actnlist.TActionLink.IsGroupIndexLinked"/>
       <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
         <short></short>
       </element>
@@ -2372,7 +2543,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomSpeedButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomSpeedButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomSpeedButton.ButtonGlyph">
         <short>Gets the TButtonGlyph used for the control.</short>
@@ -2408,7 +2579,7 @@
       <element name="TCustomSpeedButton.DialogChar" link="#lcl.controls.TControl.DialogChar"/>
 
       <element name="TCustomSpeedButton.CalculatePreferredSize">
-        <short>Calculates the default height and width required for the control.</short>
+        <short>Calculates the default height and Width required for the control.</short>
         <descr>
           <p>
             Calls MeasureDraw to gets the values for the variable parameters in PreferredWidth and PreferredHeight.
@@ -2828,10 +2999,10 @@
         </short>
         <descr>
           <p>
-            <var>GetGlyphSize</var> is a <var>TSize</var> function used to get the size of the glyph within the client rectangle specified in the <var>PaintRect</var> argument. The return value contains the width (in CX) and the height (in CY). The member values are retrieved from a scaled image resolution for the glyph bitmaps in ButtonGlyph. The values are scaled to the client rectangle using the PixelsPerInch for the Font and the Canvas scaling factor for the control.
+            <var>GetGlyphSize</var> is a <var>TSize</var> function used to get the size of the glyph within the client rectangle specified in the <var>PaintRect</var> argument. The return value contains the Width (in CX) and the height (in CY). The member values are retrieved from a scaled image resolution for the glyph bitmaps in ButtonGlyph. The values are scaled to the client rectangle using the PixelsPerInch for the Font and the Canvas scaling factor for the control.
           </p>
           <p>
-            Use GetTextSize to get the width and height or the Caption displayed on the control.
+            Use GetTextSize to get the Width and height or the Caption displayed on the control.
           </p>
           <p>
             GetGlyphSize is used in the implementation of the MeasureDraw method.
@@ -2844,7 +3015,7 @@
         </seealso>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.Result">
-        <short>TSize instance with the width (CX) and height ( CY) for the glyph .</short>
+        <short>TSize instance with the Width (CX) and height ( CY) for the glyph .</short>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.Drawing">
         <short><b>True</b> if the control is drawing, <b>False</b> if the control is measuring its components.</short>
@@ -2862,7 +3033,7 @@
             <var>GetTextSize</var> is a <var>TSize</var> function used to get the dimensions for the <var>Caption</var> text for the control.
           </p>
            <p>
-             GetTextSize removes Ampersand (&amp;) characters in Caption prior to calculating the dimensions for the text using the TextStyle for the control Canvas. The value in PaintRect is updated with the calculated dimensions. The X and Y members in the return value contain the width and the height for the text using the Font for the control. Both member values are set to <b>0</b> when ShowCaption is <b>False</b> or Caption contains an empty string (<b>''</b>).
+             GetTextSize removes Ampersand (&amp;) characters in Caption prior to calculating the dimensions for the text using the TextStyle for the control Canvas. The value in PaintRect is updated with the calculated dimensions. The X and Y members in the return value contain the Width and the height for the text using the Font for the control. Both member values are set to <b>0</b> when ShowCaption is <b>False</b> or Caption contains an empty string (<b>''</b>).
            </p>
            <p>
              GetTextSize is called from the <var>MeasureDraw</var> method.
@@ -3092,7 +3263,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TCustomSpeedButton.Images"/>
@@ -3191,7 +3362,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TCustomSpeedButton.Images"/>
@@ -3234,7 +3405,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TCustomSpeedButton.Images"/>
@@ -3289,7 +3460,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso>
           <link id="TCustomSpeedButton.Images"/>
@@ -3313,7 +3484,7 @@
           </p>
         </descr>
         <version>
-          Added in LCL version 2.3.0.
+          Added in LCL version 2.3.0. Available since version 2.4.0.
         </version>
         <seealso/>
       </element>
@@ -3551,7 +3722,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
 
       <element name="GetLCLDefaultBtnGlyph">
         <short>
-          <var>GetLCLDefaultBtnGlyph</var> gets the LCL default button glyph for the specified button Kind.
+          Gets the default LCL button glyph for the specified button Kind.
         </short>
         <descr>
         </descr>
@@ -3560,6 +3731,17 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
           <link id="TGetDefaultBitBtnGlyph"/>
         </seealso>
       </element>
+      <element name="GetLCLDefaultBtnGlyph.Result">
+        <short>
+          TGraphic instance with the glyph loaded in the routine.
+        </short>
+      </element>
+      <element name="GetLCLDefaultBtnGlyph.Kind">
+        <short>
+          Determines the default image loaded for the bitmapped button.
+        </short>
+      </element>
+
 
       <element name="LoadGlyphFromResourceName">
         <short>Loads a bitmap from a named resource into the specified Glyph.</short>
@@ -3637,29 +3819,122 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
 
       <element name="GetButtonCaption">
         <short>Gets the default caption for the specified button identifier.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>GetButtonCaption</var> is a <var>String</var> function used to get the default caption for the numeric button identifier in idButton. The return value contains the resource string from the <file>LCLStrConsts.pas</file> unit for the value in idButton.
+          </p>
+          <p>
+            idButton contains one of the button identifiers defined in <file>LCLType.pp</file>, such as:
+          </p>
+          <dl>
+            <dt>idButtonOk (1)</dt>
+            <dd>Returns the value in rsmbOK.</dd>
+            <dt>idButtonCancel (2)</dt>
+            <dd>Returns the value in rsmbCancel.</dd>
+            <dt>idButtonHelp (3)</dt>
+            <dd>Returns the value in rsmbHelp.</dd>
+            <dt>idButtonYes (4)</dt>
+            <dd>Returns the value in rsmbYes.</dd>
+            <dt>idButtonNo (5)</dt>
+            <dd>Returns the value in rsmbNo.</dd>
+            <dt>idButtonClose (6)</dt>
+            <dd>Returns the value in rsmbClose.</dd>
+            <dt>idButtonAbort (7)</dt>
+            <dd>Returns the value in rsmbAbort.</dd>
+            <dt>idButtonRetry (8)</dt>
+            <dd>Returns the value in rsmbRetry.</dd>
+            <dt>idButtonIgnore (9)</dt>
+            <dd>Returns the value in rsmbIgnore.</dd>
+            <dt>idButtonAll (10)</dt>
+            <dd>Returns the value in rsmbAll.</dd>
+            <dt>idButtonYesToAll (11)</dt>
+            <dd>Returns the value in rsmbYesToAll.</dd>
+            <dt>idButtonNoToAll (12)</dt>
+            <dd>Returns the value in rsmbNoToAll.</dd>
+            <dt>idButtonOpen (13)</dt>
+            <dd>Returns the value in rsmbOpen.</dd>
+            <dt>idButtonSave (14)</dt>
+            <dd>Returns the value in rsmbSave.</dd>
+            <dt>idButtonShield (15)</dt>
+            <dd>Returns the value in rsmbUnlock.</dd>
+          </dl>
+          <p>
+            The return value is '?' if any other numeric value is passed in idButton.
+          </p>
+          <p>
+            GetButtonCaption is called when a value other than bkCustom is assigned to the Kind property in TCustomBitBtn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="GetDefaultButtonIcon"/>
+        </seealso>
       </element>
       <element name="GetButtonCaption.Result">
-        <short></short>
+        <short>Default caption for the specified button.</short>
       </element>
       <element name="GetButtonCaption.idButton">
-        <short></short>
+        <short>Button identifier used to get the default caption from a resource string.</short>
       </element>
 
       <element name="GetDefaultButtonIcon">
-        <short>Gets the default icon for the specified button identifier.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Gets a scaled bitmap with the default glyph for the specified button identifier.
+        </short>
+        <descr>
+          <p>
+            <var>GetDefaultButtonIcon</var> is a <var>TCustomBitmap</var> function used to retrieve the default glyph bitmap for the button identifier in idButton. idButton contains one of the button identifiers defined in <file>LCLType.pp</file>, such as:
+          </p>
+          <ul>
+            <li>idButtonOk (1)</li>
+            <li>idButtonCancel (2)</li>
+            <li>idButtonHelp (3)</li>
+            <li>idButtonYes (4)</li>
+            <li>idButtonNo (5)</li>
+            <li>idButtonClose (6)</li>
+            <li>idButtonAbort (7)</li>
+            <li>idButtonRetry (8)</li>
+            <li>idButtonIgnore (9)</li>
+            <li>idButtonAll (10)</li>
+            <li>idButtonYesToAll (11)</li>
+            <li>idButtonNoToAll (12)</li>
+            <li>idButtonOpen (13)</li>
+            <li>idButtonSave (14)</li>
+            <li>idButtonShield (15)</li>
+          </ul>
+          <p>
+            GetDefaultButtonIcon uses the value in idButton to get the resource name for the button from the BitBtnResNames constant. If a resource name is not found for the button identifier, the image data in the return value is empty.
+          </p>
+          <p>
+            <var>ScalePercent</var> contains the scaling percentage for the retrieved bitmap. The default value is 100 and keeps the original dimensions for the bitmap.
+          </p>
+          <p>
+            GetDefaultButtonIcon calls the GetDefaultGlyph routine to retrieve the scaled bitmap. The image is loaded from application or LCL resources with the required name and scaling percentage, and stored in the return value. Transparency is applied to the bitmap using the color in the bottom, left pixel if it is not already enabled. Please note that GetDefaultGlyph raises an exception if a resource with the required name and scaling percentage is not found in the available resources.
+          </p>
+          <p>
+            GetDefaultButtonIcon is called from the GetButtonIcon and GetLCLDefaultBtnGlyph routines, and occurs when a value other than bkCustom is assigned to the Kind property in TCustomBitBtn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="BitBtnResNames"/>
+          <link id="GetButtonIcon"/>
+          <link id="GetLCLDefaultBtnGlyph"/>
+          <link id="#lcl.imglist.GetDefaultGlyph">GetDefaultGlyph</link>
+        </seealso>
       </element>
       <element name="GetDefaultButtonIcon.Result">
-        <short></short>
+        <short>
+          Default glyph bitmap for the specified button identifier.
+        </short>
       </element>
       <element name="GetDefaultButtonIcon.idButton">
-        <short></short>
+        <short>
+          Numeric button identifier used to retrieve the glyph from LCL resources.
+        </short>
       </element>
       <element name="GetDefaultButtonIcon.ScalePercent">
-        <short></short>
+        <short>
+          Scaling percentage for the glyph bitmap. The default value is 100.
+        </short>
       </element>
 
       <element name="GetButtonIcon">
@@ -3668,7 +3943,7 @@ Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
         </short>
         <descr>
           <p>
-            <var>GetButtonIcon</var> is a <var>TCustomBitmap</var> function used to get a bitmap with the glyph image for the button identifier in <var>idButton</var>. GetButtonIcon calls the <var>GetStockImage</var> routine in <var>ThemeServices</var> to get the handle used for the stock image. If the return value is <b>False</b>, the <var>GetDefaultButtonIcon</var> is called to get the icon for the button identifier.
+            <var>GetButtonIcon</var> is a <var>TCustomBitmap</var> function used to get a bitmap with the glyph for the button identifier in <var>idButton</var>. GetButtonIcon calls the <var>GetStockImage</var> routine in <var>ThemeServices</var> to get the handle used for the stock image. If the return value is <b>False</b>, the <var>GetDefaultButtonIcon</var> routine is called to get the icon for the button identifier.
           </p>
           <p>
             GetButtonIcon is used in the implementation of the <var>LoadGlyphFromStock</var> routine.
