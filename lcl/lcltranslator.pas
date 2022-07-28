@@ -79,6 +79,7 @@ type
   end;
 
 function TranslateLCLResourceStrings(Lang, Dir: string): string;
+function TranslateUnitResourceStringsEx(Lang, Dir, LocaleFileName: string; LocaleUnitName: string = ''): string;
 function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true): string;
 function GetDefaultLang: String; deprecated 'Use SetDefaultLang function result instead'; // Lazarus 2.1.0
 
@@ -525,19 +526,28 @@ begin
 end;
 
 function TranslateLCLResourceStrings(Lang, Dir: string): string;
+begin
+  Result:=LCLTranslator.TranslateUnitResourceStringsEx(Lang, Dir, 'lclstrconsts');
+end;
+
+function TranslateUnitResourceStringsEx(Lang, Dir, LocaleFileName: string; LocaleUnitName: string = ''): string;
 var
-  LCLPath: string;
+  UnitPath: string;
 begin
   Result:='';
+  if LocaleFileName='' then
+    exit;
+  if LocaleUnitName='' then
+    LocaleUnitName:=LocaleFileName;
   try
-    LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
-    if LCLPath<>'' then
-      Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
+    UnitPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(Dir), LocaleFileName, Result);
+    if UnitPath<>'' then
+      Translations.TranslateUnitResourceStrings(LocaleUnitName, UnitPath)
     else
     begin
-      LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), 'lclstrconsts', Result);
-      if LCLPath<>'' then
-        GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
+      UnitPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(Dir), LocaleFileName, Result);
+      if UnitPath<>'' then
+        GetText.TranslateResourceStrings(UTF8ToSys(UnitPath));
     end;
   except
     Result:='';
