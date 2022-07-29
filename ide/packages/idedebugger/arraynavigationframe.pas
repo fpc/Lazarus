@@ -37,6 +37,7 @@ type
     FLowBound: int64;
     FOnIndexChanged: TArrayNavChangeEvent;
     FOnPageSize: TArrayNavChangeEvent;
+    FOnSizeChanged: TNotifyEvent;
     FOwnerData: pointer;
     FShowBoundInfo: Boolean;
     function GetIndex: int64;
@@ -50,6 +51,7 @@ type
     procedure SetPageSize(AValue: int64);
     procedure SetShowBoundInfo(AValue: Boolean);
     procedure UpdateBoundsInfo;
+    procedure DoOnSizeChanged;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Loaded; override;
@@ -66,6 +68,7 @@ type
   published
     property OnIndexChanged: TArrayNavChangeEvent read FOnIndexChanged write FOnIndexChanged;
     property OnPageSize: TArrayNavChangeEvent read FOnPageSize write FOnPageSize;
+    property OnSizeChanged: TNotifyEvent read FOnSizeChanged write FOnSizeChanged;
     property HardLimits: Boolean read FHardLimits write SetHardLimits;
   end;
 
@@ -202,8 +205,8 @@ begin
   if FShowBoundInfo = AValue then Exit;
   FShowBoundInfo := AValue;
 
-  UpdateBoundsInfo;
   lblBounds.Visible := FShowBoundInfo;
+  UpdateBoundsInfo;
 end;
 
 procedure TArrayNavigationBar.UpdateBoundsInfo;
@@ -225,6 +228,13 @@ begin
 
   if FShowBoundInfo then
     lblBounds.Caption := format(dlgInspectBoundsDD, [FLowBound, FHighBound]);
+  DoOnSizeChanged;
+end;
+
+procedure TArrayNavigationBar.DoOnSizeChanged;
+begin
+  if FOnSizeChanged <> nil then
+    FOnSizeChanged(Self);
 end;
 
 constructor TArrayNavigationBar.Create(TheOwner: TComponent);

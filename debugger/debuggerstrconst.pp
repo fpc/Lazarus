@@ -70,9 +70,6 @@ resourcestring
   drsInspectColWidthMethType = 'Method type column';
   drsInspectColWidthMethReturns = 'Method returns column';
   drsInspectColWidthMethAddress = 'Method address column';
-  drsEvalHistoryNone      = 'No history kept';
-  dsrEvalHistoryUp        = 'Insert result at top of history';
-  dsrEvalHistoryDown      = 'Append result at bottom of history';
   dsrEvalUseFpDebugConverter = 'Use FpDebug Converter';
 
   drsUseInstanceClassType = 'Use Instance class type';
@@ -83,6 +80,7 @@ resourcestring
   dlgFpConvOptDefault = '- Default -';
   dlgFpConvOptDisabled = '- Disabled -';
   dlgFpConvOptFpConverter = 'Converter';
+  dlgFpConvOptFpNoConverter = 'No Converter';
 
 implementation
 

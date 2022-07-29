@@ -21,6 +21,40 @@ resourcestring
   dlgIdeDbgEnterName = 'Enter name';
   dlgFpConvOptName = 'Name';
 
+  drsUseInstanceClass = 'Instance';
+  drsUseInstanceClassHint = 'Use Instance class type';
+  drsUseFunctionCalls = 'Function';
+  drsUseFunctionCallsHint = 'Allow function calls';
+  drsEnterExpression = 'Enter Expression';
+  drsAddWatch = 'Add watch';
+  drsEvaluate = 'Evaluate';
+  drsInspect = 'Inspect';
+  drsHistory = 'History';
+  drsDebugConverter = 'Converter';
+  drsNoDebugConverter= 'No Converter';
+  drsDisableEnableUpdatesForTh = 'Disable/Enable updates for the entire window';
+  drsNoHistoryKept = 'No history kept';
+  drsInsertResultAtTopOfHistor = 'Insert result at top of history';
+  drsAppendResultAtBottomOfHis = 'Append result at bottom of history';
+  lisInspectShowColClass = 'Show class column';
+  lisInspectShowColType = 'Show type column';
+  lisInspectShowColVisibility = 'Show visibility column';
+  drsNewValue = 'New Value';
+  drsNewValueToAssignToTheVari = 'New value to assign to the variable in the '
+    +'debugged process. Use shift-enter to confirm';
+
+  dbgDispFormatDefault = 'Default';
+  dbgDispFormatCharacter = 'Character';
+  dbgDispFormatString = 'String';
+  dbgDispFormatDecimal = 'Decimal';
+  dbgDispFormatUnsigned = 'Unsigned';
+  dbgDispFormatHexadecimal = 'Hexadecimal';
+  dbgDispFormatFloatingPoin = 'Floating Point';
+  dbgDispFormatPointer = 'Pointer';
+  dbgDispFormatRecordStruct = 'Record/Structure';
+  dbgDispFormatMemoryDump = 'Memory Dump';
+  dbgDispFormatBinary = 'Binary';
+
 implementation
 
 end.

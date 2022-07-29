@@ -40,8 +40,9 @@ uses
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
-  IdeDebuggerBase, ArrayNavigationFrame, DebuggerDlg, DebuggerStrConst,
-  EnvironmentOpts;
+  IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
+  IdeDebuggerFpDbgValueConv, WatchInspectToolbar, DebuggerDlg,
+  DebuggerStrConst, EnvironmentOpts;
 
 type
 
@@ -53,9 +54,6 @@ type
   { TIDEInspectDlg }
 
   TIDEInspectDlg = class(TDebuggerDlg)
-    ArrayNavigationBar1: TArrayNavigationBar;
-    btnUseConverter: TToolButton;
-    EdInspect: TComboBox;
     ErrorLabel: TLabel;
     menuCopyValue: TMenuItem;
     PageControl: TPageControl;
@@ -66,30 +64,7 @@ type
     MethodsPage: TTabSheet;
     ErrorPage: TTabSheet;
     TimerClearData: TTimer;
-    ToolBar1: TToolBar;
-    btnUseInstance: TToolButton;
-    btnBackward: TToolButton;
-    BtnAddWatch: TToolButton;
-    btnPower: TToolButton;
-    tbDiv1: TToolButton;
-    tbDiv5: TToolButton;
-    tbDiv3: TToolButton;
-    btnColClass: TToolButton;
-    btnColType: TToolButton;
-    btnColVisibility: TToolButton;
-    btnForward: TToolButton;
-    tbDiv4: TToolButton;
-    tbDiv2: TToolButton;
-    procedure BtnAddWatchClick(Sender: TObject);
-    procedure btnBackwardClick(Sender: TObject);
-    procedure btnColClassClick(Sender: TObject);
-    procedure btnForwardClick(Sender: TObject);
-    procedure btnPowerClick(Sender: TObject);
-    procedure btnUseConverterClick(Sender: TObject);
-    procedure btnUseInstanceClick(Sender: TObject);
-    procedure EdInspectEditingDone(Sender: TObject);
-    procedure EdInspectKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
-    procedure FormActivate(Sender: TObject);
+    WatchInspectNav1: TWatchInspectNav;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -106,22 +81,22 @@ type
     //FDataGrid,
     //FPropertiesGrid,
     //FMethodsGrid: TOIDBGGrid;
-    FExpression, FAlternateExpression: ansistring;
+    FAlternateExpression: ansistring;
     FUpdatedData: Boolean;
     FWatchPrinter: TWatchResultPrinter;
-    FInspectWatches: TCurrentWatches;
-    FCurrentWatchValue: TIdeWatchValue;
     FCurrentResData: TWatchResultData;
     FHumanReadable: ansistring;
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
     FExpressionWasEvaluated: Boolean;
-    FHistory: TStringList;
-    FHistoryIndex: Integer;
-    FPowerImgIdx, FPowerImgIdxGrey: Integer;
 
     procedure ArrayNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
+    procedure DoAddEval(Sender: TObject);
+    procedure DoAddWatch(Sender: TObject);
+    function DoBeforeUpdate(ASender: TObject): boolean;
+    procedure DoColumnsChanged(Sender: TObject);
     procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
+    procedure DoEnvOptChanged(Sender: TObject; Restore: boolean);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure Localize;
@@ -145,17 +120,14 @@ type
     procedure ShowDataFields;
     procedure ShowMethodsFields;
     //procedure ShowError;
-    procedure Clear;
-    procedure GotoHistory(AIndex: Integer);
+    procedure Clear(Sender: TObject = nil);
   protected
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
-    procedure InternalExecute(const AExpression: ansistring);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(const AExpression: ansistring);
-    procedure UpdateData;
   end;
 
 implementation
@@ -202,31 +174,10 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,300,400);
 end;
 
-procedure TIDEInspectDlg.EdInspectKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if (Key = VK_RETURN) then begin
-    EdInspectEditingDone(nil);
-  end;
-end;
-
-procedure TIDEInspectDlg.EdInspectEditingDone(Sender: TObject);
-begin
-  if FExpression = EdInspect.Text then
-    exit;
-  Execute(EdInspect.Text);
-end;
-
-procedure TIDEInspectDlg.btnUseInstanceClick(Sender: TObject);
-begin
-  UpdateData;
-end;
-
 procedure TIDEInspectDlg.ContextChanged(Sender: TObject);
 begin
   FExpressionWasEvaluated := False;
-  if (not btnPower.Down) or (not Visible) then exit;
-
-  UpdateData;
+  WatchInspectNav1.DoContextChanged;
 end;
 
 procedure TIDEInspectDlg.InspectResDataSimple;
@@ -241,18 +192,17 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=Res.TypeName;
   FGridData.Cells[3,1]:=v;
 end;
@@ -268,19 +218,18 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   v := FWatchPrinter.PrintWatchValue(Res, wdfPointer);
-  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=Res.TypeName;
   FGridData.Cells[3,1]:=v;
 
@@ -305,18 +254,17 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False; // anchestor
-  FGridData.Columns[2].Visible := btnColType.Down; // typename
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown; // typename
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=Res.TypeName;
   // TODO: show declaration (all elements)
   FGridData.Cells[3,1]:=v;
@@ -341,12 +289,11 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
   Res := FCurrentResData;
   if Res = nil then begin
@@ -358,20 +305,20 @@ begin
 
   LowBnd := Res.LowBound;
   if FUpdatedData then begin
-    ArrayNavigationBar1.LowBound := LowBnd;
-    ArrayNavigationBar1.HighBound := LowBnd + Res.ArrayLength - 1;
-    ArrayNavigationBar1.Index := LowBnd;
+    WatchInspectNav1.ArrayNavigationBar1.LowBound := LowBnd;
+    WatchInspectNav1.ArrayNavigationBar1.HighBound := LowBnd + Res.ArrayLength - 1;
+    WatchInspectNav1.ArrayNavigationBar1.Index := LowBnd;
     FUpdatedData := False;
   end;
 
-  CurIndexOffs := ArrayNavigationBar1.Index - LowBnd;
-  CurPageCount := ArrayNavigationBar1.PageSize;
+  CurIndexOffs := WatchInspectNav1.ArrayNavigationBar1.Index - LowBnd;
+  CurPageCount := WatchInspectNav1.ArrayNavigationBar1.PageSize;
   if (CurIndexOffs >= 0) and (CurIndexOffs < res.ArrayLength) then
     CurPageCount := Max(1, Min(CurPageCount, res.ArrayLength - CurIndexOffs));
 
-  WVal:= FCurrentWatchValue.Watch.ValueList.GetEntriesForRange(
-    FCurrentWatchValue.ThreadId,
-    FCurrentWatchValue.StackFrame,
+  WVal:= WatchInspectNav1.CurrentWatchValue.Watch.ValueList.GetEntriesForRange(
+    WatchInspectNav1.CurrentWatchValue.ThreadId,
+    WatchInspectNav1.CurrentWatchValue.StackFrame,
     CurIndexOffs,
     CurPageCount
   );
@@ -380,7 +327,7 @@ begin
     TimerClearData.Enabled := True;
     exit;
   end;
-  FCurrentWatchValue.Watch.ValueList.ClearRangeEntries(5);
+  WatchInspectNav1.CurrentWatchValue.Watch.ValueList.ClearRangeEntries(5);
 
   Res := WVal.ResultData;
 
@@ -413,13 +360,12 @@ var
 begin
   Res := FCurrentResData;
 
-  FGridData.Columns[0].Visible := (Res.StructType in [dstClass, dstObject]) and btnColClass.Down; // anchestor
-  FGridData.Columns[2].Visible := btnColType.Down; // typename
-  FGridData.Columns[4].Visible := (Res.StructType in [dstClass, dstObject]) and btnColVisibility.Down; // class-visibility
-  btnUseInstance.Enabled   := Res.StructType in [dstClass];
-  btnColClass.Enabled      := Res.StructType in [dstClass, dstObject];
-  btnColType.Enabled       := True;
-  btnColVisibility.Enabled := Res.StructType in [dstClass, dstObject];
+  FGridData.Columns[0].Visible := (Res.StructType in [dstClass, dstObject]) and WatchInspectNav1.ColClassIsDown; // anchestor
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown; // typename
+  FGridData.Columns[4].Visible := (Res.StructType in [dstClass, dstObject]) and WatchInspectNav1.ColVisibilityIsDown; // class-visibility
+  WatchInspectNav1.ColClassEnabled      := Res.StructType in [dstClass, dstObject];
+  WatchInspectNav1.ColTypeEnabled       := True;
+  WatchInspectNav1.ColVisibilityEnabled := Res.StructType in [dstClass, dstObject];
 
   AnchType := '';
   if Res.Anchestor <> nil then
@@ -524,9 +470,9 @@ var
   g: TStringGrid;
   Cur: TPoint;
 begin
-  if Button = mbExtra1 then btnBackwardClick(nil)
+  if Button = mbExtra1 then WatchInspectNav1.GoPrevBrowseEntry
   else
-  if Button = mbExtra2 then btnForwardClick(nil)
+  if Button = mbExtra2 then WatchInspectNav1.GoNextBrowseEntry
   else
   if Button = mbRight then begin
     if (PageControl.ActivePage = DataPage) then
@@ -545,10 +491,9 @@ end;
 
 procedure TIDEInspectDlg.FormShow(Sender: TObject);
 begin
-  ReleaseRefAndNil(FCurrentWatchValue);
   FCurrentResData := nil;
-  FInspectWatches.Clear;
-  UpdateData;
+  WatchInspectNav1.UpdateData(True);
+  WatchInspectNav1.FocusEnterExpression;
 end;
 
 procedure TIDEInspectDlg.menuCopyValueClick(Sender: TObject);
@@ -585,40 +530,40 @@ var
   i: Integer;
   s, t: String;
 begin
-  if (FCurrentWatchValue = nil) or (FExpression = '') then exit;
+  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.Expression = '') then exit;
 
-  if FCurrentWatchValue.TypeInfo <> nil then begin
+  if WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil then begin
 
-    if (FCurrentWatchValue.TypeInfo.Kind in [skClass, skRecord, skObject]) then begin
+    if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skClass, skRecord, skObject]) then begin
       i := FGridData.Row;
       if (i < 1) or (i >= FGridData.RowCount) then exit;
       s := FGridData.Cells[1, i];
 
-      if btnUseInstance.Down and (FCurrentWatchValue.TypeInfo.Kind = skClass) then
-        Execute(FGridData.Cells[0, i] + '(' + FExpression + ').' + s)
+      if WatchInspectNav1.UseInstanceIsDown and (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind = skClass) then
+        Execute(FGridData.Cells[0, i] + '(' + WatchInspectNav1.Expression + ').' + s)
       else
-        Execute(FExpression + '.' + s);
+        Execute(WatchInspectNav1.Expression + '.' + s);
       exit;
     end;
 
-    if (FCurrentWatchValue.TypeInfo.Kind in [skPointer]) then begin
+    if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skPointer]) then begin
       i := FGridData.Row;
       if (i < 1) or (i >= FGridData.RowCount) then exit;
       s := FGridData.Cells[1, i];
       t := FGridData.Cells[2, i];
-      Execute('(' + FExpression + ')^');
+      Execute('(' + WatchInspectNav1.Expression + ')^');
       if not FExpressionWasEvaluated then
-        FAlternateExpression := t + '(' + FExpression + ')[0]';
+        FAlternateExpression := t + '(' + WatchInspectNav1.Expression + ')[0]';
       exit;
     end;
 
-    if (FCurrentWatchValue.TypeInfo.Kind in [skSimple]) and (FCurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> []) then begin
-      if FCurrentWatchValue.TypeInfo.Len < 1 then exit;
-      if FCurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
+    if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skSimple]) and (WatchInspectNav1.CurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> []) then begin
+      if WatchInspectNav1.CurrentWatchValue.TypeInfo.Len < 1 then exit;
+      if WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
         i := FGridData.Row;
         if (i < 1) or (i >= FGridData.RowCount) then exit;
         s := FGridData.Cells[1, i];
-        Execute(FExpression + '[' + s + ']');
+        Execute(WatchInspectNav1.Expression + '[' + s + ']');
       end
       else begin
         //
@@ -634,25 +579,25 @@ begin
           if (i < 1) or (i >= FGridData.RowCount) then exit;
           s := FGridData.Cells[1, i];
           t := FGridData.Cells[2, i];
-          Execute('(' + FExpression + ')^');
+          Execute('(' + WatchInspectNav1.Expression + ')^');
           if not FExpressionWasEvaluated then
-            FAlternateExpression := t + '(' + FExpression + ')[0]';
+            FAlternateExpression := t + '(' + WatchInspectNav1.Expression + ')[0]';
         end;
       rdkArray: begin
           i := FGridData.Row;
           if (i < 1) or (i >= FGridData.RowCount) then exit;
           s := FGridData.Cells[1, i];
-          Execute(FExpression + '[' + s + ']');
+          Execute(WatchInspectNav1.Expression + '[' + s + ']');
         end;
       rdkStruct: begin
           i := FGridData.Row;
           if (i < 1) or (i >= FGridData.RowCount) then exit;
           s := FGridData.Cells[1, i];
 
-          if btnUseInstance.Down and (FCurrentResData.StructType in [dstClass, dstObject]) then
-            Execute(FGridData.Cells[0, i] + '(' + FExpression + ').' + s)
+          if WatchInspectNav1.UseInstanceIsDown and (FCurrentResData.StructType in [dstClass, dstObject]) then
+            Execute(FGridData.Cells[0, i] + '(' + WatchInspectNav1.Expression + ').' + s)
           else
-            Execute(FExpression + '.' + s);
+            Execute(WatchInspectNav1.Expression + '.' + s);
         end;
 
       otherwise begin
@@ -660,13 +605,13 @@ begin
           if (i < 1) or (i >= FGridData.RowCount) then exit;
 
           if FCurrentResData.ArrayLength > 0 then begin
-            s := FCurrentWatchValue.ExpressionForChildEntry(FGridData.Cells[1, i]);
+            s := WatchInspectNav1.CurrentWatchValue.ExpressionForChildEntry(FGridData.Cells[1, i]);
             if s <> '' then
               Execute(s);
           end
           else
           if FCurrentResData.FieldCount > 0 then begin
-            s := FCurrentWatchValue.ExpressionForChildField(FGridData.Cells[1, i]);
+            s := WatchInspectNav1.CurrentWatchValue.ExpressionForChildField(FGridData.Cells[1, i]);
             if s <> '' then
               Execute(s);
           end;
@@ -676,82 +621,11 @@ begin
 
 end;
 
-procedure TIDEInspectDlg.btnColClassClick(Sender: TObject);
-begin
-  if (FCurrentWatchValue = nil) then exit;
-
-  if ( (FCurrentWatchValue.TypeInfo <> nil) and
-       (FCurrentWatchValue.TypeInfo.Kind = skClass)
-     ) or
-     ( FCurrentResData.StructType in [dstClass, dstObject] )
-  then begin
-    FGridData.Columns[0].Visible := btnColClass.Down;
-    FGridData.Columns[4].Visible := btnColVisibility.Down;
-  end;
-
-  FGridData.Columns[2].Visible := btnColType.Down;
-end;
-
-procedure TIDEInspectDlg.btnForwardClick(Sender: TObject);
-begin
-  GotoHistory(FHistoryIndex + 1);
-end;
-
-procedure TIDEInspectDlg.btnPowerClick(Sender: TObject);
-begin
-  if btnPower.Down
-  then begin
-    btnPower.ImageIndex := FPowerImgIdx;
-    ReleaseRefAndNil(FCurrentWatchValue);
-    FCurrentResData := nil;
-    FInspectWatches.Clear;
-    UpdateData;
-  end
-  else begin
-    btnPower.ImageIndex := FPowerImgIdxGrey;
-  end;
-end;
-
-procedure TIDEInspectDlg.btnUseConverterClick(Sender: TObject);
-begin
-  UpdateData;
-end;
-
-procedure TIDEInspectDlg.btnBackwardClick(Sender: TObject);
-begin
-  GotoHistory(FHistoryIndex - 1);
-end;
-
-procedure TIDEInspectDlg.BtnAddWatchClick(Sender: TObject);
-var
-  w: TCurrentWatch;
-begin
-  if DebugBoss = nil then
-    exit;
-  DebugBoss.Watches.CurrentWatches.BeginUpdate;
-  try
-    w := DebugBoss.Watches.CurrentWatches.Find(FExpression);
-    if w = nil then
-      w := DebugBoss.Watches.CurrentWatches.Add(FExpression);
-    if (w <> nil) then begin
-      w.Enabled := True;
-      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass or
-         btnUseInstance.Down
-      then
-        w.EvaluateFlags := w.EvaluateFlags + [defClassAutoCast];
-      if not btnUseConverter.Down then
-        w.EvaluateFlags := w.EvaluateFlags + [defSkipValConv];
-      DebugBoss.ViewDebugDialog(ddtWatches, False);
-    end;
-  finally
-    DebugBoss.Watches.CurrentWatches.EndUpdate;
-  end;
-
-end;
-
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_ESCAPE) and not Docked then
+  if (Key = VK_ESCAPE) and (not Docked) and
+     (not WatchInspectNav1.DropDownOpen)
+  then
     Close;
 end;
 
@@ -761,21 +635,13 @@ begin
   DataPage.Caption := lisInspectData;
   PropertiesPage.Caption := lisInspectProperties;
   MethodsPage.Caption := lisInspectMethods;
-
-  btnUseInstance.Caption := lisInspectUseInstance;
-  btnUseInstance.Hint    := lisInspectUseInstanceHint;
-  btnUseConverter.Caption := dlgFpConvOptFpConverter;
-  btnUseConverter.Hint    := dsrEvalUseFpDebugConverter;
-  btnColClass.Hint       := lisInspectShowColClass;
-  btnColType.Hint        := lisInspectShowColType;
-  btnColVisibility.Hint  := lisInspectShowColVisibility;
 end;
 
 function TIDEInspectDlg.ShortenedExpression: String;
 const
   MAX_SHORT_EXPR_LEN = 25;
 begin
-  Result := FExpression;
+  Result := WatchInspectNav1.Expression;
   if Length(Result) > MAX_SHORT_EXPR_LEN then
     Result := copy(Result, 1, MAX_SHORT_EXPR_LEN-3) + '...';
 end;
@@ -787,20 +653,19 @@ begin
   MethodsPage.TabVisible:=true;
   if not (PageControl.ActivePage = MethodsPage) then
     PageControl.ActivePage := DataPage;
-  FGridData.Columns[0].Visible := btnColClass.Down;
-  FGridData.Columns[2].Visible := btnColType.Down;
-  FGridData.Columns[4].Visible := btnColVisibility.Down;
-  btnUseInstance.Enabled := True;
-  btnColClass.Enabled := True;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := True;
+  FGridData.Columns[0].Visible := WatchInspectNav1.ColClassIsDown;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
+  FGridData.Columns[4].Visible := WatchInspectNav1.ColVisibilityIsDown;
+  WatchInspectNav1.ColClassEnabled := True;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := True;
 
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo.Fields) then exit;
-  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FCurrentWatchValue.TypeInfo.
-    TypeName, FCurrentWatchValue.TypeInfo.Ancestor]);
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields) then exit;
+  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, WatchInspectNav1.CurrentWatchValue.TypeInfo.
+    TypeName, WatchInspectNav1.CurrentWatchValue.TypeInfo.Ancestor]);
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(1);
@@ -818,20 +683,19 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
   StatusBar1.SimpleText:=ShortenedExpression+' : Variant';
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:='Variant';
-  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
+  FGridData.Cells[3,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(1);
 end;
 
@@ -842,17 +706,16 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo.Fields) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName;
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(2);
@@ -868,27 +731,26 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
   GridDataSetup;
 
-  if FCurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> [] then begin
-    if FCurrentWatchValue.TypeInfo.Len >= 0 then
-      StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = Len:' + IntToStr(FCurrentWatchValue.TypeInfo.Len) + ' ' + FCurrentWatchValue.TypeInfo.Value.AsString
+  if WatchInspectNav1.CurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> [] then begin
+    if WatchInspectNav1.CurrentWatchValue.TypeInfo.Len >= 0 then
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = Len:' + IntToStr(WatchInspectNav1.CurrentWatchValue.TypeInfo.Len) + ' ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString
     else
-      StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
+      StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
 
-    if FCurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
-      FGridData.RowCount:=FCurrentWatchValue.TypeInfo.Fields.Count+1;
-      for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
-        fld := FCurrentWatchValue.TypeInfo.Fields[j];
+    if WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
+      FGridData.RowCount:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count+1;
+      for j := 0 to WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+        fld := WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j];
         FGridData.Cells[1,j+1]:=fld.Name; // index
         FGridData.Cells[2,j+1]:=fld.DBGType.TypeName;
         FGridData.Cells[3,j+1]:=fld.DBGType.Value.AsString;
@@ -897,11 +759,11 @@ begin
     end;
   end
   else
-    StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
 
-  FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
-  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
+  FGridData.Cells[2,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName;
+  FGridData.Cells[3,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -912,23 +774,22 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
-  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeDeclaration <> '')
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
+  FGridData.Cells[2,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName;
+  if (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName <> '') and (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeDeclaration <> '')
   then FGridData.Cells[2,1] := FGridData.Cells[2,1] + ' = ';
-  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FCurrentWatchValue.TypeInfo.TypeDeclaration;
-  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
+  FGridData.Cells[2,1] := FGridData.Cells[2,1] + WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeDeclaration;
+  FGridData.Cells[3,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -939,23 +800,22 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
-  FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
-  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeDeclaration <> '')
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
+  FGridData.Cells[2,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName;
+  if (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName <> '') and (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeDeclaration <> '')
   then FGridData.Cells[2,1] := FGridData.Cells[2,1] + ' = ';
-  FGridData.Cells[2,1] := FGridData.Cells[2,1] + FCurrentWatchValue.TypeInfo.TypeDeclaration;
-  FGridData.Cells[3,1]:=FCurrentWatchValue.TypeInfo.Value.AsString;
+  FGridData.Cells[2,1] := FGridData.Cells[2,1] + WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeDeclaration;
+  FGridData.Cells[3,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   //FGridData.AutoSizeColumn(2);
 end;
 
@@ -966,24 +826,23 @@ begin
   MethodsPage.TabVisible:=false;
   PageControl.ActivePage := DataPage;
   FGridData.Columns[0].Visible := False;
-  FGridData.Columns[2].Visible := btnColType.Down;
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
   FGridData.Columns[4].Visible := False;
-  btnUseInstance.Enabled := False;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := True;
-  btnColVisibility.Enabled := False;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := True;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  if not Assigned(FCurrentWatchValue) then exit;
-  if not Assigned(FCurrentWatchValue.TypeInfo) then exit;
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentWatchValue.TypeInfo.TypeName + ' = ' + FCurrentWatchValue.TypeInfo.Value.AsString;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue) then exit;
+  if not Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo) then exit;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName + ' = ' + WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsString;
   GridDataSetup;
-  FGridData.Cells[1,1]:=FExpression;
-  if (FCurrentWatchValue.TypeInfo.TypeName <> '') and (FCurrentWatchValue.TypeInfo.TypeName[1] = '^')
-  then FGridData.Cells[2, 1]:=Format(lisInspectPointerTo, [copy(FCurrentWatchValue.TypeInfo.
-    TypeName, 2, length(FCurrentWatchValue.TypeInfo.TypeName))])
-  else FGridData.Cells[2,1]:=FCurrentWatchValue.TypeInfo.TypeName;
+  FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
+  if (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName <> '') and (WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName[1] = '^')
+  then FGridData.Cells[2, 1]:=Format(lisInspectPointerTo, [copy(WatchInspectNav1.CurrentWatchValue.TypeInfo.
+    TypeName, 2, length(WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName))])
+  else FGridData.Cells[2,1]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.TypeName;
   {$PUSH}{$RANGECHECKS OFF}
-  FGridData.Cells[3,1]:=format('$%x',[{%H-}PtrUInt(FCurrentWatchValue.TypeInfo.Value.AsPointer)]);
+  FGridData.Cells[3,1]:=format('$%x',[{%H-}PtrUInt(WatchInspectNav1.CurrentWatchValue.TypeInfo.Value.AsPointer)]);
   {$POP}
   //FGridData.AutoSizeColumn(2);
 end;
@@ -1064,8 +923,8 @@ var
   fld: TDBGField;
 begin
   k:=0;
-  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
-    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
+  for j := 0 to WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skSimple,skRecord,skVariant,skPointer: inc(k);
     end;
   end;
@@ -1073,8 +932,8 @@ begin
   if k<2 Then k:=2;
   FGridData.RowCount:=k;
   k:=0;
-  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
-    fld := FCurrentWatchValue.TypeInfo.Fields[j];
+  for j := 0 to WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    fld := WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j];
     case fld.DBGType.Kind of
       skSimple:
         begin
@@ -1137,8 +996,8 @@ var
   j,k: SizeInt;
 begin
   k:=0;
-  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
-    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
+  for j := 0 to WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skProcedure,skFunction,skProcedureRef, skFunctionRef: inc(k);
     end;
   end;
@@ -1146,13 +1005,13 @@ begin
   if k<2 Then k:=2;
   FGridMethods.RowCount:=k;
   k:=0;
-  for j := 0 to FCurrentWatchValue.TypeInfo.Fields.Count-1 do begin
-    case FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
+  for j := 0 to WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count-1 do begin
+    case WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].DBGType.Kind of
       skProcedure, skProcedureRef:
         begin
           inc(k);
-          FGridMethods.Cells[0,k]:=FCurrentWatchValue.TypeInfo.Fields[j].Name;
-          if ffDestructor in FCurrentWatchValue.TypeInfo.Fields[j].Flags then begin
+          FGridMethods.Cells[0,k]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].Name;
+          if ffDestructor in WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].Flags then begin
             FGridMethods.Cells[1,k]:='Destructor';
           end else begin
             FGridMethods.Cells[1,k]:='Procedure';
@@ -1163,14 +1022,14 @@ begin
       skFunction, skFunctionRef:
         begin
           inc(k);
-          FGridMethods.Cells[0,k]:=FCurrentWatchValue.TypeInfo.Fields[j].Name;
-          if ffConstructor in FCurrentWatchValue.TypeInfo.Fields[j].Flags then begin
+          FGridMethods.Cells[0,k]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].Name;
+          if ffConstructor in WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].Flags then begin
             FGridMethods.Cells[1,k]:='Constructor';
           end else begin
             FGridMethods.Cells[1,k]:='Function';
           end;
-          if Assigned(FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Result) then begin
-            FGridMethods.Cells[2,k]:=FCurrentWatchValue.TypeInfo.Fields[j].DBGType.Result.TypeName;
+          if Assigned(WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].DBGType.Result) then begin
+            FGridMethods.Cells[2,k]:=WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields[j].DBGType.Result.TypeName;
           end else begin
             FGridMethods.Cells[2,k]:='';
           end;
@@ -1180,7 +1039,7 @@ begin
   end;
 end;
 
-procedure TIDEInspectDlg.Clear;
+procedure TIDEInspectDlg.Clear(Sender: TObject);
 begin
   DataPage.TabVisible:=false;
   PropertiesPage.TabVisible:=false;
@@ -1235,7 +1094,6 @@ begin
   WatchesNotification.OnUpdate    := @DoWatchUpdated;
 
   FWatchPrinter := TWatchResultPrinter.Create;
-  FInspectWatches := TCurrentWatches.Create(WatchesMonitor);
 
   ThreadsNotification.OnCurrent := @ContextChanged;
   CallstackNotification.OnCurrent := @ContextChanged;
@@ -1243,11 +1101,14 @@ begin
   DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
   DebugBoss.RegisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
 
-  ArrayNavigationBar1.OnIndexChanged := @ArrayNavChanged;
-  ArrayNavigationBar1.OnPageSize := @ArrayNavChanged;
-  ArrayNavigationBar1.Visible := False;
 
-  FHistory := TStringList.Create;
+  WatchInspectNav1.Init(WatchesMonitor, ThreadsMonitor, CallStackMonitor, [defExtraDepth, defFullTypeInfo]);
+  WatchInspectNav1.HistoryList := InputHistories.HistoryLists.
+    GetList(ClassName,True,rltCaseSensitive);
+
+  WatchInspectNav1.OnArrayIndexChanged := @ArrayNavChanged;
+  WatchInspectNav1.OnArrayPageSize := @ArrayNavChanged;
+  WatchInspectNav1.ShowArrayNav := False;
 
   FGridData:=TStringGrid.Create(DataPage);
   DataPage.InsertControl(FGridData);
@@ -1257,126 +1118,70 @@ begin
   MethodsPage.InsertControl(FGridMethods);
   GridMethodsSetup(True);
 
-  EdInspect.Items.Assign(InputHistories.HistoryLists.
-    GetList(ClassName,True,rltCaseSensitive));
-
   FGridData.OnDblClick := @DataGridDoubleClick;
   FGridData.OnMouseDown := @DataGridMouseDown;
   FGridData.PopupMenu := PopupMenu1;
   FGridMethods.OnMouseDown := @DataGridMouseDown;
   FGridMethods.PopupMenu := PopupMenu1;
 
-  ToolBar1.Images := IDEImages.Images_16;
-  btnBackward.ImageIndex := IDEImages.LoadImage('arrow_left');
-  btnBackward.Caption := '';
-  btnForward.ImageIndex := IDEImages.LoadImage('arrow_right');
-  btnForward.Caption := '';
-  BtnAddWatch.Caption:=lisInspectAddWatch;
+  WatchInspectNav1.btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
 
-  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
-  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
-  btnPower.ImageIndex := FPowerImgIdx;
-  btnPower.Caption := '';
-  btnPower.Hint := lisDbgWinPowerHint;
+  WatchInspectNav1.ColClassEnabled := False;
+  WatchInspectNav1.ColTypeEnabled := False;
+  WatchInspectNav1.ColVisibilityEnabled := False;
 
-  btnUseInstance.Enabled := False;
-  btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
-  btnColClass.Enabled := False;
-  btnColType.Enabled := False;
-  btnColVisibility.Enabled := False;
-  btnBackward.Enabled := FHistoryIndex > 0;
-  btnForward.Enabled := FHistoryIndex < FHistory.Count - 1;
+  WatchInspectNav1.ShowEvalHist := False;
+  WatchInspectNav1.ShowAddInspect := False;
+  WatchInspectNav1.ShowDisplayFormat := False;
+
+  WatchInspectNav1.OnAddWatchClicked := @DoAddWatch;
+  WatchInspectNav1.OnAddEvaluateClicked := @DoAddEval;
 
   menuCopyValue.Caption := lisLocalsDlgCopyValue;
 
   Clear;
+
+  WatchInspectNav1.OnClear := @Clear;
+  WatchInspectNav1.OnBeforeEvaluate := @DoBeforeUpdate;
+  WatchInspectNav1.OnWatchUpdated := @DoWatchUpdated;
+  WatchInspectNav1.OnColumnsChanged := @DoColumnsChanged;
+
+  EnvironmentOptions.AddHandlerAfterWrite(@DoEnvOptChanged);
+  DoEnvOptChanged(nil, False);
 end;
 
 destructor TIDEInspectDlg.Destroy;
 begin
   DebugBoss.UnregisterStateChangeHandler(@DoDebuggerState);
   DebugBoss.UnregisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
-  ReleaseRefAndNil(FCurrentWatchValue);
+  EnvironmentOptions.RemoveHandlerAfterWrite(@DoEnvOptChanged);
   FCurrentResData := nil;
-  FreeAndNil(FHistory);
   FreeAndNil(FWatchPrinter);
-  //FreeAndNil(FDataGridHook);
-  //FreeAndNil(FPropertiesGridHook);
-  //FreeAndNil(FMethodsGridHook);
   inherited Destroy;
 
-  FreeAndNil(FInspectWatches);
-end;
-
-procedure TIDEInspectDlg.InternalExecute(const AExpression: ansistring);
-begin
-  if FHistoryIndex >= FHistory.Count then
-    FHistoryIndex := FHistory.Count - 1;
-  inc(FHistoryIndex);
-  while FHistory.Count > FHistoryIndex do
-    FHistory.Delete(FHistoryIndex);
-
-  FHistoryIndex := FHistory.Add(AExpression);
-
-  while FHistory.Count > MAX_HISTORY do
-    FHistory.Delete(0);
-
-  GotoHistory(FHistoryIndex);
 end;
 
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
 begin
-  InternalExecute(AExpression);
+  WatchInspectNav1.Execute(AExpression);
 end;
-
-procedure TIDEInspectDlg.FormActivate(Sender: TObject);
-begin
-  EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
-end;
-
-procedure TIDEInspectDlg.GotoHistory(AIndex: Integer);
-begin
-  FHistoryIndex := AIndex;
-  if FHistory.Count = 0 then exit;
-  if FHistoryIndex >= FHistory.Count then
-    FHistoryIndex := FHistory.Count - 1;
-  if FHistoryIndex < 0 then
-    FHistoryIndex := 0;
-
-  btnBackward.Enabled := FHistoryIndex > 0;
-  btnForward.Enabled := FHistoryIndex < FHistory.Count - 1;
-
-  if (FExpression=FHistory[FHistoryIndex]) and FExpressionWasEvaluated then
-    exit;
-
-  FExpression:=FHistory[FHistoryIndex];
-  ArrayNavigationBar1.Index := 0;
-  EdInspect.Text := FExpression;
-  UpdateData;
-end;
-
 
 procedure TIDEInspectDlg.DoWatchUpdated(const ASender: TIdeWatches;
   const AWatch: TIdeWatch);
 begin
-  if (FCurrentWatchValue = nil) or
-     not (FCurrentWatchValue.Validity in [ddsError, ddsInvalid, ddsValid])
+  if (WatchInspectNav1.CurrentWatchValue = nil) or
+     not (WatchInspectNav1.CurrentWatchValue.Validity in [ddsError, ddsInvalid, ddsValid])
   then
     exit;
-  if (AWatch <> FCurrentWatchValue.Watch) or
-     (ASender <> FInspectWatches)
+  if (AWatch <> WatchInspectNav1.CurrentWatchValue.Watch) or
+     (ASender <> WatchInspectNav1.Watches)
   then
     exit;
 
-  if (FCurrentWatchValue.Validity in [ddsError, ddsInvalid]) and
+  if (WatchInspectNav1.CurrentWatchValue.Validity in [ddsError, ddsInvalid]) and
      (FAlternateExpression <> '')
   then begin
-    if (FHistoryIndex = FHistory.Count - 1) and
-       (FHistory[FHistoryIndex] = FExpression)
-    then begin
-      FHistory.Delete(FHistoryIndex);
-      dec(FHistoryIndex);
-    end;
+    WatchInspectNav1.DeleteLastHistoryIf(WatchInspectNav1.Expression);
     Execute(FAlternateExpression);
     FAlternateExpression := '';
     exit;
@@ -1386,13 +1191,13 @@ begin
 
   FAlternateExpression := '';
   FExpressionWasEvaluated := True;
-  FCurrentResData := FCurrentWatchValue.ResultData;
+  FCurrentResData := WatchInspectNav1.CurrentWatchValue.ResultData;
   FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentResData, wdfStructure);
 
-  if FCurrentWatchValue.Validity = ddsValid then begin
-    if FCurrentWatchValue.TypeInfo <> nil then begin
-      ArrayNavigationBar1.Visible := False;
-      case FCurrentWatchValue.TypeInfo.Kind of
+  if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
+    if WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil then begin
+      WatchInspectNav1.ShowArrayNav := False;
+      case WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind of
         skClass, skObject, skInterface: InspectClass();
         skRecord: InspectRecord();
         skVariant: InspectVariant();
@@ -1434,9 +1239,9 @@ begin
       end;
 
 
-      ArrayNavigationBar1.Visible := (FCurrentResData.ValueKind = rdkArray) or
+      WatchInspectNav1.ShowArrayNav := (FCurrentResData.ValueKind = rdkArray) or
         (FCurrentResData.ArrayLength > 0);
-      ArrayNavigationBar1.HardLimits := (FCurrentResData.ValueKind <> rdkArray);
+      WatchInspectNav1.ArrayNavigationBar1.HardLimits := (FCurrentResData.ValueKind <> rdkArray);
 
       if FCurrentResData.ArrayLength > 0 then
         InspectResDataArray
@@ -1488,13 +1293,17 @@ end;
 procedure TIDEInspectDlg.DoDebuggerState(ADebugger: TDebuggerIntf;
   AnOldState: TDBGState);
 begin
-  if (not btnPower.Down) or (not Visible) then exit;
+  if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
   if (ADebugger.State = dsPause) and (AnOldState <> dsPause) then begin
-    ReleaseRefAndNil(FCurrentWatchValue);
     FCurrentResData := nil;
-    FInspectWatches.Clear;
-    UpdateData;
+    WatchInspectNav1.UpdateData(True);
   end;
+end;
+
+procedure TIDEInspectDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);
+begin
+  WatchInspectNav1.ShowCallFunction := EnvironmentOptions.DebuggerAllowFunctionCalls;
+  WatchInspectNav1.EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
 procedure TIDEInspectDlg.ArrayNavChanged(Sender: TArrayNavigationBar;
@@ -1505,90 +1314,65 @@ begin
   InspectResDataArray;
 end;
 
-procedure TIDEInspectDlg.DoWatchesInvalidated(Sender: TObject);
+procedure TIDEInspectDlg.DoAddEval(Sender: TObject);
 begin
-  if (not btnPower.Down) or (not Visible) then exit;
-  ReleaseRefAndNil(FCurrentWatchValue);
-  FCurrentResData := nil;
-  FInspectWatches.Clear;
-  UpdateData;
+  DebugBoss.EvaluateModify(WatchInspectNav1.Expression);
 end;
 
-procedure TIDEInspectDlg.UpdateData;
+procedure TIDEInspectDlg.DoAddWatch(Sender: TObject);
 var
-  Opts: TWatcheEvaluateFlags;
-  AWatch: TCurrentWatch;
-  tid, idx: Integer;
-  stack: TIdeCallStack;
-  expr: String;
+  w: TCurrentWatch;
+begin
+  if DebugBoss = nil then
+    exit;
+  DebugBoss.Watches.CurrentWatches.BeginUpdate;
+  try
+    w := DebugBoss.Watches.CurrentWatches.Find(WatchInspectNav1.Expression);
+    if w = nil then
+      w := DebugBoss.Watches.CurrentWatches.Add(WatchInspectNav1.Expression);
+    if (w <> nil) then begin
+      WatchInspectNav1.InitWatch(w);
+      w.Enabled := True;
+      DebugBoss.ViewDebugDialog(ddtWatches, False);
+    end;
+  finally
+    DebugBoss.Watches.CurrentWatches.EndUpdate;
+  end;
+end;
+
+function TIDEInspectDlg.DoBeforeUpdate(ASender: TObject): boolean;
 begin
   FExpressionWasEvaluated := False;
   FAlternateExpression := '';
   FUpdatedData := True;
 
-  expr := trim(FExpression);
-  if expr = '' then begin
-    ReleaseRefAndNil(FCurrentWatchValue);
+  Result := DebugBoss.State = dsPause;
+
+  if Result then
     FCurrentResData := nil;
-    Clear;
-    StatusBar1.SimpleText := '';
-    exit;
-  end;
+end;
 
-  InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
-  if EdInspect.Items.IndexOf(FExpression) = -1
-  then EdInspect.Items.Insert(0, FExpression);
+procedure TIDEInspectDlg.DoColumnsChanged(Sender: TObject);
+begin
+  if (WatchInspectNav1.CurrentWatchValue = nil) then exit;
 
-
-  if (CallStackMonitor = nil) or (ThreadsMonitor = nil) or
-     (DebugBoss.State <> dsPause)
-  then
-    exit;
-
-  tid    := ThreadsMonitor.CurrentThreads.CurrentThreadId;
-  stack  := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
-  idx := 0;
-  if stack <> nil then
-    idx := stack.CurrentIndex;
-
-  Opts := [defExtraDepth, defFullTypeInfo];
-  if btnUseInstance.Down then
-    include(Opts, defClassAutoCast);
-  if not btnUseConverter.Down then
-    include(Opts, defSkipValConv);
-
-  if (FCurrentWatchValue <> nil) and
-     (FCurrentWatchValue.Expression = expr) and
-     (FCurrentWatchValue.EvaluateFlags = Opts) and
-     (FCurrentWatchValue.ThreadId = tid) and
-     (FCurrentWatchValue.StackFrame = idx)
+  if ( (WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil) and
+       (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind = skClass)
+     ) or
+     ( FCurrentResData.StructType in [dstClass, dstObject] )
   then begin
-    FCurrentWatchValue.Value;
-    DoWatchUpdated(nil, FCurrentWatchValue.Watch);
-    exit;
+    FGridData.Columns[0].Visible := WatchInspectNav1.ColClassIsDown;
+    FGridData.Columns[4].Visible := WatchInspectNav1.ColVisibilityIsDown;
   end;
 
-  ReleaseRefAndNil(FCurrentWatchValue);
+  FGridData.Columns[2].Visible := WatchInspectNav1.ColTypeIsDown;
+end;
+
+procedure TIDEInspectDlg.DoWatchesInvalidated(Sender: TObject);
+begin
+  if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
   FCurrentResData := nil;
-
-  FInspectWatches.BeginUpdate;
-  AWatch := FInspectWatches.Find(expr);
-  if AWatch = nil then begin
-    FInspectWatches.Clear;
-    AWatch := FInspectWatches.Add(expr);
-    ArrayNavigationBar1.Index := 0;
-  end;
-  AWatch.EvaluateFlags := Opts;
-  AWatch.Enabled := True;
-  AWatch.RepeatCount := ArrayNavigationBar1.PageSize;
-  FInspectWatches.EndUpdate;
-  FCurrentWatchValue := AWatch.Values[tid, idx];
-  if FCurrentWatchValue <> nil then begin
-    FCurrentResData := FCurrentWatchValue.ResultData;
-    FCurrentWatchValue.AddReference;
-    FCurrentWatchValue.Value;
-  end;
-  DoWatchUpdated(FInspectWatches, AWatch);
+  WatchInspectNav1.UpdateData(True);
 end;
 
 initialization

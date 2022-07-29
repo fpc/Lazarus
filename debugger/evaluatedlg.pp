@@ -39,83 +39,56 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, Forms, Controls, ComCtrls, StdCtrls, Menus, Dialogs,
+  LCLType, Forms, Controls, ComCtrls, StdCtrls, Menus, Dialogs, ExtCtrls,
+  Buttons,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
-  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, DebuggerDlg,
-  DebuggerStrConst, EnvironmentOpts;
+  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
+  IdeDebuggerFpDbgValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
+  IdeDebuggerStringConstants, EnvironmentOpts;
 
 type
-
-  TEvalHistDirection=(EHDNone,EHDUp,EHDDown);
-
 
   { TEvaluateDlg }
 
   TEvaluateDlg = class(TDebuggerDlg)
-    chkTypeCast: TCheckBox;
-    chkFpDbgConv: TCheckBox;
-    cmbExpression: TComboBox;
-    cmbNewValue: TComboBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    lblNewValue: TLabel;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
-    mnuHistory: TPopupMenu;
-    ToolButton1: TToolButton;
-    tbHistory: TToolButton;
+    Panel1: TPanel;
+    EdModify: TComboBox;
+    BtnExecModify: TSpeedButton;
     txtResult: TMemo;
-    ToolBar1: TToolBar;
-    tbInspect: TToolButton;
-    tbWatch: TToolButton;
-    tbModify: TToolButton;
-    tbEvaluate: TToolButton;
-    procedure chkFpDbgConvChange(Sender: TObject);
-    procedure cmbExpressionKeyUp(Sender: TObject; var {%H-}Key: Word;
-      {%H-}Shift: TShiftState);
-    procedure cmbExpressionSelect(Sender: TObject);
-    procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
-    procedure FormActivate(Sender: TObject);
+    WatchInspectNav1: TWatchInspectNav;
+    procedure BtnExecModifyClick(Sender: TObject);
+    procedure EdModifyKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FormShow(Sender: TObject);
-    procedure cmbExpressionChange(Sender: TObject);
-    procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
-    procedure MenuItem1Click(Sender: TObject);
-    procedure MenuItem2Click(Sender: TObject);
-    procedure MenuItem3Click(Sender: TObject);
-    procedure tbEvaluateClick(Sender: TObject);
-    procedure tbInspectClick(Sender: TObject);
-    procedure tbModifyClick(Sender: TObject);
-    procedure tbWatchClick(Sender: TObject);
-    
   private
-    fSkipKeySelect: Boolean;
-    fHistDirection:TEvalHistDirection;
     FWatchPrinter: TWatchResultPrinter;
-    FInspectWatches: TCurrentWatches;
-    FCurrentWatchValue: TCurrentWatchValue;
 
-    procedure DoWatchValidityChanged(Sender: TObject);
-    function GetFindText: string;
-    procedure SetFindText(const NewFindText: string);
-    procedure Evaluate;
+    procedure DoAddInspect(Sender: TObject);
+    procedure DoAddWatch(Sender: TObject);
+    function DoBeforeUpdate(ASender: TObject): boolean;
+    procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
+    procedure DoDispFormatChanged(Sender: TObject);
+    procedure DoEnvOptChanged(Sender: TObject; Restore: boolean);
+    procedure DoHistDirChanged(Sender: TObject; NewDir: TEvalHistDirection);
+    procedure DoWatchesInvalidated(Sender: TObject);
+    procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    function GetEvalExpression: string;
+    procedure SetEvalExpression(const NewExpression: string);
     procedure Modify;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(const AExpression: String);
-    property FindText: string read GetFindText write SetFindText;
-    procedure UpdateData;
+    property EvalExpression: string read GetEvalExpression write SetEvalExpression;
   end;
 
 implementation
@@ -138,112 +111,169 @@ begin
   ThreadsMonitor := DebugBoss.Threads;
   CallStackMonitor := DebugBoss.CallStack;
   WatchesMonitor := DebugBoss.Watches;
+  WatchesNotification.OnUpdate    := @DoWatchUpdated;
+
+  DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
+  DebugBoss.RegisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
 
   FWatchPrinter := TWatchResultPrinter.Create;
-  FInspectWatches := TCurrentWatches.Create(WatchesMonitor);
 
-  fSkipKeySelect := False;
+  WatchInspectNav1.Init(WatchesMonitor, ThreadsMonitor, CallStackMonitor, []);
+  WatchInspectNav1.HistoryList := InputHistories.HistoryLists.
+    GetList(ClassName,True,rltCaseSensitive);
+
   Caption := lisKMEvaluateModify;
-  cmbExpression.Items.Assign(InputHistories.HistoryLists.
-    GetList(ClassName,True,rltCaseSensitive));
+  EdModify.TextHint := drsNewValue;
+  EdModify.Hint := drsNewValueToAssignToTheVari;
+  Panel1.Enabled := False;
 
-  tbEvaluate.Caption := lisEvaluate;
-  tbModify.Caption := lisModify;
-  tbWatch.Caption := lisWatch;
-  tbInspect.Caption := lisInspect;
-  tbHistory.Caption := lisMenuViewHistory;
+  WatchInspectNav1.btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
 
-  Label1.Caption := lisDBGEMExpression;
-  Label2.Caption := lisDBGEMResult;
-  lblNewValue.Caption := lisDBGEMNewValue;
-  chkTypeCast.Caption := drsUseInstanceClassType;
-  chkFpDbgConv.Caption := dsrEvalUseFpDebugConverter;
-  fHistDirection:=EHDNone;
+  WatchInspectNav1.ShowInspectColumns := False;
+  WatchInspectNav1.ShowArrayNav := False;
+  WatchInspectNav1.ShowEvalHist := True;
+  WatchInspectNav1.ShowAddEval:= False;
+  WatchInspectNav1.ShowDisplayFormat := True;
 
-  ToolBar1.Images := IDEImages.Images_16;
-  tbInspect.ImageIndex := IDEImages.LoadImage('debugger_inspect');
-  tbWatch.ImageIndex := IDEImages.LoadImage('debugger_watches');
-  tbModify.ImageIndex := IDEImages.LoadImage('debugger_modify');
-  tbEvaluate.ImageIndex := IDEImages.LoadImage('debugger_evaluate');
-  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_no_hist');
+  WatchInspectNav1.OnAddWatchClicked := @DoAddWatch;
+  WatchInspectNav1.OnAddInspectClicked := @DoAddInspect;
 
-  mnuHistory.Items[0].Caption:=drsEvalHistoryNone;
-  mnuHistory.Items[1].Caption:=dsrEvalHistoryUp;
-  mnuHistory.Items[2].Caption:=dsrEvalHistoryDown;
+  WatchInspectNav1.OnEvalHistDirectionChanged := @DoHistDirChanged;
+  WatchInspectNav1.OnDisplayFormatChanged := @DoDispFormatChanged;
+
+  //Clear;
+  //WatchInspectNav1.OnClear := @DoClear;
+  WatchInspectNav1.OnBeforeEvaluate := @DoBeforeUpdate;
+  WatchInspectNav1.OnWatchUpdated := @DoWatchUpdated;
+
+  EnvironmentOptions.AddHandlerAfterWrite(@DoEnvOptChanged);
+  DoEnvOptChanged(nil, False);
+
 end;
 
 destructor TEvaluateDlg.Destroy;
 begin
-  ReleaseRefAndNil(FCurrentWatchValue);
-  FreeAndNil(FWatchPrinter);
+  DebugBoss.UnregisterStateChangeHandler(@DoDebuggerState);
+  DebugBoss.UnregisterWatchesInvalidatedHandler(@DoWatchesInvalidated);
+  EnvironmentOptions.RemoveHandlerAfterWrite(@DoEnvOptChanged);
 
+  FreeAndNil(FWatchPrinter);
   inherited Destroy;
-  FreeAndNil(FInspectWatches);
 end;
 
 procedure TEvaluateDlg.Execute(const AExpression: String);
 begin
-  SetFindText(AExpression);
+  SetEvalExpression(AExpression);
 end;
 
-procedure TEvaluateDlg.FormActivate(Sender: TObject);
-begin
-  cmbExpression.DropDownCount := EnvironmentOptions.DropDownCount;
-  cmbNewValue.DropDownCount := EnvironmentOptions.DropDownCount;
-end;
-
-procedure TEvaluateDlg.UpdateData;
-begin
-  ReleaseRefAndNil(FCurrentWatchValue);
-  FInspectWatches.Clear;
-  Evaluate;
-end;
-
-procedure TEvaluateDlg.DoWatchValidityChanged(Sender: TObject);
+procedure TEvaluateDlg.DoAddWatch(Sender: TObject);
 var
-  expr: TCaption;
-  ResultText: String;
+  w: TCurrentWatch;
 begin
-  if (FCurrentWatchValue = nil ) then begin
-    txtResult.Clear;
+  if DebugBoss = nil then
+    exit;
+  DebugBoss.Watches.CurrentWatches.BeginUpdate;
+  try
+    w := DebugBoss.Watches.CurrentWatches.Find(WatchInspectNav1.Expression);
+    if w = nil then
+      w := DebugBoss.Watches.CurrentWatches.Add(WatchInspectNav1.Expression);
+    if (w <> nil) then begin
+      WatchInspectNav1.InitWatch(w);
+      w.Enabled := True;
+      DebugBoss.ViewDebugDialog(ddtWatches, False);
+    end;
+  finally
+    DebugBoss.Watches.CurrentWatches.EndUpdate;
+  end;
+end;
+
+function TEvaluateDlg.DoBeforeUpdate(ASender: TObject): boolean;
+begin
+  Result := DebugBoss.State = dsPause;
+end;
+
+procedure TEvaluateDlg.DoDebuggerState(ADebugger: TDebuggerIntf;
+  AnOldState: TDBGState);
+begin
+  if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
+  if (ADebugger.State = dsPause) and (AnOldState <> dsPause) then begin
+    WatchInspectNav1.UpdateData(True);
+  end;
+end;
+
+procedure TEvaluateDlg.DoDispFormatChanged(Sender: TObject);
+begin
+  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.CurrentWatchValue.Watch = nil)
+  then begin
+    if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
+    WatchInspectNav1.UpdateData;
     exit;
   end;
 
-  if DebugBoss.State <> dsPause then
+  DoWatchUpdated(WatchInspectNav1.Watches, WatchInspectNav1.CurrentWatchValue.Watch);
+end;
+
+procedure TEvaluateDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);
+begin
+  WatchInspectNav1.ShowCallFunction := EnvironmentOptions.DebuggerAllowFunctionCalls;
+  WatchInspectNav1.EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
+  EdModify.DropDownCount := EnvironmentOptions.DropDownCount;
+end;
+
+procedure TEvaluateDlg.DoHistDirChanged(Sender: TObject;
+  NewDir: TEvalHistDirection);
+begin
+  txtResult.Lines.Clear;
+end;
+
+procedure TEvaluateDlg.DoWatchesInvalidated(Sender: TObject);
+begin
+  if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
+  WatchInspectNav1.UpdateData(True);
+end;
+
+procedure TEvaluateDlg.DoWatchUpdated(const ASender: TIdeWatches;
+  const AWatch: TIdeWatch);
+var
+  expr, ResultText: String;
+begin
+  if (WatchInspectNav1.CurrentWatchValue = nil) or
+     not (WatchInspectNav1.CurrentWatchValue.Validity in [ddsError, ddsInvalid, ddsValid])
+  then
     exit;
-  if not (FCurrentWatchValue.Validity in [ddsValid, ddsError, ddsInvalid]) then
+  if (AWatch <> WatchInspectNav1.CurrentWatchValue.Watch) or
+     (ASender <> WatchInspectNav1.Watches)
+  then
     exit;
 
-  expr := cmbExpression.Text;
+
+  expr := WatchInspectNav1.Expression;
   ResultText := '';
 
-  if cmbExpression.Items.IndexOf(expr) = -1 then
-    cmbExpression.Items.Insert(0, expr);
-
-  if FCurrentWatchValue.Validity = ddsValid then begin
-    ResultText := FWatchPrinter.PrintWatchValue(FCurrentWatchValue.ResultData, wdfStructure);
-    if (FCurrentWatchValue.ResultData <> nil) and
-       (FCurrentWatchValue.ResultData.ValueKind = rdkArray) and (FCurrentWatchValue.ResultData.ArrayLength > 0)
+  if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
+    ResultText := FWatchPrinter.PrintWatchValue(WatchInspectNav1.CurrentWatchValue.ResultData, WatchInspectNav1.DisplayFormat);
+    if (WatchInspectNav1.CurrentWatchValue.ResultData <> nil) and
+       (WatchInspectNav1.CurrentWatchValue.ResultData.ValueKind = rdkArray) and (WatchInspectNav1.CurrentWatchValue.ResultData.ArrayLength > 0)
     then
-      ResultText := Format(drsLen, [FCurrentWatchValue.ResultData.ArrayLength]) + ResultText
+      ResultText := Format(drsLen, [WatchInspectNav1.CurrentWatchValue.ResultData.ArrayLength]) + ResultText
     else
-    if (FCurrentWatchValue.TypeInfo <> nil) and
-       (FCurrentWatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
-       (FCurrentWatchValue.TypeInfo.Len >= 0)
+    if (WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil) and
+       (WatchInspectNav1.CurrentWatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+       (WatchInspectNav1.CurrentWatchValue.TypeInfo.Len >= 0)
     then
-      ResultText := Format(drsLen, [FCurrentWatchValue.TypeInfo.Len]) + ResultText;
+      ResultText := Format(drsLen, [WatchInspectNav1.CurrentWatchValue.TypeInfo.Len]) + ResultText;
   end
   else
-    ResultText := FCurrentWatchValue.Value;
+    ResultText := WatchInspectNav1.CurrentWatchValue.Value;
 
-  tbModify.Enabled := FCurrentWatchValue.Validity = ddsValid;
+  Panel1.Enabled := WatchInspectNav1.CurrentWatchValue.Validity = ddsValid;
 
-  if fHistDirection<>EHDNone then
+  if WatchInspectNav1.EvalHistDirection <> EHDNone then
     begin
     if txtResult.Lines.Text='' then
       txtResult.Lines.Text := RESULTEVAL+ expr+':'+LineEnding+ ResultText + LineEnding
     else
-      if fHistDirection=EHDUp then
+      if WatchInspectNav1.EvalHistDirection = EHDUp then
         txtResult.Lines.Text := RESULTEVAL+ expr+':'+LineEnding+ ResultText + LineEnding
            + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
       else
@@ -257,143 +287,40 @@ begin
     txtResult.Lines.Text := ResultText;
 end;
 
-procedure TEvaluateDlg.Evaluate;
-var
-  expr: String;
-  Opts: TWatcheEvaluateFlags;
-  tid, idx: Integer;
-  stack: TIdeCallStack;
-  AWatch: TCurrentWatch;
+procedure TEvaluateDlg.DoAddInspect(Sender: TObject);
 begin
-  if DebugBoss.State <> dsPause then
-    exit;
-
-  expr := trim(cmbExpression.Text);
-  if expr = '' then Exit;
-  InputHistories.HistoryLists.Add(ClassName, expr,rltCaseSensitive);
-  Opts := [];
-  if chkTypeCast.Checked then
-    Opts := Opts + [defClassAutoCast];
-  if not chkFpDbgConv.Checked then
-    Opts := Opts + [defSkipValConv];
-
-  tid    := ThreadsMonitor.CurrentThreads.CurrentThreadId;
-  stack  := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
-  idx := 0;
-  if stack <> nil then
-    idx := stack.CurrentIndex;
-
-  if (FCurrentWatchValue <> nil) and
-     (FCurrentWatchValue.Validity in [ddsEvaluating, ddsRequested]) and
-     (FCurrentWatchValue.Expression = expr) and
-     (FCurrentWatchValue.EvaluateFlags = Opts) and
-     (FCurrentWatchValue.ThreadId = tid) and
-     (FCurrentWatchValue.StackFrame = idx)
-  then begin
-    FCurrentWatchValue.Value;
-    DoWatchValidityChanged(FCurrentWatchValue);
-    exit;
-  end;
-
-  ReleaseRefAndNil(FCurrentWatchValue);
-
-  FInspectWatches.Clear;
-  FInspectWatches.BeginUpdate;
-  AWatch := FInspectWatches.Find(expr);
-  if AWatch = nil then begin
-    FInspectWatches.Clear;
-    AWatch := FInspectWatches.Add(expr);
-  end;
-  AWatch.EvaluateFlags := Opts;
-  AWatch.Enabled := True;
-  FInspectWatches.EndUpdate;
-
-  FCurrentWatchValue := AWatch.Values[tid, idx] as TCurrentWatchValue;
-  if FCurrentWatchValue <> nil then begin
-    FCurrentWatchValue.OnValidityChanged := @DoWatchValidityChanged;
-    FCurrentWatchValue.AddReference;
-    FCurrentWatchValue.Value;
-    DoWatchValidityChanged(FCurrentWatchValue);
-  end;
+  DebugBoss.Inspect(WatchInspectNav1.Expression);
 end;
 
-procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
-var
-  HasExpression: Boolean;
+procedure TEvaluateDlg.SetEvalExpression(const NewExpression: string);
 begin
-  HasExpression := Trim(cmbExpression.Text) <> '';
-  tbEvaluate.Enabled := HasExpression;
-  tbModify.Enabled := HasExpression;
-  tbWatch.Enabled := HasExpression;
-  tbInspect.Enabled := HasExpression;
+  if NewExpression<>'' then
+    WatchInspectNav1.Execute(NewExpression);
+  WatchInspectNav1.FocusEnterExpression;
 end;
 
-procedure TEvaluateDlg.cmbExpressionKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+function TEvaluateDlg.GetEvalExpression: string;
 begin
-  fSkipKeySelect := True;
-  if (Key = VK_RETURN) and tbEvaluate.Enabled
-  then begin
-    Evaluate;
-    Key := 0;
-  end;
-end;
-
-procedure TEvaluateDlg.MenuItem1Click(Sender: TObject);
-begin
-  fHistDirection:=EHDNone;
-  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_no_hist');
-  txtResult.Lines.Clear;
-end;
-
-procedure TEvaluateDlg.MenuItem2Click(Sender: TObject);
-begin
-  fHistDirection:=EHDUp;
-  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_up');
-  txtResult.Lines.Clear;
-end;
-
-procedure TEvaluateDlg.MenuItem3Click(Sender: TObject);
-begin
-  fHistDirection:=EHDDown;
-  tbHistory.ImageIndex := IDEImages.LoadImage('callstack_goto');
-  txtResult.Lines.Clear;
-end;
-
-procedure TEvaluateDlg.SetFindText(const NewFindText: string);
-begin
-  if NewFindText<>'' then
-  begin
-    cmbExpression.Text := NewFindText;
-    cmbExpressionChange(nil);
-    cmbExpression.SelectAll;
-    tbEvaluateClick(tbEvaluate);
-  end;
-  ActiveControl := cmbExpression;
-end;
-
-function TEvaluateDlg.GetFindText: string;
-begin
-  Result := cmbExpression.Text;
+  Result := WatchInspectNav1.Expression;
 end;
 
 procedure TEvaluateDlg.Modify;
 var
   S, V: String;
 begin
-  S := Trim(cmbExpression.Text);
+  S := Trim(WatchInspectNav1.Expression);
   if S = '' then Exit;
-  V := cmbNewValue.Text;
+  V := EdModify.Text;
   if not DebugBoss.Modify(S, V) then begin
     MessageDlg(lisCCOErrorCaption, synfTheDebuggerWasNotAbleToModifyTheValue, mtError, [mbOK],
       0);
     Exit;
   end;
 
-  if cmbNewValue.Items.IndexOf(V) = -1
-  then cmbNewValue.Items.Insert(0, V);
+  if EdModify.Items.IndexOf(V) = -1
+  then EdModify.Items.Insert(0, V);
 
-  Evaluate;
+  WatchInspectNav1.UpdateData(True);
 end;
 
 procedure TEvaluateDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -406,87 +333,51 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,400,300);
 end;
 
-procedure TEvaluateDlg.cmbNewValueKeyDown(Sender: TObject; var Key: Word;
+procedure TEvaluateDlg.EdModifyKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_RETURN) and (tbModify.Enabled)
+  if (Key = VK_RETURN) and (Shift * [ssShift, ssCtrl, ssAlt] = [ssShift]) and
+     (EdModify.Text <> '')
   then begin
     Modify;
     Key := 0;
   end;
 end;
 
-procedure TEvaluateDlg.cmbExpressionKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TEvaluateDlg.BtnExecModifyClick(Sender: TObject);
 begin
-  fSkipKeySelect := False;
-end;
-
-procedure TEvaluateDlg.chkFpDbgConvChange(Sender: TObject);
-begin
-  UpdateData;
-end;
-
-procedure TEvaluateDlg.cmbExpressionSelect(Sender: TObject);
-begin
-  if not fSkipKeySelect then
-    Evaluate;
-end;
-
-procedure TEvaluateDlg.FormShow(Sender: TObject);
-begin
-  cmbExpression.SetFocus;
-end;
-
-procedure TEvaluateDlg.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_ESCAPE) and not Docked then
-    Close
-  else
-    inherited;
-end;
-
-procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);
-begin
-  Evaluate;
-end;
-
-procedure TEvaluateDlg.tbInspectClick(Sender: TObject);
-begin
-  DebugBoss.Inspect(cmbExpression.Text);
-end;
-
-procedure TEvaluateDlg.tbModifyClick(Sender: TObject);
-begin
-  if cmbNewValue.Text = '' then begin
+  if EdModify.Text = '' then begin
     MessageDlg(lisCCOErrorCaption, synfNewValueIsEmpty, mtError, [mbOK], 0);
     exit;
   end;
   Modify;
 end;
 
-procedure TEvaluateDlg.tbWatchClick(Sender: TObject);
-var
-  S: String;
-  Watch: TCurrentWatch;
+procedure TEvaluateDlg.FormShow(Sender: TObject);
 begin
-  S := cmbExpression.Text;
-  if s = '' then
-    exit;
-  if DebugBoss.Watches.CurrentWatches.Find(S) = nil
-  then begin
-    DebugBoss.Watches.CurrentWatches.BeginUpdate;
-    try
-      Watch := DebugBoss.Watches.CurrentWatches.Add(S);
-      Watch.Enabled := True;
-      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
-        Watch.EvaluateFlags := Watch.EvaluateFlags + [defClassAutoCast];
-    finally
-      DebugBoss.Watches.CurrentWatches.EndUpdate;
-    end;
-  end;
-  DebugBoss.ViewDebugDialog(ddtWatches);
+  WatchInspectNav1.FocusEnterExpression;
+end;
+
+procedure TEvaluateDlg.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (not Docked) and
+     ( (not WatchInspectNav1.DropDownOpen) or
+       (EdModify.DroppedDown and EdModify.Focused) )
+  then
+    Close
+  else
+    inherited;
+end;
+
+procedure TEvaluateDlg.FormMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbExtra1 then
+    WatchInspectNav1.GoPrevBrowseEntry
+  else
+  if Button = mbExtra2 then
+    WatchInspectNav1.GoNextBrowseEntry;
 end;
 
 initialization

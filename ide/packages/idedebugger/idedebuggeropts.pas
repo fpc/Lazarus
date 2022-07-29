@@ -37,14 +37,23 @@ type
     property FpDbgConverterConfig: TIdeFpDbgConverterConfigList read FFpDbgConverterConfig write FFpDbgConverterConfig;
   end;
 
-var
-  DebuggerOptions: TDebuggerOptions = nil;
+function GetDebuggerOptions: TDebuggerOptions;
+property DebuggerOptions: TDebuggerOptions read GetDebuggerOptions;
 
 
 implementation
 
 const
   DebuggerOptsConfFileName = 'debuggeroptions.xml';
+var
+  TheDebuggerOptions: TDebuggerOptions = nil;
+
+function GetDebuggerOptions: TDebuggerOptions;
+begin
+  if TheDebuggerOptions = nil then
+    TheDebuggerOptions := TDebuggerOptions.Create;
+  Result := TheDebuggerOptions;
+end;
 
 { TDebuggerOptions }
 
@@ -69,6 +78,7 @@ end;
 
 constructor TDebuggerOptions.Create;
 begin
+  inherited Create;
   FpDbgConverterConfig := TIdeFpDbgConverterConfigList.Create;
 end;
 
@@ -115,7 +125,8 @@ begin
   FFilename:=GetDefaultConfigFilename;
 end;
 
-
+finalization
+  TheDebuggerOptions.Free;
 
 end.
 

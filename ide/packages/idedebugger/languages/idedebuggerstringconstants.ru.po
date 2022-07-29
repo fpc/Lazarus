@@ -11,6 +11,50 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
+#: idedebuggerstringconstants.dbgdispformatbinary
+msgid "Binary"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatcharacter
+msgid "Character"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatdecimal
+msgid "Decimal"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatdefault
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatfloatingpoin
+msgid "Floating Point"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformathexadecimal
+msgid "Hexadecimal"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatmemorydump
+msgid "Memory Dump"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatpointer
+msgid "Pointer"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatstring
+msgid "String"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgdispformatunsigned
+msgid "Unsigned"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgfpconvoptaction
 msgid "Action"
 msgstr "Действие"
@@ -59,4 +103,84 @@ msgstr "Границы: %d .. %d"
 #: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
 msgid "Index of first item to show"
 msgstr "Индекс первого показываемого элемента"
+
+#: idedebuggerstringconstants.drsaddwatch
+msgid "Add watch"
+msgstr ""
+
+#: idedebuggerstringconstants.drsappendresultatbottomofhis
+msgid "Append result at bottom of history"
+msgstr ""
+
+#: idedebuggerstringconstants.drsdebugconverter
+msgid "Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.drsdisableenableupdatesforth
+msgid "Disable/Enable updates for the entire window"
+msgstr ""
+
+#: idedebuggerstringconstants.drsenterexpression
+msgid "Enter Expression"
+msgstr ""
+
+#: idedebuggerstringconstants.drsevaluate
+msgid "Evaluate"
+msgstr ""
+
+#: idedebuggerstringconstants.drshistory
+msgid "History"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinsertresultattopofhistor
+msgid "Insert result at top of history"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspect
+msgid "Inspect"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnewvalue
+msgid "New Value"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnewvaluetoassigntothevari
+msgid "New value to assign to the variable in the debugged process. Use shift-enter to confirm"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnodebugconverter
+msgid "No Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnohistorykept
+msgid "No history kept"
+msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+msgid "Function"
+msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncallshint
+msgid "Allow function calls"
+msgstr ""
+
+#: idedebuggerstringconstants.drsuseinstanceclass
+msgid "Instance"
+msgstr ""
+
+#: idedebuggerstringconstants.drsuseinstanceclasshint
+msgid "Use Instance class type"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinspectshowcolclass
+msgid "Show class column"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinspectshowcoltype
+msgid "Show type column"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinspectshowcolvisibility
+msgid "Show visibility column"
+msgstr ""
 

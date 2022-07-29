@@ -1387,7 +1387,6 @@ begin
   CodeExplorerOptions.OnAfterWrite := @CodeExplorerOptionsAfterWrite;
   CodeExplorerOptions.Load;
 
-  DebuggerOptions := TDebuggerOptions.Create;
   DebuggerOptions.PrimaryConfigPath := GetPrimaryConfigPath;
   DebuggerOptions.CreateConfig;
   DebuggerOptions.Load;
@@ -1773,7 +1772,6 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   IDECommandList := nil;
-  FreeThenNil(DebuggerOptions);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
   // free control selection

@@ -6,6 +6,7 @@ object ArrayNavigationBar: TArrayNavigationBar
   AutoSize = True
   ClientHeight = 26
   ClientWidth = 320
+  LCLVersion = '2.3.0.0'
   TabOrder = 0
   DesignLeft = 518
   DesignTop = 777

@@ -91,7 +91,12 @@
       </Item>
       <Item>
         <Filename Value="idedebuggerwatchresultjson.pas"/>
-        <UnitName Value="idedebuggerwatchresultjson"/>
+        <UnitName Value="IdeDebuggerWatchResultJSon"/>
+      </Item>
+      <Item>
+        <Filename Value="frames\watchinspecttoolbar.pas"/>
+        <UnitName Value="WatchInspectToolbar"/>
+        <ResourceBaseClass Value="Frame"/>
       </Item>
     </Files>
     <i18n>

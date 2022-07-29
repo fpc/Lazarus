@@ -1434,15 +1434,6 @@ begin
       FBreakPoints[i].SetLocation(FBreakPoints[i].Source, FBreakPoints[i].Line);
   end;
 
-  // update inspect
-  // TODO: Move here from DebuggerCurrentLine / Only currently State change locks execution of gdb
-  //if ( ((FDebugger.State in [dsPause]) and (OldState = dsRun)) or
-  //     (OldState in [dsPause]) ) and
-  if (OldState in [dsPause]) and (FDialogs[ddtInspect] <> nil)
-  then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
-  if (OldState in [dsPause]) and (FDialogs[ddtEvaluate] <> nil)
-  then TEvaluateDlg(FDialogs[ddtEvaluate]).UpdateData;
-
   case FDebugger.State of
     dsError: begin
     {$ifdef VerboseDebugger}
@@ -1570,10 +1561,6 @@ begin
   // Must be after stack frame selection (for inspect)
   if FDialogs[ddtAssembler] <> nil
   then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
-  if (FDialogs[ddtInspect] <> nil)
-  then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
-  if (FDialogs[ddtEvaluate] <> nil)
-  then TEvaluateDlg(FDialogs[ddtEvaluate]).UpdateData;
 
   if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
      GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
@@ -1921,9 +1908,9 @@ begin
     exit;
   if SourceEditorManager.GetActiveSE.SelectionAvailable
   then
-    TheDialog.FindText := SourceEditorManager.GetActiveSE.Selection
+    TheDialog.EvalExpression := SourceEditorManager.GetActiveSE.Selection
   else
-    TheDialog.FindText := SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret;
+    TheDialog.EvalExpression := SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -3029,7 +3016,7 @@ begin
   if Destroying then Exit;
   ViewDebugDialog(ddtEvaluate);
   if FDialogs[ddtEvaluate] <> nil then
-    TEvaluateDlg(FDialogs[ddtEvaluate]).FindText := AExpression;
+    TEvaluateDlg(FDialogs[ddtEvaluate]).EvalExpression := AExpression;
 end;
 
 procedure TDebugManager.Inspect(const AExpression: String);
