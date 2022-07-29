@@ -5,7 +5,7 @@ unit IdeDebuggerWatchResultJSon;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerWatchResult, fpjson, jsonparser;
+  Classes, SysUtils, IdeDebuggerWatchResult, fpjson, jsonparser, jsonscanner;
 
 type
 
@@ -49,10 +49,18 @@ implementation
 { TWatchResultDataJSonBase }
 
 function TWatchResultDataJSonBase.JSon: TJSONData;
+Var
+  P : TJSONParser;
 begin
   if FInternalJSon = nil then
     try
-      FInternalJSon := GetJSON(AsString);
+      //FInternalJSon := GetJSON(AsString);
+      P := TJSONParser.Create(AsString, [joUTF8,joComments,joIgnoreTrailingComma,joBOMCheck{,joIgnoreDuplicates}]);
+      try
+        FInternalJSon := P.Parse;
+      finally
+        P.Free;
+      end;
     except
       FInternalJSon := nil;
     end;

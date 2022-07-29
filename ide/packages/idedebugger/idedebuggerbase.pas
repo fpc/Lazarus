@@ -231,13 +231,13 @@ function TWatchValue.GetResultData: TWatchResultData;
     if l = 0 then
       exit;
 
-    while (l > 1) and (s[l] in [' ', #9]) do
+    while (l > 1) and (s[l] in [' ', #9, #10, #13]) do
       dec(l);
     if not(s[l] in [']', '}']) then
       exit;
 
     i := 1;
-    while (i < l) and (s[i] in [' ', #9]) do
+    while (i < l) and (s[i] in [' ', #9, #10, #13]) do
       inc(i);
     if not(s[i] in ['[', '{']) then
       exit;
