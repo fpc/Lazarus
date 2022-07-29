@@ -295,8 +295,6 @@ implementation
 
 {$R *.lfm}
 
-{ $DEFINE HAVEMSSQLCONN}
-
 uses
   frmselectconnectiontype, reglddfeatures,
   frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect;
