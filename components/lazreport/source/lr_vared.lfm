@@ -39,6 +39,7 @@ object frVaredForm: TfrVaredForm
     HelpContext = 79
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    ScrollBars = ssAutoBoth
     TabOrder = 0
   end
   object ButtonPanel1: TButtonPanel
