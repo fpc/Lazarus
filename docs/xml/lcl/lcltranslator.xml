@@ -263,38 +263,94 @@
 
       <element name="TranslateLCLResourceStrings">
         <short>
-          Translates resource strings in <file>LCLStrConsts</file> to the specified language.
+          Translates resource strings in <file>LCLStrConsts.pas</file> using localization files for the specified language.
         </short>
         <descr>
           <p>
-            <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts</file> unit to the language identifier specified in the Lang argument.
+            <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts.pas</file> unit to the language identifier specified in the <var>Lang</var> argument. Lang can contain a value as defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>. For example: 'de' or 'ru'. An empty string (<b>''</b>) causes the default language for the system to be used.
           </p>
           <p>
-            Dir is an optional path where .PO or .MO files can be found with the translated values for string constants.
+            <var>Dir</var> is the optional path where .po or .mo files with the translated values for string constants are located. An empty string (<b>''</b>) causes the predefined directories, like 'languages' or 'locale', to be used. This is the location where the <file>lclstrconsts.&lt;Lang&gt;.po</file> or <file>lclstrconsts.&lt;Lang&gt;.mo</file> localization file for the <file>lclstrconsts.pas</file> unit is stored.
           </p>
           <p>
-            TranslateLCLResourceStrings calls FindLocaleFileName to locate the .PO or .MO file. Preference is given to the .PO variant. If it is located in the specified path, the TranslateUnitResourceStrings routine is called to translate constants from the LCLStrConts unit.
+            TranslateLCLResourceStrings calls the TranslateUnitResourceStringsEx routine using the specified parameter values as arguments, and 'lclstrconsts' as the base unit name for the translation. TranslateUnitResourceStringsEx resolves the path, language, and file extension needed for the platform or operating system and applies the translated values.
           </p>
           <p>
-            If a .PO file is not found, FindLocaleFileName is called to locate a .MO file used for translation. When found, the TranslateResourceStrings routine is called to translate strings using the .MO file in the specified path.
-          </p>
-          <p>
-            The return value contains the name of the .PO or .MO file used to translate string constants, or an empty string when a file is not found in the path specified in Dir.
+            The return value contains the language identifier or locale code used in the translation. It may contain an empty string (<b>''</b>) if a localization file is not found for the language or an error occurs.            
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TranslateUnitResourceStringsEx"/>
+          <link id="#lazutils.translations.TranslateUnitResourceStrings">TranslateUnitResourceStrings</link>
+        </seealso>
       </element>
       <element name="TranslateLCLResourceStrings.Lang">
         <short>Language identifier for the translated constants.</short>
       </element>
       <element name="TranslateLCLResourceStrings.Dir">
-        <short>Path to the .MO or .PO file used for the translation.</short>
+        <short>Path to the .po or .mo file used for the translation.</short>
       </element>
       <element name="TranslateLCLResourceStrings.Result">
         <short>
-          File name used for the translation, or an empty string ('') when translation is not available.
+          Language code used for the translation, or an empty string ('') when a translation is not available or an error has occurred.
         </short>
       </element>
+
+      <element name="TranslateUnitResourceStringsEx">
+        <short>
+          Translates string constants in a unit using the localization file for the specified language and path.
+        </short>
+        <descr>
+          <p>
+            <var>TranslateUnitResourceStringsEx</var> is a convenience routine used to translate string constants in a specified source file to a given language. It provides arguments which identify the source file, the path to localization files, and the language requested.            
+          </p>
+          <p>
+            <var>Lang</var> contains the optional language identifier requested for the translated string constants. It contains a value like 'en', 'ru' or 'de'. An empty string (<b>''</b>) causes the default language identifier for the platform or operating system to be used.
+          </p>
+          <p>
+            <var>Dir</var> contains the path where the localization files (.po, .mo) are located. It can contain a path relative to the directory for the application executable, or a fully qualified path to the directory with the localization files. For example: 'languages' or '/usr/share/locale'. An empty string (<b>''</b>) indicates that the predefined directories like 'languages' or 'locale' are used to locate the localization files.
+          </p>
+          <p>
+            <var>LocaleFileName</var> contains the base name for the localization file used to translate the values in the specified unit. It contains a value like 'lazaruside' or 'lclstrconts'. No actions are performed in the routine when LocaleFileName is an empty string ('').
+          </p>
+          <p>
+            <var>LocaleUnitName</var> contains the base name for the source code file with the string constants translated in the routine. An empty string (<b>''</b>) causes the value in LocaleFileName to be used as the base source code file name.
+          </p>        
+          <p>
+            TranslateUnitResourceStringsEx calls the FindLocaleFileName implementation routine to resolve the requested language identifier, and the path and file extension for the localization files. .po files are given preference, and .mo files are used when a .po equivalent is not available.
+          </p>
+          <p>
+            TranslateUnitResourceStringsEx calls the TranslateUnitResourceStrings routine in the <file>LazUtils</file> <file>translations.pp</file> unit to translate the specified file using the path to the localization file.
+          </p>
+          <p>
+            TranslateUnitResourceStringsEx calls the TranslateResourceStrings routine in the FCL <file>gettext.pp</file> unit to translate using a .mo file when a path to .po files is not found.
+          </p>
+          <p>
+            The return value contains the language code or locale ID used in the translation. An empty string ('') in the return value indicates that a localization file for the specified arguments was not found, or that an error occurred during the translation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.translations.TranslateUnitResourceStrings">Translations.TranslateUnitResourceStrings</link>
+          <link id="#lazutils.translations.TranslateResourceStrings">Translations.TranslateResourceStrings</link>
+        </seealso>
+      </element>
+      <element name="TranslateUnitResourceStringsEx.Result">
+        <short>
+          The language code or locale ID used in the translation, or an empty string when a translation is not available or an error has occurred.
+        </short>
+      </element>
+      <element name="TranslateUnitResourceStringsEx.Lang">
+        <short>Optional language identifier requested for the translation.</short>
+      </element>
+      <element name="TranslateUnitResourceStringsEx.Dir">
+        <short>Optional path to the localization files used in the translation.</short>
+      </element>
+      <element name="TranslateUnitResourceStringsEx.LocaleName">
+        <short>Base name for the localization file used in the translation.</short>
+      </element>
+      <element name="TranslateUnitResourceStringsEx.LocaleUnitName">
+        <short>Optional base name of the unit with strings translated in the routine.</short>
+      </element>     
 
       <element name="SetDefaultLang">
         <short>
@@ -305,28 +361,32 @@
             <var>SetDefaultLang</var> is a procedure used to the set the default language used for string translations.
           </p>
           <p>
-            <var>Lang</var> contains the Language ID to use for translated strings. Lang contains a language identifier defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>
+            <var>Lang</var> contains the Language identifier used to translate strings. Lang contains a value as defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>
           </p>
           <p>
-            The default value for the parameter is an empty string (<b>''</b>), and indicates that strings are not translated.
+            The default value for the parameter is an empty string (<b>''</b>), and indicates that the default language identifier for the system should be used. This value can be passed as a command line argument (like '--lang ru' or '--lang=es'). The value also can be overridden using the <b>LANG</b> environment variable. The fallback value is the language identifier for the platform. For Windows, this is the language code and country code from GetLocaleInfo in a format like 'en_US' or 'zh_CN'. For other platforms, the value from either the <b>LC_ALL</b> or <b>LC_MESSAGE</b> environment variables is used as the fallback.
           </p>
           <p>
-            <var>Dir</var> contains the directory name where .po/.mo files are stored. The default value is an empty string (<b>''</b>), and indicates that the default directories are used for translation files.
+            <var>Dir</var> contains the name of the directory where .po or .mo localization files are stored, like 'mylng'. The default value is an empty string (<b>''</b>), and indicates that the predefined directories like 'languages' or 'locale' are used to find the localization files for the translation.
           </p>
           <p>
-            <var>LocaleFileName</var> contain the localization file used for for strings. This file handles variations in grammar and spelling that occur in local dialects for a language. It contains a value like 'zh_cn' or 'pt_br'. The default value is an empty string (<b>''</b>), and indicates that localization is not preformed for resource strings.
+            <var>LocaleFileName</var> contains the base name for the localization file used to translate string values, like 'lazaruside' or 'debuggerstrconst'. The default value for the argument is an empty string (<b>''</b>) and causes the base name for the application executable to be used, like 'project1' for 'project1.exe'.
+          </p>
+          <p>            
+            When combined with the language identifier and the '.po' or '.mo' file extension, it forms the complete file name with the localized string values. For example: 'lazaruside.ru.po', 'debuggerstrconst.zh_CN.po', or 'project1.es.po'. The value in the Dir argument is prepended to form the complete path to the localization file.
           </p>
           <p>
-            <var>ForceUpdate</var> indicates if an immediate update to to the User Interface is performed when translations are loaded. Set ForceUpdate to <b>False</b> when SetDefaultLang is called from the initialization section for a unit. The default value is <b>True</b>.
+            <var>ForceUpdate</var> indicates if an immediate update to the user interface is performed when translations are loaded. Set ForceUpdate to <b>False</b> when SetDefaultLang is called from the initialization section in a unit. The default value is <b>True</b>.
           </p>
           <p>
-            SetDefaultLang ensures that Language ID and Locale Codes are valid, and .po/.mo exist for the specified names before they are applied. SetDefaultLang calls the FindLocaleFileName function to get the file name used for translation resources. .po files are applied when they exist. Otherwise, .mo file are used to get the translated string values. LCL resource string constants are also translated when the default language code is assigned.
+            SetDefaultLang ensures that the language ID / locale codes are valid, and .po or .mo files exist with the specified values before they are applied. SetDefaultLang calls the FindLocaleFileName function to get the file name used for translation resources. .po files are applied when they exist. Otherwise, .mo file are used to get the translated string values. LCL resource string constants are also translated using TranslateLCLResourceStrings when a localization file is found with the specified values.
           </p>
           <p>
-            When ForceUpdate contains <b>True</b>, string properties used in Forms, Data Modules, Controls, Components and Persistent objects are translated. This action is performed for items with RTTI (Run Time Type Information) and includes a setter (write access) procedure. TUpdateTranslator is used to perform the update to user interface elements.
+            When ForceUpdate contains <b>True</b>, string properties used in Forms, Data Modules, Controls, Components and Persistent objects are translated. This action is performed for members with RTTI (Run Time Type Information) which include a setter (write access) procedure. TUpdateTranslator is used to perform the update to user interface elements.
           </p>
         </descr>
         <seealso>
+          <link id="TranslateLCLResourceStrings"/>
           <link id="TPOTranslator"/>
           <link id="TDefaultTranslator"/>
           <link id="TUpdateTranslator"/>
@@ -335,20 +395,28 @@
       </element>
       <element name="SetDefaultLang.Lang">
         <short>
-          Language ID to use for translated strings.
+          Language ID requested for translated strings, or '' to use the system default.
         </short>
       </element>
       <element name="SetDefaultLang.Dir">
-        <short>Directory name with translation files.</short>
+        <short>
+          Directory with the localization files, or '' to use the predefined directories.
+        </short>
       </element>
       <element name="SetDefaultLang.LocaleFileName">
-        <short>Locale code for the localization file.</short>
+        <short>
+          Base name for the localization file, or '' to use the base name for the executable file.
+        </short>
       </element>
       <element name="SetDefaultLang.ForceUpdate">
-        <short>Indicates if the UI should be updated immediately.</short>
+        <short>
+          Indicates if the UI should be updated immediately.
+        </short>
       </element>
       <element name="SetDefaultLang.Result">
-        <short>Default language code in use.</short>
+        <short>
+          Language code used for the translation, or an empty string when a language code is not available or an error occurs.
+        </short>
       </element>
 
       <element name="GetDefaultLang">
