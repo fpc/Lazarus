@@ -320,7 +320,7 @@
             TranslateUnitResourceStringsEx calls the FindLocaleFileName implementation routine to resolve the requested language identifier, and the path and file extension for the localization files. .po files are given preference, and .mo files are used when a .po equivalent is not available.
           </p>
           <p>
-            TranslateUnitResourceStringsEx calls the TranslateUnitResourceStrings routine in the <file>LazUtils</file> <file>translations.pp</file> unit to translate the specified file using the path to the localization file.
+            TranslateUnitResourceStringsEx calls the TranslateUnitResourceStrings routine in the <file>translations.pp</file> unit to translate the specified file using the path to the localization file.
           </p>
           <p>
             TranslateUnitResourceStringsEx calls the TranslateResourceStrings routine in the FCL <file>gettext.pp</file> unit to translate using a .mo file when a path to .po files is not found.
@@ -345,7 +345,7 @@
       <element name="TranslateUnitResourceStringsEx.Dir">
         <short>Optional path to the localization files used in the translation.</short>
       </element>
-      <element name="TranslateUnitResourceStringsEx.LocaleName">
+      <element name="TranslateUnitResourceStringsEx.LocaleFileName">
         <short>Base name for the localization file used in the translation.</short>
       </element>
       <element name="TranslateUnitResourceStringsEx.LocaleUnitName">
