@@ -1,622 +1,682 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="LazControls">
+<package name="LazControls">
 
-    <module name="TreeFilterEdit">
-      <short>Implements a control used to filter an associated TTreeView control.</short>
-      <descr>
-        <p>
-          <file>treefilteredit.pas</file> contains classes and other types used to implement a control used to filter an associated TTreeView control. This file is part of the <file>LazControls</file> package.
-        </p>
-      </descr>
+<module name="TreeFilterEdit">
+<short>
+Implements a control used to filter an associated TTreeView control.
+</short>
+<descr>
+<p>
+<file>treefilteredit.pas</file> contains classes and other types used to 
+implement a control used to filter an associated TTreeView control. This file 
+is part of the <file>LazControls</file> package.
+</p>
+</descr>
 
-      <element name="TImageIndexEvent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TImageIndexEvent.Result">
-        <short/>
-      </element>
-      <element name="TImageIndexEvent.Str">
-        <short/>
-      </element>
-      <element name="TImageIndexEvent.Data">
-        <short/>
-      </element>
-      <element name="TImageIndexEvent.AIsEnabled">
-        <short/>
-      </element>
+<element name="TImageIndexEvent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TImageIndexEvent.Result">
+<short/>
+</element>
+<element name="TImageIndexEvent.Str">
+<short/>
+</element>
+<element name="TImageIndexEvent.Data">
+<short/>
+</element>
+<element name="TImageIndexEvent.AIsEnabled">
+<short/>
+</element>
 
-      <element name="TFilterNodeEvent">
-        <short>
-          Specifies an event handler signalled to determine if a tree node matches the Filter in a TTreeFilterEdit control.
-        </short>
-        <descr>
-          <p>
-            <var>TFilterNodeEvent</var> is a <var>Boolean</var> object function which defines an event handler used to determine whether a tree node can be used in a TTreeFilterEdit control. TFilterNodeEvent is the type used to implement the OnFilterNode property in TTreeFilterEdit.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TTreeFilterEdit.OnFilterNode"/>
-        </seealso>
-      </element>
-      <element name="TFilterNodeEvent.Result">
-        <short>
-          <b>True</b> if the specified tree node can be used.
-        </short>
-      </element>
-      <element name="TFilterNodeEvent.ItemNode">
-        <short>
-          Tree node examined in the handler routine.
-        </short>
-      </element>
-      <element name="TFilterNodeEvent.Done">
-        <short>
-          <b>True</b> if the node was handled in the routine. <b>False</b> if the node was ignored in the handler.
-        </short>
-      </element>
+<element name="TFilterNodeEvent">
+<short>
+Specifies an event handler signalled to determine if a tree node matches the 
+Filter in a TTreeFilterEdit control.
+</short>
+<descr>
+<p>
+<var>TFilterNodeEvent</var> is a <var>Boolean</var> object function which 
+defines an event handler used to determine whether a tree node can be used in 
+a TTreeFilterEdit control. TFilterNodeEvent is the type used to implement the 
+OnFilterNode property in TTreeFilterEdit.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.OnFilterNode"/>
+</seealso>
+</element>
+<element name="TFilterNodeEvent.Result">
+<short>
+<b>True</b> if the specified tree node can be used.
+</short>
+</element>
+<element name="TFilterNodeEvent.ItemNode">
+<short>
+Tree node examined in the handler routine.
+</short>
+</element>
+<element name="TFilterNodeEvent.Done">
+<short>
+<b>True</b> if the node was handled in the routine. <b>False</b> if the node 
+was ignored in the handler.
+</short>
+</element>
 
-      <element name="TTreeFilterBranch">
-        <short>
-          Represents a branch for an existing tree node when a filter is used in "sub-branches" mode.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterBranch">
+<short>
+Represents a branch for an existing tree node when a filter is used in 
+"sub-branches" mode.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterBranch.Create">
-        <short>
-          Constructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            Allocates resources for the Items property, and other internal members. Stores AOwner in the Owner property, and ARootNode to the internal member used in the class instance.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterBranch.Create.AOwner">
-        <short>
-          Filter edit control which owns the class instance.
-        </short>
-      </element>
-      <element name="TTreeFilterBranch.Create.ARootNode">
-        <short>
-          Tree node which is the root for the brance, or Nil when all nodes are considered as top-level tree nodes.
-        </short>
-      </element>
+<element name="TTreeFilterBranch.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+Allocates resources for the Items property, and other internal members. 
+Stores AOwner in the Owner property, and ARootNode to the internal member 
+used in the class instance.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TTreeFilterBranch.Create.AOwner">
+<short>
+Filter edit control which owns the class instance.
+</short>
+</element>
+<element name="TTreeFilterBranch.Create.ARootNode">
+<short>
+Tree node which is the root for the brance, or Nil when all nodes are 
+considered as top-level tree nodes.
+</short>
+</element>
 
-      <element name="TTreeFilterBranch.AddNodeData">
-        <short>
-          Adds an entry in Items for a root node in a branch.
-        </short>
-        <descr>
-          <p>
-            Text, a data reference, and an associated file name can be added for the node.
-          </p>
-        </descr>
-      </element>
-      <element name="TTreeFilterBranch.AddNodeData.ANodeText">
-        <short/>
-      </element>
-      <element name="TTreeFilterBranch.AddNodeData.AData">
-        <short/>
-      </element>
-      <element name="TTreeFilterBranch.AddNodeData.AFullFilename">
-        <short/>
-      </element>
+<element name="TTreeFilterBranch.AddNodeData">
+<short>
+Adds an entry in Items for a root node in a branch.
+</short>
+<descr>
+<p>
+Text, a data reference, and an associated file name can be added for the node.
+</p>
+</descr>
+</element>
+<element name="TTreeFilterBranch.AddNodeData.ANodeText">
+<short/>
+</element>
+<element name="TTreeFilterBranch.AddNodeData.AData">
+<short/>
+</element>
+<element name="TTreeFilterBranch.AddNodeData.AFullFilename">
+<short/>
+</element>
 
-      <element name="TTreeFilterBranch.DeleteData">
-        <short>
-          Removes the specified tree node from the data for the class instance.
-        </short>
-        <descr>
-          <p>
-            Removes the specified tree node from Items, the internal list for sorted data, and the items in the FilteredTreeview for the owner control.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterBranch.DeleteData.ANode">
-        <short>
-          Tree node deleted in the method.
-        </short>
-      </element>
+<element name="TTreeFilterBranch.DeleteData">
+<short>
+Removes the specified tree node from the data for the class instance.
+</short>
+<descr>
+<p>
+Removes the specified tree node from Items, the internal list for sorted 
+data, and the items in the FilteredTreeview for the owner control.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TTreeFilterBranch.DeleteData.ANode">
+<short>
+Tree node deleted in the method.
+</short>
+</element>
 
-      <element name="TTreeFilterBranch.FreeNodeData">
-        <short>
-          Frees the specified tree node including its node object data.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterBranch.FreeNodeData.ANode">
-        <short>
-          Tree node freed in the method.
-        </short>
-      </element>
+<element name="TTreeFilterBranch.FreeNodeData">
+<short>
+Frees the specified tree node including its node object data.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterBranch.FreeNodeData.ANode">
+<short>
+Tree node freed in the method.
+</short>
+</element>
 
-      <element name="TTreeFilterBranch.GetData">
-        <short>
-          Gets the object data for the node at the specified position in the sorted data.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterBranch.GetData.Result">
-        <short>
-          TObject instance at the specified position, or Nil when AIndex does not exist in the sorted data.
-        </short>
-      </element>
-      <element name="TTreeFilterBranch.GetData.AIndex">
-        <short>
-          Ordinal position in the sorted data where the object instance is stored.
-        </short>
-      </element>
+<element name="TTreeFilterBranch.GetData">
+<short>
+Gets the object data for the node at the specified position in the sorted 
+data.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterBranch.GetData.Result">
+<short>
+TObject instance at the specified position, or Nil when AIndex does not exist 
+in the sorted data.
+</short>
+</element>
+<element name="TTreeFilterBranch.GetData.AIndex">
+<short>
+Ordinal position in the sorted data where the object instance is stored.
+</short>
+</element>
 
-      <element name="TTreeFilterBranch.ClearNodeData">
-        <short>
-          Frees the specified tree node and all of its child nodes.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterBranch.ClearNodeData">
+<short>
+Frees the specified tree node and all of its child nodes.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterBranch.InvalidateBranch">
-        <short>
-          Causes nodes in the class instance to be sorted, filtered, and applied to the owner control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterBranch.InvalidateBranch">
+<short>
+Causes nodes in the class instance to be sorted, filtered, and applied to the 
+owner control.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterBranch.Move">
-        <short>
-          Moves the tree node at the specified position in Items to the position in NewIndex.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterBranch.Move.CurIndex">
-        <short/>
-      </element>
-      <element name="TTreeFilterBranch.Move.NewIndex">
-        <short/>
-      </element>
+<element name="TTreeFilterBranch.Move">
+<short>
+Moves the tree node at the specified position in Items to the position in 
+NewIndex.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterBranch.Move.CurIndex">
+<short/>
+</element>
+<element name="TTreeFilterBranch.Move.NewIndex">
+<short/>
+</element>
 
-      <element name="TTreeFilterBranch.Items">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterBranch.Items">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TBranchList">
-        <short>
-          Specializes TFPGObjectList for the TTreeFilterBranch type.
-        </short>
-        <descr>
-          <p>
-            Used in the implementation of the TTreeFilterEdit control.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TTreeFilterBranch"/>
-          <link id="TTreeFilterEdit"/>
-        </seealso>
-      </element>
+<element name="TBranchList">
+<short>
+Specializes TFPGObjectList for the TTreeFilterBranch type.
+</short>
+<descr>
+<p>
+Used in the implementation of the TTreeFilterEdit control.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterBranch"/>
+<link id="TTreeFilterEdit"/>
+</seealso>
+</element>
 
-      <element name="TTreeFilterEdit">
-        <short>Implements a filter edit control for an associated TTreeView control.</short>
-        <descr>
-          <p>
-            This control has 2 different modes of operation. One mode maintains and filters sub-items of root-nodes in a tree. The other mode filters the whole tree using the  TreeNode.Visible property for each of the nodes.
-          </p>
-          <p>
-            <b>Mode 1</b>: Sub-branches under root nodes Items for each branch are maintained in a TTreeFilterBranch class instance.
-          </p>
-          <p>
-            <b>Mode 2</b>: A whole tree When no branches are defined (no calls made to GetBranch), the TreeFilterEdit control filters the whole tree automatically. It uses each TreeNode's Visible property to show/hide it.
-          </p>
-        </descr>
-      </element>
+<element name="TTreeFilterEdit">
+<short>
+Implements a filter edit control for an associated TTreeView control.
+</short>
+<descr>
+<p>
+This control has 2 different modes of operation. One mode maintains and 
+filters sub-items of root-nodes in a tree. The other mode filters the whole 
+tree using the  TreeNode.Visible property for each of the nodes.
+</p>
+<p>
+<b>Mode 1</b>: Sub-branches under root nodes Items for each branch are 
+maintained in a TTreeFilterBranch class instance.
+</p>
+<p>
+<b>Mode 2</b>: A whole tree When no branches are defined (no calls made to 
+GetBranch), the TreeFilterEdit control filters the whole tree automatically. 
+It uses each TreeNode's Visible property to show/hide it.
+</p>
+</descr>
+</element>
 
-      <element name="TTreeFilterEdit.Notification">
-        <short>
-          Performs actions needed when the specified component is added to or removed from the control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.Notification.AComponent">
-        <short>
-          Component for the notification event.
-        </short>
-      </element>
-      <element name="TTreeFilterEdit.Notification.Operation">
-        <short>
-          Operation for the specified component.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.Notification">
+<short>
+Performs actions needed when the specified component is added to or removed 
+from the control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.Notification.AComponent">
+<short>
+Component for the notification event.
+</short>
+</element>
+<element name="TTreeFilterEdit.Notification.Operation">
+<short>
+Operation for the specified component.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MoveNext">
-        <short>
-          Moves to and optionally selects the next node in the associated tree view control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MoveNext.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MoveNext">
+<short>
+Moves to and optionally selects the next node in the associated tree view 
+control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MoveNext.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MovePrev">
-        <short>
-          Moves to and optionally selects the previous node in the associated tree view control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MovePrev.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MovePrev">
+<short>
+Moves to and optionally selects the previous node in the associated tree view 
+control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MovePrev.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MovePageUp">
-        <short>
-          Moves the associated tree view control by one page in the upward direction, and optionally selects the first node.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MovePageUp.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MovePageUp">
+<short>
+Moves the associated tree view control by one page in the upward direction, 
+and optionally selects the first node.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MovePageUp.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MovePageDown">
-        <short>
-          Moves the associated tree view control by one page in the downward direction, and optionally selects the first node.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MovePageDown.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MovePageDown">
+<short>
+Moves the associated tree view control by one page in the downward direction, 
+and optionally selects the first node.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MovePageDown.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MoveHome">
-        <short>
-          Moves the tree view control to the first (or root) node in the tree.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MoveHome.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MoveHome">
+<short>
+Moves the tree view control to the first (or root) node in the tree.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MoveHome.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.MoveEnd">
-        <short>
-          Moves the tree view control to the last node in the tree.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.MoveEnd.ASelect">
-        <short>
-          <b>True</b> if the new tree node is marked as selected in the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.MoveEnd">
+<short>
+Moves the tree view control to the last node in the tree.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.MoveEnd.ASelect">
+<short>
+<b>True</b> if the new tree node is marked as selected in the tree view 
+control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.ReturnKeyHandled">
-        <short>
-          Indicates if a Return key in the Edit control was forwarded to the associated tree view.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TTreeFilterEdit.FilteredTreeview"/>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
-        </seealso>
-      </element>
-      <element name="TTreeFilterEdit.ReturnKeyHandled.Result">
-        <short>
-          <b>True</b> if the Return key press was forwarded to the tree view control.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.ReturnKeyHandled">
+<short>
+Indicates if a Return key in the Edit control was forwarded to the associated 
+tree view.
+</short>
+<descr/>
+<seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
+</seealso>
+</element>
+<element name="TTreeFilterEdit.ReturnKeyHandled.Result">
+<short>
+<b>True</b> if the Return key press was forwarded to the tree view control.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.SortAndFilter">
-        <short>
-          Sorts and filters either branches or the whole tree depending on operation mode for the control.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TTreeFilterEdit.GetCleanBranch"/>
-          <link id="TTreeFilterEdit.GetExistingBranch"/>
-          <link id="TTreeFilterBranch"/>
-          <link id="TBranchList"/>
-        </seealso>
-      </element>
+<element name="TTreeFilterEdit.SortAndFilter">
+<short>
+Sorts and filters either branches or the whole tree depending on operation 
+mode for the control.
+</short>
+<descr/>
+<seealso>
+<link id="TTreeFilterEdit.GetCleanBranch"/>
+<link id="TTreeFilterEdit.GetExistingBranch"/>
+<link id="TTreeFilterBranch"/>
+<link id="TBranchList"/>
+</seealso>
+</element>
 
-      <element name="TTreeFilterEdit.ApplyFilterCore">
-        <short>
-          Applies the Filter to branches in tree or the whole tree depending on the mode of operation for the control.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TTreeFilterEdit.SortAndFilter"/>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
-        </seealso>
-      </element>
+<element name="TTreeFilterEdit.ApplyFilterCore">
+<short>
+Applies the Filter to branches in tree or the whole tree depending on the 
+mode of operation for the control.
+</short>
+<descr/>
+<seealso>
+<link id="TTreeFilterEdit.SortAndFilter"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
+</seealso>
+</element>
 
-      <element name="TTreeFilterEdit.GetDefaultGlyphName">
-        <short>
-          Gets the resource name for the glyph used on the Button in the filter edit control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.GetDefaultGlyphName.Result">
-        <short>
-          Name of the resource with the glyph image for the button.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.GetDefaultGlyphName">
+<short>
+Gets the resource name for the glyph used on the Button in the filter edit 
+control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.GetDefaultGlyphName.Result">
+<short>
+Name of the resource with the glyph image for the button.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.Create">
-        <short>
-          Constructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            Allocates resource for the SelectionList property. Sets the default values for the ExpandAllInitially and ImageIndexDirectory properties.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.Create.AOwner">
-        <short>
-          Owner of the class instance.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+Allocates resource for the SelectionList property. Sets the default values 
+for the ExpandAllInitially and ImageIndexDirectory properties.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.Create.AOwner">
+<short>
+Owner of the class instance.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.Destroy">
-        <short>
-          Destructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            Frees resource allocated in the class instance for:
-          </p>
-          <ul>
-            <li>FilteredTreeview</li>
-            <li>SelectionList</li>
-            <li>Other internal members</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+Frees resource allocated in the class instance for:
+</p>
+<ul>
+<li>FilteredTreeview</li>
+<li>SelectionList</li>
+<li>Other internal members</li>
+</ul>
+</descr>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.StoreSelection">
-        <short>
-          Stores the first visible node for the selected tree node in FilteredTreeview to the SelectionList property.
-        </short>
-        <descr>
-          <p>
-            No actions are performed in the method for the following conditions:
-          </p>
-          <ul>
-            <li>FilteredTreeview has not been assigned.</li>
-            <li>FilteredTreeview does not have a Selected tree node.</li>
-          </ul>
-        </descr>
-        <seealso>
-          <link id="TTreeFilterEdit.FilteredTreeview"/>
-          <link id="TTreeFilterEdit.RestoreSelection"/>
-        </seealso>
-      </element>
+<element name="TTreeFilterEdit.StoreSelection">
+<short>
+Stores the first visible node for the selected tree node in FilteredTreeview 
+to the SelectionList property.
+</short>
+<descr>
+<p>
+No actions are performed in the method for the following conditions:
+</p>
+<ul>
+<li>FilteredTreeview has not been assigned.</li>
+<li>FilteredTreeview does not have a Selected tree node.</li>
+</ul>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="TTreeFilterEdit.RestoreSelection"/>
+</seealso>
+</element>
 
-      <element name="TTreeFilterEdit.RestoreSelection">
-        <short>
-          Makes the tree node in SelectionList the Selected node in the FilteredTreeview control.
-        </short>
-        <descr>
-          <p>
-            No actions are performed in the method if FilteredTreeview has not been assigned.
-          </p>
-          <p>
-            Raises an assertion exception if SelectionList has more than one node in the list.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TTreeFilterEdit.StoreSelection"/>
-        </seealso>
-      </element>
+<element name="TTreeFilterEdit.RestoreSelection">
+<short>
+Makes the tree node in SelectionList the Selected node in the 
+FilteredTreeview control.
+</short>
+<descr>
+<p>
+No actions are performed in the method if FilteredTreeview has not been 
+assigned.
+</p>
+<p>
+Raises an assertion exception if SelectionList has more than one node in the 
+list.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.StoreSelection"/>
+</seealso>
+</element>
 
-      <element name="TTreeFilterEdit.GetExistingBranch">
-        <short>Get an existing branch for a given tree-node, or Nil if there is none.</short>
-        <descr>
-          <p>
-            This can be used only with the "sub-branches" mode.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.GetExistingBranch.Result">
-        <short/>
-      </element>
-      <element name="TTreeFilterEdit.GetExistingBranch.ARootNode">
-        <short/>
-      </element>
+<element name="TTreeFilterEdit.GetExistingBranch">
+<short>
+Get an existing branch for a given tree-node, or Nil if there is none.
+</short>
+<descr>
+<p>
+This can be used only with the "sub-branches" mode.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.GetExistingBranch.Result">
+<short/>
+</element>
+<element name="TTreeFilterEdit.GetExistingBranch.ARootNode">
+<short/>
+</element>
 
-      <element name="TTreeFilterEdit.GetCleanBranch">
-        <short>Get a new or existing branch with data cleared for a given tree-node.</short>
-        <descr>
-          <p>
-            This can be used only with the "sub-branches" mode. In fact calling this method switches the filter into "sub-branches" mode. This is the way to add those branches.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TTreeFilterEdit.GetCleanBranch.Result">
-        <short/>
-      </element>
-      <element name="TTreeFilterEdit.GetCleanBranch.ARootNode">
-        <short/>
-      </element>
+<element name="TTreeFilterEdit.GetCleanBranch">
+<short>
+Get a new or existing branch with data cleared for a given tree-node.
+</short>
+<descr>
+<p>
+This can be used only with the "sub-branches" mode. In fact calling this 
+method switches the filter into "sub-branches" mode. This is the way to add 
+those branches.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TTreeFilterEdit.GetCleanBranch.Result">
+<short/>
+</element>
+<element name="TTreeFilterEdit.GetCleanBranch.ARootNode">
+<short/>
+</element>
 
-      <element name="TTreeFilterEdit.DeleteBranch">
-        <short>
-          Deletes the specified branch root node from the internal list for the control.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TTreeFilterEdit.GetCleanBranch"/>
-          <link id="TTreeFilterEdit.GetExistingBranch"/>
-        </seealso>
-      </element>
-      <element name="TTreeFilterEdit.DeleteBranch.Result">
-        <short>
-          Returns True the specified branch node was successfully removed from the internal list.
-        </short>
-      </element>
-      <element name="TTreeFilterEdit.DeleteBranch.ARootNode">
-        <short>
-          Tree node that represents the root for a given branch.
-        </short>
-      </element>
+<element name="TTreeFilterEdit.DeleteBranch">
+<short>
+Deletes the specified branch root node from the internal list for the control.
+</short>
+<descr/>
+<seealso>
+<link id="TTreeFilterEdit.GetCleanBranch"/>
+<link id="TTreeFilterEdit.GetExistingBranch"/>
+</seealso>
+</element>
+<element name="TTreeFilterEdit.DeleteBranch.Result">
+<short>
+Returns <b>True</b> if the specified branch node was successfully removed from the internal list.
+</short>
+</element>
+<element name="TTreeFilterEdit.DeleteBranch.ARootNode">
+<short>
+Tree node that represents the root for a given branch.
+</short>
+</element>
 
-      <element name="TTreeFilterEdit.ImageIndexDirectory">
-        <short>
-          Ordinal position for the image displayed for a directory entry in the list of tree nodes.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.ImageIndexDirectory">
+<short>
+Ordinal position for the image displayed for a directory entry in the list of 
+tree nodes.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.SelectionList">
-        <short>
-          List of selected items in the FilteredTreeview control.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.SelectionList">
+<short>
+List of selected items in the FilteredTreeview control.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.ShowDirHierarchy">
-        <short>
-          When a filtered text is a directory name, it is split and shown as a tree structure.
-        </short>
-        <descr>
-          <p>
-            This has effect only in the "sub-branches" mode. The "whole tree" mode uses the existing tree nodes as is and only changes their visibility.
-          </p>
-        </descr>
-      </element>
+<element name="TTreeFilterEdit.ShowDirHierarchy">
+<short>
+When a filtered text is a directory name, it is split and shown as a tree 
+structure.
+</short>
+<descr>
+<p>
+This has effect only in the "sub-branches" mode. The "whole tree" mode uses 
+the existing tree nodes as is and only changes their visibility.
+</p>
+</descr>
+</element>
 
-      <element name="TTreeFilterEdit.FilteredTreeview">
-        <short>The associated TTreeView with the nodes filtered in the control.</short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.FilteredTreeview">
+<short>
+The associated TTreeView with the nodes filtered in the control.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.ExpandAllInitially">
-        <short>Tree branches are expanded also initially.</short>
-        <descr>
-          <p>
-            The branches are expanded in any case when the tree is filtered and matches are found. This setting only affects the initial state.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.ExpandAllInitially">
+<short>Tree branches are expanded also initially.</short>
+<descr>
+<p>
+The branches are expanded in any case when the tree is filtered and matches 
+are found. This setting only affects the initial state.
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.OnGetImageIndex">
-        <short>ImageIndex can be queried while filtering based on the node data.</short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTreeFilterEdit.OnGetImageIndex">
+<short>
+ImageIndex can be queried while filtering based on the node data.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTreeFilterEdit.OnFilterNode">
-        <short>
-          Event handler signalled to determine if a tree node matches the Filter for the control.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.DoFilterItem">TCustomControlFilterEdit.DoFilterItem</link>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
-          <link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItem">TCustomControlFilterEdit.OnFilterItem</link>
-        </seealso>
-      </element>
+<element name="TTreeFilterEdit.OnFilterNode">
+<short>
+Event handler signalled to determine if a tree node matches the Filter for 
+the control.
+</short>
+<descr/>
+<seealso>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.DoFilterItem">TCustomControlFilterEdit.DoFilterItem</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItem">TCustomControlFilterEdit.OnFilterItem</link>
+</seealso>
+</element>
 
-      <element name="TTFENodeData">
-        <short/>
-        <descr>
-          TreeFilterEditNodeData.
-        </descr>
-        <seealso/>
-      </element>
+<element name="TTFENodeData">
+<short/>
+<descr>
+TreeFilterEditNodeData.
+</descr>
+<seealso/>
+</element>
 
-      <element name="TTFENodeData.Node">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTFENodeData.Node">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TTFENodeData.Branch">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TTFENodeData.Branch">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TFileNameItem">
-        <short>
-          Stores information about a file name and the tree node which represents it.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileNameItem.Data">
-        <short>
-          Pointer to the Object instance associated with the file aname in the instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileNameItem.Filename">
-        <short>
-          Path and name for the file represented in the class instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TFileNameItem">
+<short>
+Stores information about a file name and the tree node which represents it.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TFileNameItem.Data">
+<short>
+Pointer to the Object instance associated with the file aname in the instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TFileNameItem.Filename">
+<short>
+Path and name for the file represented in the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TFileNameItem.Create">
-        <short>
-          Constructor for the class instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileNameItem.Create.AFilename">
-        <short>
-          Value assigned to the Filename member.
-        </short>
-      </element>
-      <element name="TFileNameItem.Create.AData">
-        <short>
-          Value assigned to the Data member.
-        </short>
-      </element>
+<element name="TFileNameItem.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TFileNameItem.Create.AFilename">
+<short>
+Value assigned to the Filename member.
+</short>
+</element>
+<element name="TFileNameItem.Create.AData">
+<short>
+Value assigned to the Data member.
+</short>
+</element>
 
-    </module>
+</module>
 
-  </package>
+</package>
 </fpdoc-descriptions>
