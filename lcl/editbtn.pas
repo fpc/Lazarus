@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType,
   LMessages, Graphics, Controls, Forms, LazFileUtils, LazUTF8, Dialogs,
   StdCtrls, Buttons, Calendar, ExtDlgs, GroupedEdit, CalendarPopup, MaskEdit,
-  Menus, StrUtils, DateUtils, TimePopup, CalcForm, ImgList;
+  Menus, StrUtils, DateUtils, TimePopup, CalcForm, ImgList, Math;
 
 const
   NullDate: TDateTime = 0;
@@ -570,6 +570,7 @@ type
   TAcceptDateEvent = procedure (Sender : TObject; var ADate : TDateTime;
     var AcceptDate: Boolean) of object;
   TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
+  TDateRangeCheckEvent = procedure (Sender : TObject; var ADate : TDateTime) of object;
   TDateOrder = (doNone,doMDY,doDMY,doYMd);
 
   TDateEdit = class(TCustomEditButton)
@@ -580,11 +581,20 @@ type
     FDroppedDown: Boolean;
     FOnAcceptDate: TAcceptDateEvent;
     FOnCustomDate: TCustomDateEvent;
+    FOnDateRangeCheck: TDateRangeCheckEvent;
     FFixedDateFormat: string; //used when DateOrder <> doNone
     FFreeDateFormat: String;  //used when DateOrder = doNone
     FDate: TDateTime;
+    FMinDate: TDateTime;
+    FMaxDate: TDateTime;
     FUpdatingDate: Boolean;
+    procedure CheckRange(var ADate: TDateTime; AMinDate, AMaxDate: TDateTime);
     procedure SetFreeDateFormat(AValue: String);
+    procedure SetMaxDate(AValue: TDateTime);
+    procedure SetMinDate(AValue: TDateTime);
+    function IsLimited: Boolean;
+    function GetMaxDateStored: Boolean;
+    function GetMinDateStored: Boolean;
     function TextToDate(AText: String; ADefault: TDateTime): TDateTime;
     function GetDate: TDateTime;
     procedure SetDate(Value: TDateTime);
@@ -602,6 +612,7 @@ type
     procedure RealSetText(const AValue: TCaption); override;
     procedure SetDateMask; virtual;
     procedure Loaded; override;
+    procedure DoDateRangeCheck(var ADate: TDateTime);
   public
     constructor Create(AOwner: TComponent); override;
     function GetDateFormat: string;
@@ -613,10 +624,13 @@ type
     property CalendarDisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings;
     property OnAcceptDate: TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
     property OnCustomDate: TCustomDateEvent read FOnCustomDate write FOnCustomDate;
+    property OnDateRangeCheck: TDateRangeCheckEvent read FOnDateRangeCheck write FOnDateRangeCheck;
     property ReadOnly;
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
     property DateFormat: String read FFreeDateFormat write SetFreeDateFormat;
+    property MinDate: TDateTime read FMinDate write SetMinDate stored GetMinDateStored;
+    property MaxDate: TDateTime read FMaxDate write SetMaxDate stored GetMaxDateStored;
     property ButtonOnlyWhenFocused;
     property ButtonCaption;
     property ButtonCursor;
@@ -1567,6 +1581,8 @@ constructor TDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDate := NullDate;
+  FMinDate := 0.0;
+  FMaxDate := 0.0;
   FUpdatingDate := False;
   FDefaultToday := False;
   FDisplaySettings := [dsShowHeadings, dsShowDayNames];
@@ -1587,9 +1603,6 @@ procedure TDateEdit.ButtonClick;//or onClick
 var
   PopupOrigin: TPoint;
   ADate: TDateTime;
-  {$IFDEF WINDOWS}
-  CalendarMinDate,CalendarMaxDate: integer;
-  {$ENDIF}
 begin
   inherited ButtonClick;
 
@@ -1597,25 +1610,11 @@ begin
   ADate := GetDate;
   if ADate = NullDate then
     ADate := SysUtils.Date;
-  {$ifdef WINDOWS} // temporarily copied form TCustomCalendar, needs a proper fix
-  CalendarMinDate:=-53787;// 14 sep 1752, start of Gregorian calendar in England
-  CalendarMaxDate:=trunc(MaxDateTime);
-  if (ADate < CalendarMindate) then
-  begin
-    if FDefaultToday then
-      ADate := SysUtils.Date
-    else
-      ADate := CalendarMinDate
-  end
-  else if (ADate > CalendarMaxDate) then
-  begin
-    if FDefaultToday then
-      ADate := SysUtils.Date
-    else
-      ADate := CalendarMaxDate;
-  end;
-  {$endif}
+
+  if IsLimited then
+    CheckRange(ADate, FMinDate, FMaxDate);
   ShowCalendarPopup(PopupOrigin, ADate, CalendarDisplaySettings,
+                    FMinDate, FMaxDate,
                     @CalendarPopupReturnDate, @CalendarPopupShowHide, self);
   //Do this after the dialog, otherwise it just looks silly
   if FocusOnButtonClick then FocusAndMaybeSelectAll;
@@ -1711,6 +1710,12 @@ begin
   //Forces a valid Text in the control
   if not (csDesigning in ComponentState) then
     SetDate(FDate);
+end;
+
+procedure TDateEdit.DoDateRangeCheck(var ADate: TDateTime);
+begin
+  if Assigned(FOnDateRangeCheck) then
+    FOnDateRangeCheck(Self, ADate);
 end;
 
 Function ParseDate(S : String; Order : TDateOrder; Def: TDateTime) : TDateTime;
@@ -1960,6 +1965,20 @@ begin
     Result := ParseDate(AText,DateOrder,ADefault)
 end;
 
+procedure TDateEdit.CheckRange(var ADate: TDateTime; AMinDate, AMaxDate: TDateTime);
+begin
+  DoDateRangeCheck(ADate);
+  //otherwise you get a message like "Invalid Date: 31-12-9999. Must be between 1-1-0001 and 31-12-9999"
+  if (ADate < SysUtils.MinDateTime) then
+    raise EInvalidDate.CreateFmt(rsDateTooSmall, [DateToStr(SysUtils.MinDateTime)]);
+  if (ADate > SysUtils.MaxDateTime) then
+    raise EInvalidDate.CreateFmt(rsDateTooLarge, [DateToStr(SysUtils.MaxDateTime)]);
+
+  if (ADate < AMinDate) or (ADate > AMaxDate) then
+  raise EInvalidDate.CreateFmt(rsInvalidDateRangeHint, [DateToStr(ADate),
+      DateToStr(AMinDate), DateToStr(AMaxDate)]);
+end;
+
 procedure TDateEdit.SetFreeDateFormat(AValue: String);
 var
   D: TDateTime;
@@ -1973,6 +1992,35 @@ begin
   end
   else
     FFreeDateFormat := AValue;
+end;
+
+procedure TDateEdit.SetMaxDate(AValue: TDateTime);
+begin
+  CheckRange(AValue, MinDateTime, MaxDateTime);
+  if FMaxDate = AValue then Exit;
+  FMaxDate := AValue;
+end;
+
+procedure TDateEdit.SetMinDate(AValue: TDateTime);
+begin
+  CheckRange(AValue, MinDateTime, MaxDateTime);
+  if FMinDate = AValue then Exit;
+  FMinDate := AValue;
+end;
+
+function TDateEdit.IsLimited: Boolean;
+begin
+  Result := (CompareValue(FMinDate, FMaxDate, 1E-9) = LessThanValue);
+end;
+
+function TDateEdit.GetMaxDateStored: Boolean;
+begin
+  Result := not SameValue(FMaxDate, Double(0.0), 1E-9);
+end;
+
+function TDateEdit.GetMinDateStored: Boolean;
+begin
+  Result := not SameValue(FMinDate, Double(0.0), 1E-9);
 end;
 
 function TDateEdit.GetDate: TDateTime;
@@ -2017,6 +2065,8 @@ begin
       else
         Value := NullDate;
     end;
+    if IsLimited then
+      CheckRange(Value, FMinDate, FMaxDate);
     FDate := Value;
     Text := DateToText(FDate);
   finally
