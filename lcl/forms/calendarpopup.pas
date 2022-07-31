@@ -39,12 +39,19 @@ type
     FClosed: boolean;
     FOnReturnDate: TReturnDateEvent;
     procedure Initialize(ADate: TDateTime;
-      const DisplaySettings: TDisplaySettings);
+      const DisplaySettings: TDisplaySettings;
+      AMinDate, AMaxDate: TDateTime);
     procedure KeepInView(const PopupOrigin: TPoint);
     procedure ReturnDate;
   protected
     procedure Paint; override;
   end;
+
+procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
+    const CalendarDisplaySettings: TDisplaySettings;
+    AMinDate, AMaxDate: TDateTime;
+    const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil;
+    ACaller: TControl = nil);
 
 procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
     const CalendarDisplaySettings: TDisplaySettings;
@@ -57,6 +64,7 @@ implementation
 
 procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
   const CalendarDisplaySettings: TDisplaySettings;
+  AMinDate, AMaxDate: TDateTime;
   const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent;
   ACaller: TControl);
 var
@@ -64,12 +72,20 @@ var
 begin
   PopupForm := TCalendarPopupForm.Create(nil);
   PopupForm.FCaller := ACaller;
-  PopupForm.Initialize(ADate, CalendarDisplaySettings);
+  PopupForm.Initialize(ADate, CalendarDisplaySettings, AMinDate, AMaxDate);
   PopupForm.FOnReturnDate := OnReturnDate;
   PopupForm.OnShow := OnShowHide;
   PopupForm.OnHide := OnShowHide;
   PopupForm.Show;
   PopupForm.KeepInView(APosition);   // must be after Show for PopupForm.AutoSize to be in effect.
+end;
+
+procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
+    const CalendarDisplaySettings: TDisplaySettings;
+    const OnReturnDate: TReturnDateEvent; const OnShowHide: TNotifyEvent = nil;
+    ACaller: TControl = nil);
+begin
+  ShowCalendarPopup(APosition, ADate, CalendarDisplaySettings, 0.0, 0.0, OnReturnDate, OnShowHide, Acaller)
 end;
 
 { TCalendarPopupForm }
@@ -134,10 +150,12 @@ begin
 end;
 
 procedure TCalendarPopupForm.Initialize(ADate: TDateTime;
-  const DisplaySettings: TDisplaySettings);
+  const DisplaySettings: TDisplaySettings; AMinDate, AMaxDate: TDateTime);
 begin
   Calendar.DateTime := ADate;
   Calendar.DisplaySettings:=DisplaySettings;
+  Calendar.MinDate := AMinDate;
+  Calendar.MaxDate := AMaxDate;
 end;
 
 procedure TCalendarPopupForm.KeepInView(const PopupOrigin: TPoint);
