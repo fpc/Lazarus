@@ -92,7 +92,7 @@ type
     procedure CheckRange(ADate, AMinDate, AMaxDate: TDateTime);
     function GetDateTime: TDateTime;
     function GetMaxDateStored: Boolean;
-    function GetMixDateStored: Boolean;
+    function GetMinDateStored: Boolean;
     procedure SetDateTime(const AValue: TDateTime);
     procedure GetProps;
     procedure SetMaxDate(AValue: TDateTime);
@@ -126,7 +126,7 @@ type
       write SetDisplaySettings default DefaultDisplaySettings;
     property FirstDayOfWeek: TCalDayOfWeek read FFirstDayOfWeek write SetFirstDayOfWeek default dowDefault;
     property MaxDate: TDateTime read FMaxDate write SetMaxDate stored GetMaxDateStored;
-    property MinDate: TDateTime read FMinDate write SetMinDate stored GetMixDateStored;
+    property MinDate: TDateTime read FMinDate write SetMinDate stored GetMinDateStored;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
@@ -310,7 +310,7 @@ begin
   Result := not SameValue(FMaxDate, Double(0.0), 1E-9);
 end;
 
-function TCustomCalendar.GetMixDateStored: Boolean;
+function TCustomCalendar.GetMinDateStored: Boolean;
 begin
   Result := not SameValue(FMinDate, Double(0.0), 1E-9);
 end;
