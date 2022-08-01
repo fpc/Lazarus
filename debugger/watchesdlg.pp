@@ -556,6 +556,7 @@ begin
         end;
       end;
       AWatch.Index := NewIdx;
+      AWatch.DisplayName := '';
 
       Target := NewNode;
       NTarget := tvWatches.GetNextSiblingNoInit(Target);
