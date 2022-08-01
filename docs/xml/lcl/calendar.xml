@@ -23,6 +23,9 @@
         <ul>
           <li>TCalendar</li>
         </ul>
+        <p>
+          <file>Calendar.pp</file> is part of the LCL (Lazarus Component Library).
+        </p>
       </descr>
 
       <!-- unresolved references -->
@@ -283,8 +286,8 @@
 
       <element name="TCustomCalendar.GetMaxDateStored"/>
       <element name="TCustomCalendar.GetMaxDateStored.Result"/>
-      <element name="TCustomCalendar.GetMixDateStored"/>
-      <element name="TCustomCalendar.GetMixDateStored.Result"/>
+      <element name="TCustomCalendar.GetMinDateStored"/>
+      <element name="TCustomCalendar.GetMinDateStored.Result"/>
 
       <element name="TCustomCalendar.SetDateTime">
         <short>Sets the value for the DateTime property.</short>
@@ -552,7 +555,7 @@
         </short>
         <descr>
           <p>
-            <var>Date</var> is a String property that represents the value in DateTime as a String data type. 
+            <var>Date</var> is a String property that represents the value in DateTime as a String data type.
           </p>
           <p>
             Reading the value for the property causes both Date and DateTime to be read from the widgetset class when its handle has been assigned. FormatDateTime is used to convert the date value to a string type using the ShortDateFormat in the DefaultFormatSettings variable. If the widget handle is not available, the member value is used.
