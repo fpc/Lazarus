@@ -10,7 +10,10 @@
       <short>Implements specialized edit controls with attached speed buttons.</short>
       <descr>
         <p>
-          <file>editbtn.pas</file> contains specialized edit controls with an attached speed button used to perform an action when it is clicked. The following components are added to the <b>Misc</b> tab in the Lazarus IDE Component Palette:
+          <file>editbtn.pas</file> contains specialized edit controls with an attached speed button used to perform an action when it is clicked. The following components are added to the Lazarus IDE Component Palette:
+        </p>
+        <p>
+          <b>Misc</b> tab
         </p>
         <ul>
           <li>TEditButton</li>
@@ -20,6 +23,9 @@
           <li>TTimeEdit</li>
           <li>TCalcEdit</li>
         </ul>
+        <p>
+          <file>editbtn.pas</file> is part of the LCL (Lazarus Component Library).
+        </p>
       </descr>
 
       <!-- unresolved type references -->
@@ -50,6 +56,7 @@
       <element name="TimePopup"/>
       <element name="CalcForm"/>
       <element name="ImgList"/>
+      <element name="Math"/>
 
       <element name="NullDate">
         <short>Represents a TDateTime type without a value assigned.</short>
@@ -131,7 +138,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomEditButton</var> is a <var>TCustomAbstractGroupedEdit</var> descendant which implements a composite control with both an <var>Edit</var> and a <var>Button</var>. It provides overridden methods which extend or re-implement those found in the ancestor class. Most of the properties in the class are declared as protected, and must be exposed as public or published properties in an ancestor class like <var>TEditButton</var>.
+            <var>TCustomEditButton</var> is a <var>TCustomAbstractGroupedEdit</var> descendant which implements a composite control with both an <var>Edit</var> and a <var>Button</var>. It provides overridden methods which extend or re-implement those found in the ancestor classMost of the properties in the class are declared as protected, and must be exposed as public or published properties in an ancestor class like <var>TEditButton</var>.
           </p>
         </descr>
         <seealso>
@@ -2450,6 +2457,28 @@
         </short>
       </element>
 
+      <element name="TDateRangeCheckEvent">
+        <short>
+          Specifies an event handler signalled prior to validating a date for it lower and upper limits.
+        </short>
+        <descr>
+          <p>
+            TDateRangeCheckEvent is the type used to implement the OnDateRangeCheck property in TDateEdit. TDateRangeCheckEvent allows the control to perform actions needed for the existing value in ADate prior to validating and/or limiting the value to a specific range.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.MaxDate"/>
+          <link id="TDateEdit.ButtonClick"/>
+        </seealso>
+      </element>
+      <element name="TDateRangeCheckEvent.Sender">
+        <short>Object (TDateEdit) for the event notification.</short>
+      </element>
+      <element name="TDateRangeCheckEvent.ADate">
+        <short>The existing TDateTime value for the handler routine.</short>
+      </element>
+
       <element name="TDateOrder">
         <short>
           Controls the display order for Month, Day, and Year portions of a date value.
@@ -2485,10 +2514,13 @@
         </short>
         <descr>
           <p>
-            <var>TDateEdit</var> is a <var>TCustomEditButton</var> descendant which implements a grouped edit control for entering a date value. The control uses an <var>Edit</var> and a <var>Button</var>, as defined in the ancestor class, and implements a Calendar dialog to select a date value when the Button is clicked. The value is stored in the <var>Date</var> property as a <var>TDateTime</var> value.
+            <var>TDateEdit</var> is a <var>TCustomEditButton</var> descendant which implements a grouped edit control for entering a date value. The control uses an <var>Edit</var> and a <var>Button</var>, as defined in the ancestor class, and displays a pop-up Calendar dialog to select a date value when the Button is clicked. The selected date is stored in the <var>Date</var> property as a <var>TDateTime</var> value.
           </p>
           <p>
             TDateEdit provides additional properties which are used to configure the Edit and Button controls and the dialog executed when Button is clicked.
+          </p>
+          <p>
+            TDateEdit has an overridden ButtonClick method which displays the pop-up Calendar dialog. This method includes logic to set the minimum and maximum date values for the native calendar control on the dialog. For the Windows platform, the value limits are September 14, 1752 and December 31, 9999. This functionality is not supported for all platforms. Specifically, GTK2 and GTK3 do not support the minimum and maximum date values on their native calendar controls.
           </p>
         </descr>
         <seealso>
@@ -2502,10 +2534,22 @@
       <element name="TDateEdit.FDroppedDown"/>
       <element name="TDateEdit.FOnAcceptDate"/>
       <element name="TDateEdit.FOnCustomDate"/>
+      <element name="TDateEdit.FOnDateRangeCheck"/>
       <element name="TDateEdit.FFixedDateFormat"/>
       <element name="TDateEdit.FFreeDateFormat"/>
       <element name="TDateEdit.FDate"/>
+      <element name="TDateEdit.FMinDate"/>
+      <element name="TDateEdit.FMaxDate"/>
       <element name="TDateEdit.FUpdatingDate"/>
+
+      <element name="TDateEdit.CheckRange">
+        <short>
+          Signals the OnDateRangeCheck event handler and validates a date for its lower and upper limits.
+        </short>
+      </element>
+      <element name="TDateEdit.CheckRange.ADate"/>
+      <element name="TDateEdit.CheckRange.AMinDate"/>
+      <element name="TDateEdit.CheckRange.AMaxDate"/>
 
       <element name="TDateEdit.SetFreeDateFormat">
         <short>Sets the value for the DateFormat property.</short>
@@ -2517,6 +2561,23 @@
       <element name="TDateEdit.SetFreeDateFormat.AValue">
         <short>New value for the property.</short>
       </element>
+
+      <element name="TDateEdit.SetMaxDate">
+        <short>Sets the value for the MaxDate property.</short>
+      </element>
+      <element name="TDateEdit.SetMaxDate.AValue"/>
+
+      <element name="TDateEdit.SetMinDate">
+        <short>Sets the value for the MinDate property.</short>
+      </element>
+      <element name="TDateEdit.SetMinDate.AValue"/>
+
+      <element name="TDateEdit.IsLimited"/>
+      <element name="TDateEdit.IsLimited.Result"/>
+      <element name="TDateEdit.GetMaxDateStored"/>
+      <element name="TDateEdit.GetMaxDateStored.Result"/>
+      <element name="TDateEdit.GetMixDateStored"/>
+      <element name="TDateEdit.GetMixDateStored.Result"/>
 
       <element name="TDateEdit.TextToDate">
         <short>
@@ -2684,7 +2745,7 @@
             ButtonClick creates, displays, and executes a pop-up calendar dialog used to get a TDateTime value. The value in the Date property is passed as the initial date displayed on the dialog form. If Date contains the NullDate value (0), the current system date is used.
           </p>
           <remark>
-            For the Windows platform, additional validation is performed to ensure that Date is within the range of values allowed for the native calendar control. The minimum date value is "1752-09-14" (September 14, 1752) for the start of the Gregorian calendar. The maximum date value is "9999-12-31" (December 31, 9999). This is done to prevent an exception when an invalid value is passed to the native calendar control. When DefaultToday is enabled, Date defaults to the current system date for a value outside this range. When not enabled, the minimum or maximum value is used to range limit the date.
+            For the Windows platform, additional validation is performed to ensure that Date is within the range of values allowed for the native calendar control. The minimum date value is "1752-09-14" (September 14, 1752) for the start of the Gregorian calendar. The maximum date value is "9999-12-31" (December 31, 9999). This is done to prevent an exception when an invalid value is passed to the native calendar control. When DefaultToday is enabled, Date defaults to the current system date for a value outside this range. When not enabled, the MinDate and MaxDate values are used to range limit the date.
           </remark>
           <p>
             The ShowCalendarPopup routine is called to display and execute the dialog form. Set values in CalendarDisplaySettings and DefaultToday to control the appearance and behavior for the calendar on the dialog.
@@ -2695,6 +2756,8 @@
         </descr>
         <seealso>
           <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.MaxDate"/>
           <link id="TDateEdit.CalendarDisplaySettings"/>
           <link id="TDateEdit.DefaultToday"/>
           <link id="TDateEdit.OnAcceptDate"/>
@@ -2831,6 +2894,25 @@
         </seealso>
       </element>
 
+      <element name="TDateEdit.DoDateRangeCheck">
+        <short>Signals the OnDateRangeCheck event handler (when assigned).</short>
+        <descr>
+          <p>
+            <var>DoDateRangeCheck</var> is called when a date value is validated and range checked for its lower and upper limits. It is called prior to validation of the date value, and allows the OnDateRangeCheck event handler to perform any actions needed for the control. DoDateRangeCheck occurs when a new value is assigned to either the MinDate or MaxDate property, and when ButtonClick is called to display the pop-up calendar dialog for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.MaxDate"/>
+          <link id="TDateEdit.ButtonClick"/>
+          <link id="TDateEdit.OnDateRangeCheck"/>
+        </seealso>
+      </element>
+      <element name="TDateEdit.DoDateRangeCheck.ADate">
+        <short>Date value for the event notification.</short>
+      </element>
+
       <element name="TDateEdit.Create">
         <short>
           Constructor for the class instance.
@@ -2887,17 +2969,30 @@
         <short>Contains the TDateTime value for the control.</short>
         <descr>
           <p>
-            <var>Date</var> is a <var>TDateTime</var> property with the date value for the control. The Time component in the value is ignored in TDateEdit.
+            <var>Date</var> is a <var>TDateTime</var> property with the date value for the control. The Time component in the value is ignored in TDateEdit. Date is a public property, so it is not available in the Object Inspector at design-time. But its value can be assigned in program code at run-time.
           </p>
           <p>
-            Date provides the value displayed and updated using the Edit for the control when DirectInput is enabled. It is updated when the Button for the control is clicked and a new value is selected form the calendar dialog. Setting a new value for the property causes the new date value to be validated. An empty date is represented using the NullDate value (0). When DefaultToday is enabled, an empty date defaults to the current system date. The value in Text is updated when a new value is assigned to the property.
+            Date provides the value displayed and updated using the Edit for the control when DirectInput is enabled. It is updated when the Button for the control is clicked and a new value is selected from the calendar dialog.
+          </p>
+          <p>
+            Setting a new value for the property causes the new date to be validated. An empty date is represented using the NullDate value (0). When DefaultToday is enabled, an empty date defaults to the current system date.
+          </p>
+          <p>
+            MinDate and MaxDate are used (when assigned) to ensure that the new property value is within the specified range of dates. They are not used to limit the value in Date if either of the properties contain an empty date/time value (0.0).
+          </p>
+          <p>
+            The value in Text is updated when the new value is stored in the Date property.
           </p>
           <p>
             Use DateOrder to control the order of the date components displayed on the control and in the Text property. Use DateFormat to specify the FormatDateTime-compatible formatting string used when DateOrder is set to doNone. The default format settings for the locale are used to generate the value in Text when both DateOrder and DateFormat are not used.
           </p>
         </descr>
         <seealso>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.MaxDate"/>
           <link id="TDateEdit.Text"/>
+          <link id="TDateEdit.DefaultToday"/>
+          <link id="TDateEdit.Button"/>
           <link id="TDateEdit.DateOrder"/>
           <link id="TDateEdit.DateFormat"/>
           <link id="TDateEdit.DefaultToday"/>
@@ -2983,6 +3078,28 @@
         </seealso>
       </element>
 
+      <element name="TDateEdit.OnDateRangeCheck">
+        <short>
+          Event handler signalled prior to validating and range checking a date value.
+        </short>
+        <descr>
+          <p>
+            <var>OnDateRangeCheck</var> is a <var>TDateRangeCheckEvent</var> with the event handler signalled prior to validating and range checking a date value. It allows the application to perform actions needed before a date value is potentially updated. An application can implement and assign a routine to the handler which responds to the event notification.
+          </p>
+          <p>
+            OnDateRangeCheck is signalled (when assigned) from the DoDateRangeCheck method. It occurs when a new value is assigned to either the MinDate or MaxDate property, and when ButtonClick is called to display the pop-up calendar for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.MaxDate"/>
+          <link id="TDateEdit.DoDateRangeCheck"/>
+          <link id="TDateEdit.ButtonClick"/>
+          <link id="TDateRangeCheckEvent"/>
+        </seealso>
+      </element>
+
       <element name="TDateEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 
       <element name="TDateEdit.DefaultToday">
@@ -3065,6 +3182,68 @@
           <link id="TDateEdit.Date"/>
           <link id="TDateEdit.DateOrder"/>
           <link id="TDateOrder"/>
+        </seealso>
+      </element>
+
+      <element name="TDateEdit.MinDate">
+        <short>
+          Smallest date value allowed in the date edit control.
+        </short>
+        <descr>
+          <p>
+            <var>MinDate</var> is a <var>TDateTime</var> property which indicates the smallest value allowed in the Date property. Along with MaxDate, it defines a range limit for possible Date values in both the edit control and the pop-up calendar form displayed when its Button is clicked.
+          </p>
+          <p>
+            The default value for the property is an empty date/time value (0.0), and indicates that neither MinDate nor MaxDate are used to limit the values in Date. Setting a new value for the property causes the date value to be validated. It must be in the range of valid TDateTime values defined in the RTL MinDateTime and MaxDateTime constants. An EInvalidDate exception is raised if the new value is outside the allowed range.
+          </p>
+          <p>
+            Time component values (hours, minutes, seconds, milliseconds) in MinDate are ignored in TDateEdit.
+          </p>
+          <p>
+            Use MaxDate to specify the largest value allowed in the Date property.
+          </p>
+          <remark>
+            MinDate and MaxDate are not implemented for all platforms supported in the LCL. Specifically, GTK2 and GTK3 do not implement MinDate and MaxDate in their native calendar controls.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.MaxDate"/>
+          <link id="TDateEdit.DoDateRangeCheck"/>
+          <link id="#lcl.calendar.EInvalidDate">EInvalidDate</link>
+          <link id="#rtl.sysutils.MinDateTime">MinDateTime</link>
+          <link id="#rtl.sysutils.MaxDateTime">MaxDateTime</link>
+        </seealso>
+      </element>
+
+      <element name="TDateEdit.MaxDate">
+        <short>
+          Largest date value allowed in the date edit control.
+        </short>
+        <descr>
+          <p>
+            <var>MaxDate</var> is a <var>TDateTime</var> property which indicates the largest value allowed in the Date property. Along with MinDate, it defines a range limit for possible Date values in both the edit control and the pop-up calendar form displayed when its Button is clicked.
+          </p>
+          <p>
+            The default value for the property is an empty date/time value (0.0), and indicates that neither MinDate nor MaxDate are used to limit the values in Date. Setting a new value for the property causes the date value to be validated. It must be in the range of valid TDateTime values defined in the RTL MinDateTime and MaxDateTime constants. An EInvalidDate exception is raised if the new value is outside the allowed range.
+          </p>
+          <p>
+            Time component values (hours, minutes, seconds, milliseconds) in MaxDate are ignored in TDateEdit.
+          </p>
+          <p>
+            Use MinDate to specify the smallest value allowed in the Date property.
+          </p>
+          <remark>
+            MinDate and MaxDate are not implemented for all platforms supported in the LCL. Specifically, GTK2 and GTK3 do not implement MinDate and MaxDate in their native calendar controls.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TDateEdit.Date"/>
+          <link id="TDateEdit.MinDate"/>
+          <link id="TDateEdit.DoDateRangeCheck"/>
+          <link id="#lcl.calendar.EInvalidDate">EInvalidDate</link>
+          <link id="#rtl.sysutils.MinDateTime">MinDateTime</link>
+          <link id="#rtl.sysutils.MaxDateTime">MaxDateTime</link>
         </seealso>
       </element>
 
@@ -3820,7 +3999,10 @@
         <short>Registers components in the unit for use in the Lazarus IDE.</short>
         <descr>
           <p>
-            <var>Register</var> is the procedure used to add components to the component palette in the Lazarus IDE. Register adds the following components to the <b>Misc</b> tab on the component palette:
+            <var>Register</var> is the procedure used to add components to the component palette in the Lazarus IDE. Register adds the following components to the Lazarus component palette:
+          </p>
+          <p>
+            <b>Misc</b> Tab
           </p>
           <ul>
             <li>TEditButton</li>
