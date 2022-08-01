@@ -13,7 +13,10 @@
           <file>calendarpopup.pas</file> implements a non-modal calendar popup for a TDateEdit control. It includes a ShowCalendarPopup routine to configure, display, and capture the return value for the pop-up form.
         </p>
         <p>
-          Author: Vincent Snijders
+          Original Author: Vincent Snijders.
+        </p>
+        <p>
+          <file>calendarpopup.pas</file> is part of the LCL (Lazarus Component Library).
         </p>
       </descr>
 
@@ -74,10 +77,10 @@
         <short>TCalendar control used to select a date on the form.</short>
         <descr>
           <p>
-            <var>Calendar</var> is a <var>TCalendar</var> member which contains the calendar control displayed on the form. It allows selection of date, and calls the <var>ReturnDate</var> method when the Month, Day, or Year in the control is changed using either the mouse or the keyboard. Calendar is configured in the <var>Initialize</var> method using the <var>TDateTime</var> and <var>TDisplaySettings</var> provided as arguments.
+            <var>Calendar</var> is a <var>TCalendar</var> member which contains the calendar control displayed on the form. It allows selection of a date, and calls the <var>ReturnDate</var> method when the Month, Day, or Year in the control is changed using either the mouse or the keyboard. Calendar is configured in the private <var>Initialize</var> method using the <var>TDateTime</var> and <var>TDisplaySettings</var> provided as arguments.
           </p>
           <p>
-            Use the <var>ShowCalendarPopup</var> routine to provide the date/time value and display settings needed in the pop-up calendar form.
+            Use the <var>ShowCalendarPopup</var> routine to provide the date/time value, display settings, and date range needed in the pop-up calendar form.
           </p>
         </descr>
         <seealso>
@@ -179,20 +182,48 @@
       <element name="TCalendarPopupForm.FClosed"/>
       <element name="TCalendarPopupForm.FOnReturnDate"/>
 
+      <!-- private -->
       <element name="TCalendarPopupForm.Initialize">
         <short>Configures the Calendar control in the pop-up form.</short>
         <descr>
           <p>
-            Applies the values in the <var>ADate</var> and <var>DisplaySettings</var> arguments to the <var>Calendar</var> control.
+            <var>Initialize</var> is a method which configures the calendar control displayed on the form using the values passed in the arguments to the method.
+          </p>
+          <p>
+            <var>ADateTime</var> contains the initial TDateTime value for the calendar, and is stored in the DateTime property in Calendar.
+          </p>
+          <p>
+            <var>DisplaySettings</var> contains the set of display options enabled for the calendar, and is stored in the DisplaySettings property in Calendar.
+          </p>
+          <p>
+            <var>AMinDate</var> and <var>AMaxDate</var> indicate the range of dates that can be displayed or selected using the calendar, and is stored in the corresponding properties in Calendar. The Calendar uses the values to limit its DateTime selection to a required range of values. The values also prevent an exception raised when a TDateTime value is not supported on the native Calendar control.
+          </p>
+          <p>
+            Initialize is called when the ShowCalendarPopup routine creates, configures, and executes the pop-up calendar dialog.
           </p>
         </descr>
-        <seealso></seealso>
+        <version>
+          Modified in LCL version 2.4.0 to include minimum and maximum date arguments.
+        </version>
+        <seealso>
+          <link id="ShowCalendarPopup"/>
+          <link id="#lcl.calendar.TCalendar.DateTime">TCalendar.DateTime</link>
+          <link id="#lcl.calendar.TCalendar.DisplaySettings">TCalendar.DisplaySettings</link>
+          <link id="#lcl.calendar.TCalendar.MinDate">TCalendar.MinDate</link>
+          <link id="#lcl.calendar.TCalendar.MaxDate">TCalendar.MaxDate</link>
+        </seealso>
       </element>
       <element name="TCalendarPopupForm.Initialize.ADate">
         <short>Date value assigned to the Calendar control.</short>
       </element>
       <element name="TCalendarPopupForm.Initialize.DisplaySettings">
         <short>Display settings applied to the Calendar control.</short>
+      </element>
+      <element name="TCalendarPopupForm.Initialize.AMinDate">
+        <short>Minimum date value allowed on the calendar.</short>
+      </element>
+      <element name="TCalendarPopupForm.Initialize.AMaxDate">
+        <short>Maximum date value allowed on the calendar.</short>
       </element>
 
       <element name="TCalendarPopupForm.KeepInView">
@@ -206,11 +237,15 @@
         <short>Coordinates where the pop-up form is displayed.</short>
       </element>
 
+      <!-- private -->
       <element name="TCalendarPopupForm.ReturnDate">
         <short>
           Signals the OnReturnDate event handler using the DateTime value in the Calendar control.
         </short>
         <descr>
+          <p>
+            The TReturnDateEvent routine signalled in the method is provided when the ShowCalendarPopup routine is called. It is implemented as an object procedure in the control which displays the calendar pop-up form. For example: TDateEdit; it includes private methods used for the OnReturnDate and OnShowHide arguments passed to ShowCalendarPopup.
+          </p>
           <p>
             Calls <var>Close</var> to close the form if it has not already been executed.
           </p>
@@ -218,20 +253,49 @@
         <seealso></seealso>
       </element>
 
+      <element name="TCalendarPopupForm.Paint">
+        <short>
+          Implements the default paint handler used to draw the control.
+        </short>
+        <descr>
+          <p>
+            <var>Paint</var> is an overridden method in <var>TCalendarPopupForm</var>. It calls the inherited method on entry to signal the OnPaint event handler (when assigned).
+          </p>
+          <p>
+            Paint ensures that the Canvas for the control is updated so that Pen color is clWindowText using a solid pen style. The Rectangle method for the Canvas is called to draw the bounds for the control represented by the Width and Height for the control.
+          </p>
+          <p>
+            Paint is called from the PaintWindow method in the ancestor class, and occurs when a LM_PAINT message is handled for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+          <link id="#lcl.controls.TCustomControl.OnPaint">TCustomControl.OnPaint</link>
+          <link id="#lcl.controls.TCustomControl.PaintWindow">TCustomControl.PaintWindow</link>
+        </seealso>
+      </element>
+
       <element name="ShowCalendarPopup">
         <short>Creates, configures, and displays a TCalendarPopupForm instance.</short>
         <descr>
           <p>
-            <var>ShowCalendarPopup</var> is a procedure used to create, configure, and display a <var>TCalendarPopupForm</var> instance. ShowCalendarPopup stores arguments to the routine in properties for the pop-up calendar form, and calls its <var>Initialize</var> method to configure the <var>Calendar</var> control.
+            <var>ShowCalendarPopup</var> is an overloaded procedure used to create, configure, and display a TCalendarPopupForm instance using the arguments passed to the routine. The argument values are stored to the TCalendar instance on the dialog form by calling the Initialize method.
           </p>
           <p>
-            ShowCalendarPopup calls the <var>Show</var> in the form to make it visible, and calls <var>KeepInView</var> to ensure that the form is fully visible on the current monitor.
+            ShowCalendarPopup calls the Show method in the form to make it visible. The KeepInView method in the form is called to ensure that the pop-up is fully visible on the current monitor.
+          </p>
+          <p>
+            ShowCalendarPopup is called from the ButtonClick method in TDateEdit. The caller sets the argument values, including the date range in AMinDate and AMaxDate, to the defaults needed for the control. AMinDate is set to the date value for September 14, 1752 (the start of the Gregorian calendar in England). AMaxDate is set to the date portion of the MaxDateTime constant in the RTL (December 31, 9999). When omitted, an empty TDateTime value (0.0) is used in the arguments and does not impose a date range for the calendar pop-up.
           </p>
         </descr>
+        <version>
+          Modified in LCL version 2.4.0 to include an overloaded variant with minimum and maximum date arguments.
+        </version>
         <seealso>
           <link id="TCalendarPopupForm"/>
           <link id="TReturnDateEvent"/>
           <link id="#lcl.calendar.TDisplaySettings">TDisplaySettings</link>
+          <link id="#lcl.editbtn.TDateEdit.ButtonClick">TDateEdit.ButtonClick</link>
         </seealso>
       </element>
       <element name="ShowCalendarPopup.APosition">
@@ -242,6 +306,18 @@
       </element>
       <element name="ShowCalendarPopup.CalendarDisplaySettings">
         <short>Display settings applied to the Calendar control.</short>
+      </element>
+      <element name="ShowCalendarPopup.AMinDate">
+        <short>
+          Minimum date value that can be displayed or selected using the Calendar on the dialog, or 
+          an empty value (0.0) when omitted.
+        </short>
+      </element>
+      <element name="ShowCalendarPopup.AMaxDate">
+        <short>
+          Minimum date value that can be displayed or selected using the Calendar on the dialog, or 
+          an empty value (0.0) when omitted.
+        </short>
       </element>
       <element name="ShowCalendarPopup.OnReturnDate">
         <short>Event handler signalled when a new date value is selected.</short>
