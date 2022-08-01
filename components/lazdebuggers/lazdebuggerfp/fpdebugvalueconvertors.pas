@@ -6,9 +6,9 @@ interface
 
 uses
   Classes, SysUtils, fgl, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
-  FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
-  lazCollections, LazClasses, LCLProc, FpDebugDebuggerBase,
-  LazDebuggerIntfBaseTypes;
+  FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil,
+  DbgIntfBaseTypes, lazCollections, LazClasses, LCLProc, StrUtils,
+  FpDebugDebuggerBase, LazDebuggerIntfBaseTypes;
 
 type
   TDbgSymbolKinds = set of TDbgSymbolKind;
@@ -59,6 +59,7 @@ type
     procedure Assign(ASource: TFpDbgConverterConfig); virtual;
 
     function CheckMatch(AValue: TFpValue): Boolean;
+    function CheckTypeMatch(AValue: TFpValue): Boolean;
     property Converter: TFpDbgValueConverter read FConverter write SetConverter;
 
     property MatchKinds: TDbgSymbolKinds read FMatchKinds write FMatchKinds;
@@ -212,11 +213,104 @@ var
   t: TFpSymbol;
   TpName: String;
 begin
-  t := AValue.TypeInfo;
   Result := (AValue.Kind in (FMatchKinds * Converter.GetSupportedKinds)) and
-            (t <> nil) and
-            GetTypeName(TpName, t, [tnfNoSubstitute]) and
-            (FMatchTypeNames.IndexOf(TpName) >= 0);
+            CheckTypeMatch(AValue);
+end;
+
+function TFpDbgConverterConfig.CheckTypeMatch(AValue: TFpValue): Boolean;
+  function MatchPattern(const AName, APattern: String): Boolean;
+  var
+    NamePos, PatternPos, p: Integer;
+  begin
+    Result := False;
+    if APattern = '' then
+      exit;
+
+    NamePos := 1;
+    PatternPos := 1;
+
+    while PatternPos <= Length(APattern) do begin
+      if APattern[PatternPos] = '*' then begin
+        inc(PatternPos);
+      end
+      else begin
+        p := PatternPos;
+        PatternPos := PosEx('*', APattern, p);
+        if PatternPos < 1 then
+          PatternPos := Length(APattern)+1;
+        if PatternPos-p > Length(AName)+1 - NamePos then
+          break;
+
+        NamePos := PosEx(Copy(APattern, p, PatternPos-p), AName, NamePos);
+        if (NamePos < 1) or
+           ( (p = 1) and (NamePos <> 1) ) // APattern does not start with *
+        then
+          break;
+
+        inc(NamePos, PatternPos-p);
+      end;
+    end;
+
+    Result := (PatternPos = Length(APattern)+1) and
+              ( (NamePos = Length(AName)+1) or
+                ( (APattern[Length(APattern)] = '*') and
+                  (NamePos <= Length(AName)+1)
+                )
+              );
+  end;
+var
+  i, CnIdx: Integer;
+  TpName, Pattern, ValClassName: String;
+  t: TFpSymbol;
+begin
+  t := AValue.TypeInfo;
+  Result := (t <> nil) and GetTypeName(TpName, t, [tnfNoSubstitute]);
+  if not Result then
+    exit;
+
+  TpName := LowerCase(TpName);
+  i := FMatchTypeNames.Count;
+  while i > 0 do begin
+    dec(i);
+    Pattern := LowerCase(trim(FMatchTypeNames[i]));
+
+    if AnsiStrLIComp('is:', @Pattern[1], 3) = 0 then begin
+      Delete(Pattern, 1, 3);
+      Pattern := trim(Pattern);
+
+      if  (AValue.Kind in [skRecord, skClass, skObject, skInterface]) then begin
+        ValClassName := TpName;
+        while t <> nil do begin
+          Result := MatchPattern(ValClassName, Pattern);
+          if Result then
+            exit;
+          t := t.TypeInfo;
+          if (t = nil) or not GetTypeName(ValClassName, t, [tnfNoSubstitute]) then
+            break;
+          ValClassName := LowerCase(ValClassName);
+        end;
+
+        CnIdx := 0;
+        while AValue.GetInstanceClassName(ValClassName, CnIdx) and
+              (ValClassName <> '')
+        do begin
+          ValClassName := LowerCase(ValClassName);
+          if ValClassName = TpName then
+            Break;
+          Result := MatchPattern(ValClassName, Pattern);
+          if Result then
+            exit;
+          inc(CnIdx);
+        end;
+
+        Continue;
+      end;
+    end;
+
+    Result := MatchPattern(TpName, Pattern);
+    if Result then
+      exit;
+  end;
 end;
 
 { TFpDbgConverterConfigList }

@@ -157,10 +157,13 @@ type
     //function GetInstanceClass(AValueObj: TFpValueDwarf): TFpSymbolDwarf; override;
     class function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
       AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
-      out AClassName: String; out AnError: TFpError): boolean;
+      out AClassName: String; out AnError: TFpError;
+      AParentClassIndex: integer = 0;
+      ACompilerVersion: Cardinal = 0): boolean;
   public
     function GetInstanceClassName(AValueObj: TFpValue; out
-      AClassName: String): boolean; override;
+      AClassName: String;
+      AParentClassIndex: integer = 0): boolean; override;
   end;
 
   (* *** Record vs ShortString *** *)
@@ -965,7 +968,8 @@ begin
 end;
 
 function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassName(
-  AValueObj: TFpValue; out AClassName: String): boolean;
+  AValueObj: TFpValue; out AClassName: String; AParentClassIndex: integer
+  ): boolean;
 var
   AnErr: TFpError;
 begin
@@ -973,21 +977,27 @@ begin
   if not Result then
     exit;
   Result := GetInstanceClassNameFromPVmt(LocToAddrOrNil(AValueObj.DataAddress),
-    TFpValueDwarf(AValueObj).Context, TFpValueDwarf(AValueObj).Context.SizeOfAddress, AClassName, AnErr);
+    TFpValueDwarf(AValueObj).Context, TFpValueDwarf(AValueObj).Context.SizeOfAddress,
+    AClassName, AnErr, AParentClassIndex,
+    TFpDwarfFreePascalSymbolClassMap(CompilationUnit.DwarfSymbolClassMap).FCompilerVersion
+  );
+
   if not Result then
     SetLastError(AValueObj, AnErr);
 end;
 
 class function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt
   (APVmt: TDbgPtr; AContext: TFpDbgLocationContext; ASizeOfAddr: Integer; out
-  AClassName: String; out AnError: TFpError): boolean;
+  AClassName: String; out AnError: TFpError; AParentClassIndex: integer;
+  ACompilerVersion: Cardinal): boolean;
 var
-  VmtAddr, ClassNameAddr: TFpDbgMemLocation;
+  VmtAddr, ClassNameAddr, A: TFpDbgMemLocation;
   NameLen: QWord;
 begin
   Result := False;
   AnError := NoError;
   AClassName := '';
+
   if not AContext.ReadAddress(TargetLoc(APVmt), SizeVal(ASizeOfAddr), VmtAddr) then begin
     AnError := AContext.LastMemError;
     exit;
@@ -996,6 +1006,37 @@ begin
     AnError := CreateError(fpErrCanNotReadMemAtAddr, [VmtAddr.Address]);
     exit;
   end;
+
+  while AParentClassIndex > 0 do begin
+    {$PUSH}{$Q-}
+    VmtAddr.Address := VmtAddr.Address + TDBGPtr(2 * ASizeOfAddr);
+    {$POP}
+    A := VmtAddr;
+    if not AContext.ReadAddress(A, SizeVal(ASizeOfAddr), VmtAddr) then begin
+      AnError := AContext.LastMemError;
+      exit;
+    end;
+    if not IsReadableMem(VmtAddr) then begin
+      AnError := CreateError(fpErrCanNotReadMemAtAddr, [VmtAddr.Address]);
+      exit;
+    end;
+
+    if (ACompilerVersion >= $030200)
+    then begin
+      A := VmtAddr;
+      if not AContext.ReadAddress(A, SizeVal(ASizeOfAddr), VmtAddr) then begin
+        AnError := AContext.LastMemError;
+        exit;
+      end;
+      if not IsReadableMem(VmtAddr) then begin
+        AnError := CreateError(fpErrCanNotReadMemAtAddr, [VmtAddr.Address]);
+        exit;
+      end;
+    end;
+
+    dec(AParentClassIndex);
+  end;
+
   {$PUSH}{$Q-}
   VmtAddr.Address := VmtAddr.Address + TDBGPtr(3 * ASizeOfAddr);
   {$POP}
