@@ -13,47 +13,47 @@ msgstr ""
 
 #: idedebuggerstringconstants.dbgdispformatbinary
 msgid "Binary"
-msgstr ""
+msgstr "Двоичное"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
 msgid "Character"
-msgstr ""
+msgstr "Символ"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
 msgid "Decimal"
-msgstr ""
+msgstr "Десятичное"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
 msgid "Default"
-msgstr ""
+msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
 msgid "Floating Point"
-msgstr ""
+msgstr "С плавающей точкой"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Шестнадцатеричное"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
 msgid "Memory Dump"
-msgstr ""
+msgstr "Дамп памяти"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
 msgid "Pointer"
-msgstr ""
+msgstr "Указатель"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
 msgid "Record/Structure"
-msgstr ""
+msgstr "Запись/Структура"
 
 #: idedebuggerstringconstants.dbgdispformatstring
 msgid "String"
-msgstr ""
+msgstr "Строка"
 
 #: idedebuggerstringconstants.dbgdispformatunsigned
 msgid "Unsigned"
-msgstr ""
+msgstr "Беззнаковое"
 
 #: idedebuggerstringconstants.dlgfpconvoptaction
 msgid "Action"
@@ -106,81 +106,81 @@ msgstr "Индекс первого показываемого элемента"
 
 #: idedebuggerstringconstants.drsaddwatch
 msgid "Add watch"
-msgstr ""
+msgstr "Добавить наблюдение"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
-msgstr ""
+msgstr "Добавлять результат в историю снизу"
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr ""
+msgstr "Преобразование"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Отключить/включить обновления для всего окна"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
-msgstr ""
+msgstr "Введите выражение"
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr ""
+msgstr "Вычислить"
 
 #: idedebuggerstringconstants.drshistory
 msgid "History"
-msgstr ""
+msgstr "История"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
-msgstr ""
+msgstr "Добавлять результат в историю сверху"
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
-msgstr ""
+msgstr "Просмотреть"
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr ""
+msgstr "Новое значение"
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
-msgid "New value to assign to the variable in the debugged process. Use shift-enter to confirm"
-msgstr ""
+msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
+msgstr "Новое значение переменной отлаживаемого процесса для присвоения (нажмите Shift-Enter для подтверждения)"
 
 #: idedebuggerstringconstants.drsnodebugconverter
 msgid "No Converter"
-msgstr ""
+msgstr "Без преобразования"
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
-msgstr ""
+msgstr "Не сохранять историю"
 
 #: idedebuggerstringconstants.drsusefunctioncalls
 msgid "Function"
-msgstr ""
+msgstr "Функция"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr ""
+msgstr "Разрешить вызовы функций"
 
 #: idedebuggerstringconstants.drsuseinstanceclass
 msgid "Instance"
-msgstr ""
+msgstr "Экземпляр"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 msgid "Use Instance class type"
-msgstr ""
+msgstr "Использовать тип экземпляра класса"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
-msgstr ""
+msgstr "Показывать столбец класса"
 
 #: idedebuggerstringconstants.lisinspectshowcoltype
 msgid "Show type column"
-msgstr ""
+msgstr "Показывать столбец типа"
 
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
-msgstr ""
+msgstr "Показывать столбец видимости"
 

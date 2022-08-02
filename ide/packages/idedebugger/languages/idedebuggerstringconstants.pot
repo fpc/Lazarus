@@ -135,7 +135,7 @@ msgid "New Value"
 msgstr ""
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
-msgid "New value to assign to the variable in the debugged process. Use shift-enter to confirm"
+msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
 msgstr ""
 
 #: idedebuggerstringconstants.drsnodebugconverter

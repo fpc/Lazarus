@@ -41,7 +41,7 @@ resourcestring
   lisInspectShowColVisibility = 'Show visibility column';
   drsNewValue = 'New Value';
   drsNewValueToAssignToTheVari = 'New value to assign to the variable in the '
-    +'debugged process. Use shift-enter to confirm';
+    +'debugged process (use Shift-Enter to confirm)';
 
   dbgDispFormatDefault = 'Default';
   dbgDispFormatCharacter = 'Character';
