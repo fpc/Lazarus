@@ -2007,6 +2007,8 @@ begin
   CheckRange(AValue, MinDateTime, MaxDateTime);
   if FMaxDate = AValue then Exit;
   FMaxDate := AValue;
+  if IsLimited and not IsNullDate(FDate) and (FDate > FMaxDate) then
+    SetDate(FMaxDate);
 end;
 
 procedure TDateEdit.SetMinDate(AValue: TDateTime);
@@ -2014,6 +2016,8 @@ begin
   CheckRange(AValue, MinDateTime, MaxDateTime);
   if FMinDate = AValue then Exit;
   FMinDate := AValue;
+  if IsLimited and not IsNullDate(FDate) and (FDate < FMinDate) then
+    SetDate(FMinDate);
 end;
 
 function TDateEdit.IsLimited: Boolean;
