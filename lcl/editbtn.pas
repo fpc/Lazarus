@@ -921,6 +921,9 @@ implementation
 
 {$R lcl_edbtnimg.res}
 
+const
+  DTEpsilon = Double(1.0)/(24*3600*1000*10); //0.1 millisec (0.000000001157407407);
+
 { TEditSpeedButton }
 
 procedure TEditSpeedButton.GlyphChanged(Sender: TObject);
@@ -2010,17 +2013,17 @@ end;
 
 function TDateEdit.IsLimited: Boolean;
 begin
-  Result := (CompareValue(FMinDate, FMaxDate, 1E-9) = LessThanValue);
+  Result := (CompareValue(FMinDate, FMaxDate, DTEpsilon) = LessThanValue);
 end;
 
 function TDateEdit.GetMaxDateStored: Boolean;
 begin
-  Result := not SameValue(FMaxDate, Double(0.0), 1E-9);
+  Result := not SameValue(FMaxDate, Double(0.0), DTEpsilon);
 end;
 
 function TDateEdit.GetMinDateStored: Boolean;
 begin
-  Result := not SameValue(FMinDate, Double(0.0), 1E-9);
+  Result := not SameValue(FMinDate, Double(0.0), DTEpsilon);
 end;
 
 function TDateEdit.GetDate: TDateTime;
