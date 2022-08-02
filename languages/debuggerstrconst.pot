@@ -9,10 +9,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -79,10 +75,6 @@ msgstr ""
 msgid "Value column"
 msgstr ""
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr ""
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr ""
@@ -142,14 +134,6 @@ msgstr ""
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
-msgstr ""
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr ""
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
 msgstr ""
 
 #: debuggerstrconst.dsrevalusefpdebugconverter

@@ -8414,18 +8414,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Proprietà dei breakpoints ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "&Espressione:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "&Nuovo valore:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Risultato:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Elaborazione dei breakpoint"
@@ -9882,10 +9870,6 @@ msgstr "Errore nella scrittura dell'elenco pacchetti sul file%s%s%s%s"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Valuta espressione"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "&Valuta"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11490,18 +11474,6 @@ msgstr "Puntatore a %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Proprietà"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Mostra la colonna classe"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Mostra la colonna tipo"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Mostra la colonna visibilità"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14825,10 +14797,6 @@ msgstr ""
 "Questo codice è distribuito con la speranza che sia utile, ma SENZA NESSUNA GARANZIA; senza nemmeno l'implicita garanzia di COMMERCIABILITA' e di IDONEITA' PER UN PARTICOLARE SCOPO. Leggete la GNU General Public License per ulteriori dettagli. \n"
 "\n"
 "Una copia della GNU General Public License è disponibile sul World Wide Web sul sito <http://www.gnu.org/copyleft/gpl.html>. Potete anche ottenerla scrivendo a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Modifica"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

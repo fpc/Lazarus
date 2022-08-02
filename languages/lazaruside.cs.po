@@ -8310,18 +8310,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Nastavení bodu přerušení ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "Výraz:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "Nová hodnota:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "Výsledek:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Vyhodnocení bodu přerušení"
@@ -9766,10 +9754,6 @@ msgstr "Chyba zápisu seznamu balíčků do souboru%s%s%s%s"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Vyhodnotit výraz"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "&Vyhodnocení"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11360,18 +11344,6 @@ msgstr "Ukazatel na %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Vlastnosti"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Zobrazit sloupeček třídy"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Zobrazit sloupeček typu"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Zobrazit sloupeček viditelnosti"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14622,10 +14594,6 @@ msgstr ""
 "Tento program je distribuován v naději, že bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez záruky PRODEJNOSTI nebo VHODNOSTI PRO PŘÍSLUŠNÝ ÚČEL. Další podrobnosti najdete v GNU Library General Public License.\n"
 "\n"
 "Kopii GNU Library General Public Licence by jste měli získat spolu s touto knihovnou, pokud ne, napište Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Pozměnit"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

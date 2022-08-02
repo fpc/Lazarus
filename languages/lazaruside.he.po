@@ -8697,18 +8697,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "הצג תכונות נקודת עצירה"
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr ""
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""
@@ -10189,10 +10177,6 @@ msgstr "שגיאה בכתיבת רשימת חבילות לקובץ s%s%%s%"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "חשב את הביטוי"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "חשב"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11815,18 +11799,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "תכונות"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr ""
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -15378,10 +15350,6 @@ msgid ""
 "\n"
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "שנה"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

@@ -9,10 +9,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -79,10 +75,6 @@ msgstr "状態列"
 msgid "Value column"
 msgstr "値列"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "履歴が保持されていません"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "現在の列"
@@ -143,14 +135,6 @@ msgstr "インスタンスクラス型を使って下さい"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "検査ペイン"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "履歴の底に添える"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "履歴の冒頭に挿入する"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

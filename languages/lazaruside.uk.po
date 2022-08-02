@@ -8268,18 +8268,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Властивості точки зупинки ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "&Вираз:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "&Нове значення:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Результат:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Аналіз точки зупинки"
@@ -9720,10 +9708,6 @@ msgstr "Помилка запису списку пакунків у файл%s%
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Оцінити вираз"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "О&бчислити"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11326,18 +11310,6 @@ msgstr "Вказівник на %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Властивості"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Показати стовпець класу"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Показати стовпець типу"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Показати стовпець видимості"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14541,10 +14513,6 @@ msgstr ""
 "Ця програма поширюється з надією, що вона буде корисною, але БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, зокрема не гарантується її ПРИДАТНІСТЬ ДЛЯ ПЕВНОЇ МЕТИ. Докладнішу інформацію дивіться в ліцензії GNU LGPL. \n"
 "\n"
 "Ви повинні були отримати копію ліцензії GNU LGPL з цією бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Змінити"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

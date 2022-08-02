@@ -8386,18 +8386,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "ブレークポイントプロパティ ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "評価(&E)"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "新しい値(&N)"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "結果(&R)"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "ブレークポイント評価"
@@ -9845,10 +9833,6 @@ msgstr "パッケージリストをファイル %s%s%s%s に書き込み中に�
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "式を評価"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "評価(&v)"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11444,18 +11428,6 @@ msgstr "%sへのポインタ"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "プロパティ"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "クラス列を表示"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "型の列を表示"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "可視列を表示"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14717,10 +14689,6 @@ msgstr ""
 "本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細については GNU ライブラリ一般公衆使用許諾書をお読みください。\n"
 "\n"
 "GNU ライブラリ一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA\n"
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "修正(&M)"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

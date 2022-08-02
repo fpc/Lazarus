@@ -8264,18 +8264,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr ""
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""
@@ -9713,10 +9701,6 @@ msgstr ""
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
 msgstr ""
 
 #: lazarusidestrconsts.lisevaluateall
@@ -11288,18 +11272,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectunavailableerror
@@ -14533,10 +14505,6 @@ msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
-msgstr ""
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
 msgstr ""
 
 #: lazarusidestrconsts.lismore

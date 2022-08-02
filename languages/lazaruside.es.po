@@ -8444,18 +8444,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Propiedades de Punto de interrupción ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "&Expresión:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "&Nuevo valor:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Resultado:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Evaluación de Punto de interrupción"
@@ -9918,10 +9906,6 @@ msgstr "Error al escribir lista de paquetes al archivo%s%s%s%s"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Evaluar expresión"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "E&valuar"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11553,18 +11537,6 @@ msgstr "Puntero a %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Propiedades"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Mostrar columna de clase"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Mostrar columna de tipo"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Mostrar columna de visibilidad"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14923,10 +14895,6 @@ msgstr ""
 "Esto se distribuye con la esperanza que sea útil, pero sin ninguna garantía; ni siquiera la garantía implícita de comerciabilidad o idoneidad para un fin determinado. Consulte la GNU Library General Public License para obtener más detalles. \n"
 "\n"
 "Usted debería haber recibido una copia de la GNU Library General Public License junto con esta biblioteca; Si no, escriba a la Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Modificar"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

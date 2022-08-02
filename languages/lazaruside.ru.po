@@ -8245,18 +8245,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Параметры точки останова ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "В&ыражение:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "Новое &значение:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Результат:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Вычисление выражения точки останова"
@@ -9697,10 +9685,6 @@ msgstr "Ошибка записи списка пакетов в файл%s%s%s%
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Вычислить выражение"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "&Вычислить"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11303,18 +11287,6 @@ msgstr "Указатель на %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Свойства"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Показывать столбец класса"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Показывать столбец типа"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Показывать столбец видимости"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14513,10 +14485,6 @@ msgstr ""
 "Мы распространяем эту библиотеку в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией Ограниченного Применений GNU. \n"
 "\n"
 "Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Изменить"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

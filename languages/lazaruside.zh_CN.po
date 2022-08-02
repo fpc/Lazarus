@@ -8275,18 +8275,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "断点属性..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "表达式(&E)"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "新值:(&N)"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "结果:(&R)"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "断点诊断/评价(Evaluation)"
@@ -9738,10 +9726,6 @@ msgstr "写入软件包列表到文件 %s%s%s%s错误"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "求值(Eval)表达式"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "评估(&v)"
 
 #: lazarusidestrconsts.lisevaluateall
 #, fuzzy
@@ -11337,18 +11321,6 @@ msgstr "指针到 %s"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "属性"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "显示类列"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "显示类型列"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "显示可视化列"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format, fuzzy, badformat
@@ -14548,10 +14520,6 @@ msgstr ""
 "这个程序发布的目的是希望它能有用,但不作任何保证;甚至连适销性或特殊目的适应性的默示保证都没有.更多信息查看GNU库通用公共协议.\n"
 "\n"
 "你应该已经随这个库一起收到一份GNU库通用公共协议的副本;如果没有收到,写信给自由软件基金会, 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "修改(&M)"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

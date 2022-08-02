@@ -8254,18 +8254,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Keskeytyskohdan ominaisuudet ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "&Ilmaisu:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "&Uusi arvo:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Lopputulos:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Keskeytyskohdan määritys"
@@ -9697,10 +9685,6 @@ msgstr "Virhe kirjoitettaessa pakettiluettelo tiedostoon%s%s%s%s"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Eval lauseke"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "&Arvioi"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11267,18 +11251,6 @@ msgstr "Osoitin %s:hen"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Ominaisuudet"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Näytä luokan sarake"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Näytä tyypin sarake"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Näytä näkyvyyden sarake"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14446,10 +14418,6 @@ msgid ""
 "\n"
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Muuta"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

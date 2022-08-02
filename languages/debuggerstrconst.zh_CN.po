@@ -20,10 +20,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -90,10 +86,6 @@ msgstr "状态列"
 msgid "Value column"
 msgstr "值列"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "没有历史保存"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "当前列"
@@ -154,14 +146,6 @@ msgstr "使用实例类类型"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "查看窗格"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "在历史的底部附加结果"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "在历史的顶部插入结果"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

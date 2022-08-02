@@ -20,10 +20,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -90,10 +86,6 @@ msgstr "Būsenos stulpelis"
 msgid "Value column"
 msgstr "Vertės stulpelis"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "Istorija nevedama"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Veikiamasis stulpelis"
@@ -154,14 +146,6 @@ msgstr "Naudoti egzemplioriaus klasės tipą"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "Inspektavimo polangis"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "Rezultatą pridėti istorijos apačioje"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "Rezultatą pridėti istorijos viršuje"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

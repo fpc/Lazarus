@@ -20,10 +20,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -90,10 +86,6 @@ msgstr "Графа стану"
 msgid "Value column"
 msgstr "Графа значення"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "Немає збереженої історії"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Поточна графа"
@@ -154,14 +146,6 @@ msgstr "Викор. тип екземпляра класу"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "Панель огляду"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "Додавати результати внизу історії"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "Вставляти результат вгорі історії"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

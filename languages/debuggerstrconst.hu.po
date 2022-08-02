@@ -19,10 +19,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -89,10 +85,6 @@ msgstr "Állapot oszlop"
 msgid "Value column"
 msgstr "Érték oszlop"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "Nincs előzmény megjegyezve"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Aktuális oszlop"
@@ -153,14 +145,6 @@ msgstr "Osztálypéldány-típus használata"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "Ellenőrző tábla"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "Eredmények az előzmények aljára"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "Eredmények az előzmények tetejére"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

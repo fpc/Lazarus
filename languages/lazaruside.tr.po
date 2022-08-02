@@ -8210,18 +8210,6 @@ msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Kesme Noktası Özellikleri ..."
 
-#: lazarusidestrconsts.lisdbgemexpression
-msgid "&Expression:"
-msgstr "&İfade:"
-
-#: lazarusidestrconsts.lisdbgemnewvalue
-msgid "&New value:"
-msgstr "&Yeni değer:"
-
-#: lazarusidestrconsts.lisdbgemresult
-msgid "&Result:"
-msgstr "&Sonuç:"
-
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr "Kesme noktası değerlendirmesi"
@@ -9662,10 +9650,6 @@ msgstr "%s %s %s %s dosyasına paket listesi yazarken hata oluştu"
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr "Eval ifadesi"
-
-#: lazarusidestrconsts.lisevaluate
-msgid "E&valuate"
-msgstr "Değe&rlendir"
 
 #: lazarusidestrconsts.lisevaluateall
 msgid "Evaluate all"
@@ -11267,18 +11251,6 @@ msgstr "%s işaretçisi"
 msgctxt "lazarusidestrconsts.lisinspectproperties"
 msgid "Properties"
 msgstr "Özellikler"
-
-#: lazarusidestrconsts.lisinspectshowcolclass
-msgid "Show class column"
-msgstr "Sınıf sütununu göster"
-
-#: lazarusidestrconsts.lisinspectshowcoltype
-msgid "Show type column"
-msgstr "Tip sütununu göster"
-
-#: lazarusidestrconsts.lisinspectshowcolvisibility
-msgid "Show visibility column"
-msgstr "Görünürlük sütununu göster"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
@@ -14455,10 +14427,6 @@ msgstr ""
 "Bu program faydalı olacağı umuduyla dağıtılmıştır, ancak HİÇBİR GARANTİ YOKTUR; HİÇBİR AMAÇLI GARANTİ veya FITNESS zımni garantisi olmadan. Daha fazla bilgi için GNU Kütüphanesi Genel Kamu Lisansına bakın. \n"
 "\n"
 "GNU Kütüphanesi Genel Kamu Lisansının bir kopyasını bu kütüphane ile birlikte almış olmalısınız; olmasa da, Özgür Yazılım Vakfı, Inc.'e, 51 Franklin Street - Beşinci Kat, Boston, MA 02110-1335, ABD'ye yazmalısınız."
-
-#: lazarusidestrconsts.lismodify
-msgid "&Modify"
-msgstr "&Değiştir"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"

@@ -19,10 +19,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -89,10 +85,6 @@ msgstr "Durum sütunu"
 msgid "Value column"
 msgstr "Değer sütunu"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "Geçmiş tutulmadı"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Şimdiki sütun"
@@ -153,14 +145,6 @@ msgstr "Instance sınıf türünü kullan"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "İnceleme penceresi"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "Sonucu geçmişin en altına ekle"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "Sonucu geçmişin en üstüne ekle"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"

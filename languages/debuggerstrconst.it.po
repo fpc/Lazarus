@@ -17,10 +17,6 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptfpconverter
-msgid "Converter"
-msgstr ""
-
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
 msgstr ""
@@ -87,10 +83,6 @@ msgstr "Colonna Stato"
 msgid "Value column"
 msgstr "Colonna Valore"
 
-#: debuggerstrconst.drsevalhistorynone
-msgid "No history kept"
-msgstr "Storico non presente"
-
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Colonna corrente"
@@ -151,14 +143,6 @@ msgstr "Usa tipo istanza di classe"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "Pannello di ispezione"
-
-#: debuggerstrconst.dsrevalhistorydown
-msgid "Append result at bottom of history"
-msgstr "Accodare il risultato in fondo allo storico"
-
-#: debuggerstrconst.dsrevalhistoryup
-msgid "Insert result at top of history"
-msgstr "Inserire risultato in testa allo storico"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"
