@@ -189,6 +189,9 @@ implementation
 uses
   WSCalendar;
 
+const
+  DTEpsilon = Double(1.0)/(24*3600*1000*10); //0.1 millisec (0.000000001157407407);
+
 procedure Register;
 begin
   RegisterComponents('Misc',[TCalendar]);
@@ -307,12 +310,12 @@ end;
 
 function TCustomCalendar.GetMaxDateStored: Boolean;
 begin
-  Result := not SameValue(FMaxDate, Double(0.0), 1E-9);
+  Result := not SameValue(FMaxDate, Double(0.0), DTEpsilon);
 end;
 
 function TCustomCalendar.GetMinDateStored: Boolean;
 begin
-  Result := not SameValue(FMinDate, Double(0.0), 1E-9);
+  Result := not SameValue(FMinDate, Double(0.0), DTEpsilon);
 end;
 
 procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
@@ -343,7 +346,7 @@ end;
 
 function TCustomCalendar.IsLimited: Boolean;
 begin
-  Result := (CompareValue(FMinDate, FMaxDate, 1E-9) = LessThanValue);
+  Result := (CompareValue(FMinDate, FMaxDate, DTEpsilon) = LessThanValue);
 end;
 
 procedure TCustomCalendar.ApplyLimits;
