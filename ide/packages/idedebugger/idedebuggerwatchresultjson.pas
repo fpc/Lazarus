@@ -5,7 +5,8 @@ unit IdeDebuggerWatchResultJSon;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerWatchResult, fpjson, jsonparser, jsonscanner;
+  Classes, SysUtils, IdeDebuggerWatchResult, DbgIntfBaseTypes, fpjson,
+  jsonparser, jsonscanner;
 
 type
 
@@ -20,6 +21,8 @@ type
     function JSon: TJSONData; inline;
   protected
     function GetAsString: String; override;
+    function GetDataAddress: TDBGPtr; override;
+    function GetHasDataAddress: Boolean; override;
 
     // arary
     function  GetCount: Integer; override;
@@ -75,8 +78,7 @@ begin
     exit;
 
   FIndex := TWatchResultDataJSonBase(ASource).FIndex;
-  if FInternalJSon <> nil then
-    Self.Create(FInternalJSon.AsJSON);
+  Self.Create(AsString);
 end;
 
 function TWatchResultDataJSonBase.GetAsString: String;
@@ -84,6 +86,46 @@ begin
   Result := inherited GetAsString;
   if (Result = '') and (FInternalJSon <> nil) then
     Result := FInternalJSon.AsJSON;
+end;
+
+function TWatchResultDataJSonBase.GetDataAddress: TDBGPtr;
+var
+  j: TJSONData;
+begin
+  Result := 0;
+  j := JSon;
+  if (j = nil) and not(j is TJSONObject) then
+    exit;
+
+  if (TJSONObject(j).Elements['Address'] <> nil) then
+    j := TJSONObject(j).Elements['Address']
+  else
+    j := TJSONObject(j).Elements['DataAddress'];
+
+  if ((j is TJSONFloatNumber)) or not(j is TJSONNumber) then
+    exit;
+
+  if j is TJSONInt64Number then
+    Result := TDBGPtr(j.AsInt64)
+  else
+    Result := j.AsQWord;
+end;
+
+function TWatchResultDataJSonBase.GetHasDataAddress: Boolean;
+var
+  j: TJSONData;
+begin
+  j := JSon;
+  Result := (j <> nil) and (j is TJSONObject);
+  if not Result then
+    exit;
+
+  if (TJSONObject(j).Elements['Address'] <> nil) then
+    j := TJSONObject(j).Elements['Address']
+  else
+    j := TJSONObject(j).Elements['DataAddress'];
+
+  Result := (j is TJSONNumber) and not (j is TJSONFloatNumber);
 end;
 
 function TWatchResultDataJSonBase.GetCount: Integer;
@@ -165,6 +207,8 @@ var
   js: TJSONData;
 begin
   Result := Self;
+  if ASuffix = '' then
+    exit;
 
   NeedComma := False;
   InBracket := False;
@@ -270,7 +314,7 @@ begin
     end;
   end;
 
-  if (Idx > SfxLen) and (js <> nil) then begin
+  if (Idx > SfxLen) and (js <> nil) and (js <> JSon) then begin
     Result := TWatchResultDataJSon.Create(js.AsJSON);
     exit;
   end;

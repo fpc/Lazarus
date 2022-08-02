@@ -1261,10 +1261,7 @@ begin
           if (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0)
           then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.ResultData.ArrayLength]) + WatchValueStr
           else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
-          if (WatchValue.ResultData.ValueKind  in [rdkPointerVal]) or
-             (WatchValue.ResultData.StructType in [dstClass, dstInterface]) or
-             (WatchValue.ResultData.ArrayType  in [datDynArray])
-          then begin
+          if WatchValue.ResultData.HasDataAddress then begin
             da := WatchValue.ResultData.DataAddress;
             if da = 0
             then tvWatches.NodeText[VNode, 2] := 'nil'

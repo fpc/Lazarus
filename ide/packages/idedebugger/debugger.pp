@@ -6486,6 +6486,7 @@ begin
   Result.SetParentWatch(Self);
   Result.Enabled       := Enabled;
   Result.DisplayFormat := DisplayFormat;
+  Result.FpDbgConverter := FpDbgConverter;
   Result.FDisplayName := ADispName;
   EndChildUpdate;
 end;

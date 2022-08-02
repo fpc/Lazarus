@@ -256,6 +256,18 @@ begin
     exit;
   end;
 
+  if (Result.ValueKind = rdkStruct) and (Result.StructType = dstInternal) and
+     (Result.FieldCount > 0)
+  then begin
+    if (Result.FieldCount = 1) or
+       ( (Result.Fields[0].Field <> nil) and  ((Result.Fields[0].Field.ValueKind <> rdkError)) )
+    then
+      Result := Result.Fields[0].Field
+    else
+    if (Result.FieldCount > 1) then
+      Result := Result.Fields[1].Field;
+  end;
+
   case FResultDataContent of
     rdcJSon:
       FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
@@ -535,6 +547,7 @@ begin
     TWatch(Dest).FFirstIndexOffs    := FFirstIndexOffs;
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
+    TWatch(Dest).FpDbgConverter := FpDbgConverter;
     TWatch(Dest).FValueList.Assign(FValueList);
   end
   else inherited;

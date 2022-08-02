@@ -697,6 +697,7 @@ type
     function GetLowBound: Int64; virtual; abstract;
     function GetSelectedEntry: TWatchResultData;  virtual; abstract;
     function GetDataAddress: TDBGPtr; virtual; abstract;
+    function GetHasDataAddress: Boolean; virtual;
 
     function GetStructType: TLzDbgStructType; virtual; abstract;
     function GetAnchestor: TWatchResultData; virtual; abstract;
@@ -728,7 +729,7 @@ type
     *)
     function HandleExpressionSuffix(ASuffix: String): TWatchResultData; virtual;
 
-    function GetEnumerator: TWatchResultDataEnumerator; virtual;
+  function GetEnumerator: TWatchResultDataEnumerator; virtual;
   public
     property ValueKind: TWatchResultDataKind read GetValueKind;
     property TypeName: String read FTypeName;
@@ -757,6 +758,7 @@ type
     property SelectedEntry: TWatchResultData read GetSelectedEntry;
 
     property DataAddress: TDBGPtr read GetDataAddress;
+    property HasDataAddress: Boolean read GetHasDataAddress;
 
     // Struct
     property StructType:  TLzDbgStructType read GetStructType;
@@ -1053,6 +1055,7 @@ type
     FCurrentDerefData: TWatchResultData; // needed if this is an array element
     function GetClassID: TWatchResultDataClassID; override;
   protected
+    function GetHasDataAddress: Boolean; override;
     function GetAsString: String; override;
     function GetDerefData: TWatchResultData; override;
     class function GetStorageClass: TWatchResultStorageClass; override;
@@ -1198,6 +1201,7 @@ type
     function GetClassID: TWatchResultDataClassID; override;
   protected
     function GetArrayType: TLzDbgArrayType; override;
+    function GetHasDataAddress: Boolean; override;
   public
     constructor Create(ALength: Integer);
     procedure SetDataAddress(AnAddr: TDbgPtr); override;
@@ -1333,6 +1337,8 @@ type
   TWatchResultDataRefStruct = class(specialize TGenericWatchResultDataStruct<TWatchResultValueStructWithRef, TWatchResultTypeStruct>)
   private
     function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetHasDataAddress: Boolean; override;
   public
     constructor Create(AStructType: TLzDbgStructType;
                        ADataAddress: TDBGPtr
@@ -2374,6 +2380,11 @@ begin
   Result := rdkUnknown;
 end;
 
+function TWatchResultData.GetHasDataAddress: Boolean;
+begin
+  Result := False;
+end;
+
 constructor TWatchResultData.CreateEmpty;
 begin
   //
@@ -3367,6 +3378,11 @@ begin
   Result := wdPtr;
 end;
 
+function TWatchResultDataPointer.GetHasDataAddress: Boolean;
+begin
+  Result := True;
+end;
+
 function TWatchResultDataPointer.GetAsString: String;
 begin
   Result := FData.GetAsString + FType.GetAsString;
@@ -3807,6 +3823,11 @@ end;
 function TWatchResultDataDynArray.GetArrayType: TLzDbgArrayType;
 begin
   Result := datDynArray;
+end;
+
+function TWatchResultDataDynArray.GetHasDataAddress: Boolean;
+begin
+  Result := True;
 end;
 
 constructor TWatchResultDataDynArray.Create(ALength: Integer);
@@ -4349,6 +4370,11 @@ end;
 function TWatchResultDataRefStruct.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdStructRef;
+end;
+
+function TWatchResultDataRefStruct.GetHasDataAddress: Boolean;
+begin
+  Result := True;
 end;
 
 constructor TWatchResultDataRefStruct.Create(AStructType: TLzDbgStructType;
