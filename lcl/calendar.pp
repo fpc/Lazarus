@@ -346,7 +346,7 @@ end;
 
 function TCustomCalendar.IsLimited: Boolean;
 begin
-  Result := (CompareValue(FMinDate, FMaxDate, DTEpsilon) = LessThanValue);
+  Result := (Trunc(FMaxDate)-Trunc(FMinDate) > 0);
 end;
 
 procedure TCustomCalendar.ApplyLimits;

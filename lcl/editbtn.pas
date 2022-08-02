@@ -2018,7 +2018,7 @@ end;
 
 function TDateEdit.IsLimited: Boolean;
 begin
-  Result := (CompareValue(FMinDate, FMaxDate, DTEpsilon) = LessThanValue);
+  Result := (Trunc(FMaxDate)-Trunc(FMinDate) > 0);
 end;
 
 function TDateEdit.GetMaxDateStored: Boolean;
