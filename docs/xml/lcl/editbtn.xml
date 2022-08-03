@@ -59,9 +59,21 @@
       <element name="Math"/>
 
       <element name="NullDate">
-        <short>Represents a TDateTime type without a value assigned.</short>
+        <short>Represents a TDateTime type without date and time values.</short>
         <descr/>
         <seealso/>
+        <version>
+          The value was modified in LCL version 2.4.
+        </version>
+      </element>
+
+      <element name="NullTime">
+        <short>Represents a TDateTime type without a time value assigned.</short>
+        <descr/>
+        <seealso/>
+        <version>
+          Added in LCL version 2.4.
+        </version>        
       </element>
 
       <element name="TEbEdit">
@@ -2711,6 +2723,10 @@
         <short>TDateTime vale converted in the method.</short>
       </element>
 
+      <element name="TDateEdit.IsNullDate"/>
+      <element name="TDateEdit.IsNullDate.Result"/>
+      <element name="TDateEdit.IsNullDate.ADate"/>
+
       <element name="TDateEdit.WSRegisterClass">
         <short/>
         <short>Registers the class reference used to create new instances of the class.</short>
@@ -2742,14 +2758,17 @@
             <var>ButtonClick</var> is an overridden method in <var>TDateEdit</var>. It implements the virtual method defined in the ancestor class, and is called when the Button for the grouped edit control is clicked.
           </p>
           <p>
-            ButtonClick creates, displays, and executes a pop-up calendar dialog used to get a TDateTime value. The value in the Date property is passed as the initial date displayed on the dialog form. If Date contains the NullDate value (0), the current system date is used.
+            ButtonClick creates, displays, and executes a pop-up calendar dialog used to get a TDateTime value. The value in the Date property is passed as the initial date displayed on the dialog form. If Date contains the NullDate value, the current system date is used.
+          </p>
+          <p>
+            Values in the MinDate and MaxDate properties are used to validate and to limit the range of dates displayed on the pop-up calendar. When the properties contain non-zero values that are at least one day apart, they are used as the lower and upper limits for the value in Date. Otherwise, the MinDateTime and MaxDateTime RTL constants are used as the limits for the date value.
+          </p>
+          <p>
+            The ShowCalendarPopup routine is called to display and execute the dialog form. Set values in CalendarDisplaySettings and DefaultToday to control the appearance and behavior for the calendar on the dialog.
           </p>
           <remark>
             For the Windows platform, additional validation is performed to ensure that Date is within the range of values allowed for the native calendar control. The minimum date value is "1752-09-14" (September 14, 1752) for the start of the Gregorian calendar. The maximum date value is "9999-12-31" (December 31, 9999). This is done to prevent an exception when an invalid value is passed to the native calendar control. When DefaultToday is enabled, Date defaults to the current system date for a value outside this range. When not enabled, the MinDate and MaxDate values are used to range limit the date.
           </remark>
-          <p>
-            The ShowCalendarPopup routine is called to display and execute the dialog form. Set values in CalendarDisplaySettings and DefaultToday to control the appearance and behavior for the calendar on the dialog.
-          </p>
           <p>
             Assign a routine to the OnAcceptDate event handler to perform actions needed when a new date value is selected using the dialog. Enable FocusOnButtonClick to focus and optionally auto-select the value in the edit control after the dialog has been closed.
           </p>
@@ -2791,7 +2810,7 @@
             <var>EditEditingDone</var> is an overridden method in <var>TDateEdit</var>. It calls the inherited method on entry to signal the OnEditEditingDone event handler (when assigned).
           </p>
           <p>
-            If DirectInput is enabled, the value in Date is converted to a string and stored in the Text property. Values in DateOrder, DateFormat, or the default date format settings for the locale are used to determine the content for the converted value. An empty string ('') is assigned to Text when Date contains the NullDate value (0).
+            If DirectInput is enabled, the value in Date is converted to a string and stored in the Text property. Values in DateOrder, DateFormat, or the default date format settings for the locale are used to determine the content for the converted value. An empty string ('') is assigned to Text when Date contains the NullDate value.
           </p>
         </descr>
         <seealso>
@@ -2810,8 +2829,14 @@
         <short>Sets the value in the DirectInput property.</short>
         <descr>
           <p>
-            <var>SetDirectory</var> is overridden in <var>TDateEdit</var> to synchronize the value from the Text property to the Date property when DirectInput is changed.
+            <var>SetDirectInput</var> is overridden in <var>TDateEdit</var> to synchronize the value from the Text property to the Date property when the property value in DirectInput is changed. The OnCustomDate event handler is signalled (when assigned) to handle a custom date format or value in Text. DateOrder is used to determine the order of the date component values in Text. When DateOrder is doNone, the format setting in DefaultFormatSettings or DateFormat is used. An implementation routine is used to parse the value in Text if cannot be converted using TryStrToDate or ParseDate.
           </p>
+          <p>
+            Date is set to the value in NullDate if Text is not successfully converted to a TDateTime value.
+          </p>
+          <remark>
+            Date may contain an uninitialized value at design-time.
+          </remark>
         </descr>
         <seealso>
           <link id="TDateEdit.Date"/>
@@ -2975,10 +3000,10 @@
             Date provides the value displayed and updated using the Edit for the control when DirectInput is enabled. It is updated when the Button for the control is clicked and a new value is selected from the calendar dialog.
           </p>
           <p>
-            Setting a new value for the property causes the new date to be validated. An empty date is represented using the NullDate value (0). When DefaultToday is enabled, an empty date defaults to the current system date.
+            Setting a new value for the property causes the new date to be validated. An empty date is represented using the NullDate value. When the property value is NullDate and DefaultToday is enabled, the current system date is used.
           </p>
           <p>
-            MinDate and MaxDate are used (when assigned) to ensure that the new property value is within the specified range of dates. They are not used to limit the value in Date if either of the properties contain an empty date/time value (0.0).
+            MinDate and MaxDate are used (when assigned) to ensure that the new property value is within the specified range of dates. They are not used to limit the value in Date if either of the properties contain NullDate, or are not at least one day apart. When not used, the MinDateTime and MaxDateTime RTL constants are used as the lower and upper limits for the date value.
           </p>
           <p>
             The value in Text is updated when the new value is stored in the Date property.
@@ -3111,7 +3136,7 @@
             <var>DefaultToday</var> is a <var>Boolean</var> property which indicates if the current system date is used when the Date property has not been assigned or contains an invalid date value. The default value for the property is <b>False</b>.
           </p>
           <p>
-            DefaultToday is used in the ButtonClick method, and causes SysUtils.Date to be used as the date value when set to True. This occurs when the date contains the NullDate value (0), or when the date is not within the date range allowed for a given platform. It is used when a new value is assigned to the DirectInput property and a valid date has not been assigned to the Date property. It is also used when a new value is assigned to Text and DirectInput has not been enabled for the control.
+            DefaultToday is used in the ButtonClick method, and causes SysUtils.Date to be used as the date value when set to True. This occurs when the date contains the NullDate value, or when the date is not within the date range allowed for a given platform. It is used when a new value is assigned to the DirectInput property and a valid date has not been assigned to the Date property. It is also used when a new value is assigned to Text and DirectInput has not been enabled for the control.
           </p>
         </descr>
         <seealso>
@@ -3197,6 +3222,9 @@
             The default value for the property is an empty date/time value (0.0), and indicates that neither MinDate nor MaxDate are used to limit the values in Date. Setting a new value for the property causes the date value to be validated. It must be in the range of valid TDateTime values defined in the RTL MinDateTime and MaxDateTime constants. An EInvalidDate exception is raised if the new value is outside the allowed range.
           </p>
           <p>
+            The value in Date is adjusted (when needed) if its value is smaller than the new value for the MinDate property. No actions are needed if MinDate and MaxDate have not been assigned, or are not at least one day apart.
+          </p>
+          <p>
             Time component values (hours, minutes, seconds, milliseconds) in MinDate are ignored in TDateEdit.
           </p>
           <p>
@@ -3226,6 +3254,9 @@
           </p>
           <p>
             The default value for the property is an empty date/time value (0.0), and indicates that neither MinDate nor MaxDate are used to limit the values in Date. Setting a new value for the property causes the date value to be validated. It must be in the range of valid TDateTime values defined in the RTL MinDateTime and MaxDateTime constants. An EInvalidDate exception is raised if the new value is outside the allowed range.
+          </p>
+          <p>
+            The value in Date is adjusted (when needed) if its value is larger than the new value for the MaxDate property. No actions are needed if MinDate and MaxDate have not been assigned, or are not at least one day apart.
           </p>
           <p>
             Time component values (hours, minutes, seconds, milliseconds) in MaxDate are ignored in TDateEdit.
@@ -3406,7 +3437,7 @@
         <short>Sets the value in the Time property to the empty time value.</short>
         <descr>
           <p>
-            <var>SetEmptyTime</var> is a procedure used to set the value in the <var>Time</var> property to the empty time value. The value in <var>NullDate</var> is assigned as the value for the <var>Time</var> property. In addition, the <var>EmptyStr</var> constant is assigned as the value for the <var>Text</var> property. An internal flag is set to indicate that the time value is empty.
+            <var>SetEmptyTime</var> is a procedure used to set the value in the <var>Time</var> property to the empty time value. The value in <var>NullTime</var> is assigned as the value for the <var>Time</var> property. In addition, the <var>EmptyStr</var> constant is assigned as the value for the <var>Text</var> property. An internal flag is set to indicate that the time value is empty.
           </p>
           <p>
             SetEmptyTime is used in the implementation of the <var>ParseInput</var> method, and in the constructor for the class instance.
@@ -3472,7 +3503,9 @@
           Configures and displays the popup dialog for the control.
         </short>
         <descr>
-          Used in the implementation of the ButtonClick and EditDblClick methods.
+          <p>
+            Used in the implementation of the ButtonClick and EditDblClick methods.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
