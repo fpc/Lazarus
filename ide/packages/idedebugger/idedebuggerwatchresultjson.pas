@@ -12,7 +12,7 @@ type
 
   { TWatchResultDataJSonBase }
 
-  TWatchResultDataJSonBase = class(TWatchResultDataPrePrinted)
+  TWatchResultDataJSonBase = class(TWatchResultDataString)
   private
     FInternalJSon: TJSONData;
     FIndex: Integer;

@@ -370,7 +370,10 @@ begin
   AnchType := '';
   if Res.Anchestor <> nil then
     AnchType := Res.Anchestor.TypeName;
-  StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, Res.TypeName, AnchType]);
+  if (Res.ValueKind = rdkStruct) and (AnchType <> '') then
+    StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, Res.TypeName, AnchType])
+  else
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + FHumanReadable;
 
   GridDataSetup;
   FldCnt := 0;

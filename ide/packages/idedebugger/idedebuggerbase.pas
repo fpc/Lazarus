@@ -277,6 +277,9 @@ begin
 
       if (Result.ValueKind in [rdkString, rdkPrePrinted]) and (IsMaybeJson(Result.AsString)) then begin
         FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
+        TWatchResultDataJSon(FResultDataSpecialised).SetTypeName(FResultData.TypeName);
+        if FResultData.HasDataAddress then
+          TWatchResultDataJSon(FResultDataSpecialised).SetDataAddress(FResultData.DataAddress);
         if (FResultDataSpecialised.Count > 0) or (FResultDataSpecialised.FieldCount > 0) then
           FResultDataContent := rdcJSon;
       end;

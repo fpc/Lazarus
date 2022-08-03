@@ -96,6 +96,15 @@ type
   TWatchResultValueString = object(TWatchResultValueTextBase)
   protected const
     VKind = rdkString;
+  private
+    FAddress: TDBGPtr;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+    property GetDataAddress: TDBGPtr read FAddress;
   end;
 
   { TWatchResultValueWideString }
@@ -1000,6 +1009,9 @@ type
   TWatchResultDataString = class(specialize TGenericWatchResultData<TWatchResultValueString>)
   private
     function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetHasDataAddress: Boolean; override;
+    function GetDataAddress: TDBGPtr; override;
   public
     constructor Create(AStringVal: String);
   end;
@@ -1592,6 +1604,24 @@ procedure TWatchResultValueTextBase.SaveDataToXMLConfig(
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
   AConfig.SetValue(APath + 'Value', FText);
+end;
+
+{ TWatchResultValueString }
+
+procedure TWatchResultValueString.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+  FAddress := TDBGPtr(AConfig.GetValue(APath + 'Addr', 0));
+end;
+
+procedure TWatchResultValueString.SaveDataToXMLConfig(
+  const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
+  AConfig.SetDeleteValue(APath + 'Addr', Int64(FAddress), 0);
 end;
 
 { TWatchResultValueWideString }
@@ -3286,6 +3316,16 @@ end;
 function TWatchResultDataString.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdString;
+end;
+
+function TWatchResultDataString.GetHasDataAddress: Boolean;
+begin
+  Result := True;
+end;
+
+function TWatchResultDataString.GetDataAddress: TDBGPtr;
+begin
+  Result := FData.GetDataAddress;
 end;
 
 constructor TWatchResultDataString.Create(AStringVal: String);
