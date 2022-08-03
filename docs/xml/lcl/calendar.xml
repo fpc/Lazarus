@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          <file>calendar.pp</file> contains classes and types used to implement <var>TCalendar</var>, a graphic control allowing selection of a date from a calendar display. It is part of the Lazarus Component Library (<b>LCL</b>).
+          <file>calendar.pp</file> contains classes and types used to implement <var>TCalendar</var>, a graphic control allowing selection of a date from a calendar display.
         </p>
         <p>
           The following components are added to the Lazarus IDE component palette:
@@ -239,7 +239,7 @@
             <var>TCustomCalendar</var> is the base class for <var>TCalendar</var>, a graphic control used to select a date value from the familiar monthly calendar layout. It includes Date and DateTime properties with the selected date as a String or a TDateTime value.
           </p>
           <p>
-            TCustomCalendar acts as a wrapper for the native calendar control on a given platform. The range of dates allowed in a native calendar control varies by platform. Starting in LCL version 2.4, TCustomCalendar includes MinDate and MaxDate properties which can used to limited the dates displayed on the calendar to a specified minimum and maximum date. Setting Date or DateTime to a value outside the allowed range (when used) causes an EInvalidDate exception to be raised.
+            TCustomCalendar acts as a wrapper for the native calendar control on a given platform. The range of dates allowed in a native calendar control varies by platform. Starting in LCL version 2.4, TCustomCalendar includes MinDate and MaxDate properties which can used to limit the dates displayed on the calendar to a specified minimum and maximum date. Setting Date or DateTime to a value outside the allowed range (when used) causes an EInvalidDate exception to be raised.
           </p>
           <p>
             Please note that MinDate and MaxDate are not supported on all platforms; they are not implemented for GTK2 and GTK3 because the native calendar control does not implement or enforce them.
@@ -566,6 +566,9 @@
           <p>
             Use DateTime to read or write the date value using a TDateTime data type.
           </p>
+          <p>
+            Use MinDate and MaxDate to set the lower and upper limits for the dates displayed on the calendar control.
+          </p>
         </descr>
         <errors>
           <p>
@@ -574,6 +577,8 @@
         </errors>
         <seealso>
           <link id="TCustomCalendar.DateTime"/>
+          <link id="TCustomCalendar.MinDate"/>
+          <link id="TCustomCalendar.MaxDate"/>
           <link id="#rtl.sysutils.StrToDate">StrToDate</link>
           <link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
           <link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
@@ -593,7 +598,7 @@
             Reading the value for the property causes both Date and DateTime members to be retrieved from the widgetset class when its handle has been allocated. If the handle is not available, the member value is used instead.
           </p>
           <p>
-            Setting a new value for the property causes the TDateTime value to be validated. When MinDate and MaxDate contain non-zero date/time values, the property must in the specified range limits. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to range limit the date value. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
+            Setting a new value for the property causes the TDateTime value to be validated. When MinDate and MaxDate contain non-zero date/time values that are at least one day apart, the property must in the specified range limits. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to limit the range for the date value. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
           </p>
           <p>
             FormatDateTime is called to convert the TDateTime value to its string representation in Date. An EConvertError exception is raised if the date is not valid or DefaultFormatSettings contains an invalid ShortDate format.
@@ -613,7 +618,7 @@
             EConvertError is raised when the value is not a valid for the TDateTime type.
           </p>
           <p>
-            EInvalidDate is raised when the date value is not within the MinDate to MaxDate range; raised with the message rsInvalidDateRangeHint.
+            EInvalidDate is raised when the date value is not within the range represented by MinDate and MaxDate; raised with the message rsInvalidDateRangeHint.
           </p>
         </errors>
         <seealso>
@@ -691,7 +696,7 @@
             The default value for MaxDate is an empty TDateTime value (0.0), and indicates that the upper limit has not been assigned. Setting a new value for the property causes the TDateTime value to be validated. The new value in MaxDate must in the range defined by the RTL MinDateTime and MaxDateTime constants.
           </p>
           <p>
-            When MinDate and MaxDate contain non-zero date/time values, the value in DateTime must in the range represented by the properties. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to range limit the value in DateTime. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
+            When MinDate and MaxDate contain non-zero date/time values that are at least one day apart, the value in DateTime must in the range represented by the properties. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to range limit the value in DateTime. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
           </p>
           <remark>
             MinDate and MaxDate are not supported on all platforms. The values may not be available or enforced in some widgetset implementations; GTK2 and GTK3 do not use the values.
@@ -722,7 +727,7 @@
             The default value for MinDate is an empty TDateTime value (0.0), and indicates that the lower limit has not been assigned. Setting a new value for the property causes the TDateTime value to be validated. The new value in MinDate must in the range defined by the RTL MinDateTime and MaxDateTime constants.
           </p>
           <p>
-            When MinDate and MaxDate contain non-zero date/time values, the value in DateTime must in the range represented by the properties. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to range limit the value in DateTime. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
+            When MinDate and MaxDate contain non-zero date/time values that are at least one day apart, the value in DateTime must in the range represented by the properties. When MinDate and MaxDate are not assigned, the RTL MinDateTime and MaxDateTime constants are used to range limit the value in DateTime. An EInvalidDate exception is raised when the date value is not valid for the data type, or not within the required range.
           </p>
           <remark>
             MinDate and MaxDate are not supported on all platforms. The values may not be available or enforced in some widgetset implementations; GTK2 and GTK3 do not use the values.
@@ -829,7 +834,7 @@
             <var>TCalendar</var> is a <var>TCustomCalendar</var> descendant which implements the graphic control used to select a date value from from the familiar monthly calendar layout. It includes Date and DateTime properties with the selected date as a String or a TDateTime value.
           </p>
           <p>
-            TCalendar / TCustomCalendar act as a wrapper for the native calendar control on a given platform. The range of dates allowed in a native calendar control varies by platform. Starting in LCL version 2.4, TCustomCalendar includes MinDate and MaxDate properties which can used to limited the dates displayed on the calendar to a specified minimum and maximum date. Setting Date or DateTime to a value outside the allowed range (when used) causes an EInvalidDate exception to be raised.
+            TCalendar / TCustomCalendar act as a wrapper for the native calendar control on a given platform. The range of dates allowed in a native calendar control varies by platform. Starting in LCL version 2.4, TCustomCalendar includes MinDate and MaxDate properties which can used to limit the dates displayed on the calendar to a specified minimum and maximum date. Setting Date or DateTime to a value outside the allowed range (when used) causes an EInvalidDate exception to be raised.
           </p>
           <p>
             Please note that MinDate and MaxDate are not supported on all platforms; they are not implemented for GTK2 and GTK3 because the native calendar control does not implement or enforce them.
