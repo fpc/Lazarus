@@ -1101,7 +1101,6 @@ var
   WatchResConv: TFpLazDbgWatchResultConvertor;
   ResData: TLzDbgWatchDataIntf;
   i: Integer;
-  ValConfig: TFpDbgConverterConfig;
 begin
   Result := False;
   AResText := '';
@@ -1179,9 +1178,10 @@ begin
       WatchResConv.ExtraDepth := defExtraDepth in FWatchValue.EvaluateFlags;
       WatchResConv.FirstIndexOffs := FWatchValue.FirstIndexOffs;
       if not (defSkipValConv in AnEvalFlags) then begin
-        ValConfig := TFpDbgConverterConfig(FWatchValue.GetFpDbgConverter);
-        if ValConfig <> nil then
-          WatchResConv.ValConfig := ValConfig
+        if (FWatchValue.GetFpDbgConverter <> nil) and
+           (FWatchValue.GetFpDbgConverter.GetBackendSpecificObject is TFpDbgConverterConfig)
+        then
+          WatchResConv.ValConfig := TFpDbgConverterConfig(FWatchValue.GetFpDbgConverter.GetBackendSpecificObject)
         else
           WatchResConv.ValConvList := ValueConverterConfigList;
         WatchResConv.Debugger := FDebugger;

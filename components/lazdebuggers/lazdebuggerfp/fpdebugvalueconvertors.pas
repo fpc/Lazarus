@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, fgl, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
   FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil,
   DbgIntfBaseTypes, lazCollections, LazClasses, LCLProc, StrUtils,
-  FpDebugDebuggerBase, LazDebuggerIntfBaseTypes;
+  FpDebugDebuggerBase, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes;
 
 type
   TDbgSymbolKinds = set of TDbgSymbolKind;
@@ -20,9 +20,11 @@ type
      - Any setting that the IDE may need to store, should be published
   *)
 
-  TFpDbgValueConverter = class(TRefCountedObject)
+  TFpDbgValueConverter = class(TRefCountedObject, TLazDbgValueConverterIntf)
   private
     FLastErrror: TFpError;
+  protected
+    function GetObject: TObject;
   public
     class function GetName: String; virtual; abstract;
     class function GetSupportedKinds: TDbgSymbolKinds; virtual;
@@ -46,12 +48,14 @@ type
 
   { TFpDbgConverterConfig }
 
-  TFpDbgConverterConfig = class(TFreeNotifyingObject)
+  TFpDbgConverterConfig = class(TFreeNotifyingObject, TLazDbgValueConvertSelectorIntf)
   private
     FConverter: TFpDbgValueConverter;
     FMatchKinds: TDbgSymbolKinds;
     FMatchTypeNames: TStrings;
     procedure SetConverter(AValue: TFpDbgValueConverter);
+  protected
+    function GetBackendSpecificObject: TObject;
   public
     constructor Create(AConverter: TFpDbgValueConverter);
     destructor Destroy; override;
@@ -158,6 +162,11 @@ begin
   FLastErrror := AnError;
 end;
 
+function TFpDbgValueConverter.GetObject: TObject;
+begin
+  Result := Self;
+end;
+
 class function TFpDbgValueConverter.GetSupportedKinds: TDbgSymbolKinds;
 begin
   Result := [low(TDbgSymbolKinds)..high(TDbgSymbolKinds)];
@@ -177,6 +186,11 @@ begin
   FConverter := AValue;
   if FConverter <> nil then
     FConverter.AddReference;
+end;
+
+function TFpDbgConverterConfig.GetBackendSpecificObject: TObject;
+begin
+  Result := Self;
 end;
 
 function TFpDbgConverterConfig.CreateCopy: TFpDbgConverterConfig;

@@ -1226,8 +1226,7 @@ begin
     else begin
     // resultdata
 
-      if (FCurrentResData.ValueKind = rdkStruct) and
-         (FCurrentResData.StructType = dstInternal)
+      if (FCurrentResData.ValueKind = rdkConvertRes)
       then begin
         if (FCurrentResData.FieldCount > 0) then
         //if (FCurrentResData.FieldCount = 1) then
@@ -1275,6 +1274,7 @@ begin
         rdkSet:           InspectResDataSet;
         rdkArray:         InspectResDataArray;
         rdkStruct:        InspectResDataStruct;
+//        rdkConvertRes:    InspectResDataStruct;
         else begin
             Clear;
             StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);

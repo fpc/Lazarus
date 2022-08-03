@@ -43,8 +43,8 @@ uses
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase,
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerFpDbgValueConv;
 
 const
@@ -726,6 +726,7 @@ type
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
                               //ARecurseFieldCount: Integer = 0 // Fields including anchestors
                              );
+    function CreateValueHandleResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
 
     procedure CreateError(AVal: String); virtual;
 
@@ -761,7 +762,7 @@ type
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
-    function GetFpDbgConverter: TObject;
+    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
   private
     FOnValidityChanged: TNotifyEvent;
     FSnapShot: TIdeWatchValue;
@@ -3501,7 +3502,7 @@ begin
       FreeAndNil(FSubCurrentData);
     end
     else
-    if (FNewResultData.ValueKind in [rdkStruct]) then begin
+    if (FNewResultData.ValueKind in [rdkStruct, rdkConvertRes]) then begin
         WriteFieldsToRes(0, FNewResultData);
     end;
   end;
@@ -3755,6 +3756,22 @@ begin
   AfterDataCreated;
 end;
 
+function TCurrentResData.CreateValueHandleResult(
+  AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkConvertRes), 'TCurrentResData.CreateVariantValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkConvertRes)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataConverted.Create(AValueHandler)
+  else
+    TWatchResultDataConverted(FNewResultData).Create(AValueHandler);
+
+  FCurrentIdx := 0;
+  AfterDataCreated;
+
+  Result := AddField('', dfvUnknown, []);
+end;
+
 function TCurrentResData.CreateArrayValue(AnArrayType: TLzDbgArrayType;
   ATotalCount: Integer; ALowIdx: Integer): TLzDbgWatchDataIntf;
 begin
@@ -3830,6 +3847,11 @@ end;
 
 function TCurrentResData.SetDerefData: TLzDbgWatchDataIntf;
 begin
+  if (FNewResultData<> nil) and (FNewResultData.ValueKind = rdkConvertRes) then begin
+    Result := AddField('', dfvUnknown, []);
+    exit;
+  end;
+
   assert((FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer), 'TCurrentResData.SetDerefData: (FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer)');
   if FSubCurrentData = nil then
     FSubCurrentData := CreateSubCurrentResData;
@@ -3885,7 +3907,7 @@ var
   NewField: TCurrentResData;
 begin
   Result := nil;
-  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct]), 'TCurrentResData.AddField: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct])');
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct, rdkConvertRes]), 'TCurrentResData.AddField: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkStruct])');
 
   if FCurrentFields = nil then begin
     FCurrentFields := TCurrentResDataList.Create(True);
@@ -3975,7 +3997,7 @@ begin
   Result := FCurrentResData;
 end;
 
-function TCurrentWatchValue.GetFpDbgConverter: TObject;
+function TCurrentWatchValue.GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
 begin
   Result := FFpDbgConverter;
 end;

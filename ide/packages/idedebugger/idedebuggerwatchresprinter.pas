@@ -19,6 +19,7 @@ type
     function PrintNumber(ANumValue: TWatchResultData; AnIsPointer: Boolean; ADispFormat: TWatchDisplayFormat): String;
     function PrintArray(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
     function PrintStruct(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+    function PrintConverted(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
     function PrintProc(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
 
     function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
@@ -142,36 +143,6 @@ var
 begin
   Result := '';
 
-  if (AResValue.ValueKind = rdkStruct) and
-     (AResValue.StructType = dstInternal)
-  then begin
-    if AResValue.FieldCount = 0 then
-      exit('Error: No result');
-
-    if (AResValue.FieldCount = 1) or
-       ( (AResValue.Fields[0].Field <> nil) and
-         ((AResValue.Fields[0].Field.ValueKind <> rdkError))
-       )
-    then begin
-      Result := PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl);
-      exit;
-    end;
-
-    if (AResValue.FieldCount > 1) then begin
-      Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl);
-      if (AResValue.Fields[0].Field = nil) or
-         (AResValue.Fields[0].Field.ValueKind <> rdkError) or
-         (AResValue.Fields[0].Field.AsString <> '')
-      then
-      Result := Result + ' { '
-        + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl)
-        + ' }';
-      exit;
-    end;
-
-    exit('Error: No result');
-  end;
-
   if (AResValue.StructType in [dstClass, dstInterface])
   then begin
     tn := AResValue.TypeName;
@@ -251,6 +222,36 @@ begin
      )
   then
     Result := tn + Result;
+end;
+
+function TWatchResultPrinter.PrintConverted(AResValue: TWatchResultData;
+  ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+begin
+  if AResValue.FieldCount = 0 then
+    exit('Error: No result');
+
+  if (AResValue.FieldCount = 1) or
+     ( (AResValue.Fields[0].Field <> nil) and
+       ((AResValue.Fields[0].Field.ValueKind <> rdkError))
+     )
+  then begin
+    Result := PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl);
+    exit;
+  end;
+
+  if (AResValue.FieldCount > 1) then begin
+    Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl);
+    if (AResValue.Fields[0].Field = nil) or
+       (AResValue.Fields[0].Field.ValueKind <> rdkError) or
+       (AResValue.Fields[0].Field.AsString <> '')
+    then
+    Result := Result + ' { '
+      + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl)
+      + ' }';
+    exit;
+  end;
+
+  Result := 'Error: No result';
 end;
 
 function TWatchResultPrinter.PrintProc(AResValue: TWatchResultData;
@@ -448,6 +449,7 @@ begin
     end;
     rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl);
     rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl);
+    rdkConvertRes: Result := PrintConverted(AResValue, ADispFormat, ANestLvl);
     rdkFunction,
     rdkProcedure,
     rdkFunctionRef,

@@ -160,8 +160,7 @@ begin
             dec(FCurMaxArrayConv);
         end;
 
-        AnResData.CreateStructure(dstInternal);
-        AnResFld := AnResData.AddField('', dfvUnknown, []);
+        AnResFld := AnResData.CreateValueHandleResult(CurConv);
         if (CurConv <> nil) then begin
           FInNonConvert := True;
 

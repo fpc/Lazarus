@@ -1290,7 +1290,7 @@ begin
 
         HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
                        ( (WatchValue.ResultData <> nil) and
-                         ( ( (WatchValue.ResultData.FieldCount > 0) and (WatchValue.ResultData.StructType <> dstInternal) )
+                         ( ( (WatchValue.ResultData.FieldCount > 0) and (WatchValue.ResultData.ValueKind <> rdkConvertRes) )
                            or
                            //( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
                            (WatchValue.ResultData.ArrayLength > 0)
@@ -1436,7 +1436,7 @@ begin
   ChildCount := 0;
 
   if (AWatchValue.ResultData <> nil) and (AWatchValue.ResultData.FieldCount > 0) and
-     (AWatchValue.ResultData.StructType <> dstInternal)
+     (AWatchValue.ResultData.ValueKind <> rdkConvertRes)
   then begin
     ResData := AWatchValue.ResultData;
     AWatch := AWatchValue.Watch;

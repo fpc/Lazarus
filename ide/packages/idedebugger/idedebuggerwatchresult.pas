@@ -7,7 +7,8 @@ interface
 
 uses
   Classes, SysUtils, Types, IdeDebuggerUtils, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazUTF8, Laz2_XMLCfg, LazLoggerBase;
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazUTF8, Laz2_XMLCfg,
+  LazLoggerBase;
 
 type
 
@@ -21,6 +22,7 @@ type
     rdkPCharOrString,
     rdkArray,
     rdkStruct,
+    rdkConvertRes,
     rdkFunction, rdkProcedure,
     rdkFunctionRef, rdkProcedureRef
   );
@@ -461,14 +463,38 @@ type
     property GetDataAddress: TDBGPtr read FDataAddress;
   end;
 
+  { TWatchResultValueConverted }
+
+  TWatchResultValueConverted = object(TWatchResultValue)
+  protected const
+    VKind = rdkConvertRes;
+  end;
+
+
+  { TWatchResultTypeStructBase }
+
+  TWatchResultTypeStructBase = object(TWatchResultValue)
+  private
+    FFieldData: packed array of TWatchResultTypeStructFieldInfo;
+  public
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+    function GetFieldCount: Integer; inline;
+    function GetFieldInfo(AnIndex: Integer): PWatchResultTypeStructFieldInfo;  inline;
+    procedure AfterAssign(ATypeOnly: Boolean = False);
+    procedure CopyFieldsProtoFrom(const ASource: TWatchResultTypeStructBase); inline;
+    procedure DoFree;
+  end;
 
   { TWatchResultTypeStruct }
 
-  TWatchResultTypeStruct = object(TWatchResultValue)
+  TWatchResultTypeStruct = object(TWatchResultTypeStructBase)
   private
     FStructType: TLzDbgStructType;
 //    FStructFlags: TLzDbgStructFlags; // dsfDummyAnchestor
-    FFieldData: packed array of TWatchResultTypeStructFieldInfo;
     FAnchestor: TWatchResultData;
   public
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -479,10 +505,17 @@ type
     property GetStructType:  TLzDbgStructType read FStructType;
 //    property GetStructFlags: TLzDbgStructFlags read FStructFlags;
     property GetAnchestor: TWatchResultData read FAnchestor;
-    function GetFieldCount: Integer; inline;
-    function GetFieldInfo(AnIndex: Integer): PWatchResultTypeStructFieldInfo;  inline;
     procedure AfterAssign(ATypeOnly: Boolean = False);
-    procedure CopyFieldsProtoFrom(const ASource: TWatchResultTypeStruct); inline;
+    procedure DoFree;
+  end;
+
+  { TWatchResultTypeConverted }
+
+  TWatchResultTypeConverted = object(TWatchResultTypeStructBase)
+  private
+    FHandler: TLazDbgValueConverterIntf;
+  public
+    procedure AfterAssign(ATypeOnly: Boolean = False);
     procedure DoFree;
   end;
 
@@ -623,6 +656,7 @@ type
     wdStatA,     // TWatchResultDataStatArray
     wdStruct,    // TWatchResultDataStruct
     wdStructRef, // TWatchResultDataRefStruct
+    wdConverted, // TWatchResultDataConverted
     wdFunc,      // TWatchResultDataFunc,
     wdProc,      // TWatchResultDataProc,
     wdFuncRef,   // TWatchResultDataFuncRef,
@@ -664,6 +698,7 @@ type
 //    FDataFlags: TWatchResultDataFlags;
   //  Addr: TDbgPtr;
   // MemDump
+    function GetBackendValueHandler: TLazDbgValueConverterIntf;
     function GetClassID: TWatchResultDataClassID; virtual; //abstract;
   protected
     class function GetStorageClass: TWatchResultStorageClass; virtual; abstract;
@@ -756,6 +791,7 @@ type
     property NestedType: TWatchResultData read GetNestedType; // NESTED TYPE FOR NESTED STORAGE
 
     property ElementName[AnIndex: Integer]: String read GetElementName;
+    property BackendValueHandler: TLazDbgValueConverterIntf read GetBackendValueHandler;
 
     // Array
     property ArrayType: TLzDbgArrayType read GetArrayType;
@@ -1266,7 +1302,6 @@ type
 
     TNestedFieldsWatchResultStorage = class(TGenericWatchResultStorage)
     private
-      FAnchestorStorage: TWatchResultStorage;
       FFieldsStorage: array of TWatchResultStorage;
       FOverrideTempl: array of TOverrideTemplateData;
       function GetStoredFieldCount: Integer;
@@ -1293,7 +1328,6 @@ type
     PNestedFieldsWatchResultStorage = ^TNestedFieldsWatchResultStorage;
 
   private
-    FCurrentAnchestor: TWatchResultData;
     FCurrentFields: array of TWatchResultData;
   protected
     class function GetStorageClass: TWatchResultStorageClass; override;
@@ -1311,15 +1345,9 @@ type
       var AnOverrideTemplate: TOverrideTemplateData); override;
     procedure ClearData; override;
     function GetFields(AnIndex: Integer): TWatchResultDataFieldInfo; override;
-    function GetAnchestor: TWatchResultData; override;
   public
-    constructor Create(AStructType: TLzDbgStructType
-                              //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
-                              //ARecurseFieldCount: Integer = 0 // Fields including anchestors
-                             );
     function GetEnumerator: TWatchResultDataEnumerator; override;
 
-    procedure SetAnchestor(AnAnchestor: TWatchResultData); override;
     procedure SetFieldCount(ACount: integer); override;
     procedure SetField(AnIndex: Integer;
                        AFieldName: String;
@@ -1335,18 +1363,71 @@ type
     procedure SetFieldData(AnIndex: Integer; AData: TWatchResultData); override;
   end;
 
-  { TWatchResultDataRefStruct }
+  { TGenericWatchResultDataStructWithAnchestor }
 
-  TWatchResultDataStruct = class(specialize TGenericWatchResultDataStruct<TWatchResultValueStruct, TWatchResultTypeStruct>)
+  generic TGenericWatchResultDataStructWithAnchestor<_DATA, _TYPE> = class(specialize TGenericWatchResultDataStruct<_DATA, _TYPE>)
+  private type
+
+    { TNestedFieldsAndAnchestorWatchResultStorage }
+
+    TNestedFieldsAndAnchestorWatchResultStorage = class(TNestedFieldsWatchResultStorage)
+    private
+      FAnchestorStorage: TWatchResultStorage;
+    protected
+      procedure SetCount(AValue: integer); override;
+      procedure Assign(ASource: TWatchResultStorage); override;
+
+      function GetNestedStorage(AnIndex: Integer): TWatchResultStorage; reintroduce;
+      function GetNestedStoragePtr(AnIndex: Integer): PWatchResultStorage; reintroduce;
+      procedure SetNestedStorage(AnIndex: Integer; AValue: TWatchResultStorage); reintroduce;
+    public
+      destructor Destroy; override;
+      procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                      const AnEntryTemplate: TWatchResultData;
+                                      var AnOverrideTemplate: TOverrideTemplateData;
+                                      ANestLvl: Integer=0); override;
+      procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; ANestLvl: Integer=0); override;
+
+      property NestedStorage[AnIndex: Integer]: TWatchResultStorage read GetNestedStorage write SetNestedStorage;
+      property NestedStoragePtr[AnIndex: Integer]: PWatchResultStorage read GetNestedStoragePtr;
+      property StoredFieldCount: Integer read GetStoredFieldCount write SetStoredFieldCount;
+    end;
+    PNestedFieldsAndAnchestorWatchResultStorage = ^TNestedFieldsAndAnchestorWatchResultStorage;
+
   private
-    function GetClassID: TWatchResultDataClassID; override;
+    FCurrentAnchestor: TWatchResultData;
   protected
     class function GetStorageClass: TWatchResultStorageClass; override;
+    function CreateStorage: TWatchResultStorage; override;
+    function MaybeUpdateProto(var AProtoData: TWatchResultData;
+      var AnOverrideTemplate: TOverrideTemplateData;
+      AStorage: PWatchResultStorage; ARecurse: boolean = False;
+      ASkipStorage: boolean = False): boolean;
+      override;
+    procedure AfterSaveToIndex(AStorage: TWatchResultStorage; AnIndex: Integer;
+      var AnEntryTemplate: TWatchResultData;
+      var AnOverrideTemplate: TOverrideTemplateData); override;
+    procedure AfterLoadFromIndex(AStorage: TWatchResultStorage;
+      AnIndex: Integer; const AnEntryTemplate: TWatchResultData;
+      var AnOverrideTemplate: TOverrideTemplateData); override;
+    procedure ClearData; override;
+    function GetAnchestor: TWatchResultData; override;
+  public
+    procedure SetAnchestor(AnAnchestor: TWatchResultData); override;
+  end;
+
+  { TWatchResultDataStruct }
+
+  TWatchResultDataStruct = class(specialize TGenericWatchResultDataStructWithAnchestor<TWatchResultValueStruct, TWatchResultTypeStruct>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(AStructType: TLzDbgStructType);
   end;
 
   { TWatchResultDataRefStruct }
 
-  TWatchResultDataRefStruct = class(specialize TGenericWatchResultDataStruct<TWatchResultValueStructWithRef, TWatchResultTypeStruct>)
+  TWatchResultDataRefStruct = class(specialize TGenericWatchResultDataStructWithAnchestor<TWatchResultValueStructWithRef, TWatchResultTypeStruct>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   protected
@@ -1357,9 +1438,16 @@ type
                       );
   end;
 
+  { TWatchResultDataConverted }
 
-
-
+  TWatchResultDataConverted = class(specialize TGenericWatchResultDataStruct<TWatchResultValueConverted, TWatchResultTypeConverted>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetBackendValueHandler: TLazDbgValueConverterIntf;
+  public
+    constructor Create(AHandler: TLazDbgValueConverterIntf);
+  end;
 
   { TGenericWatchResultDataProc }
 
@@ -1455,6 +1543,7 @@ const
     TWatchResultDataStatArray,     // wdStatA,
     TWatchResultDataStruct,        // wdStruct
     TWatchResultDataRefStruct,     // wdStructRef
+    TWatchResultDataConverted,     // wdConverted
     TWatchResultDataFunc,          // wdFunc
     TWatchResultDataProc,          // wdProc
     TWatchResultDataFuncRef,       // wdFuncRef
@@ -2076,9 +2165,9 @@ begin
   AConfig.SetDeleteValue(APath + 'Addr', Int64(FDataAddress), 0);
 end;
 
-{ TWatchResultTypeStruct }
+{ TWatchResultTypeStructBase }
 
-procedure TWatchResultTypeStruct.LoadDataFromXMLConfig(
+procedure TWatchResultTypeStructBase.LoadDataFromXMLConfig(
   const AConfig: TXMLConfig; const APath: string;
   const AnEntryTemplate: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
@@ -2089,14 +2178,6 @@ var
   i: Integer;
   p: String;
 begin
-  AConfig.GetValue(APath + 'SubID', int64(ord(dstUnknown)), FStructType, TypeInfo(TLzDbgStructType));
-  if AConfig.HasPath(APath+'Anch/', True) then begin
-    FAnchestor := TWatchResultData.CreateFromXMLConfig(AConfig, APath+'Anch/', AnEntryTemplate, AnOverrideTemplate, AnAsProto);
-    assert((FAnchestor=nil) or (FAnchestor.ValueKind=rdkStruct), 'TWatchResultTypeStruct.LoadDataFromXMLConfig: (FAnchestor=nil) or (FAnchestor.ValueKind=rdkStruct)');
-    if (FAnchestor <> nil) and (FAnchestor.ValueKind <> rdkStruct) then
-      FreeAndNil(FAnchestor);
-  end;
-
   DataCnt := AConfig.GetValue(APath + 'Cnt', 0);
   SetLength(FFieldData, DataCnt);
   for i := 0 to DataCnt-1 do begin
@@ -2109,16 +2190,12 @@ begin
   end;
 end;
 
-procedure TWatchResultTypeStruct.SaveDataToXMLConfig(const AConfig: TXMLConfig;
-  const APath: string; AnAsProto: Boolean);
+procedure TWatchResultTypeStructBase.SaveDataToXMLConfig(
+  const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
 var
   i: Integer;
   p: String;
 begin
-  AConfig.SetDeleteValue(APath + 'SubID', FStructType, ord(dstUnknown), TypeInfo(TLzDbgStructType));
-  if FAnchestor <> nil then
-    FAnchestor.SaveDataToXMLConfig(AConfig, APath+'Anch/', AnAsProto);
-
   AConfig.SetDeleteValue(APath + 'Cnt', Length(FFieldData), 0);
   for i := 0 to Length(FFieldData)-1 do begin
     p := APath+'F'+IntToStr(i)+'/';
@@ -2134,29 +2211,28 @@ begin
   end;
 end;
 
-function TWatchResultTypeStruct.GetFieldCount: Integer;
+function TWatchResultTypeStructBase.GetFieldCount: Integer;
 begin
   Result := Length(FFieldData);
 end;
 
-function TWatchResultTypeStruct.GetFieldInfo(AnIndex: Integer
+function TWatchResultTypeStructBase.GetFieldInfo(AnIndex: Integer
   ): PWatchResultTypeStructFieldInfo;
 begin
   Result := @FFieldData[AnIndex];
 end;
 
-procedure TWatchResultTypeStruct.AfterAssign(ATypeOnly: Boolean);
+procedure TWatchResultTypeStructBase.AfterAssign(ATypeOnly: Boolean);
 var
   i: Integer;
 begin
-  FAnchestor := FAnchestor.CreateCopy(ATypeOnly);
   SetLength(FFieldData, Length(FFieldData));
   for i := 0 to Length(FFieldData) - 1 do
     FFieldData[i].Field := FFieldData[i].Field.CreateCopy(ATypeOnly);
 end;
 
-procedure TWatchResultTypeStruct.CopyFieldsProtoFrom(
-  const ASource: TWatchResultTypeStruct);
+procedure TWatchResultTypeStructBase.CopyFieldsProtoFrom(
+  const ASource: TWatchResultTypeStructBase);
 var
   i: Integer;
 begin
@@ -2166,14 +2242,67 @@ begin
     FFieldData[i].Field := ASource.FFieldData[i].Field.CreateCopy(True);
 end;
 
-procedure TWatchResultTypeStruct.DoFree;
+procedure TWatchResultTypeStructBase.DoFree;
 var
   i: Integer;
 begin
   for i := 0 to Length(FFieldData) - 1 do
     FFieldData[i].Field.Free;
   FFieldData := nil;
+end;
+
+{ TWatchResultTypeStruct }
+
+procedure TWatchResultTypeStruct.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+begin
+  AConfig.GetValue(APath + 'SubID', int64(ord(dstUnknown)), FStructType, TypeInfo(TLzDbgStructType));
+  if AConfig.HasPath(APath+'Anch/', True) then begin
+    FAnchestor := TWatchResultData.CreateFromXMLConfig(AConfig, APath+'Anch/', AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+    assert((FAnchestor=nil) or (FAnchestor.ValueKind=rdkStruct), 'TWatchResultTypeStruct.LoadDataFromXMLConfig: (FAnchestor=nil) or (FAnchestor.ValueKind=rdkStruct)');
+    if (FAnchestor <> nil) and (FAnchestor.ValueKind <> rdkStruct) then
+      FreeAndNil(FAnchestor);
+  end;
+
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+end;
+
+procedure TWatchResultTypeStruct.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; AnAsProto: Boolean);
+begin
+  AConfig.SetDeleteValue(APath + 'SubID', FStructType, ord(dstUnknown), TypeInfo(TLzDbgStructType));
+  if FAnchestor <> nil then
+    FAnchestor.SaveDataToXMLConfig(AConfig, APath+'Anch/', AnAsProto);
+
+  inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
+end;
+
+procedure TWatchResultTypeStruct.AfterAssign(ATypeOnly: Boolean);
+begin
+  FAnchestor := FAnchestor.CreateCopy(ATypeOnly);
+  inherited AfterAssign(ATypeOnly);
+end;
+
+procedure TWatchResultTypeStruct.DoFree;
+begin
+  inherited DoFree;
   FAnchestor.Free;
+end;
+
+{ TWatchResultTypeConverted }
+
+procedure TWatchResultTypeConverted.AfterAssign(ATypeOnly: Boolean);
+begin
+  if FHandler <> nil then
+    FHandler.AddReference;
+end;
+
+procedure TWatchResultTypeConverted.DoFree;
+begin
+  if FHandler <> nil then
+    FHandler.ReleaseReference;
 end;
 
 { TWatchResultTypeProc }
@@ -2451,6 +2580,11 @@ end;
 function TWatchResultData.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdPrePrint;
+end;
+
+function TWatchResultData.GetBackendValueHandler: TLazDbgValueConverterIntf;
+begin
+  Result := nil;
 end;
 
 procedure TWatchResultData.AfterSaveToIndex(AStorage: TWatchResultStorage;
@@ -4013,8 +4147,6 @@ var
   i: Integer;
 begin
   inherited SetCount(AValue);
-  if FAnchestorStorage <> nil then
-    FAnchestorStorage.SetCount(AValue);
   for i := 0 to Length(FFieldsStorage) - 1 do
     if FFieldsStorage[i] <> nil then
       FFieldsStorage[i].SetCount(AValue);
@@ -4029,8 +4161,6 @@ begin
   inherited Assign(ASource);
 
   if ASource is TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage then begin
-    FAnchestorStorage := Src.FAnchestorStorage.CreateCopy;
-
     SetLength(FFieldsStorage, Length(Src.FFieldsStorage));
     for i := 0 to Length(FFieldsStorage) - 1 do
       FFieldsStorage[i] := Src.FFieldsStorage[i].CreateCopy;
@@ -4044,33 +4174,20 @@ end;
 function TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.GetNestedStorage
   (AnIndex: Integer): TWatchResultStorage;
 begin
-  if AnIndex < 0 then
-    Result := FAnchestorStorage
-  else
-    Result := FFieldsStorage[AnIndex];
+  Result := FFieldsStorage[AnIndex];
 end;
 
 function TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.GetNestedStoragePtr
   (AnIndex: Integer): PWatchResultStorage;
 begin
-  if AnIndex < 0 then
-    Result := @FAnchestorStorage
-  else
-    Result := @FFieldsStorage[AnIndex];
-
+  Result := @FFieldsStorage[AnIndex];
 end;
 
 procedure TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage
   (AnIndex: Integer; AValue: TWatchResultStorage);
 begin
-  if AnIndex < 0 then begin
-    assert((FAnchestorStorage=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FAnchestorStorage=nil) or (AValue=nil)');
-    FAnchestorStorage := AValue;
-  end
-  else begin
-    assert((FFieldsStorage[AnIndex]=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FFieldsStorage[AnIndex]=nil) or (AValue=nil)');
-    FFieldsStorage[AnIndex] := AValue;
-  end;
+  assert((FFieldsStorage[AnIndex]=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FFieldsStorage[AnIndex]=nil) or (AValue=nil)');
+  FFieldsStorage[AnIndex] := AValue;
 
   if AValue <> nil then
     AValue.Count := Count;
@@ -4078,7 +4195,6 @@ end;
 
 destructor TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.Destroy;
 begin
-  FreeAndNil(FAnchestorStorage);
   StoredFieldCount := 0;
   inherited Destroy;
 end;
@@ -4103,14 +4219,6 @@ begin
       FFieldsStorage[i].LoadDataFromXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', t, FOverrideTempl[i], ANestLvl);
     end;
   end;
-
-  if FAnchestorStorage <> nil then begin
-    t := AnEntryTemplate;
-    if t <> nil then
-      t := TGenericWatchResultDataStruct(t).FType.FAnchestor;
-
-    FAnchestorStorage.LoadDataFromXMLConfig(AConfig, APath+'Anch/', t, AnOverrideTemplate, ANestLvl);
-  end;
 end;
 
 procedure TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SaveDataToXMLConfig
@@ -4123,10 +4231,6 @@ begin
   for i := 0 to Length(FFieldsStorage) - 1 do
     if FFieldsStorage[i] <> nil then
       FFieldsStorage[i].SaveDataToXMLConfig(AConfig, APath+'F'+IntToStr(i)+'/', ANestLvl);
-
-  if FAnchestorStorage <> nil then
-    FAnchestorStorage.SaveDataToXMLConfig(AConfig, APath+'Anch/', ANestLvl);
-
 end;
 
 { TGenericWatchResultDataStruct }
@@ -4142,9 +4246,6 @@ var
   i: Integer;
 begin
   Result := inherited CreateStorage;
-
-  if FType.FAnchestor <> nil then
-    Store.NestedStorage[-1] := FType.FAnchestor.CreateStorage;
 
   Store.StoredFieldCount := Length(FType.FFieldData);
   for i := 0 to Length(FType.FFieldData) - 1 do
@@ -4172,11 +4273,6 @@ begin
     AStructProtoData.FType.CopyFieldsProtoFrom(FType);
   assert((Length(FType.FFieldData)=0) or (Length(FType.FFieldData)=Length(AStructProtoData.FType.FFieldData)), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (Length(FType.FFieldData)=0) or (Length(FType.FFieldData)=Length(AStructProtoData.FType.FFieldData))');
 
-  if (AStructProtoData.FType.FAnchestor = nil) and
-     (FType.FAnchestor <> nil)
-  then
-    AStructProtoData.FType.FAnchestor := FType.FAnchestor.CreateCopy(True);
-
 
   assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
   if (AStorage = nil) or (AStorage^ = nil)
@@ -4189,12 +4285,6 @@ begin
             dummy, nil, ARecurse, ASkipStorage);
           assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
         end;
-      end;
-
-      if FType.FAnchestor <> nil then begin
-        FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, dummy,
-          nil, ARecurse, ASkipStorage);
-        assert(dummy = nil, 'TGenericWatchResultDataStruct.MaybeUpdateProto: dummy = nil');
       end;
     end;
   end
@@ -4210,11 +4300,6 @@ begin
           FieldStore^.FOverrideTempl[i], FieldStore^.NestedStoragePtr[i], ARecurse, ASkipStorage);
       end;
     end;
-
-    if FType.FAnchestor <> nil then begin
-      FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, AnOverrideTemplate,
-        FieldStore^.NestedStoragePtr[-1], ARecurse, ASkipStorage);
-    end;
   end;
 end;
 
@@ -4228,24 +4313,6 @@ var
   i: Integer;
 begin
   inherited AfterSaveToIndex(AStorage, AnIndex, AnEntryTemplate, AnOverrideTemplate);
-
-  if (FType.FAnchestor <> nil) then begin
-    assert(AnEntryTemplate is TGenericWatchResultDataStruct, 'TGenericWatchResultDataStruct.AfterSaveToIndex: AnEntryTemplate is TGenericWatchResultDataStruct');
-
-    FType.FAnchestor.MaybeUpdateProto(
-      AStructEntryTemplate.FType.FAnchestor,
-      AnOverrideTemplate,
-      AStore.NestedStoragePtr[-1]
-    );
-
-    if (AStore.NestedStorage[-1] = nil) then
-      AStore.NestedStorage[-1] := FType.FAnchestor.CreateStorage;
-
-    AStore.NestedStorage[-1].SaveToIndex(AnIndex,
-      FType.FAnchestor,
-      AStructEntryTemplate.FType.FAnchestor,
-      AnOverrideTemplate);
-  end;
 
   if Length(FType.FFieldData) > AStore.StoredFieldCount then begin
     assert(AStore.StoredFieldCount=0, 'TGenericWatchResultDataStruct.AfterSaveToIndex: AStore.StoredFieldCount=0');
@@ -4286,11 +4353,6 @@ begin
   inherited AfterLoadFromIndex(AStorage, AnIndex, AnEntryTemplate,
     AnOverrideTemplate);
 
-  if (FType.FAnchestor <> nil) then begin
-    if (AStore.NestedStorage[-1] <> nil) then
-      AStore.NestedStorage[-1].LoadFromIndex(AnIndex, FCurrentAnchestor, FType.FAnchestor, AnOverrideTemplate);
-  end;
-
   if AStore.StoredFieldCount = 0 then begin
     SetLength(FCurrentFields, 0);
   end
@@ -4317,9 +4379,6 @@ var
 begin
   inherited ClearData;
 
-  if FType.FAnchestor <> nil then
-    FType.FAnchestor.ClearData;
-
   for i := 0 to Length(FType.FFieldData) - 1 do
     if (FType.FFieldData[i].Field <> nil) then
       FType.FFieldData[i].Field.ClearData;
@@ -4333,27 +4392,9 @@ begin
     Result.Field := FCurrentFields[AnIndex];
 end;
 
-function TGenericWatchResultDataStruct.GetAnchestor: TWatchResultData;
-begin
-  if FCurrentAnchestor <> nil then
-    Result := FCurrentAnchestor
-  else
-    Result := inherited GetAnchestor;
-end;
-
-constructor TGenericWatchResultDataStruct.Create(AStructType: TLzDbgStructType);
-begin
-  FType.FStructType := AStructType;
-end;
-
 function TGenericWatchResultDataStruct.GetEnumerator: TWatchResultDataEnumerator;
 begin
   Result := TWatchResultDataStructEnumerator.Create(Self);
-end;
-
-procedure TGenericWatchResultDataStruct.SetAnchestor(AnAnchestor: TWatchResultData);
-begin
-  FType.FAnchestor := AnAnchestor;
 end;
 
 procedure TGenericWatchResultDataStruct.SetFieldCount(ACount: integer);
@@ -4392,6 +4433,219 @@ begin
   FType.FFieldData[AnIndex].Field := AData;
 end;
 
+{ TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage }
+
+procedure TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.SetCount
+  (AValue: integer);
+begin
+  inherited SetCount(AValue);
+  if FAnchestorStorage <> nil then
+    FAnchestorStorage.SetCount(AValue);
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.Assign
+  (ASource: TWatchResultStorage);
+var
+  Src: TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage absolute ASource;
+begin
+  inherited Assign(ASource);
+
+  if ASource is TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage then begin
+    FAnchestorStorage := Src.FAnchestorStorage.CreateCopy;
+  end;
+end;
+
+function TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.GetNestedStorage
+  (AnIndex: Integer): TWatchResultStorage;
+begin
+  if AnIndex < 0 then
+    Result := FAnchestorStorage
+  else
+    Result := inherited GetNestedStorage(AnIndex);
+end;
+
+function TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.GetNestedStoragePtr
+  (AnIndex: Integer): PWatchResultStorage;
+begin
+  if AnIndex < 0 then
+    Result := @FAnchestorStorage
+  else
+    Result := inherited GetNestedStoragePtr(AnIndex);
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.SetNestedStorage
+  (AnIndex: Integer; AValue: TWatchResultStorage);
+begin
+  if AnIndex < 0 then begin
+    assert((FAnchestorStorage=nil) or (AValue=nil), 'TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage.SetNestedStorage: (FAnchestorStorage=nil) or (AValue=nil)');
+    FAnchestorStorage := AValue;
+
+    if AValue <> nil then
+      AValue.Count := Count;
+  end
+  else
+    inherited SetNestedStorage(AnIndex, AValue);
+end;
+
+destructor TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.Destroy;
+begin
+  FreeAndNil(FAnchestorStorage);
+  inherited Destroy;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.LoadDataFromXMLConfig
+  (const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; ANestLvl: Integer);
+var
+  t: TWatchResultData;
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate,
+    AnOverrideTemplate, ANestLvl);
+
+  if FAnchestorStorage <> nil then begin
+    t := AnEntryTemplate;
+    if t <> nil then
+      t := TGenericWatchResultDataStructWithAnchestor(t).FType.FAnchestor;
+
+    FAnchestorStorage.LoadDataFromXMLConfig(AConfig, APath+'Anch/', t, AnOverrideTemplate, ANestLvl);
+  end;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.TNestedFieldsAndAnchestorWatchResultStorage.SaveDataToXMLConfig
+  (const AConfig: TXMLConfig; const APath: string; ANestLvl: Integer);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath, ANestLvl);
+
+  if FAnchestorStorage <> nil then
+    FAnchestorStorage.SaveDataToXMLConfig(AConfig, APath+'Anch/', ANestLvl);
+end;
+
+{ TGenericWatchResultDataStructWithAnchestor }
+
+class function TGenericWatchResultDataStructWithAnchestor.GetStorageClass: TWatchResultStorageClass;
+begin
+  Result := TNestedFieldsAndAnchestorWatchResultStorage;
+end;
+
+function TGenericWatchResultDataStructWithAnchestor.CreateStorage: TWatchResultStorage;
+var
+  Store: TNestedFieldsAndAnchestorWatchResultStorage absolute Result;
+begin
+  Result := inherited CreateStorage;
+
+  if FType.FAnchestor <> nil then
+    Store.NestedStorage[-1] := FType.FAnchestor.CreateStorage;
+end;
+
+function TGenericWatchResultDataStructWithAnchestor.MaybeUpdateProto(
+  var AProtoData: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AStorage: PWatchResultStorage;
+  ARecurse: boolean; ASkipStorage: boolean): boolean;
+var
+  AStructProtoData: TGenericWatchResultDataStructWithAnchestor absolute AProtoData;
+  FieldStore: PNestedFieldsWatchResultStorage absolute AStorage;
+  dummy: TOverrideTemplateData;
+begin
+  Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse, ASkipStorage);
+  if Result or not ARecurse then
+    exit;
+
+  if (AStructProtoData.FType.FAnchestor = nil) and
+     (FType.FAnchestor <> nil)
+  then
+    AStructProtoData.FType.FAnchestor := FType.FAnchestor.CreateCopy(True);
+
+
+  assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
+  if (AStorage = nil) or (AStorage^ = nil)
+  then begin
+    if (ARecurse) then begin  // or "if not ASkipStorage and " ??
+      dummy := nil;
+      if FType.FAnchestor <> nil then begin
+        FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, dummy,
+          nil, ARecurse, ASkipStorage);
+        assert(dummy = nil, 'TGenericWatchResultDataStructWithAnchestor.MaybeUpdateProto: dummy = nil');
+      end;
+    end;
+  end
+
+  else begin
+    if FType.FAnchestor <> nil then begin
+      FType.FAnchestor.MaybeUpdateProto(AStructProtoData.FType.FAnchestor, AnOverrideTemplate,
+        FieldStore^.NestedStoragePtr[-1], ARecurse, ASkipStorage);
+    end;
+  end;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.AfterSaveToIndex(
+  AStorage: TWatchResultStorage; AnIndex: Integer;
+  var AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData);
+var
+  AStructEntryTemplate: TGenericWatchResultDataStructWithAnchestor absolute AnEntryTemplate;
+  AStore: TNestedFieldsAndAnchestorWatchResultStorage absolute AStorage;
+begin
+  inherited AfterSaveToIndex(AStorage, AnIndex, AnEntryTemplate,
+    AnOverrideTemplate);
+
+  if (FType.FAnchestor <> nil) then begin
+    assert(AnEntryTemplate is TGenericWatchResultDataStructWithAnchestor, 'TGenericWatchResultDataStructWithAnchestor.AfterSaveToIndex: AnEntryTemplate is TGenericWatchResultDataStruct');
+
+    FType.FAnchestor.MaybeUpdateProto(
+      AStructEntryTemplate.FType.FAnchestor,
+      AnOverrideTemplate,
+      AStore.NestedStoragePtr[-1]
+    );
+
+    if (AStore.NestedStorage[-1] = nil) then
+      AStore.NestedStorage[-1] := FType.FAnchestor.CreateStorage;
+
+    AStore.NestedStorage[-1].SaveToIndex(AnIndex,
+      FType.FAnchestor,
+      AStructEntryTemplate.FType.FAnchestor,
+      AnOverrideTemplate);
+  end;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.AfterLoadFromIndex(
+  AStorage: TWatchResultStorage; AnIndex: Integer;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData);
+var
+  AStore: TNestedFieldsAndAnchestorWatchResultStorage absolute AStorage;
+begin
+  inherited AfterLoadFromIndex(AStorage, AnIndex, AnEntryTemplate,
+    AnOverrideTemplate);
+
+  if (FType.FAnchestor <> nil) then begin
+    if (AStore.NestedStorage[-1] <> nil) then
+      AStore.NestedStorage[-1].LoadFromIndex(AnIndex, FCurrentAnchestor, FType.FAnchestor, AnOverrideTemplate);
+  end;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.ClearData;
+begin
+  inherited ClearData;
+
+  if FType.FAnchestor <> nil then
+    FType.FAnchestor.ClearData;
+end;
+
+function TGenericWatchResultDataStructWithAnchestor.GetAnchestor: TWatchResultData;
+begin
+  if FCurrentAnchestor <> nil then
+    Result := FCurrentAnchestor
+  else
+    Result := inherited GetAnchestor;
+end;
+
+procedure TGenericWatchResultDataStructWithAnchestor.SetAnchestor(
+  AnAnchestor: TWatchResultData);
+begin
+  FType.FAnchestor := AnAnchestor;
+end;
+
 { TWatchResultDataStruct }
 
 function TWatchResultDataStruct.GetClassID: TWatchResultDataClassID;
@@ -4399,10 +4653,9 @@ begin
   Result := wdStruct;
 end;
 
-class function TWatchResultDataStruct.GetStorageClass: TWatchResultStorageClass;
+constructor TWatchResultDataStruct.Create(AStructType: TLzDbgStructType);
 begin
-  Result := inherited GetStorageClass;
-  //Result := TGenericNestedWatchResultStorage;
+  FType.FStructType := AStructType;
 end;
 
 { TWatchResultDataRefStruct }
@@ -4421,7 +4674,26 @@ constructor TWatchResultDataRefStruct.Create(AStructType: TLzDbgStructType;
   ADataAddress: TDBGPtr);
 begin
   FData.FDataAddress := ADataAddress;
-  inherited Create(AStructType);
+  FType.FStructType := AStructType;
+end;
+
+{ TWatchResultDataConverted }
+
+function TWatchResultDataConverted.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdConverted;
+end;
+
+function TWatchResultDataConverted.GetBackendValueHandler: TLazDbgValueConverterIntf;
+begin
+  Result := FType.FHandler;
+end;
+
+constructor TWatchResultDataConverted.Create(
+  AHandler: TLazDbgValueConverterIntf);
+begin
+  FType.FHandler := AHandler;
+  AHandler.AddReference;
 end;
 
 { TGenericWatchResultDataProc }

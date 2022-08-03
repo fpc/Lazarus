@@ -21,7 +21,7 @@ unit LazDebuggerIntf;
 interface
 
 uses
-  Classes, SysUtils, Types, LazDebuggerIntfBaseTypes;
+  Classes, SysUtils, Types, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes;
 
 type
   TDBGState = LazDebuggerIntfBaseTypes.TDBGState deprecated 'Use LazDebuggerIntfBaseTypes.TDBGState';
@@ -167,6 +167,9 @@ type
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
                               //ARecurseFieldCount: Integer = 0 // Fields including anchestors
                              );
+    // returns the intf for the converted result
+    // Use SetDerefData to get the interface for the NON-converted result
+    function CreateValueHandleResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
     procedure CreateError(AVal: String);
 
     // For all Values
@@ -239,7 +242,7 @@ type
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
-    function GetFpDbgConverter: TObject;
+    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
     function GetExpression: String;
     function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;

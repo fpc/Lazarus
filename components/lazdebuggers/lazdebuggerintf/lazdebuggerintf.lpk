@@ -35,7 +35,11 @@ See LCL license for details."/>
       </Item>
       <Item>
         <Filename Value="lazdebuggerintfbasetypes.pas"/>
-        <UnitName Value="lazdebuggerintfbasetypes"/>
+        <UnitName Value="LazDebuggerIntfBaseTypes"/>
+      </Item>
+      <Item>
+        <Filename Value="lazdebuggervalueconverter.pas"/>
+        <UnitName Value="LazDebuggerValueConverter"/>
       </Item>
     </Files>
     <RequiredPkgs>
