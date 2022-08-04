@@ -528,7 +528,7 @@ begin
 
   Addr := 0;
   if (AnFpValue.Kind in [skClass, skInterface]) then begin
-    if AnFpValue.FieldFlags * [svfInteger, svfCardinal] <> [] then
+    if AnFpValue.FieldFlags * [svfInteger, svfCardinal, svfOrdinal] <> [] then
       Addr := AnFpValue.AsCardinal
     else
     if svfDataAddress in AnFpValue.FieldFlags then

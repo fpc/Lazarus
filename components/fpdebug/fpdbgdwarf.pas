@@ -3159,7 +3159,7 @@ begin
   Result := Result + [svfMembers];
 
   //TODO: svfDataAddress should depend on (hidden) Pointer or Ref in the TypeInfo
-  if Kind in [skClass] then begin
+  if Kind in [skClass, skInterface] then begin
     Result := Result + [svfOrdinal, svfDataAddress, svfDataSize]; // svfDataSize
     if ((FDataSymbol <> nil) and FDataSymbol.HasAddress) or
        (HasTypeCastInfo and (Kind = skClass))
