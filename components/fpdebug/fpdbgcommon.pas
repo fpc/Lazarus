@@ -31,6 +31,7 @@ function hostDescriptor: TTargetDescriptor;
 procedure AssertFpDebugThreadId(const AName: String);
 procedure AssertFpDebugThreadIdNotMain(const AName: String);
 procedure SetCurrentFpDebugThreadIdForAssert(AnId: TThreadID);
+procedure ClearCurrentFpDebugThreadIdForAssert;
 property CurrentFpDebugThreadIdForAssert: TThreadID write SetCurrentFpDebugThreadIdForAssert;
 {$ENDIF}
 
@@ -85,6 +86,11 @@ procedure SetCurrentFpDebugThreadIdForAssert(AnId: TThreadID);
 begin
   FCurrentFpDebugThreadIdForAssert := AnId;
   FCurrentFpDebugThreadIdValidForAssert := True;
+end;
+
+procedure ClearCurrentFpDebugThreadIdForAssert;
+begin
+  FCurrentFpDebugThreadIdValidForAssert := False;
 end;
 
 {$ENDIF}

@@ -3292,7 +3292,7 @@ begin
   if (FDbgController.CurrentProcess <> nil) then
     TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(FDbgController.CurrentProcess.DbgInfo)
     .GetInstanceClassNameFromPVmt
-      (AnAddr, FDbgController.DefaultContext, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
+      (AnAddr, FDbgController.DefaultContext, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], @Result, nil, AnErr);
 end;
 
 procedure TFpDebugDebugger.DoThreadDebugOutput(Sender: TObject; ProcessId,

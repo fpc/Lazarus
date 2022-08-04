@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testregistry, TestBase, FpDebugValueConvertors,
-  TestDbgControl, TestDbgTestSuites, TestOutputLogger, TTestWatchUtilities,
-  TestCommonSources, TestDbgConfig, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, Forms, IdeDebuggerBase,
-  IdeDebuggerWatchResult;
+  FpDebugDebugger, TestDbgControl, TestDbgTestSuites, TestOutputLogger,
+  TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfBaseTypes, FpDbgInfo,
+  FpPascalParser, FpDbgCommon, Forms, IdeDebuggerBase, IdeDebuggerWatchResult;
 
 type
 
@@ -33,6 +33,7 @@ type
     procedure TestWatchesExpression;
     procedure TestWatchesModify;
     procedure TestWatchesErrors;
+    procedure TestClassRtti;
   end;
 
 implementation
@@ -41,7 +42,7 @@ var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchFunct,
   ControlTestWatchFunctStr, ControlTestWatchFunctRec, ControlTestWatchFunctVariant,
   ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
-  ControlTestExpression, ControlTestErrors: Pointer;
+  ControlTestExpression, ControlTestErrors, ControlTestRTTI: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint;
   ADisableBreak: Boolean);
@@ -3693,6 +3694,105 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestClassRtti;
+var
+  ExeName: String;
+  Src: TCommonSource;
+  BrkPrg: TDBGBreakPoint;
+  fp: TFpDebugDebugger;
+  AnExpressionScope: TFpDbgSymbolScope;
+  APasExpr: TFpPascalExpression;
+  ResValue: TFpValue;
+  InstClass, AnUnitName: String;
+  r: Boolean;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestRTTI) then exit;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    AssertDebuggerNotInErrorState;
+    RunToPause(BrkPrg);
+
+{$IFDEF FPDEBUG_THREAD_CHECK}
+    ClearCurrentFpDebugThreadIdForAssert;
+{$ENDIF}
+
+  fp := TFpDebugDebugger(Debugger.LazDebugger);
+  AnExpressionScope := fp.DbgController.CurrentProcess.FindSymbolScope(fp.DbgController.CurrentThread.ID, 0);
+  TestTrue('got scope', AnExpressionScope <> nil);
+
+  if AnExpressionScope <> nil then begin
+
+    APasExpr := TFpPascalExpression.Create('MyClass1', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+
+    r := ResValue.GetInstanceClassName(InstClass);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyClass', InstClass);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyClass', InstClass);
+    TestEquals('unit name', 'WatchesValuePrg', AnUnitName);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName, 1);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyBaseClass', InstClass);
+    TestEquals('unit name', 'WatchesValuePrg', AnUnitName);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName, 2);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TObject', InstClass);
+    TestEquals('unit name', 'system', lowercase(AnUnitName));
+
+    APasExpr.Free;
+
+
+
+    APasExpr := TFpPascalExpression.Create('MyClass2', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+
+    r := ResValue.GetInstanceClassName(InstClass);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyClass', InstClass);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyClass', InstClass);
+    TestEquals('unit name', 'WatchesValuePrg', AnUnitName);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName, 1);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TMyBaseClass', InstClass);
+    TestEquals('unit name', 'WatchesValuePrg', AnUnitName);
+
+    r := ResValue.GetInstanceClassName(@InstClass, @AnUnitName, 2);
+    TestTrue('got inst class ', r);
+    TestEquals('inst class ', 'TObject', InstClass);
+    TestEquals('unit name', 'system', lowercase(AnUnitName));
+
+    APasExpr.Free;
+
+
+
+  end;
+
+
+  finally
+    Debugger.RunToNextPause(dcStop);
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
@@ -3708,6 +3808,7 @@ initialization
   ControlTestModify         := TestControlRegisterTest('Modify', ControlTestWatch);
   ControlTestExpression     := TestControlRegisterTest('Expression', ControlTestWatch);
   ControlTestErrors         := TestControlRegisterTest('Errors', ControlTestWatch);
+  ControlTestRTTI         :=   TestControlRegisterTest('Rtti', ControlTestWatch);
 
 end.
 

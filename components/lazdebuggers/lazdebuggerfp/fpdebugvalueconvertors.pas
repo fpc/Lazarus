@@ -312,7 +312,7 @@ begin
         end;
 
         CnIdx := 0;
-        while AValue.GetInstanceClassName(ValClassName, CnIdx) and
+        while AValue.GetInstanceClassName(@ValClassName, nil, CnIdx) and
               (ValClassName <> '')
         do begin
           ValClassName := LowerCase(ValClassName);
