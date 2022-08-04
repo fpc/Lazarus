@@ -41,7 +41,9 @@ uses
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
-  FpDbgDwarf, FpDbgUtil;
+  FpDbgDwarf, FpDbgUtil,
+  // use converters
+  FpDebugValueConvertors, FpDebugConvDebugForJson;
 
 type
 

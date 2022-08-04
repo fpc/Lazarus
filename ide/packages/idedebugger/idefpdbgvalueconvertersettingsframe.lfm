@@ -17,6 +17,7 @@ object FpDbgValConvFrame: TFpDbgValConvFrame
     BevelOuter = bvNone
     ClientHeight = 150
     ClientWidth = 512
+    Constraints.MinHeight = 80
     TabOrder = 0
     object lstConverters: TCheckListBox
       Left = 5
@@ -79,6 +80,7 @@ object FpDbgValConvFrame: TFpDbgValConvFrame
     BevelOuter = bvNone
     ClientHeight = 362
     ClientWidth = 512
+    Constraints.MinHeight = 120
     TabOrder = 2
     object Panel4: TPanel
       Left = 342
@@ -111,6 +113,7 @@ object FpDbgValConvFrame: TFpDbgValConvFrame
         Top = 25
         Width = 160
         ItemHeight = 15
+        OnChange = dropActionChange
         Style = csDropDownList
         TabOrder = 0
       end
@@ -181,6 +184,17 @@ object FpDbgValConvFrame: TFpDbgValConvFrame
     Top = 150
     Width = 512
     Align = alTop
+    OnCanOffset = Splitter1CanOffset
     ResizeAnchor = akTop
+  end
+  object pnlCurConvSetting: TPanel
+    Left = 0
+    Height = 0
+    Top = 519
+    Width = 512
+    Align = alBottom
+    AutoSize = True
+    Caption = 'PnlConvSetting'
+    TabOrder = 3
   end
 end

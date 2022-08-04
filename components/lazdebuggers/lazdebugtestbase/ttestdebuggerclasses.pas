@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase, Debugger,
-  IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerValueConverter;
 
 type
 
@@ -90,7 +91,7 @@ type
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
       AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
-    function GetFpDbgConverter: TObject;
+    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
   protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
@@ -428,7 +429,7 @@ begin
   Result := FCurrentResData;
 end;
 
-function TTestWatchValue.GetFpDbgConverter: TObject;
+function TTestWatchValue.GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
 begin
   Result := nil;
 end;

@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
   IdeDebuggerFpDbgValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
   DbgIntfMiscClasses, LazDebuggerIntf, LazDebuggerTemplate,
-  LazDebuggerIntfBaseTypes, FpDebugValueConvertors;
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugValueConvertors,
+  FpDebugConvDebugForJson;
 
 type
 
@@ -245,36 +246,55 @@ function TWatchValue.GetResultData: TWatchResultData;
     Result := True;
   end;
 
+var
+  UsedConv: TLazDbgValueConverterIntf;
+  SrcData: TWatchResultData;
+
+  function CreateJson: TWatchResultDataJSon;
+  begin
+    Result := TWatchResultDataJSon.Create(SrcData.AsString);
+    Result.SetTypeName(SrcData.TypeName);
+    if SrcData.HasDataAddress then
+      Result.SetDataAddress(SrcData.DataAddress);
+    if (Result.Count > 0) or (Result.FieldCount > 0) then
+      FResultDataContent := rdcJSon;
+    if (UsedConv <> nil) and (UsedConv.GetObject is TFpDbgValueConverterJsonForDebug)
+    then begin
+      Result.JsonAddressKey  := TFpDbgValueConverterJsonForDebug(UsedConv.GetObject).JsonAddressKey;
+      Result.JsonTypenameKey := TFpDbgValueConverterJsonForDebug(UsedConv.GetObject).JsonTypenameKey;
+    end;
+  end;
+
 begin
-  Result := FResultData;
-
-  if (FResultDataContent = rdcNotSpecial) or (Result = nil) then
-    exit;
-
   if FResultDataSpecialised <> nil then begin
     Result := FResultDataSpecialised;
     exit;
   end;
 
-  if (Result.ValueKind = rdkConvertRes) and (Result.FieldCount > 0) and
-     (Result.Fields[0].Field.ValueKind <> rdkError)
-  then
-    Result := Result.Fields[0].Field;
+  Result := FResultData;
+  if (FResultDataContent = rdcNotSpecial) or (Result = nil) then
+    exit;
+
+  SrcData := FResultData;
+  UsedConv := nil;
+  if (SrcData.ValueKind = rdkConvertRes) and (SrcData.FieldCount > 0) and
+     (SrcData.Fields[0].Field <> nil) and
+     (SrcData.Fields[0].Field.ValueKind <> rdkError)
+  then begin
+    SrcData := SrcData.Fields[0].Field;
+    UsedConv := FResultData.BackendValueHandler;
+  end;
 
   case FResultDataContent of
-    rdcJSon:
-      FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
+    rdcJSon: begin
+        FResultDataSpecialised := CreateJson;
+      end;
 
     else begin
       FResultDataContent := rdcNotSpecial;
 
-      if (Result.ValueKind in [rdkString, rdkPrePrinted]) and (IsMaybeJson(Result.AsString)) then begin
-        FResultDataSpecialised := TWatchResultDataJSon.Create(Result.AsString);
-        TWatchResultDataJSon(FResultDataSpecialised).SetTypeName(FResultData.TypeName);
-        if FResultData.HasDataAddress then
-          TWatchResultDataJSon(FResultDataSpecialised).SetDataAddress(FResultData.DataAddress);
-        if (FResultDataSpecialised.Count > 0) or (FResultDataSpecialised.FieldCount > 0) then
-          FResultDataContent := rdcJSon;
+      if (SrcData.ValueKind in [rdkString, rdkPrePrinted]) and (IsMaybeJson(SrcData.AsString)) then begin
+        FResultDataSpecialised := CreateJson;
       end;
 
       if FResultDataContent = rdcNotSpecial then

@@ -698,7 +698,7 @@ type
 //    FDataFlags: TWatchResultDataFlags;
   //  Addr: TDbgPtr;
   // MemDump
-    function GetBackendValueHandler: TLazDbgValueConverterIntf;
+    function GetBackendValueHandler: TLazDbgValueConverterIntf; virtual;
     function GetClassID: TWatchResultDataClassID; virtual; //abstract;
   protected
     class function GetStorageClass: TWatchResultStorageClass; virtual; abstract;
@@ -721,6 +721,7 @@ type
     procedure ClearData; virtual; abstract;
   protected
     function GetValueKind: TWatchResultDataKind; virtual; //abstract;
+    function GetTypeName: String; virtual;
     function GetAsString: String; virtual; abstract;
     function GetAsDesc: String; virtual; abstract;
     function GetAsWideString: WideString; virtual; abstract;
@@ -776,7 +777,7 @@ type
   function GetEnumerator: TWatchResultDataEnumerator; virtual;
   public
     property ValueKind: TWatchResultDataKind read GetValueKind;
-    property TypeName: String read FTypeName;
+    property TypeName: String read GetTypeName;
 
     property AsString: String read GetAsString;
     property AsDesc: String read GetAsDesc;
@@ -1048,6 +1049,7 @@ type
   protected
     function GetHasDataAddress: Boolean; override;
     function GetDataAddress: TDBGPtr; override;
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   public
     constructor Create(AStringVal: String);
   end;
@@ -1444,7 +1446,7 @@ type
   private
     function GetClassID: TWatchResultDataClassID; override;
   protected
-    function GetBackendValueHandler: TLazDbgValueConverterIntf;
+    function GetBackendValueHandler: TLazDbgValueConverterIntf; override;
   public
     constructor Create(AHandler: TLazDbgValueConverterIntf);
   end;
@@ -2582,6 +2584,11 @@ begin
   Result := wdPrePrint;
 end;
 
+function TWatchResultData.GetTypeName: String;
+begin
+  Result := FTypeName;
+end;
+
 function TWatchResultData.GetBackendValueHandler: TLazDbgValueConverterIntf;
 begin
   Result := nil;
@@ -3460,6 +3467,11 @@ end;
 function TWatchResultDataString.GetDataAddress: TDBGPtr;
 begin
   Result := FData.GetDataAddress;
+end;
+
+procedure TWatchResultDataString.SetDataAddress(AnAddr: TDbgPtr);
+begin
+  FData.FAddress := AnAddr;
 end;
 
 constructor TWatchResultDataString.Create(AStringVal: String);

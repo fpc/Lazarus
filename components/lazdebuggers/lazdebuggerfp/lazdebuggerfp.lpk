@@ -48,6 +48,14 @@
         <Filename Value="fpdebuggerresultdata.pas"/>
         <UnitName Value="FpDebuggerResultData"/>
       </Item>
+      <Item>
+        <Filename Value="fpdebugconvdebugforjson.pas"/>
+        <UnitName Value="FpDebugConvDebugForJson"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdebugstringconstants.pas"/>
+        <UnitName Value="FpDebugStringConstants"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
