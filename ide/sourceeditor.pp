@@ -2876,7 +2876,7 @@ var
 begin
   if Editor=nil then exit;
   LogCaret:=Editor.LogicalCaretXY;
-  if LogCaret.Y>=Editor.Lines.Count then exit;
+  if LogCaret.Y>Editor.Lines.Count then exit; //* LogCaret.Y One Based
   Line:=Editor.Lines[LogCaret.Y-1];
   if LogCaret.X>length(Line) then exit;
   CharLen:=UTF8CodepointSize(@Line[LogCaret.X]);
@@ -11588,6 +11588,5 @@ initialization
 
 finalization
   InternalFinal;
-
 end.
 
