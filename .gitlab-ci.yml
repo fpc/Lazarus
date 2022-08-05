@@ -6,7 +6,7 @@ before_script:
   - wget https://sourceforge.net/projects/freepascal/files/Linux/3.2.2/fpc-3.2.2.x86_64-linux.tar
   - tar xf fpc-3.2.2.x86_64-linux.tar
   - cd fpc-3.2.2.x86_64-linux
-  - yes $'\n' | head | ./install.sh 2> /dev/null
+  - yes $'\n' | head | ./install.sh | true
 
 stages:          # List of stages for jobs, and their order of execution
   - build
