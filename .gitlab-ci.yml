@@ -1,0 +1,18 @@
+image: debian:stable-backports
+
+before_script:
+  - apt-get update
+  - apt-get install libgtk2.0-dev wget
+  - wget https://sourceforge.net/projects/freepascal/files/Linux/3.2.2/fpc-3.2.2.x86_64-linux.tar
+  - tar xf fpc-3.2.2.x86_64-linux.tar
+  - cd fpc-3.2.2.x86_64-linux
+  - yes $'\n' | head | ./install.sh
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Compiling bigide for GTK2"
+    - make bigide LCL_PLATFORM=gtk2
