@@ -2297,12 +2297,14 @@ end;
 
 procedure TWatchResultTypeConverted.AfterAssign(ATypeOnly: Boolean);
 begin
+  inherited AfterAssign(ATypeOnly);
   if FHandler <> nil then
     FHandler.AddReference;
 end;
 
 procedure TWatchResultTypeConverted.DoFree;
 begin
+  inherited DoFree;
   if FHandler <> nil then
     FHandler.ReleaseReference;
 end;
@@ -4556,7 +4558,7 @@ function TGenericWatchResultDataStructWithAnchestor.MaybeUpdateProto(
   ARecurse: boolean; ASkipStorage: boolean): boolean;
 var
   AStructProtoData: TGenericWatchResultDataStructWithAnchestor absolute AProtoData;
-  FieldStore: PNestedFieldsWatchResultStorage absolute AStorage;
+  FieldStore: PNestedFieldsAndAnchestorWatchResultStorage absolute AStorage;
   dummy: TOverrideTemplateData;
 begin
   Result := inherited MaybeUpdateProto(AProtoData, AnOverrideTemplate, AStorage, ARecurse, ASkipStorage);
@@ -4569,7 +4571,7 @@ begin
     AStructProtoData.FType.FAnchestor := FType.FAnchestor.CreateCopy(True);
 
 
-  assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
+  assert((AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsAndAnchestorWatchResultStorage), 'TGenericWatchResultDataStruct.MaybeUpdateProto: (AStorage=nil) or (AStorage^=nil) or (AStorage^ is TNestedFieldsWatchResultStorage)');
   if (AStorage = nil) or (AStorage^ = nil)
   then begin
     if (ARecurse) then begin  // or "if not ASkipStorage and " ??
@@ -4705,7 +4707,8 @@ constructor TWatchResultDataConverted.Create(
   AHandler: TLazDbgValueConverterIntf);
 begin
   FType.FHandler := AHandler;
-  AHandler.AddReference;
+  if AHandler <> nil then
+    AHandler.AddReference;
 end;
 
 { TGenericWatchResultDataProc }
