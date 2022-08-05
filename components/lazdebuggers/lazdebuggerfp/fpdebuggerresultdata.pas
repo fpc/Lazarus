@@ -165,7 +165,7 @@ begin
             dec(FCurMaxArrayConv);
         end;
 
-        AnResFld := AnResData.CreateValueHandleResult(CurConv);
+        AnResFld := AnResData.CreateValueHandlerResult(CurConv);
         if (CurConv <> nil) then begin
           FInNonConvert := True;
 
@@ -184,7 +184,7 @@ begin
         else
           AnResFld.CreateError('');
 
-        AnResData := AnResData.AddField('', dfvUnknown, []);
+        AnResData := AnResData.SetDerefData;
       end;
     finally
       CurConv.ReleaseReference;

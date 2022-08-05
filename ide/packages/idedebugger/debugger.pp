@@ -726,7 +726,7 @@ type
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
                               //ARecurseFieldCount: Integer = 0 // Fields including anchestors
                              );
-    function CreateValueHandleResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+    function CreateValueHandlerResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
 
     procedure CreateError(AVal: String); virtual;
 
@@ -3756,7 +3756,7 @@ begin
   AfterDataCreated;
 end;
 
-function TCurrentResData.CreateValueHandleResult(
+function TCurrentResData.CreateValueHandlerResult(
   AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
 begin
   BeforeCreateValue;

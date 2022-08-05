@@ -169,7 +169,7 @@ type
                              );
     // returns the intf for the converted result
     // Use SetDerefData to get the interface for the NON-converted result
-    function CreateValueHandleResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+    function CreateValueHandlerResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
     procedure CreateError(AVal: String);
 
     // For all Values
