@@ -2,7 +2,7 @@ image: debian:stable-backports
 
 before_script:
   - apt-get update
-  - apt-get -y install libgtk2.0-dev wget
+  - apt-get -y install build-essential libgtk2.0-dev wget
   - wget https://sourceforge.net/projects/freepascal/files/Linux/3.2.2/fpc-3.2.2.x86_64-linux.tar
   - tar xf fpc-3.2.2.x86_64-linux.tar
   - cd fpc-3.2.2.x86_64-linux
