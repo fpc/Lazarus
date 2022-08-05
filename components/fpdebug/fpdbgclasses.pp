@@ -459,6 +459,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope); virtual;
     destructor Destroy; override;
+    function BelongsToInstance(const AnInstance: TDbgInstance): Boolean; override;
 
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -3541,6 +3542,12 @@ begin
     FProcess.FWatchPointList.Remove(Self);
   ResetBreak;
   inherited Destroy;
+end;
+
+function TFpInternalWatchpoint.BelongsToInstance(const AnInstance: TDbgInstance
+  ): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TFpInternalWatchpoint.SetBreak;
