@@ -2542,8 +2542,10 @@ begin
   if ti <> nil then begin
     Result := ti.TypeCastValue(Tmp);
     Tmp.ReleaseReference;
-    TFpValueDwarf(Result).SetStructureValue(Self);
-    TFpValueDwarf(Result).Context := Context;
+    if Result <> nil then begin // TODO: maybe return "tmp" ??
+      TFpValueDwarf(Result).SetStructureValue(Self);
+      TFpValueDwarf(Result).Context := Context;
+    end;
   end
   else begin
     Result := Tmp;
