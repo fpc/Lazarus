@@ -4706,9 +4706,14 @@ end;
 constructor TWatchResultDataConverted.Create(
   AHandler: TLazDbgValueConverterIntf);
 begin
-  FType.FHandler := AHandler;
-  if AHandler <> nil then
-    AHandler.AddReference;
+  assert((FType.FHandler=nil) or (FType.FHandler=AHandler) or (AHandler=nil), 'TWatchResultDataConverted.Create: (FType.FHandler=nil) or (FType.FHandler=AHandler) or (AHandler=nil)');
+  if (AHandler <> FType.FHandler) and (AHandler <> nil) then begin
+    if FType.FHandler <> nil then
+      FType.FHandler.ReleaseReference;
+    FType.FHandler := AHandler;
+    if AHandler <> nil then
+      AHandler.AddReference;
+  end;
 end;
 
 { TGenericWatchResultDataProc }
