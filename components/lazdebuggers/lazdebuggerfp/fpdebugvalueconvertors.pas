@@ -281,8 +281,9 @@ function TFpDbgConverterConfig.CheckTypeMatch(AValue: TFpValue): Boolean;
   end;
 var
   i, CnIdx: Integer;
-  TpName, Pattern, ValClassName: String;
+  TpName, Pattern, ValClassName, ValUnitName: String;
   t: TFpSymbol;
+  HasMaybeUnitDot: Boolean;
 begin
   t := AValue.TypeInfo;
   Result := (t <> nil) and GetTypeName(TpName, t, [tnfNoSubstitute]);
@@ -294,6 +295,9 @@ begin
   while i > 0 do begin
     dec(i);
     Pattern := LowerCase(trim(FMatchTypeNames[i]));
+
+    HasMaybeUnitDot := (pos('.', Pattern) > 1) and
+                       (AValue.Kind in [skClass]); // only class supports unitnames (via rtti)
 
     if AnsiStrLIComp('is:', @Pattern[1], 3) = 0 then begin
       Delete(Pattern, 1, 3);
@@ -312,17 +316,26 @@ begin
         end;
 
         CnIdx := 0;
-        while AValue.GetInstanceClassName(@ValClassName, nil, CnIdx) and
+        while AValue.GetInstanceClassName(@ValClassName, @ValUnitName, CnIdx) and
               (ValClassName <> '')
         do begin
           ValClassName := LowerCase(ValClassName);
-          if ValClassName = TpName then
+          if (ValClassName = TpName) and (not HasMaybeUnitDot) then
             Break;
           Result := MatchPattern(ValClassName, Pattern);
           if Result then
             exit;
+
+          if HasMaybeUnitDot and (ValUnitName <> '') then begin
+            ValUnitName := LowerCase(ValUnitName);
+            Result := MatchPattern(ValUnitName+'.'+ValClassName, Pattern);
+            if Result then
+              exit;
+          end;
+
           inc(CnIdx);
         end;
+        AValue.ResetError;
 
         Continue;
       end;
@@ -331,6 +344,16 @@ begin
     Result := MatchPattern(TpName, Pattern);
     if Result then
       exit;
+    if HasMaybeUnitDot then begin
+      if AValue.GetInstanceClassName(@ValClassName, @ValUnitName) and
+         (ValUnitName <> '') and (ValClassName <> '')
+      then begin
+        Result := MatchPattern(ValUnitName+'.'+ValClassName, Pattern);
+        if Result then
+          exit;
+      end;
+      AValue.ResetError;
+    end;
   end;
 end;
 
