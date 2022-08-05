@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Menus, LCLType, SpinEx, IDEImagesIntf, LazUTF8, LazClasses, LazDebuggerIntf,
   IdeDebuggerStringConstants, ArrayNavigationFrame, IdeDebuggerOpts, Debugger,
-  IdeDebuggerFpDbgValueConv;
+  IdeDebuggerFpDbgValueConv, IdeDebuggerBase;
 
 type
 
@@ -92,6 +92,8 @@ type
     FThreadsMonitor:   TIdeThreadsMonitor;
     FCallStackMonitor: TIdeCallStackMonitor;
     FInspectWatches: TCurrentWatches;
+    FUpdateCount: Integer;
+    FExecAfterUpdate: Boolean;
 
     procedure ArrayNavSizeChanged(Sender: TObject);
     procedure DoDbpConvMenuClicked(Sender: TObject);
@@ -124,7 +126,12 @@ type
                    ADefaultEvalOpts: TWatcheEvaluateFlags
     );
 
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
     procedure InitWatch(AWatch: TIdeWatch);
+    procedure ReadFromWatch(AWatch: TWatch; AlternateExpression: String = '');
+
     procedure Execute(const AnExpression: ansistring; ASkipHistory: Boolean = False);
     procedure UpdateData(AForceClear: Boolean = False);// context changed instead
     procedure DoContextChanged;
@@ -616,6 +623,21 @@ begin
   FDefaultEvalOpts := ADefaultEvalOpts;
 end;
 
+procedure TWatchInspectNav.BeginUpdate;
+begin
+  if FUpdateCount = 0 then
+    FExecAfterUpdate := False;
+  inc(FUpdateCount);
+end;
+
+procedure TWatchInspectNav.EndUpdate;
+begin
+  if FUpdateCount > 0 then
+    dec(FUpdateCount);
+  if (FUpdateCount = 0) and FExecAfterUpdate then
+    UpdateData(True);
+end;
+
 procedure TWatchInspectNav.InitWatch(AWatch: TIdeWatch);
 var
   Opts: TWatcheEvaluateFlags;
@@ -638,6 +660,46 @@ begin
 
   AWatch.EvaluateFlags := Opts;
   AWatch.FpDbgConverter := Conv;
+end;
+
+procedure TWatchInspectNav.ReadFromWatch(AWatch: TWatch;
+  AlternateExpression: String);
+var
+  i: Integer;
+begin
+  BeginUpdate;
+  try
+
+    btnUseInstance.Down := defClassAutoCast in AWatch.EvaluateFlags;
+    btnFunctionEval.Down := defAllowFunctionCall in AWatch.EvaluateFlags;
+
+    if defSkipValConv in AWatch.EvaluateFlags then begin
+      if popConverter.Items.Count > 1 then
+        popConverter.Items[1].Click;
+    end
+    else if AWatch.FpDbgConverter = nil then begin
+      if popConverter.Items.Count > 0 then
+        popConverter.Items[0].Click;
+    end
+    else begin
+      i := DebuggerOptions.FpDbgConverterConfig.Count - 1;
+      while i >= 0 do begin
+        if DebuggerOptions.FpDbgConverterConfig.IdeItems[i] = AWatch.FpDbgConverter then begin
+          if popConverter.Items.Count > i+2 then
+            popConverter.Items[i+2].Click;
+          break;
+        end;
+        dec(i);
+      end;
+    end;
+
+    if AlternateExpression <> '' then
+      Execute(AlternateExpression)
+    else
+      Execute(AWatch.Expression);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TWatchInspectNav.Execute(const AnExpression: ansistring;
@@ -709,6 +771,12 @@ var
   expr: String;
   Conv: TIdeFpDbgConverterConfig;
 begin
+  if FUpdateCount > 0 then begin
+    FExecAfterUpdate := True;
+    exit;
+  end;
+  FExecAfterUpdate := False;
+
   if AForceClear then
     FInspectWatches.Clear;
 

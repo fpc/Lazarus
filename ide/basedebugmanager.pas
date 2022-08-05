@@ -52,7 +52,8 @@ uses
   LazDebuggerIntf,
   IdeDebuggerOpts,
   // IDE
-  Debugger, SourceMarks, Project, ProjectDefs, LazarusIDEStrConsts;
+  Debugger, IdeDebuggerBase, SourceMarks, Project, ProjectDefs,
+  LazarusIDEStrConsts;
 
 type
   TDebugDialogType = (
@@ -188,8 +189,8 @@ type
                              out Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
 
-    procedure EvaluateModify(const AExpression: String); virtual; abstract;
-    procedure Inspect(const AExpression: String); virtual; abstract;
+    procedure EvaluateModify(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
+    procedure Inspect(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; virtual; abstract;
@@ -213,8 +214,11 @@ type
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean); virtual; abstract;
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
-                              BringToFront: Boolean = True; Show: Boolean = true;
-                              DoDisableAutoSizing: boolean = false); virtual; abstract;
+                              BringToFront: Boolean = true;
+                              Show: Boolean = true;
+                              DoDisableAutoSizing: boolean = false;
+                              InitFromSourceEdit: boolean = True
+                             ); virtual; abstract;
     procedure ViewDisassembler(AnAddr: TDBGPtr;
                               BringToFront: Boolean = True; Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false); virtual; abstract;

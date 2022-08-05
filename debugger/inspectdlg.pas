@@ -127,7 +127,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute(const AExpression: ansistring);
+    procedure Execute(const AExpression: ansistring; AWatch: TWatch = nil);
   end;
 
 implementation
@@ -1164,9 +1164,12 @@ begin
 
 end;
 
-procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
+procedure TIDEInspectDlg.Execute(const AExpression: ansistring; AWatch: TWatch);
 begin
-  WatchInspectNav1.Execute(AExpression);
+  if AWatch <> nil then
+    WatchInspectNav1.ReadFromWatch(AWatch, AExpression)
+  else
+    WatchInspectNav1.Execute(AExpression);
 end;
 
 procedure TIDEInspectDlg.DoWatchUpdated(const ASender: TIdeWatches;
@@ -1318,8 +1321,13 @@ begin
 end;
 
 procedure TIDEInspectDlg.DoAddEval(Sender: TObject);
+var
+  w: TIdeWatch;
 begin
-  DebugBoss.EvaluateModify(WatchInspectNav1.Expression);
+  w := nil;
+  if WatchInspectNav1.CurrentWatchValue <> nil then
+    w := WatchInspectNav1.CurrentWatchValue.Watch;
+  DebugBoss.EvaluateModify(WatchInspectNav1.Expression, w);
 end;
 
 procedure TIDEInspectDlg.DoAddWatch(Sender: TObject);

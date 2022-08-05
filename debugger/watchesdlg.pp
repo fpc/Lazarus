@@ -750,7 +750,7 @@ var
 begin
   CurWatch := GetSelected;
   if CurWatch <> nil then
-    DebugBoss.EvaluateModify(CurWatch.Expression);
+    DebugBoss.EvaluateModify(CurWatch.Expression, CurWatch);
 end;
 
 procedure TWatchesDlg.actInspectExecute(Sender: TObject);
@@ -759,7 +759,7 @@ var
 begin
   CurWatch := GetSelected;
   if CurWatch <> nil then
-    DebugBoss.Inspect(CurWatch.Expression);
+    DebugBoss.Inspect(CurWatch.Expression, CurWatch);
 end;
 
 procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);

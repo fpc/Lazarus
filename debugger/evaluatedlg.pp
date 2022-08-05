@@ -49,7 +49,7 @@ uses
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
   IdeDebuggerFpDbgValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
-  IdeDebuggerStringConstants, EnvironmentOpts;
+  IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts;
 
 type
 
@@ -87,7 +87,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Execute(const AExpression: String);
+    procedure Execute(const AExpression: String; AWatch: TWatch = nil);
     property EvalExpression: string read GetEvalExpression write SetEvalExpression;
   end;
 
@@ -161,9 +161,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TEvaluateDlg.Execute(const AExpression: String);
+procedure TEvaluateDlg.Execute(const AExpression: String; AWatch: TWatch);
 begin
-  SetEvalExpression(AExpression);
+  if AWatch <> nil then
+    WatchInspectNav1.ReadFromWatch(AWatch, AExpression)
+  else
+    SetEvalExpression(AExpression);
 end;
 
 procedure TEvaluateDlg.DoAddWatch(Sender: TObject);
@@ -288,8 +291,13 @@ begin
 end;
 
 procedure TEvaluateDlg.DoAddInspect(Sender: TObject);
+var
+  w: TIdeWatch;
 begin
-  DebugBoss.Inspect(WatchInspectNav1.Expression);
+  w := nil;
+  if WatchInspectNav1.CurrentWatchValue <> nil then
+    w := WatchInspectNav1.CurrentWatchValue.Watch;
+  DebugBoss.Inspect(WatchInspectNav1.Expression, w);
 end;
 
 procedure TEvaluateDlg.SetEvalExpression(const NewExpression: string);
