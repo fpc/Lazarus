@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
-  LazUTF8, LazFileUtils, LCLIntf, Buttons, Menus, IniFiles,
+  LazUTF8, LazFileUtils, LCLIntf, LCLType, Buttons, Menus, IniFiles,
   SynEdit, SynHighlighterHTML;
 
 type
@@ -42,6 +42,7 @@ type
     ImgDir: String;
     Config: TIniFile;
     LastDirsMax: Integer;
+    function CalcIniFileName: String;
     procedure InfoMsg(const AMsg: String);
     procedure ErrorMsg(const AMsg: String);
     procedure UpdateLastDirs(D: String);
@@ -57,6 +58,11 @@ implementation
 {$R *.lfm}
 
 { TMainForm }
+
+function TMainForm.CalcIniFileName: String;
+begin
+  Result := Application.Location + 'IconTableConfig.ini';
+end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
@@ -76,13 +82,23 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 var
   i: Integer;
+  L, T, W, H: Integer;
+  R: TRect;
 begin
-  Config := TIniFile.Create('IconTableConfig.ini');
+  Config := TIniFile.Create(CalcIniFileName);
   try
-    Top := Config.ReadInteger('Position', 'Top', 100);
-    Left := Config.ReadInteger('Position', 'Left', 100);
-    Width := Config.ReadInteger('Position', 'Width', 100);
-    Height := Config.ReadInteger('Position', 'Height', 100);
+    T := Config.ReadInteger('Position', 'Top', 100);
+    L := Config.ReadInteger('Position', 'Left', 100);
+    W := Config.ReadInteger('Position', 'Width', 100);
+    H := Config.ReadInteger('Position', 'Height', 100);
+    R := Screen.WorkAreaRect;
+    if W > R.Width then W := R.Width;
+    if H > R.Height then H := R.Height;
+    if L < R.Left then L := R.Left;
+    if T < R.Top then T := R.Top;
+    if L + W > R.Right then L := R.Right - W - GetSystemMetrics(SM_CYSIZEFRAME);
+    if T + H > R.Bottom then T := R.Bottom - H - GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYSIZEFRAME);
+    SetBounds(L, T, W, H);
     WindowState := wsNormal;
     Application.ProcessMessages;
     WindowState := TWindowState(Config.ReadInteger('Position', 'WindowState', 0));
@@ -117,18 +133,22 @@ begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
 
-  Config := TIniFile.Create('IconTableConfig.ini');
+  Config := TIniFile.Create(CalcIniFileName);
   try
-    Config.WriteInteger('Position', 'Top', RestoredTop);
-    Config.WriteInteger('Position', 'Left', RestoredLeft);
-    Config.WriteInteger('Position', 'Width', RestoredWidth);
-    Config.WriteInteger('Position', 'Height', RestoredHeight);
-    Config.WriteInteger('Position', 'WindowState', Integer(WindowState));
+    try
+      Config.WriteInteger('Position', 'Top', RestoredTop);
+      Config.WriteInteger('Position', 'Left', RestoredLeft);
+      Config.WriteInteger('Position', 'Width', RestoredWidth);
+      Config.WriteInteger('Position', 'Height', RestoredHeight);
+      Config.WriteInteger('Position', 'WindowState', Integer(WindowState));
 
-    for i := 0 to LastDirsMax do
-      Config.WriteString('LastDirs', 'LastDir' + i.ToString, popLastDirs.Items[i].Caption);
+      for i := 0 to LastDirsMax do
+        Config.WriteString('LastDirs', 'LastDir' + i.ToString, popLastDirs.Items[i].Caption);
 
-    Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
+      Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
+    except
+      ErrorMsg('The configuration could not be saved.');
+    end;
   finally
     Config.Free;
   end;
@@ -372,16 +392,15 @@ var
   i: Integer;
 begin
   i := popLastDirs.Items.IndexOfCaption(D);
-  if i >-1 then
+  if i > -1 then
+    popLastDirs.Items[i].MenuIndex := 0
+  else
   begin
-    popLastDirs.Items[i].MenuIndex := 0;
-    Exit;
+    popLastDirs.Items[LastDirsMax].Caption := D;
+    popLastDirs.Items[LastDirsMax].Visible := True;
+    popLastDirs.Items[LastDirsMax].MenuIndex := 0;
   end;
-
-  popLastDirs.Items[LastDirsMax].Caption := D;
-  popLastDirs.Items[LastDirsMax].Visible := True;
-  popLastDirs.Items[LastDirsMax].MenuIndex := 0;
-  sbtnLastDirs.Enabled := True;
+  sbtnLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
 end;
 
 procedure TMainForm.InfoMsg(const AMsg: String);

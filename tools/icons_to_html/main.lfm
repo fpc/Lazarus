@@ -13,7 +13,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '2.3.0.0'
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = sbtnLastDirs
@@ -554,7 +554,7 @@ object MainForm: TMainForm
     Height = 19
     Hint = 'Creates an html page with dark background'
     Top = 483
-    Width = 78
+    Width = 76
     BorderSpacing.Left = 15
     Caption = 'Dark Mode'
     OnChange = cbDarkModeChange
