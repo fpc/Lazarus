@@ -7,6 +7,7 @@ before_script:
   - tar xf fpc-3.2.2.x86_64-linux.tar
   - cd fpc-3.2.2.x86_64-linux
   - echo -e "\n\n\n\n" | ./install.sh
+  - cd ..
 
 stages:          # List of stages for jobs, and their order of execution
   - build
@@ -14,6 +15,8 @@ stages:          # List of stages for jobs, and their order of execution
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
-    - fpc -v | true
+    - echo "Using FPC:"
+    - fpc -iV
+    - echo
     - echo "Compiling bigide for GTK2"
     - make bigide LCL_PLATFORM=gtk2
