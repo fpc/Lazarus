@@ -569,7 +569,11 @@ end;
 
 procedure TLazLoggerFile.SetParamForLogFileName(AValue: String);
 begin
-  if FParamForLogFileName = AValue then Exit;
+  if (AValue <> '') and (AValue[Length(AValue)] = '=') then
+    Delete(AValue, Length(AValue), 1);
+  if FParamForLogFileName = AValue then
+    Exit;
+
   Finish;
   FGetLogFileNameDone := False;
   FParamForLogFileName := AValue;
@@ -800,7 +804,7 @@ begin
   FParamForLogFileName := '';
   FEnvironmentForLogFileName := '';
   {$else}
-  FParamForLogFileName := '--debug-log=';
+  FParamForLogFileName := '--debug-log';
   FEnvironmentForLogFileName   := '*_debuglog';
   {$endif}
 end;
