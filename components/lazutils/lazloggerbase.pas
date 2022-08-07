@@ -1166,7 +1166,11 @@ end;
 
 procedure TLazLoggerWithGroupParam.SetParamForEnabledLogGroups(AValue: String);
 begin
-  if FParamForEnabledLogGroups = AValue then Exit;
+  if (AValue <> '') and (AValue[Length(AValue)] = '=') then
+    Delete(AValue, Length(AValue), 1);
+  if FParamForEnabledLogGroups = AValue then
+    Exit;
+
   FParamForEnabledLogGroups := AValue;
   ParseParamForEnabledLogGroups;
 end;
