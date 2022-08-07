@@ -32,17 +32,15 @@ type
     procedure bbtnShowClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
     procedure DirectoryEditChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LastDirClick(Sender: TObject);
     procedure sbtnLastDirsClick(Sender: TObject);
   private
-    fn: String;
     ImgDir: String;
-    Config: TIniFile;
     LastDirsMax: Integer;
-    function CalcIniFileName: String;
+    function GetIniFileName: String;
     procedure InfoMsg(const AMsg: String);
     procedure ErrorMsg(const AMsg: String);
     procedure UpdateLastDirs(D: String);
@@ -57,18 +55,18 @@ implementation
 
 {$R *.lfm}
 
+const
+  LE2 = LineEnding + LineEnding;
+  
 { TMainForm }
-
-function TMainForm.CalcIniFileName: String;
-begin
-  Result := Application.Location + 'IconTableConfig.ini';
-end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   i: Integer;
   MenItem: TMenuItem;
 begin
+  Position := poScreenCenter;
+  
   LastDirsMax := 9;
   for i := 0 to LastDirsMax do
   begin
@@ -84,19 +82,26 @@ var
   i: Integer;
   L, T, W, H: Integer;
   R: TRect;
+  Config: TIniFile;
 begin
-  Config := TIniFile.Create(CalcIniFileName);
+  Constraints.MinWidth := cbDarkMode.Left + cbDarkMode.Width + cbDarkMode.BorderSpacing.Right + 
+    bbtnClose.Left + bbtnClose.Width - bbtnCreateHTML.Left + bbtnClose.BorderSpacing.Right;
+  Constraints.MinHeight := Constraints.MinWidth * 2 div 3;
+  
+  Position := poDesigned;
+  
+  Config := TIniFile.Create(GetIniFileName);
   try
-    T := Config.ReadInteger('Position', 'Top', 100);
-    L := Config.ReadInteger('Position', 'Left', 100);
-    W := Config.ReadInteger('Position', 'Width', 100);
-    H := Config.ReadInteger('Position', 'Height', 100);
+    T := Config.ReadInteger('Position', 'Top', Top);
+    L := Config.ReadInteger('Position', 'Left', Left);
+    W := Config.ReadInteger('Position', 'Width', Width);
+    H := Config.ReadInteger('Position', 'Height', Height);
     R := Screen.WorkAreaRect;
     if W > R.Width then W := R.Width;
     if H > R.Height then H := R.Height;
     if L < R.Left then L := R.Left;
     if T < R.Top then T := R.Top;
-    if L + W > R.Right then L := R.Right - W - GetSystemMetrics(SM_CYSIZEFRAME);
+    if L + W > R.Right then L := R.Right - W - GetSystemMetrics(SM_CXSIZEFRAME);
     if T + H > R.Bottom then T := R.Bottom - H - GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYSIZEFRAME);
     SetBounds(L, T, W, H);
     WindowState := wsNormal;
@@ -129,11 +134,12 @@ end;
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
   i: Integer;
+  Config: TIniFile;
 begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
 
-  Config := TIniFile.Create(CalcIniFileName);
+  Config := TIniFile.Create(GetIniFileName);
   try
     try
       Config.WriteInteger('Position', 'Top', RestoredTop);
@@ -147,11 +153,17 @@ begin
 
       Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
     except
-      ErrorMsg('The configuration could not be saved.');
+      on E: Exception do
+        ErrorMsg('The configuration could not be saved.' + LE2 + E.Message);
     end;
   finally
     Config.Free;
   end;
+end;
+
+function TMainForm.GetIniFileName: String;
+begin
+  Result := Application.Location + 'IconTableConfig.ini';
 end;
 
 procedure TMainForm.cbDarkModeChange(Sender: TObject);
@@ -330,6 +342,8 @@ begin
 end;
 
 procedure TMainForm.bbtnSaveClick(Sender: TObject);
+var
+  fn: String;
 begin
   fn := ImgDir + 'IconTable.html';
   try
@@ -343,6 +357,8 @@ begin
 end;
 
 procedure TMainForm.bbtnShowClick(Sender: TObject);
+var
+  fn: String;
 begin
   fn := ImgDir + 'IconTable.html';
   if FileExists(fn) then
@@ -364,6 +380,8 @@ begin
   end
   else
     bbtnCreateHTML.Enabled := False;
+  bbtnSave.Enabled := False;
+  bbtnShow.Enabled := False;
 end;
 
 procedure TMainForm.LastDirClick(Sender: TObject);

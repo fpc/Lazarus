@@ -6,14 +6,11 @@ object MainForm: TMainForm
   Caption = 'IconTable'
   ClientHeight = 515
   ClientWidth = 600
-  Constraints.MinHeight = 515
-  Constraints.MinWidth = 600
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '2.3.0.0'
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = sbtnLastDirs
@@ -556,6 +553,7 @@ object MainForm: TMainForm
     Top = 483
     Width = 76
     BorderSpacing.Left = 15
+    BorderSpacing.Right = 15
     Caption = 'Dark Mode'
     OnChange = cbDarkModeChange
     TabOrder = 2
