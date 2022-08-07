@@ -7,21 +7,20 @@ Contains controls which access properties in TPersistent objects using RTTI.
 </short>
 <descr>
 <p>
-Provides LCL controls that access properties of TPersistent objects via
-RTTI (the FreePascal Run-Time Type Information). Every published property
-can be edited in the Object Inspector. There you have a TOIPropertyGrid
-which works with TEdit, TComboBox and TButton. The RTTI controls extend
-these capabilities to edit a single property in an associated persistent
-object or component. The developer can choose how the property is displayed
-and edited.
+Provides LCL controls that access properties of TPersistent objects via RTTI 
+(the FreePascal Run-Time Type Information). Every published property can be 
+edited in the Object Inspector. There you have a TOIPropertyGrid which works 
+with TEdit, TComboBox and TButton. The RTTI controls extend these 
+capabilities to edit a single property in an associated persistent object or 
+component. The developer can choose how the property is displayed and edited.
 </p>
 <p>
-Please note that the current RTTI implementation is limited to published
-properties. Type information cannot be retrieved for properties with lesser
+Please note that the current RTTI implementation is limited to published 
+properties. Type information cannot be retrieved for properties with lesser 
 visibility, like public or protected.
 </p>
 <p>
-<file>rttictrls.pas</file> registers property editors in its initialization
+<file>rttictrls.pas</file> registers property editors in its initialization 
 section for the following classes and types:
 </p>
 <dl>
@@ -35,7 +34,7 @@ Used for all instances of the class type.
 TPersistent
 </dt>
 <dd>
-Used for the TCustomPropertyLink.TIObject and TMultiPropertyLink.TIObject
+Used for the TCustomPropertyLink.TIObject and TMultiPropertyLink.TIObject 
 properties.
 </dd>
 <dt>
@@ -48,7 +47,7 @@ Used for the TCustomPropertyLink.AliasValues property.
 String
 </dt>
 <dd>
-Used for the TCustomPropertyLink.TIPropertyName and
+Used for the TCustomPropertyLink.TIPropertyName and 
 TCustomPropertyLink.TIElementName properties.
 </dd>
 </dl>
@@ -64,7 +63,7 @@ Used for all instances of the class type.
 </dd>
 </dl>
 <p>
-The following components are added to the component palette in the Lazarus
+The following components are added to the component palette in the Lazarus 
 IDE:
 </p>
 <p>
@@ -127,11 +126,11 @@ TStringList descendant which maps names to alias values.
 </short>
 <descr>
 <p>
-Some RTTI controls use TAliasStrings to map RTTI values to display values.
+Some RTTI controls use TAliasStrings to map RTTI values to display values. 
 Eventually accelerate search for Names and Values.
 </p>
 <p>
-TAliasStrings is the type used for the AliasValues property in
+TAliasStrings is the type used for the AliasValues property in 
 TCustomPropertyLink.
 </p>
 </descr>
@@ -143,23 +142,22 @@ TCustomPropertyLink.
 
 <element name="TAliasStrings.IndexOfValue">
 <short>
-Gets the ordinal position in the list where the specified value is stored
-in the Strings property.
+Gets the ordinal position in the list where the specified value is stored in 
+the Strings property.
 </short>
 <descr>
 <p>
-<var>IndexOfValue</var> searches the content in the Strings property to
-find the position where the AValue argument is stored in the Name/Value
-pair.
+<var>IndexOfValue</var> searches the content in the Strings property to find 
+the position where the AValue argument is stored in the Name/Value pair.
 </p>
 <p>
-The search occurs in reverse order, starting at Count-1, and a match is
-found when the AValue argument is found after the "=" sign in the Name/
-Value pair. Case is not significant.
+The search occurs in reverse order, starting at Count-1, and a match is found 
+when the AValue argument is found after the "=" sign in the Name/ Value pair. 
+Case is not significant.
 </p>
 <p>
-The return value is the ordinal position in Strings where a match was
-found, or -1 when no entry in Strings matches the specified value.
+The return value is the ordinal position in Strings where a match was found, 
+or -1 when no entry in Strings matches the specified value.
 </p>
 </descr>
 <seealso/>
@@ -179,11 +177,11 @@ Gets the alias value stored at the specified ordinal position in the list.
 </short>
 <descr>
 <p>
-Index must be in the range 0..Count-1 or an exception is raised when
+Index must be in the range 0..Count-1 or an exception is raised when 
 accessing the value for an alias.
 </p>
 <p>
-The return value is an empty string ('') if a value is not stored for the
+The return value is an empty string ('') if a value is not stored for the 
 alias using the NAME=VALUE format.
 </p>
 </descr>
@@ -232,19 +230,19 @@ Forwards notification messages to a property Link in the class instance.
 
 <element name="TPropertyLinkNotifier.Notification">
 <short>
-Performs actions needed when a component is added to or removed from the
+Performs actions needed when a component is added to or removed from the 
 class instance.
 </short>
 <descr>
 <p>
-<var>Notification</var> is an overridden method in
-<var>TPropertyLinkNotifier</var>. It calls the inherited method on entry to
-remove a free notification when AComponent is removed. Each of the child
-Components (when assigned) calls their Notification method using the
-argument values.
+<var>Notification</var> is an overridden method in 
+<var>TPropertyLinkNotifier</var>. It calls the inherited method on entry to 
+remove a free notification when AComponent is removed. Each of the child 
+Components (when assigned) calls their Notification method using the argument 
+values.
 </p>
 <p>
-In TPropertyLinkNotifier, the method is extended to call the Notification
+In TPropertyLinkNotifier, the method is extended to call the Notification 
 method in the Link property (when assigned).
 </p>
 </descr>
@@ -270,10 +268,10 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the reintroduced constructor for the class instance.
-It calls the inherited constructor on entry to set the ComponentStyle and
-Owner (<b>Nil</b> in this case) for the class instance. Create stores the
-value in TheLink to the Link property.
+<var>Create</var> is the reintroduced constructor for the class instance. It 
+calls the inherited constructor on entry to set the ComponentStyle and Owner 
+(<b>Nil</b> in this case) for the class instance. Create stores the value in 
+TheLink to the Link property.
 </p>
 </descr>
 <seealso>
@@ -282,14 +280,14 @@ value in TheLink to the Link property.
 </element>
 <element name="TPropertyLinkNotifier.Create.TheLink">
 <short>
-TPropertyLink with the object, property, element name, and Editor for the
+TPropertyLink with the object, property, element name, and Editor for the 
 class instance.
 </short>
 </element>
 
 <element name="TPropertyLinkNotifier.Link">
 <short>
-Provides access to the linked object, property, element, and property
+Provides access to the linked object, property, element, and property 
 editor for the notifier.
 </short>
 <descr/>
@@ -303,14 +301,13 @@ editor for the notifier.
 </element>
 <element name="TPropertyLinkOption.ploReadOnIdle">
 <short>
-Allows reading / updating property values in an Application OnIdle handler
+Allows reading / updating property values in an Application OnIdle handler 
 routine.
 </short>
 </element>
 <element name="TPropertyLinkOption.ploAutoSave">
 <short>
-Auto-save the property value when EditingDone is called for the RTTI
-control.
+Auto-save the property value when EditingDone is called for the RTTI control.
 </short>
 </element>
 
@@ -329,11 +326,11 @@ Set of options enabled for a RTTI control.
 </short>
 <descr>
 <p>
-<var>TPropertyLinkOptions</var> is a set type used to store zero (0) or
-more values from the <var>TPropertyLinkOption</var> enumeration.
+<var>TPropertyLinkOptions</var> is a set type used to store zero (0) or more 
+values from the <var>TPropertyLinkOption</var> enumeration.
 </p>
 <p>
-TPropertyLinkOptions is the type used to implement the Options property in
+TPropertyLinkOptions is the type used to implement the Options property in 
 <var>TCustomPropertyLink</var> / <var>TPropertyLink</var>.
 </p>
 </descr>
@@ -346,12 +343,11 @@ TPropertyLinkOptions is the type used to implement the Options property in
 
 <element name="DefaultLinkOptions">
 <short>
-Contains the default options enabled in the property links for RTTI
-controls.
+Contains the default options enabled in the property links for RTTI controls.
 </short>
 <descr>
 <p>
-<var>DefaultLinkOptions</var> contains the default values assigned to the
+<var>DefaultLinkOptions</var> contains the default values assigned to the 
 Options property in TCustomPropertyLink / TPropertyLink.
 </p>
 </descr>
@@ -364,20 +360,20 @@ Options property in TCustomPropertyLink / TPropertyLink.
 <element name="TTestEditing">
 <short>
 <p>
-Specifies an event handler signalled to check whether a linked control is
+Specifies an event handler signalled to check whether a linked control is 
 focused and actively editing its value(s).
 </p>
 </short>
 <descr>
 <p>
-<var>TTestEditing</var> is the type used for the OnTestEditing event
-handler in TCustomPropertyLink. An application must implement and assign an
-object method using the signature to respond to the event notification.
+<var>TTestEditing</var> is the type used for the OnTestEditing event handler 
+in TCustomPropertyLink. An application must implement and assign an object 
+method using the signature to respond to the event notification.
 </p>
 <p>
-The return value is set to <b>True</b> when the control is focused and its
-editor is visible / active. TTICustomComboBox provides an implementation
-of the handler in its LinkTestEditing method which is assigned to its
+The return value is set to <b>True</b> when the control is focused and its 
+editor is visible / active. TTICustomComboBox provides an implementation of 
+the handler in its LinkTestEditing method which is assigned to its 
 OnTestEditing event handler.
 </p>
 </descr>
@@ -399,7 +395,7 @@ Object (TCustomPropertyLink) for the event notification.
 
 <element name="TBeforeWriteProperty">
 <short>
-Specifies an event handler signalled prior to storing the value from a RTTI
+Specifies an event handler signalled prior to storing the value from a RTTI 
 control to a property in its linked object.
 </short>
 <descr/>
@@ -478,25 +474,25 @@ Value for the CanModify property.
 
 <element name="TCustomPropertyLink.EditorChanged">
 <short>
-Performs actions needed when the value in the Editor property has been
+Performs actions needed when the value in the Editor property has been 
 changed.
 </short>
 <descr>
 <p>
-EditorChanged updates values in the TIObject and TIPropertyName properties
+EditorChanged updates values in the TIObject and TIPropertyName properties 
 based on the current value in Editor.
 </p>
 <p>
-When Editor is unassigned <b>(Nil)</b>, TIObject is also set to <b>Nil</b>
+When Editor is unassigned <b>(Nil)</b>, TIObject is also set to <b>Nil</b> 
 and TIPropertyName is set to an empty string ('').
 </p>
 <p>
-Otherwise, TIObject is set to the first persistent object instance in the
-property list for Editor. The Getname method in Editor is used to get the
+Otherwise, TIObject is set to the first persistent object instance in the 
+property list for Editor. The Getname method in Editor is used to get the 
 value for the TIPropertyName property.
 </p>
 <p>
-EditorChanged is called after a new value has been assigned to the Editor
+EditorChanged is called after a new value has been assigned to the Editor 
 property.
 </p>
 </descr>
@@ -522,12 +518,12 @@ TPropertyEditor instance for the property link.
 
 <element name="TCustomPropertyLink.CheckPropInfo">
 <short>
-Checks whether the specified RTTI property has the same name as the
+Checks whether the specified RTTI property has the same name as the 
 TIPropertyName property.
 </short>
 <descr>
 <p>
-Called from the CreateEditor method when the persistent properties for
+Called from the CreateEditor method when the persistent properties for 
 TIObject are retrieved.
 </p>
 </descr>
@@ -550,9 +546,9 @@ Creates the TPropertyEditorHook instance used in the Hook property.
 </short>
 <descr>
 <p>
-Called from the CreateEditor method when the Editor for the class is
-created. It is called before RTTI property information is retrieved for
-TIObject and TIPropertyName.
+Called from the CreateEditor method when the Editor for the class is created. 
+It is called before RTTI property information is retrieved for TIObject and 
+TIPropertyName.
 </p>
 </descr>
 <seealso>
@@ -567,27 +563,27 @@ TIObject and TIPropertyName.
 
 <element name="TCustomPropertyLink.UpdateIdleHandler">
 <short>
-Ensures that the OnApplicationIdle event handler is added to or removed
-from the Application based on the Options for the property link.
+Ensures that the OnApplicationIdle event handler is added to or removed from 
+the Application based on the Options for the property link.
 </short>
 <descr>
 <p>
-If the Application singleton has been assigned, the values in Options are
+If the Application singleton has been assigned, the values in Options are 
 compared the current state for the idle handler.
 </p>
 <p>
-ploReadOnIdle in Option causes the OnApplicationIdle event handler to be
-added to the Application if it has not been applied. This allows the value
-for the linked property to be read from the linked object when the
-application is idle and the editor for the property value is not focused
-and active.
+ploReadOnIdle in Option causes the OnApplicationIdle event handler to be 
+added to the Application if it has not been applied. This allows the value 
+for the linked property to be read from the linked object when the 
+application is idle and the editor for the property value is not focused and 
+active.
 </p>
 <p>
-If ploReadOnIdle is not in Options, the OnApplicationIdle handler is
-removed from the handlers in the Application singleton.
+If ploReadOnIdle is not in Options, the OnApplicationIdle handler is removed 
+from the handlers in the Application singleton.
 </p>
 <p>
-UpdateIdleHandler is called from the CreateEditor method, and when a new
+UpdateIdleHandler is called from the CreateEditor method, and when a new 
 value is assigned to the Options property.
 </p>
 </descr>
@@ -596,23 +592,22 @@ value is assigned to the Options property.
 <link id="TCustomPropertyLink.Options"/>
 <link id="TCustomPropertyLink.Editor"/>
 <link id="TCustomPropertyLink.CreateEditor"/>
-<link id="#lcl.forms.TApplication.AddOnIdleHandler">
-TApplication.AddOnIdleHandler</link>
+<link id="#lcl.forms.TApplication.AddOnIdleHandler">TApplication.AddOnIdleHandler</link>
 </seealso>
 </element>
 
 <element name="TCustomPropertyLink.OnApplicationIdle">
 <short>
-Implements an idle handler which reads the linked property value when
-enabled in Options.
+Implements an idle handler which reads the linked property value when enabled 
+in Options.
 </short>
 <descr>
 <p>
-<var>OnApplicationIdle</var> implements an idle handler which allows the
-value for the property link to be read when the Application is idle. It is
-added to the idle handlers in the Application singleton when ploReadOnIdle
-is present in the Options property. It is removed from the Application
-singleton when it is not used in Options.
+<var>OnApplicationIdle</var> implements an idle handler which allows the 
+value for the property link to be read when the Application is idle. It is 
+added to the idle handlers in the Application singleton when ploReadOnIdle is 
+present in the Options property. It is removed from the Application singleton 
+when it is not used in Options.
 </p>
 </descr>
 <seealso>
@@ -634,17 +629,17 @@ Not used in the implementation of the idle handler.
 
 <element name="TCustomPropertyLink.Notification">
 <short>
-Performs actions needed when a component is added to or removed from the
+Performs actions needed when a component is added to or removed from the 
 class instance.
 </short>
 <descr>
 <p>
-<var>Notification</var> is an overridden method in TCustomPropertyLink, and
-calls the inherited method on entry. Notification is used to update the
-free notification list for the specified component and any child
-components. When Operation is opRemove, the component is removed from the
-free notification list. This method ensures that the Notification method in
-the Link property is called for the specified component and operation.
+<var>Notification</var> is an overridden method in TCustomPropertyLink, and 
+calls the inherited method on entry. Notification is used to update the free 
+notification list for the specified component and any child components. When 
+Operation is opRemove, the component is removed from the free notification 
+list. This method ensures that the Notification method in the Link property 
+is called for the specified component and operation.
 </p>
 </descr>
 <seealso>
@@ -669,12 +664,12 @@ Adds the specified value to the CollectedValues for the property link.
 </short>
 <descr>
 <p>
-<var>GetEditorValues</var> ensures that a TStringList instance has been
-allocated for the CollectedValues member, and calls its Add method to store
+<var>GetEditorValues</var> ensures that a TStringList instance has been 
+allocated for the CollectedValues member, and calls its Add method to store 
 the string in <var>NewValue</var>.
 </p>
 <p>
-GetEditorValues is called from the FetchValues method to store the values
+GetEditorValues is called from the FetchValues method to store the values 
 provided by the Editor for the property link.
 </p>
 </descr>
@@ -694,14 +689,14 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the overloaded constructor for the class instance. The
-variant with a TheOwner argument allows the component which is the Owner of
-the class instance to be specified. Owner receives a free notification when
+<var>Create</var> is the overloaded constructor for the class instance. The 
+variant with a TheOwner argument allows the component which is the Owner of 
+the class instance to be specified. Owner receives a free notification when 
 the class instance is destroyed.
 </p>
 <p>
-Create calls the inherited constructor on entry, and allocates resources
-needed for the AliasValues and LinkNotifier properties. The default values
+Create calls the inherited constructor on entry, and allocates resources 
+needed for the AliasValues and LinkNotifier properties. The default values 
 for properties are assigned, including:
 </p>
 <dl>
@@ -711,8 +706,7 @@ Set to the value in TheOwner, or Nil when TheOwner is omitted.
 </dd>
 <dt>Filter</dt>
 <dd>
-Set to the constant which represents all values in the TTypeKind
-enumeration.
+Set to the constant which represents all values in the TTypeKind enumeration.
 </dd>
 <dt>Options</dt>
 <dd>
@@ -728,7 +722,7 @@ Set to <b>True</b>.
 </element>
 <element name="TCustomPropertyLink.Create.TheOwner">
 <short>
-Optional component which owns the class instance. When omitted, the Owner
+Optional component which owns the class instance. When omitted, the Owner 
 property is set to <b>Nil</b>.
 </short>
 </element>
@@ -739,9 +733,8 @@ Destructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Destroy</var> is the overridden destructor for the class instance. It
-ensures that resources allocated in the class instance are freed,
-including:
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that resources allocated in the class instance are freed, including:
 </p>
 <ul>
 <li>Hook</li>
@@ -751,7 +744,7 @@ including:
 <li>LinkNotifier</li>
 </ul>
 <p>
-An idle handler routine assigned to TApplication is also removed in the
+An idle handler routine assigned to TApplication is also removed in the 
 method.
 </p>
 <p>
@@ -774,19 +767,19 @@ Implements persistence for a TCustomPropertyLink instance in Source.
 </short>
 <descr>
 <p>
-<var>Assign</var> is an overridden method in TCustomPropertyLink. It
-implements the persistence mechanism for a TPersistent instance specified
-in the <var>Source</var> argument.
+<var>Assign</var> is an overridden method in TCustomPropertyLink. It 
+implements the persistence mechanism for a TPersistent instance specified in 
+the <var>Source</var> argument.
 </p>
 <p>
-If Source is derived from <var>TCustomPropertyLink</var>, the
-SetObjectAndProperty method is called to apply the values in TIObject,
-TIPropertyName, and TIElementName. This also causes the Editor to be
-(re-)created and the OnLoadFromProperty event handler is signalled (when
-assigned).
+If Source is derived from <var>TCustomPropertyLink</var>, the 
+SetObjectAndProperty method is called to apply the values in TIObject, 
+TIPropertyName, and TIElementName. This also causes the Editor to be 
+(re-)created and the OnLoadFromProperty event handler is signalled 
+(when assigned).
 </p>
 <p>
-If Source is not derived from TCustomPropertyLink, the inherited Assign
+If Source is not derived from TCustomPropertyLink, the inherited Assign 
 method is called using Source as an argument.
 </p>
 </descr>
@@ -802,16 +795,16 @@ TPersistent object instance with values copied in the method.
 
 <element name="TCustomPropertyLink.SetObjectAndProperty">
 <short>
-Copies values from the specified arguments to the TIObject, TIPropertyName,
+Copies values from the specified arguments to the TIObject, TIPropertyName, 
 and TIElementName properties.
 </short>
 <descr>
 <p>
-SetObjectAndProperty is called from the Assign method to implement object
-persistence for the TCustomPropertyLink class type. A free notification
-handler is removed and re-created for TIObject when it is derived from
-TComponent. The value in Editor is recreated when needed, and
-LoadFromProperty is called to signal the OnLoadFromProperty event handler
+SetObjectAndProperty is called from the Assign method to implement object 
+persistence for the TCustomPropertyLink class type. A free notification 
+handler is removed and re-created for TIObject when it is derived from 
+TComponent. The value in Editor is recreated when needed, and 
+LoadFromProperty is called to signal the OnLoadFromProperty event handler 
 (when assigned).
 </p>
 </descr>
@@ -863,33 +856,33 @@ It is also called when the class instance is freed in the Destroy method.
 
 <element name="TCustomPropertyLink.CreateEditor">
 <short>
-Ensures that a valid property Editor exists for the values in TIObject and
+Ensures that a valid property Editor exists for the values in TIObject and 
 TIPropertyName.
 </short>
 <descr>
 <p>
-No actions are performed in the method when Editor has already been
-assigned, or when either TIObject or TIPropertyName are unassigned.
+No actions are performed in the method when Editor has already been assigned, 
+or when either TIObject or TIPropertyName are unassigned.
 </p>
 <p>
-<var>CreateEditor</var> calls CreateHook to allocate the
-TPropertyEditorHook instance for the Hook property if it has not already
-been assigned. CreateEditor gets RTTI property information for the
-persistent object in TIObject, and assigns the property Editor when needed.
-When CollectValues is set to True, FetchValues is called to gather the
-values which can be selected in the property Editor.
+<var>CreateEditor</var> calls CreateHook to allocate the TPropertyEditorHook 
+instance for the Hook property if it has not already been assigned. 
+CreateEditor gets RTTI property information for the persistent object in 
+TIObject, and assigns the property Editor when needed. When CollectValues is 
+set to <b>True</b>, FetchValues is called to gather the values which can be 
+selected in the property Editor.
 </p>
 <p>
-The OnEditorChanged event handler is signalled (when assigned) if the value
+The OnEditorChanged event handler is signalled (when assigned) if the value 
 in Editor was changed in the method.
 </p>
 <p>
-UpdateIdleHandler is called to add or remove the OnApplicationIdle handler
-in the idle handlers for the Application. Values in Options are used to
+UpdateIdleHandler is called to add or remove the OnApplicationIdle handler in 
+the idle handlers for the Application. Values in Options are used to 
 determine whether the handler is added or removed.
 </p>
 <p>
-CreateEditor is called from methods like LoadFromProperty, SaveProperty,
+CreateEditor is called from methods like LoadFromProperty, SaveProperty, 
 BuildEnumAliasValues, and GetSetTypeData.
 </p>
 </descr>
@@ -902,20 +895,20 @@ Gets the values that can be maintained using the property Editor.
 </short>
 <descr>
 <p>
-<var>FetchValues</var> contains the current list of values for the property
-<var>Editor</var> in the class instance. It may contain a single value when
-the linked property is a simple text property. It may contain multiple
-values when TIObject is linked to a property which is a set or collection
-type, or a TStrings instance.
+<var>FetchValues</var> contains the current list of values for the property 
+<var>Editor</var> in the class instance. It may contain a single value when 
+the linked property is a simple text property. It may contain multiple values 
+when TIObject is linked to a property which is a set or collection type, or a 
+TStrings instance.
 </p>
 <p>
-FetchValues frees and re-creates the TStrings instance in the
-<var>CollectedValues</var> property. <var>GetEditorValues</var> is called
-to add the current value(s) from the linked property to CollectedValues.
+FetchValues frees and re-creates the TStrings instance in the 
+<var>CollectedValues</var> property. <var>GetEditorValues</var> is called to 
+add the current value(s) from the linked property to CollectedValues.
 </p>
 <p>
-FetchValues is called from the <var>CreateEditor</var> method, and when a
-new value is assigned to the <var>CollectValues</var> property.
+FetchValues is called from the <var>CreateEditor</var> method, and when a new 
+value is assigned to the <var>CollectValues</var> property.
 </p>
 </descr>
 <seealso/>
@@ -927,18 +920,17 @@ Performs actions when the class instance is loaded using LCL streaming.
 </short>
 <descr>
 <p>
-<var>LoadFromProperty</var> is a method used to perform actions needed when
+<var>LoadFromProperty</var> is a method used to perform actions needed when 
 the class instance has been Loaded from the LCL streaming mechanism.
 </p>
 <p>
-LoadFromProperty calls CreateEditor to load RTTI property information for
-the class instance and to create its property Editor. The
-OnLoadFromProperty event handler is signalled (when assigned) prior to
-exiting from the method.
+LoadFromProperty calls CreateEditor to load RTTI property information for the 
+class instance and to create its property Editor. The OnLoadFromProperty 
+event handler is signalled (when assigned) prior to exiting from the method.
 </p>
 <p>
-No actions are performed in the method when either the class instance or
-the assigned component in Owner is being freed.
+No actions are performed in the method when either the class instance or the 
+assigned component in Owner is being freed.
 </p>
 </descr>
 <seealso>
@@ -948,21 +940,22 @@ the assigned component in Owner is being freed.
 
 <element name="TCustomPropertyLink.SaveToProperty">
 <short>
-Performs actions to save the property value when SaveEnabled is set to True.
+Performs actions to save the property value when SaveEnabled is set to 
+<b>True</b>.
 </short>
 <descr>
 <p>
-<var>SaveToProperty</var> ensures that the Editor for the property link is
-valid by calling the CreateEditor method. The OnSaveToProperty event
-handler is signalled (when assigned) to store the property value, and
-normally executes the LinkSaveToProperty method in an RTTI-enabled control.
+<var>SaveToProperty</var> ensures that the Editor for the property link is 
+valid by calling the CreateEditor method. The OnSaveToProperty event handler 
+is signalled (when assigned) to store the property value, and normally 
+executes the LinkSaveToProperty method in an RTTI-enabled control.
 </p>
 <p>
-No actions are performed in the method at design-time, when SaveEnabled is
+No actions are performed in the method at design-time, when SaveEnabled is 
 <b>False</b>, or when the component in Owner is being loaded or freed.
 </p>
 <p>
-SaveToProperty is called from the EditingDone method when ploAutoSave has
+SaveToProperty is called from the EditingDone method when ploAutoSave has 
 been included in the Options for the class instance.
 </p>
 </descr>
@@ -977,7 +970,7 @@ been included in the Options for the class instance.
 
 <element name="TCustomPropertyLink.EditingDone">
 <short>
-Saves the value for the linked property when editing is completed in an
+Saves the value for the linked property when editing is completed in an 
 RTTI-enabled control.
 </short>
 <descr/>
@@ -990,8 +983,8 @@ Sets the property value in Editor to the specified string value.
 </short>
 <descr>
 <p>
-Displays a dialog with an exception message handled when setting the
-property value.
+Displays a dialog with an exception message handled when setting the property 
+value.
 </p>
 </descr>
 <seealso>
@@ -1013,8 +1006,8 @@ Gets the value for the linked property as a String type.
 </short>
 <descr>
 <p>
-Displays a dialog with an exception message handled when getting the
-property value.
+Displays a dialog with an exception message handled when getting the property 
+value.
 </p>
 </descr>
 <seealso>
@@ -1058,28 +1051,28 @@ Checks for a valid value prior to storing it in the linked property.
 </short>
 <descr>
 <p>
-Signals the OnBeforeWrite event handler (when assigned) to check the value
-for the linked property prior to storage. The return value is <b>True</b>
-if OnBeforeWrite has not been assigned.
+Signals the OnBeforeWrite event handler (when assigned) to check the value 
+for the linked property prior to storage. The return value is <b>True</b> if 
+OnBeforeWrite has not been assigned.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.CheckBeforeWrite.Result">
 <short>
-Returns <b>True</b> if the property value can be stored to the linked
+Returns <b>True</b> if the property value can be stored to the linked 
 property.
 </short>
 </element>
 
 <element name="TCustomPropertyLink.CheckAfterWrite">
 <short>
-Performs actions needed after the property value has been stored in the
+Performs actions needed after the property value has been stored in the 
 linked property.
 </short>
 <descr>
 <p>
-  Signals the OnAfterWrite event handler when assigned.
+Signals the OnAfterWrite event handler when assigned.
 </p>
 </descr>
 <seealso/>
@@ -1101,7 +1094,7 @@ Displays a dialog with an exception message handled for the property link.
 
 <element name="TCustomPropertyLink.MapValues">
 <short>
-Consolidates the specified values and aliases for use with the property
+Consolidates the specified values and aliases for use with the property 
 Editor in the class instance.
 </short>
 <descr/>
@@ -1256,9 +1249,9 @@ Indicates whether the Editor for the property link can be modified.
 </short>
 <descr>
 <p>
-CanModify is a read-only Boolean property which indicates if the Editor for
-the property link has been assigned and can be modified. Calls the
-IsReadonly method in Editor to check its attributes for the paReadOnly flag.
+CanModify is a read-only Boolean property which indicates if the Editor for 
+the property link has been assigned and can be modified. Calls the IsReadonly 
+method in Editor to check its attributes for the paReadOnly flag.
 </p>
 </descr>
 <seealso/>
@@ -1294,7 +1287,7 @@ Indicates the RTTI types which can be represented in the property link.
 
 <element name="TCustomPropertyLink.Hook">
 <short>
-Provides a hook or callback to locate and perform actions upon the property
+Provides a hook or callback to locate and perform actions upon the property 
 editor for the association.
 </short>
 <descr/>
@@ -1315,7 +1308,10 @@ Event handler signalled then the class instance in Editor has been changed.
 </short>
 <descr>
 <p>
-Called from the CreateEditor method. Occurs after the value in Hook has been updated, RTTI property information has been retrieved, and CollectedValues has been populated. Occurs before the idle handler is assigned to the Application instance.
+Called from the CreateEditor method. Occurs after the value in Hook has been 
+updated, RTTI property information has been retrieved, and CollectedValues 
+has been populated. Occurs before the idle handler is assigned to the 
+Application instance.
 </p>
 </descr>
 <seealso/>
@@ -1343,7 +1339,7 @@ Do not publish; it is used internally by the RTTI controls.
 
 <element name="TCustomPropertyLink.OnBeforeWrite">
 <short>
-Event handler signalled to determine if a new value can be stored in the
+Event handler signalled to determine if a new value can be stored in the 
 linked property.
 </short>
 <descr/>
@@ -1359,8 +1355,8 @@ linked property.
 
 <element name="TCustomPropertyLink.OnAfterWrite">
 <short>
-Event handler signalled to perform actions needed after a new value has
-been stored in the linked property.
+Event handler signalled to perform actions needed after a new value has been 
+stored in the linked property.
 </short>
 <descr/>
 <seealso>
@@ -1380,13 +1376,13 @@ been stored in the linked property.
 
 <element name="TCustomPropertyLink.OnTestEditor">
 <short>
-Event handler signalled to check for an active and focused editor for the
+Event handler signalled to check for an active and focused editor for the 
 linked property.
 </short>
 <descr>
 <p>
-Normally contains the address of the LinkTestEditor method in the RTTI-
-enabled control which implements the property link.
+Normally contains the address of the LinkTestEditor method in the 
+RTTI-enabled control which implements the property link.
 </p>
 </descr>
 <seealso>
@@ -1417,12 +1413,14 @@ Set of options enabled for the property link.
 
 <element name="TCustomPropertyLink.PropertyLoaded">
 <short>
-Indicates whether the value for the linked property is available in the
+Indicates whether the value for the linked property is available in the 
 property Editor.
 </short>
 <descr>
 <p>
-Set to <b>False</b> by default in SetObjectAndProperty and CreateEditor. Set to <b>True</b> in LoadFromProperty after values have been assigned in TIObject, TIPropertyName, TIElementName, and Editor.
+Set to <b>False</b> by default in SetObjectAndProperty and CreateEditor. Set 
+to <b>True</b> in LoadFromProperty after values have been assigned in 
+TIObject, TIPropertyName, TIElementName, and Editor.
 </p>
 </descr>
 <seealso/>
@@ -1442,8 +1440,8 @@ Set to <b>False</b> by default in SetObjectAndProperty and CreateEditor. Set to 
 
 <element name="TCustomPropertyLink.TIElementName">
 <short>
-If the property is a set type, the name of the enumeration value can be
-given here.
+If the property is a set type, the name of the enumeration value can be given 
+here.
 </short>
 <descr/>
 <seealso/>
@@ -1451,15 +1449,15 @@ given here.
 
 <element name="TPropertyLink">
 <short>
-Implements the connection between an RTTI control and a property editor for
-a value in a linked object.
+Implements the connection between an RTTI control and a property editor for a 
+value in a linked object.
 </short>
 <descr>
 <p>
-<var>TPropertyLink</var> is a <var>TCustomPropertyLink</var> descendant. It
-sets the visibility for properties introduced in the ancestor class. It
-also provides methods used to define, read and write properties used during
-LCL component streaming, like AliasValues.
+<var>TPropertyLink</var> is a <var>TCustomPropertyLink</var> descendant. It 
+sets the visibility for properties introduced in the ancestor class. It also 
+provides methods used to define, read and write properties used during LCL 
+component streaming, like AliasValues.
 </p>
 </descr>
 <seealso>
@@ -1491,7 +1489,7 @@ Writes the data for the AliasValues property during LCL component streaming.
 
 <element name="TPropertyLink.DefineProperties">
 <short>
-Defines properties included in LCL component streaming, and the procedures
+Defines properties included in LCL component streaming, and the procedures 
 used to read or write the data for the properties.
 </short>
 <descr/>
@@ -1538,15 +1536,14 @@ Set of property attributes enabled in the class instance.
 
 <element name="TTIObjectPropertyEditor">
 <short>
-Identifies the property editor used for persistent objects assigned to
+Identifies the property editor used for persistent objects assigned to 
 TPropertyLink or TMultiPropertyLink class instances.
 </short>
 <descr/>
 <p>
-It does allow editing of the property. It allows the user to set the
-value this property to point to a component in any form or datamodule
-that is type compatible with the property being edited (e. g. the
-DataSource property).
+It does allow editing of the property. It allows the user to set the value 
+this property to point to a component in any form or datamodule that is type 
+compatible with the property being edited (e. g. the DataSource property).
 </p>
 <seealso>
 <link id="TCustomPropertyLink.TIObject"/>
@@ -1557,12 +1554,12 @@ DataSource property).
 
 <element name="TPropertyNamePropertyEditor">
 <short>
-TPropertyNamePropertyEditor is the property editor for
+TPropertyNamePropertyEditor is the property editor for 
 TCustomPropertyLink.TIPropertyName.
 </short>
 <descr>
 <p>
-It displays all properties which are type compatible with the Filter in the
+It displays all properties which are type compatible with the Filter in the 
 property link.
 </p>
 </descr>
@@ -1631,7 +1628,7 @@ Implements the editor for the TIElementName property in TCustomPropertyLink.
 </short>
 <descr>
 <p>
-TTIElementNamePropertyEditor Property editor for
+TTIElementNamePropertyEditor Property editor for 
 TCustomPropertyLink.TIElementName. Shows all elements.
 </p>
 </descr>
@@ -1781,7 +1778,7 @@ Changes the object reference for multiple RTTI controls in one action.
 </short>
 <descr>
 <p>
-TMultiPropertyLink is a component to switch the TIObjects of multiple RTTI
+TMultiPropertyLink is a component to switch the TIObjects of multiple RTTI 
 controls at once.
 </p>
 </descr>
@@ -1812,9 +1809,9 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the overridden constructor for the class instance. It
-calls the inherited constructor on entry, and sets the default value for
-the MaintainSiblings property to <b>True</b>.
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited constructor on entry, and sets the default value for the 
+MaintainSiblings property to <b>True</b>.
 </p>
 </descr>
 <seealso/>
@@ -1903,29 +1900,32 @@ Owner => child components
 
 <element name="TTICustomEdit">
 <short>
-Base class for an edit control which uses RTTI to access and maintain
-property values in a linked object.
+Base class for an edit control which uses RTTI to access and maintain 
+a property value in a linked object.
 </short>
 <descr>
-
 <!-- WIP: HERE -->
 <p>
-Extends TCustomEdit with methods and properties...
+<var>TTICustomEdit</var> extends <var>TCustomEdit</var> to allow the the 
+RTTI-enabled edit control to read and write its value from an associated edit 
+control.
 </p>
 <p>
-Use the Link property to specify the persistent object instance and the
-property name represented in the edit control.
+Use the Link property to specify the persistent object instance and the 
+property name represented in the RTTI edit control. The TIObject and 
+TIPropertyName properties in Link are used for the purpose.
 </p>
 <p>
-Provides overridden methods needed to...
+The Loaded and EditingDone methods are overridden in TTICustomEdit to read and write the control value using the persistent object and property name specified in Link.
 </p>
-<p>
-Implements methods need to retrieve and save the value for the property in
-Link.
-</p>
-
 </descr>
-<seealso/>
+<seealso>
+<link id="TTICustomEdit.Link"/>
+<link id="TTICustomEdit.Loaded"/>
+<link id="TTICustomEdit.EditingDone"/>
+<link id="TTIEdit.OnEditingDone"/>
+<link id="#lcl.controls.TCustomEdit">TCustomEdit</link>
+</seealso>
 </element>
 
 <!-- private -->
@@ -1935,20 +1935,20 @@ Link.
 
 <element name="TTICustomEdit.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
-the value assigned to the Text property in the control.
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get the 
+value assigned to the Text property in the control.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -1992,8 +1992,8 @@ Destructor for the class instance.
 
 <element name="TTICustomEdit.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2009,8 +2009,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomEdit.Link">
 <short>
-Provides a link to the persistent object and property with the text value
-for the control.
+Provides a link to the persistent object and property with the text value for 
+the control.
 </short>
 <descr/>
 <seealso>
@@ -2020,8 +2020,8 @@ for the control.
 
 <element name="TTIEdit">
 <short>
-Implements an edit control which uses RTTI to access and maintain
-property values in a linked object.
+Implements an edit control which uses RTTI to access and maintain property 
+values in a linked object.
 </short>
 <descr/>
 <seealso>
@@ -2067,7 +2067,7 @@ property values in a linked object.
 
 <element name="TTICustomMaskEdit">
 <short>
-Base class for a masked edit control which uses RTTI to access and maintain
+Base class for a masked edit control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2083,20 +2083,20 @@ property values in a linked object.
 
 <element name="TTICustomMaskEdit.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
-the value assigned to the Text property in the control.
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get the 
+value assigned to the Text property in the control.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -2138,8 +2138,8 @@ Destructor for the class instance.
 
 <element name="TTICustomMaskEdit.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2155,8 +2155,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomMaskEdit.Link">
 <short>
-Provides a link to the persistent object and property with the text value
-for the control.
+Provides a link to the persistent object and property with the text value for 
+the control.
 </short>
 <descr/>
 <seealso>
@@ -2166,7 +2166,7 @@ for the control.
 
 <element name="TTIMaskEdit">
 <short>
-Implements a masked edit control which uses RTTI to access and maintain
+Implements a masked edit control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2219,7 +2219,7 @@ property values in a linked object.
 
 <element name="TTICustomComboBox">
 <short>
-Base class for an combo-box control which uses RTTI to access and maintain
+Base class for an combo-box control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2239,20 +2239,20 @@ property values in a linked object.
 
 <element name="TTICustomComboBox.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
-the value assigned to the Text property in the control.
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get the 
+value assigned to the Text property in the control.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -2340,8 +2340,8 @@ Destructor for the class instance.
 
 <element name="TTICustomComboBox.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2357,8 +2357,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomComboBox.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -2369,8 +2369,10 @@ the control.
 <element name="TTICustomComboBox.MaxHistoryCount">
 <short/>
 <descr>
-Set MaxHistoryCount to a positive non-zero value to enable history in the
+<p>
+Set MaxHistoryCount to a positive non-zero value to enable history in the 
 control.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -2383,7 +2385,7 @@ control.
 
 <element name="TTIComboBox">
 <short>
-Implements a combo-box control which uses RTTI to access and maintain
+Implements a combo-box control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2436,7 +2438,7 @@ property values in a linked object.
 
 <element name="TTICustomRadioGroup">
 <short>
-Specifies a radio group control which uses RTTI to access and maintain
+Specifies a radio group control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2452,21 +2454,21 @@ property values in a linked object.
 
 <element name="TTICustomRadioGroup.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
-the property value and sets ItemIndex to the position where the value is
-stored in Items.
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get the 
+property value and sets ItemIndex to the position where the value is stored 
+in Items.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -2519,8 +2521,8 @@ Destructor for the class instance.
 
 <element name="TTICustomRadioGroup.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2536,8 +2538,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomRadioGroup.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -2547,7 +2549,7 @@ the control.
 
 <element name="TTIRadioGroup">
 <short>
-Implements a radio group control which uses RTTI to access and maintain
+Implements a radio group control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2591,7 +2593,7 @@ property values in a linked object.
 
 <element name="TTICustomCheckGroup">
 <short>
-Specifies a grouped check box control which uses RTTI to access and maintain
+Specifies a grouped check box control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -2608,21 +2610,21 @@ property values in a linked object.
 
 <element name="TTICustomCheckGroup.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetSetElementValue in Link for
-each of the values in Items. The corresponding Checked property is updated
-for the values in Items.
+<var>LinkLoadFromProperty</var> calls the GetSetElementValue in Link for each 
+of the values in Items. The corresponding Checked property is updated for the 
+values in Items.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -2675,8 +2677,8 @@ Destructor for the class instance.
 
 <element name="TTICustomCheckGroup.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2692,8 +2694,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomCheckGroup.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -2703,8 +2705,8 @@ the control.
 
 <element name="TTICheckGroup">
 <short>
-Implements a grouped check box control which uses RTTI to access and
-maintain property values in a linked object.
+Implements a grouped check box control which uses RTTI to access and maintain 
+property values in a linked object.
 </short>
 <descr/>
 <seealso>
@@ -2747,7 +2749,7 @@ maintain property values in a linked object.
 
 <element name="TTICustomCheckListBox">
 <short>
-Specifies a list with check box controls which uses RTTI to access and
+Specifies a list with check box controls which uses RTTI to access and 
 maintain property values in a linked object.
 </short>
 <descr/>
@@ -2764,21 +2766,21 @@ maintain property values in a linked object.
 
 <element name="TTICustomCheckListBox.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetSetElementValue method in Link
-for each of the values in Items, and sets the value in the corresponding
+<var>LinkLoadFromProperty</var> calls the GetSetElementValue method in Link 
+for each of the values in Items, and sets the value in the corresponding 
 Checked property.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -2831,8 +2833,8 @@ Destructor for the class instance.
 
 <element name="TTICustomCheckListBox.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -2848,7 +2850,7 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomCheckListBox.Link">
 <short>
-Provides a link to the persistent object and property with the text values
+Provides a link to the persistent object and property with the text values 
 for the control.
 </short>
 <descr/>
@@ -2859,7 +2861,7 @@ for the control.
 
 <element name="TTICheckListBox">
 <short>
-Implements a list of check box controls which uses RTTI to access and
+Implements a list of check box controls which uses RTTI to access and 
 maintain property values in a linked object.
 </short>
 <descr/>
@@ -2917,24 +2919,24 @@ maintain property values in a linked object.
 
 <element name="TTICustomListBox.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> loads values using methods in the Link
-property. When the Editor in Link is a Set property editor, the
-GetSetElementValue is called for each of the values in Items and the
-corresponding value in Selected is set to the element value. For other
-property editor types, the GetAsText method in Link is called, and the
-value in ItemIndex is set to the value in Items.
+<var>LinkLoadFromProperty</var> loads values using methods in the Link 
+property. When the Editor in Link is a Set property editor, the 
+GetSetElementValue is called for each of the values in Items and the 
+corresponding value in Selected is set to the element value. For other 
+property editor types, the GetAsText method in Link is called, and the value 
+in ItemIndex is set to the value in Items.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -3002,8 +3004,8 @@ Destructor for the class instance.
 
 <element name="TTICustomListBox.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3019,8 +3021,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomListBox.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -3102,22 +3104,22 @@ the control.
 
 <element name="TTICustomCheckBox.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
-the property value and sets Checked to True when the value is different
-than LinkValueFalse. When PropertyNameAsCaption is set, Caption is set   to
-the property name from the Editor in Link.
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get the 
+property value and sets Checked to <b>True</b> when the value is different 
+than LinkValueFalse. When PropertyNameAsCaption is set, Caption is set to the 
+property name from the Editor in Link.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -3170,8 +3172,8 @@ Destructor for the class instance.
 
 <element name="TTICustomCheckBox.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3199,8 +3201,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomCheckBox.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -3314,7 +3316,7 @@ Destructor for the class instance.
 
 <element name="TTICustomButton.Link">
 <short>
-Provides a link to the persistent object and property with the caption and
+Provides a link to the persistent object and property with the caption and 
 action for the control.
 </short>
 <descr/>
@@ -3387,20 +3389,20 @@ action for the control.
 
 <element name="TTICustomLabel.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and 
 stores the value in the Caption property.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -3435,8 +3437,8 @@ Destructor for the class instance.
 
 <element name="TTICustomLabel.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3444,8 +3446,8 @@ been completed.
 
 <element name="TTICustomLabel.Link">
 <short>
-Provides a link to the persistent object and property with the text value
-for the control.
+Provides a link to the persistent object and property with the text value for 
+the control.
 </short>
 <descr/>
 <seealso>
@@ -3503,20 +3505,20 @@ for the control.
 
 <element name="TTICustomGroupbox.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr>
 <p>
-<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and 
 stores the value in the Caption property.
 </p>
 <p>
-No actions are performed in the method if the Editor in the Link property
-has not been assigned.
+No actions are performed in the method if the Editor in the Link property has 
+not been assigned.
 </p>
 <p>
-<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty 
 property in Link in the constructor for the class instance.
 </p>
 </descr>
@@ -3551,8 +3553,8 @@ Destructor for the class instance.
 
 <element name="TTICustomGroupbox.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3560,8 +3562,8 @@ been completed.
 
 <element name="TTICustomGroupbox.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -3628,7 +3630,7 @@ the control.
 
 <element name="TTICustomMemo.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -3684,8 +3686,8 @@ Destructor for the class instance.
 
 <element name="TTICustomMemo.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3701,8 +3703,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomMemo.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -3762,7 +3764,7 @@ the control.
 
 <element name="TTICustomCalendar.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -3818,8 +3820,8 @@ Destructor for the class instance.
 
 <element name="TTICustomCalendar.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3835,8 +3837,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomCalendar.Link">
 <short>
-Provides a link to the persistent object and property with the values for
-the control.
+Provides a link to the persistent object and property with the values for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -3895,7 +3897,7 @@ the control.
 
 <element name="TTICustomImage.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -3942,8 +3944,8 @@ Destructor for the class instance.
 
 <element name="TTICustomImage.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -3951,8 +3953,8 @@ been completed.
 
 <element name="TTICustomImage.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -4007,7 +4009,7 @@ the control.
 
 <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -4066,8 +4068,8 @@ Destructor for the class instance.
 
 <element name="TTICustomFloatSpinEdit.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -4083,8 +4085,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomFloatSpinEdit.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -4094,8 +4096,8 @@ the control.
 
 <element name="TTICustomFloatSpinEdit.UseRTTIMinMax">
 <short>
-Indicates whether MinValue and MaxValue constraints in the linked control
-are used.
+Indicates whether MinValue and MaxValue constraints in the linked control are 
+used.
 </short>
 <descr/>
 <seealso/>
@@ -4170,7 +4172,7 @@ are used.
 
 <element name="TTICustomSpinEdit.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -4229,8 +4231,8 @@ Destructor for the class instance.
 
 <element name="TTICustomSpinEdit.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -4246,8 +4248,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomSpinEdit.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -4257,8 +4259,8 @@ the control.
 
 <element name="TTICustomSpinEdit.UseRTTIMinMax">
 <short>
-Indicates whether MinValue and MaxValue constraints in the linked control
-are used.
+Indicates whether MinValue and MaxValue constraints in the linked control are 
+used.
 </short>
 <descr/>
 <seealso/>
@@ -4319,7 +4321,7 @@ are used.
 
 <element name="TTICustomTrackBar.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -4378,8 +4380,8 @@ Destructor for the class instance.
 
 <element name="TTICustomTrackBar.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -4395,8 +4397,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomTrackBar.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -4406,8 +4408,8 @@ the control.
 
 <element name="TTICustomTrackBar.UseRTTIMinMax">
 <short>
-Indicates whether MinValue and MaxValue constraints in the linked control
-are used in the Min and Max properties.
+Indicates whether MinValue and MaxValue constraints in the linked control are 
+used in the Min and Max properties.
 </short>
 <descr/>
 <seealso/>
@@ -4483,7 +4485,7 @@ are used in the Min and Max properties.
 
 <element name="TTICustomProgressBar.LinkLoadFromProperty">
 <short>
-Implements the event handler signalled when the value for the control is
+Implements the event handler signalled when the value for the control is 
 loaded from its property Link.
 </short>
 <descr/>
@@ -4517,8 +4519,8 @@ Object (TPropertyLink) for the event notification.
 
 <element name="TTICustomProgressBar.GetRTTIMinMax">
 <short>
-Gets the minimum and maximum value constraints from the RTTI type
-information for the linked object and property.
+Gets the minimum and maximum value constraints from the RTTI type information 
+for the linked object and property.
 </short>
 <descr/>
 <seealso/>
@@ -4545,8 +4547,8 @@ Destructor for the class instance.
 
 <element name="TTICustomProgressBar.Loaded">
 <short>
-Loads the value from the property Link when LCL component streaming has
-been completed.
+Loads the value from the property Link when LCL component streaming has been 
+completed.
 </short>
 <descr/>
 <seealso/>
@@ -4562,8 +4564,8 @@ Saves the property value when editing has been completed in the control.
 
 <element name="TTICustomProgressBar.Link">
 <short>
-Provides a link to the persistent object and property with the value for
-the control.
+Provides a link to the persistent object and property with the value for the 
+control.
 </short>
 <descr/>
 <seealso>
@@ -4573,8 +4575,7 @@ the control.
 
 <element name="TTICustomProgressBar.UseRTTIMinMax">
 <short>
-Indicates whether minimum and maximum values from the linked control are
-used.
+Indicates whether minimum and maximum values from the linked control are used.
 </short>
 <descr/>
 <seealso/>
@@ -4628,7 +4629,7 @@ used.
 
 <element name="TTICustomColorButton">
 <short>
-Specifies a color button control which uses RTTI to access and maintain
+Specifies a color button control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -4657,13 +4658,13 @@ New value for the Link property.
 
 <element name="TTICustomColorButton.LinkLoadFromProperty">
 <short>
-Gets the TColor value for the control from the object and property defined
-in Link.
+Gets the TColor value for the control from the object and property defined in 
+Link.
 </short>
 <descr>
 <p>
-LinkLoadFromProperty implements the routine assigned to the
-OnLoadFromProperty event handler in Link in the constructor for the class
+LinkLoadFromProperty implements the routine assigned to the 
+OnLoadFromProperty event handler in Link in the constructor for the class 
 instance.
 </p>
 </descr>
@@ -4680,13 +4681,12 @@ Object (TCustomPropertyLink) for the event notification.
 
 <element name="TTICustomColorButton.LinkSaveToProperty">
 <short>
-Stores the TColor value in the control to the object and property defined
-in Link.
+Stores the TColor value in the control to the object and property defined in 
+Link.
 </short>
 <p>
-LinkSaveToProperty implements the routine assigned to the
-OnSaveToProperty event handler in Link in the constructor for the class
-instance.
+LinkSaveToProperty implements the routine assigned to the OnSaveToProperty 
+event handler in Link in the constructor for the class instance.
 </p>
 <seealso>
 <link id="TTICustomColorButton.Link"/>
@@ -4723,13 +4723,13 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-Create is the overridden constructor for the class instance, and calls
-calls the inherited constructor on entry.
+Create is the overridden constructor for the class instance, and calls calls 
+the inherited constructor on entry.
 </p>
 <p>
-Create allocates resources for the Link member and configures it to
-access properties using the Integer type. Its OnLoadFromProperty and
-OnSaveToProperty event handlers are set to the LinkLoadFromProperty and
+Create allocates resources for the Link member and configures it to access 
+properties using the Integer type. Its OnLoadFromProperty and 
+OnSaveToProperty event handlers are set to the LinkLoadFromProperty and 
 LinkSaveToProperty methods (respectively) in the class instance.
 </p>
 </descr>
@@ -4757,8 +4757,8 @@ Destructor for the class instance.
 
 <element name="TTICustomColorButton.Loaded">
 <short>
-Loads the value for the control from the object and property in Link when
-LCL component streaming has been completed.
+Loads the value for the control from the object and property in Link when LCL 
+component streaming has been completed.
 </short>
 <descr/>
 <seealso/>
@@ -4766,8 +4766,8 @@ LCL component streaming has been completed.
 
 <element name="TTICustomColorButton.EditingDone">
 <short>
-Applies the color value to the linked property when editing is
-completed in the control.
+Applies the color value to the linked property when editing is completed in 
+the control.
 </short>
 <descr/>
 <seealso>
@@ -4779,7 +4779,7 @@ completed in the control.
 
 <element name="TTICustomColorButton.Link">
 <short>
-Provides a link to the persistent object and property with the color value
+Provides a link to the persistent object and property with the color value 
 for the control.
 </short>
 <descr/>
@@ -4790,7 +4790,7 @@ for the control.
 
 <element name="TTIColorButton">
 <short>
-Implements a color button control which uses RTTI to access and maintain
+Implements a color button control which uses RTTI to access and maintain 
 property values in a linked object.
 </short>
 <descr/>
@@ -4824,14 +4824,14 @@ property values in a linked object.
 <short/>
 <descr>
 <p>
-Called from the SaveActivePropertyLink routine. Also used in the
-implementation of the SetLinksForChildControls and
-SetLinksForChildComponents methods in TMultiPropertyLink.
+Called from the SaveActivePropertyLink routine. Also used in the 
+implementation of the SetLinksForChildControls and SetLinksForChildComponents 
+methods in TMultiPropertyLink.
 </p>
 </descr>
 <errors>
-An EPropertyError exception raised in the routine when AComponent does not
-have a Link property using the TCustomPropertyLink type is handled and
+An EPropertyError exception raised in the routine when AComponent does not 
+have a Link property using the TCustomPropertyLink type is handled and 
 ignored.
 </errors>
 <seealso>
@@ -4843,8 +4843,7 @@ ignored.
 </element>
 <element name="GetPropertyLinkOfComponent.Result">
 <short>
-TCustomPropertyLink instance for the Link property in the specified
-Component.
+TCustomPropertyLink instance for the Link property in the specified Component.
 </short>
 </element>
 <element name="GetPropertyLinkOfComponent.AComponent">
@@ -4859,8 +4858,8 @@ Saves the value for the active control on a form using its propertylink.
 </short>
 <descr>
 <p>
-<var>SaveActivePropertyLink</var> is a procedure used to save the value for
-the active control on the specified form using the <var>TPropertyLink</var>
+<var>SaveActivePropertyLink</var> is a procedure used to save the value for 
+the active control on the specified form using the <var>TPropertyLink</var> 
 instance for the control.
 </p>
 </descr>
@@ -4879,8 +4878,8 @@ TCustomForm instance with the control updated in the routine.
 
 <element name="CreateEnumAliasValues">
 <short>
-Fills a TStrings instance with enumeration value names and their aliases
-for the specified RTTI type information.
+Fills a TStrings instance with enumeration value names and their aliases for 
+the specified RTTI type information.
 </short>
 <descr>
 <p>
@@ -4898,13 +4897,12 @@ Pointer to the RTTI type information for an enumeration property.
 </element>
 <element name="CreateEnumAliasValues.List">
 <short>
-TStrings instance where enumeration value names and their aliases are
-stored.
+TStrings instance where enumeration value names and their aliases are stored.
 </short>
 </element>
 <element name="CreateEnumAliasValues.AStringArray">
 <short>
-Array with the aliases for the enumeration values in the specified type
+Array with the aliases for the enumeration values in the specified type 
 information.
 </short>
 </element>
@@ -4915,7 +4913,7 @@ Registers components for use in the Lazarus IDE.
 </short>
 <descr>
 <p>
-The following components are added to the component palette in the Lazarus
+The following components are added to the component palette in the Lazarus 
 IDE:
 </p>
 <p>
