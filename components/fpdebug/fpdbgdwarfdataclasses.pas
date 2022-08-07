@@ -3744,6 +3744,7 @@ var
   n: Integer;
   CU: TDwarfCompilationUnit;
 begin
+  Result := False;
   for n := 0 to FCompilationUnits.Count - 1 do
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
