@@ -1,604 +1,643 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      DynHashArray
-    ====================================================================
-    -->
-    <module name="DynHashArray">
-      <short>Contains classes used to manage dynamic sets or associative arrays.</short>
-      <descr>
-        <p>
-          <file>DynHashArray.pp</file> extends the functionality of Pascal by
-          offering alternative data structure: set like array (the order is not kept)
-          with fast find/delete. Its size can change automatically during the
-          execution of the program. The price is that it is somewhat slower than
-          a number indexes access of an array.
-        </p>
-        <p>
-          This unit defines TDynHashArray, which is very similar to a TList, since
-          it also stores pointer/objects.
-        </p>
-        <p>
-          It supports Add, Remove, Contains, First, Count and Clear.
-        </p>
-        <p>
-          Because of the hashing nature the operations adding, removing and
-          finding is done in constant time on average.
-        </p>
-        <p>
-          <b>Inner structure:</b>
-        </p>
-        <p>
-          There are three parts:
-        </p>
-        <ul>
-          <li>
-            The array itself (FItems). Every entry is a pointer to the first
-               TDynHashArrayItem of a list with the same hash index.
-               The first item of every same index list is the list beginning
-               and its IsOverflow flag is set to false. All other items are
-               overflow items. To get all items with the same hash index,
-               do a FindHashItem. Then search through all "Next" items
-               until Next is nil or its IsOverflow flag is set to false.
-          </li>
-          <li>
-            The items beginning with FFirstItem is a 2-way-connected list
-            of TDynHashArrayItem. This list contains all used items.
-          </li>
-          <li>
-          To reduce GetMem/FreeMem calls, free items are cached.
-        </li>
-        </ul>
-        <p>
-          <b>Issues:</b>
-        </p>
-        <p>
-          The maximum capacity is the PrimeNumber. You can store more items,
-          but the performance decreases. The best idea is to provide your own
-          hash function.
-        </p>
-        <p>
-          Important: Items in the TDynHashArray must not change their key. When
-          changing the key of an item, remove it and add it after the change.
-        </p>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
-
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="LazLoggerBase"/>
-
-      <!-- function type Visibility: default -->
-      <element name="THashFunction">
-        <short>Type for hash function.</short>
-        <descr>Each hash function specified by the user has to have these parameters</descr>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="THashFunction.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="THashFunction.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="THashFunction.Item">
-        <short/>
-      </element>
-      <!-- function type Visibility: default -->
-      <element name="TOwnerHashFunction">
-        <short>Defines a hash function implemented as an object procedure.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TOwnerHashFunction.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TOwnerHashFunction.Item">
-        <short/>
-      </element>
-      <!-- function type Visibility: default -->
-      <element name="TOnGetKeyForHashItem">
-        <short>
-          Defines a Pointer function type used to get the key value for a hash item in TDynHashArray.
-        </short>
-        <descr>
-          <p>
-            TOnGetKeyForHashItem is the type used for the OnGetKeyForHashItem property in TDynHashArray.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TOnGetKeyForHashItem.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TOnGetKeyForHashItem.Item">
-        <short/>
-      </element>
-
-      <element name="TOnEachHashItem">
-        <short>
-          Defines a Boolean function type used to enumerate hash items in TDynHashArray.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TOnEachHashItem.Result">
-        <short/>
-      </element>
-      <element name="TOnEachHashItem.Sender">
-        <short/>
-      </element>
-      <element name="TOnEachHashItem.Item">
-        <short/>
-      </element>
-
-      <!-- pointer type Visibility: default -->
-      <element name="PDynHashArrayItem">
-        <short>Pointer to a TDynHashArrayItem instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- record type Visibility: default -->
-      <element name="TDynHashArrayItem">
-        <short>
-          Record type with pointers to the current, previous, and next has items in a linked list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TDynHashArrayItem.Item">
-        <short>Pointer to an element to be stored in the array.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TDynHashArrayItem.Next">
-        <short>It points to the next element in the doubly linked list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TDynHashArrayItem.Prior">
-        <short>It points to the previous element in the doubly linked list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TDynHashArrayItem.IsOverflow">
-        <short>False if it is the first element of the linked list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TDynHashArrayOption">
-        <short>Options for how this class should work.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TDynHashArrayOption.dhaoCachingEnabled">
-        <short>It will use cached result if available in IndexOfKey.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TDynHashArrayOption.dhaoCacheContains">
-        <short>Turns on a cache for contains operations.</short>
-      </element>
-      <!-- set type Visibility: default -->
-      <element name="TDynHashArrayOptions">
-        <short>Set type used to store values from TDynHashArrayOption.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TDynHashArray">
-        <short>Name of the class that store all functions and data for an hashed array.</short>
-        <descr>
-          <p>
-            TDynHashArray is a class which is similar to TList which allows both pointers and objects to be maintained in its internal storage. It includes common methods like Add, Remove, Contains, First, Count and Clear. Because of its hashing nature, the add, remove, and find operations are done in constant time on average.
-          </p>
-          <p>
-            <b>Inner structure:</b>
-          </p>
-          <p>
-            There are three parts:
-          </p>
-          <ol>
-            <li>
-              The array itself (FItems). Every entry is a pointer to the first TDynHashArrayItem of a list with the same hash index. The first item of every same index list is the list beginning and its IsOverflow flag is set to false. All other items are overflow items. To get all items with the same hash index, do a FindHashItem. Then search through all "Next" items until Next is nil or its IsOverflow flag is set to false.
-            </li>
-            <li>
-              The items beginning with FFirstItem is a 2-way-connected list of
-              TDynHashArrayItem. This list contains all used items.
-            </li>
-            <li>To reduce GetMem/FreeMem calls, free items are cached.</li>
-          </ol>
-          <p>
-            <b>Issues:</b>
-          </p>
-          <p>
-            The maximum capacity is the PrimeNumber. You can store more items, but the
-            performance decreases. The best idea is to provide your own hash function.
-          </p>
-          <p>
-            <b>Important</b>: Items in the TDynHashArray must not change their key. When changing the key of an item, remove it and add it after the change.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FItems">
-        <short>Array pointing to link lists.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FCount">
-        <short>Number of elements stored.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FCapacity">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FMinCapacity">
-        <short>The minimum number of items that will be allocated for an array.</short>
-        <descr>
-          <p>
-            The size of the array can be changed anytime. However, even if a size is given by FCapacity is smaller than this minimum number, then this minimum number of items will be allocated. This is done for efficiency and speed.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FMaxCapacity">
-        <short>The size of the array cannot be larger than this number.</short>
-        <descr>
-          <p>
-            FCapacity is overridden by this number, if that is larger than this.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FFirstItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FHashCacheItem">
-        <short>It contains the cached key.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FHashCacheIndex">
-        <short>It contains the cached index derived from the key.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FLowWaterMark">
-        <short>The lower element limit for reallocation.</short>
-        <descr>
-          <p>
-            The number of elements allocated are halved if the number of elements in the array goes below this number.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FHighWaterMark">
-        <short>The upper element count limit for reallocation.</short>
-        <descr>
-          <p>
-            The number of elements allocated are doubled if the number of elements in the array reaches this number.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FCustomHashFunction">
-        <short>The pointer to the user-defined hash function.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FOnGetKeyForHashItem">
-        <short>Optional user-defined function for converting keys.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FOptions">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FOwnerHashFunction">
-        <short>Optional user-defined hash function which can be SlowAlternativeHashMethod.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArray.FContainsCache">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TDynHashArray.NewHashItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.NewHashItem.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.DisposeHashItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.DisposeHashItem.ADynHashArrayItem">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.ComputeWaterMarks">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.SetCapacity">
-        <short>Changes the number of items (pre-)allocated.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SetCapacity.NewCapacity">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.SetCustomHashFunction">
-        <short>Specify your own hash function to be used by the class.</short>
-        <descr>
-          <p>
-            The hash function has to convert a string into a number in a random fashion.
-          </p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SetCustomHashFunction.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.SetOnGetKeyForHashItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SetOnGetKeyForHashItem.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.SetOptions">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SetOptions.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArray.SetOwnerHashFunction">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SetOwnerHashFunction.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TDynHashArray.RebuildItems">
-        <short>Rebuilds the internal data structures.</short>
-        <descr>
-          <p>
-            It is called anytime when there is a change that makes it necessary. E.g. hash function changes or because of dynamic reallocation.
-          </p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TDynHashArray.SaveCacheItem">
-        <short>Sets the cache.</short>
-        <descr>The cache is set as given by the parameters.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SaveCacheItem.Item">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SaveCacheItem.Index">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TDynHashArray.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overloaded constructor for the class instance. Overloaded variants are provided which set the initial value in MinCapacity to either a default or a user-specified value. The parameter-less version sets the initial value in MinCapacity to 10, but it is automagically increased to 137.
-          </p>
-          <p>
-            MaxCapacity is set to an arbitrarily large prime number defined in the implementation for class.
-          </p>
-          <p>
-            Create allocates memory needed to store the number of TDynHashArrayItem entries specified in its Capacity property. The allocated memory is zero-filled prior to use.
-          </p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.Create.InitialMinCapacity">
-        <short>Initial value used as the minimum capacity for the class instance.</short>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TDynHashArray.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            Destroy is the overridden destructor for the class instance. It calls the Clear method to remove cache entries for the list, and to free the pointers to the TDynHashArrayItem entries starting at FirstHashItem.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TDynHashArray.FirstHashItem"/>
-          <link id="TDynHashArray.Clear"/>
-          <link id="TDynHashArray.ClearCache"/>
-        </seealso>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.Add">
-        <short>Adds an item to the set/array.</short>
-        <descr><p>An example:</p>
-<code>uses
-   {$IFDEF UNIX}{$IFDEF UseCThreads}
-   cthreads,
-   {$ENDIF}{$ENDIF}
-   Classes, dynhasharray,strings;
-
-var
-   A:TDynHashArray;
-   s:pchar;
-begin
-  A := TDynHashArray.Create;
-  s := StrNew ('u');
-  A.Add(s);
-  if A.Contains(s) then
-    writeln('1:it contains s.');
-    writeln('1:count:',A.Count);
-  A.Clear;
-
-  if A.Contains(s) then
-    writeln('2:it contains s.');
-    writeln('2:count:',A.Count);
-  ReadLn;
-  StrDispose(s);</code>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.Add.Item">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.Contains">
-        <short>Returns true if the item is in the set.</short>
-        <descr>
-          <p>An example:</p>
-<code>uses
-   {$IFDEF UNIX}{$IFDEF UseCThreads}
-   cthreads,
-   {$ENDIF}{$ENDIF}
-   Classes, dynhasharray,strings;
-
-var
-   A: TDynHashArray;
-   s: pchar;
-begin
-  A := TDynHashArray.Create;
-  s := StrNew ('u');
-  A.Add(s);
-  if A.Contains(s) then
-    writeln('1:it contains s.');
-    writeln('1:count:',A.Count);
-  A.Clear;
-
-  if A.Contains(s) then
-    writeln('2:it contains s.');
-    writeln('2:count:',A.Count);
-  ReadLn;
-  StrDispose(s);</code>
+<package name="lazutils">
+<!--
+====================================================================
+DynHashArray
+====================================================================
+-->
+<module name="DynHashArray">
+<short>
+Contains classes used to manage dynamic sets or associative arrays.
+</short>
+<descr>
+<p>
+<file>DynHashArray.pp</file> extends the functionality of Pascal by
+offering alternative data structure: set like array (the order is not kept)
+with fast find/delete. Its size can change automatically during the
+execution of the program. The price is that it is somewhat slower than
+a number indexes access of an array.
+</p>
+<p>
+This unit defines TDynHashArray, which is very similar to a TList, since
+it also stores pointer/objects.
+</p>
+<p>
+It supports Add, Remove, Contains, First, Count and Clear.
+</p>
+<p>
+Because of the hashing nature the operations adding, removing and
+finding is done in constant time on average.
+</p>
+<p>
+<b>Inner structure:</b>
+</p>
+<p>
+There are three parts:
+</p>
+<ul>
+<li>
+The array itself (FItems). Every entry is a pointer to the first
+TDynHashArrayItem of a list with the same hash index.
+The first item of every same index list is the list beginning
+and its IsOverflow flag is set to false. All other items are
+overflow items. To get all items with the same hash index,
+do a FindHashItem. Then search through all "Next" items
+until Next is nil or its IsOverflow flag is set to false.
+</li>
+<li>
+The items beginning with FFirstItem is a 2-way-connected list
+of TDynHashArrayItem. This list contains all used items.
+</li>
+<li>
+To reduce GetMem/FreeMem calls, free items are cached.
+</li>
+</ul>
+<p>
+<b>Issues:</b>
+</p>
+<p>
+The maximum capacity is the PrimeNumber. You can store more items,
+but the performance decreases. The best idea is to provide your own
+hash function.
+</p>
+<p>
+Important: Items in the TDynHashArray must not change their key. When
+changing the key of an item, remove it and add it after the change.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.Contains.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.Contains.Item">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.ContainsKey">
-        <short>Returns true if the item is in the set.(through OnGetKeyForHashItem).</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.ContainsKey.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.ContainsKey.Key">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.Remove">
-        <short>Removes an element from the set/hash array.</short>
-        <descr>
-          <p>An example:</p>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="LazLoggerBase"/>
+
+<!-- function type Visibility: default -->
+<element name="THashFunction">
+<short>Type for hash function.</short>
+<descr>Each hash function specified by the user has to have these 
+parameters</descr>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="THashFunction.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="THashFunction.Sender">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="THashFunction.Item">
+<short/>
+</element>
+<!-- function type Visibility: default -->
+<element name="TOwnerHashFunction">
+<short>Defines a hash function implemented as an object procedure.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TOwnerHashFunction.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TOwnerHashFunction.Item">
+<short/>
+</element>
+<!-- function type Visibility: default -->
+<element name="TOnGetKeyForHashItem">
+<short>
+Defines a Pointer function type used to get the key value for a hash item in 
+TDynHashArray.
+</short>
+<descr>
+<p>
+TOnGetKeyForHashItem is the type used for the OnGetKeyForHashItem property in 
+TDynHashArray.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TOnGetKeyForHashItem.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TOnGetKeyForHashItem.Item">
+<short/>
+</element>
+
+<element name="TOnEachHashItem">
+<short>
+Defines a Boolean function type used to enumerate hash items in TDynHashArray.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TOnEachHashItem.Result">
+<short/>
+</element>
+<element name="TOnEachHashItem.Sender">
+<short/>
+</element>
+<element name="TOnEachHashItem.Item">
+<short/>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PDynHashArrayItem">
+<short>Pointer to a TDynHashArrayItem instance.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- record type Visibility: default -->
+<element name="TDynHashArrayItem">
+<short>
+Record type with pointers to the current, previous, and next has items in a 
+linked list.
+</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Item">
+<short>Pointer to an element to be stored in the array.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Next">
+<short>It points to the next element in the doubly linked list.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.Prior">
+<short>It points to the previous element in the doubly linked list.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: default -->
+<element name="TDynHashArrayItem.IsOverflow">
+<short><b>False</b> if it is the first element of the linked list.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- enumeration type Visibility: default -->
+<element name="TDynHashArrayOption">
+<short>Options for how this class should work.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TDynHashArrayOption.dhaoCachingEnabled">
+<short>It will use cached result if available in IndexOfKey.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TDynHashArrayOption.dhaoCacheContains">
+<short>Turns on a cache for contains operations.</short>
+</element>
+<!-- set type Visibility: default -->
+<element name="TDynHashArrayOptions">
+<short>Set type used to store values from TDynHashArrayOption.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- object Visibility: default -->
+<element name="TDynHashArray">
+<short>
+Name of the class that store all functions and data for an hashed array.
+</short>
+<descr>
+<p>
+TDynHashArray is a class which is similar to TList which allows both pointers 
+and objects to be maintained in its internal storage. It includes common 
+methods like Add, Remove, Contains, First, Count and Clear. Because of its 
+hashing nature, the add, remove, and find operations are done in constant 
+time on average.
+</p>
+<p>
+<b>Inner structure:</b>
+</p>
+<p>
+There are three parts:
+</p>
+<ol>
+<li>
+The array itself (FItems). Every entry is a pointer to the first 
+TDynHashArrayItem of a list with the same hash index. The first item of every 
+same index list is the list beginning and its IsOverflow flag is set to 
+false. All other items are overflow items. To get all items with the same 
+hash index, do a FindHashItem. Then search through all "Next" items until 
+Next is nil or its IsOverflow flag is set to false.
+</li>
+<li>
+The items beginning with FFirstItem is a 2-way-connected list of
+TDynHashArrayItem. This list contains all used items.
+</li>
+<li>To reduce GetMem/FreeMem calls, free items are cached.</li>
+</ol>
+<p>
+<b>Issues:</b>
+</p>
+<p>
+The maximum capacity is the PrimeNumber. You can store more items, but the
+performance decreases. The best idea is to provide your own hash function.
+</p>
+<p>
+<b>Important</b>: Items in the TDynHashArray must not change their key. When 
+changing the key of an item, remove it and add it after the change.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FItems">
+<short>Array pointing to link lists.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCount">
+<short>Number of elements stored.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCapacity">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FMinCapacity">
+<short>
+The minimum number of items that will be allocated for an array.
+</short>
+<descr>
+<p>
+The size of the array can be changed anytime. However, even if a size is 
+given by FCapacity is smaller than this minimum number, then this minimum 
+number of items will be allocated. This is done for efficiency and speed.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FMaxCapacity">
+<short>The size of the array cannot be larger than this number.</short>
+<descr>
+<p>
+FCapacity is overridden by this number, if that is larger than this.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FFirstItem">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHashCacheItem">
+<short>It contains the cached key.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHashCacheIndex">
+<short>It contains the cached index derived from the key.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FLowWaterMark">
+<short>The lower element limit for reallocation.</short>
+<descr>
+<p>
+The number of elements allocated are halved if the number of elements in the 
+array goes below this number.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FHighWaterMark">
+<short>The upper element count limit for reallocation.</short>
+<descr>
+<p>
+The number of elements allocated are doubled if the number of elements in the 
+array reaches this number.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FCustomHashFunction">
+<short>The pointer to the user-defined hash function.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOnGetKeyForHashItem">
+<short>Optional user-defined function for converting keys.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOptions">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FOwnerHashFunction">
+<short>
+Optional user-defined hash function which can be SlowAlternativeHashMethod.
+</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArray.FContainsCache">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- function Visibility: private -->
+<element name="TDynHashArray.NewHashItem">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.NewHashItem.Result">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.DisposeHashItem">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.DisposeHashItem.ADynHashArrayItem">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.ComputeWaterMarks">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetCapacity">
+<short>Changes the number of items (pre-)allocated.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetCapacity.NewCapacity">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetCustomHashFunction">
+<short>Specify your own hash function to be used by the class.</short>
+<descr>
+<p>
+The hash function has to convert a string into a number in a random fashion.
+</p>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetCustomHashFunction.AValue">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOnGetKeyForHashItem">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOnGetKeyForHashItem.AValue">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOptions">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOptions.AValue">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArray.SetOwnerHashFunction">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SetOwnerHashFunction.AValue">
+<short/>
+</element>
+<!-- procedure Visibility: protected -->
+<element name="TDynHashArray.RebuildItems">
+<short>Rebuilds the internal data structures.</short>
+<descr>
+<p>
+It is called anytime when there is a change that makes it necessary. E.g. 
+hash function changes or because of dynamic reallocation.
+</p>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- procedure Visibility: protected -->
+<element name="TDynHashArray.SaveCacheItem">
+<short>Sets the cache.</short>
+<descr>The cache is set as given by the parameters.</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SaveCacheItem.Item">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SaveCacheItem.Index">
+<short/>
+</element>
+<!-- constructor Visibility: public -->
+<element name="TDynHashArray.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overloaded constructor for the class instance. Overloaded 
+variants are provided which set the initial value in MinCapacity to either a 
+default or a user-specified value. The parameter-less version sets the 
+initial value in MinCapacity to 10, but it is automagically increased to 137.
+</p>
+<p>
+MaxCapacity is set to an arbitrarily large prime number defined in the 
+implementation for class.
+</p>
+<p>
+Create allocates memory needed to store the number of TDynHashArrayItem 
+entries specified in its Capacity property. The allocated memory is 
+zero-filled prior to use.
+</p>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Create.InitialMinCapacity">
+<short>
+Initial value used as the minimum capacity for the class instance.
+</short>
+</element>
+<!-- destructor Visibility: public -->
+<element name="TDynHashArray.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Destroy is the overridden destructor for the class instance. It calls the 
+Clear method to remove cache entries for the list, and to free the pointers 
+to the TDynHashArrayItem entries starting at FirstHashItem.
+</p>
+</descr>
+<seealso>
+<link id="TDynHashArray.FirstHashItem"/>
+<link id="TDynHashArray.Clear"/>
+<link id="TDynHashArray.ClearCache"/>
+</seealso>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Add">
+<short>Adds an item to the set/array.</short>
+<descr><p>An example:</p>
+<code>uses
+{$IFDEF UNIX}{$IFDEF UseCThreads}
+cthreads,
+{$ENDIF}{$ENDIF}
+Classes, dynhasharray,strings;
+
+var
+A:TDynHashArray;
+s:pchar;
+begin
+A := TDynHashArray.Create;
+s := StrNew ('u');
+A.Add(s);
+if A.Contains(s) then
+writeln('1:it contains s.');
+writeln('1:count:',A.Count);
+A.Clear;
+
+if A.Contains(s) then
+writeln('2:it contains s.');
+writeln('2:count:',A.Count);
+ReadLn;
+StrDispose(s);</code>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Add.Item">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.Contains">
+<short>Returns <b>True</b> if the item is in the set.</short>
+<descr>
+<p>An example:</p>
+<code>uses
+{$IFDEF UNIX}{$IFDEF UseCThreads}
+cthreads,
+{$ENDIF}{$ENDIF}
+Classes, dynhasharray,strings;
+
+var
+A: TDynHashArray;
+s: pchar;
+begin
+A := TDynHashArray.Create;
+s := StrNew ('u');
+A.Add(s);
+if A.Contains(s) then
+writeln('1:it contains s.');
+writeln('1:count:',A.Count);
+A.Clear;
+
+if A.Contains(s) then
+writeln('2:it contains s.');
+writeln('2:count:',A.Count);
+ReadLn;
+StrDispose(s);</code>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.Contains.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Contains.Item">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.ContainsKey">
+<short>
+Returns <b>True</b> if the item is in the set.(through OnGetKeyForHashItem).
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.ContainsKey.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.ContainsKey.Key">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Remove">
+<short>Removes an element from the set/hash array.</short>
+<descr>
+<p>An example:</p>
 <code>{$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
- cthreads,
-  {$ENDIF}{$ENDIF}
-  Classes, dynhasharray,strings;
+{$IFDEF UNIX}{$IFDEF UseCThreads}
+cthreads,
+{$ENDIF}{$ENDIF}
+Classes, dynhasharray,strings;
 
 var
-  A:TDynHashArray;
-  s:pchar;
-  s2:pchar;
+A:TDynHashArray;
+s:pchar;
+s2:pchar;
 begin
 A:=TDynHashArray.Create;
 s:=StrNew ('u');
@@ -606,486 +645,506 @@ s2:=StrNew ('i');
 A.Add(s);
 A.Add(s2);
 if A.Contains(s2) then
-  writeln('1:it contains s2.');
-  writeln('1:count:',A.Count);
+writeln('1:it contains s2.');
+writeln('1:count:',A.Count);
 A.Remove(s2);
 if A.Contains(s2) then
-  writeln('2:it contains s2.');
-  writeln('2:count:',A.Count);
+writeln('2:it contains s2.');
+writeln('2:count:',A.Count);
 ReadLn;
 StrDispose(s);StrDispose(s2);
 end.
 </code>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.Remove.Item">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.Clear">
-        <short>Removes all elements from the set/hash array.</short>
-        <descr>
-          <p>An example:</p>
-<code>uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
- cthreads,
-  {$ENDIF}{$ENDIF}
-  Classes, dynhasharray,strings;
-
-var
-  A:TDynHashArray;
-  s:pchar;
-begin
-A:=TDynHashArray.Create;
-s:=StrNew ('u');
-A.Add(s);
-if A.Contains(s) then
-  writeln('1:it contains s.');
-  writeln('1:count:',A.Count);
-A.Clear;
-
-if A.Contains(s) then
-  writeln('2:it contains s.');
-  writeln('2:count:',A.Count);
-ReadLn;
-StrDispose(s);   </code>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.ClearCache">
-        <short>Clears the FContainsCache cache.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.First">
-        <short>Returns the first item or nil.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.First.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.Count">
-        <short>Number of elements stored in the set/array.</short>
-        <descr><p>An example:</p><code>uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
- cthreads,
-  {$ENDIF}{$ENDIF}
-  Classes, dynhasharray,strings;
-
-var
-  A:TDynHashArray;
-  s:pchar;
-begin
-A:=TDynHashArray.Create;
-s:=StrNew ('u');
-A.Add(s);
-if A.Contains(s) then
-  writeln('1:it contains s.');
-  writeln('1:count:',A.Count);
-A.Clear;
-
-if A.Contains(s) then
-  writeln('2:it contains s.');
-  writeln('2:count:',A.Count);
-ReadLn;
-StrDispose(s);   </code>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.IndexOf">
-        <short>Returns calculated index from Item through OnGetKeyForHashItem.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.IndexOf.Result"/>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.IndexOf.AnItem">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.IndexOfKey">
-        <short>Returns calculated index from Item.</short>
-        <descr>It uses user-defined hash functions or built-in algorithm</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.IndexOfKey.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.IndexOfKey.Key">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.FindHashItem">
-        <short>Finds an item as PDynHashArrayItem among all items.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.FindHashItem.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.FindHashItem.Item">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.FindHashItemWithKey">
-        <short>Finds an item as PDynHashArrayItem among all items (through OnGetKeyForHashItem).</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.FindHashItemWithKey.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.FindHashItemWithKey.Key">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.FindItemWithKey">
-        <short>Finds an item among all items (through OnGetKeyForHashItem).</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.FindItemWithKey.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.FindItemWithKey.Key">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.GetHashItem">
-        <short>Gets a link list from the "main" array FItems by index.</short>
-        <descr>So it returns a link list which can be processed.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.GetHashItem.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.GetHashItem.HashIndex">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.Delete">
-        <short>Deletes a PDynHashArrayItem from link list.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.Delete.ADynHashArrayItem">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.AssignTo">
-        <short>Copies all items into a given TList.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.AssignTo.List">
-        <short/>
-      </element>
-
-      <element name="TDynHashArray.ForEach">
-        <short>Calls the specified function for each of the items in the hash array.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TDynHashArray.ForEach.Func">
-        <short>Boolean function type called for the hash items.</short>
-      </element>
-
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.SlowAlternativeHashMethod">
-        <short>Another hash function that can be used.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.SlowAlternativeHashMethod.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SlowAlternativeHashMethod.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArray.SlowAlternativeHashMethod.Item">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArray.ConsistencyCheck">
-        <short>Check if data in TDynHashArray are OK.</short>
-        <descr>Returns a number indicating the nature of inconsistency. 0
-         means OK.
 </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArray.ConsistencyCheck.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArray.WriteDebugReport">
-        <short>Prints out essential data to aid debugging TDynHashArray.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.FirstHashItem">
-        <short>
-          Pointer which provides access to the first TDynHashArrayItem stored in the hash array.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.MinCapacity">
-        <short>The minimum number of items that will be allocated for an array.</short>
-        <descr>
-          <p>
-            The size of the array can be changed at any time. However, even if a size is given for Capacity that is smaller than this minimum number, then this minimum number of items will be allocated. This is done for efficiency and speed.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.MaxCapacity">
-        <short>The size of the array cannot be larger than this number.</short>
-        <descr>FCapacity is overridden by this number, if that is larger than this.</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.Capacity">
-        <short>Space is allocated for this number of items.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.CustomHashFunction">
-        <short>The pointer to the user-defined hash function.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.OwnerHashFunction">
-        <short>The pointer to the user-defined hash function.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.OnGetKeyForHashItem">
-        <short>User-defined function to obtain a key from an item.</short>
-        <descr>
-          <p>
-            If this function is specified,then it is possible to use this class as an associative array. Otherwise, it implements a set.
-          </p>
-       </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArray.Options">
-        <short>Set of TDynHashArrayOption values enabled for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TDynHashArrayItemMemManager">
-        <short>Custom memory manager for TDynHashArrayItem instances.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.FFirstFree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.FFreeCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.FCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.FMinFree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.FMaxFreeRatio">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.SetMaxFreeRatio">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArrayItemMemManager.SetMaxFreeRatio.NewValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.SetMinFree">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArrayItemMemManager.SetMinFree.NewValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDynHashArrayItemMemManager.DisposeFirstFreeItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.DisposeItem">
-        <short>
-          Removes references to the specified hash item and adds it to the free list.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDynHashArrayItemMemManager.DisposeItem.ADynHashArrayItem">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.NewItem">
-        <short>Allocates and initializes a new hash item for the memory manager.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArrayItemMemManager.NewItem.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.MinimumFreeCount">
-        <short>Minimum size for the internal free list storage.</short>
-        <descr>
-          <p>
-            Ensures that MinimumFreeCount cannot be set to a negative value.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.MaximumFreeRatio">
-        <short>Threshold at which items in the free list are released.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.Count">
-        <short>Number of hash items allocated by the memory manager.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.Clear">
-        <short>Disposes of hash items in the free list.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.ConsistencyCheck">
-        <short>
-          Ensures that Count matches the actual number of entries in the free list.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDynHashArrayItemMemManager.ConsistencyCheck.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDynHashArrayItemMemManager.WriteDebugReport">
-        <short>Prints out essential data to aid debugging DynHashArrayItemMemManager.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="EDynHashArrayException">
-        <short>Raised if index is invalid in IndexOfKey.</short>
-        <descr>The index can be invalid if user-defined/custom function are faulty.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="ItemMemManager">
-        <short>A small memory manager.</short>
-        <descr/>
-        <seealso/>
-      </element>
-    </module>
-    <!-- DynHashArray -->
-  </package>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Remove.Item">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Clear">
+<short>Removes all elements from the set/hash array.</short>
+<descr>
+<p>An example:</p>
+<code>uses
+{$IFDEF UNIX}{$IFDEF UseCThreads}
+cthreads,
+{$ENDIF}{$ENDIF}
+Classes, dynhasharray,strings;
+
+var
+A:TDynHashArray;
+s:pchar;
+begin
+A:=TDynHashArray.Create;
+s:=StrNew ('u');
+A.Add(s);
+if A.Contains(s) then
+writeln('1:it contains s.');
+writeln('1:count:',A.Count);
+A.Clear;
+
+if A.Contains(s) then
+writeln('2:it contains s.');
+writeln('2:count:',A.Count);
+ReadLn;
+StrDispose(s);   </code>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.ClearCache">
+<short>Clears the FContainsCache cache.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.First">
+<short>Returns the first item or nil.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.First.Result">
+<short/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Count">
+<short>Number of elements stored in the set/array.</short>
+<descr><p>An example:</p><code>uses
+{$IFDEF UNIX}{$IFDEF UseCThreads}
+cthreads,
+{$ENDIF}{$ENDIF}
+Classes, dynhasharray,strings;
+
+var
+A:TDynHashArray;
+s:pchar;
+begin
+A:=TDynHashArray.Create;
+s:=StrNew ('u');
+A.Add(s);
+if A.Contains(s) then
+writeln('1:it contains s.');
+writeln('1:count:',A.Count);
+A.Clear;
+
+if A.Contains(s) then
+writeln('2:it contains s.');
+writeln('2:count:',A.Count);
+ReadLn;
+StrDispose(s);   </code>
+</descr>
+<seealso/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.IndexOf">
+<short>Returns calculated index from Item through OnGetKeyForHashItem.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.IndexOf.Result"/>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.IndexOf.AnItem">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.IndexOfKey">
+<short>Returns calculated index from Item.</short>
+<descr>It uses user-defined hash functions or built-in algorithm</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.IndexOfKey.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.IndexOfKey.Key">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindHashItem">
+<short>Finds an item as PDynHashArrayItem among all items.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.FindHashItem.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindHashItem.Item">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindHashItemWithKey">
+<short>
+Finds an item as PDynHashArrayItem among all items (through 
+OnGetKeyForHashItem).
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.FindHashItemWithKey.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindHashItemWithKey.Key">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.FindItemWithKey">
+<short>Finds an item among all items (through OnGetKeyForHashItem).</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.FindItemWithKey.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.FindItemWithKey.Key">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.GetHashItem">
+<short>Gets a link list from the "main" array FItems by index.</short>
+<descr>So it returns a link list which can be processed.</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.GetHashItem.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.GetHashItem.HashIndex">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.Delete">
+<short>Deletes a PDynHashArrayItem from link list.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.Delete.ADynHashArrayItem">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.AssignTo">
+<short>Copies all items into a given TList.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.AssignTo.List">
+<short/>
+</element>
+
+<element name="TDynHashArray.ForEach">
+<short>
+Calls the specified function for each of the items in the hash array.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TDynHashArray.ForEach.Func">
+<short>Boolean function type called for the hash items.</short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynHashArray.SlowAlternativeHashMethod">
+<short>Another hash function that can be used.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Result">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Sender">
+<short/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArray.SlowAlternativeHashMethod.Item">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArray.ConsistencyCheck">
+<short>Check if data in TDynHashArray are OK.</short>
+<descr>Returns a number indicating the nature of inconsistency. 0
+means OK.
+</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArray.ConsistencyCheck.Result">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArray.WriteDebugReport">
+<short>Prints out essential data to aid debugging TDynHashArray.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.FirstHashItem">
+<short>
+Pointer which provides access to the first TDynHashArrayItem stored in the 
+hash array.
+</short>
+<descr/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.MinCapacity">
+<short>
+The minimum number of items that will be allocated for an array.
+</short>
+<descr>
+<p>
+The size of the array can be changed at any time. However, even if a size is 
+given for Capacity that is smaller than this minimum number, then this 
+minimum number of items will be allocated. This is done for efficiency and 
+speed.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.MaxCapacity">
+<short>The size of the array cannot be larger than this number.</short>
+<descr>FCapacity is overridden by this number, if that is larger than 
+this.</descr>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Capacity">
+<short>Space is allocated for this number of items.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.CustomHashFunction">
+<short>The pointer to the user-defined hash function.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.OwnerHashFunction">
+<short>The pointer to the user-defined hash function.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.OnGetKeyForHashItem">
+<short>User-defined function to obtain a key from an item.</short>
+<descr>
+<p>
+If this function is specified,then it is possible to use this class as an 
+associative array. Otherwise, it implements a set.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArray.Options">
+<short>
+Set of TDynHashArrayOption values enabled for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<!-- object Visibility: default -->
+<element name="TDynHashArrayItemMemManager">
+<short>Custom memory manager for TDynHashArrayItem instances.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FFirstFree">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FFreeCount">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FCount">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FMinFree">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- variable Visibility: private -->
+<element name="TDynHashArrayItemMemManager.FMaxFreeRatio">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.SetMaxFreeRatio">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.SetMaxFreeRatio.NewValue">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.SetMinFree">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.SetMinFree.NewValue">
+<short/>
+</element>
+<!-- procedure Visibility: private -->
+<element name="TDynHashArrayItemMemManager.DisposeFirstFreeItem">
+<short/>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.DisposeItem">
+<short>
+Removes references to the specified hash item and adds it to the free list.
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- argument Visibility: default -->
+<element name="TDynHashArrayItemMemManager.DisposeItem.ADynHashArrayItem">
+<short/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArrayItemMemManager.NewItem">
+<short>
+Allocates and initializes a new hash item for the memory manager.
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArrayItemMemManager.NewItem.Result">
+<short/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.MinimumFreeCount">
+<short>Minimum size for the internal free list storage.</short>
+<descr>
+<p>
+Ensures that MinimumFreeCount cannot be set to a negative value.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.MaximumFreeRatio">
+<short>Threshold at which items in the free list are released.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- property Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Count">
+<short>Number of hash items allocated by the memory manager.</short>
+<descr/>
+<seealso/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Clear">
+<short>Disposes of hash items in the free list.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- constructor Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- destructor Visibility: public -->
+<element name="TDynHashArrayItemMemManager.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function Visibility: public -->
+<element name="TDynHashArrayItemMemManager.ConsistencyCheck">
+<short>
+Ensures that Count matches the actual number of entries in the free list.
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- function result Visibility: default -->
+<element name="TDynHashArrayItemMemManager.ConsistencyCheck.Result">
+<short/>
+</element>
+<!-- procedure Visibility: public -->
+<element name="TDynHashArrayItemMemManager.WriteDebugReport">
+<short>
+Prints out essential data to aid debugging DynHashArrayItemMemManager.
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<!-- object Visibility: default -->
+<element name="EDynHashArrayException">
+<short>Raised if index is invalid in IndexOfKey.</short>
+<descr>The index can be invalid if user-defined/custom function are 
+faulty.</descr>
+<errors/>
+<seealso/>
+</element>
+<!-- constant Visibility: default -->
+<element name="ItemMemManager">
+<short>A small memory manager.</short>
+<descr/>
+<seealso/>
+</element>
+</module>
+<!-- DynHashArray -->
+</package>
 </fpdoc-descriptions>

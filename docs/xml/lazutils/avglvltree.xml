@@ -1,1547 +1,1574 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      AvgLvlTree
-    ====================================================================
-    -->
-    <module name="AvgLvlTree">
-      <short>
-        An Average Level Tree structure, which is kept balanced so that finding a node is very rapid.
-        </short>
-      <descr>
-        <p>
-          Defines classes that use TAvlTree for data storage, and enumerators for them. TAvlTree is an Average Level binary Tree, located in unit AVL_Tree in FPC packages.
-        </p>
-      </descr>
-
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Laz_AVL_Tree"/>
-      <element name="LazFileUtils"/>
-      <element name="LazDbgLog"/>
-
-      <element name="TAvgLvlObjectSortCompare">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TAvgLvlObjectSortCompare.Result">
-        <short></short>
-      </element>
-      <element name="TAvgLvlObjectSortCompare.Tree">
-        <short></short>
-      </element>
-      <element name="TAvgLvlObjectSortCompare.Data1">
-        <short></short>
-      </element>
-      <element name="TAvgLvlObjectSortCompare.Data2">
-        <short></short>
-      </element>
-
-      <element name="TAvgLvlTreeNode">
-        <short>
-          <var>TAvgLvlTreeNode</var> - a node, the basic structural element of a <var>TAvgLvlTree</var>.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-
-      <element name="TAvgLvlTreeNodeEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TAvgLvlTree">
-        <short>
-          <var>TAvgLvlTree</var> - an Average Level binary Tree.
-        </short>
-        <descr>
-          <p>
-            <var>TAvgLvlTree</var> is an Average Level binary Tree. This binary tree is always balanced, so that inserting, deleting and finding a node is performed in O(log(#Nodes))
-          </p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-
-      <element name="TAvgLvlTree.FOwnsObjexts"/>
-      <element name="TAvgLvlTree.GetObjectCompare"/>
-      <element name="TAvgLvlTree.GetObjectCompare.Result"/>
-      <element name="TAvgLvlTree.SetObjectCompare"/>
-      <element name="TAvgLvlTree.SetObjectCompare.AValue"/>
-
-      <element name="TAvgLvlTree.CreateObjectCompare">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
-        <short></short>
-      </element>
-
-      <element name="TAvgLvlTree.DisposeNode">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TAvgLvlTree.DisposeNode.ANode">
-        <short></short>
-      </element>
-
-      <element name="TAvgLvlTree.FreeAndDelete">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TAvgLvlTree.FreeAndDelete.ANode">
-        <short></short>
-      </element>
-
-      <element name="TAvgLvlTree.OwnsObjects">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TAvgLvlTree.OnObjectCompare">
-        <short>Same as OnCompare, but with a method instead of a procedure.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TAvgLvlTreeClass">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTreeNode" link="#lazutils.avglvltree.TAVLTreeNode">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTreeNode.LeftCount">
-        <short>The number of nodes in the Left side.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTree" link="#lazutils.avglvltree.TAvgLvlTree">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTree.GetItems"/>
-
-      <element name="TIndexedAVLTree.FLastIndex">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.FLastNode">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.DeletingNode">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.DeletingNode.ANode">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.Init">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTree.NodeAdded">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.NodeAdded.ANode">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.RotateLeft">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.RotateLeft.ANode">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.RotateRight">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.RotateRight.ANode">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.SwitchPositionWithSuccessor">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.SwitchPositionWithSuccessor.ANode">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.SwitchPositionWithSuccessor.ASuccessor">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.GetNodeAtIndex">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.GetNodeAtIndex.Result">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.GetNodeAtIndex.Index">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.NodeToIndex">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.NodeToIndex.Result">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.NodeToIndex.Node">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.IndexOf">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.IndexOf.Result">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.IndexOf.Data">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.Items">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.Items.Index">
-        <short></short>
-      </element>
-
-      <element name="TIndexedAVLTree.ConsistencyCheck">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TIndexedAVLTree.NodeToReportStr">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TIndexedAVLTree.NodeToReportStr.Result">
-        <short></short>
-      </element>
-      <element name="TIndexedAVLTree.NodeToReportStr.ANode">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerItem">
-        <short>
-          <var>TPointerToPointerItem</var> - an item in a PointerToPointer Tree (associative array).
-        </short>
-      </element>
-      <element name="TPointerToPointerItem.Key">
-        <short>
-          The <var>Key</var> defining the pointer item.
-        </short>
-      </element>
-      <element name="TPointerToPointerItem.Value">
-        <short>
-          The <var>Value</var> of the pointer item.
-        </short>
-      </element>
-
-      <element name="PPointerToPointerItem">
-        <short>
-          <var>PPointerToPointerItem</var> - a pointer to a <var>TPointerToPointerItem</var>.
-        </short>
-      </element>
-
-      <element name="TPointerToPointerEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.FHighToLow"/>
-      <element name="TPointerToPointerEnumerator.FTree"/>
-      <element name="TPointerToPointerEnumerator.FCurrent"/>
-
-      <element name="TPointerToPointerEnumerator.GetCurrent">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerEnumerator.GetCurrent.Result">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.Create">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerEnumerator.Create.Tree">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.GetEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerEnumerator.GetEnumerator.Result">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.MoveNext">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerEnumerator.MoveNext.Result">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.Current">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerEnumerator.HighToLow">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerTree">
-        <short>
-          <var>TPointerToPointerTree</var> is an associative array of PointerToPointer Items, or a tree of trees.
-        </short>
-        <descr>
-          <p>
-            <var>TPointerToPointerTree</var> is an associative array of PointerToPointer Items, or a tree of trees. This class uses pointers to identify pointers within the array, unlike the <var>TStringToStringTree</var>, which uses strings to identify strings.
-          </p>
-        </descr>
-      </element>
-
-      <element name="TPointerToPointerTree.FItems"/>
-
-      <element name="TPointerToPointerTree.GetCount"/>
-      <element name="TPointerToPointerTree.GetCount.Result"/>
-      <element name="TPointerToPointerTree.GetValues"/>
-      <element name="TPointerToPointerTree.GetValues.Result"/>
-      <element name="TPointerToPointerTree.GetValues.Key"/>
-      <element name="TPointerToPointerTree.SetValues"/>
-      <element name="TPointerToPointerTree.SetValues.Key"/>
-      <element name="TPointerToPointerTree.SetValues.AValue"/>
-      <element name="TPointerToPointerTree.FindNode"/>
-      <element name="TPointerToPointerTree.FindNode.Result"/>
-      <element name="TPointerToPointerTree.FindNode.Key"/>
-      <element name="TPointerToPointerTree.GetNode"/>
-      <element name="TPointerToPointerTree.GetNode.Result"/>
-      <element name="TPointerToPointerTree.GetNode.Node"/>
-      <element name="TPointerToPointerTree.GetNode.Key"/>
-      <element name="TPointerToPointerTree.GetNode.Value"/>
-
-      <element name="TPointerToPointerTree.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for <var>TPointerToPointerTree</var>.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerTree.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerTree.Clear">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerTree.ClearWithFree">
-        <short>Frees objects stored in Values.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TPointerToPointerTree.Equals">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.Equals.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.Equals.Obj">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.IsEqual">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.IsEqual.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.IsEqual.ATree">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.Assign">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.Assign.ATree">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.Remove">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.Remove.Key">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.Contains">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.Contains.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.Contains.Key">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.GetFirst">
-        <short>
-          <var>GetFirst</var> - finds the first node matching the supplied arguments; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.GetFirst.Key">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetFirst.Value">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.GetLast">
-        <short>
-          <var>GetLast</var> - finds the last node matching the supplied arguments; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.GetLast.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetLast.Key">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetLast.Value">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.GetNext">
-        <short>
-          <var>GetNext</var> - finds the next node matching the supplied arguments; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.GetNext.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetNext.Key">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetNext.NextKey">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetNext.NextValue">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.GetPrev">
-        <short>
-          <var>GetPrev</var> - finds the previous node matching the supplied arguments; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.GetPrev.Result">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetPrev.Key">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetPrev.PrevKey">
-        <short></short>
-      </element>
-      <element name="TPointerToPointerTree.GetPrev.PrevValue">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.FindByValue">
-        <short>Finds a Key by its Value using a slow linear search.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.FindByValue.Result">
-        <short>Pointer to the Key or Nil.</short>
-      </element>
-      <element name="TPointerToPointerTree.FindByValue.AValue">
-        <short/>
-      </element>
-
-      <element name="TPointerToPointerTree.Count">
-        <short>
-          <var>Count</var> - the number of items.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPointerToPointerTree.Values">
-        <short>
-          <var>Values</var> - a pointer into the array of values associated with the nodes.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPointerToPointerTree.Values.Key">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.Tree">
-        <short>
-          The <var>Tree</var> that forms the basis of the associative array.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPointerToPointerTree.GetEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.GetEnumerator.Result">
-        <short></short>
-      </element>
-
-      <element name="TPointerToPointerTree.GetEnumeratorHighToLow">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPointerToPointerTree.GetEnumeratorHighToLow.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringMapItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringMapItem.Name">
-        <short></short>
-      </element>
-
-      <element name="PStringMapItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMapEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMapEnumerator.FTree"/>
-      <element name="TCustomStringMapEnumerator.FCurrent"/>
-
-      <element name="TCustomStringMapEnumerator.Create">
-        <short>Constructor for the class instance.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMapEnumerator.Create.Tree">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMapEnumerator.MoveNext">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMapEnumerator.MoveNext.Result">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.FCompareKeyItemFunc"/>
-      <element name="TCustomStringMap.FTree"/>
-      <element name="TCustomStringMap.FCaseSensitive"/>
-
-      <element name="TCustomStringMap.GetCompareItemsFunc">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.GetCompareItemsFunc.Result">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.DisposeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.DisposeItem.P">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.ItemsAreEqual">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.ItemsAreEqual.Result">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.ItemsAreEqual.P1">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.ItemsAreEqual.P2">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.CreateCopy">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.CreateCopy.Result">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.CreateCopy.Src">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Create">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Create.TheCaseSensitive">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.Create.ACompareItems">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.Create.ACompareNameWithItem">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.Create.ACompareNameWithItem">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.Clear">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.Contains">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Contains.Result">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.Contains.S">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.GetNames">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.GetNames.List">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Remove">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Remove.Name">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.CaseSensitive">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.Tree">
-        <short>Tree containing PStringMapItem pointers.</short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.FindNode">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.FindNode.Result">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.FindNode.S">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Count">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Count.Result">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Equals">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Equals.Result">
-        <short></short>
-      </element>
-      <element name="TCustomStringMap.Equals.OtherTree">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.Assign">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.Assign.Source">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.CalcMemSize">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.CalcMemSize.Result">
-        <short></short>
-      </element>
-
-      <element name="TCustomStringMap.CompareItemsFunc">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.CompareKeyItemsFunc">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TCustomStringMap.SetCompareFuncs">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TCustomStringMap.SetCompareFuncs.NewCompareItemsFunc">
-        <short></short>
-      </element>
-
-      <element name="TStringMapEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringMapEnumerator.GetCurrent">
-        <short></short>
-      </element>
-      <element name="TStringMapEnumerator.GetCurrent.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringMapEnumerator.Current">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringMap" link="#lazutils.avglvltree.TCustomStringMap">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringMap.GetValues">
-        <short></short>
-      </element>
-      <element name="TStringMap.GetValues.Result">
-        <short></short>
-      </element>
-      <element name="TStringMap.GetValues.S">
-        <short></short>
-      </element>
-
-      <element name="TStringMap.SetValues">
-        <short></short>
-      </element>
-      <element name="TStringMap.SetValues.S">
-        <short></short>
-      </element>
-      <element name="TStringMap.SetValues.AValue">
-        <short></short>
-      </element>
-
-      <element name="TStringMap.Add">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringMap.Add.Name">
-        <short></short>
-      </element>
-
-      <element name="TStringMap.GetEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringMap.GetEnumerator.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringMap.Values">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringMap.Values.S">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToStringItem.Name">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToStringItem.Value">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="PStringToStringItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToStringTreeEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToStringTreeEnumerator.GetCurrent">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTreeEnumerator.GetCurrent.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTreeEnumerator.Current">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToStringTree">
-        <short>An associative array of StringToString Items, or a tree of trees.</short>
-        <descr>
-          <p>
-            <var>TStringToStringTree</var> implements an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomStringMap"/>
-        </seealso>
-      </element>
-
-      <element name="TStringToStringTree.GetValues">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetValues.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetValues.S">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.SetValues">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.SetValues.S">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.SetValues.AValue">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.DisposeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.DisposeItem.P">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.ItemsAreEqual">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.ItemsAreEqual.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.ItemsAreEqual.P1">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.ItemsAreEqual.P2">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.CreateCopy">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.CreateCopy.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.CreateCopy.Src">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetNode">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.GetNode.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNode.Node">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNode.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNode.Value">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetString">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.GetString.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetString.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetString.Value">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.Add">
-        <short>
-          <var>Add</var> an item to the tree (specified by its name, value or delimiter).
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.Add.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.Add.Value">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.Add.Delimiter">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.AddNameValues">
-        <short>
-          <var>AddNameValues</var> add the specified named values to the tree.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.AddNameValues.List">
-        <short/>
-      </element>
-
-      <element name="TStringToStringTree.AddNames">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.AddNames.List">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.Values">
-        <short>
-          The <var>Values</var> of the strings corresponding to the supplied name.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.S">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetNodeData">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.GetNodeData.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNodeData.Node">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.AsText">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.AsText.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.Assign">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.Assign.Source">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.CalcMemSize">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.CalcMemSize.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToStringTree.GetEnumerator.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetFirst">
-        <short>
-          <var>GetFirst</var> - finds the matching first item; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.GetFirst.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetFirst.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetFirst.Value">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetLast">
-        <short>
-          <var>GetLast</var> - finds the last matching item; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.GetLast.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetLast.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetLast.Value">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetNext">
-        <short>
-          <var>GetNext</var> - finds the next matching item; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.GetNext.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNext.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNext.NextName">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetNext.NextValue">
-        <short></short>
-      </element>
-
-      <element name="TStringToStringTree.GetPrev">
-        <short>
-          <var>GetPrev</var> - finds the previous matching item; returns True if successful.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TStringToStringTree.GetPrev.Result">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetPrev.Name">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetPrev.PrevName">
-        <short></short>
-      </element>
-      <element name="TStringToStringTree.GetPrev.PrevValue">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTreeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTreeItem.Name">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTreeItem.Value">
-        <short></short>
-      </element>
-
-      <element name="PStringToPointerTreeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToPointerTreeEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToPointerTreeEnumerator.GetCurrent">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTreeEnumerator.GetCurrent.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTreeEnumerator.Current">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToPointerTree" link="#lazutils.avglvltree.TCustomStringMap">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToPointerTree.FFreeValues"/>
-
-      <element name="TStringToPointerTree.GetValues">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.GetValues.Result">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.GetValues.S">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.SetValues">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.SetValues.S">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.SetValues.AValue">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.DisposeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.DisposeItem.P">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.ItemsAreEqual">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.ItemsAreEqual.Result">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.ItemsAreEqual.P1">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.ItemsAreEqual.P2">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.CreateCopy">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.CreateCopy.Result">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.CreateCopy.Src">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.GetData">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.GetData.Result">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.GetData.Name">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.GetData.Value">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.GetNodeData">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.GetNodeData.Result">
-        <short></short>
-      </element>
-      <element name="TStringToPointerTree.GetNodeData.Node">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.GetEnumerator">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.GetEnumerator.Result">
-        <short></short>
-      </element>
-
-      <element name="TStringToPointerTree.FreeValues">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TStringToPointerTree.Values">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringToPointerTree.Values.S">
-        <short></short>
-      </element>
-
-      <element name="TFilenameToStringTree">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TFilenameToStringTree" link="#lazutils.avglvltree.TStringToStringTree">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TFilenameToStringTree.Create">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TFilenameToStringTree.Create.CaseSensitive">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TFilenameToPointerTree" link="#lazutils.avglvltree.TStringToPointerTree">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TFilenameToPointerTree.Create">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TFilenameToPointerTree.Create.CaseSensitive">
-        <short></short>
-      </element>
-
-      <element name="ComparePointer">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="ComparePointer.Result">
-        <short></short>
-      </element>
-      <element name="ComparePointer.Data1">
-        <short></short>
-      </element>
-      <element name="ComparePointer.Data2">
-        <short></short>
-      </element>
-
-      <element name="ComparePointerToPointerItems">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="ComparePointerToPointerItems.Result">
-        <short></short>
-      </element>
-      <element name="ComparePointerToPointerItems.Data1">
-        <short></short>
-      </element>
-      <element name="ComparePointerToPointerItems.Data2">
-        <short></short>
-      </element>
-
-      <element name="ComparePointerWithPtrToPtrItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="ComparePointerWithPtrToPtrItem.Result">
-        <short></short>
-      </element>
-      <element name="ComparePointerWithPtrToPtrItem.Key">
-        <short></short>
-      </element>
-      <element name="ComparePointerWithPtrToPtrItem.Data">
-        <short></short>
-      </element>
-
-      <element name="CompareStringToStringItems">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareStringToStringItems.Result">
-        <short></short>
-      </element>
-      <element name="CompareStringToStringItems.Data1">
-        <short></short>
-      </element>
-      <element name="CompareStringToStringItems.Data2">
-        <short></short>
-      </element>
-
-      <element name="CompareAnsiStringWithStrToStrItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareAnsiStringWithStrToStrItem.Result">
-        <short></short>
-      </element>
-      <element name="CompareAnsiStringWithStrToStrItem.Data1">
-        <short></short>
-      </element>
-      <element name="CompareAnsiStringWithStrToStrItem.Data2">
-        <short></short>
-      </element>
-      <element name="CompareAnsiStringWithStrToStrItem.Key">
-        <short></short>
-      </element>
-      <element name="CompareAnsiStringWithStrToStrItem.Data">
-        <short></short>
-      </element>
-
-      <element name="CompareFilenameToStringItems">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareFilenameToStringItems.Result">
-        <short></short>
-      </element>
-      <element name="CompareFilenameToStringItems.Data1">
-        <short></short>
-      </element>
-      <element name="CompareFilenameToStringItems.Data2">
-        <short></short>
-      </element>
-
-      <element name="CompareFilenameAndFilenameToStringTreeItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItem.Result">
-        <short></short>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItem.Key">
-        <short></short>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItem.Data">
-        <short></short>
-      </element>
-
-      <element name="CompareFilenameToStringItemsI">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareFilenameToStringItemsI.Result">
-        <short></short>
-      </element>
-      <element name="CompareFilenameToStringItemsI.Data1">
-        <short></short>
-      </element>
-      <element name="CompareFilenameToStringItemsI.Data2">
-        <short></short>
-      </element>
-
-      <element name="CompareFilenameAndFilenameToStringTreeItemI">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItemI.Result">
-        <short></short>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItemI.Key">
-        <short></short>
-      </element>
-      <element name="CompareFilenameAndFilenameToStringTreeItemI.Data">
-        <short></short>
-      </element>
-
-    </module>
-    <!-- AvgLvlTree -->
-  </package>
+<package name="lazutils">
+<!--
+====================================================================
+AvgLvlTree
+====================================================================
+-->
+<module name="AvgLvlTree">
+<short>
+An Average Level Tree structure, which is kept balanced so that finding a 
+node is very rapid.
+</short>
+<descr>
+<p>
+Defines classes that use TAvlTree for data storage, and enumerators for them. 
+TAvlTree is an Average Level binary Tree, located in unit AVL_Tree in FPC 
+packages.
+</p>
+</descr>
+
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Laz_AVL_Tree"/>
+<element name="LazFileUtils"/>
+<element name="LazDbgLog"/>
+
+<element name="TAvgLvlObjectSortCompare">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TAvgLvlObjectSortCompare.Result">
+<short></short>
+</element>
+<element name="TAvgLvlObjectSortCompare.Tree">
+<short></short>
+</element>
+<element name="TAvgLvlObjectSortCompare.Data1">
+<short></short>
+</element>
+<element name="TAvgLvlObjectSortCompare.Data2">
+<short></short>
+</element>
+
+<element name="TAvgLvlTreeNode">
+<short>
+<var>TAvgLvlTreeNode</var> - a node, the basic structural element of a 
+<var>TAvgLvlTree</var>.
+</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+
+<element name="TAvgLvlTreeNodeEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TAvgLvlTree">
+<short>
+<var>TAvgLvlTree</var> - an Average Level binary Tree.
+</short>
+<descr>
+<p>
+<var>TAvgLvlTree</var> is an Average Level binary Tree. This binary tree is 
+always balanced, so that inserting, deleting and finding a node is performed 
+in O(log(#Nodes))
+</p>
+</descr>
+<errors/>
+<seealso/>
+</element>
+
+<element name="TAvgLvlTree.FOwnsObjexts"/>
+<element name="TAvgLvlTree.GetObjectCompare"/>
+<element name="TAvgLvlTree.GetObjectCompare.Result"/>
+<element name="TAvgLvlTree.SetObjectCompare"/>
+<element name="TAvgLvlTree.SetObjectCompare.AValue"/>
+
+<element name="TAvgLvlTree.CreateObjectCompare">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
+<short></short>
+</element>
+
+<element name="TAvgLvlTree.DisposeNode">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TAvgLvlTree.DisposeNode.ANode">
+<short></short>
+</element>
+
+<element name="TAvgLvlTree.FreeAndDelete">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TAvgLvlTree.FreeAndDelete.ANode">
+<short></short>
+</element>
+
+<element name="TAvgLvlTree.OwnsObjects">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TAvgLvlTree.OnObjectCompare">
+<short>Same as OnCompare, but with a method instead of a procedure.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TAvgLvlTreeClass">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTreeNode" link="#lazutils.avglvltree.TAVLTreeNode">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTreeNode.LeftCount">
+<short>The number of nodes in the Left side.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTree" link="#lazutils.avglvltree.TAvgLvlTree">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTree.GetItems"/>
+
+<element name="TIndexedAVLTree.FLastIndex">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.FLastNode">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.DeletingNode">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.DeletingNode.ANode">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTree.NodeAdded">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.NodeAdded.ANode">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.RotateLeft">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.RotateLeft.ANode">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.RotateRight">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.RotateRight.ANode">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.SwitchPositionWithSuccessor">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.SwitchPositionWithSuccessor.ANode">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.SwitchPositionWithSuccessor.ASuccessor">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.GetNodeAtIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.GetNodeAtIndex.Result">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.GetNodeAtIndex.Index">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.NodeToIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.NodeToIndex.Result">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.NodeToIndex.Node">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.IndexOf.Result">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.IndexOf.Data">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.Items">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.Items.Index">
+<short></short>
+</element>
+
+<element name="TIndexedAVLTree.ConsistencyCheck">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TIndexedAVLTree.NodeToReportStr">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TIndexedAVLTree.NodeToReportStr.Result">
+<short></short>
+</element>
+<element name="TIndexedAVLTree.NodeToReportStr.ANode">
+<short></short>
+</element>
+
+<element name="TPointerToPointerItem">
+<short>
+<var>TPointerToPointerItem</var> - an item in a PointerToPointer Tree 
+(associative array).
+</short>
+</element>
+<element name="TPointerToPointerItem.Key">
+<short>
+The <var>Key</var> defining the pointer item.
+</short>
+</element>
+<element name="TPointerToPointerItem.Value">
+<short>
+The <var>Value</var> of the pointer item.
+</short>
+</element>
+
+<element name="PPointerToPointerItem">
+<short>
+<var>PPointerToPointerItem</var> - a pointer to a 
+<var>TPointerToPointerItem</var>.
+</short>
+</element>
+
+<element name="TPointerToPointerEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerEnumerator.FHighToLow"/>
+<element name="TPointerToPointerEnumerator.FTree"/>
+<element name="TPointerToPointerEnumerator.FCurrent"/>
+
+<element name="TPointerToPointerEnumerator.GetCurrent">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerEnumerator.GetCurrent.Result">
+<short></short>
+</element>
+
+<element name="TPointerToPointerEnumerator.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerEnumerator.Create.Tree">
+<short></short>
+</element>
+
+<element name="TPointerToPointerEnumerator.GetEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerEnumerator.GetEnumerator.Result">
+<short></short>
+</element>
+
+<element name="TPointerToPointerEnumerator.MoveNext">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerEnumerator.MoveNext.Result">
+<short></short>
+</element>
+
+<element name="TPointerToPointerEnumerator.Current">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerEnumerator.HighToLow">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerTree">
+<short>
+<var>TPointerToPointerTree</var> is an associative array of PointerToPointer 
+Items, or a tree of trees.
+</short>
+<descr>
+<p>
+<var>TPointerToPointerTree</var> is an associative array of PointerToPointer 
+Items, or a tree of trees. This class uses pointers to identify pointers 
+within the array, unlike the <var>TStringToStringTree</var>, which uses 
+strings to identify strings.
+</p>
+</descr>
+</element>
+
+<element name="TPointerToPointerTree.FItems"/>
+
+<element name="TPointerToPointerTree.GetCount"/>
+<element name="TPointerToPointerTree.GetCount.Result"/>
+<element name="TPointerToPointerTree.GetValues"/>
+<element name="TPointerToPointerTree.GetValues.Result"/>
+<element name="TPointerToPointerTree.GetValues.Key"/>
+<element name="TPointerToPointerTree.SetValues"/>
+<element name="TPointerToPointerTree.SetValues.Key"/>
+<element name="TPointerToPointerTree.SetValues.AValue"/>
+<element name="TPointerToPointerTree.FindNode"/>
+<element name="TPointerToPointerTree.FindNode.Result"/>
+<element name="TPointerToPointerTree.FindNode.Key"/>
+<element name="TPointerToPointerTree.GetNode"/>
+<element name="TPointerToPointerTree.GetNode.Result"/>
+<element name="TPointerToPointerTree.GetNode.Node"/>
+<element name="TPointerToPointerTree.GetNode.Key"/>
+<element name="TPointerToPointerTree.GetNode.Value"/>
+
+<element name="TPointerToPointerTree.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for <var>TPointerToPointerTree</var>.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerTree.Destroy">
+<short>Destructor for the class instance.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerTree.Clear">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerTree.ClearWithFree">
+<short>Frees objects stored in Values.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TPointerToPointerTree.Equals">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.Equals.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.Equals.Obj">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.IsEqual">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.IsEqual.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.IsEqual.ATree">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.Assign">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.Assign.ATree">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.Remove">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.Remove.Key">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.Contains">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.Contains.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.Contains.Key">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.GetFirst">
+<short>
+<var>GetFirst</var> - finds the first node matching the supplied arguments; 
+returns <b>True</b> if successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.GetFirst.Key">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetFirst.Value">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.GetLast">
+<short>
+<var>GetLast</var> - finds the last node matching the supplied arguments; 
+returns <b>True</b> if successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.GetLast.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetLast.Key">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetLast.Value">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.GetNext">
+<short>
+<var>GetNext</var> - finds the next node matching the supplied arguments; 
+returns <b>True</b> if successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.GetNext.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetNext.Key">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetNext.NextKey">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetNext.NextValue">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.GetPrev">
+<short>
+<var>GetPrev</var> - finds the previous node matching the supplied arguments; 
+returns <b>True</b> if successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.GetPrev.Result">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetPrev.Key">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetPrev.PrevKey">
+<short></short>
+</element>
+<element name="TPointerToPointerTree.GetPrev.PrevValue">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.FindByValue">
+<short>Finds a Key by its Value using a slow linear search.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.FindByValue.Result">
+<short>Pointer to the Key or Nil.</short>
+</element>
+<element name="TPointerToPointerTree.FindByValue.AValue">
+<short/>
+</element>
+
+<element name="TPointerToPointerTree.Count">
+<short>
+<var>Count</var> - the number of items.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPointerToPointerTree.Values">
+<short>
+<var>Values</var> - a pointer into the array of values associated with the 
+nodes.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPointerToPointerTree.Values.Key">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.Tree">
+<short>
+The <var>Tree</var> that forms the basis of the associative array.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPointerToPointerTree.GetEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.GetEnumerator.Result">
+<short></short>
+</element>
+
+<element name="TPointerToPointerTree.GetEnumeratorHighToLow">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TPointerToPointerTree.GetEnumeratorHighToLow.Result">
+<short></short>
+</element>
+
+<element name="TStringMapItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringMapItem.Name">
+<short></short>
+</element>
+
+<element name="PStringMapItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMapEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMapEnumerator.FTree"/>
+<element name="TCustomStringMapEnumerator.FCurrent"/>
+
+<element name="TCustomStringMapEnumerator.Create">
+<short>Constructor for the class instance.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMapEnumerator.Create.Tree">
+<short></short>
+</element>
+
+<element name="TCustomStringMapEnumerator.MoveNext">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMapEnumerator.MoveNext.Result">
+<short></short>
+</element>
+
+<element name="TCustomStringMap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.FCompareKeyItemFunc"/>
+<element name="TCustomStringMap.FTree"/>
+<element name="TCustomStringMap.FCaseSensitive"/>
+
+<element name="TCustomStringMap.GetCompareItemsFunc">
+<short></short>
+</element>
+<element name="TCustomStringMap.GetCompareItemsFunc.Result">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.DisposeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.DisposeItem.P">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.ItemsAreEqual">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.ItemsAreEqual.Result">
+<short></short>
+</element>
+<element name="TCustomStringMap.ItemsAreEqual.P1">
+<short></short>
+</element>
+<element name="TCustomStringMap.ItemsAreEqual.P2">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.CreateCopy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.CreateCopy.Result">
+<short></short>
+</element>
+<element name="TCustomStringMap.CreateCopy.Src">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Create.TheCaseSensitive">
+<short></short>
+</element>
+<element name="TCustomStringMap.Create.ACompareItems">
+<short></short>
+</element>
+<element name="TCustomStringMap.Create.ACompareNameWithItem">
+<short></short>
+</element>
+<element name="TCustomStringMap.Create.ACompareNameWithItem">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Destroy">
+<short>Destructor for the class instance.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.Clear">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.Contains">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Contains.Result">
+<short></short>
+</element>
+<element name="TCustomStringMap.Contains.S">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.GetNames">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.GetNames.List">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Remove">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Remove.Name">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.CaseSensitive">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.Tree">
+<short>Tree containing PStringMapItem pointers.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.FindNode">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.FindNode.Result">
+<short></short>
+</element>
+<element name="TCustomStringMap.FindNode.S">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Count.Result">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Equals">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Equals.Result">
+<short></short>
+</element>
+<element name="TCustomStringMap.Equals.OtherTree">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.Assign">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.Assign.Source">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.CalcMemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.CalcMemSize.Result">
+<short></short>
+</element>
+
+<element name="TCustomStringMap.CompareItemsFunc">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.CompareKeyItemsFunc">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TCustomStringMap.SetCompareFuncs">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TCustomStringMap.SetCompareFuncs.NewCompareItemsFunc">
+<short></short>
+</element>
+
+<element name="TStringMapEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringMapEnumerator.GetCurrent">
+<short></short>
+</element>
+<element name="TStringMapEnumerator.GetCurrent.Result">
+<short></short>
+</element>
+
+<element name="TStringMapEnumerator.Current">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringMap" link="#lazutils.avglvltree.TCustomStringMap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringMap.GetValues">
+<short></short>
+</element>
+<element name="TStringMap.GetValues.Result">
+<short></short>
+</element>
+<element name="TStringMap.GetValues.S">
+<short></short>
+</element>
+
+<element name="TStringMap.SetValues">
+<short></short>
+</element>
+<element name="TStringMap.SetValues.S">
+<short></short>
+</element>
+<element name="TStringMap.SetValues.AValue">
+<short></short>
+</element>
+
+<element name="TStringMap.Add">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringMap.Add.Name">
+<short></short>
+</element>
+
+<element name="TStringMap.GetEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringMap.GetEnumerator.Result">
+<short></short>
+</element>
+
+<element name="TStringMap.Values">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringMap.Values.S">
+<short></short>
+</element>
+
+<element name="TStringToStringItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToStringItem.Name">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToStringItem.Value">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="PStringToStringItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToStringTreeEnumerator" link="#lazutils.avglvltree.TCustomStringMapEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToStringTreeEnumerator.GetCurrent">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTreeEnumerator.GetCurrent.Result">
+<short></short>
+</element>
+
+<element name="TStringToStringTreeEnumerator.Current">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToStringTree">
+<short>
+An associative array of StringToString Items, or a tree of trees.
+</short>
+<descr>
+<p>
+<var>TStringToStringTree</var> implements an associative array of 
+StringToString Items, or a tree of trees. This class uses strings to identify 
+strings within the array, unlike the <var>TPointerToPointerTree</var>, which 
+uses pointers to identify pointers.
+</p>
+</descr>
+<seealso>
+<link id="TCustomStringMap"/>
+</seealso>
+</element>
+
+<element name="TStringToStringTree.GetValues">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetValues.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetValues.S">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.SetValues">
+<short></short>
+</element>
+<element name="TStringToStringTree.SetValues.S">
+<short></short>
+</element>
+<element name="TStringToStringTree.SetValues.AValue">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.DisposeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.DisposeItem.P">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.ItemsAreEqual">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.ItemsAreEqual.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.ItemsAreEqual.P1">
+<short></short>
+</element>
+<element name="TStringToStringTree.ItemsAreEqual.P2">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.CreateCopy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.CreateCopy.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.CreateCopy.Src">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetNode">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.GetNode.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNode.Node">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNode.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNode.Value">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetString">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.GetString.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetString.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetString.Value">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.Add">
+<short>
+<var>Add</var> an item to the tree (specified by its name, value or 
+delimiter).
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.Add.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.Add.Value">
+<short></short>
+</element>
+<element name="TStringToStringTree.Add.Delimiter">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.AddNameValues">
+<short>
+<var>AddNameValues</var> add the specified named values to the tree.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.AddNameValues.List">
+<short/>
+</element>
+
+<element name="TStringToStringTree.AddNames">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.AddNames.List">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.Values">
+<short>
+The <var>Values</var> of the strings corresponding to the supplied name.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.S">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetNodeData">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.GetNodeData.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNodeData.Node">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.AsText">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.AsText.Result">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.Assign">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.Assign.Source">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.CalcMemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.CalcMemSize.Result">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToStringTree.GetEnumerator.Result">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetFirst">
+<short>
+<var>GetFirst</var> - finds the matching first item; returns <b>True</b> if 
+successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.GetFirst.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetFirst.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetFirst.Value">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetLast">
+<short>
+<var>GetLast</var> - finds the last matching item; returns <b>True</b> if 
+successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.GetLast.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetLast.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetLast.Value">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetNext">
+<short>
+<var>GetNext</var> - finds the next matching item; returns <b>True</b> if 
+successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.GetNext.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNext.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNext.NextName">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetNext.NextValue">
+<short></short>
+</element>
+
+<element name="TStringToStringTree.GetPrev">
+<short>
+<var>GetPrev</var> - finds the previous matching item; returns <b>True</b> if 
+successful.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringToStringTree.GetPrev.Result">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetPrev.Name">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetPrev.PrevName">
+<short></short>
+</element>
+<element name="TStringToStringTree.GetPrev.PrevValue">
+<short></short>
+</element>
+
+<element name="TStringToPointerTreeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTreeItem.Name">
+<short></short>
+</element>
+<element name="TStringToPointerTreeItem.Value">
+<short></short>
+</element>
+
+<element name="PStringToPointerTreeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToPointerTreeEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToPointerTreeEnumerator.GetCurrent">
+<short></short>
+</element>
+<element name="TStringToPointerTreeEnumerator.GetCurrent.Result">
+<short></short>
+</element>
+
+<element name="TStringToPointerTreeEnumerator.Current">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToPointerTree" link="#lazutils.avglvltree.TCustomStringMap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToPointerTree.FFreeValues"/>
+
+<element name="TStringToPointerTree.GetValues">
+<short></short>
+</element>
+<element name="TStringToPointerTree.GetValues.Result">
+<short></short>
+</element>
+<element name="TStringToPointerTree.GetValues.S">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.SetValues">
+<short></short>
+</element>
+<element name="TStringToPointerTree.SetValues.S">
+<short></short>
+</element>
+<element name="TStringToPointerTree.SetValues.AValue">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.DisposeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.DisposeItem.P">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.ItemsAreEqual">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.ItemsAreEqual.Result">
+<short></short>
+</element>
+<element name="TStringToPointerTree.ItemsAreEqual.P1">
+<short></short>
+</element>
+<element name="TStringToPointerTree.ItemsAreEqual.P2">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.CreateCopy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.CreateCopy.Result">
+<short></short>
+</element>
+<element name="TStringToPointerTree.CreateCopy.Src">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.GetData">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.GetData.Result">
+<short></short>
+</element>
+<element name="TStringToPointerTree.GetData.Name">
+<short></short>
+</element>
+<element name="TStringToPointerTree.GetData.Value">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.GetNodeData">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.GetNodeData.Result">
+<short></short>
+</element>
+<element name="TStringToPointerTree.GetNodeData.Node">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.GetEnumerator">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.GetEnumerator.Result">
+<short></short>
+</element>
+
+<element name="TStringToPointerTree.FreeValues">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TStringToPointerTree.Values">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TStringToPointerTree.Values.S">
+<short></short>
+</element>
+
+<element name="TFilenameToStringTree">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TFilenameToStringTree" link="#lazutils.avglvltree.TStringToStringTree">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TFilenameToStringTree.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TFilenameToStringTree.Create.CaseSensitive">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TFilenameToPointerTree" link="#lazutils.avglvltree.TStringToPointerTree">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TFilenameToPointerTree.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TFilenameToPointerTree.Create.CaseSensitive">
+<short></short>
+</element>
+
+<element name="ComparePointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="ComparePointer.Result">
+<short></short>
+</element>
+<element name="ComparePointer.Data1">
+<short></short>
+</element>
+<element name="ComparePointer.Data2">
+<short></short>
+</element>
+
+<element name="ComparePointerToPointerItems">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="ComparePointerToPointerItems.Result">
+<short></short>
+</element>
+<element name="ComparePointerToPointerItems.Data1">
+<short></short>
+</element>
+<element name="ComparePointerToPointerItems.Data2">
+<short></short>
+</element>
+
+<element name="ComparePointerWithPtrToPtrItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="ComparePointerWithPtrToPtrItem.Result">
+<short></short>
+</element>
+<element name="ComparePointerWithPtrToPtrItem.Key">
+<short></short>
+</element>
+<element name="ComparePointerWithPtrToPtrItem.Data">
+<short></short>
+</element>
+
+<element name="CompareStringToStringItems">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareStringToStringItems.Result">
+<short></short>
+</element>
+<element name="CompareStringToStringItems.Data1">
+<short></short>
+</element>
+<element name="CompareStringToStringItems.Data2">
+<short></short>
+</element>
+
+<element name="CompareAnsiStringWithStrToStrItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareAnsiStringWithStrToStrItem.Result">
+<short></short>
+</element>
+<element name="CompareAnsiStringWithStrToStrItem.Data1">
+<short></short>
+</element>
+<element name="CompareAnsiStringWithStrToStrItem.Data2">
+<short></short>
+</element>
+<element name="CompareAnsiStringWithStrToStrItem.Key">
+<short></short>
+</element>
+<element name="CompareAnsiStringWithStrToStrItem.Data">
+<short></short>
+</element>
+
+<element name="CompareFilenameToStringItems">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareFilenameToStringItems.Result">
+<short></short>
+</element>
+<element name="CompareFilenameToStringItems.Data1">
+<short></short>
+</element>
+<element name="CompareFilenameToStringItems.Data2">
+<short></short>
+</element>
+
+<element name="CompareFilenameAndFilenameToStringTreeItem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItem.Result">
+<short></short>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItem.Key">
+<short></short>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItem.Data">
+<short></short>
+</element>
+
+<element name="CompareFilenameToStringItemsI">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareFilenameToStringItemsI.Result">
+<short></short>
+</element>
+<element name="CompareFilenameToStringItemsI.Data1">
+<short></short>
+</element>
+<element name="CompareFilenameToStringItemsI.Data2">
+<short></short>
+</element>
+
+<element name="CompareFilenameAndFilenameToStringTreeItemI">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItemI.Result">
+<short></short>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItemI.Key">
+<short></short>
+</element>
+<element name="CompareFilenameAndFilenameToStringTreeItemI.Data">
+<short></short>
+</element>
+
+</module>
+<!-- AvgLvlTree -->
+</package>
 </fpdoc-descriptions>
