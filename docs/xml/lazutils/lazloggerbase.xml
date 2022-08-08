@@ -9,88 +9,131 @@ LazLoggerBase
 <module name="LazLoggerBase">
 <short>Defines base logging classes used in the Lazarus IDE.</short>
 <descr>
-  <p>
-    <file>lazloggerbase.pas</file> contains classes, types, and routines used to implement the base logging mechanisms used in the Lazarus IDE. Its primary usage, when used along with the LazLogger unit, is to provide output to the debugger in the Lazarus IDE.
-  </p>
-  <p>
-    Logger classes (and routines) are found in units like:
-  </p>
-  <dl>
-    <dt>LazLoggerBase.pas</dt>
-    <dd>
-      Provides the base TLazLogger class used as the common ancestor for other logger classes. Use this unit when you want to use the debugln routine. What LazLoggerBase does depends on whether the unit LazLogger is used in any other unit of your application. If LazLogger is not used, LazLoggerBase will install a "blackhole logger" that discards all log messages. If LazLogger is used anywhere, then all units using LazLoggerBase will write the log messages as described under "Logging Output"
-    </dd>
-    <dt>LazLogger.pas</dt>
-    <dd>
-      Provides a logger class which writes output to a file or file handle. Use this unit to activate the functionality of LazLogger.
-    </dd>
-    <dt>LazLoggerProfiling.pas</dt>
-    <dd>
-      Provides a logger class which captures memory usage and execution times.
-    </dd>
-    <dt>LazLoggerDummy.pas</dt>
-    <dd>
-      Re-implements the logger class methods with empty implementations. They are just calls to empty methods. This allows you to disable logging in a unit without the need to remove debugln statements.
-    </dd>
-  </dl>
-  <p>
-    The LazLoggerIntf.inc include file contains interface declarations for routines and operators which should be implemented in each of the units for the various loggers.
-  </p>
-  <p>
-    <b>Usage</b>
-  </p>
-  <p>
-    Add one of the logger classes to your application to enable output of logging messages to the destination supported in the logger class. By using the LazLogger unit, the following are enabled:
-  </p>
-  <ul>
-    <li>A single string, or list of (up to 15) strings: DebugLn('Foo'); DbgOut('a','b');</li>
-    <li>An array of const: DebugLn(['Foo=', 1, ' Bar=', anInteger]);</li>
-    <li>Same arguments as Format(). String + array of const: DbgOut('a %d',[1]);</li>
-  </ul>
-  <p>
-    Also there are tons of dbgs functions that converts common types to a string. For example dbgs(aRect) converts a variable of type TRect to a string.
-  </p>
-  <p>
-    <b>Logger output</b>
-  </p>
-  <dl>
-    <dt>Stdout/Console</dt>
-    <dd>
-      <p>
-        By default the output created by DebugLn is written to the stdout device. The output is silently discarded if stdout is not open. On Windows this is the default behavior, if project type "Application" is used to create a Windows GUI application. To get a console alongside your Windows GUI application, you need to uncheck the option "Win32 GUI application (-WG)" under Project options / Compiler options / Config and Target / Target specific options. Alternatively you can add {$APPTYPE CONSOLE} at the top of your project .lpr file, or configure multiple "Build Modes" to control the -WG switch.
-      </p>
-    </dd>
-    <dt>File</dt>
-    <dd>
-      <p>
-        Debug output can also be written to file. The initialization code of the logging unit checks your program's command line parameters for --debug-log=&lt;file&gt; (In Lazarus: Run / Run Parameters / Command line parameters). On finding this parameter, any subsequent debug output is sent to &lt;file&gt;.
-      </p>
-      <p>
-        The param name can be changed with DebugLogger.ParamForLogFileName:='--debug-log'; This property exists only if the unit LazLogger is used. (LazLoggerBase does not define this property).
-      </p>
-      <p>
-        If no '--debug-log' command line parameter has been given, it next checks if an operating system environment variable xxx_debuglog exists, where xxx is the program file name without extension. E.g. for Lazarus this would be lazarus_debuglog. If such an environment variable exists, it uses the file specified in that environment variable as file to receive debug output.
-      </p>
-    </dd>
-  </dl>
-  <p>
-    <b>Multithreading</b>
-  </p>
-  <p>
-    DebugLn is thread safe, since Lazarus 2.0. Earlier versions of this text stated "since 1.0", but a further race condition was found and fixed for 2.0.
-  </p>
-  <p>
-    Calls to DbgOut, DebugLnEnter, DebugLnExit can be made from threads, but may not always format/indent the output correctly.
-  </p>
-  <p>
-    The creation/setup/destruction/configuration of the logger is not thread-safe, and should be done before threads are started. Creation is usually done automatically during unit initialization. But any properties (eg ParamForLogFileName) should be set before accessing the logger from threads.
-  </p>
-  <p>
-    Callback to events like OnDebugLn are made in each thread. The code in the callback must be thread save by itself. Changing the routine assigned to the property is <b>NOT</b> thread-safe.
-  </p>
-  <p>
-    This file is part of the <file>LazUtils</file> package.
-  </p>
+<p>
+<file>lazloggerbase.pas</file> contains classes, types, and routines used to 
+implement the base logging mechanisms used in the Lazarus IDE. Its primary 
+usage, when used along with the LazLogger unit, is to provide output to the 
+debugger in the Lazarus IDE.
+</p>
+<p>
+Logger classes (and routines) are found in units like:
+</p>
+<dl>
+<dt>LazLoggerBase.pas</dt>
+<dd>
+Provides the base TLazLogger class used as the common ancestor for other 
+logger classes. Use this unit when you want to use the debugln routine. What 
+LazLoggerBase does depends on whether the unit LazLogger is used in any other 
+unit of your application. If LazLogger is not used, LazLoggerBase will 
+install a "blackhole logger" that discards all log messages. If LazLogger is 
+used anywhere, then all units using LazLoggerBase will write the log messages 
+as described under "Logging Output"
+</dd>
+<dt>LazLogger.pas</dt>
+<dd>
+Provides a logger class which writes output to a file or file handle. Use 
+this unit to activate the functionality of LazLogger.
+</dd>
+<dt>LazLoggerProfiling.pas</dt>
+<dd>
+Provides a logger class which captures memory usage and execution times.
+</dd>
+<dt>LazLoggerDummy.pas</dt>
+<dd>
+Re-implements the logger class methods with empty implementations. They are 
+just calls to empty methods. This allows you to disable logging in a unit 
+without the need to remove debugln statements.
+</dd>
+</dl>
+<p>
+The LazLoggerIntf.inc include file contains interface declarations for 
+routines and operators which should be implemented in each of the units for 
+the various loggers.
+</p>
+<p>
+<b>Usage</b>
+</p>
+<p>
+Add one of the logger classes to your application to enable output of logging 
+messages to the destination supported in the logger class. By using the 
+LazLogger unit, the following are enabled:
+</p>
+<ul>
+<li>A single string, or list of (up to 15) strings: DebugLn('Foo'); 
+DbgOut('a','b');</li>
+<li>An array of const: DebugLn(['Foo=', 1, ' Bar=', anInteger]);</li>
+<li>Same arguments as Format(). String + array of const: DbgOut('a 
+%d',[1]);</li>
+</ul>
+<p>
+Also there are tons of dbgs functions that converts common types to a string. 
+For example dbgs(aRect) converts a variable of type TRect to a string.
+</p>
+<p>
+<b>Logger output</b>
+</p>
+<dl>
+<dt>Stdout/Console</dt>
+<dd>
+<p>
+By default the output created by DebugLn is written to the stdout device. The 
+output is silently discarded if stdout is not open. On Windows this is the 
+default behavior, if project type "Application" is used to create a Windows 
+GUI application. To get a console alongside your Windows GUI application, you 
+need to uncheck the option "Win32 GUI application (-WG)" under Project 
+options / Compiler options / Config and Target / Target specific options. 
+Alternatively you can add {$APPTYPE CONSOLE} at the top of your project .lpr 
+file, or configure multiple "Build Modes" to control the -WG switch.
+</p>
+</dd>
+<dt>File</dt>
+<dd>
+<p>
+Debug output can also be written to file. The initialization code of the 
+logging unit checks your program's command line parameters for 
+--debug-log=&lt;file&gt; (In Lazarus: Run / Run Parameters / Command line 
+parameters). On finding this parameter, any subsequent debug output is sent 
+to &lt;file&gt;.
+</p>
+<p>
+The param name can be changed with 
+DebugLogger.ParamForLogFileName:='--debug-log'; This property exists only if 
+the unit LazLogger is used. (LazLoggerBase does not define this property).
+</p>
+<p>
+If no '--debug-log' command line parameter has been given, it next checks if 
+an operating system environment variable xxx_debuglog exists, where xxx is 
+the program file name without extension. E.g. for Lazarus this would be 
+lazarus_debuglog. If such an environment variable exists, it uses the file 
+specified in that environment variable as file to receive debug output.
+</p>
+</dd>
+</dl>
+<p>
+<b>Multithreading</b>
+</p>
+<p>
+DebugLn is thread safe, since Lazarus 2.0. Earlier versions of this text 
+stated "since 1.0", but a further race condition was found and fixed for 2.0.
+</p>
+<p>
+Calls to DbgOut, DebugLnEnter, DebugLnExit can be made from threads, but may 
+not always format/indent the output correctly.
+</p>
+<p>
+The creation/setup/destruction/configuration of the logger is not 
+thread-safe, and should be done before threads are started. Creation is 
+usually done automatically during unit initialization. But any properties (eg 
+ParamForLogFileName) should be set before accessing the logger from threads.
+</p>
+<p>
+Callback to events like OnDebugLn are made in each thread. The code in the 
+callback must be thread save by itself. Changing the routine assigned to the 
+property is <b>NOT</b> thread-safe.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
 <!-- unresolved externals -->
 <element name="Classes"/>
@@ -102,168 +145,182 @@ LazLoggerBase
 
 <!-- enumeration type Visibility: default -->
 <element name="TLazLoggerLogGroupFlag">
-  <short>Represents flags used for Log Groups in TLazLogger.</short>
-  <descr/>
-  <seealso>
-    <link id="TLazLoggerLogGroup"/>
-    <link id="TLazLogger.RegisterLogGroup"/>
-    <link id="TLazLogger.LogGroupList"/>
-  </seealso>
+<short>Represents flags used for Log Groups in TLazLogger.</short>
+<descr/>
+<seealso>
+<link id="TLazLoggerLogGroup"/>
+<link id="TLazLogger.RegisterLogGroup"/>
+<link id="TLazLogger.LogGroupList"/>
+</seealso>
 </element>
 <element name="TLazLoggerLogGroupFlag.lgfAddedByParamParser">
-  <short>
-    Not added using RegisterLogGroup in the logger class. This is a placeholder for the enabled-state given by the user via the command line.
-  </short>
+<short>
+Not added using RegisterLogGroup in the logger class. This is a placeholder 
+for the enabled-state given by the user via the command line.
+</short>
 </element>
 <element name="TLazLoggerLogGroupFlag.lgfNoDefaultEnabledSpecified">
-  <short>Registered and enabled without a default group name.</short>
+<short>Registered and enabled without a default group name.</short>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TLazLoggerLogGroupFlags">
-  <short>Set type used to store values from the TLazLoggerLogGroupFlag enumeration.</short>
-  <descr>
-    <p>
-      TLazLoggerLogGroupFlags is the type used for the Flags member in TLazLoggerLogGroup.
-    </p>
-  </descr>
-  <seealso>
-    <link id="TLazLoggerLogGroup"/>
-  </seealso>
+<short>
+Set type used to store values from the TLazLoggerLogGroupFlag enumeration.
+</short>
+<descr>
+<p>
+TLazLoggerLogGroupFlags is the type used for the Flags member in 
+TLazLoggerLogGroup.
+</p>
+</descr>
+<seealso>
+<link id="TLazLoggerLogGroup"/>
+</seealso>
 </element>
 
 <!-- record type Visibility: default -->
 <element name="TLazLoggerLogGroup">
-  <short>Record type with information about a log group in TLazLogger.</short>
-  <descr/>
-  <seealso>
-    <link id="TLazLogger.RegisterLogGroup"/>
-    <link id="TLazLogger.LogGroupList"/>
-  </seealso>
+<short>Record type with information about a log group in TLazLogger.</short>
+<descr/>
+<seealso>
+<link id="TLazLogger.RegisterLogGroup"/>
+<link id="TLazLogger.LogGroupList"/>
+</seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.ConfigName">
-  <short>Case-insensitive name for the log group.</short>
-  <descr/>
-  <seealso/>
+<short>Case-insensitive name for the log group.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.Enabled">
-  <short><b>True</b> if the log group is enabled.</short>
-  <descr/>
-  <seealso/>
+<short><b>True</b> if the log group is enabled.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.Flags">
-  <short>Flags which indicate how the log was created, and whether it is active.</short>
-  <descr/>
-  <seealso/>
+<short>
+Flags which indicate how the log was created, and whether it is active.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TLazLoggerLogGroup.FOpenedIndents">
-  <short>
-    Member used to track the current indentation level for the log group.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Member used to track the current indentation level for the log group.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- pointer type Visibility: default -->
 <element name="PLazLoggerLogGroup">
-  <short>Pointer to a TLazLoggerLogGroup instance.</short>
-  <descr/>
-  <seealso/>
+<short>Pointer to a TLazLoggerLogGroup instance.</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TLazLoggerLogEnabled">
-  <short>Record type used to track an enabled log group.</short>
-  <descr/>
-  <seealso/>
+<short>Record type used to track an enabled log group.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerLogEnabled.Enabled">
-  <short/>
+<short/>
 </element>
 <element name="TLazLoggerLogEnabled.Group">
-  <short/>
+<short/>
 </element>
 
 <!-- enumeration type Visibility: default -->
 <element name="TLazLoggerWriteTarget">
-  <short>Indicates the destination where output from a logger is written or stored.</short>
-  <descr/>
-  <seealso/>
+<short>
+Indicates the destination where output from a logger is written or stored.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerWriteTarget.lwtNone">
-  <short>Logger output is not written or stored... it is discarded.</short>
+<short>Logger output is not written or stored... it is discarded.</short>
 </element>
 <element name="TLazLoggerWriteTarget.lwtStdOut">
-  <short>Logger output is written to the stdout device.</short>
+<short>Logger output is written to the stdout device.</short>
 </element>
 <element name="TLazLoggerWriteTarget.lwtStdErr">
-  <short>Logger output is written to the StdErr device.</short>
+<short>Logger output is written to the StdErr device.</short>
 </element>
 <element name="TLazLoggerWriteTarget.lwtTextFile">
-  <short>Logger output is written to a text file.</short>
+<short>Logger output is written to a text file.</short>
 </element>
 
 <!-- procedure type Visibility: default -->
 <element name="TLazLoggerWriteEvent">
-  <short>Specifies an event handler signalled to write logger output.</short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>Specifies an event handler signalled to write logger output.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLoggerWriteEvent.Sender">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLoggerWriteEvent.S">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLoggerWriteEvent.Handled">
-  <short></short>
+<short></short>
 </element>
 
 <!-- procedure type Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent">
-  <short>
-    Specifies an event handler used to perform widgetset-specific debug log message handling.
-  </short>
-  <descr>
-    <p>
-      TLazLoggerWidgetSetWriteEvent is the type used for the OnWidgetSetDebugLn and OnWidgetSetDbgOut unit variables. Used primarily for the custom-drawn Android widgetset.
-    </p>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Specifies an event handler used to perform widgetset-specific debug log 
+message handling.
+</short>
+<descr>
+<p>
+TLazLoggerWidgetSetWriteEvent is the type used for the OnWidgetSetDebugLn and 
+OnWidgetSetDbgOut unit variables. Used primarily for the custom-drawn Android 
+widgetset.
+</p>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLoggerWidgetSetWriteEvent.Sender">
-  <short>Object with the logger class instance (TLazLogger) for the event.</short>
+<short>
+Object with the logger class instance (TLazLogger) for the event.
+</short>
 </element>
 <element name="TLazLoggerWidgetSetWriteEvent.S">
-  <short>Log message handled in the routine.</short>
+<short>Log message handled in the routine.</short>
 </element>
 <element name="TLazLoggerWidgetSetWriteEvent.Handled">
-  <short>
-    <b>True</b> if the message was handled in the routine, <var>False</var> if the default output mechanism for the logger class is used.
-  </short>
+<short>
+<b>True</b> if the message was handled in the routine, <var>False</var> if 
+the default output mechanism for the logger class is used.
+</short>
 </element>
 <element name="TLazLoggerWidgetSetWriteEvent.Target">
-  <short>Destination where the log message is written.</short>
+<short>Destination where the log message is written.</short>
 </element>
 <element name="TLazLoggerWidgetSetWriteEvent.Data">
-  <short>Optional pointer to data for the log message.</short>
+<short>Optional pointer to data for the log message.</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TLazLoggerLogGroupList">
-  <short>Implements a container for TLazLoggerLogGroup instances.</short>
-  <descr/>
-  <seealso/>
+<short>Implements a container for TLazLoggerLogGroup instances.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: private -->
@@ -279,158 +336,189 @@ LazLoggerBase
 
 <!-- function Visibility: protected -->
 <element name="TLazLoggerLogGroupList.Add">
-  <short>Creates and adds a new logger group in the container.</short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>Creates and adds a new logger group in the container.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLoggerLogGroupList.Add.Result">
-  <short>Pointer to the TLazLoggerLogGroup instance created and added in the method.</short>
+<short>
+Pointer to the TLazLoggerLogGroup instance created and added in the method.
+</short>
 </element>
 <element name="TLazLoggerLogGroupList.Add.AConfigName">
-  <short>Case-insensitive name for the log group added in the method.</short>
+<short>Case-insensitive name for the log group added in the method.</short>
 </element>
 <element name="TLazLoggerLogGroupList.Add.ADefaulEnabled">
-  <short><b>True</b> if enabled by default.</short>
+<short><b>True</b> if enabled by default.</short>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TLazLoggerLogGroupList.FindOrAdd">
-  <short>
-    Finds or creates a log group in the container with the specified name and enabled status.
-  </short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Finds or creates a log group in the container with the specified name and 
+enabled status.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLoggerLogGroupList.FindOrAdd.Result">
-  <short>Pointer to the TLazLoggerLogGroup instance with the specified name.</short>
+<short>
+Pointer to the TLazLoggerLogGroup instance with the specified name.
+</short>
 </element>
 <element name="TLazLoggerLogGroupList.FindOrAdd.AConfigName">
-  <short>Name of the log group to locate or create in the container.</short>
+<short>Name of the log group to locate or create in the container.</short>
 </element>
 <element name="TLazLoggerLogGroupList.FindOrAdd.ADefaulEnabled">
-  <short>Default enabled status if the log group is created.</short>
+<short>Default enabled status if the log group is created.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLoggerLogGroupList.Remove">
-  <short>Removes a log group from the container.</short>
-  <descr>
-    <p>
-      Remove is overloaded to allow the group to be located using a pointer to the TLazLoggerLogGroup entry, or by a specified name. Remove calls Dispose to release resource allocated for the log group, and frees it from the internal list in the container.No actions are performed if a log group cannot be located in the method.
-    </p>
-  </descr>
-  <seealso/>
+<short>Removes a log group from the container.</short>
+<descr>
+<p>
+Remove is overloaded to allow the group to be located using a pointer to the 
+TLazLoggerLogGroup entry, or by a specified name. Remove calls Dispose to 
+release resource allocated for the log group, and frees it from the internal 
+list in the container.No actions are performed if a log group cannot be 
+located in the method.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="TLazLoggerLogGroupList.Remove.AConfigName">
-  <short>Name of the log group removed from the container.</short>
+<short>Name of the log group removed from the container.</short>
 </element>
 <element name="TLazLoggerLogGroupList.Remove.AnEntry">
-  <short>Pointer to the TLazLoggerLogGroup entry to remove from the container.</short>
+<short>
+Pointer to the TLazLoggerLogGroup entry to remove from the container.
+</short>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TLazLoggerLogGroupList.Create">
-  <short>Constructor for the class instance.</short>
-  <descr>
-    <p>
-      Create is the constructor for the class instance. It allocates the internal TFPList instance used to store TLazLoggerLogGroup entries in the container.
-    </p>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the constructor for the class instance. It allocates the internal 
+TFPList instance used to store TLazLoggerLogGroup entries in the container.
+</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TLazLoggerLogGroupList.Destroy">
-  <short>Destructor for the class instance.</short>
-  <descr>
-    <p>
-      Destroy is the overridden destructor for the class instance. It call Clear to remove all log group entries in the container, and frees the internal list where the log group entries are stored. Destroy calls the inherited method prior to exit.
-    </p>
-  </descr>
-  <seealso/>
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Destroy is the overridden destructor for the class instance. It call Clear to 
+remove all log group entries in the container, and frees the internal list 
+where the log group entries are stored. Destroy calls the inherited method 
+prior to exit.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerLogGroupList.Assign">
-  <short>Stores values from the log group list in Src in the current class instance.</short>
-  <descr/>
-  <seealso/>
+<short>
+Stores values from the log group list in Src in the current class instance.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerLogGroupList.Assign.Src">
-  <short>Logger group list with values stored in the current class instance.</short>
+<short>
+Logger group list with values stored in the current class instance.
+</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLoggerLogGroupList.IndexOf">
-  <short>Gets the ordinal position in the container for the specified log group.</short>
-  <descr/>
-  <seealso/>
+<short>
+Gets the ordinal position in the container for the specified log group.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerLogGroupList.IndexOf.Result">
-  <short>Ordinal position in the container for the specified log group.</short>
+<short>Ordinal position in the container for the specified log group.</short>
 </element>
 <element name="TLazLoggerLogGroupList.IndexOf.AConfigName">
-  <short>Name of the load group to locate in the container.</short>
+<short>Name of the load group to locate in the container.</short>
 </element>
 <element name="TLazLoggerLogGroupList.IndexOf.AnEntry">
-  <short>Pointer to the log group to locate in the container.</short>
+<short>Pointer to the log group to locate in the container.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLoggerLogGroupList.Find">
-  <short>Gets a pointer to the log group with the specified name.</short>
-  <descr/>
-  <seealso/>
+<short>Gets a pointer to the log group with the specified name.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerLogGroupList.Find.Result">
-  <short>Pointer to the log group located in the method, or Nil when not found.</short>
+<short>
+Pointer to the log group located in the method, or Nil when not found.
+</short>
 </element>
 <element name="TLazLoggerLogGroupList.Find.AConfigName">
-  <short>Name of the log group to locate in the container.</short>
+<short>Name of the log group to locate in the container.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLoggerLogGroupList.Count">
-  <short>Gets the number of log groups stored in the container.</short>
-  <descr/>
-  <seealso/>
+<short>Gets the number of log groups stored in the container.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLoggerLogGroupList.Count.Result">
-  <short>Number of TLazLoggerLogGroup instances stored in the container.</short>
+<short>Number of TLazLoggerLogGroup instances stored in the container.</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerLogGroupList.Item">
-  <short>
-    Provides indexed access to log group entries in the container by their ordinal position.
-  </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Provides indexed access to log group entries in the container by their 
+ordinal position.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLoggerLogGroupList.Item.Index">
-  <short>Ordinal position for the log group retrieved from the container.</short>
+<short>
+Ordinal position for the log group retrieved from the container.
+</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TLazLogger">
-  <short>Defines the base class for loggers used in the Lazarus IDE.</short>
-  <descr>
-    <p>
-      TLazLogger is a TRefCountedObject descendant which implements the base class for the logger mechanism used in the Lazarus IDE and the LCL. TLazLogger defines the interface used for the various logger classes which write their content to a specific destination. Many of the method which perform the output are empty implementations, and must be re-implemented in descendent classes which write to a file or to the debugger.
-    </p>
-  </descr>
-  <seealso/>
+<short>Defines the base class for loggers used in the Lazarus IDE.</short>
+<descr>
+<p>
+TLazLogger is a TRefCountedObject descendant which implements the base class 
+for the logger mechanism used in the Lazarus IDE and the LCL. TLazLogger 
+defines the interface used for the various logger classes which write their 
+content to a specific destination. Many of the method which perform the 
+output are empty implementations, and must be re-implemented in descendent 
+classes which write to a file or to the debugger.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- private -->
@@ -451,710 +539,775 @@ LazLoggerBase
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoInit">
-  <short>Performs actions needed to initialize the logger class instance.</short>
-  <descr>
-    <p>
-      DoInit has an empty implementation. It must be re-implemented in a descendent class to perform the actions needed for the logger type.
-    </p>
-  </descr>
-  <seealso/>
+<short>
+Performs actions needed to initialize the logger class instance.
+</short>
+<descr>
+<p>
+DoInit has an empty implementation. It must be re-implemented in a descendent 
+class to perform the actions needed for the logger type.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoFinish">
-  <short>Performs actions needed to finalize the logger class instance.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Performs actions needed to finalize the logger class instance.</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoFinsh">
-  <short>Deprecated. Use DoFinish instead.</short>
+<short>Deprecated. Use DoFinish instead.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.IncreaseIndent">
-  <short>Increases the nesting level for the logger.</short>
-  <descr>
-    <p>
-      IncreaseIndent is an overloaded method used to increment the nesting level for output from the logger. The overloaded variant allow the method to be called without parameters, or with a record for an enabled log group. Both variants have an empty implementation, and must be overridden to perform the actions needed for the output destination in the descendent logger.
-    </p>
-  </descr>
-  <seealso/>
+<short>Increases the nesting level for the logger.</short>
+<descr>
+<p>
+IncreaseIndent is an overloaded method used to increment the nesting level 
+for output from the logger. The overloaded variant allow the method to be 
+called without parameters, or with a record for an enabled log group. Both 
+variants have an empty implementation, and must be overridden to perform the 
+actions needed for the output destination in the descendent logger.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="TLazLogger.IncreaseIndent.LogGroup">
-  <short>Identifies the enabled log group for the nesting level.</short>
+<short>Identifies the enabled log group for the nesting level.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DecreaseIndent">
-  <short>Decreases the nesting level for the logger.</short>
-  <descr>
-    <p>
-      DecreaseIndent is an overloaded method used to decrement the nesting level for output from the logger. The overloaded variant allow the method to be called without parameters, or with a record for an enabled log group. Both variants have an empty implementation, and must be overridden to perform the actions needed for the output destination in the descendent logger.
-    </p>
-  </descr>
-  <seealso/>
+<short>Decreases the nesting level for the logger.</short>
+<descr>
+<p>
+DecreaseIndent is an overloaded method used to decrement the nesting level 
+for output from the logger. The overloaded variant allow the method to be 
+called without parameters, or with a record for an enabled log group. Both 
+variants have an empty implementation, and must be overridden to perform the 
+actions needed for the output destination in the descendent logger.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="TLazLogger.DecreaseIndent.LogGroup">
-  <short>Identifies the enabled log group for the nesting level.</short>
+<short>Identifies the enabled log group for the nesting level.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.IndentChanged">
-  <short>
-    Performs actions needed when the nesting level for the logger has been changed.
-  </short>
-  <descr>
-    <p>
-      IndentChanged has an empty implementation, and must be overridden in a descendent class to perform the actions needed when the nesting level (Increaseindent, DecreaseIndent) has been changed.
-    </p>
-  </descr>
-  <seealso/>
+<short>
+Performs actions needed when the nesting level for the logger has been 
+changed.
+</short>
+<descr>
+<p>
+IndentChanged has an empty implementation, and must be overridden in a 
+descendent class to perform the actions needed when the nesting level 
+(Increaseindent, DecreaseIndent) has been changed.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <element name="TLazLogger.GetBlockHandler">
-  <short>Gets the value for the indexed BlockHandler property.</short>
-  <descr/>
-  <seealso>
-    <link id="TLazLogger.BlockHandler"/>
-  </seealso>
+<short>Gets the value for the indexed BlockHandler property.</short>
+<descr/>
+<seealso>
+<link id="TLazLogger.BlockHandler"/>
+</seealso>
 </element>
 <element name="TLazLogger.GetBlockHandler.Result">
-  <short>Value for the indexed property.</short>
+<short>Value for the indexed property.</short>
 </element>
 <element name="TLazLogger.GetBlockHandler.AIndex">
-  <short>
-    Ordinal position for the property value retrieved in the method.
-  </short>
+<short>
+Ordinal position for the property value retrieved in the method.
+</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoDbgOut">
-  <short>Implements the DbgOut method for the logger type.</short>
-  <descr>
-    <p>
-      DoDbgOut has an empty implementation, and must be overridden in a descendent class to perform any actions needed for the output destination for the logger type.
-    </p>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Implements the DbgOut method for the logger type.</short>
+<descr>
+<p>
+DoDbgOut has an empty implementation, and must be overridden in a descendent 
+class to perform any actions needed for the output destination for the logger 
+type.
+</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.DoDbgOut.s">
-  <short>String value written in the method.</short>
+<short>String value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoDebugLn">
-  <short>Implements the DebugLn method for the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>Implements the DebugLn method for the logger type.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.DoDebugLn.s">
-  <short>String value written in the method.</short>
+<short>String value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoDebuglnStack">
-  <short>Implements the DebugLnStack method for the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>Implements the DebugLnStack method for the logger type.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.DoDebuglnStack.s">
-  <short>String value written in the method.</short>
+<short>String value written in the method.</short>
 </element>
 
 <!-- function Visibility: protected -->
 <element name="TLazLogger.ArgsToString">
-  <short>
-    Converts the specified array of values to a string which can be displayed using the output methods for the logger type.
-  </short>
-  <descr>
-    <p>
-      The return value is generated by calling DbgS or DbgSName for the value types in the array elements. For string and character types, the values are converted and cast using AnsiString, WideString, or RTTI routines as needed. An unknown value type is represented in the string using '?unknown variant?'.
-    </p>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Converts the specified array of values to a string which can be displayed 
+using the output methods for the logger type.
+</short>
+<descr>
+<p>
+The return value is generated by calling DbgS or DbgSName for the value types 
+in the array elements. For string and character types, the values are 
+converted and cast using AnsiString, WideString, or RTTI routines as needed. 
+An unknown value type is represented in the string using '?unknown variant?'.
+</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.ArgsToString.Result">
-  <short>String representing the values in the specified array.</short>
+<short>String representing the values in the specified array.</short>
 </element>
 <element name="TLazLogger.ArgsToString.Args">
-  <short>Array of constant values converted to a string in the method.</short>
+<short>Array of constant values converted to a string in the method.</short>
 </element>
 
 <!-- property Visibility: protected -->
 <element name="TLazLogger.IsInitialized">
-  <short>
-    Indicates whether the Init method has already been called for the logger class instance.
-  </short>
-  <descr>
-    <p>
-      Used and updated in the Init method to determine whether DoInit is called. DoInit is not called when IsInitialized is set to <b>True</b>.
-    </p>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Indicates whether the Init method has already been called for the logger 
+class instance.
+</short>
+<descr>
+<p>
+Used and updated in the Init method to determine whether DoInit is called. 
+DoInit is not called when IsInitialized is set to <b>True</b>.
+</p>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TLazLogger.Create">
-  <short>Constructor for the class instance.</short>
-  <descr>
-    <p>
-      Create is the constructor for the class instance. It calls the inherited method on entry, and allocates or initializes members in the class instance.It calls InitCriticalSection to allow the thread manager to set up the critical section used to protect resources in the class instance.
-    </p>
-  </descr>
-  <seealso/>
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the constructor for the class instance. It calls the inherited 
+method on entry, and allocates or initializes members in the class 
+instance.It calls InitCriticalSection to allow the thread manager to set up 
+the critical section used to protect resources in the class instance.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TLazLogger.Destroy">
-  <short>Destructor for the class instance.</short>
-  <descr>
-    <p>
-      Destroy is the overridden destructor for the class instance. It calls the Finish method to finalize the logger class instance, and releases and nils the reference-counted LogGroupList property. It calls the inherited destructor prior to signalling the DonCriticalSection handler for the critical section used in the class instance.
-    </p>
-  </descr>
-  <seealso/>
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Destroy is the overridden destructor for the class instance. It calls the 
+Finish method to finalize the logger class instance, and releases and nils 
+the reference-counted LogGroupList property. It calls the inherited 
+destructor prior to signalling the DonCriticalSection handler for the 
+critical section used in the class instance.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.Assign">
-  <short>Copies values from the logger instance in Src into the current class instance.</short>
-  <descr>
-    <p>
-      No actions are performed in the method when Src has not been assigned.
-    </p>
-    <p>
-      Copies values from the NestLvlIndent, MaxNestPrefixLen, and UseGlobalLogGroupList properties in Src into the current class instance. Values from LogGroupList in Src are also assigned to the current class instance.
-    </p>
-  </descr>
-  <seealso>
-    <link id="TLazLogger.NestLvlIndent"/>
-    <link id="TLazLogger.MaxNestPrefixLen"/>
-    <link id="TLazLogger.UseGlobalLogGroupList"/>
-    <link id="TLazLogger.LogGroupList"/>
-  </seealso>
+<short>
+Copies values from the logger instance in Src into the current class instance.
+</short>
+<descr>
+<p>
+No actions are performed in the method when Src has not been assigned.
+</p>
+<p>
+Copies values from the NestLvlIndent, MaxNestPrefixLen, and 
+UseGlobalLogGroupList properties in Src into the current class instance. 
+Values from LogGroupList in Src are also assigned to the current class 
+instance.
+</p>
+</descr>
+<seealso>
+<link id="TLazLogger.NestLvlIndent"/>
+<link id="TLazLogger.MaxNestPrefixLen"/>
+<link id="TLazLogger.UseGlobalLogGroupList"/>
+<link id="TLazLogger.LogGroupList"/>
+</seealso>
 </element>
 <element name="TLazLogger.Assign.Src">
-  <short>Logger instance with values copied in the method.</short>
+<short>Logger instance with values copied in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.Init">
-  <short>Initializes the logger class instance.</short>
-  <descr>
-    <p>
-      Ensures that the EnterCriticalSection handler in the thread manager is signalled for the critical section used to protect resources in the class instance. Calls the DoInit method, and sets IsInitialized to <b>True</b>.
-    </p>
-  </descr>
-  <seealso>
-    <link id="TLazLogger.DoInit"/>
-    <link id="TLazLogger.IsInitialized"/>
-  </seealso>
+<short>Initializes the logger class instance.</short>
+<descr>
+<p>
+Ensures that the EnterCriticalSection handler in the thread manager is 
+signalled for the critical section used to protect resources in the class 
+instance. Calls the DoInit method, and sets IsInitialized to <b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TLazLogger.DoInit"/>
+<link id="TLazLogger.IsInitialized"/>
+</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.Finish">
-  <short>Finalizes the logger class instance.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Finalizes the logger class instance.</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <element name="TLazLogger.CurrentIndentLevel">
-  <short>Gets the current indentation level for the logger.</short>
-  <descr>
-    <p>
-      Always returns 0. Must be overridden in a descendent class to return a value appropriate for the logger type.
-    </p>
-  </descr>
-  <seealso/>
+<short>Gets the current indentation level for the logger.</short>
+<descr>
+<p>
+Always returns 0. Must be overridden in a descendent class to return a value 
+appropriate for the logger type.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="TLazLogger.CurrentIndentLevel.Result">
-  <short>Always returns 0.</short>
+<short>Always returns 0.</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLogger.NestLvlIndent">
-  <short>Indicates the current nesting level for call to the logger class instance.</short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Indicates the current nesting level for call to the logger class instance.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLogger.MaxNestPrefixLen">
-  <short>
-    Indicates the maximum length for the nesting prefix used when values are output in the logger.
-  </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Indicates the maximum length for the nesting prefix used when values are 
+output in the logger.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLogger.RegisterLogGroup">
-  <short>Creates a log group and optionally sets its enabled status.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Creates a log group and optionally sets its enabled status.</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.RegisterLogGroup.Result">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.RegisterLogGroup.AConfigName">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.RegisterLogGroup.ADefaulEnabled">
-  <short></short>
+<short></short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLogger.FindOrRegisterLogGroup">
-  <short>Retrieves or creates a log group for the logger.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>Retrieves or creates a log group for the logger.</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.FindOrRegisterLogGroup.Result">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.FindOrRegisterLogGroup.AConfigName">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.FindOrRegisterLogGroup.ADefaulEnabled">
-  <short></short>
+<short></short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLogger.LogGroupList">
-  <short>Container with the group instances for the logger.</short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>Container with the group instances for the logger.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLogger.UseGlobalLogGroupList">
-  <short>
-    Indicates if the global DebugLoggerGroupList is used as the value for the LogGroupList property.
-  </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Indicates if the global DebugLoggerGroupList is used as the value for the 
+LogGroupList property.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <element name="TLazLogger.AddBlockHandler">
-  <short>Adds the specified handler for blobk Enter and Exit conditions.</short>
-  <descr/>
-  <seealso/>
+<short>Adds the specified handler for blobk Enter and Exit conditions.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.AddBlockHandler.AHandler">
-  <short/>
+<short/>
 </element>
 
 <element name="TLazLogger.RemoveBlockHandler">
-  <short>Removes the specified block handler for the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>Removes the specified block handler for the logger type.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.RemoveBlockHandler.AHandler">
-  <short/>
+<short/>
 </element>
 
 <element name="TLazLogger.BlockHandlerCount">
-  <short>Gets the number of block handlers added to the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>Gets the number of block handlers added to the logger type.</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.BlockHandlerCount.Result">
-  <short>Number of block handlers for the logger type.</short>
+<short>Number of block handlers for the logger type.</short>
 </element>
 
 <element name="TLazLogger.BlockHandler">
-  <short>Provides indexed access to the Block handlers for the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>
+Provides indexed access to the Block handlers for the logger type.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.BlockHandler.AIndex">
-  <short>Ordinal position for a block handler in the logger class instance.</short>
+<short>
+Ordinal position for a block handler in the logger class instance.
+</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebuglnStack">
-  <short>
-    Calls DoDebuglnStack to write the message in s when the logger has been enabled.
-  </short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Calls DoDebuglnStack to write the message in s when the logger has been 
+enabled.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.DebuglnStack.s">
-  <short>Message written in the method.</short>
+<short>Message written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DbgOut">
-  <short>Generates a log message with formatted value(s) for the specified type(s).</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Generates a log message with formatted value(s) for the specified type(s).
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.DbgOut.s">
-  <short>String value for the message.</short>
+<short>String value for the message.</short>
 </element>
 <element name="TLazLogger.DbgOut.Args">
-  <short>Array of constant value(s) for the message.</short>
+<short>Array of constant value(s) for the message.</short>
 </element>
 <element name="TLazLogger.DbgOut.s1">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s2">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s3">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s4">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s5">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s6">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s7">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s8">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s9">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s10">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s11">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s12">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s13">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s14">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s15">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s16">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s17">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DbgOut.s18">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 
 <element name="TLazLogger.DebugLn">
-  <short>Writes a message to the logger class instance at the current indentation level.</short>
-  <descr>
-    <p>
-      DebugLn is used to write a log message using the logger class instance. DebugLn is overloaded in TLazLogger to provide variants which accept String or Array values, a Format()-like expression, or a fixed number of String arguments.
-    </p>
-    <p>
-      DebugLn calls the DoDebugLn method to write the formatted string with the message for the logger class instance.
-    </p>
-  </descr>
-  <seealso>
-    <link id="TLazLogger.DoDebugLn"/>
-  </seealso>
+<short>
+Writes a message to the logger class instance at the current indentation 
+level.
+</short>
+<descr>
+<p>
+DebugLn is used to write a log message using the logger class instance. 
+DebugLn is overloaded in TLazLogger to provide variants which accept String 
+or Array values, a Format()-like expression, or a fixed number of String 
+arguments.
+</p>
+<p>
+DebugLn calls the DoDebugLn method to write the formatted string with the 
+message for the logger class instance.
+</p>
+</descr>
+<seealso>
+<link id="TLazLogger.DoDebugLn"/>
+</seealso>
 </element>
 <element name="TLazLogger.DebugLn.s">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.Args">
-  <short>Array of constant values written in the method.</short>
+<short>Array of constant values written in the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s1">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s2">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s3">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s4">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s5">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s6">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s7">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s8">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s9">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s10">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s11">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s12">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s13">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s14">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s15">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s16">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s17">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s18">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebugLnEnter">
-  <short>Increases the indentation level for the logger and writes an optional log message.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Increases the indentation level for the logger and writes an optional log 
+message.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.DebugLnEnter.s">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.DebugLnEnter.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s1">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s2">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s3">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s4">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s5">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s6">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s7">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s8">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s9">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s10">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s11">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s12">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s13">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s14">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s15">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s16">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s17">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s18">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebugLnExit">
-  <short>Decreases the indentation level for the logger and writes an optional log message.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Decreases the indentation level for the logger and writes an optional log 
+message.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="TLazLogger.DebugLnExit.s">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="TLazLogger.DebugLnExit.s1">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s2">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s3">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s4">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s5">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s6">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s7">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s8">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s9">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s10">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s11">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s12">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s13">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s14">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s15">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s16">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s17">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLnExit.s18">
-  <short>String argument for the method.</short>
+<short>String argument for the method.</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DebugLnStack.LogGroup">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DbgOut.LogGroup">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DebugLn.LogGroup">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DebugLnEnter.LogGroup">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DebugLnExit.LogGroup">
-  <short></short>
+<short></short>
 </element>
 
 <element name="TLazLogger.DumpExceptionBackTrace">
-  <short>
-    Writes addresses and exception frames representing the backtrace for an exception.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Writes addresses and exception frames representing the backtrace for an 
+exception.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.DumpExceptionBackTrace.LogEnabled">
-  <short/>
+<short/>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TLazLoggerWithGroupParam">
-  <short>
-    Defines a logger which allows enabling / disabling groups from the command line.
-  </short>
-  <descr>
-    <p>
-      TLazLoggerWithGroupParam allows enabling / disabling groups from the command line. TLazLogger provides only storage for LogGroups, it does not need to enable/disable them, as it discards all logging anyway.
-    </p>
-  </descr>
-  <seealso/>
+<short>
+Defines a logger which allows enabling / disabling groups from the command 
+line.
+</short>
+<descr>
+<p>
+TLazLoggerWithGroupParam allows enabling / disabling groups from the command 
+line. TLazLogger provides only storage for LogGroups, it does not need to 
+enable/disable them, as it discards all logging anyway.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <!-- variable Visibility: private -->
@@ -1168,907 +1321,957 @@ LazLoggerBase
 
 <!-- constructor Visibility: public -->
 <element name="TLazLoggerWithGroupParam.Create">
-  <short></short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerWithGroupParam.Assign">
-  <short></short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLoggerWithGroupParam.Assign.Src">
-  <short></short>
+<short></short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLoggerWithGroupParam.RegisterLogGroup">
-  <short></short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TLazLoggerWithGroupParam.RegisterLogGroup.Result">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLoggerWithGroupParam.RegisterLogGroup.AConfigName">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLoggerWithGroupParam.RegisterLogGroup.ADefaulEnabled">
-  <short></short>
+<short></short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup">
-  <short></short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.Result">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.AConfigName">
-  <short></short>
+<short></short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TLazLoggerWithGroupParam.FindOrRegisterLogGroup.ADefaulEnabled">
-  <short></short>
+<short></short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerWithGroupParam.ParamForEnabledLogGroups">
-  <short></short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TLazLoggerNoOutput">
-  <short>???</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>???</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- included from LazLoggerIntf.inc -->
 <element name="DebuglnStack">
-  <short>Writes a message to the log.</short>
-  <descr>
-    <p>
-      Calls the DebuglnStack method for the logger class instance.
-    </p>
-  </descr>
-  <seealso/>
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Calls the DebuglnStack method for the logger class instance.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="DebuglnStack.s">
-  <short/>
+<short/>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgOut">
-  <short>Writes a message to the log.</short>
-  <descr>
-    <p>
-      Writes the text to the log. Does not append a new line.
-      The Argument can be:
-    </p>
-    <ul>
-      <li>One or more string(s)</li>
-      <li>An open array of const: All values are converted to string and joined</li>
-      <li>A single string and open array of const:  Will be passed to Format</li>
-      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-    </ul>
-    <p>
-      This is a forwarder to the log TLazLogger object. See there for details.
-    </p>
-  </descr>
-  <seealso>
-    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-  </seealso>
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does not append a new line.
+The Argument can be:
+</p>
+<ul>
+<li>One or more string(s)</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>
+This is a forwarder to the log TLazLogger object. See there for details.
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
 </element>
 <element name="DbgOut.s">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="DbgOut.s1">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s2">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s3">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s4">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s5">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s6">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s7">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s8">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s9">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s10">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s11">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s12">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s13">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s14">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s15">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s16">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s17">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.s18">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 
 <element name="DebugLn">
-  <short>Writes a message to the log.</short>
-  <descr>
-    <p>
-      Writes the text to the log. Does append a new line.
-    </p>
-    <p>
-      The Argument can be:
-    </p>
-    <ul>
-      <li>One or more string</li>
-      <li>An open array of const: All values are converted to string and joined</li>
-      <li>A single string and open array of const:  Will be passed to Format</li>
-      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-    </ul>
-    <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
-  </descr>
-  <seealso>
-    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-  </seealso>
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>This is a forwarder to the log TLazLogger object. See there for 
+details.</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
 </element>
 <element name="DebugLn.s">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="DebugLn.s1">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s2">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s3">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s4">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s5">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s6">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s7">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s8">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s9">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s10">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s11">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s12">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s13">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s14">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s15">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s16">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s17">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.s18">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 
 <element name="DebugLnEnter">
-  <short>Writes a message to the log.</short>
-  <descr>
-    <p>
-      Writes the text to the log. Does append a new line. Increases the current intend.
-    </p>
-    <p>
-      The Argument can be:
-    </p>
-    <ul>
-      <li>One or more string</li>
-      <li>An open array of const: All values are converted to string and joined</li>
-      <li>A single string and open array of const:  Will be passed to Format</li>
-      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-    </ul>
-    <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
-  </descr>
-  <seealso>
-    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-  </seealso>
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line. Increases the current 
+intend.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>This is a forwarder to the log TLazLogger object. See there for 
+details.</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
 </element>
 <element name="DebugLnEnter.s">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="DebugLnEnter.s1">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s2">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s3">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s4">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s5">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s6">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s7">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s8">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s9">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s10">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s11">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s12">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s13">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s14">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s15">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s16">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s17">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.s18">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 
 <element name="DebugLnExit">
-  <short>Writes a message to the log.</short>
-  <descr>
-    <p>
-      Writes the text to the log. Does append a new line. Increases the current indentation level.
-    </p>
-    <p>
-      The Argument can be:
-    </p>
-    <ul>
-      <li>One or more string</li>
-      <li>An open array of const: All values are converted to string and joined</li>
-      <li>A single string and open array of const:  Will be passed to Format</li>
-      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-      <li>This is a forwarder to the log TLazLogger object. See there for details.</li>
-    </ul>
-  </descr>
-  <seealso>
-    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-  </seealso>
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line. Increases the current 
+indentation level.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+<li>This is a forwarder to the log TLazLogger object. See there for 
+details.</li>
+</ul>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
 </element>
 <element name="DebugLnExit.s">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.Args">
-  <short></short>
+<short></short>
 </element>
 <element name="DebugLnExit.s1">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s2">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s3">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s4">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s5">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s6">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s7">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s8">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s9">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s10">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s11">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s12">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s13">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s14">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s15">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s16">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s17">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.s18">
-  <short>String argument for the routine.</short>
+<short>String argument for the routine.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DbgS">
-  <short>
-    Generates a debugger message formatted with the value(s) for the specified type(s).
-  </short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Generates a debugger message formatted with the value(s) for the specified 
+type(s).
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="DbgS.Result">
-  <short>String with the formatted content for the specified value(s).</short>
+<short>String with the formatted content for the specified value(s).</short>
 </element>
 <element name="DbgS.c">
-  <short>Cardinal value for the message.</short>
+<short>Cardinal value for the message.</short>
 </element>
 <element name="DbgS.i">
-  <short>Integer (LongInt, Int64) value for the message.</short>
+<short>Integer (LongInt, Int64) value for the message.</short>
 </element>
 <element name="DbgS.q">
-  <short>QWord value for the message.</short>
+<short>QWord value for the message.</short>
 </element>
 <element name="DbgS.r">
-  <short>TRect value for the message.</short>
+<short>TRect value for the message.</short>
 </element>
 <element name="DbgS.p">
-  <short>Untyped pointer value for the message.</short>
+<short>Untyped pointer value for the message.</short>
 </element>
 <element name="DbgS.e">
-  <short>Extended value for the message.</short>
+<short>Extended value for the message.</short>
 </element>
 <element name="DbgS.MaxDecimals">
-  <short>Number of decimal places for the Extended value in the message.</short>
+<short>Number of decimal places for the Extended value in the message.</short>
 </element>
 <element name="DbgS.b">
-  <short>Boolean value for the message.</short>
+<short>Boolean value for the message.</short>
 </element>
 <element name="DbgS.m">
-  <short>TMethod value for the message. </short>
+<short>TMethod value for the message. </short>
 </element>
 <element name="DbgS.ASize">
-  <short></short>
+<short></short>
 </element>
 <element name="DbgS.s">
-  <short>String value for the message.</short>
+<short>String value for the message.</short>
 </element>
 <element name="DbgS.i1">
-  <short>Integer value for the message.</short>
+<short>Integer value for the message.</short>
 </element>
 <element name="DbgS.i2">
-  <short>Integer value for the message.</short>
+<short>Integer value for the message.</short>
 </element>
 <element name="DbgS.i3">
-  <short>Integer value for the message.</short>
+<short>Integer value for the message.</short>
 </element>
 <element name="DbgS.i4">
-  <short>Integer value for the message.</short>
+<short>Integer value for the message.</short>
 </element>
 <element name="DbgS.Shift">
-  <short>TShiftStateEnum value for the message.</short>
+<short>TShiftStateEnum value for the message.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DbgSJoin">
-  <short>
-    Generates a debugger message with the combined values of the specified arguments.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a debugger message with the combined values of the specified 
+arguments.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="DbgSJoin.Result">
-  <short>Message with the values in s1 and s2 combined into a single string.</short>
+<short>
+Message with the values in s1 and s2 combined into a single string.
+</short>
 </element>
 <element name="DbgSJoin.s1">
-  <short>String value for the message.</short>
+<short>String value for the message.</short>
 </element>
 <element name="DbgSJoin.s2">
-  <short>String value for the message.</short>
+<short>String value for the message.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DbgSName">
-  <short>
-    Generates a message with the optional name and class type for the specified object.
-  </short>
-  <descr>
-    <p>
-      DbgSName generates a log message with the optional name and class type for the object in p.
-    </p>
-    <p>
-      When p has not been assigned, the return value contains:
-    </p>
-    <code>'Nil'</code>
-    <p>
-      When p is a TComponent descendant, the return value contains a value like:
-    </p>
-    <code>TComponent.Name + ':' + TComponent.ClassName</code>
-    <p>
-      Otherwise, the return value is set to:
-    </p>
-    <code>TObject.ClassName</code>
-    <p>
-      If the LazLogger_Dummy unit has been included in the application, the return value is an empty string.
-    </p>
-  </descr>
-  <seealso/>
+<short>
+Generates a message with the optional name and class type for the specified 
+object.
+</short>
+<descr>
+<p>
+DbgSName generates a log message with the optional name and class type for 
+the object in p.
+</p>
+<p>
+When p has not been assigned, the return value contains:
+</p>
+<code>'Nil'</code>
+<p>
+When p is a TComponent descendant, the return value contains a value like:
+</p>
+<code>TComponent.Name + ':' + TComponent.ClassName</code>
+<p>
+Otherwise, the return value is set to:
+</p>
+<code>TObject.ClassName</code>
+<p>
+If the LazLogger_Dummy unit has been included in the application, the return 
+value is an empty string.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="DbgSName.Result">
-  <short>
-    Formatted message with the optional name and class type for the specified value.
-  </short>
+<short>
+Formatted message with the optional name and class type for the specified 
+value.
+</short>
 </element>
 <element name="DbgSName.p">
-  <short>TObject instance examined in the routine.</short>
+<short>TObject instance examined in the routine.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="dbgObjMem">
-  <short>
-    Generates a message with the hexadecimal-encoded memory content for the specified object instance.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a message with the hexadecimal-encoded memory content for the 
+specified object instance.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="dbgObjMem.Result">
-  <short>String with hexadecimal-encoded values for the specified object instance.</short>
+<short>
+String with hexadecimal-encoded values for the specified object instance.
+</short>
 </element>
 <element name="dbgObjMem.AnObject">
-  <short>Object instance examined in the routine.</short>
+<short>Object instance examined in the routine.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="dbghex">
-  <short>
-    Generates a message with the hexadecimal representation for the specified Int64 value.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a message with the hexadecimal representation for the specified 
+Int64 value.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="dbghex.Result">
-  <short>String with the hexadecimal representation for the specified value.</short>
+<short>
+String with the hexadecimal representation for the specified value.
+</short>
 </element>
 <element name="dbghex.i">
-  <short>Int64 value converted in the routine.</short>
+<short>Int64 value converted in the routine.</short>
 </element>
 
 <element name="DbgSTime">
-  <short>Generates a message with the tick count for the computer system.</short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a message with the tick count for the computer system.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="DbgSTime.Result">
-  <short>String with the tick count for the system.</short>
+<short>String with the tick count for the system.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="dbgMemRange">
-  <short>
-    Generates a message with the hexadecimal-encoded content for the specified block of memory and size.
-  </short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Generates a message with the hexadecimal-encoded content for the specified 
+block of memory and size.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="dbgMemRange.Result">
-  <short></short>
+<short></short>
 </element>
 <element name="dbgMemRange.P">
-  <short>Untyped pointer to the byte values examined in the routine.</short>
+<short>Untyped pointer to the byte values examined in the routine.</short>
 </element>
 <element name="dbgMemRange.Count">
-  <short>Number of bytes from the pointer to include in the message.</short>
+<short>Number of bytes from the pointer to include in the message.</short>
 </element>
 <element name="dbgMemRange.Width">
-  <short>
-    Maximum number of columns to use in the formatted message string. A LineEnd sequence is inserted in the message when Width is exceeded.
-  </short>
+<short>
+Maximum number of columns to use in the formatted message string. A LineEnd 
+sequence is inserted in the message when Width is exceeded.
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="dbgMemStream">
-  <short>
-    Generates a message with the hexadecimal-encoded values from the specified memory stream.
-  </short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Generates a message with the hexadecimal-encoded values from the specified 
+memory stream.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 <element name="dbgMemStream.Result">
-  <short></short>
+<short></short>
 </element>
 <element name="dbgMemStream.MemStream">
-  <short></short>
+<short></short>
 </element>
 <element name="dbgMemStream.Count">
-  <short></short>
+<short></short>
 </element>
 
 <element name="DumpExceptionBackTrace">
-  <short>Write the stack trace back when an exception is detected.</short>
-  <descr>
-    <p>
-      Calls the <var>DumpExceptionBackTrace</var> method for the logger in the <var>DebugLogger</var> variable.
-    </p>
-  </descr>
-  <seealso>
-    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
-    <link id="TLazLogger.DebugLn"/>
-    <link id="TLazLogger.DumpExceptionBackTrace"/>
-  </seealso>
+<short>Write the stack trace back when an exception is detected.</short>
+<descr>
+<p>
+Calls the <var>DumpExceptionBackTrace</var> method for the logger in the 
+<var>DebugLogger</var> variable.
+</p>
+</descr>
+<seealso>
+<!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
+<link id="TLazLogger.DebugLn"/>
+<link id="TLazLogger.DumpExceptionBackTrace"/>
+</seealso>
 </element>
 
 <element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
-  <short>
-    Implements the Assign (':=') operator using a Pointer to a logger group for the TLazLoggerLogEnabled type.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Implements the Assign (':=') operator using a Pointer to a logger group for 
+the TLazLoggerLogEnabled type.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="operator assign(boolean): tlazloggerlogenabled">
-  <short>
-    Implements the Assign (':=') operator using a Boolean argument for the TLazLoggerLogEnabled type.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Implements the Assign (':=') operator using a Boolean argument for the 
+TLazLoggerLogEnabled type.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
-  <short>
-    Implements the logical And operator for TLazLoggerLogEnabled types.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Implements the logical And operator for TLazLoggerLogEnabled types.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="operator logicalor(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
-  <short>
-    Implements the logical Or operator for TLazLoggerLogEnabled types.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Implements the logical Or operator for TLazLoggerLogEnabled types.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetParamByNameCount">
-  <short>
-    Gets the ordinal position for the specified parameter name in the command line for the application.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Gets the ordinal position for the specified parameter name in the command 
+line for the application.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="GetParamByNameCount.Result">
-  <short>Position for the named parameters.</short>
+<short>Position for the named parameters.</short>
 </element>
 <element name="GetParamByNameCount.AName">
-  <short>Parameter name to locate in the command line arguments.</short>
+<short>Parameter name to locate in the command line arguments.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetParamByName">
-  <short>
-    The the value for the specified parameter name from the command line for the application.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+The the value for the specified parameter name from the command line for the 
+application.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="GetParamByName.Result">
-  <short>Value for the named parameter, or an empty string when not found.</short>
+<short>
+Value for the named parameter, or an empty string when not found.
+</short>
 </element>
 <element name="GetParamByName.AName">
-  <short>Name of the parameter to locate in the command line arguments.</short>
+<short>Name of the parameter to locate in the command line arguments.</short>
 </element>
 <element name="GetParamByName.AnIndex">
-  <short></short>
+<short></short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetDebugLoggerGroups">
-  <short>Gets the value for the DebugLoggerGroups property.</short>
-  <descr/>
-  <seealso>
-    <!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
-  </seealso>
+<short>Gets the value for the DebugLoggerGroups property.</short>
+<descr/>
+<seealso>
+<!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
+</seealso>
 </element>
 <element name="GetDebugLoggerGroups.Result">
-  <short></short>
+<short></short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="SetDebugLoggerGroups">
-  <short>Sets the value for the DebugLoggerGroups property.</short>
-  <descr/>
-  <seealso>
-    <!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
-  </seealso>
+<short>Sets the value for the DebugLoggerGroups property.</short>
+<descr/>
+<seealso>
+<!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
+</seealso>
 </element>
 <element name="SetDebugLoggerGroups.ALogGroups">
-  <short>New value for the DebugLoggerGroups property.</short>
+<short>New value for the DebugLoggerGroups property.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetDebugLogger">
-  <short>Gets the value for the DebugLogger property.</short>
-  <descr/>
-  <seealso>
-    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
-  </seealso>
+<short>Gets the value for the DebugLogger property.</short>
+<descr/>
+<seealso>
+<!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
+</seealso>
 </element>
 <element name="GetDebugLogger.Result">
-  <short>Value for the DebugLogger property.</short>
+<short>Value for the DebugLogger property.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetExistingDebugLogger">
-  <short>
-    Gets an existing instance of the logger class type without forcing it to be created.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Gets an existing instance of the logger class type without forcing it to be 
+created.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="GetExistingDebugLogger.Result">
-  <short></short>
+<short></short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="SetDebugLogger">
-  <short>Sets the value for the DebugLogger property.</short>
-  <descr/>
-  <seealso>
-    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
-  </seealso>
+<short>Sets the value for the DebugLogger property.</short>
+<descr/>
+<seealso>
+<!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
+</seealso>
 </element>
 <element name="SetDebugLogger.ALogger">
-  <short>New value for the DebugLogger property.</short>
+<short>New value for the DebugLogger property.</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="RecreateDebugLogger">
-  <short>Discards an re-creates the logger class instance got the logger type.</short>
-  <descr>
-  </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+<short>
+Discards an re-creates the logger class instance got the logger type.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: default -->
 <element name="DebugLogger">
-  <short>Unit property with the logger class instance for the logger type.</short>
-  <descr/>
-  <seealso/>
+<short>
+Unit property with the logger class instance for the logger type.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- property Visibility: default -->
 <element name="DebugLoggerGroups">
-  <short>Unit property with the list of log groups defined for a logger class instance.</short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Unit property with the list of log groups defined for a logger class instance.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <element name="DbgStr">
-  <short>Generates a debugger message with the content from the specified value.</short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a debugger message with the content from the specified value.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="DbgStr.Result">
-  <short/>
+<short/>
 </element>
 <element name="DbgStr.StringWithSpecialChars">
-  <short/>
+<short/>
 </element>
 <element name="DbgStr.StartPos">
-  <short/>
+<short/>
 </element>
 <element name="DbgStr.Len">
-  <short/>
+<short/>
 </element>
 <element name="DbgStr.p">
-  <short/>
+<short/>
 </element>
 
 <element name="DbgWideStr">
-  <short>Generates a debugger message with the specified WideString content.</short>
-  <descr/>
-  <seealso/>
+<short>
+Generates a debugger message with the specified WideString content.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="DbgWideStr.Result">
-  <short/>
+<short/>
 </element>
 <element name="DbgWideStr.StringWithSpecialChars">
-  <short/>
+<short/>
 </element>
 
 <element name="DumpStack">
-  <short>
-    Convenience routine used to write a debugger message with the current content of the stack.
-  </short>
-  <descr/>
-  <seealso/>
+<short>
+Convenience routine used to write a debugger message with the current content 
+of the stack.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function type Visibility: default -->
 <element name="TLazDebugLoggerCreator">
-  <short>
-    Function type used to create a TLazLogger instance for use with the Lazarus debugger.
-  </short>
-  <descr>
-    <p>
-      The return value is a TRefCountedObject object instance, and can be smart-linked away if none of the routines are used in the application.
-    </p>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Function type used to create a TLazLogger instance for use with the Lazarus 
+debugger.
+</short>
+<descr>
+<p>
+The return value is a TRefCountedObject object instance, and can be 
+smart-linked away if none of the routines are used in the application.
+</p>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TLazDebugLoggerCreator.Result">
-  <short>Reference-counted object for the TLazLogger instance.</short>
+<short>Reference-counted object for the TLazLogger instance.</short>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="LazDebugLoggerCreator">
-  <short>
-    Address of the routine used to create a TLazLogger instance for use with the Lazarus debugger.
-  </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Address of the routine used to create a TLazLogger instance for use with the 
+Lazarus debugger.
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="OnWidgetSetDebugLn">
-  <short>Address of the routine called to perform DebugLn output for the logger type. </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Address of the routine called to perform DebugLn output for the logger type. 
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="OnWidgetSetDbgOut">
-  <short>Address of the routine called to perform DbgOut output for the logger type. </short>
-  <descr>
-  </descr>
-  <seealso>
-  </seealso>
+<short>
+Address of the routine called to perform DbgOut output for the logger type. 
+</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
 </element>
 
 </module>

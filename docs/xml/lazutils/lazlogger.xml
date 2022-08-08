@@ -1,1447 +1,1630 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="LazUtils">
-    <!--
-    ========================================================================
-      LazLogger
-    ========================================================================
-    -->
-    <module name="LazLogger">
-      <short>Provides a logging framework for Lazarus applications.</short>
-      <descr>
-        <p>
-          <file>LazLogger.pas</file> provides logging facilities to write message to a file or stdout device. Messages can be logged plain, or enclosed in begin/end like blocks, adding indent to all messages between to points (blocks can be nested). It also has the ability to filter groups of messages.
-        </p>
-        <p>
-          It can read the command line and environment to find the desired filename. By default it looks for a --debug-log= argument on the command line or "appname"_debuglog in the system environment.
-        </p>
-        <p>
-          If no log name is found StdOut is used.
-        </p>
-        <p>
-          The easiest method is to use the unit and put "DebugLn"/ "DbgOut" / "DebugLnEnter"/ "DebugLnExit" in your code. This works without any further setup.
-        </p>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
-
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Types"/>
-      <element name="Math"/>
-      <element name="LazLoggerBase"/>
-      <element name="LazClasses"/>
-      <element name="LazFileUtils"/>
-      <element name="LazStringUtils"/>
-      <element name="LazUTF8"/>
-
-      <element name="PLazLoggerLogGroup">
-        <short>Alias for the PLazLoggerLogGroup type in the LazLoggerBase unit.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- included from lazloggerintf.inc -->
-      <element name="DebuglnStack">
-        <short>Writes a message to the log.</short>
-        <descr>
-          <p>
-            Calls the DebuglnStack method for the logger class instance.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="DebuglnStack.s">
-        <short/>
-      </element>
-
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short>Writes a message to the log.</short>
-        <descr>
-          <p>
-            Writes the text to the log. Does not append a new line.
-            The Argument can be:
-          </p>
-          <ul>
-            <li>One or more string(s)</li>
-            <li>An open array of const: All values are converted to string and joined</li>
-            <li>A single string and open array of const:  Will be passed to Format</li>
-            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-          </ul>
-          <p>
-            This is a forwarder to the log TLazLogger object. See there for details.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-        </seealso>
-      </element>
-      <element name="DbgOut.s">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.Args">
-        <short></short>
-      </element>
-      <element name="DbgOut.s1">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s2">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s3">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s4">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s5">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s6">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s7">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s8">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s9">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s10">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s11">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s12">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s13">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s14">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s15">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s16">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s17">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DbgOut.s18">
-        <short>String argument for the routine.</short>
-      </element>
-
-      <element name="DebugLn">
-        <short>Writes a message to the log.</short>
-        <descr>
-          <p>
-            Writes the text to the log. Does append a new line.
-          </p>
-          <p>
-            The Argument can be:
-          </p>
-          <ul>
-            <li>One or more string</li>
-            <li>An open array of const: All values are converted to string and joined</li>
-            <li>A single string and open array of const:  Will be passed to Format</li>
-            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-          </ul>
-          <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-        </seealso>
-      </element>
-      <element name="DebugLn.s">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.Args">
-        <short></short>
-      </element>
-      <element name="DebugLn.s1">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s2">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s3">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s4">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s5">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s6">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s7">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s8">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s9">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s10">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s11">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s12">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s13">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s14">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s15">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s16">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s17">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLn.s18">
-        <short>String argument for the routine.</short>
-      </element>
-
-      <element name="DebugLnEnter">
-        <short>Writes a message to the log.</short>
-        <descr>
-          <p>
-            Writes the text to the log. Does append a new line. Increases the current intend.
-          </p>
-          <p>
-            The Argument can be:
-          </p>
-          <ul>
-            <li>One or more string</li>
-            <li>An open array of const: All values are converted to string and joined</li>
-            <li>A single string and open array of const:  Will be passed to Format</li>
-            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-          </ul>
-          <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-        </seealso>
-      </element>
-      <element name="DebugLnEnter.s">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.Args">
-        <short></short>
-      </element>
-      <element name="DebugLnEnter.s1">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s2">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s3">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s4">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s5">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s6">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s7">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s8">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s9">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s10">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s11">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s12">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s13">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s14">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s15">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s16">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s17">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnEnter.s18">
-        <short>String argument for the routine.</short>
-      </element>
-
-      <element name="DebugLnExit">
-        <short>Writes a message to the log.</short>
-        <descr>
-          <p>
-            Writes the text to the log. Does append a new line. Increases the current indentation level.
-          </p>
-          <p>
-            The Argument can be:
-          </p>
-          <ul>
-            <li>One or more string</li>
-            <li>An open array of const: All values are converted to string and joined</li>
-            <li>A single string and open array of const:  Will be passed to Format</li>
-            <li>Any of the above with a PLazLoggerLogGroup as filter</li>
-            <li>This is a forwarder to the log TLazLogger object. See there for details.</li>
-          </ul>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
-          <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
-        </seealso>
-      </element>
-      <element name="DebugLnExit.s">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.Args">
-        <short></short>
-      </element>
-      <element name="DebugLnExit.s1">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s2">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s3">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s4">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s5">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s6">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s7">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s8">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s9">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s10">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s11">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s12">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s13">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s14">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s15">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s16">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s17">
-        <short>String argument for the routine.</short>
-      </element>
-      <element name="DebugLnExit.s18">
-        <short>String argument for the routine.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short>
-          Generates a debugger message formatted with the value(s) for the specified type(s).
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="DbgS.Result">
-        <short>String with the formatted content for the specified value(s).</short>
-      </element>
-      <element name="DbgS.c">
-        <short>Cardinal value for the message.</short>
-      </element>
-      <element name="DbgS.i">
-        <short>Integer (LongInt, Int64) value for the message.</short>
-      </element>
-      <element name="DbgS.q">
-        <short>QWord value for the message.</short>
-      </element>
-      <element name="DbgS.r">
-        <short>TRect value for the message.</short>
-      </element>
-      <element name="DbgS.p">
-        <short>Untyped pointer value for the message.</short>
-      </element>
-      <element name="DbgS.e">
-        <short>Extended value for the message.</short>
-      </element>
-      <element name="DbgS.MaxDecimals">
-        <short>Number of decimal places for the Extended value in the message.</short>
-      </element>
-      <element name="DbgS.b">
-        <short>Boolean value for the message.</short>
-      </element>
-      <element name="DbgS.m">
-        <short>TMethod value for the message. </short>
-      </element>
-      <element name="DbgS.ASize">
-        <short></short>
-      </element>
-      <element name="DbgS.s">
-        <short>String value for the message.</short>
-      </element>
-      <element name="DbgS.i1">
-        <short>Integer value for the message.</short>
-      </element>
-      <element name="DbgS.i2">
-        <short>Integer value for the message.</short>
-      </element>
-      <element name="DbgS.i3">
-        <short>Integer value for the message.</short>
-      </element>
-      <element name="DbgS.i4">
-        <short>Integer value for the message.</short>
-      </element>
-      <element name="DbgS.Shift">
-        <short>TShiftStateEnum value for the message.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="DbgSJoin">
-        <short>
-          Generates a debugger message with the combined values of the specified arguments.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="DbgSJoin.Result">
-        <short>Message with the values in s1 and s2 combined into a single string.</short>
-      </element>
-      <element name="DbgSJoin.s1">
-        <short>String value for the message.</short>
-      </element>
-      <element name="DbgSJoin.s2">
-        <short>String value for the message.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="DbgSName">
-        <short>
-          Generates a message with the optional name and class type for the specified object.
-        </short>
-        <descr>
-          <p>
-            DbgSName generates a log message with the optional name and class type for the object in p.
-          </p>
-          <p>
-            When p has not been assigned, the return value contains:
-          </p>
-          <code>'Nil'</code>
-          <p>
-            When p is a TComponent descendant, the return value contains a value like:
-          </p>
-          <code>TComponent.Name + ':' + TComponent.ClassName</code>
-          <p>
-            Otherwise, the return value is set to:
-          </p>
-          <code>TObject.ClassName</code>
-          <p>
-            If the LazLogger_Dummy unit has been included in the application, the return value is an empty string.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="DbgSName.Result">
-        <short>
-          Formatted message with the optional name and class type for the specified value.
-        </short>
-      </element>
-      <element name="DbgSName.p">
-        <short>TObject instance examined in the routine.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="dbgObjMem">
-        <short>
-          Generates a message with the hexadecimal-encoded memory content for the specified object instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="dbgObjMem.Result">
-        <short>String with hexadecimal-encoded values for the specified object instance.</short>
-      </element>
-      <element name="dbgObjMem.AnObject">
-        <short>Object instance examined in the routine.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="dbghex">
-        <short>
-          Generates a message with the hexadecimal representation for the specified Int64 value.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="dbghex.Result">
-        <short>String with the hexadecimal representation for the specified value.</short>
-      </element>
-      <element name="dbghex.i">
-        <short>Int64 value converted in the routine.</short>
-      </element>
-
-      <element name="DbgSTime">
-        <short>Generates a message with the tick count for the computer system.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="DbgSTime.Result">
-        <short>String with the tick count for the system.</short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="dbgMemRange">
-        <short>
-          Generates a message with the hexadecimal-encoded content for the specified block of memory and size.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="dbgMemRange.Result">
-        <short></short>
-      </element>
-      <element name="dbgMemRange.P">
-        <short>Untyped pointer to the byte values examined in the routine.</short>
-      </element>
-      <element name="dbgMemRange.Count">
-        <short>Number of bytes from the pointer to include in the message.</short>
-      </element>
-      <element name="dbgMemRange.Width">
-        <short>
-          Maximum number of columns to use in the formatted message string. A LineEnd sequence is inserted in the message when Width is exceeded.
-        </short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="dbgMemStream">
-        <short>
-          Generates a message with the hexadecimal-encoded values from the specified memory stream.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="dbgMemStream.Result">
-        <short></short>
-      </element>
-      <element name="dbgMemStream.MemStream">
-        <short></short>
-      </element>
-      <element name="dbgMemStream.Count">
-        <short></short>
-      </element>
-
-      <element name="DumpExceptionBackTrace">
-        <short>Write the stack trace back when an exception is detected.</short>
-        <descr>
-          <p>
-            Calls the <var>DumpExceptionBackTrace</var> method for the logger in the <var>DebugLogger</var> variable.
-          </p>
-        </descr>
-        <seealso>
-          <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
-          <link id="TLazLogger.DebugLn"/>
-          <link id="TLazLogger.DumpExceptionBackTrace"/>
-        </seealso>
-      </element>
-
-      <element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
-        <short>
-          Implements the Assign (':=') operator using a Pointer to a logger group for the TLazLoggerLogEnabled type.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="operator assign(boolean): tlazloggerlogenabled">
-        <short>
-          Implements the Assign (':=') operator using a Boolean argument for the TLazLoggerLogEnabled type.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
-        <short>
-          Implements the logical And operator for TLazLoggerLogEnabled types.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="operator logicalor(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
-        <short>
-          Implements the logical Or operator for TLazLoggerLogEnabled types.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="DbgStr">
-        <short>Generates a debugger message with the content from the specified value.</short>
-        <descr>
-          <p>
-            Calls the DbgStr routine in <file>LazLoggerBase</file> unit to write the value(s).
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgStr</link>
-        </seealso>
-      </element>
-      <element name="DbgStr.Result">
-        <short/>
-      </element>
-      <element name="DbgStr.StringWithSpecialChars">
-        <short/>
-      </element>
-      <element name="DbgStr.StartPos">
-        <short/>
-      </element>
-      <element name="DbgStr.Len">
-        <short/>
-      </element>
-      <element name="DbgStr.p">
-        <short/>
-      </element>
-
-      <element name="DbgWideStr">
-        <short>Generates a debugger message with the specified WideString content.</short>
-        <descr>
-          <p>
-            Calls the DbgWideStr routine in <file>LazLoggerBase</file> unit to write the value(s).
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgWideStr</link>
-        </seealso>
-      </element>
-      <element name="DbgWideStr.Result">
-        <short/>
-      </element>
-      <element name="DbgWideStr.StringWithSpecialChars">
-        <short/>
-      </element>
-
-      <element name="TLazLoggerFileHandle">
-        <short>
-          Represents a file or device handle for a logger class instance.
-        </short>
-        <descr>
-          <p>
-            Provides functionality to write messages to a log file. The file is represented by a Text member stored internally. TLazLoggerFileHandle allows filtering and changing indent level.
-          </p>
-          <p>
-            TLazLoggerFileHandle can parse options from command line for log filename and filter settings.
-          </p>
-          <p>
-            An application can subclass the logger handle to provide additional functionality.
-          </p>
-          <p>
-            Used in the implementation of the TLazLoggerFile class.
-          </p>
-        </descr>
-      </element>
-      <element name="TLazLoggerFileHandle.FActiveLogText"/>
-      <element name="TLazLoggerFileHandle.FCloseLogFileBetweenWrites"/>
-      <element name="TLazLoggerFileHandle.FLastWriteFailed"/>
-      <element name="TLazLoggerFileHandle.FLogName"/>
-      <element name="TLazLoggerFileHandle.FText"/>
-      <element name="TLazLoggerFileHandle.FLogTextInUse"/>
-      <element name="TLazLoggerFileHandle.FUseStdOut"/>
-      <element name="TLazLoggerFileHandle.FWriteFailedCount"/>
-      <element name="TLazLoggerFileHandle.DoOpenFile"/>
-      <element name="TLazLoggerFileHandle.DoCloseFile"/>
-      <element name="TLazLoggerFileHandle.GetWriteTarget"/>
-      <element name="TLazLoggerFileHandle.GetWriteTarget.Result"/>
-      <element name="TLazLoggerFileHandle.SetCloseLogFileBetweenWrites"/>
-      <element name="TLazLoggerFileHandle.SetCloseLogFileBetweenWrites.AValue"/>
-      <element name="TLazLoggerFileHandle.SetLogName"/>
-      <element name="TLazLoggerFileHandle.SetLogName.AValue"/>
-
-      <element name="TLazLoggerFileHandle.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          Create sets the default values for members and properties in the class instance.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            Calls the inherited destructor on entry. Ensures that the Text handle to LogName is closed when it is in use. Sets the value in ActiveLogText to Nil.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.OpenFIle">
-        <short>
-          Opens the output handle for the logger when CloseLogFileBetweenWrites is <b>False</b>.
-        </short>
-        <descr>
-          <p>
-            Calls a private method to ensure that a Text handle is allocated for the output destination. No actions are performed when:
-          </p>
-          <ul>
-            <li>ActiveLogText has already been assigned.</li>
-            <li>Previous access to the output handle has failed.</li>
-            <li>LogName is an empty string ('') and UseStdOut is set to <b>False</b>.</li>
-          </ul>
-          <p>
-            To use an output file, set LogName to a valid file path and name which allows write access prior to calling OpenFile.
-          </p>
-          <p>
-            To use the stdout device, set LogName to an empty string and UseStdOut to <b>True</b> prior to calling OpenFile.
-          </p>
-          <p>
-            RTL routines like Assign, Append, or Rewrite are called to associate the Text handle for the logger and to establish the FileMode for write access. On successful completion of the method, ActiveLogText is updated with the TextRec for the file name or stdout device in Output. If an exception occurs, it is caught and an error message is written to the stdout device.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.CloseFile">
-        <short>Closes the output handle for the logger.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.ResetWriteFailedCounter">
-        <short>Resets the value in WriteFailedCount to 0 (zero).</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.WriteToFile">
-        <short>
-          Writes the specified log message to the output handle for the class instance.
-        </short>
-        <descr>
-          <p>
-            WriteToFile ensures that the OnWidgetsetDbgOut routine is signalled (when assigned for the unit) to perform the write operation. If the message is handled in OnWidgetsetDbgOut, no additional actions are performed in the method.
-          </p>
-          <p>
-            Otherwise, the output handle is opened when not already assigned. If ActiveLogText is unassigned after trying to open the output handle, no additional actions are performed in the method.
-          </p>
-          <p>
-            The RTL Write routine is called to write the value in S to the output handle for the TextRec. The Flush routine is called when needed for the platform.
-          </p>
-          <p>
-            When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is closed and released.
-          </p>
-          <p>
-            If an exception occurs during output to the handle, it is caught and the values in WriteFailedCount and LastWriteFailed are updated to reflect the error condition.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandle.WriteToFile.s">
-        <short>Log message written in the method.</short>
-      </element>
-      <element name="TLazLoggerFileHandle.WriteToFile.ALogger">
-        <short>Logger class instance passed to the OnWidgetsetDbgOut handler.</short>
-      </element>
-
-      <element name="TLazLoggerFileHandle.WriteLnToFile">
-        <short>
-          Writes the specified log message to the output handle for the class instance.
-        </short>
-        <descr>
-          <p>
-            WriteLnToFile ensures that the OnWidgetSetDebugLn routine is signalled (when assigned for the unit) to perform the write operation. If the message is handled in OnWidgetSetDebugLn, no additional actions are performed in the method.
-          </p>
-          <p>
-            Otherwise, the output handle is opened when not already assigned. If ActiveLogText is unassigned after trying to open the output handle, no additional actions are performed in the method.
-          </p>
-          <p>
-            The RTL WriteLn routine is called to write the value in S to the output handle for the TextRec.
-          </p>
-          <p>
-            When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is closed and released.
-          </p>
-          <p>
-            If an exception occurs during output to the handle, it is caught and the values in WriteFailedCount and LastWriteFailed are updated to reflect the error condition.
-          </p>
-        </descr>        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandle.WriteLnToFile.s">
-        <short>Log message written in the method.</short>
-      </element>
-      <element name="TLazLoggerFileHandle.WriteLnToFile.ALogger">
-        <short>Logger class instance passed to the OnWidgetSetDebugLn handler.</short>
-      </element>
-
-      <element name="TLazLoggerFileHandle.LogName">
-        <short>The name of the log file.</short>
-        <descr>
-          This can be set by the application. Alternatively it can be determined according to ParamForLogFileName and EnvironmentForLogFileName
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.UseStdOut">
-        <short>Enables writing to STDOUT, if LogName is not set.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.CloseLogFileBetweenWrites">
-        <short>Enable opening and closing the log for each write.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.WriteTarget">
-        <short>
-          Indicates whether logger output is directed to a File or the STDOUT device.
-        </short>
-        <descr>
-          <p>
-            The property contains a value from the TLazLoggerWriteTarget enumeration.
-          </p>
-          <dl>
-            <dt>lwtNone</dt>
-            <dd>A handle or output destination has not been or cannot be determined.</dd>
-            <dt>lwtTextFile</dt>
-            <dd>The output destination is a Text instance representing the file in LogName.</dd>
-            <dt>lwtStdOut</dt>
-            <dd>The output destination is the STDOUT device.</dd>
-          </dl>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.ActiveLogText">
-        <short>
-          Contains the Text instance for the output destination, or Nil when unassigned.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.WriteFailedCount">
-        <short>
-          Indicates the cumulative number of failed write operations for the output handle.
-        </short>
-        <descr>
-          <p>
-            WriteFailedCount is updated in methods which perform write operations to the output handle, such WriteToFile and WriteLnToFile. Its value is reset using the ResetWriteFailedCounter method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandle.LastWriteFailed">
-        <short>
-          Indicates if the last write attempt encountered an exception or otherwise failed.
-        </short>
-        <descr>
-          <p>
-            The value is updated in methods which perform write operations to the output handle, like WriteToFile and WriteLnToFIle.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleThreadSave">
-        <short>Performs file operations using a critical section.</short>
-        <descr>
-          <p>
-            TLazLoggerFileHandleThreadSave is a TLazLoggerFileHandle descendant which implements a threaded file logger. TLazLoggerFileHandleThreadSave uses a TRTLCriticalSection class instance to lock the log file during file output operations. Requires that DoOpenFile is called by the main application thread. Otherwise the filehandle may get closed.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleThreadSave.FWriteToFileLock"/>
-
-      <element name="TLazLoggerFileHandleThreadSave.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Initializes the critical section used to protect write access to the handle for the class instance. Calls the inherited constructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleThreadSave.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            Finalizes the critical section used to protect write access to the handle for the class instance. Calls the inherited destructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleThreadSave.WriteToFile">
-        <short>
-          Re-implements the method to use a critical section to protect write access to the handle for the class instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandleThreadSave.WriteToFile.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFileHandleThreadSave.WriteToFile.ALogger">
-        <short/>
-      </element>
-
-      <element name="TLazLoggerFileHandleThreadSave.WriteLnToFile">
-        <short>
-          Re-implements the method to use a critical section to protect write access to the handle for the class instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandleThreadSave.WriteLnToFile.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFileHandleThreadSave.WriteLnToFile.ALogger">
-        <short/>
-      </element>
-
-      <element name="TLazLoggerFileHandleMainThread">
-        <short>Represents a File handle for logger operations queued in the main thread.</short>
-        <descr>
-          <p>
-            TLazLoggerFileHandleMainThread is a TLazLoggerFileHandle descendant which implements a file-based logger which queues file operations for the main thread in an application.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleMainThread.PWriteListEntry"/>
-      <element name="TLazLoggerFileHandleMainThread.TWriteListEntry"/>
-      <element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Next"/>
-      <element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Data"/>
-      <element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Ln"/>
-      <element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Logger"/>
-      <element name="TLazLoggerFileHandleMainThread.FWriteToFileLock"/>
-      <element name="TLazLoggerFileHandleMainThread.FFirst"/>
-      <element name="TLazLoggerFileHandleMainThread.FLast"/>
-      <element name="TLazLoggerFileHandleMainThread.MainThreadWrite"/>
-
-      <element name="TLazLoggerFileHandleMainThread.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Initializes the critical section used to protect write access to the handle for the class instance. Calls the inherited constructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleMainThread.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            Ensures the event handler used to write log messages in the main thread is removed from the thread manager. Calls the inherited destructor, and finalizes the critical section used to protect write access to the handle for the class instance.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFileHandleMainThread.WriteToFile">
-        <short>
-          Re-implements the method used to write log messages in the main thread for the application.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandleMainThread.WriteToFile.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFileHandleMainThread.WriteToFile.ALogger">
-        <short/>
-      </element>
-      <element name="TLazLoggerFileHandleMainThread.WriteLnToFile">
-        <short>
-          Re-implements the method used to write log messages in the main thread for the application.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFileHandleMainThread.WriteLnToFile.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFileHandleMainThread.WriteLnToFile.ALogger">
-        <short/>
-      </element>
-
-      <element name="TLazLoggerFile">
-        <short>
-          Implements a logger which uses a file or the STDOUT device as the destination for log messages.
-        </short>
-        <descr>
-          <p>
-            TLazLoggerFile is a TLazLoggerWithGroupParam descendant. It provides properties and methods needed to implement the handle-based logger class. It also provides event handlers used to perform DbgOut and DebugLn write events (when assigned).
-          </p>
-          <p>
-            TLazLoggerFileHandle provides a FileHandle property (TLazLoggerFileHandle instance) to represent the handle for the output device or file.
-          </p>
-          <p>
-            Various methods from ancestor classes are overridden to perform actions needed to format log messages for the destination.
-          </p>
-          <p>
-            Use LogName to specify a file name where log messages are stored.
-          </p>
-          <p>
-            Use the UseStdOut property to indicate that the STDOUT device is used (instead of a file name) to output the log messages for the class instance. Set LogName to an empty string ('') to ensure that STDOUT is used.
-          </p>
-          <p>
-            Use CloseLogFileBetweenWrites to force the output handle to be closed and released when a write operation is completed. This is the default behavior for the WinCE platform.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.FFileHandle"/>
-      <element name="TLazLoggerFile.FOnDbgOut"/>
-      <element name="TLazLoggerFile.FOnDbgLn"/>
-      <element name="TLazLoggerFile.FBlockHandler"/>
-      <element name="TLazLoggerFile.FEnvironmentForLogFileName"/>
-      <element name="TLazLoggerFile.FParamForLogFileName"/>
-      <element name="TLazLoggerFile.FGetLogFileNameDone"/>
-      <element name="TLazLoggerFile.FIndentCriticalSection"/>
-      <element name="TLazLoggerFile.FDebugNestLvl"/>
-      <element name="TLazLoggerFile.FDebugIndent"/>
-      <element name="TLazLoggerFile.FDebugNestAtBOL"/>
-      <element name="TLazLoggerFile.GetFileHandle"/>
-      <element name="TLazLoggerFile.GetFileHandle.Result"/>
-      <element name="TLazLoggerFile.SetEnvironmentForLogFileName"/>
-      <element name="TLazLoggerFile.SetEnvironmentForLogFileName.AValue"/>
-      <element name="TLazLoggerFile.SetFileHandle"/>
-      <element name="TLazLoggerFile.SetFileHandle.AValue"/>
-      <element name="TLazLoggerFile.SetParamForLogFileName"/>
-      <element name="TLazLoggerFile.SetParamForLogFileName.AValue"/>
-      <element name="TLazLoggerFile.GetLogFileName"/>
-      <element name="TLazLoggerFile.GetLogFileName.Result"/>
-      <element name="TLazLoggerFile.GetCloseLogFileBetweenWrites"/>
-      <element name="TLazLoggerFile.GetCloseLogFileBetweenWrites.Result"/>
-      <element name="TLazLoggerFile.GetLogName"/>
-      <element name="TLazLoggerFile.GetLogName.Result"/>
-      <element name="TLazLoggerFile.GetUseStdOut"/>
-      <element name="TLazLoggerFile.GetUseStdOut.Result"/>
-      <element name="TLazLoggerFile.SetCloseLogFileBetweenWrites"/>
-      <element name="TLazLoggerFile.SetCloseLogFileBetweenWrites.AValue"/>
-      <element name="TLazLoggerFile.SetLogName"/>
-      <element name="TLazLoggerFile.SetLogName.AValue"/>
-      <element name="TLazLoggerFile.SetUseStdOut"/>
-      <element name="TLazLoggerFile.SetUseStdOut.AValue"/>
-
-      <element name="TLazLoggerFile.DoInit">
-        <short>Performs actions to initialize the file-based logger class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DoFinish">
-        <short>Performs actions to finalize the file-based logger class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.IncreaseIndent">
-        <short>
-          Increases the indentation (nesting) level for messages written using the logger.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.IncreaseIndent.LogEnabled">
-        <short/>
-      </element>
-      <element name="TLazLoggerFile.DecreaseIndent">
-        <short>
-          Decreases the indentation (nesting) level for messages written using the logger.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DecreaseIndent.LogEnabled">
-        <short/>
-      </element>
-      <element name="TLazLoggerFile.IndentChanged">
-        <short>
-          Performs actions needed to create an indentation spacing string for the current nesting level.
-        </short>
-        <descr>
-          <p>
-            Calls CreateIndent to prepare the string prefix inserted at the start of a log message.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.CreateIndent">
-        <short>
-          Creates a string with spaces characters used as the prefix for log messages.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.GetBlockHandler">
-        <short>Gets the value for the indexed BlockHandler property.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.GetBlockHandler.Result">
-        <short>Value for the indexed BlockHandler property.</short>
-      </element>
-      <element name="TLazLoggerFile.GetBlockHandler.AIndex">
-        <short>Ordinal position for the TLazLoggerBlockHandler value in the property.</short>
-      </element>
-      <element name="TLazLoggerFile.ClearAllBlockHandler">
-        <short>
-          Removes all block handlers for the logger class created using AddBlockHandler.
-        </short>
-        <descr>
-          <p>
-            Calls RemoveBlockHandler to remove each of the block handlers from the internal list of handlers, and releases the references to the block handler class instances.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DoDbgOut">
-        <short>
-          Performs actions needed to implement the DbgOut method for the logger class type.
-        </short>
-        <descr>
-          <p>
-            DoDbgOut is overridden in TLazLoggerFile to ensure that log message formatting and event handlers are used when the DbgOut method is called. Space characters are inserted at the start of the log message to reflect the current nesting level for the logger class. For multi-threaded usage, an internal critical section is used to protect the current nesting level while preparing the indentation spaces for the message.
-          </p>
-           <p>
-             The OnDbgOut event handler is signalled (when assigned) to allow user-specified actions to be performed when writing the log message. If the write operation is handled in the event handler, no additional actions are performed in the method. Otherwise, the WriteToFile method in FileHandle is called to write the log message to the device or file.
-           </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DoDbgOut.s">
-        <short>Log message formatted and written in the method.</short>
-      </element>
-      <element name="TLazLoggerFile.DoDebugLn">
-        <short>
-          Performs actions needed to implement the DebugLn method for the logger class type.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DoDebugLn.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFile.DoDebuglnStack">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.DoDebuglnStack.s">
-        <short/>
-      </element>
-      <element name="TLazLoggerFile.FileHandle">
-        <short>
-          TLazLoggerFileHandle instance representing the file or device where log messages are written.
-        </short>
-        <descr>
-          <p>
-            Resources are allocated for the member when the FileHandle property is accessed. At run-time, a TLazLoggerFileHandleMainThread instance is created and assigned to the member for the property.
-          </p>
-          <p>
-            Read and write access to some property values in the logger class instance are re-directed to the corresponding properties in FileHandle, including:
-          </p>
-          <ul>
-            <li>LogName</li>
-            <li>UseStdOut</li>
-            <li>CloseLogFileBetweenWrites</li>
-          </ul>
-          <p>
-            Methods in TLazLoggerFile may call the corresponding methods in FileHandle which implement the methods, including:
-          </p>
-          <ul>
-            <li>DoInit</li>
-            <li>DoFinish</li>
-            <li>DoDbgOut</li>
-            <li>DoDebugLn</li>
-            <li>DoDebugLnStack</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Creates allocates and initializes resources for the block handler list and a critical section used in the class instance. The default value for CurrentIndentLevel is set to 0.
-          </p>
-          <p>
-            Create ensures that ParamForLogFileName and EnvironmentForLogFileName are set to the default values for the platform or widgetset. For WinCE, that requires the properties to be set empty strings ('').
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            Destroy is the overridden destructor for the class instance. It ensures that all block handlers assigned to the class instance are removed from the internal list and released. The inherited destructor is called to finalize the logger class instance.
-          </p>
-          <p>
-            Destory frees resources allocated for the FileHandle property, the internal list used for block handlers, and the critical section used to protect access to the current nesting level.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.Assign">
-        <short>Implements object persistence for the TLazLoggerFile class type.</short>
-        <descr>
-          <p>
-            Assign is an overridden method used to implement object persistence for the TLazLoggerFile class type.
-          </p>
-          <p>
-            Src is the TLazLogger instance with the values copied into the current class instance. The inherited method is called to handle group parameters and block handlers assigned in Src.
-          </p>
-          <p>
-            When Src is derived from TLazLoggerFile, the following property values are also copied:
-          </p>
-          <ul>
-            <li>CloseLogFileBetweenWrites</li>
-            <li>EnvironmentForLogFileName</li>
-            <li>LogName</li>
-            <li>ParamForLogFileName</li>
-            <li>UseStdOut</li>
-            <li>OnDbgOut</li>
-            <li>OnDebugLn</li>
-          </ul>
-          <p>
-            These property values are not copied when Src is not derived from TLazLoggerFile.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.Assign.Src">
-        <short>TLazLogger instance with values copies in the method.</short>
-      </element>
-
-      <element name="TLazLoggerFile.CurrentIndentLevel">
-        <short>
-          Gets the current indentation (nesting) level for messages written using the logger.
-        </short>
-        <descr>
-          <p>
-            Indicates the number of space characters prepended to a message to format the output for the logger class.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.CurrentIndentLevel.Result">
-        <short>Current nesting level for the logger class instance.</short>
-      </element>
-      <element name="TLazLoggerFile.ParamForLogFileName">
-        <short>
-          Name of the command line parameter that has the log file name for the class instance.
-        </short>
-        <descr>
-          <p>
-            ParamForLogFileName is a command line parameter that may contain the name for the log file (if not already set). For example:  --debug-log=/path/to/filename.ext.
-          </p>
-          <p>
-            If LogName is empty and ParamForLogFileName has been assigned, the command line will be checked for a parameter with the specified name. LogName will be set to the file name in the parameter, if found. The default value for the property is '--debug-log='. Please note that the dashes and equal sign must be present.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.EnvironmentForLogFileName">
-        <short>
-          Name of the environment variable with the log file name for the class instance.
-        </short>
-        <descr>
-          <p>
-            If LogName is empty and con not be found from ParamForLogFileName, then the environment variable specified will be checked. LogName will be set, if found.
-          </p>
-          <p>
-            An * character will be replaced with the value from param(0) (the name for the application).
-          </p>
-          <p>The default value for the property is: '*_debuglog'.</p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.OnDebugLn">
-        <short>
-          Event handler signalled to write a full line in the log (DebugLn, DebugLnEnter or DebugLnExit).
-        </short>
-        <descr>
-          <p>
-            OnDebugLn allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation. A Handled variable parameter is also provided that can be set to <b>True</b> to prevent the default action (writing to log) from being performed in the DoDebugLn method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.OnDbgOut">
-        <short>
-          Event handler signalled to write a log message (DbgOut).
-        </short>
-        <descr>
-          <p>
-            OnDbgOut allows user-specified actions to be performed when writing a log message. Arguments passed to the event handler identify the log message and the logger class instance used for the operation. A Handled variable parameter is also provided that can be set to <b>True</b> to prevent the default action (writing to log) from being performed in the DoDbgOut method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.AddBlockHandler">
-        <short>
-          Adds the specified block handler to the internal list of block handlers for the logger.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.AddBlockHandler.AHandler">
-        <short>Block handler added to the internal list of block handlers.</short>
-      </element>
-
-      <element name="TLazLoggerFile.RemoveBlockHandler">
-        <short>
-          Removes the specified block handler from the internal list of block handlers.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.RemoveBlockHandler.AHandler">
-        <short>Block handler removed from the internal list of block handlers.</short>
-      </element>
-
-      <element name="TLazLoggerFile.BlockHandlerCount">
-        <short>Gets the number of block handlers in the internal list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazLoggerFile.BlockHandlerCount.Result">
-        <short>Number of block handler instances in the internal list.</short>
-      </element>
-
-      <element name="TLazLoggerFile.LogName">
-        <short>The qualified name for the log file where log messages are written.</short>
-        <descr>
-          <p>
-            The property value can be set by the application. Alternatively, it can be determined using ParamForLogFileName or EnvironmentForLogFileName.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.UseStdOut">
-        <short>Enables writing to STDOUT when LogName has not been assigned.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazLoggerFile.CloseLogFileBetweenWrites">
-        <short>
-          Enables opening and closing the output handle for the logger following each write operation.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="GetDebugLogger">
-        <short>Gets the value for the DebugLogger property.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="GetDebugLogger.Result">
-        <short>Value for the DebugLogger property.</short>
-      </element>
-
-      <element name="SetDebugLogger">
-        <short>Sets the value for the DebugLogger property.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="SetDebugLogger.ALogger">
-        <short>New value for the DebugLogger property.</short>
-      </element>
-
-      <element name="DebugLogger">
-        <short>Contains the class instance for the file-based logger.</short>
-        <descr>
-          <p>
-            DebugLogger is a TLazLoggerFile property with the class instance for the logger used to write its output to a file.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-    </module>
-    <!-- LazLogger -->
-  </package>
+<package name="LazUtils">
+<!--
+========================================================================
+LazLogger
+========================================================================
+-->
+<module name="LazLogger">
+<short>Provides a logging framework for Lazarus applications.</short>
+<descr>
+<p>
+<file>LazLogger.pas</file> provides logging facilities to write message to a 
+file or stdout device. Messages can be logged plain, or enclosed in begin/end 
+like blocks, adding indent to all messages between to points (blocks can be 
+nested). It also has the ability to filter groups of messages.
+</p>
+<p>
+It can read the command line and environment to find the desired filename. By 
+default it looks for a --debug-log= argument on the command line or 
+"appname"_debuglog in the system environment.
+</p>
+<p>
+If no log name is found StdOut is used.
+</p>
+<p>
+The easiest method is to use the unit and put "DebugLn"/ "DbgOut" / 
+"DebugLnEnter"/ "DebugLnExit" in your code. This works without any further 
+setup.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+</descr>
+
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Types"/>
+<element name="Math"/>
+<element name="LazLoggerBase"/>
+<element name="LazClasses"/>
+<element name="LazFileUtils"/>
+<element name="LazStringUtils"/>
+<element name="LazUTF8"/>
+
+<element name="PLazLoggerLogGroup">
+<short>
+Alias for the PLazLoggerLogGroup type in the LazLoggerBase unit.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<!-- included from lazloggerintf.inc -->
+<element name="DebuglnStack">
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Calls the DebuglnStack method for the logger class instance.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="DebuglnStack.s">
+<short/>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DbgOut">
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does not append a new line.
+The Argument can be:
+</p>
+<ul>
+<li>One or more string(s)</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>
+This is a forwarder to the log TLazLogger object. See there for details.
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
+</element>
+<element name="DbgOut.s">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.Args">
+<short></short>
+</element>
+<element name="DbgOut.s1">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s2">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s3">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s4">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s5">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s6">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s7">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s8">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s9">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s10">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s11">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s12">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s13">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s14">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s15">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s16">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s17">
+<short>String argument for the routine.</short>
+</element>
+<element name="DbgOut.s18">
+<short>String argument for the routine.</short>
+</element>
+
+<element name="DebugLn">
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>This is a forwarder to the log TLazLogger object. See there for 
+details.</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
+</element>
+<element name="DebugLn.s">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.Args">
+<short></short>
+</element>
+<element name="DebugLn.s1">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s2">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s3">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s4">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s5">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s6">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s7">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s8">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s9">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s10">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s11">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s12">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s13">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s14">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s15">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s16">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s17">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLn.s18">
+<short>String argument for the routine.</short>
+</element>
+
+<element name="DebugLnEnter">
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line. Increases the current 
+intend.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+</ul>
+<p>This is a forwarder to the log TLazLogger object. See there for 
+details.</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
+</element>
+<element name="DebugLnEnter.s">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.Args">
+<short></short>
+</element>
+<element name="DebugLnEnter.s1">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s2">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s3">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s4">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s5">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s6">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s7">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s8">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s9">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s10">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s11">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s12">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s13">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s14">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s15">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s16">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s17">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnEnter.s18">
+<short>String argument for the routine.</short>
+</element>
+
+<element name="DebugLnExit">
+<short>Writes a message to the log.</short>
+<descr>
+<p>
+Writes the text to the log. Does append a new line. Increases the current 
+indentation level.
+</p>
+<p>
+The Argument can be:
+</p>
+<ul>
+<li>One or more string</li>
+<li>An open array of const: All values are converted to string and joined</li>
+<li>A single string and open array of const:  Will be passed to Format</li>
+<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+<li>This is a forwarder to the log TLazLogger object. See there for 
+details.</li>
+</ul>
+</descr>
+<seealso>
+<link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+<link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
+</seealso>
+</element>
+<element name="DebugLnExit.s">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.Args">
+<short></short>
+</element>
+<element name="DebugLnExit.s1">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s2">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s3">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s4">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s5">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s6">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s7">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s8">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s9">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s10">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s11">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s12">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s13">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s14">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s15">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s16">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s17">
+<short>String argument for the routine.</short>
+</element>
+<element name="DebugLnExit.s18">
+<short>String argument for the routine.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgS">
+<short>
+Generates a debugger message formatted with the value(s) for the specified 
+type(s).
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+<element name="DbgS.Result">
+<short>String with the formatted content for the specified value(s).</short>
+</element>
+<element name="DbgS.c">
+<short>Cardinal value for the message.</short>
+</element>
+<element name="DbgS.i">
+<short>Integer (LongInt, Int64) value for the message.</short>
+</element>
+<element name="DbgS.q">
+<short>QWord value for the message.</short>
+</element>
+<element name="DbgS.r">
+<short>TRect value for the message.</short>
+</element>
+<element name="DbgS.p">
+<short>Untyped pointer value for the message.</short>
+</element>
+<element name="DbgS.e">
+<short>Extended value for the message.</short>
+</element>
+<element name="DbgS.MaxDecimals">
+<short>Number of decimal places for the Extended value in the message.</short>
+</element>
+<element name="DbgS.b">
+<short>Boolean value for the message.</short>
+</element>
+<element name="DbgS.m">
+<short>TMethod value for the message. </short>
+</element>
+<element name="DbgS.ASize">
+<short></short>
+</element>
+<element name="DbgS.s">
+<short>String value for the message.</short>
+</element>
+<element name="DbgS.i1">
+<short>Integer value for the message.</short>
+</element>
+<element name="DbgS.i2">
+<short>Integer value for the message.</short>
+</element>
+<element name="DbgS.i3">
+<short>Integer value for the message.</short>
+</element>
+<element name="DbgS.i4">
+<short>Integer value for the message.</short>
+</element>
+<element name="DbgS.Shift">
+<short>TShiftStateEnum value for the message.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgSJoin">
+<short>
+Generates a debugger message with the combined values of the specified 
+arguments.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="DbgSJoin.Result">
+<short>
+Message with the values in s1 and s2 combined into a single string.
+</short>
+</element>
+<element name="DbgSJoin.s1">
+<short>String value for the message.</short>
+</element>
+<element name="DbgSJoin.s2">
+<short>String value for the message.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DbgSName">
+<short>
+Generates a message with the optional name and class type for the specified 
+object.
+</short>
+<descr>
+<p>
+DbgSName generates a log message with the optional name and class type for 
+the object in p.
+</p>
+<p>
+When p has not been assigned, the return value contains:
+</p>
+<code>'Nil'</code>
+<p>
+When p is a TComponent descendant, the return value contains a value like:
+</p>
+<code>TComponent.Name + ':' + TComponent.ClassName</code>
+<p>
+Otherwise, the return value is set to:
+</p>
+<code>TObject.ClassName</code>
+<p>
+If the LazLogger_Dummy unit has been included in the application, the return 
+value is an empty string.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="DbgSName.Result">
+<short>
+Formatted message with the optional name and class type for the specified 
+value.
+</short>
+</element>
+<element name="DbgSName.p">
+<short>TObject instance examined in the routine.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgObjMem">
+<short>
+Generates a message with the hexadecimal-encoded memory content for the 
+specified object instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="dbgObjMem.Result">
+<short>
+String with hexadecimal-encoded values for the specified object instance.
+</short>
+</element>
+<element name="dbgObjMem.AnObject">
+<short>Object instance examined in the routine.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbghex">
+<short>
+Generates a message with the hexadecimal representation for the specified 
+Int64 value.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="dbghex.Result">
+<short>
+String with the hexadecimal representation for the specified value.
+</short>
+</element>
+<element name="dbghex.i">
+<short>Int64 value converted in the routine.</short>
+</element>
+
+<element name="DbgSTime">
+<short>
+Generates a message with the tick count for the computer system.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="DbgSTime.Result">
+<short>String with the tick count for the system.</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgMemRange">
+<short>
+Generates a message with the hexadecimal-encoded content for the specified 
+block of memory and size.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+<element name="dbgMemRange.Result">
+<short></short>
+</element>
+<element name="dbgMemRange.P">
+<short>Untyped pointer to the byte values examined in the routine.</short>
+</element>
+<element name="dbgMemRange.Count">
+<short>Number of bytes from the pointer to include in the message.</short>
+</element>
+<element name="dbgMemRange.Width">
+<short>
+Maximum number of columns to use in the formatted message string. A LineEnd 
+sequence is inserted in the message when Width is exceeded.
+</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="dbgMemStream">
+<short>
+Generates a message with the hexadecimal-encoded values from the specified 
+memory stream.
+</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+<element name="dbgMemStream.Result">
+<short></short>
+</element>
+<element name="dbgMemStream.MemStream">
+<short></short>
+</element>
+<element name="dbgMemStream.Count">
+<short></short>
+</element>
+
+<element name="DumpExceptionBackTrace">
+<short>Write the stack trace back when an exception is detected.</short>
+<descr>
+<p>
+Calls the <var>DumpExceptionBackTrace</var> method for the logger in the 
+<var>DebugLogger</var> variable.
+</p>
+</descr>
+<seealso>
+<!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
+<link id="TLazLogger.DebugLn"/>
+<link id="TLazLogger.DumpExceptionBackTrace"/>
+</seealso>
+</element>
+
+<element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
+<short>
+Implements the Assign (':=') operator using a Pointer to a logger group for 
+the TLazLoggerLogEnabled type.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="operator assign(boolean): tlazloggerlogenabled">
+<short>
+Implements the Assign (':=') operator using a Boolean argument for the 
+TLazLoggerLogEnabled type.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+<short>
+Implements the logical And operator for TLazLoggerLogEnabled types.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="operator logicalor(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+<short>
+Implements the logical Or operator for TLazLoggerLogEnabled types.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="DbgStr">
+<short>
+Generates a debugger message with the content from the specified value.
+</short>
+<descr>
+<p>
+Calls the DbgStr routine in <file>LazLoggerBase</file> unit to write the 
+value(s).
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgStr</link>
+</seealso>
+</element>
+<element name="DbgStr.Result">
+<short/>
+</element>
+<element name="DbgStr.StringWithSpecialChars">
+<short/>
+</element>
+<element name="DbgStr.StartPos">
+<short/>
+</element>
+<element name="DbgStr.Len">
+<short/>
+</element>
+<element name="DbgStr.p">
+<short/>
+</element>
+
+<element name="DbgWideStr">
+<short>
+Generates a debugger message with the specified WideString content.
+</short>
+<descr>
+<p>
+Calls the DbgWideStr routine in <file>LazLoggerBase</file> unit to write the 
+value(s).
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgWideStr</link>
+</seealso>
+</element>
+<element name="DbgWideStr.Result">
+<short/>
+</element>
+<element name="DbgWideStr.StringWithSpecialChars">
+<short/>
+</element>
+
+<element name="TLazLoggerFileHandle">
+<short>
+Represents a file or device handle for a logger class instance.
+</short>
+<descr>
+<p>
+Provides functionality to write messages to a log file. The file is 
+represented by a Text member stored internally. TLazLoggerFileHandle allows 
+filtering and changing indent level.
+</p>
+<p>
+TLazLoggerFileHandle can parse options from command line for log filename and 
+filter settings.
+</p>
+<p>
+An application can subclass the logger handle to provide additional 
+functionality.
+</p>
+<p>
+Used in the implementation of the TLazLoggerFile class.
+</p>
+</descr>
+</element>
+<element name="TLazLoggerFileHandle.FActiveLogText"/>
+<element name="TLazLoggerFileHandle.FCloseLogFileBetweenWrites"/>
+<element name="TLazLoggerFileHandle.FLastWriteFailed"/>
+<element name="TLazLoggerFileHandle.FLogName"/>
+<element name="TLazLoggerFileHandle.FText"/>
+<element name="TLazLoggerFileHandle.FLogTextInUse"/>
+<element name="TLazLoggerFileHandle.FUseStdOut"/>
+<element name="TLazLoggerFileHandle.FWriteFailedCount"/>
+<element name="TLazLoggerFileHandle.DoOpenFile"/>
+<element name="TLazLoggerFileHandle.DoCloseFile"/>
+<element name="TLazLoggerFileHandle.GetWriteTarget"/>
+<element name="TLazLoggerFileHandle.GetWriteTarget.Result"/>
+<element name="TLazLoggerFileHandle.SetCloseLogFileBetweenWrites"/>
+<element name="TLazLoggerFileHandle.SetCloseLogFileBetweenWrites.AValue"/>
+<element name="TLazLoggerFileHandle.SetLogName"/>
+<element name="TLazLoggerFileHandle.SetLogName.AValue"/>
+
+<element name="TLazLoggerFileHandle.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+Create sets the default values for members and properties in the class 
+instance.
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Calls the inherited destructor on entry. Ensures that the Text handle to 
+LogName is closed when it is in use. Sets the value in ActiveLogText to Nil.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.OpenFIle">
+<short>
+Opens the output handle for the logger when CloseLogFileBetweenWrites is 
+<b>False</b>.
+</short>
+<descr>
+<p>
+Calls a private method to ensure that a Text handle is allocated for the 
+output destination. No actions are performed when:
+</p>
+<ul>
+<li>ActiveLogText has already been assigned.</li>
+<li>Previous access to the output handle has failed.</li>
+<li>LogName is an empty string ('') and UseStdOut is set to <b>False</b>.</li>
+</ul>
+<p>
+To use an output file, set LogName to a valid file path and name which allows 
+write access prior to calling OpenFile.
+</p>
+<p>
+To use the stdout device, set LogName to an empty string and UseStdOut to 
+<b>True</b> prior to calling OpenFile.
+</p>
+<p>
+RTL routines like Assign, Append, or Rewrite are called to associate the Text 
+handle for the logger and to establish the FileMode for write access. On 
+successful completion of the method, ActiveLogText is updated with the 
+TextRec for the file name or stdout device in Output. If an exception occurs, 
+it is caught and an error message is written to the stdout device.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.CloseFile">
+<short>Closes the output handle for the logger.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.ResetWriteFailedCounter">
+<short>Resets the value in WriteFailedCount to 0 (zero).</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.WriteToFile">
+<short>
+Writes the specified log message to the output handle for the class instance.
+</short>
+<descr>
+<p>
+WriteToFile ensures that the OnWidgetsetDbgOut routine is signalled (when 
+assigned for the unit) to perform the write operation. If the message is 
+handled in OnWidgetsetDbgOut, no additional actions are performed in the 
+method.
+</p>
+<p>
+Otherwise, the output handle is opened when not already assigned. If 
+ActiveLogText is unassigned after trying to open the output handle, no 
+additional actions are performed in the method.
+</p>
+<p>
+The RTL Write routine is called to write the value in S to the output handle 
+for the TextRec. The Flush routine is called when needed for the platform.
+</p>
+<p>
+When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is 
+closed and released.
+</p>
+<p>
+If an exception occurs during output to the handle, it is caught and the 
+values in WriteFailedCount and LastWriteFailed are updated to reflect the 
+error condition.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFileHandle.WriteToFile.s">
+<short>Log message written in the method.</short>
+</element>
+<element name="TLazLoggerFileHandle.WriteToFile.ALogger">
+<short>Logger class instance passed to the OnWidgetsetDbgOut handler.</short>
+</element>
+
+<element name="TLazLoggerFileHandle.WriteLnToFile">
+<short>
+Writes the specified log message to the output handle for the class instance.
+</short>
+<descr>
+<p>
+WriteLnToFile ensures that the OnWidgetSetDebugLn routine is signalled (when 
+assigned for the unit) to perform the write operation. If the message is 
+handled in OnWidgetSetDebugLn, no additional actions are performed in the 
+method.
+</p>
+<p>
+Otherwise, the output handle is opened when not already assigned. If 
+ActiveLogText is unassigned after trying to open the output handle, no 
+additional actions are performed in the method.
+</p>
+<p>
+The RTL WriteLn routine is called to write the value in S to the output 
+handle for the TextRec.
+</p>
+<p>
+When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is 
+closed and released.
+</p>
+<p>
+If an exception occurs during output to the handle, it is caught and the 
+values in WriteFailedCount and LastWriteFailed are updated to reflect the 
+error condition.
+</p>
+</descr>        <seealso/>
+</element>
+<element name="TLazLoggerFileHandle.WriteLnToFile.s">
+<short>Log message written in the method.</short>
+</element>
+<element name="TLazLoggerFileHandle.WriteLnToFile.ALogger">
+<short>Logger class instance passed to the OnWidgetSetDebugLn handler.</short>
+</element>
+
+<element name="TLazLoggerFileHandle.LogName">
+<short>The name of the log file.</short>
+<descr>
+This can be set by the application. Alternatively it can be determined 
+according to ParamForLogFileName and EnvironmentForLogFileName
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.UseStdOut">
+<short>Enables writing to STDOUT, if LogName is not set.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.CloseLogFileBetweenWrites">
+<short>Enable opening and closing the log for each write.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.WriteTarget">
+<short>
+Indicates whether logger output is directed to a File or the STDOUT device.
+</short>
+<descr>
+<p>
+The property contains a value from the TLazLoggerWriteTarget enumeration.
+</p>
+<dl>
+<dt>lwtNone</dt>
+<dd>A handle or output destination has not been or cannot be determined.</dd>
+<dt>lwtTextFile</dt>
+<dd>The output destination is a Text instance representing the file in 
+LogName.</dd>
+<dt>lwtStdOut</dt>
+<dd>The output destination is the STDOUT device.</dd>
+</dl>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.ActiveLogText">
+<short>
+Contains the Text instance for the output destination, or Nil when unassigned.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.WriteFailedCount">
+<short>
+Indicates the cumulative number of failed write operations for the output 
+handle.
+</short>
+<descr>
+<p>
+WriteFailedCount is updated in methods which perform write operations to the 
+output handle, such WriteToFile and WriteLnToFile. Its value is reset using 
+the ResetWriteFailedCounter method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandle.LastWriteFailed">
+<short>
+Indicates if the last write attempt encountered an exception or otherwise 
+failed.
+</short>
+<descr>
+<p>
+The value is updated in methods which perform write operations to the output 
+handle, like WriteToFile and WriteLnToFIle.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleThreadSave">
+<short>Performs file operations using a critical section.</short>
+<descr>
+<p>
+TLazLoggerFileHandleThreadSave is a TLazLoggerFileHandle descendant which 
+implements a threaded file logger. TLazLoggerFileHandleThreadSave uses a 
+TRTLCriticalSection class instance to lock the log file during file output 
+operations. Requires that DoOpenFile is called by the main application 
+thread. Otherwise the filehandle may get closed.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleThreadSave.FWriteToFileLock"/>
+
+<element name="TLazLoggerFileHandleThreadSave.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Initializes the critical section used to protect write access to the handle 
+for the class instance. Calls the inherited constructor prior to exiting from 
+the method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleThreadSave.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Finalizes the critical section used to protect write access to the handle for 
+the class instance. Calls the inherited destructor prior to exiting from the 
+method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleThreadSave.WriteToFile">
+<short>
+Re-implements the method to use a critical section to protect write access to 
+the handle for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFileHandleThreadSave.WriteToFile.s">
+<short/>
+</element>
+<element name="TLazLoggerFileHandleThreadSave.WriteToFile.ALogger">
+<short/>
+</element>
+
+<element name="TLazLoggerFileHandleThreadSave.WriteLnToFile">
+<short>
+Re-implements the method to use a critical section to protect write access to 
+the handle for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFileHandleThreadSave.WriteLnToFile.s">
+<short/>
+</element>
+<element name="TLazLoggerFileHandleThreadSave.WriteLnToFile.ALogger">
+<short/>
+</element>
+
+<element name="TLazLoggerFileHandleMainThread">
+<short>
+Represents a File handle for logger operations queued in the main thread.
+</short>
+<descr>
+<p>
+TLazLoggerFileHandleMainThread is a TLazLoggerFileHandle descendant which 
+implements a file-based logger which queues file operations for the main 
+thread in an application.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleMainThread.PWriteListEntry"/>
+<element name="TLazLoggerFileHandleMainThread.TWriteListEntry"/>
+<element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Next"/>
+<element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Data"/>
+<element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Ln"/>
+<element name="TLazLoggerFileHandleMainThread.TWriteListEntry.Logger"/>
+<element name="TLazLoggerFileHandleMainThread.FWriteToFileLock"/>
+<element name="TLazLoggerFileHandleMainThread.FFirst"/>
+<element name="TLazLoggerFileHandleMainThread.FLast"/>
+<element name="TLazLoggerFileHandleMainThread.MainThreadWrite"/>
+
+<element name="TLazLoggerFileHandleMainThread.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Initializes the critical section used to protect write access to the handle 
+for the class instance. Calls the inherited constructor prior to exiting from 
+the method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleMainThread.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Ensures the event handler used to write log messages in the main thread is 
+removed from the thread manager. Calls the inherited destructor, and 
+finalizes the critical section used to protect write access to the handle for 
+the class instance.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFileHandleMainThread.WriteToFile">
+<short>
+Re-implements the method used to write log messages in the main thread for 
+the application.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFileHandleMainThread.WriteToFile.s">
+<short/>
+</element>
+<element name="TLazLoggerFileHandleMainThread.WriteToFile.ALogger">
+<short/>
+</element>
+<element name="TLazLoggerFileHandleMainThread.WriteLnToFile">
+<short>
+Re-implements the method used to write log messages in the main thread for 
+the application.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFileHandleMainThread.WriteLnToFile.s">
+<short/>
+</element>
+<element name="TLazLoggerFileHandleMainThread.WriteLnToFile.ALogger">
+<short/>
+</element>
+
+<element name="TLazLoggerFile">
+<short>
+Implements a logger which uses a file or the STDOUT device as the destination 
+for log messages.
+</short>
+<descr>
+<p>
+TLazLoggerFile is a TLazLoggerWithGroupParam descendant. It provides 
+properties and methods needed to implement the handle-based logger class. It 
+also provides event handlers used to perform DbgOut and DebugLn write events 
+(when assigned).
+</p>
+<p>
+TLazLoggerFileHandle provides a FileHandle property (TLazLoggerFileHandle 
+instance) to represent the handle for the output device or file.
+</p>
+<p>
+Various methods from ancestor classes are overridden to perform actions 
+needed to format log messages for the destination.
+</p>
+<p>
+Use LogName to specify a file name where log messages are stored.
+</p>
+<p>
+Use the UseStdOut property to indicate that the STDOUT device is used 
+(instead of a file name) to output the log messages for the class instance. 
+Set LogName to an empty string ('') to ensure that STDOUT is used.
+</p>
+<p>
+Use CloseLogFileBetweenWrites to force the output handle to be closed and 
+released when a write operation is completed. This is the default behavior 
+for the WinCE platform.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.FFileHandle"/>
+<element name="TLazLoggerFile.FOnDbgOut"/>
+<element name="TLazLoggerFile.FOnDbgLn"/>
+<element name="TLazLoggerFile.FBlockHandler"/>
+<element name="TLazLoggerFile.FEnvironmentForLogFileName"/>
+<element name="TLazLoggerFile.FParamForLogFileName"/>
+<element name="TLazLoggerFile.FGetLogFileNameDone"/>
+<element name="TLazLoggerFile.FIndentCriticalSection"/>
+<element name="TLazLoggerFile.FDebugNestLvl"/>
+<element name="TLazLoggerFile.FDebugIndent"/>
+<element name="TLazLoggerFile.FDebugNestAtBOL"/>
+<element name="TLazLoggerFile.GetFileHandle"/>
+<element name="TLazLoggerFile.GetFileHandle.Result"/>
+<element name="TLazLoggerFile.SetEnvironmentForLogFileName"/>
+<element name="TLazLoggerFile.SetEnvironmentForLogFileName.AValue"/>
+<element name="TLazLoggerFile.SetFileHandle"/>
+<element name="TLazLoggerFile.SetFileHandle.AValue"/>
+<element name="TLazLoggerFile.SetParamForLogFileName"/>
+<element name="TLazLoggerFile.SetParamForLogFileName.AValue"/>
+<element name="TLazLoggerFile.GetLogFileName"/>
+<element name="TLazLoggerFile.GetLogFileName.Result"/>
+<element name="TLazLoggerFile.GetCloseLogFileBetweenWrites"/>
+<element name="TLazLoggerFile.GetCloseLogFileBetweenWrites.Result"/>
+<element name="TLazLoggerFile.GetLogName"/>
+<element name="TLazLoggerFile.GetLogName.Result"/>
+<element name="TLazLoggerFile.GetUseStdOut"/>
+<element name="TLazLoggerFile.GetUseStdOut.Result"/>
+<element name="TLazLoggerFile.SetCloseLogFileBetweenWrites"/>
+<element name="TLazLoggerFile.SetCloseLogFileBetweenWrites.AValue"/>
+<element name="TLazLoggerFile.SetLogName"/>
+<element name="TLazLoggerFile.SetLogName.AValue"/>
+<element name="TLazLoggerFile.SetUseStdOut"/>
+<element name="TLazLoggerFile.SetUseStdOut.AValue"/>
+
+<element name="TLazLoggerFile.DoInit">
+<short>
+Performs actions to initialize the file-based logger class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DoFinish">
+<short>
+Performs actions to finalize the file-based logger class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.IncreaseIndent">
+<short>
+Increases the indentation (nesting) level for messages written using the 
+logger.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.IncreaseIndent.LogEnabled">
+<short/>
+</element>
+<element name="TLazLoggerFile.DecreaseIndent">
+<short>
+Decreases the indentation (nesting) level for messages written using the 
+logger.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DecreaseIndent.LogEnabled">
+<short/>
+</element>
+<element name="TLazLoggerFile.IndentChanged">
+<short>
+Performs actions needed to create an indentation spacing string for the 
+current nesting level.
+</short>
+<descr>
+<p>
+Calls CreateIndent to prepare the string prefix inserted at the start of a 
+log message.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.CreateIndent">
+<short>
+Creates a string with spaces characters used as the prefix for log messages.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.GetBlockHandler">
+<short>Gets the value for the indexed BlockHandler property.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.GetBlockHandler.Result">
+<short>Value for the indexed BlockHandler property.</short>
+</element>
+<element name="TLazLoggerFile.GetBlockHandler.AIndex">
+<short>
+Ordinal position for the TLazLoggerBlockHandler value in the property.
+</short>
+</element>
+<element name="TLazLoggerFile.ClearAllBlockHandler">
+<short>
+Removes all block handlers for the logger class created using AddBlockHandler.
+</short>
+<descr>
+<p>
+Calls RemoveBlockHandler to remove each of the block handlers from the 
+internal list of handlers, and releases the references to the block handler 
+class instances.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DoDbgOut">
+<short>
+Performs actions needed to implement the DbgOut method for the logger class 
+type.
+</short>
+<descr>
+<p>
+DoDbgOut is overridden in TLazLoggerFile to ensure that log message 
+formatting and event handlers are used when the DbgOut method is called. 
+Space characters are inserted at the start of the log message to reflect the 
+current nesting level for the logger class. For multi-threaded usage, an 
+internal critical section is used to protect the current nesting level while 
+preparing the indentation spaces for the message.
+</p>
+<p>
+The OnDbgOut event handler is signalled (when assigned) to allow 
+user-specified actions to be performed when writing the log message. If the 
+write operation is handled in the event handler, no additional actions are 
+performed in the method. Otherwise, the WriteToFile method in FileHandle is 
+called to write the log message to the device or file.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DoDbgOut.s">
+<short>Log message formatted and written in the method.</short>
+</element>
+<element name="TLazLoggerFile.DoDebugLn">
+<short>
+Performs actions needed to implement the DebugLn method for the logger class 
+type.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DoDebugLn.s">
+<short/>
+</element>
+<element name="TLazLoggerFile.DoDebuglnStack">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.DoDebuglnStack.s">
+<short/>
+</element>
+<element name="TLazLoggerFile.FileHandle">
+<short>
+TLazLoggerFileHandle instance representing the file or device where log 
+messages are written.
+</short>
+<descr>
+<p>
+Resources are allocated for the member when the FileHandle property is 
+accessed. At run-time, a TLazLoggerFileHandleMainThread instance is created 
+and assigned to the member for the property.
+</p>
+<p>
+Read and write access to some property values in the logger class instance 
+are re-directed to the corresponding properties in FileHandle, including:
+</p>
+<ul>
+<li>LogName</li>
+<li>UseStdOut</li>
+<li>CloseLogFileBetweenWrites</li>
+</ul>
+<p>
+Methods in TLazLoggerFile may call the corresponding methods in FileHandle 
+which implement the methods, including:
+</p>
+<ul>
+<li>DoInit</li>
+<li>DoFinish</li>
+<li>DoDbgOut</li>
+<li>DoDebugLn</li>
+<li>DoDebugLnStack</li>
+</ul>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Creates allocates and initializes resources for the block handler list and a 
+critical section used in the class instance. The default value for 
+CurrentIndentLevel is set to 0.
+</p>
+<p>
+Create ensures that ParamForLogFileName and EnvironmentForLogFileName are set 
+to the default values for the platform or widgetset. For WinCE, that requires 
+the properties to be set empty strings ('').
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+Destroy is the overridden destructor for the class instance. It ensures that 
+all block handlers assigned to the class instance are removed from the 
+internal list and released. The inherited destructor is called to finalize 
+the logger class instance.
+</p>
+<p>
+Destory frees resources allocated for the FileHandle property, the internal 
+list used for block handlers, and the critical section used to protect access 
+to the current nesting level.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.Assign">
+<short>
+Implements object persistence for the TLazLoggerFile class type.
+</short>
+<descr>
+<p>
+Assign is an overridden method used to implement object persistence for the 
+TLazLoggerFile class type.
+</p>
+<p>
+Src is the TLazLogger instance with the values copied into the current class 
+instance. The inherited method is called to handle group parameters and block 
+handlers assigned in Src.
+</p>
+<p>
+When Src is derived from TLazLoggerFile, the following property values are 
+also copied:
+</p>
+<ul>
+<li>CloseLogFileBetweenWrites</li>
+<li>EnvironmentForLogFileName</li>
+<li>LogName</li>
+<li>ParamForLogFileName</li>
+<li>UseStdOut</li>
+<li>OnDbgOut</li>
+<li>OnDebugLn</li>
+</ul>
+<p>
+These property values are not copied when Src is not derived from 
+TLazLoggerFile.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.Assign.Src">
+<short>TLazLogger instance with values copies in the method.</short>
+</element>
+
+<element name="TLazLoggerFile.CurrentIndentLevel">
+<short>
+Gets the current indentation (nesting) level for messages written using the 
+logger.
+</short>
+<descr>
+<p>
+Indicates the number of space characters prepended to a message to format the 
+output for the logger class.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.CurrentIndentLevel.Result">
+<short>Current nesting level for the logger class instance.</short>
+</element>
+<element name="TLazLoggerFile.ParamForLogFileName">
+<short>
+Name of the command line parameter that has the log file name for the class 
+instance.
+</short>
+<descr>
+<p>
+ParamForLogFileName is a command line parameter that may contain the name for 
+the log file (if not already set). For example:  
+--debug-log=/path/to/filename.ext.
+</p>
+<p>
+If LogName is empty and ParamForLogFileName has been assigned, the command 
+line will be checked for a parameter with the specified name. LogName will be 
+set to the file name in the parameter, if found. The default value for the 
+property is '--debug-log='. Please note that the dashes and equal sign must 
+be present.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.EnvironmentForLogFileName">
+<short>
+Name of the environment variable with the log file name for the class 
+instance.
+</short>
+<descr>
+<p>
+If LogName is empty and con not be found from ParamForLogFileName, then the 
+environment variable specified will be checked. LogName will be set, if found.
+</p>
+<p>
+An * character will be replaced with the value from param(0) (the name for 
+the application).
+</p>
+<p>The default value for the property is: '*_debuglog'.</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.OnDebugLn">
+<short>
+Event handler signalled to write a full line in the log (DebugLn, 
+DebugLnEnter or DebugLnExit).
+</short>
+<descr>
+<p>
+OnDebugLn allows user-specified actions to be performed when writing a log 
+message. Arguments passed to the event handler identify the log message and 
+the logger class instance used for the operation. A Handled variable 
+parameter is also provided that can be set to <b>True</b> to prevent the 
+default action (writing to log) from being performed in the DoDebugLn method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.OnDbgOut">
+<short>
+Event handler signalled to write a log message (DbgOut).
+</short>
+<descr>
+<p>
+OnDbgOut allows user-specified actions to be performed when writing a log 
+message. Arguments passed to the event handler identify the log message and 
+the logger class instance used for the operation. A Handled variable 
+parameter is also provided that can be set to <b>True</b> to prevent the 
+default action (writing to log) from being performed in the DoDbgOut method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.AddBlockHandler">
+<short>
+Adds the specified block handler to the internal list of block handlers for 
+the logger.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.AddBlockHandler.AHandler">
+<short>Block handler added to the internal list of block handlers.</short>
+</element>
+
+<element name="TLazLoggerFile.RemoveBlockHandler">
+<short>
+Removes the specified block handler from the internal list of block handlers.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.RemoveBlockHandler.AHandler">
+<short>Block handler removed from the internal list of block handlers.</short>
+</element>
+
+<element name="TLazLoggerFile.BlockHandlerCount">
+<short>Gets the number of block handlers in the internal list.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazLoggerFile.BlockHandlerCount.Result">
+<short>Number of block handler instances in the internal list.</short>
+</element>
+
+<element name="TLazLoggerFile.LogName">
+<short>
+The qualified name for the log file where log messages are written.
+</short>
+<descr>
+<p>
+The property value can be set by the application. Alternatively, it can be 
+determined using ParamForLogFileName or EnvironmentForLogFileName.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.UseStdOut">
+<short>Enables writing to STDOUT when LogName has not been assigned.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.CloseLogFileBetweenWrites">
+<short>
+Enables opening and closing the output handle for the logger following each 
+write operation.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="GetDebugLogger">
+<short>Gets the value for the DebugLogger property.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="GetDebugLogger.Result">
+<short>Value for the DebugLogger property.</short>
+</element>
+
+<element name="SetDebugLogger">
+<short>Sets the value for the DebugLogger property.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="SetDebugLogger.ALogger">
+<short>New value for the DebugLogger property.</short>
+</element>
+
+<element name="DebugLogger">
+<short>Contains the class instance for the file-based logger.</short>
+<descr>
+<p>
+DebugLogger is a TLazLoggerFile property with the class instance for the 
+logger used to write its output to a file.
+</p>
+</descr>
+<seealso/>
+</element>
+
+</module>
+<!-- LazLogger -->
+</package>
 </fpdoc-descriptions>

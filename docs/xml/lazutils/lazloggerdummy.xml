@@ -3,17 +3,17 @@
 <package name="lazutils">
 
 <!--
-  ====================================================================
-    LazLoggerDummy
-  ====================================================================
+====================================================================
+LazLoggerDummy
+====================================================================
 -->
 
 <module name="LazLoggerDummy">
 <short>Provide an empty re-implementation of LazLoggerBase.</short>
 <descr>
-  <p>
-    This file is part of the <file>LazUtils</file> package.
-  </p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
 
 <!-- unresolved externals -->
@@ -691,12 +691,12 @@
 </element>
 
 <element name="DbgSTime">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="DbgSTime.Result">
-  <short/>
+<short/>
 </element>
 
 <element name="dbgMemRange">
@@ -756,21 +756,21 @@
 </element>
 
 <element name="TLazLoggerBlockHandler">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TLazLoggerBlockHandler.IncreaseIndent">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TLazLoggerBlockHandler.DecreaseIndent">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TLazLoggerLogGroupList">
@@ -1611,15 +1611,15 @@
 </element>
 
 <element name="TLazLogger.DumpExceptionBackTrace">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazLogger.DumpExceptionBackTrace.LogEnabled">
-  <short/>
+<short/>
 </element>
 <element name="TLazLogger.DumpExceptionBackTrace.LogEnabled">
-  <short/>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
