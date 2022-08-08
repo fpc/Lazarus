@@ -3814,8 +3814,9 @@ begin
         SM := SM.Clone;
         Result := TFpSymbolDwarfDataLineInfo.Create(AAddress, SM, CU);
         if not (sfHasLine in Result.Flags) then
-          ReleaseRefAndNil(Result);
-        Break;
+          ReleaseRefAndNil(Result)
+        else
+          Break;
       end;
     finally
       Iter.Free;
