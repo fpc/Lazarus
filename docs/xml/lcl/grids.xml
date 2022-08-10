@@ -14520,14 +14520,17 @@
       </element>
 
       <element name="TCustomGrid.OnCheckboxToggled">
-        <short>Event handler signalled when the value for a check box cell is toggled.</short>
+        <short>
+          Event handler signalled when the value for a check box cell is toggled.
+        </short>
         <descr>
           <p>
-            <var>OnCheckboxToggled</var> is a <var>TToggledCheckboxEvent</var> property with the event handler signalled when the value for a check box-style cell is toggled. OnCheckboxToggled is triggered (when assigned) after the cell value has been changed and stored. OnCheckboxToggled is used descendent classes which implement a Toggle method, like TCustomDrawGrid.
+            <var>OnCheckboxToggled</var> is a <var>TToggledCheckboxEvent</var> property with the event handler signalled when the value for a check box-style cell is toggled. OnCheckboxToggled is triggered (when assigned) after the cell value has been changed and stored. OnCheckboxToggled is used in descendent classes which implement a method to toggle the value when the cell is clicked, like TCustomDrawGrid.
           </p>
         </descr>
         <seealso>
           <link id="TCustomDrawGrid.ToggleCheckbox"/>
+          <link id="TCustomDrawGrid.CellClick"/>
           <link id="TToggledCheckboxEvent"/>
         </seealso>
       </element>
@@ -14536,10 +14539,14 @@
         <short>Event handler signalled to compare the content in grid cells.</short>
         <descr>
           <p>
-            OnCompareCells is a TOnCompareCells property with the event handler signalled to compare two cell values in the grid control. OnCompareCells is signalled (when assigned) by the DoCompareCells method, and occurs when column or row values are examined in the Sort method. The Result parameter contains the relative sort order for the compared cell values.
+            <var>OnCompareCells</var> is a <var>TOnCompareCells</var> property with the event handler signalled to compare two cell values in the grid control. OnCompareCells is signalled (when assigned) by the DoCompareCells method, and occurs when column or row values are examined in the Sort method. The Result parameter contains the relative sort order for the compared cell values.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomGrid.Sort"/>
+          <link id="TCustomGrid.DoCompareCells"/>
+          <link id="TOnCompareCells"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.OnPrepareCanvas">
@@ -16812,7 +16819,9 @@
             ToggleCheckbox is called from the <var>CellClick</var> method when a left mouse button click occurs in the cell. It is also called from the <var>KeyDown</var> method when the <b>Space (VK_SPACE)</b> key is applied for the cell.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomDrawGrid.OnCheckboxToggled"/>
+        </seealso>
       </element>
 
       <element name="TCustomDrawGrid.OnGetCheckboxState">
