@@ -361,7 +361,7 @@ type
               var Editor: TWinControl) of object;
 
   TOnPrepareCanvasEvent =
-    procedure(sender: TObject; aCol, aRow: Integer;
+    procedure(Sender: TObject; aCol, aRow: Integer;
               aState: TGridDrawState) of object;
 
   TUserCheckBoxBitmapEvent =
@@ -376,13 +376,13 @@ type
               var ImageIndex: TImageIndex) of object;
 
   TValidateEntryEvent =
-    procedure(sender: TObject; aCol, aRow: Integer;
+    procedure(Sender: TObject; aCol, aRow: Integer;
               const OldValue: string; var NewValue: String) of object;
 
-  TToggledCheckboxEvent = procedure(sender: TObject; aCol, aRow: Integer;
+  TToggledCheckboxEvent = procedure(Sender: TObject; aCol, aRow: Integer;
                                     aState: TCheckboxState) of object;
 
-  THeaderSizingEvent = procedure(sender: TObject; const IsColumn: boolean;
+  THeaderSizingEvent = procedure(Sender: TObject; const IsColumn: boolean;
                                     const aIndex, aSize: Integer) of object;
 
   TCellProcessEvent = procedure(Sender: TObject; aCol, aRow: Integer;
@@ -1004,9 +1004,9 @@ type
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
     procedure DoEnter; override;
-    procedure DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+    procedure DoLoadColumn(Sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
                             aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
-    procedure DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+    procedure DoSaveColumn(Sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
                             aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -7410,14 +7410,14 @@ begin
   {$IfDef dbgGrid}DebugLnExit('DoEnter - END');{$Endif}
 end;
 
-procedure TCustomGrid.DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn;
+procedure TCustomGrid.DoLoadColumn(Sender: TCustomGrid; aColumn: TGridColumn;
   aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
 begin
   if Assigned(FOnLoadColumn) then
     FOnLoadColumn(Self, aColumn, aColIndex, aCfg, aVersion, aPath);
 end;
 
-procedure TCustomGrid.DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn;
+procedure TCustomGrid.DoSaveColumn(Sender: TCustomGrid; aColumn: TGridColumn;
   aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
 begin
   if Assigned(FOnSaveColumn) then
