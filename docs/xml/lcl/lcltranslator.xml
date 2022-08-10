@@ -24,7 +24,9 @@
           For more information, see the Lazarus Wiki article:
         </p>
         <p>
-          <url href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">Creating Multi-Language Applications</url>
+        <url href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">
+          Creating Multi-Language Applications
+        </url>
         </p>
       </descr>
 
@@ -267,7 +269,15 @@
         </short>
         <descr>
           <p>
-            <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts.pas</file> unit to the language identifier specified in the <var>Lang</var> argument. Lang can contain a value as defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>. For example: 'de' or 'ru'. An empty string (<b>''</b>) causes the default language for the system to be used.
+            <var>TranslateLCLResourceStrings</var> is a <var>String</var> function used to translate resource strings in the <file>LCLStrConsts.pas</file> unit to the language identifier specified in the <var>Lang</var> argument. Lang can contain a value as defined in ISO 639, at:
+          </p>
+          <p>
+            <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">
+              ISO 639 - Codes for the Representation of Names of Languages
+            </url>.
+          </p>
+          <p>
+            For example: 'de' or 'ru'. An empty string (<b>''</b>) causes the default language for the system to be used.
           </p>
           <p>
             <var>Dir</var> is the optional path where .po or .mo files with the translated values for string constants are located. An empty string (<b>''</b>) causes the predefined directories, like 'languages' or 'locale', to be used. This is the location where the <file>lclstrconsts.&lt;Lang&gt;.po</file> or <file>lclstrconsts.&lt;Lang&gt;.mo</file> localization file for the <file>lclstrconsts.pas</file> unit is stored.
@@ -361,7 +371,12 @@
             <var>SetDefaultLang</var> is a procedure used to the set the default language used for string translations.
           </p>
           <p>
-            <var>Lang</var> contains the Language identifier used to translate strings. Lang contains a value as defined in ISO 639, at: <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639 - Codes for the Representation of Names of Languages</url>
+            <var>Lang</var> contains the Language identifier used to translate strings. Lang contains a value as defined in ISO 639, at:
+          </p>
+          <p>
+            <url href="http://www.loc.gov/standards/iso639-2/php/code_list.php">
+              ISO 639 - Codes for the Representation of Names of Languages
+            </url>
           </p>
           <p>
             The default value for the parameter is an empty string (<b>''</b>), and indicates that the default language identifier for the system should be used. This value can be passed as a command line argument (like '--lang ru' or '--lang=es'). The value also can be overridden using the <b>LANG</b> environment variable. The fallback value is the language identifier for the platform. For Windows, this is the language code and country code from GetLocaleInfo in a format like 'en_US' or 'zh_CN'. For other platforms, the value from either the <b>LC_ALL</b> or <b>LC_MESSAGE</b> environment variables is used as the fallback.
