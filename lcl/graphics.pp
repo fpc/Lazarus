@@ -93,7 +93,7 @@ type
     Orientation: Integer;
   end;
 
-var
+const
   // New TFont instances are initialized with the values in this structure.
   // About font default values: The default font is chosen by the interfaces
   // depending on the context. For example, there can be a different default
