@@ -3853,17 +3853,13 @@ procedure TEnumPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   EnumType: PTypeInfo;
-  s, EnumUnitName: String;
+  s: String;
 begin
   EnumType := GetPropType;
-  EnumUnitName := GetPropTypeUnitName;
   with GetTypeData(EnumType)^ do
-    for I := MinValue to MaxValue do begin
+    for I := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do begin
       s := GetEnumName(EnumType, I);
-      // An empty string and the enum's unit name happen in gaps
-      // of a non-contiguous enum. Why the unit name? A bug in FPC code?
-      if (s <> '') and (s <> EnumUnitName) then
-        Proc(s);
+      Proc(s);
     end;
 end;
 
