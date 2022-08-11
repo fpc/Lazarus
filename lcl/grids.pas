@@ -84,52 +84,51 @@ type
 
 type
   TGridOption = (
-    goFixedVertLine,      // Ya
-    goFixedHorzLine,      // Ya
-    goVertLine,           // Ya
-    goHorzLine,           // Ya
-    goRangeSelect,        // Ya
-    goDrawFocusSelected,  // Ya
-    goRowSizing,          // Ya
-    goColSizing,          // Ya
-    goRowMoving,          // Ya
-    goColMoving,          // Ya
-    goEditing,            // Ya
-    goAutoAddRows,        // JuMa
-    goTabs,               // Ya
-    goRowSelect,          // Ya
-    goAlwaysShowEditor,   // Ya
-    goThumbTracking,      // ya
-    // Additional Options
-    goColSpanning,        // Enable cellextent calcs
+    goFixedVertLine,
+    goFixedHorzLine,
+    goVertLine,
+    goHorzLine,
+    goRangeSelect,
+    goDrawFocusSelected,
+    goRowSizing,
+    goColSizing,
+    goRowMoving,
+    goColMoving,
+    goEditing,
+    goAutoAddRows,
+    goTabs,
+    goRowSelect,
+    goAlwaysShowEditor,
+    goThumbTracking,
+    goColSpanning,        // Enable CellExtent calculation
     goRelaxedRowSelect,   // User can see focused cell on goRowSelect
-    goDblClickAutoSize,   // dblclicking columns borders (on hdrs) resize col.
+    goDblClickAutoSize,   // Double-clicking column borders (on headers) resizes column
     goSmoothScroll,       // Switch scrolling mode (pixel scroll is by default)
-    goFixedRowNumbering,  // Ya
-    goScrollKeepVisible,  // keeps focused cell visible while scrolling
+    goFixedRowNumbering,
+    goScrollKeepVisible,  // Keeps focused cell visible while scrolling
     goHeaderHotTracking,  // Header cells change look when mouse is over them
     goHeaderPushedLook,   // Header cells looks pushed when clicked
-    goSelectionActive,    // Setting grid.Selection moves also cell cursor
+    goSelectionActive,    // Setting of Selection moves also cell cursor
     goFixedColSizing,     // Allow to resize fixed columns
-    goDontScrollPartCell, // clicking partially visible cells will not scroll
-    goCellHints,          // show individual cell hints
-    goTruncCellHints,     // show cell hints if cell text is too long
-    goCellEllipsis,       // show "..." if cell text is too long
-    goAutoAddRowsSkipContentCheck,//BB Also add a row (if AutoAddRows in Options) if last row is empty
-    goRowHighlight        // Highlight the current Row
+    goDontScrollPartCell, // Clicking partially visible cells will not scroll
+    goCellHints,          // Show individual cell hints
+    goTruncCellHints,     // Show cell hints if cell text is too long
+    goCellEllipsis,       // Show "..." if cell text is too long
+    goAutoAddRowsSkipContentCheck, //Also add a row (if AutoAddRows in Options) if last row is empty
+    goRowHighlight        // Highlight the current row
   );
   TGridOptions = set of TGridOption;
 
   TGridOption2 = (
-    goScrollToLastCol,  // allow scrolling to last column (so that last column can be leftcol)
-    goScrollToLastRow   // allow scrolling to last row (so that last row can be toprow)
+    goScrollToLastCol,  // Allow scrolling to last column (so that last column can be LeftCol)
+    goScrollToLastRow   // Allow scrolling to last row (so that last row can be TopRow)
   );
   TGridOptions2 = set of TGridOption2;
 
   TGridSaveOptions = (
     soDesign,             // Save grid structure (col/row count and Options)
     soAttributes,         // Save grid attributes (Font,Brush,TextStyle)
-    soContent,            // Save Grid Content (Text in stringgrid)
+    soContent,            // Save Grid Content (Text in StringGrid)
     soPosition            // Save Grid cursor and selection position
   );
   TSaveOptions = set of TGridSaveOptions;
