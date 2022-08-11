@@ -16820,7 +16820,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomDrawGrid.OnCheckboxToggled"/>
+          <link id="TCustomGrid.OnCheckboxToggled"/>
         </seealso>
       </element>
 
