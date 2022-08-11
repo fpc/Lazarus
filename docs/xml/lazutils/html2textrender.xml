@@ -16,6 +16,9 @@ Contains an HTML-to-Text renderer.
 converts HTML into plain text by converting tags and their attributes to a 
 representation as plain text.
 </p>
+<p>
+This file is part of the <file>lazutils</file> package.
+</p>
 </descr>
 
 <!-- unresolved externals -->

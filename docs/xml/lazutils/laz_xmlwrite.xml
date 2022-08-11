@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      Laz_XMLWrite
-    ====================================================================
-    -->
-    <module name="Laz_XMLWrite">
-      <short>Provides routines used to write XML documents or nodes.</short>
-      <descr>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
+<package name="lazutils">
+<!--
+====================================================================
+Laz_XMLWrite
+====================================================================
+-->
+<module name="Laz_XMLWrite">
+<short>Provides routines used to write XML documents or nodes.</short>
+<descr>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+</descr>
 
-      <element name="Classes"/>
-      <element name="laz2_DOM"/>
-      <element name="laz2_XMLWrite"/>
+<element name="Classes"/>
+<element name="laz2_DOM"/>
+<element name="laz2_XMLWrite"/>
 
-      <element name="WriteXML" link="laz2_XMLWrite.WriteXML"/>
-      <element name="WriteXML.Element" link="laz2_XMLWrite.WriteXML.Element"/>
-      <element name="WriteXML.AFileName" link="laz2_XMLWrite.WriteXML.AFileName"/>
-      <element name="WriteXML.AStream" link="laz2_XMLWrite.WriteXML.AStream"/>
+<element name="WriteXML" link="laz2_XMLWrite.WriteXML"/>
+<element name="WriteXML.Element" link="laz2_XMLWrite.WriteXML.Element"/>
+<element name="WriteXML.AFileName" link="laz2_XMLWrite.WriteXML.AFileName"/>
+<element name="WriteXML.AStream" link="laz2_XMLWrite.WriteXML.AStream"/>
 
-      <element name="WriteXMLFile" link="laz2_XMLWrite.WriteXMLFile"/>
-      <element name="WriteXMLFile.doc" link="laz2_XMLWrite.WriteXMLFile.doc"/>
-      <element name="WriteXMLFile.AFileName" link="laz2_XMLWrite.WriteXMLFile.AFileName"/>
-      <element name="WriteXMLFile.AFile" link="laz2_XMLWrite.WriteXMLFile.AFile"/>
-      <element name="WriteXMLFile.AStream" link="laz2_XMLWrite.WriteXMLFile.AStream"/>
+<element name="WriteXMLFile" link="laz2_XMLWrite.WriteXMLFile"/>
+<element name="WriteXMLFile.doc" link="laz2_XMLWrite.WriteXMLFile.doc"/>
+<element name="WriteXMLFile.AFileName" link="laz2_XMLWrite.WriteXMLFile.AFileName"/>
+<element name="WriteXMLFile.AFile" link="laz2_XMLWrite.WriteXMLFile.AFile"/>
+<element name="WriteXMLFile.AStream" link="laz2_XMLWrite.WriteXMLFile.AStream"/>
 
-    </module>
-    <!-- Laz_XMLWrite -->
+</module>
+<!-- Laz_XMLWrite -->
 
-  </package>
+</package>
 </fpdoc-descriptions>

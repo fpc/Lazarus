@@ -1,2197 +1,2780 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      Masks
-    ====================================================================
-    -->
-    <module name="Masks">
-      <short>Contains classes for matching file names to file masks.</short>
-      <descr>
-        <p>
-          <file>masks.pas</file> contains classes, types, and routines used implement file and directory masks. Masks are patterns used to match file names found on the local file system. Support is provided for both UNIX- and Windows-style masks. The unit includes utility functions to compare one or more file names to a given mask, including: MatchesMask, MatchesWindowsMask, MatchesMaskList, and MatchesWindowsMaskList.
-        </p>
-        <p>
-          It is fast and optimized, and fully supports Unicode. Also supports DOS/Windows compatible masks which behave differently from standard masks.
-        </p>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-        <p>
-          Author: José Mejuto
-        </p>
-        <p>
-          Changes and improvements by: Juha Manninen and Bart Broersma.
-        </p>
-      </descr>
-
-      <!-- unresolved external references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Contnrs"/>
-      <element name="LazUtilsStrConsts"/>
-      <element name="LazUtf8"/>
-
-      <element name="EMaskError">
-        <short>Exception raised for an invalid character in TMask.</short>
-        <descr>
-          <p>
-            <var>EMaskError</var> is a <var>EConvertError</var> descendant representing the exception raised when an invalid character is found in a mask expression, or when an invalid value is assigned to properties in a mask class instances. EMaskError is the exception type raised in TMaskBase methods like:
-          </p>
-          <ul>
-            <li>Exception_InvalidCharMask</li>
-            <li>Exception_MissingCloseChar</li>
-            <li>Exception_IncompleteMask</li>
-            <li>Exception_InvalidEscapeChar</li>
-            <li>Exception_InternalError</li>
-          </ul>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.Exception_InvalidCharMask"/>
-          <link id="TMaskBase.Exception_MissingCloseChar"/>
-          <link id="TMaskBase.Exception_IncompleteMask"/>
-          <link id="TMaskBase.Exception_InvalidEscapeChar"/>
-          <link id="TMaskBase.Exception_InternalError"/>
-          <link id="#rtl.sysutils.EConvertError">EConvertError</link>
-        </seealso>
-      </element>
-
-      <element name="EMaskError.TMaskExceptionCode">
-        <short>Enumeration with values identifiers representing mask exception codes.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecInternalError">
-        <short>
-          Represents an exception raised when an unexpected op code is encountered while evaluating a mask expression.
-        </short>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecInvalidCharMask">
-        <short>
-          Represents an exception raised when an unexpected mask character is found when compiling the op codes for a mask expression.
-        </short>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecMissingClose">
-        <short>
-          Represents an exception raised when the closing ']' is not found in a set or range expression.
-        </short>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecIncompleteMask">
-        <short>
-          Represents an exception raised when a mask does not contain enough characters to evaluate the mask expression.
-        </short>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecInvalidEscapeChar">
-        <short>
-          Represents an exception raised when an invalid value is assigned as the EscapeChar for a mask instance.
-        </short>
-      </element>
-      <element name="EMaskError.TMaskExceptionCode.mecInvalidUTF8Sequence">
-        <short>Not used in the current implementation.</short>
-      </element>
-
-      <element name="EMaskError.FCode">
-        <short>Member with the mask exception code for an exception instance.</short>
-      </element>
-
-      <element name="EMaskError.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Calls the CreateFmt constructor using the values in msg and aCode as arguments.
-          </p>
-        </descr>
-        <seealso>
-          <link id="EMaskError.CreateFmt"/>
-        </seealso>
-      </element>
-      <element name="EMaskError.Create.msg">
-        <short>Message for the exception.</short>
-      </element>
-      <element name="EMaskError.Create.aCode">
-        <short>Error code for the exception.</short>
-      </element>
-
-      <element name="EMaskError.CreateFmt">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            CreateFmt is an overridden constructor used to create an exception instance with the values specified in the msg and aCode arguments. It stores the value in ACode to the cCode member, and calls the inherited method.
-          </p>
-          <p>
-            msg is a String which contains a formatting specification using the notation allowed for the RTL Format routine. Values from the args parameter are substituted for the placeholders found in the msg argument.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="EMaskError.CreateFmt.msg">
-        <short>Message for the exception with embedded arguments for Format().</short>
-      </element>
-      <element name="EMaskError.CreateFmt.args">
-        <short>Array of constant values for the formatted exception message.</short>
-      </element>
-      <element name="EMaskError.CreateFmt.aCode">
-        <short>Error code for the exception.</short>
-      </element>
-
-      <element name="EMaskError.Code">
-        <short>Provides access to the mask exception code for the exception instance.</short>
-        <descr>
-          <p>
-            Code is a read-only TMaskExceptionCode property with the code for a mask exception class instance. The value in Code is passed as argument to the Create or CreateFmt constructors.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMaskOpCode">
-        <short>Represents operations needed for an entry in a mask specification.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMaskOpCode.mocAnyChar">
-        <short>Treats '?' as a wildcard to match exactly one char.</short>
-      </element>
-      <element name="mocAnyCharOrNone">
-        <short>Allows '[?]'  to match any character or no character.</short>
-      </element>
-      <element name="mocAnyText">
-        <short>Treats '*' as a wildcard to match zero or any number of characters.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMaskOpCode.mocRange">
-        <short>
-          Causes '[a-c]'' to match either 'a', 'b' or 'c'. '-' is always treated as the range separator. To use a literal '-' in a range, it must be escaped using the EscapeChar (default is '\') for a mask instance. '[+-\-]' matches '+', ',' or '-'.
-        </short>
-      </element>
-      <element name="mocSet">
-        <short>
-          Causes '[a-c]' to match either 'a', '-' or 'c'. Enables sets notation in a mask expression.
-        </short>
-      </element>
-      <element name="mocNegateGroup">
-        <short>
-          Causes '[!a-c]' to not match the group values, but matches any other character. Requires mocRange and/or mocSet.
-        </short>
-      </element>
-      <element name="mocEscapeChar">
-        <short>
-          Causes an EscapeChar (defaults to '\') to use the next character as a literal instead of a wildcard; so '\*' is treated as a literal '*' character.
-        </short>
-      </element>
-
-      <element name="TMaskOpCodes">
-        <short>Set type used to store values from the TMaskOpcode enumeration.</short>
-        <descr>
-          <p>
-            TMaskOpcodes is the type passed as argument to the constructor for TMaskBase and TWindowsMaskUTF8 classes, and used to implement their MaskOpCodes property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="TMaskUTF8"/>
-          <link id="TWindowsMaskUTF8"/>
-        </seealso>
-      </element>
-
-      <element name="AllMaskOpCodes">
-        <short>Set with all of the mask op codes values.</short>
-        <descr/>
-        <seealso>
-          <link id="TMaskOpCode"/>
-          <link id="TMaskOpCodes"/>
-        </seealso>
-      </element>
-
-      <element name="MaskOpCodesDisableRange">
-        <short>
-          Contains the set of op codes allowed when sets and ranges are disabled in mask expressions.
-        </short>
-        <descr>
-          <p>
-            Omits the op code identifiers mocAnyCharOrNone, mocRange, and mocSet.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskOpCode"/>
-          <link id="TMaskOpCodes"/>
-          <link id="TMaskOptions"/>
-          <link id="TMaskList.Create"/>
-        </seealso>
-      </element>
-
-      <element name="MaskOpCodesNoEscape">
-        <short>
-          Contains op codes enabled when escape characters and single character wildcards are not used.
-        </short>
-        <descr>
-          <p>
-            Interprets '[?]' as a literal question mark instead of 0..1 character wildcard.
-            Disables escape characters like '\?'. Omits the op code values mocAnyCharOrNone and mocEscapeChar.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="DefaultMaskOpCodes">
-        <short>Contains the default op code values used for mask class instances.</short>
-        <descr>
-          <p>
-            DefaultMaskOpCodes includes the TMaskOpCode values found in AllMaskOpCodes with the exception of mocEscapeChar. This disables use of the escape character ('\' is the default) in a mask expression. DefaultMaskOpCodes is used as the default value for an argument passed to the TMaskBase.Create and TMaskList.Create methods.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskOpCodes"/>
-          <link id="TMaskOpCode"/>
-          <link id="TMaskBase.Create"/>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="TMaskBase.EscapeChar"/>
-          <link id="TMaskList.Create"/>
-          <link id="TMaskList.MaskOpCodes"/>
-        </seealso>
-      </element>
-
-      <element name="TWindowsQuirk">
-        <short>Represents types of Windows-specific quirks for file and directory masks.</short>
-        <descr>
-          <p>
-            TWindowsQuirk is an enumerated type used to represent ways in which a Windows/DOS mask works differently than a regular mask. Windows/DOS masks have many quirks and corner cases inherited from CP/M, then adapted to DOS (8.3) file names, and adapted again for long file names.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TWindowsQuirk.wqAnyExtension">
-        <short>
-          Treats "filename*.*" as if the ".*"" notation is omitted. This causes the mask to behave in a UNIX-like manner, where 'foo.*' matches 'foo'.
-        </short>
-      </element>
-      <element name="TWindowsQuirks.wqFilenameEnd">
-        <short>
-          For "filename??.ext", "?" matches 1 or 0 chars (except for '.'). Not the same as "filename*.ext", but the same as regex "filename.{0,2}\.ext". Internally converted to "filename[??].ext".
-        </short>
-      </element>
-      <element name="TWindowsQuirks.wqExtension3More">
-        <short>
-          Anything.abc matches "Anything.abc" but also "Anything.abc*" (3 char extension). Anything.ab matches "Anything.ab" and never "anything.abcd".
-        </short>
-      </element>
-      <element name="TWindowsQuirks.wqEmptyIsAny">
-        <short>
-          An empty string ("") matches anything "*" .
-        </short>
-      </element>
-      <element name="TWindowsQuirks.wqAllByExtension">
-        <short>
-          ".abc" is treated as "*.abc".
-        </short>
-      </element>
-      <element name="TWindowsQuirks.wqNoExtension">
-        <short>
-          "Anything*." matches "Anything*" without a file extension.
-        </short>
-      </element>
-
-      <element name="TWindowsQuirks">
-        <short>Set type used to store values from the TWindowsQuirk enumeration.</short>
-        <descr>
-          <p>
-            A TWindowsQuirks type is passed as an argument to the Create method in TWindowsMaskUTF8, and is the type used for its Quirks property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsMaskUTF8.Create"/>
-          <link id="TWindowsMaskUTF8.Quirks"/>
-        </seealso>
-      </element>
-
-      <element name="AllWindowsQuirks">
-        <short>Sets type with all of the Windows-specific quirk values.</short>
-        <descr>
-          <p>
-            AllWindowsQuirks can be passed an argument to the constructor in TWindowsMaskUTF8, or assigned directly to the Quirks property in the mask class instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsQuirk"/>
-          <link id="TWindowsQuirks"/>
-          <link id="DefaultWindowsQuirks"/>
-          <link id="TWindowsMaskUTF8.Create"/>
-          <link id="TWindowsMaskUTF8.Quirks"/>
-        </seealso>
-      </element>
-
-      <element name="DefaultWindowsQuirks">
-        <short>Set with the default Windows-specific quirk values.</short>
-        <descr>
-          <p>
-            DefaultWindowsQuirks can be passed an argument to the constructor in TWindowsMaskUTF8, or assigned directly to the Quirks property in the mask class instance. Omits the values wqExtension3More and wqAllByExtension.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsQuirk"/>
-          <link id="TWindowsQuirks"/>
-          <link id="AllWindowsQuirks"/>
-          <link id="TWindowsMaskUTF8.Create"/>
-          <link id="TWindowsMaskUTF8.Quirks"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskOption">
-        <short>Contains options which can be enabled or disabled in TMask comparisons.</short>
-        <descr>
-          <p>
-            TMaskOption is an enumerated type with values for options that can be enabled in TMask class instances. Values from the enumeration are stored in the TMaskOptions set type, and passed as an argument to an alternate constructor in TMaskBase and descendent classes. Values in the set also control the values assigned to the CaseSensitive and MaskOpCodes properties in the mask class instance.
-          </p>
-          <p>
-            TMaskOption and TMaskOptions are provided for backward compatibility with previous versions of LazUtils.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskOptions"/>
-          <link id="TMaskBase.Create"/>
-          <link id="TMaskBase.CaseSensitive"/>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-      <element name="TMaskOption.moCaseSensitive">
-        <short>Enables case sensitive comparison.</short>
-      </element>
-      <element name="TMaskOption.moDisableSets">
-        <short>Disables set processing; '[' and ']' are treated as literal characters.</short>
-      </element>
-
-      <element name="TMaskOptions">
-        <short>Set type used to store values from the TMaskOption enumeration.</short>
-        <seealso>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase">
-        <short>Implements the base class used to define and evaluate a mask expression.</short>
-        <descr>
-          <p>
-            TMaskBase provides the framework or API used to examine and handle a mask expression. It provides member fields used to store the compiled op codes for the mask expression as well other state information. Methods are provides to raise exceptions for specific mask error conditions. Properties are also implemented to represent the case sensitivity, escape character, range handling, and op codes enabled for a mask expression.
-          </p>
-          <p>
-            Please note that TMaskBase does not capture, compile or store the mask expression. Those actions are performed in a descendent class.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8"/>
-          <link id="TMask"/>
-          <link id="TWindowsMaskUTF8"/>
-          <link id="TWindowsMask"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.TMaskParsedCode">
-        <short>Represents op codes found when parsing / compiling a mask expression.</short>
-        <descr>
-          <p>
-            Used in the Add and IncrementLastCounterBy methods.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.Literal">
-        <short>Op code for a literal value in a compiled mask expression.</short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.Range">
-        <short>Op code for a range declared in a compiled mask expression.</short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.Negate">
-        <short>Op code to exclude a range or set declared in a compiled mask expression.</short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.AnyChar">
-        <short>
-          Op code to match any single character in a compiled mask expression. The character is required.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.AnyCharOrNone">
-        <short>
-          Op code to match any single character in a compiled mask expression. The character is optional.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.AnyCharToNext">
-        <short>
-          Op code to match any number of characters in a compiled mask expression. On failure, the match is restarted at the next position and continues until the mask is completed or all matching values are used.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.OptionalChar">
-        <short>
-          Op code to match a single optional character value in the compiled mask expression.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.CharsGroupBegin">
-        <short>
-          Op code for the '[' character which starts an optional range or set in a compiled mask expression.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskParsedCode.CharsGroupEnd">
-        <short>
-          Op code for the ']' character which ends an optional range or set in a compiled mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.TMaskFailCause">
-        <short>Represents success or failure conditions when handling mask characters.</short>
-        <descr>
-          <p>
-            TMaskFailCause is the type returned from the IntfMatches method in TMaskUTF8 and descendent classes.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskBase.TMaskFailCause.mfcSuccess">
-        <short>The mask was examined and a match was found.</short>
-      </element>
-      <element name="TMaskBase.TMaskFailCause.mfcMatchStringExhausted">
-        <short>
-          Characters in a compared value were exhausted before a match was found.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskFailCause.mfcMaskExhausted">
-        <short>
-          Values in a mask expression were exhausted before a match was found.
-        </short>
-      </element>
-      <element name="TMaskBase.TMaskFailCause.mfcMaskNotMatch">
-        <short>The compared value is not a match for a given mask expression.</short>
-      </element>
-      <element name="TMaskBase.TMaskFailCause.mfcUnexpectedEnd">
-        <short>
-          Default error condition when an invalid op code is found for a mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.GROW_BY">
-        <short>
-          Number bytes used to grow the storage for op codes in a compiled mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.Add">
-        <short>
-          Adds one or more mask op codes found in the compiled mask expression.
-        </short>
-        <descr>
-          <p>
-            Add is an overloaded method used to add one or more op codes for compiled mask expression. The overloaded variants allow the op code to be specified as a TMaskParsedCode enumeration value, as a pointer to byte values for the parsed op code(s), or as an Integer.
-          </p>
-          <p>
-            Add is called is from the Compile method (in descendent classes) when UTF-8 codepoints in the mask expression are translated into their corresponding op codes.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TMaskBase.TMaskParsedCode"/>
-        </seealso>
-      </element>
-      <element name="TMaskBase.Add.ALength">
-        <short>Number of bytes needed to represent the op codes in AData.</short>
-      </element>
-      <element name="TMaskBase.Add.AData">
-        <short>Pointer to the bytes representing the op codes.</short>
-      </element>
-      <element name="TMaskBase.Add.AValue">
-        <short>Integer value for the TMaskOpCode enumeration value added in the method.</short>
-      </element>
-
-      <element name="TMaskBase.IncrementLastCounterBy">
-        <short>
-          Moves the internal counter for a specified op code when processing a range expression.
-        </short>
-        <descr>
-          <p>
-            Calls Exception_InternalError when the op code at the current position does not match the value in AOpCode. IncrementLastCounterBy is called from the private CompileRange method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskBase.IncrementLastCounterBy.AOpCode">
-        <short>Op code affected in the method.</short>
-      </element>
-      <element name="TMaskBase.IncrementLastCounterBy.AValue">
-        <short>Number of characters to advance the pointer offset in the method.</short>
-      </element>
-
-      <element name="TMaskBase.FCaseSensitive">
-        <short>Member with the case sensitivity settings for a mask expression.</short>
-      </element>
-
-      <element name="TMaskBase.FAutoReverseRange">
-        <short>Member with the value for the AutoReverseRange property.</short>
-      </element>
-
-      <element name="TMaskBase.FMaskIsCompiled">
-        <short>Member which indicates if the mask expression has been compiled.</short>
-      </element>
-
-      <element name="TMaskBase.FMaskCompiled">
-        <short>
-          Member which stores the op codes needed to evaluate the mask expression and compare specified values.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMaskCompiledIndex">
-        <short>
-          Member with the current offset an op code for the compiled mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMaskCompiledAllocated">
-        <short>
-          Member with the allocated storage for the compiled mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMaskCompiledLimit">
-        <short>
-          Member with the ordinal position represented in cMaskCompiledIndex.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMaskLimit">
-        <short>
-          Member with the last position in the mask expression where an op code can be applied.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMatchStringLimit">
-        <short>
-          Member with the last position in a compared value that can used to match the mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMatchMinimumLiteralBytes">
-        <short>Member with the minimum number of bytes for a literal character (normally 1).</short>
-      </element>
-
-      <element name="TMaskBase.FMatchMaximumLiteralBytes">
-        <short>Member with the maximum number of bytes for a literal character (normally 4 for UTF-8 codepoints).</short>
-      </element>
-
-      <element name="TMaskBase.FMaskOpcodesAllowed">
-        <short>
-          Member with the op code identifiers allowed for the mask expression.
-        </short>
-      </element>
-
-      <element name="TMaskBase.FMaskEscapeChar">
-        <short>
-          Member with the escape character for the mask expression. An escape character forces the next mask character to be treated as a literal and not a wildcard.
-        </short>
-      </element>
-
-      <element name="TMaskBase.Compile">
-        <short>Examines and converts mask expression characters into a list of op codes.</short>
-        <descr>
-          <p>
-            In TMaskBase, Compile simply sets values for members in the class instance. Descendent classes implement additional functionality needed for a specific platform.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TWindowsMaskUTF8.Compile"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.Exception_InvalidCharMask">
-        <short>
-          Raises an exception when the specified mask character or offset is invalid.
-        </short>
-        <descr>
-          <p>
-            Exception_InvalidCharMask is a class procedure used to raise an exception when a character in the mask expression is invalid. Exception_InvalidCharMask is one of the methods called during execution of the Compile method (in descendent classes) when an invalid Mask expression is detected for the class instance.
-          </p>
-          <p>
-            In TMaskBase, an EMaskError exception is always raised. The base class does not implement the required mask expression, nor does it provide a complete implementation of the Compile method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.Exception_MissingCloseChar"/>
-          <link id="TMaskBase.Exception_IncompleteMask"/>
-          <link id="TMaskBase.Exception_InvalidEscapeChar"/>
-          <link id="TMaskBase.Exception_InternalError"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TWindowsMaskUTF8.Compile"/>
-        </seealso>
-      </element>
-      <element name="TMaskBase.Exception_InvalidCharMask.aMaskChar">
-        <short>Mask character which caused the exception.</short>
-      </element>
-      <element name="TMaskBase.Exception_InvalidCharMask.aOffset">
-        <short>Offset where the invalid mask character was found.</short>
-      </element>
-
-      <element name="TMaskBase.Exception_MissingCloseChar">
-        <short>
-          Raises an EMaskError exception when the closing ']' character is omitted from a set or range expression.
-        </short>
-        <descr>
-          <p>
-            Exception_MissingCloseChar is a class procedure used to raise an EMaskError exception when the closing ']' character is omitted from a set or range expression. The exception message is determined by the value in the aOffset argument. When aOffset is a positive value (or zero), the value in rsMissingCloseCharMaskAt is used as the exception message. Otherwise, the value in rsMissingCloseCharMask is used.
-          </p>
-          <p>
-            Exception_MissingCloseChar is called from the private CompileRange method in TMaskUTF8 when the range or set expression is not closed.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8.Compile"/>
-        </seealso>
-      </element>
-      <element name="TMaskBase.Exception_MissingCloseChar.aMaskChar">
-        <short>Mask character found instead of the expected value.</short>
-      </element>
-      <element name="TMaskBase.Exception_MissingCloseChar.aOffset">
-        <short>Offset in the mask expression where the error was found.</short>
-      </element>
-
-      <element name="TMaskBase.Exception_IncompleteMask">
-        <short>
-          Raises an EMaskError exception when escaped characters in a set is enabled, but range processing has not been enabled.
-        </short>
-        <descr>
-          <p>
-            The exception is raised with the message in the rsIncompleteMask resource string.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMaskBase.Exception_InvalidEscapeChar">
-        <short>
-          Raises an EMaskError exception when an invalid value is assigned to the EscapeChar property.
-        </short>
-        <descr>
-          <p>
-            Exception_InvalidEscapeChar is a class procedure used to raise an EMaskError exception when an invalid value is assigned to the EscapeChar property. This occurs when the new property value is not in the range #0..#127. The exception is raised with the message in the rsInvalidEscapeChar resource string.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskbase.EscapeChar"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.Exception_InternalError">
-        <short>
-          Raises an EMaskError exception when a parsed op code does not match an expected value in the mask expression.
-        </short>
-        <descr>
-          <p>
-            The method is called from the IncrementLastCounterBy method when a range expression is handled in Compile.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.Compile"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overloaded constructor for the class instance. One variant allows case sensitivity for mask expressions and the allowed op codes to be specified as arguments. The other variant accepts an argument with the set of mask options for the class instance.
-          </p>
-          <p>
-            Create the sets the initial values for the CaseSensitive, AutoReverseRange, and EscapeChar properties.
-          </p>
-          <remark>
-            TMaskBase does not provide a way to specify or store the mask expression for the class instance. Use one of the descendent classes which provide UTF-8 support and implement specific file system behavior for the mask expression.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskBase.Create.aCaseSensitive">
-        <short><b>True</b> if the mask expression is case sensitive.</short>
-      </element>
-      <element name="TMaskBase.Create.aOpcodesAllowed">
-        <short>Op codes allowed for the compiled mask expression.</short>
-      </element>
-      <element name="TMaskBase.Create.aOptions">
-        <short>Set with the TMaskOption values enabled in the class instance.</short>
-      </element>
-
-      <element name="TMaskBase.CaseSensitive">
-        <short>Indicates if the mask expression is case sensitive.</short>
-        <descr>
-          <p>
-            CaseSensitive is a Boolean property which indicates if character in a mask expression are handle with case sensitivity. Its value is determined by an explicit argument passed to the Create method, or the presence of moCaseSensitive in the TMaskOptions passed to the constructor.
-          </p>
-          <p>
-            Changing the value for the property causes Compile to be called when the Matches method in descendent classes is executed. When set to <b>False</b>, both the mask expression and the compared values are converted to lowercase for the comparison performed in Matches.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.Create"/>
-          <link id="TMaskUTF8.Matches"/>
-          <link id="TWindowsMaskUTF8.Matches"/>
-          <link id="TMaskOption"/>
-          <link id="TMaskOptions"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.AutoReverseRange">
-        <short>
-          Indicates if a range expression is automatically reversed when the starting value is larger than the ending value.
-        </short>
-        <descr>
-          <p>
-            Setting AutoReverseRange to <b>True</b> would cause a range expression like '[e-a]' to be treated as if it were specified as '[a-e]'. The default value for the property is <b>True</b>, as assigned in the Create constructor.
-          </p>
-          <p>
-            Changing the value for the property causes Compile to be called during execution of the Matches method. The property value is used in the implementation of the private CompileRange method in descendent classes.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMaskBase.EscapeChar">
-        <short>
-          Contains the character used to escape the following character in a mask expression.
-        </short>
-        <descr>
-          <p>
-            EscapeChar causes the character that immediately follows the value to be treated as a literal character instead of a wildcard. It is used to allow wildcard characters (like '?' or '*') or set / range characters (like '[', '-', or ']') to be used as literals in the Mask expression. The default value for the property is '\' (Backslash) as assigned in the Create constructor.
-          </p>
-          <p>
-            EscapeChar must be one of the 7-bit ASCII characters in the range #0..#127. Setting the property to a value larger than #127 (ASCII Delete) causes an EMaskError exception to be raised with the message in the rsInvalidEscapeChar resource string.
-          </p>
-          <p>
-            Changing the value for the property causes Compile to be called during execution of the Matches method.
-          </p>
-          <p>
-            Descendent classes (which include the Mask expression) use the value in their Compile and CompileRange methods. Make sure the class instance has the value mocRange in the MaskOpCodes property to enable range notation in the Mask expression.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="TMaskOpCode"/>
-          <link id="TMaskOpCodes"/>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TWindowsMaskUTF8.Compile"/>
-          <link id="#lazutils.lazutilsstrconsts.rsInvalidEscapeChar">rsInvalidEscapeChar</link>
-        </seealso>
-      </element>
-
-      <element name="TMaskBase.MaskOpCodes">
-        <short>Contains the set of mask op codes enabled for the class instance.</short>
-        <descr>
-          <p>
-            MaskOpCodes is a TMaskOpCodes property with the set of op codes enabled for the Mask expression in the class instance. MaskOpCodes is populated with enumeration values from TMaskOpCode when characters in the mask expression are examined in the Compile method. The allowed values in the set can be specified as an argument to the Create constructor.
-          </p>
-          <p>
-            Values in MaskOpCodes are used when the Matches method is called to compare a string value to the Mask expression.
-          </p>
-          <p>
-            Setting a new value for the property causes Compile to be called during execution of the Matches method in descendent classes.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase.Create"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TWindowsMaskUTF8.Compile"/>
-          <link id="TMaskUTF8.Matches"/>
-          <link id="TWindowsMaskUTF8.Matches"/>
-          <link id="TMaskOpCodes"/>
-          <link id="TMaskOpCode"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskUTF8">
-        <short>
-          Implements a class used to define, evaluate, and compare a mask expression using UNIX file system mask conventions.
-        </short>
-        <descr>
-          <p>
-            TMaskUTF8 is a TMaskBase descendant which implements a class used for mask expressions using UNIX file system conventions. It extends the ancestor class with support for a UTF-8-encoded Mask expression. The mask expression uses wildcards and other notation specific to UNIX-like file systems, including:
-          </p>
-          <dl>
-            <dt>'?'</dt>
-            <dd>
-              Represents any single required character in a file or directory name. For instance, 'c?t' matches 'cat' and 'cut', but not 'coat' or 'cult'. An expression like 'cl??' would matches values like 'clap' and 'clot', but not 'clean' or 'clt'.
-            </dd>
-            <dt>'*'</dt>
-            <dd>
-              Matches all entries in a directory. This includes entries with or without a file extension, and does not differentiate between files and directories. This is commonly referred to as the "all files" mask.
-            </dd>
-            <dt>'*.*'</dt>
-            <dd>
-              Matches all entries which have any given file extension. The file extension is required though. Please note that this notation is different than the one implemented for the Windows file system.
-            </dd>
-            <dt>'*.ext'</dt>
-            <dd>
-              Matches all entries which have a '.ext' file extension.
-            </dd>
-            <dt>'file* </dt>
-            <dd>
-              Matches all entries that start with 'file' and may contain any number of additional optional characters or a file extension. Matches 'file', 'filename' and 'filename.ext'.
-            </dd>
-            <dt>'[]' (square brackets)</dt>
-            <dd>
-              Represents a choice of characters that may represent a match on the file system. They are used in both set and range expressions. A set is expressed using notation like 'c[au]t'. This would match entries like 'cat' or 'cut', but not 'cot'. A range uses notation like 'g[a-f]z'. This would match values like 'gaz', 'gbz', and 'gcz'. It would not match 'ggz', 'gxz', or 'gz'.
-            </dd>
-            <dt>'[!]'</dt>
-            <dd>
-              Used to negate a set or range expression. It matches any character value which is <b>NOT</b> in the set or range.
-            </dd>
-            <dt>'\' (Backslash) </dt>
-            <dd>
-              The default escape character which forces the following character to be interpreted as a literal and not a wildcard. The escape character is configurable in the class instance using the EscapeChar property.
-            </dd>
-          </dl>
-          <p>
-            TMaskUTF8 provides an overridden Compile method which examines and converts the Mask expression into a list of op codes needed in Matches and MatchesWindowsMask.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskBase"/>
-          <link id="TMask"/>
-          <link id="TWindowsMaskUTF8"/>
-          <link id="TWindowsMask"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TMaskUTF8.FOriginalMask">
-        <short>Member used for the mask expression passed to the constructor.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMaskUTF8.IsSpecialChar">
-        <short>
-          Indicates if the specified character is a wildcard character, or used to represent set  / range notation.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMaskUTF8.IsSpecialChar.Result">
-        <short>Always returns <b>False</b> in TMaskUTF8.</short>
-      </element>
-      <element name="TMaskUTF8.IsSpecialChar.AChar">
-        <short>Character value examined in the method.</short>
-      </element>
-
-      <element name="TMaskUTF8.CompileOtherSpecialChars">
-        <short>Has an empty implementation in TMaskUTF8.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMaskUTF8.CompareUTF8Sequences">
-        <short>
-          Indicates the difference between UTF-8 codepoints in the specified values.
-        </short>
-        <descr>
-          <p>
-            CompareUTF8Sequences is an Integer class function used to compare the UTF-8 codepoints in the values specified by P1 and P2. The return value is the numeric difference between the byte values in the differing UTF-8 codepoints. The return value is 0 (zero) when P1 and P2 have the same UTF-8-encoded content.
-          </p>
-          <p>
-            CompareUTF8Sequences is used in the implementation of the CompileRange and IntfMatches methods.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskUTF8.CompareUTF8Sequences.Result">
-        <short>numeric difference between differing codepoints, or zero when the same.</short>
-      </element>
-      <element name="TMaskUTF8.CompareUTF8Sequences.P1">
-        <short>PChar type with UTF-8 codepoints compared in the method.</short>
-      </element>
-      <element name="TMaskUTF8.CompareUTF8Sequences.P2">
-        <short>PChar type with UTF-8 codepoints compared in the method.</short>
-      </element>
-
-      <element name="TMaskUTF8.IntfMatches">
-        <short>Implements the Matches method for the supported platform.</short>
-        <descr>
-          <p>
-            IntfMatches is a TMaskFailCause function which implements the Matches method in the class instance.
-          </p>
-          <p>
-            IntfMatches uses the compiled op codes for the Mask expression to determine whether a value in the compared string are suitable for op codes. The return value indicates the success or reason for failure in the method.
-          </p>
-          <p>
-            IntfMatches is called from the Matches method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskUTF8.IntfMatches.Result">
-        <short>Success or failure reason for the comparison.</short>
-      </element>
-      <element name="TMaskUTF8.IntfMatches.aMatchOffset">
-        <short>Offset into the match string compared in the method.</short>
-      </element>
-      <element name="TMaskUTF8.IntfMatches.aMaskIndex">
-        <short>Ordinal position for the op code used in the method.</short>
-      </element>
-
-      <element name="TMaskUTF8.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overloaded constructor for the class instance. It includes an AMask argument which contains the expression stored in the Mask property. Variants of the method also allow the value in CaseSensitive to be set. Set arguments can be provided which contain the TMaskOpCode values or the TMaskOption values used in the class instance.
-          </p>
-          <remark>
-            The variant which includes a TMaskOptions parameter has been deprecated in version 2.3, and will be removed in version 2.5. Use the variant which includes a TMaskOpCodes parameter.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TMaskUTF8.Create.aMask">
-        <short>Mask expression for the class instance.</short>
-      </element>
-      <element name="TMaskUTF8.Create.aCaseSensitive">
-        <short><b>True</b> if comparisons are performed with case sensitivity.</short>
-      </element>
-      <element name="TMaskUTF8.Create.aOpcodesAllowed">
-        <short>Set of op codes allowed for the compiled mask expression.</short>
-      </element>
-      <element name="TMaskUTF8.Create.aOptions">
-        <short>Set of TMaskOption values enabled for the class instance.</short>
-      </element>
-
-      <element name="TMaskUTF8.Compile">
-        <short>Examines the mask expression and creates a list of op codes.</short>
-        <descr>
-          <p>
-            Compile is an overridden method used to examine and convert values from the Mask property into TMaskParsedCode values for the positions in the mask expression.
-          </p>
-          <p>
-            CaseSensitive indicates if case is significant for the value in Mask. Mask is converted to lowercase prior to processing in the method when CaseSensitive is set to <b>False</b>.
-          </p>
-          <p>
-            Compile examines each of the UTF-8 codepoints in Mask, and adds values to an internal list representing the character ranges, literal values, or other TMaskParsedCode values needed to evaluate the Mask expression. Compile may raise an exception when an invalid or incomplete mask is encountered. If the Compile method is called again using the same value in Mask, it simply returns <b>False</b> rather than re-raise the exception.
-          </p>
-          <p>
-            Compile is called from the Matches method when the Mask expression has not already been compiled.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8.Matches"/>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskBase.Compile"/>
-          <link id="TMaskBase.CaseSensitive"/>
-          <link id="TMaskBase.AutoReverseRange"/>
-          <link id="TMaskBase.EscapeChar"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskUTF8.Matches">
-        <short>Indicates whether the specified value is a match for the Mask expression.</short>
-        <descr>
-          <p>
-            Matches calls Compile if the MaskOpCodes have not been compiled for the Mask expression, or when one the configuration parameters has been changed for the class instance. When CaseSensitive is set to <b>False</b>, the value in aStringToMatch is converted to a lowercase UTF-8 codepoint for the comparison.
-          </p>
-          <p>
-            Matches calls the IntfMatches method to implement the comparison between the specified value using the MaskOpCodes for the class instance. The return value is <b>True</b> if the call to IntfMatches is successful. It is <b>False</b> if either the Mask expression or the compared value is too long or too short.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8.IntfMatches"/>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TMaskBase.MaskOpCodes"/>
-          <link id="TMaskBase.CaseSensitive"/>
-        </seealso>
-      </element>
-      <element name="TMaskUTF8.Matches.Result">
-        <short><b>True</b> when the specified value matches the Mask expression.</short>
-      </element>
-      <element name="TMaskUTF8.Matches.aStringToMatch">
-        <short>Value to compare to the Mask expression.</short>
-      </element>
-
-      <element name="TMaskUTF8.MatchesWindowsMask">
-        <short>
-          Indicates whether the specified value is a match for the Windows-specific Mask expression.
-        </short>
-        <descr>
-          <remark>
-            Deprecated in Lazarus version 2.3, and will be removed in 2.5. Create a TWindowsMask instance and call its Matches method instead.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="TWindowsMaskUTF8.Matches"/>
-          <link id="TWindowsMask"/>
-          <link id="MatchesWindowsMask"/>
-          <link id="MatchesWindowsMaskList"/>
-        </seealso>
-      </element>
-      <element name="TMaskUTF8.MatchesWindowsMask.Result">
-        <short>
-          <b>True</b> if the specified file name matches the Windows-specific Mask expression.
-        </short>
-      </element>
-      <element name="TMaskUTF8.MatchesWindowsMask.AFileName">
-        <short>Value compared to the Mask expression.</short>
-      </element>
-
-      <element name="TMaskUTF8.Mask">
-        <short>
-          Mask expression used to match files or directories in the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Mask</var> is a <var>String</var> property which contains the mask expression used to compare / evaluate a value in the Matches method. The property value is initially set using the arguments passed to the Create constructor. Values in Mask use the UNIX file system conventions for wildcards and related notations.
-          </p>
-          <p>
-            Character values in Mask are translated into op codes in the Compile method. These op codes are used in the Matches method to evaluate and compare a given value to the compiled mask expression.
-          </p>
-          <p>
-            Changing the value for the property causes Compile to be called when the Matches method is executed.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMask">
-        <short>
-          The TMask class represents a mask expression and performs comparisons.
-        </short>
-        <descr>
-          <p>
-            TMask is an alias for the TMaskUTF8 class. Provided for compatibility with previous LazUtils versions.
-          </p>
-          <p>
-            Use TWindowsMaskUTF8 or TWindowsMask for mask expressions using DOS/Windows-specific notation and file system conventions.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8"/>
-          <link id="TWindowsMaskUTF8"/>
-          <link id="TWindowsMask"/>
-          <link id="TMaskBase"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskUTF8">
-        <short>
-          Implements a class used to define and evaluate a mask expression using Windows file system mask conventions.
-        </short>
-        <descr>
-          <p>
-            TWindowsMaskUTF8 is a TMask descendant which implements a class used for mask expressions using Windows file system conventions. It extends the ancestor class with support for a UTF-8-encoded Mask expression. The mask expression uses wildcards and other notation specific to Windows/DOS file systems, including:
-          </p>
-          <dl>
-            <dt>'?'</dt>
-            <dd>
-              Represents any single required character in a file or directory name. For instance, 'c?t' matches 'cat' and 'cut', but not 'coat' or 'cult'. An expression like 'cl??' would matches values like 'clap' and 'clot', but not 'clean' or 'clt'.
-            </dd>
-            <dt>'*'</dt>
-            <dd>
-              Matches any entries found in a directory. This includes files that have a file extension. Behaves the same as '*.*'.
-            </dd>
-            <dt>'*.*'</dt>
-            <dd>
-              Matches all entries in a directory. The file extension is optional. Please note that this notation is different than the behavior in TMaskUTF8 / TMask.
-            </dd>
-            <dt>'*.ext'</dt>
-            <dd>
-              Matches all entries which have a '.ext' file extension.
-            </dd>
-            <dt>'file* </dt>
-            <dd>
-              Matches all entries that start with 'file' and may contain any number of additional optional characters or an optional file extension. Matches 'file', 'filename' and 'filename.ext'.
-            </dd>
-            <dt>'[]' (square brackets)</dt>
-            <dd>
-              Represents a choice of characters that may represent a match on the file system. They are used in both set and range expressions. A set is expressed using notation like 'c[au]t'. This would match entries like 'cat' or 'cut', but not 'cot'. A range uses notation like 'g[a-f]z'. This would match values like 'gaz', 'gbz', and 'gcz'. It would not match 'ggz', 'gxz', or 'gz'.
-            </dd>
-            <dt>'[!]'</dt>
-            <dd>
-              Used to negate a set or range expression. It matches any character value which is <b>NOT</b> in the set or range.
-            </dd>
-            <dt>'\' (Backslash) </dt>
-            <dd>
-              The default escape character which forces the following character to be interpreted as a literal and not a wildcard. The escape character is configurable in the class instance using the EscapeChar property.
-            </dd>
-          </dl>
-          <p>
-            TWindowsMaskUTF8 provides an overridden Compile method which examines and converts the Mask expression into a list of op codes needed in Matches and MatchesWindowsMask. TWindowsMaskUTF8 re-implements the read and write access specifiers for the Mask property to use the FWindowsMask member for the property value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskBase"/>
-          <link id="TMask"/>
-          <link id="TWindowsMask"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskUTF8.FWindowsQuirkAllowed">
-        <short>Member with the set of quirks enabled in the class instance,</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.FWindowsQuirkInUse">
-        <short>Member with the set of quirks in use in the compiled mask expression.</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.FWindowsMask">
-        <short>Member with the Windows-specific mask expression for the class instance.</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.CompileOtherSpecialChars">
-        <short>
-          Generates MaskOpCodes for optional characters or groups in a Windows-specific mask expression.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TMaskBase.MaskOpCodes"/>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskUTF8.IsSpecialChar">
-        <short>
-          Returns <b>True</b> if the specified character contains a Null character (#0) (ASCII NUL).
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskUTF8.IsSpecialChar.Result">
-        <short>
-          <b>True</b> if the specified character contains a Null character (#0) (ASCII NUL).
-        </short>
-      </element>
-      <element name="TWindowsMaskUTF8.IsSpecialChar.AChar">
-        <short>Character value examined in the method.</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.SplitFileNameExtension">
-        <short>Separates the specified value into file name and extension values.</short>
-        <descr>
-          <p>
-            SplitFileNameExtension is a method used to separate the value in ASourceFileName into file name and file extension values.
-          </p>
-          <p>
-            The values are returned in the AFileName and AExtension arguments. AExtension can contain an empty string ('') if a file extension is not found in ASourceFileName.
-          </p>
-          <p>
-            AIsMask indicates whether the value in ASourceFileName is treated as a mask specification instead of a file name. When set to <b>True</b>, a value like '.foo' is treated as a mask where the file name is '.foo' instead of a file extension, like a hidden file name on UNIX-like file systems.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskUTF8.SplitFileNameExtension.aSourceFileName">
-        <short>Value examined and separated into its component values.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.SplitFileNameExtension.aFileName">
-        <short>File name portion of the specified source file name.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.SplitFileNameExtension.aExtension">
-        <short>File extension portion of the specified source file name.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.SplitFileNameExtension.aIsMask">
-        <short>
-          <b>True</b> if the source file name is treated as a mask specification for a file name and not a file extension; such as '.foo'.
-        </short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overloaded, overridden constructor for the class instance. Create ensures that argument values are stored in the Mask, CaseSensitive, MaskOpCodes and Quirks properties. The inherited Create method is called prior to exit.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskUTF8.Create.aMask">
-        <short>Mask expression for the class instance.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.Create.aCaseSensitive">
-        <short><b>True</b> if masks are compared with case sensitivity.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.Create.aOpcodesAllowed">
-        <short>Set of TMaskOpCode values allowed in the class instance.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.Create.aWindowsQuirksAllowed">
-        <short>Set of TWindowsQuirk values allowed in the class instance.</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.Compile">
-        <short>Examines and converts the mask expression into a list of op codes.</short>
-        <descr>
-          <p>
-            Compile is an overridden method used to examine and convert values from the Mask property into TMaskParsedCode values for the positions in the mask expression. It provides support for Windows-specific quirks that enabled in the class instance using the Quirks property.
-          </p>
-          <p>
-            CaseSensitive indicates if case is significant for the value in Mask. Mask is converted to lowercase prior to processing in the method when CaseSensitive is set to <b>False</b>.
-          </p>
-          <p>
-            Compile examines each of the UTF-8 codepoints in Mask, and adds TMaskParsedCode values when the specific mask op codes are included in the MaskOpCodes property. The value in Mask is decomposed into file name and extension component values that are used in the method. These temporary values may be altered when particular quirks are enabled and encountered in the Mask expression. The modified values are applied to the Mask property prior to calling the inherited Compile method.
-          </p>
-          <p>
-            Compile may raise an exception when an invalid or incomplete mask is encountered. The the Compile method is called again with the same value in Mask, is simply returns <b>False</b> rather than re-raise the exception.
-          </p>
-          <p>
-            Compile is called from the Matches method when it has not already been compiled.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsMaskUTF8.Quirks"/>
-          <link id="TWindowsQuirks"/>
-          <link id="TWindowsQuirk"/>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TMaskBase.CaseSensitive"/>
-          <link id="TMaskBase.AutoReverseRange"/>
-          <link id="TMaskBase.EscapeChar"/>
-          <link id="TMaskBase.MaskOpCodes"/>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskUTF8.Matches">
-        <short>Indicates whether the specified value is a match for the Mask expression.</short>
-        <descr>
-          <p>
-            <var>Matches</var> calls <var>Compile</var> if the <var>MaskOpCodes</var> have not been compiled for the <var>Mask</var> expression, or when one the configuration parameters has been changed for the class instance.
-          </p>
-          <p>
-            Matches provides support for values in the Quirks property such as wqNoExtension. When specified and found in the mask expression, SplitFileNameExtension is called to get the file name and extension components for the value in AFileName.
-          </p>
-          <p>
-            Matches calls the inherited method to compare the specified values using the MaskOpCodes for the class instance. The return value is <b>True</b> if the file name argument matches the Mask expression. It is <b>False</b> if either the Mask expression or the compared value is too long or too short.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsMaskUTF8.Quirks"/>
-          <link id="TWindowsMaskUTF8.SplitFileNameExtension"/>
-          <link id="TMaskUTF8.Matches"/>
-          <link id="TMaskUTF8.Mask"/>
-          <link id="TMaskBase.MaskOpCodes"/>
-        </seealso>
-      </element>
-      <element name="TWindowsMaskUTF8.Matches.Result">
-        <short><b>True</b> when the specified value matches the Mask expression.</short>
-      </element>
-      <element name="TWindowsMaskUTF8.Matches.aFileName">
-        <short>Value examined and compared to the Mask expression.</short>
-      </element>
-
-      <element name="TWindowsMaskUTF8.Quirks">
-        <short>
-          Contains the TWindowsQuirk enumeration values for file system quirks enabled in the class instance.
-        </short>
-        <descr>
-          <p>
-            Quirks is a TWindowsQuirks property with the set of Windows-specific "quirks" allowed when comparing a value to the Mask expression. It contains values from the TWindowsQuirk enumeration which are enabled for the class instance.
-          </p>
-          <p>
-            The default value for Quirks is assigned using an argument passed to the Create constructor. If the value is omitted, values in the DefaultWindowsQuirks constant are assigned to the property.
-          </p>
-          <p>
-            Values in Quirks are used when the Compile method generates the MaskOpCodes for the Mask expression. Changing the property value causes the Compile method to be called during the next execution of the Matches method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TWindowsMask">
-        <short>Implements the class type used to evaluate and compare Windows-specific mask expressions.</short>
-        <descr>
-          <p>
-            TWindowsMask is a TWindowsMaskUTF8 descendant, and introduces no new properties, methods, or events. It is essentially an alias for the TWindowsMaskUTF8 type.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsMaskUTF8"/>
-          <link id="TMaskUTF8"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskClass">
-        <short>Class type used to create new instances of the TMaskUtf8 type.</short>
-        <descr>
-          <p>
-            TMaskClass is the type returned from the GetMaskClass method in TMaskList.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.GetMaskClass"/>
-        </seealso>
-      </element>
-
-      <element name="TParseStringList">
-        <short>Parses text into a list of strings using a specified line separator.</short>
-        <descr>
-          <p>
-            <var>TParseStringList</var> is a <var>TStringList</var> descendant used to parse text which uses the specified line separators. An alternate constructor is introduced with parameters for the lines of text and the separators used in the class instance.
-          </p>
-          <p>
-            TParseStringList is used to get a list of file masks from a string value in the <var>TMaskList.Create</var> method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="#rtl.classes.TStringList">TStringList</link>
-        </seealso>
-      </element>
-
-      <element name="TParseStringList.Create">
-        <short>
-          Creates new string list by parsing the specified text using the separators argument.
-        </short>
-        <descr>
-          <p>
-            <var>Create</var> is constructor for the class instance. Values in the <var>AText</var> and <var>ASeparator</var> arguments determine the content stored as lines of text in the instance. AText contains one or more file mask expressions separated by one of the delimiters characters n ASeparators.
-          </p>
-          <p>
-            Each line in the string list represents a single mask value from AText.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TParseStringList.Create.AText">
-        <short>Text examine and parsed in the method.</short>
-      </element>
-      <element name="TParseStringList.Create.ASeparators">
-        <short>String with the separators used to delimit lines in the text argument.</short>
-      </element>
-
-      <element name="TMaskList">
-        <short>Implements a list for mask class instances.</short>
-        <descr>
-          <p>
-            <var>TMaskList</var> is a class used to maintain a list with TMaskUtf8 instances for mask expressions. Parameter values passed to the constructor are used when mask instances are created and stored in the list.
-          </p>
-          <p>
-            TMaskList is used in the implementation of the <var>MatchesMaskList</var> function.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMask"/>
-          <link id="TWindowsMaskList"/>
-          <link id="TWindowsMask"/>
-          <link id="MatchesMaskList"/>
-          <link id="MatchesWindowsMaskList"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TMaskList.FMasks"/>
-      <element name="TMaskList.FMaskClass"/>
-      <element name="TMaskList.FMask"/>
-      <element name="TMaskList.FSeparator"/>
-      <element name="TMaskList.FCaseSensitive"/>
-      <element name="TMaskList.FMaskIOpCodes"/>
-
-      <element name="TMaskList.GetCount">
-        <short>Gets the value for the Count property.</short>
-        <descr/>
-        <seealso>
-          <link id="TMaskList.Count"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.GetCount.Result">
-        <short>Value for the Count property.</short>
-      </element>
-
-      <element name="TMaskList.GetItem">
-        <short>Gets the value for the indexed Items property.</short>
-        <descr/>
-        <seealso>
-          <link id="TMaskList.Items"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.GetItem.Result">
-        <short>Value for the Items property.</short>
-      </element>
-      <element name="TMaskList.GetItem.Index">
-        <short>Ordinal position for the TMask instance in the property value.</short>
-      </element>
-
-      <element name="TMaskList.SetMask"/>
-      <element name="TMaskList.SetMask.AValue"/>
-      <element name="TMaskList.SetMaskOpCodes"/>
-      <element name="TMaskList.SetMaskOpCodes.AValue"/>
-
-      <element name="TMaskList.GetMaskClass">
-        <short>Gets the class type used to create new mask instances for the list.</short>
-        <descr>
-          <p>
-            Used in the <var>Create</var> constructor to set the value for an internal member in the class instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.GetMaskClass.Result">
-        <short>Returns the TMaskClass type.</short>
-      </element>
-
-      <element name="TMaskList.AddMasksToList">
-        <short>
-          Adds new mask instances to the list for the specified delimited mask expressions and settings.
-        </short>
-        <descr>
-          <p>
-            Parses mask expression in <var>AValue</var> using the delimiter in <var>ASeparator</var>. A new <var>TMaskClass</var> instance is created and stored for each of the mask expressions using the settings in <var>CaseSensitive</var> and <var>AOpcodesAllowed</var>.
-          </p>
-          <p>
-            AddMasksToList is called from the Create constructor to populate the list using the mask expression(s) and settings passed as arguments to the method. It is also called when a new value is assigned to the Mask property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="TMaskList.Mask"/>
-          <link id="TMaskList.GetMaskClass"/>
-          <link id="TParseStringList"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.AddMasksToList.AValue">
-        <short>Delimited mask expressions for the instances added to the list.</short>
-      </element>
-      <element name="TMaskList.AddMasksToList.aSeparator">
-        <short>Delimiter between mask expressions in AValue.</short>
-      </element>
-      <element name="TMaskList.AddMasksToList.CaseSensitive">
-        <short>Indicates whether mask expressions are case sensitive.</short>
-      </element>
-      <element name="TMaskList.AddMasksToList.aOpcodesAllowed">
-        <short>Set of Mask op codes allowed for the class instances added to the list.</short>
-      </element>
-
-      <element name="TMaskList.Create">
-        <short>
-          Creates a new list for mask instances using the specified delimiters and options.
-        </short>
-        <descr>
-          <p>
-            <var>Create</var> is the overloaded constructor for the class instance. Create allocates resources for the internal object list in the class instance. Arguments passed to the constructor are used to configure and populate the values in the <var>Items</var> property by calling the <var>AddMasksToList</var> method. Values in the arguments are also assigned to the CaseSensitive and MaskOpCodes properties.
-          </p>
-          <remark>
-            The overloaded variant which does <b>not</b> include an <var>Options</var> parameter has been <b>deprecated</b>. It will be removed in a future Lazarus version.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Items"/>
-          <link id="TMaskList.CaseSensitive"/>
-          <link id="TMaskList.MaskOpCodes"/>
-          <link id="TMaskList.AddMasksToList"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.Create.AValue">
-        <short>Mask value(s) stored in the internal object list.</short>
-      </element>
-      <element name="TMaskList.Create.ASeparator">
-        <short>Delimiter used to delimit mask values in AValue.</short>
-      </element>
-      <element name="TMaskList.Create.CaseSensitive">
-        <short>Indicates if case sensitivity is used for masks.</short>
-      </element>
-      <element name="TMaskList.Create.aOpcodesAllowed">
-        <short>Indicates if case sensitivity is used for masks.</short>
-      </element>
-      <element name="TMaskList.Create.aOptions">
-        <short>Contains the options enabled for the mask instances.</short>
-      </element>
-
-      <element name="TMaskList.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that the internal object list for the class instance is freed. Destroy calls the inherited destructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMaskList.Matches">
-        <short>Determines whether the specified file name matches a mask in the list.</short>
-        <descr>
-          <p>
-            <var>Matches</var> is a <var>Boolean</var> function used to determine if the specified file name matches one of the file masks in the list.
-          </p>
-          <p>
-            <var>AFileName</var> contains the file name examined in the method.
-          </p>
-          <p>
-            Matches uses the <var>TMask</var> instances in <var>Items</var> to perform the file name comparison. Each TMask instance in Items is used to call its <var>Matches</var> method until a match is found, or until all of the masks have been visited.
-          </p>
-          <p>
-            The return value is <b>True</b> when a mask is found that matches the file name.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Items"/>
-          <link id="TMaskList.Count"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.Matches.Result">
-        <short><b>True</b> when the file name matches one of the mask items.</short>
-      </element>
-      <element name="TMaskList.Matches.AFileName">
-        <short>File name examined in the method.</short>
-      </element>
-
-      <element name="TMaskList.MatchesWindowsMask">
-        <short>
-          Tests whether the file name matches a mask in the list using Windows file system masks.
-        </short>
-        <descr>
-          <p>
-            Tests whether the file name matches at least one of the mask items in the list. Implements some special rules for a Windows© file system comparison.
-          </p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMaskList.MatchesWindowsMask.Result">
-        <short><b>True</b> if the file name matches one the masks in the list.</short>
-      </element>
-      <element name="TMaskList.MatchesWindowsMask.AFileName">
-        <short>File name examined in the method.</short>
-      </element>
-
-      <element name="TMaskList.Count">
-        <short>The number of mask items in the list.</short>
-        <descr>
-          <p>
-            <var>Count</var> is a read-only <var>Integer</var> property with the number of <var>TMask</var> instances stored in the <var>Items</var> for the list.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Items"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskList.Items">
-        <short>The mask items in the list.</short>
-        <descr>
-          <p>
-            <var>Items</var> is a read-only indexed <var>TMask</var> property which contains the mask instances in the list.
-          </p>
-          <p>
-            <var>Index</var> specifies the ordinal position in the list for the TMask instance in the property. The property value is cast to a TMask instance when it is retrieved from the internal object list.
-          </p>
-          <p>
-            Values in the Items property are created in the Create constructor. A TMask instance is created and stored in Items for each of the mask values passed an argument to the method.
-          </p>
-          <p>
-            Use the Count property to determine the number of masks stored in Items.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="TMask"/>
-        </seealso>
-      </element>
-      <element name="TMaskList.Items.Index">
-        <short>Ordinal position for the value in the indexed property.</short>
-      </element>
-
-      <element name="TMaskList.Mask">
-        <short>
-          String with the delimited list of mask expressions for the class instances in the list.
-        </short>
-        <descr>
-          <p>
-            <var>Mask</var> can contain one or more mask expressions separated by the separator character passed as an argument to the Create constructor. The default separator character is ';' (Semicolon).
-          </p>
-          <p>
-            Setting a new value for the Mask property causes the internal list of TMask instances to be cleared and recreated using the values in the CaseSensitive and MaskOpCodes properties.
-          </p>
-          <remark>
-            The separator character cannot be changed in the current implementation. It is set using an argument passed to the constructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMaskList.MaskOpCodes">
-        <short>Contains the op codes allowed for the mask instances in the list.</short>
-        <descr>
-          <p>
-            <var>MaskOpCodes</var> is a <var>TMaskOpCodes</var> property with the set of mask op codes enabled in the class instance. It contains values from the <var>TMaskOpCode</var> enumeration, and is initially set from arguments passed to the Create constructor. Setting a new value for the property causes each of the TMask instances in Items to be updated with the new value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="TMaskList.Mask"/>
-          <link id="TMaskList.Items"/>
-          <link id="TMaskOpCodes"/>
-          <link id="TMaskOpCode"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskList.AutoReverseRange">
-        <short>
-          Indicates if a range expression is automatically reversed when the starting value is larger than the ending value.
-        </short>
-        <descr>
-          <p>
-            Setting AutoReverseRange to <b>True</b> would cause a range expression like '[e-a]' to be treated as if it were specified as '[a-e]'. The default value for the property is <b>True</b>, as assigned in the Create constructor.
-          </p>
-          <p>
-            Changing the value for the property causes the corresponding property in each of the Items in the list to be updated. This causes Compile in the TMask instance to be called when it executes its Matches method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="TMaskList.Items"/>
-          <link id="TMaskBase.AutoReverseRange"/>
-          <link id="TMaskUTF8.Compile"/>
-          <link id="TMaskUTF8.Matches"/>
-          <link id="TWindowsMaskUTF8.Compile"/>
-          <link id="TWindowsMaskUTF8.Matches"/>
-        </seealso>
-      </element>
-
-      <element name="TMaskList.CaseSensitive">
-        <short>
-          Indicates whether the Mask expressions in the list are case sensitive.
-        </short>
-        <descr>
-          <p>
-            CaseSensitive is a Boolean property which indicates whether Mask expressions in the list are case sensitive. The default value for the property is set using an argument passed to the overloaded constructor. It can be specified using the CaseSensitive argument, or by including / excluding moCaseSensitive in the TMaskOptions argument.
-          </p>
-          <p>
-            Changing the value for the property causes the corresponding property to be updated for each of the Items in the list.
-          </p>
-          <p>
-            The property value is used when a new value is assigned to the Mask property. It is passed as an argument to the AddMasksToList method called to re-populate the Items in the list.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TMaskList.Create"/>
-          <link id="TMaskList.Items"/>
-          <link id="TMaskList.AddMasksToList"/>
-          <link id="TMaskBase.CaseSensitive"/>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskList">
-        <short>
-          Implements a list for mask class instances which support Windows-specific file masks.
-        </short>
-        <descr>
-          <p>
-            <var>TWindowsMaskList</var> is a TMaskList descendant which implements a list used to maintain a list with TWindowsMask instances for mask expressions. Parameter values passed to the constructor are used when mask instances are created and stored in the list.
-          </p>
-          <p>
-            TWindowsMaskList is used in the implementation of the <var>MatchesWindowsMaskList</var> function.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TWindowsMask"/>
-          <link id="MatchesWindowsMaskList"/>
-          <link id="MatchesMaskList"/>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-
-      <element name="TWindowsMaskList.fWindowsQuirks"/>
-      <element name="TWindowsMaskList.SetQuirks"/>
-      <element name="TWindowsMaskList.SetQuirks.AValue"/>
-
-      <element name="TWindowsMaskList.GetMaskClass">
-        <short>
-          Gets the class type used to create new mask instances for the list.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TWindowsMask"/>
-          <link id="TWindowsMaskUTF8"/>
-        </seealso>
-      </element>
-      <element name="TWindowsMaskList.GetMaskClass.Result">
-        <short>Returns the TWindowsMask type.</short>
-      </element>
-
-      <element name="TWindowsMaskList.AddMasksToList">
-        <short>
-          Adds masks to the list using the delimited mask expressions and configuration settings.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskList.AddMasksToList.AValue">
-        <short>Delimited mask expressions for the instances added to the list.</short>
-      </element>
-      <element name="TWindowsMaskList.AddMasksToList.ASeparator">
-        <short>Delimiter between mask expressions in AValue.</short>
-      </element>
-      <element name="TWindowsMaskList.AddMasksToList.CaseSensitive">
-        <short>Indicates whether mask expressions are case sensitive.</short>
-      </element>
-      <element name="TWindowsMaskList.AddMasksToList.AOpcodesAllowed">
-        <short>Set of Mask op codes allowed for the class instances added to the list.</short>
-      </element>
-
-      <element name="TWindowsMaskList.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overloaded constructor for the class instance. Create ensures that arguments passed to the constructor are stored in internal members for use in the class instance. An alternate constructor allows configuration settings to be derived from a set of TMaskOption values.
-          </p>
-          <remark>
-            The variant with a TMaskOptions parameter has been deprecated in version 2.3, and will be removed in version 2.5.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskList.Create.AValue">
-        <short>Mask expression for the class instance.</short>
-      </element>
-      <element name="TWindowsMaskList.Create.ASeparator">
-        <short>Delimiter used between mask expressions in AValue.</short>
-      </element>
-      <element name="TWindowsMaskList.Create.CaseSensitive">
-        <short><b>True</b> if the mask expression(s) are case sensitive.</short>
-      </element>
-      <element name="TWindowsMaskList.Create.AOpcodesAllowed">
-        <short>Set of TMaskOpCode values enabled for the class instance.</short>
-      </element>
-      <element name="TWindowsMaskList.Create.AWindowsQuirksAllowed">
-        <short>Set of TWindowsQuirk values allowed for the class instance.</short>
-      </element>
-      <element name="TWindowsMaskList.Create.AOptions">
-        <short>Set of TMaskOption values enabled for the class instance.</short>
-      </element>
-
-      <element name="TWindowsMaskList.MatchesWindowsMask">
-        <short>Same as calling the Matches method.</short>
-        <descr>
-          <p>
-            MatchesWindowsMask is deprecated in version 2.3, and will be removed in version 2.5. Use the Matches method instead.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TWindowsMaskList.MatchesWindowsMask.Result">
-        <short><b>True</b> if the specified file name matches one of the mask in the list.</short>
-      </element>
-      <element name="TWindowsMaskList.MatchesWindowsMask.AFileName">
-        <short>File name compared to the mask instances in the list.</short>
-      </element>
-
-      <element name="TWindowsMaskList.Quirks">
-        <short>Contains the TWindowsQuirk values enabled for the class instance.</short>
-        <descr>
-          <p>
-            The initial value for the property is set using an argument passed to the Create constructor.
-          </p>
-          <p>
-            Changing the value for the property causes the internal TObjectList instance for the masks to be cleared. The AddMasksToList method is called to re-populate the internal list. The delimiter character, case sensitivity, and op codes provided to the constructor are used when re-creating the TWindowsMask instances in the Items property.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="MatchesMask">
-        <short>Indicates whether the file name matches the specified mask.</short>
-        <descr>
-          <p>
-            <var>MatchesMask</var> is an overloaded <var>Boolean</var> function used to determine if the file name specified in <var>FileName</var> matches the specified <var>Mask</var>.
-          </p>
-          <p>
-            <var>CaseSensitive</var> indicates whether case sensitivity is used when comparing the file name to the mask value.
-          </p>
-          <p>
-            <var>Options</var> contains a set of zero or more TMaskOption values enabled for the comparison. The Options argument allows enabling or disabling set notation in the mask value. Specifying <var>moDisableSets</var> in the Options parameter will disable interpreting the ' <b>[</b>' character as the beginning of a set in the specified mask. Use an empty set (' <b>[]</b>') when options from the <var>TMaskOption</var> enumeration are not needed.
-          </p>
-          <p>
-            For example:
-          </p>
-          <code>MatchesMask('[x]','[x]',[moDisableSets]);  // returns True</code>
-          <p>
-            MatchesMask creates a <var>TMask</var> instance which is used to compare the file name to the mask using the specified options. Values in Mask and Options are passed as arguments the TMask constructor. The <var>Matches</var> method in the instance is called using FileName as an argument, and gets the return value for the function.
-          </p>
-          <remark>
-            The overloaded variant which includes a TMaskOptions parameter has been marked as deprecated in version 2.3. It will be removed in version 2.5.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-      <element name="MatchesMask.Result">
-        <short>
-          <b>True</b> when the file name matches the mask value using the specified options.
-        </short>
-      </element>
-      <element name="MatchesMask.FileName">
-        <short>File name compared to the mask value.</short>
-      </element>
-      <element name="MatchesMask.Mask">
-        <short>Mask used to perform the comparison.</short>
-      </element>
-      <element name="MatchesMask.CaseSensitive">
-        <short><b>True</b> when case sensitivity should be used in the comparison.</short>
-      </element>
-      <element name="MatchesMask.Options">
-        <short>Set of options enabled for the comparison.</short>
-      </element>
-      <element name="MatchesMask.AOpcodesAllowed">
-        <short>Set of TMaskOpCode values allowed in the comparison.</short>
-      </element>
-
-      <element name="MatchesWindowsMask">
-        <short>
-          Indicates whether the file name matches the specified Windows-style file system mask.
-        </short>
-        <descr>
-          <p>
-            <var>MatchesWindowsMask</var> is an overloaded <var>Boolean</var> function used to determine if the file name specified in <var>FileName</var> matches the specified <var>Mask</var>. Mask can contain a Windows-style file mask which uses the following wildcards:
-          </p>
-          <dl>
-            <dt>foo*.*</dt>
-            <dd>
-              Matches all files starting with 'foo' regardless of the file extension. Same as foo* using the Matches method.
-            </dd>
-            <dt>foo*.</dt>
-            <dd>Matches foo* but must not include a file extension.</dd>
-            <dt>*.</dt>
-            <dd>Matches any file name, but must not include a file extension.</dd>
-            <dt>foo.</dt>
-            <dd>Matches foo but not foo.txt.</dd>
-            <dt>foo.*</dt>
-            <dd>Matches foo, foo.txt, or foo.bar.</dd>
-            <dt>*.*</dt>
-            <dd>Matches any file name with an extension.</dd>
-          </dl>
-          <p>
-            <var>CaseSensitive</var> indicates whether case sensitivity is used when comparing the file name to the mask value.
-          </p>
-          <p>
-            <var>Options</var> contains a set of zero or more TMaskOption values enabled for the comparison. The Options argument allows enabling or disabling set notation in the mask value. Specifying <var>moDisableSets</var> in the Options parameter will disable interpreting the ' <b>[</b>' character as the beginning of a set in the specified mask. Use an empty set (' <b>[]</b>') when options from the <var>TMaskOption</var> enumeration are not needed.
-          </p>
-          <p>
-            For example:
-          </p>
-          <code>MatchesWindowsMask('[x]','[x]',[moDisableSets]);  // returns True</code>
-          <p>
-            MatchesWindowsMask creates a <var>TMask</var> instance which is used to compare the file name to the mask using the specified options. Values in Mask and Options are passed as arguments the TMask constructor. The <var>MatchesWindowsMask</var> method in the TMask instance is called using FileName as an argument, and gets the return value for the function.
-          </p>
-          <remark>
-            The overloaded variant which includes a TMaskOptions parameter has been marked as deprecated in version 2.3. It will be removed in version 2.5.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-      <element name="MatchesWindowsMask.Result">
-        <short>
-          <b>True</b> when the file name matches the mask value using the specified options.
-        </short>
-      </element>
-      <element name="MatchesWindowsMask.FileName">
-        <short>File name compared to the mask value.</short>
-      </element>
-      <element name="MatchesWindowsMask.Mask">
-        <short>Mask used to perform the comparison.</short>
-      </element>
-      <element name="MatchesWindowsMask.CaseSensitive">
-        <short><b>True</b> when case sensitivity should be used in the comparison.</short>
-      </element>
-      <element name="MatchesWindowsMask.Options">
-        <short>Set of options enabled for the comparison.</short>
-      </element>
-
-      <element name="MatchesMaskList">
-        <short>
-          Determine whether the specified file name matches at least one of the specified masks.
-        </short>
-        <descr>
-          <p>
-            <var>MatchesMaskList</var> is an overloaded <var>Boolean</var> function used to determine whether the specified file name matches at least one of the specified masks. MatchesMaskList is similar to <var>MatchesWindowsMaskList</var>, but uses Unix-style mask expressions. This includes use of the following:
-          </p>
-          <dl>
-            <dt>foo*</dt>
-            <dd>
-              Matches all files starting with 'foo' regardless of the file extension. Same as foo*.* using MatchesWindowsMaskList.
-            </dd>
-            <dt>foo*.</dt>
-            <dd>Matches foo* but must not include a file extension.</dd>
-            <dt>*.</dt>
-            <dd>Matches any file name, but must not include a file extension.</dd>
-            <dt>foo.</dt>
-            <dd>Matches foo but not foo.txt.</dd>
-            <dt>foo.*</dt>
-            <dd>Matches foo, foo.txt, or foo.bar.</dd>
-            <dt>*</dt>
-            <dd>Matches any file name including those with an optional extension.</dd>
-          </dl>
-          <p>
-            Overloaded variants of the routine provide arguments and configuration settings, including:
-          </p>
-          <dl>
-            <dt>Filename</dt>
-            <dd>File name compared to the file masks in Mask.</dd>
-            <dt>Mask</dt>
-            <dd>Contains one or more file mask expressions separated by one of the values in Separator.</dd>
-            <dt>Separator</dt>
-            <dd>
-              Contains the character(s) used as a separator between mask expressions in Mask. The default separator is the SemiColon (;) character.
-            </dd>
-            <dt>Options</dt>
-            <dd>
-              Contains TMaskOption values which enable or disable features in the comparison. The default value is an empty set ([]).
-            </dd>
-            <dt>CaseSensitive</dt>
-            <dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
-          </dl>
-          <remark>
-            The overloaded variant which includes the <var>CaseSensitive</var> argument has been deprecated. Use the variant that includes the <var>TMaskOptions</var> argument.
-          </remark>
-          <p>
-            MatchesMaskList creates a <var>TMaskList</var> instance which uses the values in the Mask, Separator and Options parameters. Its <var>Matches</var> method is called to compare the value in Filename to the mask values in the list.
-          </p>
-          <p>
-            The return value is <b>True</b> when Filename matches at least one of the masks in the list.
-          </p>
-          <remark>
-            The overloaded variant which includes a TMaskOptions parameter has been marked as deprecated in version 2.3. It will be removed in version 2.5.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-      <element name="MatchesMaskList.Result">
-        <short><b>True</b> when Filename matches at least one of the masks in the list.</short>
-      </element>
-      <element name="MatchesMaskList.FileName">
-        <short>File name compared to the file masks in Mask.</short>
-      </element>
-      <element name="MatchesMaskList.Mask">
-        <short>one or more file mask expressions separated by one of the values in Separator.</short>
-      </element>
-      <element name="MatchesMaskList.Separator">
-        <short>Character(s) used as a separator between mask expressions in Mask.</short>
-      </element>
-      <element name="MatchesMaskList.CaseSensitive">
-        <short><b>True</b> if the file name to mask comparison is case sensitive.</short>
-      </element>
-      <element name="MatchesMaskList.Options">
-        <short>TMaskOption values which enable or disable features in the comparison.</short>
-      </element>
-      <element name="MatchesMaskList.AOpcodesAllowed">
-        <short>Set of TMaskOpCode values allowed in the comparison.</short>
-      </element>
-
-      <element name="MatchesWindowsMaskList">
-        <short>
-          Determine whether the specified file name matches at least one of the specified Windows-specific masks.
-        </short>
-        <descr>
-          <p>
-            <var>MatchesWindowsMaskList</var> is an overloaded <var>Boolean</var> function used to determine whether the specified file name matches at least one of the specified masks. MatchesWindowsMaskList is similar to <var>MatchesMaskList</var>, but provides support for Windows-style file system masks in the Mask argument. This includes use of the following:
-          </p>
-          <dl>
-            <dt>foo*.*</dt>
-            <dd>
-              Matches all files starting with 'foo' regardless of the file extension. Same as foo* using MatchesMaskList.
-            </dd>
-            <dt>foo*.</dt>
-            <dd>Matches foo* but must not include a file extension.</dd>
-            <dt>*.</dt>
-            <dd>Matches any file name, but must not include a file extension.</dd>
-            <dt>foo.</dt>
-            <dd>Matches foo but not foo.txt.</dd>
-            <dt>foo.*</dt>
-            <dd>Matches foo, foo.txt, or foo.bar.</dd>
-            <dt>*.*</dt>
-            <dd>Matches any file name with an extension.</dd>
-          </dl>
-          <p>
-            Overloaded variants of the routine provide arguments and configuration settings, including:
-          </p>
-          <dl>
-            <dt>Filename</dt>
-            <dd>File name compared to the file masks in Mask.</dd>
-            <dt>Mask</dt>
-            <dd>Contains one or more file mask expressions separated by one of the values in Separator.</dd>
-            <dt>Separator</dt>
-            <dd>
-              Contains the character(s) used as a separator between mask expressions in Mask. The default separator is the SemiColon (;) character.
-            </dd>
-            <dt>Options</dt>
-            <dd>
-              Contains TMaskOption values which enable or disable features in the comparison. The default value is an empty set ([]).
-            </dd>
-            <dt>CaseSensitive</dt>
-            <dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
-          </dl>
-          <remark>
-            The overloaded variant which includes the <var>CaseSensitive</var> argument has been deprecated. Use the variant that includes the <var>TMaskOptions</var> argument.
-          </remark>
-          <p>
-            MatchesWindowsMaskList creates a <var>TMaskList</var> instance which uses the values in the Mask, Separator and Options parameters. Its <var>MatchesWindowsMask</var> method is called to compare the value in Filename to the Windows-style masks in the list.
-          </p>
-          <p>
-            The return value is <b>True</b> when Filename matches at least one of the masks in the list.
-          </p>
-          <remark>
-            The overloaded variant which includes a TMaskOptions parameter has been marked as deprecated in version 2.3. It will be removed in version 2.5.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-        </seealso>
-      </element>
-      <element name="MatchesWindowsMaskList.Result">
-        <short>
-          <b>True</b> when Filename matches at least one of the masks in the list.
-        </short>
-      </element>
-      <element name="MatchesWindowsMaskList.FileName">
-        <short>File name compared to the file masks in Mask.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.Mask">
-        <short>one or more file mask expressions separated by one of the values in Separator.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.Separator">
-        <short>Character(s) used as a separator between mask expressions in Mask.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.CaseSensitive">
-        <short><b>True</b> if the file name to mask comparison is case sensitive.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.Options">
-        <short>TMaskOption values which enable or disable features in the comparison.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.AOpcodesAllowed">
-        <short>Set of TMaskOpCode values allowed in the comparison.</short>
-      </element>
-      <element name="MatchesWindowsMaskList.AWindowsQuirksAllowed">
-        <short>Set of TWindowsQuirk values allowed in the comparison.</short>
-      </element>
-
-      <element name="DbgS">
-        <short>
-          Gets a string with the value(s) for the specified type. Used to format debugger messages.
-        </short>
-        <descr>
-          <p>
-            DbgS is a overloaded String function used to get a formatted message which can be displayed in the debugger. Values from the type passed as an argument are converted to their string representation and used in the return value for the routine. In the masks.pas unit, TMaskOpCodes and TWindowsQuirks types are allowed as parameter values. Both types result in a String with the set notation needed to represent enumeration values in the argument. For example:
-          </p>
-          <dl>
-            <dt>TMaskOpCode</dt>
-            <dd>
-              '[mocAnyChar,mocAnyText,mocRange,mocSet]'
-            </dd>
-            <dt>
-              TWindowsQuirks
-            </dt>
-            <dd>
-              '[wqAnyExtension,wqFilenameEnd,wqAllByExtension,wqNoExtension]'
-            </dd>
-          </dl>
-        </descr>
-        <seealso>
-          <link id="TMaskOpCode"/>
-          <link id="TMaskOpCodes"/>
-          <link id="TWindowsQuirk"/>
-          <link id="TWindowsQuirks"/>
-        </seealso>
-      </element>
-      <element name="DbgS.Result">
-        <short>String representing the value(s) in the specified type.</short>
-      </element>
-      <element name="DbgS.O">
-        <short>TMaskOpCodes instance with the values returned in the string result.</short>
-      </element>
-      <element name="DbgS.Q">
-        <short>TWindowsQuirks instance with the values returned in the string result.</short>
-      </element>
-
-      <topic name="MasksOverview">
-        <short>Masks Overview.</short>
-        <descr>
-          <p>
-            <b>What is a Mask</b>
-          </p>
-          <p>
-            A mask is an expression composed of literal characters, sets or ranges or characters, and wildcards. It is commonly used to match file or directory names against the pattern in the mask expression.
-          </p>
-          <p>
-            <b>Literal Characters</b>
-          </p>
-          <p>
-            Each literal character in a mask corresponds to a single character in a compared value. For instance, 'abc.def' would match a file with that exact name and nothing else.
-          </p>
-          <p>
-            <b>Sets of Characters</b>
-          </p>
-          <p>
-            A set begins with an opening Square Bracket character (<b>[</b>) and ends with a closing Square Bracket character (<b>]</b>). Values between the brackets represent the characters which are considered a match in that position. For example: 'a[bcd]e.txt' would match 'abe.txt', 'ace.txt', or 'ade.txt'. It would not match 'afe.txt'.
-          </p>
-          <p>
-            <b>Ranges of Characters</b>
-          </p>
-          <p>
-            A range begins with an opening Square Bracket character (<b>[</b>) and ends with a closing Square Bracket character (<b>]</b>) like set notation. Character values in the range are defined using a starting and ending values separated by a '-' character. For example: 'abc[0-9].ext'. Any character in the range is allowed in that position. An alpha-numeric range could be represented using '[a-zA-Z0-9]'.
-          </p>
-          <p>
-            <b>Negated Sets and Ranges</b>
-          </p>
-          <p>
-            When using set or range notation, character values can be excluded using negation. This is expressed using an Exclamation Point character (<b>!</b>) in front of the set or range specification. For example: '[!0-9]' or '[!0123456789]'. In both examples, any character at the given position <b>except</b> the values in the set or range would be considered a match.
-          </p>
-          <p>
-            <b>Wildcards</b>
-          </p>
-          <p>
-            Wildcards allow one or more characters to be considered as a match for a value in the mask. The wildcard characters are '?' and '*'. <b>?</b> matches a single character (regardless of its value). <b>*</b> matches any number of characters (regardless of their values).
-          </p>
-          <p>
-            <b>Platform-specific Behaviors</b>
-          </p>
-          <p>
-            While the syntax and notation for mask expressions is the same for different platforms, there are some platform-specific behaviors.
-          </p>
-          <p>
-            The TMask and TWindowsMask classes are used to isolate and implement those platform-specific behaviors. TMask conforms the to conventions used for UNIX-like file systems. TWindowsMask implements the conventions used for Windows-based file systems.
-          </p>
-          <p>
-            Most differences between the platforms center on the implementation of the "any file" mask. This is the notation used to match any file or directory name, regardless of the presence of a file extension. For UNIX file systems (TMask), the notation used is '*'. For Windows file systems (TWindowsMask), the notation '*.*' is used.
-          </p>
-          <p>
-            They are other Windows-specific behaviors originating from its CP/M and MS DOS heritage. These are implemented in TWindowsMask as Quirks, and can be enabled or disabled in the class instance.
-          </p>
-          <p>
-            Please refer to the documentation for the <link id="TMask">TMask</link> and <link id="TWindowsMask">TWindowsMask</link> for more information about mask expressions and their usage in the respective classes.
-          </p>
-          <p>
-            <b>Configurable Settings</b>
-          </p>
-          <p>
-            The Mask classes also contain configurable settings which can affect their behavior in their Matches method. For example: CaseSensitive, AutoReverseRange, EscapeChar, and MaskOpCodes. The initial value for these settings can be passed as arguments to the class constructors, or they can be specified using properties in the class instances. MaskOpCodes is particularly important; it determines the behavior of wildcards and escape characters in the mask expression.
-          </p>
-          <p>
-            <b>Mask Expression Examples</b>
-          </p>
-          <p>
-            The following FPC unit test program is provided which demonstrates the mask expressions allowed in TMaskUTF8 and TWindowsMaskUTF8 class instances:
-          </p>
-          <p>
-            <file>$(LazarusDir)/components/lazutils/test/testmasks.lpr</file>
-          </p>
-          <p>
-            <b>Using Masks</b>
-          </p>
-          <p>
-            Mask expressions are typically passed as an argument to new instances of TMask or TWindowsMask. It can also be passed as an argument to routines like MatchesMask, MatchesMaskList, MatchesWindowsMask, or MatchesWindowsMaskList. The expression can be assigned to the Mask property in an existing mask class instance. In general, the mask is used to find file names that match the mask expression. But they are not limited to that single use case. They can be used to determine if any string value matches a valid mask expression. They are like regular expressions without all of the complexity, and focused on specific functionality.
-          </p>
-          <remark>
-            Mask values as used in TMask are not related to the mask values used in the TMaskEdit control. Although both compare string values to determine if they match a particular pattern, they use different symbols and syntax.
-          </remark>
-        </descr>
-      </topic>
-    </module>
-    <!-- Masks -->
-  </package>
+<package name="lazutils">
+<!--
+====================================================================
+Masks
+====================================================================
+-->
+<module name="Masks">
+<short>Contains classes for matching file names to file masks.</short>
+<descr>
+<p>
+<file>masks.pas</file> contains classes, types, and routines used implement 
+file and directory masks. Masks are patterns used to match file names found 
+on the local file system. Support is provided for both UNIX- and 
+Windows-style masks. The unit includes utility functions to compare one or 
+more file names to a given mask, including: MatchesMask, MatchesWindowsMask, 
+MatchesMaskList, and MatchesWindowsMaskList.
+</p>
+<p>
+It is fast and optimized, and fully supports Unicode. Also supports 
+DOS/Windows compatible masks which behave differently from standard masks.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+<p>
+Author: José Mejuto
+</p>
+<p>
+Changes and improvements by: Juha Manninen and Bart Broersma.
+</p>
+</descr>
+
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Contnrs"/>
+<element name="LazUtilsStrConsts"/>
+<element name="LazUtf8"/>
+
+<element name="EMaskError">
+<short>Exception raised for an invalid character in TMask.</short>
+<descr>
+<p>
+<var>EMaskError</var> is a <var>EConvertError</var> descendant representing 
+the exception raised when an invalid character is found in a mask expression, 
+or when an invalid value is assigned to properties in a mask class instances. 
+EMaskError is the exception type raised in TMaskBase methods like:
+</p>
+<ul>
+<li>Exception_InvalidCharMask</li>
+<li>Exception_MissingCloseChar</li>
+<li>Exception_IncompleteMask</li>
+<li>Exception_InvalidEscapeChar</li>
+<li>Exception_InternalError</li>
+</ul>
+</descr>
+<seealso>
+<link id="TMaskBase.Exception_InvalidCharMask"/>
+<link id="TMaskBase.Exception_MissingCloseChar"/>
+<link id="TMaskBase.Exception_IncompleteMask"/>
+<link id="TMaskBase.Exception_InvalidEscapeChar"/>
+<link id="TMaskBase.Exception_InternalError"/>
+<link id="#rtl.sysutils.EConvertError">EConvertError</link>
+</seealso>
+</element>
+
+<element name="EMaskError.TMaskExceptionCode">
+<short>
+Enumeration with values identifiers representing mask exception codes.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecInternalError">
+<short>
+Represents an exception raised when an unexpected op code is encountered 
+while evaluating a mask expression.
+</short>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecInvalidCharMask">
+<short>
+Represents an exception raised when an unexpected mask character is found 
+when compiling the op codes for a mask expression.
+</short>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecMissingClose">
+<short>
+Represents an exception raised when the closing ']' is not found in a set or 
+range expression.
+</short>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecIncompleteMask">
+<short>
+Represents an exception raised when a mask does not contain enough characters 
+to evaluate the mask expression.
+</short>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecInvalidEscapeChar">
+<short>
+Represents an exception raised when an invalid value is assigned as the 
+EscapeChar for a mask instance.
+</short>
+</element>
+<element name="EMaskError.TMaskExceptionCode.mecInvalidUTF8Sequence">
+<short>Not used in the current implementation.</short>
+</element>
+
+<element name="EMaskError.FCode">
+<short>Member with the mask exception code for an exception instance.</short>
+</element>
+
+<element name="EMaskError.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Calls the CreateFmt constructor using the values in msg and aCode as 
+arguments.
+</p>
+</descr>
+<seealso>
+<link id="EMaskError.CreateFmt"/>
+</seealso>
+</element>
+<element name="EMaskError.Create.msg">
+<short>Message for the exception.</short>
+</element>
+<element name="EMaskError.Create.aCode">
+<short>Error code for the exception.</short>
+</element>
+
+<element name="EMaskError.CreateFmt">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+CreateFmt is an overridden constructor used to create an exception instance 
+with the values specified in the msg and aCode arguments. It stores the value 
+in ACode to the cCode member, and calls the inherited method.
+</p>
+<p>
+msg is a String which contains a formatting specification using the notation 
+allowed for the RTL Format routine. Values from the args parameter are 
+substituted for the placeholders found in the msg argument.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="EMaskError.CreateFmt.msg">
+<short>Message for the exception with embedded arguments for Format().</short>
+</element>
+<element name="EMaskError.CreateFmt.args">
+<short>Array of constant values for the formatted exception message.</short>
+</element>
+<element name="EMaskError.CreateFmt.aCode">
+<short>Error code for the exception.</short>
+</element>
+
+<element name="EMaskError.Code">
+<short>
+Provides access to the mask exception code for the exception instance.
+</short>
+<descr>
+<p>
+Code is a read-only TMaskExceptionCode property with the code for a mask 
+exception class instance. The value in Code is passed as argument to the 
+Create or CreateFmt constructors.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMaskOpCode">
+<short>
+Represents operations needed for an entry in a mask specification.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TMaskOpCode.mocAnyChar">
+<short>Treats '?' as a wildcard to match exactly one char.</short>
+</element>
+<element name="mocAnyCharOrNone">
+<short>Allows '[?]'  to match any character or no character.</short>
+</element>
+<element name="mocAnyText">
+<short>
+Treats '*' as a wildcard to match zero or any number of characters.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TMaskOpCode.mocRange">
+<short>
+Causes '[a-c]'' to match either 'a', 'b' or 'c'. '-' is always treated as the 
+range separator. To use a literal '-' in a range, it must be escaped using 
+the EscapeChar (default is '\') for a mask instance. '[+-\-]' matches '+', 
+',' or '-'.
+</short>
+</element>
+<element name="mocSet">
+<short>
+Causes '[a-c]' to match either 'a', '-' or 'c'. Enables sets notation in a 
+mask expression.
+</short>
+</element>
+<element name="mocNegateGroup">
+<short>
+Causes '[!a-c]' to not match the group values, but matches any other 
+character. Requires mocRange and/or mocSet.
+</short>
+</element>
+<element name="mocEscapeChar">
+<short>
+Causes an EscapeChar (defaults to '\') to use the next character as a literal 
+instead of a wildcard; so '\*' is treated as a literal '*' character.
+</short>
+</element>
+
+<element name="TMaskOpCodes">
+<short>Set type used to store values from the TMaskOpcode enumeration.</short>
+<descr>
+<p>
+TMaskOpcodes is the type passed as argument to the constructor for TMaskBase 
+and TWindowsMaskUTF8 classes, and used to implement their MaskOpCodes 
+property.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="TMaskUTF8"/>
+<link id="TWindowsMaskUTF8"/>
+</seealso>
+</element>
+
+<element name="AllMaskOpCodes">
+<short>Set with all of the mask op codes values.</short>
+<descr/>
+<seealso>
+<link id="TMaskOpCode"/>
+<link id="TMaskOpCodes"/>
+</seealso>
+</element>
+
+<element name="MaskOpCodesDisableRange">
+<short>
+Contains the set of op codes allowed when sets and ranges are disabled in 
+mask expressions.
+</short>
+<descr>
+<p>
+Omits the op code identifiers mocAnyCharOrNone, mocRange, and mocSet.
+</p>
+</descr>
+<seealso>
+<link id="TMaskOpCode"/>
+<link id="TMaskOpCodes"/>
+<link id="TMaskOptions"/>
+<link id="TMaskList.Create"/>
+</seealso>
+</element>
+
+<element name="MaskOpCodesNoEscape">
+<short>
+Contains op codes enabled when escape characters and single character 
+wildcards are not used.
+</short>
+<descr>
+<p>
+Interprets '[?]' as a literal question mark instead of 0..1 character 
+wildcard.
+Disables escape characters like '\?'. Omits the op code values 
+mocAnyCharOrNone and mocEscapeChar.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="DefaultMaskOpCodes">
+<short>
+Contains the default op code values used for mask class instances.
+</short>
+<descr>
+<p>
+DefaultMaskOpCodes includes the TMaskOpCode values found in AllMaskOpCodes 
+with the exception of mocEscapeChar. This disables use of the escape 
+character ('\' is the default) in a mask expression. DefaultMaskOpCodes is 
+used as the default value for an argument passed to the TMaskBase.Create and 
+TMaskList.Create methods.
+</p>
+</descr>
+<seealso>
+<link id="TMaskOpCodes"/>
+<link id="TMaskOpCode"/>
+<link id="TMaskBase.Create"/>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="TMaskBase.EscapeChar"/>
+<link id="TMaskList.Create"/>
+<link id="TMaskList.MaskOpCodes"/>
+</seealso>
+</element>
+
+<element name="TWindowsQuirk">
+<short>
+Represents types of Windows-specific quirks for file and directory masks.
+</short>
+<descr>
+<p>
+TWindowsQuirk is an enumerated type used to represent ways in which a 
+Windows/DOS mask works differently than a regular mask. Windows/DOS masks 
+have many quirks and corner cases inherited from CP/M, then adapted to DOS 
+(8.3) file names, and adapted again for long file names.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TWindowsQuirk.wqAnyExtension">
+<short>
+Treats "filename*.*" as if the ".*"" notation is omitted. This causes the 
+mask to behave in a UNIX-like manner, where 'foo.*' matches 'foo'.
+</short>
+</element>
+<element name="TWindowsQuirks.wqFilenameEnd">
+<short>
+For "filename??.ext", "?" matches 1 or 0 chars (except for '.'). Not the same 
+as "filename*.ext", but the same as regex "filename.{0,2}\.ext". Internally 
+converted to "filename[??].ext".
+</short>
+</element>
+<element name="TWindowsQuirks.wqExtension3More">
+<short>
+Anything.abc matches "Anything.abc" but also "Anything.abc*" (3 char 
+extension). Anything.ab matches "Anything.ab" and never "anything.abcd".
+</short>
+</element>
+<element name="TWindowsQuirks.wqEmptyIsAny">
+<short>
+An empty string ("") matches anything "*" .
+</short>
+</element>
+<element name="TWindowsQuirks.wqAllByExtension">
+<short>
+".abc" is treated as "*.abc".
+</short>
+</element>
+<element name="TWindowsQuirks.wqNoExtension">
+<short>
+"Anything*." matches "Anything*" without a file extension.
+</short>
+</element>
+
+<element name="TWindowsQuirks">
+<short>
+Set type used to store values from the TWindowsQuirk enumeration.
+</short>
+<descr>
+<p>
+A TWindowsQuirks type is passed as an argument to the Create method in 
+TWindowsMaskUTF8, and is the type used for its Quirks property.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsMaskUTF8.Create"/>
+<link id="TWindowsMaskUTF8.Quirks"/>
+</seealso>
+</element>
+
+<element name="AllWindowsQuirks">
+<short>Sets type with all of the Windows-specific quirk values.</short>
+<descr>
+<p>
+AllWindowsQuirks can be passed an argument to the constructor in 
+TWindowsMaskUTF8, or assigned directly to the Quirks property in the mask 
+class instance.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsQuirk"/>
+<link id="TWindowsQuirks"/>
+<link id="DefaultWindowsQuirks"/>
+<link id="TWindowsMaskUTF8.Create"/>
+<link id="TWindowsMaskUTF8.Quirks"/>
+</seealso>
+</element>
+
+<element name="DefaultWindowsQuirks">
+<short>Set with the default Windows-specific quirk values.</short>
+<descr>
+<p>
+DefaultWindowsQuirks can be passed an argument to the constructor in 
+TWindowsMaskUTF8, or assigned directly to the Quirks property in the mask 
+class instance. Omits the values wqExtension3More and wqAllByExtension.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsQuirk"/>
+<link id="TWindowsQuirks"/>
+<link id="AllWindowsQuirks"/>
+<link id="TWindowsMaskUTF8.Create"/>
+<link id="TWindowsMaskUTF8.Quirks"/>
+</seealso>
+</element>
+
+<element name="TMaskOption">
+<short>
+Contains options which can be enabled or disabled in TMask comparisons.
+</short>
+<descr>
+<p>
+TMaskOption is an enumerated type with values for options that can be enabled 
+in TMask class instances. Values from the enumeration are stored in the 
+TMaskOptions set type, and passed as an argument to an alternate constructor 
+in TMaskBase and descendent classes. Values in the set also control the 
+values assigned to the CaseSensitive and MaskOpCodes properties in the mask 
+class instance.
+</p>
+<p>
+TMaskOption and TMaskOptions are provided for backward compatibility with 
+previous versions of LazUtils.
+</p>
+</descr>
+<seealso>
+<link id="TMaskOptions"/>
+<link id="TMaskBase.Create"/>
+<link id="TMaskBase.CaseSensitive"/>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+<element name="TMaskOption.moCaseSensitive">
+<short>Enables case sensitive comparison.</short>
+</element>
+<element name="TMaskOption.moDisableSets">
+<short>
+Disables set processing; '[' and ']' are treated as literal characters.
+</short>
+</element>
+
+<element name="TMaskOptions">
+<short>Set type used to store values from the TMaskOption enumeration.</short>
+<seealso>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TMaskBase">
+<short>
+Implements the base class used to define and evaluate a mask expression.
+</short>
+<descr>
+<p>
+TMaskBase provides the framework or API used to examine and handle a mask 
+expression. It provides member fields used to store the compiled op codes for 
+the mask expression as well other state information. Methods are provides to 
+raise exceptions for specific mask error conditions. Properties are also 
+implemented to represent the case sensitivity, escape character, range 
+handling, and op codes enabled for a mask expression.
+</p>
+<p>
+Please note that TMaskBase does not capture, compile or store the mask 
+expression. Those actions are performed in a descendent class.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8"/>
+<link id="TMask"/>
+<link id="TWindowsMaskUTF8"/>
+<link id="TWindowsMask"/>
+</seealso>
+</element>
+
+<element name="TMaskBase.TMaskParsedCode">
+<short>
+Represents op codes found when parsing / compiling a mask expression.
+</short>
+<descr>
+<p>
+Used in the Add and IncrementLastCounterBy methods.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskBase.TMaskParsedCode.Literal">
+<short>Op code for a literal value in a compiled mask expression.</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.Range">
+<short>Op code for a range declared in a compiled mask expression.</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.Negate">
+<short>
+Op code to exclude a range or set declared in a compiled mask expression.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.AnyChar">
+<short>
+Op code to match any single character in a compiled mask expression. The 
+character is required.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.AnyCharOrNone">
+<short>
+Op code to match any single character in a compiled mask expression. The 
+character is optional.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.AnyCharToNext">
+<short>
+Op code to match any number of characters in a compiled mask expression. On 
+failure, the match is restarted at the next position and continues until the 
+mask is completed or all matching values are used.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.OptionalChar">
+<short>
+Op code to match a single optional character value in the compiled mask 
+expression.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.CharsGroupBegin">
+<short>
+Op code for the '[' character which starts an optional range or set in a 
+compiled mask expression.
+</short>
+</element>
+<element name="TMaskBase.TMaskParsedCode.CharsGroupEnd">
+<short>
+Op code for the ']' character which ends an optional range or set in a 
+compiled mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.TMaskFailCause">
+<short>
+Represents success or failure conditions when handling mask characters.
+</short>
+<descr>
+<p>
+TMaskFailCause is the type returned from the IntfMatches method in TMaskUTF8 
+and descendent classes.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskBase.TMaskFailCause.mfcSuccess">
+<short>The mask was examined and a match was found.</short>
+</element>
+<element name="TMaskBase.TMaskFailCause.mfcMatchStringExhausted">
+<short>
+Characters in a compared value were exhausted before a match was found.
+</short>
+</element>
+<element name="TMaskBase.TMaskFailCause.mfcMaskExhausted">
+<short>
+Values in a mask expression were exhausted before a match was found.
+</short>
+</element>
+<element name="TMaskBase.TMaskFailCause.mfcMaskNotMatch">
+<short>The compared value is not a match for a given mask expression.</short>
+</element>
+<element name="TMaskBase.TMaskFailCause.mfcUnexpectedEnd">
+<short>
+Default error condition when an invalid op code is found for a mask 
+expression.
+</short>
+</element>
+
+<element name="TMaskBase.GROW_BY">
+<short>
+Number bytes used to grow the storage for op codes in a compiled mask 
+expression.
+</short>
+</element>
+
+<element name="TMaskBase.Add">
+<short>
+Adds one or more mask op codes found in the compiled mask expression.
+</short>
+<descr>
+<p>
+Add is an overloaded method used to add one or more op codes for compiled 
+mask expression. The overloaded variants allow the op code to be specified as 
+a TMaskParsedCode enumeration value, as a pointer to byte values for the 
+parsed op code(s), or as an Integer.
+</p>
+<p>
+Add is called is from the Compile method (in descendent classes) when UTF-8 
+codepoints in the mask expression are translated into their corresponding op 
+codes.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8.Compile"/>
+<link id="TMaskBase.TMaskParsedCode"/>
+</seealso>
+</element>
+<element name="TMaskBase.Add.ALength">
+<short>Number of bytes needed to represent the op codes in AData.</short>
+</element>
+<element name="TMaskBase.Add.AData">
+<short>Pointer to the bytes representing the op codes.</short>
+</element>
+<element name="TMaskBase.Add.AValue">
+<short>
+Integer value for the TMaskOpCode enumeration value added in the method.
+</short>
+</element>
+
+<element name="TMaskBase.IncrementLastCounterBy">
+<short>
+Moves the internal counter for a specified op code when processing a range 
+expression.
+</short>
+<descr>
+<p>
+Calls Exception_InternalError when the op code at the current position does 
+not match the value in AOpCode. IncrementLastCounterBy is called from the 
+private CompileRange method.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskBase.IncrementLastCounterBy.AOpCode">
+<short>Op code affected in the method.</short>
+</element>
+<element name="TMaskBase.IncrementLastCounterBy.AValue">
+<short>
+Number of characters to advance the pointer offset in the method.
+</short>
+</element>
+
+<element name="TMaskBase.FCaseSensitive">
+<short>
+Member with the case sensitivity settings for a mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.FAutoReverseRange">
+<short>Member with the value for the AutoReverseRange property.</short>
+</element>
+
+<element name="TMaskBase.FMaskIsCompiled">
+<short>
+Member which indicates if the mask expression has been compiled.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskCompiled">
+<short>
+Member which stores the op codes needed to evaluate the mask expression and 
+compare specified values.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskCompiledIndex">
+<short>
+Member with the current offset an op code for the compiled mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskCompiledAllocated">
+<short>
+Member with the allocated storage for the compiled mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskCompiledLimit">
+<short>
+Member with the ordinal position represented in cMaskCompiledIndex.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskLimit">
+<short>
+Member with the last position in the mask expression where an op code can be 
+applied.
+</short>
+</element>
+
+<element name="TMaskBase.FMatchStringLimit">
+<short>
+Member with the last position in a compared value that can used to match the 
+mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.FMatchMinimumLiteralBytes">
+<short>
+Member with the minimum number of bytes for a literal character (normally 1).
+</short>
+</element>
+
+<element name="TMaskBase.FMatchMaximumLiteralBytes">
+<short>
+Member with the maximum number of bytes for a literal character (normally 4 
+for UTF-8 codepoints).
+</short>
+</element>
+
+<element name="TMaskBase.FMaskOpcodesAllowed">
+<short>
+Member with the op code identifiers allowed for the mask expression.
+</short>
+</element>
+
+<element name="TMaskBase.FMaskEscapeChar">
+<short>
+Member with the escape character for the mask expression. An escape character 
+forces the next mask character to be treated as a literal and not a wildcard.
+</short>
+</element>
+
+<element name="TMaskBase.Compile">
+<short>
+Examines and converts mask expression characters into a list of op codes.
+</short>
+<descr>
+<p>
+In TMaskBase, Compile simply sets values for members in the class instance. 
+Descendent classes implement additional functionality needed for a specific 
+platform.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TWindowsMaskUTF8.Compile"/>
+</seealso>
+</element>
+
+<element name="TMaskBase.Exception_InvalidCharMask">
+<short>
+Raises an exception when the specified mask character or offset is invalid.
+</short>
+<descr>
+<p>
+Exception_InvalidCharMask is a class procedure used to raise an exception 
+when a character in the mask expression is invalid. Exception_InvalidCharMask 
+is one of the methods called during execution of the Compile method (in 
+descendent classes) when an invalid Mask expression is detected for the class 
+instance.
+</p>
+<p>
+In TMaskBase, an EMaskError exception is always raised. The base class does 
+not implement the required mask expression, nor does it provide a complete 
+implementation of the Compile method.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.Exception_MissingCloseChar"/>
+<link id="TMaskBase.Exception_IncompleteMask"/>
+<link id="TMaskBase.Exception_InvalidEscapeChar"/>
+<link id="TMaskBase.Exception_InternalError"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TWindowsMaskUTF8.Compile"/>
+</seealso>
+</element>
+<element name="TMaskBase.Exception_InvalidCharMask.aMaskChar">
+<short>Mask character which caused the exception.</short>
+</element>
+<element name="TMaskBase.Exception_InvalidCharMask.aOffset">
+<short>Offset where the invalid mask character was found.</short>
+</element>
+
+<element name="TMaskBase.Exception_MissingCloseChar">
+<short>
+Raises an EMaskError exception when the closing ']' character is omitted from 
+a set or range expression.
+</short>
+<descr>
+<p>
+Exception_MissingCloseChar is a class procedure used to raise an EMaskError 
+exception when the closing ']' character is omitted from a set or range 
+expression. The exception message is determined by the value in the aOffset 
+argument. When aOffset is a positive value (or zero), the value in 
+rsMissingCloseCharMaskAt is used as the exception message. Otherwise, the 
+value in rsMissingCloseCharMask is used.
+</p>
+<p>
+Exception_MissingCloseChar is called from the private CompileRange method in 
+TMaskUTF8 when the range or set expression is not closed.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8.Compile"/>
+</seealso>
+</element>
+<element name="TMaskBase.Exception_MissingCloseChar.aMaskChar">
+<short>Mask character found instead of the expected value.</short>
+</element>
+<element name="TMaskBase.Exception_MissingCloseChar.aOffset">
+<short>Offset in the mask expression where the error was found.</short>
+</element>
+
+<element name="TMaskBase.Exception_IncompleteMask">
+<short>
+Raises an EMaskError exception when escaped characters in a set is enabled, 
+but range processing has not been enabled.
+</short>
+<descr>
+<p>
+The exception is raised with the message in the rsIncompleteMask resource 
+string.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMaskBase.Exception_InvalidEscapeChar">
+<short>
+Raises an EMaskError exception when an invalid value is assigned to the 
+EscapeChar property.
+</short>
+<descr>
+<p>
+Exception_InvalidEscapeChar is a class procedure used to raise an EMaskError 
+exception when an invalid value is assigned to the EscapeChar property. This 
+occurs when the new property value is not in the range #0..#127. The 
+exception is raised with the message in the rsInvalidEscapeChar resource 
+string.
+</p>
+</descr>
+<seealso>
+<link id="TMaskbase.EscapeChar"/>
+</seealso>
+</element>
+
+<element name="TMaskBase.Exception_InternalError">
+<short>
+Raises an EMaskError exception when a parsed op code does not match an 
+expected value in the mask expression.
+</short>
+<descr>
+<p>
+The method is called from the IncrementLastCounterBy method when a range 
+expression is handled in Compile.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.Compile"/>
+</seealso>
+</element>
+
+<element name="TMaskBase.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overloaded constructor for the class instance. One variant 
+allows case sensitivity for mask expressions and the allowed op codes to be 
+specified as arguments. The other variant accepts an argument with the set of 
+mask options for the class instance.
+</p>
+<p>
+Create the sets the initial values for the CaseSensitive, AutoReverseRange, 
+and EscapeChar properties.
+</p>
+<remark>
+TMaskBase does not provide a way to specify or store the mask expression for 
+the class instance. Use one of the descendent classes which provide UTF-8 
+support and implement specific file system behavior for the mask expression.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskBase.Create.aCaseSensitive">
+<short><b>True</b> if the mask expression is case sensitive.</short>
+</element>
+<element name="TMaskBase.Create.aOpcodesAllowed">
+<short>Op codes allowed for the compiled mask expression.</short>
+</element>
+<element name="TMaskBase.Create.aOptions">
+<short>Set with the TMaskOption values enabled in the class instance.</short>
+</element>
+
+<element name="TMaskBase.CaseSensitive">
+<short>Indicates if the mask expression is case sensitive.</short>
+<descr>
+<p>
+CaseSensitive is a Boolean property which indicates if character in a mask 
+expression are handle with case sensitivity. Its value is determined by an 
+explicit argument passed to the Create method, or the presence of 
+moCaseSensitive in the TMaskOptions passed to the constructor.
+</p>
+<p>
+Changing the value for the property causes Compile to be called when the 
+Matches method in descendent classes is executed. When set to <b>False</b>, 
+both the mask expression and the compared values are converted to lowercase 
+for the comparison performed in Matches.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.Create"/>
+<link id="TMaskUTF8.Matches"/>
+<link id="TWindowsMaskUTF8.Matches"/>
+<link id="TMaskOption"/>
+<link id="TMaskOptions"/>
+</seealso>
+</element>
+
+<element name="TMaskBase.AutoReverseRange">
+<short>
+Indicates if a range expression is automatically reversed when the starting 
+value is larger than the ending value.
+</short>
+<descr>
+<p>
+Setting AutoReverseRange to <b>True</b> would cause a range expression like 
+'[e-a]' to be treated as if it were specified as '[a-e]'. The default value 
+for the property is <b>True</b>, as assigned in the Create constructor.
+</p>
+<p>
+Changing the value for the property causes Compile to be called during 
+execution of the Matches method. The property value is used in the 
+implementation of the private CompileRange method in descendent classes.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMaskBase.EscapeChar">
+<short>
+Contains the character used to escape the following character in a mask 
+expression.
+</short>
+<descr>
+<p>
+EscapeChar causes the character that immediately follows the value to be 
+treated as a literal character instead of a wildcard. It is used to allow 
+wildcard characters (like '?' or '*') or set / range characters (like '[', 
+'-', or ']') to be used as literals in the Mask expression. The default value 
+for the property is '\' (Backslash) as assigned in the Create constructor.
+</p>
+<p>
+EscapeChar must be one of the 7-bit ASCII characters in the range #0..#127. 
+Setting the property to a value larger than #127 (ASCII Delete) causes an 
+EMaskError exception to be raised with the message in the rsInvalidEscapeChar 
+resource string.
+</p>
+<p>
+Changing the value for the property causes Compile to be called during 
+execution of the Matches method.
+</p>
+<p>
+Descendent classes (which include the Mask expression) use the value in their 
+Compile and CompileRange methods. Make sure the class instance has the value 
+mocRange in the MaskOpCodes property to enable range notation in the Mask 
+expression.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="TMaskOpCode"/>
+<link id="TMaskOpCodes"/>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TWindowsMaskUTF8.Compile"/>
+<link id="#lazutils.lazutilsstrconsts.rsInvalidEscapeChar">rsInvalidEscapeChar</link>
+</seealso>
+</element>
+
+<element name="TMaskBase.MaskOpCodes">
+<short>
+Contains the set of mask op codes enabled for the class instance.
+</short>
+<descr>
+<p>
+MaskOpCodes is a TMaskOpCodes property with the set of op codes enabled for 
+the Mask expression in the class instance. MaskOpCodes is populated with 
+enumeration values from TMaskOpCode when characters in the mask expression 
+are examined in the Compile method. The allowed values in the set can be 
+specified as an argument to the Create constructor.
+</p>
+<p>
+Values in MaskOpCodes are used when the Matches method is called to compare a 
+string value to the Mask expression.
+</p>
+<p>
+Setting a new value for the property causes Compile to be called during 
+execution of the Matches method in descendent classes.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase.Create"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TWindowsMaskUTF8.Compile"/>
+<link id="TMaskUTF8.Matches"/>
+<link id="TWindowsMaskUTF8.Matches"/>
+<link id="TMaskOpCodes"/>
+<link id="TMaskOpCode"/>
+</seealso>
+</element>
+
+<element name="TMaskUTF8">
+<short>
+Implements a class used to define, evaluate, and compare a mask expression 
+using UNIX file system mask conventions.
+</short>
+<descr>
+<p>
+TMaskUTF8 is a TMaskBase descendant which implements a class used for mask 
+expressions using UNIX file system conventions. It extends the ancestor class 
+with support for a UTF-8-encoded Mask expression. The mask expression uses 
+wildcards and other notation specific to UNIX-like file systems, including:
+</p>
+<dl>
+<dt>'?'</dt>
+<dd>
+Represents any single required character in a file or directory name. For 
+instance, 'c?t' matches 'cat' and 'cut', but not 'coat' or 'cult'. An 
+expression like 'cl??' would matches values like 'clap' and 'clot', but not 
+'clean' or 'clt'.
+</dd>
+<dt>'*'</dt>
+<dd>
+Matches all entries in a directory. This includes entries with or without a 
+file extension, and does not differentiate between files and directories. 
+This is commonly referred to as the "all files" mask.
+</dd>
+<dt>'*.*'</dt>
+<dd>
+Matches all entries which have any given file extension. The file extension 
+is required though. Please note that this notation is different than the one 
+implemented for the Windows file system.
+</dd>
+<dt>'*.ext'</dt>
+<dd>
+Matches all entries which have a '.ext' file extension.
+</dd>
+<dt>'file* </dt>
+<dd>
+Matches all entries that start with 'file' and may contain any number of 
+additional optional characters or a file extension. Matches 'file', 
+'filename' and 'filename.ext'.
+</dd>
+<dt>'[]' (square brackets)</dt>
+<dd>
+Represents a choice of characters that may represent a match on the file 
+system. They are used in both set and range expressions. A set is expressed 
+using notation like 'c[au]t'. This would match entries like 'cat' or 'cut', 
+but not 'cot'. A range uses notation like 'g[a-f]z'. This would match values 
+like 'gaz', 'gbz', and 'gcz'. It would not match 'ggz', 'gxz', or 'gz'.
+</dd>
+<dt>'[!]'</dt>
+<dd>
+Used to negate a set or range expression. It matches any character value 
+which is <b>NOT</b> in the set or range.
+</dd>
+<dt>'\' (Backslash) </dt>
+<dd>
+The default escape character which forces the following character to be 
+interpreted as a literal and not a wildcard. The escape character is 
+configurable in the class instance using the EscapeChar property.
+</dd>
+</dl>
+<p>
+TMaskUTF8 provides an overridden Compile method which examines and converts 
+the Mask expression into a list of op codes needed in Matches and 
+MatchesWindowsMask.
+</p>
+</descr>
+<seealso>
+<link id="TMaskBase"/>
+<link id="TMask"/>
+<link id="TWindowsMaskUTF8"/>
+<link id="TWindowsMask"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TMaskUTF8.FOriginalMask">
+<short>Member used for the mask expression passed to the constructor.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMaskUTF8.IsSpecialChar">
+<short>
+Indicates if the specified character is a wildcard character, or used to 
+represent set  / range notation.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TMaskUTF8.IsSpecialChar.Result">
+<short>Always returns <b>False</b> in TMaskUTF8.</short>
+</element>
+<element name="TMaskUTF8.IsSpecialChar.AChar">
+<short>Character value examined in the method.</short>
+</element>
+
+<element name="TMaskUTF8.CompileOtherSpecialChars">
+<short>Has an empty implementation in TMaskUTF8.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMaskUTF8.CompareUTF8Sequences">
+<short>
+Indicates the difference between UTF-8 codepoints in the specified values.
+</short>
+<descr>
+<p>
+CompareUTF8Sequences is an Integer class function used to compare the UTF-8 
+codepoints in the values specified by P1 and P2. The return value is the 
+numeric difference between the byte values in the differing UTF-8 codepoints. 
+The return value is 0 (zero) when P1 and P2 have the same UTF-8-encoded 
+content.
+</p>
+<p>
+CompareUTF8Sequences is used in the implementation of the CompileRange and 
+IntfMatches methods.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskUTF8.CompareUTF8Sequences.Result">
+<short>
+numeric difference between differing codepoints, or zero when the same.
+</short>
+</element>
+<element name="TMaskUTF8.CompareUTF8Sequences.P1">
+<short>PChar type with UTF-8 codepoints compared in the method.</short>
+</element>
+<element name="TMaskUTF8.CompareUTF8Sequences.P2">
+<short>PChar type with UTF-8 codepoints compared in the method.</short>
+</element>
+
+<element name="TMaskUTF8.IntfMatches">
+<short>Implements the Matches method for the supported platform.</short>
+<descr>
+<p>
+IntfMatches is a TMaskFailCause function which implements the Matches method 
+in the class instance.
+</p>
+<p>
+IntfMatches uses the compiled op codes for the Mask expression to determine 
+whether a value in the compared string are suitable for op codes. The return 
+value indicates the success or reason for failure in the method.
+</p>
+<p>
+IntfMatches is called from the Matches method.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskUTF8.IntfMatches.Result">
+<short>Success or failure reason for the comparison.</short>
+</element>
+<element name="TMaskUTF8.IntfMatches.aMatchOffset">
+<short>Offset into the match string compared in the method.</short>
+</element>
+<element name="TMaskUTF8.IntfMatches.aMaskIndex">
+<short>Ordinal position for the op code used in the method.</short>
+</element>
+
+<element name="TMaskUTF8.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overloaded constructor for the class instance. It includes an 
+AMask argument which contains the expression stored in the Mask property. 
+Variants of the method also allow the value in CaseSensitive to be set. Set 
+arguments can be provided which contain the TMaskOpCode values or the 
+TMaskOption values used in the class instance.
+</p>
+<remark>
+The variant which includes a TMaskOptions parameter has been deprecated in 
+version 2.3, and will be removed in version 2.5. Use the variant which 
+includes a TMaskOpCodes parameter.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="TMaskUTF8.Create.aMask">
+<short>Mask expression for the class instance.</short>
+</element>
+<element name="TMaskUTF8.Create.aCaseSensitive">
+<short><b>True</b> if comparisons are performed with case sensitivity.</short>
+</element>
+<element name="TMaskUTF8.Create.aOpcodesAllowed">
+<short>Set of op codes allowed for the compiled mask expression.</short>
+</element>
+<element name="TMaskUTF8.Create.aOptions">
+<short>Set of TMaskOption values enabled for the class instance.</short>
+</element>
+
+<element name="TMaskUTF8.Compile">
+<short>Examines the mask expression and creates a list of op codes.</short>
+<descr>
+<p>
+Compile is an overridden method used to examine and convert values from the 
+Mask property into TMaskParsedCode values for the positions in the mask 
+expression.
+</p>
+<p>
+CaseSensitive indicates if case is significant for the value in Mask. Mask is 
+converted to lowercase prior to processing in the method when CaseSensitive 
+is set to <b>False</b>.
+</p>
+<p>
+Compile examines each of the UTF-8 codepoints in Mask, and adds values to an 
+internal list representing the character ranges, literal values, or other 
+TMaskParsedCode values needed to evaluate the Mask expression. Compile may 
+raise an exception when an invalid or incomplete mask is encountered. If the 
+Compile method is called again using the same value in Mask, it simply 
+returns <b>False</b> rather than re-raise the exception.
+</p>
+<p>
+Compile is called from the Matches method when the Mask expression has not 
+already been compiled.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8.Matches"/>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskBase.Compile"/>
+<link id="TMaskBase.CaseSensitive"/>
+<link id="TMaskBase.AutoReverseRange"/>
+<link id="TMaskBase.EscapeChar"/>
+</seealso>
+</element>
+
+<element name="TMaskUTF8.Matches">
+<short>
+Indicates whether the specified value is a match for the Mask expression.
+</short>
+<descr>
+<p>
+Matches calls Compile if the MaskOpCodes have not been compiled for the Mask 
+expression, or when one the configuration parameters has been changed for the 
+class instance. When CaseSensitive is set to <b>False</b>, the value in 
+aStringToMatch is converted to a lowercase UTF-8 codepoint for the comparison.
+</p>
+<p>
+Matches calls the IntfMatches method to implement the comparison between the 
+specified value using the MaskOpCodes for the class instance. The return 
+value is <b>True</b> if the call to IntfMatches is successful. It is 
+<b>False</b> if either the Mask expression or the compared value is too long 
+or too short.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8.IntfMatches"/>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TMaskBase.MaskOpCodes"/>
+<link id="TMaskBase.CaseSensitive"/>
+</seealso>
+</element>
+<element name="TMaskUTF8.Matches.Result">
+<short>
+<b>True</b> when the specified value matches the Mask expression.
+</short>
+</element>
+<element name="TMaskUTF8.Matches.aStringToMatch">
+<short>Value to compare to the Mask expression.</short>
+</element>
+
+<element name="TMaskUTF8.MatchesWindowsMask">
+<short>
+Indicates whether the specified value is a match for the Windows-specific 
+Mask expression.
+</short>
+<descr>
+<remark>
+Deprecated in Lazarus version 2.3, and will be removed in 2.5. Create a 
+TWindowsMask instance and call its Matches method instead.
+</remark>
+</descr>
+<seealso>
+<link id="TWindowsMaskUTF8.Matches"/>
+<link id="TWindowsMask"/>
+<link id="MatchesWindowsMask"/>
+<link id="MatchesWindowsMaskList"/>
+</seealso>
+</element>
+<element name="TMaskUTF8.MatchesWindowsMask.Result">
+<short>
+<b>True</b> if the specified file name matches the Windows-specific Mask 
+expression.
+</short>
+</element>
+<element name="TMaskUTF8.MatchesWindowsMask.AFileName">
+<short>Value compared to the Mask expression.</short>
+</element>
+
+<element name="TMaskUTF8.Mask">
+<short>
+Mask expression used to match files or directories in the class instance.
+</short>
+<descr>
+<p>
+<var>Mask</var> is a <var>String</var> property which contains the mask 
+expression used to compare / evaluate a value in the Matches method. The 
+property value is initially set using the arguments passed to the Create 
+constructor. Values in Mask use the UNIX file system conventions for 
+wildcards and related notations.
+</p>
+<p>
+Character values in Mask are translated into op codes in the Compile method. 
+These op codes are used in the Matches method to evaluate and compare a given 
+value to the compiled mask expression.
+</p>
+<p>
+Changing the value for the property causes Compile to be called when the 
+Matches method is executed.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMask">
+<short>
+The TMask class represents a mask expression and performs comparisons.
+</short>
+<descr>
+<p>
+TMask is an alias for the TMaskUTF8 class. Provided for compatibility with 
+previous LazUtils versions.
+</p>
+<p>
+Use TWindowsMaskUTF8 or TWindowsMask for mask expressions using 
+DOS/Windows-specific notation and file system conventions.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8"/>
+<link id="TWindowsMaskUTF8"/>
+<link id="TWindowsMask"/>
+<link id="TMaskBase"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TWindowsMaskUTF8">
+<short>
+Implements a class used to define and evaluate a mask expression using 
+Windows file system mask conventions.
+</short>
+<descr>
+<p>
+TWindowsMaskUTF8 is a TMask descendant which implements a class used for mask 
+expressions using Windows file system conventions. It extends the ancestor 
+class with support for a UTF-8-encoded Mask expression. The mask expression 
+uses wildcards and other notation specific to Windows/DOS file systems, 
+including:
+</p>
+<dl>
+<dt>'?'</dt>
+<dd>
+Represents any single required character in a file or directory name. For 
+instance, 'c?t' matches 'cat' and 'cut', but not 'coat' or 'cult'. An 
+expression like 'cl??' would matches values like 'clap' and 'clot', but not 
+'clean' or 'clt'.
+</dd>
+<dt>'*'</dt>
+<dd>
+Matches any entries found in a directory. This includes files that have a 
+file extension. Behaves the same as '*.*'.
+</dd>
+<dt>'*.*'</dt>
+<dd>
+Matches all entries in a directory. The file extension is optional. Please 
+note that this notation is different than the behavior in TMaskUTF8 / TMask.
+</dd>
+<dt>'*.ext'</dt>
+<dd>
+Matches all entries which have a '.ext' file extension.
+</dd>
+<dt>'file* </dt>
+<dd>
+Matches all entries that start with 'file' and may contain any number of 
+additional optional characters or an optional file extension. Matches 'file', 
+'filename' and 'filename.ext'.
+</dd>
+<dt>'[]' (square brackets)</dt>
+<dd>
+Represents a choice of characters that may represent a match on the file 
+system. They are used in both set and range expressions. A set is expressed 
+using notation like 'c[au]t'. This would match entries like 'cat' or 'cut', 
+but not 'cot'. A range uses notation like 'g[a-f]z'. This would match values 
+like 'gaz', 'gbz', and 'gcz'. It would not match 'ggz', 'gxz', or 'gz'.
+</dd>
+<dt>'[!]'</dt>
+<dd>
+Used to negate a set or range expression. It matches any character value 
+which is <b>NOT</b> in the set or range.
+</dd>
+<dt>'\' (Backslash) </dt>
+<dd>
+The default escape character which forces the following character to be 
+interpreted as a literal and not a wildcard. The escape character is 
+configurable in the class instance using the EscapeChar property.
+</dd>
+</dl>
+<p>
+TWindowsMaskUTF8 provides an overridden Compile method which examines and 
+converts the Mask expression into a list of op codes needed in Matches and 
+MatchesWindowsMask. TWindowsMaskUTF8 re-implements the read and write access 
+specifiers for the Mask property to use the FWindowsMask member for the 
+property value.
+</p>
+</descr>
+<seealso>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskBase"/>
+<link id="TMask"/>
+<link id="TWindowsMask"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TWindowsMaskUTF8.FWindowsQuirkAllowed">
+<short>Member with the set of quirks enabled in the class instance,</short>
+</element>
+
+<element name="TWindowsMaskUTF8.FWindowsQuirkInUse">
+<short>
+Member with the set of quirks in use in the compiled mask expression.
+</short>
+</element>
+
+<element name="TWindowsMaskUTF8.FWindowsMask">
+<short>
+Member with the Windows-specific mask expression for the class instance.
+</short>
+</element>
+
+<element name="TWindowsMaskUTF8.CompileOtherSpecialChars">
+<short>
+Generates MaskOpCodes for optional characters or groups in a Windows-specific 
+mask expression.
+</short>
+<descr/>
+<seealso>
+<link id="TMaskBase.MaskOpCodes"/>
+</seealso>
+</element>
+
+<element name="TWindowsMaskUTF8.IsSpecialChar">
+<short>
+Returns <b>True</b> if the specified character contains a Null character (#0) 
+(ASCII NUL).
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowsMaskUTF8.IsSpecialChar.Result">
+<short>
+<b>True</b> if the specified character contains a Null character (#0) (ASCII 
+NUL).
+</short>
+</element>
+<element name="TWindowsMaskUTF8.IsSpecialChar.AChar">
+<short>Character value examined in the method.</short>
+</element>
+
+<element name="TWindowsMaskUTF8.SplitFileNameExtension">
+<short>
+Separates the specified value into file name and extension values.
+</short>
+<descr>
+<p>
+SplitFileNameExtension is a method used to separate the value in 
+ASourceFileName into file name and file extension values.
+</p>
+<p>
+The values are returned in the AFileName and AExtension arguments. AExtension 
+can contain an empty string ('') if a file extension is not found in 
+ASourceFileName.
+</p>
+<p>
+AIsMask indicates whether the value in ASourceFileName is treated as a mask 
+specification instead of a file name. When set to <b>True</b>, a value like 
+'.foo' is treated as a mask where the file name is '.foo' instead of a file 
+extension, like a hidden file name on UNIX-like file systems.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TWindowsMaskUTF8.SplitFileNameExtension.aSourceFileName">
+<short>Value examined and separated into its component values.</short>
+</element>
+<element name="TWindowsMaskUTF8.SplitFileNameExtension.aFileName">
+<short>File name portion of the specified source file name.</short>
+</element>
+<element name="TWindowsMaskUTF8.SplitFileNameExtension.aExtension">
+<short>File extension portion of the specified source file name.</short>
+</element>
+<element name="TWindowsMaskUTF8.SplitFileNameExtension.aIsMask">
+<short>
+<b>True</b> if the source file name is treated as a mask specification for a 
+file name and not a file extension; such as '.foo'.
+</short>
+</element>
+
+<element name="TWindowsMaskUTF8.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overloaded, overridden constructor for the class instance. 
+Create ensures that argument values are stored in the Mask, CaseSensitive, 
+MaskOpCodes and Quirks properties. The inherited Create method is called 
+prior to exit.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TWindowsMaskUTF8.Create.aMask">
+<short>Mask expression for the class instance.</short>
+</element>
+<element name="TWindowsMaskUTF8.Create.aCaseSensitive">
+<short><b>True</b> if masks are compared with case sensitivity.</short>
+</element>
+<element name="TWindowsMaskUTF8.Create.aOpcodesAllowed">
+<short>Set of TMaskOpCode values allowed in the class instance.</short>
+</element>
+<element name="TWindowsMaskUTF8.Create.aWindowsQuirksAllowed">
+<short>Set of TWindowsQuirk values allowed in the class instance.</short>
+</element>
+
+<element name="TWindowsMaskUTF8.Compile">
+<short>
+Examines and converts the mask expression into a list of op codes.
+</short>
+<descr>
+<p>
+Compile is an overridden method used to examine and convert values from the 
+Mask property into TMaskParsedCode values for the positions in the mask 
+expression. It provides support for Windows-specific quirks that enabled in 
+the class instance using the Quirks property.
+</p>
+<p>
+CaseSensitive indicates if case is significant for the value in Mask. Mask is 
+converted to lowercase prior to processing in the method when CaseSensitive 
+is set to <b>False</b>.
+</p>
+<p>
+Compile examines each of the UTF-8 codepoints in Mask, and adds 
+TMaskParsedCode values when the specific mask op codes are included in the 
+MaskOpCodes property. The value in Mask is decomposed into file name and 
+extension component values that are used in the method. These temporary 
+values may be altered when particular quirks are enabled and encountered in 
+the Mask expression. The modified values are applied to the Mask property 
+prior to calling the inherited Compile method.
+</p>
+<p>
+Compile may raise an exception when an invalid or incomplete mask is 
+encountered. The the Compile method is called again with the same value in 
+Mask, is simply returns <b>False</b> rather than re-raise the exception.
+</p>
+<p>
+Compile is called from the Matches method when it has not already been 
+compiled.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsMaskUTF8.Quirks"/>
+<link id="TWindowsQuirks"/>
+<link id="TWindowsQuirk"/>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TMaskBase.CaseSensitive"/>
+<link id="TMaskBase.AutoReverseRange"/>
+<link id="TMaskBase.EscapeChar"/>
+<link id="TMaskBase.MaskOpCodes"/>
+</seealso>
+</element>
+
+<element name="TWindowsMaskUTF8.Matches">
+<short>
+Indicates whether the specified value is a match for the Mask expression.
+</short>
+<descr>
+<p>
+<var>Matches</var> calls <var>Compile</var> if the <var>MaskOpCodes</var> 
+have not been compiled for the <var>Mask</var> expression, or when one the 
+configuration parameters has been changed for the class instance.
+</p>
+<p>
+Matches provides support for values in the Quirks property such as 
+wqNoExtension. When specified and found in the mask expression, 
+SplitFileNameExtension is called to get the file name and extension 
+components for the value in AFileName.
+</p>
+<p>
+Matches calls the inherited method to compare the specified values using the 
+MaskOpCodes for the class instance. The return value is <b>True</b> if the 
+file name argument matches the Mask expression. It is <b>False</b> if either 
+the Mask expression or the compared value is too long or too short.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsMaskUTF8.Quirks"/>
+<link id="TWindowsMaskUTF8.SplitFileNameExtension"/>
+<link id="TMaskUTF8.Matches"/>
+<link id="TMaskUTF8.Mask"/>
+<link id="TMaskBase.MaskOpCodes"/>
+</seealso>
+</element>
+<element name="TWindowsMaskUTF8.Matches.Result">
+<short>
+<b>True</b> when the specified value matches the Mask expression.
+</short>
+</element>
+<element name="TWindowsMaskUTF8.Matches.aFileName">
+<short>Value examined and compared to the Mask expression.</short>
+</element>
+
+<element name="TWindowsMaskUTF8.Quirks">
+<short>
+Contains the TWindowsQuirk enumeration values for file system quirks enabled 
+in the class instance.
+</short>
+<descr>
+<p>
+Quirks is a TWindowsQuirks property with the set of Windows-specific "quirks" 
+allowed when comparing a value to the Mask expression. It contains values 
+from the TWindowsQuirk enumeration which are enabled for the class instance.
+</p>
+<p>
+The default value for Quirks is assigned using an argument passed to the 
+Create constructor. If the value is omitted, values in the 
+DefaultWindowsQuirks constant are assigned to the property.
+</p>
+<p>
+Values in Quirks are used when the Compile method generates the MaskOpCodes 
+for the Mask expression. Changing the property value causes the Compile 
+method to be called during the next execution of the Matches method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TWindowsMask">
+<short>
+Implements the class type used to evaluate and compare Windows-specific mask 
+expressions.
+</short>
+<descr>
+<p>
+TWindowsMask is a TWindowsMaskUTF8 descendant, and introduces no new 
+properties, methods, or events. It is essentially an alias for the 
+TWindowsMaskUTF8 type.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsMaskUTF8"/>
+<link id="TMaskUTF8"/>
+</seealso>
+</element>
+
+<element name="TMaskClass">
+<short>Class type used to create new instances of the TMaskUtf8 type.</short>
+<descr>
+<p>
+TMaskClass is the type returned from the GetMaskClass method in TMaskList.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.GetMaskClass"/>
+</seealso>
+</element>
+
+<element name="TParseStringList">
+<short>
+Parses text into a list of strings using a specified line separator.
+</short>
+<descr>
+<p>
+<var>TParseStringList</var> is a <var>TStringList</var> descendant used to 
+parse text which uses the specified line separators. An alternate constructor 
+is introduced with parameters for the lines of text and the separators used 
+in the class instance.
+</p>
+<p>
+TParseStringList is used to get a list of file masks from a string value in 
+the <var>TMaskList.Create</var> method.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
+</element>
+
+<element name="TParseStringList.Create">
+<short>
+Creates new string list by parsing the specified text using the separators 
+argument.
+</short>
+<descr>
+<p>
+<var>Create</var> is constructor for the class instance. Values in the 
+<var>AText</var> and <var>ASeparator</var> arguments determine the content 
+stored as lines of text in the instance. AText contains one or more file mask 
+expressions separated by one of the delimiters characters n ASeparators.
+</p>
+<p>
+Each line in the string list represents a single mask value from AText.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TParseStringList.Create.AText">
+<short>Text examine and parsed in the method.</short>
+</element>
+<element name="TParseStringList.Create.ASeparators">
+<short>
+String with the separators used to delimit lines in the text argument.
+</short>
+</element>
+
+<element name="TMaskList">
+<short>Implements a list for mask class instances.</short>
+<descr>
+<p>
+<var>TMaskList</var> is a class used to maintain a list with TMaskUtf8 
+instances for mask expressions. Parameter values passed to the constructor 
+are used when mask instances are created and stored in the list.
+</p>
+<p>
+TMaskList is used in the implementation of the <var>MatchesMaskList</var> 
+function.
+</p>
+</descr>
+<seealso>
+<link id="TMask"/>
+<link id="TWindowsMaskList"/>
+<link id="TWindowsMask"/>
+<link id="MatchesMaskList"/>
+<link id="MatchesWindowsMaskList"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TMaskList.FMasks"/>
+<element name="TMaskList.FMaskClass"/>
+<element name="TMaskList.FMask"/>
+<element name="TMaskList.FSeparator"/>
+<element name="TMaskList.FCaseSensitive"/>
+<element name="TMaskList.FMaskIOpCodes"/>
+
+<element name="TMaskList.GetCount">
+<short>Gets the value for the Count property.</short>
+<descr/>
+<seealso>
+<link id="TMaskList.Count"/>
+</seealso>
+</element>
+<element name="TMaskList.GetCount.Result">
+<short>Value for the Count property.</short>
+</element>
+
+<element name="TMaskList.GetItem">
+<short>Gets the value for the indexed Items property.</short>
+<descr/>
+<seealso>
+<link id="TMaskList.Items"/>
+</seealso>
+</element>
+<element name="TMaskList.GetItem.Result">
+<short>Value for the Items property.</short>
+</element>
+<element name="TMaskList.GetItem.Index">
+<short>Ordinal position for the TMask instance in the property value.</short>
+</element>
+
+<element name="TMaskList.SetMask"/>
+<element name="TMaskList.SetMask.AValue"/>
+<element name="TMaskList.SetMaskOpCodes"/>
+<element name="TMaskList.SetMaskOpCodes.AValue"/>
+
+<element name="TMaskList.GetMaskClass">
+<short>
+Gets the class type used to create new mask instances for the list.
+</short>
+<descr>
+<p>
+Used in the <var>Create</var> constructor to set the value for an internal 
+member in the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+</seealso>
+</element>
+<element name="TMaskList.GetMaskClass.Result">
+<short>Returns the TMaskClass type.</short>
+</element>
+
+<element name="TMaskList.AddMasksToList">
+<short>
+Adds new mask instances to the list for the specified delimited mask 
+expressions and settings.
+</short>
+<descr>
+<p>
+Parses mask expression in <var>AValue</var> using the delimiter in 
+<var>ASeparator</var>. A new <var>TMaskClass</var> instance is created and 
+stored for each of the mask expressions using the settings in 
+<var>CaseSensitive</var> and <var>AOpcodesAllowed</var>.
+</p>
+<p>
+AddMasksToList is called from the Create constructor to populate the list 
+using the mask expression(s) and settings passed as arguments to the method. 
+It is also called when a new value is assigned to the Mask property.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="TMaskList.Mask"/>
+<link id="TMaskList.GetMaskClass"/>
+<link id="TParseStringList"/>
+</seealso>
+</element>
+<element name="TMaskList.AddMasksToList.AValue">
+<short>Delimited mask expressions for the instances added to the list.</short>
+</element>
+<element name="TMaskList.AddMasksToList.aSeparator">
+<short>Delimiter between mask expressions in AValue.</short>
+</element>
+<element name="TMaskList.AddMasksToList.CaseSensitive">
+<short>Indicates whether mask expressions are case sensitive.</short>
+</element>
+<element name="TMaskList.AddMasksToList.aOpcodesAllowed">
+<short>
+Set of Mask op codes allowed for the class instances added to the list.
+</short>
+</element>
+
+<element name="TMaskList.Create">
+<short>
+Creates a new list for mask instances using the specified delimiters and 
+options.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overloaded constructor for the class instance. 
+Create allocates resources for the internal object list in the class 
+instance. Arguments passed to the constructor are used to configure and 
+populate the values in the <var>Items</var> property by calling the 
+<var>AddMasksToList</var> method. Values in the arguments are also assigned 
+to the CaseSensitive and MaskOpCodes properties.
+</p>
+<remark>
+The overloaded variant which does <b>not</b> include an <var>Options</var> 
+parameter has been <b>deprecated</b>. It will be removed in a future Lazarus 
+version.
+</remark>
+</descr>
+<seealso>
+<link id="TMaskList.Items"/>
+<link id="TMaskList.CaseSensitive"/>
+<link id="TMaskList.MaskOpCodes"/>
+<link id="TMaskList.AddMasksToList"/>
+</seealso>
+</element>
+<element name="TMaskList.Create.AValue">
+<short>Mask value(s) stored in the internal object list.</short>
+</element>
+<element name="TMaskList.Create.ASeparator">
+<short>Delimiter used to delimit mask values in AValue.</short>
+</element>
+<element name="TMaskList.Create.CaseSensitive">
+<short>Indicates if case sensitivity is used for masks.</short>
+</element>
+<element name="TMaskList.Create.aOpcodesAllowed">
+<short>Indicates if case sensitivity is used for masks.</short>
+</element>
+<element name="TMaskList.Create.aOptions">
+<short>Contains the options enabled for the mask instances.</short>
+</element>
+
+<element name="TMaskList.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. 
+Destroy ensures that the internal object list for the class instance is 
+freed. Destroy calls the inherited destructor prior to exiting from the 
+method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMaskList.Matches">
+<short>
+Determines whether the specified file name matches a mask in the list.
+</short>
+<descr>
+<p>
+<var>Matches</var> is a <var>Boolean</var> function used to determine if the 
+specified file name matches one of the file masks in the list.
+</p>
+<p>
+<var>AFileName</var> contains the file name examined in the method.
+</p>
+<p>
+Matches uses the <var>TMask</var> instances in <var>Items</var> to perform 
+the file name comparison. Each TMask instance in Items is used to call its 
+<var>Matches</var> method until a match is found, or until all of the masks 
+have been visited.
+</p>
+<p>
+The return value is <b>True</b> when a mask is found that matches the file 
+name.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Items"/>
+<link id="TMaskList.Count"/>
+</seealso>
+</element>
+<element name="TMaskList.Matches.Result">
+<short><b>True</b> when the file name matches one of the mask items.</short>
+</element>
+<element name="TMaskList.Matches.AFileName">
+<short>File name examined in the method.</short>
+</element>
+
+<element name="TMaskList.MatchesWindowsMask">
+<short>
+Tests whether the file name matches a mask in the list using Windows file 
+system masks.
+</short>
+<descr>
+<p>
+Tests whether the file name matches at least one of the mask items in the 
+list. Implements some special rules for a Windows© file system comparison.
+</p>
+</descr>
+<errors/>
+<seealso/>
+</element>
+<element name="TMaskList.MatchesWindowsMask.Result">
+<short><b>True</b> if the file name matches one the masks in the list.</short>
+</element>
+<element name="TMaskList.MatchesWindowsMask.AFileName">
+<short>File name examined in the method.</short>
+</element>
+
+<element name="TMaskList.Count">
+<short>The number of mask items in the list.</short>
+<descr>
+<p>
+<var>Count</var> is a read-only <var>Integer</var> property with the number 
+of <var>TMask</var> instances stored in the <var>Items</var> for the list.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Items"/>
+</seealso>
+</element>
+
+<element name="TMaskList.Items">
+<short>The mask items in the list.</short>
+<descr>
+<p>
+<var>Items</var> is a read-only indexed <var>TMask</var> property which 
+contains the mask instances in the list.
+</p>
+<p>
+<var>Index</var> specifies the ordinal position in the list for the TMask 
+instance in the property. The property value is cast to a TMask instance when 
+it is retrieved from the internal object list.
+</p>
+<p>
+Values in the Items property are created in the Create constructor. A TMask 
+instance is created and stored in Items for each of the mask values passed an 
+argument to the method.
+</p>
+<p>
+Use the Count property to determine the number of masks stored in Items.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="TMask"/>
+</seealso>
+</element>
+<element name="TMaskList.Items.Index">
+<short>Ordinal position for the value in the indexed property.</short>
+</element>
+
+<element name="TMaskList.Mask">
+<short>
+String with the delimited list of mask expressions for the class instances in 
+the list.
+</short>
+<descr>
+<p>
+<var>Mask</var> can contain one or more mask expressions separated by the 
+separator character passed as an argument to the Create constructor. The 
+default separator character is ';' (Semicolon).
+</p>
+<p>
+Setting a new value for the Mask property causes the internal list of TMask 
+instances to be cleared and recreated using the values in the CaseSensitive 
+and MaskOpCodes properties.
+</p>
+<remark>
+The separator character cannot be changed in the current implementation. It 
+is set using an argument passed to the constructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMaskList.MaskOpCodes">
+<short>
+Contains the op codes allowed for the mask instances in the list.
+</short>
+<descr>
+<p>
+<var>MaskOpCodes</var> is a <var>TMaskOpCodes</var> property with the set of 
+mask op codes enabled in the class instance. It contains values from the 
+<var>TMaskOpCode</var> enumeration, and is initially set from arguments 
+passed to the Create constructor. Setting a new value for the property causes 
+each of the TMask instances in Items to be updated with the new value for the 
+property.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="TMaskList.Mask"/>
+<link id="TMaskList.Items"/>
+<link id="TMaskOpCodes"/>
+<link id="TMaskOpCode"/>
+</seealso>
+</element>
+
+<element name="TMaskList.AutoReverseRange">
+<short>
+Indicates if a range expression is automatically reversed when the starting 
+value is larger than the ending value.
+</short>
+<descr>
+<p>
+Setting AutoReverseRange to <b>True</b> would cause a range expression like 
+'[e-a]' to be treated as if it were specified as '[a-e]'. The default value 
+for the property is <b>True</b>, as assigned in the Create constructor.
+</p>
+<p>
+Changing the value for the property causes the corresponding property in each 
+of the Items in the list to be updated. This causes Compile in the TMask 
+instance to be called when it executes its Matches method.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="TMaskList.Items"/>
+<link id="TMaskBase.AutoReverseRange"/>
+<link id="TMaskUTF8.Compile"/>
+<link id="TMaskUTF8.Matches"/>
+<link id="TWindowsMaskUTF8.Compile"/>
+<link id="TWindowsMaskUTF8.Matches"/>
+</seealso>
+</element>
+
+<element name="TMaskList.CaseSensitive">
+<short>
+Indicates whether the Mask expressions in the list are case sensitive.
+</short>
+<descr>
+<p>
+CaseSensitive is a Boolean property which indicates whether Mask expressions 
+in the list are case sensitive. The default value for the property is set 
+using an argument passed to the overloaded constructor. It can be specified 
+using the CaseSensitive argument, or by including / excluding moCaseSensitive 
+in the TMaskOptions argument.
+</p>
+<p>
+Changing the value for the property causes the corresponding property to be 
+updated for each of the Items in the list.
+</p>
+<p>
+The property value is used when a new value is assigned to the Mask property. 
+It is passed as an argument to the AddMasksToList method called to 
+re-populate the Items in the list.
+</p>
+</descr>
+<seealso>
+<link id="TMaskList.Create"/>
+<link id="TMaskList.Items"/>
+<link id="TMaskList.AddMasksToList"/>
+<link id="TMaskBase.CaseSensitive"/>
+</seealso>
+</element>
+
+<element name="TWindowsMaskList">
+<short>
+Implements a list for mask class instances which support Windows-specific 
+file masks.
+</short>
+<descr>
+<p>
+<var>TWindowsMaskList</var> is a TMaskList descendant which implements a list 
+used to maintain a list with TWindowsMask instances for mask expressions. 
+Parameter values passed to the constructor are used when mask instances are 
+created and stored in the list.
+</p>
+<p>
+TWindowsMaskList is used in the implementation of the 
+<var>MatchesWindowsMaskList</var> function.
+</p>
+</descr>
+<seealso>
+<link id="TWindowsMask"/>
+<link id="MatchesWindowsMaskList"/>
+<link id="MatchesMaskList"/>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+
+<element name="TWindowsMaskList.fWindowsQuirks"/>
+<element name="TWindowsMaskList.SetQuirks"/>
+<element name="TWindowsMaskList.SetQuirks.AValue"/>
+
+<element name="TWindowsMaskList.GetMaskClass">
+<short>
+Gets the class type used to create new mask instances for the list.
+</short>
+<descr/>
+<seealso>
+<link id="TWindowsMask"/>
+<link id="TWindowsMaskUTF8"/>
+</seealso>
+</element>
+<element name="TWindowsMaskList.GetMaskClass.Result">
+<short>Returns the TWindowsMask type.</short>
+</element>
+
+<element name="TWindowsMaskList.AddMasksToList">
+<short>
+Adds masks to the list using the delimited mask expressions and configuration 
+settings.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowsMaskList.AddMasksToList.AValue">
+<short>Delimited mask expressions for the instances added to the list.</short>
+</element>
+<element name="TWindowsMaskList.AddMasksToList.ASeparator">
+<short>Delimiter between mask expressions in AValue.</short>
+</element>
+<element name="TWindowsMaskList.AddMasksToList.CaseSensitive">
+<short>Indicates whether mask expressions are case sensitive.</short>
+</element>
+<element name="TWindowsMaskList.AddMasksToList.AOpcodesAllowed">
+<short>
+Set of Mask op codes allowed for the class instances added to the list.
+</short>
+</element>
+
+<element name="TWindowsMaskList.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overloaded constructor for the class instance. Create ensures 
+that arguments passed to the constructor are stored in internal members for 
+use in the class instance. An alternate constructor allows configuration 
+settings to be derived from a set of TMaskOption values.
+</p>
+<remark>
+The variant with a TMaskOptions parameter has been deprecated in version 2.3, 
+and will be removed in version 2.5.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="TWindowsMaskList.Create.AValue">
+<short>Mask expression for the class instance.</short>
+</element>
+<element name="TWindowsMaskList.Create.ASeparator">
+<short>Delimiter used between mask expressions in AValue.</short>
+</element>
+<element name="TWindowsMaskList.Create.CaseSensitive">
+<short><b>True</b> if the mask expression(s) are case sensitive.</short>
+</element>
+<element name="TWindowsMaskList.Create.AOpcodesAllowed">
+<short>Set of TMaskOpCode values enabled for the class instance.</short>
+</element>
+<element name="TWindowsMaskList.Create.AWindowsQuirksAllowed">
+<short>Set of TWindowsQuirk values allowed for the class instance.</short>
+</element>
+<element name="TWindowsMaskList.Create.AOptions">
+<short>Set of TMaskOption values enabled for the class instance.</short>
+</element>
+
+<element name="TWindowsMaskList.MatchesWindowsMask">
+<short>Same as calling the Matches method.</short>
+<descr>
+<p>
+MatchesWindowsMask is deprecated in version 2.3, and will be removed in 
+version 2.5. Use the Matches method instead.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TWindowsMaskList.MatchesWindowsMask.Result">
+<short>
+<b>True</b> if the specified file name matches one of the mask in the list.
+</short>
+</element>
+<element name="TWindowsMaskList.MatchesWindowsMask.AFileName">
+<short>File name compared to the mask instances in the list.</short>
+</element>
+
+<element name="TWindowsMaskList.Quirks">
+<short>
+Contains the TWindowsQuirk values enabled for the class instance.
+</short>
+<descr>
+<p>
+The initial value for the property is set using an argument passed to the 
+Create constructor.
+</p>
+<p>
+Changing the value for the property causes the internal TObjectList instance 
+for the masks to be cleared. The AddMasksToList method is called to 
+re-populate the internal list. The delimiter character, case sensitivity, and 
+op codes provided to the constructor are used when re-creating the 
+TWindowsMask instances in the Items property.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="MatchesMask">
+<short>Indicates whether the file name matches the specified mask.</short>
+<descr>
+<p>
+<var>MatchesMask</var> is an overloaded <var>Boolean</var> function used to 
+determine if the file name specified in <var>FileName</var> matches the 
+specified <var>Mask</var>.
+</p>
+<p>
+<var>CaseSensitive</var> indicates whether case sensitivity is used when 
+comparing the file name to the mask value.
+</p>
+<p>
+<var>Options</var> contains a set of zero or more TMaskOption values enabled 
+for the comparison. The Options argument allows enabling or disabling set 
+notation in the mask value. Specifying <var>moDisableSets</var> in the 
+Options parameter will disable interpreting the ' <b>[</b>' character as the 
+beginning of a set in the specified mask. Use an empty set (' <b>[]</b>') 
+when options from the <var>TMaskOption</var> enumeration are not needed.
+</p>
+<p>
+For example:
+</p>
+<code>MatchesMask('[x]','[x]',[moDisableSets]);  // returns True</code>
+<p>
+MatchesMask creates a <var>TMask</var> instance which is used to compare the 
+file name to the mask using the specified options. Values in Mask and Options 
+are passed as arguments the TMask constructor. The <var>Matches</var> method 
+in the instance is called using FileName as an argument, and gets the return 
+value for the function.
+</p>
+<remark>
+The overloaded variant which includes a TMaskOptions parameter has been 
+marked as deprecated in version 2.3. It will be removed in version 2.5.
+</remark>
+</descr>
+<seealso>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+<element name="MatchesMask.Result">
+<short>
+<b>True</b> when the file name matches the mask value using the specified 
+options.
+</short>
+</element>
+<element name="MatchesMask.FileName">
+<short>File name compared to the mask value.</short>
+</element>
+<element name="MatchesMask.Mask">
+<short>Mask used to perform the comparison.</short>
+</element>
+<element name="MatchesMask.CaseSensitive">
+<short>
+<b>True</b> when case sensitivity should be used in the comparison.
+</short>
+</element>
+<element name="MatchesMask.Options">
+<short>Set of options enabled for the comparison.</short>
+</element>
+<element name="MatchesMask.AOpcodesAllowed">
+<short>Set of TMaskOpCode values allowed in the comparison.</short>
+</element>
+
+<element name="MatchesWindowsMask">
+<short>
+Indicates whether the file name matches the specified Windows-style file 
+system mask.
+</short>
+<descr>
+<p>
+<var>MatchesWindowsMask</var> is an overloaded <var>Boolean</var> function 
+used to determine if the file name specified in <var>FileName</var> matches 
+the specified <var>Mask</var>. Mask can contain a Windows-style file mask 
+which uses the following wildcards:
+</p>
+<dl>
+<dt>foo*.*</dt>
+<dd>
+Matches all files starting with 'foo' regardless of the file extension. Same 
+as foo* using the Matches method.
+</dd>
+<dt>foo*.</dt>
+<dd>Matches foo* but must not include a file extension.</dd>
+<dt>*.</dt>
+<dd>Matches any file name, but must not include a file extension.</dd>
+<dt>foo.</dt>
+<dd>Matches foo but not foo.txt.</dd>
+<dt>foo.*</dt>
+<dd>Matches foo, foo.txt, or foo.bar.</dd>
+<dt>*.*</dt>
+<dd>Matches any file name with an extension.</dd>
+</dl>
+<p>
+<var>CaseSensitive</var> indicates whether case sensitivity is used when 
+comparing the file name to the mask value.
+</p>
+<p>
+<var>Options</var> contains a set of zero or more TMaskOption values enabled 
+for the comparison. The Options argument allows enabling or disabling set 
+notation in the mask value. Specifying <var>moDisableSets</var> in the 
+Options parameter will disable interpreting the ' <b>[</b>' character as the 
+beginning of a set in the specified mask. Use an empty set (' <b>[]</b>') 
+when options from the <var>TMaskOption</var> enumeration are not needed.
+</p>
+<p>
+For example:
+</p>
+<code>MatchesWindowsMask('[x]','[x]',[moDisableSets]);  // returns True</code>
+<p>
+MatchesWindowsMask creates a <var>TMask</var> instance which is used to 
+compare the file name to the mask using the specified options. Values in Mask 
+and Options are passed as arguments the TMask constructor. The 
+<var>MatchesWindowsMask</var> method in the TMask instance is called using 
+FileName as an argument, and gets the return value for the function.
+</p>
+<remark>
+The overloaded variant which includes a TMaskOptions parameter has been 
+marked as deprecated in version 2.3. It will be removed in version 2.5.
+</remark>
+</descr>
+<seealso>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+<element name="MatchesWindowsMask.Result">
+<short>
+<b>True</b> when the file name matches the mask value using the specified 
+options.
+</short>
+</element>
+<element name="MatchesWindowsMask.FileName">
+<short>File name compared to the mask value.</short>
+</element>
+<element name="MatchesWindowsMask.Mask">
+<short>Mask used to perform the comparison.</short>
+</element>
+<element name="MatchesWindowsMask.CaseSensitive">
+<short>
+<b>True</b> when case sensitivity should be used in the comparison.
+</short>
+</element>
+<element name="MatchesWindowsMask.Options">
+<short>Set of options enabled for the comparison.</short>
+</element>
+
+<element name="MatchesMaskList">
+<short>
+Determine whether the specified file name matches at least one of the 
+specified masks.
+</short>
+<descr>
+<p>
+<var>MatchesMaskList</var> is an overloaded <var>Boolean</var> function used 
+to determine whether the specified file name matches at least one of the 
+specified masks. MatchesMaskList is similar to 
+<var>MatchesWindowsMaskList</var>, but uses Unix-style mask expressions. This 
+includes use of the following:
+</p>
+<dl>
+<dt>foo*</dt>
+<dd>
+Matches all files starting with 'foo' regardless of the file extension. Same 
+as foo*.* using MatchesWindowsMaskList.
+</dd>
+<dt>foo*.</dt>
+<dd>Matches foo* but must not include a file extension.</dd>
+<dt>*.</dt>
+<dd>Matches any file name, but must not include a file extension.</dd>
+<dt>foo.</dt>
+<dd>Matches foo but not foo.txt.</dd>
+<dt>foo.*</dt>
+<dd>Matches foo, foo.txt, or foo.bar.</dd>
+<dt>*</dt>
+<dd>Matches any file name including those with an optional extension.</dd>
+</dl>
+<p>
+Overloaded variants of the routine provide arguments and configuration 
+settings, including:
+</p>
+<dl>
+<dt>Filename</dt>
+<dd>File name compared to the file masks in Mask.</dd>
+<dt>Mask</dt>
+<dd>Contains one or more file mask expressions separated by one of the values 
+in Separator.</dd>
+<dt>Separator</dt>
+<dd>
+Contains the character(s) used as a separator between mask expressions in 
+Mask. The default separator is the SemiColon (;) character.
+</dd>
+<dt>Options</dt>
+<dd>
+Contains TMaskOption values which enable or disable features in the 
+comparison. The default value is an empty set ([]).
+</dd>
+<dt>CaseSensitive</dt>
+<dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
+</dl>
+<remark>
+The overloaded variant which includes the <var>CaseSensitive</var> argument 
+has been deprecated. Use the variant that includes the 
+<var>TMaskOptions</var> argument.
+</remark>
+<p>
+MatchesMaskList creates a <var>TMaskList</var> instance which uses the values 
+in the Mask, Separator and Options parameters. Its <var>Matches</var> method 
+is called to compare the value in Filename to the mask values in the list.
+</p>
+<p>
+The return value is <b>True</b> when Filename matches at least one of the 
+masks in the list.
+</p>
+<remark>
+The overloaded variant which includes a TMaskOptions parameter has been 
+marked as deprecated in version 2.3. It will be removed in version 2.5.
+</remark>
+</descr>
+<seealso>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+<element name="MatchesMaskList.Result">
+<short>
+<b>True</b> when Filename matches at least one of the masks in the list.
+</short>
+</element>
+<element name="MatchesMaskList.FileName">
+<short>File name compared to the file masks in Mask.</short>
+</element>
+<element name="MatchesMaskList.Mask">
+<short>
+one or more file mask expressions separated by one of the values in Separator.
+</short>
+</element>
+<element name="MatchesMaskList.Separator">
+<short>
+Character(s) used as a separator between mask expressions in Mask.
+</short>
+</element>
+<element name="MatchesMaskList.CaseSensitive">
+<short>
+<b>True</b> if the file name to mask comparison is case sensitive.
+</short>
+</element>
+<element name="MatchesMaskList.Options">
+<short>
+TMaskOption values which enable or disable features in the comparison.
+</short>
+</element>
+<element name="MatchesMaskList.AOpcodesAllowed">
+<short>Set of TMaskOpCode values allowed in the comparison.</short>
+</element>
+
+<element name="MatchesWindowsMaskList">
+<short>
+Determine whether the specified file name matches at least one of the 
+specified Windows-specific masks.
+</short>
+<descr>
+<p>
+<var>MatchesWindowsMaskList</var> is an overloaded <var>Boolean</var> 
+function used to determine whether the specified file name matches at least 
+one of the specified masks. MatchesWindowsMaskList is similar to 
+<var>MatchesMaskList</var>, but provides support for Windows-style file 
+system masks in the Mask argument. This includes use of the following:
+</p>
+<dl>
+<dt>foo*.*</dt>
+<dd>
+Matches all files starting with 'foo' regardless of the file extension. Same 
+as foo* using MatchesMaskList.
+</dd>
+<dt>foo*.</dt>
+<dd>Matches foo* but must not include a file extension.</dd>
+<dt>*.</dt>
+<dd>Matches any file name, but must not include a file extension.</dd>
+<dt>foo.</dt>
+<dd>Matches foo but not foo.txt.</dd>
+<dt>foo.*</dt>
+<dd>Matches foo, foo.txt, or foo.bar.</dd>
+<dt>*.*</dt>
+<dd>Matches any file name with an extension.</dd>
+</dl>
+<p>
+Overloaded variants of the routine provide arguments and configuration 
+settings, including:
+</p>
+<dl>
+<dt>Filename</dt>
+<dd>File name compared to the file masks in Mask.</dd>
+<dt>Mask</dt>
+<dd>Contains one or more file mask expressions separated by one of the values 
+in Separator.</dd>
+<dt>Separator</dt>
+<dd>
+Contains the character(s) used as a separator between mask expressions in 
+Mask. The default separator is the SemiColon (;) character.
+</dd>
+<dt>Options</dt>
+<dd>
+Contains TMaskOption values which enable or disable features in the 
+comparison. The default value is an empty set ([]).
+</dd>
+<dt>CaseSensitive</dt>
+<dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
+</dl>
+<remark>
+The overloaded variant which includes the <var>CaseSensitive</var> argument 
+has been deprecated. Use the variant that includes the 
+<var>TMaskOptions</var> argument.
+</remark>
+<p>
+MatchesWindowsMaskList creates a <var>TMaskList</var> instance which uses the 
+values in the Mask, Separator and Options parameters. Its 
+<var>MatchesWindowsMask</var> method is called to compare the value in 
+Filename to the Windows-style masks in the list.
+</p>
+<p>
+The return value is <b>True</b> when Filename matches at least one of the 
+masks in the list.
+</p>
+<remark>
+The overloaded variant which includes a TMaskOptions parameter has been 
+marked as deprecated in version 2.3. It will be removed in version 2.5.
+</remark>
+</descr>
+<seealso>
+<link id="#lazutils.masks.MasksOverview">Masks Overview</link>
+</seealso>
+</element>
+<element name="MatchesWindowsMaskList.Result">
+<short>
+<b>True</b> when Filename matches at least one of the masks in the list.
+</short>
+</element>
+<element name="MatchesWindowsMaskList.FileName">
+<short>File name compared to the file masks in Mask.</short>
+</element>
+<element name="MatchesWindowsMaskList.Mask">
+<short>
+one or more file mask expressions separated by one of the values in Separator.
+</short>
+</element>
+<element name="MatchesWindowsMaskList.Separator">
+<short>
+Character(s) used as a separator between mask expressions in Mask.
+</short>
+</element>
+<element name="MatchesWindowsMaskList.CaseSensitive">
+<short>
+<b>True</b> if the file name to mask comparison is case sensitive.
+</short>
+</element>
+<element name="MatchesWindowsMaskList.Options">
+<short>
+TMaskOption values which enable or disable features in the comparison.
+</short>
+</element>
+<element name="MatchesWindowsMaskList.AOpcodesAllowed">
+<short>Set of TMaskOpCode values allowed in the comparison.</short>
+</element>
+<element name="MatchesWindowsMaskList.AWindowsQuirksAllowed">
+<short>Set of TWindowsQuirk values allowed in the comparison.</short>
+</element>
+
+<element name="DbgS">
+<short>
+Gets a string with the value(s) for the specified type. Used to format 
+debugger messages.
+</short>
+<descr>
+<p>
+DbgS is a overloaded String function used to get a formatted message which 
+can be displayed in the debugger. Values from the type passed as an argument 
+are converted to their string representation and used in the return value for 
+the routine. In the masks.pas unit, TMaskOpCodes and TWindowsQuirks types are 
+allowed as parameter values. Both types result in a String with the set 
+notation needed to represent enumeration values in the argument. For example:
+</p>
+<dl>
+<dt>TMaskOpCode</dt>
+<dd>
+'[mocAnyChar,mocAnyText,mocRange,mocSet]'
+</dd>
+<dt>
+TWindowsQuirks
+</dt>
+<dd>
+'[wqAnyExtension,wqFilenameEnd,wqAllByExtension,wqNoExtension]'
+</dd>
+</dl>
+</descr>
+<seealso>
+<link id="TMaskOpCode"/>
+<link id="TMaskOpCodes"/>
+<link id="TWindowsQuirk"/>
+<link id="TWindowsQuirks"/>
+</seealso>
+</element>
+<element name="DbgS.Result">
+<short>String representing the value(s) in the specified type.</short>
+</element>
+<element name="DbgS.O">
+<short>
+TMaskOpCodes instance with the values returned in the string result.
+</short>
+</element>
+<element name="DbgS.Q">
+<short>
+TWindowsQuirks instance with the values returned in the string result.
+</short>
+</element>
+
+<topic name="MasksOverview">
+<short>Masks Overview.</short>
+<descr>
+<p>
+<b>What is a Mask</b>
+</p>
+<p>
+A mask is an expression composed of literal characters, sets or ranges or 
+characters, and wildcards. It is commonly used to match file or directory 
+names against the pattern in the mask expression.
+</p>
+<p>
+<b>Literal Characters</b>
+</p>
+<p>
+Each literal character in a mask corresponds to a single character in a 
+compared value. For instance, 'abc.def' would match a file with that exact 
+name and nothing else.
+</p>
+<p>
+<b>Sets of Characters</b>
+</p>
+<p>
+A set begins with an opening Square Bracket character (<b>[</b>) and ends 
+with a closing Square Bracket character (<b>]</b>). Values between the 
+brackets represent the characters which are considered a match in that 
+position. For example: 'a[bcd]e.txt' would match 'abe.txt', 'ace.txt', or 
+'ade.txt'. It would not match 'afe.txt'.
+</p>
+<p>
+<b>Ranges of Characters</b>
+</p>
+<p>
+A range begins with an opening Square Bracket character (<b>[</b>) and ends 
+with a closing Square Bracket character (<b>]</b>) like set notation. 
+Character values in the range are defined using a starting and ending values 
+separated by a '-' character. For example: 'abc[0-9].ext'. Any character in 
+the range is allowed in that position. An alpha-numeric range could be 
+represented using '[a-zA-Z0-9]'.
+</p>
+<p>
+<b>Negated Sets and Ranges</b>
+</p>
+<p>
+When using set or range notation, character values can be excluded using 
+negation. This is expressed using an Exclamation Point character (<b>!</b>) 
+in front of the set or range specification. For example: '[!0-9]' or 
+'[!0123456789]'. In both examples, any character at the given position 
+<b>except</b> the values in the set or range would be considered a match.
+</p>
+<p>
+<b>Wildcards</b>
+</p>
+<p>
+Wildcards allow one or more characters to be considered as a match for a 
+value in the mask. The wildcard characters are '?' and '*'. <b>?</b> matches 
+a single character (regardless of its value). <b>*</b> matches any number of 
+characters (regardless of their values).
+</p>
+<p>
+<b>Platform-specific Behaviors</b>
+</p>
+<p>
+While the syntax and notation for mask expressions is the same for different 
+platforms, there are some platform-specific behaviors.
+</p>
+<p>
+The TMask and TWindowsMask classes are used to isolate and implement those 
+platform-specific behaviors. TMask conforms the to conventions used for 
+UNIX-like file systems. TWindowsMask implements the conventions used for 
+Windows-based file systems.
+</p>
+<p>
+Most differences between the platforms center on the implementation of the 
+"any file" mask. This is the notation used to match any file or directory 
+name, regardless of the presence of a file extension. For UNIX file systems 
+(TMask), the notation used is '*'. For Windows file systems (TWindowsMask), 
+the notation '*.*' is used.
+</p>
+<p>
+They are other Windows-specific behaviors originating from its CP/M and MS 
+DOS heritage. These are implemented in TWindowsMask as Quirks, and can be 
+enabled or disabled in the class instance.
+</p>
+<p>
+Please refer to the documentation for the <link id="TMask">TMask</link> and 
+<link id="TWindowsMask">TWindowsMask</link> for more information about mask 
+expressions and their usage in the respective classes.
+</p>
+<p>
+<b>Configurable Settings</b>
+</p>
+<p>
+The Mask classes also contain configurable settings which can affect their 
+behavior in their Matches method. For example: CaseSensitive, 
+AutoReverseRange, EscapeChar, and MaskOpCodes. The initial value for these 
+settings can be passed as arguments to the class constructors, or they can be 
+specified using properties in the class instances. MaskOpCodes is 
+particularly important; it determines the behavior of wildcards and escape 
+characters in the mask expression.
+</p>
+<p>
+<b>Mask Expression Examples</b>
+</p>
+<p>
+The following FPC unit test program is provided which demonstrates the mask 
+expressions allowed in TMaskUTF8 and TWindowsMaskUTF8 class instances:
+</p>
+<p>
+<file>$(LazarusDir)/components/lazutils/test/testmasks.lpr</file>
+</p>
+<p>
+<b>Using Masks</b>
+</p>
+<p>
+Mask expressions are typically passed as an argument to new instances of 
+TMask or TWindowsMask. It can also be passed as an argument to routines like 
+MatchesMask, MatchesMaskList, MatchesWindowsMask, or MatchesWindowsMaskList. 
+The expression can be assigned to the Mask property in an existing mask class 
+instance. In general, the mask is used to find file names that match the mask 
+expression. But they are not limited to that single use case. They can be 
+used to determine if any string value matches a valid mask expression. They 
+are like regular expressions without all of the complexity, and focused on 
+specific functionality.
+</p>
+<remark>
+Mask values as used in TMask are not related to the mask values used in the 
+TMaskEdit control. Although both compare string values to determine if they 
+match a particular pattern, they use different symbols and syntax.
+</remark>
+</descr>
+</topic>
+</module>
+<!-- Masks -->
+</package>
 </fpdoc-descriptions>

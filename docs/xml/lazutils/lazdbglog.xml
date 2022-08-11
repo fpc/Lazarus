@@ -1,85 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-
 <!--
-  ====================================================================
-    LazDbgLog
-  ====================================================================
+====================================================================
+LazDbgLog
+====================================================================
 -->
-
 <module name="LazDbgLog">
 <short>Contains utility routines used in the Lazarus Debugger and IDE.</short>
 <descr>
-  <p>
-    This file is part of the <file>LazUtils</file> package.
-  </p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
 
 <!-- function Visibility: default -->
 <element name="MemSizeString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="MemSizeString.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="MemSizeString.s">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="MemSizeFPList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="MemSizeFPList.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="MemSizeFPList.List">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="GetStringRefCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="GetStringRefCount.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="GetStringRefCount.s">
-<short></short>
+<short/>
 </element>
 
-</module> <!-- LazDbgLog -->
+</module>
+<!-- LazDbgLog -->
 
 </package>
 </fpdoc-descriptions>

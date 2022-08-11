@@ -1,132 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
+<package name="lazutils">
 
-    <module name="codepagesasian">
-      <short>Contains Unicode conversion tables for Asian code pages.</short>
-      <descr></descr>
+<module name="codepagesasian">
+<short>Contains Unicode conversion tables for Asian code pages.</short>
+<descr>
+<p>
+This file is part of the <file>lazutils</file> package.
+</p>
+</descr>
 
-      <element name="CP936Arr">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP936Arr">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP950Arr">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP950Arr">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP949Arr">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP949Arr">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP932Arr">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP932Arr">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP936CC">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP936CC">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni936C">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni936C">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP936CU">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP936CU">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni936U">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni936U">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP950CC">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP950CC">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni950C">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni950C">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP950CU">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP950CU">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni950U">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni950U">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP949CC">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP949CC">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni949C">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni949C">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP949CU">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP949CU">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni949U">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni949U">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP932CC">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP932CC">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni932C">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni932C">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="CP932CU">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="CP932CU">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="Uni932U">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="Uni932U">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-    </module>
+</module>
 
-  </package>
+</package>
 </fpdoc-descriptions>

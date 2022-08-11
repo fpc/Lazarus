@@ -8,22 +8,23 @@ Laz_XMLStreaming
 -->
 <module name="Laz_XMLStreaming">
 <short>
-  Contains classes, types, and routines used to implement an XML serialization driver.
+Contains classes, types, and routines used to implement an XML serialization 
+driver.
 </short>
 <descr>
-  <p>
-    Copyright (c) 2000 by Sebastian Guenther, sg@freepascal.org
-  </p>
-  <p>
-    Extended by Mattias Gaertner:
-  </p>
-  <ul>
-    <li>Reading/Writing children, all kinds of properties,</li>
-    <li>Custom properties (via DefineProperties).</li>
-  </ul>
-  <p>
-    This file is part of the <file>LazUtils</file> package.
-  </p>
+<p>
+Copyright (c) 2000 by Sebastian Guenther, sg@freepascal.org
+</p>
+<p>
+Extended by Mattias Gaertner:
+</p>
+<ul>
+<li>Reading/Writing children, all kinds of properties,</li>
+<li>Custom properties (via DefineProperties).</li>
+</ul>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
 
 <!-- unresolved external references -->
@@ -35,10 +36,12 @@ Laz_XMLStreaming
 
 <!-- enumeration type Visibility: default -->
 <element name="TXMLObjectWriterStackElType">
-<short>Represents element types used in stack elements for an XML object writer.</short>
+<short>
+Represents element types used in stack elements for an XML object writer.
+</short>
 <descr/>
 <seealso>
-  <link id="TXMLObjectWriterStackEl.ElemType"/>
+<link id="TXMLObjectWriterStackEl.ElemType"/>
 </seealso>
 </element>
 <element name="TXMLObjectWriterStackElType.elUnknown">
@@ -48,56 +51,73 @@ Laz_XMLStreaming
 <short>Element represents a property in a list of properties.</short>
 </element>
 <element name="TXMLObjectWriterStackElType.elChildrenList">
-<short>Element represents a child component in a list of child components.</short>
+<short>
+Element represents a child component in a list of child components.
+</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TXMLObjectWriterStackEl">
 <short>Represents a stack element for an XML object writer.</short>
 <descr>
-  <p>
-    <var>TXMLObjectWriterStackEl</var> is a class used to represent an element pushed onto the stack for an XML object writer. Members in the class instance contain the <var>TDOMElement</var> instances for the stack element and its <var>Parent</var>, the stack element type, an inner list of stack elements which it contains, and the name of the property represented in the class instance.
-  </p>
-  <p>
-    TXMLObjectWriterStackEl is used in the implementation of the <var>TXMLObjectWriter</var> class to represent the current element being processed in the XML object writer.
-  </p>
+<p>
+<var>TXMLObjectWriterStackEl</var> is a class used to represent an element 
+pushed onto the stack for an XML object writer. Members in the class instance 
+contain the <var>TDOMElement</var> instances for the stack element and its 
+<var>Parent</var>, the stack element type, an inner list of stack elements 
+which it contains, and the name of the property represented in the class 
+instance.
+</p>
+<p>
+TXMLObjectWriterStackEl is used in the implementation of the 
+<var>TXMLObjectWriter</var> class to represent the current element being 
+processed in the XML object writer.
+</p>
 </descr>
 <seealso>
-  <link id="TXMLObjectWriter"/>
+<link id="TXMLObjectWriter"/>
 </seealso>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.Element">
 <short>
-  DOM Element which represents the component or property in the stack element.
+DOM Element which represents the component or property in the stack element.
 </short>
 <descr>
-  <p>
-    <var>Element</var> is a <var>TDOMElement</var> member used to store the values from the property or component represented in the stack element. Element is created and populated when <var>TXMLObjectWriter</var> processes properties, components, collections, and lists in the class instance.
-  </p>
-  <p>
-    Use <var>PropertyName</var> to get the name of the property represented in the stack element.
-  </p>
-  <p>
-    Use <var>ElemType</var> to determine whether the stack element represents a property list, child component list, or other type.
-  </p>
-  <p>
-    Use <var>Parent</var> to access the TDOMElement which is the parent for the current stack element.
-  </p>
+<p>
+<var>Element</var> is a <var>TDOMElement</var> member used to store the 
+values from the property or component represented in the stack element. 
+Element is created and populated when <var>TXMLObjectWriter</var> processes 
+properties, components, collections, and lists in the class instance.
+</p>
+<p>
+Use <var>PropertyName</var> to get the name of the property represented in 
+the stack element.
+</p>
+<p>
+Use <var>ElemType</var> to determine whether the stack element represents a 
+property list, child component list, or other type.
+</p>
+<p>
+Use <var>Parent</var> to access the TDOMElement which is the parent for the 
+current stack element.
+</p>
 </descr>
 <seealso>
-  <link id="TXMLObjectWriterStackEl.PropertyName"/>
-  <link id="TXMLObjectWriterStackEl.ElemType"/>
-  <link id="TXMLObjectWriterStackEl.Parent"/>
-  <link id="TXMLObjectWriter"/>
-  <link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
+<link id="TXMLObjectWriterStackEl.PropertyName"/>
+<link id="TXMLObjectWriterStackEl.ElemType"/>
+<link id="TXMLObjectWriterStackEl.Parent"/>
+<link id="TXMLObjectWriter"/>
+<link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
 </seealso>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.Parent">
-<short>Contains the TDOMElement that is the parent node for the stack element.</short>
+<short>
+Contains the TDOMElement that is the parent node for the stack element.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -120,13 +140,19 @@ Laz_XMLStreaming
 <element name="TXMLObjectWriter">
 <short>Serializes an object instance using an XML storage format.</short>
 <descr>
-  <p>
-    <var>TXMLObjectWriter</var> is a <var>TAbstractObjectWriter</var> descendant which implements an object serialization writer using XML as the storage format. TXMLObjectWriter implements abstract methods defined in the ancestor class, and provides access to the DOM document and the DOM Node tree used to store values generated in the class instance. It maintains an internal stack used to capture and process the hierarchical node tree needed to represent a class instance.
-  </p>
+<p>
+<var>TXMLObjectWriter</var> is a <var>TAbstractObjectWriter</var> descendant 
+which implements an object serialization writer using XML as the storage 
+format. TXMLObjectWriter implements abstract methods defined in the ancestor 
+class, and provides access to the DOM document and the DOM Node tree used to 
+store values generated in the class instance. It maintains an internal stack 
+used to capture and process the hierarchical node tree needed to represent a 
+class instance.
+</p>
 </descr>
 <seealso>
-  <link id="TXMLObjectReader"/>
-  <link id="#rtl.classes.TAbstractObjectWriter">TAbstractObjectWriter</link>
+<link id="TXMLObjectReader"/>
+<link id="#rtl.classes.TAbstractObjectWriter">TAbstractObjectWriter</link>
 </seealso>
 </element>
 
@@ -156,9 +182,13 @@ Laz_XMLStreaming
 <element name="TXMLObjectWriter.Create">
 <short>Constructor for the class instance.</short>
 <descr>
-  <p>
-    <var>Create</var> is the constructor for the class instance. It provides arguments which identify the XML document where the XML content is stored, an optional path to a node in the document where the content is stored, and a flag to indicate the content is appended to or replaces the content for the root node in the document.
-  </p>
+<p>
+<var>Create</var> is the constructor for the class instance. It provides 
+arguments which identify the XML document where the XML content is stored, an 
+optional path to a node in the document where the content is stored, and a 
+flag to indicate the content is appended to or replaces the content for the 
+root node in the document.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -170,14 +200,15 @@ Laz_XMLStreaming
 </element>
 <element name="TXMLObjectWriter.Create.Append">
 <short>
-  True to append the content to the root node in the document, False to replace it.
+True to append the content to the root node in the document, False to replace 
+it.
 </short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginCollection">
 <short>
-  Starts serialization of a Collection using the XML format for the writer.
+Starts serialization of a Collection using the XML format for the writer.
 </short>
 <descr/>
 <seealso/>
@@ -186,7 +217,7 @@ Laz_XMLStreaming
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginComponent">
 <short>
-  Starts serialization of a Component using the XML format for object writer.
+Starts serialization of a Component using the XML format for object writer.
 </short>
 <descr/>
 <seealso/>
@@ -203,14 +234,18 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginList">
-<short>Starts serialization of a list using the XML format for the writer.</short>
+<short>
+Starts serialization of a list using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.EndList">
-<short>Finishes serialization of a list using the XML format for the writer.</short>
+<short>
+Finishes serialization of a list using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -218,18 +253,23 @@ Laz_XMLStreaming
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginProperty">
 <short>
-  Starts serialization for a property using the XML format for the object writer.
+Starts serialization for a property using the XML format for the object 
+writer.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TXMLObjectWriter.BeginProperty.PropName">
-<short>Name for the property used as the value for the name attribute in the element.</short>
+<short>
+Name for the property used as the value for the name attribute in the element.
+</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.EndProperty">
-<short>Ends serialization for a property using the XML format for the writer.</short>
+<short>
+Ends serialization for a property using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -259,7 +299,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteFloat">
-<short>Serializes a floating point value using the XML format for the writer.</short>
+<short>
+Serializes a floating point value using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -279,7 +321,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteCurrency">
-<short>Serializes a Currency value using the XML format for the writer.</short>
+<short>
+Serializes a Currency value using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -289,7 +333,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteDate">
-<short>Serializes a TDateTime value using the XML format for the writer.</short>
+<short>
+Serializes a TDateTime value using the XML format for the writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -309,7 +355,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteInteger">
-<short>Serializes an Integer value using the XML format for the object writer.</short>
+<short>
+Serializes an Integer value using the XML format for the object writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -319,7 +367,10 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteMethodName">
-<short>Serializes the specified method name using the XML format for the object writer.</short>
+<short>
+Serializes the specified method name using the XML format for the object 
+writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -330,7 +381,8 @@ Laz_XMLStreaming
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteSet">
 <short>
-  Serializes a set values from the specified type using the XML format for the object writer.
+Serializes a set values from the specified type using the XML format for the 
+object writer.
 </short>
 <descr/>
 <seealso/>
@@ -344,7 +396,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteString">
-<short>Serializes a string value using the XML format for the object writer.</short>
+<short>
+Serializes a string value using the XML format for the object writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -354,7 +408,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteWideString">
-<short>Serializes a wide string value using the XML format for the object writer.</short>
+<short>
+Serializes a wide string value using the XML format for the object writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -365,19 +421,21 @@ Laz_XMLStreaming
 <element name="TXMLObjectWriter.WriteSignature">
 <short>Not needed for the XML format used in TXMLObjectWriter.</short>
 <descr>
-  <p>
-    Contains an empty implementation in <var>TXMLObjectWriter</var>.
-  </p>
+<p>
+Contains an empty implementation in <var>TXMLObjectWriter</var>.
+</p>
 </descr>
 <seealso/>
 </element>
 
 <element name="TXMLObjectWriter.WriteUInt64">
-<short>Serializes an Int64 value using the XML format for the object writer.</short>
+<short>
+Serializes an Int64 value using the XML format for the object writer.
+</short>
 <descr>
-  <p>
-    Included when USE_NEW_READER_WRITER has been defined in the LCL.
-  </p>
+<p>
+Included when USE_NEW_READER_WRITER has been defined in the LCL.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -387,12 +445,12 @@ Laz_XMLStreaming
 
 <element name="TXMLObjectWriter.WriteUnicodeString">
 <short>
-  Serializes an UnicodeString value using the XML format for the object writer.
+Serializes an UnicodeString value using the XML format for the object writer.
 </short>
 <descr>
-  <p>
-    Included when USE_NEW_READER_WRITER has been defined in the LCL.
-  </p>
+<p>
+Included when USE_NEW_READER_WRITER has been defined in the LCL.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -402,12 +460,12 @@ Laz_XMLStreaming
 
 <element name="TXMLObjectWriter.WriteVariant">
 <short>
-  Serializes a Variant value using the XML format for the object writer.
+Serializes a Variant value using the XML format for the object writer.
 </short>
 <descr>
-  <p>
-    Included when USE_NEW_READER_WRITER has been defined in the LCL.
-  </p>
+<p>
+Included when USE_NEW_READER_WRITER has been defined in the LCL.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -419,9 +477,10 @@ Laz_XMLStreaming
 <element name="TXMLObjectWriter.Write">
 <short>Raises an exception in the current LCL version.</short>
 <descr>
-  <p>
-    Raises an Exception when <var>HasReadWriteBuf</var> has been defined in the LCL.
-  </p>
+<p>
+Raises an Exception when <var>HasReadWriteBuf</var> has been defined in the 
+LCL.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -434,18 +493,26 @@ Laz_XMLStreaming
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectWriter.Doc">
-<short>TDOMDocument used to create and store elements in the XML object writer.</short>
+<short>
+TDOMDocument used to create and store elements in the XML object writer.
+</short>
 <descr>
-  <p>
-    <var>Doc</var> is a read-only <var>TDOMDocument</var> property which contains the DOM document used to create and store the DOM elements written in XML object writer. The value in Doc is assigned in the <var>Create</var> constructor, and uses the TDOMDocument instance passed as an argument to the constructor.
-  </p>
+<p>
+<var>Doc</var> is a read-only <var>TDOMDocument</var> property which contains 
+the DOM document used to create and store the DOM elements written in XML 
+object writer. The value in Doc is assigned in the <var>Create</var> 
+constructor, and uses the TDOMDocument instance passed as an argument to the 
+constructor.
+</p>
 </descr>
 <seealso/>
 </element>
 
 <!-- "class of" type Visibility: default -->
 <element name="TXMLObjectWriterClass">
-<short>Class type used to create new instances of the XML object writer.</short>
+<short>
+Class type used to create new instances of the XML object writer.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -455,8 +522,8 @@ Laz_XMLStreaming
 <short>De-serializes an object instance from its XML storage format.</short>
 <descr/>
 <seealso>
-  <link id="TXMLObjectWriter"/>
-  <link id="#rtl.classes.TAbstractObjectReader">TAbstractObjectReader</link>
+<link id="TXMLObjectWriter"/>
+<link id="#rtl.classes.TAbstractObjectReader">TAbstractObjectReader</link>
 </seealso>
 </element>
 
@@ -473,29 +540,40 @@ Laz_XMLStreaming
 <element name="TXMLObjectReader.Create">
 <short>Constructor for the class instance.</short>
 <descr>
-  <p>
-    <var>Create</var> is the constructor for the object instance. It uses values passed in the <var>ADoc</var> and <var>APath</var> arguments to access the DOM document and node(s) where the XML content for the object reader is stored.
-  </p>
-  <p>
-    ADoc is assigned to the <var>Doc</var> property in the class instance, and its <var>DocumentElement</var> is used to access nodes in the DOM tree.
-  </p>
-  <p>
-    <var>APath</var> contains an expression used to locate the DOM node with the content for the object reader. It provides the hierarchy of DOM nodes used to access the XML content for the class instance.
-  </p>
-  <remark>
-    Create raises an Exception in the constructor if a node cannot be located using the path in APath, or when the node is not a valid <var>TDOMElement</var> instance. Use exception handling when calling the method.
-  </remark>
+<p>
+<var>Create</var> is the constructor for the object instance. It uses values 
+passed in the <var>ADoc</var> and <var>APath</var> arguments to access the 
+DOM document and node(s) where the XML content for the object reader is 
+stored.
+</p>
+<p>
+ADoc is assigned to the <var>Doc</var> property in the class instance, and 
+its <var>DocumentElement</var> is used to access nodes in the DOM tree.
+</p>
+<p>
+<var>APath</var> contains an expression used to locate the DOM node with the 
+content for the object reader. It provides the hierarchy of DOM nodes used to 
+access the XML content for the class instance.
+</p>
+<remark>
+Create raises an Exception in the constructor if a node cannot be located 
+using the path in APath, or when the node is not a valid 
+<var>TDOMElement</var> instance. Use exception handling when calling the 
+method.
+</remark>
 </descr>
 <seealso>
-  <link id="TXMLObjectReader.Doc"/>
-  <link id="TXMLObjectReader.Element"/>
-  <link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
-  <link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
-  <link id="#lazutils.laz2_dom.TDOMDocument">TDOMDocument</link>
+<link id="TXMLObjectReader.Doc"/>
+<link id="TXMLObjectReader.Element"/>
+<link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
+<link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
+<link id="#lazutils.laz2_dom.TDOMDocument">TDOMDocument</link>
 </seealso>
 </element>
 <element name="TXMLObjectReader.Create.ADoc">
-<short>TDOMDocument instance with the values read in the object reader.</short>
+<short>
+TDOMDocument instance with the values read in the object reader.
+</short>
 </element>
 <element name="TXMLObjectReader.Create.APath">
 <short>Path to the node in ADoc where the object instance is stored.</short>
@@ -505,9 +583,9 @@ Laz_XMLStreaming
 <element name="TXMLObjectReader.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
-  <p>
-    Calls the inherited destructor on entry.
-  </p>
+<p>
+Calls the inherited destructor on entry.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -515,12 +593,14 @@ Laz_XMLStreaming
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.GetRootClassName">
 <short>
-  Gets the class name from the node which is the root element for the object instance.
+Gets the class name from the node which is the root element for the object 
+instance.
 </short>
 <descr>
-  <p>
-    GetRootClassName raises an Exception if a component node cannot be located in the root element, or the node is not a valid TDOMElement instance.
-  </p>
+<p>
+GetRootClassName raises an Exception if a component node cannot be located in 
+the root element, or the node is not a valid TDOMElement instance.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -536,7 +616,7 @@ Laz_XMLStreaming
 <short>Reads the value type for the next element in the XML DOM tree.</short>
 <descr/>
 <seealso>
-  <link id="#rtl.classes.TValueType">TValueType</link>
+<link id="#rtl.classes.TValueType">TValueType</link>
 </seealso>
 </element>
 <element name="TXMLObjectReader.NextValue.Result">
@@ -546,7 +626,8 @@ Laz_XMLStreaming
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadValue">
 <short>
-  Reads the value for the next element in the XML DOM tree after the value type has been read.
+Reads the value for the next element in the XML DOM tree after the value type 
+has been read.
 </short>
 <descr/>
 <seealso/>
@@ -559,9 +640,10 @@ Laz_XMLStreaming
 <element name="TXMLObjectReader.BeginRootComponent">
 <short>Locates the DOM node for the component in the document element.</short>
 <descr>
-  <p>
-    Raises an Exception if Element has not been assigned, or a node using a "component" tag is not found in the Element.
-  </p>
+<p>
+Raises an Exception if Element has not been assigned, or a node using a 
+"component" tag is not found in the Element.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -569,7 +651,8 @@ Laz_XMLStreaming
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.BeginComponent">
 <short>
-  Gets the DOM element for the component, gets the class type and component name, and sets Element to the properties node.
+Gets the DOM element for the component, gets the class type and component 
+name, and sets Element to the properties node.
 </short>
 <descr/>
 <seealso/>
@@ -589,7 +672,9 @@ Laz_XMLStreaming
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.BeginProperty">
-<short>Reads the property name from Element and prepares for the property value(s).</short>
+<short>
+Reads the property name from Element and prepares for the property value(s).
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -599,7 +684,9 @@ Laz_XMLStreaming
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.ReadBinary">
-<short>Reads a binary value from Element and stores it in the specified stream.</short>
+<short>
+Reads a binary value from Element and stores it in the specified stream.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -609,12 +696,16 @@ Laz_XMLStreaming
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadFloat">
-<short>Reads a string value from Element and converts it to a floating point value.</short>
+<short>
+Reads a string value from Element and converts it to a floating point value.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TXMLObjectReader.ReadFloat.Result">
-<short>Floating point value converted in the method, or 0 as the default.</short>
+<short>
+Floating point value converted in the method, or 0 as the default.
+</short>
 </element>
 
 <!-- function Visibility: public -->
@@ -728,7 +819,7 @@ Laz_XMLStreaming
 <short>Reads a string value from Element.</short>
 <descr/>
 <notes>
-  <note>Why the exception when the string has more than 255 characters?</note>
+<note>Why the exception when the string has more than 255 characters?</note>
 </notes>
 <seealso/>
 </element>
@@ -743,9 +834,10 @@ Laz_XMLStreaming
 <element name="TXMLObjectReader.ReadWideString">
 <short>Reads a WideString value from Element.</short>
 <descr>
-  <p>
-    Converts the UTF-8-encoded content in Element to the WideString type used in the return value.
-  </p>
+<p>
+Converts the UTF-8-encoded content in Element to the WideString type used in 
+the return value.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -754,22 +846,23 @@ Laz_XMLStreaming
 </element>
 
 <element name="TXMLObjectReader.ReadSignature">
-  <short>Not implemented and not needed in TXMLObjectReader.</short>
-  <descr/>
-  <seealso/>
+<short>Not implemented and not needed in TXMLObjectReader.</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TXMLObjectReader.ReadUnicodeString">
-  <short>Reads a UnicodeString value from Element.</short>
-  <descr>
-    <p>
-      Converts the UTF-8-encoded value in Element to the UnicodeString type used in the return value.
-    </p>
-  </descr>
-  <seealso/>
+<short>Reads a UnicodeString value from Element.</short>
+<descr>
+<p>
+Converts the UTF-8-encoded value in Element to the UnicodeString type used in 
+the return value.
+</p>
+</descr>
+<seealso/>
 </element>
 <element name="TXMLObjectReader.ReadUnicodeString.Result">
-  <short>UnicodeString value read in the method.</short>
+<short>UnicodeString value read in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -804,7 +897,9 @@ Laz_XMLStreaming
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.Doc">
-<short>TDomDocument instance with the XML content read in the object reader.</short>
+<short>
+TDomDocument instance with the XML content read in the object reader.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -812,7 +907,7 @@ Laz_XMLStreaming
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.Element">
 <short>
-  Contains the DOM element currently being processed in the XML object reader.
+Contains the DOM element currently being processed in the XML object reader.
 </short>
 <descr/>
 <seealso/>
@@ -821,19 +916,24 @@ Laz_XMLStreaming
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.ElementPosition">
 <short>
-  Indicates whether the object reader is processing an element name or its value.
+Indicates whether the object reader is processing an element name or its 
+value.
 </short>
 <descr>
-  <p>
-    0 indicates that the element name is being processed. 1 indicates that the name processing has been completed, and the value(s) in the element are being processed.
-  </p>
+<p>
+0 indicates that the element name is being processed. 1 indicates that the 
+name processing has been completed, and the value(s) in the element are being 
+processed.
+</p>
 </descr>
 <seealso/>
 </element>
 
 <!-- "class of" type Visibility: default -->
 <element name="TXMLObjectReaderClass">
-<short>Class type used to create new instances of the XML object reader.</short>
+<short>
+Class type used to create new instances of the XML object reader.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -841,7 +941,7 @@ Laz_XMLStreaming
 <!-- procedure Visibility: default -->
 <element name="WriteComponentToXMLStream">
 <short>
-  Serializes the specified component to a stream using an XML object writer.
+Serializes the specified component to a stream using an XML object writer.
 </short>
 <descr/>
 <seealso/>

@@ -1,207 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
+<package name="lazutils">
 
-    <!-- lazutf8classes -->
-    <module name="lazutf8classes">
-      <short>
-        Implements UTF-8-enabled classes and routines.
-        </short>
-      <descr>
-        <p>
-          <file>lazutf8classes.pas</file> implements UTF-8-enabled classes and routines, including: TFileStreamUTF8, TMemoryStreamUTF8, and TStringListUTF8. This file is part of the <file>LazUtils</file> package.
-        </p>
-        <remark>
-          lazutf8classes has an implementation dependency on the <file>lazfileutils</file> unit.
-        </remark>
-      </descr>
+<!-- lazutf8classes -->
+<module name="lazutf8classes">
+<short>
+Implements UTF-8-enabled classes and routines.
+</short>
+<descr>
+<p>
+<file>lazutf8classes.pas</file> implements UTF-8-enabled classes and 
+routines, including: TFileStreamUTF8, TMemoryStreamUTF8, and TStringListUTF8. 
+This file is part of the <file>LazUtils</file> package.
+</p>
+<remark>
+lazutf8classes has an implementation dependency on the 
+<file>lazfileutils</file> unit.
+</remark>
+</descr>
 
-      <!-- class Visibility: default -->
-      <element name="TFileStreamUTF8">
-        <short>
-          Alias for the TFileStream type.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="#rtl.classes.TFileStream">TFileStream</link>
-        </seealso>
-      </element>
+<!-- class Visibility: default -->
+<element name="TFileStreamUTF8">
+<short>
+Alias for the TFileStream type.
+</short>
+<descr/>
+<seealso>
+<link id="#rtl.classes.TFileStream">TFileStream</link>
+</seealso>
+</element>
 
-      <element name="TStringListUTF8">
-        <short>
-          Implements a UTF-8-enabled string list. <b>Deprecated</b>.
-        </short>
-        <descr>
-          <p>
-            TStringListUTF8 is a TStringList descendant that implements a string list that can store data which uses UTF-8 encoding. TStringListUTF8 provides an overridden method used to sort items in the list using UTF-8 string comparisons.
-          </p>
-        </descr>
-        <remark>
-          TStringListUTF8 has been marked as <b>deprecated</b>. Use TStringList instead.
-        </remark>
-        <seealso>
-           <link id="#rtl.classes.TStringList">TStringList</link>
-        </seealso>
-      </element>
+<element name="TStringListUTF8">
+<short>
+Implements a UTF-8-enabled string list. <b>Deprecated</b>.
+</short>
+<descr>
+<p>
+TStringListUTF8 is a TStringList descendant that implements a string list 
+that can store data which uses UTF-8 encoding. TStringListUTF8 provides an 
+overridden method used to sort items in the list using UTF-8 string 
+comparisons.
+</p>
+</descr>
+<remark>
+TStringListUTF8 has been marked as <b>deprecated</b>. Use TStringList instead.
+</remark>
+<seealso>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
+</element>
 
-      <element name="TStringListUTF8.DoCompareText">
-        <short>
-          Compares UTF-8-encoded lines in the string list.
-        </short>
-        <descr>
-          <p>
-            DoCompareText is PtrInt function used to compare the specified values using UTF-8 string comparison routines. DoCompareText uses the value in CaseSensitive to determine the routine used for the comparison. When CaseSensitive contains <b>True</b>, the UTF8CompareStr is used. Otherwise, UTF8CompareText is called. The return value contains the result from the routine.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-      <element name="TStringListUTF8.DoCompareText.Result">
-        <short>Value from the string comparison.</short>
-      </element>
-      <element name="TStringListUTF8.DoCompareText.s1">
-        <short>First string value for the comparison.</short>
-      </element>
-      <element name="TStringListUTF8.DoCompareText.s2">
-        <short>Second string value for the comparison.</short>
-      </element>
+<element name="TStringListUTF8.DoCompareText">
+<short>
+Compares UTF-8-encoded lines in the string list.
+</short>
+<descr>
+<p>
+DoCompareText is PtrInt function used to compare the specified values using 
+UTF-8 string comparison routines. DoCompareText uses the value in 
+CaseSensitive to determine the routine used for the comparison. When 
+CaseSensitive contains <b>True</b>, the UTF8CompareStr is used. Otherwise, 
+UTF8CompareText is called. The return value contains the result from the 
+routine.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+<element name="TStringListUTF8.DoCompareText.Result">
+<short>Value from the string comparison.</short>
+</element>
+<element name="TStringListUTF8.DoCompareText.s1">
+<short>First string value for the comparison.</short>
+</element>
+<element name="TStringListUTF8.DoCompareText.s2">
+<short>Second string value for the comparison.</short>
+</element>
 
-      <element name="TStringListUTF8.LoadFromFile">
-        <short>
-          Loads the content in the string list from the specified file.
-        </short>
-        <descr>
-          <p>
-            <var>LoadFromFile</var> is a procedure used to load the content for the string list from the specified file name. LoadFromFile uses a TFileStreamUTF8 instance to open and read the contents of FileName, and calls LoadFromStream to store the values in the string list.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings.LoadFromFile">TStrings.LoadFromFile</link>
-        </seealso>
-      </element>
-      <element name="TStringListUTF8.LoadFromFile.FileName">
-        <short>File name with content for the string list.</short>
-      </element>
+<element name="TStringListUTF8.LoadFromFile">
+<short>
+Loads the content in the string list from the specified file.
+</short>
+<descr>
+<p>
+<var>LoadFromFile</var> is a procedure used to load the content for the 
+string list from the specified file name. LoadFromFile uses a TFileStreamUTF8 
+instance to open and read the contents of FileName, and calls LoadFromStream 
+to store the values in the string list.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings.LoadFromFile">TStrings.LoadFromFile</link>
+</seealso>
+</element>
+<element name="TStringListUTF8.LoadFromFile.FileName">
+<short>File name with content for the string list.</short>
+</element>
 
-      <element name="TStringListUTF8.SaveToFile">
-        <short>
-          Saves the content in the string to the specified file name.
-        </short>
-        <descr>
-          <p>
-            <var>SaveToFile</var> is a procedure used to save the content in the string list to the specified file name. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FileName, and calls the SaveToStream method to store values from the string list.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings.SaveToFile">TStrings.SaveToFile</link>
-        </seealso>
-      </element>
-      <element name="TStringListUTF8.SaveToFile.FileName">
-        <short>File name where content in the string list is stored.</short>
-      </element>
+<element name="TStringListUTF8.SaveToFile">
+<short>
+Saves the content in the string to the specified file name.
+</short>
+<descr>
+<p>
+<var>SaveToFile</var> is a procedure used to save the content in the string 
+list to the specified file name. SaveToFile uses a TFileStreamUTF8 instance 
+to create the file specified in FileName, and calls the SaveToStream method 
+to store values from the string list.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings.SaveToFile">TStrings.SaveToFile</link>
+</seealso>
+</element>
+<element name="TStringListUTF8.SaveToFile.FileName">
+<short>File name where content in the string list is stored.</short>
+</element>
 
-      <element name="TMemoryStreamUTF8">
-        <short>
-          Implements a memory stream with support for UTF-8-encoded content. <b>Deprecated</b>.
-        </short>
-        <descr>
-          <p>
-            <var>TMemoryStreamUTF8</var> is a <var>TMemoryStream</var> descendant that stores its data in memory. TMemoryStreamUTF8 extends the ancestor to include methods used to load and save its  content from files with UTF-8-encoded content.
-          </p>
-        </descr>
-        <remark>
-          TMemoryStreamUTF8 has been marked as <b>deprecated</b>. Use TMemoryStream instead.
-        </remark>
-        <seealso>
-          <link id="#rtl.classes.TMemoryStream">TMemoryStream</link>
-        </seealso>
-      </element>
+<element name="TMemoryStreamUTF8">
+<short>
+Implements a memory stream with support for UTF-8-encoded content. 
+<b>Deprecated</b>.
+</short>
+<descr>
+<p>
+<var>TMemoryStreamUTF8</var> is a <var>TMemoryStream</var> descendant that 
+stores its data in memory. TMemoryStreamUTF8 extends the ancestor to include 
+methods used to load and save its  content from files with UTF-8-encoded 
+content.
+</p>
+</descr>
+<remark>
+TMemoryStreamUTF8 has been marked as <b>deprecated</b>. Use TMemoryStream 
+instead.
+</remark>
+<seealso>
+<link id="#rtl.classes.TMemoryStream">TMemoryStream</link>
+</seealso>
+</element>
 
-      <element name="TMemoryStreamUTF8.LoadFromFile">
-        <short>
-          Loads the content in the stream from the specified file.
-        </short>
-        <descr>
-          <p>
-            LoadFromFile is a procedure used to load the content for the stream from the specified file name. LoadFromFile uses a TFileStreamUTF8 instance to open the file specified in FileName, and calls LoadFromStream to store the contents in the memory stream.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TMemoryStream.LoadFromFile">TMemoryStream.LoadFromFile</link>
-        </seealso>
-      </element>
+<element name="TMemoryStreamUTF8.LoadFromFile">
+<short>
+Loads the content in the stream from the specified file.
+</short>
+<descr>
+<p>
+LoadFromFile is a procedure used to load the content for the stream from the 
+specified file name. LoadFromFile uses a TFileStreamUTF8 instance to open the 
+file specified in FileName, and calls LoadFromStream to store the contents in 
+the memory stream.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TMemoryStream.LoadFromFile">TMemoryStream.LoadFromFile</link>
+</seealso>
+</element>
 
-      <element name="TMemoryStreamUTF8.LoadFromFile.FileName">
-        <short>File name where where content for the stream is stored.</short>
-      </element>
+<element name="TMemoryStreamUTF8.LoadFromFile.FileName">
+<short>File name where where content for the stream is stored.</short>
+</element>
 
-      <element name="TMemoryStreamUTF8.SaveToFile">
-        <short>
-          Stores the content in the stream to the specified file.
-        </short>
-        <descr>
-          <p>
-            <var>SaveToFile</var> is a procedure used to store the content in the memory stream to the specified file name. SaveToFile uses a TFileStreamUTF8 instance to create the file in FileName, and calls SaveToStream to write the UTF-8-encoded values in the memory stream to the file.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TCustomMemoryStream.SaveToFile">TCustomMemoryStream.SaveToFile</link>
-        </seealso>
-      </element>
+<element name="TMemoryStreamUTF8.SaveToFile">
+<short>
+Stores the content in the stream to the specified file.
+</short>
+<descr>
+<p>
+<var>SaveToFile</var> is a procedure used to store the content in the memory 
+stream to the specified file name. SaveToFile uses a TFileStreamUTF8 instance 
+to create the file in FileName, and calls SaveToStream to write the 
+UTF-8-encoded values in the memory stream to the file.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TCustomMemoryStream.SaveToFile">TCustomMemoryStream.SaveToFile</link>
+</seealso>
+</element>
 
-      <element name="TMemoryStreamUTF8.SaveToFile.FileName">
-        <short>File name where content in the stream is stored.</short>
-      </element>
+<element name="TMemoryStreamUTF8.SaveToFile.FileName">
+<short>File name where content in the stream is stored.</short>
+</element>
 
-      <element name="LoadStringsFromFileUTF8">
-        <short>
-          Loads the content for a TStringList from the specified file name. <b>Deprecated</b>.
-        </short>
-        <descr>
-          <p>
-            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name.
-          </p>
-          <p>
-            List is the TStrings descendant where the content from FileName is stored. FileName can contain UTF-8-encoded characters.
-          </p>
-          <p>
-            LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the UTF-8-encoded content in FileName. It calls the Assign method in List to store the values.
-          </p>
-        </descr>
-        <remark>
-          LoadStringsFromFileUTF8 has been marked as <b>deprecated</b>. Use the LoadFromFile method in TStrings instead.
-        </remark>
-        <seealso></seealso>
-      </element>
-      <element name="LoadStringsFromFileUTF8.List">
-        <short>TStrings descendant where the content is stored.</short>
-      </element>
-      <element name="LoadStringsFromFileUTF8.FileName">
-        <short>File name with the content to load in the string list.</short>
-      </element>
+<element name="LoadStringsFromFileUTF8">
+<short>
+Loads the content for a TStringList from the specified file name. 
+<b>Deprecated</b>.
+</short>
+<descr>
+<p>
+LoadStringsFromFileUTF8 is a procedure used to load the content for a string 
+list from the specified file name.
+</p>
+<p>
+List is the TStrings descendant where the content from FileName is stored. 
+FileName can contain UTF-8-encoded characters.
+</p>
+<p>
+LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when 
+needed) that is used to load the UTF-8-encoded content in FileName. It calls 
+the Assign method in List to store the values.
+</p>
+</descr>
+<remark>
+LoadStringsFromFileUTF8 has been marked as <b>deprecated</b>. Use the 
+LoadFromFile method in TStrings instead.
+</remark>
+<seealso></seealso>
+</element>
+<element name="LoadStringsFromFileUTF8.List">
+<short>TStrings descendant where the content is stored.</short>
+</element>
+<element name="LoadStringsFromFileUTF8.FileName">
+<short>File name with the content to load in the string list.</short>
+</element>
 
-      <element name="SaveStringsToFileUTF8">
-        <short>
-          Saves the content in the TStringList to the specified file name. <b>Deprecated</b>.
-        </short>
-        <descr>
-          <p>
-            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings descendant with the content to store in the specified file name. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the UTF-8-encoded content in the string list to the specified FileName.
-          </p>
-        </descr>
-        <remark>
-          SaveStringsToFileUTF8 has been marked as <b>deprecated</b>. Use the SaveToFile method in TStrings instead.
-        </remark>
-        <seealsao></seealsao>
-      </element>
-      <element name="SaveStringsToFileUTF8.List">
-        <short>String list to store in the specified file.</short>
-      </element>
-      <element name="SaveStringsToFileUTF8.FileName">
-        <short>Name of the file where the content is stored.</short>
-      </element>
+<element name="SaveStringsToFileUTF8">
+<short>
+Saves the content in the TStringList to the specified file name. 
+<b>Deprecated</b>.
+</short>
+<descr>
+<p>
+SaveStringsToFileUTF8 is a procedure used to save the content in the List to 
+the specified file name. List is a TStrings descendant with the content to 
+store in the specified file name. SaveStringsToFileUTF8 uses a 
+TStringListUTF8 (when needed) to store the UTF-8-encoded content in the 
+string list to the specified FileName.
+</p>
+</descr>
+<remark>
+SaveStringsToFileUTF8 has been marked as <b>deprecated</b>. Use the 
+SaveToFile method in TStrings instead.
+</remark>
+<seealsao></seealsao>
+</element>
+<element name="SaveStringsToFileUTF8.List">
+<short>String list to store in the specified file.</short>
+</element>
+<element name="SaveStringsToFileUTF8.FileName">
+<short>Name of the file where the content is stored.</short>
+</element>
 
-    </module>
-    <!-- lazutf8classes -->
+</module>
+<!-- lazutf8classes -->
 
-  </package>
+</package>
 </fpdoc-descriptions>

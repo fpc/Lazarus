@@ -2,26 +2,28 @@
 <fpdoc-descriptions>
 <package name="lazutils">
 <!--
-  ====================================================================
-    Translations
-  ====================================================================
+====================================================================
+Translations
+====================================================================
 -->
 <module name="Translations">
 <short>
-Contains classes and routines used to load/check/maintain translations from .po (portable object) files.
+Contains classes and routines used to load/check/maintain translations from 
+.po (portable object) files.
 </short>
 <descr>
 <p>
-  <file>translations.pas</file> contains classes and routines used to load/check/maintain translations from .po (portable object) files.
+<file>translations.pas</file> contains classes and routines used to 
+load/check/maintain translations from .po (portable object) files.
 </p>
 <p>
-  This file is part of the <file>LazUtils</file> package.
+This file is part of the <file>LazUtils</file> package.
 </p>
 <p>
-  Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla
+Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla
 </p>
 <p>
-  <b>Example 1</b>: Load a specific .po file
+<b>Example 1</b>: Load a specific .po file
 </p>
 <code>
   procedure TForm1.FormCreate(Sender: TObject);
@@ -34,9 +36,10 @@ Contains classes and routines used to load/check/maintain translations from .po 
     MessageDlg('Title', 'Text', mtInformation, [mbOk, mbCancel, mbYes], 0);
   end;
 </code>
-  <p>
-    <b>Example 2</b>: Load the current language file using the GetLanguageIDs function of the gettext unit in the project lpr file:
-  </p>
+<p>
+<b>Example 2</b>: Load the current language file using the GetLanguageIDs 
+function of the gettext unit in the project lpr file:
+</p>
 <code>
     uses
       ...
@@ -61,12 +64,14 @@ Contains classes and routines used to load/check/maintain translations from .po 
       Application.Run;
     end.
 </code>
-  <p>
-    <b>Note for Mac OS X</b>:
-  </p>
-  <p>
-    The supported language IDs should be added into the application bundle property list to CFBundleLocalizations key, see <file>lazarus.app/Contents/Info.plist</file> for an example.
-  </p>
+<p>
+<b>Note for Mac OS X</b>:
+</p>
+<p>
+The supported language IDs should be added into the application bundle 
+property list to CFBundleLocalizations key, see 
+<file>lazarus.app/Contents/Info.plist</file> for an example.
+</p>
 </descr>
 
 <element name="TStringsType">

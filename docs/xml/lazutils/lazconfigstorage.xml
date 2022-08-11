@@ -3,20 +3,22 @@
 <package name="lazutils">
 
 <!--
-  ====================================================================
-    LazConfigStorage
-  ====================================================================
+====================================================================
+LazConfigStorage
+====================================================================
 -->
 
 <module name="LazConfigStorage">
-<short>Defines various base classes for loading and saving configuration files.</short>
+<short>
+Defines various base classes for loading and saving configuration files.
+</short>
 <descr>
-  <p>
-    This file is part of the <file>LazUtils</file> package.
-  </p>
-  <p>
-    Author: Mattias Gaertner
-  </p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+<p>
+Author: Mattias Gaertner
+</p>
 </descr>
 
 <!-- class Visibility: default -->

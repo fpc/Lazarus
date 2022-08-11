@@ -1,388 +1,444 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
+<package name="lazutils">
 
-    <module name="codepagescommon">
-      <short>Contains Unicode conversion tables for common code pages.</short>
-      <descr>
-        <p>
-          <file>codepagescommon.pas</file> is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
+<module name="codepagescommon">
+<short>Contains Unicode conversion tables for common code pages.</short>
+<descr>
+<p>
+<file>codepagescommon.pas</file> is part of the <file>LazUtils</file> package.
+</p>
+</descr>
 
-      <element name="TCharToUTF8Table">
-        <short>
-          Array type which provides indexed access to UTF-8 codepoint pointers.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TCharToUTF8Table">
+<short>
+Array type which provides indexed access to UTF-8 codepoint pointers.
+</short>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_1ToUTF8">
-        <short/>
-        <descr>
-          <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT">
-            https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT
-          </url>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_1ToUTF8">
+<short/>
+<descr>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT
+</url>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_9ToUTF8">
-        <short>Provides a mapping for ISO-8859-9 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-9">ISO/IEC 8859-9</url>
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lconvencoding.ISO_8859_9ToUTF8">ISO_8859_9ToUTF8</link>
-        </seealso>
-      </element>
+<element name="ArrayISO_8859_9ToUTF8">
+<short>
+Provides a mapping for ISO-8859-9 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-9">ISO/IEC 8859-9</url>
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lconvencoding.ISO_8859_9ToUTF8">ISO_8859_9ToUTF8</link>
+</seealso>
+</element>
 
-      <element name="ArrayISO_8859_10ToUTF8">
-        <short>Provides a mapping for ISO-8859-10 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-10">ISO/IEC 8859-10</url>
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lconvencoding.ISO_8859_10ToUTF8">ISO_8859_10ToUTF8</link>
-        </seealso>
-      </element>
+<element name="ArrayISO_8859_10ToUTF8">
+<short>
+Provides a mapping for ISO-8859-10 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-10">
+ISO/IEC 8859-10
+</url>
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lconvencoding.ISO_8859_10ToUTF8">ISO_8859_10ToUTF8</link>
+</seealso>
+</element>
 
-      <element name="ArrayISO_8859_13ToUTF8">
-        <short>Provides a mapping for ISO-8859-13 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-13">ISO/IEC 8859-13</url>
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lconvencoding.ISO_8859_13ToUTF8">ISO_8859_13ToUTF8</link>
-        </seealso>
-      </element>
+<element name="ArrayISO_8859_13ToUTF8">
+<short>
+Provides a mapping for ISO-8859-13 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-13">
+ISO/IEC 8859-13
+</url>
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lconvencoding.ISO_8859_13ToUTF8">ISO_8859_13ToUTF8</link>
+</seealso>
+</element>
 
-      <element name="ArrayISO_8859_14ToUTF8">
-        <short>Provides a mapping for ISO-8859-14 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-14">ISO/IEC 8859-14</url>
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lconvencoding.ISO_8859_14ToUTF8">ISO_8859_14ToUTF8</link>
-        </seealso>
-      </element>
+<element name="ArrayISO_8859_14ToUTF8">
+<short>
+Provides a mapping for ISO-8859-14 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-14">
+ISO/IEC 8859-14
+</url>
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lconvencoding.ISO_8859_14ToUTF8">ISO_8859_14ToUTF8</link>
+</seealso>
+</element>
 
-      <element name="ArrayISO_8859_15ToUTF8">
-        <short>Provides a mapping for ISO-8859-15 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_15ToUTF8">
+<short>
+Provides a mapping for ISO-8859-15 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-15.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_16ToUTF8">
-        <short>Provides a mapping for ISO-8859-16 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-16.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-16.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      
+<element name="ArrayISO_8859_16ToUTF8">
+<short>
+Provides a mapping for ISO-8859-16 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-16.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-16.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_2ToUTF8">
-        <short>Provides a mapping for ISO-8859-2 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
 
-      <element name="ArrayISO_8859_3ToUTF8">
-        <short>Provides a mapping for ISO-8859-3 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_2ToUTF8">
+<short>
+Provides a mapping for ISO-8859-2 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_4ToUTF8">
-        <short>Provides a mapping for ISO-8859-4 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_3ToUTF8">
+<short>
+Provides a mapping for ISO-8859-3 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-3.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_5ToUTF8">
-        <short>Provides a mapping for ISO-8859-5 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_4ToUTF8">
+<short>
+Provides a mapping for ISO-8859-4 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-4.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayISO_8859_7ToUTF8">
-        <short>Provides a mapping for ISO-8859-7 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT">
-              https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_5ToUTF8">
+<short>
+Provides a mapping for ISO-8859-5 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-5.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1250ToUTF8">
-        <short>Provides a mapping for Code Page 1250 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayISO_8859_7ToUTF8">
+<short>
+Provides a mapping for ISO-8859-7 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT">
+https://unicode.org/Public/MAPPINGS/ISO8859/8859-7.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1251ToUTF8">
-        <short>Provides a mapping for Code Page 1251 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1250ToUTF8">
+<short>
+Provides a mapping for Code Page 1250 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1250.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1252ToUTF8">
-        <short>Provides a mapping for Code Page 1252 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1251ToUTF8">
+<short>
+Provides a mapping for Code Page 1251 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1251.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1253ToUTF8">
-        <short>Provides a mapping for Code Page 1253 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1252ToUTF8">
+<short>
+Provides a mapping for Code Page 1252 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1254ToUTF8">
-        <short>Provides a mapping for Code Page 1254 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1253ToUTF8">
+<short>
+Provides a mapping for Code Page 1253 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1255ToUTF8">
-        <short>Provides a mapping for Code Page 1255 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1254ToUTF8">
+<short>
+Provides a mapping for Code Page 1254 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1256ToUTF8">
-        <short>Provides a mapping for Code Page 1256 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1255ToUTF8">
+<short>
+Provides a mapping for Code Page 1255 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1255.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1257ToUTF8">
-        <short>Provides a mapping for Code Page 1257 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1256ToUTF8">
+<short>
+Provides a mapping for Code Page 1256 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1256.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP1258ToUTF8">
-        <short>Provides a mapping for Code Page 1258 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1257ToUTF8">
+<short>
+Provides a mapping for Code Page 1257 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP437ToUTF8">
-        <short>Provides a mapping for Code Page 437 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP1258ToUTF8">
+<short>
+Provides a mapping for Code Page 1258 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1258.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP850ToUTF8">
-        <short>Provides a mapping for Code Page 850 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP437ToUTF8">
+<short>
+Provides a mapping for Code Page 437 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP852ToUTF8">
-        <short>Provides a mapping for Code Page 852 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT">
-              Code Page 852 DOS-Latin-2 to Unicode Conversion Table
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP850ToUTF8">
+<short>
+Provides a mapping for Code Page 850 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP866ToUTF8">
-        <short>Provides a mapping for Code Page 866 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP852ToUTF8">
+<short>
+Provides a mapping for Code Page 852 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT">
+Code Page 852 DOS-Latin-2 to Unicode Conversion Table
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayCP874ToUTF8">
-        <short>Provides a mapping for Code Page 874 characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP866ToUTF8">
+<short>
+Provides a mapping for Code Page 866 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayKOI8RToUTF8">
-        <short>Provides a mapping for KOI8-R characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayCP874ToUTF8">
+<short>
+Provides a mapping for Code Page 874 characters to UTF-8 codepoints.
+</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayKOI8UToUTF8">
-        <short>Provides a mapping for KOI8-U characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
-            </url>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ArrayKOI8RToUTF8">
+<short>Provides a mapping for KOI8-R characters to UTF-8 codepoints.</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayKOI8RUToUTF8">
-        <short>Provides a mapping for KOI8-RU characters to UTF-8 codepoints.</short>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT
-            </url>
-          </p>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT">
-              https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
-            </url>
-          </p>
-        </descr>        
-        <seealso/>
-      </element>
+<element name="ArrayKOI8UToUTF8">
+<short>Provides a mapping for KOI8-U characters to UTF-8 codepoints.</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <element name="ArrayMacintoshToUTF8">
-        <short/>
-        <descr>
-          <p>
-            <url href="https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/">
-              https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/
-            </url>
-          </p>
-        </descr>        
-        <seealso/>
-      </element>
+<element name="ArrayKOI8RUToUTF8">
+<short>Provides a mapping for KOI8-RU characters to UTF-8 codepoints.</short>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-R.TXT
+</url>
+</p>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT">
+https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-    </module>
+<element name="ArrayMacintoshToUTF8">
+<short/>
+<descr>
+<p>
+<url href="https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/">
+https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/
+</url>
+</p>
+</descr>
+<seealso/>
+</element>
 
-  </package>
+</module>
+
+</package>
 </fpdoc-descriptions>

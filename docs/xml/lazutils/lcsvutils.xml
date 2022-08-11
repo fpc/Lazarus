@@ -1,171 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      lcsvutils
-    ====================================================================
-    -->
-    <module name="lcsvutils">
-      <short>
-        Contains routines used to read and process Comma-separated values from a file or a stream.
-      </short>
-      <descr>
-        <p>
-          <file>lcsvutils.pas</file> contains routines used to read and process Comma-separated values from a file or a stream. It is used in the implementation of the <file>LazUtils</file> package and the <var>TGrid</var> component.
-        </p>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
+<package name="lazutils">
+<!--
+====================================================================
+lcsvutils
+====================================================================
+-->
+<module name="lcsvutils">
+<short>
+Contains routines used to read and process Comma-separated values from a file 
+or a stream.
+</short>
+<descr>
+<p>
+<file>lcsvutils.pas</file> contains routines used to read and process 
+Comma-separated values from a file or a stream. It is used in the 
+implementation of the <file>LazUtils</file> package and the <var>TGrid</var> 
+component.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+</descr>
 
-      <!-- procedure type Visibility: default -->
-      <element name="TCSVRecordProc">
-        <short>Defines a procedure used to process field values.</short>
-        <descr>
-          <p>
-            <var>TCSVRecordProc</var> defines a nested procedure type used when reading and processing delimited field values. A TCSVRecordProc reference is passed as an argument to the <var>LoadFromCSVFile</var> and <var>LoadFromCSVStream</var> routines. Applications must create a procedure that performs actions required when a line of data has been read from its source and separated into individual field values.
-          </p>
-          <p>
-            The Fields argument is a TStringList instance which contains the field values converted and parsed in the calling routine. Each field value exists on a separate line in the Fields argument. A field with no value is represented as an empty line in the TStringList instance.
-          </p>
-          <p>
-            An application must implement a procedure using the signature in TCSVRecordProc, and pass its address as an argument to the LoadFromCSVFile or LoadFromCSVStream routine. The procedure is responsible for performing any actions needed for the values in Fields.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LoadFromCSVFile"/>
-          <link id="LoadFromCSVStream"/>
-        </seealso>
-      </element>
-      <element name="TCSVRecordProc.Fields">
-        <short>TStringList used to store comma-separated field values.</short>
-      </element>
+<!-- procedure type Visibility: default -->
+<element name="TCSVRecordProc">
+<short>Defines a procedure used to process field values.</short>
+<descr>
+<p>
+<var>TCSVRecordProc</var> defines a nested procedure type used when reading 
+and processing delimited field values. A TCSVRecordProc reference is passed 
+as an argument to the <var>LoadFromCSVFile</var> and 
+<var>LoadFromCSVStream</var> routines. Applications must create a procedure 
+that performs actions required when a line of data has been read from its 
+source and separated into individual field values.
+</p>
+<p>
+The Fields argument is a TStringList instance which contains the field values 
+converted and parsed in the calling routine. Each field value exists on a 
+separate line in the Fields argument. A field with no value is represented as 
+an empty line in the TStringList instance.
+</p>
+<p>
+An application must implement a procedure using the signature in 
+TCSVRecordProc, and pass its address as an argument to the LoadFromCSVFile or 
+LoadFromCSVStream routine. The procedure is responsible for performing any 
+actions needed for the values in Fields.
+</p>
+</descr>
+<seealso>
+<link id="LoadFromCSVFile"/>
+<link id="LoadFromCSVStream"/>
+</seealso>
+</element>
+<element name="TCSVRecordProc.Fields">
+<short>TStringList used to store comma-separated field values.</short>
+</element>
 
-      <element name="TCSVEncoding">
-        <short>Represents character encodings used for values in CSV data.</short>
-        <descr>
-          <p>
-            <var>TCSVEncoding</var> is an enumerated type which represents character encodings used for CSV data. A value from the enumeration can be passed as an argument to the <var>LoadFromCSVFile</var> and <var>LoadFromCSVStream</var> routines.
-          </p>
-          <p>
-            A value from the enumeration is passed as an argument to the LoadFromCSVFile and LoadFromCSVStream routines. It identifies the character encoding for the byte values read from the data source, and determines the actions needed to convert the byte values to the UTF-8 encoding needed for the String type.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LoadFromCSVFile"/>
-          <link id="LoadFromCSVStream"/>
-        </seealso>
-      </element>
-      <element name="TCSVEncoding.ceAuto">
-        <short>Auto-detects character encoding applied to the CSV data.</short>
-      </element>
-      <element name="TCSVEncoding.ceUTF8">
-        <short>CSV data uses the UTF-8 encoding.</short>
-      </element>
-      <element name="TCSVEncoding.ceUTF16">
-        <short>CSV data uses the UTF-16 encoding.</short>
-      </element>
-      <element name="TCSVEncoding.ceUTF16be">
-        <short>CSV data uses the UTF-16 Big-Endian encoding.</short>
-      </element>
+<element name="TCSVEncoding">
+<short>Represents character encodings used for values in CSV data.</short>
+<descr>
+<p>
+<var>TCSVEncoding</var> is an enumerated type which represents character 
+encodings used for CSV data. A value from the enumeration can be passed as an 
+argument to the <var>LoadFromCSVFile</var> and <var>LoadFromCSVStream</var> 
+routines.
+</p>
+<p>
+A value from the enumeration is passed as an argument to the LoadFromCSVFile 
+and LoadFromCSVStream routines. It identifies the character encoding for the 
+byte values read from the data source, and determines the actions needed to 
+convert the byte values to the UTF-8 encoding needed for the String type.
+</p>
+</descr>
+<seealso>
+<link id="LoadFromCSVFile"/>
+<link id="LoadFromCSVStream"/>
+</seealso>
+</element>
+<element name="TCSVEncoding.ceAuto">
+<short>Auto-detects character encoding applied to the CSV data.</short>
+</element>
+<element name="TCSVEncoding.ceUTF8">
+<short>CSV data uses the UTF-8 encoding.</short>
+</element>
+<element name="TCSVEncoding.ceUTF16">
+<short>CSV data uses the UTF-16 encoding.</short>
+</element>
+<element name="TCSVEncoding.ceUTF16be">
+<short>CSV data uses the UTF-16 Big-Endian encoding.</short>
+</element>
 
-      <element name="LoadFromCSVStream">
-        <short>
-          Loads and processes comma-separated values from the specified stream.
-        </short>
-        <descr>
-          <p>
-            <var>LoadFromCSVStream</var> is a procedure used to read and process delimited values from the stream specified in <var>AStream</var>.
-          </p>
-          <p>
-            The procedure name is actually a misnomer; the routine uses the value in <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
-          </p>
-          <p>
-            LoadFromCSVStream reads lines of data from the stream, and calls nested routines to handle character encodings for the byte values. Each line is terminated with one or more line-ending characters (#13, #10).
-          </p>
-          <remark>
-            The position in AStream is <b>not</b> maintained in the routine. Processing is started using the stream position on entry. The stream position on exit is after the last line of text successfully processed from the stream, and is normally at the end of the stream.
-          </remark>
-          <p>
-            The value in <var>CSVEncoding</var> indicates the encoding for the byte values read from the stream. <var>ceAuto</var> is the default value for the argument, and indicates that the encoding is auto-detected in the routine using the BOM (Byte Order Mark) at the beginning of the processed byte values. The nested routines convert non-UTF-8 encodings to the UTF-8 encoding needed for the native String type.
-          </p>
-          <p>
-            Leading spaces in a line of text read from the stream are discarded. Field values in the line of text can be enclosed in Quotation (") marks if the delimiter character appears in the field content. Nested Quotation marks are allowed when used in a balanced pair.
-          </p>
-          <p>
-            LoadFromCSVStream calls the procedure passed in the <var>AProc</var> argument to process and apply each delimited field value from the line of text read from the stream. Field values are stored in a TStringList instance that is passed as argument to the routine in AProc. An application must implement the procedure passed in the argument to perform any actions needed for the field values.
-          </p>
-          <p>
-            No actions are performed in LoadFromCSVStream when AProc has not been assigned.
-          </p>
-          <p>
-            Use the <var>LoadFromCSVFile</var> procedure to process delimited values in a specified file name.
-          </p>
-          <p>
-            LoadFromCSVStream is called from the <var>LoadFromCSVFile</var> routine, and used in the implementation of the LoadFromCSVFile and LoadFromCSVStream methods in <var>TCustomStringGrid</var>. For database-aware applications, consider the <var>TCSVDataset</var> class found in the <file>csvdataset</file> unit from the FCL; also available on the Data Access tab for the Lazarus IDE component palette.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LoadFromCSVFile"/>
-          <link id="TCSVEncoding"/>
-          <link id="TCSVRecordProc"/>
-          <link id="#lcl.grids.TCustomStringGrid.LoadFromCSVFile">TCustomStringGrid.LoadFromCSVFile</link>
-          <link id="#lcl.grids.TCustomStringGrid.LoadFromCSVStream">TCustomStringGrid.LoadFromCSVStream</link>
-        </seealso>
-      </element>
-      <element name="LoadFromCSVStream.AStream">
-        <short>TStream instance containing the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVStream.AProc">
-        <short>Routine used to load and process lines in the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVStream.ADelimiter">
-        <short>Delimiter used to separate fields in the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVStream.CSVEncoding">
-        <short>Character encoding used for the CSV data.</short>
-      </element>
+<element name="LoadFromCSVStream">
+<short>
+Loads and processes comma-separated values from the specified stream.
+</short>
+<descr>
+<p>
+<var>LoadFromCSVStream</var> is a procedure used to read and process 
+delimited values from the stream specified in <var>AStream</var>.
+</p>
+<p>
+The procedure name is actually a misnomer; the routine uses the value in 
+<var>ADelimiter</var> as the delimiter between field values. It does not have 
+to be a Comma (,) character. Comma is, however, the default value for the 
+ADelimiter argument.
+</p>
+<p>
+LoadFromCSVStream reads lines of data from the stream, and calls nested 
+routines to handle character encodings for the byte values. Each line is 
+terminated with one or more line-ending characters (#13, #10).
+</p>
+<remark>
+The position in AStream is <b>not</b> maintained in the routine. Processing 
+is started using the stream position on entry. The stream position on exit is 
+after the last line of text successfully processed from the stream, and is 
+normally at the end of the stream.
+</remark>
+<p>
+The value in <var>CSVEncoding</var> indicates the encoding for the byte 
+values read from the stream. <var>ceAuto</var> is the default value for the 
+argument, and indicates that the encoding is auto-detected in the routine 
+using the BOM (Byte Order Mark) at the beginning of the processed byte 
+values. The nested routines convert non-UTF-8 encodings to the UTF-8 encoding 
+needed for the native String type.
+</p>
+<p>
+Leading spaces in a line of text read from the stream are discarded. Field 
+values in the line of text can be enclosed in Quotation (") marks if the 
+delimiter character appears in the field content. Nested Quotation marks are 
+allowed when used in a balanced pair.
+</p>
+<p>
+LoadFromCSVStream calls the procedure passed in the <var>AProc</var> argument 
+to process and apply each delimited field value from the line of text read 
+from the stream. Field values are stored in a TStringList instance that is 
+passed as argument to the routine in AProc. An application must implement the 
+procedure passed in the argument to perform any actions needed for the field 
+values.
+</p>
+<p>
+No actions are performed in LoadFromCSVStream when AProc has not been 
+assigned.
+</p>
+<p>
+Use the <var>LoadFromCSVFile</var> procedure to process delimited values in a 
+specified file name.
+</p>
+<p>
+LoadFromCSVStream is called from the <var>LoadFromCSVFile</var> routine, and 
+used in the implementation of the LoadFromCSVFile and LoadFromCSVStream 
+methods in <var>TCustomStringGrid</var>. For database-aware applications, 
+consider the <var>TCSVDataset</var> class found in the 
+<file>csvdataset</file> unit from the FCL; also available on the Data Access 
+tab for the Lazarus IDE component palette.
+</p>
+</descr>
+<seealso>
+<link id="LoadFromCSVFile"/>
+<link id="TCSVEncoding"/>
+<link id="TCSVRecordProc"/>
+<link id="#lcl.grids.TCustomStringGrid.LoadFromCSVFile">TCustomStringGrid.LoadFromCSVFile</link>
+<link id="#lcl.grids.TCustomStringGrid.LoadFromCSVStream">TCustomStringGrid.LoadFromCSVStream</link>
+</seealso>
+</element>
+<element name="LoadFromCSVStream.AStream">
+<short>TStream instance containing the CSV data.</short>
+</element>
+<element name="LoadFromCSVStream.AProc">
+<short>Routine used to load and process lines in the CSV data.</short>
+</element>
+<element name="LoadFromCSVStream.ADelimiter">
+<short>Delimiter used to separate fields in the CSV data.</short>
+</element>
+<element name="LoadFromCSVStream.CSVEncoding">
+<short>Character encoding used for the CSV data.</short>
+</element>
 
-      <element name="LoadFromCSVFile">
-        <short>
-          Loads and processes comma-separated values from the specified file.
-        </short>
-        <descr>
-          <p>
-            <var>LoadFromCSVFile</var> is a procedure used to read and process delimited values from the file specified in the <var>AFilename</var> argument.
-          </p>
-          <p>
-            The procedure name is actually a misnomer; the routine uses the value in <var>ADelimiter</var> as the delimiter between field values. It does not have to be a Comma (,) character. Comma is, however, the default value for the ADelimiter argument.
-          </p>
-          <p>
-            LoadFromCSVFile reads lines of data from the file, and converts the encoded byte values to fields which are processed and applied using the procedure in <var>AProc</var>. Internally, it creates a temporary <var>TFileStream</var> instance for the specified file name. The <var>LoadFromCSVStream</var> routine is called to read and apply the content using the arguments in <var>AProc</var>, <var>ADelimiter</var>, and <var>CSVEncoding</var>.
-          </p>
-          <p>
-            See <link id="#lazutils.lcsvutils.LoadFromCSVStream">LoadFromCSVStream</link> for more information about the arguments passed to the routine, and how the procedure is implemented.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LoadFromCSVStream"/>
-          <link id="TCSVEncoding"/>
-          <link id="TCSVRecordProc"/>
-        </seealso>
-      </element>
-      <element name="LoadFromCSVFile.aFilename">
-        <short>File name which contains the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVFile.AProc">
-        <short>Routine used to load and process lines in the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVFile.ADelimiter">
-        <short>Delimiter used to separate fields in the CSV data.</short>
-      </element>
-      <element name="LoadFromCSVFile.CSVEncoding">
-        <short>Character encoding used for the CSV data.</short>
-      </element>
+<element name="LoadFromCSVFile">
+<short>
+Loads and processes comma-separated values from the specified file.
+</short>
+<descr>
+<p>
+<var>LoadFromCSVFile</var> is a procedure used to read and process delimited 
+values from the file specified in the <var>AFilename</var> argument.
+</p>
+<p>
+The procedure name is actually a misnomer; the routine uses the value in 
+<var>ADelimiter</var> as the delimiter between field values. It does not have 
+to be a Comma (,) character. Comma is, however, the default value for the 
+ADelimiter argument.
+</p>
+<p>
+LoadFromCSVFile reads lines of data from the file, and converts the encoded 
+byte values to fields which are processed and applied using the procedure in 
+<var>AProc</var>. Internally, it creates a temporary <var>TFileStream</var> 
+instance for the specified file name. The <var>LoadFromCSVStream</var> 
+routine is called to read and apply the content using the arguments in 
+<var>AProc</var>, <var>ADelimiter</var>, and <var>CSVEncoding</var>.
+</p>
+<p>
+See <link id="#lazutils.lcsvutils.LoadFromCSVStream">LoadFromCSVStream</link> 
+for more information about the arguments passed to the routine, and how the 
+procedure is implemented.
+</p>
+</descr>
+<seealso>
+<link id="LoadFromCSVStream"/>
+<link id="TCSVEncoding"/>
+<link id="TCSVRecordProc"/>
+</seealso>
+</element>
+<element name="LoadFromCSVFile.aFilename">
+<short>File name which contains the CSV data.</short>
+</element>
+<element name="LoadFromCSVFile.AProc">
+<short>Routine used to load and process lines in the CSV data.</short>
+</element>
+<element name="LoadFromCSVFile.ADelimiter">
+<short>Delimiter used to separate fields in the CSV data.</short>
+</element>
+<element name="LoadFromCSVFile.CSVEncoding">
+<short>Character encoding used for the CSV data.</short>
+</element>
 
-    </module>
-    <!-- lcsvutils -->
+</module>
+<!-- lcsvutils -->
 
-  </package>
+</package>
 </fpdoc-descriptions>

@@ -1,280 +1,370 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      UTF8Process
-    ====================================================================
-    -->
-    <module name="UTF8Process">
-      <short>
-        Implements a version of the FCL TProcess component that allows UTF-8-encoded arguments.
-      </short>
-      <descr>
-        <p>
-          <file>utf8process.pp</file> implements the <var>TProcessUTF8</var> component which provides a TProcess descendant that allows UTF-8-encoded values in its properties. The TProcessUTF8 component is added to the <b>System</b> tab in the Lazarus IDE Component Palette.
-        </p>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
+<package name="lazutils">
+<!--
+====================================================================
+UTF8Process
+====================================================================
+-->
+<module name="UTF8Process">
+<short>
+Implements a version of the FCL TProcess component that allows UTF-8-encoded 
+arguments.
+</short>
+<descr>
+<p>
+<file>utf8process.pp</file> implements the <var>TProcessUTF8</var> component 
+which provides a TProcess descendant that allows UTF-8-encoded values in its 
+properties. The TProcessUTF8 component is added to the <b>System</b> tab in 
+the Lazarus IDE Component Palette.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+</descr>
 
-      <!-- unresolved external references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Process"/>
-      <element name="pipes"/>
-      <element name="FileUtil"/>
-      <element name="LazFileUtils"/>
-      <element name="LazUTF8"/>
-      <element name="LazUtilsStrConsts"/>
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Process"/>
+<element name="pipes"/>
+<element name="FileUtil"/>
+<element name="LazFileUtils"/>
+<element name="LazUTF8"/>
+<element name="LazUtilsStrConsts"/>
 
-      <element name="SNoCommandLine">
-        <descr>
-          <p>
-            Exception message raised when a process has no executable or command-line. Present for the Microsoft Windows platform.
-          </p>
-        </descr>
-      </element>
+<element name="SNoCommandLine">
+<descr>
+<p>
+Exception message raised when a process has no executable or command-line. 
+Present for the Microsoft Windows platform.
+</p>
+</descr>
+</element>
 
-      <element name="SErrCannotExecute">
-        <descr>
-          <p>
-            Exception message raised when a process cannot be created for the executable or command-line. Present for the Microsoft Windows platform.
-          </p>
-        </descr>
-      </element>
+<element name="SErrCannotExecute">
+<descr>
+<p>
+Exception message raised when a process cannot be created for the executable 
+or command-line. Present for the Microsoft Windows platform.
+</p>
+</descr>
+</element>
 
-      <element name="TProcessUTF8">
-        <short>Implements a version of the FCL TProcess that allows UTF-8-encoded arguments.</short>
-        <descr>
-          <p>
-            <var>TProcessUTF8</var> is a <var>TProcess</var> descendant which implements a version of TProcess that accepts and processes UTF-8-encoded arguments. It includes a <var>ParseCmdLine</var> method used to separate a command line into the <var>Executable</var> name and <var>Parameters</var> used in the class instance.
-          </p>
-          <p>
-            The TProcessUTF8 interface includes additional methods for the Microsoft Windows platform. An overridden <var>Execute</var> method is provided, and protected methods to assign IDs and Handles for the process and its thread. These methods handle Windows-specific nuances required for the CreateProcessW API. This includes security and thread attributes, pipe creation, and any quoting required for file names or parameters with space characters.
-          </p>
-          <p>
-            TProcessUTF8 is used in the implementation of the Lazarus IDE and related tools like the Debugger, HTML Help viewer, external tools, and the FP Doc Editor. Use TAsyncProcess for a process which receives asynchronous notifications during process execution.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#fcl.process.TProcess">TProcess</link>
-          <link id="#lcl.asyncprocess.TAsyncProcess">TAsyncProcess</link>
-        </seealso>
-      </element>
+<element name="TProcessUTF8">
+<short>
+Implements a version of the FCL TProcess that allows UTF-8-encoded arguments.
+</short>
+<descr>
+<p>
+<var>TProcessUTF8</var> is a <var>TProcess</var> descendant which implements 
+a version of TProcess that accepts and processes UTF-8-encoded arguments. It 
+includes a <var>ParseCmdLine</var> method used to separate a command line 
+into the <var>Executable</var> name and <var>Parameters</var> used in the 
+class instance.
+</p>
+<p>
+The TProcessUTF8 interface includes additional methods for the Microsoft 
+Windows platform. An overridden <var>Execute</var> method is provided, and 
+protected methods to assign IDs and Handles for the process and its thread. 
+These methods handle Windows-specific nuances required for the CreateProcessW 
+API. This includes security and thread attributes, pipe creation, and any 
+quoting required for file names or parameters with space characters.
+</p>
+<p>
+TProcessUTF8 is used in the implementation of the Lazarus IDE and related 
+tools like the Debugger, HTML Help viewer, external tools, and the FP Doc 
+Editor. Use TAsyncProcess for a process which receives asynchronous 
+notifications during process execution.
+</p>
+</descr>
+<seealso>
+<link id="#fcl.process.TProcess">TProcess</link>
+<link id="#lcl.asyncprocess.TAsyncProcess">TAsyncProcess</link>
+</seealso>
+</element>
 
-      <element name="TProcessUTF8.SetProcessHandle">
-        <short>Updates the process handle for the class instance.</short>
-        <descr>
-          <p>
-            Raises an Exception if the ProcessHandle property cannot be set to the value specified in aProcessHandle.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#fcl.process.TProcess.ProcessHandle">TProcess.ProcessHandle</link>
-        </seealso>
-      </element>
-      <element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
-        <short>Process handle assigned to the ancestor class.</short>
-      </element>
+<element name="TProcessUTF8.SetProcessHandle">
+<short>Updates the process handle for the class instance.</short>
+<descr>
+<p>
+Raises an Exception if the ProcessHandle property cannot be set to the value 
+specified in aProcessHandle.
+</p>
+</descr>
+<seealso>
+<link id="#fcl.process.TProcess.ProcessHandle">TProcess.ProcessHandle</link>
+</seealso>
+</element>
+<element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
+<short>Process handle assigned to the ancestor class.</short>
+</element>
 
-      <element name="TProcessUTF8.SetThreadHandle">
-        <short>Sets ThreadHandle to the specified value.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TProcessUTF8.SetThreadHandle.aThreadHandle">
-        <short>Thread handle assigned to the ancestor class.</short>
-      </element>
+<element name="TProcessUTF8.SetThreadHandle">
+<short>Sets ThreadHandle to the specified value.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TProcessUTF8.SetThreadHandle.aThreadHandle">
+<short>Thread handle assigned to the ancestor class.</short>
+</element>
 
-      <element name="TProcessUTF8.SetProcessID">
-        <short>Sets ProcessID to the specified value.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TProcessUTF8.SetProcessID.aProcessID">
-        <short>Process ID assigned to the ancestor class.</short>
-      </element>
+<element name="TProcessUTF8.SetProcessID">
+<short>Sets ProcessID to the specified value.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TProcessUTF8.SetProcessID.aProcessID">
+<short>Process ID assigned to the ancestor class.</short>
+</element>
 
-      <element name="TProcessUTF8.Execute">
-        <short>Starts execution of the process.</short>
-        <descr>
-          <p>
-            <var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is defined only for the Microsoft Windows platforms where poDetached in not available as a process option. Execute handles the nuances of configuring and executing a call to CreateProcessW in the Windows API.
-          </p>
-          <p>
-            The values in <var>ApplicationName</var>, <var>CommandLine</var>, and <var>Executable</var> are checked to ensure that they contain non-empty values. An <var>EProcess</var> exception is raised if any of these properties contain an empty string (<b>''</b>).
-          </p>
-          <p>
-            <var>UTF8Decode</var> is called to convert the property values to Unicode strings, and ultimately the WideStr values passed to CreateProcessW. Additional quoting may be applied to the values when the path to the file or arguments contain a Space character. UTF8Decode is also called for the value in the <var>CurrentDirectory</var> property. <var>StringsToWChars</var> is called to convert values in <var>Environment</var>.
-          </p>
-          <p>
-            Execute initializes the creation flags, process attributes, thread attributes, and start-up information required for the CreateProcessW API call. Values in the <var>Options</var> property determine whether <var>CreatePipes</var> is called for the handles in the start-up information.
-          </p>
-          <p>
-            Execute raises an EProcess exception if the CreateProcessW API call returns <b>False</b>. Otherwise, the values in <var>ProcessID</var>, <var>ProcessHandle</var>, and <var>ThreadHandle</var> are assigned for the current class instance.
-          </p>
-          <p>
-            When Options contains the value <var>poUsePipes</var>, the process will redirect information on the standard input, output, and error handles allocated in start-up information. Use the THandleStream instances used in the Input, Output, and StdErr properties to access values for the API call.
-          </p>
-          <p>
-            Executes sets the value in <var>Running</var> to <b>True</b>, and frees memory allocated to the pointer for the <var>Environment</var> in the process.
-          </p>
-          <p>
-            At run-time, Execute calls <var>WaitOnExit</var> to detect completion of the process and to set values in the <var>ExitStatus</var> and <var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is included in the Options for the process, and <var>poRunSuspended</var> is <b>not</b> included in the Options. WaitOnExit is never called at design-time to prevent hanging the IDE.
-          </p>
-          <p>
-            Please note: The overridden Execute method in TProcessUTF8 does not call the inherited method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TProcessUTF8.ParseCmdLine"/>
-          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
-          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
-          <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
-          <link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
-          <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
-          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
-          <link id="#fcl.process.TProcess.Input">TProcess.Input</link>
-          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
-        </seealso>
-      </element>
+<element name="TProcessUTF8.Execute">
+<short>Starts execution of the process.</short>
+<descr>
+<p>
+<var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is 
+defined only for the Microsoft Windows platforms where poDetached in not 
+available as a process option. Execute handles the nuances of configuring and 
+executing a call to CreateProcessW in the Windows API.
+</p>
+<p>
+The values in <var>ApplicationName</var>, <var>CommandLine</var>, and 
+<var>Executable</var> are checked to ensure that they contain non-empty 
+values. An <var>EProcess</var> exception is raised if any of these properties 
+contain an empty string (<b>''</b>).
+</p>
+<p>
+<var>UTF8Decode</var> is called to convert the property values to Unicode 
+strings, and ultimately the WideStr values passed to CreateProcessW. 
+Additional quoting may be applied to the values when the path to the file or 
+arguments contain a Space character. UTF8Decode is also called for the value 
+in the <var>CurrentDirectory</var> property. <var>StringsToWChars</var> is 
+called to convert values in <var>Environment</var>.
+</p>
+<p>
+Execute initializes the creation flags, process attributes, thread 
+attributes, and start-up information required for the CreateProcessW API 
+call. Values in the <var>Options</var> property determine whether 
+<var>CreatePipes</var> is called for the handles in the start-up information.
+</p>
+<p>
+Execute raises an EProcess exception if the CreateProcessW API call returns 
+<b>False</b>. Otherwise, the values in <var>ProcessID</var>, 
+<var>ProcessHandle</var>, and <var>ThreadHandle</var> are assigned for the 
+current class instance.
+</p>
+<p>
+When Options contains the value <var>poUsePipes</var>, the process will 
+redirect information on the standard input, output, and error handles 
+allocated in start-up information. Use the THandleStream instances used in 
+the Input, Output, and StdErr properties to access values for the API call.
+</p>
+<p>
+Executes sets the value in <var>Running</var> to <b>True</b>, and frees 
+memory allocated to the pointer for the <var>Environment</var> in the process.
+</p>
+<p>
+At run-time, Execute calls <var>WaitOnExit</var> to detect completion of the 
+process and to set values in the <var>ExitStatus</var> and 
+<var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is 
+included in the Options for the process, and <var>poRunSuspended</var> is 
+<b>not</b> included in the Options. WaitOnExit is never called at design-time 
+to prevent hanging the IDE.
+</p>
+<p>
+Please note: The overridden Execute method in TProcessUTF8 does not call the 
+inherited method.
+</p>
+</descr>
+<seealso>
+<link id="TProcessUTF8.ParseCmdLine"/>
+<link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+<link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
+<link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
+<link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
+<link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
+<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+<link id="#fcl.process.TProcess.Input">TProcess.Input</link>
+<link id="#fcl.process.TProcess.Output">TProcess.Output</link>
+</seealso>
+</element>
 
-      <element name="TProcessUTF8.ParseCmdLine">
-        <short>
-          Separates values in the CommandLine argument into the Executable and Parameters properties.
-        </short>
-        <descr>
-          <p>
-            <var>ParseCmdLine</var> is used to separate the values in the CmdLine argument into the values used for the Executable and Parameters properties.
-          </p>
-          <p>
-            <var>ReadBackSlash</var> indicates if the <b>BackSlash</b> character (<b>\</b>) is used to quote a character value in the command line. The default value for the argument is <b>False</b>.
-          </p>
-          <p>
-            ParseCmdLine creates an internal <var>TStringList</var> instance used to store values returned from the <var>SplitCmdLineParams</var> routine in <file>lazfileutils.pas</file>. The first value in the string list (when present) is stored in the <var>Executable</var> property. The remaining values are stored in the <var>Parameters</var> property.
-          </p>
-          <p>
-            ParseCmdLine is provided as a convenience method. The same result can be achieved by setting the values in the Executable and Parameters properties directly.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazfileutils.SplitCmdLineParams">SplitCmdLineParams</link>
-          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
-          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
-        </seealso>
-      </element>
-      <element name="TProcessUTF8.ParseCmdLine.CmdLine">
-        <short>Command line examined and parsed in the method.</short>
-      </element>
-      <element name="TProcessUTF8.ParseCmdLine.ReadBackslash">
-        <short>
-          When <b>True</b>, the BackSlash character is used to quote character values.
-        </short>
-      </element>
+<element name="TProcessUTF8.ParseCmdLine">
+<short>
+Separates values in the CommandLine argument into the Executable and 
+Parameters properties.
+</short>
+<descr>
+<p>
+<var>ParseCmdLine</var> is used to separate the values in the CmdLine 
+argument into the values used for the Executable and Parameters properties.
+</p>
+<p>
+<var>ReadBackSlash</var> indicates if the <b>BackSlash</b> character 
+(<b>\</b>) is used to quote a character value in the command line. The 
+default value for the argument is <b>False</b>.
+</p>
+<p>
+ParseCmdLine creates an internal <var>TStringList</var> instance used to 
+store values returned from the <var>SplitCmdLineParams</var> routine in 
+<file>lazfileutils.pas</file>. The first value in the string list (when 
+present) is stored in the <var>Executable</var> property. The remaining 
+values are stored in the <var>Parameters</var> property.
+</p>
+<p>
+ParseCmdLine is provided as a convenience method. The same result can be 
+achieved by setting the values in the Executable and Parameters properties 
+directly.
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazfileutils.SplitCmdLineParams">SplitCmdLineParams</link>
+<link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+<link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
+</seealso>
+</element>
+<element name="TProcessUTF8.ParseCmdLine.CmdLine">
+<short>Command line examined and parsed in the method.</short>
+</element>
+<element name="TProcessUTF8.ParseCmdLine.ReadBackslash">
+<short>
+When <b>True</b>, the BackSlash character is used to quote character values.
+</short>
+</element>
 
-      <element name="RunCmdFromPath">
-        <short>Executes a command found in the current PATH environment.</short>
-        <descr>
-          <p>
-            <var>RunCmdFromPath</var> is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the <b>/bin/ls -l /home</b> command:
-          </p>
-          <code>
+<element name="RunCmdFromPath">
+<short>Executes a command found in the current PATH environment.</short>
+<descr>
+<p>
+<var>RunCmdFromPath</var> is used to execute a command which can be found in 
+the current <var>PATH</var> environment. For example, the following locates 
+and executes the <b>/bin/ls -l /home</b> command:
+</p>
+<code>
             RunCmdFromPath('ls', '-l /home');
-          </code>
-          <p>
-            An exception is raised if the program file cannot be located, or cannot be executed.
-          </p>
-          <p>
-            RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance which is used to execute the program file. <var>ProgramFilename</var> contains the qualified executable file name for the process. If the argument contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters before it is assigned to the class instance. <var>CmdLineParameters</var> contains optional parameters values for the executable file. It is assumed that parameter values with embedded spaces are already quoted when passed to the routine. CmdLineParameters is included in the class instance when the value is not an empty string (<b>''</b>).
-          </p>
-          <p>
-            RunCmdFromPath calls the <var>Execute</var> method in the TProcessUTF8 instance to execute the specified program file name with the specified parameter values.
-          </p>
-        </descr>
-        <errors>
-          <dl>
-            <dt>EFOpenError</dt>
-            <dd>
-              Raised with the message in lrsProgramFileNotFound or lrsCanNotExecute.
-            </dd>
-          </dl>
-        </errors>
-        <!--
-        ===========================================
-        Uncomment when the target version is known.
-        ===========================================
-        <version>
-          Modified in LazUtils version 2.3.0 to wait for process exit during execution.
-        </version>
-        -->
-        <seealso>
-          <!-- not an error: {$IFDEF UseTProcessW} -->
-          <!-- link id="TProcessUTF8.Execute"/ -->
-          <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
-          <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
-          <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
-          <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
-          <link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
-        </seealso>
-      </element>
-      <element name="RunCmdFromPath.ProgramFilename">
-        <short>Path and name for the program executed.</short>
-      </element>
-      <element name="RunCmdFromPath.CmdLineParameters">
-        <short>Command line parameters for the program.</short>
-      </element>
+</code>
+<p>
+An exception is raised if the program file cannot be located, or cannot be 
+executed.
+</p>
+<p>
+RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance 
+which is used to execute the program file. <var>ProgramFilename</var> 
+contains the qualified executable file name for the process. If the argument 
+contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation 
+Mark</b> (<b>"</b>) characters before it is assigned to the class instance. 
+<var>CmdLineParameters</var> contains optional parameters values for the 
+executable file. It is assumed that parameter values with embedded spaces are 
+already quoted when passed to the routine. CmdLineParameters is included in 
+the class instance when the value is not an empty string (<b>''</b>).
+</p>
+<p>
+RunCmdFromPath calls the <var>Execute</var> method in the TProcessUTF8 
+instance to execute the specified program file name with the specified 
+parameter values.
+</p>
+</descr>
+<errors>
+<dl>
+<dt>EFOpenError</dt>
+<dd>
+Raised with the message in lrsProgramFileNotFound or lrsCanNotExecute.
+</dd>
+</dl>
+</errors>
+<!--
+===========================================
+Uncomment when the target version is known.
+===========================================
+<version>
+Modified in LazUtils version 2.3.0 to wait for process exit during execution.
+</version>
+-->
+<seealso>
+<!-- not an error: {$IFDEF UseTProcessW} -->
+<!-- link id="TProcessUTF8.Execute"/ -->
+<link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
+<link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
+<link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
+<link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
+<link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
+</seealso>
+</element>
+<element name="RunCmdFromPath.ProgramFilename">
+<short>Path and name for the program executed.</short>
+</element>
+<element name="RunCmdFromPath.CmdLineParameters">
+<short>Command line parameters for the program.</short>
+</element>
 
-      <element name="FindFilenameOfCmd">
-        <short>Gets the full path for the specified executable file.</short>
-        <descr>
-          <p>
-            <var>FindFilenameOfCmd</var> is a <var>String</var> function used to get the full path for the executable file specified in the <var>ProgramFilename</var> argument. FindFilenameOfCmd calls the <var>FilenameIsAbsolute</var> routine to determine if a relative path in ProgramFilename needs to be resolved. <var>FindDefaultExecutablePath</var> is called to search the <b>PATH</b> environment when path information is not used in ProgramFilename.
-          </p>
-          <p>
-            The return value contains the absolute path and file name. If the file does not exist on the local file system, the return value is an empty string ('').
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
-          <link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
-          <link id="#lazutils.fileutil.FindDefaultExecutablePath">FindDefaultExecutablePath</link>
-        </seealso>
-      </element>
-      <element name="FindFilenameOfCmd.Result">
-        <short>Absolute path to the requested program file, or an empty string.</short>
-      </element>
-      <element name="FindFilenameOfCmd.ProgramFilename">
-        <short>Program file examined in the method.</short>
-      </element>
+<element name="FindFilenameOfCmd">
+<short>Gets the full path for the specified executable file.</short>
+<descr>
+<p>
+<var>FindFilenameOfCmd</var> is a <var>String</var> function used to get the 
+full path for the executable file specified in the <var>ProgramFilename</var> 
+argument. FindFilenameOfCmd calls the <var>FilenameIsAbsolute</var> routine 
+to determine if a relative path in ProgramFilename needs to be resolved. 
+<var>FindDefaultExecutablePath</var> is called to search the <b>PATH</b> 
+environment when path information is not used in ProgramFilename.
+</p>
+<p>
+The return value contains the absolute path and file name. If the file does 
+not exist on the local file system, the return value is an empty string ('').
+</p>
+</descr>
+<seealso>
+<link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
+<link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+<link id="#lazutils.fileutil.FindDefaultExecutablePath">FindDefaultExecutablePath</link>
+</seealso>
+</element>
+<element name="FindFilenameOfCmd.Result">
+<short>
+Absolute path to the requested program file, or an empty string.
+</short>
+</element>
+<element name="FindFilenameOfCmd.ProgramFilename">
+<short>Program file examined in the method.</short>
+</element>
 
-      <element name="GetSystemThreadCount">
-        <short>Gets the number of threads available on the system.</short>
-        <descr>
-          <p>
-            <var>GetSystemThreadCount</var> is an <var>Integer</var> function used to get the number of threads on the system. The implementation for GetSystemThreadCount is platform- and/or OS-specific. For the Windows environment, the total number of processors available (including logical hyperthreaded processors) are returned using the GetProcessAffinityMask API. When GetProcessAffinityMask is unavailable, the total number of processors from GetSystemInfo is used. For UNIX-like environments, either the sysconf or the fpsysctl function is used. For other environments, the return value is always <b>1</b>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="GetSystemThreadCount.Result">
-        <short>The number of threads on the system.</short>
-      </element>
+<element name="GetSystemThreadCount">
+<short>Gets the number of threads available on the system.</short>
+<descr>
+<p>
+<var>GetSystemThreadCount</var> is an <var>Integer</var> function used to get 
+the number of threads on the system. The implementation for 
+GetSystemThreadCount is platform- and/or OS-specific. For the Windows 
+environment, the total number of processors available (including logical 
+hyperthreaded processors) are returned using the GetProcessAffinityMask API. 
+When GetProcessAffinityMask is unavailable, the total number of processors 
+from GetSystemInfo is used. For UNIX-like environments, either the sysconf or 
+the fpsysctl function is used. For other environments, the return value is 
+always <b>1</b>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="GetSystemThreadCount.Result">
+<short>The number of threads on the system.</short>
+</element>
 
-      <element name="Register">
-        <short>Registers components for use in the Lazarus IDE.</short>
-        <descr>
-          <p>
-            <var>Register</var> is a procedure used to make components in the unit available for use in the Lazarus IDE. Register calls <var>RegisterComponents</var> to make the <var>TProcessUTF8</var> available on the <b>System</b> tab.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TProcessUTF8"/>
-        </seealso>
-      </element>
+<element name="Register">
+<short>Registers components for use in the Lazarus IDE.</short>
+<descr>
+<p>
+<var>Register</var> is a procedure used to make components in the unit 
+available for use in the Lazarus IDE. Register calls 
+<var>RegisterComponents</var> to make the <var>TProcessUTF8</var> available 
+on the <b>System</b> tab.
+</p>
+</descr>
+<seealso>
+<link id="TProcessUTF8"/>
+</seealso>
+</element>
 
-    </module>
-    <!-- UTF8Process -->
-  </package>
+</module>
+<!-- UTF8Process -->
+</package>
 </fpdoc-descriptions>

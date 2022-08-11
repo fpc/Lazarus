@@ -1,342 +1,406 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-     ====================================================================
-        LookupStringList
-    ====================================================================
-    -->
-    <module name="LookupStringList">
-      <short>
-        Contains TLookupStringList, an unsorted StringList with a fast lookup feature.
-      </short>
-      <descr>
-        <p>
-          <file>lookupstringlist.pas</file> contains TLookupStringList, an unsorted StringList with a fast lookup feature. This file is part of the <file>LazUtils</file> package.
-        </p>
-        <p>
-          Authors: Juha Manninen / Antônio Galvão
-        </p>
-      </descr>
+<package name="lazutils">
+<!--
+====================================================================
+LookupStringList
+====================================================================
+-->
+<module name="LookupStringList">
+<short>
+Contains TLookupStringList, an unsorted StringList with a fast lookup feature.
+</short>
+<descr>
+<p>
+<file>lookupstringlist.pas</file> contains TLookupStringList, an unsorted 
+StringList with a fast lookup feature. This file is part of the 
+<file>LazUtils</file> package.
+</p>
+<p>
+Authors: Juha Manninen / Antônio Galvão
+</p>
+</descr>
 
-      <!-- class Visibility: default -->
-      <element name="TLookupStringList">
-        <short>
-          Implements an unsorted StringList with a fast lookup feature.
-        </short>
-        <descr>
-          <p>
-            <var>TLookupStringList</var> is a <var>TStringList</var> descendant that implements an unsorted string list with a fast lookup feature. Internally it uses a map container to store the strings which are used in the <var>Contains</var>, <var>IndexOf</var> and <var>Find</var> methods. The map container does not reserve too much memory because the strings are reference counted and not copied.
-          </p>
-          <p>
-            All values for the Duplicates property are fully supported, including dupIgnore and dupError (unlike in unsorted TStringList class).
-          </p>
-          <p>
-            This class is useful when you must preserve the order in list, but also need to do fast lookups to see if a string exists, or must prevent duplicates.
-          </p>
-          <p>
-            Authors: Juha Manninen / Antônio Galvão
-          </p>
-        </descr>
-        <seealso>
-           <link id="#rtl.classes.TStringList">TStringList</link>
-        </seealso>
-      </element>
+<!-- class Visibility: default -->
+<element name="TLookupStringList">
+<short>
+Implements an unsorted StringList with a fast lookup feature.
+</short>
+<descr>
+<p>
+<var>TLookupStringList</var> is a <var>TStringList</var> descendant that 
+implements an unsorted string list with a fast lookup feature. Internally it 
+uses a map container to store the strings which are used in the 
+<var>Contains</var>, <var>IndexOf</var> and <var>Find</var> methods. The map 
+container does not reserve too much memory because the strings are reference 
+counted and not copied.
+</p>
+<p>
+All values for the Duplicates property are fully supported, including 
+dupIgnore and dupError (unlike in unsorted TStringList class).
+</p>
+<p>
+This class is useful when you must preserve the order in list, but also need 
+to do fast lookups to see if a string exists, or must prevent duplicates.
+</p>
+<p>
+Authors: Juha Manninen / Antônio Galvão
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
+</element>
 
-      <!-- variable Visibility: private -->
-      <element name="TLookupStringList.FMap"/>
+<!-- variable Visibility: private -->
+<element name="TLookupStringList.FMap"/>
 
-      <!-- procedure Visibility: protected -->
-      <element name="TLookupStringList.InsertItem">
-        <short>
-          Adds a new value to the items and the string map with duplicate enforcement.
-        </short>
-        <descr>
-          <p>
-            <var>InsertItem</var> is an overridden method which ensures that the internal <var>String</var> map and the <var>Duplicates</var> property are used when an item value is inserted. When <var>Sorted</var> contains <b>False</b>, the value in Duplicates determines the actions taken.
-          </p>
-          <dl>
-            <dt>dupAccept</dt>
-            <dd>
-              Duplicates are allowed. Inserts the item and adds it to the string map.
-            </dd>
-            <dt>dupIgnore</dt>
-            <dd>
-              Ignores duplicates. No actions are performed when S is already in the string map.
-            </dd>
-            <dt>dupError</dt>
-            <dd>
-              Raises an Exception if S is already in the string map.
-            </dd>
-          </dl>
-          <p>
-            InsertItem calls the inherited method, and adds the value in <var>S</var> to the internal string map.
-          </p>
-        </descr>
-        <errors>
-          <p>
-            Raises an <var>Exception</var> when adding a duplicated value and Duplicates contains <var>dupError</var>. Raised with the message 'TLookupStringList.InsertItem: Duplicates are not allowed.'
-          </p>
-        </errors>
-        <seealso>
-          <link id="#rtl.classes.TStringList">TStringList</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.InsertItem.Index">
-        <short>Position for the new item.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.InsertItem.S">
-        <short>Value for the new item.</short>
-      </element>
+<!-- procedure Visibility: protected -->
+<element name="TLookupStringList.InsertItem">
+<short>
+Adds a new value to the items and the string map with duplicate enforcement.
+</short>
+<descr>
+<p>
+<var>InsertItem</var> is an overridden method which ensures that the internal 
+<var>String</var> map and the <var>Duplicates</var> property are used when an 
+item value is inserted. When <var>Sorted</var> contains <b>False</b>, the 
+value in Duplicates determines the actions taken.
+</p>
+<dl>
+<dt>dupAccept</dt>
+<dd>
+Duplicates are allowed. Inserts the item and adds it to the string map.
+</dd>
+<dt>dupIgnore</dt>
+<dd>
+Ignores duplicates. No actions are performed when S is already in the string 
+map.
+</dd>
+<dt>dupError</dt>
+<dd>
+Raises an Exception if S is already in the string map.
+</dd>
+</dl>
+<p>
+InsertItem calls the inherited method, and adds the value in <var>S</var> to 
+the internal string map.
+</p>
+</descr>
+<errors>
+<p>
+Raises an <var>Exception</var> when adding a duplicated value and Duplicates 
+contains <var>dupError</var>. Raised with the message 
+'TLookupStringList.InsertItem: Duplicates are not allowed.'
+</p>
+</errors>
+<seealso>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.InsertItem.Index">
+<short>Position for the new item.</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.InsertItem.S">
+<short>Value for the new item.</short>
+</element>
 
-      <!-- constructor Visibility: public -->
-      <element name="TLookupStringList.Create">
-        <short>
-          Constructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor. Create allocates the internal <var>TStringMap</var> instance used in the class.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings.Create">TStrings.Create</link>
-        </seealso>
-      </element>
+<!-- constructor Visibility: public -->
+<element name="TLookupStringList.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance, and calls the 
+inherited constructor. Create allocates the internal <var>TStringMap</var> 
+instance used in the class.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings.Create">TStrings.Create</link>
+</seealso>
+</element>
 
-      <!-- destructor Visibility: public -->
-      <element name="TLookupStringList.Destroy">
-        <short>
-          Destructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy frees the internal <var>TStringMap</var> instance allocated in the constructor, and calls the inherited Destroy method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.Destroy">TStringList.Destroy</link>
-        </seealso>
-      </element>
+<!-- destructor Visibility: public -->
+<element name="TLookupStringList.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the destructor for the class instance. Destroy frees 
+the internal <var>TStringMap</var> instance allocated in the constructor, and 
+calls the inherited Destroy method.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.Destroy">TStringList.Destroy</link>
+</seealso>
+</element>
 
-      <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Assign">
-        <short>
-          Implements object persistence in the class.
-        </short>
-        <descr>
-          <p>
-            <var>Assign</var> is an overridden method which implements the object persistence mechanism in the class. Assign ensures that property values in <var>Source</var> are stored in the current class instance. Assign calls the inherited method. When Source is a <var>TLookupStringList</var> class instance, the values in its internal string map are also stored in the current class instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Assign.Source">
-        <short>Persistent object with property values for the class instance.</short>
-      </element>
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Assign">
+<short>
+Implements object persistence in the class.
+</short>
+<descr>
+<p>
+<var>Assign</var> is an overridden method which implements the object 
+persistence mechanism in the class. Assign ensures that property values in 
+<var>Source</var> are stored in the current class instance. Assign calls the 
+inherited method. When Source is a <var>TLookupStringList</var> class 
+instance, the values in its internal string map are also stored in the 
+current class instance.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
+</seealso>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Assign.Source">
+<short>Persistent object with property values for the class instance.</short>
+</element>
 
-      <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Clear">
-        <short>
-          Clears the content stored in the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Clear</var> is an overridden method used to clear the content stored in <var>Strings</var>, <var>Objects</var>, and the internal string map. Clear calls the inherited method, and calls the <var>TStringMap.Clear</var> method in the internal string map.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.Clear">TStringList.Clear</link>
-        </seealso>
-      </element>
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Clear">
+<short>
+Clears the content stored in the class instance.
+</short>
+<descr>
+<p>
+<var>Clear</var> is an overridden method used to clear the content stored in 
+<var>Strings</var>, <var>Objects</var>, and the internal string map. Clear 
+calls the inherited method, and calls the <var>TStringMap.Clear</var> method 
+in the internal string map.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.Clear">TStringList.Clear</link>
+</seealso>
+</element>
 
-      <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Delete">
-        <short>
-          Deletes the value at the specified position.
-        </short>
-        <descr>
-          <p>
-            <var>Delete</var> is an overridden method which ensures that the internal string map is maintained when deleting the value stored at the specified position. The corresponding value in <var>Strings</var> is used to check for duplicates using <var>IndexOf</var>. When a duplicate exists, and <var>Duplicates</var> are not allowed, the value is also removed from the internal string map. Delete calls the inherited method to delete the values in Strings and Objects at the position in <var>Index</var>.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.Delete">TStringList.Delete</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Delete.Index">
-        <short>Ordinal position of the value to delete.</short>
-      </element>
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Delete">
+<short>
+Deletes the value at the specified position.
+</short>
+<descr>
+<p>
+<var>Delete</var> is an overridden method which ensures that the internal 
+string map is maintained when deleting the value stored at the specified 
+position. The corresponding value in <var>Strings</var> is used to check for 
+duplicates using <var>IndexOf</var>. When a duplicate exists, and 
+<var>Duplicates</var> are not allowed, the value is also removed from the 
+internal string map. Delete calls the inherited method to delete the values 
+in Strings and Objects at the position in <var>Index</var>.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.Delete">TStringList.Delete</link>
+</seealso>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Delete.Index">
+<short>Ordinal position of the value to delete.</short>
+</element>
 
-      <!-- function Visibility: public -->
-      <element name="TLookupStringList.Add">
-        <short>
-          Adds the specified value to the Strings in the list.
-        </short>
-        <descr>
-          <p>
-            <var>Add</var> is an overridden <var>Integer</var> function used to enforce handling of <var>Duplicates</var> when adding the specified value to <var>Strings</var>. Add checks the values in <var>Sorted</var> and Duplicates to see if duplicates are allowed in the unsorted string list.
-          </p>
-          <p>
-            The return value is <b>-1</b> if the value in <var>S</var> already exists in the string map, and no actions are performed in the method. Otherwise, the inherited Add method is called to store the value in S. The return value is the position in Strings where the new value was stored.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.Add">TStringList.Add</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TLookupStringList.Add.Result">
-        <short>
-          Ordinal position for the new value, or -1 when duplicates are not allowed.
-        </short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Add.S">
-        <short>Value to add to the Strings in the list.</short>
-      </element>
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Add">
+<short>
+Adds the specified value to the Strings in the list.
+</short>
+<descr>
+<p>
+<var>Add</var> is an overridden <var>Integer</var> function used to enforce 
+handling of <var>Duplicates</var> when adding the specified value to 
+<var>Strings</var>. Add checks the values in <var>Sorted</var> and Duplicates 
+to see if duplicates are allowed in the unsorted string list.
+</p>
+<p>
+The return value is <b>-1</b> if the value in <var>S</var> already exists in 
+the string map, and no actions are performed in the method. Otherwise, the 
+inherited Add method is called to store the value in S. The return value is 
+the position in Strings where the new value was stored.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.Add">TStringList.Add</link>
+</seealso>
+</element>
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Add.Result">
+<short>
+Ordinal position for the new value, or -1 when duplicates are not allowed.
+</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Add.S">
+<short>Value to add to the Strings in the list.</short>
+</element>
 
-      <!-- function Visibility: public -->
-      <element name="TLookupStringList.AddObject">
-        <short>
-          Adds the specified values to the Strings and Objects in the list.
-        </short>
-        <descr>
-          <p>
-            <var>AddObject</var> is an overridden <var>Integer</var> function used to add the specified values to the <var>Strings</var> and <var>Objects</var> in the list. AddObject calls the <var>Add</var> method to add the value in <var>S</var> to Strings.
-          </p>
-          <p>
-            The return value contains the ordinal position in Strings where the value was stored, or <b>-1</b> when duplicate values are not allowed. If the return value is not <b>-1</b>, the Objects property is updated to include the value in <var>AObject</var> at the specified position.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings.AddObject">TStrings.AddObject</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TLookupStringList.AddObject.Result">
-        <short>
-          Ordinal position for the new values, or -1 when duplicates are not allowed.
-        </short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.AddObject.S">
-        <short>Value added to the Strings property.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.AddObject.AObject">
-        <short>Value added to the Objects property.</short>
-      </element>
+<!-- function Visibility: public -->
+<element name="TLookupStringList.AddObject">
+<short>
+Adds the specified values to the Strings and Objects in the list.
+</short>
+<descr>
+<p>
+<var>AddObject</var> is an overridden <var>Integer</var> function used to add 
+the specified values to the <var>Strings</var> and <var>Objects</var> in the 
+list. AddObject calls the <var>Add</var> method to add the value in 
+<var>S</var> to Strings.
+</p>
+<p>
+The return value contains the ordinal position in Strings where the value was 
+stored, or <b>-1</b> when duplicate values are not allowed. If the return 
+value is not <b>-1</b>, the Objects property is updated to include the value 
+in <var>AObject</var> at the specified position.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings.AddObject">TStrings.AddObject</link>
+</seealso>
+</element>
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.AddObject.Result">
+<short>
+Ordinal position for the new values, or -1 when duplicates are not allowed.
+</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.AddObject.S">
+<short>Value added to the Strings property.</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.AddObject.AObject">
+<short>Value added to the Objects property.</short>
+</element>
 
-      <!-- function Visibility: public -->
-      <element name="TLookupStringList.Contains">
-        <short>
-          Determines if the specified value already exists in the string map.
-        </short>
-        <descr>
-          <p>
-            <var>Contains</var> is a <var>Boolean</var> function used to determine if the specified value already exists in the internal string map for the string list. The return value is <b>True</b> when <var>S</var> is already stored in the <var>TStringMap</var> for the class.
-          </p>
-          <p>
-            Contains is called from the <var>Add</var>, <var>InsertItem</var>, and <var>IndexOf</var> methods.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TLookupStringList.Contains.Result">
-        <short><b>True</b> when the value is already stored in the TStringMap for the class.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Contains.S">
-        <short>Value to locate in the string map.</short>
-      </element>
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Contains">
+<short>
+Determines if the specified value already exists in the string map.
+</short>
+<descr>
+<p>
+<var>Contains</var> is a <var>Boolean</var> function used to determine if the 
+specified value already exists in the internal string map for the string 
+list. The return value is <b>True</b> when <var>S</var> is already stored in 
+the <var>TStringMap</var> for the class.
+</p>
+<p>
+Contains is called from the <var>Add</var>, <var>InsertItem</var>, and 
+<var>IndexOf</var> methods.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Contains.Result">
+<short>
+<b>True</b> when the value is already stored in the TStringMap for the class.
+</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Contains.S">
+<short>Value to locate in the string map.</short>
+</element>
 
-      <!-- function Visibility: public -->
-      <element name="TLookupStringList.Find">
-        <short>
-          Locates the specified value in the Strings property.
-        </short>
-        <descr>
-          <p>
-            <var>Find</var> is an overridden <var>Boolean</var> function used to locate the specified value in the <var>Strings</var> property. The value in <var>Index</var> contains the position in Strings where value was located using the <var>IndexOf</var> method. Index contains <b>-1</b> if the value in <var>S</var> is not stored in Strings. The return value if <b>True</b> when Index contains a value other than <b>-1</b>.
-          </p>
-          <p>
-            Please note: Find does <b>NOT</b> call the inherited method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.Find">TStringList.Find</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TLookupStringList.Find.Result">
-        <short><b>True</b> when the value is located in the Strings property.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Find.S">
-        <short>Value to find in the Strings property.</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.Find.Index">
-        <short>Ordinal position where the value was found.</short>
-      </element>
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Find">
+<short>
+Locates the specified value in the Strings property.
+</short>
+<descr>
+<p>
+<var>Find</var> is an overridden <var>Boolean</var> function used to locate 
+the specified value in the <var>Strings</var> property. The value in 
+<var>Index</var> contains the position in Strings where value was located 
+using the <var>IndexOf</var> method. Index contains <b>-1</b> if the value in 
+<var>S</var> is not stored in Strings. The return value if <b>True</b> when 
+Index contains a value other than <b>-1</b>.
+</p>
+<p>
+Please note: Find does <b>NOT</b> call the inherited method.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.Find">TStringList.Find</link>
+</seealso>
+</element>
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Find.Result">
+<short><b>True</b> when the value is located in the Strings property.</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Find.S">
+<short>Value to find in the Strings property.</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Find.Index">
+<short>Ordinal position where the value was found.</short>
+</element>
 
-      <!-- function Visibility: public -->
-      <element name="TLookupStringList.IndexOf">
-        <short>
-          Gets the position in Strings where the specified value is stored.
-        </short>
-        <descr>
-          <p>
-            <var>IndexOf</var> is an overridden <var>Integer</var> function used to get the position in <var>Strings</var> where the specified value is stored. IndexOf uses the internal <var>String</var> map to determine if the value in <var>S</var> is stored in the string list. If S already exists, the inherited method is called.
-          </p>
-          <p>
-            The return value contains the ordinal position for the specified value, or <b>-1</b> when S does not exist in the string map.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStringList.IndexOf">TStringList.IndexOf</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TLookupStringList.IndexOf.Result">
-        <short>
-          Ordinal position for the specified value, or -1 when it does not exist.
-        </short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TLookupStringList.IndexOf.S">
-        <short>Value to locate in Strings.</short>
-      </element>
+<!-- function Visibility: public -->
+<element name="TLookupStringList.IndexOf">
+<short>
+Gets the position in Strings where the specified value is stored.
+</short>
+<descr>
+<p>
+<var>IndexOf</var> is an overridden <var>Integer</var> function used to get 
+the position in <var>Strings</var> where the specified value is stored. 
+IndexOf uses the internal <var>String</var> map to determine if the value in 
+<var>S</var> is stored in the string list. If S already exists, the inherited 
+method is called.
+</p>
+<p>
+The return value contains the ordinal position for the specified value, or 
+<b>-1</b> when S does not exist in the string map.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStringList.IndexOf">TStringList.IndexOf</link>
+</seealso>
+</element>
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.IndexOf.Result">
+<short>
+Ordinal position for the specified value, or -1 when it does not exist.
+</short>
+</element>
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.IndexOf.S">
+<short>Value to locate in Strings.</short>
+</element>
 
-      <element name="Deduplicate">
-        <short>
-          Removes duplicate strings in the AStrings argument.
-        </short>
-        <descr>
-          <p>
-            Removes duplicate strings (with case sensitivity) from <var>AStrings</var>. Deduplicate creates a <var>TLookupStringList</var> instance that is used to remove the duplicate values in AStrings.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TLookupStringList"/>
-        </seealso>
-      </element>
-      <element name="Deduplicate.AStrings">
-        <short>TStrings instance examined in the function.</short>
-      </element>
-      <element name="Deduplicate.Result">
-        <short>The number of duplicates removed from AStrings.</short>
-      </element>
+<element name="Deduplicate">
+<short>
+Removes duplicate strings in the AStrings argument.
+</short>
+<descr>
+<p>
+Removes duplicate strings (with case sensitivity) from <var>AStrings</var>. 
+Deduplicate creates a <var>TLookupStringList</var> instance that is used to 
+remove the duplicate values in AStrings.
+</p>
+</descr>
+<seealso>
+<link id="TLookupStringList"/>
+</seealso>
+</element>
+<element name="Deduplicate.AStrings">
+<short>TStrings instance examined in the function.</short>
+</element>
+<element name="Deduplicate.Result">
+<short>The number of duplicates removed from AStrings.</short>
+</element>
 
-    </module>
-    <!-- LookupStringList -->
-  </package>
+</module>
+<!-- LookupStringList -->
+</package>
 </fpdoc-descriptions>

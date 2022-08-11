@@ -3,9 +3,9 @@
 <package name="lazutils">
 
 <!--
-  ====================================================================
-    LazFileCache
-  ====================================================================
+====================================================================
+LazFileCache
+====================================================================
 -->
 
 <module name="LazFileCache">
@@ -15,8 +15,8 @@ Implements a caching mechanism for file and directory state information.
 <descr>
 <p>
 <file>lazfilecache.pas</file> implement a caching mechanism used for file and
-directory state information. It is used in the implementation of the Lazarus IDE,
-and in the LCL package system.
+directory state information. It is used in the implementation of the Lazarus 
+IDE, and in the LCL package system.
 </p>
 <p>
 This file is part of the <file>LazUtils</file> package.
@@ -40,7 +40,8 @@ state caching mechanism.
 <p>
 <var>TFileStateCacheItemFlag</var> is an enumerated type with values that
 represent flags used for files or directories in the state caching mechanism.
-Values from the enumeration are stored in the <var>TFileStateCacheItemFlags</var>
+Values from the enumeration are stored in the 
+<var>TFileStateCacheItemFlags</var>
 set type, and used in the implementation of the <var>TFileStateCacheItem</var>
 class.
 </p>
@@ -103,7 +104,9 @@ class.
 
 <!-- set type Visibility: default -->
 <element name="TFileStateCacheItemFlags">
-<short>Set type used to store TFileStateCacheItemFlag enumeration values.</short>
+<short>
+Set type used to store TFileStateCacheItemFlag enumeration values.
+</short>
 <descr/>
 <seealso>
 <link id="TFileStateCacheItemFlag"/>
@@ -119,9 +122,11 @@ Contains information about a file or directory in the state caching mechanism.
 </short>
 <descr>
 <p>
-<var>TFileStateCacheItem</var> is a class which contains information about a file or
+<var>TFileStateCacheItem</var> is a class which contains information about a 
+file or
 directory in the state caching mechanism. TFileStateCacheItem has properties
-used to represent a file or directory name (symbolic and physical), a timestamp,
+used to represent a file or directory name (symbolic and physical), a 
+timestamp,
 and status flags.
 </p>
 <p>
@@ -236,9 +241,11 @@ Contains status flags that have been tested for the cached item.
 <short>Timestamp for the cached item.</short>
 <descr>
 <p>
-<var>Timestamp</var> is an <var>Int64</var> property with a timestamp value for
+<var>Timestamp</var> is an <var>Int64</var> property with a timestamp value 
+for
 an item in the state caching mechanism. It is not actually a time value; it is
-a counter that is assigned when the item is added to the TFileStateCache class.
+a counter that is assigned when the item is added to the TFileStateCache 
+class.
 It can be compared to the <var>Timestamp</var> value in the state cache to
 determine when the item is potentially out-of-date.
 </p>
@@ -259,9 +266,11 @@ invalid.
 <short>FileAge value for the file or directory.</short>
 <descr>
 <p>
-<var>Age</var> is a <var>LongInt</var> property with the file age for the file or
+<var>Age</var> is a <var>LongInt</var> property with the file age for the 
+file or
 directory in the cache item. The value for the property is assigned when the
-TFileStateCache.FileAgeCached method is called, and contains the value returned
+TFileStateCache.FileAgeCached method is called, and contains the value 
+returned
 from the FileAge routine in <file>SysUtils</file>.
 </p>
 </descr>
@@ -349,7 +358,8 @@ access and verify state flags for the TFileStateCacheItem instances.
 <p>
 <var>Create</var> is the constructor for the class instance. It allocates
 resources needed for the internal AVL tree used to store the file or directory
-items in the cache mechanism. The address for the <var>CompareFileStateItems</var>
+items in the cache mechanism. The address for the 
+<var>CompareFileStateItems</var>
 routine is used to compare and sort the items added to the AVL tree. It also
 sets the initial value in the <var>Timestamp</var> property.
 </p>
@@ -406,7 +416,9 @@ method is called.
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.Locked">
-<short>Indicates Lock has been called without a corresponding Unlock call.</short>
+<short>
+Indicates Lock has been called without a corresponding Unlock call.
+</short>
 <descr>
 The return value is <b>True</b> when the internal lock count has a positive
 non-zero value.
@@ -419,7 +431,9 @@ non-zero value.
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.Locked.Result">
-<short>True when the internal lock count has a positive non-zero value.</short>
+<short>
+True when the internal lock count has a positive non-zero value.
+</short>
 </element>
 
 <!-- procedure Visibility: public -->
@@ -493,7 +507,9 @@ the local file system. <var>SetFlag</var> is called to update the
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileExistsCached.Result">
-<short>True if the file exists on the local file system and in the cache.</short>
+<short>
+True if the file exists on the local file system and in the cache.
+</short>
 </element>
 
 <!-- argument Visibility: default -->
@@ -504,7 +520,8 @@ the local file system. <var>SetFlag</var> is called to update the
 <!-- function Visibility: public -->
 <element name="TFileStateCache.DirPathExistsCached">
 <short>
-Ensures that a cached item has an up-to-date "directory path exists" flag value.
+Ensures that a cached item has an up-to-date "directory path exists" flag 
+value.
 </short>
 <descr>
 <p>
@@ -593,7 +610,8 @@ Ensures that the "File is Executable" flag is up-to-date for a cache item.
 </short>
 <descr>
 <p>
-<var>FileIsExecutableCached</var> ensures that the cache item for the specified
+<var>FileIsExecutableCached</var> ensures that the cache item for the 
+specified
 file has an up-to-date value in its "File is Executable" flag. It calls
 <var>Check</var> to get the cache item with the given name, and to examine its
 flag values. If Check returns <b>True</b> for the flag, no additional actions
@@ -601,7 +619,8 @@ are performed in the method.
 </p>
 <p>
 Otherwise, the <var>FileIsExecutable</var> routine is called to get the return
-value. <var>SetFlag</var> is called to apply the <var>fsciExecutable</var> flag
+value. <var>SetFlag</var> is called to apply the <var>fsciExecutable</var> 
+flag
 value to the cached item.
 </p>
 </descr>
@@ -692,15 +711,18 @@ Ensures that the file age is up-to-date for a cache item.
 </short>
 <descr>
 <p>
-<var>FileAgeCached</var> differs from the related methods in the class instance.
+<var>FileAgeCached</var> differs from the related methods in the class 
+instance.
 It returns a <var>LongInt</var> value instead of a <var>Boolean</var>, and
 contains the value from the <var>FileAge</var> routine in the RTL
 <file>SysUtils</file> unit. The value represents the last date that the file
-was modified, and the integer value does not include any time-related information
+was modified, and the integer value does not include any time-related 
+information
 for the modification timestamp.
 </p>
 <p>
-FileAgeCached cannot be used for directory names; the value is always <b>-1</b>
+FileAgeCached cannot be used for directory names; the value is always 
+<b>-1</b>
 when used for a directory name.
 </p>
 <p>
@@ -793,12 +815,14 @@ in a cache item with the name in <var>Filename</var>.
 <var>AFile</var> contains the cache item used to get the value for the
 specified flag. The <var>FindFile</var> method is called to get (or create) a
 cache item for the specified file or directory name. AFile is an output
-parameter, and is used to return the <var>TFileStateCacheItem</var> instance to
+parameter, and is used to return the <var>TFileStateCacheItem</var> instance 
+to
 the caller.
 </p>
 <p>
 Check ensures that the cache item is valid (recent) using the
-<var>Timestamp</var> for the class instance. When TimeStamp is more recent than
+<var>Timestamp</var> for the class instance. When TimeStamp is more recent 
+than
 the value in the cache item, the cache item is updated with the current
 Timestamp and its tested flags are cleared.
 </p>
@@ -944,7 +968,8 @@ Unit global variable with the class instance for the state caching mechanism.
 </short>
 <descr>
 <p>
-<var>FileStateCache</var> is a <var>FileStateCache</var> variable which contains
+<var>FileStateCache</var> is a <var>FileStateCache</var> variable which 
+contains
 the class instance used for the state caching mechanism. The default value for
 the variable is Nil (unassigned).
 </p>
@@ -1132,7 +1157,8 @@ Gets the physical file name for the specified file or directory name.
 <p>
 <var>GetPhysicalFilenameCached</var> is a <var>String</var> function used to
 get the physical file name for the value specified in <var>AFileName</var>.
-The return value contains the actual file name for a symbolic link or reference
+The return value contains the actual file name for a symbolic link or 
+reference
 on the local file system.
 </p>
 <p>
@@ -1307,7 +1333,8 @@ in the cache.
 <!-- function type Visibility: default -->
 <element name="TOnFileAgeCached">
 <short>
-Specifies an event handler signalled to get the file age for an item in the cache.
+Specifies an event handler signalled to get the file age for an item in the 
+cache.
 </short>
 <descr/>
 <seealso/>
@@ -1326,7 +1353,8 @@ Specifies an event handler signalled to get the file age for an item in the cach
 <!-- variable Visibility: default -->
 <element name="OnFileExistsCached">
 <short>
-Event handler signalled to get the File Exists flag for the specified file name.
+Event handler signalled to get the File Exists flag for the specified file 
+name.
 </short>
 <descr/>
 <seealso/>

@@ -1,1110 +1,1356 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      LazStringUtils
-    ====================================================================
-    -->
-    <module name="LazStringUtils">
-      <short>
-        Contains routines used for string manipulation.
-        </short>
-      <descr>
-        <p>
-          <file>LazStringUtils.pas</file> contains routines used for string manipulation. It is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
-      <version>
-        File added in LCL version 2.0.X (revision  58631).
-      </version>
+<package name="lazutils">
+<!--
+====================================================================
+LazStringUtils
+====================================================================
+-->
+<module name="LazStringUtils">
+<short>
+Contains routines used for string manipulation.
+</short>
+<descr>
+<p>
+<file>LazStringUtils.pas</file> contains routines used for string 
+manipulation. It is part of the <file>LazUtils</file> package.
+</p>
+</descr>
+<version>
+File added in LCL version 2.0.X (revision  58631).
+</version>
 
-      <!-- unresolved externals -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="LazUTF8"/>
-      <element name="LazLoggerBase"/>
-      <element name="LazTracer"/>
+<!-- unresolved externals -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="LazUTF8"/>
+<element name="LazLoggerBase"/>
+<element name="LazTracer"/>
 
-      <element name="TCommentType">
-        <short>Represents comment styles available in CommentText.</short>
-        <descr/>
-        <seealso>
-          <link id="CommentText"/>
-          <link id="TCommentTypes"/>
-        </seealso>
-      </element>
-      <element name="TCommentType.comtDefault">
-        <short>Auto-detected comment style.</short>
-      </element>
-      <element name="TCommentType.comtNone">
-        <short>No comment.</short>
-      </element>
-      <element name="TCommentType.comtPascal">
-        <short>Comment surrounded by <b>{ }</b> characters.</short>
-      </element>
-      <element name="TCommentType.comtDelphi">
-        <short>Delphi inline comment using a <b>//</b> marker.</short>
-      </element>
-      <element name="TCommentType.comtTurboPascal">
-        <short>TurboPascal comment using <b>(* *)</b> markers.</short>
-      </element>
-      <element name="TCommentType.comtCPP">
-        <short>C++ comment using <b>/* */</b> markers.</short>
-      </element>
-      <element name="TCommentType.comtPerl">
-        <short>Perl comment using a <b>#</b> marker.</short>
-      </element>
-      <element name="TCommentType.comtHtml">
-        <short>HTML/XML comment using <b>&lt;!-- --&gt;</b> markers.</short>
-      </element>
+<element name="TCommentType">
+<short>Represents comment styles available in CommentText.</short>
+<descr/>
+<seealso>
+<link id="CommentText"/>
+<link id="TCommentTypes"/>
+</seealso>
+</element>
+<element name="TCommentType.comtDefault">
+<short>Auto-detected comment style.</short>
+</element>
+<element name="TCommentType.comtNone">
+<short>No comment.</short>
+</element>
+<element name="TCommentType.comtPascal">
+<short>Comment surrounded by <b>{ }</b> characters.</short>
+</element>
+<element name="TCommentType.comtDelphi">
+<short>Delphi inline comment using a <b>//</b> marker.</short>
+</element>
+<element name="TCommentType.comtTurboPascal">
+<short>TurboPascal comment using <b>(* *)</b> markers.</short>
+</element>
+<element name="TCommentType.comtCPP">
+<short>C++ comment using <b>/* */</b> markers.</short>
+</element>
+<element name="TCommentType.comtPerl">
+<short>Perl comment using a <b>#</b> marker.</short>
+</element>
+<element name="TCommentType.comtHtml">
+<short>HTML/XML comment using <b>&lt;!-- --&gt;</b> markers.</short>
+</element>
 
-      <element name="TCommentTypes">
-        <short>Set type for TCommentType enumeration values.</short>
-        <descr/>
-        <seealso>
-          <link id="TCommentType"/>
-          <link id="CommentText"/>
-        </seealso>
-      </element>
+<element name="TCommentTypes">
+<short>Set type for TCommentType enumeration values.</short>
+<descr/>
+<seealso>
+<link id="TCommentType"/>
+<link id="CommentText"/>
+</seealso>
+</element>
 
-      <element name="EndOfLine">
-        <short>End-of-line character sequence.</short>
-        <descr>
-            <p>
-              <var>EndOfLine</var> is a <var>ShortString</var> constant used to represent the end-of-line character sequence. The value is set to the <var>LineEnding</var> for the platform or operating system.
-            </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.system.LineEnding">LineEnding</link>
-        </seealso>
-      </element>
+<element name="EndOfLine">
+<short>End-of-line character sequence.</short>
+<descr>
+<p>
+<var>EndOfLine</var> is a <var>ShortString</var> constant used to represent 
+the end-of-line character sequence. The value is set to the 
+<var>LineEnding</var> for the platform or operating system.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.system.LineEnding">LineEnding</link>
+</seealso>
+</element>
 
-      <element name="LazStartsStr">
-        <short>Determines if a string starts with the specified value.</short>
-        <descr>
-          <p>
-            <var>LazStartsStr</var> is a <var>Boolean</var> function used to determine if the string in <var>AText</var> starts with the text specified in <var>ASubText</var>. It is a modified version of <var>StartsStr</var> from the RTL <file>strutils.pp</file> unit.
-          </p>
-          <p>
-            LazStartsStr casts the values in ASubText and AText to PChar types, and calls <var>StrLComp</var> to perform the comparison.
-          </p>
-          <p>
-            The returns value is <b>True</b> when AText begins with the specified sub-text. It also returns <b>True</b> when ASubText is an empty string (<b>''</b>), which is Delphi compatible.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LazEndsStr"/>
-          <link id="LazStartsText"/>
-        </seealso>
-      </element>
-      <element name="LazStartsStr.Result">
-        <short><b>True</b> when the string starts with the specified sub-text.</short>
-      </element>
-      <element name="LazStartsStr.ASubText">
-        <short>Value to look for at the start of the text.</short>
-      </element>
-      <element name="LazStartsStr.AText">
-        <short>Text examined in the routine.</short>
-      </element>
+<element name="LazStartsStr">
+<short>Determines if a string starts with the specified value.</short>
+<descr>
+<p>
+<var>LazStartsStr</var> is a <var>Boolean</var> function used to determine if 
+the string in <var>AText</var> starts with the text specified in 
+<var>ASubText</var>. It is a modified version of <var>StartsStr</var> from 
+the RTL <file>strutils.pp</file> unit.
+</p>
+<p>
+LazStartsStr casts the values in ASubText and AText to PChar types, and calls 
+<var>StrLComp</var> to perform the comparison.
+</p>
+<p>
+The returns value is <b>True</b> when AText begins with the specified 
+sub-text. It also returns <b>True</b> when ASubText is an empty string 
+(<b>''</b>), which is Delphi compatible.
+</p>
+</descr>
+<seealso>
+<link id="LazEndsStr"/>
+<link id="LazStartsText"/>
+</seealso>
+</element>
+<element name="LazStartsStr.Result">
+<short><b>True</b> when the string starts with the specified sub-text.</short>
+</element>
+<element name="LazStartsStr.ASubText">
+<short>Value to look for at the start of the text.</short>
+</element>
+<element name="LazStartsStr.AText">
+<short>Text examined in the routine.</short>
+</element>
 
-      <element name="LazEndsStr">
-        <short>Determines if a string ends with the specified value.</short>
-        <descr>
-          <p>
-            <var>LazEndsStr</var> is a <var>Boolean</var> function used to determine if the string in <var>AText</var> ends with the text specified in <var>ASubText</var>. It is a modified version of <var>EndsStr</var> from the RTL <file>strutils.pp</file> unit.
-          </p>
-          <p>
-            LazEndsStr casts the values in ASubText and AText to PChar types, and calls <var>StrLComp</var> to perform the comparison.
-          </p>
-          <p>
-            The returns value is <b>True</b> when AText ends with the specified sub-text. It also returns <b>True</b> when ASubText is an empty string (<b>''</b>), which is Delphi compatible.
-          </p>
-        </descr>
-        <seealso>
-          <link id="LazStartsStr"/>
-          <link id="LazEndsText"/>
-        </seealso>
-      </element>
-      <element name="LazEndsStr.Result">
-        <short><b>True</b> when the string ends with the specified value.</short>
-      </element>
-      <element name="LazEndsStr.ASubText">
-        <short>Text to look for at the end of the string.</short>
-      </element>
-      <element name="LazEndsStr.AText">
-        <short>String examined in the routine.</short>
-      </element>
+<element name="LazEndsStr">
+<short>Determines if a string ends with the specified value.</short>
+<descr>
+<p>
+<var>LazEndsStr</var> is a <var>Boolean</var> function used to determine if 
+the string in <var>AText</var> ends with the text specified in 
+<var>ASubText</var>. It is a modified version of <var>EndsStr</var> from the 
+RTL <file>strutils.pp</file> unit.
+</p>
+<p>
+LazEndsStr casts the values in ASubText and AText to PChar types, and calls 
+<var>StrLComp</var> to perform the comparison.
+</p>
+<p>
+The returns value is <b>True</b> when AText ends with the specified sub-text. 
+It also returns <b>True</b> when ASubText is an empty string (<b>''</b>), 
+which is Delphi compatible.
+</p>
+</descr>
+<seealso>
+<link id="LazStartsStr"/>
+<link id="LazEndsText"/>
+</seealso>
+</element>
+<element name="LazEndsStr.Result">
+<short><b>True</b> when the string ends with the specified value.</short>
+</element>
+<element name="LazEndsStr.ASubText">
+<short>Text to look for at the end of the string.</short>
+</element>
+<element name="LazEndsStr.AText">
+<short>String examined in the routine.</short>
+</element>
 
-      <element name="LazStartsText">
-        <short>Determines if a string occurs at the beginning of the specified text.</short>
-        <descr>
-            <p>
-            <var>LazStartsText</var> is a fast implementation of <var>StartsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
-          </p>
-          <p>
-            LazStartsText casts the values in <var>ASubText</var> and <var>AText</var> to <var>PChar</var> types, and calls <var>StrLIComp</var> to perform a case-insensitive comparison for the number of characters in ASubText.
-          </p>
-          <p>
-            The return value is <b>True</b> when ASubText and AText start with the same values. The return value is also <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. The return value is <b>False</b> when StrLIComp returns a non-zero value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.strutils.StartsText">StartsText</link>
-          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
-        </seealso>
-      </element>
-      <element name="LazStartsText.Result">
-        <short><b>True</b> when the sub-text is at the start of the string value.</short>
-      </element>
-      <element name="LazStartsText.ASubText">
-        <short>Value to locate at the start of the string.</short>
-      </element>
-      <element name="LazStartsText.AText">
-        <short>String value used in the comparison.</short>
-      </element>
+<element name="LazStartsText">
+<short>
+Determines if a string occurs at the beginning of the specified text.
+</short>
+<descr>
+<p>
+<var>LazStartsText</var> is a fast implementation of <var>StartsText</var>. 
+The version in the RTL <file>strutils.pp</file> unit calls 
+<var>AnsiCompareText</var> and is <b>very</b> slow.
+</p>
+<p>
+LazStartsText casts the values in <var>ASubText</var> and <var>AText</var> to 
+<var>PChar</var> types, and calls <var>StrLIComp</var> to perform a 
+case-insensitive comparison for the number of characters in ASubText.
+</p>
+<p>
+The return value is <b>True</b> when ASubText and AText start with the same 
+values. The return value is also <b>True</b> when ASubText is an empty string 
+(<b>''</b>); this is Delphi compatible. The return value is <b>False</b> when 
+StrLIComp returns a non-zero value.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.strutils.StartsText">StartsText</link>
+<link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+</seealso>
+</element>
+<element name="LazStartsText.Result">
+<short>
+<b>True</b> when the sub-text is at the start of the string value.
+</short>
+</element>
+<element name="LazStartsText.ASubText">
+<short>Value to locate at the start of the string.</short>
+</element>
+<element name="LazStartsText.AText">
+<short>String value used in the comparison.</short>
+</element>
 
-      <element name="LazEndsText">
-        <short>Determines if a string occurs at the end of the specified text.</short>
-        <descr>
-          <p>
-            <var>LazEndsText</var> is a fast implementation of <var>EndsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
-          </p>
-          <p>
-            LazEndsText casts the values in <var>ASubText</var> and <var>AText</var> to PChar types, and calls <var>StrLIComp</var> to perform a case-insensitive comparison for the number of characters in ASubText at the end of the value in AText.
-          </p>
-          <p>
-            The return value is <b>True</b> when AText ends with the value in ASubText. The return value is <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. It is <b>False</b> when StrLIComp returns a non-zero value, or when ASubText is longer than AText.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.strutils.EndsText">EndsText</link>
-          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
-        </seealso>
-      </element>
-      <element name="LazEndsText.Result">
-        <short><b>True</b> when the sub-text is at the end of the string value.</short>
-      </element>
-      <element name="LazEndsText.ASubText">
-        <short>Value to locate at the end of the string.</short>
-      </element>
-      <element name="LazEndsText.AText">
-        <short>String value used in the comparison.</short>
-      </element>
+<element name="LazEndsText">
+<short>Determines if a string occurs at the end of the specified text.</short>
+<descr>
+<p>
+<var>LazEndsText</var> is a fast implementation of <var>EndsText</var>. The 
+version in the RTL <file>strutils.pp</file> unit calls 
+<var>AnsiCompareText</var> and is <b>very</b> slow.
+</p>
+<p>
+LazEndsText casts the values in <var>ASubText</var> and <var>AText</var> to 
+PChar types, and calls <var>StrLIComp</var> to perform a case-insensitive 
+comparison for the number of characters in ASubText at the end of the value 
+in AText.
+</p>
+<p>
+The return value is <b>True</b> when AText ends with the value in ASubText. 
+The return value is <b>True</b> when ASubText is an empty string (<b>''</b>); 
+this is Delphi compatible. It is <b>False</b> when StrLIComp returns a 
+non-zero value, or when ASubText is longer than AText.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.strutils.EndsText">EndsText</link>
+<link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+</seealso>
+</element>
+<element name="LazEndsText.Result">
+<short>
+<b>True</b> when the sub-text is at the end of the string value.
+</short>
+</element>
+<element name="LazEndsText.ASubText">
+<short>Value to locate at the end of the string.</short>
+</element>
+<element name="LazEndsText.AText">
+<short>String value used in the comparison.</short>
+</element>
 
-      <element name="PosI">
-        <short>A case-insensitive optimized version of the Pos routine.</short>
-        <descr>
-          <p>
-            <var>PosI</var> implements a case-insensitive optimized version of the <var>Pos</var> routine found the RTL <file>system</file> unit. It only accepts <var>String</var> values in its parameters, unlike the RTL overloaded variants which accept combinations of the Char, ShortString, AnsiString, UnicodeString, WideString, and Variant types.
-          </p>
-          <p>
-            It is also an alternative to the <var>ContainsText</var> routine in the RTL <file>StrUtils</file> unit, which has a <b>very</b> slow implementation.
-          </p>
-          <p>
-            <var>SubStr</var> contains the value to locate in <var>S</var>.
-          </p>
-          <p>
-            PosI supports ASCII comparison. It converts the values in SubStr and S to lowercase char by char for fast comparisons. The result is much faster than Pos(Lowercase(SubStr),Lowercase(S)) which is often used.
-          </p>
-          <p>
-            The return value contains the position in S where SubStr is located, or 0 when SubStr does not occur in S. The position is 1-based just like indexed access to values in the String type.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.system.Pos">Pos</link>
-          <link id="#rtl.strutils.ContainsText">ContainsText</link>
-        </seealso>
-      </element>
-      <element name="PosI.Result">
-        <short>Position of the sub-string within the searched value, or 0 when not found.</short>
-      </element>
-      <element name="PosI.SubStr">
-        <short>Value to locate in the searched value.</short>
-      </element>
-      <element name="PosI.S">
-        <short>Value searched for the specified sub-string.</short>
-      </element>
+<element name="PosI">
+<short>A case-insensitive optimized version of the Pos routine.</short>
+<descr>
+<p>
+<var>PosI</var> implements a case-insensitive optimized version of the 
+<var>Pos</var> routine found the RTL <file>system</file> unit. It only 
+accepts <var>String</var> values in its parameters, unlike the RTL overloaded 
+variants which accept combinations of the Char, ShortString, AnsiString, 
+UnicodeString, WideString, and Variant types.
+</p>
+<p>
+It is also an alternative to the <var>ContainsText</var> routine in the RTL 
+<file>StrUtils</file> unit, which has a <b>very</b> slow implementation.
+</p>
+<p>
+<var>SubStr</var> contains the value to locate in <var>S</var>.
+</p>
+<p>
+PosI supports ASCII comparison. It converts the values in SubStr and S to 
+lowercase char by char for fast comparisons. The result is much faster than 
+Pos(Lowercase(SubStr),Lowercase(S)) which is often used.
+</p>
+<p>
+The return value contains the position in S where SubStr is located, or 0 
+when SubStr does not occur in S. The position is 1-based just like indexed 
+access to values in the String type.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.system.Pos">Pos</link>
+<link id="#rtl.strutils.ContainsText">ContainsText</link>
+</seealso>
+</element>
+<element name="PosI.Result">
+<short>
+Position of the sub-string within the searched value, or 0 when not found.
+</short>
+</element>
+<element name="PosI.SubStr">
+<short>Value to locate in the searched value.</short>
+</element>
+<element name="PosI.S">
+<short>Value searched for the specified sub-string.</short>
+</element>
 
-      <element name="IsNumber">
-        <short><b>True</b> when characters in S are in the range <b>'0'..'9'</b></short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="IsNumber.Result">
-        <short><b>True</b> when characters in S are in the range '0'..'9'</short>
-      </element>
-      <element name="IsNumber.s">
-        <short>String with values examined in the routine.</short>
-      </element>
+<element name="IsNumber">
+<short>
+<b>True</b> when characters in S are in the range <b>'0'..'9'</b>
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="IsNumber.Result">
+<short><b>True</b> when characters in S are in the range '0'..'9'</short>
+</element>
+<element name="IsNumber.s">
+<short>String with values examined in the routine.</short>
+</element>
 
-      <element name="LineEndingCount">
-        <short>Gets the number of LineEnding sequences in the specified text.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="LineEndingCount.Result">
-        <short>Number of LineEnding sequences in the text.</short>
-      </element>
-      <element name="LineEndingCount.Txt">
-        <short>Text examined in the routine.</short>
-      </element>
-      <element name="LineEndingCount.LengthOfLastLine">
-        <short>Number of characters in the last line.</short>
-      </element>
+<element name="LineEndingCount">
+<short>Gets the number of LineEnding sequences in the specified text.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LineEndingCount.Result">
+<short>Number of LineEnding sequences in the text.</short>
+</element>
+<element name="LineEndingCount.Txt">
+<short>Text examined in the routine.</short>
+</element>
+<element name="LineEndingCount.LengthOfLastLine">
+<short>Number of characters in the last line.</short>
+</element>
 
-      <element name="ChangeLineEndings">
-        <short>Converts CR and LF characters in s string to the specified line-ending sequence.</short>
-        <descr>
-          <p>
-            <var>ChangeLineEndings</var> is a <var>String</var> function used to convert <b>CR</b> or <b>LF</b> characters in a string to the specified line-ending character sequence. ChangeLineEndings assumes that values in <var>S</var> are single-byte values and not multi-byte UTF-8 characters.
-          </p>
-          <p>
-            ChangeLineEndings iterates over the byte values in S, and replaces any occurrences of <b>CR</b> (<b>#13</b>), <b>LF</b> (<b>#10</b>), or <b>CR+LF</b> (<b>#13#10</b>) to the specified end-of-line character sequence. No actions are performed in the function when S is an empty string (<b>''</b>).
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="ChangeLineEndings.Result">
-        <short>Value from S after conversion of line endings.</short>
-      </element>
-      <element name="ChangeLineEndings.s">
-        <short>Values examined in the routine.</short>
-      </element>
-      <element name="ChangeLineEndings.NewLineEnding">
-        <short>End-of-line character sequence applied to the return value.</short>
-      </element>
+<element name="ChangeLineEndings">
+<short>
+Converts CR and LF characters in s string to the specified line-ending 
+sequence.
+</short>
+<descr>
+<p>
+<var>ChangeLineEndings</var> is a <var>String</var> function used to convert 
+<b>CR</b> or <b>LF</b> characters in a string to the specified line-ending 
+character sequence. ChangeLineEndings assumes that values in <var>S</var> are 
+single-byte values and not multi-byte UTF-8 characters.
+</p>
+<p>
+ChangeLineEndings iterates over the byte values in S, and replaces any 
+occurrences of <b>CR</b> (<b>#13</b>), <b>LF</b> (<b>#10</b>), or 
+<b>CR+LF</b> (<b>#13#10</b>) to the specified end-of-line character sequence. 
+No actions are performed in the function when S is an empty string 
+(<b>''</b>).
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="ChangeLineEndings.Result">
+<short>Value from S after conversion of line endings.</short>
+</element>
+<element name="ChangeLineEndings.s">
+<short>Values examined in the routine.</short>
+</element>
+<element name="ChangeLineEndings.NewLineEnding">
+<short>End-of-line character sequence applied to the return value.</short>
+</element>
 
-      <element name="LineBreaksToSystemLineBreaks">
-        <short>Normalizes end-of-line characters in a string to the value in LineEnding.</short>
-        <descr>
-          <p>
-            Calls ChangeLineEndings to normalize line ending sequences to the value in LineEnding.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="LineBreaksToSystemLineBreaks.Result">
-        <short>Value after line ending sequences have been replaced.</short>
-      </element>
-      <element name="LineBreaksToSystemLineBreaks.s">
-        <short>String with values examined and updated in the routine.</short>
-      </element>
+<element name="LineBreaksToSystemLineBreaks">
+<short>
+Normalizes end-of-line characters in a string to the value in LineEnding.
+</short>
+<descr>
+<p>
+Calls ChangeLineEndings to normalize line ending sequences to the value in 
+LineEnding.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="LineBreaksToSystemLineBreaks.Result">
+<short>Value after line ending sequences have been replaced.</short>
+</element>
+<element name="LineBreaksToSystemLineBreaks.s">
+<short>String with values examined and updated in the routine.</short>
+</element>
 
-      <element name="LineBreaksToDelimiter">
-        <short>
-          Converts CR or LF characters in a string to the specified delimiter character.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="LineBreaksToDelimiter.Result">
-        <short>Value after converting CR, LF to the delimiter character </short>
-      </element>
-      <element name="LineBreaksToDelimiter.s">
-        <short>String with values converted in the routine.</short>
-      </element>
-      <element name="LineBreaksToDelimiter.Delimiter">
-        <short>Delimiter character used in place of CR, LF characters.</short>
-      </element>
+<element name="LineBreaksToDelimiter">
+<short>
+Converts CR or LF characters in a string to the specified delimiter character.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LineBreaksToDelimiter.Result">
+<short>Value after converting CR, LF to the delimiter character </short>
+</element>
+<element name="LineBreaksToDelimiter.s">
+<short>String with values converted in the routine.</short>
+</element>
+<element name="LineBreaksToDelimiter.Delimiter">
+<short>Delimiter character used in place of CR, LF characters.</short>
+</element>
 
-      <element name="ConvertLineEndings">
-        <short>Deprecated.</short>
-        <descr>
-          <remark>Deprecated. Use LineBreaksToSystemLineBreaks instead.</remark>
-        </descr>
-        <seealso>
-          <link id="LineBreaksToSystemLineBreaks"/>
-        </seealso>
-      </element>
-      <element name="ConvertLineEndings.Result">
-        <short>Value after converting the line endings.</short>
-      </element>
-      <element name="ConvertLineEndings.s">
-        <short>Value with line endings to convert in the routine.</short>
-      </element>
+<element name="ConvertLineEndings">
+<short>Deprecated.</short>
+<descr>
+<remark>Deprecated. Use LineBreaksToSystemLineBreaks instead.</remark>
+</descr>
+<seealso>
+<link id="LineBreaksToSystemLineBreaks"/>
+</seealso>
+</element>
+<element name="ConvertLineEndings.Result">
+<short>Value after converting the line endings.</short>
+</element>
+<element name="ConvertLineEndings.s">
+<short>Value with line endings to convert in the routine.</short>
+</element>
 
-      <element name="TabsToSpaces">
-        <short>Converts all Tab characters in a string to the specified number of space characters.</short>
-        <descr>
-          <p>
-            Replaces all <b>Tab</b> characters (<b>#9</b>) in <var>S</var> with the specified number of space characters.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TabsToSpaces.Result">
-        <short>String value after converting Tab characters to spaces.</short>
-      </element>
-      <element name="TabsToSpaces.s">
-        <short>String with values updated in the routine.</short>
-      </element>
-      <element name="TabsToSpaces.TabWidth">
-        <short>Number of space characters to use for each Tab character.</short>
-      </element>
-      <element name="TabsToSpaces.UseUTF8">
-        <short><b>True</b> when UTF-8 codepoints are used to convert individual characters.</short>
-      </element>
+<element name="TabsToSpaces">
+<short>
+Converts all Tab characters in a string to the specified number of space 
+characters.
+</short>
+<descr>
+<p>
+Replaces all <b>Tab</b> characters (<b>#9</b>) in <var>S</var> with the 
+specified number of space characters.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TabsToSpaces.Result">
+<short>String value after converting Tab characters to spaces.</short>
+</element>
+<element name="TabsToSpaces.s">
+<short>String with values updated in the routine.</short>
+</element>
+<element name="TabsToSpaces.TabWidth">
+<short>Number of space characters to use for each Tab character.</short>
+</element>
+<element name="TabsToSpaces.UseUTF8">
+<short>
+<b>True</b> when UTF-8 codepoints are used to convert individual characters.
+</short>
+</element>
 
-      <element name="CommentText">
-        <short>
-          Converts a string into a comment using the specified comment style.
-        </short>
-        <descr>
-          <p>
-            <var>CommentText</var> is a <var>String</var> function used to convert the specified string into a comment using a given comment style.
-          </p>
-          <p>
-            <var>CommentType</var> is a <var>TCommentType</var> value which indicates the comment style applied to the value in <var>S</var>. See <link id="TCommentType">TCommentType</link> for more information about the enumeration values and their meanings.
-          </p>
-          <p>
-            No actions are performed in the function when CommentType contains <var>comtNone</var>.
-          </p>
-          <p>
-            When CommentType contains <var>comtDefault</var>, the <var>comtPascal</var> comment style is applied to the value in S.
-          </p>
-          <p>
-            An internal procedure is used to apply the starting marker (and ending marker when needed) as well as a continuation character sequence for a multi-line comment.
-          </p>
-          <p>
-            CommentText is used in the implementation of the source code editor in the Lazarus IDE. An <var>Exception</var> can be raised if the comment length does not match the expected length for the comment style.
-          </p>
-        </descr>
-        <errors>
-          Raises an Exception with the message 'IDEProcs.CommentText ERROR: ' when an unexpected length is found for the commented value.
-        </errors>
-        <seealso>
-          <link id="TCommentType"/>
-        </seealso>
-      </element>
-      <element name="CommentText.Result">
-        <short>Comment with the specified style marker(s).</short>
-      </element>
-      <element name="CommentText.s">
-        <short>Value converted into a comment.</short>
-      </element>
-      <element name="CommentText.CommentType">
-        <short>Comment type applied to the string.</short>
-      </element>
+<element name="CommentText">
+<short>
+Converts a string into a comment using the specified comment style.
+</short>
+<descr>
+<p>
+<var>CommentText</var> is a <var>String</var> function used to convert the 
+specified string into a comment using a given comment style.
+</p>
+<p>
+<var>CommentType</var> is a <var>TCommentType</var> value which indicates the 
+comment style applied to the value in <var>S</var>. See <link 
+id="TCommentType">TCommentType</link> for more information about the 
+enumeration values and their meanings.
+</p>
+<p>
+No actions are performed in the function when CommentType contains 
+<var>comtNone</var>.
+</p>
+<p>
+When CommentType contains <var>comtDefault</var>, the <var>comtPascal</var> 
+comment style is applied to the value in S.
+</p>
+<p>
+An internal procedure is used to apply the starting marker (and ending marker 
+when needed) as well as a continuation character sequence for a multi-line 
+comment.
+</p>
+<p>
+CommentText is used in the implementation of the source code editor in the 
+Lazarus IDE. An <var>Exception</var> can be raised if the comment length does 
+not match the expected length for the comment style.
+</p>
+</descr>
+<errors>
+Raises an Exception with the message 'IDEProcs.CommentText ERROR: ' when an 
+unexpected length is found for the commented value.
+</errors>
+<seealso>
+<link id="TCommentType"/>
+</seealso>
+</element>
+<element name="CommentText.Result">
+<short>Comment with the specified style marker(s).</short>
+</element>
+<element name="CommentText.s">
+<short>Value converted into a comment.</short>
+</element>
+<element name="CommentText.CommentType">
+<short>Comment type applied to the string.</short>
+</element>
 
-      <element name="SimpleSyntaxToRegExpr">
-        <short>
-          Creates a regular expression from a filter expression used in IDE dialogs.
-        </short>
-        <descr>
-          <p>
-            Ensures that characters in <var>Src</var> are converted to the notation needed for regular expressions, including '.', ',', ';', '*', '+', '?', and '\'. The return value is enclosed in a regex single line expression ('^(...)$').
-          </p>
-          <p>
-            Used in the implementation of the Clean Directory and Change Encoding dialogs in the Lazarus IDE.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="SimpleSyntaxToRegExpr.Result">
-        <short>Regular expression for the value in Src.</short>
-      </element>
-      <element name="SimpleSyntaxToRegExpr.Src">
-        <short>Filter expression converted to a regular expression in the routine.</short>
-      </element>
+<element name="SimpleSyntaxToRegExpr">
+<short>
+Creates a regular expression from a filter expression used in IDE dialogs.
+</short>
+<descr>
+<p>
+Ensures that characters in <var>Src</var> are converted to the notation 
+needed for regular expressions, including '.', ',', ';', '*', '+', '?', and 
+'\'. The return value is enclosed in a regex single line expression 
+('^(...)$').
+</p>
+<p>
+Used in the implementation of the Clean Directory and Change Encoding dialogs 
+in the Lazarus IDE.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="SimpleSyntaxToRegExpr.Result">
+<short>Regular expression for the value in Src.</short>
+</element>
+<element name="SimpleSyntaxToRegExpr.Src">
+<short>
+Filter expression converted to a regular expression in the routine.
+</short>
+</element>
 
-      <element name="BinaryStrToText">
-        <short>Replaces control characters with Pascal-style character constants.</short>
-        <descr>
-          <p>
-            Replaces control characters (<b>#0..#31</b>) with Pascal-style character constants using the <b>#nnn</b> notation.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="BinaryStrToText.Result">
-        <short>String after replacing binary characters.</short>
-      </element>
-      <element name="BinaryStrToText.s">
-        <short>Values examined and converted in the routine.</short>
-      </element>
+<element name="BinaryStrToText">
+<short>
+Replaces control characters with Pascal-style character constants.
+</short>
+<descr>
+<p>
+Replaces control characters (<b>#0..#31</b>) with Pascal-style character 
+constants using the <b>#nnn</b> notation.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="BinaryStrToText.Result">
+<short>String after replacing binary characters.</short>
+</element>
+<element name="BinaryStrToText.s">
+<short>Values examined and converted in the routine.</short>
+</element>
 
-      <element name="SpecialCharsToSpaces">
-        <short>Converts occurrences of special characters to spaces.</short>
-        <descr>
-          <p>
-            Converts special characters (<b>#0..#31, #127</b>) to a Space character. Converts line breaks to a single Space character (<b>#32</b>). Trims leading and trailing Spaces. Calls <var>UTF8FixBroken</var> when <var>FixUTF8</var> is <b>True</b>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="SpecialCharsToSpaces.Result">
-        <short>String after converting special characters.</short>
-      </element>
-      <element name="SpecialCharsToSpaces.s">
-        <short>String examined and converted in the routine.</short>
-      </element>
-      <element name="SpecialCharsToSpaces.FixUTF8">
-        <short><b>True</b> when invalid UTF-8 codepoints are repaired in the string.</short>
-      </element>
+<element name="SpecialCharsToSpaces">
+<short>Converts occurrences of special characters to spaces.</short>
+<descr>
+<p>
+Converts special characters (<b>#0..#31, #127</b>) to a Space character. 
+Converts line breaks to a single Space character (<b>#32</b>). Trims leading 
+and trailing Spaces. Calls <var>UTF8FixBroken</var> when <var>FixUTF8</var> 
+is <b>True</b>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="SpecialCharsToSpaces.Result">
+<short>String after converting special characters.</short>
+</element>
+<element name="SpecialCharsToSpaces.s">
+<short>String examined and converted in the routine.</short>
+</element>
+<element name="SpecialCharsToSpaces.FixUTF8">
+<short>
+<b>True</b> when invalid UTF-8 codepoints are repaired in the string.
+</short>
+</element>
 
-      <element name="ShortDotsLine">
-        <short>Shortens and "ellipsifies" the specified value.</short>
-        <descr>
-          <p>
-            <var>ShortDotsLine</var> is a <var>String</var> function used to generate a shortened and  "ellipsified" string for the value in Line.
-          </p>
-          <p>
-            ShortDotsLine calls <var>Utf8EscapeControlChars</var> to convert any control characters in Line to their representation as a hexadecimal character value.
-          </p>
-          <p>
-            The value in the <var>MaxTextLen</var> constant is used as the maximum length for the "ellipsified" string value. If the number of UTF-8 codepoints in the line is larger than the value in MaxTextLen, the string is shortened to the maximum length and 3 (three) Period ('.') characters are appended to the return value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="MaxTextLen"/>
-          <link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
-        </seealso>
-      </element>
-      <element name="ShortDotsLine.Result">
-        <short>Shortened and "ellipsified" value for the specified line of text.</short>
-      </element>
-      <element name="ShortDotsLine.Line">
-        <short>Line of text examined in the routine.</short>
-      </element>
+<element name="ShortDotsLine">
+<short>Shortens and "ellipsifies" the specified value.</short>
+<descr>
+<p>
+<var>ShortDotsLine</var> is a <var>String</var> function used to generate a 
+shortened and  "ellipsified" string for the value in Line.
+</p>
+<p>
+ShortDotsLine calls <var>Utf8EscapeControlChars</var> to convert any control 
+characters in Line to their representation as a hexadecimal character value.
+</p>
+<p>
+The value in the <var>MaxTextLen</var> constant is used as the maximum length 
+for the "ellipsified" string value. If the number of UTF-8 codepoints in the 
+line is larger than the value in MaxTextLen, the string is shortened to the 
+maximum length and 3 (three) Period ('.') characters are appended to the 
+return value.
+</p>
+</descr>
+<seealso>
+<link id="MaxTextLen"/>
+<link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
+</seealso>
+</element>
+<element name="ShortDotsLine.Result">
+<short>
+Shortened and "ellipsified" value for the specified line of text.
+</short>
+</element>
+<element name="ShortDotsLine.Line">
+<short>Line of text examined in the routine.</short>
+</element>
 
-      <element name="BeautifyLineXY">
-        <short>Combines and optionally shortens the specified values.</short>
-        <descr>
-          <p>
-            <var>BeautifyLineXY</var> is a <var>String</var> function used to combine the values in the <var>Filename</var>, <var>Line</var>, <var>X</var> and <var>Y</var> arguments into a formatted message. The message is in the form:
-          </p>
+<element name="BeautifyLineXY">
+<short>Combines and optionally shortens the specified values.</short>
+<descr>
+<p>
+<var>BeautifyLineXY</var> is a <var>String</var> function used to combine the 
+values in the <var>Filename</var>, <var>Line</var>, <var>X</var> and 
+<var>Y</var> arguments into a formatted message. The message is in the form:
+</p>
 <code>examplefile.pas (123, 1) The error message goes here.</code>
-          <p>
-            <var>Filename</var> contains a file name used at the start of the formatted message.
-          </p>
-          <p>
-            <var>X</var> represents the line number in the context for the message.
-          </p>
-          <p>
-            <var>Y</var> represents the column number in the context for the message.
-          </p>
-          <p>
-            <var>Line</var> contains the context for the formatted message. The <var>ShortDotsLine</var> routine is called to shorten and "ellipsify" the message in Line when needed.
-          </p>
-          <p>
-            BeautifyLineXY is used in the implementation of Jump History and Search Result views in the Lazarus IDE.
-          </p>
-        </descr>
-        <seealso>
-          <link id="ShortDotsLine"/>
-          <link id="MaxTextLen"/>
-        </seealso>
-      </element>
-      <element name="BeautifyLineXY.Result">
-        <short>Formatted message using the specified values.</short>
-      </element>
-      <element name="BeautifyLineXY.Filename">
-        <short>File name used at the start of the formatted message.</short>
-      </element>
-      <element name="BeautifyLineXY.Line">
-        <short>Contains the context for the formatted message.</short>
-      </element>
-      <element name="BeautifyLineXY.X">
-        <short>Line number for the message context.</short>
-      </element>
-      <element name="BeautifyLineXY.Y">
-        <short>Column number for the message context.</short>
-      </element>
+<p>
+<var>Filename</var> contains a file name used at the start of the formatted 
+message.
+</p>
+<p>
+<var>X</var> represents the line number in the context for the message.
+</p>
+<p>
+<var>Y</var> represents the column number in the context for the message.
+</p>
+<p>
+<var>Line</var> contains the context for the formatted message. The 
+<var>ShortDotsLine</var> routine is called to shorten and "ellipsify" the 
+message in Line when needed.
+</p>
+<p>
+BeautifyLineXY is used in the implementation of Jump History and Search 
+Result views in the Lazarus IDE.
+</p>
+</descr>
+<seealso>
+<link id="ShortDotsLine"/>
+<link id="MaxTextLen"/>
+</seealso>
+</element>
+<element name="BeautifyLineXY.Result">
+<short>Formatted message using the specified values.</short>
+</element>
+<element name="BeautifyLineXY.Filename">
+<short>File name used at the start of the formatted message.</short>
+</element>
+<element name="BeautifyLineXY.Line">
+<short>Contains the context for the formatted message.</short>
+</element>
+<element name="BeautifyLineXY.X">
+<short>Line number for the message context.</short>
+</element>
+<element name="BeautifyLineXY.Y">
+<short>Column number for the message context.</short>
+</element>
 
-      <element name="BreakString">
-        <short>Applies line breaks and indenting to a string value.</short>
-        <descr>
-          <p>
-            <var>BreakString</var> is a <var>String</var> function used to apply line breaks and indent spacing to the text specified in <var>S</var>.
-          </p>
-          <p>
-            <var>MaxLineLength</var> contains the maximum number of characters allowed on any given line.
-          </p>
-          <p>
-            <var>Indent</var> contains the number of space characters used to indent text following a line break. The value in Indent may be adjusted if it is too large for the value specified in MaxLineLength.
-          </p>
-          <p>
-            BreakString examines values in S and counts the number of characters in each of the lines. Existing <b>CR</b> (<b>#13</b>) or <b>LF</b> (<b>#10</b>) characters are preserved. If the value in MaxLineLength is reached for any given line, a new line is created by inserting the value in LineEnding. The line break occurs at a natural word boundary when one can be determined.
-          </p>
-          <p>
-            Inserting a line break causes an indent with the number of space characters in Indent to be inserted in the return value following the line break.
-          </p>
-          <p>
-            The process is repeated until all values in S have been handled.
-          </p>
-          <p>
-            The return value contains the content in S after applying line breaks and indent spacing.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.system.LineEnding">LineEnding</link>
-        </seealso>
-      </element>
-      <element name="BreakString.Result">
-        <short>String with values after applying line breaks and indent spacing.</short>
-      </element>
-      <element name="BreakString.s">
-        <short>Contains the text examined and formatted in the routine.</short>
-      </element>
-      <element name="BreakString.MaxLineLength">
-        <short>Maximum length of lines in the converted value.</short>
-      </element>
-      <element name="BreakString.Indent">
-        <short>
-          Number of Space characters prepended as an indent for lines in the converted value.
-        </short>
-      </element>
+<element name="BreakString">
+<short>Applies line breaks and indenting to a string value.</short>
+<descr>
+<p>
+<var>BreakString</var> is a <var>String</var> function used to apply line 
+breaks and indent spacing to the text specified in <var>S</var>.
+</p>
+<p>
+<var>MaxLineLength</var> contains the maximum number of characters allowed on 
+any given line.
+</p>
+<p>
+<var>Indent</var> contains the number of space characters used to indent text 
+following a line break. The value in Indent may be adjusted if it is too 
+large for the value specified in MaxLineLength.
+</p>
+<p>
+BreakString examines values in S and counts the number of characters in each 
+of the lines. Existing <b>CR</b> (<b>#13</b>) or <b>LF</b> (<b>#10</b>) 
+characters are preserved. If the value in MaxLineLength is reached for any 
+given line, a new line is created by inserting the value in LineEnding. The 
+line break occurs at a natural word boundary when one can be determined.
+</p>
+<p>
+Inserting a line break causes an indent with the number of space characters 
+in Indent to be inserted in the return value following the line break.
+</p>
+<p>
+The process is repeated until all values in S have been handled.
+</p>
+<p>
+The return value contains the content in S after applying line breaks and 
+indent spacing.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.system.LineEnding">LineEnding</link>
+</seealso>
+</element>
+<element name="BreakString.Result">
+<short>
+String with values after applying line breaks and indent spacing.
+</short>
+</element>
+<element name="BreakString.s">
+<short>Contains the text examined and formatted in the routine.</short>
+</element>
+<element name="BreakString.MaxLineLength">
+<short>Maximum length of lines in the converted value.</short>
+</element>
+<element name="BreakString.Indent">
+<short>
+Number of Space characters prepended as an indent for lines in the converted 
+value.
+</short>
+</element>
 
-      <element name="SplitString">
-        <short>
-          Creates and populates a TStringList with lines determined using the specified delimiter character.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="SplitString.Result">
-        <short>TStrings instance created and populated in the routine.</short>
-      </element>
-      <element name="SplitString.s">
-        <short>String with the values examined and loaded into the string list.</short>
-      </element>
-      <element name="SplitString.Delimiter">
-        <short>Character used to delimit lines of text in S.</short>
-      </element>
-      <element name="SplitString.AddTo">
-        <short>TStrings instance where lines of text are stored.</short>
-      </element>
-      <element name="SplitString.ClearList">
-        <short>
-          <b>True</b> to clear the string list; <b>False</b> to append lines to existing values.
-        </short>
-      </element>
+<element name="SplitString">
+<short>
+Creates and populates a TStringList with lines determined using the specified 
+delimiter character.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="SplitString.Result">
+<short>TStrings instance created and populated in the routine.</short>
+</element>
+<element name="SplitString.s">
+<short>
+String with the values examined and loaded into the string list.
+</short>
+</element>
+<element name="SplitString.Delimiter">
+<short>Character used to delimit lines of text in S.</short>
+</element>
+<element name="SplitString.AddTo">
+<short>TStrings instance where lines of text are stored.</short>
+</element>
+<element name="SplitString.ClearList">
+<short>
+<b>True</b> to clear the string list; <b>False</b> to append lines to 
+existing values.
+</short>
+</element>
 
-      <element name="StringListToText">
-        <short>
-          Gets a string with the lines of text from the specified TStrings instance.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="StringListToText.Result">
-        <short>String with the delimited lines of text from the TStrings instance.</short>
-      </element>
-      <element name="StringListToText.List">
-        <short>TStrings instance with text values retrieved in the routine.</short>
-      </element>
-      <element name="StringListToText.Delimiter">
-        <short>End-of-Line sequence used to delimit lines of text in the result value.</short>
-      </element>
-      <element name="StringListToText.IgnoreEmptyLines">
-        <short><b>True</b> to omit empty lines in the string list from the return value.</short>
-      </element>
+<element name="StringListToText">
+<short>
+Gets a string with the lines of text from the specified TStrings instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="StringListToText.Result">
+<short>
+String with the delimited lines of text from the TStrings instance.
+</short>
+</element>
+<element name="StringListToText.List">
+<short>TStrings instance with text values retrieved in the routine.</short>
+</element>
+<element name="StringListToText.Delimiter">
+<short>
+End-of-Line sequence used to delimit lines of text in the result value.
+</short>
+</element>
+<element name="StringListToText.IgnoreEmptyLines">
+<short>
+<b>True</b> to omit empty lines in the string list from the return value.
+</short>
+</element>
 
-      <element name="StringListPartToText">
-        <short>Converts the specified lines in a TStrings instance to a string value.</short>
-        <descr>
-          <p>
-            <var>StringListPartToText</var> is a <var>String</var> function used to get a line of text which contains the specified range of lines from a <var>TStrings</var> instance.
-          </p>
-          <p>
-            <var>List</var> is the TStrings instance which contains the lines of text examined in the function.
-          </p>
-          <p>
-            <var>FromIndex</var> and <var>ToIndex</var> indicate the line numbers in List used in the return value for the function. They must contain valid ordinal positions, and are used to access the indexed Strings property in the TStrings instance.
-          </p>
-          <p>
-            If FromIndex contains -1, it defaults to the first ordinal position (0). ToIndex must be equal to or larger than the value in FromIndex, and valid for the number of Strings in the string list. It defaults to the upper limit for the string list when it is too large. FromIndex cannot have a value that is larger than the one in ToIndex.
-          </p>
-          <p>
-            No actions are performed in the function when List is unassigned (contains Nil), or when values in the FromIndex or ToIndex parameters are invalid. The return value is an empty string ('') in these scenarios.
-          </p>
-          <p>
-            <var>IgnoreEmptyLines</var> indicates whether empty lines in the string list are omitted from the return value for the function. When set to <b>True</b>, any Strings value that is an empty string (<b>''</b>) is discarded. Otherwise, the empty value is denoted by adding the value in Delimiter to the return value.
-          </p>
-          <p>
-            <var>Delimiter</var> contains the end-of-line sequence used to separate strings added to the return value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TStrings">TStrings</link>
-          <link id="#rtl.classes.TStringList">TStringList</link>
-        </seealso>
-      </element>
-      <element name="StringListPartToText.Result">
-        <short>Text representing the specified lines in the TStrings instance.</short>
-      </element>
-      <element name="StringListPartToText.List">
-        <short>TStrings instance examined in the method.</short>
-      </element>
-      <element name="StringListPartToText.FromIndex">
-        <short>First line includes in the text.</short>
-      </element>
-      <element name="StringListPartToText.ToIndex">
-        <short>Last line included in the text.</short>
-      </element>
-      <element name="StringListPartToText.Delimiter">
-        <short>Delimiter inserted between lines in the text.</short>
-      </element>
-      <element name="StringListPartToText.IgnoreEmptyLines">
-        <short>Indicates if empty lines are excluded from the text.</short>
-      </element>
+<element name="StringListPartToText">
+<short>
+Converts the specified lines in a TStrings instance to a string value.
+</short>
+<descr>
+<p>
+<var>StringListPartToText</var> is a <var>String</var> function used to get a 
+line of text which contains the specified range of lines from a 
+<var>TStrings</var> instance.
+</p>
+<p>
+<var>List</var> is the TStrings instance which contains the lines of text 
+examined in the function.
+</p>
+<p>
+<var>FromIndex</var> and <var>ToIndex</var> indicate the line numbers in List 
+used in the return value for the function. They must contain valid ordinal 
+positions, and are used to access the indexed Strings property in the 
+TStrings instance.
+</p>
+<p>
+If FromIndex contains -1, it defaults to the first ordinal position (0). 
+ToIndex must be equal to or larger than the value in FromIndex, and valid for 
+the number of Strings in the string list. It defaults to the upper limit for 
+the string list when it is too large. FromIndex cannot have a value that is 
+larger than the one in ToIndex.
+</p>
+<p>
+No actions are performed in the function when List is unassigned (contains 
+Nil), or when values in the FromIndex or ToIndex parameters are invalid. The 
+return value is an empty string ('') in these scenarios.
+</p>
+<p>
+<var>IgnoreEmptyLines</var> indicates whether empty lines in the string list 
+are omitted from the return value for the function. When set to <b>True</b>, 
+any Strings value that is an empty string (<b>''</b>) is discarded. 
+Otherwise, the empty value is denoted by adding the value in Delimiter to the 
+return value.
+</p>
+<p>
+<var>Delimiter</var> contains the end-of-line sequence used to separate 
+strings added to the return value.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TStrings">TStrings</link>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
+</element>
+<element name="StringListPartToText.Result">
+<short>Text representing the specified lines in the TStrings instance.</short>
+</element>
+<element name="StringListPartToText.List">
+<short>TStrings instance examined in the method.</short>
+</element>
+<element name="StringListPartToText.FromIndex">
+<short>First line includes in the text.</short>
+</element>
+<element name="StringListPartToText.ToIndex">
+<short>Last line included in the text.</short>
+</element>
+<element name="StringListPartToText.Delimiter">
+<short>Delimiter inserted between lines in the text.</short>
+</element>
+<element name="StringListPartToText.IgnoreEmptyLines">
+<short>Indicates if empty lines are excluded from the text.</short>
+</element>
 
-      <element name="StringListToString">
-        <short>Converts the content in a TStrings instance to a string value.</short>
-        <descr>
-          <p>
-            Adds a <b>LF</b> (<b>#10</b>) character to the end of text lines in the string list. Quotes each string value which ends with a LF character using surrounding <b>Quote</b> (<b>'</b>) characters.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StringListToString.Result">
-        <short>String representing the contents of the TStrings instance.</short>
-      </element>
-      <element name="StringListToString.List">
-        <short>TStrings instance examined in the method.</short>
-      </element>
-      <element name="StringListToString.FromIndex">
-        <short>First line included in the string value.</short>
-      </element>
-      <element name="StringListToString.ToIndex">
-        <short>Last line included in the string value.</short>
-      </element>
-      <element name="StringListToString.IgnoreEmptyLines">
-        <short>Indicates if empty lines are excluded from the result.</short>
-      </element>
+<element name="StringListToString">
+<short>Converts the content in a TStrings instance to a string value.</short>
+<descr>
+<p>
+Adds a <b>LF</b> (<b>#10</b>) character to the end of text lines in the 
+string list. Quotes each string value which ends with a LF character using 
+surrounding <b>Quote</b> (<b>'</b>) characters.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="StringListToString.Result">
+<short>String representing the contents of the TStrings instance.</short>
+</element>
+<element name="StringListToString.List">
+<short>TStrings instance examined in the method.</short>
+</element>
+<element name="StringListToString.FromIndex">
+<short>First line included in the string value.</short>
+</element>
+<element name="StringListToString.ToIndex">
+<short>Last line included in the string value.</short>
+</element>
+<element name="StringListToString.IgnoreEmptyLines">
+<short>Indicates if empty lines are excluded from the result.</short>
+</element>
 
-      <element name="StringToStringList">
-        <short>
-          Stores a multi-line string as separate lines in a TStrings instance.
-        </short>
-        <descr>
-          <p>
-            <var>StringToStringList</var> is a procedure used to convert the multi-line String in <var>S</var> to separate lines of text in a <var>TStrings</var> instance.
-          </p>
-          <p>
-            The <b>LF</b> (<b>#10</b>) character is used to mark the end of a line in <var>S</var>, and causes the preceding text to be added to the string list in <var>List</var>. The LF character is not included in the value added to the string list.
-          </p>
-          <p>
-            If no end-of-line characters are found in <var>S</var>, then a single line of text is added to the string list.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StringToStringList.s">
-        <short>
-          String with values extracted and stored in the string list.
-        </short>
-      </element>
-      <element name="StringToStringList.List">
-        <short>TStrings instance where values are stored in the routine.</short>
-      </element>
+<element name="StringToStringList">
+<short>
+Stores a multi-line string as separate lines in a TStrings instance.
+</short>
+<descr>
+<p>
+<var>StringToStringList</var> is a procedure used to convert the multi-line 
+String in <var>S</var> to separate lines of text in a <var>TStrings</var> 
+instance.
+</p>
+<p>
+The <b>LF</b> (<b>#10</b>) character is used to mark the end of a line in 
+<var>S</var>, and causes the preceding text to be added to the string list in 
+<var>List</var>. The LF character is not included in the value added to the 
+string list.
+</p>
+<p>
+If no end-of-line characters are found in <var>S</var>, then a single line of 
+text is added to the string list.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="StringToStringList.s">
+<short>
+String with values extracted and stored in the string list.
+</short>
+</element>
+<element name="StringToStringList.List">
+<short>TStrings instance where values are stored in the routine.</short>
+</element>
 
-      <element name="GetNextDelimitedItem">
-        <short>
-          Gets the next delimited value in List starting at the specified position.
-        </short>
-        <descr>
-          <p>
-            <var>GetNextDelimitedItem</var> is a <var>String</var> function used to get the next item in a delimited list of items starting at the specified position.
-          </p>
-          <p>
-            <var>List</var> contains the list of values examined in the routine.
-          </p>
-          <p>
-            <var>Delimiter</var> is the character used to separate item values in List.
-          </p>
-          <p>
-            <var>Position</var> contains the initial character position in List examined in the routine.
-          </p>
-          <p>
-            GetNextDelimitedItem iterates over the characters in List starting at the character in Position. When the character in Delimiter is encountered, the characters starting at Position and prior to the position for the Delimiter are copied into the return value.
-          </p>
-          <p>
-            The value in Position is incremented to skip both the character values and the delimiter for the list item.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="GetNextDelimitedItem.Result">
-        <short>Value for the list item at the specified position.</short>
-      </element>
-      <element name="GetNextDelimitedItem.List">
-        <short>List of delimited values examined in the routine.</short>
-      </element>
-      <element name="GetNextDelimitedItem.Delimiter">
-        <short>Delimiter character used to separate values in the list.</short>
-      </element>
-      <element name="GetNextDelimitedItem.Position">
-        <short>Initial position in the list where the characters are examined </short>
-      </element>
+<element name="GetNextDelimitedItem">
+<short>
+Gets the next delimited value in List starting at the specified position.
+</short>
+<descr>
+<p>
+<var>GetNextDelimitedItem</var> is a <var>String</var> function used to get 
+the next item in a delimited list of items starting at the specified position.
+</p>
+<p>
+<var>List</var> contains the list of values examined in the routine.
+</p>
+<p>
+<var>Delimiter</var> is the character used to separate item values in List.
+</p>
+<p>
+<var>Position</var> contains the initial character position in List examined 
+in the routine.
+</p>
+<p>
+GetNextDelimitedItem iterates over the characters in List starting at the 
+character in Position. When the character in Delimiter is encountered, the 
+characters starting at Position and prior to the position for the Delimiter 
+are copied into the return value.
+</p>
+<p>
+The value in Position is incremented to skip both the character values and 
+the delimiter for the list item.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="GetNextDelimitedItem.Result">
+<short>Value for the list item at the specified position.</short>
+</element>
+<element name="GetNextDelimitedItem.List">
+<short>List of delimited values examined in the routine.</short>
+</element>
+<element name="GetNextDelimitedItem.Delimiter">
+<short>Delimiter character used to separate values in the list.</short>
+</element>
+<element name="GetNextDelimitedItem.Position">
+<short>Initial position in the list where the characters are examined </short>
+</element>
 
-      <element name="HasDelimitedItem">
-        <short>Determines if a value exists in a delimited list of values.</short>
-        <descr>
-          <p>
-            <var>HasDelimitedItem</var> is a <var>Boolean</var> function used to determine if the specified value exists in a delimited list of values.
-          </p>
-          <p>
-            <var>List</var> contains the item values examined in the routine.
-          </p>
-          <p>
-            <var>Delimiter</var> is the character used to separate the item values in List.
-          </p>
-          <p>
-            <var>FindItem</var> contains the value to locate in the List of items.
-          </p>
-          <p>
-            HasDelimitedItem calls <var>FindNextDelimitedItem</var> to get the return value for the method. The return value is <b>True</b> when FindNextDelimitedItem returns an non-empty string value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="FindNextDelimitedItem"/>
-        </seealso>
-      </element>
-      <element name="HasDelimitedItem.Result">
-        <short><b>True</b> when the specified item is found in the list.</short>
-      </element>
-      <element name="HasDelimitedItem.List">
-        <short>Values checked for the specified item.</short>
-      </element>
-      <element name="HasDelimitedItem.Delimiter">
-        <short>Delimiter used to separate items in the list.</short>
-      </element>
-      <element name="HasDelimitedItem.FindItem">
-        <short>Value to locate in the list of items.</short>
-      </element>
+<element name="HasDelimitedItem">
+<short>Determines if a value exists in a delimited list of values.</short>
+<descr>
+<p>
+<var>HasDelimitedItem</var> is a <var>Boolean</var> function used to 
+determine if the specified value exists in a delimited list of values.
+</p>
+<p>
+<var>List</var> contains the item values examined in the routine.
+</p>
+<p>
+<var>Delimiter</var> is the character used to separate the item values in 
+List.
+</p>
+<p>
+<var>FindItem</var> contains the value to locate in the List of items.
+</p>
+<p>
+HasDelimitedItem calls <var>FindNextDelimitedItem</var> to get the return 
+value for the method. The return value is <b>True</b> when 
+FindNextDelimitedItem returns an non-empty string value.
+</p>
+</descr>
+<seealso>
+<link id="FindNextDelimitedItem"/>
+</seealso>
+</element>
+<element name="HasDelimitedItem.Result">
+<short><b>True</b> when the specified item is found in the list.</short>
+</element>
+<element name="HasDelimitedItem.List">
+<short>Values checked for the specified item.</short>
+</element>
+<element name="HasDelimitedItem.Delimiter">
+<short>Delimiter used to separate items in the list.</short>
+</element>
+<element name="HasDelimitedItem.FindItem">
+<short>Value to locate in the list of items.</short>
+</element>
 
-      <element name="FindNextDelimitedItem">
-        <short>Finds the next occurrence of a specific value in a delimited list.</short>
-        <descr>
-          <p>
-            <var>FindNextDelimitedItem</var> is a <var>String</var> function used to find the next occurrence of a specific value in a delimited list of values.
-          </p>
-          <p>
-            <var>List</var> is the list with the delimited values searched in the routine.
-          </p>
-          <p>
-            <var>Delimiter</var> is the character used to separate the values in List.
-          </p>
-          <p>
-            <var>Position</var> is a variable parameter with the character index in List where the find operation is started. Position is 1-based, like using indexed access to the values in a String.
-          </p>
-          <p>
-            FindItem is the value to locate in List starting at the given position.
-          </p>
-          <p>
-            FindNextDelimitedItem calls the <var>GetNextDelimitedItem</var> routine to get the individual delimited values in List. GetNextDelimitedItem updates the value in Position when an item is retrieved. The value in Position is set to <b>Len(List)+1</b> if FindItem is not found in the routine.
-          </p>
-          <p>
-            The return value is set to the value in FindItem if it is found in List. The return value is an empty string (<b>''</b>) if FindItem is not found in the List starting at the given position.
-          </p>
-        </descr>
-        <seealso>
-          <link id="GetNextDelimitedItem"/>
-        </seealso>
-      </element>
-      <element name="FindNextDelimitedItem.Result">
-        <short>The value in FindItem when found, or an empty string.</short>
-      </element>
-      <element name="FindNextDelimitedItem.List">
-        <short>List with delimited values examined in the routine.</short>
-      </element>
-      <element name="FindNextDelimitedItem.Delimiter">
-        <short>Character used to separate values in the list.</short>
-      </element>
-      <element name="FindNextDelimitedItem.Position">
-        <short>Starting position for the values examined in the routine.</short>
-      </element>
-      <element name="FindNextDelimitedItem.FindItem">
-        <short>Item value to locate in List.</short>
-      </element>
+<element name="FindNextDelimitedItem">
+<short>
+Finds the next occurrence of a specific value in a delimited list.
+</short>
+<descr>
+<p>
+<var>FindNextDelimitedItem</var> is a <var>String</var> function used to find 
+the next occurrence of a specific value in a delimited list of values.
+</p>
+<p>
+<var>List</var> is the list with the delimited values searched in the routine.
+</p>
+<p>
+<var>Delimiter</var> is the character used to separate the values in List.
+</p>
+<p>
+<var>Position</var> is a variable parameter with the character index in List 
+where the find operation is started. Position is 1-based, like using indexed 
+access to the values in a String.
+</p>
+<p>
+FindItem is the value to locate in List starting at the given position.
+</p>
+<p>
+FindNextDelimitedItem calls the <var>GetNextDelimitedItem</var> routine to 
+get the individual delimited values in List. GetNextDelimitedItem updates the 
+value in Position when an item is retrieved. The value in Position is set to 
+<b>Len(List)+1</b> if FindItem is not found in the routine.
+</p>
+<p>
+The return value is set to the value in FindItem if it is found in List. The 
+return value is an empty string (<b>''</b>) if FindItem is not found in the 
+List starting at the given position.
+</p>
+</descr>
+<seealso>
+<link id="GetNextDelimitedItem"/>
+</seealso>
+</element>
+<element name="FindNextDelimitedItem.Result">
+<short>The value in FindItem when found, or an empty string.</short>
+</element>
+<element name="FindNextDelimitedItem.List">
+<short>List with delimited values examined in the routine.</short>
+</element>
+<element name="FindNextDelimitedItem.Delimiter">
+<short>Character used to separate values in the list.</short>
+</element>
+<element name="FindNextDelimitedItem.Position">
+<short>Starting position for the values examined in the routine.</short>
+</element>
+<element name="FindNextDelimitedItem.FindItem">
+<short>Item value to locate in List.</short>
+</element>
 
-      <element name="MergeWithDelimiter">
-        <short>Combines two string values using the specified delimiter character.</short>
-        <descr>
-          <p>
-            The value in <var>Delimiter</var> is omitted from the return value if either <var>A</var> or <var>B</var> is an empty string (<b>''</b>).
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="MergeWithDelimiter.Result">
-        <short>Combined values using the specified delimiter.</short>
-      </element>
-      <element name="MergeWithDelimiter.a">
-        <short>First value merged in the result.</short>
-      </element>
-      <element name="MergeWithDelimiter.b">
-        <short>Second value merged after the delimiter.</short>
-      </element>
-      <element name="MergeWithDelimiter.Delimiter">
-        <short>Delimiter used to separate values.</short>
-      </element>
+<element name="MergeWithDelimiter">
+<short>
+Combines two string values using the specified delimiter character.
+</short>
+<descr>
+<p>
+The value in <var>Delimiter</var> is omitted from the return value if either 
+<var>A</var> or <var>B</var> is an empty string (<b>''</b>).
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="MergeWithDelimiter.Result">
+<short>Combined values using the specified delimiter.</short>
+</element>
+<element name="MergeWithDelimiter.a">
+<short>First value merged in the result.</short>
+</element>
+<element name="MergeWithDelimiter.b">
+<short>Second value merged after the delimiter.</short>
+</element>
+<element name="MergeWithDelimiter.Delimiter">
+<short>Delimiter used to separate values.</short>
+</element>
 
-      <element name="StripLn">
-        <short>Gets the first line of text up to an end-of-line character.</short>
-        <descr>
-          <p>
-            <var>StripLn</var> is a <var>String</var> function used to get the first line of text in the specified value up to an end-of-line character. CR and LF characters are recognized as end-of-line characters.
-          </p>
-          <p>
-            The return value contains the values from <var>ALine</var> prior to the first end-of-line character, or the entire contents of ALine when an end-of-line character is not found.
-          </p>
-          <remark>
-            The value in ALine is a constant parameter and is not altered in any way in the routine.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StripLn.Result">
-        <short>Text in the initial line of text.</short>
-      </element>
-      <element name="StripLn.ALine">
-        <short>Values examined in the routine.</short>
-      </element>
+<element name="StripLn">
+<short>Gets the first line of text up to an end-of-line character.</short>
+<descr>
+<p>
+<var>StripLn</var> is a <var>String</var> function used to get the first line 
+of text in the specified value up to an end-of-line character. CR and LF 
+characters are recognized as end-of-line characters.
+</p>
+<p>
+The return value contains the values from <var>ALine</var> prior to the first 
+end-of-line character, or the entire contents of ALine when an end-of-line 
+character is not found.
+</p>
+<remark>
+The value in ALine is a constant parameter and is not altered in any way in 
+the routine.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="StripLn.Result">
+<short>Text in the initial line of text.</short>
+</element>
+<element name="StripLn.ALine">
+<short>Values examined in the routine.</short>
+</element>
 
-      <element name="GetPart">
-        <short/>
-        <descr>
-          GetPart is an overloaded String function.
-          It is used to implement facilities in the debugger.
-        </descr>
-        <seealso/>
-      </element>
-      <element name="GetPart.Result">
-        <short/>
-      </element>
-      <element name="GetPart.ASkipTo">
-        <short/>
-      </element>
-      <element name="GetPart.AnEnd">
-        <short/>
-      </element>
-      <element name="GetPart.ASource">
-        <short/>
-      </element>
-      <element name="GetPart.AnIgnoreCase">
-        <short/>
-      </element>
-      <element name="GetPart.AnUpdateSource">
-        <short/>
-      </element>
+<element name="GetPart">
+<short/>
+<descr>
+GetPart is an overloaded String function.
+It is used to implement facilities in the debugger.
+</descr>
+<seealso/>
+</element>
+<element name="GetPart.Result">
+<short/>
+</element>
+<element name="GetPart.ASkipTo">
+<short/>
+</element>
+<element name="GetPart.AnEnd">
+<short/>
+</element>
+<element name="GetPart.ASource">
+<short/>
+</element>
+<element name="GetPart.AnIgnoreCase">
+<short/>
+</element>
+<element name="GetPart.AnUpdateSource">
+<short/>
+</element>
 
-      <element name="TextToSingleLine">
-        <short>Converts a multi-line string to a single line of text.</short>
-        <descr>
-          <p>
-            Replaces <b>CR</b> and <b>LF</b> characters in <var>AText</var> with <b>Space</b> characters. Duplicate Space characters in the return value are converted to a single Space character.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TextToSingleLine.Result">
-        <short>Text after removing end-of-line characters and duplicate spaces.</short>
-      </element>
-      <element name="TextToSingleLine.AText">
-        <short>Text values examined and converted in the routine.</short>
-      </element>
+<element name="TextToSingleLine">
+<short>Converts a multi-line string to a single line of text.</short>
+<descr>
+<p>
+Replaces <b>CR</b> and <b>LF</b> characters in <var>AText</var> with 
+<b>Space</b> characters. Duplicate Space characters in the return value are 
+converted to a single Space character.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TextToSingleLine.Result">
+<short>
+Text after removing end-of-line characters and duplicate spaces.
+</short>
+</element>
+<element name="TextToSingleLine.AText">
+<short>Text values examined and converted in the routine.</short>
+</element>
 
-      <element name="SwapCase">
-        <short>Inverts the case for characters in the specified text.</short>
-        <descr>
-          <p>
-            Inverts the case for characters in the specified string value. Like using LowerCase and UpperCase simultaneously.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="SwapCase.Result">
-        <short>String with values after inverting the case for each character.</short>
-      </element>
-      <element name="SwapCase.S">
-        <short>String with the characters converted in the routine.</short>
-      </element>
+<element name="SwapCase">
+<short>Inverts the case for characters in the specified text.</short>
+<descr>
+<p>
+Inverts the case for characters in the specified string value. Like using 
+LowerCase and UpperCase simultaneously.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="SwapCase.Result">
+<short>String with values after inverting the case for each character.</short>
+</element>
+<element name="SwapCase.S">
+<short>String with the characters converted in the routine.</short>
+</element>
 
-      <element name="ReplaceSubstring">
-        <short>Replaces (or appends) the specified number of bytes at a given position.</short>
-        <descr>
-          <p>
-            <var>ReplaceSubstring</var> is a procedure used to replace a portion of a string with the specified value.
-          </p>
-          <p>
-            <var>Startpos</var> contains the byte position in S where the substitution is performed. When StartPos is larger that the number of bytes in S, the value in Insertion is appended to the existing string value. The initial value in StartPos is 1.
-          </p>
-          <p>
-            <var>Count</var> contains the number of bytes in the string to be replaced in the routine. Count cannot exceed the number of bytes available starting at StartPos. No actions are performed in the routine when Count is <b>0</b> (<b>zero</b>) and the length of the Insertion parameter is <b>0</b> (<b>zero</b>).
-          </p>
-          <p>
-            ReplaceSubstring calls <var>CompareMem</var> to determine if the specified range in S and the value in Insertion have the same content. No actions are performed when the contain the same values.
-          </p>
-          <p>
-            The affected byte values in S are transferred by calling the <var>System.Move</var> routine. <var>SetLength</var> is called to update the new length for the string.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="ReplaceSubstring.S">
-        <short>String with values examined and updated in the routine.</short>
-      </element>
-      <element name="ReplaceSubstring.StartPos">
-        <short>Initial byte position in the string where the substitution occurs.</short>
-      </element>
-      <element name="ReplaceSubstring.Count">
-        <short>Number of bytes replaced in the string.</short>
-      </element>
-      <element name="ReplaceSubstring.Insertion">
-        <short>Value inserted (or appended) to the value in the string.</short>
-      </element>
+<element name="ReplaceSubstring">
+<short>
+Replaces (or appends) the specified number of bytes at a given position.
+</short>
+<descr>
+<p>
+<var>ReplaceSubstring</var> is a procedure used to replace a portion of a 
+string with the specified value.
+</p>
+<p>
+<var>Startpos</var> contains the byte position in S where the substitution is 
+performed. When StartPos is larger that the number of bytes in S, the value 
+in Insertion is appended to the existing string value. The initial value in 
+StartPos is 1.
+</p>
+<p>
+<var>Count</var> contains the number of bytes in the string to be replaced in 
+the routine. Count cannot exceed the number of bytes available starting at 
+StartPos. No actions are performed in the routine when Count is <b>0</b> 
+(<b>zero</b>) and the length of the Insertion parameter is <b>0</b> 
+(<b>zero</b>).
+</p>
+<p>
+ReplaceSubstring calls <var>CompareMem</var> to determine if the specified 
+range in S and the value in Insertion have the same content. No actions are 
+performed when the contain the same values.
+</p>
+<p>
+The affected byte values in S are transferred by calling the 
+<var>System.Move</var> routine. <var>SetLength</var> is called to update the 
+new length for the string.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="ReplaceSubstring.S">
+<short>String with values examined and updated in the routine.</short>
+</element>
+<element name="ReplaceSubstring.StartPos">
+<short>
+Initial byte position in the string where the substitution occurs.
+</short>
+</element>
+<element name="ReplaceSubstring.Count">
+<short>Number of bytes replaced in the string.</short>
+</element>
+<element name="ReplaceSubstring.Insertion">
+<short>Value inserted (or appended) to the value in the string.</short>
+</element>
 
-      <element name="StringCase">
-        <short>Emulates the CASE .. OF statement for string values.</short>
-        <descr>
-          <p>
-            <var>StringCase</var> is an overloaded <var>Integer</var> function used to emulate the Pascal <b>CASE .. OF</b> statement.
-          </p>
-          <p>
-            <var>AString</var> contains the value compared to the elements in the <var>ACase</var> array.
-          </p>
-          <p>
-            <var>ACase</var> is an array of String values which determine the result for the function.
-          </p>
-          <p>
-            <var>AIgnoreCase</var> indicates whether case is significant when comparing AString to elements in ACase. <b>False</b> indicates that case is not used in the comparison.
-          </p>
-          <p>
-            <var>APartial</var> indicates whether the value in AString can be a partial match for the value in an array element. When set to <b>False</b>, AString must match the array element exactly to be considered a match. When set to <b>True</b>, any value in ACase which starts with the value in AString is considered a match.
-          </p>
-          <p>
-            The return value contains the ordinal position of the element in ACase which matches the value in AString. The return value is <b>-1</b> if no match was found for the value in AString.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StringCase.Result">
-        <short>Ordinal position for the case selector, or -1 when a match is not found.</short>
-      </element>
-      <element name="StringCase.AString">
-        <short>Value compared to the array elements.</short>
-      </element>
-      <element name="StringCase.ACase">
-        <short>Determines the selector in the return value </short>
-      </element>
-      <element name="StringCase.AnIgnoreCase">
-        <short><b>True</b> if case is ignored in the comparison.</short>
-      </element>
-      <element name="StringCase.APartial">
-        <short><b>True</b> is a partial match at the start of the selector is a match.</short>
-       </element>
+<element name="StringCase">
+<short>Emulates the CASE .. OF statement for string values.</short>
+<descr>
+<p>
+<var>StringCase</var> is an overloaded <var>Integer</var> function used to 
+emulate the Pascal <b>CASE .. OF</b> statement.
+</p>
+<p>
+<var>AString</var> contains the value compared to the elements in the 
+<var>ACase</var> array.
+</p>
+<p>
+<var>ACase</var> is an array of String values which determine the result for 
+the function.
+</p>
+<p>
+<var>AIgnoreCase</var> indicates whether case is significant when comparing 
+AString to elements in ACase. <b>False</b> indicates that case is not used in 
+the comparison.
+</p>
+<p>
+<var>APartial</var> indicates whether the value in AString can be a partial 
+match for the value in an array element. When set to <b>False</b>, AString 
+must match the array element exactly to be considered a match. When set to 
+<b>True</b>, any value in ACase which starts with the value in AString is 
+considered a match.
+</p>
+<p>
+The return value contains the ordinal position of the element in ACase which 
+matches the value in AString. The return value is <b>-1</b> if no match was 
+found for the value in AString.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="StringCase.Result">
+<short>
+Ordinal position for the case selector, or -1 when a match is not found.
+</short>
+</element>
+<element name="StringCase.AString">
+<short>Value compared to the array elements.</short>
+</element>
+<element name="StringCase.ACase">
+<short>Determines the selector in the return value </short>
+</element>
+<element name="StringCase.AnIgnoreCase">
+<short><b>True</b> if case is ignored in the comparison.</short>
+</element>
+<element name="StringCase.APartial">
+<short>
+<b>True</b> is a partial match at the start of the selector is a match.
+</short>
+</element>
 
-      <element name="SamePChar">
-        <short>Returns <b>True</b> if P1 and P2 have the same content.</short>
-        <descr>
-          <p>
-            Returns <b>False</b> if either <var>P1</var> or <var>P2</var> are unassigned (contain <b>Nil</b>).
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="SamePChar.Result">
-        <short>
-          <b>True</b> when P1 and P2 have the same content, or are the same pointer.
-        </short>
-      </element>
-      <element name="SamePChar.P1">
-        <short>Pointer to characters compared in the routine.</short>
-      </element>
-      <element name="SamePChar.P2">
-        <short>Pointer to characters compared in the routine.</short>
-      </element>
+<element name="SamePChar">
+<short>Returns <b>True</b> if P1 and P2 have the same content.</short>
+<descr>
+<p>
+Returns <b>False</b> if either <var>P1</var> or <var>P2</var> are unassigned 
+(contain <b>Nil</b>).
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="SamePChar.Result">
+<short>
+<b>True</b> when P1 and P2 have the same content, or are the same pointer.
+</short>
+</element>
+<element name="SamePChar.P1">
+<short>Pointer to characters compared in the routine.</short>
+</element>
+<element name="SamePChar.P2">
+<short>Pointer to characters compared in the routine.</short>
+</element>
 
-      <element name="StrLScan">
-        <short>
-          Like StrScan but compares only the specified number of characters in MaxLen.
-        </short>
-        <descr>
-          <p>
-            The return value is <b>Nil</b> when <var>P</var> is unassigned (contains <b>Nil</b>), or when <var>P</var> contains a terminating null character prior to finding a match for <var>c</var> before comparing the requested number of characters in <var>MaxLen</var>.
-          </p>
-          <p>
-            When c is located in P, the return value is a <var>PChar</var> pointer to the location where c was located.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StrLScan.Result">
-        <short>Pointer to the character located in P, or Nil.</short>
-      </element>
-      <element name="StrLScan.P">
-        <short>Pointer to characters examined in the routine.</short>
-      </element>
-      <element name="StrLScan.c">
-        <short>Character to locate in the specified values.</short>
-      </element>
-      <element name="StrLScan.MaxLen">
-        <short>Maximum number of characters examined in the routine.</short>
-      </element>
+<element name="StrLScan">
+<short>
+Like StrScan but compares only the specified number of characters in MaxLen.
+</short>
+<descr>
+<p>
+The return value is <b>Nil</b> when <var>P</var> is unassigned (contains 
+<b>Nil</b>), or when <var>P</var> contains a terminating null character prior 
+to finding a match for <var>c</var> before comparing the requested number of 
+characters in <var>MaxLen</var>.
+</p>
+<p>
+When c is located in P, the return value is a <var>PChar</var> pointer to the 
+location where c was located.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="StrLScan.Result">
+<short>Pointer to the character located in P, or Nil.</short>
+</element>
+<element name="StrLScan.P">
+<short>Pointer to characters examined in the routine.</short>
+</element>
+<element name="StrLScan.c">
+<short>Character to locate in the specified values.</short>
+</element>
+<element name="StrLScan.MaxLen">
+<short>Maximum number of characters examined in the routine.</short>
+</element>
 
-      <element name="LazIsValidIdent">
-        <short>This is a copy of IsValidIdent from the FPC 3.1 FCL library.</short>
-        <descr>
-          <p>
-            <var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine if the name specified in <var>Ident</var> contains a valid identifier name. The identifier name can represent a Namespace, Package, Unit, Component, or a Member.
-          </p>
-          <p>
-            The return value is <b>True</b> when Ident contains a valid identifier name using the Pascal naming convention. The return value is <b>False</b> if Ident contains an empty string ('').
-          </p>
-          <p>
-            <var>AllowDots</var> indicates whether Period ('.') characters are allowed in the identifier name. The default value for the argument is <b>False</b> (not allowed).
-          </p>
-          <p>
-            <var>StrictDots</var> indicates whether a Period character in the identifier name causes name validation to restart at the next character in the identifier name. When set to <b>False</b>, a Period character is ignored during identifier name validation. The default value for the argument is <b>False</b>, and is significant only when AllowDots is set to <b>True</b>.
-          </p>
-          <p>
-            LazIsValidIdent examines each of the characters in Ident to ensure that the value uses the Pascal identifier naming convention. This requires the value to contain only alphanumeric characters or the Underscore ('_') character. It must start with an alphabetic character or the Underscore character; numeric characters cannot be used at the start of the identifier name. The remaining characters in the identifier name can be any alphanumeric character.
-          </p>
-          <p>
-            Case is not significant when determining the validity of an identifier name.
-          </p>
-          <p>
-            LazIsValidIdent is used in the implementation of various tools in the Lazarus IDE. (IDEIntf, CodeTools, BuildIntf)
-          </p>
-          <remark>
-            Use the IsValidIdent routine from FPC 3.2.X when version 3.2 is the minimum requirement.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#rtl.sysutils.IsValidIdent">IsValidIdent</link>
-        </seealso>
-      </element>
-      <element name="LazIsValidIdent.Result">
-        <short><b>True</b> if the specified value is a valid identifier name.</short>
-      </element>
-      <element name="LazIsValidIdent.Ident">
-        <short>Identifier name examined in the routine.</short>
-      </element>
-      <element name="LazIsValidIdent.AllowDots">
-        <short><b>True</b> if period characters are allowed in the identifier name.</short>
-      </element>
-      <element name="LazIsValidIdent.StrictDots">
-        <short><b>True</b> if the position of a period character is validated.</short>
-      </element>
+<element name="LazIsValidIdent">
+<short>This is a copy of IsValidIdent from the FPC 3.1 FCL library.</short>
+<descr>
+<p>
+<var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine 
+if the name specified in <var>Ident</var> contains a valid identifier name. 
+The identifier name can represent a Namespace, Package, Unit, Component, or a 
+Member.
+</p>
+<p>
+The return value is <b>True</b> when Ident contains a valid identifier name 
+using the Pascal naming convention. The return value is <b>False</b> if Ident 
+contains an empty string ('').
+</p>
+<p>
+<var>AllowDots</var> indicates whether Period ('.') characters are allowed in 
+the identifier name. The default value for the argument is <b>False</b> (not 
+allowed).
+</p>
+<p>
+<var>StrictDots</var> indicates whether a Period character in the identifier 
+name causes name validation to restart at the next character in the 
+identifier name. When set to <b>False</b>, a Period character is ignored 
+during identifier name validation. The default value for the argument is 
+<b>False</b>, and is significant only when AllowDots is set to <b>True</b>.
+</p>
+<p>
+LazIsValidIdent examines each of the characters in Ident to ensure that the 
+value uses the Pascal identifier naming convention. This requires the value 
+to contain only alphanumeric characters or the Underscore ('_') character. It 
+must start with an alphabetic character or the Underscore character; numeric 
+characters cannot be used at the start of the identifier name. The remaining 
+characters in the identifier name can be any alphanumeric character.
+</p>
+<p>
+Case is not significant when determining the validity of an identifier name.
+</p>
+<p>
+LazIsValidIdent is used in the implementation of various tools in the Lazarus 
+IDE. (IDEIntf, CodeTools, BuildIntf)
+</p>
+<remark>
+Use the IsValidIdent routine from FPC 3.2.X when version 3.2 is the minimum 
+requirement.
+</remark>
+</descr>
+<seealso>
+<link id="#rtl.sysutils.IsValidIdent">IsValidIdent</link>
+</seealso>
+</element>
+<element name="LazIsValidIdent.Result">
+<short><b>True</b> if the specified value is a valid identifier name.</short>
+</element>
+<element name="LazIsValidIdent.Ident">
+<short>Identifier name examined in the routine.</short>
+</element>
+<element name="LazIsValidIdent.AllowDots">
+<short>
+<b>True</b> if period characters are allowed in the identifier name.
+</short>
+</element>
+<element name="LazIsValidIdent.StrictDots">
+<short><b>True</b> if the position of a period character is validated.</short>
+</element>
 
-      <element name="MaxTextLen">
-        <short>Defines the maximum length for shortened or "ellipsified" text.</short>
-        <descr>
-          <p>
-            Used in the <var>ShortDotsLine</var> routine.
-          </p>
-        </descr>
-        <seealso>
-          <link id="ShortDotsLine"/>
-        </seealso>
-      </element>
+<element name="MaxTextLen">
+<short>Defines the maximum length for shortened or "ellipsified" text.</short>
+<descr>
+<p>
+Used in the <var>ShortDotsLine</var> routine.
+</p>
+</descr>
+<seealso>
+<link id="ShortDotsLine"/>
+</seealso>
+</element>
 
-    </module>
-    <!-- LazStringUtils -->
+</module>
+<!-- LazStringUtils -->
 
-  </package>
+</package>
 </fpdoc-descriptions>

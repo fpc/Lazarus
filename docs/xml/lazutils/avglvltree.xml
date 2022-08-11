@@ -17,6 +17,9 @@ Defines classes that use TAvlTree for data storage, and enumerators for them.
 TAvlTree is an Average Level binary Tree, located in unit AVL_Tree in FPC 
 packages.
 </p>
+<p>
+This file is part of the <file>lazutils</file> package.
+</p>
 </descr>
 
 <element name="Classes"/>

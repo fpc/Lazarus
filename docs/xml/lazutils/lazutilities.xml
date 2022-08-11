@@ -1,226 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
-  <package name="lazutils">
-    <!--
-    ====================================================================
-      LazUtilities
-    ====================================================================
-    -->
-    <module name="LazUtilities">
-      <short>
-        Contains miscellaneous utility routines and variables used in the Lazarus IDE and LCL.
-      </short>
-      <descr>
-        <p>
-          This file is part of the <file>LazUtils</file> package.
-        </p>
-      </descr>
+<package name="lazutils">
+<!--
+====================================================================
+LazUtilities
+====================================================================
+-->
+<module name="LazUtilities">
+<short>
+Contains miscellaneous utility routines and variables used in the Lazarus IDE 
+and LCL.
+</short>
+<descr>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
+</descr>
 
-      <!-- unresolved external references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="TypInfo"/>
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="TypInfo"/>
 
-      <element name="FreeThenNil">
-        <short>Ensures that the specified object instance is freed and set to Nil.</short>
-        <descr>
-          <var>FreeThenNil</var> is a procedure used to ensure that the object instance in <var>obj</var> is freed and set to Nil. If obj has been assigned, it is cast to a <var>TObject</var> instance and its Free method is called. Finally, the pointer to the address in obj is set to Nil.
-        </descr>
-        <seealso/>
-      </element>
-      <element name="FreeThenNil.obj">
-        <short>Object instance modified in the routine.</short>
-      </element>
+<element name="FreeThenNil">
+<short>
+Ensures that the specified object instance is freed and set to Nil.
+</short>
+<descr>
+<var>FreeThenNil</var> is a procedure used to ensure that the object instance 
+in <var>obj</var> is freed and set to Nil. If obj has been assigned, it is 
+cast to a <var>TObject</var> instance and its Free method is called. Finally, 
+the pointer to the address in obj is set to Nil.
+</descr>
+<seealso/>
+</element>
+<element name="FreeThenNil.obj">
+<short>Object instance modified in the routine.</short>
+</element>
 
-      <element name="ComparePointers">
-        <short>Gets the relative order for the specified Pointers.</short>
-        <descr>
-          <p>
-            <var>ComparePointers</var> is an <var>Integer</var> function used to get the relative order for the specified Pointer values. The following return values are used in the routine:
-          </p>
-          <dl>
-            <dt>1</dt>
-            <dd>Returned when p1 &gt; p2.</dd>
-            <dt>0</dt>
-            <dd>Returned when p1 = p2.</dd>
-            <dt>-1</dt>
-            <dd>Returned when p1 &lt; p2.</dd>
-          </dl>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="ComparePointers.Result">
-        <short>Numeric value with the relative order for the compared Pointers.</short>
-      </element>
-      <element name="ComparePointers.p1">
-        <short>Pointer compared in the routine.</short>
-      </element>
-      <element name="ComparePointers.p2">
-        <short>Pointer compared in the routine.</short>
-      </element>
+<element name="ComparePointers">
+<short>Gets the relative order for the specified Pointers.</short>
+<descr>
+<p>
+<var>ComparePointers</var> is an <var>Integer</var> function used to get the 
+relative order for the specified Pointer values. The following return values 
+are used in the routine:
+</p>
+<dl>
+<dt>1</dt>
+<dd>Returned when p1 &gt; p2.</dd>
+<dt>0</dt>
+<dd>Returned when p1 = p2.</dd>
+<dt>-1</dt>
+<dd>Returned when p1 &lt; p2.</dd>
+</dl>
+</descr>
+<seealso/>
+</element>
+<element name="ComparePointers.Result">
+<short>
+Numeric value with the relative order for the compared Pointers.
+</short>
+</element>
+<element name="ComparePointers.p1">
+<short>Pointer compared in the routine.</short>
+</element>
+<element name="ComparePointers.p2">
+<short>Pointer compared in the routine.</short>
+</element>
 
-      <element name="CompareBoolean">
-        <short>Compares the specified Boolean values.</short>
-        <descr>
-          <dl>
-            <dt>0</dt>
-            <dd>Returned when b1 and b2 have the same value.</dd>
-            <dt>1</dt>
-            <dd>Returned when b1 is <b>True</b>.</dd>
-            <dt>-1</dt>
-            <dd>Returned as the default value (when b1 is <b>False</b>).</dd>
-          </dl>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="CompareBoolean.Result">
-        <short>Numeric value for the comparison.</short>
-      </element>
-      <element name="CompareBoolean.b1">
-        <short>Boolean value compared in the routine.</short>
-      </element>
-      <element name="CompareBoolean.b2">
-        <short>Boolean value compared in the routine.</short>
-      </element>
+<element name="CompareBoolean">
+<short>Compares the specified Boolean values.</short>
+<descr>
+<dl>
+<dt>0</dt>
+<dd>Returned when b1 and b2 have the same value.</dd>
+<dt>1</dt>
+<dd>Returned when b1 is <b>True</b>.</dd>
+<dt>-1</dt>
+<dd>Returned as the default value (when b1 is <b>False</b>).</dd>
+</dl>
+</descr>
+<seealso/>
+</element>
+<element name="CompareBoolean.Result">
+<short>Numeric value for the comparison.</short>
+</element>
+<element name="CompareBoolean.b1">
+<short>Boolean value compared in the routine.</short>
+</element>
+<element name="CompareBoolean.b2">
+<short>Boolean value compared in the routine.</short>
+</element>
 
-      <element name="GetEnumValueDef">
-        <short>Gets the ordinal position for an enumeration value with the specified name.</short>
-        <descr>
-          <p>
-            <var>GetEnumValueDef</var> is an <var>Integer</var> function used to get the ordinal position in the specified enumeration type insformation for the value with the given name.
-          </p>
-          <p>
-            The return value contains the ordinal position in <var>TypeInfo</var> for the enumeration value with the given <var>Name</var>. GetEnumValueDef calls <var>GetEnumValue</var> to find the value in Name in the type information. If the return value is <b>-1</b>, an enumeration value with the specified name is not found in TypeInfo and the value in <var>DefaultValue</var> is used as the return value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.typinfo.GetEnumValue">GetEnumValue</link>
-          <link id="#rtl.typinfo.PTypeInfo">PTypeInfo</link>
-        </seealso>
-      </element>
-      <element name="GetEnumValueDef.Result">
-        <short>Ordinal position for the enumeration value with the specified name.</short>
-      </element>
-      <element name="GetEnumValueDef.TypeInfo">
-        <short>Pointer to the type information examined in the routine.</short>
-      </element>
-      <element name="GetEnumValueDef.Name">
-        <short>Name for the enumeration value to locate in TypeInfo.</short>
-      </element>
-      <element name="GetEnumValueDef.DefaultValue">
-        <short>Default ordinal position for the enumeration value used when Name is not found.</short>
-      </element>
+<element name="GetEnumValueDef">
+<short>
+Gets the ordinal position for an enumeration value with the specified name.
+</short>
+<descr>
+<p>
+<var>GetEnumValueDef</var> is an <var>Integer</var> function used to get the 
+ordinal position in the specified enumeration type insformation for the value 
+with the given name.
+</p>
+<p>
+The return value contains the ordinal position in <var>TypeInfo</var> for the 
+enumeration value with the given <var>Name</var>. GetEnumValueDef calls 
+<var>GetEnumValue</var> to find the value in Name in the type information. If 
+the return value is <b>-1</b>, an enumeration value with the specified name 
+is not found in TypeInfo and the value in <var>DefaultValue</var> is used as 
+the return value.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.typinfo.GetEnumValue">GetEnumValue</link>
+<link id="#rtl.typinfo.PTypeInfo">PTypeInfo</link>
+</seealso>
+</element>
+<element name="GetEnumValueDef.Result">
+<short>
+Ordinal position for the enumeration value with the specified name.
+</short>
+</element>
+<element name="GetEnumValueDef.TypeInfo">
+<short>Pointer to the type information examined in the routine.</short>
+</element>
+<element name="GetEnumValueDef.Name">
+<short>Name for the enumeration value to locate in TypeInfo.</short>
+</element>
+<element name="GetEnumValueDef.DefaultValue">
+<short>
+Default ordinal position for the enumeration value used when Name is not 
+found.
+</short>
+</element>
 
-      <element name="RoundToInt">
-        <short>Rounds the specified Extended value to an Integer value.</short>
-        <descr>
-          <p>
-            Calls <var>Round</var> to round the <var>Extended</var> value, and casts the result to the <var>Integer</var> type used as the return value.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="RoundToInt.Result">
-        <short>Integer value for the rounded numeric value.</short>
-      </element>
-      <element name="RoundToInt.e">
-        <short>Extended type rounded and converted in the routine.</short>
-      </element>
+<element name="RoundToInt">
+<short>Rounds the specified Extended value to an Integer value.</short>
+<descr>
+<p>
+Calls <var>Round</var> to round the <var>Extended</var> value, and casts the 
+result to the <var>Integer</var> type used as the return value.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="RoundToInt.Result">
+<short>Integer value for the rounded numeric value.</short>
+</element>
+<element name="RoundToInt.e">
+<short>Extended type rounded and converted in the routine.</short>
+</element>
 
-      <element name="RoundToCardinal">
-        <short>Rounds the specified Extended value to a Cardinal value.</short>
-        <descr>
-          <p>
-            Calls <var>Round</var> to round the <var>Extended</var> value, and casts the result to the <var>Cardinal</var> type used as the return value.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="RoundToCardinal.Result">
-        <short>Cardinal value for the rounded numeric value.</short>
-      </element>
-      <element name="RoundToCardinal.e">
-        <short>Extended type rounded and converted in the routine.</short>
-      </element>
+<element name="RoundToCardinal">
+<short>Rounds the specified Extended value to a Cardinal value.</short>
+<descr>
+<p>
+Calls <var>Round</var> to round the <var>Extended</var> value, and casts the 
+result to the <var>Cardinal</var> type used as the return value.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="RoundToCardinal.Result">
+<short>Cardinal value for the rounded numeric value.</short>
+</element>
+<element name="RoundToCardinal.e">
+<short>Extended type rounded and converted in the routine.</short>
+</element>
 
-      <element name="TruncToInt">
-        <short>Truncates the extended value and returns an Integer type.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TruncToInt.Result">
-        <short>Integer type with the truncated value.</short>
-      </element>
-      <element name="TruncToInt.e">
-        <short>Extended value truncated and converted in the routine.</short>
-      </element>
+<element name="TruncToInt">
+<short>Truncates the extended value and returns an Integer type.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TruncToInt.Result">
+<short>Integer type with the truncated value.</short>
+</element>
+<element name="TruncToInt.e">
+<short>Extended value truncated and converted in the routine.</short>
+</element>
 
-      <element name="TruncToCardinal">
-        <short>Truncates the extended value and returns a Cardinal type.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TruncToCardinal.Result">
-        <short>Cardinal type with the truncated value.</short>
-      </element>
-      <element name="TruncToCardinal.e">
-        <short>Extended value truncated and converted in the routine.</short>
-      </element>
+<element name="TruncToCardinal">
+<short>Truncates the extended value and returns a Cardinal type.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TruncToCardinal.Result">
+<short>Cardinal type with the truncated value.</short>
+</element>
+<element name="TruncToCardinal.e">
+<short>Extended value truncated and converted in the routine.</short>
+</element>
 
-      <element name="StrToDouble">
-        <short>Converts the specified string value to a Double type.</short>
-        <descr>
-          <p>
-            Calls <var>StrToFloat</var> to convert the value in <var>s</var>, and casts the result to the <var>Double</var> data type used as the return value.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="StrToDouble.Result">
-        <short>Double type with the converted value.</short>
-      </element>
-      <element name="StrToDouble.s">
-        <short>String value converted in the routine.</short>
-      </element>
+<element name="StrToDouble">
+<short>Converts the specified string value to a Double type.</short>
+<descr>
+<p>
+Calls <var>StrToFloat</var> to convert the value in <var>s</var>, and casts 
+the result to the <var>Double</var> data type used as the return value.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="StrToDouble.Result">
+<short>Double type with the converted value.</short>
+</element>
+<element name="StrToDouble.s">
+<short>String value converted in the routine.</short>
+</element>
 
-      <element name="MergeSortWithLen">
-        <short>
-          Implements a merge sort algorithm for a list of pointers with the given length.
-        </short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="MergeSortWithLen.List">
-        <short></short>
-      </element>
-      <element name="MergeSortWithLen.ListLength">
-        <short></short>
-      </element>
-      <element name="MergeSortWithLen.Compare">
-        <short></short>
-      </element>
+<element name="MergeSortWithLen">
+<short>
+Implements a merge sort algorithm for a list of pointers with the given 
+length.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="MergeSortWithLen.List">
+<short></short>
+</element>
+<element name="MergeSortWithLen.ListLength">
+<short></short>
+</element>
+<element name="MergeSortWithLen.Compare">
+<short></short>
+</element>
 
-      <element name="ConsoleVerbosity">
-        <short>Level of detail displayed in IDE console output windows.</short>
-        <descr>
-          <p>
-            <var>ConsoleVerbosity</var> is an Integer variable which indicates the level of detail output from tools like pas2js and CodeTools. ConsoleVerbosity enables debugger output for specific levels of detail.
-          </p>
-          <dl>
-            <dt>-1</dt>
-            <dd>Quiet</dd>
-            <dt>0</dt>
-            <dd>Normal verbosity (No debugger output)</dd>
-            <dt>1</dt>
-            <dd>Verbose (Debugger output enabled)</dd>
-            <dt>2</dt>
-            <dd>Very verbose (Debugger output enabled)</dd>
-          </dl>
-        </descr>
-        <seealso/>
-      </element>
+<element name="ConsoleVerbosity">
+<short>Level of detail displayed in IDE console output windows.</short>
+<descr>
+<p>
+<var>ConsoleVerbosity</var> is an Integer variable which indicates the level 
+of detail output from tools like pas2js and CodeTools. ConsoleVerbosity 
+enables debugger output for specific levels of detail.
+</p>
+<dl>
+<dt>-1</dt>
+<dd>Quiet</dd>
+<dt>0</dt>
+<dd>Normal verbosity (No debugger output)</dd>
+<dt>1</dt>
+<dd>Verbose (Debugger output enabled)</dd>
+<dt>2</dt>
+<dd>Very verbose (Debugger output enabled)</dd>
+</dl>
+</descr>
+<seealso/>
+</element>
 
-    </module>
-    <!-- LazUtilities -->
-  </package>
+</module>
+<!-- LazUtilities -->
+</package>
 </fpdoc-descriptions>
