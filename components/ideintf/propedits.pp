@@ -3796,7 +3796,8 @@ begin
   L := OrdValue;
   TypeData := GetTypeData(GetPropType);
   with TypeData^ do
-    if (L < MinValue) or (L > MaxValue) then L := MaxValue;
+    if (L < MinValue) or (L > MaxValue) then
+      L := MaxValue;
   Result := GetEnumName(GetPropType, L);
 end;
 
@@ -3812,13 +3813,17 @@ procedure TEnumPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   EnumType: PTypeInfo;
-  s: ShortString;
+  s, EnumUnitName: String;
 begin
   EnumType := GetPropType;
+  EnumUnitName := GetPropTypeUnitName;
   with GetTypeData(EnumType)^ do
     for I := MinValue to MaxValue do begin
       s := GetEnumName(EnumType, I);
-      Proc(s);
+      // An empty string and the enum's unit name happen in gaps
+      // of a non-contiguous enum. Why the unit name? A bug in FPC code?
+      if (s <> '') and (s <> EnumUnitName) then
+        Proc(s);
     end;
 end;
 
