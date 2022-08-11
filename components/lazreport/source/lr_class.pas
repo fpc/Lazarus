@@ -9987,7 +9987,8 @@ begin
   FShowProgress := True;
   FModalPreview := True;
   FModifyPrepared := True;
-  FPreviewButtons := [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit];
+  FPreviewButtons := [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit,
+    pbSettings, pbPageSetup];
   FInitialZoom := pzDefault;
   FDefaultCopies := 1;
   FileName := sUntitled;

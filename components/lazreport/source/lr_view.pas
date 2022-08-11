@@ -22,7 +22,8 @@ uses
 type
   TfrPreviewForm = class;
   TfrPreviewZoom = (pzDefault, pzPageWidth, pzOnePage, pzTwoPages);
-  TfrPreviewButton = (pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit);
+  TfrPreviewButton = (pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit,
+    pbSettings, pbPageSetup);
   TfrPreviewButtons = set of TfrPreviewButton;
 
   { TfrPreview }
@@ -705,6 +706,8 @@ begin
     LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
     PrintBtn.Visible := pbPrint in TfrReport(Doc).PreviewButtons;
     ExitBtn.Visible := pbExit in TfrReport(Doc).PreviewButtons;
+    SettingsBtn.Visible := pbSettings in TfrReport(Doc).PreviewButtons;
+    PageSetupBtn.Visible := pbPageSetup in TfrReport(Doc).PreviewButtons;
     if not ZoomBtn.Visible then
       frTBSeparator1.Hide;
   end;
