@@ -32,7 +32,7 @@ x86_64-gtk2-stable:
   stage: build
   script:
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
-  when: manual
+#  when: manual
 
 x86_64-qt5-oldstable:
   stage: build
@@ -63,7 +63,7 @@ i386-win32-oldstable:
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
-  when: manual
+#  when: manual
 
 i386-win32-stable:
   stage: build
