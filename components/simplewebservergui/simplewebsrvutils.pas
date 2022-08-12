@@ -56,8 +56,6 @@ type
   end;
 
 {$IFDEF MSWindows}
-{$linklib iphlpapi}
-{$linklib psapi}
 const
   ANY_SIZE = 1;
 type
@@ -77,8 +75,8 @@ type
     dwNumEntries: DWORD;
     table: array [0..ANY_SIZE - 1] of MIB_TCPROW2;
   end;
-function GetTcpTable2(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL): DWORD; stdcall; external name 'GetTcpTable2';
-function GetModuleFilenameExW(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord): DWord; stdcall; external name 'GetModuleFileNameExW';
+function GetTcpTable2(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL): DWORD; stdcall; external 'iphlpapi' name 'GetTcpTable2';
+function GetModuleFilenameExW(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord): DWord; stdcall; external 'psapi' name 'GetModuleFileNameExW';
 {$ENDIF}
 
 function MaybeQuote(S : String) : String;
