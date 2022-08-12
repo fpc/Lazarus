@@ -1,0 +1,74 @@
+FROM debian:11
+ARG FPC_STABLE_VER
+ARG FPC_OLDSTABLE_VER
+RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install \
+    build-essential \
+    libc6-dev-i386 \
+    libgtk2.0-dev \
+    libgtk-3-dev \
+    libqt5x11extras5-dev \
+    qtbase5-dev \
+    wget
+
+SHELL ["/bin/bash", "-c"]
+
+RUN tarballs=( \
+              "$FPC_OLDSTABLE_VER fpc-$FPC_OLDSTABLE_VER-x86_64-linux" \
+              "$FPC_STABLE_VER fpc-$FPC_STABLE_VER.x86_64-linux" \
+             ); \
+    for tbl in "${tarballs[@]}"; do \
+      tarball=($tbl); \
+      wget https://sourceforge.net/projects/freepascal/files/Linux/${tarball[0]}/${tarball[1]}.tar; \ 
+      tar xf ${tarball[1]}.tar; \
+      cd ${tarball[1]}; \
+      echo -e "\n\n\n\n" | ./install.sh; \
+      if [ $? -ne 0 ]; then \
+        exit 1; \
+      fi; \ 
+      cd ..; \
+      rm -f ${tarball[1]}.tar; \
+      rm -rf ${tarball[1]}; \
+    done; \
+    echo; \
+    echo "Contents of /etc/fpc.cfg:"; \
+    cat /etc/fpc.cfg; \
+    # build and install cross-compilers
+    tarballs=( \
+              "$FPC_OLDSTABLE_VER fpc-$FPC_OLDSTABLE_VER.source tar.gz win32 i386" \
+              "$FPC_OLDSTABLE_VER fpc-$FPC_OLDSTABLE_VER.source tar.gz win64 x86_64" \
+              "$FPC_STABLE_VER fpc-$FPC_STABLE_VER.source tar.gz win32 i386" \
+              "$FPC_STABLE_VER fpc-$FPC_STABLE_VER.source tar.gz win64 x86_64" \
+             ); \
+    # downloading, building and tarball removal are done in separate steps,
+    # because several targets can be built from one source
+    #  
+    # download sources
+    for tbl in "${tarballs[@]}"; do \
+      tarball=($tbl); \
+      if [ ! -f ${tarball[1]}.${tarball[2]} ]; then \
+        wget https://sourceforge.net/projects/freepascal/files/Source/${tarball[0]}/${tarball[1]}.${tarball[2]}; \
+      fi; \   
+      if [ ! -d fpc-${tarball[0]} ]; then \
+        tar zxf ${tarball[1]}.${tarball[2]}; \
+      fi; \  
+      if [ $? -ne 0 ]; then \
+        exit 1; \
+      fi; \
+    done; \
+    # build and install cross-compilers
+    for tbl in "${tarballs[@]}"; do \
+      tarball=($tbl); \
+      cd fpc-${tarball[0]}; \
+      make all FPC=/usr/lib/fpc/${tarball[0]}/ppcx64 OS_TARGET=${tarball[3]} CPU_TARGET=${tarball[4]}; \
+      make crossinstall FPC=/usr/lib/fpc/${tarball[0]}/ppcx64 OS_TARGET=${tarball[3]} CPU_TARGET=${tarball[4]} INSTALL_PREFIX=/usr; \
+      if [ $? -ne 0 ]; then \
+        exit 1; \
+      fi; \
+      cd ..; \
+    done; \
+    # remove sources
+    for tbl in "${tarballs[@]}"; do \
+      tarball=($tbl); \
+      rm -f ${tarball[1]}.${tarball[2]}; \
+      rm -rf fpc-${tarball[0]}; \
+    done;

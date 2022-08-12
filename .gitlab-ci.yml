@@ -1,22 +1,87 @@
-image: debian:stable-backports
+variables:
+  FPC_OLDSTABLE_VER: 3.2.0
+  FPC_STABLE_VER: 3.2.2
+  IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
 
-before_script:
-  - apt-get update
-  - apt-get -y install build-essential libgtk2.0-dev wget
-  - wget https://sourceforge.net/projects/freepascal/files/Linux/3.2.2/fpc-3.2.2.x86_64-linux.tar
-  - tar xf fpc-3.2.2.x86_64-linux.tar
-  - cd fpc-3.2.2.x86_64-linux
-  - echo -e "\n\n\n\n" | ./install.sh
-  - cd ..
+default:
+  image: $IMAGE_TAG
 
 stages:          # List of stages for jobs, and their order of execution
+  - prepenv
   - build
 
-build-job:       # This job runs in the build stage, which runs first.
+update-build-env: # This job updates building environment image. Run it if FPC version constants and/or Dockerfile.buildenv were changed. 
+  stage: prepenv
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --pull --build-arg FPC_OLDSTABLE_VER=$FPC_OLDSTABLE_VER --build-arg FPC_STABLE_VER=$FPC_STABLE_VER -t $IMAGE_TAG - < Dockerfile.buildenv
+    - docker push $IMAGE_TAG
+  when: manual
+
+
+x86_64-gtk2-oldstable:
   stage: build
   script:
-    - echo "Using FPC:"
-    - fpc -iV
-    - echo
-    - echo "Compiling bigide for GTK2"
-    - make bigide LCL_PLATFORM=gtk2
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
+  when: manual
+
+x86_64-gtk2-stable:
+  stage: build
+  script:
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
+  when: manual
+
+x86_64-qt5-oldstable:
+  stage: build
+  script:
+    - cd lcl/interfaces/qt5/cbindings         # build and install Qt5 Pascal bindings
+    - qmake -query
+    - qmake
+    - make
+    - make install
+    - cd ../../../..
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
+  when: manual
+
+x86_64-qt5-stable:
+  stage: build
+  script:
+    - cd lcl/interfaces/qt5/cbindings         # build and install Qt5 Pascal bindings
+    - qmake -query
+    - qmake
+    - make
+    - make install
+    - cd ../../../..
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
+  when: manual
+
+i386-win32-oldstable:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
+  when: manual
+
+i386-win32-stable:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
+  when: manual
+
+x86_64-win64-oldstable:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 OS_TARGET=win64 CPU_TARGET=x86_64 LCL_PLATFORM=win32
+  when: manual
+
+x86_64-win64-stable:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 OS_TARGET=win64 CPU_TARGET=x86_64 LCL_PLATFORM=win32
+  when: manual
