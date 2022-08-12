@@ -63,7 +63,7 @@ i386-win32-oldstable:
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
-  when: manual
+#  when: manual
 
 i386-win32-stable:
   stage: build
