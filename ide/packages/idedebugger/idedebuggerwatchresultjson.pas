@@ -64,7 +64,9 @@ begin
   if FInternalJSon = nil then
     try
       //FInternalJSon := GetJSON(AsString);
-      P := TJSONParser.Create(AsString, [joUTF8,joComments,joIgnoreTrailingComma,joBOMCheck{,joIgnoreDuplicates}]);
+      P := TJSONParser.Create(AsString, [joUTF8,joComments,joIgnoreTrailingComma
+        {$IF FPC_VERSION >= 030202} , joBOMCheck {$ENDIF}
+        {,joIgnoreDuplicates}]);
       try
         FInternalJSon := P.Parse;
       finally
