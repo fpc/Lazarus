@@ -12985,11 +12985,13 @@ begin
             end else
             begin
               SlotMouse(Sender, Event);
-              HandleCheckChangedEvent(MousePos, Item, Event);
+              //issue #39852, uncommented works fine with Qt4
+              //HandleCheckChangedEvent(MousePos, Item, Event);
               if not QListWidgetItem_isSelected(Item) then
                 QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelClearAndSelect);
               QEvent_ignore(Event);
-              Result := True;
+              //issue #39852, uncommented works fine with Qt4
+              //Result := True;
               exit;
             end;
           end;
