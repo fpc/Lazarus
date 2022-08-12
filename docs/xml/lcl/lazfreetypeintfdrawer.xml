@@ -3,17 +3,19 @@
 <package name="lcl">
 
 <!--
-  ====================================================================
-    LazFreeTypeIntfDrawer
-  ====================================================================
+====================================================================
+LazFreeTypeIntfDrawer
+====================================================================
 -->
 
 <module name="LazFreeTypeIntfDrawer">
-<short>LCL interface class for the text renderer in the FreeType package.</short>
+<short>
+LCL interface class for the text renderer in the FreeType package.
+</short>
 <descr>
-  <p>
-    This file is part of the Lazarus Component Library (<b>LCL</b>).
-  </p>
+<p>
+This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
 </descr>
 
 <!-- unresolved external references -->
@@ -26,45 +28,45 @@
 <element name="IntfGraphics"/>
 
 <element name="TLazIntfImageGetPixelAtProc">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazIntfImageGetPixelAtProc.p">
-  <short/>
+<short/>
 </element>
 <element name="TLazIntfImageGetPixelAtProc.Color">
-  <short/>
+<short/>
 </element>
 
 <element name="TLazIntfImageSetPixelAtProc">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazIntfImageSetPixelAtProc.p">
-  <short/>
+<short/>
 </element>
 <element name="TLazIntfImageSetPixelAtProc.Color">
-  <short/>
+<short/>
 </element>
 
 <element name="TLazIntfHorizLineProc">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TLazIntfHorizLineProc.x1">
-  <short/>
+<short/>
 </element>
 <element name="TLazIntfHorizLineProc.y">
-  <short/>
+<short/>
 </element>
 <element name="TLazIntfHorizLineProc.x2">
-  <short/>
+<short/>
 </element>
 <element name="TLazIntfHorizLineProc.Color">
-  <short/>
+<short/>
 </element>
 
 <!-- class Visibility: default -->

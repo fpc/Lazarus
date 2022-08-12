@@ -1,154 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-      IntfGraphics
-    ====================================================================
-    -->
-    <module name="IntfGraphics">
-      <short>Classes and functions for easy handling of raw images (interface images).</short>
-      <descr>
-          <p>
-            Author: Mattias Gaertner
-          </p>
-      </descr>
+<package name="lcl">
+<!--
+====================================================================
+IntfGraphics
+====================================================================
+-->
+<module name="IntfGraphics">
+<short>
+Classes and functions for easy handling of raw images (interface images).
+</short>
+<descr>
+<p>
+Author: Mattias Gaertner
+</p>
+</descr>
 
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Math"/>
-      <element name="fpImage"/>
-      <element name="FPReadBMP"/>
-      <element name="FPWriteBMP"/>
-      <element name="BMPComn"/>
-      <element name="FPReadPNG"/>
-      <element name="FPWritePNG"/>
-      <element name="FPReadTiff"/>
-      <element name="FPWriteTiff"/>
-      <element name="FPTiffCmn"/>
-      <element name="AvgLvlTree"/>
-      <element name="GraphType"/>
-      <element name="FPCAdds"/>
-      <element name="LazLoggerBase"/>
-      <element name="LazTracer"/>
-      <element name="LCLType"/>
-      <element name="LCLVersion"/>
-      <element name="IcnsTypes"/>
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Math"/>
+<element name="fpImage"/>
+<element name="FPReadBMP"/>
+<element name="FPWriteBMP"/>
+<element name="BMPComn"/>
+<element name="FPReadPNG"/>
+<element name="FPWritePNG"/>
+<element name="FPReadTiff"/>
+<element name="FPWriteTiff"/>
+<element name="FPTiffCmn"/>
+<element name="AvgLvlTree"/>
+<element name="GraphType"/>
+<element name="FPCAdds"/>
+<element name="LazLoggerBase"/>
+<element name="LazTracer"/>
+<element name="LCLType"/>
+<element name="LCLVersion"/>
+<element name="IcnsTypes"/>
 
-      <element name="TLazIntfImageGetPixelProc ">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageGetPixelProc.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageGetPixelProc.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageGetPixelProc.Color">
-        <short/>
-      </element>
+<element name="TLazIntfImageGetPixelProc ">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageGetPixelProc.x">
+<short/>
+</element>
+<element name="TLazIntfImageGetPixelProc.y">
+<short/>
+</element>
+<element name="TLazIntfImageGetPixelProc.Color">
+<short/>
+</element>
 
-      <element name="TLazIntfImageSetPixelProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageSetPixelProc.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageSetPixelProc.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageSetPixelProc.Color">
-        <short/>
-      </element>
+<element name="TLazIntfImageSetPixelProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageSetPixelProc.x">
+<short/>
+</element>
+<element name="TLazIntfImageSetPixelProc.y">
+<short/>
+</element>
+<element name="TLazIntfImageSetPixelProc.Color">
+<short/>
+</element>
 
-      <element name="TOnGetLazIntfImagePixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TOnGetLazIntfImagePixel.x">
-        <short/>
-      </element>
-      <element name="TOnGetLazIntfImagePixel.y">
-        <short/>
-      </element>
-      <element name="TOnGetLazIntfImagePixel.Color">
-        <short/>
-      </element>
-      <element name="TOnSetLazIntfImagePixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TOnSetLazIntfImagePixel.x">
-        <short/>
-      </element>
-      <element name="TOnSetLazIntfImagePixel.y">
-        <short/>
-      </element>
-      <element name="TOnSetLazIntfImagePixel.Color">
-        <short/>
-      </element>
-      <element name="TOnReadRawImageBits">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TOnReadRawImageBits.TheData">
-        <short/>
-      </element>
-      <element name="TOnReadRawImageBits.Position">
-        <short/>
-      </element>
-      <element name="TOnReadRawImageBits.Prec">
-        <short/>
-      </element>
-      <element name="TOnReadRawImageBits.Shift">
-        <short/>
-      </element>
-      <element name="TOnReadRawImageBits.Bits">
-        <short/>
-      </element>
-      <element name="TOnWriteRawImageBits">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TOnWriteRawImageBits.TheData">
-        <short/>
-      </element>
-      <element name="TOnWriteRawImageBits.Position">
-        <short/>
-      </element>
-      <element name="TOnWriteRawImageBits.Prec">
-        <short/>
-      </element>
-      <element name="TOnWriteRawImageBits.Shift">
-        <short/>
-      </element>
-      <element name="TOnWriteRawImageBits.Bits">
-        <short/>
-      </element>
+<element name="TOnGetLazIntfImagePixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TOnGetLazIntfImagePixel.x">
+<short/>
+</element>
+<element name="TOnGetLazIntfImagePixel.y">
+<short/>
+</element>
+<element name="TOnGetLazIntfImagePixel.Color">
+<short/>
+</element>
+<element name="TOnSetLazIntfImagePixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TOnSetLazIntfImagePixel.x">
+<short/>
+</element>
+<element name="TOnSetLazIntfImagePixel.y">
+<short/>
+</element>
+<element name="TOnSetLazIntfImagePixel.Color">
+<short/>
+</element>
+<element name="TOnReadRawImageBits">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TOnReadRawImageBits.TheData">
+<short/>
+</element>
+<element name="TOnReadRawImageBits.Position">
+<short/>
+</element>
+<element name="TOnReadRawImageBits.Prec">
+<short/>
+</element>
+<element name="TOnReadRawImageBits.Shift">
+<short/>
+</element>
+<element name="TOnReadRawImageBits.Bits">
+<short/>
+</element>
+<element name="TOnWriteRawImageBits">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TOnWriteRawImageBits.TheData">
+<short/>
+</element>
+<element name="TOnWriteRawImageBits.Position">
+<short/>
+</element>
+<element name="TOnWriteRawImageBits.Prec">
+<short/>
+</element>
+<element name="TOnWriteRawImageBits.Shift">
+<short/>
+</element>
+<element name="TOnWriteRawImageBits.Bits">
+<short/>
+</element>
 
-      <element name="TLazIntfImage">
-        <short>Represents a graphical image.</short>
-        <descr>
-          <p>
-            TLazIntfImage is a <var>TFPCustomImage</var> descendant which stores the image data as TRawImage, and is therefore able to interchange images directly with the LCL interfaces.
-          </p>
-          <p>
-            A large number of the protected methods (GetColorxxxxxx and SetColorxxxxxx) deal with direct interface to the operating system at the pixel level.
-          </p>
-          <p>
-            <b>Usage examples:</b>
-          </p>
-          <p>
-            1. Loading an .xpm file into a TBitmap:
-          </p>
+<element name="TLazIntfImage">
+<short>Represents a graphical image.</short>
+<descr>
+<p>
+TLazIntfImage is a <var>TFPCustomImage</var> descendant which stores the 
+image data as TRawImage, and is therefore able to interchange images directly 
+with the LCL interfaces.
+</p>
+<p>
+A large number of the protected methods (GetColorxxxxxx and SetColorxxxxxx) 
+deal with direct interface to the operating system at the pixel level.
+</p>
+<p>
+<b>Usage examples:</b>
+</p>
+<p>
+1. Loading an .xpm file into a TBitmap:
+</p>
 <code>
       var
         BmpHnd,MaskHnd: HBitmap;
@@ -178,9 +183,9 @@
         ...
       end;
 </code>
-      <p>
-        2. Saving a TBitmap to an .xpm file:
-      </p>
+<p>
+2. Saving a TBitmap to an .xpm file:
+</p>
 <code>
       var
         BmpHnd,MaskHnd: HBitmap;
@@ -204,3430 +209,3479 @@
       end;
     }
 </code>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.FRawImage"/>
-      <element name="TLazIntfImage.FLineStarts"/>
-      <element name="TLazIntfImage.FMaskLineStarts"/>
-      <element name="TLazIntfImage.FMaskSet"/>
-      <element name="TLazIntfImage.FUpdateCount"/>
-      <element name="TLazIntfImage.fCreateAllDataNeeded"/>
-      <element name="TLazIntfImage.FGetSetColorFunctionsUpdateNeeded"/>
-      <element name="TLazIntfImage.FReadRawImageBits"/>
-      <element name="TLazIntfImage.FWriteRawImageBits"/>
-      <element name="TLazIntfImage.FMaskReadRawImageBits"/>
-      <element name="TLazIntfImage.FMaskWriteRawImageBits"/>
-      <element name="TLazIntfImage.FDataOwner"/>
-
-      <element name="TLazIntfImage.GetMasked">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetMasked.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetMasked.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetMasked.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetTColors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetTColors.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetTColors.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetTColors.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.InternalSetSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.InternalSetSize.AWidth">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.InternalSetSize.AHeight">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetMasked">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetMasked.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetMasked.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetMasked.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetTColors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetTColors.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetTColors.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetTColors.AValue">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.OnGetInternalColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.FGetInternalColorProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.FSetInternalColorProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.SetUsePalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetUsePalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetInternalColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetInternalColor.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetInternalColor.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetInternalColor.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetInternalColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetInternalColor.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetInternalColor.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetInternalColor.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetInternalPixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetInternalPixel.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetInternalPixel.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetInternalPixel.Value">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetInternalPixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetInternalPixel.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetInternalPixel.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetInternalPixel.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.FreeData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.SetDataDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetDataDescription.NewDescription">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.ChooseGetSetColorFunctions">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc.BitsPerPixel">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc.ByteOrder">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc.BitOrder">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc.ProcReadRawImageBits">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.ChooseRawBitsProc.ProcWriteRawImageBits">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_Generic">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Generic.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Generic.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Generic.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_RGBA_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGBA_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGBA_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGBA_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_RGB_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGB_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGB_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_RGB_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_Gray_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Gray_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Gray_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_Gray_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_NULL">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_NULL.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_NULL.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_NULL.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetMask_Generic">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetMask_Generic.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetMask_Generic.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetMask_Generic.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_Generic">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Generic.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Generic.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Generic.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_RGBA_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGBA_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGBA_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGBA_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_RGB_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGB_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGB_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_RGB_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_Gray_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Gray_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Gray_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_Gray_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_NULL">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_NULL.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_NULL.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_NULL.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetMask_Generic">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetMask_Generic.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetMask_Generic.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetMask_Generic.Value">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.Create.AWidth">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Create.AHeight">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Create.AFlags">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Create.ARawImage">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Create.ADataOwner">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.CreateCompatible">
-        <short>Alternate constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.CreateCompatible.IntfImg">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CreateCompatible.AWidth">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CreateCompatible.AHeight">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.Assign">
-        <short>Stores values from the specified persistent object into the current class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.Assign.Source">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.BeginUpdate">
-        <short>Increments the internal update counter.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.EndUpdate">
-        <short>Decrements the internal update counter.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.SetSize">
-        <short>
-          <var>SetSize</var> - define the height and width of the image.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetSize.AWidth">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetSize.AHeight">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.CheckDescription">
-        <short>
-          <var>CheckDescription</var> - looks at the supplied Image Description record and returns True if it matches the actual properties of the image.</short>
-        <descr/>
-        <errors>Generates an exception if an error is encountered in the image description</errors>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.CheckDescription.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CheckDescription.ADescription">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CheckDescription.ExceptionOnError">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.LoadFromDevice">
-        <short>
-          <var>LoadFromDevice</var> - loads the image from the device with specified handle.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.LoadFromDevice.DC">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.LoadFromBitmap">
-        <short>
-          <var>LoadFromBitmap</var> - loads the image from a Bitmap.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.LoadFromBitmap.ABitmap">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.LoadFromBitmap.AMaskBitmap">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.LoadFromBitmap.AWidth">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.CreateBitmaps">
-        <short>
-          <var>CreateBitmaps</var> - generates a Bitmap and an optional Mask for the image data.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.CreateBitmaps.ABitmap">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CreateBitmaps.AMask">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CreateBitmaps.ASkipMask">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetRawImage">
-        <short>Stores the raw image data in the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetRawImage.RawImage">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.SetRawImage.ADataOwner">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetRawImage">
-        <short>Gets the raw image data stored in the class instance and optionally release ownership.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetRawImage.ARawImage">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetRawImage.ATransferOwnership">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.FillPixels">
-        <short>Sets the color for all pixels in the raw image data to the specified value.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.FillPixels.Color">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.CopyPixels">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.CopyPixels.ASource">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CopyPixels.XDst">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CopyPixels.YDst">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CopyPixels.AlphaMask">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.CopyPixels.AlphaTreshold">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.AlphaBlend">
-        <short>Merges a source image with alpha blending.</short>
-        <descr>
-          <p>
-            Merges an image to a canvas using alpha blending according to a separate image containing the alpha channel. White pixels in the alpha channel will correspond to the source image pixel being fully drawn, grey ones are merged and black ones ignored.
-          </p>
-          <p>
-            If ASourceAlpha is Nil then it will utilize the alpha channel from ASource.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.AlphaBlend.ASource">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.AlphaBlend.ASourceAlpha">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.AlphaBlend.ADestX">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.AlphaBlend.ADestY">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.AlphaFromMask">
-        <short>Gets the alpha value from the mask if needed.</short>
-        <descr>
-          <p>
-            <var>AlphaFromMask</var> gets the alpha value from the mask if <var>AKeepAlpha</var> is True (default condition).
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.AlphaFromMask.AKeepAlpha">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.Mask">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Mask.AColor">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Mask.AKeepOldMask">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetXYDataPostion">
-        <short>
-          <var>GetXYDataPosition</var> - finds the position of the raw image.</short>
-        <descr>Yes, it really is spelled 'Postion'</descr>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetXYDataPostion.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetXYDataPostion.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetXYDataPostion.Position">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetXYMaskPostion">
-        <short>
-          <var>GetXYMaskPostion</var> - finds the position of the raw image mask.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetXYMaskPostion.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetXYMaskPostion.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetXYMaskPostion.Position">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.GetDataLineStart">
-        <short>Returns an pointer to the raw data for a scan line.</short>
-        <descr>
-          <p>
-            Similar to Delphi's TBitmap.ScanLine. Works with scan lines aligned to whole bytes.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.GetDataLineStart.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.GetDataLineStart.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.CreateData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.HasTransparency">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.HasTransparency.Result">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.HasMask">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.HasMask.Result">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.SetDataDescriptionKeepData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.SetDataDescriptionKeepData.ADescription">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.PixelData">
-        <short>
-          <var>PixelData</var> - the raw image data for the image.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.MaskData">
-        <short>
-          <var>MaskData</var> - the raw data for the mask in the image.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.DataDescription">
-        <short>
-          <var>DataDescription</var> - the raw description record for the current image.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.GetInternalColorProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.SetInternalColorProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImage.TColors">
-        <short>
-          <var>TColors</var> - the colors available for the specified pixel.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.TColors.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.TColors.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImage.Masked">
-        <short><var>Masked</var> - whether the image mask applies at the specified position.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImage.Masked.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImage.Masked.y">
-        <short/>
-      </element>
-
-      <element name="TLazIntfImageMask">
-        <short>
-          <var>TLazIntfImageMask</var> - applying a mask at the Raw Image level.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazIntfImageMask.FImage"/>
-
-      <element name="TLazIntfImageMask.SetInternalColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalColor.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalColor.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalColor.Value">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalColor.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalColor.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalColor.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalPixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalPixel.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalPixel.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.SetInternalPixel.Value">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalPixel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalPixel.Result">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalPixel.x">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.GetInternalPixel.y">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.CreateWithImage">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazIntfImageMask.CreateWithImage.TheImage">
-        <short/>
-      </element>
-      <element name="TLazIntfImageMask.Image">
-        <short>
-          <var>Image</var> - the image to which masking is applied.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette">
-        <short>
-          Descendant of <var>TFPPalette</var> which uses an AVL tree for speed up.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazAVLPalette.FAVLPalette"/>
-      <element name="TLazAVLPalette.FAVLNodes"/>
-
-      <element name="TLazAVLPalette.SetCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.SetCount.NewCount">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.SetColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.SetColor.Index">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.SetColor.NewColor">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareEntries">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.CompareEntries.Result">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareEntries.Index1">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareEntries.Index2">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareColorWithEntries">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.CompareColorWithEntries.Result">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareColorWithEntries.AColor">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CompareColorWithEntries.Index">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.EnlargeData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.IndexOf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.IndexOf.Result">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.IndexOf.AColor">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.Add">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazAVLPalette.Add.Result">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.Add.NewColor">
-        <short/>
-      </element>
-      <element name="TLazAVLPalette.CheckConsistency">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="PArrayNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TArrayNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Parent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Value">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Children">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.StartValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Capacity">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Data">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.DeleteChilds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.UnbindFromParent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.CreateChildNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.CreateChildNode.ChildValue">
-        <short/>
-      </element>
-      <element name="TArrayNode.GetChildNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.GetChildNode.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.GetChildNode.ChildValue">
-        <short/>
-      </element>
-      <element name="TArrayNode.GetChildNode.CreateIfNotExists">
-        <short/>
-      </element>
-      <element name="TArrayNode.Expand">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.Expand.ValueToInclude">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindPrevSibling">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindPrevSibling.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindNextSibling">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindNextSibling.Result">
-        <short/>
-      </element>
-
-      <element name="TArrayNode.FindNextUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindNextUTF8.Result">
-        <short/>
-      </element>
-
-      <element name="TArrayNode.FindPrev">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindPrev.Result">
-        <short/>
-      </element>
-
-      <element name="TArrayNode.FindFirstChild">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindFirstChild.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindLastChild">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindLastChild.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindLastSubChild">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindLastSubChild.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindFirstSibling">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindFirstSibling.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.FindLastSibling">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNode.FindLastSibling.Result">
-        <short/>
-      </element>
-      <element name="TArrayNode.ConsistencyCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TArrayNodesTree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.Root">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.FindNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.FindNode.Result">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.FindNode.IntArray">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.FindNode.Count">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.FindData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.FindData.Result">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.FindData.IntArray">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.FindData.Count">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.SetNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.SetNode.Result">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.SetNode.IntArray">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.SetNode.Count">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.SetNode.Data">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.Delete">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.Delete.Node">
-        <short/>
-      </element>
-      <element name="TArrayNodesTree.Clear">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TArrayNodesTree.ConsistencyCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="ILazImageReader">
-        <short></short>
-        <descr>
-          <p>
-            <var>ILazImageReader</var> is an interface used to extend <var>TFPCustomImageReader</var> to initialize a <var>TRawImgeDescription</var> based on the image to be read.
-          </p>
-        </descr>
-        <seeslso/>
-      </element>
-
-      <element name="ILazImageWriter.Initialize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ILazImageWriter.Initialize.AImage">
-        <short/>
-      </element>
-
-      <element name="ILazImageWriter.Finalize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderXPM">
-        <short><var>TLazReaderXPM</var> - this is a FPImage reader for xpm images.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderXPM.FWidth"/>
-      <element name="TLazReaderXPM.FHeight"/>
-      <element name="TLazReaderXPM.FColorCount"/>
-      <element name="TLazReaderXPM.FCharsPerPixel"/>
-      <element name="TLazReaderXPM.fXHot"/>
-      <element name="TLazReaderXPM.fYHot"/>
-      <element name="TLazReaderXPM.FPixelToColorTree"/>
-      <element name="TLazReaderXPM.FContinue"/>
-      <element name="TLazReaderXPM.FUpdateDescription"/>
-
-      <element name="TLazReaderXPM.GetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM.GetUpdateDescription.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM.SetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM.SetUpdateDescription.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderXPM.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazReaderXPM.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM.ClearPixelToColorTree">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderXPM.InternalRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM.InternalRead.Str">
-        <short/>
-      </element>
-      <element name="TLazReaderXPM.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM.InternalCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderXPM.InternalCheck.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderXPM.InternalCheck.Str">
-        <short/>
-      </element>
-
-      <element name="TLazReaderXPM.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderXPM.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderXPM.UpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterXPM">
-        <short><var>TLazWriterXPM</var> is a <var>FPImage</var> writer for xpm images.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterXPM.FNibblesPerSample"/>
-      <element name="TLazWriterXPM.FRightShiftSample"/>
-      <element name="TLazWriterXPM.FContinue"/>
-
-      <element name="TLazWriterXPM.SetNibblesPerSample">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterXPM.SetNibblesPerSample.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazWriterXPM.InternalWrite">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterXPM.InternalWrite.Str">
-        <short/>
-      </element>
-      <element name="TLazWriterXPM.InternalWrite.Img">
-        <short/>
-      </element>
-
-      <element name="TLazWriterXPM.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterXPM.NibblesPerSample">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderMaskMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderMaskMode.lrmmNone">
-        <short>No mask is generated.</short>
-      </element>
-      <element name="TLazReaderMaskMode.lrmmAuto">
-        <short>A mask is generated based on the first pixel read.</short>
-        <descr>
-          <p>
-            Note: when reading images with an alpha channel and the alpha channel has no influence on the mask (the maskcolor is transparent).
-          </p>
-        </descr>
-      </element>
-      <element name="TLazReaderMaskMode.lrmmColor">
-        <short>A mask is generated based on the given color.</short>
-        <descr>
-          <p>
-            Note: when reading images with an alpha channel and the alpha channel has no influence on the mask (the maskcolor is transparent).
-          </p>
-        </descr>
-      </element>
-
-      <element name="TLazReaderDIBEncoding">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdeRGB">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdeRLE">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdeBitfield">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdeJpeg">
-        <short>For completeness - don't know if they exist.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdePng">
-        <short>For completeness - don't know if they exist.</short>
-      </element>
-      <element name="TLazReaderDIBEncoding.lrdeHuffman">
-        <short>For completeness - don't know if they exist.</short>
-      </element>
-
-      <element name="TLazReaderDIBInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIBInfo.Width">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.Height">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.BitCount">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.Encoding">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PaletteCount">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.UpsideDown">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PixelMasks">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PixelMasks.R">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PixelMasks.G">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PixelMasks.B">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.PixelMasks.A">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskShift">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskShift.R">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskShift.G">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskShift.B">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskShift.A">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskSize">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskSize.R">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskSize.G">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskSize.B">
-        <short/>
-      </element>
-      <element name="TLazReaderDIBInfo.MaskSize.A">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.FImage"/>
-      <element name="TLazReaderDIB.FMaskMode"/>
-      <element name="TLazReaderDIB.FMaskColor">
-        <short>Color which should be interpreted as masked.</short>
-      </element>
-      <element name="TLazReaderDIB.FMaskIndex">
-        <short>For palette based images, index of the color which should be interpreted as masked.</short>
-      </element>
-      <element name="TLazReaderDIB.FReadSize">
-        <short>Size (in bytes) for a scanline.</short>
-      </element>
-      <element name="TLazReaderDIB.FDIBInfo">
-        <short>Information about the bitmap as read from the stream.</short>
-      </element>
-      <element name="TLazReaderDIB.FPalette">
-        <short>Buffer with Palette entries.</short>
-      </element>
-      <element name="TLazReaderDIB.FLineBuf">
-        <short>Buffer for ascanline. Can be Byte, Word, TColorRGB or TColorRGBA.</short>
-      </element>
-      <element name="TLazReaderDIB.FUpdateDescription">
-        <short>If set, rawimagedescription is updated.</short>
-      </element>
-      <element name="TLazReaderDIB.FContinue">
-        <short>For progress support.</short>
-      </element>
-      <element name="TLazReaderDIB.FIgnoreAlpha">
-        <short>If alpha channel is declared but does not exist (all values = 0).</short>
-      </element>
-
-      <element name="TLazReaderDIB.BitfieldsToFPColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.BitfieldsToFPColor.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.BitfieldsToFPColor.AColor">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.RGBToFPColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.RGBToFPColor.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.RGBToFPColor.AColor">
-        <short/>
-      </element>
-
-
-      <element name="TLazReaderDIB.GetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.GetUpdateDescription.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.SetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.SetUpdateDescription.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.InitLineBuf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.FreeLineBuf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.ReadScanLine">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.ReadScanLine.Row">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.WriteScanLine">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.WriteScanLine.Row">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.InternalRead">
-        <short/>
-        <descr>
-          Required by TFPCustomImageReader.
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.InternalRead.Stream">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.InternalReadHead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.InternalReadBody">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.InternalCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderDIB.InternalCheck.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderDIB.InternalCheck.Stream">
-        <short/>
-      </element>
-
-      <element name="TLazReaderDIB.ReadSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.LineBuf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.Info">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.MaskColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.MaskMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderDIB.UpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderBMP">
-        <short>
-          <var>TLazReaderBMP</var> - This is an improved <var>FPImage</var> reader for bmp images.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderBMP.FDataOffset">
-        <short/>
-        <descr>
-          Some bitmaps can specify the data offset.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderBMP.InternalCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderBMP.InternalCheck.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderBMP.InternalCheck.Stream">
-        <short/>
-      </element>
-
-      <element name="TLazReaderBMP.InternalReadHead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterBMP">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterBMP.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterBMP.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazWriterBMP.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazWriterBMP.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazWriterBMP._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterBMP._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterBMP._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterBMP._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterBMP.Initialize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterBMP.Initialize.AImage">
-        <short/>
-      </element>
-
-      <element name="TLazWriterBMP.Finalize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIconDIB">
-        <short>Implements an image reader for a single DIB in an icon file.</short>
-        <descr>
-          <p>
-            <var>TLazReaderIconDIB</var> is a <var>FPImage</var> reader for a single DIB from an icon file.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIconDIB.InternalRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIconDIB.InternalRead.Stream">
-        <short/>
-      </element>
-      <element name="TLazReaderIconDIB.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderPNG.FAlphaPalette"/>
-      <element name="TLazReaderPNG.FUpdateDescription"/>
-
-      <element name="TLazReaderPNG.GetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG.GetUpdateDescription.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG.SetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG.SetUpdateDescription.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderPNG.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazReaderPNG.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG.DoDecompress">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderPNG.HandleAlpha">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderPNG.InternalRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderPNG.InternalRead.Str">
-        <short/>
-      </element>
-      <element name="TLazReaderPNG.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderPNG.UpdateDescription">
-        <short/>
-      </element>
-
-      <element name="TLazWriterPNG">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterPNG.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterPNG.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazWriterPNG.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazWriterPNG.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazWriterPNG._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterPNG._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterPNG._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterPNG._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterPNG.Initialize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterPNG.Initialize.AImage">
-        <short/>
-      </element>
-
-      <element name="TLazWriterPNG.Finalize">
-        <short/>
-      </element>
-
-      <element name="LazTiffExtraPrefix">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="LazTiffHostComputer">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="LazTiffMake">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="LazTiffMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="LazTiffSoftware">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderTiff">
-        <short>Extends the FCL TIFF image reader to support the ILazImageReader interface.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderTiff.FUpdateDescription"/>
-      <element name="TLazReaderTiff.FOrgEvent"/>
-
-      <element name="TLazReaderTiff.CreateImageHook">
-        <short/>
-        <descr>
-            <p>
-              Defined for LCL versions prior to 2.06.01, where the OnCreateImage event is "abused" to update the description after the format and before the image is read.
-            </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.CreateImageHook.Sender">
-        <short/>
-      </element>
-      <element name="TLazReaderTiff.CreateImageHook.NewImage">
-        <short/>
-      </element>
-
-
-      <element name="TLazReaderTiff.DoCreateImage">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.DoCreateImage.ImgFileDir">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff.GetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.GetUpdateDescription.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff.SetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.SetUpdateDescription.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderTiff.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazReaderTiff.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff.InternalRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderTiff.InternalRead.Str">
-        <short/>
-      </element>
-      <element name="TLazReaderTiff.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderTiff.UpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterTiff">
-        <short>Extends the FCL TIFF image writer to support the ILazImageWriter interface.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazWriterTiff.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterTiff.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazWriterTiff.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazWriterTiff.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazWriterTiff._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterTiff._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterTiff._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterTiff._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazWriterTiff.InternalWrite">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterTiff.InternalWrite.Stream">
-        <short/>
-      </element>
-      <element name="TLazWriterTiff.InternalWrite.Img">
-        <short/>
-      </element>
-
-      <element name="TLazWriterTiff.Initialize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazWriterTiff.Initialize.AImage">
-        <short/>
-      </element>
-
-      <element name="TLazWriterTiff.Finalize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.FUpdateDescription"/>
-      <element name="TLazReaderIcnsPart.FPalette"/>
-      <element name="TLazReaderIcnsPart.FImage"/>
-      <element name="TLazReaderIcnsPart.FData"/>
-      <element name="TLazReaderIcnsPart.FCalcSize"/>
-      <element name="TLazReaderIcnsPart.FDataSize"/>
-      <element name="TLazReaderIcnsPart.FIconType"/>
-      <element name="TLazReaderIcnsPart.FIconInfo"/>
-
-      <element name="TLazReaderIcnsPart.InternalCheck">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.InternalCheck.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.InternalCheck.Str">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.InternalRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.InternalRead.Stream">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.InternalRead.Img">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.SetupRead">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.SetupRead.AWidth">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.SetupRead.AHeight">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.SetupRead.ADepth">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.SetupRead.IsMask">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.Create256ColorPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.Create256ColorPalette.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.DoReadRaw">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.DoReadRLE">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.DoReadJpeg2000">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.DoReadMask">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.GetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.GetUpdateDescription.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.SetUpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.SetUpdateDescription.AValue">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.QueryInterface">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart.QueryInterface.Result">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.QueryInterface.iid">
-        <short/>
-      </element>
-      <element name="TLazReaderIcnsPart.QueryInterface.obj">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart._AddRef">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart._AddRef.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart._Release">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TLazReaderIcnsPart._Release.Result">
-        <short/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create initializes members in the class instance, and sets the default value for <var>IconType</var> to <var>iitNone</var>.
-          </p>
-         </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. Destroy frees resources allocated for members, and calls the inherited destructor prior to exit.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.UpdateDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.IconType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TLazReaderIcnsPart.DataSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="QueryDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="QueryDescription.Result">
-        <short/>
-      </element>
-      <element name="QueryDescription.AFlags">
-        <short/>
-      </element>
-      <element name="QueryDescription.AWidth">
-        <short/>
-      </element>
-      <element name="QueryDescription.AHeight">
-        <short/>
-      </element>
-      <element name="QueryDescription.ADesc">
-        <short/>
-      </element>
-
-      <element name="GetDescriptionFromDevice">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="GetDescriptionFromDevice.Result">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromDevice.ADC">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromDevice.AWidth">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromDevice.AHeight">
-        <short/>
-      </element>
-
-      <element name="GetDescriptionFromBitmap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="GetDescriptionFromBitmap.Result">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromBitmap.ABitmap">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromBitmap.AWidth">
-        <short/>
-      </element>
-      <element name="GetDescriptionFromBitmap.AHeight">
-        <short/>
-      </element>
-
-      <element name="AddAlphaToDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="AddAlphaToDescription.Result">
-        <short/>
-      </element>
-      <element name="AddAlphaToDescription.ADesc">
-        <short/>
-      </element>
-      <element name="AddAlphaToDescription.APrec">
-        <short/>
-      </element>
-
-      <element name="DefaultReaderDescription">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="DefaultReaderDescription.AWidth">
-        <short/>
-      </element>
-      <element name="DefaultReaderDescription.AHeight">
-        <short/>
-      </element>
-      <element name="DefaultReaderDescription.ADepth">
-        <short/>
-      </element>
-      <element name="DefaultReaderDescription.ADesc">
-        <short/>
-      </element>
-
-      <element name="ReadCompleteStreamToString">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ReadCompleteStreamToString.Result">
-        <short/>
-      </element>
-      <element name="ReadCompleteStreamToString.Str">
-        <short/>
-      </element>
-      <element name="ReadCompleteStreamToString.StartSize">
-        <short/>
-      </element>
-
-      <element name="ReadCompleteStreamToStream">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ReadCompleteStreamToStream.SrcStream">
-        <short/>
-      </element>
-      <element name="ReadCompleteStreamToStream.DestStream">
-        <short/>
-      </element>
-      <element name="ReadCompleteStreamToStream.StartSize">
-        <short/>
-      </element>
-
-      <element name="dbgs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="dbgs.Result">
-        <short/>
-      </element>
-      <element name="dbgs.FPColor">
-        <short/>
-      </element>
-
-    </module>
-    <!-- IntfGraphics -->
-  </package>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.FRawImage"/>
+<element name="TLazIntfImage.FLineStarts"/>
+<element name="TLazIntfImage.FMaskLineStarts"/>
+<element name="TLazIntfImage.FMaskSet"/>
+<element name="TLazIntfImage.FUpdateCount"/>
+<element name="TLazIntfImage.fCreateAllDataNeeded"/>
+<element name="TLazIntfImage.FGetSetColorFunctionsUpdateNeeded"/>
+<element name="TLazIntfImage.FReadRawImageBits"/>
+<element name="TLazIntfImage.FWriteRawImageBits"/>
+<element name="TLazIntfImage.FMaskReadRawImageBits"/>
+<element name="TLazIntfImage.FMaskWriteRawImageBits"/>
+<element name="TLazIntfImage.FDataOwner"/>
+
+<element name="TLazIntfImage.GetMasked">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetMasked.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.GetMasked.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetMasked.y">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetTColors">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetTColors.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.GetTColors.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetTColors.y">
+<short/>
+</element>
+
+<element name="TLazIntfImage.InternalSetSize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.InternalSetSize.AWidth">
+<short/>
+</element>
+<element name="TLazIntfImage.InternalSetSize.AHeight">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetMasked">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetMasked.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetMasked.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetMasked.AValue">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetTColors">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetTColors.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetTColors.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetTColors.AValue">
+<short/>
+</element>
+<element name="TLazIntfImage.OnGetInternalColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.FGetInternalColorProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.FSetInternalColorProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.SetUsePalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetUsePalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetInternalColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetInternalColor.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetInternalColor.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetInternalColor.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetInternalColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetInternalColor.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.GetInternalColor.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetInternalColor.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetInternalPixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetInternalPixel.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetInternalPixel.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetInternalPixel.Value">
+<short/>
+</element>
+<element name="TLazIntfImage.GetInternalPixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetInternalPixel.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.GetInternalPixel.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetInternalPixel.y">
+<short/>
+</element>
+
+<element name="TLazIntfImage.FreeData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.SetDataDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetDataDescription.NewDescription">
+<short/>
+</element>
+
+<element name="TLazIntfImage.ChooseGetSetColorFunctions">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc.BitsPerPixel">
+<short/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc.ByteOrder">
+<short/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc.BitOrder">
+<short/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc.ProcReadRawImageBits">
+<short/>
+</element>
+<element name="TLazIntfImage.ChooseRawBitsProc.ProcWriteRawImageBits">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_Generic">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_Generic.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_Generic.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_Generic.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_RGBA_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_RGBA_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_RGBA_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_RGBA_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_RGB_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_RGB_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_RGB_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_RGB_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_Gray_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_Gray_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_Gray_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_Gray_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_GrayAlpha_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_NULL">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_NULL.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_NULL.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_NULL.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_A8B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_X8B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8G8R8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8G8B8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8B8R8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_G8R8B8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_B8R8G8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP32_R8B8G8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetColor_BPP24_R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetMask_Generic">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetMask_Generic.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetMask_Generic.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetMask_Generic.AValue">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_Generic">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_Generic.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_Generic.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_Generic.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_RGBA_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_RGBA_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_RGBA_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_RGBA_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_RGB_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_RGB_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_RGB_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_RGB_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_Gray_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_Gray_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_Gray_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_Gray_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_GrayAlpha_NoPalette.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_NULL">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_NULL.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_NULL.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_NULL.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_A8B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8A8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_X8B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8G8R8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8G8B8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8B8R8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_G8R8B8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_B8R8G8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP32_R8B8G8X8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8G8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8G8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8B8R8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_G8R8B8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_B8R8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetColor_BPP24_R8B8G8_BIO_TTB.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetMask_Generic">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetMask_Generic.x">
+<short/>
+</element>
+<element name="TLazIntfImage.SetMask_Generic.y">
+<short/>
+</element>
+<element name="TLazIntfImage.SetMask_Generic.Value">
+<short/>
+</element>
+
+<element name="TLazIntfImage.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.Create.AWidth">
+<short/>
+</element>
+<element name="TLazIntfImage.Create.AHeight">
+<short/>
+</element>
+<element name="TLazIntfImage.Create.AFlags">
+<short/>
+</element>
+<element name="TLazIntfImage.Create.ARawImage">
+<short/>
+</element>
+<element name="TLazIntfImage.Create.ADataOwner">
+<short/>
+</element>
+
+<element name="TLazIntfImage.CreateCompatible">
+<short>Alternate constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.CreateCompatible.IntfImg">
+<short/>
+</element>
+<element name="TLazIntfImage.CreateCompatible.AWidth">
+<short/>
+</element>
+<element name="TLazIntfImage.CreateCompatible.AHeight">
+<short/>
+</element>
+
+<element name="TLazIntfImage.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.Assign">
+<short>
+Stores values from the specified persistent object into the current class 
+instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.Assign.Source">
+<short/>
+</element>
+
+<element name="TLazIntfImage.BeginUpdate">
+<short>Increments the internal update counter.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.EndUpdate">
+<short>Decrements the internal update counter.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.SetSize">
+<short>
+<var>SetSize</var> - define the height and width of the image.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetSize.AWidth">
+<short/>
+</element>
+<element name="TLazIntfImage.SetSize.AHeight">
+<short/>
+</element>
+
+<element name="TLazIntfImage.CheckDescription">
+<short>
+<var>CheckDescription</var> - looks at the supplied Image Description record 
+and returns True if it matches the actual properties of the image.</short>
+<descr/>
+<errors>Generates an exception if an error is encountered in the image 
+description</errors>
+<seealso/>
+</element>
+<element name="TLazIntfImage.CheckDescription.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.CheckDescription.ADescription">
+<short/>
+</element>
+<element name="TLazIntfImage.CheckDescription.ExceptionOnError">
+<short/>
+</element>
+
+<element name="TLazIntfImage.LoadFromDevice">
+<short>
+<var>LoadFromDevice</var> - loads the image from the device with specified 
+handle.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.LoadFromDevice.DC">
+<short/>
+</element>
+
+<element name="TLazIntfImage.LoadFromBitmap">
+<short>
+<var>LoadFromBitmap</var> - loads the image from a Bitmap.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.LoadFromBitmap.ABitmap">
+<short/>
+</element>
+<element name="TLazIntfImage.LoadFromBitmap.AMaskBitmap">
+<short/>
+</element>
+<element name="TLazIntfImage.LoadFromBitmap.AWidth">
+<short/>
+</element>
+
+<element name="TLazIntfImage.CreateBitmaps">
+<short>
+<var>CreateBitmaps</var> - generates a Bitmap and an optional Mask for the 
+image data.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.CreateBitmaps.ABitmap">
+<short/>
+</element>
+<element name="TLazIntfImage.CreateBitmaps.AMask">
+<short/>
+</element>
+<element name="TLazIntfImage.CreateBitmaps.ASkipMask">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetRawImage">
+<short>Stores the raw image data in the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetRawImage.RawImage">
+<short/>
+</element>
+<element name="TLazIntfImage.SetRawImage.ADataOwner">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetRawImage">
+<short>
+Gets the raw image data stored in the class instance and optionally release 
+ownership.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetRawImage.ARawImage">
+<short/>
+</element>
+<element name="TLazIntfImage.GetRawImage.ATransferOwnership">
+<short/>
+</element>
+
+<element name="TLazIntfImage.FillPixels">
+<short>
+Sets the color for all pixels in the raw image data to the specified value.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.FillPixels.Color">
+<short/>
+</element>
+
+<element name="TLazIntfImage.CopyPixels">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.CopyPixels.ASource">
+<short/>
+</element>
+<element name="TLazIntfImage.CopyPixels.XDst">
+<short/>
+</element>
+<element name="TLazIntfImage.CopyPixels.YDst">
+<short/>
+</element>
+<element name="TLazIntfImage.CopyPixels.AlphaMask">
+<short/>
+</element>
+<element name="TLazIntfImage.CopyPixels.AlphaTreshold">
+<short/>
+</element>
+
+<element name="TLazIntfImage.AlphaBlend">
+<short>Merges a source image with alpha blending.</short>
+<descr>
+<p>
+Merges an image to a canvas using alpha blending according to a separate 
+image containing the alpha channel. White pixels in the alpha channel will 
+correspond to the source image pixel being fully drawn, grey ones are merged 
+and black ones ignored.
+</p>
+<p>
+If ASourceAlpha is Nil then it will utilize the alpha channel from ASource.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazIntfImage.AlphaBlend.ASource">
+<short/>
+</element>
+<element name="TLazIntfImage.AlphaBlend.ASourceAlpha">
+<short/>
+</element>
+<element name="TLazIntfImage.AlphaBlend.ADestX">
+<short/>
+</element>
+<element name="TLazIntfImage.AlphaBlend.ADestY">
+<short/>
+</element>
+
+<element name="TLazIntfImage.AlphaFromMask">
+<short>Gets the alpha value from the mask if needed.</short>
+<descr>
+<p>
+<var>AlphaFromMask</var> gets the alpha value from the mask if 
+<var>AKeepAlpha</var> is True (default condition).
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazIntfImage.AlphaFromMask.AKeepAlpha">
+<short/>
+</element>
+
+<element name="TLazIntfImage.Mask">
+<short/>
+</element>
+<element name="TLazIntfImage.Mask.AColor">
+<short/>
+</element>
+<element name="TLazIntfImage.Mask.AKeepOldMask">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetXYDataPostion">
+<short>
+<var>GetXYDataPosition</var> - finds the position of the raw image.</short>
+<descr>Yes, it really is spelled 'Postion'</descr>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetXYDataPostion.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetXYDataPostion.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetXYDataPostion.Position">
+<short/>
+</element>
+<element name="TLazIntfImage.GetXYMaskPostion">
+<short>
+<var>GetXYMaskPostion</var> - finds the position of the raw image 
+mask.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetXYMaskPostion.x">
+<short/>
+</element>
+<element name="TLazIntfImage.GetXYMaskPostion.y">
+<short/>
+</element>
+<element name="TLazIntfImage.GetXYMaskPostion.Position">
+<short/>
+</element>
+
+<element name="TLazIntfImage.GetDataLineStart">
+<short>Returns an pointer to the raw data for a scan line.</short>
+<descr>
+<p>
+Similar to Delphi's TBitmap.ScanLine. Works with scan lines aligned to whole 
+bytes.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazIntfImage.GetDataLineStart.Result">
+<short/>
+</element>
+<element name="TLazIntfImage.GetDataLineStart.y">
+<short/>
+</element>
+
+<element name="TLazIntfImage.CreateData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.HasTransparency">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.HasTransparency.Result">
+<short/>
+</element>
+
+<element name="TLazIntfImage.HasMask">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.HasMask.Result">
+<short/>
+</element>
+
+<element name="TLazIntfImage.SetDataDescriptionKeepData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.SetDataDescriptionKeepData.ADescription">
+<short/>
+</element>
+
+<element name="TLazIntfImage.PixelData">
+<short>
+<var>PixelData</var> - the raw image data for the image.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.MaskData">
+<short>
+<var>MaskData</var> - the raw data for the mask in the image.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.DataDescription">
+<short>
+<var>DataDescription</var> - the raw description record for the current 
+image.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.GetInternalColorProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.SetInternalColorProc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImage.TColors">
+<short>
+<var>TColors</var> - the colors available for the specified pixel.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.TColors.x">
+<short/>
+</element>
+<element name="TLazIntfImage.TColors.y">
+<short/>
+</element>
+
+<element name="TLazIntfImage.Masked">
+<short>
+<var>Masked</var> - whether the image mask applies at the specified position.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImage.Masked.x">
+<short/>
+</element>
+<element name="TLazIntfImage.Masked.y">
+<short/>
+</element>
+
+<element name="TLazIntfImageMask">
+<short>
+<var>TLazIntfImageMask</var> - applying a mask at the Raw Image level.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntfImageMask.FImage"/>
+
+<element name="TLazIntfImageMask.SetInternalColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageMask.SetInternalColor.x">
+<short/>
+</element>
+<element name="TLazIntfImageMask.SetInternalColor.y">
+<short/>
+</element>
+<element name="TLazIntfImageMask.SetInternalColor.Value">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageMask.GetInternalColor.Result">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalColor.x">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalColor.y">
+<short/>
+</element>
+<element name="TLazIntfImageMask.SetInternalPixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageMask.SetInternalPixel.x">
+<short/>
+</element>
+<element name="TLazIntfImageMask.SetInternalPixel.y">
+<short/>
+</element>
+<element name="TLazIntfImageMask.SetInternalPixel.Value">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalPixel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageMask.GetInternalPixel.Result">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalPixel.x">
+<short/>
+</element>
+<element name="TLazIntfImageMask.GetInternalPixel.y">
+<short/>
+</element>
+<element name="TLazIntfImageMask.CreateWithImage">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntfImageMask.CreateWithImage.TheImage">
+<short/>
+</element>
+<element name="TLazIntfImageMask.Image">
+<short>
+<var>Image</var> - the image to which masking is applied.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette">
+<short>
+Descendant of <var>TFPPalette</var> which uses an AVL tree for speed up.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazAVLPalette.FAVLPalette"/>
+<element name="TLazAVLPalette.FAVLNodes"/>
+
+<element name="TLazAVLPalette.SetCount">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.SetCount.NewCount">
+<short/>
+</element>
+<element name="TLazAVLPalette.SetColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.SetColor.Index">
+<short/>
+</element>
+<element name="TLazAVLPalette.SetColor.NewColor">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareEntries">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.CompareEntries.Result">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareEntries.Index1">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareEntries.Index2">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareColorWithEntries">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.CompareColorWithEntries.Result">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareColorWithEntries.AColor">
+<short/>
+</element>
+<element name="TLazAVLPalette.CompareColorWithEntries.Index">
+<short/>
+</element>
+<element name="TLazAVLPalette.EnlargeData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.IndexOf">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.IndexOf.Result">
+<short/>
+</element>
+<element name="TLazAVLPalette.IndexOf.AColor">
+<short/>
+</element>
+<element name="TLazAVLPalette.Add">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazAVLPalette.Add.Result">
+<short/>
+</element>
+<element name="TLazAVLPalette.Add.NewColor">
+<short/>
+</element>
+<element name="TLazAVLPalette.CheckConsistency">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="PArrayNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TArrayNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Parent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Value">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Children">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.StartValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Capacity">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Data">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.DeleteChilds">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.UnbindFromParent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.CreateChildNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.CreateChildNode.ChildValue">
+<short/>
+</element>
+<element name="TArrayNode.GetChildNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.GetChildNode.Result">
+<short/>
+</element>
+<element name="TArrayNode.GetChildNode.ChildValue">
+<short/>
+</element>
+<element name="TArrayNode.GetChildNode.CreateIfNotExists">
+<short/>
+</element>
+<element name="TArrayNode.Expand">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.Expand.ValueToInclude">
+<short/>
+</element>
+<element name="TArrayNode.FindPrevSibling">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindPrevSibling.Result">
+<short/>
+</element>
+<element name="TArrayNode.FindNextSibling">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindNextSibling.Result">
+<short/>
+</element>
+
+<element name="TArrayNode.FindNextUTF8">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindNextUTF8.Result">
+<short/>
+</element>
+
+<element name="TArrayNode.FindPrev">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindPrev.Result">
+<short/>
+</element>
+
+<element name="TArrayNode.FindFirstChild">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindFirstChild.Result">
+<short/>
+</element>
+<element name="TArrayNode.FindLastChild">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindLastChild.Result">
+<short/>
+</element>
+<element name="TArrayNode.FindLastSubChild">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindLastSubChild.Result">
+<short/>
+</element>
+<element name="TArrayNode.FindFirstSibling">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindFirstSibling.Result">
+<short/>
+</element>
+<element name="TArrayNode.FindLastSibling">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNode.FindLastSibling.Result">
+<short/>
+</element>
+<element name="TArrayNode.ConsistencyCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TArrayNodesTree">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.Root">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.FindNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.FindNode.Result">
+<short/>
+</element>
+<element name="TArrayNodesTree.FindNode.IntArray">
+<short/>
+</element>
+<element name="TArrayNodesTree.FindNode.Count">
+<short/>
+</element>
+<element name="TArrayNodesTree.FindData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.FindData.Result">
+<short/>
+</element>
+<element name="TArrayNodesTree.FindData.IntArray">
+<short/>
+</element>
+<element name="TArrayNodesTree.FindData.Count">
+<short/>
+</element>
+<element name="TArrayNodesTree.SetNode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.SetNode.Result">
+<short/>
+</element>
+<element name="TArrayNodesTree.SetNode.IntArray">
+<short/>
+</element>
+<element name="TArrayNodesTree.SetNode.Count">
+<short/>
+</element>
+<element name="TArrayNodesTree.SetNode.Data">
+<short/>
+</element>
+<element name="TArrayNodesTree.Delete">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.Delete.Node">
+<short/>
+</element>
+<element name="TArrayNodesTree.Clear">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TArrayNodesTree.ConsistencyCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="ILazImageReader">
+<short></short>
+<descr>
+<p>
+<var>ILazImageReader</var> is an interface used to extend 
+<var>TFPCustomImageReader</var> to initialize a 
+<var>TRawImgeDescription</var> based on the image to be read.
+</p>
+</descr>
+<seeslso/>
+</element>
+
+<element name="ILazImageWriter.Initialize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="ILazImageWriter.Initialize.AImage">
+<short/>
+</element>
+
+<element name="ILazImageWriter.Finalize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderXPM">
+<short>
+<var>TLazReaderXPM</var> - this is a FPImage reader for xpm images.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderXPM.FWidth"/>
+<element name="TLazReaderXPM.FHeight"/>
+<element name="TLazReaderXPM.FColorCount"/>
+<element name="TLazReaderXPM.FCharsPerPixel"/>
+<element name="TLazReaderXPM.fXHot"/>
+<element name="TLazReaderXPM.fYHot"/>
+<element name="TLazReaderXPM.FPixelToColorTree"/>
+<element name="TLazReaderXPM.FContinue"/>
+<element name="TLazReaderXPM.FUpdateDescription"/>
+
+<element name="TLazReaderXPM.GetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM.GetUpdateDescription.Result">
+<short/>
+</element>
+
+<element name="TLazReaderXPM.SetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM.SetUpdateDescription.AValue">
+<short/>
+</element>
+
+<element name="TLazReaderXPM.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazReaderXPM.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazReaderXPM.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazReaderXPM._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazReaderXPM._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM._Release.Result">
+<short/>
+</element>
+
+<element name="TLazReaderXPM.ClearPixelToColorTree">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderXPM.InternalRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM.InternalRead.Str">
+<short/>
+</element>
+<element name="TLazReaderXPM.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderXPM.InternalCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderXPM.InternalCheck.Result">
+<short/>
+</element>
+<element name="TLazReaderXPM.InternalCheck.Str">
+<short/>
+</element>
+
+<element name="TLazReaderXPM.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderXPM.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderXPM.UpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterXPM">
+<short>
+<var>TLazWriterXPM</var> is a <var>FPImage</var> writer for xpm images.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterXPM.FNibblesPerSample"/>
+<element name="TLazWriterXPM.FRightShiftSample"/>
+<element name="TLazWriterXPM.FContinue"/>
+
+<element name="TLazWriterXPM.SetNibblesPerSample">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterXPM.SetNibblesPerSample.AValue">
+<short/>
+</element>
+
+<element name="TLazWriterXPM.InternalWrite">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterXPM.InternalWrite.Str">
+<short/>
+</element>
+<element name="TLazWriterXPM.InternalWrite.Img">
+<short/>
+</element>
+
+<element name="TLazWriterXPM.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterXPM.NibblesPerSample">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderMaskMode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderMaskMode.lrmmNone">
+<short>No mask is generated.</short>
+</element>
+<element name="TLazReaderMaskMode.lrmmAuto">
+<short>A mask is generated based on the first pixel read.</short>
+<descr>
+<p>
+Note: when reading images with an alpha channel and the alpha channel has no 
+influence on the mask (the maskcolor is transparent).
+</p>
+</descr>
+</element>
+<element name="TLazReaderMaskMode.lrmmColor">
+<short>A mask is generated based on the given color.</short>
+<descr>
+<p>
+Note: when reading images with an alpha channel and the alpha channel has no 
+influence on the mask (the maskcolor is transparent).
+</p>
+</descr>
+</element>
+
+<element name="TLazReaderDIBEncoding">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIBEncoding.lrdeRGB">
+<short/>
+</element>
+<element name="TLazReaderDIBEncoding.lrdeRLE">
+<short/>
+</element>
+<element name="TLazReaderDIBEncoding.lrdeBitfield">
+<short/>
+</element>
+<element name="TLazReaderDIBEncoding.lrdeJpeg">
+<short>For completeness - don't know if they exist.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIBEncoding.lrdePng">
+<short>For completeness - don't know if they exist.</short>
+</element>
+<element name="TLazReaderDIBEncoding.lrdeHuffman">
+<short>For completeness - don't know if they exist.</short>
+</element>
+
+<element name="TLazReaderDIBInfo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIBInfo.Width">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.Height">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.BitCount">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.Encoding">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PaletteCount">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.UpsideDown">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PixelMasks">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PixelMasks.R">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PixelMasks.G">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PixelMasks.B">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.PixelMasks.A">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskShift">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskShift.R">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskShift.G">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskShift.B">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskShift.A">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskSize">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskSize.R">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskSize.G">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskSize.B">
+<short/>
+</element>
+<element name="TLazReaderDIBInfo.MaskSize.A">
+<short/>
+</element>
+
+<element name="TLazReaderDIB">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.FImage"/>
+<element name="TLazReaderDIB.FMaskMode"/>
+<element name="TLazReaderDIB.FMaskColor">
+<short>Color which should be interpreted as masked.</short>
+</element>
+<element name="TLazReaderDIB.FMaskIndex">
+<short>
+For palette based images, index of the color which should be interpreted as 
+masked.
+</short>
+</element>
+<element name="TLazReaderDIB.FReadSize">
+<short>Size (in bytes) for a scanline.</short>
+</element>
+<element name="TLazReaderDIB.FDIBInfo">
+<short>Information about the bitmap as read from the stream.</short>
+</element>
+<element name="TLazReaderDIB.FPalette">
+<short>Buffer with Palette entries.</short>
+</element>
+<element name="TLazReaderDIB.FLineBuf">
+<short>
+Buffer for ascanline. Can be Byte, Word, TColorRGB or TColorRGBA.
+</short>
+</element>
+<element name="TLazReaderDIB.FUpdateDescription">
+<short>If set, rawimagedescription is updated.</short>
+</element>
+<element name="TLazReaderDIB.FContinue">
+<short>For progress support.</short>
+</element>
+<element name="TLazReaderDIB.FIgnoreAlpha">
+<short>
+If alpha channel is declared but does not exist (all values = 0).
+</short>
+</element>
+
+<element name="TLazReaderDIB.BitfieldsToFPColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.BitfieldsToFPColor.Result">
+<short/>
+</element>
+<element name="TLazReaderDIB.BitfieldsToFPColor.AColor">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.RGBToFPColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.RGBToFPColor.Result">
+<short/>
+</element>
+<element name="TLazReaderDIB.RGBToFPColor.AColor">
+<short/>
+</element>
+
+
+<element name="TLazReaderDIB.GetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.GetUpdateDescription.Result">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.SetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.SetUpdateDescription.AValue">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazReaderDIB.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazReaderDIB.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazReaderDIB._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazReaderDIB._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB._Release.Result">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.InitLineBuf">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.FreeLineBuf">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.ReadScanLine">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.ReadScanLine.Row">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.WriteScanLine">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.WriteScanLine.Row">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.InternalRead">
+<short/>
+<descr>
+Required by TFPCustomImageReader.
+</descr>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.InternalRead.Stream">
+<short/>
+</element>
+<element name="TLazReaderDIB.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.InternalReadHead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.InternalReadBody">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.InternalCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderDIB.InternalCheck.Result">
+<short/>
+</element>
+<element name="TLazReaderDIB.InternalCheck.Stream">
+<short/>
+</element>
+
+<element name="TLazReaderDIB.ReadSize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.LineBuf">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.Info">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.MaskColor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.MaskMode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderDIB.UpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderBMP">
+<short>
+<var>TLazReaderBMP</var> - This is an improved <var>FPImage</var> reader for 
+bmp images.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderBMP.FDataOffset">
+<short/>
+<descr>
+Some bitmaps can specify the data offset.
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazReaderBMP.InternalCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderBMP.InternalCheck.Result">
+<short/>
+</element>
+<element name="TLazReaderBMP.InternalCheck.Stream">
+<short/>
+</element>
+
+<element name="TLazReaderBMP.InternalReadHead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterBMP">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterBMP.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterBMP.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazWriterBMP.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazWriterBMP.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazWriterBMP._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterBMP._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazWriterBMP._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterBMP._Release.Result">
+<short/>
+</element>
+
+<element name="TLazWriterBMP.Initialize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterBMP.Initialize.AImage">
+<short/>
+</element>
+
+<element name="TLazWriterBMP.Finalize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIconDIB">
+<short>Implements an image reader for a single DIB in an icon file.</short>
+<descr>
+<p>
+<var>TLazReaderIconDIB</var> is a <var>FPImage</var> reader for a single DIB 
+from an icon file.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazReaderIconDIB.InternalRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIconDIB.InternalRead.Stream">
+<short/>
+</element>
+<element name="TLazReaderIconDIB.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderPNG">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderPNG.FAlphaPalette"/>
+<element name="TLazReaderPNG.FUpdateDescription"/>
+
+<element name="TLazReaderPNG.GetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG.GetUpdateDescription.Result">
+<short/>
+</element>
+
+<element name="TLazReaderPNG.SetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG.SetUpdateDescription.AValue">
+<short/>
+</element>
+
+<element name="TLazReaderPNG.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazReaderPNG.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazReaderPNG.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazReaderPNG._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazReaderPNG._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG._Release.Result">
+<short/>
+</element>
+
+<element name="TLazReaderPNG.DoDecompress">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderPNG.HandleAlpha">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderPNG.InternalRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderPNG.InternalRead.Str">
+<short/>
+</element>
+<element name="TLazReaderPNG.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderPNG.UpdateDescription">
+<short/>
+</element>
+
+<element name="TLazWriterPNG">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterPNG.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterPNG.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazWriterPNG.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazWriterPNG.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazWriterPNG._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterPNG._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazWriterPNG._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterPNG._Release.Result">
+<short/>
+</element>
+
+<element name="TLazWriterPNG.Initialize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterPNG.Initialize.AImage">
+<short/>
+</element>
+
+<element name="TLazWriterPNG.Finalize">
+<short/>
+</element>
+
+<element name="LazTiffExtraPrefix">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="LazTiffHostComputer">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="LazTiffMake">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="LazTiffMode">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="LazTiffSoftware">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderTiff">
+<short>
+Extends the FCL TIFF image reader to support the ILazImageReader interface.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderTiff.FUpdateDescription"/>
+<element name="TLazReaderTiff.FOrgEvent"/>
+
+<element name="TLazReaderTiff.CreateImageHook">
+<short/>
+<descr>
+<p>
+Defined for LCL versions prior to 2.06.01, where the OnCreateImage event is 
+"abused" to update the description after the format and before the image is 
+read.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.CreateImageHook.Sender">
+<short/>
+</element>
+<element name="TLazReaderTiff.CreateImageHook.NewImage">
+<short/>
+</element>
+
+
+<element name="TLazReaderTiff.DoCreateImage">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.DoCreateImage.ImgFileDir">
+<short/>
+</element>
+
+<element name="TLazReaderTiff.GetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.GetUpdateDescription.Result">
+<short/>
+</element>
+
+<element name="TLazReaderTiff.SetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.SetUpdateDescription.AValue">
+<short/>
+</element>
+
+<element name="TLazReaderTiff.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazReaderTiff.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazReaderTiff.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazReaderTiff._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazReaderTiff._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff._Release.Result">
+<short/>
+</element>
+
+<element name="TLazReaderTiff.InternalRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderTiff.InternalRead.Str">
+<short/>
+</element>
+<element name="TLazReaderTiff.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderTiff.UpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterTiff">
+<short>
+Extends the FCL TIFF image writer to support the ILazImageWriter interface.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazWriterTiff.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterTiff.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazWriterTiff.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazWriterTiff.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazWriterTiff._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterTiff._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazWriterTiff._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterTiff._Release.Result">
+<short/>
+</element>
+
+<element name="TLazWriterTiff.InternalWrite">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterTiff.InternalWrite.Stream">
+<short/>
+</element>
+<element name="TLazWriterTiff.InternalWrite.Img">
+<short/>
+</element>
+
+<element name="TLazWriterTiff.Initialize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazWriterTiff.Initialize.AImage">
+<short/>
+</element>
+
+<element name="TLazWriterTiff.Finalize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.FUpdateDescription"/>
+<element name="TLazReaderIcnsPart.FPalette"/>
+<element name="TLazReaderIcnsPart.FImage"/>
+<element name="TLazReaderIcnsPart.FData"/>
+<element name="TLazReaderIcnsPart.FCalcSize"/>
+<element name="TLazReaderIcnsPart.FDataSize"/>
+<element name="TLazReaderIcnsPart.FIconType"/>
+<element name="TLazReaderIcnsPart.FIconInfo"/>
+
+<element name="TLazReaderIcnsPart.InternalCheck">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.InternalCheck.Result">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.InternalCheck.Str">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.InternalRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.InternalRead.Stream">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.InternalRead.Img">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.SetupRead">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.SetupRead.AWidth">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.SetupRead.AHeight">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.SetupRead.ADepth">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.SetupRead.IsMask">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.Create256ColorPalette">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.Create256ColorPalette.Result">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.DoReadRaw">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.DoReadRLE">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.DoReadJpeg2000">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.DoReadMask">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.GetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.GetUpdateDescription.Result">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.SetUpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.SetUpdateDescription.AValue">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.QueryInterface">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart.QueryInterface.Result">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.QueryInterface.iid">
+<short/>
+</element>
+<element name="TLazReaderIcnsPart.QueryInterface.obj">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart._AddRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart._AddRef.Result">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart._Release">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazReaderIcnsPart._Release.Result">
+<short/>
+</element>
+
+<element name="TLazReaderIcnsPart.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and 
+calls the inherited constructor on entry. Create initializes members in the 
+class instance, and sets the default value for <var>IconType</var> to 
+<var>iitNone</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. 
+Destroy frees resources allocated for members, and calls the inherited 
+destructor prior to exit.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.UpdateDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.IconType">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazReaderIcnsPart.DataSize">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="QueryDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="QueryDescription.Result">
+<short/>
+</element>
+<element name="QueryDescription.AFlags">
+<short/>
+</element>
+<element name="QueryDescription.AWidth">
+<short/>
+</element>
+<element name="QueryDescription.AHeight">
+<short/>
+</element>
+<element name="QueryDescription.ADesc">
+<short/>
+</element>
+
+<element name="GetDescriptionFromDevice">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="GetDescriptionFromDevice.Result">
+<short/>
+</element>
+<element name="GetDescriptionFromDevice.ADC">
+<short/>
+</element>
+<element name="GetDescriptionFromDevice.AWidth">
+<short/>
+</element>
+<element name="GetDescriptionFromDevice.AHeight">
+<short/>
+</element>
+
+<element name="GetDescriptionFromBitmap">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="GetDescriptionFromBitmap.Result">
+<short/>
+</element>
+<element name="GetDescriptionFromBitmap.ABitmap">
+<short/>
+</element>
+<element name="GetDescriptionFromBitmap.AWidth">
+<short/>
+</element>
+<element name="GetDescriptionFromBitmap.AHeight">
+<short/>
+</element>
+
+<element name="AddAlphaToDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="AddAlphaToDescription.Result">
+<short/>
+</element>
+<element name="AddAlphaToDescription.ADesc">
+<short/>
+</element>
+<element name="AddAlphaToDescription.APrec">
+<short/>
+</element>
+
+<element name="DefaultReaderDescription">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="DefaultReaderDescription.AWidth">
+<short/>
+</element>
+<element name="DefaultReaderDescription.AHeight">
+<short/>
+</element>
+<element name="DefaultReaderDescription.ADepth">
+<short/>
+</element>
+<element name="DefaultReaderDescription.ADesc">
+<short/>
+</element>
+
+<element name="ReadCompleteStreamToString">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="ReadCompleteStreamToString.Result">
+<short/>
+</element>
+<element name="ReadCompleteStreamToString.Str">
+<short/>
+</element>
+<element name="ReadCompleteStreamToString.StartSize">
+<short/>
+</element>
+
+<element name="ReadCompleteStreamToStream">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="ReadCompleteStreamToStream.SrcStream">
+<short/>
+</element>
+<element name="ReadCompleteStreamToStream.DestStream">
+<short/>
+</element>
+<element name="ReadCompleteStreamToStream.StartSize">
+<short/>
+</element>
+
+<element name="dbgs">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="dbgs.Result">
+<short/>
+</element>
+<element name="dbgs.FPColor">
+<short/>
+</element>
+
+</module>
+<!-- IntfGraphics -->
+</package>
 </fpdoc-descriptions>

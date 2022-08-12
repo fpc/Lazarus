@@ -1,292 +1,296 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-      postscriptunicode
-    ====================================================================
-    -->
-    <module name="postscriptunicode">
-      <short>Contains classes and types used to provide Unicode support in the PostScript printer type.</short>
-      <descr>
-        <p>
-          <file>postscriptunicode.pas</file> contains classes and types used to provide Unicode support in the PostScript printer type.
-        </p>
-        <p>
-          Author: Jesus Reyes Aguilar
-        </p>
-      </descr>
+<package name="lcl">
+<!--
+====================================================================
+postscriptunicode
+====================================================================
+-->
+<module name="postscriptunicode">
+<short>
+Contains classes and types used to provide Unicode support in the PostScript 
+printer type.
+</short>
+<descr>
+<p>
+<file>postscriptunicode.pas</file> contains classes and types used to provide 
+Unicode support in the PostScript printer type.
+</p>
+<p>
+Author: Jesus Reyes Aguilar
+</p>
+</descr>
 
-      <!-- unresolved type references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Math"/>
-      <element name="Maps"/>
-      <element name="LazUTF8"/>
+<!-- unresolved type references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Math"/>
+<element name="Maps"/>
+<element name="LazUTF8"/>
 
-      <element name="TUnicodeBlock">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TUnicodeBlock">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TUnicodeBlock.Ini">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TUnicodeBlock.Ini">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TUnicodeBlock.Fin">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TUnicodeBlock.Fin">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TUnicodeBlock.PSCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TUnicodeBlock.PSCount">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="PGlyph">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="PGlyph">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TGlyph">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TGlyph">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TGlyph.Code">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TGlyph.Code">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TGlyph.Name">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TGlyph.Name">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="GLYPHCOUNT">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="GLYPHCOUNT">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="GlyphsArr">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="GlyphsArr">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.FFontSize"/>
-      <element name="TPsUnicode.FFontStyle"/>
-      <element name="TPsUnicode.FGlyphs"/>
-      <element name="TPsUnicode.FBlocks"/>
-      <element name="TPsUnicode.FEncodings"/>
-      <element name="TPsUnicode.FOutLst"/>
-      <element name="TPsUnicode.FBaseFonts"/>
-      <element name="TPsUnicode.FEncodedFonts"/>
-      <element name="TPsUnicode.FUsedFonts"/>
-      <element name="TPsUnicode.FLastFontIndex"/>
-      <element name="TPsUnicode.FFont"/>
+<element name="TPsUnicode.FFontSize"/>
+<element name="TPsUnicode.FFontStyle"/>
+<element name="TPsUnicode.FGlyphs"/>
+<element name="TPsUnicode.FBlocks"/>
+<element name="TPsUnicode.FEncodings"/>
+<element name="TPsUnicode.FOutLst"/>
+<element name="TPsUnicode.FBaseFonts"/>
+<element name="TPsUnicode.FEncodedFonts"/>
+<element name="TPsUnicode.FUsedFonts"/>
+<element name="TPsUnicode.FLastFontIndex"/>
+<element name="TPsUnicode.FFont"/>
 
-      <element name="TPsUnicode.CreateGlyphMap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.CreateGlyphMap">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.CreateUniCodeBlocks">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.CreateUniCodeBlocks">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.CountPSChars">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.CountPSChars">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.FindEncodingIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.FindEncodingIndex">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.FindEncodingIndex.Result">
-        <short/>
-      </element>
+<element name="TPsUnicode.FindEncodingIndex.Result">
+<short/>
+</element>
 
-      <element name="TPsUnicode.FindEncodingIndex.ABlock">
-        <short/>
-      </element>
+<element name="TPsUnicode.FindEncodingIndex.ABlock">
+<short/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.IndexOfFont">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont.Result">
-        <short/>
-      </element>
+<element name="TPsUnicode.IndexOfFont.Result">
+<short/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont.AFontName">
-        <short/>
-      </element>
+<element name="TPsUnicode.IndexOfFont.AFontName">
+<short/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont.AFontSize">
-        <short/>
-      </element>
+<element name="TPsUnicode.IndexOfFont.AFontSize">
+<short/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont.AFontStyle">
-        <short/>
-      </element>
+<element name="TPsUnicode.IndexOfFont.AFontStyle">
+<short/>
+</element>
 
-      <element name="TPsUnicode.IndexOfFont.ABlock">
-        <short/>
-      </element>
+<element name="TPsUnicode.IndexOfFont.ABlock">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SelectFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.SelectFont">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.SelectFont.Result">
-        <short/>
-      </element>
+<element name="TPsUnicode.SelectFont.Result">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SelectFont.AFontName">
-        <short/>
-      </element>
+<element name="TPsUnicode.SelectFont.AFontName">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SelectFont.AFontSize">
-        <short/>
-      </element>
+<element name="TPsUnicode.SelectFont.AFontSize">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SelectFont.AFontStyle">
-        <short/>
-      </element>
+<element name="TPsUnicode.SelectFont.AFontStyle">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SelectFont.ABlock">
-        <short/>
-      </element>
+<element name="TPsUnicode.SelectFont.ABlock">
+<short/>
+</element>
 
-      <element name="TPsUnicode.ReportBlockEncoding">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.ReportBlockEncoding">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.ReportBlockEncoding.i">
-        <short/>
-      </element>
+<element name="TPsUnicode.ReportBlockEncoding.i">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SetFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.SetFont">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.SetFont.AValue">
-        <short/>
-      </element>
+<element name="TPsUnicode.SetFont.AValue">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SetFontSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.SetFontSize">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.SetFontSize.AValue">
-        <short/>
-      </element>
+<element name="TPsUnicode.SetFontSize.AValue">
+<short/>
+</element>
 
-      <element name="TPsUnicode.SetFontStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.SetFontStyle">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.SetFontStyle.AValue">
-        <short/>
-      </element>
+<element name="TPsUnicode.SetFontStyle.AValue">
+<short/>
+</element>
 
-      <element name="TPsUnicode.create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.create">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.OutputString">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.OutputString">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.OutputString.S">
-        <short/>
-      </element>
+<element name="TPsUnicode.OutputString.S">
+<short/>
+</element>
 
-      <element name="TPsUnicode.BlockFor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.BlockFor">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.BlockFor.Result">
-        <short/>
-      </element>
+<element name="TPsUnicode.BlockFor.Result">
+<short/>
+</element>
 
-      <element name="TPsUnicode.BlockFor.w">
-        <short/>
-      </element>
+<element name="TPsUnicode.BlockFor.w">
+<short/>
+</element>
 
-      <element name="TPsUnicode.Font">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.Font">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.FontSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.FontSize">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.FOntStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.FOntStyle">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-      <element name="TPsUnicode.OutLst">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+<element name="TPsUnicode.OutLst">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-    </module>
-    <!-- postscriptunicode -->
-  </package>
+</module>
+<!-- postscriptunicode -->
+</package>
 </fpdoc-descriptions>

@@ -1,993 +1,1133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-
-    <!-- popupnotifier -->
-    <module name="popupnotifier">
-      <short>Contains the TPopupNotifier visual component.</short>
-      <descr>
-        <p>
-          The following controls are added to the component palette in the Lazarus IDE:
-        </p>
-        <p>
-          <b>Common Controls</b> Tab
-        </p>
-        <ul>
-          <li>TPopupNotifier</li>
-        </ul>
-        <remark>
-          Please note that <var>ExtCtrls</var> has a dependency on the <var>popupnotifier</var> unit; circular dependencies between <var>popupnotifier</var> and other units should be avoided.
-        </remark>
-        <p>
-          This file is part of the Lazarus Component Library (<b>LCL</b>).
-        </p>
-      </descr>
-
-      <!-- enumeration type Visibility: default -->
-      <element name="TNotifierXButtonButtonState">
-        <short>
-          Button states for the pop-up notifier buttons.
-        </short>
-        <descr>
-          <p>
-            <var>TNotifierXButtonButtonState</var> is an enumeration type with values that define the state for buttons in <var>TPopupNotifier</var>. TNotifierXButtonButtonState is defined to avoid a dependency on the <file>Buttons</file> unit.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier"/>
-        </seealso>
-      </element>
-
-      <!-- enumeration value Visibility: default -->
-      <element name="TNotifierXButtonButtonState.nbsUp">
-        <short>The button is up.</short>
-      </element>
-
-      <!-- enumeration value Visibility: default -->
-      <element name="TNotifierXButtonButtonState.nbsDown">
-        <short>The button is down.</short>
-      </element>
-
-      <!-- enumeration value Visibility: default -->
-      <element name="TNotifierXButtonButtonState.nbsHot">
-        <short>The button is hot (under the mouse).</short>
-      </element>
-
-      <!-- object Visibility: default -->
-      <element name="TNotifierXButton">
-        <short>
-          Implements the button for TNotifierForm.
-        </short>
-        <descr>
-          <p>
-            <var>TNotifierXButton</var> is a <var>TCustomControl</var> descendant that implements the button for <var>TNotifierForm</var>. TNotifierXButton provides methods need to draw the button in a specific state, and respond to mouse up and down messages.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TNotifierXButton.FState"/>
-
-      <!-- procedure Visibility: private -->
-      <element name="TNotifierXButton.HandleMouseDown">
-        <short>
-          Responds to mouse down messages.
-        </short>
-        <descr>
-          <p>
-            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages in the button. HandleMouseDown sets the internal state and redraws the button when the left mouse button is clicked. No actions are performed in the method if Button contains a value other than mbLeft.
-          </p>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseDown.Sender">
-        <short>Object generating the mouse message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseDown.Button">
-        <short>
-          Mouse button for the message.
-        </short>
-        <descr>
-          <p>
-            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages for the button. HandleMouseDown sets the internal state and redraws the button when the left mouse button is clicked. No actions are performed if the method if Button contains a value other than than mbLeft.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierXButton.HandleMouseUp"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseDown.X">
-        <short>Horizontal position for the mouse message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseDown.Y">
-        <short>Vertical position for the mouse message.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TNotifierXButton.HandleMouseUp">
-        <short>
-          Responds to mouse up messages.
-        </short>
-        <descr>
-          <p>
-            <var>HandleMouseUp</var> is a procedure which responds to mouse up messages in the button. HandleMouseUp sets the internal state and redraws the button when the left mouse button is released.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierXButton.HandleMouseDown"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseUp.Sender">
-        <short>Object generating the mouse message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseUp.Button">
-        <short>Button for the mouse message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseUp.Shift">
-        <short>Shift key state for the message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseUp.X">
-        <short>Horizontal position for the mouse message.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.HandleMouseUp.Y">
-        <short>Vertical position for the mouse message.</short>
-      </element>
-
-      <!-- constructor Visibility: public -->
-      <element name="TNotifierXButton.Create">
-        <short>
-          Constructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the initial value for the internal state tracking member to nbsUp. Create sets the event handlers in the class instance to the following private methods:
-          </p>
-          <dl>
-            <dt>OnMouseUp</dt>
-            <dd>HandleMouseUp</dd>
-            <dt>OnMouseDown</dt>
-            <dd>HandleMouseDown</dd>
-          </dl>
-        </descr>
-        <seealso/>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierXButton.Create.AOwner">
-        <short>Owner for the class instance.</short>
-      </element>
-
-      <!-- destructor Visibility: public -->
-      <element name="TNotifierXButton.Destroy">
-        <short>
-          Destructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            Destroy is the destructor for the class instance. Destroy calls the inherited destructor.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- procedure Visibility: public -->
-      <element name="TNotifierXButton.Paint">
-        <short>Draws the button in its current state.</short>
-        <descr>
-          <p>
-             <var>Paint</var> is an overridden procedure which draws the close button using the Canvas for the control. Paint updates the Canvas with the pen and brush needed to draw the button in its current state. Canvas methods are called to draw the filled rectangle and "X" icon displayed on the close button.
-          </p>
-          <p>
-            Paint calls the inherited method prior to exit to signal the OnPaint event handler (when assigned).
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
-          <link id="#lcl.controls.TCustomControl.OnPaint">TCustomControl.OnPaint</link>
-        </seealso>
-      </element>
-
-      <!-- object Visibility: default -->
-      <element name="TNotifierForm">
-        <short>
-          Implements the form used for TPopupNotifier.
-        </short>
-        <descr>
-          <p>
-            <var>TNotifierForm</var> is a <var>THintWindow</var> descendant that implements the form used for <var>TPopupNotifier</var>. TNotifierForm has private members that are used for the title, text, icon, and button on the pop-up notification form.TNotifierForm provides methods which paint, hide, and handle resizing for the form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier"/>
-          <link id="#lcl.forms.THintWindow">THintWindow</link>
-        </seealso>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TNotifierForm.lblTitle">
-        <short>Label with the Title for the form.</short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TNotifierForm.lblText">
-        <short>Label with the Text for the form.</short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TNotifierForm.imgIcon">
-        <short>Image with the Icon for the form.</short>
-      </element>
-
-      <!-- variable Visibility: private -->
-      <element name="TNotifierForm.btnX">
-        <short>Custom close button for the form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TNotifierForm.HideForm">
-        <short>
-          Signals the OnClose event handler when the form is hidden.
-        </short>
-        <descr>
-          <p>
-            <var>HideForm</var> is a procedure which signals an event when the form is hidden. HideForm signals the OnClose event (when assigned). HideForm calls Hide prior to exiting from the method.
-          </p>
-          <p>
-            HideForm is assigned as the OnClick event handler in TLabel and TNotifierXButton members created for the form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.forms.TCustomForm.Hide">TCustomForm.Hide</link>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierForm.HideForm.Sender">
-        <short>Object generating the event.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TNotifierForm.HandleResize">
-        <short>
-          Handles resize requests for the form.
-        </short>
-        <descr>
-          <p>
-            <var>HandleResize</var> is a procedure which handles resize requests for the form. HandleResize adjusts the size for the Icon, Button, Text, and Title in the form to their new size constraints. HandleResize is assigned as the event handler for the OnShow event in the form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.forms.TCustomForm.OnShow">TCustomForm.OnShow</link>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierForm.HandleResize.Sender">
-        <short>Object generating the event.</short>
-      </element>
-
-      <!-- procedure visibility: protected -->
-      <element name="TNotifierForm.CreateHandle">
-        <short>
-          Creates the handle for the form.
-        </short>
-        <descr>
-          <p>
-            <var>CreateHandle</var> is an overridden procedure used to update font colors for TLabel members when the handle for the form is created. CreateHandle calls the inherited method to ensure that a handle is allocated for the control.
-          </p>
-          <p>
-            CreateHandle ensures that font colors used in its TLabel instances are resolved, when needed. clDefault is converted to the value clInfoText in TNotifierForm.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.controls.TWinControl.CreateHandle">TWinControl.CreateHandle</link>
-        </seealso>
-      </element>
-
-      <!-- constructor Visibility: public -->
-      <element name="TNotifierForm.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the BorderStyle to bsNone, and calculates the Width and Height for the form. Create allocates resources and configures the Icon, Title, Text, and Button for the form. The Color for the form is set to clInfoBk.
-          </p>
-          <p>
-            Create sets the event handlers in the class instance to the following methods:
-          </p>
-          <dl>
-            <dt>OnMouseUp</dt>
-            <dd>HandleMouseUp</dd>
-            <dt>OnMouseDown</dt>
-            <dd>HandleMouseDown</dd>
-          </dl>
-          <p>
-            Create calls HandleResize to resize the current form instance and apply sizing constraints.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TNotifierForm.Create.AOwner">
-        <short>Owner of the form instance.</short>
-      </element>
-
-      <!-- destructor Visibility: public -->
-      <element name="TNotifierForm.Destroy">
-        <short>
-          Frees the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated in the constructor for the Icon, Title, Text, and Button on the form. Destroy calls the inherited destructor proper to exiting from the method.
-          </p>
-        </descr>
-        <errors></errors>
-        <seealso></seealso>
-      </element>
-
-      <element name="TNotifierForm.Paint">
-        <short>Draws the form background and icon image.</short>
-        <descr>
-          <p>
-            Paint is an overridden method in TNotifierForm used to render the form to its Canvas using values in the Color and ImgIcon properties. Canvas is updated with the brush style and color needed, and its FillRect method is called to paint the background for the form. The bitmap in ImgIcon is drawn on the Canvas when it has been assigned.
-          </p>
-          <p>
-            Paint re-implements and does not call the inherited method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
-          <link id="#lcl.graphics.TCanvas.FillRect">TCanvas.FillRect</link>
-          <link id="#lcl.graphics.TPicture.Bitmap">TPicture.Bitmap</link>
-          <link id="#lcl.forms.TCustomForm.Color">TCustomForm.Color</link>
-          <link id="#lcl.forms.THintWindow.Paint">THintWindow.Paint</link>
-        </seealso>
-      </element>
-
-      <!-- object Visibility: default -->
-      <element name="TPopupNotifier">
-        <short>
-          Implements a pop-up notification component.
-        </short>
-        <descr>
-          <p>
-            <var>TPopupNotifier</var> is a TComponent descendant which implements a pop-up notification component. TPopupNotifier includes an internal TNotifierForm member which displays the Title, Text, Icon and the close button for the notification. TPopupNotifier provides methods needed to display or hide the notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetColor">
-        <short>
-          Gets the color for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>GetColor</var> is a TColor function used to get the value for the Color property in the form which displays the pop-up notification. GetColor is the read access specifier for the Color property.
-          </p>
-          <p>
-            Use Color to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Color"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetColor.Result">
-        <short>Current color for the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier.SetColor">
-        <short>
-          Sets the color for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>SetColor</var> is procedure used to set color for the form which displays the pop-up notification. SetColor is the write access specifier for the Color property. SetColor stores the specified value in the Color property for the notification form.
-          </p>
-          <p>
-            Use Color to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Color"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetColor.Value">
-        <short>New color for the notification form.</short>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetIcon">
-        <short>
-          Gets the icon for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>GetIcon</var> is a TPicture function which gets the icon for the pop-up notification form. GetIcon is the read access specifier for the Icon property.
-          </p>
-          <p>
-            Use Icon to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Icon"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetIcon.Result">
-        <short>Current Icon for the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier. SetIcon">
-        <short>Sets the icon for the notification form.</short>
-        <descr>
-          <p>
-             <var>SetIcon</var> is a procedure which sets the Icon for the pop-up notification form to the specified value. SetIcon is the write access specifier for the Icon property.
-          </p>
-          <p>
-            Use Icon to read or write the value in the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Icon"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetIcon.Value">
-        <short>New icon for the notification form.</short>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetText">
-        <short>
-          Gets the text for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>GetText</var> is a String function which gets the value of the Text label for the pop-up notification form. GetText is the read access specifier for the Text property. GetText returns the Caption for the corresponding TLabel on the pop-up notification form.
-          </p>
-          <p>
-            Use Text to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Text"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetText.Result">
-        <short>Text for the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier.SetText">
-        <short>
-          Sets the text for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>SetText</var> is a procedure which sets the text on the pop-up notification form to the specified value. SetText is the write access specifier for the Text property. SetText stores the specified value in the caption of the corresponding TLabel on the pop-up notification form.
-          </p>
-          <p>
-            Use Text to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Text"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetText.Value">
-        <short>New text for the notification form.</short>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetTitle">
-        <short>Gets the title for the notification form.</short>
-        <descr>
-          <p>
-            <var>GetTitle</var> is a String function which gets the title displayed on the pop-up notification form. GetTitle is the read access specifier for the Title property. GetTitle returns the value for the caption in the corresponding TLabel on the notification form.
-          </p>
-          <p>
-            Use Title to read or write the value in the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Title"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetTitle.Result">
-        <short>Title for the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier.SetTitle">
-        <short>
-          Sets the title for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>SetTitle</var> is a procedure which sets the value for the title on the pop-up notification form. SetTitle is the write access specifier for the Title property. SetTitle stores the specified value in the caption of the TLabel for the pop-up notification form.
-          </p>
-          <p>
-            Use Title to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Title"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetTitle.Value">
-        <short>New title for the notification form.</short>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetVisible">
-        <short>
-          Gets the Visible property for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>GetVisible</var> is a Boolean function which gets the value for the Visible property in the pop-up notification form. GetVisible is the read access specifier for the Visible property.
-          </p>
-          <p>
-            Use Visible to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Visible"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetVisible.Result">
-        <short>Value of the Visible property for the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier.SetVisible">
-        <short>
-          Sets the Visible property for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>SetVisible</var> is a procedure which sets the value in the Visible property for the pop-up notification form. SetVisible is the write access specifier for the Visible property.
-          </p>
-          <p>
-            Use Visible to read or write the value for the property.
-          </p>
-          <p>
-            Use Show or ShowAtPos to display the pop-up notification form for the component. Use Hide to close the pop-up notification form for the component.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Visible"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetVisible.Value">
-        <short>New value for the Visible property in the notification form.</short>
-      </element>
-
-      <!-- function Visibility: private -->
-      <element name="TPopupNotifier.GetOnClose">
-        <short>
-          Sets the OnClose event handler for the notification form.
-        </short>
-        <descr>
-          <p>
-            <var>GetOnClose</var> is a TCloseEvent function which gets the OnClose event handler assigned to the pop-up notification form. GetOnClose is the read access specifier for the OnClose property.
-          </p>
-          <p>
-            Use OnClose to read or write the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.OnClose"/>
-        </seealso>
-      </element>
-
-      <!-- function result Visibility: default -->
-      <element name="TPopupNotifier.GetOnClose.Result">
-        <short>Value for the OnClose event handler in the notification form.</short>
-      </element>
-
-      <!-- procedure Visibility: private -->
-      <element name="TPopupNotifier.SetOnClose">
-        <short>
-          Sets the OnClose event handler for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>SetOnClose</var> is a procedure which sets the OnClose event handler in the pop-up notification form to the specified value. SetOnClose is the write access specifier for the OnClose property.
-          </p>
-          <p>
-            Use OnClose to read or write the value in the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.OnClose"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.SetOnClose.Value">
-        <short>New event handler assigned to OnClose in the notification form.</short>
-      </element>
-
-      <!-- variable Visibility: public -->
-      <element name="TPopupNotifier.vNotifierForm">
-        <short>
-          Form which displays the pop-up notification.
-        </short>
-        <descr>
-          <p>
-            <var>vNotifierForm</var> is a public <var>TNotifierForm</var> member which represents the form used to display the pop-up notification. vNotifierForm is instantiated in Create but not displayed; its Visible property is set to <b>False</b>. vNotifierForm is displayed using the Show or ShowAtPos methods. Use the Hide method to hide the form. vNotifierForm is freed in the Destroy method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Create"/>
-          <link id="TPopupNotifier.Destroy"/>
-          <link id="TPopupNotifier.Show"/>
-          <link id="TPopupNotifier.ShowAtPos"/>
-          <link id="TPopupNotifier.Hide"/>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- constructor Visibility: public -->
-      <element name="TPopupNotifier.Create">
-        <short>
-          Constructor for the component instance.
-        </short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for the component instance. Create calls the inherited constructor using AOwner as the owner for the component instance. Create allocates resources needed for the vNotifierForm member, and sets the forms Visible property to <b>False</b>. When the Application singleton has been assigned, its BidiMode property is applied to the notifier form instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Destroy"/>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.forms.THintWindow.BidiMode">THintWindow.BidiMode</link>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.Create.AOwner">
-        <short>Owner of the component instance.</short>
-      </element>
-
-      <!-- destructor Visibility: public -->
-      <element name="TPopupNotifier.Destroy">
-        <short>
-          Frees the component.
-        </short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the destructor for the component instance. Destroy calls the <var>Hide</var> method for the pop-up notification form, and frees the the vNotifierForm member. Destroy calls the inherited destructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Create"/>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- procedure Visibility: public -->
-      <element name="TPopupNotifier.Hide">
-        <short>
-          Hides the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Hide</var> is a procedure which hides the pop-up notification form for the component. Hide calls the Hide method in VNotifierForm.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Show"/>
-          <link id="TPopupNotifier.ShowAtPos"/>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- procedure Visibility: public -->
-      <element name="TPopupNotifier.Show">
-        <short>
-          Displays the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Show</var> is a procedure which displays the pop-up notification form for the component. Show calls the Show method in vNotifierForm. The default values in its Left (0) and Top (0) properties are used.
-          </p>
-          <p>
-            Use ShowAtPos to display the form at specific coordinates.
-          </p>
-          <p>
-            Use the Hide method, or set Visible to <b>False</b>, to close the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.ShowAtPos"/>
-          <link id="TPopupNotifier.Hide"/>
-          <link id="TPopupNotifier.Visible"/>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.forms.TCustomForm.Show">TCustomForm.Show</link>
-        </seealso>
-      </element>
-
-      <!-- procedure Visibility: public -->
-      <element name="TPopupNotifier.ShowAtPos">
-        <short>
-          Displays the pop-up notification form at the specified position.
-        </short>
-        <descr>
-          <p>
-            <var>ShowAtPos</var> is a procedure which displays the pop-up notification form at the specified position on the screen. Values in X and Y are corrected to fit the screen dimensions, similar to the mechanism used for <var>TPopupMenu</var>, and assigned to the Left and Top properties in the form. ShowAtPos calls the <var>Show</var> method in vNotifierForm to display the pop-up notification form.
-          </p>
-          <p>
-            Use the Show method to display the pop-up notification form at its default position (0, 0).
-          </p>
-          <p>
-            Use the Hide method, or set Visible to <b>False</b>, to close the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Show"/>
-          <link id="TPopupNotifier.Hide"/>
-          <link id="TPopupNotifier.Visible"/>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.ShowAtPos.x">
-        <short>Horizontal position for the notification.</short>
-      </element>
-
-      <!-- argument Visibility: default -->
-      <element name="TPopupNotifier.ShowAtPos.y">
-        <short>Vertical position for the notification.</short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.Color">
-        <short>
-          Color for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Color</var> is a <var>TColor</var> property with the background color for the pop-up notification form. GetColor is the read access specifier for the property. SetColor is the write access specifier for the property.
-          </p>
-          <p>
-            TNotifierForm use clInfoBk as the default value for its Color property. Use this property to override the default color value in the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.forms.TCustomForm.Color">TCustomForm.Color</link>
-        </seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.Icon">
-        <short>
-          Icon for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Icon</var> is a <var>TPicture</var> property that provides access to the Icon for the pop-up notification form. GetIcon is the read access specifier for the property. SetIcon is the write access specifier for the property.
-          </p>
-          <p>
-            Use Icon to assign an image using one of the supported LCL formats to display on the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.graphics.TPicture">TPicture</link>
-        </seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.Text">
-        <short>
-          Text for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Text</var> is a String property with the text for the pop-up notification form. GetText is the read access specifier for the property. SetText is the write access specifier for the property.
-          </p>
-          <p>
-            Use TextFont to specify the typeface and style attributes used to display the value in Text.
-          </p>
-          <p>
-            Use Title and TitleFont for the title text displayed on the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.TextFont"/>
-          <link id="TPopupNotifier.Title"/>
-          <link id="TPopupNotifier.TitleFont"/>
-          <link id="TNotifierForm"/>
-        </seealso>
-      </element>
-
-      <element name="TPopupNotifier.TextFont">
-        <short>Font used for the Text displayed on the form.</short>
-        <descr>
-          <p>
-            <var>TextFont</var> is a <var>TFont</var> property with the font face used for the <var>Text</var> displayed on the form. Changing the value for the property causes the font to be assigned to the <var>TLabel</var> instance used to display the value in Text.
-          </p>
-          <p>
-            Use TitleFont to set the font face and style used for the Title on the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Text"/>
-          <link id="TPopupNotifier.Title"/>
-          <link id="TPopupNotifier.TitleFont"/>
-          <link id="#lcl.stdctrls.TLabel">TLabel</link>
-          <link id="#lcl.graphics.TFont">TFont</link>
-        </seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.Title">
-        <short>
-          Title for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Title</var> is a String property that provides access to the title for the pop-up notification form. GetTitle is the read access specifier for the property. SetTitle is the write access specifier for the property.
-          </p>
-          <p>
-            Use TitleFont to set the typeface and style attributes used to display the value on the pop-up notification form.
-          </p>
-          <p>
-            Use Text and TextFont for the text displayed on the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.TitleFont"/>
-          <link id="TPopupNotifier.Text"/>
-          <link id="TPopupNotifier.TextFont"/>
-        </seealso>
-      </element>
-
-      <element name="TPopupNotifier.TitleFont">
-        <short>Font used for the Title displayed on the form.</short>
-        <descr>
-          <p>
-            <var>TitleFont</var> is a <var>TFont</var> property with the font face used for the
-            <var>Title</var> displayed on the form. Changing the value for the property causes the font to be assigned to the <var>TLabel</var> instance used to display the value in Title.
-          </p>
-          <p>
-            Use TextFont to set the typeface and style attributes for the Text displayed on the pop-up notification form.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Title"/>
-          <link id="TPopupNotifier.Text"/>
-          <link id="TPopupNotifier.TextFont"/>
-        </seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.Visible">
-        <short>
-          Value for the Visible property in the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>Visible</var> is a <var>Boolean</var> property that provides access to the Visible property for the pop-up notification form. GetVisible is the read access specifier for the property. SetVisible is the write access specifier for the property.
-          </p>
-          <p>
-            Setting Visible to <b>False</b> is the same as calling the Hide method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TPopupNotifier.Hide"/>
-          <link id="TPopupNotifier.Visible"/>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.forms.TCustomForm.Hide">TCustomForm.Hide</link>
-          <link id="#lcl.forms.TCustomForm.Visible">TCustomForm.Visible</link>
-        </seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TPopupNotifier.OnClose">
-        <short>
-          OnClose event handler for the pop-up notification form.
-        </short>
-        <descr>
-          <p>
-            <var>OnClose</var> is a TCloseEven property that provides access to the OnClose event handler for the pop-up notification form. GetOnClose is the read access specifier for the property. SetOnClose is the write access specifier for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TNotifierForm"/>
-          <link id="#lcl.forms.TCustomForm.OnClose">TCustomForm.OnClose</link>
-          <link id="#lcl.forms.TCloseEvent">TCloseEvent</link>
-        </seealso>
-      </element>
-
-      <!-- constant Visibility: default -->
-      <element name="BGDrawn">
-        <short>
-          Not used in the current implementation.
-        </short>
-        <descr>
-          <p>
-            <var>BGDrawn</var> is a Boolean constant with the value <b>False</b>.
-          </p>
-          <remark>
-            BGDrawn is not used in the current implementation.
-          </remark>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short>Registers components for use on the Lazarus IDE component palette.</short>
-        <descr>
-          <p>
-            Register adds the following components to the Lazarus IDE component palette:
-          </p>
-          <p>
-            <b>Common Controls</b> Tab
-          </p>
-          <ul>
-            <li>TPopupNotifier</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
-
-    </module>
-    <!-- popupnotifier -->
-
-  </package>
+<package name="lcl">
+
+<!-- popupnotifier -->
+<module name="popupnotifier">
+<short>Contains the TPopupNotifier visual component.</short>
+<descr>
+<p>
+The following controls are added to the component palette in the Lazarus IDE:
+</p>
+<p>
+<b>Common Controls</b> Tab
+</p>
+<ul>
+<li>TPopupNotifier</li>
+</ul>
+<remark>
+Please note that <var>ExtCtrls</var> has a dependency on the 
+<var>popupnotifier</var> unit; circular dependencies between 
+<var>popupnotifier</var> and other units should be avoided.
+</remark>
+<p>
+This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TNotifierXButtonButtonState">
+<short>
+Button states for the pop-up notifier buttons.
+</short>
+<descr>
+<p>
+<var>TNotifierXButtonButtonState</var> is an enumeration type with values 
+that define the state for buttons in <var>TPopupNotifier</var>. 
+TNotifierXButtonButtonState is defined to avoid a dependency on the 
+<file>Buttons</file> unit.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier"/>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNotifierXButtonButtonState.nbsUp">
+<short>The button is up.</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNotifierXButtonButtonState.nbsDown">
+<short>The button is down.</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNotifierXButtonButtonState.nbsHot">
+<short>The button is hot (under the mouse).</short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TNotifierXButton">
+<short>
+Implements the button for TNotifierForm.
+</short>
+<descr>
+<p>
+<var>TNotifierXButton</var> is a <var>TCustomControl</var> descendant that 
+implements the button for <var>TNotifierForm</var>. TNotifierXButton provides 
+methods need to draw the button in a specific state, and respond to mouse up 
+and down messages.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNotifierXButton.FState"/>
+
+<!-- procedure Visibility: private -->
+<element name="TNotifierXButton.HandleMouseDown">
+<short>
+Responds to mouse down messages.
+</short>
+<descr>
+<p>
+<var>HandleMouseDown</var> is a procedure which responds to mouse down 
+messages in the button. HandleMouseDown sets the internal state and redraws 
+the button when the left mouse button is clicked. No actions are performed in 
+the method if Button contains a value other than mbLeft.
+</p>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseDown.Sender">
+<short>Object generating the mouse message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseDown.Button">
+<short>
+Mouse button for the message.
+</short>
+<descr>
+<p>
+<var>HandleMouseDown</var> is a procedure which responds to mouse down 
+messages for the button. HandleMouseDown sets the internal state and redraws 
+the button when the left mouse button is clicked. No actions are performed if 
+the method if Button contains a value other than than mbLeft.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierXButton.HandleMouseUp"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseDown.X">
+<short>Horizontal position for the mouse message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseDown.Y">
+<short>Vertical position for the mouse message.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TNotifierXButton.HandleMouseUp">
+<short>
+Responds to mouse up messages.
+</short>
+<descr>
+<p>
+<var>HandleMouseUp</var> is a procedure which responds to mouse up messages 
+in the button. HandleMouseUp sets the internal state and redraws the button 
+when the left mouse button is released.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierXButton.HandleMouseDown"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseUp.Sender">
+<short>Object generating the mouse message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseUp.Button">
+<short>Button for the mouse message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseUp.Shift">
+<short>Shift key state for the message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseUp.X">
+<short>Horizontal position for the mouse message.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.HandleMouseUp.Y">
+<short>Vertical position for the mouse message.</short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TNotifierXButton.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance. Create calls the 
+inherited constructor using AOwner as the owner for the class instance. 
+Create sets the initial value for the internal state tracking member to 
+nbsUp. Create sets the event handlers in the class instance to the following 
+private methods:
+</p>
+<dl>
+<dt>OnMouseUp</dt>
+<dd>HandleMouseUp</dd>
+<dt>OnMouseDown</dt>
+<dd>HandleMouseDown</dd>
+</dl>
+</descr>
+<seealso/>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierXButton.Create.AOwner">
+<short>Owner for the class instance.</short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TNotifierXButton.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+Destroy is the destructor for the class instance. Destroy calls the inherited 
+destructor.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TNotifierXButton.Paint">
+<short>Draws the button in its current state.</short>
+<descr>
+<p>
+<var>Paint</var> is an overridden procedure which draws the close button 
+using the Canvas for the control. Paint updates the Canvas with the pen and 
+brush needed to draw the button in its current state. Canvas methods are 
+called to draw the filled rectangle and "X" icon displayed on the close 
+button.
+</p>
+<p>
+Paint calls the inherited method prior to exit to signal the OnPaint event 
+handler (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+<link id="#lcl.controls.TCustomControl.OnPaint">TCustomControl.OnPaint</link>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TNotifierForm">
+<short>
+Implements the form used for TPopupNotifier.
+</short>
+<descr>
+<p>
+<var>TNotifierForm</var> is a <var>THintWindow</var> descendant that 
+implements the form used for <var>TPopupNotifier</var>. TNotifierForm has 
+private members that are used for the title, text, icon, and button on the 
+pop-up notification form.TNotifierForm provides methods which paint, hide, 
+and handle resizing for the form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier"/>
+<link id="#lcl.forms.THintWindow">THintWindow</link>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNotifierForm.lblTitle">
+<short>Label with the Title for the form.</short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNotifierForm.lblText">
+<short>Label with the Text for the form.</short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNotifierForm.imgIcon">
+<short>Image with the Icon for the form.</short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TNotifierForm.btnX">
+<short>Custom close button for the form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TNotifierForm.HideForm">
+<short>
+Signals the OnClose event handler when the form is hidden.
+</short>
+<descr>
+<p>
+<var>HideForm</var> is a procedure which signals an event when the form is 
+hidden. HideForm signals the OnClose event (when assigned). HideForm calls 
+Hide prior to exiting from the method.
+</p>
+<p>
+HideForm is assigned as the OnClick event handler in TLabel and 
+TNotifierXButton members created for the form.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.forms.TCustomForm.Hide">TCustomForm.Hide</link>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierForm.HideForm.Sender">
+<short>Object generating the event.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TNotifierForm.HandleResize">
+<short>
+Handles resize requests for the form.
+</short>
+<descr>
+<p>
+<var>HandleResize</var> is a procedure which handles resize requests for the 
+form. HandleResize adjusts the size for the Icon, Button, Text, and Title in 
+the form to their new size constraints. HandleResize is assigned as the event 
+handler for the OnShow event in the form.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.forms.TCustomForm.OnShow">TCustomForm.OnShow</link>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierForm.HandleResize.Sender">
+<short>Object generating the event.</short>
+</element>
+
+<!-- procedure visibility: protected -->
+<element name="TNotifierForm.CreateHandle">
+<short>
+Creates the handle for the form.
+</short>
+<descr>
+<p>
+<var>CreateHandle</var> is an overridden procedure used to update font colors 
+for TLabel members when the handle for the form is created. CreateHandle 
+calls the inherited method to ensure that a handle is allocated for the 
+control.
+</p>
+<p>
+CreateHandle ensures that font colors used in its TLabel instances are 
+resolved, when needed. clDefault is converted to the value clInfoText in 
+TNotifierForm.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.CreateHandle">TWinControl.CreateHandle</link>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TNotifierForm.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance. Create calls the 
+inherited constructor using AOwner as the owner for the class instance. 
+Create sets the BorderStyle to bsNone, and calculates the Width and Height 
+for the form. Create allocates resources and configures the Icon, Title, 
+Text, and Button for the form. The Color for the form is set to clInfoBk.
+</p>
+<p>
+Create sets the event handlers in the class instance to the following methods:
+</p>
+<dl>
+<dt>OnMouseUp</dt>
+<dd>HandleMouseUp</dd>
+<dt>OnMouseDown</dt>
+<dd>HandleMouseDown</dd>
+</dl>
+<p>
+Create calls HandleResize to resize the current form instance and apply 
+sizing constraints.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TNotifierForm.Create.AOwner">
+<short>Owner of the form instance.</short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TNotifierForm.Destroy">
+<short>
+Frees the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the destructor for the class instance. Destroy frees 
+resources allocated in the constructor for the Icon, Title, Text, and Button 
+on the form. Destroy calls the inherited destructor proper to exiting from 
+the method.
+</p>
+</descr>
+<errors></errors>
+<seealso></seealso>
+</element>
+
+<element name="TNotifierForm.Paint">
+<short>Draws the form background and icon image.</short>
+<descr>
+<p>
+Paint is an overridden method in TNotifierForm used to render the form to its 
+Canvas using values in the Color and ImgIcon properties. Canvas is updated 
+with the brush style and color needed, and its FillRect method is called to 
+paint the background for the form. The bitmap in ImgIcon is drawn on the 
+Canvas when it has been assigned.
+</p>
+<p>
+Paint re-implements and does not call the inherited method.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.graphics.TCanvas.FillRect">TCanvas.FillRect</link>
+<link id="#lcl.graphics.TPicture.Bitmap">TPicture.Bitmap</link>
+<link id="#lcl.forms.TCustomForm.Color">TCustomForm.Color</link>
+<link id="#lcl.forms.THintWindow.Paint">THintWindow.Paint</link>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPopupNotifier">
+<short>
+Implements a pop-up notification component.
+</short>
+<descr>
+<p>
+<var>TPopupNotifier</var> is a TComponent descendant which implements a 
+pop-up notification component. TPopupNotifier includes an internal 
+TNotifierForm member which displays the Title, Text, Icon and the close 
+button for the notification. TPopupNotifier provides methods needed to 
+display or hide the notification form.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetColor">
+<short>
+Gets the color for the notification form.
+</short>
+<descr>
+<p>
+<var>GetColor</var> is a TColor function used to get the value for the Color 
+property in the form which displays the pop-up notification. GetColor is the 
+read access specifier for the Color property.
+</p>
+<p>
+Use Color to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Color"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetColor.Result">
+<short>Current color for the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier.SetColor">
+<short>
+Sets the color for the notification form.
+</short>
+<descr>
+<p>
+<var>SetColor</var> is procedure used to set color for the form which 
+displays the pop-up notification. SetColor is the write access specifier for 
+the Color property. SetColor stores the specified value in the Color property 
+for the notification form.
+</p>
+<p>
+Use Color to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Color"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetColor.Value">
+<short>New color for the notification form.</short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetIcon">
+<short>
+Gets the icon for the notification form.
+</short>
+<descr>
+<p>
+<var>GetIcon</var> is a TPicture function which gets the icon for the pop-up 
+notification form. GetIcon is the read access specifier for the Icon property.
+</p>
+<p>
+Use Icon to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Icon"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetIcon.Result">
+<short>Current Icon for the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier. SetIcon">
+<short>Sets the icon for the notification form.</short>
+<descr>
+<p>
+<var>SetIcon</var> is a procedure which sets the Icon for the pop-up 
+notification form to the specified value. SetIcon is the write access 
+specifier for the Icon property.
+</p>
+<p>
+Use Icon to read or write the value in the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Icon"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetIcon.Value">
+<short>New icon for the notification form.</short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetText">
+<short>
+Gets the text for the notification form.
+</short>
+<descr>
+<p>
+<var>GetText</var> is a String function which gets the value of the Text 
+label for the pop-up notification form. GetText is the read access specifier 
+for the Text property. GetText returns the Caption for the corresponding 
+TLabel on the pop-up notification form.
+</p>
+<p>
+Use Text to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Text"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetText.Result">
+<short>Text for the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier.SetText">
+<short>
+Sets the text for the notification form.
+</short>
+<descr>
+<p>
+<var>SetText</var> is a procedure which sets the text on the pop-up 
+notification form to the specified value. SetText is the write access 
+specifier for the Text property. SetText stores the specified value in the 
+caption of the corresponding TLabel on the pop-up notification form.
+</p>
+<p>
+Use Text to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Text"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetText.Value">
+<short>New text for the notification form.</short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetTitle">
+<short>Gets the title for the notification form.</short>
+<descr>
+<p>
+<var>GetTitle</var> is a String function which gets the title displayed on 
+the pop-up notification form. GetTitle is the read access specifier for the 
+Title property. GetTitle returns the value for the caption in the 
+corresponding TLabel on the notification form.
+</p>
+<p>
+Use Title to read or write the value in the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Title"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetTitle.Result">
+<short>Title for the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier.SetTitle">
+<short>
+Sets the title for the notification form.
+</short>
+<descr>
+<p>
+<var>SetTitle</var> is a procedure which sets the value for the title on the 
+pop-up notification form. SetTitle is the write access specifier for the 
+Title property. SetTitle stores the specified value in the caption of the 
+TLabel for the pop-up notification form.
+</p>
+<p>
+Use Title to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Title"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetTitle.Value">
+<short>New title for the notification form.</short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetVisible">
+<short>
+Gets the Visible property for the notification form.
+</short>
+<descr>
+<p>
+<var>GetVisible</var> is a Boolean function which gets the value for the 
+Visible property in the pop-up notification form. GetVisible is the read 
+access specifier for the Visible property.
+</p>
+<p>
+Use Visible to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Visible"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetVisible.Result">
+<short>Value of the Visible property for the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier.SetVisible">
+<short>
+Sets the Visible property for the notification form.
+</short>
+<descr>
+<p>
+<var>SetVisible</var> is a procedure which sets the value in the Visible 
+property for the pop-up notification form. SetVisible is the write access 
+specifier for the Visible property.
+</p>
+<p>
+Use Visible to read or write the value for the property.
+</p>
+<p>
+Use Show or ShowAtPos to display the pop-up notification form for the 
+component. Use Hide to close the pop-up notification form for the component.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Visible"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetVisible.Value">
+<short>New value for the Visible property in the notification form.</short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPopupNotifier.GetOnClose">
+<short>
+Sets the OnClose event handler for the notification form.
+</short>
+<descr>
+<p>
+<var>GetOnClose</var> is a TCloseEvent function which gets the OnClose event 
+handler assigned to the pop-up notification form. GetOnClose is the read 
+access specifier for the OnClose property.
+</p>
+<p>
+Use OnClose to read or write the value for the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.OnClose"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPopupNotifier.GetOnClose.Result">
+<short>Value for the OnClose event handler in the notification form.</short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPopupNotifier.SetOnClose">
+<short>
+Sets the OnClose event handler for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>SetOnClose</var> is a procedure which sets the OnClose event handler in 
+the pop-up notification form to the specified value. SetOnClose is the write 
+access specifier for the OnClose property.
+</p>
+<p>
+Use OnClose to read or write the value in the property.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.OnClose"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.SetOnClose.Value">
+<short>New event handler assigned to OnClose in the notification form.</short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TPopupNotifier.vNotifierForm">
+<short>
+Form which displays the pop-up notification.
+</short>
+<descr>
+<p>
+<var>vNotifierForm</var> is a public <var>TNotifierForm</var> member which 
+represents the form used to display the pop-up notification. vNotifierForm is 
+instantiated in Create but not displayed; its Visible property is set to 
+<b>False</b>. vNotifierForm is displayed using the Show or ShowAtPos methods. 
+Use the Hide method to hide the form. vNotifierForm is freed in the Destroy 
+method.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Create"/>
+<link id="TPopupNotifier.Destroy"/>
+<link id="TPopupNotifier.Show"/>
+<link id="TPopupNotifier.ShowAtPos"/>
+<link id="TPopupNotifier.Hide"/>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPopupNotifier.Create">
+<short>
+Constructor for the component instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the component instance. Create calls 
+the inherited constructor using AOwner as the owner for the component 
+instance. Create allocates resources needed for the vNotifierForm member, and 
+sets the forms Visible property to <b>False</b>. When the Application 
+singleton has been assigned, its BidiMode property is applied to the notifier 
+form instance.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Destroy"/>
+<link id="TNotifierForm"/>
+<link id="#lcl.forms.THintWindow.BidiMode">THintWindow.BidiMode</link>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.Create.AOwner">
+<short>Owner of the component instance.</short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TPopupNotifier.Destroy">
+<short>
+Frees the component.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the destructor for the component instance. Destroy 
+calls the <var>Hide</var> method for the pop-up notification form, and frees 
+the the vNotifierForm member. Destroy calls the inherited destructor prior to 
+exiting from the method.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Create"/>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPopupNotifier.Hide">
+<short>
+Hides the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Hide</var> is a procedure which hides the pop-up notification form for 
+the component. Hide calls the Hide method in VNotifierForm.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Show"/>
+<link id="TPopupNotifier.ShowAtPos"/>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPopupNotifier.Show">
+<short>
+Displays the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Show</var> is a procedure which displays the pop-up notification form 
+for the component. Show calls the Show method in vNotifierForm. The default 
+values in its Left (0) and Top (0) properties are used.
+</p>
+<p>
+Use ShowAtPos to display the form at specific coordinates.
+</p>
+<p>
+Use the Hide method, or set Visible to <b>False</b>, to close the pop-up 
+notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.ShowAtPos"/>
+<link id="TPopupNotifier.Hide"/>
+<link id="TPopupNotifier.Visible"/>
+<link id="TNotifierForm"/>
+<link id="#lcl.forms.TCustomForm.Show">TCustomForm.Show</link>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPopupNotifier.ShowAtPos">
+<short>
+Displays the pop-up notification form at the specified position.
+</short>
+<descr>
+<p>
+<var>ShowAtPos</var> is a procedure which displays the pop-up notification 
+form at the specified position on the screen. Values in X and Y are corrected 
+to fit the screen dimensions, similar to the mechanism used for 
+<var>TPopupMenu</var>, and assigned to the Left and Top properties in the 
+form. ShowAtPos calls the <var>Show</var> method in vNotifierForm to display 
+the pop-up notification form.
+</p>
+<p>
+Use the Show method to display the pop-up notification form at its default 
+position (0, 0).
+</p>
+<p>
+Use the Hide method, or set Visible to <b>False</b>, to close the pop-up 
+notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Show"/>
+<link id="TPopupNotifier.Hide"/>
+<link id="TPopupNotifier.Visible"/>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.ShowAtPos.x">
+<short>Horizontal position for the notification.</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPopupNotifier.ShowAtPos.y">
+<short>Vertical position for the notification.</short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.Color">
+<short>
+Color for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Color</var> is a <var>TColor</var> property with the background color 
+for the pop-up notification form. GetColor is the read access specifier for 
+the property. SetColor is the write access specifier for the property.
+</p>
+<p>
+TNotifierForm use clInfoBk as the default value for its Color property. Use 
+this property to override the default color value in the pop-up notification 
+form.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierForm"/>
+<link id="#lcl.forms.TCustomForm.Color">TCustomForm.Color</link>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.Icon">
+<short>
+Icon for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Icon</var> is a <var>TPicture</var> property that provides access to the 
+Icon for the pop-up notification form. GetIcon is the read access specifier 
+for the property. SetIcon is the write access specifier for the property.
+</p>
+<p>
+Use Icon to assign an image using one of the supported LCL formats to display 
+on the pop-up notification form.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierForm"/>
+<link id="#lcl.graphics.TPicture">TPicture</link>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.Text">
+<short>
+Text for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Text</var> is a String property with the text for the pop-up 
+notification form. GetText is the read access specifier for the property. 
+SetText is the write access specifier for the property.
+</p>
+<p>
+Use TextFont to specify the typeface and style attributes used to display the 
+value in Text.
+</p>
+<p>
+Use Title and TitleFont for the title text displayed on the pop-up 
+notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.TextFont"/>
+<link id="TPopupNotifier.Title"/>
+<link id="TPopupNotifier.TitleFont"/>
+<link id="TNotifierForm"/>
+</seealso>
+</element>
+
+<element name="TPopupNotifier.TextFont">
+<short>Font used for the Text displayed on the form.</short>
+<descr>
+<p>
+<var>TextFont</var> is a <var>TFont</var> property with the font face used 
+for the <var>Text</var> displayed on the form. Changing the value for the 
+property causes the font to be assigned to the <var>TLabel</var> instance 
+used to display the value in Text.
+</p>
+<p>
+Use TitleFont to set the font face and style used for the Title on the pop-up 
+notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Text"/>
+<link id="TPopupNotifier.Title"/>
+<link id="TPopupNotifier.TitleFont"/>
+<link id="#lcl.stdctrls.TLabel">TLabel</link>
+<link id="#lcl.graphics.TFont">TFont</link>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.Title">
+<short>
+Title for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Title</var> is a String property that provides access to the title for 
+the pop-up notification form. GetTitle is the read access specifier for the 
+property. SetTitle is the write access specifier for the property.
+</p>
+<p>
+Use TitleFont to set the typeface and style attributes used to display the 
+value on the pop-up notification form.
+</p>
+<p>
+Use Text and TextFont for the text displayed on the pop-up notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.TitleFont"/>
+<link id="TPopupNotifier.Text"/>
+<link id="TPopupNotifier.TextFont"/>
+</seealso>
+</element>
+
+<element name="TPopupNotifier.TitleFont">
+<short>Font used for the Title displayed on the form.</short>
+<descr>
+<p>
+<var>TitleFont</var> is a <var>TFont</var> property with the font face used 
+for the
+<var>Title</var> displayed on the form. Changing the value for the property 
+causes the font to be assigned to the <var>TLabel</var> instance used to 
+display the value in Title.
+</p>
+<p>
+Use TextFont to set the typeface and style attributes for the Text displayed 
+on the pop-up notification form.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Title"/>
+<link id="TPopupNotifier.Text"/>
+<link id="TPopupNotifier.TextFont"/>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.Visible">
+<short>
+Value for the Visible property in the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>Visible</var> is a <var>Boolean</var> property that provides access to 
+the Visible property for the pop-up notification form. GetVisible is the read 
+access specifier for the property. SetVisible is the write access specifier 
+for the property.
+</p>
+<p>
+Setting Visible to <b>False</b> is the same as calling the Hide method.
+</p>
+</descr>
+<seealso>
+<link id="TPopupNotifier.Hide"/>
+<link id="TPopupNotifier.Visible"/>
+<link id="TNotifierForm"/>
+<link id="#lcl.forms.TCustomForm.Hide">TCustomForm.Hide</link>
+<link id="#lcl.forms.TCustomForm.Visible">TCustomForm.Visible</link>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPopupNotifier.OnClose">
+<short>
+OnClose event handler for the pop-up notification form.
+</short>
+<descr>
+<p>
+<var>OnClose</var> is a TCloseEven property that provides access to the 
+OnClose event handler for the pop-up notification form. GetOnClose is the 
+read access specifier for the property. SetOnClose is the write access 
+specifier for the property.
+</p>
+</descr>
+<seealso>
+<link id="TNotifierForm"/>
+<link id="#lcl.forms.TCustomForm.OnClose">TCustomForm.OnClose</link>
+<link id="#lcl.forms.TCloseEvent">TCloseEvent</link>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="BGDrawn">
+<short>
+Not used in the current implementation.
+</short>
+<descr>
+<p>
+<var>BGDrawn</var> is a Boolean constant with the value <b>False</b>.
+</p>
+<remark>
+BGDrawn is not used in the current implementation.
+</remark>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short>
+Registers components for use on the Lazarus IDE component palette.
+</short>
+<descr>
+<p>
+Register adds the following components to the Lazarus IDE component palette:
+</p>
+<p>
+<b>Common Controls</b> Tab
+</p>
+<ul>
+<li>TPopupNotifier</li>
+</ul>
+</descr>
+<seealso/>
+</element>
+
+</module>
+<!-- popupnotifier -->
+
+</package>
 </fpdoc-descriptions>

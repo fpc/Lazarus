@@ -12,13 +12,23 @@ Implements Theme Services for supported platforms / widgetsets.
 </short>
 <descr>
 <p>
-<file>themes.pas</file> contains an implementation of TThemeServices which is a designed to manage all necessary aspects of the Windows XP (and up) theme APIs. The component is responsible for loading and unloading of the theme DLL and offers properties and methods to test for various aspects of the theme APIs and to ease painting of themed window content.
+<file>themes.pas</file> contains an implementation of TThemeServices which is 
+a designed to manage all necessary aspects of the Windows XP (and up) theme 
+APIs. The component is responsible for loading and unloading of the theme DLL 
+and offers properties and methods to test for various aspects of the theme 
+APIs and to ease painting of themed window content.
 </p>
 <p>
-The TThemeServices class is designed to work for controls which need XP-like painting. It does not manipulate any VCL class (for this task TThemeManager is responsible) and can be used standalone (also as general support tool in an application). Using the global ThemeServices function you can implicitely create and use a single instance of the class. Theme Manager uses the same approach.
+The TThemeServices class is designed to work for controls which need XP-like 
+painting. It does not manipulate any VCL class (for this task TThemeManager 
+is responsible) and can be used standalone (also as general support tool in 
+an application). Using the global ThemeServices function you can implicitely 
+create and use a single instance of the class. Theme Manager uses the same 
+approach.
 </p>
 <p>
-The original file name ThemeSrv.pas was changed to themes.pas to be compatible with Delphi. Adapted for Lazarus by the Lazarus Team.
+The original file name ThemeSrv.pas was changed to themes.pas to be 
+compatible with Delphi. Adapted for Lazarus by the Lazarus Team.
 </p>
 <p>
 The initial developer of the original code is:
@@ -1852,11 +1862,11 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 
 <element name="TThemeOption">
 <short>
-  Represents glyph / image options that can be enabled or disabled for a theme.
+Represents glyph / image options that can be enabled or disabled for a theme.
 </short>
 <descr/>
 <seealso>
-  <link id="TThemeServices.GetOption"/>
+<link id="TThemeServices.GetOption"/>
 </seealso>
 </element>
 <element name="TThemeOption.toShowButtonImages">
@@ -1868,9 +1878,10 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 <element name="TThemeOption.toUseGlyphEffects">
 <short>Use hot / down effects on (button) glyphs.</short>
 <descr>
-  <p>
-    The option is platform- or OS-dependent. Not supported for Windows or Mac. Requires WindowManager or Desktop Environment support on Linux platforms.
-  </p>
+<p>
+The option is platform- or OS-dependent. Not supported for Windows or Mac. 
+Requires WindowManager or Desktop Environment support on Linux platforms.
+</p>
 </descr>
 </element>
 
@@ -1878,7 +1889,9 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 <short>Implements theme services for supported platforms.</short>
 <descr>
 <p>
-<var>TThemeServices</var> is a small foot print class to provide the user with pure Windows XP theme related abilities like painting elements and text, or retrieving theme element details.
+<var>TThemeServices</var> is a small foot print class to provide the user 
+with pure Windows XP theme related abilities like painting elements and text, 
+or retrieving theme element details.
 </p>
 </descr>
 <seealso/>
@@ -1945,9 +1958,9 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 <short>Converts the numeric color value to color reference.</short>
 <descr/>
 <seealso>
-  <link id="#lcl.graphics.ColorToRGB">ColorToRGB</link>
-  <link id="#lcl.lcltype.TColorRef">TColorRef</link>
-  <link id="#lcl.lcltype.COLORREF">COLORREF</link>
+<link id="#lcl.graphics.ColorToRGB">ColorToRGB</link>
+<link id="#lcl.lcltype.TColorRef">TColorRef</link>
+<link id="#lcl.lcltype.COLORREF">COLORREF</link>
 </seealso>
 </element>
 <element name="TThemeServices.InternalColorToRGB.Result">
@@ -1981,7 +1994,9 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-Calls <var>InitThemes</var> to determine if theme data is available. Sets the value in the <var>ThemesAvailable</var> property. Calls <var>UpdateThemes</var> to load theme data.
+Calls <var>InitThemes</var> to determine if theme data is available. Sets the 
+value in the <var>ThemesAvailable</var> property. Calls 
+<var>UpdateThemes</var> to load theme data.
 </p>
 </descr>
 <seealso>
@@ -2006,7 +2021,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TThemeServices.IsDisabled">
-<short>Indicates if the theme element value in Details is in a disabled state.</short>
+<short>
+Indicates if the theme element value in Details is in a disabled state.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2018,7 +2035,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TThemeServices.IsPushed">
-  <short>Indicates if the theme element value in Details is in a pushed state.</short>
+<short>
+Indicates if the theme element value in Details is in a pushed state.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2030,7 +2049,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TThemeServices.IsHot">
-  <short>Indicates if the theme element value in Details is in a hot or hovered state.</short>
+<short>
+Indicates if the theme element value in Details is in a hot or hovered state.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2042,7 +2063,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TThemeServices.IsChecked">
-  <short>Indicates if the theme element value in Details is in a checked state.</short>
+<short>
+Indicates if the theme element value in Details is in a checked state.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2054,9 +2077,10 @@ Destructor for the class instance.
 </element>
 
 <element name="TThemeServices.IsMixed">
-  <short>
-    Indicates if the theme element value in Details has more than one theming state.
-  </short>
+<short>
+Indicates if the theme element value in Details has more than one theming 
+state.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2085,7 +2109,9 @@ Gets the default dimensions for a theme element detail.
 </short>
 <descr>
 <p>
-Gets the default size for a theme element detail. -1 in the Width and Height for the <var>TSize</var> instance means the size for the theme element detail is not known.
+Gets the default size for a theme element detail. -1 in the Width and Height 
+for the <var>TSize</var> instance means the size for the theme element detail 
+is not known.
 </p>
 </descr>
 <seealso/>
@@ -2139,10 +2165,13 @@ Gets the handle to the region for a theme element.
 </element>
 
 <element name="TThemeServices.GetOption">
-<short>Returns 1 if the theme option is used for the platform, or 0 when not used.</short>
+<short>
+Returns 1 if the theme option is used for the platform, or 0 when not used.
+</short>
 <descr>
 <p>
-Use of toUseGlyphEffects is OS-dependent. The option is used for Linux. It is not used for Windows or OSX.
+Use of toUseGlyphEffects is OS-dependent. The option is used for Linux. It is 
+not used for Windows or OSX.
 </p>
 </descr>
 <seealso/>
@@ -2155,7 +2184,9 @@ Use of toUseGlyphEffects is OS-dependent. The option is used for Linux. It is no
 </element>
 
 <element name="TThemeServices.GetTextExtent">
-<short>Calculates the bounding rectangle for the text or caption in a theme element.</short>
+<short>
+Calculates the bounding rectangle for the text or caption in a theme element.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2183,7 +2214,8 @@ Use of toUseGlyphEffects is OS-dependent. The option is used for Linux. It is no
 
 <element name="TThemeServices.ColorToRGB">
 <short>
-Converts a TColor value to the Cardinal color constant needed for a theme element detail.
+Converts a TColor value to the Cardinal color constant needed for a theme 
+element detail.
 </short>
 <descr/>
 <seealso/>
@@ -2200,7 +2232,8 @@ Converts a TColor value to the Cardinal color constant needed for a theme elemen
 
 <element name="TThemeServices.ContentRect">
 <short>
-Adjusts the bounding rectangle for a theme element to contain the content area only.
+Adjusts the bounding rectangle for a theme element to contain the content 
+area only.
 </short>
 <descr/>
 <seealso/>
@@ -2250,7 +2283,8 @@ Draws a theme element using the specified theme element details.
 </short>
 <descr/>
 <version>
-Modified in version 2.3.0 to use clBtnFace as the fill color for Tab pane or Tab body parts.
+Modified in version 2.3.0 to use clBtnFace as the fill color for Tab pane or 
+Tab body parts.
 clBackground was used in previous versions.
 </version>
 <seealso/>
@@ -2274,7 +2308,8 @@ Draws the icon for a theme element.
 </short>
 <descr>
 <p>
-Overloaded to provide Windows and non-Windows variants. Overridden in the TWin32ThemeServices descendant for compatibility with Delphi.
+Overloaded to provide Windows and non-Windows variants. Overridden in the 
+TWin32ThemeServices descendant for compatibility with Delphi.
 </p>
 </descr>
 <seealso/>
@@ -2296,7 +2331,10 @@ Overloaded to provide Windows and non-Windows variants. Overridden in the TWin32
 </element>
 
 <element name="TThemeServices.DrawParentBackground">
-<short>Draws a parent background using the specified window handle and device context.</short>
+<short>
+Draws a parent background using the specified window handle and device 
+context.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2322,7 +2360,8 @@ Draws the text for a themed control.
 </short>
 <descr>
 <p>
-<var>DrawText</var> is an overloaded method used to draw the text or caption for a themed control.
+<var>DrawText</var> is an overloaded method used to draw the text or caption 
+for a themed control.
 </p>
 </descr>
 <seealso/>
@@ -2367,7 +2406,9 @@ Default painting method for the borders for a control.
 </short>
 <descr>
 <p>
-<var>PaintBorder</var> has an empty implementation in <var>TThemeServices</var>. It must be overridden in a descendent class to use the native border drawing style for the widgetset.
+<var>PaintBorder</var> has an empty implementation in 
+<var>TThemeServices</var>. It must be overridden in a descendent class to use 
+the native border drawing style for the widgetset.
 </p>
 </descr>
 <seealso/>
@@ -2383,7 +2424,8 @@ Default painting method for the borders for a control.
 <short>Reloads theme elements and details when UseThemes is True.</short>
 <descr>
 <p>
-Called from the <var>Create</var> constructor. Think of it as the theme counterpart for the <var>Loaded</var> method used for components.
+Called from the <var>Create</var> constructor. Think of it as the theme 
+counterpart for the <var>Loaded</var> method used for components.
 </p>
 </descr>
 <seealso>
@@ -2392,7 +2434,9 @@ Called from the <var>Create</var> constructor. Think of it as the theme counterp
 </element>
 
 <element name="TThemeServices.DottedBrush">
-<short>Bitmap Handle for the Dotted Pattern Brush used to draw theme elements.</short>
+<short>
+Bitmap Handle for the Dotted Pattern Brush used to draw theme elements.
+</short>
 <descr/>
 <link id="ThemeServices.DrawElement"/>
 </element>
@@ -2410,10 +2454,15 @@ Called from the <var>Create</var> constructor. Think of it as the theme counterp
 </element>
 
 <element name="TThemeServices.OnThemeChange">
-<short>Event handler signalled when the current window theme has been changed.</short>
+<short>
+Event handler signalled when the current window theme has been changed.
+</short>
 <descr>
 <p>
-<var>OnThemeChange</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the current window theme has been changed. Applications must implement and assign an object procedure to the handler to respond to the event notification.
+<var>OnThemeChange</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the current window theme has been changed. 
+Applications must implement and assign an object procedure to the handler to 
+respond to the event notification.
 </p>
 </descr>
 <seealso>
@@ -2427,7 +2476,10 @@ Provides access to the Theme Services singleton for the widgetset.
 </short>
 <descr>
 <p>
-<var>ThemeServices</var> is a <var>TThemeServices</var> function used to get the theme services singleton for the current widgetset. The return value is a TThemeServices descendant which implement the theming API for a specific widgetset / platform.
+<var>ThemeServices</var> is a <var>TThemeServices</var> function used to get 
+the theme services singleton for the current widgetset. The return value is a 
+TThemeServices descendant which implement the theming API for a specific 
+widgetset / platform.
 </p>
 </descr>
 <seealso/>
@@ -2437,7 +2489,9 @@ Provides access to the Theme Services singleton for the widgetset.
 </element>
 
 <element name="ThemedElementDetailsEqual">
-<short>Compares the content for the specified theme element detail arguments.</short>
+<short>
+Compares the content for the specified theme element detail arguments.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2455,7 +2509,8 @@ Provides access to the Theme Services singleton for the widgetset.
 <short>Copyright information for the theme manager code.</short>
 <descr>
 <p>
-Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice in the compiled binary file.
+Do not modify the copyright in any way! Usage of this unit is prohibited 
+without the copyright notice in the compiled binary file.
 </p>
 </descr>
 <seealso/>
@@ -2463,11 +2518,13 @@ Do not modify the copyright in any way! Usage of this unit is prohibited without
 
 <element name="TThemesImageDrawEvent">
 <short>
-Specifies an event handler signalled to draw an image in an image list to a Canvas instance.
+Specifies an event handler signalled to draw an image in an image list to a 
+Canvas instance.
 </short>
 <descr>
 <p>
-<var>TThemesImageDrawEvent</var> is the type used for the <var>ThemesImageDrawEvent</var> variable in the unit.
+<var>TThemesImageDrawEvent</var> is the type used for the 
+<var>ThemesImageDrawEvent</var> variable in the unit.
 </p>
 </descr>
 <seealso/>
@@ -2514,10 +2571,15 @@ Reference to the control with the Canvas updated in the event handler.
 </element>
 
 <element name="ThemesImageDrawEvent">
-<short>Variable with the event handler signalled to draw a themed image to a Canvas.</short>
+<short>
+Variable with the event handler signalled to draw a themed image to a Canvas.
+</short>
 <descr>
 <p>
-<var>ThemesImageDrawEvent</var> is a unit global <var>TThemesImageDrawEvent</var> variable with the event handler signalled to draw an image in an imagelist to a Canvas. The value for the variable is assigned in the <file>imglist</file> unit when used in an application.
+<var>ThemesImageDrawEvent</var> is a unit global 
+<var>TThemesImageDrawEvent</var> variable with the event handler signalled to 
+draw an image in an imagelist to a Canvas. The value for the variable is 
+assigned in the <file>imglist</file> unit when used in an application.
 </p>
 </descr>
 <seealso>

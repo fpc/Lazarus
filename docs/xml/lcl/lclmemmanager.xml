@@ -7,10 +7,13 @@ LCLMemManager
 ====================================================================
 -->
 <module name="LCLMemManager">
-<short>Base class for a memory manager used in the LCL and its interfaces.</short>
+<short>
+Base class for a memory manager used in the LCL and its interfaces.
+</short>
 <descr>
 <p>
-<file>lclmemmanager.pas</file> contains classes and type used to define the base
+<file>lclmemmanager.pas</file> contains classes and type used to define the 
+base
 class for various memory managers used in the Lazarus Component Library
 (<b>LCL</b>) and its interfaces. An own memory manager is somewhat faster and
 makes debugging and profiling easier.
@@ -103,7 +106,9 @@ Internal member with the pointer the first item in the memory manager.
 </element>
 
 <element name="TLCLMemManager.FMinFree">
-<short>Member used to store the value for the MinimumFreeCount property.</short>
+<short>
+Member used to store the value for the MinimumFreeCount property.
+</short>
 </element>
 
 <element name="TLCLMemManager.FMaxFreeRatio">
@@ -268,7 +273,8 @@ Destructor for the class instance.
 </short>
 <descr>
 <p>
-Calls Clear to remove all items in the memory manager list. Calls the inherited
+Calls Clear to remove all items in the memory manager list. Calls the 
+inherited
 destructor prior to exit.
 </p>
 </descr>
@@ -430,7 +436,7 @@ Calls the inherited destructor prior to exit.
 
 <element name="TLCLNonFreeMemManager.EnumerateItems">
 <short>
-  Enumerates items in the list using the specified object procedure.
+Enumerates items in the list using the specified object procedure.
 </short>
 <descr>
 </descr>
@@ -474,7 +480,8 @@ Reallocates memory for the stream using the specified capacity.
 <p>
 <var>Realloc</var> is an overridden method in <var>TExtMemoryStream</var>.
 It ensures that the new <var>Capacity</var> is at least 25% larger than the
-existing Capacity. Realloc calls the inherited method to re-allocate memory to the
+existing Capacity. Realloc calls the inherited method to re-allocate memory 
+to the
 size needed.
 </p>
 </descr>
@@ -495,7 +502,8 @@ size needed.
 <descr>
 <p>
 <var>Capacity</var> is a public <var>PtrInt</var> property in TExtMemoryStream
-which contains the memory size allocated for the stream. Setting a new value for
+which contains the memory size allocated for the stream. Setting a new value 
+for
 the property causes the <var>Realloc</var> method to be called to re-allocate
 memory to the requested value.
 </p>

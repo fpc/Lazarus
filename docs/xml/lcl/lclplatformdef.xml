@@ -2,9 +2,9 @@
 <fpdoc-descriptions>
 <package name="lcl">
 <!--
-  ====================================================================
-    LCLPlatformDef
-  ====================================================================
+====================================================================
+LCLPlatformDef
+====================================================================
 -->
 <module name="LCLPlatformDef">
 <short>Contains routines and types used in LCL Platform definitions.</short>
@@ -75,7 +75,9 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 </element>
 
 <element name="DirNameToLCLPlatform">
-<short>Gets the platform enumeration value for the specified directory name.</short>
+<short>
+Gets the platform enumeration value for the specified directory name.
+</short>
 <descr>
 <p>
 DirNameToLCLPlatform is a TLCLPlatform function used to get the platform
@@ -115,7 +117,8 @@ widgetset override has been provided on the command line.
 <short>Gets the value in the BuildLCLWidgetType variable.</short>
 <descr>
 <p>
-Used in the <var>lazbuild</var> utility to get the target widgetset used for the
+Used in the <var>lazbuild</var> utility to get the target widgetset used for 
+the
 various platform defines.
 </p>
 </descr>
@@ -129,7 +132,9 @@ various platform defines.
 </element>
 
 <element name="LCLPlatformDirNames">
-<short>Array constant with the directory names for supported LCL platforms.</short>
+<short>
+Array constant with the directory names for supported LCL platforms.
+</short>
 <descr>
 <p>
 LCLPlatformDirNames is a array of Strings with directory names for the
@@ -161,11 +166,15 @@ enumeration value.
 </element>
 
 <element name="LCLPlatformDisplayNames">
-<short>Array constant with the display names for supported LCL platforms.</short>
+<short>
+Array constant with the display names for supported LCL platforms.
+</short>
 <descr>
 <p>
-LCLPlatformDisplayNames is a array of Strings with display names for the supported
-LCL platforms. Values in the array are indexed by TLCLPlatform enumeration values.
+LCLPlatformDisplayNames is a array of Strings with display names for the 
+supported
+LCL platforms. Values in the array are indexed by TLCLPlatform enumeration 
+values.
 For example:
 </p>
 <code>
@@ -188,7 +197,9 @@ enumeration value.
 </element>
 
 <element name="BuildLCLWidgetType">
-<short>Gets the TLCLPlatform enumeration value for the current platform.</short>
+<short>
+Gets the TLCLPlatform enumeration value for the current platform.
+</short>
 <descr>
 <p>
 BuildLCLWidgetType is a TLCLPlatform variable with an enumeration value which

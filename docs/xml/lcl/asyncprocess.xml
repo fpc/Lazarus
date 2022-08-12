@@ -1,291 +1,360 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-      AsyncProcess
-    ====================================================================
-    -->
-    <module name="AsyncProcess">
-      <short>
-        Implements a process with asynchronous event notifications.
-      </short>
-      <descr>
-        <p>
-          <file>asyncprocess.pp</file> implements a process with asynchronous event notifications for data availability and process termination. The following components are added to the Lazarus IDE component palette:
-        </p>
-        <p>
-          <b>System</b> Tab
-        </p>
-        <ul>
-          <li>TAsyncProcess</li>
-        </ul>
-      </descr>
+<package name="lcl">
+<!--
+====================================================================
+AsyncProcess
+====================================================================
+-->
+<module name="AsyncProcess">
+<short>
+Implements a process with asynchronous event notifications.
+</short>
+<descr>
+<p>
+<file>asyncprocess.pp</file> implements a process with asynchronous event 
+notifications for data availability and process termination. The following 
+components are added to the Lazarus IDE component palette:
+</p>
+<p>
+<b>System</b> Tab
+</p>
+<ul>
+<li>TAsyncProcess</li>
+</ul>
+<p>
+<file>asynprocess.pp</file> is part of the Lazarus Component Library (LCL).
+</p>
+</descr>
 
-      <!-- unresolved references -->
-      <element name="Classes"/>
-      <element name="Process"/>
-      <element name="FileUtil"/>
-      <element name="UTF8Process"/>
-      <element name="InterfaceBase"/>
-      <element name="LCLIntf"/>
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="Process"/>
+<element name="FileUtil"/>
+<element name="UTF8Process"/>
+<element name="InterfaceBase"/>
+<element name="LCLIntf"/>
 
-      <element name="TAsyncProcess">
-        <short>
-          Implements a process with asynchronous notifications for data and termination.
-        </short>
-        <descr>
-          <p>
-            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchronous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the <var>Output</var> handle, and when the process is terminated. TAsyncProcess provides <var>OnReadData</var> and <var>OnTerminate</var> event handlers signalled for the corresponding asynchronous notifications.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.OnReadData"/>
-          <link id="TAsyncProcess.OnTerminate"/>
-          <link id="#lazutils.utf8process.TProcessUTF8">TProcessUTF8</link>
-          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess">
+<short>
+Implements a process with asynchronous notifications for data and termination.
+</short>
+<descr>
+<p>
+<var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which 
+implements support for asynchronous notifications when data is available for 
+the process. Internally, TAsyncProcess uses pipe and process handlers to 
+detect when data is written to the <var>Output</var> handle, and when the 
+process is terminated. TAsyncProcess provides <var>OnReadData</var> and 
+<var>OnTerminate</var> event handlers signalled for the corresponding 
+asynchronous notifications.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.OnReadData"/>
+<link id="TAsyncProcess.OnTerminate"/>
+<link id="#lazutils.utf8process.TProcessUTF8">TProcessUTF8</link>
+<link id="#fcl.process.TProcess.Output">TProcess.Output</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.FPipeHandler"/>
-      <element name="TAsyncProcess.FProcessHandler"/>
-      <element name="TAsyncProcess.FOnReadData"/>
-      <element name="TAsyncProcess.FOnTerminate"/>
+<element name="TAsyncProcess.FPipeHandler"/>
+<element name="TAsyncProcess.FProcessHandler"/>
+<element name="TAsyncProcess.FOnReadData"/>
+<element name="TAsyncProcess.FOnTerminate"/>
 
-      <element name="TAsyncProcess.GetNumBytesAvailable">
-        <short>
-          Gets the value for the NumBytesAvailable property.
-        </short>
-        <descr>
-          <p>
-            <var>GetNumBytesAvailable</var> is a <var>dword</var> function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value from <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
-          </p>
-          <p>
-            Use <var>NumBytesAvailable</var> to access the value for the property.
-          </p>
-          <p>
-            Use <var>Options</var> to specify the process options enabled for the class instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.NumBytesAvailable"/>
-          <link id="TAsyncProcess.GetNumBytesAvailable"/>
-          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
-        </seealso>
-      </element>
-      <element name="TAsyncProcess.GetNumBytesAvailable.Result">
-        <short>Value for the property.</short>
-      </element>
+<element name="TAsyncProcess.GetNumBytesAvailable">
+<short>
+Gets the value for the NumBytesAvailable property.
+</short>
+<descr>
+<p>
+<var>GetNumBytesAvailable</var> is a <var>dword</var> function used to get 
+the value for the <var>NumBytesAvailable</var> property. The return value 
+contains the value from <var>Output.NumBytesAvailable</var>, or 0 (zero) when 
+<var>Options</var> does not include the value <var>poUsePipes</var>.
+</p>
+<p>
+Use <var>NumBytesAvailable</var> to access the value for the property.
+</p>
+<p>
+Use <var>Options</var> to specify the process options enabled for the class 
+instance.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.NumBytesAvailable"/>
+<link id="TAsyncProcess.GetNumBytesAvailable"/>
+<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+</seealso>
+</element>
+<element name="TAsyncProcess.GetNumBytesAvailable.Result">
+<short>Value for the property.</short>
+</element>
 
-      <element name="TAsyncProcess.HandlePipeInput">
-        <short>
-          Implements asynchronous notifications during execution of the process.
-        </short>
-        <descr>
-          <p>
-            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous notifications which occur during execution of the process. HandlePipeInput is assigned using <var>AddPipeEventHandler</var> when <var>Execute</var> is called.
-          </p>
-          <p>
-            HandlePipeInput examines values in <var>AReasons</var> to determine the action for the notification. When AReasons includes the value <var>prBroken</var>, the pipe has been closed and <var>UnhookPipeHandle</var> is called. When <var>prDataAvailable</var> is included in AReasons, the <var>OnReadData</var> event handler is signalled (when assigned).
-          </p>
-          <p>
-            Use <var>OnReadData</var> to respond to arrival of data on the handle for the process. Use <var>NumBytesAvailable</var> is determine the number of bytes available.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.OnReadData"/>
-          <link id="TAsyncProcess.NumBytesAvailable"/>
-        </seealso>
-      </element>
-      <element name="TAsyncProcess.HandlePipeInput.AData">
-        <short>Data available on the input handle.</short>
-      </element>
-      <element name="TAsyncProcess.HandlePipeInput.AReasons">
-        <short>Reason the data was written for the handler.</short>
-      </element>
+<element name="TAsyncProcess.HandlePipeInput">
+<short>
+Implements asynchronous notifications during execution of the process.
+</short>
+<descr>
+<p>
+<var>HandlePipeInput</var> is a procedure which implements support for 
+asynchronous notifications which occur during execution of the process. 
+HandlePipeInput is assigned using <var>AddPipeEventHandler</var> when 
+<var>Execute</var> is called.
+</p>
+<p>
+HandlePipeInput examines values in <var>AReasons</var> to determine the 
+action for the notification. When AReasons includes the value 
+<var>prBroken</var>, the pipe has been closed and <var>UnhookPipeHandle</var> 
+is called. When <var>prDataAvailable</var> is included in AReasons, the 
+<var>OnReadData</var> event handler is signalled (when assigned).
+</p>
+<p>
+Use <var>OnReadData</var> to respond to arrival of data on the handle for the 
+process. Use <var>NumBytesAvailable</var> is determine the number of bytes 
+available.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.OnReadData"/>
+<link id="TAsyncProcess.NumBytesAvailable"/>
+</seealso>
+</element>
+<element name="TAsyncProcess.HandlePipeInput.AData">
+<short>Data available on the input handle.</short>
+</element>
+<element name="TAsyncProcess.HandlePipeInput.AReasons">
+<short>Reason the data was written for the handler.</short>
+</element>
 
-      <element name="TAsyncProcess.HandleProcessTermination">
-        <short>
-          Performs actions needed when the process is terminated.
-        </short>
-        <descr>
-          <p>
-            <var>HandleProcessTermination</var> is a procedure which performs actions needed when the process is terminated. HandleProcessTermination is assigned using <var>AddProcessEventHandler</var> when <var>Execute</var> is called.
-          </p>
-          <p>
-            HandleProcessTermination calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> to release the handlers in the class instance. HandleProcessTermination signals the <var>OnTerminate</var> event handler when it has been assigned.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.Execute"/>
-          <link id="TAsyncProcess.UnhookProcessHandle"/>
-          <link id="TAsyncProcess.UnhookPipeHandle"/>
-          <link id="TAsyncProcess.OnTerminate"/>
-        </seealso>
-      </element>
-      <element name="TAsyncProcess.HandleProcessTermination.AData">
-        <short>Data for the process notification.</short>
-      </element>
-      <element name="TAsyncProcess.HandleProcessTermination.AReason">
-        <short>Reason(s) for the process notification.</short>
-      </element>
-      <element name="TAsyncProcess.HandleProcessTermination.AInfo">
-        <short>Process exit code.</short>
-      </element>
+<element name="TAsyncProcess.HandleProcessTermination">
+<short>
+Performs actions needed when the process is terminated.
+</short>
+<descr>
+<p>
+<var>HandleProcessTermination</var> is a procedure which performs actions 
+needed when the process is terminated. HandleProcessTermination is assigned 
+using <var>AddProcessEventHandler</var> when <var>Execute</var> is called.
+</p>
+<p>
+HandleProcessTermination calls <var>UnhookProcessHandle</var> and 
+<var>UnhookPipeHandle</var> to release the handlers in the class instance. 
+HandleProcessTermination signals the <var>OnTerminate</var> event handler 
+when it has been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.Execute"/>
+<link id="TAsyncProcess.UnhookProcessHandle"/>
+<link id="TAsyncProcess.UnhookPipeHandle"/>
+<link id="TAsyncProcess.OnTerminate"/>
+</seealso>
+</element>
+<element name="TAsyncProcess.HandleProcessTermination.AData">
+<short>Data for the process notification.</short>
+</element>
+<element name="TAsyncProcess.HandleProcessTermination.AReason">
+<short>Reason(s) for the process notification.</short>
+</element>
+<element name="TAsyncProcess.HandleProcessTermination.AInfo">
+<short>Process exit code.</short>
+</element>
 
-      <element name="TAsyncProcess.UnhookPipeHandle">
-        <short>
-          Removes the pipe handler assigned for the process.
-        </short>
-        <descr>
-          <p>
-            <var>UnhookPipeHandle</var> is a procedure used to remove the pipe handler assigned for the process in the <var>Execute</var> method. UnhookPipeHandle calls <var>RemovePipeEventHandler</var> when a pipe handler has been assigned.
-          </p>
-          <p>
-            <var>UnhookPipeHandle</var> is called from the <var>Destroy</var> method, and from <var>HandlePipeInput</var> when the <var>prBroken</var> flag is found in the parameters passed to the method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.Execute"/>
-          <link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.UnhookPipeHandle">
+<short>
+Removes the pipe handler assigned for the process.
+</short>
+<descr>
+<p>
+<var>UnhookPipeHandle</var> is a procedure used to remove the pipe handler 
+assigned for the process in the <var>Execute</var> method. UnhookPipeHandle 
+calls <var>RemovePipeEventHandler</var> when a pipe handler has been assigned.
+</p>
+<p>
+<var>UnhookPipeHandle</var> is called from the <var>Destroy</var> method, and 
+from <var>HandlePipeInput</var> when the <var>prBroken</var> flag is found in 
+the parameters passed to the method.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.Execute"/>
+<link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.UnhookProcessHandle">
-        <short>
-          Removes the process handler assigned for the process.
-        </short>
-        <descr>
-          <p>
-            <var>UnhookProcessHandle</var> is a procedure used to remove the process handler assigned for the process in the <var>Execute</var> method. UnhookProcessHandle calls <var>RemoveProcessEventHandler</var> when a process handler has been assigned.
-          </p>
-          <p>
-            <var>UnhookProcessHandle</var> is called from the <var>HandleProcessTermination</var> and <var>Destroy</var> methods.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.Execute"/>
-          <link id="TAsyncProcess.HandleProcessTermination"/>
-          <link id="TAsyncProcess.Destroy"/>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.UnhookProcessHandle">
+<short>
+Removes the process handler assigned for the process.
+</short>
+<descr>
+<p>
+<var>UnhookProcessHandle</var> is a procedure used to remove the process 
+handler assigned for the process in the <var>Execute</var> method. 
+UnhookProcessHandle calls <var>RemoveProcessEventHandler</var> when a process 
+handler has been assigned.
+</p>
+<p>
+<var>UnhookProcessHandle</var> is called from the 
+<var>HandleProcessTermination</var> and <var>Destroy</var> methods.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.Execute"/>
+<link id="TAsyncProcess.HandleProcessTermination"/>
+<link id="TAsyncProcess.Destroy"/>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.Execute">
-        <short>
-          Executes the process.
-        </short>
-        <descr>
-          <p>
-            <var>Execute</var> is an overridden procedure used to execute the process. Execute calls the inherited Execute method on entry.
-          </p>
-          <p>
-            Execute uses values in <var>Options</var> to determine if a process or a pipe handler is needed for the class instance. When Options includes the value <var>poUsePipes</var>, <var>AddPipeEventHandler</var> is called using <var>HandlePipeInput</var> as the pipe handler routine. Set the values in Options prior to calling the Execute method.
-          </p>
-          <p>
-            Execute calls <var>AddProcessEventHandler</var> using <var>HandleProcessTermination</var> as the process handler routine.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.HandlePipeInput"/>
-          <link id="TAsyncProcess.HandleProcessTermination"/>
-          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.Execute">
+<short>
+Executes the process.
+</short>
+<descr>
+<p>
+<var>Execute</var> is an overridden procedure used to execute the process. 
+Execute calls the inherited Execute method on entry.
+</p>
+<p>
+Execute uses values in <var>Options</var> to determine if a process or a pipe 
+handler is needed for the class instance. When Options includes the value 
+<var>poUsePipes</var>, <var>AddPipeEventHandler</var> is called using 
+<var>HandlePipeInput</var> as the pipe handler routine. Set the values in 
+Options prior to calling the Execute method.
+</p>
+<p>
+Execute calls <var>AddProcessEventHandler</var> using 
+<var>HandleProcessTermination</var> as the process handler routine.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.HandlePipeInput"/>
+<link id="TAsyncProcess.HandleProcessTermination"/>
+<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.Destroy">
-        <short>
-          Destructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> to remove the handler(s) for the class instance. Destroy calls the inherited method to free resources allocated in the class instance and perform free notifications.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.UnhookProcessHandle"/>
-          <link id="TAsyncProcess.UnhookPipeHandle"/>
-          <link id="#fcl.process.TProcess.Destroy">TProcess.Destroy</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. 
+Destroy calls <var>UnhookProcessHandle</var> and <var>UnhookPipeHandle</var> 
+to remove the handler(s) for the class instance. Destroy calls the inherited 
+method to free resources allocated in the class instance and perform free 
+notifications.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.UnhookProcessHandle"/>
+<link id="TAsyncProcess.UnhookPipeHandle"/>
+<link id="#fcl.process.TProcess.Destroy">TProcess.Destroy</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.NumBytesAvailable">
-        <short>
-          Number of output bytes available from the process.
-        </short>
-        <descr>
-          <p>
-            <var>NumBytesAvailable</var> is a read-only <var>dword</var> property that indicates the number of bytes available on the <var>Output</var> handle for the process. <var>GetNumBytesAvailable</var> is the read access specifier for the property value. NumBytesAvailable contains the value in Output.NumBytesAvailable, or 0 (zero) when <var>Options</var> does not contain the value <var>poUsePipes</var>.
-          </p>
-          <p>
-            Set the values for the <var>Options</var> property prior to calling <var>Execute</var>.
-          </p>
-          <p>
-            Use <var>OnReadData</var> to respond to the process notification signalled when data is available.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.Execute"/>
-          <link id="TAsyncProcess.OnReadData"/>
-          <link id="#fcl.process.TProcess.Options">TProcess.Options</link>
-          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.NumBytesAvailable">
+<short>
+Number of output bytes available from the process.
+</short>
+<descr>
+<p>
+<var>NumBytesAvailable</var> is a read-only <var>dword</var> property that 
+indicates the number of bytes available on the <var>Output</var> handle for 
+the process. <var>GetNumBytesAvailable</var> is the read access specifier for 
+the property value. NumBytesAvailable contains the value in 
+Output.NumBytesAvailable, or 0 (zero) when <var>Options</var> does not 
+contain the value <var>poUsePipes</var>.
+</p>
+<p>
+Set the values for the <var>Options</var> property prior to calling 
+<var>Execute</var>.
+</p>
+<p>
+Use <var>OnReadData</var> to respond to the process notification signalled 
+when data is available.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.Execute"/>
+<link id="TAsyncProcess.OnReadData"/>
+<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+<link id="#fcl.process.TProcess.Output">TProcess.Output</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.OnReadData">
-        <short>
-          Event handler signalled when output data is available for the process.
-        </short>
-        <descr>
-          <p>
-            <var>OnReadData</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when data is available for the process. Applications should assign a procedure to the event handler that responds to the pipe notification. The procedure must handle all data available on the <var>Output</var> handle up to the number of bytes in <var>NumBytesAvailable</var>. All available data must be handled, or the procedure will be called repeatedly until no more data is available.
-          </p>
-          <p>
-            OnReadData is signalled (when assigned) from the <var>HandlePipeInput</var> method when the <var>prDataAvailable</var> flag is found in the parameters passed to the method.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.NumBytesAvailable"/>
-          <link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
-          <link id="#fcl.process.TProcess.Output">TProcess.Output</link>
-          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.OnReadData">
+<short>
+Event handler signalled when output data is available for the process.
+</short>
+<descr>
+<p>
+<var>OnReadData</var> is a <var>TNotifyEvent</var> property that implements 
+the event handler signalled when data is available for the process. 
+Applications should assign a procedure to the event handler that responds to 
+the pipe notification. The procedure must handle all data available on the 
+<var>Output</var> handle up to the number of bytes in 
+<var>NumBytesAvailable</var>. All available data must be handled, or the 
+procedure will be called repeatedly until no more data is available.
+</p>
+<p>
+OnReadData is signalled (when assigned) from the <var>HandlePipeInput</var> 
+method when the <var>prDataAvailable</var> flag is found in the parameters 
+passed to the method.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.NumBytesAvailable"/>
+<link id="#lcl.interfacebase.TPipeReason">TPipeReason</link>
+<link id="#fcl.process.TProcess.Output">TProcess.Output</link>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
 
-      <element name="TAsyncProcess.OnTerminate">
-        <short>
-          Event handler signalled when the process is terminated.
-        </short>
-        <descr>
-          <p>
-            <var>OnTerminate</var> is a <var>TNotifyEvent</var> property that implements the event handler signalled when the process is terminated. Applications can assign a procedure to the event handler to perform actions needed when the process is terminated.
-          </p>
-          <p>
-            OnTerminate is signalled (when assigned) from the <var>HandleProcessTermination</var> method, and occurs after the process and pipe handlers have been unhooked in the class instance.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TAsyncProcess.HandleProcessTermination"/>
-          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-        </seealso>
-      </element>
+<element name="TAsyncProcess.OnTerminate">
+<short>
+Event handler signalled when the process is terminated.
+</short>
+<descr>
+<p>
+<var>OnTerminate</var> is a <var>TNotifyEvent</var> property that implements 
+the event handler signalled when the process is terminated. Applications can 
+assign a procedure to the event handler to perform actions needed when the 
+process is terminated.
+</p>
+<p>
+OnTerminate is signalled (when assigned) from the 
+<var>HandleProcessTermination</var> method, and occurs after the process and 
+pipe handlers have been unhooked in the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TAsyncProcess.HandleProcessTermination"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
 
-      <element name="Register">
-        <short>Registers components for use in the Lazarus IDE.</short>
-        <descr>
-          <p>
-            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE. The following components are added to the Lazarus IDE component palette:
-          </p>
-          <p>
-            <b>System</b> Tab
-          </p>
-          <ul>
-            <li>TAsyncProcess</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
+<element name="Register">
+<short>Registers components for use in the Lazarus IDE.</short>
+<descr>
+<p>
+<var>Register</var> is the procedure used to register components for use in 
+the Lazarus IDE. The following components are added to the Lazarus IDE 
+component palette:
+</p>
+<p>
+<b>System</b> Tab
+</p>
+<ul>
+<li>TAsyncProcess</li>
+</ul>
+</descr>
+<seealso/>
+</element>
 
-    </module>
-    <!-- AsyncProcess -->
-  </package>
+</module>
+<!-- AsyncProcess -->
+</package>
 </fpdoc-descriptions>

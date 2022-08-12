@@ -1,1303 +1,1620 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-      PropertyStorage
-    ====================================================================
-    -->
-    <module name="PropertyStorage">
-      <short>
-        Provides the base class for a storage container use to save and restore control or form properties.
-        </short>
-      <descr>
-        <p>
-          <file>propertystorage.pas</file> contains classes and types used to define a storage container for property values: <var>TCustomPropertyStorage</var>. This is a base class and contains abstract virtual methods which must be implemented in a descendent class. For example: TControlPropertyStorage, TFormPropertyStorage, TIniPropStorage, TJSONPropStorage, and TXMLPropStorage.
-        </p>
-        <p>
-          This file is part of the <b>Lazarus Component Library (LCL)</b>.
-        </p>
-      </descr>
-
-      <!-- unresolved external references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="RTLConsts"/>
-      <element name="RTTIUtils"/>
-
-      <element name="TPlacementOperation">
-        <short>Represents operations performed for a property storage container.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPlacementOperation.poSave">
-        <short>The property is being saved.</short>
-      </element>
-      <element name="TPlacementOperation.poRestore">
-        <short>The property is being restored.</short>
-      </element>
-
-      <element name="TStoredType">
-        <short>Alias to the type used to store a property value.</short>
-        <descr>
-          <p>
-            When <var>storevariant</var> is defined, <var>TStoredType</var> is aliased to the <var>Variant</var> type. Otherwise, TStoredType is aliased to the <var>AnsiString</var> type.
-          </p>
-          <p>
-            TStoredType is the type used for the <var>Value</var> property in <var>TStoredValue</var> and in the <var>TStoredValues</var> collection. It is also used to implement the <var>StoredValue</var> property in <var>TCustomPropertyStorage</var>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValueEvent">
-        <short>Type of an TStoredValue.OnSave and OnRestore notification handler.</short>
-        <descr>
-          Called before a property is saved, after a it has been restored.
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TStoredValueEvent.Sender">
-        <short>Object for the event notification.</short>
-      </element>
-      <element name="TStoredValueEvent.Value">
-        <short>Contains the property value for the event.</short>
-      </element>
-
-      <element name="TStoredValue">
-        <short>
-          A key/value pair representing a property value, with added Save/Restore features.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.FName" link="#lcl.propertystorage.TStoredValue.Name"/>
-      <element name="TStoredValue.FValue" link="#lcl.propertystorage.TStoredValue.Value"/>
-      <element name="TStoredValue.FKeyString" link="#lcl.propertystorage.TStoredValue.KeyString"/>
-      <element name="TStoredValue.FOnSave" link="#lcl.propertystorage.TStoredValue.OnSave"/>
-      <element name="TStoredValue.FOnRestore" link="#lcl.propertystorage.TStoredValue.OnRestore"/>
-
-      <element name="TStoredValue.IsValueStored" link="#lcl.propertystorage.TStoredValue.Value"/>
-      <element name="TStoredValue.IsValueStored.Result">
-        <short/>
-      </element>
-
-      <element name="TStoredValue.GetStoredValues" link="#lcl.propertystorage.TStoredValue.StoredValues"/>
-      <element name="TStoredValue.GetStoredValues.Result">
-        <short/>
-      </element>
-
-      <element name="TStoredValue.GetDisplayName">
-        <short>Gets the value for the DisplayName property in the collection item.</short>
-        <descr>
-          <p>
-            <var>GetDisplayName</var> is overridden in <var>TStoredValue</var> to use the value in the <var>Name</var> property (when assigned). If Name is an empty string (<b>''</b>), the inherited method is called to get the value for the property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.Name"/>
-          <link id="TStoredValue.SetDisplayName"/>
-          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
-        </seealso>
-      </element>
-      <element name="TStoredValue.GetDisplayName.Result">
-        <short>Value for the property.</short>
-      </element>
-
-      <element name="TStoredValue.SetDisplayName">
-        <short>Sets the value for the DisplayName property in the collection item.</short>
-        <descr>
-          <p>
-            <var>SetDisplayName</var> is overridden in <var>TStoredValue</var> to set the value for the <var>DisplayName</var> property. SetDisplayName ensures that a new value is not a duplicate of an existing DisplayName value in the <var>TStoredValues</var>. An <var>Exception</var> is raised when <var>AValue</var> is already used in the <var>Collection</var>.
-          </p>
-          <p>
-            SetDisplayName calls the inherited method prior to exit.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues"/>
-          <link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
-          <link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
-        </seealso>
-      </element>
-      <element name="TStoredValue.SetDisplayName.AValue">
-        <short>New value for the property.</short>
-      </element>
-
-      <element name="TStoredValue.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry using <var>ACollection</var> as an argument. Create set the default <var>Value</var> for the collection item to an empty string (<b>''</b>).
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.Value"/>
-          <link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
-          <link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
-        </seealso>
-      </element>
-      <element name="TStoredValue.Create.ACollection">
-        <short>Collection which owns the collection item.</short>
-      </element>
-
-      <element name="TStoredValue.Assign">
-        <short>
-          Copies property values from the specified persistent object into the current class instance.
-        </short>
-        <descr>
-          <p>
-            <var>Assign</var> is an overridden method in <var>TStoredValue</var> used to copy property values from the persistent object specified in <var>Source</var> into the current class instance. When Source is assigned and derived from <var>TStoredValue</var>, the following properties are copied:
-          </p>
-          <ul>
-            <li>Values</li>
-            <li>Name</li>
-            <li>KeyString</li>
-          </ul>
-          <p>
-            No actions are performed in the method when Source is unassigned (<b>Nil</b>) or not derived from TStoredValue. It does <b>not</b> call the inherited method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TStoredValue.Assign.Source">
-        <short>Persistent object with property values copied in the method.</short>
-      </element>
-
-      <element name="TStoredValue.Clear">
-        <short>Clears the content in the Value property.</short>
-        <descr>
-          <p>
-            <var>Clear</var> is a method used to remove the existing content in the <var>Value</var> property. The type used for the Value property is dependent on the <var>storevariant</var> compiler define. When defined, the <var>Unassigned</var> variant constant from the RTL is stored in the Value property. Otherwise, an empty string (<b>''</b>) is stored in the property.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.Save">
-        <short>
-          Saves the value for the collection item to the storage container for the collection.
-        </short>
-        <descr>
-          <p>
-            <var>Save</var> is a method used to save the <var>Value</var> for the collection item to the storage container for the <var>Collection</var>.
-          </p>
-          <p>
-            Save signals the <var>OnSave</var> event handler (when assigned) to get the actual value for the collection item used in the operation. The value is converted to a <var>String</var> type when the Value property is stored as a <var>Variant</var> type.
-          </p>
-          <p>
-            The <var>KeyString</var> property contains the key used to XOR-encode the value stored in the method. XOR encoding is not performed when KeyString is an empty string (<b>''</b>).
-          </p>
-          <p>
-            Save uses the <var>StoredValues</var> collection to access the storage container where the value is written. The <var>WriteString</var> method in the <var>TCustomPropertyStorage</var> container is called to store a key/value pair using the <var>Name</var> for the collection item and its value.
-          </p>
-          <p>
-            Use <var>Restore</var> to load a collection item value from the storage container for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.OnSave"/>
-          <link id="TStoredValue.StoredValues"/>
-          <link id="TStoredValues.Storage"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValue.Restore">
-        <short>
-          Loads the value for the collection item from the storage container for the collection.
-        </short>
-        <descr>
-          <p>
-            <var>Restore</var> is a method used to load the Value for the collection item for the storage container for the collection.
-          </p>
-          <p>
-            Restore uses the existing <var>Value</var> as the default value for the restore operation. It is converted to a <var>String</var> when Value is defined as a <var>Variant</var> type.
-          </p>
-          <p>
-            <var>KeyString</var> contains the key used to XOR encode / decode values written to and read from the storage container for the collection. XOR encoding / decoding is not used when KeyString is an empty string (<b>''</b>).
-          </p>
-          <p>
-            The default value is XOR encoded when needed. The <var>StoredValues</var> collection is used to access the <var>Storage</var> container and calls its <var>ReadString</var> method. The retrieved value is XOR decoded when needed.
-          </p>
-          <p>
-            Restore signals the <var>OnRestore</var> event handler (when assigned) to validate and/or modify the restored value.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.OnRestore"/>
-          <link id="TStoredValue.StoredValues"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValue.StoredValues">
-        <short>The collection containing the collection item.</short>
-        <descr>
-          <p>
-            <var>StoredValues</var> is a read-only <var>TStoredValues</var> property with the collection which owns the collection item.
-          </p>
-          <p>
-            StoredValues is the TCollection descendant passes as an argument to the <var>Create</var> constructor cast to the TStoredValues type. It provides access to name/value pairs for the collection items, and the <var>Storage</var> container used to read and write collection item values in the <var>Save</var> and <var>Restore</var> methods.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.Name">
-        <short>The name for the collection item.</short>
-        <descr>
-          <p>
-            <var>Name</var> is a <var>String</var> property with the name for the collection item. It is like the <var>DisplayName</var> property, but enforces uniqueness when setting a new value for the property. An <var>Exception</var> is raised when Name is already used in the <var>Collection</var>.
-          </p>
-          <p>
-            Name also provides the key used for name/value pairs stored in the storage container for the collection.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.Value">
-        <short>The value of the property (as a String or a Variant type).</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.KeyString">
-        <short>XOR encoding key, empty for encoding is not used.</short>
-        <descr>
-          <p>
-            <var>KeyString</var> is a <var>String</var> property which contains the key used to XOR encode/decode the <var>Value</var> for the collection item. XOR encoding is performed in the <var>Save</var> method when the collection item is written to the storage container for the collection. XOR decoding is performed in the <var>Restore</var> method when the value is read from the storage container. XOR encoding/decoding is not performed when KeyString is an empty string (<b>''</b>).
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValue.OnSave">
-        <short>Event handler signalled when the collection item value is saved.</short>
-        <descr>
-          <p>
-            <var>OnSave</var> is a <var>TStoredValueEvent</var> property with the event handler signalled when the <var>Value</var> for the collection item is saved to the storage container for the collection. Arguments passed to the event handler identify the collection item and the value for the collection item. The <var>Value</var> parameter is a variable argument and can be modified in the event handler as needed.
-          </p>
-          <p>
-            OnSave is signalled (when assigned) from the <var>Save</var> method, and occurs before the collection item value is XOR encoded (when needed) and written to the storage container for the collection.
-          </p>
-          <p>
-            Use <var>OnRestore</var> to perform actions needed when the collection item is retrieved from the storage container for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.Value"/>
-          <link id="TStoredValue.KeyString"/>
-          <link id="TStoredValue.Save"/>
-          <link id="TStoredValue.Restore"/>
-          <link id="TStoredValue.OnRestore"/>
-          <link id="TStoredValueEvent"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValue.OnRestore">
-        <short>Event handler signalled when the collection item value is restored.</short>
-        <descr>
-          <p>
-            <var>OnRestore</var> is a <var>TStoredValueEvent</var> property with the event handler signalled when the <var>Value</var> for the collection item is restored from the storage container for the collection. Arguments passed to the event handler identify the collection item and the value for the collection item. The <var>Value</var> parameter is a variable argument and can be modified in the event handler as needed.
-          </p>
-          <p>
-            OnRestore is signalled (when assigned) from the <var>Restore</var> method, and occurs after the collection item value has been retrieved from the collection storage and XOR decoded (when needed). It has not been stored in the <var>Value</var> property when the event handler is signalled.
-          </p>
-          <p>
-            Use the <var>OnSave</var> event handler to perform actions needed when the Value is saved to the storage container for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue.Value"/>
-          <link id="TStoredValue.KeyString"/>
-          <link id="TStoredValue.StoredValues"/>
-          <link id="TStoredValue.Restore"/>
-          <link id="TStoredValue.OnSave"/>
-          <link id="TStoredValue.Save"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValues">
-        <short>Implements a collection for TStoredValue collection items.</short>
-        <descr>
-          <p>
-            <var>TStoredValues</var> is a <var>TOwnedCollection</var> descendant which implements an owned collection for <var>TStoredValue</var> collection items.
-          </p>
-          <p>
-            TStoredValues provides properties and methods used to access the TStoredValue collection items or their values. Use <var>Items</var> to read and write a collection item by its ordinal position in the collection. Use <var>Values</var> to read and write a collection item by its name. Use <var>StoredValue</var> to read and write the value for a collection item by its name.
-          </p>
-          <p>
-            The owner of the collection (passed as an argument to the constructor) is a <var>TCustomPropertyStorage</var> instance stored in the <var>Storage</var> property. It provides a container used to read and write name/value pairs which represent the items in the collection. Use <var>RestoreValues</var> and <var>SaveValues</var> methods to read and write the collection items using the <var>Storage</var> container for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue"/>
-          <link id="TStoredType"/>
-          <link id="TCustomPropertyStorage"/>
-          <link id="#rtl.classes.TOwnedCollection">TOwnedCollection</link>
-        </seealso>
-      </element>
-
-      <element name="TStoredValues.FStorage" link="#lcl.propertystorage.TStoredValues.Storage"/>
-
-      <element name="TStoredValues.GetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
-      <element name="TStoredValues.GetValue.Result"/>
-      <element name="TStoredValues.GetValue.AName"/>
-
-      <element name="TStoredValues.SetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
-      <element name="TStoredValues.SetValue.AName"/>
-      <element name="TStoredValues.SetValue.AStoredValue"/>
-
-      <element name="TStoredValues.GetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
-      <element name="TStoredValues.GetStoredValue.Result"/>
-      <element name="TStoredValues.GetStoredValue.AName"/>
-
-      <element name="TStoredValues.SetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
-      <element name="TStoredValues.SetStoredValue.AName"/>
-      <element name="TStoredValues.SetStoredValue.Value"/>
-
-      <element name="TStoredValues.GetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
-      <element name="TStoredValues.GetItem.Result"/>
-      <element name="TStoredValues.GetItem.Index">
-        <short/>
-      </element>
-
-      <element name="TStoredValues.SetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
-      <element name="TStoredValues.SetItem.Index"/>
-      <element name="TStoredValues.SetItem.AStoredValue"/>
-
-      <element name="TStoredValues.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using <var>AOwner</var> as the owner for the class instance. When AOwner is derived from <var>TCustomPropertyStorage</var>, it is assigned as the value for the <var>Storage</var> property. <var>TStoredValue</var> is the class type used as the <var>ItemClass</var> for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValue"/>
-          <link id="TCustomPropertyStorage"/>
-          <link id="#rtl.classes.TOwnedCollection.Create">TOwnedCollection.Create</link>
-          <link id="#rtl.classes.TCollection.ItemClass">TCollection.ItemClass</link>
-        </seealso>
-      </element>
-      <element name="TStoredValues.Create.AOwner">
-        <short>
-          TCustomPropertyStorage instance which is the owner and the Storage container for the class.
-        </short>
-      </element>
-
-      <element name="TStoredValues.IndexOf">
-        <short>
-          Gets the ordinal position in Items for the collection item with the specified name.
-        </short>
-        <descr>
-          <p>
-            <var>IndexOf</var> iterates over the values in the <var>Items</var> property to locate the <var>TStoredValue</var> instance with a <var>Name</var> property that matches the value in <var>AName</var>. <var>AnsiCompareText</var> is called to perform a case-insensitive comparison which also ignores accents in the characters.
-          </p>
-          <p>
-            The return value contains the ordinal position in Items where the value in AName was located, or <b>-1</b> when a collection item is not found using the specified name.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues.Items"/>
-          <link id="TStoredValue.Name"/>
-          <link id="#rtl.sysutils.AnsiCompareText">AnsiCompareText</link>
-        </seealso>
-      </element>
-      <element name="TStoredValues.IndexOf.Result">
-        <short>
-          Ordinal position for the collection item with the given name, or -1 when not found.
-        </short>
-      </element>
-      <element name="TStoredValues.IndexOf.AName">
-        <short>Name of the collection item to locate in the method.</short>
-      </element>
-
-      <element name="TStoredValues.SaveValues">
-        <short>
-          Saves all of the collection items to the Storage container for the collection.
-        </short>
-        <descr>
-          <p>
-            <var>SaveValues</var> is a method used to save all of the collection <var>Items</var> to the <var>Storage</var> container for the collection. It iterates over the values in Items and calls the <var>Save</var> method for each of the <var>TStoredValue</var> instances. See <var>TStoredValue.Save</var> for more details.
-          </p>
-          <p>
-            Use <var>RestoreValues</var> to load the values for the collection items from the Storage container.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues.Items"/>
-          <link id="TStoredValues.Storage"/>
-          <link id="TStoredValues.RestoreValues"/>
-          <link id="TStoredValue.Save"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValues.RestoreValues">
-        <short>
-          Loads all of the values for the collection Items from the Storage container for the collection.
-        </short>
-        <descr>
-          <p>
-            <var>RestoreValues</var> is a method used to load the values in the collection <var>Items</var> from the <var>Storage</var> container for the collection. RestoreValues iterates of the values in Items and calls the <var>Restore</var> method for each of the <var>TStoredValue</var> instances. See <var>TStoredValue.Restore</var> for more details.
-          </p>
-          <p>
-            Use <var>SaveValues</var> to save the values for all of the collection items to the Storage container for the collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues.Items"/>
-          <link id="TStoredValues.Storage"/>
-          <link id="TStoredValues.SaveValues"/>
-          <link id="TStoredValue.Restore"/>
-          <link id="TStoredValue.Save"/>
-        </seealso>
-      </element>
-
-      <element name="TStoredValues.Storage">
-        <short>
-          Storage container used to Save and Restore the Values for the collection Items.
-        </short>
-        <descr>
-          <p>
-            <var>Storage</var> is a <var>TCustomPropertyStorage</var> property with the storage container used to save and restore the values for the Items in the collection. Storage contains the value passed as the <var>Owner</var> argument to the <var>Create</var> constructor, or <b>Nil</b> when the parameter is not derived from TCustomPropertyStorage.
-          </p>
-          <p>
-            TCustomPropertyStorage is an ancestor class which contains abstract virtual methods; normally, one of the descendent classes which implement a specific storage mechanism is used as the Owner. For example: <var>TControlPropertyStorage</var>, <var>TFormPropertyStorage</var>, <var>TIniPropStorage</var>, <var>TJSONPropStorage</var>, and <var>TXMLPropStorage</var>.
-          </p>
-          <p>
-            Storage is used when the <var>SaveValues</var> or <var>RestoreValues</var> method is called. The TStoredValue instances in Items access the property when they call their <var>Save</var> or <var>Restore</var> methods.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TStoredValues.Items">
-        <short>
-          Provides indexed access to the TStoredValue collection items by their ordinal position.
-        </short>
-        <descr>
-          <p>
-            <var>Items</var> is an indexed <var>TStoredValue</var> property with the items for the collection. It re-implements the internal list to use the TStoredValue type as the <var>ItemClass</var> for the collection.
-          </p>
-          <p>
-            Values in Items are accessed by their ordinal position in the list of collection items. The Read access specifier ensures that the inherited property value is cast to the TStoredValue type. The Write access specifier ensures that the property value is cast to the TCollectionItem type used in the inherited method.
-          </p>
-          <p>
-            Items is the default property for the class instance.
-          </p>
-          <p>
-            Use the <var>Values</var> and <var>StoredValue</var> properties to access a collection item by its name.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TStoredValues.Items.Index">
-        <short>Ordinal position for the collection item used as the property value.</short>
-      </element>
-
-      <element name="TStoredValues.Values">
-        <short>
-          Provides indexed access to a TStoredValue instance in the collection by its name.
-        </short>
-        <descr>
-          <p>
-            <var>Values</var> is an indexed <var>TStoredValue</var> property which provides access to a collection item with the name specified in the <var>Name</var> argument. The <var>IndexOf</var> method is called to locate the entry in <var>Items</var> matching the specified Name. The property value is <b>Nil</b> if Items does not contain a TStoredValue instance with the value in Name.
-          </p>
-          <p>
-            When saving a new value for the property, the <var>Assign</var> method in the collection item is called to update the property values for the TStoredValue instance.
-          </p>
-          <p>
-            Use the <var>StoredValue</var> property to access the <var>String</var> or <var>Variant</var> value for the collection item by its name.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues.Items"/>
-          <link id="TStoredValues.IndexOf"/>
-          <link id="TStoredValues.StoredValue"/>
-          <link id="TStoredValue.Assign"/>
-          <link id="TStoredValue.Name"/>
-        </seealso>
-      </element>
-      <element name="TStoredValues.Values.Name">
-        <short>Name for the collection item to retrieve from the Items property.</short>
-      </element>
-
-      <element name="TStoredValues.StoredValue">
-        <short>
-          Provides indexed access to the value for a collection item with the specified name.
-        </short>
-        <descr>
-          <p>
-            <var>StoredValue</var> is an indexed <var>TStoredType</var> property which provides access to the value for a collection item with the name specified in the <var>Name</var> argument. TStoredType allows the value to be represented as either a <var>String</var> or <var>Variant</var> type. See <link id="TStoredType">TStoredType</link> for more information.
-          </p>
-          <p>
-            The <var>IndexOf</var> method is called to locate the collection item with the specified Name. If a collection item is not found, the property value can be either an empty string ('') (when TStoredType is AnsiString) or Null (when TStoredType is a Variant).
-          </p>
-          <p>
-            When writing the value for the indexed property, a new collection item is created in <var>Items</var> if a <var>TStoredValue</var> entry does not already exist with the specified Name.
-          </p>
-          <p>
-            Use the <var>Values</var> property to access a collection item instance by its Name. Use the <var>Items</var> property to access a collection item by its ordinal position.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TStoredValues.IndexOf"/>
-          <link id="TStoredValues.Items"/>
-          <link id="TStoredValues.Values"/>
-          <link id="TStoredValue.Name"/>
-          <link id="TStoredValue.Value"/>
-          <link id="TStoredType"/>
-        </seealso>
-      </element>
-      <element name="TStoredValues.StoredValue.Name">
-        <short>Name for the collection item with the property value.</short>
-      </element>
-
-      <element name="TPropertyStorageLink">
-        <short>Links a storage object to a property collection.</short>
-        <descr>
-          <p>
-            TPropertyStorageLink is a TPersistent descendant which implements a class used to link a storage container to the collection and values read from and written to the storage. Not very useful by itself, Load/Save depends on installed handlers.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.FStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
-      <element name="TPropertyStorageLink.FOnSave" link="#lcl.propertystorage.TPropertyStorageLink.OnSave"/>
-      <element name="TPropertyStorageLink.FOnLoad" link="#lcl.propertystorage.TPropertyStorageLink.OnLoad"/>
-
-      <element name="TPropertyStorageLink.GetRootSection" link="#lcl.propertystorage.TPropertyStorageLink.RootSection"/>
-      <element name="TPropertyStorageLink.GetRootSection.Result">
-        <short/>
-      </element>
-
-      <element name="TPropertyStorageLink.SetStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
-      <element name="TPropertyStorageLink.SetStorage.Value">
-        <short/>
-      </element>
-
-      <element name="TPropertyStorageLink.SaveProperties">
-        <short>Invokes the OnSave handler.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.LoadProperties">
-        <short>Invokes the OnLoad handler.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that references used in the <var>OnLoad</var>, <var>OnSave</var>, and <var>Storage</var> properties are set to <b>Nil</b>. Destroy calls the inherited destructor prior to exiting from the method.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.Storage">
-        <short>Contains a reference to the storage contain used in the link.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.RootSection">
-        <short>Path to the root where values are stored in the Storage container.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyStorageLink.OnSave">
-        <short>Event handler signalled when all of the property values are stored.</short>
-        <descr/>
-        <seealso>
-          <link id="TPropertyStorageLink.SaveProperties"/>
-          <link id="TPropertyStorageLink.OnLoad"/>
-        </seealso>
-      </element>
-
-      <element name="TPropertyStorageLink.OnLoad">
-        <short>Event handler signalled when all of the property values are loaded.</short>
-        <descr/>
-        <seealso>
-          <link id="TPropertyStorageLink.LoadProperties"/>
-          <link id="TPropertyStorageLink.OnSave"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage">
-        <short>Defines a container used to Save and Restore property values.</short>
-        <descr>
-          <p>
-            <var>TCustomPropertyStorage</var> is a <var>TComponent</var> descendant which defines a storage container used to save and restore property values. It has a <var>StoredValues</var> property that is a collection with items containing the Names and Values read and written using the storage container.
-          </p>
-          <p>
-            TCustomPropertyStorage is a base class; it includes abstract virtual methods which must be implemented in a descendant to use a particular storage medium or format. For example: <var>TControlPropertyStorage</var>, <var>TFormPropertyStorage</var>, <var>TIniPropStorage</var>, <var>TJSONPropStorage</var>, and <var>TXMLPropStorage</var>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.FOnRestoringProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoringProperties"/>
-      <element name="TCustomPropertyStorage.FOnSavingProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSavingProperties"/>
-      <element name="TCustomPropertyStorage.FStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
-      <element name="TCustomPropertyStorage.FActive" link="#lcl.propertystorage.TCustomPropertyStorage.Active"/>
-
-      <element name="TCustomPropertyStorage.FLinks">
-        <short>The list of linked property collections.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.FSaved">
-        <short><b>True</b> when everything has been saved.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.FRestored">
-        <short><b>True</b> when everything has been restored.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.FOnSaveProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSaveProperties"/>
-      <element name="TCustomPropertyStorage.FOnRestoreProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoreProperties"/>
-
-      <element name="TCustomPropertyStorage.AddLink">
-        <short>Establishes a connection to a property collection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.AddLink.ALink">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.RemoveLink">
-        <short>Drops the connection to a property collection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.RemoveLink.ALink">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.NotifyLinks">
-        <short>Notifies all connected property collections.</short>
-        <descr>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.NotifyLinks.Operation">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.SetStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
-      <element name="TCustomPropertyStorage.SetStoredValues.Value"/>
-
-      <element name="TCustomPropertyStorage.GetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
-      <element name="TCustomPropertyStorage.GetStoredValue.Result"/>
-      <element name="TCustomPropertyStorage.GetStoredValue.AName"/>
-
-      <element name="TCustomPropertyStorage.SetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
-      <element name="TCustomPropertyStorage.SetStoredValue.AName"/>
-      <element name="TCustomPropertyStorage.SetStoredValue.Value"/>
-
-      <element name="TCustomPropertyStorage.GetRoot">
-        <short>Gets the value for the Root property.</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomPropertyStorage.Root"/>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.GetRoot.Result">
-        <short>Value for the property.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.RootSection">
-        <short>
-          Gets the path needed to represent the section for the Root (Owner) component.
-        </short>
-        <descr>
-          <p>
-            <var>RootSection</var> is a <var>String</var> function which builds the path in the storage container where the property values are located.
-          </p>
-          <p>
-            RootSection uses the value in the <var>Root</var> property to determine the return value for the method. When Root is assigned and derived from <var>TComponent</var>, its <var>Name</var> or <var>ClassName</var> property is prepended to the return value. Preference is given to the value in its Name property.
-          </p>
-          <p>
-            Preceding <var>Owner</var> components are also examined and prepended to the return value. The value is complete when an Owner does not exist, or is not derived from TComponent.
-          </p>
-          <p>
-            The return value represents the component hierarchy used to access the property values in the storage container. The value is used in the <var>SaveProperties</var> and <var>RestoreProperties</var> methods to load property values from the underlying storage mechanism.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.RootSection.Result">
-        <short>
-          The Name or ClassName prefix for the Owner component, or an empty string when Root is not assigned.
-        </short>
-      </element>
-
-      <element name="TCustomPropertyStorage.SaveProperties">
-        <short>
-          Saves property values to the storage mechanism for the container.
-        </short>
-        <descr>
-          <p>
-            <var>SaveProperties</var> is a method used to save property values from components and persistent objects to the storage mechanism for the container.
-          </p>
-          <p>
-            Existing values in the container are loaded on entry using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods. A temporary <var>TPropsStorage</var> instance is created and configured to use the <var>RootSection</var>, <var>Root</var>, and <var>Owner</var> for the component instance. Its <var>OnWriteString</var> and <var>OnEraseSection</var> event handlers are set to the <var>DoWriteString</var> and <var>DoEraseSections</var> methods (respectively).
-          </p>
-          <p>
-            SaveProperties calls the <var>StoreObjectsProps</var> method in <var>TPropsStorage</var> to store the component and property names and values using the storage format for the container.
-          </p>
-          <remark>
-            Some of the methods called in SaveProperties are declared as abstract virtual methods in TCustomPropertyStorage, like: GetPropertyList, FinishPropertyList, DoWriteString, and DoEraseSections. They must be implemented in a descendent class to use a specific storage format in its container.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.GetPropertyList"/>
-          <link id="TCustomPropertyStorage.FinishPropertyList"/>
-          <link id="TCustomPropertyStorage.StorageNeeded"/>
-          <link id="TCustomPropertyStorage.FreeStorage"/>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="#fcl.rttiutils.TPropsStorage">TPropsStorage</link>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.RestoreProperties">
-        <short>
-          Restores property values from the storage mechanism for the container.
-        </short>
-        <descr>
-          <p>
-            <var>RestoreProperties</var> is a method used to load property values stored in the container, and apply the values to the origin components / persistent object instances. Properties names and the corresponding object instances are loaded using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods.
-          </p>
-          <p>
-            A temporary <var>TPropsStorage</var> instance is created and configured to use <var>RootSection</var> and <var>DoReadString</var> from the class instance. The <var>LoadObjectsProps</var> method is called to get the property values and apply them to the object instances for the property list.
-          </p>
-          <remark>
-            Some of the methods called in RestoreProperties are declared as abstract virtual methods in TCustomPropertyStorage, like: GetPropertyList, FinishPropertyList, and DoReadString. They must be implemented in a descendent class to use the specific storage format for its container.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.GetPropertyList"/>
-          <link id="TCustomPropertyStorage.FinishPropertyList"/>
-          <link id="TCustomPropertyStorage.StorageNeeded"/>
-          <link id="TCustomPropertyStorage.FreeStorage"/>
-          <link id="TCustomPropertyStorage.SaveProperties"/>
-          <link id="#fcl.rttiutils.TPropsStorage">TPropsStorage</link>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.GetPropertyList">
-        <short>
-          Builds a list with the object(s) and properties stored in the container.
-        </short>
-        <descr>
-          <p>
-            <var>GetPropertyList</var> is an abstract virtual method in <var>TCustomPropertyStorage</var>. It specifies the method used to populate the <var>TStringList</var> instance in <var>List</var> with the component / object properties stored in the container. The <var>Names</var> in the List argument contain the component and property names for the value. The <var>Objects</var> in the List argument contain a reference to the component instance that is the origin for the property value.
-          </p>
-          <p>
-            GetPropertyList must be implemented in a descendent class to ensure that the component and property names or values are valid for the storage format in the container.
-          </p>
-          <p>
-            GetPropertyList is used in the implementation of the SaveProperties and RestoreProperties methods.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.SaveProperties"/>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="#lcl.controls.TControlPropertyStorage">TControlPropertyStorage</link>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.GetPropertyList.List">
-        <short>
-          TStringList instance where names and the components / objects instance for the property values are stored.
-        </short>
-      </element>
-
-      <element name="TCustomPropertyStorage.FinishPropertyList">
-        <short>
-          Updates the specified list to include a reference to the object instance for each of the properties in the storage container.
-        </short>
-        <descr>
-          <p>
-            <var>FinishPropertyList</var> ensures that a valid object reference exists for each of the property names loaded into the <var>List</var> argument using the <var>GetPropertyList</var> method. It ensures that the Objects property in List contains a valid reference to a <var>TComponent</var> instance for each of the component and property names in List.
-          </p>
-          <p>
-            Root identifies the initial component / object instance examined in the method. property named and values in List are relative to the component hierarchy starting at Root.
-          </p>
-          <p>
-            The <var>ParseStoredItem</var> routine from the RTL <file>rttiutils</file> unit is called to parse each of the values in the Names property in List into separate component and property names. If the value cannot be parsed into valid component and property names, the entry in List is deleted. If the component name is not the same as the value for Root, or one of its children, the value is also deleted from List.
-          </p>
-          <p>
-            The FindComponent method is called to get the object instance with the property value for a given component name. The references is stored in the Objects property for the corresponding component / property name.
-          </p>
-          <p>
-            FinishPropertyList is used in the implementation of the <var>SaveProperties</var> and <var>RestoreProperties</var> methods.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.SaveProperties"/>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="TCustomPropertyStorage.GetPropertyList"/>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.FinishPropertyList.List">
-        <short>
-          TStringList instance with the component and property names examined in the method.
-        </short>
-      </element>
-
-      <element name="TCustomPropertyStorage.DoReadInteger">
-        <short>Reads an integer value, stored as a string.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadInteger.Result">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadInteger.Section">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadInteger.Ident">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadInteger.DefaultValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.DoReadString">
-        <short>Default OnReadString handler; must be overridden.</short>
-        <descr>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadString.Result">
-        <short>The previously stored string.</short>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadString.Section">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadString.Ident">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoReadString.DefaultValue">
-        <short>The default value, when no string was stored.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.DoWriteString">
-        <short>Default OnWriteString handler; must be overridden.</short>
-        <descr>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteString.Section">
-        <short>The name of the section.</short>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteString.Ident">
-        <short>The name (key) of the property.</short>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteString.Value">
-        <short>The value string to store.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.DoWriteInteger">
-        <short>Writes an Integer value as a String.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteInteger.Section">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteInteger.Ident">
-        <short/>
-      </element>
-      <element name="TCustomPropertyStorage.DoWriteInteger.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.DoEraseSections">
-        <short/>
-        <descr>
-          Must be overridden
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.DoEraseSections.ARootSection">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited method on entry. Create allocates resources needed for member variables in the class instance, and sets the default value for the <var>Active</var> property to <b>True</b>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.Create.AOwner">
-        <short>Owner of the class instance.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr>
-          <p>
-            <var>Destroy</var> is the overridden destructor for the class instance. It calls the <var>FreeStorage</var> method to free any items in the collection, and frees the <var>TStoredValues</var> instance in the <var>StoredValues</var> property. <var>TPropertyStorageLink</var> instances in the internal list are freed, and the list itself is also freed. Destroy calls the inherited method prior to exit.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.Save">
-        <short>Saves all linked property collections.</short>
-        <descr>
-          <p>
-            Uses <var>SaveProperties</var> and <var>StoredValues.SaveValues</var> to do the actual work. At least one of these should be implemented.
-          </p>
-          <p>
-            All linked property collections are notified when everything has been stored, or to actually store their values.
-          </p>
-          <p>
-            The OnSavingProperties handler is invoked before the properties are stored, OnSaveProperties afterwards.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.SaveProperties"/>
-          <link id="TCustomPropertyStorage.OnSaveProperties"/>
-          <link id="TCustomPropertyStorage.OnSavingProperties"/>
-          <link id="TCustomPropertyStorage.StoredValues"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.Restore">
-        <short>Restores all linked property collections.</short>
-        <descr>
-          <p>
-            Uses <var>RestoreProperties</var> and <var>StoredValues.RestoreValues</var> to do the actual work. At least one of these should be implemented.
-          </p>
-          <p>
-            All linked property collections are notified, when everything has been restored, or to actually restore the values.
-          </p>
-          <p>
-            The OnRestoringProperties handler is invoked before the properties are restored, OnRestoreProperties afterwards.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="TCustomPropertyStorage.OnRestoreProperties"/>
-          <link id="TCustomPropertyStorage.OnRestoringProperties"/>
-          <link id="TCustomPropertyStorage.StoredValues"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.StorageNeeded">
-        <short>Ensures that the storage mechanism for the container is available.</short>
-        <descr>
-          <p>
-            <var>StorageNeeded</var> is a method used to ensure that the underlying storage mechanism for the container has been allocated and configured. StorageNeeded has an empty implementation in <var>TCustomPropertyStorage</var>. It must be overridden in a descendent class to use the format and access mechanism needed.
-          </p>
-          <p>
-            The <var>ReadOnly</var> argument indicates whether write access is enabled for the storage. In general, the <var>Save</var> method requires write access and the <var>Restore</var> method does not.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.FreeStorage"/>
-          <link id="TCustomPropertyStorage.Save"/>
-          <link id="TCustomPropertyStorage.Restore"/>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.StorageNeeded.ReadOnly">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyStorage.FreeStorage">
-        <short>Frees resources allocated for the underlying storage mechanism.</short>
-        <descr>
-          <p>
-            <var>FreeStorage</var> is a method used to free resources allocated for the underlying storage mechanism for the container in <var>StorageNeeded</var>. FreeStorage has an empty implementation in <var>TCustomPropertyStorage</var>, and must be overridden in a descendent class.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.StorageNeeded"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.ReadBoolean">
-        <short>Reads an Boolean value, stored as a string.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.ReadBoolean.Result">
-        <short>Value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadBoolean.Ident">
-        <short>Identifier for the value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadBoolean.DefaultValue">
-        <short>Default value used when the specified identifier is not found.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.ReadString">
-        <short>Reads an String value from the RootSection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.ReadString.Result">
-        <short>String value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadString.Ident">
-        <short>Identifier for the value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadString.DefaultValue">
-        <short>Default value used when the specified identifier is not found.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.ReadInteger">
-        <short>Reads an integer value, stored as a string, from the RootSection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.ReadInteger.Result">
-        <short>Value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadInteger.Ident">
-        <short>Identifier for the value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadInteger.DefaultValue">
-        <short>Default value used when the identifier is not found.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.ReadRect">
-        <short>Reads an TRect instance stored as a String value.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.ReadRect.Ident">
-        <short>Identifier for the value read in the method.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadRect.ARect">
-        <short>TRect instance where the value is stored.</short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadRect.Default">
-        <short>Default value used when the specified identifier is not found.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.ReadStrings">
-        <short>Reads a list of strings, stored with a Count value.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.ReadStrings.Ident">
-        <short>The name of the list property.
-        </short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadStrings.List">
-        <short>The list to which the strings are added.
-        </short>
-      </element>
-      <element name="TCustomPropertyStorage.ReadStrings.DefaultList">
-        <short>A list of default values, used when nothing was stored yet.
-        </short>
-      </element>
-
-      <element name="TCustomPropertyStorage.WriteString">
-        <short>Writes a String to the RootSection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.WriteString.Ident">
-        <short>Identifier for the value.</short>
-      </element>
-      <element name="TCustomPropertyStorage.WriteString.Value">
-        <short>String value written in the method.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.WriteInteger">
-        <short>Writes an integer into the RootSection.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyStorage.WriteInteger.Ident">
-        <short>Identifier for the value.</short>
-      </element>
-      <element name="TCustomPropertyStorage.WriteInteger.Value">
-        <short>Integer value written in the method.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.WriteBoolean">
-        <short>Writes a Boolean value to the RootSection.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.WriteBoolean.Ident">
-        <short>Identifier for the value.</short>
-      </element>
-      <element name="TCustomPropertyStorage.WriteBoolean.Value">
-        <short>Boolean value written in the method.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.WriteRect">
-        <short>Writes an TRect instance to the RootSection.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.WriteRect.Ident">
-        <short>Identifier used for the rectangle values.</short>
-      </element>
-      <element name="TCustomPropertyStorage.WriteRect.Value">
-        <short>TRect instance written in the method.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.WriteStrings">
-        <short>Writes a list of strings into the RootSection.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.WriteStrings.Ident">
-        <short>Identifier used for the string values.</short>
-      </element>
-      <element name="TCustomPropertyStorage.WriteStrings.List">
-        <short>TStrings instance with the values written in the method.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.EraseSections">
-        <short>Removes all sections that are descendants of the specified root section.</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomPropertyStorage.DoEraseSections"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.StoredValue">
-        <short>Provides indexed access to the value for a collection item by its name.</short>
-        <descr>
-          <p>
-            <var>StoredValue</var> is an indexed <var>TStoredType</var> property which provides indexed access to the value for a collection item by the name specified in <var>AName</var>. Read and write access is redirected to the <var>StoredValue</var> property in the <var>StoredValues</var> collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.StoredValues"/>
-          <link id="TStoredValues.StoredValue"/>
-        </seealso>
-      </element>
-      <element name="TCustomPropertyStorage.StoredValue.AName">
-        <short>Name of the collection item with the value for the property.</short>
-      </element>
-
-      <element name="TCustomPropertyStorage.Root">
-        <short>Path where values in the storage container are rooted.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.Active">
-        <short>
-          Indicates whether the container is Active and allows access to its storage.
-        </short>
-        <descr>
-          <p>
-            <var>Active</var> is a <var>Boolean</var> property which indicates if the container can access its underlying storage mechanism. In <var>TCustomPropertyStorage</var>, the default value for the property is <var>True</var>.
-          </p>
-          <p>
-            Active is used in the <var>Save</var> and <var>Restore</var> methods, and controls whether the corresponding actions can be performed using the collection items and storage for the container.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.StoredValues">
-        <short>
-          Collection with the names and values for properties handled for the container.
-        </short>
-        <descr>
-          <p>
-            <var>StoredValues</var> is a <var>TStoredValues</var> property with the collection of names and values for properties handled by the storage container. StoredValues is used in the <var>Save</var> and <var>Restore</var> methods when the collection items are read or written using the underlying storage mechanism for the container. It is also used to read or write the value for the indexed <var>StoreValue</var> property.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.Save"/>
-          <link id="TCustomPropertyStorage.Restore"/>
-          <link id="TCustomPropertyStorage.StoredValue"/>
-          <link id="TStoredValues"/>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.OnSavingProperties">
-        <short>Event handler signalled when the Save method is started.</short>
-        <descr>
-          <p>
-            <var>OnSavingProperties</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the Save <var>method</var> is started. It is signalled (when assigned) after the <var>StorageNeeded</var> method has been called, and before collection values in <var>StoredValues</var> are written using <var>SaveProperties</var>.
-          </p>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.OnSaveProperties">
-        <short>Event handler signalled when the Save method is completed.</short>
-        <descr>
-          <p>
-            <var>OnSaveProperties</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the <var>Save</var> method is completed. It is signalled (when assigned) after the <var>OnSavingProperties</var> event handler. Values for collection items in <var>StoredValues</var> have already been written using <var>SaveProperties</var> when the event handler is called.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyStorage.OnRestoringProperties">
-        <short>Event handler signalled when the Restore method is started.</short>
-        <descr>
-          <p>
-            <var>OnRestoringProperties</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the <var>Restore</var> method is started. It is signalled (when assigned) after the <var>StorageNeeded</var> method has been called , and before values for the collection items are read and applied using <var>StoredValues</var> and <var>RestoreProperties</var>.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.StorageNeeded"/>
-          <link id="TCustomPropertyStorage.StoredValues"/>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-        </seealso>
-      </element>
-
-      <element name="TCustomPropertyStorage.OnRestoreProperties">
-        <short>Event handler signalled when the Restore method is completed.</short>
-        <descr>
-          <p>
-            <var>OnRestoreProperties</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the <var>Restore</var> method is completed. OnRestoreProperties is signalled (when assigned) after the <var>OnRestoringProperties</var> event handler has been signalled, after property values have been read using <var>RestoreProperties</var>, and after the values have been loaded in the <var>StoredValues</var> collection.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TCustomPropertyStorage.OnRestoringProperties"/>
-          <link id="TCustomPropertyStorage.StoredValues"/>
-          <link id="TCustomPropertyStorage.RestoreProperties"/>
-          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-        </seealso>
-      </element>
-    </module>
-    <!-- PropertyStorage -->
-  </package>
+<package name="lcl">
+<!--
+====================================================================
+PropertyStorage
+====================================================================
+-->
+<module name="PropertyStorage">
+<short>
+Provides the base class for a storage container use to save and restore 
+control or form properties.
+</short>
+<descr>
+<p>
+<file>propertystorage.pas</file> contains classes and types used to define a 
+storage container for property values: <var>TCustomPropertyStorage</var>. 
+This is a base class and contains abstract virtual methods which must be 
+implemented in a descendent class. For example: TControlPropertyStorage, 
+TFormPropertyStorage, TIniPropStorage, TJSONPropStorage, and TXMLPropStorage.
+</p>
+<p>
+This file is part of the <b>Lazarus Component Library (LCL)</b>.
+</p>
+</descr>
+
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="RTLConsts"/>
+<element name="RTTIUtils"/>
+
+<element name="TPlacementOperation">
+<short>
+Represents operations performed for a property storage container.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPlacementOperation.poSave">
+<short>The property is being saved.</short>
+</element>
+<element name="TPlacementOperation.poRestore">
+<short>The property is being restored.</short>
+</element>
+
+<element name="TStoredType">
+<short>Alias to the type used to store a property value.</short>
+<descr>
+<p>
+When <var>storevariant</var> is defined, <var>TStoredType</var> is aliased to 
+the <var>Variant</var> type. Otherwise, TStoredType is aliased to the 
+<var>AnsiString</var> type.
+</p>
+<p>
+TStoredType is the type used for the <var>Value</var> property in 
+<var>TStoredValue</var> and in the <var>TStoredValues</var> collection. It is 
+also used to implement the <var>StoredValue</var> property in 
+<var>TCustomPropertyStorage</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValueEvent">
+<short>
+Type of an TStoredValue.OnSave and OnRestore notification handler.
+</short>
+<descr>
+Called before a property is saved, after a it has been restored.
+</descr>
+<seealso/>
+</element>
+<element name="TStoredValueEvent.Sender">
+<short>Object for the event notification.</short>
+</element>
+<element name="TStoredValueEvent.Value">
+<short>Contains the property value for the event.</short>
+</element>
+
+<element name="TStoredValue">
+<short>
+A key/value pair representing a property value, with added Save/Restore 
+features.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TStoredValue.FName" link="#lcl.propertystorage.TStoredValue.Name"/>
+<element name="TStoredValue.FValue" link="#lcl.propertystorage.TStoredValue.Value"/>
+<element name="TStoredValue.FKeyString" link="#lcl.propertystorage.TStoredValue.KeyString"/>
+<element name="TStoredValue.FOnSave" link="#lcl.propertystorage.TStoredValue.OnSave"/>
+<element name="TStoredValue.FOnRestore" link="#lcl.propertystorage.TStoredValue.OnRestore"/>
+
+<element name="TStoredValue.IsValueStored" link="#lcl.propertystorage.TStoredValue.Value"/>
+<element name="TStoredValue.IsValueStored.Result">
+<short/>
+</element>
+
+<element name="TStoredValue.GetStoredValues" link="#lcl.propertystorage.TStoredValue.StoredValues"/>
+<element name="TStoredValue.GetStoredValues.Result">
+<short/>
+</element>
+
+<element name="TStoredValue.GetDisplayName">
+<short>
+Gets the value for the DisplayName property in the collection item.
+</short>
+<descr>
+<p>
+<var>GetDisplayName</var> is overridden in <var>TStoredValue</var> to use the 
+value in the <var>Name</var> property (when assigned). If Name is an empty 
+string (<b>''</b>), the inherited method is called to get the value for the 
+property.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.Name"/>
+<link id="TStoredValue.SetDisplayName"/>
+<link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
+</seealso>
+</element>
+<element name="TStoredValue.GetDisplayName.Result">
+<short>Value for the property.</short>
+</element>
+
+<element name="TStoredValue.SetDisplayName">
+<short>
+Sets the value for the DisplayName property in the collection item.
+</short>
+<descr>
+<p>
+<var>SetDisplayName</var> is overridden in <var>TStoredValue</var> to set the 
+value for the <var>DisplayName</var> property. SetDisplayName ensures that a 
+new value is not a duplicate of an existing DisplayName value in the 
+<var>TStoredValues</var>. An <var>Exception</var> is raised when 
+<var>AValue</var> is already used in the <var>Collection</var>.
+</p>
+<p>
+SetDisplayName calls the inherited method prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues"/>
+<link id="#rtl.classes.TCollectionItem.DisplayName">TCollectionItem.DisplayName</link>
+<link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
+</seealso>
+</element>
+<element name="TStoredValue.SetDisplayName.AValue">
+<short>New value for the property.</short>
+</element>
+
+<element name="TStoredValue.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and 
+calls the inherited method on entry using <var>ACollection</var> as an 
+argument. Create set the default <var>Value</var> for the collection item to 
+an empty string (<b>''</b>).
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.Value"/>
+<link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
+<link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
+</seealso>
+</element>
+<element name="TStoredValue.Create.ACollection">
+<short>Collection which owns the collection item.</short>
+</element>
+
+<element name="TStoredValue.Assign">
+<short>
+Copies property values from the specified persistent object into the current 
+class instance.
+</short>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in <var>TStoredValue</var> used to 
+copy property values from the persistent object specified in 
+<var>Source</var> into the current class instance. When Source is assigned 
+and derived from <var>TStoredValue</var>, the following properties are copied:
+</p>
+<ul>
+<li>Values</li>
+<li>Name</li>
+<li>KeyString</li>
+</ul>
+<p>
+No actions are performed in the method when Source is unassigned (<b>Nil</b>) 
+or not derived from TStoredValue. It does <b>not</b> call the inherited 
+method.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TStoredValue.Assign.Source">
+<short>Persistent object with property values copied in the method.</short>
+</element>
+
+<element name="TStoredValue.Clear">
+<short>Clears the content in the Value property.</short>
+<descr>
+<p>
+<var>Clear</var> is a method used to remove the existing content in the 
+<var>Value</var> property. The type used for the Value property is dependent 
+on the <var>storevariant</var> compiler define. When defined, the 
+<var>Unassigned</var> variant constant from the RTL is stored in the Value 
+property. Otherwise, an empty string (<b>''</b>) is stored in the property.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValue.Save">
+<short>
+Saves the value for the collection item to the storage container for the 
+collection.
+</short>
+<descr>
+<p>
+<var>Save</var> is a method used to save the <var>Value</var> for the 
+collection item to the storage container for the <var>Collection</var>.
+</p>
+<p>
+Save signals the <var>OnSave</var> event handler (when assigned) to get the 
+actual value for the collection item used in the operation. The value is 
+converted to a <var>String</var> type when the Value property is stored as a 
+<var>Variant</var> type.
+</p>
+<p>
+The <var>KeyString</var> property contains the key used to XOR-encode the 
+value stored in the method. XOR encoding is not performed when KeyString is 
+an empty string (<b>''</b>).
+</p>
+<p>
+Save uses the <var>StoredValues</var> collection to access the storage 
+container where the value is written. The <var>WriteString</var> method in 
+the <var>TCustomPropertyStorage</var> container is called to store a 
+key/value pair using the <var>Name</var> for the collection item and its 
+value.
+</p>
+<p>
+Use <var>Restore</var> to load a collection item value from the storage 
+container for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.OnSave"/>
+<link id="TStoredValue.StoredValues"/>
+<link id="TStoredValues.Storage"/>
+</seealso>
+</element>
+
+<element name="TStoredValue.Restore">
+<short>
+Loads the value for the collection item from the storage container for the 
+collection.
+</short>
+<descr>
+<p>
+<var>Restore</var> is a method used to load the Value for the collection item 
+for the storage container for the collection.
+</p>
+<p>
+Restore uses the existing <var>Value</var> as the default value for the 
+restore operation. It is converted to a <var>String</var> when Value is 
+defined as a <var>Variant</var> type.
+</p>
+<p>
+<var>KeyString</var> contains the key used to XOR encode / decode values 
+written to and read from the storage container for the collection. XOR 
+encoding / decoding is not used when KeyString is an empty string (<b>''</b>).
+</p>
+<p>
+The default value is XOR encoded when needed. The <var>StoredValues</var> 
+collection is used to access the <var>Storage</var> container and calls its 
+<var>ReadString</var> method. The retrieved value is XOR decoded when needed.
+</p>
+<p>
+Restore signals the <var>OnRestore</var> event handler (when assigned) to 
+validate and/or modify the restored value.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.OnRestore"/>
+<link id="TStoredValue.StoredValues"/>
+</seealso>
+</element>
+
+<element name="TStoredValue.StoredValues">
+<short>The collection containing the collection item.</short>
+<descr>
+<p>
+<var>StoredValues</var> is a read-only <var>TStoredValues</var> property with 
+the collection which owns the collection item.
+</p>
+<p>
+StoredValues is the TCollection descendant passes as an argument to the 
+<var>Create</var> constructor cast to the TStoredValues type. It provides 
+access to name/value pairs for the collection items, and the 
+<var>Storage</var> container used to read and write collection item values in 
+the <var>Save</var> and <var>Restore</var> methods.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValue.Name">
+<short>The name for the collection item.</short>
+<descr>
+<p>
+<var>Name</var> is a <var>String</var> property with the name for the 
+collection item. It is like the <var>DisplayName</var> property, but enforces 
+uniqueness when setting a new value for the property. An <var>Exception</var> 
+is raised when Name is already used in the <var>Collection</var>.
+</p>
+<p>
+Name also provides the key used for name/value pairs stored in the storage 
+container for the collection.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValue.Value">
+<short>The value of the property (as a String or a Variant type).</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TStoredValue.KeyString">
+<short>XOR encoding key, empty for encoding is not used.</short>
+<descr>
+<p>
+<var>KeyString</var> is a <var>String</var> property which contains the key 
+used to XOR encode/decode the <var>Value</var> for the collection item. XOR 
+encoding is performed in the <var>Save</var> method when the collection item 
+is written to the storage container for the collection. XOR decoding is 
+performed in the <var>Restore</var> method when the value is read from the 
+storage container. XOR encoding/decoding is not performed when KeyString is 
+an empty string (<b>''</b>).
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValue.OnSave">
+<short>
+Event handler signalled when the collection item value is saved.
+</short>
+<descr>
+<p>
+<var>OnSave</var> is a <var>TStoredValueEvent</var> property with the event 
+handler signalled when the <var>Value</var> for the collection item is saved 
+to the storage container for the collection. Arguments passed to the event 
+handler identify the collection item and the value for the collection item. 
+The <var>Value</var> parameter is a variable argument and can be modified in 
+the event handler as needed.
+</p>
+<p>
+OnSave is signalled (when assigned) from the <var>Save</var> method, and 
+occurs before the collection item value is XOR encoded (when needed) and 
+written to the storage container for the collection.
+</p>
+<p>
+Use <var>OnRestore</var> to perform actions needed when the collection item 
+is retrieved from the storage container for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.Value"/>
+<link id="TStoredValue.KeyString"/>
+<link id="TStoredValue.Save"/>
+<link id="TStoredValue.Restore"/>
+<link id="TStoredValue.OnRestore"/>
+<link id="TStoredValueEvent"/>
+</seealso>
+</element>
+
+<element name="TStoredValue.OnRestore">
+<short>
+Event handler signalled when the collection item value is restored.
+</short>
+<descr>
+<p>
+<var>OnRestore</var> is a <var>TStoredValueEvent</var> property with the 
+event handler signalled when the <var>Value</var> for the collection item is 
+restored from the storage container for the collection. Arguments passed to 
+the event handler identify the collection item and the value for the 
+collection item. The <var>Value</var> parameter is a variable argument and 
+can be modified in the event handler as needed.
+</p>
+<p>
+OnRestore is signalled (when assigned) from the <var>Restore</var> method, 
+and occurs after the collection item value has been retrieved from the 
+collection storage and XOR decoded (when needed). It has not been stored in 
+the <var>Value</var> property when the event handler is signalled.
+</p>
+<p>
+Use the <var>OnSave</var> event handler to perform actions needed when the 
+Value is saved to the storage container for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue.Value"/>
+<link id="TStoredValue.KeyString"/>
+<link id="TStoredValue.StoredValues"/>
+<link id="TStoredValue.Restore"/>
+<link id="TStoredValue.OnSave"/>
+<link id="TStoredValue.Save"/>
+</seealso>
+</element>
+
+<element name="TStoredValues">
+<short>Implements a collection for TStoredValue collection items.</short>
+<descr>
+<p>
+<var>TStoredValues</var> is a <var>TOwnedCollection</var> descendant which 
+implements an owned collection for <var>TStoredValue</var> collection items.
+</p>
+<p>
+TStoredValues provides properties and methods used to access the TStoredValue 
+collection items or their values. Use <var>Items</var> to read and write a 
+collection item by its ordinal position in the collection. Use 
+<var>Values</var> to read and write a collection item by its name. Use 
+<var>StoredValue</var> to read and write the value for a collection item by 
+its name.
+</p>
+<p>
+The owner of the collection (passed as an argument to the constructor) is a 
+<var>TCustomPropertyStorage</var> instance stored in the <var>Storage</var> 
+property. It provides a container used to read and write name/value pairs 
+which represent the items in the collection. Use <var>RestoreValues</var> and 
+<var>SaveValues</var> methods to read and write the collection items using 
+the <var>Storage</var> container for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue"/>
+<link id="TStoredType"/>
+<link id="TCustomPropertyStorage"/>
+<link id="#rtl.classes.TOwnedCollection">TOwnedCollection</link>
+</seealso>
+</element>
+
+<element name="TStoredValues.FStorage" link="#lcl.propertystorage.TStoredValues.Storage"/>
+
+<element name="TStoredValues.GetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
+<element name="TStoredValues.GetValue.Result"/>
+<element name="TStoredValues.GetValue.AName"/>
+
+<element name="TStoredValues.SetValue" link="#lcl.propertystorage.TStoredValues.Values"/>
+<element name="TStoredValues.SetValue.AName"/>
+<element name="TStoredValues.SetValue.AStoredValue"/>
+
+<element name="TStoredValues.GetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
+<element name="TStoredValues.GetStoredValue.Result"/>
+<element name="TStoredValues.GetStoredValue.AName"/>
+
+<element name="TStoredValues.SetStoredValue" link="#lcl.propertystorage.TStoredValues.StoredValue"/>
+<element name="TStoredValues.SetStoredValue.AName"/>
+<element name="TStoredValues.SetStoredValue.Value"/>
+
+<element name="TStoredValues.GetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
+<element name="TStoredValues.GetItem.Result"/>
+<element name="TStoredValues.GetItem.Index">
+<short/>
+</element>
+
+<element name="TStoredValues.SetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
+<element name="TStoredValues.SetItem.Index"/>
+<element name="TStoredValues.SetItem.AStoredValue"/>
+
+<element name="TStoredValues.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance, and calls the 
+inherited constructor using <var>AOwner</var> as the owner for the class 
+instance. When AOwner is derived from <var>TCustomPropertyStorage</var>, it 
+is assigned as the value for the <var>Storage</var> property. 
+<var>TStoredValue</var> is the class type used as the <var>ItemClass</var> 
+for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValue"/>
+<link id="TCustomPropertyStorage"/>
+<link id="#rtl.classes.TOwnedCollection.Create">TOwnedCollection.Create</link>
+<link id="#rtl.classes.TCollection.ItemClass">TCollection.ItemClass</link>
+</seealso>
+</element>
+<element name="TStoredValues.Create.AOwner">
+<short>
+TCustomPropertyStorage instance which is the owner and the Storage container 
+for the class.
+</short>
+</element>
+
+<element name="TStoredValues.IndexOf">
+<short>
+Gets the ordinal position in Items for the collection item with the specified 
+name.
+</short>
+<descr>
+<p>
+<var>IndexOf</var> iterates over the values in the <var>Items</var> property 
+to locate the <var>TStoredValue</var> instance with a <var>Name</var> 
+property that matches the value in <var>AName</var>. 
+<var>AnsiCompareText</var> is called to perform a case-insensitive comparison 
+which also ignores accents in the characters.
+</p>
+<p>
+The return value contains the ordinal position in Items where the value in 
+AName was located, or <b>-1</b> when a collection item is not found using the 
+specified name.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues.Items"/>
+<link id="TStoredValue.Name"/>
+<link id="#rtl.sysutils.AnsiCompareText">AnsiCompareText</link>
+</seealso>
+</element>
+<element name="TStoredValues.IndexOf.Result">
+<short>
+Ordinal position for the collection item with the given name, or -1 when not 
+found.
+</short>
+</element>
+<element name="TStoredValues.IndexOf.AName">
+<short>Name of the collection item to locate in the method.</short>
+</element>
+
+<element name="TStoredValues.SaveValues">
+<short>
+Saves all of the collection items to the Storage container for the collection.
+</short>
+<descr>
+<p>
+<var>SaveValues</var> is a method used to save all of the collection 
+<var>Items</var> to the <var>Storage</var> container for the collection. It 
+iterates over the values in Items and calls the <var>Save</var> method for 
+each of the <var>TStoredValue</var> instances. See 
+<var>TStoredValue.Save</var> for more details.
+</p>
+<p>
+Use <var>RestoreValues</var> to load the values for the collection items from 
+the Storage container.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues.Items"/>
+<link id="TStoredValues.Storage"/>
+<link id="TStoredValues.RestoreValues"/>
+<link id="TStoredValue.Save"/>
+</seealso>
+</element>
+
+<element name="TStoredValues.RestoreValues">
+<short>
+Loads all of the values for the collection Items from the Storage container 
+for the collection.
+</short>
+<descr>
+<p>
+<var>RestoreValues</var> is a method used to load the values in the 
+collection <var>Items</var> from the <var>Storage</var> container for the 
+collection. RestoreValues iterates of the values in Items and calls the 
+<var>Restore</var> method for each of the <var>TStoredValue</var> instances. 
+See <var>TStoredValue.Restore</var> for more details.
+</p>
+<p>
+Use <var>SaveValues</var> to save the values for all of the collection items 
+to the Storage container for the collection.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues.Items"/>
+<link id="TStoredValues.Storage"/>
+<link id="TStoredValues.SaveValues"/>
+<link id="TStoredValue.Restore"/>
+<link id="TStoredValue.Save"/>
+</seealso>
+</element>
+
+<element name="TStoredValues.Storage">
+<short>
+Storage container used to Save and Restore the Values for the collection 
+Items.
+</short>
+<descr>
+<p>
+<var>Storage</var> is a <var>TCustomPropertyStorage</var> property with the 
+storage container used to save and restore the values for the Items in the 
+collection. Storage contains the value passed as the <var>Owner</var> 
+argument to the <var>Create</var> constructor, or <b>Nil</b> when the 
+parameter is not derived from TCustomPropertyStorage.
+</p>
+<p>
+TCustomPropertyStorage is an ancestor class which contains abstract virtual 
+methods; normally, one of the descendent classes which implement a specific 
+storage mechanism is used as the Owner. For example: 
+<var>TControlPropertyStorage</var>, <var>TFormPropertyStorage</var>, 
+<var>TIniPropStorage</var>, <var>TJSONPropStorage</var>, and 
+<var>TXMLPropStorage</var>.
+</p>
+<p>
+Storage is used when the <var>SaveValues</var> or <var>RestoreValues</var> 
+method is called. The TStoredValue instances in Items access the property 
+when they call their <var>Save</var> or <var>Restore</var> methods.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TStoredValues.Items">
+<short>
+Provides indexed access to the TStoredValue collection items by their ordinal 
+position.
+</short>
+<descr>
+<p>
+<var>Items</var> is an indexed <var>TStoredValue</var> property with the 
+items for the collection. It re-implements the internal list to use the 
+TStoredValue type as the <var>ItemClass</var> for the collection.
+</p>
+<p>
+Values in Items are accessed by their ordinal position in the list of 
+collection items. The Read access specifier ensures that the inherited 
+property value is cast to the TStoredValue type. The Write access specifier 
+ensures that the property value is cast to the TCollectionItem type used in 
+the inherited method.
+</p>
+<p>
+Items is the default property for the class instance.
+</p>
+<p>
+Use the <var>Values</var> and <var>StoredValue</var> properties to access a 
+collection item by its name.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TStoredValues.Items.Index">
+<short>
+Ordinal position for the collection item used as the property value.
+</short>
+</element>
+
+<element name="TStoredValues.Values">
+<short>
+Provides indexed access to a TStoredValue instance in the collection by its 
+name.
+</short>
+<descr>
+<p>
+<var>Values</var> is an indexed <var>TStoredValue</var> property which 
+provides access to a collection item with the name specified in the 
+<var>Name</var> argument. The <var>IndexOf</var> method is called to locate 
+the entry in <var>Items</var> matching the specified Name. The property value 
+is <b>Nil</b> if Items does not contain a TStoredValue instance with the 
+value in Name.
+</p>
+<p>
+When saving a new value for the property, the <var>Assign</var> method in the 
+collection item is called to update the property values for the TStoredValue 
+instance.
+</p>
+<p>
+Use the <var>StoredValue</var> property to access the <var>String</var> or 
+<var>Variant</var> value for the collection item by its name.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues.Items"/>
+<link id="TStoredValues.IndexOf"/>
+<link id="TStoredValues.StoredValue"/>
+<link id="TStoredValue.Assign"/>
+<link id="TStoredValue.Name"/>
+</seealso>
+</element>
+<element name="TStoredValues.Values.Name">
+<short>
+Name for the collection item to retrieve from the Items property.
+</short>
+</element>
+
+<element name="TStoredValues.StoredValue">
+<short>
+Provides indexed access to the value for a collection item with the specified 
+name.
+</short>
+<descr>
+<p>
+<var>StoredValue</var> is an indexed <var>TStoredType</var> property which 
+provides access to the value for a collection item with the name specified in 
+the <var>Name</var> argument. TStoredType allows the value to be represented 
+as either a <var>String</var> or <var>Variant</var> type. See <link 
+id="TStoredType">TStoredType</link> for more information.
+</p>
+<p>
+The <var>IndexOf</var> method is called to locate the collection item with 
+the specified Name. If a collection item is not found, the property value can 
+be either an empty string ('') (when TStoredType is AnsiString) or Null (when 
+TStoredType is a Variant).
+</p>
+<p>
+When writing the value for the indexed property, a new collection item is 
+created in <var>Items</var> if a <var>TStoredValue</var> entry does not 
+already exist with the specified Name.
+</p>
+<p>
+Use the <var>Values</var> property to access a collection item instance by 
+its Name. Use the <var>Items</var> property to access a collection item by 
+its ordinal position.
+</p>
+</descr>
+<seealso>
+<link id="TStoredValues.IndexOf"/>
+<link id="TStoredValues.Items"/>
+<link id="TStoredValues.Values"/>
+<link id="TStoredValue.Name"/>
+<link id="TStoredValue.Value"/>
+<link id="TStoredType"/>
+</seealso>
+</element>
+<element name="TStoredValues.StoredValue.Name">
+<short>Name for the collection item with the property value.</short>
+</element>
+
+<element name="TPropertyStorageLink">
+<short>Links a storage object to a property collection.</short>
+<descr>
+<p>
+TPropertyStorageLink is a TPersistent descendant which implements a class 
+used to link a storage container to the collection and values read from and 
+written to the storage. Not very useful by itself, Load/Save depends on 
+installed handlers.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.FStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
+<element name="TPropertyStorageLink.FOnSave" link="#lcl.propertystorage.TPropertyStorageLink.OnSave"/>
+<element name="TPropertyStorageLink.FOnLoad" link="#lcl.propertystorage.TPropertyStorageLink.OnLoad"/>
+
+<element name="TPropertyStorageLink.GetRootSection" link="#lcl.propertystorage.TPropertyStorageLink.RootSection"/>
+<element name="TPropertyStorageLink.GetRootSection.Result">
+<short/>
+</element>
+
+<element name="TPropertyStorageLink.SetStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
+<element name="TPropertyStorageLink.SetStorage.Value">
+<short/>
+</element>
+
+<element name="TPropertyStorageLink.SaveProperties">
+<short>Invokes the OnSave handler.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.LoadProperties">
+<short>Invokes the OnLoad handler.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that references used in the <var>OnLoad</var>, <var>OnSave</var>, and 
+<var>Storage</var> properties are set to <b>Nil</b>. Destroy calls the 
+inherited destructor prior to exiting from the method.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.Storage">
+<short>Contains a reference to the storage contain used in the link.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.RootSection">
+<short>
+Path to the root where values are stored in the Storage container.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyStorageLink.OnSave">
+<short>
+Event handler signalled when all of the property values are stored.
+</short>
+<descr/>
+<seealso>
+<link id="TPropertyStorageLink.SaveProperties"/>
+<link id="TPropertyStorageLink.OnLoad"/>
+</seealso>
+</element>
+
+<element name="TPropertyStorageLink.OnLoad">
+<short>
+Event handler signalled when all of the property values are loaded.
+</short>
+<descr/>
+<seealso>
+<link id="TPropertyStorageLink.LoadProperties"/>
+<link id="TPropertyStorageLink.OnSave"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage">
+<short>Defines a container used to Save and Restore property values.</short>
+<descr>
+<p>
+<var>TCustomPropertyStorage</var> is a <var>TComponent</var> descendant which 
+defines a storage container used to save and restore property values. It has 
+a <var>StoredValues</var> property that is a collection with items containing 
+the Names and Values read and written using the storage container.
+</p>
+<p>
+TCustomPropertyStorage is a base class; it includes abstract virtual methods 
+which must be implemented in a descendant to use a particular storage medium 
+or format. For example: <var>TControlPropertyStorage</var>, 
+<var>TFormPropertyStorage</var>, <var>TIniPropStorage</var>, 
+<var>TJSONPropStorage</var>, and <var>TXMLPropStorage</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.FOnRestoringProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoringProperties"/>
+<element name="TCustomPropertyStorage.FOnSavingProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSavingProperties"/>
+<element name="TCustomPropertyStorage.FStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
+<element name="TCustomPropertyStorage.FActive" link="#lcl.propertystorage.TCustomPropertyStorage.Active"/>
+
+<element name="TCustomPropertyStorage.FLinks">
+<short>The list of linked property collections.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.FSaved">
+<short><b>True</b> when everything has been saved.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.FRestored">
+<short><b>True</b> when everything has been restored.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.FOnSaveProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSaveProperties"/>
+<element name="TCustomPropertyStorage.FOnRestoreProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoreProperties"/>
+
+<element name="TCustomPropertyStorage.AddLink">
+<short>Establishes a connection to a property collection.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.AddLink.ALink">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.RemoveLink">
+<short>Drops the connection to a property collection.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.RemoveLink.ALink">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.NotifyLinks">
+<short>Notifies all connected property collections.</short>
+<descr>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.NotifyLinks.Operation">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.SetStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
+<element name="TCustomPropertyStorage.SetStoredValues.Value"/>
+
+<element name="TCustomPropertyStorage.GetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
+<element name="TCustomPropertyStorage.GetStoredValue.Result"/>
+<element name="TCustomPropertyStorage.GetStoredValue.AName"/>
+
+<element name="TCustomPropertyStorage.SetStoredValue" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValue"/>
+<element name="TCustomPropertyStorage.SetStoredValue.AName"/>
+<element name="TCustomPropertyStorage.SetStoredValue.Value"/>
+
+<element name="TCustomPropertyStorage.GetRoot">
+<short>Gets the value for the Root property.</short>
+<descr/>
+<seealso>
+<link id="TCustomPropertyStorage.Root"/>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.GetRoot.Result">
+<short>Value for the property.</short>
+</element>
+
+<element name="TCustomPropertyStorage.RootSection">
+<short>
+Gets the path needed to represent the section for the Root (Owner) component.
+</short>
+<descr>
+<p>
+<var>RootSection</var> is a <var>String</var> function which builds the path 
+in the storage container where the property values are located.
+</p>
+<p>
+RootSection uses the value in the <var>Root</var> property to determine the 
+return value for the method. When Root is assigned and derived from 
+<var>TComponent</var>, its <var>Name</var> or <var>ClassName</var> property 
+is prepended to the return value. Preference is given to the value in its 
+Name property.
+</p>
+<p>
+Preceding <var>Owner</var> components are also examined and prepended to the 
+return value. The value is complete when an Owner does not exist, or is not 
+derived from TComponent.
+</p>
+<p>
+The return value represents the component hierarchy used to access the 
+property values in the storage container. The value is used in the 
+<var>SaveProperties</var> and <var>RestoreProperties</var> methods to load 
+property values from the underlying storage mechanism.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.RootSection.Result">
+<short>
+The Name or ClassName prefix for the Owner component, or an empty string when 
+Root is not assigned.
+</short>
+</element>
+
+<element name="TCustomPropertyStorage.SaveProperties">
+<short>
+Saves property values to the storage mechanism for the container.
+</short>
+<descr>
+<p>
+<var>SaveProperties</var> is a method used to save property values from 
+components and persistent objects to the storage mechanism for the container.
+</p>
+<p>
+Existing values in the container are loaded on entry using the 
+<var>GetPropertyList</var> and <var>FinishPropertyList</var> methods. A 
+temporary <var>TPropsStorage</var> instance is created and configured to use 
+the <var>RootSection</var>, <var>Root</var>, and <var>Owner</var> for the 
+component instance. Its <var>OnWriteString</var> and 
+<var>OnEraseSection</var> event handlers are set to the 
+<var>DoWriteString</var> and <var>DoEraseSections</var> methods 
+(respectively).
+</p>
+<p>
+SaveProperties calls the <var>StoreObjectsProps</var> method in 
+<var>TPropsStorage</var> to store the component and property names and values 
+using the storage format for the container.
+</p>
+<remark>
+Some of the methods called in SaveProperties are declared as abstract virtual 
+methods in TCustomPropertyStorage, like: GetPropertyList, FinishPropertyList, 
+DoWriteString, and DoEraseSections. They must be implemented in a descendent 
+class to use a specific storage format in its container.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.GetPropertyList"/>
+<link id="TCustomPropertyStorage.FinishPropertyList"/>
+<link id="TCustomPropertyStorage.StorageNeeded"/>
+<link id="TCustomPropertyStorage.FreeStorage"/>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="#fcl.rttiutils.TPropsStorage">TPropsStorage</link>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.RestoreProperties">
+<short>
+Restores property values from the storage mechanism for the container.
+</short>
+<descr>
+<p>
+<var>RestoreProperties</var> is a method used to load property values stored 
+in the container, and apply the values to the origin components / persistent 
+object instances. Properties names and the corresponding object instances are 
+loaded using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> 
+methods.
+</p>
+<p>
+A temporary <var>TPropsStorage</var> instance is created and configured to 
+use <var>RootSection</var> and <var>DoReadString</var> from the class 
+instance. The <var>LoadObjectsProps</var> method is called to get the 
+property values and apply them to the object instances for the property list.
+</p>
+<remark>
+Some of the methods called in RestoreProperties are declared as abstract 
+virtual methods in TCustomPropertyStorage, like: GetPropertyList, 
+FinishPropertyList, and DoReadString. They must be implemented in a 
+descendent class to use the specific storage format for its container.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.GetPropertyList"/>
+<link id="TCustomPropertyStorage.FinishPropertyList"/>
+<link id="TCustomPropertyStorage.StorageNeeded"/>
+<link id="TCustomPropertyStorage.FreeStorage"/>
+<link id="TCustomPropertyStorage.SaveProperties"/>
+<link id="#fcl.rttiutils.TPropsStorage">TPropsStorage</link>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.GetPropertyList">
+<short>
+Builds a list with the object(s) and properties stored in the container.
+</short>
+<descr>
+<p>
+<var>GetPropertyList</var> is an abstract virtual method in 
+<var>TCustomPropertyStorage</var>. It specifies the method used to populate 
+the <var>TStringList</var> instance in <var>List</var> with the component / 
+object properties stored in the container. The <var>Names</var> in the List 
+argument contain the component and property names for the value. The 
+<var>Objects</var> in the List argument contain a reference to the component 
+instance that is the origin for the property value.
+</p>
+<p>
+GetPropertyList must be implemented in a descendent class to ensure that the 
+component and property names or values are valid for the storage format in 
+the container.
+</p>
+<p>
+GetPropertyList is used in the implementation of the SaveProperties and 
+RestoreProperties methods.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.SaveProperties"/>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="#lcl.controls.TControlPropertyStorage">TControlPropertyStorage</link>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.GetPropertyList.List">
+<short>
+TStringList instance where names and the components / objects instance for 
+the property values are stored.
+</short>
+</element>
+
+<element name="TCustomPropertyStorage.FinishPropertyList">
+<short>
+Updates the specified list to include a reference to the object instance for 
+each of the properties in the storage container.
+</short>
+<descr>
+<p>
+<var>FinishPropertyList</var> ensures that a valid object reference exists 
+for each of the property names loaded into the <var>List</var> argument using 
+the <var>GetPropertyList</var> method. It ensures that the Objects property 
+in List contains a valid reference to a <var>TComponent</var> instance for 
+each of the component and property names in List.
+</p>
+<p>
+Root identifies the initial component / object instance examined in the 
+method. property named and values in List are relative to the component 
+hierarchy starting at Root.
+</p>
+<p>
+The <var>ParseStoredItem</var> routine from the RTL <file>rttiutils</file> 
+unit is called to parse each of the values in the Names property in List into 
+separate component and property names. If the value cannot be parsed into 
+valid component and property names, the entry in List is deleted. If the 
+component name is not the same as the value for Root, or one of its children, 
+the value is also deleted from List.
+</p>
+<p>
+The FindComponent method is called to get the object instance with the 
+property value for a given component name. The references is stored in the 
+Objects property for the corresponding component / property name.
+</p>
+<p>
+FinishPropertyList is used in the implementation of the 
+<var>SaveProperties</var> and <var>RestoreProperties</var> methods.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.SaveProperties"/>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="TCustomPropertyStorage.GetPropertyList"/>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.FinishPropertyList.List">
+<short>
+TStringList instance with the component and property names examined in the 
+method.
+</short>
+</element>
+
+<element name="TCustomPropertyStorage.DoReadInteger">
+<short>Reads an integer value, stored as a string.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.DoReadInteger.Result">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoReadInteger.Section">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoReadInteger.Ident">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoReadInteger.DefaultValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.DoReadString">
+<short>Default OnReadString handler; must be overridden.</short>
+<descr>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.DoReadString.Result">
+<short>The previously stored string.</short>
+</element>
+<element name="TCustomPropertyStorage.DoReadString.Section">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoReadString.Ident">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoReadString.DefaultValue">
+<short>The default value, when no string was stored.</short>
+</element>
+
+<element name="TCustomPropertyStorage.DoWriteString">
+<short>Default OnWriteString handler; must be overridden.</short>
+<descr>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.DoWriteString.Section">
+<short>The name of the section.</short>
+</element>
+<element name="TCustomPropertyStorage.DoWriteString.Ident">
+<short>The name (key) of the property.</short>
+</element>
+<element name="TCustomPropertyStorage.DoWriteString.Value">
+<short>The value string to store.</short>
+</element>
+
+<element name="TCustomPropertyStorage.DoWriteInteger">
+<short>Writes an Integer value as a String.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.DoWriteInteger.Section">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoWriteInteger.Ident">
+<short/>
+</element>
+<element name="TCustomPropertyStorage.DoWriteInteger.Value">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.DoEraseSections">
+<short/>
+<descr>
+Must be overridden
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.DoEraseSections.ARootSection">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and 
+calls the inherited method on entry. Create allocates resources needed for 
+member variables in the class instance, and sets the default value for the 
+<var>Active</var> property to <b>True</b>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.Create.AOwner">
+<short>Owner of the class instance.</short>
+</element>
+
+<element name="TCustomPropertyStorage.Destroy">
+<short>Destructor for the class instance.</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+calls the <var>FreeStorage</var> method to free any items in the collection, 
+and frees the <var>TStoredValues</var> instance in the 
+<var>StoredValues</var> property. <var>TPropertyStorageLink</var> instances 
+in the internal list are freed, and the list itself is also freed. Destroy 
+calls the inherited method prior to exit.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.Save">
+<short>Saves all linked property collections.</short>
+<descr>
+<p>
+Uses <var>SaveProperties</var> and <var>StoredValues.SaveValues</var> to do 
+the actual work. At least one of these should be implemented.
+</p>
+<p>
+All linked property collections are notified when everything has been stored, 
+or to actually store their values.
+</p>
+<p>
+The OnSavingProperties handler is invoked before the properties are stored, 
+OnSaveProperties afterwards.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.SaveProperties"/>
+<link id="TCustomPropertyStorage.OnSaveProperties"/>
+<link id="TCustomPropertyStorage.OnSavingProperties"/>
+<link id="TCustomPropertyStorage.StoredValues"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.Restore">
+<short>Restores all linked property collections.</short>
+<descr>
+<p>
+Uses <var>RestoreProperties</var> and <var>StoredValues.RestoreValues</var> 
+to do the actual work. At least one of these should be implemented.
+</p>
+<p>
+All linked property collections are notified, when everything has been 
+restored, or to actually restore the values.
+</p>
+<p>
+The OnRestoringProperties handler is invoked before the properties are 
+restored, OnRestoreProperties afterwards.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="TCustomPropertyStorage.OnRestoreProperties"/>
+<link id="TCustomPropertyStorage.OnRestoringProperties"/>
+<link id="TCustomPropertyStorage.StoredValues"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.StorageNeeded">
+<short>
+Ensures that the storage mechanism for the container is available.
+</short>
+<descr>
+<p>
+<var>StorageNeeded</var> is a method used to ensure that the underlying 
+storage mechanism for the container has been allocated and configured. 
+StorageNeeded has an empty implementation in 
+<var>TCustomPropertyStorage</var>. It must be overridden in a descendent 
+class to use the format and access mechanism needed.
+</p>
+<p>
+The <var>ReadOnly</var> argument indicates whether write access is enabled 
+for the storage. In general, the <var>Save</var> method requires write access 
+and the <var>Restore</var> method does not.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.FreeStorage"/>
+<link id="TCustomPropertyStorage.Save"/>
+<link id="TCustomPropertyStorage.Restore"/>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.StorageNeeded.ReadOnly">
+<short/>
+</element>
+
+<element name="TCustomPropertyStorage.FreeStorage">
+<short>Frees resources allocated for the underlying storage mechanism.</short>
+<descr>
+<p>
+<var>FreeStorage</var> is a method used to free resources allocated for the 
+underlying storage mechanism for the container in <var>StorageNeeded</var>. 
+FreeStorage has an empty implementation in <var>TCustomPropertyStorage</var>, 
+and must be overridden in a descendent class.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.StorageNeeded"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.ReadBoolean">
+<short>Reads an Boolean value, stored as a string.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.ReadBoolean.Result">
+<short>Value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadBoolean.Ident">
+<short>Identifier for the value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadBoolean.DefaultValue">
+<short>Default value used when the specified identifier is not found.</short>
+</element>
+
+<element name="TCustomPropertyStorage.ReadString">
+<short>Reads an String value from the RootSection.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.ReadString.Result">
+<short>String value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadString.Ident">
+<short>Identifier for the value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadString.DefaultValue">
+<short>Default value used when the specified identifier is not found.</short>
+</element>
+
+<element name="TCustomPropertyStorage.ReadInteger">
+<short>
+Reads an integer value, stored as a string, from the RootSection.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.ReadInteger.Result">
+<short>Value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadInteger.Ident">
+<short>Identifier for the value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadInteger.DefaultValue">
+<short>Default value used when the identifier is not found.</short>
+</element>
+
+<element name="TCustomPropertyStorage.ReadRect">
+<short>Reads an TRect instance stored as a String value.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.ReadRect.Ident">
+<short>Identifier for the value read in the method.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadRect.ARect">
+<short>TRect instance where the value is stored.</short>
+</element>
+<element name="TCustomPropertyStorage.ReadRect.Default">
+<short>Default value used when the specified identifier is not found.</short>
+</element>
+
+<element name="TCustomPropertyStorage.ReadStrings">
+<short>Reads a list of strings, stored with a Count value.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.ReadStrings.Ident">
+<short>The name of the list property.
+</short>
+</element>
+<element name="TCustomPropertyStorage.ReadStrings.List">
+<short>The list to which the strings are added.
+</short>
+</element>
+<element name="TCustomPropertyStorage.ReadStrings.DefaultList">
+<short>A list of default values, used when nothing was stored yet.
+</short>
+</element>
+
+<element name="TCustomPropertyStorage.WriteString">
+<short>Writes a String to the RootSection.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.WriteString.Ident">
+<short>Identifier for the value.</short>
+</element>
+<element name="TCustomPropertyStorage.WriteString.Value">
+<short>String value written in the method.</short>
+</element>
+
+<element name="TCustomPropertyStorage.WriteInteger">
+<short>Writes an integer into the RootSection.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyStorage.WriteInteger.Ident">
+<short>Identifier for the value.</short>
+</element>
+<element name="TCustomPropertyStorage.WriteInteger.Value">
+<short>Integer value written in the method.</short>
+</element>
+
+<element name="TCustomPropertyStorage.WriteBoolean">
+<short>Writes a Boolean value to the RootSection.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.WriteBoolean.Ident">
+<short>Identifier for the value.</short>
+</element>
+<element name="TCustomPropertyStorage.WriteBoolean.Value">
+<short>Boolean value written in the method.</short>
+</element>
+
+<element name="TCustomPropertyStorage.WriteRect">
+<short>Writes an TRect instance to the RootSection.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.WriteRect.Ident">
+<short>Identifier used for the rectangle values.</short>
+</element>
+<element name="TCustomPropertyStorage.WriteRect.Value">
+<short>TRect instance written in the method.</short>
+</element>
+
+<element name="TCustomPropertyStorage.WriteStrings">
+<short>Writes a list of strings into the RootSection.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.WriteStrings.Ident">
+<short>Identifier used for the string values.</short>
+</element>
+<element name="TCustomPropertyStorage.WriteStrings.List">
+<short>TStrings instance with the values written in the method.</short>
+</element>
+
+<element name="TCustomPropertyStorage.EraseSections">
+<short>
+Removes all sections that are descendants of the specified root section.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomPropertyStorage.DoEraseSections"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.StoredValue">
+<short>
+Provides indexed access to the value for a collection item by its name.
+</short>
+<descr>
+<p>
+<var>StoredValue</var> is an indexed <var>TStoredType</var> property which 
+provides indexed access to the value for a collection item by the name 
+specified in <var>AName</var>. Read and write access is redirected to the 
+<var>StoredValue</var> property in the <var>StoredValues</var> collection.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.StoredValues"/>
+<link id="TStoredValues.StoredValue"/>
+</seealso>
+</element>
+<element name="TCustomPropertyStorage.StoredValue.AName">
+<short>Name of the collection item with the value for the property.</short>
+</element>
+
+<element name="TCustomPropertyStorage.Root">
+<short>Path where values in the storage container are rooted.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.Active">
+<short>
+Indicates whether the container is Active and allows access to its storage.
+</short>
+<descr>
+<p>
+<var>Active</var> is a <var>Boolean</var> property which indicates if the 
+container can access its underlying storage mechanism. In 
+<var>TCustomPropertyStorage</var>, the default value for the property is 
+<var>True</var>.
+</p>
+<p>
+Active is used in the <var>Save</var> and <var>Restore</var> methods, and 
+controls whether the corresponding actions can be performed using the 
+collection items and storage for the container.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.StoredValues">
+<short>
+Collection with the names and values for properties handled for the container.
+</short>
+<descr>
+<p>
+<var>StoredValues</var> is a <var>TStoredValues</var> property with the 
+collection of names and values for properties handled by the storage 
+container. StoredValues is used in the <var>Save</var> and <var>Restore</var> 
+methods when the collection items are read or written using the underlying 
+storage mechanism for the container. It is also used to read or write the 
+value for the indexed <var>StoreValue</var> property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.Save"/>
+<link id="TCustomPropertyStorage.Restore"/>
+<link id="TCustomPropertyStorage.StoredValue"/>
+<link id="TStoredValues"/>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.OnSavingProperties">
+<short>Event handler signalled when the Save method is started.</short>
+<descr>
+<p>
+<var>OnSavingProperties</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the Save <var>method</var> is started. It is 
+signalled (when assigned) after the <var>StorageNeeded</var> method has been 
+called, and before collection values in <var>StoredValues</var> are written 
+using <var>SaveProperties</var>.
+</p>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.OnSaveProperties">
+<short>Event handler signalled when the Save method is completed.</short>
+<descr>
+<p>
+<var>OnSaveProperties</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the <var>Save</var> method is completed. It is 
+signalled (when assigned) after the <var>OnSavingProperties</var> event 
+handler. Values for collection items in <var>StoredValues</var> have already 
+been written using <var>SaveProperties</var> when the event handler is called.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyStorage.OnRestoringProperties">
+<short>Event handler signalled when the Restore method is started.</short>
+<descr>
+<p>
+<var>OnRestoringProperties</var> is a <var>TNotifyEvent</var> property with 
+the event handler signalled when the <var>Restore</var> method is started. It 
+is signalled (when assigned) after the <var>StorageNeeded</var> method has 
+been called , and before values for the collection items are read and applied 
+using <var>StoredValues</var> and <var>RestoreProperties</var>.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.StorageNeeded"/>
+<link id="TCustomPropertyStorage.StoredValues"/>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
+
+<element name="TCustomPropertyStorage.OnRestoreProperties">
+<short>Event handler signalled when the Restore method is completed.</short>
+<descr>
+<p>
+<var>OnRestoreProperties</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the <var>Restore</var> method is completed. 
+OnRestoreProperties is signalled (when assigned) after the 
+<var>OnRestoringProperties</var> event handler has been signalled, after 
+property values have been read using <var>RestoreProperties</var>, and after 
+the values have been loaded in the <var>StoredValues</var> collection.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyStorage.OnRestoringProperties"/>
+<link id="TCustomPropertyStorage.StoredValues"/>
+<link id="TCustomPropertyStorage.RestoreProperties"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
+</module>
+<!-- PropertyStorage -->
+</package>
 </fpdoc-descriptions>

@@ -1,394 +1,396 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-      LCLStrConsts
-    ====================================================================
-    -->
-    <module name="LCLStrConsts">
-      <short>Contains resource strings used in the LCL.</short>
-      <descr>
-        <p>
-          <file>lclstrconsts.pas</file> contains resource strings used in the LCL. This file is part of the Lazarus Component Library (<b>LCL</b>).
-        </p>
-      </descr>
+<package name="lcl">
+<!--
+====================================================================
+LCLStrConsts
+====================================================================
+-->
+<module name="LCLStrConsts">
+<short>Contains resource strings used in the LCL.</short>
+<descr>
+<p>
+<file>lclstrconsts.pas</file> contains resource strings used in the LCL. This 
+file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
+</descr>
 
-      <!-- message/input dialog buttons -->
-      <element name="rsMbYes"/>
-      <element name="rsMbNo"/>
-      <element name="rsMbOK"/>
-      <element name="rsMbCancel"/>
-      <element name="rsMbAbort"/>
-      <element name="rsMbRetry"/>
-      <element name="rsMbIgnore"/>
-      <element name="rsMbAll"/>
-      <element name="rsMbNoToAll"/>
-      <element name="rsMbYesToAll"/>
-      <element name="rsMbHelp"/>
-      <element name="rsMbClose"/>
-      <element name="rsmbOpen"/>
-      <element name="rsmbSave"/>
-      <element name="rsmbUnlock"/>
-      <element name="rsMtWarning"/>
-      <element name="rsMtError"/>
-      <element name="rsMtInformation"/>
-      <element name="rsMtConfirmation"/>
-      <element name="rsMtAuthentication"/>
-      <element name="rsMtCustom"/>
+<!-- message/input dialog buttons -->
+<element name="rsMbYes"/>
+<element name="rsMbNo"/>
+<element name="rsMbOK"/>
+<element name="rsMbCancel"/>
+<element name="rsMbAbort"/>
+<element name="rsMbRetry"/>
+<element name="rsMbIgnore"/>
+<element name="rsMbAll"/>
+<element name="rsMbNoToAll"/>
+<element name="rsMbYesToAll"/>
+<element name="rsMbHelp"/>
+<element name="rsMbClose"/>
+<element name="rsmbOpen"/>
+<element name="rsmbSave"/>
+<element name="rsmbUnlock"/>
+<element name="rsMtWarning"/>
+<element name="rsMtError"/>
+<element name="rsMtInformation"/>
+<element name="rsMtConfirmation"/>
+<element name="rsMtAuthentication"/>
+<element name="rsMtCustom"/>
 
-      <!-- file dialog -->
-      <element name="rsfdOpenFile"/>
-      <element name="rsfdOverwriteFile"/>
-      <element name="rsfdFileAlreadyExists"/>
-      <element name="rsfdPathMustExist"/>
-      <element name="rsfdPathNoExist"/>
-      <element name="rsfdFileMustExist"/>
-      <element name="rsfdDirectoryMustExist"/>
-      <element name="rsfdFileNotExist"/>
-      <element name="rsfdDirectoryNotExist"/>
-      <element name="rsFind"/>
-      <element name="rsfdFileReadOnlyTitle"/>
-      <element name="rsfdFileReadOnly"/>
-      <element name="rsfdFileSaveAs"/>
-      <element name="rsAllFiles"/>
-      <element name="rsfdSelectDirectory"/>
-      <element name="rsDirectory"/>
+<!-- file dialog -->
+<element name="rsfdOpenFile"/>
+<element name="rsfdOverwriteFile"/>
+<element name="rsfdFileAlreadyExists"/>
+<element name="rsfdPathMustExist"/>
+<element name="rsfdPathNoExist"/>
+<element name="rsfdFileMustExist"/>
+<element name="rsfdDirectoryMustExist"/>
+<element name="rsfdFileNotExist"/>
+<element name="rsfdDirectoryNotExist"/>
+<element name="rsFind"/>
+<element name="rsfdFileReadOnlyTitle"/>
+<element name="rsfdFileReadOnly"/>
+<element name="rsfdFileSaveAs"/>
+<element name="rsAllFiles"/>
+<element name="rsfdSelectDirectory"/>
+<element name="rsDirectory"/>
 
-      <!-- Select color dialog -->
-      <element name="rsSelectcolorTitle"/>
+<!-- Select color dialog -->
+<element name="rsSelectcolorTitle"/>
 
-      <!-- Select font dialog -->
-      <element name="rsSelectFontTitle"/>
-      <element name="rsFindMore"/>
-      <element name="rsReplace"/>
-      <element name="rsReplaceAll"/>
-      <element name="rsHelp"/>
+<!-- Select font dialog -->
+<element name="rsSelectFontTitle"/>
+<element name="rsFindMore"/>
+<element name="rsReplace"/>
+<element name="rsReplaceAll"/>
+<element name="rsHelp"/>
 
-      <!-- DBGrid -->
-      <element name="rsDeleteRecord"/>
+<!-- DBGrid -->
+<element name="rsDeleteRecord"/>
 
-      <!-- DBCtrls -->
-      <element name="rsFirstRecordHint"/>
-      <element name="rsPriorRecordHint"/>
-      <element name="rsNextRecordHint"/>
-      <element name="rsLastRecordHint"/>
-      <element name="rsInsertRecordHint"/>
-      <element name="rsDeleteRecordHint"/>
-      <element name="rsEditRecordHint"/>
-      <element name="rsPostRecordHint"/>
-      <element name="rsCancelRecordHint"/>
-      <element name="rsRefreshRecordsHint"/>
+<!-- DBCtrls -->
+<element name="rsFirstRecordHint"/>
+<element name="rsPriorRecordHint"/>
+<element name="rsNextRecordHint"/>
+<element name="rsLastRecordHint"/>
+<element name="rsInsertRecordHint"/>
+<element name="rsDeleteRecordHint"/>
+<element name="rsEditRecordHint"/>
+<element name="rsPostRecordHint"/>
+<element name="rsCancelRecordHint"/>
+<element name="rsRefreshRecordsHint"/>
 
-      <!-- macOS (cocoa) interface -->
-      <element name="rsMacOSMenuHide"/>
-      <element name="rsMacOSMenuHideOthers"/>
-      <element name="rsMacOSMenuQuit"/>
-      <element name="rsMacOSMenuServices"/>
-      <element name="rsMacOSMenuShowAll"/>
-      <element name="rsMacOSFileFormat"/>
+<!-- macOS (cocoa) interface -->
+<element name="rsMacOSMenuHide"/>
+<element name="rsMacOSMenuHideOthers"/>
+<element name="rsMacOSMenuQuit"/>
+<element name="rsMacOSMenuServices"/>
+<element name="rsMacOSMenuShowAll"/>
+<element name="rsMacOSFileFormat"/>
 
-      <!-- gtk interface -->
-      <element name="rsWarningUnremovedPaintMessages"/>
-      <element name="rsWarningUnreleasedDCsDump"/>
-      <element name="rsWarningUnreleasedGDIObjectsDump"/>
-      <element name="rsWarningUnreleasedMessagesInQueue"/>
-      <element name="rsWarningUnreleasedTimerInfos"/>
-      <element name="rsFileInformation"/>
-      <element name="rsgtkFilter"/>
-      <element name="rsgtkHistory"/>
-      <element name="rsDefaultFileInfoValue"/>
-      <element name="rsBlank"/>
-      <element name="rsUnableToLoadDefaultFont"/>
-      <element name="rsFileInfoFileNotFound"/>
-      <element name="rsgtkOptionNoTransient"/>
-      <element name="rsgtkOptionModule"/>
-      <element name="rsgOptionFatalWarnings"/>
-      <element name="rsgtkOptionDebug"/>
-      <element name="rsgtkOptionNoDebug"/>
-      <element name="rsgdkOptionDebug"/>
-      <element name="rsgdkOptionNoDebug"/>
-      <element name="rsgtkOptionDisplay"/>
-      <element name="rsgtkOptionSync"/>
-      <element name="rsgtkOptionNoXshm"/>
-      <element name="rsgtkOptionName"/>
-      <element name="rsgtkOptionClass"/>
+<!-- gtk interface -->
+<element name="rsWarningUnremovedPaintMessages"/>
+<element name="rsWarningUnreleasedDCsDump"/>
+<element name="rsWarningUnreleasedGDIObjectsDump"/>
+<element name="rsWarningUnreleasedMessagesInQueue"/>
+<element name="rsWarningUnreleasedTimerInfos"/>
+<element name="rsFileInformation"/>
+<element name="rsgtkFilter"/>
+<element name="rsgtkHistory"/>
+<element name="rsDefaultFileInfoValue"/>
+<element name="rsBlank"/>
+<element name="rsUnableToLoadDefaultFont"/>
+<element name="rsFileInfoFileNotFound"/>
+<element name="rsgtkOptionNoTransient"/>
+<element name="rsgtkOptionModule"/>
+<element name="rsgOptionFatalWarnings"/>
+<element name="rsgtkOptionDebug"/>
+<element name="rsgtkOptionNoDebug"/>
+<element name="rsgdkOptionDebug"/>
+<element name="rsgdkOptionNoDebug"/>
+<element name="rsgtkOptionDisplay"/>
+<element name="rsgtkOptionSync"/>
+<element name="rsgtkOptionNoXshm"/>
+<element name="rsgtkOptionName"/>
+<element name="rsgtkOptionClass"/>
 
-      <!-- qt interface -->
-      <element name="rsqtOptionNoGrab"/>
-      <element name="rsqtOptionDoGrab"/>
-      <element name="rsqtOptionSync"/>
-      <element name="rsqtOptionStyle"/>
-      <element name="rsqtOptionStyleSheet"/>
-      <element name="rsqtOptionGraphicsStyle"/>
-      <element name="rsqtOptionSession"/>
-      <element name="rsqtOptionWidgetCount"/>
-      <element name="rsqtOptionReverse"/>
+<!-- qt interface -->
+<element name="rsqtOptionNoGrab"/>
+<element name="rsqtOptionDoGrab"/>
+<element name="rsqtOptionSync"/>
+<element name="rsqtOptionStyle"/>
+<element name="rsqtOptionStyleSheet"/>
+<element name="rsqtOptionGraphicsStyle"/>
+<element name="rsqtOptionSession"/>
+<element name="rsqtOptionWidgetCount"/>
+<element name="rsqtOptionReverse"/>
 
-      <!-- qt X11 options -->
-      <element name="rsqtOptionX11Display"/>
-      <element name="rsqtOptionX11Geometry"/>
-      <element name="rsqtOptionX11Font"/>
-      <element name="rsqtOptionX11BgColor"/>
-      <element name="rsqtOptionX11FgColor"/>
-      <element name="rsqtOptionX11BtnColor"/>
-      <element name="rsqtOptionX11Name"/>
-      <element name="rsqtOptionX11Title"/>
-      <element name="rsqtOptionX11Visual"/>
-      <element name="rsqtOptionX11NCols"/>
-      <element name="rsqtOptionX11CMap"/>
-      <element name="rsqtOptionX11IM"/>
-      <element name="rsqtOptionX11InputStyle"/>
-      <element name="rsqtOptionDisableAccurateFrame"/>
+<!-- qt X11 options -->
+<element name="rsqtOptionX11Display"/>
+<element name="rsqtOptionX11Geometry"/>
+<element name="rsqtOptionX11Font"/>
+<element name="rsqtOptionX11BgColor"/>
+<element name="rsqtOptionX11FgColor"/>
+<element name="rsqtOptionX11BtnColor"/>
+<element name="rsqtOptionX11Name"/>
+<element name="rsqtOptionX11Title"/>
+<element name="rsqtOptionX11Visual"/>
+<element name="rsqtOptionX11NCols"/>
+<element name="rsqtOptionX11CMap"/>
+<element name="rsqtOptionX11IM"/>
+<element name="rsqtOptionX11InputStyle"/>
+<element name="rsqtOptionDisableAccurateFrame"/>
 
-      <!-- win32 interface -->
-      <element name="rsWin32Warning"/>
-      <element name="rsWin32Error"/>
+<!-- win32 interface -->
+<element name="rsWin32Warning"/>
+<element name="rsWin32Error"/>
 
-      <!--
-        LResource, Menus, ExtCtrls, ImgList, Spin StdCtrls, Calendar, CustomTimer, Forms, Grids, LCLProc, Controls, ComCtrls, ExtDlgs, EditBtn, MaskEdit
-      -->
-      <element name="sInvalidActionRegistration"/>
-      <element name="sInvalidActionUnregistration"/>
-      <element name="sInvalidActionEnumeration"/>
-      <element name="sInvalidActionCreation"/>
-      <element name="sMenuNotFound"/>
-      <element name="sMenuIndexError"/>
-      <element name="sMenuItemIsNil"/>
-      <element name="sNoTimers"/>
-      <element name="sInvalidIndex"/>
-      <element name="sInvalidImageSize"/>
-      <element name="sDuplicateMenus"/>
-      <element name="sCannotFocus"/>
-      <element name="sParentRequired"/>
-      <element name="SMaskEditNoMatch"/>
+<!--
+LResource, Menus, ExtCtrls, ImgList, Spin StdCtrls, Calendar, CustomTimer, 
+Forms, Grids, LCLProc, Controls, ComCtrls, ExtDlgs, EditBtn, MaskEdit
+-->
+<element name="sInvalidActionRegistration"/>
+<element name="sInvalidActionUnregistration"/>
+<element name="sInvalidActionEnumeration"/>
+<element name="sInvalidActionCreation"/>
+<element name="sMenuNotFound"/>
+<element name="sMenuIndexError"/>
+<element name="sMenuItemIsNil"/>
+<element name="sNoTimers"/>
+<element name="sInvalidIndex"/>
+<element name="sInvalidImageSize"/>
+<element name="sDuplicateMenus"/>
+<element name="sCannotFocus"/>
+<element name="sParentRequired"/>
+<element name="SMaskEditNoMatch"/>
 
-      <element name="rsInvalidPropertyValue"/>
-      <element name="rsPropertyDoesNotExist"/>
-      <element name="rsInvalidStreamFormat"/>
-      <element name="rsInvalidFormObjectStream"/>
-      <element name="rsScrollBarOutOfRange"/>
-      <element name="rsInvalidDate"/>
-      <element name="rsInvalidDateRangeHint"/>
-      <element name="rsErrorOccurredInAtAddressFrame"/>
-      <element name="rsException"/>
-      <element name="rsFormStreamingError"/>
-      <element name="rsFixedColsTooBig"/>
-      <element name="rsFixedRowsTooBig"/>
-      <element name="rsGridFileDoesNotExist"/>
-      <element name="rsNotAValidGridFile"/>
-      <element name="rsIndexOutOfRange"/>
-      <element name="rsGridIndexOutOfRange"/>
-      <element name="rsGridHasNoRows"/>
-      <element name="rsGridHasNoCols"/>
-      <element name="rsAControlCanNotHaveItselfAsParent"/>
-      <element name="rsControlHasNoParentFormOrFrame"/>
-      <element name="rsControlIsNotAParent"/>
-      <element name="rsControlClassCantContainChildClass"/>
-      <element name="rsASCannotHaveAsParent"/>
-      <element name="lisLCLResourceSNotFound"/>
-      <element name="rsFormResourceSNotFoundForResourcelessFormsCreateNew"/>
-      <element name="rsErrorCreatingDeviceContext"/>
-      <element name="rsIndexOutOfBounds"/>
-      <element name="rsUnknownPictureExtension"/>
-      <element name="rsUnknownPictureFormat"/>
-      <element name="rsBitmaps"/>
-      <element name="rsPixmap"/>
-      <element name="rsPortableNetworkGraphic"/>
-      <element name="rsPortablePixmap"/>
-      <element name="rsIcon"/>
-      <element name="rsIcns"/>
-      <element name="rsCursor"/>
-      <element name="rsJpeg"/>
-      <element name="rsTiff"/>
-      <element name="rsGIF"/>
-      <element name="rsTGA"/>
-      <element name="rsGraphic"/>
-      <element name="rsUnsupportedClipboardFormat"/>
-      <element name="rsGroupIndexCannotBeLessThanPrevious"/>
-      <element name="rsIsAlreadyAssociatedWith"/>
-      <element name="rsCanvasDoesNotAllowDrawing"/>
-      <element name="rsUnsupportedBitmapFormat"/>
-      <element name="rsErrorWhileSavingBitmap"/>
-      <element name="rsDuplicateIconFormat"/>
-      <element name="rsIconImageEmpty"/>
-      <element name="rsIconImageSize"/>
-      <element name="rsIconNoCurrent"/>
-      <element name="rsIconImageFormat"/>
-      <element name="rsIconImageFormatChange"/>
-      <element name="rsIconImageSizeChange"/>
-      <element name="rsRasterImageUpdateAll"/>
-      <element name="rsRasterImageEndUpdate"/>
-      <element name="rsRasterImageSaveInUpdate"/>
-      <element name="rsNoWidgetSet"/>
-      <element name="rsPressOkToIgnoreAndRiskDataCorruptionPressAbortToK"/>
-      <element name="rsCanNotFocus"/>
-      <element name="rsListIndexExceedsBounds"/>
-      <element name="rsResourceNotFound"/>
-      <element name="rsCalculator"/>
-      <element name="rsError"/>
-      <element name="rsPickDate"/>
-      <element name="rsSize"/>
-      <element name="rsModified"/>
-      <element name="rsDoCopy"/>
-      <element name="rsDoPaste"/>
+<element name="rsInvalidPropertyValue"/>
+<element name="rsPropertyDoesNotExist"/>
+<element name="rsInvalidStreamFormat"/>
+<element name="rsInvalidFormObjectStream"/>
+<element name="rsScrollBarOutOfRange"/>
+<element name="rsInvalidDate"/>
+<element name="rsInvalidDateRangeHint"/>
+<element name="rsErrorOccurredInAtAddressFrame"/>
+<element name="rsException"/>
+<element name="rsFormStreamingError"/>
+<element name="rsFixedColsTooBig"/>
+<element name="rsFixedRowsTooBig"/>
+<element name="rsGridFileDoesNotExist"/>
+<element name="rsNotAValidGridFile"/>
+<element name="rsIndexOutOfRange"/>
+<element name="rsGridIndexOutOfRange"/>
+<element name="rsGridHasNoRows"/>
+<element name="rsGridHasNoCols"/>
+<element name="rsAControlCanNotHaveItselfAsParent"/>
+<element name="rsControlHasNoParentFormOrFrame"/>
+<element name="rsControlIsNotAParent"/>
+<element name="rsControlClassCantContainChildClass"/>
+<element name="rsASCannotHaveAsParent"/>
+<element name="lisLCLResourceSNotFound"/>
+<element name="rsFormResourceSNotFoundForResourcelessFormsCreateNew"/>
+<element name="rsErrorCreatingDeviceContext"/>
+<element name="rsIndexOutOfBounds"/>
+<element name="rsUnknownPictureExtension"/>
+<element name="rsUnknownPictureFormat"/>
+<element name="rsBitmaps"/>
+<element name="rsPixmap"/>
+<element name="rsPortableNetworkGraphic"/>
+<element name="rsPortablePixmap"/>
+<element name="rsIcon"/>
+<element name="rsIcns"/>
+<element name="rsCursor"/>
+<element name="rsJpeg"/>
+<element name="rsTiff"/>
+<element name="rsGIF"/>
+<element name="rsTGA"/>
+<element name="rsGraphic"/>
+<element name="rsUnsupportedClipboardFormat"/>
+<element name="rsGroupIndexCannotBeLessThanPrevious"/>
+<element name="rsIsAlreadyAssociatedWith"/>
+<element name="rsCanvasDoesNotAllowDrawing"/>
+<element name="rsUnsupportedBitmapFormat"/>
+<element name="rsErrorWhileSavingBitmap"/>
+<element name="rsDuplicateIconFormat"/>
+<element name="rsIconImageEmpty"/>
+<element name="rsIconImageSize"/>
+<element name="rsIconNoCurrent"/>
+<element name="rsIconImageFormat"/>
+<element name="rsIconImageFormatChange"/>
+<element name="rsIconImageSizeChange"/>
+<element name="rsRasterImageUpdateAll"/>
+<element name="rsRasterImageEndUpdate"/>
+<element name="rsRasterImageSaveInUpdate"/>
+<element name="rsNoWidgetSet"/>
+<element name="rsPressOkToIgnoreAndRiskDataCorruptionPressAbortToK"/>
+<element name="rsCanNotFocus"/>
+<element name="rsListIndexExceedsBounds"/>
+<element name="rsResourceNotFound"/>
+<element name="rsCalculator"/>
+<element name="rsError"/>
+<element name="rsPickDate"/>
+<element name="rsSize"/>
+<element name="rsModified"/>
+<element name="rsDoCopy"/>
+<element name="rsDoPaste"/>
 
-      <!-- ShellCtrls -->
-      <element name="sShellCtrlsName"/>
-      <element name="sShellCtrlsSize"/>
-      <element name="sShellCtrlsType"/>
-      <element name="sShellCtrlsMB"/>
-      <element name="sShellCtrlsKB"/>
-      <element name="sShellCtrlsBytes"/>
-      <element name="sShellCtrlsInvalidRoot"/>
-      <element name="sShellCtrlsSelectedItemDoesNotExists"/>
-      <element name="sShellCtrlsInvalidPath"/>
-      <element name="sShellCtrlsInvalidPathRelative"/>
+<!-- ShellCtrls -->
+<element name="sShellCtrlsName"/>
+<element name="sShellCtrlsSize"/>
+<element name="sShellCtrlsType"/>
+<element name="sShellCtrlsMB"/>
+<element name="sShellCtrlsKB"/>
+<element name="sShellCtrlsBytes"/>
+<element name="sShellCtrlsInvalidRoot"/>
+<element name="sShellCtrlsSelectedItemDoesNotExists"/>
+<element name="sShellCtrlsInvalidPath"/>
+<element name="sShellCtrlsInvalidPathRelative"/>
 
-      <element name="ifsVK_UNKNOWN"/>
-      <element name="ifsVK_SHIFT"/>
-      <element name="ifsVK_META"/>
-      <element name="ifsVK_CMD"/>
-      <element name="ifsVK_HELP"/>
-      <element name="ifsVK_SUPER"/>
-      <element name="ifsCtrl"/>
-      <element name="ifsAlt"/>
+<element name="ifsVK_UNKNOWN"/>
+<element name="ifsVK_SHIFT"/>
+<element name="ifsVK_META"/>
+<element name="ifsVK_CMD"/>
+<element name="ifsVK_HELP"/>
+<element name="ifsVK_SUPER"/>
+<element name="ifsCtrl"/>
+<element name="ifsAlt"/>
 
-      <element name="rsWholeWordsOnly"/>
-      <element name="rsCaseSensitive"/>
-      <element name="rsPromptOnReplace"/>
-      <element name="rsEntireScope"/>
-      <element name="rsText"/>
-      <element name="rsDirection"/>
-      <element name="rsForward"/>
-      <element name="rsBackward"/>
+<element name="rsWholeWordsOnly"/>
+<element name="rsCaseSensitive"/>
+<element name="rsPromptOnReplace"/>
+<element name="rsEntireScope"/>
+<element name="rsText"/>
+<element name="rsDirection"/>
+<element name="rsForward"/>
+<element name="rsBackward"/>
 
-      <!-- menu key captions -->
-      <element name="SmkcBkSp"/>
-      <element name="SmkcTab"/>
-      <element name="SmkcEsc"/>
-      <element name="SmkcEnter"/>
-      <element name="SmkcSpace"/>
-      <element name="SmkcPgUp"/>
-      <element name="SmkcPgDn"/>
-      <element name="SmkcEnd"/>
-      <element name="SmkcHome"/>
-      <element name="SmkcLeft"/>
-      <element name="SmkcUp"/>
-      <element name="SmkcRight"/>
-      <element name="SmkcDown"/>
-      <element name="SmkcIns"/>
-      <element name="SmkcDel"/>
-      <element name="SmkcShift"/>
-      <element name="SmkcCtrl"/>
-      <element name="SmkcAlt"/>
-      <element name="SmkcMeta"/>
+<!-- menu key captions -->
+<element name="SmkcBkSp"/>
+<element name="SmkcTab"/>
+<element name="SmkcEsc"/>
+<element name="SmkcEnter"/>
+<element name="SmkcSpace"/>
+<element name="SmkcPgUp"/>
+<element name="SmkcPgDn"/>
+<element name="SmkcEnd"/>
+<element name="SmkcHome"/>
+<element name="SmkcLeft"/>
+<element name="SmkcUp"/>
+<element name="SmkcRight"/>
+<element name="SmkcDown"/>
+<element name="SmkcIns"/>
+<element name="SmkcDel"/>
+<element name="SmkcShift"/>
+<element name="SmkcCtrl"/>
+<element name="SmkcAlt"/>
+<element name="SmkcMeta"/>
 
-      <!-- help -->
-      <element name="rsHelpHelpNodeHasNoHelpDatabase"/>
-      <element name="rsHelpThereIsNoViewerForHelpType"/>
-      <element name="rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType"/>
-      <element name="rsHelpAlreadyRegistered"/>
-      <element name="rsHelpNotRegistered"/>
-      <element name="rsHelpHelpDatabaseNotFound"/>
-      <element name="rsHelpHelpKeywordNotFoundInDatabase"/>
-      <element name="rsHelpHelpKeywordNotFound"/>
-      <element name="rsHelpHelpForDirectiveNotFoundInDatabase"/>
-      <element name="rsHelpHelpForDirectiveNotFound"/>
-      <element name="rsHelpHelpContextNotFoundInDatabase"/>
-      <element name="rsHelpHelpContextNotFound"/>
-      <element name="rsHelpNoHelpFoundForSource"/>
-      <element name="rsHelpNoHelpNodesAvailable"/>
-      <element name="rsHelpError"/>
-      <element name="rsHelpDatabaseNotFound"/>
-      <element name="rsHelpContextNotFound"/>
-      <element name="rsHelpViewerNotFound"/>
-      <element name="rsHelpNotFound"/>
-      <element name="rsHelpViewerError"/>
-      <element name="rsHelpSelectorError"/>
-      <element name="rsUnknownErrorPleaseReportThisBug"/>
-      <element name="hhsHelpTheHelpDatabaseWasUnableToFindFile"/>
-      <element name="rsTheBuiltInURLIsReadOnlyChangeTheBaseURLInstead"/>
-      <element name="hhsHelpNoHTMLBrowserFoundPleaseDefineOne"/>
-      <element name="hhsHelpNoHTMLBrowserFound"/>
-      <element name="hhsHelpBrowserNotFound"/>
-      <element name="hhsHelpBrowserNotExecutable"/>
-      <element name="hhsHelpErrorWhileExecuting"/>
+<!-- help -->
+<element name="rsHelpHelpNodeHasNoHelpDatabase"/>
+<element name="rsHelpThereIsNoViewerForHelpType"/>
+<element name="rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType"/>
+<element name="rsHelpAlreadyRegistered"/>
+<element name="rsHelpNotRegistered"/>
+<element name="rsHelpHelpDatabaseNotFound"/>
+<element name="rsHelpHelpKeywordNotFoundInDatabase"/>
+<element name="rsHelpHelpKeywordNotFound"/>
+<element name="rsHelpHelpForDirectiveNotFoundInDatabase"/>
+<element name="rsHelpHelpForDirectiveNotFound"/>
+<element name="rsHelpHelpContextNotFoundInDatabase"/>
+<element name="rsHelpHelpContextNotFound"/>
+<element name="rsHelpNoHelpFoundForSource"/>
+<element name="rsHelpNoHelpNodesAvailable"/>
+<element name="rsHelpError"/>
+<element name="rsHelpDatabaseNotFound"/>
+<element name="rsHelpContextNotFound"/>
+<element name="rsHelpViewerNotFound"/>
+<element name="rsHelpNotFound"/>
+<element name="rsHelpViewerError"/>
+<element name="rsHelpSelectorError"/>
+<element name="rsUnknownErrorPleaseReportThisBug"/>
+<element name="hhsHelpTheHelpDatabaseWasUnableToFindFile"/>
+<element name="rsTheBuiltInURLIsReadOnlyChangeTheBaseURLInstead"/>
+<element name="hhsHelpNoHTMLBrowserFoundPleaseDefineOne"/>
+<element name="hhsHelpNoHTMLBrowserFound"/>
+<element name="hhsHelpBrowserNotFound"/>
+<element name="hhsHelpBrowserNotExecutable"/>
+<element name="hhsHelpErrorWhileExecuting"/>
 
-      <!-- parser -->
-      <element name="SParExpected"/>
-      <element name="SParInvalidInteger"/>
-      <element name="SParWrongTokenType"/>
-      <element name="SParInvalidFloat"/>
-      <element name="SParWrongTokenSymbol"/>
-      <element name="SParUnterminatedString"/>
-      <element name="SParLocInfo"/>
-      <element name="SParUnterminatedBinValue"/>
+<!-- parser -->
+<element name="SParExpected"/>
+<element name="SParInvalidInteger"/>
+<element name="SParWrongTokenType"/>
+<element name="SParInvalidFloat"/>
+<element name="SParWrongTokenSymbol"/>
+<element name="SParUnterminatedString"/>
+<element name="SParLocInfo"/>
+<element name="SParUnterminatedBinValue"/>
 
-      <!-- colorbox -->
-      <element name="rsCustomColorCaption"/>
-      <element name="rsBlackColorCaption"/>
-      <element name="rsMaroonColorCaption"/>
-      <element name="rsGreenColorCaption"/>
-      <element name="rsOliveColorCaption"/>
-      <element name="rsNavyColorCaption"/>
-      <element name="rsPurpleColorCaption"/>
-      <element name="rsTealColorCaption"/>
-      <element name="rsGrayColorCaption"/>
-      <element name="rsSilverColorCaption"/>
-      <element name="rsRedColorCaption"/>
-      <element name="rsLimeColorCaption"/>
-      <element name="rsYellowColorCaption"/>
-      <element name="rsBlueColorCaption"/>
-      <element name="rsFuchsiaColorCaption"/>
-      <element name="rsAquaColorCaption"/>
-      <element name="rsWhiteColorCaption"/>
-      <element name="rsMoneyGreenColorCaption"/>
-      <element name="rsSkyBlueColorCaption"/>
-      <element name="rsCreamColorCaption"/>
-      <element name="rsMedGrayColorCaption"/>
-      <element name="rsNoneColorCaption"/>
-      <element name="rsDefaultColorCaption"/>
-      <element name="rsScrollBarColorCaption"/>
-      <element name="rsBackgroundColorCaption"/>
-      <element name="rsActiveCaptionColorCaption"/>
-      <element name="rsInactiveCaptionColorCaption"/>
-      <element name="rsMenuColorCaption"/>
-      <element name="rsWindowColorCaption"/>
-      <element name="rsWindowFrameColorCaption"/>
-      <element name="rsMenuTextColorCaption"/>
-      <element name="rsWindowTextColorCaption"/>
-      <element name="rsCaptionTextColorCaption"/>
-      <element name="rsActiveBorderColorCaption"/>
-      <element name="rsInactiveBorderColorCaption"/>
-      <element name="rsAppWorkspaceColorCaption"/>
-      <element name="rsHighlightColorCaption"/>
-      <element name="rsHighlightTextColorCaption"/>
-      <element name="rsBtnFaceColorCaption"/>
-      <element name="rsBtnShadowColorCaption"/>
-      <element name="rsGrayTextColorCaption"/>
-      <element name="rsBtnTextColorCaption"/>
-      <element name="rsInactiveCaptionText"/>
-      <element name="rsBtnHighlightColorCaption"/>
-      <element name="rs3DDkShadowColorCaption"/>
-      <element name="rs3DLightColorCaption"/>
-      <element name="rsInfoTextColorCaption"/>
-      <element name="rsInfoBkColorCaption"/>
-      <element name="rsHotLightColorCaption"/>
-      <element name="rsGradientActiveCaptionColorCaption"/>
-      <element name="rsGradientInactiveCaptionColorCaption"/>
-      <element name="rsMenuHighlightColorCaption"/>
-      <element name="rsMenuBarColorCaption"/>
-      <element name="rsFormColorCaption"/>
-      <element name="rsFilter"/>
+<!-- colorbox -->
+<element name="rsCustomColorCaption"/>
+<element name="rsBlackColorCaption"/>
+<element name="rsMaroonColorCaption"/>
+<element name="rsGreenColorCaption"/>
+<element name="rsOliveColorCaption"/>
+<element name="rsNavyColorCaption"/>
+<element name="rsPurpleColorCaption"/>
+<element name="rsTealColorCaption"/>
+<element name="rsGrayColorCaption"/>
+<element name="rsSilverColorCaption"/>
+<element name="rsRedColorCaption"/>
+<element name="rsLimeColorCaption"/>
+<element name="rsYellowColorCaption"/>
+<element name="rsBlueColorCaption"/>
+<element name="rsFuchsiaColorCaption"/>
+<element name="rsAquaColorCaption"/>
+<element name="rsWhiteColorCaption"/>
+<element name="rsMoneyGreenColorCaption"/>
+<element name="rsSkyBlueColorCaption"/>
+<element name="rsCreamColorCaption"/>
+<element name="rsMedGrayColorCaption"/>
+<element name="rsNoneColorCaption"/>
+<element name="rsDefaultColorCaption"/>
+<element name="rsScrollBarColorCaption"/>
+<element name="rsBackgroundColorCaption"/>
+<element name="rsActiveCaptionColorCaption"/>
+<element name="rsInactiveCaptionColorCaption"/>
+<element name="rsMenuColorCaption"/>
+<element name="rsWindowColorCaption"/>
+<element name="rsWindowFrameColorCaption"/>
+<element name="rsMenuTextColorCaption"/>
+<element name="rsWindowTextColorCaption"/>
+<element name="rsCaptionTextColorCaption"/>
+<element name="rsActiveBorderColorCaption"/>
+<element name="rsInactiveBorderColorCaption"/>
+<element name="rsAppWorkspaceColorCaption"/>
+<element name="rsHighlightColorCaption"/>
+<element name="rsHighlightTextColorCaption"/>
+<element name="rsBtnFaceColorCaption"/>
+<element name="rsBtnShadowColorCaption"/>
+<element name="rsGrayTextColorCaption"/>
+<element name="rsBtnTextColorCaption"/>
+<element name="rsInactiveCaptionText"/>
+<element name="rsBtnHighlightColorCaption"/>
+<element name="rs3DDkShadowColorCaption"/>
+<element name="rs3DLightColorCaption"/>
+<element name="rsInfoTextColorCaption"/>
+<element name="rsInfoBkColorCaption"/>
+<element name="rsHotLightColorCaption"/>
+<element name="rsGradientActiveCaptionColorCaption"/>
+<element name="rsGradientInactiveCaptionColorCaption"/>
+<element name="rsMenuHighlightColorCaption"/>
+<element name="rsMenuBarColorCaption"/>
+<element name="rsFormColorCaption"/>
+<element name="rsFilter"/>
 
-      <!-- Accessibility -->
-      <element name="rsTTreeViewAccessibilityDescription"/>
-      <element name="rsTPanelAccessibilityDescription"/>
-      <element name="rsTSplitterAccessibilityDescription"/>
-      <element name="rsTCustomTabControlAccessibilityDescription"/>
+<!-- Accessibility -->
+<element name="rsTTreeViewAccessibilityDescription"/>
+<element name="rsTPanelAccessibilityDescription"/>
+<element name="rsTSplitterAccessibilityDescription"/>
+<element name="rsTCustomTabControlAccessibilityDescription"/>
 
-    </module>
-    <!-- LCLStrConsts -->
-  </package>
+</module>
+<!-- LCLStrConsts -->
+</package>
 </fpdoc-descriptions>

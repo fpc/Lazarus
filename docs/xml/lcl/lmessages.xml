@@ -2,9 +2,9 @@
 <fpdoc-descriptions>
 <package name="lcl">
 <!--
-  ====================================================================
-    LMessages
-  ====================================================================
+====================================================================
+LMessages
+====================================================================
 -->
 <module name="LMessages">
 <short>
@@ -268,38 +268,38 @@ IDs reserved for internal messages in the interfaces.
 </element>
 
 <element name="LM_IM_COMPOSITION ">
-  <short/>
-  <descr/>
+<short/>
+<descr/>
 </element>
 
 <element name="GTK_IM_FLAG_START">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="GTK_IM_FLAG_PREEDIT">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="GTK_IM_FLAG_END">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="GTK_IM_FLAG_COMMIT">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="GTK_IM_FLAG_REPLACE">
-  <short/>
-  <descr/>
-  <seealso/>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="SC_SIZE">
@@ -1277,7 +1277,8 @@ Needed for 64-bit alignment.
 <element name="TLMMove.MoveType">
 <short/>
 <descr>
-0 = update, 1 = force RequestAlign, 128 = Source is Interface (Widget has moved).
+0 = update, 1 = force RequestAlign, 128 = Source is Interface (Widget has 
+moved).
 </descr>
 </element>
 
@@ -2542,7 +2543,9 @@ Combo-Box Notification Code.
 </element>
 
 <element name="GetMessageName">
-<short>Gets the string representation for the specified message constant.</short>
+<short>
+Gets the string representation for the specified message constant.
+</short>
 <descr>
 <p>
 <var>GetMessageName</var> can be used to convert the Integer value in

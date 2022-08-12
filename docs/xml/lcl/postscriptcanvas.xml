@@ -3,38 +3,40 @@
 <package name="lcl">
 
 <!--
-  ====================================================================
-    PostscriptCanvas
-  ====================================================================
+====================================================================
+PostscriptCanvas
+====================================================================
 -->
 
 <module name="PostscriptCanvas">
-<short>Contains classes and types used to implement a PostScript printer canvas.</short>
+<short>
+Contains classes and types used to implement a PostScript printer canvas.
+</short>
 <descr>
-  <p>
-    Developed using information from:
-  </p>
-  <ul>
-    <li>The Green Book Listing 9-1, on page 138 for Patterns</li>
-    <li>PostScriptPrinter.pas unit by Tony Maro</li>
-    <li>Piddle Project (Python language)</li>
-    <li>Internet PostScript forums</li>
-  </ul>
-  <p>
-    <b>Warnings:</b>
-  </p>
-  <ul>
-    <li>
-      Draw and StretchDraw are slow for big images.
-    </li>
-    <li>
-      Angles are expressed in 1/16th of degree.
-    </li>
-  </ul>
-  <p>
-    Author: Olivier Guilbaud.
-    TextRect implemented by T. P. Launchbury (12 Dec 2012).
-  </p>
+<p>
+Developed using information from:
+</p>
+<ul>
+<li>The Green Book Listing 9-1, on page 138 for Patterns</li>
+<li>PostScriptPrinter.pas unit by Tony Maro</li>
+<li>Piddle Project (Python language)</li>
+<li>Internet PostScript forums</li>
+</ul>
+<p>
+<b>Warnings:</b>
+</p>
+<ul>
+<li>
+Draw and StretchDraw are slow for big images.
+</li>
+<li>
+Angles are expressed in 1/16th of degree.
+</li>
+</ul>
+<p>
+Author: Olivier Guilbaud.
+TextRect implemented by T. P. Launchbury (12 Dec 2012).
+</p>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->

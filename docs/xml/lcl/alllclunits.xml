@@ -3,771 +3,142 @@
 <package name="lcl">
 
 <!--
-  ====================================================================
-    AllLCLUnits
-  ====================================================================
+====================================================================
+AllLCLUnits
+====================================================================
 -->
 
 <module name="AllLCLUnits">
-<short><var>AllLCLUnits</var> - a dummy unit containing a <var>Uses</var> clause listing all the units in the Lazarus Component Library - probably used as a checklist for building Lazarus.</short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FPCAdds">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LazLinkedList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DynHashArray">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLMemManager">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="AvgLvlTree">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StringHashList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtendedStrings">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DynamicArray">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="UTrace">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="TextStrings">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLResCache">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileCtrl">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LResources">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileUtil">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="InterfaceBase">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="IntfGraphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StdActns">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Buttons">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Extctrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Calendar">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Clipbrd">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Spin">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Comctrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Arrow">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ImgList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Menus">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Toolwin">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Dialogs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Messages">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Clistbox">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ActnList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Grids">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="MaskEdit">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Printers">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="PostScriptPrinter">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="PostScriptCanvas">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="CheckLst">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="PairSplitter">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtDlgs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DBCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DBGrids">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DBActns">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="EditBtn">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtGraphics">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="PropertyStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="IniPropStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="XMLPropStorage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Chart">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSActnList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSArrow">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSButtons">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSCalendar">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSCheckLst">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSCListBox">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSComCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSControls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSDbCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSDBGrids">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSDialogs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSDirSel">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSEditBtn">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSExtCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSExtDlgs">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<short>
+Includes all of the LCL units and registers their components in the Lazarus 
+IDE.
+</short>
+<descr>
+<var>AllLCLUnits</var> - a dummy unit containing a <var>Uses</var> clause 
+listing all the units in the Lazarus Component Library. It is used in make 
+files as a checklist for compiling/building the Lazarus IDE. It also includes 
+implementation routines used to register all of the LCL components in the Lazarus IDE as part of the LCLBase package.
+</descr>
+
+<!-- unresolved references -->
+<element name="CheckLst"/>
+<element name="Clipbrd"/>
+<element name="ColorBox"/>
+<element name="ComCtrls"/>
+<element name="Controls"/>
+<element name="CustomTimer"/>
+<element name="DBActns"/>
+<element name="DBCtrls"/>
+<element name="DBGrids"/>
+<element name="DefaultTranslator"/>
+<element name="Dialogs"/>
+<element name="ExtCtrls"/>
+<element name="ExtDlgs"/>
+<element name="ExtGraphics"/>
+<element name="FileCtrl"/>
+<element name="Forms"/>
+<element name="Graphics"/>
+<element name="GraphUtil"/>
+<element name="Grids"/>
+<element name="HelpIntfs"/>
+<element name="IcnsTypes"/>
+<element name="ImageListCache"/>
+<element name="ImgList"/>
+<element name="IniPropStorage"/>
+<element name="InterfaceBase"/>
+<element name="IntfGraphics"/>
+<element name="LazHelpHTML"/>
+<element name="LazHelpIntf"/>
+<element name="LCLClasses"/>
+<element name="LCLIntf"/>
+<element name="LCLMemManager"/>
+<element name="LCLMessageGlue"/>
+<element name="LCLProc"/>
+<element name="LCLResCache"/>
+<element name="LCLStrConsts"/>
+<element name="LCLType"/>
+<element name="Menus"/>
+<element name="LCLUnicodeData"/>
+<element name="LCLVersion"/>
+<element name="LMessages"/>
+<element name="LResources"/>
+<element name="MaskEdit"/>
+<element name="PairSplitter"/>
+<element name="PopupNotifier"/>
+<element name="PostScriptCanvas"/>
+<element name="PostScriptPrinter"/>
+<element name="PostScriptUnicode"/>
+<element name="Printers"/>
+<element name="PropertyStorage"/>
+<element name="RubberBand"/>
+<element name="ShellCtrls"/>
+<element name="Spin"/>
+<element name="StdActns"/>
+<element name="StdCtrls"/>
+<element name="Themes"/>
+<element name="TmSchema"/>
+<element name="Toolwin"/>
+<element name="UTrace"/>
+<element name="XMLPropStorage"/>
+<element name="TimePopup"/>
+<element name="Messages"/>
+<element name="WSButtons"/>
+<element name="WSCalendar"/>
+<element name="WSCheckLst"/>
+<element name="WSComCtrls"/>
+<element name="WSControls"/>
+<element name="WSDesigner"/>
+<element name="WSDialogs"/>
+<element name="WSExtCtrls"/>
+<element name="WSExtDlgs"/>
+<element name="WSFactory"/>
+<element name="WSForms"/>
+<element name="WSGrids"/>
+<element name="WSImgList"/>
+<element name="WSLCLClasses"/>
+<element name="WSMenus"/>
+<element name="WSPairSplitter"/>
+<element name="WSProc"/>
+<element name="WSReferences"/>
+<element name="WSSpin"/>
+<element name="WSStdCtrls"/>
+<element name="WSToolwin"/>
+<element name="ActnList"/>
+<element name="AsyncProcess"/>
+<element name="ButtonPanel"/>
+<element name="Buttons"/>
+<element name="Calendar"/>
+<element name="RegisterLCL"/>
+<element name="ValEdit"/>
+<element name="LazCanvas"/>
+<element name="LazDialogs"/>
+<element name="LazRegions"/>
+<element name="CustomDrawn_Common"/>
+<element name="CustomDrawnControls"/>
+<element name="CustomDrawnDrawers"/>
+<element name="LazDeviceApis"/>
+<element name="LDockTree"/>
+<element name="LazFreeTypeIntfDrawer"/>
+<element name="CustomDrawn_WinXP"/>
+<element name="CustomDrawn_Android"/>
+<element name="Arrow"/>
+<element name="EditBtn"/>
+<element name="ComboEx"/>
+<element name="DBExtCtrls"/>
+<element name="CustomDrawn_Mac"/>
+<element name="CalcForm"/>
+<element name="LCLTranslator"/>
+<element name="GroupedEdit"/>
+<element name="LCLTaskDialog"/>
+<element name="WSLazDeviceAPIS"/>
+<element name="LCLPlatformDef"/>
+<element name="IndustrialBase"/>
+<element name="JSONPropStorage"/>
+<element name="LCLExceptionStackTrace"/>
+<element name="LazarusPackageIntf"/>
+
+</module>
+<!-- AllLCLUnits -->
 
-<!-- unresolved type reference Visibility: default -->
-<element name="WSFileCtrl">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSForms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSGrids">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSImgList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSMaskEdit">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSMenus">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSPairSplitter">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSSpin">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSStdCtrls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSToolwin">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- AllLCLUnits -->
 </package>
 </fpdoc-descriptions>

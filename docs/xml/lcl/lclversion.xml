@@ -2,9 +2,9 @@
 <fpdoc-descriptions>
 <package name="lcl">
 <!--
-  ====================================================================
-    LCLVersion
-  ====================================================================
+====================================================================
+LCLVersion
+====================================================================
 -->
 <module name="LCLVersion">
 <short>Contains the version number constants of the LCL.</short>
@@ -31,7 +31,7 @@ The lcl_fullversion constant contains all version numbers, formatted with 2
 digits and concatenated (leading zeros are omitted).
 </p>
 <p>
-  For example, if the LCL version is 2.0.12.6, lcl_fullversion will be 2001206.
+For example, if the LCL version is 2.0.12.6, lcl_fullversion will be 2001206.
 </p>
 </descr>
 <seealso>lcl_version</seealso>
@@ -75,7 +75,8 @@ contains the third number (0).
 <descr>
 <p>
 Given a complete version string like 2.2.0.1, the lcl_patch constant
-contains the last number (1). If there is no fourth number, for example when the
+contains the last number (1). If there is no fourth number, for example when 
+the
 version string is 2.2.0, then lcl_patch is 0.
 </p>
 </descr>

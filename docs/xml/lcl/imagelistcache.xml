@@ -3,9 +3,9 @@
 <package name="lcl">
 
 <!--
-  ====================================================================
-    ImageListCache
-  ====================================================================
+====================================================================
+ImageListCache
+====================================================================
 -->
 
 <module name="ImageListCache">
@@ -110,7 +110,8 @@ Interface that cache user should have to listen for cache changes.
 <descr>
 <p>
 <var>TImageCacheItems</var> is a <var>TList</var> descendant which implements
-a container for cached image lists. It allows indexed access to the image lists
+a container for cached image lists. It allows indexed access to the image 
+lists
 in the container by their ordinal position. It also provides a method used to
 create the image list references stored in the container.
 </p>
@@ -136,7 +137,9 @@ TImageCacheItems is used in the implementation of the
 <element name="TImageCacheItems.SetItem.AValue"/>
 
 <element name="TImageCacheItems.Notify">
-<short>Notifies observers when a value in the container has been changed.</short>
+<short>
+Notifies observers when a value in the container has been changed.
+</short>
 <descr/>
 <seealso>
 <link id="#rtl.classes.TList">TList</link>
@@ -155,10 +158,13 @@ TImageCacheItems is used in the implementation of the
 
 <!-- function Visibility: public -->
 <element name="TImageCacheItems.GetNew">
-<short>Allocates and stores a new image list reference in the container.</short>
+<short>
+Allocates and stores a new image list reference in the container.
+</short>
 <descr>
 <p>
-<var>GetNew</var> is a <var>PImageCacheItem</var> function used to allocate and
+<var>GetNew</var> is a <var>PImageCacheItem</var> function used to allocate 
+and
 store a new reference to an image list in the container. GetNew calls
 <var>New</var> to allocate the storage needed for the return value. The
 <var>Add</var> method is called to append the reference to the storage for
@@ -325,7 +331,8 @@ Removes the specified cache listener from the internal list.
 <p>
 <var>UnregisterListener</var> is a method used to remove the specified cache
 listener from the internal list in the class instance. If <var>AListener</var>
-exists in the interface list, the <var>UnregisterBitmaps</var> method is called
+exists in the interface list, the <var>UnregisterBitmaps</var> method is 
+called
 and the listener is removed from the list.
 </p>
 <p>
@@ -361,7 +368,8 @@ new cache item is allocated.
 <p>
 <var>ABitmap</var> can contain a "sliced" image, which has multiple adjacent
 images each using the height for the bitmap. The image list in the cache is
-configured to use the number of images indicated in the <var>ABitmapCount</var>
+configured to use the number of images indicated in the 
+<var>ABitmapCount</var>
 argument. Each image has the same height and width.
 </p>
 <p>

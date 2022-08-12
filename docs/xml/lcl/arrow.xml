@@ -1,246 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-      ====================================================================
-        Arrow
-      ====================================================================
-    -->
-    <module name="Arrow">
-      <short>Defines an Arrow symbol widely used in forms.</short>
-      <descr>
-        <p>
-          <file>arrow.pp</file> implements a control used to draw an arrow. Its size, direction, color and shadow can be adjusted. It is part of the Lazarus Component Library (<b>LCL</b>).
-        </p>
-        <p>
-          The following components are added to the Lazarus IDE component palette:
-        </p>
-        <p>
-          <b>Misc</b> Tab
-        </p>
-        <ul>
-          <li>TArrow</li>
-        </ul>
-      </descr>
+<package name="lcl">
+<!--
+====================================================================
+Arrow
+====================================================================
+-->
+<module name="Arrow">
+<short>Defines an Arrow symbol widely used in forms.</short>
+<descr>
+<p>
+<file>arrow.pp</file> implements a control used to draw an arrow. Its size, 
+direction, color and shadow can be adjusted. It is part of the Lazarus 
+Component Library (<b>LCL</b>).
+</p>
+<p>
+The following components are added to the Lazarus IDE component palette:
+</p>
+<p>
+<b>Misc</b> Tab
+</p>
+<ul>
+<li>TArrow</li>
+</ul>
+</descr>
 
-      <!-- unresolved references -->
-      <element name="Classes"/>
-      <element name="Types"/>
-      <element name="Math"/>
-      <element name="Controls"/>
-      <element name="Graphics"/>
-      <element name="IndustrialBase"/>
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="Types"/>
+<element name="Math"/>
+<element name="Controls"/>
+<element name="Graphics"/>
+<element name="IndustrialBase"/>
 
-      <!-- enumeration type Visibility: default -->
-      <element name="TArrowType">
-        <short>Represents the direction the arrow is oriented in TArrow.</short>
-        <descr/>
-        <seealso>
-          <link id="TArrow.ArrowType"/>
-        </seealso>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TArrowType.atUp">
-        <short>The arrow points in the upward direction.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TArrowType.atDown">
-        <short>The arrow points in the downward direction.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TArrowType.atLeft">
-        <short>The arrow points to the left.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TArrowType.atRight">
-        <short>Th arrow points to the right.</short>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TShadowType">
-        <short>Represent shadow drawing styles used in TArrow.</short>
-        <descr/>
-        <seealso>
-          <link id="TArrow.ShadowType"/>
-        </seealso>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TShadowType.stNone">
-        <short>A shadow is not drawn.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TShadowType.stIn">
-        <short>A shadow is drawn with an inset style.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TShadowType.stOut">
-        <short>A shadow is drawn with an outset style.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TShadowType.stEtchedIn">
-        <short>A shadow is drawn with an inset style and an etched border.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TShadowType.stEtchedOut">
-        <short>A shadow is drawn with an outset style and an etched border.</short>
-      </element>
-      <element name="TShadowType.stFilled">
-        <short>A shadow is drawn with a filled style.</short>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TArrow">
-        <short><var>TArrow</var> - an arrow symbol widely used in forms.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TArrow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TArrow.Paint" link="#lcl.controls.TCustomControl.Paint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TArrow.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Create is the overridden constructor for the class instance, and calls the inherited method on entry. Create sets the default values for properties, including:
-          </p>
-          <ul>
-            <li>Constraints</li>
-            <li>ArrowType</li>
-            <li>ArrowPointerAngle</li>
-            <li>ShadowType</li>
-            <li>ShadowColor</li>
-            <li>ArrowColor</li>
-          </ul>
-        </descr>
-        <seealso>
-          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TArrow.Create.AOwner">
-        <short>Owner of the class instance.</short>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TArrow.Align" link="#lcl.controls.TControl.Align"/>
-      <element name="TArrow.Anchors" link="#lcl.controls.TControl.Anchors"/>
-      <!-- property Visibility: published -->
-      <element name="TArrow.ArrowColor">
-        <short>Color used to draw the arrow symbol on the control.</short>
-        <descr>
-          <p>
-            The default value for the property is <var>clBlack</var>.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TArrow.ArrowType">
-        <short><var>ArrowType</var> - pointing up, down, left or right.</short>
-        <descr>
-          <p>
-            <var>ArrowType</var> is a <var>TArrowType</var> property which indicates the direction for the arrow pointer on the control. The default value for the property is <var>atLeft</var>. Changing the value for the property causes the control to be redrawn.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TArrowType"/>
-        </seealso>
-      </element>
+<!-- enumeration type Visibility: default -->
+<element name="TArrowType">
+<short>Represents the direction the arrow is oriented in TArrow.</short>
+<descr/>
+<seealso>
+<link id="TArrow.ArrowType"/>
+</seealso>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TArrowType.atUp">
+<short>The arrow points in the upward direction.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TArrowType.atDown">
+<short>The arrow points in the downward direction.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TArrowType.atLeft">
+<short>The arrow points to the left.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TArrowType.atRight">
+<short>Th arrow points to the right.</short>
+</element>
+<!-- enumeration type Visibility: default -->
+<element name="TShadowType">
+<short>Represent shadow drawing styles used in TArrow.</short>
+<descr/>
+<seealso>
+<link id="TArrow.ShadowType"/>
+</seealso>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TShadowType.stNone">
+<short>A shadow is not drawn.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TShadowType.stIn">
+<short>A shadow is drawn with an inset style.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TShadowType.stOut">
+<short>A shadow is drawn with an outset style.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TShadowType.stEtchedIn">
+<short>A shadow is drawn with an inset style and an etched border.</short>
+</element>
+<!-- enumeration value Visibility: default -->
+<element name="TShadowType.stEtchedOut">
+<short>A shadow is drawn with an outset style and an etched border.</short>
+</element>
+<element name="TShadowType.stFilled">
+<short>A shadow is drawn with a filled style.</short>
+</element>
+<!-- object Visibility: default -->
+<element name="TArrow">
+<short><var>TArrow</var> - an arrow symbol widely used in forms.</short>
+<descr/>
+<errors/>
+<seealso/>
+</element>
+<element name="TArrow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+<element name="TArrow.Paint" link="#lcl.controls.TCustomControl.Paint">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<!-- constructor Visibility: public -->
+<element name="TArrow.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Create is the overridden constructor for the class instance, and calls the 
+inherited method on entry. Create sets the default values for properties, 
+including:
+</p>
+<ul>
+<li>Constraints</li>
+<li>ArrowType</li>
+<li>ArrowPointerAngle</li>
+<li>ShadowType</li>
+<li>ShadowColor</li>
+<li>ArrowColor</li>
+</ul>
+</descr>
+<seealso>
+<link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+</seealso>
+</element>
+<!-- argument Visibility: default -->
+<element name="TArrow.Create.AOwner">
+<short>Owner of the class instance.</short>
+</element>
+<!-- property Visibility: published -->
+<element name="TArrow.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TArrow.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<!-- property Visibility: published -->
+<element name="TArrow.ArrowColor">
+<short>Color used to draw the arrow symbol on the control.</short>
+<descr>
+<p>
+The default value for the property is <var>clBlack</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+<!-- property Visibility: published -->
+<element name="TArrow.ArrowType">
+<short><var>ArrowType</var> - pointing up, down, left or right.</short>
+<descr>
+<p>
+<var>ArrowType</var> is a <var>TArrowType</var> property which indicates the 
+direction for the arrow pointer on the control. The default value for the 
+property is <var>atLeft</var>. Changing the value for the property causes the 
+control to be redrawn.
+</p>
+</descr>
+<seealso>
+<link id="TArrowType"/>
+</seealso>
+</element>
 
-      <element name="TArrow.ArrowPointerAngle">
-        <short>Size of the angle that forms the arrow pointer.</short>
-        <descr>
-          <p>
-            <var>ArrowPointerAngle</var> is an <var>Integer</var> property with the size of the angle (in degress) that forms the arrow pointer for the control. It determines the size in degrees for the angles on the base of the arrow pointer. ArrowPointerAngle must be in the range specified by the <var>cMinAngle</var> and <var>cMaxAngle</var> constants in the implementation for the control. The default value for the property is 60, and causes all three angles in the arrow pointer to measure 60 degrees.
-          </p>
-          <p>
-            ArrowPointerAngle is used to calculate the points for the arrow pointer triangle.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
+<element name="TArrow.ArrowPointerAngle">
+<short>Size of the angle that forms the arrow pointer.</short>
+<descr>
+<p>
+<var>ArrowPointerAngle</var> is an <var>Integer</var> property with the size 
+of the angle (in degress) that forms the arrow pointer for the control. It 
+determines the size in degrees for the angles on the base of the arrow 
+pointer. ArrowPointerAngle must be in the range specified by the 
+<var>cMinAngle</var> and <var>cMaxAngle</var> constants in the implementation 
+for the control. The default value for the property is 60, and causes all 
+three angles in the arrow pointer to measure 60 degrees.
+</p>
+<p>
+ArrowPointerAngle is used to calculate the points for the arrow pointer 
+triangle.
+</p>
+</descr>
+<seealso/>
+</element>
 
-      <!-- property Visibility: published -->
-      <element name="TArrow.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TArrow.Color" link="#lcl.controls.TControl.Color"/>
-      <element name="TArrow.Constraints" link="#lcl.controls.TControl.Constraints"/>
-      <element name="TArrow.Enabled" link="#lcl.controls.TControl.Enabled"/>
-      <element name="TArrow.Hint" link="#lcl.controls.TControl.Hint"/>
-      <element name="TArrow.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-      <element name="TArrow.OnClick" link="#lcl.controls.TControl.OnClick"/>
-      <element name="TArrow.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-      <element name="TArrow.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-      <element name="TArrow.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-      <element name="TArrow.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-      <element name="TArrow.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-      <element name="TArrow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-      <element name="TArrow.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-      <element name="TArrow.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-      <element name="TArrow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-      <element name="TArrow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-      <element name="TArrow.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-      <element name="TArrow.OnMouseWheelDown" link="#lcl.controls.TControl."/>
-      <element name="TArrow.OnMouseWheelUp" link="#lcl.controls.TControl."/>
-      <element name="TArrow.OnMouseWheelHorz" link="#lcl.controls.TControl."/>
-      <element name="TArrow.OnMouseWheelLeft" link="#lcl.controls.TControl."/>
-      <element name="TArrow.OnMouseWheelRight" link="#lcl.controls.TControl."/>
-      <element name="TArrow.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
-      <element name="TArrow.OnResize" link="#lcl.controls.TControl.OnResize"/>
-      <element name="TArrow.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-      <element name="TArrow.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-      <element name="TArrow.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-      <element name="TArrow.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<!-- property Visibility: published -->
+<element name="TArrow.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TArrow.Color" link="#lcl.controls.TControl.Color"/>
+<element name="TArrow.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TArrow.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TArrow.Hint" link="#lcl.controls.TControl.Hint"/>
+<element name="TArrow.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TArrow.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TArrow.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TArrow.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TArrow.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TArrow.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TArrow.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TArrow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TArrow.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TArrow.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TArrow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TArrow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TArrow.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TArrow.OnMouseWheelDown" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelUp" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelHorz" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelLeft" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelRight" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
+<element name="TArrow.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TArrow.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+<element name="TArrow.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TArrow.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TArrow.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 
-      <!-- property Visibility: published -->
-      <element name="TArrow.ShadowType">
-        <short>
-          <var>ShadowType</var> - the type of shadowing: None, In, Out, EtchedIn, EtchedOut.
-        </short>
-        <descr/>
-        <seealso>
-          <link id="TShadowType"/>
-        </seealso>
-      </element>
+<!-- property Visibility: published -->
+<element name="TArrow.ShadowType">
+<short>
+<var>ShadowType</var> - the type of shadowing: None, In, Out, EtchedIn, 
+EtchedOut.
+</short>
+<descr/>
+<seealso>
+<link id="TShadowType"/>
+</seealso>
+</element>
 
-      <element name="TArrow.ShadowColor">
-        <short>Color used to draw the shadow on the control.</short>
-        <descr>
-          <p>
-            <var>ShadowColor</var> is a <var>TColor</var> property with the color used to draw the shadow on the control (when enabled). The default value for the property is <var>cl3DShadow</var>. Changing the value for the property causes the control to be redrawn.
-          </p>
-          <p>
-            ShadowColor is used, along with <var>ShadowType</var>, in the <var>Paint</var> method to draw the triangle for the shadow on the control. The property value is used as both the pen and the brush color for the shadow triangle.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TArrow.ShadowType"/>
-          <link id="TArrow.Paint"/>
-        </seealso>
-      </element>
+<element name="TArrow.ShadowColor">
+<short>Color used to draw the shadow on the control.</short>
+<descr>
+<p>
+<var>ShadowColor</var> is a <var>TColor</var> property with the color used to 
+draw the shadow on the control (when enabled). The default value for the 
+property is <var>cl3DShadow</var>. Changing the value for the property causes 
+the control to be redrawn.
+</p>
+<p>
+ShadowColor is used, along with <var>ShadowType</var>, in the 
+<var>Paint</var> method to draw the triangle for the shadow on the control. 
+The property value is used as both the pen and the brush color for the shadow 
+triangle.
+</p>
+</descr>
+<seealso>
+<link id="TArrow.ShadowType"/>
+<link id="TArrow.Paint"/>
+</seealso>
+</element>
 
-      <element name="TArrow.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-      <element name="TArrow.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TArrow.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TArrow.Visible" link="#lcl.controls.TControl.Visible"/>
 
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short>Registers components for use in the Lazarus IDE.</short>
-        <descr>
-          <p>
-            The following components are added to the Lazarus IDE component palette:
-          </p>
-          <p>
-            <b>Misc</b> Tab
-          </p>
-          <ul>
-            <li>TArrow</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short>Registers components for use in the Lazarus IDE.</short>
+<descr>
+<p>
+The following components are added to the Lazarus IDE component palette:
+</p>
+<p>
+<b>Misc</b> Tab
+</p>
+<ul>
+<li>TArrow</li>
+</ul>
+</descr>
+<seealso/>
+</element>
 
-    </module>
-    <!-- Arrow -->
-  </package>
+</module>
+<!-- Arrow -->
+</package>
 </fpdoc-descriptions>

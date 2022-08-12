@@ -1,680 +1,711 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="lcl">
-    <!--
-    ====================================================================
-    LCLResCache
-    ====================================================================
-    -->
-    <module name="LCLResCache">
-      <short>Classes and routines used to cache interface resources.</short>
-      <descr>
-        <p>
-          <file>lclrescache.pas</file> contains classes and routines used to cache interface resources. See <file>graphics.pp</file> for examples.
-        </p>
-        <p>
-          This file is part of the Lazarus Component Library (<b>LCL</b>).
-        </p>
-        <p>
-          Author: Mattias Gaertner
-        </p>
-      </descr>
-
-      <!-- unresolved references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="Type"/>
-      <element name="Laz_AVL_Tree"/>
-      <element name="FPCAdds"/>
-      <element name="LazLoggerBase"/>
-      <element name="LazTracer"/>
-      <element name="LCLType"/>
-      <element name="WSReferences"/>
-      <element name="syncobjs"/>
-
-      <element name="TResourceCacheItem">
-        <short>
-          <var>TResourceCacheItem</var> - an item in a list (<var>TResourceCache</var>).</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.FDestroying">
-        <short>
-          <var>FDestroying</var> - local boolean variable to store Destroying status.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCacheItem.FReferenceCount">
-        <short>
-          <var>FReferenceCount</var> - local variable to store Reference Count.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCacheItem.Handle">
-        <short>
-          <var>Handle</var> for Cache Item - use <var>TLCLHandle</var> instead of THandle since THandle = longint under 64bit linux.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.Cache">
-        <short>The Resource <var>Cache</var> to which this Cache Item belongs.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.FirstDescriptor">
-        <short>
-          <var>FirstDescriptor</var> - the descriptor for the first item in the list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.LastDescriptor">
-        <short>
-          <var>LastDescriptor</var> - the descriptor for the last item in the list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.Next">
-        <short>The <var>Next</var> item in the list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.Prev">
-        <short><var>Prev</var> - the previous item in the list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso>
-          <link id="#rtl.system.TObject.Create">TObject.Create</link>
-        </seealso>
-      </element>
-      <element name="TResourceCacheItem.Create.TheCache">
-        <short/>
-      </element>
-      <element name="TResourceCacheItem.Create.TheHandle">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheItem.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso>
-          <link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
-        </seealso>
-      </element>
-
-      <element name="TResourceCacheItem.IncreaseRefCount">
-        <short>
-          <var>IncreaseRefCount</var> - increment the reference count.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.DecreaseRefCount">
-        <short>
-          <var>DecreaseRefCount</var> - decrement the reference count.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.AddToList">
-        <short>
-          <var>AddToList</var> - add an item to the cache list specified by <var>First</var>, <var>Last</var>.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCacheItem.AddToList.First">
-        <short/>
-      </element>
-      <element name="TResourceCacheItem.AddToList.Last">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheItem.RemoveFromList">
-        <short>
-          <var>RemoveFromList</var> - remove an item from the cache list specified by <var>First</var>, <var>Last</var>.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCacheItem.RemoveFromList.First">
-        <short/>
-      </element>
-      <element name="TResourceCacheItem.RemoveFromList.Last">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheItem.WarnReferenceHigh">
-        <short>
-          <var>WarnReferenceHigh</var> - issue a warning if the number of references gets too high.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItem.ReferenceCount">
-        <short>
-          <var>ReferenceCount</var> - the number of references to this Item.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheItemClass">
-        <short>Class reference used to create new TResourceCacheItem instances.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor">
-        <short>
-          <var>TResourceCacheDescriptor</var> - a class of descriptors for ResourceCache Items.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.FDestroying">
-        <short>
-          <var>FDestroying</var> - local boolean variable to store Destroying status.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Item">
-        <short>
-          <var>Item</var> - the Resource Cache Item to which this descriptor refers.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Cache">
-        <short>
-          <var>Cache</var> - the resource Cache to which this Item belongs.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Next">
-        <short>The <var>Next</var> descriptor in the list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Prev">
-        <short>
-          <var>Prev</var> - the Previous descriptor in the list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Create">
-        <short>Constructor for the class instance.</short>
-        <descr/>
-        <seealso>
-          <link id="#rtl.system.TObject.Create">TObject.Create</link>
-        </seealso>
-      </element>
-      <element name="TResourceCacheDescriptor.Create.TheCache">
-        <short/>
-      </element>
-      <element name="TResourceCacheDescriptor.Create.TheItem">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso>
-          <link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
-        </seealso>
-      </element>
-
-      <element name="TResourceCacheDescriptor.AddToList">
-        <short>
-          <var>AddToList</var> - add a descriptor to the list specified by <var>First</var>, <var>Last</var>.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCacheDescriptor.AddToList.First">
-        <short/>
-      </element>
-      <element name="TResourceCacheDescriptor.AddToList.Last">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheDescriptor.RemoveFromList">
-        <short>
-          <var>RemoveFromList</var> - remove a descriptor from the list specified by <var>First</var>, <var>Last</var>.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCacheDescriptor.RemoveFromList.First">
-        <short/>
-      </element>
-      <element name="TResourceCacheDescriptor.RemoveFromList.Last">
-        <short/>
-      </element>
-
-      <element name="TResourceCacheDescriptorClass">
-        <short>Class reference used to create new TResourceCacheDescriptor instances.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache">
-        <short>
-          <var>TResourceCache</var> - a cache (linked list) for storing Resources.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.FItems"/>
-      <element name="TResourceCache.FDescriptors"/>
-
-      <element name="TResourceCache.FDestroying">
-        <short>
-          <var>FDestroying</var> - local boolean variable to store Destroying status.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FResourceCacheDescriptorClass">
-        <short>
-          <var>FResourceCacheDescriptorClass</var> - local variable for holding the class of the current descriptor.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FResourceCacheItemClass">
-        <short>
-          <var>FResourceCacheItemClass</var> - local variable for holding the class of the current cache item.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FMaxUnusedItem">
-        <short>
-          <var>FMaxUnusedItem</var> - how many freed resources to keep.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FFirstUnusedItem">
-        <short>
-          <var>FFirstUnusedItem</var> - local variable storing location of first free item.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FLastUnusedItem">
-        <short>
-          <var>FLastUnusedItem</var> - local variable storing location of last free item.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.FUnUsedItemCount">
-        <short>
-          <var>FUnUsedItemCount</var> - local variable with count of free items.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TResourceCache.RemoveItem">
-        <short>
-          <var>RemoveItem</var> from CacheItem list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.RemoveItem.Item">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.RemoveDescriptor">
-        <short>
-          <var>RemoveDescriptor</var> from Cache Descriptor list.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.RemoveDescriptor.Desc">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.ItemUsed">
-        <short>
-          <var>ItemUsed</var> - method for signalling that the specified <var>Item</var> is being used.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.ItemUsed.Item">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.ItemUnused">
-        <short>
-          <var>ItemUnused</var> - method for signalling that the specified <var>Item</var> is unused.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.ItemUnused.Item">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.ItemIsUsed">
-        <short>
-          <var>ItemIsUsed</var> - returns True if specified Item is being used.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.ItemIsUsed.Result">
-        <short/>
-      </element>
-      <element name="TResourceCache.ItemIsUsed.Item">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Allocates resources for the internal TAVLTree instances used for items and descriptors in the class instance, and sets the default values for properties.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.Clear">
-        <short>Clears the current entries in the Resource Cache.</short>
-        <descr>
-          <p>
-            Frees entries in the internal items and descriptors for the resource cache.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.Destroy">
-        <short>
-          Destructor for the class instance.
-        </short>
-        <descr>
-          <p>
-            Frees resources allocates in the Create constructor, and calls the inherited method prior to exit.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.CompareItems">
-        <short>
-          <var>CompareItems</var> - returns 0 if items are equal, -1 if Item1 is less, 1 if Item1 is greater.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.CompareItems.Result">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareItems.Tree">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareItems.Item1">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareItems.Item2">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.CompareDescriptors">
-        <short>
-          <var>CompareDescriptors</var> - returns 0 if descriptors are equal, -1 if Desc1 is less, 1 if Desc1 is greater.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TResourceCache.CompareDescriptors.Result">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareDescriptors.Tree">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareDescriptors.Desc1">
-        <short/>
-      </element>
-      <element name="TResourceCache.CompareDescriptors.Desc2">
-        <short/>
-      </element>
-
-      <element name="TResourceCache.ConsistencyCheck">
-        <short>
-          <var>ConsistencyCheck</var> - checks that Items have valid descriptors.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.MaxUnusedItem">
-        <short>
-          <var>MaxUnusedItem</var> - the largest permitted number of unused items.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.ResourceCacheItemClass">
-        <short>
-          <var>ResourceCacheItemClass</var> - the Class of the current Cache Item.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TResourceCache.ResourceCacheDescriptorClass">
-        <short>
-          <var>ResourceCacheDescriptorClass</var> - the class of the current cache item descriptor.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="THandleResourceCache">
-        <short>
-          <var>THandleResourceCache</var> - a Resource Cache for Handles.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="THandleResourceCache.FindItem">
-        <short>
-          <var>FindItem</var> - locate the item with the specified Handle.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="THandleResourceCache.FindItem.Result">
-        <short/>
-      </element>
-      <element name="THandleResourceCache.FindItem.Handle">
-        <short/>
-      </element>
-
-      <element name="TBlockResourceCacheDescriptor">
-        <short>
-          <var>TBlockResourceCacheDescriptor</var> - descriptor for a Block Resource Cache.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TBlockResourceCacheDescriptor.Data">
-        <short>Pointer to the <var>Data</var>.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TBlockResourceCacheDescriptor.Destroy">
-        <short>Destructor for the class instance.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TBlockResourceCache">
-        <short>
-          <var>TBlockResourceCache</var> - a cache for Block resources.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TBlockResourceCache.FDataSize"/>
-
-      <element name="TBlockResourceCache.FOnCompareDescPtrWithDescriptor">
-        <short>
-          <var>FOnCompareDescPtrWithDescriptor</var> - local variable to hold the result of a comparison between a descriptor pointer and the descriptor itself.
-        </short>
-        <descr/>
-      </element>
-
-      <element name="TBlockResourceCache.Create">
-        <short>Constructor for the class instance.</short>
-        <descr>
-          <p>
-            Allocates resources needed for the cache descriptor. Sets the initial DataSize for the cache. Assign the default compare routine used for the block resources.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TBlockResourceCache.Create.TheDataSize">
-        <short/>
-      </element>
-
-      <element name="TBlockResourceCache.FindDescriptor">
-        <short>
-          <var>FindDescriptor</var> - returns the descriptor whose pointer is given.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TBlockResourceCache.FindDescriptor.Result">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.FindDescriptor.DescPtr">
-        <short/>
-      </element>
-
-      <element name="TBlockResourceCache.AddResource">
-        <short>
-          <var>AddResource</var> - inserts a Block resource into the list, referenced by a handle and a descriptor pointer, and returns the Block Resource Cache descriptor.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TBlockResourceCache.AddResource.Result">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.AddResource.Handle">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.AddResource.DescPtr">
-        <short/>
-      </element>
-
-      <element name="TBlockResourceCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TBlockResourceCache.CompareDescriptors.Result">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.CompareDescriptors.Tree">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.CompareDescriptors.Desc1">
-        <short/>
-      </element>
-      <element name="TBlockResourceCache.CompareDescriptors.Desc2">
-        <short/>
-      </element>
-
-      <element name="TBlockResourceCache.DataSize">
-        <short>
-          <var>DataSize</var> - the total size of the data in the Block Resource.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TBlockResourceCache.OnCompareDescPtrWithDescriptor">
-        <short>
-          <var>OnCompareDescPtrWithDescriptor</var> - the result of a comparison between a descriptor pointer and the descriptor itself.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="ComparePHandleWithResourceCacheItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ComparePHandleWithResourceCacheItem.Result">
-        <short/>
-      </element>
-      <element name="ComparePHandleWithResourceCacheItem.HandlePtr">
-        <short/>
-      </element>
-      <element name="ComparePHandleWithResourceCacheItem.Item">
-        <short/>
-      </element>
-
-      <element name="CompareDescPtrWithBlockResDesc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="CompareDescPtrWithBlockResDesc.Result">
-        <short/>
-      </element>
-      <element name="CompareDescPtrWithBlockResDesc.DescPtr">
-        <short/>
-      </element>
-      <element name="CompareDescPtrWithBlockResDesc.Item">
-        <short/>
-      </element>
-
-    </module>
-      <!-- LCLResCache -->
-  </package>
+<package name="lcl">
+<!--
+====================================================================
+LCLResCache
+====================================================================
+-->
+<module name="LCLResCache">
+<short>Classes and routines used to cache interface resources.</short>
+<descr>
+<p>
+<file>lclrescache.pas</file> contains classes and routines used to cache 
+interface resources. See <file>graphics.pp</file> for examples.
+</p>
+<p>
+This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
+<p>
+Author: Mattias Gaertner
+</p>
+</descr>
+
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Type"/>
+<element name="Laz_AVL_Tree"/>
+<element name="FPCAdds"/>
+<element name="LazLoggerBase"/>
+<element name="LazTracer"/>
+<element name="LCLType"/>
+<element name="WSReferences"/>
+<element name="syncobjs"/>
+
+<element name="TResourceCacheItem">
+<short>
+<var>TResourceCacheItem</var> - an item in a list 
+(<var>TResourceCache</var>).</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.FDestroying">
+<short>
+<var>FDestroying</var> - local boolean variable to store Destroying status.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCacheItem.FReferenceCount">
+<short>
+<var>FReferenceCount</var> - local variable to store Reference Count.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCacheItem.Handle">
+<short>
+<var>Handle</var> for Cache Item - use <var>TLCLHandle</var> instead of 
+THandle since THandle = longint under 64bit linux.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.Cache">
+<short>The Resource <var>Cache</var> to which this Cache Item belongs.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.FirstDescriptor">
+<short>
+<var>FirstDescriptor</var> - the descriptor for the first item in the list.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.LastDescriptor">
+<short>
+<var>LastDescriptor</var> - the descriptor for the last item in the list.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.Next">
+<short>The <var>Next</var> item in the list.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.Prev">
+<short><var>Prev</var> - the previous item in the list.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso>
+<link id="#rtl.system.TObject.Create">TObject.Create</link>
+</seealso>
+</element>
+<element name="TResourceCacheItem.Create.TheCache">
+<short/>
+</element>
+<element name="TResourceCacheItem.Create.TheHandle">
+<short/>
+</element>
+
+<element name="TResourceCacheItem.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso>
+<link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
+</seealso>
+</element>
+
+<element name="TResourceCacheItem.IncreaseRefCount">
+<short>
+<var>IncreaseRefCount</var> - increment the reference count.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.DecreaseRefCount">
+<short>
+<var>DecreaseRefCount</var> - decrement the reference count.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.AddToList">
+<short>
+<var>AddToList</var> - add an item to the cache list specified by 
+<var>First</var>, <var>Last</var>.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCacheItem.AddToList.First">
+<short/>
+</element>
+<element name="TResourceCacheItem.AddToList.Last">
+<short/>
+</element>
+
+<element name="TResourceCacheItem.RemoveFromList">
+<short>
+<var>RemoveFromList</var> - remove an item from the cache list specified by 
+<var>First</var>, <var>Last</var>.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCacheItem.RemoveFromList.First">
+<short/>
+</element>
+<element name="TResourceCacheItem.RemoveFromList.Last">
+<short/>
+</element>
+
+<element name="TResourceCacheItem.WarnReferenceHigh">
+<short>
+<var>WarnReferenceHigh</var> - issue a warning if the number of references 
+gets too high.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItem.ReferenceCount">
+<short>
+<var>ReferenceCount</var> - the number of references to this Item.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheItemClass">
+<short>
+Class reference used to create new TResourceCacheItem instances.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor">
+<short>
+<var>TResourceCacheDescriptor</var> - a class of descriptors for 
+ResourceCache Items.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor.FDestroying">
+<short>
+<var>FDestroying</var> - local boolean variable to store Destroying status.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCacheDescriptor.Item">
+<short>
+<var>Item</var> - the Resource Cache Item to which this descriptor refers.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor.Cache">
+<short>
+<var>Cache</var> - the resource Cache to which this Item belongs.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor.Next">
+<short>The <var>Next</var> descriptor in the list.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor.Prev">
+<short>
+<var>Prev</var> - the Previous descriptor in the list.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCacheDescriptor.Create">
+<short>Constructor for the class instance.</short>
+<descr/>
+<seealso>
+<link id="#rtl.system.TObject.Create">TObject.Create</link>
+</seealso>
+</element>
+<element name="TResourceCacheDescriptor.Create.TheCache">
+<short/>
+</element>
+<element name="TResourceCacheDescriptor.Create.TheItem">
+<short/>
+</element>
+
+<element name="TResourceCacheDescriptor.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso>
+<link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
+</seealso>
+</element>
+
+<element name="TResourceCacheDescriptor.AddToList">
+<short>
+<var>AddToList</var> - add a descriptor to the list specified by 
+<var>First</var>, <var>Last</var>.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCacheDescriptor.AddToList.First">
+<short/>
+</element>
+<element name="TResourceCacheDescriptor.AddToList.Last">
+<short/>
+</element>
+
+<element name="TResourceCacheDescriptor.RemoveFromList">
+<short>
+<var>RemoveFromList</var> - remove a descriptor from the list specified by 
+<var>First</var>, <var>Last</var>.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCacheDescriptor.RemoveFromList.First">
+<short/>
+</element>
+<element name="TResourceCacheDescriptor.RemoveFromList.Last">
+<short/>
+</element>
+
+<element name="TResourceCacheDescriptorClass">
+<short>
+Class reference used to create new TResourceCacheDescriptor instances.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCache">
+<short>
+<var>TResourceCache</var> - a cache (linked list) for storing Resources.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCache.FItems"/>
+<element name="TResourceCache.FDescriptors"/>
+
+<element name="TResourceCache.FDestroying">
+<short>
+<var>FDestroying</var> - local boolean variable to store Destroying status.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FResourceCacheDescriptorClass">
+<short>
+<var>FResourceCacheDescriptorClass</var> - local variable for holding the 
+class of the current descriptor.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FResourceCacheItemClass">
+<short>
+<var>FResourceCacheItemClass</var> - local variable for holding the class of 
+the current cache item.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FMaxUnusedItem">
+<short>
+<var>FMaxUnusedItem</var> - how many freed resources to keep.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FFirstUnusedItem">
+<short>
+<var>FFirstUnusedItem</var> - local variable storing location of first free 
+item.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FLastUnusedItem">
+<short>
+<var>FLastUnusedItem</var> - local variable storing location of last free 
+item.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.FUnUsedItemCount">
+<short>
+<var>FUnUsedItemCount</var> - local variable with count of free items.
+</short>
+<descr/>
+</element>
+
+<element name="TResourceCache.RemoveItem">
+<short>
+<var>RemoveItem</var> from CacheItem list.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.RemoveItem.Item">
+<short/>
+</element>
+
+<element name="TResourceCache.RemoveDescriptor">
+<short>
+<var>RemoveDescriptor</var> from Cache Descriptor list.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.RemoveDescriptor.Desc">
+<short/>
+</element>
+
+<element name="TResourceCache.ItemUsed">
+<short>
+<var>ItemUsed</var> - method for signalling that the specified 
+<var>Item</var> is being used.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.ItemUsed.Item">
+<short/>
+</element>
+
+<element name="TResourceCache.ItemUnused">
+<short>
+<var>ItemUnused</var> - method for signalling that the specified 
+<var>Item</var> is unused.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.ItemUnused.Item">
+<short/>
+</element>
+
+<element name="TResourceCache.ItemIsUsed">
+<short>
+<var>ItemIsUsed</var> - returns True if specified Item is being used.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.ItemIsUsed.Result">
+<short/>
+</element>
+<element name="TResourceCache.ItemIsUsed.Item">
+<short/>
+</element>
+
+<element name="TResourceCache.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Allocates resources for the internal TAVLTree instances used for items and 
+descriptors in the class instance, and sets the default values for properties.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TResourceCache.Clear">
+<short>Clears the current entries in the Resource Cache.</short>
+<descr>
+<p>
+Frees entries in the internal items and descriptors for the resource cache.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TResourceCache.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+Frees resources allocates in the Create constructor, and calls the inherited 
+method prior to exit.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TResourceCache.CompareItems">
+<short>
+<var>CompareItems</var> - returns 0 if items are equal, -1 if Item1 is less, 
+1 if Item1 is greater.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.CompareItems.Result">
+<short/>
+</element>
+<element name="TResourceCache.CompareItems.Tree">
+<short/>
+</element>
+<element name="TResourceCache.CompareItems.Item1">
+<short/>
+</element>
+<element name="TResourceCache.CompareItems.Item2">
+<short/>
+</element>
+
+<element name="TResourceCache.CompareDescriptors">
+<short>
+<var>CompareDescriptors</var> - returns 0 if descriptors are equal, -1 if 
+Desc1 is less, 1 if Desc1 is greater.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TResourceCache.CompareDescriptors.Result">
+<short/>
+</element>
+<element name="TResourceCache.CompareDescriptors.Tree">
+<short/>
+</element>
+<element name="TResourceCache.CompareDescriptors.Desc1">
+<short/>
+</element>
+<element name="TResourceCache.CompareDescriptors.Desc2">
+<short/>
+</element>
+
+<element name="TResourceCache.ConsistencyCheck">
+<short>
+<var>ConsistencyCheck</var> - checks that Items have valid descriptors.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCache.MaxUnusedItem">
+<short>
+<var>MaxUnusedItem</var> - the largest permitted number of unused items.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCache.ResourceCacheItemClass">
+<short>
+<var>ResourceCacheItemClass</var> - the Class of the current Cache Item.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TResourceCache.ResourceCacheDescriptorClass">
+<short>
+<var>ResourceCacheDescriptorClass</var> - the class of the current cache item 
+descriptor.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="THandleResourceCache">
+<short>
+<var>THandleResourceCache</var> - a Resource Cache for Handles.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="THandleResourceCache.FindItem">
+<short>
+<var>FindItem</var> - locate the item with the specified Handle.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="THandleResourceCache.FindItem.Result">
+<short/>
+</element>
+<element name="THandleResourceCache.FindItem.Handle">
+<short/>
+</element>
+
+<element name="TBlockResourceCacheDescriptor">
+<short>
+<var>TBlockResourceCacheDescriptor</var> - descriptor for a Block Resource 
+Cache.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TBlockResourceCacheDescriptor.Data">
+<short>Pointer to the <var>Data</var>.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TBlockResourceCacheDescriptor.Destroy">
+<short>Destructor for the class instance.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TBlockResourceCache">
+<short>
+<var>TBlockResourceCache</var> - a cache for Block resources.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TBlockResourceCache.FDataSize"/>
+
+<element name="TBlockResourceCache.FOnCompareDescPtrWithDescriptor">
+<short>
+<var>FOnCompareDescPtrWithDescriptor</var> - local variable to hold the 
+result of a comparison between a descriptor pointer and the descriptor itself.
+</short>
+<descr/>
+</element>
+
+<element name="TBlockResourceCache.Create">
+<short>Constructor for the class instance.</short>
+<descr>
+<p>
+Allocates resources needed for the cache descriptor. Sets the initial 
+DataSize for the cache. Assign the default compare routine used for the block 
+resources.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TBlockResourceCache.Create.TheDataSize">
+<short/>
+</element>
+
+<element name="TBlockResourceCache.FindDescriptor">
+<short>
+<var>FindDescriptor</var> - returns the descriptor whose pointer is given.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TBlockResourceCache.FindDescriptor.Result">
+<short/>
+</element>
+<element name="TBlockResourceCache.FindDescriptor.DescPtr">
+<short/>
+</element>
+
+<element name="TBlockResourceCache.AddResource">
+<short>
+<var>AddResource</var> - inserts a Block resource into the list, referenced 
+by a handle and a descriptor pointer, and returns the Block Resource Cache 
+descriptor.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TBlockResourceCache.AddResource.Result">
+<short/>
+</element>
+<element name="TBlockResourceCache.AddResource.Handle">
+<short/>
+</element>
+<element name="TBlockResourceCache.AddResource.DescPtr">
+<short/>
+</element>
+
+<element name="TBlockResourceCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TBlockResourceCache.CompareDescriptors.Result">
+<short/>
+</element>
+<element name="TBlockResourceCache.CompareDescriptors.Tree">
+<short/>
+</element>
+<element name="TBlockResourceCache.CompareDescriptors.Desc1">
+<short/>
+</element>
+<element name="TBlockResourceCache.CompareDescriptors.Desc2">
+<short/>
+</element>
+
+<element name="TBlockResourceCache.DataSize">
+<short>
+<var>DataSize</var> - the total size of the data in the Block Resource.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TBlockResourceCache.OnCompareDescPtrWithDescriptor">
+<short>
+<var>OnCompareDescPtrWithDescriptor</var> - the result of a comparison 
+between a descriptor pointer and the descriptor itself.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="ComparePHandleWithResourceCacheItem">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="ComparePHandleWithResourceCacheItem.Result">
+<short/>
+</element>
+<element name="ComparePHandleWithResourceCacheItem.HandlePtr">
+<short/>
+</element>
+<element name="ComparePHandleWithResourceCacheItem.Item">
+<short/>
+</element>
+
+<element name="CompareDescPtrWithBlockResDesc">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="CompareDescPtrWithBlockResDesc.Result">
+<short/>
+</element>
+<element name="CompareDescPtrWithBlockResDesc.DescPtr">
+<short/>
+</element>
+<element name="CompareDescPtrWithBlockResDesc.Item">
+<short/>
+</element>
+
+</module>
+<!-- LCLResCache -->
+</package>
 </fpdoc-descriptions>

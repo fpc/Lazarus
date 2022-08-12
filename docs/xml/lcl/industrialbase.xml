@@ -3,17 +3,20 @@
 <package name="lcl">
 
 <!--
-  ====================================================================
-    IndustrialBase
-  ====================================================================
+====================================================================
+IndustrialBase
+====================================================================
 -->
 
 <module name="IndustrialBase">
-<short>Contains the base class for graphic controls that support anti-aliasing.</short>
+<short>
+Contains the base class for graphic controls that support anti-aliasing.
+</short>
 <descr>
-  <p>
-    <file>industrialbase.pp</file> contains the base class for graphic controls that support anti-aliasing.
-  </p>
+<p>
+<file>industrialbase.pp</file> contains the base class for graphic controls 
+that support anti-aliasing.
+</p>
 </descr>
 
 <!-- class Visibility: default -->

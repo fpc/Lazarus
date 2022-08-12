@@ -4,7 +4,8 @@
 <short>(LCL) Lazarus Component Library.</short>
 <descr>
 <p>
-The Lazarus Component Library (LCL) is a set of visual components to create GUI applications.
+The Lazarus Component Library (LCL) is a set of visual components to create 
+GUI applications.
 </p>
 </descr>
 </package>
