@@ -325,9 +325,9 @@ client area, equivalent to the top coordinate of the slider. The Position can
 be changed by the user or by code.
 </p>
 <p>
-Scroll bars usually appear only when Range is higher than Page, i.e. when the 
-entire content cannot be shown at the same time. See the scroll bar 
-properties in <var>TScrollingWinControl</var> for more details.
+Scroll bars usually appear only when Range is larger than Page, i.e. when the 
+entire content cannot be shown in the visible area for a control. See the 
+scroll bar properties in <var>TScrollingWinControl</var> for more details.
 </p>
 </descr>
 <seealso>
@@ -388,7 +388,7 @@ including:
 
 <element name="TControlScrollBar.GetAutoScroll">
 <short>
-The AutoScroll state for the associated TScrollingWinControl control.
+Gets the AutoScroll state for the associated TScrollingWinControl control.
 </short>
 <descr>
 <remark>
@@ -758,8 +758,8 @@ sets the default values for properties, including:
 <dd>Set to 8.</dd>
 <dt>Position and Range</dt>
 <dd>Set to 0 (zero).</dd>
-<dt>Smooth and Tracking</dt>
-<dd>Set to <b>False</b>.</dd>
+<dt>Smooth, Tracking</dt>
+<dd>Both are set to <b>False</b>.</dd>
 <dt>Visible</dt>
 <dd>Set to <b>True</b>.</dd>
 </dl>
@@ -847,14 +847,33 @@ instance.
 </element>
 
 <element name="TControlScrollBar.Size">
-<short>The adjustable size of the scroll bar.</short>
+<short>Height or width for the scroll bar.</short>
 <descr>
 <p>
-The length of the bar is the Width (or Height) of the Parent Control, the 
-Size is the other (free) coordinate.
+<var>Size</var> is a read-only <var>Integer</var> property with the width or 
+height in pixels for the scroll bar indicated in the Kind property. For a 
+horizontal scroll bar (Kind is sbHorizontal), the return value is the height 
+of the scroll bar. Conversely, for a vertical scroll bar (Kind is sbVertical) 
+the value is the width of the scroll bar.
+</p>
+<p>
+Size calls the GetScrollbarSize routine in the LCL interface to get the 
+return value when the Handle for the control has been allocated. Otherwise, 
+the GetSystemMetrics method in the widgetset class is called to get 
+the return value.
+</p>
+<p>
+Use ControlSize, ClientSize, ClientSizeWithBar, and ClientSizeWithoutBar methods to get the control or client width for the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TControlScrollBar.Kind"/>
+<link id="TControlScrollBar.ControlSize"/>
+<link id="TControlScrollBar.ClientSize"/>
+<link id="TControlScrollBar.ClientSizeWithBar"/>
+<link id="TControlScrollBar.ClientSizeWithoutBar"/>
+<link id="TScrollBarKind"/>
+</seealso>
 </element>
 
 <element name="TControlScrollBar.ControlSize">
@@ -982,14 +1001,15 @@ methods in <var>TScrollingWinControl</var>.
 
 <element name="TControlScrollBar.Increment">
 <short>
-The small Position increment, applicable to the scroll bar arrows.
+Number of pixels the display area is scrolled for scroll bar or mouse wheel 
+movements.
 </short>
 <descr>
 <p>
 <var>Increment</var> is a <var>TScrollBarInc</var> property which indicates 
 the amount the client area in the associated control is scrolled when the 
-<b>Up</b> or <b>Down</b> navigation arrows on the scroll bar are clicked. The 
-default value is <b>8</b>.
+<b>Up</b> or <b>Down</b> navigation arrows on the scroll bar are clicked. It is also used for movements of the mouse wheel on the control. The default 
+value is <b>8</b> pixels.
 </p>
 <p>
 The value in Increment may be automatically recalculated in the 
@@ -1044,14 +1064,26 @@ control, such as:
 
 <element name="TControlScrollBar.Page">
 <short>
-The slider size, position increment applicable to the scroll bar area beneath 
-the slider.
+Number of pixels needed for a page on the associated control.
 </short>
 <descr>
 <p>
-The amount by which the scroll indicator moves if the cursor selects the 
-scroll bar above, below or on either side of the scroll indicator. The 
-default value is 80.
+<var>Page</var> is a <var>TScrollBarInc</var> property with the number of 
+pixels needed for a page using the orientation in Kind for the scroll bar. 
+This is the amount that the associated control is scrolled when the track bar 
+or direction indicators are clicked on the scroll bar. The default value for 
+the property is 80 pixels.
+</p>
+<p>
+When the associated control is a TScrollingWinControl descendant, the scroll 
+information is retrieved using the Handle for the control. The property value 
+may be changed when the associated control calls its UpdateScrollbars method. 
+This can occur when the handle is created for the associated control, or when 
+its AutoScroll property is changed.
+</p>
+<p>
+Changing the value for the property causes the ControlUpdateScrollBars method 
+to be called to update the scroll bars in the associated control.
 </p>
 </descr>
 <seealso/>
@@ -1090,7 +1122,7 @@ The default value for the property is <b>False</b>.
 </element>
 
 <element name="TControlScrollBar.Position">
-<short>Position of the slider, 0..Range-Page.</short>
+<short>Position of the scroll bar slider in the range 0..Range-Page.</short>
 <descr>
 <p>
 The Position reflects the top coordinate of the slider, which is Range-Page 
@@ -1101,19 +1133,44 @@ when the slider is at the bottom of the bar.
 </element>
 
 <element name="TControlScrollBar.Range">
-<short>The virtual size of the Parent Control.</short>
+<short>
+The size of the logical display area on the associated control for the scroll 
+bar orientation.
+</short>
 <descr>
+<p>
+<var>Range</var> is an <var>Integer</var> property with the number of pixels 
+needed for the logical display area on the control where the scroll bar is 
+used. It measures the size of the scrolled content in the direction indicated 
+by the Kind property. The default value for the property is 0, and indicates 
+the dimensions for the scrollable content is smaller than the Page size for 
+the scroll bar.
+</p>
+<p>
+The values in Range and other properties are updated when the associated 
+control recalculates sizes and positions for its scroll bars.
+</p>
+<p>
+Use Position to determine the origin for the scrollable content displayed in 
+the visible area on the associated control.
+</p>
+<p>
+Use Page to determine the number of pixels along the scroll bar orientation 
+needed for the visible area on the associated control.
+</p>
 </descr>
 <seealso/>
 </element>
 
 <element name="TControlScrollBar.Tracking">
-<short>Gives feedback while the slider is dragged.</short>
+<short>
+Enables feedback when the slider is dragged.
+</short>
 <descr>
 <p>
-When it takes a significant amount of time to repaint the parent control at a 
-new position, Tracking should be <b>False</b> to prevent flicker. This causes 
-the control to be updated only when the slider is released.
+If it takes a significant amount of time to repaint the associated control at 
+a new position, Tracking should be set to <b>False</b> to prevent flicker. 
+This causes the control to be updated when the slider is released.
 </p>
 </descr>
 <seealso>
@@ -1124,15 +1181,14 @@ the control to be updated only when the slider is released.
 <short>Hides the scroll bar when <b>False</b> (default <b>True</b>).</short>
 <descr>
 <p>
-The scroll bar widget is visible only if (Visible=True) <b>and</b> 
-(Range&gt;Page).
+The scroll bar is visible only if (Visible = True) <b>and</b> 
+(Range &gt; Page).
 </p>
 <p>
-Set Visible to <b>False</b> to disallow the user to scroll the content, while 
-the content still can be scrolled by code.
+Set Visible to <b>False</b> to hide the scroll bar. The content on the associated control can still be scrolled in program code.
 </p>
 <p>
-Use IsScrollBarVisible to get the current visible state of the widget.
+Use IsScrollBarVisible to get the current visible state for the scroll bar.
 </p>
 </descr>
 <seealso>
@@ -1141,7 +1197,7 @@ Use IsScrollBarVisible to get the current visible state of the widget.
 </element>
 
 <element name="TScrollingWinControl">
-<short>Class of a windowed control with incorporated scroll bars.</short>
+<short>Implements a windowed control with scroll bars.</short>
 <descr>
 <p>
 This class introduces a logical (virtual) client area, part of which is 
@@ -1191,21 +1247,21 @@ progress.
 
 <element name="TScrollingWinControl.AlignControls">
 <short>
-Aligns the controls which have the class instance as their parent.
+Aligns the controls which have the class instance as their Parent.
 </short>
 <descr>
 <p>
 Calls the inherited method to align the specified control and its children to 
 the parent control. Ensures that the page, range, and position in the scroll 
 bars are recalculated when <var>AutoScroll</var> is enabled and both 
-<var>HorzScrollBar</var> and <var>VertScrollBar</var> are in use.
+<var>HorzScrollBar</var> and <var>VertScrollBar</var> are assigned.
 </p>
 </descr>
 <seealso>
 <link id="TScrollingWinControl.AutoScroll"/>
 <link id="TScrollingWinControl.HorzScrollBar"/>
 <link id="TScrollingWinControl.VertScrollBar"/>
-<link id="#LCL.Controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
+<link id="#lcl.controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
 </seealso>
 </element>
 <element name="TScrollingWinControl.AlignControls.AControl">
@@ -1227,7 +1283,7 @@ a dock site by an active docking manager.
 <p>
 Use the <var>AutoSize</var> property to enabled or disable automatic control 
 resizing. Set the <var>UseDockManager</var> property to <b>False</b> to 
-disable use of the <var>DockSite</var> for the control.
+disable using the control as a <var>DockSite</var> for other controls.
 </p>
 </descr>
 <seealso>
@@ -1243,8 +1299,15 @@ disable use of the <var>DockSite</var> for the control.
 </element>
 
 <element name="TScrollingWinControl.CalculateAutoRanges">
-<short>Sets or resets the ranges used for scroll bars in the control.</short>
+<short>Sets or resets the ranges used for scroll bars on the control.</short>
 <descr>
+<p>
+<var>CalculateAutoRanges</var> calculates the preferred size for the control 
+- both with and without scroll bars. The Range properties in HorzScrollBar 
+and VertScrollBar are updated to reflect the logical (virtual) size for the 
+content on the control. The Range value is set to 0 if the scroll bar is not 
+visible.
+</p>
 <p>
 Used in the implementation of the ComputeScrollbars method.
 </p>
@@ -1253,6 +1316,8 @@ Used in the implementation of the ComputeScrollbars method.
 <link id="TScrollingWinControl.ComputeScrollbars"/>
 <link id="TScrollingWinControl.HorzScrollBar"/>
 <link id="TScrollingWinControl.VertScrollBar"/>
+<link id="TScrollingWinControl.GetPreferredSizeClientFrame"/>
+<link id="#lcl.controls.TControl.GetPreferredSize">TControl.GetPreferredSize</link>
 </seealso>
 </element>
 
@@ -1260,7 +1325,7 @@ Used in the implementation of the ComputeScrollbars method.
 <short>Creates the window handle for the control.</short>
 <descr>
 <p>
-Ensures that the scroll bar page, range, and visibility are established when 
+Ensures that the scroll bar page, range, and visibility are assigned when 
 the handles for the windowed control are created. Temporarily disables 
 auto-sizing in the method, and re-enables auto-sizing prior to exit. Calls 
 the inherited method to create the window and its handles.
@@ -1276,18 +1341,30 @@ the inherited method to create the window and its handles.
 <short>The origin for the physical client area.</short>
 <descr/>
 <seealso>
-<link id="#LCL.Controls.TControl.GetClientScrollOffset">TControl.GetClientScrollOffset</link>
+<link id="#lcl.controls.TControl.GetClientScrollOffset">TControl.GetClientScrollOffset</link>
 </seealso>
 </element>
 <element name="TScrollingWinControl.GetClientScrollOffset.Result">
-<short>The scroll bar Positions, or (0,0) if no scroll bars in use.</short>
+<short>The scroll bar Positions, or (0,0) if scroll bars are not used.</short>
 </element>
 
-<element name="TScrollingWinControl.GetLogicalClientRect" link="#lcl.controls.TControl.GetLogicalClientRect">
-<short>Returns the full virtual ClientRect.</short>
-<descr/>
+<element name="TScrollingWinControl.GetLogicalClientRect">
+<short>Returns the logical size of the client area on the control.</short>
+<descr>
+<p>
+<var>GetLogicalClientRect</var> is an overridden method in 
+<var>TScrollingWinControl</var>; it re-implements the method introduced in 
+the ancestor class. The return value contains the value in the ClientRect 
+property. It ensures that the Right and Bottom members in the return value 
+are updated (when needed) to reflect the current Range values for the 
+respective visible scroll bars.
+</p>
+</descr>
 <seealso>
+<link id="TControlScrollBar.Visible"/>
+<link id="TControlScrollBar.Range"/>
 <link id="#lcl.controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
+<link id="#lcl.controls.TControl.ClientRect">TControl.ClientRect</link>
 </seealso>
 </element>
 <element name="TScrollingWinControl.GetLogicalClientRect.Result">
@@ -1297,11 +1374,30 @@ the control.
 </short>
 </element>
 
-<element name="TScrollingWinControl.DoOnResize" link="#lcl.controls.TControl.DoOnResize">
-<short>Also updates scroll bars if needed.</short>
-<descr/>
+<element name="TScrollingWinControl.DoOnResize">
+<short>Performs actions needed when the control has been resized.</short>
+<descr>
+<p>
+<var>DoOnResize</var> is an overridden method in 
+<var>TScrollingWinControl</var>. It calls the inherited method on entry to 
+signal the OnResize event handler (when assigned). Other OnResize handlers 
+for the application are also signalled.
+</p>
+<p>
+When AutoScroll is enabled, the UpdateScrollbars method is called to 
+recalculate the page, range, and visibility for the scroll bars on the 
+control. This action is <b>not</b> performed if either VertScrollBar or 
+HorzScrollBar has not been assigned.
+</p>
+</descr>
 <seealso>
+<link id="TScrollingWinControl.AutoScroll"/>
+<link id="TScrollingWinControl.UpdateScrollbars"/>
+<link id="TScrollingWinControl.VertScrollBar"/>
+<link id="TScrollingWinControl.HorzScrollBar"/>
 <link id="#lcl.controls.TControl.DoOnResize">TControl.DoOnResize</link>
+<link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
+<link id="#lcl.controls.TControl.DoCallNotifyHandler">TControl.DoCallNotifyHandler</link>
 </seealso>
 </element>
 
@@ -1441,7 +1537,7 @@ to compute the page, auto ranges, and visibility for the scroll bars when
 <link id="TScrollingWinControl.HorzScrollBar"/>
 <link id="TScrollingWinControl.VertScrollBar"/>
 <link id="TScrollingWinControl.UpdateScrollBars"/>
-<link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+<link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
 </seealso>
 </element>
 
@@ -1542,20 +1638,80 @@ prior to exiting from the method.
 </seealso>
 </element>
 
-<element name="TScrollingWinControl.ScreenToClient" link="#lcl.controls.TControl.ScreenToClient"/>
+<element name="TScrollingWinControl.ScreenToClient">
+<short>
+Converts the specified screen coordinates to client-relative coordinates.
+</short>
+<descr>
+<p>
+<var>ScreenToClient</var> is an overridden method in 
+<var>TScrollingWinControl</var>.
+</p>
+<p>
+ScreenToClient calls the inherited method to get the TPoint instance with the 
+client coordinates used in the return value. The X and Y members in the 
+return value are updated to reflect the current scroll offsets for the 
+control. This gives the origin on the logical display area for the visible 
+area on the control.
+</p>
+<p>
+ScreenToClient is used, along with ClientToScreen, in inherited methods which 
+respond to changes in the mouse pointer position for a control. This includes 
+context menu display and drag-and-dock operations.
+</p>
+</descr>
+<seealso>
+<link id="TScrollingWinControl.ClientToScreen"/>
+<link id="#lcl.controls.TControl.ScreenToClient">TControl.ScreenToClient</link>
+</seealso>
+</element>
 <element name="TScrollingWinControl.ScreenToClient.Result">
-<short/>
+<short>
+TPoint instance with the client-relative coordinates for the specified value.
+</short>
 </element>
 <element name="TScrollingWinControl.ScreenToClient.APoint">
-<short/>
+<short>
+TPoint instance with the screen coordinates converted in the method.
+</short>
 </element>
 
-<element name="TScrollingWinControl.ClientToScreen" link="#lcl.controls.TControl.ClientToScreen"/>
+<element name="TScrollingWinControl.ClientToScreen">
+<short>
+Converts the specified client coordinates to absolute screen coordinates.
+</short>
+<descr>
+<p>
+<var>ClientToScreen</var> is an overridden method in 
+<var>TScrollingWinControl</var>.
+</p>
+<p>
+ClientToScreen calls the inherited method to get the TPoint instance with the 
+screen coordinates for the client coordinates in APoint. The X and Y members 
+in the return value are updated to reflect the current scroll offsets for the 
+control. This gives the screen coordinates where the origin for the logical 
+display area is located on the control.
+</p>
+<p>
+ClientToScreen is used, along with ScreenToClient, in inherited methods which 
+respond to changes in the mouse pointer position for a control. This includes 
+context menu display and drag-and-dock operations.
+</p>
+</descr>
+<seealso>
+<link id="TScrollingWinControl.ScreenToClient"/>
+<link id="#lcl.controls.TControl.ClientToScreen">TControl.ClientToScreen</link>
+</seealso>
+</element>
 <element name="TScrollingWinControl.ClientToScreen.Result">
-<short/>
+<short>
+TPoint instance with the screen coordinates for the specified value.
+</short>
 </element>
 <element name="TScrollingWinControl.ClientToScreen.APoint">
-<short/>
+<short>
+TPoint instance with the client-relative coordinates converted in the method.
+</short>
 </element>
 
 <element name="TScrollingWinControl.UpdateScrollbars">
@@ -1569,7 +1725,7 @@ on the windowed control.
 When automatic scrollbars are enabled using AutoScroll, the scroll bar 
 information is initialized as needed for the visible scroll bars. The 
 UpdateScrollBar method in both VertScrollBar and HorzScrollBar is called to 
-recalculate the current page and range in the scroll bars.
+recalculate the current page and range for the scroll bars.
 </p>
 <p>
 No actions are performed in the method if a handle has not been allocated for 
@@ -1577,7 +1733,7 @@ the control, or when either HorzScrollBar or VertScrollBar has not been
 assigned.
 </p>
 <p>
-Recursive calls to the method are also ignored.
+Recursive calls to the method are ignored.
 </p>
 </descr>
 <seealso>
@@ -1695,10 +1851,33 @@ and <var>AutoScroll</var> is enabled.
 <descr>
 <p>
 <var>TScrollBox</var> is a <var>TScrollingWinControl</var> descendant that 
-implements a windowed control with scroll bars. TScrollBox sets the 
-visibility for properties inherited from the ancestor class. TScrollBox 
-includes an overridden constructor which sets the default values for 
-properties in the class instance.
+implements a windowed control with scroll bars. It uses the logical and 
+physical display areas introduced in the ancestor class, and allows a 
+scrollable area to be displayed on a form or panel. The logical (or virtual) 
+client area represents the dimensions needed for the child Controls added to 
+the class instance. When the logical display area is larger than the visible 
+area for the control, scroll bars allow the content to be moved into the 
+visible area for the control.
+</p>
+<p>
+TScrollBox sets the visibility for properties inherited from the ancestor 
+class. TScrollBox includes an overridden constructor which sets the default 
+values for properties in the class instance.
+</p>
+<p>
+Child Controls can be added to the class instance at design-time, or at 
+run-time by setting the scroll box as the Parent for a control.
+</p>
+<p>
+The AutoScroll property indicates whether the scroll bars are automatically 
+displayed (or hidden) as needed when the control is resized, or when child 
+Controls are updated. This includes setting the page, range, and visibility 
+for the scroll bars. Use the HorzScrollBar and VertScrollBar properties to 
+access scroll bar page, range, and visibility when AutoScroll is not enabled.
+</p>
+<p>
+An example application using TScrollBox is located in the 
+<file>examples/imgviewer</file> directory.
 </p>
 </descr>
 <seealso>
@@ -2205,7 +2384,7 @@ a Parent.
 </short>
 <descr/>
 <seealso>
-<link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+<link id="#lcl.controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
 </seealso>
 </element>
 <element name="TCustomFrame.GetChildren.Proc">
@@ -3979,7 +4158,7 @@ auto-sizing is performed for <var>Controls</var>.
 </p>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
+<link id="#lcl.controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
 </seealso>
 </element>
 <element name="TCustomForm.AdjustClientRect.Rect">
@@ -4352,7 +4531,7 @@ ParentFormHandleInitialized method is also called.
 </p>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
+<link id="#lcl.controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
 </seealso>
 </element>
 
@@ -5226,7 +5405,7 @@ properties for the form instance, including:
 <ul>
 <li>Sets the FormState to fsFirstShow and calls BeginFormUpdate.</li>
 <li>Sets the default BorderIcons for the form.</li>
-<li>Sets the FormStyle, ControlsStyle, and BorderStyle for the form.</li>
+<li>Sets the FormStyle, ControlStyle, and BorderStyle for the form.</li>
 <li>Calls the inherited Create constructor.</li>
 <li>Sets the default bounds for the form instance.</li>
 <li>Sets Visible to <b>False</b>.</li>
@@ -17600,7 +17779,7 @@ assigned as event handler routines for the TCustomForm instance in TheOwner.
 </seealso>
 </element>
 <element name="TFormPropertyStorage.Create.TheOwner">
-<short>TCustomForm instance which owns th class instance.</short>
+<short>TCustomForm instance which owns the class instance.</short>
 </element>
 
 <element name="TFormPropertyStorage.Destroy">
