@@ -2,12 +2,14 @@ variables:
   FPC_OLDSTABLE_VER: 3.2.0
   FPC_STABLE_VER: 3.2.2
   IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
+  QT5PAS_SRC: lcl/interfaces/qt5/cbindings
 
 default:
   image: $IMAGE_TAG
 
 stages:          # List of stages for jobs, and their order of execution
   - prepenv
+  - prepcaches
   - build
 
 update-build-env: # This job updates building environment image. Run it if FPC version constants and/or Dockerfile.buildenv were changed. 
@@ -20,6 +22,23 @@ update-build-env: # This job updates building environment image. Run it if FPC v
     - docker build --pull --build-arg FPC_OLDSTABLE_VER=$FPC_OLDSTABLE_VER --build-arg FPC_STABLE_VER=$FPC_STABLE_VER -t $IMAGE_TAG - < Dockerfile.buildenv
     - docker push $IMAGE_TAG
   when: manual
+
+update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
+  stage: prepcaches
+  script:
+    - cd $QT5PAS_SRC
+    - qmake -query
+    - qmake
+    - make
+  cache:
+    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
+    policy: push
+    untracked: true
+    paths:
+      - $QT5PAS_SRC/
+  rules:
+    - changes:
+        - $QT5PAS_SRC/**/*
 
 
 x86_64-gtk2-oldstable:
@@ -37,25 +56,29 @@ x86_64-gtk2-stable:
 x86_64-qt5-oldstable:
   stage: build
   script:
-    - cd lcl/interfaces/qt5/cbindings         # build and install Qt5 Pascal bindings
-    - qmake -query
-    - qmake
-    - make
+    - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
     - make install
-    - cd ../../../..
+    - cd $CI_PROJECT_DIR
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
+  cache:
+    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
+    policy: pull
+    paths:
+      - $QT5PAS_SRC/
   when: manual
 
 x86_64-qt5-stable:
   stage: build
   script:
-    - cd lcl/interfaces/qt5/cbindings         # build and install Qt5 Pascal bindings
-    - qmake -query
-    - qmake
-    - make
+    - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
     - make install
-    - cd ../../../..
+    - cd $CI_PROJECT_DIR
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
+  cache:
+    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
+    policy: pull
+    paths:
+      - $QT5PAS_SRC/
   when: manual
 
 i386-win32-oldstable:
