@@ -175,6 +175,7 @@ Nikolay Ermolov
 Nur Cholif Murtadho
 Olivier Guilbaud
 Olexandr Pylypchuk - Ukrainian translation
+Olly Cain
 Ondrej Pokorny
 Pascal Riekenberg
 Patrick Chevalley
