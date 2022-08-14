@@ -1976,11 +1976,6 @@ begin
   Result.Y := BidiFlipX(Result.Y, ParentRect, Flip);
 end;
 
-function PointIgual(const P1,P2: TPoint): Boolean;
-begin
-  result:=(P1.X=P2.X)and(P1.Y=P2.Y);
-end;
-
 function NormalizarRect(const R:TRect): TRect;
 begin
   Result.Left:=Min(R.Left, R.Right);
@@ -3708,13 +3703,12 @@ begin
     TLRowOffChanged := True;
   end;
 
-  Result:=not PointIgual(OldTopleft,FTopLeft)
-    or TLColOffChanged or TLRowOffChanged;
+  Result := (OldTopLeft <> FTopLeft) or TLColOffChanged or TLRowOffChanged;
 
   BeginUpdate;
   try
     if Result then begin
-      if not PointIgual(OldTopleft,FTopLeft) then
+      if (OldTopLeft <> FTopLeft) then
         doTopleftChange(False)
       else
         VisualChange;
@@ -4974,9 +4968,9 @@ var
   TLChange: Boolean;
 begin
   TryTL:=ScrollGrid(False,aCol, aRow);
-  TLChange := not PointIgual(TryTL, FTopLeft);
+  TLChange := (TryTL <> FTopLeft);
   if TLChange
-  or (not PointIgual(TryTL, Point(aCol, aRow)) and (goSmoothScroll in Options))
+  or ((TryTL <> Point(aCol, aRow)) and (goSmoothScroll in Options))
   or (ClearColOff and (FGCache.TLColOff<>0))
   or (ClearRowOff and (FGCache.TLRowOff<>0)) then
   begin
@@ -5053,7 +5047,7 @@ begin
   if not GetSmoothScroll(SB_Vert) then
     FGCache.TLRowOff := 0;
 
-  if not PointIgual(OldTopleft,FTopLeft) then begin
+  if OldTopLeft <> FTopLeft then begin
     TopLeftChanged;
     if goScrollKeepVisible in Options then
       MoveNextSelectable(False, FTopLeft.x - oldTopLeft.x + col,
@@ -5064,8 +5058,7 @@ begin
   ScrollBy((OldTopLeftXY.x-NewTopLeftXY.x)*RTLSign, OldTopLeftXY.y-NewTopLeftXY.y);
 
   //Result is false if this function failed due to a too high/wide cell (applicable only if goSmoothScroll not used)
-  Result :=
-       not PointIgual(OldTopLeftXY, NewTopLeftXY)
+  Result := (OldTopLeftXY <> NewTopLeftXY)
     or ((NewTopLeftXY.x = 0) and (aColDelta < 0))
     or ((FTopLeft.x = FGCache.MaxTopLeft.x) and (FGCache.TLColOff = FGCache.MaxTLOffset.x) and (aColDelta > 0))
     or ((NewTopLeftXY.y = 0) and (aRowDelta < 0))
@@ -5428,7 +5421,7 @@ begin
     //DebugLn('TCustomGrid.CheckTopLeft A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
   end;
 
-  Result := not PointIgual(OldTopleft,FTopLeft);
+  Result := (OldTopLeft <> FTopLeft);
   if Result then
     doTopleftChange(False)
 end;
@@ -8870,7 +8863,7 @@ var
       if OldTL.Y<FixedRows then
         OldTL.Y:=FixedRows;
     end;
-    if not PointIgual(OldTL, FTopleft) then begin
+    if (OldTL <> FTopLeft) then begin
       fTopLeft := OldTL;
       //DebugLn('TCustomGrid.FixPosition ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
       topleftChanged;
