@@ -79,7 +79,7 @@ x86_64-qt5-stable:
     policy: pull
     paths:
       - $QT5PAS_SRC/
-  when: manual
+#  when: manual
 
 i386-win32-oldstable:
   stage: build
