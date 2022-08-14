@@ -57,12 +57,16 @@ uses
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
+  TSynPasMultilineStringMode  = (spmsmDoubleQuote);
+  TSynPasMultilineStringModes = set of TSynPasMultilineStringMode;
 
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
     tkSpace, tkString, tkSymbol, tkDirective, tkIDEDirective,
     tkUnknown);
 
   TRangeState = (
+    rsAnsiMultiDQ,  // Multi line double quoted string
+
     // rsAnsi, rsBor, rsDirective are exclusive to each other
     rsAnsi,         // *) comment
     rsBor,          // { comment
@@ -330,6 +334,7 @@ type
     fRange: TRangeStates;
     FOldRange: TRangeStates;
     FStringKeywordMode: TSynPasStringMode;
+    FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
     FAtLineStart: Boolean; // Line had only spaces or comments sofar
     fLineStr: string;
@@ -369,6 +374,7 @@ type
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetNestedComments(const ANestedComments: boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
+    procedure SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
     function Func15: TtkTokenKind;
@@ -497,6 +503,7 @@ type
     procedure SlashContinueProc;
     procedure SpaceProc;
     procedure StringProc;
+    procedure StringProc_MultiLineDQ;
     procedure SymbolProc;
     function TypeHelpersIsStored: Boolean;
     procedure UnknownProc;
@@ -635,6 +642,8 @@ type
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
     property StringKeywordMode: TSynPasStringMode
              read FStringKeywordMode write SetStringKeywordMode default spsmDefault;
+    property StringMultilineMode: TSynPasMultilineStringModes
+             read FStringMultilineMode write SetStringMultilineMode;
   end;
 
   { TSynFreePascalSyn }
@@ -934,6 +943,14 @@ procedure TSynPasSyn.SetStringKeywordMode(const AValue: TSynPasStringMode);
 begin
   if FStringKeywordMode = AValue then exit;
   FStringKeywordMode := AValue;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
+end;
+
+procedure TSynPasSyn.SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
+begin
+  if FStringMultilineMode=AValue then Exit;
+  FStringMultilineMode:=AValue;
   FAttributeChangeNeedScan := True;
   DefHighlightChange(self);
 end;
@@ -2586,12 +2603,13 @@ begin
       '%': fProcTable[I] := @BinaryProc;
       '&': fProcTable[I] := @OctalProc;
       #39: fProcTable[I] := @StringProc;
+      '"': fProcTable[I] := @StringProc_MultiLineDQ;
       '0'..'9': fProcTable[I] := @NumberProc;
       'A'..'Z', 'a'..'z', '_':
         fProcTable[I] := @IdentProc;
       '^': fProcTable[I] := @CaretProc;
       '{': fProcTable[I] := @BraceOpenProc;
-      '}', '!', '"', '('..'/', ':'..'@', '[', ']', '\', '`', '~':
+      '}', '!', '('..'/', ':'..'@', '[', ']', '\', '`', '~':
         begin
           case I of
             '(': fProcTable[I] := @RoundOpenProc;
@@ -3393,6 +3411,32 @@ begin
   end;
 end;
 
+procedure TSynPasSyn.StringProc_MultiLineDQ;
+begin
+  if (not (spmsmDoubleQuote in FStringMultilineMode)) then
+  begin
+    SymbolProc();
+    Exit;
+  end;
+
+  fTokenID := tkString;
+  fRange := fRange + [rsAnsiMultiDQ];
+
+  while (fLine[Run] <> #0) do
+  begin
+    Inc(Run);
+    if (fLine[Run] = '"') then
+    begin
+      Inc(Run);
+      if (fLine[Run] <> '"') then
+      begin
+        fRange := fRange - [rsAnsiMultiDQ];
+        Break;
+      end;
+    end;
+  end;
+end;
+
 procedure TSynPasSyn.SymbolProc;
 begin
   inc(Run);
@@ -3427,6 +3471,9 @@ begin
     NullProc;
     exit;
   end;
+  if rsAnsiMultiDQ in fRange then
+    StringProc_MultiLineDQ()
+  else
   case fLine[Run] of
      #0: NullProc;
     #10: LFProc;
@@ -4877,5 +4924,4 @@ finalization
   FreeAndNil(KeywordsList);
 
 end.
-
 
