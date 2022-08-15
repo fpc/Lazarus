@@ -6587,14 +6587,27 @@ when Index is not valid for the row or column.
 
 <element name="TCustomGrid.CheckTopLeft">
 <short>
-Determines if the top/left visible cell needs to change for the cached 
-information.
+Determines if the TopLeft cell needs to be changed in the grid cache.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The return value is <b>True</b> if the cached value in TopLeft needs to be 
+updated to reflect the origin cell for the grid control.
+</p>
+<p>
+Calls TopLeftChanged (when needed) and VisualChange to cause the control to be redrawn.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.TopLeft"/>
+<link id="TCustomGrid.TopLeftChanged"/>
+<link id="TCustomGrid.VisualChange"/>
+</seealso>
 </element>
 <element name="TCustomGrid.CheckTopLeft.Result">
-<short><b>True</b> when the top left cell is changed.</short>
+<short>
+<b>True</b> if the top left cell was different than the cached grid value.
+</short>
 </element>
 <element name="TCustomGrid.CheckTopLeft.aCol">
 <short/>
@@ -7772,22 +7785,46 @@ configuration file.
 <short>
 Scrolls the grid until the cell at the specified location is visible.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls TopLeftChanged (when needed) and VisualChange to cause the control to 
+be redrawn.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.TopLeftChanged"/>
+<link id="TCustomGrid.VisualChange"/>
+</seealso>
 </element>
 <element name="TCustomGrid.ScrollToCell.Result">
-<short/>
+<short>
+<b>True</b> if the origin cell (top, left) was changed after scrolling the 
+grid content.
+</short>
 </element>
 <element name="TCustomGrid.ScrollToCell.aCol">
-<short/>
+<short>
+Column number for the cell to make visible in the display area for the 
+control.
+</short>
 </element>
 <element name="TCustomGrid.ScrollToCell.aRow">
-<short/>
+<short>
+Row number for the cell to make visible in the display area for the 
+control.
+</short>
+</element>
+<element name="TCustomGrid.ScrollToCell.ForceFullyVisible">
+<short>
+<b>True</b> to force the entire content for the cell to become visible. 
+<b>False</b> if the cell content can be partially visible.
+</short>
 </element>
 
 <element name="TCustomGrid.ScrollGrid">
 <short>
-Scrolls the grid until the cell at the specified location is the new origin.
+Scrolls the grid until the cell at the specified location is the new origin 
+for the control.
 </short>
 <descr/>
 <seealso/>
@@ -8144,8 +8181,25 @@ Indicates if the existing cursor shape is stored for later reuse.
 Attempts to scroll the grid until the specified coordinates are at the origin 
 for the grid control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls ScrollGrid to scroll the content until the cell at ACol and ARow is the 
+origin (top, left) for the visible area for the control. Calls TopLeftChanged 
+(when needed) and VisualChange to redraw the grid control.
+</p>
+<p>
+TryScrollTo is called when the value in LeftCol or TopRow is changed. It is 
+also used in the implementation of the GridMouseWheel method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.ScrollGrid"/>
+<link id="TCustomGrid.Options"/>
+<link id="TCustomGrid.TopLeftChanged"/>
+<link id="TCustomGrid.VisualChange"/>
+<link id="TGridOption"/>
+<link id="TGridOptions"/>
+</seealso>
 </element>
 <element name="TCustomGrid.TryScrollTo.aCol">
 <short>Column number to become the first visible column on the grid.</short>
