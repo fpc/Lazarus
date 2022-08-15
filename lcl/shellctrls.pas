@@ -214,6 +214,7 @@ type
     FMask: string;
     FMaskCaseSensitivity: TMaskCaseSensitivity;
     FObjectTypes: TObjectTypes;
+    FPopulateDelayed: Boolean;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
     FUseBuiltInIcons: Boolean;
@@ -228,6 +229,7 @@ type
     { Methods specific to Lazarus }
     class procedure WSRegisterClass; override;
     procedure AdjustColWidths;
+    procedure CreateHandle; override;
     procedure PopulateWithRoot();
     procedure DoOnResize; override;
     procedure SetAutoSizeColumns(const Value: Boolean); virtual;
@@ -1529,6 +1531,13 @@ begin
   // Check inputs
   if Trim(FRoot) = '' then Exit;
 
+  // Check handle
+  if not HandleAllocated then
+  begin
+    FPopulateDelayed := true;
+    Exit;
+  end;
+
   Items.BeginUpdate;
   Files := TStringList.Create;
   try
@@ -1604,6 +1613,16 @@ begin
     Column[2].Width := Max(0, iWidth - Column[0].Width - Column[1].Width);
   finally
     EndUpdate;
+  end;
+end;
+
+procedure TCustomShellListView.CreateHandle;
+begin
+  inherited;
+  if FPopulateDelayed then
+  begin
+    PopulateWithRoot;
+    FPopulateDelayed := false;
   end;
 end;
 
