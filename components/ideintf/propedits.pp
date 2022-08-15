@@ -4243,9 +4243,11 @@ end;
 procedure TSetPropertyEditor.GetProperties(Proc: TGetPropEditProc);
 var
   I: Integer;
+  EnumType: PTypeInfo;
 begin
-  with GetTypeData(GetTypeData(GetPropType)^.CompType)^ do
-    for I := MinValue to MaxValue do
+  EnumType := GetTypeData(GetPropType)^.CompType;
+  with GetTypeData(EnumType)^ do
+    for I := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do
       Proc(TSetElementPropertyEditor.Create(Self, I));
 end;
 
@@ -7658,26 +7660,20 @@ var
   // check set element names against AFilter
   function IsPropInSet( const ATypeInfo: PTypeInfo ) : Boolean;
   var
-    TypeInfo: PTypeInfo;
-    TypeData: PTypeData;
+    EnumType: PTypeInfo;
     i: Integer;
   begin
     Result := False;
-    TypeInfo := ATypeInfo;
-
-    if (TypeInfo^.Kind <> tkSet) then exit;
-
-    TypeData := GetTypeData(TypeInfo);
+    if (ATypeInfo^.Kind <> tkSet) then exit;
     // Get TypeInfo of set type.
-    TypeInfo := TypeData^.CompType;
-    TypeData := GetTypeData(TypeInfo);
-
-    for i:= TypeData^.MinValue to TypeData^.MaxValue do
-    begin
-      Result := PosI(APropNameFilter, GetEnumName(TypeInfo,i)) > 0;
-      if Result then
-        Break;
-    end;
+    EnumType := GetTypeData(ATypeInfo)^.CompType;
+    with GetTypeData(EnumType)^ do
+      for i := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do
+      begin
+        Result := PosI(APropNameFilter, GetEnumName(EnumType,i)) > 0;
+        if Result then
+          Break;
+      end;
   end;
 
   //check if class has property name
