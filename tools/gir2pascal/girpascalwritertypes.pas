@@ -5,7 +5,7 @@ unit girpascalwritertypes;
 interface
 
 uses
-  Classes, SysUtils, girNameSpaces, girObjects, girTokens, contnrs;
+  Classes, SysUtils, girNameSpaces, girObjects, girTokens, contnrs, StrUtils;
 
 type
   TgirOption = (goWantTest, goLinkDynamic, goSeperateConsts, goClasses, goObjects, goIncludeDeprecated, goNoWrappers);
@@ -1179,7 +1179,7 @@ begin
 
   WriteFunctionTypeAndReturnType(AItem, RoutineType, Returns);
   Params := WriteFunctionParams(AItem.Params);
-  Postfix := ' external;';// '+UnitName+'_library;';
+  Postfix := ' external' +' {$ifdef Mswindows}'+UnitName+'_library '+' name ''' + aitem.CIdentifier+ '''{$endif};';
   FuncSect := WantFunctionSection;
   if not (goLinkDynamic in FOptions) then
     FuncSect.Lines.Add(RoutineType +' '+ AItem.CIdentifier+ParenParams(Params)+Returns+Postfix)
@@ -1242,7 +1242,7 @@ begin
   if Pos('array of const', Params) + Pos('va_list', Params) > 0 then
     Prefix:='//';
   if not (goLinkDynamic in FOptions) then
-    Postfix := ' external;'+ DeprecatedS// '+UnitName+'_library;';
+    Postfix := ' external' +' {$ifdef Mswindows}'+UnitName+'_library '+' name ''' + AFunction.CIdentifier+ '''{$endif};'+DeprecatedS
   else
     PostFix := ''+DeprecatedS;
 
@@ -1511,10 +1511,11 @@ var
   end;
   procedure AddGetTypeProc(AObj: TgirGType);
   const
-    GetTypeTemplate = 'function %s: %s; cdecl; external;';
+    GetTypeTemplate = 'function %s: %s; cdecl; external {$ifdef MSWindows} %s_library name ''%s'' {$endif};';
     GetTypeTemplateDyn = '%s: function:%s; cdecl;';
   var
     AType: String;
+    AName : string;
   begin
     AType:='TGType';
     if (AObj.GetTypeFunction = '') or (AObj.GetTypeFunction = 'none') or (AObj.GetTypeFunction = 'intern') then
@@ -1523,7 +1524,10 @@ var
       AType := 'csize_t { TGType }';
 
     if not (goLinkDynamic in FOptions) then
-      UnitFuncs.Add(Format(GetTypeTemplate, [AObj.GetTypeFunction, AType]))
+      begin
+        AName:=AObj.GetTypeFunction;
+        UnitFuncs.Add(Format(GetTypeTemplate, [AName, AType,unitname,AName]))
+      end
     else
     begin
       UnitFuncs.Add(Format(GetTypeTemplateDyn, [AObj.GetTypeFunction, AType]));
@@ -2401,6 +2405,10 @@ var
   NS: TgirNamespace;
   ImplementationUses: TPUses;
   NeedUnit: String;
+  iswindows : boolean;
+  UnixName,
+  WindowsName : String;
+
 begin
   for i := 0 to FNameSpace.RequiredNameSpaces.Count-1 do
   begin
@@ -2449,12 +2457,28 @@ begin
     end
     else // Not linking dynamically
     begin
+      isWindows:=Pos('.dll',NameSpace.SharedLibrary)>0;
       i := Pos(',',NameSpace.SharedLibrary);
       if i > 0 then
         LibName:=Copy(NameSpace.SharedLibrary,1,i-1)
       else
         LibName:=NameSpace.SharedLibrary;
-      WantConstSection.Lines.Add(IndentText(UnitName+'_library = '''+LibName+''';', 2));
+      if isWindows then
+        begin
+          WindowsName:=LibName;
+          UnixName:=changefileext(LibName,'')+'.so';
+        end
+      else
+       begin
+         WindowsName:=changefileext(LibName,'')+'.dll';
+         UnixName:=LibName;;
+       end;
+
+      WantConstSection.Lines.Add(IndentText('{$ifdef MsWindows}',2,0));
+      WantConstSection.Lines.Add(IndentText(UnitName+'_library = '''+WindowsName+''';', 2,0));
+      WantConstSection.Lines.Add(IndentText('{$else}',2,0));
+      WantConstSection.Lines.Add(IndentText(UnitName+'_library = '''+Unixname+''';', 2,0));
+      WantConstSection.Lines.Add(IndentText('{$endif}',2));
     end;
   end;
 
@@ -2482,8 +2506,12 @@ begin
   Str.WriteString(IndentText('{$MODESWITCH DUPLICATELOCALS+}',0,2));
 
   if (utFunctions in FUnitType) and not (goLinkDynamic in FOptions) then
+   begin
+    Str.WriteString(IndentText('{$ifdef Unix}',0,1));   // Probably needs handling for OS X frameworks too.
     for i := 0 to Libs.Count-1 do
       Str.WriteString(IndentText('{$LINKLIB '+Libs.Strings[i]+'}',0,1));
+    Str.WriteString(IndentText('{$endif}',0,1));
+   end;
 
   Libs.Free;
 
