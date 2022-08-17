@@ -3817,7 +3817,7 @@ var
 begin
   EnumType := GetPropType;
   with GetTypeData(EnumType)^ do
-    for I := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do begin
+    for I := MinValue to MaxValue do begin
       s := GetEnumName(EnumType, I);
       Proc(s);
     end;
@@ -4247,7 +4247,7 @@ var
 begin
   EnumType := GetTypeData(GetPropType)^.CompType;
   with GetTypeData(EnumType)^ do
-    for I := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do
+    for I := MinValue to MaxValue do
       Proc(TSetElementPropertyEditor.Create(Self, I));
 end;
 
@@ -7668,7 +7668,7 @@ var
     // Get TypeInfo of set type.
     EnumType := GetTypeData(ATypeInfo)^.CompType;
     with GetTypeData(EnumType)^ do
-      for i := MinValue to MinValue+GetEnumNameCount(EnumType)-1 do
+      for i := MinValue to MaxValue do
       begin
         Result := PosI(APropNameFilter, GetEnumName(EnumType,i)) > 0;
         if Result then
