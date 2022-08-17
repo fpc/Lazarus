@@ -4,6 +4,13 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
   QT5PAS_SRC: lcl/interfaces/qt5/cbindings
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
 default:
   image: $IMAGE_TAG
 
@@ -41,6 +48,18 @@ update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
         - $QT5PAS_SRC/**/*
 
 
+.useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
+  stage: build
+  script:
+    - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
+    - make install
+    - cd $CI_PROJECT_DIR
+  cache:
+    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
+    policy: pull
+    paths:
+      - $QT5PAS_SRC/
+
 x86_64-gtk2-oldstable:
   stage: build
   script:
@@ -54,31 +73,19 @@ x86_64-gtk2-stable:
 #  when: manual
 
 x86_64-qt5-oldstable:
+  extends: .useqt5cache
   stage: build
   script:
-    - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
-    - make install
-    - cd $CI_PROJECT_DIR
+    - !reference [.useqt5cache, script]
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
-  cache:
-    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
-    policy: pull
-    paths:
-      - $QT5PAS_SRC/
 #  when: manual
 
 x86_64-qt5-stable:
+  extends: .useqt5cache
   stage: build
   script:
-    - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
-    - make install
-    - cd $CI_PROJECT_DIR
+    - !reference [.useqt5cache, script]
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
-  cache:
-    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
-    policy: pull
-    paths:
-      - $QT5PAS_SRC/
   when: manual
 
 i386-win32-oldstable:
