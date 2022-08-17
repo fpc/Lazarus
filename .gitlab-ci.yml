@@ -39,13 +39,13 @@ update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
     - make
   cache:
     key: qt5pas-cache-$CI_COMMIT_REF_SLUG
-    policy: push
+#    policy: push
     untracked: true
     paths:
       - $QT5PAS_SRC/
-  rules:
-    - changes:
-        - $QT5PAS_SRC/**/*
+#  rules:
+#    - changes:
+#        - $QT5PAS_SRC/**/*
 
 
 .useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
