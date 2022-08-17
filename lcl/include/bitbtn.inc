@@ -314,17 +314,7 @@ begin
         idButton := BitBtnImages[Kind];
         if (idButton >= Low(BitBtnResNames)) and (idButton <= High(BitBtnResNames))
         and (BitBtnResNames[idButton] <> '') then
-        begin
-          FButtonGlyph.LCLGlyphName := BitBtnResNames[idButton];
-          CustomGlyph := GetLCLDefaultBtnGlyph(Kind);
-          try
-            if not Assigned(Glyph) then
-              Glyph := TBitmap.Create;
-            Glyph.Assign(CustomGlyph);
-          finally
-            CustomGlyph.Free;
-          end;
-        end
+          FButtonGlyph.LCLGlyphName := BitBtnResNames[idButton]
         else
           ImageIndex := -1;
         GlyphValid := True;
