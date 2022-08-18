@@ -96,11 +96,61 @@ The following components are added to the Lazarus IDE component palette:
 <seealso/>
 </element>
 <element name="TArrow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-<element name="TArrow.Paint" link="#lcl.controls.TCustomControl.Paint">
-<short/>
-<descr/>
-<seealso/>
+
+<element name="TArrow.Paint">
+<short>
+Implements the paint handler used to draw the control.
+</short>
+<descr>
+<p>
+<var>Paint</var> is an overridden method in <var>TArrow</var>. It extends the 
+inherited to method to perform actions needed to draw the shape and an 
+optional shadow.
+</p>
+<p>
+Paint calculates the internal TPoint instances needed for the triangular 
+shape using the values in ArrowType and ArrowPointerAngle. It configures the 
+control Canvas with the values in Color, ArrowColor, ShadowColor, and 
+AntiAliasingMode.
+</p>
+<p>
+Methods in Canvas are called to render the shape. FillRect is called to draw 
+the background for the control Polygon is called to draw both the shadow and 
+the arrow on the control. The MoveTo and LineTo methods are used to draw the 
+lines needed for an unfilled shadow.
+</p>
+<p>
+Use Color to set the background color for the client area in the shape.
+</p>
+<p>
+Use ArrowColor to set the color for the Pen and Brush used to draw the arrow 
+shape.
+</p>
+<p>
+Use ShadowType and ShadowColor to draw a shadow for the shape with the 
+desired color and drawing style.
+</p>
+<p>
+Paint calls the inherited method prior to exit to signal the OnPaint event 
+handler (when assigned).
+</p>
+<p>
+Paint is called when the WM_PAINT window message is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TArrow.ShadowType"/>
+<link id="TArrow.ShadowColor"/>
+<link id="TArrow.ArrowType"/>
+<link id="TArrow.ArrowColor"/>
+<link id="TArrow.ArrowPointerAngle"/>
+<link id="#lcl.industrialbase.TIndustrialBase.AntiAliasingMode">TIndustrialBase.AntiAliasingMode</link>
+<link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
+<link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
+<link id="#lcl.controls.TGraphicControl.OnPaint">TGraphicControl.OnPaint</link>
+</seealso>
 </element>
+
 <!-- constructor Visibility: public -->
 <element name="TArrow.Create">
 <short>Constructor for the class instance.</short>
