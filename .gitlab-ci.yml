@@ -4,7 +4,7 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
   QT5PAS_SRC: lcl/interfaces/qt5/cbindings
 
-workflow:
+workflow:  # these rules enable pipeline for merge requests and try to avoid duplicate pipelines
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
@@ -14,12 +14,26 @@ workflow:
 default:
   image: $IMAGE_TAG
 
-stages:          # List of stages for jobs, and their order of execution
+stages:  # List of stages for jobs, and their order of execution
   - prepenv
   - prepcaches
   - build
 
-update-build-env: # This job updates building environment image. Run it if FPC version constants and/or Dockerfile.buildenv were changed. 
+.runscheduled:  # this hidden job defines a rule, which, if referenced by job, enables it to always run in scheduled pipeline
+  rules:
+#    - when: manual  # uncomment this line to switch all jobs in the pipeline to manual mode (useful for service needs)
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+.manualjob:  # this hidden job defines a rule, which, if referenced by job, allows it to be skipped without errors
+  rules:
+    - when: manual
+      allow_failure: true
+
+.onsuccessjob:  # this hidden job defines a rule, which, if referenced by job, configures it to be run when previous ones completed successfully
+  rules:
+    - when: on_success
+
+update-build-env:  # This job updates building environment image. Run it if FPC version constants and/or Dockerfile.buildenv were changed.
   stage: prepenv
   image: docker
   services:
@@ -30,7 +44,7 @@ update-build-env: # This job updates building environment image. Run it if FPC v
     - docker push $IMAGE_TAG
   when: manual
 
-update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
+update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
   stage: prepcaches
   script:
     - cd $QT5PAS_SRC
@@ -43,13 +57,13 @@ update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
     untracked: true
     paths:
       - $QT5PAS_SRC/
-#  rules:
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.onsuccessjob, rules]
 #    - changes:
 #        - $QT5PAS_SRC/**/*
 
-
 .useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
-  stage: build
   script:
     - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
     - make install
@@ -60,17 +74,22 @@ update-qt5pas-bindings:   # build and cache Qt5 Pascal bindings
     paths:
       - $QT5PAS_SRC/
 
+
 x86_64-gtk2-oldstable:
   stage: build
   script:
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
-  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
 
 x86_64-gtk2-stable:
   stage: build
   script:
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
-#  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.onsuccessjob, rules]
 
 x86_64-qt5-oldstable:
   extends: .useqt5cache
@@ -78,7 +97,9 @@ x86_64-qt5-oldstable:
   script:
     - !reference [.useqt5cache, script]
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
-#  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.onsuccessjob, rules]
 
 x86_64-qt5-stable:
   extends: .useqt5cache
@@ -86,32 +107,42 @@ x86_64-qt5-stable:
   script:
     - !reference [.useqt5cache, script]
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
-  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
 
 i386-win32-oldstable:
   stage: build
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
-  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
 
 i386-win32-stable:
   stage: build
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
-#  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.onsuccessjob, rules]
 
 x86_64-win64-oldstable:
   stage: build
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 OS_TARGET=win64 CPU_TARGET=x86_64 LCL_PLATFORM=win32
-  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
 
 x86_64-win64-stable:
   stage: build
   script:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 OS_TARGET=win64 CPU_TARGET=x86_64 LCL_PLATFORM=win32
-  when: manual
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
