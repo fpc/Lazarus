@@ -231,18 +231,18 @@ Handle.
 
 <!-- function Visibility: private -->
 <element name="TLCLReferenceComponent.GetHandle" link="#lcl.lclclasses.TLCLReferenceComponent.Handle"/>
-<element name="TLCLReferenceComponent.GetHandle.Result">
-<short/>
-</element>
+<element name="TLCLReferenceComponent.GetHandle.Result"/>
 
 <!-- function Visibility: private -->
 <element name="TLCLReferenceComponent.GetReferenceAllocated">
-<short>Checks for a valid widget reference.</short>
+<short>Gets the value for the ReferenceAllocated property.</short>
 <descr></descr>
 <seealso></seealso>
 </element>
 <element name="TLCLReferenceComponent.GetReferenceAllocated.Result">
-<short/>
+<short>
+Value for the ReferenceAllocated property.
+</short>
 </element>
 
 <!-- function Visibility: protected -->
@@ -263,9 +263,14 @@ Override this method to supply specific widget creation parameters.
 <!-- function Visibility: protected -->
 <element name="TLCLReferenceComponent.GetReferenceHandle">
 <short>Override this method to return the Handle from the reference.</short>
+<seealso>
+<link id="TLCLReferenceComponent.HandleAllocated"/>
+</seealso>
 </element>
 <element name="TLCLReferenceComponent.GetReferenceHandle.Result">
-<short/>
+<short>
+<b>True</b> if both the component reference pointer and its Handle have been allocated.
+</short>
 </element>
 
 <!-- function Visibility: protected -->
@@ -287,14 +292,25 @@ Override this method to supply specific widget creation parameters.
 <element name="TLCLReferenceComponent.WSCreateReference">
 <short>Tells the widgetset to create a Reference.</short>
 <descr>
-This implementation returns Nil, and should be overridden in derived classes.
+<p>
+This implementation returns <b>Nil</b>, and should be overridden in derived 
+classes.
+</p>
 </descr>
+<seealso>
+<link id="TLCLReferenceComponent.ReferenceNeeded"/>
+</seealso>
 </element>
 <element name="TLCLReferenceComponent.WSCreateReference.Result">
-<short/>
+<short>
+Pointer to the reference for the widgetset class instance, or <b>Nil</b> when 
+not allocated.
+</short>
 </element>
 <element name="TLCLReferenceComponent.WSCreateReference.AParams">
-<short/>
+<short>
+Creation parameters for the reference.
+</short>
 </element>
 
 <!-- function Visibility: protected -->
