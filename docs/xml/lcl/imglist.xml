@@ -1631,21 +1631,34 @@ the value in both Height and Width are set to <b>0</b> (<b>zero</b>).
 
 <element name="TScaledImageListResolution.StretchDraw">
 <short>Draws the scaled image sized to the target rectangle.</short>
+<descr>
+<p>
+Calls the StretchDraw method in the Resolution member.
+</p>
+</descr>
 <seealso>
 <link id="TCustomImageListResolution.StretchDraw"/>
 </seealso>
 </element>
 <element name="TScaledImageListResolution.StretchDraw.ACanvas">
-<short/>
+<short>
+Canvas where the specified image is drawn.
+</short>
 </element>
 <element name="TScaledImageListResolution.StretchDraw.Index">
-<short/>
+<short>
+Ordinal position for the image drawn in method.
+</short>
 </element>
 <element name="TScaledImageListResolution.StretchDraw.ARect">
-<short/>
+<short>
+Rectangle with the coordinates where the image is drawn on the canvas.
+</short>
 </element>
 <element name="TScaledImageListResolution.StretchDraw.Enabled">
-<short/>
+<short>
+<b>True</b> if the image is drawn in the enabled state.
+</short>
 </element>
 
 <element name="TScaledImageListResolution.DrawOverlay">
