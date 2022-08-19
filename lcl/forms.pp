@@ -441,6 +441,7 @@ type
     FEnabled: boolean;
     FActiveForm: TCustomForm;
     FPreviousSource, FPreviousReturn: TWindowPos;
+    FCompositorBorders: TRect;
   protected
     function SnapToSides(var x, cx: integer; px, pcx, pxout, pcxout: integer; dist: integer; leftsides, rightsides: TIntegerDynArray): boolean;
     function SnapToMonitor(Opts: TWindowMagnetOptions; var WindowPos: TWindowPos): boolean;

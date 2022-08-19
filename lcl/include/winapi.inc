@@ -360,6 +360,11 @@ begin
   Result := WidgetSet.GetClipRGN(DC, RGN);
 end;
 
+function GetCompositorExtendedBorder(handle : HWND; var Borders: TRect) : Boolean;
+begin
+  Result := WidgetSet.GetCompositorExtendedBorder(handle, Borders);
+end;
+
 function GetCursorPos(var lpPoint:TPoint): Boolean;
 begin
   Result := WidgetSet.GetCursorPos(lpPoint);

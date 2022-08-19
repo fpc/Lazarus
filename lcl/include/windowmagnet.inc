@@ -49,6 +49,7 @@ begin
   FActiveForm:= nil;
   FPreviousSource:= Default(TWindowPos);
   FPreviousReturn:= Default(TWindowPos);
+  FCompositorBorders:= Rect(0, 0, 0, 0);
 end;
 
 function TWindowMagnetManager.SnapForm(Form: TCustomForm; var WindowPos: TWindowPos): boolean;
@@ -70,6 +71,9 @@ begin
     FPreviousReturn:= WindowPos;
     Exit;
   end;
+
+  if not GetCompositorExtendedBorder(Form.Handle, FCompositorBorders) then
+    FCompositorBorders:= Rect(0, 0, 0, 0);
 
   Result:= SnapToMonitor(Form.SnapOptions, WindowPos) or
            SnapToForms(Form.SnapOptions, WindowPos);
@@ -147,8 +151,10 @@ begin
   Area:= Screen.MonitorFromRect(Rect).WorkareaRect;
 {$push}
 {$BoolEval on} // do not short-circuit, SnapToSides has sideffects that must take place either way
-  Result:= SnapToSides(WindowPos.x, WindowPos.cx, FPreviousSource.x, FPreviousSource.cx, FPreviousReturn.x, FPreviousReturn.cx, Opts.Distance, [Area.Left], [Area.Right]) or
-           SnapToSides(WindowPos.y, WindowPos.cy, FPreviousSource.y, FPreviousSource.cy, FPreviousReturn.y, FPreviousReturn.cy, Opts.Distance, [Area.Top], [Area.Bottom]);
+  Result:= SnapToSides(WindowPos.x, WindowPos.cx, FPreviousSource.x, FPreviousSource.cx, FPreviousReturn.x, FPreviousReturn.cx,
+                       Opts.Distance, [Area.Left - FCompositorBorders.Left], [Area.Right + FCompositorBorders.Right]) or
+           SnapToSides(WindowPos.y, WindowPos.cy, FPreviousSource.y, FPreviousSource.cy, FPreviousReturn.y, FPreviousReturn.cy,
+                       Opts.Distance, [Area.Top - FCompositorBorders.Top], [Area.Bottom + FCompositorBorders.Bottom]);
 {$pop}
 end;
 
@@ -159,13 +165,17 @@ function TWindowMagnetManager.SnapToForms(Opts: TWindowMagnetOptions; var Window
     Insert(Item, List, Length(List));
   end;
 
-  procedure AddGoals(wtop, wbot, otop, obot, oleft, oright, mleft, mright: integer; var snapleft, snapright, snapup, snapdown: TIntegerDynArray);
+  procedure AddGoals(wtop, wbot, otop, obot, oleft, oright, mleft, mright,
+                     btop, bbot, bleft, bright: integer;
+                     var snapleft, snapright, snapup, snapdown: TIntegerDynArray);
   begin
-    // is there any overlap?
-    if (wtop < obot) and (wbot > otop) then begin
-      Append(oleft, snapright);
-      Append(oright, snapleft);
-      if (oleft = mright) or (oright = mleft) then begin
+    // is there any true overlap?
+    if (wtop + btop < obot - bbot) and (wbot - bbot > otop + btop) then begin
+      // add borders in order "apparent +- mine +- theirs"
+      Append(oleft + bright + bleft, snapright);
+      Append(oright - bleft - bright, snapleft);
+      if (oleft + bleft = mright - bright) or
+         (oright - bright = mleft + bleft) then begin
         // already magnetised on L-R axis, include top-top/bottom-bottom align goals
         Append(otop, snapup);
         Append(obot, snapdown);
@@ -196,9 +206,13 @@ begin
     if not frm.SnapOptions.SnapFormTarget then continue;
     if GetWindowRect(frm.Handle, br) = 0 then continue;
     // Left-Right snapping
-    AddGoals(Rect.Top, Rect.Bottom, br.Top, br.Bottom, br.Left, br.Right, PrevRect.Left, PrevRect.Right, SnapTo[3], SnapTo[1], SnapTo[0], SnapTo[2]);
+    AddGoals(Rect.Top, Rect.Bottom, br.Top, br.Bottom, br.Left, br.Right, PrevRect.Left, PrevRect.Right,
+             FCompositorBorders.Top, FCompositorBorders.Bottom, FCompositorBorders.Left, FCompositorBorders.Right,
+             SnapTo[3], SnapTo[1], SnapTo[0], SnapTo[2]);
     // Up-Down snapping
-    AddGoals(Rect.Left, Rect.Right, br.Left, br.Right, br.Top, br.Bottom, PrevRect.Top, PrevRect.Bottom, SnapTo[0], SnapTo[2], SnapTo[3], SnapTo[1]);
+    AddGoals(Rect.Left, Rect.Right, br.Left, br.Right, br.Top, br.Bottom, PrevRect.Top, PrevRect.Bottom,
+             FCompositorBorders.Left, FCompositorBorders.Right, FCompositorBorders.Top, FCompositorBorders.Bottom,
+             SnapTo[0], SnapTo[2], SnapTo[3], SnapTo[1]);
   end;
 
 {$push}

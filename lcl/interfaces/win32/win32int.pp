@@ -30,7 +30,7 @@ interface
 }
 uses
   Windows, // keep as first
-  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, UxTheme, ctypes,
+  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, UxTheme, ctypes, DwmApi,
   {$IF FPC_FULLVERSION>=30000}
   character,
   {$ENDIF}
@@ -563,6 +563,8 @@ initialization
     LCLCheckListboxClsName[L+L1] := #0;
   end;
 
+  InitDwmLibrary;
+
 finalization
   if CurDoubleBuffer.Bitmap <> 0 then
   begin
@@ -577,4 +579,6 @@ finalization
     Windows.UnregisterClassW(PWideChar(  WideString(LCLComboboxClsName) ), System.HInstance);
     Windows.UnregisterClassW(PWideChar(  WideString(LCLCheckListboxClsName) ), System.HInstance);
   end;
+
+  FreeDwmLibrary;
 end.
