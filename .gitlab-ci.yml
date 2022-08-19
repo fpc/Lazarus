@@ -91,6 +91,22 @@ x86_64-gtk2-stable:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
 
+x86_64-gtk3-oldstable:
+  stage: build
+  script:
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk3
+  rules:
+#    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
+x86_64-gtk3-stable:
+  stage: build
+  script:
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk3
+  rules:
+#    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
 x86_64-qt5-oldstable:
   extends: .useqt5cache
   stage: build
