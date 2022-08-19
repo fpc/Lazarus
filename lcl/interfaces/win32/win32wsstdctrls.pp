@@ -853,15 +853,9 @@ begin
 end;
 
 class function TWin32WSCustomListBox.GetItemRect(
-  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
-  ): boolean;
-var
-  Handle: HWND;
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
 begin
-  Handle := ACustomListBox.Handle;
-  // The check for GetProp is required because of some division error which happens
-  // if call LB_GETITEMRECT on window initialization
-  Result := Assigned(GetProp(Handle, 'WinControl')) and (Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR);
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR;
 end;
 
 class function TWin32WSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;

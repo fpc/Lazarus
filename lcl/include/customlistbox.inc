@@ -339,13 +339,15 @@ var
 begin
   with TheMessage.MeasureItemStruct^ do 
   begin
-    if Self.ItemHeight <> 0 then
-      AHeight := Self.ItemHeight
+    // don't call GetItemHeight: causes errors on Windows due to recursion on control creation
+    if FItemHeight <> 0 then
+      AHeight := FItemHeight
     else begin
       Canvas.Font := Font;
       AHeight := Canvas.TextHeight('Hg');
     end;
-    MeasureItem(Integer(ItemId), AHeight);
+    if FStyle = lbOwnerDrawVariable then
+      MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then
       ItemHeight := AHeight;
   end;
