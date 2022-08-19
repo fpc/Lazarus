@@ -849,6 +849,10 @@ the tab order for the visible buttons.
 <short/>
 </element>
 
+<!-- 
+REVERTED in 79505152. Remove.
+-->
+
 <element name="TCustomButtonPanel.Loaded">
 <short>
 Performs actions after the component has finished loading during LCL 
@@ -995,7 +999,7 @@ TPanelBitBtn instances used in the panel class.
 </p>
 </descr>
 <seealso>
-<link id="TCustomButtonPanel.Destroy"/>
+<link id="#lcl.extctrls.TCustomPanel.Create">TCustomPanel.Create</link>
 </seealso>
 </element>
 <element name="TCustomButtonPanel.Create.AOwner">
