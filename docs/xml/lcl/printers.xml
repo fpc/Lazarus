@@ -437,7 +437,9 @@ inherited constructor on entry. Create sets the value for the
 </seealso>
 </element>
 <element name="TPrinterCanvas.Create.APrinter">
-<short/>
+<short>
+Printer where the canvas class instance is used.
+</short>
 </element>
 
 <element name="TPrinterCanvas.BeginDoc">
