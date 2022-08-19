@@ -426,6 +426,7 @@ type
     FDistance: integer;
   public
     constructor Create;
+    procedure AssignTo(Dest: TPersistent); override;
   published
     property SnapToMonitor: boolean read FSnapMonitor write FSnapMonitor default false;
     property SnapToForms: boolean read FSnapForms write FSnapForms default false;
@@ -609,6 +610,7 @@ type
     procedure SetScreenSnap(aValue: boolean);
     function GetSnapBuffer: integer;
     procedure SetSnapBuffer(aValue: integer);
+    procedure SetSnapOptions(aValue: TWindowMagnetOptions);
   protected
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
@@ -795,7 +797,7 @@ type
     property LastActiveControl: TWinControl read FLastActiveControl;
     property PopupMode: TPopupMode read FPopupMode write SetPopupMode default pmNone;
     property PopupParent: TCustomForm read FPopupParent write SetPopupParent;
-    property SnapOptions: TWindowMagnetOptions read FSnapOptions;
+    property SnapOptions: TWindowMagnetOptions read FSnapOptions write SetSnapOptions;
     property ScreenSnap: boolean read GetScreenSnap write SetScreenSnap stored false;
     property SnapBuffer: integer read GetSnapBuffer write SetSnapBuffer stored false;
 

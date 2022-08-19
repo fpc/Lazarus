@@ -21,6 +21,17 @@ begin
   FDistance:= 10;
 end;
 
+procedure TWindowMagnetOptions.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TWindowMagnetOptions then
+    with TWindowMagnetOptions(Dest) do begin
+      Distance:= Self.Distance;
+      SnapToMonitor:= Self.SnapToMonitor;
+      SnapToForms:= Self.SnapToForms;
+      SnapFormTarget:= Self.SnapFormTarget;
+    end;
+end;
+
 { TWindowMagnetManager }
 
 function PosToRect(wp: TWindowPos): TRect;
@@ -218,6 +229,12 @@ end;
 procedure TCustomForm.SetSnapBuffer(aValue: integer);
 begin
   FSnapOptions.Distance:= aValue;
+end;
+
+procedure TCustomForm.SetSnapOptions(aValue: TWindowMagnetOptions);
+begin
+  if FSnapOptions=aValue then Exit;
+  FSnapOptions.Assign(aValue);
 end;
 
 procedure TCustomForm.WMWindowPosChanging(var Message: TLMWindowPosChanging);
