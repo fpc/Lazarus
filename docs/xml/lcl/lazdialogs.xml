@@ -47,9 +47,52 @@ Enumerated type which represents the dialog kind in a Lazarus dialog form.
 </element>
 
 <element name="TLazarusFileDialogForm">
-<short></short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Implements the form displayed for TLazOpenDialog descendants.  
+</short>
+<descr>
+<p>
+<var>TLazarusFileDialogForm</var> is a <var>TForm</var> descendant which 
+implements the form displayed for dialogs which are not wrappers for native 
+dialogs on a given platform. The form includes public members that are used 
+to store input or output values for the dialog, like:
+</p>
+<ul>
+<li>FileName</li>
+<li>Filter</li>
+<li>IntialDir</li>
+<li>Title</li>
+</ul>
+<p>
+It includes public user interface elements needed for the dialog form. The 
+active UI elements are determined by the TLazFileDialogKind value passed as 
+an argument when a dialog calls the Initialize method for the form. The UI 
+elements include:
+</p>
+<ul>
+<li>ShellTreeView (TShellTreeView)</li>
+<li>ShellListView (TShellListView)</li>
+<li>SaveEdit (TEdit)</li>
+<li>FilterComboBox (TFilterComboBox)</li>
+<li>ButtonPanel (TButtonPanel)</li>
+</ul>
+<p>
+TLazarusFileDialogForm includes methods that implement routines assigned to 
+event handlers in the various UI elements. The routines perform actions like 
+setting the ModalResult value when a button is clicked, updating FileName 
+from selected nodes in the shell controls, and enabling / disabling controls 
+as needed.
+</p>
+<p>
+TLazarusFileDialogForm is used to implement the private form member in the 
+TLazOpenDialog component.
+</p>
+</descr>
+<seealso>
+<link id="TLazOpenDialog"/>
+<link id="TLazFileDialogKind"/>
+<link id="#lcl.forms.TForm">TForm</link>
+</seealso>
 </element>
 
 <element name="TLazarusFileDialogForm.FKind">
@@ -93,10 +136,10 @@ Button panel for the Lazarus dialog form.
 <descr>
 <p>
 <var>ButtonPanel</var> is a <var>TButtonPanel</var> member that contains the 
-buttons appropriate for the kind of Lazarus dialog. ButtonPanel is configured 
-by default to display and respond to Ok and Cancel buttons in the Initialize 
-method. Specialized dialog types can alter the default buttons and their 
-actions.
+buttons appropriate for a specific kind of Lazarus dialog. ButtonPanel is 
+configured by default to display and respond to Ok and Cancel buttons in the 
+Initialize method. Specialized dialog types can alter the default buttons and 
+their actions.
 </p>
 </descr>
 <seealso>
@@ -122,7 +165,7 @@ Shell list view control for the Lazarus dialog form.
 </element>
 
 <element name="TLazarusFileDialogForm.SaveEdit">
-<short></short>
+<short>Edit control used for a FileName on the dialog form.</short>
 <descr></descr>
 <seealso></seealso>
 </element>
@@ -232,7 +275,7 @@ Lazarus dialog form appropriate for the dialog type specified in AKind.
 <p>
 The value in AKind is stored in an internal member in the class instance, and 
 is used to determine the child controls configured and displayed on the 
-Lazarus dialog form. It affects the following child controls:
+Lazarus dialog form. It affects the following:
 </p>
 <ul>
 <li>ShellTreeView</li>

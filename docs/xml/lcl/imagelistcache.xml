@@ -244,9 +244,18 @@ threshold is exceeded.
 <short>
 Gets a TCustomImageList instance with the specified image size.
 </short>
+<descr>
+<p>
+Called from the RegisterBitmap method when the cache item is retrieved for a 
+registered cached listener.
+</p>
+</descr>
 </element>
 <element name="TImageListCache.GetImageListFor.Result">
-<short/>
+<short>
+Image list using the specified image size retrieved from the cache or created 
+on demand.
+</short>
 </element>
 <element name="TImageListCache.GetImageListFor.AWidth">
 <short>Width for the images in the image list.</short>
