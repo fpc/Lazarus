@@ -1282,14 +1282,12 @@ Deprecated in Lazarus 2.2.0. Use KOI8RToUTF8 instead.
 Deprecated in Lazarus 2.2.0. Use KOI8RToUTF8 instead.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="KOI8RToUTF8"/>
+</seealso>
 </element>
-<element name="KOI8ToUTF8.Result">
-<short/>
-</element>
-<element name="KOI8ToUTF8.s">
-<short/>
-</element>
+<element name="KOI8ToUTF8.Result"/>
+<element name="KOI8ToUTF8.s"/>
 
 <element name="MacintoshToUTF8">
 <short>
