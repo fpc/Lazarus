@@ -738,10 +738,15 @@ and when queue space is available.
 <seealso/>
 </element>
 <element name="TLazThreadedQueue.TryPushItemUnprotected.Result">
-<short/>
+<short>
+<b>True</b> if an element was available in the list storage for the queue. 
+<b>False</b> if the queue is full.
+</short>
 </element>
 <element name="TLazThreadedQueue.TryPushItemUnprotected.AItem">
-<short/>
+<short>
+Specialization type for the item pushed onto the queue.
+</short>
 </element>
 
 <element name="TLazThreadedQueue.TryPopItemUnprotected">
@@ -757,10 +762,15 @@ and when queue space is available.
 <seealso/>
 </element>
 <element name="TLazThreadedQueue.TryPopItemUnprotected.Result">
-<short/>
+<short>
+<b>True</b> if an item was available in the queue. <b>False</b> if the 
+storage list for the queue was empty.
+</short>
 </element>
 <element name="TLazThreadedQueue.TryPopItemUnprotected.AItem">
-<short/>
+<short>
+Specialization type for the item popped off of the queue.
+</short>
 </element>
 
 <element name="TLazThreadedQueue.Lock">
