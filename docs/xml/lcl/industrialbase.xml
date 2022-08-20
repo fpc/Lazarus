@@ -10,84 +10,113 @@ IndustrialBase
 
 <module name="IndustrialBase">
 <short>
-Contains the base class for graphic controls that support anti-aliasing.
+Contains the base class for a graphic control with an anti-aliasing setting.
 </short>
 <descr>
 <p>
-<file>industrialbase.pp</file> contains the base class for graphic controls 
-that support anti-aliasing.
+<file>industrialbase.pp</file> contains the base class for a graphic control 
+with an anti-aliasing setting.
+</p>
+<p>
+<file>industrialbase.pp</file> is part of the Lazarus Component Library (LCL).
 </p>
 </descr>
 
-<!-- class Visibility: default -->
 <element name="TIndustrialBase">
-<short></short>
+<short>
+Implements the base class for a control with an anti-aliasing setting.
+</short>
 <descr>
+<p>
+<var>TIndustrialBase</var> is a <var>TGraphicControl</var> descendant. It 
+extends the ancestor class with an AntiAliasingMode property which indicates 
+if anti-aliasing is enabled on the Canvas for the control. The property 
+emulates the behavior implemented in the TCustomImage / TImage component.
+</p>
+<p>
+TIndustrialBase is the ancestor for the TArrow class.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="#lcl.controls.TGraphicControl">TGraphicControl</link>
+<link id="#lcl.arrow.TArrow">TArrow</link>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TIndustrialBase.FAntiAliasingMode">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- private -->
+<element name="TIndustrialBase.FAntiAliasingMode"/>
+<element name="TIndustrialBase.SetAntiAliasingMode"/>
+<element name="TIndustrialBase.SetAntiAliasingMode.AValue"/>
 
-<!-- procedure Visibility: private -->
-<element name="TIndustrialBase.SetAntiAliasingMode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TIndustrialBase.SetAntiAliasingMode.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
+<!-- protected -->
 <element name="TIndustrialBase.GraphicChanged">
-<short></short>
+<short>
+Causes the control to be redrawn when it is parented and visible.
+</short>
 <descr>
+<p>
+Calls the Invalidate method to request an update to the control. No actions 
+are performed in the method if Parent has not be assigned, or the control is 
+not Visible.
+</p>
+<p>
+GraphicChanged is called when the value in AntiAliasingMode is updated.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
+<!-- public -->
 <element name="TIndustrialBase.Create">
-<short></short>
+<short>Constructor for the class instance.</short>
 <descr>
+<p>
+<var>Create</var> is the overridden constructor in 
+<var>TIndustrialBase</var>. It calls the inherited method on entry to set the Owner for the class instance, and to allocate resources for the Canvas property.
+</p>
+<p>
+Create sets the default value for the AntiAliasingMode property to 
+amDontCare; this causes the default setting for the platform or widgetset to 
+be used. The initial bounds for the control are set in the method, and the 
+control style flags are updated to remove the csSetCaption flag.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TIndustrialBase.AntiAliasingMode"/>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TIndustrialBase.Create.aOwner">
-<short></short>
+<short>Owner of the class instance.</short>
 </element>
 
-<!-- property Visibility: published -->
+<!-- published -->
 <element name="TIndustrialBase.AntiAliasingMode">
-<short></short>
+<short>
+Indicates whether anti-aliased drawing is enabled for the control Canvas.
+</short>
 <descr>
+<p>
+<var>AntiAliasingMode</var> is a <var>TAntialiasingMode</var> property which 
+indicates whether anti-aliased drawing is enabled for the control Canvas. It emulates the behavior implemented in the TCustomImage / TImage component.
+</p>
+<p>
+Anti-aliased drawing is a technique used to reduce the "stair-stepping" 
+effect for edges or lines in an image. It combines the colors for adjacent 
+pixels to soften a hard edge, and make the image look more realistic.
+</p>
+<p>
+The default value for the property is amDontCare, and indicates that the 
+default setting for the platform or widgetset is used. Changing the property 
+value causes GraphicChanged to be called to redraw the control when allowed.
+</p>
+<p>
+Descendent classes, like TArrow, use the value to configure the corresponding property in its control Canvas.
+</p>
 </descr>
 <seealso>
+<link id="#lcl.graphics.TAntialiasingMode">TAntialiasingMode</link>
+<link id="#lcl.graphics.TCanvas.AntialiasingMode">TCanvas.AntialiasingMode</link>
 </seealso>
 </element>
 
