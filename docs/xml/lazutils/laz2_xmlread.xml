@@ -485,14 +485,67 @@ Maximum number of characters allowed in expanded entity references.
 <seealso></seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TDOMParseOptions.CanonicalForm">
-<short></short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Indicates whether XML Canonical Form is used for parsed XML content.
+</short>
+<descr>
+<p>
+<var>CanonicalForm</var> is a <var>Boolean</var> property which indicates 
+whether an XML parser should convert XML content to Canonical XML form. This 
+is also referred to as Normal form, and means that the following are used in 
+the parsed XML document:
+</p>
+<ul>
+<li>UTF-8 encoding is used.</li>
+<li>An End-of-line is represented using the newline character (#10).</li>
+<li>Whitespace in attribute values is normalized.</li>
+<li>Entity references and non-special character references are expanded.</li>
+<li>CDATA sections are replaced with their character content.</li>
+<li>
+Empty elements are encoded as start and end element tag pairs, not using the 
+special empty element syntax.
+</li>
+<li>Default attributes are explicitly declared.</li>
+<li>Superfluous namespace declarations are deleted.</li>
+</ul>
+<p>
+The property value is <b>True</b> when all of the following properties are 
+<b>True</b>:
+</p>
+<ul>
+<li>CanonicalForm</li>
+<li>ExpandEntities</li>
+<li>CDSectionsAsText</li>
+<li>Namespaces</li>
+<li>PreserveWhitespace</li>
+</ul>
+<p>
+Changing the property value to <b>True</b> causes the following properties to 
+be set to <b>True</b>:
+</p>
+<ul>
+<li>ExpandEntities</li>
+<li>CDSectionsAsText</li>
+<li>Namespaces</li>
+<li>PreserveWhitespace</li>
+</ul>
+<p>
+The value in CanonicalForm is used in the constructor for a TXMLReader class 
+instance which uses an XML parser with these parse options.
+</p>
+</descr>
+<seealso>
+<link id="TDOMParser.Parse"/>
+<link id="TDOMParser.ParseUri"/>
+<link id="TDOMParser.ParseWithContext"/>
+<link id="ReadXMLFile"/>
+<link id="ReadXMLFragment"/>
+<link id="ReadDTDFile"/>
+<link id="TXMLReaderFlags"/>
+</seealso>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TXMLContextAction">
 <short>
 Values that control how XML content is stored in a DOM sub-tree.
@@ -1040,26 +1093,37 @@ the decoder Context.
 <seealso></seealso>
 </element>
 
-<!-- function type Visibility: default -->
 <element name="TGetDecoderProc">
-<short></short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Function type used to get a decoder routine for the specified target encoding.
+</short>
+<descr>
+<p>
+<var>TGetDecoderProc</var> is a <var>Boolean</var> function type used to get 
+the Decoder routine used to convert value in an arbitrary encoding to the encoding specified in AEncoding.
+</p>
+<p>
+TGetDecoderProc is the type passed as an argument to the RegisterDecoder routine.
+</p>
+</descr>
+<seealso>
+<link id="RegisterDecoder"/>
+</seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TGetDecoderProc.Result">
-<short></short>
+<short>
+<b>True</b> if a decoder routine is found for the specified target encoding.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TGetDecoderProc.AEncoding">
-<short></short>
+<short>
+Encoding name for the converted values from the decoder routine.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TGetDecoderProc.Decoder">
-<short></short>
+<short>
+Returns a record with the decode and clean-up routines for a given context.
+</short>
 </element>
 
 <!-- procedure Visibility: default -->
