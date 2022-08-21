@@ -1323,10 +1323,8 @@ msgid "Do not ask this question again"
 msgstr "Não perguntar novamente"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
-#, fuzzy
-#| msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
 msgid "In order to work properly, OPM needs the OpenSSL libraries."
-msgstr "Para funcionar corretamente, o GPO necessita das bibliotecas OpenSSL: \"libeay32.dll\" e \"ssleay32.dll\""
+msgstr "Para funcionar corretamente, o GPO necessita das bibliotecas OpenSSL."
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
@@ -1612,7 +1610,7 @@ msgstr "Desligado"
 
 #: opkman_const.rsoptions_rbopenssl_caption
 msgid "OpenSSL libraries (required for connection to remote repository)"
-msgstr ""
+msgstr "Bibliotecas OpenSSL (requeridas para conexão ao repositório remoto)"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""

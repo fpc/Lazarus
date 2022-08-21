@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: fpwebstrconsts.rsapachemodule
 msgid "Apache Module"
@@ -51,11 +53,11 @@ msgstr "Um programa FastCGI (Common Gateway Interface) em Free Pascal usando mó
 
 #: fpwebstrconsts.rsfilemodule
 msgid "File serving Module"
-msgstr ""
+msgstr "Módulo servidor de arquivos"
 
 #: fpwebstrconsts.rsfilemodule2
 msgid "A datamodule to help serving files from the filesystem in WEB (HTTP) applications."
-msgstr ""
+msgstr "Um datamodule para ajudar a servir arquivos do sistema de arquivos em aplicações WEB (HTTP)."
 
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
@@ -75,7 +77,7 @@ msgstr "Programa servidor HTTP completo em Free Pascal usando módulos web."
 
 #: fpwebstrconsts.rsnomodule
 msgid "Do not create a web module"
-msgstr ""
+msgstr "Não criar um módulo web"
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
@@ -127,7 +129,7 @@ msgstr "Entre com suas definições de classe/estilo aqui"
 
 #: fpwebstrconsts.sdefaultrouteservesfiles
 msgid "Serve files from default location"
-msgstr ""
+msgstr "Servir arquivos do local padrão"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
@@ -139,7 +141,7 @@ msgstr "Entre com seu texto ..."
 
 #: fpwebstrconsts.sfileserving
 msgid "File serving"
-msgstr ""
+msgstr "Servir arquivos"
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
@@ -504,7 +506,7 @@ msgstr "Nova aplicação HTTP"
 
 #: fpwebstrconsts.snofiles
 msgid "Do not serve files"
-msgstr ""
+msgstr "Não servir arquivos"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
@@ -520,7 +522,7 @@ msgstr "Registrar módulo web"
 
 #: fpwebstrconsts.sstandardmodule
 msgid "Web module to create:"
-msgstr ""
+msgstr "Módulo web a criar:"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

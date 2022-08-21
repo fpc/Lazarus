@@ -1,0 +1,323 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.13\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: simplewebsrvstrconsts.rsswadd
+msgid "Add"
+msgstr "Adicionar"
+
+#: simplewebsrvstrconsts.rsswaddcustomserver
+msgid "Add Custom Server"
+msgstr "Adicionar servidor customizado"
+
+#: simplewebsrvstrconsts.rsswaddextracommandlineoptionsforthecommandwhichstarts
+msgid "Add extra command-line options for the command which starts the webserver."
+msgstr "Adicionar opções extra de linha de comando para o comando que inicia o servidor web."
+
+#: simplewebsrvstrconsts.rsswaddlocation
+msgid "Add Location"
+msgstr "Adicionar local"
+
+#: simplewebsrvstrconsts.rsswaddsimplewebserverlocation
+msgid "Add Simple Web Server Location"
+msgstr "Adiconar local Servidor Web Simples"
+
+#: simplewebsrvstrconsts.rsswanarbitrarynamefortheurlsubfolder
+msgid "An arbitrary name for the URL subfolder"
+msgstr "Um nome arbitrário para a subpasta URL"
+
+#: simplewebsrvstrconsts.rsswbindingofsocketfailed
+msgid "Binding of socket failed"
+msgstr "Ligação ao soquete falhou"
+
+#: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
+msgid "Browser to open HTML page, macro $(SWSBrowser)"
+msgstr "Navegador para abrir a página HTML, macro $(SWSBrowser)"
+
+#: simplewebsrvstrconsts.rsswcannotfindbrowsersee
+msgid "Cannot find browser. See"
+msgstr "Impossível encontra navegador. Veja"
+
+#: simplewebsrvstrconsts.rsswcommandlineparameters
+msgid "Command line parameters"
+msgstr "Parâmetros da linha de comando"
+
+#: simplewebsrvstrconsts.rsswconfigure
+msgid "Configure"
+msgstr "Configure"
+
+#: simplewebsrvstrconsts.rsswcopylocation
+msgid "Copy Location"
+msgstr "Copiar local"
+
+#: simplewebsrvstrconsts.rsswcopyorigin
+msgid "Copy Origin"
+msgstr "Copiar origem"
+
+#: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
+msgid "Copy Working Directory Path"
+msgstr "Copiar caminho do diretório de trabalho"
+
+#: simplewebsrvstrconsts.rsswcustomserver
+msgid "Custom Server"
+msgstr "Servidor Customizado"
+
+#: simplewebsrvstrconsts.rsswdelete
+msgid "Delete?"
+msgstr "Excluir?"
+
+#: simplewebsrvstrconsts.rsswdelete2
+msgid "Delete"
+msgstr "Excluir"
+
+#: simplewebsrvstrconsts.rsswdeletelocation
+#, object-pascal-format
+msgid "Delete location \"%s\"?"
+msgstr "Excluir local \"%s\"?"
+
+#: simplewebsrvstrconsts.rsswdeleteserverat
+#, object-pascal-format
+msgid "Delete server at \"%s\"?"
+msgstr "Excluir servidor em \"%s\"?"
+
+#: simplewebsrvstrconsts.rsswdirectorynotfound
+msgid "Directory not found."
+msgstr "Diretório não encontrado"
+
+#: simplewebsrvstrconsts.rsswerror
+msgid "Error"
+msgstr "Erro"
+
+#: simplewebsrvstrconsts.rsswerrorcheckingwhichprocessusestcpport
+#, object-pascal-format
+msgid "Error checking which process uses TCP port %s:"
+msgstr "Erro ao verificar qual processo usa a porta TCP %s:"
+
+#: simplewebsrvstrconsts.rsswerrorcreatingdirectory
+msgid "Error creating directory"
+msgstr "Erro ao criar diretório"
+
+#: simplewebsrvstrconsts.rsswerrorfindingfreetcpport
+msgid "Error finding free TCP port:"
+msgstr "Erro ao procurar porta TCP livre:"
+
+#: simplewebsrvstrconsts.rsswerrorkillingprocess
+#, object-pascal-format
+msgid "Error killing process %s:"
+msgstr "Erro ao encerrar processo %s:"
+
+#: simplewebsrvstrconsts.rsswerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\":"
+msgstr "Erro ao gravar \"%s\":"
+
+#: simplewebsrvstrconsts.rsswexecutable
+msgid "Executable"
+msgstr "Executável"
+
+#: simplewebsrvstrconsts.rsswfilenotfound
+#, object-pascal-format
+msgid "File not found: \"%s\""
+msgstr "Arquivo não encontrado: \"%s\""
+
+#: simplewebsrvstrconsts.rsswinvalidmacrosee
+msgid "Invalid macro. See"
+msgstr "Macro inválida. Veja"
+
+#: simplewebsrvstrconsts.rsswinvalidport
+msgid "Invalid Port."
+msgstr "Porta inválida."
+
+#: simplewebsrvstrconsts.rsswkillpid
+#, object-pascal-format
+msgid "Kill PID %s"
+msgstr "Encerrar PID %s"
+
+#: simplewebsrvstrconsts.rsswkillprocess
+msgid "Kill process?"
+msgstr "Encerrar processo?"
+
+#: simplewebsrvstrconsts.rsswlocaldirectory
+msgid "Local Directory"
+msgstr "Diretório local"
+
+#: simplewebsrvstrconsts.rsswlocaldirectorynotfound
+msgid "Local directory not found:"
+msgstr "Diretório local não encontrado:"
+
+#: simplewebsrvstrconsts.rsswlocation
+msgid "Location"
+msgstr "Local"
+
+#: simplewebsrvstrconsts.rsswlocationalreadyused
+msgid "Location already used."
+msgstr "Local já está em uso."
+
+#: simplewebsrvstrconsts.rsswmissingcontroller
+msgid "missing controller"
+msgstr "controlador faltando"
+
+#: simplewebsrvstrconsts.rsswmissinglocaldirectory
+msgid "Missing local directory."
+msgstr "Diretório local faltando"
+
+#: simplewebsrvstrconsts.rsswmissinglocation
+msgid "Missing Location."
+msgstr "Local faltando."
+
+#: simplewebsrvstrconsts.rsswmissingserverexecutable
+msgid "Missing server executable."
+msgstr "Executável do servidor faltando."
+
+#: simplewebsrvstrconsts.rsswnote
+msgid "Note"
+msgstr "Nota"
+
+#: simplewebsrvstrconsts.rssworigin
+msgid "Origin"
+msgstr "Origem"
+
+#: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
+msgid "Parameters (please use macro $(port))"
+msgstr "Parâmetros (favor usar a macro $(port))"
+
+#: simplewebsrvstrconsts.rsswport
+msgid "Port"
+msgstr "Porta"
+
+#: simplewebsrvstrconsts.rsswportalreadyused
+msgid "Port already used."
+msgstr "Porta já está em uso."
+
+#: simplewebsrvstrconsts.rsswsaddress
+msgid "Address"
+msgstr "Endereço"
+
+#: simplewebsrvstrconsts.rsswsbindany
+msgid "Bind Any"
+msgstr "Ligar algum"
+
+#: simplewebsrvstrconsts.rsswselectdirectory
+msgid "Select Directory"
+msgstr "Selecionar diretório"
+
+#: simplewebsrvstrconsts.rsswserverdirectorynotfound
+#, object-pascal-format
+msgid "Server directory \"%s\" not found."
+msgstr "Diretório do servidor \"%s\" não encontrado."
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfound
+msgid "Server executable not found."
+msgstr "Executável do servidor não encontrado."
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath
+#, object-pascal-format
+msgid "Server executable \"%s\" not found in PATH."
+msgstr "Executável do servidor \"%s\" não encontrado no caminho."
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath2
+msgid "Server executable not found in PATH."
+msgstr "Executável do servidor não encontrado no caminho."
+
+#: simplewebsrvstrconsts.rsswserverexeisnotexecutable
+#, object-pascal-format
+msgid "Server exe is not executable: \"%s\""
+msgstr "Exe do servidor não é executável: \"%s\""
+
+#: simplewebsrvstrconsts.rsswserverexeisnotexecutable2
+msgid "Server exe is not executable."
+msgstr "Exe do servidor não é executável."
+
+#: simplewebsrvstrconsts.rsswserverextracommandlineoptionsoneperline
+msgid "Server extra command-line options (one per line)"
+msgstr "Opções extras da linha de comando do servidor (uma por linha)"
+
+#: simplewebsrvstrconsts.rsswsimplewebserveraddress
+msgid "Simple Web Server Address"
+msgstr "Endereço do Servidor Web Simples"
+
+#: simplewebsrvstrconsts.rsswsimplewebserverexecutable
+msgid "Simple Web Server Executable"
+msgstr "Executável do Servidor Web Simples"
+
+#: simplewebsrvstrconsts.rsswsimplewebserverport
+msgid "Simple Web Server Port"
+msgstr "Porta do Servidor Web Simples"
+
+#: simplewebsrvstrconsts.rsswspathofcompileserver
+msgid "Path of compileserver, macro $(SWSExe)"
+msgstr "Caminho do compileserver, macro $(SWSExe)"
+
+#: simplewebsrvstrconsts.rsswsportmacro
+msgctxt "simplewebsrvstrconsts.rsswsportmacro"
+msgid "Port, macro $(SWSPort)"
+msgstr "Porta, macro $(SWSPort)"
+
+#: simplewebsrvstrconsts.rsswstartserver
+msgid "Start Server"
+msgstr "Iniciar servidor"
+
+#: simplewebsrvstrconsts.rsswstitle
+msgid "Simple Web Server"
+msgstr "Servidor Web Simples"
+
+#: simplewebsrvstrconsts.rsswstopserver
+msgid "Stop Server"
+msgstr "Parar servidor"
+
+#: simplewebsrvstrconsts.rsswsuserorigin
+msgid "User"
+msgstr "Usuário"
+
+#: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
+msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
+msgstr "Porta TCP 1024..65535 (você pode usar a macro $(port) para os parâmetros abaixo)"
+
+#: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
+msgid "The following process already listens:"
+msgstr "O processo seguinte já escuta:"
+
+#: simplewebsrvstrconsts.rsswthereisalreadyaserveronportoriginpath
+#, object-pascal-format
+msgid "There is already a server on port %s:%sOrigin: %sPath: %s"
+msgstr "Já existe um servidor na porta %s:%sOrigem: %sCaminho: %s"
+
+#: simplewebsrvstrconsts.rsswtoolsoptionssimplewebserverbrowser
+msgid "Tools / Options / Simple Web Server / Browser"
+msgstr "Ferramentas / Opções / Servidor Web Simples / Navegador"
+
+#: simplewebsrvstrconsts.rsswtryanotherport
+msgid "Try another port"
+msgstr "Tente outra porta."
+
+#: simplewebsrvstrconsts.rsswunabletoaddlocation
+msgid "Unable to add location:"
+msgstr "Incapaz de adicionar local:"
+
+#: simplewebsrvstrconsts.rsswusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr "Use este navegador para abrir a URL ou arquivo HTML de um projeto de navegador web"
+
+#: simplewebsrvstrconsts.rsswworkingdirectory
+msgid "Working Directory"
+msgstr "Diretório de trabalho"
+
+#: simplewebsrvstrconsts.rsswworkingdirectoryondiskusuallywheretheserverfetches
+msgid "Working directory on disk, usually where the server fetches files from"
+msgstr "Diretório de trabalho no disco, usualmente de onde o servidor obtém arquivos"
+
+#: simplewebsrvstrconsts.rsswwrongcompileserverexe
+#, object-pascal-format
+msgid "Wrong compileserver exe: %s"
+msgstr "Exe compileserver errado: %s"
+

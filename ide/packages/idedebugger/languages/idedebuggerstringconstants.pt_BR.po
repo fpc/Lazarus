@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.13\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: idedebuggerstringconstants.dbgdispformatbinary
+msgid "Binary"
+msgstr "Binário"
+
+#: idedebuggerstringconstants.dbgdispformatcharacter
+msgid "Character"
+msgstr "Caracter"
+
+#: idedebuggerstringconstants.dbgdispformatdecimal
+msgid "Decimal"
+msgstr "Decimal"
+
+#: idedebuggerstringconstants.dbgdispformatdefault
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dbgdispformatfloatingpoin
+msgid "Floating Point"
+msgstr "Ponto flutuante"
+
+#: idedebuggerstringconstants.dbgdispformathexadecimal
+msgid "Hexadecimal"
+msgstr "Hexadecimal"
+
+#: idedebuggerstringconstants.dbgdispformatmemorydump
+msgid "Memory Dump"
+msgstr "Despejo de memória"
+
+#: idedebuggerstringconstants.dbgdispformatpointer
+msgid "Pointer"
+msgstr "Ponteiro"
+
+#: idedebuggerstringconstants.dbgdispformatrecordstruct
+msgid "Record/Structure"
+msgstr "Registro/Estrutura"
+
+#: idedebuggerstringconstants.dbgdispformatstring
+msgid "String"
+msgstr "String"
+
+#: idedebuggerstringconstants.dbgdispformatunsigned
+msgid "Unsigned"
+msgstr "Unsigned"
+
+#: idedebuggerstringconstants.dlgfpconvoptaction
+msgid "Action"
+msgstr "Ação"
+
+#: idedebuggerstringconstants.dlgfpconvoptaddnew
+msgid "Add"
+msgstr "Adicionar"
+
+#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
+msgid "FpDebug Options"
+msgstr "Opções FpDebug"
+
+#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+msgid "Match types by name"
+msgstr "Corresponder tipos pelo nome"
+
+#: idedebuggerstringconstants.dlgfpconvoptname
+msgid "Name"
+msgstr "Nome"
+
+#: idedebuggerstringconstants.dlgfpconvoptremove
+msgid "Remove"
+msgstr "Remover"
+
+#: idedebuggerstringconstants.dlgidedbgdebugger
+msgid "Debugger"
+msgstr "Depurador"
+
+#: idedebuggerstringconstants.dlgidedbgentername
+msgid "Enter name"
+msgstr "Nome de entrada"
+
+#: idedebuggerstringconstants.dlgidedbgnewitem
+msgid "New Item"
+msgstr "Novo Item"
+
+#: idedebuggerstringconstants.dlginspectamountofitemstoshow
+msgid "Amount of items to show"
+msgstr "Quantidade de itens a exibir"
+
+#: idedebuggerstringconstants.dlginspectboundsdd
+#, object-pascal-format
+msgid "Bounds: %d .. %d"
+msgstr "Limites: %d .. %d"
+
+#: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
+msgid "Index of first item to show"
+msgstr "Índice do primeiro item a exibir"
+
+#: idedebuggerstringconstants.drsaddwatch
+msgid "Add watch"
+msgstr "Adicionar observador"
+
+#: idedebuggerstringconstants.drsappendresultatbottomofhis
+msgid "Append result at bottom of history"
+msgstr "Anexar resultado ao final do histórico"
+
+#: idedebuggerstringconstants.drsdebugconverter
+msgid "Converter"
+msgstr "Conversor"
+
+#: idedebuggerstringconstants.drsdisableenableupdatesforth
+msgid "Disable/Enable updates for the entire window"
+msgstr "Desabilitar/Habilitar atualizações para a janela toda"
+
+#: idedebuggerstringconstants.drsenterexpression
+msgid "Enter Expression"
+msgstr "Entrar Expressão"
+
+#: idedebuggerstringconstants.drsevaluate
+msgid "Evaluate"
+msgstr "Avaliar"
+
+#: idedebuggerstringconstants.drshistory
+msgid "History"
+msgstr "Histórico"
+
+#: idedebuggerstringconstants.drsinsertresultattopofhistor
+msgid "Insert result at top of history"
+msgstr "Inserir resultado no topo do histórico"
+
+#: idedebuggerstringconstants.drsinspect
+msgid "Inspect"
+msgstr "Inspecionar"
+
+#: idedebuggerstringconstants.drsnewvalue
+msgid "New Value"
+msgstr "Novo Valor"
+
+#: idedebuggerstringconstants.drsnewvaluetoassigntothevari
+msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
+msgstr "Novo valor para atribuir à variável no processo em depuração (usar Shift-Enter para confirmar)"
+
+#: idedebuggerstringconstants.drsnodebugconverter
+msgid "No Converter"
+msgstr "Nenhum Conversor"
+
+#: idedebuggerstringconstants.drsnohistorykept
+msgid "No history kept"
+msgstr "Nenhum histórico mantido"
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+msgid "Function"
+msgstr "Função"
+
+#: idedebuggerstringconstants.drsusefunctioncallshint
+msgid "Allow function calls"
+msgstr "Permitir chamadas de função"
+
+#: idedebuggerstringconstants.drsuseinstanceclass
+msgid "Instance"
+msgstr "Instância"
+
+#: idedebuggerstringconstants.drsuseinstanceclasshint
+msgid "Use Instance class type"
+msgstr "Usar tipo de classe Instância"
+
+#: idedebuggerstringconstants.lisinspectshowcolclass
+msgid "Show class column"
+msgstr "Exibir coluna classe"
+
+#: idedebuggerstringconstants.lisinspectshowcoltype
+msgid "Show type column"
+msgstr "Exibir coluna tipo"
+
+#: idedebuggerstringconstants.lisinspectshowcolvisibility
+msgid "Show visibility column"
+msgstr "Exibir coluna visibilidade"
+

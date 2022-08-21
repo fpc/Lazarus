@@ -1582,37 +1582,37 @@ msgstr "Limpar"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d colunas, %d linhas)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
-msgstr ""
+msgstr "Excluir coluna"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "Excluir coluna #%d?"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete row"
-msgstr ""
+msgstr "Excluir linha"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "Excluir linha #%d?"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "Editar título da coluna"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "Editar título da coluna fixa"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "Editar cabeçalho da linha"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1620,21 +1620,19 @@ msgstr "\"String Grid\""
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"
-msgstr ""
+msgstr "Inserir coluna"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert row"
-msgstr ""
+msgstr "Inserir linha"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "Carregar ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
-msgstr "Mover Linhas/Colunas"
+msgstr "Mover linhas/colunas"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1653,7 +1651,7 @@ msgstr "Salvar"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"

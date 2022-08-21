@@ -9,13 +9,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: glazresmain.cbtncancel
-#, fuzzy
-#| msgid "Cancel"
 msgid "Close"
-msgstr "Cancelar"
+msgstr "Fechar"
 
 #: glazresmain.defilter
 msgctxt "glazresmain.defilter"
@@ -91,11 +89,9 @@ msgid "Open existing file"
 msgstr "Abrir arquivo existente"
 
 #: glazresmain.opdfilter
-#, fuzzy
-#| msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
 msgctxt "glazresmain.opdfilter"
 msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|macOS Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
-msgstr "Gráfico (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "Gráficos (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|PNG (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icone (*.ico)|*.ico|Icone macOS (*.icns)|*.icns|JPEG (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|TIFF (*.tif;*.tiff)|*.tif;*.tiff|GIF (*.gif)|*.gif|PixMap portável(*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|GIF animado (*.gif)|*.gif|arquivo de imagem TGA (*.tga)|*.tga|"
 
 #: glazresmain.opdfilterall
 msgid "All files"
@@ -109,7 +105,7 @@ msgstr "Abrir imagem existente"
 #: tglazresform.addanybtn.caption
 msgctxt "tglazresform.addanybtn.caption"
 msgid "Add files"
-msgstr ""
+msgstr "Adicionar arquivos"
 
 #: tglazresform.addanybtn.hint
 msgid "Add (any kind of) files to the list"
@@ -118,7 +114,7 @@ msgstr "Adicionar (qualquer tipo) arquivos na lista"
 #: tglazresform.addimgbtn.caption
 msgctxt "tglazresform.addimgbtn.caption"
 msgid "Add images"
-msgstr ""
+msgstr "Adicionar imagens"
 
 #: tglazresform.addimgbtn.hint
 msgid "Add images to the list"
@@ -131,13 +127,11 @@ msgstr "Construtor LRS"
 #: tglazresform.clearbtn.caption
 msgctxt "tglazresform.clearbtn.caption"
 msgid "Delete all"
-msgstr ""
+msgstr "Excluir tudo"
 
 #: tglazresform.clearbtn.hint
-#, fuzzy
-#| msgid "Cleare the entire list"
 msgid "Clear the entire list"
-msgstr "Limpar toda a lista"
+msgstr "Limpar a lista toda"
 
 #: tglazresform.closebtn.hint
 msgid "Exit the program"
@@ -146,7 +140,7 @@ msgstr "Sair do programa"
 #: tglazresform.deletebtn.caption
 msgctxt "tglazresform.deletebtn.caption"
 msgid "Delete selected"
-msgstr ""
+msgstr "Excluir selecionado"
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"
@@ -165,11 +159,9 @@ msgid "Messages"
 msgstr "Mensagens"
 
 #: tglazresform.startbtn.caption
-#, fuzzy
-#| msgid "Create LRS"
 msgctxt "tglazresform.startbtn.caption"
 msgid "Create"
-msgstr "Criar LRS"
+msgstr "Criar"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"

@@ -875,27 +875,21 @@ msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Você não pode usar área de trabalho ancorada em ambiente não ancorado e vice-versa."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-#, fuzzy
-#| msgid "Multi/2nd (NotXor)"
 msgid "Secondary carets (multi-caret mode)"
-msgstr "Multi/2º (NotXor)"
+msgstr "Cursores texto secundários (modo multi-caret)"
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
-#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret (Text-Cursor)"
-msgstr "Cursor Texto"
+msgstr "Cursor Texto (Caret)"
 
 #: lazarusidestrconsts.dlgcaretcolorinfo
 msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
-msgstr ""
+msgstr "A cor do cursor texto depende das cores do texto e plano de fundo sob ele. O RGB de cada pixel é invertido bit a bit e aplicado via operação XOR com as cores RGB escolhidas."
 
 #: lazarusidestrconsts.dlgcaretforecolor
-#, fuzzy
-#| msgid "Color (NotXor)"
 msgid "Main or primary caret"
-msgstr "Cor (NotXor)"
+msgstr "Cursor texto principal ou primário"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
@@ -1390,7 +1384,7 @@ msgstr "Fonte padrão do Editor"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
-msgstr ""
+msgstr "Fonte padrão da aba"
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -2349,7 +2343,7 @@ msgstr "Incluir identificadores contendo prefixo"
 
 #: lazarusidestrconsts.dlgincludekeywordstoidentcompl
 msgid "Include all keywords and operators"
-msgstr ""
+msgstr "Incluir todas as palavras-chave e operadores"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -4125,7 +4119,7 @@ msgstr "Valor"
 
 #: lazarusidestrconsts.dlgvaluedataaddr
 msgid "Data-Address"
-msgstr ""
+msgstr "Endereço-Dados"
 
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
@@ -6353,7 +6347,7 @@ msgstr "Limpar Diretório?"
 
 #: lazarusidestrconsts.lisclearfilter
 msgid "Clear filter"
-msgstr ""
+msgstr "Limpar filtro"
 
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
@@ -8038,7 +8032,7 @@ msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
-msgstr ""
+msgstr "Criar e editar"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
@@ -8272,7 +8266,7 @@ msgstr "Ativar tudo"
 
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
-msgstr ""
+msgstr "Copiar endereço para Área de Transferência"
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
@@ -11042,7 +11036,7 @@ msgstr "Importante"
 #: lazarusidestrconsts.lisimported
 #, object-pascal-format
 msgid "%s (imported)"
-msgstr ""
+msgstr "%s (importado)"
 
 #: lazarusidestrconsts.lisimportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
@@ -12460,10 +12454,8 @@ msgid "library path"
 msgstr "caminho biblioteca."
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-#, fuzzy
-#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
-msgstr "Uma biblioteca compartilhada Free Pascal (.dll no Windows, .so no Linux, .dylib no MacOS X)."
+msgstr "Uma biblioteca compartilhada Free Pascal (.dll no Windows, .so no Linux, .dylib no macOS)."
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -13711,11 +13703,9 @@ msgid "Lowercase Selection"
 msgstr "Seleção em minúsculas"
 
 #: lazarusidestrconsts.lismenumacrolistview
-#, fuzzy
-#| msgid "Editor Macros ..."
 msgctxt "lazarusidestrconsts.lismenumacrolistview"
 msgid "Editor Macros"
-msgstr "Editor de macros ..."
+msgstr "Editor de macros"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -17107,7 +17097,7 @@ msgstr "Arquivo de informações de projeto detectado"
 
 #: lazarusidestrconsts.lisprojectinspectorshowprops
 msgid "Show properties pane in Project Inspector"
-msgstr ""
+msgstr "Exibir painel de propriedades no Inspetor de Projeto"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
@@ -18356,7 +18346,7 @@ msgstr "Ignorar carregamento do último projeto"
 
 #: lazarusidestrconsts.lisskipstartupchecks
 msgid "Skip selected checks at startup."
-msgstr ""
+msgstr "Pular verificações selecionadas ao iniciar."
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -19225,7 +19215,7 @@ msgstr "Não há nenhum fpc.exe no diretório de %s. Geralmente o executável ma
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
 msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr ""
+msgstr "Não há um compilador Free Pascal (como fpc%0:s ou ppc<cpu>%0:s) configurado nas opções de projeto. CodeTools não irá funcionar corretamente.%1:s%1:sMensagem de erro:%1:s%2:s"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."

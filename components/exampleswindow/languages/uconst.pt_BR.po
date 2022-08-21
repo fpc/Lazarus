@@ -1,0 +1,107 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.13\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr "Diretório para onde vão os exemplos"
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr "Categoria"
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr "Fechar"
+
+#: uconst.rsexamplecopy
+msgid "Copy to work area"
+msgstr "Copiar para a área de trabalho"
+
+#: uconst.rsexampledownload
+msgid "Download"
+msgstr "Download"
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr "Palavras-chave"
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr "Nome"
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr "Abrir"
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr "Caminho"
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr "Projetos de exemplo"
+
+#: uconst.rsexampleview
+msgid "View in Browser"
+msgstr "Visualizar no navegador"
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr "Copiando projeto ..."
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr "Baixando projeto ..."
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr "Erro na rede GitLab"
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr "Arquivo de projeto não encontrado"
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr "Projeto copiado para"
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr "Projeto baixado para"
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr "Procurando por exemplos ..."
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr "Procurar aqui"
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr "Falha ao copiar arquivos para"
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr "Encontrado(s) %d Projeto(s) de exemplo"
+
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr "Duplo clique inverte a seleção"
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr "Atualizar exemplo existente?"
+

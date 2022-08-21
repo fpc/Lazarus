@@ -13,15 +13,15 @@ msgstr ""
 
 #: debuggerstrconst.dlgfpconvoptdefault
 msgid "- Default -"
-msgstr ""
+msgstr "- Padrão -"
 
 #: debuggerstrconst.dlgfpconvoptdisabled
 msgid "- Disabled -"
-msgstr ""
+msgstr "- Desabilitado -"
 
 #: debuggerstrconst.dlgfpconvoptfpdebugconverter
 msgid "FpDebug Converter:"
-msgstr ""
+msgstr "Conversor FpDebug:"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -148,7 +148,7 @@ msgstr "Painel inspeção"
 
 #: debuggerstrconst.dsrevalusefpdebugconverter
 msgid "Use FpDebug Converter"
-msgstr ""
+msgstr "Usar Conversor FpDebug"
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."

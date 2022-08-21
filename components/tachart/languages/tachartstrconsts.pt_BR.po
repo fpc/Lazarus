@@ -166,7 +166,7 @@ msgstr "Dica ponto de dados"
 
 #: tachartstrconsts.rsdatapointmarksclicktool
 msgid "Data point marks click"
-msgstr ""
+msgstr "Clique das marcas de pontos de Dados"
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
