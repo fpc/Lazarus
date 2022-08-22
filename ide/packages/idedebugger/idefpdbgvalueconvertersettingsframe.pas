@@ -68,7 +68,7 @@ implementation
 
 procedure TFpDbgValConvFrame.btnAddClick(Sender: TObject);
 var
-  AvailClass: TFpDbgValueConverterClassList;
+  AvailClass: TLazDbgValueConvertRegistry;
   AName: String;
   obj: TIdeFpDbgConverterConfig;
 begin
@@ -79,8 +79,8 @@ begin
   SaveCurrent;
 
   FCurConvConf := nil;
-  AvailClass := ValueConverterClassList;
-  obj := TIdeFpDbgConverterConfig.Create(AvailClass[0].Create);
+  AvailClass := ValueConverterRegistry;
+  obj := TIdeFpDbgConverterConfig.Create(AvailClass[0].CreateValueConvertorIntf.GetObject as TFpDbgValueConverter);
   obj.Enabled := True;
   obj.Name := AName;
   obj.MatchKinds := obj.Converter.GetSupportedKinds;
@@ -115,7 +115,7 @@ end;
 
 procedure TFpDbgValConvFrame.lstConvertersClick(Sender: TObject);
 var
-  AvailClass: TFpDbgValueConverterClassList;
+  AvailClass: TLazDbgValueConvertRegistry;
 begin
   SaveCurrent;
   pnlCurrentConv.Enabled := lstConverters.Count > 0;
@@ -135,8 +135,8 @@ begin
   EdName.Text := FCurConvConf.Name;
   memoTypeNames.Text := FCurConvConf.MatchTypeNames.Text;
 
-  AvailClass := ValueConverterClassList;
-  dropAction.ItemIndex := AvailClass.IndexOf(TFpDbgValueConverterClass(FCurConvConf.Converter.ClassType));
+  AvailClass := ValueConverterRegistry;
+  dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.ClassType);
 
   lstConvertersItemClick(nil, FCurIdx);
 end;
@@ -172,14 +172,14 @@ end;
 
 procedure TFpDbgValConvFrame.UpdateConvForClass;
 var
-  AvailClass: TFpDbgValueConverterClassList;
+  AvailClass: TLazDbgValueConvertRegistry;
 begin
   if FCurConvConf = nil then
     exit;
 
-  AvailClass := ValueConverterClassList;
-  if (dropAction.ItemIndex <> AvailClass.IndexOf(TFpDbgValueConverterClass(FCurConv.GetObject.ClassType))) then begin
-    FCurConv := AvailClass[dropAction.ItemIndex].Create;
+  AvailClass := ValueConverterRegistry;
+  if (dropAction.ItemIndex <> AvailClass.IndexOfConvertorClass(FCurConv.GetObject.ClassType)) then begin
+    FCurConv := AvailClass[dropAction.ItemIndex].CreateValueConvertorIntf;
     UpdateConvPanel;
   end;
 end;
@@ -217,7 +217,7 @@ end;
 
 procedure TFpDbgValConvFrame.UpdateButtons;
 begin
-  btnAdd.Enabled := ValueConverterClassList.Count > 0;
+  btnAdd.Enabled := ValueConverterRegistry.Count > 0;
   btnRemove.Enabled := (lstConverters.Count > 0) and (lstConverters.ItemIndex >= 0);
   pnlCurrentConv.Enabled := FCurConvConf <> nil;
 end;
@@ -239,12 +239,12 @@ end;
 
 procedure TFpDbgValConvFrame.SaveCurrent;
 var
-  AvailClass: TFpDbgValueConverterClassList;
+  AvailClass: TLazDbgValueConvertRegistry;
 begin
   if FCurConvConf = nil then
     exit;
 
-  AvailClass := ValueConverterClassList;
+  AvailClass := ValueConverterRegistry;
   if ( (FCurConv = nil) or (FCurConvSettings = nil) or FCurConvSettings.WriteTo(FCurConv) ) or
      (TrimSet(FCurConvConf.MatchTypeNames.Text, [#1..#32]) <> TrimSet(memoTypeNames.Text, [#1..#32])) or
      (FCurConvConf.Converter <> FCurConv) or
@@ -260,7 +260,7 @@ end;
 
 procedure TFpDbgValConvFrame.Setup;
 var
-  AvailClass: TFpDbgValueConverterClassList;
+  AvailClass: TLazDbgValueConvertRegistry;
   i: Integer;
 begin
   btnAdd.Caption       := dlgFpConvOptAddNew;
@@ -273,8 +273,8 @@ begin
   lblDesc.Caption := '-';
 
   dropAction.Clear;
-  AvailClass := ValueConverterClassList;
-  for i := 0 to ValueConverterClassList.Count - 1 do
+  AvailClass := ValueConverterRegistry;
+  for i := 0 to ValueConverterRegistry.Count - 1 do
     dropAction.AddItem(AvailClass[i].GetName, nil);
 
   UpdateButtons;

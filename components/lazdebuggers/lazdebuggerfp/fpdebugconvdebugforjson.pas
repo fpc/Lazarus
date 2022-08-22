@@ -321,8 +321,24 @@ begin
   end;
 end;
 
+type
+
+  { TFpDbgValueConverterJsonForDebugRegistryEntry }
+
+  TFpDbgValueConverterJsonForDebugRegistryEntry = class(TFpDbgValueConverterRegistryEntry)
+  public
+    class function GetConvertorClass: TClass; override;
+  end;
+
+{ TFpDbgValueConverterJsonForDebugRegistryEntry }
+
+class function TFpDbgValueConverterJsonForDebugRegistryEntry.GetConvertorClass: TClass;
+begin
+  Result := TFpDbgValueConverterJsonForDebug;
+end;
+
 initialization
-  ValueConverterClassList.Add(TFpDbgValueConverterJsonForDebug);
+  ValueConverterRegistry.Add(TFpDbgValueConverterJsonForDebugRegistryEntry);
 
 end.
 

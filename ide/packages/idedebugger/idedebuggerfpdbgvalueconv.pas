@@ -5,7 +5,8 @@ unit IdeDebuggerFpDbgValueConv;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, FpDebugValueConvertors;
+  Classes, SysUtils, Laz2_XMLCfg, FpDebugValueConvertors,
+  LazDebuggerValueConverter;
 
 type
 
@@ -64,18 +65,18 @@ procedure TIdeFpDbgConverterConfig.LoadDataFromXMLConfig(
   const AConfig: TRttiXMLConfig; const APath: string);
 var
   s: String;
-  c: TFpDbgValueConverterClass;
   obj: TFpDbgValueConverter;
+  RegEntry: TLazDbgValueConvertRegistryEntryClass;
 begin
   AConfig.ReadObject(APath + 'Filter/', Self);
   MatchTypeNames.CommaText := AConfig.GetValue(APath + 'Filter/MatchTypeNames', '');
 
   s := AConfig.GetValue(APath + 'ConvClass', '');
-  c := ValueConverterClassList.FindByClassName(s);
-  if c = nil then
+  RegEntry := ValueConverterRegistry.FindByConvertorClassName(s);
+  if RegEntry = nil then
     exit;
 
-  obj := c.Create;
+  obj := RegEntry.CreateValueConvertorIntf.GetObject as TFpDbgValueConverter;
   AConfig.ReadObject(APath + 'Conv/', obj);
   Converter := obj;
 end;
