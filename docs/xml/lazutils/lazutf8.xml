@@ -663,15 +663,9 @@ table.
 </descr>
 <seealso/>
 </element>
-<element name="UTF8CharacterToUnicode.Result">
-<short/>
-</element>
-<element name="UTF8CharacterToUnicode.p">
-<short/>
-</element>
-<element name="UTF8CharacterToUnicode.CharLen">
-<short/>
-</element>
+<element name="UTF8CharacterToUnicode.Result"/>
+<element name="UTF8CharacterToUnicode.p"/>
+<element name="UTF8CharacterToUnicode.CharLen"/>
 
 <element name="UnicodeToUTF8">
 <short>
@@ -956,18 +950,10 @@ Deprecated. Use UTF8CodepointStart instead.
 </descr>
 <seealso/>
 </element>
-<element name="UTF8CharStart.Result">
-<short/>
-</element>
-<element name="UTF8CharStart.UTF8Str">
-<short/>
-</element>
-<element name="UTF8CharStart.Len">
-<short/>
-</element>
-<element name="UTF8CharStart.CharIndex">
-<short/>
-</element>
+<element name="UTF8CharStart.Result"/>
+<element name="UTF8CharStart.UTF8Str"/>
+<element name="UTF8CharStart.Len"/>
+<element name="UTF8CharStart.CharIndex"/>
 
 <element name="UTF8CodepointToByteIndex">
 <short>
@@ -975,23 +961,43 @@ Finds the byte index of the n-th UTF-8 codepoint.
 </short>
 <descr>
 <p>
-Finds the byte index of the n-th UTF-8 codepoint, ignoring BIDI (byte len of 
-substr).
+<var>UTF8CodepointToByteIndex</var> is a <var>PtrInt</var> function used to 
+find the byte index in UTF8Str where the n-th UTF-8 codepoint is located. It 
+calls UTF8CodepointStart to get a pointer to the requested codepoint position.
+</p>
+<p>
+The return value contains the difference between the pointer offsets in each 
+of the PChar values. The return value is -1 when a codepoint is not found at 
+the specified position.
+</p>
+<p>
+UTF8CodepointToByteIndex ignores BIDI mode.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="UTF8CodepointStart"/>
+<link id="UTF8CharToByteIndex"/>
+</seealso>
 </element>
 <element name="UTF8CodepointToByteIndex.Result">
-<short/>
+<short>
+Byte position where the requested UTF-8 codepoint is located, or -1 when a codepoint is not available for the index value.
+</short>
 </element>
 <element name="UTF8CodepointToByteIndex.UTF8Str">
-<short/>
+<short>
+PChar with the multi-byte UTF-8-encoded values examined in the routine.
+</short>
 </element>
 <element name="UTF8CodepointToByteIndex.Len">
-<short/>
+<short>
+Length of the PChar value in UTF8Str in bytes.
+</short>
 </element>
 <element name="UTF8CodepointToByteIndex.CodepointIndex">
-<short/>
+<short>
+Position of the codepoint requested in the routine. This is 1-based, like a character index in String.
+</short>
 </element>
 
 <element name="UTF8CharToByteIndex">
@@ -1005,18 +1011,10 @@ Deprecated. Use UTF8CodepointToByteIndex instead.
 </descr>
 <seealso/>
 </element>
-<element name="UTF8CharToByteIndex.Result">
-<short/>
-</element>
-<element name="UTF8CharToByteIndex.UTF8Str">
-<short/>
-</element>
-<element name="UTF8CharToByteIndex.Len">
-<short/>
-</element>
-<element name="UTF8CharToByteIndex.CharIndex">
-<short/>
-</element>
+<element name="UTF8CharToByteIndex.Result"/>
+<element name="UTF8CharToByteIndex.UTF8Str"/>
+<element name="UTF8CharToByteIndex.Len"/>
+<element name="UTF8CharToByteIndex.CharIndex"/>
 
 <element name="UTF8FixBroken">
 <short>
@@ -1024,17 +1022,45 @@ Replaces all invalid UTF-8 characters with spaces.
 </short>
 <descr>
 <p>
-Replaces all invalid UTF-8 characters with spaces. Stops at the first 
-occurrence of the byte value #0 (Decimal 0).
+<var>UTF8FixBroken</var> is an overloaded routine used to replace all invalid 
+UTF-8 characters with spaces. The overloaded variants allow the UTF-8-encoded 
+content to be specified using either a PChar or a String type.
+</p>
+<p>
+The PChar variant examines the specified byte values to determine when an 
+invalid UTF-8 codepoint is found. This includes byte values that fall outside 
+of the ranges allowed in UTF-8, and common byte sequences used to inject XSS 
+vulnerabilities.
+</p>
+<p>
+UTF-8 byte sequences updated in the routine are stored in the original PChar 
+argument.
+</p>
+<p>
+UTF8FixBroken processing at the first occurrence of the byte value #0 
+(Decimal 0).
+</p>
+<p>
+The String variant converts the argument to a PChar type and calls 
+FindInvalidUTF8Codepoint to locate invalid UTF-8 byte sequences. When found, 
+UniqueString is called to get a new reference-counted String for the return 
+value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="FindInvalidUTF8Codepoint"/>
+<link id="#rtl.system.UniqueString">UniqueString</link>
+</seealso>
 </element>
 <element name="UTF8FixBroken.P">
-<short/>
+<short>
+PChar with the UTF-8-encoded values examined in the routine.
+</short>
 </element>
 <element name="UTF8FixBroken.S">
-<short/>
+<short>
+String with the UTF-8-encoded values examined in the routine.
+</short>
 </element>
 
 <element name="UTF8CodepointStrictSize">
@@ -1046,8 +1072,8 @@ return value contains the number of bytes need for the codepoint (in the
 range 1..4), or 0 (zero) when P is not assigned or the codepoint is invalid.
 </p>
 <remark>
-UTF8CodepointStrictSize stops examining the byte values in P when #0 is 
-encountered.
+UTF8CodepointStrictSize stops examining the byte values in P when #0 (Decimal 
+0) is encountered.
 </remark>
 </descr>
 <seealso/>
@@ -1070,12 +1096,8 @@ Deprecated. Use UTF8CodepointStrictSize instead.
 </descr>
 <seealso/>
 </element>
-<element name="UTF8CharacterStrictLength.Result">
-<short/>
-</element>
-<element name="UTF8CharacterStrictLength.P">
-<short/>
-</element>
+<element name="UTF8CharacterStrictLength.Result"/>
+<element name="UTF8CharacterStrictLength.P"/>
 
 <element name="UTF8CStringToUTF8String">
 <short>
@@ -1145,26 +1167,37 @@ Returns 0 if the search text is not found in the string.
 
 <element name="UTF8PosP">
 <short>
-Returns the position where SearchInText starts in SearchForText, or Nil when 
-not found.
+Returns a pointer to the position where SearchForText starts in SearchInText, 
+or Nil when not found.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="UTF8PosP.Result">
-<short/>
+<short>
+Pointer to the character value where SearchForText was located in 
+SearchInText, or Nil when not found.
+</short>
 </element>
 <element name="UTF8PosP.SearchForText">
-<short/>
+<short>
+Pointer to the character(s) to locate in SearchInText.
+</short>
 </element>
 <element name="UTF8PosP.SearchForTextLen">
-<short/>
+<short>
+Number of bytes in SearchForText.
+</short>
 </element>
 <element name="UTF8PosP.SearchInText">
-<short/>
+<short>
+Pointer to the character values examined in the routine.
+</short>
 </element>
 <element name="UTF8PosP.SearchInTextLen">
-<short/>
+<short>
+Number of bytes in SearchInText.
+</short>
 </element>
 
 <element name="UTF8Copy">
@@ -1545,18 +1578,10 @@ StopOnNonUTF8 is <b>False</b> it will ignore undefined codes. For example
 </descr>
 <seealso/>
 </element>
-<element name="FindInvalidUTF8Character.Result">
-<short/>
-</element>
-<element name="FindInvalidUTF8Character.p">
-<short/>
-</element>
-<element name="FindInvalidUTF8Character.Count">
-<short/>
-</element>
-<element name="FindInvalidUTF8Character.StopOnNonASCII">
-<short/>
-</element>
+<element name="FindInvalidUTF8Character.Result"/>
+<element name="FindInvalidUTF8Character.p"/>
+<element name="FindInvalidUTF8Character.Count"/>
+<element name="FindInvalidUTF8Character.StopOnNonASCII"/>
 
 <element name="UTF8StringOfChar">
 <short>
@@ -1791,28 +1816,41 @@ Gets the specified number of characters (codepoints) at the end of the string.
 
 <element name="UTF8QuotedStr">
 <short>
-Performs safe quoting for the string value.
+Performs safe quoting for the specified UTF-8-encoded string value.
 </short>
 <descr>
 <p>
-<var>UTF8QuotedStr</var> is used to replace all Quote (') characters in 
-<var>S</var> with double Quote (") characters, and enclose the replaced 
-values in Quote characters.
+<var>UTF8QuotedStr</var> is a <var>String</var> function used to double all 
+occurrences of the byte sequence in the Quote argument. It works like the 
+QuotedStr or AnsiQuotedStr routines from the RTL <file>sysutils</file> unit, 
+but allows the Quote character to contain a valid multi-byte UTF-8 codepoint. 
+Processing in the routine is halted when the #0 (Decimal 0) character is 
+encountered.
+</p>
+<p>
+Like its counterparts, UTF8QuotedStr encloses the return value with the 
+character specified in the Quote argument.
 </p>
 </descr>
-<notes>
-<note>This needs work.</note>
-</notes>
-<seealso/>
+<seealso>
+<link id="#rtl.sysutils.QuotedStr">QuotedStr</link>
+<link id="#rtl.sysutils.AnsiQuotedStr">AnsiQuotedStr</link>
+</seealso>
 </element>
 <element name="UTF8QuotedStr.Result">
-<short/>
+<short>
+Value in S after safe UTF-8 quoting has been applied.
+</short>
 </element>
 <element name="UTF8QuotedStr.S">
-<short/>
+<short>
+String with the values examined and quoted in the routine.
+</short>
 </element>
 <element name="UTF8QuotedStr.Quote">
-<short/>
+<short>
+Byte sequence with the quote character used in the routine.
+</short>
 </element>
 
 <element name="UTF8StartsText">
@@ -2230,20 +2268,32 @@ values.
 </short>
 <descr>
 <p>
-Converts values in S1 and S2 to UnicodeString and calls WideCompareText to 
-get the return value for the function.
+Converts values in S1 and S2 to UTF-16 encoding, and calls WideCompareText to 
+get the return value for the case-insensitive comparison. The return value 
+contains the relative difference between the compared values. For instance:
 </p>
+<ul>
+<li>&lt;0 when S1&lt;S2.</li>
+<li>0 when S1=S2.</li>
+<li>&gt;0 when S1&gt;S2.</li>
+</ul>
 </descr>
 <seealso/>
 </element>
 <element name="UTF8CompareTextP.Result">
-<short/>
+<short>
+Integer result for the case-insensitive comparison.
+</short>
 </element>
 <element name="UTF8CompareTextP.S1">
-<short/>
+<short>
+PChar with the values used in the comparison.
+</short>
 </element>
 <element name="UTF8CompareTextP.S2">
-<short/>
+<short>
+PChar with the values used in the comparison.
+</short>
 </element>
 
 <element name="UTF8CompareLatinTextFast">
@@ -2252,13 +2302,15 @@ Like UTF8CompareText but does not return strict alphabetical order.
 </short>
 <descr>
 <p>
-Like UTF8CompareText but does not return strict alphabetical order. The order 
-is deterministic and good for binary search and similar uses. Optimizes 
+Like UTF8CompareText, but does not return strict alphabetical order. The 
+order is deterministic and good for binary search and similar uses. Optimizes 
 comparison of single-byte encoding and also multi-byte portions when they are 
 equal. Otherwise falls back to WideCompareText.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="#rtl.sysutils.WideCompareText">WideCompareText</link>
+</seealso>  
 </element>
 <element name="UTF8CompareLatinTextFast.Result">
 <short/>
@@ -2346,10 +2398,12 @@ instance.
 
 <element name="TStringListUTF8Fast.DoCompareText">
 <short>
-Compares UTF-8-encoded values in the class using UTF8CompareLatinTextFast.
+Compares UTF-8-encoded values using UTF8CompareLatinTextFast.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="UTF8CompareLatinTextFast"/>
+</seealso>
 </element>
 <element name="TStringListUTF8Fast.DoCompareText.Result">
 <short/>
