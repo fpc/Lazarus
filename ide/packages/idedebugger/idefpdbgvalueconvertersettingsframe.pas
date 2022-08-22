@@ -102,7 +102,7 @@ begin
   FValConvList.Delete(i);
 
   FillList;
-  if i > lstConverters.Count then
+  if i >= lstConverters.Count then
     dec(i);
   lstConverters.ItemIndex := i;
   lstConvertersClick(nil);
