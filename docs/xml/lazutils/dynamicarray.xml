@@ -27,51 +27,63 @@ Author: Jesus Reyes
 <element name="SysUtils"/>
 
 <element name="EArray">
-<short/>
+<short>
+Not used in the current LazUtils version.
+</short>
 <descr>
-EArray is an Exception type. Not used in the current LCL implementation.
+EArray is an Exception type. Not used in the current LazUtils implementation.
 </descr>
 <seealso/>
 </element>
-<!-- procedure type Visibility: default -->
+
 <element name="TOnNotifyItem">
-<short>Type for event handling.</short>
-<descr/>
-<seealso/>
+<short>
+Specifies and event handler signalled when an item is added to or removed 
+from TPointerPointerArray.
+</short>
+<descr>
+<p>
+<var>TOnNotifyItem</var> is the type used for the <var>OnDestroyItem</var> 
+and <var>OnNewItem</var> properties in <var>TPointerPointerArray</var>.
+</p>
+</descr>
+<seealso>
+<link id="TPointerPointerArray.OnDestroyItem"/>
+<link id="TPointerPointerArray.OnNewItem"/>
+</seealso>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnNotifyItem.Sender">
-<short>instance of the TArray that causes the event.</short>
+<short>Instance of the TArray that causes the event.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnNotifyItem.Col">
-<short>The related Col of the event.</short>
+<short>The Col number for the event.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnNotifyItem.Row">
-<short>The related Row of the event.</short>
+<short>The Row number for the event.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnNotifyItem.Item">
-<short>The related Item of the event.</short>
+<short>Pointer to the Item date for the event.</short>
 </element>
-<!-- procedure type Visibility: default -->
+
 <element name="TOnExchangeItem">
-<short/>
+<short>
+Not used in the current LazUtils version.
+</short>
 <descr/>
 <seealso/>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnExchangeItem.Sender">
 <short>The instance of the TArray that causes the Exchange event.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnExchangeItem.Index">
-<short/>
+<short>
+Ordinal position for an array element exchanged in the handler.
+</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="TOnExchangeItem.WithIndex">
-<short/>
+<short>
+Ordinal position for an array element exchanged in the handler.
+</short>
 </element>
 
 <element name="TPointerPointerArray">
