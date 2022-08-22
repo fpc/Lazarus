@@ -1,6 +1,9 @@
 variables:
   FPC_OLDSTABLE_VER: 3.2.0
   FPC_STABLE_VER: 3.2.2
+  FPC_FIXES_VER: 3.2.3
+  FPC_MAIN_VER: 3.3.1
+
   IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
   QT5PAS_SRC: lcl/interfaces/qt5/cbindings
 
@@ -40,7 +43,12 @@ update-build-env:  # This job updates building environment image. Run it if FPC 
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --pull --build-arg FPC_OLDSTABLE_VER=$FPC_OLDSTABLE_VER --build-arg FPC_STABLE_VER=$FPC_STABLE_VER -t $IMAGE_TAG - < Dockerfile.buildenv
+    - docker build --pull
+                   --build-arg FPC_OLDSTABLE_VER=$FPC_OLDSTABLE_VER
+                   --build-arg FPC_STABLE_VER=$FPC_STABLE_VER
+                   --build-arg FPC_FIXES_VER=$FPC_FIXES_VER
+                   --build-arg FPC_MAIN_VER=$FPC_MAIN_VER
+                   -t $IMAGE_TAG - < Dockerfile.buildenv
     - docker push $IMAGE_TAG
   when: manual
 
