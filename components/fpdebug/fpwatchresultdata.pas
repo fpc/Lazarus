@@ -69,6 +69,7 @@ type
                                  ): Boolean;
 
     property RecurseCnt: Integer read FRecurseCnt;
+    property RecurseCntLow: Integer read FRecurseCntLow;
   public
     constructor Create(AContext: TFpDbgLocationContext);
     destructor Destroy; override;
@@ -590,7 +591,7 @@ begin
       end;
 
       ResAnch := nil;
-      ti := MemberValue.ParentTypeInfo;
+      ti := MemberValue.ParentTypeInfo; // TODO: variant returens nil, membervalue.sturcturevalue.parenttypesymbol
       if ti <> nil then
         ti := ti.InternalTypeInfo;
       j := AnchestorMap.IndexOf(PtrUInt(ti));

@@ -45,8 +45,8 @@ type
   { TFpDbgValueConvertSelectorIntfHelper }
 
   TFpDbgValueConvertSelectorIntfHelper = type helper for TLazDbgValueConvertSelectorIntf
-    function CheckMatch(AValue: TFpValue): Boolean;
-    function CheckTypeMatch(AValue: TFpValue): Boolean;
+    function CheckMatch(AValue: TFpValue; IgnoreInstanceClass: boolean = False): Boolean;
+    function CheckTypeMatch(AValue: TFpValue; IgnoreInstanceClass: boolean = False): Boolean;
   end;
 
   { TFpDbgValueConverterRegistryEntry }
@@ -131,15 +131,15 @@ end;
 
 { TFpDbgValueConvertSelectorIntfHelper }
 
-function TFpDbgValueConvertSelectorIntfHelper.CheckMatch(AValue: TFpValue
-  ): Boolean;
+function TFpDbgValueConvertSelectorIntfHelper.CheckMatch(AValue: TFpValue;
+  IgnoreInstanceClass: boolean): Boolean;
 begin
   Result := //(AValue.Kind in (MatchKinds * GetConverter.GetSupportedKinds)) and
-            CheckTypeMatch(AValue);
+            CheckTypeMatch(AValue, IgnoreInstanceClass);
 end;
 
-function TFpDbgValueConvertSelectorIntfHelper.CheckTypeMatch(AValue: TFpValue
-  ): Boolean;
+function TFpDbgValueConvertSelectorIntfHelper.CheckTypeMatch(AValue: TFpValue;
+  IgnoreInstanceClass: boolean): Boolean;
   function MatchPattern(const AName, APattern: String): Boolean;
   var
     NamePos, PatternPos, p: Integer;
@@ -218,25 +218,27 @@ begin
           ValClassName := LowerCase(ValClassName);
         end;
 
-        CnIdx := 0;
-        while AValue.GetInstanceClassName(@ValClassName, @ValUnitName, CnIdx) and
-              (ValClassName <> '')
-        do begin
-          ValClassName := LowerCase(ValClassName);
-          if (ValClassName = TpName) and (not HasMaybeUnitDot) then
-            Break;
-          Result := MatchPattern(ValClassName, Pattern);
-          if Result then
-            exit;
-
-          if HasMaybeUnitDot and (ValUnitName <> '') then begin
-            ValUnitName := LowerCase(ValUnitName);
-            Result := MatchPattern(ValUnitName+'.'+ValClassName, Pattern);
+        if not IgnoreInstanceClass then begin
+          CnIdx := 0;
+          while AValue.GetInstanceClassName(@ValClassName, @ValUnitName, CnIdx) and
+                (ValClassName <> '')
+          do begin
+            ValClassName := LowerCase(ValClassName);
+            if (ValClassName = TpName) and (not HasMaybeUnitDot) then
+              Break;
+            Result := MatchPattern(ValClassName, Pattern);
             if Result then
               exit;
-          end;
 
-          inc(CnIdx);
+            if HasMaybeUnitDot and (ValUnitName <> '') then begin
+              ValUnitName := LowerCase(ValUnitName);
+              Result := MatchPattern(ValUnitName+'.'+ValClassName, Pattern);
+              if Result then
+                exit;
+            end;
+
+            inc(CnIdx);
+          end;
         end;
         AValue.ResetError;
 
