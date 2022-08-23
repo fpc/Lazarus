@@ -99,6 +99,22 @@ x86_64-gtk2-stable:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
 
+x86_64-gtk2-fixes:
+  stage: build
+  script:
+    - make bigide FPC=/usr/lib/fpc/$FPC_FIXES_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
+x86_64-gtk2-main:
+  stage: build
+  script:
+    - make bigide FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=gtk2
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
 x86_64-gtk3-oldstable:
   stage: build
   script:
@@ -152,6 +168,24 @@ i386-win32-stable:
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
+
+i386-win32-fixes:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_FIXES_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_FIXES_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
+i386-win32-main:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
+    - make bigide FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcross386 OS_TARGET=win32 CPU_TARGET=i386 LCL_PLATFORM=win32
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
 
 x86_64-win64-oldstable:
   stage: build
