@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, CheckLst, LCLIntf,
-  Dialogs, StrUtils, FpDebugValueConvertors, LazDebuggerValueConverter,
+  Dialogs, StrUtils, LazDebuggerValueConverter,
   IdeDebuggerStringConstants, IdeDebuggerFpDbgValueConv;
 
 type
@@ -80,7 +80,7 @@ begin
 
   FCurConvConf := nil;
   AvailClass := ValueConverterRegistry;
-  obj := TIdeDbgValueConvertSelector.Create(AvailClass[0].CreateValueConvertorIntf.GetObject as TFpDbgValueConverter);
+  obj := TIdeDbgValueConvertSelector.Create(AvailClass[0].CreateValueConvertorIntf);
   obj.Enabled := True;
   obj.Name := AName;
 //  obj.MatchKinds := obj.Converter.GetSupportedKinds;
@@ -131,12 +131,12 @@ begin
   else
     SetCurConv(FValConvList[FCurIdx]);
 
-  lblDesc.Caption := FCurConvConf.Converter.GetName;
+  lblDesc.Caption := FCurConvConf.Converter.GetRegistryEntry.GetName;
   EdName.Text := FCurConvConf.Name;
   memoTypeNames.Text := FCurConvConf.MatchTypeNames.Text;
 
   AvailClass := ValueConverterRegistry;
-  dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.ClassType);
+  dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.GetObject.ClassType);
 
   lstConvertersItemClick(nil, FCurIdx);
 end;
@@ -251,7 +251,7 @@ begin
      (EdName.Text <> FCurConvConf.Name)
   then begin
     FValConvList.Changed := True;
-    FCurConvConf.Converter := TFpDbgValueConverter(FCurConv.GetObject);
+    FCurConvConf.Converter := FCurConv;
 //    FCurConvConf.MatchKinds := FCurConvConf.Converter.GetSupportedKinds;
     FCurConvConf.MatchTypeNames.Text := memoTypeNames.Text;
     FCurConvConf.Name := EdName.Text

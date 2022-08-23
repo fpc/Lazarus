@@ -10,6 +10,8 @@ uses
 
 type
   TLazDbgValueConverterIntf = interface;
+  TLazDbgValueConvertRegistryEntry = class;
+  TLazDbgValueConvertRegistryEntryClass = class of TLazDbgValueConvertRegistryEntry;
 
   TLazDbgValueConverterSettingsFrameIntf = interface
     procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf);
@@ -22,7 +24,10 @@ type
   TLazDbgValueConverterIntf = interface
     procedure AddReference;
     procedure ReleaseReference;
+    function CreateCopy: TLazDbgValueConverterIntf;
+
     function GetObject: TObject;
+    function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass;
     function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
   end;
 
@@ -59,7 +64,6 @@ type
     class function GetConvertorClass: TClass; virtual; abstract;
     class function GetDebuggerClass: TClass; virtual; abstract; //  class of TDebuggerIntf
   end;
-  TLazDbgValueConvertRegistryEntryClass = class of TLazDbgValueConvertRegistryEntry;
 
   { TLazDbgValueConvertRegistry }
 

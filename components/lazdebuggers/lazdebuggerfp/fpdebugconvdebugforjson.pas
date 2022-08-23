@@ -46,6 +46,7 @@ type
     procedure Init; override;
   public
     class function GetName: String; override;
+    function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
     procedure Assign(ASource: TFpDbgValueConverter); override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
@@ -58,6 +59,12 @@ type
     property JsonTypenameKey: String read FJsonTypenameKey write FJsonTypenameKey;
   end;
 
+  { TFpDbgValueConverterJsonForDebugRegistryEntry }
+
+  TFpDbgValueConverterJsonForDebugRegistryEntry = class(TFpDbgValueConverterRegistryEntry)
+  public
+    class function GetConvertorClass: TClass; override;
+  end;
 
 implementation
 
@@ -182,6 +189,11 @@ end;
 class function TFpDbgValueConverterJsonForDebug.GetName: String;
 begin
   Result := drsCallJsonForDebug;
+end;
+
+function TFpDbgValueConverterJsonForDebug.GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass;
+begin
+  Result := TFpDbgValueConverterJsonForDebugRegistryEntry;
 end;
 
 procedure TFpDbgValueConverterJsonForDebug.Assign(ASource: TFpDbgValueConverter);
@@ -314,15 +326,6 @@ begin
       AnFpDebugger.CallTargetFuncStringDecRef(DecRefProc, TextAddr, AnExpressionScope.LocationContext);
   end;
 end;
-
-type
-
-  { TFpDbgValueConverterJsonForDebugRegistryEntry }
-
-  TFpDbgValueConverterJsonForDebugRegistryEntry = class(TFpDbgValueConverterRegistryEntry)
-  public
-    class function GetConvertorClass: TClass; override;
-  end;
 
 { TFpDbgValueConverterJsonForDebugRegistryEntry }
 

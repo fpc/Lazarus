@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, Laz2_XMLCfg, LazClasses, lazCollections,
-  FpDebugValueConvertors, LazDebuggerValueConverter;
+  LazDebuggerValueConverter;
 
 type
 
@@ -14,19 +14,19 @@ type
 
   TIdeDbgValueConvertSelector = class(TFreeNotifyingObject, TLazDbgValueConvertSelectorIntf)
   private
-    FConverter: TFpDbgValueConverter;
+    FConverter: TLazDbgValueConverterIntf;
     FMatchTypeNames: TStrings;
     FEnabled: Boolean;
     FName: String;
 
-    procedure SetConverter(AValue: TFpDbgValueConverter);
+    procedure SetConverter(AValue: TLazDbgValueConverterIntf);
   protected
     function GetBackendSpecificObject: TObject; deprecated;
     function GetConverter: TLazDbgValueConverterIntf;
 
     function AllowedTypeNames: TStrings;
   public
-    constructor Create(AConverter: TFpDbgValueConverter);
+    constructor Create(AConverter: TLazDbgValueConverterIntf);
     destructor Destroy; override;
 
     function CreateCopy: TIdeDbgValueConvertSelector;
@@ -34,7 +34,7 @@ type
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
   published
-    property Converter: TFpDbgValueConverter read FConverter write SetConverter;
+    property Converter: TLazDbgValueConverterIntf read FConverter write SetConverter;
     property Enabled: Boolean read FEnabled write FEnabled;
     property Name: String read FName write FName;
     property MatchTypeNames: TStrings read FMatchTypeNames;
@@ -80,10 +80,11 @@ implementation
 
 { TIdeDbgValueConvertSelector }
 
-procedure TIdeDbgValueConvertSelector.SetConverter(AValue: TFpDbgValueConverter);
+procedure TIdeDbgValueConvertSelector.SetConverter(AValue: TLazDbgValueConverterIntf);
 begin
   if FConverter = AValue then Exit;
-  FConverter.ReleaseReference;
+  if FConverter <> nil then
+    FConverter.ReleaseReference;
   FConverter := AValue;
   if FConverter <> nil then
     FConverter.AddReference;
@@ -104,7 +105,7 @@ begin
   Result := FMatchTypeNames;
 end;
 
-constructor TIdeDbgValueConvertSelector.Create(AConverter: TFpDbgValueConverter);
+constructor TIdeDbgValueConvertSelector.Create(AConverter: TLazDbgValueConverterIntf);
 begin
   inherited Create;
   Converter := AConverter;
@@ -128,7 +129,6 @@ end;
 
 procedure TIdeDbgValueConvertSelector.Assign(ASource: TIdeDbgValueConvertSelector);
 begin
-
   Converter := ASource.FConverter.CreateCopy;
   FMatchTypeNames.Assign(ASource.FMatchTypeNames);
   FName     := ASource.FName;
@@ -139,7 +139,6 @@ procedure TIdeDbgValueConvertSelector.LoadDataFromXMLConfig(
   const AConfig: TRttiXMLConfig; const APath: string);
 var
   s: String;
-  obj: TFpDbgValueConverter;
   RegEntry: TLazDbgValueConvertRegistryEntryClass;
 begin
   AConfig.ReadObject(APath + 'Filter/', Self);
@@ -150,9 +149,8 @@ begin
   if RegEntry = nil then
     exit;
 
-  obj := RegEntry.CreateValueConvertorIntf.GetObject as TFpDbgValueConverter;
-  AConfig.ReadObject(APath + 'Conv/', obj);
-  Converter := obj;
+  Converter := RegEntry.CreateValueConvertorIntf;
+  AConfig.ReadObject(APath + 'Conv/', Converter.GetObject);
 end;
 
 procedure TIdeDbgValueConvertSelector.SaveDataToXMLConfig(
@@ -161,8 +159,8 @@ begin
   AConfig.WriteObject(APath + 'Filter/', Self);
   AConfig.SetDeleteValue(APath + 'Filter/MatchTypeNames', MatchTypeNames.CommaText, '');
 
-  AConfig.SetValue(APath + 'ConvClass', Converter.ClassName);
-  AConfig.WriteObject(APath + 'Conv/', Converter);
+  AConfig.SetValue(APath + 'ConvClass', Converter.GetObject.ClassName);
+  AConfig.WriteObject(APath + 'Conv/', Converter.GetObject);
 end;
 
 { TIdeDbgValueConvertSelectorList }

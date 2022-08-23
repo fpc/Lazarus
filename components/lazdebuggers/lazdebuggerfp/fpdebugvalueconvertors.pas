@@ -28,9 +28,10 @@ type
     procedure Init; virtual;
   public
     class function GetName: String; virtual; abstract;
+    function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; virtual;
     constructor Create; virtual;
     procedure Assign(ASource: TFpDbgValueConverter); virtual;
-    function CreateCopy: TFpDbgValueConverter; virtual;
+    function CreateCopy: TLazDbgValueConverterIntf; virtual;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope
@@ -65,21 +66,31 @@ type
     function GetProcAddrFromMgr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDbgPtr;
   public
     class function GetName: String; override;
+    function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope
                          ): TFpValue; override;
   end;
 
+  { TFpDbgValueConverterVariantToLStrRegistryEntry }
+
+  TFpDbgValueConverterVariantToLStrRegistryEntry = class(TFpDbgValueConverterRegistryEntry)
+  public
+    class function GetConvertorClass: TClass; override;
+  end;
 
 implementation
 
 { TFpDbgValueConverter }
 
-function TFpDbgValueConverter.CreateCopy: TFpDbgValueConverter;
+function TFpDbgValueConverter.CreateCopy: TLazDbgValueConverterIntf;
+var
+  c: TFpDbgValueConverter;
 begin
-  Result := TFpDbgValueConverterClass(ClassType).Create;
-  Result.Assign(Self);
+  c := TFpDbgValueConverterClass(ClassType).Create;
+  c.Assign(Self);
+  Result := c;
 end;
 
 procedure TFpDbgValueConverter.SetError(AnError: TFpError);
@@ -100,6 +111,11 @@ end;
 procedure TFpDbgValueConverter.Init;
 begin
   //
+end;
+
+function TFpDbgValueConverter.GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass;
+begin
+  Result := nil;
 end;
 
 constructor TFpDbgValueConverter.Create;
@@ -315,6 +331,11 @@ begin
   Result := drsCallSysVarToLStr;
 end;
 
+function TFpDbgValueConverterVariantToLStr.GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass;
+begin
+  Result := TFpDbgValueConverterVariantToLStrRegistryEntry;
+end;
+
 function TFpDbgValueConverterVariantToLStr.ConvertValue(ASourceValue: TFpValue;
   AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
   ): TFpValue;
@@ -434,15 +455,6 @@ begin
     ProcSym.ReleaseReference;
   end;
 end;
-
-type
-
-  { TFpDbgValueConverterVariantToLStrRegistryEntry }
-
-  TFpDbgValueConverterVariantToLStrRegistryEntry = class(TFpDbgValueConverterRegistryEntry)
-  public
-    class function GetConvertorClass: TClass; override;
-  end;
 
 { TFpDbgValueConverterVariantToLStrRegistryEntry }
 

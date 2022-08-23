@@ -8,8 +8,7 @@ uses
   Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
   IdeDebuggerFpDbgValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
   DbgIntfMiscClasses, LazDebuggerIntf, LazDebuggerTemplate,
-  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugValueConvertors,
-  FpDebugConvDebugForJson;
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugConvDebugForJson;
 
 type
 
