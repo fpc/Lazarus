@@ -9447,9 +9447,7 @@ FocusControl. Defers the focus to FocusControl when assigned and enabled.
 </element>
 
 <element name="TCustomStaticText.RealSetText" link="#lcl.controls.TControl.RealSetText"/>
-<element name="TCustomStaticText.RealSetText.AValue">
-<short/>
-</element>
+<element name="TCustomStaticText.RealSetText.AValue"/>
 
 <element name="TCustomStaticText.Notification">
 <short>
