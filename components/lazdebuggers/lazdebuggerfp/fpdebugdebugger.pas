@@ -3175,6 +3175,7 @@ begin
   DoException(deExternal, ExceptionClass, GetLocation, ExceptionMessage, continue);
   if not continue then
     begin
+    FDbgController.AbortCurrentCommand; // remove FCommand, in case any watch runs a TDbgControllerCallRoutineCmd
     SetState(dsPause);
     DoCurrent(GetLocation);
     end;
