@@ -1744,9 +1744,7 @@ Recursive calls to the method are ignored.
 </element>
 
 <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-<element name="TScrollingWinControl.GetControlClassDefaultSize.Result">
-<short/>
-</element>
+<element name="TScrollingWinControl.GetControlClassDefaultSize.Result"/>
 
 <element name="TScrollingWinControl.ScrollBy">
 <short>
@@ -2069,14 +2067,9 @@ TCustomDesignControl is used as the ancestor for <var>TCustomFrame</var> and
 <element name="TCustomDesignControl.FScaled"/>
 <element name="TCustomDesignControl.FDesignTimePPI"/>
 <element name="TCustomDesignControl.FPixelsPerInch"/>
-<element name="TCustomDesignControl.DesignTimePPIIsStored">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomDesignControl.DesignTimePPIIsStored.Result">
-<short/>
-</element>
+<element name="TCustomDesignControl.DesignTimePPIIsStored"/>
+<element name="TCustomDesignControl.DesignTimePPIIsStored.Result"/>
+
 <element name="TCustomDesignControl.SetDesignTimePPI">
 <short>Sets the value for the DesignTimePPI property.</short>
 <descr/>
@@ -2087,6 +2080,7 @@ TCustomDesignControl is used as the ancestor for <var>TCustomFrame</var> and
 <element name="TCustomDesignControl.SetDesignTimePPI.ADesignTimePPI">
 <short>New value for the property.</short>
 </element>
+
 <element name="TCustomDesignControl.SetScaled">
 <short>Sets the value for the Scaled property.</short>
 <descr/>
@@ -2138,6 +2132,7 @@ and <var>lapAutoAdjustForDPI</var> enumeration values.
 <element name="TCustomDesignControl.DoAutoAdjustLayout.AYProportion">
 <short>Vertical scaling factor applied in the method.</short>
 </element>
+
 <element name="TCustomDesignControl.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -2169,6 +2164,7 @@ the <var>Font</var> property.
 <element name="TCustomDesignControl.Create.TheOwner">
 <short>Owner of the class instance.</short>
 </element>
+
 <element name="TCustomDesignControl.AutoAdjustLayout">
 <short>
 Applies a new display density (Pixels Per Inch) for a layout policy to the 
@@ -3294,9 +3290,8 @@ or platform, and provide a common API for form-related operations.
 <element name="TCustomForm.FIsFirstOnShow"/>
 <element name="TCustomForm.FIsFirstOnActivate"/>
 <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
-<element name="TCustomForm.GetClientHandle.Result">
-<short/>
-</element>
+<element name="TCustomForm.GetClientHandle.Result"/>
+
 <element name="TCustomForm.GetEffectiveShowInTaskBar">
 <short>
 Tries to resolve <var>stDefault</var> in <var>ShowInTaskBar</var> using 
@@ -3335,10 +3330,10 @@ return value.
 <element name="TCustomForm.GetMonitor.Result">
 <short>Value for the property.</short>
 </element>
+
 <element name="TCustomForm.IsAutoScrollStored" link="#lcl.forms.TCustomForm.AutoScroll"/>
-<element name="TCustomForm.IsAutoScrollStored.Result">
-<short/>
-</element>
+<element name="TCustomForm.IsAutoScrollStored.Result"/>
+
 <element name="TCustomForm.IsForm">
 <short>
 Indicates whether Form properties should be stored in the stream.
@@ -3364,10 +3359,10 @@ the class instance. Always returns <b>True</b> in <var>TCustomForm</var>.
 the LCL streaming mechanism.
 </short>
 </element>
+
 <element name="TCustomForm.IsIconStored" link="#lcl.forms.TCustomForm.Icon"/>
-<element name="TCustomForm.IsIconStored.Result">
-<short/>
-</element>
+<element name="TCustomForm.IsIconStored.Result"/>
+
 <element name="TCustomForm.CloseModal">
 <short>Closes a modal form.</short>
 <descr>
@@ -3424,6 +3419,7 @@ Loads the new form icons, and notifies the widgetset and all forms.
 <element name="TCustomForm.IconChanged.Sender">
 <short/>
 </element>
+
 <element name="TCustomForm.DelayedEvent">
 <short>
 Performs actions needed for delayed window move, resize, show, and activate 
@@ -3437,7 +3433,7 @@ controls.
 </p>
 <p>
 <var>DelayedEvent</var> discards duplicate calls to the method; only the most 
-recent message is processed. It is used in conjunction with the 
+recent message is processed. It is executed using the 
 <var>QueueAsyncCall</var> method in <var>TApplication</var>. DelayedEvent 
 decrements an internal counter used to track the number of pending delayed 
 event messages. When the counter reaches zero (0), the message is applied.
@@ -3467,86 +3463,75 @@ An integer pointer to the data for the event; not used in the current
 implementation.
 </short>
 </element>
+
 <element name="TCustomForm.SetActive" link="#lcl.forms.TCustomForm.Active"/>
-<element name="TCustomForm.SetActive.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetActive.AValue"/>
+
 <element name="TCustomForm.SetActiveControl" link="#lcl.forms.TCustomForm.ActiveControl"/>
-<element name="TCustomForm.SetActiveControl.AWinControl">
-<short/>
-</element>
+<element name="TCustomForm.SetActiveControl.AWinControl"/>
+
 <element name="TCustomForm.SetActiveDefaultControl" link="#lcl.forms.TCustomForm.ActiveDefaultControl"/>
-<element name="TCustomForm.SetActiveDefaultControl.AControl">
-<short/>
-</element>
+<element name="TCustomForm.SetActiveDefaultControl.AControl"/>
+
 <element name="TCustomForm.SetAllowDropFiles" link="#lcl.forms.TCustomForm.AllowDropFiles"/>
-<element name="TCustomForm.SetAllowDropFiles.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetAllowDropFiles.AValue"/>
+
 <element name="TCustomForm.SetAlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
-<element name="TCustomForm.SetAlphaBlend.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetAlphaBlend.AValue"/>
+
 <element name="TCustomForm.SetAlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
-<element name="TCustomForm.SetAlphaBlendValue.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetAlphaBlendValue.AValue"/>
+
 <element name="TCustomForm.SetBorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
-<element name="TCustomForm.SetBorderIcons.NewIcons">
-<short/>
-</element>
+<element name="TCustomForm.SetBorderIcons.NewIcons"/>
+
 <element name="TCustomForm.SetFormBorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
-<element name="TCustomForm.SetFormBorderStyle.NewStyle">
-<short/>
-</element>
+<element name="TCustomForm.SetFormBorderStyle.NewStyle"/>
+
 <element name="TCustomForm.SetCancelControl" link="#lcl.forms.TCustomForm.CancelControl"/>
-<element name="TCustomForm.SetCancelControl.NewControl">
-<short/>
-</element>
+<element name="TCustomForm.SetCancelControl.NewControl"/>
+
 <element name="TCustomForm.SetDefaultControl" link="#lcl.forms.TCustomForm.DefaultControl"/>
-<element name="TCustomForm.SetDefaultControl.NewControl">
-<short/>
-</element>
+<element name="TCustomForm.SetDefaultControl.NewControl"/>
+
 <element name="TCustomForm.SetFormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
-<element name="TCustomForm.SetFormStyle.Value">
-<short/>
-</element>
+<element name="TCustomForm.SetFormStyle.Value"/>
+
 <element name="TCustomForm.SetIcon" link="#lcl.forms.TCustomForm.Icon"/>
-<element name="TCustomForm.SetIcon.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetIcon.AValue"/>
+
 <element name="TCustomForm.SetMenu" link="#lcl.forms.TCustomForm.Menu"/>
-<element name="TCustomForm.SetMenu.Value">
-<short/>
-</element>
+<element name="TCustomForm.SetMenu.Value"/>
+
 <element name="TCustomForm.SetModalResult" link="#lcl.forms.TCustomForm.ModalResult"/>
-<element name="TCustomForm.SetModalResult.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetModalResult.AValue"/>
+
 <element name="TCustomForm.SetPopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
-<element name="TCustomForm.SetPopupMode.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetPopupMode.AValue"/>
+
 <element name="TCustomForm.SetPopupParent" link="#lcl.forms.TCustomForm.PopupParent"/>
-<element name="TCustomForm.SetPopupParent.AValue">
-<short/>
-</element>
+<element name="TCustomForm.SetPopupParent.AValue"/>
+
 <element name="TCustomForm.SetPosition" link="#lcl.forms.TCustomForm.Position"/>
-<element name="TCustomForm.SetPosition.Value">
-<short/>
-</element>
+<element name="TCustomForm.SetPosition.Value"/>
+
 <element name="TCustomForm.SetShowInTaskbar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
-<element name="TCustomForm.SetShowInTaskbar.Value">
-<short/>
-</element>
+<element name="TCustomForm.SetShowInTaskbar.Value"/>
+
 <element name="TCustomForm.SetLastFocusedControl">
 <short>Remembers the last focused control.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomForm.SetFocusedControl"/>
+</seealso>
 </element>
 <element name="TCustomForm.SetLastFocusedControl.AControl">
-<short/>
+<short>
+Control to store as the last focused control in the form instance, or 
+<b>Nil</b> if the control has been freed.
+</short>
 </element>
+
 <element name="TCustomForm.SetWindowFocus">
 <short>Called when the Focus changed.</short>
 <descr>
@@ -3662,6 +3647,7 @@ the TMethod instance in Handler. Raised with the message
 <b>True</b> if the new form handler is stored first in the list of handlers.
 </short>
 </element>
+
 <element name="TCustomForm.RemoveHandler">
 <short>Removes a form notification handler of the specified type.</short>
 <descr/>
@@ -4637,48 +4623,151 @@ it is signalled for the current class instance.
 <short>Window state applied in the method.</short>
 </element>
 
-<element name="TCustomForm.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize">
+<element name="TCustomForm.CalculatePreferredSize">
 <short>
-Here: clip width and height of a top-level form to the monitor WorkArea.
+Calculates the clipping width and height for a top-level form on the monitor 
+WorkArea.
 </short>
 <descr>
+<p>
+<var>CalculatePreferredSize</var> is an overridden method in 
+<var>TCustomForm</var>. It calls the inherited method on entry to calculate 
+the default dimensions for the new class instance, and to notify the 
+widgetset class when its Handle has been allocated.
+</p>
+<p>
+CalculatePreferredSize ensures that a form anchored to the bottom or right 
+fits within the WorkArea rectangle on the Monitor. The value in 
+PreferredWidth or PreferredHeight is updated when Anchors contains akRight or 
+akBottom.
+</p>
 </descr>
 <seealso>
+<link id="TCustomForm.Monitor"/>
+<link id="TMonitor.WorkAreaRect"/>
+<link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+<link id="#lcl.controls.TControl.Anchors">TControl.Anchors</link>
 </seealso>
 </element>
 <element name="TCustomForm.CalculatePreferredSize.PreferredWidth">
-<short/>
+<short>Default width for a new instance of the class.</short>
 </element>
 <element name="TCustomForm.CalculatePreferredSize.PreferredHeight">
-<short/>
+<short>Default height for a new instance of the class.</short>
 </element>
 <element name="TCustomForm.CalculatePreferredSize.WithThemeSpace">
-<short/>
+<short>
+<b>True</b> if additional space is reserved for theme element details.
+</short>
 </element>
 
 <element name="TCustomForm.DoOnResize">
 <short>
 Performs a delayed resize action using the DelayedEvent for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoOnResize</var> is an overridden method in <var>TCustomForm</var>. It 
+re-implements the method from the ancestor class, and does not call the 
+inherited method.
+</p>
+<p>
+DoOnResize sets an internal flag to indicate that a delayed resize event has 
+been requested. It increments an internal counter to track the number of 
+pending delayed events.
+</p>
+<p>
+DoOnResize uses the QueueAsyncCall method in the TApplication instance to 
+queue execution of the private DelayedEvent method. DelayedEvent will discard 
+duplicate requests, and call the inherited method to signal OnResize event 
+handlers (when assigned) and update scroll bars (when needed).
+</p>
+<p>
+No actions are performed in the method when the component is being freed 
+(csDestroying in ComponentState).
+</p>
+</descr>
+<seealso>
+<link id="TApplication.QueueAsyncCall"/>
+<link id="TScrollingWinControl.DoOnResize"/>
+<link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
 </element>
 
 <element name="TCustomForm.DoOnChangeBounds">
 <short>
 Performs a delayed bounds change using the DelayedEvent for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoOnChangeBounds</var> is an overridden method in 
+<var>TCustomForm</var>. It re-implements the method from the ancestor class, 
+and does not call the inherited method.
+</p>
+<p> 
+DoOnChangeBounds sets an internal flag to indicate that a delayed bounds 
+change event has been requested. It increments an internal counter to track 
+the number of pending delayed events.
+</p>
+<p>
+DoOnChangeBounds uses the QueueAsyncCall method in the TApplication instance 
+to queue execution of the private DelayedEvent method. DelayedEvent will 
+discard duplicate requests, and handle changes to the restored bounds for the 
+control. DoShow or Activate are called if the form is being displayed or 
+activated for the first time.
+</p>
+<p>
+No actions are performed in the method when the component is being freed 
+(csDestroying in ComponentState).
+</p>
+</descr>
+<seealso>
+<link id="TCustomForm.DoShow"/>
+<link id="TCustomForm.Activate"/>
+<link id="TApplication.QueueAsyncCall"/>
+<link id="#lcl.controls.TControl.DoOnChangeBounds">TControl.DoOnChangeBounds</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
 </element>
 
 <element name="TCustomForm.SetZOrder">
-<short>Moves a top-level form in front or back of all forms.</short>
-<descr/>
-<seealso/>
+<short>Moves a top-level form in front of or behind all other forms.</short>
+<descr>
+<p>
+<var>SetZOrder</var> is an overridden method in <var>TCustomForm</var>. It 
+ensures that a request to bring the current form to the top of the Z-Order is handled properly. 
+</p>
+<p>
+If a Parent control has not been assigned, the form instance is moved to the 
+top of the Z-Order in the Screen singleton and the SetForegroundWindow 
+routine is called using the Handle for the form instance. No actions are 
+performed in the method if the Handle has not been allocated for the control, 
+or when another form has been displayed modally on the Screen.
+</p>
+<p>
+If Parent has been assigned, the inherited method is called to change the 
+Z-Order using the SetChildZPosition method in the parent control.
+</p>
+<p>
+SetZOrder is called from the BringToFront and SendToBack methods in the 
+TControl ancestor.
+</p>
+</descr>
+<seealso>
+<link id="TScreen.GetCurrentModalForm"/>
+<link id="TScreen.MoveFormToZFront"/>
+<link id="#lcl.controls.TControl.SetZOrder">TControl.SetZOrder</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TControl.BringToFront">TControl.BringToFront</link>
+<link id="#lcl.controls.TControl.SendToBack">TControl.SendToBack</link>
+<link id="#lcl.lclintf.SetForegroundWindow">SetForegroundWindow</link>
+</seealso>
 </element>
 <element name="TCustomForm.SetZOrder.Topmost">
-<short><b>True</b> for BringToFront.</short>
+<short>
+<b>True</b> to bring the form to the front or top of the Z-order.
+</short>
 </element>
 
 <element name="TCustomForm.SetParent">
@@ -5505,9 +5594,7 @@ is a MDI child form, merged menu items are removed from the menu in the
 </element>
 
 <element name="TCustomForm.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-<element name="TCustomForm.GetControlClassDefaultSize.Result">
-<short/>
-</element>
+<element name="TCustomForm.GetControlClassDefaultSize.Result"/>
 
 <element name="TCustomForm.BigIconHandle">
 <short>Handle for the large icon used on the form.</short>
@@ -5813,18 +5900,10 @@ not available.
 </element>
 
 <element name="TCustomForm.GetPreferredSize" link="#lcl.controls.TControl.GetPreferredSize"/>
-<element name="TCustomForm.GetPreferredSize.PreferredWidth">
-<short/>
-</element>
-<element name="TCustomForm.GetPreferredSize.PreferredHeight">
-<short/>
-</element>
-<element name="TCustomForm.GetPreferredSize.Raw">
-<short/>
-</element>
-<element name="TCustomForm.GetPreferredSize.WithThemeSpace">
-<short/>
-</element>
+<element name="TCustomForm.GetPreferredSize.PreferredWidth"/>
+<element name="TCustomForm.GetPreferredSize.PreferredHeight"/>
+<element name="TCustomForm.GetPreferredSize.Raw"/>
+<element name="TCustomForm.GetPreferredSize.WithThemeSpace"/>
 
 <element name="TCustomForm.Release">
 <short>Marks the form for destruction.</short>
@@ -6067,9 +6146,7 @@ Always returns <b>False</b> in <var>TCustomForm</var>.
 </element>
 
 <element name="TCustomForm.RemoveAllHandlersOfObject" link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject"/>
-<element name="TCustomForm.RemoveAllHandlersOfObject.AnObject">
-<short/>
-</element>
+<element name="TCustomForm.RemoveAllHandlersOfObject.AnObject"/>
 
 <element name="TCustomForm.AddHandlerFirstShow">
 <short>
@@ -8694,9 +8771,7 @@ window region, or apply a background theme when enabled.
 </element>
 
 <element name="THintWindow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-<element name="THintWindow.GetControlClassDefaultSize.Result">
-<short/>
-</element>
+<element name="THintWindow.GetControlClassDefaultSize.Result"/>
 
 <element name="THintWindow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="THintWindow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
@@ -9481,9 +9556,7 @@ application.
 </element>
 
 <element name="TScreen.GetCustomFormZOrderCount" link="#lcl.forms.TScreen.CustomFormZOrderCount"/>
-<element name="TScreen.GetCustomFormZOrderCount.Result">
-<short/>
-</element>
+<element name="TScreen.GetCustomFormZOrderCount.Result"/>
 
 <element name="TScreen.GetCustomForms">
 <short>Gets the value for the indexed CustomForms property.</short>
@@ -10291,7 +10364,10 @@ currently active form at index position zero (<b>0</b>).
 <seealso/>
 </element>
 <element name="TScreen.CustomFormZIndex.Result">
-<short/>
+<short>
+Position for the specified form in the Z-Order for the screen. 0 if the form 
+is at the top of the Z-Order.
+</short>
 </element>
 <element name="TScreen.CustomFormZIndex.AForm">
 <short>Form instance to locate in CustomFormsZOrdered.</short>
@@ -13050,14 +13126,10 @@ to post a <var>CM_APPSHOWBTNGLYPHCHANGED</var> control message to
 </element>
 
 <element name="TApplication.SetShowMenuGlyphs" link="#lcl.forms.TApplication.ShowMenuGlyphs"/>
-<element name="TApplication.SetShowMenuGlyphs.AValue">
-<short/>
-</element>
+<element name="TApplication.SetShowMenuGlyphs.AValue"/>
 
 <element name="TApplication.SetTaskBarBehavior" link="#lcl.forms.TApplication.TaskBarBehavior"/>
-<element name="TApplication.SetTaskBarBehavior.AValue">
-<short/>
-</element>
+<element name="TApplication.SetTaskBarBehavior.AValue"/>
 
 <element name="TApplication.UpdateMouseControl">
 <short>Handles mouse movement to a new control.</short>
@@ -13081,29 +13153,19 @@ to post a <var>CM_APPSHOWBTNGLYPHCHANGED</var> control message to
 </element>
 
 <element name="TApplication.SetCaptureExceptions" link="#lcl.forms.TApplication.CaptureExceptions"/>
-<element name="TApplication.SetCaptureExceptions.AValue">
-<short/>
-</element>
+<element name="TApplication.SetCaptureExceptions.AValue"/>
 
 <element name="TApplication.SetHint" link="#lcl.forms.TApplication.Hint"/>
-<element name="TApplication.SetHint.AValue">
-<short/>
-</element>
+<element name="TApplication.SetHint.AValue"/>
 
 <element name="TApplication.SetHintColor" link="#lcl.forms.TApplication.HintControl"/>
-<element name="TApplication.SetHintColor.AValue">
-<short/>
-</element>
+<element name="TApplication.SetHintColor.AValue"/>
 
 <element name="TApplication.SetIcon" link="#lcl.forms.TApplication.Icon"/>
-<element name="TApplication.SetIcon.AValue">
-<short/>
-</element>
+<element name="TApplication.SetIcon.AValue"/>
 
 <element name="TApplication.SetShowHint" link="#lcl.forms.TApplication.ShowHint"/>
-<element name="TApplication.SetShowHint.AValue">
-<short/>
-</element>
+<element name="TApplication.SetShowHint.AValue"/>
 
 <element name="TApplication.StopHintTimer">
 <short>Disables the Hint timer.</short>
@@ -13124,9 +13186,7 @@ id="#lcl.HelpIntfs.HelpManager">HelpManager</link>.
 </element>
 
 <element name="TApplication.WndProc" link="#lcl.controls.TControl.WndProc"/>
-<element name="TApplication.WndProc.AMessage">
-<short/>
-</element>
+<element name="TApplication.WndProc.AMessage"/>
 
 <element name="TApplication.DispatchAction">
 <short>Asks the active form and MainForm to handle the action.</short>
@@ -13999,7 +14059,7 @@ This is thread safe.
 </p>
 </descr>
 <errors>
-Exceptions on various inconsistencies of the queue.
+Exceptions are raised for various inconsistencies in the queue.
 </errors>
 </element>
 <element name="TApplication.RemoveAsyncCalls.AnObject">
@@ -15430,7 +15490,9 @@ specified object.
 <seealso/>
 </element>
 <element name="TApplication.RemoveAllHandlersOfObject.AnObject">
-<short/>
+<short>
+Object instance for the handlers removed in the method.
+</short>
 </element>
 
 <element name="TApplication.DoBeforeMouseMessage">
@@ -17496,16 +17558,8 @@ causes the Application instance to be updated.
 <element name="TApplicationProperties.ShowHint" link="#lcl.forms.TApplication.ShowHint"/>
 <element name="TApplicationProperties.ShowMainForm" link="#lcl.forms.TApplication.ShowMainForm"/>
 <element name="TApplicationProperties.Title" link="#lcl.forms.TApplication.Title"/>
-<element name="TApplicationProperties.OnActivate" link="#lcl.forms.TApplication.OnActivate">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TApplicationProperties.OnDeactivate" link="#lcl.forms.TApplication.OnDeactivate">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TApplicationProperties.OnActivate" link="#lcl.forms.TApplication.OnActivate"/>
+<element name="TApplicationProperties.OnDeactivate" link="#lcl.forms.TApplication.OnDeactivate"/>
 
 <element name="TApplicationProperties.OnException">
 <short>
@@ -18020,7 +18074,7 @@ for the unit. The type used for the return value is TFocusState.
 
 <element name="RestoreFocusState">
 <short>
-Restores the last focused control in an application to specified value.
+Restores the last focused control in an application to the specified state.
 </short>
 <descr/>
 <seealso>
