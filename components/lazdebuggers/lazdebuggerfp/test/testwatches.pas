@@ -8,8 +8,9 @@ uses
   Classes, SysUtils, fpcunit, testregistry, TestBase, FpDebugValueConvertors,
   FpDebugDebugger, TestDbgControl, TestDbgTestSuites, TestOutputLogger,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfBaseTypes, FpDbgInfo,
-  FpPascalParser, FpDbgCommon, Forms, IdeDebuggerBase, IdeDebuggerWatchResult;
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon, Forms,
+  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerFpDbgValueConv;
 
 type
 
@@ -2066,7 +2067,8 @@ var
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg: TDBGBreakPoint;
-  obj: TFpDbgConverterConfig;
+  ValueConverterSelectorList: TIdeDbgValueConvertSelectorList;
+  obj: TIdeDbgValueConvertSelector;
   i, c: Integer;
 begin
   if SkipTest then exit;
@@ -2078,6 +2080,8 @@ begin
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
 
+  ValueConverterSelectorList := TIdeDbgValueConvertSelectorList.Create;
+  ValueConverterConfigList := ValueConverterSelectorList;
   try
     t := TWatchExpectationList.Create(Self);
     t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
@@ -2096,10 +2100,10 @@ begin
 
     RunToPause(BrkPrg);
 
-    obj := TFpDbgConverterConfig.Create(TFpDbgValueConverterVariantToLStr.Create);
-    obj.MatchKinds := [skRecord];
+    obj := TIdeDbgValueConvertSelector.Create(TFpDbgValueConverterVariantToLStr.Create);
+    //obj.MatchKinds := [skRecord];
     obj.MatchTypeNames.Add('variant');
-    ValueConverterConfigList.Add(obj);
+    ValueConverterSelectorList.Add(obj);
 
     t.Clear;
     t.Add('variant1 to lstr', 'variant1',    weAnsiStr('102'));
@@ -2142,7 +2146,8 @@ begin
 
 
   finally
-    ValueConverterConfigList.Clear;
+    ValueConverterConfigList := nil;
+    FreeAndNil(ValueConverterSelectorList);
 
     Debugger.RunToNextPause(dcStop);
     t.Free;

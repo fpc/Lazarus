@@ -31,6 +31,23 @@ type
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
     function GetConverter: TLazDbgValueConverterIntf;
     function GetBackendSpecificObject: TObject; deprecated;
+
+    function AllowedTypeNames: TStrings;
+  end;
+
+  { TLazDbgValueConvertSelectorListIntf }
+
+  TLazDbgValueConvertSelectorListIntf = interface
+    function Count: Integer;
+    function Get(Index: Integer): TLazDbgValueConvertSelectorIntf;
+    property Items[Index: Integer]: TLazDbgValueConvertSelectorIntf read Get; default;
+
+    procedure Lock;
+    procedure Unlock;
+
+    //function CreateCopy: TLazDbgValueConvertSelectorListIntf;
+    //procedure Assign(ASource: TLazDbgValueConvertSelectorListIntf);
+    //procedure Free;
   end;
 
   { TLazDbgValueConvertRegistryEntry }
@@ -52,6 +69,9 @@ type
   end;
 
 function ValueConverterRegistry: TLazDbgValueConvertRegistry;
+
+var
+  ValueConverterConfigList: TLazDbgValueConvertSelectorListIntf;
 
 implementation
 var

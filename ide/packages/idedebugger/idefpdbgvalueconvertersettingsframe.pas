@@ -39,25 +39,25 @@ type
     procedure Splitter1CanOffset(Sender: TObject; var NewOffset: Integer;
       var Accept: Boolean);
   private
-    FValConvList: TIdeFpDbgConverterConfigList;
+    FValConvList: TIdeDbgValueConvertSelectorList;
     FCurIdx: Integer;
-    FCurConvConf: TIdeFpDbgConverterConfig;
+    FCurConvConf: TIdeDbgValueConvertSelector;
     FCurConv: TLazDbgValueConverterIntf;
     FCurConvSettings: TLazDbgValueConverterSettingsFrameIntf;
 
-    procedure SetCurConv(AValConv: TIdeFpDbgConverterConfig);
+    procedure SetCurConv(AValConv: TIdeDbgValueConvertSelector);
     procedure UpdateConvForClass;
     procedure UpdateConvPanel;
     procedure FillList;
     procedure UpdateButtons;
-    procedure SetValConvList(AValue: TIdeFpDbgConverterConfigList);
+    procedure SetValConvList(AValue: TIdeDbgValueConvertSelectorList);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure SaveCurrent;
     procedure Setup;
 
-    property ValConvList: TIdeFpDbgConverterConfigList read FValConvList write SetValConvList;
+    property ValConvList: TIdeDbgValueConvertSelectorList read FValConvList write SetValConvList;
   end;
 
 implementation
@@ -70,7 +70,7 @@ procedure TFpDbgValConvFrame.btnAddClick(Sender: TObject);
 var
   AvailClass: TLazDbgValueConvertRegistry;
   AName: String;
-  obj: TIdeFpDbgConverterConfig;
+  obj: TIdeDbgValueConvertSelector;
 begin
   AName := InputBox(dlgIdeDbgNewItem, dlgIdeDbgEnterName, '');
   if AName = '' then
@@ -80,10 +80,10 @@ begin
 
   FCurConvConf := nil;
   AvailClass := ValueConverterRegistry;
-  obj := TIdeFpDbgConverterConfig.Create(AvailClass[0].CreateValueConvertorIntf.GetObject as TFpDbgValueConverter);
+  obj := TIdeDbgValueConvertSelector.Create(AvailClass[0].CreateValueConvertorIntf.GetObject as TFpDbgValueConverter);
   obj.Enabled := True;
   obj.Name := AName;
-  obj.MatchKinds := obj.Converter.GetSupportedKinds;
+//  obj.MatchKinds := obj.Converter.GetSupportedKinds;
   FValConvList.Add(obj);
 
   FillList;
@@ -163,7 +163,7 @@ begin
 
 end;
 
-procedure TFpDbgValConvFrame.SetCurConv(AValConv: TIdeFpDbgConverterConfig);
+procedure TFpDbgValConvFrame.SetCurConv(AValConv: TIdeDbgValueConvertSelector);
 begin
   FCurConvConf := AValConv;
   FCurConv := TLazDbgValueConvertSelectorIntf(FCurConvConf).GetConverter;
@@ -203,7 +203,7 @@ end;
 procedure TFpDbgValConvFrame.FillList;
 var
   i: Integer;
-  obj: TIdeFpDbgConverterConfig;
+  obj: TIdeDbgValueConvertSelector;
 begin
   FCurConvConf := nil;
 
@@ -222,7 +222,7 @@ begin
   pnlCurrentConv.Enabled := FCurConvConf <> nil;
 end;
 
-procedure TFpDbgValConvFrame.SetValConvList(AValue: TIdeFpDbgConverterConfigList);
+procedure TFpDbgValConvFrame.SetValConvList(AValue: TIdeDbgValueConvertSelectorList);
 begin
   if FValConvList = AValue then Exit;
   FValConvList := AValue;
@@ -252,7 +252,7 @@ begin
   then begin
     FValConvList.Changed := True;
     FCurConvConf.Converter := TFpDbgValueConverter(FCurConv.GetObject);
-    FCurConvConf.MatchKinds := FCurConvConf.Converter.GetSupportedKinds;
+//    FCurConvConf.MatchKinds := FCurConvConf.Converter.GetSupportedKinds;
     FCurConvConf.MatchTypeNames.Text := memoTypeNames.Text;
     FCurConvConf.Name := EdName.Text
   end;

@@ -754,7 +754,7 @@ type
     FCurrentBackEndExpression: String;
     FUpdateCount: Integer;
     FEvents: array [TWatcheEvaluateEvent] of TMethodList;
-    FFpDbgConverter: TIdeFpDbgConverterConfig;
+    FFpDbgConverter: TIdeDbgValueConvertSelector;
 
   (* TWatchValueIntf *)
     procedure BeginUpdate;
@@ -4044,7 +4044,7 @@ procedure TCurrentWatchValue.RequestData;
 begin
   FreeAndNil(FFpDbgConverter);
   if Watch.FpDbgConverter <> nil then
-    FFpDbgConverter := TIdeFpDbgConverterConfig(Watch.FpDbgConverter.CreateCopy);
+    FFpDbgConverter := TIdeDbgValueConvertSelector(Watch.FpDbgConverter.CreateCopy);
 
   if (Watch.ParentWatch <> nil) and (Watch.ParentWatch.FpDbgConverter = Watch.FpDbgConverter) then
     if MaybeCopyResult(Watch.ParentWatch) then

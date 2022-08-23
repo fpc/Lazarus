@@ -114,7 +114,7 @@ type
   TWatch = class(TDelayedUdateItem)
   private
     FFirstIndexOffs: Int64;
-    FFpDbgConverter: TIdeFpDbgConverterConfig;
+    FFpDbgConverter: TIdeDbgValueConvertSelector;
 
     procedure FFpDbgConverterFreed(Sender: TObject);
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
@@ -122,7 +122,7 @@ type
     procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
     procedure SetExpression(AValue: String);
     procedure SetFirstIndexOffs(AValue: Int64);
-    procedure SetFpDbgConverter(AValue: TIdeFpDbgConverterConfig);
+    procedure SetFpDbgConverter(AValue: TIdeDbgValueConvertSelector);
     procedure SetRepeatCount(AValue: Integer);
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
@@ -154,7 +154,7 @@ type
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
-    property FpDbgConverter: TIdeFpDbgConverterConfig read FFpDbgConverter write SetFpDbgConverter;
+    property FpDbgConverter: TIdeDbgValueConvertSelector read FFpDbgConverter write SetFpDbgConverter;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
     property ValueList: TWatchValueList read FValueList;
@@ -501,7 +501,7 @@ begin
   DoModified;
 end;
 
-procedure TWatch.SetFpDbgConverter(AValue: TIdeFpDbgConverterConfig);
+procedure TWatch.SetFpDbgConverter(AValue: TIdeDbgValueConvertSelector);
 begin
   if FFpDbgConverter = AValue then Exit;
   FValueList.Clear;

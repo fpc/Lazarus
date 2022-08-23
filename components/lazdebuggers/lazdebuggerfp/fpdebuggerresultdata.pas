@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FpWatchResultData, FpDbgInfo, FpdMemoryTools,
   FpErrorMessages, DbgIntfBaseTypes, LazClasses, FpDebugValueConvertors,
-  FpDebugDebuggerBase, LazDebuggerIntf;
+  FpDebugDebuggerBase, LazDebuggerIntf, LazDebuggerValueConverter;
 
 type
 
@@ -17,8 +17,9 @@ type
   private
     FDebugger: TFpDebugDebuggerBase;
     FExpressionScope: TFpDbgSymbolScope;
-    FValConvList: TFpDbgConverterConfigList;
-    FValConfig: TFpDbgConverterConfig;
+    //FValConvList: TFpDbgConverterConfigList;
+    FValConvList: TLazDbgValueConvertSelectorListIntf;
+    FValConfig: TLazDbgValueConvertSelectorIntf;
 
     FExtraDephtLevelIsArray: Boolean; // defExtraDepth / RecurseCnt=-1
     FExtraDephtLevelItemConv: TFpDbgValueConverter;
@@ -36,8 +37,9 @@ type
 
     function DoValueToResData(AnFpValue: TFpValue;
       AnResData: TLzDbgWatchDataIntf): Boolean; override;
-    property ValConvList: TFpDbgConverterConfigList read FValConvList write FValConvList;
-    property ValConfig: TFpDbgConverterConfig read FValConfig write FValConfig;
+    //property ValConvList: TFpDbgConverterConfigList read FValConvList write FValConvList;
+    property ValConvList: TLazDbgValueConvertSelectorListIntf read FValConvList write FValConvList;
+    property ValConfig: TLazDbgValueConvertSelectorIntf read FValConfig write FValConfig;
     property Debugger: TFpDebugDebuggerBase read FDebugger write FDebugger;
     property ExpressionScope: TFpDbgSymbolScope read FExpressionScope write FExpressionScope;
     property MaxArrayConv: Integer read FMaxArrayConv write SetMaxArrayConv;
@@ -61,7 +63,7 @@ begin
 
   if (ValConfig <> nil) then begin
     if ValConfig.CheckMatch(AnFpValue) then
-      Result := ValConfig.Converter;
+      Result := ValConfig.GetConverter.GetObject as TFpDbgValueConverter;
     if Result <> nil then
       Result.AddReference;
   end
@@ -73,7 +75,7 @@ begin
       while (i >= 0) and (not ValConvList[i].CheckMatch(AnFpValue)) do
         dec(i);
       if i >= 0 then
-        Result := ValConvList[i].Converter;
+        Result := ValConvList[i].GetConverter.GetObject as TFpDbgValueConverter;
       if Result <> nil then
         Result.AddReference;
     finally

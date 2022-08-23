@@ -103,7 +103,7 @@ uses
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
   DebugManager, debugger, DebuggerDlg, DebugAttachDialog, DebuggerStrConst,
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  idedebuggerpackage, FpDebugValueConvertors,
+  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerFpDbgValueConv,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
@@ -1390,11 +1390,11 @@ begin
   DebuggerOptions.PrimaryConfigPath := GetPrimaryConfigPath;
   DebuggerOptions.CreateConfig;
   DebuggerOptions.Load;
-  ValueConverterConfigList.Lock;
+  ValueConverterSelectorList.Lock;
   try
-    DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterConfigList);
+    DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
   finally
-    ValueConverterConfigList.Unlock;
+    ValueConverterSelectorList.Unlock;
   end;
 
   Assert(InputHistories = nil, 'TMainIDE.LoadGlobalOptions: InputHistories is already assigned.');

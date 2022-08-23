@@ -46,7 +46,6 @@ type
     procedure Init; override;
   public
     class function GetName: String; override;
-    class function GetSupportedKinds: TDbgSymbolKinds; override;
     procedure Assign(ASource: TFpDbgValueConverter); override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
@@ -183,11 +182,6 @@ end;
 class function TFpDbgValueConverterJsonForDebug.GetName: String;
 begin
   Result := drsCallJsonForDebug;
-end;
-
-class function TFpDbgValueConverterJsonForDebug.GetSupportedKinds: TDbgSymbolKinds;
-begin
-  Result := [low(Result)..high(Result)];
 end;
 
 procedure TFpDbgValueConverterJsonForDebug.Assign(ASource: TFpDbgValueConverter);

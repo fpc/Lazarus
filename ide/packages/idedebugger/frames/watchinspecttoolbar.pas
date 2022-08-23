@@ -641,7 +641,7 @@ end;
 procedure TWatchInspectNav.InitWatch(AWatch: TIdeWatch);
 var
   Opts: TWatcheEvaluateFlags;
-  Conv: TIdeFpDbgConverterConfig;
+  Conv: TIdeDbgValueConvertSelector;
 begin
   Opts := AWatch.EvaluateFlags;
   if btnUseInstance.Down then
@@ -769,7 +769,7 @@ var
   tid, idx: Integer;
   stack: TIdeCallStack;
   expr: String;
-  Conv: TIdeFpDbgConverterConfig;
+  Conv: TIdeDbgValueConvertSelector;
 begin
   if FUpdateCount > 0 then begin
     FExecAfterUpdate := True;

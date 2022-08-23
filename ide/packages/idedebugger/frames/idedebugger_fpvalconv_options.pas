@@ -17,7 +17,7 @@ type
   TIdeDbgFpValConvOptionsFrame = class(TAbstractIDEOptionsEditor)
     FpDbgValConvFrame1: TFpDbgValConvFrame;
   private
-    FValConvList: TIdeFpDbgConverterConfigList;
+    FValConvList: TIdeDbgValueConvertSelectorList;
   public
     destructor Destroy; override;
     function GetTitle: String; override;
@@ -62,7 +62,7 @@ procedure TIdeDbgFpValConvOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   if FValConvList = nil then
-    FValConvList := TIdeFpDbgConverterConfigList.Create;
+    FValConvList := TIdeDbgValueConvertSelectorList.Create;
   FValConvList.Assign(DebuggerOptions.FpDbgConverterConfig);
   FValConvList.Changed := False;
   FpDbgValConvFrame1.ValConvList := FValConvList;
@@ -76,11 +76,11 @@ begin
     DebuggerOptions.FpDbgConverterConfig.Assign(FValConvList);
     DebuggerOptions.FpDbgConverterConfig.Changed := True;
 
-    ValueConverterConfigList.Lock;
+    ValueConverterSelectorList.Lock;
     try
-      DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterConfigList);
+      DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
     finally
-      ValueConverterConfigList.Unlock;
+      ValueConverterSelectorList.Unlock;
     end;
   end;
 end;

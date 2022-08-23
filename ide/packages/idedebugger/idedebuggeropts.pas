@@ -15,7 +15,7 @@ type
   TDebuggerOptions = class(TAbstractIDEEnvironmentOptions)
   private
     FFilename: string;
-    FFpDbgConverterConfig: TIdeFpDbgConverterConfigList;
+    FFpDbgConverterConfig: TIdeDbgValueConvertSelectorList;
     FPrimaryConfigPath: String;
     FXMLCfg: TRttiXMLConfig;
   protected
@@ -34,7 +34,7 @@ type
     property Filename: string read FFilename;
     property PrimaryConfigPath: String read FPrimaryConfigPath write FPrimaryConfigPath;
 
-    property FpDbgConverterConfig: TIdeFpDbgConverterConfigList read FFpDbgConverterConfig write FFpDbgConverterConfig;
+    property FpDbgConverterConfig: TIdeDbgValueConvertSelectorList read FFpDbgConverterConfig write FFpDbgConverterConfig;
   end;
 
 function GetDebuggerOptions: TDebuggerOptions;
@@ -79,7 +79,7 @@ end;
 constructor TDebuggerOptions.Create;
 begin
   inherited Create;
-  FpDbgConverterConfig := TIdeFpDbgConverterConfigList.Create;
+  FpDbgConverterConfig := TIdeDbgValueConvertSelectorList.Create;
 end;
 
 destructor TDebuggerOptions.Destroy;
