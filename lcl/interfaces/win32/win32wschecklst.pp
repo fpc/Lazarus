@@ -159,6 +159,9 @@ begin
     pClassName := ListBoxClsName;
     pSubClassName := LCLCheckListboxClsName;
     SubClassWndProc := @CheckListBoxWndProc;
+    // require always owner-drawn, add flags if not already set due to Style
+    if (Flags and (LBS_OWNERDRAWFIXED or LBS_OWNERDRAWVARIABLE)) = 0 then
+      Flags:= Flags or LBS_OWNERDRAWFIXED;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False, True);
@@ -262,6 +265,10 @@ begin
   case TLMessage(AMessage).Msg of
     LM_DRAWITEM:
     begin
+      { If the user set one of the OwnerDraw Styles, the widgetset will have translated the draw messages to LM_DRAWLISTITEM
+        instead (in TWindowProcHelper.DoMsgDrawItem). This means we don't get to draw the checkmark and the CLB looks like a
+        regular list.
+      }
       with TLMDrawItems(AMessage) do
       begin
         // ItemID not UINT(-1)
@@ -270,15 +277,10 @@ begin
       end;
     end;
 
-    LM_MEASUREITEM:
-    begin
-      with TLMMeasureItem(AMessage).MeasureItemStruct^ do
-      begin
-        itemHeight := TCustomListBox(AWinControl).ItemHeight;
-        if TCustomListBox(AWinControl).Style = lbOwnerDrawVariable then
-          TCustomListBox(AWinControl).MeasureItem(Integer(itemID), integer(itemHeight));
-      end;
-    end;
+    { LM_MEASUREITEM:
+      TCustomListBox has a message handler, so DefaultWndHandler is never called.
+      We handle CLB specialcasing via a CalculateStandardItemHeight override
+    }
   end;
 
   inherited DefaultWndHandler(AWinControl, AMessage);

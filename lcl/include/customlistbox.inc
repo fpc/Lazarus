@@ -342,10 +342,8 @@ begin
     // don't call GetItemHeight: causes errors on Windows due to recursion on control creation
     if FItemHeight <> 0 then
       AHeight := FItemHeight
-    else begin
-      Canvas.Font := Font;
-      AHeight := Canvas.TextHeight('Hg');
-    end;
+    else
+      AHeight:= CalculateStandardItemHeight;
     if FStyle = lbOwnerDrawVariable then
       MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then

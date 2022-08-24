@@ -581,7 +581,7 @@ type
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
     procedure BeforeDragStart; override;
     procedure BeginAutoDrag; override;
-    function CalculateStandardItemHeight: Integer;
+    function CalculateStandardItemHeight: Integer; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
