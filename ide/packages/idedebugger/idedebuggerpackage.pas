@@ -11,16 +11,16 @@ uses
   IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
   IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
   IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
-  IdeDebuggerFpDbgValueConv, IdeFpDbgValueConverterSettingsFrame, 
-  IdeDebugger_FpValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
+  IdeDebuggerFpDbgValueConv, IdeDbgValueConverterSettingsFrame, 
+  IdeDebugger_ValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
   WatchInspectToolbar, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('IdeDebugger_FpValConv_Options', 
-    @IdeDebugger_FpValConv_Options.Register);
+  RegisterUnit('IdeDebugger_ValConv_Options', 
+    @IdeDebugger_ValConv_Options.Register);
 end;
 
 initialization

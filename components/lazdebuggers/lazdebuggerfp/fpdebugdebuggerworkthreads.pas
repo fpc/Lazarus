@@ -1178,10 +1178,10 @@ begin
       WatchResConv.ExtraDepth := defExtraDepth in FWatchValue.EvaluateFlags;
       WatchResConv.FirstIndexOffs := FWatchValue.FirstIndexOffs;
       if not (defSkipValConv in AnEvalFlags) then begin
-        if (FWatchValue.GetFpDbgConverter <> nil) and
-           (FWatchValue.GetFpDbgConverter.GetConverter.GetObject is TFpDbgValueConverter)
+        if (FWatchValue.GetDbgValConverter <> nil) and
+           (FWatchValue.GetDbgValConverter.GetConverter.GetObject is TFpDbgValueConverter)
         then
-          WatchResConv.ValConfig := FWatchValue.GetFpDbgConverter
+          WatchResConv.ValConfig := FWatchValue.GetDbgValConverter
         else
           WatchResConv.ValConvList := ValueConverterConfigList;
         WatchResConv.Debugger := FDebugger;

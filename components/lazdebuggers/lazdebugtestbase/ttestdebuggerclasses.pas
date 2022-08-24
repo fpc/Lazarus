@@ -91,7 +91,7 @@ type
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
       AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
-    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
+    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
   protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
@@ -429,7 +429,7 @@ begin
   Result := FCurrentResData;
 end;
 
-function TTestWatchValue.GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
+function TTestWatchValue.GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
 begin
   Result := nil;
 end;

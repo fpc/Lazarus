@@ -21,7 +21,6 @@ type
 
     procedure SetConverter(AValue: TLazDbgValueConverterIntf);
   protected
-    function GetBackendSpecificObject: TObject; deprecated;
     function GetConverter: TLazDbgValueConverterIntf;
 
     function AllowedTypeNames: TStrings;
@@ -88,11 +87,6 @@ begin
   FConverter := AValue;
   if FConverter <> nil then
     FConverter.AddReference;
-end;
-
-function TIdeDbgValueConvertSelector.GetBackendSpecificObject: TObject;
-begin
-  Result := Self;
 end;
 
 function TIdeDbgValueConvertSelector.GetConverter: TLazDbgValueConverterIntf;

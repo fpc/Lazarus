@@ -242,7 +242,7 @@ type
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
-    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
+    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
     function GetExpression: String;
     function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;

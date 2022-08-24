@@ -1,4 +1,4 @@
-unit IdeFpDbgValueConverterSettingsFrame;
+unit IdeDbgValueConverterSettingsFrame;
 
 {$mode objfpc}{$H+}
 
@@ -11,9 +11,9 @@ uses
 
 type
 
-  { TFpDbgValConvFrame }
+  { TIdeDbgValConvFrame }
 
-  TFpDbgValConvFrame = class(TFrame)
+  TIdeDbgValConvFrame = class(TFrame)
     btnAdd: TButton;
     btnRemove: TButton;
     EdName: TEdit;
@@ -64,9 +64,9 @@ implementation
 
 {$R *.lfm}
 
-{ TFpDbgValConvFrame }
+{ TIdeDbgValConvFrame }
 
-procedure TFpDbgValConvFrame.btnAddClick(Sender: TObject);
+procedure TIdeDbgValConvFrame.btnAddClick(Sender: TObject);
 var
   AvailClass: TLazDbgValueConvertRegistry;
   AName: String;
@@ -92,7 +92,7 @@ begin
   memoTypeNames.SetFocus;
 end;
 
-procedure TFpDbgValConvFrame.btnRemoveClick(Sender: TObject);
+procedure TIdeDbgValConvFrame.btnRemoveClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -108,12 +108,12 @@ begin
   lstConvertersClick(nil);
 end;
 
-procedure TFpDbgValConvFrame.dropActionChange(Sender: TObject);
+procedure TIdeDbgValConvFrame.dropActionChange(Sender: TObject);
 begin
   UpdateConvForClass;
 end;
 
-procedure TFpDbgValConvFrame.lstConvertersClick(Sender: TObject);
+procedure TIdeDbgValConvFrame.lstConvertersClick(Sender: TObject);
 var
   AvailClass: TLazDbgValueConvertRegistry;
 begin
@@ -141,7 +141,7 @@ begin
   lstConvertersItemClick(nil, FCurIdx);
 end;
 
-procedure TFpDbgValConvFrame.lstConvertersItemClick(Sender: TObject; Index: integer);
+procedure TIdeDbgValConvFrame.lstConvertersItemClick(Sender: TObject; Index: integer);
 begin
   if Index < 0 then
     exit;
@@ -157,20 +157,20 @@ begin
   UpdateButtons;
 end;
 
-procedure TFpDbgValConvFrame.Splitter1CanOffset(Sender: TObject;
+procedure TIdeDbgValConvFrame.Splitter1CanOffset(Sender: TObject;
   var NewOffset: Integer; var Accept: Boolean);
 begin
 
 end;
 
-procedure TFpDbgValConvFrame.SetCurConv(AValConv: TIdeDbgValueConvertSelector);
+procedure TIdeDbgValConvFrame.SetCurConv(AValConv: TIdeDbgValueConvertSelector);
 begin
   FCurConvConf := AValConv;
   FCurConv := TLazDbgValueConvertSelectorIntf(FCurConvConf).GetConverter;
   UpdateConvPanel;
 end;
 
-procedure TFpDbgValConvFrame.UpdateConvForClass;
+procedure TIdeDbgValConvFrame.UpdateConvForClass;
 var
   AvailClass: TLazDbgValueConvertRegistry;
 begin
@@ -184,7 +184,7 @@ begin
   end;
 end;
 
-procedure TFpDbgValConvFrame.UpdateConvPanel;
+procedure TIdeDbgValConvFrame.UpdateConvPanel;
 var
   F: TFrame;
 begin
@@ -200,7 +200,7 @@ begin
   end;
 end;
 
-procedure TFpDbgValConvFrame.FillList;
+procedure TIdeDbgValConvFrame.FillList;
 var
   i: Integer;
   obj: TIdeDbgValueConvertSelector;
@@ -215,14 +215,14 @@ begin
   end;
 end;
 
-procedure TFpDbgValConvFrame.UpdateButtons;
+procedure TIdeDbgValConvFrame.UpdateButtons;
 begin
   btnAdd.Enabled := ValueConverterRegistry.Count > 0;
   btnRemove.Enabled := (lstConverters.Count > 0) and (lstConverters.ItemIndex >= 0);
   pnlCurrentConv.Enabled := FCurConvConf <> nil;
 end;
 
-procedure TFpDbgValConvFrame.SetValConvList(AValue: TIdeDbgValueConvertSelectorList);
+procedure TIdeDbgValConvFrame.SetValConvList(AValue: TIdeDbgValueConvertSelectorList);
 begin
   if FValConvList = AValue then Exit;
   FValConvList := AValue;
@@ -237,7 +237,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TFpDbgValConvFrame.SaveCurrent;
+procedure TIdeDbgValConvFrame.SaveCurrent;
 var
   AvailClass: TLazDbgValueConvertRegistry;
 begin
@@ -258,7 +258,7 @@ begin
   end;
 end;
 
-procedure TFpDbgValConvFrame.Setup;
+procedure TIdeDbgValConvFrame.Setup;
 var
   AvailClass: TLazDbgValueConvertRegistry;
   i: Integer;
@@ -280,13 +280,13 @@ begin
   UpdateButtons;
 end;
 
-constructor TFpDbgValConvFrame.Create(TheOwner: TComponent);
+constructor TIdeDbgValConvFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Setup;
 end;
 
-destructor TFpDbgValConvFrame.Destroy;
+destructor TIdeDbgValConvFrame.Destroy;
 begin
   if FCurConvSettings <> nil then
     FCurConvSettings.Free;

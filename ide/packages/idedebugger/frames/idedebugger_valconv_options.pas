@@ -1,4 +1,4 @@
-unit IdeDebugger_FpValConv_Options;
+unit IdeDebugger_ValConv_Options;
 
 {$mode objfpc}{$H+}
 
@@ -7,15 +7,15 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, IDEOptEditorIntf, IDEOptionsIntf,
   FpDebugValueConvertors, IdeDebuggerStringConstants,
-  IdeFpDbgValueConverterSettingsFrame, IdeDebuggerOpts,
+  IdeDbgValueConverterSettingsFrame, IdeDebuggerOpts,
   IdeDebuggerFpDbgValueConv;
 
 type
 
-  { TIdeDbgFpValConvOptionsFrame }
+  { TIdeDbgValConvOptionsFrame }
 
-  TIdeDbgFpValConvOptionsFrame = class(TAbstractIDEOptionsEditor)
-    FpDbgValConvFrame1: TFpDbgValConvFrame;
+  TIdeDbgValConvOptionsFrame = class(TAbstractIDEOptionsEditor)
+    DbgValConvFrame1: TIdeDbgValConvFrame;
   private
     FValConvList: TIdeDbgValueConvertSelectorList;
   public
@@ -34,44 +34,44 @@ implementation
 
 procedure Register;
 begin
-  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgFpValConvOptionsFrame, DbgOptionsFpDbgOpts);
+  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgValConvOptionsFrame, DbgOptionsFpDbgOpts);
 end;
 
 {$R *.lfm}
 
-{ TIdeDbgFpValConvOptionsFrame }
+{ TIdeDbgValConvOptionsFrame }
 
-destructor TIdeDbgFpValConvOptionsFrame.Destroy;
+destructor TIdeDbgValConvOptionsFrame.Destroy;
 begin
   inherited Destroy;
   FValConvList.Free;
 end;
 
-function TIdeDbgFpValConvOptionsFrame.GetTitle: String;
+function TIdeDbgValConvOptionsFrame.GetTitle: String;
 begin
   Result := dlgFpConvOptFpDebugOptions;
 end;
 
-procedure TIdeDbgFpValConvOptionsFrame.Setup(
+procedure TIdeDbgValConvOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
-  FpDbgValConvFrame1.Setup;
+  DbgValConvFrame1.Setup;
 end;
 
-procedure TIdeDbgFpValConvOptionsFrame.ReadSettings(
+procedure TIdeDbgValConvOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   if FValConvList = nil then
     FValConvList := TIdeDbgValueConvertSelectorList.Create;
   FValConvList.Assign(DebuggerOptions.FpDbgConverterConfig);
   FValConvList.Changed := False;
-  FpDbgValConvFrame1.ValConvList := FValConvList;
+  DbgValConvFrame1.ValConvList := FValConvList;
 end;
 
-procedure TIdeDbgFpValConvOptionsFrame.WriteSettings(
+procedure TIdeDbgValConvOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  FpDbgValConvFrame1.SaveCurrent;
+  DbgValConvFrame1.SaveCurrent;
   if FValConvList.Changed then begin
     DebuggerOptions.FpDbgConverterConfig.Assign(FValConvList);
     DebuggerOptions.FpDbgConverterConfig.Changed := True;
@@ -85,7 +85,7 @@ begin
   end;
 end;
 
-class function TIdeDbgFpValConvOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TIdeDbgValConvOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TDebuggerOptions;
 end;

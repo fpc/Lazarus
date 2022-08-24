@@ -1,4 +1,4 @@
-object IdeDbgFpValConvOptionsFrame: TIdeDbgFpValConvOptionsFrame
+object IdeDbgValConvOptionsFrame: TIdeDbgValConvOptionsFrame
   Left = 0
   Height = 371
   Top = 0
@@ -8,7 +8,7 @@ object IdeDbgFpValConvOptionsFrame: TIdeDbgFpValConvOptionsFrame
   TabOrder = 0
   DesignLeft = 471
   DesignTop = 200
-  inline FpDbgValConvFrame1: TFpDbgValConvFrame
+  inline DbgValConvFrame1: TIdeDbgValConvFrame
     Height = 371
     Width = 510
     Align = alClient
@@ -42,16 +42,26 @@ object IdeDbgFpValConvOptionsFrame: TIdeDbgFpValConvOptionsFrame
         Width = 340
         ClientHeight = 194
         ClientWidth = 340
+        inherited lblName: TLabel
+          Width = 330
+        end
+        inherited EdName: TEdit
+          Width = 330
+        end
         inherited lblTypeNames: TLabel
           Width = 330
         end
         inherited memoTypeNames: TMemo
-          Height = 164
+          Height = 116
           Width = 330
         end
       end
     end
     inherited Splitter1: TSplitter
+      Width = 510
+    end
+    inherited pnlCurConvSetting: TPanel
+      Top = 371
       Width = 510
     end
   end

@@ -35,7 +35,6 @@ type
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
     function GetConverter: TLazDbgValueConverterIntf;
-    function GetBackendSpecificObject: TObject; deprecated;
 
     function AllowedTypeNames: TStrings;
   end;

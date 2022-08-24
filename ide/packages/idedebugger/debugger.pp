@@ -762,7 +762,7 @@ type
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     function ResData: TLzDbgWatchDataIntf;
-    function GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
+    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
   private
     FOnValidityChanged: TNotifyEvent;
     FSnapShot: TIdeWatchValue;
@@ -3997,7 +3997,7 @@ begin
   Result := FCurrentResData;
 end;
 
-function TCurrentWatchValue.GetFpDbgConverter: TLazDbgValueConvertSelectorIntf;
+function TCurrentWatchValue.GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
 begin
   Result := FFpDbgConverter;
 end;

@@ -75,14 +75,14 @@
         <UnitName Value="IdeDebuggerFpDbgValueConv"/>
       </Item>
       <Item>
-        <Filename Value="idefpdbgvalueconvertersettingsframe.pas"/>
-        <UnitName Value="IdeFpDbgValueConverterSettingsFrame"/>
+        <Filename Value="idedbgvalueconvertersettingsframe.pas"/>
+        <UnitName Value="IdeDbgValueConverterSettingsFrame"/>
         <ResourceBaseClass Value="Frame"/>
       </Item>
       <Item>
-        <Filename Value="frames\idedebugger_fpvalconv_options.pas"/>
+        <Filename Value="frames\idedebugger_valconv_options.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="IdeDebugger_FpValConv_Options"/>
+        <UnitName Value="IdeDebugger_ValConv_Options"/>
         <ResourceBaseClass Value="Frame"/>
       </Item>
       <Item>

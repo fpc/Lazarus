@@ -1,4 +1,4 @@
-object FpDbgValConvFrame: TFpDbgValConvFrame
+object IdeDbgValConvFrame: TIdeDbgValConvFrame
   Left = 0
   Height = 519
   Top = 0
