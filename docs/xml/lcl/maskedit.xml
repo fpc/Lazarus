@@ -806,12 +806,8 @@ UTF-8 character literal appended to the mask for the edit control.
 <element name="TCustomMaskEdit.GetMask">
 <short>Gets values in the internal FMask member.</short>
 </element>
-<element name="TCustomMaskEdit.GetMask.Result">
-<short/>
-</element>
-<element name="TCustomMaskEdit.GetMask.Index">
-<short/>
-</element>
+<element name="TCustomMaskEdit.GetMask.Result"/>
+<element name="TCustomMaskEdit.GetMask.Index"/>
 
 <element name="TCustomMaskEdit.SetEditMask">
 <short>Sets the value for the EditMask property.</short>
@@ -1491,11 +1487,14 @@ the return value for the method.
 </p>
 </descr>
 <seealso>
+<link id="TCustomMaskEdit.EditMask"/>
 <link id="#lcl.stdctrls.TCustomEdit.CanShowEmulatedTextHint">TCustomEdit.CanShowEmulatedTextHint</link>
 </seealso>
 </element>
 <element name="TCustomMaskEdit.CanShowEmulatedTextHint.Result">
-<short/>
+<short>
+<b>False</b> if a value has been assigned to EditMask.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.DisableMask">
@@ -1622,58 +1621,138 @@ is called to remove the mask literals.
 
 <element name="TCustomMaskEdit.GetTextWithoutMask">
 <short>
-Gets the raw value for the control without formatting applied by an edit mask.
+Gets the text value for the control without formatting applied by an edit 
+mask.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetTextWithoutMask</var> is method used to get the text for the 
+specified Value without the formatting applied by the EditMask. It ensures 
+that any occurrences of SpaceChar not used as a mask literal are replaced 
+with #32. Other mask literals are removed from Value. If the mask indicates 
+it is saved as part of the data, leading or trailing whitespace is trimmed as 
+required.
+</p>
+<p>
+GetTextWithoutMask is used in the implementation of the RealGetText method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomMaskEdit.SpaceChar"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.RealGetText"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.GetTextWithoutMask.Result">
 <short>
-Value for the control without the formatting or literals in the EditMask.
+Value for the control without formatting applied by EditMask.
 </short>
 </element>
 <element name="TCustomMaskEdit.GetTextWithoutMask.Value">
-<short/>
+<short>
+Text value for the control without mask characters or formatting.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.GetTextWithoutSpaceChar">
 <short>
-Gets the value for the control without Space characters inserted by an edit 
-mask.
+Gets the value for the control without the Space character literal used in 
+the edit mask.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetTextWithoutSpaceChar</var> is similar to GetTextWithoutMask - but 
+leaves mask literals other than SpaceChar intact. It replaces all occurrences 
+of SpaceChar that are not used as a mask literal with #32.
+</p>
+<p>
+GetTextWithoutSpaceChar is used in the implementation of the Delphi 
+compatible FormatMaskText routine.
+</p>
+</descr>
+<seealso>
+<link id="FormatMaskText"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.GetTextWithoutSpaceChar.Result">
-<short/>
+<short>
+Text value for the control after the SpaceChar literal is converted to its 
+conventional representation (#32).
+</short>
 </element>
 <element name="TCustomMaskEdit.GetTextWithoutSpaceChar.Value">
-<short/>
+<short>
+Masked caption value examined and converted in the method.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.SetTextApplyMask">
-<short>Sets the value for the control after applying its edit mask.</short>
-<descr/>
-<seealso/>
+<short>
+Sets the value for the control after applying its edit mask.
+</short>
+<descr>
+<p>
+<var>SetTextApplyMask</var> is a method used to set the text for the control 
+to the specified Value. It ensures that the EditMask is applied to the value 
+when IsMasked returns True. The ApplyMaskToText method is called to generate 
+the text with mask literals as needed for the EditMask.
+</p>
+<p>
+RealSetTextWhileMasked is called to apply the masked text value to the 
+control.
+</p>
+<p>
+When Value is an empty string (''), the Clear method is called to set the 
+control value.
+</p>
+<p>
+SetTextApplyMask is used in the implementation of the RealSetText method. It 
+is also called from the Loaded method when the component has finished loading 
+during LCL streaming.
+</p>
+</descr>
+<seealso>
+<link id="TCustomMaskEdit.IsMasked"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.Clear"/>
+<link id="TCustomMaskEdit.ApplyMaskToText"/>
+<link id="TCustomMaskEdit.RealSetTextWhileMasked"/>
+<link id="TCustomMaskEdit.RealSetText"/>
+<link id="TCustomMaskEdit.Loaded"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.SetTextApplyMask.Value">
-<short/>
+<short>
+Text before mask literals in EditMask are applied.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.GetEditText">
 <short>
-Gets the text in the edit box (the string value that has been masked).
+Gets the value for the EditText property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetEditText</var> is a <var>String</var> function used to get the value 
+for the EditText property. It contains the text displayed in the edit box for 
+the control including any mask literals and formatting required for the 
+EditMask. The value is retrieved by calling the overridden RealGetText method 
+for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomMaskEdit.EditText"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.GetEditText.Result">
-<short/>
+<short>
+Value for the EditText property.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.SetEditText">
 <short>
-Sets the value for the Text displayed in the control.
+Sets the value for the EditText property.
 </short>
 <descr>
 <p>
@@ -1689,10 +1768,12 @@ ensures that the text assigned in the control does not exceed the length
 specified by its edit mask.
 </remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomMaskEdit.EditText"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.SetEditText.Value">
-<short>New value applied to the Text in the control.</short>
+<short>New value for the EditText property.</short>
 </element>
 
 <element name="TCustomMaskEdit.GetSel">
@@ -1906,13 +1987,20 @@ clipboard.
 </element>
 
 <element name="TCustomMaskEdit.EditCanModify">
-<short>If <b>True</b>, the Edit box is allowed to modify the contents.</short>
-<descr/>
-<errors/>
+<short>If <b>True</b>, the Edit box is allowed to modify its contents.</short>
+<descr>
+<p>
+<var>EditCanModify</var> always returns True in <var>TCustomMaskEdit</var>. 
+It is a virtual method, and can be overridden in descendent classes (like 
+TDBEdit).
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomMaskEdit.EditCanModify.Result">
-<short/>
+<short>
+<b>True</b> if the control can modify its text value.
+</short>
 </element>
 
 <element name="TCustomMaskEdit.Reset">
@@ -2129,7 +2217,7 @@ the control.
 <descr>
 <p>
 <var>CheckCursor</var> is a procedure used to update the position for the 
-cursor  (or caret) when an <var>EditMask</var> is used in the control. 
+cursor (or caret) when an <var>EditMask</var> is used in the control. 
 CheckCursor uses the value from <var>IsMasked</var> to determine if the 
 cursor position needs to be updated by calling <var>SetCursorPos</var>. When 
 <var>IsMasked</var> returns <b>False</b>, no actions are performed in the 
