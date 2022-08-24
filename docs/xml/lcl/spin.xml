@@ -232,9 +232,7 @@ the return value for the method.
 <element name="TCustomFloatSpinEdit.RealGetText.Result" link="#lcl.stdctrls.TCustomEdit.RealGetText.Result"/>
 
 <element name="TCustomFloatSpinEdit.RealSetText" link="#lcl.stdctrls.TCustomEdit.RealSetText"/>
-<element name="TCustomFloatSpinEdit.RealSetText.AValue">
-<short/>
-</element>
+<element name="TCustomFloatSpinEdit.RealSetText.AValue"/>
 
 <element name="TCustomFloatSpinEdit.TextChanged">
 <short>
