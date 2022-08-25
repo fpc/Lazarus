@@ -179,18 +179,10 @@ Not used in the current LCL implementation.
 <element name="TComboBoxExStyleEx.csExCaseSensitive">
 <short>Enables case-sensitive comparisons in the control.</short>
 </element>
-<element name="TComboBoxExStyleEx.csExNoEditImage">
-<short/>
-</element>
-<element name="TComboBoxExStyleEx.csExNoEditImageIndent">
-<short/>
-</element>
-<element name="TComboBoxExStyleEx.csExNoSizeLimit">
-<short/>
-</element>
-<element name="TComboBoxExStyleEx.csExPathWordBreak">
-<short/>
-</element>
+<element name="TComboBoxExStyleEx.csExNoEditImage"/>
+<element name="TComboBoxExStyleEx.csExNoEditImageIndent"/>
+<element name="TComboBoxExStyleEx.csExNoSizeLimit"/>
+<element name="TComboBoxExStyleEx.csExPathWordBreak"/>
 
 <element name="TComboBoxExStyles">
 <short>Set type used to store TComboBoxExStyle enumeration values.</short>
@@ -305,7 +297,9 @@ changed. TCheckItemChange is the type used to implement the
 </element>
 
 <element name="TListCompareEvent" link="#lcl.comboex.TListItemsCompare">
-<short/>
+<short>
+Specifies a function type used to compare items in TComboEx.
+</short>
 <descr>
 <p>
 Similar to <var>TListItemsSortType</var>, but implemented as an object 
@@ -314,18 +308,10 @@ function.
 </descr>
 <seealso/>
 </element>
-<element name="TListCompareEvent.Result">
-<short/>
-</element>
-<element name="TListCompareEvent.AList">
-<short/>
-</element>
-<element name="TListCompareEvent.AItem1">
-<short/>
-</element>
-<element name="TListCompareEvent.AItem2">
-<short/>
-</element>
+<element name="TListCompareEvent.Result"/>
+<element name="TListCompareEvent.AList"/>
+<element name="TListCompareEvent.AItem1"/>
+<element name="TListCompareEvent.AItem2"/>
 
 <element name="TListControlItem">
 <short>Implements a collection item added to a list control.</short>
