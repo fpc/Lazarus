@@ -3185,6 +3185,11 @@ begin
   end;
 end;
 
+function RoundToMultiple(AValue, ABasis: Integer): Integer; inline;
+begin
+  Result := AValue div ABasis * ABasis;
+end;
+
 procedure TDesigner.PaintClientGrid(AWinControl: TWinControl;
   aDDC: TDesignerDeviceContext);
 var
@@ -3192,6 +3197,8 @@ var
   Count: integer;
   i: integer;
   CurControl: TControl;
+  R, R1: TRect;
+  P: TPoint;
 begin
   if (AWinControl=nil)
   or (not (csAcceptsControls in AWinControl.ControlStyle))
@@ -3218,8 +3225,11 @@ begin
       ADDC.Canvas.Pen.Color := GridColor;
       ADDC.Canvas.Pen.Width := 1;
       ADDC.Canvas.Pen.Style := psSolid;
-      DrawGrid(ADDC.Canvas.Handle, TWinControlAccess(AWinControl).GetLogicalClientRect,
-               GridSizeX, GridSizeY);
+      P := TWinControlAccess(AWinControl).GetClientScrollOffset;
+      R := AWinControl.ClientRect;
+      R.BottomRight := R.BottomRight + Point(GridSizeX, GridSizeY);
+      OffsetRect(R, RoundToMultiple(P.X, GridSizeX), RoundToMultiple(P.Y, GridSizeY));
+      DrawGrid(ADDC.Canvas.Handle, R, GridSizeX, GridSizeY);
     end;
     
     if ShowBorderSpacing then
