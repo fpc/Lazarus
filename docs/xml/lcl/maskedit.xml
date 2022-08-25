@@ -1716,7 +1716,6 @@ during LCL streaming.
 <link id="TCustomMaskEdit.EditMask"/>
 <link id="TCustomMaskEdit.Clear"/>
 <link id="TCustomMaskEdit.ApplyMaskToText"/>
-<link id="TCustomMaskEdit.RealSetTextWhileMasked"/>
 <link id="TCustomMaskEdit.RealSetText"/>
 <link id="TCustomMaskEdit.Loaded"/>
 </seealso>
