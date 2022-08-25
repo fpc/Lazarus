@@ -800,54 +800,26 @@ the tab order for the visible buttons.
 </element>
 
 <element name="TCustomButtonPanel.CreateControlBorderSpacing" link="#lcl.controls.TControl.CreateControlBorderSpacing"/>
-<element name="TCustomButtonPanel.CreateControlBorderSpacing.Result">
-<short/>
-</element>
+<element name="TCustomButtonPanel.CreateControlBorderSpacing.Result"/>
 
 <element name="TCustomButtonPanel.CustomAlignInsertBefore" link="#lcl.controls.TWinControl.CustomAlignInsertBefore"/>
-<element name="TCustomButtonPanel.CustomAlignInsertBefore.Result">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl1">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl2">
-<short/>
-</element>
+<element name="TCustomButtonPanel.CustomAlignInsertBefore.Result"/>
+<element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl1"/>
+<element name="TCustomButtonPanel.CustomAlignInsertBefore.AControl2"/>
 
 <element name="TCustomButtonPanel.CustomAlignPosition" link="#lcl.controls.TWinControl.CustomAlignPosition"/>
-<element name="TCustomButtonPanel.CustomAlignPosition.AControl">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.ANewLeft">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.ANewTop">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.ANewWidth">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.ANewHeight">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.AlignRect">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CustomAlignPosition.AlignInfo">
-<short/>
-</element>
+<element name="TCustomButtonPanel.CustomAlignPosition.AControl"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.ANewLeft"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.ANewTop"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.ANewWidth"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.ANewHeight"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.AlignRect"/>
+<element name="TCustomButtonPanel.CustomAlignPosition.AlignInfo"/>
 
 <element name="TCustomButtonPanel.CalculatePreferredSize" link="#lcl.controls.TWinControl.CalculatePreferredSize"/>
-<element name="TCustomButtonPanel.CalculatePreferredSize.PreferredWidth">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CalculatePreferredSize.PreferredHeight">
-<short/>
-</element>
-<element name="TCustomButtonPanel.CalculatePreferredSize.WithThemeSpace">
-<short/>
-</element>
+<element name="TCustomButtonPanel.CalculatePreferredSize.PreferredWidth"/>
+<element name="TCustomButtonPanel.CalculatePreferredSize.PreferredHeight"/>
+<element name="TCustomButtonPanel.CalculatePreferredSize.WithThemeSpace"/>
 
 <element name="TCustomButtonPanel.Notification">
 <short>
