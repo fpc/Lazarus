@@ -27,7 +27,8 @@ RUN tarballs=( \
       wget --no-verbose --output-document=${tarball[1]}.tar ${tarball[0]}; \
       tar xf ${tarball[1]}.tar; \
       cd ${tarball[1]}; \
-      echo -e "\n\n\n\n" | ./install.sh; \
+      # install only compiler and RTL, do not install documentation and demos
+      echo -e "\nn\nn\n" | ./install.sh; \
       if [ $? -ne 0 ]; then \
         exit 1; \
       fi; \ 
