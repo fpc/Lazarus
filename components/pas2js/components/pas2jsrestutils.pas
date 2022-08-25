@@ -218,7 +218,7 @@ begin
     aFieldDefs.BeginUpdate;
     While not Buf.EOF do
       begin
-      if aFieldDefs.Find(aName.AsString)=nil then
+      if aFieldDefs.IndexOf(aName.AsString)=-1 then
         begin
         aFieldDefs.Add(aName.AsString,GetFieldType(aType.AsString),aMaxLen.asInteger,aRequired.AsBoolean);
         Inc(Result);
