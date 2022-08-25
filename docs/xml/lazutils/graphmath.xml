@@ -28,29 +28,57 @@ operations. This file is part of the <file>LazUtils</file> package.
 
 <element name="TFloatPoint">
 <short>
-<var>TFloatPoint</var> - an extended precision record specifying the X and
+<var>TFloatPoint</var> is an extended precision record specifying the X and
 Y coordinates of a point in a graphic environment.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TFloatPoint.X">
-<short/>
+<short>
+Horizontal position for the coordinate.
+</short>
 </element>
 <element name="TFloatPoint.Y">
-<short/>
+<short>
+Vertical position for the coordinate.
+</short>
 </element>
 
 <element name="TBezier">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Array type used to store the coordinates for Bezier control points as 
+floating point values.
+</short>
+<descr>
+<p>
+<var>TBezier</var> allows up to 4 coordinates to be specified which represent 
+the control points for the parametric curve. Each coordinate is implemented 
+using the TFloatPoint type, and stored as elements in the array.
+</p>
+<p>
+TBezier is the type returned by the Bezier function. The type is passed as an 
+argument to routines like: Arc2Bezier, Bezier2Polyline, BezierMidPoint, and 
+SplitBezier.
+</p>
+</descr>
+<seealso>
+<link id="Bezier"/>
+<link id="Arc2Bezier"/>
+<link id="Bezier2Polyline"/>
+<link id="BezierMidPoint"/>
+<link id="SplitBezier"/>
+</seealso>
 </element>
 
 <element name="PPoint">
-<short/>
+<short>
+Pointer to the TPoint type.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#rtl.classes.TPoint">TPoint</link>
+</seealso>
 </element>
 
 <element name="Angles2Coords">
@@ -163,25 +191,37 @@ o&apos;clock position.
 
 <element name="Bezier">
 <short>
-<var>Bezier</var> - function to get a Bezier figure from the given points.
+Gets a TBezier instance representing the specified Bezier control points.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="Bezier.Result">
-<short/>
+<short>
+TBezier instance with the values in C1, C2, C3, and C4.
+</short>
 </element>
 <element name="Bezier.C1">
-<short/>
+<short>
+Control point on the parametric curve. C1 is an endpoint.
+</short>
 </element>
 <element name="Bezier.C2">
-<short/>
+<short>
+Control point on the parametric curve. C2 is a directional control point for 
+a Quadratic or Cubic Bezier.
+</short>
 </element>
 <element name="Bezier.C3">
-<short/>
+<short>
+Control point on the parametric curve. C3 is a directional control point for 
+a Cubic Bezier.
+</short>
 </element>
 <element name="Bezier.C4">
-<short/>
+<short>
+Control point on the parametric curve. C4 is an endpoint.
+</short>
 </element>
 
 <element name="Bezier2Polyline">
