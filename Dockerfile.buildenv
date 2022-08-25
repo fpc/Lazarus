@@ -24,7 +24,7 @@ RUN tarballs=( \
              ); \
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
-      wget --output-document=${tarball[1]}.tar ${tarball[0]}; \
+      wget --no-verbose --output-document=${tarball[1]}.tar ${tarball[0]}; \
       tar xf ${tarball[1]}.tar; \
       cd ${tarball[1]}; \
       echo -e "\n\n\n\n" | ./install.sh; \
@@ -57,7 +57,7 @@ RUN tarballs=( \
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
       if [ ! -f ${tarball[2]}.${tarball[3]} ]; then \
-        wget ${tarball[1]}/${tarball[2]}.${tarball[3]}; \
+        wget --no-verbose ${tarball[1]}/${tarball[2]}.${tarball[3]}; \
       fi; \   
       if [ ! -d ${tarball[2]} ]; then \
         tar zxf ${tarball[2]}.${tarball[3]}; \
@@ -81,5 +81,5 @@ RUN tarballs=( \
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
       rm -vf ${tarball[2]}.${tarball[3]}; \
-      rm -vrf ${tarball[2]}; \
+      rm -rf ${tarball[2]}; \
     done;
