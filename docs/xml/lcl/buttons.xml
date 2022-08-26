@@ -20,7 +20,7 @@ in the Lazarus IDE component palette:
 <li>TSpeedButton</li>
 </ul>
 <p>
-<file>buttons.pp</file> is part of the LCL (Lazarus Component Library).
+<file>buttons.pp</file> is part of the Lazarus Component Library (<b>LCL</b>).
 </p>
 </descr>
 
@@ -558,10 +558,11 @@ notification, and normally receives a reference to the current TButtonGlyph
 class instance.
 </p>
 <p>
-GlyphChanged ensures that the internal ImagesCache member is set to Nil, and 
-the ClearImages methods is called to remove images stored in the Images 
-property. When CanShow returns <b>True</b>, the internal ImagesCache member 
-is re-populated and registered to listen for changes to the Glyph property.
+GlyphChanged ensures that the internal ImagesCache member is set to 
+<b>Nil</b>, and the ClearImages methods is called to remove images stored in 
+the Images property. When CanShow returns <b>True</b>, the internal 
+ImagesCache member is re-populated and registered to listen for changes to 
+the Glyph property.
 </p>
 <p>
 GlyphChanged is assigned to the OnChange event handler when the class 
@@ -730,22 +731,30 @@ specified button <var>State</var>.
 </seealso>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.State">
-<short></short>
+<short>Drawing state for the button glyph.</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.APPI">
-<short></short>
+<short>
+Pixels per inch for the image resolution with the button glyphs.
+</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.ACanvasScaleFactor">
-<short></short>
+<short>Canvas scaling factor applied to the image resolution.</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AImageResolution">
-<short></short>
+<short>Returns the scaled image resolution with the button glyphs.</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AIndex">
-<short></short>
+<short>
+Returns the index for the glyph image selected from Images or LCL glyph 
+resources
+</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AEffect">
-<short></short>
+<short>
+Returns the drawing effect needed for the glyph image with the specified 
+state.
+</short>
 </element>
 
 <element name="TButtonGlyph.Draw">
@@ -1722,7 +1731,7 @@ updated.
 <short>Value for the ImageIndex property.</short>
 </element>
 <element name="TCustomBitBtn.GetImageIndex.AState">
-<short></short>
+<short>Drawing state for the requested button glyph.</short>
 </element>
 
 <element name="TCustomBitBtn.SetImageIndex">
@@ -1736,7 +1745,7 @@ updated.
 <short>New value for the ImageIndex property.</short>
 </element>
 <element name="TCustomBitBtn.SetImageIndex.AState">
-<short></short>
+<short>Identifies the drawing State for the specified image index.</short>
 </element>
 
 <element name="TCustomBitBtn.GetImageWidth">
@@ -1793,8 +1802,8 @@ when a new value is assigned to the Action property, or when the control is
 loaded using LCL component streaming.
 </p>
 <p>
-Sender is the new action instance for the event, or Nil when the value in 
-Action has been removed (set to Nil).
+Sender is the new action instance for the event, or <b>Nil</b> when the value 
+in Action has been removed (set to <b>Nil</b>).
 </p>
 <p>
 CheckDefaults indicates whether existing properties values in the control are 
@@ -1922,9 +1931,7 @@ value has been assigned for the Caption property.
 </element>
 
 <element name="TCustomBitBtn.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
-<element name="TCustomBitBtn.GetControlClassDefaultSize.Result">
-<short></short>
-</element>
+<element name="TCustomBitBtn.GetControlClassDefaultSize.Result"/>
 
 <element name="TCustomBitBtn.CMAppShowBtnGlyphChanged">
 <short>Handles the CM_APPSHOWBTNGLYPHCHANGED message for the control.</short>
@@ -2671,20 +2678,35 @@ visibility for a control in its parent container.
 </element>
 
 <element name="TSpeedButtonActionLink.AssignClient" link="#rtl.classes.TBasicActionLink.AssignClient"/>
-<element name="TSpeedButtonActionLink.AssignClient.AClient">
-<short></short>
-</element>
+<element name="TSpeedButtonActionLink.AssignClient.AClient"/>
 
 <element name="TSpeedButtonActionLink.SetGroupIndex">
 <short>
-<var>SetGroupIndex</var> - stores the value of the index within the list of 
-links.
+Sets the group index for the speed button in the action link.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>SetGroupIndex</var> is an overridden method in 
+<var>TSpeedButtonActionLink</var>. It implements the empty virtual method 
+from the ancestor class. SetGroupIndex call IsGroupIndexLinked to determine 
+if the action link has an assigned speed button instance. When assigned, the 
+GroupIndex property in the client control is set to Value.
+</p>
+<p>
+SetGroupIndex is called when a TCustomAction instance notifies each of its 
+client controls of a new value for the group index property in the class 
+instance.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.actnlist.TCustomAction.GroupIndex">TCustomAction.GroupIndex</link>
+<link id="#lcl.actnlist.TCustomActionList">TCustomActionList</link>
+</seealso>
 </element>
 <element name="TSpeedButtonActionLink.SetGroupIndex.Value">
-<short></short>
+<short>
+New value for the group index in the linked speed button.
+</short>
 </element>
 
 <element name="TSpeedButtonActionLink.SetChecked">
@@ -2732,14 +2754,10 @@ Ordinal position for the image selected in the speed button control.
 </element>
 
 <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#lcl.actnlist.TActionLink.IsCheckedLinked"/>
-<element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
-<short></short>
-</element>
+<element name="TSpeedButtonActionLink.IsCheckedLinked.Result"/>
 
 <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#lcl.actnlist.TActionLink.IsGroupIndexLinked"/>
-<element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
-<short></short>
-</element>
+<element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result"/>
 
 <element name="TSpeedButtonActionLink.IsImageIndexLinked">
 <short>
@@ -2822,11 +2840,22 @@ Selected, Disabled).
 
 <element name="TCustomSpeedButton.ImageListChange">
 <short>Performs actions needed when the value in Images is changed.</short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>ImageListChange</var> implements a handler routine assigned to the 
+OnChange event handler in the internal image change link for the speed 
+button. It is assigned in the Create method when the TChangeLink is created 
+for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TCustomSpeedButton.Create"/>
+<link id="#lcl.imglist.TChangeLink.OnChange">TChangeLink.OnChange</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.ImageListChange.Sender">
-<short></short>
+<short>Object for the event notification.</short>
 </element>
 
 <element name="TCustomSpeedButton.IsGlyphStored">
@@ -2960,12 +2989,26 @@ have the same GroupIndex value.
 </element>
 
 <element name="TCustomSpeedButton.CMEnabledChanged">
-<short>Handles the Control message passed when the control is enabled.</short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Handles the Control message passed when the Enabled state is changed.
+</short>
+<descr>
+<p>
+<var>CMEnabledChanged</var> is a method used to handle the CM_ENABLEDCHANGED 
+control message. It re-implements the method from the ancestor class, and 
+does not call the inherited method. CMEnabledChanged calls UpdateState to 
+(re-)create the glyph using the new state for the speed button and to 
+invalidate the drawing area for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedButton.UpdateState"/>
+<link id="TButtonState"/>
+<link id="#lcl.controls.TControl.CMEnabledChanged">TControl.CMEnabledChanged</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.CMEnabledChanged.Message">
-<short></short>
+<short>Message handled in the method.</short>
 </element>
 
 <element name="TCustomSpeedButton.WMLButtonDown" link="#lcl.controls.TControl.WMLButtonDown"/>
@@ -3010,7 +3053,7 @@ have the same GroupIndex value.
 <short>Value for the property.</short>
 </element>
 <element name="TCustomSpeedButton.GetImageIndex.AState">
-<short></short>
+<short>Drawing state for the requested glyph image.</short>
 </element>
 
 <element name="TCustomSpeedButton.SetImageIndex">
@@ -3021,7 +3064,7 @@ have the same GroupIndex value.
 </seealso>
 </element>
 <element name="TCustomSpeedButton.SetImageIndex.AState">
-<short></short>
+<short>Drawing state for the specified glyph image.</short>
 </element>
 <element name="TCustomSpeedButton.SetImageIndex.AImageIndex">
 <short>New value for the property.</short>
@@ -3083,8 +3126,19 @@ Internal member used to store the TButtonState for the control.
 <short>
 Performs actions needed when the value in the Glyph property has been changed.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>GlyphChanged</var> implements the handler routine used for the OnChange 
+event handler in the Glyph for the control. It is assigned in the Create 
+constructor. GlyphChanged calls Invalidate to request the control to be 
+redrawn when the glyph image is updated.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedButton.Create"/>
+<link id="TButtonGlyph.OnChange"/>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.GlyphChanged.Sender">
 <short>TObject instance for the change notification.</short>
@@ -3131,16 +3185,25 @@ Used in the implementation of the CalculatePreferredSize and Paint methods.
 <seealso></seealso>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.Draw">
-<short></short>
+<short>
+<b>True</b> if the background and content for the control are drawn. 
+<b>False</b> to calculate the preferred width and height only.
+</short>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.PaintRect">
-<short></short>
+<short>
+Drawing area on the canvas where the content is positioned.
+</short>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.PreferredWidth">
-<short></short>
+<short>
+Returns the preferred width calculated for the control.  
+</short>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.PreferredHeight">
-<short></short>
+<short>
+Returns the preferred height calculated for the control.
+</short>
 </element>
 
 <element name="TCustomSpeedButton.MouseEnter" link="#lcl.controls.TControl.MouseEnter"/>
@@ -3398,7 +3461,6 @@ whether or not button was pressed)
 </element>
 
 <element name="TCustomSpeedButton.RealSetText" link="#lcl.controls.TControl.RealSetText">
-<short></short>
 <descr>
 <p>
 Used by SetTextBuf to store a text string rather than performing read/write 
@@ -3527,8 +3589,8 @@ OnChange event handler for the ActionLink in the control. It is signalled
 the control is loaded using LCL component streaming.
 </p>
 <p>
-Sender is the new action instance for the event, or Nil when the value in 
-Action has been removed (set to Nil).
+Sender is the new action instance for the event, or <b>Nil</b> when the value 
+in Action has been removed (set to <b>Nil</b>).
 </p>
 <p>
 CheckDefaults indicates whether existing properties values in the control are 
@@ -3559,9 +3621,7 @@ properties from the new action.
 </element>
 
 <element name="TCustomSpeedButton.GetActionLinkClass" link="#lcl.controls.TControl.GetActionLinkClass"/>
-<element name="TCustomSpeedButton.GetActionLinkClass.Result">
-<short></short>
-</element>
+<element name="TCustomSpeedButton.GetActionLinkClass.Result"/>
 
 <element name="TCustomSpeedButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
 
@@ -3795,10 +3855,14 @@ instance.
 <seealso></seealso>
 </element>
 <element name="TCustomSpeedButton.LoadGlyphFromResourceName.Instance">
-<short></short>
+<short>
+Handle for the resource with the specified glyph.
+</short>
 </element>
 <element name="TCustomSpeedButton.LoadGlyphFromResourceName.AName">
-<short></short>
+<short>
+Name of the glyph image resource loaded for the control.
+</short>
 </element>
 
 <element name="TCustomSpeedButton.LoadGlyphFromLazarusResource">
@@ -3810,7 +3874,9 @@ Lazarus Resource file (.lrs).
 <seealso></seealso>
 </element>
 <element name="TCustomSpeedButton.LoadGlyphFromLazarusResource.AName">
-<short></short>
+<short>
+Name of the glyph image loaded from the Lazarus resource.
+</short>
 </element>
 
 <element name="TCustomSpeedButton.Alignment">
@@ -4775,10 +4841,14 @@ GetButtonIcon is used in the implementation of the
 </seealso>
 </element>
 <element name="GetButtonIcon.Result">
-<short></short>
+<short>
+Bitmap instance with the glyph for the specified button.
+</short>
 </element>
 <element name="GetButtonIcon.idButton">
-<short></short>
+<short>
+Numeric button identifier for the glyph loaded in the routine.
+</short>
 </element>
 
 <element name="BidiAdjustButtonLayout">
@@ -4895,8 +4965,9 @@ method in <var>TCustomBitBtn</var>.
 <short>Registers components for use in the Lazarus IDE.</short>
 <descr>
 <p>
-Register is the procedure used to register components for use in the Lazarus 
-IDE. The following components are added to the Lazarus IDE component palette:
+<var>Register</var> is the procedure used to register components for use in 
+the Lazarus IDE. The following components are added to the Lazarus IDE 
+component palette:
 </p>
 <p>
 <b>Additional</b> Tab
