@@ -60,7 +60,7 @@ uses
   {$IF FPC_FULLVERSION>30100}
   GenerateFppkgConfigurationDlg,
   {$ENDIF}
-  IDEProcs;
+  IDEProcs, IdeDebuggerOpts;
   
 type
   TInitialSetupDialog = class;
