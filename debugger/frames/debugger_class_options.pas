@@ -529,7 +529,7 @@ begin
   repeat
     inc(i);
     j := FCopiedDbgPropertiesConfigList.IndexOf(Result+' ('+IntToStr(i)+')');
-    if (j >= 0) and (FCopiedDbgPropertiesConfigList.Opt[i]= FSelectedDbgPropertiesConfig)
+    if (j >= 0) and (FCopiedDbgPropertiesConfigList.Opt[j]= FSelectedDbgPropertiesConfig)
     then
       j := -1;
   until j < 0;
