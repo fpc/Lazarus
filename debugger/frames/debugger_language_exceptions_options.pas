@@ -204,6 +204,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupProject, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions);
+  RegisterIDEOptionsEditor(GroupProject, TDebuggerLanguageExceptionsOptions, DbgOptionsLanguageExceptions, ProjectOptionsDebug);
 end.
 

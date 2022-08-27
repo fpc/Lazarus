@@ -37,7 +37,8 @@ uses
   GDBMIDebugger,
   // IDE
   TransferMacros, LazarusIDEStrConsts, PathEditorDlg, IDEProcs, DialogProcs,
-  InputHistory, EnvironmentOpts, BaseDebugManager, Debugger, IdeDebuggerOpts;
+  InputHistory, EnvironmentOpts, BaseDebugManager, Project, Debugger,
+  IdeDebuggerOpts;
 
 type
 
@@ -53,6 +54,7 @@ type
     gbAdditionalSearchPath: TGroupBox;
     gbDebuggerSpecific: TGroupBox;
     gbDebuggerType: TGroupBox;
+    lblWarningProject: TLabel;
     LblWarnClassChange: TLabel;
     lblName: TLabel;
     Panel1: TPanel;
@@ -77,6 +79,8 @@ type
   private
     FDebuggerFileHistory: TStringList;
     FInOdNameExit: Boolean;
+    FOnModifiedDbgPropertiesCountChanged: TNotifyEvent;
+    FShowWarningOverridenByProject: boolean;
     PropertyGrid: TOIPropertyGrid;
     FPropertyEditorHook: TPropertyEditorHook;
     FCopiedDbgPropertiesConfigList: TDebuggerPropertiesConfigList;
@@ -96,6 +100,7 @@ type
     procedure ClearDbgProperties;
     procedure FillNameDropDown;
     procedure HookGetCheckboxForBoolean(var Value: Boolean);
+    procedure DoModifiedDbgPropertiesCountChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,8 +108,13 @@ type
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure ReadSettings(ADbgConf: TDebuggerPropertiesConfigList);
     procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(ADbgConf: TDebuggerPropertiesConfigList);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    property ModifiedDbgPropertiesConfigList: TDebuggerPropertiesConfigList read FCopiedDbgPropertiesConfigList;
+    property ShowWarningOverridenByProject: boolean read FShowWarningOverridenByProject write FShowWarningOverridenByProject;
+    property OnModifiedDbgPropertiesCountChanged: TNotifyEvent read FOnModifiedDbgPropertiesCountChanged write FOnModifiedDbgPropertiesCountChanged;
   end;
 
 implementation
@@ -245,6 +255,7 @@ begin
   cmbDebuggerType.Enabled := True;
   BtnEditClass.Visible := False;
   LblWarnClassChange.Visible := False;
+  DoModifiedDbgPropertiesCountChanged;
 end;
 
 procedure TDebuggerClassOptionsFrame.tbCopyClick(Sender: TObject);
@@ -275,6 +286,7 @@ begin
   cmbDebuggerType.Enabled := True;
   BtnEditClass.Visible := False;
   LblWarnClassChange.Visible := False;
+  DoModifiedDbgPropertiesCountChanged;
 end;
 
 procedure TDebuggerClassOptionsFrame.tbDeleteClick(Sender: TObject);
@@ -292,6 +304,7 @@ begin
   FillNameDropDown;
   UpdateDebuggerClassDropDown;
   FetchDebuggerSpecificOptions;
+  DoModifiedDbgPropertiesCountChanged;
 end;
 
 function TDebuggerClassOptionsFrame.SelectedDebuggerClass: TDebuggerClass;
@@ -541,6 +554,7 @@ procedure TDebuggerClassOptionsFrame.ClearDbgProperties;
 begin
   PropertyGrid.Selection.Clear;
   FCopiedDbgPropertiesConfigList.ClearAll;
+  DoModifiedDbgPropertiesCountChanged;
 end;
 
 procedure TDebuggerClassOptionsFrame.FillNameDropDown;
@@ -573,11 +587,24 @@ begin
   Panel1.Enabled := FSelectedDbgPropertiesConfig <> nil;
   tbCopy.Enabled := FSelectedDbgPropertiesConfig <> nil;
   tbDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
+
+  if ShowWarningOverridenByProject then
+    lblWarningProject.Visible := (
+      (Project1.DebuggerBackend <> FSelectedDbgPropertiesConfig.UID) and
+      (Project1.DebuggerBackend <> 'IDE') and
+      not( (Project1.DebuggerBackend = '') and (Project1.DebuggerPropertiesConfigList.CountWithoutDeleted > 0) )
+    );
 end;
 
 procedure TDebuggerClassOptionsFrame.HookGetCheckboxForBoolean(var Value: Boolean);
 begin
   Value := EnvironmentOptions.ObjectInspectorOptions.CheckboxForBoolean;
+end;
+
+procedure TDebuggerClassOptionsFrame.DoModifiedDbgPropertiesCountChanged;
+begin
+  if FOnModifiedDbgPropertiesCountChanged <> nil then
+    FOnModifiedDbgPropertiesCountChanged(Self);
 end;
 
 constructor TDebuggerClassOptionsFrame.Create(AOwner: TComponent);
@@ -644,6 +671,7 @@ begin
   tbCopy.Caption := lisCopy;
   tbDelete.Caption := lisDelete;
   lblName.Caption := lisDebugOptionsFrmName;
+  lblWarningProject.Caption := 'The project options have been set to use a different debugger backend';
   BtnEditClass.Caption := lisDebugOptionsFrmEditClass;
   LblWarnClassChange.Caption := lisDebugOptionsFrmEditClassWarn;
   gbDebuggerType.Caption := dlgDebugType;
@@ -652,57 +680,63 @@ begin
 end;
 
 procedure TDebuggerClassOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  ShowWarningOverridenByProject := True;
+  ReadSettings(EnvironmentOptions.DebuggerPropertiesConfigList);
+end;
+
+procedure TDebuggerClassOptionsFrame.ReadSettings(
+  ADbgConf: TDebuggerPropertiesConfigList);
 var
   i: Integer;
 begin
+  EnvironmentOptions.ObjectInspectorOptions.AssignTo(PropertyGrid);
+
   ClearDbgProperties;
-  with EnvironmentOptions do
-  begin
-    ObjectInspectorOptions.AssignTo(PropertyGrid);
+  FDebuggerFileHistory.Clear;
+  FCopiedDbgPropertiesConfigList.ClearAll;
+  for i := 0 to ADbgConf.Count - 1 do
+    FCopiedDbgPropertiesConfigList.AddObject(ADbgConf[i],
+      TDebuggerPropertiesConfig.CreateCopy(ADbgConf.Opt[i], True, True) );
+  // Find our copy of the current entry
+  if ADbgConf.CurrentDebuggerPropertiesConfig = nil then
+    FSelectedDbgPropertiesConfig := nil
+  else
+    FSelectedDbgPropertiesConfig := FCopiedDbgPropertiesConfigList.EntryByName(
+      ADbgConf.CurrentDebuggerPropertiesConfig.ConfigName, ADbgConf.CurrentDebuggerPropertiesConfig.ConfigClass);
 
-    FDebuggerFileHistory.Clear;
-    FCopiedDbgPropertiesConfigList.ClearAll;
-    for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-      FCopiedDbgPropertiesConfigList.AddObject(DebuggerPropertiesConfigList[i],
-        TDebuggerPropertiesConfig.CreateCopy(DebuggerPropertiesConfigList.Opt[i], True, True) );
-    // Find our copy of the current entry
-    if CurrentDebuggerPropertiesConfig = nil then
-      FSelectedDbgPropertiesConfig := nil
-    else
-      FSelectedDbgPropertiesConfig := FCopiedDbgPropertiesConfigList.EntryByName(
-        CurrentDebuggerPropertiesConfig.ConfigName, CurrentDebuggerPropertiesConfig.ConfigClass);
-
-    FillNameDropDown;
-    FillDebuggerClassDropDown;
-    FetchDebuggerSpecificOptions;
-  end;
+  FillNameDropDown;
+  FillDebuggerClassDropDown;
+  FetchDebuggerSpecificOptions;
+  DoModifiedDbgPropertiesCountChanged;
 end;
 
 procedure TDebuggerClassOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+begin
+  WriteSettings(EnvironmentOptions.DebuggerPropertiesConfigList);
+  EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
+end;
+
+procedure TDebuggerClassOptionsFrame.WriteSettings(
+  ADbgConf: TDebuggerPropertiesConfigList);
 var
   i: Integer;
-  EnvConf: TDebuggerPropertiesConfigList;
 begin
   UpdateDebuggerPathHistory;
-  with EnvironmentOptions do
-  begin
-    for i := 0 to FDebuggerFileHistory.Count - 1 do
-      DebuggerFileHistory[FDebuggerFileHistory[i]].Assign(TStringList(FDebuggerFileHistory.Objects[i]));
+  for i := 0 to FDebuggerFileHistory.Count - 1 do
+    EnvironmentOptions.DebuggerFileHistory[FDebuggerFileHistory[i]].Assign(TStringList(FDebuggerFileHistory.Objects[i]));
 
 //    DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
 
-    EnvConf := DebuggerPropertiesConfigList;
-    EnvConf.ClearAll;
-    for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do
-      EnvConf.AddObject(FCopiedDbgPropertiesConfigList[i],
-        TDebuggerPropertiesConfig.CreateCopy(FCopiedDbgPropertiesConfigList.Opt[i], True, True) );
-    if FSelectedDbgPropertiesConfig = nil then
-      CurrentDebuggerPropertiesConfig := nil
-    else
-      CurrentDebuggerPropertiesConfig := DebuggerPropertiesConfigList.EntryByName(
-        FSelectedDbgPropertiesConfig.ConfigName, FSelectedDbgPropertiesConfig.ConfigClass);
-    SaveDebuggerPropertiesList; // Update XML
-  end;
+  ADbgConf.ClearAll;
+  for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do
+    ADbgConf.AddObject(FCopiedDbgPropertiesConfigList[i],
+      TDebuggerPropertiesConfig.CreateCopy(FCopiedDbgPropertiesConfigList.Opt[i], True, True) );
+  if FSelectedDbgPropertiesConfig = nil then
+    ADbgConf.CurrentDebuggerPropertiesConfig := nil
+  else
+    ADbgConf.CurrentDebuggerPropertiesConfig := ADbgConf.EntryByName(
+      FSelectedDbgPropertiesConfig.ConfigName, FSelectedDbgPropertiesConfig.ConfigClass);
 end;
 
 class function TDebuggerClassOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

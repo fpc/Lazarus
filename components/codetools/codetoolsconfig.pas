@@ -56,7 +56,7 @@ type
 
   { TCodeBufXMLConfig }
 
-  TCodeBufXMLConfig = class(TXMLConfig)
+  TCodeBufXMLConfig = class(TRttiXMLConfig)
   private
     FCodeCache: TCodeCache;
   protected

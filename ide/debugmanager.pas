@@ -58,9 +58,10 @@ uses
   BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg,
   EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
-  HistoryDlg, ProcessDebugger, IdeDebuggerBase, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager;
+  HistoryDlg, ProcessDebugger, IdeDebuggerBase, IdeDebuggerOpts,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  DbgIntfPseudoTerminal, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  BaseDebugManager;
 
 
 type
@@ -2478,15 +2479,15 @@ begin
 
     // check if debugger needs an Exe and the exe is there
     if (NewDebuggerClass.NeedsExePath)
-    and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename(Project1))
+    and not FileIsExecutable(Project1.GetParsedDebuggerFilename)
     then begin
       if not PromptOnError then
         ClearPathAndExe
       else begin
-        debugln(['Info: (lazarus) [TDebugManager.GetLaunchPathAndExe] EnvironmentOptions.DebuggerFilename="',EnvironmentOptions.DebuggerFilename,'"']);
+        debugln(['Info: (lazarus) [TDebugManager.GetLaunchPathAndExe] Project1.DebuggerFilename="',Project1.DebuggerFilename,'"']);
         IDEMessageDialog(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro,
-            [EnvironmentOptions.DebuggerFilename(Project1), LineEnding, LineEnding+LineEnding]),
+            [Project1.DebuggerFilename, LineEnding, LineEnding+LineEnding]),
           mtError,[mbOK]);
         Exit;
       end;
@@ -2501,6 +2502,7 @@ var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
   NewDebuggerClass: TDebuggerClass;
+  DbgCfg: TDebuggerPropertiesConfig;
 begin
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
@@ -2535,7 +2537,7 @@ begin
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
     and (not (FDebugger.ClassType = NewDebuggerClass) // exact class match
-          or (FDebugger.ExternalDebugger <> EnvironmentOptions.GetParsedDebuggerFilename(Project1))
+          or (FDebugger.ExternalDebugger <> Project1.GetParsedDebuggerFilename)
           or (FDebugger.State in [dsError])
         )
     then begin
@@ -2546,7 +2548,7 @@ begin
 
     // create debugger object
     if FDebugger = nil
-    then SetDebugger(NewDebuggerClass.Create(EnvironmentOptions.GetParsedDebuggerFilename(Project1)));
+    then SetDebugger(NewDebuggerClass.Create(Project1.GetParsedDebuggerFilename));
 
     if FDebugger = nil
     then begin
@@ -2554,10 +2556,10 @@ begin
       Exit;
     end;
 
-    if (EnvironmentOptions.CurrentDebuggerPropertiesConfigEx(Project1) <> nil) and
-       (EnvironmentOptions.CurrentDebuggerPropertiesConfigEx(Project1).DebuggerProperties <> nil)
-    then
-      FDebugger.GetProperties.Assign(EnvironmentOptions.CurrentDebuggerPropertiesConfigEx(Project1).DebuggerProperties);
+  DbgCfg := Project1.CurrentDebuggerPropertiesConfig;
+
+    if (DbgCfg <> nil) and (DbgCfg.DebuggerProperties <> nil) then
+      FDebugger.GetProperties.Assign(DbgCfg.DebuggerProperties);
 
     ClearDebugOutputLog;
     if EnvironmentOptions.DebuggerEventLogClearOnRun then
@@ -2668,10 +2670,10 @@ function TDebugManager.DoSetBreakkPointWarnIfNoDebugger: boolean;
 var
   DbgClass: TDebuggerClass;
 begin
-  DbgClass:=EnvironmentOptions.CurrentDebuggerClass(Project1);
+  DbgClass := Project1.CurrentDebuggerClass;
   if (DbgClass=nil)
   or (DbgClass.NeedsExePath
-    and (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename(Project1))))
+    and (not FileIsExecutableCached(Project1.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
@@ -3227,7 +3229,7 @@ end;
 
 function TDebugManager.GetDebuggerClass: TDebuggerClass;
 begin
-  Result := EnvironmentOptions.CurrentDebuggerClass(Project1);
+  Result := Project1.CurrentDebuggerClass;
   if Result = nil then
     Result := TProcessDebugger;
 end;

@@ -76,21 +76,23 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 10
       Height = 15
-      Top = 10
+      Top = 31
       Width = 45
       BorderSpacing.Left = 10
       Caption = 'lblName'
+      Color = clDefault
       ParentColor = False
     end
     object edName: TEdit
       AnchorSideLeft.Control = lblName
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = lblWarningProject
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 61
       Height = 23
-      Top = 6
+      Top = 27
       Width = 448
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -108,7 +110,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 105
-      Top = 35
+      Top = 56
       Width = 519
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -196,6 +198,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'LblWarnClassChange'
+        Color = clDefault
         Font.Color = clRed
         ParentColor = False
         ParentFont = False
@@ -211,7 +214,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 55
-      Top = 146
+      Top = 167
       Width = 519
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -261,13 +264,29 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 194
-      Top = 207
+      Height = 173
+      Top = 228
       Width = 519
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'Debugger specific options (depends on type of debugger)'
       TabOrder = 3
+    end
+    object lblWarningProject: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 507
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'lblWarningProject'
+      Font.Color = clRed
+      ParentFont = False
+      Visible = False
     end
   end
   object tbDropMenu: TPopupMenu

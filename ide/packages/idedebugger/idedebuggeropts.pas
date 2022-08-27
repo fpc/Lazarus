@@ -84,6 +84,7 @@ type
     procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String; AnOldFileNamePath: String = '');
 
     procedure ClearAll;
+    function CountWithoutDeleted: Integer;
     function EntryByName(AConfName, AConfClass: String): TDebuggerPropertiesConfig;
     function EntryByUid(AnUid: String): TDebuggerPropertiesConfig;
     property Opt[Index: Integer]: TDebuggerPropertiesConfig read GetOpt;
@@ -490,28 +491,30 @@ begin
     FCurrentDebuggerPropertiesConfig := UnloadedCurrent;
 
   // Read old style, per class
-  ActiveClassName := '';
-  ActiveClassSeen := False;
-  if FCurrentDebuggerPropertiesConfig = nil then
-    ActiveClassName := AXMLCfg.GetValue(APath + 'Class', '');
-  HasActiveDebuggerEntry := HasActiveDebuggerEntry or (ActiveClassName <> '');
-  // There is only one filename for all classes
-  CurFilename:=AXMLCfg.GetValue(AnOldFileNamePath, '');
+  if (AnOldFileNamePath <> '') then begin
+    ActiveClassName := '';
+    ActiveClassSeen := False;
+    if FCurrentDebuggerPropertiesConfig = nil then
+      ActiveClassName := AXMLCfg.GetValue(APath + 'Class', '');
+    HasActiveDebuggerEntry := HasActiveDebuggerEntry or (ActiveClassName <> '');
+    // There is only one filename for all classes
+    CurFilename:=AXMLCfg.GetValue(AnOldFileNamePath, '');
 
-  for i := 0 to TBaseDebugManagerIntf.DebuggerCount  -1 do begin
-    DbgClassType := TBaseDebugManagerIntf.Debuggers[i];
-    ActiveClassSeen := ActiveClassSeen or (CompareText(DbgClassType.ClassName, ActiveClassName)=0);
-    Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF_OLD,
-      DbgClassType, CompareText(DbgClassType.ClassName, ActiveClassName)=0);
-    if not Entry.IsLoaded then begin
-      Entry.Free;
-      Continue;
+    for i := 0 to TBaseDebugManagerIntf.DebuggerCount  -1 do begin
+      DbgClassType := TBaseDebugManagerIntf.Debuggers[i];
+      ActiveClassSeen := ActiveClassSeen or (CompareText(DbgClassType.ClassName, ActiveClassName)=0);
+      Entry := TDebuggerPropertiesConfig.CreateFromOldXmlConf(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF_OLD,
+        DbgClassType, CompareText(DbgClassType.ClassName, ActiveClassName)=0);
+      if not Entry.IsLoaded then begin
+        Entry.Free;
+        Continue;
+      end;
+      if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
+        Entry.DebuggerFilename := CurFilename;
+      AddObject(Entry.ConfigName, Entry);
+      if (Entry.ConfigClass = ActiveClassName) and (FCurrentDebuggerPropertiesConfig = nil) then
+        FCurrentDebuggerPropertiesConfig := Entry;
     end;
-    if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
-      Entry.DebuggerFilename := CurFilename;
-    AddObject(Entry.ConfigName, Entry);
-    if (Entry.ConfigClass = ActiveClassName) and (FCurrentDebuggerPropertiesConfig = nil) then
-      FCurrentDebuggerPropertiesConfig := Entry;
   end;
 end;
 
@@ -563,7 +566,7 @@ begin
     else begin
       Entry.SaveToOldXml(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF_OLD);
       // For compatibility
-      if Entry.Active then
+      if Entry.Active and (AnOldFileNamePath <> '') then
         AXMLCfg.SetDeleteValue(AnOldFileNamePath, Entry.DebuggerFilename,'');
     end;
   end;
@@ -582,6 +585,16 @@ begin
   for i := 0 to Count - 1 do
     Objects[i].Free;
   Clear;
+end;
+
+function TDebuggerPropertiesConfigList.CountWithoutDeleted: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do
+    if not Opt[i].IsDeleted then
+      inc(Result);
 end;
 
 function TDebuggerPropertiesConfigList.EntryByName(AConfName, AConfClass: String

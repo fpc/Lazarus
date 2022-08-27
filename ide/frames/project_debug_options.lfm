@@ -8,32 +8,82 @@ object ProjectDebugOptionsFrame: TProjectDebugOptionsFrame
   TabOrder = 0
   DesignLeft = 617
   DesignTop = 390
-  object lbProjectDebugger: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbProjectDebugger
-    AnchorSideTop.Side = asrCenter
+  object Panel1: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 320
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 56
+    ClientWidth = 320
+    TabOrder = 0
+    object lbProjectDebugger: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = cbProjectDebugger
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 10
+      Width = 99
+      BorderSpacing.Around = 6
+      Caption = 'lbProjectDebugger'
+      Color = clDefault
+      ParentColor = False
+    end
+    object cbProjectDebugger: TComboBox
+      AnchorSideLeft.Control = lbProjectDebugger
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 23
+      Top = 6
+      Width = 203
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 15
+      OnChange = cbProjectDebuggerChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object chkStoreInSession: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = lbProjectDebugger
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 113
+      BorderSpacing.Around = 6
+      Caption = 'chkStoreInSession'
+      TabOrder = 1
+    end
+  end
+  object DividerBevel1: TDividerBevel
+    Left = 3
+    Height = 15
+    Top = 59
+    Width = 314
+    Align = alTop
+    BorderSpacing.Around = 3
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblResolvedDebuggerHint: TLabel
     Left = 6
     Height = 15
-    Top = 10
-    Width = 99
-    BorderSpacing.Around = 6
-    Caption = 'lbProjectDebugger'
-    ParentColor = False
-  end
-  object cbProjectDebugger: TComboBox
-    AnchorSideLeft.Control = lbProjectDebugger
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 111
-    Height = 23
-    Top = 6
-    Width = 203
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
-    ItemHeight = 15
-    Style = csDropDownList
-    TabOrder = 0
+    Top = 77
+    Width = 308
+    Align = alTop
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'ResolvedDebuggerHint'
+    Font.Color = clRed
+    ParentFont = False
+    Visible = False
   end
 end
