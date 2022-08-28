@@ -49,10 +49,12 @@ type
   private
     FLock: TLazMonitor;
     FChanged: Boolean;
+    FOnChanged: TNotifyEvent;
     function Count: Integer;
     function Get(Index: Integer): TLazDbgValueConvertSelectorIntf;
     function GetIdeItems(Index: Integer): TIdeDbgValueConvertSelector;
     procedure PutIdeItems(Index: Integer; AValue: TIdeDbgValueConvertSelector);
+    procedure SetChanged(AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -61,7 +63,7 @@ type
     procedure Lock;
     procedure Unlock;
 
-    procedure AssignEnabledTo(ADest: TIdeDbgValueConvertSelectorList);
+    procedure AssignEnabledTo(ADest: TIdeDbgValueConvertSelectorList; AnAppend: Boolean = False);
 
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
@@ -69,7 +71,8 @@ type
     function IdeItemByName(AName: String): TIdeDbgValueConvertSelector;
 
     property IdeItems[Index: Integer]: TIdeDbgValueConvertSelector read GetIdeItems write PutIdeItems; default;
-    property Changed: Boolean read FChanged write FChanged;
+    property Changed: Boolean read FChanged write SetChanged;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
 var
@@ -183,6 +186,14 @@ begin
   Items[Index] := AValue;
 end;
 
+procedure TIdeDbgValueConvertSelectorList.SetChanged(AValue: Boolean);
+begin
+  if FChanged = AValue then Exit;
+  FChanged := AValue;
+  if FChanged and (FOnChanged <> nil) then
+    FOnChanged(Self);
+end;
+
 constructor TIdeDbgValueConvertSelectorList.Create;
 begin
   inherited Create(True);
@@ -217,11 +228,13 @@ begin
 end;
 
 procedure TIdeDbgValueConvertSelectorList.AssignEnabledTo(
-  ADest: TIdeDbgValueConvertSelectorList);
+  ADest: TIdeDbgValueConvertSelectorList; AnAppend: Boolean);
 var
   i: Integer;
 begin
-  ADest.Clear;
+  if not AnAppend then
+    ADest.Clear;
+
   for i := 0 to Count - 1 do
     if IdeItems[i].Enabled then
       ADest.Add(Items[i].CreateCopy);

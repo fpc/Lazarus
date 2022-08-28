@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Forms, Controls, IDEOptEditorIntf, IDEOptionsIntf,
-  IdeDebuggerStringConstants,
+  DbgIntfDebuggerBase, IdeDebuggerStringConstants,
   IdeDbgValueConverterSettingsFrame, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv;
 
@@ -25,7 +25,6 @@ type
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-
   end;
 
   procedure Register;
@@ -76,12 +75,8 @@ begin
     DebuggerOptions.BackendConverterConfig.Assign(FValConvList);
     DebuggerOptions.BackendConverterConfig.Changed := True;
 
-    ValueConverterSelectorList.Lock;
-    try
-      DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
-    finally
-      ValueConverterSelectorList.Unlock;
-    end;
+    if DebugBossManager <> nil then
+      DebugBossManager.DoBackendConverterChanged;
   end;
 end;
 

@@ -121,22 +121,22 @@ begin
   pnlCurrentConv.Enabled := lstConverters.Count > 0;
 
   FCurIdx := lstConverters.ItemIndex;
-  if FCurIdx >= FValConvList.Count then begin
+  if (FCurIdx >= FValConvList.Count) or (FCurIdx < 0) then begin
     FCurIdx := -1;
     FCurConvConf := nil;
     lblDesc.Caption := '';
     EdName.Text := '';
     memoTypeNames.Text := '';
   end
-  else
+  else begin
     SetCurConv(FValConvList[FCurIdx]);
+    lblDesc.Caption := FCurConvConf.Converter.GetRegistryEntry.GetName;
+    EdName.Text := FCurConvConf.Name;
+    memoTypeNames.Text := FCurConvConf.MatchTypeNames.Text;
 
-  lblDesc.Caption := FCurConvConf.Converter.GetRegistryEntry.GetName;
-  EdName.Text := FCurConvConf.Name;
-  memoTypeNames.Text := FCurConvConf.MatchTypeNames.Text;
-
-  AvailClass := ValueConverterRegistry;
-  dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.GetObject.ClassType);
+    AvailClass := ValueConverterRegistry;
+    dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.GetObject.ClassType);
+  end;
 
   lstConvertersItemClick(nil, FCurIdx);
 end;
@@ -270,7 +270,7 @@ begin
   lblAction.Caption    := dlgBackConvOptAction;
 
   FCurConvConf := nil;
-  lblDesc.Caption := '-';
+  lblDesc.Caption := '';
 
   dropAction.Clear;
   AvailClass := ValueConverterRegistry;

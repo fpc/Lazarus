@@ -71,8 +71,8 @@
         <UnitName Value="IdeDebuggerStringConstants"/>
       </Item>
       <Item>
-        <Filename Value="idedebuggerfpdbgvalueconv.pas"/>
-        <UnitName Value="IdeDebuggerFpDbgValueConv"/>
+        <Filename Value="idedebuggerbackendvalueconv.pas"/>
+        <UnitName Value="IdeDebuggerBackendValueConv"/>
       </Item>
       <Item>
         <Filename Value="idedbgvalueconvertersettingsframe.pas"/>

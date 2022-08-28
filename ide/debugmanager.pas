@@ -59,9 +59,9 @@ uses
   EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
   HistoryDlg, ProcessDebugger, IdeDebuggerBase, IdeDebuggerOpts,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  DbgIntfPseudoTerminal, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  BaseDebugManager;
+  IdeDebuggerBackendValueConv, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, DbgIntfPseudoTerminal, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, BaseDebugManager;
 
 
 type
@@ -216,6 +216,7 @@ type
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
     procedure ClearDebugOutputLog;
     procedure ClearDebugEventsLog;
+    procedure DoBackendConverterChanged; override;
 
     function RequiredCompilerOpts(ATargetCPU, ATargetOS: String
       ): TDebugCompilerRequirements; override;
@@ -2369,6 +2370,22 @@ end;
 procedure TDebugManager.ClearDebugEventsLog;
 begin
   FEventLogManager.ClearDebugEventsLog;
+end;
+
+procedure TDebugManager.DoBackendConverterChanged;
+begin
+  ValueConverterSelectorList.Lock;
+
+  try
+    ValueConverterSelectorList.Clear;
+    if (Project1 <> nil) and (Project1.UseBackendConverterFromProject) then
+      Project1.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
+    if (Project1 = nil) or (Project1.UseBackendConverterFromIDE) then
+      DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
+
+  finally
+    ValueConverterSelectorList.Unlock;
+  end;
 end;
 
 function TDebugManager.RequiredCompilerOpts(ATargetCPU, ATargetOS: String

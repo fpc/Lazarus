@@ -1859,6 +1859,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure DoBackendConverterChanged; virtual; abstract;
   end;
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
