@@ -1,0 +1,122 @@
+object IdeProjectValConvOptionsFrame: TIdeProjectValConvOptionsFrame
+  Left = 0
+  Height = 371
+  Top = 0
+  Width = 510
+  ClientHeight = 371
+  ClientWidth = 510
+  TabOrder = 0
+  DesignLeft = 471
+  DesignTop = 200
+  inline DbgValConvFrame1: TIdeDbgValConvFrame
+    Height = 300
+    Top = 71
+    Width = 510
+    Align = alClient
+    ClientHeight = 300
+    ClientWidth = 510
+    inherited Panel1: TPanel
+      Width = 510
+      ClientWidth = 510
+      inherited lstConverters: TCheckListBox
+        Width = 330
+      end
+      inherited Panel2: TPanel
+        Left = 340
+      end
+    end
+    inherited pnlCurrentConv: TPanel
+      Height = 143
+      Width = 510
+      ClientHeight = 143
+      ClientWidth = 510
+      inherited Panel4: TPanel
+        Left = 340
+        Height = 123
+        ClientHeight = 123
+      end
+      inherited lblDesc: TLabel
+        Width = 500
+      end
+      inherited Panel5: TPanel
+        Height = 123
+        Width = 340
+        ClientHeight = 123
+        ClientWidth = 340
+        inherited lblName: TLabel
+          Width = 330
+        end
+        inherited EdName: TEdit
+          Width = 330
+        end
+        inherited lblTypeNames: TLabel
+          Width = 330
+        end
+        inherited memoTypeNames: TMemo
+          Height = 45
+          Width = 330
+        end
+      end
+    end
+    inherited Splitter1: TSplitter
+      Width = 510
+    end
+    inherited pnlCurConvSetting: TPanel
+      Top = 300
+      Width = 510
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 510
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 56
+    ClientWidth = 510
+    TabOrder = 1
+    object chkUseProjList: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 249
+      Caption = 'chkUseProjList'
+      TabOrder = 0
+    end
+    object chkUseGlobalList: TCheckBox
+      Left = 261
+      Height = 19
+      Top = 6
+      Width = 243
+      Caption = 'chkUseGlobalList'
+      TabOrder = 1
+    end
+    object chkStoreInSession: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 249
+      Caption = 'chkStoreInSession'
+      TabOrder = 2
+    end
+  end
+  object DividerBevel1: TDividerBevel
+    Left = 0
+    Height = 15
+    Top = 56
+    Width = 510
+    Align = alTop
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+end
