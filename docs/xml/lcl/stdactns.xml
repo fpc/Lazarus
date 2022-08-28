@@ -8,7 +8,7 @@ StdActns
 -->
 <module name="StdActns">
 <short>
-Defines standard actions to be used in Action Lists in the LCL.
+Defines standard actions used in Action Lists in the LCL.
 </short>
 <descr>
 <p>
@@ -651,7 +651,7 @@ The base class for standard help actions.
 <p>
 <var>THelpAction</var> is a <var>TAction</var> descendant which implements 
 the base class for help actions. It is used as the ancestor for classes 
-including: THelpContents, THelpTopicSearch, THelpOnHelp , and 
+including: THelpContents, THelpTopicSearch, THelpOnHelp, and 
 THelpContextAction.
 </p>
 </descr>
@@ -679,65 +679,25 @@ Calls the inherited constructor.
 <short>Owner of the class instance.</short>
 </element>
 
-<element name="THelpAction.HandlesTarget">
-<short>
-Determines whether the help action can be applied to the Target control.
-</short>
-<descr>
-<p>
-Calls the inherited method.
-</p>
-</descr>
-<seealso>
-<link id="#rtl.classes.TBasicAction.HandlesTarget">TBasicAction.HandlesTarget</link>
-</seealso>
-</element>
-<element name="THelpAction.HandlesTarget.Result">
-<short><b>True</b> if the action can be applied to the target control.</short>
-</element>
-<element name="THelpAction.HandlesTarget.Target">
-<short>Object instance with the control examined in the method.</short>
-</element>
+<element name="THelpAction.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget"/>
+<element name="THelpAction.HandlesTarget.Result"/>
+<element name="THelpAction.HandlesTarget.Target"/>
 
-<element name="THelpAction.UpdateTarget">
-<short>
-Updates the enabled state for the action using values in the target control.
-</short>
-<descr>
-<p>
-Calls the inherited method.
-</p>
-</descr>
-<seealso>
-<link id="#rtl.classes.TBasicAction.UpdateTarget">TBasicAction.UpdateTarget</link>
-</seealso>
-</element>
-<element name="THelpAction.UpdateTarget.Target">
-<short>Object instance with values examined in the method.</short>
-</element>
+<element name="THelpAction.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget"/>
+<element name="THelpAction.UpdateTarget.Target"/>
 
 <element name="THelpContents">
 <short>
 Help action used to display a Table of Contents for the HelpContext.
 </short>
 <descr/>
-<seealso/>
-</element>
-
-<element name="THelpContents.ExecuteTarget">
-<short>Executes the help action for the HelpContext.</short>
-<descr>
-<p>
-Calls the inherited method.
-</p>
-</descr>
 <seealso>
-<link id="#rtl.classes.TBasicAction.UpdateTarget">TBasicAction.ExecuteTarget</link>
+<link id="THelpAction"/>
 </seealso>
 </element>
-<element name="THelpContents.ExecuteTarget.Target">
-<short>Object instance with the context for the help action.</short>
-</element>
+
+<element name="THelpContents.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget"/>
+<element name="THelpContents.ExecuteTarget.Target"/>
 
 <element name="THelpTopicSearch">
 <short>
@@ -745,7 +705,9 @@ Help action used to search for a help topic.
 </short>
 <descr>
 </descr>
-<seealso/>
+<seealso>
+<link id="THelpAction"/>
+</seealso>
 </element>
 
 <element name="THelpTopicSearch.ExecuteTarget">
@@ -762,43 +724,29 @@ Help action used to search for a help topic.
 Help action used to display the Help on Help topic, or "How to Get Help".
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="THelpAction"/>
+</seealso>
 </element>
 
-<element name="THelpOnHelp.ExecuteTarget">
-<short>Executes the help action.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="THelpOnHelp.ExecuteTarget.Target">
-<short/>
-</element>
+<element name="THelpOnHelp.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget"/>
+<element name="THelpOnHelp.ExecuteTarget.Target"/>
 
 <element name="THelpContextAction">
 <short>
 Help action used to get help for a specific help context.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="THelpAction"/>
+</seealso>
 </element>
 
-<element name="THelpContextAction.ExecuteTarget">
-<short>Executes the help action.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="THelpContextAction.ExecuteTarget.Target">
-<short/>
-</element>
+<element name="THelpContextAction.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget"/>
+<element name="THelpContextAction.ExecuteTarget.Target"/>
 
-<element name="THelpContextAction.UpdateTarget">
-<short>Updates the enabled state for the help action.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="THelpContextAction.UpdateTarget.Target">
-<short/>
-</element>
+<element name="THelpContextAction.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget"/>
+<element name="THelpContextAction.UpdateTarget.Target"/>
 
 <element name="TCommonDialogClass">
 <short>
@@ -811,15 +759,39 @@ TCommonDialogAction. TCommonDialogClass is the type returned from the
 GetDialogClass method in TCommonDialogAction.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCommonDialogAction.GetDialogClass"/>
+</seealso>
 </element>
 
 <element name="TCommonDialogAction">
 <short>
-Dialog action used to create, configure, and display a dialog.
+Dialog action used to create, configure, display, and execute a dialog form.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TCommonDialogAction</var> is the base class for standard actions which 
+display a dialog form, such as: TFileAction, TSearchAction, TFontEdit, 
+TColorSelect.
+</p>
+<p>
+TCommonDialogAction introduces methods used to get the class type for an 
+associated dialog form, and to create the form instance displayed when the 
+action is executed. It includes overridden methods to enable or execute the 
+action for a target control. Event handlers are included which are signalled 
+when the action is updated or executed, and to respond to accept and cancel 
+buttons on its dialog form.
+</p>
+<p>
+Do not create instances of TCommonDialogAction; use one of its descendent 
+classes which provides the correct dialog form for the action.
+</p>
+</descr>
 <seealso>
+<link id="TFileAction"/>
+<link id="TSearchAction"/>
+<link id="TFontEdit"/>
+<link id="TColorSelect"/>
 <link id="#lcl.actnlist.TCustomAction">TCustomAction</link>
 </seealso>
 </element>
@@ -846,42 +818,52 @@ with this action.
 </element>
 
 <element name="TCommonDialogAction.DoBeforeExecute">
-<short>Performs the BeforeExecute notification when assigned.</short>
+<short>Performs the BeforeExecute notification event when assigned.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCommonDialogAction.BeforeExecute"/>
+</seealso>
 </element>
 
 <element name="TCommonDialogAction.DoCancel">
 <short>
-<var>DoCancel</var> - perform the code for the
-<var>OnCancel</var> event.
+Signals the OnCancel event handler (when assigned).
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCommonDialogAction.OnCancel"/>
+</seealso>
 </element>
 
 <element name="TCommonDialogAction.GetDialogClass">
 <short>
-<var>GetDialogClass</var> - returns the class type for the dialog
-associated with this action.
+Returns the class type for the dialog associated with this action.
 </short>
-<descr/>
+<descr>
+<p>
+<var>GetDialogClass</var> always returns <b>Nil</b> in 
+<var>TCommonDialogAction</var>. It must be overridden in a descendent class 
+to return the class type which is valid for the dialog action subclass.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCommonDialogAction.GetDialogClass.Result">
-<short/>
+<short>
+Class type for the dialog associated with the dialog action.
+</short>
 </element>
 
 <element name="TCommonDialogAction.CreateDialog">
 <short>
-Create a new instance of the class type used in the Dialog property.
+Create a new instance of the class type needed for the dialog in the action.
 </short>
 <descr>
 <p>
 Calls GetDialogClass to get the class reference used to create the dialog 
-instance. When assigned, it is created and stored in the Dialog property. It 
-Name is set to the ClassName for the class reference, and it is marked as a 
-sub-component for the class instance.
+instance. When assigned, it is created and stored in the Dialog member for 
+the class instance. The Name is set to the ClassName for the class reference, 
+and it is marked as a sub-component for the class instance.
 </p>
 </descr>
 <seealso/>
@@ -909,24 +891,59 @@ implementation. It sets the value in <var>Enabled</var> to <b>True</b>.
 </element>
 
 <element name="TCommonDialogAction.HandlesTarget">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Indicates whether the action is supported for the specified target.
+</short>
+<descr>
+<p>
+Since a class type is not available from GetDialogClass, the return value is 
+always <b>False</b> in TCommonDialogAction. In a descendent class, the return 
+value is <b>True</b> if the internal TCommonDialog instance for the action 
+has been assigned.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TBasicAction.HandlesTarget">TBasicAction.HandlesTarget</link>
+</seealso>
 </element>
 <element name="TCommonDialogAction.Handlestarget.Result">
-<short/>
+<short>
+<b>False</b> if a dialog instance has not been assigned for the action.
+</short>
 </element>
 <element name="TCommonDialogAction.Handlestarget.Target">
-<short/>
+<short>
+Not used in TCommonDialogAction. A descendent class must implement GetDialogClass to determine the target.
+</short>
 </element>
 
 <element name="TCommonDialogAction.ExecuteTarget">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Executes the action on the target control.
+</short>
+<descr>
+<p>
+<var>ExecuteTarget</var> is an overridden method in 
+<var>TCommonDialogAction</var>. It implements the empty method introduced in 
+the ancestor class.
+</p>
+<p>
+ExecuteTarget signals the BeforeExecute event handler (when assigned), and 
+captures the result from the Execute method in the TCommonDialog instance for 
+the action. If the result is True, the DoAccept method is called to signal 
+the OnAccept event handler. Otherwise, the DoCancel method is called to 
+signal the OnCancel event handler.
+</p>
+</descr>
+<seealso>
+<link id="TCommonDialogAction.DoBeforeExecute"/>
+<link id="#rtl.classes.TBasicAction.ExecuteTarget">TBasicAction.ExecuteTarget</link>
+</seealso>
 </element>
 <element name="TCommonDialogAction.ExecuteTarget.Target">
-<short/>
+<short>
+Not used in TCommonDialogAction.
+</short>
 </element>
 
 <element name="TCommonDialogAction.ExecuteResult">
@@ -963,11 +980,7 @@ the action.
 <seealso/>
 </element>
 
-<element name="TCommonDialogAction.OnUpdate">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TCommonDialogAction.OnUpdate" link="#rtl.classes.TBasicAction.OnUpdate"/>
 
 <element name="TFileAction">
 <short>
@@ -1195,14 +1208,8 @@ saving the file.
 <short>Value for the Dialog property.</short>
 </element>
 
-<element name="TFileSaveAs.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TFileSaveAs.GetDialogClass.Result">
-<short/>
-</element>
+<element name="TFileSaveAs.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass"/>
+<element name="TFileSaveAs.GetDialogClass.Result"/>
 
 <element name="TFileSaveAs.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
 
@@ -1235,25 +1242,38 @@ application) associated with the <var>File Exit</var> menu option.
 </seealso>
 </element>
 
-<element name="TFileExit.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TFileExit.HandlesTarget.Result">
-<short/>
-</element>
-<element name="TFileExit.HandlesTarget.Target">
-<short/>
-</element>
+<element name="TFileExit.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget"/>
+<element name="TFileExit.HandlesTarget.Result"/>
+<element name="TFileExit.HandlesTarget.Target"/>
 
 <element name="TFileExit.ExecuteTarget">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Executes the action for the target control.
+</short>
+<descr>
+<p>
+<var>ExecuteTarget</var> is an overridden method in <var>TFileExit</var>. It 
+implements the empty method introduced in the ancestor class to perform the 
+steps needed for the file action.
+</p>
+<p>
+In TFileExit, ExecuteTarget causes the current application to be halted. If 
+the Application singleton has been assigned, the MainForm in the application 
+is closed to stop execution. If MainForm has not been assigned, the Terminate 
+method in Application is called to stop execution. If Application has not been
+assigned, the Halt routine is called to stop the program.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.forms.TApplication">TApplication</link>
+<link id="#lcl.forms.Application">Application</link>
+<link id="#rtl.classes.TBasicAction.ExecuteTarget">TBasicAction.ExecuteTarget</link>
+</seealso>
 </element>
 <element name="TFileExit.ExecuteTarget.Target">
-<short/>
+<short>
+Not used in TFileExit.
+</short>
 </element>
 
 <element name="TFileExit.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
@@ -1383,27 +1403,80 @@ calls the inherited destructor.
 <element name="TSearchAction.HandlesTarget.Target"/>
 
 <element name="TSearchAction.Search">
-<short>Performs the <var>Search</var> action.</short>
-<descr/>
-<seealso/>
+<short>
+Performs the Search action in the text for the associated control.
+</short>
+<descr>
+<p>
+Calls the PerformSearch method to locate the value in FindText in the text 
+for the associated control. Options in the Find Dialog control use of case 
+sensitivity in the search, as well as the search direction.
+</p>
+</descr>
+<seealso>
+<link id="TSearchAction.PerformSearch"/>
+<link id="#lcl.dialogs.TFindDialog.FindText">TFindDialog.FindText</link>  
+<link id="#lcl.dialogs.TFindDialog.Options">TFindDialog.Options</link>  
+</seealso>
 </element>
 <element name="TSearchAction.Search.Sender">
-<short/>
+<short>
+Not used in the method.
+</short>
 </element>
 
 <element name="TSearchAction.UpdateTarget">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Updates the Enabled property for the action based on values in the Target 
+control.
+</short>
+<descr>
+<p>
+<var>UpdateTarget</var> is an overridden method in <var>TSearchAction</var>. 
+It implements the empty method introduced in the ancestor class.
+</p>
+<p>
+In TSearchAction, UpdateTarget sets the value for the Enabled property in the 
+action. Enabled is set to <b>True</b> when Target has a Text property that is 
+not an empty string (''). It, in turn, determines the Enabled state for any 
+client controls linked to the action. It also determines the return value 
+from the Execute method; when Enabled is <b>False</b>, the return value from 
+Execute is also <b>False</b>.
+</p>
+</descr>
+<seealso>
+<link id="TSearchAction.ExecuteTarget"/>
+<link id="TSearchAction.UpdateControl"/>
+<link id="#lcl.actnlist.TCustomAction.Enabled">TCustomAction.Enabled</link>
+<link id="#rtl.classes.TBasicAction.UpdateTarget">TBasicAction.UpdateTarget</link>
+</seealso>
 </element>
-<element name="TSearchAction.UpdateTarget.Target"/>
+<element name="TSearchAction.UpdateTarget.Target">
+<short>
+Object instance that is the target control for the action.
+</short>
+</element>
 
 <element name="TSearchAction.ExecuteTarget">
-<short/>
-<descr/>
+<short>
+Executes the action for the specified Target control.
+</short>
+<descr>
+<p>
+<var>ExecuteTarget</var> is an overridden method in <var>TSearchAction</var>. 
+It calls the UpdateControl method to assign the value in Target as the 
+associated control for the action. It calls the inherited method to execute 
+the action for Target, capture the return value, and signal the OnAccept or 
+OnCancel event handler for the button clicked on the search dialog.
+</p>
+</descr>
 <seealso/>
 </element>
-<element name="TSearchAction.ExecuteTarget.Target"/>
+<element name="TSearchAction.ExecuteTarget.Target">
+<short>
+Control that is the target for the action.
+</short>
+</element>
 
 <element name="TSearchFind">
 <short>
@@ -1472,11 +1545,7 @@ and Replace</var> menu option and dialogs.
 <element name="TSearchReplace.GetReplaceDialog"/>
 <element name="TSearchReplace.GetReplaceDialog.Result"/>
 
-<element name="TSearchReplace.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TSearchReplace.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass"/>
 <element name="TSearchReplace.CreateDialog" link="#lcl.stdactns.TCommonDialogAction.CreateDialog"/>
 
 <element name="TSearchReplace.Replace">
@@ -1544,26 +1613,52 @@ the specified text has been found.
 </element>
 
 <element name="TSearchFindNext.HandlesTarget">
-<short/>
-<descr/>
+<short>
+Indicates whether the action can be applied to the specified target control.
+</short>
+<descr>
+<p>
+<var>HandlesTarget</var> is an overridden method in 
+<var>TSearchFindNext</var>. It re-implements the method introduced in the 
+ancestor class.
+</p>
+<p>
+The return value is <b>True</b> if the action can be applied to the control 
+specified in Target. In TSearchFindNext, the return value is <b>True</b> if 
+Target is a TCustomEdit descendant.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TSearchFindNext.HandlesTarget.Result"/>
 <element name="TSearchFindNext.HandlesTarget.Target"/>
 
 <element name="TSearchFindNext.UpdateTarget">
-<short/>
+<short>
+Updates the Enabled state for the action based on values in SearchFind and 
+Target.
+</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TSearchFindNext.UpdateTarget.Target"/>
+<element name="TSearchFindNext.UpdateTarget.Target">
+<short>
+Target control for the action.
+</short>
+</element>
 
 <element name="TSearchFindNext.ExecuteTarget">
-<short/>
+<short>
+Executes the action for the specified Target control.
+</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TSearchFindNext.ExecuteTarget.Target"/>
+<element name="TSearchFindNext.ExecuteTarget.Target">
+<short>
+Target control for the action.
+</short>
+</element>
 
 <element name="TSearchFindNext.Notification">
 <short>
@@ -1619,15 +1714,8 @@ added or removed.
 <short>Value for the property.</short>
 </element>
 
-<element name="TFontEdit.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TFontEdit.GetDialogClass.Result">
-<short/>
-</element>
-
+<element name="TFontEdit.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass"/>
+<element name="TFontEdit.GetDialogClass.Result"/>
 <element name="TFontEdit.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
 
 <element name="TFontEdit.Dialog">
@@ -1662,29 +1750,54 @@ Selection</var> dialog.
 </element>
 
 <element name="TColorSelect.GetDialog">
-<short/>
+<short>
+Gets the value for the Dialog property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TColorSelect.Dialog"/>
+</seealso>
 </element>
 <element name="TColorSelect.GetDialog.Result">
-<short/>
+<short>
+Value for the Dialog property.
+</short>
 </element>
 
-<element name="TColorSelect.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
-<short/>
-<descr/>
-<seealso/>
+<element name="TColorSelect.GetDialogClass">
+<short>
+Gets the class type used to create the Dialog instance for the action.
+</short>
+<descr>
+<p>
+<var>GetDialogClass</var> is called from the CreateDialog method when the 
+action class instance is created.
+</p>
+</descr>
+<seealso>
+<link id="TColorSelect.Dialog"/>
+<link id="TCommonDialogAction.GetDialogClass"/>
+<link id="TCommonDialogAction.CreateDialog"/>
+<link id="TCommonDialogAction.Create"/>
+</seealso>
 </element>
 <element name="TColorSelect.GetDialogClass.Result">
-<short/>
+<short>
+Returns the TColorDialog type.
+</short>
 </element>
 
 <element name="TColorSelect.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
 
 <element name="TColorSelect.Dialog">
-<short>The Color<var>Dialog</var> to use with this action.</short>
+<short>The color selection dialog for the action.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCommonDialogAction.CreateDialog"/>
+<link id="TCommonDialogAction.GetDialogClass"/>
+<link id="TCommonDialogClass"/>
+<link id="#lcl.dialogs.TColorDialog">TColorDialog</link>
+</seealso>
 </element>
 
 <element name="TColorSelect.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
