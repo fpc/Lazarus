@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+  <package name="LazDebuggerIntf">
+    <module name="LazDebuggerValueConverter">
+      <short>Interface for "Value-Converter". Process watches data in the debugger backend</short>
+      <descr>A "Value-Converter" can transform the value of a watch. They are implemented in the debugger-backend (if supported by the backend). This allows them to access internal data of the backend.
+
+The backend can decide in its implementation, at which time to run a convertor. The convertor is free to perform any action, and can generate a new watch-result for the IDE's debugger frontend.
+
+"Value-Converter" can be configured to be selected based on the typename for the watch-data.
+
+They can also be directly assosiated with a given watch. See TWatchValueIntf.GetFpDbgConverter
+</descr>
+      <element name="ValueConverterRegistry">
+        <short>List of all available "Value-Converter"</short>
+        <descr>Using the TLazDbgValueConvertRegistryEntry interface packages can add their "classes" of "Value-Converter"
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistry">
+        <short>List of TLazDbgValueConvertRegistryEntry. Available classes of "Value-Converter"</short>
+        <descr>Use Add/Remove from TFPGList to add/remove TLazDbgValueConvertRegistryEntry</descr>
+        <seealso>
+          <link id="TLazDbgValueConvertRegistryEntry">TLazDbgValueConvertRegistryEntry</link>
+        </seealso>
+      </element>
+      <element name="TLazDbgValueConvertRegistry.FindByConvertorClassName">
+        <short>Find entry by "GetConvertorClass"</short>
+        <descr>For use by the IDE.
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistry.IndexOfConvertorClass">
+        <short>Find entry by GetConvertorClass.ClassName</short>
+        <descr>For use by the IDE
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistryEntry">
+        <short>Describes an available "Value-Converter"</short>
+        <descr>To register a "Value-Converter" with the IDE an inherited class of this should be declared, overriding all methods.
+
+The new class is then registered like this
+
+<p>
+            <code>type
+  TMyValConv = class(TObject, TLazDbgValueConverterIntf)
+    //...
+  end;
+
+  TMyValConvEntry = class(TLazDbgValueConvertRegistryEntry)
+    class function CreateValueConvertorIntf: TLazDbgValueConverterIntf; virtual; override;
+      // return an instance off TMyValConv
+
+    class function GetName: String; virtual; override;
+      // return a display name for the IDE
+
+    class function GetConvertorClass: TClass; virtual; override;
+      // return the class TMyValConv
+
+    class function GetDebuggerClass: TClass; virtual; override;
+      // return the class of the debugger (inherits from TDebuggerIntf)
+  end;
+
+begin
+  TheValueConverterRegistry.Add(TMyValConvEntry)</code>
+          </p>
+        </descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistryEntry.CreateValueConvertorIntf">
+        <short>Creates a new instance of a "Value-Converter"</short>
+        <descr>Creates an new instance of a "Value-Converter" and returns an interface to it.
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistryEntry.GetName">
+        <short>Display-Name of the converter class</short>
+        <descr>Shown in the IDE in the list of "Value-Converter" that can be created.
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistryEntry.GetConvertorClass">
+        <short>Returns the class of the "Value-Converter"</short>
+        <descr>The classname is used to store a value in the IDE's xml config. It must be unique accross all converters and all debugger backends
+</descr>
+      </element>
+      <element name="TLazDbgValueConvertRegistryEntry.GetDebuggerClass">
+        <short>The (base-) class of the Debugger backend for wich the the "Value-Converter" is implemented</short>
+        <descr>The IDE can use this to display the backend name.
+</descr>
+      </element>
+      <element name="TLazDbgValueConverterIntf">
+        <short>Interface to the instance of a "Value-Converter"</short>
+        <descr>A configured "Value-Converter". 
+
+The IDE will assign this to a TLazDbgValueConvertSelectorIntf, which it will add to a TLazDbgValueConvertSelectorListIntf list.
+
+The backend can match a watch value against the TLazDbgValueConvertSelectorIntf. In case of a match, the backend will call GetObject to get the backend specific object. Invocation of the converter is not part of this interface. Each backend can implement its own means.</descr>
+      </element>
+      <element name="TLazDbgValueConverterIntf.AddReference">
+        <short>Increase reference count</short>
+      </element>
+      <element name="TLazDbgValueConverterIntf.ReleaseReference">
+        <short>Decrease reference count</short>
+        <descr>The underlaying object will be freed, if the reference count goes to zero.
+</descr>
+      </element>
+      <element name="TLazDbgValueConverterIntf.CreateCopy">
+        <short>Create a copy of the instance</short>
+      </element>
+      <element name="TLazDbgValueConverterIntf.GetObject">
+        <short>Get the object instance</short>
+        <descr>The backend can use this to get the real object instance.
+
+The class structure for "Value-Converter" object is determined by each debugger backend. It is up to each backend how to invoke it.
+</descr>
+      </element>
+      <element name="TLazDbgValueConverterIntf.GetRegistryEntry">
+        <short>Returns the info for the "Value-Converter"</short>
+      </element>
+      <element name="TLazDbgValueConverterIntf.GetSettingsFrame">
+        <short>Returns an interface to configure the "Value-Converter" in the IDE options dialog</short>
+      </element>
+      <element name="TLazDbgValueConvertSelectorIntf">
+        <short>Specify for witch watches a converter should be used (list of typenames)</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

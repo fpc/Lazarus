@@ -42,6 +42,7 @@ See LCL license for details."/>
         <UnitName Value="LazDebuggerValueConverter"/>
       </Item>
     </Files>
+    <LazDoc Paths="docs"/>
     <RequiredPkgs>
       <Item>
         <PackageName Value="FCL"/>
