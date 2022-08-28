@@ -5,10 +5,10 @@ unit IdeDebugger_ValConv_Options;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, IDEOptEditorIntf, IDEOptionsIntf,
-  FpDebugValueConvertors, IdeDebuggerStringConstants,
+  SysUtils, Forms, Controls, IDEOptEditorIntf, IDEOptionsIntf,
+  IdeDebuggerStringConstants,
   IdeDbgValueConverterSettingsFrame, IdeDebuggerOpts,
-  IdeDebuggerFpDbgValueConv;
+  IdeDebuggerBackendValueConv;
 
 type
 
@@ -34,7 +34,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgValConvOptionsFrame, DbgOptionsFpDbgOpts);
+  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgValConvOptionsFrame, DbgOptionsBackConverter);
 end;
 
 {$R *.lfm}
@@ -49,7 +49,7 @@ end;
 
 function TIdeDbgValConvOptionsFrame.GetTitle: String;
 begin
-  Result := dlgFpConvOptFpDebugOptions;
+  Result := dlgBackConvOptDebugOptions;
 end;
 
 procedure TIdeDbgValConvOptionsFrame.Setup(
@@ -63,7 +63,7 @@ procedure TIdeDbgValConvOptionsFrame.ReadSettings(
 begin
   if FValConvList = nil then
     FValConvList := TIdeDbgValueConvertSelectorList.Create;
-  FValConvList.Assign(DebuggerOptions.FpDbgConverterConfig);
+  FValConvList.Assign(DebuggerOptions.BackendConverterConfig);
   FValConvList.Changed := False;
   DbgValConvFrame1.ValConvList := FValConvList;
 end;
@@ -73,12 +73,12 @@ procedure TIdeDbgValConvOptionsFrame.WriteSettings(
 begin
   DbgValConvFrame1.SaveCurrent;
   if FValConvList.Changed then begin
-    DebuggerOptions.FpDbgConverterConfig.Assign(FValConvList);
-    DebuggerOptions.FpDbgConverterConfig.Changed := True;
+    DebuggerOptions.BackendConverterConfig.Assign(FValConvList);
+    DebuggerOptions.BackendConverterConfig.Changed := True;
 
     ValueConverterSelectorList.Lock;
     try
-      DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
+      DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
     finally
       ValueConverterSelectorList.Unlock;
     end;

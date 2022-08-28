@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
-  IdeDebuggerFpDbgValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
+  IdeDebuggerBackendValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
   DbgIntfMiscClasses, LazDebuggerIntf, LazDebuggerTemplate,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugConvDebugForJson;
 
@@ -113,15 +113,15 @@ type
   TWatch = class(TDelayedUdateItem)
   private
     FFirstIndexOffs: Int64;
-    FFpDbgConverter: TIdeDbgValueConvertSelector;
+    FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
-    procedure FFpDbgConverterFreed(Sender: TObject);
+    procedure FDbgBackendConverterFreed(Sender: TObject);
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
     procedure SetEnabled(AValue: Boolean);
     procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
     procedure SetExpression(AValue: String);
     procedure SetFirstIndexOffs(AValue: Int64);
-    procedure SetFpDbgConverter(AValue: TIdeDbgValueConvertSelector);
+    procedure SetDbgBackendConverter(AValue: TIdeDbgValueConvertSelector);
     procedure SetRepeatCount(AValue: Integer);
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
@@ -153,7 +153,7 @@ type
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
-    property FpDbgConverter: TIdeDbgValueConvertSelector read FFpDbgConverter write SetFpDbgConverter;
+    property DbgBackendConverter: TIdeDbgValueConvertSelector read FDbgBackendConverter write SetDbgBackendConverter;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
     property ValueList: TWatchValueList read FValueList;
@@ -456,9 +456,9 @@ begin
   DoDisplayFormatChanged;
 end;
 
-procedure TWatch.FFpDbgConverterFreed(Sender: TObject);
+procedure TWatch.FDbgBackendConverterFreed(Sender: TObject);
 begin
-  FFpDbgConverter := nil;
+  FDbgBackendConverter := nil;
 
   Changed;
   DoModified;
@@ -500,18 +500,18 @@ begin
   DoModified;
 end;
 
-procedure TWatch.SetFpDbgConverter(AValue: TIdeDbgValueConvertSelector);
+procedure TWatch.SetDbgBackendConverter(AValue: TIdeDbgValueConvertSelector);
 begin
-  if FFpDbgConverter = AValue then Exit;
+  if FDbgBackendConverter = AValue then Exit;
   FValueList.Clear;
 
-  if FFpDbgConverter <> nil then
-    FFpDbgConverter.RemoveFreeNotification(@FFpDbgConverterFreed);
+  if FDbgBackendConverter <> nil then
+    FDbgBackendConverter.RemoveFreeNotification(@FDbgBackendConverterFreed);
 
-  FFpDbgConverter := AValue;
+  FDbgBackendConverter := AValue;
 
-  if FFpDbgConverter <> nil then
-    FFpDbgConverter.AddFreeNotification(@FFpDbgConverterFreed);
+  if FDbgBackendConverter <> nil then
+    FDbgBackendConverter.AddFreeNotification(@FDbgBackendConverterFreed);
 
   Changed;
   DoModified;
@@ -562,7 +562,7 @@ begin
     TWatch(Dest).FFirstIndexOffs    := FFirstIndexOffs;
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
-    TWatch(Dest).FpDbgConverter := FpDbgConverter;
+    TWatch(Dest).DbgBackendConverter := DbgBackendConverter;
     TWatch(Dest).FValueList.Assign(FValueList);
   end
   else inherited;
@@ -618,8 +618,8 @@ end;
 
 destructor TWatch.Destroy;
 begin
-  if FFpDbgConverter <> nil then
-    FFpDbgConverter.RemoveFreeNotification(@FFpDbgConverterFreed);
+  if FDbgBackendConverter <> nil then
+    FDbgBackendConverter.RemoveFreeNotification(@FDbgBackendConverterFreed);
 
   FValueList.Clear;
   inherited Destroy;

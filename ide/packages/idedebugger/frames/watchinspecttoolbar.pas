@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Menus, LCLType, SpinEx, IDEImagesIntf, LazUTF8, LazClasses, LazDebuggerIntf,
   IdeDebuggerStringConstants, ArrayNavigationFrame, IdeDebuggerOpts, Debugger,
-  IdeDebuggerFpDbgValueConv, IdeDebuggerBase;
+  IdeDebuggerBackendValueConv, IdeDebuggerBase;
 
 type
 
@@ -477,15 +477,15 @@ begin
   m.Tag := -1;
   popConverter.Items.Add(m);
 
-  for i := 0 to DebuggerOptions.FpDbgConverterConfig.Count - 1 do begin
+  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do begin
     m := TMenuItem.Create(Self);
-    m.Caption := DebuggerOptions.FpDbgConverterConfig.IdeItems[i].Name;
+    m.Caption := DebuggerOptions.BackendConverterConfig.IdeItems[i].Name;
     m.OnClick := @DoDbpConvMenuClicked;
     m.Tag := i;
     popConverter.Items.Add(m)
   end;
 
-  btnUseConverter.Visible := DebuggerOptions.FpDbgConverterConfig.Count > 0;
+  btnUseConverter.Visible := DebuggerOptions.BackendConverterConfig.Count > 0;
   btnUseConverter.Tag := -2;
   btnUseConverter.Caption := drsDebugConverter;
   FrameResize(nil);
@@ -654,12 +654,12 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.FpDbgConverterConfig.IdeItems[btnUseConverter.Tag];
+      Conv := DebuggerOptions.BackendConverterConfig.IdeItems[btnUseConverter.Tag];
     end
   end;
 
   AWatch.EvaluateFlags := Opts;
-  AWatch.FpDbgConverter := Conv;
+  AWatch.DbgBackendConverter := Conv;
 end;
 
 procedure TWatchInspectNav.ReadFromWatch(AWatch: TWatch;
@@ -677,14 +677,14 @@ begin
       if popConverter.Items.Count > 1 then
         popConverter.Items[1].Click;
     end
-    else if AWatch.FpDbgConverter = nil then begin
+    else if AWatch.DbgBackendConverter = nil then begin
       if popConverter.Items.Count > 0 then
         popConverter.Items[0].Click;
     end
     else begin
-      i := DebuggerOptions.FpDbgConverterConfig.Count - 1;
+      i := DebuggerOptions.BackendConverterConfig.Count - 1;
       while i >= 0 do begin
-        if DebuggerOptions.FpDbgConverterConfig.IdeItems[i] = AWatch.FpDbgConverter then begin
+        if DebuggerOptions.BackendConverterConfig.IdeItems[i] = AWatch.DbgBackendConverter then begin
           if popConverter.Items.Count > i+2 then
             popConverter.Items[i+2].Click;
           break;
@@ -817,7 +817,7 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.FpDbgConverterConfig.IdeItems[btnUseConverter.Tag];
+      Conv := DebuggerOptions.BackendConverterConfig.IdeItems[btnUseConverter.Tag];
     end
   end;
 
@@ -827,7 +827,7 @@ begin
      (FCurrentWatchValue.ThreadId = tid) and
      (FCurrentWatchValue.StackFrame = idx) and
      (FCurrentWatchValue.Watch <> nil) and
-     (FCurrentWatchValue.Watch.FpDbgConverter = Conv)
+     (FCurrentWatchValue.Watch.DbgBackendConverter = Conv)
   then begin
     FCurrentWatchValue.Value;
     DoWatchUpdated(FCurrentWatchValue.Watch);
@@ -844,7 +844,7 @@ begin
     ArrayNavigationBar1.Index := 0;
   end;
   AWatch.EvaluateFlags := Opts;
-  AWatch.FpDbgConverter := Conv;
+  AWatch.DbgBackendConverter := Conv;
   AWatch.Enabled := True;
   AWatch.RepeatCount := ArrayNavigationBar1.PageSize;
   FInspectWatches.EndUpdate;

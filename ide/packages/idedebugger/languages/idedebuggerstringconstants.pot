@@ -45,27 +45,33 @@ msgstr ""
 msgid "Unsigned"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptaction
+#: idedebuggerstringconstants.dlgbackconvoptaction
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptaddnew
+#: idedebuggerstringconstants.dlgbackconvoptaddnew
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaddnew"
 msgid "Add"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
-msgid "FpDebug Options"
+#: idedebuggerstringconstants.dlgbackconvoptdebugoptions
+msgctxt "idedebuggerstringconstants.dlgbackconvoptdebugoptions"
+msgid "Backend Converter"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+#: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
+msgctxt "idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname"
 msgid "Match types by name"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptname
+#: idedebuggerstringconstants.dlgbackconvoptname
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptremove
+#: idedebuggerstringconstants.dlgbackconvoptremove
+msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
 msgstr ""
 

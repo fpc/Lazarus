@@ -103,7 +103,7 @@ uses
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
   DebugManager, debugger, DebuggerDlg, DebugAttachDialog, DebuggerStrConst,
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerFpDbgValueConv,
+  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
@@ -1392,7 +1392,7 @@ begin
   DebuggerOptions.Load;
   ValueConverterSelectorList.Lock;
   try
-    DebuggerOptions.FpDbgConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
+    DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList);
   finally
     ValueConverterSelectorList.Unlock;
   end;
@@ -11501,7 +11501,7 @@ begin
       Opts := [];
       if EditorOpts.DbgHintAutoTypeCastClass
       then Opts := [defClassAutoCast];
-      if not EditorOpts.DbgHintUseFpDebugConverter
+      if not EditorOpts.DbgHintUseBackendDebugConverter
       then Opts := [defSkipValConv];
 
       DebugBoss.CurrentWatches.BeginUpdate;

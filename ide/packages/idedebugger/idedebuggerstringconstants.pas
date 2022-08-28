@@ -11,15 +11,15 @@ resourcestring
   dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
   dlgInspectAmountOfItemsToShow = 'Amount of items to show';
   dlgInspectBoundsDD = 'Bounds: %d .. %d';
-  dlgFpConvOptAddNew = 'Add';
-  dlgFpConvOptRemove = 'Remove';
-  dlgFpConvOptMatchTypesByName = 'Match types by name';
-  dlgFpConvOptAction = 'Action';
-  dlgFpConvOptFpDebugOptions = 'FpDebug Options';
+  dlgBackConvOptAddNew = 'Add';
+  dlgBackConvOptRemove = 'Remove';
+  dlgBackConvOptMatchTypesByName = 'Match types by name';
+  dlgBackConvOptAction = 'Action';
+  dlgBackConvOptDebugOptions = 'Backend Converter';
   dlgIdeDbgDebugger = 'Debugger';
   dlgIdeDbgNewItem = 'New Item';
   dlgIdeDbgEnterName = 'Enter name';
-  dlgFpConvOptName = 'Name';
+  dlgBackConvOptName = 'Name';
 
   drsUseInstanceClass = 'Instance';
   drsUseInstanceClassHint = 'Use Instance class type';

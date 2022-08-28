@@ -55,27 +55,38 @@ msgstr "Строка"
 msgid "Unsigned"
 msgstr "Беззнаковое"
 
-#: idedebuggerstringconstants.dlgfpconvoptaction
+#: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Действие"
 
-#: idedebuggerstringconstants.dlgfpconvoptaddnew
+#: idedebuggerstringconstants.dlgbackconvoptaddnew
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaddnew"
 msgid "Add"
 msgstr "Добавить"
 
-#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
-msgid "FpDebug Options"
-msgstr "Параметры FpDebug"
+#: idedebuggerstringconstants.dlgbackconvoptdebugoptions
+msgctxt "idedebuggerstringconstants.dlgbackconvoptdebugoptions"
+msgid "Backend Converter"
+msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+#: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname"
 msgid "Match types by name"
 msgstr "Сопоставлять типы по имени"
 
-#: idedebuggerstringconstants.dlgfpconvoptname
+#: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Имя"
 
-#: idedebuggerstringconstants.dlgfpconvoptremove
+#: idedebuggerstringconstants.dlgbackconvoptremove
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
 msgstr "Удалить"
 

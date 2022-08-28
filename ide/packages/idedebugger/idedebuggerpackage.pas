@@ -11,7 +11,7 @@ uses
   IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
   IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
   IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
-  IdeDebuggerFpDbgValueConv, IdeDbgValueConverterSettingsFrame, 
+  IdeDebuggerBackendValueConv, IdeDbgValueConverterSettingsFrame,
   IdeDebugger_ValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
   WatchInspectToolbar, LazarusPackageIntf;
 

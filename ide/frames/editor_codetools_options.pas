@@ -94,7 +94,7 @@ begin
   AutoToolTipSymbToolsCheckBox.Caption := lisShowDeclarationHints;
   AutoToolTipExprEvalCheckBox.Caption := lisShowValueHintsWhileDebugging;
   DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
-  DbgToolTipUseConverter.Caption := dsrEvalUseFpDebugConverter;
+  DbgToolTipUseConverter.Caption := dsrEvalUseDebugConverter;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
 
@@ -117,7 +117,7 @@ begin
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     DbgToolTipAutoCastClass.Checked := DbgHintAutoTypeCastClass;
-    DbgToolTipUseConverter.Checked := DbgHintUseFpDebugConverter;
+    DbgToolTipUseConverter.Checked := DbgHintUseBackendDebugConverter;
     AutoCompletionDelayTrackBar.Position := AutoDelayInMSec;
     AutoHintDelayTrackBar.Position := AutoHintDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
@@ -138,7 +138,7 @@ begin
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     DbgHintAutoTypeCastClass := DbgToolTipAutoCastClass.Checked;
-    DbgHintUseFpDebugConverter := DbgToolTipUseConverter.Checked;
+    DbgHintUseBackendDebugConverter := DbgToolTipUseConverter.Checked;
     AutoDelayInMSec := AutoCompletionDelayTrackBar.Position;
     AutoHintDelayInMSec := AutoHintDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;

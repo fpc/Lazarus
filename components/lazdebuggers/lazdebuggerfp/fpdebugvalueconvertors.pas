@@ -14,7 +14,7 @@ uses
 type
   (* TFpDbgValueConverter and descendants
      - A TFpDbgValueConverter should be immutable, once in the list.
-       To change settings a new instance can be set to TFpDbgConverterConfig
+       To change settings a new instance can be set to TDbgBackendConverterConfig
        This allows for TFpDbgValueConverter to be used outside the lock (reduces lock time)
      - Any setting that the IDE may need to store, should be published
   *)

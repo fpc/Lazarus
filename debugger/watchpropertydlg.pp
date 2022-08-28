@@ -113,13 +113,13 @@ begin
     FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
 
     if dropFpDbgConv.ItemIndex = 0 then
-      FWatch.FpDbgConverter := nil
+      FWatch.DbgBackendConverter := nil
     else
     if dropFpDbgConv.ItemIndex = 1 then
       FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValConv]
     else
-    if dropFpDbgConv.ItemIndex - 2 < DebuggerOptions.FpDbgConverterConfig.Count then begin
-      FWatch.FpDbgConverter := DebuggerOptions.FpDbgConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
+    if dropFpDbgConv.ItemIndex - 2 < DebuggerOptions.BackendConverterConfig.Count then begin
+      FWatch.DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
     end;
 
     FWatch.Enabled := chkEnabled.Checked;
@@ -202,11 +202,11 @@ begin
   rgStyle.Items[9]:= lisBinary;
   //rgStyle.Items[10]:= lisFloatingPoin;
 
-  lblFpDbgConv.Caption := dlgFpConvOptFpDebugConverter;
-  dropFpDbgConv.AddItem(dlgFpConvOptDefault, nil);
-  dropFpDbgConv.AddItem(dlgFpConvOptDisabled, nil);
-  for i := 0 to DebuggerOptions.FpDbgConverterConfig.Count - 1 do
-    dropFpDbgConv.AddItem(DebuggerOptions.FpDbgConverterConfig.IdeItems[i].Name, nil);
+  lblFpDbgConv.Caption := dlgBackendConvOptDebugConverter;
+  dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);
+  dropFpDbgConv.AddItem(dlgBackendConvOptDisabled, nil);
+  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
+    dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.IdeItems[i].Name, nil);
 
   dropFpDbgConv.ItemIndex := 0;
   if AWatch <> nil then begin
@@ -214,8 +214,8 @@ begin
       dropFpDbgConv.ItemIndex := 1;
     end
     else
-    if AWatch.FpDbgConverter <> nil then begin
-      i := DebuggerOptions.FpDbgConverterConfig.IndexOf(AWatch.FpDbgConverter);
+    if AWatch.DbgBackendConverter <> nil then begin
+      i := DebuggerOptions.BackendConverterConfig.IndexOf(AWatch.DbgBackendConverter);
       if i >= 0 then
         dropFpDbgConv.ItemIndex := i + 2;
     end;

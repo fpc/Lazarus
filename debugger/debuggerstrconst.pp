@@ -70,15 +70,15 @@ resourcestring
   drsInspectColWidthMethType = 'Method type column';
   drsInspectColWidthMethReturns = 'Method returns column';
   drsInspectColWidthMethAddress = 'Method address column';
-  dsrEvalUseFpDebugConverter = 'Use FpDebug Converter';
+  dsrEvalUseDebugConverter = 'Use Backend Converter';
 
   drsUseInstanceClassType = 'Use Instance class type';
   drsLen = 'Len=%d: ';
   synfNewValueIsEmpty = '"New value" is empty.';
   synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value.';
-  dlgFpConvOptFpDebugConverter = 'FpDebug Converter:';
-  dlgFpConvOptDefault = '- Default -';
-  dlgFpConvOptDisabled = '- Disabled -';
+  dlgBackendConvOptDebugConverter = 'Backend Converter:';
+  dlgBackendConvOptDefault = '- Default -';
+  dlgBackendConvOptDisabled = '- Disabled -';
 
 implementation
 

@@ -203,7 +203,7 @@ const
     DbgOptionsClass              = 150;
     DbgOptionsEventLog           = 200;
     DbgOptionsSignals            = 400;
-    DbgOptionsFpDbgOpts          = 500;
+    DbgOptionsBackConverter      = 500;
 
   GroupHelp         = 500;
     HlpOptionsGeneral = 100;

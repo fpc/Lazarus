@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, CheckLst, LCLIntf,
   Dialogs, StrUtils, LazDebuggerValueConverter,
-  IdeDebuggerStringConstants, IdeDebuggerFpDbgValueConv;
+  IdeDebuggerStringConstants, IdeDebuggerBackendValueConv;
 
 type
 
@@ -263,11 +263,11 @@ var
   AvailClass: TLazDbgValueConvertRegistry;
   i: Integer;
 begin
-  btnAdd.Caption       := dlgFpConvOptAddNew;
-  btnRemove.Caption    := dlgFpConvOptRemove;
-  lblName.Caption      := dlgFpConvOptName;
-  lblTypeNames.Caption := dlgFpConvOptMatchTypesByName;
-  lblAction.Caption    := dlgFpConvOptAction;
+  btnAdd.Caption       := dlgBackConvOptAddNew;
+  btnRemove.Caption    := dlgBackConvOptRemove;
+  lblName.Caption      := dlgBackConvOptName;
+  lblTypeNames.Caption := dlgBackConvOptMatchTypesByName;
+  lblAction.Caption    := dlgBackConvOptAction;
 
   FCurConvConf := nil;
   lblDesc.Caption := '-';

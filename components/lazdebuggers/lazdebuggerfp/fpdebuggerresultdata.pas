@@ -17,7 +17,6 @@ type
   private
     FDebugger: TFpDebugDebuggerBase;
     FExpressionScope: TFpDbgSymbolScope;
-    //FValConvList: TFpDbgConverterConfigList;
     FValConvList: TLazDbgValueConvertSelectorListIntf;
     FValConfig: TLazDbgValueConvertSelectorIntf;
 
@@ -37,7 +36,6 @@ type
 
     function DoValueToResData(AnFpValue: TFpValue;
       AnResData: TLzDbgWatchDataIntf): Boolean; override;
-    //property ValConvList: TFpDbgConverterConfigList read FValConvList write FValConvList;
     property ValConvList: TLazDbgValueConvertSelectorListIntf read FValConvList write FValConvList;
     property ValConfig: TLazDbgValueConvertSelectorIntf read FValConfig write FValConfig;
     property Debugger: TFpDebugDebuggerBase read FDebugger write FDebugger;

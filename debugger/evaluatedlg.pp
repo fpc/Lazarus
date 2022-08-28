@@ -48,7 +48,7 @@ uses
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
-  IdeDebuggerFpDbgValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
+  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
   IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts;
 
 type

@@ -56,27 +56,38 @@ msgstr "String"
 msgid "Unsigned"
 msgstr "Unsigned"
 
-#: idedebuggerstringconstants.dlgfpconvoptaction
+#: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Ação"
 
-#: idedebuggerstringconstants.dlgfpconvoptaddnew
+#: idedebuggerstringconstants.dlgbackconvoptaddnew
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaddnew"
 msgid "Add"
 msgstr "Adicionar"
 
-#: idedebuggerstringconstants.dlgfpconvoptfpdebugoptions
-msgid "FpDebug Options"
-msgstr "Opções FpDebug"
+#: idedebuggerstringconstants.dlgbackconvoptdebugoptions
+msgctxt "idedebuggerstringconstants.dlgbackconvoptdebugoptions"
+msgid "Backend Converter"
+msgstr ""
 
-#: idedebuggerstringconstants.dlgfpconvoptmatchtypesbyname
+#: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname"
 msgid "Match types by name"
 msgstr "Corresponder tipos pelo nome"
 
-#: idedebuggerstringconstants.dlgfpconvoptname
+#: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Nome"
 
-#: idedebuggerstringconstants.dlgfpconvoptremove
+#: idedebuggerstringconstants.dlgbackconvoptremove
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
 msgstr "Remover"
 
