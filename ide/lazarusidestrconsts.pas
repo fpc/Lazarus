@@ -6659,7 +6659,7 @@ resourcestring
     +'. The project specific backends (below) are by default stored in the LPI.';
   drsStoreConverterConfigInSes = 'Store converter config in session';
   drsThisOnlyAffectsTheListOfC = 'This only affects the list of converters '
-    +'below. The options which list to use are always stored in the session';
+    +'below. The options setting which list to use are always stored in the session.';
   drsUseTheIDEGlobalListOfConv = 'Use the IDE-Global list of converters';
   drsUseTheProjectListOfConver = 'Use the project list of converters';
 
