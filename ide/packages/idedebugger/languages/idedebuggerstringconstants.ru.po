@@ -56,13 +56,11 @@ msgid "Unsigned"
 msgstr "Беззнаковое"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Действие"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaddnew"
 msgid "Add"
 msgstr "Добавить"
@@ -70,22 +68,19 @@ msgstr "Добавить"
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
 msgctxt "idedebuggerstringconstants.dlgbackconvoptdebugoptions"
 msgid "Backend Converter"
-msgstr ""
+msgstr "Преобразование в механизме отладки"
 
 #: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname"
 msgid "Match types by name"
 msgstr "Сопоставлять типы по имени"
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Имя"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
 msgstr "Удалить"
