@@ -11,16 +11,18 @@ msgstr ""
 "Language: tr\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
-msgstr ""
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
 msgstr ""
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
@@ -146,8 +148,8 @@ msgstr "Instance sınıf türünü kullan"
 msgid "Inspect pane"
 msgstr "İnceleme penceresi"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
 msgstr ""
 
 #: debuggerstrconst.synfnewvalueisempty

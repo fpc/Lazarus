@@ -11,17 +11,21 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.13\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+#, fuzzy
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr "- Padrão -"
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+#, fuzzy
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
 msgstr "- Desabilitado -"
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
-msgstr "Conversor FpDebug:"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -146,9 +150,9 @@ msgstr "Usar tipo classe instância"
 msgid "Inspect pane"
 msgstr "Painel inspeção"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
-msgstr "Usar Conversor FpDebug"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr ""
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."

@@ -11,17 +11,19 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr "Преобразование в механизме отладки:"
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr "- По умолчанию -"
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
 msgstr "- Отключено -"
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
-msgstr "Преобразование FpDebug:"
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -146,9 +148,9 @@ msgstr "Использовать тип экземпляра класса"
 msgid "Inspect pane"
 msgstr "Панель просмотра"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
-msgstr "Использовать преобразование FpDebug"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr "Использовать преобразование в механизме отладки"
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."

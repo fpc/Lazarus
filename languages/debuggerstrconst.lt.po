@@ -12,16 +12,18 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
-msgstr ""
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
 msgstr ""
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
@@ -147,8 +149,8 @@ msgstr "Naudoti egzemplioriaus klasės tipą"
 msgid "Inspect pane"
 msgstr "Inspektavimo polangis"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
 msgstr ""
 
 #: debuggerstrconst.synfnewvalueisempty

@@ -11,16 +11,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
-msgstr ""
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
 msgstr ""
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
@@ -146,8 +148,8 @@ msgstr "Osztálypéldány-típus használata"
 msgid "Inspect pane"
 msgstr "Ellenőrző tábla"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
 msgstr ""
 
 #: debuggerstrconst.synfnewvalueisempty

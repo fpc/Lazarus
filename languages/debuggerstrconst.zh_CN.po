@@ -12,16 +12,18 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: debuggerstrconst.dlgfpconvoptdefault
+#: debuggerstrconst.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: debuggerstrconst.dlgbackendconvoptdefault
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
 msgstr ""
 
-#: debuggerstrconst.dlgfpconvoptdisabled
+#: debuggerstrconst.dlgbackendconvoptdisabled
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
-msgstr ""
-
-#: debuggerstrconst.dlgfpconvoptfpdebugconverter
-msgid "FpDebug Converter:"
 msgstr ""
 
 #: debuggerstrconst.drsbreakpointcolwidthaction
@@ -147,8 +149,8 @@ msgstr "使用实例类类型"
 msgid "Inspect pane"
 msgstr "查看窗格"
 
-#: debuggerstrconst.dsrevalusefpdebugconverter
-msgid "Use FpDebug Converter"
+#: debuggerstrconst.dsrevalusedebugconverter
+msgid "Use Backend Converter"
 msgstr ""
 
 #: debuggerstrconst.synfnewvalueisempty
