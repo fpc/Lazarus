@@ -3784,5 +3784,6 @@ cleartarget:
 compiled:
 	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IdeDebugger.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) idedebuggerpackage$(PPUEXT) compiled
+lazbuild: cleartarget $(COMPILER_UNITTARGETDIR) idedebuggeropts$(PPUEXT) 
 distclean: clean
 	${DELTREE} lib/*
