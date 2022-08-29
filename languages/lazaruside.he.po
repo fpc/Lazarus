@@ -4428,6 +4428,42 @@ msgstr "תצוגה מקדימה"
 msgid "Write FPC logo"
 msgstr "כתוב לוגו של FPC"
 
+#: lazarusidestrconsts.drsignoringprojectdebuggersettings
+msgid " (Ignoring project settings below)"
+msgstr ""
+
+#: lazarusidestrconsts.drsstoreconverterconfiginses
+msgid "Store converter config in session"
+msgstr ""
+
+#: lazarusidestrconsts.drsstoreprojectdebuggerconfi
+msgid "Store project debugger configs in session"
+msgstr ""
+
+#: lazarusidestrconsts.drsthedebuggerbackendselecti
+msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
+msgstr ""
+
+#: lazarusidestrconsts.drsthisonlyaffectsthelistofc
+msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsusetheidegloballistofconv
+msgid "Use the IDE-Global list of converters"
+msgstr ""
+
+#: lazarusidestrconsts.drsusetheprojectlistofconver
+msgid "Use the project list of converters"
+msgstr ""
+
+#: lazarusidestrconsts.drsusingidedefaultdebuggerse
+msgid "Using IDE default debugger settings"
+msgstr ""
+
+#: lazarusidestrconsts.drsusingselectedidedebuggers
+msgid "Using selected IDE debugger settings"
+msgstr ""
+
 #: lazarusidestrconsts.fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
 msgstr "כמה רכיבים שנבחרו יחד מוכרחים להיות של טופס יחיד"
@@ -9018,6 +9054,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseidedebugger
 msgid "-- Use IDE default Debugger --"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmuseprojectdebugger
+msgid "-- Use project Debugger --"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
