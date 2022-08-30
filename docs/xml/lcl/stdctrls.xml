@@ -296,6 +296,7 @@ information about scrollbars used for windowed controls.
 <element name="TCustomScrollBar.FOnChange"/>
 <element name="TCustomScrollBar.FOnScroll"/>
 
+<!-- private -->
 <element name="TCustomScrollBar.DoScroll">
 <short>
 Performs actions needed to translate and apply scrollbar notification 
@@ -307,7 +308,7 @@ messages.
 </element>
 
 <element name="TCustomScrollBar.NotRightToLeft">
-<short>Always returns </short>
+<short>Always returns <b>True</b></short>
 </element>
 <element name="TCustomScrollBar.NotRightToLeft.Result">
 <short>Always returns <b>True</b>.</short>
@@ -1789,7 +1790,12 @@ value is assigned to the TextHint property.
 <element name="TCustomComboBox.ShowEmulatedTextHint">
 <short>Displays an emulated TextHint for the control.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomComboBox.TextHint"/>
+<link id="TCustomComboBox.Text"/>
+<link id="TCustomComboBox.EmulatedTextHintStatus"/>
+<link id="#lcl.controls.TControl.Font">TControl.Font</link>
+</seealso>
 </element>
 
 <element name="TCustomComboBox.HideEmulatedTextHint">
@@ -1807,7 +1813,7 @@ value is assigned to the TextHint property.
 </element>
 
 <element name="TCustomComboBox.LMDrawListItem">
-<short>Handler for custom drawing items; calls DrawItem.</short>
+<short>Handler for custom drawing an item; calls DrawItem.</short>
 <descr/>
 <seealso/>
 </element>
@@ -1817,7 +1823,7 @@ value is assigned to the TextHint property.
 
 <element name="TCustomComboBox.LMMeasureItem">
 <short>
-Determines the height of an item, using MeasureItem in variable owner-draw 
+Determines the height of an item using MeasureItem in variable owner-draw 
 mode.
 </short>
 <descr/>
@@ -2182,8 +2188,18 @@ needed) and calling the InternalDrawItem routine.
 
 <element name="TCustomComboBox.KeyUpAfterInterface">
 <short>Handles key up events forwarded from the LCL interface.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>KeyUpAfterInterface</var> is an overridden method in 
+<var>TCustomComboBox</var>. It ensures that the EditingDone method is called 
+when a <var>VK_RETURN</var> Key code is received from the LCL interface. The 
+internal edit completion flag is reset prior to exiting from the method.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.EditingDone">TControl.EditingDone</link>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+</seealso>
 </element>
 <element name="TCustomComboBox.KeyUpAfterInterface.Key">
 <short>Key code examined in the method.</short>
@@ -2280,13 +2296,13 @@ method.
 
 <element name="TCustomComboBox.Change">
 <short>
-Invokes the OnChange handler, signalling a change in the edit box.
+Signals the OnChange event handler when the value for the control is changed.
 </short>
 <descr>
 <p>
 <var>Change</var> is a procedure used to perform actions needed when the 
 value for the control is changed. Change is called from the 
-<var>LMChanged</var> method used to process the change notification message. 
+<var>LMChanged</var> method used to process the change notification message.
 Change calls the <var>Changed</var> method, inherited from TControl, to 
 <var>Perform</var> the control message. The <var>OnChange</var> event handler 
 is signalled (when assigned).
@@ -3374,7 +3390,7 @@ calls the <var>AddObject</var> method in Items to store the values in
 <short>The string added to Items.</short>
 </element>
 <element name="TCustomComboBox.AddItem.AnObject">
-<short>The associated object, can be Nil.</short>
+<short>The associated object, can be <b>Nil</b>.</short>
 </element>
 
 <element name="TCustomComboBox.AddHistoryItem">
@@ -3432,7 +3448,7 @@ text, differing in case.
 </short>
 </element>
 <element name="TCustomComboBox.AddHistoryItem.AnObject">
-<short>The object associated with the item; can be Nil.</short>
+<short>The object associated with the item; can be <b>Nil</b>.</short>
 </element>
 
 <element name="TCustomComboBox.Clear">
@@ -4611,23 +4627,22 @@ created.
 <var>CalculateStandardItemHeight</var> is an <var>Integer</var> function used 
 to get the standard height for items in the control. 
 CalculateStandardItemHeight is used in descendent classes, like 
-<var>TCustomCheckListBox</var>, when its Style property is set to 
+<var>TCustomCheckListBox</var>, when its Style property is set to
 <var>lbStandard</var> and the Handle for the control (and its Canvas) has not 
 been allocated.
 </p>
 <p>
 CalculateStandardItemHeight gets the height for items using a temporary 
-TBitmap instance.
-The Font for the control is assigned to the Canvas in the the bitmap 
-instance, and its TextHeight method is called to get the return value.
+TBitmap instance. The Font for the control is assigned to the Canvas in the 
+the bitmap instance, and its TextHeight method is called to get the return 
+value.
 </p>
 <p>
-CalculateStandardItemHeight is called from the MeasureItem and FontChanged 
-methods in the TCustomCheckListBox descendent.
+CalculateStandardItemHeight is called from the FontChanged method in the 
+TCustomCheckListBox descendent.
 </p>
 </descr>
 <seealso>
-<link id="#lcl.checklst.TCustomCheckListBox.MeasureItem">TCustomCheckListBox.MeasureItem</link>
 <link id="#lcl.checklst.TCustomCheckListBox.FontChanged">TCustomCheckListBox.FontChanged</link>
 </seealso>
 </element>
@@ -5177,7 +5192,7 @@ values in the object instance.
 <short>The item text.</short>
 </element>
 <element name="TCustomListBox.AddItem.AnObject">
-<short>The associated object, or Nil when not used.</short>
+<short>The associated object, or <b>Nil</b> when not used.</short>
 </element>
 
 <element name="TCustomListBox.Click">
@@ -9841,27 +9856,22 @@ Performs actions needed when a click message is handled for the control.
 <descr>
 <p>
 <var>Click</var> is an overridden method in <var>TButtonControl</var>. Click 
-calls the <var>DoOnChange</var> method to signal the <var>OnEditingDone</var> 
-and <var>OnChange</var> event handlers (when assigned). Click calls the 
-inherited method prior to exit.
+calls the <var>DoOnChange</var> method which signals the 
+<var>OnEditingDone</var> and <var>OnChange</var> event handlers (when 
+assigned). Click calls the inherited method prior to exit.
 </p>
 <p>
-Click is used when messages are handled in the control and 
-<var>csClickEvents</var> is not used in the <var>ControlStyle</var> property.
+Click is called when the LM_CLICKED message is handled for the control. It 
+occurs when click events are not enabled in <var>ControlStyle</var> and 
+<var>ControlState</var>.
 </p>
 </descr>
 <seealso>
+<link id="TButtonControl.DoOnChange"/>
+<link id="TButtonControl.OnChange"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
 </seealso>
-</element>
-
-<element name="TButtonControl.CMWantSpecialKey" link="#lcl.controls.TControl.CMWantSpecialKey">
-<short>Handles the CM_WANTSPECIALKEY message for the control.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TButtonControl.CMWantSpecialKey.Message">
-<short>Control message examined in the method.</short>
 </element>
 
 <element name="TButtonControl.Create">
@@ -9892,24 +9902,66 @@ instance.
 <var>Checked</var> is a <var>Boolean</var> property which indicates if the 
 control is displayed using its "checked" or "unchecked" state. The value for 
 the property is always <b>False</b> in <var>TButtonControl</var>, and is 
-overridden in a descendent class.
+overridden in descendent classes like TCustomCheckBox.
 </p>
 </descr>
 </element>
 
 <element name="TButtonControl.ClicksDisabled">
 <short>
-Disables clicking on the button, without showing the button in a disabled 
-state.
+Disables calling the Click method without changing the Enabled state for 
+the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ClicksDisabled</var> is a <var>Boolean</var> property which controls 
+whether the Click method is called when a the Checked property is changed in 
+the control.
+</p>
+<p>
+The TCustomCheckBox descendant uses ClicksDisabled in its DoClickOnChange 
+method; when set to False, the Click method is called to signal both the 
+OnChange and OnClick handlers for the control. When set to True, only the 
+OnChange event handler is signalled. This emulates the Delphi OnClick 
+behavior.
+</p>
+<p>
+ClicksDisabled is also used to prevent calling Click when the Checked 
+property in a linked button action is updated.
+</p>
+</descr>
+<seealso>
+<link id="TButtonControl.DoOnChange"/>
+<link id="TCustomCheckBox.DoClickOnChange"/>
+<link id="TCustomCheckBox.Click"/>
+<link id="TButtonActionLink.SetChecked"/>
+<link id="TButtonActionLink.IsCheckedLinked"/>
+</seealso>
 </element>
 
 <element name="TButtonControl.OnChange">
-<short>Event handler for changes to properties in the control.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler for signalled when the button control is clicked.
+</short>
+<descr>
+<p>
+<var>OnChange</var> is signalled from the DoOnChange method, and occurs when 
+the Click method is called for the class instance. It is signalled after the 
+OnEditingDone event handler. The Sender argument contains the current button 
+control class instance (Self).
+</p>
+<p>
+The OnClick event handler can also be used for the notification when 
+ClicksDisabled is set to <b>False</b>.
+</p>
+</descr>
+<seealso>
+<link id="TButtonControl.Click"/>
+<link id="TButtonControl.DoOnChange"/>
+<link id="TButtonControl.ClicksDisabled"/>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+</seealso>
 </element>
 
 <element name="TButtonActionLink">
@@ -11035,16 +11087,20 @@ handler. Use <var>ClicksDisabled</var> is control the event handler signalled.
 <short>Performs actions when the control is clicked.</short>
 <descr>
 <p>
-<var>Click</var> is an overridden method in <var>TCustomCheckBox</var>, and 
-ignores mouse up event notifications. It does not call the inherited method; 
-the click action is performed in the DoClickOnChange method when the 
-inherited ClicksDisabled property is <b>False</b>.
+<var>Click</var> is an overridden method in <var>TCustomCheckBox</var>. It 
+ignores mouse up event notifications, and does not call the inherited method. 
+The click action is performed either in the DoClickOnChange method when the 
+ClicksDisabled property is <b>False</b>, or when the LM_CLICKED message is 
+handled for the control and click events are not enabled in ControlStyle and 
+ControlState.
 </p>
 </descr>
 <seealso>
 <link id="TCustomCheckBox.DoClickOnChange"/>
 <link id="TButtonControl.ClicksDisabled"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
 </seealso>
 </element>
 
@@ -11053,7 +11109,7 @@ inherited ClicksDisabled property is <b>False</b>.
 <descr>
 <p>
 <var>DoClickOnChange</var> is a procedure used to signal event handler(s) 
-when the <b>LC_CHANGED</b> message is handled for the control. 
+when the <b>LM_CHANGED</b> message is handled for the control. 
 DoClickOnChange calls the <var>Changed</var> method to dispatch the control 
 message.
 </p>
@@ -11374,6 +11430,7 @@ meanings in the <var>State</var> property.
 <seealso>
 <link id="TCustomCheckBox.RetrieveState"/>
 <link id="TCustomCheckBox.ApplyChanges"/>
+<link id="TCustomCheckBox.AllowGrayed"/>
 <!-- link id="TCustomCheckBox.DoClickOnChange"/ -->
 <link id="TButtonControl.Checked"/>
 <link id="TCheckBoxState"/>
@@ -12126,11 +12183,12 @@ updated for the new text rectangle.
 </p>
 <p>
 No actions are performed in the method if <var>Parent</var> has not been 
-assigned (contains Nil), or when a handle has not been allocated in the 
-Parent control.
+assigned (contains <b>Nil</b>), or when a handle has not been allocated in 
+the Parent control.
 </p>
 <p>
-Please note: CalculatePreferredSize does <b>not</b> call the inherited method.
+Please note that CalculatePreferredSize does <b>not</b> call the inherited 
+method.
 </p>
 </descr>
 <seealso>
@@ -13116,9 +13174,9 @@ the form is destroyed.
 </p>
 <p>
 However, if you create the component yourself by code, and don't specify an 
-Owner for it (Create(Nil)), you are responsible for freeing the component 
-when it is no longer needed. You better construct it with Create(Self), where 
-Self means the containing Form or Parent control.
+Owner for it (Create(<b>Nil</b>)), you are responsible for freeing the 
+component when it is no longer needed. You should construct it with 
+Create(Self), where Self means the containing Form or Parent control.
 </p>
 <p>
 A control also must have a Parent control, maybe the Form, so that it can 
