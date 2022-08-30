@@ -341,25 +341,6 @@ data.
 <short>Pointer to the data retrieved in the method.</short>
 </element>
 
-<element name="TCustomCheckListBox.CreateParams">
-<short>Sets the creation parameters for the control handle.</short>
-<descr>
-<p>
-<var>CreateParams</var> is an overridden procedure used to set the creation 
-parameters for the class instance. It calls the inherited method on entry, 
-and sets the list box drawing style flag for the class instance.
-</p>
-</descr>
-<seealso>
-<link id="TCustomListBox.Style"/>
-</seealso>
-</element>
-<element name="TCustomCheckListBox.CreateParams.Params">
-<short>
-Parameters applied to the control, including the Owner drawing style.
-</short>
-</element>
-
 <element name="TCustomCheckListBox.DrawItem">
 <short>
 Adjusts the drawing area for the specified item, and renders it on the 
@@ -637,42 +618,47 @@ needed for each cached item in the control.
 <short>Owner of the class instance.</short>
 </element>
 
-<element name="TCustomCheckListBox.MeasureItem">
+<element name="TCustomCheckListBox.CalculateStandardItemHeight">
 <short>
-Calculates the height for an item displayed in the check list control.
+Calculates the height for an item displayed on the check list control.
 </short>
 <descr>
 <p>
-<var>MeasureItem</var> is an overridden method used to calculate the height 
-for an item displayed in the check list control.
+<var>CalculateStandardItemHeight</var> is an overridden method used to 
+calculate the height for an item on the check list control.
 </p>
 <p>
-MeasureItem re-implements the method from the ancestor class, and calculates 
-the item height when the <var>Style</var> property is set to 
-<var>lbStandard</var>. The values from <var>CalculateStandardItemHeight</var> 
-and <var>GetSystemMetrics</var> (using <var>SM_CYMENUCHECK</var>) are 
-compared to get the item height. The larger of the two values is stored in 
-the <var>TheHeight</var> argument.
+CalculateStandardItemHeight calls the inherited method on entry to get the 
+height for an item using the Canvas and Font in the class instance. The value 
+is adjusted when needed to the size needed for the SM_CYMENUCHECK system 
+metric. 2 pixels are added to the value as padding, and it is stored in the 
+return value for the method.
 </p>
 <p>
-When Style is set to a value other than lbStandard, the inherited method is 
-called to calculate the item height using the <var>OnMeasureItem</var> event 
-handler.
+CalculateStandardItemHeight is called from the FontChanged method, and occurs 
+when the Font size is changed for the control. It is also called when the 
+LM_MeasureItem is handled in the ancestor class (TCustomListBox).
+</p>
+<p>
+CalculateStandardItemHeight is used when Style is set to a value other than 
+lbOwnerDrawVariable. Use the <var>OnMeasureItem</var> event handler to 
+calculate the item height when Style is set to lbOwnerDrawVariable.
 </p>
 </descr>
+<version>
+Added in LCL version 2.4 as a replacement for the MeasureItem method.
+</version>
 <seealso>
-<link id="#lcl.stdctrls.TCustomListBox.CalculateStandardItemHeight">TCustomListBox.CalculateStandardItemHeight</link>
-<link id="#lcl.stdctrls.TCustomListBox.MeasureItem">TCustomListBox.MeasureItem</link>
 <link id="#lcl.stdctrls.TCustomListBox.OnMeasureItem">TCustomListBox.OnMeasureItem</link>
+<link id="#lcl.stdctrls.TCustomListBox.CalculateStandardItemHeight">TCustomListBox.CalculateStandardItemHeight</link>
 <link id="#lcl.stdctrls.TCustomListBox.Style">TCustomListBox.Style</link>
 <link id="#lcl.lclintf.GetSystemMetrics">GetSystemMetrics</link>
 </seealso>
 </element>
-<element name="TCustomCheckListBox.MeasureItem.Index">
-<short>Ordinal position for the check box item measured in the method.</short>
-</element>
-<element name="TCustomCheckListBox.MeasureItem.TheHeight">
-<short>Returns the calculated height for the check box item.</short>
+<element name="TCustomCheckListBox.CalculateStandardItemHeight.Result">
+<short>
+Height in pixels for a check box item on the control.
+</short>
 </element>
 
 <element name="TCustomCheckListBox.Toggle">
@@ -1123,6 +1109,7 @@ link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TCheckListBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
 <element name="TCheckListBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
 <element name="TCheckListBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TCheckListBox.OnMeasureItem" link="#lcl.stdctrls.TCustomListBox.OnMeasureItem"/>
 <element name="TCheckListBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TCheckListBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
 <element name="TCheckListBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
