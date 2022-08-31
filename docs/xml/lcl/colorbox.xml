@@ -396,13 +396,19 @@ DoAutoAdjustLayout is called from the AutoAdjustLayout method.
 </seealso>
 </element>
 <element name="TCustomColorBox.DoAutoAdjustLayout.AMode">
-<short/>
+<short>
+Layout adjustment policy applied in the method.
+</short>
 </element>
 <element name="TCustomColorBox.DoAutoAdjustLayout.AXProportion">
-<short/>
+<short>
+Horizontal scaling factor for the layout policy.
+</short>
 </element>
 <element name="TCustomColorBox.DoAutoAdjustLayout.AYProportion">
-<short/>
+<short>
+Vertical scaling factor for the layout policy.
+</short>
 </element>
 
 <element name="TCustomColorBox.DoGetColors">
@@ -421,11 +427,39 @@ setting a new value in <var>Style</var>. It is called if
 </seealso>
 </element>
 
-<element name="TCustomColorBox.CloseUp" link="#lcl.stdctrls.TCustomComboBox.CloseUp">
-<short/>
-<descr/>
+<element name="TCustomColorBox.CloseUp">
+<short>
+Performs actions needed when the drop-down list for the control is closed.
+</short>
+<descr>
+<p>
+<var>CloseUp</var> is an overridden method in <var>TCustomColorBox</var>. It 
+extends the inherited method to select a custom color using TColorDialog when 
+enabled in the Style for the control and selected in the drop-down list. 
+</p>
+<p>
+PickCustomColor is called to select the custom color, or cancel the 
+operation. The TColor value selected in PickCustomColor is assigned to both 
+Colors and the Selected property if the dialog was not cancelled.
+</p>
+<p>
+CloseUp calls the inherited method prior to exit to signal the OnEditingDone 
+and OnCloseUp event handlers.
+</p>
+<p>
+CloseUp is called when a CN_Command message with a CBN_CLOSEUP notification 
+code is handed for the control.
+</p>
+</descr>
 <seealso>
+<link id="TCustomColorBox.PickCustomColor"/>
+<link id="TCustomColorBox.Selected"/>
+<link id="TCustomColorBox.Colors"/>
+<link id="#lcl.dialogs.TColorDialog">TColorDialog</link>
 <link id="#lcl.stdctrls.TCustomComboBox.CloseUp">TCustomComboBox.CloseUp</link>
+<link id="#lcl.stdctrls.TCustomComboBox.OnCloseUp">TCustomComboBox.OnCloseUp</link>
+<link id="#lcl.stdctrls.TCustomComboBox.DroppedDown">TCustomComboBox.DroppedDown</link>
+<link id="#lcl.stdctrls.TComboBox.OnEditingDone">TComboBox.OnEditingDone</link>
 </seealso>
 </element>
 
@@ -433,8 +467,8 @@ setting a new value in <var>Style</var>. It is called if
 <short>Selects a custom color using a color dialog.</short>
 <descr>
 <p>
-PickCustomColor is a Boolean function used to select a custom color rather 
-than one of the standard colors in the Colors property.
+<var>PickCustomColor</var> is a <var>Boolean</var> function used to select a 
+custom color rather than one of the standard colors in the Colors property.
 </p>
 <p>
 PickCustomColor is used when cbCustomColor is included in the Style for the 
@@ -1216,7 +1250,6 @@ TCustomListBox.DoAutoAdjustLayout
 </element>
 <element name="TCustomColorListBox.DoAutoAdjustLayout.AYProportion">
 <short>Vertical scaling factor for the policy.</short>
-<short/>
 </element>
 
 <element name="TCustomColorListBox.DoGetColors">
