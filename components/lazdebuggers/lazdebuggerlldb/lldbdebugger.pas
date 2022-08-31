@@ -942,7 +942,7 @@ const
   var
     CanContinue: Boolean;
   begin
-    Debugger.DoException(deExternal, Format('Debugger stopped with reason: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);
+    Debugger.DoException(deExternal, Format('Process stopped with reason: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);
 
     SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
   end;
