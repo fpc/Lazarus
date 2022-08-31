@@ -1053,8 +1053,8 @@ var
   w: TWatchValueIntf;
 begin
   if FWatchValue <> nil then begin
-    FWatchValue := nil;
     w := FWatchValue;
+    FWatchValue := nil;
     w.RemoveNotification(weeCancel, @DoWachCanceled);
     if w.Validity = ddsRequested then
       w.Validity :=  ddsInvalid;
