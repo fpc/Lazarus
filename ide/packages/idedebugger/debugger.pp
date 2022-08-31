@@ -3812,6 +3812,7 @@ begin
       end;
     end;
 
+    FNewResultData.SetEntryCount(0);
     FCurrentIdx := -1; // xxxxxxxxx lowbound
     FArrayCount := ATotalCount;
   end;

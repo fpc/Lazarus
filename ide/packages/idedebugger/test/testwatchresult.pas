@@ -1780,7 +1780,7 @@ var
   Res, InnerRes: TWatchResultData;
   i, j, x: Integer;
   iLen, IErrIx: integer;
-  aSetProto, aUsePtr: Boolean;
+  aSetProto, aUsePtr, aUseField, IsErr, aInnerToErr: Boolean;
   aEntryType: TTestCreateDataKind;
   aLen, aExtraArray, aInnerLen, aInnerLen2, aErrIdx, aErrIdx2: Integer;
 begin
@@ -1789,12 +1789,33 @@ begin
   for aSetProto := low(Boolean) to high(Boolean) do
   for aLen := 1 to 2 do
   for aUsePtr := low(Boolean) to high(Boolean) do
+  for aUseField := low(Boolean) to high(Boolean) do
   for aExtraArray := 0 to 3 do
   for aInnerLen := 0 to 2 do
   for aInnerLen2 := 0 to 2 do
-  for aErrIdx := -1 to aInnerLen-1 do
-  for aErrIdx2 := -1 to aInnerLen2-1 do
+  for aInnerToErr := low(Boolean) to high(Boolean) do
+  for aErrIdx  := -2 to aInnerLen-1 do
+  for aErrIdx2 := -2 to aInnerLen2-1 do
   begin
+    if (aLen = 1) and ((aInnerLen2 <> 0) or (aErrIdx2 <> -1)) then continue;
+    if (aInnerLen < 2)  and (aErrIdx  = -2) then continue;
+    if (aInnerLen2 < 2) and (aErrIdx2 = -2) then continue;
+    if aUsePtr and aUseField then continue;
+    if aUseField and ((aExtraArray <> 0) or (aInnerLen+aInnerLen2 < 3)) then continue;
+
+//if x <> 0 then continue;
+//if aEntryType <> cdErrNum then continue;
+//if aSetProto <> not False then Continue;///
+//if aExtraArray <> 0 then continue;
+//if aUsePtr <> False then continue;
+//   if aUseField <> false then Continue;
+//if aLen <> 2 then Continue;
+//if aInnerToErr <> True then Continue;
+//if aInnerLen <> 2 then Continue;
+//if aInnerLen2 <> 2 then Continue;
+//if aErrIdx <> -2 then Continue;
+//if aErrIdx2 <> -2 then Continue;
+
     t.Init;
     ProtoIntf := t.ResIntf.CreateArrayValue(datDynArray, aLen, 0);
     t.ResIntf.SetTypeName('TMyArray');
@@ -1802,6 +1823,11 @@ begin
     if aSetProto then begin
       if aUsePtr then begin
         ProtoIntf := CreatePointer(ProtoIntf, 1900, 'TMyPtr', True);
+      end
+      else
+      if aUseField then begin
+        ProtoIntf.CreateStructure(dstClass);
+        //ProtoIntf.AddField('a', dfvPublic, []);
       end
       else
       if aExtraArray <> 0 then begin
@@ -1827,6 +1853,11 @@ begin
       if aUsePtr then
         ProtoIntf := CreatePointer(ProtoIntf, 900+i, 'TMyPtr');
 
+      if aUseField then begin
+        ProtoIntf.CreateStructure(dstClass);
+        ProtoIntf := ProtoIntf.AddField('a', dfvPublic, []);
+      end;
+
       if aExtraArray <> 0 then begin
         ExtraIntf := ProtoIntf;
         ExtraIntf.CreateArrayValue(datStatArray, Min(aExtraArray, 2), 0);
@@ -1849,9 +1880,14 @@ begin
       end;
 
       for j := 0 to iLen - 1 do begin
+        IsErr := (j = IErrIx) or
+                 (IErrIx = -2);
         InnerIntf := ProtoIntf.SetNextArrayData;
-        CreateData(InnerIntf, aEntryType, j = IErrIx, 'TMyProto', 200+j, 990);
+        CreateData(InnerIntf, aEntryType, IsErr, 'TMyProto', 200+j, 990);
       end;
+
+      if (i = 0) and aInnerToErr then
+        ProtoIntf.CreateError('InnerErr');
 
       if aExtraArray =3 then begin
         ExtraEntryIntf := ExtraIntf.SetNextArrayData;
@@ -1887,6 +1923,11 @@ begin
         InnerRes := InnerRes.DerefData;
       end;
 
+      if aUseField then begin
+        AssertEquals('FieldCount', 1, InnerRes.FieldCount);
+        InnerRes := InnerRes.Fields[0].Field;
+      end;
+
       if aExtraArray <> 0 then begin
         AssertValKind('', InnerRes, rdkArray);
         AssertArrayData('', InnerRes, datStatArray, Min(aExtraArray, 2), 0, 'TMyStat');
@@ -1897,13 +1938,21 @@ begin
         InnerRes := InnerRes.SelectedEntry;
       end;
 
-      AssertValKind('', InnerRes, rdkArray);
-      AssertArrayData('', InnerRes, datDynArray, iLen, 0, 'TMyInner');
+      if (i = 0) and aInnerToErr then begin
+        AssertErrData('InnerErr', InnerRes, 'InnerErr');
+      end
+      else
+      begin
+        AssertValKind('', InnerRes, rdkArray);
+        AssertArrayData('', InnerRes, datDynArray, iLen, 0, 'TMyInner');
 
-      for j := 0 to iLen - 1 do begin
-        InnerRes.SetSelectedIndex(j);
-        AssertData(''+IntToStr(i), InnerRes.SelectedEntry, aEntryType, j = IErrIx, 'TMyProto', 200+j, 990);
-      end;
+        for j := 0 to iLen - 1 do begin
+          IsErr := (j = IErrIx) or
+                   (IErrIx = -2);
+          InnerRes.SetSelectedIndex(j);
+          AssertData(''+IntToStr(i), InnerRes.SelectedEntry, aEntryType, IsErr, 'TMyProto', 200+j, 990);
+        end;
+      end
     end;
 
 
