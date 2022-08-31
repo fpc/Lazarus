@@ -10,7 +10,7 @@ uses
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, DbgIntfDebuggerBase,
   DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon, Forms,
-  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerFpDbgValueConv;
+  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerBackendValueConv;
 
 type
 
