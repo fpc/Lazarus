@@ -2076,7 +2076,8 @@ begin
     end;
 
     // let the main form handle the shortcut
-    if Assigned(MainForm) and (Screen.ActiveCustomForm <> MainForm) and IsWindowEnabled(MainForm.Handle) then
+    if Assigned(MainForm) and (Screen.ActiveCustomForm <> MainForm)
+        and MainForm.HandleAllocated and IsWindowEnabled(MainForm.Handle) then
     begin
       Result := FMainForm.IsShortcut(Message);
       if Result then Exit;
