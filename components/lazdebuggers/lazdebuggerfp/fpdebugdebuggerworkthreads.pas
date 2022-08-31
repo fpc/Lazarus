@@ -423,14 +423,17 @@ begin
     exit;
   FLocked := True;
   WorkItem := FNextWorker;
-  while (WorkItem <> nil) and (WorkItem.RefCount = 1) do begin
-    w := WorkItem;
-    WorkItem := w.FNextWorker;
-    w.DoRemovedFromLinkedList;
-    w.DecRef;
+  try
+    while (WorkItem <> nil) and (WorkItem.RefCount = 1) do begin
+      w := WorkItem;
+      WorkItem := w.FNextWorker;
+      w.DoRemovedFromLinkedList;
+      w.DecRef;
+    end;
+  finally
+    FNextWorker := WorkItem;
+    FLocked := False;
   end;
-  FNextWorker := WorkItem;
-  FLocked := False;
 end;
 
 procedure TFpDbgDebggerThreadWorkerLinkedList.RequestStopForWorkers;
@@ -456,17 +459,20 @@ begin
   FLocked := True;
   WorkItem := FNextWorker;
   FNextWorker := nil;
-  while (WorkItem <> nil) do begin
-    w := WorkItem;
-    WorkItem := w.FNextWorker;
-    if w.IsCancelled then
-      w.FDebugger.WorkQueue.RemoveItem(w)
-    else
-      w.FDebugger.WorkQueue.WaitForItem(w);
-    w.DoRemovedFromLinkedList;
-    w.DecRef;
+  try
+    while (WorkItem <> nil) do begin
+      w := WorkItem;
+      WorkItem := w.FNextWorker;
+      if w.IsCancelled then
+        w.FDebugger.WorkQueue.RemoveItem(w)
+      else
+        w.FDebugger.WorkQueue.WaitForItem(w);
+      w.DoRemovedFromLinkedList;
+      w.DecRef;
+    end;
+  finally
+    FLocked := False;
   end;
-  FLocked := False;
 end;
 
 { TFpThreadWorkerControllerRun }

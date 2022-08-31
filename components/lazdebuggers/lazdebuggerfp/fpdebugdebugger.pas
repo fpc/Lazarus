@@ -1032,13 +1032,15 @@ end;
 procedure TFpThreadWorkerWatchValueEvalUpdate.UpdateWatch_DecRef(Data: PtrInt);
 var
   dbg: TFpDebugDebuggerBase;
+  w: TWatchValueIntf;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.UpdateWatch_DecRef: system.ThreadID = classes.MainThreadID');
 
   if FWatchValue <> nil then begin
-    FWatchValue.RemoveNotification(weeCancel, @DoWachCanceled);
-    FWatchValue.EndUpdate;
+    w := FWatchValue;
     FWatchValue := nil;
+    w.RemoveNotification(weeCancel, @DoWachCanceled);
+    w.EndUpdate;
   end;
 
   dbg := FDebugger;
@@ -1047,13 +1049,16 @@ begin
 end;
 
 procedure TFpThreadWorkerWatchValueEvalUpdate.DoRemovedFromLinkedList;
+var
+  w: TWatchValueIntf;
 begin
   if FWatchValue <> nil then begin
-    FWatchValue.RemoveNotification(weeCancel, @DoWachCanceled);
-    if FWatchValue.Validity = ddsRequested then
-      FWatchValue.Validity :=  ddsInvalid;
-    FWatchValue.EndUpdate;
     FWatchValue := nil;
+    w := FWatchValue;
+    w.RemoveNotification(weeCancel, @DoWachCanceled);
+    if w.Validity = ddsRequested then
+      w.Validity :=  ddsInvalid;
+    w.EndUpdate;
   end;
   UnQueue_DecRef;
 end;
