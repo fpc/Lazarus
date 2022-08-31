@@ -3821,7 +3821,7 @@ SelectRecord is used in the implementation of various methods such as:
 KeyDown, MouseDown, ToggleSelectedRow, and ClearSelection.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TCustomDBGrid.SelectRecord.AValue">
 <short><b>True</b> when the current record should be selected.</short>
@@ -3839,16 +3839,22 @@ the record count for the dataset and the number of visible rows for the
 control.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TCustomDBGrid.GetScrollbarParams.aRange">
-<short/>
+<short>
+Returns the maximum value for the scroll range in scroll bar information.
+</short>
 </element>
 <element name="TCustomDBGrid.GetScrollbarParams.aPage">
-<short/>
+<short>
+Returns the current page represented by the visible rows in the scroll bar.
+</short>
 </element>
 <element name="TCustomDBGrid.GetScrollbarParams.aPos">
-<short/>
+<short>
+Returns the current scroll bar position.
+</short>
 </element>
 
 <element name="TCustomDBGrid.CMGetDataLink">
@@ -5746,29 +5752,13 @@ scroll bar settings.
 <short>Returns the visibility for the vertical scroll bar.</short>
 </element>
 
-<element name="TCustomDBGrid.GetSBRanges" link="#lcl.grids.TCustomGrid.GetSBRanges">
-<short/>
-<descr></descr>
-<seealso></seealso>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.HsbVisible">
-<short/>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.VsbVisible">
-<short/>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.HsbRange">
-<short/>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.VsbRange">
-<short/>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.HsbPage">
-<short/>
-</element>
-<element name="TCustomDBGrid.GetSBRanges.VsbPage">
-<short/>
-</element>
+<element name="TCustomDBGrid.GetSBRanges" link="#lcl.grids.TCustomGrid.GetSBRanges"/>
+<element name="TCustomDBGrid.GetSBRanges.HsbVisible"/>
+<element name="TCustomDBGrid.GetSBRanges.VsbVisible"/>
+<element name="TCustomDBGrid.GetSBRanges.HsbRange"/>
+<element name="TCustomDBGrid.GetSBRanges.VsbRange"/>
+<element name="TCustomDBGrid.GetSBRanges.HsbPage"/>
+<element name="TCustomDBGrid.GetSBRanges.VsbPage"/>
 
 <element name="TCustomDBGrid.HeaderClick">
 <short>
