@@ -5809,9 +5809,20 @@ shortcut or accelerator key used on the form. This includes signalling the
 the <var>ActionLists</var> for the form instance.
 </p>
 <p>
-Returns <b>True</b> when the specified <var>Message</var> is an active as a 
-shortcut.
+Returns <b>True</b> when the specified <var>Message</var> contains a 
+shortcut or accelerator key. Returns <b>False</b> for the following 
+conditions:
 </p>
+<ul>
+<li>The MainForm has not been assigned in the application.</li>
+<li>The MainForm is not the ActiveCustomForm for the application.</li>
+<li>The MainForm does not have a valid handle.</li>
+<li>The MainForm is not enabled.</li>
+<li>
+Message does not contain a key code that is a shortcut for the form instance in 
+Application.MainForm.
+</li>
+</ul>
 </descr>
 <seealso/>
 </element>
@@ -8209,7 +8220,7 @@ Use BorderStyle to get or set the appearance of the form's border. The
 default value in TCustomDockForm is bsSizeToolWin.
 </p>
 <p>
-This property is slightly different (has a different base type) from the 
+This property is slightly different (has a different base type) than the 
 TCustomControl.BorderStyle property. When the form is put into another 
 control the window borders depend on the widgetset. There are no borders 
 under GTK.
