@@ -192,15 +192,25 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     OldBkMode: Integer;
     sz: TSize;
     WideBuffer: widestring;
+    HdrBg, HdrTxt: TColor;
+    BgBrush: Windows.HBRUSH;
   begin
     Selected := (Data^.itemState and ODS_SELECTED) > 0;
     Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
     Header := CheckListBox.Header[Data^.itemID];
 
+    if Header then
+    begin
+      HdrBg := CheckListBox.HeaderBackgroundColor;
+      if HdrBg = clDefault then HdrBg := clInfoBk;
+      HdrTxt := CheckListBox.HeaderColor;
+      if HdrTxt = clDefault then HdrTxt := clInfoText;
+    end;
+
     ARect := Data^.rcItem;
     TextRect := ARect;
 
-    // adjust text rectangle for check box items
+    // adjust text rectangle for check box and padding
     if not Header then
     begin
       if CheckListBox.UseRightToLeftAlignment then
@@ -209,9 +219,13 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
         TextRect.Left := TextRect.Left + TextRect.Bottom - TextRect.Top + 4;
     end;
 
+    // fill the background
     if Header then
-      // TODO: use TCheckListBox.HeaderBackground when implemented
-      Windows.FillRect(Data^._HDC, ARect, GetSysColorBrush(SysColorToSysColorIndex(clInfoBk)))
+    begin
+      BgBrush := Windows.CreateSolidBrush(ColorToRGB(HdrBg));
+      Windows.FillRect(Data^._HDC, ARect, BgBrush);
+      Windows.DeleteObject(BgBrush);
+    end
     else if Selected then
     begin
       Windows.FillRect(Data^._HDC, Rect(ARect.Left, ARect.Top, TextRect.Left, ARect.Bottom), CheckListBox.Brush.Reference.Handle);
@@ -249,13 +263,11 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
       TextFlags := DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX;
     end;
     OldBkMode := Windows.SetBkMode(Data^._HDC, TRANSPARENT);
-    if Header then
-      // TODO: use TCheckListBox.HeaderColor when implemented
-      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(SysColorToSysColorIndex(clInfoText)))
-    else if not Enabled then
+    if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
-    else
-    if Selected then
+    else if Header then
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(HdrTxt))
+    else if Selected then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT))
     else
     begin
