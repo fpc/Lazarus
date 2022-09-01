@@ -451,6 +451,14 @@ begin
   Result := Data^.Enabled;
 end;
 
+function TWin32CheckListBoxStrings.GetHeader(Index: Integer): Boolean;
+var
+  Data: PWin32CheckListBoxItemRecord;
+begin
+  Data := GetItemRecord(Index, false);
+  Result := Data^.Header;
+end;
+
 function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
   const CreateNew: boolean): PWin32CheckListBoxItemRecord;
 begin
@@ -473,6 +481,15 @@ var
 begin
   ItemRecord := GetItemRecord(Index, true);
   ItemRecord^.Enabled := AValue;
+  SetItemRecord(Index, ItemRecord);
+end;
+
+procedure TWin32CheckListBoxStrings.SetHeader(Index: Integer; AValue: Boolean);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.Header := AValue;
   SetItemRecord(Index, ItemRecord);
 end;
 
