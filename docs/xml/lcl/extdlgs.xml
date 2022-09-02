@@ -15,7 +15,7 @@ tasks.
 <p>
 <file>extdlgs.pas</file> contains extended dialogs available in Lazarus 
 Component Library (<b>LCL</b>) applications. It adds the following components 
-to <b>Dialogs</b> tab in the Lazarus IDE Component Palette:
+to the <b>Dialogs</b> tab in the Lazarus IDE Component Palette:
 </p>
 <ul>
 <li>TOpenPictureDialog</li>
@@ -1112,8 +1112,8 @@ signalled to process keys in the dialog. CalcKey signals the
 <var>OnCalcKey</var> event handler (when assigned).
 </p>
 <p>
-CalcKey is assigned as the <var>OnCalcKey</var> event handler for 
-<var>DlgForm</var> in the <var>Execute</var> method.
+CalcKey is assigned as the <var>OnCalcKey</var> event handler for the 
+TCalculatorForm instance created in the <var>Execute</var> method.
 </p>
 </descr>
 <seealso>
@@ -1138,8 +1138,8 @@ calculator dialog. The return value is set to the <var>rsCalculator</var>
 resource string in <var>TCalculatorDialog</var>.
 </p>
 <p>
-The value from DefaultTitle is assigned as the value for the Title property 
-in the constructor for the class instance.
+The value from DefaultTitle is assigned to the Title property in the 
+constructor for the class instance.
 </p>
 </descr>
 <seealso>
@@ -1150,23 +1150,54 @@ in the constructor for the class instance.
 </seealso>
 </element>
 <element name="TCalculatorDialog.DefaultTitle.Result">
-<short></short>
+<short>
+Default value for the Title property.
+</short>
 </element>
 
 <element name="TCalculatorDialog.DisplayChange">
 <short>
-<var>DisplayChange</var> - software emulator for the 
-<var>OnDisplayChange</var> event.
+Implements the event handler signalled when the calculator display has been 
+changed on the dialog form.
 </short>
-<descr/>
+<descr>
+<p>
+<var>DisplayChange</var> signals the OnDisplayChange event handler (when 
+assigned) to perform actions needed for the update. DisplayChange is used as 
+the handler routine for the OnDisplayChange property in TCalculatorForm. It 
+is assigned when the calculator form instance is created and configured in 
+the Execute method. It allows the dialog form to notify the dialog component 
+when its calculator panel has been updated.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCalculatorDialog.Create">
 <short>Constructor for the class instance.</short>
 <descr>
+<p>
+<var>Create</var> is the overridden constructor for the 
+<var>TCalculatorDialog</var> class. It calls the inherited method on entry, 
+and sets the default values for properties including:
+</p>
+<ul>
+<li>Precision</li>
+<li>BeepOnError</li>
+<li>DialogScale</li>
+<li>CalculatorLayout</li>
+<li>ColorBtnDigits</li>
+<li>ColorBtnOthers</li>
+<li>ColorBtnMemory</li>
+<li>ColorBtnOk</li>
+<li>ColorBtnCancel</li>
+<li>ColorBtnClear</li>
+<li>ColorDisplayText</li>
+<li>ColorDisplayBack</li>
+</ul>
 </descr>
 <seealso>
+<link id="TExtCommonDialog.Create"/>
 </seealso>
 </element>
 <element name="TCalculatorDialog.Create.AOwner">
@@ -1175,8 +1206,17 @@ in the constructor for the class instance.
 
 <element name="TCalculatorDialog.Destroy">
 <short>Destructor for the class instance.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the 
+<var>TCalculatorDialog</var> class. Destroy frees references to handler 
+routines assigned to the OnChange and OnDisplayChange properties. It calls 
+the inherited method prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="TExtCommonDialog.Destroy"/>
+</seealso>
 </element>
 
 <element name="TCalculatorDialog.Execute">
@@ -1584,73 +1624,129 @@ updated when a calendar date is selected while the form is active.
 <short>
 Implements the event handler signalled when the dialog form is closed.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>OnDialogClose</var> calls the DoClose method to signal the OnClose event 
+handler (when assigned).
+</p>
+<p>
+OnDialogClose is assigned to the OnClose event handler for the dialog form 
+created in the Execute method.
+</p>
+<p>
+See OnDialogCloseQuery for the handler routine used in the OnCloseQuery event 
+handler for the dialog form.
+</p>
+</descr>
+<seealso>
+<link id="TCalendarDialog.DoClose"/>
+<link id="TCalendarDialog.OnClose"/>
+<link id="TCalendarDialog.Execute"/>
+<link id="#lcl.forms.TCustomForm.OnClose">TCustomForm.OnClose</link>
+</seealso>
 </element>
 <element name="TCalendarDialog.OnDialogClose.Sender">
-<short></short>
+<short>
+Object instance for the event notification. Not used in TCalendarDialog.
+</short>
 </element>
 <element name="TCalendarDialog.OnDialogClose.CloseAction">
-<short></short>
+<short>
+Action to perform when the dialog is closed. Not used in TCalendarDialog.
+</short>
 </element>
 
 <element name="TCalendarDialog.OnDialogCloseQuery">
 <short>
-Implements an event handler signalled to determine if the dialog form can be 
+Implements the event handler signalled to determine if the dialog form can be 
 closed.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>OnDialogCloseQuery</var> copies the value from the ModalResult property 
+to the UserChoice property in the dialog component.
+</p>
+<p>
+The CanClose argument is a variable parameter which contains True if the form 
+can be closed. It is passed as an argument to the DoCanClose method where the 
+OnCanClose event handler is signalled (when assigned) to get its return 
+value. OnCanClose should set CanClose to False to prevent closing the form.
+</p>
+<p>
+OnDialogCloseQuery is assigned to the OnCloseQuery event handler for the 
+dialog form created in the Execute method.
+</p>
+<p>
+See OnDialogClose for the actions performed when the form is actually closed.
+</p>
+</descr>
+<seealso>
+<link id="TCalendarDialog.OnDialogClose"/>
+<link id="#lcl.dialogs.TCommonDialog.UserChoice">TCommonDialog.UserChoice</link>
+<link id="#lcl.forms.TCustomForm.OnCloseQuery">TCustomForm.OnCloseQuery</link>
+</seealso>
 </element>
 <element name="TCalendarDialog.OnDialogCloseQuery.Sender">
-<short></short>
+<short>
+Object instance for the event notification. Not used in the method.
+</short>
 </element>
 <element name="TCalendarDialog.OnDialogCloseQuery.CanClose">
-<short></short>
+<short>
+Returns the value from the OnCanClose event handler.
+</short>
 </element>
 
 <element name="TCalendarDialog.OnDialogShow">
 <short>
-Implements an event handler signalled when the dialog form is displayed.
+Implements the event handler signalled when the dialog form is displayed.
 </short>
-<descr></descr>
+<descr/>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.OnDialogShow.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.
+</short>
 </element>
 
 <element name="TCalendarDialog.OnCalendarDayChanged">
 <short>
-Implements an event handler signalled when the day number in Date is changed.
+Implements the event handler signalled when the day number in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.OnCalendarDayChanged.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.  
+</short>
 </element>
 
 <element name="TCalendarDialog.OnCalendarMonthChanged">
 <short>
-Implements an event handler signalled when the month in Date is changed.
+Implements the event handler signalled when the month in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.OnCalendarMonthChanged.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.  
+</short>
 </element>
 
 <element name="TCalendarDialog.OnCalendarYearChanged">
 <short>
-Implements an event handler signalled when the year in Date is changed.
+Implements the event handler signalled when the year in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.OnCalendarYearChanged.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.  
+</short>
 </element>
 
 <element name="TCalendarDialog.OnCalendarChange">
@@ -1661,49 +1757,102 @@ Event handler used to signal the OnChange event when the Calendar is updated.
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.OnCalendarChange.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.  
+</short>
 </element>
 
+<!-- protected -->
 <element name="TCalendarDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TCalendarDialog.GetNewDate">
 <short>
-<var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, 
-which transfers the selected date to the calling program.
+Gets the date value from the Calendar on the dialog form.
 </short>
-<descr></descr>
+<descr>
+<p>
+<var>GetNewDate</var> is a procedure used to get the date value from the 
+TCalendar control on the dialog form. It assigns the DateTime value from the 
+calendar control to the Date property in the dialog component.
+</p>
+<p>
+GetNewDate is called from methods like CalendarDblClick, 
+OnCalendarDayChanged, OnCalendarYearChanged, and OnCalendarMonthChanged. It 
+is assigned as the OnClick event handler for the OK button displayed on the 
+calendar dialog form.
+</p>
+</descr>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.GetNewDate.Sender">
-<short></short>
+<short>
+Object instance for the event notification. Not used in the method.
+</short>
 </element>
 
 <element name="TCalendarDialog.CalendarDblClick">
 <short>
-<var>CalendarDblClick</var> - method for handling doubleclick on the calendar.
+Implements the event handler signalled for a double click on the calendar 
+control in the dialog.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>CalendarDblClick</var> is the handler routine assigned to the OnDblClick 
+event in the TCalendar instance for the dialog form. It ensures that the 
+value in Date is updated when a mouse double click occurs on a date in the 
+TCalendar control on the dialog form. GetNewDate is called to update the 
+value in Date. The calendar dialog form is updated to set its ModalResult 
+value to mbOK.
+</p>
+</descr>
+<seealso>
+<link id="TCalendarDialog.Execute"/>
+<link id="#lcl.calendar.TCalendar.OnDblClick">TCalendar.OnDblClick</link>
+</seealso>
 </element>
 <element name="TCalendarDialog.CalendarDblClick.Sender">
-<short></short>
+<short>
+Object instance (TForm) for the event notification.  
+</short>
 </element>
 
 <element name="TCalendarDialog.DefaultTitle">
 <short>
-Contains the default value for the Title displayed on the calendar dialog 
-form.
+Gets the default value for the Title property used as the Caption for the 
+calendar dialog form.
 </short>
-<descr></descr>
+<descr>
+<p>
+The return value is set to the content in the rsPickDate resource string.
+</p>
+</descr>
 <seealso></seealso>
 </element>
 <element name="TCalendarDialog.DefaultTitle.Result">
-<short></short>
+<short>Default value for the Title property.</short>
 </element>
 
+<!-- public -->
 <element name="TCalendarDialog.Create">
 <short>Constructor for the class instance.</short>
-<descr/>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the 
+<var>TCalendarDialog</var> class. It calls the inherited method entry which 
+sets the value in DialogPosition to poMainFormCenter. Create sets the default 
+values for properties including:
+</p>
+<dl>
+<dt>DisplaySettings</dt>
+<dd>Set to the value in the DefaultDisplaySettings constant.</dd>
+<dt>Date</dt>
+<dd>Set to the date part of the value from the Now function.</dd>
+<dt>OKCaption</dt>
+<dd>Set to the value in the rsMbOK resource string.</dd>
+<dt>CancelCaption</dt>
+<dd>Set to the value in the rsMbCancel resource string.</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 <element name="TCalendarDialog.Create.AOwner">
@@ -1712,35 +1861,140 @@ form.
 
 <element name="TCalendarDialog.Execute">
 <short>
-Configures and displays the form for the calendar dialog, and captures the 
+Creates and displays the form for the calendar dialog, and captures the 
 results.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Execute</var> is an overridden method in <var>TCalendarDialog</var>. It 
+creates and configures a new TForm instance displayed for the dialog 
+component. The dialog form includes controls needed to select a 
+date value, and to accept or reject the selected value. This includes:
+</p>
+<ul>
+<li>TCalendar</li>
+<li>TButton instances for the OK and Cancel buttons.</li>
+</ul>
+<p>
+Values from properties in the class instance are used to configure the dialog 
+form, including:
+</p>
+<dl>
+<dt>Title</dt>
+<dd>
+Used as the Caption for the dialog form.
+</dd>
+<dt>DialogPosition</dt>
+<dd>
+Sets the Position property in the form instance at run-time. At design-time, 
+the dialog is centered on the screen.
+</dd>
+<dt>DisplaySettings</dt>
+<dd>
+Sets the display settings used for the TCalendar instance on the dialog form.
+</dd>
+<dt>Date</dt>
+<dd>
+Sets the initial value for DateTime in the TCalendar instance on the dialog 
+form.
+</dd>
+</dl>
+<p>
+Methods in the class instance are assigned to the event handlers for the 
+dialog form and its controls, including:
+</p>
+<dl>
+<dt>OnDialogShow</dt>
+<dd>Assigned to the OnShow event handler in the dialog form.</dd>
+<dt>OnDialogClose</dt>
+<dd>Assigned to the OnClose event handler in the dialog form.</dd>
+<dt>OnDialogCloseQuery</dt>
+<dd>Assigned to the OnCloseQuery event handler in the dialog form.</dd>
+<dt>OnCalendarDayChanged</dt>
+<dd>
+Assigned to the OnDayChanged event handler in the TCalendar instance on the 
+form.
+</dd>
+<dt>OnCalendarMonthChanged</dt>
+<dd>
+Assigned to the OnMonthChanged event handler in the TCalendar instance on the 
+form.
+</dd>
+<dt>OnCalendarYearChanged</dt>
+<dd>
+Assigned to the OnYearChanged event handler in the TCalendar instance on the 
+form.
+</dd>
+<dt>OnCalendarChange</dt>
+<dd>
+Assigned to the OnChange event handler in the TCalendar instance on the form.
+</dd>
+<dt>CalendarDblClick</dt>
+<dd>
+Assigned to the OnDblClick event handler in the TCalendar instance on the 
+form.
+</dd>
+</dl>
+<p>
+The ShowModal method for the dialog form is called to display the form and 
+capture the return value. The return value is <b>True</b> if the ModalResult 
+value is mrOK (when the OK button was clicked). The return value is 
+<b>False</b> if the Cancel button was clicked or the form was closed using 
+the window decoration.
+</p>
+<p>
+The date selected using the calendar control is stored when the 
+OnCalendarChange routine is executed (via TCalendar.OnChange). This causes 
+the OnChange event handler in the class instance to be signalled to store the 
+updated value.
+</p>
+<p>
+The form is freed prior to exiting from the method.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
 </seealso>
 </element>
 <element name="TCalendarDialog.Execute.Result">
-<short/>
+<short>
+<b>True</b> if the OK button was used to close the dialog form.
+</short>
 </element>
 
 <element name="TCalendarDialog.Left">
 <short>Contains the left coordinate for the dialog.</short>
-<descr></descr>
+<descr>
+<p>
+Used when Position contains poDesigned. Otherwise, it is updated after the form is dynamically created, aligned, and displayed.
+</p>
+</descr>
 <seealso></seealso>
 </element>
 
 <element name="TCalendarDialog.Top">
 <short>Contains the top coordinate for the dialog.</short>
-<descr></descr>
+<descr>
+<p>
+Used when Position contains poDesigned. Otherwise, it is updated after the form is dynamically created, aligned, and displayed.
+</p>
+</descr>
 <seealso></seealso>
 </element>
 
 <element name="TCalendarDialog.Date">
-<short>The selected <var>Date</var>, for return to the main program.</short>
+<short>The selected Date for the calendar dialog.</short>
 <descr>
-<p>The selected <var>Date</var>, for return to the main program.</p>
-<p>This is NOT the standard RTL Date function.</p>
+<p>
+<var>Date</var> is a <var>TDateTime</var> property which contains the date 
+displayed and updated using the form for the dialog. The initial value in 
+Date is set in the Create constructor to the date returned from the Now 
+function. The property is updated in the GetNewDate method when a new month, 
+day, or year is selected using the calendar control on the dialog form.
+</p>
+<p>
+This is <b>not</b> the standard RTL Date function.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -1766,7 +2020,7 @@ ShowWeekNumbers, StartMonday.
 
 <element name="TCalendarDialog.OnDayChanged">
 <short>
-<var>OnDayChanged</var> - event handler when a different day is selected.
+Event handler signalled when the day number in Date has been changed.
 </short>
 <descr/>
 <seealso/>
@@ -1774,7 +2028,7 @@ ShowWeekNumbers, StartMonday.
 
 <element name="TCalendarDialog.OnMonthChanged">
 <short>
-Event handler signalled when a different month is selected.
+Event handler signalled when a month number in Date has been changed.
 </short>
 <descr>
 <p>
@@ -1787,7 +2041,7 @@ the Month in the Date is changed.
 
 <element name="TCalendarDialog.OnYearChanged">
 <short>
-<var>OnYearChanged</var> - event handler when a different year is selected.
+Event handler signalled when the year number in Date has been changed.
 </short>
 <descr/>
 <seealso/>
