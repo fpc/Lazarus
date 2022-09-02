@@ -88,6 +88,8 @@ item is toggled.
 </element>
 
 <element name="TCustomCheckListBox.FAllowGrayed"/>
+<element name="TCustomCheckListBox.FHeaderBackgroundColor"/>
+<element name="TCustomCheckListBox.FHeaderColor"/>
 <element name="TCustomCheckListBox.FItemDataOffset"/>
 <element name="TCustomCheckListBox.FOnClickCheck"/>
 <element name="TCustomCheckListBox.FOnItemClick"/>
@@ -277,6 +279,11 @@ Value for the property; <b>True</b> indicates a header, and <b>False</b>
 indicates a check box.
 </short>
 </element>
+
+<element name="TCustomCheckListBox.SetHeaderBackgroundColor"/>
+<element name="TCustomCheckListBox.SetHeaderBackgroundColor.AValue"/>
+<element name="TCustomCheckListBox.SetHeaderColor"/>
+<element name="TCustomCheckListBox.SetHeaderColor.AValue"/>
 
 <element name="TCustomCheckListBox.SetItemEnabled">
 <short>Sets the value for the indexed ItemEnabled property.</short>
@@ -606,7 +613,8 @@ changed. FontChanged calls the inherited method on entry. The value in
 <var>TCustomCheckListBox</var>. It calls the inherited <var>Create</var> 
 method, and sets the component style flag for the control. It also calls the 
 inherited <var>GetCachedDataSize</var> method to determine the storage size 
-needed for each cached item in the control.
+needed for each cached item in the control. Create sets the default values 
+for the HeaderBackgroundColor and HeaderColor properties.
 </p>
 </descr>
 <seealso>
@@ -843,6 +851,71 @@ property. Otherwise, the cached item data for the control is updated.
 </element>
 <element name="TCustomCheckListBox.Header.Index">
 <short>Ordinal position for the item affected in the method.</short>
+</element>
+
+<element name="TCustomCheckListBox.HeaderBackgroundColor">
+<short>
+Color used to paint the background for Header items on the control.
+</short>
+<descr>
+<p>
+<var>HeaderBackgroundColor</var> is a <var>TColor</var> property with the 
+color used to paint the background for a header item on the control. It is 
+used in the widgetset class when a header item is rendered on the control.
+</p>
+<p>
+The default value for the property is clInfoBk. Changing the value for the
+property causes the control to be redrawn.
+</p>
+<p>
+Use HeaderColor to set the font color for header items on the control.
+</p>
+<p>
+Use the public Header property to identify whether a value in Items is 
+displayed as a non-checkable entry in the list drawn using the colors in 
+HeaderBackgroundColor and HeaderColor.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomCheckListBox.HeaderColor"/>
+<link id="TCustomCheckListBox.Header"/>
+</seealso>
+</element>
+
+<element name="TCustomCheckListBox.HeaderColor">
+<short>
+Color used for the text on a Header item.
+</short>
+<descr>
+<p>
+<var>HeaderColor</var> is a <var>TColor</var> property with the color for the 
+font used to render the text on a Header item. It is used in the widgetset 
+class when a header item is rendered on the control.
+</p>
+<p>
+The default value for the property is clInfoText. Changing the value for the 
+property causes the control to be redrawn.
+</p>
+<p>
+Use the HeaderBackgroundColor property to set the background color for a 
+header item on the control.
+</p>
+<p>
+Use the public Header property to identify whether a value in Items is 
+displayed as a non-checkable entry in the list drawn using the colors in 
+HeaderBackgroundColor and HeaderColor.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomCheckListBox.HeaderBackgroundColor"/>
+<link id="TCustomCheckListBox.Header"/>
+</seealso>
 </element>
 
 <element name="TCustomCheckListBox.ItemEnabled">
@@ -1084,6 +1157,8 @@ ancestor class.
 <element name="TCheckListBox.ExtendedSelect"  link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
 <element name="TCheckListBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TCheckListBox.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TCheckListBox.HeaderBackgroundColor" link="#lcl.checklst.TCustomCheckListBox.HeaderBackgroundColor"/>
+<element name="TCheckListBox.HeaderColor" link="#lcl.checklst.TCustomCheckListBox.HeaderColor"/>
 <element name="TCheckListBox.IntegralHeight" link="#lcl.stdctrls.TCustomListBox.IntegralHeight"/>
 <element name="TCheckListBox.Items" link="#lcl.stdctrls.TCustomListBox.Items"/>
 <element name="TCheckListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
