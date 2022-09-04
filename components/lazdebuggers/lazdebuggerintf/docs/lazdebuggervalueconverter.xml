@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
   <package name="LazDebuggerIntf">
+    <short>Interface between IDE and Debugger backend</short>
     <module name="LazDebuggerValueConverter">
       <short>Interface for "Value-Converter". Process watches data in the debugger backend</short>
       <descr>A "Value-Converter" can transform the value of a watch. They are implemented in the debugger-backend (if supported by the backend). This allows them to access internal data of the backend.

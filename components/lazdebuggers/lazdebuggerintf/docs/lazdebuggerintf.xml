@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+  <package name="LazDebuggerIntf">
+    <!--
+  ====================================================================
+    LazDebuggerIntf
+  ====================================================================
+-->
+    <module name="LazDebuggerIntf">
+      <short/>
+      <descr/>
+      <!-- uses unit Visibility: default -->
+      <!-- uses unit Visibility: default -->
+      <!-- uses unit Visibility: default -->
+      <!-- uses unit Visibility: default -->
+      <!-- uses unit Visibility: default -->
+      <!-- alias type Visibility: default -->
+      <!-- interface Visibility: default -->
+      <element name="TInternalDbgMonitorIntfType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TInternalDbgSupplierIntfType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- generic type Visibility: default -->
+      <element name="TInternalDbgMonitorIntf._SUPPLIER_INTF">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TInternalDbgMonitorIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TInternalDbgMonitorIntf.GetSupplier">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TInternalDbgMonitorIntf.SetSupplier">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TInternalDbgMonitorIntf.DoStateChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TInternalDbgMonitorIntf.Supplier">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- generic type Visibility: default -->
+      <element name="TInternalDbgSupplierIntf._MONITOR_INTF">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TInternalDbgSupplierIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TInternalDbgSupplierIntf.SetMonitor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TInternalDbgSupplierIntf.DoStateChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TDebuggerDataState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsUnknown">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsRequested">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsEvaluating">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsValid">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsInvalid">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDebuggerDataState.ddsError">
+        <short/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TDbgDataRequestIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TDbgDataRequestIntf.AddFreeNotification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TDbgDataRequestIntf.RemoveFreeNotification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TWatchDisplayFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfDefault">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfStructure">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfChar">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfString">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfDecimal">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfUnsigned">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfFloat">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfHex">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfPointer">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfMemDump">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatchDisplayFormat.wdfBinary">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TWatcheEvaluateFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defClassAutoCast">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defAllowFunctionCall">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defExtraDepth">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defSkipValConv">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defNoTypeInfo">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defSimpleTypeInfo">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateFlag.defFullTypeInfo">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TWatcheEvaluateFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TWatcheEvaluateEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWatcheEvaluateEvent.weeCancel">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <!-- alias type Visibility: default -->
+      <element name="TLzDbgToken">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLzDbgFloatPrecission">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFloatPrecission.dfpSingle">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFloatPrecission.dfpDouble">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFloatPrecission.dfpExtended">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLzDbgStructType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstUnknown">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstRecord">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstObject">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstClass">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstInterface">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgStructType.dstInternal">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLzDbgArrayType">
+        <short>Enumeration of array types</short>
+        <descr>
+          <p>Select the type of array when creating an array result value with 
+<link id="TLzDbgWatchDataIntf.CreateArrayValue">TLzDbgWatchDataIntf.CreateArrayValue</link>.
+</p>
+          <p>
+            <u>Each type also has some different properties:</u>
+          </p>
+          <ul>
+            <li>
+              <p>
+                <b>Dynamic Array</b>
+              </p>
+              <ol>
+                <li>Does <b>not </b>have a <var>LowBound</var>, LowBound is always zero</li>
+                <li>
+                  <var>Length</var> is part of the data</li>
+                <li>Does have a <var>DataAddress</var>
+                </li>
+              </ol>
+              <p/>
+            </li>
+            <li>
+              <p>
+                <b>Static Array</b>
+              </p>
+              <ol>
+                <li>Does have a <var>LowBound</var>. LowBound is part of the type.
+      </li>
+                <li>
+                  <var>Length</var> is part of the type</li>
+                <li>Does <b>not </b>have a <var>DataAddress</var>
+                </li>
+              </ol>
+              <p/>
+            </li>
+            <li>
+              <p>
+                <b>Unknown Array type</b>
+              </p>
+              <ol>
+                <li>Does have a <var>LowBound</var>, LowBound is part of the data</li>
+                <li>
+                  <var>Length</var> is part of the data</li>
+                <li>Does <b>not </b>have a <var>DataAddress</var>
+                </li>
+              </ol>
+              <p/>
+            </li>
+          </ul>
+          <p/>
+          <p>"part of the data" vs "part of the type": If arrays are nested, then as all nested values, each array that is an element of an outer array must have identical types.<br/>
+Like in Pascal, for an <var>array of array [1..3] of </var> the inner arrays all have the same Length and LowBound. But for <var>array of array of </var> the length of the inner array can vary.
+</p>
+        </descr>
+        <seealso>
+          <link id="TLzDbgWatchDataIntf.CreateArrayValue">TLzDbgWatchDataIntf.CreateArrayValue</link>
+        </seealso>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgArrayType.datUnknown">
+        <short>Unknown array type</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgArrayType.datDynArray">
+        <short>Dynamic array</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgArrayType.datStatArray">
+        <short>Static array</short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLzDbgFieldVisibility">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldVisibility.dfvUnknown">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldVisibility.dfvPrivate">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldVisibility.dfvProtected">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldVisibility.dfvPublic">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldVisibility.dfvPublished">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLzDbgFieldFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffClass">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffAbstract">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffVirtual">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffOverwritten">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffConstructor">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffDestructor">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TLzDbgFieldFlag.dffVariant">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TLzDbgFieldFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TLzDbgWatchDataIntf">
+        <short>Result data for a Watch</short>
+        <descr>
+          <p>This interface is provide by the IDE (Debugger frontend) via 
+<link id="TWatchValueIntf.ResData">TWatchValueIntf.ResData</link>. The backend must use it to describe the "watch result" to the frontend.
+</p>
+          <p>The IDE can then apply different formatting to the result. 
+For example, if a watch yields an Int64 result of "24" the backend will call 
+  <var>CreateNumValue(24, True, 8)</var> instead of delivering a pre-formated text result. This way the IDE knows the value, the signedness and the byte-size of the result. This allows the IDE to format the value in Hex, Decimal, Binary without having to make further queries to the backend.
+</p>
+          <p>The interface is designed for use in the Lazarus IDE, and therefore Pascal specific. The methods represent the types as defined in Pascal.<br/>
+If the interface does not provide a method for a specific value, then the backend can provide a preformated result using 
+<var>CreatePrePrinted(text)</var>
+          </p>
+          <p>
+            <p>
+              <u>Restrictions</u>
+            </p>
+            <ul>
+              <li>The backend must first call one of the <var>Create...</var> methods.
+Only after that, can it add further info such as <var>SetTypeName</var>
+              </li>
+              <li>Once the backend has created a value, it must not change the result. That is the backend can not create a new different value to overwrite the result. The exception here is CreateError.
+If the backend encounters an error while working on a value, it can change the entire result to be an error.</li>
+              <li>For methods that return an interface for a nested value, the backend must check if nil was returned. The frontend may return nil, if it does not require the information</li>
+              <li>In an array all elements must be of the same type. That is, each element must be created with the same <var>Create...</var> method. Any parameters affecting the type rather than the value, must be kept the same too. E.g. for a <var>CreateNumValue</var> call only the num-value can change, the signedness and byte-size must be identical for all elements</li>
+            </ul>
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWatchValueIntf.ResData">Method providing TLzDbgWatchDataIntf</link>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreatePrePrinted">
+        <short>Create result as pre-formatted text</short>
+        <descr>
+          <p>Create a result for any data, that is pre-formatted by the backend. The IDE will display this as is. The IDE can not change formatting, or any other operation (such as extending nested values).</p>
+          <ul>
+            <li>
+              <p>
+                <var>AVal: String</var>
+              </p>
+              <p>The text to be displayed</p>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateString">
+        <short>Create result for a string type</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AVal: String</var>
+              </p>
+              <p>The UTF8 encoded result</p>
+            </li>
+          </ul>
+          <remark>More parameters may still be added</remark>
+          <p>
+            <u>Supported methods to add info to a string value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetDataAddress">TLzDbgWatchDataIntf.SetDataAddress</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateWideString">
+        <short>Create result for a widestring</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AVal: WideString</var>
+              </p>
+              <p>The text</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a widestring value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateCharValue">
+        <short>Create result for Char or WideChar</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>ACharValue: QWord</var>
+              </p>
+              <p>Ordinal value of the char</p>
+            </li>
+            <li>
+              <p>
+                <var>AByteSize: Integer = 0</var>
+              </p>
+              <p>A size of 1 represents a pascal "char". And a size of 2 a widechar. Other values will be printed as "#12345". There is currently no encoding for the type "char". (it is a singel byte char, not utf-8)</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a char value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateNumValue">
+        <short>Create result for an ordinal number</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>ANumValue: QWord</var>
+              </p>
+              <p>The numerical value typecast to  QWord. If the value is signed, it should be fully sign extended.</p>
+            </li>
+            <li>
+              <p>
+                <var>ASigned: Boolean</var>
+              </p>
+              <p>Indicate if the value is signed</p>
+            </li>
+            <li>
+              <p>
+                <var>AByteSize: Integer = 0</var>
+              </p>
+              <p>Should be 0,1,2,4 or 8. Zero indicates unknow size.</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a numeric value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreatePointerValue">
+        <short>Create result for a pointer</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AnAddrValue: TDbgPtr</var>
+              </p>
+              <p>The address stored in the pointer  </p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a pointer value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetDerefData">TLzDbgWatchDataIntf.SetDerefData</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateFloatValue">
+        <short>Create result for a floating number</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>ANumValue: QWord</var>
+              </p>
+              <p>The numerical value typecast to  QWord. If the value is signed, it should be fully sign extended.</p>
+            </li>
+            <li>
+              <p>
+                <var>ASigned: Boolean</var>
+              </p>
+              <p>Indicate if the value is signed</p>
+            </li>
+            <li>
+              <p>
+                <var>AByteSize: Integer = 0</var>
+              </p>
+              <p>Should be 0,1,2,4 or 8. Zero indicates unknow size.</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a numeric value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateBoolValue">
+        <short>Create result for a boolean value</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AnOrdBoolValue: QWord</var>
+              </p>
+              <p>Ordinal value of the char. This can be any numerical value (within the range of the byte-size) as the value may hold non conform data</p>
+            </li>
+            <li>
+              <p>
+                <var>AByteSize: Integer = 0</var>
+              </p>
+              <p>Size of the underlaying type. In case the IDE is asked to dispaly the numerical value.<br/>
+A value of 0 represents an unknown size. This can currently also be used for bitpacked values.</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a char value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateEnumValue">
+        <short>Create result for an enumerated value.</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>ANumValue: QWord</var>
+              </p>
+              <p>The ordinal value of the enum. For example "1" (as result of "ord(alTop)")</p>
+            </li>
+            <li>
+              <p>
+                <var>AName: String</var>
+              </p>
+              <p>The identifier representing the value. For example "alTop"</p>
+            </li>
+            <li>
+              <p>
+                <var>AByteSize: Integer = 0</var>
+              </p>
+              <p>The byte size of the variable.</p>
+            </li>
+            <li>
+              <p>
+                <var>AnIsEnumIdent: Boolean = False</var>
+              </p>
+              <ul>
+                <li>
+                  <p>False: The value was read from a variable (or constant) of an enum type. E.g.: Form1.FAlign</p>
+                </li>
+                <li>
+                  <p>True: The value was the identifier representing that enum value.  E.g., the watch actually contained the term: "alTop"</p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a enum value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateSetValue">
+        <short>Create a result for a set of enum</short>
+        <descr>
+          <remark>Subject to change</remark>
+          <ul>
+            <li>
+              <p>
+                <var>const ANames: TStringDynArray</var>
+              </p>
+              <p>A list of all enum identifiers that are included in the set value</p>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateVariantValue">
+        <short>Create / Add variant fields</short>
+        <descr>
+          <p>This is used to create fields for the variant part(s) of any record "<var>record ... case ... end</var>". Included but not limited to the type "variant" itself.</p>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateProcedure">
+        <short>Create a result for a function</short>
+        <descr>This is if the user entered the name of a function (without setting function-eval).
+
+<remark>Subject to change</remark>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateProcedureRef">
+        <short>Create a result for a function reference (variable containing a function)</short>
+        <descr>
+          <remark>Subject to change</remark>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateArrayValue">
+        <short>Create result for Arrays</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AnArrayType: TLzDbgArrayType</var>
+              </p>
+              <p>See    <link id="TLzDbgWatchDataIntf.TLzDbgArrayType">TLzDbgWatchDataIntf.TLzDbgArrayType</link>
+              </p>
+            </li>
+            <li>
+              <p>
+                <var>ATotalCount: Integer = 0</var>
+              </p>
+              <p>The declared length of the array. In case of dynamic array the length set with SetLength().<br/>
+The amount of actually evaluated elements may differ.
+</p>
+            </li>
+            <li>
+              <p>
+                <var>ALowIdx: Integer = 0</var>
+              </p>
+The lower bound of the array. 
+    
+    
+              <br/>
+Only for static arrays, or arrays of unknown type.
+
+
+</li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to an array value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetDataAddress">TLzDbgWatchDataIntf.SetDataAddress</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetNextArrayData">TLzDbgWatchDataIntf.SetNextArrayData</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateStructure">
+        <short>Create result for an object, record or other structure</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AStructType: TLzDbgStructType</var>
+              </p>
+              <p>See   
+    <link id="TLzDbgWatchDataIntf.TLzDbgStructType">TLzDbgWatchDataIntf.TLzDbgStructType</link>
+              </p>
+            </li>
+            <li>
+              <p>
+                <var>ADataAddress: TDBGPtr = 0</var>
+              </p>
+              <p>DataAddress, if applicable (SetDataAddress does not work)</p>
+            </li>
+          </ul>
+          <p>
+            <u>Supported methods to add info to a structure value:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetTypeName">TLzDbgWatchDataIntf.SetTypeName</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetAnchestor">TLzDbgWatchDataIntf.SetAnchestor</link>
+            </li>
+            <li>
+              <link id="TLzDbgWatchDataIntf.AddField">TLzDbgWatchDataIntf.AddField</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateValueHandlerResult">
+        <short>Create extra storage for value converter result</short>
+        <descr>
+          <p>When storing a result from a value converter, the result (which must be created using any of the other "Create..." methods) should be encapsulated by this.</p>
+          <p>This will allow storing the value converter's result and the result the backend would otherwise have created. Should the value handler create an error, the original data is available to be shown</p>
+          <p>The call to <var>CreateValueHandlerResult</var>returns a new <var>TLzDbgWatchDataIntf</var> which should be used to create the result of the value converter. <br/>
+To add the non converted result use <var>SetDerefData</var>, which will alse returns a <var>TLzDbgWatchDataIntf</var>.
+</p>
+          <p>
+            <u>Supported methods to add info to a converter's result wrapper:</u>
+          </p>
+          <ul>
+            <li>
+              <link id="TLzDbgWatchDataIntf.SetDerefData">TLzDbgWatchDataIntf.SetDerefData</link>
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.CreateError">
+        <short>Create an error</short>
+        <descr>
+          <ul>
+            <li>
+              <p>
+                <var>AVal: String</var>
+              </p>
+              <p>The error text to be displayed</p>
+            </li>
+          </ul>
+          <remark>The interface may still change</remark>
+          <p/>
+          <p>CreateError can be called immediately, without need to create any other value first. Or it can be called on a result that already had a value created. If the existing result had nested values they will all be dropped.</p>
+        </descr>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetPCharShouldBeStringValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetTypeName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetDataAddress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetDerefData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetNextArrayData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.SetAnchestor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TLzDbgWatchDataIntf.AddField">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TWatchValueIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.BeginUpdate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.EndUpdate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.AddNotification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.RemoveNotification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.ResData">
+        <short>Provides the interface for building the watch-result.</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetDisplayFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetEvaluateFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetDbgValConverter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetExpression">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetFirstIndexOffs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetRepeatCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetStackFrame">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetThreadId">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetValidity">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.SetTypeInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TWatchValueIntf.GetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.SetValidity">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchValueIntf.SetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.DisplayFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.EvaluateFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.FirstIndexOffs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.RepeatCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.ThreadId">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.StackFrame">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.Expression">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.Validity">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.Value">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: default -->
+      <element name="TWatchValueIntf.TypeInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TWatchesSupplierIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- interface Visibility: default -->
+      <element name="TWatchesMonitorIntf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchesMonitorIntf.InvalidateWatchValues">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchesSupplierIntf.RequestData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TWatchesSupplierIntf.TriggerInvalidateWatchValues">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- LazDebuggerIntf -->
+  </package>
+</fpdoc-descriptions>
