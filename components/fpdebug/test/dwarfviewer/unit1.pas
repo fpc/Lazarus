@@ -5,10 +5,11 @@ unit Unit1;
 interface
 
 uses
-  FpImgReaderWinPE, Classes, SysUtils, math, FileUtil, LazLogger, LazLoggerProfiling,
-  LazSysUtils, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, FpPascalParser, FpDbgInfo,
-  FpDbgDwarfDataClasses, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, EditBtn,
-  Menus, Clipbrd, maps, types, strutils;
+  FpImgReaderWinPE, Classes, SysUtils, math, FileUtil, LazLogger,
+  LazLoggerProfiling, LazSysUtils, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst,
+  FpPascalParser, FpDbgInfo, FpDbgDwarfDataClasses, FpDbgUtil, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, ComCtrls, EditBtn, Menus, Clipbrd, maps, types,
+  strutils;
 
 type
 
