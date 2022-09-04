@@ -10,7 +10,7 @@ uses
   LazFglHash, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazFileUtils, LazUTF8,
   DbgIntfBaseTypes,
   // FpDebug
-  macho, FpImgReaderMachoFile, FpImgReaderBase, fpDbgSymTable, FpDbgUtil;
+  macho, FpImgReaderMachoFile, FpImgReaderBase, fpDbgSymTable, FpDbgUtil, FpDbgLoader, FpDbgCommon;
 
 type
 
@@ -43,7 +43,7 @@ type
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
-    class procedure LoadSubFiles(ASubFiles: TStrings; ALoaderList: TFPObjectList);
+    class procedure LoadSubFiles(ASubFiles: TStrings; ALoaderList: TDbgImageLoaderList);
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   public
@@ -52,9 +52,6 @@ type
   end;
 
 implementation
-
-uses
-  FpDbgLoader, FpDbgCommon;
 
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
@@ -170,7 +167,7 @@ begin
   Result:='mach-o file';
 end;
 
-class procedure TDbgMachoDataSource.LoadSubFiles(ASubFiles: TStrings; ALoaderList: TFPObjectList);
+class procedure TDbgMachoDataSource.LoadSubFiles(ASubFiles: TStrings; ALoaderList: TDbgImageLoaderList);
 var
   DwarfDebugMap: TAppleDwarfDebugMap;
   Loader: TDbgImageLoader;
@@ -633,14 +630,16 @@ var
   StringOffset: uint32_t;
   SymbolValue: QWord;
   State: TDebugTableState;
-  AddressMap: TDbgAddressMap;
+  AddressMap, AddressMapTmp: TDbgAddressMap;
   ProcName: string;
   DwarfDebugMap: TAppleDwarfDebugMap;
   FullDwarfDebugMap: TDbgAddressMapPointerHashList;
+  TmpAddressMapList: TDbgAddressMapHashList;
   ind: THTCustomNode;
 begin
   DwarfDebugMap:=nil;
   FullDwarfDebugMap := TDbgAddressMapPointerHashList.Create;
+  TmpAddressMapList := TDbgAddressMapHashList.Create;
   p := Section[_symbol];
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
@@ -685,9 +684,21 @@ begin
               DwarfDebugMap.Dir := pchar(SymbolStr+StringOffset);
               state := dtsDir;
             end
-            else if (SymbolType in [14,15]) then begin
+            else if (SymbolType and not uint8_t(N_EXT or N_PEXT) = N_SECT) and (SymbolValue <> 0) then begin
               ind := FullDwarfDebugMap.Find(pchar(SymbolStr+StringOffset));
-              if (ind <> nil) and (FullDwarfDebugMap.ItemPointerFromNode(ind)^.NewAddr = 0) then begin
+              if (ind = nil) then begin
+                ind := TmpAddressMapList.Find(pchar(SymbolStr+StringOffset));
+                if (ind = nil) then begin
+                  AddressMapTmp.NewAddr:=SymbolValue;
+                  AddressMapTmp.OrgAddr:=0;
+                  AddressMapTmp.Length:=0;
+                  TmpAddressMapList.Add(pchar(SymbolStr+StringOffset), AddressMapTmp);
+                end
+                else
+                  TmpAddressMapList.ItemPointerFromNode(ind)^.NewAddr := SymbolValue;
+              end
+              else
+              if (FullDwarfDebugMap.ItemPointerFromNode(ind)^.NewAddr = 0) then begin
                 FullDwarfDebugMap.ItemPointerFromNode(ind)^.NewAddr := SymbolValue;
               end;
             end;
@@ -722,8 +733,14 @@ begin
               AddressMap.NewAddr:=SymbolValue;
               AddressMap.OrgAddr:=0;
               AddressMap.Length:=0;
-              DwarfDebugMap.GlobalList.Add(pchar(SymbolStr+StringOffset), AddressMap);
               if (SymbolType = N_GSYM) and (SymbolValue = 0) then begin
+                ind := TmpAddressMapList.Find(pchar(SymbolStr+StringOffset));
+                if (ind <> nil) then begin
+                  AddressMap.NewAddr:=TmpAddressMapList.ItemPointerFromNode(ind)^.NewAddr ;
+                end;
+              end;
+              DwarfDebugMap.GlobalList.Add(pchar(SymbolStr+StringOffset), AddressMap);
+              if (SymbolType = N_GSYM) and (AddressMap.NewAddr = 0) then begin
                 ind := DwarfDebugMap.GlobalList.Find(pchar(SymbolStr+StringOffset));
                 FullDwarfDebugMap.Add(pchar(SymbolStr+StringOffset),
                   DwarfDebugMap.GlobalList.ItemPointerFromNode(ind));
@@ -765,6 +782,7 @@ begin
     end;
   end;
   FullDwarfDebugMap.Free;
+  TmpAddressMapList.Free
 end;
 
 procedure TDbgMachoDataSource.ParseSubAppleDwarfDataMap(ADebugMap: TObject);
@@ -814,18 +832,7 @@ begin
         StringOffset := SymbolArr[i].n_un.n_strx;
         SymbolValue := SymbolArr[i].n_value;
       end;
-      if SymbolType = N_SECT then
-      begin
-        s := pchar(SymbolStr+StringOffset);
-        ind := MainDwarfDebugMap.GlobalList.Find(s);
-        if assigned(ind) then
-          begin
-            AddressMap:=MainDwarfDebugMap.GlobalList.ItemFromNode(ind);
-            AddressMap.OrgAddr:=SymbolValue;
-            AddressMapList.Add(AddressMap);
-          end;
-      end;
-      if SymbolType = N_SECT+N_EXT then
+      if SymbolType and not uint8_t(N_EXT or N_PEXT) = N_SECT then
       begin
         s := pchar(SymbolStr+StringOffset);
         ind := MainDwarfDebugMap.GlobalList.Find(s);
