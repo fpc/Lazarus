@@ -513,10 +513,11 @@ var
   Entry: TIdeCallStackEntry;
   S: String;
 begin
+  if (GetSelectedCallstack=nil) or (GetSelectedCallstack.Count=0) then
+    exit;
+
   Clipboard.Clear;
-  
-  if (GetSelectedCallstack=nil) or (GetSelectedCallstack.Count=0) then exit;
-  
+
   S := '';
   // GetSelectedCallstack.PrepareRange();
   for n:= 0 to GetSelectedCallstack.Count-1 do
