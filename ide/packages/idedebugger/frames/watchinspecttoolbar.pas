@@ -846,7 +846,9 @@ begin
   AWatch.EvaluateFlags := Opts;
   AWatch.DbgBackendConverter := Conv;
   AWatch.Enabled := True;
-  AWatch.RepeatCount := ArrayNavigationBar1.PageSize;
+  AWatch.RepeatCount := 0;
+  if ArrayNavigationBar1.Visible then
+    AWatch.RepeatCount := ArrayNavigationBar1.PageSize;
   FInspectWatches.EndUpdate;
   FCurrentWatchValue := AWatch.Values[tid, idx];
   if FCurrentWatchValue <> nil then begin
