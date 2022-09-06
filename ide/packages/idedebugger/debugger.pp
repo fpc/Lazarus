@@ -4662,6 +4662,7 @@ begin
   if AnOther is TCurrentCallStack then begin
     FCount := TCurrentCallStack(AnOther).FCount;
     FCountValidity := TCurrentCallStack(AnOther).FCountValidity;
+    FAtLeastCountValidity := TCurrentCallStack(AnOther).FAtLeastCountValidity;
     FAtLeastCount := TCurrentCallStack(AnOther).FAtLeastCount;
     FAtLeastCountOld := TCurrentCallStack(AnOther).FAtLeastCountOld;
   end
@@ -4876,7 +4877,10 @@ end;
 procedure TCurrentCallStack.SetHasAtLeastCountInfo(AValidity: TDebuggerDataState;
   AMinCount: Integer);
 begin
-  if (FAtLeastCountValidity = AValidity) then exit;
+  if (FAtLeastCountValidity = AValidity) and
+     ( (AValidity <> ddsValid) or (FAtLeastCount >= AMinCount) )
+  then
+    exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TCurrentCallStack.SetCountMinValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]);
   FAtLeastCountOld := -1;
   FAtLeastCountValidity := AValidity;
