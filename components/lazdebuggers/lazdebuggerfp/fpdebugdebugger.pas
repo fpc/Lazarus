@@ -730,7 +730,8 @@ begin
       CList := FThread.CallStackEntryList;
 
     if CList <> nil then begin
-      if CList.HasReadAllAvailableFrames then begin
+      DebugLn((DBG_VERBOSE or DBG_WARNINGS) and (FRequiredMinCount < 0) and not CList.HasReadAllAvailableFrames, ['UpdateCallstack_DecRef: ERROR needed full count, but CList is not marked as AllAvail']);
+      if (CList.HasReadAllAvailableFrames) or (FRequiredMinCount = -1) then begin
         FCallstack.Count := CList.Count;
         FCallstack.SetCountValidity(ddsValid);
       end
