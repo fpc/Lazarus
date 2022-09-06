@@ -6383,9 +6383,9 @@ end;
 function TIdeCallStack.CountLimited(ALimit: Integer): Integer;
 begin
   case HasAtLeastCount(ALimit) of
-    nbUnknown: Result := 0;
     nbTrue:    Result := ALimit;
     nbFalse:   Result := Count;
+    else       Result := 0;
   end;
 end;
 
