@@ -547,7 +547,8 @@ begin
   FDebugger.FLockList.GetLockFor(ThreadCallStack);
   try
     CurCnt := ThreadCallStack.Count;
-    while (not StopRequested) and (FRequiredMinCount > CurCnt) and
+    while (not StopRequested) and
+          ( (FRequiredMinCount > CurCnt) or (FRequiredMinCount < 0) ) and
           (not ThreadCallStack.HasReadAllAvailableFrames)
     do begin
       ReqCnt := Min(CurCnt + 5, FRequiredMinCount);
