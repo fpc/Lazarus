@@ -2988,20 +2988,65 @@ values should be used (mrOK, mrCancel, et. al.).
 </element>
 
 <element name="TShowInTaskbar">
-<short>How a form is represented in the TaskBar.</short>
-<descr/>
-<seealso/>
+<short>
+Identifies the display preference for a form on the TaskBar.
+</short>
+<descr>
+<p>
+<var>TShowInTaskbar</var> is an enumerated type with values that indicate 
+whether a form should be displayed on the task bar for the application. 
+TShowInTaskbar is the type used to implement the ShowInTaskBar and 
+EffectiveShowInTaskBar properties in TCustomForm.
+</p>
+<p>
+stDefault has a special meaning. It enables use of the setting in 
+Application.TaskBarBehavior to determine whether one or more icon buttons can 
+be displayed for the forms in the application. The resulting value is the 
+effective task bar visibility for a given form.
+</p>
+<p>
+stDefault also indicates that widgetset features and rules for form display 
+on the task bar are used.
+</p>
+<p>
+For Windows, it causes the Parent for the form to be set to the AppHandle in 
+the widgetset if the form is not the MainForm in the Application. Otherwise, 
+the MainFormHandle in the Application is used.
+</p>
+<p>
+On QT platforms, only the MainForm for the application is visible on the task 
+bar (single button mode) when set to stDefault.
+</p>
+<p>
+On GTK platforms, the SkipTaskBarHint for the GDK window is set to False for 
+the value.
+</p>
+<p>
+Some display managers, like Cinnamon, also do not allow multiple buttons to 
+be displayed; only the main form for the application is visibile on the task 
+bar. 
+</p>
+<p>
+The widgetset implementation may also impose restrictions based on the 
+display protocol used at run-time, like X-11 or Wayland.
+</p>
+</descr>
+<seealso>
+<link id="TCustomForm.ShowInTaskBar"/>
+<link id="TCustomForm.EffectiveShowInTaskBar"/>
+</seealso>
 </element>
 <element name="TShowInTaskbar.stDefault">
 <short>
-Uses the default rules from the platform for showing the form in the TaskBar.
+Uses the default rules for the widgetset / platform to determine form 
+visibility on the TaskBar.
 </short>
 </element>
 <element name="TShowInTaskbar.stAlways">
-<short>Always show the form in the TaskBar.</short>
+<short>Always show the form on the TaskBar.</short>
 </element>
 <element name="TShowInTaskbar.stNever">
-<short>Never show the form in the TaskBar.</short>
+<short>Never show the form on the TaskBar.</short>
 </element>
 
 <element name="TPopupMode">
@@ -3292,35 +3337,18 @@ or platform, and provide a common API for form-related operations.
 <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
 <element name="TCustomForm.GetClientHandle.Result"/>
 
+<!-- private -->
 <element name="TCustomForm.GetEffectiveShowInTaskBar">
 <short>
-Tries to resolve <var>stDefault</var> in <var>ShowInTaskBar</var> using 
-<var>Application</var> settings.
+Gets the value for the EffectiveShowInTaskBar property.
 </short>
-<descr>
-<p>
-Calls ShowInTaskBar to get the visibility of an icon for the form.
-</p>
-<p>
-When the return value is stDefault (or when called at design-time), the 
-TaskBarBehavior property in Application is taken into consideration to get 
-the actual return value. If the application displays a single button for the 
-executable and its forms, the return value is set to stNever. If multiple 
-buttons can be displayed in the task bar, the value stAlways is used. If the 
-Application uses the value tbDefault, the value stDefault is retained in the 
-return value.
-</p>
-</descr>
-<seealso>
-<link id="TCustomForm.ShowInTaskBar"/>
-<link id="TApplication.TaskBarBehavior"/>
-<link id="TShowInTaskbar"/>
-<link id="Application"/>
-</seealso>
+<descr/>
+<seealso/>
 </element>
 <element name="TCustomForm.GetEffectiveShowInTaskBar.Result">
-<short>Effect visibility for the form icon in the task bar.</short>
+<short>Value for the EffectiveShowInTaskBar property.</short>
 </element>
+
 <element name="TCustomForm.GetMonitor">
 <short>Gets the value for the Monitor property.</short>
 <seealso>
@@ -6804,11 +6832,55 @@ use dmMainForm behavior.
 
 <element name="TCustomForm.EffectiveShowInTaskBar">
 <short>
-Value from ShowInTaskBar adjusted for the default task bar behavior in the 
-application.
+Value for the <var>ShowInTaskBar</var> property when resolved using the 
+<var>Application</var> settings.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+</p>
+<p>
+<var>EffectiveShowInTaskBar</var> is a read-only <var>TShowInTaskBar</var> 
+property. It contains the effective visibility for the form on the system 
+task bar. The value is derived from the ShowInTaskBar property when it has 
+been changed. It is not updated, however, for the following conditions:
+</p>
+<ul>
+<li>The form instance is the MainForm in the Application.</li>
+<li>The form does not have a valid Handle.</li>
+<li>The form has an assigned Parent.</li>
+<li>The form is a MDIChild form (FormStyle is fsMDIChild).</li>
+<li>The form is not Showing (Handle is visible).</li>
+</ul>
+<p>
+EffectiveShowInTaskBar resolves the value to the TaskBarBehavior property in 
+the Application singleton. For the TaskBarBehavior values:
+</p>
+<dl>
+<dt>tbSingleButton</dt>
+<dd>Contains stNever.</dd>
+<dt>tbMultiButton</dt>
+<dd>Contains stAlways.</dd>
+<dt>tbDefault</dt>
+<dd>
+Contains stDefault and causes the rules for the widgetset or platform to be 
+used.
+</dd>
+</dl>
+<p>
+The property value is passed to the widgetset class where it may 
+be translated, applied, or ignored based on the capabilities for the 
+implementation or platform.
+</p>
+</descr>
+<seealso>
+<link id="TCustomForm.ShowInTaskBar"/>
+<link id="TApplication.TaskBarBehavior"/>
+<link id="Application"/>
+<link id="TShowInTaskbar"/>
+</seealso>
+</element>
+<element name="TCustomForm.GetEffectiveShowInTaskBar.Result">
+<short>Effect visibility for the form icon in the task bar.</short>
 </element>
 
 <element name="TCustomForm.FormState">
@@ -6931,7 +7003,7 @@ allow the parent form to handle specific interactions with the user.
 
 <element name="TCustomForm.MDIChildren">
 <short>
-Provides indexed access to MDI child forms, when this is a MDI form.
+Provides indexed access to MDI child forms when used as a MDI form.
 </short>
 <descr>
 <p>
@@ -6939,7 +7011,7 @@ Provides indexed access to MDI child forms, when this is a MDI form.
 which provides access to the child forms in a Multi-Document Interface (MDI) 
 application. In an MDI application, one of the forms acts as the main form 
 for the application, and is the container for its MDI child forms. In 
-addition, an MDI child form can be nested in another MDI child form.
+addition, a MDI child form can be nested in another MDI child form.
 </p>
 <remark>
 Historically, support for MDI is dependent on the underlying widgetset or 
@@ -7665,32 +7737,57 @@ asynchronous queued event handler for the form is executed and calls the
 </element>
 
 <element name="TCustomForm.ShowInTaskBar">
-<short>How the form is represented in the system Task Bar.</short>
+<short>
+Indicates if the form should be displayed on the system Task Bar.
+</short>
 <descr>
 <p>
 <var>ShowInTaskBar</var> is a <var>TShowInTaskbar</var> property which 
-indicates how the form is represented on the system task bar. The default 
-value for the property is <var>stDefault</var>, and indicates the default 
-behavior for the widgetset, platform, or operating system is used. See <link 
-id="TShowInTaskbar">TShowInTaskbar</link> for more information about values 
-in the enumeration and their meanings.
+indicates whether the form instance should be displayed as an icon on the 
+system task bar. The default value for the property is <var>stDefault</var>, 
+and indicates the default behavior for the application, widgetset, platform, 
+or operating system is used. See 
+<link id="TShowInTaskbar">TShowInTaskbar</link> for more information about 
+values in the enumeration and their meanings.
 </p>
 <p>
 ShowInTaskBar is used in conjunction with the <var>TaskBarBehavior</var> 
 property in the <var>Application</var> singleton to determine the effective 
-visibility for the form on the system task bar. For example: The task bar 
-behavior may require grouping related forms under a single form icon.
+(realized) visibility for the form on the system task bar. For example, the 
+value may be changed when it conflicts with the value in TaskBarBehavior.
 </p>
 <p>
 Changing the value for the property causes the effective visibility to be 
-recalculated when the form is not hidden, or a MDI child form. The new 
-effective task bar visibility is posted to the widgetset class.
+recalculated when the form is not hidden, or a MDI child form. The value is 
+posted to the widgetset class. Actions performed in the widget are 
+platform-specific, and may include:
+</p>
+<ul>
+<li>Update and apply style flags for the form window (when needed).</li>
+<li>Show or Hide the form window (as needed).</li>
+<li>
+Disable the request when not supported in the widgetset or the display 
+protocol (like X-11, Wayland).
+</li>
+<li>
+Update other properties which control the feature (GTK2 and GTK use their  
+SkipTaskBarHint properties).
+</li>
+</ul>
+<p>
+In short, ShowInTaskBar is the requested visibility on the task bar. 
+EffectiveShowInTaskBar is the visibility as determined by the Application and 
+the widgetset / platform at run-time. stDefault is the value which enables 
+use of the platform rules. Any given value assigned to either ShowInTaskBar 
+or in Application.TaskBarBehavior can be overridden at run-time based on the 
+capabilities for the widgetset or the display manager.
 </p>
 </descr>
 <seealso>
-<link id="TShowInTaskbar"/>
+<link id="TCustomForm.EffectiveShowInTaskBar"/>
 <link id="Application"/>
 <link id="TApplication.TaskBarBehavior"/>
+<link id="TShowInTaskbar"/>
 </seealso>
 </element>
 
