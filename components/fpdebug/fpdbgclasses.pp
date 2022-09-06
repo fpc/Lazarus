@@ -3002,7 +3002,7 @@ var
   Address, FrameBase, LastFrameBase, Dummy: QWord;
   Size, CountNeeded, IP, BP, CodeReadErrCnt, SP, i: integer;
   AnEntry, NewEntry: TDbgCallstackEntry;
-  R: TDbgRegisterValue;
+  R, StackReg, FrameReg: TDbgRegisterValue;
   nIP, nBP, nSP: String;
   NextIdx: LongInt;
   OutSideFrame: Boolean;
@@ -3090,6 +3090,13 @@ begin
         Break;
       FCallStackEntryList.Add(NewEntry);
       Address := NewEntry.AnAddress;
+      StackReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
+      FrameReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
+      StackPtr := 0;
+      if (StackReg <> nil) and (FrameReg <> nil) then begin
+        StackPtr := StackReg.FNumValue;
+        FrameBase := FrameReg.FNumValue;
+      end;
       AnEntry := NewEntry;
       Dec(CountNeeded);
       inc(NextIdx);
@@ -3098,6 +3105,8 @@ begin
       end
     else if (FrameBase <> 0) and (FrameBase > LastFrameBase) then
       begin
+      if StackPtr = 0 then
+        break;
       // CFI not available or contains unsupported structures. Fallback to
       // old fashioned stack-tracing.
       OutSideFrame := False;
