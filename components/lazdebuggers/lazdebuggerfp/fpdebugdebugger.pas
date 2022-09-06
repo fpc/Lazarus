@@ -2659,14 +2659,10 @@ begin
     end;
   end;
 
-  if (CurrentThread <> nil) then
-    FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
-
-  // Needs to be correct thread, do not interfer with other threads
-  if (CurrentThread = nil) or
-     (CurrentCommand = nil) or (CurrentCommand.Thread <> CurrentThread)
-  then
+  if (CurrentThread = nil) then
     exit;
+
+  FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
 
   PC := CurrentThread.GetInstructionPointerRegisterValue;
   {$IFDEF WIN64}
@@ -2680,6 +2676,37 @@ begin
     end;
   end;
   {$ENDIF}
+
+  if (CurrentCommand = nil) then
+    exit;
+
+  // Needs to be correct thread, ignore events in other threads
+  if (CurrentCommand.Thread <> CurrentThread)
+  then begin
+    if (assigned(FBreakPoints[bplPopExcept])    and FBreakPoints[bplPopExcept].HasLocation(PC))
+    or (assigned(FBreakPoints[bplCatches])      and FBreakPoints[bplCatches].HasLocation(PC))
+    or (assigned(FBreakPoints[bplStepOut])      and FBreakPoints[bplStepOut].HasLocation(PC))
+    or (assigned(FBreakPoints[bplReRaise])      and FBreakPoints[bplReRaise].HasLocation(PC))
+       {$IFDEF MSWINDOWS}
+    or (assigned(FBreakPoints[bplSehW32Except])      and FBreakPoints[bplSehW32Except].HasLocation(PC))
+    or (assigned(FBreakPoints[bplSehW32Finally])     and FBreakPoints[bplSehW32Finally].HasLocation(PC))
+    or (assigned(FBreakPoints[bplFpcExceptHandler])  and FBreakPoints[bplFpcExceptHandler].HasLocation(PC))
+    or (assigned(FBreakPoints[bplFpcFinallyHandler]) and FBreakPoints[bplFpcFinallyHandler].HasLocation(PC))
+    or (assigned(FBreakPoints[bplFpcLeaveHandler])   and FBreakPoints[bplFpcLeaveHandler].HasLocation(PC))
+       {$ENDIF}
+       {$IFDEF WIN64}
+    or (assigned(FBreakPoints[bplFpcSpecific])       and FBreakPoints[bplFpcSpecific].HasLocation(PC))
+    or (assigned(FBreakPoints[bplRtlRestoreContext]) and FBreakPoints[bplRtlRestoreContext].HasLocation(PC))
+    or (assigned(FBreakPoints[bplRtlUnwind])         and FBreakPoints[bplRtlUnwind].HasLocation(PC))
+    or (assigned(FBreakPoints[bplSehW64Except])      and FBreakPoints[bplSehW64Except].HasLocation(PC))
+    or (assigned(FBreakPoints[bplSehW64Finally])     and FBreakPoints[bplSehW64Finally].HasLocation(PC))
+       {$ENDIF}
+    then begin
+      AFinishLoopAndSendEvents := False;
+    end;
+    exit;
+  end;
+
 
   if (FState = esSteppingFpcSpecialHandler) and
      (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler) and
