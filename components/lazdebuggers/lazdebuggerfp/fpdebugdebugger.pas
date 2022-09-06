@@ -1535,7 +1535,7 @@ var
   Process: TDbgProcess;
 begin
   Process := GetDbgProcess;
-  if not Process.GetThread(AContext.ThreadId, Result) then
+  if (AContext = nil) or not Process.GetThread(AContext.ThreadId, Result) then
     Result := FFpDebugDebugger.FDbgController.CurrentThread;
 end;
 
