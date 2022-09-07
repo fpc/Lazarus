@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-08-30 01:58+0300\n"
+"PO-Revision-Date: 2022-09-08 01:43+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14921,6 +14921,10 @@ msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "Не удалось найти %s в %s на строке %s, в столбце %s.%sВозможно, сообщение утратило актуальность."
 
+#: lazarusidestrconsts.lisnothingtodo
+msgid "Nothing to do"
+msgstr "Нечего выполнять"
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Не реализовано"
@@ -19085,6 +19089,11 @@ msgstr "Проект не выводит отладочную информаци
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Проект не использует модуль LCL Interfaces, требующийся LCLBase.%sКомпоновщик будет выдавать непонятные ошибки, если LCL будет использоваться без модуля Interfaces."
+
+#: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
+#, object-pascal-format
+msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
+msgstr "Проект не имеет команды компиляции.%sСмотрите Проект -> Параметры проекта -> Параметры компилятора -> Команды компилятора"
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."

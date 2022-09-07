@@ -15030,6 +15030,10 @@ msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "%s nenalezen v %s na řádku %s, sloupec %s.%sMožná je zpráva neaktuální."
 
+#: lazarusidestrconsts.lisnothingtodo
+msgid "Nothing to do"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Doposud neimplementováno"
@@ -19192,6 +19196,11 @@ msgstr "Projekt nezapisuje ladící informace v Dwarf formátu. \"%s\" podporuje
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekt nepoužívá rozhraní jednotek LCL, které jsou vyžadovány LCLBase.%sDostanete různé chyby při linkování, pokud použijete LCL bez rozhraní."
+
+#: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
+#, object-pascal-format
+msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."

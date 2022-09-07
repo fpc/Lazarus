@@ -14853,6 +14853,10 @@ msgstr "Mallinetta ei ole valittu"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "%s ei löydy %s:ssa riviltä %s sarakkeesta %s.%sEhkä viesti on vanhentunut."
 
+#: lazarusidestrconsts.lisnothingtodo
+msgid "Nothing to do"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Ei toteutettu"
@@ -18998,6 +19002,11 @@ msgstr "Projekti ei tuota virheenjäljitystietoa Dwarf muodossa.\"%s\" tukee ain
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekti ei käytä LCL \"interfaces\" käännösyksikköä, Mitä LCLBase tarvitsee.%sLinkittäjä antaa omituisia virheitä, jos LCL käytetään ilman \"interfaces\":a."
+
+#: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
+#, object-pascal-format
+msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."

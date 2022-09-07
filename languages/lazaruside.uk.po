@@ -14949,6 +14949,10 @@ msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "Не вдалось знайти %s у %s у рядку %s, у стовпці %s.%sМожливо, повідомлення застаріло."
 
+#: lazarusidestrconsts.lisnothingtodo
+msgid "Nothing to do"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Не реалізовано"
@@ -19113,6 +19117,11 @@ msgstr "Проєкт не записує зневаджувальної інфо
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Проєкт не використовує інтерфейси модулів LCL, які вимагає LCLBase.%sВи отримаєте дивні помилки компонувальника, якщо ви використаєте LCL без інтерфейсів."
+
+#: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
+#, object-pascal-format
+msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."

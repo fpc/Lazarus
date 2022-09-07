@@ -14941,6 +14941,10 @@ msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr "%s non trouvé dans %s à la ligne %s, colonne %s.%sLe message est peut être périmé."
 
+#: lazarusidestrconsts.lisnothingtodo
+msgid "Nothing to do"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "Non implémenté"
@@ -19105,6 +19109,11 @@ msgstr "Le projet ne fournit pas d'informations de débogage au format Dwarf. Le
 #, object-pascal-format
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Le projet n'utilise pas les interfaces de l'unité LCL, mais il semble qu'il en ait besoin.%sVous obtiendrez des erreurs étranges avec l'éditeur de liens si vous utilisez les fiches LCL sans interfaces."
+
+#: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
+#, object-pascal-format
+msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
