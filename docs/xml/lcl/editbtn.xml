@@ -77,7 +77,7 @@ The value was modified in LCL version 2.4.
 <seealso/>
 <version>
 Added in LCL version 2.4.
-</version>        
+</version>
 </element>
 
 <element name="TEbEdit">
@@ -388,12 +388,14 @@ Performs actions needed when the button for the control is clicked.
 </short>
 <descr>
 <p>
-The implementation for <var>ButtonClick</var> is empty in 
-<var>TCustomEditButton</var>; use a descendent class which implements a 
-specific functionality.
+The <var>ButtonClick</var> it a virtual method in 
+<var>TCustomEditButton</var>, and the implementation is empty; use a 
+descendent class which re-implements the method with the functionality needed 
+for the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+</seealso>
 </element>
 
 <element name="TCustomEditButton.BuddyClick">
@@ -496,19 +498,53 @@ CalcButtonVisible is used in the implementation of the
 </seealso>
 </element>
 <element name="TCustomEditButton.CalcButtonVisible.Result">
-<short></short>
+<short>
+<b>True</b> if the control is visible and has focus, or is configured to 
+always shows its editor button.
+</short>
 </element>
 
 <element name="TCustomEditButton.GetDefaultGlyphName">
 <short>
-<var>GetDefaultGlyphName</var> finds the name of the default glyph used for 
-the Button.
+Gets the name of the default glyph resource used for the Button on the 
+control.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>GetDefaultGlyphName</var> is String function used to get the default 
+resource name with the glyph image for the Button on the control. It is used 
+in the LoadDefaultGlyph method to assign the LCLGlyphName for the 
+TButtonGlyph instance used in the control.
+</p>
+<p>
+GetDefaultGlyphName is a virtual method in TCustomEditButton, and does not 
+provide an actual value (other than an empty string). It must be 
+re-implemented in a descendant class to return the name for its glyph 
+resource. Descendants include:
+</p>
+<ul>
+<li>TCustomControlFilterEdit</li>
+<li>TFileNameEdit</li>
+<li>TDirectoryEdit</li>
+<li>TDateEdit</li>
+<li>TTimeEdit</li>
+<li>TCalcEdit</li>
+</ul>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit"/>
+<link id="TFileNameEdit"/>
+<link id="TDirectoryEdit"/>
+<link id="TDateEdit"/>
+<link id="TTimeEdit"/>
+<link id="TCalcEdit"/>
+<link id="#lcl.buttons.TButtonGlyph.LCLGlyphName">TButtonGlyph.LCLGlyphName</link>
+</seealso>
 </element>
 <element name="TCustomEditButton.GetDefaultGlyphName.Result">
-<short></short>
+<short>
+Default resource name for the glyph image on the Button in the control.
+</short>
 </element>
 
 <element name="TCustomEditButton.CalculatePreferredSize" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CalculatePreferredSize"/>
@@ -1124,6 +1160,7 @@ does not have focus, it displays the greyed value "(filter)".
 <short>New value for the property.</short>
 </element>
 
+<!-- this is private ATM -->
 <element name="TCustomControlFilterEdit.OnIdle">
 <short>
 Event handler signalled to apply a filter when an Application becomes idle.
@@ -1158,20 +1195,20 @@ OnIdle signals the <var>OnAfterFilter</var> event handler (when assigned).
 <short>Object for the event notification.</short>
 </element>
 <element name="TCustomControlFilterEdit.OnIdle.Done">
-<short></short>
+<short>Not used or updated in TCustomControlFilterEdit.</short>
 </element>
 
 <element name="TCustomControlFilterEdit.IsTextHintStored">
-<descr>
-Indicates if the value in TextHint is stored in the LCL component streaming 
-mechanism
-</descr>
 <short>
+Indicates if the value in TextHint is stored in the LCL component streaming 
+mechanism.
+</short>
+<descr>
 <p>
 The value is <b>True</b> when <var>TextHint</var> contains a value other than 
 the <var>rsFilter</var> resource string.
-</p>.
-</short>
+</p>
+</descr>
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.IsTextHintStored.Result">
@@ -1384,12 +1421,16 @@ is a virtual abstract method, and must be implemented in a derived classes.
 <element name="TCustomControlFilterEdit.MoveNext">
 <short>Moves to the next value matching the filter for the control.</short>
 <descr>
+<p>
 Abstract virtual method that must be implemented in a descendent class.
+</p>
 </descr>
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MoveNext.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.MovePrev">
@@ -1404,18 +1445,24 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MovePrev.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.MovePageUp">
 <short>Moves one page of previous values matching the filter.</short>
 <descr>
+<p>
 Abstract virtual method that must be implemented in a descendent class.
+</p>
 </descr>
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MovePageUp.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.MovePageDown">
@@ -1428,7 +1475,9 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MovePageDown.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.MoveHome">
@@ -1441,7 +1490,9 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MoveHome.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.MoveEnd">
@@ -1454,7 +1505,9 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 <element name="TCustomControlFilterEdit.MoveEnd.ASelect">
-<short></short>
+<short>
+<b>True</b> if the value should be selected following the move operation.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.ReturnKeyHandled">
@@ -2043,10 +2096,15 @@ Performs actions needed when the value for the control has been changed.
 <element name="TFileNameEdit.DoFolderChange">
 <short>Signals the OnFolderChange event handler (when assigned).</short>
 <descr></descr>
-<seealso></seealso>
+<seealso>
+<link id="TFileNameEdit.OnFolderChange"/>
+<link id="#lcl.dialogs.TOpenDialog.OnFolderChange"/>
+</seealso>
 </element>
 <element name="TFileNameEdit.DoFolderChange.Sender">
-<short></short>
+<short>
+Object instance (TFileNameEdit) for the event notification.
+</short>
 </element>
 
 <element name="TFileNameEdit.Create">
@@ -2080,9 +2138,23 @@ calls the inherited constructor. Create allocates resource needed for the
 
 <element name="TFileNameEdit.RunDialog">
 <short>
-<var>RunDialog</var> executes the dialog for the control.
+Executes an Open or Save dialog for the DialogKind specified in the control. 
 </short>
-<descr/>
+<descr>
+<p>
+<var>RunDialog</var> is a virtual method used to create, display, and execute 
+a dialog when the button for the control is clicked. It calls the 
+CreateDialog method to create a TDialogKind instance for the type indicated 
+in the DialogKind property. The Execute method for the dialog is called to 
+display the dialog form. If Execute returns <b>True</b>, the SaveDialogResult 
+method is called to perform the Open or Save action(s) needed for the 
+DialogKind.
+</p>
+<p>
+RunDialog is called from the ButtonClick method which occurs when the Button 
+for the control has been clicked.
+</p>
+</descr>
 <errors/>
 <seealso/>
 </element>
@@ -2379,10 +2451,33 @@ attached SpeedButton that summons a Directory Open dialog.
 <short>New value for the property.</short>
 </element>
 
-<element name="TDirectoryEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName">
-<short></short>
-<descr></descr>
-<seealso></seealso>
+<element name="TDirectoryEdit.GetDefaultGlyphName">
+<short>
+Gets the name of the default glyph resource used for the Button on the 
+control.
+</short>
+<descr>
+<p>
+<var>GetDefaultGlyphName</var> is an overridden String function used to get 
+the default resource name with the glyph image for the Button on the control. 
+It is used in the LoadDefaultGlyph method to assign the LCLGlyphName for the 
+TButtonGlyph instance used in the control.
+</p>
+<p>
+In <var>TDirectoryEdit</var>, the return value is set to the ResBtnSelDir 
+constant.
+</p>
+</descr>
+<seealso>
+<link id="TCalcEdit"/>
+<link id="ResBtnSelDir"/>
+<link id="#lcl.buttons.TButtonGlyph.LCLGlyphName">TButtonGlyph.LCLGlyphName</link>
+</seealso>
+</element>
+<element name="TDirectoryEdit.GetDefaultGlyphName.Result">
+<short>
+Default resource name for the glyph used on the button in the control.
+</short>
 </element>
 
 <element name="TDirectoryEdit.CreateDialog">
@@ -3107,7 +3202,6 @@ DateToText is used in the implementation of the <var>SetDate</var>,
 <element name="TDateEdit.IsNullDate.ADate"/>
 
 <element name="TDateEdit.WSRegisterClass">
-<short/>
 <short>
 Registers the class reference used to create new instances of the class.
 </short>
@@ -3116,21 +3210,30 @@ Registers the class reference used to create new instances of the class.
 
 <element name="TDateEdit.GetDefaultGlyphName">
 <short>
-Gets the default glyph name displayed on the Button for the control.
+Gets the name of the default glyph resource used for the Button on the 
+control.
 </short>
 <descr>
 <p>
-<var>GetDefaultGlyphName</var> is overridden in <var>TDateEdit</var> to 
-return the resource name specified in the <var>ResBtnCalendar</var> constant.
+<var>GetDefaultGlyphName</var> is an overridden String function used to get 
+the default resource name with the glyph image for the Button on the control. 
+It is used in the LoadDefaultGlyph method to assign the LCLGlyphName for the 
+TButtonGlyph instance used in the control.
+</p>
+<p>
+In <var>TDateEdit</var>, the return value is set to the ResBtnCalendar
+constant.
 </p>
 </descr>
 <seealso>
+<link id="TCalcEdit"/>
 <link id="ResBtnCalendar"/>
 <link id="TCustomEditButton.GetDefaultGlyphName"/>
+<link id="#lcl.buttons.TButtonGlyph.LCLGlyphName">TButtonGlyph.LCLGlyphName</link>
 </seealso>
 </element>
 <element name="TDateEdit.GetDefaultGlyphName.Result">
-<short>Resource name for the default glyph.</short>
+<short>Default resource name for the glyph image on the control.</short>
 </element>
 
 <element name="TDateEdit.ButtonClick">
@@ -4094,30 +4197,55 @@ Used in the implementation of the OpenTimePopup and EditEditingDone methods.
 </element>
 
 <element name="TTimeEdit.TryParseInput">
-<short></short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Tries to parse and convert the specified string to a time value.
+</short>
+<descr/>
+<seealso/>
 </element>
 <element name="TTimeEdit.TryParseInput.Result">
-<short></short>
+<short>
+<b>True</b> if the text was successfully converted to a TDateTime value.
+</short>
 </element>
 <element name="TTimeEdit.TryParseInput.AInput">
-<short></short>
+<short>
+String with the time to convert in the method.
+</short>
 </element>
 <element name="TTimeEdit.TryParseInput.ParseResult">
-<short></short>
+<short>
+Returns the TDateTime with the time value converted in the method.
+</short>
 </element>
 
 <element name="TTimeEdit.GetDefaultGlyphName">
 <short>
-Gets the resource name for the default glyph displayed on the Button for the 
+Gets the name of the default glyph resource used for the Button on the 
 control.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>GetDefaultGlyphName</var> is an overridden String function used to get 
+the default resource name with the glyph image for the Button on the control. 
+It is used in the LoadDefaultGlyph method to assign the LCLGlyphName for the 
+TButtonGlyph instance used in the control.
+</p>
+<p>
+In <var>TTimeEdit</var>, the return value is set to the ResBtnTime 
+constant.
+</p>
+</descr>
+<seealso>
+<link id="ResBtnCalendar"/>
+<link id="TCustomEditButton.GetDefaultGlyphName"/>
+<link id="#lcl.buttons.TButtonGlyph.LCLGlyphName">TButtonGlyph.LCLGlyphName</link>
+</seealso>
 </element>
 <element name="TTimeEdit.GetDefaultGlyphName.Result">
-<short>Resource name for the glyph.</short>
+<short>
+Default resource name for the glyph used on the button in the control.
+</short>
 </element>
 
 <element name="TTimeEdit.ButtonClick">
@@ -4125,7 +4253,10 @@ control.
 Performs actions needed when the Button for the control is clicked.
 </short>
 <descr></descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomEditButton.ButtonClick"/>
+<link id="#lcl.timepopup.ShowTimePopup">ShowTimePopup</link>
+</seealso>
 </element>
 
 <element name="TTimeEdit.EditDblClick">
@@ -4289,20 +4420,37 @@ by 5 columns using 5 minute time intervals is used.
 
 <element name="TAcceptValueEvent">
 <short>
-<var>TAcceptValueEvent</var> - generic event handling method for accepting a 
-value from a (calculator) dialog.
+Specifies an event handler signalled when a calculator dialog has been used 
+to accept or reject a value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TAcceptValueEvent</var> is the type used for the OnAcceptValue property 
+in TCalcEdit. Implement and assign a routine using the signature for the 
+event handler to respond to selection of a value using a calculator dialog. 
+Use the AValue and Accept variable arguments to determine the value and 
+action returned from the dialog instance.
+</p>
+</descr>
+<seealso>
+<link id="TCalcEdit.OnAcceptValue"/>
+</seealso>
 </element>
 <element name="TAcceptValueEvent.Sender">
-<short/>
+<short>
+Object instance (TCalcEdit) for the event notification. 
+</short>
 </element>
 <element name="TAcceptValueEvent.AValue">
-<short/>
+<short>
+Double type with the value returned from the dialog for a calculator dialog.
+</short>
 </element>
-<element name="TAcceptValueEvent.Action">
-<short/>
+<element name="TAcceptValueEvent.Accept">
+<short>
+Returns <b>True</b> if the OK button was used to accept the value on the 
+dialog. Otherwise, the return value is <b>False</b>.
+</short>
 </element>
 
 <element name="TCalcEdit">
@@ -4316,11 +4464,13 @@ dialog.
 implements a numeric edit control with a button to display a calculator 
 dialog. It contains properties to configure the button and the calculator 
 dialog. Other properties are provided to access the numeric value as an 
-Integer or a floating point (Double) data type. Use the RunDIalog method to 
+Integer or a floating point (Double) data type. Use the RunDialog method to 
 display the calculator dialog and get its return value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomEditButton"/>
+</seealso>
 </element>
 
 <element name="TCalcEdit.FDialogTitle"/>
@@ -4330,6 +4480,7 @@ display the calculator dialog and get its return value.
 <element name="TCalcEdit.FDialogLeft"/>
 <element name="TCalcEdit.FDialogTop"/>
 
+<!-- private -->
 <element name="TCalcEdit.GetAsFloat">
 <short>Gets the value for the AsFloat property.</short>
 <descr/>
@@ -4374,14 +4525,8 @@ display the calculator dialog and get its return value.
 <short>New value for the property.</short>
 </element>
 
-<element name="TCalcEdit.TitleStored">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCalcEdit.TitleStored.Result">
-<short/>
-</element>
+<element name="TCalcEdit.TitleStored"/>
+<element name="TCalcEdit.TitleStored.Result"/>
 
 <element name="TCalcEdit.FCalcDialog">
 <short>
