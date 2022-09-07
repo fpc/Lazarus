@@ -49,6 +49,9 @@ type
 
   TSeparatorType = (ppstComma);
 
+  TFpIntrinsicPrefix = (ipExclamation, ipColon, ipNoPrefix);
+  TFpIntrinsicFunc = (ifErrorNotFound, ifLength);
+
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
     AFunctionValue: TFpValue; ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
     out AResult: TFpValue; var AnError: TFpError): boolean of object;
@@ -61,25 +64,27 @@ type
     FContext: TFpDbgSymbolScope;
     FFixPCharIndexAccess: Boolean;
     FHasPCharIndexAccess: Boolean;
+    FIntrinsicPrefix: TFpIntrinsicPrefix;
     FOnFunctionCall: TFpPascalParserCallFunctionProc;
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
     function GetResultValue: TFpValue;
     function GetValid: Boolean;
-    procedure Parse;
     procedure SetError(AMsg: String);  // deprecated;
     procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
     procedure SetError(const AnErr: TFpError);
     function PosFromPChar(APChar: PChar): Integer;
+    function LookupIntrinsic(AStart: PChar; ALen: Integer): TFpIntrinsicFunc;
   protected
     function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpValue;
     function GetRegisterValue({%H-}AnIdent: String): TFpValue;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
     property Context: TFpDbgSymbolScope read FContext;
   public
-    constructor Create(ATextExpression: String; AContext: TFpDbgSymbolScope);
+    constructor Create(ATextExpression: String; AContext: TFpDbgSymbolScope; ASkipParse: Boolean = False);
     destructor Destroy; override;
+    procedure Parse;
     function DebugDump(AWithResults: Boolean = False): String;
     procedure ResetEvaluation;
     property TextExpression: String read FTextExpression;
@@ -89,6 +94,7 @@ type
     property HasPCharIndexAccess: Boolean read FHasPCharIndexAccess;
     // handle pchar as string (adjust index)
     property FixPCharIndexAccess: Boolean read FFixPCharIndexAccess write FFixPCharIndexAccess;
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix;
     // ResultValue
     // - May be a type, if expression is a type
     // - Only valid, as long as the expression is not destroyed
@@ -202,6 +208,22 @@ type
   TFpPascalExpressionPartCpuRegister = class(TFpPascalExpressionPartContainer)
   protected
     function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartIntrinsic }
+  TFpPascalExpressionPartBracketArgumentList = class;
+
+  TFpPascalExpressionPartIntrinsic = class(TFpPascalExpressionPartContainer)
+  private
+    FIntrinsic: TFpIntrinsicFunc;
+  protected
+    function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+
+    function DoGetResultValue: TFpValue; override;
+    function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+  public
+    constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar;
+      AnEndChar: PChar; AnIntrinsic: TFpIntrinsicFunc);
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -1471,6 +1493,12 @@ begin
   end;
 
   Itm0 := Items[0];
+
+  if Itm0 is TFpPascalExpressionPartIntrinsic then begin
+    Result := TFpPascalExpressionPartIntrinsic(Itm0).DoGetResultValue(Self);
+    exit;
+  end;
+
   tmp := Itm0.ResultValue;
   if (tmp = nil) or (not Expression.Valid) then
     exit;
@@ -1708,6 +1736,73 @@ begin
   Result := FExpression.GetRegisterValue(GetText);
 end;
 
+{ TFpPascalExpressionPartIntrinsic }
+
+function TFpPascalExpressionPartIntrinsic.DoLength(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Itm: TFpPascalExpressionPart;
+  Arg: TFpValue;
+  ResLen: Integer;
+begin
+  Result := nil;
+  if (AParams.Count <> 2) then begin
+    SetError('wrong argument count');
+    exit;
+  end;
+
+  Itm := AParams.Items[1];
+  Arg := nil;
+  if Itm <> nil then
+    Arg := Itm.ResultValue;
+
+  if (Arg = nil) then begin
+    SetError('argument not supported');
+    exit;
+  end;
+
+  ResLen := 0;
+  case Arg.Kind of
+    skChar:       ResLen := 1;
+    skString,
+    skAnsiString,
+    skWideString,
+    skArray:      ResLen := Arg.MemberCount;
+    otherwise begin
+      SetError('argument not supported');
+      exit;
+    end;
+
+  end;
+
+  Result := TFpValueConstNumber.Create(ResLen, True)
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
+begin
+  Result := nil;
+  SetError('wrong argument count');
+  // this gets called, if an intrinsic has no () after it. I.e. no arguments and no empty brackets
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoGetResultValue(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+begin
+  Result := nil;
+  case FIntrinsic of
+    ifLength: Result := DoLength(AParams);
+  end;
+//  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+end;
+
+constructor TFpPascalExpressionPartIntrinsic.Create(
+  AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar;
+  AnIntrinsic: TFpIntrinsicFunc);
+begin
+  inherited Create(AExpression, AStartChar, AnEndChar);
+  FIntrinsic := AnIntrinsic;
+end;
+
 { TFpPascalExpressionPartConstantNumber }
 
 function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TFpValue;
@@ -1809,7 +1904,27 @@ var
     else AddPart(TFpPascalExpressionPartOperatorPlusMinus);
   end;
 
+  procedure AddIntrinsic(AnIntrinsic: TFpIntrinsicFunc);
+  begin
+    if AnIntrinsic = ifErrorNotFound then
+      SetError('Unknown build-in')
+    else
+      NewPart := TFpPascalExpressionPartIntrinsic.Create(Self, CurPtr, TokenEndPtr-1, AnIntrinsic);
+  end;
+
+  procedure AddIntrinsic;
+  var
+    intr: TFpIntrinsicFunc;
+  begin
+    while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9', '$'] do
+      inc(TokenEndPtr);
+    intr := LookupIntrinsic(CurPtr, TokenEndPtr - CurPtr);
+    AddIntrinsic(intr);
+  end;
+
   procedure AddIdentifier;
+  var
+    intr: TFpIntrinsicFunc;
   begin
     while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9', '$'] do
       inc(TokenEndPtr);
@@ -1840,6 +1955,15 @@ var
               NewPart := TFpPascalExpressionPartOperatorUnaryNot.Create(Self, CurPtr, TokenEndPtr-1);
         end;
     end;
+
+    if (FIntrinsicPrefix = ipNoPrefix) then begin
+      intr := LookupIntrinsic(CurPtr, TokenEndPtr - CurPtr);
+      if intr <> ifErrorNotFound then begin
+        AddIntrinsic(intr);
+        exit;
+      end;
+    end;
+
     if NewPart = nil then
       NewPart := TFpPascalExpressionPartIdentifier.Create(Self, CurPtr, TokenEndPtr-1);
   end;
@@ -2062,6 +2186,16 @@ begin
 
     NewPart := nil;
     TokenEndPtr := CurPtr + 1;
+    if (FIntrinsicPrefix = ipExclamation) and (CurPtr^ = '!') then begin
+      inc(CurPtr);
+      AddIntrinsic;
+    end
+    else
+    if (FIntrinsicPrefix = ipColon) and (CurPtr^ = ':') then begin
+      inc(CurPtr);
+      AddIntrinsic;
+    end
+    else
     case CurPtr^ of
       '@' :      AddPart(TFpPascalExpressionPartOperatorAddressOf);
       '^':       AddRefOperator; // ^A may be #$01
@@ -2161,6 +2295,15 @@ begin
   Result := APChar - @FTextExpression[1] + 1;
 end;
 
+function TFpPascalExpression.LookupIntrinsic(AStart: PChar; ALen: Integer
+  ): TFpIntrinsicFunc;
+begin
+  Result := ifErrorNotFound;
+  case ALen of
+    6: if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
+  end;
+end;
+
 function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TFpValue;
 begin
   if FContext <> nil then
@@ -2192,14 +2335,15 @@ begin
 end;
 
 constructor TFpPascalExpression.Create(ATextExpression: String;
-  AContext: TFpDbgSymbolScope);
+  AContext: TFpDbgSymbolScope; ASkipParse: Boolean);
 begin
   FContext := AContext;
   FContext.AddReference;
   FTextExpression := ATextExpression;
   FError := NoError;
   FValid := True;
-  Parse;
+  if not ASkipParse then
+    Parse;
 end;
 
 destructor TFpPascalExpression.Destroy;

@@ -3482,7 +3482,9 @@ begin
         if Context <> nil then begin
           PasExpr := nil;
           try
-            PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
+            PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context, True);
+            PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
+            PasExpr.Parse;
             PasExpr.ResultValue; // trigger full validation
             if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
                (not PasExpr.ResultValue.AsBool) // false => do not pause

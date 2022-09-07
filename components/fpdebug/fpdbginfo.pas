@@ -298,6 +298,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
+    function GetMemberCount: Integer; override;
   public
     constructor Create(const AValue: AnsiString);
   end;
@@ -794,6 +795,11 @@ end;
 function TFpValueConstString.GetAsWideString: WideString;
 begin
   Result := GetAsString;
+end;
+
+function TFpValueConstString.GetMemberCount: Integer;
+begin
+  Result := Length(FValue);
 end;
 
 constructor TFpValueConstString.Create(const AValue: AnsiString);

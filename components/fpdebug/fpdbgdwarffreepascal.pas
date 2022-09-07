@@ -189,6 +189,7 @@ type
     function IsValidTypeCast: Boolean; override;
     function GetInternMemberByName(const AIndex: String): TFpValue;
     procedure Reset; override;
+    function GetMemberCount: Integer; override;
   private
     FValue: String;
     FValueDone: Boolean;
@@ -240,10 +241,12 @@ type
   TFpValueDwarfV3FreePascalString = class(TFpValueDwarf) // short & ansi...
   private
     FValue: String;
-    FValueDone: Boolean;
+    FLowBound, FHighBound: Int64;
+    FValueDone, FBoundsDone: Boolean;
     FDynamicCodePage: TSystemCodePage;
     function GetCodePage: TSystemCodePage;
     function ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out Codepage: TSystemCodePage): Boolean;
+    procedure CalcBounds;
   protected
     function IsValidTypeCast: Boolean; override;
     procedure Reset; override;
@@ -252,6 +255,7 @@ type
     function GetAsWideString: WideString; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetAsCardinal: QWord; override;
+    function GetMemberCount: Integer; override;
   public
     property DynamicCodePage: TSystemCodePage read GetCodePage;
   end;
@@ -1162,6 +1166,16 @@ begin
   FValueDone := False;
 end;
 
+function TFpValueDwarfV2FreePascalShortString.GetMemberCount: Integer;
+var
+  LenSym: TFpValueDwarf;
+begin
+  LenSym := TFpValueDwarf(GetInternMemberByName('length'));
+  assert(LenSym is TFpValueDwarf, 'LenSym is TFpValueDwarf');
+  Result := LenSym.AsInteger;
+  LenSym.ReleaseReference;
+end;
+
 function TFpValueDwarfV2FreePascalShortString.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -1524,7 +1538,7 @@ end;
 
 function TFpValueDwarfV3FreePascalString.GetAsString: AnsiString;
 var
-  t, t2: TFpSymbol;
+  t: TFpSymbol;
   LowBound, HighBound, i: Int64;
   Addr, Addr2: TFpDbgMemLocation;
   WResult: WideString;
@@ -1545,11 +1559,6 @@ begin
   if t.NestedSymbolCount < 1 then // subrange type
     exit;
 
-  t2 := t.NestedSymbol[0]; // subrange type
-  if not( (t2 is TFpSymbolDwarfType) and TFpSymbolDwarfType(t2).GetValueBounds(self, LowBound, HighBound) )
-  then
-    exit;
-
   GetDwarfDataAddress(Addr);
   if (not IsValidLoc(Addr)) and
      (HasTypeCastInfo) and
@@ -1559,28 +1568,10 @@ begin
   if not IsReadableLoc(Addr) then
     exit;
 
-  assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
-     (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
-  then begin
-    if t.Kind = skWideString then begin
-      if (t2 is TFpSymbolDwarfTypeSubRange) and (LowBound = 1) then begin
-        if (TFpSymbolDwarfTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
-           (TFpSymbolDwarfTypeSubRange(t2).InformationEntry.AttribForm[AttrData.Idx] = DW_FORM_block1) and
-           (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
-        then begin
-          // fpc issue 0035359
-          // read data and check for DW_OP_shr ?
-          Addr2 := Addr;
-          Addr2.Address := Addr2.Address - AddressSize;
-          if Context.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
-            if (i shr 1) = HighBound then
-              HighBound := i;
-          end
-        end;
-      end;
-    end;
-  end;
+
+  CalcBounds;
+  LowBound  := FLowBound;
+  HighBound := FHighBound;
 
   if HighBound < LowBound then
     exit; // empty string
@@ -1664,6 +1655,12 @@ begin
     Result := inherited GetAsCardinal;
 end;
 
+function TFpValueDwarfV3FreePascalString.GetMemberCount: Integer;
+begin
+  CalcBounds;
+  Result := Max(0, FHighBound - FLowBound + 1);
+end;
+
 function TFpValueDwarfV3FreePascalString.ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out
   Codepage: TSystemCodePage): Boolean;
 var
@@ -1687,6 +1684,63 @@ begin
     Addr.Address := Addr.Address - CodepageOffset;
     if Context.ReadMemory(Addr, SizeVal(2), @Codepage) then
       Result := CodePageToCodePageName(Codepage) <> '';
+  end;
+end;
+
+procedure TFpValueDwarfV3FreePascalString.CalcBounds;
+var
+  t, t2: TFpSymbol;
+  i: Int64;
+  Addr, Addr2: TFpDbgMemLocation;
+  AttrData: TDwarfAttribData;
+begin
+  if FBoundsDone then
+    exit;
+
+  FBoundsDone := True;
+  FLowBound := 0;
+  FHighBound := -1;
+
+  // get length
+  t := TypeInfo;
+  if t.NestedSymbolCount < 1 then // subrange type
+    exit;
+
+  t2 := t.NestedSymbol[0]; // subrange type
+  if not( (t2 is TFpSymbolDwarfType) and TFpSymbolDwarfType(t2).GetValueBounds(self, FLowBound, FHighBound) )
+  then
+    exit;
+
+  GetDwarfDataAddress(Addr);
+  if (not IsValidLoc(Addr)) and
+     (HasTypeCastInfo) and
+     (svfOrdinal in TypeCastSourceValue.FieldFlags)
+  then
+    Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
+  if not IsReadableLoc(Addr) then
+    exit;
+
+  assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
+  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
+     (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
+  then begin
+    if t.Kind = skWideString then begin
+      if (t2 is TFpSymbolDwarfTypeSubRange) and (FLowBound = 1) then begin
+        if (TFpSymbolDwarfTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
+           (TFpSymbolDwarfTypeSubRange(t2).InformationEntry.AttribForm[AttrData.Idx] = DW_FORM_block1) and
+           (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize))
+        then begin
+          // fpc issue 0035359
+          // read data and check for DW_OP_shr ?
+          Addr2 := Addr;
+          Addr2.Address := Addr2.Address - AddressSize;
+          if Context.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
+            if (i shr 1) = FHighBound then
+              FHighBound := i;
+          end
+        end;
+      end;
+    end;
   end;
 end;
 

@@ -30,8 +30,8 @@ unit FpDebugDebuggerUtils;
 interface
 
 uses
-  FpDbgUtil, FpdMemoryTools, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, DbgIntfDebuggerBase, sysutils,
-  Classes, syncobjs, Forms;
+  FpDbgUtil, FpdMemoryTools, FpPascalParser, LazLoggerBase, DbgIntfDebuggerBase,
+  sysutils, Classes, syncobjs, Forms;
 
 type
 
@@ -109,6 +109,7 @@ type
     FForceNewConsole: boolean;
     {$endif windows}
     FHandleDebugBreakInstruction: TFpInt3DebugBreakOptions;
+    FIntrinsicPrefix: TFpIntrinsicPrefix;
     FMemLimits: TFpDebugDebuggerPropertiesMemLimits;
     FNextOnlyStopOnStartLine: boolean;
     procedure SetMemLimits(AValue: TFpDebugDebuggerPropertiesMemLimits);
@@ -128,6 +129,7 @@ type
 
     property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipExclamation;
   end;
 
 
@@ -368,6 +370,7 @@ begin
   {$endif windows}
   FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
   FHandleDebugBreakInstruction := [dboIgnoreAll];
+  FIntrinsicPrefix := ipExclamation;
 end;
 
 destructor TFpDebugDebuggerProperties.Destroy;
@@ -387,6 +390,7 @@ begin
     {$endif windows}
     FMemLimits.Assign(TFpDebugDebuggerProperties(Source).MemLimits);
     FHandleDebugBreakInstruction:=TFpDebugDebuggerProperties(Source).FHandleDebugBreakInstruction;
+    FIntrinsicPrefix:=TFpDebugDebuggerProperties(Source).FIntrinsicPrefix;
   end;
 end;
 

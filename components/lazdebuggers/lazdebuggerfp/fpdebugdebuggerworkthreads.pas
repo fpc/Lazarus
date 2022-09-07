@@ -734,7 +734,9 @@ begin
   if ExpressionScope = nil then
     exit;
 
-  APasExpr := TFpPascalExpression.Create(FExpression, ExpressionScope);
+  APasExpr := TFpPascalExpression.Create(FExpression, ExpressionScope, True);
+  APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+  APasExpr.Parse;
   try
     APasExpr.ResultValue; // trigger full validation
     if not APasExpr.Valid then
@@ -1121,7 +1123,9 @@ begin
   end;
 
   PrettyPrinter := nil;
-  APasExpr := TFpPascalExpression.Create(AnExpression, FExpressionScope);
+  APasExpr := TFpPascalExpression.Create(AnExpression, FExpressionScope, True);
+  APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+  APasExpr.Parse;
   try
     if FAllowFunctions and (dfEvalFunctionCalls in FDebugger.EnabledFeatures) then
       APasExpr.OnFunctionCall  := @DoWatchFunctionCall;
@@ -1154,7 +1158,9 @@ begin
        (not IsError(ResValue.LastError)) and (defClassAutoCast in AnEvalFlags)
     then begin
       if ResValue.GetInstanceClassName(CastName) then begin
-        PasExpr2 := TFpPascalExpression.Create(CastName+'('+AnExpression+')', FExpressionScope);
+        PasExpr2 := TFpPascalExpression.Create(CastName+'('+AnExpression+')', FExpressionScope, True);
+        PasExpr2.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+        PasExpr2.Parse;
         PasExpr2.ResultValue;
         if PasExpr2.Valid then begin
           APasExpr.Free;
@@ -1389,7 +1395,9 @@ begin
     bpkData: begin
       CurContext := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
       if CurContext <> nil then begin
-        WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext);
+        WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext, True);
+        WatchPasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+        WatchPasExpr.Parse;
         R := WatchPasExpr.ResultValue; // Address and Size
         // TODO: Cache current value
         if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
