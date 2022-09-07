@@ -894,6 +894,10 @@ resourcestring
   lisBusy = 'Busy';
   lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Cannot test the '
     +'compiler while debugging or compiling.';
+  lisNothingToDo = 'Nothing to do';
+  lisTheProjectHasNoCompileCommandSeePr = 'The project '
+    +'has no compile command.%sSee Project -> Project Options'
+    +' -> Compiler Options -> Compiler Commands';
   lisExecutingCommandBefore = 'Executing command before';
   lisProject2 = 'Project: ';
   lisExecutingCommandAfter = 'Executing command after';

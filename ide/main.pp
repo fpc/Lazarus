@@ -6795,10 +6795,9 @@ begin
     exit(mrOk);
   // reason is not handled
   if Quiet then exit(mrCancel);
-  Result:=IDEMessageDialog('Nothing to do',
-    'The project''s compiler options has no compile command.'+LineEnding+
-    'See Project / Project Options / Compiler Options / Compiler Commands',mtInformation,
-    [mbCancel,mbIgnore]);
+  Result := IDEMessageDialog(lisNothingToDo,
+    Format(lisTheProjectHasNoCompileCommandSeePr, [LineEnding])
+      , mtInformation, [mbCancel,mbIgnore]);
   if Result=mrIgnore then
     Result:=mrOk;
 end;
