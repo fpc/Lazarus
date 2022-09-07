@@ -1525,6 +1525,7 @@ procedure TFpValueDwarfV3FreePascalString.Reset;
 begin
   inherited Reset;
   FValueDone := False;
+  FBoundsDone := False;
 end;
 
 function TFpValueDwarfV3FreePascalString.GetFieldFlags: TFpValueFieldFlags;
@@ -1642,6 +1643,7 @@ begin
     SetLastError(Context.LastMemError);
   end;
   FValueDone := False;
+  FBoundsDone := False;
 end;
 
 function TFpValueDwarfV3FreePascalString.GetAsCardinal: QWord;
