@@ -409,7 +409,11 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
   if AMenuItem.HasParent then
+  begin
+    if Assigned(TQtMenu(AMenuItem.handle).actionHandle) then
+      QAction_setVisible(TQtMenu(AMenuItem.handle).actionHandle, False);
     AMenuItem.RecreateHandle;
+  end;
 end;
 
 { TQtWSMenu }
