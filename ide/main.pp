@@ -6796,8 +6796,8 @@ begin
   // reason is not handled
   if Quiet then exit(mrCancel);
   Result:=IDEMessageDialog('Nothing to do',
-    'The project''s compiler options has no compile command.'+LineEnding
-    +'See Project / Compiler Options ... / Compilation',mtInformation,
+    'The project''s compiler options has no compile command.'+LineEnding+
+    'See Project / Project Options / Compiler Options / Compiler Commands',mtInformation,
     [mbCancel,mbIgnore]);
   if Result=mrIgnore then
     Result:=mrOk;
