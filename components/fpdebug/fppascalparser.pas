@@ -74,6 +74,7 @@ type
     function PosFromPChar(APChar: PChar): Integer;
   protected
     function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpValue;
+    function GetRegisterValue({%H-}AnIdent: String): TFpValue;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
     property Context: TFpDbgSymbolScope read FContext;
   public
@@ -193,6 +194,13 @@ type
   TFpPascalExpressionPartIdentifier = class(TFpPascalExpressionPartContainer)
   protected
     function DoGetIsTypeCast: Boolean; override;
+    function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartCpuRegister }
+
+  TFpPascalExpressionPartCpuRegister = class(TFpPascalExpressionPartContainer)
+  protected
     function DoGetResultValue: TFpValue; override;
   end;
 
@@ -1693,6 +1701,13 @@ begin
   end;
 end;
 
+{ TFpPascalExpressionPartCpuRegister }
+
+function TFpPascalExpressionPartCpuRegister.DoGetResultValue: TFpValue;
+begin
+  Result := FExpression.GetRegisterValue(GetText);
+end;
+
 { TFpPascalExpressionPartConstantNumber }
 
 function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TFpValue;
@@ -1883,6 +1898,13 @@ var
     end;
   end;
 
+  procedure AddRegister;
+  begin
+    while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9', '_'] do
+      inc(TokenEndPtr);
+    AddPart(TFpPascalExpressionPartCpuRegister);
+  end;
+
   procedure AddConstNumber;
   begin
     case CurPtr^ of
@@ -1895,7 +1917,13 @@ var
            end
            else
             while TokenEndPtr^ in ['0'..'7'] do inc(TokenEndPtr);
-      '%': while TokenEndPtr^ in ['0'..'1'] do inc(TokenEndPtr);
+      '%': if TokenEndPtr^ in ['a'..'z', 'A'..'Z'] then begin
+             inc(CurPtr);
+             AddRegister;
+             exit;
+           end
+           else
+             while TokenEndPtr^ in ['0'..'1'] do inc(TokenEndPtr);
       '0'..'9':
         if (CurPtr^ = '0') and ((CurPtr + 1)^ in ['x', 'X']) and
            ((CurPtr + 2)^ in ['a'..'z', 'A'..'Z', '0'..'9'])
@@ -2139,6 +2167,28 @@ begin
     Result := FContext.FindSymbol(AnIdent)
   else
     Result := nil;
+end;
+
+function TFpPascalExpression.GetRegisterValue(AnIdent: String): TFpValue;
+var
+  RNum: Cardinal;
+  RSize: Integer;
+  RVal: QWord;
+begin
+  Result := nil;
+  if FContext = nil then
+    exit;
+
+  if not FContext.MemManager.RegisterNumber(AnIdent, RNum) then
+    exit;
+
+  RSize := FContext.MemManager.RegisterSize(RNum);
+  if RSize > 8 then
+    exit;
+  if not FContext.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal) then
+    exit;
+
+  Result := TFpValueConstNumber.Create(RVal, False);
 end;
 
 constructor TFpPascalExpression.Create(ATextExpression: String;

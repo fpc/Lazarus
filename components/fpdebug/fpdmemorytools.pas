@@ -178,6 +178,7 @@ type
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; virtual; abstract;
     function WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; virtual; abstract;
     function RegisterSize(ARegNum: Cardinal): Integer; virtual; abstract;
+    function RegisterNumber(ARegName: String; out ARegNum: Cardinal): Boolean; virtual; abstract;
     // Registernum from name
   end;
 
@@ -432,6 +433,7 @@ type
     procedure ClearLastError;
 
     function RegisterSize(ARegNum: Cardinal): Integer; // This is not context dependent
+    function RegisterNumber(ARegName: String; out ARegNum: Cardinal): Boolean;
 
     function SetLength(var ADest: TByteDynArray; ALength: Int64): Boolean; overload;
     function SetLength(var ADest: RawByteString; ALength: Int64): Boolean; overload;
@@ -1774,6 +1776,12 @@ end;
 function TFpDbgMemManager.RegisterSize(ARegNum: Cardinal): Integer;
 begin
   Result := FMemReader.RegisterSize(ARegNum);
+end;
+
+function TFpDbgMemManager.RegisterNumber(ARegName: String; out ARegNum: Cardinal
+  ): Boolean;
+begin
+  Result := FMemReader.RegisterNumber(ARegName, ARegNum);
 end;
 
 function TFpDbgMemManager.ReadMemoryEx(

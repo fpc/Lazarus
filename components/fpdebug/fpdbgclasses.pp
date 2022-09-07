@@ -84,13 +84,14 @@ type
   private
     FPreviousRegisterValueList: TDbgRegisterValueList;
 
-    function GetDbgRegister(const AName: string): TDbgRegisterValue;
+    function GetDbgRegister(AName: string): TDbgRegisterValue;
     function GetDbgRegisterAutoCreate(const AName: string): TDbgRegisterValue;
     function GetIsModified(AReg: TDbgRegisterValue): boolean;
   public
     procedure Assign(ASource: TDbgRegisterValueList);
     property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
     function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
+    function FindRegisterByName(AnName: String): TDbgRegisterValue;
     property IsModified[AReg: TDbgRegisterValue]: boolean read GetIsModified;
   end;
 
@@ -158,6 +159,7 @@ type
     function WriteMemory(AnAddress: TDbgPtr; ASize: Cardinal; ASource: Pointer): Boolean; override; overload;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
+    function RegisterNumber(ARegName: String; out ARegNum: Cardinal): Boolean; override;
 
     function WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
   end;
@@ -1440,15 +1442,33 @@ begin
     result := sizeof(pointer);
 end;
 
+function TDbgMemReader.RegisterNumber(ARegName: String; out ARegNum: Cardinal
+  ): Boolean;
+var
+  ARegister: TDbgRegisterValue;
+  CtxThread: TDbgThread;
+begin
+  Result := False;
+  CtxThread := GetDbgThread(nil);
+  if CtxThread = nil then
+    exit;
+
+  ARegister:=CtxThread.RegisterValueList.FindRegisterByName(ARegName);
+  Result := ARegister <> nil;
+  if Result then
+    ARegNum := ARegister.DwarfIdx;
+end;
+
 { TDbgRegisterValueList }
 
-function TDbgRegisterValueList.GetDbgRegister(const AName: string
+function TDbgRegisterValueList.GetDbgRegister(AName: string
   ): TDbgRegisterValue;
 var
   i: integer;
 begin
+  AName := UpperCase(AName);
   for i := 0 to Count -1 do
-    if Items[i].Name=AName then
+    if UpperCase(Items[i].Name)=AName then
       begin
       result := items[i];
       exit;
@@ -1507,6 +1527,12 @@ begin
       exit;
     end;
   result := nil;
+end;
+
+function TDbgRegisterValueList.FindRegisterByName(AnName: String
+  ): TDbgRegisterValue;
+begin
+  Result := GetDbgRegister(AnName);
 end;
 
 { TDbgRegisterValue }
