@@ -69,6 +69,25 @@ object IdeDbgValConvFrame: TIdeDbgValConvFrame
         OnClick = btnRemoveClick
         TabOrder = 1
       end
+      object btnUp: TButton
+        Left = 5
+        Height = 25
+        Top = 72
+        Width = 160
+        BorderSpacing.Top = 12
+        Caption = 'btnUp'
+        OnClick = btnUpClick
+        TabOrder = 2
+      end
+      object btnDown: TButton
+        Left = 5
+        Height = 25
+        Top = 102
+        Width = 160
+        Caption = 'btnDown'
+        OnClick = btnDownClick
+        TabOrder = 3
+      end
     end
   end
   object pnlCurrentConv: TPanel

@@ -15,6 +15,8 @@ type
 
   TIdeDbgValConvFrame = class(TFrame)
     btnAdd: TButton;
+    btnUp: TButton;
+    btnDown: TButton;
     btnRemove: TButton;
     EdName: TEdit;
     lblName: TLabel;
@@ -32,7 +34,9 @@ type
     Panel5: TPanel;
     Splitter1: TSplitter;
     procedure btnAddClick(Sender: TObject);
+    procedure btnDownClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
+    procedure btnUpClick(Sender: TObject);
     procedure dropActionChange(Sender: TObject);
     procedure lstConvertersClick(Sender: TObject);
     procedure lstConvertersItemClick(Sender: TObject; Index: integer);
@@ -92,6 +96,22 @@ begin
   memoTypeNames.SetFocus;
 end;
 
+procedure TIdeDbgValConvFrame.btnDownClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  SaveCurrent;
+  FCurConvConf := nil;
+  i := lstConverters.ItemIndex;
+  if (i < 0) or (i >= FValConvList.Count-1) then
+    exit;
+  FValConvList.Move(i, i+1);
+
+  FillList;
+  lstConverters.ItemIndex := i+1;
+  lstConvertersClick(nil);
+end;
+
 procedure TIdeDbgValConvFrame.btnRemoveClick(Sender: TObject);
 var
   i: Integer;
@@ -105,6 +125,22 @@ begin
   if i >= lstConverters.Count then
     dec(i);
   lstConverters.ItemIndex := i;
+  lstConvertersClick(nil);
+end;
+
+procedure TIdeDbgValConvFrame.btnUpClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  SaveCurrent;
+  FCurConvConf := nil;
+  i := lstConverters.ItemIndex;
+  if (i < 1) or (i > FValConvList.Count-1) then
+    exit;
+  FValConvList.Move(i, i-1);
+
+  FillList;
+  lstConverters.ItemIndex := i-1;
   lstConvertersClick(nil);
 end;
 
@@ -137,6 +173,10 @@ begin
     AvailClass := ValueConverterRegistry;
     dropAction.ItemIndex := AvailClass.IndexOfConvertorClass(FCurConvConf.Converter.GetObject.ClassType);
   end;
+
+  btnRemove.Enabled := FCurIdx >= 0;
+  btnUp.Enabled     := FCurIdx >= 1;
+  btnDown.Enabled   := FCurIdx < FValConvList.Count - 1;
 
   lstConvertersItemClick(nil, FCurIdx);
 end;

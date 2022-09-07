@@ -51,7 +51,7 @@ implementation
 function TFpLazDbgWatchResultConvertor.GetValConv(AnFpValue: TFpValue;
   IgnoreInstanceClass: boolean): TFpDbgValueConverter;
 var
-  i: Integer;
+  i, c: Integer;
 begin
   Result := nil;
   if (FNoConvert) or
@@ -69,10 +69,11 @@ begin
   if (ValConvList <> nil) then begin
     ValConvList.Lock;
     try
-      i := ValConvList.Count - 1;
-      while (i >= 0) and (not ValConvList[i].CheckMatch(AnFpValue, IgnoreInstanceClass)) do
-        dec(i);
-      if i >= 0 then
+      i := 0;
+      c := ValConvList.Count;
+      while (i < c) and (not ValConvList[i].CheckMatch(AnFpValue, IgnoreInstanceClass)) do
+        inc(i);
+      if i < c then
         Result := ValConvList[i].GetConverter.GetObject as TFpDbgValueConverter;
       if Result <> nil then
         Result.AddReference;
