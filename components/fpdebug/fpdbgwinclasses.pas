@@ -1936,6 +1936,8 @@ end;
 procedure TDbgWinThread.RestoreRegisters;
 begin
   _UnAligendContext := _StoredContext;
+  FThreadContextChanged := True;
+  FRegisterValueListValid := False;
 end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;

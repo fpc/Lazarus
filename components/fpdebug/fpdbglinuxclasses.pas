@@ -905,6 +905,7 @@ procedure TDbgLinuxThread.RestoreRegisters;
 begin
   FUserRegs:=FStoredUserRegs;
   FUserRegsChanged := true;
+  FRegisterValueListValid := False;
 end;
 
 procedure TDbgLinuxThread.StoreRegisters;
