@@ -25,6 +25,7 @@ type
   published
     procedure TestWatchesScope;
     procedure TestWatchesValue;
+    procedure TestWatchesIntrinsic;
     procedure TestWatchesFunctions;
     procedure TestWatchesFunctionsWithString;
     procedure TestWatchesFunctionsWithRecord;
@@ -40,8 +41,8 @@ type
 implementation
 
 var
-  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchFunct,
-  ControlTestWatchFunctStr, ControlTestWatchFunctRec, ControlTestWatchFunctVariant,
+  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchIntrinsic,
+  ControlTestWatchFunct, ControlTestWatchFunctStr, ControlTestWatchFunctRec, ControlTestWatchFunctVariant,
   ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
   ControlTestExpression, ControlTestErrors, ControlTestRTTI: Pointer;
 
@@ -1457,6 +1458,143 @@ if Compiler.Version < 030300 then
     //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
     t.EvaluateWatches;
     t.CheckResults;
+
+
+  finally
+    Debugger.RunToNextPause(dcStop);
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
+procedure TTestWatches.TestWatchesIntrinsic;
+
+  const PREFIX = '!';
+
+  type
+    TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer, tlPointerAny, tlClassConst, tlClassVar);
+    TTestIgn = set of (
+      tiPointerMath  // pointer math / (ptr+n)^ / ptr[n]
+    );
+
+  procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
+    ALoc: TTestLoc = tlAny; APostFix: String = ''; AIgnFlags: TTestIgn = []);
+  var
+    LN, p, e: String;
+    n, StartIdx, i, StartIdxClassConst: Integer;
+  begin
+    p := APrefix;
+    e := APostFix;
+    n := AOffs;
+
+    LN := PREFIX+'Length';
+
+    t.Add(AName, LN+'('+p+'Char'+e+')',   weInteger(1, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'Char2'+e+')',  weInteger(1, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'Char2'+e+'+''a'')',   weInteger(2, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'Char2'+e+'+''ab'')',  weInteger(3, #1, 0)).IgnTypeName();
+
+    t.Add(AName, LN+'('+p+'String1'+e+')',    weInteger( 1, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String1e'+e+')',   weInteger( 0, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String10'+e+')',   weInteger( 4, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String10e'+e+')',  weInteger( 0, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String10x'+e+')',  weInteger( 8, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String255'+e+')',  weInteger(14, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String10'+e+'+''a'')',    weInteger( 5, #1, 0)).IgnTypeName();
+    t.Add(AName, LN+'('+p+'String10'+e+'+''ab'')',   weInteger( 6, #1, 0)).IgnTypeName();
+
+  //if Compiler.HasFlag('SkipStringFunc') then exit;
+  //if Compiler.HasFlag('Dwarf2') then exit;
+
+    t.Add(AName, LN+'('+p+'Ansi1'+e+')',  weInteger(  1, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi2'+e+')',  weInteger(  9, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi3'+e+')',  weInteger(  0, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi4'+e+')',  weInteger(  8, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi5'+e+')',  weInteger(360, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi4'+e+'+''a'')',   weInteger( 9, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'Ansi4'+e+'+''ab'')',  weInteger(10, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+
+
+    t.Add(AName, LN+'('+p+'CharDynArray'+e+')',   weInteger(0, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'CharDynArray2'+e+')',  weInteger(3, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+
+    t.Add(AName, LN+'('+p+'IntDynArray'+e+')',   weInteger(0, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'IntDynArray2'+e+')',  weInteger(3, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+
+    t.Add(AName, LN+'('+p+'ShortStrDynArray2'+e+')',     weInteger(3, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'ShortStrDynArray2[0]'+e+')',  weInteger(4, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add(AName, LN+'('+p+'ShortStrDynArray2[1]'+e+')',  weInteger(3, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+
+    t.Add(AName, LN+'('+p+'ArrayEnum1'+e+')',  weInteger(4, #1, 0)).IgnTypeName().IgnAll(stDwarf2)
+    .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
+
+
+  end;
+
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchIntrinsic) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface, skEnumValue];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+    t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
+
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
+    BrkFoo         := Debugger.SetBreakPoint(Src, 'Foo');
+    BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
+    BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+
+    AssertDebuggerNotInErrorState;
+    RunToPause(BrkPrg);
+
+
+    t.Clear;
+    AddWatches(t, 'glob var',   'gv', 001, 'B');
+    AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
+    t.EvaluateWatches;
+
+
+    RunToPause(BrkFoo);
+    t.Clear;
+    AddWatches(t, 'foo local', 'fooloc', 002, 'C');
+    AddWatches(t, 'foo args', 'arg', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkFooVar);
+    t.Clear;
+    AddWatches(t, 'foo var args', 'argvar', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkFooConstRef);
+    t.Clear;
+    AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
 
 
   finally
@@ -3804,6 +3942,7 @@ initialization
   ControlTestWatch          := TestControlRegisterTest('TTestWatch');
   ControlTestWatchScope     := TestControlRegisterTest('Scope', ControlTestWatch);
   ControlTestWatchValue     := TestControlRegisterTest('Value', ControlTestWatch);
+  ControlTestWatchIntrinsic := TestControlRegisterTest('Intrinsic', ControlTestWatch);
   ControlTestWatchFunct     := TestControlRegisterTest('Function', ControlTestWatch);
   ControlTestWatchFunctStr  := TestControlRegisterTest('FunctionString', ControlTestWatch);
   ControlTestWatchFunctRec  := TestControlRegisterTest('FunctionRecord', ControlTestWatch);
