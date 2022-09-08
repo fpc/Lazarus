@@ -24,11 +24,50 @@
   Set new state of the checkbox.
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetState(Value: TCheckBoxState);
+var
+  OldCheckState: TCheckBoxState;
+  OldActionListState: TActionListState;
+  LAction: TBasicAction;
 begin
+  LAction := Action;            // property getter is function, call only once.
+  // TAction does not have the 3rd state, nothing meaningful can be done then
+  if Value <> cbGrayed then begin
+    // no infinite recursion when we would be called again later by TAction itself
+    if not ClicksDisabled then begin
+      if LAction is TCustomAction then begin
+        TCustomAction(LAction).Checked := Value = cbChecked;
+        Exit;
+      end;
+    end;
+  end;
+
   if FState <> Value then
   begin
+    OldCheckState := FState;
     FState := Value;
+
     ApplyChanges;
+
+    // some widgetsets like gtk* do not allow to uncheck a radio button
+    // only call OnChange if effectivelly changed
+    FState := RetrieveState;
+    if FState <> OldCheckState then begin
+      if LAction is TCustomAction then begin
+        // Prevent triggering a linked Action when State = cbGrayed.
+        if FState = cbGrayed then begin
+          OldActionListState := TCustomAction(LAction).ActionList.State;
+          TCustomAction(LAction).ActionList.State := asSuspended;
+          TCustomAction(LAction).Grayed := True;
+        end;
+      end;
+      DoClickOnChange;
+      if LAction is TCustomAction then begin
+        if FState = cbGrayed then
+          TCustomAction(LAction).ActionList.State := OldActionListState
+        else
+          TCustomAction(LAction).Grayed := False;
+      end;
+    end;
   end;
 end;
 
@@ -141,26 +180,11 @@ end;
   Set the new state of the checkbox as boolean.
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetChecked(Value : Boolean);
-var
-  OldState: TCheckBoxState;
 begin
-  OldState := FState;
   if Value then
-    FState := cbChecked
+    State := cbChecked
   else
-    FState := cbUnChecked;
-  //debugln('TCustomCheckBox.SetChecked ',dbgsname(Self),' ',dbgs(ord(FState)));
-  if FState <> OldState then
-  begin
-    if Action is TCustomAction then
-      TCustomAction(Action).Checked := FState = cbChecked;
-    ApplyChanges;
-    //some widgetsets (gtk*) does not allow to uncheck a radio button
-    //only call OnChange if effectivelly changed
-    FState := RetrieveState;
-    if FState <> OldState then
-      DoClickOnChange;
-  end;
+    State := cbUnChecked;
 end;
 
 procedure TCustomCheckBox.RealSetText(const Value: TCaption);

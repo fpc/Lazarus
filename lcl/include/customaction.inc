@@ -85,7 +85,8 @@ var
   I: Integer;
   Action: TContainedAction;
 begin
-  if FChecking or (Value=FChecked) then exit;
+  if FChecking then exit;
+  if (Value=FChecked) and not FGrayed then exit;
   FChecking := True;
   try
     for I := 0 to FClients.Count - 1 do

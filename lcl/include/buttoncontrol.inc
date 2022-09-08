@@ -73,7 +73,8 @@ end;
 function TButtonActionLink.IsCheckedLinked: Boolean;
 begin
   Result:=inherited IsCheckedLinked
-          and (FClientButton.Checked = (Action as TCustomAction).Checked);
+          and ( (FClientButton.Checked = TCustomAction(Action).Checked)
+            or (TCustomAction(Action).Grayed) );
 end;
 
 procedure TButtonActionLink.SetChecked(Value: Boolean);

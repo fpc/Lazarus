@@ -153,6 +153,7 @@ type
     FCaption: TTranslateString;
     FChecked: Boolean;
     FChecking: Boolean;
+    FGrayed: Boolean;    // The client control (Checkbox) is in 3rd grayed state.
     FDisableIfNoHandler: Boolean;
     FEnabled: Boolean;
     FGroupIndex: Integer;
@@ -195,10 +196,10 @@ type
     function DoHint(var HintStr: string): Boolean; virtual;
     function Execute: Boolean; override;
   public
-    property AutoCheck: Boolean
-                              read FAutoCheck write  SetAutoCheck default False;
+    property AutoCheck: Boolean read FAutoCheck write SetAutoCheck default False;
     property Caption: TTranslateString read FCaption write SetCaption;
     property Checked: Boolean read FChecked write SetChecked default False;
+    property Grayed: Boolean read FGrayed write FGrayed;
     property DisableIfNoHandler: Boolean read FDisableIfNoHandler
                                         write FDisableIfNoHandler default False;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
