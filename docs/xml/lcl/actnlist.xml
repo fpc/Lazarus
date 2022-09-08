@@ -847,7 +847,7 @@ the actions in the list., e.g. in a Menu display.
 
 <element name="TActionList">
 <short>
-<var>TActionList</var>   - The basic actions list class.</short>
+<var>TActionList</var> - The basic actions list class.</short>
 <descr>
 <p>
 <var>TActionList</var> - The basic actions list class. <var>TActionList</var> 
@@ -983,19 +983,21 @@ Indicates whether the hint text can be displayed for the action.
 </short>
 </element>
 
-<!-- object Visibility: default -->
 <element name="TCustomAction">
 <short>
 <var>TCustomAction</var> is the ancestor class for <var>TAction</var>.
 </short>
 <descr>
 <p>
-<var>TCustomAction</var> is a generic class for all components that represent 
-actions that can be be set on the user interface for buttons and other 
-controls. <var>TCustomAction</var> is the ancestor for <var>TAction</var>. If 
-you want to define your own action class, you should derive it from this 
-class.</p>
-<p>You can assign a action to a component by using the Object Inspector.</p>
+<var>TCustomAction</var> is a generic class for all components that 
+represents actions that can be be set on the user interface for buttons and 
+other controls. <var>TCustomAction</var> is the ancestor for 
+<var>TAction</var>. If you want to define your own action class, you should 
+derive it from this class.
+</p>
+<p>
+You can assign a action to a component by using the Object Inspector.
+</p>
 </descr>
 <seealso>
 <link id="TAction"/>
@@ -1007,6 +1009,7 @@ class.</p>
 <element name="TCustomAction.FCaption"/>
 <element name="TCustomAction.FChecked"/>
 <element name="TCustomAction.FChecking"/>
+<element name="TCustomAction.FGrayed"/>
 <element name="TCustomAction.FEnabled"/>
 <element name="TCustomAction.FGroupIndex"/>
 <element name="TCustomAction.FHelpContext"/>
@@ -1020,156 +1023,40 @@ class.</p>
 <element name="TCustomAction.FShortCut"/>
 <element name="TCustomAction.FVisible"/>
 
-<element name="TCustomAction.SetAutoCheck">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetAutoCheck.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetCaption">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetCaption.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetChecked">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetChecked.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetEnabled">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetEnabled.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetGroupIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetGroupIndex.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetHelpContext">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetHelpContext.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetHelpKeyword">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetHelpKeyword.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetHelpType">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetHelpType.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetHint">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetHint.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetImageIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetImageIndex.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetShortCut">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetShortCut.Value">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetVisible">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetVisible.Value">
-<short/>
-</element>
-<!-- function Visibility: private -->
-<element name="TCustomAction.GetSecondaryShortCuts">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- function result Visibility: default -->
-<element name="TCustomAction.GetSecondaryShortCuts.Result">
-<short/>
-</element>
-<!-- procedure Visibility: private -->
-<element name="TCustomAction.SetSecondaryShortCuts">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- argument Visibility: default -->
-<element name="TCustomAction.SetSecondaryShortCuts.Value">
-<short/>
-</element>
-<!-- function Visibility: private -->
-<element name="TCustomAction.IsSecondaryShortCutsStored">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- function result Visibility: default -->
-<element name="TCustomAction.IsSecondaryShortCutsStored.Result">
-<short/>
-</element>
+<!-- private -->
+<element name="TCustomAction.SetAutoCheck"/>
+<element name="TCustomAction.SetAutoCheck.Value"/>
+<element name="TCustomAction.SetCaption"/>
+<element name="TCustomAction.SetCaption.Value"/>
+<element name="TCustomAction.SetChecked"/>
+<element name="TCustomAction.SetChecked.Value"/>
+<element name="TCustomAction.SetEnabled"/>
+<element name="TCustomAction.SetEnabled.Value"/>
+<element name="TCustomAction.SetGroupIndex"/>
+<element name="TCustomAction.SetGroupIndex.Value"/>
+<element name="TCustomAction.SetHelpContext"/>
+<element name="TCustomAction.SetHelpContext.Value"/>
+<element name="TCustomAction.SetHelpKeyword"/>
+<element name="TCustomAction.SetHelpKeyword.Value"/>
+<element name="TCustomAction.SetHelpType"/>
+<element name="TCustomAction.SetHelpType.Value"/>
+<element name="TCustomAction.SetHint"/>
+<element name="TCustomAction.SetHint.Value"/>
+<element name="TCustomAction.SetImageIndex"/>
+<element name="TCustomAction.SetImageIndex.Value"/>
 
+<element name="TCustomAction.SetShortCut"/>
+<element name="TCustomAction.SetShortCut.Value"/>
+<element name="TCustomAction.SetVisible"/>
+<element name="TCustomAction.SetVisible.Value"/>
+<element name="TCustomAction.GetSecondaryShortCuts"/>
+<element name="TCustomAction.GetSecondaryShortCuts.Result"/>
+<element name="TCustomAction.SetSecondaryShortCuts"/>
+<element name="TCustomAction.SetSecondaryShortCuts.Value"/>
+<element name="TCustomAction.IsSecondaryShortCutsStored"/>
+<element name="TCustomAction.IsSecondaryShortCutsStored.Result"/>
+
+<!-- protected -->
 <element name="TCustomAction.FImage"/>
 <element name="TCustomAction.FMask"/>
 
@@ -1255,7 +1142,8 @@ successfully.
 <descr/>
 <seealso/>
 </element>
-<!-- constructor Visibility: public -->
+
+<!-- public -->
 <element name="TCustomAction.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -1269,11 +1157,10 @@ class instance.
 <link id="#rtl.classes.TBasicAction.Create">TBasicAction.Create</link>
 </seealso>
 </element>
-<!-- argument Visibility: default -->
 <element name="TCustomAction.Create.AOwner">
 <short>Owner of the class instance.</short>
 </element>
-<!-- destructor Visibility: public -->
+
 <element name="TCustomAction.Destroy">
 <short>
 <var>Destroy</var> - destructor for <var>TCustomAction</var>: frees various 
@@ -1343,14 +1230,47 @@ The <var>Caption</var> to be used if this action is associated with a visible
 component.
 </short>
 </element>
-<!-- property Visibility: public -->
+
 <element name="TCustomAction.Checked">
 <short>
 Whether the CheckBox associated with the action is <var>Checked</var> 
 (default <b>False</b>).
 </short>
 </element>
-<!-- property Visibility: public -->
+
+<element name="TCustomAction.Grayed">
+<short>
+True if the action (and it client control) are in the grayed or indeterminate 
+state.
+</short>
+<descr>
+<p>
+<var>Grayed</var> is a <var>Boolean</var> property used to prevent execution 
+of an action when its client control is in the grayed or indeterminate state. 
+It applies primarily to check box and button controls.
+</p>
+<p>
+Grayed is updated when the State property in an associated TCheckBox control 
+is changed. It is also used to determine if the Checked property for a button 
+control is linked to an assigned action; they are considered to be linked 
+when Grayed is set to <b>True</b>.
+</p>
+<p>
+Grayed is used when the value in the Checked property is updated.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomAction.Checked"/>
+<link id="#lcl.stdctrls.TButtonControl.Checked">TButtonControl.Checked</link>
+<link id="#lcl.stdctrls.TCheckbox.Checked">TCheckBox.Checked</link>
+<link id="#lcl.stdctrls.TButtonActionLink.IsCheckedLinked">TButtonActionLink.IsCheckedLinked</link>
+<link id="#lcl.actnlist.TActionLink.IsCheckedLinked">TActionLink.IsCheckedLinked</link>
+</seealso>
+</element>
+
 <element name="TCustomAction.DisableIfNoHandler">
 <short>
 Prevents the action from executing if an OnExecute handler is not assigned in 
