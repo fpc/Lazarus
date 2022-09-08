@@ -60,9 +60,11 @@ type
        - the thread just created this, and no other thread has (yet) access to the object
        - the thread is in a critical section, preventing other threads from decreasing the ref.
     *)
-    procedure AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
-    procedure ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+    procedure AddReference;
+    procedure ReleaseReference;
     {$IFDEF WITH_REFCOUNT_DEBUG}
+    procedure AddReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
+    procedure ReleaseReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
     procedure DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
     procedure DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String; DebugIdAdr: Pointer; DebugIdTxt: String = '');
     {$ENDIF}
@@ -76,8 +78,12 @@ type
   end;
 
 
-procedure ReleaseRefAndNil(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
-procedure NilThenReleaseRef(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
+procedure ReleaseRefAndNil(var ARefCountedObject);
+procedure NilThenReleaseRef(var ARefCountedObject);
+{$IFDEF WITH_REFCOUNT_DEBUG}
+procedure ReleaseRefAndNil(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
+procedure NilThenReleaseRef(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
+{$ENDIF}
 
 implementation
 {$IFDEF WITH_REFCOUNT_DEBUG}
@@ -113,19 +119,18 @@ end;
 
 { TRefCountedObject }
 
-procedure TRefCountedObject.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+{$IFDEF WITH_REFCOUNT_DEBUG}
+procedure TRefCountedObject.AddReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
 begin
-  {$IFDEF WITH_REFCOUNT_DEBUG}
   Assert(not FInDestroy, 'Adding reference while destroying');
   DbgAddName(DebugIdAdr, DebugIdTxt);
-  {$ENDIF}
+
   InterLockedIncrement(FRefCount);
   // call only if overridden
   If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
     DoReferenceAdded;
 end;
 
-{$IFDEF WITH_REFCOUNT_DEBUG}
 procedure TRefCountedObject.DbgAddName(DebugIdAdr: Pointer; DebugIdTxt: String);
 var
   s: String;
@@ -237,15 +242,26 @@ begin
   inherited;
 end;
 
-procedure TRefCountedObject.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''){$ENDIF};
+procedure TRefCountedObject.AddReference;
+begin
+  {$IFDEF WITH_REFCOUNT_DEBUG}
+  Assert(not FInDestroy, 'Adding reference while destroying');
+  DbgAddName(nil, '');
+  {$ENDIF}
+
+  InterLockedIncrement(FRefCount);
+  // call only if overridden
+  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
+    DoReferenceAdded;
+end;
+
+procedure TRefCountedObject.ReleaseReference;
 var
   lc: Integer;
 begin
   if Self = nil then exit;
-  {$IFDEF WITH_REFCOUNT_DEBUG}
-  DbgRemoveName(DebugIdAdr, DebugIdTxt);
-  {$ENDIF}
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
+  {$IFDEF WITH_REFCOUNT_DEBUG} DbgRemoveName(nil, ''); {$ENDIF}
 
   InterLockedIncrement(FInDecRefCount);
   InterLockedDecrement(FRefCount);
@@ -264,6 +280,29 @@ begin
 end;
 
 {$IFDEF WITH_REFCOUNT_DEBUG}
+procedure TRefCountedObject.ReleaseReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
+var
+  lc: Integer;
+begin
+  if Self = nil then exit;
+  DbgRemoveName(DebugIdAdr, DebugIdTxt);
+
+  InterLockedIncrement(FInDecRefCount);
+  InterLockedDecrement(FRefCount);
+  // call only if overridden
+
+  // Do not check for RefCount = 0, since this was done, by whoever decreased it;
+  If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedObject.DoReferenceReleased) then
+    DoReferenceReleased;
+
+  lc := InterLockedDecrement(FInDecRefCount);
+  if lc = 0 then begin
+    ReadBarrier;
+    if (FRefCount = 0) then
+      DoFree;
+  end;
+end;
+
 procedure TRefCountedObject.DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
 begin
   DbgRemoveName(nil, '');
@@ -289,7 +328,43 @@ begin
   end;
 end;
 
-procedure ReleaseRefAndNil(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
+
+procedure ReleaseRefAndNil(var ARefCountedObject);
+begin
+  Assert( (Pointer(ARefCountedObject) = nil) or
+          (TObject(ARefCountedObject) is TRefCountedObject),
+         'ReleaseRefAndNil requires TRefCountedObject');
+
+  if Pointer(ARefCountedObject) = nil then
+    exit;
+
+  if (TObject(ARefCountedObject) is TRefCountedObject) then
+    TRefCountedObject(ARefCountedObject).ReleaseReference;
+  Pointer(ARefCountedObject) := nil;
+end;
+
+procedure NilThenReleaseRef(var ARefCountedObject);
+var
+  RefObj: TRefCountedObject;
+begin
+  Assert( (Pointer(ARefCountedObject) = nil) or
+          (TObject(ARefCountedObject) is TRefCountedObject),
+         'ReleaseRefAndNil requires TRefCountedObject');
+
+  if Pointer(ARefCountedObject) = nil then
+    exit;
+
+  if (TObject(ARefCountedObject) is TRefCountedObject) then
+    RefObj := TRefCountedObject(ARefCountedObject)
+  else RefObj := nil;
+  Pointer(ARefCountedObject) := nil;
+
+  if RefObj <> nil then
+    RefObj.ReleaseReference;
+end;
+
+{$IFDEF WITH_REFCOUNT_DEBUG}
+procedure ReleaseRefAndNil(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
 begin
   Assert( (Pointer(ARefCountedObject) = nil) or
           (TObject(ARefCountedObject) is TRefCountedObject),
@@ -303,7 +378,7 @@ begin
   Pointer(ARefCountedObject) := nil;
 end;
 
-procedure NilThenReleaseRef(var ARefCountedObject {$IFDEF WITH_REFCOUNT_DEBUG}; DebugIdAdr: Pointer = nil; DebugIdTxt: String = ''{$ENDIF});
+procedure NilThenReleaseRef(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
 var
   RefObj: TRefCountedObject;
 begin
@@ -322,6 +397,7 @@ begin
   if RefObj <> nil then
     RefObj.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
 end;
+{$ENDIF}
 
 end .
 
