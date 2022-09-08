@@ -49,7 +49,7 @@ type
 
   TSeparatorType = (ppstComma);
 
-  TFpIntrinsicPrefix = (ipExclamation, ipColon, ipNoPrefix);
+  TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
   TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass);
 
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
@@ -1754,8 +1754,10 @@ var
   i: Integer;
 begin
   Result := AParams.Count - 1 = ARequiredCount;
-  if not Result then
+  if not Result then begin
+    SetError('wrong argument count');
     exit;
+  end;
 
   for i := 1 to ARequiredCount do
     if (AParams.Items[i] = nil) then begin
@@ -1997,6 +1999,16 @@ var
     AddIntrinsic(intr);
   end;
 
+  function CheckOpenBracket: Boolean;
+  var
+    p: PChar;
+  begin
+    p := TokenEndPtr;
+    while p^ in [' ', #9, #10, #13] do
+      inc(p);
+    Result := p^ = '(';
+  end;
+
   procedure AddIdentifier;
   var
     intr: TFpIntrinsicFunc;
@@ -2033,7 +2045,7 @@ var
 
     if (FIntrinsicPrefix = ipNoPrefix) then begin
       intr := LookupIntrinsic(CurPtr, TokenEndPtr - CurPtr);
-      if intr <> ifErrorNotFound then begin
+      if (intr <> ifErrorNotFound) and CheckOpenBracket then begin
         AddIntrinsic(intr);
         exit;
       end;

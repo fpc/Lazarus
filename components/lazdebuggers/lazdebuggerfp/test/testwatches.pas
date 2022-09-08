@@ -1472,7 +1472,7 @@ end;
 
 procedure TTestWatches.TestWatchesIntrinsic;
 
-  const PREFIX = '!';
+  const PREFIX = ':';
 
   type
     TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer, tlPointerAny, tlClassConst, tlClassVar);

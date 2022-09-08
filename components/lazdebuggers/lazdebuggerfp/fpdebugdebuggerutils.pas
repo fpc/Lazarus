@@ -129,7 +129,7 @@ type
 
     property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
-    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipExclamation;
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
   end;
 
 
@@ -370,7 +370,7 @@ begin
   {$endif windows}
   FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
   FHandleDebugBreakInstruction := [dboIgnoreAll];
-  FIntrinsicPrefix := ipExclamation;
+  FIntrinsicPrefix := ipColon;
 end;
 
 destructor TFpDebugDebuggerProperties.Destroy;
