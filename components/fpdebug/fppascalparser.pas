@@ -50,7 +50,7 @@ type
   TSeparatorType = (ppstComma);
 
   TFpIntrinsicPrefix = (ipExclamation, ipColon, ipNoPrefix);
-  TFpIntrinsicFunc = (ifErrorNotFound, ifLength);
+  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass);
 
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
     AFunctionValue: TFpValue; ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
@@ -216,14 +216,19 @@ type
   TFpPascalExpressionPartIntrinsic = class(TFpPascalExpressionPartContainer)
   private
     FIntrinsic: TFpIntrinsicFunc;
+    FChildClassCastType: TFpValue;
+
+    function CheckArgumentCount(AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer): Boolean;
   protected
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 
     function DoGetResultValue: TFpValue; override;
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
   public
     constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar;
       AnEndChar: PChar; AnIntrinsic: TFpIntrinsicFunc);
+    destructor Destroy; override;
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -1734,28 +1739,43 @@ end;
 function TFpPascalExpressionPartCpuRegister.DoGetResultValue: TFpValue;
 begin
   Result := FExpression.GetRegisterValue(GetText);
+  {$IFDEF WITH_REFCOUNT_DEBUG}
+  if Result <> nil then
+    Result.DbgRenameReference(nil, 'DoGetResultValue')
+  {$ENDIF}
 end;
 
 { TFpPascalExpressionPartIntrinsic }
 
+function TFpPascalExpressionPartIntrinsic.CheckArgumentCount(
+  AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer
+  ): Boolean;
+var
+  i: Integer;
+begin
+  Result := AParams.Count - 1 = ARequiredCount;
+  if not Result then
+    exit;
+
+  for i := 1 to ARequiredCount do
+    if (AParams.Items[i] = nil) then begin
+      Result := False;
+      SetError('wrong argument count');
+      exit;
+    end;
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoLength(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
-  Itm: TFpPascalExpressionPart;
   Arg: TFpValue;
   ResLen: Integer;
 begin
   Result := nil;
-  if (AParams.Count <> 2) then begin
-    SetError('wrong argument count');
+  if not CheckArgumentCount(AParams, 1) then
     exit;
-  end;
 
-  Itm := AParams.Items[1];
-  Arg := nil;
-  if Itm <> nil then
-    Arg := Itm.ResultValue;
-
+  Arg := AParams.Items[1].ResultValue;
   if (Arg = nil) then begin
     SetError('argument not supported');
     exit;
@@ -1778,11 +1798,56 @@ begin
   Result := TFpValueConstNumber.Create(ResLen, True)
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoChildClass(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  CastName: String;
+  NewResult: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+
+  Result := AParams.Items[1].ResultValue;
+  if Result = nil then
+    exit;
+  Result.AddReference;
+  if IsError(Expression.Error) or IsError(Result.LastError) or
+     (Result.Kind <> skClass) or (Result.AsCardinal = 0)
+  then
+    exit;
+
+  if not Result.GetInstanceClassName(CastName) then
+    exit;
+
+  FChildClassCastType.ReleaseReference;
+  FChildClassCastType := Expression.GetDbgSymbolForIdentifier(CastName);
+  if (FChildClassCastType = nil) or (FChildClassCastType.DbgSymbol = nil) or
+     (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
+     (FChildClassCastType.DbgSymbol.Kind <> skClass)
+  then begin
+    ReleaseRefAndNil(FChildClassCastType);
+    exit;
+  end;
+
+  // FChildClassCastType.DbgSymbol is part of NewResult, but not refcounted;
+  NewResult := FChildClassCastType.GetTypeCastedValue(Result);
+  if NewResult <> nil then begin
+    Result.ReleaseReference;
+    Result := NewResult;
+  end;
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
 begin
   Result := nil;
   SetError('wrong argument count');
   // this gets called, if an intrinsic has no () after it. I.e. no arguments and no empty brackets
+
+  {$IFDEF WITH_REFCOUNT_DEBUG}
+  if Result <> nil then
+    Result.DbgRenameReference(nil, 'DoGetResultValue')
+  {$ENDIF}
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue(
@@ -1790,9 +1855,13 @@ function TFpPascalExpressionPartIntrinsic.DoGetResultValue(
 begin
   Result := nil;
   case FIntrinsic of
-    ifLength: Result := DoLength(AParams);
+    ifLength:     Result := DoLength(AParams);
+    ifChildClass: Result := DoChildClass(AParams);
   end;
-//  {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+  {$IFDEF WITH_REFCOUNT_DEBUG}
+  if Result <> nil then
+    Result.DbgRenameReference(nil, 'DoGetResultValue')
+  {$ENDIF}
 end;
 
 constructor TFpPascalExpressionPartIntrinsic.Create(
@@ -1801,6 +1870,12 @@ constructor TFpPascalExpressionPartIntrinsic.Create(
 begin
   inherited Create(AExpression, AStartChar, AnEndChar);
   FIntrinsic := AnIntrinsic;
+end;
+
+destructor TFpPascalExpressionPartIntrinsic.Destroy;
+begin
+  inherited Destroy;
+  FChildClassCastType.ReleaseReference;
 end;
 
 { TFpPascalExpressionPartConstantNumber }
@@ -2300,6 +2375,7 @@ function TFpPascalExpression.LookupIntrinsic(AStart: PChar; ALen: Integer
 begin
   Result := ifErrorNotFound;
   case ALen of
+    2: if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass;
     6: if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
   end;
 end;
