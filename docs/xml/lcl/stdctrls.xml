@@ -9916,18 +9916,19 @@ the control.
 <p>
 <var>ClicksDisabled</var> is a <var>Boolean</var> property which controls 
 whether the Click method is called when a the Checked property is changed in 
-the control.
+the control. It is a protected property accessible in the TButtonControl and 
+TButtonActionLink classes.
 </p>
 <p>
 The TCustomCheckBox descendant uses ClicksDisabled in its DoClickOnChange 
-method; when set to False, the Click method is called to signal both the 
-OnChange and OnClick handlers for the control. When set to True, only the 
-OnChange event handler is signalled. This emulates the Delphi OnClick 
-behavior.
+method; when set to <b>False</b>, the Click method is called to signal both 
+the OnChange and OnClick handlers for the control. When set to <b>True</b>, 
+only the OnChange event handler is signalled. This emulates the Delphi VCL 
+OnClick behavior.
 </p>
 <p>
 ClicksDisabled is also used to prevent calling Click when the Checked 
-property in a linked button action is updated.
+property in a linked button action is updated. This prevents duplicate OnChange / OnClick calls when Checked is updated in the control.
 </p>
 </descr>
 <seealso>
@@ -11243,6 +11244,11 @@ Delphi VCL compatibility.
 <element name="TCustomCheckBox.SetChecked">
 <short>Sets the value for the Checked property.</short>
 <descr/>
+<version>
+Modified in LCL version 2.4 to remove processing for the linked Action and 
+OnChange or OnClick notifications. In 2.4, these actions are performed when 
+the State property is updated.
+</version>
 <seealso>
 <link id="TCustomCheckBox.State"/>
 <link id="TButtonControl.Checked"/>
@@ -11402,6 +11408,8 @@ possible states: checked and unchecked.
 </seealso>
 </element>
 
+<!-- HERE -->
+
 <element name="TCustomCheckBox.State">
 <short>The check, unchecked, or grayed state for the control.</short>
 <descr>
@@ -11410,30 +11418,49 @@ possible states: checked and unchecked.
 whether the check box is checked, unchecked or grayed (disabled). The default 
 value for the property is cbUnchecked. State allows the control to be set to 
 the indeterminate (grayed) state when AllowGrayed is set to <b>True</b>. 
-Otherwise, it is the same as using the Checked property.
-</p>
-<!--
-TODO: DoClickOnChange needed after ApplyChanges? A patch was submitted but 
-never applied.
--->
-<p>
-Reading the property value calls RetrieveState to get the value from the 
-widgetset class when its handle has been allocated. Otherwise, the existing 
-value for the member is used. Changing the value for the property causes 
-ApplyChanges to be called to send the new property value to the widget.
+Otherwise, it has the same behavior as using the Checked property.
 </p>
 <p>
 See <var>TCheckBoxState</var> for the available enumeration values and their 
 meanings in the <var>State</var> property.
 </p>
+<p>
+Reading the property value calls RetrieveState to get the value from the 
+widgetset class when its handle has been allocated. Otherwise, the existing 
+value for the member is used.
+</p>
+<p>
+Changing the value for the property causes the Checked property in an 
+assigned Action to be updated if the property value is not cbGrayed and the 
+ClicksDisabled property is <b>False</b>. The value is applied to the Action 
+without updating the value in the control. This prevents recursion when the 
+value is changed in the linked action.
+</p>
+<p>
+Otherwise, ApplyChanges is called to update the visual appearance for the 
+control. DoClickOnChange is called to post the control message for the 
+updated control, and to emulate the OnChange and OnClick behavior in the 
+Delphi VCL. When ClicksDisabled is <b>True</b>, only the OnChange event 
+handler is signalled. When set to <b>False</b>, the Click method is called to 
+signal both the OnChange and OnClick event handlers (when assigned).
+</p>
+<p>
+The Grayed property in Action is set to <b>False</b> when the new property 
+value is cbChecked or cbUnchecked.
+</p>
 </descr>
+<version>
+Modified in LCL version 2.4 to prevent recursive updates (and event 
+notifications) when the action is changed.
+</version>
 <seealso>
+<link id="TCustomCheckBox.AllowGrayed"/>
+<link id="TButtonControl.Checked"/>
 <link id="TCustomCheckBox.RetrieveState"/>
 <link id="TCustomCheckBox.ApplyChanges"/>
-<link id="TCustomCheckBox.AllowGrayed"/>
-<!-- link id="TCustomCheckBox.DoClickOnChange"/ -->
-<link id="TButtonControl.Checked"/>
+<link id="TCustomCheckBox.DoClickOnChange"/>
 <link id="TCheckBoxState"/>
+<link id="#lcl.actnlist.TCustomAction.Grayed">TCustomAction.Grayed</link>
 </seealso>
 <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
 </element>
