@@ -589,10 +589,10 @@ begin
   tbDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
 
   if ShowWarningOverridenByProject then
-    lblWarningProject.Visible := (
-      (Project1.DebuggerBackend <> FSelectedDbgPropertiesConfig.UID) and
-      (Project1.DebuggerBackend <> 'IDE') and
-      not( (Project1.DebuggerBackend = '') and (Project1.DebuggerPropertiesConfigList.CountWithoutDeleted > 0) )
+    lblWarningProject.Visible := not (
+      (Project1.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
+      (Project1.DebuggerBackend = 'IDE') or
+      ( (Project1.DebuggerBackend = '') and (Project1.DebuggerPropertiesConfigList.CountWithoutDeleted = 0) )
     );
 end;
 
