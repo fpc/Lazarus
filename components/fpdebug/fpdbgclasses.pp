@@ -1157,7 +1157,7 @@ end;
 function TDbgCallstackEntry.GetProcSymbol: TFpSymbol;
 begin
   if not FIsSymbolResolved then begin
-    if FIndex > 0 then
+    if (FIndex > 0) and (FAnAddress <> 0) then
       FSymbol := FThread.Process.FindProcSymbol(FAnAddress - 1) // -1 => inside the call instruction
     else
       FSymbol := FThread.Process.FindProcSymbol(FAnAddress);
