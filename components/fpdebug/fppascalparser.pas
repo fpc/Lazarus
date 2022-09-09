@@ -2123,6 +2123,7 @@ var
       '&': if TokenEndPtr^ in ['a'..'z', 'A'..'Z'] then begin
              // escaped keyword used as identifier
              while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '0'..'9', '_'] do inc(TokenEndPtr);
+             inc(CurPtr);
              NewPart := TFpPascalExpressionPartIdentifier.Create(Self, CurPtr, TokenEndPtr-1);
              exit;
            end
