@@ -1711,7 +1711,10 @@ begin
   if MaybeDetach then
     exit;
 
-  FCurrentProcess.ThreadsClearCallStack;
+  // Do not clear callstack of threads: TDbgControllerCallRoutineCmd is considered remaining in pause.
+  // TODO: if the IP of another thread changes, send notifications
+  if (FCommand = nil) or not (FCommand is TDbgControllerCallRoutineCmd) then
+    FCurrentProcess.ThreadsClearCallStack;
 
   if Assigned(FOnThreadBeforeProcessLoop) then
     FOnThreadBeforeProcessLoop(Self);
