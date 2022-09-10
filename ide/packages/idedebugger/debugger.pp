@@ -1241,6 +1241,7 @@ type
     function GetNewCurrentIndex: Integer; override;
 
     procedure Clear; virtual;
+    function GetCountValidity: TDebuggerDataState; virtual;
     function  GetCount: Integer; override;
     procedure SetCount({%H-}ACount: Integer); override;
     function  GetEntry(AIndex: Integer): TIdeCallStackEntry; virtual;
@@ -1271,6 +1272,7 @@ type
     function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; virtual; // Can be faster than getting the full count
     function CountLimited(ALimit: Integer): Integer; override;
     property Entries[AIndex: Integer]: TIdeCallStackEntry read GetEntry;
+    property CountValidity: TDebuggerDataState read GetCountValidity;
   end;
 
   { TCallStackList }
@@ -1313,6 +1315,7 @@ type
 
     procedure Clear; override;
     function  GetCount: Integer; override;
+    function GetCountValidity: TDebuggerDataState; override;
     procedure SetCount(ACount: Integer); override;
     function GetEntry(AIndex: Integer): TIdeCallStackEntry; override;
     procedure AddEntry(AnEntry: TIdeCallStackEntry); override;
@@ -4684,6 +4687,11 @@ begin
   FSnapShot := AValue;
 end;
 
+function TCurrentCallStack.GetCountValidity: TDebuggerDataState;
+begin
+  Result := FCountValidity;
+end;
+
 function TCurrentCallStack.GetCount: Integer;
 begin
   Result := 0;
@@ -7546,6 +7554,11 @@ end;
 procedure TIdeCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
 begin
   assert(False, 'TCallStack.SetCurrentValidity');
+end;
+
+function TIdeCallStack.GetCountValidity: TDebuggerDataState;
+begin
+  Result := ddsValid;
 end;
 
 function TIdeCallStack.IndexError(AIndex: Integer): TIdeCallStackEntry;
