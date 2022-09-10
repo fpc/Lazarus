@@ -129,12 +129,15 @@ type
     function  GetSelectedCallstack: TIdeCallStack;
     procedure DoBreakPointsChanged; override;
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const {%H-}ABreakpoint: TIDEBreakPoint);
+    procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
     procedure CallStackChanged(Sender: TObject);
+    procedure CallStackCtxChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property BreakPoints;
     property CallStackMonitor;
     property ThreadsMonitor;
@@ -190,8 +193,11 @@ begin
   BreakpointsNotification.OnAdd    := @BreakPointChanged;
   BreakpointsNotification.OnUpdate := @BreakPointChanged;
   BreakpointsNotification.OnRemove := @BreakPointChanged;
-  ThreadsNotification.OnCurrent    := @CallStackChanged;
-  SnapshotNotification.OnCurrent   := @CallStackChanged;
+  ThreadsNotification.OnCurrent    := @CallStackCtxChanged;
+  SnapshotNotification.OnCurrent   := @CallStackCtxChanged;
+
+  DebugBoss.RegisterStateChangeHandler(@DoDebuggerState);
+
 
   actToggleBreakPoint.ShortCut := IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
 
@@ -202,9 +208,29 @@ begin
       lvCallStack.Column[i].AutoSize := True;
 end;
 
+destructor TCallStackDlg.Destroy;
+begin
+  DebugBoss.UnregisterStateChangeHandler(@DoDebuggerState);
+  inherited Destroy;
+end;
+
+procedure TCallStackDlg.DoDebuggerState(ADebugger: TDebuggerIntf;
+  AnOldState: TDBGState);
+begin
+  CallStackCtxChanged(nil);
+end;
+
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]);
+  if (not ToolButtonPower.Down) or FInUpdateView then exit;
+  UpdateView;
+  SetViewMax;
+end;
+
+procedure TCallStackDlg.CallStackCtxChanged(Sender: TObject);
+begin
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackCtxChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]);
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   if FViewStart = 0
   then UpdateView
