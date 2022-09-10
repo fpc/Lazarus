@@ -245,6 +245,7 @@ type
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
+    procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 
     function AllocStackMem(ASize: Integer): TDbgPtr; virtual;

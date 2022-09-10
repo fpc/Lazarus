@@ -297,6 +297,7 @@ type
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); override;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
   end;
@@ -828,6 +829,16 @@ begin
     result := FUserRegs.regs32[ebp]
   else
     result := FUserRegs.regs64[rbp];
+end;
+
+procedure TDbgLinuxThread.SetInstructionPointerRegisterValue(AValue: TDbgPtr);
+begin
+  if not FHasThreadState then
+    exit;
+  if Process.Mode=dm32 then
+    FUserRegs.regs32[eip] := AValue
+  else
+    FUserRegs.regs64[rip] := AValue;
 end;
 
 procedure TDbgLinuxThread.SetStackPointerRegisterValue(AValue: TDbgPtr);

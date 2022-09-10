@@ -178,11 +178,11 @@ type
     // Calling the function is done in two steps:
     //  - first execute one instruction so that the debugee jumps into the function (sSingleStep)
     //  - then run until the function has been completed (sRunRoutine)
-    type TStep = (sSingleStep, sRunRoutine);
+    type TStep = (sSingleStepInto, sRunRoutine, sSingleStepOver);
   protected
     FOriginalCode: array of byte;
     FOriginalInstructionPointer: TDBGPtr;
-    FReturnAdress: TDBGPtr;
+    FNewCodeAddress, FReturnAddress, FReturnStackPointer: TDBGPtr;
     FRoutineAddress: TDBGPtr;
     FStep: TStep;
     FHiddenBreakpoint: TFpInternalBreakpoint;
@@ -465,7 +465,7 @@ begin
   if FController.FStoredDefaultContext <> nil then
     FController.FStoredDefaultContext.AddReference;
 
-  FStep := sSingleStep;
+  FStep := sSingleStepInto;
   StoreInstructionPointer;
 
   if not FCallContext.WriteStack then begin
@@ -477,18 +477,31 @@ begin
 end;
 
 procedure TDbgControllerCallRoutineCmd.InsertCallInstructionCode;
+const
+  TEMP_CODE_LEN = 5; //  is the size of the instruction we are about to add.
 var
-  CurrentIP : TDBGPtr;
-  Buf: array of Byte;
+  InsertAddr : TDBGPtr;
+  Buf: array [0..TEMP_CODE_LEN] of Byte;
   RelAddr: Int32;
   DW: PInt32;
 begin
   // Get the address of the current instruction.
-  CurrentIP := FController.CurrentThread.GetInstructionPointerRegisterValue;
+  InsertAddr := FController.CurrentThread.GetInstructionPointerRegisterValue;
+  FReturnStackPointer := FController.CurrentThread.GetStackPointerRegisterValue;
+
+  // Store the address where the debugee should return at after the function
+  // finished. It is used to determine if the call has been completed succesfully.
+  FReturnAddress := InsertAddr;
+
+  // Insert 5 bytes before
+  InsertAddr := InsertAddr - TEMP_CODE_LEN;
+  FNewCodeAddress := InsertAddr;
 
   // Store the original code of the current instruction
-  SetLength(FOriginalCode, 5);
-  if not FProcess.ReadData(CurrentIP, 5, FOriginalCode[0]) then begin
+  (* TODO: if there is an error, try using: Current_IP + len_of_instr_at_IP - TEMP_CODE_LEN
+           Ensure the breakpoint at FReturnAddress is at the start of an intruction *)
+  SetLength(FOriginalCode, TEMP_CODE_LEN);
+  if not FProcess.ReadData(InsertAddr, TEMP_CODE_LEN, FOriginalCode[0]) then begin
     FCallContext.SetError('Failed to read code from mem');
     FInitError := True;
     exit;
@@ -497,29 +510,28 @@ begin
 
   // Calculate the relative offset between the address of the current instruction
   // and the address of the function we want to call.
-  if Abs(Int64(FRoutineAddress)-Int64(CurrentIP))>=MaxSIntValue then begin
+  {$PUSH}{$Q-}{$R-}
+  if Abs(Int64(FRoutineAddress-(InsertAddr+TEMP_CODE_LEN))) >= High(Int32) then begin
     FCallContext.SetError('Calling this function is not supported. Offset to the function that is to be called is too high.');
     FInitError := True;
     exit;
   end;
-  RelAddr := Int32(FRoutineAddress) - (Int32(CurrentIP) + 5); // 5 is the size of the instruction we are about to add.
+  RelAddr := Int64(FRoutineAddress-(InsertAddr+TEMP_CODE_LEN)); // TEMP_CODE_LEN is the size of the instruction we are about to add.
+  {$POP}
 
   // Construct the code to call the function.
-  SetLength(Buf, 5);
   Buf[0] := $e8; // CALL
   DW := pointer(@Buf[1]);
   DW^ := RelAddr;
 
   // Overwrite the current code with the new code to call the function
-  if not FProcess.WriteInstructionCode(CurrentIP, 5, Buf[0]) then begin
+  if not FProcess.WriteInstructionCode(InsertAddr, TEMP_CODE_LEN, Buf[0]) then begin
     FCallContext.SetError('Failed to write code to mem');
     FInitError := True;
     exit;
   end;
 
-  // Store the address where the debugee should return at after the function
-  // finished. It is used to determine if the call has been completed succesfully.
-  FReturnAdress := CurrentIP + 5;
+  FController.CurrentThread.SetInstructionPointerRegisterValue(InsertAddr);
 end;
 
 function TDbgControllerCallRoutineCmd.DoContinue(AProcess: TDbgProcess;
@@ -533,7 +545,7 @@ begin
   end;
 
   case FStep of
-    sSingleStep: AProcess.Continue(AProcess, AThread, True);  // Single step into the function
+    sSingleStepInto, sSingleStepOver: AProcess.Continue(AProcess, AThread, True);  // Single step into the function
     sRunRoutine: AProcess.Continue(AProcess, AThread, False); // Continue running the function
   end;
 end;
@@ -553,17 +565,30 @@ begin
   end;
 
   case FStep of
-    sSingleStep: begin
+    sSingleStepInto: begin
       // The debugee is in the routine now. Restore the original code.
       // (Remove the code that made the debugee jump into this routine)
       RestoreOriginalCode;
       // Set a breakpoint at the return-adres, so the debugee stops when the
       // routine has been completed.
       if AnEvent=deBreakpoint then begin
-        SetHiddenBreakpointAtReturnAddress(FReturnAdress);
+        SetHiddenBreakpointAtReturnAddress(FReturnAddress);
         AnEvent := deInternalContinue;
         Finished := false;
         FStep := sRunRoutine;
+      end else begin
+        assert(False, 'TDbgControllerCallRoutineCmd.DoResolveEvent: False / failed single step, should never happen');
+        FCallContext.SetError('Failed to make call');
+        FThread.ClearExceptionSignal;
+        RestoreState;
+        Finished := True;
+      end;
+    end;
+    sSingleStepOver: begin
+      FStep := sRunRoutine;
+      if AnEvent=deBreakpoint then begin
+        AnEvent := deInternalContinue;
+        Finished := false;
       end else begin
         assert(False, 'TDbgControllerCallRoutineCmd.DoResolveEvent: False / failed single step, should never happen');
         FCallContext.SetError('Failed to make call');
@@ -581,7 +606,6 @@ begin
         exit;
       end;
 
-
       if not (AnEvent in [deException, deBreakpoint, deHardCodedBreakpoint, deExitProcess]) then begin
         //deCreateProcess, deFinishedStep
         // Bail out. It can be anything, even deExitProcess. Maybe that handling
@@ -593,8 +617,10 @@ begin
       end;
 
       CurrentIP := FController.CurrentThread.GetInstructionPointerRegisterValue;
-      if CurrentIP<>FReturnAdress then
-        begin
+
+
+      if CurrentIP<>FReturnAddress then
+      begin
         // If we are not at the return-adres, the debugee has stopped due to some
         // unforeseen reason. Skip setting up the call-context, but assign an
         // error instead.
@@ -603,14 +629,24 @@ begin
           // at an actual breakpoint.
           FCallContext.SetError('The function stopped unexpectedly. (Breakpoint, Exception, etc)')
         else
-          begin
+        begin
           // Clear any (pending) signals that were sent to the application during
           // the function-call.
           AnEventThread.ClearExceptionSignal;
           FCallContext.SetError('The function stopped due to an exception.')
-          end;
-        end
+        end;
+      end
       else
+        if (FThread.GetStackPointerRegisterValue < FReturnStackPointer)
+        then begin
+          // TODO: check for FCurrentProcess.CurrentBreakpoint ??
+          // in recursion
+          AnEvent := deInternalContinue;
+          Finished := false;
+          FStep := sSingleStepOver; // step over breakpoint
+          exit;
+        end;
+
         // We are at the return-adres. (Phew...)
         // Store the necessary data into the context to obtain the function-result
         // later
@@ -636,7 +672,7 @@ begin
   if not FHasOrigCodeRead then
     exit;
   FHasOrigCodeRead := False;
-  if not FProcess.WriteInstructionCode(FOriginalInstructionPointer, Length(FOriginalCode), FOriginalCode[0]) then begin
+  if not FProcess.WriteInstructionCode(FNewCodeAddress, Length(FOriginalCode), FOriginalCode[0]) then begin
     // There is no recovery from here. Attempt to exti somewhat graceful
     HandleUnrecoverable;
     FCallContext.SetError('Failed to restore target app after call. Terminating');

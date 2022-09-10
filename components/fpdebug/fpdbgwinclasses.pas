@@ -169,6 +169,7 @@ type
     procedure RestoreRegisters; override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); override;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
     property Process;
@@ -1976,6 +1977,21 @@ begin
   else
     Result := FCurrentContext^.def.Rbp;
 {$endif}
+end;
+
+procedure TDbgWinThread.SetInstructionPointerRegisterValue(AValue: TDbgPtr);
+begin
+  if FCurrentContext = nil then
+    exit;
+{$ifdef cpui386}
+  FCurrentContext^.def.Eip := AValue;
+{$else}
+  if (TDbgWinProcess(Process).FBitness = b32) then
+    FCurrentContext^.WOW.Eip := AValue
+  else
+    FCurrentContext^.def.Rip := AValue;
+{$endif}
+  FThreadContextChanged:=True;
 end;
 
 procedure TDbgWinThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
