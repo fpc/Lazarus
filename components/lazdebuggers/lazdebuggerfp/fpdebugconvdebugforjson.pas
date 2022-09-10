@@ -279,6 +279,7 @@ begin
 
     CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
 
+    AnFpDebugger.BeforeWatchEval(CallContext);
     AnFpDebugger.DbgController.ProcessLoop;
 
     if not CallContext.IsValid then begin

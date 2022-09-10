@@ -47,12 +47,15 @@ type
 
   { TFpDbgInfoCallContext }
 
+  TOnCallRoutineHitBreapoint = procedure(AnAddress: TDBGPtr; out ACanContinue: Boolean) of object;
+
   TFpDbgInfoCallContext = class(TFpDbgAbstractCallContext)
   private
     FDbgProcess: TDbgProcess;
     FDbgThread: TDbgThread;
     FLastError: TFpError;
     FNextParamRegister: Integer;
+    FOnCallRoutineHitBreapoint: TOnCallRoutineHitBreapoint;
     FOrigStackPtr: TDBGPtr;
     FPreparedStack: Array of Byte;
     FNeedStringResInFinalize: Boolean;
@@ -95,6 +98,7 @@ type
     function GetWideStringResult(out AVal: TFpValue; AStringSymbolType: TFpSymbol = nil): Boolean;
 
     property LastError: TFpError read FLastError;
+    property OnCallRoutineHitBreapoint: TOnCallRoutineHitBreapoint read FOnCallRoutineHitBreapoint write FOnCallRoutineHitBreapoint;
   end;
 
 implementation

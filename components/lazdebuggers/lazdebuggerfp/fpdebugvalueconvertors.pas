@@ -310,6 +310,7 @@ begin
     try
       CallContext.AddOrdinalParam(nil, MgrAddr);
       CallContext.FinalizeParams;
+      AnFpDebugger.BeforeWatchEval(CallContext);
       AnFpDebugger.DbgController.ProcessLoop;
 
       if not CallContext.IsValid then
@@ -424,6 +425,7 @@ begin
       CallContext.AddStringResult;
       CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
       CallContext.AddOrdinalParam(nil, ASourceValue.DataAddress.Address);
+      AnFpDebugger.BeforeWatchEval(CallContext);
       AnFpDebugger.DbgController.ProcessLoop;
 
       if not CallContext.IsValid then begin

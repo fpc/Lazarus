@@ -553,6 +553,7 @@ end;
 procedure TDbgControllerCallRoutineCmd.DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 var
   CurrentIP: TDBGPtr;
+  ACanCont: Boolean;
 begin
   if FInitError then begin
     assert(False, 'TDbgControllerCallRoutineCmd.DoResolveEvent: False / should never be here');
@@ -624,7 +625,22 @@ begin
         // If we are not at the return-adres, the debugee has stopped due to some
         // unforeseen reason. Skip setting up the call-context, but assign an
         // error instead.
-        if (AnEvent in [deBreakpoint, deHardCodedBreakpoint, deExitProcess]) then
+        if (AnEvent = deBreakpoint) and (FProcess.CurrentBreakpoint <> nil) then begin
+          ACanCont := False;
+          if FCallContext.OnCallRoutineHitBreapoint <> nil then
+            FCallContext.OnCallRoutineHitBreapoint(CurrentIP, ACanCont);
+          if ACanCont then begin
+            AnEvent := deInternalContinue;
+            Finished := false;
+            FStep := sSingleStepOver; // step over breakpoint
+            exit;
+          end
+          else begin
+            FCallContext.SetError('The function stopped unexpectedly. (Breakpoint, Exception, etc)');
+          end;
+        end
+        else
+        if (AnEvent in [deHardCodedBreakpoint, deExitProcess]) then
           // Note that deBreakpoint does not necessarily mean that it it stopped
           // at an actual breakpoint.
           FCallContext.SetError('The function stopped unexpectedly. (Breakpoint, Exception, etc)')
@@ -636,7 +652,7 @@ begin
           FCallContext.SetError('The function stopped due to an exception.')
         end;
       end
-      else
+      else begin
         if (FThread.GetStackPointerRegisterValue < FReturnStackPointer)
         then begin
           // TODO: check for FCurrentProcess.CurrentBreakpoint ??
@@ -646,6 +662,7 @@ begin
           FStep := sSingleStepOver; // step over breakpoint
           exit;
         end;
+      end;
 
         // We are at the return-adres. (Phew...)
         // Store the necessary data into the context to obtain the function-result

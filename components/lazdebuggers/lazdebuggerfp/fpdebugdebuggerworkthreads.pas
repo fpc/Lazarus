@@ -1039,6 +1039,7 @@ begin
         exit;
       end;
 
+      FDebugger.BeforeWatchEval(CallContext);
       FDebugger.DbgController.ProcessLoop;
 
       if not CallContext.IsValid then begin

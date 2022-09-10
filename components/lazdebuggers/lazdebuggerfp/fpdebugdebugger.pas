@@ -41,7 +41,7 @@ uses
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
-  FpDbgDwarf, FpDbgUtil,
+  FpDbgDwarf, FpDbgUtil, FpDbgCallContextInfo,
   // use converters
   FpDebugValueConvertors, FpDebugConvDebugForJson;
 
@@ -434,6 +434,10 @@ type
     procedure UnLockCommandProcessing; override;
     function GetLocationRec(AnAddress: TDBGPtr=0; AnAddrOffset: Integer = 0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
+
+    procedure ThreadHandleBreakPointInCallRoutine(AnAddress: TDBGPtr; out ACanContinue: Boolean);
+    procedure BeforeWatchEval(ACallContext: TFpDbgInfoCallContext); override;
+
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
     class function RequiredCompilerOpts({%H-}ATargetCPU, {%H-}ATargetOS: String): TDebugCompilerRequirements; override;
@@ -4342,6 +4346,34 @@ end;
 function TFpDebugDebugger.GetLocation: TDBGLocationRec;
 begin
   Result:=GetLocationRec;
+end;
+
+procedure TFpDebugDebugger.ThreadHandleBreakPointInCallRoutine(
+  AnAddress: TDBGPtr; out ACanContinue: Boolean);
+begin
+  with FExceptionStepper do
+    ACanContinue := not(
+      ( (FBreakPoints[bplRaise]      <> nil) and FBreakPoints[bplRaise].HasLocation(AnAddress) ) or
+      ( (FBreakPoints[bplReRaise]    <> nil) and FBreakPoints[bplReRaise].HasLocation(AnAddress) ) or
+      ( (FBreakPoints[bplBreakError] <> nil) and FBreakPoints[bplBreakError].HasLocation(AnAddress) ) or
+      ( (FBreakPoints[bplRunError]   <> nil) and FBreakPoints[bplRunError].HasLocation(AnAddress) )
+    );
+end;
+
+procedure TFpDebugDebugger.BeforeWatchEval(ACallContext: TFpDbgInfoCallContext);
+begin
+  ACallContext.OnCallRoutineHitBreapoint := @ThreadHandleBreakPointInCallRoutine;
+
+  FExceptionStepper.DisableBreaks([bplPopExcept, bplCatches, //bplReRaise,
+    {$IFDEF MSWINDOWS}
+    {$IFDEF WIN64}
+    bplFpcSpecific, bplRtlRestoreContext, bplRtlUnwind,
+    bplSehW64Finally, bplSehW64Except, bplSehW64Unwound,
+    {$ENDIF}
+    bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler,
+    bplSehW32Except, bplSehW32Finally,
+    {$ENDIF}
+    bplStepOut]);
 end;
 
 class function TFpDebugDebugger.Caption: String;

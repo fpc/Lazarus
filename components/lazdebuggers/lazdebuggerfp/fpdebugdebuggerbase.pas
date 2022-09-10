@@ -64,6 +64,7 @@ type
     ): Boolean;
 
     function ReadAnsiStringFromTarget(AStringAddr: TDBGPtr; out AString: String): boolean;
+    procedure BeforeWatchEval(ACallContext: TFpDbgInfoCallContext); virtual; abstract;
 
     property DbgController: TDbgController read FDbgController;
     property MemManager:    TFpDbgMemManager read FMemManager;
@@ -168,6 +169,7 @@ begin
   try
     CallContext.AddOrdinalViaRefAsParam(AStringDataAddr);
     CallContext.FinalizeParams;
+    BeforeWatchEval(CallContext);
     DbgController.ProcessLoop;
   finally
     DbgController.AbortCurrentCommand;
@@ -200,6 +202,7 @@ begin
     if not CallContext.AddOrdinalParam(65001) then
       exit;
     CallContext.FinalizeParams;
+    BeforeWatchEval(CallContext);
     DbgController.ProcessLoop;
 
     if not CallContext.IsValid then
