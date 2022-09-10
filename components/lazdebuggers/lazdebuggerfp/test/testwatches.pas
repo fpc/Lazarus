@@ -3857,6 +3857,7 @@ begin
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
 
+  AnExpressionScope := nil;
   try
     BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
     AssertDebuggerNotInErrorState;
@@ -3922,12 +3923,12 @@ begin
 
     APasExpr.Free;
 
-
-
   end;
 
 
   finally
+    AnExpressionScope.ReleaseReference;
+
     Debugger.RunToNextPause(dcStop);
     Debugger.ClearDebuggerMonitors;
     Debugger.FreeDebugger;
