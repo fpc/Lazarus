@@ -299,7 +299,7 @@ begin
 
     FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
     CStack := GetSelectedCallstack;
-    MaxCnt := FViewStart + FViewLimit + 1;
+    MaxCnt := FViewStart + FViewLimit;
     if CStack <> nil then CStack.CountLimited(MaxCnt); // trigger the update-notification, if executed immediately
     FInUpdateView := False;
     // TODO: must make CStack ref-counted
