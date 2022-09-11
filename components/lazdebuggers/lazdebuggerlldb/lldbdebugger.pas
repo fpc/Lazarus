@@ -1431,7 +1431,7 @@ begin
       func,
       filename, fullfile,
       line,
-      TId, name, ''
+      TId, name, dtsUnknown
     );
     CurrentThreads.Add(te);
     te.Free;

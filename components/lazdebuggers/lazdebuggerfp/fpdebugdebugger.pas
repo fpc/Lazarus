@@ -926,21 +926,21 @@ begin
       if Assigned(CallStack) and (CallStack.Count > 0) then begin
         c := CallStack.Items[0];
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, 'paused');
+          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, dtsPaused);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, 'paused');
+          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, dtsPaused);
       end
       else begin
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, 'paused');
+          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, dtsPaused);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, 'paused');
+          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, dtsPaused);
       end;
     end;
 
@@ -1426,7 +1426,7 @@ begin
   ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
   for i := 0 to high(ThreadArray) do begin
     // TODO: Maybe get the address. If FpDebug has already read the ThreadState.
-    ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, 'Thread ' + IntToStr(ThreadArray[i].ID), 'paused');
+    ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, 'Thread ' + IntToStr(ThreadArray[i].ID), dtsPaused);
     try
       CurrentThreads.Add(ThreadEntry);
     finally

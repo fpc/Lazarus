@@ -65,6 +65,8 @@ type
     dsDestroying
     );
 
+  TDbgThreadState = (dtsUnknown, dtsRunning, dtsPaused, dtsSuspended);
+
 implementation
 
 end.

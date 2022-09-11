@@ -2500,7 +2500,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
         S := GetPart('thread-id="', '"', Line);
         if s = 'all' then begin
           for i := 0 to  ct.Count - 1 do
-            ct[i].ThreadState := 'running'; // TODO enum?
+            ct[i].ThreadState := dtsRunning; // TODO enum?
         end
         else begin
           S := S + ',';
@@ -2514,7 +2514,7 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
             if i < 0 then Continue;
             t := ct.EntryById[i];
             if t <> nil then
-              t.ThreadState := 'running'; // TODO enum?
+              t.ThreadState := dtsRunning; // TODO enum?
           end;
         end;
         FCmd.FTheDebugger.Threads.Changed;
@@ -2999,7 +2999,7 @@ var
             S := GetPart('thread-id="', '"', Line);
             if s = 'all' then begin
               for i := 0 to  ct.Count - 1 do
-                ct[i].ThreadState := 'running'; // TODO enum?
+                ct[i].ThreadState := dtsRunning; // TODO enum?
             end
             else begin
               S := S + ',';
@@ -3013,7 +3013,7 @@ var
                 if i < 0 then Continue;
                 t := ct.EntryById[i];
                 if t <> nil then
-                  t.ThreadState := 'running'; // TODO enum?
+                  t.ThreadState := dtsRunning; // TODO enum?
               end;
             end;
             FTheDebugger.Threads.Changed;
@@ -3848,7 +3848,8 @@ var
   i, j: Integer;
   line, ThrId: Integer;
   func, filename, fullname: String;
-  ThrName, ThrState: string;
+  ThrName, s: string;
+  ThrState: TDbgThreadState;
   addr: TDBGPtr;
   Arguments: TStringList;
 begin
@@ -3889,7 +3890,11 @@ begin
       EList.Init(List.Items[i]^.Name);
       ThrId    := StrToIntDef(EList.Values['id'], -2);
       ThrName  := EList.Values['target-id'];
-      ThrState := EList.Values['state'];
+      s := LowerCase(EList.Values['state']);
+      if (pos('pause', s) > 0) or (pos('stop', s) > 0) then ThrState := dtsPaused
+      else
+      if pos('run', s) > 0   then ThrState := dtsRunning
+      else                        ThrState := dtsUnknown;
       EList.SetPath('frame');
       addr := StrToQWordDef(EList.Values['addr'], 0);
       func := EList.Values['func'];
@@ -9061,7 +9066,7 @@ begin
           case x of
             0: begin
                 if t = nil then begin
-                  t := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
+                  t := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', dtsUnknown);
                   ct.Add(t);
                   t.Free;
                 end

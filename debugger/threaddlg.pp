@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, ComCtrls, LCLProc, LazLoggerBase,
   Debugger, DebuggerDlg, Forms, LazarusIDEStrConsts, IDEWindowIntf, DebuggerStrConst,
-  BaseDebugManager, IDEImagesIntf;
+  BaseDebugManager, IDEImagesIntf, LazDebuggerIntfBaseTypes;
 
 type
 
@@ -55,6 +55,10 @@ const
   COL_THREAD_LINE     = 6;
   COL_THREAD_FUNC     = 7;
   COL_WIDTHS: Array[0..6] of integer = ( 20, 50, 100, 50,  150, 50, 300);
+
+const THREAD_STATE_NAMES: array [TDbgThreadState] of string = (
+  '', 'running', 'paused', 'suspended'
+);
 
 function ThreadsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -137,7 +141,7 @@ begin
       else lvThreads.Items[i].ImageIndex := -1;
       lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
       lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
-      lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
+      lvThreads.Items[i].SubItems[2] := THREAD_STATE_NAMES[Threads[i].ThreadState];
       s := Threads[i].TopFrame.Source;
       if s = '' then s := ':' + IntToHex(Threads[i].TopFrame.Address, 8);
       lvThreads.Items[i].SubItems[3] := s;
