@@ -295,6 +295,7 @@ var
   DropDownButtonRect: TRect;
   TextSize: TSize;
   TextPos: TPoint;
+  dist: Integer;
   IconSize: TSize;
   IconPos: TPoint;
   ImgList: TCustomImageList;
@@ -372,9 +373,10 @@ begin
         if FToolBar.List then
         begin
           // icon left of text
+          dist := FToolbar.Scale96ToFont(cIconTextDist);
           IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx-TextSize.cx-2) div 2;
           IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy) div 2;
-          TextPos.X:=IconPos.X+IconSize.cx+2;
+          TextPos.X:=IconPos.X+IconSize.cx+dist;
           TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
         end else
         begin
@@ -1126,6 +1128,7 @@ var
   TextSize: TSize;
   TextPos: TPoint;
   IconPos: TPoint;
+  dist: Integer;
   ImgList: TCustomImageList;
   ImgIndex: integer;
   ImgEffect: TGraphicsDrawEffect;
@@ -1173,7 +1176,8 @@ begin
         if FToolBar.List then
         begin
           // icon left of text
-          TextPos.X := IconPos.X + IconSize.cx + 2;
+          dist := FToolbar.Scale96ToFont(cIconTextDist);
+          TextPos.X := IconPos.X + IconSize.cx + dist;
         end
         else
         begin
