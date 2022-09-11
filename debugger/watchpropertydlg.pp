@@ -51,6 +51,7 @@ type
   TWatchPropertyDlg = class(TForm)
     ButtonPanel: TButtonPanel;
     chkAllowFunc: TCheckBox;
+    chkAllowFuncThreads: TCheckBox;
     chkEnabled: TCheckBox;
     chkUseInstanceClass: TCheckBox;
     dropFpDbgConv: TComboBox;
@@ -65,7 +66,7 @@ type
     txtRepCount: TEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
-    procedure PanelTopClick(Sender: TObject);
+    procedure chkAllowFuncChange(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
   private
     FWatch: TIdeWatch;
@@ -110,6 +111,8 @@ begin
     then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defClassAutoCast];
     if chkAllowFunc.Checked
     then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall];
+    if chkAllowFuncThreads.Checked
+    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defFunctionCallRunAllThreads];
     FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
 
     if dropFpDbgConv.ItemIndex = 0 then
@@ -128,9 +131,11 @@ begin
   end;
 end;
 
-procedure TWatchPropertyDlg.PanelTopClick(Sender: TObject);
+procedure TWatchPropertyDlg.chkAllowFuncChange(Sender: TObject);
 begin
-
+  chkAllowFuncThreads.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
+    (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures) and
+    (chkAllowFunc.Checked);
 end;
 
 procedure TWatchPropertyDlg.txtExpressionChange(Sender: TObject);
@@ -173,6 +178,7 @@ begin
     rgStyle.ItemIndex           := DispFormatToStyle[FWatch.DisplayFormat];
     chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
     chkAllowFunc.Checked        := defAllowFunctionCall in FWatch.EvaluateFlags;
+    chkAllowFuncThreads.Checked := defFunctionCallRunAllThreads in FWatch.EvaluateFlags;
     txtRepCount.Text            := IntToStr(FWatch.RepeatCount);
   end;
   txtExpressionChange(nil);
@@ -181,6 +187,9 @@ begin
   txtDigits.Enabled := False;
   chkAllowFunc.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures);
+  chkAllowFuncThreads.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
+    (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures) and
+    (chkAllowFunc.Checked);
 
   Caption:= lisWatchPropert;
   lblExpression.Caption:= lisExpression;
@@ -188,6 +197,7 @@ begin
   lblDigits.Caption:= lisDigits;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
+  chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
   chkUseInstanceClass.Caption := drsUseInstanceClassType;
   rgStyle.Caption:= lisStyle;
   rgStyle.Items[0]:= lisCharacter;

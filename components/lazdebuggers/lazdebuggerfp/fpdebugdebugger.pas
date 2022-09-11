@@ -440,6 +440,7 @@ type
 
     procedure ThreadHandleBreakPointInCallRoutine(AnAddress: TDBGPtr; out ACanContinue: Boolean);
     procedure BeforeWatchEval(ACallContext: TFpDbgInfoCallContext); override;
+    procedure RunProcessLoop(OnlyCurrentThread: Boolean); override;
 
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
@@ -4419,6 +4420,25 @@ begin
     bplSehW32Except, bplSehW32Finally,
     {$ENDIF}
     bplStepOut]);
+end;
+
+procedure TFpDebugDebugger.RunProcessLoop(OnlyCurrentThread: Boolean);
+var
+  ct, t: TDbgThread;
+begin
+  ct := FDbgController.CurrentThread;
+
+  if OnlyCurrentThread then
+    for t in FDbgController.CurrentProcess.ThreadMap do
+      if t <> ct then
+        t.IncSuspendCount;
+
+  FDbgController.ProcessLoop;
+
+  if OnlyCurrentThread then
+    for t in FDbgController.CurrentProcess.ThreadMap do
+      if (t <> ct) and (t.SuspendCount > 0) then // new threads will have count=0
+        t.DecSuspendCount;
 end;
 
 class function TFpDebugDebugger.Caption: String;

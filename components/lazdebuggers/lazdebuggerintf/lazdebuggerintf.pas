@@ -84,6 +84,7 @@ type
   TWatcheEvaluateFlag =
     ( defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable
       defAllowFunctionCall, //
+      defFunctionCallRunAllThreads, //
       defExtraDepth,        // Evaluate 1 extra level of sub-elements => i.e., evaluate each nested sub-item
       defSkipValConv,
       // deprecated

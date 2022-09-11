@@ -6568,6 +6568,9 @@ begin
   if AConfig.GetValue(APath + 'AllowFunctionCall', False)
   then Include(FEvaluateFlags, defAllowFunctionCall)
   else Exclude(FEvaluateFlags, defAllowFunctionCall);
+  if AConfig.GetValue(APath + 'AllowFunctionThreads', False)
+  then Include(FEvaluateFlags, defFunctionCallRunAllThreads)
+  else Exclude(FEvaluateFlags, defFunctionCallRunAllThreads);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
@@ -6593,6 +6596,7 @@ begin
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
@@ -6715,6 +6719,9 @@ begin
   if AConfig.GetValue(APath + 'AllowFunctionCall', False)
   then Include(FEvaluateFlags, defAllowFunctionCall)
   else Exclude(FEvaluateFlags, defAllowFunctionCall);
+  if AConfig.GetValue(APath + 'AllowFunctionThreads', False)
+  then Include(FEvaluateFlags, defFunctionCallRunAllThreads)
+  else Exclude(FEvaluateFlags, defFunctionCallRunAllThreads);
   i := StringCase
     (AConfig.GetValue(APath + 'DisplayStyle/Value', TWatchDisplayFormatNames[wdfDefault]),
     TWatchDisplayFormatNames);
@@ -6740,6 +6747,7 @@ begin
     TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);

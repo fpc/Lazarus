@@ -14,8 +14,8 @@ object WatchPropertyDlg: TWatchPropertyDlg
   LCLVersion = '2.3.0.0'
   object rgStyle: TRadioGroup
     Left = 6
-    Height = 90
-    Top = 153
+    Height = 71
+    Top = 172
     Width = 416
     Align = alClient
     AutoFill = True
@@ -31,7 +31,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 70
+    ClientHeight = 51
     ClientWidth = 412
     Columns = 3
     ItemIndex = 7
@@ -71,16 +71,15 @@ object WatchPropertyDlg: TWatchPropertyDlg
   end
   object PanelTop: TPanel
     Left = 0
-    Height = 153
+    Height = 172
     Top = 0
     Width = 428
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 153
+    ClientHeight = 172
     ClientWidth = 428
     TabOrder = 0
-    OnClick = PanelTopClick
     object lblExpression: TLabel
       AnchorSideLeft.Control = PanelTop
       AnchorSideTop.Control = txtExpression
@@ -166,19 +165,19 @@ object WatchPropertyDlg: TWatchPropertyDlg
       ParentColor = False
     end
     object chkEnabled: TCheckBox
+      AnchorSideLeft.Control = lblExpression
       AnchorSideTop.Control = txtRepCount
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
       Top = 61
       Width = 60
-      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'Enabled'
       TabOrder = 3
     end
     object chkAllowFunc: TCheckBox
-      AnchorSideLeft.Control = chkEnabled
+      AnchorSideLeft.Control = lblExpression
       AnchorSideTop.Control = chkEnabled
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -186,15 +185,16 @@ object WatchPropertyDlg: TWatchPropertyDlg
       Top = 80
       Width = 126
       Caption = 'Allow Function Calls'
+      OnChange = chkAllowFuncChange
       TabOrder = 4
     end
     object chkUseInstanceClass: TCheckBox
-      AnchorSideLeft.Control = chkEnabled
-      AnchorSideTop.Control = chkAllowFunc
+      AnchorSideLeft.Control = lblExpression
+      AnchorSideTop.Control = chkAllowFuncThreads
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 99
+      Top = 118
       Width = 127
       BorderSpacing.Bottom = 6
       Caption = 'chkUseInstanceClass'
@@ -207,7 +207,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
       AnchorSideTop.Side = asrBottom
       Left = 88
       Height = 23
-      Top = 124
+      Top = 143
       Width = 160
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
@@ -216,14 +216,26 @@ object WatchPropertyDlg: TWatchPropertyDlg
       TabOrder = 6
     end
     object lblFpDbgConv: TLabel
-      AnchorSideLeft.Control = chkEnabled
+      AnchorSideLeft.Control = lblExpression
       AnchorSideTop.Control = dropFpDbgConv
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 128
+      Top = 147
       Width = 76
       Caption = 'lblFpDbgConv'
+    end
+    object chkAllowFuncThreads: TCheckBox
+      AnchorSideLeft.Control = lblExpression
+      AnchorSideTop.Control = chkAllowFunc
+      AnchorSideTop.Side = asrBottom
+      Left = 26
+      Height = 19
+      Top = 99
+      Width = 134
+      BorderSpacing.Left = 20
+      Caption = 'chkAllowFuncThreads'
+      TabOrder = 7
     end
   end
 end

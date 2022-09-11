@@ -229,7 +229,7 @@ type
 
   TFpThreadWorkerEvaluate = class(TFpDbgDebggerThreadWorkerLinkedItem)
   private
-    FAllowFunctions: Boolean;
+    FAllowFunctions, FAllowFunctionsAllThread: Boolean;
     FExpressionScope: TFpDbgSymbolScope;
 
     function DoWatchFunctionCall(AnExpressionPart: TFpPascalExpressionPart;
@@ -1040,7 +1040,7 @@ begin
       end;
 
       FDebugger.BeforeWatchEval(CallContext);
-      FDebugger.DbgController.ProcessLoop;
+      FDebugger.RunProcessLoop(not FAllowFunctionsAllThread);
 
       if not CallContext.IsValid then begin
         DebugLn(['Error in call ',CallContext.Message]);
@@ -1278,8 +1278,8 @@ begin
   FDispFormat := ADispFormat;
   FRepeatCnt := ARepeatCnt;
   FEvalFlags := AnEvalFlags;
-  if (defAllowFunctionCall in AnEvalFlags) then
-    FAllowFunctions := True;
+  FAllowFunctions := defAllowFunctionCall in AnEvalFlags;
+  FAllowFunctionsAllThread := defFunctionCallRunAllThreads in AnEvalFlags;
   FRes := False;
 end;
 
