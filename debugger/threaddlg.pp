@@ -235,12 +235,12 @@ var
   Entry: TIdeThreadEntry;
   Item: TListItem;
 begin
-  if (DebugBoss = nil) or (DebugBoss.Debugger = nil) then begin
+  if (DebugBoss = nil) or (DebugBoss.DebuggerClass = nil) then begin
     tbSuspend.Visible := False;
     exit;
   end;
 
-  tbSuspend.Visible := dfThreadSuspension in DebugBoss.Debugger.SupportedFeatures;
+  tbSuspend.Visible := dfThreadSuspension in DebugBoss.DebuggerClass.SupportedFeatures;
   tbSuspend.Caption := drsSuspend;
   tbSuspend.Enabled := False;
 
