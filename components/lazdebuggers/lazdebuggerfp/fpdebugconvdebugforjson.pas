@@ -5,7 +5,7 @@ unit FpDebugConvDebugForJson;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls,
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, ActnList,
   FpDebugStringConstants, FpDebugValueConvertors, FpDebugDebuggerBase,
   LazDebuggerValueConverter, LazDebuggerIntfBaseTypes, FpDbgInfo, FpDbgClasses,
   FpdMemoryTools, FpDbgCallContextInfo, FpErrorMessages, DbgIntfBaseTypes;
@@ -15,9 +15,11 @@ type
   { TJsonForDebugSettingsFrame }
 
   TJsonForDebugSettingsFrame = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+    ConverterWithFuncCallSettingsFrame1: TConverterWithFuncCallSettingsFrame;
     edFuncName: TEdit;
     edJsonAddress: TEdit;
     edJsonTypename: TEdit;
+    Label1: TLabel;
     lblFuncName: TLabel;
     lblJsonAddress: TLabel;
     lblJsonTypename: TLabel;
@@ -33,7 +35,7 @@ type
 
   { TFpDbgValueConverterJsonForDebug }
 
-  TFpDbgValueConverterJsonForDebug = class(TFpDbgValueConverter)
+  TFpDbgValueConverterJsonForDebug = class(TFpDbgValueConverterWithFuncCall)
   private
     FFunctionName: String;
     FJsonAddressKey: String;
@@ -77,6 +79,8 @@ procedure TJsonForDebugSettingsFrame.ReadFrom(
 var
   c: TFpDbgValueConverterJsonForDebug;
 begin
+  ConverterWithFuncCallSettingsFrame1.ReadFrom(AConvertor);
+
   if not (AConvertor.GetObject is TFpDbgValueConverterJsonForDebug) then
     exit;
 
@@ -92,13 +96,15 @@ function TJsonForDebugSettingsFrame.WriteTo(
 var
   c: TFpDbgValueConverterJsonForDebug;
 begin
-  Result := False;
+  Result := ConverterWithFuncCallSettingsFrame1.WriteTo(AConvertor);
+
   if not (AConvertor.GetObject is TFpDbgValueConverterJsonForDebug) then
     exit;
 
   c := TFpDbgValueConverterJsonForDebug(AConvertor.GetObject);
 
   Result :=
+    Result or
     (c.FFunctionName    <> trim(edFuncName.Text)) or
     (c.FJsonAddressKey  <> trim(edJsonAddress.Text)) or
     (c.FJsonTypenameKey <> trim(edJsonTypename.Text));
@@ -280,7 +286,7 @@ begin
     CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
 
     AnFpDebugger.BeforeWatchEval(CallContext);
-    AnFpDebugger.DbgController.ProcessLoop;
+    AnFpDebugger.RunProcessLoop(not FuncCallRunAllThreads);
 
     if not CallContext.IsValid then begin
       if (IsError(CallContext.LastError)) then

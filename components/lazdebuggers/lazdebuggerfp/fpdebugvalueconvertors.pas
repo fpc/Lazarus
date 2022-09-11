@@ -8,8 +8,8 @@ interface
 uses
   Classes, SysUtils, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
   FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
-  LazClasses, LCLProc, StrUtils, FpDebugDebuggerBase, FpDebugStringConstants,
-  LazDebuggerValueConverter, LazDebuggerIntfBaseTypes;
+  LazClasses, LCLProc, Forms, StdCtrls, Controls, StrUtils, FpDebugDebuggerBase,
+  FpDebugStringConstants, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes;
 
 type
   (* TFpDbgValueConverter and descendants
@@ -41,6 +41,29 @@ type
   end;
   TFpDbgValueConverterClass = class of TFpDbgValueConverter;
 
+  { TConverterWithFuncCallSettingsFrame }
+
+  TConverterWithFuncCallSettingsFrame = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+    chkRunAll: TCheckBox;
+  protected
+    function GetFrame: TObject;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf);
+    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean;
+  end;
+
+  { TFpDbgValueConverterWithFuncCall }
+
+  TFpDbgValueConverterWithFuncCall = class(TFpDbgValueConverter)
+  private
+    FFuncCallRunAllThreads: Boolean;
+  public
+    procedure Assign(ASource: TFpDbgValueConverter); override;
+  published
+    property FuncCallRunAllThreads: Boolean read FFuncCallRunAllThreads write FFuncCallRunAllThreads;
+  end;
+
 
   { TFpDbgValueConvertSelectorIntfHelper }
 
@@ -61,9 +84,11 @@ type
 
   { TFpDbgValueConverterVariantToLStr }
 
-  TFpDbgValueConverterVariantToLStr = class(TFpDbgValueConverter)
+  TFpDbgValueConverterVariantToLStr = class(TFpDbgValueConverterWithFuncCall)
   private
     function GetProcAddrFromMgr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDbgPtr;
+  protected
+    function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf; override;
   public
     class function GetName: String; override;
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
@@ -81,6 +106,18 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
+{ TFpDbgValueConverterWithFuncCall }
+
+procedure TFpDbgValueConverterWithFuncCall.Assign(ASource: TFpDbgValueConverter);
+begin
+  inherited Assign(ASource);
+  if ASource is TFpDbgValueConverterWithFuncCall then begin
+    FFuncCallRunAllThreads := TFpDbgValueConverterWithFuncCall(ASource).FFuncCallRunAllThreads;
+  end;
+end;
 
 { TFpDbgValueConverter }
 
@@ -127,6 +164,48 @@ end;
 procedure TFpDbgValueConverter.Assign(ASource: TFpDbgValueConverter);
 begin
   //
+end;
+
+{ TConverterWithFuncCallSettingsFrame }
+
+procedure TConverterWithFuncCallSettingsFrame.ReadFrom(
+  AConvertor: TLazDbgValueConverterIntf);
+var
+  c: TFpDbgValueConverterWithFuncCall;
+begin
+  if not (AConvertor.GetObject is TFpDbgValueConverterWithFuncCall) then
+    exit;
+
+  c := TFpDbgValueConverterWithFuncCall(AConvertor.GetObject);
+
+  chkRunAll.Checked := c.FuncCallRunAllThreads;
+end;
+
+function TConverterWithFuncCallSettingsFrame.WriteTo(
+  AConvertor: TLazDbgValueConverterIntf): Boolean;
+var
+  c: TFpDbgValueConverterWithFuncCall;
+begin
+  Result := False;
+  if not (AConvertor.GetObject is TFpDbgValueConverterWithFuncCall) then
+    exit;
+
+  c := TFpDbgValueConverterWithFuncCall(AConvertor.GetObject);
+
+  Result :=  chkRunAll.Checked <> c.FuncCallRunAllThreads;
+
+  c.FuncCallRunAllThreads := chkRunAll.Checked;
+end;
+
+function TConverterWithFuncCallSettingsFrame.GetFrame: TObject;
+begin
+  Result := Self;
+end;
+
+constructor TConverterWithFuncCallSettingsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  chkRunAll.Caption := drsRunAllThreadsWhileEval;
 end;
 
 { TFpDbgValueConvertSelectorIntfHelper }
@@ -311,7 +390,7 @@ begin
       CallContext.AddOrdinalParam(nil, MgrAddr);
       CallContext.FinalizeParams;
       AnFpDebugger.BeforeWatchEval(CallContext);
-      AnFpDebugger.DbgController.ProcessLoop;
+      AnFpDebugger.RunProcessLoop(True);
 
       if not CallContext.IsValid then
         exit;
@@ -327,6 +406,11 @@ begin
   finally
     ProcSym.ReleaseReference;
   end;
+end;
+
+function TFpDbgValueConverterVariantToLStr.GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
+begin
+  Result := TConverterWithFuncCallSettingsFrame.Create(nil);
 end;
 
 class function TFpDbgValueConverterVariantToLStr.GetName: String;
@@ -426,7 +510,7 @@ begin
       CallContext.FinalizeParams; // force the string as first param (32bit) // TODO
       CallContext.AddOrdinalParam(nil, ASourceValue.DataAddress.Address);
       AnFpDebugger.BeforeWatchEval(CallContext);
-      AnFpDebugger.DbgController.ProcessLoop;
+      AnFpDebugger.RunProcessLoop(not FuncCallRunAllThreads);
 
       if not CallContext.IsValid then begin
         if (IsError(CallContext.LastError)) then

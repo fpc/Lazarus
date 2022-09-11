@@ -1,0 +1,21 @@
+object ConverterWithFuncCallSettingsFrame: TConverterWithFuncCallSettingsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  AutoSize = True
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 268
+  DesignTop = 68
+  object chkRunAll: TCheckBox
+    Left = 0
+    Height = 19
+    Top = 0
+    Width = 320
+    Align = alTop
+    Caption = 'chkRunAll'
+    TabOrder = 0
+  end
+end

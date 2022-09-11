@@ -14,48 +14,65 @@ object JsonForDebugSettingsFrame: TJsonForDebugSettingsFrame
   TabOrder = 0
   DesignLeft = 394
   DesignTop = 60
+  inline ConverterWithFuncCallSettingsFrame1: TConverterWithFuncCallSettingsFrame
+    Height = 19
+    Top = 1
+    Width = 107
+    ClientHeight = 19
+    ClientWidth = 107
+    TabOrder = 3
+    inherited chkRunAll: TCheckBox
+      Width = 107
+    end
+  end
+  object Label1: TLabel
+    Left = 107
+    Height = 19
+    Top = 1
+    Width = 119
+  end
   object lblFuncName: TLabel
     Left = 0
     Height = 23
-    Top = 1
-    Width = 45
+    Top = 21
+    Width = 107
     Caption = '----'
   end
   object edFuncName: TEdit
-    Left = 45
+    Left = 107
     Height = 23
-    Top = 1
-    Width = 181
+    Top = 21
+    Width = 119
     AutoSize = False
     TabOrder = 0
   end
   object lblJsonAddress: TLabel
     Left = 0
     Height = 23
-    Top = 25
-    Width = 45
+    Top = 45
+    Width = 107
     Caption = '----'
   end
   object edJsonAddress: TEdit
-    Left = 45
+    Left = 107
     Height = 23
-    Top = 25
-    Width = 181
+    Top = 45
+    Width = 119
     AutoSize = False
     TabOrder = 1
   end
   object lblJsonTypename: TLabel
     Left = 0
     Height = 23
-    Top = 49
-    Width = 45
+    Top = 69
+    Width = 107
     Caption = '----'
   end
   object edJsonTypename: TEdit
-    Left = 45
+    Left = 107
     Height = 23
-    Top = 49
-    Width = 181
+    Top = 69
+    Width = 119
     AutoSize = False
     TabOrder = 2
   end

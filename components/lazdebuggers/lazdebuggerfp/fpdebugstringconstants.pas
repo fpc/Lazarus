@@ -14,6 +14,7 @@ resourcestring
   drsFunctionName = 'Function name';
   drsCallSysVarToLStr = 'Call SysVarToLStr';
   drsCallJsonForDebug = 'Call JsonForDebug';
+  drsRunAllThreadsWhileEval = 'Run all threads while evaluating';
 
 implementation
 
