@@ -130,6 +130,14 @@ msgstr "メソッド型列"
 msgid "Len=%d: "
 msgstr "Len=%d"
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "インスタンスクラス型を使って下さい"

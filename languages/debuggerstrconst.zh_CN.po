@@ -141,6 +141,14 @@ msgstr "方法类型列"
 msgid "Len=%d: "
 msgstr "长度=%d:"
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "使用实例类类型"

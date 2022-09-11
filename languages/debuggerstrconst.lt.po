@@ -141,6 +141,14 @@ msgstr "Metodo tipo stulpelis"
 msgid "Len=%d: "
 msgstr "Ilgis = %d: "
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "Naudoti egzemplioriaus klasės tipą"

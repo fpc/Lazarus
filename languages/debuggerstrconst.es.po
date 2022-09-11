@@ -138,6 +138,14 @@ msgstr "Columna tipo método"
 msgid "Len=%d: "
 msgstr "Long=%d: "
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "Utilice tipo Instancia de clase"

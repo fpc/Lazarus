@@ -140,6 +140,14 @@ msgstr "Metod türü sütunu"
 msgid "Len=%d: "
 msgstr "Len=%d: "
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "Instance sınıf türünü kullan"

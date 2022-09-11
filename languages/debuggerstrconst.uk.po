@@ -141,6 +141,14 @@ msgstr "Графа типу методу"
 msgid "Len=%d: "
 msgstr "Дов=%d: "
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr ""
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "Викор. тип екземпляра класу"

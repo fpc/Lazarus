@@ -140,6 +140,14 @@ msgstr "Столбец типа метода"
 msgid "Len=%d: "
 msgstr "Длина=%d: "
 
+#: debuggerstrconst.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr "Запускать все потоки исполнения при вычислении"
+
+#: debuggerstrconst.drssuspend
+msgid "Suspend"
+msgstr "Приостановить"
+
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
 msgstr "Использовать тип экземпляра класса"
