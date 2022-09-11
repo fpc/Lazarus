@@ -869,6 +869,9 @@ debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep, ' # ', ' # ',DbgS
       TDbgWinThread(t).SuspendForStepOverBreakPoint;
   end;
 
+  for t in FThreadMap do
+    if (t <> AThread) and (t.SuspendCount > 0) then
+      TDbgWinThread(t).Suspend;
 
   AProcess.ThreadsBeforeContinue;
   if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);

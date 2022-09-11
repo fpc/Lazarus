@@ -203,6 +203,7 @@ type
     FPausedAtRemovedBreakPointState: (rbUnknown, rbNone, rbFound{, rbFoundAndDec});
     FPausedAtHardcodeBreakPoint: Boolean;
     FPausedAtRemovedBreakPointAddress: TDBGPtr;
+    FSuspendCount: Integer;
 
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
@@ -221,6 +222,7 @@ type
     procedure DoBeforeBreakLocationMapChange; // A new location added / or a location removed => memory will change
     procedure ValidateRemovedBreakPointInfo;
     function GetName: String; virtual;
+
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
     procedure DoBeforeProcessLoop;
@@ -264,6 +266,10 @@ type
     // signal is stored to be send to the debuggee again upon continuation.
     // Use ClearExceptionSignal to remove/eat this signal.
     procedure ClearExceptionSignal; virtual;
+
+    procedure IncSuspendCount;
+    procedure DecSuspendCount;
+    property  SuspendCount: Integer read FSuspendCount;
 
     destructor Destroy; override;
     function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
@@ -3286,6 +3292,17 @@ end;
 procedure TDbgThread.ClearExceptionSignal;
 begin
   // To be implemented in sub-classes
+end;
+
+procedure TDbgThread.IncSuspendCount;
+begin
+  inc(FSuspendCount);
+end;
+
+procedure TDbgThread.DecSuspendCount;
+begin
+  dec(FSuspendCount);
+  DebugLn((DBG_VERBOSE or DBG_WARNINGS) and (FSuspendCount < 0), ['DecSuspendCount went negative: ', FSuspendCount])
 end;
 
 { TFpWatchPointData }

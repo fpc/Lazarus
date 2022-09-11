@@ -1487,6 +1487,7 @@ type
                                   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
                                  ); reintroduce;
   public
+    procedure SetThreadStateOnly(AValue: TDbgThreadState); override;
     function CreateCopy: TThreadEntry; override;
     property TopFrame: TIdeThreadFrameEntry read GetTopFrame;
   end;
@@ -5306,6 +5307,11 @@ begin
   if ThreadState = AValue then Exit;
   inherited SetThreadState(AValue);
   TopFrame.ClearLocation;
+end;
+
+procedure TIdeThreadEntry.SetThreadStateOnly(AValue: TDbgThreadState);
+begin
+  inherited SetThreadState(AValue);
 end;
 
 procedure TIdeThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;

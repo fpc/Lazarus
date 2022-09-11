@@ -79,6 +79,7 @@ resourcestring
   dlgBackendConvOptDebugConverter = 'Backend Converter:';
   dlgBackendConvOptDefault = '- Default -';
   dlgBackendConvOptDisabled = '- Disabled -';
+  drsSuspend = 'Suspend';
 
 implementation
 

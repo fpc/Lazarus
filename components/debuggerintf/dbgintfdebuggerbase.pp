@@ -62,7 +62,8 @@ type
   EDBGExceptions = class(EDebuggerException);
 
   TDBGFeature = (
-    dfEvalFunctionCalls   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
+    dfEvalFunctionCalls,   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
+    dfThreadSuspension
   );
   TDBGFeatures = set of TDBGFeature;
 
@@ -1289,6 +1290,7 @@ type
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: TDbgThreadState;
                        AState: TDebuggerDataState = ddsValid);
+    procedure SetThreadStateOnly(AValue: TDbgThreadState); virtual;
     function CreateCopy: TThreadEntry; virtual;
     destructor Destroy; override;
     procedure Assign(AnOther: TThreadEntry); virtual;
@@ -1345,6 +1347,7 @@ type
     procedure DoCleanAfterPause; virtual;
   public
     procedure RequestMasterData; virtual;
+    procedure SetSuspended(AThread: TThreadEntry; ASuspended: Boolean); virtual;
     procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure Changed; // TODO: needed because entries can not notify the monitor
     property  CurrentThreads: TThreads read GetCurrentThreads;
@@ -1362,6 +1365,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure SetSuspended(AThread: TThreadEntry; ASuspended: Boolean);
     property Threads: TThreads read FThreads;
     property Supplier: TThreadsSupplier read GetSupplier write SetSupplier;
   end;
@@ -2300,6 +2304,11 @@ begin
   FThreadState := AValue;
 end;
 
+procedure TThreadEntry.SetThreadStateOnly(AValue: TDbgThreadState);
+begin
+  SetThreadState(AValue);
+end;
+
 function TThreadEntry.CreateStackEntry: TCallStackEntry;
 begin
   Result := TCallStackEntry.Create;
@@ -2482,6 +2491,13 @@ destructor TThreadsMonitor.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FThreads);
+end;
+
+procedure TThreadsMonitor.SetSuspended(AThread: TThreadEntry;
+  ASuspended: Boolean);
+begin
+  if GetSupplier <> nil then
+    GetSupplier.SetSuspended(AThread, ASuspended);
 end;
 
 { TRegistersMonitor }
@@ -4395,6 +4411,12 @@ begin
 end;
 
 procedure TThreadsSupplier.RequestMasterData;
+begin
+  //
+end;
+
+procedure TThreadsSupplier.SetSuspended(AThread: TThreadEntry;
+  ASuspended: Boolean);
 begin
   //
 end;

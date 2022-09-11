@@ -1,11 +1,14 @@
-inherited ThreadsDlg: TThreadsDlg
+object ThreadsDlg: TThreadsDlg
   Left = 345
+  Height = 240
   Top = 428
   Width = 774
   BorderStyle = bsSizeToolWin
   Caption = 'Threads'
+  ClientHeight = 240
   ClientWidth = 774
-  object lvThreads: TListView[0]
+  LCLVersion = '2.3.0.0'
+  object lvThreads: TListView
     Left = 0
     Height = 214
     Top = 26
@@ -41,9 +44,11 @@ inherited ThreadsDlg: TThreadsDlg
     SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
+    OnClick = lvThreadsClick
     OnDblClick = lvThreadsDblClick
+    OnSelectItem = lvThreadsSelectItem
   end
-  object ToolBar1: TToolBar[1]
+  object ToolBar1: TToolBar
     Left = 0
     Height = 26
     Top = 0
@@ -58,10 +63,16 @@ inherited ThreadsDlg: TThreadsDlg
       OnClick = tbCurrentClick
     end
     object tbGoto: TToolButton
-      Left = 70
+      Left = 60
       Top = 2
       Caption = 'tbGoto'
       OnClick = lvThreadsDblClick
+    end
+    object tbSuspend: TToolButton
+      Left = 105
+      Top = 2
+      Caption = 'tbSuspend'
+      OnClick = tbSuspendClick
     end
   end
 end

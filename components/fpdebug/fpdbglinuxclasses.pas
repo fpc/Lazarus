@@ -1549,7 +1549,9 @@ begin
 
   // check other threads if they need a singlestep
   for TDbgThread(ThreadToContinue) in FThreadMap do
-    if (ThreadToContinue <> AThread) and ThreadToContinue.FIsPaused then begin
+    if (ThreadToContinue <> AThread) and ThreadToContinue.FIsPaused and
+       (ThreadToContinue.SuspendCount <= 0)
+    then begin
       IP := ThreadToContinue.GetInstructionPointerRegisterValue;
       if HasInsertedBreakInstructionAtLocation(IP) or ThreadToContinue.NextIsSingleStep then begin
         TempRemoveBreakInstructionCode(IP);
@@ -1614,7 +1616,9 @@ begin
 
   // start all other threads
   for TDbgThread(ThreadToContinue) in FThreadMap do begin
-    if (ThreadToContinue <> AThread) and (ThreadToContinue.FIsPaused) then begin
+    if (ThreadToContinue <> AThread) and (ThreadToContinue.FIsPaused) and
+       (ThreadToContinue.SuspendCount <= 0)
+    then begin
       fpseterrno(0);
       {$IFDEF DebuglnLinuxDebugEvents}
       Debugln(FPDBG_LINUX, ['RUN other TID: ', ThreadToContinue.ID]);
