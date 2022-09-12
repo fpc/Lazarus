@@ -40,7 +40,7 @@ The following components are added but not displayed on the component palette:
 <li>TTabSheet</li>
 </ul>
 <p>
-This file is part of the <file>LCL</file> package.
+This file is part of the <file>LCL</file> (Lazarus Component Library) package.
 </p>
 </descr>
 
@@ -18166,11 +18166,19 @@ right-click, and choose New Button.
 <element name="TToolButton.cDefButtonDropDecArrowWidth">
 <short>Default width the drop-down indicator in tools buttons.</short>
 </element>
+<element name="TToolButton.cIconTextDist">
+<short>
+Default number of pixels between the icon and the text on the tool 
+button. It is used when the List property is enabled, and contains the scaled 
+number of pixels to the right of the icon (when assigned). It is included in 
+the size value returned from CalculatePreferredSize (when needed).
+</short>
+</element>
 
 <element name="TToolButton.FToolBar">
-<short>Member variable with the tool bar where the button is used.</short>
-<descr/>
-<seealso/>
+<short>
+Member variable with the tool bar where the button is used.
+</short>
 </element>
 
 <element name="TToolButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -18532,7 +18540,7 @@ method is called.
 </p>
 <p>
 Paint calculates the area display area for the button, and calls 
-GetButtonDrawDetail to get the Theme Element Details for the control.
+GetButtonDrawDetail to get the theme element details for the control.
 </p>
 <p>
 When an OnPaintButton event handler has been assigned for the ToolBar, it is 
@@ -18543,8 +18551,9 @@ performed in the method.
 When OnPaintButton is unassigned, the default drawing routines are used to 
 render the button on the Canvas for the control. This includes decorations 
 like a drop-down indicator, an image using the required state, the Caption 
-text, button relief, and dividers or separators. Methods in ThemeServices are 
-called to render the control to the Handle for the Canvas.
+text with space reserved for padding, button relief, and dividers or 
+separators. Methods in ThemeServices are called to render the control to the 
+Handle for the Canvas.
 </p>
 <p>
 Paint calls the inherited method prior to exit to signal the OnPaint event 
@@ -18552,9 +18561,12 @@ handler (when assigned).
 </p>
 </descr>
 <seealso>
+<link id="TToolBar.cIconTextDist"/>
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
 <link id="#lcl.controls.TGraphicControl.OnPaint">TGraphicControl.OnPaint</link>
+<link id="#lcl.themes.ThemeServices.GetElementDetails">ThemeServices.GetElementDetails</link>
+<link id="#lcl.themes.ThemeServices.DrawElement">ThemeServices.DrawElement</link>
 </seealso>
 </element>
 
@@ -18641,8 +18653,16 @@ button.
 Causes the tool bar to adjust the size and position for its Buttons and 
 Controls.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls UpdateVisibleToolbar to adjust the buttons sizes and redraw the tool 
+bar which owns the button.
+</p>
+</descr>
+<seealso>
+<link id="TToolButton.UpdateVisibleToolbar"/>
+<link id="TToolButton.RefreshControl"/>
+</seealso>
 </element>
 
 <element name="TToolButton.GetButtonDrawDetail">
