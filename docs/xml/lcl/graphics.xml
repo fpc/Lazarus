@@ -6214,10 +6214,10 @@ bitmap, the contents are discarded and a blank bitmap is returned.
 </element>
 <element name="TPicture.Jpeg">
 <short>
-<var>Jpeg</var>  - returns a JPEG image.</short>
+<var>Jpeg</var> - returns a JPEG image.</short>
 <descr>
 <p>
-<var>Jpeg</var>  - returns a JPEG image.
+<var>Jpeg</var> - returns a JPEG image.
 </p>
 <p>
 If the contents is not already a JPEG image, the contents are discarded and a 
@@ -17418,40 +17418,81 @@ Not used in the current LCL implementation.
 <element name="GetCharsetValues.Proc">
 <short/>
 </element>
+
 <element name="CharsetToIdent">
 <short>
-Converts the specified numeric font identifier to its representation as a 
-string.
+Converts the specified numeric character set identifier to its representation 
+as a string.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls the RTL IntToIdent routine to locate the TIdentMapEntry for the 
+specified value in the FontCharsets constant.
+</p>
+</descr>
+<seealso>
+<link id="IdentToCharset"/>
+<link id="FontCharsets"/>
+<link id="#rtl.classes.IntToIdent">IntToIdent</link>
+<link id="#rtl.classes.IdentToInt">IdentToInt</link>
+<link id="#rtl.classes.TIdentMapEntry">TIdentMapEntry</link>
+</seealso>
 </element>
 <element name="CharsetToIdent.Result">
-<short/>
+<short>
+<b>True</b> if the specified numeric value exists in the FontCharsets 
+constant.
+</short>
 </element>
 <element name="CharsetToIdent.Charset">
-<short/>
+<short>
+Numeric character set identifier converted in the routine.
+</short>
 </element>
 <element name="CharsetToIdent.Ident">
-<short/>
+<short>
+Returns the string representing the specified character set number. It 
+returns the value on entry if Charset is not found.
+</short>
 </element>
+
 <element name="IdentToCharset">
 <short>
-Converts the specified string value to the numeric font identifier for the 
-value.
+Converts the specified character set identifier to the its numeric 
+representation.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls the RTL IdentToInt routine to locate the TIdentMapEntry for the 
+specified value in the FontCharsets constant.
+</p>
+</descr>
+<seealso>
+<link id="CharsetToIdent"/>
+<link id="FontCharsets"/>
+<link id="#rtl.classes.IntToIdent">IntToIdent</link>
+<link id="#rtl.classes.IdentToInt">IdentToInt</link>
+<link id="#rtl.classes.TIdentMapEntry">TIdentMapEntry</link>
+</seealso>
 </element>
 <element name="IdentToCharset.Result">
-<short/>
+<short>
+<b>True</b> if the specified string value exists in the FontCharsets 
+constant.
+</short>
 </element>
 <element name="IdentToCharset.Ident">
-<short/>
+<short>
+String with the character set identifier to locate in the FontCharsets 
+constant.
+</short>
 </element>
 <element name="IdentToCharset.Charset">
-<short/>
+<short>
+Returns the numeric representation for the specified character set name. It returns the value on entry if Ident is not found.
+</short>
 </element>
+
 <element name="GetFontData">
 <short>Gets font data for the specified font handle.</short>
 <descr>
