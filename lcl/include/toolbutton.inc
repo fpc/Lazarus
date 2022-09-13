@@ -295,7 +295,7 @@ var
   DropDownButtonRect: TRect;
   TextSize: TSize;
   TextPos: TPoint;
-  dist: Integer;
+  dist, marg: Integer;
   IconSize: TSize;
   IconPos: TPoint;
   ImgList: TCustomImageList;
@@ -373,18 +373,19 @@ begin
         if FToolBar.List then
         begin
           // icon left of text
-          dist := FToolbar.Scale96ToFont(cIconTextDist);
-          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx-TextSize.cx-2) div 2;
+          dist := FToolbar.Scale96ToFont(cHorIconTextDist);
+          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx-TextSize.cx-dist) div 2;
           IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy) div 2;
           TextPos.X:=IconPos.X+IconSize.cx+dist;
           TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
         end else
         begin
           // icon above text
+          dist := cVertIconTextDist;
           IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx) div 2;
-          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy-TextSize.cy-2) div 2;
+          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy-TextSize.cy-dist) div 2;
           TextPos.X:=(MainBtnRect.Left+MainBtnRect.Right-TextSize.cx) div 2;
-          TextPos.Y:=IconPos.Y+IconSize.cy+2;
+          TextPos.Y:=IconPos.Y+IconSize.cy+dist;
         end;
       end else
       begin
@@ -1151,8 +1152,9 @@ begin
           TextSize := GetTextSize;
       end;
       // add space around text
-      inc(TextSize.cx, 4);
-      inc(TextSize.cy, 4);
+      dist := FToolbar.Scale96ToFont(4);
+      inc(TextSize.cx, dist);
+      inc(TextSize.cy, dist);
     end;
 
     // calculate icon size
@@ -1176,13 +1178,14 @@ begin
         if FToolBar.List then
         begin
           // icon left of text
-          dist := FToolbar.Scale96ToFont(cIconTextDist);
+          dist := FToolbar.Scale96ToFont(cHorIconTextDist);
           TextPos.X := IconPos.X + IconSize.cx + dist;
         end
         else
         begin
           // icon above text
-          TextPos.Y := IconPos.Y + IconSize.cy + 2;
+          dist := FToolbar.Scale96ToFont(cVertIconTextDist);
+          TextPos.Y := IconPos.Y + IconSize.cy + dist;
         end;
       end
       else
