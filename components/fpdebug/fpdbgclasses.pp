@@ -3030,7 +3030,7 @@ end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 const
-  MAX_FRAMES = 50000; // safety net
+  MAX_FRAMES = 150000; // safety net
 var
   Address, FrameBase, LastFrameBase, Dummy: QWord;
   Size, CountNeeded, IP, BP, CodeReadErrCnt, SP, i: integer;
