@@ -18561,12 +18561,14 @@ handler (when assigned).
 </p>
 </descr>
 <seealso>
-<link id="TToolBar.cIconTextDist"/>
+<link id="TToolBar"/>
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
 <link id="#lcl.controls.TGraphicControl.OnPaint">TGraphicControl.OnPaint</link>
-<link id="#lcl.themes.ThemeServices.GetElementDetails">ThemeServices.GetElementDetails</link>
-<link id="#lcl.themes.ThemeServices.DrawElement">ThemeServices.DrawElement</link>
+<link id="#lcl.themes.TThemeServices.GetElementDetails">TThemeServices.GetElementDetails</link>
+<link id="#lcl.themes.TThemeServices.DrawElement">TThemeServices.DrawElement</link>
+<link id="#lcl.themes.TThemedElementDetails">TThemedElementDetails</link>
+<link id="#lcl.themes.ThemeServices">ThemeServices</link>
 </seealso>
 </element>
 
