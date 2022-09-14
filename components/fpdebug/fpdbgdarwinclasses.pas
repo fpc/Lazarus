@@ -563,7 +563,7 @@ begin
     result := FThreadState64.__rsp;
 end;
 
-procedure TDbgDarwinThread.SetSetInstructionPointerRegisterValue(AValue: TDbgPtr);
+procedure TDbgDarwinThread.SetInstructionPointerRegisterValue(AValue: TDbgPtr);
 begin
 end;
 
