@@ -333,7 +333,7 @@ type
     *)
     FWorkerThreadId: TThreadID;
     FEvalWorkItem: TFpThreadWorkerCmdEval;
-    FQuickPause, FPauseForEvent, FSendingEvents: boolean;
+    FQuickPause, FPauseForEvent, FInternalPauseForEvent, FSendingEvents: boolean;
     FExceptionStepper: TFpDebugExceptionStepping;
     FConsoleOutputThread: TThread;
     // Helper vars to run in debug-thread
@@ -3543,8 +3543,10 @@ var
   Context: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
   Opts: TFpInt3DebugBreakOptions;
+  NeedInternalPause: Boolean;
 begin
   // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
+  NeedInternalPause := False;
   if AnEventType = deBreakpoint then
     if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
       exit;
@@ -3582,7 +3584,7 @@ begin
         EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
 
       if assigned(ABreakPoint) then
-        ABreakPoint.Hit(&continue);
+        ABreakPoint.Hit(&continue, NeedInternalPause);
 
       if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
         // For message use location(Address - 1)
@@ -3621,8 +3623,11 @@ begin
   if not continue then
     FPauseForEvent := True;
 
-  if not AMoreHitEventsPending then begin
+  FInternalPauseForEvent := FInternalPauseForEvent or NeedInternalPause;
+
+  if (not AMoreHitEventsPending) and (FPauseForEvent or FInternalPauseForEvent) then begin
     FQuickPause := False; // Ok, because we will SetState => RunQuickPauseTasks is not needed
+
     if FPauseForEvent then
       &continue := False; // Only continue, if ALL events did say to continue
 
@@ -3944,6 +3949,7 @@ begin
       Threads.CurrentThreads.CurrentThreadId := FDbgController.CurrentThreadId;
 
     FPauseForEvent := False;
+    FInternalPauseForEvent := False;
     FSendingEvents := True;
     try
       FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)

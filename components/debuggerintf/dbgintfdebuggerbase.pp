@@ -289,7 +289,7 @@ type
   protected
     procedure AssignLocationTo(Dest: TPersistent); virtual;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure DoHit(const ACount: Integer; var {%H-}AContinue: Boolean); virtual;
+    procedure DoHit(const ACount: Integer; var {%H-}AContinue, ANeedInternalPause: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
     procedure SetValid(const AValue: TValidState);
   protected
@@ -362,6 +362,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Hit(var ACanContinue: Boolean);
+    procedure Hit(var ACanContinue, ANeedInternalPause: Boolean);
     property Slave: TBaseBreakPoint read FSlave write SetSlave;
     property Kind: TDBGBreakPointKind read GetKind write SetKind; // TODO: remove, used by TIDEBreakPoint.SetKind
 
@@ -3316,7 +3317,8 @@ begin
   Changed;
 end;
 
-procedure TBaseBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean );
+procedure TBaseBreakPoint.DoHit(const ACount: Integer; var AContinue,
+  ANeedInternalPause: Boolean);
 begin
   SetHitCount(ACount);
 end;
@@ -3458,14 +3460,21 @@ end;
 
 procedure TDBGBreakPoint.Hit(var ACanContinue: Boolean);
 var
+  dummy: Boolean;
+begin
+  Hit(ACanContinue, dummy);
+end;
+
+procedure TDBGBreakPoint.Hit(var ACanContinue, ANeedInternalPause: Boolean);
+var
   cnt: Integer;
 begin
   cnt := HitCount + 1;
   if BreakHitcount > 0
   then ACanContinue := cnt < BreakHitcount;
-  DoHit(cnt, ACanContinue);
+  DoHit(cnt, ACanContinue, ANeedInternalPause);
   if Assigned(FSlave)
-  then FSlave.DoHit(cnt, ACanContinue);
+  then FSlave.DoHit(cnt, ACanContinue, ANeedInternalPause);
   Debugger.DoBreakpointHit(Self, ACanContinue)
 end;
 

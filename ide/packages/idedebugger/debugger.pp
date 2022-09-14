@@ -316,7 +316,7 @@ type
 
     procedure DisableGroups;
     procedure DoActionChange; virtual;
-    procedure DoHit(const ACount: Integer; var AContinue: Boolean); override;
+    procedure DoHit(const ACount: Integer; var AContinue, ANeedInternalPause: Boolean); override;
     procedure EnableGroups;
     procedure ClearAllGroupLists;
     {$IFDEF DBG_BREAKPOINT}
@@ -5634,9 +5634,10 @@ begin
   DoUserChanged;
 end;
 
-procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean);
+procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue,
+  ANeedInternalPause: Boolean);
 begin
-  inherited DoHit(ACount, AContinue);
+  inherited DoHit(ACount, AContinue, ANeedInternalPause);
   AContinue := AContinue or not (bpaStop in Actions);
   if bpaLogMessage in Actions
   then Master.DoLogMessage(FLogMessage);
@@ -5645,6 +5646,8 @@ begin
   if bpaLogCallStack in Actions
   then Master.DoLogCallStack(FLogCallStackLimit);
   // SnapShot is taken in TDebugManager.DebuggerChangeState
+  if bpaTakeSnapshot in Actions then
+    ANeedInternalPause := True;
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions
