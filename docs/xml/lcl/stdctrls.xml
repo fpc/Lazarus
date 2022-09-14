@@ -9858,19 +9858,36 @@ Performs actions needed when a click message is handled for the control.
 <var>Click</var> is an overridden method in <var>TButtonControl</var>. Click 
 calls the <var>DoOnChange</var> method which signals the 
 <var>OnEditingDone</var> and <var>OnChange</var> event handlers (when 
-assigned). Click calls the inherited method prior to exit.
+assigned).
 </p>
 <p>
-Click is called when the LM_CLICKED message is handled for the control. It 
-occurs when click events are not enabled in <var>ControlStyle</var> and 
-<var>ControlState</var>.
+Click calls the inherited method prior to exit. The inherited method (in 
+TControl) signals either the OnClick event handler or the OnExecute handler 
+in the Action. OnClick is used when Action has not been assigned, or when 
+OnClick contains a handler routine that differs from the one assigned to the 
+OnExecute handler in the Action.
+</p>
+<p>
+Click can be called in two different usage scenarios. If standard click 
+events have been enabled in ControlStyle, it is called when the left mouse 
+button is released. It can also be called from a private LM_CLICKED message 
+handler in the control when standard click events are <b>not</b> enabled in 
+ControlStyle. This avoids a duplicate click notification when csClickEvents 
+is enabled in ControlStyle and Click is handled when the WMLButtonUp method 
+is executed.
 </p>
 </descr>
 <seealso>
 <link id="TButtonControl.DoOnChange"/>
 <link id="TButtonControl.OnChange"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+<link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+<link id="#lcl.lmessages.LM_CLICKED">LM_CLICKED</link>
+<link id="#rtl.classes.TBasicAction.OnExecute">TBasicAction.OnExecute</link>
 </seealso>
 </element>
 
@@ -11089,19 +11106,37 @@ handler. Use <var>ClicksDisabled</var> is control the event handler signalled.
 <descr>
 <p>
 <var>Click</var> is an overridden method in <var>TCustomCheckBox</var>. It 
-ignores mouse up event notifications, and does not call the inherited method. 
-The click action is performed either in the DoClickOnChange method when the 
-ClicksDisabled property is <b>False</b>, or when the LM_CLICKED message is 
-handled for the control and click events are not enabled in ControlStyle and 
-ControlState.
+performs actions needed when the value in the Checked or State property is 
+changed for the control, whether by mouse click or setting the value in 
+program code.
+</p>
+<p>
+TCustomCheckBox re-implements the method from the TButtonControl ancestor to 
+ignore the mouse click event. It has an empty implementation, and does not call the inherited method.
+</p>
+<p>
+In TCustomCheckBox, the click action may be handled in two different ways. 
+The action may be performed (in TControl) when the left mouse button is 
+released and standard click events are enabled in ControlStyle. The click 
+action may be performed in DoClickOnChange (by calling the inherited Click 
+method) when the value in State is changed and ClicksDisabled is <b>False</b>.
+</p>
+<p>
+This avoids a duplicate click notification when csClickEvents is enabled in 
+ControlStyle and Click is handled when the WMLButtonUp method is executed, or 
+when the click is triggered by an associated Action.
 </p>
 </descr>
 <seealso>
 <link id="TCustomCheckBox.DoClickOnChange"/>
+<link id="TCustomCheckBox.State"/>
+<link id="TButtonControl.Checked"/>
 <link id="TButtonControl.ClicksDisabled"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
 <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
 </seealso>
 </element>
 
