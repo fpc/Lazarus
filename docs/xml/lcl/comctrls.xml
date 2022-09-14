@@ -6669,7 +6669,7 @@ and stored internally in the controls.
 
 <element name="TCustomDrawState">
 <short>
-<var>TCustomDrawState</var>  - set of <var>TCustomDrawStateFlag</var>.
+<var>TCustomDrawState</var> - set of <var>TCustomDrawStateFlag</var>.
 </short>.
 <descr>
 TCustomDrawState determines how a item will be drawn.
@@ -12630,7 +12630,7 @@ list item.
 
 <element name="TCustomListView.Change">
 <short>
-<var>Change</var>  - Internal procedure to simulate the <var>OnChange</var> 
+<var>Change</var> - Internal procedure to simulate the <var>OnChange</var> 
 event.
 </short>
 <descr>
@@ -17790,7 +17790,7 @@ alignment.
 
 <element name="TCustomUpDown.Destroy">
 <short>
-<var>Destroy</var>  - destructor for <var>TCustomUpDown</var>: removes 
+<var>Destroy</var> - destructor for <var>TCustomUpDown</var>: removes 
 connection with associate control and calls inherited <var>Destroy</var>.
 </short>
 <descr/>
@@ -18075,6 +18075,7 @@ right-click, and choose New Button.
 <example file="comctrls/ttoolbutton.pas"/>
 </element>
 
+<!-- private -->
 <element name="TToolButton.FAllowAllUp"/>
 <element name="TToolButton.FDown"/>
 <element name="TToolButton.FDropdownMenu"/>
@@ -18157,6 +18158,7 @@ right-click, and choose New Button.
 <element name="TToolButton.CMHitTest"/>
 <element name="TToolButton.CMHitTest.Message"/>
 
+<!-- protected -->
 <element name="TToolButton.cDefSeparatorWidth">
 <short>Default width for tool buttons using the separator style.</short>
 </element>
@@ -18164,14 +18166,27 @@ right-click, and choose New Button.
 <short>Default width for tool buttons using the divider style.</short>
 </element>
 <element name="TToolButton.cDefButtonDropDecArrowWidth">
-<short>Default width the drop-down indicator in tools buttons.</short>
+<short>Default width for the drop-down indicator in tool buttons.</short>
 </element>
-<element name="TToolButton.cIconTextDist">
+
+<element name="TToolButton.cHorIconTextDist">
 <short>
-Default number of pixels between the icon and the text on the tool 
-button. It is used when the List property is enabled, and contains the scaled 
-number of pixels to the right of the icon (when assigned). It is included in 
-the size value returned from CalculatePreferredSize (when needed).
+Default number of pixels between the icon and the text on the tool button. It 
+is used when the List property in the parent tool bar is enabled, and 
+contains the number of pixels (prior to scaling) between the right edge of 
+the icon (when assigned) and the caption text. It is included in the size 
+value returned from CalculatePreferredSize (when needed).
+</short>
+</element>
+
+<element name="TToolButton.cVerIconTextDist">
+<short>
+Default number of pixels between the icon and the text on the tool button. It 
+is used when the List property in the parent tool bar is <b>not</b> enabled 
+and an icon is displayed above the text on the control. It contains the 
+number of pixels (prior to scaling) between the icon and text for the button 
+control. It is included in the size value returned from 
+CalculatePreferredSize (when needed).
 </short>
 </element>
 
@@ -18544,16 +18559,19 @@ GetButtonDrawDetail to get the theme element details for the control.
 </p>
 <p>
 When an OnPaintButton event handler has been assigned for the ToolBar, it is 
-used to render the button using the theme details. No additional actions are 
+used to render the button using theme details. No additional actions are 
 performed in the method.
 </p>
 <p>
 When OnPaintButton is unassigned, the default drawing routines are used to 
 render the button on the Canvas for the control. This includes decorations 
-like a drop-down indicator, an image using the required state, the Caption 
-text with space reserved for padding, button relief, and dividers or 
-separators. Methods in ThemeServices are called to render the control to the 
-Handle for the Canvas.
+like a drop-down indicator, an image using the required state, and dividers 
+or separators for the button. Space is reserved as padding between the icon 
+and text on the control (when both are used). The value in the 
+cHorIconTextDist or cVerIconTextDist constant is scaled to the PPI setting 
+for the control Font, and applied to the text position based on the setting 
+in List. cHorIconTextDist is used when List is <b>True</b>. Methods in 
+ThemeServices are called to render the control to the Handle for the Canvas.
 </p>
 <p>
 Paint calls the inherited method prior to exit to signal the OnPaint event 
@@ -18599,7 +18617,70 @@ handled for the control.
 </seealso>
 </element>
 
-<element name="TToolButton.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
+<element name="TToolButton.CalculatePreferredSize">
+<short>
+Calculates the preferred dimensions for new instances of the control.
+</short>
+<descr>
+<p>
+<var>CalculatePreferredSize</var> is an overridden method in 
+<var>TToolButton</var>. It returns the calculated width and height for the 
+control in the <var>PreferredWidth</var> and <var>PreferredHeight</var> 
+variable arguments. It re-implements the method introduced in TControl to 
+return non-empty values in the arguments.
+</p>
+<p>
+No actions are performed in the method if a TToolBar instance has not been 
+assigned as the Parent for the control. In this case, the values in the 
+PreferredWidth and PreferredHeight arguments are not changed from their 
+values on entry.
+</p>
+<p>
+<var>WithThemeSpace</var> indicates whether additional space is reserved for 
+theme element details. It is not used in the current implementation of the 
+method.
+</p>
+<p>
+CalculatePreferredSize calculates the size needed to represent the icon and 
+text on the control. The value in Style determines whether the icon and/or 
+text values are needed in the calculated values. When both are needed, 
+additional space is reserved between the icon and text as indicated in the 
+cHorIconTextDist or cVerIconTextDist constants. The number of pixels is 
+scaled to the PPI setting for the control Font and applied to the calculated 
+values.
+</p>
+<p>
+CalculatePreferredSize includes space (when needed) for a frame around the 
+control, a drop-down indicator, or the height / width for a divider or 
+separator button. The Style property determines which values are required.
+</p>
+<p>
+CalculatePreferredSize is called form the GetPreferredSize method when it has 
+not already been called for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.GetPreferredSize"/>
+<link id="TToolBar"/>
+<link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+</seealso>
+</element>
+<element name="TToolButton.CalculatePreferredSize.PreferredWidth">
+<short>
+Returns the preferred width for a new instance of the tool button class.
+</short>
+</element>
+<element name="TToolButton.CalculatePreferredSize.PreferredHeight">
+<short>
+Returns the preferred height for a new instance of the tool button class.
+</short>
+</element>
+<element name="TToolButton.CalculatePreferredSize.WithThemeSpace">
+<short>
+Not used in the current implementation.
+</short>
+</element>
 
 <element name="TToolButton.GetControlClassDefaultSize">
 <short>
