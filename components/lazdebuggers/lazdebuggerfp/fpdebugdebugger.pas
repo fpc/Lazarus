@@ -567,9 +567,16 @@ type
     FResetBreakFlag: boolean;
     FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
     FIsSet: boolean;
+    FBrkLogStackLimit: Integer;
+    FBrkLogStackResult: array of String;
+    FBrkLogExpr, FBrkLogResult: String;
     procedure SetBreak;
     procedure ResetBreak;
+    procedure ThreadLogExpression;
+    procedure ThreadLogCallStack;
   protected
+    procedure DoLogExpression(const AnExpression: String); override;
+    procedure DoLogCallStack(const Limit: Integer); override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoEnableChange; override;
     procedure DoChanged; override;
@@ -1873,6 +1880,92 @@ begin
     FInternalBreakpoint := nil;
     debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.ResetBreak ' ]);
     end;
+end;
+
+procedure TFPBreakpoint.ThreadLogExpression;
+var
+  dbg: TFpDebugDebugger;
+  Context: TFpDbgSymbolScope;
+  PasExpr: TFpPascalExpression;
+  PrettyPrinter: TFpPascalPrettyPrinter;
+  s: String;
+begin
+  dbg := TFpDebugDebugger(Debugger);
+  Context := dbg.GetContextForEvaluate(dbg.FDbgController.CurrentThreadId, 0);
+  if Context <> nil then begin
+    PrettyPrinter := nil;
+    PasExpr := TFpPascalExpression.Create(FBrkLogExpr, Context, True);
+    try
+      PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(dbg.GetProperties).IntrinsicPrefix;
+      PasExpr.Parse;
+      PasExpr.ResultValue; // trigger full validation
+      if PasExpr.Valid then begin
+        PrettyPrinter := TFpPascalPrettyPrinter.Create(Context.SizeOfAddress);
+        PrettyPrinter.Context := Context.LocationContext;
+        if PrettyPrinter.PrintValue(s, PasExpr.ResultValue) then begin
+          FBrkLogResult := s;
+          FBrkLogExpr := '';
+        end;
+      end;
+    finally
+      PasExpr.Free;
+      Context.ReleaseReference;
+    end;
+  end;
+end;
+
+procedure TFPBreakpoint.ThreadLogCallStack;
+var
+  dbg: TFpDebugDebugger;
+  thr: TDbgThread;
+  CStack: TDbgCallstackEntryList;
+  s: String;
+  e: TDbgCallstackEntry;
+  i, c: Integer;
+begin
+  dbg := TFpDebugDebugger(Debugger);
+  thr := dbg.DbgController.CurrentThread;
+  if thr = nil then
+    exit;
+
+  thr.PrepareCallStackEntryList(FBrkLogStackLimit);
+  CStack := thr.CallStackEntryList;
+
+  c := min(FBrkLogStackLimit, CStack.Count);
+  SetLength(FBrkLogStackResult, c);
+  for i := 0 to c - 1 do begin
+    e := CStack[i];
+
+    s := e.SourceFile;
+    if s <> '' then
+      s := s + ':' + IntToStr(e.Line)
+    else
+      s := IntToHex(e.AnAddress, 8);
+
+    FBrkLogStackResult[i] := s + ' ' + e.FunctionName + LineEnding;
+  end;
+end;
+
+procedure TFPBreakpoint.DoLogExpression(const AnExpression: String);
+begin
+  FBrkLogExpr := AnExpression;
+  FBrkLogResult := '';
+  TFpDebugDebugger(Debugger).ExecuteInDebugThread(@ThreadLogExpression);
+  if FBrkLogExpr = '' then
+    TFpDebugDebugger(Debugger).DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, FBrkLogResult);
+end;
+
+procedure TFPBreakpoint.DoLogCallStack(const Limit: Integer);
+var
+  i: Integer;
+begin
+  if Limit <= 0 then
+    exit;
+  FBrkLogStackLimit := Limit;
+  FBrkLogResult := '';
+  TFpDebugDebugger(Debugger).ExecuteInDebugThread(@ThreadLogCallStack);
+  for i := 0 to Length(FBrkLogStackResult) - 1 do
+    TFpDebugDebugger(Debugger).DoDbgEvent(ecBreakpoint, etBreakpointStackDump, FBrkLogStackResult[i]);
 end;
 
 destructor TFPBreakpoint.Destroy;
@@ -4245,6 +4338,9 @@ end;
 
 function TFpDebugDebugger.FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
 begin
+  if ThreadID = FWorkerThreadId then
+    exit(FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame));
+
   assert(GetCurrentThreadId=MainThreadID, 'TFpDebugDebugger.FindSymbolScope: GetCurrentThreadId=MainThreadID');
   FCacheThreadId := AThreadId;
   FCacheStackFrame := AStackFrame;
