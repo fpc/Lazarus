@@ -4630,12 +4630,7 @@ begin
       FList.Insert(Index, Bookmark);
       FGrid.Invalidate;
     end else
-    begin
       FDataset.FreeBookmark(Bookmark);
-      {$ifndef noautomatedbookmark}
-      SetLength(TBookmark(Bookmark),0);   // decrease reference count
-      {$endif}
-    end;
   end;
 end;
 
