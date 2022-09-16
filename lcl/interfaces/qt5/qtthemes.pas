@@ -1129,15 +1129,26 @@ begin
           TP_DROPDOWNBUTTON,
           TP_SPLITBUTTON: // there is another positibility to draw TP_SPLITBUTTON by CC_ToolButton
             begin
+              {$IFDEF DARWIN}
+              Result.DrawVariant := qdvComplexControl;
+              Result.ComplexControl := QStyleCC_ToolButton;
+              Result.SubControls := QStyleSC_ToolButton;
+              Result.Features := QStyleOptionToolButtonNone;
+              {$ELSE}
               Result.DrawVariant := qdvPrimitive;
               Result.PrimitiveElement := QStylePE_PanelButtonTool;
+              {$ENDIF}
             end;
           TP_SPLITBUTTONDROPDOWN:
             begin
               Result.DrawVariant := qdvComplexControl;
               Result.ComplexControl := QStyleCC_ToolButton;
               Result.SubControls := QStyleSC_None;
+              {$IFDEF DARWIN}
+              Result.Features := QStyleOptionToolButtonHasMenu;
+              {$ELSE}
               Result.Features := QStyleOptionToolButtonMenuButtonPopup;
+              {$ENDIF}
             end;
           TP_SEPARATOR,
           TP_SEPARATORVERT:
