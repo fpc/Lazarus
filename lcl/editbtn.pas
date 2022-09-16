@@ -1705,8 +1705,6 @@ begin
 end;
 
 procedure TDateEdit.Loaded;
-var
-  SavedOnChange: TNotifyEvent;
 begin
   //Forces a valid Text in the control
   if not (csDesigning in ComponentState) then
