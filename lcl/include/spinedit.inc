@@ -119,7 +119,7 @@ end;
 
 function TCustomFloatSpinEdit.MaxValueStored: Boolean;
 begin
-  Result := not SameValue(FMaxValue, DefMaxValue);
+  Result := not SameValue(FMaxValue, Double(DefMaxValue)); //use typecast to force use of correct overload. Issue #39792
 end;
 
 procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
@@ -193,7 +193,7 @@ end;
 
 function TCustomFloatSpinEdit.IncrementStored: Boolean;
 begin
-  Result := not SameValue(FIncrement, DefIncrement);
+  Result := not SameValue(FIncrement, Double(DefIncrement)); //use typecast to force use of correct overload. Issue #39792
 end;
 
 procedure TCustomFloatSpinEdit.SetDecimals(ADecimals: Integer);
