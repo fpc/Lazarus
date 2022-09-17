@@ -1098,12 +1098,46 @@ begin
 end;
 
 function TFpPasParserValueAddressOf.GetAsString: AnsiString;
+var
+  a: TFpDbgMemLocation;
+  WResult: WideString;
 begin
+  a := FValue.Address;
+
+  if (FValue.Kind = skChar) and IsTargetNotNil(a) then begin
+    if (FValue.DataSize = 1) and Context.MemManager.ReadPChar(a, 0, Result) then
+      exit;
+    if (FValue.DataSize = 2) and Context.MemManager.ReadPWChar(a, 0, WResult) then
+      exit(WResult);
+  end;
+
+  //if (FValue.Kind = skChar) and IsTargetNotNil(a) and
+  //   Context.MemManager.ReadPChar(a, 0, Result)
+  //then
+  //  exit;
+  //
+  //if (FValue.Kind = skWideString) and IsTargetNotNil(a) and
+  //   Context.MemManager.ReadPWChar(a, 0, WResult)
+  //then
+  //  exit(WResult);
+
   Result := FValue.AsString;
 end;
 
 function TFpPasParserValueAddressOf.GetAsWideString: WideString;
+var
+  AResult: AnsiString;
+  a: TFpDbgMemLocation;
 begin
+  a := FValue.Address;
+
+  if (FValue.Kind = skChar) and IsTargetNotNil(a) then begin
+    if (FValue.DataSize = 1) and Context.MemManager.ReadPChar(a, 0, AResult) then
+      exit(AResult);
+    if (FValue.DataSize = 2) and Context.MemManager.ReadPWChar(a, 0, Result) then
+      exit;
+  end;
+
   Result := FValue.AsWideString;
 end;
 
@@ -1221,6 +1255,7 @@ var
   IsPChar: Boolean;
   v: String;
   w: WideString;
+  a: TFpDbgMemLocation;
 begin
   Result := nil;
   assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
@@ -1308,6 +1343,9 @@ begin
           end;
 
           TmpVal2 := TFpValueConstChar.Create(v[Offs]);
+          a := TmpVal.DataAddress;
+          if IsTargetAddr(a) and IsReadableMem(a) then
+            TFpValueConstChar(TmpVal2).SetAddress(a + Offs-1);
         end;
       skWideString: begin
           //TODO: move to FpDwarfValue.member ??
@@ -1332,6 +1370,9 @@ begin
           end;
 
           TmpVal2 := TFpValueConstWideChar.Create(w[Offs]);
+          a := TmpVal.DataAddress;
+          if IsTargetAddr(a) and IsReadableMem(a) then
+            TFpValueConstWideChar(TmpVal2).SetAddress(a + (Offs-1)*2);
         end;
       else
         begin

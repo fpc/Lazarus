@@ -2509,28 +2509,11 @@ begin
     Result := GetAsWideString
   else
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    i := MemManager.MemLimits.MaxNullStringSearchLen;
-    if i = 0 then
-      i := 32*1024;
-    if i > MemManager.MemLimits.MaxMemReadSize then
-      i := MemManager.MemLimits.MaxMemReadSize;
-    if not MemManager.SetLength(Result, i) then begin
-      Result := '';
-      SetLastError(MemManager.LastError);
-      exit;
-    end;
-
-    if not Context.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], [mmfPartialRead]) then begin
+    if not MemManager.ReadPChar(GetDerefAddress, 0, Result) then begin
       Result := '';
       SetLastError(Context.LastMemError);
       exit;
     end;
-
-    i := Context.PartialReadResultLenght;
-    SetLength(Result,i);
-    i := pos(#0, Result);
-    if i > 0 then
-      SetLength(Result,i-1);
   end
   else
     Result := inherited GetAsString;
@@ -2548,28 +2531,11 @@ begin
     exit;
   // skWideChar ???
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
-    i := MemManager.MemLimits.MaxNullStringSearchLen * 2;
-    if i = 0 then
-      i := 32*1024 * 2;
-    if i > MemManager.MemLimits.MaxMemReadSize then
-      i := MemManager.MemLimits.MaxMemReadSize;
-    if not MemManager.SetLength(Result, i div 2) then begin
-      Result := '';
-      SetLastError(MemManager.LastError);
-      exit;
-    end;
-
-    if not Context.ReadMemory(GetDerefAddress, SizeVal(i), @Result[1], [mmfPartialRead]) then begin
+    if not MemManager.ReadPWChar(GetDerefAddress, 0, Result) then begin
       Result := '';
       SetLastError(Context.LastMemError);
       exit;
     end;
-
-    i := Context.PartialReadResultLenght;
-    SetLength(Result, i div 2);
-    i := pos(#0, Result);
-    if i > 0 then
-      SetLength(Result, i-1);
   end
   else
     Result := inherited GetAsWideString;

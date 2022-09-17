@@ -2497,6 +2497,57 @@ end;
 
   end;
 
+  procedure AddWatches2(t: TWatchExpectationList; AName: String; APrefix: String; AChr1: Char; ALoc: TTestLoc = tlAny; APostFix: String = '');
+  var
+    p, e: String;
+    i, c: Integer;
+  begin
+    p := APrefix;
+    e := APostFix;
+
+
+    t.Add(AName, p+'PChar2'+e+'+0',     wePointer(weAnsiStr(AChr1+'abcd0123', 'Char'), 'PChar'));
+    t.Add(AName, p+'PChar2'+e+'+1',     wePointer(weAnsiStr('abcd0123', 'Char'), 'PChar'));
+    t.Add(AName, p+'PChar2'+e+'+2',     wePointer(weAnsiStr('bcd0123', 'Char'), 'PChar'));
+
+    t.Add(AName, p+'PWideChar2'+e+'+0',     wePointer(weWideStr(AChr1+'abcX0123', 'WideChar'), 'TPWChr'));
+    t.Add(AName, p+'PWideChar2'+e+'+1',     wePointer(weWideStr('abcX0123', 'WideChar'), 'TPWChr'));
+    t.Add(AName, p+'PWideChar2'+e+'+2',     wePointer(weWideStr('bcX0123', 'WideChar'), 'TPWChr'));
+
+
+    c := t.Count;
+    // .CharFromIndex.
+    //t.Add(AName, p+'PChar2'+e+'[0]',     weChar(AChr1, 'Char'));
+    //t.Add(AName, p+'PChar2'+e+'[1]',     weChar('a', 'Char'));
+    //t.Add(AName, '@'+p+'PChar2'+e+'[0]',     wePointer(weAnsiStr(AChr1+'abcd0123', 'Char'), 'PChar'));
+    //t.Add(AName, '@'+p+'PChar2'+e+'[1]',     wePointer(weAnsiStr('abcd0123', 'Char'), 'PChar'));
+    //t.Add(AName, '@'+p+'PChar2'+e+'[2]',     wePointer(weAnsiStr('bcd0123', 'Char'), 'PChar'));
+
+    t.Add(AName, '@'+p+'Ansi2'+e+'[1]',      wePointer(weAnsiStr(AChr1+'abcd0123').IgnTypeName, '^Char')).IgnKindPtr(stDwarf2);
+    t.Add(AName, '@'+p+'Ansi2'+e+'[2]',      wePointer(weAnsiStr('abcd0123').IgnTypeName, '^Char')).IgnKindPtr(stDwarf2);
+    t.Add(AName, '@'+p+'Ansi2'+e+'[3]',      wePointer(weAnsiStr('bcd0123').IgnTypeName, '^Char')).IgnKindPtr(stDwarf2);
+//    t.Add(AName, '@'+p+'Ansi2'+e+'[1]+1',    wePointer(weAnsiStr('abcd0123'), '^Char')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up);
+
+    t.Add(AName, '@'+p+'String10'+e+'[1]',    wePointer(weShortStr(AChr1+'bc1', '').IgnTypeName, '^Char'));
+    t.Add(AName, '@'+p+'String10'+e+'[2]',    wePointer(weShortStr('bc1', '').IgnTypeName, '^Char'));
+
+
+    // DWARF-3: .CharFromIndex.
+    t.Add(AName, '@'+p+'WideString2'+e+'[1]',     wePointer(weWideStr(AChr1+'abcX0123', 'WideChar'), '^WideChar'))
+    .IgnAll(stDwarf3Up);
+    t.Add(AName, '@'+p+'WideString2'+e+'[2]',     wePointer(weWideStr('abcX0123', 'WideChar'), '^WideChar'))
+    .IgnAll(stDwarf3Up);
+    t.Add(AName, '@'+p+'WideString2'+e+'[3]',     wePointer(weWideStr('bcX0123', 'WideChar'), '^WideChar'))
+    .IgnAll(stDwarf3Up);
+
+    for i := 0 to t.Count - 1 do begin
+      t.Tests[i].IgnTypeName;
+      t.Tests[i].IgnKind;
+      if i >= c then
+        t.Tests[i].IgnAll(stDwarf2);
+    end;
+  end;
+
   procedure CmpWatches(t1, t2: TWatchExpectationList);
   var
     i, Thread: Integer;
@@ -2583,6 +2634,11 @@ begin
     AddWatches(t,  'glob var',         '@gv');
     AddWatches(tp, 'glob var pointer', 'gvp_'); // pointer
     CmpWatches(t, tp);
+
+    t.Clear;
+    AddWatches2(t, 'glob var pchar',   'gv', 'B');
+    t.EvaluateWatches;
+    t.CheckResults;
 
 // TODO: field / field on nil object
 
