@@ -1202,12 +1202,12 @@ begin
     end;
   GDK_KEY_PRESS:
     begin
-      if Widget^.has_focus then
+      if Widget^.has_focus or Widget^.is_toplevel then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
     end;
   GDK_KEY_RELEASE:
     begin
-      if Widget^.has_focus then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
+      if Widget^.has_focus or Widget^.is_toplevel then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
     end;
   GDK_ENTER_NOTIFY:
@@ -7555,11 +7555,11 @@ begin
   begin
     Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
     FWidget:=Result;
-    //Result^.set_size_request(0,0);
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     gtk_widget_realize(Result);
     decor:=decoration_flags(AForm);
     gdk_window_set_decorations(Result^.window, decor);
+    gtk_window_set_decorated(PGtkWindow(Result),(decor<>0));
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
 
@@ -7611,7 +7611,6 @@ begin
 
   if not (csDesigning in AForm.ComponentState) then
     UpdateWindowState;
-
 
   //REMOVE THIS, USED TO TRACK MOUSE MOVE OVER WIDGET TO SEE SIZE OF FIXED !
   //g_object_set_data(PGObject(FScrollWin), 'lcldebugscrollwin', Self);
@@ -7735,6 +7734,7 @@ begin
         end;
       end;
     end;
+    PGtkWindow(Widget)^.set_resizable(true);
     PGtkWindow(Widget)^.resize(AWidth, AHeight);
     PGtkWindow(Widget)^.move(ALeft, ATop);
   finally
