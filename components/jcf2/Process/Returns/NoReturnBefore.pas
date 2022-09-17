@@ -66,6 +66,16 @@ begin
   if pt = nil then
     exit;
 
+  //var
+  //  Test : function: Integer; // No New Line
+  //type
+  //  TTestFunc = function: Integer; // No New Line
+  if (pt .TokenType in [ttProcedure,ttFunction])
+    and (pt.PriorSolidTokenType in [ttEquals, ttColon]) then
+  begin
+    exit(true);
+  end;
+
   if pt.HasParentNode(nAsm) then
   begin
     //end registers list   end ['eax', 'ebx']

@@ -401,6 +401,15 @@ begin
 
   { number to insert = needed - actual }
   liReturnsNeeded := liReturnsNeeded - fiReturnsBefore;
+  //var
+  //  Test : function: Integer; // No New Line
+  //type
+  //  TTestFunc = function: Integer; // No New Line
+  if (lcSourceToken.TokenType in [ttProcedure,ttFunction]) and
+    (lcSourceToken.PriorSolidTokenType in [ttEquals, ttColon]) then
+  begin
+    liReturnsNeeded:=0;
+  end;
 
   if liReturnsNeeded > 0 then
   begin

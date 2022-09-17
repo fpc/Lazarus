@@ -78,6 +78,8 @@ type
     function PriorToken: TSourceToken;
     function NextSolidToken: TSourceToken;
     function PriorSolidToken: TSourceToken;
+    function NextSolidTokenType: TTokenType;
+    function PriorSolidTokenType: TTokenType;
     function NextTokenWithExclusions(const peExclusions: TTokenTypeSet): TSourceToken;
     function PriorTokenWithExclusions(const peExclusions: TTokenTypeSet): TSourceToken;
 
@@ -231,6 +233,26 @@ begin
 
   while (Result <> nil) and ( not Result.IsSolid) do
     Result := Result.PriorToken;
+end;
+
+function TSourceToken.NextSolidTokenType: TTokenType;
+var
+  lc: TSourceToken;
+begin
+  Result := ttUnknown;
+  lc := NextSolidToken;
+  if lc <> nil then
+    Result := lc.TokenType;
+end;
+
+function TSourceToken.PriorSolidTokenType: TTokenType;
+var
+  lc: TSourceToken;
+begin
+  Result := ttUnknown;
+  lc := PriorSolidToken;
+  if lc <> nil then
+    Result := lc.TokenType;
 end;
 
 function TSourceToken.SolidChildCount: integer;
