@@ -2617,6 +2617,8 @@ begin
 end;
 
 procedure TBuildParseTree.RecogniseVarDecl;
+const
+  VariableModifiers: TTokenTypeSet = [ttExternal, ttExport, ttPublic];
 var
   lc: TSourceToken;
 begin
@@ -2655,6 +2657,28 @@ begin
   else
   begin
     RecogniseHintDirectives;
+
+    if (fcTokenList.FirstSolidTokenType in VariableModifiers) or
+      ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
+       (fcTokenList.SolidTokenType(2) in VariableModifiers)) then
+    begin
+      // optional SemiColon
+      if  fcTokenList.FirstSolidTokenType=ttSemicolon then
+        Recognise(ttSemiColon);
+      if fcTokenList.FirstSolidTokenType = ttExternal then
+      begin
+        Recognise(fcTokenList.FirstSolidTokenType);
+        if fcTokenList.FirstSolidTokenType in [ttIdentifier,ttQuotedLiteralString] then
+          RecogniseConstantExpression;  //can be a literal string or constant.
+      end
+      else
+        Recognise(fcTokenList.FirstSolidTokenType);
+      if fcTokenList.FirstSolidTokenType=ttName then
+      begin
+        Recognise(ttName);
+        RecogniseConstantExpression;
+      end;
+    end;
 
     if fcTokenList.FirstSolidTokenType = ttEquals then
     begin

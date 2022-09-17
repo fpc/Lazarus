@@ -105,6 +105,9 @@ begin
   { pointer type }
   if ptNext.TokenType in [ttNear,ttFar,ttHuge] then
     exit(False);
+  {in var declarations}
+  if (ptNext.TokenType in [ttExternal, ttExport, ttPublic ]) and pt.HasParentNode(nVarDecl) then
+    exit(False);
 end;
 
 
