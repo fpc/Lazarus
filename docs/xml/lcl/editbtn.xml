@@ -3452,16 +3452,41 @@ streaming mechanism.
 </short>
 <descr>
 <p>
-<var>Loaded</var> is an overridden method in <var>TDateEdit</var>, and calls 
-the inherited method on entry. At run-time, SetDate is called to re-apply the 
-current value in the Date property. This causes the value in Text to be 
-updated with the string representation for the date value.
+<var>Loaded</var> is an overridden method in <var>TDateEdit</var>. The 
+overridden method ensures that the value in Date is re-applied at run-time. 
+</p>
+<p>
+Date defaults to the current system date when Value is a null date and 
+DefaultToday is <b>True</b>. The assignment causes Date to be range-limited 
+to the minimum and maximum values in MinDate and MaxDate (when assigned), or 
+the limits for the Date type. Date is not updated at design-time.
+</p>
+<p>
+The string representation for the date value is also applied to the Text 
+property. The value in DateOrder determines the date format used for the text 
+value.
+</p>
+<p>
+Loaded calls the the inherited method prior to exit to update the spacing and 
+color for the control.
 </p>
 </descr>
+<version>
+Modified in version 2.2.4 (e7e585f1) to call the inherited Loaded method on 
+exit instead of on entry. This allows the OnChange handler to be signalled 
+once after both the Date member and Text have been updated.
+</version>
 <seealso>
 <link id="TDateEdit.Date"/>
 <link id="TDateEdit.DateOrder"/>
+<link id="TDateEdit.DateFormat"/>
+<link id="TDateEdit.DefaultToday"/>
 <link id="TDateEdit.Text"/>
+<link id="TDateEdit.MinDate"/>
+<link id="TDateEdit.MaxDate"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Loaded">TCustomAbstractGroupedEdit.Loaded</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.UpdateSpacing">TCustomAbstractGroupedEdit.UpdateSpacing</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Color">TCustomAbstractGroupedEdit.Color</link>
 </seealso>
 </element>
 
