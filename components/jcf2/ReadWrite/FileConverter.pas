@@ -441,10 +441,11 @@ end;
 
 procedure TFileConverter.Convert;
 var
-  dwStart, dwElapsed: DWord;
+  dwStart: QWord;
+  dwElapsed: DWord;
 begin
   if GetRegSettings.LogTime then
-    dwStart := GetTickCount
+    dwStart := GetTickCount64
   else
     dwStart := 0;
 
@@ -468,7 +469,7 @@ begin
 
   if GetRegSettings.LogTime then
   begin
-    dwElapsed := GetTickCount - dwStart;
+    dwElapsed := GetTickCount64 - dwStart;
     Log.Write('Run took ' + FloatToStr(dwElapsed / 1000) + ' seconds')
   end;
 
