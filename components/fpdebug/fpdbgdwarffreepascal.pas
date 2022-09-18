@@ -217,6 +217,8 @@ type
     function DoGetStride(out AStride: TFpDbgValueSize): Boolean; override;
     function DoGetMainStride(out AStride: TFpDbgValueSize): Boolean; override;
     function DoGetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; override;
+  public
+    function GetFpcRefCount(out ARefCount: Int64): Boolean; override;
   end;
 
   (* *** Array vs AnsiString *** *)
@@ -257,6 +259,7 @@ type
     function GetAsCardinal: QWord; override;
     function GetMemberCount: Integer; override;
   public
+    function GetFpcRefCount(out ARefCount: Int64): Boolean; override;
     property DynamicCodePage: TSystemCodePage read GetCodePage;
   end;
 
@@ -1370,6 +1373,27 @@ begin
   end;
 end;
 
+function TFpValueDwarfFreePascalArray.GetFpcRefCount(out ARefCount: Int64
+  ): Boolean;
+var
+  Addr: TFpDbgMemLocation;
+begin
+  ARefCount := 0;
+  Result := (TypeInfo <> nil) and (sfDynArray in TypeInfo.Flags);
+  if not Result then
+    exit;
+
+  Result := AsCardinal = 0;
+  if Result then
+    exit;
+
+  if not( GetDwarfDataAddress(Addr) and IsReadableLoc(Addr) ) then
+    exit;
+
+  Addr:= Addr - (AddressSize * 2);
+  Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
+end;
+
 { TFpSymbolDwarfV3FreePascalSymbolTypeArray }
 
 function TFpSymbolDwarfV3FreePascalSymbolTypeArray.GetInternalStringType: TArrayOrStringType;
@@ -1661,6 +1685,34 @@ function TFpValueDwarfV3FreePascalString.GetMemberCount: Integer;
 begin
   CalcBounds;
   Result := Max(0, FHighBound - FLowBound + 1);
+end;
+
+function TFpValueDwarfV3FreePascalString.GetFpcRefCount(out ARefCount: Int64
+  ): Boolean;
+var
+  Addr: TFpDbgMemLocation;
+begin
+  ARefCount := 0;
+  Result := (TypeInfo.Kind = skString);
+  if not Result then
+    exit;
+
+  GetDwarfDataAddress(Addr);
+  if (not IsValidLoc(Addr)) and
+     (HasTypeCastInfo) and
+     (svfOrdinal in TypeCastSourceValue.FieldFlags)
+  then
+    Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
+
+  Result := IsTargetNil(Addr);
+  if Result then
+    exit;
+
+  if not IsReadableLoc(Addr) then
+    exit;
+
+  Addr:= Addr - (AddressSize * 2);
+  Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
 end;
 
 function TFpValueDwarfV3FreePascalString.ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out

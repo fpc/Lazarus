@@ -50,7 +50,7 @@ type
   TSeparatorType = (ppstComma);
 
   TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
-  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass);
+  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass, ifRefCount);
 
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
     AFunctionValue: TFpValue; ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
@@ -222,6 +222,7 @@ type
   protected
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoRefCnt(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 
     function DoGetResultValue: TFpValue; override;
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -1881,6 +1882,26 @@ begin
   end;
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoRefCnt(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Tmp: TFpValue;
+  rcnt: Int64;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+
+  Tmp := AParams.Items[1].ResultValue;
+  if (Tmp = nil) or IsError(Expression.Error) or IsError(Tmp.LastError) then
+    exit;
+
+  if not Tmp.GetFpcRefCount(rcnt) then
+    exit;
+
+  Result := TFpValueConstNumber.Create(QWord(rcnt), True)
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
 begin
   Result := nil;
@@ -1900,6 +1921,7 @@ begin
   case FIntrinsic of
     ifLength:     Result := DoLength(AParams);
     ifChildClass: Result := DoChildClass(AParams);
+    ifRefCount:   Result := DoRefCnt(AParams);
   end;
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if Result <> nil then
@@ -2430,7 +2452,10 @@ begin
   Result := ifErrorNotFound;
   case ALen of
     2: if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass;
-    6: if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
+    6: case AStart^ of
+        'l', 'L': if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
+        'r', 'R': if strlicomp(AStart, 'REFCNT', 6) = 0 then Result := ifRefCount;
+      end;
   end;
 end;
 

@@ -189,6 +189,7 @@ type
 
     function GetInstanceClassName(out AClassName; AParentClassIndex: integer = 0): boolean; virtual;
     function GetInstanceClassName(AClassName: PString; AUnitName: PString = nil; AParentClassIndex: integer = 0): boolean; virtual;
+    function GetFpcRefCount(out ARefCount: Int64): Boolean; virtual;
 
 // base class? Or Member includes member from base
     (* Member:
@@ -947,7 +948,7 @@ begin
   Result := GetInstanceClassName(@AClassName, nil);
 end;
 
-function TFpValue.GetInstanceClassName(AClassName, AUnitName: PString;
+function TFpValue.GetInstanceClassName(AClassName: PString; AUnitName: PString;
   AParentClassIndex: integer): boolean;
 var
   ti: TFpSymbol;
@@ -956,6 +957,11 @@ begin
   Result := ti <> nil;
   if Result then
     Result := ti.GetInstanceClassName(Self, AClassName, AUnitName, AParentClassIndex);
+end;
+
+function TFpValue.GetFpcRefCount(out ARefCount: Int64): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TFpValue.ResetError;

@@ -1569,6 +1569,19 @@ begin
 
 
     t.Clear;
+
+    t.Add('refcnt', PREFIX+'refcnt(SRef0)',     weInteger( 0, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('refcnt', PREFIX+'refcnt(SRef1)',     weInteger(-1, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('refcnt', PREFIX+'refcnt(SRef2)',     weInteger( 1, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('refcnt', PREFIX+'refcnt(SRef3)',     weInteger( 2, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('refcnt', PREFIX+'refcnt(SRef4)',     weInteger( 2, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
+
+    t.Add('refcnt', PREFIX+'refcnt(ARef0)',     weInteger( 0, #1, 0)).IgnTypeName();
+    t.Add('refcnt', PREFIX+'refcnt(ARef1)',     weInteger( 1, #1, 0)).IgnTypeName();
+    t.Add('refcnt', PREFIX+'refcnt(ARef2)',     weInteger( 1, #1, 0)).IgnTypeName();
+    t.Add('refcnt', PREFIX+'refcnt(ARef3)',     weInteger( 2, #1, 0)).IgnTypeName();
+    t.Add('refcnt', PREFIX+'refcnt(ARef4)',     weInteger( 2, #1, 0)).IgnTypeName();
+
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
     t.EvaluateWatches;

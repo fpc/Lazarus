@@ -83,6 +83,9 @@ var
   end;
   v_array: array [3..4] of variant;
 
+  SRef0, SRef1, SRef2, SRef3, SRef4: String;
+  ARef0, ARef1, ARef2, ARef3, ARef4: array of byte;
+
 type
   TClass1 = class;
 
@@ -1068,6 +1071,17 @@ begin
   RecursePtrC17 := @RecursePtrC18;
   RecursePtrC18 := @RecursePtrC1;
 
+  SRef0 := '';
+  SRef1 := 'abc';
+  SRef1 := inttostr(random(9))+SRef1;
+  SRef2 := inttostr(random(9))+SRef1;
+  SRef3 := SRef2;
+
+  ARef0 := nil;
+  SetLength(ARef1, 10);
+  SetLength(ARef2, 10);
+  SetLength(ARef3, 10);
+  ARef4 := ARef3;
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg
 
