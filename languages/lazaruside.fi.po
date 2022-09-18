@@ -1302,15 +1302,15 @@ msgid "Automatic"
 msgstr "Automaattinen"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-msgid "Dwarf2"
+msgid "Dwarf 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-msgid "Dwarf with sets"
+msgid "Dwarf 2 with sets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-msgid "Dwarf3 (beta)"
+msgid "Dwarf 3 (beta)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypestabs

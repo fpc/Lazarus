@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-09-08 01:43+0300\n"
+"PO-Revision-Date: 2022-09-18 03:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1300,16 +1300,16 @@ msgid "Automatic"
 msgstr "Автоматический"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-msgid "Dwarf2"
-msgstr "Dwarf2"
+msgid "Dwarf 2"
+msgstr "Dwarf 2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-msgid "Dwarf with sets"
-msgstr "Dwarf с поддержкой множеств"
+msgid "Dwarf 2 with sets"
+msgstr "Dwarf 2 с поддержкой множеств"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-msgid "Dwarf3 (beta)"
-msgstr "Dwarf3 (бета)"
+msgid "Dwarf 3 (beta)"
+msgstr "Dwarf 3 (бета)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"

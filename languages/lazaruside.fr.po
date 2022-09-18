@@ -1307,15 +1307,21 @@ msgid "Automatic"
 msgstr "Automatique"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-msgid "Dwarf2"
+#, fuzzy
+#| msgid "Dwarf2"
+msgid "Dwarf 2"
 msgstr "Dwarf2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-msgid "Dwarf with sets"
+#, fuzzy
+#| msgid "Dwarf with sets"
+msgid "Dwarf 2 with sets"
 msgstr "Dwarf avec ensembles"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-msgid "Dwarf3 (beta)"
+#, fuzzy
+#| msgid "Dwarf3 (beta)"
+msgid "Dwarf 3 (beta)"
 msgstr "Dwarf3 (beta)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
