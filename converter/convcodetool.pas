@@ -312,7 +312,7 @@ end;
 
 function TConvDelphiCodeTool.RenameResourceDirectives: boolean;
 // rename {$R *.dfm} directive to {$R *.lfm}, or lowercase it.
-// lowercase {$R *.RES} to {$R *.res}, or change it to a comment
+// lowercase {$R *.RES} to {$R *.res}
 var
   ParamPos, CleanPos: Integer;
   Key, LowKey, NewKey: String;
@@ -359,15 +359,19 @@ begin
           else       // Change .dfm to .lfm.
             NewKey:='lfm';
         end
-        // lowercase {$R *.RES} to {$R *.res}, or change it to a comment
+        // lowercase {$R *.RES} to {$R *.res}
         else if LowKey='res' then begin
           case fResAction of
             raLowerCase:
               if Key='RES' then
                 NewKey:=LowKey;
-            raDelete:        // Make it a comment by adding a dot (.)
-              if not SrcCache.ReplaceEx(gtNone, gtNone, CleanPos, CleanPos+1,
-                                        Code, CleanPos, CleanPos+1, '{.') then exit;
+            raDelete:   // Actually don't delete,
+              // the directive is needed because .res file will be generated.
+              if Assigned(Settings) and Settings.SupportDelphi then begin
+                // ToDo: For Delphi wrap it like {$IFnDEF FPC}{$R *.res}{$ENDIF}
+                //if not SrcCache.ReplaceEx(gtNone, gtNone, CleanPos, CleanPos+1,
+                //                          Code, CleanPos, CleanPos+1, '{.') then exit;
+              end;
           end;
         end;
         // Change a single resource name.
