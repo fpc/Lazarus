@@ -1136,7 +1136,7 @@ value for the control in TSpinEditExBase, but it may be re-specified in a
 descendent class specialized for a given data type.
 </p>
 </descr>
--<seealso>
+<seealso>
 <link id="TSpinEditExBase.Value"/>
 <link id="TSpinEditExBase.UpDown"/>
 <link id="TSpinEditExBase.Edit"/>
@@ -1152,18 +1152,24 @@ descendent class specialized for a given data type.
 <p>
 <var>MinValue</var> is a property used to specify the minimum numeric value 
 allowed in the <var>Value</var> property. MinValue uses the type specified 
-for the generic class. Changing the property value causes 
-<var>UpdateControl</var> to be called to range check and update members in 
-the control.
+for the generic class. 
 </p>
 <p>
-MinValue is used in the implementation of methods such as 
-<var>IsLimited</var>, <var>IsOutOfLimits</var>, <var>SpinUpDown</var>, and 
-<var>GetLimitedValue</var>. It also influences the value stored in the 
-control when a <var>NullValueBehaviour</var> is applied.
+Use <var>MaxValue</var> to specify the upper limit for the value in the 
+control.
 </p>
 <p>
-Use <var>MaxValue</var> to specify the maximum value allowed in the control.
+MinValue is used, along with MaxValue, to ensure that the Value property 
+falls within the specified limits. MinValue and MaxValue are not enforced 
+when they have not been explicitly assigned, if they contain the same value, 
+or when MaxValue is smaller than MinValue. This allows any numeric value to 
+be assigned to the control.
+</p>
+<p>
+MinValue is used in the implementation of private methods such as IsLimited, 
+IsOutOfLimits, and SpinUpDown. It also influences the value stored in the 
+control when <var>GetLimitedValue</var> or <var>NullValueBehaviour</var> is 
+applied.
 </p>
 </descr>
 <seealso>
@@ -1179,20 +1185,26 @@ Use <var>MaxValue</var> to specify the maximum value allowed in the control.
 <short>Maximum value allowed in the Value property.</short>
 <descr>
 <p>
-<var>MaxValue</var> is a property which contains the largest numeric value 
+<var>MaxValue</var> is a property used to specify the largest numeric value 
 allowed in the <var>Value</var> property. MaxValue uses the type specified 
-for the generic class. Changing the property value causes 
-<var>UpdateControl</var> to be called to range check and update members in 
-the control.
+for the generic class. 
 </p>
 <p>
-MaxValue is used in the implementation of methods such as 
-<var>IsLimited</var>, <var>IsOutOfLimits</var>, <var>SpinUpDown</var>, and 
-<var>GetLimitedValue</var>. It also influences the value stored in the 
-control when a <var>NullValueBehaviour</var> is applied.
+Use <var>MinValue</var> to specify the lower limit for the value in the 
+control.
 </p>
 <p>
-Use <var>MinValue</var> to specify the smallest value allowed in the control.
+MaxValue is used, along with MinValue, to ensure that the Value property 
+falls within the specified limits. MinValue and MaxValue are not enforced 
+when they have not been explicitly assigned, if they contain the same value, 
+or when MaxValue is smaller than MinValue. This allows any numeric value to 
+be assigned to the control.
+</p>
+<p>
+MaxValue is used in the implementation of private methods such as IsLimited, 
+IsOutOfLimits, and SpinUpDown. It also influences the value stored in the 
+control when <var>GetLimitedValue</var> or <var>NullValueBehaviour</var> is 
+applied.
 </p>
 </descr>
 <seealso>
@@ -1246,33 +1258,33 @@ NullValueBehaviour is used in the implementation of the
 <descr>
 <p>
 <var>Value</var> is a property which contains the numeric value for the 
-grouped edit control. Value used the data type specified for the generic 
+spin edit control. Value uses the data type specified for the generic 
 class.
 </p>
 <p>
-Read access to the property value checks for an allocated handle in the 
-control. If the handle has not been allocated, the <var>StrToValue</var> 
-method is called to get the property value. When the handle exists, the value 
-stored in the internal member is used.
+If a valid Handle has been allocated for the control, the property value is 
+retrieved by calling <var>StrToValue</var> using the <var>Text</var> for the 
+control. If the handle has not been allocated, the value stored in the 
+internal member is used.
 </p>
 <p>
-Write access to the property value ensures that text assigned directly to 
+Setting a new value for the property ensures that text assigned directly to 
 <var>Edit</var> contains a valid number for the data type. This is done by 
 calling <var>TextIsNumber</var>. If the new value is the same as the stored 
 property value, no actions are performed.
 </p>
 <p>
-When the value for the property is changed, the <var>UpdateControl</var> 
-method is called to range check, validate, and update members in the class 
-instance.
+When the property value is changed, it is range checked and validated. Use 
+<var>MinValue</var> and <var>MaxValue</var> to control the minimum and
+maximum values allowed in the control. The range limits are not enforced if 
+they have not been explicitly assigned, contain the same value, or when 
+MaxValue is smaller than MinValue.
 </p>
 <p>
-Use <var>MinValue</var> and <var>MaxValue</var> to control the minimum and 
-maximum values allowed in the control. Use <var>Increment</var> to control 
-the amount applied to the control value when a button in the 
-<var>UpDown</var> control is clicked. Use <var>NullValue</var> and 
-<var>NullValueBehaviour</var> to control the logic applied with an invalid 
-numeric value is stored in the control.
+Use <var>Increment</var> to control the amount applied to the control value 
+when a button in the <var>UpDown</var> control is clicked. Use 
+<var>NullValue</var> and <var>NullValueBehaviour</var> to control the logic 
+applied with an invalid numeric value is stored in the control.
 </p>
 </descr>
 <seealso>
