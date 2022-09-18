@@ -61,13 +61,22 @@ control value when the up or down buttons are clicked.
 </element>
 
 <element name="TCustomFloatSpinEdit.DefIncrement">
-<short>Default increment for the control.</short>
+<short>
+Default increment value for the control. Used to determine if an explicit  
+increment value has been assigned to the control.
+</short>
 </element>
 <element name="TCustomFloatSpinEdit.DefDecimals">
-<short>Default decimal places displayed for the control.</short>
+<short>
+Default number of decimal places displayed for the control. Used to determine 
+if an explicit value has been assigned to the DecimalPlaces property.
+</short>
 </element>
 <element name="TCustomFloatSpinEdit.DefMaxValue">
-<short>Default value for the MaxValue property.</short>
+<short>
+Default value for the MaxValue property. Used to determine if an explicit 
+value has been assigned to the MaxValue property.
+</short>
 </element>
 
 <element name="TCustomFloatSpinEdit.FIncrement">
@@ -553,31 +562,45 @@ constant (1). Changing the value for the property causes the
 </element>
 
 <element name="TCustomFloatSpinEdit.MinValue">
-<short>Minimal value allowed for the spin edit control.</short>
+<short>Minimum value allowed for the spin edit control.</short>
 <descr>
 <p>
-Minimal value allowed for the spin edit control. Set the MinValue property 
-equal to MaxValue to allow any number to be selected.
+MinValue contains the minimum value allowed for the spin edit control. It is 
+used, along with MaxValue, to determine the range of values allowed in the 
+Value property.
+</p>
+<p>
+When MinValue and MaxValue have the same value, or MaxValue is smaller than 
+MinValue, the range limit is not enforced. This allows any value to be 
+assigned to the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomFloatSpinEdit.MaxValue"/>
 <link id="TCustomFloatSpinEdit.Value"/>
+<link id="TCustomFloatSpinEdit.GetLimitedValue"/>
 <link id="TCustomFloatSpinEdit.Increment"/>
 </seealso>
 </element>
 
 <element name="TCustomFloatSpinEdit.MaxValue">
-<short>Maximal value allowed for the spin edit control.</short>
+<short>Maximum value allowed for the spin edit control.</short>
 <descr>
 <p>
-Maximal value allowed for the spin edit control. Set the MinValue property 
-equal to MaxValue to allow any number to be selected.
+MaxValue contains the maximum value allowed for the spin edit control. It is 
+used, along with MinValue, to determine the range of values allowed in the 
+Value property.
+</p>
+<p>
+When MinValue and MaxValue have the same value, or MaxValue is smaller than 
+MinValue, the range limit is not enforced. This allows any value to be 
+assigned to the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomFloatSpinEdit.MinValue"/>
 <link id="TCustomFloatSpinEdit.Value"/>
+<link id="TCustomFloatSpinEdit.GetLimitedValue"/>
 <link id="TCustomFloatSpinEdit.Increment"/>
 </seealso>
 </element>
@@ -586,10 +609,10 @@ equal to MaxValue to allow any number to be selected.
 <short>The value for the spin edit control.</short>
 <descr>
 <p>
-<var>Value</var> is a <var>Double</var> property which contains the value for 
-the spin edit control. Its content can be modified using the UI elements for 
-the control (up and down buttons, up and down cursor keys, edit box for the 
-control). It can also be directly assigned in program code.
+<var>Value</var> contains the value for the spin edit control. Its content 
+can be modified using the UI elements for the control (up and down buttons, 
+up and down cursor keys, edit box for the control). It can also be directly 
+assigned in program code.
 </p>
 <p>
 Changing the value for the property causes the <var>Text</var> for the 
@@ -606,14 +629,17 @@ been allocated, the <var>Change</var> method is called to post a
 assigned for the control.
 </p>
 <p>
-Value is constrained to the range defined in the <var>MinValue</var> and 
-<var>MaxValue</var> properties.
+When changed, Value is constrained to the range defined in the 
+<var>MinValue</var> and <var>MaxValue</var> properties (when assigned). The 
+range limit is not enforced when MinValue and MaxValue have the same value, 
+or when MaxValue is smaller than MinValue.
 </p>
 </descr>
 <seealso>
 <link id="TCustomFloatSpinEdit.Change"/>
 <link id="TCustomFloatSpinEdit.MinValue"/>
 <link id="TCustomFloatSpinEdit.MaxValue"/>
+<link id="TCustomFloatSpinEdit.GetLimitedValue"/>
 <link id="TCustomFloatSpinEdit.Increment"/>
 <link id="#lcl.stdctrls.TCustomEdit.Modified">TCustomEdit.Modified</link>
 </seealso>
@@ -622,9 +648,11 @@ Value is constrained to the range defined in the <var>MinValue</var> and
 <element name="TCustomFloatSpinEdit.ValueEmpty">
 <short>Indicates if a value has not been assigned for the control.</short>
 <descr>
+<p>
 <var>ValueEmpty</var> is updated in the <var>TextChanged</var> method when a 
 new value has been assigned to the control. Changing the value for the 
 property causes the <var>UpdateControl</var> method to be called.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -905,41 +933,84 @@ constants defined in RTL for the platform / CPU architecture.
 
 <element name="TCustomSpinEdit.Value">
 <short>The value for the spin edit control.</short>
-<descr/>
+<descr>
+<p>
+<var>Value</var> contains the value for the spin edit control. Its content 
+can be modified using the UI elements for the control (up and down buttons, 
+up and down cursor keys, edit box for the control). It can also be directly 
+assigned in program code.
+</p>
+<p>
+Changing the value for the property causes the <var>Text</var> for the 
+control to be checked for a valid numeric representation in the property. If 
+the new property value is the same as the existing value, no actions are 
+performed.
+</p>
+<p>
+When the property value has been stored, internal flags are set to ensure 
+that <var>Modified</var> is updated accordingly and the private 
+<var>UpdateControl</var> method in the ancestor is called. If the handle for 
+the control has been allocated, the <var>Change</var> method in the ancestor 
+is called to post a <b>CM_CHANGED</b> control message and signal 
+<var>OnChange</var> handler(s) assigned for the control.
+</p>
+<p>
+When changed, Value is constrained to the range defined in the 
+<var>MinValue</var> and <var>MaxValue</var> properties (when assigned). The 
+range limit is not enforced when MinValue and MaxValue have the same value, 
+or when MaxValue is smaller than MinValue.
+</p>
+</descr>
 <seealso>
 <link id="TCustomSpinEdit.MinValue"/>
 <link id="TCustomSpinEdit.MaxValue"/>
 <link id="TCustomSpinEdit.Increment"/>
+<link id="TCustomSpinEdit.GetLimitedValue"/>
+<link id="#lcl.stdctrls.TCustomEdit.Modified">TCustomEdit.Modified</link>
 </seealso>
 </element>
 
 <element name="TCustomSpinEdit.MinValue">
-<short>Minimal value allowed for the spin edit control.</short>
+<short>Minimum value allowed for the spin edit control.</short>
 <descr>
 <p>
-Minimal value allowed for the spin edit. Set the MinValue property equal to 
-MaxValue to allow any number to be selected.
+MinValue contains the minimum value allowed for the spin edit control. It is 
+used, along with MaxValue, to determine the range of values allowed in the 
+Value property.
+</p>
+<p>
+When MinValue and MaxValue have the same value, or MaxValue is smaller than 
+MinValue, the range limit is not enforced. This allows any value to be 
+assigned to the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomSpinEdit.MaxValue"/>
 <link id="TCustomSpinEdit.Value"/>
 <link id="TCustomSpinEdit.Increment"/>
+<link id="TCustomSpinEdit.GetLimitedValue"/>
 </seealso>
 </element>
 
 <element name="TCustomSpinEdit.MaxValue">
-<short>Maximal value allowed for the spin edit control.</short>
+<short>Maximum value allowed for the spin edit control.</short>
 <descr>
 <p>
-Maximal value allowed for the spin edit. Set the MinValue property equal to 
-MaxValue to allow any number to be selected.
+MaxValue contains the maximum value allowed for the spin edit control. It is 
+used, along with MinValue, to determine the range of values allowed in the 
+Value property.
+</p>
+<p>
+When MinValue and MaxValue have the same value, or MaxValue is smaller than 
+MinValue, the range limit is not enforced. This allows any value to be 
+assigned to the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomSpinEdit.MinValue"/>
 <link id="TCustomSpinEdit.Value"/>
 <link id="TCustomSpinEdit.Increment"/>
+<link id="TCustomSpinEdit.GetLimitedValue"/>
 </seealso>
 </element>
 
