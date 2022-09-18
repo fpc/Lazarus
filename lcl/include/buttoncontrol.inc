@@ -51,7 +51,8 @@ end;
 
 procedure TButtonControl.Click;
 begin
-  DoOnChange;
+  if not FSkipOnChangeOnClick then
+    DoOnChange;
   inherited Click;
 end;
 

@@ -1181,6 +1181,8 @@ type
     function IsCheckedStored: boolean;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
+    // Do not call OnChange when clicked, required by TCustomCheckBox
+    FSkipOnChangeOnClick: boolean;
     class procedure WSRegisterClass; override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetChecked: Boolean; virtual;
@@ -1353,6 +1355,9 @@ type
     procedure TextChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public
+    // VCL calls OnChange when clicked. This can be turned off for a more logical behavior.
+    class var VCL_OnClick_Emulation: boolean;
+    class constructor CreateClass;
     constructor Create(TheOwner: TComponent); override;
   public
     property Alignment: TLeftRight read GetAlignment write SetAlignment default taRightJustify;
