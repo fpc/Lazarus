@@ -7602,14 +7602,10 @@ begin
     SaveDialog:=IDESaveDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
-      AFilename:='';
       // build a nice project info filename suggestion
-      if UseMainSourceFile and (Project1.MainUnitID>=0) then
-        AFilename:=Project1.MainUnitInfo.Unit_Name;
+      AFilename:=ExtractFileName(Project1.MainFilename);
       if AFilename='' then
         AFilename:=ExtractFileName(Project1.ProjectInfoFile);
-      if AFilename='' then
-        AFilename:=ExtractFileName(Project1.MainFilename);
       if AFilename='' then
         AFilename:=Trim(Project1.GetTitle);
       if AFilename='' then
