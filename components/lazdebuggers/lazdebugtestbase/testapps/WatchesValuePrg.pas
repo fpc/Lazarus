@@ -84,6 +84,10 @@ var
   v_array: array [3..4] of variant;
 
   SRef0, SRef1, SRef2, SRef3, SRef4: String;
+  PCRef1: PChar;
+  PtrRef1: Pointer;
+  Short0: Shortstring;
+  Short1: array [0..2] of ShortString[10];
   ARef0, ARef1, ARef2, ARef3, ARef4: array of byte;
 
 type
@@ -1072,10 +1076,18 @@ begin
   RecursePtrC18 := @RecursePtrC1;
 
   SRef0 := '';
-  SRef1 := 'abc';
+  SRef1 := 'abcdef123456';
   SRef1 := inttostr(random(9))+SRef1;
   SRef2 := inttostr(random(9))+SRef1;
   SRef3 := SRef2;
+
+  PCRef1 := @SRef1[1];
+  PtrRef1 := PCRef1;
+
+  Short0 := 'abcdef1234';
+  Short1[0] := 'abcdef1234';
+  Short1[1] := 'ABCDEF7890';
+  Short1[2] := 'mnopqrstuv';
 
   ARef0 := nil;
   SetLength(ARef1, 10);

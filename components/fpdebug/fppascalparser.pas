@@ -50,7 +50,7 @@ type
   TSeparatorType = (ppstComma);
 
   TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
-  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass, ifRefCount);
+  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass, ifRefCount, ifPos, ifSubStr);
 
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
     AFunctionValue: TFpValue; ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
@@ -218,11 +218,16 @@ type
     FIntrinsic: TFpIntrinsicFunc;
     FChildClassCastType: TFpValue;
 
-    function CheckArgumentCount(AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer): Boolean;
+    function CheckArgumentCount(AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer; AMaxAccepted: Integer = -1): Boolean;
+    // GetArg; ANum is 1 based
+    function GetArg(AParams: TFpPascalExpressionPartBracketArgumentList; ANum: Integer; out AValue: TFpValue;
+                    AnErr: String = ''): Boolean;
   protected
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoRefCnt(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoPos(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoSubStr(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 
     function DoGetResultValue: TFpValue; override;
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -1790,12 +1795,16 @@ end;
 { TFpPascalExpressionPartIntrinsic }
 
 function TFpPascalExpressionPartIntrinsic.CheckArgumentCount(
-  AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer
-  ): Boolean;
+  AParams: TFpPascalExpressionPartBracketArgumentList; ARequiredCount: Integer;
+  AMaxAccepted: Integer): Boolean;
 var
   i: Integer;
 begin
-  Result := AParams.Count - 1 = ARequiredCount;
+  if AMaxAccepted < 0 then
+    Result := AParams.Count - 1 = ARequiredCount
+  else
+    Result := (AParams.Count - 1 >= ARequiredCount) and
+              (AParams.Count - 1 <= AMaxAccepted);
   if not Result then begin
     SetError('wrong argument count');
     exit;
@@ -1809,6 +1818,26 @@ begin
     end;
 end;
 
+function TFpPascalExpressionPartIntrinsic.GetArg(
+  AParams: TFpPascalExpressionPartBracketArgumentList; ANum: Integer; out
+  AValue: TFpValue; AnErr: String): Boolean;
+begin
+  AValue := nil;
+  Result := ANum < AParams.Count;
+  if not Result then begin
+    if AnErr <> '' then
+      SetError(AnErr);
+    exit;
+  end;
+
+  AValue := AParams.Items[ANum].ResultValue;
+  Result := (AValue <> nil) and (not IsError(Expression.Error)) and (not IsError(AValue.LastError));
+  if not Result then begin
+    if AnErr <> '' then
+      SetError(AnErr);
+  end;
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoLength(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
@@ -1819,11 +1848,8 @@ begin
   if not CheckArgumentCount(AParams, 1) then
     exit;
 
-  Arg := AParams.Items[1].ResultValue;
-  if (Arg = nil) then begin
-    SetError('argument not supported');
+  if not GetArg(AParams, 1, Arg, 'argument required') then
     exit;
-  end;
 
   ResLen := 0;
   case Arg.Kind of
@@ -1846,18 +1872,17 @@ function TFpPascalExpressionPartIntrinsic.DoChildClass(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
   CastName: String;
-  NewResult: TFpValue;
+  NewResult, Arg: TFpValue;
 begin
   Result := nil;
   if not CheckArgumentCount(AParams, 1) then
     exit;
 
-  Result := AParams.Items[1].ResultValue;
-  if Result = nil then
+  if not GetArg(AParams, 1, Arg, 'argument required') then
     exit;
+  Result := Arg;
   Result.AddReference;
-  if IsError(Expression.Error) or IsError(Result.LastError) or
-     (Result.Kind <> skClass) or (Result.AsCardinal = 0)
+  if (Result.Kind <> skClass) or (Result.AsCardinal = 0)
   then
     exit;
 
@@ -1892,14 +1917,148 @@ begin
   if not CheckArgumentCount(AParams, 1) then
     exit;
 
-  Tmp := AParams.Items[1].ResultValue;
-  if (Tmp = nil) or IsError(Expression.Error) or IsError(Tmp.LastError) then
+  if not GetArg(AParams, 1, Tmp, 'argument required') then
     exit;
 
-  if not Tmp.GetFpcRefCount(rcnt) then
+  if not Tmp.GetFpcRefCount(rcnt) then begin
+    SetError('argument not supported');
     exit;
+  end;
 
   Result := TFpValueConstNumber.Create(QWord(rcnt), True)
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoPos(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Tmp, Tmp2, CmpCase: TFpValue;
+  s1, s2: String;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 2, 3) then
+    exit;
+
+  if not GetArg(AParams, 1, Tmp, 'argument required')  then exit;
+  if not GetArg(AParams, 2, Tmp2, 'argument required') then exit;
+
+  CmpCase := nil;
+  if AParams.Count = 4 then begin
+    if not GetArg(AParams, 3, Tmp, 'argument required') then
+      exit;
+    if (CmpCase.Kind <> skBoolean) then begin
+      SetError('bool argument expected');
+      exit;
+    end;
+  end;
+
+  s1 := Tmp.AsString;
+  s2 := Tmp2.AsString;
+
+  if (CmpCase <> nil) and (CmpCase.AsBool) then begin
+    s1 := LowerCase(s1);
+    s2 := LowerCase(s2);
+  end;
+
+  if (s1 = '') or (s2 = '') then
+    Result := TFpValueConstNumber.Create(0, True)
+  else
+    Result := TFpValueConstNumber.Create(pos(s1, s2), True);
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoSubStr(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Tmp, Tmp2, Tmp3, Tmp4: TFpValue;
+  s1, s2: String;
+  p1, p2: Int64;
+  UsePtr: Boolean;
+  Addr: QWord;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 3,4) then
+    exit;
+
+  if not GetArg(AParams, 1, Tmp, 'argument required')  then exit;
+  if not GetArg(AParams, 2, Tmp2, 'argument required') then exit;
+  if not GetArg(AParams, 3, Tmp3, 'argument required') then exit;
+
+  UsePtr := False;
+  if AParams.Count = 5 then begin
+    if not GetArg(AParams, 4, Tmp4, 'argument required') then
+      exit;
+    if (Tmp4.Kind <> skBoolean) then begin
+      SetError('bool argument expected');
+      exit;
+    end;
+    UsePtr := Tmp4.AsBool;
+  end;
+
+  s1 := Tmp.AsString;
+  if (s1 = '') and (Tmp.Kind in [skPointer, skAddress]) then begin
+    if (AParams.Count = 5) and not UsePtr then begin
+      SetError('expected true for argument 4');
+      exit;
+    end;
+    UsePtr := True;
+  end;
+
+  if svfInteger in Tmp2.FieldFlags then
+    p1 := Tmp2.AsInteger
+  else
+  if svfCardinal in Tmp2.FieldFlags then
+    {$PUSH}{$R-}{$Q-}
+    p1 := Int64(Tmp2.AsCardinal)
+    {$POP}
+  else begin
+    SetError('int argument expected');
+    exit;
+  end;
+  if (p1 < 1) and (not UsePtr) then begin
+    SetError('argument >= 1 expected');
+    exit;
+  end;
+
+  if svfInteger in Tmp3.FieldFlags then
+    p2 := Tmp3.AsInteger
+  else
+  if svfCardinal in Tmp3.FieldFlags then
+    {$PUSH}{$R-}{$Q-}
+    p2 := Int64(Tmp3.AsCardinal)
+    {$POP}
+  else begin
+    SetError('int argument expected');
+    exit;
+  end;
+  if (p2 < 1) and (not UsePtr) then begin
+    SetError('argument >= 1 expected');
+    exit;
+  end;
+
+  if UsePtr then begin
+    if not (Tmp.Kind in [skPointer, skString, skAnsiString, skWideString, skAddress]) then begin
+      SetError('argument 1 not supported');
+    end;
+    Addr := Tmp.AsCardinal;
+    if Addr = 0 then begin
+      Result := TFpValueConstString.Create('');
+      exit;
+    end;
+
+    {$PUSH}{$R-}{$Q-}
+    Expression.Context.MemManager.ReadPChar(TargetLoc(Addr+QWord(p1)), p2, s1, True);
+    {$POP}
+    Result := TFpValueConstString.Create(s1);
+    exit;
+  end;
+
+  if (s1 = '') then begin
+    Result := TFpValueConstString.Create('');
+    exit;
+  end;
+
+  {$PUSH}{$R-}{$Q-}
+  Result := TFpValueConstString.Create(copy(s1, p1, p2));
+  {$POP}
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
@@ -1922,6 +2081,8 @@ begin
     ifLength:     Result := DoLength(AParams);
     ifChildClass: Result := DoChildClass(AParams);
     ifRefCount:   Result := DoRefCnt(AParams);
+    ifPos:        Result := DoPos(AParams);
+    ifSubStr:     Result := DoSubStr(AParams);
   end;
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if Result <> nil then
@@ -2452,9 +2613,11 @@ begin
   Result := ifErrorNotFound;
   case ALen of
     2: if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass;
+    3: if strlicomp(AStart, 'POS', 3) = 0     then Result := ifPos;
     6: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
         'r', 'R': if strlicomp(AStart, 'REFCNT', 6) = 0 then Result := ifRefCount;
+        's', 'S': if strlicomp(AStart, 'SUBSTR', 6) = 0 then Result := ifSubStr;
       end;
   end;
 end;

@@ -441,7 +441,7 @@ type
     function SetLength(var ADest: AnsiString; ALength: Int64): Boolean; overload;
     function SetLength(var ADest: WideString; ALength: Int64): Boolean; overload;
     function CheckDataSize(ASize: Int64): Boolean;
-    function ReadPChar(const ALocation: TFpDbgMemLocation; AMaxChars: Int64; out AValue: AnsiString): Boolean;
+    function ReadPChar(const ALocation: TFpDbgMemLocation; AMaxChars: Int64; out AValue: AnsiString; NoTrimToZero: Boolean = False): Boolean;
     function ReadPWChar(const ALocation: TFpDbgMemLocation; AMaxChars: Int64; out AValue: WideString): Boolean;
 
     property TargetMemConvertor: TFpDbgMemConvertor read FTargetMemConvertor;
@@ -1922,7 +1922,7 @@ begin
 end;
 
 function TFpDbgMemManager.ReadPChar(const ALocation: TFpDbgMemLocation;
-  AMaxChars: Int64; out AValue: AnsiString): Boolean;
+  AMaxChars: Int64; out AValue: AnsiString; NoTrimToZero: Boolean): Boolean;
 var
   i: QWord;
 begin
@@ -1945,9 +1945,11 @@ begin
     Result := True;
     i := PartialReadResultLenght;
     SetLength(AValue, i);
-    i := pos(#0, AValue);
-    if i > 0 then
-      SetLength(AValue, i-1);
+    if not NoTrimToZero then begin
+      i := pos(#0, AValue);
+      if i > 0 then
+        SetLength(AValue, i-1);
+    end;
     exit;
   end
 end;

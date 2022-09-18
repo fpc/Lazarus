@@ -1582,6 +1582,27 @@ begin
     t.Add('refcnt', PREFIX+'refcnt(ARef3)',     weInteger( 2, #1, 0)).IgnTypeName();
     t.Add('refcnt', PREFIX+'refcnt(ARef4)',     weInteger( 2, #1, 0)).IgnTypeName();
 
+    t.Add('pos', PREFIX+'pos(''c'', SRef1)',     weInteger( 3, #1, 0)).IgnTypeName();
+    t.Add('pos', PREFIX+'pos(''d'', PCRef1)',     weInteger( 4, #1, 0)).IgnTypeName();
+    t.Add('pos', PREFIX+'pos(''e'', Short0)',     weInteger( 5, #1, 0)).IgnTypeName();
+    t.Add('pos', PREFIX+'pos(''e'', ''1e'')',     weInteger( 2, #1, 0)).IgnTypeName();
+
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3)',   weAnsiStr('bcd', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(Short0, 4,3)',   weAnsiStr('def', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3, false)',   weAnsiStr('bcd', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(Short0, 4,3, false)',   weAnsiStr('def', #1)).IgnTypeName();
+    //  0 based
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3, true)',   weAnsiStr('cde', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(Short0, 4,3, true)',   weAnsiStr('ef1', #1)).IgnTypeName();
+    // cut off
+    t.Add('substr', PREFIX+'substr(SRef1, 10, 30)',   weAnsiStr('456', #1)).IgnTypeName();
+
+    t.Add('substr', PREFIX+'substr(SHORT1[1], -4, 2, true)',   weAnsiStr('23', #1)).IgnTypeName();
+
+    t.Add('substr', PREFIX+'PtrRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'PCRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
+
+
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
     t.EvaluateWatches;
