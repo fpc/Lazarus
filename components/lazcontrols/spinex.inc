@@ -213,12 +213,12 @@ end;
 
 function TSpinEditExBase.MaxValueStored: Boolean;
 begin
-  Result := not SameValue(FMaxValue, T(DefMaxValue)); //use typecast to force use of correct overload. Issue #39792
+  Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
 function TSpinEditExBase.MinValueStored: Boolean;
 begin
-  Result := not SameValue(FMinValue, T(DefMinValue)); //use typecast to force use of correct overload. Issue #39792
+  Result := not SameValue(FMinValue, DefMinValue);
 end;
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
