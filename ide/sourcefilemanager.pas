@@ -3998,16 +3998,16 @@ begin
   end;
 
   // save virtual files
-  if (not (sfDoNotSaveVirtualFiles in Flags)) then
+  if not (sfDoNotSaveVirtualFiles in Flags) then
   begin
     // check that all new units are saved first to get valid filenames
     // Note: this can alter the mainunit: e.g. used unit names
     for i:=0 to Project1.UnitCount-1 do begin
       AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.Loaded) and AnUnitInfo.IsVirtual
-      and AnUnitInfo.IsPartOfProject
+      if AnUnitInfo.Loaded and AnUnitInfo.IsVirtual and AnUnitInfo.IsPartOfProject
       and (Project1.MainUnitID<>i)
-      and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
+      and (AnUnitInfo.OpenEditorInfoCount > 0) then
+      begin
         SaveFileFlags:=[sfSaveAs,sfProjectSaving]+[sfCheckAmbiguousFiles]*Flags;
         if sfSaveToTestDir in Flags then begin
           Assert(AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual, 'SaveProject: Not IsPartOfProject or IsVirtual');
@@ -7627,8 +7627,7 @@ begin
       begin
         if (Ext = '') or (not FilenameIsPascalSource(AFilename)) then
           AFilename := ChangeFileExt(AFilename, '.pas');
-      end else
-      begin
+      end else begin
         if (Ext = '') or FilenameIsPascalSource(AFilename) then
           AFilename := ChangeFileExt(AFilename, '.lpi');
       end;
@@ -7680,7 +7679,10 @@ begin
         begin
           // check mainunit filename
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
-          if Ext = '' then Ext := '.pas';
+          if Ext = '' then begin
+            Ext := '.pas';
+            DebugLn('ShowSaveProjectAsDialog: Forced suffix to be .pas');
+          end;
           if UseMainSourceFile then
             NewProgramFN := ExtractFileName(AFilename)
           else
