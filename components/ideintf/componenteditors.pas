@@ -432,6 +432,19 @@ type
     procedure ExecuteVerb(Index:integer);override;
   end;
 
+
+  { TTaskDialogComponentEditor
+  The default componenteditor for TTaskDialog which does not descent from TCommonDialog }
+
+  TTaskDialogComponentEditor = class(TComponentEditor)
+  private
+    procedure TestDialog;
+  public
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
+  end;
+
   { TTimerComponentEditor }
 
   TTimerComponentEditor = class(TDefaultComponentEditor)
@@ -1417,6 +1430,36 @@ begin
   end;
 end;
 
+{ TTaskDialogComponentEditor }
+
+procedure TTaskDialogComponentEditor.TestDialog;
+begin
+  with Component as TCustomTaskDialog do Execute;
+end;
+
+function TTaskDialogComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TTaskDialogComponentEditor.GetVerb(Index: integer): string;
+begin
+  case Index of
+    0:Result:=oisTestDialog;
+  else
+    Result:=inherited GetVerb(Index);
+  end;
+end;
+
+procedure TTaskDialogComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    0: TestDialog;
+  else
+    inherited ExecuteVerb(Index);
+  end;
+end;
+
 //------------------------------------------------------------------------------
 
 { RegisterComponentRequirements }
@@ -1823,6 +1866,7 @@ initialization
   RegisterComponentEditor(TFlowPanel, TFlowPanelComponentEditor);
   RegisterComponentEditor(TToolBar, TToolBarComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
+  RegisterComponentEditor(TCustomTaskDialog, TTaskDialogComponentEditor);
   RegisterComponentEditor(TCustomTimer, TTimerComponentEditor);
   OnGetSourceClassUnitname:=@InternalGetSourceClassUnitName;
 
