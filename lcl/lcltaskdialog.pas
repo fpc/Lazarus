@@ -925,6 +925,43 @@ begin
     if Info<>'' then
       // no information collapse/expand yet: it's always expanded
       Dialog.Form.Element[tdeExpandedInfo] := AddLabel(Info, false);
+
+    // add radio buttons
+    if Radios<>'' then
+    begin
+      {$IFDEF MSWINDOWS}
+      if WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_NO then
+        ARadioOffset := 1
+      else
+        ARadioOffset := 0;
+      {$ELSE}
+      ARadioOffset := 1;
+      {$ENDIF}
+      with TStringList.Create do
+      try
+        Text := SysUtils.trim(Radios);
+        SetLength(Rad,Count);
+        for i := 0 to Count-1 do begin
+          Rad[i] := TRadioButton.Create(Dialog.Form);
+          with Rad[i] do begin
+            Parent := Par;
+            SetBounds(X+16,Y,aWidth-32-X, (6-FontHeight) + ARadioOffset);
+            Caption := NoCR(Strings[i]);
+            if aHint<>'' then begin
+              ShowHint := true;
+              Hint := aHint; // note shown as Hint
+            end;
+            inc(Y,Height + ARadioOffset);
+            if (i=0) or (i+200=aRadioDef) then
+              Checked := true;
+          end;
+        end;
+        inc(Y,24);
+      finally
+        Free;
+      end;
+    end;
+
     // add command links buttons
     if (tdfUseCommandLinks in aFlags) and (Buttons<>'') then
       with TStringList.Create do
@@ -976,41 +1013,7 @@ begin
       finally
         Free;
       end;
-    // add radio buttons
-    if Radios<>'' then
-    begin
-      {$IFDEF MSWINDOWS}
-      if WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_NO then
-        ARadioOffset := 1
-      else
-        ARadioOffset := 0;
-      {$ELSE}
-      ARadioOffset := 1;
-      {$ENDIF}
-      with TStringList.Create do
-      try
-        Text := SysUtils.trim(Radios);
-        SetLength(Rad,Count);
-        for i := 0 to Count-1 do begin
-          Rad[i] := TRadioButton.Create(Dialog.Form);
-          with Rad[i] do begin
-            Parent := Par;
-            SetBounds(X+16,Y,aWidth-32-X, (6-FontHeight) + ARadioOffset);
-            Caption := NoCR(Strings[i]);
-            if aHint<>'' then begin
-              ShowHint := true;
-              Hint := aHint; // note shown as Hint
-            end;
-            inc(Y,Height + ARadioOffset);
-            if (i=0) or (i+200=aRadioDef) then
-              Checked := true;
-          end;
-        end;
-        inc(Y,24);
-      finally
-        Free;
-      end;
-    end;
+
     // add selection list or query editor
     if Selection<>'' then begin
       List := TStringListUTF8Fast.Create;
