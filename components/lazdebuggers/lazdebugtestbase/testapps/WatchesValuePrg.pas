@@ -87,7 +87,7 @@ var
   PCRef1: PChar;
   PtrRef1: Pointer;
   Short0: Shortstring;
-  Short1: array [0..2] of ShortString[10];
+  Short1: array [0..2] of String[10];
   ARef0, ARef1, ARef2, ARef3, ARef4: array of byte;
 
 type
