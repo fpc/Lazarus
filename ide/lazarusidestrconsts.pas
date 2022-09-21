@@ -4205,6 +4205,20 @@ resourcestring
   lisEnableOptionDwarf2 = 'Enable Dwarf 2 (-gw)';
   lisEnableOptionDwarf2Sets = 'Enable Dwarf 2 with sets';
   lisEnableOptionDwarf3 = 'Enable Dwarf 3 (-gw3)';
+
+  lisTheProjectDoesNotUseDwarf_TaskDlg_Caption = 'Running your application with debugger';
+  lisTheProjectDoesNotUseDwarf_TaskDlg_Title = 'Choose Debug Information format';
+  lisTheProjectDoesNotUseDwarf_TaskDlg_TextExplain = '"%s" can only run your application'
+      + ' when it was compiled with a suitable Debug Information enabled.';
+  lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Caption = 'Run with no debugger';
+  lisTheProjectDoesNotUseDwarf_TaskDlg_Footer = 'This choice can be later changed'
+       + ' in Project Options / Compiler Options / Debugging window.';
+  // non-Windows LCL does not implement
+  lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Hint =
+       'If you continue running without Debug Info selected - the debugger'
+       + ' would not be enabled, and this question would reappear next'
+       + ' time you run your application.';
+
   lisCleanUpUnitPath = 'Clean up unit path?';
   lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt =
     'The directory "%s" is no longer needed in the unit path.%sRemove it?';
