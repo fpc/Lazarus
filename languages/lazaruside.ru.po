@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-09-18 03:19+0300\n"
+"PO-Revision-Date: 2022-09-22 02:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9474,10 +9474,6 @@ msgstr "Включить поддержку интернационализаци
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Включить макросы"
-
-#: lazarusidestrconsts.lisenableoptiondwarf
-msgid "Enable Dwarf 2 (-gw)?"
-msgstr "Включить Dwarf 2 (-gw)?"
 
 #: lazarusidestrconsts.lisenableoptiondwarf2
 msgid "Enable Dwarf 2 (-gw)"
@@ -19080,10 +19076,26 @@ msgstr "Программа \"make\" не найдена.%sОна требует�
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Параметры компилятора для проекта не соответствуют директивам в главном файле исходного кода. В новом модуле будут использованы режим синтаксиса и тип строк в соответствии с параметрами проекта:"
 
-#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_caption
+msgid "Running your application with debugger"
+msgstr "Запуск приложения в отладчике"
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
+msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
+msgstr "Выбор можно будет изменить позднее в диалоге Проект -> Параметры проекта -> Параметры компилятора -> Отладка."
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
+msgid "Run with no debugger"
+msgstr "Запустить без отладчика"
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_textexplain
 #, object-pascal-format
-msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
-msgstr "Проект не выводит отладочную информацию в формате Dwarf. \"%s\" поддерживает только Dwarf."
+msgid "\"%s\" can only run your application when it was compiled with a suitable Debug Information enabled."
+msgstr "Отладчик \"%s\" сможет запустить ваше приложение только если оно было собрано с подходящей отладочной информацией."
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_title
+msgid "Choose Debug Information format"
+msgstr "Выберите формат отладочной информации"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 #, object-pascal-format

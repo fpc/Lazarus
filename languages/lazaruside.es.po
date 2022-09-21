@@ -9699,10 +9699,6 @@ msgstr "Activar soporte de internacionalización y traducción"
 msgid "Enable Macros"
 msgstr "Activar Macros"
 
-#: lazarusidestrconsts.lisenableoptiondwarf
-msgid "Enable Dwarf 2 (-gw)?"
-msgstr "¿Activar Dwarf 2 (-gw)?"
-
 #: lazarusidestrconsts.lisenableoptiondwarf2
 msgid "Enable Dwarf 2 (-gw)"
 msgstr "Activar Dwarf 2 (-gw)"
@@ -19543,10 +19539,26 @@ msgstr "El programa \"make\" no se encuentra.%sEsta herramienta es necesaria par
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Las opciones de compilador del proyecto y las directivas en la fuente principal difieren. Para la nueva unidad el modo y el tipo de cadena del proyecto son usados:"
 
-#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_caption
+msgid "Running your application with debugger"
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
+msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
+msgid "Run with no debugger"
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_textexplain
 #, object-pascal-format
-msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
-msgstr "El proyecto no escribe información de depuración en formato Dwarf. El \"%s\" soporta solo Dwarf."
+msgid "\"%s\" can only run your application when it was compiled with a suitable Debug Information enabled."
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_title
+msgid "Choose Debug Information format"
+msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 #, object-pascal-format
