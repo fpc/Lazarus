@@ -168,7 +168,6 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
-    dlgFpDebugNeedsDwarf: dialogs.TTaskDialog; // LCLTaskDialog has a record type with the same name
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -7242,7 +7241,8 @@ var
   ARunMode: TRunParamsOptionsMode;
   ReqOpts: TDebugCompilerRequirements;
   Handled, SkipDebuggerThisTime: Boolean;
-  dlgResult: TModalResult;
+  DlgResult: TModalResult;
+  ChangeDebugInfoFormatDialog: TTaskDialog;
 begin
   if ToolStatus <> itNone
   then begin
@@ -7313,65 +7313,59 @@ begin
     and (not (Project1.CompilerOptions.DebugInfoType in [dsDwarf2, dsDwarf2Set, dsDwarf3])) then
     begin
       // this debugger does ONLY support external debug symbols
+      ChangeDebugInfoFormatDialog := TTaskDialog.Create(Self);
+      try
 
-      if nil = dlgFpDebugNeedsDwarf then begin
-         dlgFpDebugNeedsDwarf := TTaskDialog.Create(Self);
+        ChangeDebugInfoFormatDialog.Flags := [tfAllowDialogCancellation];
+        ChangeDebugInfoFormatDialog.Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_Caption;
+        ChangeDebugInfoFormatDialog.Title := lisTheProjectDoesNotUseDwarf_TaskDlg_Title;
+        ChangeDebugInfoFormatDialog.Text := Format(
+            lisTheProjectDoesNotUseDwarf_TaskDlg_TextExplain, [DebugClass.Caption]);
+        ChangeDebugInfoFormatDialog.FooterText := lisTheProjectDoesNotUseDwarf_TaskDlg_Footer;
+        ChangeDebugInfoFormatDialog.FooterIcon := tdiInformation;
+        ChangeDebugInfoFormatDialog.MainIcon := tdiWarning;
 
-         dlgFpDebugNeedsDwarf.Flags := [tfAllowDialogCancellation];
-         dlgFpDebugNeedsDwarf.Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_Caption;
-         dlgFpDebugNeedsDwarf.Title := lisTheProjectDoesNotUseDwarf_TaskDlg_Title;
-         dlgFpDebugNeedsDwarf.Text := Format(
-             lisTheProjectDoesNotUseDwarf_TaskDlg_TextExplain, [DebugClass.Caption]);
-         dlgFpDebugNeedsDwarf.FooterText := lisTheProjectDoesNotUseDwarf_TaskDlg_Footer;
-         dlgFpDebugNeedsDwarf.FooterIcon := tdiInformation;
-         dlgFpDebugNeedsDwarf.MainIcon := tdiWarning;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 1;
+          Default := True;
+          Caption := lisEnableOptionDwarf2Sets;
+        end;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 12;
+          Caption := lisEnableOptionDwarf2;
+        end;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 13;
+          Caption := lisEnableOptionDwarf3;
+        end;
 
-         with dlgFpDebugNeedsDwarf.RadioButtons.Add do begin
-           ModalResult := 1;
-           Default := True;
-           Caption := lisEnableOptionDwarf2Sets;
-         end;
-         with dlgFpDebugNeedsDwarf.RadioButtons.Add do begin
-           ModalResult := 12;
-           Caption := lisEnableOptionDwarf2;
-         end;
-         with dlgFpDebugNeedsDwarf.RadioButtons.Add do begin
-           ModalResult := 13;
-           Caption := lisEnableOptionDwarf3;
-         end;
+        with ChangeDebugInfoFormatDialog.Buttons.Add do begin
+          ModalResult := 500;
+          Caption := lisHelp;
+        end;
+        with ChangeDebugInfoFormatDialog.Buttons.Add do begin
+          ModalResult := 400;
+          Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Caption;
+        end;
 
-         with dlgFpDebugNeedsDwarf.Buttons.Add do begin
-           ModalResult := 500;
-           Caption := lisHelp;
-         end;
-         with dlgFpDebugNeedsDwarf.Buttons.Add do begin
-           ModalResult := 400;
-           Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Caption;
-         end;
+        ChangeDebugInfoFormatDialog.OnButtonClicked := @DlgDebugInfoHelpRequested;
 
-         dlgFpDebugNeedsDwarf.OnButtonClicked := @DlgDebugInfoHelpRequested;
-      end;
- (*
-      case IDEQuestionDialog(lisEnableOptionDwarf,
-          Format(lisTheProjectDoesNotUseDwarf, [DebugClass.Caption]),
-          mtConfirmation, [1 {mrOk}, lisEnableOptionDwarf2Sets,
-                           12, lisEnableOptionDwarf2,
-                           13, lisEnableOptionDwarf3,
-                           mrCancel])
- *)
-      if not dlgFpDebugNeedsDwarf.Execute() then
-         exit;
-      dlgResult := dlgFpDebugNeedsDwarf.ModalResult;
-      if (dlgResult = mrOK) and (nil <> dlgFpDebugNeedsDwarf.RadioButton) then
-         dlgResult := dlgFpDebugNeedsDwarf.RadioButton.ModalResult;
-      case dlgResult
-      of
-        1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
-        12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
-        13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
-        400: SkipDebuggerThisTime := True;
-        else
-          exit;
+        if not ChangeDebugInfoFormatDialog.Execute() then
+           exit;
+        DlgResult := ChangeDebugInfoFormatDialog.ModalResult;
+        if (DlgResult = mrOK) and (nil <> ChangeDebugInfoFormatDialog.RadioButton) then
+           DlgResult := ChangeDebugInfoFormatDialog.RadioButton.ModalResult;
+        case DlgResult
+        of
+          1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
+          12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
+          13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
+          400: SkipDebuggerThisTime := True;
+          else
+            exit;
+        end;
+      finally
+        ChangeDebugInfoFormatDialog.free
       end;
     end;
   end;
