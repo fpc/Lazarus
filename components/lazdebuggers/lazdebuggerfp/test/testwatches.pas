@@ -27,6 +27,7 @@ type
     procedure TestWatchesValue;
     procedure TestWatchesIntrinsic;
     procedure TestWatchesFunctions;
+    procedure TestWatchesFunctions2;
     procedure TestWatchesFunctionsWithString;
     procedure TestWatchesFunctionsWithRecord;
     procedure TestWatchesFunctionsSysVarToLStr;
@@ -42,8 +43,8 @@ implementation
 
 var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchIntrinsic,
-  ControlTestWatchFunct, ControlTestWatchFunctStr, ControlTestWatchFunctRec, ControlTestWatchFunctVariant,
-  ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
+  ControlTestWatchFunct, ControlTestWatchFunct2, ControlTestWatchFunctStr, ControlTestWatchFunctRec,
+  ControlTestWatchFunctVariant, ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
   ControlTestExpression, ControlTestErrors, ControlTestRTTI: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint;
@@ -1682,7 +1683,8 @@ begin
     t.Add('FuncIntAdd(3,15)',     weInteger(18)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,FuncIntAdd(4,5))',     weInteger(12)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('FuncIntAdd(3,4) + FuncIntAdd(4,5)',     weInteger(16,#1,-1)).AddEvalFlag([defAllowFunctionCall]);
-    t.Add('FuncTooManyArg(3,4,3,4,3,4,3,4,3,4,3,4)',     weInteger(16)).AddEvalFlag([defAllowFunctionCall])^.AddFlag(ehExpectError);
+    //t.Add('FuncTooManyArg(3,4,3,4,3,4,3,4,3,4,3,4)',     weInteger(16)).AddEvalFlag([defAllowFunctionCall])^.AddFlag(ehExpectError);
+    t.Add('FuncTooManyArg(3,4,3,4,3,4,3,4,3,4,3,4)',     weInteger(123)).AddEvalFlag([defAllowFunctionCall]);
 
     t.Add('MyClass1.SomeFuncIntResAdd(3)',     weInteger(80)).AddEvalFlag([defAllowFunctionCall]);
     t.Add('MyClass1.SomeFuncIntRes()',     weInteger(80+999)).AddEvalFlag([defAllowFunctionCall]);
@@ -1706,6 +1708,77 @@ begin
 
     AssertTestErrors;
   end;
+end;
+
+procedure TTestWatches.TestWatchesFunctions2;
+var
+  ExeName: String;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  BrkPrg: TDBGBreakPoint;
+
+  procedure AddTest(AFunc, ARes: String; AExp: TWatchExpectationResult);
+  begin
+    t.Add(AFunc, AExp).AddEvalFlag([defAllowFunctionCall]).IgnTypeName;
+    t.Add('LastRes',     weAnsiStr(ARes)).IgnTypeName;
+  end;
+
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchFunct2) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor(AppDir + 'WatchesFuncPrg.pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat,
+      skString, skAnsiString, skCurrency, skVariant, skWideString,
+      skInterface, skEnumValue];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+
+
+    BrkPrg         := Debugger.SetBreakPoint(Src, 'main');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    RunToPause(BrkPrg);
+    t.Clear;
+
+    AddTest('FuncResByte(11)', '11', weCardinal( 2, #1, 1));
+    AddTest('FuncResWord(21)', '21', weCardinal( 2, #1, 2));
+    AddTest('FuncResInt(31)',  '31', weInteger(-2, #1, 4));
+//    AddTest('FuncResInt64(41)','41', weInteger(-2, #1, 8));
+
+    AddTest('FuncByte1(191)',   '191',  weInteger(3, #1, 4));
+    AddTest('FuncByte2(11,99)', '1199', weInteger(4, #1, 4));
+    AddTest('FuncByte12(1,2,3,4,5,6,7,8,9,11,99,0)', '12345678911990', weInteger(14, #1, 4));
+
+    AddTest('foo.FuncInt12(1,2,3,4,5,6,7,8,9,11,99,0)', '12345678911990201', weInteger(17, #1, 4));
+
+
+
+
+    //t.Add('FuncResByte(11)',  weInteger(2)).AddEvalFlag([defAllowFunctionCall]);
+    //t.Add('LastRes',     weAnsiStr('')).IgnTypeName;
+
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+  finally
+    Debugger.RunToNextPause(dcStop);
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+
 end;
 
 procedure TTestWatches.TestWatchesFunctionsWithString;
@@ -2216,6 +2289,21 @@ begin
       t.Add('bRecW2.a', weCardinal(52, #1, -1)).IgnTypeName.SkipEval.IgnKind;
       t.Add('bRecC2.a', weCardinal(53, #1, -1)).IgnTypeName.SkipEval.IgnKind;
       t.Add('bRecQ2.a', weCardinal(54, #1, -1)).IgnTypeName.SkipEval.IgnKind;
+
+
+      t.Add('Test2RecB2QQQB3(0, aRecB2, 1,2,3,4,5,6,7,8, bRecB3)', weCardinal(11)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB2QQQQ2(0, aRecB2, 1,2,3,4,5,6,7,8, bRecQ2)', weCardinal(11)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB3QQQB2(0, aRecB3, 1,2,3,4,5,6,7,8, bRecB2)', weCardinal(15)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB3QQQQ2(0, aRecB3, 1,2,3,4,5,6,7,8, bRecQ2)', weCardinal(15)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecQ2QQQB2(0, aRecQ2, 1,2,3,4,5,6,7,8, bRecB2)', weCardinal(14)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecQ2QQQB3(0, aRecQ2, 1,2,3,4,5,6,7,8, bRecB3)', weCardinal(14)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+
+      t.Add('Test2RecB2QQQB3(0, aRecB2, 11,2,3,4,5,6,7,8, bRecB3)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB2QQQQ2(0, aRecB2, 11,2,3,4,5,6,7,8, bRecQ2)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB3QQQB2(0, aRecB3, 11,2,3,4,5,6,7,8, bRecB2)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecB3QQQQ2(0, aRecB3, 11,2,3,4,5,6,7,8, bRecQ2)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecQ2QQQB2(0, aRecQ2, 11,2,3,4,5,6,7,8, bRecB2)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
+      t.Add('Test2RecQ2QQQB3(0, aRecQ2, 11,2,3,4,5,6,7,8, bRecB3)', weCardinal(8)).AddEvalFlag([defAllowFunctionCall]).IgnTypeName.SkipEval;
 
       t.EvalAndCheck;
 
@@ -4035,6 +4123,7 @@ initialization
   ControlTestWatchValue     := TestControlRegisterTest('Value', ControlTestWatch);
   ControlTestWatchIntrinsic := TestControlRegisterTest('Intrinsic', ControlTestWatch);
   ControlTestWatchFunct     := TestControlRegisterTest('Function', ControlTestWatch);
+  ControlTestWatchFunct2    := TestControlRegisterTest('Function2', ControlTestWatch);
   ControlTestWatchFunctStr  := TestControlRegisterTest('FunctionString', ControlTestWatch);
   ControlTestWatchFunctRec  := TestControlRegisterTest('FunctionRecord', ControlTestWatch);
   ControlTestWatchFunctVariant:= TestControlRegisterTest('FunctionSysVarToLstr', ControlTestWatch);

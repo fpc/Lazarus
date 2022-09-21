@@ -312,7 +312,7 @@ type
     (* InitializeCommand: set new command
        Not called if command is replaced by OnThreadProcessLoopCycleEvent  *)
     procedure InitializeCommand(ACommand: TDbgControllerCmd);
-    procedure AbortCurrentCommand;
+    procedure AbortCurrentCommand(AForce: Boolean = False); // AForce: either if in debug-thread, or if thread not needed
     function Run: boolean;
     procedure Stop;
     procedure &ContinueRun;
@@ -1595,8 +1595,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TDbgController.AbortCurrentCommand;
+procedure TDbgController.AbortCurrentCommand(AForce: Boolean);
 begin
+  if AForce then begin
+    FreeAndNil(FCommand);
+    exit;
+  end;
+
   if FCommand = nil then
     exit;
   assert(FCommandToBeFreed=nil, 'TDbgController.AbortCurrentCommand: FCommandToBeFreed=nil');

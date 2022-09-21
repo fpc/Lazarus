@@ -62,9 +62,10 @@ type
     FStringResultMem: TDBGPtr;
 
     function AllocStack(ASize: Integer): TDbgPtr;
+    function CreatePreparedStackLocation(ASize: Integer): TFpDbgMemLocation;
     function InternalCreateParamSymbol(ParameterMemLocation: TFpDbgMemLocation; ASymbolType: TFpSymbol; AName: String): TFpValue;
     function InternalCreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; AName: String): TFpValue; inline;
-    function AddRecordParam(var ParamSymbol: TFpValue; AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+    function AddRecordParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
     function InternalAddStringResult: Boolean;
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext;
@@ -172,8 +173,34 @@ begin
   Result := FDbgThread.GetStackPointerRegisterValue;
   if FOrigStackPtr = 0 then
     FOrigStackPtr := Result;
+
+  {$IF defined(WINDOWS)}
+  if FDbgProcess.Mode = dm64 then begin
+    ASize := (ASize + 32) and not(31); // keep aligned to 32 bytes
+  end
+  else
+  {$ENDIF}
+  ASize := (ASize + 8) and not(7); // keep aligned to 8 bytes
+
   dec(Result, ASize);
   FDbgThread.SetStackPointerRegisterValue(Result);
+end;
+
+function TFpDbgInfoCallContext.CreatePreparedStackLocation(ASize: Integer
+  ): TFpDbgMemLocation;
+var
+  l: SizeInt;
+begin
+  l := Length(FPreparedStack);
+  SetLength(FPreparedStack, l + ASize);
+
+  if FDbgProcess.Mode = dm32 then begin
+    if l > 0 then
+      move(FPreparedStack[0], FPreparedStack[ASize], SizeOf(FPreparedStack[0]) * l);
+    l := 0;
+  end;
+
+  Result := SelfLoc(@FPreparedStack[l]);
 end;
 
 function TFpDbgInfoCallContext.InternalCreateParamSymbol(
@@ -198,13 +225,17 @@ end;
 
 function TFpDbgInfoCallContext.InternalCreateParamSymbol(AParamIndex: Integer;
   ASymbolType: TFpSymbol; AName: String): TFpValue;
+var
+  Loc: TFpDbgMemLocation;
 begin
-  Result := InternalCreateParamSymbol(FDbgProcess.CallParamDefaultLocation(AParamIndex),
-    ASymbolType, AName);
+  Loc := FDbgProcess.CallParamDefaultLocation(AParamIndex);
+  if not IsValidLoc(Loc) then
+    Loc := CreatePreparedStackLocation(SizeOfAddress);
+  Result := InternalCreateParamSymbol(Loc, ASymbolType, AName);
 end;
 
-function TFpDbgInfoCallContext.AddRecordParam(var ParamSymbol: TFpValue;
-  AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+function TFpDbgInfoCallContext.AddRecordParam(AParamSymbolType: TFpSymbol;
+  AValue: TFpValue): Boolean;
 // Only intel/amd
   function ReadRecFromMem(Addr: TDbgPtr; sz: Integer; out Data: QWord): Boolean;
   var
@@ -251,6 +282,17 @@ function TFpDbgInfoCallContext.AddRecordParam(var ParamSymbol: TFpValue;
   end;
 
 var
+  ParamSymbol: TFpValue;
+
+  procedure InitParamSymbol;
+  begin
+    ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
+    inc(FNextParamRegister);
+    if Length(FPreparedStack) > 0 then
+      MemManager.SetWritableSeflMem(TDBGPtr(@FPreparedStack[0]), Length(FPreparedStack));
+  end;
+
+var
   {$If defined(UNIX)}
   i: Integer;
   {$ENDIF}
@@ -259,97 +301,115 @@ var
   RecAddr, RecData: TDBGPtr;
   l: SizeInt;
 begin
-  RecSize := SizeToFullBytes(AValue.DataSize);
-  Result := not IsError(AValue.LastError);
-  if Result then begin
-    RecLoc := AValue.Address;
-    Result := IsValidLoc(RecLoc);
-    RecAddr := RecLoc.Address;
-  end;
-  if not Result then begin
-    FLastError := AValue.LastError;
-    exit;
-  end;
-
-  {$IF defined(WINDOWS)}
-  if FDbgProcess.Mode = dm32 then begin
-    if (RecSize <= FDbgProcess.PointerSize) then begin
-      Result := ReadRecFromMem(RecAddr, RecSize, RecData);
-      if not Result then
-        exit;
-
-      l := Length(FPreparedStack);
-      SetLength(FPreparedStack, l + 4);
-      if l > 0 then
-        move(FPreparedStack[0], FPreparedStack[4], SizeOf(FPreparedStack[0]) * l);
-      PDWord(@FPreparedStack[0])^ := RecData;
-
-      dec(FNextParamRegister); // no register used
+  ParamSymbol := nil;
+  try
+    RecSize := SizeToFullBytes(AValue.DataSize);
+    Result := not IsError(AValue.LastError);
+    if Result then begin
+      RecLoc := AValue.Address;
+      Result := IsValidLoc(RecLoc);
+      RecAddr := RecLoc.Address;
+    end;
+    if not Result then begin
+      FLastError := AValue.LastError;
       exit;
     end;
 
-    ParamSymbol.AsCardinal := RecAddr;
-    Result := not IsError(ParamSymbol.LastError);
-    FLastError := ParamSymbol.LastError;
-  end
-  else begin
-    if (RecSize <= FDbgProcess.PointerSize) and (RecSize in [2,4,8]) then begin
-      Result := ReadRecFromMem(RecAddr, RecSize, RecData);
-      RecAddr := RecData;
-    end;
-
-    if Result then begin
-      ParamSymbol.AsCardinal := RecAddr;
-      Result := not IsError(ParamSymbol.LastError);
-      FLastError := ParamSymbol.LastError;
-    end;
-  end;
-  {$ElseIf defined(UNIX)}
-  if FDbgProcess.Mode = dm64 then begin
-    if (RecSize <= 16) and not HasUnalignedFields then begin
-      // Use 1 or 2 registers
-      While RecSize > 0 do begin
-        Result := ReadRecFromMem(RecAddr, Min(8, RecSize), RecData);
+    {$IF defined(WINDOWS)}
+    if FDbgProcess.Mode = dm32 then begin
+      if (RecSize <= FDbgProcess.PointerSize) then begin
+        Result := ReadRecFromMem(RecAddr, RecSize, RecData);
         if not Result then
           exit;
 
-        ParamSymbol.AsCardinal := RecData;
+        l := Length(FPreparedStack);
+        SetLength(FPreparedStack, l + 4);
+        if l > 0 then
+          move(FPreparedStack[0], FPreparedStack[4], SizeOf(FPreparedStack[0]) * l);
+        PDWord(@FPreparedStack[0])^ := RecData;
+
+        exit;
+      end;
+
+      InitParamSymbol;
+      ParamSymbol.AsCardinal := RecAddr;
+      Result := not IsError(ParamSymbol.LastError);
+      FLastError := ParamSymbol.LastError;
+    end
+    else begin
+      InitParamSymbol;
+      if (RecSize <= FDbgProcess.PointerSize) and (RecSize in [2,4,8]) then begin
+        Result := ReadRecFromMem(RecAddr, RecSize, RecData);
+        RecAddr := RecData;
+      end;
+
+      if Result then begin
+        ParamSymbol.AsCardinal := RecAddr;
         Result := not IsError(ParamSymbol.LastError);
-        if not result then begin
-          FLastError := ParamSymbol.LastError;
-          exit;
-        end;
-        dec(RecSize, 8);
-        inc(RecAddr, 8);
-        if RecSize > 0 then begin
-          inc(FNextParamRegister);
+        FLastError := ParamSymbol.LastError;
+      end;
+    end;
+    {$ElseIf defined(UNIX)}
+    if FDbgProcess.Mode = dm64 then begin
+      if (RecSize <= 16) and not HasUnalignedFields then begin
+        // Use 1 or 2 registers
+        While RecSize > 0 do begin
           ParamSymbol.ReleaseReference;
-          ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
+          InitParamSymbol;
+          Result := ReadRecFromMem(RecAddr, Min(8, RecSize), RecData);
+          if not Result then
+            exit;
+
+          ParamSymbol.AsCardinal := RecData;
+          Result := not IsError(ParamSymbol.LastError);
+          if not result then begin
+            FLastError := ParamSymbol.LastError;
+            exit;
+          end;
+          dec(RecSize, 8);
+          inc(RecAddr, 8);
+        end;
+      end
+      else begin
+        // on the stack
+        i := (RecSize+7) and $FFFFFFF8;
+        l := Length(FPreparedStack);
+        SetLength(FPreparedStack, l + i);
+        Result := FDbgProcess.ReadData(RecAddr, RecSize, FPreparedStack[l]);
+        if not Result then begin
+          FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
+          exit;
         end;
       end;
     end
     else begin
-      // on the stack
-      dec(FNextParamRegister); // no register used
-      i := (RecSize+7) and $FFFFFFF8;
-      l := Length(FPreparedStack);
-      SetLength(FPreparedStack, l + i);
-      Result := FDbgProcess.ReadData(RecAddr, RecSize, FPreparedStack[l]);
-      if not Result then begin
-        FLastError := CreateError(fpErrAnyError, ['failed to read mem']);
-        exit;
-      end;
+      // 32bit linux
+        if (RecSize <= 4) then begin
+          Result := ReadRecFromMem(RecAddr, 4, RecData);
+          if not Result then
+            exit;
+
+          l := Length(FPreparedStack);
+          SetLength(FPreparedStack, l + 4);
+          if l > 0 then
+            move(FPreparedStack[0], FPreparedStack[4], SizeOf(FPreparedStack[0]) * l);
+          PDWord(@FPreparedStack[0])^ := RecData;
+        end
+        else begin
+          InitParamSymbol;
+          ParamSymbol.AsCardinal := RecAddr;
+          Result := not IsError(ParamSymbol.LastError);
+          FLastError := ParamSymbol.LastError;
+        end;
     end;
-  end
-  else begin
-    // 32bit linux
-    Result := False;
-    FLastError := CreateError(fpErrAnyError, ['record as parm are not supported']);
+    {$Else}
+      Result := False;
+      FLastError := CreateError(fpErrAnyError, ['record as param are not supported']);
+    {$ENDIF}
+  finally
+    ParamSymbol.ReleaseReference;
+    MemManager.ClearWritableSeflMem;
   end;
-  {$Else}
-    Result := False;
-    FLastError := CreateError(fpErrAnyError, ['record as param are not supported']);
-  {$ENDIF}
 end;
 
 function TFpDbgInfoCallContext.InternalAddStringResult: Boolean;
@@ -402,7 +462,15 @@ begin
   if Length(FPreparedStack) = 0 then
     exit;
 
+  {$IF defined(WINDOWS)}
+  if FDbgProcess.Mode = dm64 then begin
+    m := AllocStack(Length(FPreparedStack)+32) + 32;
+  end
+
+  else
+  {$ENDIF}
   m := AllocStack(Length(FPreparedStack));
+
   Result := FDbgProcess.WriteData(m, Length(FPreparedStack), FPreparedStack[0]);
   if not Result then
     FLastError := CreateError(fpErrAnyError, ['failed to write call info to stack memory']);
@@ -420,20 +488,25 @@ function TFpDbgInfoCallContext.AddParam(AParamSymbolType: TFpSymbol; AValue: TFp
 var
   ParamSymbol: TFpValue;
 begin
+  if AValue.Kind = skRecord then begin
+    Result := AddRecordParam(AParamSymbolType, AValue);
+    exit;
+  end;
+
   Result := False;
   ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
   Result := ParamSymbol <> nil;
   if not Result then
     exit;
   try
-    if AValue.Kind = skRecord then
-      Result := AddRecordParam(ParamSymbol, AParamSymbolType, AValue)
-    else
-      ParamSymbol.AsCardinal := AValue.AsCardinal;
+    if Length(FPreparedStack) > 0 then
+      MemManager.SetWritableSeflMem(TDBGPtr(@FPreparedStack[0]), Length(FPreparedStack));
+    ParamSymbol.AsCardinal := AValue.AsCardinal;
     Result := not IsError(ParamSymbol.LastError);
     FLastError := ParamSymbol.LastError;
   finally
     ParamSymbol.ReleaseReference;
+    MemManager.ClearWritableSeflMem;
   end;
   inc(FNextParamRegister);
 end;
@@ -442,6 +515,7 @@ function TFpDbgInfoCallContext.AddOrdinalParam(AParamSymbolType: TFpSymbol; AVal
 var
   ParamSymbol: TFpValue;
 begin
+debugln(['TFpDbgInfoCallContext.AddOrdinalParam ',FNextParamRegister]);
   Result := False;
   if AParamSymbolType = nil then
     AParamSymbolType := TFpSymbolCallParamOrdinalOrPointer.Create('', 0)

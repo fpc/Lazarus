@@ -407,6 +407,8 @@ type
     FTmpMem: array[0..(TMP_MEM_SIZE div 8)+1] of qword; // MUST have at least ONE extra byte
     FTargetMemConvertor: TFpDbgMemConvertor;
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
+    FStartWirteableSelfMem: TDBGPtr;
+    FLenWirteableSelfMem: Cardinal;
     function GetCacheManager: TFpDbgMemCacheManagerBase;
     procedure BitShiftMem(ASrcMem, ADestMem: Pointer; ASrcSize, ADestSize: cardinal; ABitCnt: Integer);
   protected
@@ -432,6 +434,9 @@ type
     constructor Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor, ASelfMemConvertor: TFpDbgMemConvertor);
     destructor Destroy; override;
     procedure ClearLastError;
+
+    procedure SetWritableSeflMem(AStartWirteableSelfMem: TDBGPtr; ALenWirteableSelfMem: Cardinal);
+    procedure ClearWritableSeflMem;
 
     function RegisterSize(ARegNum: Cardinal): Integer; // This is not context dependent
     function RegisterNumber(ARegName: String; out ARegNum: Cardinal): Boolean;
@@ -1769,6 +1774,21 @@ begin
           FMemReader.WriteMemory(LocToAddr(ADestLocation), SizeToFullBytes(ADestSize), ASource);
         end;
       end;
+    mlfSelfMem:
+      begin
+        DestWriteSize := ADestSize.Size;
+        if (BitOffset = 0) and (ADestSize.BitSize = 0) and
+           (DestWriteSize > 0) and
+           (FStartWirteableSelfMem <> 0) and
+           (ADestLocation.Address >= FStartWirteableSelfMem) and
+           (ADestLocation.Address + DestWriteSize <= FStartWirteableSelfMem + FLenWirteableSelfMem)
+        then begin
+          if ASourceSize < DestWriteSize then
+            DestWriteSize := ASourceSize;
+          move(ASource^, Pointer(PtrUint(ADestLocation.Address))^, ADestSize.Size);
+          Result := True;
+        end;
+      end;
   end;
 
   if (not Result) and (not IsError(FLastError)) then
@@ -1814,6 +1834,19 @@ end;
 procedure TFpDbgMemManager.ClearLastError;
 begin
   FLastError := NoError;
+end;
+
+procedure TFpDbgMemManager.SetWritableSeflMem(AStartWirteableSelfMem: TDBGPtr;
+  ALenWirteableSelfMem: Cardinal);
+begin
+  FStartWirteableSelfMem := AStartWirteableSelfMem;
+  FLenWirteableSelfMem := ALenWirteableSelfMem;
+end;
+
+procedure TFpDbgMemManager.ClearWritableSeflMem;
+begin
+  FStartWirteableSelfMem := 0;
+  FLenWirteableSelfMem := 0;
 end;
 
 function TFpDbgMemManager.RegisterSize(ARegNum: Cardinal): Integer;

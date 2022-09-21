@@ -318,7 +318,7 @@ begin
     end;
 
 
-    AnFpDebugger.DbgController.AbortCurrentCommand;
+    AnFpDebugger.DbgController.AbortCurrentCommand(True);
     CallContext.ReleaseReference;
 
     Result := TFpValueConstString.Create(JsonText);

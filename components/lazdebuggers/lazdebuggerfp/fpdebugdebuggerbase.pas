@@ -173,7 +173,7 @@ begin
     BeforeWatchEval(CallContext);
     RunProcessLoop(True);
   finally
-    DbgController.AbortCurrentCommand;
+    DbgController.AbortCurrentCommand(True);
     CallContext.ReleaseReference;
   end;
 end;
@@ -211,7 +211,7 @@ begin
 
     Result := DbgController.CurrentProcess.ReadAddress(AParamAddr, AStringDataAddr);
   finally
-    DbgController.AbortCurrentCommand;
+    DbgController.AbortCurrentCommand(True);
     CallContext.ReleaseReference;
   end;
 end;

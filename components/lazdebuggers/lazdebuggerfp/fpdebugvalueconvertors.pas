@@ -399,7 +399,7 @@ begin
         Result := Fnd;
 
     finally
-      AnFpDebugger.DbgController.AbortCurrentCommand;
+      AnFpDebugger.DbgController.AbortCurrentCommand(True);
       CallContext.ReleaseReference;
       AnFpDebugger.DbgController.CurrentThread.RestoreStackMem;
     end;
@@ -533,7 +533,7 @@ begin
 
       Result := NewResult;
     finally
-      AnFpDebugger.DbgController.AbortCurrentCommand;
+      AnFpDebugger.DbgController.AbortCurrentCommand(True);
       CallContext.ReleaseReference;
 
       AnFpDebugger.CallTargetFuncStringDecRef(StringDecRefAddress, StringAddr, AnExpressionScope.LocationContext);

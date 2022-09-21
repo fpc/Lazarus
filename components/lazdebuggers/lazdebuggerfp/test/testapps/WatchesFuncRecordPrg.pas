@@ -132,6 +132,13 @@ function Test2RecB3Q2(i: byte; AVal: TRecB3; BVal: TRecQ2): Cardinal;  begin  if
 function Test2RecQ2B2(i: byte; AVal: TRecQ2; BVal: TRecB2): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0;  end;
 function Test2RecQ2B3(i: byte; AVal: TRecQ2; BVal: TRecB3): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0;  end;
 
+function Test2RecB2QQQB3(i: byte; AVal: TRecB2; m,n,o,p,q,r,s,t: Integer; BVal: TRecB3): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+function Test2RecB2QQQQ2(i: byte; AVal: TRecB2; m,n,o,p,q,r,s,t: Integer; BVal: TRecQ2): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+function Test2RecB3QQQB2(i: byte; AVal: TRecB3; m,n,o,p,q,r,s,t: Integer; BVal: TRecB2): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+function Test2RecB3QQQQ2(i: byte; AVal: TRecB3; m,n,o,p,q,r,s,t: Integer; BVal: TRecQ2): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+function Test2RecQ2QQQB2(i: byte; AVal: TRecQ2; m,n,o,p,q,r,s,t: Integer; BVal: TRecB2): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+function Test2RecQ2QQQB3(i: byte; AVal: TRecQ2; m,n,o,p,q,r,s,t: Integer; BVal: TRecB3): Cardinal;  begin  if i=0 then Result := AVal.a else Result := BVal.a; AVal.a:=0; if (m<>1) or (t<>8) then result := t;  end;
+
 
 function Test2RecQ3Q3(i: byte; AVal, BVal: TRecQ3): Cardinal;
 begin
@@ -327,6 +334,13 @@ Test2RecQ4Q4(1, aRecQ4, bRecQ4);
 Test2RecQ5Q5(1, aRecQ5, bRecQ5);
 Test2RecQ6Q6(1, aRecQ6, bRecQ6);
 Test2RecQ7Q7(1, aRecQ7, bRecQ7);
+
+Test2RecB2QQQB3(1, aRecB2, 1,2,3,4,5,6,7,8, bRecB3);
+Test2RecB2QQQQ2(1, aRecB2, 1,2,3,4,5,6,7,8, bRecQ2);
+Test2RecB3QQQB2(1, aRecB3, 1,2,3,4,5,6,7,8, bRecB2);
+Test2RecB3QQQQ2(1, aRecB3, 1,2,3,4,5,6,7,8, bRecQ2);
+Test2RecQ2QQQB2(1, aRecQ2, 1,2,3,4,5,6,7,8, bRecB2);
+Test2RecQ2QQQB3(1, aRecQ2, 1,2,3,4,5,6,7,8, bRecB3);
 
 
 end.

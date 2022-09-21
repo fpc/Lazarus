@@ -982,11 +982,11 @@ begin
           ParameterSymbolArr[FoundIdx].ParamVal := ExprParamVal;
           ParameterSymbolArr[FoundIdx].TypeSym  := TempSymbol;
         end;
-        if not IsTargetOrRegNotNil(FDebugger.DbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
-          DebugLn('error to many args / not supported / arg > %d ', [FoundIdx]);
-          AnError := CreateError(fpErrAnyError, ['too many parameter / not supported']);
-          exit;
-        end;
+        //if not IsTargetOrRegNotNil(FDebugger.DbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
+        //  DebugLn('error to many args / not supported / arg > %d ', [FoundIdx]);
+        //  AnError := CreateError(fpErrAnyError, ['too many parameter / not supported']);
+        //  exit;
+        //end;
         inc(FoundIdx)
       end;
     end;
@@ -1075,7 +1075,7 @@ begin
       end;
       Result := AResult <> nil;
     finally
-      FDebugger.DbgController.AbortCurrentCommand;
+      FDebugger.DbgController.AbortCurrentCommand(True);
       CallContext.ReleaseReference;
     end;
 
