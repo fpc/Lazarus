@@ -189,6 +189,8 @@ type
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
     procedure OnHintWatchValidityChanged(Sender: TObject);
+    procedure DlgDebugInfoHelpRequested(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean);
+
   public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -7238,7 +7240,9 @@ var
   DebugClass: TDebuggerClass;
   ARunMode: TRunParamsOptionsMode;
   ReqOpts: TDebugCompilerRequirements;
-  Handled: Boolean;
+  Handled, SkipDebuggerThisTime: Boolean;
+  DlgResult: TModalResult;
+  ChangeDebugInfoFormatDialog: TTaskDialog;
 begin
   if ToolStatus <> itNone
   then begin
@@ -7274,6 +7278,7 @@ begin
   end;
 
   DebugClass:=DebugBoss.DebuggerClass;
+  SkipDebuggerThisTime := False;
 
   if DebugClass <> nil then begin
     ReqOpts := DebugBoss.RequiredCompilerOpts(Project1.CompilerOptions.TargetCPU, Project1.CompilerOptions.TargetOS);
@@ -7308,20 +7313,68 @@ begin
     and (not (Project1.CompilerOptions.DebugInfoType in [dsDwarf2, dsDwarf2Set, dsDwarf3])) then
     begin
       // this debugger does ONLY support external debug symbols
-      case IDEQuestionDialog(lisEnableOptionDwarf,
-          Format(lisTheProjectDoesNotUseDwarf, [DebugClass.Caption]),
-          mtConfirmation, [1 {mrOk}, lisEnableOptionDwarf2Sets,
-                           12, lisEnableOptionDwarf2,
-                           13, lisEnableOptionDwarf3,
-                           mrCancel])
-      of
-        1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
-        12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
-        13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
-        else
-          exit;
+      ChangeDebugInfoFormatDialog := TTaskDialog.Create(Self);
+      try
+
+        ChangeDebugInfoFormatDialog.Flags := [tfAllowDialogCancellation];
+        ChangeDebugInfoFormatDialog.Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_Caption;
+        ChangeDebugInfoFormatDialog.Title := lisTheProjectDoesNotUseDwarf_TaskDlg_Title;
+        ChangeDebugInfoFormatDialog.Text := Format(
+            lisTheProjectDoesNotUseDwarf_TaskDlg_TextExplain, [DebugClass.Caption]);
+        ChangeDebugInfoFormatDialog.FooterText := lisTheProjectDoesNotUseDwarf_TaskDlg_Footer;
+        ChangeDebugInfoFormatDialog.FooterIcon := tdiInformation;
+        ChangeDebugInfoFormatDialog.MainIcon := tdiWarning;
+
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 1;
+          Default := True;
+          Caption := lisEnableOptionDwarf2Sets;
+        end;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 12;
+          Caption := lisEnableOptionDwarf2;
+        end;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 13;
+          Caption := lisEnableOptionDwarf3;
+        end;
+
+        with ChangeDebugInfoFormatDialog.Buttons.Add do begin
+          ModalResult := 500;
+          Caption := lisHelp;
+        end;
+        with ChangeDebugInfoFormatDialog.Buttons.Add do begin
+          ModalResult := 400;
+          Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Caption;
+        end;
+
+        ChangeDebugInfoFormatDialog.OnButtonClicked := @DlgDebugInfoHelpRequested;
+
+        if not ChangeDebugInfoFormatDialog.Execute() then
+           exit;
+        DlgResult := ChangeDebugInfoFormatDialog.ModalResult;
+        if (DlgResult = mrOK) and (nil <> ChangeDebugInfoFormatDialog.RadioButton) then
+           DlgResult := ChangeDebugInfoFormatDialog.RadioButton.ModalResult;
+        case DlgResult
+        of
+          1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
+          12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
+          13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
+          400: SkipDebuggerThisTime := True;
+          else
+            exit;
+        end;
+      finally
+        ChangeDebugInfoFormatDialog.free
       end;
     end;
+  end;
+
+  if SkipDebuggerThisTime then begin
+     Result := DoRunProjectWithoutDebug;
+     if Result = mrOK then
+        Result := mrCancel;
+     Exit;
   end;
 
   // Build project first
@@ -7356,6 +7409,17 @@ begin
     debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] Success']);
   Result := mrOK;
   ToolStatus := itDebugger;
+end;
+
+procedure TMainIDE.DlgDebugInfoHelpRequested(Sender: TObject;
+  AModalResult: TModalResult; var ACanClose: Boolean);
+begin
+  // pevent HELP pushbutton from closing the dialog, others should close
+  if AModalResult = 500 then begin
+     ACanClose := False;
+     ShowHelpOrError('https://wiki.lazarus.freepascal.org/DWARF',
+        'Help for debug info selection','text/html');
+  end;
 end;
 
 function TMainIDE.DoRunProject: TModalResult;
