@@ -716,7 +716,7 @@ begin
       result.Font.Style := [fsBold]
     end else begin
       result.Font.Height := FontHeight-4;
-      result.Font.Color := $B00000;
+      result.Font.Color := clHighlight;
     end;
   end else
     result.Font.Height := FontHeight;
@@ -872,7 +872,7 @@ begin
     Panel.BorderStyle := bsNone;
     Panel.BevelOuter := bvNone;
     if not aEmulateClassicStyle then begin
-      Panel.Color := clWhite;
+      Panel.Color := clWindow;
     end;
     Par := Panel;
     // handle main dialog icon
