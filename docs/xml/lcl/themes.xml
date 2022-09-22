@@ -22,7 +22,7 @@ APIs and to ease painting of themed window content.
 The TThemeServices class is designed to work for controls which need XP-like 
 painting. It does not manipulate any VCL class (for this task TThemeManager 
 is responsible) and can be used standalone (also as general support tool in 
-an application). Using the global ThemeServices function you can implicitely 
+an application). Using the global ThemeServices function you can implicitly 
 create and use a single instance of the class. Theme Manager uses the same 
 approach.
 </p>
