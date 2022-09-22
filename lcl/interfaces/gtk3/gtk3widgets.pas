@@ -637,6 +637,7 @@ type
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
   public
+    procedure UpdateWidgetConstraints;override;
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
   end;
 
@@ -3378,6 +3379,13 @@ begin
   FText := AValue;
   if Self.Visible then
     FWidget^.queue_draw;
+end;
+
+procedure TGtk3Panel.UpdateWidgetConstraints;
+begin
+  inherited UpdateWidgetConstraints;
+  LCLObject.Constraints.MinWidth:=0;
+  //writeln('MinHeight=',LCLObject.Constraints.MinHeight);
 end;
 
 { TGtk3GroupBox }
