@@ -766,7 +766,7 @@ PageSize contains the size for the proportionally-sized slider for the
 control.
 </p>
 <p>
-PageSize is used in the CreateWnd method when the inital scrollbar 
+PageSize is used in the CreateWnd method when the initial scrollbar 
 information is assigned for the control. It is also one of the arguments 
 passed to the SetParams method to update the scrollbar information in the 
 widgetset class instance.
