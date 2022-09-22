@@ -624,6 +624,7 @@ type
     procedure SetReplacingControl(Control: TControl); virtual;
     function AutoFreeByControl: Boolean; virtual;
     function IsEnabledControl(Control: TControl):Boolean; virtual;
+    function CanBeDoubleDocked:Boolean; virtual;
   end;
 
   TDockManagerClass = class of TDockManager;
@@ -4636,6 +4637,11 @@ end;
 procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage);
 begin
 
+end;
+
+function TDockManager.CanBeDoubleDocked:Boolean;
+begin
+  result:=true;
 end;
 
 function TDockManager.IsEnabledControl(Control: TControl):Boolean;
