@@ -4461,6 +4461,8 @@ begin
   OldControl:=GetOneControl;
   OldSite:=MakeSite(OldControl);
   AddCleanControl(OldSite);
+  if not(OldControl is TAnchorDockHostSite) then
+    OldSite.Header.FHeaderPosition:=Header.FHeaderPosition;
   OldSite.AnchorClient(0);
   // the LCL will compute the bounds later after EnableAutoSizing
   // but the bounds are needed now => set them manually
@@ -5185,6 +5187,7 @@ begin
 
     // header
     Header.Align:=Site.Header.Align;
+    Header.HeaderPosition:=Site.Header.HeaderPosition;
     Header.Caption:=Site.Header.Caption;
     UpdateHeaderShowing;
     Caption:=Site.Caption;
