@@ -846,7 +846,7 @@ paper size. Otherwise, the existing value in the property is used.
 Changes to the property value are not applied to the Printer device.
 </p>
 <p>
-Use <var>Topargin</var> for the unused area at the top edge of the canvas. 
+Use <var>TopMargin</var> for the unused area at the top edge of the canvas. 
 Values in TopMargin, BottomMargin, and <var>PaperHeight</var> are used to 
 calculate the <var>PageHeight</var> for the printer canvas.
 </p>
