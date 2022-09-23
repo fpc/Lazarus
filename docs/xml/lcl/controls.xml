@@ -2335,7 +2335,7 @@ has ended.
 <short>Contains the mouse position for the drag image.</short>
 <descr>
 DragHotspot is a TPoint property which contains the mouse position for the 
-Drag hostspot. The value in DragHotspot is updated when TDragImageList sets 
+Drag hotspot. The value in DragHotspot is updated when TDragImageList sets 
 the image used for the resolution, and in the BeginDrag method.
 </descr>
 <seealso/>
@@ -2405,7 +2405,7 @@ location.</li>
 </element>
 
 <element name="TDragImageList.GetDragHotSpot">
-<short>Gets the value for the DragHostSpot property.</short>
+<short>Gets the value for the DragHotSpot property.</short>
 <descr/>
 <seealso>
 <link id="TDragImageList.DragHotSpot"/>
@@ -2413,18 +2413,18 @@ location.</li>
 </seealso>
 </element>
 <element name="TDragImageList.GetDragHotSpot.Result">
-<short>Value for the DragHostSpot property.</short>
+<short>Value for the DragHotSpot property.</short>
 </element>
 
 <element name="TDragImageList.SetDragHotspot">
-<short>Sets the value for the DragHostSpot property.</short>
+<short>Sets the value for the DragHotSpot property.</short>
 <descr/>
 <seealso>
 <link id="TDragImageList.DragHotSpot"/>
 </seealso>
 </element>
 <element name="TDragImageList.SetDragHotspot.ADragHotSpot">
-<short>New value for the DragHostSpot property.</short>
+<short>New value for the DragHotSpot property.</short>
 </element>
 
 <element name="TDragImageList.WSRegisterClass"  link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
@@ -13143,7 +13143,7 @@ classes.
 <p>
 The return value is <b>True</b> when a value has been assigned to Parent, and 
 its FormIsUpdating method returns <b>True</b>. This causes all assigned 
-Parent controls in the hierachy to be examined to determine the return value.
+Parent controls in the hierarchy to be examined to determine the return value.
 </p>
 <p>
 Eventually, one of the Parent controls will be the TCustomForm instance which 
@@ -15292,7 +15292,7 @@ bidrectional text on the control.
 
 <element name="TControl.AnchorSideLeft">
 <short>
-Contains anchor aligment information used to position the control with its 
+Contains anchor alignment information used to position the control with its 
 left edge anchored to another control.
 </short>
 <descr>
@@ -15314,7 +15314,7 @@ the position in akLeft.
 
 <element name="TControl.AnchorSideTop">
 <short>
-Contains anchor aligment information used to position the control with its 
+Contains anchor alignment information used to position the control with its 
 top edge anchored to another control.
 </short>
 <descr>
@@ -15336,7 +15336,7 @@ the position in akTop.
 
 <element name="TControl.AnchorSideRight">
 <short>
-Contains anchor aligment information used to position the control with its 
+Contains anchor alignment information used to position the control with its 
 right edge anchored to another control.
 </short>
 <descr>
@@ -15358,7 +15358,7 @@ the position in akRight.
 
 <element name="TControl.AnchorSideBottom">
 <short>
-Contains anchor aligment information used to position the control with its 
+Contains anchor alignment information used to position the control with its 
 bottom edge anchored to another control.
 </short>
 <descr>
@@ -15799,7 +15799,7 @@ B.Width=30, C.Width=55 (35+30+55=120).
 <descr>
 <p>
 Enlarge space between children equally. Children are resized to their 
-normal/adviced size. If there is some space left in the client area of the 
+normal/advised size. If there is some space left in the client area of the 
 parent, then the space between the children is expanded.
 </p>
 <p>
@@ -23893,7 +23893,7 @@ TRect instance with the unused client area in a control.
 </element>
 <element name="AdjustBorderSpace.CurBorderSpace">
 <short>
-TRect instance with the space reservers for borders on the corresponding 
+TRect instance with the space reserved for borders on the corresponding 
 edges of a control.
 </short>
 </element>
@@ -24012,7 +24012,7 @@ Flips the value Alignment to reflect the value needed for BiDi mode.
 <seealso/>
 </element>
 <element name="ChangeBiDiModeAlignment.Alignment">
-<short>TAligment value updated in the method.</short>
+<short>TAlignment value updated in the method.</short>
 </element>
 
 <element name="DbgS">
