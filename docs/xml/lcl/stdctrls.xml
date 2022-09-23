@@ -9358,7 +9358,7 @@ Applications should use TEdit for a single line edit control.
 <var>TStaticBorderStyle</var> is an enumerated type with values that 
 represents border styles used for static text controls. TStaticBorderStyle is 
 the type used for the <var>BorderStyle</var> property in 
-<var>TCustomStaticText</var> and decendants.
+<var>TCustomStaticText</var> and descendants.
 </p>
 </descr>
 <seealso>
