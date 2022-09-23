@@ -16478,7 +16478,7 @@ Minimum width allowed for the image when read using an FCL image reader.
 <descr>
 <p>
 <var>Scale</var> is a <var>TJPEGScale</var> property which contains one of 
-the prefined scaling values applied to the raw image data. For instance:
+the predefined scaling values applied to the raw image data. For instance:
 </p>
 <dl>
 <dt>jsFullSize</dt>
