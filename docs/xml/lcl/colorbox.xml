@@ -307,7 +307,7 @@ The item rectangle is made smaller and passed to the inherited method to draw
 the text for the item.
 </p>
 <p>
-The Brush color and Pen color for the control Canavas are reset to their 
+The Brush color and Pen color for the control Canvas are reset to their 
 original values after drawing the item.
 </p>
 </descr>
@@ -1155,7 +1155,7 @@ The item rectangle is made smaller and passed to the inherited method to draw
 the text for the item.
 </p>
 <p>
-The Brush color and Pen color for the control Canavas are reset to their 
+The Brush color and Pen color for the control Canvas are reset to their 
 original values after drawing the item.
 </p>
 </descr>
