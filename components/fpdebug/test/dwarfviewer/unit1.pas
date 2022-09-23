@@ -473,8 +473,11 @@ var
         DW_OP_lo_user..DW_OP_hi_user: begin
           Result := Result + 'DW_OP_user, ' + IntToStr(AData^);
         end;
-      else
+      else begin
         Result := Result + 'Unknown DW_OP_' + IntToStr(AData^);
+        result := Result + ' RemainCnt:' + IntToStr(MaxData - AData);
+        break;
+      end
       end;
       Inc(AData);
       //Result := Result +' / ';
