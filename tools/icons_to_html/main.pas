@@ -293,7 +293,7 @@ begin
           LineStr := '';
           for isl := StartIdx to i do
             if IcoSizeList[isl] = PixSizeList[ips] then
-              LineStr := '    <td><img src="' + IcoFileList.Strings[isl] + '.png" alt=""></td>';
+              LineStr := '    <td><img src="' + IcoFileList.Strings[isl] + '.png" loading="lazy" alt=""></td>';
           if LineStr > '' then
             SynEdit.Lines.Add(LineStr)
           else

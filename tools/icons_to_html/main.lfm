@@ -11,6 +11,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
+  LCLVersion = '2.3.0.0'
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = sbtnLastDirs
