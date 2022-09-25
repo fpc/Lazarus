@@ -43,6 +43,7 @@ type
     constructor Create(const AName: String;
                        const AAddress: TFpDbgMemLocation;
                        ATypeSymbol: TFpSymbol); overload;
+    property NewAddress: TFpDbgMemLocation write SetAddress;
   end;
 
   { TFpDbgInfoCallContext }
@@ -63,6 +64,7 @@ type
 
     function AllocStack(ASize: Integer): TDbgPtr;
     function CreatePreparedStackLocation(ASize: Integer): TFpDbgMemLocation;
+    function InternalGetLocation(AParamIndex: Integer; ASize: Integer = 0): TFpDbgMemLocation;
     function InternalCreateParamSymbol(ParameterMemLocation: TFpDbgMemLocation; ASymbolType: TFpSymbol; AName: String): TFpValue;
     function InternalCreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; AName: String): TFpValue; inline;
     function AddRecordParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
@@ -203,6 +205,23 @@ begin
   Result := SelfLoc(@FPreparedStack[l]);
 end;
 
+function TFpDbgInfoCallContext.InternalGetLocation(AParamIndex: Integer;
+  ASize: Integer): TFpDbgMemLocation;
+begin
+  if (FDbgProcess.Mode = dm32) and (ASize = 8) then begin
+    Result := CreatePreparedStackLocation(ASize);
+    exit;
+  end;
+
+  Result := FDbgProcess.CallParamDefaultLocation(AParamIndex);
+  if IsValidLoc(Result) then
+    exit;
+
+  if ASize = 0 then
+    ASize := SizeOfAddress;
+  Result := CreatePreparedStackLocation(ASize);
+end;
+
 function TFpDbgInfoCallContext.InternalCreateParamSymbol(
   ParameterMemLocation: TFpDbgMemLocation; ASymbolType: TFpSymbol; AName: String
   ): TFpValue;
@@ -225,13 +244,8 @@ end;
 
 function TFpDbgInfoCallContext.InternalCreateParamSymbol(AParamIndex: Integer;
   ASymbolType: TFpSymbol; AName: String): TFpValue;
-var
-  Loc: TFpDbgMemLocation;
 begin
-  Loc := FDbgProcess.CallParamDefaultLocation(AParamIndex);
-  if not IsValidLoc(Loc) then
-    Loc := CreatePreparedStackLocation(SizeOfAddress);
-  Result := InternalCreateParamSymbol(Loc, ASymbolType, AName);
+  Result := InternalCreateParamSymbol(InternalGetLocation(AParamIndex), ASymbolType, AName);
 end;
 
 function TFpDbgInfoCallContext.AddRecordParam(AParamSymbolType: TFpSymbol;
@@ -486,7 +500,9 @@ end;
 
 function TFpDbgInfoCallContext.AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
 var
-  ParamSymbol: TFpValue;
+  ParamSymbol: TFpSymbolDwarfFunctionResult;
+  ParamValue: TFpValue;
+  s: TFpDbgValueSize;
 begin
   if AValue.Kind = skRecord then begin
     Result := AddRecordParam(AParamSymbolType, AValue);
@@ -494,18 +510,29 @@ begin
   end;
 
   Result := False;
-  ParamSymbol := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
-  Result := ParamSymbol <> nil;
-  if not Result then
-    exit;
+
+//  ParamValue := InternalCreateParamSymbol(FNextParamRegister, AParamSymbolType, '');
+  ParamValue := nil;
+  ParamSymbol := TFpSymbolDwarfFunctionResult.Create('', InvalidLoc, AParamSymbolType);
   try
+    ParamValue := ParamSymbol.Value;
+    TFpValueDwarf(ParamValue).Context := Self;
+    if (FDbgProcess.Mode = dm32) and (ParamValue.GetSize(s)) and (SizeToFullBytes(s) = 8) then
+      ParamSymbol.NewAddress := InternalGetLocation(FNextParamRegister, SizeToFullBytes(s))
+    else
+      ParamSymbol.NewAddress := InternalGetLocation(FNextParamRegister);
+
+    Result := ParamValue <> nil;
+    if not Result then
+      exit;
     if Length(FPreparedStack) > 0 then
       MemManager.SetWritableSeflMem(TDBGPtr(@FPreparedStack[0]), Length(FPreparedStack));
-    ParamSymbol.AsCardinal := AValue.AsCardinal;
-    Result := not IsError(ParamSymbol.LastError);
-    FLastError := ParamSymbol.LastError;
+    ParamValue.AsCardinal := AValue.AsCardinal;
+    Result := not IsError(ParamValue.LastError);
+    FLastError := ParamValue.LastError;
   finally
     ParamSymbol.ReleaseReference;
+    ParamValue.ReleaseReference;
     MemManager.ClearWritableSeflMem;
   end;
   inc(FNextParamRegister);

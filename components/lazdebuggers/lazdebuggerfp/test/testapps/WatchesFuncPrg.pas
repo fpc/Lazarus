@@ -121,6 +121,7 @@ begin
   FuncWord1(1);
   FuncWord2(1,2);
   FuncWord12(1,2,3,4,5,6,7,8,9,10,11,12);
+  FuncInt1(1);
   FuncInt2(1,2);
   FuncInt12(1,2,3,4,5,6,7,8,9,10,11,12);
   FuncQWord1(1);

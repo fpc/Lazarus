@@ -1758,6 +1758,19 @@ begin
     AddTest('FuncByte2(11,99)', '1199', weInteger(4, #1, 4));
     AddTest('FuncByte12(1,2,3,4,5,6,7,8,9,11,99,0)', '12345678911990', weInteger(14, #1, 4));
 
+    AddTest('FuncWord1(191)',     '191',  weInteger(3, #1, 4));
+    AddTest('FuncWord2(2211,99)', '221199', weInteger(6, #1, 4));
+    AddTest('FuncWord12(991,2,3,4,5,6,7,8,9,11,799,0)', '99123456789117990', weInteger(17, #1, 4));
+
+    AddTest('FuncInt1(191)',   '191',  weInteger(3, #1, 4));
+    AddTest('FuncInt2(11,99)', '1199', weInteger(4, #1, 4));
+    AddTest('FuncInt12(3000001,2,3,4,5,6,7,8,9,11,2000099,0)', '3000001234567891120000990', weInteger(25, #1, 4));
+
+    AddTest('FuncQWord1(191)',   '191',  weInteger(3, #1, 4));
+    AddTest('FuncQWord2(11,99)', '1199', weInteger(4, #1, 4));
+    AddTest('FuncQWord12(40000000000001,2,3,4,5,6,7,8,9,11,300000000000099,0)', '4000000000000123456789113000000000000990', weInteger(40, #1, 4));
+
+
     AddTest('foo.FuncInt12(1,2,3,4,5,6,7,8,9,11,99,0)', '12345678911990201', weInteger(17, #1, 4));
 
 
