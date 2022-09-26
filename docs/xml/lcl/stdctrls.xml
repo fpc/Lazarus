@@ -9955,8 +9955,7 @@ TButtonActionLink classes.
 The TCustomCheckBox descendant uses ClicksDisabled in its DoClickOnChange 
 method; when set to <b>False</b>, the Click method is called to signal both 
 the OnChange and OnClick handlers for the control. When set to <b>True</b>, 
-only the OnChange event handler is signalled. This emulates the Delphi VCL 
-OnClick behavior.
+only the OnChange event handler is signalled. 
 </p>
 <p>
 ClicksDisabled is also used to prevent calling Click when the Checked 
@@ -11438,11 +11437,11 @@ causes the property to be updated. OnClick occurs only when the mouse or
 keyboard is used to interact with the control.
 </p>
 <p>
-In the Delphi VCL, these events (OnChange and OnClick) are treated as 
-interchangeable equivalents. In fact, if both are assigned then both are 
-signalled. This class member ensures that the Delphi handling for OnClick is 
-used when the application has not accounted for the difference between the 
-events and their usage in the LCL.
+In the Delphi VCL, the OnChange event does not exist. The OnClick handler is 
+signalled when the value in State is changed and when the control is clicked. 
+This class member allows use of Delphi handling for OnClick when the 
+application has not accounted for the difference between the events and their 
+usage in the LCL.
 </p>
 <p>
 When set to <b>True</b>, the OnClick event is signalled each time the State 
