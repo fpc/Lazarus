@@ -311,34 +311,6 @@ Calls <var>Close</var> to close the form if it has not already been executed.
 <seealso></seealso>
 </element>
 
-<element name="TCalendarPopupForm.Paint">
-<short>
-Implements the default paint handler used to draw the control.
-</short>
-<descr>
-<p>
-<var>Paint</var> is an overridden method in <var>TCalendarPopupForm</var>. It 
-calls the inherited method on entry to signal the OnPaint event handler (when 
-assigned).
-</p>
-<p>
-Paint ensures that the Canvas for the control is updated so that Pen color is 
-clWindowText using a solid pen style. The Rectangle method for the Canvas is 
-called to draw the bounds for the control represented by the Width and Height 
-for the control.
-</p>
-<p>
-Paint is called from the PaintWindow method in the ancestor class, and occurs 
-when a LM_PAINT message is handled for the control.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
-<link id="#lcl.controls.TCustomControl.OnPaint">TCustomControl.OnPaint</link>
-<link id="#lcl.controls.TCustomControl.PaintWindow">TCustomControl.PaintWindow</link>
-</seealso>
-</element>
-
 <element name="ShowCalendarPopup">
 <short>
 Creates, configures, and displays a TCalendarPopupForm instance.
@@ -389,15 +361,13 @@ and maximum date arguments.
 <element name="ShowCalendarPopup.AMinDate">
 <short>
 Minimum date value that can be displayed or selected using the Calendar on 
-the dialog, or 
-an empty value (0.0) when omitted.
+the dialog, or an empty value (0.0) when omitted.
 </short>
 </element>
 <element name="ShowCalendarPopup.AMaxDate">
 <short>
 Minimum date value that can be displayed or selected using the Calendar on 
-the dialog, or 
-an empty value (0.0) when omitted.
+the dialog, or an empty value (0.0) when omitted.
 </short>
 </element>
 <element name="ShowCalendarPopup.OnReturnDate">
