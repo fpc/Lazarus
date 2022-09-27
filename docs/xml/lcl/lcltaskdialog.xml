@@ -828,8 +828,10 @@ Will return 0 on error, or the Button ID (e.g. mrOk for the OK button or 100
 for the first custom button defined in Buttons string).
 </p>
 <p>
-If Buttons was defined, aButtonDef can set the selected Button ID. If Radios 
-was defined, aRadioDef can set the selected Radio ID.
+If Buttons have been defined, aButtonDef can set the selected Button ID. If 
+Radio buttons have been defined, the default radio button defined in the 
+RadioButtons property is pre-selected. Otherwise, the default radio button is 
+set to 0.
 </p>
 <p>
 aDialogIcon and aFooterIcon are used to specify the icons on the dialog form.
@@ -866,7 +868,7 @@ Set of common or standard buttons enabled on the task dialog form.
 </element>
 <element name="TTaskDialog.Execute.aButtonDef">
 <short>
-Indicates the button which the default for the task dialog form.
+Indicates the button which is the default for the task dialog form.
 </short>
 </element>
 <element name="TTaskDialog.Execute.aFlags">
@@ -1081,57 +1083,76 @@ TaskEx.Execute;
 <seealso/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="TTaskDialogEx.Execute">
-<short/>
+<short>
+Method used to display and execute the extended task dialog.
+</short>
 <descr>
 <p>
-Main (and unique) method used to show the dialog. It is a wrapper around the 
-TTaskDialog.Execute method.
+<var>Execute</var> is an <var>Integer</var> function used to display the 
+dialog and capture its result. It is a wrapper around the TTaskDialog.Execute 
+method. TTaskDialogEx passes its member values as arguments to the Execute 
+method in the base TTaskDialog type.
+</p>
+<p>
+Before calling Execute, assign a routine to the OnButtonClicked event handler 
+to perform actions needed for a specific button clicked on the dialog.
+</p>
+<p>
+The return value contains the modal result value returned from the base task 
+dialog.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTaskDialog.Execute"/>
+</seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TTaskDialogEx.Execute.Result">
-<short/>
+<short>
+Modal result value for the dialog. Contains the identifier for the button 
+clicked on the dialog.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TTaskDialogEx.Execute.aParent">
-<short/>
+<short>
+Handle for the window which is the parent for the dialog. 0 (the default) is 
+the unassigned value.
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="UnAmp">
-<short/>
+<short>
+Gets a string with Ampersand characters removed from the specified value.
+</short>
 <descr>
 <p>
-Return the text without '&amp;' (Ampersand) characters.
+Returns the specified text without any '&amp;' (Ampersand) characters used as 
+a accelerator or hot key prefix.
 </p>
 </descr>
 <seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="UnAmp.Result">
-<short/>
+<short>
+String with all Ampersand characters removed.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UnAmp.s">
-<short/>
+<short>
+String examined and converted in the routine.
+</short>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="DefaultTaskDialog">
-<short/>
+<short>
+The default Task Dialog wrapper instance.
+</short>
 <descr>
 <p>
-A default Task Dialog wrapper instance. Can be used to display some 
-information with fewer parameters, just like the TTaskDialogEx.Init method. 
-For example:
+Can be used to display a task dialog using fewer parameters, just like the 
+TTaskDialogEx.Init method. For example:
 </p>
 <code>
 var TaskEx: TTaskDialogEx;
@@ -1147,43 +1168,68 @@ TaskEx.Execute;
 
 <!-- function type Visibility: default -->
 <element name="TTaskDialogTranslate">
-<short/>
+<short>
+Defines a function used to translate a caption used on a task dialog.
+</short>
 <descr>
-Function used to translate captions.
+<p>
+TTaskDialogTranslate is the type used to implement the TaskDialog_Translate 
+variable.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TaskDialog_Translate"/>
+</seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TTaskDialogTranslate.Result">
-<short/>
+<short>
+Translated value for the specified caption.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TTaskDialogTranslate.aString">
-<short/>
+<short>
+Caption value translated in the routine.
+</short>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="TaskDialog_Translate">
-<short/>
+<short>
+Function used to translate the content on an emulated task dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DefaultFont">
-<short/>
+<short>
+Assigns the default font used for task dialogs when one has not already been 
+chosen. 
+</short>
 <descr>
 <p>
-Will map a default font, according to the available fonts. If Calibri is 
-installed, it will be used by default. Falls back to Tahoma otherwise.
+<var>DefaultFont</var> creates a <var>TFont</var> instance used in the 
+implementation for the unit. The default font name and size are updated in 
+the font instance returned as the Result for the routine.
+</p>
+<p>
+The default font name value is 'default', and causes the default font for the 
+platform or operating system to be used. The default size is 10 (points).
+</p>
+<p>
+For the Windows platform, a different font name (and size) may be used. When 
+the Calibri typeface is installed, it is used with an 11 point font size. 
+Otherwise, Tahoma or Arial are used as the fallback font names (in that 
+order) using a 10 point font size.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="DefaultFont.Result">
-<short/>
+<short>
+TFont instance with the default typeface and font size for a task dialog.
+</short>
 </element>
 
 </module>
