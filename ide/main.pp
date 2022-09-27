@@ -7347,6 +7347,11 @@ begin
           ModalResult := 400;
           Caption := lisTheProjectDoesNotUseDwarf_TaskDlg_NoDebugBtn_Caption;
         end;
+        if dcrPreferDwarf2Sets in ReqOpts then
+          ChangeDebugInfoFormatDialog.RadioButtons.DefaultButton := ChangeDebugInfoFormatDialog.RadioButtons[0]
+        else
+        if dcrPreferDwarf3 in ReqOpts then
+          ChangeDebugInfoFormatDialog.RadioButtons.DefaultButton := ChangeDebugInfoFormatDialog.RadioButtons[2];
 
         ChangeDebugInfoFormatDialog.OnButtonClicked := @DlgDebugInfoHelpRequested;
 

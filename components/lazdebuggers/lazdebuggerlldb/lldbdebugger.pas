@@ -3134,7 +3134,7 @@ end;
 class function TLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String
   ): TDebugCompilerRequirements;
 begin
-  Result:=[dcrDwarfOnly];
+  Result:=[dcrDwarfOnly, dcrPreferDwarf2Sets];
 end;
 
 function TLldbDebugger.GetLocation: TDBGLocationRec;

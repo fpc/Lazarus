@@ -1714,6 +1714,7 @@ begin
   Result:=[dcrNoExternalDbgInfo, dcrDwarfOnly];
   {$ENDIF}
   {$ENDIF}
+  Result := Result + [dcrPreferDwarf3];
 end;
 
 constructor TFpLldbDebugger.Create(const AExternalDebugger: String);

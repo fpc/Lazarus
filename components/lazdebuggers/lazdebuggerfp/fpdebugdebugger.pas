@@ -4569,6 +4569,7 @@ begin
   {$ELSE}
   Result:=[dcrDwarfOnly];
   {$ENDIF}
+  Result := Result + [dcrPreferDwarf3];
 end;
 
 class function TFpDebugDebugger.CreateProperties: TDebuggerProperties;

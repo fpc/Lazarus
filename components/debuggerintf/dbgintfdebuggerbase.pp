@@ -1537,7 +1537,15 @@ type
     etWindowsMessageSent
   );
 
-  TDebugCompilerRequirement = (dcrNoExternalDbgInfo, dcrExternalDbgInfoOnly, dcrDwarfOnly);
+  TDebugCompilerRequirement = (
+    dcrNoExternalDbgInfo,
+    dcrExternalDbgInfoOnly,
+    dcrDwarfOnly,
+
+    // preferred defaults
+    dcrPreferDwarf2Sets,
+    dcrPreferDwarf3
+  );
   TDebugCompilerRequirements = set of TDebugCompilerRequirement;
 
   TDBGFeedbackType = (ftInformation, ftWarning, ftError);
