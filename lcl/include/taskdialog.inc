@@ -218,7 +218,7 @@ begin
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then
-    DefRB := RadioButtons.DefaultButton.ModalResult
+    DefRB := RadioButtons.DefaultButton.Index
   else
     DefRB := 0;
   if Buttons.DefaultButton<>nil then

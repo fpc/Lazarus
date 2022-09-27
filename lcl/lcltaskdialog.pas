@@ -827,7 +827,7 @@ begin
     Config.hMainIcon := TD_ICONS[aDialogIcon];
     Config.hFooterIcon := TD_FOOTERICONS[aFooterIcon];
     Config.nDefaultButton := aButtonDef;
-    Config.nDefaultRadioButton := aRadioDef;
+    Config.nDefaultRadioButton := aRadioDef+200;
     Config.cxWidth := aWidth;
     Config.pfCallback := @TaskDialogCallbackProc;
     Config.lpCallbackData := @self;
@@ -952,7 +952,7 @@ begin
               Hint := aHint; // note shown as Hint
             end;
             inc(Y,Height + ARadioOffset);
-            if (i=0) or (i+200=aRadioDef) then
+            if (i=0) or (i=aRadioDef) then
               Checked := true;
           end;
         end;
