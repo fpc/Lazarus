@@ -43,8 +43,6 @@ type
       AMinDate, AMaxDate: TDateTime);
     procedure KeepInView(const PopupOrigin: TPoint);
     procedure ReturnDate;
-  protected
-    procedure Paint; override;
   end;
 
 procedure ShowCalendarPopup(const APosition: TPoint; ADate: TDateTime;
@@ -190,14 +188,6 @@ begin
     FOnReturnDate(Self, Calendar.DateTime);
   if not FClosed then
     Close;
-end;
-
-procedure TCalendarPopupForm.Paint;
-begin
-  inherited Paint;
-  Canvas.Pen.Color := clWindowText;
-  Canvas.Pen.Style := psSolid;
-  Canvas.Rectangle(0, 0, Width, Height);
 end;
 
 end.

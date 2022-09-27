@@ -1,19 +1,18 @@
 object CalendarPopupForm: TCalendarPopupForm
   Left = 635
-  Height = 192
+  Height = 160
   Top = 259
-  Width = 233
+  Width = 176
   AutoSize = True
   BorderIcons = [biMinimize, biMaximize]
   BorderStyle = bsNone
   Caption = 'CalendarPopupForm'
-  ClientHeight = 192
-  ClientWidth = 233
+  ClientHeight = 160
+  ClientWidth = 176
   OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   PopupMode = pmAuto
-  LCLVersion = '2.1.0.0'
   object Calendar: TCalendar
     Left = 0
     Height = 160
