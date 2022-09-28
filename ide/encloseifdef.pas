@@ -239,7 +239,7 @@ begin
   IDEImages.AssignImage(RemoveBtn, 'laz_delete');
   ButtonPanel1.CloseButton.Caption := lisSave;
   ButtonPanel1.OKButton.Caption := lisOk;
-  //ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
+  //ButtonPanel1.CloseButton.LoadGlyphFromResource(idButtonSave);
   //if btnSave.Glyph.Empty then
   //  btnSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
   try

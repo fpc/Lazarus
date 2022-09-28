@@ -393,9 +393,9 @@ begin
   ExportAction.Caption := lisExportSelected;
   ExportAllAction.Caption := lisExportAll;
   ImportAction.Hint := lisImport;
-  ExportBitBtn.LoadGlyphFromStock(idButtonSave);
+  IDEImages.AssignImage(ExportBitBtn, 'laz_save');
   ExportBitBtn.Caption := lisExportSub;
-  ImportBitBtn.LoadGlyphFromStock(idButtonOpen);
+  IDEImages.AssignImage(ImportBitBtn, 'laz_open');
   ImportBitBtn.Caption := lisImport;
 
   ButtonPanel1.HelpButton.TabOrder := 0;

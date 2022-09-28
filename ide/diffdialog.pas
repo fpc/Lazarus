@@ -359,9 +359,7 @@ begin
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   HelpButton.Caption:=lisMenuHelp;
 
-  OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
-  if OpenInEditorButton.Glyph.Empty then
-    IDEImages.AssignImage(OpenInEditorButton, 'laz_open');
+  IDEImages.AssignImage(OpenInEditorButton, 'laz_open');
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

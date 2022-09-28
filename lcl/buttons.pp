@@ -56,6 +56,8 @@ type
     bsHot       // button is under mouse
   );
 
+  TButtonImage = idButtonOk..idButtonNoToAll;
+
   {
    TNumGlyphs holds the number of glyphs in an image.
    If we change this the code in SetNumGlyphs for @link(TCustomSpeedButton)
@@ -207,7 +209,8 @@ type
     procedure Click; override;
     procedure LoadGlyphFromResourceName(Instance: THandle; const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
-    procedure LoadGlyphFromStock(idButton: Integer);
+    procedure LoadGlyphFromStock(idButton: Integer); // not DPI-aware, uses widgetset themed icons if available
+    procedure LoadGlyphFromResource(idButton: TButtonImage); // DPI-aware
     function CanShowGlyph(const AWithShowMode: Boolean = False): Boolean;
   public
     property Caption stored IsCaptionStored;
@@ -511,7 +514,6 @@ type
     }
 type
   TGetDefaultBitBtnGlyph = function(Kind: TBitBtnKind; var Handled: Boolean): TBitmap;
-  TButtonImage = idButtonOk..idButtonNoToAll;
 var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 

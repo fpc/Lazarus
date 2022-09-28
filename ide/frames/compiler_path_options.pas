@@ -642,7 +642,7 @@ begin
   btnCheck := CreateButton(lisCompTest);
   btnCheck.ModalResult := mrNone;
   btnCheck.OnClick  := @DoCheck;
-  btnCheck.LoadGlyphFromStock(idButtonYes);
+  btnCheck.LoadGlyphFromResource(idButtonYes);
 
   ADialog.AddButtonSeparator;
 
@@ -650,14 +650,12 @@ begin
   btnExport := CreateButton(lisExport);
   btnExport.OnClick := @DoExport;
   btnExport.Hint := dlgCOLoadSaveHint;
-  btnExport.LoadGlyphFromStock(idButtonSave);
+  IDEImages.AssignImage(btnExport, 'laz_save');
   // Import
   btnLoadSave := CreateButton(lisImport);
   btnLoadSave.OnClick := @DoImport;
   btnLoadSave.Hint := dlgCOLoadSaveHint;
-  btnLoadSave.LoadGlyphFromStock(idButtonOpen);
-  if btnLoadSave.Glyph.Empty then
-    IDEImages.AssignImage(btnLoadSave, 'laz_save');
+  IDEImages.AssignImage(btnLoadSave, 'laz_save');
 
   ADialog.AddButtonSeparator;
 

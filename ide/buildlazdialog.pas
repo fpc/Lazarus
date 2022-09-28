@@ -1051,9 +1051,7 @@ begin
   CompileAdvancedButton.Caption := lisLazBuildBuildMany;
   IDEImages.AssignImage(CompileAdvancedButton, 'menu_build_all');
   SaveSettingsButton.Caption := lisSaveSettings;
-  SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
-  if SaveSettingsButton.Glyph.Empty then
-    IDEImages.AssignImage(SaveSettingsButton, 'laz_save');
+  IDEImages.AssignImage(SaveSettingsButton, 'laz_save');
   CancelButton.Caption := lisCancel;
   HelpButton.Caption := lisMenuHelp;
 

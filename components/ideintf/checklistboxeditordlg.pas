@@ -94,7 +94,7 @@ begin
   BtnPanel.CancelButton.Caption := oisCancel;
   BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
   BtnPanel.CloseButton.Kind := bkCustom;
-  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
+  BtnPanel.CloseButton.LoadGlyphFromResource(idButtonYes);
   BtnPanel.CloseButton.Caption := sccsTrEdtApply;
   BtnPanel.CloseButton.OnClick := @ApplyCheck;
 

@@ -294,13 +294,10 @@ begin
   DefaultIconButton.Caption := dlgPODefaultIcon;
   SaveIconButton.Caption := dlgPOSaveIcon;
   ClearIconButton.Caption := dlgPOClearIcon;
-  LoadIconButton.LoadGlyphFromStock(idButtonOpen);
-  if LoadIconButton.Glyph.Empty then
-    IDEImages.AssignImage(LoadIconButton, 'laz_open');
+  IDEImages.AssignImage(LoadIconButton, 'laz_open');
   SaveIconButton.LoadGlyphFromStock(idButtonSave);
   IDEImages.AssignImage(DefaultIconButton, 'restore_default');
-  if SaveIconButton.Glyph.Empty then
-    IDEImages.AssignImage(SaveIconButton, 'laz_save');
+  IDEImages.AssignImage(SaveIconButton, 'laz_save');
   IDEImages.AssignImage(ClearIconButton, 'menu_clean');
   IconImage.KeepOriginXWhenClipped := True;
   IconImage.KeepOriginYWhenClipped := True;

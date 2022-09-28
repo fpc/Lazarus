@@ -77,6 +77,11 @@ begin
   Buttons.LoadGlyphFromLazarusResource(FButtonGlyph, AName);
 end;
 
+procedure TCustomBitBtn.LoadGlyphFromResource(idButton: TButtonImage);
+begin
+  Buttons.LoadGlyphFromResource(FButtonGlyph, idButton);
+end;
+
 procedure TCustomBitBtn.LoadGlyphFromStock(idButton: Integer);
 begin
   Buttons.LoadGlyphFromStock(FButtonGlyph, idButton);
