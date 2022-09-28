@@ -2732,7 +2732,6 @@ type
     procedure SetMin(Value: Integer);
     procedure SetOrientation(Value: TTrackBarOrientation);
     procedure SetPageSize(Value: Integer);
-    procedure SetParams(APosition, AMin, AMax: Integer);
     procedure SetPosition(Value: Integer);
     procedure SetReversed(const AValue: Boolean);
     procedure SetScalePos(Value: TTrackBarScalePos);
@@ -2755,6 +2754,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetTick(Value: Integer);
+    procedure SetParams(APosition, AMin, AMax: Integer); // allow to set the parameters in one go in order to call FixParams only once
   published
     property AutoSize;
     property Frequency: Integer read FFrequency write SetFrequency default 1;
