@@ -415,6 +415,10 @@ function DefaultFont: TFont;
 
 implementation
 
+uses
+  Dialogs,
+  ImgList;
+
 var
   LDefaultFont: TFont;
 
@@ -631,6 +635,7 @@ function TTaskDialog.Execute(aCommonButtons: TCommonButtons;
   aDialogIcon: TTaskDialogIcon; aFooterIcon: TTaskDialogFooterIcon;
   aRadioDef, aWidth: integer; aParent: HWND; aNonNative: boolean;
   aEmulateClassicStyle: boolean; aOnButtonClicked: TTaskDialogButtonClickedEvent): integer;
+
 function GetNextStringLineToWS(var P: PChar): WS;
 var S: PChar;
     tmp: string;
@@ -648,7 +653,9 @@ begin
       P := nil;
   end;
 end;
+
 var aHint: string;
+
 function NoCR(const aText: string): string;
 var i: integer;
 begin
@@ -702,13 +709,15 @@ var
     List: TStrings;
     B: TCommonButton;
     CommandLink: TBitBtn;
-    Rad: array of TRadioButton;
+    Rad: array of TRadioButton = nil;
+
 function AddLabel(Text: string; BigFont: boolean): TLabel;
 var R: TRect;
     W: integer;
 begin
   result := TLabel.Create(Dialog.Form);
   result.Parent := Par;
+  result.Font.PixelsPerInch := 96;
   result.WordWrap := true;
   if BigFont then begin
     if aEmulateClassicStyle then begin
@@ -732,6 +741,7 @@ begin
   result.Caption := Text;
   inc(Y,R.Bottom+16);
 end;
+
 procedure AddBevel;
 var BX: integer;
 begin
@@ -744,6 +754,7 @@ begin
   end;
   inc(Y,16);
 end;
+
 function AddButton(const s: string; ModalResult: integer): TButton;
 var WB: integer;
 begin
@@ -755,9 +766,11 @@ begin
   end;
   result := TButton.Create(Dialog.Form);
   result.Parent := Par;
-    if aEmulateClassicStyle then
-      result.SetBounds(XB,Y,WB-10,22) else
-      result.SetBounds(XB,Y,WB-12,28);
+  result.Font.PixelsPerInch := 96;
+  if aEmulateClassicStyle then
+    result.SetBounds(XB,Y,WB-10,22)
+  else
+    result.SetBounds(XB,Y,WB-12,28);
   result.Caption := s;
   result.ModalResult := ModalResult;
   result.TabOrder := CurrTabOrder;
@@ -773,10 +786,50 @@ begin
   if ModalResult=aButtonDef then
     Dialog.Form.ActiveControl := result;
 end;
+
+procedure AddImages(AImgList: TCustomImageList; AResName: String);
 var
-  PngImg: TPortableNetworkGraphic;
+  img100, img150, img200: TCustomBitmap;
+begin
+  img100 := TPortableNetworkGraphic.Create;
+  img150 := TPortableNetworkGraphic.Create;
+  img200 := TPortableNetworkGraphic.Create;
+  try
+    img100.LoadFromResourceName(HInstance, AResName);
+    img150.LoadFromResourceName(HInstance, AResName + '_150');
+    img200.LoadFromResourceName(HInstance, AResName + '_200');
+    AImgList.AddMultipleResolutions([img100, img150, img200]);
+  finally
+    img100.Free;
+    img150.Free;
+    img200.Free;
+  end;
+end;
+
+var
+  imgList: TLCLGlyphs;
+
+procedure PrepareImages;
+var
+  di: TTaskDialogIcon;
+begin
+  imgList := TLCLGlyphs.Create(Dialog.Form);
+  imgList.MissingResources := gmrOneMustExist;
+  imgList.Scaled := true;
+  imgList.Width := 32;
+  imgList.Height := 32;
+  imgList.RegisterResolutions([16, 24, 32, 48, 64]);
+  for di in TTaskDialogIcon do
+    if LAZ_ICONS[di] <> '' then
+      AddImages(imgList, LAZ_ICONS[di]);
+  // Since footer icons use the same image resources we do not add them again.
+end;
+
+var
   IconHandle: HICON;
   ARadioOffset: integer;
+  imgIndex: Integer;
+  imgRes: TScaledImageListResolution;
 begin
   if (byte(aCommonButtons)=0) and (Buttons='') then begin
     aCommonButtons := [cbOk];
@@ -835,12 +888,16 @@ begin
       exit; // error (mostly invalid argument) -> execute the VCL emulation
   end;
   {$endif MSWINDOWS}
+
   // use our native (naive?) Delphi implementation
   Dialog.Emulated := true;
   Dialog.Form := TEmulatedTaskDialog.CreateNew(Application);
   try
     Dialog.Form.Owner := @Self;
+
     // initialize form properties
+    Dialog.Form.PixelsPerInch := 96;   // for scaling later
+    Dialog.Form.Font.PixelsPerInch := 96;
     Dialog.Form.BorderStyle := bsDialog;
     if tdfAllowDialogCancellation in aFlags then
       Dialog.Form.BorderIcons := [biSystemMenu]
@@ -865,6 +922,10 @@ begin
     Dialog.Form.ClientWidth := aWidth;
     Dialog.Form.Height := 200;
     Dialog.Form.Caption := Title;
+
+    // Prepare image list
+    PrepareImages;
+
     // create a white panel for the main dialog part
     Panel := TPanel.Create(Dialog.Form);
     Panel.Parent := Dialog.Form;
@@ -875,14 +936,16 @@ begin
       Panel.Color := clWindow;
     end;
     Par := Panel;
+
     // handle main dialog icon
     if aEmulateClassicStyle then
-      IconBorder := 10 else
+      IconBorder := 10
+    else
       IconBorder := 24;
 
-     if (LAZ_ICONS[aDialogIcon]<>'') {$IFDEF MSWINDOWS}or
+    if (LAZ_ICONS[aDialogIcon]<>'') {$IFDEF MSWINDOWS}or
       ((WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and (WIN_ICONS[aDialogIcon]<>nil)){$ENDIF} then
-     begin
+    begin
       Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
       {$IFDEF MSWINDOWS}
@@ -898,9 +961,11 @@ begin
         Image.Picture.Icon.Handle := IconHandle
       else if LAZ_ICONS[aDialogIcon]<>'' then
       begin
+        imgRes := imgList.ResolutionForPPI[32, Screen.PixelsPerInch, Dialog.Form.GetCanvasScaleFactor];
+        imgIndex := imgList.GetImageIndex(LAZ_ICONS[aDialogIcon]);
         Pic := TPortableNetworkGraphic.Create;
         try
-          Pic.LoadFromResourceName(HINSTANCE, LAZ_ICONS[aDialogIcon]);
+          imgRes.GetBitmap(imgIndex, Pic);
           Image.Picture.Assign(Pic);
         finally
           Pic.Free;
@@ -919,6 +984,7 @@ begin
       X := IconBorder;
       Y := IconBorder;
     end;
+
     // add main texts (Instruction, Content, Information)
     Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true);
     Dialog.Form.Element[tdeContent] := AddLabel(Content, false);
@@ -999,13 +1065,8 @@ begin
             end;
             if not (tdfUseCommandLinksNoIcon in aFlags) then
             begin
-              PngImg := TPortableNetworkGraphic.Create;
-              try
-                PngImg.LoadFromResourceName(HINSTANCE, 'btn_arrowright');
-                Glyph.Assign(PngImg);
-              finally
-                PngImg.Free;
-              end;
+              Images := imgList;
+              ImageIndex := imgList.GetImageIndex('btn_arrowright');
             end;
           end;
         end;
@@ -1051,9 +1112,11 @@ begin
           Dialog.Form.ActiveControl := Dialog.Form.Edit;
         inc(Y,42);
       end;
+
     // from now we won't add components to the white panel, but to the form
     Panel.Height := Y;
     Par := Dialog.Form;
+
     // add buttons and verification checkbox
     if (byte(aCommonButtons)<>0) or (Verify<>'') or
        ((Buttons<>'') and not (tdfUseCommandLinks in aFlags)) then begin
@@ -1088,10 +1151,12 @@ begin
       inc(Y,36);
     end else
       XB := 0;
+
     // add footer text with optional icon
     if Footer<>'' then begin
       if XB<>0 then
-        AddBevel else
+        AddBevel
+      else
         inc(Y,16);
       if (LAZ_FOOTERICONS[aFooterIcon]<>'') {$IFDEF MSWINDOWS}or ((WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and (WIN_FOOTERICONS[aFooterIcon]<>nil)){$ENDIF} then
       begin
@@ -1118,9 +1183,11 @@ begin
           if (Ico=nil) and (LAZ_FOOTERICONS[aFooterIcon]<>'') then
           begin
             Pic := TPortableNetworkGraphic.Create;
-            Pic.LoadFromResourceName(HINSTANCE, LAZ_FOOTERICONS[aFooterIcon]);
-            Bmp.Width := Pic.Width shr 1;
-            Bmp.Height := Pic.Height shr 1;
+            imgIndex := imgList.GetImageIndex(LAZ_FOOTERICONS[aFooterIcon]);
+            imgRes := imgList.ResolutionForPPI[16, Screen.PixelsPerInch, Dialog.Form.GetCanvasScaleFactor];
+            imgRes.GetBitmap(imgIndex, Pic);
+            Bmp.Width := Pic.Width;
+            Bmp.Height := Pic.Height;
           end;
           if (Ico<>nil) or (Pic<>nil) then
           begin
@@ -1169,7 +1236,13 @@ begin
     if Assigned(Dialog.Form.PopupParent) then
       Dialog.Form.PopupMode := pmExplicit;
 
+
+    // Scale the dialog
+//    Dialog.Form.AutoAdjustLayout(lapAutoAdjustForDPI, 96, Screen.PixelsPerInch, 0, 0);
+    Dialog.Form.AutoScale;
+
     // retrieve the results
+
     result := Dialog.Form.ShowModal;
     if Dialog.Form.Combo<>nil then begin
       SelectionRes := Dialog.Form.Combo.ItemIndex;
