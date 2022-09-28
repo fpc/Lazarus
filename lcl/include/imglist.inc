@@ -1336,6 +1336,38 @@ begin
   end;
 end;
 
+function TCustomImageList.AddMultipleResolutions(Images: array of TRasterImage): Integer;
+
+  function FindImage(const ATargetWidth: Integer): TRasterImage;
+  begin
+    for Result in Images do // find the smallest (but bigger) image
+    begin
+      if (Result.Width>=ATargetWidth) then
+        Exit;
+    end;
+
+    Result := Images[High(Images)]; // just pickup the biggest image to scale up
+  end;
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  Image: TRasterImage;
+  msk: HBITMAP;
+begin
+  Result := Count;
+  CreateDefaultResolution;
+  for R in Resolutions do
+  begin
+    Image := FindImage(R.Width);
+    if Image.Masked then
+      msk := Image.MaskHandle
+    else
+      msk := 0;
+    ScaleImage(Image.BitmapHandle, msk, Rect(0, 0, Image.Width, Image.Height), R.Width, R.Height, ScBmp);
+    R.InternalInsert(Result, @ScBmp[0]);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomImageList.AddLazarusResource(const ResourceName: string
     ): integer;
