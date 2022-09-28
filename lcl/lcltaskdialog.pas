@@ -883,6 +883,8 @@ begin
       Image.Images := GetDialogImages;
       Image.ImageIndex := GetDialogImages.DialogIndexes[LCL_IMAGES[aDialogIcon]];
       Image.SetBounds(IconBorder,IconBorder, 32, 32);
+      Image.Stretch := True;
+      Image.Proportional := True;
       X := Image.Width+IconBorder*2;
       Y := Image.Top;
       if aEmulateClassicStyle then
@@ -1077,6 +1079,8 @@ begin
         Image.Images := GetDialogImages;
         Image.ImageWidth := 16;
         Image.ImageIndex := GetDialogImages.DialogIndexes[LCL_FOOTERIMAGES[aFooterIcon]];
+        Image.Stretch := True;
+        Image.Proportional := True;
         Image.SetBounds(24,Y,16,16);
         X := 40+Image.Width;
       end else
