@@ -49,15 +49,15 @@ type
   TDialogImageList = class(TLCLGlyphs)
   private
     fDialogIndexes: array[TDialogImage] of Integer;
-    function GetDialogIndexes(AIndex: TDialogImage): Integer;
     procedure LoadImage(AIndex: TDialogImage);
+    function GetDialogIcon(AIndex: TDialogImage): Integer;
   public
     constructor Create(AOwner: TComponent); override;
   public
-    property DialogIndexes[AIndex: TDialogImage]: Integer read GetDialogIndexes;
+    property DialogIcon[AIndex: TDialogImage]: Integer read GetDialogIcon;
   end;
 
-function GetDialogImages: TDialogImageList;
+function DialogGlyphs: TDialogImageList;
 
 implementation
 
@@ -73,7 +73,7 @@ Function LoadIconWithScaleDown( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var
 var
   DialogImages: TDialogImageList;
 
-function GetDialogImages: TDialogImageList;
+function DialogGlyphs: TDialogImageList;
 begin
   if not Assigned(DialogImages) then
     DialogImages := TDialogImageList.Create(nil);
@@ -96,7 +96,7 @@ begin
   RegisterResolutions([16, 24, 32, 48, 64]);
 end;
 
-function TDialogImageList.GetDialogIndexes(AIndex: TDialogImage): Integer;
+function TDialogImageList.GetDialogIcon(AIndex: TDialogImage): Integer;
 begin
   if fDialogIndexes[AIndex]=-1 then
     LoadImage(AIndex);

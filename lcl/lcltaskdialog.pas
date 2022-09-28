@@ -880,8 +880,8 @@ begin
     begin
       Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
-      Image.Images := GetDialogImages;
-      Image.ImageIndex := GetDialogImages.DialogIndexes[LCL_IMAGES[aDialogIcon]];
+      Image.Images := DialogGlyphs;
+      Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
       Image.SetBounds(IconBorder,IconBorder, 32, 32);
       Image.Stretch := True;
       Image.StretchOutEnabled := False;
@@ -1078,9 +1078,9 @@ begin
       begin
         Image := TImage.Create(Dialog.Form);
         Image.Parent := Par;
-        Image.Images := GetDialogImages;
+        Image.Images := DialogGlyphs;
         Image.ImageWidth := 16;
-        Image.ImageIndex := GetDialogImages.DialogIndexes[LCL_FOOTERIMAGES[aFooterIcon]];
+        Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[aFooterIcon]];
         Image.Stretch := True;
         Image.StretchOutEnabled := False;
         Image.Proportional := True;

@@ -780,7 +780,7 @@ function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Int
 
 // helper functions (search LCLType for idDiag)
 function GetDialogCaption(idDiag: Integer): string;
-function GetDialogIcon(idDiag: Integer): TCustomBitmap; deprecated 'Use DialogRes.GetDialogImages';
+function GetDialogIcon(idDiag: Integer): TCustomBitmap; deprecated 'Use DialogRes.DialogGlyphs';
 
 function dbgs(Option: TOpenOption): string; overload;
 function dbgs(Options: TOpenOptions): string; overload;
