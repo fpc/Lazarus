@@ -948,9 +948,14 @@ begin
   if Result then
   begin
     FillRawImageDescription(WinDIB.dsBm, ADesc);
+    {
     // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+    ////  deleted be Ondrej - why is this needed?
+    ////  When applied, the alpha channel in windows icons is lost.
+    ////  See issue #39933.
     if ASize < SizeOf(WinDIB) then
       ADesc.AlphaPrec := 0;
+    }
   end;
 end;
 
@@ -1026,10 +1031,16 @@ begin
   //DbgDumpBitmap(AMask, 'FromMask - Mask');
 
   FillRawImageDescription(WinBmp, ARawImage.Description);
+  {
   // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+  ////  deleted be Ondrej - why is this needed?
+  ////  When applied, the alpha channel in windows icons is lost.
+  ////  See issue #39933.
   if ASize < SizeOf(WinDIB) then
     ARawImage.Description.AlphaPrec := 0;
-    
+  }
+
+
   if ARect = nil
   then begin
     R := Rect(0, 0, WinBmp.bmWidth, WinBmp.bmHeight);
