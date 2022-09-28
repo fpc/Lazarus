@@ -498,20 +498,27 @@ type
   end;
 
 
-  { TCustomDrawImage }
+  { TCustomImage }
 
-  TCustomDrawImage = class(TGraphicControl)
+  TCustomImage = class(TGraphicControl)
   private
+    FAntialiasingMode: TAntialiasingMode;
     FOnPictureChanged: TNotifyEvent;
     FOnPaintBackground: TImagePaintBackgroundEvent;
+    FPicture: TPicture;
     FCenter: Boolean;
     FKeepOriginXWhenClipped: Boolean;
     FKeepOriginYWhenClipped: Boolean;
     FProportional: Boolean;
+    FTransparent: Boolean;
     FStretch: Boolean;
     FStretchOutEnabled: Boolean;
     FStretchInEnabled: Boolean;
+    FUseAncestorCanvas: boolean;
     FPainting: boolean;
+    function  GetCanvas: TCanvas;
+    procedure SetAntialiasingMode(AValue: TAntialiasingMode);
+    procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);
     procedure SetKeepOriginX(AValue: Boolean);
     procedure SetKeepOriginY(AValue: Boolean);
@@ -519,23 +526,30 @@ type
     procedure SetStretch(const AValue : Boolean);
     procedure SetStretchInEnabled(AValue: Boolean);
     procedure SetStretchOutEnabled(AValue: Boolean);
+    procedure SetTransparent(const AValue : Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure PictureChanged(Sender : TObject); virtual;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                                     PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
-    function GetPictureSize: TSize; virtual; abstract;
-    procedure PaintImage(const ARect: TRect); virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Canvas: TCanvas read GetCanvas;
     function DestRect: TRect; virtual;
     procedure Invalidate; override;
   public
+    property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property Align;
     property AutoSize;
     property Center: Boolean read FCenter write SetCenter default False;
     property KeepOriginXWhenClipped: Boolean read FKeepOriginXWhenClipped write SetKeepOriginX default False;
     property KeepOriginYWhenClipped: Boolean read FKeepOriginYWhenClipped write SetKeepOriginY default False;
     property Constraints;
+    property Picture: TPicture read FPicture write SetPicture;
     property Visible;
     property OnClick;
     property OnMouseDown;
@@ -549,42 +563,12 @@ type
     property Stretch: Boolean read FStretch write SetStretch default False;
     property StretchOutEnabled: Boolean read FStretchOutEnabled write SetStretchOutEnabled default True;
     property StretchInEnabled: Boolean read FStretchInEnabled write SetStretchInEnabled default True;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     property Proportional: Boolean read FProportional write SetProportional default False;
     property OnPictureChanged: TNotifyEvent read FOnPictureChanged write FOnPictureChanged;
     property OnPaintBackground: TImagePaintBackgroundEvent read FOnPaintBackground write FOnPaintBackground;
   end;
 
-  { TCustomImage }
-
-  TCustomImage = class(TCustomDrawImage)
-  private
-    FAntialiasingMode: TAntialiasingMode;
-    FPicture: TPicture;
-    FTransparent: Boolean;
-
-    function GetCanvas: TCanvas;
-    procedure SetAntialiasingMode(AValue: TAntialiasingMode);
-    procedure SetPicture(const AValue: TPicture);
-    procedure SetTransparent(const AValue : Boolean);
-  protected
-    class procedure WSRegisterClass; override;
-    procedure CalculatePreferredSize(var PreferredWidth,
-                                     PreferredHeight: integer;
-                                     WithThemeSpace: Boolean); override;
-    procedure PictureChanged(Sender: TObject); override;
-    function GetPictureSize: TSize; override;
-    procedure Paint; override;
-    procedure PaintImage(const ARect: TRect); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  public
-    property Canvas: TCanvas read GetCanvas;
-  public
-    property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
-    property Picture: TPicture read FPicture write SetPicture;
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
-  end;
 
   { TImage }
 
@@ -634,80 +618,6 @@ type
     property StretchOutEnabled;
     property StretchInEnabled;
     property Transparent;
-    property Visible;
-  end;
-
-
-  { TCustomImageListImage }
-
-  TCustomImageListImage = class(TCustomDrawImage)
-  private
-    FImageIndex: Integer;
-    FImages: TCustomImageList;
-    FImageWidth: Integer;
-    procedure SetImageIndex(const AImageIndex: Integer);
-    procedure SetImages(const AImages: TCustomImageList);
-    procedure SetImageWidth(const AImageWidth: Integer);
-  protected
-    procedure CalculatePreferredSize(var PreferredWidth,
-                                     PreferredHeight: integer;
-                                     WithThemeSpace: Boolean); override;
-    function GetPictureSize: TSize; override;
-    procedure PaintImage(const ARect: TRect); override;
-  public
-    property ImageIndex: Integer read FImageIndex write SetImageIndex;
-    property ImageWidth: Integer read FImageWidth write SetImageWidth;
-    property Images: TCustomImageList read FImages write SetImages;
-  end;
-
-
-  { TImageListImage }
-
-  TImageListImage = class(TCustomImageListImage)
-  published
-    property Align;
-    property Anchors;
-    property AutoSize;
-    property BorderSpacing;
-    property Center;
-    property Constraints;
-    property DragCursor;
-    property DragMode;
-    property Enabled;
-    property ImageIndex;
-    property ImageWidth; // a custom ImageWidth for the Images image list
-    property Images;
-    property KeepOriginXWhenClipped;
-    property KeepOriginYWhenClipped;
-    property OnChangeBounds;
-    property OnClick;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnMouseWheel;
-    property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    property OnMouseWheelHorz;
-    property OnMouseWheelLeft;
-    property OnMouseWheelRight;
-    property OnPaint;
-    property OnPaintBackground;
-    property OnResize;
-    property OnStartDrag;
-    property ParentShowHint;
-    property PopupMenu;
-    property Proportional;
-    property ShowHint;
-    property Stretch;
-    property StretchOutEnabled;
-    property StretchInEnabled;
     property Visible;
   end;
 
@@ -1801,7 +1711,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
-  RegisterComponents('Additional',[TImage,TImageListImage,TShape,TBevel,TPaintBox,
+  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,
     TNotebook, TLabeledEdit, TSplitter, TTrayIcon, TControlBar, TFlowPanel]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
   RegisterNoIcon([TPage]);
