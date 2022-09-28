@@ -2354,5 +2354,8 @@ begin
 end;
 
 
+finalization
+  Pas2JSHandler.Free;
+
 end.
 

@@ -58,6 +58,7 @@ Type
     class function HTMLBaseDir: String;
   Public
     Constructor Create;
+    Destructor Destroy; override;
     Class Constructor Init;
     Class Destructor Done;
     Class Procedure RegisterComponent2HTMLFileHandler(aClass : TComponentClass; aHandler : TComponentHTMLFileNameHandler);
@@ -352,6 +353,12 @@ end;
 procedure TIDEHTMLTools.ClearCache;
 begin
   FTagCache.Clear;
+end;
+
+destructor TIDEHTMLTools.Destroy;
+begin
+  FTagCache.Free;
+  inherited Destroy;
 end;
 
 class function TIDEHTMLTools.HTMLBaseDir: String;
