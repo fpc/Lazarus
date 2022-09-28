@@ -3,101 +3,105 @@
   <ProjectOptions>
     <Version Value="12"/>
     <General>
-      <Flags>
-        <CompatibilityMode Value="True"/>
-      </Flags>
+      <Title Value="Stock image tester"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True/PM_V2"/>
+      </XPManifest>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes>
+      <Item Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default"/>
+      <Modes>
+        <Mode Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="1">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item1>
+      </Item>
     </RequiredPackages>
-    <Units Count="10">
-      <Unit0>
+    <Units>
+      <Unit>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="1"/>
         <CursorPos X="35" Y="14"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
-      </Unit0>
-      <Unit1>
+      </Unit>
+      <Unit>
         <Filename Value="unit1.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <WindowIndex Value="1"/>
-        <CursorPos X="89" Y="34"/>
-        <UsageCount Value="22"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="8"/>
+        <CursorPos X="54" Y="23"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit1>
-      <Unit2>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/lcltype.pp"/>
         <UnitName Value="LCLType"/>
-        <TopLine Value="1585"/>
-        <CursorPos X="15" Y="1604"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="1797"/>
+        <CursorPos X="3" Y="1820"/>
         <UsageCount Value="11"/>
-      </Unit2>
-      <Unit3>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/gtk2/gtk2themes.pas"/>
         <UnitName Value="Gtk2Themes"/>
         <TopLine Value="151"/>
         <CursorPos X="39" Y="166"/>
         <UsageCount Value="11"/>
-      </Unit3>
-      <Unit4>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/win32/win32themes.pas"/>
         <UnitName Value="Win32Themes"/>
-        <TopLine Value="153"/>
-        <CursorPos X="37" Y="176"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="197"/>
+        <CursorPos X="3" Y="208"/>
         <UsageCount Value="11"/>
         <Bookmarks Count="1">
           <Item0 X="15" Y="163" ID="1"/>
         </Bookmarks>
-      </Unit4>
-      <Unit5>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/win32/win32extra.pas"/>
         <UnitName Value="Win32Extra"/>
         <UsageCount Value="11"/>
-      </Unit5>
-      <Unit6>
+      </Unit>
+      <Unit>
         <Filename Value="../../../fpc/rtl/win/wininc/func.inc"/>
         <TopLine Value="42"/>
         <CursorPos X="10" Y="61"/>
         <UsageCount Value="11"/>
-      </Unit6>
-      <Unit7>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/qt/qtthemes.pas"/>
         <UnitName Value="QtThemes"/>
         <TopLine Value="338"/>
         <CursorPos X="55" Y="359"/>
         <UsageCount Value="11"/>
-      </Unit7>
-      <Unit8>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/qt/qt45.pas"/>
         <TopLine Value="10480"/>
         <CursorPos X="5" Y="10499"/>
@@ -105,15 +109,289 @@
         <Bookmarks Count="1">
           <Item0 X="35" Y="10466" ID="2"/>
         </Bookmarks>
-      </Unit8>
-      <Unit9>
+      </Unit>
+      <Unit>
         <Filename Value="../../lcl/interfaces/qt/qtwinapi.inc"/>
         <TopLine Value="4865"/>
         <CursorPos X="70" Y="4875"/>
         <UsageCount Value="11"/>
-      </Unit9>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/dialogres.pas"/>
+        <UnitName Value="DialogRes"/>
+        <EditorIndex Value="10"/>
+        <CursorPos X="3" Y="14"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/imglist.pp"/>
+        <UnitName Value="ImgList"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="426"/>
+        <CursorPos X="14" Y="455"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="11"/>
+        <CursorPos X="47" Y="29"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/lcltaskdialog.pas"/>
+        <UnitName Value="LCLTaskDialog"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="1035"/>
+        <CursorPos X="55" Y="1083"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <UnitName Value="Buttons"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="492"/>
+        <CursorPos X="78" Y="528"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/themes.pas"/>
+        <UnitName Value="Themes"/>
+        <EditorIndex Value="19"/>
+        <TopLine Value="494"/>
+        <CursorPos Y="533"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../../../FPC/trunk_src/rtl/inc/generic.inc"/>
+        <EditorIndex Value="21"/>
+        <TopLine Value="820"/>
+        <CursorPos Y="858"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/interfaces/qt5/qtthemes.pas"/>
+        <UnitName Value="QtThemes"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="981"/>
+        <CursorPos X="27" Y="1015"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/include/imglist.inc"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="2760"/>
+        <CursorPos X="3" Y="2806"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="2725"/>
+        <CursorPos X="52" Y="2748"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/include/trackbar.inc"/>
+        <EditorIndex Value="20"/>
+        <TopLine Value="295"/>
+        <CursorPos Y="336"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/interfaces/win32/win32wscomctrls.pp"/>
+        <UnitName Value="Win32WSComCtrls"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="961"/>
+        <CursorPos Y="1031"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/lmessages.pp"/>
+        <UnitName Value="LMessages"/>
+        <EditorIndex Value="18"/>
+        <CursorPos X="3" Y="52"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/interfaces/win32/win32callback.inc"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="2471"/>
+        <CursorPos X="35" Y="2541"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="113"/>
+        <CursorPos X="30" Y="203"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/imagelistcache.pas"/>
+        <UnitName Value="ImageListCache"/>
+        <EditorIndex Value="13"/>
+        <CursorPos X="14" Y="66"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="1944"/>
+        <CursorPos X="10" Y="1973"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../lcl/customdrawncontrols.pas"/>
+        <UnitName Value="CustomDrawnControls"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="2103"/>
+        <CursorPos X="12" Y="2152"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory HistoryIndex="29">
+      <Position>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+        <Caret Line="401" Column="24" TopLine="313"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="109" Column="15" TopLine="79"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="624" Column="23" TopLine="576"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="101" Column="15" TopLine="72"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+        <Caret Line="380" Column="3" TopLine="350"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="82" Column="26" TopLine="53"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="91" Column="26" TopLine="54"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+        <Caret Line="158" Column="3" TopLine="129"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/include/buttonglyph.inc"/>
+        <Caret Line="203" Column="27" TopLine="113"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="137" Column="26" TopLine="73"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="625" Column="45" TopLine="575"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="624" Column="10" TopLine="574"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="520" Column="11" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="521" Column="11" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="624" TopLine="591"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="520" Column="11" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="604" Column="31" TopLine="577"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="519" Column="11" TopLine="491"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="624" TopLine="561"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="521" Column="11" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="622" Column="3" TopLine="591"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="525" Column="52" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="578" Column="3" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="525" Column="10" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/customdrawncontrols.pas"/>
+        <Caret Line="2152" Column="12" TopLine="2103"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="570" Column="13" TopLine="492"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="662" Column="15" TopLine="613"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="521" Column="11" TopLine="497"/>
+      </Position>
+      <Position>
+        <Filename Value="../../lcl/buttons.pp"/>
+        <Caret Line="622" Column="3" TopLine="591"/>
+      </Position>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
@@ -121,6 +399,9 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -129,16 +410,16 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>

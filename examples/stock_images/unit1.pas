@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Forms, Graphics, Dialogs, ComCtrls, ExtCtrls, LCLType, StdCtrls, Buttons;
+  Forms, Graphics, Dialogs, ComCtrls, ExtCtrls, LCLType, StdCtrls, Buttons, DialogRes, ImgList;
 
 type
 
@@ -43,13 +43,10 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  DialogTrack.Min := idDialogWarning - idDialogBase;
-  DialogTrack.Max := idDialogShield - idDialogBase;
-  DialogTrack.Position := DialogTrack.Min;
+  DialogTrack.SetParams(Low(TDialogImage), Low(TDialogImage), High(TDialogImage));
   UpdateDialogImage;
 
-  ButtonTrack.Min := idButtonOk - idButtonBase;
-  ButtonTrack.Max := idButtonShield - idButtonBase;
+  ButtonTrack.SetParams(Low(TButtonImage), Low(TButtonImage), High(TButtonImage));
   ButtonTrack.Position := ButtonTrack.Min;
   UpdateButtonImage;
 end;
@@ -65,33 +62,17 @@ begin
 end;
 
 procedure TForm1.UpdateDialogImage;
-var
-  B: TCustomBitmap;
 begin
-  B := GetDialogIcon(DialogTrack.Position + idDialogBase);
-  if B <> nil then
-  begin
-    DialogImage.Picture.Graphic := B;
-    B.Free;
-  end
-  else
-    DialogImage.Picture.Clear;
-  DialogCaptionLbl.Caption := GetDialogCaption(DialogTrack.Position + idDialogBase);
+  DialogImage.ImageIndex := DialogGlyphs.DialogIcon[DialogTrack.Position];
+  DialogImage.Images := DialogGlyphs;
+  DialogCaptionLbl.Caption := GetDialogCaption(DialogTrack.Position);
 end;
 
 procedure TForm1.UpdateButtonImage;
-var
-  B: TCustomBitmap;
 begin
-  B := GetButtonIcon(ButtonTrack.Position + idButtonBase);
-  if B <> nil then
-  begin
-    ButtonImage.Picture.Graphic := B;
-    B.Free;
-  end
-  else
-    ButtonImage.Picture.Clear;
-  ButtonCaptionLbl.Caption := GetButtonCaption(ButtonTrack.Position + idButtonBase);
+  ButtonImage.ImageIndex := GetButtonImageIndex(ButtonTrack.Position);
+  ButtonImage.Images := LCLGlyphs;
+  ButtonCaptionLbl.Caption := GetButtonCaption(ButtonTrack.Position);
 end;
 
 end.

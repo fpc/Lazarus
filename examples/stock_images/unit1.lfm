@@ -24,7 +24,7 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BitBtn1
     Left = 6
-    Height = 206
+    Height = 211
     Top = 6
     Width = 192
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -32,7 +32,7 @@ object Form1: TForm1
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     Caption = 'Dialog Icons:'
-    ClientHeight = 183
+    ClientHeight = 191
     ClientWidth = 188
     TabOrder = 0
     object DialogImage: TImage
@@ -43,8 +43,8 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DialogTrack
       Left = 6
-      Height = 97
-      Top = 33
+      Height = 111
+      Top = 27
       Width = 176
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
@@ -56,7 +56,7 @@ object Form1: TForm1
       AnchorSideRight.Control = GroupBox1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 15
       Top = 6
       Width = 176
       Anchors = [akTop, akLeft, akRight]
@@ -73,7 +73,7 @@ object Form1: TForm1
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 41
-      Top = 136
+      Top = 144
       Width = 176
       OnChange = DialogTrackChange
       Position = 0
@@ -90,7 +90,7 @@ object Form1: TForm1
     AnchorSideBottom.Control = GroupBox1
     AnchorSideBottom.Side = asrBottom
     Left = 203
-    Height = 206
+    Height = 211
     Top = 6
     Width = 191
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -98,7 +98,7 @@ object Form1: TForm1
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'Button Icons:'
-    ClientHeight = 183
+    ClientHeight = 191
     ClientWidth = 187
     TabOrder = 1
     object ButtonImage: TImage
@@ -109,8 +109,8 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ButtonTrack
       Left = 6
-      Height = 97
-      Top = 33
+      Height = 111
+      Top = 27
       Width = 175
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
@@ -122,7 +122,7 @@ object Form1: TForm1
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 15
       Top = 6
       Width = 175
       Anchors = [akTop, akLeft, akRight]
@@ -139,7 +139,7 @@ object Form1: TForm1
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 41
-      Top = 136
+      Top = 144
       Width = 175
       OnChange = ButtonTrackChange
       Position = 0
@@ -154,8 +154,8 @@ object Form1: TForm1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 319
-    Height = 31
-    Top = 218
+    Height = 26
+    Top = 223
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True

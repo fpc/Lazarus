@@ -13,6 +13,8 @@ uses
 {$R *.res}
 
 begin
+  Application.Scaled := True;
+  Application.Title := 'Stock image tester';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
