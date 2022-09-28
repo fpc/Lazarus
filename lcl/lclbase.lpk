@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="3"/>
-    <Files Count="287">
+    <Files Count="288">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1186,6 +1186,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WSShellCtrls"/>
       </Item287>
+      <Item288>
+        <Filename Value="dialogres.pas"/>
+        <UnitName Value="DialogRes"/>
+      </Item288>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>

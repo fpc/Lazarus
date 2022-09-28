@@ -26,7 +26,7 @@ uses
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
+  ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog, DialogRes,
   // LazUtils
   GraphType, UITypes, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
@@ -780,7 +780,7 @@ function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Int
 
 // helper functions (search LCLType for idDiag)
 function GetDialogCaption(idDiag: Integer): string;
-function GetDialogIcon(idDiag: Integer): TCustomBitmap;
+function GetDialogIcon(idDiag: Integer): TCustomBitmap; deprecated 'Use DialogRes.GetDialogImages';
 
 function dbgs(Option: TOpenOption): string; overload;
 function dbgs(Options: TOpenOptions): string; overload;
@@ -788,10 +788,6 @@ function dbgs(Options: TOpenOptions): string; overload;
 procedure Register;
 
 implementation
-
-{$R dialog_icons.res}
-{ $R forms/finddlgunit.lfm}
-{ $R forms/replacedlgunit.lfm}
 
 uses 
   Math, WSDialogs;
