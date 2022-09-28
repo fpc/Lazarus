@@ -16,23 +16,24 @@ type
   TPromptDialog = class(TCustomCopyToClipboardDialog)
   private
     FCancelKind: TBitBtnKind;
-    function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer): Integer;
+    FCreatedButtons : Array[Low(DialogButtonKind)..High(DialogButtonKind)] of TBitBtn;
+    procedure CreateButtons;
   protected
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
-    procedure ChangeScale(Multiplier, Divider: Integer); override;
     procedure FontChanged(Sender: TObject); override;
   public
     IsSmallDevice: Boolean;
   
     TheDefaultIndex : Longint;
 
-    FBitmap: TCustomBitmap;
+    FImageIndex: Integer;
     MSG : AnsiString;
     NumButtons : Longint;
     Buttons : PLongint;
 
     TextBox : TRect;
+    ImageBox: TRect;
     TextStyle : TTextStyle;
 
     procedure LayoutDialog;
@@ -45,54 +46,48 @@ type
   end;
 
 
-function TPromptDialog.CreateButtons(AVerticalLayout: Boolean;
- ASpacing: Integer): Integer;
+procedure TPromptDialog.CreateButtons;
 var
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
   ButtonIndex : integer;
   CurButton: TBitBtn;
   DefaultButton: TBitBtn;
 begin
-  Result := 0;
-
   ButtonIndex := -1;
   DefaultButton := nil;
   for curBtn := 0 to NumButtons - 1 do
   begin
     if (Buttons[curBtn] >= Low(DialogButtonKind)) and
-      (Buttons[curBtn] <= High(DialogButtonKind))
-    then
+       (Buttons[curBtn] <= High(DialogButtonKind)) then
     begin
-      inc(ButtonIndex);
-
-      CurButton := TBitBtn.Create(Self);
-      with CurButton do
+      if not Assigned(FCreatedButtons[Buttons[curBtn]]) then
       begin
-        Parent:= Self;
-        Layout  := blGlyphLeft;
+        inc(ButtonIndex);
 
-        Kind := DialogButtonKind[Buttons[curBtn]];
-        if Kind = FCancelKind then Cancel := True;
-
-        if Height < Glyph.Height + 5 then
-          Height := Glyph.Height + 5;
-
-        if ButtonIndex = TheDefaultIndex then
-          DefaultButton := CurButton;
-
-        Inc(Result, ASpacing);
-
-        if AVerticalLayout then Inc(Result, Height)
-        else
+        CurButton := TBitBtn.Create(Self);
+        FCreatedButtons[Buttons[curBtn]] := CurButton;
+        with CurButton do
         begin
-{          CurBtnSize:=GetButtonSize(CurButton);
-          Inc(Result, CurBtnSize.X);}
+          Parent:= Self;
+          Layout  := blGlyphLeft;
+          Kind := DialogButtonKind[Buttons[curBtn]];
+          if Kind = FCancelKind then Cancel := True;
+
+          if ButtonIndex = TheDefaultIndex then
+            DefaultButton := CurButton;
         end;
-      end;
+      end else
+        CurButton := FCreatedButtons[Buttons[curBtn]];
     end;
   end;
   if DefaultButton <> nil then
     DefaultButton.Default := True;
+end;
+
+destructor TPromptDialog.Destroy;
+begin
+  ReallocMem(Buttons, 0);
+  inherited Destroy;
 end;
 
 procedure TPromptDialog.Paint;
@@ -112,12 +107,8 @@ begin
   Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MSG, ATextStyle);
 
   // Draws the icon
-  if Assigned (FBitmap) and not IsSmallDevice then
-  begin
-    Canvas.StretchDraw(
-      Rect(cBitmapX, cBitmapY, cBitmapX+ScaleScreenToFont(FBitmap.Width), cBitmapY+ScaleScreenToFont(FBitmap.Height)),
-      FBitmap);
-  end;
+  if (FImageIndex>=0) and not IsSmallDevice then
+    DialogGlyphs.StretchDraw(Canvas, FImageIndex, ImageBox);
 end;
 
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
@@ -140,7 +131,7 @@ begin
   SetInitialBounds(0,0,200,100);
   MSG         := LineBreaksToSystemLineBreaks(AMSG);
   Buttons     := nil;
-  FBitmap := nil;
+  FImageIndex := -1;
   case DialogType of
     idDialogConfirm,
     idDialogInfo,
@@ -148,7 +139,7 @@ begin
     idDialogError,
     idDialogShield:
       begin
-        FBitmap := GetDialogIcon(DialogType);
+        FImageIndex := DialogGlyphs.DialogIcon[DialogType];
 
         if ACaption <> '' then
           Caption := ACaption
@@ -157,7 +148,7 @@ begin
       end;
     else
       begin
-        //FBitmap := GetDialogIcon(idDialogInfo); //Delphi does not display an Icon in this case
+        //FImageIndex := DialogGlyphs.DialogIcon[idDialogInfo]; //Delphi does not display an Icon in this case
         if ACaption <> '' then
           Caption := ACaption
         else
@@ -165,7 +156,11 @@ begin
       end
   end;
   NumButtons := ButtonCount;
-  Buttons := TheButtons;
+  if NumButtons>0 then
+  begin
+    ReallocMem(Buttons, ButtonCount * SizeOf(Longint));
+    Move(TheButtons^, Buttons^, ButtonCount * SizeOf(Longint));
+  end;
 
   if (DefaultIndex >= ButtonCount) or (DefaultIndex < 0) then
     TheDefaultIndex := 0
@@ -209,35 +204,16 @@ begin
     LayoutDialog;
 end;
 
-procedure TPromptDialog.ChangeScale(Multiplier, Divider: Integer);
-begin
-  inherited ChangeScale(Multiplier, Divider);
-
-  TextBox.Left := MulDiv(TextBox.Left, Multiplier, Divider);
-  TextBox.Top := MulDiv(TextBox.Top, Multiplier, Divider);
-  TextBox.Right := MulDiv(TextBox.Right, Multiplier, Divider);
-  TextBox.Bottom := MulDiv(TextBox.Bottom, Multiplier, Divider);
-end;
-
-destructor TPromptDialog.Destroy;
-begin
-  FBitmap.Free;
-  inherited destroy;
-end;
-
 procedure TPromptDialog.DoAutoAdjustLayout(
   const AMode: TLayoutAdjustmentPolicy; const AXProportion,
   AYProportion: Double);
 begin
   inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
 
-  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
-  begin
-    TextBox.Left := Round(TextBox.Left*AXProportion);
-    TextBox.Top := Round(TextBox.Top*AYProportion);
-    TextBox.Right := Round(TextBox.Right*AXProportion);
-    TextBox.Bottom := Round(TextBox.Bottom*AYProportion);
-  end;
+  if IsSmallDevice then
+    LayoutDialogSmallDevice
+  else
+    LayoutDialog;
 end;
 
 procedure TPromptDialog.FontChanged(Sender: TObject);
@@ -256,8 +232,6 @@ procedure TPromptDialog.LayoutDialog;
 const
   cBtnCalcWidth  = 50;
   cBtnCalcHeight = 13;
-  cBtnCalcSpace   = 4;
-  cBtnCalcBorder = 4;
   cBtnDist = 10;
 var
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
@@ -279,17 +253,7 @@ var
   begin
     AButton.HandleNeeded;
 
-    // Issue 32704: Fix button size at high dpi
-    // CalcPreferredSize uses the real font size although the button's
-    // Font.PixelsPerInch is still at 96ppi here.
-    // Because the general LCL scaling procedure, AutoAdjustLayout, will
-    // later scale the button size again, we must scale the output of
-    // GetPreferredSize down to 96 ppi here.
-    AButton.Font.PixelsPerInch := Monitor.PixelsPerInch;
     TBitBtnAccess(AButton).CalculatePreferredSize(Result.x, Result.y, True);
-    Result.x := AButton.ScaleFontTo96(Result.x);
-    Result.y := AButton.ScaleFontTo96(Result.y);
-    AButton.Font.PixelsPerInch := 96;
 
     if MinBtnHeight < Result.y then
       MinBtnHeight := Result.y
@@ -305,52 +269,50 @@ begin
 
   // calculate the needed size for the text
   TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
-  SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
+  // SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
     TextBox, DT_WORDBREAK or DT_CALCRECT or DT_NOPREFIX);
 
   // calculate the width we need to display the buttons
-  MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
-  MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
+  MinBtnWidth:=Scale96ToFont(Max(25,MinimumDialogButtonWidth));
+  MinBtnHeight:=Scale96ToFont(Max(15,MinimumDialogButtonHeight));
   reqBtnWidth := 0;
 
   // create the buttons, without positioning
-  ButtonIndex := -1;
-  DefaultButton := nil;
-  for curBtn := 0 to NumButtons - 1 do
+  CreateButtons;
+
+  // calculate the height of the text+icon
+  reqHeight:= max(TextBox.Bottom, Scale96ToFont(32));
+  ButtonTop := reqHeight + 2*Scale96ToFont(cLabelSpacing);
+
+  // position buttons and activate default
+  ButtonLeft := 0;
+  for i := 0 to ComponentCount-1 do
   begin
-    if (Buttons[curBtn] >= Low(DialogButtonKind)) and
-       (Buttons[curBtn] <= High(DialogButtonKind)) then
+    if (Components[i] is TBitBtn) then
     begin
-      inc(ButtonIndex);
+      CurButton := TBitBtn(Components[i]);
+      CurBtnSize := GetButtonSize(CurButton);
+      CurButton.SetBounds(ButtonLeft, ButtonTop, CurBtnSize.X, CurBtnSize.Y);
+      inc(ButtonLeft, CurButton.Width + Scale96ToFont(cBtnDist));
 
-      CurButton := TBitBtn.Create(Self);
-      with CurButton do
+      if (CurButton.Default) then
       begin
-        Parent:= Self;
-        Layout  := blGlyphLeft;
-        Kind := DialogButtonKind[Buttons[curBtn]];
-        if Kind = FCancelKind then Cancel := True;
-        if Height < Glyph.Height + 5 then
-          Height := Glyph.Height + 5;
-
-        if ButtonIndex = TheDefaultIndex then
-          DefaultButton := CurButton;
-
-        CurBtnSize:=GetButtonSize(CurButton);
-        if reqBtnWidth > 0 then inc(reqBtnWidth, cBtnDist);
-        Inc(reqBtnWidth, CurBtnSize.X);
+        ActiveControl := CurButton;
+        DefaultControl := CurButton;
       end;
     end;
   end;
-  if DefaultButton <> nil then
-    DefaultButton.Default := True;
+  reqBtnWidth := ButtonLeft-Scale96ToFont(cBtnDist);
 
   // calculate the minimum text offset from left
-  if FBitmap <> nil then
-    cMinLeft := cBitmapX + max(32, FBitmap.Width) + cLabelSpacing
-  else
-    cMinLeft := cLabelSpacing;
+  if FImageIndex >= 0 then
+  begin
+    ImageBox := Rect(Scale96ToFont(cBitmapX), Scale96ToFont(cBitmapY), 0, 0);
+    ImageBox.Size := DialogGlyphs.SizeForPPI[32, Font.PixelsPerInch];
+  end else
+    ImageBox := Rect(0, 0, 0, 0);
+  cMinLeft := ImageBox.Right + Scale96ToFont(cLabelSpacing);
 
   // calculate required width for the text
   reqWidth := cMinLeft + TextBox.Right;
@@ -360,42 +322,28 @@ begin
   if reqWidth < reqBtnWidth then
   begin
     reqWidth := reqBtnWidth;
-    TextLeft := max(cMinLeft, cLabelSpacing + (reqWidth - TextBox.Right) div 2);
+    TextLeft := max(cMinLeft, Scale96ToFont(cLabelSpacing) + (reqWidth - TextBox.Right) div 2);
   end
   else
     TextLeft := (cMinLeft + reqWidth - TextBox.Right) div 2;
 
   // position the text
-  OffsetRect(TextBox, TextLeft, cLabelSpacing);
-
-  // calculate the height of the text+icon
-  reqHeight:= max(TextBox.Bottom, 32);
-  if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
-    reqHeight := FBitmap.Height;
+  OffsetRect(TextBox, TextLeft, Scale96ToFont(cLabelSpacing));
 
   // set size of form
-  SetBounds(Left, Top, reqWidth + 2 * cLabelSpacing,
-        3 * cLabelSpacing + reqHeight + MinBtnHeight);
+  ClientWidth := reqWidth + 2 * Scale96ToFont(cLabelSpacing);
+  ClientHeight := 3 * Scale96ToFont(cLabelSpacing) + reqHeight + MinBtnHeight;
 
   // calculate the left of the buttons
-  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
-  ButtonTop := reqHeight + 2*cLabelSpacing;
-
-  // position buttons and activate default
+  ButtonLeft := ((ClientWidth - reqBtnWidth) div 2);
+  // center buttons
   for i := 0 to ComponentCount-1 do
   begin
     if (Components[i] is TBitBtn) then
     begin
       CurButton := TBitBtn(Components[i]);
-      CurBtnSize := GetButtonSize(CurButton);
-      CurButton.SetBounds(ButtonLeft, ButtonTop, CurBtnSize.X, CurBtnSize.Y);
-      inc(ButtonLeft, CurButton.Width + cBtnDist);
-      
-      if (CurButton.Default) then
-      begin
-        ActiveControl := CurButton;
-        DefaultControl := CurButton;
-      end;
+      CurButton.Left := ButtonLeft;
+      inc(ButtonLeft, CurButton.Width + Scale96ToFont(cBtnDist));
     end;
   end;
 end;
@@ -451,19 +399,22 @@ var
    MinHeightForButtons,
    reqHeight: Integer;
 begin
+  FImageIndex := -1;
   // Create buttons without positioning and
   // Calculate the minimum size for the buttons
   // First thing so that ComponentCount is updated
-  MinHeightForButtons := CreateButtons(True, cVerticalSpacing);
+  CreateButtons;
+  MinHeightForButtons := 100;
 
   // calculate the width & height we need to display the Message
 
   // calculate the needed size for the text
   if ComponentCount = 1 then { one button layout }
-    TextBox := Rect(0, 0, cOneButtonTextWidth, Screen.Height - 100)
+    TextBox := Rect(0, 0, Scale96ToFont(cOneButtonTextWidth), Screen.Height - 100)
   else
-    TextBox := Rect(0, 0, cTextWidth, Screen.Height - 100);
+    TextBox := Rect(0, 0, Scale96ToFont(cTextWidth), Screen.Height - 100);
 
+  Canvas.Font.PixelsPerInch := Font.PixelsPerInch;
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
     TextBox, DT_WORDBREAK or DT_CALCRECT);
 
@@ -472,34 +423,19 @@ begin
 
   if ComponentCount = 1 then { one button layout }
   begin
-    TextBox.Top := 2*cVerticalSpacing + MinHeightForButtons;
+    MinHeightForButtons := TBitBtn(Components[0]).Height;
+    TextBox.Top := 2*Scale96ToFont(cVerticalSpacing) + MinHeightForButtons;
     Inc(TextBox.Bottom, TextBox.Top);
-    TextBox.Left := cHorizontalSpacing;
-    TextBox.Right := cOneButtonTextWidth + TextBox.Left;
-  end
-  else
-  begin
-    TextBox.Top := cVerticalSpacing;
-    Inc(TextBox.Bottom, TextBox.Top);
-    TextBox.Left := cHorizontalSpacing;
-    TextBox.Right := cTextWidth + TextBox.Left;
-  end;
-
-  reqHeight := Max(MinHeightForText, MinHeightForButtons);
-
-  if ComponentCount = 1 then { one button layout }
-  begin
-    // set size of form
-    Height := (TextBox.Bottom - TextBox.Top) + 3*cVerticalSpacing + MinHeightForButtons;
-    Width := 200;
+    TextBox.Left := Scale96ToFont(cHorizontalSpacing);
+    TextBox.Right := Scale96ToFont(cOneButtonTextWidth) + TextBox.Left;
 
     // position buttons and activate default
     if (Components[0] is TBitBtn) then
     begin
       CurButton:=TBitBtn(Components[0]);
-      CurButton.Left := cDialogHalfWidth - cButtonWidth div 2;
-      CurButton.Top := cVerticalSpacing;
-      CurButton.Width := cButtonWidth;
+      CurButton.Left := Scale96ToFont(cDialogHalfWidth) - Scale96ToFont(cButtonWidth) div 2;
+      CurButton.Top := Scale96ToFont(cVerticalSpacing);
+      CurButton.Width := Scale96ToFont(cButtonWidth);
       if (CurButton.Default) then
       begin
         ActiveControl:=CurButton;
@@ -509,13 +445,9 @@ begin
   end
   else
   begin
-    // set size of form
-    Height := reqHeight + cVerticalSpacing;
-    Width := 200;
-
     // calculate the left of the buttons
-    ButtonLeft := cTextWidth + 2 * cHorizontalSpacing;
-    ButtonTop := cVerticalSpacing;
+    ButtonLeft := Scale96ToFont(cTextWidth + 2 * cHorizontalSpacing);
+    ButtonTop := Scale96ToFont(cVerticalSpacing);
 
     // position buttons and activate default
     for i:=0 to ComponentCount-1 do
@@ -525,9 +457,9 @@ begin
         CurButton:=TBitBtn(Components[i]);
         CurButton.Left := ButtonLeft;
         CurButton.Top := ButtonTop;
-        CurButton.Width := cButtonWidth;
+        CurButton.Width := Scale96ToFont(cButtonWidth);
 
-        inc(ButtonTop, CurButton.Height + cVerticalSpacing);
+        inc(ButtonTop, CurButton.Height + Scale96ToFont(cVerticalSpacing));
 
         if (CurButton.Default) then
         begin
@@ -536,6 +468,26 @@ begin
         end;
       end;
     end;
+
+    TextBox.Top := Scale96ToFont(cVerticalSpacing);
+    Inc(TextBox.Bottom, TextBox.Top);
+    TextBox.Left := cHorizontalSpacing;
+    TextBox.Right := cTextWidth + TextBox.Left;
+    MinHeightForButtons := ButtonTop - Scale96ToFont(cVerticalSpacing);
+  end;
+
+  reqHeight := Max(MinHeightForText, MinHeightForButtons);
+
+  if ComponentCount = 1 then { one button layout }
+  begin
+    // set size of form
+    Height := (TextBox.Bottom - TextBox.Top) + 3*Scale96ToFont(cVerticalSpacing) + MinHeightForButtons;
+    Width := Scale96ToFont(200);
+  end else
+  begin
+    // set size of form
+    ClientHeight := reqHeight + Scale96ToFont(cVerticalSpacing);
+    ClientWidth := Scale96ToFont(200);
   end;
 
   // We need to avoid a too high dialog which would go out
