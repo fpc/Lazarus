@@ -503,6 +503,9 @@ type
   TCustomImage = class(TGraphicControl)
   private
     FAntialiasingMode: TAntialiasingMode;
+    FImageIndex: Integer;
+    FImages: TCustomImageList;
+    FImageWidth: Integer;
     FOnPictureChanged: TNotifyEvent;
     FOnPaintBackground: TImagePaintBackgroundEvent;
     FPicture: TPicture;
@@ -517,7 +520,11 @@ type
     FUseAncestorCanvas: boolean;
     FPainting: boolean;
     function  GetCanvas: TCanvas;
+    function GetHasGraphic: Boolean;
     procedure SetAntialiasingMode(AValue: TAntialiasingMode);
+    procedure SetImageIndex(const AImageIndex: Integer);
+    procedure SetImages(const AImages: TCustomImageList);
+    procedure SetImageWidth(const AImageWidth: Integer);
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);
     procedure SetKeepOriginX(AValue: Boolean);
@@ -541,6 +548,7 @@ type
     property Canvas: TCanvas read GetCanvas;
     function DestRect: TRect; virtual;
     procedure Invalidate; override;
+    property HasGraphic: Boolean read GetHasGraphic; // has either a picture or valid image from imagelist
   public
     property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property Align;
@@ -549,6 +557,9 @@ type
     property KeepOriginXWhenClipped: Boolean read FKeepOriginXWhenClipped write SetKeepOriginX default False;
     property KeepOriginYWhenClipped: Boolean read FKeepOriginYWhenClipped write SetKeepOriginY default False;
     property Constraints;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default 0;
+    property ImageWidth: Integer read FImageWidth write SetImageWidth default 0; // a specific width for the image from Images
+    property Images: TCustomImageList read FImages write SetImages;
     property Picture: TPicture read FPicture write SetPicture;
     property Visible;
     property OnClick;
@@ -586,6 +597,9 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    property ImageIndex;
+    property ImageWidth;
+    property Images;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;

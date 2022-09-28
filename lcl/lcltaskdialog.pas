@@ -683,7 +683,7 @@ var
   Par: TWinControl;
   Panel: TPanel;
   CurrTabOrder: TTabOrder;
-  Image: TImageListImage;
+  Image: TImage;
   List: TStrings;
   B: TCommonButton;
   CommandLink: TBitBtn;
@@ -878,7 +878,7 @@ begin
 
     if (LCL_IMAGES[aDialogIcon]<>0) then
     begin
-      Image := TImageListImage.Create(Dialog.Form);
+      Image := TImage.Create(Dialog.Form);
       Image.Parent := Par;
       Image.Images := GetDialogImages;
       Image.ImageIndex := GetDialogImages.DialogIndexes[LCL_IMAGES[aDialogIcon]];
@@ -1076,7 +1076,7 @@ begin
         inc(Y,16);
       if (LCL_FOOTERIMAGES[aFooterIcon]<>0) then
       begin
-        Image := TImageListImage.Create(Dialog.Form);
+        Image := TImage.Create(Dialog.Form);
         Image.Parent := Par;
         Image.Images := GetDialogImages;
         Image.ImageWidth := 16;

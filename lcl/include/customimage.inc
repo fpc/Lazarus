@@ -135,6 +135,27 @@ begin
   PictureChanged(Self);
 end;
 
+procedure TCustomImage.SetImageIndex(const AImageIndex: Integer);
+begin
+  if FImageIndex = AImageIndex then Exit;
+  FImageIndex := AImageIndex;
+  PictureChanged(Self);
+end;
+
+procedure TCustomImage.SetImages(const AImages: TCustomImageList);
+begin
+  if FImages = AImages then Exit;
+  FImages := AImages;
+  PictureChanged(Self);
+end;
+
+procedure TCustomImage.SetImageWidth(const AImageWidth: Integer);
+begin
+  if FImageWidth = AImageWidth then Exit;
+  FImageWidth := AImageWidth;
+  PictureChanged(Self);
+end;
+
 procedure TCustomImage.SetProportional(const AValue: Boolean);
 begin
   if FProportional = AValue then exit;
@@ -144,24 +165,26 @@ end;
 
 procedure TCustomImage.PictureChanged(Sender : TObject);
 begin
-  if Picture.Graphic <> nil
-  then begin
-    if AutoSize
-    then begin
+  if HasGraphic then
+  begin
+    if AutoSize then
+    begin
       InvalidatePreferredSize;
       AdjustSize;
     end;
-    Picture.Graphic.Transparent := FTransparent;
+    if Assigned(Picture.Graphic) then
+      Picture.Graphic.Transparent := FTransparent;
   end;
-  invalidate;
+  Invalidate;
   if Assigned(OnPictureChanged) then
     OnPictureChanged(Self);
 end;
 
 function TCustomImage.DestRect: TRect;
 var
-  PicWidth: Integer;
-  PicHeight: Integer;
+  PicSize: TSize;
+  PicWidth: Integer absolute PicSize.Width;
+  PicHeight: Integer absolute PicSize.Height;
   ImgWidth: Integer;
   ImgHeight: Integer;
   w: Integer;
@@ -169,8 +192,13 @@ var
   ChangeX, ChangeY: Integer;
   PicInside, PicOutside, PicOutsidePartial: boolean;
 begin
-  PicWidth := Picture.Width;
-  PicHeight := Picture.Height;
+  if Assigned(Picture.Graphic) then
+    PicSize := TSize.Create(Picture.Width, Picture.Height)
+  else
+  if Assigned(Images) then
+    PicSize := Images.SizeForPPI[ImageWidth, Font.PixelsPerInch]
+  else
+    Exit(TRect.Create(0, 0, 0, 0));
   ImgWidth := ClientWidth;
   ImgHeight := ClientHeight;
   if (PicWidth=0) or (PicHeight=0) then Exit(Rect(0, 0, 0, 0));
@@ -217,15 +245,31 @@ end;
 
 procedure TCustomImage.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  S: TSize;
 begin
-  PreferredWidth := Picture.Width;
-  PreferredHeight := Picture.Height;
+  if Assigned(Picture.Graphic) then
+  begin
+    PreferredWidth := Picture.Width;
+    PreferredHeight := Picture.Height;
+  end else
+  if Assigned(Images) then
+  begin
+    S := Images.SizeForPPI[ImageWidth, Font.PixelsPerInch];
+    PreferredWidth := S.Width;
+    PreferredHeight := S.Height;
+  end;
 end;
 
 class function TCustomImage.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 90;
   Result.CY := 90;
+end;
+
+function TCustomImage.GetHasGraphic: Boolean;
+begin
+  Result := Assigned(Picture.Graphic) or (Assigned(Images) and (ImageIndex>=0));
 end;
 
 procedure TCustomImage.Paint;
@@ -254,8 +298,8 @@ begin
   if csDesigning in ComponentState
   then DrawFrame;
   
-  if Picture.Graphic = nil
-  then Exit;
+  if not HasGraphic then
+    Exit;
 
   C := inherited Canvas;
   R := DestRect;
@@ -264,7 +308,12 @@ begin
   try
     if Assigned(FOnPaintBackground) then
       FOnPaintBackground(Self, C, R);
-    C.StretchDraw(R, Picture.Graphic);
+
+    if Assigned(Picture.Graphic) then
+      C.StretchDraw(R, Picture.Graphic)
+    else
+    if Assigned(Images) and (ImageIndex>=0) then
+      Images.StretchDraw(C, ImageIndex, R);
   finally
     FPainting:=false;
   end;
