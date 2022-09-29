@@ -30,7 +30,7 @@ uses
   Forms, Controls, LCLType, Classes,
 ////////////////////////////////////////////////////
   WSForms, WSProc, WSLCLClasses, Windows, SysUtils, Win32Extra,
-  InterfaceBase, Win32Int, Win32Proc, Win32WSControls;
+  InterfaceBase, Graphics, Win32Int, Win32Proc, Win32WSControls;
 
 type
 
@@ -124,18 +124,6 @@ type
 
 
 implementation
-
-type
-// in Windows 10, we need DPI-aware functions (that are available since Windows 10)
-//function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL; stdcall; external 'user32.dll' name 'AdjustWindowRectExForDpi';
-  TAdjustWindowRectExForDpi = function(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL; stdcall;
-//function GetDpiForWindow(hwnd: HWND): UINT; stdcall; external 'user32.dll' name 'GetDpiForWindow';
-  TGetDpiForWindow = function(hwnd: HWND): UINT; stdcall;
-
-var
-  ExtraFunctionsChecked: Boolean = False;
-  AdjustWindowRectExForDpi: TAdjustWindowRectExForDpi;
-  GetDpiForWindow: TGetDpiForWindow;
 
 type
   TWinControlAccess = class(TWinControl)
@@ -318,26 +306,16 @@ end;
 
 procedure AdjustFormBounds(const AForm: TCustomForm; var ioSizeRect: TRect);
 var
-  LibHandle: TLibHandle;
+  dpi: LCLType.UINT;
 begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
-  if not ExtraFunctionsChecked then
-  begin
-    LibHandle := LoadLibrary('user32.dll');
-    if LibHandle<>0 then
-    begin
-      Pointer(AdjustWindowRectExForDpi) := GetProcAddress(LibHandle, 'AdjustWindowRectExForDpi');
-      Pointer(GetDpiForWindow) := GetProcAddress(LibHandle, 'GetDpiForWindow');
-    end;
-    ExtraFunctionsChecked := True;
-  end;
-  if Assigned(AdjustWindowRectExForDpi) and Assigned(GetDpiForWindow) and AForm.HandleAllocated then // use DPI-aware variant
-    AdjustWindowRectExForDpi(@ioSizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
-      False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm), GetDpiForWindow(AForm.Handle))
+  if AForm.HandleAllocated then
+    dpi := GetDpiForWindow(AForm.Handle)
   else
-    Windows.AdjustWindowRectEx(@ioSizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
-      False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
+    dpi := ScreenInfo.PixelsPerInchX;
+  AdjustWindowRectExForDpi(@ioSizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
+    False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm), dpi);
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;

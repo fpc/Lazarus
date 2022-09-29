@@ -2425,9 +2425,9 @@ var
   begin
     if (Info.dwStyle and (WS_CHILD or WS_CAPTION)) = WS_CAPTION then
       if (Info.dwExStyle and WS_EX_TOOLWINDOW) <> 0 then
-        Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+        Dec(Height, GetSystemMetricsForDpi(SM_CYSMCAPTION, GetDpiForWindow(Handle)))
       else
-        Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+        Dec(Height, GetSystemMetricsForDpi(SM_CYCAPTION, GetDpiForWindow(Handle)));
   end;
 
   procedure SetWidthHeightFromRect(const R: TRect); inline;
@@ -2458,8 +2458,10 @@ begin
       else
         SetWidthHeightFromRect(Info.rcWindow);
       {$IFNDEF LCLRealFormBounds}
-      Width := Width - 2 * Integer(Info.cxWindowBorders);
-      Height := Height - 2 * Integer(Info.cyWindowBorders);
+      if Info.cxWindowBorders>0 then
+        Dec(Width, 2*(GetSystemMetricsForDpi(SM_CXSIZEFRAME, GetDpiForWindow(Handle))+GetSystemMetricsForDpi(SM_CXPADDEDBORDER, GetDpiForWindow(Handle))));
+      if Info.cyWindowBorders>0 then
+        Dec(Height, 2*(GetSystemMetricsForDpi(SM_CYSIZEFRAME, GetDpiForWindow(Handle))+GetSystemMetricsForDpi(SM_CXPADDEDBORDER, GetDpiForWindow(Handle))));
       ExcludeCaption;
       {$ENDIF}
       //WriteLn('W = ', Width, ' H = ', Height);
@@ -2483,26 +2485,6 @@ begin
   end;
 
   WindowInfo := GetWin32WindowInfo(Handle);
-
-  // convert top level lcl window coordinaties to win32 coord
-  Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
-  Info.dwExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE));
-  if (Info.dwStyle and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
-  begin
-    // thick, sizing border
-    // add twice, top+bottom border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
-  end else
-  if (Info.dwStyle and (WS_CHILD or WS_BORDER)) = WS_BORDER then
-  begin
-    // thin, non-sizing border
-    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
-    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
-  end;
-
-  ExcludeCaption;
-
   if WindowInfo^.UpDown <> 0 then
     AdjustUpDownSize;
 end;
