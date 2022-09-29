@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+<!-- DialogRes -->
+<module name="DialogRes">
+<short>
+Contains types and constants used to access scalable dialog images.
+</short>
+<descr>
+<p>
+<file>DialogRes.pas</file> contains constants and types used to access scalable images as TIcon or TImage resources used on dialog forms.
+</p>
+<p>
+<file>DialogRes.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
+</p>
+</descr>  
+
+<!-- unresolved references -->
+<element name="windows"/>
+<element name="ctype"/>
+<element name="lcltype"/>
+<element name="graphics"/>
+<element name="themes"/>
+<element name="controls"/>
+<element name="imglist"/>
+<element name="interfacebase"/>
+<element name="lclintf"/>
+<element name="sysutils"/>
+<element name="classes"/>
+
+<element name="TDialogImage">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="DialogResName">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- MSWindows external symbols -->
+<element name="IDI_HAND">
+<short/>
+</element>
+<element name="IDI_QUESTION">
+<short/>
+</element>
+<element name="IDI_EXCLAMATION">
+<short/>
+</element>
+<element name="IDI_ASTERISK">
+<short/>
+</element>
+<element name="IDI_WINLOGO">
+<short/>
+</element>
+<element name="IDI_SHIELD">
+<short/>
+</element>
+<element name="IDI_WARNING">
+<short/>
+</element>
+<element name="IDI_ERROR">
+<short/>
+</element>
+<element name="IDI_INFORMATION">
+<short/>
+</element>
+
+<element name="TDialogImageList">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TDialogImageList.fDialogIndexes"/>
+<element name="TDialogImageList.LoadImage"/>
+<element name="TDialogImageList.LoadImage.AIndex"/>
+<element name="TDialogImageList.GetDialogIcon"/>
+<element name="TDialogImageList.GetDialogIcon.Result"/>
+<element name="TDialogImageList.GetDialogIcon.AIndex"/>
+
+<!-- public -->
+<element name="TDialogImageList.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TDialogImageList.Create.AOwner">
+<short/>
+</element>
+
+<element name="TDialogImageList.DialogIcon">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TDialogImageList.DialogIcon.AIndex">
+<short/>
+</element>
+
+<element name="DialogGlyphs">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="DialogGlyphs.Result">
+<short/>
+</element>
+
+</module>
+<!-- DialogRes -->
+</package>
+</fpdoc-descriptions>
+
