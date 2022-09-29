@@ -322,13 +322,14 @@ begin
   WinHandle := AWinControl.Handle;
   UpDown := GetWin32WindowInfo(WinHandle)^.UpDown;
 
-  UpDownWidth := GetUpDownWidth(AWinControl);
   if (AWinControl as TCustomFloatSpinEdit).BorderStyle = bsNone then
     BorderWidth := 0
   else if (WindowsVersion >= wvXP) and ThemeServices.ThemesEnabled then
     BorderWidth := GetSystemMetrics(SM_CXBORDER)
   else
     BorderWidth := GetSystemMetrics(SM_CXEDGE);
+
+  UpDownWidth := (Height - BorderWidth * 2) div 5 * 4 +1 {to get odd number}; // calculate from height to scale it
 
   DWP := BeginDeferWindowPos(2);
   DeferWindowPos(DWP, UpDown, WinHandle, Left + Width - UpDownWidth - BorderWidth,
