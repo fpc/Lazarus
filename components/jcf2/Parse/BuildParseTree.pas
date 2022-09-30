@@ -163,7 +163,7 @@ type
     procedure RecogniseInterfaceType;
     procedure RecogniseObjectType;
     procedure RecogniseVariantSection;
-    procedure RecogniseVarDecl;
+    procedure RecogniseVarDecl(aInClassBody:boolean=false);
     procedure RecogniseAddOp;
     procedure RecogniseDesignator;
     procedure RecogniseDesignatorTail;
@@ -2616,7 +2616,7 @@ begin
   Recognise(OperatorTokens);
 end;
 
-procedure TBuildParseTree.RecogniseVarDecl;
+procedure TBuildParseTree.RecogniseVarDecl(aInClassBody:boolean=false);
 const
   VariableModifiers: TTokenTypeSet = [ttExternal, ttExport, ttPublic];
 var
@@ -2657,10 +2657,9 @@ begin
   else
   begin
     RecogniseHintDirectives;
-
-    if (fcTokenList.FirstSolidTokenType in VariableModifiers) or
+   if (not aInClassBody) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
       ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
-       (fcTokenList.SolidTokenType(2) in VariableModifiers)) then
+       (fcTokenList.SolidTokenType(2) in VariableModifiers))) then
     begin
       // optional SemiColon
       if  fcTokenList.FirstSolidTokenType=ttSemicolon then
@@ -4861,7 +4860,7 @@ begin
         if pbInterface then
           RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
 
-        RecogniseVarDecl;
+        RecogniseVarDecl(True);
       end
       else
         RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
