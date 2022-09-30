@@ -218,9 +218,9 @@ const
     1  {GTK_SHADOW_IN sbsSunken}
   );
 
-  MenuDirection : array[Boolean] of Longint = (
-    0, {GTK_PACK_DIRECTION_LTR}
-    1 {GTK_PACK_DIRECTION_RTL}
+  MenuDirection : array[Boolean] of TGtkPackDirection = (
+    GTK_PACK_DIRECTION_LTR,
+    GTK_PACK_DIRECTION_RTL
     );
 
 

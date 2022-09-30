@@ -291,7 +291,7 @@ begin
   if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
   begin
     AForm := TCustomForm(AMenuItem.GetParentMenu.Owner);
-    PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(AMenuItem.Handle){.Widget});
+    PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
   end else
   (*
   if (AMenuItem.GetParentMenu is TPopupMenu) then
@@ -619,39 +619,37 @@ end;
 
 class procedure TGtk3WSMenu.SetBiDiMode(const AMenu : TMenu;
   UseRightToLeftAlign, UseRightToLeftReading : Boolean);
-(*
+
 const
-  WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
-{$ifdef GTK_2_8}
-const
-  MenuDirection : array[Boolean] of Longint = (
+  WidgetDirection : array[boolean] of TGtkTextDirection = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+  MenuDirection : array[Boolean] of TGtkPackDirection = (
     GTK_PACK_DIRECTION_LTR,
     GTK_PACK_DIRECTION_RTL);
-{$endif}
-  procedure Switch(AMenuItem: TMenuItem; Flip: Boolean);
+
+procedure Switch(AMenuItem: TMenuItem; Flip: Boolean);
   var
     i: Integer;
   begin
     if Flip then
     begin
-      if AMenuItem.HandleAllocated then begin
-        gtk_widget_set_direction({%H-}PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
-        UpdateInnerMenuItem(AMenuItem, {%H-}PGtkWidget(AMenuItem.Handle));
+      if AMenuItem.HandleAllocated then
+      with TGtk3Widget(AMenuItem.Handle).Widget^ do
+      begin
+        set_direction(WidgetDirection[UseRightToLeftReading]);
       end;
     end;
     for i := 0 to AMenuItem.Count -1 do
       Switch(AMenuItem[i], True);
   end;
-  *)
 begin
-  (*
-  {$ifdef GTK_2_8}
-    gtk_menu_bar_set_pack_direction({%H-}PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
-    gtk_menu_bar_set_child_pack_direction({%H-}PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
-  {$endif}
-  //gtk_widget_set_direction(PGtkWidget(AMenu.Handle), WidgetDirection[UseRightToLeftAlign]);
   Switch(AMenu.Items, False);
-  *)
+
+  if AMenu is TMainMenu then
+  with PGtkMenuBar(TGtk3MenuBar(Amenu.Handle).Widget)^ do
+  begin
+    set_pack_direction(MenuDirection[UseRightToLeftAlign]);
+    set_child_pack_direction(MenuDirection[UseRightToLeftAlign]);
+  end;
 end;
 
 { TGtk3WSPopupMenu }

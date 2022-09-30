@@ -253,12 +253,12 @@ const
   GTK_TEXT_VIEW_PRIORITY_VALIDATE = 5;
 
 type
-  TGtkTextDirection = Integer;
-const
+  TGtkTextDirection = (
   { GtkTextDirection }
-  GTK_TEXT_DIR_NONE: TGtkTextDirection = 0;
-  GTK_TEXT_DIR_LTR: TGtkTextDirection = 1;
-  GTK_TEXT_DIR_RTL: TGtkTextDirection = 2;
+  GTK_TEXT_DIR_NONE = 0,
+  GTK_TEXT_DIR_LTR = 1,
+  GTK_TEXT_DIR_RTL = 2
+  );
 
 type
   TGtkAccelFlags = Integer;
@@ -928,13 +928,13 @@ const
   GTK_SORT_DESCENDING: TGtkSortType = 1;
 
 type
-  TGtkPackDirection = Integer;
-const
+  TGtkPackDirection = (
   { GtkPackDirection }
-  GTK_PACK_DIRECTION_LTR: TGtkPackDirection = 0;
-  GTK_PACK_DIRECTION_RTL: TGtkPackDirection = 1;
-  GTK_PACK_DIRECTION_TTB: TGtkPackDirection = 2;
-  GTK_PACK_DIRECTION_BTT: TGtkPackDirection = 3;
+  GTK_PACK_DIRECTION_LTR = 0,
+  GTK_PACK_DIRECTION_RTL = 1,
+  GTK_PACK_DIRECTION_TTB = 2,
+  GTK_PACK_DIRECTION_BTT = 3
+  );
 
 type
   TGtkMenuDirectionType = Integer;
