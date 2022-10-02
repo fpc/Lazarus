@@ -30,7 +30,7 @@ interface
 }
 uses
   Windows, // keep as first
-  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl,
+  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, ctypes,
   {$IF FPC_FULLVERSION>=30000}
   character,
   {$ENDIF}
@@ -264,6 +264,7 @@ function GetSystemMetricsForDpi(nIndex: Integer; dpi: UINT): Integer;
 function GetDpiForWindow(hwnd: HWND): UINT;
 function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL;
 function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
 
 implementation
 
@@ -311,12 +312,14 @@ type
   TGetDpiForWindow = function(hwnd: HWND): UINT; stdcall;
   TAdjustWindowRectExForDpi = function(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL; stdcall;
   TGetSystemMetricsForDpi = function (nIndex: Integer; dpi: UINT): Integer; stdcall;
+  TLoadIconWithScaleDown = function ( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT; stdcall;
 
 var
   g_GetDpiForMonitor: TGetDpiForMonitor = nil;
   g_GetDpiForWindow: TGetDpiForWindow = nil;
   g_AdjustWindowRectExForDpi: TAdjustWindowRectExForDpi = nil;
   g_GetSystemMetricsForDpi: TGetSystemMetricsForDpi = nil;
+  g_LoadIconWithScaleDown: TLoadIconWithScaleDown = nil;
   g_HighDPIAPIDone: Boolean = False;
 
 procedure InitHighDPIAPI;
@@ -337,6 +340,10 @@ begin
     Pointer(g_GetDpiForWindow) := GetProcAddress(lib, 'GetDpiForWindow');
     Pointer(g_GetSystemMetricsForDpi) := GetProcAddress(lib, 'GetSystemMetricsForDpi');
   end;
+
+  lib := LoadLibrary(comctl32);
+  if lib<>0 then
+    Pointer(g_LoadIconWithScaleDown) := GetProcAddress(lib, 'LoadIconWithScaleDown');
 
   g_HighDPIAPIDone := True;
 end;
@@ -380,6 +387,15 @@ begin
     dpiY := 0;
     Result := S_FALSE;
   end;
+end;
+
+function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
+begin
+  InitHighDPIAPI;
+  if Assigned(g_LoadIconWithScaleDown) then
+    Result := g_LoadIconWithScaleDown(hinst, pszName, cx, cy, phico)
+  else
+    Result := S_FALSE;
 end;
 
 {$I win32listsl.inc}

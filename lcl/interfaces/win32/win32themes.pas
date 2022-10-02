@@ -7,11 +7,11 @@ interface
 
 uses
   // os
-  Windows, UxTheme, Win32Proc, Win32Extra,
+  Windows, UxTheme, Win32Proc, Win32Extra, Win32Int,
   // rtl
   Classes, SysUtils,
   // lcl
-  Controls, Graphics, Themes, LCLType, LazUTF8;
+  Controls, Graphics, Themes, LCLType, InterfaceBase, LazUTF8;
   
 type
 
@@ -30,12 +30,15 @@ type
     
     function InternalColorToRGB(Details: TThemedElementDetails; Color: TColor): COLORREF; override;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
+
+    function GetImageAndMaskFromIcon(const Icon: HICON; out Image, Mask: HBITMAP): Boolean;
   public
     destructor Destroy; override;
 
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
+    function GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
     function GetTextExtent(DC: HDC; Details: TThemedElementDetails; const S: String; Flags: Cardinal; BoundingRect: PRect): TRect; override;
 
@@ -129,6 +132,7 @@ const
   IDI_EXCLAMATION = System.MakeIntResource(32515);
   IDI_ASTERISK    = System.MakeIntResource(32516);
   IDI_WINLOGO     = System.MakeIntResource(32517); // XP only
+  IDI_SHIELD      = System.MakeIntResource(32518);
 
   IDI_WARNING     = IDI_EXCLAMATION;
   IDI_ERROR       = IDI_HAND;
@@ -185,19 +189,8 @@ begin
     Result := inherited GetDetailSize(Details);
 end;
 
-function TWin32ThemeServices.GetDetailRegion(DC: HDC;
-  Details: TThemedElementDetails; const R: TRect): HRGN;
-begin
-  Result := 0;
-  if ThemesEnabled then
-    GetThemeBackgroundRegion(GetTheme(Details.Element), DC, Details.Part, Details.State, R, Result)
-  else
-    Result := inherited;
-end;
-
-function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+function TWin32ThemeServices.GetImageAndMaskFromIcon(const Icon: HICON; out Image, Mask: HBITMAP): Boolean;
 var
-  IconHandle: HIcon;
   IconInfo: TIconInfo;
   Bitmap: Windows.TBitmap;
   x, y: Integer;
@@ -205,38 +198,9 @@ var
   Pixel: PRGBAQuad;
   SHIconInfo: TSHSTOCKICONINFO;
 begin
-  case StockID of
-    idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogShield:
-      begin
-        SHIconInfo := Default(TSHSTOCKICONINFO);
-        SHIconInfo.cbSize := SizeOf(SHIconInfo);
-        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
-          IconHandle := SHIconInfo.hIcon
-        else
-          IconHandle := 0;
-      end;
-    idButtonShield:
-      begin
-        SHIconInfo := Default(TSHSTOCKICONINFO);
-        SHIconInfo.cbSize := SizeOf(SHIconInfo);
-        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
-          IconHandle := SHIconInfo.hIcon
-        else
-          IconHandle := 0;
-      end;
-  else
-    IconHandle := 0;
-  end;
-  Result := (IconHandle <> 0) and GetIconInfo(IconHandle, @IconInfo);
+  Result := GetIconInfo(Icon, @IconInfo);
   if not Result then
-  begin
-    Result := inherited GetStockImage(StockID, Image, Mask);
     Exit;
-  end;
 
   Image := IconInfo.hbmColor;
   Mask := IconInfo.hbmMask;
@@ -269,6 +233,75 @@ begin
       Inc(Pixel);
     end;
     Inc(LinePtr, Bitmap.bmWidthBytes);
+  end;
+end;
+
+function TWin32ThemeServices.GetDetailRegion(DC: HDC;
+  Details: TThemedElementDetails; const R: TRect): HRGN;
+begin
+  Result := 0;
+  if ThemesEnabled then
+    GetThemeBackgroundRegion(GetTheme(Details.Element), DC, Details.Part, Details.State, R, Result)
+  else
+    Result := inherited;
+end;
+
+function TWin32ThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+var
+  IconHandle: HIcon;
+  SHIconInfo: TSHSTOCKICONINFO;
+begin
+  case StockID of
+    idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogShield:
+      begin
+        SHIconInfo := Default(TSHSTOCKICONINFO);
+        SHIconInfo.cbSize := SizeOf(SHIconInfo);
+        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
+          IconHandle := SHIconInfo.hIcon
+        else
+          IconHandle := 0;
+      end;
+    idButtonShield:
+      begin
+        SHIconInfo := Default(TSHSTOCKICONINFO);
+        SHIconInfo.cbSize := SizeOf(SHIconInfo);
+        if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
+          IconHandle := SHIconInfo.hIcon
+        else
+          IconHandle := 0;
+      end;
+  else
+    IconHandle := 0;
+  end;
+  Result := (IconHandle <> 0) and GetImageAndMaskFromIcon(IconHandle, Image, Mask);
+  if not Result then
+  begin
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
+  end;
+end;
+
+function TWin32ThemeServices.GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image,
+  Mask: HBitmap): Boolean;
+const
+  WIN_ICONS: array[idDialogWarning..idDialogShield] of PWideChar = (IDI_WARNING, IDI_ERROR, IDI_INFORMATION, IDI_QUESTION, IDI_SHIELD);
+var
+  IconHandle: HICON;
+  Ico: TIcon;
+begin
+  IconHandle := 0;
+  Result := (StockID>=Low(WIN_ICONS)) and (StockID<=High(WIN_ICONS)) and (WIN_ICONS[StockID]<>nil)
+    and (LoadIconWithScaleDown(0, WIN_ICONS[StockID], AWidth, AHeight, IconHandle)=S_OK);
+
+  Result := (IconHandle <> 0) and GetImageAndMaskFromIcon(IconHandle, Image, Mask);
+  if not Result then
+  begin
+    Result := inherited GetStockImage(StockID, Image, Mask);
+    Exit;
   end;
 end;
 

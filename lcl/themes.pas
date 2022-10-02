@@ -480,6 +480,7 @@ type
     function GetDetailSize(Details: TThemedElementDetails): TSize; virtual;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
+    function GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image, Mask: HBitmap): Boolean; virtual;
     function GetOption(AOption: TThemeOption): Integer; virtual;
     function GetTextExtent(DC: HDC; Details: TThemedElementDetails; const S: String; Flags: Cardinal; BoundingRect: PRect): TRect; virtual;
 
@@ -1916,6 +1917,12 @@ begin
 end;
 
 function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+begin
+  Result := False;
+end;
+
+function TThemeServices.GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image,
+  Mask: HBitmap): Boolean;
 begin
   Result := False;
 end;
