@@ -5,9 +5,6 @@ unit DialogRes;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, ctypes,
-  {$ENDIF}
   LCLType, Graphics, Themes, Controls, ImgList, InterfaceBase, LCLIntf, SysUtils, Classes;
 
 type
@@ -22,28 +19,6 @@ const
     {idDialogConfirm} 'dialog_confirmation',
     {idDialogShield } 'dialog_shield'
   );
-
-{$IFDEF MSWINDOWS}
-  {$EXTERNALSYM IDI_HAND}
-  IDI_HAND = MakeIntResourceW(32513);
-  {$EXTERNALSYM IDI_QUESTION}
-  IDI_QUESTION = MakeIntResourceW(32514);
-  {$EXTERNALSYM IDI_EXCLAMATION}
-  IDI_EXCLAMATION = MakeIntResourceW(32515);
-  {$EXTERNALSYM IDI_ASTERISK}
-  IDI_ASTERISK = MakeIntResourceW(32516);
-  {$EXTERNALSYM IDI_WINLOGO}
-  IDI_WINLOGO = MakeIntResourceW(32517);
-  {$EXTERNALSYM IDI_SHIELD}
-  IDI_SHIELD = MakeIntResourceW(32518);
-  {$EXTERNALSYM IDI_WARNING}
-  IDI_WARNING = IDI_EXCLAMATION;
-  {$EXTERNALSYM IDI_ERROR}
-  IDI_ERROR = IDI_HAND;
-  {$EXTERNALSYM IDI_INFORMATION}
-  IDI_INFORMATION = IDI_ASTERISK;
-
-{$ENDIF MSWINDOWS}
 
 type
   TDialogImageList = class(TLCLGlyphs)
@@ -64,11 +39,6 @@ implementation
 {$R dialog_icons.res}
 { $R forms/finddlgunit.lfm}
 { $R forms/replacedlgunit.lfm}
-
-{$IFDEF MSWINDOWS}
-Function LoadIconWithScaleDown( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT; stdcall; external 'comctl32.dll' name 'LoadIconWithScaleDown';
-{$ENDIF MSWINDOWS}
-
 
 var
   DialogImages: TDialogImageList;
@@ -104,42 +74,36 @@ begin
 end;
 
 procedure TDialogImageList.LoadImage(AIndex: TDialogImage);
-{$IFDEF MSWINDOWS}
-const
-  WIN_ICONS: array[TDialogImage] of PWideChar = (IDI_WARNING, IDI_ERROR, IDI_INFORMATION, IDI_QUESTION, IDI_SHIELD);
 var
   R: TCustomImageListResolution;
-  IconHandle: HICON;
-  Ico: TRasterImage;
-  Icos: array of TRasterImage;
-{$ENDIF}
+  Bmp: TCustomBitmap;
+  Bmps: array of TCustomBitmap;
+  Image, Mask: HBitmap;
 begin
-  {$IFDEF MSWINDOWS}
-  if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and (WIN_ICONS[AIndex]<>nil) then
-  begin
-    Icos := [];
-    try
-      for R in Resolutions do
+  Bmps := [];
+  try
+    for R in Resolutions do
+    begin
+      if ThemeServices.GetStockImage(AIndex, R.Width, R.Height, Image, Mask) then
       begin
-        if LoadIconWithScaleDown(0, WIN_ICONS[AIndex], R.Width, R.Height, IconHandle)=S_OK then
-        begin
-          Ico := TIcon.Create;
-          TIcon(Ico).Handle := IconHandle;
-          SetLength(Icos, Length(Icos)+1);
-          Icos[High(Icos)] := Ico;
-        end;
-      end;
-      if Length(Icos)>0 then
-      begin
-        fDialogIndexes[AIndex] := AddMultipleResolutions(Icos);
-        Exit;
-      end;
-    finally
-      for Ico in Icos do
-        Ico.Free;
+        Bmp := TBitmap.Create;
+        Bmp.SetHandles(Image, Mask);
+        SetLength(Bmps, Length(Bmps)+1);
+        Bmps[High(Bmps)] := Bmp;
+      end else
+        break; // goto default handling
     end;
+    if Length(Bmps)>0 then
+    begin
+      fDialogIndexes[AIndex] := AddMultipleResolutions(Bmps);
+      Exit; // we are good to go
+    end;
+  finally
+    for Bmp in Bmps do
+      Bmp.Free;
   end;
-  {$ENDIF}
+
+  // default handling
   fDialogIndexes[AIndex] := GetImageIndex(DialogResName[AIndex]);
 end;
 

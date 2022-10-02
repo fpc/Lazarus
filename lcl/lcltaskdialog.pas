@@ -415,10 +415,6 @@ function DefaultFont: TFont;
 
 implementation
 
-{$IFDEF WINDOWS}
-Function LoadIconWithScaleDown( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT; stdcall; external 'comctl32.dll' name 'LoadIconWithScaleDown';
-{$ENDIF}
-
 var
   LDefaultFont: TFont;
 
