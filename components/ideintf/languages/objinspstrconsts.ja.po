@@ -632,7 +632,8 @@ msgstr "互換性のない識別子"
 msgid "Incompatible Method"
 msgstr "互換性のないメソッド"
 
-#: objinspstrconsts.oisinfinitenotsupported
+#: objinspstrconsts.oisinfinitynotsupported
+msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
 msgstr ""
 

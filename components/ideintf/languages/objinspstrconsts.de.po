@@ -628,7 +628,8 @@ msgstr "Inkompatibler Bezeichner"
 msgid "Incompatible Method"
 msgstr "Inkompatible Methode"
 
-#: objinspstrconsts.oisinfinitenotsupported
+#: objinspstrconsts.oisinfinitynotsupported
+msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
 msgstr ""
 

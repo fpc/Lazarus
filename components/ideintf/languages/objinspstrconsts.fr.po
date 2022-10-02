@@ -626,7 +626,8 @@ msgstr "Identificateur incompatible"
 msgid "Incompatible Method"
 msgstr "Méthode incompatible"
 
-#: objinspstrconsts.oisinfinitenotsupported
+#: objinspstrconsts.oisinfinitynotsupported
+msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
 msgstr ""
 
