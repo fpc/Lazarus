@@ -541,7 +541,8 @@ type
     tfVerificationFlagChecked, tfShowProgressBar,
     tfShowMarqueeProgressBar, tfCallbackTimer,
     tfPositionRelativeToWindow, tfRtlLayout,
-    tfNoDefaultRadioButton, tfCanBeMinimized);
+    tfNoDefaultRadioButton, tfCanBeMinimized,
+    tfForceNonNative);
   TTaskDialogFlags = set of TTaskDialogFlag;
 
   TTaskDialogCommonButton = (tcbOk, tcbYes, tcbNo, tcbCancel, tcbRetry, tcbClose);
