@@ -3985,7 +3985,7 @@ begin
     //if this failed, assume the user entered DS from his current locale
     NewFloat := StrToFloat(NewValue, DefaultFormatSettings);
   if IsInfinite(NewFloat) then
-    raise EPropertyError.Create(oisInfiniteNotSupported);
+    raise EPropertyError.Create(oisInfinityNotSupported);
   if IsNan(NewFloat) then
     raise EPropertyError.Create(oisNaNNotSupported);
   SetFloatValue(NewFloat);
