@@ -70,7 +70,7 @@ unit SpinEx;
 {$mode objfpc}{$H+}
 
 // Activates a workaround for issue #39490
-{$if FPC_FullVersion=30202}{$ifdef Win64}
+{$if (FPC_FullVersion>=30202) and (FPC_FullVersion < 30300)}{$ifdef Win64}
   {$define fpc_math_samevalue_bug}
 {$endif}{$endif}
 
