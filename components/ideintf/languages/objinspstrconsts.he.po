@@ -651,6 +651,10 @@ msgstr "מזהה לא תואם"
 msgid "Incompatible Method"
 msgstr "מתודה לא תואמת"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "הכנס מסכה:"
@@ -737,6 +741,10 @@ msgstr "הזז למעלה"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "הזז שדה למעלה"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

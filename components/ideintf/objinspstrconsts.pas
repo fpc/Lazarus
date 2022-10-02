@@ -373,6 +373,8 @@ resourcestring
   oisStringsEditorDialog = 'Strings Editor Dialog';
   ois0Lines0Chars = '0 lines, 0 chars';
   oisInvalidPropertyValue = 'Invalid property value';
+  oisInfiniteNotSupported = 'Setting a floating point property to positive or negative Infinity at design time is not supported';
+  oisNaNNotSupported = 'Setting a floating point property to NaN at design time is not supported';
   oisNone = '(none)';
   oisPressAKey = 'Press a key ...';
   oisPressAKeyEGCtrlP = 'You can press e.g. Ctrl+P ...';

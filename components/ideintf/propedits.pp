@@ -24,6 +24,7 @@ interface
 uses
   // RTL / FCL
   Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils, FGL,
+  Math,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -3983,6 +3984,10 @@ begin
   if not TryStrToFloat(NewValue, NewFloat, FS) then
     //if this failed, assume the user entered DS from his current locale
     NewFloat := StrToFloat(NewValue, DefaultFormatSettings);
+  if IsInfinite(NewFloat) then
+    raise EPropertyError.Create(oisInfiniteNotSupported);
+  if IsNan(NewFloat) then
+    raise EPropertyError.Create(oisNaNNotSupported);
   SetFloatValue(NewFloat);
   //writeln('TFloatPropertyEditor.SetValue B ',GetValue);
 end;

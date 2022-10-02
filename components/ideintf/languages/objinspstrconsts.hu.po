@@ -629,6 +629,10 @@ msgstr "Nem kompatibilis azonosító"
 msgid "Incompatible Method"
 msgstr "Nem kompatibilis metódus"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Beviteli maszk:"
@@ -712,6 +716,10 @@ msgstr "Mozgatás &fel"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Mező mozgatása fel"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

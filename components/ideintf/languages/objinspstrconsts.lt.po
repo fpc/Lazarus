@@ -630,6 +630,10 @@ msgstr "Nesuderinamas identifikatorius"
 msgid "Incompatible Method"
 msgstr "Nesuderinamas metodas"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Įvedimo kaukė:"
@@ -713,6 +717,10 @@ msgstr "Perkelti au&kštyn"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Laukelį perkelti aukštyn"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

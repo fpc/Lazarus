@@ -632,6 +632,10 @@ msgstr "互換性のない識別子"
 msgid "Incompatible Method"
 msgstr "互換性のないメソッド"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "入力マスク"
@@ -716,6 +720,10 @@ msgstr "上に移動(&U)"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "フィールドを上に移動"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

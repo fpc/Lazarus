@@ -629,6 +629,10 @@ msgstr "Uyumsuz Tanımlayıcı"
 msgid "Incompatible Method"
 msgstr "Uyumsuz Yöntem"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Maske gir:"
@@ -712,6 +716,10 @@ msgstr "Yukarı &Taşı"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Alanı yukarı taşı"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

@@ -629,6 +629,10 @@ msgstr "Nekompatibilní identifikátor"
 msgid "Incompatible Method"
 msgstr "Nekompatibilní metoda"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Vstupní maska:"
@@ -713,6 +717,10 @@ msgstr "Přesunout &nahoru"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Posunout pole výše"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

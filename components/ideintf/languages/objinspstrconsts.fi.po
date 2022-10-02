@@ -622,6 +622,10 @@ msgstr "Sopimaton tunniste"
 msgid "Incompatible Method"
 msgstr "Sopimaton metodi"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Syöttö maski:"
@@ -705,6 +709,10 @@ msgstr "Siirrä &ylös"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Siirrä kenttä ylös"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"

@@ -631,6 +631,10 @@ msgstr "Identificador no compatible"
 msgid "Incompatible Method"
 msgstr "Método no compatible"
 
+#: objinspstrconsts.oisinfinitenotsupported
+msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
+msgstr ""
+
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Máscara de entrada:"
@@ -714,6 +718,10 @@ msgstr "Mover Arriba"
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
 msgstr "Mover el campo hacia arriba"
+
+#: objinspstrconsts.oisnannotsupported
+msgid "Setting a floating point property to NaN at design time is not supported"
+msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"
