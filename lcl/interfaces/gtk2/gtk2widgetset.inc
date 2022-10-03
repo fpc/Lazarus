@@ -6058,8 +6058,7 @@ begin
         DebugLn(['TGtk2WidgetSet.UpdateDCTextMetric WARNING: no pango metrics']);
 
       TextMetric.tmAveCharWidth := Max(1,
-                 pango_font_metrics_get_approximate_char_width(APangoMetrics)
-                 div PANGO_SCALE);
+                 PANGO_PIXELS(pango_font_metrics_get_approximate_char_width(APangoMetrics)));
 
       TextMetric.tmAscent := PANGO_PIXELS(pango_font_metrics_get_ascent(APangoMetrics));
       TextMetric.tmDescent := PANGO_PIXELS(pango_font_metrics_get_descent(APangoMetrics));
@@ -6069,8 +6068,8 @@ begin
                             length(PChar(TestString[IsDoubleByteChar])));
       pango_layout_get_extents(UseFont, nil, @aRect);
 
-      lBearing := PANGO_LBEARING(aRect) div PANGO_SCALE;
-      rBearing := PANGO_RBEARING(aRect) div PANGO_SCALE;
+      lBearing :=PANGO_PIXELS(PANGO_LBEARING(aRect));
+      rBearing := PANGO_PIXELS(PANGO_RBEARING(aRect));
 
       pango_layout_set_text(UseFont, 'M', 1);
       pango_layout_get_pixel_size(UseFont, @aRect.width, @aRect.height);

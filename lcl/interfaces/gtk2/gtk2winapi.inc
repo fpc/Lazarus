@@ -1452,7 +1452,7 @@ begin
           begin
             aSize := pango_font_description_get_size(PangoDesc);
             if not pango_font_description_get_size_is_absolute(PangoDesc) then
-              aSize := aSize div PANGO_SCALE;
+              aSize := PANGO_PIXELS(aSize);
           end;
         end;
       end;
@@ -3490,7 +3490,7 @@ var
 
     ALogFontA.lfHeight := pango_font_description_get_size(Font);
     if not pango_font_description_get_size_is_absolute(Font) then
-      ALogFontA.lfHeight := ALogFontA.lfHeight div PANGO_SCALE;
+      ALogFontA.lfHeight := PANGO_PIXELS(ALogFontA.lfHeight);
 
     // pango does not have underline and strikeout params for font
     // ALogFontA.lfUnderline := ;
@@ -5257,7 +5257,7 @@ begin
               if not pango_font_description_get_size_is_absolute(PangoDesc) then
                 AFontSize := MulDiv(AFontSize, Screen.PixelsPerInch, 72 * PANGO_SCALE)
               else
-                AFontSize := AFontSize div PANGO_SCALE;;
+                AFontSize := PANGO_PIXELS(AFontSize);
 
               PLogfont(Buf)^.lfHeight := AFontSize;
             end;
