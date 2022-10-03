@@ -42,7 +42,7 @@
     </RequiredPackages>
     <Units Count="125">
       <Unit0>
-        <Filename Value="JCF.lpr"/>
+        <Filename Value="jcf.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
