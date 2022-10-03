@@ -463,7 +463,7 @@ begin
     else
       APen.Style := psSolid;
     end;
-    APen.Color := TColor(lopnColor);
+    APen.Color := ColorToRgb(TColor(lopnColor));
     APen.Cosmetic := lopnWidth.X <= 0 ;
     if not APen.Cosmetic then
       APen.Width := lopnWidth.X;
