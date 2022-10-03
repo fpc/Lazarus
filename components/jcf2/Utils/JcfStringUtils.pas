@@ -154,6 +154,7 @@ procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
 function SkipLeftSpaces(const aStr: string; aPos: integer): integer;
 function SkipToNextLine(const aStr: string; aPos: integer): integer;
 function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
+function StrTrimLastEndOfLine(const aStr:string):string;
 
 type
   EJcfConversionError = class(Exception)
@@ -705,6 +706,29 @@ begin
   Result := Path;
   if (Result <> '') and (Result[Length(Result)] = PathDelim) then
     Delete(Result, Length(Result), 1);
+end;
+
+function StrTrimLastEndOfLine(const aStr:string):string;
+var
+  len:integer;
+  c:char;
+begin
+  len:=length(aStr);
+  if (len>0) then
+  begin
+    if (aStr[len]=#10) then
+    begin
+      dec(len);
+      if (len>0) and (aStr[len]=#13) then
+        dec(len);
+    end
+    else if aStr[len]=#13 then //MAC
+      dec(len);
+  end;
+  if len<>length(aStr) then
+     result:=Copy(aStr,1,len)
+  else
+    result:=aStr;
 end;
 
 end.

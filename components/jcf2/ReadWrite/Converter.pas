@@ -451,21 +451,21 @@ var
 
   procedure AddFakeInterface;
   begin
-    sourceCode := sourceCode + 'interface' + #10;
+    sourceCode := sourceCode + 'interface{:*_*:}' + #10;
     sourceCode := sourceCode + 'type' + #10;        // if there is only a class selected this is required
     sourceCode := sourceCode + 'faketjcfifc=' + END_MARK_INTERFACE + #10;
   end;
 
   procedure AddFakeImplementation;
   begin
-    sourceCode := sourceCode + 'implementation' + #10;
+    sourceCode := sourceCode + 'implementation{:*_*:}' + #10;
     sourceCode := sourceCode + 'type' + #10;
     sourceCode := sourceCode + 'faketjcfimpl=' + END_MARK_IMPLEMENTATION + #10;
   end;
 
   procedure AddFakeEnd;
   begin
-    sourceCode := sourceCode + #10 + 'end.' + #10;
+    sourceCode := sourceCode + #10 + 'end{:*_*:}.' + #10;
   end;
 
 begin
@@ -500,11 +500,24 @@ begin
       else
         lcStartIndex := Pos(END_MARK_IMPLEMENTATION, sourceCodeLowerCase) + length(END_MARK_IMPLEMENTATION);
     end;
-    lcStartIndex := SkipToNextLine(sourceCodeLowerCase, lcStartIndex);
+    //lcStartIndex := SkipToNextLine(sourceCodeLowerCase, lcStartIndex-1);
+    //formated code:    tfaketjcf_implm_end_mark;#10#13#10     on windows
+    if sourceCodeLowerCase[lcStartIndex]=#10 then
+    begin
+      Inc(lcStartIndex);
+      if sourceCodeLowerCase[lcStartIndex]=#13 then
+      begin
+        Inc(lcStartIndex);
+        if sourceCodeLowerCase[lcStartIndex]=#10 then
+          Inc(lcStartIndex);
+      end
+      else if sourceCodeLowerCase[lcStartIndex]=#10 then
+        Inc(lcStartIndex);
+    end;
     if hasInterface and not hasImplementation then
-      lcEndIndex := RPos('implementation', sourceCodeLowerCase)
+      lcEndIndex := RPos('implementation{:*_*:}', sourceCodeLowerCase)
     else
-      lcEndIndex := RPos('end', sourceCodeLowerCase);
+      lcEndIndex := RPos('end{:*_*:}', sourceCodeLowerCase);
     lcEndIndex := SkipLeftSpaces(sourceCodeLowerCase, lcEndIndex);
     fsOutputCode:=Copy(OutputCode, lcStartIndex, lcEndIndex - lcStartIndex);
   end;

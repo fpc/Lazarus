@@ -252,7 +252,7 @@ var
   BlockBegin, BlockEnd: TPoint;
   fcConverter: TConverter;
   lineStartOffset,lineEndOffset: integer;
-  wi: integer;
+  wi,EndY: integer;
   outputstr: string;
 begin
   if (SourceEditorManagerIntf = nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
@@ -286,15 +286,44 @@ begin
       BlockBegin := srcEditor.BlockBegin;
       BlockBegin.X := 1;     // full lines.
       BlockEnd := srcEditor.BlockEnd;
+      EndY:=BlockEnd.Y;
       if BlockEnd.X > 1 then
         BlockEnd.Y := BlockEnd.Y + 1;
+      if BlockEnd.X > 1 then
+        BlockEnd.Y := BlockEnd.Y + 1
+      else
+      begin
+        if EndY>1 then
+          EndY:=EndY-1;
+      end;
       BlockEnd.X := 1;
+      //Since it is very difficult to predict what JCF will do with the empty lines
+      //at the beginning and end of the selection, we do not allow them.
+
+      // skip start empty lines.
+      while BlockBegin.Y < EndY do
+      begin
+        if Trim(srcEditor.Lines[BlockBegin.Y-1])<>'' then
+          break;
+        Inc(BlockBegin.Y);
+      end;
+      // skip end empty lines.
+      while EndY > BlockBegin.Y do
+      begin
+        if Trim(srcEditor.Lines[EndY-1])<>'' then
+          break;
+        Dec(BlockEnd.Y);
+        Dec(EndY);
+      end;
       srcEditor.SelectText(BlockBegin, BlockEnd); //extend selection to full lines.
       fcConverter.InputCode := srcEditor.GetText(True);  // only selected text.
       fcConverter.GuiMessages := true;
       fcConverter.ConvertUsingFakeUnit;
       if not fcConverter.ConvertError then
-        DiffMergeEditor(srcEditor,fcConverter.OutputCode,BlockBegin.Y,BlockEnd.Y);
+      begin
+        outputstr:=StrTrimLastEndOfLine(fcConverter.OutputCode);
+        DiffMergeEditor(srcEditor,outputstr,BlockBegin.Y,EndY);
+      end;
     end;
   finally
     fcConverter.Free;
