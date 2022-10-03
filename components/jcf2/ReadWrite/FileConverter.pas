@@ -362,7 +362,7 @@ begin
       if fbAbort then
         break;
       
-      {$IFNDEF COMMAND_LINE}
+      {$IFnDEF LCLNOGUI}
       // refresh the GUI
       Application.ProcessMessages;
       {$ENDIF}

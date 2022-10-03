@@ -67,7 +67,7 @@ type
       This could be in  batch file on a server }
     fbGuiMessages: Boolean;
     fbShowParseTree: Boolean;
-    {$IFNDEF COMMAND_LINE}
+    {$IFnDEF LCLNOGUI}
     leOldCursor: TCursor;
     {$ENDIF}
 
@@ -156,7 +156,7 @@ var
   lcTokenList: TSourceTokenList;
 begin
   fbConvertError := False;
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   leOldCursor := Screen.Cursor;
   try { finally normal cursor }
     // this can take a long time for large files
@@ -230,7 +230,7 @@ begin
       end;
     end;
 
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   finally
     Screen.Cursor := leOldCursor;
   end;
@@ -354,7 +354,7 @@ end;
 
 procedure TConverter.ShowParseTree;
 begin
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   // This is always called from a Cursor:=crHourGlass block. Restore old cursor.
   Screen.Cursor := leOldCursor;
   {$ENDIF}

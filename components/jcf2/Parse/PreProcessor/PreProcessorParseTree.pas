@@ -178,14 +178,14 @@ end;
 
 
 procedure TPreProcessorParseTree.NextToken;
-{$IFNDEF COMMAND_LINE}
+{$IFnDEF LCLNOGUI}
 const
    UPDATE_INTERVAL = 512;
 {$ENDIF}
 begin
   Inc(fiCurrentTokenIndex);
   
-  {$IFNDEF COMMAND_LINE}  
+  {$IFnDEF LCLNOGUI}
   if (fiCurrentTokenIndex mod UPDATE_INTERVAL) = 0 then
      Application.ProcessMessages;
   {$ENDIF}

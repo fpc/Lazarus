@@ -444,7 +444,7 @@ begin
   
   
   Inc(fiTokenCount);
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   if (fiTokenCount mod UPDATE_INTERVAL) = 0 then
      Application.ProcessMessages;
   {$ENDIF}

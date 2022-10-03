@@ -158,7 +158,7 @@ begin
       if lc.FinalSummary(lsMessage) then
         OnMessage('', lsMessage, mtFinalSummary, -1, -1);
       
-      {$IFNDEF COMMAND_LINE}
+      {$IFnDEF LCLNOGUI}
       Application.ProcessMessages;
       {$ENDIF}
 

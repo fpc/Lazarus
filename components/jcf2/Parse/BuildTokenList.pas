@@ -950,13 +950,13 @@ const
 var
   lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   liCounter: integer;
   {$ENDIF}
 begin
   Assert(SourceCode <> '');
 
-  {$IFNDEF COMMAND_LINE}
+  {$IFnDEF LCLNOGUI}
   liCounter := 0;
   {$ENDIF}
   lcList    := TSourceTokenList.Create;
@@ -966,7 +966,7 @@ begin
     lcNew := GetNextToken;
     lcList.Add(lcNew);
 
-    {$IFNDEF COMMAND_LINE}
+    {$IFnDEF LCLNOGUI}
     Inc(liCounter);
     if (liCounter mod UPDATE_INTERVAL) = 0 then
        Application.ProcessMessages;
