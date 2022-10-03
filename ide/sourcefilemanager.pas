@@ -2699,8 +2699,10 @@ begin
 
     // if SaveFirst then save the source
     if (cfSaveFirst in Flags) and (not AnUnitInfo.ReadOnly)
-    and ((AEditor.Modified) or (AnUnitInfo.Modified)) then begin
-      if not (cfQuiet in Flags) then begin
+    and ((AEditor.Modified) or (AnUnitInfo.Modified))
+    then begin
+      if not (cfQuiet in Flags) then
+      begin
         // ask user
         if AnUnitInfo.Filename<>'' then
           AText:=Format(lisFileHasChangedSave, [AnUnitInfo.Filename])
@@ -2715,9 +2717,8 @@ begin
                              mrAbort]);
       end else
         Result:=mrYes;
-      if Result=mrYes then begin
+      if Result=mrYes then
         Result:=SaveEditorFile(AnEditorInfo.EditorComponent,[sfCheckAmbiguousFiles]);
-      end;
       if Result in [mrAbort,mrCancel] then exit;
       Result:=mrOk;
     end;
@@ -2741,24 +2742,23 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
     // free sources, forget changes
-    if (AnUnitInfo.Source<>nil) then begin
-      if (Project1.MainUnitInfo=AnUnitInfo)
-      and (not (cfProjectClosing in Flags)) then begin
-        AnUnitInfo.Source.Revert;
-      end else begin
+    if AnUnitInfo.Source<>nil then
+    begin
+      if (Project1.MainUnitInfo=AnUnitInfo) and not (cfProjectClosing in Flags) then
+        AnUnitInfo.Source.Revert
+      else
         AnUnitInfo.Source.IsDeleted:=true;
-      end;
     end;
 
     // close file in project
     AnUnitInfo.Loaded:=false;
-    if AnUnitInfo<>Project1.MainUnitInfo then
+    if Project1.MainUnitInfo<>AnUnitInfo then
       AnUnitInfo.Source:=nil;
-    if not (cfProjectClosing in Flags) then begin
+    if not (cfProjectClosing in Flags) then
+    begin
       i:=Project1.IndexOf(AnUnitInfo);
-      if (i<>Project1.MainUnitID) and AnUnitInfo.IsVirtual then begin
+      if (i<>Project1.MainUnitID) and AnUnitInfo.IsVirtual then
         Project1.RemoveUnit(i);
-      end;
     end;
 
   finally
@@ -7447,7 +7447,7 @@ var
   MainUnitInfo: TUnitInfo;
   MainUnitSrcEdit: TSourceEditor;
   DestFilename: String;
-  SkipSavingMainSource: Boolean;
+  SaveMainSrc: Boolean;
 begin
   Result:=mrOk;
   Project1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
@@ -7466,7 +7466,7 @@ begin
     Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
-    Result:=ShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
+    Result := ShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
     if Result<>mrOk then begin
       debugln(['Info: (lazarus) [SaveProjectInfo] ShowSaveProjectAsDialog failed']);
       exit;
@@ -7479,61 +7479,56 @@ begin
 
   // save project info file
   //debugln(['SaveProjectInfo ',Project1.ProjectInfoFile,' Test=',sfSaveToTestDir in Flags,' Virt=',Project1.IsVirtual]);
-  if (not (sfSaveToTestDir in Flags))
-  and (not Project1.IsVirtual) then begin
-    Result:=Project1.WriteProject([],'',EnvironmentOptions.BuildMatrixOptions);
+  if not ((sfSaveToTestDir in Flags) or Project1.IsVirtual) then
+  begin
+    Result := Project1.WriteProject([],'',EnvironmentOptions.BuildMatrixOptions);
     if Result=mrAbort then begin
       debugln(['Info: (lazarus) [SaveProjectInfo] Project1.WriteProject failed']);
       exit;
     end;
-    EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
+    EnvironmentOptions.LastSavedProjectFile := Project1.ProjectInfoFile;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     AddRecentProjectFile(Project1.ProjectInfoFile);
     MainIDE.SaveIncludeLinks;
     MainIDE.UpdateCaption;
   end;
 
-  // save main source
-  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then
-  begin
-    if not (sfSaveToTestDir in Flags) then
-      DestFilename := MainUnitInfo.Filename
-    else
-      DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
+  if (MainUnitInfo=nil) or (sfDoNotSaveVirtualFiles in flags) then exit;
 
-    if MainUnitInfo.OpenEditorInfoCount > 0 then
+  // save main source
+  if sfSaveToTestDir in Flags then
+    DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo)
+  else
+    DestFilename := MainUnitInfo.Filename;
+
+  if MainUnitInfo.OpenEditorInfoCount > 0 then
+  begin
+    // loaded in source editor
+    Result := SaveEditorFile(MainUnitInfo.OpenEditorInfo[0].EditorComponent,
+                [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
+    if Result=mrAbort then begin
+      debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile MainUnitInfo failed "',DestFilename,'"']);
+      exit;
+    end;
+  end else
+  begin
+    // not loaded in source editor (hidden)
+    SaveMainSrc := (sfSaveToTestDir in Flags) or MainUnitInfo.NeedsSaveToDisk;
+    if SaveMainSrc and (MainUnitInfo.Source<>nil) then
     begin
-      // loaded in source editor
-      Result:=SaveEditorFile(MainUnitInfo.OpenEditorInfo[0].EditorComponent,
-               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
+      Result := SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
       if Result=mrAbort then begin
-        debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile MainUnitInfo failed "',DestFilename,'"']);
+        debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile failed "',DestFilename,'"']);
         exit;
       end;
-    end else
-    begin
-      // not loaded in source editor (hidden)
-      SkipSavingMainSource := false;
-      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then
-        SkipSavingMainSource := true;
-      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then
-      begin
-        Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
-        if Result=mrAbort then begin
-          debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile failed "',DestFilename,'"']);
-          exit;
-        end;
-      end;
     end;
+  end;
 
-    // clear modified flags
-    if not (sfSaveToTestDir in Flags) then
-    begin
-      if (Result=mrOk) then begin
-        if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
-        if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
-      end;
-    end;
+  if sfSaveToTestDir in Flags then exit;
+  // clear modified flags
+  if Result=mrOk then begin
+    if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
+    if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
   end;
 end;
 
