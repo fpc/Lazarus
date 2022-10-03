@@ -2722,15 +2722,17 @@ begin
       if Result in [mrAbort,mrCancel] then exit;
       Result:=mrOk;
     end;
-    // mark file as unmodified
-    if (AnUnitInfo.Source<>nil) and AnUnitInfo.Source.Modified then
-      AnUnitInfo.Source.Clear;
-
-    // add to recent file list
-    if (not AnUnitInfo.IsVirtual) and (not (cfProjectClosing in Flags)) then
+    if not AnUnitInfo.IsVirtual then
     begin
-      EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
-      MainIDE.SetRecentFilesMenu;
+      // mark file as unmodified
+      if (AnUnitInfo.Source<>nil) and AnUnitInfo.Source.Modified then
+        AnUnitInfo.Source.Clear;
+      // add to recent file list
+      if not (cfProjectClosing in Flags) then
+      begin
+        EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
+        MainIDE.SetRecentFilesMenu;
+      end;
     end;
 
     // close form soft (keep it if used by another component)
