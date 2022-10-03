@@ -357,46 +357,48 @@ procedure TBuildParseTree.BuildParseTree;
 var
   lc: TSourceToken;
 begin
-  Assert(fcTokenList <> nil);
-  Clear;
-  { read to end of file necessary?
-  liIndex := 0;
-  while BufferTokens(liIndex).TokenType <> ttEOF do
-  begin
-    BufferTokens(liIndex);
-    inc(liIndex);
-  end; }
-  fiTokenIndex := 0;
   try
-    RecogniseGoal;
-  except
-    on E: TEParseError do
+    Assert(fcTokenList <> nil);
+    Clear;
+    { read to end of file necessary?
+    liIndex := 0;
+    while BufferTokens(liIndex).TokenType <> ttEOF do
     begin
-      raise;
+      BufferTokens(liIndex);
+      inc(liIndex);
+    end; }
+    fiTokenIndex := 0;
+    try
+      RecogniseGoal;
+    except
+      on E: TEParseError do
+      begin
+        raise;
+      end;
+    else
+      // $ (US): 2021-06-29 13:41:03 $
+      //  Do not use CheckNilInstance here. We do not want to hide the original exception.
+      lc := self.Root.LastLeaf as TSourceToken;
+      if Assigned(lc) then
+      begin
+        // $ (US): 2021-06-29 12:05:12 $
+        //  Try to recover the last valid token before exception is thrown.
+        JcfRaiseOuterException(TEParseError.Create('Unhandled error in source code!', lc));
+      end else
+      begin
+        raise;
+      end;
     end;
-  else
-    // $ (US): 2021-06-29 13:41:03 $
-    //  Do not use CheckNilInstance here. We do not want to hide the original exception.
-    lc := self.Root.LastLeaf as TSourceToken;
-    if Assigned(lc) then
-    begin
-      // $ (US): 2021-06-29 12:05:12 $
-      //  Try to recover the last valid token before exception is thrown.
-      JcfRaiseOuterException(TEParseError.Create('Unhandled error in source code!', lc));
-    end else
-    begin
-      raise;
-    end;
+
+    { should not have any sections started but not finished }
+    Assert(fcStack.Count = 0);
+
+    { all tokens should have been processed }
+    Assert(fcTokenList.Count = fcTokenList.CurrentTokenIndex);
+  finally
+    fcTokenList.OwnsObjects := True;;
+    fcTokenList.Clear;
   end;
-
-  { should not have any sections started but not finished }
-  Assert(fcStack.Count = 0);
-
-  { all tokens should have been processed }
-  Assert(fcTokenList.Count = fcTokenList.CurrentTokenIndex);
-  fcTokenList.Clear;
-
-
   fbMadeTree := True;
 end;
 

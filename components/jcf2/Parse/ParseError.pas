@@ -37,16 +37,15 @@ uses
 type
   TEParseError = class(Exception)
   private
-    fcToken: TSourceToken;
+    fsMessage: string;
     fiXPosition, fiYPosition: integer;
     fsFileName: string;
 
-    function GetTokenMessage: string;
   public
     constructor Create(const psMessage: string; const pcToken: TSourceToken);
 
     property FileName: string Read fsFileName Write fsFileName;
-    property TokenMessage: string Read GetTokenMessage;
+    property TokenMessage: string Read fsMessage;
     property XPosition: integer Read fiXPosition;
     property YPosition: integer Read fiYPosition;
 
@@ -81,25 +80,18 @@ constructor TEParseError.Create(const psMessage: string; const pcToken: TSourceT
 begin
   inherited Create(psMessage);
 
-  fcToken := pcToken;
   if pcToken <> nil then
   begin
     fiXPosition := pcToken.XPosition;
     fiYPosition := pcToken.YPosition;
+    fsMessage := pcToken.Describe;
   end
   else
   begin
     fiXPosition := -1;
     fiYPosition := -1;
+    fsMessage := '';
   end;
-end;
-
-function TEParseError.GetTokenMessage: string;
-begin
-  if fcToken = nil then
-    Result := ''
-  else
-    Result := fcToken.Describe;
 end;
 
 end.
