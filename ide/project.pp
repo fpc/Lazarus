@@ -5187,7 +5187,7 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
     PropInfo: PPropInfo;
     PropList: PPropList;
     CurCount,i: integer;
-    ReferenceComponent: TComponent;
+    RefObj: TObject;
   begin
     if csDestroying in AComponent.ComponentState then exit;
 
@@ -5200,16 +5200,19 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
       CurCount:=GetPropList(TypeInfo,PropList);
       try
          // read properties
-        for i:=0 to CurCount-1 do begin
+        for i:=0 to CurCount-1 do
+        begin
           PropInfo:=PropList^[i];
-          if PropInfo^.PropType^.Kind=tkClass then begin
+          if PropInfo^.PropType^.Kind=tkClass then
+          begin
             // property of kind TObject
-            ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
-            //debugln('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
-            if ReferenceComponent=SubComponent then begin
+            RefObj:=GetObjectProp(AComponent,PropInfo);
+            //DebugLn('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),
+            //        ' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,
+            //        ' Value=',dbgsName(RefObj),' TypeInfo=',TypeInfo^.Name);
+            if RefObj=SubComponent then
               if List.IndexOf(AnUnitInfo)<0 then
                 List.Add(AnUnitInfo);
-            end;
           end;
         end;
       finally
