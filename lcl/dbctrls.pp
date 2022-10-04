@@ -662,6 +662,8 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetValueChecked(const AValue: string);
     procedure SetValueUnchecked(const AValue: string);
+    function NonDefaultValueChecked: Boolean;
+    function NonDefaultValueUnchecked: Boolean;
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
@@ -725,8 +727,8 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property ValueChecked: string read FValueChecked write SetValueChecked;
-    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
+    property ValueChecked: string read FValueChecked write SetValueChecked stored NonDefaultValueChecked;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored NonDefaultValueUnchecked;
     property Visible;
   end;
   

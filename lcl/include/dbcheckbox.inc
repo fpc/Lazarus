@@ -128,24 +128,29 @@ procedure TDBCheckBox.DataChange(Sender: TObject);
 begin
   // avoid DoOnChange circle #33573
   FDataLink.OnDataChange := nil;
-  State:=GetFieldCheckState;
-  FDataLink.OnDataChange := @DataChange;
+  try
+    State := GetFieldCheckState;
+  finally
+    FDataLink.OnDataChange := @DataChange;
+  end;
 end;
 
 procedure TDBCheckBox.DoOnChange;
 begin
   // avoid DoOnChange circle #33573
-  if FDataLink.OnDataChange = nil then
-    Exit;
+  if FDataLink.OnDataChange <> nil then
+  try
+    //avoid reseting value when state changes
+    FDataLink.OnDataChange := nil;
+    if FDatalink.Edit then begin
+      FDatalink.Modified;
+      FDataLink.UpdateRecord;
+    end else
+      State := GetFieldCheckState;
+  finally
+    FDataLink.OnDataChange := @DataChange;
+  end;
 
-  //avoid reseting value when state changes
-  FDataLink.OnDataChange := nil;
-  if FDatalink.Edit then begin
-    FDatalink.Modified;
-    FDataLink.UpdateRecord;
-  end else
-    State:=GetFieldCheckState;
-  FDataLink.OnDataChange := @DataChange;
   inherited DoOnChange;
 end;
 
@@ -182,11 +187,21 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
+function TDBCheckBox.NonDefaultValueChecked: Boolean;
+begin
+  Result := not AnsiSameText(FValueChecked, BoolToStr(True));
+end;
+
+function TDBCheckBox.NonDefaultValueUnchecked: Boolean;
+begin
+  Result := not AnsiSameText(FValueChecked, BoolToStr(False));
+end;
+
 constructor TDBCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FValueChecked:='True';
-  FValueUnchecked:='False';
+  FValueChecked := BoolToStr(True);
+  FValueUnchecked := BoolToStr(False);
 
   ControlStyle:=ControlStyle+[csReplicatable];
   State:=cbUnchecked;
