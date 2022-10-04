@@ -722,6 +722,18 @@
         <Filename Value="..\..\ReadWrite\diffmerge.pas"/>
         <UnitName Value="diffmerge"/>
       </Item>
+      <Item>
+        <Filename Value="..\..\Utils\JcfStringUtils.pas"/>
+        <UnitName Value="JcfStringUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\Utils\JcfSystemUtils.pas"/>
+        <UnitName Value="JcfSystemUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\Utils\JcfUnicodeFiles.pas"/>
+        <UnitName Value="JcfUnicodeFiles"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

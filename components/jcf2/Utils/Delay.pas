@@ -56,7 +56,9 @@ See http://www.gnu.org/licenses/gpl.html
 
 interface
 
-uses ExtCtrls;
+uses
+  SysUtils,
+  ExtCtrls;
 
 type
   TProcedure = procedure(var pbTryAgain: boolean);
@@ -93,8 +95,6 @@ type
 
 
 implementation
-
-uses SysUtils;
 
 const
   // default of 100ms = 1/0 second

@@ -30,7 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, SysUtils, Dialogs;
+  Classes, SysUtils;
 
 type
   TFileContentType = (eUnknown, e8Bit, eUtf8,

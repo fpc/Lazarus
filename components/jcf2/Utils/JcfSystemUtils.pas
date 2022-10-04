@@ -59,7 +59,7 @@ implementation
 
 uses
   {$ifdef MSWINDOWS}
-    Windows, ShellApi, {$PUSH} {$WARNINGS OFF} FileCtrl {$POP}
+    Windows, ShellApi
   {$endif}
   {$ifdef Unix}
     Unix
