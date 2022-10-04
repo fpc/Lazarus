@@ -662,7 +662,7 @@ begin
     ie one dat = decimal
     two dots = end of number
   }
-  lbFirstDigit := True;
+  lbFirstDigit := False;
   while CharIsDigit(Current) or (Current = '.') or CharIsDigitSeparator(Current,lbFirstDigit) do
   begin
     lbFirstDigit := False;
