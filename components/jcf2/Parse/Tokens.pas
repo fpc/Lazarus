@@ -164,6 +164,8 @@ type
     ttStrict,
     ttStdcall,
     ttAssembler,
+    ttCompilerproc,
+    ttrtlproc,
     ttForward,
     ttProtected,
     ttStored,
@@ -225,6 +227,7 @@ type
     ttExperimental,
     ttUnimplemented,
     ttInterrupt,
+    ttAlias,
 
     { built-in constants }
     ttNil,
@@ -389,7 +392,7 @@ const
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated];
 
   ProcedureDirectives: TTokenTypeSet = [ttExternal, ttPascal, ttSafecall, ttAbstract,
-    ttFar, ttStdcall, ttAssembler, ttInline, ttForward,
+    ttFar, ttStdcall, ttAssembler, ttInline, ttCompilerproc, ttrtlproc, ttForward,
     ttVirtual, ttCdecl, ttMessage, ttName, ttRegister, ttDispId,
     ttNear, ttDynamic, ttExport, ttOverride, ttResident, ttLocal,
     ttOverload, ttReintroduce,
@@ -401,6 +404,8 @@ const
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
   HintDirectives: TTokenTypeSet  = [ttDeprecated, ttLibrary, ttPlatform, ttCVar,
                                     ttExperimental, ttUnimplemented, ttStatic];
+
+  AllProcDirectives: TTokenTypeSet = [];
 
   AllDirectives: TTokenTypeSet =
   [ttAbsolute, ttExternal, ttPascal, ttSafecall,
@@ -695,6 +700,8 @@ begin
   AddKeyword('public', wtReservedWordDirective, ttPublic);
   AddKeyword('virtual', wtReservedWordDirective, ttVirtual);
   AddKeyword('cdecl', wtReservedWordDirective, ttCdecl);
+  AddKeyword('compilerproc', wtReservedWordDirective, ttCompilerproc);
+  AddKeyword('rtlproc', wtReservedWordDirective, ttrtlproc);
   AddKeyword('ms_abi_default', wtReservedWordDirective, ttCdecl);
   AddKeyword('ms_abi_cdecl', wtReservedWordDirective, ttCdecl);
   AddKeyword('sysv_abi_default', wtReservedWordDirective, ttCdecl);
@@ -755,6 +762,7 @@ begin
   AddKeyword('experimental', wtReservedWordDirective, ttExperimental);
   AddKeyword('unimplemented', wtReservedWordDirective, ttUnimplemented);
   AddKeyword('interrupt', wtReservedWordDirective, ttInterrupt);
+  AddKeyword('alias', wtReservedWordDirective, ttAlias);
 
   { operators that are words not symbols }
   AddKeyword('and', wtOperator, ttAnd);

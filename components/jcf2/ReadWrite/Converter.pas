@@ -38,6 +38,8 @@ interface
 
 uses
   SysUtils, strutils,
+  // LazUtils
+  LazFileUtils,
   // LCL
   Controls, Forms,
   // local
@@ -178,6 +180,7 @@ begin
 
         // make a parse tree from it
         fcBuildParseTree.TokenList := lcTokenList;
+        fcBuildParseTree.IsIncFile := FilenameExtIs(FileName, 'inc');
         fcBuildParseTree.BuildParseTree;
         if fbShowParseTree then
            ShowParseTree;

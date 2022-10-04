@@ -45,6 +45,7 @@ type
     nUnitName,
     nPackage,
     nLibrary,
+    nInclude,
     nUses,
     nUsesItem,
     nRequires,
@@ -79,6 +80,8 @@ type
     nVarDecl,
     nVarAbsolute,
     nVariableInit,
+    nVarExpPubl,   // ( 'export' | 'public' ) [ named ] ';'
+    nVarExternal,  // ( 'external' [[ lib_name ] [named]] ';'
     nDesignator,
     nExpression,
     nTerm,
@@ -122,6 +125,7 @@ type
     nFormalParam,
     nFunctionReturnType,
     nProcedureDirectives,
+    nProcedureDirBracket,  // proc dir backet
     nExternalDirective,
     nObjectType,
     nInitSection,
@@ -198,13 +202,15 @@ uses SysUtils;
 
 const
   TreeNodeTypeNames: array[TParseTreeNodeType] of string = (
-    'UnkNown', 'Leaf', 'Program', 'Unit', 'Unit header', 'Unit name', 'Package', 'Library', 'Uses',
+    'UnkNown', 'Leaf', 'Program', 'Unit', 'Unit header', 'Unit name', 'Package', 'Library',
+    'Include', 'Uses',
     'Uses Item', 'Requires', 'Contains', 'ident list', 'Identifier', 'Interface section',
     'Implementation section', 'Block', 'Statement list', 'Decl section', 'Label decl section',
     'const section', 'Const decl', 'type section', 'Type Decl', 'Array constant', 'Record Constant',
     'Field constant', 'Type', 'Restricted type', 'Subrange type', 'Enumerated type', 'Array type',
     'record type', 'Field declarations', 'Record variant section', 'Record variant', 'Set type',
-    'procedure type', 'Var section', 'Var decl', 'Absolute var', 'Variable init', 'Designator',
+    'procedure type', 'Var section', 'Var decl', 'Absolute var', 'Variable init', 
+    'Var Export | Public', 'Var External/Lib', 'Designator',
     'Expression', 'Term', 'Unary op', 'Actual params', 'Statement', 'Assignment', 'Inline',
     'Inline item', 'Statement label', 'Compound statement', 'If Condition', 'If Block', 'Else block',
     'Case statement', 'Case selector', 'Case labels', 'Case label', 'else case', 'Repeat statement',
@@ -213,6 +219,7 @@ const
     'On exception handler', 'Procedure decl', 'Function Decl', 'Constructor decl', 'Destructor decl',
     'Function heading', 'Procedure Heading', 'Constructor Heading', 'Destructor heading',
     'Formal params', 'formal param', 'Function Return type', 'Procedure directives',
+    'Procedure [directives]',
     'external directive', 'object type', 'init section', 'class type', 'class heritage',
     'class body', 'class visiblity', 'class declarations', 'property', 'property param list',
     'property specifier', 'interface type', 'interface heritage', 'interface type guid',

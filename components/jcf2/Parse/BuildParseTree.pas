@@ -61,6 +61,8 @@ type
     fbMadeTree: boolean;
     fiTokenIndex: integer;
 
+    fcIsIncFile: boolean;
+
     fcRoot: TParseTreeNode;
     fcStack: TStack;
     fcTokenList: TSourceTokenList;
@@ -76,6 +78,7 @@ type
     procedure RecogniseProgram;
     procedure RecognisePackage;
     procedure RecogniseLibrary;
+    procedure RecogniseInclude;
 
     procedure RecogniseFileEnd;
 
@@ -164,6 +167,7 @@ type
     procedure RecogniseObjectType;
     procedure RecogniseVariantSection;
     procedure RecogniseVarDecl(aInClassBody:boolean=false);
+    procedure RecogniseVarExpPubDir;
     procedure RecogniseAddOp;
     procedure RecogniseDesignator;
     procedure RecogniseDesignatorTail;
@@ -205,6 +209,7 @@ type
 
     procedure RecogniseFunctionDecl(const pbAnon: boolean);
     procedure RecogniseProcedureDecl(const pbAnon: boolean);
+    procedure RecogniseSquareBracketDir;
     procedure RecogniseConstructorDecl;
     procedure RecogniseDestructorDecl;
 
@@ -287,6 +292,7 @@ type
     procedure BuildParseTree;
     procedure Clear;
 
+    property IsIncFile : boolean Read fcIsIncFile Write fcIsIncFile;
     property Root: TParseTreeNode Read fcRoot;
     property TokenList: TSourceTokenList Read fcTokenList Write fcTokenList;
   end;
@@ -305,6 +311,7 @@ begin
   fcStack := TStack.Create;
   fcRoot  := nil;
   fiTokenCount := 0;
+  AllProcDirectives := ProcedureDirectives + [ttOpenSquareBracket];
 end;
 
 destructor TBuildParseTree.Destroy;
@@ -417,31 +424,29 @@ procedure TBuildParseTree.Recognise(const peTokenTypes: TTokenTypeSet;
   end;
 
 var
-  lcCurrentToken:  TSourceToken;
+  lcToken:  TSourceToken;
 begin
   // must accept something
   Assert(peTokenTypes <> []);
 
   { read tokens up to and including the specified one.
     Add them to the parse tree at the current growing point  }
-  while not fcTokenList.EOF do
-  begin
-    lcCurrentToken := fcTokenList.Extract;
-    CheckNilInstance(lcCurrentToken, fcRoot.LastLeaf);
+  while not fcTokenList.EOF do begin
+    lcToken := fcTokenList.Extract;
+    Assert(lcToken <> nil);
 
-    TopNode.AddChild(lcCurrentToken);
+    TopNode.AddChild(lcToken);
     // the the match must be the first solid token
-    if lcCurrentToken.TokenType in peTokenTypes then
+    if lcToken.TokenType in peTokenTypes then
     begin
       // found it
       Break;
     end
     // accept any white space until we find it
-    else if not (lcCurrentToken.TokenType in NotSolidTokens) then
-      RaiseParseError('Unexpected token, expected ' +
-        DescribeTarget, lcCurrentToken);
+    else if not (lcToken.TokenType in NotSolidTokens) then
+      raise TEParseError.Create('Unexpected token "'+lcToken.SourceCode+ '" , expected ' +
+        DescribeTarget, lcToken);
   end;
-  
   
   Inc(fiTokenCount);
   {$IFnDEF LCLNOGUI}
@@ -465,6 +470,9 @@ end;
 
 function TBuildParseTree.PushNode(const peNodeType: TParseTreeNodeType): TParseTreeNode;
 begin
+  if peNodeType = nProcedureDirectives then
+    Result := nil;
+
   Result := TParseTreeNode.Create;
   Result.NodeType := peNodeType;
 
@@ -529,10 +537,15 @@ begin
       RecogniseLibrary;
     ttUnit:
       RecogniseUnit;
+    else begin
+      if Self.IsIncFile then
+        RecogniseInclude
   else
-    RaiseParseError('Expected program, package, library, unit, got "' + s + '" ',
+        RaiseParseError('Expected program, package, library, unit, ''.inc'' got "' +
+          s + '" ',
       fcTokenList.FirstSolidToken);
-  end
+end;
+  end;
 end;
 
 procedure TBuildParseTree.RecogniseProgram;
@@ -645,6 +658,16 @@ begin
   PopNode;
 
   RecogniseProgramBlock;
+  RecogniseFileEnd;
+
+  PopNode;
+end;
+
+procedure TBuildParseTree.RecogniseInclude;
+begin
+  PushNode(nInclude);
+
+  RecogniseDeclSections;
   RecogniseFileEnd;
 
   PopNode;
@@ -2623,6 +2646,7 @@ const
   VariableModifiers: TTokenTypeSet = [ttExternal, ttExport, ttPublic];
 var
   lc: TSourceToken;
+  lct: TTokenType;
 begin
   // (* attempted EBNF definition of a variable definition *)
   // named : 'name' var_name
@@ -2688,16 +2712,42 @@ begin
       Recognise(ttEquals);
 
       { not just an expr - can be an array, record or the like
-        reuse the code from typed constant declaration as it works the same
-      }
+        reuse the code from typed constant declaration as it works the same }
       RecogniseTypedConstant;
-
       PopNode;
     end;
   end;
 
-  { yes, they can occur here too }
-  RecogniseHintDirectives;
+  { This loop will attempt to recognize HintDirectives and special directives }
+  repeat
+    lct := fcTokenList.FirstSolidTokenType;
+    if lct = ttSemicolon then   // need to look ahead
+      lct := fcTokenList.SolidTokenType(2);
+    if lct in HintDirectives then
+      RecogniseHintDirectives
+    else if lct in [ttExport, ttPublic] then
+      RecogniseVarExpPubDir
+    else
+    break;
+  until False;
+
+  PopNode;
+end;
+
+procedure TBuildParseTree.RecogniseVarExpPubDir;
+var
+  lTokenType : TTokenType;
+begin
+  PushNode(nVarExpPubl);
+
+  Recognise(ttSemicolon); // close previous term
+  { Skip checking anything until ';' }
+  while not fcTokenList.EOF do begin
+    lTokenType := fcTokenList.FirstTokenType;
+    if lTokenType = ttSemicolon then
+  break;
+    Recognise(lTokenType);
+  end;
 
   PopNode;
 end;
@@ -4014,18 +4064,18 @@ end;
 
 function IsForwardExtern(pt: TParseTreeNode): boolean;
 var
-  lcDirectives: TParseTreeNode;
+  lpt: TParseTreeNode;
 begin
   Assert(pt <> nil);
 
+  { Path to directives : <pt>/nProcedureHeading/nProcedureDirectives }
   if pt.NodeType in ProcedureNodes then
-    pt := pt.GetImmediateChild(ProcedureHeadings);
+    lpt:= pt.GetImmediateChild(nProcedureHeading);
 
-  Assert(pt <> nil);
-
-  lcDirectives := pt.GetImmediateChild(nProcedureDirectives);
-
-  Result := (lcDirectives <> nil) and lcDirectives.HasChildNode([ttExternal, ttForward])
+  if Assigned(lpt) then
+    result := lpt.HasChildNode([ttForward,ttExternal]) // This searches all sub nodes !
+  else
+    result := False;
 end;
 
 procedure TBuildParseTree.RecogniseProcedureDecl(const pbAnon: boolean);
@@ -4046,6 +4096,10 @@ begin
     Recognise(ttSemicolon);
 
   RecogniseNotSolidTokens;
+
+  //opt
+  if fcTokenList.FirstSolidTokenType in AllProcDirectives then
+    RecogniseProcedureDirectives;
 
   { if the proc declaration has the directive external or forward,
     it will not have a body
@@ -4089,11 +4143,30 @@ begin
   if not IsForwardExtern(lcTop) then
   begin
     RecogniseBlock;
-
     if (not pbAnon) and (fcTokenList.FirstSolidTokenType = ttSemiColon) then
     begin
       Recognise(ttSemicolon);
     end;
+  end;
+
+  PopNode;
+end;
+
+procedure TBuildParseTree.RecogniseSquareBracketDir;
+var
+  lTokenType : TTokenType;
+  { lNextToken : TSourceToken; }
+begin
+  { just add all tokens until the ']'  is reached ] }
+
+  PushNode(nProcedureDirBracket);
+
+  { Skip checking anything until ']' }
+  while not fcTokenList.EOF do begin
+    lTokenType := fcTokenList.FirstSolidTokenType;
+    Recognise(lTokenType);
+    if lTokenType = ttCloseSquareBracket then
+      break;
   end;
 
   PopNode;
@@ -4324,7 +4397,7 @@ end;
 
 procedure TBuildParseTree.RecogniseProcedureDirectives;
 var
-  lbFirstPass: boolean;
+  lTokenType, lNextType: TTokenType;
 begin
   { these are semi-colon separated
 
@@ -4333,65 +4406,48 @@ begin
 
     external is more complex
   }
-  CheckEnumeratorToken(fcTokenList.FirstSolidTokenType = ttSemicolon);
-  if (fcTokenList.FirstSolidTokenType in ProcedureDirectives) or
-    ((fcTokenList.FirstSolidTokenType = ttSemicolon) and
-    (fcTokenList.SolidTokenType(2) in ProcedureDirectives)) then
-  begin
+
+  lTokenType := fcTokenList.FirstSolidTokenType;
+  lNextType := fcTokenList.SolidTokenType(2);
+  if (lTokenType in AllProcDirectives) or (lNextType in AllProcDirectives) then begin
     PushNode(nProcedureDirectives);
-
-    if fcTokenList.FirstSolidTokenType = ttSemiColon then
-      Recognise(ttSemiColon);
-    lbFirstPass := True;
-
-    CheckEnumeratorToken(fcTokenList.FirstSolidTokenType = ttSemicolon);
-    while (fcTokenList.FirstSolidTokenType in ProcedureDirectives) or
-      ((fcTokenList.FirstSolidTokenType = ttSemicolon) and
-        (fcTokenList.SolidTokenType(2) in ProcedureDirectives)) do
-    begin
-      if ( not lbFirstPass) and (fcTokenList.FirstSolidTokenType = ttSemiColon) then
-        Recognise(ttSemiColon);
-
-      case fcTokenList.FirstSolidTokenType of
-        ttExternal:
-        begin
-          RecogniseExternalProcDirective;
-        end;
-        ttPublic:
-        begin
-          { Break the loop if we have found a class visibility "public" }
-          if not RecognisePublicProcDirective then
-            break;
-        end;
-        ttDispId:
-        begin
-          Recognise(ttDispId);
-          RecogniseConstantExpression;
-        end;
-        ttMessage:
-        begin
-          Recognise(ttMessage);
-          RecogniseConstantExpression;
-        end;
-        ttEnumerator:
-        begin
-          Recognise(ttEnumerator);
-          RecogniseIdentifier(False, idStrict);
-        end;
-        ttDeprecated:
-        begin
-          Recognise(ttDeprecated);
-          if fcTokenList.FirstSolidTokenType <> ttSemicolon then
+    while (lTokenType in AllProcDirectives) or (lNextType in AllProcDirectives) do begin
+      if (lTokenType = ttSemiColon) then
+        Recognise(ttSemiColon)
+      else begin
+        case lTokenType of
+          ttOpenSquareBracket:
+            RecogniseSquareBracketDir;
+          ttExternal:
+            RecogniseExternalProcDirective;
+          ttPublic:
+            { Break the loop if we have found a class visibility "public" }
+            if not RecognisePublicProcDirective then
+              break;
+          ttDispId: begin
+            Recognise(ttDispId);
             RecogniseConstantExpression;
-        end
-        else
-          Recognise(ProcedureDirectives);
+          end;
+          ttMessage: begin
+            Recognise(ttMessage);
+            RecogniseConstantExpression;
+          end;
+          ttEnumerator: begin
+            Recognise(ttEnumerator);
+            RecogniseIdentifier(False, idStrict);
+          end;
+          ttDeprecated: begin
+            Recognise(ttDeprecated);
+            if fcTokenList.FirstSolidTokenType <> ttSemicolon then
+              RecogniseConstantExpression;
+          end
+          else
+            Recognise(ProcedureDirectives);
+        end;
       end;
-
-      lbFirstPass := False;
-      CheckEnumeratorToken();
+      lTokenType := fcTokenList.FirstSolidTokenType;
+      lNextType := fcTokenList.SolidTokenType(2);
     end;
-
     PopNode;
   end;
 end;

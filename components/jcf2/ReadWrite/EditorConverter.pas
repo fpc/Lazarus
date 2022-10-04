@@ -120,6 +120,7 @@ begin
   fcConverter.InputCode := ReadFromIDE(pciUnit);
 
   // now convert
+  fcConverter.FileName := fsCurrentUnitName;
   fcConverter.Convert;
   fsCurrentUnitName := '';
   if not ConvertError then
