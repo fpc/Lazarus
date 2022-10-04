@@ -1811,11 +1811,11 @@ begin
   end//FMaskSave = True
   else
   begin//FMaskSave = False
-    if FTrimType = metTrimRight then
+    //while GetCodePoint does not crash on an empty string (and it does not return a #32), it sort of worked by accident in that scenario
+    //and it crashed in similar function in MaskUtils because of that, see: https://forum.lazarus.freepascal.org/index.php/topic,60803.0.html
+    if (Value <> '') then
     begin
-      //while GetCodePoint does not crash on an empty string (and it does not return a #32), it sort of worked by accident in that scenario
-      //and it crashed in similar function in MaskUtils because of that, see: https://forum.lazarus.freepascal.org/index.php/topic,60803.0.html
-      if (Value <> '') then
+      if FTrimType = metTrimRight then
       begin
         //fill text from left to rigth, skipping MaskLiterals
         j := 1;
@@ -1828,13 +1828,10 @@ begin
             if j > Utf8Length(Value) then Break;
           end;
         end;
-      end;
-    end
-    else
-    begin
-      //fill text from right to left, skipping MaskLiterals
-      if (Value <> '') then
+      end
+      else
       begin
+        //fill text from right to left, skipping MaskLiterals
         j := Utf8Length(Value);
         for i := FMaskLength downto 1 do
         begin
