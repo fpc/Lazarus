@@ -132,6 +132,12 @@ begin
   Result := (c in OctDigits);
 end;
 
+// 123_456 Ok  _123_456 Bad
+function CharIsDigitSeparator(c: Char; aIsFirstDigit: Boolean): Boolean;
+begin
+  result:= (not aIsFirstDigit) and (c='_');
+end;
+
 { TBuildTokenList }
 
 constructor TBuildTokenList.Create;
@@ -627,7 +633,7 @@ end;
 
 function TBuildTokenList.TryNumber(const pcToken: TSourceToken): boolean;
 var
-  lbHasDecimalSep: boolean;
+  lbHasDecimalSep, lbFirstDigit: boolean;
 begin
   Result := False;
 
@@ -643,9 +649,6 @@ begin
   if not CharIsDigit(Current) then
     exit;
 
-  if (Current = '.') or (Current = '-') then
-    exit;
-
   pcToken.TokenType  := ttNumber;
   pcToken.SourceCode := Current;
   Consume;
@@ -659,21 +662,20 @@ begin
     ie one dat = decimal
     two dots = end of number
   }
-  while CharIsDigit(Current) or (Current = '.') do
+  lbFirstDigit := True;
+  while CharIsDigit(Current) or (Current = '.') or CharIsDigitSeparator(Current,lbFirstDigit) do
   begin
+    lbFirstDigit := False;
     // have we got to the dot?
     if (Current = '.') then
     begin
       if CurrentChars(2) = '..' then
         break;
-
       if lbHasDecimalSep then
-        // oops! a second one
-        break
-      else
-        lbHasDecimalSep := True;
+        break;                   // oops! a second one
+      lbHasDecimalSep := True;
+      lbFirstDigit := True;
     end;
-
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
@@ -695,8 +697,10 @@ begin
     end;
 
     { exponent must be integer }
-    while CharIsDigit(Current) do
+    lbFirstDigit := True;
+    while CharIsDigit(Current) or CharIsDigitSeparator(Current,lbFirstDigit) do
     begin
+      lbFirstDigit := False;
       pcToken.SourceCode := pcToken.SourceCode + Current;
       Consume;
     end;
@@ -709,7 +713,7 @@ end;
   Delphi source code does *not* change for this }
 function TBuildTokenList.TryHexNumber(const pcToken: TSourceToken): boolean;
 var
-  lbHasDecimalSep: boolean;
+  lbHasDecimalSep, lbFirstDigit: boolean;
 begin
   Result := False;
 
@@ -723,34 +727,35 @@ begin
   lbHasDecimalSep := False;
 
   { concat any subsequent number chars }
-  while CharIsHexDigitDot(Current) do
+  lbFirstDigit := True;
+  while CharIsHexDigitDot(Current) or CharIsDigitSeparator(Current,lbFirstDigit) do
   begin
+    lbFirstDigit := False;
     // have we got to the dot?
     if (Current = '.') then
     begin
       if CurrentChars(2) = '..' then
         break;
-
       if lbHasDecimalSep then
-        // oops! a second one
-        break
-      else
-        lbHasDecimalSep := True;
+        break;                   // oops! a second one
+      lbHasDecimalSep := True;
+      lbFirstDigit := True;
     end;
-
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
   // msdos i8086 segment:offset
   // $SSSS:$OOOO
-  if (lbHasDecimalSep=false) and (Current=':') and (ForwardChar(1)='$') then
+  if (not lbHasDecimalSep) and (Current=':') and (ForwardChar(1)='$') then
   begin
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
-    while Current in NativeHexDigits do
+    lbFirstDigit := True;
+    while (Current in NativeHexDigits) or CharIsDigitSeparator(Current,lbFirstDigit) do
     begin
+      lbFirstDigit := False;
       pcToken.SourceCode := pcToken.SourceCode + Current;
       Consume;
     end;
@@ -761,6 +766,8 @@ end;
 
 { Bin numbers are prefixed with % }
 function TBuildTokenList.TryBinNumber(const pcToken: TSourceToken): boolean;
+var
+  lbFirstDigit: boolean;
 begin
   Result := False;
 
@@ -773,8 +780,10 @@ begin
   Consume;
 
   { concat any subsequent binary chars }
-  while CharIsBinDigit(Current) do
+  lbFirstDigit := True;
+  while CharIsBinDigit(Current) or CharIsDigitSeparator(Current,lbFirstDigit) do
   begin
+    lbFirstDigit := False;
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
@@ -784,6 +793,8 @@ end;
 
 { ~pktb 2017.05.19 - Oct numbers are prefixed with & }
 function TBuildTokenList.TryOctNumber(const pcToken: TSourceToken): boolean;
+var
+  lbFirstDigit: boolean;
 begin
   Result := False;
 
@@ -806,8 +817,10 @@ begin
   Consume;
 
   { concat any subsequent binary chars }
-  while CharIsOctDigit(Current) do
+  lbFirstDigit := True;
+  while CharIsOctDigit(Current) or CharIsDigitSeparator(Current,lbFirstDigit) do
   begin
+    lbFirstDigit := False;
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
