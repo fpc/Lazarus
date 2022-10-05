@@ -159,10 +159,13 @@ uses
   StatusMessageReceiver in '..\StatusMessageReceiver.pas',
   MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
 
+const
+  CONFIG_FILE_NAME = 'jcfsettings.cfg';
+
 var
   feReturnCode: TJcfCommandLineReturnCode;
-  fbCmdLineShowHelp: boolean;
-  fbQuietFail: boolean;
+  fbCmdLineShowHelp: boolean = false;
+  fbQuietFail: boolean = false;
 
   fbCmdLineObfuscate: boolean;
 
@@ -205,6 +208,7 @@ var
     fbYesAll := False;
     fbHasNamedConfigFile := False;
     fsConfigFileName := '';
+    lsPath := '';
 
     for liLoop := 1 to ParamCount do
     begin
@@ -305,7 +309,22 @@ var
         WriteLn;
         fbQuietFail := True;
         feReturnCode := rcConfigFileNotFound;
+      end;
+    end
+    else
+    begin  // read default file configuration
+      fsConfigFileName:=CONFIG_FILE_NAME;
+      if FileExists(fsConfigFileName) then
+      begin
+        FormatSettingsFromFile(fsConfigFileName);
       end
+      else
+      begin
+        WriteLn('Named config file ' + fsConfigFileName + ' was not found');
+        WriteLn;
+        fbQuietFail := True;
+        feReturnCode := rcConfigFileNotFound;
+      end;
     end;
 
     { must have read from registry or file }
@@ -378,9 +397,17 @@ var
     end;
   end;
 
+  // we want lowercase filename the same as Lazarus ide.
+  function CmdLineDefGetDefaultSettingsFileName: string;
+  begin
+    Result := IncludeTrailingPathDelimiter(GetApplicationFolder) + CONFIG_FILE_NAME;
+  end;
+
+
 { main program starts here }
 begin
   Application.Initialize;
+  GetDefaultSettingsFileName := CmdLineDefGetDefaultSettingsFileName;
   feReturnCode := rcSuccess;
   { read registry }
   GetRegSettings.ReadAll;
@@ -388,6 +415,9 @@ begin
   lcStatus := TStatusMesssageReceiver.Create;
 
   ParseCommandLine;
+
+  if fbCmdLineShowHelp then
+     fbQuietFail:=false;
 
   { format setttings will be altered by the command line.
     Do not persist these changes
