@@ -597,7 +597,7 @@
     <SearchPaths>
       <IncludeFiles Value="../../Include"/>
       <OtherUnitFiles Value="../../Output/Lazarus"/>
-      <UnitOutputDirectory Value="../../Output/Lazarus"/>
+      <UnitOutputDirectory Value="../../lib/CommandLine-$(TargetCPU)-$(TargetOS)-$(BuildMode)"/>
       <SrcPath Value="../../Include"/>
     </SearchPaths>
     <Parsing>
