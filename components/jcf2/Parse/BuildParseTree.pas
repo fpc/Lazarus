@@ -470,9 +470,6 @@ end;
 
 function TBuildParseTree.PushNode(const peNodeType: TParseTreeNodeType): TParseTreeNode;
 begin
-  if peNodeType = nProcedureDirectives then
-    Result := nil;
-
   Result := TParseTreeNode.Create;
   Result.NodeType := peNodeType;
 
