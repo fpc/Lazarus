@@ -1222,6 +1222,9 @@ var
 begin
   Result := CallBackDefaultReturn;
   //DebugLn(['gtkdestroyCB ',GetWidgetDebugReport(Widget)]);
+
+  // Cancel any pending idle callbacks for the widget
+  while g_idle_remove_by_data(Widget) <> gFALSE do;
   
   Info:=GetWidgetInfo(Widget);
   if Info = nil then // this widget is already destroyed
