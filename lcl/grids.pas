@@ -6244,7 +6244,7 @@ begin
     Inc(FTopLeft.X, Dir.X);
   if ((Dir.Y < 0) and (FTopLeft.Y > FFixedRows)) or ((Dir.Y > 0) and (FGCache.FullVisibleGrid.Bottom + FixedRows < RowCount)) then
     Inc(FTopLeft.Y, Dir.Y);
-  if not PointsEqual(FTopleft, OldTopLeft) then begin
+  if FTopleft <> OldTopLeft then begin
     FMoveLast := Point(-1, -1);
     doTopleftChange(False);
   end;
