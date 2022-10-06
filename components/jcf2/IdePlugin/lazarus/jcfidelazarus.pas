@@ -42,7 +42,7 @@ uses
   frAnyCapsSettings, frIdentifierCapsSettings, frNotIdentifierCapsSettings, 
   frUnitCaps, frReplace, frUses, frTransform, frAsm, frPreProcessor, 
   JcfUIConsts, Diff, diffmerge, JcfStringUtils, JcfSystemUtils, 
-  JcfUnicodeFiles, LazarusPackageIntf;
+  JcfUnicodeFiles, JcfUiTools, LazarusPackageIntf;
 
 implementation
 

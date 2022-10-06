@@ -37,11 +37,7 @@ unit Converter;
 interface
 
 uses
-  SysUtils, strutils,
-  // LazUtils
-  LazFileUtils,
-  // LCL
-  Controls, Forms,
+  SysUtils, strutils, LazFileUtils,
   // local
   ConvertTypes, ParseTreeNode, BuildTokenList, BuildParseTree, BaseVisitor;
 
@@ -69,9 +65,6 @@ type
       This could be in  batch file on a server }
     fbGuiMessages: Boolean;
     fbShowParseTree: Boolean;
-    {$IFnDEF LCLNOGUI}
-    leOldCursor: TCursor;
-    {$ENDIF}
 
     function GetOnStatusMessage: TStatusMessageProc;
     procedure SetOnStatusMessage(const Value: TStatusMessageProc);
@@ -116,9 +109,10 @@ type
 implementation
 
 uses
-  AllProcesses, fShowParseTree, JcfRegistrySettings,
+  AllProcesses,
+  JcfRegistrySettings,
   JcfSettings, JcfStringUtils, ParseError, PreProcessorParseTree,
-  SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY;
+  SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY, JcfUiTools;
 
 function StrInsert(const psSub, psMain: String; const piPos: Integer): String;
 begin
@@ -158,12 +152,10 @@ var
   lcTokenList: TSourceTokenList;
 begin
   fbConvertError := False;
-  {$IFnDEF LCLNOGUI}
-  leOldCursor := Screen.Cursor;
   try { finally normal cursor }
     // this can take a long time for large files
-    Screen.Cursor := crHourGlass;
-  {$ENDIF}
+    SetWaitCursorUI;
+
 
     // turn text into tokens
     fcTokeniser.SourceCode := InputCode;
@@ -232,12 +224,9 @@ begin
         SendExceptionMessage(E);
       end;
     end;
-
-  {$IFnDEF LCLNOGUI}
   finally
-    Screen.Cursor := leOldCursor;
+    RestoreCursorUI;
   end;
-  {$ENDIF}
 end;
 
 { this is what alters the code (in parse tree form) from source to output }
@@ -357,12 +346,10 @@ end;
 
 procedure TConverter.ShowParseTree;
 begin
-  {$IFnDEF LCLNOGUI}
   // This is always called from a Cursor:=crHourGlass block. Restore old cursor.
-  Screen.Cursor := leOldCursor;
-  {$ENDIF}
+  RestoreCursorUI;
   if fcBuildParseTree.Root <> nil then
-    fShowParseTree.ShowParseTree(fcBuildParseTree.Root);
+    ShowParseTreeUI(fcBuildParseTree.Root);
 end;
 
 procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer;
