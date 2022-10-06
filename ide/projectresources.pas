@@ -67,10 +67,9 @@ type
     FSystemResources: TResources;
     FLazarusResources: TStringList;
 
-    resFileName: String;
-    lrsFileName: String;
-    LastResFileName: String;
-    LastLrsFileName: String;
+    resFileName, lrsFileName: String;
+    LastResFileName, LastLrsFileName: String;
+    LastSavedRes: String;
 
     function GetProjectIcon: TProjectIcon;
     function GetProjectUserResources: TProjectUserResources;
@@ -82,7 +81,8 @@ type
     function UpdateMainSourceFile(const AFileName: string): Boolean;
     procedure UpdateFlagLrsIncludeAllowed(const AFileName: string);
     function Save(SaveToTestDir: string): Boolean;
-    procedure UpdateCodeBuffers;
+    function UpdateResCodeBuffer: Boolean;
+    procedure UpdateLrsCodeBuffer;
     procedure DeleteLastCodeBuffers;
 
     procedure OnResourceModified(Sender: TObject);
@@ -100,8 +100,7 @@ type
     procedure DoBeforeBuild(AReason: TCompileReason; SaveToTestDir: boolean);
     procedure Clear;
     function Regenerate(const MainFileName: String;
-                        UpdateSource, PerformSave: boolean;
-                        const SaveToTestDir: string): Boolean;
+      UpdateSource, PerformSave: boolean; const SaveToTestDir: string): Boolean;
     function RenameDirectives(const CurFileName, NewFileName: String): Boolean;
     procedure DeleteResourceBuffers;
 
@@ -505,16 +504,14 @@ begin
   FMessages.Clear;
 end;
 
-function TProjectResources.Regenerate(const MainFileName: String; UpdateSource,
-  PerformSave: boolean; const SaveToTestDir: string): Boolean;
+function TProjectResources.Regenerate(const MainFileName: String;
+  UpdateSource, PerformSave: boolean; const SaveToTestDir: string): Boolean;
 begin
   //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,
   //         ' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
   //DumpStack;
   Result := False;
-
-  if (MainFileName = '') then
-    Exit(true);
+  Assert(MainFileName<>'', 'TProjectResources.Regenerate: MainFileName is empty.');
 
   // remember old codebuffer filenames
   LastResFileName := resFileName;
@@ -529,8 +526,16 @@ begin
       debugln(['TProjectResources.Regenerate Update failed']);
       Exit;
     end;
-    // create codebuffers of new .lrs and .rc files
-    UpdateCodeBuffers;
+    if LastSavedRes='' then begin
+      // ToDo: Read an existing .res file from disk into LastSavedRes
+      //   to know if a new resource should be saved.
+      //   Now it gets saved once the first time after IDE started.
+    end;
+    // codebuffer of new .res file
+    if not UpdateResCodeBuffer and (LastResFileName=resFileName) then
+      PerformSave := False;     // Do not save an unchanged resource file.
+    // codebuffer of new .lrs file
+    UpdateLrsCodeBuffer;
     // update .lpr file (old and new include files exist, so parsing should work without errors)
     if UpdateSource and not UpdateMainSourceFile(MainFileName) then begin
       debugln(['TProjectResources.Regenerate UpdateMainSourceFile failed']);
@@ -730,8 +735,9 @@ begin
     UpdateFlagLrsIncludeAllowed(CurFileName);
     if not Update then
       Exit;
-    // update codebuffers of new .lrs and .res files
-    UpdateCodeBuffers;
+    // update codebuffers of new .res and .lrs files
+    UpdateResCodeBuffer;
+    UpdateLrsCodeBuffer;
 
     // update {$I filename} directive
     if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
@@ -780,14 +786,11 @@ end;
 
 function TProjectResources.Save(SaveToTestDir: string): Boolean;
 
-  function SaveCodeBuf(Filename: string): boolean;
+  function SaveCodeBuf(CodeBuf: TCodeBuffer): boolean;
   var
-    CodeBuf: TCodeBuffer;
     TestFilename: String;
   begin
     Result := True;
-    CodeBuf := CodeToolBoss.FindFile(Filename);
-    if (CodeBuf = nil) or CodeBuf.IsDeleted then Exit;
     if not CodeBuf.IsVirtual then
       Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore]
     else if SaveToTestDir<>'' then
@@ -797,38 +800,57 @@ function TProjectResources.Save(SaveToTestDir: string): Boolean;
     end;
   end;
 
-begin
-  Result := False;
-  if not SaveCodeBuf(resFileName) then Exit;
-  if not SaveCodeBuf(lrsFileName) then Exit;
-  Result := True;
-end;
-
-procedure TProjectResources.UpdateCodeBuffers;
 var
   CodeBuf: TCodeBuffer;
-  S: TStream;
+begin
+  Result := False;
+  // Save .res
+  CodeBuf := CodeToolBoss.FindFile(resFilename);
+  if Assigned(CodeBuf) and not CodeBuf.IsDeleted then
+  begin
+    Result := SaveCodeBuf(CodeBuf);
+    if not Result then Exit;
+    //DebugLn(['TProjectResources.Save: Res len=', Length(CodeBuf.Source),
+    //         ', LastRes len=', Length(LastSavedRes)]);
+    LastSavedRes := CodeBuf.Source;
+  end;
+  // Save .lrs
+  CodeBuf := CodeToolBoss.FindFile(lrsFilename);
+  if Assigned(CodeBuf) and not CodeBuf.IsDeleted then
+    Result := SaveCodeBuf(CodeBuf);
+end;
+
+function TProjectResources.UpdateResCodeBuffer: Boolean;
+// Generate .res resource and return True if it differs from the last saved one.
+var
+  CodeBuf: TCodeBuffer;
+  ResStream: TStream;
   Writer: TAbstractResourceWriter;
 begin
-  if HasSystemResources then
-  begin
-    CodeBuf := CodeToolBoss.CreateFile(resFileName);
-    S := TMemoryStream.Create;
-    Writer := TResResourceWriter.Create;
-    try
-      FSystemResources.WriteToStream(S, Writer);
-      S.Position := 0;
-      CodeBuf.LoadFromStream(S);
-    finally
-      Writer.Free;
-      S.Free;
-    end;
+  Result := False;
+  if not HasSystemResources then Exit;
+  CodeBuf := CodeToolBoss.CreateFile(resFileName);
+  ResStream := TMemoryStream.Create;
+  Writer := TResResourceWriter.Create;
+  try
+    FSystemResources.WriteToStream(ResStream, Writer);
+    ResStream.Position := 0;
+    CodeBuf.LoadFromStream(ResStream);
+    Result := CodeBuf.Source <> LastSavedRes;
+  finally
+    Writer.Free;
+    ResStream.Free;
   end;
-  if FLrsIncludeAllowed and HasLazarusResources then
-  begin
-    CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
-    CodeBuf.Source := FLazarusResources.Text;
-  end;
+end;
+
+procedure TProjectResources.UpdateLrsCodeBuffer;
+// Generate .lrs resource.
+var
+  CodeBuf: TCodeBuffer;
+begin
+  if not (FLrsIncludeAllowed or HasLazarusResources) then Exit;
+  CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
+  CodeBuf.Source := FLazarusResources.Text;
 end;
 
 procedure TProjectResources.DeleteLastCodeBuffers;
