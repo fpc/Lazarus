@@ -10,7 +10,7 @@ uses {$IFDEF UNIX}
   unit1,
   BuildParseTree,
   fShowParseTree,
-  Converter, JcfUiTools, SettingsStream,
+  Converter, SettingsStream,
   ReturnBefore,
   MoveSpaceToBeforeColon,
   Indenter,

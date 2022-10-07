@@ -41,6 +41,7 @@ interface
 
 uses
   Contnrs, SysUtils,
+  Forms,
   // local
   ParseTreeNode,
   ParseTreeNodeType,
@@ -298,9 +299,6 @@ type
 
 implementation
 
-uses
-  JcfUiTools;
-
 const
   UPDATE_INTERVAL = 512;
 
@@ -451,7 +449,10 @@ begin
   end;
   
   Inc(fiTokenCount);
-  UpdateGUI(fiTokenCount,UPDATE_INTERVAL);
+  {$IFnDEF LCLNOGUI}
+  if (fiTokenCount mod UPDATE_INTERVAL) = 0 then
+     Application.ProcessMessages;
+  {$ENDIF}
 
   { add trailing white space
     fixes some problems, causes others

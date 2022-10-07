@@ -31,6 +31,7 @@ interface
 
 uses
   Classes, SysUtils,
+  Dialogs, Controls, Forms,
   // local
   Converter, ConvertTypes;
 
@@ -113,9 +114,9 @@ implementation
 
 uses
   { local }
-  JcfStringUtils, FileUtil,
+  JcfStringUtils, JcfSystemUtils,
   JcfMiscFunctions, JcfLog,
-  JcfRegistrySettings, JcfSettings, JcfUnicodeFiles, JcfUiTools, System.UITypes;
+  JcfRegistrySettings, JcfSettings, JcfUnicodeFiles;
 
 constructor TFileConverter.Create;
 begin
@@ -150,7 +151,7 @@ begin
     exit;
   end;
 
-  if FileSize(psInputFileName) < 1 then
+  if FileGetSize(psInputFileName) < 1 then
   begin
     SendStatusMessage(psInputFileName, 'The file "' + psInputFileName + '" is empty',
       mtInputError,
@@ -249,7 +250,8 @@ begin
         else
           lsOutType := 'Output';
           
-        wRes :=MessageDlgUI(lsOutType + ' file ' + lsOut + ' exists already. Remove it?');
+        wRes := MessageDlg(lsOutType + ' file ' + lsOut + ' exists already. Remove it?',
+          mtConfirmation, [mbYes, mbNo, mbAll, mbAbort], 0);
       end;
 
       if wRes = mrAll then
@@ -359,7 +361,11 @@ begin
       ProcessFile(lsDir + lsNames[liLoop]);
       if fbAbort then
         break;
-      UpdateGUI;
+      
+      {$IFnDEF LCLNOGUI}
+      // refresh the GUI
+      Application.ProcessMessages;
+      {$ENDIF}
     end;
 
     { all subdirs }

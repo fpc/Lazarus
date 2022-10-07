@@ -27,7 +27,13 @@ See http://www.gnu.org/licenses/gpl.html
 
   {$I JcfGlobal.inc}
 uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+  Interfaces, // this includes the LCL widgetset
+  Forms,
   SysUtils,
+  FileCtrl,
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
   JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
@@ -44,6 +50,7 @@ uses
   BaseVisitor in '..\..\Process\BaseVisitor.pas',
   JcfMiscFunctions in '..\..\Utils\JcfMiscFunctions.pas',
   JcfLog in '..\..\Utils\JcfLog.pas',
+  fShowParseTree in '..\..\Parse\UI\fShowParseTree.pas' {frmShowParseTree},
   SetUses in '..\..\Settings\SetUses.pas',
   JcfSetBase in '..\..\Settings\JcfSetBase.pas',
   JcfSettings in '..\..\Settings\JcfSettings.pas',
@@ -70,9 +77,8 @@ uses
   WarnCaseNoElse in '..\..\Process\Warnings\WarnCaseNoElse.pas',
   WarnDestroy in '..\..\Process\Warnings\WarnDestroy.pas',
   WarnEmptyBlock in '..\..\Process\Warnings\WarnEmptyBlock.pas',
-  WarnImbalancedComment in '..\..\Process\Warnings\WarnImbalancedComment.pas',
   Warning in '..\..\Process\Warnings\Warning.pas',
-  JcfVersionConsts in '..\..\JcfVersionConsts.pas',
+  JcfVersionConsts in '..\..\JcfVersionConsts.pas', jcfidelazarus,
   JcfRegistrySettings in '..\..\Settings\JcfRegistrySettings.pas',
   TokenUtils in '..\..\Parse\TokenUtils.pas',
   NoSpaceBefore in '..\..\Process\Spacing\NoSpaceBefore.pas',
@@ -117,11 +123,13 @@ uses
   PreProcessorExpressionTokens in '..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas',
   PreProcessorExpressionParser in '..\..\Parse\PreProcessor\PreProcessorExpressionParser.pas',
   PreProcessorExpressionTokenise in '..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas',
+  JcfHelp in '..\..\Utils\JcfHelp.pas',
   SettingsTypes in '..\..\Settings\SettingsTypes.pas',
   SetPreProcessor in '..\..\Settings\SetPreProcessor.pas',
   UnitNameCaps in '..\..\Process\Capitalisation\UnitNameCaps.pas',
   RemoveSpaceAtLineEnd in '..\..\Process\Spacing\RemoveSpaceAtLineEnd.pas',
   FindReplace in '..\..\Process\Transform\FindReplace.pas',
+  fJcfErrorDisplay in '..\..\Ui\fJcfErrorDisplay.pas' {ExceptionDialog},
   ReturnsAfterFinalEnd in '..\..\Process\Returns\ReturnsAfterFinalEnd.pas',
   PreProcessorParseTree in '..\..\Parse\PreProcessor\PreProcessorParseTree.pas',
   RemoveEmptyComment in '..\..\Process\RemoveEmptyComment.pas',
@@ -140,6 +148,7 @@ uses
   SortUsesData in '..\..\Process\Transform\SortUsesData.pas',
   IdentifierCaps in '..\..\Process\Capitalisation\IdentifierCaps.pas',
   WarnUnusedParam in '..\..\Process\Warnings\WarnUnusedParam.pas',
+  JcfFontSetFunctions in '..\..\Utils\JcfFontSetFunctions.pas',
   SetAsm in '..\..\Settings\SetAsm.pas',
   RemoveReturnsAfter in '..\..\Process\Returns\RemoveReturnsAfter.pas',
   IndentAsmParam in '..\..\Process\Indent\IndentAsmParam.pas',
@@ -148,7 +157,6 @@ uses
   CommandLineReturnCode in '..\CommandLineReturnCode.pas',
   CommandLineConstants in '..\CommandLineConstants.pas',
   StatusMessageReceiver in '..\StatusMessageReceiver.pas',
-  JcfUiTools in '..\..\Ui\jcfuitools.pas',
   MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
 
 const
@@ -398,6 +406,7 @@ var
 
 { main program starts here }
 begin
+  Application.Initialize;
   GetDefaultSettingsFileName := CmdLineDefGetDefaultSettingsFileName;
   feReturnCode := rcSuccess;
   { read registry }
@@ -427,10 +436,6 @@ begin
   begin
     ConvertFiles;
   end;
-
-  // keep for debuginng in the lazarus ide.
-  //Write('Press enter to end');
-  //ReadLn;
 
   FreeAndNil(lcStatus);
 

@@ -34,6 +34,7 @@ interface
 
 uses
   Classes, SysUtils,
+  Forms,
   { local }
   Tokens, SourceTokenList, SourceToken;
 
@@ -91,7 +92,7 @@ implementation
 uses
   { local }
   PreProcessorExpressionTokenise, PreProcessorExpressionParser,
-  ParseError, JcfSettings, JcfUiTools;
+  ParseError, JcfSettings;
 
 procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
 var
@@ -177,11 +178,17 @@ end;
 
 
 procedure TPreProcessorParseTree.NextToken;
+{$IFnDEF LCLNOGUI}
 const
    UPDATE_INTERVAL = 512;
+{$ENDIF}
 begin
   Inc(fiCurrentTokenIndex);
-  UpdateGUI(fiCurrentTokenIndex,UPDATE_INTERVAL);
+  
+  {$IFnDEF LCLNOGUI}
+  if (fiCurrentTokenIndex mod UPDATE_INTERVAL) = 0 then
+     Application.ProcessMessages;
+  {$ENDIF}
 end;
 
 function TPreProcessorParseTree.CurrentToken: TSourceToken;

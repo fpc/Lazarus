@@ -38,6 +38,10 @@ uses
 
 function GetWindowsTempFolder: string;
 
+function FileIsReadOnly(const ps: string): boolean;
+function FileGetSize(const FileName: string): Int64;
+
+procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 function IsMultiByte(const {%H-}pcChar: Char): Boolean;
 
 function IsWinServer2008R2: Boolean;
@@ -55,16 +59,40 @@ implementation
 
 uses
   {$ifdef MSWINDOWS}
-    Windows
+    Windows, ShellApi
   {$endif}
   {$ifdef Unix}
     Unix
   {$endif}
-  ,FileUtil;
+  ,LCLIntf, fileutil;
 
 function GetWindowsTempFolder: string;
 begin
   Result := GetTempDir;
+end;
+
+function FileIsReadOnly(const ps: string): boolean;
+var
+  liAttr: integer;
+begin
+  Assert(FileExists(ps));
+  liAttr := FileGetAttr(ps);
+  Result := (liAttr and faReadOnly) <> 0;
+end;
+
+function FileGetSize(const FileName: string): Int64;
+begin
+  Result := FileUtil.FileSize(FileName);
+end;
+
+procedure ShellExecEx(const FileName: string; const Parameters: string = '');
+begin
+  {$ifdef MSWINDOWS}
+    ShellApi.ShellExecute(0, 'open', PChar(FileName), PChar(Parameters), nil, SW_SHOW);
+  {$endif}
+  {$ifdef unix}
+    fpsystem(format('%s %s',[FileName, Parameters]));
+  {$endif}
 end;
 
 function IsMultiByte(const pcChar: Char): Boolean;

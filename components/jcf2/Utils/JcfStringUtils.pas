@@ -711,6 +711,7 @@ end;
 function StrTrimLastEndOfLine(const aStr:string):string;
 var
   len:integer;
+  c:char;
 begin
   len:=length(aStr);
   if (len>0) then

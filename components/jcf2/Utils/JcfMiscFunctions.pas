@@ -48,7 +48,10 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, SysUtils, JcfStringUtils;
+  Classes, SysUtils,
+  Forms,
+  // local
+  JcfStringUtils;
 
 
 function GetApplicationFolder: string;
@@ -69,7 +72,7 @@ implementation
 
 function GetApplicationFolder: string;
 begin
-  Result := ExtractFilePath(ParamStr(0));
+  Result := ExtractFilePath(Application.ExeName);
 end;
 
 { these come from Ralf Steinhaeusser

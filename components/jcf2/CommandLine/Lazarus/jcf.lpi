@@ -17,9 +17,15 @@
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
+    <MacroValues Count="1">
+      <Macro1 Name="LCLWidgetType" Value="nogui"/>
+    </MacroValues>
     <BuildModes Count="2">
       <Item1 Name="Debug" Default="True"/>
       <Item2 Name="Release">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <SearchPaths>
@@ -48,6 +54,9 @@
           </Linking>
         </CompilerOptions>
       </Item2>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="656785217950" Modes="Debug,Release" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -67,19 +76,15 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="jcfidelazarus"/>
       </Item1>
-      <Item2>
-        <PackageName Value="FCL"/>
-      </Item2>
     </RequiredPackages>
-    <Units Count="122">
+    <Units Count="125">
       <Unit0>
         <Filename Value="jcf.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCF"/>
       </Unit0>
       <Unit1>
         <Filename Value="../../Parse/Tokens.pas"/>
@@ -142,439 +147,456 @@
         <IsPartOfProject Value="True"/>
       </Unit15>
       <Unit16>
-        <Filename Value="../../Process/VisitSetXY.pas"/>
+        <Filename Value="../../Utils/JcfFontSetFunctions.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit16>
       <Unit17>
-        <Filename Value="../../Process/FormatFlags.pas"/>
+        <Filename Value="../../Parse/UI/fShowParseTree.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmShowParseTree"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit17>
       <Unit18>
-        <Filename Value="../../Process/Obfuscate/FixCase.pas"/>
+        <Filename Value="../../Process/VisitSetXY.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit18>
       <Unit19>
-        <Filename Value="../../Process/Obfuscate/RemoveComment.pas"/>
+        <Filename Value="../../Process/FormatFlags.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit19>
       <Unit20>
-        <Filename Value="../../Process/Obfuscate/RemoveUnneededWhiteSpace.pas"/>
+        <Filename Value="../../Process/Obfuscate/FixCase.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit20>
       <Unit21>
-        <Filename Value="../../Process/Obfuscate/RemoveReturn.pas"/>
+        <Filename Value="../../Process/Obfuscate/RemoveComment.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit21>
       <Unit22>
-        <Filename Value="../../Process/Obfuscate/RebreakLines.pas"/>
+        <Filename Value="../../Process/Obfuscate/RemoveUnneededWhiteSpace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit22>
       <Unit23>
-        <Filename Value="../../Process/RemoveEmptyComment.pas"/>
+        <Filename Value="../../Process/Obfuscate/RemoveReturn.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit23>
       <Unit24>
-        <Filename Value="../../Process/Capitalisation/IdentifierCaps.pas"/>
+        <Filename Value="../../Process/Obfuscate/RebreakLines.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit24>
       <Unit25>
-        <Filename Value="../../Process/Capitalisation/Capitalisation.pas"/>
+        <Filename Value="../../Process/RemoveEmptyComment.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit25>
       <Unit26>
-        <Filename Value="../../Process/Returns/ReturnChars.pas"/>
+        <Filename Value="../../Process/Capitalisation/IdentifierCaps.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit26>
       <Unit27>
-        <Filename Value="../../Process/Returns/BlockStyles.pas"/>
+        <Filename Value="../../Process/Capitalisation/Capitalisation.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit27>
       <Unit28>
-        <Filename Value="../../Process/Spacing/TabToSpace.pas"/>
+        <Filename Value="../../Process/Returns/ReturnChars.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit28>
       <Unit29>
-        <Filename Value="../../Process/Spacing/SpaceToTab.pas"/>
+        <Filename Value="../../Process/Returns/BlockStyles.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit29>
       <Unit30>
-        <Filename Value="../../Process/Spacing/MaxSpaces.pas"/>
+        <Filename Value="../../Process/Spacing/TabToSpace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit30>
       <Unit31>
-        <Filename Value="../../Process/Spacing/SingleSpaceBefore.pas"/>
+        <Filename Value="../../Process/Spacing/SpaceToTab.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit31>
       <Unit32>
-        <Filename Value="../../Process/Spacing/SingleSpaceAfter.pas"/>
+        <Filename Value="../../Process/Spacing/MaxSpaces.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit32>
       <Unit33>
-        <Filename Value="../../Process/Spacing/SpaceBeforeColon.pas"/>
+        <Filename Value="../../Process/Spacing/SingleSpaceBefore.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit33>
       <Unit34>
-        <Filename Value="../../Process/Indent/Indenter.pas"/>
+        <Filename Value="../../Process/Spacing/SingleSpaceAfter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit34>
       <Unit35>
-        <Filename Value="../../Process/Returns/LongLineBreaker.pas"/>
+        <Filename Value="../../Process/Spacing/SpaceBeforeColon.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit35>
       <Unit36>
-        <Filename Value="../../Process/Info/BasicStats.pas"/>
+        <Filename Value="../../Process/Indent/Indenter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit36>
       <Unit37>
-        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionTokens.pas"/>
+        <Filename Value="../../Process/Returns/LongLineBreaker.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit37>
       <Unit38>
-        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionTokenise.pas"/>
+        <Filename Value="../../Process/Info/BasicStats.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit38>
       <Unit39>
-        <Filename Value="../../ReadWrite/FileConverter.pas"/>
+        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionTokens.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit39>
       <Unit40>
-        <Filename Value="../../Utils/JcfUnicodeFiles.pas"/>
+        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionTokenise.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit40>
       <Unit41>
-        <Filename Value="../CommandLineConstants.pas"/>
+        <Filename Value="../../ReadWrite/FileConverter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit41>
       <Unit42>
-        <Filename Value="../StatusMessageReceiver.pas"/>
+        <Filename Value="../../Utils/JcfUnicodeFiles.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit42>
       <Unit43>
-        <Filename Value="../CommandLineReturnCode.pas"/>
+        <Filename Value="../../Ui/fJcfErrorDisplay.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ExceptionDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit43>
       <Unit44>
-        <Filename Value="../../ReadWrite/ConvertTypes.pas"/>
+        <Filename Value="../CommandLineConstants.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit44>
       <Unit45>
-        <Filename Value="../../Parse/ParseError.pas"/>
+        <Filename Value="../StatusMessageReceiver.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit45>
       <Unit46>
-        <Filename Value="../../Parse/ParseTreeNode.pas"/>
+        <Filename Value="../CommandLineReturnCode.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit46>
       <Unit47>
-        <Filename Value="../../Parse/ParseTreeNodeType.pas"/>
+        <Filename Value="../../ReadWrite/ConvertTypes.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit47>
       <Unit48>
-        <Filename Value="../../Parse/SourceToken.pas"/>
+        <Filename Value="../../Parse/ParseError.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit48>
       <Unit49>
-        <Filename Value="../../Parse/SourceTokenList.pas"/>
+        <Filename Value="../../Parse/ParseTreeNode.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit49>
       <Unit50>
-        <Filename Value="../../Utils/JcfLog.pas"/>
+        <Filename Value="../../Parse/ParseTreeNodeType.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFLog"/>
       </Unit50>
       <Unit51>
-        <Filename Value="../../Settings/SetUses.pas"/>
+        <Filename Value="../../Parse/SourceToken.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit51>
       <Unit52>
-        <Filename Value="../../Settings/JcfSetBase.pas"/>
+        <Filename Value="../../Parse/SourceTokenList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit52>
       <Unit53>
-        <Filename Value="../../Settings/SetAlign.pas"/>
+        <Filename Value="../../Utils/JcfLog.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="JCFLog"/>
       </Unit53>
       <Unit54>
-        <Filename Value="../../Settings/SetCaps.pas"/>
+        <Filename Value="../../Settings/SetUses.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit54>
       <Unit55>
-        <Filename Value="../../Settings/SetFile.pas"/>
+        <Filename Value="../../Settings/JcfSetBase.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit55>
       <Unit56>
-        <Filename Value="../../Settings/SetIndent.pas"/>
+        <Filename Value="../../Settings/SetAlign.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit56>
       <Unit57>
-        <Filename Value="../../Settings/SetObfuscate.pas"/>
+        <Filename Value="../../Settings/SetCaps.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit57>
       <Unit58>
-        <Filename Value="../../Process/Warnings/WarnUnusedParam.pas"/>
+        <Filename Value="../../Settings/SetFile.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit58>
       <Unit59>
-        <Filename Value="../../Process/Warnings/WarnDestroy.pas"/>
+        <Filename Value="../../Settings/SetIndent.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit59>
       <Unit60>
-        <Filename Value="../../Process/Warnings/WarnAssignToFunctionName.pas"/>
+        <Filename Value="../../Settings/SetObfuscate.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit60>
       <Unit61>
-        <Filename Value="../../Process/Capitalisation/UnitNameCaps.pas"/>
+        <Filename Value="../../Process/Warnings/WarnUnusedParam.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit61>
       <Unit62>
-        <Filename Value="../../Process/Transform/SortUsesData.pas"/>
+        <Filename Value="../../Process/Warnings/WarnDestroy.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit62>
       <Unit63>
-        <Filename Value="../../Process/Capitalisation/SpecificWordCaps.pas"/>
+        <Filename Value="../../Process/Warnings/WarnAssignToFunctionName.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit63>
       <Unit64>
-        <Filename Value="../../Settings/SetWordList.pas"/>
+        <Filename Value="../../Process/Capitalisation/UnitNameCaps.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit64>
       <Unit65>
-        <Filename Value="../../Settings/SetPreProcessor.pas"/>
+        <Filename Value="../../Process/Transform/SortUsesData.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SetPreprocessor"/>
       </Unit65>
       <Unit66>
-        <Filename Value="../../Settings/SetReturns.pas"/>
+        <Filename Value="../../Process/Capitalisation/SpecificWordCaps.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit66>
       <Unit67>
-        <Filename Value="../../Settings/SetSpaces.pas"/>
+        <Filename Value="../../Settings/SetWordList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit67>
       <Unit68>
-        <Filename Value="../../Settings/Streams/RegistrySettings.pas"/>
+        <Filename Value="../../Settings/SetPreProcessor.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SetPreprocessor"/>
       </Unit68>
       <Unit69>
-        <Filename Value="../../Process/Obfuscate/ReduceWhiteSpace.pas"/>
+        <Filename Value="../../Utils/JcfHelp.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit69>
       <Unit70>
-        <Filename Value="../../Process/Obfuscate/RemoveConsecutiveWhiteSpace.pas"/>
+        <Filename Value="../../Settings/SetReturns.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit70>
       <Unit71>
-        <Filename Value="../../Process/Warnings/WarnRealType.pas"/>
+        <Filename Value="../../Settings/SetSpaces.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit71>
       <Unit72>
-        <Filename Value="../../Process/Warnings/WarnCaseNoElse.pas"/>
+        <Filename Value="../../Settings/Streams/RegistrySettings.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit72>
       <Unit73>
-        <Filename Value="../../Process/Warnings/WarnEmptyBlock.pas"/>
+        <Filename Value="../../Process/Obfuscate/ReduceWhiteSpace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit73>
       <Unit74>
-        <Filename Value="../../Process/Warnings/Warning.pas"/>
+        <Filename Value="../../Process/Obfuscate/RemoveConsecutiveWhiteSpace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit74>
       <Unit75>
-        <Filename Value="../../Process/Spacing/NoSpaceBefore.pas"/>
+        <Filename Value="../../Process/Warnings/WarnRealType.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit75>
       <Unit76>
-        <Filename Value="../../Process/Spacing/NoSpaceAfter.pas"/>
+        <Filename Value="../../Process/Warnings/WarnCaseNoElse.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit76>
       <Unit77>
-        <Filename Value="../../Process/Returns/ReturnAfter.pas"/>
+        <Filename Value="../../Process/Warnings/WarnEmptyBlock.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit77>
       <Unit78>
-        <Filename Value="../../Process/Nesting.pas"/>
+        <Filename Value="../../Process/Warnings/Warning.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit78>
       <Unit79>
-        <Filename Value="../../Process/VisitSetNesting.pas"/>
+        <Filename Value="../../Process/Spacing/NoSpaceBefore.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit79>
       <Unit80>
-        <Filename Value="../../Process/Returns/ReturnBefore.pas"/>
+        <Filename Value="../../Process/Spacing/NoSpaceAfter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit80>
       <Unit81>
-        <Filename Value="../../Process/Returns/NoReturnAfter.pas"/>
+        <Filename Value="../../Process/Returns/ReturnAfter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit81>
       <Unit82>
-        <Filename Value="../../Process/Returns/NoReturnBefore.pas"/>
+        <Filename Value="../../Process/Nesting.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit82>
       <Unit83>
-        <Filename Value="../../Process/AllProcesses.pas"/>
+        <Filename Value="../../Process/VisitSetNesting.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit83>
       <Unit84>
-        <Filename Value="../../Process/Obfuscate/RemoveBlankLine.pas"/>
+        <Filename Value="../../Process/Returns/ReturnBefore.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit84>
       <Unit85>
-        <Filename Value="../../Process/SwitchableVisitor.pas"/>
+        <Filename Value="../../Process/Returns/NoReturnAfter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit85>
       <Unit86>
-        <Filename Value="../../Process/Returns/PropertyOnOneLine.pas"/>
+        <Filename Value="../../Process/Returns/NoReturnBefore.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit86>
       <Unit87>
-        <Filename Value="../../Process/VisitStripEmptySpace.pas"/>
+        <Filename Value="../../Process/AllProcesses.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit87>
       <Unit88>
-        <Filename Value="../../Process/Returns/RemoveBlankLinesAfterProcHeader.pas"/>
+        <Filename Value="../../Process/Obfuscate/RemoveBlankLine.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit88>
       <Unit89>
-        <Filename Value="../../Process/Returns/RemoveBlankLinesInVars.pas"/>
+        <Filename Value="../../Process/SwitchableVisitor.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit89>
       <Unit90>
-        <Filename Value="../../Process/Returns/RemoveReturnsBeforeEnd.pas"/>
+        <Filename Value="../../Process/Returns/PropertyOnOneLine.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit90>
       <Unit91>
-        <Filename Value="../../Process/Returns/RemoveReturnsAfterBegin.pas"/>
+        <Filename Value="../../Process/VisitStripEmptySpace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit91>
       <Unit92>
-        <Filename Value="../../Utils/IntList.pas"/>
+        <Filename Value="../../Process/Returns/RemoveBlankLinesAfterProcHeader.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit92>
       <Unit93>
-        <Filename Value="../../Process/Align/AlignConst.pas"/>
+        <Filename Value="../../Process/Returns/RemoveBlankLinesInVars.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit93>
       <Unit94>
-        <Filename Value="../../Process/Align/AlignBase.pas"/>
+        <Filename Value="../../Process/Returns/RemoveReturnsBeforeEnd.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit94>
       <Unit95>
-        <Filename Value="../../Process/Align/AlignAssign.pas"/>
+        <Filename Value="../../Process/Returns/RemoveReturnsAfterBegin.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit95>
       <Unit96>
-        <Filename Value="../../Process/Align/AlignVars.pas"/>
+        <Filename Value="../../Utils/IntList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit96>
       <Unit97>
-        <Filename Value="../../Process/Align/AlignTypedef.pas"/>
+        <Filename Value="../../Process/Align/AlignConst.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit97>
       <Unit98>
-        <Filename Value="../../Process/Align/AlignComment.pas"/>
+        <Filename Value="../../Process/Align/AlignBase.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit98>
       <Unit99>
-        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionParser.pas"/>
+        <Filename Value="../../Process/Align/AlignAssign.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit99>
       <Unit100>
-        <Filename Value="../../Process/Spacing/RemoveSpaceAtLineEnd.pas"/>
+        <Filename Value="../../Process/Align/AlignVars.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit100>
       <Unit101>
-        <Filename Value="../../Process/Transform/FindReplace.pas"/>
+        <Filename Value="../../Process/Align/AlignTypedef.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit101>
       <Unit102>
-        <Filename Value="../../Process/Returns/ReturnsAfterFinalEnd.pas"/>
+        <Filename Value="../../Process/Align/AlignComment.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit102>
       <Unit103>
-        <Filename Value="../../Parse/PreProcessor/PreProcessorParseTree.pas"/>
+        <Filename Value="../../Parse/PreProcessor/PreProcessorExpressionParser.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit103>
       <Unit104>
-        <Filename Value="../../Process/Returns/RemoveConsecutiveReturns.pas"/>
+        <Filename Value="../../Process/Spacing/RemoveSpaceAtLineEnd.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit104>
       <Unit105>
-        <Filename Value="../../Process/Transform/UsesClauseFindReplace.pas"/>
+        <Filename Value="../../Process/Transform/FindReplace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit105>
       <Unit106>
-        <Filename Value="../../Process/Transform/UsesClauseInsert.pas"/>
+        <Filename Value="../../Process/Returns/ReturnsAfterFinalEnd.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit106>
       <Unit107>
-        <Filename Value="../../Process/Transform/UsesClauseRemove.pas"/>
+        <Filename Value="../../Parse/PreProcessor/PreProcessorParseTree.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit107>
       <Unit108>
-        <Filename Value="../../Settings/SetComments.pas"/>
+        <Filename Value="../../Process/Returns/RemoveConsecutiveReturns.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit108>
       <Unit109>
-        <Filename Value="../../Process/TreeWalker.pas"/>
+        <Filename Value="../../Process/Transform/UsesClauseFindReplace.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit109>
       <Unit110>
-        <Filename Value="../../Process/Transform/AddBlockEndSemicolon.pas"/>
+        <Filename Value="../../Process/Transform/UsesClauseInsert.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit110>
       <Unit111>
-        <Filename Value="../../Process/Transform/AddBeginEnd.pas"/>
+        <Filename Value="../../Process/Transform/UsesClauseRemove.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit111>
       <Unit112>
-        <Filename Value="../../Settings/SetTransform.pas"/>
+        <Filename Value="../../Settings/SetComments.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit112>
       <Unit113>
-        <Filename Value="../../Process/Align/AlignField.pas"/>
+        <Filename Value="../../Process/TreeWalker.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit113>
       <Unit114>
-        <Filename Value="../../Process/Transform/SortUses.pas"/>
+        <Filename Value="../../Process/Transform/AddBlockEndSemicolon.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit114>
       <Unit115>
-        <Filename Value="../../Settings/SetAsm.pas"/>
+        <Filename Value="../../Process/Transform/AddBeginEnd.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit115>
       <Unit116>
-        <Filename Value="../../Process/Returns/RemoveReturnsAfter.pas"/>
+        <Filename Value="../../Settings/SetTransform.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit116>
       <Unit117>
-        <Filename Value="../../Process/Indent/IndentAsmParam.pas"/>
+        <Filename Value="../../Process/Align/AlignField.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit117>
       <Unit118>
-        <Filename Value="../../Utils/JcfStringUtils.pas"/>
+        <Filename Value="../../Process/Transform/SortUses.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit118>
       <Unit119>
-        <Filename Value="../../Process/Spacing/MoveSpaceToBeforeColon.pas"/>
+        <Filename Value="../../Settings/SetAsm.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit119>
       <Unit120>
-        <Filename Value="../../Utils/JcfSystemUtils.pas"/>
+        <Filename Value="../../Process/Returns/RemoveReturnsAfter.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit120>
       <Unit121>
-        <Filename Value="../../Ui/jcfuitools.pas"/>
+        <Filename Value="../../Process/Indent/IndentAsmParam.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JcfUiTools"/>
       </Unit121>
+      <Unit122>
+        <Filename Value="../../Utils/JcfStringUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit122>
+      <Unit123>
+        <Filename Value="../../Process/Spacing/MoveSpaceToBeforeColon.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit123>
+      <Unit124>
+        <Filename Value="../../Utils/JcfSystemUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit124>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
       <IncludeFiles Value="../../Include"/>
-      <OtherUnitFiles Value="../../Output/Lazarus;../../IdePlugin/lazarus"/>
+      <OtherUnitFiles Value="../../Output/Lazarus"/>
       <UnitOutputDirectory Value="../../lib/CommandLine-$(TargetCPU)-$(TargetOS)-$(BuildMode)"/>
       <SrcPath Value="../../Include"/>
     </SearchPaths>
@@ -602,8 +624,5 @@
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CustomOptions Value="-dCOMMAND_LINE"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

@@ -41,6 +41,7 @@ interface
 
 uses
   Registry, Classes, SysUtils,
+  Dialogs,
   { local }
   ConvertTypes;
 
@@ -190,11 +191,7 @@ implementation
 
 uses
   { jcf }
-  JcfStringUtils, JcfSystemUtils, JcfMiscFunctions, JcfUiTools
-  {$ifndef COMMAND_LINE}
-   ,lclintf  //< OpenDocument
-  {$endif}
-  ;
+  JcfStringUtils, JcfSystemUtils, JcfMiscFunctions;
 
 const
   REG_GENERAL_SECTION = 'General';
@@ -524,17 +521,14 @@ procedure TJCFRegistrySettings.ViewLog;
 var
   lsFile: string;
 begin
-  {$ifndef COMMAND_LINE}
   lsFile := LogFileName;
 
   if FileExists(lsFile) then
   begin
-    //ShellExecEx('notepad.exe ', lsFile);
-    OpenDocument(lsFile);
+    ShellExecEx('notepad.exe ', lsFile);
   end
   else
-    ShowErrorMessageUI('No log file found at ' + lsFile);
-  {$endif}
+    ShowMessage('No log file found at ' + lsFile);
 end;
 
 function TJCFRegistrySettings.DirIsExcluded(const psDir: string): boolean;

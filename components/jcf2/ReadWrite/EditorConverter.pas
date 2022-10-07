@@ -35,6 +35,7 @@ interface
 
 uses
   Classes, SysUtils,
+  // IdeIntf
   SrcEditorIntf,
   { local }
   Converter, ConvertTypes;

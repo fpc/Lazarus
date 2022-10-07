@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="31">
+    <Units Count="30">
       <Unit0>
         <Filename Value="TestJCF.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -162,11 +162,6 @@
         <Filename Value="..\JcfVersionConsts.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit29>
-      <Unit30>
-        <Filename Value="..\Ui\jcfuitools.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="JcfUiTools"/>
-      </Unit30>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -177,13 +172,10 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-      <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui"/>
+      <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;.."/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf3"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
