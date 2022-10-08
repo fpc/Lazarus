@@ -990,6 +990,7 @@ begin
     cell := NSTextFieldCell(field.cell);
     cell.setWraps(false);
     cell.setScrollable(true);
+    cell.setUsesSingleLineMode(true);
   end;
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
   TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
