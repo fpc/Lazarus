@@ -1291,6 +1291,10 @@ msgstr "Зняти вибір з всіх"
 msgid "Value:"
 msgstr "Значення:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Variant"

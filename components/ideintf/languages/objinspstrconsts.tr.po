@@ -1288,6 +1288,10 @@ msgstr "Tüm seçimleri kaldır"
 msgid "Value:"
 msgstr "Değer:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Variant"

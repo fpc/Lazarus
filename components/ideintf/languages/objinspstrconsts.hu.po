@@ -1288,6 +1288,10 @@ msgstr "Kijelölések megszüntetése"
 msgid "Value:"
 msgstr "Érték:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Variáns"

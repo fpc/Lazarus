@@ -1331,6 +1331,10 @@ msgstr "בטל את כל הבחירות"
 msgid "Value:"
 msgstr "ערך:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "גירסה"

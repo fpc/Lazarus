@@ -1284,6 +1284,10 @@ msgstr "Снять выделение"
 msgid "Value:"
 msgstr "Значение:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Variant"

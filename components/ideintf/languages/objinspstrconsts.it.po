@@ -1291,6 +1291,10 @@ msgstr "Deseleziona tutto"
 msgid "Value:"
 msgstr "Valore:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "Variante"

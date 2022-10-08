@@ -513,6 +513,8 @@ type
   Single, Double, etc.) }
 
   TFloatPropertyEditor = class(TPropertyEditor)
+  protected
+    function FloatInRange(AValue: Extended; AType: TFloatType): Boolean;
   public
     function AllEqual: Boolean; override;
     function FormatValue(const AValue: Extended): ansistring;
@@ -3934,6 +3936,44 @@ end;
 
 { TFloatPropertyEditor }
 
+function TFloatPropertyEditor.FloatInRange(AValue: Extended; AType: TFloatType): Boolean;
+{$ifndef FPC_HAS_TYPE_DOUBLE}
+const MaxDouble = Math.MaxSingle;
+{$endif}
+{$ifndef FPC_HAS_TYPE_EXTENDED}
+const MaxExtended = MaxDouble;
+{$endif}
+{$ifndef FPC_HAS_TYPE_COMP}
+const
+  MaxComp =  9223372036854775807;
+  MinComp = -9223372036854775808;
+{$endif}
+begin
+  try
+    case AType of
+      ftSingle:   Result := {$ifndef FPC_HAS_TYPE_DOUBLE}
+                            //Extended=Single, so anything out of range of a Single will be +/-Infinity
+                            not IsInfinite(AValue);
+                            {$else}
+                            (AValue <= MaxSingle) and (AValue >= -MaxSingle);
+                            {$endif}
+      ftDouble:   Result := {$ifndef FPC_HAS_TYPE_EXTENDED}
+                            //Extended=Double, so anything out of range of a Double will be +/-Infinity
+                            not IsInfinite(AValue);
+                            {$else}
+                            (AValue <= MaxDouble) and (AValue >= -MaxDouble);
+                            {$endif}
+      ftExtended: Result := not IsInfinite(AValue);
+      ftComp:     Result := (AValue <= MaxComp) and (AValue >= MinComp);
+      ftCurr:     Result := (AValue <= MaxCurrency) and (AValue >= MinCurrency);
+    end;
+  except
+    //Currency comparisons can cause Floating Point overflow on Win64 (i.e. compared with +/-MaxDouble, +/-MaxExtended, MaxComp, MinComp, +/-Inf)
+    //and on Win32 (i.e with +/-MaxExtended), not tested other platforms
+    Result := False;
+  end;
+end;
+
 function TFloatPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
@@ -3977,6 +4017,7 @@ procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
 var
   FS: TFormatSettings;
   NewFloat: Extended;
+  fType: TFloatType;
 begin
   //writeln('TFloatPropertyEditor.SetValue A ',NewValue,'  ',StrToFloat(NewValue));
   FS := DefaultFormatSettings;
@@ -3984,13 +4025,20 @@ begin
   if not TryStrToFloat(NewValue, NewFloat, FS) then
     //if this failed, assume the user entered DS from his current locale
     NewFloat := StrToFloat(NewValue, DefaultFormatSettings);
-  if IsInfinite(NewFloat) then
+  //conversion succeeded, out of range input gets converted to +/-Inf as well, not only literal user input as '+Inf'
+  //so check user input instead of IsInfinite now
+  if (Pos('inf',LowerCase(NewValue)) > 0) then
     raise EPropertyError.Create(oisInfinityNotSupported);
+  //Check NaN before checking for range, since you cannot compare NaN to anything
   if IsNan(NewFloat) then
     raise EPropertyError.Create(oisNaNNotSupported);
+  fType := GetTypeData(GetPropType)^.FloatType;
+  if not FloatInRange(NewFloat, fType) then
+    raise EPropertyError.Create(oisValueOutOfRange);
   SetFloatValue(NewFloat);
   //writeln('TFloatPropertyEditor.SetValue B ',GetValue);
 end;
+
 
 { TStringPropertyEditor }
 

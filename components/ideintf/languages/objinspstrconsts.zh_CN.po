@@ -1285,6 +1285,10 @@ msgstr "不选择所有"
 msgid "Value:"
 msgstr "值:"
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "变量"

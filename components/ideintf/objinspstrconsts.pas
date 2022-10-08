@@ -375,6 +375,7 @@ resourcestring
   oisInvalidPropertyValue = 'Invalid property value';
   oisInfinityNotSupported = 'Setting a floating point property to positive or negative Infinity at design time is not supported';
   oisNaNNotSupported = 'Setting a floating point property to NaN at design time is not supported';
+  oisValueOutOfRange = 'Property value out of range.';
   oisNone = '(none)';
   oisPressAKey = 'Press a key ...';
   oisPressAKeyEGCtrlP = 'You can press e.g. Ctrl+P ...';

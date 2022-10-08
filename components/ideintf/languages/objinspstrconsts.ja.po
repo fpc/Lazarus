@@ -1296,6 +1296,10 @@ msgstr "すべての選択を解除"
 msgid "Value:"
 msgstr "値："
 
+#: objinspstrconsts.oisvalueoutofrange
+msgid "Property value out of range."
+msgstr ""
+
 #: objinspstrconsts.oisvariant
 msgid "Variant"
 msgstr "変数"
