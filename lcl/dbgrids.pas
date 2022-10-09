@@ -439,9 +439,9 @@ type
     procedure DoOnChangeBounds; override;
     procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); override;
     procedure DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
-                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
+                            aCfg: TXMLConfig; aVersion: Integer; const aPath: string); override;
     procedure DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
-                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
+                            aCfg: TXMLConfig; aVersion: Integer; const aPath: string); override;
     procedure DrawAllRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
@@ -552,9 +552,9 @@ type
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
 
-    procedure SaveToFile(FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
     procedure SaveToStream(AStream: TStream); override;
-    procedure LoadFromFile(FileName: string); override;
+    procedure LoadFromFile(const FileName: string); override;
     procedure LoadFromStream(AStream: TStream); override;
 
     property AllowOutboundEvents;
@@ -2299,7 +2299,7 @@ begin
 end;
 
 procedure TCustomDBGrid.DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn;
-  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; const aPath: string);
 var
   c: TColumn;
   s: string;
@@ -2315,7 +2315,7 @@ begin
 end;
 
 procedure TCustomDBGrid.DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn;
-  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; const aPath: string);
 var
   c: TColumn;
 begin
@@ -3949,7 +3949,7 @@ begin
             and DataLink.UpdateAction(AAction);
 end;
 
-procedure TCustomDBGrid.SaveToFile(FileName: string);
+procedure TCustomDBGrid.SaveToFile(const FileName: string);
 begin
   SaveOptions:=[ soDesign ];
   inherited SaveToFile(Filename);
@@ -3961,7 +3961,7 @@ begin
   inherited SaveToStream(AStream);
 end;
 
-procedure TCustomDBGrid.LoadFromFile(FileName: string);
+procedure TCustomDBGrid.LoadFromFile(const FileName: string);
 begin
   SaveOptions:=[ soDesign ];
   Include(FGridStatus, gsLoadingGrid);

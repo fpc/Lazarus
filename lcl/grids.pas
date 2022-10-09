@@ -1028,9 +1028,9 @@ type
     procedure DoExit; override;
     procedure DoEnter; override;
     procedure DoLoadColumn(Sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
-                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
+                            aCfg: TXMLConfig; aVersion: Integer; const aPath: string); virtual;
     procedure DoSaveColumn(Sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
-                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
+                            aCfg: TXMLConfig; aVersion: Integer; const aPath: string); virtual;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -1055,7 +1055,7 @@ type
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawThemedCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
-    procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
+    procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; const aText: String); virtual;
     procedure DrawGridCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect;
                                         const aState: TCheckboxState); virtual;
     procedure DrawButtonCell(const aCol,aRow: Integer; aRect: TRect; const aState:TGridDrawState);
@@ -1358,14 +1358,14 @@ type
     procedure InvalidateRow(ARow: Integer);
     function  IsCellVisible(aCol, aRow: Integer): Boolean;
     function  IsFixedCellVisible(aCol, aRow: Integer): boolean;
-    procedure LoadFromFile(FileName: string); virtual;
+    procedure LoadFromFile(const FileName: string); virtual;
     procedure LoadFromStream(AStream: TStream); virtual;
     function  MouseCoord(X,Y: Integer): TGridCoord;
     function  MouseToCell(const Mouse: TPoint): TPoint; overload;
     procedure MouseToCell(X,Y: Integer; out ACol,ARow: Longint); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
-    procedure SaveToFile(FileName: string); virtual;
+    procedure SaveToFile(const FileName: string); virtual;
     procedure SaveToStream(AStream: TStream); virtual;
     procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); override;
     procedure SetFocus; override;
@@ -1785,8 +1785,8 @@ type
     procedure SaveContent(cfg: TXMLConfig); override;
     //procedure DrawInteriorCells; override;
     //procedure SelectEditor; override;
-    procedure SelectionSetText(TheText: String);
-    procedure SelectionSetHTML(TheHTML, TheText: String);
+    procedure SelectionSetText(const TheText: String);
+    procedure SelectionSetHTML(const TheHTML: String; TheText: String);
     procedure SetCells(ACol, ARow: Integer; const AValue: string); virtual;
     procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
     procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
@@ -1807,11 +1807,11 @@ type
     procedure InsertRowWithValues(Index: Integer; Values: array of String);
     procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=',';
       UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true); virtual;
-    procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=',';
+    procedure LoadFromCSVFile(const AFilename: string; ADelimiter: Char=',';
       UseTitles: boolean=true; FromLine: Integer=0; SkipEmptyLines: Boolean=true);
     procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=',';
       WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
-    procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=',';
+    procedure SaveToCSVFile(const AFileName: string; ADelimiter: Char=',';
       WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 
     property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
@@ -4733,7 +4733,7 @@ begin
 end;
 
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
-  aState: TGridDrawState; aText: String);
+  aState: TGridDrawState; const aText: String);
 var
   Rtxt, Rrot, R: TRect;
   angle: Double;
@@ -7567,14 +7567,14 @@ begin
 end;
 
 procedure TCustomGrid.DoLoadColumn(Sender: TCustomGrid; aColumn: TGridColumn;
-  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; const aPath: string);
 begin
   if Assigned(FOnLoadColumn) then
     FOnLoadColumn(Self, aColumn, aColIndex, aCfg, aVersion, aPath);
 end;
 
 procedure TCustomGrid.DoSaveColumn(Sender: TCustomGrid; aColumn: TGridColumn;
-  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; const aPath: string);
 begin
   if Assigned(FOnSaveColumn) then
     FOnSaveColumn(Self, aColumn, aColIndex, aCfg, aVersion, aPath);
@@ -10090,7 +10090,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.LoadFromFile(FileName: string);
+procedure TCustomGrid.LoadFromFile(const FileName: string);
 var
   Cfg: TXMLConfig;
 begin
@@ -10118,7 +10118,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.SaveToFile(FileName: string);
+procedure TCustomGrid.SaveToFile(const FileName: string);
 var
   Cfg: TXMLConfig;
 begin
@@ -11827,7 +11827,7 @@ begin
    end;
 end;
 
-procedure TCustomStringGrid.SelectionSetText(TheText: String);
+procedure TCustomStringGrid.SelectionSetText(const TheText: String);
 var
   StartCol,StartRow: Integer;
   Stream: TStringStream;
@@ -11867,7 +11867,7 @@ begin
 end;
 
 
-procedure TCustomStringGrid.SelectionSetHTML(TheHTML, TheText: String);
+procedure TCustomStringGrid.SelectionSetHTML(const TheHTML: String; TheText: String);
 var
   bStartCol, bStartRow, bCol, bRow: Integer;
   bCellStr: string;
@@ -12245,7 +12245,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
+procedure TCustomStringGrid.LoadFromCSVFile(const AFilename: string;
   ADelimiter: Char=','; UseTitles: boolean=true; FromLine: Integer=0;
   SkipEmptyLines: Boolean=true);
 var
@@ -12331,7 +12331,7 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char;
+procedure TCustomStringGrid.SaveToCSVFile(const AFileName: string; ADelimiter: Char;
   WriteTitles: boolean=true; VisibleColumnsOnly: boolean=false);
 var
   TheStream: TFileStream;
