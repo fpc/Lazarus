@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-10-03 02:12+0300\n"
+"PO-Revision-Date: 2022-10-10 01:36+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1286,7 +1286,7 @@ msgstr "Значение:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "Значение свойства находится вне границ его диапазона."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
