@@ -3917,6 +3917,9 @@ Form position will be poOwnerFormCenter, instead of poScreenCenter.
 <element name="TTaskDialogFlag.tfCanBeMinimized">
 <short>Allow the dialog to be minimized.</short>
 </element>
+<element name="TTaskDialogFlag.tfForceNonNative">
+<short>Forces use of an emulated task dialog form.</short>
+</element>
 
 <element name="TTaskDialogFlags">
 <short>
@@ -4599,14 +4602,59 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 
 <element name="TCustomTaskDialog.DoExecute">
 <short>
-Performs actions to convert values in the class, and execute the dialog using 
-the wrapper in the LCLTaskDialog unit.
+Performs actions to configure and execute the dialog using the wrapper in the 
+LCLTaskDialog unit.
 </short>
 <descr>
-<!-- hic sunt dracones -->
+<p>
+<var>DoExecute</var> is a dynamic <var>Boolean</var> function used to 
+initialize and execute the task dialog. It ensures that the index for the 
+default Buttons and RadioButtons are updated before executing the task 
+dialog. It also builds the delimited list of captions for each of the items 
+in Buttons and RadioButtons. The lists use the format needed for the task 
+dialog wrapper (#10 is the delimter).
+</p>
+<p>
+Property values are copied to the members in the TTaskDialog instance, 
+including:
+</p>
+<ul>
+<li>Caption</li>
+<li>Title</li>
+<li>Text</li>
+<li>ExpandButtonCaption</li>
+<li>ExpandedText</li>
+<li>FooterText</li>
+<li>VerificationText</li>
+</ul>
+<p>
+DoExecute calls the Execute method in the TTaskDialog wrapper. The return 
+value is <b>True</b> if the ModalResult value contains a valid button 
+identifier defined in the Buttons for the dialog.
+</p>
+<p>
+DoExecute is called from the Execute method.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.Execute"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.Buttons"/>
+<link id="TCustomTaskDialog.RadioButtons"/>
+<link id="TCustomTaskDialog.ExpandButtonCaption"/>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.FooterText"/>
+<link id="TCustomTaskDialog.Text"/>
+<link id="TCustomTaskDialog.VerificationText"/>
+<link id="TCustomTaskDialog.Caption"/>
+<link id="TCustomTaskDialog.Title"/>
+<link id="TCustomTaskDialog.ModalResult"/>
+<link id="#lcl.lcltaskdialog.TTaskDialog">TTaskDialog</link>
+</seealso>
 </element>
+<version>
+Modified in version 2.4 to use the tfForceNonNative flag to determine whether an emulated dialog is displayed.
+</version>
 <element name="TCustomTaskDialog.DoExecute.Result">
 <short>
 <b>True</b> if a valid button identifier was clicked in the dialog.
