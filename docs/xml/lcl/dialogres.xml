@@ -8,17 +8,16 @@ Contains types and constants used to access scalable dialog images.
 </short>
 <descr>
 <p>
-<file>DialogRes.pas</file> contains constants and types used to access scalable images as TIcon or TImage resources used on dialog forms.
+<file>DialogRes.pas</file> contains constants and types used to access 
+scalable images as TIcon or TImage resources used on dialog forms.
 </p>
 <p>
 <file>DialogRes.pas</file> is part of the Lazarus Component Library 
 (<b>LCL</b>).
 </p>
-</descr>  
+</descr>
 
 <!-- unresolved references -->
-<element name="windows"/>
-<element name="ctype"/>
 <element name="lcltype"/>
 <element name="graphics"/>
 <element name="themes"/>
@@ -30,49 +29,70 @@ Contains types and constants used to access scalable dialog images.
 <element name="classes"/>
 
 <element name="TDialogImage">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines a range with image identifiers for glyphs used in dialog resources.
+</short>
+<descr>
+<p>
+<var>TDialogImage</var> is a range type with identifiers for the images used 
+on glyph icons in the LCL. The range is defined using constant values defined 
+in the <file>LCLType</file> unit. The values are used to access glyph image 
+names in DialogRes and their index positions in TDialogImageList.
+</p>
+</descr>
+<seealso>
+<link id="DialogResName"/>
+<link id="TDialogImageList"/>
+</seealso>
 </element>
 
 <element name="DialogResName">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- MSWindows external symbols -->
-<element name="IDI_HAND">
-<short/>
-</element>
-<element name="IDI_QUESTION">
-<short/>
-</element>
-<element name="IDI_EXCLAMATION">
-<short/>
-</element>
-<element name="IDI_ASTERISK">
-<short/>
-</element>
-<element name="IDI_WINLOGO">
-<short/>
-</element>
-<element name="IDI_SHIELD">
-<short/>
-</element>
-<element name="IDI_WARNING">
-<short/>
-</element>
-<element name="IDI_ERROR">
-<short/>
-</element>
-<element name="IDI_INFORMATION">
-<short/>
+<short>
+Contains the base names for glyph resources used on dialogs.
+</short>
+<descr>
+<p>
+<var>DialogResName</var> is an array constant which contains strings with the 
+base resource names for glyph images used on dialogs. The array elements are 
+indexed by the values in the TDialogImage range type. For example:
+</p>
+<code>
+sResName := DialogResName[idDialogError] // returns 'dialog_error'
+</code>
+<p>
+This base resource name can then be combined with a scaling suffix, like 
+'_150' or '_200', to form the complete name for the desired icon resource.
+</p>
+</descr>
+<seealso>
+<link id="TDialogImage"/>
+<link id="TDialogImageList"/>
+<link id="DialogGlyphs"/>
+</seealso>
 </element>
 
 <element name="TDialogImageList">
-<short/>
-<descr/>
+<short>
+Implements a multi-resolution image list used for a dialog icon loaded from a resource file.
+</short>
+<descr>
+<p>
+<var>TDialogImageList</var> is a <var>TLCLGlyphs</var> descendant which 
+implements an image list for a single dialog icon used in the LCL. It 
+registers multiple resolutions for the glyph images including 16, 24, 32, 48, 
+and 64 pixels variants. The default image size is 32x32 pixels. The different 
+image sizes are loaded by calling the ThemeServices.GetStockImage method when 
+theme services are available.
+</p>
+<p>
+Use the Width and Height properties to assign a different preferred size for 
+images in the list.
+</p>
+<p>
+Use the DialogIcon property to access get the ordinal position in the image 
+list for an icon using its TDialogImage image identifier.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -86,7 +106,9 @@ Contains types and constants used to access scalable dialog images.
 
 <!-- public -->
 <element name="TDialogImageList.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -95,7 +117,9 @@ Contains types and constants used to access scalable dialog images.
 </element>
 
 <element name="TDialogImageList.DialogIcon">
-<short/>
+<short>
+Provides indexed access to images for the dialog icon identified in AIndex.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -104,16 +128,28 @@ Contains types and constants used to access scalable dialog images.
 </element>
 
 <element name="DialogGlyphs">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Gets the image list with glyph images used on dialogs.
+</short>
+<descr>
+<p>
+<var>DialogGlyphs</var> is a <var>TDialogImageList</var> function which 
+returns the image list with the glyphs used for dialog icons.
+</p>
+</descr>
+<seealso>
+<link id="TDialogImageList"/>
+</seealso>
 </element>
 <element name="DialogGlyphs.Result">
-<short/>
+<short>
+Returns the TDialogImageList singleton defined in the implementation section.
+</short>
 </element>
 
 </module>
 <!-- DialogRes -->
 </package>
 </fpdoc-descriptions>
+
 
