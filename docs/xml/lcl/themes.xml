@@ -2163,6 +2163,12 @@ Gets the handle to the region for a theme element.
 <element name="TThemeServices.GetStockImage.Mask">
 <short/>
 </element>
+<element name="TThemeServices.GetStockImage.Width">
+<short/>
+</element>
+<element name="TThemeServices.GetStockImage.Height">
+<short/>
+</element>
 
 <element name="TThemeServices.GetOption">
 <short>
