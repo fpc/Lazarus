@@ -4572,8 +4572,15 @@ control:
 <element name="TDBCheckBox.SetValueUnchecked.AValue">
 <short>New value for the property.</short>
 </element>
+
+<element name="TDBCheckBox.NonDefaultValueChecked"/>
+<element name="TDBCheckBox.NonDefaultValueChecked.Result"/>
+<element name="TDBCheckBox.NonDefaultValueUnchecked"/>
+<element name="TDBCheckBox.NonDefaultValueUnchecked.Result"/>
+
 <element name="TDBCheckBox.CMGetDataLink">
-<short>Implements the CM_GETDATALINK control message for the data-aware 
+<short>
+Implements the CM_GETDATALINK control message for the data-aware 
 control.
 </short>
 <descr/>
@@ -4582,6 +4589,7 @@ control.
 <element name="TDBCheckBox.CMGetDataLink.Message">
 <short>Message examined and updated in the method.</short>
 </element>
+
 <element name="TDBCheckBox.GetFieldCheckState">
 <short>
 <var>GetFieldCheckState</var> - returns the checkbox state for the current 
@@ -4590,13 +4598,16 @@ field.
 <descr>
 <p>
 <var>GetFieldCheckState</var> is a <var>TCheckBoxState</var> function used to 
-get the current state for the checkbox. GetFieldCheckState uses the internal 
-<var>TFieldDataLink</var> instance in the class to access the 
-<var>Field</var> in the linked dataset represented by <var>DataField</var>.
+get the current value for the State property in the data-aware check box 
+control. GetFieldCheckState uses the internal <var>TFieldDataLink</var> 
+instance in the class to access the <var>Field</var> in the linked dataset represented by <var>DataField</var>.
 </p>
+
+<!-- HERE -->
+
 <p>
-The field value is examined to get the return value for the method. The 
-return value can be one of the following:
+The field type and value are examined to determine the return value for the 
+method. The return value can be one of the following:
 </p>
 <dl>
 <dt>cbChecked</dt>
@@ -4607,12 +4618,11 @@ Used when the Boolean value in the Field is <b>True</b>.
 <dd>
 Used when the Boolean value in the Field is <b>False</b>, or the String value 
 matched ValueChecked. Also used when the Field has not been assigned 
-(contains Nil).
+(contains <b>Nil</b>).
 </dd>
 <dt>cbGrayed</dt>
 <dd>
-Used when the value in Field is NULL, and when none of the previous 
-conditions are <b>True</b>.
+Used when the value in Field is not NULL (depends on the database and the field type), and when none of the previous conditions are <b>True</b>.
 </dd>
 </dl>
 <p>
@@ -4625,6 +4635,7 @@ The return value is assigned to the <var>State</var> property when the
 <element name="TDBCheckBox.GetFieldCheckState.Result">
 <short>Current TCheckBoxState for the control.</short>
 </element>
+
 <element name="TDBCheckBox.DataChange">
 <short>
 Updates the control display value when the linked dataset is changed.
@@ -4633,38 +4644,50 @@ Updates the control display value when the linked dataset is changed.
 <p>
 <var>DataChange</var> is used to perform actions needed when the linked 
 dataset for the control has been changed. In TDBCheckBox, this requires 
-setting the
-<var>State</var> property for the control. DataChange calls the 
+setting the <var>State</var> property for the control. DataChange calls the 
 GetFieldCheckState method to get the value for the State property.
 </p>
 <p>
-DataChange is assigned as the <var>OnDataChange</var> event handler in the 
-internal <var>TFieldDataLink</var> instance.
+DataChange is assigned in the constructor as the <var>OnDataChange</var> 
+event handler in the internal <var>TFieldDataLink</var> instance for the 
+control. It is temporarily unassigned (when used) prior to calling 
+GetFieldCheckState, and reassigned prior to exit.
 </p>
 </descr>
+<seealso>
+<link id="TDBCheckBox.GetFieldCheckState"/>
+<link id="TDBCheckBox.State"/>
+<link id="TFieldDataLink.OnDataChange"/>
+</seealso>
 </element>
 <element name="TDBCheckBox.DataChange.Sender">
 <short>Object for the event notification.</short>
 </element>
+
 <element name="TDBCheckBox.DoOnChange">
 <short>Performs actions needed when the control is clicked.</short>
 <descr>
 <p>
 <var>DoOnChange</var> is an overridden method in <var>TDBCheckBox</var>. It 
 ensures that the internal <var>TFieldDataLink</var> is notified of a change 
-to the control value. The <var>Edit</var>, <var>Modified</var>, and 
-<var>UpdateRecord</var> methods in the field data link are called to store 
-the new value for the control. If the linked dataset cannot be edited, the 
-<var>GetFieldCheckState</var> is called to get the value stored in the 
-<var>State</var> property.
+to the control value.
 </p>
 <p>
-DoOnChange calls the inherited method prior to exit.
+If the OnDataChange event handler has been assigned for the field data link, 
+its <var>Edit</var>, <var>Modified</var>, and <var>UpdateRecord</var> methods 
+are called to store the new value for the control. If the linked dataset 
+cannot be edited, the <var>GetFieldCheckState</var> method is called to get 
+the checked state value stored to the <var>State</var> property.
 </p>
-<remark>
-No actions are performed in the method when the internal TFieldDataLink does 
-not have an assigned <var>OnDataChange</var> event handler.
-</remark>
+<p>
+The OnDataChange event handler in the data link is temporarily unassigned 
+proper to updating the field value. The handler is reassigned when the 
+actions have been completed.
+</p>
+<p>
+DoOnChange calls the inherited method to signal the OnEditingDone and 
+OnChange event handlers in ancestor classes.
+</p>
 </descr>
 <seealso>
 <link id="TDBCheckBox.State"/>
@@ -4743,28 +4766,50 @@ component is destroyed.
 <short>Constructor for the class instance.</short>
 <descr>
 <p>
-<var>Create</var> is the constructor for <var>TDBCheckBox</var>. It calls the 
-inherited <var>Create</var> method, and forms the logical connections for 
-checked and unchecked, sets initial style and state, forms datalinks and 
-actions.
+<var>Create</var> is the constructor for <var>TDBCheckBox</var>, and calls 
+the inherited constructor on entry.
+</p>
+<p>
+Create sets the default values for the ValueChecked and ValueUnchecked 
+properties to the corresponding strings returned from the BoolToStr. ValueChecked is set to '-1'. ValueUnchecked is set to '0'. Change the values 
+in ValueChecked and ValueUnchecked if other string representations are needed.
+</p>
+<p>
+The default value for the State property is set to cbUnchecked.
+</p>
+<p>
+Create allocates and configures the internal TFieldDataLink instance used to 
+link the data-aware control to its Field in the underlying DataSource. The 
+OnDataChange and OnUpdateData event handlers in the link are set to the 
+DataChange and UpdateData methods in the control.
 </p>
 </descr>
 <seealso>
+<link id="TDBCheckBox.State"/>
+<link id="TDBCheckBox.ValueChecked"/>
+<link id="TDBCheckBox.ValueUnchecked"/>
+<link id="TDBCheckBox.DataChange"/>
+<link id="TDBCheckBox.UpdateData"/>
+<link id="TFieldDataLink"/>
 <link id="#lcl.stdctrls.TCustomCheckBox.Create">TCustomCheckBox.Create</link>
+<link id="#rtl.sysutils.BoolToStr">SysUtils.BoolToStr</link>
 </seealso>
 </element>
 <element name="TDBCheckBox.Create.TheOwner">
 <short>Owner of the class instance.</short>
 </element>
+
 <element name="TDBCheckBox.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
 <p>
 <var>Destroy</var> is the destructor for <var>TDBCheckBox</var>. It frees 
-links and calls inherited <var>Destroy</var> method.
+the internal field data link, and calls the inherited <var>Destroy</var> 
+method prior to exit.
 </p>
 </descr>
 <seealso>
+<link id="TFieldDataLink"/>
 <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
 </seealso>
 </element>
@@ -5052,27 +5097,125 @@ modified (doesn't make much sense for a check-box unless the box is
 <descr/>
 <seealso/>
 </element>
+
 <element link="#lcl.controls.TControl.ShowHint" name="TDBCheckBox.ShowHint"/>
 <element link="#lcl.controls.TWinControl.TabOrder" name="TDBCheckBox.TabOrder"/>
 <element link="#lcl.controls.TWinControl.TabStop" name="TDBCheckBox.TabStop"/>
+
 <element name="TDBCheckBox.ValueChecked">
 <short>
-<var>ValueChecked</var> is the value to use when the box is checked, for 
-example
-<b>True</b> or 1.
+String representation for the check box value when the control is in its 
+checked state.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ValueChecked</var> is a <var>String</var> property with the value for 
+the control when its State property contains the value cbChecked (or Checked 
+is set to <b>True</b>). It is the string representation for the boolean 
+value, like: 'True', '1', or -1'.
+</p>
+<p>
+The default value for the property is assigned in the constructor, and 
+contains the value returned from BoolToStr(True). Changing the value for the 
+property causes the DataChange method to be called. This updates the control 
+State after the new property value has been assigned to its member.
+</p>
+<p>
+ValueChecked is not written using the LCL resource streaming mechanism if a 
+non-default value has not been explicitly assigned to the property.
+</p>
+<p>
+ValueChecked is used in the GetFieldCheckState method when the control is 
+linked to a field that is not a Boolean field type. It provides the value  
+which is compared to the field value to determine the checked State for the 
+control.
+</p>
+<p>
+ValueChecked is also used in the UpdateData method when the control is linked 
+to field that is not a Boolean field type. It provides the value that is 
+stored in the field when the Checked property is <b>True</b> (State is 
+cbChecked).
+</p>
+<p>
+Use ValueUnchecked to specify the string used for the unchecked state in the 
+control.
+</p>
+</descr>
+<version>
+Modified in version 2.4 to include the storage specifier for the property 
+value.
+</version>
+<seealso>
+<link id="TDBCheckBox.Create"/>
+<link id="TDBCheckBox.State"/>
+<link id="TDBCheckBox.GetFieldCheckState"/>
+<link id="TDBCheckBox.DataChange"/>
+<link id="TDBCheckBox.UpdateData"/>
+<link id="TDBCheckBox.ValueUnchecked"/>
+<link id="#rtl.sysutils.BoolToStr">SysUtils.BoolToStr</link>
+<link id="#rtl.sysutils.TrueBoolStrs">SysUtils.TrueBoolStrs</link>
+</seealso>
 </element>
+
 <element name="TDBCheckBox.ValueUnchecked">
 <short>
-<var>ValueUnchecked</var> is the value to use when the box is unchecked, for 
-example
-<b>False</b> or 0.
+String representation for the check box value when the control is in its 
+unchecked state.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ValueUnchecked</var> is a <var>String</var> property with the value for 
+the control when its State property contains the value cbUnchecked (or 
+Checked is set to <b>False</b>). It is the string representation for the 
+boolean value, like: 'False' or '0'.
+</p>
+<p>
+The default value for the property is assigned in the constructor, and 
+contains the value returned from BoolToStr(False). Changing the value for the 
+property causes the DataChange method to be called. This updates the control 
+State after the new property value has been assigned to its member.
+</p>
+<p>
+ValueUnchecked is not written using the LCL resource streaming mechanism if a 
+non-default value has not been explicitly assigned to the property.
+</p>
+<p>
+ValueUnchecked is used in the GetFieldCheckState method when the control is 
+linked to a field that is not a Boolean field type. It provides the value  
+which is compared to the field value to determine the checked State for the 
+control.
+</p>
+<p>
+ValueUnchecked is also used in the UpdateData method when the control is 
+linked to field that is not a Boolean field type. It provides the value that 
+is stored in the field when the Checked property is <b>False</b> (State is 
+cbUnchecked).
+</p>
+<remark>
+The property value is not included in the LCL resource streaming mechanism if 
+a non-default value has not been explicitly assigned to the property.
+</remark>
+<p>
+Use ValueChecked to specify the string used for the checked state in the 
+control.
+</p>
+</descr>
+<version>
+Modified in version 2.4 to include the storage specifier for the property 
+value.
+</version>
+<seealso>
+<link id="TDBCheckBox.Create"/>
+<link id="TDBCheckBox.State"/>
+<link id="TDBCheckBox.GetFieldCheckState"/>
+<link id="TDBCheckBox.DataChange"/>
+<link id="TDBCheckBox.UpdateData"/>
+<link id="TDBCheckBox.ValueChecked"/>
+<link id="#rtl.sysutils.BoolToStr">SysUtils.BoolToStr</link>
+<link id="#rtl.sysutils.TrueBoolStrs">SysUtils.TrueBoolStrs</link>
+</seealso>
 </element>
+
 <element name="TDBCheckBox.Visible">
 <short>
 Indicates if the control is visible on its parent.
@@ -8671,7 +8814,7 @@ DataSource is set to Nil when the component is freed.
 </element>
 <element name="TDBCalendar.Create">
 <short>
-Constructor for the class instance.          
+Constructor for the class instance.
 </short>
 <descr>
 <p>
@@ -8694,7 +8837,7 @@ handlers in the TFieldDataLink instance.
 </element>
 <element name="TDBCalendar.Destroy">
 <short>
-Destructor for the class instance.          
+Destructor for the class instance.
 </short>
 <descr>
 <p>
