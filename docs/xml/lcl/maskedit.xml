@@ -1458,17 +1458,27 @@ This feature seems to have been invented for use with dates:
 </tr>
 </table>
 <p>
-The resulting text will always have length defined for the TInternalMask type 
-used in the control. The new text value does not have to pass validation.
+The resulting text will always have the length defined for the TInternalMask 
+type used in the control. The new text value does not have to pass validation.
+</p>
+<p>
+ApplyMaskToText is called from the SetTextApplyMask when IsMasked contains 
+<b>True</b> (EditMask has a non-zero length).
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomMaskEdit.IsMasked"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.SetTextApplyMask"/>
+<link id="TCustomMaskEdit.RealSetText"/>
+<link id="TCustomMaskEdit.Loaded"/>
+</seealso>
 </element>
 <element name="TCustomMaskEdit.ApplyMaskToText.Result">
 <short>Value after mask literals and space substitution is applied.</short>
 </element>
 <element name="TCustomMaskEdit.ApplyMaskToText.Value">
-<short>Value examined and converted in the method.</short>
+<short>Value examined and updated in the method.</short>
 </element>
 
 <element name="TCustomMaskEdit.CanShowEmulatedTextHint">
