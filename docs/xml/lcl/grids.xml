@@ -59,6 +59,8 @@ Original author:  Jesus Reyes Aguilar (jesusrmx@yahoo.com.mx) [2002]
 <element name="LCSVUtils"/>
 <element name="IntegerList"/>
 <element name="Messages"/>
+<element name="imm"/>
+<element name="extcrls"/>
 
 <element name="GRIDFILEVERSION">
 <short>Current revision level for the <file>grids.pas</file> file.</short>
@@ -6123,7 +6125,7 @@ Indicates if the header cell is currently drawn in the pushed state.
 </element>
 
 <element name="TGridCursorState">
-<short>Enumerated type with cursors available in a grid.</short>
+<short>Enumerated type with cursor states available in a grid.</short>
 <descr>
 <p>
 <var>TGridCursorState</var> is the type used for the <var>CursorState</var> 
@@ -6138,13 +6140,163 @@ property in <var>TCustomGrid</var>.
 <short>Normal cursor shape/style.</short>
 </element>
 <element name="TGridCursorState.gcsColWidthChanging">
-<short>Cursor displayed when changing the size of a column.</short>
+<short>Cursor displayed when changing the width for a column.</short>
 </element>
 <element name="TGridCursorState.gcsRowHeightChanging">
-<short>Cursor displayed when resizing the height of a row.</short>
+<short>Cursor displayed when resizing the height for a row.</short>
 </element>
 <element name="TGridCursorState.gcsDragging">
 <short>Cursor displayed when dragging a row or column.</short>
+</element>
+
+<element name="TGridScrollerDoScroll">
+<short>
+Specifies an event handler routine used to scroll a grid control when a column or row is dragged beyond the grid client area.
+</short>
+<descr>
+<p>
+<var>Dir</var> is a <var>TPoint</var> instance which indicates the scroll 
+direction for a grid control. The X and Y members in Dir can contain position 
+or negative values. A negative value indicates the scroll direction is to the 
+left (X) or top (Y) of the grid control. A positive value indicates the 
+scroll direction is to the right (X) or bottom (Y). The values cause the top 
+and/or left visible column on the grid to be adjusted by the indicated amount.
+</p>
+<p>
+TGridScrollerDoScroll is the type used to implement the internal callback 
+routine in the TGridScroller class. It uses the private ScrollerDoScroll method in TCustomGrid as the handler routine called when a mouse movement is 
+handled in the control.
+</p>
+</descr>
+<seealso>
+<link id="TGridScroller.Create"/>
+<link id="TGridScroller.Start"/>
+<link id="TCustomGrid.MouseMove"/>
+</seealso>
+</element>
+<element name="TGridScrollerDoScroll.Dir">
+<short>
+TPoint instance with delta values indicating the scroll direction.
+</short>
+</element>
+
+<element name="TGridScroller">
+<short>
+Scrolls an associated grid when a column or row is dragged beyond the client 
+area for the control.
+</short>
+<descr>
+<p>
+<var>TGridScroller</var> provides methods and internal members which 
+implement a timer-based callback routine fired every 200ms (milliseconds). 
+The routine handles scrolling a grid control in a given direction by changing 
+the top/left visible cell for the control. The callback routine is passed as 
+an argument to the constructor for the class instance, and points to a 
+private method in the TCustomGrid instance.
+</p>
+<p>
+TGridScroller is used in the implementation of TCustomGrid. The callback 
+routine is signalled when MouseMove handles a row or column drag operation 
+for the control. The class instance is created as needed, and freed when the 
+drag operation is completed in the MouseUp method for the grid control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.MouseUp"/>
+<link id="TCustomGrid.Destroy"/>
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TGridScroller.Dir"/>
+<element name="TGridScroller.Timer"/>
+<element name="TGridScroller.Callback"/>
+<element name="TGridScroller.TimerTick"/>
+<element name="TGridScroller.TimerTick.Sender"/>
+
+<!-- public -->
+<element name="TGridScroller.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> sets the internal Callback member to the handler routine in 
+the DoScroll argument. It also creates the internal TTimer instance used in 
+the class; the timer Interval internal is set to 200ms (milliseconds) and the 
+OnTimer routine is set to the private TimerTick method in the class.
+</p>
+</descr>
+<seealso>
+<link id="TGridScrollerDoScroll"/>
+<link id="#lcl.extctrls.TTimer.Interval">TTimer.Interval</link>
+<link id="#lcl.extctrls.TTimer.OnTimer">TTimer.OnTimer</link>
+</seealso>
+</element>
+<element name="TGridScroller.Create.DoScroll">
+<short>
+Contains the callback routine signalled when the timer has elapsed in the 
+class instance.
+</short>
+</element>
+
+<element name="TGridScroller.Destroy">
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+frees resources allocates for the TTimer instance in the class. Destroy calls 
+the inherited destructor prior to exiting from the method.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.extctrls.TTimer">TTimer</link>
+</seealso>
+</element>
+
+<element name="TGridScroller.Start">
+<short>
+Stores the scroll direction and starts the internal timer for the class 
+instance.
+</short>
+<descr>
+<p>
+<var>Start</var> is a method used to configure and activate the scroller 
+class instance.
+</p>
+<p>
+Start stores the value from the <var>ADir</var> argument to the Dir member in 
+the class instance. The TPoint value contains the relative scroll direction 
+for the associated grid control. The X member indicates the horizontal scroll 
+direction; -1 scrolls toward the left, and 1 scrolls toward the right. 
+Similarly, the Y member indicates the vertical scroll direction; -1 scrolls 
+toward the top, and 1 scrolls toward the bottom.
+</p>
+<p>
+Start sets the value for the Enabled property in the internal TTimer instance 
+to <b>True</b>. This causes the Callback routine, passed as argument to the 
+constructor, to be executed when the time Interval (200ms) has elapsed.
+</p>
+<p>
+Start is called when a TGridScroller instance is assigned for the grid 
+control, and occurs when column or row drag operations are handled for the 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.MouseUp"/>
+<link id="#rtl.types.TPoint">TPoint</link>
+</seealso>
+</element>
+<element name="TGridScroller.Start.ADir">
+<short>
+TPoint instance with the relative scroll direction for an associated grid 
+control.
+</short>
 </element>
 
 <element name="TCustomGrid">
@@ -6383,6 +6535,7 @@ TStringGrid
 <element name="TCustomGrid.FSavedHint"/>
 <element name="TCustomGrid.FCellHintPriority"/>
 <element name="TCustomGrid.FOnGetCellHint"/>
+<element name="TCustomGrid.FScroller"/>
 
 <element name="TCustomGrid.AdjustCount">
 <short>Adjusts a row or column count.</short>
@@ -6807,6 +6960,11 @@ DefaultDrawCell, and IsMouseOverCellButton methods.
 <short>New value for the FocusRectVisible property.</short>
 </element>
 
+<element name="TCustomGrid.ScrollerDoScroll"/>
+<element name="TCustomGrid.ScrollerDoScroll.Dir"/>
+<element name="TCustomGrid.SetScroller"/>
+<element name="TCustomGrid.SetScroller.Dir"/>
+
 <element name="TCustomGrid.SetTitleImageList">
 <short>Sets the value for the TitleImageList property.</short>
 <descr/>
@@ -6914,28 +7072,20 @@ size.
 </element>
 
 <element name="TCustomGrid.doColMoving">
-<short>Performs actions needed to move or drag a grid column.</short>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed to move or drag a grid column.
+</short>
 </element>
-<element name="TCustomGrid.doColMoving.X">
-<short/>
-</element>
-<element name="TCustomGrid.doColMoving.Y">
-<short/>
-</element>
+<element name="TCustomGrid.doColMoving.X"/>
+<element name="TCustomGrid.doColMoving.Y"/>
 
 <element name="TCustomGrid.doRowMoving">
-<short>Performs actions needed to move or drag a grid row.</short>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed to move or drag a grid row.
+</short>
 </element>
-<element name="TCustomGrid.doRowMoving.X">
-<short/>
-</element>
-<element name="TCustomGrid.doRowMoving.Y">
-<short/>
-</element>
+<element name="TCustomGrid.doRowMoving.X"/>
+<element name="TCustomGrid.doRowMoving.Y"/>
 
 <element name="TCustomGrid.doPushCell">
 <short>
@@ -8335,7 +8485,7 @@ The return value is 1 for all BiDiMode values except bdRightToLeft; it causes
 </element>
 
 <element name="TCustomGrid.WSRegisterClass"
-link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TCustomGrid.AddSelectedRange">
 <short>
@@ -13558,6 +13708,7 @@ WMRButtonUp, and WMXButtonUp methods in the ancestor class.
 <seealso>
 <link id="TCustomGrid.GridFlags"/>
 <link id="TGridState"/>
+<link id="TGridScroller"/>
 <link id="#lcl.controls.TControl.MouseUp">TControl.MouseUp</link>
 <link id="#lcl.controls.TControl.OnMouseUp">TControl.OnMouseUp</link>
 <link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
@@ -15178,8 +15329,15 @@ and can occur during the DoOnChangeBounds method.
 WndProc calls the inherited method to handle focus, mouse, key, and state 
 change messages.
 </p>
+<p>
+WndProc ensures that a TGridScroller instance allocated for the class is 
+freed after a scroll message has been handled and the grid state has been 
+updated.
+</p>
 </descr>
 <seealso>
+<link id="TGridScroller"/>
+<link id="TGridState"/>
 <link id="#lcl.controls.TWinControl.WndProc">TWinControl.WndProc</link>
 </seealso>
 </element>
@@ -17719,7 +17877,7 @@ be fully instantiated it is called.
 </remark>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+<link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
 </seealso>
 </element>
 <element name="TCustomGrid.Create.AOwner">
@@ -17731,12 +17889,13 @@ be fully instantiated it is called.
 <descr>
 <p>
 <var>Destroy</var> is the destructor for <var>TCustomGrid</var>. Destroy 
-frees various resources including editors, columns, rows, and fonts. It calls 
-the inherited <var>Destroy</var> method.
+frees various resources including editors, columns, rows, fonts, and the 
+internal TGridScroller used in the class instance. It calls the inherited 
+<var>Destroy</var> method prior to exit.
 </p>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+<link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
 </seealso>
 </element>
 
@@ -22688,7 +22847,7 @@ TStringGrid
 </seealso>
 </element>
 
-<element name="TStringGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+<element name="TStringGrid.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 <element name="TStringGrid.Modified" link="#lcl.grids.TCustomStringGrid.Modified"/>
 <element name="TStringGrid.InplaceEditor" link="#lcl.grids.TCustomGrid.InplaceEditor"/>
 <element name="TStringGrid.Align" link="#lcl.controls.TControl.Align"/>
