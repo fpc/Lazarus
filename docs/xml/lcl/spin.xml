@@ -26,6 +26,9 @@ The following components are added to the Lazarus IDE component palette:
 <p>
 Original author: Shane Miller.
 </p>
+<p>
+Modified by: Bart Broersma.
+</p>
 </descr>
 
 <!-- unresolved external references -->
@@ -39,7 +42,9 @@ Original author: Shane Miller.
 <element name="Math"/>
 
 <element name="TCustomFloatSpinEdit">
-<short>The base class for the float-based spin control.</short>
+<short>
+The base class for a spin edit control using a floating point value.
+</short>
 <descr>
 <p>
 <var>TCustomFloatSpinEdit</var> is a <var>TCustomEdit</var> descendant which 
@@ -48,16 +53,56 @@ an edit control where the Float value can be entered directly, and up / down
 buttons which can be used to increment or decrement the value for the control.
 </p>
 <p>
+Use the Value property to assign a floating point value to the control as a 
+Double type. Value is a 64-bit real type in the range 5.0E-324 .. 1.7E308 
+(inclusive), and allows up to 15-16 digits of precision (15 digits for a 
+negative value).
+</p>
+<p>
+At run-time, setting Value to a number outside of the range for the real type 
+causes Value to be updated. When neither MinValue nor MaxValue have been 
+assigned, either -Inf or +Inf is displayed as the value for the control. If 
+either MinValue or MaxValue has been given an explicit non-default value, the 
+Value property is updated with corresponding range limit.
+</p>
+<p>
+In LCL version 2.4, the floating point property editor will not allow an 
+invalid value to be stored in the Value property at design-time. An error is 
+raised (and handled) with the message 'Property value out of range', and the 
+Value property is not updated.
+</p>
+<p>
+LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+assigned as the property value. These values are no longer supported in LCL 
+version 2.4 and later.
+</p>
+<p>
 Use the MinValue and MaxValue properties to define the lower and upper limits 
-for the value in the control.
+for the Value in the control. Like Value, they are implemented as a Double 
+type with the same range limits. An invalid value causes the property to be 
+set to the corresponding range limit for the real type.
+</p>
+<p>
+Use the DecimalPlaces property to specify the number of decimal digits 
+displayed for a value not represented using the radix/precision/exponent 
+format for the IEE 754 value.
 </p>
 <p>
 Use the Increment property to set the value added to or subtracted from the 
-control value when the up or down buttons are clicked.
+control Value when the up or down buttons are clicked.
 </p>
 </descr>
-<errors/>
-<seealso/>
+<seealso>
+<link id="TCustomFloatSpinEdit.Value"/>
+<link id="TCustomFloatSpinEdit.MinValue"/>
+<link id="TCustomFloatSpinEdit.MaxValue"/>
+<link id="TCustomFloatSpinEdit.DecimalPlaces"/>
+<link id="TCustomFloatSpinEdit.Increment"/>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
+</seealso>
+<version>
+Modified in LCL version 2.4 to implement range checking with floating point property editor support.
+</version>
 </element>
 
 <element name="TCustomFloatSpinEdit.DefIncrement">
@@ -562,61 +607,79 @@ constant (1). Changing the value for the property causes the
 </element>
 
 <element name="TCustomFloatSpinEdit.MinValue">
-<short>Minimum value allowed for the spin edit control.</short>
+<short>
+Minimum value allowed in the spin edit control.
+</short>
 <descr>
 <p>
-MinValue contains the minimum value allowed for the spin edit control. It is 
-used, along with MaxValue, to determine the range of values allowed in the 
-Value property.
+<var>MinValue</var> is a <var>Double</var> property which contains the 
+minimum value allowed for the spin edit control. It is used, along with 
+MaxValue, to determine the range of values allowed in the Value property.
 </p>
 <p>
 When MinValue and MaxValue have the same value, or MaxValue is smaller than 
 MinValue, the range limit is not enforced. This allows any value to be 
 assigned to the control.
+</p>
+<p>
+Changing the value for the property causes the range limits to be re-applied 
+to Value by calling the GetLimitedValue method. A pending update is also 
+applied to the widgetset class instance.
 </p>
 </descr>
 <seealso>
 <link id="TCustomFloatSpinEdit.MaxValue"/>
 <link id="TCustomFloatSpinEdit.Value"/>
 <link id="TCustomFloatSpinEdit.GetLimitedValue"/>
-<link id="TCustomFloatSpinEdit.Increment"/>
 </seealso>
 </element>
 
 <element name="TCustomFloatSpinEdit.MaxValue">
-<short>Maximum value allowed for the spin edit control.</short>
+<short>
+Maximum value allowed in the spin edit control.
+</short>
 <descr>
 <p>
-MaxValue contains the maximum value allowed for the spin edit control. It is 
-used, along with MinValue, to determine the range of values allowed in the 
-Value property.
+MaxValue is a Double property which contains the maximum value allowed for 
+the spin edit control. It is used, along with MinValue, to determine the 
+range of values allowed in the Value property.
 </p>
 <p>
 When MinValue and MaxValue have the same value, or MaxValue is smaller than 
 MinValue, the range limit is not enforced. This allows any value to be 
 assigned to the control.
 </p>
+<p>
+Changing the value for the property causes the range limits to be re-applied 
+to Value by calling the GetLimitedValue method. A pending update is also 
+applied to the widgetset class instance.
+</p>
 </descr>
 <seealso>
 <link id="TCustomFloatSpinEdit.MinValue"/>
 <link id="TCustomFloatSpinEdit.Value"/>
 <link id="TCustomFloatSpinEdit.GetLimitedValue"/>
-<link id="TCustomFloatSpinEdit.Increment"/>
 </seealso>
 </element>
 
 <element name="TCustomFloatSpinEdit.Value">
-<short>The value for the spin edit control.</short>
+<short>
+The floating point value for the spin edit control.
+</short>
 <descr>
 <p>
-<var>Value</var> contains the value for the spin edit control. Its content 
-can be modified using the UI elements for the control (up and down buttons, 
-up and down cursor keys, edit box for the control). It can also be directly 
-assigned in program code.
+<var>Value</var> is a Double property which contains the floating point value 
+for the spin edit control. It can be modified using the UI elements for the 
+control (up and down buttons, up and down cursor keys, or the edit box for 
+the control). It can also be assigned directly in program code.
+</p>
+<p>
+Value is a 64-bit real type in the range 5.0E-324 .. 1.7E308 (inclusive), and 
+allows up to 15-16 digits of precision (15 digits for a negative value).
 </p>
 <p>
 Changing the value for the property causes the <var>Text</var> for the 
-control to be checked for a valid numeric representation in the property. If 
+control to be checked for a valid numeric representation for the property. If 
 the new property value is the same as the existing value, no actions are 
 performed.
 </p>
@@ -631,51 +694,139 @@ assigned for the control.
 <p>
 When changed, Value is constrained to the range defined in the 
 <var>MinValue</var> and <var>MaxValue</var> properties (when assigned). The 
-range limit is not enforced when MinValue and MaxValue have the same value, 
-or when MaxValue is smaller than MinValue.
+range limits are not enforced when MinValue and MaxValue have the same value, 
+or when MaxValue is smaller than MinValue. When neither MinValue nor MaxValue 
+have been assigned, either -Inf or +Inf is displayed as the value for the 
+control. If either MinValue or MaxValue has been given an explicit 
+non-default value, the Value property is updated with corresponding range 
+limit.
+</p>
+<p>
+In LCL version 2.4, the floating point property editor will not allow an 
+invalid value to be stored in the Value property at design-time. An error is 
+raised (and handled) with the message 'Property value out of range', and the 
+Value property is not updated.
+</p>
+<p>
+LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+assigned as the property value. These values are no longer supported in LCL 
+version 2.4 and later.
+</p>
+<p>
+Use the MinValue and MaxValue properties to define the lower and upper limits 
+for the Value in the control. Like Value, they are implemented as a Double 
+type with the same range limits. An invalid value causes the property to be 
+set to the corresponding range limit for the real type.
+</p>
+<p>
+Use the DecimalPlaces property to specify the number of decimal digits 
+displayed for a value not represented using the radix/precision/exponent 
+format for the IEE 754 value.
+</p>
+<p>
+Use the Increment property to set the value added to or subtracted from the 
+control Value when the up or down buttons are clicked.
 </p>
 </descr>
 <seealso>
-<link id="TCustomFloatSpinEdit.Change"/>
 <link id="TCustomFloatSpinEdit.MinValue"/>
 <link id="TCustomFloatSpinEdit.MaxValue"/>
 <link id="TCustomFloatSpinEdit.GetLimitedValue"/>
+<link id="TCustomFloatSpinEdit.Change"/>
 <link id="TCustomFloatSpinEdit.Increment"/>
 <link id="#lcl.stdctrls.TCustomEdit.Modified">TCustomEdit.Modified</link>
 </seealso>
 </element>
 
 <element name="TCustomFloatSpinEdit.ValueEmpty">
-<short>Indicates if a value has not been assigned for the control.</short>
+<short>
+Indicates that a value has not been assigned for the control.
+</short>
 <descr>
 <p>
-<var>ValueEmpty</var> is updated in the <var>TextChanged</var> method when a 
-new value has been assigned to the control. Changing the value for the 
-property causes the <var>UpdateControl</var> method to be called.
+<var>ValueEmpty</var> is a <var>Boolean</var> property which indicates 
+whether or not an explicit numeric value has been assigned to the Value 
+property. ValueEmpty is updated in the <var>TextChanged</var> method when a 
+new value in Text is handled for the control. When set to <b>True</b>, an 
+explicit value has <b>not</b> been assigned.
+</p>
+<p>
+The default value for the property is <b>False</b>.
+</p>
+<p>
+Changing the value for the property causes the <var>UpdateControl</var> 
+method to be called. This re-applies the range limits in MinValue and 
+MaxValue (when assigned and needed) and posts the update the widgetset class.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomFloatSpinEdit.TextChanged"/>
+<link id="TCustomFloatSpinEdit.Value"/>
+<link id="TCustomFloatSpinEdit.MinValue"/>
+<link id="TCustomFloatSpinEdit.MaxValue"/>
+<link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
+</seealso>
 </element>
 
 <element name="TFloatSpinEdit">
-<short>Implements a float-based spin edit control.</short>
+<short>
+Implements a spin edit control using a floating point value.
+</short>
 <descr>
 <p>
 <var>TFloatSpinEdit</var> is a <var>TCustomFloatSpinEdit</var> descendant 
-which implements a spin edit control for a <var>Float</var> value. It 
-provides an edit control for the numeric value and up / down buttons that can 
-be clicked to increment or decrement the <var>Value</var> for the control. 
-TFloatSpinEdit sets the visibility for properties introduced in ancestor 
-classes.
+which implements a float-based spin edit control. It provides an edit control 
+where the Float value can be entered directly, and up / down buttons which 
+can be used to increment or decrement the <var>Value</var> for the control.
 </p>
 <p>
-Use <var>TSpinEdit</var> to edit an <var>Integer</var> value.
+Use the Value property to assign a floating point value to the control as a 
+Double type. Value is a 64-bit real type in the range 5.0E-324 .. 1.7E308 
+(inclusive), and allows up to 15-16 digits of precision (15 digits for a 
+negative value).
+</p>
+<p>
+At run-time, setting Value to a number outside of the range for the real type 
+causes Value to be updated. When neither MinValue nor MaxValue have been 
+assigned, either -Inf or +Inf is displayed as the value for the control. If 
+either MinValue or MaxValue has been given an explicit non-default value, the 
+Value property is updated with corresponding range limit.
+</p>
+<p>
+In LCL version 2.4, the floating point property editor will not allow an 
+invalid value to be stored in the Value property at design-time. An error is 
+raised (and handled) with the message 'Property value out of range'. The 
+Value property is reset to 0.
+</p>
+<p>
+LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+assigned to the Value property. These values are no longer supported in LCL 
+version 2.4 and later.
+</p>
+<p>
+Use the MinValue and MaxValue properties to define the lower and upper limits 
+for the Value in the control. Like Value, they are implemented as a Double 
+type with the same range limits. An invalid value causes the property to be 
+set to the corresponding range limit for the real type.
+</p>
+<p>
+Use the DecimalPlaces property to specify the number of decimal digits 
+displayed for a value not represented using the radix/precision/exponent 
+format for the IEE 754 value.
+</p>
+<p>
+Use the Increment property to set the value added to or subtracted from the 
+control Value when the up or down buttons are clicked.
 </p>
 </descr>
-<errors/>
 <seealso>
+<link id="TCustomFloatSpinEdit"/>
 <link id="TSpinEdit"/>
 </seealso>
+<version>
+Modified in LCL version 2.4 to implement range checking with floating point 
+property editor support.
+</version>
 </element>
 
 <element name="TFloatSpinEdit.AutoSelected">
@@ -722,7 +873,9 @@ Use AutoSelect to control whether auto-selection is enabled for the control.
 <element name="TFloatSpinEdit.MinValue" link="#lcl.spin.TCustomFloatSpinEdit.MinValue"/>
 
 <element name="TFloatSpinEdit.OnChange">
-<short>The OnChange event is fired when spin edit value has changed.</short>
+<short>
+The OnChange event is fired when the value for the spin edit has changed.
+</short>
 <descr>
 <p>
 <var>OnChange</var> event is similar to <var>TCustomEdit.OnChange</var>, and 
@@ -1043,7 +1196,6 @@ TSpinEdit sets the visibility for properties introduced in ancestor classes.
 Use TFloatSpinEdit to edit a float value in a spin edit control.
 </p>
 </descr>
-<errors/>
 <seealso>
 <link id="TCustomSpinEdit"/>
 <link id="TFloatSpinEdit"/>
