@@ -7968,8 +7968,11 @@ the control.
 <descr>
 <p>
 <var>NumbersOnly</var> is a <var>Boolean</var> property which controls 
-whether the edit control is limited to numeric characters when edited. The 
-default value for the property is <b>False</b>.
+whether Text is limited to characters which represent numeric digits. The 
+default value for the property is <b>False</b>, and allows any character 
+valid for the type to be entered. When set to <b>True</b>, only the 
+characters '0'..'9' are accepted in Text. '+', '-',  ',', and '.' are 
+<b>not</b> numeric digits.
 </p>
 <p>
 Changing the property value causes the widgetset class to be notified when a 
@@ -7980,9 +7983,30 @@ NumbersOnly is used in <var>CreateParams</var> to include the
 <b>ES_NUMBER</b> edit style in the creation parameters for the control when 
 set to <b>True</b>.
 </p>
+<p>
+NumbersOnly is not supported on all platform for the LCL; GTK 2 does not 
+support the property.
+</p>
+<p>
+Versions of Windows prior to Windows 95 did not enforce the ES_NUMBER style 
+flag. It could be specified, but still allowed any value to be manually 
+entered into the edit control. Some version of Windows allowed copy (Ctrl+C) 
+and paste (Ctrl+V) to be used to insert non-numeric values - even when 
+NumbersOnly is set to <b>True</b>.
+</p>
+<p>
+For inputs that require both numeric and punctuation digits, use one of the 
+keyboard event handlers like OnKeyPress or OnKeyDown to filter values as they 
+are entered into a control. Or, use TMaskEdit which supports using an edit 
+mask for the input values.
+</p>
 </descr>
 <seealso>
+<link id="TCustomEdit.Text"/>
 <link id="TCustomEdit.CreateParams"/>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+<link id="#lcl.maskedit.TMaskEdit">TMaskEdit</link>
 </seealso>
 </element>
 
