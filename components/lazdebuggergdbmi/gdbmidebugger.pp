@@ -518,6 +518,7 @@ type
     function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
     function  GetStrValue(const AExpression: String; const AValues: array of const; AFlags: TGDBMICommandFlags = []): String;
     function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
+    function  GetPtrValue(const AResText: String): TDbgPtr; inline;
     function  GetPtrValue(const AExpression: String;
                 const AValues: array of const; {%H-}ConvertNegative: Boolean = False;
                 AFlags: TGDBMICommandFlags = []): TDbgPtr;
@@ -1473,6 +1474,8 @@ type
     FDisplayFormat: TWatchDisplayFormat;
     FWatchValue: TWatchValueIntf;
     FTextValue: String;
+    FNumValue: TDBGPtr;
+    FHasNumValue: (nvNone, nvUnsigned, nvSigned);
     FTypeInfo: TGDBType;
     FValidity: TDebuggerDataState;
     FTypeInfoAutoDestroy: Boolean;
@@ -12655,23 +12658,33 @@ begin
   if e=0 then ;
 end;
 
-function TGDBMIDebuggerCommand.GetPtrValue(const AExpression: String;
-  const AValues: array of const; ConvertNegative: Boolean;
-  AFlags: TGDBMICommandFlags): TDbgPtr;
+function TGDBMIDebuggerCommand.GetPtrValue(const AResText: String): TDbgPtr;
 var
   e: Integer;
   i: Int64;
-  s: String;
 begin
   Result := 0;
-  s := GetStrValue(AExpression, AValues, [cfNoMemLimits]+AFlags);
-  if (s <> '') and (s[1] = '-')
+  if (AResText <> '') and (AResText[1] = '-')
   then begin
-    Val(s, i, e);
+    Val(AResText, i, e);
     Result := TDBGPtr(i);
   end
-  else Val(s, Result, e);
-  if e=0 then ;
+  else
+    Val(AResText, Result, e);
+
+  if (e<>0) and (FLastExecResult.State <> dsError) then begin
+    FLastExecResult.State := dsError;
+    FLastExecResult.Values := '';
+  end;
+end;
+
+function TGDBMIDebuggerCommand.GetPtrValue(const AExpression: String;
+  const AValues: array of const; ConvertNegative: Boolean;
+  AFlags: TGDBMICommandFlags): TDbgPtr;
+begin
+  Result := GetPtrValue(
+    GetStrValue(AExpression, AValues, [cfNoMemLimits]+AFlags)
+  );
 end;
 
 function TGDBMIDebuggerCommand.CheckHasType(TypeName: String;
@@ -14406,6 +14419,7 @@ var
   var
     ResultList: TGDBMINameValueList;
   begin
+    FHasNumValue := nvNone;
     if (dcsCanceled in SeenStates)
     then begin
       FTextValue := '<Canceled>';
@@ -14437,14 +14451,28 @@ var
       else expr := QuoteExpr(AddAddressOfToExpression(expr, FTypeInfo));
     end;
 
+    procedure  GetNumValue(const AExpression: String);
+    var
+      s: String;
+    begin
+      s := GetStrValue(AExpression, [], [cfNoMemLimits]);
+      FHasNumValue := nvUnsigned;
+      if (s <> '') and (s[1] = '-') then
+        FHasNumValue := nvSigned;
+      FNumValue := GetPtrValue(s);
+    end;
+
   var
     ResultList: TGDBMINameValueList;
     R: TGDBMIExecResult;
     MemDump: TGDBMIMemoryDumpResultList;
     i, Size: integer;
+    i64: Int64;
+    Error: word;
     s: String;
   begin
     Result := False;
+    FHasNumValue := nvNone;
 
     case FDisplayFormat of
       wdfStructure:
@@ -14495,7 +14523,8 @@ var
           if not Result
           then exit;
           FValidity := ddsValid;
-          FTextValue := IntToStr(Int64(GetPtrValue(AnExpression, [], True)));
+          GetNumValue(AnExpression);
+          FTextValue := IntToStr(Int64(FNumValue));
           if LastExecResult.State = dsError
           then ParseLastError;
         end;
@@ -14505,7 +14534,8 @@ var
           if not Result
           then exit;
           FValidity := ddsValid;
-          FTextValue := IntToStr(GetPtrValue(AnExpression, [], True));
+          GetNumValue(AnExpression);
+          FTextValue := IntToStr(FNumValue);
           if LastExecResult.State = dsError
           then ParseLastError;
         end;
@@ -14523,8 +14553,9 @@ var
           Result := PrepareExpr(AnExpression, True);
           if not Result
           then exit;
-          FTextValue := IntToHex(GetPtrValue(AnExpression, [], True), 2);
           FValidity := ddsValid;
+          GetNumValue(AnExpression);
+          FTextValue := IntToHex(FNumValue, 2);
           if length(FTextValue) mod 2 = 1
           then FTextValue := '0'+FTextValue; // make it an even number of digets
           if LastExecResult.State = dsError
@@ -14535,8 +14566,9 @@ var
           Result := PrepareExpr(AnExpression, True);
           if not Result
           then exit;
-          FTextValue := PascalizePointer('0x' + IntToHex(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2));
           FValidity := ddsValid;
+          GetNumValue(AnExpression);
+          FTextValue := PascalizePointer('0x' + IntToHex(FNumValue, TargetInfo^.TargetPtrSize*2));
           if LastExecResult.State = dsError
           then FTextValue := '<error>';
         end;
@@ -14574,7 +14606,8 @@ var
           if not Result
           then exit;
           FValidity := ddsValid;
-          FTextValue := Concat('0b' + BinStr(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2));
+          GetNumValue(AnExpression);
+          FTextValue := Concat('0b' + BinStr(FNumValue, TargetInfo^.TargetPtrSize*2));
           if LastExecResult.State = dsError
           then ParseLastError;
         end;
@@ -14594,8 +14627,21 @@ var
           end;
           if FTypeInfo.HasExprEvaluatedAsText then begin
             FTextValue := FTypeInfo.ExprEvaluatedAsText;
-            //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
             FValidity := ddsValid;
+
+            if (FTextValue <> '') and (FTextValue[1] = '-') then begin
+              Val(FTextValue, i64, Error);
+              FNumValue := TDBGPtr(i64);
+              if Error = 0 then
+                FHasNumValue := nvSigned;
+            end
+            else begin
+              Val(FTextValue, FNumValue, Error);
+              if Error = 0 then
+                FHasNumValue := nvUnsigned;
+            end;
+
+            //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
             Result := True;
             FixUpResult(AnExpression, FTypeInfo);
 
@@ -14621,7 +14667,6 @@ var
   S: String;
   ResultList: TGDBMINameValueList;
   frameidx: Integer;
-  NumVal: QWord;
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   SelectContext;
@@ -14683,35 +14728,30 @@ begin
     if FWatchValue <> nil then begin
       FWatchValue.BeginUpdate;
       repeat
-        if (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
+        if (FHasNumValue <> nvNone) and
+           (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
            (FWatchValue.RepeatCount <= 0)
         then begin
-          FTextValue := Trim(FTextValue);
-
           if (FTypeInfo.Kind = skPointer) then begin
-            if TryStrToInt64(FTextValue, Int64(NumVal)) then begin
-              FWatchValue.ResData.CreatePointerValue(NumVal);
-              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-              FWatchValue.Validity := FValidity;
-              break;
-            end;
+            FWatchValue.ResData.CreatePointerValue(FNumValue);
+            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            break;
           end;
 
-          if (FTypeInfo.Kind = skInteger) or ((FTextValue <> '') and (FTextValue[1]='-')) then begin
-            if TryStrToInt64(FTextValue, Int64(NumVal)) then begin
-              FWatchValue.ResData.CreateNumValue(NumVal, True);
-              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-              FWatchValue.Validity := FValidity;
-              break;
-            end;
+          if (FHasNumValue = nvSigned) or
+             ( (FTypeInfo.Kind = skInteger) and (FNumValue <= high(int64)) )
+          then begin
+            FWatchValue.ResData.CreateNumValue(FNumValue, True);
+            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            break;
           end
           else begin
-            if TryStrToQWord(FTextValue, NumVal) then begin
-              FWatchValue.ResData.CreateNumValue(NumVal, False);
-              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-              FWatchValue.Validity := FValidity;
-              break;
-            end;
+            FWatchValue.ResData.CreateNumValue(FNumValue, False);
+            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            break;
           end;
         end;
 

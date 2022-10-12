@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, RegExpr, TestBase, LazLoggerBase, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, TestDbgConfig, TTestDebuggerClasses, IdeDebuggerBase,
-  IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes;
 
 type
 
@@ -380,6 +381,7 @@ end;
 
 var
   Frx: TRegExpr;
+  TheWatchPrinter: TWatchResultPrinter;
 
 { TTestWatchesBase }
 
@@ -445,7 +447,7 @@ begin
       if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then
         exit;
 
-      s := PrintWatchValue(WV.ResultData, AWatch.DisplayFormat);
+      s := TheWatchPrinter.PrintWatchValue(WV.ResultData, AWatch.DisplayFormat);
       IsValid := WV.Validity = ddsValid;
       HasTpInfo := IsValid and (
         (WV.TypeInfo <> nil) or
@@ -638,8 +640,12 @@ begin
 end;
 
 
+initialization
+  TheWatchPrinter := TWatchResultPrinter.Create;
+
 finalization
   FreeAndNil(Frx);
+  FreeAndNil(TheWatchPrinter);
 
 end.
 
