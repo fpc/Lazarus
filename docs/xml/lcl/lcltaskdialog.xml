@@ -206,7 +206,6 @@ Represents the shield icon.
 </short>
 </element>
 
-<!-- TODO: Needs description. -->
 <element name="TTaskDialogFooterIcon">
 <short>
 Represents the available footer icons for a task dialog.
@@ -216,26 +215,50 @@ Represents the available footer icons for a task dialog.
 <var>TTaskDialogFooterIcon</var> is an enumerated type with values which 
 represent the available footer icons for a task dialog.
 </p>
+<p>
+Values in the enumeration are used as an index into arrays with resource 
+identifiers declared in the implementation section for the unit. The values 
+are also passed as an argument to implementation routines which to get 
+resource strings for the index values.
+</p>
+<p>
+A TTaskDialogFooterIcon enumeration value is passed as an argument to the 
+Execute method in TTaskDialog.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTaskDialog.Execute"/>
+</seealso>
 </element>
 <element name="TTaskDialogFooterIcon.tfiBlank">
-<short/>
+<short>
+Represents a blank icon with no image.
+</short>
 </element>
 <element name="TTaskDialogFooterIcon.tfiWarning">
-<short/>
+<short>
+Represents the warning icon.
+</short>
 </element>
 <element name="TTaskDialogFooterIcon.tfiQuestion">
-<short/>
+<short>
+Represents the question icon.
+</short>
 </element>
 <element name="TTaskDialogFooterIcon.tfiError">
-<short/>
+<short>
+Represents the error icon. 
+</short>
 </element>
 <element name="TTaskDialogFooterIcon.tfiInformation">
-<short/>
+<short>
+Represents the information icon. 
+</short>
 </element>
 <element name="TTaskDialogFooterIcon.tfiShield">
-<short/>
+<short>
+Represents the shield  icon. 
+</short>
 </element>
 
 <element name="TTaskDialogFlag">
@@ -259,8 +282,11 @@ http://msdn.microsoft.com/en-us/library/bb787473(v=vs.85).aspx
 </url>
 </p>
 <p>
-tdfQuery and tdfQueryMasked are custom flags, implemented in Pascal code, to 
-handle an input query.
+Please note: TTaskDialogFlag <b>does not</b> include the TDF_SIZE_TO_CONTENT flag allowed in the Windows API.
+</p>
+<p>
+tdfQuery, tdfQueryMasked, and tdfQueryFieldFocused are custom flags, 
+implemented in Pascal code, to handle an input query.
 </p>
 <p>
 An emulated task dialog (as opposed to a native one) will handle only 
@@ -277,60 +303,112 @@ in a task dialog.
 </element>
 <element name="TTaskDialogFlag.tdfUseHIconMain">
 <short>
-Uses the icon specified by Handle as the primary or main icon (instead of the 
+Uses the icon specified by handle as the primary or main icon (instead of the 
 pointer to an Integer resource identifier).
 </short>
 </element>
 <element name="TTaskDialogFlag.tdfUseHIconFooter">
-<short/>
+<short>
+Uses the icon specified by handle as the footer icon (instead of the 
+pointer to an Integer resource identifier).
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfAllowDialogCancellation">
-<short/>
+<short>
+Allows the dialog to be closed using Alt+F4, by pressing the Escape key, or 
+using the Close button in the window decorations. Does not require a cancel 
+button on a task dialog.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfUseCommandLinks">
-<short/>
+<short>
+Causes buttons define on a task dialog to be displayed as command links with 
+standard glyph images instead of as plain push buttons. The first line of 
+text in a button caption is used as the main text for button. Following  
+lines are displayed as additional notes for the command link.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfUseCommandLinksNoIcon">
-<short/>
+<short>
+Causes buttons define on a task dialog to be displayed as command links but 
+without standard glyph images. The first line of text in a button caption is 
+used as the main text for button. Following lines are displayed as additional 
+notes for the command link.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfExpandFooterArea">
-<short/>
+<short>
+Causes expanded information to be displayed at the bottom of the footer area 
+instead of after the main content for a task dialog.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfExpandByDefault">
-<short/>
+<short>
+Causes the expanded information to be fully visible (expanded) when a task dialog is displayed.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfVerificationFlagChecked">
-<short/>
+<short>
+Indicates that the verification checkbox is in a checked state when a task 
+dialog is displayed. Ignored when the verification text for the dialog is 
+empty.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfShowProgressBar">
-<short/>
+<short>
+Causes a progress bar to be displayed on a task dialog.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfShowMarqueeProgressBar">
-<short/>
+<short>
+Causes a progress bar using the Marquis style to be displayed on a task 
+dialog.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfCallbackTimer">
-<short/>
+<short>
+Causes the callback routine for a task dialog to be called every 200 
+milliseconds.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfPositionRelativeToWindow">
-<short/>
+<short>
+Causes tha task dialog to be centered relative to the parent window for the 
+dialog. When omitted, or when a handle for the parent window has not been 
+specified, the dialog is centered on the active monitor for an application.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfRtlLayout">
-<short/>
+<short>
+Causes text on a task dialog to be displayed using the right-to-left 
+reading direction.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfNoDefaultRadioButton">
-<short/>
+<short>
+Causes all radio buttons on a task dialog to be unselected when it is displayed.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfCanBeMinimized">
-<short/>
+<short>
+Allows the taask dialog to be minimized. 
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfQuery">
-<short/>
+<short>
+Causes a query input control to be displayed on the task dialog.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfQueryMasked">
-<short/>
+<short>
+Causes Asterisk ('*') characters to be displayed to obfuscate characters in 
+the query input.
+</short>
 </element>
 <element name="TTaskDialogFlag.tdfQueryFieldFocused">
-<short/>
+<short>
+Causes the query input to be focused when a task dialog is displayed.
+</short>
 </element>
 
 <element name="TTaskDialogFlags">
