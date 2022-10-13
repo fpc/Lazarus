@@ -5639,7 +5639,7 @@ Integer value which identifies the scroll bar checked for the control setting.
 
 <element name="TCustomDBGrid.GetTruncCellHintText">
 <short>
-Gets the truncated (ellipsified) hint text for the specified cell.
+Gets the truncated hint text for the specified cell.
 </short>
 <descr>
 <p>
@@ -5648,10 +5648,10 @@ Gets the truncated (ellipsified) hint text for the specified cell.
 class, and does <b>not</b> call the inherited method.
 </p>
 <p>
-GetTruncCellHintText is used to get the truncated (ellipsified) hint text for 
-the cell specified in the ACol and ARow arguments. No actions are performed 
-in the method if ARow is one of the FixedRows for the grid control; the 
-return value is an empty string ('') in this situation.
+GetTruncCellHintText is used to get the truncated hint text (shortened with 
+an Ellipsis appended) for the cell specified in the ACol and ARow arguments. 
+No actions are performed in the method if ARow is one of the FixedRows for 
+the grid control; the return value is an empty string ('') in this situation.
 </p>
 <p>
 GetTruncCellHintText calls GetFieldFromGridColumn to get the TField instance 
