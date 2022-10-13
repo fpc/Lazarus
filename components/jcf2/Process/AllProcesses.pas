@@ -71,7 +71,7 @@ type
 implementation
 
 uses
-  Forms, SysUtils,
+  SysUtils,
   { local }
   JcfSettings, SetClarify, VisitSetXY,
   { once-offs }
@@ -107,7 +107,7 @@ uses
   BasicStats,
   { align }
   AlignConst, AlignVars, AlignAssign, AlignTypedef, AlignComment, AlignField,
-  IndentAsmParam;
+  IndentAsmParam, JcfUiTools;
 
 constructor TAllProcesses.Create;
 begin
@@ -158,9 +158,7 @@ begin
       if lc.FinalSummary(lsMessage) then
         OnMessage('', lsMessage, mtFinalSummary, -1, -1);
       
-      {$IFnDEF LCLNOGUI}
-      Application.ProcessMessages;
-      {$ENDIF}
+      UpdateGUI;
 
       { if the main process fired, do the follow set too }
       for liLoop := Low(pcFollowSet) to High(pcFollowSet) do

@@ -35,24 +35,26 @@ interface
 
 uses
   SysUtils,
-  // LCL
-  Dialogs,
-  // BuildIntf
+  {$ifdef LAZARUS_PLUGIN}
   IDEOptionsIntf,
-  // IdeIntf
   IDEOptEditorIntf,
+  {$endif}
   // local
   SetObfuscate, SetClarify, SetIndent, SetSpaces, SetReturns, SetComments,
   SetCaps, SetWordList, SetAlign, SetReplace, SetUses, SetPreProcessor,
   SettingsStream, SetTransform, SetAsm, JcfVersionConsts,
-  JcfStringUtils, JcfSetBase, JcfRegistrySettings, JcfUIConsts;
-
+  JcfStringUtils, JcfSetBase, JcfRegistrySettings,
+  JcfUIConsts,
+  JcfUiTools;
 
 type
 
   { TFormattingSettings }
-
+  {$ifdef LAZARUS_PLUGIN}
   TFormattingSettings = class(TAbstractIDEEnvironmentOptions)
+  {$else}
+  TFormattingSettings = class
+  {$endif}
   private
     fcObfuscate: TSetObfuscate;
     fcClarify: TSetClarify;
@@ -90,10 +92,11 @@ type
   public
     constructor Create(const pbReadRegFile: boolean);
     destructor Destroy; override;
+    {$ifdef LAZARUS_PLUGIN}
     class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
     procedure DoAfterWrite({%H-}Restore: boolean); override;
-
+    {$endif}
     procedure Read;
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);
     procedure ReadDefaults;
@@ -241,6 +244,7 @@ begin
   inherited;
 end;
 
+{$ifdef LAZARUS_PLUGIN}
 class function TFormattingSettings.GetGroupCaption: String;
 begin
   Result := lisJCFFormatSettings;
@@ -260,6 +264,7 @@ begin
   { save to file }
   Write;
 end;
+{$endif}
 
 const
   CODEFORMAT_SETTINGS_SECTION = 'JediCodeFormatSettings';
@@ -297,8 +302,7 @@ begin
     end;
   end
   else if pbMustExist then
-    MessageDlg(Format(lisTheSettingsFileDoesNotExist, [psFileName, NativeLineBreak]),
-               mtError, [mbOK], 0);
+    ShowErrorMessageUI(Format(lisTheSettingsFileDoesNotExist, [psFileName, NativeLineBreak]));
 end;
 
 
@@ -334,7 +338,7 @@ begin
   begin
     { fail quietly? }
     if lcReg.FormatFileWriteOption = eAlwaysWrite then
-      MessageDlg(Format(lisErrorWritingSettingsFileReadOnly, [lcReg.FormatConfigFileName]), mtError, [mbOK], 0);
+      ShowErrorMessageUI(Format(lisErrorWritingSettingsFileReadOnly, [lcReg.FormatConfigFileName]));
     exit;
   end;
 
@@ -354,8 +358,7 @@ begin
     begin
       if lcReg.FormatFileWriteOption = eAlwaysWrite then
       begin
-        MessageDlg(Format(lisErrorWritingSettingsException, [GetRegSettings.FormatConfigFileName, NativeLineBreak, E.Message]),
-          mtError, [mbOK], 0);
+        ShowErrorMessageUI(Format(lisErrorWritingSettingsException, [GetRegSettings.FormatConfigFileName, NativeLineBreak, E.Message]));
       end;
     end;
   end;
@@ -442,7 +445,7 @@ begin
   lcAllSettings := pcStream.ExtractSection(CODEFORMAT_SETTINGS_SECTION);
   if lcAllSettings = nil then
   begin
-    ShowMessage(lisNoSettingsFound);
+    ShowErrorMessageUI(lisNoSettingsFound);
     exit;
   end;
 
@@ -510,8 +513,10 @@ begin
 end;
 
 initialization
+  {$ifdef LAZARUS_PLUGIN}
   JCFOptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
   RegisterIDEOptionsGroup(JCFOptionsGroup, TFormattingSettings);
+  {$endif}
 finalization
   FreeAndNil(mcFormattingSettings);
 end.
