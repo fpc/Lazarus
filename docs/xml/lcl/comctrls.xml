@@ -10314,14 +10314,14 @@ TLVChangeEvent is the type used for the <var>OnChange</var> property in
 
 <element name="TLVDataFindEvent">
 <short>
-Specifies an envent handler used to locate a list view item using the 
+Specifies an event handler used to locate a list view item using the 
 specified search parameters and criteria.
 </short>
 <descr>
 <p>
 <var>TLVDataFindEvent</var> is the type used for the <var>OnDataFind</var> 
-property in TCustomListView. Use the arguments to the handler to deterine the 
-actions performed in its implementation.
+property in TCustomListView. Use the arguments to the handler to determine 
+the actions performed in its implementation.
 </p>
 </descr>
 <seealso>
