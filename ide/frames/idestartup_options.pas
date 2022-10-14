@@ -150,7 +150,6 @@ begin
     ProjectTypeCB.ItemIndex := i;
 
     CheckFPPkgCheckBox.Checked:=FppkgCheck;
-    debugln(['TIdeStartupFrame.ReadSettings ',CheckFPPkgCheckBox.Checked,' ',FppkgCheck]);
   end;
 end;
 
@@ -168,7 +167,6 @@ begin
     NewProjectTemplateAtStart := pd.Name;
 
     FppkgCheck:=CheckFPPkgCheckBox.Checked;
-    debugln(['TIdeStartupFrame.WriteSettings FppkgCheck=',FppkgCheck,' ',CheckFPPkgCheckBox.Checked]);
   end;
 end;
 
