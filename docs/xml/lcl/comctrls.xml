@@ -4201,40 +4201,94 @@ more elaborate version of <var>TPage</var>, and adds the following features:
 <element name="TTabSheet.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TTabSheet.Create">
-<short>calls inherited <var>Create</var> and zeroes <var>ImageIndex</var>.
+<short>
+Constructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited method on entry using the value in TheOwner as an argument.
+</p>
+</descr>
 <seealso>
-<link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+<link id="TCustomPage.Create"/>
 </seealso>
 </element>
 <element name="TTabSheet.Create.TheOwner">
-<short/>
+<short>
+Component which owns the class instance.
+</short>
 </element>
 
 <element name="TTabSheet.Destroy">
 <short>
-<var>Destroy</var> - destructor for <var>TTabSheet</var>: detaches from the 
-Host Dock Site and calls inherited <var>Destroy</var>.
+Destructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that a child control which is a host dock site is detached (set to 
+<b>Nil</b>). Destroy calls the inherited method to free handles for both the 
+control and any child controls, and other resources allocated in the ancestor 
+class (TWinControl).
+</p>
+</descr>
 <seealso>
-<link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
+<link id="#lcl.controls.TWinControl.ControlCount">TWinControl.ControlCount</link>
+<link id="#lcl.controls.TWinControl.Controls">TWinControl.Controls</link>
+<link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
 </seealso>
 </element>
 
 <element name="TTabSheet.PageControl">
-<short>The <var>PageControl</var> of which this TabSheet is a member.</short>
-<descr/>
-<seealso/>
+<short>
+The TPageControl instance where the tab sheet is displayed.
+</short>
+<descr>
+<p>
+<var>PageControl</var> is a <var>TPageControl</var> property with the parent 
+control where this tab sheet is hosted. The property value is assigned at 
+design-time when the 'Add Page' context option is used on the form designer 
+in the Lazarus IDE. The value is <b>Nil</b> if the Parent property has not 
+been assigned or is not derived from TPageControl.
+</p>
+<p>
+Changing the property value causes the Parent property to be updated to 
+reflect the new value.
+</p>
+</descr>
+<seealso>
+<link id="TPageControl"/>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+</seealso>
 </element>
 
 <element name="TTabSheet.TabIndex">
 <short>
-<var>TabIndex</var> - the Index value or sequence number of this 
-TabSheet.</short>
-<descr/>
-<seealso/>
+Ordinal position for the tab sheet in the visible tab sheets on the 
+page control.
+</short>
+<descr>
+<p>
+<var>TabIndex</var> is a read-only <var>Integer</var> property with the 
+ordinal position for the tab sheet in the list of active pages on the parent 
+TPageControl instance. The property value is -1 when TabVisible is set to 
+<b>False</b>.
+</p>
+<p>
+TabIndex iterates over the TTabSheet instances in PageControl up to the value 
+in its PageIndex property. The return value contains the ordinal position for 
+the TTabSheet in the list of pages with their TabVisible property set to 
+<b>True</b>. Pages which are not visible are not considered when the ordinal 
+value is calculated.
+</p>
+</descr>
+<seealso>
+<link id="TTabSheet.TabVisible"/>
+<link id="TTabSheet.PageControl"/>
+<link id="TPageControl.Pages"/>
+<link id="TCustomPage.PageIndex"/>
+</seealso>
 </element>
 
 <element name="TTabSheet.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
@@ -4331,7 +4385,7 @@ Inspector choosing the page required and editing its properties.
 </p>
 <p>
 While a given page is selected, it is also possible to drop other controls 
-(such as buttons, memo boxes etc) on to the page from the Component Palette.
+(such as buttons, memo boxes etc) onto the page from the Component Palette.
 </p>
 <p>
 Inherits most of its properties from <link 
@@ -4402,7 +4456,7 @@ the form, but their <var>Parent</var> has been set to <var>nil</var>.
 </element>
 <element name="TPageControl.GetTabSheet.Index">
 <short>
-Ordinal position for the page or tabsheet requested in the method.
+Ordinal position for the page or tab sheet requested in the method.
 </short>
 </element>
 
@@ -4430,7 +4484,7 @@ Ordinal position for the page or tabsheet requested in the method.
 
 <element name="TPageControl.FindPageWithDockClient">
 <short>
-Finds the tabsheet in the Pages property which is the parent for the control 
+Finds the tab sheet in the Pages property which is the parent for the control 
 in Client.
 </short>
 <descr/>
@@ -4447,7 +4501,7 @@ in Client.
 
 <element name="TPageControl.GetPageClass">
 <short>
-Gets the class type used to create a new tabsheet (or page) for the page 
+Gets the class type used to create a new tab sheet (or page) for the page 
 control.
 </short>
 <descr/>
@@ -4459,13 +4513,13 @@ control.
 
 <element name="TPageControl.DoAddDockClient">
 <short>
-<var>DoAddDockClient</var> creates a new TabSheet in the PageControl, places 
+<var>DoAddDockClient</var> creates a new tab sheet in the PageControl, places 
 the client on it and aligns it.
 </short>
 <descr>
 <p>
-Client cannot be added directly to TPageControl, but a new TabSheet should be 
-added and client placed on it.
+Client cannot be added directly to TPageControl, but a new tab sheet should 
+be added and client placed on it.
 </p>
 </descr>
 <seealso>
@@ -4520,46 +4574,113 @@ added and client placed on it.
 
 <element name="TPageControl.FindNextPage">
 <short>
-<var>FindNextPage</var> - returns the next page (<var>TTabSheet</var>) in the 
-sequence.
+Gets the next tab sheet in the specified direction.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>FindNextPage</var> is a <var>TTabSheet</var> function used to get the 
+next tab sheet (or page) in the specified direction.
+</p>
+<p>
+<var>CurPage</var> contains the TTabSheet instance where the search is 
+started. If CurPage is not found in the list of Pages, the search starts at 
+the first or last tab sheet in the specified search direction. The first when 
+GoForward is <b>False</b>, and the last when GoForward is <b>True</b>.
+</p>
+<p>
+<var>GoForward</var> indicates the direction for the search. When set to 
+<b>True</b>, subsequent Pages after the value in CurPage are used. When set 
+to <b>False</b>, previous pages are examined.
+</p>
+<p>
+<var>CheckTabVisible</var> indicates whether the TTabSheet must be visible in 
+the list of Pages. When set to <b>True</b>, the TabVisible property for the 
+next tab sheet must also be set to <b>True</b>. If TabVisible is 
+<b>False</b>, the tab sheet is skipped. When CheckTabVisible is set to 
+<b>False</b> (the default value), all tab sheets in Pages are used.
+</p>
+<p>
+The return value contains the first tab sheet that matches the search 
+criteria and direction. The can be the same as CurPage if another tab sheet 
+is not found. The return value is <b>Nil</b> when PageCount contains 0 (no 
+tab sheets have been created).
+</p>
+<p>
+FindNextPage is used to implement the SelectNextPage method.
+</p>
+</descr>
+<seealso>
+<link id="TPageControl.SelectNextPage"/>
+<link id="TPageControl.Pages"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TTabSheet.TabVisible"/>
+</seealso>
 </element>
 <element name="TPageControl.FindNextPage.Result">
-<short/>
+<short>
+Tab sheet which matches the search criteria and direction. Nil if no tab 
+sheets have been defined on the page control.
+</short>
 </element>
 <element name="TPageControl.FindNextPage.CurPage">
-<short/>
+<short>
+Tab sheet where the search is started.
+</short>
 </element>
 <element name="TPageControl.FindNextPage.GoForward">
-<short/>
+<short>
+<b>True</b> to search for a subsequent tab sheet. <b>False</b> to search for 
+a prior tab sheet.
+</short>
 </element>
 <element name="TPageControl.FindNextPage.CheckTabVisible">
-<short/>
+<short>
+<b>True</b> if the tab sheets must have their TabVisible property set. 
+<b>False</b> to check all tab sheets.
+</short>
 </element>
 
 <element name="TPageControl.SelectNextPage">
 <short>
-<var>SelectNextPage</var> - checking that its tab is visible.
+Locates and activates the next page in the specified direction.
 </short>
 <descr>
 <p>
-If GoForward is <b>True</b>, goes to next (higher index) page.
-If <b>False</b>, goes to previous (lower index)
+SelectNextPage is an overloaded method used to locate and activate the next 
+page (or tab sheet) in the specified direction.
 </p>
 <p>
-If <var>CheckTabVisible</var> is <b>True</b>, will only move if the tab is 
-Visible.
+<var>GoForward</var> indicates the search direction for the next page. When 
+set to <b>False</b>, the pages prior to ActivePage are examined. When set to 
+<b>True</b>, the pages after active page are used.
+</p>
+<p>
+An overloaded variant provides the CheckTabVisible argument, which forces use 
+of tab sheets with their TabVisible property set to <b>True</b>.
+</p>
+<p>
+SelectNextPage calls the FindNextPage method to locate the next tab sheet in 
+the specified direction. If a tab sheet is found, it is assigned to the 
+ActivePage property for the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TPageControl.FindNextPage"/>
+<link id="TPageControl.Pages"/>
+<link id="TPageControl.ActivePage"/>
+</seealso>
 </element>
 <element name="TPageControl.SelectNextPage.GoForward">
-<short/>
+<short>
+<b>True</b> to search for a subsequent tab sheet. <b>False</b> to search for 
+a prior tab sheet.
+</short>
 </element>
 <element name="TPageControl.SelectNextPage.CheckTabVisible">
-<short/>
+<short>
+<b>True</b> if the tab sheets must have their TabVisible property set. 
+<b>False</b> to check all tab sheets.
+</short>
 </element>
 
 <element name="TPageControl.IndexOfTabAt" link="#lcl.comctrls.TCustomTabControl.IndexOfTabAt"/>
@@ -4576,14 +4697,24 @@ Visible.
 
 <element name="TPageControl.AddTabSheet">
 <short>
-Convenience routine used to make the TPageControl more intuitive to use.
+Creates and configures a new tab sheet for the page control.
 </short>
 <descr/>
+<p>
+<var>AddTabSheet</var> is a <var>TTabSheet</var> function used create and 
+configure a new instance of the page class (TTabSheet) for the control. It is 
+a convenience routine, added in Lazarus, to make the TPageControl class more 
+intuitive to use.
+</p>
+<p>
+AddTabSheet calls the GetPageClass method to get the class reference used to 
+create a new TTabSheet instance. The current class instance is used as both 
+the owner of the tab sheet and the value for the PageControl property.
+</p>
 <seealso>
 <link id="TTabSheet.PageControl"/>
-<link id="TPageControl.Pages"/>
-<link id="TPageControl.ActivePage"/>
 <link id="TPageControl.GetPageClass"/>
+<link id="TPageControl.Pages"/>
 </seealso>
 </element>
 <element name="TPageControl.AddTabSheet.Result">
@@ -4592,47 +4723,92 @@ Convenience routine used to make the TPageControl more intuitive to use.
 
 <element name="TPageControl.ActivePageIndex">
 <short>
-<var>ActivePageIndex</var> - index value of currently selected (active) page.
+Ordinal position for the active page (tab sheet) on the page control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ActivePageIndex</var> is an <var>Integer</var> property with the ordinal 
+position in Pages where the ActivePage is stored. The value for the property 
+is read from and written the PageIndex property in the TCustomTabControl ancestor.
+</p>
+<p>
+ActivePageIndex contains -1 when PageCount is 0 (no tab sheets have been 
+created), or ActivePage has not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TPageControl.Pages"/>
+<link id="TPageControl.ActivePage"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.PageIndex"/>
+</seealso>
 </element>
 
 <element name="TPageControl.Pages">
 <short>
-<var>Pages</var> - the actual Pages (<var>TTabSheet</var>) that comprise the 
-component.
+Provides indexed access to the pages (tab sheets) on the page control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Pages</var> is a read-only indexed <var>TTabSheet</var> property used to 
+access pages (tab sheets) defined on the page control by their ordinal 
+positions. Read access to the property value ensures that the page object is 
+cast to the TTabSheet class type used in the control.
+</p>
+<p>
+At design-time, use the ActivePage property to make one of the Pages become 
+active on the control. Use the published TabIndex property to select a page 
+by its ordinal position.
+</p>
+<p>
+At run-time, use methods like FindNextPage or SelectNextPage to locate or 
+select a TTabSheet for use as the ActivePage. You can also use 
+ActivePageIndex to specify the active page by its ordinal position at 
+run-time.
+</p>
+</descr>
 <seealso>
+<link id="TPageControl.ActivePage"/>
+<link id="TPageControl.ActivePageIndex"/>
+<link id="TPageControl.FindNextPage"/>
+<link id="TPageControl.SelectNextPage"/>
+<link id="TPageControl.TabIndex"/>
+<link id="TTabSheet"/>
+<link id="TCustomTabControl.Page"/>
 <link id="TCustomTabControl.Pages"/>
+<link id="TCustomTabControl.PageIndex"/>
 </seealso>
 </element>
 <element name="TPageControl.Pages.Index">
-<short/>
+<short>
+Ordinal position for the tab sheet (page) returned as the property value.
+</short>
 </element>
 
 <element name="TPageControl.ActivePage">
 <short>
-<var>ActivePage</var> - the currently selected active page 
-(<var>TTabSheet</var>).
+The currently selected and active page (<var>TTabSheet</var>) on the page 
+control.
 </short>
 <descr>
 <p>
-<var>ActivePage</var> - the currently selected active page 
-(<var>TTabSheet</var>).
+<var>ActivePage</var> is a TTabSheet property with the page that is active 
+and selected on the page control. Read and write access to the property value 
+are redirected to the ActivePageComponent property in the TCustomTabControl 
+ancestor.
 </p>
 <remark>
-Please note that the property is implemented with a type that differs from 
-<var>TCustomTabControl</var>, where <var>ActivePage</var> is defined as a 
-<var>String</var>.
+Please note that ActivePage is implemented with a type that differs from 
+TCustomTabControl, where it is defined as a <var>String</var>.
 </remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomTabControl.ActivePage"/>
+<link id="TCustomTabControl.ActivePageComponent"/>
+</seealso>
 </element>
 
 <element name="TPageControl.OnGetDockCaption" link="#lcl.controls.TWinControl.OnGetDockCaption"/>
-
 <element name="TPageControl.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TPageControl.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TPageControl.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
@@ -4660,21 +4836,12 @@ Please note that the property is implemented with a type that differs from
 <element name="TPageControl.Style" link="#lcl.comctrls.TCustomTabControl.Style"/>
 <element name="TPageControl.TabHeight" link="#lcl.comctrls.TCustomTabControl.TabHeight"/>
 <element name="TPageControl.TabIndex" link="#lcl.comctrls.TCustomTabControl.TabIndex"/>
-
 <element name="TPageControl.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TPageControl.TabPosition" link="#lcl.comctrls.TCustomTabControl.TabPosition"/>
 <element name="TPageControl.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TPageControl.TabWidth" link="#lcl.comctrls.TCustomTabControl.TabWidth"/>
 <element name="TPageControl.Visible" link="#lcl.controls.TControl.Visible"/>
-
-<element name="TPageControl.OnChange">
-<short>
-<var>OnChange</var> - Occurs immediately after a tab is selected.
-</short>
-<descr>Occurs immediately after a tab is selected.</descr>
-<seealso/>
-</element>
-
+<element name="TPageControl.OnChange" link="#lcl.comctrls.TCustomTabControl.OnChange"/>
 <element name="TPageControl.OnChanging" link="#lcl.comctrls.TCustomTabControl.OnChanging"/>
 <element name="TPageControl.OnCloseTabClicked" link="#lcl.comctrls.TCustomTabControl.OnCloseTabClicked"/>
 <element name="TPageControl.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -7303,7 +7470,7 @@ Must include lifCreated, and must not include lifDestroying.
 <dd>
 The Owner is the TListItems instance in the Items property for a TListView 
 control. It must be assigned, meaning the list item is still stored there, 
-and its WSUpdateAllowed method must also return True.
+and its WSUpdateAllowed method must also return <b>True</b>.
 </dd>
 <dt>List View control which owns the container and the list item.</dt>
 <dd>
@@ -7312,7 +7479,7 @@ not being freed.
 </dd>
 </dl>
 <p>
-When all of these conditions are met, the return value is set to True.
+When all of these conditions are met, the return value is set to <b>True</b>.
 </p>
 <p>
 WSUpdateAllowed is called prior to reading or writing values for properties 
@@ -8174,13 +8341,13 @@ method. StateIndex values and their TListItemStates equivalents:
 <dt>0</dt>
 <dd>Used when GetStates is an empty set ([]).</dd>
 <dt>1</dt>
-<dd>Used when GetStates contains lisCut. Cut is True.</dd>
+<dd>Used when GetStates contains lisCut. Cut is <b>True</b>.</dd>
 <dt>2</dt>
-<dd>Used when GetStates contains lisDropTarget. DropTarget is True.</dd>
+<dd>Used when GetStates contains lisDropTarget. DropTarget is <b>True</b>.</dd>
 <dt>3</dt>
-<dd>Used when GetStates contains lisSelected. Selected is True.</dd>
+<dd>Used when GetStates contains lisSelected. Selected is <b>True</b>.</dd>
 <dt>4</dt>
-<dd>Used when GetStates contains lisFocused. Focused is True.</dd>
+<dd>Used when GetStates contains lisFocused. Focused is <b>True</b>.</dd>
 </dl>
 </descr>
 <seealso>
@@ -10026,7 +10193,7 @@ checks whether the update is actually needed for the collection when the
 value in Item is <b>Nil</b>. If the collection update is required, Item is 
 set to the internal collection item that has been cached for the action. This 
 occurs when the collection calls its Changed method with its AllItems 
-argument set to True.
+argument set to <b>True</b>.
 </p>
 <p>
 Update calls the inherited method using the value in Item as an argument.
@@ -29932,7 +30099,7 @@ set to <b>Nil</b> when the component is removed from the class instance.
 <short>Operation performed for the component.</short>
 </element>
 
-<element name="TCustomTreeView.Paint" link="#lcl.controls.TCustomControl.Paint">
+<element name="TCustomTreeView.Paint">
 <short>Renders the tree view control.</short>
 <descr>
 <p>
@@ -31112,8 +31279,7 @@ symbol.
 
 <element name="TCustomTreeView.GetInsertMarkAt">
 <short>
-<var>GetInsertMarkAt</var> - find if there is an insert mark at the specified 
-coordinates.
+Determines if there is an insert mark at the specified coordinates.
 </short>
 <descr/>
 <seealso/>
@@ -31133,8 +31299,7 @@ coordinates.
 
 <element name="TCustomTreeView.SetInsertMark">
 <short>
-<var>SetInsertMark</var> - place an Insert mark at the specified node in the 
-tree.
+Places an Insert mark at the specified node in the tree.
 </short>
 <descr/>
 <seealso/>
@@ -31148,8 +31313,7 @@ tree.
 
 <element name="TCustomTreeView.SetInsertMarkAt">
 <short>
-<var>SetInsertMarkAt</var> - place an insert mark at the specified 
-coordinates.
+Places an insert mark at the specified coordinates.
 </short>
 <descr/>
 <seealso/>
@@ -31420,7 +31584,7 @@ The variants which accept either an array or a list of nodes always call
 ClearSelections to reset the selected state for multi-selected nodes. The 
 first TTreeNode instance in either is stored in Selected. When 
 tvoAllowMultiSelect has been included in Options, the Selected property in 
-each of the tree nodes is set to True.
+each of the tree nodes is set to <b>True</b>.
 </p>
 <p>
 Use ClearSelections to reset the state for any selected nodes on the tree 
@@ -32026,7 +32190,7 @@ property.
 </p>
 <p>
 Changing the property value causes Options and Items to be updated. When set 
-to True, tvoKeepCollapsedNodes is included in Options. Otherwise, 
+to <b>True</b>, tvoKeepCollapsedNodes is included in Options. Otherwise, 
 tvoKeepCollapsedNodes is excluded from Options. The new value for the 
 property is assigned to the KeepCollapsedNodes property in Items.
 </p>
