@@ -57,10 +57,7 @@ uses
   // IDE
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
   AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc,
-  {$IF FPC_FULLVERSION>30100}
-  GenerateFppkgConfigurationDlg,
-  {$ENDIF}
-  IDEProcs, IdeDebuggerOpts;
+  GenerateFppkgConfigurationDlg, IDEProcs, IdeDebuggerOpts;
   
 type
   TInitialSetupDialog = class;
@@ -538,12 +535,9 @@ begin
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
   TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
-  {$IF FPC_FULLVERSION>30100}
-  TVNodeFppkg:=PropertiesTreeView.Items.Add(nil,FppkgTabSheet.Caption);
-  FppkgTabSheet.TabVisible := True;
-  {$ELSE}
-  FppkgTabSheet.TabVisible := False;
-  {$ENDIF FPC_FULLVERSION>30100}
+  FppkgTabSheet.TabVisible := EnvironmentOptions.FppkgCheck;
+  if FppkgTabSheet.TabVisible then
+    TVNodeFppkg:=PropertiesTreeView.Items.Add(nil,FppkgTabSheet.Caption);
   ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
   ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
 
@@ -868,9 +862,8 @@ begin
   TVNodeFPCSources.Text:=FPCSourcesTabSheet.Caption;
   TVNodeMakeExe.Text:=MakeExeTabSheet.Caption;
   TVNodeDebugger.Text:=DebuggerTabSheet.Caption;
-  {$IF FPC_FULLVERSION>30100}
-  TVNodeFppkg.Text:=FppkgTabSheet.Caption;
-  {$ENDIF FPC_FULLVERSION>30100}
+  if TVNodeFppkg<>nil then
+    TVNodeFppkg.Text:=FppkgTabSheet.Caption;
 
   LazDirBrowseButton.Caption:=lisPathEditBrowse;
   LazDirLabel.Caption:=SimpleFormat(
@@ -1163,8 +1156,10 @@ begin
   TVNodeCompiler.ImageIndex:=ImageIndex;
   TVNodeCompiler.SelectedIndex:=ImageIndex;
 
-  FFlags:=FFlags+[sdfFPCSrcDirNeedsUpdate,sdfFppkgConfigFileNeedsUpdate,
+  FFlags:=FFlags+[sdfFPCSrcDirNeedsUpdate,
                   sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
+  if FppkgTabSheet.TabVisible then
+    Include(FFlags,sdfFppkgConfigFileNeedsUpdate);
   IdleConnected:=true;
 end;
 
@@ -1510,10 +1505,13 @@ begin
   UpdateDebuggerNote;
 
   // Fppkg
-  FppkgComboBox.Text := EnvironmentOptions.FppkgConfigFile;
   fLastParsedFppkgConfigFile := ' ';
-  UpdateFppkgCandidates;
-  UpdateFppkgNote;
+  if FppkgTabSheet.TabVisible then
+  begin
+    FppkgComboBox.Text := EnvironmentOptions.FppkgConfigFile;
+    UpdateFppkgCandidates;
+    UpdateFppkgNote;
+  end;
 
   // select first error
   Node:=FirstErrorNode;
@@ -1528,11 +1526,10 @@ var
   FppkgMsg, Note: string;
   Quality: TSDFilenameQuality;
   ConfigFile: string;
-  {$IF FPC_FULLVERSION>30100}
   ImageIndex: Integer;
-  {$ENDIF}
 begin
   if csDestroying in ComponentState then exit;
+  if not FppkgTabSheet.TabVisible then exit;
   CurCaption:=FppkgComboBox.Text;
   EnvironmentOptions.FppkgConfigFile:=CurCaption;
   if fLastParsedFppkgConfigFile=EnvironmentOptions.GetParsedFppkgConfig then exit;
@@ -1564,11 +1561,9 @@ begin
 
   FppkgMemo.Text := lisFile2 + ConfigFile + LineEnding + LineEnding + Note;
 
-  {$IF FPC_FULLVERSION>30100}
   ImageIndex:=QualityToImgIndex(Quality);
   TVNodeFppkg.ImageIndex:=ImageIndex;
   TVNodeFppkg.SelectedIndex:=ImageIndex;
-  {$ENDIF FPC_FULLVERSION>30100}
 
   IdleConnected:=true;
 end;
@@ -1604,24 +1599,22 @@ procedure TInitialSetupDialog.UpdateFppkgCandidates;
   begin
     Result:=nil;
 
-    {$IF FPC_FULLVERSION>30100}
     CheckFile(GetFppkgConfigFile(False, False), Result);
     CheckFile(GetFppkgConfigFile(False, True), Result);
     CheckFile(GetFppkgConfigFile(True, False), Result);
     CheckFile(GetFppkgConfigFile(True, True), Result);
-    {$ENDIF}
   end;
 
 var
   Files: TSDFileInfoList;
 begin
   Exclude(FFlags,sdfFppkgConfigFileNeedsUpdate);
+  if not FppkgTabSheet.TabVisible then exit;
   Files:=SearchFppkgFpcPrefixCandidates;
   FreeAndNil(FCandidates[sddtFppkgFpcPrefix]);
   FCandidates[sddtFppkgFpcPrefix]:=Files;
   FillComboboxWithFileInfoList(FppkgComboBox,Files,-1);
 end;
-
 
 procedure TInitialSetupDialog.FppkgBrowseButtonClick(Sender: TObject);
 var
@@ -1632,6 +1625,7 @@ var
   Dlg: TIDEOpenDialog;
   Filter: String;
 begin
+  if not FppkgTabSheet.TabVisible then exit;
   Dlg:=IDEOpenDialogClass.Create(nil);
   try
     lTitle:='fppkg.cfg';
@@ -1661,12 +1655,10 @@ begin
 end;
 
 procedure TInitialSetupDialog.FppkgWriteConfigButtonClick(Sender: TObject);
-{$IF FPC_FULLVERSION>30100}
 var
   Dialog: TGenerateFppkgConfigurationDialog;
-{$ENDIF}
 begin
-  {$IF FPC_FULLVERSION>30100}
+  if not FppkgTabSheet.TabVisible then exit;
   Dialog := TGenerateFppkgConfigurationDialog.Create(Self);
   try
     Dialog.Compiler := fLastParsedCompiler;
@@ -1681,7 +1673,6 @@ begin
 
   fLastParsedFppkgConfigFile := ' ';
   UpdateFppkgNote;
-  {$ENDIF}
 end;
 
 end.

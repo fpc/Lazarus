@@ -537,6 +537,7 @@ type
     FDebuggerAllowFunctionCalls: boolean;
     FDebuggerAutoSetInstanceFromClass: boolean;
     FDebuggerShowExitCodeMessage: boolean;
+    FFppkgCheck: boolean;
     FHasActiveDebuggerEntry: Boolean;
     fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
@@ -902,6 +903,7 @@ type
     property DebuggerAutoCloseAsm: boolean read FDebuggerAutoCloseAsm write FDebuggerAutoCloseAsm;
     property DebuggerAutoSetInstanceFromClass: boolean read FDebuggerAutoSetInstanceFromClass write FDebuggerAutoSetInstanceFromClass;
     property DebuggerAllowFunctionCalls: boolean read FDebuggerAllowFunctionCalls write FDebuggerAllowFunctionCalls;
+    property FppkgCheck: boolean read FFppkgCheck write FFppkgCheck;
     property FppkgConfigFile: string read GetFppkgConfigFile write SetFppkgConfigFile;
     property FppkgConfigFileHistory: TStringList read FFppkgConfigFileHistory write FFppkgConfigFileHistory;
     // ShowCompileDialog and AutoCloseCompileDialog are currently not used.
@@ -1943,6 +1945,7 @@ begin
   FDebuggerFileHistory.OwnsObjects := True;
   FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
   FDebuggerEventLogColors:=DebuggerDefaultColors;
+  FppkgCheck:=false;
   FppkgConfigFile:='';
   FFppkgConfigFileHistory:=TStringList.Create;
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
@@ -2197,6 +2200,7 @@ begin
   LoadRecentList(FXMLCfg,FMakeFileHistory,Path+'MakeFilename/History/',rltFile);
   if FMakeFileHistory.Count=0 then
     GetDefaultMakeFilenames(FMakeFileHistory);
+  FppkgCheck:=FXMLCfg.GetValue(Path+'FppkgCheck/Value',false);
   FppkgConfigFile:=FXMLCfg.GetValue(Path+'FppkgConfigFile/Value',FppkgConfigFile);
   LoadRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/',rltFile);
 
@@ -2604,6 +2608,7 @@ begin
   SaveRecentList(FXMLCfg,FTestBuildDirHistory,Path+'TestBuildDirectory/History/');
   FXMLCfg.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
   SaveRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
+  FXMLCfg.SetDeleteValue(Path+'FppkgCheck/Value',FppkgCheck,false);
   FXMLCfg.SetDeleteValue(Path+'FppkgConfigFile/Value',FppkgConfigFile,'');
   SaveRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/');
   // Note: ManyBuildModesSelection is not stored here any more. Moved to project settings.
@@ -2611,7 +2616,7 @@ begin
   // Primary-config verification
   FXMLCfg.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
 
-  // global buid options
+  // global build options
   FConfigStore.AppendBasePath('BuildMatrix');
   FBuildMatrixOptions.SaveToConfig(FConfigStore,IsGlobalMode);
   FConfigStore.UndoAppendBasePath;

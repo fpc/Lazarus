@@ -1492,6 +1492,7 @@ begin
   if (not ShowSetupDialog)
   and (not SkipAllTests)
   and (not GetSkipCheck(skcFppkg))
+  and EnvironmentOptions.FppkgCheck
   and (CheckFppkgConfiguration(ConfigFile, Note)<>sddqCompatible)
   then begin
     debugln('Warning: (lazarus) fppkg not properly configured.');

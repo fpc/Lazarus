@@ -50,10 +50,12 @@ type
   { TIdeStartupFrame }
 
   TIdeStartupFrame = class(TAbstractIDEOptionsEditor)
+    CheckFPPkgCheckBox: TCheckBox;
+    divInitialChecks: TDividerBevel;
     ProjectTypeLabel: TLabel;
     ProjectTypeCB: TComboBox;
-    lblFileAssociation: TDividerBevel;
-    lblProjectToOpen: TDividerBevel;
+    divFileAssociation: TDividerBevel;
+    divProjectToOpen: TDividerBevel;
     LazarusInstancesCB: TComboBox;
     LazarusInstancesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
@@ -98,7 +100,7 @@ var
   pd: TProjectDescriptor;
 begin
   // Using File Association in OS
-  lblFileAssociation.Caption := dlgFileAssociationInOS;
+  divFileAssociation.Caption := dlgFileAssociationInOS;
   LazarusInstancesLabel.Caption := dlgLazarusInstances;
   with LazarusInstancesCB.Items do
   begin
@@ -110,7 +112,7 @@ begin
   end;
   Assert(LazarusInstancesCB.Items.Count = Ord(High(TIDEMultipleInstancesOption))+1);
   // Project to Open or Create
-  lblProjectToOpen.Caption := dlgProjectToOpenOrCreate;
+  divProjectToOpen.Caption := dlgProjectToOpenOrCreate;
   OpenLastProjectAtStartCheckBox.Caption := dlgQOpenLastPrj;
   ProjectTypeLabel.Caption := dlgNewProjectType;
   for i:=0 to ProjectDescriptors.Count-1 do
@@ -119,6 +121,8 @@ begin
     if pd.VisibleInNewDialog then
       ProjectTypeCB.Items.AddObject(pd.GetLocalizedName, pd);
   end;
+
+  CheckFPPkgCheckBox.Caption:=lisQuickCheckFppkgConfigurationAtStart;
 end;
 
 procedure TIdeStartupFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -134,16 +138,19 @@ begin
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
 
     FOldProjectTemplateAtStart := NewProjectTemplateAtStart;
-    for i := 0 to ProjectTypeCB.Items.Count-1 do
+    i:=ProjectTypeCB.Items.Count-1;
+    while i>=0 do
     begin
       pd := TProjectDescriptor(ProjectTypeCB.Items.Objects[i]);
       if pd.Name = FOldProjectTemplateAtStart then
-      begin
-        ProjectTypeCB.ItemIndex := i;
-        Exit;
-      end;
+        break;
+      dec(i);
     end;
-    ProjectTypeCB.ItemIndex := 0;
+    if i<0 then i:=0;
+    ProjectTypeCB.ItemIndex := i;
+
+    CheckFPPkgCheckBox.Checked:=FppkgCheck;
+    debugln(['TIdeStartupFrame.ReadSettings ',CheckFPPkgCheckBox.Checked,' ',FppkgCheck]);
   end;
 end;
 
@@ -159,6 +166,9 @@ begin
     // Don't use the localized name from ProjectTypeCB.Text.
     pd := TProjectDescriptor(ProjectTypeCB.Items.Objects[ProjectTypeCB.ItemIndex]);
     NewProjectTemplateAtStart := pd.Name;
+
+    FppkgCheck:=CheckFPPkgCheckBox.Checked;
+    debugln(['TIdeStartupFrame.WriteSettings FppkgCheck=',FppkgCheck,' ',CheckFPPkgCheckBox.Checked]);
   end;
 end;
 
