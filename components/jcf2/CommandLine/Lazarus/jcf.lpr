@@ -29,7 +29,6 @@ See http://www.gnu.org/licenses/gpl.html
 uses
   SysUtils,
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
-  JcfSystemUtils in '..\..\Utils\JcfSystemUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
   FileConverter in '..\..\ReadWrite\FileConverter.pas',
   ConvertTypes in '..\..\ReadWrite\ConvertTypes.pas',

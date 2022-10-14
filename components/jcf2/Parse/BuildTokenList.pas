@@ -110,8 +110,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils, JcfSystemUtils,
-  JcfRegistrySettings, ParseError;
+  JcfStringUtils, JcfRegistrySettings, ParseError;
 
 const
   CurlyLeft =  '{'; //widechar(123);
@@ -120,8 +119,8 @@ const
 function CheckMultiByte(const pcChar: char): boolean;
 begin
   Result := False;
-  if GetRegSettings.CheckMultiByteChars then
-    Result := IsMultiByte(pcChar);
+//  if GetRegSettings.CheckMultiByteChars then
+//    Result := IsMultiByte(pcChar);  //IsMultiByte(pcChar)-->Result := IsDBCSLeadByte(Byte(pcChar));
 end;
 
 function CharIsOctDigit(const c: Char): Boolean;

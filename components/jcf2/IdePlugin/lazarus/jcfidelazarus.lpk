@@ -492,10 +492,6 @@
         <UnitName Value="IntList"/>
       </Item>
       <Item>
-        <Filename Value="..\..\Utils\JcfFontSetFunctions.pas"/>
-        <UnitName Value="JcfFontSetFunctions"/>
-      </Item>
-      <Item>
         <Filename Value="..\..\Utils\JcfHelp.pas"/>
         <UnitName Value="JcfHelp"/>
       </Item>
@@ -726,10 +722,6 @@
       <Item>
         <Filename Value="..\..\Utils\JcfStringUtils.pas"/>
         <UnitName Value="JcfStringUtils"/>
-      </Item>
-      <Item>
-        <Filename Value="..\..\Utils\JcfSystemUtils.pas"/>
-        <UnitName Value="JcfSystemUtils"/>
       </Item>
       <Item>
         <Filename Value="..\..\Utils\JcfUnicodeFiles.pas"/>

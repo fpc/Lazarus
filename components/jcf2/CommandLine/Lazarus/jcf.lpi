@@ -75,7 +75,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="122">
+    <Units Count="121">
       <Unit0>
         <Filename Value="jcf.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -560,14 +560,10 @@
         <IsPartOfProject Value="True"/>
       </Unit119>
       <Unit120>
-        <Filename Value="../../Utils/JcfSystemUtils.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit120>
-      <Unit121>
         <Filename Value="../../Ui/jcfuitools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUiTools"/>
-      </Unit121>
+      </Unit120>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

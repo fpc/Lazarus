@@ -7,8 +7,7 @@ object ExceptionDialog: TExceptionDialog
   Caption = 'JCF Exception'
   ClientHeight = 180
   ClientWidth = 420
-  OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object mExceptionMessage: TMemo
     Left = 6
     Height = 133

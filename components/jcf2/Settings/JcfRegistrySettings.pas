@@ -190,7 +190,7 @@ implementation
 
 uses
   { jcf }
-  JcfStringUtils, JcfSystemUtils, JcfMiscFunctions, JcfUiTools
+  JcfStringUtils, JcfMiscFunctions, JcfUiTools
   {$ifndef COMMAND_LINE}
    ,lclintf  //< OpenDocument
   {$endif}
@@ -505,7 +505,7 @@ function TJCFRegistrySettings.LogDirectory: string;
 begin
   case feLogPlace of
     eLogTempDir:
-      Result := GetWindowsTempFolder;
+      Result := GetTempDir;
     eLogAppDir:
       Result := ExtractFileDir(ParamStr(0));
     eLogSpecifiedDir:

@@ -43,7 +43,6 @@ type
   TExceptionDialog = class(TForm)
     BtnPanel: TButtonPanel;
     mExceptionMessage: TMemo;
-    procedure FormCreate(Sender: TObject);
   private
   public
     procedure DisplayException(const pE: Exception);
@@ -59,7 +58,7 @@ implementation
 
 uses
   { local }
-  ParseError, JcfStringUtils, JcfFontSetFunctions, JcfUIConsts;
+  ParseError, JcfStringUtils, JcfUIConsts;
 
 {$R *.lfm}
 
@@ -138,11 +137,6 @@ begin
   end;
 
   ShowModal;
-end;
-
-procedure TExceptionDialog.FormCreate(Sender: TObject);
-begin
-  SetObjectFontToSystemFont(Self);
 end;
 
 end.

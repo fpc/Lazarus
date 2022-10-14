@@ -57,10 +57,6 @@ procedure RestoreCursorUI;
 begin
 end;
 
-procedure ShowParseTreeUI;
-begin
-end;
-
 procedure ShowParseTreeUI(const pcRoot: TParseTreeNode);
 begin
 end;
