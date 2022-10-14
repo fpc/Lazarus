@@ -1625,7 +1625,8 @@ resourcestring
   dlgProjectToOpenOrCreate = 'Project to Open or Create';
   dlgQOpenLastPrj = 'Open last project and packages at start';
   dlgNewProjectType = 'New Project Type';
-  lisQuickCheckFppkgConfigurationAtStart = 'Quick check fppkg configuration at'
+  lisInitialChecks = 'Initial Checks';
+  lisQuickCheckFppkgConfigurationAtStart = 'Quick check Fppkg configuration at'
     +' start';
 
   // open-dialog filters

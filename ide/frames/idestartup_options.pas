@@ -122,6 +122,7 @@ begin
       ProjectTypeCB.Items.AddObject(pd.GetLocalizedName, pd);
   end;
 
+  divInitialChecks.Caption := lisInitialChecks;
   CheckFPPkgCheckBox.Caption:=lisQuickCheckFppkgConfigurationAtStart;
 end;
 
