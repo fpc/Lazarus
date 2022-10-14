@@ -11189,6 +11189,10 @@ msgstr "Parâmetros herdados"
 msgid "Inherited project component"
 msgstr "Componente projeto herdado"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Inicializar variável local"
@@ -17410,6 +17414,10 @@ msgstr "Abrir projeto &recente"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "&Exibir projetos de exemplo"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

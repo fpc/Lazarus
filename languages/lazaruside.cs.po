@@ -11237,6 +11237,10 @@ msgstr "Zděděné parametry"
 msgid "Inherited project component"
 msgstr "Zděděné komponenty projektu"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Inicializovat místní proměnnou"
@@ -17485,6 +17489,10 @@ msgstr "Otevřít nedávný projekt"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Prohlížet ukázkové projekty"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

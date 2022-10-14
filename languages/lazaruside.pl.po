@@ -11347,6 +11347,10 @@ msgstr "Parametry:"
 msgid "Inherited project component"
 msgstr "Inherited"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 #, fuzzy
 msgid "Initialize Local Variable"
@@ -17609,6 +17613,10 @@ msgstr "Otwórz ostatnio otwarty projekt"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Pokaż przykładowe proj&ekty"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 #, fuzzy

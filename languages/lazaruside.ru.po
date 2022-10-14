@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-09-22 02:28+0300\n"
+"PO-Revision-Date: 2022-10-15 01:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11150,6 +11150,10 @@ msgstr "Унаследованные параметры"
 msgid "Inherited project component"
 msgstr "Унаследованный от компонента проекта"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr "Начальные проверки"
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Инициализация локальной переменной"
@@ -17367,6 +17371,10 @@ msgstr "Открыть &недавний проект"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Просмотреть пр&имеры проектов"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr "Проводить быструю проверку настройки Fppkg при запуске"
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

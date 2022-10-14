@@ -11139,6 +11139,10 @@ msgstr "Periytyvät parametrit"
 msgid "Inherited project component"
 msgstr "Periytyvä projektin komponentti"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Alusta paikallinen muuttuja"
@@ -17291,6 +17295,10 @@ msgstr "Avaa &edellinen projekti"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Selaa &esimerkkiprojekteja"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

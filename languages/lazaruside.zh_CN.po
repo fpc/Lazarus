@@ -11215,6 +11215,10 @@ msgstr "继承的参数"
 msgid "Inherited project component"
 msgstr "继承工程组件"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "初始化局部变量"
@@ -17419,6 +17423,10 @@ msgstr "打开最近工程(&R)"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "查看示例工程(&E)"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

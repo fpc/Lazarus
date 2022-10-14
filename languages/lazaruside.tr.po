@@ -11120,6 +11120,10 @@ msgstr "Devralınan parametreler"
 msgid "Inherited project component"
 msgstr "Devralınan proje bileşeni"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Yerel Değişken Başlat"
@@ -17293,6 +17297,10 @@ msgstr "&En son Projeyi aç"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "&Örnek Projeleri gör"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

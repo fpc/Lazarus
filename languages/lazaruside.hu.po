@@ -11179,6 +11179,10 @@ msgstr "Örökölt paraméterek"
 msgid "Inherited project component"
 msgstr "Örökölt projekt komponens"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Helyi változó előkészítése"
@@ -17403,6 +17407,10 @@ msgstr "Legutóbbi projekt megnyitása"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Példa projektek megjelenítése"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"

@@ -11323,6 +11323,10 @@ msgstr "Paveldėti parametrai"
 msgid "Inherited project component"
 msgstr "Paveldėta projekto komponentė"
 
+#: lazarusidestrconsts.lisinitialchecks
+msgid "Initial Checks"
+msgstr ""
+
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
 msgstr "Inicializuoti vietinį kintamąjį"
@@ -17636,6 +17640,10 @@ msgstr "Atverti pas&kiausiąjį projektą"
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View &Example Projects"
 msgstr "Rodyti pavy&zdžių projektus"
+
+#: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
+msgid "Quick check Fppkg configuration at start"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
