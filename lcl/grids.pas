@@ -120,8 +120,10 @@ type
   TGridOptions = set of TGridOption;
 
   TGridOption2 = (
-    goScrollToLastCol,  // Allow scrolling to last column (so that last column can be LeftCol)
-    goScrollToLastRow   // Allow scrolling to last row (so that last row can be TopRow)
+    goScrollToLastCol,   // Allow scrolling to last column (so that last column can be LeftCol)
+    goScrollToLastRow,   // Allow scrolling to last row (so that last row can be TopRow)
+    goEditorParentColor, // Set editor's ParentColor to True
+    goEditorParentFont   // Set editor's ParentFont to True
   );
   TGridOptions2 = set of TGridOption2;
 
@@ -1980,6 +1982,9 @@ uses
   {$WARN IMPLICIT_STRING_CAST OFF}
   {$WARN IMPLICIT_STRING_CAST_LOSS OFF}
 {$ENDIF}
+
+type
+  TWinControlAccess = Class(TWinControl); //used in TCustomGrid.DoEditorShow
 
 const
   MULTISEL_MODIFIER = {$IFDEF Darwin}ssMeta{$ELSE}ssCtrl{$ENDIF};
@@ -7383,6 +7388,7 @@ begin
   Editor.Visible:=False;
   {$ifdef dbgGrid}DebugLnExit('grid.DoEditorHide [',Editor.ClassName,'] END');{$endif}
 end;
+
 procedure TCustomGrid.DoEditorShow;
 var
   ParentChanged: Boolean;
@@ -7409,6 +7415,14 @@ begin
     else
       FStringEditor.Alignment:=taLeftJustify;
   end;
+  TWinControlAccess(FEditor).ParentColor := (goEditorParentColor in Options2);
+  TWinControlAccess(FEditor).ParentFont := (goEditorParentFont in Options2);
+  if (FEditor is TCompositeCellEditor) then
+  begin
+    TWinControlAccess(TCompositeCellEditor(FEditor).ActiveControl).ParentColor := (goEditorParentColor in Options2);
+    TWinControlAccess(TCompositeCellEditor(FEditor).ActiveControl).ParentFont := (goEditorParentFont in Options2);
+  end;
+
   Editor.Visible:=True;
   if Focused and Editor.CanFocus then
     Editor.SetFocus;
