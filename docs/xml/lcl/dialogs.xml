@@ -5149,7 +5149,7 @@ Use tfExpandFooterArea to position the expanded text in the footer area.
 </p>
 <p>
 Use ExpandedText to set the content in the collapsible area on the Task 
-dialog. Use tfExpandFooterArea in the FLags property to position the expanded 
+dialog. Use tfExpandFooterArea in the Flags property to position the expanded 
 text in the footer area.
 </p>
 </descr>
