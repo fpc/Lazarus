@@ -31,7 +31,7 @@ The lcl_fullversion constant contains all version numbers, formatted with 2
 digits and concatenated (leading zeros are omitted).
 </p>
 <p>
-For example, if the LCL version is 2.0.12.6, lcl_fullversion will be 2001206.
+For example, if the LCL version is 2.2.4.1, lcl_fullversion will be 2020401.
 </p>
 </descr>
 <seealso>lcl_version</seealso>
@@ -41,7 +41,7 @@ For example, if the LCL version is 2.0.12.6, lcl_fullversion will be 2001206.
 <short>LCL major version.</short>
 <descr>
 <p>
-Given a complete version string like 2.2.0, the lcl_major constant
+Given a complete version string like 2.2.4, the lcl_major constant
 contains the first number (2).
 </p>
 </descr>
@@ -52,7 +52,7 @@ contains the first number (2).
 <short>LCL minor version.</short>
 <descr>
 <p>
-Given a version string like 2.2.0, the lcl_minor constant
+Given a version string like 2.2.4, the lcl_minor constant
 contains the second number (2).
 </p>
 </descr>
@@ -63,8 +63,8 @@ contains the second number (2).
 <short>LCL release number.</short>
 <descr>
 <p>
-Given a version string like 2.2.0, the lcl_release constant
-contains the third number (0).
+Given a version string like 2.2.4, the lcl_release constant
+contains the third number (4).
 </p>
 </descr>
 <seealso>lcl_version</seealso>
@@ -74,10 +74,9 @@ contains the third number (0).
 <short>LCL patch version.</short>
 <descr>
 <p>
-Given a complete version string like 2.2.0.1, the lcl_patch constant
+Given a complete version string like 2.2.4.1, the lcl_patch constant
 contains the last number (1). If there is no fourth number, for example when 
-the
-version string is 2.2.0, then lcl_patch is 0.
+the version string is 2.2.4, then lcl_patch is 0.
 </p>
 </descr>
 <seealso>lcl_version</seealso>
@@ -85,7 +84,7 @@ version string is 2.2.0, then lcl_patch is 0.
 
 <element name="lcl_version">
 <short>LCL version string.</short>
-<descr>Contains the LCL version string, e.g. 2.2.0.</descr>
+<descr>Contains the LCL version string, e.g. 2.2.4.</descr>
 <seealso/>
 </element>
 
