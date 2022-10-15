@@ -60,7 +60,7 @@ to store input or output values for the dialog, like:
 <ul>
 <li>FileName</li>
 <li>Filter</li>
-<li>IntialDir</li>
+<li>InitialDir</li>
 <li>Title</li>
 </ul>
 <p>
