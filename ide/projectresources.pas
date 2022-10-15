@@ -848,7 +848,7 @@ procedure TProjectResources.UpdateLrsCodeBuffer;
 var
   CodeBuf: TCodeBuffer;
 begin
-  if not (FLrsIncludeAllowed or HasLazarusResources) then Exit;
+  if not (FLrsIncludeAllowed and HasLazarusResources) then Exit;
   CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
   CodeBuf.Source := FLazarusResources.Text;
 end;
