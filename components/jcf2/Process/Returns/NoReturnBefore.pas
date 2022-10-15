@@ -56,7 +56,8 @@ uses SourceToken, TokenUtils, Tokens, ParseTreeNodeType,
 
 function HasNoReturnBefore(const pt: TSourceToken): boolean;
 const
-  NoReturnTokens: TTokenTypeSet    = [ttAssign, ttColon, ttSemiColon, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
+  // add ttTo for "reference to procedure/function"
+  NoReturnTokens: TTokenTypeSet    = [ttAssign, ttColon, ttSemiColon, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign, ttTo];
   ProcNoReturnWords: TTokenTypeSet = [ttThen, ttDo];
 var
   lcPrev: TParseTreeNode;
@@ -65,6 +66,13 @@ begin
 
   if pt = nil then
     exit;
+
+  if pt.TokenType=ttReference then
+    exit(true);
+
+  // referencce to procedure/function
+  if (pt.TokenType in [ttFunction,ttProcedure]) and (pt.PriorSolidTokenType=ttTo) then
+    exit(true);
 
   //var
   //  Test : function: Integer; // No New Line

@@ -76,8 +76,9 @@ end;
 
 function TNoReturnAfter.NeedsNoReturn(const pt: TSourceToken): boolean;
 const
+  // add ttTo for "reference to procedure/function"
   NoReturnWords: TTokenTypeSet = [ttProcedure, ttFunction,
-    ttConstructor, ttDestructor, ttProperty, ttGoto, ttGeneric];
+    ttConstructor, ttDestructor, ttProperty, ttGoto, ttGeneric, ttTo];
 var
   lcSetReturns: TSetReturns;
   lcNext, lcNext2: TSourceToken;

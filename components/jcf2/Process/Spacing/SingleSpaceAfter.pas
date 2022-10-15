@@ -141,6 +141,11 @@ begin
 
   if (pt.TokenType in SingleSpaceAfterWords) then
   begin
+    // reference to procedure/function(param1:typeparam1)
+    // Anonymous Functions   procedure(param1:typeparam1)
+    if (pt.TokenType in [ttProcedure,ttFunction]) and (ptNext.TokenType in
+      [ttOpenBracket, ttSemiColon]) then
+      exit(false);
     { 'procedure' and 'function' in proc type def don't have space after, e.g.
       type
         TFredProc = procedure(var psFred: integer); }

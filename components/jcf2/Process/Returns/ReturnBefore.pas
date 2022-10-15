@@ -382,8 +382,12 @@ begin
   Result := False;
   lcSourceToken := TSourceToken(pcToken);
   lcNext := lcSourceToken.NextToken;
-  if lcNext = nil then
+  if (lcSourceToken=nil) or (lcNext = nil) then
     exit;
+
+  //reference to procedure/function
+  if (lcSourceToken.TokenType in [ttProcedure,ttFunction]) and (lcSourceToken.PriorSolidTokenType=ttTo) then
+    exit(false);
 
   liReturnsNeeded := 0;
 

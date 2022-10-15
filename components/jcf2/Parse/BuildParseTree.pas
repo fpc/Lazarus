@@ -206,8 +206,8 @@ type
     procedure RecogniseInline;
     procedure RecogniseInlineItem;
 
-    procedure RecogniseFunctionDecl(const pbAnon: boolean);
-    procedure RecogniseProcedureDecl(const pbAnon: boolean);
+    procedure RecogniseFunctionDecl(const pbAnon: boolean;pbIsNamedAnonymous:boolean=false);
+    procedure RecogniseProcedureDecl(const pbAnon: boolean;pbIsNamedAnonymous:boolean=false);
     procedure RecogniseSquareBracketDir;
     procedure RecogniseConstructorDecl;
     procedure RecogniseDestructorDecl;
@@ -2859,7 +2859,7 @@ begin
 
   CheckSpecialize(True);
   lt := fcTokenList.FirstSolidTokenType;
-  if AnonymousMethodNext then
+  if lt in [ttProcedure, ttFunction] then
   begin
     RecogniseAnonymousMethod;
   end
@@ -3043,16 +3043,25 @@ end;
 procedure TBuildParseTree.RecogniseAnonymousMethod;
 var
   lt: TTokenType;
+  lIsNamedAnonymous:boolean;
 begin
+  {// this code compiles without error (anonymous Method with name?? )
+   i := function foo:integer
+      begin
+         foo:= 4711;
+      end;
+  }
+  lIsNamedAnonymous := not AnonymousMethodNext;
+
   lt := fcTokenList.FirstSolidTokenType;
 
   PushNode(nAnonymousMethod);
 
   case lt of
     ttProcedure:
-      RecogniseProcedureDecl(true);
+      RecogniseProcedureDecl(true,lIsNamedAnonymous);
     ttFunction:
-      RecogniseFunctionDecl(true);
+      RecogniseFunctionDecl(true,lIsNamedAnonymous);
   else
     RaiseParseError('Unexpected token in RecogniseAnonymousMethod', fcTokenList.FirstSolidToken);
   end;
@@ -3446,6 +3455,8 @@ begin
     // empty statement
     // this gets doen later in common code Recognise(ttSemicolon);
   end
+  else if lt in[ttProcedure,ttFunction] then  //anonymous function or procedure
+      RecogniseExpr(True)
   else
   begin
     RaiseParseError('Expected simple statement', fcTokenList.FirstSolidToken);
@@ -4074,9 +4085,10 @@ begin
     result := False;
 end;
 
-procedure TBuildParseTree.RecogniseProcedureDecl(const pbAnon: boolean);
+procedure TBuildParseTree.RecogniseProcedureDecl(const pbAnon: boolean;pbIsNamedAnonymous:boolean=false);
 var
   lcTop: TParseTreeNode;
+  lbAnon:boolean;
 begin
   { ProcedureDecl -> ProcedureHeading ';' [Directive] Block ';'
 
@@ -4085,7 +4097,10 @@ begin
   }
   PushNode(nProcedureDecl);
 
-  RecogniseProcedureHeading(pbAnon, False);
+  lbAnon:=pbAnon;
+  if pbIsNamedAnonymous then
+    lbAnon:=false;
+  RecogniseProcedureHeading(lbAnon, False);
 
   { the ';' is ommited by lazy programmers in some rare occasions}
   if fcTokenList.FirstSolidTokenType = ttSemicolon then
@@ -4115,15 +4130,19 @@ begin
   PopNode;
 end;
 
-procedure TBuildParseTree.RecogniseFunctionDecl(const pbAnon: boolean);
+procedure TBuildParseTree.RecogniseFunctionDecl(const pbAnon: boolean;pbIsNamedAnonymous:boolean=false);
 var
   lcTop: TParseTreeNode;
+  lbAnon:boolean;
 begin
   // ProcedureDecl -> FunctionHeading ';' [Directive] Block ';'
 
   PushNode(nFunctionDecl);
 
-  RecogniseFunctionHeading(pbAnon, False);
+  lbAnon:=pbAnon;
+  if pbIsNamedAnonymous then
+    lbAnon:=false;
+  RecogniseFunctionHeading(lbAnon, False);
   { the ';' is ommited by lazy programmers in some rare occasions}
   if fcTokenList.FirstSolidTokenType = ttSemicolon then
     Recognise(ttSemicolon);
@@ -4332,17 +4351,25 @@ begin
     'out' with a comma, colon or ')' directly after is not a prefix, it is a param name
     if another name follows it is a prefix
   }
-
-  if fcTokenList.FirstSolidTokenType in PARAM_PREFIXES then
-    Recognise(PARAM_PREFIXES)
-  else if fcTokenList.FirstSolidTokenType = ttOut then
+  if fcTokenList.FirstSolidTokenType in [ttProcedure, ttFunction] then
   begin
-    if IsIdentifierToken(fcTokenList.SolidToken(2), idAllowDirectives) then
-      Recognise(ttOut);
+    RecogniseAnonymousMethod;
+    //parameters to anonymous procedure/function
+    if fcTokenList.FirstSolidTokenType=ttOpenBracket then
+      RecogniseActualParams;
+  end
+  else
+  begin
+    if fcTokenList.FirstSolidTokenType in PARAM_PREFIXES then
+      Recognise(PARAM_PREFIXES)
+    else if fcTokenList.FirstSolidTokenType = ttOut then
+    begin
+      if IsIdentifierToken(fcTokenList.SolidToken(2), idAllowDirectives) then
+        Recognise(ttOut);
+    end;
+
+    RecogniseParameter;
   end;
-
-  RecogniseParameter;
-
   PopNode;
 end;
 
@@ -4376,6 +4403,13 @@ begin
       Recognise(ttArray);
       Recognise(ttOf);
       lbArray := True;
+    end
+    else if fcTokenList.FirstSolidTokenType in [ttProcedure, ttFunction] then
+    begin
+      RecogniseAnonymousMethod;
+      //parameters to anonymous procedure/function
+      if fcTokenList.FirstSolidTokenType=ttOpenBracket then
+        RecogniseActualParams;
     end;
 
     // type is optional in params ie procedure foo(var pp);
@@ -6037,6 +6071,14 @@ begin
   CheckSpecialize(True);
   lc := fcTokenList.FirstSolidToken;
   CheckNilInstance(lc, fcRoot.LastLeaf);
+  if lc.TokenType in [ttProcedure, ttFunction] then
+  begin
+    RecogniseAnonymousMethod;
+    //parameters to anonymous procedure/function
+    if fcTokenList.FirstSolidTokenType=ttOpenBracket then
+      RecogniseActualParams;
+    exit;
+  end;
   { all kinds of reserved words can sometimes be param names
     thanks to COM and named params
     See LittleTest43.pas }
@@ -6050,10 +6092,6 @@ begin
     if lc.TokenType = ttArray then
     begin
       RecogniseArrayType;
-    end
-    else if AnonymousMethodNext then
-    begin
-      RecogniseAnonymousMethod;
     end
     else
     begin
@@ -6105,19 +6143,10 @@ begin
 end;
 
 function TBuildParseTree.AnonymousMethodNext: boolean;
-var
-  lc, lcNext: TSourceToken;
 begin
   Result := False;
-  lc := fcTokenList.FirstSolidToken;
-  CheckNilInstance(lc, fcRoot.LastLeaf);
-
-  if lc.TokenType in [ttProcedure, ttFunction] then
-  begin
-    lcNext := fcTokenList.SolidToken(2);
-    if lcNext <> nil then
-      Result := (lcNext.TokenType in [ttOpenBracket, ttColon]);
-  end;
+  if fcTokenList.FirstSolidTokenType in [ttProcedure, ttFunction] then
+    Result := (fcTokenList.SolidTokenType(2) in [ttOpenBracket, ttColon, ttBegin]);
 end;
 
 procedure TBuildParseTree.CheckEnumeratorToken(aCheckTwoTokens:boolean);

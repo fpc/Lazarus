@@ -413,6 +413,9 @@ begin
     liIndentCount := pt.Nestings.GetLevel(nlBlock);
     if liIndentCount > 0 then
     begin
+      if pt.HasParentNode(nAnonymousMethod)  and not (pt.TokenType in ProcedureWords) then
+        Dec(liIndentCount);
+
       // outdent keywords that start and end the block
       if pt.TokenType in BlockOutdentWords then
       begin
