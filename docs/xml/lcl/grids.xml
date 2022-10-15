@@ -258,6 +258,7 @@ constant which defines the default set of options for LCL grid controls.
 <seealso>
 <link id="TGridOptions"/>
 <link id="TGridOptions2"/>
+<link id="TGridOption2"/>
 <link id="DefaultGridOptions"/>
 <link id="TCustomGrid.Options"/>
 <link id="TCustomGrid.Options2"/>
@@ -424,10 +425,21 @@ TGridOptions is the type used for the <var>TCustomGrid.Options</var> property.
 
 <element name="TGridOption2">
 <short>
-Represents grid options introduced in Version 2 of grid controls.
+Represents grid options introduced in Version 2 (or higher) of grid controls.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TGridOption2</var> is the type used to implement the Options2 property 
+in TCustomGrid and descendent classes.
+</p>
+</descr>
+<version>
+Modified in version 2.4 to include goEditorParentColor and goEditorParentFont 
+options.
+</version>
+<seealso>
+<link id="TCustomGrid.Options2"/>
+</seealso>
 </element>
 <element name="TGridOption2.goScrollToLastCol">
 <short>
@@ -439,6 +451,16 @@ Allows scrolling to last column (so that last column can be leftcol).
 Allows scrolling to last row (so the last row can also be TopRow).
 </short>
 </element>
+<element name="TGridOption2.goEditorParentColor">
+<short>
+Sets the color in a cell editor to the color for the parent control.
+</short>
+</element>
+<element name="TGridOption2.goEditorParentFont">
+<short>
+Sets the font in a cell editor to the font for the parent control.
+</short>
+</element>
 
 <element name="TGridOptions2">
 <short>
@@ -446,9 +468,9 @@ Set type used to store enabled grid options from the TGridOption2 enumeration.
 </short>
 <descr>
 <p>
-TGridOptions2 is the type used to implement the Options2 property in 
-TCustomGrid. The features represented by the values in the set are enabled in 
-a grid control when present.
+<var>TGridOptions2</var> is the type used to implement the Options2 property 
+in <var>TCustomGrid</var>. The features represented by the values in the set 
+are enabled in a grid control when present.
 </p>
 <p>
 See TGridOption2 for the available enumeration values and their meanings.
@@ -622,7 +644,8 @@ Grid is selecting a row, column, or cell after keyboard or mouse activity.
 
 <element name="TGridZone">
 <short>
-Enumerated type with values which represent a zones or area on a grid control.
+Enumerated type with values which represent the zones or areas on a grid 
+control.
 </short>
 <descr>
 <p>
@@ -16869,7 +16892,8 @@ movements to change the active selection in the grid control.
 
 <element name="TCustomGrid.Options">
 <short>
-Contains the set of optional features and/or behaviors enabled for the grid.
+Contains the set of optional features and/or behaviors enabled for the grid 
+control.
 </short>
 <descr>
 <p>
@@ -16898,10 +16922,81 @@ control.
 
 <element name="TCustomGrid.Options2">
 <short>
-Contains options for scrolling behavior enabled in the grid control.
+Contains additional options for scrolling and editor behavior enabled in the 
+grid control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Options2</var> is a <var>TGridOptions2</var> property which contains 
+options which control scrolling or cell editors in the grid control. It is a 
+set type which contains zero (0) or more values from the TGridOption2 
+enumeration. 
+</p>
+<p>
+See TGridOption2 for the values allowed in the set type. The default value 
+for the property is defined in the DefaultGridOptions2 constant (it is an 
+empty set).
+</p>
+<p>
+The set values can be included or excluded at design-time using the object 
+inspector in the Lazarus IDE. They can also be included or excluded in the 
+set at run-time using program code.
+</p>
+<p>
+Values present in the set cause the corresponding behaviors to be enabled in 
+the control at run-time. For example:
+</p>
+<dl>
+<dt>goScrollToLastCol</dt>
+<dd>
+Allows columns to be scrolled until the last column is the LeftCol for the 
+grid control.
+</dd>
+<dt>goScrollToLastRow</dt>
+<dd>
+Allows rows to be scrolled until the last row is the TopRow for the grid 
+control.
+</dd>
+<dt>goEditorParentColor</dt>
+<dd>
+Sets the color in a cell editor to the color in the parent control (the 
+TCustomGrid instance). Changing the set member does not affect an existing 
+cell editor already visible on the control. The change is applied when the 
+next cell editor is created and displayed.
+</dd>
+<dt>goEditorParentFont</dt>
+<dd>
+Sets the font in a cell editor to the font in the parent control (the 
+TCustomGrid instance). Changing the set member does not affect an existing 
+cell editor already visible on the control. The change is applied when the 
+next cell editor is created, configured, and/or displayed.
+</dd>
+</dl>
+<p>
+Use Options to control the primary features and behaviors in the grid 
+control.
+</p>
+<p>
+Use MouseWheelOption to control the mouse wheel behavior in the control.
+</p>
+</descr>
+<version>
+Modified in version 2.4 to include goEditorParentColor and goEditorParentFont 
+options.
+</version>
+<seealso>
+<link id="TCustomGrid.Options"/>
+<link id="TCustomGrid.MouseWheelOption"/>
+<link id="TCustomGrid.CalcMaxTopLeft"/>
+<link id="TCustomGrid.GetSBRanges"/>
+<link id="TCustomGrid.GetSBVisibility"/>
+<link id="TCustomGrid.SaveGridOptions"/>
+<link id="TCustomGrid.LoadGridOptions"/>
+<link id="TCustomGrid.DoEditorShow"/>
+<link id="TGridOptions2"/>
+<link id="TGridOption2"/>
+<link id="DefaultGridOptions2"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.RangeSelectMode">
