@@ -1937,7 +1937,7 @@ BeginDoc method has been called.
 </p>
 <remark>
 In <var>TPrinter</var>, DoBeginDoc has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -1965,7 +1965,7 @@ incrementing the value in <var>PageNumber</var>.
 </p>
 <remark>
 In <var>TPrinter</var>, DoNewPage has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -1983,7 +1983,7 @@ incrementing the <var>PageNumber</var>.
 </p>
 <remark>
 In <var>TPrinter</var>, DoBeginPage has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -2004,7 +2004,7 @@ when <var>RawMode</var> is <b>False</b>.
 </p>
 <remark>
 In <var>TPrinter</var>, DoEndPage has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -2025,7 +2025,7 @@ halted by calling the <var>Abort</var> method.
 </p>
 <remark>
 In <var>TPrinter</var>, DoEndDoc has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -2050,7 +2050,7 @@ before setting values in <var>PrinterFlags</var>.
 </p>
 <remark>
 In <var>TPrinter</var>, DoAbort has an empty implementation. It must be 
-overridden in a desendent class to perform actions needed for the operating 
+overridden in a descendent class to perform actions needed for the operating 
 system / widgetset / printer-related technology used in the implementation.
 </remark>
 </descr>
@@ -3713,7 +3713,7 @@ indicates if the print device is enabled and ready to print.
 </p>
 <remark>
 In <var>TPrinter</var>, the property value is always <b>True</b>. The read 
-access specifier (<var>GetCanPrint</var>) can be overridden in a descendnet 
+access specifier (<var>GetCanPrint</var>) can be overridden in a descendent 
 class to use the facilities for the operating system /  widgetset / 
 printer-related technology in the implementation.
 </remark>
