@@ -1333,7 +1333,7 @@ edit control.
 </p>
 <p>
 If the value in Key is handled in the method, Key is set to VK_UNKNOWN (0). 
-Otherwise, the inherited methiod is called to handle the Key and Shift 
+Otherwise, the inherited method is called to handle the Key and Shift 
 modifier.
 </p>
 </descr>
