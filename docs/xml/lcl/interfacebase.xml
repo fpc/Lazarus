@@ -192,7 +192,7 @@ Specifies an event handler signalled when a child process is exited.
 </short>
 <descr>
 <p>
-<var>TChildExitEvent</var> is an object precedure type which specifies an 
+<var>TChildExitEvent</var> is an object procedure type which specifies an 
 event handler signalled when a child process is exited in a widgetset object. 
 The parameters provide a pointer to the event data, the reason the process 
 was exited, and a unique identifier for the event.
@@ -6145,8 +6145,8 @@ is overridden in descendent class to implement the platform-specific dialog.
 The implementation in <var>TWidgetSet</var> is used as a fallback when no 
 other mechanism is available. It uses the routine assigned to 
 <var>QuestionDialogFunction</var> to execute the dialog and capture the modal 
-result value. No default actions are peformed when QuestionDialogFunction has 
-not been assigned (contains <b>Nil</b>).
+result value. No default actions are performed when QuestionDialogFunction 
+has not been assigned (contains <b>Nil</b>).
 </p>
 </descr>
 <seealso/>
