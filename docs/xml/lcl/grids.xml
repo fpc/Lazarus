@@ -15641,14 +15641,19 @@ valid column index for the grid control.
 <p>
 MoveExtend is called to move the selection to the cell at the coordinates in 
 Row and Col. The cell editor is also retrieved (when available) and is 
-displayed.
-</p>
-<p>
-MoveExtend is called to move the selection to the cell at the coordinates in 
-Row and Col. The cell editor is also retrieved (when available) and is 
-displayed.
+displayed. The Click method is called to signal the OnClick event handler 
+(when assigned) if the cell is not already selected or displaying a cell 
+editor.
 </p>
 </descr>
+<seealso>
+<link id="TCustomGrid.Row"/>
+<link id="TCustomGrid.CheckLimitsWithError"/>
+<link id="TCustomGrid.MoveExtend"/>
+<link id="TCustomGrid.Click"/>
+<link id="#lcl.controls.TControl.Click"/>
+<link id="#lcl.controls.TControl.OnClick"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.ColCount">
@@ -15732,8 +15737,26 @@ grid.
 
 <element name="TCustomGrid.ColSizingCursor">
 <short>Cursor shape displayed when a column is resized.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ColSizingCursor</var> is a <var>TCursor</var> property with the cursor 
+displayed when the horizontal size for a column is changed. The default value 
+for the property is defined in the <var>crHSplit</var> constant. 
+</p>
+<p>
+It is displayed when a mouse down event causes the grid cursor state to be 
+changed to the value gcsColWidthChanging.
+</p>
+<p>
+Use RowSizingCursor to specify the cursor shape displayed when a row height 
+is changed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.RowSizingCursor"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="#lcl.controls.crHSplit">crVSplit</link>
+</seealso>
 </element>
 
 <element name="TCustomGrid.ColumnClickSorts">
@@ -16219,8 +16242,8 @@ grid.
 <descr>
 <p>
 <var>FastEditing</var> is a <var>Boolean</var> property which indicates if 
-cell editing initialized by a KeyDown message instead of a navigation key is 
-used in the grid control. The value in FastEditing is used when a 
+cell editing initialized by a KeyDown message instead of by a navigation key 
+is used in the grid control. The value in FastEditing is used when a 
 TPickListCellEditor handles KeyDown messages.
 </p>
 <p>
@@ -16899,24 +16922,34 @@ control.
 <p>
 <var>Options</var> is a <var>TGridOptions</var> property used to store the 
 options enabled for the grid control. Values from the <var>TGridOptions</var> 
-enumeration are included in the set type to enable the features or behaviors.
+enumeration are included in the set type to enable specific features or 
+behaviors.
 </p>
 <p>
-For the complete list of available options and their usage, see <link 
-id="TGridOptions"/>.
+The set values can be included or excluded at design-time using the object 
+inspector in the Lazarus IDE. They can also be included or excluded in the 
+set at run-time using program code. The default value for the Options 
+property is defined in the <var>DefaultGridOptions</var> set constant.
 </p>
 <p>
-The default value for the Options is the <var>DefaultGridOptions</var> set.
+Values present in the set cause the corresponding features or behaviors to be 
+enabled in the control at run-time. For the complete list of available 
+options and their usage, see <link id="TGridOption"/>.
 </p>
 <p>
-Use <var>Options2</var> to set scrolling behaviors enabled for the grid 
-control.
+Use <var>Options2</var> to set scrolling or cell editor behaviors enabled for 
+the grid control.
+</p>
+<p>
+Use MouseWheelOption to control mouse wheel behavior in the grid control.
 </p>
 </descr>
 <seealso>
-<link id="TGridOptions"/>
-<link id="DefaultGridOptions"/>
 <link id="TCustomGrid.Options2"/>
+<link id="TCustomGrid.MouseWheelOption"/>
+<link id="TGridOptions"/>
+<link id="TGridOption"/>
+<link id="DefaultGridOptions"/>
 </seealso>
 </element>
 
@@ -17034,7 +17067,9 @@ RangeSelectMode is used in the implementation of methods like:
 </element>
 
 <element name="TCustomGrid.Row">
-<short>Row number for the selected grid cell.</short>
+<short>
+Row number for the selected grid cell.
+</short>
 <descr>
 <p>
 <var>Row</var> is an <var>Integer</var> property which contains the row index 
@@ -17045,15 +17080,24 @@ zero-based, and cannot exceed the value RowCount-1.
 Setting a new value for the property causes the values in Col and Row to be 
 validated against the ColCount and RowCount for the grid. Error checking is 
 used, and an exception may be raised if the new property value is not in the 
-limits for the control. The selected cell in the control is changed to the 
-new values in the Col and Row properties.
+limits for the control. The selected cell in the control is changed to (or 
+extended to) the new values in the Col and Row properties. The Click method 
+is called to signal the OnClick event handler (when assigned) if the cell is 
+not already selected or displaying a cell editor.
 </p>
 <p>
 Use Col to determine the column number for the currently selected cell in the 
 grid control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.Col"/>
+<link id="TCustomGrid.CheckLimitsWithError"/>
+<link id="TCustomGrid.MoveExtend"/>
+<link id="TCustomGrid.Click"/>
+<link id="#lcl.controls.TControl.Click"/>
+<link id="#lcl.controls.TControl.OnClick"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.RowCount">
@@ -17092,8 +17136,26 @@ Use Col and Row for the current cell selected in the control.
 
 <element name="TCustomGrid.RowSizingCursor">
 <short>Cursor shape displayed when the row height is resized.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>RowSizingCursor</var> is a <var>TCursor</var> property with the cursor 
+displayed when the vertical size for a row is changed. The default value for 
+the property is defined in the <var>crVSplit</var> constant. 
+</p>
+<p>
+It is displayed when a mouse down event causes the grid cursor state to be 
+changed to the value gcsRowHeightChanging.
+</p>
+<p>
+Use ColSizingCursor to specify the cursor shape displayed when a column width 
+is resized.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.ColSizingCursor"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="#lcl.controls.crVSplit">crVSplit</link>
+</seealso>
 </element>
 
 <element name="TCustomGrid.RowHeights">
@@ -17776,15 +17838,15 @@ Application developers can use the <var>OnSelection</var> and
 <var>OnBeforeSelection</var> events to react to focus changes.
 </p>
 </descr>
-<notes>
-<note>??? Component developers should use the ??? method instead.</note>
-</notes>
-
+<seealso>
+<link id="TCustomGrid.OnBeforeSelection"/>
+<link id="TCustomGrid.OnAfterSelection"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.OnSelectEditor">
 <short>
-Event handler signalled to select an Editor control for the current cell.
+Event handler signalled to select an Editor control for the current grid cell.
 </short>
 <descr>
 <p>
@@ -17836,8 +17898,26 @@ is updated.
 Event handler signalled to get the user-defined bitmap used for a check box 
 cell.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnUserCheckboxBitmap</var> is a <var>TUserCheckboxBitmapEvent</var> 
+property with the event handler used to get the user-specified bitmap drawn 
+for check box cell on the control. It is signalled from the 
+GetImageForCheckBox method (when assigned) with the control, column, row, and 
+check box state for the cell. Use the Bitmap argument to return the bitmap 
+image provided in the event handler routine.
+</p>
+<p>
+Use the OnUserCheckboxImage to retrieve an image list and index position with 
+the graphical representation for a specific check box state.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.GetImageForCheckBox"/>
+<link id="TCustomGrid.OnUserCheckBoxImage"/>
+<link id="TCustomGrid.DrawGridCheckboxBitmaps"/>
+<link id="TUserCheckboxBitmapEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.OnUserCheckboxImage">
@@ -17846,21 +17926,52 @@ Event handler signalled to get the user-defined image used for a check box
 cell.
 </short>
 <descr>
+<p>
+<var>OnUserCheckboxImage</var> is a <var>TUserCheckBoxImageEvent</var> 
+property with the event handler signalled to get a user-specified image list 
+and index position for a check box cell with a give state. It is signalled 
+from the GetImageForCheckBox method (when assigned) with the control, column, 
+row, and check box state for the cell. Use the ImageList and ImageIndex 
+arguments to return the image and position provided in the event handler 
+routine.
+</p>
+<p>
+Use the OnUserCheckboxBitmap event handler to get the check box image as a 
+TBitmap type.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.GetImageForCheckBox"/>
+<link id="TCustomGrid.OnUserCheckBoxBitmap"/>
+<link id="TCustomGrid.DrawGridCheckboxBitmaps"/>
+<link id="TUserCheckboxImageEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.OnValidateEntry">
 <short>Event handler signalled to perform validation for a cell value.</short>
 <descr>
 <p>
-<var>OnValidateEntry</var> is a <var>TValidateEntryEvent</var> which 
-implements the event handler signalled to perform validation for cells in the 
-<var>ValidateEntry</var> method.
+<var>OnValidateEntry</var> is a <var>TValidateEntryEvent</var> property with 
+the event handler signalled to perform validation for cells in the 
+<var>ValidateEntry</var> method. The OldValue argument contains the value 
+validated in the handler routine. Use the NewValue argument to return a 
+modified value from the handler routine.
+</p>
+<p>
+The handler can raise an Exception if needed. It is caught in the calling 
+routine (ValidateEntry), and forwarded to the HandleException method in the 
+Application singleton.
+</p>
+<p>
+Updated cell values are not validated if the event handler has not been 
+assigned.
 </p>
 </descr>
 <seealso>
 <link id="TCustomGrid.ValidateEntry"/>
+<link id="TValidateEntryEvent"/>
+<link id="#lcl.forms.TApplication.HandleException">TApplication.HandleException</link>
 </seealso>
 </element>
 
@@ -17937,12 +18048,23 @@ for the grid control.
 
 <element name="TCustomGrid.OnSaveColumn">
 <short>
-Event handler signalled when a column is saved in the SaveColumns method.
+Event handler signalled when an entry in Columns is saved to a configuration file using the SaveContent method.
 </short>
-<descr/>
+<descr>
+<p>
+The APath argument contains the XPath-like notation, including the 
+column identifier, used to access the column definition. For example: 
+</p>
+<code>
+'grid/design/columns/column1'
+</code>
+</descr>
 <seealso>
+<link id="TCustomGrid.SaveContent"/>
 <link id="TCustomGrid.SaveToFile"/>
 <link id="TCustomGrid.SaveToStream"/>
+<link id="TCustomGrid.DoSaveColumn"/>
+<link id="TSaveColumnEvent"/>
 </seealso>
 </element>
 
@@ -18510,13 +18632,42 @@ Updates the grid control when the value in a cell Editor is changed.
 </element>
 
 <element name="TCustomGrid.EndUpdate">
-<short>Finishes an update to the grid control.</short>
-<descr/>
-<seealso/>
+<short>
+Finishes an active update to the grid control.
+</short>
+<descr>
+<p>
+<var>EndUpdate</var> is a method used to complete an update started by 
+calling the <var>BeginUpdate</var> method. 
+</p>
+<p>
+EndUpdate decrements the internal update counter used in the control. When 
+the counter reaches 0, there are no other updates active for the control. If 
+ARefresh is set to True, the VisualChange method is called to update the 
+cached sizes for the control and Invalidate the control display area.
+</p>
+<p>
+BeginUpdate and EndUpdate are used to implement methods like:
+</p>
+<ul>
+<li>Assign</li>
+<li>AssignTo</li>
+<li>Sort</li>
+<li>ScrollToCell</li>
+<li>DoAutoAdjustLayout</li>
+<li>Clean</li>
+<li>LoadFromCSVStream</li>
+</ul>
+</descr>
+<seealso>
+<link id="TCustomGrid.BeginUpdate"/>
+<link id="TCustomGrid.VisualChange"/>
+<link id="TCustomGrid.Invalidate"/>
+</seealso>
 </element>
 <element name="TCustomGrid.EndUpdate.aRefresh">
 <short>
-<b>True</b> when the grid control needs to be redrawn in the method.
+<b>True</b> causes the grid control to be redrawn using Invalidate.
 </short>
 </element>
 
@@ -18646,8 +18797,26 @@ control.
 <short>
 Invalidates all cells in the specified column, and causes them to be redrawn.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>InvalidateCol</var> is a method used to refresh all cells in the column 
+number specified in the ACol argument. InvalidateCol gets a TRect instance 
+with the bounds for cells in the specified column number. It calls the 
+InvalidateRect routine in the LCL interface using the Handle for the control 
+and the display rectangle as arguments.
+</p>
+<p>
+No actions are performed in the method if a Handle has not been allocated in 
+the widgetset class instance for the control.
+</p>
+<remark>
+InvalidateCol is not used in the current LCL version. Invalidate is called 
+instead.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomGrid.Invalidate"/>
+</seealso>
 </element>
 <element name="TCustomGrid.InvalidateCol.ACol">
 <short>Column number for the cells invalidated in the method.</short>
@@ -18887,25 +19056,52 @@ file system.
 </element>
 
 <element name="TCustomGrid.MouseCoord">
-<short>Finds the mouse coordinates relative to the grid origin.</short>
-<descr/>
-<seealso/>
+<short>
+Gets the cell coordinates for the specified mouse pointer position.
+</short>
+<descr>
+<p>
+<var>MouseCoord</var> is <var>TGridCoord</var> function used to get the 
+coordinates for the mouse pointer as cell coordinates. It calls the 
+MouseToCell method to get the TGridCoord (an alias to TPoint) instance used 
+in the return value.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.MouseToCell"/>
+<link id="TGridCoord"/>
+</seealso>
 </element>
 <element name="TCustomGrid.MouseCoord.Result">
-<short/>
+<short>
+TGridCood instance with the cell coordinates for the mouse pointer.
+</short>
 </element>
 <element name="TCustomGrid.MouseCoord.X">
-<short/>
+<short>
+Horizontal screen coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomGrid.MouseCoord.Y">
-<short/>
+<short>
+Vertical screen coordinate for the mouse pointer.
+</short>
 </element>
 
 <element name="TCustomGrid.MouseToCell">
 <short>
-Converts mouse coordinates to the grid coordinates for a cell in the grid.
+Converts the specified mouse screen coordinates to cell coordinates.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MouseToCell</var> is an overloaded method in <var>TCustomGrid</var> used 
+to convert screen coordinates for the mouse pointer to cell coordinates. One 
+variant returns the cell coordinates as a TGridCoord (an alias for TPoint) 
+instance. The other variant returns the cell coordinates as Integer output 
+parameters. MouseToCell calls the OffsetToColRow method to get the cell 
+coordinates.
+</p>
+</descr>
 <seealso/>
 <version>
 ACol and ARow arguments were changed to output parameters in LCL version 2.1 
@@ -18949,23 +19145,62 @@ Converts mouse coordinates to the position for a logical cell in the grid.
 
 <element name="TCustomGrid.MouseToGridZone">
 <short>
-Converts the specified mouse position and cell coordinates to the grid zone 
-where they are located.
+Converts the specified coordinates for the mouse pointer to the grid zone where they are located.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseToGridZone</var> is a <var>TGridZone</var> function used to get the 
+grid zone where the specified mouse pointer coordinates are located. The 
+<var>X</var> and <var>Y</var> arguments contain the screen coordinates where 
+the mouse pointer is located.
+</p>
+<p>
+The return value is a <var>TGridZone</var> enumeration value determine by 
+comparing the screen coordinates to the cached sizes and offsets for the grid 
+control. The screen coordinates are converted to cell coordinates when 
+available, and used to the determine the return value.
+</p>
+<dl>
+<dt>gzInvalid</dt>
+<dd>
+X and Y are located on the border or in a area not used for cells in the client area for the control.
+</dd>
+<dt>gzFixedCells</dt>
+<dd>
+X and Y are located in the fixed header cell (column 0) on the control.
+</dd>
+<dt>gzFixedRows</dt>
+<dd>
+X and Y are located in a fixed header cell for a row on the control.
+</dd>
+<dt>gzFixedCols</dt>
+<dd>
+X and Y are located in a fixed header cell for a column on the control.
+</dd>
+<dt>gzNormal</dt>
+<dd>
+X and Y are located in a non-fixed cell in the display area for the control.
+</dd>
+</dl>
+</descr>
+<seealso>
+<link id="TGridZone"/>
+</seealso>
 </element>
 <element name="TCustomGrid.MouseToGridZone.Result">
-<short/>
+<short>
+Grid zone where the specified mouse pointer coordinates are located.
+</short>
 </element>
 <element name="TCustomGrid.MouseToGridZone.X">
-<short/>
+<short>
+Horizontal screen coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomGrid.MouseToGridZone.Y">
-<short/>
-</element>
-<element name="TCustomGrid.MouseToGridZone.CellCoords">
-<short/>
+<short>
+Vertical screen coordinate for the mouse pointer.
+</short>
 </element>
 
 <element name="TCustomGrid.SaveToFile">
@@ -19146,8 +19381,30 @@ Use <var>ClearSelections</var> to remove the cell rectangles stored in
 </element>
 
 <element name="TCustomGrid.SelectedRangeCount">
-<short>Number of cell rectangles in the selected range for the grid.</short>
-<descr/>
+<short>
+Number of cell rectangles in the selected range for the grid.
+</short>
+<descr>
+<p>
+<var>SelectedRangeCount</var> is a read-only <var>Integer</var> property with 
+the number of selected cell rectangles currently selected in the cells for 
+the control. The property value contains the length of the internal 
+TGridRectArray maintained in the control + 1 (for the current selected cell 
+not already in the array).
+</p>
+<p>
+Use SelectedRange to access the selection rectangles by the ordinal position 
+in the the internal TGridRectArray instance.
+</p>
+<p>
+Use AddSelectedRange to add a selection rectangle when RangeSelectMode is set 
+to rsMulti.
+</p>
+<p>
+Use ClearSelections to remove all selection rectangles and redraw the grid 
+control.
+</p>
+</descr>
 <seealso>
 <link id="TCustomGrid.SelectedRange"/>
 <link id="TCustomGrid.RangeSelectMode"/>
