@@ -60,6 +60,8 @@ begin
   Assert(pt.TokenType = ttColon);
 
   lcSpaces := FormattingSettings.Spaces;
+  if pt.PriorSolidTokenType=ttAlias then
+    exit(lcSpaces.SpacesBeforeColonParam);
 
   if pt.HasParentNode(nFormalParams) and InRoundBrackets(pt) then
   begin
