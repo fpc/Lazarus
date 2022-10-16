@@ -7,7 +7,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Find in files dialog form.
+    Find in files modal dialog form.
 
 }
 unit FindInFilesDlg;

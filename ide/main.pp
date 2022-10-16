@@ -153,13 +153,14 @@ uses
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
   IdeDebuggerWatchResult, InitialSetupDlgs, InitialSetupProc, NewDialog,
-  MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer,
-  BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
-  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseUnitDlg,
-  FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm, AboutFrm,
-  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
-  IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer, SourceFileManager,
-  EditorToolbarStatic, IDEInstances, NotifyProcessEnd, WordCompletion,
+  MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, FindInFilesWnd,
+  CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
+  FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
+  UseUnitDlg, FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm,
+  AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
+  IDECmdLine, IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer,
+  SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
+  WordCompletion,
   // main ide
   MainBar, MainIntf, MainBase;
 
