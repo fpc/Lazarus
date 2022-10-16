@@ -644,6 +644,7 @@ begin
   AddKeyword('inherited', wtReservedWord, ttInherited);
   AddKeyword('initialization', wtReservedWord, ttInitialization);
   AddKeyword('inline', wtReservedWord, ttInline);
+  AddKeyword('noinline', wtReservedWord, ttInline);
   AddKeyword('interface', wtReservedWord, ttInterface);
   AddKeyword('label', wtReservedWord, ttLabel);
   AddKeyword('library', wtReservedWord, ttLibrary);

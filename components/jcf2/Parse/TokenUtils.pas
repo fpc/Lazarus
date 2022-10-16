@@ -145,6 +145,7 @@ what is allowed as an identifier for a variable or proc name  -
  }
 
 type
+  TVarType = (vtNormal, vtInClassBody, vtInline, vtInFor);
   TIdentifierStrictness = (idStrict, idAllowDirectives, idAny);
 
 { use to build a parse tree}

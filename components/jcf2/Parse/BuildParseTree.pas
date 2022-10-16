@@ -100,7 +100,7 @@ type
     procedure RecogniseDeclSection;
     procedure RecogniseInitSection;
     procedure RecogniseBlock(const CanBeJustEnd: boolean = false);
-    procedure RecogniseIdentList(const pbCanHaveUnitQualifier: boolean);
+    procedure RecogniseIdentList(const pbCanHaveUnitQualifier: boolean; aVarType: TVarType=vtNormal);
     procedure RecogniseIdentValue;
     procedure RecogniseAsCast;
 
@@ -165,7 +165,7 @@ type
     procedure RecogniseInterfaceType;
     procedure RecogniseObjectType;
     procedure RecogniseVariantSection;
-    procedure RecogniseVarDecl(aInClassBody:boolean=false);
+    procedure RecogniseVarDecl(aVarType: TVarType=vtNormal);
     procedure RecogniseVarExpPubDir;
     procedure RecogniseAddOp;
     procedure RecogniseDesignator;
@@ -1536,6 +1536,7 @@ begin
     liIndex := fcTokenList.CurrentTokenIndex;
     fsFileName := fcTokenList.SourceTokens[liIndex].FileName;
 
+    fcTokenList[liIndex].Free;  //the list not owns the objects
     fcTokenList.Delete(liIndex);
 
     lcNewToken := TSourceToken.Create();
@@ -1565,6 +1566,7 @@ begin
     liIndex := fcTokenList.CurrentTokenIndex;
     fsFileName := fcTokenList.SourceTokens[liIndex].FileName;
 
+    fcTokenList[liIndex].Free;   //the list not owns the objects
     fcTokenList.Delete(liIndex);
 
     lcNewToken := TSourceToken.Create();
@@ -2637,7 +2639,7 @@ begin
   Recognise(OperatorTokens);
 end;
 
-procedure TBuildParseTree.RecogniseVarDecl(aInClassBody:boolean=false);
+procedure TBuildParseTree.RecogniseVarDecl(aVarType: TVarType=vtNormal);
 const
   VariableModifiers: TTokenTypeSet = [ttExternal, ttExport, ttPublic];
 var
@@ -2662,9 +2664,27 @@ begin
 
   PushNode(nVarDecl);
 
-  RecogniseIdentList(False);
-  Recognise(ttColon);
-  RecogniseType;
+  RecogniseIdentList(False,aVarType);
+  // delphi interfered type   var a=27
+  if (aVarType=vtInline) and (fcTokenList.FirstSolidTokenType=ttSemiColon) then
+  begin
+    // RecogniseIdentList already taked care of  var a=27;,  var a='text';, ---
+  end
+  else if (aVarType=vtInFor) then
+  begin
+    if fcTokenList.FirstSolidTokenType=ttColon then
+    begin
+      Recognise(ttColon);
+      RecogniseType;
+    end;
+    PopNode;
+    exit;
+  end
+  else
+  begin
+    Recognise(ttColon);
+    RecogniseType;
+  end;
 
   lc := fcTokenList.FirstSolidToken;
   CheckNilInstance(lc, fcRoot.LastLeaf);
@@ -2679,14 +2699,14 @@ begin
   else
   begin
     RecogniseHintDirectives;
-   if (not aInClassBody) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
+   if (aVarType=vtNormal) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
       ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
        (fcTokenList.SolidTokenType(2) in VariableModifiers))) then
     begin
       // optional SemiColon
-      if  fcTokenList.FirstSolidTokenType=ttSemicolon then
+      if fcTokenList.FirstSolidTokenType=ttSemicolon then
         Recognise(ttSemiColon);
-      if fcTokenList.FirstSolidTokenType = ttExternal then
+      if fcTokenList.FirstSolidTokenType=ttExternal then
       begin
         Recognise(fcTokenList.FirstSolidTokenType);
         if fcTokenList.FirstSolidTokenType in [ttIdentifier,ttQuotedLiteralString] then
@@ -2701,7 +2721,7 @@ begin
       end;
     end;
 
-    if fcTokenList.FirstSolidTokenType = ttEquals then
+    if fcTokenList.FirstSolidTokenType=ttEquals then
     begin
       PushNode(nVariableInit);
 
@@ -2721,10 +2741,12 @@ begin
       lct := fcTokenList.SolidTokenType(2);
     if lct in HintDirectives then
       RecogniseHintDirectives
-    else if lct in [ttExport, ttPublic] then
+    else if lct=ttExport then
+      RecogniseVarExpPubDir
+    else if (lct=ttPublic) and (aVarType<>vtInClassBody) then
       RecogniseVarExpPubDir
     else
-    break;
+      break;
   until False;
 
   PopNode;
@@ -3457,11 +3479,20 @@ begin
   end
   else if lt in[ttProcedure,ttFunction] then  //anonymous function or procedure
       RecogniseExpr(True)
+  else if lt = ttVar then  //delphi inline var
+  begin
+    Recognise([ttVar]);
+    RecogniseVarDecl(vtInline);
+  end
+  else if lt = ttConst then   //delphi inline const.
+  begin
+    Recognise([ttConst]);
+    RecogniseConstantDecl;
+  end
   else
   begin
     RaiseParseError('Expected simple statement', fcTokenList.FirstSolidToken);
   end;
-
 end;
 
 procedure TBuildParseTree.RecogniseBracketedStatement;
@@ -3779,7 +3810,14 @@ begin
   PushNode(nForStatement);
 
   Recognise(ttFor);
-  RecogniseQualId;
+
+  if fcTokenList.FirstSolidTokenType=ttVar then
+  begin
+    Recognise(ttVar);
+    RecogniseVarDecl(vtInFor);
+  end
+  else
+    RecogniseQualId;
 
 
   //type cast    for TCollectionItem(item) in ItemList do 
@@ -4948,7 +4986,7 @@ begin
         if pbInterface then
           RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
 
-        RecogniseVarDecl(True);
+        RecogniseVarDecl(vtInClassBody);
       end
       else
         RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
@@ -5284,7 +5322,7 @@ begin
   end;
 end;
 
-procedure TBuildParseTree.RecogniseIdentList(const pbCanHaveUnitQualifier: boolean);
+procedure TBuildParseTree.RecogniseIdentList(const pbCanHaveUnitQualifier: boolean; aVarType: TVarType);
 begin
   { IdentList -> Ident/','...
 
@@ -5294,13 +5332,16 @@ begin
   PushNode(nIdentList);
 
   RecogniseIdentifier(pbCanHaveUnitQualifier, idAllowDirectives);
-  RecogniseIdentValue;
-
-  while fcTokenList.FirstSolidTokenType = ttComma do
+  if aVarType <> vtInFor then
   begin
-    Recognise(ttComma);
-    RecogniseIdentifier(pbCanHaveUnitQualifier, idAllowDirectives);
     RecogniseIdentValue;
+
+    while fcTokenList.FirstSolidTokenType = ttComma do
+    begin
+      Recognise(ttComma);
+      RecogniseIdentifier(pbCanHaveUnitQualifier, idAllowDirectives);
+      RecogniseIdentValue;
+    end;
   end;
 
   PopNode;
