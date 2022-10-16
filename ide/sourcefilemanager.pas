@@ -4070,7 +4070,7 @@ begin
     // mrCancel: continue saving other files
   end;
 
-  // update all lrs files
+  // update all resource files
   if sfSaveToTestDir in Flags then
     MainBuildBoss.UpdateProjectAutomaticFiles(EnvironmentOptions.GetParsedTestBuildDirectory)
   else

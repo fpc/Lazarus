@@ -532,7 +532,7 @@ begin
       //   Now it gets saved once the first time after IDE started.
     end;
     // codebuffer of new .res file
-    if not UpdateResCodeBuffer and (LastResFileName=resFileName) then
+    if not UpdateResCodeBuffer then
       PerformSave := False;     // Do not save an unchanged resource file.
     // codebuffer of new .lrs file
     UpdateLrsCodeBuffer;
@@ -713,7 +713,6 @@ function TProjectResources.RenameDirectives(const CurFileName, NewFileName: Stri
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
-
   oldLrsFileName, newLrsFileName: String;
 begin
   //DebugLn(['TProjectResources.RenameDirectives CurFileName="',CurFileName,'" NewFileName="',NewFileName,'"']);
@@ -738,6 +737,7 @@ begin
     // update codebuffers of new .res and .lrs files
     UpdateResCodeBuffer;
     UpdateLrsCodeBuffer;
+    LastSavedRes := '';
 
     // update {$I filename} directive
     if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
