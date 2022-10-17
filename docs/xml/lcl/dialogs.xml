@@ -912,13 +912,25 @@ accessed.
 </element>
 
 <element name="TFileDialog.FileName">
-<short>String storing the name of the file chosen by the user as UTF8</short>
+<short>
+Contains the UTF-8-encoded name for the file chosen using the dialog.
+</short>
 <descr>
 <p>
-If you need the filename as system encoded, you can use UTF8ToSys from the 
-unit FileUtil.
+<var>FileName</var> is a <var>String</var> property with the name for the 
+file chosen using the dialog. As a String type, it can contain UTF-8-encoded 
+values. If you need the filename using the system encoding, you can use 
+<var>UTF8ToSys</var> from the <file>LazUTF8</file> unit.
+</p>
+<p>
+The value in FileName may be used in a different context in descendent 
+classes. For example, it represents a directory name in the 
+<var>TSelectDirectoryDialog</var> descendant.
 </p>
 </descr>
+<seealso>
+<link id="#lazutils.lazutf8.UTF8ToSys">UTF8ToSys</link>
+</seealso>
 </element>
 
 <element name="TFileDialog.Filter">
@@ -952,13 +964,48 @@ property to 2 to set the second filter as default.
 </element>
 
 <element name="TFileDialog.InitialDir">
-<short>Set the directory the dialog shows on opening.</short>
-<descr/>
-<seealso/>
+<short>
+Contains the initial directory displayed when the dialog is opened.
+</short>
+<descr>
+<p>
+<var>InitialDir</var> is a <var>String</var> property which contains the name 
+for the initial directory displayed when the dialog is opened. When omitted, 
+or set to an empty string, the directory for the application executable is 
+used.
+</p>
+<p>
+Assign the value in InitialDir prior to calling the Execute method to display 
+the dialog.
+</p>
+<p>
+For the windows platform, there are some CLSID values which can be used in 
+InitialDir. They are GUIDs representing locations like 'This PC' or 'Network' 
+used the Windows file explorer. The following values are know to work in 
+InitialDir:
+</p>
+<dl>
+<dt>Opens 'This PC'</dt>
+<dd>'::{20D04FE0-3AEA-1069-A2D8-08002B30309D}'</dd>
+<dt>Opens Network</dt>
+<dd>'::{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}'</dd>
+</dl>
+<p>
+There are others which may, or may not, work for your Windows version:
+</p>
+<p>
+<url href="https://www.elevenforum.com/t/list-of-windows-11-clsid-key-guid-shortcuts.1075/">
+List of Windows 11 CLSID Key (GUID) Shortcuts
+</url>
+</p>
+</descr>
+<seealso>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 
 <element name="TFileDialog.OnHelpClicked">
-<short>Event handler when the Help button is clicked.</short>
+<short>Event handler signalled when the Help button is clicked.</short>
 <descr/>
 <seealso/>
 </element>
@@ -1348,41 +1395,119 @@ flags to the value used for the dialog type.
 </element>
 
 <element name="TSelectDirectoryDialog">
-<short>Select Directory Dialog.</short>
+<short>Implements a select directory dialog.</short>
 <descr>
 <p>
-SelectDirectoryDialog allows the user to select a directory when the 
-directory structure is displayed as a tree.
+<var>TSelectDirectoryDialog</var> is a <var>TOpenDialog</var> descendant 
+which allows the user to select a directory name by navigating file system 
+entries. It is implemented using the native selection dialog for the platform.
+</p>
+<p>
+Use the InitialDir property to specify the active directory when the dialog 
+is displayed.
+</p>
+<p>
+The FileName property contains the selected directory when the dialog is 
+closed using the 'Select Folder' button.
+</p>
+<p>
+The Options property can be used to control the features and behaviors enabled for the selection dialog.
+</p>
+<p>
+Use the OnFolderChange event handler to perform actions when a new directory 
+is entered / chosen during navigation on the dialog.
+</p>
+<p>
+Use the OnSelectionChange handler to perform actions when a new directory is 
+selected or highlighted using the mouse or cursor keys on the dialog.
 </p>
 </descr>
 <seealso>
+<link id="TOpenDialog"/>
 <link id="#lcl.editbtn.TDirectoryEdit">TDirectoryEdit</link>
 </seealso>
 </element>
 
 <element name="TSelectDirectoryDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-<element name="TSelectDirectoryDialog.CheckFileMustExist" link="#lcl.dialogs.TOpenDialog.CheckFileMustExist">
-<short/>
-<descr/>
-<seealso/>
+<element name="TSelectDirectoryDialog.CheckFileMustExist">
+<short>
+Checks whether a specified directory already exists, and displays a message 
+when missing.
+</short>
+<descr>
+<p>
+<var>CheckFileMustExist</var> is an overridden <var>Boolean</var> function in 
+<var>TSelectDirectoryDialog</var>. It is check whether the directory 
+specified in <var>AFilename</var> already exists on the file system. The 
+return value is <b>True</b> if the directory in AFilename already exists. It 
+is <b>False</b> if the directory does not exist.
+</p>
+<p>
+CheckFileMustExist re-implements the method inherited from 
+<var>TOpenDialog</var> to use directory-specific resource strings when messages are displayed for a missing value in AFilename.
+</p>
+<p>
+CheckFileMustExist is called from the <var>CheckFile</var> method in TOpenDialog.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.CheckFileMustExist"/>
+<link id="TOpenDialog.CheckFile"/>
+<link id="#lazutils.lazfileutils.DirPathExists">DirPathExists</link>
+</seealso>
 </element>
 <element name="TSelectDirectoryDialog.CheckFileMustExist.Result">
-<short/>
+<short>
+<b>True</b> if the specified directory exists, and <b>False</b> when it is 
+missing.
+</short>
 </element>
 <element name="TSelectDirectoryDialog.CheckFileMustExist.AFilename">
-<short/>
+<short>
+Directory name examined in the method.
+</short>
 </element>
 
-<element name="TSelectDirectoryDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
+<element name="TSelectDirectoryDialog.DefaultTitle">
+<short>
+Gets the default title for the dialog.
+</short>
+<descr>
+<p>
+<var>DefaultTitle</var> is an overridden <var>String</var> function used to 
+get the default title displayed on the directory selection dialog. It returns 
+the value assigned to the <var>rsfdSelectDirectory</var> resource string used 
+in the LCL.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.DefaultTitle"/>
+<link id="TCommonDialog.DefaultTitle"/>
+<link id="#lcl.lclstrconsts.rsfdSelectDirectory">rsfdSelectDirectory</link>
+</seealso>
+</element>
 
-<element name="TSelectDirectoryDialog.Create" link="#lcl.dialogs.TOpenDialog.Create">
-<short/>
-<descr/>
-<seealso/>
+<element name="TSelectDirectoryDialog.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited constructor on entry, and sets the component style flag 
+to the value <var>csSelectDirectoryDialog</var>.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Create"/>
+<link id="#lcl.lcltype.csSelectDirectoryDialog">csSelectDirectoryDialog</link>
+</seealso>
 </element>
 <element name="TSelectDirectoryDialog.Create.AOwner">
-<short/>
+<short>
+Owner of the class instance used in notification events.
+</short>
 </element>
 
 <element name="TColorDialog">
