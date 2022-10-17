@@ -1176,46 +1176,69 @@ emulate the Pascal <b>CASE .. OF</b> statement.
 <var>ACase</var> array.
 </p>
 <p>
-<var>ACase</var> is an array of String values which determine the result for 
-the function.
+<var>ACase</var> is an array of String values with the case constants used in 
+the comparison to <var>AString</var>. 
 </p>
 <p>
-<var>AIgnoreCase</var> indicates whether case is significant when comparing 
-AString to elements in ACase. <b>False</b> indicates that case is not used in 
-the comparison.
+<var>AIgnoreCase</var> indicates whether case is significant when AString is 
+compared to elements in ACase. When set to <b>False</b> (the default), case 
+is significant. When set to <b>True</b>, a case-insensitive comparison is 
+performed for the values using the CompareText routine.
 </p>
 <p>
 <var>APartial</var> indicates whether the value in AString can be a partial 
 match for the value in an array element. When set to <b>False</b>, AString 
 must match the array element exactly to be considered a match. When set to 
-<b>True</b>, any value in ACase which starts with the value in AString is 
-considered a match.
+<b>True</b>, any value in ACase which <b>starts</b> with the value in AString 
+is considered a match.
 </p>
 <p>
-The return value contains the ordinal position of the element in ACase which 
-matches the value in AString. The return value is <b>-1</b> if no match was 
-found for the value in AString.
+The return value contains the ordinal position for the element in ACase which 
+matches the value in AString. The return value is <b>-1</b> if a match was 
+not found for the value in AString.
 </p>
+<code>
+// var SelOpt: Integer;
+
+// returns 2
+SelOpt := StringCase('Charlie', [ 'Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo' ]);
+
+// returns 3 for case-insensitive partial match
+SelOpt := StringCase('del', [ 'Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo' ], True, True);
+
+// returns -1
+SelOpt := StringCase('foo', [ 'Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo' ]);
+</code>
 </descr>
-<seealso/>
+<seealso>
+<link id="#rtl.sysutils.CompareText">CompareText</link>
+</seealso>
 </element>
 <element name="StringCase.Result">
 <short>
-Ordinal position for the case selector, or -1 when a match is not found.
+Ordinal position for the selected case constant, or -1 when a match is not 
+found.
 </short>
 </element>
 <element name="StringCase.AString">
-<short>Value compared to the array elements.</short>
+<short>
+Value compared to the array elements in ACase.
+</short>
 </element>
 <element name="StringCase.ACase">
-<short>Determines the selector in the return value </short>
+<short>
+Case constants which determine the selected case in the return value.
+</short>
 </element>
-<element name="StringCase.AnIgnoreCase">
-<short><b>True</b> if case is ignored in the comparison.</short>
+<element name="StringCase.AIgnoreCase">
+<short>
+<b>True</b> if case is ignored in the comparison.
+</short>
 </element>
 <element name="StringCase.APartial">
 <short>
-<b>True</b> is a partial match at the start of the selector is a match.
+<b>True</b> is a partial match at the start of a selector is considered a 
+match.
 </short>
 </element>
 
