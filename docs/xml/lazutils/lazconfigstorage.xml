@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-
 <!--
 ====================================================================
 LazConfigStorage
 ====================================================================
 -->
-
 <module name="LazConfigStorage">
 <short>
 Defines various base classes for loading and saving configuration files.
@@ -21,1069 +19,904 @@ Author: Mattias Gaertner
 </p>
 </descr>
 
-<!-- class Visibility: default -->
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="typinfo"/>
+<element name="Laz_AVL_Tree"/>
+<element name="LazLoggerBase"/>
+<element name="AvgLvlTree"/>
+
 <element name="TConfigStorage">
-<short></short>
+<short>
+Defines the base class for a configuration storage mechanism.
+</short>
 <descr>
+<p>
+<var>TConfigStorage</var> is a class used to create and maintain 
+configuration information using an XML-based storage format. TConfigStorage 
+is a base class; it contains abstract virtual methods which must be 
+implemented in descendent class to provide memory- or file-based storage for 
+its values.
+</p>
+<p>
+TConfigStorage and descendent classes have a base path where its data is 
+stored, and sub-paths and values for the data items in the storage. Path 
+information uses an XPath-like notation which indicates where a given value 
+is stored, and the name associated with the stored value.
+</p>
+<p>
+For example:
+</p>
+<code>
+'path/to/loginform'
+'path/to/loginform/top'
+'path/to/loginform/left'
+'path/to/loginform/width'
+'path/to/loginform/height'
+</code>
+<p>
+Values can be specified using one of the native Pascal data types supported 
+in the class, like:
+</p>
+<ul>
+<li>String</li>
+<li>Integer</li>
+<li>Boolean</li>
+<li>TStrings</li>
+<li>TRect</li>
+<li>TPoint</li>
+<li>TPersistent</li>
+</ul>
+<p>
+Methods are provided to get, set, or delete stored items using their path 
+notation. Methods are also provided to read or write published property values to or from persistent objects using RTTI.
+</p>
+<p>
+Do not create instances of TConfigStorage. Use of the descendent classes like 
+TConfigMemStorage or TXMLConfigStorage.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TConfigMemStorage"/>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage">TXMLConfigStorage</link>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TConfigStorage.FPathStack">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Contains a path history built using AppendBasePath.</short>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TConfigStorage.FCurrentBasePath">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Member used to store the value in CurrentBasePath.</short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TConfigStorage.GetFullPathValue">
-<short></short>
+<short>
+Specifies a method used to get a value or its default from the specified fully-qualified path.
+</short>
 <descr>
+<p>
+Returns the value stored using the path and name in the APath argument. The 
+value in ADefault is returned if APath is not found in the configuration 
+storage. The overloaded variants allow the return and default values to be 
+specified using String, Integer, or Boolean types.
+</p>
+<p>
+GetFullPathValue is an abstract virtual method in TConfigStorage. It is 
+implemented in a descendent class to use the storage mechanism for the class 
+instance.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.Result">
-<short></short>
+<short>
+Value in the configuration storage for the specified value type.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.APath">
-<short></short>
+<short>
+Fully-qualified path to the value. Includes both the base path and the name for the item.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetFullPathValue.ADefault">
-<short></short>
+<short>
+Default value returned when APath is not found in the configuration storage.
+</short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.SetDeleteFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteFullPathValue.DefValue">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.DeleteFullPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteFullPath.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.DeleteFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.WriteProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteProperty.Path">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteProperty.Instance">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteProperty.PropInfo">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteProperty.DefInstance">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteProperty.OnlyProperty">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigStorage.ReadProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadProperty.Path">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadProperty.Instance">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadProperty.PropInfo">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadProperty.DefInstance">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadProperty.OnlyProperty">
-<short></short>
+<short/>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TConfigStorage.Create">
-<short></short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
+<remark>
+Create has an empty implementation in TConfigStorage. Use one of the 
+descendent classes which re-implements the constructor as needed for its 
+storage mechanism.
+</remark>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.Create.Filename">
-<short></short>
+<short>File name where configuration data is stored.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.Create.LoadFromDisk">
-<short></short>
+<short>
+<b>True</b> to load values from the specified file if it exists. <b>False</b> 
+to create a new, empty storage.
+</short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TConfigStorage.Destroy">
-<short></short>
+<short>Destructor for the class instance.</short>
 <descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+frees resources allocated for members in the class instance, and calls the 
+inherited destructor.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="#rtl.system.TObject.Destroy">TObject.Destroy</link>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.Clear">
-<short></short>
+<short>
+Clears the content in the configuration storage.
+</short>
 <descr>
+<p>
+<var>Clear</var> is an abstract virtual method in TConfigStorage. It is 
+implemented in descendent classes to provide a file- or memory-based 
+storage mechanism.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TConfigStorage.GetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigStorage.GetValue.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.ADefault">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.ARect">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.APoint">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.GetValue.List">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetValue.AValue">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.SetDeleteValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.AValue">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.SetDeleteValue.DefValue">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.DeletePath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.DeletePath.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.DeleteValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.DeleteValue.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TConfigStorage.CurrentBasePath">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TConfigStorage.ExtendPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigStorage.ExtendPath.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ExtendPath.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.AppendBasePath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.AppendBasePath.Path">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.UndoAppendBasePath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.WriteToDisk">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TConfigStorage.GetFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigStorage.GetFilename.Result">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.WriteObject">
-<short></short>
+<short>
+Stores property names and values in the specified object to the configuration 
+storage.
+</short>
 <descr>
+<p>
+<var>WriteObject</var> is a method used to store names and values from the 
+properties in the specified persistent object into the configuration storage.
+</p>
+<p>
+<var>Path</var> contains the location in configuration storage where the 
+property values are stored. It provides a unique location for the values 
+stored in the method.
+</p>
+<p>
+<var>Obj</var> is the <var>TPersistent</var> instance with the property 
+values stored in the method.
+</p>
+<p>
+WriteObject calls <var>WriteProperty</var> for each of the properties 
+returned from the RTL <var>GetPropList</var> routine. Sub-paths representing 
+each of the published properties in the object are created by calling the 
+WriteProperty method.
+</p>
+<p>
+WriteObject (and WriteProperty) rely on RTTI types and routines to get the 
+values from the persistent object. As such, only published properties can be 
+serialized; the FPC RTL does not provide RTTI type information for other 
+protected or public visibility at this time. The properties must have getter and setter routines (read and write specifiers); otherwise, they are omitted from the serialized values.
+</p>
+<p>
+Use the <var>OnlyProperty</var> argument to specify the name for a single 
+property in Obj that should be written in the method. Otherwise, all 
+properties are stored.
+</p>
+<p>
+Use <var>ReadObject</var> to read values from a given path into a persistent 
+object instance.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TConfigMemStorage.WriteProperty"/>
+<link id="TConfigMemStorage.ReadObject"/>
+<link id="#rtl.classes.TPersistent">TPersistent</link>
+<link id="#rtl.typinfo.GetPropList">GetPropList</link>
+<link id="#rtl.typinfo.GetPropInfo">GetPropInfo</link>
+<link id="#rtl.typinfo.TTypeData">TTypeData</link>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteObject.Path">
-<short></short>
+<short>
+Path where property names and values from Obj are stored.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteObject.Obj">
-<short></short>
+<short>
+Persistent object with properties stored in the method.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteObject.DefObject">
-<short></short>
+<short>
+Persistent object with default values for the properties in Obj.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.WriteObject.OnlyProperty">
-<short></short>
+<short>
+Name for a single property that should be written in the method, instead of all properties.
+</short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigStorage.ReadObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Reads names and values from the configuration storage into properties for the 
+specified object instance.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadObject.Path">
-<short></short>
+<short>
+Path where the property names and values read in the method are stored.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadObject.Obj">
-<short></short>
+<short>
+Persistent object where the values read in the method are stored.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadObject.DefObject">
-<short></short>
+<short>
+Persistent object with the default values for properties updated in the 
+method.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigStorage.ReadObject.OnlyProperty">
-<short></short>
+<short>
+Name for a single property value read and stored in Obj.
+</short>
 </element>
 
-<!-- "class of" type Visibility: default -->
 <element name="TConfigStorageClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TConfigMemStorageNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Implements a storage node used in a memory-based configuration storage.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- variable Visibility: public -->
 <element name="TConfigMemStorageNode.Name">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Name for the node.
+</short>
 </element>
-
-<!-- variable Visibility: public -->
 <element name="TConfigMemStorageNode.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Value for the node.
+</short>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TConfigMemStorageNode.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Parent node in the tree structure where the current node is stored.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TConfigMemStorageNode.Children">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Child nodes with names and values stored as sub-paths of the current node.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorageNode.ClearChilds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Frees storage nodes allocated in Children.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TConfigMemStorageNode.Create">
-<short></short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
+<p>
+<var>Create</var> is the constructor for the class instance. It initializes values in the Parent and Name properties to the arguments passed to the constructor.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorageNode.Create.AParent">
-<short></short>
+<short>
+Node where the current node is stored as a child node.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorageNode.Create.AName">
-<short></short>
+<short>
+Name for the new storage node.
+</short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TConfigMemStorageNode.Destroy">
-<short></short>
+<short>
+Destructor for the class instance.
+</short>
 <descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+calls <var>ClearChilds</var> to remove all storage nodes allocated in 
+<var>Children</var>. It ensures the current class instance is removed from 
+the <var>Parent</var> node (when assigned).
+</p>
+<p>
+Destroy calls the inherited destructor prior to exiting from the method.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TConfigMemStorageModification">
-<short></short>
+<short>
+Represents modification operations for configuration storage nodes.
+</short>
 <descr>
+<p>
+<var>TConfigMemStorageModification</var> is an enumerated type with values 
+that represent modification operations performed for nodes in a memory-based 
+configuration storage.
+</p>
 </descr>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TConfigMemStorageModification.cmsmSet">
-<short></short>
+<short>
+Represents a set or write operation.
+</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TConfigMemStorageModification.cmsmGet">
-<short></short>
+<short>
+Represents a get or read operation.
+</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TConfigMemStorageModification.cmsmDelete">
-<short></short>
+<short>
+Represents a delete operation for a storage node.
+</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TConfigMemStorageModification.cmsmDeleteValue">
-<short></short>
+<short>
+Represents a delete operation for the value in a storage node.
+</short>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="ConfigMemStorageFormatVersion">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Current version for the storage format used in configuration storage classes.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TConfigMemStorage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Implement a configuration storage class using in-memory storage for values in 
+the class instance.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: private -->
 <element name="TConfigMemStorage.CreateRoot">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Creates the root node used to store the values for the memory-based 
+configuration storage.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: private -->
 <element name="TConfigMemStorage.CreateChilds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Creates the tree structure used to store child nodes in the configuration 
+storage.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.CreateChilds.Node">
-<short></short>
+<short>
+Memory-based storage node where the child nodes are stored.
+</short>
 </element>
 
-<!-- procedure Visibility: private -->
 <element name="TConfigMemStorage.Modify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Stores a modified value to the specified path in the configuration storage.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.Modify.APath">
-<short></short>
+<short>
+Path in the storage where the modified value is stored.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.Modify.Mode">
-<short></short>
+<short>
+Action performed in the modification.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.Modify.AValue">
-<short></short>
+<short>
+New value stored at the specified path in the storage.
+</short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigMemStorage.DeleteFullPath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.DeleteFullPath.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigMemStorage.DeleteFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.DeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TConfigMemStorage.GetFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigMemStorage.GetFullPathValue.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.GetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.GetFullPathValue.ADefault">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigMemStorage.SetDeleteFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SetDeleteFullPathValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SetDeleteFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SetDeleteFullPathValue.DefValue">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TConfigMemStorage.SetFullPathValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SetFullPathValue.APath">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SetFullPathValue.AValue">
-<short></short>
+<short/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TConfigMemStorage.Root">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+TConfigMemStorageNode instance with the storage nodes are the configuration 
+storage.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TConfigMemStorage.GetFilename">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Re-implements the method used to get the file name where the configuration 
+items are stored. Not used in TConfigMemStorage.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TConfigMemStorage.GetFilename.Result">
-<short></short>
+<short>
+Always returns an empty string ('') in TConfigMemStorage.
+</short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorage.WriteToDisk">
-<short></short>
+<short>
+Re-implements the method used to store the configuration items to disk.
+</short>
 <descr>
+<p>
+WriteToDisk raises an Exception with the message:
+</p>
+<code>
+'TConfigMemStorage.WriteToDisk invalid operation'
+</code>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TConfigMemStorage.Destroy">
-<short></short>
+<short>
+Destructor for the class instance.
+</short>
 <descr>
+<p>
+Frees resources allocate to the Root storage node in the class instance. 
+Calls the inherited destructor prior to exit.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorage.Clear">
-<short></short>
+<short>
+Clears the storage nodes in the memory-based configuration storage.
+</short>
 <descr>
+<p>
+Free resources allocated to the Root storage node in the class instance.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorage.SaveToConfig">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Save the storage nodes to the specified path in another configuration 
+storage class instance.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SaveToConfig.Config">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.SaveToConfig.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorage.LoadFromConfig">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Loads storage nodes from the specified path in another configuration storage 
+class instance.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.LoadFromConfig.Config">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TConfigMemStorage.LoadFromConfig.APath">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TConfigMemStorage.WriteDebugReport">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Generates the content in the Root node in a format suitable for debugger 
+output.
+</short>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="LoadStringToStringTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Loads names and values in the specified path from a configuration storage 
+instance to the specified Tree.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LoadStringToStringTree.Config">
-<short></short>
+<short>
+Configuration storage instance with the names and values loaded into the tree.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LoadStringToStringTree.Path">
-<short></short>
+<short>
+Path with the item names and values loaded from Config.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LoadStringToStringTree.Tree">
-<short></short>
+<short>
+String map where the names and values for configuration items stored in the routine.
+</short>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="SaveStringToStringTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="SaveStringToStringTree.Config">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="SaveStringToStringTree.Path">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="SaveStringToStringTree.Tree">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="CompareConfigMemStorageNames">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="CompareConfigMemStorageNames.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="CompareConfigMemStorageNames.p1">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="CompareConfigMemStorageNames.p2">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="CompareConfigMemStorageNodes">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="CompareConfigMemStorageNodes.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="CompareConfigMemStorageNodes.Node1">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="CompareConfigMemStorageNodes.Node2">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="ComparePCharWithConfigMemStorageNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="ComparePCharWithConfigMemStorageNode.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="ComparePCharWithConfigMemStorageNode.aPChar">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="ComparePCharWithConfigMemStorageNode.ANode">
-<short></short>
+<short/>
 </element>
 
-</module> <!-- LazConfigStorage -->
+</module>
+<!-- LazConfigStorage -->
 
 </package>
 </fpdoc-descriptions>
