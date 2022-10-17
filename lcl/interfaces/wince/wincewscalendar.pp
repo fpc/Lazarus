@@ -44,7 +44,7 @@ type
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
     class procedure SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek); override;
-    class procedure SetMinMaxDate(const ACalendar: TCustomCalendar; const AMinDate, AMaxDate: TDateTime); override;
+    class procedure SetMinMaxDate(const ACalendar: TCustomCalendar; AMinDate, AMaxDate: TDateTime); override;
     class procedure RemoveMinMaxDates(const ACalendar: TCustomCalendar); override;
   end;
 
@@ -163,7 +163,7 @@ begin
 end;
 
 class procedure TWinCEWSCustomCalendar.SetMinMaxDate(
-  const ACalendar: TCustomCalendar; const AMinDate, AMaxDate: TDateTime);
+  const ACalendar: TCustomCalendar; AMinDate, AMaxDate: TDateTime);
 var
   ST: packed array[0..1] of TSystemTime;
 const
