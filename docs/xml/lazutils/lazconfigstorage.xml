@@ -424,8 +424,8 @@ object instance.
 </p>
 </descr>
 <seealso>
-<link id="TConfigMemStorage.WriteProperty"/>
-<link id="TConfigMemStorage.ReadObject"/>
+<link id="TConfigStorage.WriteProperty"/>
+<link id="TConfigStorage.ReadObject"/>
 <link id="#rtl.classes.TPersistent">TPersistent</link>
 <link id="#rtl.typinfo.GetPropList">GetPropList</link>
 <link id="#rtl.typinfo.GetPropInfo">GetPropInfo</link>
