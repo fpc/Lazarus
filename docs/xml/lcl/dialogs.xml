@@ -2253,7 +2253,8 @@ platform.
 When the dialog is executed, the selected font and its attributes is made 
 available in the Font property. The OnApplyClicked event handler can be used 
 to perform actions needed when the optional Apply button is clicked in the 
-dialog.
+dialog. Please note that the Apply button is available on the GTK2, GTK2, and 
+Windows platforms. It is not currently implemented for QT platforms.
 </p>
 </descr>
 <seealso>
@@ -2419,7 +2420,9 @@ Include or Exclude values for the property prior to calling the
 <remark>
 Enabling a value in Options does not mean that the feature or behavior is 
 supported in the native font selection dialog for the platform. Some options 
-may not be available on a given platform.
+may not be available on a given platform. For example, the Apply button 
+enabled using fdApplyButton is not implemented for all of the LCL platforms. 
+It is not currently implemented in the QT widgetsets.
 </remark>
 </descr>
 <seealso>
