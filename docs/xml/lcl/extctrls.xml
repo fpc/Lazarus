@@ -7109,7 +7109,9 @@ Implements the AllowAdd method from the IObjInspInterface interface.
 <seealso/>
 </element>
 <element name="TFlowPanelControl.AllowAdd.Result">
-<short/>
+<short>
+Always return <b>False</b>.
+</short>
 </element>
 
 <element name="TFlowPanelControl.AllowDelete">
@@ -7120,7 +7122,9 @@ Implements the AllowDelete method from the IObjInspInterface interface.
 <seealso/>
 </element>
 <element name="TFlowPanelControl.AllowDelete.Result">
-<short/>
+<short>
+Always return <b>False</b>.
+</short>
 </element>
 
 <element name="TFlowPanelControl.Control">
@@ -7307,7 +7311,9 @@ Used in the Lazarus object inspector.
 <seealso/>
 </element>
 <element name="TFlowPanelControlList.AllowAdd.Result">
-<short/>
+<short>
+Always return <b>False</b>.
+</short>
 </element>
 
 <element name="TFlowPanelControlList.AllowDelete">
@@ -7322,7 +7328,9 @@ Used in the Lazarus object inspector.
 <seealso/>
 </element>
 <element name="TFlowPanelControlList.AllowDelete.Result">
-<short/>
+<short>
+Always return <b>False</b>.
+</short>
 </element>
 
 <element name="TCustomFlowPanel">
@@ -8299,6 +8307,10 @@ The balloon hint window disappears after the <var>BalloonHintTimeout</var>
 interval has elapsed, or when the user clicks on the close button for the 
 balloon hint.
 </p>
+<p>
+Native balloon hints are implemented for the Windows, QT4, and QT5 platforms. 
+Other platforms use the pop-up notifier to emulate the capability.
+</p>
 </descr>
 <seealso>
 <link id="TCustomTrayIcon.BalloonHint"/>
@@ -8307,9 +8319,6 @@ balloon hint.
 <link id="TTimer.Interval"/>
 <link id="#lcl.popupnotifier.TPopupNotifier">TPopupNotifier</link>
 </seealso>
-<notes>
-<note>TODO: Which platforms actually have native balloon hint support?</note>
-</notes>
 </element>
 
 <element name="TCustomTrayIcon.GetPosition">
