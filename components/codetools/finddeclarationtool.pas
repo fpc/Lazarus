@@ -4724,6 +4724,15 @@ var
         or StartContextNode.HasAsParent(ContextNode) then
           // searching an ancestor => don't search within ancestors
           Exclude(Flags,fdfSearchInAncestors);
+      end else if ContextNode.Desc=ctnGenericParams then begin
+        if SearchInGenericParams(ContextNode) then begin
+          FindIdentifierInContext:=true;
+          {$IFDEF ShowCollect}
+          if fdfCollect in Flags then
+            raise Exception.Create('fdfCollect must never return true');
+          {$ENDIF}
+          exit(AbortNoCacheResult);
+        end;
       end;
 
       if (ContextNode=StartContextNode)
@@ -13201,38 +13210,28 @@ begin
   if (ArrayNode=nil) then exit;
   if (ArrayNode.Desc<>ctnOpenArrayType) and (ArrayNode.Desc<>ctnRangedArrayType)
   then exit;
-  if (ArrayNode.Parent <> nil)
-  and (ArrayNode.Parent.Desc = ctnGenericType)
-  and (ParentParams <> nil) then begin
-    // TODO: make sure there is ONLY ONE GenParam
-    ExprType.Desc := xtContext;
-    ExprType.Context.Node := ParentParams.GenParams.SpecializeParamsNode.FirstChild;
-    ExprType.Context.Tool := ParentParams.GenParams.ParamValuesTool;
-    Result:=true;
-  end else begin
-    MoveCursorToNodeStart(ArrayNode);
-    ReadNextAtom; // array
-    if not UpAtomIs('ARRAY') then exit;
-    ReadNextAtom; // of
-    if CurPos.Flag=cafEdgedBracketOpen then begin
-      ReadTilBracketClose(true);
-      ReadNextAtom;
-    end;
-    if not UpAtomIs('OF') then exit;
+  MoveCursorToNodeStart(ArrayNode);
+  ReadNextAtom; // array
+  if not UpAtomIs('ARRAY') then exit;
+  ReadNextAtom; // of
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    ReadTilBracketClose(true);
     ReadNextAtom;
-    if not AtomIsIdentifier then exit;
-    Params:=TFindDeclarationParams.Create;
-    Params.GenParams := ParentParams.GenParams;
-    try
-      Params.Flags:=fdfDefaultForExpressions;
-      Params.ContextNode:=ArrayNode;
-      p:=CurPos.StartPos;
-      Params.SetIdentifier(Self,@Src[p],nil);
-      ExprType:=FindExpressionResultType(Params,p,-1,AliasType);
-      Result:=true;
-    finally
-      Params.Free;
-    end;
+  end;
+  if not UpAtomIs('OF') then exit;
+  ReadNextAtom;
+  if not AtomIsIdentifier then exit;
+  Params:=TFindDeclarationParams.Create;
+  Params.GenParams := ParentParams.GenParams;
+  try
+    Params.Flags:=fdfDefaultForExpressions;
+    Params.ContextNode:=ArrayNode;
+    p:=CurPos.StartPos;
+    Params.SetIdentifier(Self,@Src[p],nil);
+    ExprType:=FindExpressionResultType(Params,p,-1,AliasType);
+    Result:=true;
+  finally
+    Params.Free;
   end;
 end;
 
