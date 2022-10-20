@@ -1042,7 +1042,7 @@ Context (DC).
 <element name="TCanvasOrientation.csLefttoRight">
 <short/>
 <notes>
-<note>TODO: Change this to coLeftToRight?</note>
+<note>Needs to be changed to coLeftToRight.</note>
 </notes>
 </element>
 <element name="TCanvasOrientation.coRighttoLeft">
@@ -15713,18 +15713,36 @@ The return value is RT_GROUP_ICON in TIcon.
 <element name="TIcon.GetResourceType.Result">
 <short>Resource type used for the icon image type.</short>
 </element>
+
 <element name="TIcon.Handle">
-<short>Handle used to access the image data for the icon.</short>
+<short>
+Handle used to access the image data for the icon.
+</short>
 <descr>
 <p>
-Handle is a <var>HICON</var> property which contains the icon handle used to 
-access image data for the icon. The property value is provided by the 
-GetHandle method.
-<!-- TODO: SetHandle -->
+<var>Handle</var> is a <var>HICON</var> property which contains the handle 
+for the icon used to access image data for the icon. The property value is 
+provided by the inherited GetHandle method, and contains the Handle for its 
+TSharedRasterImage instance.
+</p>
+<p>
+Setting a new value for the property causes the previous handle and the 
+canvas device context to be freed. The previous image is cleared and unshared 
+as well.
+</p>
+<p>
+The inherited UpdateHandle method is called to apply the new handle to the 
+shared image, and to load its icon data.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomIcon.SetHandle"/>
+<link id="TCustomIcon.UpdateHandle"/>
+<link id="TRasterImage.GetHandle"/>
+<link id="TSharedRasterImage.Handle"/>
+</seealso>
 </element>
+
 <!-- .ICNS is the Apple icon image format used in macOS. -->
 <element name="TIcnsRec">
 <short>
