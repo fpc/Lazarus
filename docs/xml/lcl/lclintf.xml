@@ -2649,9 +2649,9 @@ PChar('Account Details'),
 MB_ICONWARNING or MB_ABORTRETRYIGNORE or MB_DEFBUTTON2);
 
 case Result of
-IDABORT:  // TODO:
-IDRETRY:  // TODO:
-IDIGNORE: // TODO:
+IDABORT:  // needs to be implemented
+IDRETRY:  // needs to be implemented
+IDIGNORE: // needs to be implemented
 end;
 end;
 </code>
