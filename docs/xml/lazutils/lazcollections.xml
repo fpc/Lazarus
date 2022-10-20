@@ -633,7 +633,6 @@ TLazThreadedQueue specializations are used in the implementation of the
 <var>fpdserver</var> component, and its integration into the Lazarus IDE.
 </p>
 </descr>
-<notes><note>TODO: Discuss the RTL events and their usage.</note></notes>
 <seealso>
 <link id="TLazMonitor"/>
 </seealso>
