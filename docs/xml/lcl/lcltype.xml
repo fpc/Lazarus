@@ -4779,7 +4779,7 @@ Defined for the LCL.
 <short/>
 <descr/>
 <seealso/>
-<notes><note>TODO: Move this to StdCtrls.</note></notes>
+<notes><note>Needs to be moved to to StdCtrls.</note></notes>
 </element>
 <!-- enumeration value Visibility: default -->
 <element name="TOwnerDrawStateType.odSelected">
