@@ -95,18 +95,19 @@ properly:
   If you want to compile the binaries for yourself see the BSD section.
 
   The FPC sources:
-  The easiest way to get the Free Pascal sources is via svn. Of course you can
+  The easiest way to get the Free Pascal sources is via git. Of course you can
   also download it as whole, see http://www.freepascal.org/develop.html
   for the daily snapshot of the release tree (3.1.x).
 
-  The FPC sources via svn:
+  The FPC sources via git:
   Create a directory where you would like to put the sources. You don't need
   to be root to do this.
   First create a directory for fpc (e.g. /home/username/freepascal) then do
   the following:
 
   []$ bash
-  []$ svn checkout http://svn.freepascal.org/svn/fpc/trunk fpc
+  []$ git clone https://gitlab.com/freepascal.org/fpc/source.git
+  []$ git switch main  
 
   This will create a directory fpc, which can later be used in the IDE.
 
@@ -114,7 +115,7 @@ properly:
   To download/update the latest changes you can simply do
 
   []$ cd /home/username/freepascal/fpc
-  []$ svn up
+  []$ git pull
 
 
 
@@ -145,7 +146,7 @@ properly:
 
  - a file with all sources, or two (FPC and Lazarus)
     (1) e.g. for FPC ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
-     preferably an export (no SVN/ dirs). The above file misses this
+     preferably an export (no .git/ dirs). The above file misses this
     (2) Lazarus source snapshot.
   - _any_ starting compiler from the 2.6.4 branch) You can do a check by parsing
  	  the output of 'fpc -v'  if it is 2.6.4, it is ok.
@@ -203,11 +204,12 @@ properly:
 
   Download the latest Mac OSX dmg package.
   Since FPC for Mac OSX is under heavy development, it s recommended to use
-  the latest FPC from svn.
+  the latest FPC from git.
 
   Open a terminal and type (without the []$)
   
-  []$ svn checkout http://svn.freepascal.org/svn/fpc/trunk fpc
+  []$ git clone https://gitlab.com/freepascal.org/fpc/source.git
+  []$ git switch main  
 
   This will create a directory fpc, which can also be later used by the IDE.
   
@@ -227,7 +229,7 @@ properly:
   To download/update the latest changes you can simply do
 
   []$ cd /Users/username/fpc
-  []$ svn up
+  []$ git pull
 
 
 ================================================================================
@@ -239,12 +241,12 @@ properly:
   Because the whole Lazarus stuff is installed into one directory, uninstall
   is very easy and you don't need to be root to install Lazarus.
   You can get tgz/zip files from the downloads section or you can download it
-  directly via svn.
+  directly via git.
   
   Hint: Most Linux distributions contain a Lazarus package. Go to your package
         manager and install it.
 
-  Downloading Lazarus svn: svn provides an easy way to update your sources by
+  Downloading Lazarus git: git provides an easy way to update your sources by
   only downloading the changes. This is the recommended way and saves you a lot
   of time. A connection to the internet is needed for this.
   You don't to be root. Lazarus does not need any special permissions, neither
@@ -252,9 +254,10 @@ properly:
   First create a directory for Lazarus (e.g. /home/username/freepascal) then do
   the following:
   
-  connect to the svn server (note: Lazarus and Free Pascal use the same server)
+  connect to the git server (note: Lazarus and Free Pascal use the same server)
   
-  []$ svn checkout http://svn.freepascal.org/svn/lazarus/trunk lazarus
+  []$ git clone https://gitlab.com/freepascal.org/lazarus/lazarus.git
+  []$ git switch main  
 
   compile Lazarus:
 
@@ -287,7 +290,7 @@ properly:
   To update Lazarus you can use
 
   []$ cd /home/username/freepascal/lazarus
-  []$ svn up
+  []$ git pull
   []$ make clean all   (gmake on BSD)
   
   This will rebuild Lazarus and create a minimal IDE with only the basic 
