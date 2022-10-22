@@ -823,7 +823,9 @@ Not used in the current LCL implementation.
 </element>
 
 <element name="TColumnButtonStyle">
-<short>Enumeration with cell editor types available in a grid control.</short>
+<short>
+Enumeration with cell editor types available in a grid control.
+</short>
 <descr>
 <p>
 <var>TColumnButtonStyle</var> is an enumerated type with values that 
@@ -4788,9 +4790,7 @@ called.
 </element>
 
 <element name="TGridColumn.GetDisplayName" link="#rtl.Classes.TCollectionItem.GetDisplayName"/>
-<element name="TGridColumn.GetDisplayName.Result">
-<short/>
-</element>
+<element name="TGridColumn.GetDisplayName.Result"/>
 
 <element name="TGridColumn.GetDefaultAlignment">
 <short>Gets the default value for the Alignment property.</short>
@@ -5131,35 +5131,113 @@ adjust the font PPI to the value specified in ADesignTimePPI.
 
 <element name="TGridColumn.ScaleFontsPPI">
 <short>
-Scales fonts on the column and the grid control using a scaling factor.
+Scales the fonts for the column to a specified display density using a 
+scaling factor.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ScaleFontsPPI</var> is a method used to scale the height for fonts used 
+to display the data and title in the grid column. It implements the method 
+introduced in TControl, and applies the operation to the fonts used in the 
+TGridColumn instance. It is called from the ScaleFontsPPI method in 
+TCustomGrid when Columns have been defined for the grid control.
+</p>
+<p>
+ScaleFontsPPI calls the The DoScaleFontPPI method in Grid to adjust the 
+control font using the arguments in AToPPI and AProportion.
+</p>
+<p>
+AToPPI contains the pixels per inch value assigned to the fonts used when a 
+non-zero value is specified. If AToPPI is omitted (0), the scaling factor in 
+AProportion is used to scale the existing PixelsPerInch setting in the fonts 
+by the factor in AProportion.
+</p>
+<p>
+The ScaleFontsPPI method in Title is called to adjust the font used in the 
+fixed title displayed for the column. It uses the same logic applied to the 
+control Font.
+</p>
+<p>
+ScaleFontsPPI is called when the AutoAdjustLayout method is used to apply a 
+layout policy to a control.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumn.Font"/>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumnTitle.ScaleFontsPPI"/>
+<link id="TDrawGrid.Font"/>
+<link id="TStringGrid.Font"/>
+<link id="TCustomGrid.TitleFont"/>
+<link id="TCustomGrid.ScaleFontsPPI"/>
+<link id="#lcl.controls.TControl.ScaleFontsPPI">TControl.ScaleFontsPPI</link>
+</seealso>
 </element>
 <element name="TGridColumn.ScaleFontsPPI.AToPPI">
-<short/>
+<short>
+Target pixels per inch for the fonts in the grid column.
+</short>
 </element>
 <element name="TGridColumn.ScaleFontsPPI.AProportion">
-<short/>
+<short>
+Scaling factor applied to pixels per inch when aToPPI is 0.
+</short>
 </element>
 
 <element name="TGridColumn.IsDefault">
-<short><b>True</b> if the column is the default column in the grid.</short>
-<descr/>
-<seealso/>
+<short>
+Indicates if default layout settings are used for the grid column.
+</short>
+<descr>
+<p>
+<var>IsDefault</var> is a <var>Boolean</var> function used to determine if 
+the grid column uses default values in properties used to layout and 
+configure the class instance. The return value is <b>True</b> when all of the 
+following conditions are met:
+</p>
+<ul>
+<li>Alignment is unassigned (<b>Nil</b>).</li>
+<li>Color is unassigned (<b>Nil</b>).</li>
+<li>ReadOnly is unassigned (<b>Nil</b>).</li>
+<li>Width is unassigned (<b>Nil</b>).</li>
+<li>Layout is unassigned (<b>Nil</b>).</li>
+<li>MaxSize is unassigned (<b>Nil</b>).</li>
+<li>MinSize is unassigned (<b>Nil</b>).</li>
+<li>SizePriority is unassigned (<b>Nil</b>).</li>
+<li>IsDefaultFont returns <b>True</b>.</li>
+<li>Title uses default settings.</li>
+</ul>
+<p>
+IsDefault is used during LCL component streaming to determine whether items 
+in the Columns collection need to be included in the resource stream when the 
+private WriteColumns method is called.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumns.IsDefault"/>
+<link id="TCustomGrid.Columns"/>
+</seealso>
 </element>
 <element name="TGridColumn.IsDefault.Result">
-<short/>
+<short>
+<b>True</b> if the column uses its default settings.
+</short>
 </element>
 
 <element name="TGridColumn.Grid">
 <short>The <var>Grid</var> to which this column belongs.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomGrid"/>
+<link id="TCustomGrid.Columns"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.DefaultWidth">
-<short>Default width for the column, or -1 when not assigned.</short>
+<short>
+Default width for the column, or -1 when not assigned.
+</short>
 <descr>
 <p>
 <var>DefaultWidth</var> is a read-only <var>Integer</var> property with the 
@@ -5188,128 +5266,378 @@ an explicit value has not been assigned in Width, the property value is -1.
 </element>
 
 <element name="TGridColumn.WidthChanged">
-<short><b>True</b> when the width for the column has been changed.</short>
-<descr/>
-<seealso/>
+<short>
+<b>True</b> when the width for the column has been changed.
+</short>
+<descr>
+<p>
+Set to <b>True</b> when an explicit value is assigned to the Width property.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.DefaultWidth"/>
+<link id="TGridColumn.StoredWidth"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.Alignment">
-<short>Whether the column is justified, centered, etc.</short>
-<descr/>
-<seealso/>
+<short>
+Indicates the alignment for values displayed in the column: left or right 
+aligned, or centered.
+</short>
+<descr>
+<p>
+<var>Alignment</var> is a <var>TAlignment</var> property which indicates how 
+data displayed in the column is aligned. If Alignment has not been assigned, 
+the value from GetDefaultAlignment is used in the property. Changing the 
+value for the property causes the ColumnChanged method to be called to update 
+the collection item and reset the value in WidthChanged to <b>False</b>.
+</p>
+<p>
+Alignment is used when the Grid control prepares its Canvas to draw data 
+cells in the column.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumns.Items"/>
+<link id="TCustomGrid.PrepareCanvas"/>
+<link id="TCustomGrid.DrawCellText"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.ButtonStyle">
-<short>The style used for a button displayed in the column.</short>
-<descr/>
-<seealso/>
+<short>
+The style used for a button displayed for cells in the column.
+</short>
+<descr>
+<p>
+<var>ButtonStyle</var> is a <var>TColumnButtonStyle</var> property which 
+indicates the button style used for cell editors displayed in the column. The 
+default value is cbsAuto, and causes String-based editors with an Ellipsis 
+button to be selected.
+</p>
+<p>
+See <link id="TColumnButtonStyle"/> for other values allowed used in the 
+property, and their usage.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method to be 
+called to update the collection item and reset the value in WidthChanged to 
+<b>False</b>.
+</p>
+<p>
+ButtonStyle is used when the GetDefaultEditor or EditorByStyle methods in 
+Grid are called.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumns.Items"/>
+<link id="TCustomGrid.EditorByStyle"/>
+<link id="TCustomGrid.GetDefaultEditor"/>
+<link id="TColumnButtonStyle"/>
+<link id="TCompositeCellEditor"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.Color">
-<short>Color used for the column.</short>
-<descr/>
-<seealso/>
+<short>
+Color for the background on the column.
+</short>
+<descr>
+<p>
+<var>Color</var> is a <var>TColor</var> property with the background color 
+used when values in the grid column are drawn. If an explicit value has not 
+been assigned for the property, the value from GetDefaultColor is used as the 
+property value.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method to be 
+called to update the collection item in its collection.
+</p>
+<p>
+Use the Font.Color property to set the color for text drawn in the column.
+</p>
+<p>
+Use Title.Color and Title.Font color properties to set the colors for fixed 
+cells drawn as grid column headers.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.Font"/>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumnTitle.Color"/>
+<link id="TGridColumnTitle.Font"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+<link id="#lcl.graphics.TFont.Color">TFont.Color</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.DropDownRows">
-<short>The number of rows in the drop-down list used in the column.</short>
-<descr/>
-<seealso/>
+<short>
+The number of rows displayed in the drop-down list for a cell editor in the 
+column.
+</short>
+<descr>
+<p>
+<var>DropDownRows</var> is a <var>Longint</var> property with the number of 
+rows displayed in the drop-down list for the cell editor in the column. The 
+default value is 7.
+</p>
+<p>
+DropDownRows is assigned to the cell editor retrieved in the GetDefaultEditor 
+method in the Grid control. It is relevant when the ButtonStyle for the 
+column is set or resolved to cbsPicklist in the EditorByStyle method for the 
+Grid control.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TCustomGrid.GetDefaultEditor"/>
+<link id="TCustomGrid.EditorByStyle"/>
+<link id="TColumnButtonStyle"/>
+<link id="TPickListCellEditor"/>
+<link id="#lcl.stdctrls.TCustomComboBox.DropDownCount">TCustomComboBox.DropDownCount</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.Expanded">
-<short>Whether the column has been Expanded.</short>
-<descr/>
-<seealso/>
+<short>
+Indicates if the drop-down list in the column cell editor is displayed in an 
+expanded state.
+</short>
+<descr>
+<p>
+<var>Expanded</var> is a <var>Boolean</var> property which indicates if the 
+drop-down list for the column cell editor is displayed in an expanded state. 
+The default value for the property is <b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TGridColumn.DropDownRows"/>
+<link id="TColumnButtonStyle"/>
+<link id="TPickListCellEditor"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.Font">
-<short>The <var>Font</var> for the column.</short>
-<descr/>
-<seealso/>
+<short>
+The font used for text displayed in the column.
+</short>
+<descr>
+<p>
+<var>Font</var> is a <var>TFont</var> property which contains the typeface name and display attributes used to display text for cells in the grid column.
+By default, Font contains the same value assigned to the Grid control and 
+loaded in the FillDefaultFont method. It is applied to the Canvas for the 
+Grid and used in its DrawCellText method.
+</p>
+<p>
+Changing the value for the property causes IsDefaultFont to be set to 
+<b>False</b>. The ColumnChanged method is called to update the collection 
+item in the Columns collection for the Grid. The value in WidthChanged is 
+also reset to <b>False</b>.
+</p> 
+<p>
+Use the Font property in Title to set attributes for text displayed in the 
+fixed header cells for the column.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TGridColumnTitle.Font"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.Font"/>
+<link id="TCustomGrid.PrepareCanvas"/>
+<link id="TCustomGrid.DrawCellText"/>
+<link id="#lcl.graphics.TFont">TFont</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.Layout">
-<short>The <var>Layout</var> for text.</short>
-<descr/>
-<seealso/>
+<short>
+The layout (vertical alignment) for text displayed in the column.
+</short>
+<descr>
+<p>
+Use the Alignment property to set the horizontal alignment for text displayed 
+in the non-fixed cells for the column.
+</p>
+<p>
+Use the Layout and Alignment properties in Title to control text displayed in 
+the fixed cells for the column.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.Alignment"/>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumnTitle.Alignment"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="#lcl.graphics.TTextLayout">TTextLayout</link>
+</seealso>
 </element>
 
 <element name="TGridColumn.MinSize">
-<short>The minimum size for the column.</short>
+<short>
+The minimum size for the column in pixels.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGridColumn.MaxSize"/>
+<link id="TGridColumn.Width"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.AutoFillColumns"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.MaxSize">
-<short>The maximum size for the column.</short>
+<short>
+The maximum size for the column in pixels.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGridColumn.MinSize"/>
+<link id="TGridColumn.Width"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.AutoFillColumns"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.PickList">
 <short>
-The list of items that can be selected as the value for the column.
+The list of available items in the drop-down list for the column.
+</short>
+<descr/>
+<seealso>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TGridColumn.DropDownRows"/>
+<link id="TGridColumn.Expanded"/>
+<link id="TCustomGrid.EditorByStyle"/>
+<link id="TCompositeCellEditor"/>
+</seealso>
+</element>
+
+<element name="TGridColumn.ReadOnly">
+<short>
+<b>True</b> if the values in the column cannot be changed at run-time using 
+a cell editor.
 </short>
 <descr/>
 <seealso/>
 </element>
 
-<element name="TGridColumn.ReadOnly">
-<short><b>True</b> when the values in the column cannot be changed.</short>
-<descr/>
-<seealso/>
-</element>
-
 <element name="TGridColumn.SizePriority">
-<short>The auto-sizing priority for the column.</short>
-<descr/>
-<seealso/>
+<short>
+The auto-sizing priority for the column.
+</short>
+<descr>
+<p>
+<b>0</b> indicates that the column is not one of the auto-sized columns in 
+the Grid control. Any non-zero value causes the column width to be adjusted 
+when AutoFillColumns is enabled in the Grid control.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumn.MinSize"/>
+<link id="TGridColumn.MaxSize"/>
+<link id="TGridColumn.Width"/>
+<link id="TGridColumn.Grid"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.AutoFillColumns"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.Tag">
 <short>Contains a Pointer to an Integer type.</short>
 <descr>
 <p>
-<var>Tag</var> is a <var>PtrInt</var> property which contains a numeric 
-value. Its usage is implementation dependent.
+<var>Tag</var> is a <var>PtrInt</var> property which contains a pointer to an 
+numeric integer value. It does not have any predefined usage in TGridColumn.
 </p>
 </descr>
 <seealso/>
 </element>
 
 <element name="TGridColumn.Title">
-<short>Text displayed as the column title.</short>
+<short>
+Text displayed as the title in the fixed header for the column.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TGridColumn.Width">
-<short>The Width of the column.</short>
+<short>
+The display Width in pixels for the column on its Grid control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGridColumn.MinSize"/>
+<link id="TGridColumn.MaxSize"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.AutoFillColumns"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.Visible">
-<short><b>True</b> if the column is visible (i.e. not hidden).</short>
+<short>
+<b>True</b> if the column is visible (not hidden).
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TGridColumn.GetValueChecked">
-<short>Gets the checked value for a cell in the column.</short>
+<short>
+Gets the checked value for a check box cell in the column.
+</short>
+<seealso>
+<link id="TGridColumn.ValueChecked"/>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TColumnButtonStyle"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.GetValueUnchecked">
-<short>Gets the unchecked value for a cell in the column.</short>
+<short>
+Gets the unchecked value for a check box cell in the column.
+</short>
+<seealso>
+<link id="TGridColumn.ValueUnchecked"/>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TColumnButtonStyle"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.ValueChecked">
-<short>Value used for a checked cell in the column.</short>
+<short>
+Value used for a checked check box cell in the column.
+</short>
+<seealso>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TColumnButtonStyle"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.ValueUnchecked">
-<short>Value used for an unchecked cell in the column.</short>
+<short>
+Value used for an unchecked check box cell in the column.
+</short>
+<seealso>
+<link id="TGridColumn.ButtonStyle"/>
+<link id="TColumnButtonStyle"/>
+</seealso>
 </element>
 
 <element name="TGridPropertyBackup">
@@ -5659,7 +5987,7 @@ Gets the grid column in the collection with the specified title.
 <descr>
 <p>
 Calls SameText to perform a case-insensitive comparison between the value in 
-ATitle and the title in each of the collection items.
+ATitle and the title in each of the columns in the collection.
 </p>
 </descr>
 <seealso/>
@@ -5715,14 +6043,19 @@ collection or when <var>Column</var> cannot be located in the container.
 </element>
 
 <element name="TGridColumns.IsDefault">
-<short><b>True</b> if the column contains default values only.</short>
+<short>
+<b>True</b> if the columns contain default values only.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGridColumn.IsDefault"/>
+<link id="TGridColumnTitle.IsDefault"/>
+</seealso>
 </element>
 <element name="TGridColumns.IsDefault.Result">
 <short>
-<b>True</b> if the column uses a default title and contains no explicit 
-property assignments.
+<b>True</b> if the columns use default settings in their column settings and 
+titles, and contain no explicit property assignments.
 </short>
 </element>
 
@@ -8406,6 +8739,7 @@ changed.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TCustomGrid.WriteColumns">
 <short>
 Writes the Columns collection using the specified TWriter instance.
