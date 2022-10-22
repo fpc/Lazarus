@@ -519,7 +519,6 @@ var
   allowcocoa : Boolean;
   idx: integer;
   win : NSWindow;
-  cbnew : ICommonCallback;
   responder : NSResponder;
 begin
   {$ifdef COCOALOOPNATIVE}
@@ -601,25 +600,8 @@ begin
 
   finally
 
-    // Focus change notification used to be in makeFirstResponder method
-    // However, it caused many issues with infinite loops.
-    // Sometimes Cocoa like to switch focus to window (temporary) (i.e. when switching tabs)
-    // That's causing a conflict with LCL. LCL tries to switch focus back
-    // to the original control. And Cocoa keep switching it back to the Window.
-    // (Note, that for Cocoa, window should ALWAYS be focusable)
-    // Thus, Focus switching notification was moved to post event handling.
-    //
-    // can't have this code in TCocoaWindow, because some key events are not forwarded
-    // to the window
-    cbnew := win.firstResponder.lclGetCallback;
-    if not isCallbackForSameObject(cb, cbnew) then
-    begin
-      if Assigned(cb) then cb.ResignFirstResponder;
-      cbnew := win.firstResponder.lclGetCallback;
-      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
-    end;
-
     CocoaWidgetSet.ReleaseToCollect(idx);
+
   end;
   {$ifdef COCOALOOPNATIVE}
     if CocoaWidgetSet.FTerminating then stop(nil);
