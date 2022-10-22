@@ -1,17 +1,17 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: Lazarus ide\n"
 "POT-Creation-Date: 18.06.2019\n"
-"PO-Revision-Date: 2022-04-03 04:42+0300\n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.3\n"
+"PO-Revision-Date: 2022-10-21 22:47+0300\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: tr_TR\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "Language-Team: onur2x@gmail.com\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS: Onur ERÇELEN \"\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -1294,22 +1294,16 @@ msgid "Automatic"
 msgstr "Otomatik"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-#, fuzzy
-#| msgid "Dwarf2"
 msgid "Dwarf 2"
-msgstr "Dwarf2"
+msgstr "Dwarf 2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-#, fuzzy
-#| msgid "Dwarf with sets"
 msgid "Dwarf 2 with sets"
-msgstr "Dwarf ile ayarla"
+msgstr "Dwarf 2 ile ayarla"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-#, fuzzy
-#| msgid "Dwarf3 (beta)"
 msgid "Dwarf 3 (beta)"
-msgstr "Dwarf3 (beta)"
+msgstr "Dwarf 3 (beta)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -2321,7 +2315,7 @@ msgstr "Önek içeren tanımlayıcılarını dahil et"
 
 #: lazarusidestrconsts.dlgincludekeywordstoidentcompl
 msgid "Include all keywords and operators"
-msgstr ""
+msgstr "Tüm anahtar kelimeleri ve operatörleri dahil edin"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -4088,7 +4082,7 @@ msgstr "Değer"
 
 #: lazarusidestrconsts.dlgvaluedataaddr
 msgid "Data-Address"
-msgstr ""
+msgstr "Veri-Adres"
 
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
@@ -4139,39 +4133,39 @@ msgstr "FPC logosu yaz"
 
 #: lazarusidestrconsts.drsignoringprojectdebuggersettings
 msgid " (Ignoring project settings below)"
-msgstr ""
+msgstr " (Aşağıdaki proje ayarları dikkate alınmaz)"
 
 #: lazarusidestrconsts.drsstoreconverterconfiginses
 msgid "Store converter config in session"
-msgstr ""
+msgstr "Dönüştürücü yapılandırmasını oturumda saklama"
 
 #: lazarusidestrconsts.drsstoreprojectdebuggerconfi
 msgid "Store project debugger configs in session"
-msgstr ""
+msgstr "Proje hata ayıklayıcı yapılandırmalarını oturumda saklama"
 
 #: lazarusidestrconsts.drsthedebuggerbackendselecti
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
-msgstr ""
+msgstr "Açılır menüden \"Hata Ayıklayıcı Arka Ucu\" seçimi (IDE hata ayıklayıcı arka uçlarının listesi) her zaman oturumda saklanır. Projeye özel arka uçlar (aşağıda) varsayılan olarak LPI'da saklanır."
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
-msgstr ""
+msgstr "Bu sadece aşağıdaki dönüştürücü listesini etkiler. Hangi listenin kullanılacağını belirleyen seçenekler her zaman oturumda saklanır."
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
 msgid "Use the IDE-Global list of converters"
-msgstr ""
+msgstr "IDE-Global dönüştürücüler listesini kullanın"
 
 #: lazarusidestrconsts.drsusetheprojectlistofconver
 msgid "Use the project list of converters"
-msgstr ""
+msgstr "Dönüştürücülerin proje listesini kullanın"
 
 #: lazarusidestrconsts.drsusingidedefaultdebuggerse
 msgid "Using IDE default debugger settings"
-msgstr ""
+msgstr "IDE varsayılan hata ayıklayıcı ayarlarını kullanma"
 
 #: lazarusidestrconsts.drsusingselectedidedebuggers
 msgid "Using selected IDE debugger settings"
-msgstr ""
+msgstr "Seçilen IDE hata ayıklayıcı ayarlarını kullanma"
 
 #: lazarusidestrconsts.fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -8570,7 +8564,7 @@ msgstr "-- IDE varsayılan Hata Ayıklama kullanın --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseprojectdebugger
 msgid "-- Use project Debugger --"
-msgstr ""
+msgstr "-- Proje Hata Ayıklayıcısını Kullan --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -11009,7 +11003,7 @@ msgstr "Önemli"
 #: lazarusidestrconsts.lisimported
 #, object-pascal-format
 msgid "%s (imported)"
-msgstr ""
+msgstr "%s (içe aktarıldı)"
 
 #: lazarusidestrconsts.lisimportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
@@ -11122,7 +11116,7 @@ msgstr "Devralınan proje bileşeni"
 
 #: lazarusidestrconsts.lisinitialchecks
 msgid "Initial Checks"
-msgstr ""
+msgstr "İlk Kontroller"
 
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
@@ -14869,7 +14863,7 @@ msgstr "%s satırında %s satırında %s sütununda bulunamadı.%s%s Mesaj günc
 
 #: lazarusidestrconsts.lisnothingtodo
 msgid "Nothing to do"
-msgstr ""
+msgstr "Yapacak bir şey yok"
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -17035,7 +17029,7 @@ msgstr "Proje bilgi dosyası algılandı"
 
 #: lazarusidestrconsts.lisprojectinspectorshowprops
 msgid "Show properties pane in Project Inspector"
-msgstr ""
+msgstr "Proje denetçisinde özellikler bölmesini göster"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
@@ -17300,7 +17294,7 @@ msgstr "&Örnek Projeleri gör"
 
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
-msgstr ""
+msgstr "Başlangıçta Fppkg yapılandırmasını hızlı kontrol edin"
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
@@ -18262,7 +18256,7 @@ msgstr "Son proje yüklemeyi atla"
 
 #: lazarusidestrconsts.lisskipstartupchecks
 msgid "Skip selected checks at startup."
-msgstr ""
+msgstr "Başlangıçta seçilen kontrolleri atlayın."
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -18998,24 +18992,24 @@ msgstr "Proje derleyici seçenekleri ve ana kaynaktaki direktifler farklıdır. 
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_caption
 msgid "Running your application with debugger"
-msgstr ""
+msgstr "Uygulamanızı hata ayıklayıcı ile çalıştırma"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
 msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
-msgstr ""
+msgstr "Bu seçim daha sonra Proje -> Proje Seçenekleri -> Derleyici Seçenekleri -> Hata Ayıklama bölümünden değiştirilebilir."
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
 msgid "Run with no debugger"
-msgstr ""
+msgstr "Hata ayıklayıcı olmadan çalıştır"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_textexplain
 #, object-pascal-format
 msgid "\"%s\" can only run your application when it was compiled with a suitable Debug Information enabled."
-msgstr ""
+msgstr "\"%s\" uygulamanızı yalnızca uygun bir Hata Ayıklama Bilgisi etkinleştirilerek derlendiğinde çalıştırabilir."
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_title
 msgid "Choose Debug Information format"
-msgstr ""
+msgstr "Hata Ayıklama Bilgisi biçimini seçin"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 #, object-pascal-format
@@ -19025,7 +19019,7 @@ msgstr "Proje, LCLBase tarafından gereken LCL birim arayüzlerini kullanmaz.%s 
 #: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
 #, object-pascal-format
 msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
-msgstr ""
+msgstr "Projede derleme komutu yok.%sBkz: Proje -> Proje Seçenekleri -> Derleyici Seçenekleri -> Derleyici Komutları"
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
