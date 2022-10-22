@@ -4153,51 +4153,300 @@ component streaming mechanism. Columns which contain default values
 </element>
 
 <element name="TGridColumnTitle.Column">
-<short>The <var>Column</var> to which the title applies.</short>
-<descr/>
-<seealso/>
+<short>The TGridColumn instance where the title is used.</short>
+<descr>
+<p>
+Column is a read-only TGridColumn property with the grid column where the 
+class instance is used as the Title property. Its value is assigned in Create 
+using the argument passed to the constructor.
+</p>
+<p>
+Column allows access to properties and methods in the grid column owner, 
+including the Grid where the column is defined. It is used in methods like: 
+FontChanged, FillTitleDefaultFont, FixDesignFontsPPI, and ScaleFontsPPI. It 
+is also used when properties are changed which affect the column definition, 
+including: Alignment, Color, Font, ImageIndex, ImageLayout, Layout, MultiLine, and 
+PrefixOption.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Alignment"/>
+<link id="TGridColumnTitle.Color"/>
+<link id="TGridColumnTitle.Font"/>
+<link id="TGridColumnTitle.ImageIndex"/>
+<link id="TGridColumnTitle.ImageLayout"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="TGridColumnTitle.MultiLine"/>
+<link id="TGridColumnTitle.PrefixOption"/>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumn.Grid"/>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.Alignment">
 <short>
-The <var>Alignment</var> (whether justified or centered) for the column title.
+Horizontal alignment for the text in the column title.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Alignment</var> is a <var>TAlignment</var> property which controls the 
+horizontal alignment for the text in the Caption property. The default 
+alignment is taLeftJustify, as returned from GetDefaultAlignment, and causes 
+the title to be displayed aligned to the left edge of the column.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called to update the collection item and reset its WidthChanged 
+property.
+</p>
+<p>
+Use Layout to control the vertical alignment for the text displayed in the 
+column title.
+</p>
+<p>
+Use ImageLayout to control the position for the glyph image displayed in the 
+fixed header cell for the column title.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Caption"/>
+<link id="TGridColumnTitle.GetDefaultAlignment"/>
+<link id="TGridColumnTitle.ImageLayout"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.Caption">
-<short>The <var>Caption</var> for the column title.</short>
-<descr/>
-<seealso/>
+<short>
+Text displayed as the title for the grid column.
+</short>
+<descr>
+<p>
+<var>Caption</var> is a <var>TCaption</var> property which contains the text 
+displayed as the title for a grid column in a fixed cell header. If an 
+explicit value has not been assigned to Caption, the value from 
+GetDefaultCaption is used as the property value ('Title').
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called. This updates the collection item in the Grid where the Column 
+is defined, and resets the value in the WidthChanged property for the Column.
+</p>
+<p>
+Use Font to control the typeface and display attributes for the text.
+</p>
+<p>
+Use Alignment to control the horizontal alignment for the text within the 
+cell header.
+</p>
+<p>
+Use Layout to control the vertical alignment for the text within the cell 
+header.
+</p>
+<p>
+Use MultiLine to indicate whether the text can be word-wrapped when it is 
+longer than the display width for the column.
+</p>
+<p>
+Use ImageIndex to specify the glyph displayed for in the cell header for the 
+column.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Alignment"/>
+<link id="TGridColumnTitle.Font"/>
+<link id="TGridColumnTitle.Color"/>
+<link id="TGridColumnTitle.ImageIndex"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="TGridColumnTitle.MultiLine"/>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.Color">
-<short>The background <var>Color</var> for the column title.</short>
-<descr/>
-<seealso/>
+<short>
+The background color for the column title.
+</short>
+<descr>
+<p>
+<var>Color</var> is a <var>TColor</var> property which contains the color 
+used to paint the background for the column header where the title is 
+displayed. If an explicit value has not been assigned, the value from 
+GetDefaultColor is used in the property, and contains the FixedColor for the 
+grid where the Column is defined.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called. This causes the collection item to be updated in the grid 
+control, and the WidthChanged property in Column is reset.
+</p>
+<p>
+Use the Color property in Font to control the color for the text displayed in 
+the fixed header cell.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Font"/>
+<link id="TGridColumnTitle.GetDefaultColor"/>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TCustomGrid.FixedColor"/>
+<link id="#lcl.graphics.TFont.Color">TFont.Color</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.Font">
-<short>The <var>Font</var> for the column title.</short>
-<descr/>
-<seealso/>
+<short>
+Contains the typeface and text attributes for the Caption displayed in the 
+column title.
+</short>
+<descr>
+<p>
+<var>Font</var> is a <var>TFont</var> property which contains the name for 
+the typeface and its attributes which are applied to the text displayed in 
+the column title. The default value for the property is assigned in the 
+Create constructor, and uses the value determined by the FillDefaultFont 
+method in the Column. It contains the TitleFont for the grid control (when assigned) or the 
+Column (by default).
+</p>
+<p>
+Use Alignment to control the horizontal alignment for the text displayed in 
+the column title; this overrides the attributes assigned to Font.
+</p>
+<p>
+Use Layout to control the vertical alignment for the text displayed in the 
+column title; this overrides the attributes assigned to Font.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Column"/>
+<link id="TGridColumnTitle.Create"/>
+<link id="TGridColumnTitle.Caption"/>
+<link id="TGridColumnTitle.Alignment"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="TGridColumn.FillDefaultFont"/>
+<link id="TGridColumn.Font"/>
+<link id="TCustomGrid.TitleFont"/>
+<link id="#lcl.graphics.TFont">TFont</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.ImageIndex">
 <short>
-The index for the image used in the title (default=0, i.e. no image).
+Ordinal position for the image displayed in the fixed header for the column title.
 </short>
+<descr>
+<p>
+<var>ImageIndex</var> is a <var>TImageIndex</var> property which contains the 
+ordinal position for the image displayed in the column title. It indicates 
+the position in the TitleImageList property on a grid control where the image 
+is stored. The default value for the property is -1 and indicates that an 
+explicit value has not been assigned, or that an image is not used in the 
+fixed header for the column.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called. This updates the collection item in the grid control where the 
+column is defined, and resets the value in the WidthChanged property in 
+Column.
+</p>
+<p>
+Use ImageLayout to control the position for the image relative to the caption 
+text displayed in the column header.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Column"/>
+<link id="TGridColumnTitle.ImageLayout"/>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TCustomGrid.TitleImageList"/>
+<link id="#lcl.imglist.TImageIndex">TImageIndex</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.ImageLayout">
-<short>The layout used for any image in the column title.</short>
+<short>
+The layout used for any image in the column title.
+</short>
+<descr>
+<p>
+<var>ImageLayout</var> is a <var>TButtonLayout</var> property which controls 
+the placement of the title image relative to the text displayed in the column 
+header. The default value for the property is <var>blGlyphRight</var>, and 
+causes the image to be aligned to the right of the Caption displayed in the 
+column title.
+</p>
+<p>
+See <link id="#lcl.buttons.TButtonLayout">TButtonLayout</link> for the values 
+allowed in the property and their meanings.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called. This updates the collection item in the grid control where the 
+column is defined, and resets the value in the WidthChanged property in 
+Column.
+</p>
+<p>
+Use Alignment and Layout to control the placement of the Caption text in the 
+column title.
+</p>
+</descr>
+<seealso>  
+<link id="TGridColumnTitle.Alignment"/>
+<link id="TGridColumnTitle.Caption"/>
+<link id="TGridColumnTitle.Column"/>
+<link id="TGridColumnTitle.Layout"/>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="#lcl.buttons.TButtonLayout">TButtonLayout</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.Layout">
-<short>The layout used for the text in the column title.</short>
-<descr/>
-<seealso/>
+<short>
+Vertical alignment for the Caption text displayed in the column title.
+</short>
+<descr>
+<p>
+<var>Layout</var> is a <var>TTextLayout</var> property which indicates the 
+vertical alignment for the caption text within the fixed header for the 
+column. See <link id="#lcl.graphics.TTextLayout">TTextLayout</link> for the 
+values allowed in the property and their meanings.
+</p>
+<p>
+If an explicit value has not been assigned to the property, the value from 
+the GetDefaultLayout method (tlCenter) is used as the property value.
+</p>
+<p>
+Changing the value for the property causes the ColumnChanged method in Column 
+to be called. This updates the collection item in the grid control where the 
+column is defined, and resets the value in the WidthChanged property in 
+Column.
+</p>
+<p>
+Use Alignment to control the horizontal alignment for the Caption text 
+displayed in the column title.
+</p>
+<p>
+Use MultiLine to control text wrapping when Caption is longer than the 
+display width for the Column.
+</p>
+<p>
+Use ImageLayout to control the placement of an image relative to the Caption 
+in the column title.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle.Caption"/>
+<link id="TGridColumnTitle.GetDefaultLayout"/>
+<link id="TGridColumnTitle.ImageLayout"/>
+<link id="TGridColumnTitle.MultiLine"/>
+<link id="#lcl.graphics.TTextLayout">TTextLayout</link>
+</seealso>
 </element>
 
 <element name="TGridColumnTitle.MultiLine">
@@ -5458,9 +5707,9 @@ fixed header cells for the column.
 <link id="TGridColumn.WidthChanged"/>
 <link id="TGridColumnTitle.Font"/>
 <link id="TCustomGrid.Columns"/>
-<link id="TCustomGrid.Font"/>
 <link id="TCustomGrid.PrepareCanvas"/>
 <link id="TCustomGrid.DrawCellText"/>
+<link id="#lcl.controls.TControl.Font">TControl.Font</link>
 <link id="#lcl.graphics.TFont">TFont</link>
 </seealso>
 </element>
@@ -18641,7 +18890,7 @@ valid cell position.
 <p>
 In some cases, AutoAdvance and the current cell cannot be used to find an 
 available cell. For this case, a scan of all non-fixed columns an rows is 
-performed until a suitable colunn and row number are found, and 
+performed until a suitable column and row number are found, and 
 MoveNextSelectable is called. If this too fails, the cell position cannot be 
 determined.
 </p>
@@ -24127,10 +24376,10 @@ When using mouse clicks or moving by code, focus will not move from the
 current cell unless the target cell is permitted to receive focus.
 </p>
 <p>
-The grid calls <var>SelectCell</var> to see if a cell is focusable: if this 
+The grid calls <var>SelectCell</var> to see if a cell can be focused: if this 
 function returns <b>True</b>, then the target cell identified with arguments 
-<var>aCol</var> and <var>aRow</var> is focusable (the current implementation 
-of <var>TCustomGrid</var> simply returns <b>True</b>). 
+<var>aCol</var> and <var>aRow</var> can be focused (the current 
+implementation of <var>TCustomGrid</var> simply returns <b>True</b>). 
 <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and 
 <var>TStringGrid</var> override this method and check first if a cell is any 
 wider than 0; normally you don't want a 0 width cell selected so a cell with 
@@ -24140,10 +24389,10 @@ user configurable event <var>OnSelectCell</var>: this event receives the cell
 coordinates as arguments and always returns a default result of <b>True</b>.
 </p>
 <p>
-Once a cell is known to be focusable and we are sure a movement will take 
-place, the method <var>BeforeMoveSelection</var> is called; this in turns 
-triggers the <var>OnBeforeSelection</var> event. This method's arguments are 
-the coordinates for the new focused cell; at this point any visible editor is 
+If a cell can be focused and we are sure a movement will take place, the 
+method <var>BeforeMoveSelection</var> is called; this in turns triggers the 
+<var>OnBeforeSelection</var> event. This method's arguments are the 
+coordinates for the new focused cell; at this point any visible editor is 
 hidden too. The "before" word means that selection is not yet changed and 
 current focused coordinates can be accessed with <var>grid.Col</var> and 
 <var>grid.Row</var> properties.
