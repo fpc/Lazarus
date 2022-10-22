@@ -15739,7 +15739,7 @@ shared image, and to load its icon data.
 <link id="TCustomIcon.SetHandle"/>
 <link id="TCustomIcon.UpdateHandle"/>
 <link id="TRasterImage.GetHandle"/>
-<link id="TSharedRasterImage.Handle"/>
+<link id="TSharedRasterImage.HandleAllocated"/>
 </seealso>
 </element>
 
