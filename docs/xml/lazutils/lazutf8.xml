@@ -2310,16 +2310,22 @@ equal. Otherwise falls back to WideCompareText.
 </descr>
 <seealso>
 <link id="#rtl.sysutils.WideCompareText">WideCompareText</link>
-</seealso>  
+</seealso>
 </element>
 <element name="UTF8CompareLatinTextFast.Result">
-<short/>
+<short>
+Pointer to an Integer with the relative order for the compared values.
+</short>
 </element>
 <element name="UTF8CompareLatinTextFast.S1">
-<short/>
+<short>
+String value used in the comparison.
+</short>
 </element>
 <element name="UTF8CompareLatinTextFast.S2">
-<short/>
+<short>
+String value used in the comparison.
+</short>
 </element>
 
 <element name="UTF8CompareStrCollated">
@@ -2400,19 +2406,29 @@ instance.
 <short>
 Compares UTF-8-encoded values using UTF8CompareLatinTextFast.
 </short>
-<descr/>
+<descr>
+<p>
+Calls the UTF8CompareLatinTextFast routine to compare the values in s1 and s2. The return value is a pointer to an Integer with the relative order for the compared values. &lt;0 indicates s1 comes before s2. 0 indicated the compared values are the same. &gt;0 indicates s2 comes after s1.
+</p>
+</descr>
 <seealso>
 <link id="UTF8CompareLatinTextFast"/>
 </seealso>
 </element>
 <element name="TStringListUTF8Fast.DoCompareText.Result">
-<short/>
+<short>
+Pointer to an Integer with the relative order for the compared values.
+</short>
 </element>
 <element name="TStringListUTF8Fast.DoCompareText.s1">
-<short/>
+<short>
+String with a value used in the comparison.
+</short>
 </element>
 <element name="TStringListUTF8Fast.DoCompareText.s2">
-<short/>
+<short>
+String with a value used in the comparison.
+</short>
 </element>
 
 <element name="TConvertResult">
