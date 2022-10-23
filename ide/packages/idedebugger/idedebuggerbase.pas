@@ -5,10 +5,11 @@ unit IdeDebuggerBase;
 interface
 
 uses
-  Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
-  IdeDebuggerBackendValueConv, IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase,
-  DbgIntfMiscClasses, LazDebuggerIntf, LazDebuggerTemplate,
-  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugConvDebugForJson;
+  Classes, SysUtils, LazClasses, LazLoggerBase, LazMethodList,
+  IdeDebuggerWatchResult, IdeDebuggerBackendValueConv,
+  IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes,
+  LazDebuggerValueConverter, FpDebugConvDebugForJson;
 
 type
 
@@ -112,6 +113,7 @@ type
 
   TWatch = class(TDelayedUdateItem)
   private
+    FFreeNotificationList: TMethodList;
     FFirstIndexOffs: Int64;
     FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
@@ -146,6 +148,9 @@ type
     destructor Destroy; override;
     procedure ClearValues; virtual;
     procedure ClearDisplayData; // keep only what's needed for the snapshot
+
+    procedure AddFreeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeNotification(ANotification: TNotifyEvent);
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
@@ -622,7 +627,12 @@ begin
     FDbgBackendConverter.RemoveFreeNotification(@FDbgBackendConverterFreed);
 
   FValueList.Clear;
+
+  if FFreeNotificationList <> nil then
+    FFreeNotificationList.CallNotifyEvents(Self);
+
   inherited Destroy;
+  FreeAndNil(FFreeNotificationList);
   FreeAndNil(FValueList);
 end;
 
@@ -634,6 +644,20 @@ end;
 procedure TWatch.ClearDisplayData;
 begin
   FValueList.ClearDisplayData;
+end;
+
+procedure TWatch.AddFreeNotification(ANotification: TNotifyEvent);
+begin
+  if FFreeNotificationList = nil then
+    FFreeNotificationList := TMethodList.Create;
+  FFreeNotificationList.Add(TMethod(ANotification));
+end;
+
+procedure TWatch.RemoveFreeNotification(ANotification: TNotifyEvent);
+begin
+  if FFreeNotificationList = nil then
+    exit;
+  FFreeNotificationList.Remove(TMethod(ANotification));
 end;
 
 { TWatches }

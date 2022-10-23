@@ -155,6 +155,7 @@ type
     procedure DoItemRemovedFromView(Sender: TDbgTreeView; AnItem: TObject;
       ANode: PVirtualNode);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
+    procedure DoWatchFreed(Sender: TObject);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
@@ -920,11 +921,26 @@ begin
   DebugBoss.UnLockCommandProcessing;
 end;
 
+procedure TWatchesDlg.DoWatchFreed(Sender: TObject);
+var
+  nd: PVirtualNode;
+begin
+  nd := tvWatches.FindNodeForItem(Sender);
+  if nd = nil then
+    exit;
+
+  tvWatches.OnItemRemoved := nil;
+  tvWatches.NodeItem[nd] := nil;
+  tvWatches.OnItemRemoved := @DoItemRemovedFromView;
+end;
+
 procedure TWatchesDlg.DoItemRemovedFromView(Sender: TDbgTreeView;
   AnItem: TObject; ANode: PVirtualNode);
 begin
-  if AnItem <> nil then
+  if AnItem <> nil then begin
     TWatch(AnItem).ClearDisplayData;
+    TWatch(AnItem).RemoveFreeNotification(@DoWatchFreed);
+  end;
 end;
 
 procedure TWatchesDlg.DoBeginUpdate;
@@ -1623,6 +1639,7 @@ begin
     then begin
       VNode := tvWatches.AddChild(nil, AWatch);
       tvWatches.SelectNode(VNode);
+      AWatch.AddFreeNotification(@DoWatchFreed);
     end;
 
     UpdateItem(VNode, AWatch);
