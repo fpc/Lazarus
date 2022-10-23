@@ -1909,6 +1909,7 @@ begin
       end;
     finally
       PasExpr.Free;
+      PrettyPrinter.Free;
       Context.ReleaseReference;
     end;
   end;
