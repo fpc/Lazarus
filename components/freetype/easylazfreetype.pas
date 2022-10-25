@@ -2017,14 +2017,17 @@ begin
          (nrLanguageID=0)) then
       begin
         value := TT_Get_Name_String(FFace, i);
-        for j := 1 to length(value) div 2 do
-          pword(@value[j*2-1])^ := BEtoN(pword(@value[j*2-1])^);
-        setlength(value2, 3*(length(value) div 2) + 1); //maximum is 3-byte chars and NULL char at the end
-        len := system.UnicodeToUtf8(@value2[1],length(value2),PUnicodeChar( @value[1] ),length(value) div 2);
-        if len > 0 then
+        if value <> '' then
         begin
-          setlength(value2, len-1 );
-          value := value2;
+          for j := 1 to length(value) div 2 do
+            pword(@value[j*2-1])^ := BEtoN(pword(@value[j*2-1])^);
+          setlength(value2, 3*(length(value) div 2) + 1); //maximum is 3-byte chars and NULL char at the end
+          len := system.UnicodeToUtf8(@value2[1],length(value2),PUnicodeChar( @value[1] ),length(value) div 2);
+          if len > 0 then
+          begin
+            setlength(value2, len-1 );
+            value := value2;
+          end;
         end;
         FNamesArray[nrNameID] := value;
       end;
