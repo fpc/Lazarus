@@ -998,6 +998,12 @@ var
   mn : NSMenu;
   allowcocoa : Boolean;
 begin
+  if Assigned(_keyEvCallback) and _keyEvCallback.IsCocoaOnlyState then
+  begin
+    inherited keyDown(event);
+    Exit;
+  end;
+
   if performKeyEquivalent(event) then
     Exit;
 

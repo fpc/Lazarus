@@ -47,6 +47,7 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _KeyHandled: Boolean;
+    _isCocoaOnlyState: Boolean;
     _UTF8Character : array [0..7] of TUTF8Char;
     _UTF8Charcount : Integer;
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
@@ -85,6 +86,9 @@ type
     procedure KeyEvHandled;
     procedure SetTabSuppress(ASuppress: Boolean);
     function CanFocus: Boolean; virtual;
+
+    function IsCocoaOnlyState: Boolean;
+    procedure SetCocoaOnlyState(state: Boolean);
 
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
@@ -899,6 +903,16 @@ end;
 procedure TLCLCommonCallback.KeyEvHandled;
 begin
   _KeyHandled := True;
+end;
+
+function TLCLCommonCallback.IsCocoaOnlyState: Boolean;
+begin
+  Result := _isCocoaOnlyState;
+end;
+
+procedure TLCLCommonCallback.SetCocoaOnlyState( state:Boolean );
+begin
+  _isCocoaOnlyState := state;
 end;
 
 procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);

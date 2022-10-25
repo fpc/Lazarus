@@ -520,6 +520,7 @@ var
   idx: integer;
   win : NSWindow;
   cbnew : ICommonCallback;
+  responder : NSResponder;
 begin
   {$ifdef COCOALOOPNATIVE}
   try
@@ -528,10 +529,24 @@ begin
   win := theEvent.window;
   if not Assigned(win) then win := self.keyWindow;
 
+  responder := nil;
+  cb := nil;
+
   if Assigned(win) then
-    cb := win.firstResponder.lclGetCallback
-  else
-    cb := nil;
+  begin
+    responder := win.firstResponder;
+    cb := responder.lclGetCallback;
+    if Assigned(cb) and (theEvent.type_=NSKeyDown) then
+    begin
+      // set CocoaOnlyState when NSKeyDown only,
+      // keep last CocoaOnlyState when NSKeyUp
+      if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+        cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
+      else
+        cb.CocoaOnlyState := false;
+    end;
+  end;
+
   try
     if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
        (theEvent.type_ = NSFlagsChanged) then begin
@@ -558,10 +573,17 @@ begin
           end;
           {$endif}
 
-          cb.KeyEvBefore(theEvent, allowcocoa);
-          if allowcocoa then
+          if cb.IsCocoaOnlyState then
+          begin
             inherited sendEvent(theEvent);
-          cb.KeyEvAfter;
+          end
+          else
+          begin
+            cb.KeyEvBefore(theEvent, allowcocoa);
+            if allowcocoa then
+              inherited sendEvent(theEvent);
+            cb.KeyEvAfter;
+          end;
         finally
           if Assigned(wnd) then
             wnd._keyEvCallback := nil;
