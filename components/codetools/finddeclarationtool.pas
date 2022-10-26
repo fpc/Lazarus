@@ -10460,6 +10460,7 @@ var EndPos, SubStartPos: integer;
 
 var
   OldFlags: TFindDeclarationFlags;
+  MaybeFuncAtCursor: Boolean;
 begin
   Result:=CleanExpressionType;
   if AliasType<>nil then
@@ -10473,9 +10474,9 @@ begin
   DebugLn('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
   debugln(['TFindDeclarationTool.ReadOperandTypeAtCursor StartContext=',Params.ContextNode.DescAsString,'="',dbgstr(Src,Params.ContextNode.StartPos,15),'"']);
   {$ENDIF}
-  if (AtomIsIdentifier)
+  MaybeFuncAtCursor := AtomIsIdentifier or UpAtomIs('INHERITED');
+  if (MaybeFuncAtCursor)
   or (CurPos.Flag=cafRoundBracketOpen)
-  or UpAtomIs('INHERITED')
   or UpAtomIs('ARRAY')
   then begin
     // read variable
@@ -10484,7 +10485,9 @@ begin
     if EndPos>MaxEndPos then
       EndPos:=MaxEndPos;
     OldFlags:=Params.Flags;
-    Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
+    Params.Flags:=(Params.Flags*fdfGlobals);
+    if MaybeFuncAtCursor then
+      Params.Flags:=Params.Flags+[fdfFunctionResult];
     Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true,AliasType);
     Params.Flags:=OldFlags;
     MoveCursorToCleanPos(EndPos);
