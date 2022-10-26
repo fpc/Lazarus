@@ -472,12 +472,8 @@ Deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit.
 <descr/>
 <seealso/>
 </element>
-<element name="GetModalResultStr.Result">
-<short/>
-</element>
-<element name="GetModalResultStr.ModalResult">
-<short/>
-</element>
+<element name="GetModalResultStr.Result"/>
+<element name="GetModalResultStr.ModalResult"/>
 
 <element name="ModalResultStr">
 <short>
@@ -712,34 +708,18 @@ representing the arguments and the result for a Control Change Message.
 <element name="TCMChanged">
 <short>Not used in the current LCL implementation.</short>
 </element>
-<element name="TCMChanged.Msg">
-<short/>
-</element>
-<element name="TCMChanged.Unused">
-<short/>
-</element>
-<element name="TCMChanged.Child">
-<short/>
-</element>
-<element name="TCMChanged.Result">
-<short/>
-</element>
+<element name="TCMChanged.Msg"/>
+<element name="TCMChanged.Unused"/>
+<element name="TCMChanged.Child"/>
+<element name="TCMChanged.Result"/>
 
 <element name="TCMControlListChange">
 <short>Not used in the current LCL implementation.</short>
 </element>
-<element name="TCMControlListChange.Msg">
-<short/>
-</element>
-<element name="TCMControlListChange.Control">
-<short/>
-</element>
-<element name="TCMControlListChange.Inserting">
-<short/>
-</element>
-<element name="TCMControlListChange.Result">
-<short/>
-</element>
+<element name="TCMControlListChange.Msg"/>
+<element name="TCMControlListChange.Control"/>
+<element name="TCMControlListChange.Inserting"/>
+<element name="TCMControlListChange.Result"/>
 
 <element name="TCMDialogChar">
 <short>Alias for the TLMKey type.</short>
@@ -802,12 +782,8 @@ Contains information representing a CM_CANCELMODE control message.
 <element name="TCMChildKey.CharCode">
 <short>VK_XXX constants for TLMKeyDown/Up, ASCII for TLMChar.</short>
 </element>
-<element name="TCMChildKey.Sender">
-<short/>
-</element>
-<element name="TCMChildKey.Result">
-<short/>
-</element>
+<element name="TCMChildKey.Sender"/>
+<element name="TCMChildKey.Result"/>
 
 <element name="TAlign">
 <short>Alignment options for a control, within its Parent control.</short>
@@ -2301,18 +2277,43 @@ Window handle used as the lock handle when not already assigned.
 </element>
 
 <element name="TDragImageListResolution.DragMove">
-<short>Moves the dragging image to the specified position.</short>
-<descr/>
-<seealso/>
+<short>Moves the drag image to the specified position.</short>
+<descr>
+<p>
+<var>DragMove</var> is a <var>Boolean</var> function used to move the drag 
+image in the resolution to the position specified in the X and Y arguments. 
+</p>
+<p>
+The return value indicates that the Dragging property is already set to 
+<b>True</b>, and that the widgetset class was able to perform the move 
+operation. An internal member with the last position for the drag image is 
+updated when the method is successfully completed.
+</p>
+<p>
+DragMove is called from the corresponding method in TDragImageList.
+</p>
+</descr>
+<seealso>
+<link id="TDragImageListResolution.ImageList"/>
+<link id="TDragImageList.DraggingResolution"/>
+<link id="TDragImageList.DragMove"/>
+</seealso>
 </element>
 <element name="TDragImageListResolution.DragMove.Result">
-<short/>
+<short>
+<b>True</b> if the drag image is already active and its position is updated 
+in the widgetset class.
+</short>
 </element>
 <element name="TDragImageListResolution.DragMove.X">
-<short/>
+<short>
+New horizontal coordinate for the drag image.
+</short>
 </element>
 <element name="TDragImageListResolution.DragMove.Y">
-<short/>
+<short>
+New vertical coordinate for the drag image.
+</short>
 </element>
 
 <element name="TDragImageListResolution.DragUnlock">
@@ -2328,33 +2329,91 @@ Hides the Drag image and removes the update lock for the Window.
 Removes the drag lock and restores the saved cursor when the drag operation 
 has ended.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>EndDrag</var> is a <var>Boolean</var> function used to remove the drag 
+image from the image resolution. EndDrag calls the DragUnlock method to hide 
+the drag image, and to reset the internal lock window and drag position used 
+in the class instance. The corresponding method (EndDrag) in the widgetset 
+class is called.
+</p>
+<p>
+Dragging is set to <b>False</b> prior to exit from the method. EndDrag 
+restores the previous cursor shape by calling the EndTempCursor method in the 
+Screen singleton.
+</p>
+<p>
+No actions are performed in the method if Dragging is set to <b>False</b>.
+</p>
+<p>
+The return value contains the value from the Dragging property on entry into 
+the method.
+</p>
+<p>
+EndDrag is called from the EndDrag method in TDragImageList.
+</p>
+</descr>
+<seealso>
+<link id="TDragImageListResolution.Dragging"/>
+<link id="TDragImageListResolution.DragUnlock"/>
+<link id="TDragImageList.EndDrag"/>
+</seealso>
 </element>
 <element name="TDragImageListResolution.EndDrag.Result">
-<short/>
+<short>
+Value in the Dragging property on entry.
+</short>
 </element>
 
 <element name="TDragImageListResolution.HideDragImage">
 <short>Notifies the widgetset class to hide the drag image.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Hides the drag image in the resolution without unlocking the window. 
+No actions are performed in the method if Dragging is set to <b>False</b>.
+</p>
+<p>
+HideDragImage is called from the HideDragImage method in TDragImageList.
+</p>
+</descr>
+<seealso>
+<link id="TDragImageListResolution.Dragging"/>
+<link id="TDragImageList.HideDragImage"/>
+</seealso>
 </element>
 
 <element name="TDragImageListResolution.ShowDragImage">
 <short>Notifies the widgetset class to display the drag image.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Displays the drag image from the image resolution. No actions are performed 
+in the method if Dragging is set to <b>False</b>.
+</p>
+<p>
+ShowDragImage is called from the ShowDragImage method in TDragImageList.
+</p>
+</descr>
+<seealso>
+<link id="TDragImageListResolution.Dragging"/>
+<link id="TDragImageList.ShowDragImage"/>
+</seealso>
 </element>
 
 <element name="TDragImageListResolution.DragHotspot">
 <short>Contains the mouse position for the drag image.</short>
 <descr>
-DragHotspot is a TPoint property which contains the mouse position for the 
-Drag hotspot. The value in DragHotspot is updated when TDragImageList sets 
-the image used for the resolution, and in the BeginDrag method.
+<p>
+<var>DragHotspot</var> is a <var>TPoint</var> property which contains the 
+mouse position for the Drag hotspot. It contains the value read and written 
+using the DragHotspot property in the TDragImageList for the image 
+resolution. It is also updated when the SetDragImage method in TDragImageList 
+is called to update the index position for the drag image.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TDragImageList.DragHotspot"/>
+<link id="TDragImageList.SetDragImage"/>
+</seealso>
 </element>
 
 <element name="TDragImageListResolution.Dragging">
@@ -2362,20 +2421,30 @@ the image used for the resolution, and in the BeginDrag method.
 Indicates that BeginDrag has been called for the image resolution.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TDragImageList.Dragging"/>
+</seealso>
 </element>
 
 <element name="TDragImageList">
-<short>A list of Images used during Drag operations.</short>
+<short>A multi-resolution list of Images used during Drag operations.</short>
 <descr>
 <p>
-A drag image is shown when a DragImageList is supplied at all, <b>and</b> 
-when no accepting target is under the mouse, or the source control style 
-includes csDisplayDragImage, or AlwaysShowDragImage is set in the DragObject.
+<var>TDragImageList</var> is a <var>TCustomImageList</var> descendant which 
+provides a multi-resolution container for images displayed when a drop-drop 
+operation is active. A drag image is shown when a drag operation is active 
+and a DragImageList has been supplied.
 </p>
 <p>
-In drag-dock operations typically no drag image is shown, since the DockRect 
-frame already gives all required visual feedback.
+TDragImageList overrides and reimplements methods from the ancestor to 
+support the TDragImageListResolution type used in the image Resolution 
+property. Additional properties and methods are provided to work with a drag 
+image and its hot spot when the operation is started or stopped, and when the 
+mouse position is changed.
+</p>
+<p>
+In drag-dock operations, a drag image is not typically displayed since the 
+DockRect frame already provides visual feedback.
 </p>
 <p>
 This is a general overview of the usage of this class:
@@ -2383,15 +2452,29 @@ This is a general overview of the usage of this class:
 <ul>
 <li>
 SetDragImage selects an image from the list, and defines the hotspot within 
-this image. (the hotspot typically is the offset of the mouse position to the 
-origin of the dragged control)
+this image. Te hotspot typically is the offset of the mouse position to the 
+origin of the dragged control.
 </li>
-<li>BeginDrag starts dragging, the image is shown at the starting 
-location.</li>
-<li>DragMove moves the image.</li>
-<li>EndDrag stops dragging, the image is removed from the screen.</li>
+<li>
+BeginDrag starts dragging, the image is shown at the starting location.
+</li>
+<li>
+DragMove moves the image.
+</li>
+<li>
+EndDrag stops dragging, the image is removed from the screen.
+</li>
 </ul>
+<p>
+TDragImageList is the ancestor for the TImageList class defined in the LCL. 
+It is also the type returned from the GetDragImages method in TControl.
+</p>
 </descr>
+<seealso>
+<link id="TImageList"/>
+<link id="TControl.GetDragImages"/>
+<link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
+</seealso>
 </element>
 
 <element name="TDragImageList.FDragCursor"/>
@@ -2400,7 +2483,7 @@ location.</li>
 <element name="TDragImageList.FImageIndex"/>
 
 <element name="TDragImageList.FLastDragPos">
-<short>Remember position where the image was painted.</short>
+<short>Position where the image was last painted.</short>
 </element>
 
 <element name="TDragImageList.FLockedWindow">
@@ -3115,7 +3198,7 @@ OnEndDrag handler.
 </element>
 <element name="TDragObject.EndDrag.Target">
 <short>
-The control onto which the dragged object is dropped (can be Nil).
+The control onto which the dragged object is dropped (can be <b>Nil</b>).
 </short>
 </element>
 <element name="TDragObject.EndDrag.X">
@@ -3157,14 +3240,18 @@ drop, depending on Accepted.
 </element>
 <element name="TDragObject.GetDragCursor.Accepted">
 <short>
-Which cursor to return (rejected:crNoDrop or accepted:crDrag).
+Which cursor to return (rejected: crNoDrop or accepted: crDrag).
 </short>
 </element>
 <element name="TDragObject.GetDragCursor.X">
-<short/>
+<short>
+Horizontal coordinate for the drag cursor.
+</short>
 </element>
 <element name="TDragObject.GetDragCursor.Y">
-<short/>
+<short>
+Vertical coordinate for the drag cursor.
+</short>
 </element>
 
 <element name="TDragObject.Create">
@@ -3459,21 +3546,11 @@ it. The handler can specify whether a drop will be accepted or rejected.
 <element name="TDockOverEvent.Sender">
 <short>The possible drop target.</short>
 </element>
-<element name="TDockOverEvent.Source" link="#lcl.controls.TDockDropEvent.Source">
-<short/>
-</element>
-<element name="TDockOverEvent.X" link="#lcl.controls.TDragOverEvent.X">
-<short/>
-</element>
-<element name="TDockOverEvent.Y" link="#lcl.controls.TDragOverEvent.Y">
-<short/>
-</element>
-<element name="TDockOverEvent.State" link="#lcl.controls.TDragOverEvent.State">
-<short/>
-</element>
-<element name="TDockOverEvent.Accept" link="#lcl.controls.TDragOverEvent.Accept">
-<short/>
-</element>
+<element name="TDockOverEvent.Source" link="#lcl.controls.TDockDropEvent.Source"/>
+<element name="TDockOverEvent.X" link="#lcl.controls.TDragOverEvent.X"/>
+<element name="TDockOverEvent.Y" link="#lcl.controls.TDragOverEvent.Y"/>
+<element name="TDockOverEvent.State" link="#lcl.controls.TDragOverEvent.State"/>
+<element name="TDockOverEvent.Accept" link="#lcl.controls.TDragOverEvent.Accept"/>
 
 <element name="TUnDockEvent">
 <short>The type used for OnUnDock event handler.</short>
@@ -3640,8 +3717,8 @@ This adjustment will make the DockRect appear right over the control, when
 dragging starts, regardless of where the user clicked onto the control.
 </p>
 <p>
-You'll rarely have to override this method, since the DockRect is adjusted by 
-every target site's DockManager later.
+You will rarely need to override this method, since the DockRect is adjusted 
+by every target site's DockManager later.
 </p>
 </descr>
 <seealso/>
@@ -3911,10 +3988,14 @@ When the Ctrl key is released, a drop is enabled again.
 <seealso/>
 </element>
 <element name="TDragManager.KeyUp.Key">
-<short/>
+<short>
+Virtual key code for the key up event.
+</short>
 </element>
 <element name="TDragManager.KeyUp.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key up event.
+</short>
 </element>
 
 <element name="TDragManager.KeyDown">
@@ -3928,10 +4009,14 @@ aborts the current dragging operation immediately.
 <seealso/>
 </element>
 <element name="TDragManager.KeyDown.Key">
-<short/>
+<short>
+Virtual key code for the key down event.
+</short>
 </element>
 <element name="TDragManager.KeyDown.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key up event.
+</short>
 </element>
 
 <element name="TDragManager.CaptureChanged">
@@ -3971,7 +4056,7 @@ Ends a drag operation when a mouse up event has occurred.
 <var>MouseUp</var> is an abstract virtual method in <var>TDragManager</var>. 
 It must be implemented in a descendent class to perform actions needed for 
 the notification.
-</p>  
+</p>
 </descr>
 <seealso/>
 </element>
@@ -3983,7 +4068,7 @@ Mouse button for the notification.
 <element name="TDragManager.MouseUp.Shift">
 <short>
 Ctrl, Shift, or Alt modifier for the notification.
-</short>  
+</short>
 </element>
 <element name="TDragManager.MouseUp.X">
 <short>
@@ -5975,7 +6060,7 @@ the ActionLink <link id="TControl.ActionChange"/>.
 
 <element name="TControlActionLink.FClient">
 <short>The client control that is linked to the action.</short>
-<descr>It can be assumed that FClient is not Nil.</descr>
+<descr>It can be assumed that FClient is not <b>Nil</b>.</descr>
 </element>
 
 <element name="TControlActionLink.AssignClient">
@@ -8839,14 +8924,19 @@ Message handler for changed control position events.
 </element>
 
 <element name="TControl.CMChanged">
-<short>Handles CM_CHANGED control messages for the control.</short>
+<short>
+Handles CM_CHANGED control messages for the control.
+</short>
 <descr>
 <p>
 Calls the WindowProc method in the Parent control (when assigned) to handle 
 the control message in Message.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TControl.WindowProc"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMChanged.Message">
 <short>Control message handled in the method.</short>
@@ -8854,30 +8944,73 @@ the control message in Message.
 
 <element name="TControl.LMCaptureChanged">
 <short>
-Message handler signalled when the mouse capture has been changed.
+Handles a LM_CaptureChanged message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>LMCaptureChanged</var> handles a LM_CAPTURECHANGED control message 
+received when the mouse capture control has been changed. LMCaptureChanged 
+calls the CaptureChanged method which notifies the DragManager singleton of 
+the mouse capture change.
+</p>
+</descr>
+<seealso>
+<link id="TControl.CaptureChanged"/>
+<link id="TDragManager.CaptureChanged"/>
+<link id="DragManager"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.LMCaptureChanged.Message">
-<short/>
+<short>
+Control message examined and handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMBiDiModeChanged">
 <short>
-Message handler for BiDi mode changed.
+Handles CM_BIDIMODECHANGED messages for the control.
 </short>
+<descr>
+<p>
+Calls the Invalidate method to redraw the control when the wParam member in 
+Message is 0 (zero).
+</p>
+</descr>
+<seealso>
+<link id="TControl.Invalidate"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMBiDiModeChanged.Message">
-<short/>
+<short>
+Message examined and handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMSysFontChanged">
 <short>
-Message handler for changed system Font.
+Handles the CM_SYSFONTCHANGED message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMSysFontChanged</var> ensures that a control with its DesktopFont 
+property set to <b>True</b> is updated when the system font has been changed. 
+The Font property in the control is set to the value in SystemFont from the 
+Screen singleton.
+</p>
+<p>
+No actions are performed in the method when DesktopFont is set to 
+<var>False</var>.
+</p>
+</descr>
+<seealso>
+<link id="TControl.DesktopFont"/>
+<link id="TControl.Font"/>
+<link id="#lcl.forms.Screen">Screen</link>
+<link id="#lcl.forms.TScreen.SystemFont">TScreen.SystemFont</link>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMSysFontChanged.Message">
 <short/>
@@ -8885,95 +9018,239 @@ Message handler for changed system Font.
 
 <element name="TControl.CMEnabledChanged">
 <short>
-Message handler for changed Enabled state.
+Handles a CM_ENABLEDCHANGED message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls the Invalidate method and causes the control to be redrawn when the 
+Enabled state has been changed.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Invalidate"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMEnabledChanged.Message">
-<short/>
+<short>
+Message which triggered the method.
+</short>
 </element>
 
 <element name="TControl.CMHitTest">
 <short>
-Message handler for hit test.
+Handles the CM_HITTEST message for the control.
 </short>
 <descr>
-The hit test handler determines the specific part of a control (caption, 
-border...) at the given mouse position.
+<p>
+The hit test handler determines if the control was located at the mouse 
+position for the test. Sets the Result member in Message to 1 if it was 
+received by the control.
+</p>
+<p>
+Descendent control may reimplement the method to check for a specific area on 
+the control, like a border or a dock site.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMHitTest.Message">
-<short/>
+<short>
+Message with the result for the hit test.
+</short>
 </element>
 
 <element name="TControl.CMMouseEnter">
 <short>
-Message handler for mouse entering the control.
+Handles a CM_MOUSEENTER message for the control.
 </short>
-<seealso/>
+<descr>
+<p>
+<var>CMMouseEnter</var> ensures that the <var>MouseInClient</var> property is 
+updated when the mouse pointer enters the client area for the control. No 
+actions are performed in the method if MouseInClient is already set to 
+<b>True</b> on entry.
+</p>
+<p>
+CMMouseEnter calls Perform to broadcast the CM_MOUSEENTER message to the 
+Parent and ancestor controls (when assigned). If the Message is not a child 
+message, the MouseEnter method is called to signal the OnMouseEnter event 
+handler (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TControl.MouseInClient"/>
+<link id="TControl.Parent"/>
+<link id="TControl.Perform"/>
+<link id="TControl.MouseEnter"/>
+<link id="TControl.OnMouseEnter"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMMouseEnter.Message">
-<short/>
+<short>
+Control message handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMMouseLeave">
 <short>
-Message handler for mouse leaving the control.
+Handles a CM_MOUSELEAVE message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMMouseLeave</var> ensures that the <var>MouseInClient</var> property is 
+updated when the mouse pointer has left the client area for the control. No 
+actions are performed in the method if MouseInClient is already set to 
+<b>False</b> on entry.
+</p>
+<p>
+CMMouseLeave calls Perform to broadcast the CM_MOUSELEAVE message to the 
+Parent and ancestor controls (when assigned). If the Message is not a child 
+message, the MouseLeave method is called to signal the OnMouseLeave event 
+handler (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TControl.MouseInClient"/>
+<link id="TControl.Parent"/>
+<link id="TControl.Perform"/>
+<link id="TControl.MouseLeave"/>
+<link id="TControl.OnMouseLeave"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMMouseLeave.Message">
-<short/>
+<short>
+Control message handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMHintShow">
 <short>
-Message handler for hint display.
+Handles the CM_HINTSHOW message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMHintShow</var> is a method used to handle a CM_HINTSHOW message 
+received by the control.
+</p>
+<p>
+<var>Message</var> is the <var>TLMessage</var> instance with the control 
+message constant, hint information, and result code used in the method.
+</p>
+<p>
+CMHintShow calls DoOnShowHint to signal the OnShowHint event handler (when 
+assigned) using the hint information in Message. When ActionLink has been 
+assigned, its DoShowHint is called using the hint information.
+</p>
+<p>
+The result code is Message is updated prior to exiting from the method.
+</p>
+</descr>
+<seealso>
+<link id="TControl.ActionLink"/>
+<link id="TControl.DoOnShowHint"/>
+<link id="TControl.OnShowHint"/>
+<link id="TControlActionLink.DoShowHint"/>
+<link id="#lcl.forms.TCMHintShow">TCMHintShow</link>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMHintShow.Message">
-<short/>
+<short>
+Message with the hint information displayed for the control.
+</short>
 </element>
 
 <element name="TControl.CMParentBiDiModeChanged">
-<short>Message handler for parent control's BiDi mode changed.</short>
-<descr/>
-<seealso/>
+<short>
+Handles a CM_PARENTBIDIMODECHANGED message for the control.
+</short>
+<descr>
+<p>
+<var>CMParentBiDiModeChanged</var> ensures that the BidiMode property from the Parent control is used when the ParentBidiMode property is set to 
+<b>True</b>. No actions are performed in the method when ParentBidiMode is set to <b>False</b>.
+</p>
+</descr>
+<seealso>
+<link id="TControl.BiDiMode"/>
+<link id="TControl.ParentBiDiMode"/>
+<link id="TControl.Parent"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMParentBiDiModeChanged.Message">
-<short/>
-</element>
-
-<element name="TControl.CMParentFontChanged">
 <short>
-Message handler for changed parent Font.
+Control message handled in the method.
 </short>
-<descr/>
-<seealso/>
-</element>
-<element name="TControl.CMParentFontChanged.Message">
-<short/>
 </element>
 
 <element name="TControl.CMParentColorChanged">
 <short>
-Message handler for changed parent Color.
+Handles a CM_PARENTCOLORCHANGED message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMParentColorChanged</var> ensures that the Color property is updated when the message is received for the control. The property value from the Parent control is stored in Color when ParentColor is set to <b>True</b>. 
+No actions are performed in the method when ParentColor is set to 
+<var>False</var>.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Color"/>
+<link id="TControl.ParentColor"/>
+<link id="TControl.Parent"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
 </element>
 <element name="TControl.CMParentColorChanged.Message">
-<short/>
+<short>
+Message handled in the method.
+</short>
 </element>
 
+<element name="TControl.CMParentFontChanged">
+<short>
+Handles a CM_PARENTFONTCHANGED message for the control.
+</short>
+<descr>
+<p>
+<var>CMParentFontChanged</var> ensures that the Font from the Parent control 
+is applied to the class instance when the message is received. It applies the 
+PixelsPerInch setting in the Parent font (which is not included in object 
+persistence) to the Font in the control.
+</p>
+<p>
+No actions are performed in the method if ParentFont is set to <b>False</b>, 
+or when the Parent property has not been assigned.
+</p>
+<remark>
+The current LCL version calls the ParentFontChanged method prior to exit. It 
+has an empty implementation, and is maintained only for compatibility with 
+older versions of the LCL. The work is actually performed in this method.
+</remark>
+</descr>
+<seealso>
+<link id="TControl.Font"/>
+<link id="TControl.ParentFont"/>
+<link id="TControl.Parent"/>
+<link id="TControl.ParentFOntChanged"/>
+<link id="#lcl.graphics.TFont.PixelsPerInch">TFont.PixelsPerInch</link>
+</seealso>
+</element>
+<element name="TControl.CMParentFontChanged.Message">
+<short>
+Control message handled in the method.
+</short>
+</element>
+
+<!-- HERE -->
 <element name="TControl.CMParentShowHintChanged">
 <short>
-Message handler for changed parent ShowHint.
+Handles a CM_PARENTSHOWHINTCHANGED message for the control.
 </short>
 <descr/>
 <seealso/>
@@ -8984,7 +9261,7 @@ Message handler for changed parent ShowHint.
 
 <element name="TControl.CMVisibleChanged">
 <short>
-Message handler for changed visibility.
+Handles a CM_VISIBLECHANGED message for the control.
 </short>
 <descr/>
 <seealso/>
@@ -8994,23 +9271,20 @@ Message handler for changed visibility.
 </element>
 
 <element name="TControl.CMTextChanged">
-<short>Message handler for a text changed control message.</short>
-</element>
-<element name="TControl.CMTextChanged.Message">
-<short>Control message handled in the method.</short>
-</element>
-
-<element name="TControl.CMWantSpecialKey">
 <short>
-Message handler for special character (TAB...).
+Handles a CM_TEXTCHANGED message for the control.
 </short>
 </element>
-<element name="TControl.CMWantSpecialKey.Message">
-<short>Control message handled in the method.</short>
+<element name="TControl.CMTextChanged.Message">
+<short>
+Control message handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMCursorChanged">
-<short>Handles the CM_CURSORCHANGED message for the control.</short>
+<short>
+Handles the CM_CURSORCHANGED message for the control.
+</short>
 <descr>
 <p>
 At run-time, the SetTempCursor method is called to apply the temporary cursor 
@@ -9173,9 +9447,8 @@ a control is docked to a docksite.
 </p>
 <p>
 If NewDockSite=Nil, Parent is set to <b>Nil</b> (in preparation of floating 
-the control).
-Otherwise ARect is ignored, and recomputed to fit approximately into the 
-ClientRect of the NewDockSite.
+the control). Otherwise ARect is ignored, and recomputed to fit approximately 
+into the ClientRect of the NewDockSite.
 </p>
 <p>
 Finally the computed coordinates are stored, in BoundsRectForNewParent when 
@@ -9267,7 +9540,7 @@ indicates acceptance of the drop message.
 
 <element name="TControl.DoEndDock">
 <short>
-Invokes the <link id="#lcl.Controls.TControl.OnEndDock">OnEndDock</link> 
+Signals the <link id="#lcl.Controls.TControl.OnEndDock">OnEndDock</link> 
 handler.
 </short>
 </element>
@@ -9283,7 +9556,7 @@ handler.
 
 <element name="TControl.DoEndDrag">
 <short>
-Invokes the <link id="#lcl.Controls.TControl.OnEndDrag">OnEndDrag</link> 
+Signals the <link id="#lcl.Controls.TControl.OnEndDrag">OnEndDrag</link> 
 handler.
 </short>
 </element>
@@ -9299,7 +9572,7 @@ handler.
 
 <element name="TControl.DoStartDock">
 <short>
-Invokes the <link id="#lcl.Controls.TControl.OnStartDock">OnStartDock</link> 
+Signals the <link id="#lcl.Controls.TControl.OnStartDock">OnStartDock</link> 
 handler.
 </short>
 </element>
@@ -9309,7 +9582,7 @@ handler.
 
 <element name="TControl.DoStartDrag">
 <short>
-Invokes the <link id="#lcl.Controls.TControl.OnStartDrag">OnStartDrag</link> 
+Signals the <link id="#lcl.Controls.TControl.OnStartDrag">OnStartDrag</link> 
 handler.
 </short>
 </element>
@@ -9652,7 +9925,7 @@ The currently pressed mouse buttons and modifier keys.
 
 <element name="TControl.MouseUp">
 <short>
-Invokes the <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link> 
+Signals the <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link> 
 handler.
 </short>
 <descr/>
@@ -9673,7 +9946,7 @@ handler.
 
 <element name="TControl.MouseEnter">
 <short>
-Invokes the <link 
+Signals the <link 
 id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> handler.
 </short>
 <descr/>
@@ -9682,7 +9955,7 @@ id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> handler.
 
 <element name="TControl.MouseLeave">
 <short>
-Invokes the <link 
+Signals the <link 
 id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> handler.
 </short>
 <descr/>
@@ -10017,7 +10290,7 @@ CMParentFontChanged.
 <descr>
 <p>
 The property value is retrieved from ActionLink (when assigned). Otherwise, 
-the property value is Nil.
+the property value is <b>Nil</b>.
 </p>
 </descr>
 <seealso>
@@ -10120,7 +10393,10 @@ from the CMTextChanged message handler.
 <descr>
 <p>
 Ensures that ActionLink is updated when the value for the property is 
-updated. When Value is unassigned (Nil), ActionLink is freed and set to Nil. 
+updated.
+</p>
+<p>
+When Value is unassigned (Nil), ActionLink is freed and set to <b>Nil</b>. 
 The control style flags are also updated to remove the value csActionClient. 
 Otherwise, a new ActionLink class instance is created for ActionLink and 
 Value is assigned to its Action property. Its OnChange handler is assigned, 
@@ -10260,7 +10536,7 @@ The property value is <b>True</b> when the following condition are satisfied:
 </p>
 <ul>
 <li>
-Parent is assigned (not Nil).
+Parent is assigned (not <b>Nil</b>).
 </li>
 <li>
 Parent has an allocated window handle.
@@ -10399,7 +10675,7 @@ the event handler.
 
 <element name="TControl.DoMouseWheel">
 <short>
-Invokes the OnMouseWheel handlers, when the wheel has been turned.
+Signals the OnMouseWheel handlers, when the mouse wheel has been turned.
 </short>
 <descr>
 <p>
@@ -10440,7 +10716,7 @@ not to the up and down handlers [Delphi compatible].
 <element link="#lcl.controls.TMouseWheelEvent.MousePos" name="TControl.DoMouseWheelDown.MousePos"/>
 
 <element name="TControl.DoMouseWheelUp">
-<short>Invokes the OnMouseWheelUp handler.</short>
+<short>Signals the OnMouseWheelUp handler.</short>
 </element>
 <element name="TControl.DoMouseWheelUp.Result">
 <short><b>True</b> if handled.</short>
@@ -11423,7 +11699,7 @@ use it anymore.
 
 <element name="TControl.DragDrop">
 <short>
-Invokes the OnDragDrop handler, when a dragged object is dropped onto this 
+Signals the OnDragDrop handler, when a dragged object is dropped onto this 
 control.
 </short>
 <seealso>
@@ -11469,7 +11745,7 @@ floating.
 <element name="TControl.Dock.ARect">
 <short>
 The new Bounds for the control. Expressed in screen coordinates when 
-NewDockSite is Nil. Otherwise, client coordinates for NewDockSite.
+NewDockSite is <b>Nil</b>. Otherwise, client coordinates for NewDockSite.
 </short>
 </element>
 
@@ -11478,11 +11754,12 @@ NewDockSite is Nil. Otherwise, client coordinates for NewDockSite.
 <descr>
 <p>
 Docks this control into NewDockSite, relative to DropControl. When 
-NewDockSite is Nil, the control becomes floating.
+NewDockSite is <b>Nil</b>, the control becomes floating.
 </p>
 <p>
-When the new docksite uses an DockManager, and DropControl is not Nil, the 
-control will be docked relative to DropControl, as specified by ControlSide.
+When the new docksite uses an DockManager, and DropControl is not <b>Nil</b>, 
+the control will be docked relative to DropControl, as specified by 
+ControlSide.
 </p>
 <p>
 The interpretation of ControlSide depends on the DockManager of NewDockSite,
@@ -11504,7 +11781,7 @@ The site into which the control is docked; <b>Nil</b> to make it float.
 </short>
 </element>
 <element name="TControl.ManualDock.DropControl">
-<short>The sibling control where the control is inserted; can be Nil.
+<short>The sibling control where the control is inserted; can be <b>Nil</b>.
 </short>
 </element>
 <element name="TControl.ManualDock.ControlSide">
@@ -11579,9 +11856,11 @@ docked to a host docking site. The return value is <b>True</b> when all of
 the following conditions are met:
 </p>
 <ul>
-<li>Parent is assigned (not Nil).</li>
+<li>Parent is assigned (not <b>Nil</b>).</li>
 <li>Parent has the same value as the HostDockSite property.</li>
-<li>Parent has a parent form with a different value than Parent itsself.</li>
+<li>
+Parent has a parent form with a value different than the one in Parent.
+</li>
 </ul>
 </descr>
 <seealso>
@@ -12981,7 +13260,9 @@ name.
 </seealso>
 </element>
 <element name="TControl.FindSubComponent.Result">
-<short>The component with the specified name, or Nil when not found.</short>
+<short>
+The component with the specified name, or <b>Nil</b> when not found.
+</short>
 </element>
 <element name="TControl.FindSubComponent.AName">
 <short>Parentage/path for the sub-component to retrieve in the method.</short>
@@ -12994,10 +13275,10 @@ Gets the effective visibility for the control and all of its Parent controls.
 <descr>
 <p>
 <var>IsVisible</var> calls <var>IsControlVisible</var> to determine if the 
-control has its Visible property set to True. At design-time, ControlStyle is 
-also checked to ensure that csNoDesignVisible is not used in the style flags. 
-Each of the Parent controls in the hierarchy call their IsVisible method to 
-determine the return value for the method.
+control has its Visible property set to <b>True</b>. At design-time, 
+ControlStyle is also checked to ensure that csNoDesignVisible is not used in 
+the style flags. Each of the Parent controls in the hierarchy call their 
+IsVisible method to determine the return value for the method.
 </p>
 <p>
 Use IsEnabled to get the effective enabled state for the control and all of 
@@ -13339,7 +13620,7 @@ Click event.
 </p>
 </descr>
 <errors>
-Currently NewControl can be Nil, even if it should not be.
+Currently NewControl can be <b>Nil</b>, even if it should not be.
 </errors>
 </element>
 <element name="TControl.ActiveDefaultControlChanged.NewControl">
@@ -14959,7 +15240,7 @@ it.
 Every TControl must have a Parent, else it is never shown.
 </p>
 <p>
-The Parent of a floating form is Nil.
+The Parent of a floating form is <b>Nil</b>.
 </p>
 <p>
 Set the parent last to reduce updates. For example:
@@ -15893,7 +16174,7 @@ in the properties.
 
 <element name="TControlChildSizing.Change">
 <short>
-Notifies the Control and invokes the <var>OnChange</var> handler.
+Notifies the Control and signals the <var>OnChange</var> handler.
 </short>
 <descr/>
 <seealso>
@@ -16729,7 +17010,7 @@ child controls. When AControl is a TWinControl instance, it is removed from
 the internal tab order list for child controls.
 </p>
 <p>
-Remove sets the Parent property in AControl to Nil.
+Remove sets the Parent property in AControl to <b>Nil</b>.
 </p>
 <p>
 Remove checks to see whether auto-sizing has been disabled in the AControl 
@@ -18787,7 +19068,7 @@ Handles the specified key in Message as an accelerator or shortcut key.
 <p>
 DialogChar is an overridden Boolean function in TWinControl used to handle a 
 character code in Message as an accelerator (or shortcut) key for a control. 
-It re-implements the inherited method which always returns False. In 
+It re-implements the inherited method which always returns <b>False</b>. In 
 TWinControl, the Message is sent to each of the children in Controls until 
 one of them indicates that it responds to the accelerator key.
 </p>
@@ -18942,7 +19223,7 @@ An empty implementation in the current LCL version.
 
 <element name="TWinControl.KeyUpBeforeInterface">
 <short>
-Invokes the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> 
+Signals the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> 
 handler.
 </short>
 <descr/>
@@ -18996,8 +19277,8 @@ value in <var>GoForward</var>.
 </element>
 <element name="TWinControl.FindNextControl.CurrentControl">
 <short>
-The control which has the focus. If Nil, the first control (forward) or last 
-control (backward) in TabOrder is returned, depending on GoForward.
+The control which has the focus. If <b>Nil</b>, the first control (forward) 
+or last control (backward) in TabOrder is returned, depending on GoForward.
 </short>
 </element>
 <element name="TWinControl.FindNextControl.GoForward">
@@ -19609,8 +19890,8 @@ until a control without an assigned Parent is encountered.
 </p>
 <p>
 ShowControl is called from the Show method in a control instance. It occurs 
-before the Visible property is set to True, and forces each of the parent 
-controls to become visible before setting the value in the control.
+before the Visible property is set to<b>True</b>, and forces each of the 
+parent controls to become visible before setting the value in the control.
 </p>
 </descr>
 <seealso>
@@ -20571,7 +20852,7 @@ the current time, or when the value in Showing cannot be changed.
 In TWinControl, it checks the ControlState flags for the value 
 csDestroyingHandle when determining the return value for the method. 
 AutoSizeDelayed calls the inherited method, and sets the return value to 
-<b>True</b> if either condition is True.
+<b>True</b> if either condition is <b>True</b>.
 </p>
 <p>
 The value from AutoSizeDelayed is used in methods like DoAllAutoSize and 
@@ -20935,7 +21216,7 @@ for the following properties:
 <dd>Sets DoChildSizingChange as the OnChange event handler</dd>
 <dt>Brush</dt>
 <dd>
-Set to Nil; few controls require a brush, and it is created on 
+Set to <b>Nil</b>; few controls require a brush, and it is created on 
 DoRemainingKeyDown
 </dd>
 <dt>TabOrder</dt>
@@ -21522,9 +21803,10 @@ Brush.
 </short>
 <descr>
 <p>
-EraseBackground is called during Paint requests from the WMEraseBkgnd method, 
-which provides a valid device context in the DC argument. No actions are 
-performed in the method when DC contains 0 (unassigned).
+<var>EraseBackground</var> is called during Paint requests from the 
+WMEraseBkgnd method, which provides a valid device context in the DC 
+argument. No actions are performed in the method when DC contains 0 
+(unassigned).
 </p>
 <p>
 The FillRect routine is called to perform the operation using the Width, 
@@ -21576,8 +21858,8 @@ Searches for a Parent form that can be used as a file drop target.
 </element>
 <element name="TWinControl.IntfGetDropFilesTarget.Result">
 <short>
-The TCustomForm instance that allows file drop actions, or Nil when file 
-drag/drop is not supported.
+The TCustomForm instance that allows file drop actions, or <b>Nil</b> when 
+file drag/drop is not supported.
 </short>
 </element>
 
@@ -21610,9 +21892,9 @@ operation.
 <short>Specifies the non-rectangular shape of the widget.</short>
 <descr>
 <p>
-SetShape is an overloaded procedure used to set the shape for the control to 
-the non-rectangular value in AShape. The overloaded methods allow AShape to 
-be either a TBitmap or a TRegion value.
+<var>SetShape</var> is an overloaded procedure used to set the shape for the 
+control to the non-rectangular value in AShape. The overloaded methods allow 
+AShape to be either a TBitmap or a TRegion value.
 </p>
 <p>
 When TBitmap is used, the widgetset class calls its SetShape method to apply 
@@ -21781,10 +22063,10 @@ Event handler signalled to paint the control.
 </short>
 <descr>
 <p>
-OnPaint is a TNotifyEvent with the event handler signalled to paint the 
-control. Applications must implement and assign a routine to the event 
-handler to perform the drawing operation. TGraphicControl does not provide a 
-default drawing mechanism.
+<var>OnPaint</var> is a <var>TNotifyEvent</var> with the event handler 
+signalled to paint the control. Applications must implement and assign a 
+routine to the event handler to perform the drawing operation. 
+TGraphicControl does not provide a default drawing mechanism.
 </p>
 <p>
 Use the Canvas for the control to perform drawing operations. The Font and 
@@ -21810,8 +22092,9 @@ OnPaint is signalled (when assigned) from the Paint method.
 <short>Handles the CM_CURSORCHANGED message for the control.</short>
 <descr>
 <p>
-CMCursorChanged is an overridden method in TGraphicControl. It ensures that 
-the control is Visible before the temporary cursor shape is changed.
+<var>CMCursorChanged</var> is an overridden method in TGraphicControl. It 
+ensures that the control is Visible before the temporary cursor shape is 
+changed.
 </p>
 <p>
 <var>Visible</var> must be set to <b>True</b>, and the <var>Parent</var> 
@@ -21838,9 +22121,10 @@ property.
 <short>Constructor for the class instance.</short>
 <descr>
 <p>
-Create is the overridden constructor for the class instance. It calls the 
-inherited method on entry using AOwner as the owner of the class instance. 
-Create allocates a TControlCanvas instance used for the Canvas property.
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited method on entry using AOwner as the owner of the class 
+instance. Create allocates a TControlCanvas instance used for the Canvas 
+property.
 </p>
 </descr>
 <seealso>
@@ -21895,16 +22179,21 @@ The base class for windowed controls which paint themselves.
 <descr>
 <p>
 In contrast to <var>TGraphicControl</var>, a <var>TCustomControl</var> can 
-accept keyboard input (and receive Focus), and can have child controls.
+accept keyboard input (and receive Focus), and can have child controls. It is 
+used as the base class for many of the controls in the LCL.
 </p>
 <p>
-Override the Paint method or supply your own OnPaint handler, to do the 
-actual drawing of the control.
+TCustomControl provides overridden methods which handle messages, update 
+control state flags, and update the Canvas where the control is drawn. 
+</p>
+<p>
+Override the Paint method, or supply your own OnPaint handler, to perform the 
+actual drawing operations for the control.
 </p>
 </descr>
 <seealso>
-<link id="TWinControl"/>
 <link id="TGraphicControl"/>
+<link id="TWinControl"/>
 </seealso>
 </element>
 
@@ -22421,7 +22710,7 @@ rectangle. This causes the Top, Left, Width, and Height properties to contain
 <short>The dock tree to which this zone belongs.</short>
 </element>
 <element name="TDockZone.Create.TheChildControl">
-<short>The control in this zone (or Nil when unassigned).</short>
+<short>The control in this zone (or <b>Nil</b> when unassigned).</short>
 </element>
 
 <element name="TDockZone.FindZone">
@@ -23785,7 +24074,8 @@ Parent controls are searched too (when needed).
 <p>
 CheckTransparentWindow updates the values in Handle and AWinControl to 
 reflect the results from the search. When an overlayed control is not 
-located, the value in Handle is set to 0, and AWinControl is set to Nil.
+located, the value in Handle is set to 0, and AWinControl is set to 
+<b>Nil</b>.
 </p>
 </descr>
 <seealso/>
@@ -24241,7 +24531,7 @@ During resizing, or when moving, the Left and Top coordinates are not always
 in sync with the coordinates for the Handle object.
 </p>
 <p>
-When Parent is unassigned (contains Nil), Left and Top depend on the 
+When Parent is unassigned (contains <b>Nil</b>), Left and Top depend on the 
 widgetset and the window manager. Until Lazarus 0.9.25, this is typically the 
 screen coordinate of the left, top of the client area for the form. This is 
 Delphi incompatible. It is planned to change this to the Left, Top of the 
