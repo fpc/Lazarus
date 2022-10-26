@@ -99,7 +99,7 @@ type
     procedure CheckReferenceMarkers;
     procedure FindDeclarations(Filename: string; ExpandFile: boolean = true);
     procedure FindDeclarations(aCode: TCodeBuffer);
-    procedure TestFiles(Directory: string);
+    procedure TestFiles(Directory: string; ADefaultFileMask: String = '');
     property MainCode: TCodeBuffer read FMainCode;
     property MainTool: TCodeTool read FMainTool;
   end;
@@ -143,6 +143,7 @@ type
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
+    procedure TestFindDeclaration_LazTestsBugs;
     procedure TestFindDeclaration_DirectiveWithIn;
   end;
 
@@ -489,7 +490,8 @@ begin
   Result:=TFDMarker(FMarkers[Index]);
 end;
 
-procedure TCustomTestFindDeclaration.TestFiles(Directory: string);
+procedure TCustomTestFindDeclaration.TestFiles(Directory: string;
+  ADefaultFileMask: String);
 const
   fmparam = '--filemask=';
 var
@@ -499,6 +501,8 @@ var
   Verbose: Boolean;
 begin
   aFileMask:='t*.p*';
+  if ADefaultFileMask <> '' then
+    aFileMask:=ADefaultFileMask;
   Verbose:=false;
   for i:=1 to ParamCount do begin
     Param:=ParamStr(i);
@@ -1245,6 +1249,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_LazTests;
 begin
   TestFiles('laztests');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_LazTestsBugs;
+begin
+  TestFiles('laztests', 'b*.p*');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;
