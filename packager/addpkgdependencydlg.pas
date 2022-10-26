@@ -44,8 +44,6 @@ type
     procedure CloseButtonClick(Sender: TObject);
     procedure DependPkgNameListBoxDrawItem(Control: TWinControl;
       Index: Integer; ARect: TRect; State: TOwnerDrawState);
-    procedure DependPkgNameListBoxMeasureItem(Control: TWinControl;
-      Index: Integer; var AHeight: Integer);
     procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -171,16 +169,9 @@ begin
     end;
     FillRect(ARect);
     Txt := (Control as TListBox).Items[Index];
-    InflateRect(ARect, -1, -1);
     inc(ARect.Left,3);
     DrawText(Handle, PChar(Txt), Length(Txt), ARect, DT_LEFT or DT_VCENTER or DT_SINGLELINE);
   end;
-end;
-
-procedure TAddPkgDependencyDialog.DependPkgNameListBoxMeasureItem(
-  Control: TWinControl; Index: Integer; var AHeight: Integer);
-begin
-  inc(AHeight, 3);   // Compensate InflateRect in DrawItem, and nicer centering
 end;
 
 function TAddPkgDependencyDialog.IsInstallButtonVisible: Boolean;
