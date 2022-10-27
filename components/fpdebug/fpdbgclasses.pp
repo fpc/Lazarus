@@ -3042,6 +3042,7 @@ var
   StackPtr: TDBGPtr;
   Row: TDwarfCallFrameInformationRow;
   CIE: TDwarfCIE;
+  CU: TDwarfCompilationUnit;
 begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
@@ -3116,28 +3117,36 @@ begin
   while (CountNeeded > 0) do
   begin
     if (Process.DbgInfo as TFpDwarfInfo).FindCallFrameInfo(Address, CIE, Row) and
-       TDwarfCallFrameInformation.TryObtainNextCallFrame(AnEntry, CIE, Size, NextIdx, Self, Row, Process, NewEntry) then
-      begin
-      if not Assigned(NewEntry) then
-        // Done.
-        Break;
-      FCallStackEntryList.Add(NewEntry);
-      Address := NewEntry.AnAddress;
-      StackReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
-      FrameReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
-      StackPtr := 0;
-      if (StackReg <> nil) and (FrameReg <> nil) then begin
-        StackPtr := StackReg.FNumValue;
-        FrameBase := FrameReg.FNumValue;
-      end;
-      AnEntry := NewEntry;
-      Dec(CountNeeded);
-      inc(NextIdx);
-      If (NextIdx > MAX_FRAMES) then
-        Break;
+       TDwarfCallFrameInformation.TryObtainNextCallFrame(AnEntry, CIE, Size, NextIdx, Self, Row, Process, NewEntry)
+    then begin
+      if not Assigned(NewEntry) then begin
+        CU := (Process.DbgInfo as TFpDwarfInfo).CompilationUnitForAddr(Address);
+        if (CU = nil) or (CU.DwarfSymbolClassMap = nil) or (not CU.DwarfSymbolClassMap.IgnoreCfiStackEnd) then
+          // Done.
+          Break;
       end
-    else if (FrameBase <> 0) and (FrameBase > LastFrameBase) then
-      begin
+      else begin
+        FCallStackEntryList.Add(NewEntry);
+        Address := NewEntry.AnAddress;
+        StackReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
+        FrameReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
+        StackPtr := 0;
+        if (StackReg <> nil) and (FrameReg <> nil) then begin
+          StackPtr := StackReg.FNumValue;
+          FrameBase := FrameReg.FNumValue;
+        end;
+        AnEntry := NewEntry;
+        Dec(CountNeeded);
+        inc(NextIdx);
+        If (NextIdx > MAX_FRAMES) then
+          Break;
+
+        Continue;
+      end;
+    end;
+
+    if (FrameBase <> 0) and (FrameBase > LastFrameBase)
+    then begin
       if StackPtr = 0 then
         break;
       // CFI not available or contains unsupported structures. Fallback to
@@ -3189,7 +3198,7 @@ begin
       CodeReadErrCnt := 0;
       If (NextIdx > MAX_FRAMES) then
         break;
-      end
+    end
     else
       Break;
   end;

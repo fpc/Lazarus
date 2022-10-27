@@ -556,6 +556,7 @@ type
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; virtual; abstract;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); virtual;
+    function IgnoreCfiStackEnd: boolean; virtual;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
     function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
                                  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; virtual; abstract;
@@ -811,6 +812,7 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     procedure LoadCallFrameInstructions;
     function LoadCompilationUnits: Integer;
+    function CompilationUnitForAddr(AnAddr: TDBGPtr): TDwarfCompilationUnit;
     function CompilationUnitsCount: Integer; inline;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
 
@@ -1059,6 +1061,11 @@ begin
     pm := next;
   end;
   GetExistingClassMap^ := nil;
+end;
+
+function TFpSymbolDwarfClassMap.IgnoreCfiStackEnd: boolean;
+begin
+  Result := False;
 end;
 
 constructor TFpSymbolDwarfClassMap.Create(ACU: TDwarfCompilationUnit;
@@ -4165,6 +4172,20 @@ begin
 
   for i := 0 to Result - 1 do
     TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
+end;
+
+function TFpDwarfInfo.CompilationUnitForAddr(AnAddr: TDBGPtr
+  ): TDwarfCompilationUnit;
+var
+  n: Integer;
+begin
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    Result := TDwarfCompilationUnit(FCompilationUnits[n]);
+    if  Result.HasAddress(AnAddr, []) then
+      exit;
+  end;
+  Result := nil;
 end;
 
 function TFpDwarfInfo.CompilationUnitsCount: Integer;

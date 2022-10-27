@@ -34,6 +34,7 @@ type
     class function GetInstanceForDbgInfo(ADbgInfo: TDbgInfo):TFpDwarfFreePascalSymbolClassMap;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
+    function IgnoreCfiStackEnd: boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
@@ -388,6 +389,11 @@ constructor TFpDwarfFreePascalSymbolClassMap.Create(ACU: TDwarfCompilationUnit;
 begin
   FCompilerVersion := PtrUInt(AHelperData);
   inherited Create(ACU, AHelperData);
+end;
+
+function TFpDwarfFreePascalSymbolClassMap.IgnoreCfiStackEnd: boolean;
+begin
+  Result := FCompilerVersion < $030301;
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
