@@ -1124,7 +1124,6 @@ begin
   if FShowCaption and (Caption <> '') then
   begin
     TMP := Caption;
-    DeleteAmpersands(TMP);
     Flags := DT_CalcRect;
     if not Canvas.TextStyle.SingleLine then
       Inc(Flags, DT_WordBreak);
