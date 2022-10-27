@@ -84,6 +84,15 @@ begin
   inherited;
 end;
 
+procedure TCustomPanel.SetShowAccelChar(const Value: Boolean);
+begin
+  if FShowAccelChar <> Value then
+  begin
+    FShowAccelChar := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TCustomPanel.SetVertAlignment(const Value: TVerticalAlignment);
 begin
   if FVertAlignment <> Value then
@@ -161,6 +170,7 @@ begin
     TS.SystemFont:=Canvas.Font.IsDefault;
     TS.Wordbreak := FWordWrap;
     TS.SingleLine := not FWordwrap;
+    TS.ShowPrefix := FShowAccelChar;
     if not Enabled then
       if ThemeServices.ThemesEnabled then
         Canvas.Font.Color := clGrayText

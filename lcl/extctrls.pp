@@ -1084,6 +1084,7 @@ type
     FAlignment : TAlignment;
     FVertAlignment: TVerticalAlignment;
     FFullRepaint: Boolean;
+    FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     procedure PaintBevel(var ARect: TRect; ABevel: TPanelBevel);
     procedure SetAlignment(const Value : TAlignment);
@@ -1091,6 +1092,7 @@ type
     procedure SetBevelInner(const Value: TPanelBevel);
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
+    procedure SetShowAccelChar(const Value: Boolean);
     procedure SetVertAlignment(const Value: TVerticalAlignment);
     procedure SetWordwrap(const Value: Boolean);
   protected
@@ -1104,6 +1106,7 @@ type
     procedure Paint; override;
     procedure SetParentBackground(const AParentBackground: Boolean); override;
     procedure UpdateParentColorChange;
+    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default false;
     property VerticalAlignment: TVerticalAlignment read FVertAlignment write SetVertAlignment default taVerticalCenter;
     property WordWrap: Boolean read FWordwrap write SetWordwrap default false;
   public
@@ -1159,6 +1162,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ShowAccelChar;
     property ShowHint;
     property TabOrder;
     property TabStop;
