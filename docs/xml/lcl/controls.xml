@@ -9247,33 +9247,69 @@ Control message handled in the method.
 </short>
 </element>
 
-<!-- HERE -->
 <element name="TControl.CMParentShowHintChanged">
 <short>
 Handles a CM_PARENTSHOWHINTCHANGED message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMParentShowHintChanged</var> ensures that the ShowHint property in the 
+control is updated when the corresponding property in the Parent control is 
+changed. When ParentShowHint is set to <b>True</b>, the ShowHint property 
+from the Parent is copied into the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.ShowHint"/>
+<link id="TControl.ParentShowHint"/>
+</seealso>
 </element>
 <element name="TControl.CMParentShowHintChanged.Message">
-<short/>
+<short>
+Control message handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMVisibleChanged">
 <short>
 Handles a CM_VISIBLECHANGED message for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMVisibleChanged</var> causes the control to be redrawn using the 
+Visible and ControlStyle properties in the class instance. It allows a 
+parented control to be redrawn using the visibility and opacity settings for 
+the control. It calls the InvalidateControl method to invalidate the bounds 
+rectangle or the control.
+</p>
+<p>
+No actions are performed in the method at design-time.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Visible"/>
+<link id="TControl.ControlStyle"/>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
 </element>
 <element name="TControl.CMVisibleChanged.Message">
-<short/>
+<short>
+Control message handled in the method.
+</short>
 </element>
 
 <element name="TControl.CMTextChanged">
 <short>
 Handles a CM_TEXTCHANGED message for the control.
 </short>
+<descr>
+<p>
+Calls the TextChanged method when the message is received by the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.TextChanged"/>
+</seealso>
 </element>
 <element name="TControl.CMTextChanged.Message">
 <short>
@@ -9391,9 +9427,25 @@ user (e.g. a dock caption).
 </element>
 
 <element name="TControl.BeforeDragStart">
-<short>Not implemented in TControl.</short>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed before a drag operation is started for the control.
+</short>
+<descr>
+<p>
+<var>BeforeDragStart</var> has an empty implementation in 
+<var>TControl</var>. The virtual method can be overridden in descendent 
+classes to perform the actions needed. Some common actions include updating 
+control flags or checking for a valid Handle before starting the drag 
+operation.
+</p>
+<p>
+BeforeDragStart is called from the DragStart method in TDragManager.
+</p>
+</descr>
+<seealso>
+<link id="TDragManager.DragStart"/>
+<link id="DragManager"/>
+</seealso>
 </element>
 
 <element name="TControl.BeginAutoDrag">
@@ -9438,7 +9490,7 @@ The dragged DockObject, containing the DockRect to adjust.
 
 <element name="TControl.DoDock">
 <short>
-Adjusts the control's position and extent for the new docksite.
+Adjusts the control position and extent for the new docksite.
 </short>
 <descr>
 <p>
@@ -9540,41 +9592,91 @@ indicates acceptance of the drop message.
 
 <element name="TControl.DoEndDock">
 <short>
-Signals the <link id="#lcl.Controls.TControl.OnEndDock">OnEndDock</link> 
-handler.
+Signals the OnEndDock event handler when the control has been undocked.
 </short>
+<descr>
+<p>
+No actions are performed in the method if a handler routine has not been 
+assigned to OnEndDock.
+</p>
+<p>
+DoEndDock is called from the EndDrag method in TDragDockObject.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnEndDock"/>
+<link id="TDragDockObject.EndDrag"/>
+</seealso>
 </element>
 <element name="TControl.DoEndDock.Target">
-<short/>
+<short>
+Object instance with the target control or dock site site.
+</short>
 </element>
 <element name="TControl.DoEndDock.X">
-<short/>
+<short>
+Horizontal mouse coordinate where the mouse button was released.
+</short>
 </element>
 <element name="TControl.DoEndDock.Y">
-<short/>
+<short>
+Vertical mouse coordinate where the mouse button was released.
+</short>
 </element>
 
 <element name="TControl.DoEndDrag">
 <short>
-Signals the <link id="#lcl.Controls.TControl.OnEndDrag">OnEndDrag</link> 
-handler.
+Signals the OnEndDrag event handler.
 </short>
+<descr>
+<p>
+<var>DoEndDrag</var> occurs when a drag operation for the control has been 
+completed. In <var>TControl</var>, it signals the <var>OnEndDrag</var> event 
+handler (when assigned). Arguments to the handler include the target control 
+(or dock site) and the mouse coordinates when the drag operation was 
+completed.
+</p>
+<p>
+No actions are perform in the method if a handler routine has not been 
+assigned to OnEndDrag.
+</p>
+<p>
+Descendent classes may override the method to perform additional actions 
+needed in their implementation.
+</p>
+<p>
+DoEndDrag is called from the EndDrag method in TDragObject.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnEndDrag"/>
+<link id="TDragObject.EndDrag"/>
+</seealso>
 </element>
 <element name="TControl.DoEndDrag.Target">
-<short/>
+<short>
+Object instance with the target control or dock site site.
+</short>
 </element>
 <element name="TControl.DoEndDrag.X">
-<short/>
+<short>
+Horizontal mouse coordinate where the mouse button was released.
+</short>
 </element>
 <element name="TControl.DoEndDrag.Y">
-<short/>
+<short>
+Vertical mouse coordinate where the mouse button was released.
+</short>
 </element>
 
 <element name="TControl.DoStartDock">
 <short>
-Signals the <link id="#lcl.Controls.TControl.OnStartDock">OnStartDock</link> 
-handler.
+Signals the OnStartDock event handler.
 </short>
+<descr/>
+<seealso>
+<link id="TControl.OnStartDock"/>
+</seealso>
 </element>
 <element name="TControl.DoStartDock.DragObject">
 <short/>
@@ -9582,16 +9684,21 @@ handler.
 
 <element name="TControl.DoStartDrag">
 <short>
-Signals the <link id="#lcl.Controls.TControl.OnStartDrag">OnStartDrag</link> 
-handler.
+Signals the OnStartDrag event handler.
 </short>
+<descr/>
+<seealso>
+<link id="TControl.OnStartDrag"/>
+</seealso>
 </element>
 <element name="TControl.DoStartDrag.DragObject">
 <short/>
 </element>
 
 <element name="TControl.DragCanceled">
-<short>Notifies the control of a cancelled drag.</short>
+<short>
+Notifies the control of a cancelled drag operation.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -9710,9 +9817,26 @@ Neither OnClick nor the ActionLink are executed at design-time.
 <short>
 Signals the OnDblClick event handler (when assigned).
 </short>
-<descr/>
+<descr>
+<p>
+<var>DblCLick</var> is a method used to perform actions needed when a mouse 
+double click event has occurred on the control. In TControl, it signals the 
+OnDblClick event handler (when assigned) using the class instance as the 
+Sender argument in the event type.
+</p>
+<p>
+Descendent classes may override the method to perform additional actions 
+needed in the their implementations.
+</p>
+<p>
+DblClick is called from the WMLButtonDBLCLK method when the LM_LBUTTONDBLCLK 
+window message is handled for the control.
+</p>
+</descr>
 <seealso>
 <link id="TControl.OnDblClick"/>
+<link id="TControl.WMLButtonDBLCLK"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
 </seealso>
 </element>
 
@@ -9720,9 +9844,25 @@ Signals the OnDblClick event handler (when assigned).
 <short>
 Signals the OnTripleClick event handler (when assigned).
 </short>
-<descr/>
+<descr>
+<p>
+<var>TripleClick</var> is a method used to perform actions needed when a 
+mouse triple click event has occurred on the control. In <var>TControl</var>, 
+it signals the OnTripleClick event handler (when assigned) using the class 
+instance as the Sender argument in the event type.
+</p>
+<p>
+Descendent classes may override the method to perform additional actions 
+needed in the their implementations.
+</p>
+<p>
+TripleClick is called from the WMLButtonTripleCLK method when the M_LBUTTONTRIPLECLK window message is handled for the control.
+</p>
+</descr>
 <seealso>
 <link id="TControl.OnTripleClick"/>
+<link id="TControl.WMLButtonTripleCLK"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
 </seealso>
 </element>
 
@@ -9730,9 +9870,26 @@ Signals the OnTripleClick event handler (when assigned).
 <short>
 Signals the OnQuadClick event handler (when assigned).
 </short>
-<descr/>
+<descr>
+<p>
+<var>QuadClick</var> is a method used to perform actions needed when a 
+mouse quadruple click event has occurred on the control. In 
+<var>TControl</var>, it signals the OnQuadClick event handler (when assigned) 
+using the class instance as the Sender argument in the event type.
+</p>
+<p>
+Descendent classes may override the method to perform additional actions 
+needed in the their implementations.
+</p>
+<p>
+QuadClick is called from the WMLButtonQuadCLK method when the 
+M_LBUTTONQUADCLK window message is handled for the control.
+</p>
+</descr>
 <seealso>
 <link id="TControl.OnQuadClick"/>
+<link id="TControl.WMLButtonQuadCLK"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
 </seealso>
 </element>
 
@@ -9946,20 +10103,60 @@ handler.
 
 <element name="TControl.MouseEnter">
 <short>
-Signals the <link 
-id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> handler.
+Signals the OnMouseEnter event handler (when assigned).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseEnter</var> is a method used to perform actions when the mouse 
+pointer enters the client rectangle for the control. In <var>TControl</var>, 
+it signals the OnMouseEnter event handler using the class instance as the 
+Sender argument.
+</p>
+<p>
+Descendent classes may override the method to perform actions needed for 
+their implementations.
+</p>
+<p>
+MouseEnter is called from the CMMouseEnter method when a CM_MOUSEENTER 
+message is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseEnter"/>
+<link id="TControl.CMMouseEnter"/>
+<link id="TControl.MouseCapture"/>
+<link id="TControl.MouseInClient"/>
+<link id="TControl.MouseLeave"/>
+</seealso>
 </element>
 
 <element name="TControl.MouseLeave">
 <short>
-Signals the <link 
-id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> handler.
+Signals the OnMouseLeave event handler (when assigned).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseLeave</var> is a method used to perform actions when the mouse 
+pointer leaves the client rectangle for the control. In <var>TControl</var>, 
+it signals the OnMouseLeave event handler using the class instance as the 
+Sender argument.
+</p>
+<p>
+Descendent classes may override the method to perform actions needed for 
+their implementations.
+</p>
+<p>
+MouseLeave is called from the CMMouseLeave method when a CM_MOUSELEAVE 
+message is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseLeave"/>
+<link id="TControl.CMMouseLeave"/>
+<link id="TControl.MouseCapture"/>
+<link id="TControl.MouseInClient"/>
+<link id="TControl.MouseEnter"/>
+</seealso>
 </element>
 
 <element name="TControl.DialogChar">
@@ -10024,11 +10221,26 @@ Performs actions needed when the value for the control has been changed.
 </short>
 <descr>
 <p>
-In TControl, Changed posts a CM_CHANGED control message to the message 
-processing loop.
+In <var>TControl</var>, <var>Changed</var> calls Perform to post a CM_CHANGED 
+control message to the message processing loop. The Parent control, which 
+provides the window handle, receives the message in its CMChanged method and 
+calls its WindowProc processing loop.
+</p>
+<p>
+Changed may be overridden or reimplemented in descendent classes to perform 
+actions needed in the implementations for the controls. For instance, 
+triggering OnChange or other notification events.
+</p>
+<p>
+Changed is called when properties for the control, especially its value, have 
+been modified.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TControl.CMChanged"/>
+<link id="TControl.Parent"/>
+<link id="TControl.Perform"/>
+</seealso>
 </element>
 
 <element name="TControl.GetPalette">
@@ -10570,7 +10782,9 @@ immediate abort of dragging before dragging really starts.
 </element>
 
 <element name="TControl.Notification">
-<short>Notification handler for insertion or deletion of components.</short>
+<short>
+Notification handler for insertion or deletion of components.
+</short>
 <descr>
 <p>
 First, the inherited <var>TComponent.Notification</var> is called to notify 
@@ -10595,7 +10809,7 @@ anchors for the removed control are detached.
 
 <element name="TControl.CanTab">
 <short>
-Determined whether the Tab key can be used for navigation in the control.
+Determines whether the Tab key can be used for navigation in the control.
 </short>
 <descr>
 <p>
@@ -10707,7 +10921,9 @@ not to the up and down handlers [Delphi compatible].
 </element>
 
 <element name="TControl.DoMouseWheelDown">
-<short>Signals the OnMouseWheelDown handler.</short>
+<short>
+Signals the OnMouseWheelDown handler.
+</short>
 </element>
 <element name="TControl.DoMouseWheelDown.Result">
 <short><b>True</b> if handled.</short>
@@ -10716,7 +10932,9 @@ not to the up and down handlers [Delphi compatible].
 <element link="#lcl.controls.TMouseWheelEvent.MousePos" name="TControl.DoMouseWheelDown.MousePos"/>
 
 <element name="TControl.DoMouseWheelUp">
-<short>Signals the OnMouseWheelUp handler.</short>
+<short>
+Signals the OnMouseWheelUp handler.
+</short>
 </element>
 <element name="TControl.DoMouseWheelUp.Result">
 <short><b>True</b> if handled.</short>
@@ -10746,8 +10964,11 @@ Performs actions needed to handle horizontal mouse wheel events.
 <short>TPoint with the mouse coordinates for the event.</short>
 </element>
 
+<!-- HERE -->
 <element name="TControl.DoMouseWheelLeft">
-<short>Performs the OnMouseWheelLeft event handler.</short>
+<short>
+Signals the OnMouseWheelLeft event handler.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -10762,7 +10983,9 @@ Performs actions needed to handle horizontal mouse wheel events.
 </element>
 
 <element name="TControl.DoMouseWheelRight">
-<short>Performs the OnMouseWheelRight event handler.</short>
+<short>
+Signals the OnMouseWheelRight event handler.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -10777,7 +11000,9 @@ Performs actions needed to handle horizontal mouse wheel events.
 </element>
 
 <element name="TControl.VisibleChanging">
-<short>Notifies all <var>OnVisibleChanging</var> handlers.</short>
+<short>
+Notifies all <var>OnVisibleChanging</var> handlers.
+</short>
 </element>
 
 <element name="TControl.VisibleChanged">
@@ -10929,11 +11154,11 @@ notification.
 <short>Signals the OnContextPopup handler.</short>
 <descr>
 <p>
-DoContextPopup is a method used to signal the OnContextPopup event handler 
-(when assigned). The control instance is used as the Sender argument. Values 
-in MousePos and Handled are also passed as parameters to the event handler. 
-Handled should be set to <b>True</b> in the handler routine if the context 
-pop-up was displayed and a menu item was executed.
+<var>DoContextPopup</var> is a method used to signal the OnContextPopup event 
+handler (when assigned). The control instance is used as the Sender argument. 
+Values in MousePos and Handled are also passed as parameters to the event 
+handler. Handled should be set to <b>True</b> in the handler routine if the 
+context pop-up was displayed and a menu item was executed.
 </p>
 </descr>
 <seealso/>
@@ -10994,20 +11219,20 @@ the control.
 </short>
 <descr>
 <p>
-DoAutoAdjustLayout is a method which implements changes to control sizes for 
-the AutoAdjustLayout method. These methods are called when High-DPI and 
-scaling have been enabled in the project options for an application.
+<var>DoAutoAdjustLayout</var> is a method which implements changes to control 
+sizes for the AutoAdjustLayout method. These methods are called when High-DPI 
+and scaling have been enabled in the project options for an application.
 </p>
 <p>
-AMode indicates the automatic layout policy applied in the method. It is a 
-value from the TLayoutAdjustmentPolicy enumeration, and determines whether 
-horizontal / vertical / or both sizes are adjusted in the method. It 
+<var>AMode</var> indicates the automatic layout policy applied in the method. 
+It is a value from the TLayoutAdjustmentPolicy enumeration, and determines 
+whether horizontal / vertical / or both sizes are adjusted in the method. It 
 generally reflects the constraints for the device type where the application 
 is running.
 </p>
 <p>
-AXProportion and AYProportion contain the scaling factors applied to the 
-horizontal and/or vertical sizes.
+<var>AXProportion</var> and <var>AYProportion</var> contain the scaling 
+factors applied to the horizontal and/or vertical sizes.
 </p>
 <p>
 DoAutoAdjustLayout ensures that new values for Height and Width in the 
@@ -11179,7 +11404,8 @@ operation.
 <short>Allows the user to drag the control.</short>
 <descr>
 <p>
-Default is dmManual, meaning that dragging must be started in code.
+The default value is dmManual, and indicates that dragging must be started in 
+code.
 </p>
 <p>
 Set to dmAutomatic to allow the user to drag this control. In this mode 
@@ -11295,10 +11521,11 @@ restored from an external storage mechanism.
 </short>
 <descr>
 <p>
-SessionProperties is a String property with the names of properties, in the 
-class instance or its child Components. SessionProperties allows published 
-property values to be saved to and restored from an external storage 
-mechanism like: TIniPropStorage, TXMLPropStorage, or TJSONPropStorage.
+<var>SessionProperties</var> is a <var>String</var> property with the names 
+of properties, in the class instance or its child Components. 
+SessionProperties allows published property values to be saved to and 
+restored from an external storage mechanism like: TIniPropStorage, 
+TXMLPropStorage, or TJSONPropStorage.
 </p>
 <p>
 Values in the property are delimited using the ';' (SemiColon) character. 
@@ -11308,8 +11535,8 @@ values can be assigned at design-time using a dialog in the Lazarus IDE, or
 by setting the property value at run-time.
 </p>
 <p>
-In TControl, SessionProperties has protected visibility; it is elevated to 
-published visibility in the TForm descendant.
+In <var>TControl</var>, SessionProperties has protected visibility; it is 
+elevated to published visibility in the TForm descendant.
 </p>
 </descr>
 <seealso>
