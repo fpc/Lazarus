@@ -3197,7 +3197,7 @@ Drawing area on the canvas where the content is positioned.
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.PreferredWidth">
 <short>
-Returns the preferred width calculated for the control.  
+Returns the preferred width calculated for the control.
 </short>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.PreferredHeight">
@@ -3693,19 +3693,21 @@ measuring its components.
 
 <element name="TCustomSpeedButton.GetTextSize">
 <short>
-Gets the size of the text within the specified <var>PaintRect</var>.
+Gets the size of the Caption text within the specified <var>PaintRect</var>.
 </short>
 <descr>
 <p>
 <var>GetTextSize</var> is a <var>TSize</var> function used to get the 
-dimensions for the <var>Caption</var> text for the control.
+dimensions for the <var>Caption</var> text for the control. It calculates the 
+dimensions for the text using the TextStyle and Font assigned to the control 
+Canvas.
 </p>
 <p>
-GetTextSize removes Ampersand (&amp;) characters in Caption prior to 
-calculating the dimensions for the text using the TextStyle for the control 
-Canvas. The value in PaintRect is updated with the calculated dimensions. The 
-X and Y members in the return value contain the Width and the height for the 
-text using the Font for the control. Both member values are set to <b>0</b> 
+The return value is a TSize instance where the CX and CY members represent 
+the width and height for the text. The DrawText routine in the LCL interface 
+is called to calculate the dimensions using the text style, flags, and the 
+PaintRect for the control. The coordinates from the updated PaintRect are 
+stored in CX and CY in the return value. Both members are set to <b>0</b> 
 when ShowCaption is <b>False</b> or Caption contains an empty string 
 (<b>''</b>).
 </p>
@@ -3714,8 +3716,8 @@ GetTextSize is called from the <var>MeasureDraw</var> method.
 </p>
 </descr>
 <seealso>
-<link id="TCustomSpeedButton.MeasureDraw"/>
 <link id="TCustomSpeedButton.ShowCaption"/>
+<link id="TCustomSpeedButton.MeasureDraw"/>
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 <link id="#lcl.controls.TControl.Font">TControl.Font</link>
