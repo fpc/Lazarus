@@ -6225,6 +6225,7 @@ the panel.
 <element name="TCustomPanel.FAlignment"/>
 <element name="TCustomPanel.FVertAlignment"/>
 <element name="TCustomPanel.FFullRepaint"/>
+<element name="TCustomPanel.FShowAccelChar"/>
 <element name="TCustomPanel.FWordWrap"/>
 
 <element name="TCustomPanel.PaintBevel">
@@ -6320,6 +6321,17 @@ draw using both the <var>BevelInner</var> and <var>BevelOuter</var> styles.
 </element>
 <element name="TCustomPanel.SetBevelWidth.Value">
 <short>New value for the property.</short>
+</element>
+
+<element name="TCustomPanel.SetShowAccelChar">
+<short>
+Sets the value for the ShowAccelChar property.
+</short>
+</element>
+<element name="TCustomPanel.SetShowAccelChar.Value">
+<short>
+New value for the ShowAccelChar property.
+</short>
 </element>
 
 <element name="TCustomPanel.SetVertAlignment">
@@ -6523,6 +6535,43 @@ change message is handled for the control.
 </descr>
 <errors/>
 <seealso/>
+</element>
+
+<element name="TCustomPanel.ShowAccelChar">
+<short>
+Controls the display of accelerator or hot keys in the Caption for the panel.
+</short>
+<descr>
+<p>
+<var>ShowAccelChar</var> is a <var>Boolean</var> property which indicates 
+whether accelerator keys in the Caption property are drawn when the panel is 
+displayed. The default value for the property is <b>False</b>, and causes an 
+Ampersand character (&amp;) in Caption to be rendered using its character 
+value instead of as an accelerator.
+</p>
+<p>
+When set to <b>True</b>, an Ampersand character indicates that the following 
+character is an accelerator or hot key. The Ampersand character is removed 
+from the rendered value and an underline is drawn beneath the accelerator 
+key. In this case, double Ampersand characters (&amp;&amp;) can be used to 
+renderer a single Ampersand on the panel.
+</p>
+<p>
+ShowAccelChar allows Caption rendering to behave like the panel 
+implementation in the Delphi VCL.
+</p>
+<p>
+ShowAccelChar is used in the Paint method, and controls the ShowPrefix value 
+in the text style used to render the Caption on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPanel.Paint"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+</seealso>
+<version>
+Added in LCL version 2.4.
+</version>
 </element>
 
 <element name="TCustomPanel.VerticalAlignment">
