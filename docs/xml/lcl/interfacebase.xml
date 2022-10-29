@@ -1081,6 +1081,20 @@ Don't call this directly, the LCL will use it when adequate.
 <short>The visibility of the MainForm icon in the TaskBar.</short>
 </element>
 
+<element name="TWidgetSet.AppSetupMainForm">
+<short>
+Sets the window state for the specified main form to match the CmdShow 
+parameter passed when startted from a shortcut.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TWidgetSet.AppSetupMainForm.AMainForm">
+<short>
+Main form instance with the window state updated in the method.
+</short>
+</element>
+
 <element name="TWidgetSet.LCLPlatform">
 <short>Returns the name for the widgetset used for the platform.</short>
 <descr/>
