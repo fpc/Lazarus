@@ -927,6 +927,9 @@ packages/pkg_add_200.png
 packages/pkg_binary.png
 packages/pkg_binary_150.png
 packages/pkg_binary_200.png
+packages/pkg_comp_new.png
+packages/pkg_comp_new_150.png
+packages/pkg_comp_new_200.png
 packages/pkg_compile.png
 packages/pkg_compile_150.png
 packages/pkg_compile_200.png
