@@ -3524,12 +3524,8 @@ dragged object.
 The DragDock object, containing information about the dragged object.
 </short>
 </element>
-<element name="TDockDropEvent.X" link="#lcl.controls.TDragOverEvent.X">
-<short/>
-</element>
-<element name="TDockDropEvent.Y" link="#lcl.controls.TDragOverEvent.Y">
-<short/>
-</element>
+<element name="TDockDropEvent.X" link="#lcl.controls.TDragOverEvent.X"/>
+<element name="TDockDropEvent.Y" link="#lcl.controls.TDragOverEvent.Y"/>
 
 <element name="TDockOverEvent">
 <short>The type of an OnDockOver handler.</short>
@@ -4021,7 +4017,7 @@ Shift, Ctrl, or Alt modifier for the key up event.
 
 <element name="TDragManager.CaptureChanged">
 <short>
-Aborts the dragging operation, when the capturing control has changed.
+Aborts the dragging operation when the capture control has changed.
 </short>
 <descr/>
 <seealso/>
@@ -4100,12 +4096,16 @@ Vertical pointer position when the mouse event was detected.
 </element>
 
 <element name="TDragManager.Create">
-<short>Initializes the Delphi default dragging parameters.</short>
+<short>
+Initializes the drag parameters to Delphi-compatible values.
+</short>
 <descr>
 <p>
 The Delphi VCL sets DragImmediate to <b>True</b> and DragThreshold to 5.
 </p>
-<remark>A docking operation never should start immediately.</remark>
+<remark>
+A docking operation never should start immediately.
+</remark>
 </descr>
 </element>
 <element name="TDragManager.Create.TheOwner">
@@ -4646,9 +4646,17 @@ Not used in the current LCL Implementation.
 <short>
 Set type used to store values from the TSizeConstraintsOption enumeration.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TSizeConstraintsOptions</var> is a set type used to store zero or more 
+values from the <var>TSizeConstraintsOption</var> enumeration. 
+TSizeConstraintsOptions is the type used to implement the Options property in 
+TSizeConstraints.
+</p>
+</descr>
 <seealso>
 <link id="TSizeConstraintsOption"/>
+<link id="TSizeConstraints.Options"/>
 </seealso>
 </element>
 
@@ -4682,7 +4690,7 @@ Holds maximum and minimum values that can be used in sizing objects.
 </element>
 
 <element name="TSizeConstraints.Change">
-<short>Calls an OnChange handler if assigned.</short>
+<short>Signals an OnChange handler if assigned.</short>
 <descr/>
 <seealso/>
 </element>
@@ -10964,100 +10972,368 @@ Performs actions needed to handle horizontal mouse wheel events.
 <short>TPoint with the mouse coordinates for the event.</short>
 </element>
 
-<!-- HERE -->
 <element name="TControl.DoMouseWheelLeft">
 <short>
-Signals the OnMouseWheelLeft event handler.
+Signals the OnMouseWheelLeft event handler (when assigned).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoMouseWheelLeft</var> is a <var>Boolean</var> function used to perform 
+actions when a horizontal mouse wheel movement towards the left has occurred 
+in the control. It is called, via DoMouseWheelHorz, when a LM_MOUSEHWHEEL 
+message is received and handled in the WMMouseHWheel method.
+</p>
+<p>
+DoMouseWheelLeft signals the OnMouseWheelLeft event handler when it has been 
+assigned in the control. Shift and MousePos contain the shift modifier and 
+the coordinates where the mouse event occurred. They are passed as arguments 
+to the event handler.
+</p>
+<p>
+The return value indicates whether the event handler accepted and processed 
+the mouse wheel event at the specified position. The default value is 
+<b>False</b>, but it can be updated in the handler routine. The return value 
+is <b>False</b> if OnMouseWheelLeft has not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseWheelLeft"/>
+<link id="TControl.DoMouseWheelHorz"/>
+<link id="TControl.DoMouseWheelRight"/>
+<link id="TControl.WMMouseHWheel"/>
+</seealso>
 </element>
 <element name="TControl.DoMouseWheelLeft.Result">
-<short/>
+<short>
+<b>True</b> if the mouse wheel event was handled in the OnMouseWheelLeft 
+event handler.
+</short>
 </element>
 <element name="TControl.DoMouseWheelLeft.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TControl.DoMouseWheelLeft.MousePos">
-<short/>
+<short>
+TPoint instance with the coordinates where the mouse wheel event was detected.
+</short>
 </element>
 
 <element name="TControl.DoMouseWheelRight">
 <short>
 Signals the OnMouseWheelRight event handler.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoMouseWheelRight</var> is a <var>Boolean</var> function used to perform 
+actions when a horizontal mouse wheel movement towards the right has occurred 
+in the control. It is called, via DoMouseWheelHorz, when a LM_MOUSEHWHEEL 
+message is received and handled in the WMMouseHWheel method.
+</p>
+<p>
+DoMouseWheelRight signals the OnMouseWheelRight event handler when it has 
+been assigned in the control. Shift and MousePos contain the shift modifier 
+and the coordinates where the mouse event occurred. They are passed as 
+arguments to the event handler.
+</p>
+<p>
+The return value indicates whether the event handler accepted and processed 
+the mouse wheel event at the specified position. The default value is 
+<b>False</b>, but it can be updated in the handler routine. The return value 
+is <b>False</b> if OnMouseWheelRight has not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseWheelRight"/>
+<link id="TControl.DoMouseWheelHorz"/>
+<link id="TControl.DoMouseWheelLeft"/>
+<link id="TControl.WMMouseHWheel"/>
+</seealso>
 </element>
 <element name="TControl.DoMouseWheelRight.Result">
-<short/>
+<short>
+<b>True</b> if the mouse wheel event was handled in the OnMouseWheelRight 
+event handler.
+</short>
 </element>
 <element name="TControl.DoMouseWheelRight.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TControl.DoMouseWheelRight.MousePos">
-<short/>
+<short>
+TPoint instance with the coordinates where the mouse wheel event was detected.
+</short>
 </element>
 
 <element name="TControl.VisibleChanging">
 <short>
-Notifies all <var>OnVisibleChanging</var> handlers.
+Notifies all chtOnVisibleChanging handlers for the control.
 </short>
+<descr>
+<p>
+<var>VisibleChanging</var> is called when a new value is assigned to the 
+<var>Visible</var> property. It occurs before the new property value is 
+stored to its member in the class instance. It allows all of the 
+<var>TNotifyEvent</var> routines registered for the 
+<var>chtOnVisibleChanging</var> control handler type to be signalled prior to 
+the change in the property value.
+</p>
+<p>
+VisibleChanging calls the DoCallNotifyHandler method to signal each of the 
+handler routines using the chtOnVisibleChanging control handler type. The 
+class instance is used as the Sender argument for the event notification.
+</p>
+<p>
+Use AddHandlerOnVisibleChanging and RemoveHandlerOnVisibleChanging to manage 
+the TNotifyEvent handler routines for the chtOnVisibleChanging handler type 
+used in the control.
+</p>
+<p>
+See VisibleChanged for the actions performed after the value in Visible has 
+been updated.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Visible"/>
+<link id="TControl.DoCallNotifyHandler"/>
+<link id="TControl.AddHandlerOnVisibleChanging"/>
+<link id="TControl.RemoveHandlerOnVisibleChanging"/>
+<link id="TControl.VisibleChanged"/>
+<link id="TControlHandlerType"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.VisibleChanged">
-<short>Notifies all OnVisibleChanged handlers.</short>
+<short>
+Notifies all chtOnVisibleChanged handlers for the control.
+</short>
+<descr>
+<p>
+<var>VisibleChanged</var> is called when a new value has been assigned to the 
+<var>Visible</var> property. It occurs after the new property value is stored 
+to its member in the class instance. It allows all of the 
+<var>TNotifyEvent</var> routines registered for the 
+<var>chtOnVisibleChanged</var> control handler type to be signalled for the 
+new property value.
+</p>
+<p>
+VisibleChanged calls the DoCallNotifyHandler method to signal each of the 
+handler routines using the chtOnVisibleChanged control handler type. The 
+class instance is used as the Sender argument for the event notification.
+</p>
+<p>
+Use AddHandlerOnVisibleChanged and RemoveHandlerOnVisibleChanged to manage 
+the TNotifyEvent handler routines for the chtOnVisibleChanged handler type 
+used in the control.
+</p>
+<p>
+See VisibleChanging for the actions performed before the value in Visible is 
+updated.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Visible"/>
+<link id="TControl.DoCallNotifyHandler"/>
+<link id="TControl.AddHandlerOnVisibleChanged"/>
+<link id="TControl.RemoveHandlerOnVisibleChanged"/>
+<link id="TControl.VisibleChanging"/>
+<link id="TControlHandlerType"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
+<!--
+TODO: AddHandlerOnEnabledChanging is missing in the current TControl 
+interface.
+ -->
 <element name="TControl.EnabledChanging">
-<short>Notifies all OnEnabledChanging handlers.</short>
+<short>
+Notifies all chtOnEnabledChanging handlers for the control.
+</short>
+<descr>
+<p>
+<var>EnabledChanging</var> is called when a new value has been assigned to 
+the Enabled property. It occurs after the new property value is stored to its 
+member, and before a CM_ENABLEDCHANGED control message is posted for the 
+control. It allows all of the <var>TNotifyEvent</var> routines registered for 
+the <var>chtOnEnabledChanging</var> control handler type to be signalled for 
+the new property value.
+</p>
+<p>
+EnabledChanging calls the <var>DoCallNotifyHandler</var> method to signal 
+each of the handler routines using the chtOnEnabledChanging control handler 
+type. The class instance is used as the Sender argument for the event 
+notification.
+</p>
+<p>
+Use RemoveHandlerOnEnabledChanging to manage the TNotifyEvent handler 
+routines for the handler type used in the control. AddHandler and 
+RemoveHandler can be used if the control handler type is passed as an 
+argument.
+</p>
+<p>
+See EnabledChanged for the actions performed after the value in Enabled  is 
+updated.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Enabled"/>
+<link id="TControl.EnabledChanged"/>
+<link id="TControl.Perform"/>
+<link id="TControl.DoCallNotifyHandler"/>
+<!-- <link id="TControl.RemoveHandlerOnEnabledChanging"/> -->
+<link id="TControlHandlerType"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.EnabledChanged">
-<short>Notifies all OnEnabledChanged handlers.</short>
+<short>
+Notifies all chtOnEnabledChanged handlers for the control.
+</short>
+<descr>
+<p>
+<var>EnabledChanged</var> is called when a new value has been assigned to 
+the Enabled property. It occurs after the EnabledChanging method has been 
+called, and the CM_ENABLEDCHANGED control message has been sent for the 
+control. It allows all of the <var>TNotifyEvent</var> routines registered for 
+the <var>chtOnEnabledChanged</var> control handler type to be signalled for 
+the new property value.
+</p>
+<p>
+EnabledChanged calls the <var>DoCallNotifyHandler</var> method to signal 
+each of the handler routines using the chtOnEnabledChanged control handler 
+type. The class instance is used as the Sender argument for the event 
+notification.
+</p>
+<p>
+Use AddHandlerOnEnabledChanged and RemoveHandlerOnEnabledChanged to manage 
+the TNotifyEvent handler routines for the handler type used in the control. 
+AddHandler and RemoveHandler can be used if the control handler type is 
+passed as an argument.
+</p>
+<p>
+See EnabledChanging for the actions performed before the value in Enabled 
+is updated in its widgetset class instance.
+</p>
+</descr>
+<seealso>
+<link id="TControl.DoCallNotifyHandler"/>
+<link id="TControlHandlerType"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.AddHandler">
-<short>Adds an notification handler.</short>
+<short>
+Adds a notification handler for the specified control handler type.
+</short>
 <descr>
 <p>
-Notification handlers allow components to be notified of certain events. When 
-the registered event occurs, all installed (added) handlers are invoked.
+<var>AddHandler</var> is a method used to include the handler routine 
+specified in <var>AMethod</var> in the list of notification handlers for the 
+type in <var>HandlerType</var>.
 </p>
+<p>
+<var>HandlerType</var> is a <var>TControlHandlerType</var> enumeration value, 
+and indicates both the subject for the notification and the method list where 
+the handler routine is stored.
+</p>
+<p>
+<var>AMethod</var> is the <var>TMethod</var> instance with the handler 
+routine signalled when a notification is needed. It is an object procedure 
+which implements the <var>TNotifyEvent</var> signature and cast to the 
+<var>TMethod</var> type.
+</p>
+<p>
+AddHandler ensures that a <var>TMethodList</var> instance has been allocated 
+for handler routines using the specified type; if it does not exist, it is 
+created and stored in the internal array of handler types.
+</p>
+<p>
+AddHandler calls the Add method in the method list to store the routine in 
+AMethod.
+</p>
+<p>
+<var>AsFirst</var> indicates whether the routine is inserted as the first 
+item in the list. When set to False, the routine is appended as the last 
+entry in the method list.
+</p>
+<p>
+Use RemoveHandler to remove a handler routine from the method list for a 
+specific handler type.
+</p>
+<p>
+Convenience methods which act upon a specific control handler type using 
+TNotifyEvent arguments are also available. For example:
+</p>
+<ul>
+<li>AddHandlerOnResize</li>
+<li>AddHandlerOnChangeBounds</li>
+<li>AddHandlerOnVisibleChanged</li>
+<li>and others</li>
+</ul>
 </descr>
+<seealso>
+<link id="TControl.RemoveHandler"/>
+<link id="TControl.DoCallNotifyHandler"/>
+<link id="TControlHandlerType"/>
+<link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
+<link id="#rtl.system.TMethod">TMethod</link>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 <element name="TControl.AddHandler.HandlerType">
-<short>Type of the event.</short>
+<short>
+Control handler type of the handler routine.</short>
 </element>
 <element name="TControl.AddHandler.AMethod">
-<short>The handler to be added.</short>
+<short>
+The handler routine added in the method.
+</short>
 </element>
 <element name="TControl.AddHandler.AsFirst">
-<short>Unused.</short>
+<short>
+True if the handler routine is signalled first in the notification order.
+</short>
 </element>
 
+<!-- TODO: This needs work. -->
 <element name="TControl.RemoveHandler">
 <short>
-Removes the given notification handler from the specified handler type.
+Removes a notification handler from the specified handler type.
 </short>
 <seealso>
 <link id="TControl.AddHandler"/>
 </seealso>
 </element>
 <element name="TControl.RemoveHandler.HandlerType">
-<short>Type of the notification.</short>
+<short>
+Control handler type for the notification.
+</short>
 </element>
 <element name="TControl.RemoveHandler.AMethod">
-<short>The handler to be removed.</short>
+<short>
+The handler routine removed from the list of handlers for the specified type.
+</short>
 </element>
 
+<!-- TODO: This needs work. -->
 <element name="TControl.DoCallNotifyHandler">
-<short>Invokes all notification handlers of the specified type.</short>
+<short>
+Signals handler routines for the specified control handler type.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TControl.DoCallNotifyHandler.HandlerType">
-<short>The event that has occurred.</short>
+<short>
+Identifies the handler type for the routines signalled in the method.
+</short>
 </element>
 
 <element name="TControl.DoCallKeyEventHandler">
@@ -11177,10 +11453,29 @@ handled for the control.
 
 <element name="TControl.SetZOrder">
 <short>
-Moves the control in front of or back all sibling controls.
+Moves the control in front of or behind all sibling controls.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SetZOrder</var> calls the SetChildZPosition method in the Parent control 
+to change the Z-Order for the control instance. TopMost indicates whether the 
+control is moved to the top or bottom of the Z-Order.
+</p>
+<p>
+No actions are performed in the method when Parent has not been assigned.
+</p>
+<p>
+SetZOrder is used to implement the BringToFront and SendToBack methods. It 
+may be overridden is descendent classes to perform actions needed for the 
+derived controls. See 
+<link id="#lcl.forms.TCustomForm.SetZOrder">TCustomForm.SetZOrder</link>.
+</p>
+</descr>
+<seealso>
+<link id="TControl.Parent"/>
+<link id="TWinControl.SetChildZPosition"/>
+<link id="#lcl.forms.TCustomForm.SetZOrder">TCustomForm.SetZOrder</link>
+</seealso>
 </element>
 <element name="TControl.SetZOrder.TopMost">
 <short>
@@ -11191,11 +11486,20 @@ Moves the control in front of or back all sibling controls.
 
 <element name="TControl.GetControlClassDefaultSize">
 <short>
-Returns the default size for this class of controls (when added to a form).
+Returns the default dimensions for new instances of the class.
 </short>
+<descr>
+<p>
+The CX member is set to 75 (pixels).
+The CY member is set to 50 (pixels).
+</p>
+</descr>
 </element>
 <element name="TControl.GetControlClassDefaultSize.Result">
-<short/>
+<short>
+TSize instance with the Width and Height for a new instance of the control 
+class.
+</short>
 </element>
 
 <element name="TControl.ColorIsStored">
@@ -11303,11 +11607,11 @@ Design-time display density to which the font height is adjusted.
 
 <element name="TControl.DoScaleFontPPI">
 <short>
-Adjusts the height for a given Font to the specified pixels per inch (PPI).
+Implements the ScaleFontsPPI method for the control.
 </short>
 <descr>
 <p>
-Implements the ScaleFontsPPI method for the control.
+Adjusts the height for a given Font to the specified pixels per inch (PPI).
 </p>
 </descr>
 <seealso>
@@ -11475,8 +11779,7 @@ method.
 
 <element name="TControl.ParentFont">
 <short>
-If <b>True</b>, the Font of the control will be the same as the one from the 
-Parent. Default is <b>True</b>.
+Indicates if the Font from the Parent control is used in the control.
 </short>
 <descr>
 <p>
@@ -11485,6 +11788,9 @@ are also applied to the Font for the control. This synchronizes them, keeping
 them set to the same value. If the value in <var>Font</var> is changed by the 
 application, then <var>ParentFont</var> will automatically be set to 
 <b>False</b>.
+</p>
+<p>
+The default value for ParentFont is <b>True</b>.
 </p>
 </descr>
 <seealso>
@@ -11622,16 +11928,21 @@ a method should be supplied if appropriate.
 </element>
 
 <element name="TControl.OnTripleClick">
-<short>Event handler for triple mouse clicks.</short>
+<short>
+Event handler signalled when a mouse triple click occurs.
+</short>
 </element>
 
 <element name="TControl.OnQuadClick">
-<short>Event handler for quadruple mouse clicks.</short>
+<short>
+Event handler signalled when a mouse quadruple mouse occurs.
+</short>
 </element>
 
 <element name="TControl.OnDragDrop">
-<short>This handler determines the action on an drop onto this control, in a 
-drag-drop operation.
+<short>
+Event handler used to determine the action when another control is dropped 
+onto this control, in a drag-drop operation.
 </short>
 <descr>
 <p>
@@ -11647,7 +11958,9 @@ on an drag-drop.
 </element>
 
 <element name="TControl.OnDragOver">
-<short>Event handler for a control being dragged over this control.</short>
+<short>
+Event handler for a control being dragged over this control.
+</short>
 <descr>
 The handler can reject a drop by setting Accept to <b>False</b>.
 </descr>
@@ -11714,10 +12027,47 @@ needed when mouse scroll wheel messages are handled for the control.
 </element>
 
 <element name="TControl.OnMouseMove">
-<short>Event handler for mouse movement within the control.</short>
+<short>
+Event handler signalled when the mouse pointer is moved in the control.
+</short>
 <descr>
+<p>
+<var>OnMouseMove</var> is a <var>TMouseMoveEvent</var> property with the 
+event handler signalled when the LM_MOUSEMOVE message is handled for the 
+control. It is signalled (when assigned) from the MouseMove method, and 
+occurs after the mouse position has been updated and the DragManager has been 
+notified of the new pointer position.
+</p>
+<p>
+An application can implement and assign an object procedure to the event 
+handler to perform actions needed when the mouse position is changed within 
+the control. The control for the notification event is passed as the Sender 
+argument.
+</p>
+<p>
+Use OnMouseDown and OnMouseUp to respond to mouse button events in the 
+control.
+</p>
+<p>
+Use OnMouseEnter and OnMouseLeave to respond to mouse movements where the 
+pointer enters or exits the control.
+</p>
+<p>
+Use OnMouseWheel to perform actions needed when a mouse wheel event occurs in 
+the control.
+</p>
 </descr>
 <seealso>
+<link id="TControl.MouseMove"/>
+<link id="TControl.WMMouseMove"/>
+<link id="TControl.OnMouseDown"/>
+<link id="TControl.OnMouseEnter"/>
+<link id="TControl.OnMouseLeave"/>
+<link id="TControl.OnMouseUp"/>
+<link id="TControl.OnMouseWheel"/>
+<link id="TMouseMoveEvent"/>
+<link id="TDragManager.MouseMove"/>
+<link id="DragManager"/>
 </seealso>
 </element>
 
@@ -11819,54 +12169,121 @@ the bounds for the control.
 <descr>
 <p>
 By default all mouse wheel actions are translated into scroll events. Write 
-an OnMouseWheel handler to react on turns of the mouse wheel.
+an OnMouseWheel handler to react when the mouse wheel is rotated.
 </p>
 <p>
-The OnMouseWheelUp and OnMouseWheelDown handlers are notified only, they are 
+The OnMouseWheelUp and OnMouseWheelDown handlers are notified only; they are 
 not suited for customization of mouse wheel events.
 </p>
 </descr>
 <seealso>
+<link id="TControl.OnMouseWheelDown"/>
+<link id="TControl.OnMouseWheelLeft"/>
+<link id="TControl.OnMouseWheelRight"/>
+<link id="TControl.OnMouseWheelUp"/>
 <link id="TMouseWheelEvent"/>
 </seealso>
 </element>
 
 <element name="TControl.OnMouseWheelDown">
-<short>Event handler for downward movement of mouse wheel.</short>
+<short>
+Event handler signalled for a downward movement of the mouse wheel.
+</short>
 <descr>
+<p>
+<var>OnMouseWheelDown</var> is a <var>TMouseWheelUpDownEvent</var> property 
+with the event handler signalled when a downward movement of the mouse wheel 
+has occurred in the control.
+</p>
+<p>
+OnMouseWheelDown is signalled (when assigned) from the DoMouseWheelDown 
+method using the control instance as the Sender for the event notification. 
+It occurs when the OnMouseWheel event handler has not been assigned, or does 
+not handle the mouse wheel event.
+</p>
+<p>
+Use OnMouseWheelUp to perform actions needed when an upward movement of the 
+mouse wheel has occurred.
+</p>
+<p>
+Use OnMouseWheel when a delta value with the direction for the mouse wheel 
+movement is needed.
+</p>
 </descr>
 <seealso>
 <link id="TControl.OnMouseWheel"/>
+<link id="TControl.OnMouseWheelUp"/>
+<link id="TControl.DoMouseWheelDown"/>
+<link id="TControl.DoMouseWheel"/>
 <link id="TMouseWheelUpDownEvent"/>
 </seealso>
 </element>
 
 <element name="TControl.OnMouseWheelUp">
-<short>Event handler for upward movement of the mouse wheel.</short>
+<short>
+Event handler signalled for an upward movement of the mouse wheel.
+</short>
 <descr>
 </descr>
 <seealso>
+<link id="TControl.OnMouseWheelDown"/>
 <link id="TControl.OnMouseWheel"/>
 <link id="TMouseWheelUpDownEvent"/>
 </seealso>
 </element>
 
 <element name="TControl.OnMouseWheelHorz">
-<short>Event handler for horizontal movements of the mouse wheel.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled for a horizontal movement of the mouse wheel.
+</short>
+<descr>
+<p>
+Requires a mouse with a tilting scroll wheel to generate the event 
+notification.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseWheelLeft"/>
+<link id="TControl.OnMouseWheelRight"/>
+<link id="TControl.OnMouseWheel"/>
+<link id="TMouseWheelEvent"/>
+</seealso>
 </element>
 
 <element name="TControl.OnMouseWheelLeft">
-<short>Event handler signalled for left mouse wheel movements.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled for a leftward movement of the mouse wheel.
+</short>
+<descr>
+<p>
+Requires a mouse with a tilting scroll wheel to generate the event 
+notification.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseWheelRight"/>
+<link id="TControl.OnMouseWheelHorz"/>
+<link id="TControl.OnMouseWheel"/>
+<link id="TMouseWheelUpDownEvent"/>
+</seealso>
 </element>
 
 <element name="TControl.OnMouseWheelRight">
-<short>Event handler signalled for right mouse wheel movements.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled for a rightward movement of the mouse wheel.
+</short>
+<descr>
+<p>
+Requires a mouse with a tilting scroll wheel to generate the event 
+notification.
+</p>
+</descr>
+<seealso>
+<link id="TControl.OnMouseWheelLeft"/>
+<link id="TControl.OnMouseWheelHorz"/>
+<link id="TControl.OnMouseWheel"/>
+<link id="TMouseWheelUpDownEvent"/>
+</seealso>
 </element>
 
 <element name="TControl.OnStartDock">
@@ -11884,11 +12301,13 @@ is created.
 </element>
 
 <element name="TControl.OnStartDrag">
-<short>Event handler for the start of a dragging operation.</short>
+<short>
+Event handler signalled for the start of a dragging operation.
+</short>
 <descr>
 <p>
-The handler can provide a special DragControl object, otherwise a default 
-object is created.
+The handler routine can provide a special DragControl object. Otherwise, a 
+default object is created.
 </p>
 </descr>
 <seealso>
@@ -11898,7 +12317,9 @@ object is created.
 </element>
 
 <element name="TControl.OnEditingDone">
-<short>Event handler signalled when editing is done.</short>
+<short>
+Event handler signalled when editing is completed for the control.
+</short>
 <descr>
 <p>
 The user has finished editing the value for the control, and the resulting 
@@ -11926,7 +12347,7 @@ use it anymore.
 
 <element name="TControl.DragDrop">
 <short>
-Signals the OnDragDrop handler, when a dragged object is dropped onto this 
+Signals the OnDragDrop handler when a dragged object is dropped onto this 
 control.
 </short>
 <seealso>
@@ -12883,7 +13304,9 @@ color value.
 </element>
 
 <element name="TControl.GetSidePosition">
-<short>The client coordinate for the specified side.</short>
+<short>
+Gets the client coordinate for the specified side.
+</short>
 <descr>
 <p>
 The return value contains the coordinate for the anchor side indicated in the 
@@ -14357,7 +14780,39 @@ control.
 </short>
 </element>
 
-<element link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject" name="TControl.RemoveAllHandlersOfObject"/>
+<element name="TControl.RemoveAllHandlersOfObject">
+<short>
+Removes all control handler types for the specified object.
+</short>
+<descr>
+<p>
+<var>RemoveAllHandlersOfObject</var> is an overridden method in 
+<var>TControl</var> used to remove all handler routines for the specified 
+object instance found in the internal storage for the control handler types.
+</p>
+<p>
+<var>AnObject</var> is the control associated with handler routines located 
+and removed in the method. It allows handler routines added at run-time to be 
+removed prior to destroying the object instance in AnObject.
+</p>
+<p>
+RemoveAllHandlersOfObject visits each of the <var>TMethodList</var> instances 
+used for each of the <var>TControlHandlerType</var> values. It calls the 
+RemoveAllMethodsOfObject method in the TMethodList instance to remove 
+associations where AnObject is the target.
+</p>
+<p>
+The method can be overridden in descendent classes to provide additional 
+functionality needed for derived controls.
+</p>
+</descr>
+<seealso>
+<link id="TControl.AddHandler"/>
+<link id="TControlHandlerType"/>
+<link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
+<link id="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject">TLCLComponent.RemoveAllHandlersOfObject</link>
+</seealso>
+</element>
 <element name="TControl.RemoveAllHandlersOfObject.AnObject">
 <short/>
 </element>
@@ -14476,7 +14931,11 @@ Removes the specified <var>OnVisibleChanged</var> event handler.
 <short/>
 </element>
 
-<element name="TControl.AddHandlerOnEnabledChanged">
+
+<!-- 
+TODO: RemoveHandlerOnEnabledChanged is missing in the current TControl interface.
+-->
+ <element name="TControl.AddHandlerOnEnabledChanged">
 <short>Adds an <var>OnEnabledChanged</var> handler.</short>
 <descr/>
 <seealso/>
@@ -14488,6 +14947,9 @@ Removes the specified <var>OnVisibleChanged</var> event handler.
 <short/>
 </element>
 
+<!--
+TODO: This is misnamed. Needs to be RemoveHandlerOnEnabledChanging.
+-->
 <element name="TControl.RemoveHandlerOnEnableChanging">
 <short>
 Removes the specified <var>OnEnabledChanged</var> event handler.
