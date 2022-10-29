@@ -146,6 +146,7 @@ type
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; virtual;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; virtual;
     procedure AppSetMainFormOnTaskBar(const DoSet: Boolean); virtual;
+    procedure AppSetupMainForm(AMainForm: TObject); virtual;
     
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;

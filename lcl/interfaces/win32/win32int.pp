@@ -187,6 +187,7 @@ type
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     procedure AppSetMainFormOnTaskBar(const DoSet: Boolean); override;
+    procedure AppSetupMainForm(AMainForm: TObject); override;
 
     function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 

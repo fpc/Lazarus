@@ -562,6 +562,22 @@ begin
     RecreateWnd(Application.MainForm);
 end;
 
+procedure TWin32WidgetSet.AppSetupMainForm(AMainForm: TObject);
+var
+  // AMainForm is guaranteed to be a TCustomForm
+  MainForm: TCustomForm absolute AMainForm;
+begin
+  //Handle CmdShow parameter when invoked from a shortcut.
+  case System.CmdShow of
+    SW_SHOWNORMAL: ; //don't alter WindowState
+    SW_SHOWMINNOACTIVE,
+    SW_SHOWMINIMIZED,
+    SW_MINIMIZE: MainForm.WindowState := wsMinimized;
+    SW_SHOWMAXIMIZED: MainForm.WindowState := wsMaximized;
+    SW_SHOWFULLSCREEN: MainForm.WindowState := wsFullScreen;
+  end;
+end;
+
 function TWin32WidgetSet.LCLPlatform: TLCLPlatform;
 begin
   Result:= lpWin32;

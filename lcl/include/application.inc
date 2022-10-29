@@ -1384,7 +1384,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.Run;
 begin
-  if (FMainForm <> nil) and FShowMainForm then FMainForm.Show;
+  if (FMainForm <> nil) and FShowMainForm then
+  begin
+    WidgetSet.AppSetupMainForm(FMainForm);
+    FMainForm.Show;
+  end;
   WidgetSet.AppRun(@RunLoop);
 end;
 

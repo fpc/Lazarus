@@ -80,6 +80,10 @@ procedure TWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
 end;
 
+procedure TWidgetSet.AppSetupMainForm(AMainForm: TObject);   //e.g. handle widgetset specific startup info
+begin
+end;
+
 function TWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
