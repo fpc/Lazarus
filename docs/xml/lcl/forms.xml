@@ -14302,7 +14302,7 @@ signal idle handlers for the application or wait for a new message before
 exit.
 </p>
 <p>
-HandleMessage is called from the <var>RunLoop</var> method in 
+HandleMessage is called from the private RunLoop method in 
 <var>TApplication</var>.
 </p>
 </descr>
@@ -14742,11 +14742,38 @@ any application handlers using the ahtIdleEnd handler type.
 
 <element name="TApplication.Run">
 <short>
-Loads the MainForm and passes control to the event loop for the application.
+Loads the form and passes control to the event loop for the application.
 </short>
 <descr>
+<p>
+<var>Run</var> is the method called to start execution of the application. It 
+reimplements the method introduced in TCustomApplication to provide support 
+for the MainForm and processing loop used in a GUI application. The Run 
+method is generally called, via the Application singleton, from the .lpr 
+project file.
+</p>
+<p>
+If the MainForm property has been assigned, and should be displayed, the 
+AppSetupMainForm method in the widgetset class is called to set the window 
+state for the main form. The Show method in MainForm is also called to scale 
+the form (when needed) to the PixelsPerInch for the monitor. The form is made 
+visible and brought to the top of the Z-Order in the application.
+</p>
+<p>
+The AppRun method in the widgetset class is called to start the message loop 
+using the private RunLoop method.
+</p>
 </descr>
 <seealso>
+<link id="TApplication.MainForm"/>
+<link id="TApplication.ShowMainForm"/>
+<link id="TApplication.Scaled"/>
+<link id="Application"/>
+<link id="TCustomForm.Show"/>
+<link id="TCustomForm.Visible"/>
+<link id="TCustomForm.Monitor"/>
+<link id="TMonitor.PixelsPerInch"/>
+<link id="#lcl.controls.TControl.BringToFront">TControl.BringToFront</link>
 <link id="#fcl.CustApp.TCustomApplication.Run">TCustomApplication.Run</link>
 </seealso>
 </element>
