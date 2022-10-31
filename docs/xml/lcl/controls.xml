@@ -11302,18 +11302,53 @@ True if the handler routine is signalled first in the notification order.
 </short>
 </element>
 
-<!-- TODO: This needs work. -->
 <element name="TControl.RemoveHandler">
 <short>
-Removes a notification handler from the specified handler type.
+Removes a notification handler from the list for the specified handler type.
 </short>
+<descr>
+<p>
+<var>RemoveHandler</var> is a method used to remove the specified handler 
+routine from the method list for a given control handler type. It removes an 
+entry in the method list created using the AddHandler method.
+</p>
+<p>
+<var>HandlerType</var> is a value from the <var>TControlHandlerType</var> 
+enumeration that identifies the method list updated in the method. It is an 
+index into the internal array of TMethodList instances used to store handler 
+routines.
+</p>
+<p>
+<var>AMethod</var> is the <var>TMethod</var> instance to locate and remove 
+from the method list for the handler type. It is a reference to a 
+<var>TNotifyEvent</var> implementation cast to the TMethod type used in the 
+method list.
+</p>
+<p>
+RemoveHandler calls the Remove method in the TMethodList instance using 
+AMethod as an argument.
+</p>
+<p>
+Convenience methods are provided that manage a method list for a single 
+control type handler. For example:
+</p>
+<ul>
+<li>RemoveHandlerOnResize</li>
+<li>RemoveHandlerOnChangeBounds</li>
+<li>RemoveHandlerOnVisibleChanging</li>
+<li>and others</li>
+</ul>
+</descr>
 <seealso>
 <link id="TControl.AddHandler"/>
+<link id="TControlHandlerType"/>
+<link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
+<link id="#rtl.system.TMethod">TMethod</link>
 </seealso>
 </element>
 <element name="TControl.RemoveHandler.HandlerType">
 <short>
-Control handler type for the notification.
+Control handler type for the routine removed in the method.
 </short>
 </element>
 <element name="TControl.RemoveHandler.AMethod">
@@ -11322,12 +11357,47 @@ The handler routine removed from the list of handlers for the specified type.
 </short>
 </element>
 
-<!-- TODO: This needs work. -->
 <element name="TControl.DoCallNotifyHandler">
 <short>
 Signals handler routines for the specified control handler type.
 </short>
-<descr/>
+<descr>
+<p>
+<var>DoCallNotifyHandler</var> is a method used to signal control handler 
+routines which were added for the specified <var>HandlerType</var>.
+</p>
+<p>
+<var>HandlerType</var> is a value form the <var>TControlHandlerType</var> 
+enumeration which identifies the list with the routines signalled in the 
+method.
+</p>
+<p>
+A control handler routine is a reference to a <var>TNotifyEvent</var> 
+implementation. In TControl, multiple handler routines can be added for a 
+given handler type. DoCallNotifyHandler ensures that each of the routines is 
+signalled using the control instance as the Sender or origin for the 
+notification.
+</p>
+<p>
+DoCallNotifyHandler uses the value in HandlerType to select the 
+<var>TMethodList</var> with the handler routines. The 
+<var>CallNotifyEvents</var> method in the TMethodList instance is called to 
+perform the event notification.
+</p>
+<p>
+DoCallNotifyHandler is called from methods which perform event notifications 
+using both a published event handler property and a list of control handlers. 
+For example: DoOnResize and DoOnChangeBounds. These methods signal the event 
+handlers represented by the OnResize and OnChangeBounds properties. They also 
+use DoCallNotifyHandler for their control handler types (chtOnResize and 
+chtOnChangeBounds) to signal the additional handlers added to the control.
+</p>
+<p>
+DoCallNotifyHandler is also called from methods which do not have a published 
+event handler property, but may have control handlers added at run-time. For 
+example: VisibleChanging and EnabledChanged.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TControl.DoCallNotifyHandler.HandlerType">
@@ -11851,7 +11921,9 @@ elevated to published visibility in the TForm descendant.
 </element>
 
 <element name="TControl.Text">
-<short>The character string associated with the control.</short>
+<short>
+String with the text or caption for the control.
+</short>
 <descr>
 <p>
 This is the character string, shown in controls with visible text content 
@@ -11916,27 +11988,101 @@ set Handled to <b>True</b>. Otherwise the installed PopupMenu is shown.
 </element>
 
 <element name="TControl.OnDblClick">
-<short>Event Handler for double mouse clicks.</short>
+<short>
+Event handler signalled when a mouse double click occurs in the control.
+</short>
 <descr>
+<p>
+<var>OnDblClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the mouse is double-clicked on the control. OnDblClick 
+is signalled from the DblClick method, and occurs when the LM_LBUTTONDBLCLK 
+message is handled in the WMLButtonDBLCLK method.
+</p>
+<remark>
+Click events are not generated if csClickEvents has been omitted from the 
+ControlStyle flags for the control.
+</remark>
 <p>
 Double-clicking is much more common in a Windows environment than in Unix or 
 Linux, where single-clicking is the default method for selecting an object. 
 However, in all environments there could be valid use for a double-click, and 
 a method should be supplied if appropriate.
 </p>
+<p>
+Use OnClick to perform actions needed when a single mouse click occurs in the 
+control.
+</p>
 </descr>
+<seealso>
+<link id="TControl.DblClick"/>
+<link id="TControl.WMLButtonDBLCLK"/>
+<link id="TControl.ControlStyle"/>
+<link id="TControl.OnClick"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.OnTripleClick">
 <short>
-Event handler signalled when a mouse triple click occurs.
+Event handler signalled when a mouse triple click occurs in the control.
 </short>
+<descr>
+<p>
+<var>OnTripleClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the mouse is triple-clicked on the control. 
+OnTripleClick is signalled (when assigned) from the TripleClick method, and 
+occurs when the LM_LBUTTONTRIPLECLK message is handled in the 
+WMLButtonTRIPLECLK method.
+</p>
+<remark>
+Click events are not generated if csClickEvents has been omitted from the 
+ControlStyle flags for the control.
+</remark>
+<p>
+Use OnClick or OnDblClick to perform actions needed when a single or double 
+mouse click occurs in the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.TripleClick"/>
+<link id="TControl.WMLButtonTRIPLECLK"/>
+<link id="TControl.ControlStyle"/>
+<link id="TControl.OnClick"/>
+<link id="TControl.OnDblClick"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.OnQuadClick">
 <short>
-Event handler signalled when a mouse quadruple mouse occurs.
+Event handler signalled when a mouse quadruple mouse occurs in the control.
 </short>
+<descr>
+<p>
+<var>OnQuadClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the mouse is quadruple-clicked on the control. 
+OnQuadClick is signalled (when assigned) from the QuadClick method, and 
+occurs when the LM_LBUTTONQUADCLK message is handled in the WMLButtonQUADCLK 
+method.
+</p>
+<remark>
+Click events are not generated if csClickEvents has been omitted from the 
+ControlStyle flags for the control.
+</remark>
+<p>
+Use OnClick, OnDblClick, or OnTripleClick to perform actions needed when a 
+single, double, or triple mouse click occurs in the control.
+</p>
+</descr>
+<seealso>
+<link id="TControl.QuadClick"/>
+<link id="TControl.WMLButtonQUADCLK"/>
+<link id="TControl.ControlStyle"/>
+<link id="TControl.OnClick"/>
+<link id="TControl.OnDblClick"/>
+<link id="TControl.OnTripleClick"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TControl.OnDragDrop">
@@ -12168,12 +12314,54 @@ the bounds for the control.
 <short>Event handler for mouse wheel turned.</short>
 <descr>
 <p>
-By default all mouse wheel actions are translated into scroll events. Write 
-an OnMouseWheel handler to react when the mouse wheel is rotated.
+<var>OnMouseWheel</var> is a <var>TMouseWheelEvent</var> property with the 
+event handler signalled when a mouse wheel movement occurs in for the 
+control. By default all mouse wheel actions are translated into scroll 
+events. Write an OnMouseWheel handler to react when the mouse wheel is 
+rotated.
 </p>
 <p>
-The OnMouseWheelUp and OnMouseWheelDown handlers are notified only; they are 
-not suited for customization of mouse wheel events.
+Arguments for the event handler routine include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The control for the event notification.
+</dd>
+<dt>Shift</dt>
+<dd>
+The shift modifier in effect when the action occurred.
+</dd>
+<dt>WheelDelta</dt>
+<dd>
+The relative number of units and direction the mouse wheel was rotated.
+</dd>
+<dt>MousePos</dt>
+<dd>
+The location for the mouse pointer when the event occurred.
+</dd>
+<dt>Handled</dt>
+<dd>
+A variable argument which indicates if the mouse wheel movement is handled in 
+the event handler.
+</dd>
+</dl>
+<p>
+OnMouseWheel is signalled (when assigned) from the DoMouseWheel method, and 
+occurs when the LM_MOUSEWHEEL message is handled in the WMMouseWheel method. 
+If the event handler does not set the Handled argument to <b>True</b>, other 
+assigned handler routines are signalled. These include control handlers added 
+using the AddHandler method, as well as OnMouseWheelDown and OnMouseWheelUp.
+</p>
+<p>
+The value in WheelDelta argument is used to determine the handler signalled. 
+OnMouseWheelUp is used when the delta value (or the relative number of units 
+of movement) is 0 (zero) or a positive number. OnMouseWheelDown is used when 
+the delta value is a negative number.
+</p>
+<p>
+Neither OnMouseWheelUp nor OnMouseWheelDown include the wheel delta value; 
+they are simple notifications that the event has occurred at a given position.
 </p>
 </descr>
 <seealso>
@@ -12181,6 +12369,9 @@ not suited for customization of mouse wheel events.
 <link id="TControl.OnMouseWheelLeft"/>
 <link id="TControl.OnMouseWheelRight"/>
 <link id="TControl.OnMouseWheelUp"/>
+<link id="TControl.DoMouseWheel"/>
+<link id="TControl.WMMouseHWheel"/>
+<link id="TControl.DoCallMouseWheelEventHandler"/>
 <link id="TMouseWheelEvent"/>
 </seealso>
 </element>
@@ -12224,10 +12415,61 @@ movement is needed.
 Event handler signalled for an upward movement of the mouse wheel.
 </short>
 <descr>
+<p>
+<var>OnMouseWheelUp</var> is a <var>TMouseWheelUpDownEvent</var> property 
+with the event handler signalled when the mouse wheel has been rotated in the 
+upward direction. It is signalled (when assigned) in the DoMouseWheelUp 
+method.
+</p>
+<p>
+OnMouseWheelUp occurs when a mouse wheel event is handled in the WMMouseWheel 
+method, and an OnMouseWheel event handler has not been assigned or does not 
+handle the mouse wheel event in the DoMouseWheel method.
+</p>
+<p>
+The arguments for the TMouseWheelUpDownEvent event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The control for the event notification.
+</dd>
+<dt>Shift</dt>
+<dd>
+The Ctrl, Alt, or Shift modifier in effect when the wheel event occurred.
+</dd>
+<dt>MousePos</dt>
+<dd>
+The location of the mouse pointer when the event occurred.
+</dd>
+<dt>Handled</dt>
+<dd>
+An variable Boolean argument which indicates if the event is handled in 
+the routine.
+</dd>
+</dl>
+<p>
+OnMouseWheelUp is used when the delta value (or the relative number of units 
+of movement) is 0 (zero) or a positive number.
+</p>
+<p>
+OnMouseWheelDown is used when the delta value is a negative number.
+</p>
+<p>
+Neither OnMouseWheelUp nor OnMouseWheelDown include the delta value; they are 
+simple notifications that the event has occurred at a given position.
+</p>
+<p>
+Use OnMouseWheel when the delta value (or the relative number of units of 
+movement) are important.
+</p>
 </descr>
 <seealso>
-<link id="TControl.OnMouseWheelDown"/>
 <link id="TControl.OnMouseWheel"/>
+<link id="TControl.OnMouseWheelDown"/>
+<link id="TControl.DoMouseWheel"/>
+<link id="TControl.DoMouseWheelUp"/>
+<link id="TControl.WMMouseWheel"/>
 <link id="TMouseWheelUpDownEvent"/>
 </seealso>
 </element>
@@ -12238,7 +12480,29 @@ Event handler signalled for a horizontal movement of the mouse wheel.
 </short>
 <descr>
 <p>
-Requires a mouse with a tilting scroll wheel to generate the event 
+<var>OnMouseWheelHorz</var> is a <var>TMouseWheelEvent</var> property with 
+the event handler signalled when a mouse wheel tilt event occurs in the 
+control. It is signalled (when assigned) from the DoMouseWheelHorz method, 
+and occurs when the LM_MOUSEHWHEEL message is handled in the WMMouseHWheel 
+method.
+</p>
+<p>
+An application can implement and assign a TMouseWheelEvent routine to the 
+event handler to perform actions needed when the event occurs in the control. 
+Other control handlers, created using AddHandler and the chtOnMouseWheelHorz 
+handler type, may be signalled if OnMouseWheelHorz has not been assigned or 
+does not handle the mouse wheel event.
+</p>
+<p>
+OnMouseWheelLeft or OnMouseWheelRight may be signalled (when assigned) if 
+OnMouseWheelHorz or other control handlers have not been assigned or do not 
+handle the mouse wheel event. The value in the WheelDelta argument determines 
+which handler is used; OnMouseWheelLeft when the delta is a negative number 
+and OnMouseWheelRight when the delta is 0 or a positive number.
+</p>
+<p>
+OnMouseWheelHorz, and the other horizontal mouse wheel event handlers, 
+require a mouse with a tilting scroll wheel to generate the event 
 notification.
 </p>
 </descr>
@@ -12246,7 +12510,9 @@ notification.
 <link id="TControl.OnMouseWheelLeft"/>
 <link id="TControl.OnMouseWheelRight"/>
 <link id="TControl.OnMouseWheel"/>
+<link id="TControl.AddHandler"/>
 <link id="TMouseWheelEvent"/>
+<link id="TControlHandlerType"/>
 </seealso>
 </element>
 
@@ -12256,7 +12522,56 @@ Event handler signalled for a leftward movement of the mouse wheel.
 </short>
 <descr>
 <p>
-Requires a mouse with a tilting scroll wheel to generate the event 
+<var>OnMouseWheelLeft</var> is a <var>TMouseWheelUpDownEvent</var> property 
+with the event handler signalled when the mouse wheel is "tilted" towards the 
+left. It is signalled (when assigned) from the DoMouseWheelLeft method, and 
+occurs when the LM_MOUSEHWHEEL message is handled in the WMMouseHWheel method.
+</p>
+<p>
+Applications can implement and assign a TMouseWheelUpDownEvent to perform 
+actions needed when the event has occurred in the control. The arguments to 
+the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The control for the event notification.
+</dd>
+<dt>Shift</dt>
+<dd>
+The shift modifier in effect when the event occurred.
+</dd>
+<dt>MousePos</dt>
+<dd>
+The coordinates for the mouse pointer when the event occurred.
+</dd>
+<dt>Handled</dt>
+<dd>
+A variable argument which indicates if the wheel event is handled in the 
+routine.
+</dd>
+</dl>
+<p>
+There are several horizontal mouse wheel event handlers, and they are 
+signalled in order until a handler is found that responds to the event 
+notification. These include: 
+</p>
+<ul>
+<li>
+OnMouseWheelHorz
+</li>
+<li>
+Controls handlers added using AddHandler and the chtOnMouseWheelHorz handler 
+type.
+</li>
+<li>
+OnMouseWheelLeft or OnMouseWheelRight depending on the WheelDelta - or 
+relative units of movement for the mouse wheel.
+</li>
+</ul>
+<p>
+OnMouseWheelLeft, and the other horizontal mouse wheel event handlers, 
+require a mouse with a tilting scroll wheel to generate the event 
 notification.
 </p>
 </descr>
@@ -12274,7 +12589,56 @@ Event handler signalled for a rightward movement of the mouse wheel.
 </short>
 <descr>
 <p>
-Requires a mouse with a tilting scroll wheel to generate the event 
+<var>OnMouseWheelRight</var> is a <var>TMouseWheelUpDownEvent</var> property 
+with the event handler signalled when the mouse wheel is "tilted" towards the 
+right. It is signalled (when assigned) from the DoMouseWheelRight method, and 
+occurs when the LM_MOUSEHWHEEL message is handled in the WMMouseHWheel method.
+</p>
+<p>
+Applications can implement and assign a TMouseWheelUpDownEvent to perform 
+actions needed when the event has occurred in the control. The arguments to 
+the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The control for the event notification.
+</dd>
+<dt>Shift</dt>
+<dd>
+The shift modifier in effect when the event occurred.
+</dd>
+<dt>MousePos</dt>
+<dd>
+The coordinates for the mouse pointer when the event occurred.
+</dd>
+<dt>Handled</dt>
+<dd>
+A variable argument which indicates if the wheel event is handled in the 
+routine.
+</dd>
+</dl>
+<p>
+There are several horizontal mouse wheel event handlers, and they are 
+signalled in order until a handler is found that responds to the event 
+notification. These include: 
+</p>
+<ul>
+<li>
+OnMouseWheelHorz
+</li>
+<li>
+Controls handlers added using AddHandler and the chtOnMouseWheelHorz handler 
+type.
+</li>
+<li>
+OnMouseWheelLeft or OnMouseWheelRight depending on the WheelDelta - or 
+relative units of movement for the mouse wheel.
+</li>
+</ul>
+<p>
+OnMouseWheelRight, and the other horizontal mouse wheel event handlers, 
+require a mouse with a tilting scroll wheel to generate the event 
 notification.
 </p>
 </descr>
@@ -19027,7 +19391,7 @@ exists.
 </element>
 <element name="TWinControl.WMDestroy.Message">
 <short>
-LM_DESTROY window message which triggerred the handler.
+LM_DESTROY window message which triggered the handler.
 </short>
 </element>
 
@@ -23793,11 +24157,10 @@ For example, to dock Form1 left to a Form2:
 <p>
 To dock into a TDockPage, use:
 </p>
-<code>Align=alCustom;</code>
+<code>Align := alCustom;</code>
 <p>
 <b>PositionDockRect</b> - calculates where a control would be placed, if it 
-would
-be docked via InsertControl.
+would be docked via InsertControl.
 </p>
 <p>
 <b>RemoveControl</b> - removes a control from the dock site.
@@ -24178,54 +24541,34 @@ Mouse global unit variable.
 <element name="TMouse.FWheelScrollLines"/>
 
 <element link="#lcl.controls.TMouse.Capture" name="TMouse.SetCapture"/>
-<element name="TMouse.SetCapture.Value">
-<short/>
-</element>
+<element name="TMouse.SetCapture.Value"/>
 
 <element link="#lcl.controls.TMouse.Capture" name="TMouse.GetCapture"/>
-<element name="TMouse.GetCapture.Result">
-<short/>
-</element>
+<element name="TMouse.GetCapture.Result"/>
 
 <element link="#lcl.controls.TMouse.CursorPos" name="TMouse.GetCursorPos"/>
-<element name="TMouse.GetCursorPos.Result">
-<short/>
-</element>
+<element name="TMouse.GetCursorPos.Result"/>
 
 <element link="#lcl.controls.TMouse.IsDragging" name="TMouse.GetIsDragging"/>
-<element name="TMouse.GetIsDragging.Result">
-<short/>
-</element>
+<element name="TMouse.GetIsDragging.Result"/>
 
 <element link="#lcl.controls.TMouse.CursorPos" name="TMouse.SetCursorPos"/>
-<element name="TMouse.SetCursorPos.AValue">
-<short/>
-</element>
+<element name="TMouse.SetCursorPos.AValue"/>
 
 <element link="#lcl.controls.TMouse.WheelScrollLines" name="TMouse.GetWheelScrollLines"/>
-<element name="TMouse.GetWheelScrollLines.Result">
-<short/>
-</element>
+<element name="TMouse.GetWheelScrollLines.Result"/>
 
 <element link="#lcl.controls.TMouse.DragImmediate" name="TMouse.GetDragImmediate"/>
-<element name="TMouse.GetDragImmediate.Result">
-<short/>
-</element>
+<element name="TMouse.GetDragImmediate.Result"/>
 
 <element link="#lcl.controls.TMouse.DragImmediate" name="TMouse.SetDragImmediate"/>
-<element name="TMouse.SetDragImmediate.AValue">
-<short/>
-</element>
+<element name="TMouse.SetDragImmediate.AValue"/>
 
 <element link="#lcl.controls.TMouse.DragThreshold" name="TMouse.GetDragThreshold"/>
-<element name="TMouse.GetDragThreshold.Result">
-<short/>
-</element>
+<element name="TMouse.GetDragThreshold.Result"/>
 
 <element link="#lcl.controls.TMouse.DragThreshold" name="TMouse.SetDragThreshold"/>
-<element name="TMouse.SetDragThreshold.AValue">
-<short/>
-</element>
+<element name="TMouse.SetDragThreshold.AValue"/>
 
 <element name="TMouse.Capture">
 <short>Handle for the control with mouse capture.</short>
@@ -24287,31 +24630,45 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 </element>
 
 <element name="MainAlignAnchor">
-<short/>
+<short>
+Used in the AnchorDocking package for the Lazarus IDE.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="OppositeAnchor">
-<short/>
+<short>
+Used in the AnchorDocking package for the Lazarus IDE.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="ClockwiseAnchor">
-<short/>
+<short>
+Used in the AnchorDocking package for the Lazarus IDE.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="DefaultSideForAnchorKind">
-<short/>
-<descr/>
+<short>
+</short>
+<descr>
+<p>
+Used in the <file>ldocktree</file> unit and in the TControl.AnchorToNeighbour 
+method.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="AnchorReferenceSide">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -24461,18 +24818,10 @@ The result is not reliable during resizing.
 </element>
 
 <element name="SendAppMessage" link="#LCL.LCLProc.SendApplicationMessage"/>
-<element name="SendAppMessage.Result">
-<short/>
-</element>
-<element name="SendAppMessage.Msg">
-<short/>
-</element>
-<element name="SendAppMessage.WParam">
-<short/>
-</element>
-<element name="SendAppMessage.LParam">
-<short/>
-</element>
+<element name="SendAppMessage.Result"/>
+<element name="SendAppMessage.Msg"/>
+<element name="SendAppMessage.WParam"/>
+<element name="SendAppMessage.LParam"/>
 
 <element name="MoveWindowOrg">
 <short>Moves the origin for a windowed control.</short>
@@ -24498,7 +24847,9 @@ and Top respectively) for canvas drawing operations.
 </element>
 
 <element name="RecreateWnd">
-<short>(Re-)Creates the widgetset class instance for a TWinControl.</short>
+<short>
+Creates (or recreates) the widgetset class instance for a TWinControl.
+</short>
 <descr>
 <p>
 This function was originally a member of TWinControl.
@@ -24623,7 +24974,10 @@ mouse. The LCL extends this to allow TControl to capture the mouse.
 <seealso/>
 </element>
 <element name="GetCaptureControl.Result">
-<short/>
+<short>
+The control with the mouse capture, or <b>Nil</b> when a capture control is 
+not set for the widgetset class.
+</short>
 </element>
 
 <element name="NewStyleControls">
@@ -24639,8 +24993,14 @@ only by SynEdit in <file>synedit.pp</file>.
 <short>The global TMouse instance for the unit.</short>
 <descr>
 <p>
-Allocated in the initialization section for the unit, and freed in the 
-finalization section.
+<var>Mouse</var> is a <var>TMouse</var> variable with the singleton used to 
+access mouse information in the application. This includes the handle for the 
+capture control, the current pointer position, as well as drag and scroll 
+settings used in an application.
+</p>
+<p>
+The class instance is created in the initialization section for the unit, and 
+freed in the finalization section.
 </p>
 </descr>
 <seealso>
@@ -25171,8 +25531,8 @@ The left and right side is anchored. You can anchor the sides with the
 <li>
 The Width and Height are bound by the <var>Constraints</var> properties. The 
 Constraints can also be overridden by the widgetset. For example the WinAPI 
-does not allow resizing the height of a combobox. And the gtk widgetset does 
-not allow resizing the width of a vertical scrollbar
+does not allow resizing the height of a combo-box. And the gtk widgetset does 
+not allow resizing the width of a vertical scrollbar.
 </li>
 </ul>
 <p>
