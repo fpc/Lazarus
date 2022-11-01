@@ -1038,8 +1038,7 @@ function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
 var
   sa, ca: Double;
 begin
-  sa := sin(AAngle);
-  ca := cos(AAngle);
+  SinCos(AAngle, sa, ca);
   Result.X := Round( ca * APoint.X + sa * APoint.Y);
   Result.Y := Round(-sa * APoint.X + ca * APoint.Y);
 end;
