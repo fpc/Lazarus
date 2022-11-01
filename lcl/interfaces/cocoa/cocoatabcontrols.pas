@@ -57,8 +57,7 @@ type
     nextarr  : NSButton;
 
   public
-    leftmost : Integer;         // index of the left-most tab shown
-    ignoreChange: Boolean;
+    currentIndex : Integer;     // index of the current tab shown
     callback: ITabControlCallback;
 
     fulltabs : NSMutableArray;  // the full list of NSTabViewItems
@@ -215,25 +214,32 @@ begin
   PlaceButton(false, aview.nextarr, aview);
 end;
 
-procedure RemoveAllTabs(aview: TCocoaTabControl);
-var
-  arr: NSArray;
-  i : integer;
-begin
-  arr := aview.tabViewItems;
-  for i := Integer(arr.count) - 1  downto 0 do
-    aview.removeTabViewItem( arr.objectAtIndex(i) );
-end;
-
+// only missing ViewItems inserted, RemoveAllTabs() is no longer needed,
+// and tabView_didSelectTabViewItem is not triggered anymore
 procedure AttachAllTabs(aview: TCocoaTabControl);
 var
   i : integer;
+  itm: NSTabViewItem;
 begin
-  RemoveAllTabs(aview);
-  for i := 0 to aview.fulltabs.count - 1 do
-    aview.insertTabViewItem_atIndex( aview.fulltabs.objectAtIndex(i), i);
+  for i := 0 to aview.fulltabs.count - 1 do begin
+    itm := NSTabViewItem( aview.fulltabs.objectAtIndex(i) );
+    if aview.indexOfTabViewItem(itm) = NSNotFound then
+      aview.insertTabViewItem_atIndex( itm, i);
+  end;
 end;
 
+// by fine-tuning the algorithm, guarantee that the `selectedTabViewItem`
+// remains unchanged when TabControl is not wide enough,
+// so as to avoid a lot of useless `tabView_didSelectTabViewItem` events are triggered
+// (Resize TabControl, Add Tab, Remove Tab、Prev Tab、Next Tab)
+// 1. change `leftmost` to `currentIndex`, and change the meaning to the index of
+//    the currently selected Tab (mapping selectedTabViewItem)
+// 2. currentIndex remains unchanged in ReviseTabs()
+// 3. selectedTabViewItem is no longer removed and then added,
+//    but always remains in tabViewItems,
+//    thus tabView_didSelectTabViewItem is not triggered anymore
+// 4. taking currentIndex as the intermediate value,
+//    try to keep the tabs on the right side, and then the left side
 procedure ReviseTabs(aview: TCocoaTabControl; out ShowPrev,ShowNext: Boolean);
 var
   minw: double;
@@ -249,80 +255,71 @@ var
   j : integer;
   ofs : integer;
   frw: double;
-  sel: NSTabViewItem;
   v : NSView;
 begin
   ShowPrev := false;
   ShowNext := false;
 
-  sel := aview.selectedTabViewItem;
-  try
-    if (aview.fulltabs.count>aview.tabViewItems.count) then
-      AttachAllTabs(aview);
+  if aview.fulltabs.count=0 then exit;
 
-    minw := aview.minimumSize.width;
-    if (minw<aview.frame.size.width) then Exit;
+  // AttachAllTabs() has been modified to not remove the selectedTabViewItem first,
+  // and no longer trigger tabView_didSelectTabViewItem
+  if (aview.fulltabs.count>aview.tabViewItems.count) then
+    AttachAllTabs(aview);
 
-    arr := aview.tabViewItems;
+  minw := aview.minimumSize.width;
+  if (minw<aview.frame.size.width) then Exit;
 
-    lw := 0;
-    SetLength(lwid, arr.count);
-    for i := 0 to arr.count - 1 do
-    begin
-      vi := NSTabViewItem( arr.objectAtIndex(i) );
-      sz := vi.sizeOfLabel(false);
-      lw := lw + sz.width;
-      lwid[i] := sz.width;
+  arr := aview.tabViewItems;
+
+  lw := 0;
+  SetLength(lwid, arr.count);
+  for i := 0 to arr.count - 1 do
+  begin
+    vi := NSTabViewItem( arr.objectAtIndex(i) );
+    sz := vi.sizeOfLabel(false);
+    lw := lw + sz.width;
+    lwid[i] := sz.width;
+  end;
+
+  tbext := (minw - lw) / arr.count;
+  for i:=0 to length(lwid)-1 do
+    lwid[i] := lwid[i] + tbext;
+
+  frw := aview.frame.size.width;
+  frw := frw - ((arrow_hofs + aview.nextarr.frame.size.width) * 2);
+  if frw<0 then frw := 0;
+
+  ofs := aview.currentIndex;
+  if ofs>=length(lwid) then ofs:=length(lwid)-1;
+  if (ofs < 0) then ofs:=0;
+
+  // 1. keep the current tab first
+  //    selectedTabViewItem is guaranteed to remain in the updated tabViewItems
+  xd := lwid[ofs];
+
+  // 2. try to keep the tabs on the right side until it's not wide enough
+  //    and ShowNext if necessary
+  for i := ofs+1 to length(lwid)-1 do begin
+    if xd + lwid[i] > frw then begin
+      for j:=length(lwid)-1 downto i do
+        aview.removeTabViewItem( arr.objectAtIndex(j));
+      ShowNext := true;
+      Break;
     end;
+    xd := xd + lwid[i];
+  end;
 
-    tbext := (minw - lw) / arr.count;
-    for i:=0 to length(lwid)-1 do
-      lwid[i] := lwid[i] + tbext;
-
-    ofs := aview.leftmost;
-    if ofs>=length(lwid) then ofs:=length(lwid)-1;
-    if (ofs < 0) then Exit;
-    ShowPrev := ofs > 0;
-
-
-    xd := lwid[ofs];
-    frw := aview.frame.size.width;
-    frw := frw - ((arrow_hofs + aview.nextarr.frame.size.width) * 2);
-    if frw<0 then frw := 0;
-
-    //aview.prevarr.isHidden((aview.leftmost=0));
-
-    for i := ofs+1 to length(lwid)-1 do begin
-      if xd + lwid[i] > frw then begin
-        //aview.nextarr.isHidden((aview.leftmost=0));
-        for j:=length(lwid)-1 downto i do
-          aview.removeTabViewItem( arr.objectAtIndex(j));
-        ShowNext := true;
-        Break;
-      end;
-      xd := xd + lwid[i];
+  // 3. try to keep the tabs on the left side until it's not wide enough
+  //    and ShowPrev if necessary
+  for i := ofs-1 downto 0 do begin
+    if xd + lwid[i] > frw then begin
+      for j:=i downto 0 do
+        aview.removeTabViewItem( arr.objectAtIndex(j));
+      ShowPrev := true;
+      Break;
     end;
-
-    if not ShowNext then begin
-      // shown all right-side tabs, there might be a tab, that can be shown on the left
-      while (ofs>0) and (xd+lwid[ofs]<frw) do begin
-        xd := xd + lwid[ofs];
-        dec(ofs);
-      end;
-      aview.leftmost:=ofs;
-    end;
-
-    for i := ofs - 1 downto 0 do
-      aview.removeTabViewItem( arr.objectAtIndex(i));
-
-    // todo: automatic resizing still has its effect on the tabs.
-    //       the content page fails to pick up the proper size and place
-    //       and it seems that the content of the tab is shifted.
-    //       Needs investiage and a fix.
-
-  finally
-    if (aview.indexOfTabViewItem(sel)<>NSNotFound) then
-      aview.selectTabViewItem(sel);
+    xd := xd + lwid[i];
   end;
 end;
 
@@ -441,6 +438,8 @@ var
   i   : NSUInteger;
 begin
   if (index<0) or (index>=fulltabs.count) then Exit;
+  currentIndex := index;
+
   itm := NSTabViewItem(fulltabs.objectAtIndex(index));
 
   i := tabViewItems.indexOfObject(itm);
@@ -449,7 +448,6 @@ begin
     inherited selectTabViewItemAtIndex(NSInteger(i));
   end
   else begin
-    leftmost := index;
     UpdateTabAndArrowVisibility(self);
     i := tabViewItems.indexOfObject(itm);
     inherited selectTabViewItemAtIndex(NSInteger(i));
@@ -528,7 +526,6 @@ end;
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
-  if ignoreChange then Exit;
   if Assigned(callback) then
   begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
@@ -539,6 +536,8 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
   //it's called together with "willSelect"
+
+  currentIndex:= IndexOfTab( self, tabViewItem );
 
   if Assigned(callback) then
   begin
@@ -551,7 +550,7 @@ begin
     //  of views chain (and attaches to the window
     //  the view is made "firstResponder"
     //  and finally "didSelect" is fired
-    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+    callback.didSelectTabViewItem( currentIndex );
   end;
 
   // The recent clean up, drove the workaround below unnecessary
@@ -742,18 +741,14 @@ end;
 
 procedure TCocoaTabControl.extTabPrevButtonClick(sender: id);
 begin
-  if leftmost = 0 then Exit;
-
-  leftmost := leftmost - 1;
-  UpdateTabAndArrowVisibility(self);
+  if currentIndex = 0 then Exit;
+  extselectTabViewItemAtIndex( currentIndex-1 );
 end;
 
 procedure TCocoaTabControl.extTabNextButtonClick(sender: id);
 begin
-  if leftmost = fulltabs.count - 1 then Exit;
-
-  leftmost := leftmost + 1;
-  UpdateTabAndArrowVisibility(self);
+  if currentIndex = fulltabs.count - 1 then Exit;
+  extselectTabViewItemAtIndex( currentIndex+1 );
 end;
 
 
