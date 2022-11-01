@@ -1451,6 +1451,7 @@ end;
 
 procedure TCocoaComboBox.dealloc;
 begin
+  FreeAndNil( list );
   if Assigned(resultNS) then resultNS.release;
   inherited dealloc;
 end;
