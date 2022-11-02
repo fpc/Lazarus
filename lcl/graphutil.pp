@@ -220,15 +220,18 @@ end;
 
 procedure DrawArrow(Canvas: TCanvas; p1, p2: TPoint; ArrowLen: longint;
   ArrowAngleRad: float; ArrowType: TArrowType);
-var {NormalizedLineX, NormalizedLineY, LineLen,} LineAngle: float;
-    ArrowPoint1, ArrowPoint2: TPoint;
+var
+  LineAngle: float;
+  sinAngle, cosAngle: float;
+  ArrowPoint1, ArrowPoint2: TPoint;
 begin
   LineAngle:=arctan2(p2.y-p1.y,p2.x-p1.x);
-  ArrowPoint1.x:=round(ArrowLen*cos(pi+LineAngle-ArrowAngleRad))+p2.x;
-  ArrowPoint1.y:=round(ArrowLen*sin(pi+LineAngle-ArrowAngleRad))+p2.y;
-  ArrowPoint2.x:=round(ArrowLen*cos(pi+LineAngle+ArrowAngleRad))+p2.x;
-  ArrowPoint2.y:=round(ArrowLen*sin(pi+LineAngle+ArrowAngleRad))+p2.y;
-
+  SinCos(pi + LineAngle - ArrowAngleRad, sinAngle, cosAngle);
+  ArrowPoint1.x := round(ArrowLen * cosAngle) + p2.x;
+  ArrowPoint1.y := round(ArrowLen * sinAngle) + p2.y;
+  SinCos(pi + LineAngle + ArrowAngleRad, sinAngle, cosAngle);
+  ArrowPoint2.x := round(ArrowLen * cosAngle) + p2.x;
+  ArrowPoint2.y := round(ArrowLen * sinAngle) + p2.y;
   Canvas.Line(p1,p2);
 
   case ArrowType of
