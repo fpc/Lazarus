@@ -681,12 +681,16 @@ begin
 end;
 
 procedure TCanvas.AngleArc(X, Y: Integer; Radius: Longword; StartAngle, SweepAngle: Single);
-var x1, y1, x2, y2: integer;
+var
+  x1, y1, x2, y2: integer;
+  sinStartAngle, cosStartAngle, sinEndAngle, cosEndAngle: Single;
 begin
-  x1:=trunc(x+cos(pi*StartAngle/180)*Radius);
-  y1:=trunc(y-sin(pi*StartAngle/180)*Radius);
-  x2:=trunc(x+cos(pi*(StartAngle+SweepAngle)/180)*Radius);
-  y2:=trunc(y-sin(pi*(StartAngle+SweepAngle)/180)*Radius);
+  SinCos(pi * StartAngle / 180, sinStartAngle, cosStartAngle);
+  SinCos(pi * (StartAngle + SweepAngle) / 180, sinEndAngle, cosEndAngle);
+  x1:=trunc(x+cosStartAngle*Radius);
+  y1:=trunc(y-sinStartAngle*Radius);
+  x2:=trunc(x+cosEndAngle*Radius);
+  y2:=trunc(y-sinEndAngle*Radius);
   LineTo(x1,y1);
   if SweepAngle>0 then
     Arc(x-Radius, y-Radius, x+Radius, y+Radius, x1, y1, x2, y2)
