@@ -520,9 +520,14 @@ begin
       HF:='h'
     else
       HF:='hh';
-    // No support for 12 hour stuff at the moment...
     ShortTimeFormat := HF+':nn';
     LongTimeFormat := HF + ':nn:ss';
+    { 12-hour system support }
+    if GetLocaleStr(LID, LOCALE_ITIME, '1') = '0' then
+    begin
+      LongTimeFormat := LongTimeFormat + ' AMPM';
+      ShortTimeFormat := ShortTimeFormat + ' AMPM';
+    end;
     { Currency stuff }
     CurrencyString:=GetLocaleStr(LID, LOCALE_SCURRENCY, '');
     CurrencyFormat:=StrToIntDef(GetLocaleStr(LID, LOCALE_ICURRENCY, '0'), 0);
