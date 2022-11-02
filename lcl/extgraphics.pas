@@ -794,7 +794,7 @@ end;
 procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n:Integer; a: Extended);
 const MaxStarPoint=36;
 var
-  r1,r0,alpha:double;
+  r1,r0,alpha,sinAlpha,cosAlpha:double;
   P:array[0..MaxStarPoint*2-1] of TPoint;
   i,cs:Integer;
 begin
@@ -803,9 +803,10 @@ begin
     do begin
        if (i mod 2)=0 then r0:=r else r0:=r1;
        alpha:=a+(0.5+i/n)*Pi;
-       cs:=RoundToInt(r0*cos(alpha));
+       SinCos(alpha, sinAlpha, cosAlpha);
+       cs:=RoundToInt(r0*cosAlpha);
        P[i].x:=cx+cs;
-       P[i].y:=cy-Round(r0*sin(alpha));
+       P[i].y:=cy-Round(r0*sinAlpha);
     end;
   for i:=2*n to MaxStarPoint*2-1
     do begin
