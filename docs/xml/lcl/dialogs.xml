@@ -384,11 +384,19 @@ Returns <b>True</b> when <var>Title</var> contains a value other than
 <short>
 <var>DefaultTitle</var> returns the default title for a dialog.
 </short>
-<descr/>
+<descr>
+<p>
+<var>DefaultTitle</var> returns an empty string ('') in 
+<var>TCommonDialog</var>. The method is overridden in descendent classes to 
+return the value needed for the derived class.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCommonDialog.DefaultTitle.Result">
-<short/>
+<short>
+String used as the default title or caption for the dialog form.
+</short>
 </element>
 
 <element name="TCommonDialog.GetHeight">
@@ -450,7 +458,9 @@ allocated and the dialog is displayed.
 </element>
 
 <element name="TCommonDialog.AttachTo">
-<short/>
+<short>
+Form which created the dialog class instance.
+</short>
 <descr>
 <p>
 AttachTo is a platform-specific property which provides the form instance 
@@ -752,8 +762,13 @@ method, and assigned in the <var>Create</var> constructor.
 This is also the base class for the Open and Save (As) dialogs.
 </p>
 </descr>
+<seealso>
+<link id="TOpenDialog"/>
+<link id="TSaveDialog"/>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TFileDialog.FInternalFilterIndex"/>
 <element name="TFileDialog.FDefaultExt"/>
 <element name="TFileDialog.FFileName"/>
@@ -765,69 +780,71 @@ This is also the base class for the Open and Save (As) dialogs.
 <element name="TFileDialog.FOnHelpClicked"/>
 <element name="TFileDialog.FOnTypeChange"/>
 
-<element name="TFileDialog.SetDefaultExt">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TFileDialog.SetDefaultExt.AValue">
-<short/>
-</element>
-
-<element name="TFileDialog.SetFilterIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TFileDialog.SetFilterIndex.AValue">
-<short/>
-</element>
+<element name="TFileDialog.SetDefaultExt"/>
+<element name="TFileDialog.SetDefaultExt.AValue"/>
+<element name="TFileDialog.SetFilterIndex"/>
+<element name="TFileDialog.SetFilterIndex.AValue"/>
 
 <element name="TFileDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TFileDialog.GetFilterIndex">
 <short>
-<var>GetFilterIndex</var> - returns the Index value for the filename filter.
+Gets the value for the FilterIndex property.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFileDialog.FilterIndex"/>
+</seealso>
 </element>
 <element name="TFileDialog.GetFilterIndex.Result">
-<short/>
+<short>
+Value for the FilterIndex property.
+</short>
 </element>
 
 <element name="TFileDialog.SetFileName">
 <short>
-<var>SetFileName</var> - specifies the filename in the file dialog.
+Set the value for the FileName property.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFileDialog.FileName"/>
+</seealso>
 </element>
 <element name="TFileDialog.SetFileName.Value">
-<short/>
+<short>
+New value for the FileName property.
+</short>
 </element>
 
 <element name="TFileDialog.SetFilter">
 <short>
-<var>SetFilter</var> - specifies the Filter for use in filename searching.
+Sets the value for the Filter property.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFileDialog.Filter"/>
+</seealso>
 </element>
 <element name="TFileDialog.SetFilter.Value">
-<short/>
+<short>
+New value for the Filter property.
+</short>
 </element>
 
 <element name="TFileDialog.SetHistoryList">
 <short>
-<var>SetHistoryList</var> - specifies a list of strings that have been used 
-in searching.
+Sets the value for the HistoryList property.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFileDialog.HistoryList"/>
+</seealso>
 </element>
 <element name="TFileDialog.SetHistoryList.AValue">
-<short/>
+<short>
+New value for the HistoryList property. 
+</short>
 </element>
 
 <element name="TFileDialog.Create">
@@ -860,27 +877,92 @@ file and history lists then calls the inherited <var>Destroy</var> method.
 </element>
 
 <element name="TFileDialog.DoCanClose">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed to determine if the dialog can be closed.
+</short>
+<descr>
+<p>
+<var>DoCanClose</var> is an overridden method in <var>TFileDialog</var> used 
+to perform actions needed when an attempt is made to close the dialog. It 
+ensures that the inherited method is called only when the OK button was 
+pressed on the dialog. If the Esc key was pressed, or the dialog is closed 
+using the close icon, the inherited method is <b>not</b> called. This 
+prevents the OnCanClose event from being signalled when the dialog has 
+actually been cancelled. CanClose is set to <b>True</b> in this situation.
+</p>
+<p>
+This is done to maintain compatibility with Delphi VCL behavior.
+</p>
+<p>
+Use the OnCanClose event handler to perform validation or error checking 
+needed for the value in FileName. Set the value in its CanClose argument to 
+False to prevent closing the dialog form.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.FileName"/>
+<link id="TCommonDialog.UserChoice"/>
+<link id="TCommonDialog.DoCanClose"/>
+<link id="TCommonDialog.OnCanClose"/>
+<link id="TCommonDialog.OnDialogResult"/>
+</seealso>
 </element>
 <element name="TFileDialog.DoCanClose.CanClose">
-<short/>
+<short>
+Contains <b>True</b> if the dialog can be closed. <b>False</b> to prevent the 
+dialog from being closed.
+</short>
 </element>
 
 <element name="TFileDialog.DoTypeChange">
 <short>
-<var>DoTypeChange</var> - perform the code for the <var>OnTypeChange</var> 
-event.
+Performs actions needed when the value in FilterIndex has been changed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoTypeChange</var> is called when a new value is assigned to the 
+FilterIndex property. It occurs after then value is FilterIndex has been 
+stored to its property member. 
+</p>
+<p>
+DoTypeChange signals the <var>OnTypeChange</var> event handler (when 
+assigned) using the TFileDialog instance as the control for the notification.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.Filter"/>
+<link id="TFileDialog.FilterIndex"/>
+<link id="TFileDialog.OnTypeChange"/>
+</seealso>
 </element>
 
 <element name="TFileDialog.Files">
-<short>Stringlist which stores the names of the selected files.</short>
-<descr/>
-<seealso/>
+<short>
+Stores the names of files (or directories) selected using the dialog.
+</short>
+<descr>
+<p>
+<var>Files</var> is a <var>TStrings</var> property used to store values  
+selected using the file dialog. A TStringList instance is created and 
+assigned to the property in the Create constructor.
+</p>
+<p>
+Files is used in descendent classes, like TOpenDialog and 
+TSelectDirectoryDialog, to store the directory or one or more file names 
+chosen using the derived classes.
+</p>
+<p>
+Use HistoryList to access the list of previous file or directory names used 
+in the derived dialog classes.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.Create"/>
+<link id="TOpenDialog"/>
+<link id="TSelectDirectoryDialog"/>
+<link id="#rtl.classes.TStrings">TStrings</link>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
 </element>
 
 <element name="TFileDialog.HistoryList">
@@ -888,8 +970,30 @@ event.
 <var>HistoryList</var> - stringlist containing the names of files recently 
 accessed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>HistoryList</var> is a <var>TStrings</var> property used to store the 
+previous values selected using the file dialog. A <var>TStringList</var> 
+instance is created and stored to the property in the Create constructor.
+</p>
+<p>
+HistoryList is used in descendent classes, like TOpenDialog and 
+TSelectDirectoryDialog, to store values that have previously been assigned to the FileName property.
+</p>
+<p>
+Use FileName or Files to access the directory or one or more file names 
+selected using the derived classes.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.Create"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+<link id="TOpenDialog"/>
+<link id="TSelectDirectoryDialog"/>
+<link id="#rtl.classes.TStrings">TStrings</link>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
 </element>
 
 <element name="TFileDialog.IntfFileTypeChanged">
@@ -906,20 +1010,40 @@ accessed.
 <element name="TFileDialog.Title" link="#lcl.dialogs.TCommonDialog.Title"/>
 
 <element name="TFileDialog.DefaultExt">
-<short>Sets the default file extension for the file dialog box.</short>
-<descr/>
-<seealso/>
+<short>
+Contains the default extension for file names in the dialog.
+</short>
+<descr>
+<p>
+<var>DefaultExt</var> is a <var>String</var> property which contains the 
+default file extension used for the FileName or Files in the file dialog. It 
+can contain a value like 'pas' or '.pas'. If the Period character is not 
+present in the first position, it is inserted before the property value is 
+stored.
+</p>
+<p>
+DefaultExt is used in descendent classes, like TOpenDialog, and provides the 
+value that is appended to a file name when an extension or a Filter has not been provided.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+<link id="TFileDialog.FilterIndex"/>
+<link id="TFileDialog.Filter"/>
+<link id="TOpenDialog.CheckFile"/>
+</seealso>
 </element>
 
 <element name="TFileDialog.FileName">
 <short>
-Contains the UTF-8-encoded name for the file chosen using the dialog.
+Contains the UTF-8-encoded name for a file chosen using the dialog.
 </short>
 <descr>
 <p>
-<var>FileName</var> is a <var>String</var> property with the name for the 
+<var>FileName</var> is a <var>String</var> property with the name for a 
 file chosen using the dialog. As a String type, it can contain UTF-8-encoded 
-values. If you need the filename using the system encoding, you can use 
+values. If you need the file name using the system encoding, you can use 
 <var>UTF8ToSys</var> from the <file>LazUTF8</file> unit.
 </p>
 <p>
@@ -945,11 +1069,11 @@ available filters and their description are separated by pipe symbols.
 <p>
 To set this property at run-time assign a value like:
 </p>
-<code>"All files|*.*|Lazarus Project files|*.lpr"</code>
+<code>'All files|*.*|Lazarus Project files|*.lpr'</code>
 <p>
 An entry can contain multiple masks separated by semicolon, like:
 </p>
-<code>"Pascal units|*.pas;*.pp;*.p"</code>
+<code>'Pascal units|*.pas;*.pp;*.p|All files|*.*'</code>
 </descr>
 </element>
 
@@ -1005,15 +1129,34 @@ List of Windows 11 CLSID Key (GUID) Shortcuts
 </element>
 
 <element name="TFileDialog.OnHelpClicked">
-<short>Event handler signalled when the Help button is clicked.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled when the Help button is clicked.
+</short>
+<descr>
+<p>
+Used at run-time when a widgetset class responds to a Help button click. The 
+Sender argument is the dialog instance for the event notification.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TFileDialog.OnTypeChange">
-<short>Event Handler when the selected file type is changed.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled when the selected file type or filter index is 
+changed.
+</short>
+<descr>
+<p>
+Used at run-time when the FilterIndex value is changed in a widgetset class. 
+The Sender argument is the dialog instance for the event notification.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TOpenOption">
@@ -1027,7 +1170,9 @@ in an Open dialog.
 <seealso/>
 </element>
 <element name="TOpenOption.ofReadOnly">
-<short/>
+<short>
+Include read-only files.
+</short>
 </element>
 <element name="TOpenOption.ofOverwritePrompt">
 <short>
@@ -1035,73 +1180,97 @@ If selected file exists shows a message, that file will be overwritten.
 </short>
 </element>
 <element name="TOpenOption.ofHideReadOnly">
-<short>hide read only file.</short>
+<short>Hide read only files.</short>
 </element>
 <element name="TOpenOption.ofNoChangeDir">
-<short>do not change current directory.</short>
+<short>Do not change the current directory.</short>
 </element>
 <element name="TOpenOption.ofShowHelp">
-<short>show a help button.</short>
+<short>Show a help button.</short>
 </element>
 <element name="TOpenOption.ofNoValidate">
-<short/>
+<short>
+Disables file name validation using OFN_NOVALIDATE on the Windows platform. 
+Allows file names with invalid characters.
+</short>
 </element>
 <element name="TOpenOption.ofAllowMultiSelect">
-<short>Enables multi-selection.</short>
+<short>Enables multi-selection in a dialog.</short>
 </element>
 <element name="TOpenOption.ofExtensionDifferent">
-<short/>
+<short>
+Allows a file name with an extension which does not match the filters or 
+default extension in a file dialog.
+</short>
 </element>
 <element name="TOpenOption.ofPathMustExist">
-<short>shows an error message if selected path does not exist.</short>
+<short>Shows an error message if selected path does not exist.</short>
 </element>
 <element name="TOpenOption.ofFileMustExist">
-<short>shows an error message if selected file does not exist.</short>
+<short>Shows an error message if selected file does not exist.</short>
 </element>
 <element name="TOpenOption.ofCreatePrompt">
-<short/>
+<short>
+Enables a verification prompt when a file or directory needs to be created 
+for a file dialog.
+</short>
 </element>
 <element name="TOpenOption.ofShareAware">
-<short/>
+<short>
+Includes the OFN_SHAREAWARE flag on the Windows platform.
+</short>
 </element>
 <element name="TOpenOption.ofNoReadOnlyReturn">
-<short>do not return filenames that are readonly.</short>
+<short>Do not return file names that are read-only.</short>
 </element>
 <element name="TOpenOption.ofNoTestFileCreate">
-<short/>
+<short>
+Includes the OFN_NOTESTFILECREATE flag on the Windows platform.
+</short>
 </element>
 <element name="TOpenOption.ofNoNetworkButton">
-<short/>
+<short>
+Disables and hides the Network button on the Windows platform.
+</short>
 </element>
 <element name="TOpenOption.ofNoLongNames">
-<short/>
+<short>
+Disables long file names on the Windows platform. Used in classic-style 
+dialogs to force use of file names using the 8.3 format. Explorer-style 
+dialogs ignore this flag and always display long file names.
+</short>
 </element>
 <element name="TOpenOption.ofOldStyleDialog">
-<short/>
+<short>
+Prevents use of the OFN_EXPLORER and dependent flags in dialogs on the 
+Windows platform.
+</short>
 </element>
 <element name="TOpenOption.ofNoDereferenceLinks">
 <short>
-do not resolve links while dialog is shown (only on Windows, see 
+Do not resolve links while dialog is shown (only on Windows, see 
 OFN_NODEREFERENCELINKS).
 </short>
 </element>
 <element name="TOpenOption.ofNoResolveLinks">
-<short>do not resolve links after Execute.</short>
+<short>Do not resolve links after Execute.</short>
 </element>
 <element name="TOpenOption.ofEnableIncludeNotify">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 <element name="TOpenOption.ofEnableSizing">
-<short>dialog can be resized, e.g. via the mouse.</short>
+<short>Dialog can be resized, e.g. via the mouse.</short>
 </element>
 <element name="TOpenOption.ofDontAddToRecent">
-<short>do not add the path to the history list.</short>
+<short>Do not add the path to the history list.</short>
 </element>
 <element name="TOpenOption.ofForceShowHidden">
-<short>show hidden files.</short>
+<short>Show hidden files.</short>
 </element>
 <element name="TOpenOption.ofViewDetail">
-<short>details are OS and interface dependent.</short>
+<short>Details are OS and interface dependent.</short>
 </element>
 <element name="TOpenOption.ofAutoPreview">
 <short>OS and interface dependent.</short>
@@ -1109,27 +1278,93 @@ OFN_NODEREFERENCELINKS).
 
 <element name="TOpenOptions">
 <short>
-Set used to store <var>TOpenOption</var> enumeration values.
+Set type used to store <var>TOpenOption</var> enumeration values.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+TOpenOptions is the type used to implement the Options property in TOpenDialog.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenOption"/>
+<link id="DefaultOpenDialogOptions"/>
+</seealso>
 </element>
 
 <element name="DefaultOpenDialogOptions">
-<short>Set constant with the default Open Dialog options.</short>
-<descr/>
-<seealso/>
+<short>
+Set constant with the default Open Dialog options used in TOpenDialog.
+</short>
+<descr>
+<p>
+Contains the following values from the TOpenOption enumeration:
+</p>
+<dl>
+<dt>ofEnableSizing</dt>
+<dd>
+Allows the dialog to be resized.
+</dd>
+<dt>ofViewDetail</dt>
+<dd>
+Enables the file detail view in the QT4 and QT5 widgetsets. Not implemented 
+for any other platforms in the current LCL version.
+</dd>
+</dl>
+<p>
+DefaultOpenDialogOptions is used as the default value for the Options 
+property in TOpenDialog.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenOption"/>
+</seealso>
 </element>
 
 <element name="TOpenDialog">
-<short>Opens a file in the current directory, selected by File Dialog.</short>
+<short>
+Implements a File / Open dialog used to select one or more files on the local 
+file system.
+</short>
 <descr>
 <p>
-<var>TOpenDialog</var> opens a file in the current directory, selected by 
-File Dialog. If the required file is not in the current directory, another 
-directory can be selected with SelectDirectory.
+<var>TOpenDialog</var> is a <var>TFileDialog</var> descendent which 
+implements a dialog used to select one or more files that can be opened in an 
+application. TOpenDialog is implemented as a wrapper for the native file 
+selection dialogs on the various platforms / widgetsets.
+</p>
+<p>
+Use the Options property to configure the features and behaviors enabled when 
+the dialog is executed. Please note that some of the options are 
+platform-specific, and may not be available on all of the platforms supported 
+by the Lazarus LCL.
+</p>
+<p>
+Use InitialDir to specify the directory with the files displayed when the 
+dialog is executed.
+</p>
+<p>
+Use the event handlers to perform actions needed when the directory or file 
+selection(s) is changed during execution of the dialog.
+</p>
+<p>
+Use the FileName or Files properties to access the file(s) selected using the 
+dialog.
+</p>
+<p>
+Use the Filter and FilterIndex properties to determine the file extensions 
+displayed in the dialog. Use the OnTypeChange event handler to perform 
+actions needed when the active filter is changed.
+</p>
+<p>
+Use the UserChoice property to determine the button pressed to close the 
+dialog.
 </p>
 </descr>
+<seealso>
+<link id="TFileDialog"/>
+</seealso>
 </element>
 
 <element name="TOpenDialog.FOnFolderChange"/>
@@ -1141,7 +1376,7 @@ directory can be selected with SelectDirectory.
 
 <element name="TOpenDialog.ResolveLinks">
 <short>
-Gets physical file names for file references or symbolic links.
+Gets physical file names for symbolic links or file references.
 </short>
 <descr>
 <p>
@@ -1169,7 +1404,8 @@ property.
 <short>Resolves referential links.</short>
 <descr>
 <p>
-Deprecated since LCL version 1.9. Use or override ResolveLinks instead.
+Deprecated since LCL version 1.9. Use or override the ResolveLinks method 
+instead.
 </p>
 </descr>
 <seealso>
@@ -1179,51 +1415,186 @@ Deprecated since LCL version 1.9. Use or override ResolveLinks instead.
 
 <element name="TOpenDialog.CheckFile">
 <short>
-Determines if the specified file name meets the requirements for the dialog.
+Ensures the specified file name meets the requirements for the dialog.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CheckFile</var> is a Boolean function used to examine and update the 
+specified file name. AFilename is a variable argument which contains the path 
+to the file and a file extension. The return value is <b>True</b> if the file 
+name meets the requirements for the open dialog.
+</p>
+<p>
+Values in DefaultExt, Filter, and FilterIndex are used to get a file 
+extension when AFilename does not already include one. The file extension is 
+appended to the value in AFilename.
+</p>
+<p>
+Values in Options are used to determine if the file name is usable, including:
+</p>
+<dl>
+<dt>ofPathMustExist</dt>
+<dd>
+The path in AFilename must already exist on the local file system. If it does 
+not exist, a rsfdPathNoExist message is displayed and the method is exited.
+</dd>
+<dt>ofFileMustExist</dt>
+<dd>
+Calls CheckFileMustExist to ensure that the file already exists on the local 
+file system. A message is displayed if the file name and extension are not 
+found, and the method is exited.
+</dd>
+<dt>ofNoReadOnlyReturn</dt>
+<dd>
+The file and / or directory in AFilename must be writable. A rsfdFileReadOnly 
+is displayed if the file or directory is read-only, and the method is exited. 
+</dd>
+</dl>
+<p>
+CheckFile is used to implement the CheckAllFiles method used to validate the 
+entries in the Files property.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.CheckAllFiles"/>
+<link id="TOpenDialog.CheckFileMustExist"/>
+<link id="TFileDialog.Files"/>
+<link id="TFileDialog.FileName"/>
+</seealso>
 </element>
 <element name="TOpenDialog.CheckFile.Result">
 <short/>
 </element>
 <element name="TOpenDialog.CheckFile.AFilename">
-<short/>
+<short>
+Fully-qualified file name or directory path examined and possibly updated in 
+the method.
+</short>
 </element>
 
 <element name="TOpenDialog.CheckFileMustExist">
 <short>
-<var>CheckFileMustExist</var> returns <b>True</b> if a file with the 
-specified name exists.
+Determines whether the specified file name exists.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CheckFileMustExist</var> is a <var>Boolean</var> function used to check 
+whether the file in <var>AFilename</var> exists on the local file system. The 
+return value is <b>True</b> when FileExistsUTF8 finds the specified file 
+name. If the file is not found, an error message is displayed with the value 
+in rsfdFileNotExist.
+</p>
+<p>
+CheckFileMustExist is used in the implementation of the CheckFile method.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.CheckFile"/>
+<link id="TOpenDialog.CheckAllFiles"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+</seealso>
 </element>
 <element name="TOpenDialog.CheckFileMustExist.Result">
-<short/>
+<short>
+<b>True</b> if the specified file exists on the local file system.
+</short>
 </element>
 <element name="TOpenDialog.CheckFileMustExist.AFileName">
-<short/>
+<short>
+File name (including path) checked in the method.
+</short>
 </element>
 
 <element name="TOpenDialog.CheckAllFiles">
 <short>
-Calls <var>CheckFile</var> for each selected file, returns <b>True</b> if all 
-are OK.
+Ensures that values in the FileName and Files properties are valid for the 
+Options in the dialog.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CheckAllFiles</var> is a <var>Boolean</var> function used to validate 
+values in the FileName and Files properties using the Options enabled for the 
+dialog. 
+</p>
+<p>
+<var>FileName</var> is checked when a non-empty string value has been 
+assigned to the property, or when ofAllowMultiSelect has been <b>omitted</b> 
+from the Options property. The lines of text in the Files property are 
+validated when ofAllowMultiSelect has been <b>included</b> in the Options 
+property.
+</p>
+<p>
+CheckAllFiles calls the CheckFile method to validate and potentially update a 
+file name. A file name modified in CheckFile to include a file extension is 
+stored in the origin property (FileName or Files).
+</p>
+<p>
+The return value is <b>True</b> if the file name(s) meet the requirements for 
+the Options property and the local file system. 
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.CheckFile"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+<link id="TOpenDialog.Options"/>
+</seealso>
 </element>
 <element name="TOpenDialog.CheckAllFiles.Result">
-<short/>
+<short>
+<b>True</b> if the file names are valid for Options in the dialog.
+</short>
 </element>
 
-<element name="TOpenDialog.DoExecute" link="#lcl.dialogs.TCommonDialog.DoExecute">
-<descr/>
-<seealso/>
+<element name="TOpenDialog.DoExecute">
+<short>
+Performs actions needed to display the dialog and capture its result.
+</short>
+<descr>
+<p>
+<var>DoExecute</var> is an overridden <var>Boolean</var> function in 
+<var>TOpenDialog</var>, and calls the inherited method on entry. It extends 
+the execution loop for the dialog to use the Options enabled for the dialog, 
+including:
+</p>
+<dl>
+<dt>ofNoResolveLinks</dt>
+<dd>
+Calls ResolveLinks to follow symbolic links when ofNoResolveLinks has been 
+<b>omitted</b>.
+</dd>
+<dt>ofNoChangeDir</dt>
+<dd>
+Updates the InitialDir property when a path in FileName or Files is changed 
+and ofNoChangeDir has been <b>omitted</b>.
+</dd>
+</dl>
+<p>
+If execution of the inherited method was successfully completed, the 
+CheckAllFiles method is called to validate the values in the FileName and 
+Files properties.
+</p>
+<p>
+The return value is <b>True</b> when all of these steps are successfully 
+completed.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenDialog.CheckAllFiles"/>
+<link id="TOpenDialog.ResolveLinks"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+<link id="TCommonDialog.DoExecute"/>
+<link id="TOpenOption"/>
+</seealso>
 </element>
 <element name="TOpenDialog.DoExecute.Result">
-<short/>
+<short>
+<b>True</b> when the selected file(s) are valid and the method is 
+successfully completed.
+</short>
 </element>
 
 <element name="TOpenDialog.DefaultTitle">
@@ -1267,85 +1638,241 @@ dialog.
 </element>
 
 <element name="TOpenDialog.DoCanClose">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions to determine if the dialog can be closed.
+</short>
+<descr>
+<p>
+<var>DoCanClose</var> is an overridden method in <var>TOpenDialog</var>. It 
+ensures that a dialog using the classic style (where ofOldStyleDialog is 
+included in Options) does not call the OnCanClose event handler in the 
+inherited method. In this situation, the CanClose argument is set to 
+<b>True</b> and the internal flag used in the execution loop is set 
+indicating that DoCanClose was called.
+</p>
+<p>
+This behavior is Delphi VCL compatible.
+</p>
+<p>
+For Explorer-style dialogs (where ofOldStyleDialog is <b>not</b> included in 
+Options), the inherited method is called. This allows the CanClose argument 
+to be updated when the OnCanClose event handler is signalled.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TCommonDialog.OnCanClose"/>
+<link id="TOpenOption"/>
+</seealso>
 </element>
 <element name="TOpenDialog.DoCanClose.CanClose">
-<short/>
+<short>
+Variable argument which indicates if the dialog can be closed.
+</short>
 </element>
 
 <element name="TOpenDialog.DoFolderChange">
 <short>
-<var>DoFolderChange</var> - execute the code for a folder change.
+Signals the OnFolderChange event handler when a new directory is selected 
+during execution of the dialog.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoFolderChange</var> is a method used to perform actions needed when a 
+new directory is selected using the open dialog. DoFolderChange signals the 
+<var>OnFolderChange</var> event handler (when assigned) using the dialog 
+instance as the object for the notification.
+</p>
+<p>
+DoFolderChange is called from the widgetset class when directory navigation 
+has occurred in the native dialog. FileName contains the path for the newly 
+selected directory when the method is called.
+</p>
+<p>
+Use InitialDir to specify the initial directory displayed when the dialog is 
+executed.
+</p>
+<p>
+Use OnSelectionChange to perform actions needed when a new file is selected 
+using the dialog and the value in FileName is modified.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.OnFolderChange"/>
+<link id="TOpenDialog.OnSelectionChange"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.InitialDir"/>
+</seealso>
 </element>
 
 <element name="TOpenDialog.DoSelectionChange">
 <short>
-<var>DoSelectionChange</var> - execute the code for a change in selection.
+Performs actions when the selected file in FileName has been changed.
+</short>
+<descr>
+<p>
+<var>DoSelectionChange</var> is a method used to perform action needed when 
+the selected file in the dialog has been change. It is called from methods in 
+the widgetset class when a new value has been assigned to the FileName 
+property.
+</p>
+<p>
+DoSelectionChange updates an internal member used to track the current and 
+previous value for the FileName property. It signals the 
+<var>OnSelectionChange</var> event handler (when assigned) using the dialog 
+class instance as the object for the notification.
+</p>
+<p>
+Use HistoryList for the previously selected file name values in the dialog.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.OnSelectionChange"/>
+<link id="TFileDialog.FileName"/>
+</seealso>
+</element>
+
+<element name="TOpenDialog.IntfSetOption">
+<short>
+Implements the callback used to update values in Options when the widgetset 
+class processes the dialog result.
 </short>
 <descr/>
 <seealso/>
 </element>
-
-<element name="TOpenDialog.IntfSetOption">
-<short/>
-<descr/>
-<seealso/>
-</element>
 <element name="TOpenDialog.IntfSetOption.AOption">
-<short/>
+<short>
+TOpenOption enumeration value updated in the Options for the dialog.
+</short>
 </element>
 <element name="TOpenDialog.IntfSetOption.AValue">
-<short/>
+<short>
+<b>True</b> to include the option in the class instance. <b>False</b> to 
+exclude the option.
+</short>
 </element>
 
 <element name="TOpenDialog.Options">
 <short>Options to be used for this dialog.</short>
 <descr>
 <p>
-Options to be used for the Open File dialog. A full list of available options 
-is found in <link id="TOpenOptions"/>.
+<var>Options</var> is a <var>TOpenOptions</var> property with the set used to 
+store options enabled in the dialog. Options contain 0 (zero) or more values 
+from the <var>TOpenOption</var> enumeration. When a value is included in the 
+set, it is enabled when the dialog is executed.
+</p>
+<p>
+The default value for the property is defined in the DefaultOpenDialogOptions 
+constant, and contains:
+</p>
+<dl>
+<dt>ofEnableSizing</dt>
+<dd>
+Allows the dialog to be resized at run-time.
+</dd>
+<dt>ofViewDetail</dt>
+<dd>
+Enables the file detail view in the QT4 and QT5 widgetsets. Not implemented 
+for any other platforms in the current LCL version.
+</dd>
+</dl>
+<p>
+See <link id="TOpenOption"/> for a complete list of enumeration values and 
+their meanings.
+</p>
+<p>
+Values in Options are used at run-time in methods like:
+</p>
+<ul>
+<li>CheckAllFiles</li>
+<li>CheckFile</li>
+<li>DoExecute</li>
+<li>DoCanClose</li>
+</ul>
+<p>
+In addition, values in Options may be updated when the IntfSetOption callback 
+method is used to apply changes from the widgetset class instance.
 </p>
 </descr>
 <seealso>
+<link id="TOpenDialog.DoExecute"/>
+<link id="TOpenDialog.IntfSetOption"/>
 <link id="TOpenOptions"/>
+<link id="TOpenOption"/>
+<link id="DefaultOpenDialogOptions"/>
 </seealso>
 </element>
 
 <element name="TOpenDialog.OnFolderChange">
 <short>
-Event triggered when the user changes the folder in the OpenDialog.
+Event signalled when a new directory is selected in the dialog.
 </short>
 <descr>
 <p>
-This event is called when the user changes the folder (directory) in the 
-OpenDialog.
+<var>OnFolderChange</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the current directory is changed using the 
+dialog. OnFolderChange is signalled (when assigned) from the DoFolderChange 
+method when it is called from methods in the widgetset class instance. It is 
+called  when the value in FileName has been changed as a result of directory 
+navigation using the native dialog for the platform.
 </p>
 <p>
-Note: changing the folder will also trigger the OnSelectionChange event.
+The dialog class instance is used as the Sender object for the event 
+notification.
+</p>
+<p>
+Please note that changing the current folder (and updating FileName with the 
+new directory) will also trigger the OnSelectionChange event.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenDialog.DoFolderChange"/>
+<link id="TOpenDialog.OnSelectionChange"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+</seealso>
 </element>
 
 <element name="TOpenDialog.OnSelectionChange">
 <short>
-Event triggered when the user changes the selection made in the OpenDialog.
+Event triggered when the user changes the folder of file selection(s) made in 
+the OpenDialog.
 </short>
 <descr>
 <p>
-This event is triggered when the user changes the selected file in the 
-OpenDialog.
+<var>OnSelectionChange</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the folder or file selection for the dialog has 
+been changed. It is signalled (when assigned) from the DoSelectionChange 
+method. The dialog class instance is used as the object for the notification.
 </p>
 <p>
-Note: When the user changes the folder OnSelectionChange will be called first.
+OnSelectionChange occurs at run-time when the value in <var>FileName</var> is 
+changed using the native dialog for the platform. The value in FileName has 
+been updated and also stored as the text value for the Files property prior 
+to the event.
+</p>
+<p>
+When multi-selection is enabled by including ofAllowMultiSelect in Options, 
+OnSelectionChange is signalled for the first value in the range of selected 
+files only. It will, however, be signalled again when the first selection is 
+changed. Other selected file names in Files, which are not the first selected 
+file, are not signalled at all.
+</p>
+<p>
+Please note that both the OnSelectionChange and OnFolderChange events are 
+signalled during execution when the folder (or directory) is changed to value 
+that does not match the previous value in FileName. OnSelectionChange is 
+signalled first.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TOpenDialog.DoSelectionChange"/>
+<link id="TOpenDialog.OnFolderChange"/>
+<link id="TOpenDialog.Options"/>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+</seealso>
 </element>
 
 <element name="TSaveDialog">
@@ -2378,7 +2905,7 @@ platform.
 When the dialog is executed, the selected font and its attributes is made 
 available in the Font property. The OnApplyClicked event handler can be used 
 to perform actions needed when the optional Apply button is clicked in the 
-dialog. Please note that the Apply button is available on the GTK2, GTK2, and 
+dialog. Please note that the Apply button is available on the GTK2, GTK3, and 
 Windows platforms. It is not currently implemented for QT platforms.
 </p>
 </descr>
