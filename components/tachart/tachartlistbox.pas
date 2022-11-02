@@ -526,7 +526,7 @@ end;
 procedure TChartListbox.MouseDown(
   AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
 var
-  rcb, ricon: TRect;
+  R, rcb, ricon: TRect;
   index: Integer;
   p: TPoint;
 begin
@@ -537,7 +537,17 @@ begin
     p := Point(AX, AY);
     index := GetIndexAtXY(AX, AY);
     if index < 0 then exit;
-    CalcRects(ItemRect(index), rcb, ricon);
+    R := ItemRect(index);
+    {$IFDEF DARWIN}
+    { Workaround for ItemRect returning something different than what is
+      passed to DrawItem in macOS Monterey.
+      See discussion in https://forum.lazarus.freepascal.org/index.php/topic,61074.0.html
+      The consequence of this workaround is that there can only be a single
+      column, but Columns > 1 does not work on cocoa anyway. }
+    R.Left := 0;
+    R.Right := ClientWidth;
+    {$ENDIF}
+    CalcRects(R, rcb, ricon);
     if (cloShowCheckboxes in Options) and IsPointInRect(p, rcb) then
       ClickedCheckbox(index)
     else if (cloShowIcons in Options) and IsPointInRect(p, ricon) then
