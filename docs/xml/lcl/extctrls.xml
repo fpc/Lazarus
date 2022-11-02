@@ -1037,7 +1037,7 @@ Inspector to maintain the values in the property.
 <element name="TNotebook.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TNotebook.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 <element name="TNotebook.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TNotebook.TabStop" link="#LCL.Control.TWinControl.TabStop"/>
+<element name="TNotebook.TabStop" link="#lcl.control.TWinControl.TabStop"/>
 
 <element name="TTimer">
 <short>
@@ -2434,7 +2434,7 @@ Create sets the default values for properties, including:
 </ul>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
+<link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
 </seealso>
 </element>
 <element name="TCustomSplitter.Create.TheOwner">
@@ -2488,12 +2488,49 @@ Gets the adjacent anchored control that is resized when the splitter is moved.
 
 <element name="TCustomSplitter.MoveSplitter">
 <short>
-<var>MoveSplitter</var> moves the splitter by an amount specified in 
-<var>Offset</var>.
+Moves the splitter by an amount specified in <var>Offset</var>.
 </short>
+<descr>
+<p>
+<var>MoveSplitter</var> is a method used to reposition the splitter control 
+by the amount specified in the <var>Offset</var> parameter. Offset is the 
+distance in pixels between the current and new splitter positions.
+</p>
+<p>
+The values in Align, ResizeAnchor, and AnchoredControls are used to determine 
+the direction that the splitter is moved and the controls affected. 
+ResizeControl is the control which is resized by the specified amount, and 
+the adjacent resized control(s) are updated with the converse of the offset 
+value.
+</p>
+<p>
+No actions are performed in the method when Offset contains 0 (zero) or a 
+control has not been assigned to the ResizeControl property.
+</p>
+<p>
+MoveSplitter ensures that size constraints for both the ResizeControl and the 
+adjacent control(s) are respected when the splitter is repositioned. 
+</p>
+<p>
+MoveSplitter is called from the SetSplitterPosition abd StopSplitterMove 
+methods.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSplitter.Align"/>
+<link id="TCustomSplitter.AutoSnap"/>
+<link id="TCustomSplitter.ResizeControl"/>
+<link id="TCustomSplitter.ResizeAnchor"/>
+<link id="TCustomSplitter.GetOtherResizeControl"/>
+<link id="TCustomSplitter.SetSplitterPosition"/>
+<link id="TCustomSplitter.StopSplitterMove"/>
+<link id="#lcl.controls.TControl.AnchoredControls">TControl.AnchoredControls</link>
+</seealso>
 </element>
 <element name="TCustomSplitter.MoveSplitter.Offset">
-<short></short>
+<short>
+Integer value with the requested distance that the splitter is moved.
+</short>
 </element>
 
 <element name="TCustomSplitter.SetSplitterPosition">
@@ -2502,19 +2539,21 @@ Changes the position for the splitter to the specified <var>NewPosition</var>.
 </short>
 <descr>
 <p>
-Calls MoveSplitter using the difference between NewPosition and the current 
-splitter position as an argument.
+<var>SetSplitterPosition</var> is a method used to change the position for 
+the splitter control in program code (as opposed to a drag action). It calls 
+the MoveSplitter method using the difference between NewPosition and the 
+current splitter position relative to ResizeAnchor as an argument.
 </p>
 </descr>
 <seealso>
 <link id="TCustomSplitter.MoveSplitter"/>
 <link id="TCustomSplitter.GetSplitterPosition"/>
+<link id="TCustomSplitter.ResizeAnchor"/>
 </seealso>
 </element>
 <element name="TCustomSplitter.SetSplitterPosition.NewPosition">
 <short>
-Coordinate where the splitter is moved in the orientation for the 
-ResizeAnchor.
+Coordinate where the splitter is moved relative to the ResizeAnchor.
 </short>
 </element>
 
@@ -2575,8 +2614,25 @@ in <var>MinSize</var>. Contains <b>True</b> when snapping to grid positions.
 
 <element name="TCustomSplitter.Beveled">
 <short>Indicates whether the edges of the splitter bar are beveled.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Beveled</var> is a <var>Boolean</var> property which controls whether 
+the splitter is drawn with a beveled appearance. The default value for the 
+property is <b>False</b>. Changing the value for the property causes the 
+control to be redrawn.
+</p>
+<p>
+Beveled is used in the Paint method. When set to <b>True</b>, the DrawEdge 
+method in ThemeServices is used to render a raised outer edge on the splitter 
+control. When set to <b>False</b>, a bevel is not drawn on the splitter 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSplitter.Paint"/>
+<link id="#lcl.themes.ThemeServices">ThemeServices</link>
+<link id="#lcl.themes.TThemeServices.DrawEdge">TThemeServices.DrawEdge</link>
+</seealso>
 </element>
 
 <element name="TCustomSplitter.Cursor">
@@ -5358,7 +5414,7 @@ and calls the inherited <var>Destroy</var> method.
 </p>
 </descr>
 <seealso>
-<link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+<link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
 </seealso>
 </element>
 
@@ -10485,7 +10541,9 @@ constructor.
 </seealso>
 </element>
 <element name="TCustomControlBar.PictureChanged.Sender">
-<short/>
+<short>
+Object (TPicture) for the event notification.
+</short>
 </element>
 
 <element name="TCustomControlBar.Resize">
