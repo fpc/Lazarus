@@ -1879,6 +1879,7 @@ var xScale : Real;
     ang    : Integer;
     //fs:TFormatSettings;
     pp1,pp2:TpsPoint;
+    sinAng, cosAng: Real;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -1915,7 +1916,8 @@ begin
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  WriteB(Format('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))],FFs));
+  SinCos(-StAng, sinAng, cosAng);
+  WriteB(Format('%.3f %.3f moveto',[cX+rX*cosAng,cY+rY*sinAng],FFs));
   WriteB(Code);
   SetBrushFillPattern(True,False);
 
@@ -1930,6 +1932,7 @@ var xScale : Real;
     yScale : Real;
     cX, cY : Real;
     rX,Ry  : Real;
+    sinAngle1, cosAngle1: Real;
     Code   : string;
     ang    : string;
     //fs:TFormatSettings;
@@ -1954,13 +1957,15 @@ begin
     Ang:='arc'
   else
     Ang:='arcn';
-    
+
   //calculate semi-minor and semi-major axes of ellipse
   xScale:=Abs((Right-Left)/2.0);
   yScale:=Abs((Bottom-Top)/2.0);
 
   Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
       [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang], FFs);
+
+  SinCos(-Angle1/16, sinAngle1, cosAngle1);
 
   if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
   begin
@@ -1970,7 +1975,7 @@ begin
 
     //move current point to start of arc, note negative
     //angle because y increases down
-    write(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+    write(Format('%.3f %.3f moveto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
     Write(Code);
     write('stroke');
   end;
@@ -1987,6 +1992,7 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
+    SinAngle1, CosAngle1: Real;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -2014,20 +2020,21 @@ begin
 
   //move current point to start of arc, note negative
   //angle because y increases down
+  SinCos(-Angle1/16, sinAngle1, cosAngle1);
   ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+  writeB(Format('%.3f %.3f moveto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+  writeB(Format('%.3f %.3f lineto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
   SetBrushFillPattern(False,True);
 
   //move current point to start of arc, note negative
   //angle because y increases down
   ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+  writeB(Format('%.3f %.3f moveto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
   WriteB(Code);
   writeB(Format('%d %d lineto',[Left,Top]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+  writeB(Format('%.3f %.3f lineto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
   SetBrushFillPattern(True,False);
 
   MoveToLastPos;
@@ -2240,6 +2247,7 @@ var xScale : Real;
     rX,Ry  : Real;
     Code   : string;
     ang    : string;
+    sinAngle1, cosAngle1: Real;
   //pp:TpsPoint;
 begin
   Changing;
@@ -2268,9 +2276,10 @@ begin
 
   //move current point to start of arc, note negative
   //angle because y increases down.ClosePath for draw chord
+  SinCos(-Angle1/16, SinAngle1, CosAngle1);
   ClearBuffer;
   writeB('newpath');
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))],FFs));
+  writeB(Format('%.3f %.3f moveto',[cX+rX*CosAngle1,cY+rY*SinAngle1],FFs));
   WriteB(Code);
   writeB('closepath');
   SetBrushFillPattern(True,True);
