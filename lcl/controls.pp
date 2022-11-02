@@ -1692,9 +1692,12 @@ type
     procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
                                          AsFirst: Boolean = false);
     procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
+    procedure AddHandlerOnEnabledChanging(const OnEnabledChangingEvent: TNotifyEvent;
+                                         AsFirst: Boolean = false);
+    procedure RemoveHandlerOnEnabledChanging(const OnEnabledChangingEvent: TNotifyEvent);
     procedure AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent;
                                          AsFirst: Boolean = false);
-    procedure RemoveHandlerOnEnableChanging(const OnEnableChangingEvent: TNotifyEvent);
+    procedure RemoveHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent);
     procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
                                   AsFirst: Boolean = false);
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);

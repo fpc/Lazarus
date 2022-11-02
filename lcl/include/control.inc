@@ -4990,15 +4990,28 @@ begin
   RemoveHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
 end;
 
-procedure TControl.AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent; AsFirst: Boolean);
+procedure TControl.AddHandlerOnEnabledChanging(
+  const OnEnabledChangingEvent: TNotifyEvent; AsFirst: Boolean);
+begin
+  AddHandler(chtOnEnabledChanging,TMethod(OnEnabledChangingEvent),AsFirst);
+end;
+
+procedure TControl.RemoveHandlerOnEnabledChanging(
+  const OnEnabledChangingEvent: TNotifyEvent);
+begin
+  RemoveHandler(chtOnEnabledChanging,TMethod(OnEnabledChangingEvent));
+end;
+
+procedure TControl.AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent;
+  AsFirst: Boolean);
 begin
   AddHandler(chtOnEnabledChanged,TMethod(OnEnabledChangedEvent),AsFirst);
 end;
 
-procedure TControl.RemoveHandlerOnEnableChanging(
-  const OnEnableChangingEvent: TNotifyEvent);
+procedure TControl.RemoveHandlerOnEnabledChanged(
+  const OnEnabledChangedEvent: TNotifyEvent);
 begin
-  RemoveHandler(chtOnEnabledChanged,TMethod(OnEnableChangingEvent));
+  RemoveHandler(chtOnEnabledChanged,TMethod(OnEnabledChangedEvent));
 end;
 
 procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent; AsFirst: Boolean);
