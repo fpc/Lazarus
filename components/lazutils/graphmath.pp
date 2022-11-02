@@ -353,8 +353,7 @@ procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   var
     SinA,CosA : Extended;
   begin
-    CosA := cos(Rotation);
-    SinA := Sin(Rotation);
+    SinCos(Rotation, SinA, CosA);
     Result.X := Point.X*CosA + Point.Y*SinA;
     Result.Y := Point.X*SinA - Point.Y*CosA;
   end;
@@ -368,6 +367,7 @@ var
   Beta : Extended;
   P : array[0..3] of TFLoatPoint;
   SinA,CosA : Extended;
+  SinA2o2,CosA2o2: Extended;
   A,B : Extended;
   I : Longint;
   PT : TFloatPoint;
@@ -401,20 +401,19 @@ begin
   Angle1 := DegToRad(Angle1/16);
   Angle2 := DegToRad(Angle2/16);
   Rotation := -DegToRad(Rotation/16);
-  Beta := (4/3)*(1 - Cos(Angle2/2))/(Sin(Angle2/2));
+  SinCos(Angle2/2, SinA2o2, CosA2o2);
+  Beta := (4/3)*(1 - CosA2o2)/SinA2o2;
   PT.X := X + Width / 2;
   PT.Y := Y + Height / 2;
 
-  CosA := cos(Angle1);
-  SinA := sin(Angle1);
+  SinCos(Angle1, SinA, CosA);
 
   P[0].X := A *CosA;
   P[0].Y := B *SinA;
   P[1].X := P[0].X - Beta * A * SinA;
   P[1].Y := P[0].Y + Beta * B * CosA;
 
-  CosA := cos(Angle1 + Angle2);
-  SinA := sin(Angle1 + Angle2);
+  SinCos(Angle1 + Angle2, SinA, CosA);
 
   P[3].X := A *CosA;
   P[3].Y := B *SinA;
@@ -737,13 +736,16 @@ end;
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
 var
   a, b, R : Extended;
+  sinAngle, cosAngle: Extended;
 begin
   a := (Rect.Right - Rect.Left) div 2;
   b := (Rect.Bottom - Rect.Top) div 2;
   R := Sqr(a)*Sqr(b);
   if R <> 0 then
-    R := Sqrt(R / ((Sqr(b)*Sqr(Cos(DegToRad(EccentricAngle/16)))) +
-      (Sqr(a)*Sqr(Sin(DegToRad(EccentricAngle/16))))));
+  begin
+    SinCos(DegToRad(EccentricAngle/16), sinAngle, cosAngle);
+    R := Sqrt(R / (sqr(b*cosAngle) + sqr(a*sinAngle)));
+  end;
   Result := TruncToInt(R);
 end;
 
@@ -777,8 +779,9 @@ end;
   3'o clock position.
 
 ------------------------------------------------------------------------------}
-function LineEndPoint(const StartPoint : TPoint; Angle, Length : Extended) :
-TPoint;
+function LineEndPoint(const StartPoint : TPoint; Angle, Length : Extended) : TPoint;
+var
+  sinAngle, cosAngle: Extended;
 begin
   if Angle > 360*16 then
     Angle := Frac(Angle / 360*16) * 360*16;
@@ -786,8 +789,9 @@ begin
   if Angle < 0 then
     Angle := 360*16 - abs(Angle);
 
-  Result.Y := StartPoint.Y - Round(Length*Sin(DegToRad(Angle/16)));
-  Result.X := StartPoint.X + Round(Length*Cos(DegToRad(Angle/16)));
+  SinCos(DegToRad(Angle/16), sinAngle, cosAngle);
+  Result.Y := StartPoint.Y - Round(Length*sinAngle);
+  Result.X := StartPoint.X + Round(Length*cosAngle);
 end;
 
 
