@@ -90,8 +90,8 @@ implementation
 
 uses
   { local }
-  PreProcessorExpressionTokenise, PreProcessorExpressionParser,
-  ParseError, JcfSettings, JcfUiTools;
+  PreProcessorExpressionTokenise, PreProcessorExpressionParser, StrUtils,
+  ParseError, JcfSettings, JcfUiTools, JcfStringUtils, TokenUtils, SettingsTypes;
 
 procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
 var
@@ -420,13 +420,16 @@ begin
   NextToken;
 end;
 
-
+// parse preprocessor block until finds ENDIF IFEND, ELSE ELSEIF.
+// if the block is inactive then include all nested preprocessor blocks.
 procedure TPreProcessorParseTree.ParseNonPreProc(
   const peEndTokens: TPreProcessorSymbolTypeSet);
 var
   lcToken: TSourceToken;
+  liNestLevel: integer;
 begin
   { go forward until another preprocessor tag is found. or end of file }
+  liNestLevel := 1;
   while (fiCurrentTokenIndex < fcTokens.Count) do
   begin
     lcToken := CurrentToken;
@@ -437,14 +440,21 @@ begin
 
     if (lcToken.CommentStyle = eCompilerDirective) then
     begin
-      if lcToken.PreprocessorSymbol in peEndTokens then
+      //inactive nested {$IFxxxx}
+      if (not fbPreprocessorIncluded) and (lcToken.PreprocessorSymbol in [ppIfDef, ppIfNotDef, ppIfOpt, ppIfExpr]) then
+        Inc(liNestLevel)
+      else if (liNestLevel > 1) and (lcToken.PreprocessorSymbol in [ppIfEnd, ppEndIf]) then
+        Dec(liNestLevel)
+      else if (liNestLevel = 1) and (lcToken.PreprocessorSymbol in peEndTokens) then
       begin
         lcToken.PreProcessedOut := False;
         break;
       end;
-
-      // if we are preproc'd in then parse these
-      ParseProcessorBlock;
+      if fbPreprocessorIncluded then
+        // if we are preproc'd in then parse these
+        ParseProcessorBlock
+      else
+        NextToken;
     end
     else
       NextToken;
@@ -569,6 +579,7 @@ var
   liLoop:    integer;
   lsOutText: string;
   lcCurrentToken, lcExcludedText: TSourceToken;
+  lbLFAfter,lbLFBefore:TTriOptionStyle;
 begin
   // right, what's out?
   liLoop := 0;
@@ -579,7 +590,8 @@ begin
     if lcCurrentToken.PreprocessedOut then
     begin
       lsOutText := '';
-
+     lbLFBefore:= CompilerDirectiveLineBreak(lcCurrentToken, True);
+     lbLFAfter:=  CompilerDirectiveLineBreak(lcCurrentToken, False);
       while (lcCurrentToken <> nil) and lcCurrentToken.PreprocessedOut do
       begin
         lsOutText := lsOutText + lcCurrentToken.SourceCode;
@@ -589,12 +601,19 @@ begin
         { next one will have shifted up }
         lcCurrentToken := fcTokens.SourceTokens[liLoop];
       end;
-
       lcExcludedText := TSourceToken.Create;
       lcExcludedText.FileName := lcCurrentToken.FileName;
       lcExcludedText.TokenType := ttConditionalCompilationRemoved;
-      lcExcludedText.SourceCode := lsOutText;
-
+      case lbLFBefore of
+        eAlways:lcExcludedText.SourceCode := TrimRightSet(lsOutText,NativeTabSpace); //only spaces not returns
+        eLeave: lcExcludedText.SourceCode := lsOutText;
+        eNever: lcExcludedText.SourceCode := TrimRight(lsOutText);  // spaces and returns
+      end;
+      case lbLFAfter of
+        eAlways: lcExcludedText.SourceCode := TrimLeft(lcExcludedText.SourceCode);
+        eLeave: ;
+        eNever: lcExcludedText.SourceCode := TrimLeft(lcExcludedText.SourceCode);
+      end;
       fcTokens.Insert(liLoop, lcExcludedText);
     end
     else

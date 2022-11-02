@@ -54,7 +54,7 @@ implementation
 
 uses
   { local }
-  TokenUtils, SourceToken, Tokens,
+  TokenUtils, SourceToken, Tokens, JcfStringUtils,
   ParseTreeNodeType, ParseTreeNode, JcfSettings, FormatFlags, SettingsTypes;
 
 const
@@ -75,8 +75,14 @@ const
    5) as 4, in a procedure type in a type def
 }
 function SemicolonHasReturn(const pt, ptNext: TSourceToken): boolean;
+var
+  lcN:TSourceToken;
 begin
   Result := True;
+  {before compiler directive }
+  lcN:=pt.NextTokenWithExclusions([ttWhiteSpace]); // include comments.
+  if (lcN<>nil) and (lcN.TokenType=ttComment) and (lcN.CommentStyle=eCompilerDirective)then
+    exit(false);
   { point 1 }
   if ptNext.HasParentNode(nProcedureDirectives) then
     exit(False);
@@ -368,16 +374,6 @@ begin
       exit(True);
   end;
 
-  { return after compiler directives
-    NB use lcNext as ptNext is the next *solid* token
-    cond comp removed is not solid }
-  if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, False) = eAlways) then
-  begin
-    lcNext := pt.NextTokenWithExclusions([ttWhiteSpace]);
-    if (lcNext <> nil) and (lcNext.TokenType <> ttConditionalCompilationRemoved)
-    then
-      exit(True);
-  end;
 end;
 
 function NeedsReturn(const pt, ptNext: TSourceToken): boolean;
@@ -389,6 +385,25 @@ begin
   { these can include returns }
   if pt.TokenType = ttConditionalCompilationRemoved then
     exit;
+  if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, False) = eAlways) then
+  begin
+    Result:=false;
+    lcNext:=pt.NextTokenWithExclusions([ttWhiteSpace]);
+    if (lcNext<>nil) and (lcNext.TokenType<>ttReturn) then
+    begin
+      if (lcNext <> nil) then
+      begin
+        if (lcNext.TokenType <> ttConditionalCompilationRemoved) then
+          result:=true
+        else
+        begin
+          if StrStartsWithLineEnd(lcNext.SourceCode)=false then
+            result:=true;
+        end;
+      end;
+    end;
+    exit;
+  end;
 
   { option to Break After Uses }
   if pt.HasParentNode(nUses) and (pt.TokenType = ttUses) and
@@ -509,10 +524,6 @@ begin
   lcCommentTest := lcSourceToken.NextTokenWithExclusions([ttWhiteSpace, ttReturn]);
 
   if lcCommentTest = nil then
-    exit;
-
-  if (lcCommentTest.TokenType = ttComment) and
-    (lcCommentTest.CommentStyle = eDoubleSlash) then
     exit;
 
   { white space that was on the end of the line shouldn't be carried over

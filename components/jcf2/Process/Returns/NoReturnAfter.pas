@@ -176,21 +176,22 @@ begin
         exit;
       end;
     end;
-
-    if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, False) = eNever) then
-    begin
-      Result := True;
-      exit;
-    end;
-
   end;
-
   { remove returns based on options }
 
   { the options don't apply after comments }
-  if (pt.TokenType = ttComment) then
+  if (pt.TokenType = ttComment) and (pt.CommentStyle = eCompilerDirective) then
   begin
-    Result := False;
+    Result:=CompilerDirectiveLineBreak(pt, False) = eNever;
+    if Result then  // remove spaces
+    begin
+      lcNext:=pt.NextToken;
+      while (lcNext<>nil) and (lcNext.TokenType in [ttReturn,ttWhiteSpace]) do
+      begin
+        BlankToken(lcNext);
+        lcNext:=lcNext.NextToken;
+      end;
+    end;
     exit;
   end;
 

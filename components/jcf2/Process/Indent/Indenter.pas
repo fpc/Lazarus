@@ -56,7 +56,7 @@ uses
   { local }
   JcfStringUtils,
   SourceToken, Nesting, FormatFlags, JcfSettings, TokenUtils,
-  Tokens, ParseTreeNode, ParseTreeNodeType;
+  Tokens, ParseTreeNode, ParseTreeNodeType, SettingsTypes;
 
 { true if the specified token type occurs before pt on the line }
 function HasPreceedingTokenTypeOnLine(const pt: TSourceToken; const ptt: TTokenTypeSet): Boolean;
@@ -159,6 +159,11 @@ begin
       else
         Result := FormattingSettings.Indent.KeepCommentsWithCodeElsewhere;
     end;
+  end
+  else if (pt.TokenType = ttComment) and (pt.CommentStyle = eCompilerDirective)
+          and (CompilerDirectiveLineBreak(pt,True)=eAlways) then
+  begin
+    Result:=true;
   end;
 end;
 

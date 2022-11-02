@@ -852,19 +852,19 @@ end;
 
 function CompilerDirectiveLineBreak(const pt: TSourceToken; const pbBefore: Boolean): TTriOptionStyle;
 begin
-  if InStatements(pt) then
-  begin
-    if pbBefore then
-      Result := FormattingSettings.Returns.BeforeCompilerDirectStatements
-    else
-      Result := FormattingSettings.Returns.AfterCompilerDirectStatements;
-  end
-  else if pt.HasParentNode(nUses)  then
+  if pt.HasParentNode(nUses)  then
   begin
     if pbBefore then
       Result := FormattingSettings.Returns.BeforeCompilerDirectUses
     else
       Result := FormattingSettings.Returns.AfterCompilerDirectUses;
+  end
+  else if InStatements(pt) then
+  begin
+    if pbBefore then
+      Result := FormattingSettings.Returns.BeforeCompilerDirectStatements
+    else
+      Result := FormattingSettings.Returns.AfterCompilerDirectStatements;
   end
   else
   begin

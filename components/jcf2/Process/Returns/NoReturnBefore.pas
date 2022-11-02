@@ -61,6 +61,7 @@ const
   ProcNoReturnWords: TTokenTypeSet = [ttThen, ttDo];
 var
   lcPrev: TParseTreeNode;
+  lcP:TSourceToken;
 begin
   Result := False;
 
@@ -132,17 +133,30 @@ begin
     if pt.HasParentNode(nAttribute) then
       exit(True);
   end;
+  if (pt.CommentStyle = eCompilerDirective) then
+  begin
+    if (CompilerDirectiveLineBreak(pt, True) = eNever) then
+    begin
+      // remove spaces
+      lcP:=pt.PriorToken;
+      while (lcP<>nil) and (lcP.TokenType in [ttReturn,ttWhiteSpace]) do
+      begin
+        BlankToken(lcP);
+        lcP:=lcP.PriorToken;
+      end;
+      exit(True);
+    end
+    else
+      exit(False);
+  end;
 
   // "foo in  Foo.pas, " has return only after the comma
   if InFilesUses(pt) then
   begin
     if (pt.TokenType in [ttComma, ttWord, ttQuotedLiteralString]) or
-      ((pt.TokenType = ttComment) and (pt.CommentStyle in CURLY_COMMENTS)) then
+      ((pt.TokenType = ttComment) and (pt.CommentStyle = eCurlyBrace)) then
       exit(True);
   end;
-
-  if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, True) = eNever) then
-    exit(True);
 
 end;
 
@@ -162,9 +176,18 @@ begin
   lcSourceToken := TSourceToken(pcNode);
 
   // not safe to remove return at a comment like this
-  if (lcSourceToken.TokenType = ttComment) and
-    (lcSourceToken.CommentStyle = eDoubleSlash) then
-    fbSafeToRemoveReturn := False
+  if (lcSourceToken.TokenType = ttComment)then
+  begin
+    if (lcSourceToken.CommentStyle = eDoubleSlash) then
+      fbSafeToRemoveReturn := False
+    else if lcSourceToken.CommentStyle = eCompilerDirective then
+    begin
+      if CompilerDirectiveLineBreak(lcSourceToken, True) = eNever then
+        fbSafeToRemoveReturn := true
+      else
+        fbSafeToRemoveReturn := false;
+    end;
+  end
   else if (lcSourceToken.TokenType <> ttReturn) then
     fbSafeToRemoveReturn := True;
   // safe again after the next return

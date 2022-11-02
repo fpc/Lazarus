@@ -59,7 +59,7 @@ implementation
 uses
   TokenUtils,
   SourceToken, Tokens, ParseTreeNode,
-  ParseTreeNodeType, JcfSettings,
+  ParseTreeNodeType, JcfSettings, JcfStringUtils,
   FormatFlags, SettingsTypes;
 
 const
@@ -250,14 +250,6 @@ begin
       Result := True;
   end;
 
-  { return before compiler directives }
-  if (pt.CommentStyle = eCompilerDirective) and (CompilerDirectiveLineBreak(pt, True) = eAlways) then
-  begin
-    lcPrev := pt.PriorTokenWithExclusions([ttWhiteSpace]); 
-    if (lcPrev <> nil) and (lcPrev.TokenType <> ttConditionalCompilationRemoved) then
-      exit(True);
-  end;
-
   { there is not always a return before 'type'
     e.g.
     type TMyInteger = type Integer;
@@ -405,6 +397,27 @@ begin
 
   { number to insert = needed - actual }
   liReturnsNeeded := liReturnsNeeded - fiReturnsBefore;
+
+  //preprocessor directives
+  if (lcSourceToken.TokenType = ttComment) and (lcSourceToken.CommentStyle=eCompilerDirective)  then
+  begin
+    liReturnsNeeded := 0;
+    if CompilerDirectiveLineBreak(lcSourceToken, True) = eAlways then
+    begin
+      lcPrev:=lcSourceToken.PriorTokenWithExclusions([ttWhiteSpace]);
+      if (lcPrev<>nil) and (lcPrev.TokenType<>ttReturn) then
+      begin
+        if (lcPrev.TokenType <> ttConditionalCompilationRemoved) then
+          liReturnsNeeded:=1
+        else
+        begin
+          if StrEndsWithLineEnd(lcPrev.SourceCode)=false then
+            liReturnsNeeded:=1;
+        end;
+      end;
+    end;
+  end;
+
   //var
   //  Test : function: Integer; // No New Line
   //type
@@ -421,7 +434,7 @@ begin
     Result := True;
 
     lcPrev := lcSourceToken.PriorToken;
-    if lcPrev.TokenType = ttWhiteSpace then
+    if (lcPrev<>nil) and (lcPrev.TokenType = ttWhiteSpace) then
       BlankToken(lcPrev);
 
     for liLoop := 0 to liReturnsNeeded - 1 do
@@ -452,7 +465,6 @@ begin
     Inc(fiNextReturnsBefore)
   else if not (lcSourceToken.TokenType in [ttReturn, ttWhiteSpace, ttComment]) then
     fiNextReturnsBefore := 0;
-
 end;
 
 function TReturnBefore.IsIncludedInSettings: boolean;

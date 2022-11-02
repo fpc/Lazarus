@@ -89,6 +89,7 @@ const
   NativeWhiteSpace     = [NativeTab, NativeLineFeed, NativeVerticalTab,
     NativeFormFeed, NativeCarriageReturn, NativeSpace];
 
+  NativeTabSpace =[NativeSpace,NativeTab];
   NativeDoubleQuote = Char('"');
   NativeSingleQuote = Char('''');
 
@@ -125,7 +126,7 @@ function StrCharCount(const S: string; C: Char): Integer;
 function StrStrCount(const S, SubS: string): Integer;
 function StrRepeat(const S: string; Count: Integer): string;
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
-function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer; inline;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 
 function BooleanToStr(B: Boolean): string;
@@ -155,6 +156,10 @@ function SkipLeftSpaces(const aStr: string; aPos: integer): integer;
 function SkipToNextLine(const aStr: string; aPos: integer): integer;
 function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
 function StrTrimLastEndOfLine(const aStr:string):string;
+// string starts with LF, CR, ignores prior spaces
+function StrStartsWithLineEnd(const aStr:string):boolean;
+// string ends with LF, CR, ignores trailing spaces
+function StrEndsWithLineEnd(const aStr:string):boolean;
 
 type
   EJcfConversionError = class(Exception)
@@ -406,14 +411,14 @@ end;
 
 function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
 begin
-  Result := Pos(SubStr, Copy(S, Index, Length(S)));
-  if Result > 0 then
-    Result := Result + Index - 1;
+  Result := Pos(SubStr, S ,Index);
 end;
 
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 // Case-insensitive version of StrSearch.
 begin
+  if Index=1 then
+     exit(PosI(Substr,S));
   Result := PosI(SubStr, Copy(S, Index, Length(S)));
   if Result > 0 then
     Result := Result + Index - 1;
@@ -728,6 +733,27 @@ begin
      result:=Copy(aStr,1,len)
   else
     result:=aStr;
+end;
+
+function StrStartsWithLineEnd(const aStr:string):boolean;
+var
+  i,len:integer;
+begin
+  len := length(aStr);
+  i:=1;
+  while (i<=len) and (aStr[i] in NativeTabSpace)  do   //skip spaces
+    inc(i);
+  Result := (i<=len) and CharIsReturn(aStr[i]);
+end;
+
+function StrEndsWithLineEnd(const aStr:string):boolean;
+var
+  i:integer;
+begin
+  i := length(aStr);
+  while (i>0) and (aStr[i] in NativeTabSpace) do   //skip spaces
+    dec(i);
+  Result := (i>0) and CharIsReturn(aStr[i]);
 end;
 
 end.
