@@ -158,13 +158,15 @@ procedure PolycRotate
   (var Pts:array of TPoint; CountPts:Integer; cntPoint:TPoint; fii:Extended);
 var i,dx,dy:Integer;
     x,y:Extended;
+    sinFii,cosFii: Extended;
 begin
+  SinCos(fii, sinFii, cosFii);
   for i:=0 to CountPts-1 do
     begin
       dx:=Pts[i].x-cntPoint.x;
       dy:=Pts[i].y-cntPoint.y;
-      x:=dx*cos(fii)+dy*sin(fii);
-      y:=dy*cos(fii)-dx*sin(fii);
+      x:=dx*cosFii+dy*sinFii;
+      y:=dy*cosFii-dx*sinFii;
       Pts[i].x:=cntPoint.x+Round(x);
       Pts[i].y:=cntPoint.y+Round(y);
     end;
@@ -219,11 +221,13 @@ end;
 procedure PolycSetHalfWidthAndHeight
   (const PR:TRect;var hv,wv:Integer;fii:Extended);
 var h,w:Integer;
+    sinFii, cosFii: Extended;
 begin
   h:=PR.Bottom-PR.Top;
   w:=PR.Right-PR.Left;
-  hv:=Round(h*abs(cos(fii))+w*abs(sin(fii))) div 2;
-  wv:=Round(h*abs(sin(fii))+w*abs(cos(fii))) div 2;
+  SinCos(fii, sinFii, cosFii);
+  hv:=Round(h*abs(cosFii)+w*abs(sinFii)) div 2;
+  wv:=Round(h*abs(sinFii)+w*abs(cosFii)) div 2;
 end;
 
 procedure PolycScale(var P:array of TPoint; CountPts:Integer;
