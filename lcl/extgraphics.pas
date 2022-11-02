@@ -76,7 +76,7 @@ procedure PaintCross(Canvas: TCanvas; XLeft,YUp,XRight,YLow,
 procedure PaintHalfEllipse(Canvas: TCanvas; Const PaintRect: TRect;
   AHalfEllipseDirection: TShapeDirection);
 procedure PaintFivePointLineStar(Canvas: TCanvas; const PaintRect: TRect);
-procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n,a:Integer);
+procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n:Integer; a: Extended);
 
 
 procedure InitPolygon(Canvas: TCanvas;PaintRect: TRect;RadAngle: Extended;
@@ -791,7 +791,7 @@ begin
   Canvas.Line(P[2].x,P[2].y,P[4].x,P[4].y);
 end;
 
-procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n,a:Integer);
+procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n:Integer; a: Extended);
 const MaxStarPoint=36;
 var
   r1,r0,alpha:double;
