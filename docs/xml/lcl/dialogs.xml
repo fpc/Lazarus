@@ -1881,23 +1881,46 @@ signalled first.
 </short>
 <descr>
 <p>
-Save Dialog:  invoked when the application requires to save a file.
+<var>TSaveDialog</var> is a <var>TOpenDialog</var> descendant which 
+implements a dialog used when an application needs to save a file. It is a 
+wrapper for the native Save / Save As dialogs on the platforms where the LCL 
+is supported.
 </p>
 <p>
-If the file is already open or a filename has been specified, then the 
-current buffer is written to that file. If no file is specified, the Save 
-File As dialog is invoked and the buffer is saved to that file.
+TSaveDialog extends the ancestor class to provide the correct default title 
+for the derived dialog class.
+</p>
+<p>
+TSaveDialog is used to implement the TFileSaveAs dialog defined in the 
+<file>stdactns.pas</file> unit.
 </p>
 </descr>
+<seealso>
+<link id="TOpenDialog"/>
+<link id="#lcl.stdactns.TFileSaveAs">TFileSaveAs</link>
+</seealso>
 </element>
 
 <element name="TSaveDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-<element name="TSaveDialog.DefaultTitle" link="#lcl.dialogs.TOpenDialog.DefaultTitle">
-<short/>
-<descr/>
+<element name="TSaveDialog.DefaultTitle">
+<short>Gets the default title used for the Save Dialog.</short>
+<descr>
+<p>
+<var>DefaultTitle</var> is overridden in <var>TSaveDialog</var> to return the 
+default title for the dialog. Uses the value in <var>rsfdFileSaveAs</var> as 
+the return value.
+</p>
+<p>
+Used in the inherited constructor to set the default value for the 
+<var>Title</var> property.
+</p>
+</descr>
 <seealso>
 <link id="TOpenDialog.DefaultTitle"/>
+<link id="TFileDialog.Title"/>
+<link id="TCommonDialog.Create"/>
+<link id="#lcl.lclstrconsts.rsfdFileSaveAs">rsfdFileSaveAs</link>
 </seealso>
 </element>
 <element name="TSaveDialog.DefaultTitle.Result">
@@ -1909,12 +1932,14 @@ File As dialog is invoked and the buffer is saved to that file.
 <descr>
 <p>
 <var>Create</var> is the overridden constructor for the class instance, and 
-calls the inherited constructor on entry. Create update the component style 
-flags to the value used for the dialog type.
+calls the inherited constructor on entry. Create updates the component style 
+flags to the value needed (csSaveFileDialog) for the dialog type.
 </p>
 </descr>
 <seealso>
 <link id="TOpenDialog.Create"/>
+<link id="TCommonDialog.FCompStyle"/>
+<link id="#lcl.lcltype.csSaveFileDialog">csSaveFileDialog</link>
 </seealso>
 </element>
 <element name="TSaveDialog.Create.AOwner">
@@ -2037,6 +2062,7 @@ Owner of the class instance used in notification events.
 </short>
 </element>
 
+<!-- HERE -->
 <element name="TColorDialog">
 <short>
 <var>TColorDialog</var> - dialog for selecting a color to use in graphics and 
