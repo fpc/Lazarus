@@ -38,6 +38,7 @@ optional Lazarus components like FPReport, SynEdit, and TAChart.
 <!-- unresolved type references Visibility: default -->
 <element name="Types"/>
 <element name="Math"/>
+<element name="SysUtils"/>
 <element name="Graphics"/>
 <element name="LCLType"/>
 <element name="LCLIntf"/>
@@ -442,6 +443,86 @@ Draws a gradient from top to bottom with parabolic color variation.
 </element>
 <element name="AntiAliasedStretchDrawBitmap.DestHeight">
 <short>Height for the resized image.</short>
+</element>
+
+<element name="BitmapGrayscale">
+<short>
+Converts a bitmap to grayscale taking filtering parameters into account.
+</short>
+<descr>
+<p>
+<var>BitmapGrayscale</var> is a procedure used to convert the specified 
+bitmap image to a grayscale image. It calculates the weighted average of the 
+RGB (Red, Green, Blue) color components of each pixel in the bitmap and 
+assigns it to each color component. Weighting is done by multiplication of 
+the RGB values with the corresponding filter factors in the RedFilter, 
+GreenFilter and BlueFilter arguments. The end result is an image where the 
+original colors are converted to various shades of gray.
+</p>
+<p>
+<var>ABitmap</var> is the <var>TCustomBitmap</var> instance with the original 
+image data.
+</p>
+<p>
+<var>RedFilter</var>, <var>GreenFilter</var> and <var>BlueFilter</var> are 
+multipliers (data type: single) for the red, green, blue color components of 
+each pixel when the average value of the three color components is 
+calculated. Usually these factors are between 0.0 and 1.0 and are selected to 
+suppress or enhance the contribution of the corresponding color channel to 
+the overall grayscale value. The combination 0.30, 0.59, 0.11 for the red, 
+green and blue components, respectively, is often chosen because it matches 
+the sensitivity of the human eye and thus results in a visual brightness 
+impression like in the original color image.
+</p>
+<p>
+<b>Example Usage:</b>
+</p>
+<code>
+BitmapGrayscale(Image1.Picture.Bitmap, 0.30, 0.59, 0.11); // Neutral filter
+BitmapGrayscale(Image1.Picture.Bitmap, 1.00, 0.00, 0.00); // Red filter
+BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 1.00, 0.00); // Green filter
+BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 0.00, 1.00); // Blue filter
+BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 0.50, 0.50); // Cyan filter
+BitmapGrayscale(Image1.Picture.Bitmap, 0.50, 0.00, 0.50); // Magenta filter
+BitmapGrayscale(Image1.Picture.Bitmap, 0.50, 0.50, 0.00); // Yellow filter
+</code>
+</descr>
+<seealso>
+<link id="#lcl.graphics.TCustomBitmap">TCustomBitmap</link>
+</seealso>
+</element>
+<element name="BitmapGrayscale.ABitmap">
+<short>
+Bitmap with the image data converted to grayscale in the routine.
+</short>
+</element>
+<element name="BitmapGrayscale.RedFilter">
+<short>
+Weighting factor for the contribution of the Red color component to the final 
+grayscale image. It multiplies to the value of the Red component of each 
+pixel and thus controls the contribution of the Red color channel to the 
+resulting image. Having RedFilter = 0, for example, results in grayscale 
+shades in which all parts with Red color components are rendered darker.
+</short>
+</element>
+<element name="BitmapGrayscale.GreenFilter">
+<short>
+Weighting factor for the contribution of the Green color component to the 
+final grayscale image. It multiplies to the value of the Green component of 
+each pixel and thus controls the contribution of the Green color channel to 
+the resulting image. Having GreenFilter = 0, for example, results in 
+grayscale shades in which all parts with Green color components are rendered 
+darker.
+</short>
+</element>
+<element name="BitmapGrayscale.BlueFilter">
+<short>
+Weighting factor for the contribution of the Blue color component to the 
+final grayscale image. It multiplies to the value of the Blue component of 
+each pixel and thus controls the contribution of the Blue color channel to 
+the resulting image. Having BlueFilter = 0, for example, results in grayscale 
+shades in which all parts with Green color components are rendered darker.
+</short>
 </element>
 
 <element name="TScrollDirection">
