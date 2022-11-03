@@ -7823,30 +7823,86 @@ Like the Arc method, but updates the Pen position.
 <element name="TCanvas.ArcTo.EY">
 <short/>
 </element>
+
 <element name="TCanvas.AngleArc">
 <short>
-Draws a circular Arc with a given starting angle and boundary length in 
-degrees.
+Draws an arc over a specified angle along the circumference of a circle.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AngleArc</var> is a method used to draw an arc over a specified angle 
+along the circumference of a circle with given radius and center point.
+</p>
+<p>
+<var>X</var> and <var>Y</var>  contain the coordinates for the center of the 
+circle along which the arc is drawn.
+</p>
+<p>
+<var>Radius</var> is the distance from the center point of the circle to the 
+circumference where the arc is drawn. The LongWord type can contain positive 
+integer values in the range 0..4294967295.
+</p>
+<p>
+<var>StartAngle</var> and <var>SweepAngle</var> indicate where the arc is 
+drawn on the circumference of the circle. The angle values are specified in 
+degrees.
+</p>
+<p>
+StartAngle contains the angle from the center of the circle to the starting 
+point on the circumference. Its value is relative to the X-Axis and 
+increments in the counter-clockwise direction.
+</p>
+<p>
+SweepAngle defines the length of the arc expressed in degrees, and is 
+used to find the ending point for the arc. Its value is relative to the 
+starting point, and increments in the counter-clockwise direction.
+</p>
+<p>
+Before the arc is drawn, LineTo is used to drawn a line from the current pen 
+position to the starting point of the arc.
+</p>
+<p>
+The Arc method is called to render the arc using the center point, radius, 
+starting point, and ending point values.
+</p>
+<p>
+After the arc is drawn, the Pen position is moved to the ending point for the 
+arc.
+</p>
+<p>
+Update values for the Pen style, mode, color or width prior to calling the 
+method.
+</p>
+</descr>
+<seealso>
+<link id="TCanvas.Arc"/>
+<link id="TCanvas.Pen"/>
+</seealso>
 </element>
 <element name="TCanvas.AngleArc.X">
-<short/>
+<short>
+Horizontal coordinate for the center of the circle.
+</short>
 </element>
 <element name="TCanvas.AngleArc.Y">
-<short/>
+<short>
+Vertical coordinate for the center of the circle.
+</short>
 </element>
 <element name="TCanvas.AngleArc.Radius">
-<short/>
+<short>
+Distance from the center point to the circumference of the circle.
+</short>
 </element>
 <element name="TCanvas.AngleArc.StartAngle">
-<short/>
+<short>
+Angle (in degrees) relative to the X-Axis where the arc is started.
+</short>
 </element>
 <element name="TCanvas.AngleArc.SweepAngle">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Angle (in degrees) relative to StartAngle where the arc ends.
+</short>
 </element>
 
 <element name="TCanvas.BrushCopy">
