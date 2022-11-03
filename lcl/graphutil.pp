@@ -21,7 +21,7 @@ unit GraphUtil;
 interface
 
 uses
-  Types, Math,
+  SysUtils, Types, Math,
   // LCL
   Graphics, LCLType, LCLIntf,
   // LazUtils
@@ -60,6 +60,9 @@ procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: In
 procedure AntiAliasedStretchDrawBitmap(SourceBitmap, DestBitmap: TCustomBitmap;
   DestWidth, DestHeight: integer);
 
+{ Converts a bitmap to grayscale taking filtering parameters into account. }
+procedure BitmapGrayscale(ABitmap: TCustomBitmap; RedFilter, GreenFilter, BlueFilter: Single);
+
 { Draw arrows }
 type TScrollDirection=(sdLeft,sdRight,sdUp,sdDown);
      TArrowType = (atSolid, atArrows);
@@ -87,7 +90,7 @@ procedure WaveTo(ADC: HDC; X, Y, R: Integer);
 implementation
 
 uses
-  fpcanvas, IntfGraphics, LazCanvas;
+  fpimage, fpcanvas, IntfGraphics, LazCanvas;
 
 //TODO: Check code on endianess
 
@@ -515,6 +518,56 @@ begin
     end;
   finally
     DestIntfImage.Free;
+  end;
+end;
+
+{ Converts a bitmap to grayscale by taking filtering parameters into account
+
+  Examples:
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.30, 0.59, 0.11);  // Neutral filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 1.00, 0.00, 0.00);  // Red filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 1.00, 0.00);  // Green filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 0.00, 1.00);  // Blue filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.00, 0.50, 0.50);  // Cyan filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.50, 0.00, 0.50);  // Magenta filter
+    BitmapGrayscale(Image1.Picture.Bitmap, 0.50, 0.50, 0.00);  // Yellow filter
+}
+procedure BitmapGrayscale(ABitmap: TCustomBitmap; RedFilter, GreenFilter, BlueFilter: Single);
+var
+  IntfImg: TLazIntfImage = nil;
+  x, y: Integer;
+  TempColor: TFPColor;
+  Gray: Word;
+  sum: Single;
+begin
+  // Normalize filter factors to avoid word overflow.
+  sum := RedFilter + GreenFilter + BlueFilter;
+  if sum = 0.0 then
+    exit;
+  RedFilter := RedFilter / sum;
+  GreenFilter := GreenFilter / sum;
+  BlueFilter := BlueFilter / sum;
+
+  IntfImg := ABitmap.CreateIntfImage;
+  try
+    IntfImg.BeginUpdate;
+    try
+      for y := 0 to IntfImg.Height - 1 do
+        for x := 0 to IntfImg.Width - 1 do
+        begin
+          TempColor := IntfImg.Colors[x, y];
+          Gray := word(Round(TempColor.Red * RedFilter + TempColor.Green * GreenFilter + TempColor.Blue * BlueFilter));
+          TempColor.Red := Gray;
+          TempColor.Green := Gray;
+          TempColor.Blue := Gray;
+          IntfImg.Colors[x, y] := TempColor;
+        end;
+    finally
+      IntfImg.EndUpdate;
+    end;
+    ABitmap.LoadFromIntfImage(IntfImg);
+  finally
+    IntfImg.Free;
   end;
 end;
 
