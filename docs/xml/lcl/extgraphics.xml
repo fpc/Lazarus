@@ -7,7 +7,9 @@ ExtGraphics
 ====================================================================
 -->
 <module name="ExtGraphics">
-<short>Types and routines used to implement extended graphic drawing.</short>
+<short>
+Types and routines used to implement extended graphic drawing.
+</short>
 <descr>
 <p>
 <file>extgraphics.pas</file> contains types and routines which implement 
@@ -319,45 +321,82 @@ Lazarus Component Library (<b>LCL</b>).
 <short/>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="PaintStarN">
-<short/>
+<short>
+Draws a star-shaped polygon on a canvas using the specified number of points and rotation.
+</short>
 <descr>
+<p>
+<var>PaintStarN</var> is a routine used to draw a star-shaped polygon with a 
+given number of points or arms. Each point is spaced equally along the 
+circumference of a circle with the specified radius.
+</p>
+<p>
+<var>Canvas</var> is the <var>TCanvas</var> instance where the drawing 
+operation is performed. The Polygon method in Canvas is used to draw the 
+shape using an array of TPoint instances calculated in the method.
+</p>
+<p>
+<var>cx</var> and <var>cy</var> contain the canvas coordinates where the 
+center point for the star-shaped polygon is located.
+</p>
+<p>
+<var>r</var> contains the radius for the circle where the point vertices for 
+the shape are drawn. It is the distance from the center point to the vertex 
+of any given point.
+</p>
+<p>
+<var>n</var> contains the number of points or arms drawn on the star-shaped 
+polygon. The angular span (or turn angle) between the point vertices is 360/n.
+</p>
+<p>
+<var>a</var> contains the angle of rotation for the polygon expressed in 
+radians. Negative values rotate the shape in a clockwise direction. Positive 
+values rotate the shape in a counter-clockwise direction. Use DegToRad (in 
+the RTL <file>math.pp</file> unit) or <b>&lt;angle&gt;*pi/180</b> to convert 
+an angle in degrees to radians.
+</p>
+<p>
+Set the Brush color in Canvas used to fill the polygon prior to calling the 
+routine.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TCanvas.Polygon"/>
+<link id="TCanvas.Brush"/>
+<link id="#rtl.classes.TPoint">TPoint</link>
+<link id="#rtl.math.DegToRad">DegToRad</link>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.Canvas">
-<short/>
+<short>
+TCanvas instance where the shape is drawn.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.cx">
-<short/>
+<short>
+Horizontal canvas coordinate for the center point in the shape.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.cy">
-<short/>
+<short>
+Vertical canvas coordinate for the center point in the shape.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.r">
-<short/>
+<short>
+Radius for the points on the star shape.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.n">
-<short/>
+<short>
+Number of points for the star-shaped polygon.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="PaintStarN.a">
-<short/>
+<short>
+Angle of rotation for the shape in radians.
+</short>
 </element>
 
 <!-- procedure Visibility: default -->
