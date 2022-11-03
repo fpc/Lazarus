@@ -295,13 +295,15 @@ Code ID needed for the platform.
 
 <element name="GetLocaleFormatSettingsUTF8">
 <short>
-Gets format settings for a specific Lanuguage Code ID.
+Gets format settings for a specific Language Code ID.
 </short>
 <descr>
 <p>
 <var>GetLocaleFormatSettingsUTF8</var> is a procedure used to get the 
 <var>TFormatSettings</var> for the Locale or Language Code for the platform. 
-GetFormatSettingsUTF8 is defined for Windows environments only. 
+GetLocaleFormatSettingsUTF8 is defined for Windows environments only. 
+</p>
+<p>
 GetLocaleFormatSettingsUTF8 ensures that values in the format settings use 
 the Language Code ID for the platform. The following format settings are 
 converted to their Locale-specific values:
@@ -327,7 +329,15 @@ converted to their Locale-specific values:
 <li>CurrencyDecimals</li>
 <li>ListSeparator</li>
 </ul>
+<p>
+In LCL version 2.4 or higher, LongTimeFormat and ShortTimeFormat can contain 
+AM / PM format specifiers; i. e. 'hh:nn:ss AMPM'
+</p>
 </descr>
+<version>
+Modified in LCL version 2.4 to return 12-hour time formats using AM / PM in 
+format settings.
+</version>
 <seealso>
 <link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
 </seealso>
