@@ -11146,10 +11146,6 @@ updated.
 </seealso>
 </element>
 
-<!--
-TODO: AddHandlerOnEnabledChanging is missing in the current TControl 
-interface.
- -->
 <element name="TControl.EnabledChanging">
 <short>
 Notifies all chtOnEnabledChanging handlers for the control.
@@ -15295,11 +15291,32 @@ Removes the specified <var>OnVisibleChanged</var> event handler.
 <short/>
 </element>
 
+<element name="TControl.AddHandlerOnEnabledChanging">
+<short>
+Adds the specified OnEnabledChanging handler.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TControl.AddHandlerOnEnabledChanging.OnEnabledChangingEvent">
+<short/>
+</element>
+<element name="TControl.AddHandlerOnEnabledChanging.AsFirst">
+<short/>
+</element>
 
-<!-- 
-TODO: RemoveHandlerOnEnabledChanged is missing in the current TControl interface.
--->
- <element name="TControl.AddHandlerOnEnabledChanged">
+<element name="TControl.RemoveHandlerOnEnabledChanging">
+<short>
+Removes the specified OnEnabledChanging event handler.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TControl.RemoveHandlerOnEnabledChanging.OnEnabledChangingEvent">
+<short/>
+</element>
+
+<element name="TControl.AddHandlerOnEnabledChanged">
 <short>Adds an <var>OnEnabledChanged</var> handler.</short>
 <descr/>
 <seealso/>
@@ -15311,17 +15328,14 @@ TODO: RemoveHandlerOnEnabledChanged is missing in the current TControl interface
 <short/>
 </element>
 
-<!--
-TODO: This is misnamed. Needs to be RemoveHandlerOnEnabledChanging.
--->
-<element name="TControl.RemoveHandlerOnEnableChanging">
+<element name="TControl.RemoveHandlerOnEnabledChanged">
 <short>
 Removes the specified <var>OnEnabledChanged</var> event handler.
 </short>
 <descr/>
 <seealso/>
 </element>
-<element name="TControl.RemoveHandlerOnEnableChanging.OnEnableChangingEvent">
+<element name="TControl.RemoveHandlerOnEnabledChanged.OnEnabledChangedEvent">
 <short/>
 </element>
 
