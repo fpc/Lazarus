@@ -521,7 +521,7 @@ Weighting factor for the contribution of the Blue color component to the
 final grayscale image. It multiplies to the value of the Blue component of 
 each pixel and thus controls the contribution of the Blue color channel to 
 the resulting image. Having BlueFilter = 0, for example, results in grayscale 
-shades in which all parts with Green color components are rendered darker.
+shades in which all parts with Blue color components are rendered darker.
 </short>
 </element>
 
