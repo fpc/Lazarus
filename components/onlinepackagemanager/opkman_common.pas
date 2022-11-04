@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  Dialogs, Forms, Controls, FileUtil,
+  Dialogs, Forms, Controls, FileUtil, ImgList,
   // LazUtils
   LazFileUtils, LazLoggerBase,
   // IdeIntf
@@ -153,8 +153,12 @@ procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 function FixProtocol(const AURL: String): String;
 function IsDirectoryEmpty(const ADirectory: String): Boolean;
 function CleanDirectory(const ADirectory: String): Boolean;
+function CreateDisabledImageList(AImageList: TCustomImageList; AOwner: TComponent): TImageList;
 
 implementation
+
+uses
+  Graphics, GraphUtil;
 
 function MessageDlgEx(const AMsg: string; ADlgType: TMsgDlgType;
   AButtons: TMsgDlgButtons; AParent: TForm): TModalResult;
@@ -556,6 +560,40 @@ begin
     end;
   end;
   Result := DeleteDirectory(ADirectory, False);
+end;
+
+function CreateDisabledImageList(AImageList: TCustomImageList; AOwner: TComponent): TImageList;
+var
+  i: Integer;
+  BM: TCustomBitmap;
+  Resolution: TCustomImageListResolution;
+begin
+  if AImageList = nil then
+    exit(nil);
+
+  Result := TImageList.Create(AOwner);
+  AImageList.AssignTo(Result);
+  Result.Scaled := AImageList.Scaled;
+
+  Result.BeginUpdate;
+  try
+    for i := 0 to Result.Count - 1 do
+    begin
+      for Resolution in Result.Resolutions do
+      begin
+        BM := TBitmap.Create;
+        try
+          Resolution.GetBitmap(i, BM);
+          BitmapGrayScale(BM, 0.30, 0.59, 0.11);
+          Resolution.ImageList.Replace(i, BM, nil, False);
+        finally
+          BM.Free;
+        end;
+      end;
+    end;
+  finally
+    Result.EndUpdate;
+  end;
 end;
 
 end.

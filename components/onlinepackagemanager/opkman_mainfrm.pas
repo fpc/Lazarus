@@ -54,7 +54,6 @@ type
     cbPackageCategory: TComboBox;
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
-    imTBDis: TImageList;
     miSaveChecked: TMenuItem;
     miFromExteranlSource: TMenuItem;
     miFromRepository: TMenuItem;
@@ -212,6 +211,7 @@ begin
   spCollapse.ImageIndex := IMG_COLLAPSE;
   spClear.Images := MainDM.Images;
   spClear.ImageIndex := IMG_CLEAR;
+  tbButtons.DisabledImages := CreateDisabledImageList(imTBNor, self);
   FHintTimeOut := Application.HintHidePause;
   Updates := nil;
   CurLazVersion := IntToStr(laz_major) + '.' + IntToStr(laz_minor) + '.' + IntToStr(laz_release);
