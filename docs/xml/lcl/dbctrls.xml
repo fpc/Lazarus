@@ -4602,9 +4602,6 @@ get the current value for the State property in the data-aware check box
 control. GetFieldCheckState uses the internal <var>TFieldDataLink</var> 
 instance in the class to access the <var>Field</var> in the linked dataset represented by <var>DataField</var>.
 </p>
-
-<!-- HERE -->
-
 <p>
 The field type and value are examined to determine the return value for the 
 method. The return value can be one of the following:
