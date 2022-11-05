@@ -265,27 +265,45 @@ mbOK. It is the reverse if MsgDlgBtnToBitBtnKind.
 
 <element name="TCDWSEventCapability">
 <short>Represents events handled in a custom-drawn widgetset.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Not used in the current LCL version.
+</p>
+</descr>
+<seealso>
+<link id="TCDWSEventCapabilities"/>
+</seealso>
 </element>
 <element name="TCDWSEventCapability.cdecWSPerformsDoShow">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 <element name="TCDWSEventCapability.cdecWSPerformsDoCanClose">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 <element name="TCDWSEventCapability.cdecWSPerformsDoClose">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 <element name="TCDWSEventCapability.cdecWSNOCanCloseSupport">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 
 <element name="TCDWSEventCapabilities">
 <short>
 Set type used to store values from the TCDWSEventCapability enumeration.
 </short>
-<descr/>
+<descr>
+<p>
+Not used in the current LCL version.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -998,13 +1016,35 @@ selected using the derived classes.
 
 <element name="TFileDialog.IntfFileTypeChanged">
 <short>
-<var>IntfFileTypeChanged</var> - interface method for file type change.
+Signals the OnTypeChange event handler when the value in FilterIndex is 
+changed by the widgetset class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IntfFileTypeChanged</var> is a callback routine used by the widgetset 
+class when it applies a change to the value in the FilterIndex property. It 
+occurs when the FilterIndex returned from the native dialog is handled by the 
+widget.
+</p>
+<p>
+IntfFileTypeChanged stores the value in NewFilterIndex to its internal 
+member, and calls DoTypeChange to signal the OnTypeChange event handler (when 
+assigned).
+</p>
+<p>
+Use the OnTypeChange event handler to perform actions needed when the value 
+in FilterIndex has been modified.
+</p>
+</descr>
+<seealso>
+<link id="TFileDialog.FilterIndex"/>
+<link id="TFileDialog.OnTypeChange"/>
+</seealso>
 </element>
 <element name="TFileDialog.IntfFileTypeChanged.NewFilterIndex">
-<short/>
+<short>
+New value for the FilterIndex property.
+</short>
 </element>
 
 <element name="TFileDialog.Title" link="#lcl.dialogs.TCommonDialog.Title"/>
@@ -1160,14 +1200,26 @@ The Sender argument is the dialog instance for the event notification.
 </element>
 
 <element name="TOpenOption">
-<short>Options which can be used in OpenDialog.</short>
+<short>Options which can be used in a TOpenDialog instance.</short>
 <descr>
 <p>
 <var>TOpenOption</var> contains a list of possible options which can be used 
-in an Open dialog.
+in an Open dialog. Values from the enumeration are stored in the 
+<var>TOpenOptions</var> set type which is used to implement the Options 
+property in TOpenDialog. When an option value is included in the set, it is 
+enabled during execution of the dialog. The values are applied to the native 
+dialog before it is executed.
+</p>
+<p>
+Please note that some option values may not be available for a given platform 
+where the LCL is supported: ofNoDereferenceLinks, ofOldStyleDialog, 
+ofViewDetail, and ofAutoPreview.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenOptions"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofReadOnly">
 <short>
@@ -1282,7 +1334,10 @@ Set type used to store <var>TOpenOption</var> enumeration values.
 </short>
 <descr>
 <p>
-TOpenOptions is the type used to implement the Options property in TOpenDialog.
+<var>TOpenOptions</var> is a set type used to store 0 (zero) or more values 
+from the <var>TOpenOption</var> enumeration. TOpenOptions is the type used to 
+implement the Options property in TOpenDialog. When a value s included in the 
+set, it is enabled during execution of the dialog.
 </p>
 </descr>
 <seealso>
@@ -1463,7 +1518,9 @@ entries in the Files property.
 </seealso>
 </element>
 <element name="TOpenDialog.CheckFile.Result">
-<short/>
+<short>
+<b>True</b> if the file name is valid for the open dialog.
+</short>
 </element>
 <element name="TOpenDialog.CheckFile.AFilename">
 <short>
@@ -2062,24 +2119,45 @@ Owner of the class instance used in notification events.
 </short>
 </element>
 
-<!-- HERE -->
 <element name="TColorDialog">
 <short>
-<var>TColorDialog</var> - dialog for selecting a color to use in graphics and 
-text.
+Implements a dialog used to select a TColor value.
 </short>
 <descr>
 <p>
-<var>TColorDialog</var> presents a palette of colors to allow the user to 
-select the required color for text or graphics.
+<var>TColorDialog</var> is a TCommonDialog descendant which implements a 
+dialog used to select a color value from a palette of colors. It is a wrapper 
+for the native color selection dialog on platforms supported by the LCL (when 
+available).
 </p>
 <p>
-Call the <var>Execute</var> method to display the color dialog.
+The dialog allows a TColor value to be selected from a group of predefined 
+basic colors, custom colors, or using a color wheel or pad. On some 
+platforms, the color can be specified using RGB or HSL (Hue, Saturation, 
+Luminosity) values.
+</p>
+<p>
+Use the CustomColors property to define color values using identifiers and 
+hexadecimal RGB values for the custom colors.
+</p>
+<p>
+Set the value for the Title property (when needed) prior to displaying the 
+color selection dialog.
+</p>
+<p>
+Call the <var>Execute</var> method to display the color dialog and capture 
+the color value. If the user clicks on the OK button in the dialog, the 
+selected color value is returned in the Color property and the UserChoice 
+property is set to mrOK. A value other than mrOK indicates that the color 
+selection dialog was cancelled or closed without selecting a color value.
 </p>
 </descr>
 <seealso>
-<link id="TCommonDialog"/>
+<link id="TColorDialog.Color"/>
+<link id="TColorDialog.CustomColors"/>
+<link id="TCommonDialog.Title"/>
 <link id="TCommonDialog.Execute"/>
+<link id="TCommonDialog.UserChoice"/>
 </seealso>
 </element>
 
@@ -2092,26 +2170,56 @@ Call the <var>Execute</var> method to display the color dialog.
 </element>
 
 <element name="TColorDialog.SetCustomColors">
-<short/>
+<short>
+Sets the value for the CustomColors property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TColorDialog.CustomColors"/>
+</seealso>
 </element>
 <element name="TColorDialog.SetCustomColors.AValue">
-<short/>
+<short>
+New value for the CustomColors property.
+</short>
 </element>
 
 <element name="TColorDialog.AddDefaultColor">
-<short/>
+<short>
+Adds a value to the CustomColors property.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TColorDialog.AddDefaultColor.s">
-<short/>
+<short>
+String with the identifier and hexadecimal RGB color value added in the 
+method.
+</short>
 </element>
 
 <element name="TColorDialog.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-<element name="TColorDialog.DefaultTitle" link="#lcl.dialogs.TCommonDialog.DefaultTitle"/>
+<element name="TColorDialog.DefaultTitle">
+<short>
+Gets the default title used in the caption for the color selection dialog.
+</short>
+<descr>
+<p>
+The return values contains the string data found in the rsSelectcolorTitle 
+constant.
+</p>
+</descr>
+<seealso>
+<link id="TCommonDialog.Title"/>
+<link id="#lcl.dialogs.TCommonDialog.DefaultTitle">TCommonDialog.DefaultTitle</link>
+</seealso>
+</element>
+<element name="TColorDialog.DefaultTitle.Result">
+<short>
+Returns  the values defined in the rsSelectcolorTitle constant.
+</short>
+</element>
 
 <element name="TColorDialog.Create">
 <short>Constructor for the class instance.</short>
@@ -2134,24 +2242,28 @@ initializes the Color and CustomColors properties.
 <short>Destructor for the class instance.</short>
 <descr>
 <p>
-<var>Destroy</var> is the destructor for <var>TColorDialog</var>, and frees 
-custom colors then calls the inherited <var>Destroy</var> method.
+<var>Destroy</var> is the overridden destructor for <var>TColorDialog</var>. 
+It frees resources allocated for the CustomColors property and calls the 
+inherited <var>Destroy</var> method.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TColorDialog.CustomColors"/>
+<link id="#lcl.lclclasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+</seealso>
 </element>
 
 <element name="TColorDialog.Title">
 <short>The Title or Caption displayed in the title bar for the dialog.</short>
 <descr>
 <p>
-Title can be used to provide a usage context for the re-usable dialog. The 
-default value for the property is provided by the DefaultTitle method, which 
-is an empty string in TColorDialog. Set the value for the property before 
-calling the Execute method.
+<var>Title</var> can be used to provide a usage context for the re-usable 
+dialog. The default value for the property is provided by the DefaultTitle 
+method. Set the value for the property before calling the Execute method.
 </p>
 </descr>
 <seealso>
+<link id="TCommonDialog.DefaultTitle"/>
 <link id="#lcl.dialogs.TCommonDialog.Title">TCommonDialog.Title</link>
 </seealso>
 </element>
@@ -2161,9 +2273,9 @@ calling the Execute method.
 <descr>
 <p>
 <var>Color</var> is a TColor property with the color selected using the 
-dialog. A value can be pre-set and may be accepted, but a new value may also 
-be chosen. When the Color dialog is displayed and the user pressed OK, the 
-Color property contains the chosen color.
+dialog. A value can be pre-set in Color and accepted, but a new value may 
+also be chosen. When the Color dialog is displayed and the user pressed OK, 
+the Color property contains the chosen color.
 </p>
 <p>
 Use CustomColors to define a palette with color names and their hexadecimal 
@@ -3097,7 +3209,7 @@ Include or Exclude values for the property prior to calling the
 </p>
 <remark>
 Enabling a value in Options does not mean that the feature or behavior is 
-supported in the native font selection dialog for the platform. Some options 
+supported in the native font selection dialog for a platform. Some options 
 may not be available on a given platform. For example, the Apply button 
 enabled using fdApplyButton is not implemented for all of the LCL platforms. 
 It is not currently implemented in the QT widgetsets.
@@ -4290,12 +4402,18 @@ find next, replace all.
 </element>
 
 <element name="TReplaceDialog.DefaultTitle">
-<short/>
+<short>
+Default value for the Title property used on the replace dialog.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCommonDialog.Title"/>
+</seealso>
 </element>
 <element name="TReplaceDialog.DefaultTitle.Result">
-<short/>
+<short>
+Returns the value in the rsReplace constant.
+</short>
 </element>
 
 <element name="TReplaceDialog.ReplaceClick">
@@ -4307,7 +4425,9 @@ find next, replace all.
 <seealso/>
 </element>
 <element name="TReplaceDialog.ReplaceClick.Sender">
-<short/>
+<short>
+Object for the event notification.
+</short>
 </element>
 
 <element name="TReplaceDialog.ReplaceAllClick">
@@ -4319,28 +4439,46 @@ clicked (replace all remaining instances).
 <seealso/>
 </element>
 <element name="TReplaceDialog.ReplaceAllClick.Sender">
-<short/>
+<short>
+Object for the event notification.
+</short>
 </element>
 
-<element name="TReplaceDialog.CreateForm" link="#lcl.dialogs.TFindDialog.CreateForm">
-<short/>
+<element name="TReplaceDialog.CreateForm">
+<short>
+Gets the form instance displayed when dialog is executed.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.dialogs.TFindDialog.CreateForm">TFindDialog.CreateForm</link>
+</seealso>
 </element>
 <element name="TReplaceDialog.CreateForm.Result">
-<short/>
+<short>
+Form instance with the editing controls and buttons used on the dialog form.
+</short>
 </element>
 
-<element name="TReplaceDialog.SetFormValues" link="#lcl.dialogs.TFindDialog.SetFormValues">
-<short/>
+<element name="TReplaceDialog.SetFormValues">
+<short>
+Copies property values from the class instance to the controls on the dialog 
+form.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFindDialog.SetFormValues"/>
+</seealso>
 </element>
 
-<element name="TReplaceDialog.GetFormValues" link="#lcl.dialogs.TFindDialog.GetFormValues">
-<short/>
+<element name="TReplaceDialog.GetFormValues">
+<short>
+Copies property values from the dialog form to class instance after the 
+dialog has been executed.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TFindDialog.GetFormValues"/>
+</seealso>
 </element>
 
 <element name="TReplaceDialog.Create">
@@ -4360,17 +4498,8 @@ find and replace.
 <short>Owner of the class instance.</short>
 </element>
 
-<element name="TReplaceDialog.ReplaceText" link="#lcl.dialogs.TFindDialog.ReplaceText">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TReplaceDialog.OnReplace" link="#lcl.dialogs.TFindDialog.OnReplace">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TReplaceDialog.ReplaceText" link="#lcl.dialogs.TFindDialog.ReplaceText"/>
+<element name="TReplaceDialog.OnReplace" link="#lcl.dialogs.TFindDialog.OnReplace"/>
 
 <element name="TCustomPrinterSetupDialog">
 <short>
@@ -4381,7 +4510,9 @@ Base class for <var>TPrinterSetupDialog</var> and <var>TPageSetupDialog</var>.
 </element>
 
 <element name="TPrintRange">
-<short>Enumerated type which represents page ranges in a print dialog.</short>
+<short>
+Enumerated type which represents page ranges used in a print dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -4425,17 +4556,38 @@ Base class for <var>TPrinterSetupDialog</var> and <var>TPageSetupDialog</var>.
 </element>
 
 <element name="TPrintDialogOptions">
-<short>A set for options in a print dialog.</short>
+<short>
+A set type used for the options in a print dialog.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPrintDialogOption"/>
+</seealso>
 </element>
 
 <element name="TCustomPrintDialog">
 <short>
-<var>TCustomPrintDialog</var> - base class for <var>TPrintDialog</var>.
+Implements the base class for <var>TPrintDialog</var>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TCustomPrintDialog</var> provides properties needed to configure print 
+jobs in the TPrintDialog descendant.
+</p>
+<p>
+Use the Options property to enable or disable use of specific properties on 
+the dialog.
+</p>
+<p>
+Use the Execute method to display the dialog and capture the values entered 
+using the dialog. Use UserChoice to determine the button clicked or action 
+taken to close the dialog.
+</p>
+<p>
+The TPrintDialog descendant is defined in the <file>printer4lazarus</file> 
+package.
+</p>
+</descr>
 </element>
 
 <element name="TCustomPrintDialog.FFromPage"/>
@@ -4448,62 +4600,135 @@ Base class for <var>TPrinterSetupDialog</var> and <var>TPageSetupDialog</var>.
 <element name="TCustomPrintDialog.FMaxPage"/>
 <element name="TCustomPrintDialog.FCopies"/>
 
-<element name="TCustomPrintDialog.Create" link="#rtl.classes.TComponent.Create">
-<short/>
-<descr/>
-<seealso/>
+<element name="TCustomPrintDialog.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and 
+calls the inherited method on entry. Create sets the default values for the 
+PrintRange and Copies properties.
+</p>
+</descr>
+<seealso>
+<link id="TCommonDialog.Create"/>
+<link id="TCustomPrintDialog.Copies"/>
+<link id="TCustomPrintDialog.PrintRange"/>
+</seealso>
 </element>
 <element name="TCustomPrintDialog.Create.TheOwner">
-<short/>
+<short>
+Owner of the class instance.
+</short>
 </element>
 
 <element name="TCustomPrintDialog.Collate">
-<short>Enables page collation when multiple copies are produced.</short>
+<short>
+Enables or disables page collation when multiple copies are produced.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.Copies">
-<short>Number of <var>Copies</var> of the document.</short>
+<short>
+Number of <var>Copies</var> requested for the document.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.FromPage">
-<short><var>FromPage</var> - first page of selection for printing.</short>
+<short>
+First page number to include in the print request.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.MinPage">
-<short><var>MinPage</var> - smallest number of page in print range.</short>
+<short>Smallest value allowed in the page number for a print range.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.MaxPage">
-<short><var>MaxPage</var> - highest number of page in print range.</short>
+<short>Largest value allowed in the page number for a print range.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.Options">
-<short>The set of <var>Options</var> for printing.</short>
-<descr/>
-<seealso/>
+<short>
+Set of options enabled when the print dialog is executed.
+</short>
+<descr>
+<p>
+<var>Options</var> is a <var>TPrintDialogOptions</var> property with the 
+options enabled for the print dialog. It can contain 0 (zero) or more values 
+from the <var>TPrintDialogOption</var> enumeration. When a value is included 
+in the set, the corresponding option is enabled when the Execute method is 
+called. 
+</p>
+<p>
+Values in the property are used to configure the TPrintDialog descendant 
+before it is displayed and executed. The values control both the properties 
+and printer flags used in the print dialog.
+</p>
+<p>
+See <link id="TPrintDialogOption">TPrintDialogOption</link> for the values 
+allowed in the set and their meanings.
+</p>
+<p>
+The default value for the property is an empty set ([]).
+</p>
+</descr>
+<seealso>
+<link id="TPrintDialogOptions"/>
+<link id="TPrintDialogOption"/>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 
 <element name="TCustomPrintDialog.PrintToFile">
 <short>
-When <b>True</b>, printing is spooled to a file instead of the printer.
+When <b>True</b>, printing is spooled to a file instead of directly to the 
+printer.
 </short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPrintDialog.PrintRange">
-<short><var>PrintRange</var> - the range of pages for printing.</short>
-<descr/>
+<short>
+Determines which values are used to represent the page range.
+</short>
+<descr>
+<p>
+<var>PrintRange</var> is a <var>TPrintRange</var> property which indicates 
+which values on the dialog are used for the page range in a print job.
+</p>
+<dl>
+<dt>prAllPages</dt>
+<dd>
+Selects all pages in a document for the print job. This is the default value for the property.
+</dd>
+<dt>prSelection</dt>
+<dd>
+Causes the pages selected on the dialog to be used.
+</dd>
+<dt>prPageNums</dt>
+<dd>
+Causes the page range in the FromPage and ToPage properties to be used on the 
+print dialog.
+</dd>
+<dt>prCurrentPage</dt>
+<dd>
+Causes the current page only to be printed.
+</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 
@@ -4738,7 +4963,7 @@ button, its use as the <var>Default</var> button on a dialog, and its
 <var>ModalResult</var> value.
 </p>
 <p>
-TTaskDialogBaseButtonItem is the ancestor for 
+TTaskDialogBaseButtonItem is the ancestor class for 
 <var>TTaskDialogBaseButtonItem</var>.
 </p>
 </descr>
@@ -5217,6 +5442,7 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TCustomTaskDialog.FButton"/>
 <element name="TCustomTaskDialog.FButtons"/>
 <element name="TCustomTaskDialog.FCaption"/>
@@ -5236,50 +5462,18 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 <element name="TCustomTaskDialog.FVerificationText"/>
 <element name="TCustomTaskDialog.FOnButtonClicked"/>
 
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.Sender">
-<short/>
-</element>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.AButtonID">
-<short/>
-</element>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.ACanClose">
-<short/>
-</element>
+<element name="TCustomTaskDialog.DoOnButtonClickedHandler"/>
+<element name="TCustomTaskDialog.DoOnButtonClickedHandler.Sender"/>
+<element name="TCustomTaskDialog.DoOnButtonClickedHandler.AButtonID"/>
+<element name="TCustomTaskDialog.DoOnButtonClickedHandler.ACanClose"/>
+<element name="TCustomTaskDialog.SetButtons"/>
+<element name="TCustomTaskDialog.SetButtons.Value"/>
+<element name="TCustomTaskDialog.SetRadioButtons"/>
+<element name="TCustomTaskDialog.SetRadioButtons.Value"/>
 
-<element name="TCustomTaskDialog.SetButtons">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomTaskDialog.SetButtons.Value">
-<short/>
-</element>
-
-<element name="TCustomTaskDialog.SetRadioButtons">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomTaskDialog.SetRadioButtons.Value">
-<short/>
-</element>
-
-<element name="TCustomTaskDialog.ButtonIDToModalResult">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomTaskDialog.ButtonIDToModalResult.Result">
-<short/>
-</element>
-<element name="TCustomTaskDialog.ButtonIDToModalResult.AButtonID">
-<short/>
-</element>
+<element name="TCustomTaskDialog.ButtonIDToModalResult"/>
+<element name="TCustomTaskDialog.ButtonIDToModalResult.Result"/>
+<element name="TCustomTaskDialog.ButtonIDToModalResult.AButtonID"/>
 
 <element name="TCustomTaskDialog.DoExecute">
 <short>
@@ -5983,7 +6177,7 @@ The first version displays a dialog with the standard caption. The second,
 third and fourth versions enable you to set the caption.
 </p>
 <p>
-The third version allows for a Default button;.
+The third version allows for a Default button.
 </p>
 <p>
 The fourth version contains a help keyword instead of using context-based 
@@ -6096,10 +6290,14 @@ shown.</descr>
 <descr>Sets the caption of the message dialog shown by this function.</descr>
 </element>
 <element name="MessageDlg.DefaultButton">
-<short/>
+<short>
+The default button when the message dialog is executed.
+</short>
 </element>
 <element name="MessageDlg.HelpKeyword">
-<short/>
+<short>
+Help keyword for the message dialog.
+</short>
 </element>
 
 <element name="MessageDlgPos">
@@ -6813,23 +7011,36 @@ the same as the <link id="#rtl.sysutils.Format">Format</link> function.
 </element>
 
 <element name="DefaultMessageBox">
-<short>Widgetset-independent implementation.</short>
+<short>
+Widgetset-independent implementation of a message box routine.
+</short>
 <descr/>
 <seealso>
 <link id="MessageDlg">MessageDlg</link>
 </seealso>
 </element>
 <element name="DefaultMessageBox.Result">
-<short/>
+<short>
+Modal result value for the dialog which indicates the key pressed to close 
+the message box.
+</short>
 </element>
 <element name="DefaultMessageBox.Text">
-<short/>
+<short>
+The message displayed in the message box.
+</short>
 </element>
 <element name="DefaultMessageBox.Caption">
-<short/>
+<short>
+The caption or title for the message box.
+</short>
 </element>
 <element name="DefaultMessageBox.Flags">
-<short/>
+<short>
+Indicates the buttons and icon displayed on the message box. Includes the 
+combined values for message box button and icon constants defined in 
+<file>lcltype.pp</file>.
+</short>
 </element>
 
 <element name="InputBox">
@@ -7574,13 +7785,20 @@ Creates a formatted debugger message for one or more TOpenOption values.
 <seealso/>
 </element>
 <element name="dbgs.Result">
-<short/>
+<short>
+Formatted message with enumeration value name(s) for the option or options 
+argument.
+</short>
 </element>
 <element name="dbgs.Option">
-<short/>
+<short>
+TOpenOption enumeration value used to generate the formatted message.
+</short>
 </element>
 <element name="dbgs.Options">
-<short/>
+<short>
+TOpenOptions set type with the options used to generate the formatted message.
+</short>
 </element>
 
 <element name="Register">
