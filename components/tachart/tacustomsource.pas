@@ -23,7 +23,8 @@ uses
 type
   TAxisIntervalParamOption = (
     aipGraphCoords,
-    aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps);
+    aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps,
+    aipInteger);
 
 const
   DEF_INTERVAL_STEPS = '0.2|0.5|1.0';

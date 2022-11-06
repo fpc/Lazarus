@@ -329,6 +329,13 @@ var
 begin
   CalcMinMaxCount(minCount, maxCount);
   bestCount := 0;
+  if aipInteger in Params.Options then begin
+    ABestStart := Int(AParams.FMin);
+    ABestStep := 1.0;
+    bestCount := Round(AParams.FMax) - round(ABestStart);
+    if bestCount <= maxCount then
+      exit;
+  end;
   if aipUseNiceSteps in Params.Options then begin
     s := AParams.CountToStep(minCount)  * 10;
     while s >= Max(AParams.CountToStep(maxCount), AParams.FMinStep) do begin
@@ -339,7 +346,10 @@ begin
       s *= 0.1;
     end;
   end;
-  if bestCount > 0 then exit;
+  if (aipInteger in Params.Options) and (bestCount > maxCount) then
+    bestCount := 0;
+  if bestCount > 0 then
+    exit;
   // Either nice steps were not required, or we failed to find one.
   if aipUseCount in Params.Options then
     bestCount := EnsureRange(Params.Count, minCount, maxCount)
