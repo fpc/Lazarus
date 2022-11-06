@@ -1428,10 +1428,14 @@ var
         RecogniseType;
     end
     else
-      RecogniseType;
-
-    if lbHasConst then
     begin
+      // generic procedure Test4<T, const F:specialize TTest<T>>(A: T);
+      if (fcTokenList.FirstSolidTokenType=ttIdentifier) and (fcTokenList.SolidTokenType(2)=ttColon) then
+      begin
+        recognise(ttIdentifier);
+        recognise(ttColon);
+      end;
+      RecogniseType;
       if fcTokenList.FirstSolidTokenType = ttColon then
         RecogniseGenericConstraints;
     end;
