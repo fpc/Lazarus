@@ -46,7 +46,7 @@ implementation
 
 uses
   JcfSettings, FormatFlags, Tokens, TokenUtils,
-  ParseTreeNodeType;
+  ParseTreeNodeType, ParseTreeNode;
 
 function IsPlaceForBlankLineRemoval(const ptToken, ptNextSolidToken:
   TSourceToken): boolean;
@@ -90,6 +90,8 @@ var
   lcNext, lcTest: TSourceToken;
   liReturnCount:  integer;
   liMaxReturns:   integer;
+  lcBlock: TParseTreeNode;
+  lcDeclSection: TParseTreeNode;
 begin
   Result := False;
   lcSourceToken := TSourceToken(pcNode);
@@ -102,6 +104,8 @@ begin
     exit;
 
   lcNext := lcSourceToken.NextTokenWithExclusions([ttWhiteSpace, ttReturn]);
+  if lcNext=nil then
+    exit;
 
   { it must be a 'var', 'const', 'type' or 'begin'
    in the procedure defs/body section }
@@ -114,6 +118,27 @@ begin
   liReturnCount := 0;
   liMaxReturns := FormattingSettings.Returns.MaxBlankLinesInSection + 1;
   lcTest := lcSourceToken;
+
+  // function fooo;
+  // --> no blank lines beetwen function/procedure declaration and sections.
+  // var, const, type, begin.
+
+  // find nBlock, can be grandfader or great-grandfather of node
+  lcDeclSection:=nil;
+  lcDeclSection:=lcNext.Parent;
+  if (lcDeclSection<>nil) and  not (lcDeclSection.NodeType in [nDeclSection,nCompoundStatement]) then
+    lcDeclSection:=lcDeclSection.Parent;
+  if (lcDeclSection<>nil) and  not (lcDeclSection.NodeType in [nDeclSection,nCompoundStatement]) then
+    lcDeclSection:=lcDeclSection.Parent;
+  if lcDeclSection<>nil then
+  begin
+    lcBlock:=lcDeclSection.Parent;
+    if (lcBlock<>nil) and (lcBlock.NodeType=nBlock) then
+    begin
+      //if lcBlock.IndexOfChild(lcDeclSection)=0 then //Only the first section of nBlock
+      liMaxREturns:=1;
+    end;
+  end;
 
   { remove all returns up to that point (except one) }
   while (lcTest <> lcNext) do
