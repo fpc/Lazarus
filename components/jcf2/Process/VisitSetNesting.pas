@@ -115,13 +115,25 @@ begin
   lcNode := TParseTreeNode(pcNode);
 
   case lcNode.NodeType of
-    nBlock, nCaseStatement,
-    nIfBlock, nTryBlock, nFinallyBlock, nExceptBlock,
-    nRepeatStatement, nWhileStatement, nForStatement,
-    nWithStatement, nOnExceptionHandler, nInitSection:
+    nBlock, nCaseStatement, nIfBlock, nRepeatStatement, nWhileStatement,
+    nForStatement, nWithStatement, nOnExceptionHandler, nInitSection:
     begin
       leNestType   := nlBlock;
       lbHasNesting := True;
+    end;
+    nTryBlock, nFinallyBlock, nExceptBlock:
+    begin
+      //if a=b then
+      //try
+      //  writeln();
+      //finally
+      //end;
+      // only indent try block if it is in begin end block.
+      if lcNode.HasParentNode(nCompoundStatement,4) then
+      begin
+        leNestType   := nlBlock;
+        lbHasNesting := True;
+      end;
     end;
     nElseBlock:
     begin
