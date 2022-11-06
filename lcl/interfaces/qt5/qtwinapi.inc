@@ -1480,7 +1480,7 @@ begin
   APenWidthF := QPen_widthF(QPainter_pen(TQtDeviceContext(DC).Widget));
   if APenWidthF = 0 then
     APenWidthF := 1;
-  ARectF := QRectF_Create(R.Left + (APenWidthF / 2), R.Top + (APenWidthF / 2), R.Right - R.Left - (APenWidthF / 2), R.Bottom - R.Top - (APenWidthF / 2));
+  ARectF := QRectF_Create(R.Left, R.Top, R.Right - R.Left - (APenWidthF / 2), R.Bottom - R.Top - (APenWidthF / 2));
   QPainter_drawEllipse(TQtDeviceContext(DC).Widget, ARectF);
   QRectF_destroy(ARectF);
   Result := True;
