@@ -307,6 +307,8 @@ type
     procedure SetButtonColorSize(const AValue: Integer);
   protected
     class procedure WSRegisterClass; override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
     function GetDisabledPattern: TBitmap; virtual;
