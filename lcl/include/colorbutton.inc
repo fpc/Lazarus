@@ -117,6 +117,17 @@ begin
   //debugln(['TColorButton.GetGlyphSize ',DbgSName(Self),' Drawing=',Drawing,' PaintRect=',dbgs(PaintRect),' Result=',dbgs(Result),' BoundsRect=',dbgs(BoundsRect),' Spacing=',Spacing,' Margin=',Margin]);
 end;
 
+procedure TColorButton.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+begin
+  inherited;
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    FButtonColorSize := round(FButtonColorSize * AXProportion);
+    FBorderWidth := round(FBorderWidth * AXProportion);
+  end;
+end;
+
 function TColorButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
   const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
   BiDiFlags: Longint): TRect;
