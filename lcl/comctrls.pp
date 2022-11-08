@@ -3529,8 +3529,13 @@ type
     procedure SetExpandSignSize(const AExpandSignSize: integer);
     procedure SetExpandSignWidth(const AValue: integer);
   protected
+    type
+      TFindOption = (foFindIgnoresCase, foFindExpands);
+      TFindOptions = set of TFindOption;
+  protected
     FChangeTimer: TTimer;
     FEditor: TEdit;
+    FFindOptions: TFindOptions;
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure Added(Node: TTreeNode); virtual;

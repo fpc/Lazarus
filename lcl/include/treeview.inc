@@ -1406,8 +1406,15 @@ end;
 function TTreeNode.FindNode(const NodeText: string): TTreeNode;
 begin
   Result:=GetFirstChild;
-  while (Result<>nil) and (Result.Text<>NodeText) do
-    Result:=Result.GetNextSibling;
+  if (foFindIgnoresCase in FOwner.FOwner.FFindOptions) then
+  begin
+    while (Result <> nil) and not SameText(Result.Text, NodeText) do
+      Result := Result.GetNextSibling;
+  end else
+  begin
+    while (Result<>nil) and (Result.Text<>NodeText) do
+      Result:=Result.GetNextSibling;
+  end;
 end;
 
 function TTreeNode.GetTextPath: string;
@@ -2642,8 +2649,15 @@ end;
 function TTreeNodes.FindTopLvlNode(const NodeText: string): TTreeNode;
 begin
   Result := GetFirstNode;
-  while Assigned(Result) and (Result.Text <> NodeText) do
-    Result := Result.GetNextSibling;
+  if (foFindIgnoresCase in FOwner.FFindOptions) then
+  begin
+    while Assigned(Result) and not SameText(Result.Text, NodeText) do
+      Result := Result.GetNextSibling;
+  end else
+  begin
+    while Assigned(Result) and (Result.Text <> NodeText) do
+      Result := Result.GetNextSibling;
+  end;
 end;
 
 function TTreeNodes.FindNodeWithText(const NodeText: string): TTreeNode;
@@ -2655,10 +2669,21 @@ end;
 
 function TTreeNodes.FindNodeWithTextPath(TextPath: string): TTreeNode;
 var
-  p: SizeInt;
   CurText: String;
 begin
-  Result:=nil;
+  Result := nil;
+  for CurText in TextPath.Split(FOwner.FPathDelimiter) do
+  begin
+    if Result = nil then
+      Result := FindTopLvlNode(CurText)
+    else begin
+      if (foFindExpands in FOwner.FFindOptions) then
+        Result.Expanded := true;
+      Result := Result.FindNode(CurText);
+    end;
+  end;
+
+{
   repeat
     p:=System.Pos(FOwner.FPathDelimiter,TextPath);
     if p>0 then begin
@@ -2674,6 +2699,7 @@ begin
     else
       Result:=Result.FindNode(CurText);
   until (Result=nil) or (TextPath='');
+  }
 end;
 
 function TTreeNodes.FindNodeWithData(const NodeData: Pointer): TTreeNode;
