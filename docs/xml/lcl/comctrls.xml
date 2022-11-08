@@ -25672,11 +25672,39 @@ visible and enabled.
 
 <element name="TTreeNode.GetTextPath">
 <short>
-<var>GetTextPath</var> - returns a string containing the path to the current 
-node delimited by slash.
+Gets the hierarchical path to the tree node in the tree view.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetTextPath</var> is a <var>String</var> function used to get the 
+hierarchical path to the current node in a tree view control.
+</p>
+<p>
+For example:
+</p>
+<code>/parent1/child1</code>
+<p>
+GetTextPath visits (in reverse order) each of the TTreeNode instances from 
+the current node to the first node in the Parent hierarchy. The text path for 
+the current is built using the PathDelimiter from the tree view control and 
+the value in the Text property. The text path for each prior node in the 
+hierarchy is prepended to the form the return value.
+</p>
+<p>
+Use the FindNodeWithTextPath method in TTreeNodes to retrieve a tree node 
+with the value returned from GetTextPath.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4 to use the PathDelimiter in TCustomTreeView.
+</version>
+<seealso>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNodes.FindNodeWithTextPath"/>
+<link id="TTreeNodes.FindNodeWithText"/>
+<link id="TCustomTreeView.PathDelimiter"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.HasAsParent">
@@ -27185,30 +27213,54 @@ Finds a node containing the specified text string.
 
 <element name="TTreeNodes.FindNodeWithTextPath">
 <short>
-Finds a node with the text ancestry specified in TextPath.
+Finds a node with the hierarchical path specified in TextPath.
 </short>
 <descr>
 <p>
-Returns the TTreeNode instance found which matches the text ancestry in 
-TextPath, or <b>Nil</b> if a tree node is not found matching the specified 
-values.
+Returns the <var>TTreeNode</var> instance found which matches the hierarchy 
+of tree nodes specified in <var>TextPath</var>, or <b>Nil</b> if a tree node 
+is not found matching the specified value.
 </p>
 <p>
 TextPath contains the delimited text values used to locate a tree node. The 
-'/' (Slash) character is used as the delimiter between text values in 
-TextPath. An initial slash character representing the root node is not needed 
-or allowed. The search always starts at the top-level tree nodes in the 
-container. The FindNode method is used to locate subsequent delimited text 
-values in TextPath.
+<var>PathDelimiter</var> in the <var>TCustomTreeView</var> instance in Owner 
+is used as the delimiter between node identifiers in TextPath.
+</p>
+<p>
+FindNodeWithTextPath always searches starting at the top-level or root for 
+the tree. A leading path delimiter in TextPath is assumed, and the following 
+values in TextPath are considered to be equivalent:
+</p>
+<code>
+/parentnode
+parentnode
+</code>
+<p>
+FindNodeWithTextPath calls the FindNode method in the current TTreeNode 
+instance to locate the next tree node with the required identifier Text. The 
+process is repeated until all of the identifiers have been located, or a node 
+is not found for one of the identifiers in TextPath.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.Owner"/>
+<link id="TTreeNodes.FindTopLvlNode"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.FindNode"/>
+<link id="TCustomTreeView.PathDelimiter"/>
+</seealso>
 </element>
 <element name="TTreeNodes.FindNodeWithTextPath.Result">
-<short>Tree nodes matching the specified text values.</short>
+<short>
+The tree node with a path matching the specified text, or <b>Nil</b> when not 
+found.
+</short>
 </element>
 <element name="TTreeNodes.FindNodeWithTextPath.TextPath">
-<short>Delimited text values used to locate the tree node.</short>
+<short>
+Delimited text used to locate a tree node with the path and text.
+</short>
 </element>
 
 <element name="TTreeNodes.FindTopLvlNode">
@@ -28167,6 +28219,7 @@ turn accessibility off for tree view items by setting the
 <element name="TCustomTreeView.FOnNodeChanged"/>
 <element name="TCustomTreeView.FOnSelectionChanged"/>
 <element name="TCustomTreeView.FOptions"/>
+<element name="TCustomTreeView.FPathDelimiter"/>
 <element name="TCustomTreeView.FRClickNode"/>
 <element name="TCustomTreeView.FSaveItems"/>
 <element name="TCustomTreeView.FScrollBars"/>
@@ -30867,6 +30920,56 @@ OnSelectionChanged is signalled (when assigned) from the
 <seealso/>
 </element>
 
+<element name="TCustomTreeView.PathDelimiter">
+<short>
+Delimiter used to separate node identifiers in the path to a given tree node.
+</short>
+<descr>
+<p>
+<var>PathDelimiter</var> is a <var>String</var> property which contains the 
+delimiter used between the identifiers for tree nodes in a given path. The 
+default value for the property in TCustomTreeView is the '/' (Forward Slash) 
+character.
+</p>
+<p>
+PathDelimiter is used when a TTreeNode instance, owned by the tree view, 
+build the path to the node in its GetTextPath method. If the path starts with 
+the value in PathDelimiter, it represents the root for the tree. Every node 
+in a tree is located in the hierarchy below the top level node '/'. The 
+delimiter is appended after each ancestor node leading to the current tree 
+node.
+</p>
+<p>
+For example:
+</p>
+<code>
+/node1
+/node1/childnode1
+/node1/childnode2
+/node1/childnode3
+/node2
+/node3
+//...
+</code>
+<p>
+PathDelimiter is used in the FindNodeWithTextPath method in TTreeNodes when 
+the node identifiers in a given path are examined and retrieved.
+</p>
+<remark>
+Please note that a different delimiter character may be used in descendent 
+classes like TCustomShellTreeView.
+</remark>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TTreeNode.GetTextPath"/>
+<link id="TTreeNodes.FindNodeWithTextPath"/>
+<link id="#lcl.shellctrls.TCustomShellTreeView">TCustomShellTreeView</link>
+</seealso>
+</element>
+
 <element name="TCustomTreeView.ReadOnly">
 <short>
 Indicates whether the text (or caption) for tree nodes can be edited in the 
@@ -30969,8 +31072,8 @@ Enables drawing of the root node indicator for the tree view control.
 
 <element name="TCustomTreeView.ShowSeparators">
 <short>
-Indicates if horizontal separators are drawn between nodes in the tree view 
-control.
+Indicates if horizontal separator lines are drawn between nodes in the tree 
+view control.
 </short>
 <descr/>
 <seealso/>
@@ -31001,20 +31104,52 @@ and mouse is over it.
 
 <element name="TCustomTreeView.Create">
 <short>
-<var>Create</var> - constructor for <var>TCustomTreeView</var>: calls 
-inherited <var>Create</var> then sets defaults for style, size, etc.
+Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> - constructor for <var>TCustomTreeView</var>: calls 
-inherited <var>Create</var> then sets defaults for style, size, etc.
+<var>Create</var> is the constructor for <var>TCustomTreeView</var>. It calls 
+the inherited <var>Create</var> method, and sets the default values for 
+members and properties in the class instance. These include:
 </p>
+<ul>
+<li>Width</li>
+<li>Height</li>
+<li>Color</li>
+<li>ParentColor</li>
+<li>BorderStyle</li>
+<li>BorderWidth</li>
+<li>TabStop</li>
+<li>DefaultItemHeight</li>
+<li>ExpandSignType</li>
+<li>Options</li>
+<li>ScrollBars</li>
+<li>SortType</li>
+<li>SelectedColor</li>
+<li>SelectedFontColor</li>
+<li>SeparatorColor</li>
+<li>HotTrackColor</li>
+<li>DisabledFontColor</li>
+<li>Indent</li>
+<li>PathDelimiter</li>
+</ul>
 <p>
-Among the variables initialized and defaults set are:
+Create allocates resources needed for properties including:
 </p>
+<ul>
+<li>Items</li>
+</ul>
 <p>
-size, color, the symbols for expansion etc, the border style and width, 
-scroll bars, options, indentation, timers, action links
+It also allocated resources for internal members including:
+</p>
+<ul>
+<li>change timer</li>
+<li>state change link</li>
+<li>tree node editor</li>
+</ul>
+<p>
+Create assigns and configures event handler routines used internally in the 
+class instance.
 </p>
 </descr>
 <seealso>
@@ -31031,7 +31166,7 @@ Owner of the class instance.
 <element name="TCustomTreeView.Destroy">
 <short>
 <var>Destroy</var> - destructor for <var>TCustomTreeView</var>: frees images, 
-nodes and links, then calls inherited Destroy.
+nodes and links, then calls the inherited Destroy method.
 </short>
 <descr/>
 <seealso>
