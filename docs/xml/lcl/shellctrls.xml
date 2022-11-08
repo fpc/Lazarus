@@ -727,15 +727,15 @@ Create sets the default values for properties, including:
 <dt>UseBuiltinIcons</dt>
 <dd>Set to True top enable the built-in icons in the widgetset class.</dd>
 <dt>PathDelimiter</dt>
-<dd>Set to the platform-specific PathDelimiter from the SysUtils unit.</dd>
+<dd>Set to the platform-specific PathDelim from the SysUtils unit.</dd>
 <dt>ObjectTypes</dt>
 <dd>
 Set to [otFolders] to display folders (but not files) in the tree view.
 </dd>
 </dl>
 <p>
-Create initializes an internal member used to monitor the <var>Root</var> 
-property for changes to its value.
+Create initializes internal members used to monitor the <var>Root</var> 
+property for changes to its value, and the find options used to locate nodes in the Items for the tree view control. Find options include use of case-insensitive comparisons in node values when the CaseInsensitiveFilenames compiler define is enabled.
 </p>
 <p>
 Please note: Values in the <var>Items</var> property are populated when the 
@@ -743,7 +743,7 @@ Please note: Values in the <var>Items</var> property are populated when the
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to initialize the PathDelimiter property.  
+Modified in LCL version 2.4 to initialize the PathDelimiter property and internal find options.  
 </version>
 <seealso>
 <link id="TCustomShellTreeView.ObjectTypes"/>
@@ -753,7 +753,7 @@ Modified in LCL version 2.4 to initialize the PathDelimiter property.
 <link id="TCustomShellTreeView.ShellListView"/>
 <link id="TCustomShellTreeView.Loaded"/>
 <link id="TCustomTreeView.PathDelimiter"/>
-<link id="#rtl.sysutils.PathDelimiter">SysUtils.PathDelimiter</link>
+<link id="#rtl.sysutils.PathDelim">SysUtils.PathDelim</link>
 </seealso>
 </element>
 <element name="TCustomShellTreeView.Create.AOwner">
