@@ -3159,10 +3159,14 @@ signature for the event handler, and assign it to the property.
 </seealso>
 </element>
 <element name="TDropFilesEvent.Sender">
-<short>The control that received the dropped files.</short>
+<short>
+The object (TCustomForm) for the dropped files notification.
+</short>
 </element>
 <element name="TDropFilesEvent.FileNames">
-<short>The list of the dropped files.</short>
+<short>
+Array with the list of file names for the drop event.
+</short>
 </element>
 
 <element name="THelpEvent">
@@ -7407,12 +7411,17 @@ interface.
 </p>
 <p>
 The <var>Sender</var> argument contains the current form instance. The 
-<var>FileName</var> argument contains an array with the file names for the 
-drop operation.
+<var>FileName</var> argument contains an array with the fully-qualified file 
+names for the drop operation.
 </p>
 <p>
 Set <var>AllowDropFiles</var> to <b>True</b> to enable drag and drop 
-operations, and execution of this event handler.
+operations, and execution of this event handler. The event handler is not 
+signalled when AllowDropFiles is set to <b>False</b>.
+</p>
+<p>
+The event handler should perform any actions needed for each of the files 
+dropped onto the form instance.
 </p>
 </descr>
 <seealso>
