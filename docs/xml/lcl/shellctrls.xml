@@ -711,26 +711,49 @@ the given path.
 </element>
 
 <element name="TCustomShellTreeView.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the constructor for the class instance. Create calls the 
 inherited method using the value in <var>AOwner</var> as the owner for the 
-class instance. Create initializes an internal member used to monitor the 
-<var>Root</var> property for changes to its value. Create sets the value in 
-<var>ObjectTypes</var> to display folders.
+class instance. 
+</p>
+<p>
+Create sets the default values for properties, including:
+</p>
+<dl>
+<dt>UseBuiltinIcons</dt>
+<dd>Set to True top enable the built-in icons in the widgetset class.</dd>
+<dt>PathDelimiter</dt>
+<dd>Set to the platform-specific PathDelimiter from the SysUtils unit.</dd>
+<dt>ObjectTypes</dt>
+<dd>
+Set to [otFolders] to display folders (but not files) in the tree view.
+</dd>
+</dl>
+<p>
+Create initializes an internal member used to monitor the <var>Root</var> 
+property for changes to its value.
 </p>
 <p>
 Please note: Values in the <var>Items</var> property are populated when the 
 <var>Loaded</var> method is called during component streaming.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4 to initialize the PathDelimiter property.  
+</version>
 <seealso>
-<link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.ObjectTypes"/>
+<link id="TCustomShellTreeView.UseBuiltinIcons"/>
+<link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.ShellListView"/>
 <link id="TCustomShellTreeView.Loaded"/>
+<link id="TCustomTreeView.PathDelimiter"/>
+<link id="#rtl.sysutils.PathDelimiter">SysUtils.PathDelimiter</link>
 </seealso>
 </element>
 <element name="TCustomShellTreeView.Create.AOwner">
