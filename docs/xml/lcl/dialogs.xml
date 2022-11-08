@@ -2435,6 +2435,54 @@ Implements the storage specifier for the ButtonColorAutoSize property.
 
 <element name="TColorButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
+<element name="TColorButton.DoAutoAdjustLayout">
+<short>
+Applies auto-layout changes using the specified policy and scaling 
+proportions to the control.
+</short>
+<descr>
+<p>
+<var>DoAutoAdjustLayout</var> is an overridden method in 
+<var>TColorButton</var> used to implement changes to control and border sizes 
+for the AutoAdjustLayout method. These methods are called when High-DPI and 
+scaling have been enabled in the project options for an application.
+</p>
+<p>
+<var>AMode</var> indicates the automatic layout policy applied in the method. 
+It is a value from the TLayoutAdjustmentPolicy enumeration, and determines 
+whether horizontal / vertical / or both sizes are adjusted in the method. It 
+generally reflects the constraints for the device type where the application 
+is running.
+</p>
+<p>
+<var>AXProportion</var> and <var>AYProportion</var> contain the scaling 
+factors applied to the horizontal and/or vertical sizes.
+</p>
+<p>
+DoAutoAdjustLayout calls the inherited method on entry. It extends the 
+method to update the ButtonColorSize and BorderWidth properties when AMode 
+indicates that either horizontal or high DPI scaling are used.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+</seealso>
+<version>
+Added in LCL version 2.4.
+</version>
+</element>
+<element name="TColorButton.DoAutoAdjustLayout.AMode">
+<short>
+Identifies the auto-layout policy applied in the method.
+</short>
+</element>
+<element name="TColorButton.DoAutoAdjustLayout.AXProportion">
+<short>Scaling factor for horizontal dimensions.</short>
+</element>
+<element name="TColorButton.DoAutoAdjustLayout.AYProportion">
+<short>Scaling factor for vertical dimensions.</short>
+</element>
+
 <element name="TColorButton.DrawGlyph">
 <short>
 Re-implements drawing the glyph for the control to use the selected color.
@@ -5487,7 +5535,7 @@ initialize and execute the task dialog. It ensures that the index for the
 default Buttons and RadioButtons are updated before executing the task 
 dialog. It also builds the delimited list of captions for each of the items 
 in Buttons and RadioButtons. The lists use the format needed for the task 
-dialog wrapper (#10 is the delimter).
+dialog wrapper (#10 is the delimiter).
 </p>
 <p>
 Property values are copied to the members in the TTaskDialog instance, 
