@@ -3418,6 +3418,7 @@ type
     FOnNodeChanged: TTVNodeChangedEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TTreeViewOptions;
+    FPathDelimiter: String;
     FRClickNode: TTreeNode;
     FSaveItems: TStringList;
     FScrollBars: TScrollStyle;
@@ -3667,6 +3668,7 @@ type
     property OnNodeChanged: TTVNodeChangedEvent read FOnNodeChanged write FOnNodeChanged;
     property OnSelectionChanged: TNotifyEvent
       read FOnSelectionChanged write FOnSelectionChanged;
+    property PathDelimiter: String read FPathDelimiter write FPathDelimiter;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property RightClickSelect: Boolean
       read GetRightClickSelect write SetRightClickSelect default False;

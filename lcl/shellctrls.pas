@@ -638,6 +638,7 @@ begin
   inherited Create(AOwner);
   FInitialRoot := '';
   FUseBuiltinIcons := true;
+  PathDelimiter := SysUtils.PathDelim;
 
   // Initial property values
   FObjectTypes:= [otFolders];

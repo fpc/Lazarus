@@ -1419,7 +1419,7 @@ begin
   while Assigned(Node) do
   begin
     if Result <> '' then
-      Result := '/' + Result;
+      Result := FOwner.FOwner.FPathDelimiter + Result;
     Result := Node.Text + Result;
     Node := Node.Parent;
   end;
@@ -2660,10 +2660,10 @@ var
 begin
   Result:=nil;
   repeat
-    p:=System.Pos('/',TextPath);
+    p:=System.Pos(FOwner.FPathDelimiter,TextPath);
     if p>0 then begin
       CurText:=LeftStr(TextPath,p-1);
-      System.Delete(TextPath,1,p);
+      System.Delete(TextPath,1,p-1+Length(FOwner.FPathDelimiter));
     end else begin
       CurText:=TextPath;
       TextPath:='';
@@ -3483,6 +3483,7 @@ begin
   FExpandSignColor := clWindowFrame;
   FHotTrackColor := clNone;
   FDisabledFontColor := clGrayText;
+  FPathDelimiter := '/';
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
