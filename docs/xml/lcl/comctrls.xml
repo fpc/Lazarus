@@ -25184,19 +25184,27 @@ the associated TreeView control.
 </element>
 
 <element name="TTreeNode.FindNode">
-<short>Gets the child node in Items with the specified text.</short>
+<short>Gets the child tree node in Items with the specified text.</short>
 <descr>
 <p>
 <var>FindNode</var> is a <var>TTreeNode</var> function used to get the child 
 node with the text specified in <var>NodeText</var>.
 </p>
 <p>
-FindNode examines the child nodes found in the <var>Items</var> property for 
-the class instance. The <var>GetFirstChild</var> method is called to get the 
-first child node in Items. Each tree node in Items is examined after calling 
-<var>GetNextSibling</var> until a node with the requested value is located. 
+FindNode examines the child nodes in the <var>Items</var> property. The 
+<var>GetFirstChild</var> method is called to get the first child node in 
+Items. Each tree node in Items is examined after calling 
+<var>GetNextSibling</var> until a node with the requested value is located.
+</p>
+<p>
 The return value is the TTreeNode instance with a Text property that matches 
 the value in NodeText, or <b>Nil</b> if a tree node is not found.
+</p>
+<p>
+When the CaseInsensitiveFilenames compiler define is enabled, the SameText 
+routine in SysUtils is called to perform a case-insensitive comparison using 
+the text in the nodes and the value in NodeText. Otherwise, case is 
+significant in the comparisons.
 </p>
 <p>
 Use methods in the <var>TTreeNodes</var> container to locate tree nodes not 
@@ -27239,9 +27247,13 @@ parentnode
 FindNodeWithTextPath calls the FindNode method in the current TTreeNode 
 instance to locate the next tree node with the required identifier Text. The 
 process is repeated until all of the identifiers have been located, or a node 
-is not found for one of the identifiers in TextPath.
+is not found for one of the identifiers in TextPath. The Expanded property in the tree nodes is set to True prior to calling GetNode.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4 to expand a tree node (when enabled) if it is 
+part of the text path found in a node search.
+</version>
 <seealso>
 <link id="TTreeNodes.Owner"/>
 <link id="TTreeNodes.FindTopLvlNode"/>
@@ -27267,7 +27279,30 @@ Delimited text used to locate a tree node with the path and text.
 <short>
 Gets a top-level node containing the specified text.
 </short>
-<descr/>
+<descr>
+<p>
+<var>FindTopLvlNode</var> is a method used to retrieve a tree node which is 
+one of the child nodes at the top level of the tree. It calls GetFirstNode to 
+find the first TTreeNode instance at the root level in the tree. The tree 
+node and each of its sibling nodes are checked until a node with the text 
+specified in <var>NodeText</var> is found.
+</p>
+<p>
+When the <b>CaseInsensitiveFilenames</b> compiler define is enabled, the 
+SameText routine in <file>SysUtils</file> is called to perform a 
+case-insensitive comparison using the text in the node and the value in 
+NodeText. Otherwise, case is significant in the comparisons.
+</p>
+<p>
+The return value is the <var>TTreeNode</var> instance where the Text property 
+matches the value in NodeText, or <b>Nil</b> when a node with a matching 
+value is not found.
+</p>
+<p>
+FindTopLvlNode is used in the implementation of the FindNodeWithTextPath 
+method.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNodes.FindTopLvlNode.Result">
@@ -28468,6 +28503,50 @@ CanvasChanged is not used in the current LCL implementation.
 <element name="TCustomTreeView.SetExpandSignSize.AExpandSignSize"/>
 <element name="TCustomTreeView.SetExpandSignWidth"/>
 <element name="TCustomTreeView.SetExpandSignWidth.AValue"/>
+
+<element name="TCustomTreeView.TFindOption">
+<short>
+Identifies find options that can be enabled in TCustomTreeView.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomTreeView.TFindOptions"/>
+<link id="TTreeNode.FindNode"/>
+<link id="TTreeNodes.FindTopLvlNode"/>
+<link id="TTreeNodes.FindNodeWithText"/>
+<link id="TTreeNodes.FindNodeWithTextPath"/>
+</seealso>
+</element>
+<element name="TCustomTreeView.TFindOption.foFindIgnoresCase">
+<short>
+Enable case-insensitive comparisons of the text in tree nodes.
+</short>
+</element>
+<element name="TCustomTreeView.TFindOption.foFindExpands">
+<short>
+Causes a tree node to be expanded when it is accessed in a text path.
+</short>
+</element>
+
+<element name="TCustomTreeView.TFindOptions">
+<short>
+Set type used to store find options enabled in the class.
+</short>
+<descr>
+<p>
+Values in the set are determined by the <b>CaseInsensitiveFilenames</b>  
+compiler define. When defined, the set contains: [foFindExpands, 
+foFindIgnoresCase]. Otherwise, it contains [foFindExpands].
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.TFindOption"/>
+<link id="TTreeNode.FindNode"/>
+<link id="TTreeNodes.FindTopLvlNode"/>
+<link id="TTreeNodes.FindNodeWithText"/>
+<link id="TTreeNodes.FindNodeWithTextPath"/>
+</seealso>
+</element>
 
 <!-- protected -->
 <element name="TCustomTreeView.FChangeTimer">
