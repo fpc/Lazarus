@@ -27209,14 +27209,52 @@ pointer.
 <short>
 Finds a node containing the specified text string.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>FindNodeWithText</var> is a <var>TTreeNode</var> function used to get 
+the node in the list of tree nodes where the Text for the node matches the 
+specified value.
+</p>
+<p>
+<var>NodeText</var> is the text to locate in the TTreeNode instances.
+</p>
+<p>
+FindNodeWithText starts the node search beginning with the top-level tree 
+nodes. It visits the TTreeNode instances in the node list until a node with 
+Text that matches the value in the NodeText argument is found.
+</p>
+<p>
+FindNodeWithText uses the find options assigned to the tree view control to 
+control the actions performed in the search. If the node options include 
+foFindIgnoresCase, a case-insensitive comparison is used to compare the text 
+in each node text to the value in the NodeText argument.
+</p>
+<p>
+The return value is the TTreeNode instance with text that matches the 
+specified value. It is set to <b>Nil</b> if a node is not found with the 
+specified text value.
+</p>
+<p>
+Use FindNodeWithTextPath to get a node with a given text path.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNodes.GetFirstNode"/>
+<link id="TTreeNodes.FindNodeWithTextPath"/>
+<link id="TTreeNode.GetNext"/>
+<link id="#rtl.sysutils.SameText">SysUtils.SameText</link>
+</seealso>
 </element>
 <element name="TTreeNodes.FindNodeWithText.Result">
-<short/>
+<short>
+Tree node with the text value specified in NodeText, or <b>Nil</b> when a 
+matching node is not found.
+</short>
 </element>
 <element name="TTreeNodes.FindNodeWithText.NodeText">
-<short/>
+<short>
+Text value to locate in the list of tree nodes.
+</short>
 </element>
 
 <element name="TTreeNodes.FindNodeWithTextPath">
@@ -27240,14 +27278,19 @@ the tree. A leading path delimiter in TextPath is assumed, and the following
 values in TextPath are considered to be equivalent:
 </p>
 <code>
-/parentnode
-parentnode
+/parentnode/childnode/grandchildnode
+parentnode/childnode/grandchildnode
 </code>
 <p>
 FindNodeWithTextPath calls the FindNode method in the current TTreeNode 
 instance to locate the next tree node with the required identifier Text. The 
 process is repeated until all of the identifiers have been located, or a node 
-is not found for one of the identifiers in TextPath. The Expanded property in the tree nodes is set to True prior to calling GetNode.
+is not found for one of the identifiers in TextPath. The Expanded property in 
+a tree node is set to True prior to calling GetNode.
+</p>
+<p>
+The return value is the TTreeNode instance found at the specified path, or 
+<b>Nil</b> if any one of the component value in the path is not found.
 </p>
 </descr>
 <version>
@@ -27271,7 +27314,7 @@ found.
 </element>
 <element name="TTreeNodes.FindNodeWithTextPath.TextPath">
 <short>
-Delimited text used to locate a tree node with the path and text.
+Delimited text used to locate a tree node with the path and text values.
 </short>
 </element>
 
@@ -28534,7 +28577,7 @@ Set type used to store find options enabled in the class.
 </short>
 <descr>
 <p>
-Values in the set are determined by the <b>CaseInsensitiveFilenames</b>  
+Values in the set are determined by the <b>CaseInsensitiveFilenames</b> 
 compiler define. When defined, the set contains: [foFindExpands, 
 foFindIgnoresCase]. Otherwise, it contains [foFindExpands].
 </p>
