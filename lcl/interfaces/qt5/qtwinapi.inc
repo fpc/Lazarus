@@ -562,14 +562,14 @@ begin
     // Others are guesses. The best would be to test different values for those
     // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
     case LogFont.lfWeight of
-      FW_THIN       : QtFont.setWeight(10);
-      FW_EXTRALIGHT : QtFont.setWeight(15);
+      FW_THIN       : QtFont.setWeight(0);
+      FW_EXTRALIGHT : QtFont.setWeight(12);
       FW_LIGHT      : QtFont.setWeight(25);
       FW_NORMAL     : QtFont.setWeight(50);
-      FW_MEDIUM     : QtFont.setWeight(55);
+      FW_MEDIUM     : QtFont.setWeight(57);
       FW_SEMIBOLD   : QtFont.setWeight(63);
       FW_BOLD       : QtFont.setWeight(75);
-      FW_EXTRABOLD  : QtFont.setWeight(80);
+      FW_EXTRABOLD  : QtFont.setWeight(81);
       FW_HEAVY      : QtFont.setWeight(87);
     end;
 
@@ -1840,11 +1840,26 @@ var
   var
     Font: QFontH;
     WStr: WideString;
+    FontWeight: Integer;
   begin
     WStr := UTF8ToUTF16(AFontName);
     Font := QFont_create(@WStr);
     ALogFontA.lfItalic := Byte(QFont_italic(Font));
-    ALogFontA.lfWeight := QFont_weight(Font);
+    FontWeight := QFont_weight(Font);
+    case FontWeight of
+       0: ALogFontA.lfWeight := FW_THIN;
+      12: ALogFontA.lfWeight := FW_EXTRALIGHT;
+      25: ALogFontA.lfWeight := FW_LIGHT;
+      50: ALogFontA.lfWeight := FW_NORMAL;
+      57: ALogFontA.lfWeight := FW_MEDIUM;
+      63: ALogFontA.lfWeight := FW_SEMIBOLD;
+      75: ALogFontA.lfWeight := FW_BOLD;
+      81: ALogFontA.lfWeight := FW_EXTRABOLD;
+      87: ALogFontA.lfWeight := FW_HEAVY;
+      else
+        ALogFontA.lfWeight := Round(FontWeight * 9.5);
+    end;
+    // ALogFontA.lfWeight := QFont_weight(Font);
     ALogFontA.lfHeight := QFont_pointSize(Font);
     ALogFontA.lfUnderline := Byte(QFont_underline(Font));
     ALogFontA.lfStrikeOut := Byte(QFont_strikeOut(Font));
@@ -3177,15 +3192,17 @@ begin
         ALogFont^.lfHeight := AFont.getPixelSize;
       ALogFont^.lfEscapement := AFont.Angle;
       case AFont.getWeight of
-        10: ALogFont^.lfWeight := FW_THIN;
-        15: ALogFont^.lfWeight := FW_EXTRALIGHT;
+         0: ALogFont^.lfWeight := FW_THIN;
+        12: ALogFont^.lfWeight := FW_EXTRALIGHT;
         25: ALogFont^.lfWeight := FW_LIGHT;
         50: ALogFont^.lfWeight := FW_NORMAL;
-        55: ALogFont^.lfWeight := FW_MEDIUM;
+        57: ALogFont^.lfWeight := FW_MEDIUM;
         63: ALogFont^.lfWeight := FW_SEMIBOLD;
         75: ALogFont^.lfWeight := FW_BOLD;
-        80: ALogFont^.lfWeight := FW_EXTRABOLD;
+        81: ALogFont^.lfWeight := FW_EXTRABOLD;
         87: ALogFont^.lfWeight := FW_HEAVY;
+        else
+          ALogFont^.lfWeight := Round(AFont.getWeight * 9.5);
       end;
 
       ALogFont^.lfItalic := Ord(AFont.getItalic) * High(Byte);
@@ -4306,7 +4323,7 @@ end;
 function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   QtFontMetrics: TQtFontMetrics;
-  FontFamily: WideString;
+  // FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
   FontWeight: Integer;
 begin
@@ -4338,10 +4355,14 @@ begin
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
     FontWeight := QtDC.font.getWeight;
     case FontWeight of
+       0: TM.tmWeight := FW_THIN;
+      12: TM.tmWeight := FW_EXTRALIGHT;
       25: TM.tmWeight := FW_LIGHT;
       50: TM.tmWeight := FW_NORMAL;
+      57: TM.tmWeight := FW_MEDIUM;
       63: TM.tmWeight := FW_SEMIBOLD;
       75: TM.tmWeight := FW_BOLD;
+      81: TM.tmWeight := FW_EXTRABOLD;
       87: TM.tmWeight := FW_HEAVY;
       else
         TM.tmWeight := Round(FontWeight * 9.5);
@@ -4357,7 +4378,7 @@ begin
     TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
     TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
 
-    QtDC.font.family(@FontFamily);
+    // QtDC.font.family(@FontFamily);
 
     { Defaults to a TrueType font.
       Note that the meaning of the FIXED_PITCH constant is the opposite of
