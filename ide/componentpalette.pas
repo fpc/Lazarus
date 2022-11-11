@@ -1014,7 +1014,7 @@ begin
       Assert(Pages[i].PageName=UserOrder.ComponentPages[i],
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
-      {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}   // Qt has some problems in moving existing tabs!
+      {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}   // Qt has some problems in moving existing tabs!
       if Assigned(Pg.PageComponent) then begin
         Pg.PageComponent.Free;
         Pg.RemoveSheet;

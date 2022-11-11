@@ -304,7 +304,7 @@ begin
   if (I<0) or (I>=lvToolbar.Items.Count-1) then Exit;
   Cmd := TIDEButtonCommand(lvToolbar.Items[I].Data);
   lvToolbar.Items.Delete(I);
-  {$IF DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
   lvToolbar.ItemIndex := -1;     // Try to make LCLQt behave.
   lvToolbar.ItemIndex := I;
   {$ENDIF}
