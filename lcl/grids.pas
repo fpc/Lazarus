@@ -6532,7 +6532,10 @@ var
   aColRow: Integer;
 begin
   if FromIndex=ToIndex then
+  begin
+    VisualChange;
     exit;
+  end;
 
   CheckIndex(IsColumn, FromIndex);
   CheckIndex(IsColumn, ToIndex);
