@@ -1846,20 +1846,7 @@ var
     Font := QFont_create(@WStr);
     ALogFontA.lfItalic := Byte(QFont_italic(Font));
     FontWeight := QFont_weight(Font);
-    case FontWeight of
-       0: ALogFontA.lfWeight := FW_THIN;
-      12: ALogFontA.lfWeight := FW_EXTRALIGHT;
-      25: ALogFontA.lfWeight := FW_LIGHT;
-      50: ALogFontA.lfWeight := FW_NORMAL;
-      57: ALogFontA.lfWeight := FW_MEDIUM;
-      63: ALogFontA.lfWeight := FW_SEMIBOLD;
-      75: ALogFontA.lfWeight := FW_BOLD;
-      81: ALogFontA.lfWeight := FW_EXTRABOLD;
-      87: ALogFontA.lfWeight := FW_HEAVY;
-      else
-        ALogFontA.lfWeight := Round(FontWeight * 9.5);
-    end;
-    // ALogFontA.lfWeight := QFont_weight(Font);
+    ALogFontA.lfWeight := ConvertFontWeightToQtConst(FontWeight);
     ALogFontA.lfHeight := QFont_pointSize(Font);
     ALogFontA.lfUnderline := Byte(QFont_underline(Font));
     ALogFontA.lfStrikeOut := Byte(QFont_strikeOut(Font));
@@ -3191,20 +3178,7 @@ begin
       end else
         ALogFont^.lfHeight := AFont.getPixelSize;
       ALogFont^.lfEscapement := AFont.Angle;
-      case AFont.getWeight of
-         0: ALogFont^.lfWeight := FW_THIN;
-        12: ALogFont^.lfWeight := FW_EXTRALIGHT;
-        25: ALogFont^.lfWeight := FW_LIGHT;
-        50: ALogFont^.lfWeight := FW_NORMAL;
-        57: ALogFont^.lfWeight := FW_MEDIUM;
-        63: ALogFont^.lfWeight := FW_SEMIBOLD;
-        75: ALogFont^.lfWeight := FW_BOLD;
-        81: ALogFont^.lfWeight := FW_EXTRABOLD;
-        87: ALogFont^.lfWeight := FW_HEAVY;
-        else
-          ALogFont^.lfWeight := Round(AFont.getWeight * 9.5);
-      end;
-
+      ALogFont^.lfWeight := ConvertFontWeightToQtConst(AFont.getWeight);
       ALogFont^.lfItalic := Ord(AFont.getItalic) * High(Byte);
       ALogFont^.lfUnderline := Ord(AFont.getUnderline) * High(Byte);
       ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
@@ -4354,19 +4328,7 @@ begin
 
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
     FontWeight := QtDC.font.getWeight;
-    case FontWeight of
-       0: TM.tmWeight := FW_THIN;
-      12: TM.tmWeight := FW_EXTRALIGHT;
-      25: TM.tmWeight := FW_LIGHT;
-      50: TM.tmWeight := FW_NORMAL;
-      57: TM.tmWeight := FW_MEDIUM;
-      63: TM.tmWeight := FW_SEMIBOLD;
-      75: TM.tmWeight := FW_BOLD;
-      81: TM.tmWeight := FW_EXTRABOLD;
-      87: TM.tmWeight := FW_HEAVY;
-      else
-        TM.tmWeight := Round(FontWeight * 9.5);
-    end;
+    TM.tmWeight := ConvertFontWeightToQtConst(FontWeight);
     TM.tmOverhang := 0;
     TM.tmDigitizedAspectX := 0;
     TM.tmDigitizedAspectY := 0;
