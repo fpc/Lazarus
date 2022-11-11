@@ -435,8 +435,9 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
         if not AControl.IsVisible then continue;
         if AControl=FDockObject.Control then continue;
         if IsControlChildOfClient(AControl) then continue;
-        if not AControl.DockManager.CanBeDoubleDocked then
-          if IsClientChildOfControl(AControl) then continue;
+        if AControl.DockManager<>nil then
+          if not AControl.DockManager.CanBeDoubleDocked then
+            if IsClientChildOfControl(AControl) then continue;
 
         if ItCanBeHostSite then
         begin
