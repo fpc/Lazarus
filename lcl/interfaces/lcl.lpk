@@ -130,7 +130,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="3"/>
-    <Files Count="488">
+    <Files Count="524">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2418,6 +2418,179 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="win32wsshellctrls"/>
       </Item488>
+      <Item489>
+        <Filename Value="qt6/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item489>
+      <Item490>
+        <Filename Value="qt6/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="interfaces"/>
+      </Item490>
+      <Item491>
+        <Filename Value="qt6/qt62.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qt62"/>
+      </Item491>
+      <Item492>
+        <Filename Value="qt6/qtcaret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtCaret"/>
+      </Item492>
+      <Item493>
+        <Filename Value="qt6/qtdefines.inc"/>
+        <Type Value="Include"/>
+      </Item493>
+      <Item494>
+        <Filename Value="qt6/qtint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtint"/>
+      </Item494>
+      <Item495>
+        <Filename Value="qt6/qtlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item495>
+      <Item496>
+        <Filename Value="qt6/qtlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item496>
+      <Item497>
+        <Filename Value="qt6/qtobject.inc"/>
+        <Type Value="Include"/>
+      </Item497>
+      <Item498>
+        <Filename Value="qt6/qtobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtobjects"/>
+      </Item498>
+      <Item499>
+        <Filename Value="qt6/qtpagecontrol.inc"/>
+        <Type Value="Include"/>
+      </Item499>
+      <Item500>
+        <Filename Value="qt6/qtprivate.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtprivate"/>
+      </Item500>
+      <Item501>
+        <Filename Value="qt6/qtproc.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtproc"/>
+      </Item501>
+      <Item502>
+        <Filename Value="qt6/qtsystemtrayicon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtsystemtrayicon"/>
+      </Item502>
+      <Item503>
+        <Filename Value="qt6/qtthemes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtThemes"/>
+      </Item503>
+      <Item504>
+        <Filename Value="qt6/qtwidgets.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtwidgets"/>
+      </Item504>
+      <Item505>
+        <Filename Value="qt6/qtwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item505>
+      <Item506>
+        <Filename Value="qt6/qtwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item506>
+      <Item507>
+        <Filename Value="qt6/qtwsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSButtons"/>
+      </Item507>
+      <Item508>
+        <Filename Value="qt6/qtwscalendar.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSCalendar"/>
+      </Item508>
+      <Item509>
+        <Filename Value="qt6/qtwschecklst.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSCheckLst"/>
+      </Item509>
+      <Item510>
+        <Filename Value="qt6/qtwscomctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSComCtrls"/>
+      </Item510>
+      <Item511>
+        <Filename Value="qt6/qtwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSControls"/>
+      </Item511>
+      <Item512>
+        <Filename Value="qt6/qtwsdesigner.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSDesigner"/>
+      </Item512>
+      <Item513>
+        <Filename Value="qt6/qtwsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSDialogs"/>
+      </Item513>
+      <Item514>
+        <Filename Value="qt6/qtwsextctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSExtCtrls"/>
+      </Item514>
+      <Item515>
+        <Filename Value="qt6/qtwsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSExtDlgs"/>
+      </Item515>
+      <Item516>
+        <Filename Value="qt6/qtwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSFactory"/>
+      </Item516>
+      <Item517>
+        <Filename Value="qt6/qtwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSForms"/>
+      </Item517>
+      <Item518>
+        <Filename Value="qt6/qtwsgrids.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSGrids"/>
+      </Item518>
+      <Item519>
+        <Filename Value="qt6/qtwsimglist.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSImgList"/>
+      </Item519>
+      <Item520>
+        <Filename Value="qt6/qtwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSMenus"/>
+      </Item520>
+      <Item521>
+        <Filename Value="qt6/qtwspairsplitter.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSPairSplitter"/>
+      </Item521>
+      <Item522>
+        <Filename Value="qt6/qtwsspin.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSSpin"/>
+      </Item522>
+      <Item523>
+        <Filename Value="qt6/qtwsstdctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="QtWSStdCtrls"/>
+      </Item523>
+      <Item524>
+        <Filename Value="qt6/qtx11dummywidget.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtx11dummywidget"/>
+      </Item524>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
