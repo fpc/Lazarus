@@ -18631,7 +18631,8 @@ for the grid control.
 
 <element name="TCustomGrid.OnSaveColumn">
 <short>
-Event handler signalled when an entry in Columns is saved to a configuration file using the SaveContent method.
+Event handler signalled when an entry in Columns is saved to a configuration 
+file using the SaveContent method.
 </short>
 <descr>
 <p>
@@ -19728,7 +19729,8 @@ Converts mouse coordinates to the position for a logical cell in the grid.
 
 <element name="TCustomGrid.MouseToGridZone">
 <short>
-Converts the specified coordinates for the mouse pointer to the grid zone where they are located.
+Converts the specified coordinates for the mouse pointer to the grid zone 
+where they are located.
 </short>
 <descr>
 <p>
@@ -19746,7 +19748,8 @@ available, and used to the determine the return value.
 <dl>
 <dt>gzInvalid</dt>
 <dd>
-X and Y are located on the border or in a area not used for cells in the client area for the control.
+X and Y are located on the border or in a area not used for cells in the 
+client area for the control.
 </dd>
 <dt>gzFixedCells</dt>
 <dd>
@@ -20048,10 +20051,10 @@ or Shift+Tab keys.
 </short>
 <descr>
 <p>
-The default value for <var>TabStop</var> is <b>True</b> in 
-<b>TCustomGrid</b>, and allows the control to appear in the TabOrder for a 
-Parent form. When goTabs is enabled in Options, Tab and Shift+Tab cannot be 
-used to exit the control.
+The default value for <var>TabStop</var> is <b>True</b> in <b>TCustomGrid</b>, 
+and allows the control to appear in the TabOrder for a Parent form. When 
+goTabs is enabled in Options, Tab and Shift+Tab cannot be used to exit the 
+control.
 </p>
 </descr>
 <seealso>
@@ -22685,15 +22688,15 @@ AutoAdjustColumn visits the rows in the grid to calculate the maximum width
 required for the text in each. A temporary Canvas instance is used to 
 calculate the width for the text. When Columns has been enabled, fonts 
 assigned to the TGridColumn instance are used. When Columns has not been 
-enabled, TitleFont is used for fixed rows or columns. Otherwise, the Font for 
-the grid is used.
+enabled, TitleFont is used for fixed rows or columns. Otherwise, the Font 
+for the grid is used.
 </p>
 <p>
 For multi-line columns, the DrawText routine is called to calculate the text 
 rectangle. For single-line columns, the TextExtent method in the canvas is 
-used. Cell padding is added to the calculated column width using the value in 
-varCellPadding. The derived column width is stored in the ColWidths property 
-for the column specified in ACol.
+used. Cell padding is added to the calculated column width using the value 
+in varCellPadding. The derived column width is stored in the ColWidths 
+property for the column specified in ACol.
 </p>
 <p>
 AutoAdjustColumn is called from the DblClick method when column auto-sizing 
@@ -22773,11 +22776,11 @@ Performs a comparison between the specified cells in the grid control.
 </short>
 <descr>
 <p>
-<var>DoCompareCells</var> is an overridden method used to compare cell values 
-in the Sort method. It calls the inherited method when the OnCompareCells 
-event handler has been assigned. The return value from the event handler 
-contains the relative sort order for the compared cells, and uses the 
-following values:
+<var>DoCompareCells</var> is an overridden method used to compare cell 
+values in the Sort method. It calls the inherited method when the 
+OnCompareCells event handler has been assigned. The return value from the 
+event handler contains the relative sort order for the compared cells, and 
+uses the following values:
 </p>
 <dl>
 <dt>-1</dt>
@@ -22791,9 +22794,9 @@ BRow.</dd>
 </dl>
 <p>
 When OnCompareCells is not assigned, the <var>UTF8CompareLatinTextFast</var> 
-routine is called to perform the cell comparison and provide the return value 
-for the method. When SortOrder is set to soDescending, the return value is 
-negated.
+routine is called to perform the cell comparison and provide the return 
+value for the method. When SortOrder is set to soDescending, the return 
+value is negated.
 </p>
 </descr>
 <seealso>
@@ -22863,8 +22866,8 @@ DrawCellText methods are called to draw the sort indicator and text for the
 column.
 </p>
 <p>
-DrawColumnText is called from the <var>DefaultDrawCell</var> method for cells 
-which contain fixed column titles.
+DrawColumnText is called from the <var>DefaultDrawCell</var> method for 
+cells which contain fixed column titles.
 </p>
 </descr>
 <seealso/>
@@ -22883,7 +22886,9 @@ which contain fixed column titles.
 </element>
 
 <element name="TCustomStringGrid.DrawTextInCell">
-<short>Draws the text for the specified cell in a given drawing state.</short>
+<short>
+Draws the text for the specified cell in a given drawing state.
+</short>
 <descr>
 <p>
 <var>DrawTextInCell</var> is a method used to draw the text for the cell 
@@ -22973,9 +22978,9 @@ in Options.
 <short>Gets the text displayed in the Editor for the specified cell.</short>
 <descr>
 <p>
-<var>GetEditText</var> is an overridden method used to get the text displayed 
-in the Editor for the cell with the specified column and row numbers. 
-GetEditText re-implements the method defined in the ancestor class.
+<var>GetEditText</var> is an overridden method used to get the text 
+displayed in the Editor for the cell with the specified column and row 
+numbers. GetEditText re-implements the method defined in the ancestor class.
 </p>
 <p>
 The return value contains the string stored in <var>Cells</var> at the 
@@ -23083,8 +23088,8 @@ character (?).
 </p>
 <p>
 Calls DoCellProcess to paste the values extracted from the HTML content. The 
-value in TheText is used when TheHTML does not contain valid HTML that can be 
-handled in the method. Cells affected in the method are assigned as the 
+value in TheText is used when TheHTML does not contain valid HTML that can 
+be handled in the method. Cells affected in the method are assigned as the 
 current Selection in the grid control prior to exit.
 </p>
 <p>
@@ -23153,9 +23158,10 @@ coordinates.
 <short>Indicates if the content in the grid cells has been changed.</short>
 <descr>
 <p>
-The value in <var>Modified</var> is set to <b>False</b> when Loaded using the 
-LCL streaming mechanism. The value in Modified is changed to <b>True</b> when 
-the <var>Cells</var> property is updated in the <var>SetCells</var> method.
+The value in <var>Modified</var> is set to <b>False</b> when Loaded using 
+the LCL streaming mechanism. The value in Modified is changed to <b>True</b> 
+when the <var>Cells</var> property is updated in the <var>SetCells</var> 
+method.
 </p>
 </descr>
 <seealso>
@@ -23182,8 +23188,8 @@ DoCellProcess method when assigned.
 <descr>
 <p>
 <var>Create</var> -is the constructor for <var>TCustomStringGrid</var>. It 
-calls the inherited <var>Create</var> method, and sets default styles, layout 
-and alignment used in the class instance.
+calls the inherited <var>Create</var> method, and sets default styles, 
+layout and alignment used in the class instance.
 </p>
 </descr>
 <seealso>
@@ -23411,10 +23417,88 @@ Use DeleteRow to remove a row at a specific row number in the grid.
 
 <element name="TCustomStringGrid.LoadFromCSVStream">
 <short>
-Loads the content for the grid from the delimited values in AStream.
+Loads the grid content from the delimited values in AStream.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>LoadFromCSVStream</var> is a method used to load content in the grid 
+from comma-separated values stored in the specified stream.
+</p>
+<p>
+<var>AStream</var> is the TStream instance where the delimited values are 
+stored.
+</p>
+<p>
+<var>ADelimiter</var> is a character which identifies the delimiter used 
+between column values on a row. Its default value is ',' (Comma) (decimal 
+44), but can be changed to another character value if needed.
+</p>
+<p>
+Each row of values is terminated by a Carriage Return (Decimal 13) or Line 
+Feed (Decimal 10) character. CR+LF may also be used. When LoadFromCSVStream 
+encounters either of the characters, it is processed as an end-of-line 
+marker.
+</p>
+<p>
+<var>UseTitles</var> indicates whether the first row of values in the stream 
+are treated as fixed column titles in the grid. When set to <b>True</b>, 
+each column value is stored as the caption for the corresponding entry in 
+the Columns collection (when enabled). If Columns are not used, the values 
+are stored as cell data in row number 0. When set to <b>False</b>, the first 
+row is treated as cell data. The default value is <b>True</b>.
+</p>
+<p>
+<var>FromLine</var> indicates the ordinal line number in AStream that is the 
+first row loaded in the method. The default value is 0, and causes stream 
+processing to begin at the first line. When a positive non-zero value is 
+used, the lines are skipped by reading the corresponding number of 
+end-of-line sequences from the stream.
+</p>
+<p>
+<var>SkipEmptyLines</var> indicates whether blank lines are skipped when the 
+row and column values are loaded in the method. The default value is 
+<b>True</b>, and causes any row with a single empty column value to be 
+skipped.
+</p>
+<p>
+LoadFromCSVStream calls the LoadFromCSVStream routine in the 
+<file>LCSVUtils</file> unit to load values from the stream. This routine 
+provides support for converting character encodings when needed.
+</p>
+<p>
+LoadFromCSVStream ensures that the grid control has enough columns to 
+represent the values read from the stream. When Columns is enabled, its Add 
+method is called to create additional columns (when needed). If this occurs 
+on the first line and UseTitles is enabled, cell values are stored as the 
+Title for each of the columns. If Columns is not enabled, the value in 
+ColCount is updated to reflect the number of columns read from the stream.
+</p>
+<p>
+Please note that updates to the control occur in a BeginUpdate..EndUpdate 
+block. This suppresses redrawing the control until all columns and rows in 
+the stream have been loaded.
+</p>
+<p>
+Use LoadFromCSVFile to load grid content from a file containing the 
+comma-separated values.
+</p>
+<p>
+Use SaveToCSVFile or SaveToCSVStream to store the content in the grid as 
+comma-separated values.
+</p>
+</descr>
+<seealso>
+<link id="TCustomStringGrid.LoadFromCSVFile"/>
+<link id="TCustomStringGrid.SaveToCSVFile"/>
+<link id="TCustomStringGrid.SaveToCSVStream"/>
+<link id="TCustomStringGrid.Cells"/>
+<link id="TCustomDrawGrid.Columns"/>
+<link id="TCustomDrawGrid.ColCount"/>
+<link id="TCustomDrawGrid.FixedRows"/>
+<link id="TGridColumns"/>
+<link id="TGridColumn.Title"/>
+<link id="#lazutils.lcsvutils.LoadFromCSVStream">LoadFromCSVStream</link>
+</seealso>
 </element>
 <element name="TCustomStringGrid.LoadFromCSVStream.AStream">
 <short>Stream with the content loaded in the method.</short>
@@ -23446,13 +23530,60 @@ Loads the grid from a file with delimited values for the columns and rows.
 </short>
 <descr>
 <p>
-Creates a temporary <var>TFileStream</var> instance that is used to load 
-values from the file in <var>AFilename</var> by calling the 
+LoadFromCSVFile is a method used to delimited values from the file name in 
+<var>AFilename</var>. It creates a temporary <var>TFileStream</var> instance 
+that is used to load values from the file by calling the 
 <var>LoadFromCSVStream</var> method.
+</p>
+<p>
+<var>ADelimiter</var> is a character which identifies the delimiter used 
+between column values on a row. Its default value is ',' (Comma) (decimal 
+44), but can be changed to another character value if needed.
+</p>
+<p>
+Each row of values is terminated by a Carriage Return (Decimal 13) or Line 
+Feed (Decimal 10) character. CR+LF may also be used. When either of the 
+characters is encountered, they are processed as an end-of-line 
+marker.
+</p>
+<p>
+<var>UseTitles</var> indicates whether the first row of values are treated 
+as fixed column titles in the grid. When set to <b>True</b>, each column 
+value is stored as the caption for the corresponding entry in the Columns 
+collection (when enabled). If Columns are not used, the values are stored as 
+cell data in row number 0. When set to <b>False</b>, the first row is 
+treated as cell data. The default value is <b>True</b>.
+</p>
+<p>
+<var>FromLine</var> indicates the ordinal line number that is the first row 
+loaded in the method. The default value is 0, and causes processing to begin 
+at the first line. When a positive non-zero value is used, the lines are 
+skipped by reading the corresponding number of end-of-line sequences.
+</p>
+<p>
+<var>SkipEmptyLines</var> indicates whether blank lines are skipped when the 
+row and column values are loaded in the method. The default value is 
+<b>True</b>, and causes any row with a single empty column value to be 
+skipped.
+</p>
+<p>
+Use LoadFromCSVStream to load comma-separated values from a TStream instance.
+</p>
+<p>
+Use SaveToCSVFile or SaveToCSVStream to store the content in the grid as 
+comma-separated values.
 </p>
 </descr>
 <seealso>
 <link id="TCustomStringGrid.LoadFromCSVStream"/>
+<link id="TCustomStringGrid.SaveToCSVFile"/>
+<link id="TCustomStringGrid.SaveToCSVStream"/>
+<link id="TCustomStringGrid.Cells"/>
+<link id="TCustomDrawGrid.Columns"/>
+<link id="TCustomDrawGrid.ColCount"/>
+<link id="TCustomDrawGrid.FixedRows"/>
+<link id="TGridColumns"/>
+<link id="TGridColumn.Title"/>
 </seealso>
 </element>
 <element name="TCustomStringGrid.LoadFromCSVFile.AFilename">
@@ -23469,29 +23600,106 @@ Indicates if column captions are loaded from values in the file.
 </short>
 </element>
 <element name="TCustomStringGrid.LoadFromCSVFile.FromLine">
-<short>Initial line number from the file loaded in the method.</short>
+<short>
+Initial line number from the file loaded in the method.
+</short>
 </element>
 <element name="TCustomStringGrid.LoadFromCSVFile.SkipEmptyLines">
-<short>Indicates if empty lines in the file are ignored in the method.</short>
+<short>
+Indicates if empty lines in the file are ignored in the method.
+</short>
 </element>
 
 <element name="TCustomStringGrid.SaveToCSVStream">
 <short>
-Saves content in the grid as delimited values in the specified stream 
+Saves grid content as comma-separated values in the specified stream 
 instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveToCSVStream</var> is a method used to save values in the grid as 
+comma-separated values in the specified stream instance.
+</p>
+<p>
+<var>AStream</var> is the TStream instance where the grid content is written 
+in the method.
+</p>
+<p>
+<var>ADelimiter</var> is the character used as the delimiter between cell 
+values on each row. The default value is ',' (Comma)(Decimal 44), but can be 
+changed to another value if needed.
+</p>
+<p>
+<var>WriteTitles</var> indicates whether column titles are written at the 
+beginning of the stream. When set to <b>True</b>, column headers are 
+included in the output. If the Columns collection has been enabled, the 
+titles are read from the TGridColumn instances in the collection. If Columns 
+has not been enabled, the cells in the FixedRows are written. When set to 
+<b>False</b>, titles are omitted from the values output to the stream. The 
+default value for the property is <b>True</b>.
+</p>
+<p>
+<var>VisibleColumnsOnly</var> indicates whether the CSV output contains only 
+visible columns on the grid. This capability is enabled when the Columns 
+collection is used to defined the columns and their visibility. When set to 
+<b>True</b>, any TGridColumn instance with its Visible property set to 
+<b>True</b> is included in the output. 
+</p>
+<p>
+If Columns has not been enabled, all of the columns are by default visible 
+and written to the stream - regardless of the value in the argument. The 
+default value for the argument is <b>False</b>, and allows all columns to be 
+written to the output stream.
+</p>
+<p>
+SaveToCSVStream processes values in the grid in row order. Each column 
+included in the output is written using the value in ADelimiter to separate 
+the adjacent column values. A column value is enclosed by quote characters 
+if its content contains whitespace or the delimiter character defined in 
+ADelimiter. Each row is terminated with the end-of-line sequence used in the 
+LCL.
+</p>
+<p>
+No actions are performed in the method if either RowCount or ColCount are 
+set to 0.
+</p>
+<p>
+Please note: the stream position in AStream is not changed after values are 
+written to the stream. It is positioned at the end of the stream. Use the 
+Seek method or the Position property in AStream to change the stream 
+position when needed.
+</p>
+<p>
+Use SaveToCSVFile to save the grid content as comma-separated values to a 
+given file name.
+</p>
+<p>
+Use LoadFromCSVStream or LoadFromCSVFile to load the content in the grid 
+control from comma-separated values in a stream or file.
+</p>
+</descr>
+<seealso>
+<link id="TCustomStringGrid.SaveToCSVFile"/>
+<link id="TCustomStringGrid.Rows"/>
+<link id="TCustomDrawGrid.FixedRows"/>
+<link id="TCustomDrawGrid.Columns"/>
+<link id="TGridColumns.Enabled"/>
+<link id="TGridColumn.Title"/>
+<link id="#rtl.classes.TStream">TStream</link>
+</seealso>
 </element>
 <element name="TCustomStringGrid.SaveToCSVStream.AStream">
-<short>Stream where grid content is stored.</short>
+<short>Stream where the grid content is stored.</short>
 </element>
 <element name="TCustomStringGrid.SaveToCSVStream.ADelimiter">
-<short>Delimiter between cell values; default is Comma (',').</short>
+<short>
+Delimiter between cell values on the same row; default is Comma (',').
+</short>
 </element>
 <element name="TCustomStringGrid.SaveToCSVStream.WriteTitles">
 <short>
-Indicates that column captions are stored as the first row of CSV data.
+Indicates that column titles are stored as the first row in the 
+comma-separated values. <b>False</b> omits column titles in the output.
 </short>
 </element>
 <element name="TCustomStringGrid.SaveToCSVStream.VisibleColumnsOnly">
@@ -23502,10 +23710,68 @@ Indicates if only visible columns are included in the CSV output.
 
 <element name="TCustomStringGrid.SaveToCSVFile">
 <short>
-Saves grid content as delimited values in the specified file name.
+Saves grid content as comma-separated values in the specified file name.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveToCSVFile</var> is a method used to store the contents of the grid 
+control as comma-separated values in the specified file name.
+</p>
+<p>
+<var>AFileName</var> contains the qualified path and file name where the CSV 
+data is stored.
+</p>
+<p>
+<var>ADelimiter</var> is the character used as the delimiter between cell 
+values on each row. The default value is ',' (Comma)(Decimal 44), but can be 
+changed to another value if needed.
+</p>
+<p>
+<var>WriteTitles</var> indicates whether column titles are written at the 
+beginning of the file. When set to <b>True</b>, column headers are included 
+in the output. If the Columns collection has been enabled, the titles are 
+read from the TGridColumn instances in the collection. If Columns has not 
+been enabled, the cells in the FixedRows are written. When set to 
+<b>False</b>, titles are omitted from the values output to the file. The 
+default value for the property is <b>True</b>.
+</p>
+<p>
+<var>VisibleColumnsOnly</var> indicates whether the CSV output contains only 
+visible columns on the grid. This capability is enabled when the Columns 
+collection is used to defined the columns and their visibility. When set to 
+<b>True</b>, any TGridColumn instance with its Visible property set to 
+<b>True</b> is included in the output. 
+</p>
+<p>
+If Columns has not been enabled, all of the columns are by default visible 
+and written to the file - regardless of the value in the argument. The 
+default value for the argument is <b>False</b>, and allows all columns to be 
+written to the output file.
+</p>
+<p>
+SaveToCSVFile creates a temporary TFileStream instance and calls 
+SaveToCSVStream to process rows the and columns in the grid.
+</p>
+<p>
+Use SaveToCSVStream to save the grid content as comma-separated values to a 
+TStream instance.
+</p>
+<p>
+Use LoadFromCSVStream or LoadFromCSVFile to load the content in the grid 
+control from comma-separated values in a stream or file.
+</p>
+</descr>
+<seealso>
+<link id="TCustomStringGrid.SaveToCSVStream"/>
+<link id="TCustomStringGrid.LoadFromCSVStream"/>
+<link id="TCustomStringGrid.LoadFromCSVFile"/>
+<link id="TCustomStringGrid.Rows"/>
+<link id="TCustomStringGrid.Cells"/>
+<link id="TCustomDrawGrid.FixedRows"/>
+<link id="TCustomDrawGrid.Columns"/>
+<link id="TGridColumns.Enabled"/>
+<link id="TGridColumn.Title"/>
+</seealso>
 </element>
 <element name="TCustomStringGrid.SaveToCSVFile.AFileName">
 <short>File name (with optional path) where CSV data is stored.</short>
@@ -23518,7 +23784,7 @@ Saves grid content as delimited values in the specified file name.
 <element name="TCustomStringGrid.SaveToCSVFile.WriteTitles">
 <short>
 Indicates if column captions are written as the first row of CSV data in the 
-file.
+file. <b>False</b> omits column titles in the output.
 </short>
 </element>
 <element name="TCustomStringGrid.SaveToCSVFile.VisibleColumnsOnly">
@@ -23635,11 +23901,11 @@ Provides indexed access to a TObject instance associated with the cell.
 </short>
 <descr/>
 <p>
-<var>Objects</var> is an indexed <var>TObject</var> property which is used to 
-associate an object instance with the cell specified in the ACol and ARow 
+<var>Objects</var> is an indexed <var>TObject</var> property which is used 
+to associate an object instance with the cell specified in the ACol and ARow 
 index values. The property value can be any TObject descendant. The 
-application must allocate and free the object instance, and must ensure it is 
-cast to the correct type when retrieved.
+application must allocate and free the object instance, and must ensure it 
+is cast to the correct type when retrieved.
 </p>
 <p>
 While values in Cells and Objects are related, they are handled 
@@ -23648,8 +23914,8 @@ assigned to Cells.
 </p>
 <p>
 Values stored in Objects are set to Nil when the Clean method is called to 
-remove content in the grid. The application is responsible for allocating and 
-freeing resources in Objects.
+remove content in the grid. The application is responsible for allocating 
+and freeing resources in Objects.
 </p>
 <p>
 Values for the Objects property are not included in the grid data read and 
@@ -23750,9 +24016,10 @@ control. TStringGrid also allows a <var>TObject</var> instance to be stored
 for each cell in the grid using the <var>Objects</var> property.
 </p>
 <p>
-TStringGrid sets the visibility for properties defined in the ancestor class. 
-It has an overridden <var>WSRegisterClass</var> method to register properties 
-(from older LCL versions) which are no longer used in LCL component streaming.
+TStringGrid sets the visibility for properties defined in the ancestor 
+class. It has an overridden <var>WSRegisterClass</var> method to register 
+properties (from older LCL versions) which are no longer used in LCL 
+component streaming.
 </p>
 <p>
 Additional information about grid usage is available on the Lazarus wiki in 
@@ -23850,8 +24117,8 @@ application, then ParentColor will be automatically set to <b>False</b>.
 Using ParentColor when the Color value is clDefault can cause problems in 
 resolving the actual color value. To obtain the Color property of a control 
 while taking into account clDefault and ParentColor, use the 
-GetColorResolvingParent method. This method might return a non-RGB color, but 
-will never return clDefault. To obtain a purely RGB result use the 
+GetColorResolvingParent method. This method might return a non-RGB color, 
+but will never return clDefault. To obtain a purely RGB result use the 
 GetRGBColorResolvingParent method.
 </p>
 </descr>
@@ -23963,8 +24230,8 @@ Draws a dotted rubber banding rectangle around the provided cell rectangle.
 </p>
 <p>
 <var>DrawBits</var> contains a <var>Byte</var> value that indicates the 
-rectangle sides drawn in the routine. By default, all sides for the rectangle 
-are drawn. Use the following byte values or-ed together in 
+rectangle sides drawn in the routine. By default, all sides for the 
+rectangle are drawn. Use the following byte values or-ed together in 
 <var>DrawBits</var> to specify the sides drawn:
 </p>
 <dl>
@@ -24101,10 +24368,10 @@ widgetset theme</dd>
 <tr>
 <td>AltColorStartNormal</td>
 <td>
-If <b>True</b>, alternate color is always in the second row after fixed rows; 
-the first row after fixed rows will always be the default color. If 
-<b>False</b>, default color is set to the first row as if there were no fixed 
-rows.
+If <b>True</b>, alternate color is always in the second row after fixed 
+rows; the first row after fixed rows will always be the default color. If 
+<b>False</b>, default color is set to the first row as if there were no 
+fixed rows.
 </td>
 </tr>
 <tr>
@@ -24154,8 +24421,8 @@ Pen style used to draw lines in non fixed area, possible choices are:
 <td>UseXORFeatures</td>
 <td>
 If set, focus rect is drawn using XOR mode so it should make visible the 
-focus rect in combination with any cell color background. It also affects the 
-way that moving columns look
+focus rect in combination with any cell color background. It also affects 
+the way that moving columns look
 </td>
 </tr>
 <tr>
@@ -24190,17 +24457,17 @@ anywhere along the column's height.
 <var>Options</var>
 </p>
 <p>
-This is a set of zero or more choices, with some elements that enable diverse 
-functionality but others that are related directly with grid's look. Options 
-can be set at design-time or run-time.
+This is a set of zero or more choices, with some elements that enable 
+diverse functionality but others that are related directly with grid's look. 
+Options can be set at design-time or run-time.
 </p>
 <dl>
 <dt>
 <var>goFixedVertLine, goFixedHorzLine</var>
 </dt>
 <dd>
-Draws a vertical or horizontal line respectively, delimiting cells or columns 
-in the fixed area; active by default.
+Draws a vertical or horizontal line respectively, delimiting cells or 
+columns in the fixed area; active by default.
 </dd>
 <dt>
 <var>goVertLine, goHorzLine</var>
@@ -24236,9 +24503,10 @@ If set, grid will do numbering of rows in first fixed column.
 </dt>
 <dd>
 If set, the grid will try to show a different look when the mouse cursor is 
-over any fixed cell. In order for this to work, desired cell zone needs to be 
-enabled with the <var>HeaderHotZones</var>. Try combining this option with 
-<var>TitleStyle</var>= <var>tsNative</var> to get themed hot tracking look.
+over any fixed cell. In order for this to work, desired cell zone needs to 
+be enabled with the <var>HeaderHotZones</var>. Try combining this option 
+with <var>TitleStyle</var>= <var>tsNative</var> to get themed hot tracking 
+look.
 </dd>
 <dt>
 <var>goHeaderPushedLook</var>
@@ -24258,9 +24526,10 @@ general terms the grid is drawn by painting all rows, and each row by
 painting its individual cells. The process is as follows:
 </p>
 <ul>
-<li>First, the visible cells area is determined: each row is tested to see if 
-it intersects the canvas clipping region; if it's OK, then the visible area 
-is painted by drawing columns of each row.
+<li>
+First, the visible cells area is determined: each row is tested to see if it 
+intersects the canvas clipping region; if it's OK, then the visible area is 
+painted by drawing columns of each row.
 </li>
 <li>
 The column and row values are used to identify the cell that is about to be 
@@ -24301,12 +24570,12 @@ following elements:
 </li>
 <li>
 <p>
-<var>DrawCell</var> - The DrawCell method is virtual and may be overridden in 
-descendent grids to do custom drawing. The information passed to 
-<var>DrawCell</var> helps to identify which particular cell is being painted, 
-the physical area occupied on the screen and its visible status. See <link 
-id="TCustomGrid.DrawCell">DrawCell</link> reference for details. For each 
-cell the following occurs:
+<var>DrawCell</var> - The DrawCell method is virtual and may be overridden 
+in descendent grids to do custom drawing. The information passed to 
+<var>DrawCell</var> helps to identify which particular cell is being 
+painted, the physical area occupied on the screen and its visible status. 
+See <link id="TCustomGrid.DrawCell">DrawCell</link> reference for details. 
+For each cell the following occurs:
 </p>
 <ul>
 <li>
@@ -24314,8 +24583,9 @@ cell the following occurs:
 setup with default properties for brush and font based on current visual 
 state. For several design and run-time properties, the text alignment is set 
 to match programmer selection in custom columns if they exists. If 
-DefaultDrawing is <b>False</b>, brush color is set to clWindow and Font color 
-to clWindowText, the text alignment is set to the DefaultTextStyle value.
+DefaultDrawing is <b>False</b>, brush color is set to clWindow and Font 
+color to clWindowText, the text alignment is set to the DefaultTextStyle 
+value.
 </li>
 <li>
 <b>OnPrepareCanvas</b> -  If the programmer wrote an event handler for the
@@ -24326,34 +24596,35 @@ different combinations of left, center, top, bottom, right alignment, etc.
 Any change made to the canvas for a particular cell in this event would be 
 lost, because the next cell drawing will reset canvas again to a default 
 state. So it's safe doing changes only for a particular cell or cells and 
-forget about it for the rest. Using this event sometimes helps to avoid using 
-the <var>OnDrawCell</var> grid event, where users would be forced to 
+forget about it for the rest. Using this event sometimes helps to avoid 
+using the <var>OnDrawCell</var> grid event, where users would be forced to 
 duplicate the grid's drawing code.
 </li>
 <li>
 <b>OnDrawCell</b> - Next, if no handler for the <var>OnDrawCell</var> event 
 was specified, the grid calls the <var>DefaultDrawCell</var> method which 
 simply paints the cell background using the current canvas brush color and 
-style. If the <var>OnDrawCell</var> handler exists, the grid first paints the 
-cell background, but only if the <var>DefaultDrawing</var> was set; then it 
-calls the <var>OnDrawCell</var> event to do custom cell painting. Usually 
-programmers want to do custom drawing only for particular cells, but standard 
-drawing for others: in this case, they can restrict custom operation to 
-certain cell or cells by looking into <var>ACol, ARow</var> and 
+style. If the <var>OnDrawCell</var> handler exists, the grid first paints 
+the cell background, but only if the <var>DefaultDrawing</var> was set; then 
+it calls the <var>OnDrawCell</var> event to do custom cell painting. Usually 
+programmers want to do custom drawing only for particular cells, but 
+standard drawing for others: in this case, they can restrict custom 
+operation to certain cell or cells by looking into <var>ACol, ARow</var> and 
 <var>AState</var> arguments, and for other cells simply call the 
 <var>DefaultDrawCell</var> method and let the grid to take care of it.
 </li>
 <li>
-<b>Text</b> - At this point, if the <var>DefaultDrawing</var> is <b>True</b>, 
-the cell's text content is painted (only for <var>TStringGrid</var>).
+<b>Text</b> - At this point, if the <var>DefaultDrawing</var> is 
+<b>True</b>, the cell's text content is painted (only for 
+<var>TStringGrid</var>).
 </li>
 <li>
 <b>Grid lines</b> - The last step for each cell is to paint the grid lines: 
 if grid options <var>goVertLine, goHorzLine, goFixedVertLine</var> and
 <var>goFixedHorzLine</var> are specified the cell grid is drawn at this 
 point. Grids with only rows or only cols can be obtained by changing these 
-options. If the programmer elected to have a "themed" look it is done at this 
-point also (see TitleStyle).
+options. If the programmer elected to have a "themed" look it is done at 
+this point also (see TitleStyle).
 </li>
 <li>
 <b>FocusRect</b> - When all columns of the current row have been painted it 
@@ -24367,26 +24638,28 @@ whole row if the <var>goRowSelect</var> option is set.
 <b>Grid Cell Selection</b>
 </p>
 <p>
-The location of a grid's current (focused) cell (or row) can be changed using 
-keyboard, mouse or through code. In order to change cell focus successfully 
-to another position, we must test the target position to see if it is allowed 
-to receive cell focus. When using the keyboard, <var>AutoAdvance</var> 
-performs part of the process by finding what should be the next focused cell. 
-When using mouse clicks or moving by code, focus will not move from the 
-current cell unless the target cell is permitted to receive focus.
+The location of a grid's current (focused) cell (or row) can be changed 
+using keyboard, mouse or through code. In order to change cell focus 
+successfully to another position, we must test the target position to see if 
+it is allowed to receive cell focus. When using the keyboard, 
+<var>AutoAdvance</var> performs part of the process by finding what should 
+be the next focused cell. When using mouse clicks or moving by code, focus 
+will not move from the current cell unless the target cell is permitted to 
+receive focus.
 </p>
 <p>
-The grid calls <var>SelectCell</var> to see if a cell can be focused: if this 
-function returns <b>True</b>, then the target cell identified with arguments 
-<var>aCol</var> and <var>aRow</var> can be focused (the current 
+The grid calls <var>SelectCell</var> to see if a cell can be focused: if 
+this function returns <b>True</b>, then the target cell identified with 
+arguments <var>aCol</var> and <var>aRow</var> can be focused (the current 
 implementation of <var>TCustomGrid</var> simply returns <b>True</b>). 
 <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and 
 <var>TStringGrid</var> override this method and check first if a cell is any 
 wider than 0; normally you don't want a 0 width cell selected so a cell with 
 this characteristics is skipped automatically in the process of finding a 
 suitable cell. The overridden method <var>SelectCell</var> also calls the 
-user configurable event <var>OnSelectCell</var>: this event receives the cell 
-coordinates as arguments and always returns a default result of <b>True</b>.
+user configurable event <var>OnSelectCell</var>: this event receives the 
+cell coordinates as arguments and always returns a default result of 
+<b>True</b>.
 </p>
 <p>
 If a cell can be focused and we are sure a movement will take place, the 
@@ -24457,18 +24730,18 @@ values of type <var>TColumnButtonStyle</var> and so they are prefixed by
 <li>
 <b>cbsAuto</b> - This is the default editor style for TCustomGrid derived 
 grids. The TStringCellEditor derived from TCustomMaskEdit is specialized to 
-edit single line strings and is used by default in TStringGrid and TDrawGrid. 
-When using Custom Columns, if the programmer filled the Column's PickList 
-property, this behaves as if cbsPickList editor style was set. For a 
-TCustomDBGrid that has a field of type Boolean, it behaves as if 
+edit single line strings and is used by default in TStringGrid and 
+TDrawGrid. When using Custom Columns, if the programmer filled the Column's 
+PickList property, this behaves as if cbsPickList editor style was set. For 
+a TCustomDBGrid that has a field of type Boolean, it behaves as if 
 cbsCheckBoxColumn editor style was specified. This is the recommended value 
 for custom cell editors.
 </li>
 <li>
 <p>
-<b>cbsEllipsis</b> - This editor style is the most generic one. A button with 
-ellipsis (...) appears in the editing cell and the programmer can use the 
-OnEditButtonClick grid event to take any programmed action when the user 
+<b>cbsEllipsis</b> - This editor style is the most generic one. A button 
+with ellipsis (...) appears in the editing cell and the programmer can use 
+the OnEditButtonClick grid event to take any programmed action when the user 
 presses the button. For example a calendar dialog could pop up to allow the 
 user to select a specific date, a file open dialog could appear to find 
 files, or a calculator could appear so the user could enter the numeric 
@@ -24485,8 +24758,8 @@ because this event occurs in the active record, it could update the
 information in the active field.
 </li>
 <li>
-This editor style is implemented using TButtonCellEditor, a direct descendant 
-of TButton.
+This editor style is implemented using TButtonCellEditor, a direct 
+descendant of TButton.
 </li>
 </ul>
 </li>
@@ -24511,10 +24784,10 @@ PickList property for the column.
 <p>
 <b>cbsCheckboxColumn</b> - This editor style is at the moment only available 
 in TDBGrid. If a field's contents associated with the column are restricted 
-to a pair of values, for example, yes-no, <b>True</b>-false, on-off, 1-0, etc 
-then cbsCheckboxColumn is used to modify the appearance of a column by using 
-a check box representation that the user can toggle by using a mouse click or 
-pressing the SPACE key.
+to a pair of values, for example, yes-no, <b>True</b>-false, on-off, 1-0, 
+etc. then cbsCheckboxColumn is used to modify the appearance of a column by 
+using a check box representation that the user can toggle by using a mouse 
+click or pressing the SPACE key.
 </p>
 <ul>
 <li>
@@ -24525,8 +24798,8 @@ enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn
 element to <b>False</b> disables this feature.
 </li>
 <li>
-The values that are used to recognize the checked or unchecked states are set 
-in a column's properties ValueChecked and ValueUnchecked.
+The values that are used to recognize the checked or unchecked states are 
+set in a column's properties ValueChecked and ValueUnchecked.
 </li>
 <li>
 At any moment, the field value can be in one of three states: Unchecked, 
