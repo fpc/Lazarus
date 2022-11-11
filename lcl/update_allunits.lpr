@@ -89,6 +89,7 @@ begin
   Run('nogui','');
   Run('cocoa','');
   Run('carbon','objc;pascocoa/appkit;pascocoa/foundation');
+  Run('qt6','');
   // fpgui needs manual additions for corelib/x11 and corelib/gdi
   Run('fpgui','gui;corelib');
 end.
