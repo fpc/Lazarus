@@ -3881,6 +3881,7 @@ else
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk2
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt5
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt6
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/components/synedit/design/languages
 endif
 ifndef BUILDDIR
