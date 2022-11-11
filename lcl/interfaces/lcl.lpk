@@ -92,20 +92,21 @@ end;"/>
         <Item1>
           <Identifier Value="LCLWidgetType"/>
           <Description Value="gtk3"/>
-          <Values Count="13">
+          <Values Count="14">
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
             <Item3 Value="qt"/>
             <Item4 Value="qt5"/>
-            <Item5 Value="win32"/>
-            <Item6 Value="wince"/>
-            <Item7 Value="fpgui"/>
-            <Item8 Value="nogui"/>
-            <Item9 Value="carbon"/>
-            <Item10 Value="cocoa"/>
-            <Item11 Value="customdrawn"/>
-            <Item12 Value="gtk3"/>
-            <Item13 Value="mui"/>
+            <Item5 Value="qt6"/>
+            <Item6 Value="win32"/>
+            <Item7 Value="wince"/>
+            <Item8 Value="fpgui"/>
+            <Item9 Value="nogui"/>
+            <Item10 Value="carbon"/>
+            <Item11 Value="cocoa"/>
+            <Item12 Value="customdrawn"/>
+            <Item13 Value="gtk3"/>
+            <Item14 Value="mui"/>
           </Values>
           <ValueDescriptions Count="13"/>
         </Item1>
