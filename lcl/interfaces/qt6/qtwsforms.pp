@@ -632,7 +632,7 @@ begin
           {use direct X11 call instead of QtTool flag.issue #29253}
           //SetTransientForHint(Widget.Widget, TQtWidget(APopupParent.Handle).Widget);
           {$note check if this is good supplement for SetTransientForHint}
-          QWindow_setTransientParent(Widget.WindowHandle, TQtWidget(APopupParent.Handle).WindowHandle);
+          // QWindow_setTransientParent(Widget.WindowHandle, TQtWidget(APopupParent.Handle).WindowHandle);
         end;
       end;
       {$ENDIF}
