@@ -4395,7 +4395,7 @@ Use Alignment and Layout to control the placement of the Caption text in the
 column title.
 </p>
 </descr>
-<seealso>  
+<seealso>
 <link id="TGridColumnTitle.Alignment"/>
 <link id="TGridColumnTitle.Caption"/>
 <link id="TGridColumnTitle.Column"/>
@@ -11254,12 +11254,70 @@ Position where the column or row is inserted in the method.
 <short>
 Performs a move operation for the column or row at the specified position.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoOPMoveColRow</var> is called from the MouseUp method when the mouse 
+button is released during a column or row drag operation.
+</p>
+<p>
+DoOPMoveColRow ensures that <var>FromIndex</var> and <var>ToIndex</var> 
+contain valid index values for the grid. When FromIndex and ToIndex contain 
+the same value, the drag operation has ended without changing the position for 
+the column or row. In this situation, the grid control is redrawn and no 
+additional actions are performed in the method.
+</p>
+<p>
+<var>IsColumn</var> determines whether column or row data is affected in the 
+method. When set to <b>True</b>, the index values refer to column positions  
+on the grid. Otherwise, the index values refer to row positions.
+</p>
+<p>
+<b>Column Movement</b>
+</p>
+<p>
+Column movements are handled using either the Columns collection or the 
+internal list of column widths maintained in the grid control. When Columns 
+has been enabled, and column order is not locked using GridFlags, the 
+MoveColumn method in the collection is used to move the specified column to 
+its new position.
+</p>
+<p>
+If Columns have not been defined, the internal column list is used to perform 
+the operation. ColRowMoved is called to perform an event notification 
+(implemented in descendent classes) when the action has been completed.
+</p>
+<p>
+<b>Row Movement</b>
+</p>
+<p>
+Row movements are handled using the internal list of row heights in the 
+control. The Move method in in the list is called to relocate the specified 
+row to its new position. ColRowMoved is called to perform an event 
+notification (implemented in descendent classes) when the action has been 
+completed.
+</p>
+<p>
+DoOPMoveColRow calls AdjustEditorBounds to re-select the active cell and 
+position an active cell editor (when needed). For a column movement, the value 
+in SortColumn is updated to reflect the new position for the sort column.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.MouseUp"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.GridFlags"/>
+<link id="TCustomGrid.SortColumn"/>
+<link id="TCustomGrid.AdjustEditorBounds"/>
+<link id="TCustomGrid.ColRowMoved"/>
+<link id="TCustomGrid.ColumnIndexFromGridColumn"/>
+<link id="TCustomGrid.VisualChange"/>
+<link id="TGridColumns.MoveColumn"/>
+<link id="TGridColumn"/>
+</seealso>
 </element>
 <element name="TCustomGrid.DoOPMoveColRow.IsColumn">
 <short>
-<b>True</b> if Index refers to a column instead of a row.
+<b>True</b> if index values are for columns instead of rows.
 </short>
 </element>
 <element name="TCustomGrid.DoOPMoveColRow.FromIndex">
