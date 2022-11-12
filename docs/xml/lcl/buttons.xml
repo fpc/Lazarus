@@ -4428,6 +4428,10 @@ To keep things optimal, LCL implementations should always override
 RealGet/SetText. Get/SetTextBuf is only kept for compatibility.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4 to allow a multi-line value to be entered in the 
+Object Inspector at design-time.
+</version>
 <seealso>
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>
