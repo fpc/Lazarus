@@ -1,4 +1,4 @@
-FROM debian:11
+FROM debian:bullseye-backports
 ARG FPC_STABLE_VER
 ARG FPC_OLDSTABLE_VER
 ARG FPC_FIXES_VER
@@ -11,6 +11,7 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install \
     libgtk-3-dev \
     libqt5x11extras5-dev \
     qtbase5-dev \
+    qt6-base-dev \
     wget
 
 SHELL ["/bin/bash", "-c"]
