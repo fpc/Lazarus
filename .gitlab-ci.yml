@@ -6,6 +6,7 @@ variables:
 
   IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
   QT5PAS_SRC: lcl/interfaces/qt5/cbindings
+  QT6PAS_SRC: lcl/interfaces/qt6/cbindings
 
 workflow:  # these rules enable pipeline for merge requests and try to avoid duplicate pipelines
   rules:
@@ -75,6 +76,26 @@ update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
 #    - changes:
 #        - $QT5PAS_SRC/**/*
 
+update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
+  stage: prepcaches
+  script:
+    - cd $QT6PAS_SRC
+    - qmake -query
+    - qmake
+    - make
+  cache:
+    key: qt6pas-cache-$CI_COMMIT_REF_SLUG
+#    policy: push
+    untracked: true
+    paths:
+      - $QT6PAS_SRC/
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+#    - !reference [.onsuccessjob, rules]
+#    - changes:
+#        - $QT6PAS_SRC/**/*
+
 .useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
   script:
     - cd $QT5PAS_SRC         # install Qt5 Pascal bindings
@@ -86,6 +107,16 @@ update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
     paths:
       - $QT5PAS_SRC/
 
+.useqt6cache:  # this hidden job defines cache configuration used by Qt6 IDE building jobs
+  script:
+    - cd $QT6PAS_SRC         # install Qt6 Pascal bindings
+    - make install
+    - cd $CI_PROJECT_DIR
+  cache:
+    key: qt6pas-cache-$CI_COMMIT_REF_SLUG
+    policy: pull
+    paths:
+      - $QT6PAS_SRC/
 
 x86_64-gtk2-oldstable:
   stage: build
@@ -151,6 +182,26 @@ x86_64-qt5-stable:
   script:
     - !reference [.useqt5cache, script]
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt5
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
+x86_64-qt6-oldstable:
+  extends: .useqt6cache
+  stage: build
+  script:
+    - !reference [.useqt6cache, script]
+    - make bigide FPC=/usr/lib/fpc/$FPC_OLDSTABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt6
+  rules:
+    - !reference [.runscheduled, rules]
+    - !reference [.manualjob, rules]
+
+x86_64-qt6-stable:
+  extends: .useqt6cache
+  stage: build
+  script:
+    - !reference [.useqt6cache, script]
+    - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt6
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.manualjob, rules]
