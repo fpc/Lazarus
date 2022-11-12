@@ -3184,21 +3184,7 @@ begin
       end else
         ALogFont^.lfHeight := AFont.getPixelSize;
       ALogFont^.lfEscapement := AFont.Angle;
-
-      case AFont.getWeight of
-        QtFontWeight_Thin: ALogFont^.lfWeight := FW_THIN;
-        QtFontWeight_ExtraLight: ALogFont^.lfWeight := FW_EXTRALIGHT;
-        QtFontWeight_Light: ALogFont^.lfWeight := FW_LIGHT;
-        QtFontWeight_Normal: ALogFont^.lfWeight := FW_NORMAL;
-        QtFontWeight_Medium: ALogFont^.lfWeight := FW_MEDIUM;
-        QtFontWeight_DemiBold: ALogFont^.lfWeight := FW_SEMIBOLD;
-        QtFontWeight_Bold: ALogFont^.lfWeight := FW_BOLD;
-        QtFontWeight_ExtraBold: ALogFont^.lfWeight := FW_EXTRABOLD;
-        QtFontWeight_Black: ALogFont^.lfWeight := FW_HEAVY;
-        else
-          ALogFont^.lfWeight := Round(AFont.getWeight * 9.5);
-      end;
-
+      ALogFont^.lfWeight := ConvertFontWeightToQtConst(AFont.getWeight);
       ALogFont^.lfItalic := Ord(AFont.getItalic) * High(Byte);
       ALogFont^.lfUnderline := Ord(AFont.getUnderline) * High(Byte);
       ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
@@ -4357,20 +4343,7 @@ begin
 
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
     FontWeight := QtDC.font.getWeight;
-
-    case FontWeight of
-      QtFontWeight_Thin: TM.tmWeight := FW_THIN;
-      QtFontWeight_ExtraLight: TM.tmWeight := FW_EXTRALIGHT;
-      QtFontWeight_Light: TM.tmWeight := FW_LIGHT;
-      QtFontWeight_Normal: TM.tmWeight := FW_NORMAL;
-      QtFontWeight_Medium: TM.tmWeight := FW_MEDIUM;
-      QtFontWeight_DemiBold: TM.tmWeight := FW_SEMIBOLD;
-      QtFontWeight_Bold: TM.tmWeight := FW_BOLD;
-      QtFontWeight_ExtraBold: TM.tmWeight := FW_EXTRABOLD;
-      QtFontWeight_Black: TM.tmWeight := FW_HEAVY;
-      else
-        TM.tmWeight := Round(FontWeight * 9.5);
-    end;
+    TM.tmWeight := ConvertFontWeightToQtConst(FontWeight);
     TM.tmOverhang := 0;
     TM.tmDigitizedAspectX := 0;
     TM.tmDigitizedAspectY := 0;

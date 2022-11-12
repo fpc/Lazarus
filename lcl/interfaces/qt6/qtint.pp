@@ -477,6 +477,23 @@ begin
   until Result <> nil;
 end;
 
+function ConvertFontWeightToQtConst(Value: Integer): Integer;
+begin
+  case Value of
+    QtFontWeight_Thin:       Result := FW_THIN;
+    QtFontWeight_ExtraLight: Result := FW_EXTRALIGHT;
+    QtFontWeight_Light:      Result := FW_LIGHT;
+    QtFontWeight_Normal:     Result := FW_NORMAL;
+    QtFontWeight_Medium:     Result := FW_MEDIUM;
+    QtFontWeight_DemiBold:   Result := FW_SEMIBOLD;
+    QtFontWeight_Bold:       Result := FW_BOLD;
+    QtFontWeight_ExtraBold:  Result := FW_EXTRABOLD;
+    QtFontWeight_Black:      Result := FW_HEAVY;
+    else
+      Result := Round(Value * 9.5);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: GetQtVersion
   Params:  none
