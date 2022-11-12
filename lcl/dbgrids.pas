@@ -596,6 +596,9 @@ type
     property BorderStyle;
     property CellHintPriority;
     property Color;
+    property ColRowDraggingCursor;
+    property ColRowDragIndicatorColor;
+    property ColSizingCursor;
     property Columns; // stored false;
     property Constraints;
     property DataSource;
