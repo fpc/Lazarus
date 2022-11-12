@@ -64,8 +64,17 @@ components are added to the Lazarus IDE Component Palette:
 
 <element name="NullDate">
 <short>Represents a TDateTime type without date and time values.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>NullDate</var> is actually a writeable constant. This is used for 
+compatibility reasons. It is however a bad idea to change the value to 
+anything that is an actual date that is withing the range for the TDateEdit 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TDateEdit.Date"/>
+</seealso>
 <version>
 The value was modified in LCL version 2.4.
 </version>
@@ -74,7 +83,9 @@ The value was modified in LCL version 2.4.
 <element name="NullTime">
 <short>Represents a TDateTime type without a time value assigned.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTimeEdit.Time"/>
+</seealso>
 <version>
 Added in LCL version 2.4.
 </version>
