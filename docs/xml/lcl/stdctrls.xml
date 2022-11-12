@@ -13205,6 +13205,11 @@ Set Transparent to <b>False</b> to make the label opaque.
 </p>
 </descr>
 <seealso>
+<version>
+Modified in LCL version 2.4 to unbind Color and Transparent properties. 
+Setting Color does not automatically change Transparent from <b>True</b> to 
+<b>False</b> now.
+</version>
 <link id="TCustomLabel.Paint"/>
 <link id="TCustomLabel.Transparent"/>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
@@ -13358,6 +13363,9 @@ background and text for the control are drawn. When Transparent is
 to fill the display area with the value in Color.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4. Transparent is no longer toggled when Color is changed. Its value is independent of Color.
+</version>
 <seealso>
 <link id="TCustomLabel.Color"/>
 <link id="TCustomLabel.Paint"/>
