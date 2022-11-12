@@ -80,8 +80,8 @@ update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
   stage: prepcaches
   script:
     - cd $QT6PAS_SRC
-    - qmake -query
-    - qmake
+    - qmake6 -query
+    - qmake6
     - make
   cache:
     key: qt6pas-cache-$CI_COMMIT_REF_SLUG
