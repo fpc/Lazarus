@@ -85,7 +85,9 @@ CONFIG -= link_prl
 CONFIG += release
 CONFIG += dll
 CONFIG += warn_off
-  
+
+CONFIG += c++1z
+
 message("Pascal Qt Interface for binding platform:" $$PLATFORM)
 DEFINES += $$PLATFORM   
 message("Install location:" $$target.path)
