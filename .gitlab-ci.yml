@@ -203,7 +203,7 @@ x86_64-qt6-stable:
     - make bigide FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 CPU_TARGET=x86_64 LCL_PLATFORM=qt6
   rules:
     - !reference [.runscheduled, rules]
-    - !reference [.manualjob, rules]
+    - !reference [.onsuccessjob, rules]
 
 i386-win32-oldstable:
   stage: build
