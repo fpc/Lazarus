@@ -17,7 +17,7 @@
           <ShowHints Value="False"/>
         </Verbosity>
         <CompilerMessages>
-          <IgnoredMessages idx6060="True" idx6058="True" idx3057="True"/>
+          <IgnoredMessages idx6058="True" idx3057="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
@@ -227,7 +227,7 @@ File(s) with other licenses (see also header in file(s):
       </Item>
       <Item>
         <Filename Value="fpdbgdwarfcfi.pas"/>
-        <UnitName Value="fpdbgdwarfcfi"/>
+        <UnitName Value="FpDbgDwarfCFI"/>
       </Item>
     </Files>
     <i18n>
