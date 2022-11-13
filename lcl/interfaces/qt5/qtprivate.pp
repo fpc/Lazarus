@@ -437,11 +437,22 @@ begin
   // simplified because of issue #29670
   // allow insert invalid index like others do
   if Index >= FStringList.Count then
-    Index := FStringList.Add(S)
-  else
+  begin
+    Index := FStringList.Add(S);
+    if FHasTrailingLineBreak then
+      W := GetUTF8String(S + LineBreak)
+    else
+      W := GetUTF8String(S);
+    if FHasTrailingLineBreak then
+      TQtTextEdit(FOwner.Handle).setLineText(Index, W)
+    else
+      TQtTextEdit(FOwner.Handle).Append(W);
+  end else
+  begin
     FStringList.Insert(Index, S);
-  W := GetUTF8String(S);
-  TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+    W := GetUTF8String(S);
+    TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+  end;
   FTextChanged := False; // FStringList is already updated, no need to update from WS.
 end;
 
