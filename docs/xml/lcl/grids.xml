@@ -16362,9 +16362,38 @@ in the Col and Row properties.
 </element>
 
 <element name="TCustomGrid.ColRowDraggingCursor">
-<short>Cursor shape displayed when a column is dragged.</short>
-<descr/>
-<seealso/>
+<short>
+Cursor shape displayed when a column or row is dragged in the grid control.
+</short>
+<descr>
+<p>
+<var>ColRowDraggingCursor</var> is a <var>TCursor</var> property with the 
+cursor shape displayed when a column or a row in the grid control is dragged. 
+It is displayed in methods which perform column or row drag operations at 
+run-time when the CursorState property is set to gcsDragging. The default 
+value for the property is crMultiDrag (multiple item drag cursor 
+TCursor(-16)).
+</p>
+<p>
+ColRowDraggingCursor is a published property in descendent classes like: 
+TDrawGrid, TStringGrid, and TDBGrid.
+</p>
+<p>
+Use ColRowDragIndicatorColor to specify the color for the drag cursor when a 
+drag operation is active.
+</p>
+<p>
+Use ColSizingCursor to specify the cursor shape displayed when a column is resized by dragging the column border.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.ColRowDragIndicatorColor"/>
+<link id="TCustomGrid.ColSizingCursor"/>
+<link id="TCustomGrid.CursorState"/>
+<link id="TDrawGrid"/>
+<link id="TStringGrid"/>
+<link id="#lcl.dbgrids.TDBGrid"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.ColRowDragIndicatorColor">
@@ -16372,8 +16401,36 @@ in the Col and Row properties.
 Color used to render the drag cursor when a column or row is dragged in the 
 grid.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ColRowDragIndicatorColor</var> is a <var>TColor</var> property with the 
+cursor color used when the ColRowDraggingCursor is visible for the grid 
+control. The default value for the property is clRed.
+</p>
+<p>
+Changing the property value causes the DrawColRowMoving method to be called 
+when the grid state is set to gsColMoving.
+</p>
+<p>
+ColRowDragIndicatorColor is a published property in descendent classes like: 
+TDrawGrid, TStringGrid, and TDBGrid.
+</p>
+<p>
+Use ColRowDraggingCursor to specify the cursor shape displayed when a column 
+or row drag operation is active.
+</p>
+<p>
+Use ColSizingCursor to specify the cursor shape displayed when a column is 
+resized by dragging the border on a column.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.ColRowDraggingCursor"/>
+<link id="TCustomGrid.ColSizingCursor"/>
+<link id="TDrawGrid"/>
+<link id="TStringGrid"/>
+<link id="#lcl.dbgrids.TDBGrid"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.ColSizingCursor">
@@ -16470,11 +16527,11 @@ modify column definitions. For example:
 <p>
 Columns should not be confused with the <b><i>COLUMNS</i></b> construct 
 frequently used in <b><i>SQL</i></b> programming, which refer to 
-<var>Fields</var> of data. The contents of Fields can be displayed as Columns 
-in a Grid, but they must be seen as separate and distinct. It is irrelevant 
-to refer to the color, font or width of a data field from a database, but 
-these are all very relevant in specifying the appearance of a column in a 
-grid.
+<var>Fields</var> in a database table. The content in fields can be displayed 
+as Columns in a Grid, but they must be seen as separate and distinct. It is 
+irrelevant to refer to the color, font or width of a data field from a 
+database - but these are all very relevant in specifying the appearance of a 
+column in a grid.
 </p>
 </descr>
 <seealso>
@@ -16484,7 +16541,9 @@ grid.
 </element>
 
 <element name="TCustomGrid.ColWidths">
-<short>Provides indexed access to the Width for a column in the grid.</short>
+<short>
+Provides indexed access to the Width for a column in the grid.
+</short>
 <descr>
 <p>
 The column is specified with the <var>aCol</var> parameter. The 
