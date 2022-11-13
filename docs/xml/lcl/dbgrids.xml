@@ -4707,8 +4707,9 @@ DrawCell renders the specified grid cell using the specified drawing state.
 <descr>
 <p>
 <var>DrawCell</var> is an overridden method in <var>TCustomDBGrid</var>. It 
-re-implements the method introduced in the ancestor class, and does 
-<b>not</b> call the inherited method.          </p>
+re-implements the method introduced in the ancestor class, and does <b>not</b> 
+call the inherited method.
+</p>
 <p>
 DrawCell is used to render a cell at the specified coordinates with the 
 specified drawing state. It calls PrepareCanvas to update the settings in the 
@@ -7769,6 +7770,11 @@ A restricted set of options are available for the grid control:
 
 <element name="TDBGrid.CellHintPriority" link="#lcl.grids.TCustomGrid.CellHintPriority"/>
 <element name="TDBGrid.Color" link="#lcl.controls.TControl.Color"/>
+
+<!-- published in 2.4 -->
+<element name="TDBGrid.ColRowDraggingCursor" link="#lcl.grids.TCustomGrid.ColRowDraggingCursor"/>
+<element name="TDBGrid.ColRowDragIndicatorColor" link="#lcl.grids.TCustomGrid.ColRowDragIndicatorColor"/>
+<element name="TDBGrid.ColSizingCursor" link="#lcl.grids.TCustomGrid.ColSizingCursor"/>
 
 <element name="TDBGrid.Columns">
 <short>
