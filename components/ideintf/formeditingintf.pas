@@ -580,8 +580,6 @@ end;
 procedure TDesignerMediator.SetDesigner(const AValue: TComponentEditorDesigner);
 begin
   if FDesigner=AValue then exit;
-  //if FDesigner<>nil then begin
-  //end;
   FDesigner:=AValue;
 end;
 
