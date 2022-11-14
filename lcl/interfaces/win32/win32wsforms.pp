@@ -304,18 +304,25 @@ begin
   FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
-procedure AdjustFormBounds(const AForm: TCustomForm; var ioSizeRect: TRect);
+procedure AdjustFormBounds(const AForm: TCustomForm; var ioSizeRect: TRect); overload;
 var
-  dpi: LCLType.UINT;
+  Info: tagWINDOWINFO;
 begin
-  // the LCL defines the size of a form without border, win32 with.
-  // -> adjust size according to BorderStyle
   if AForm.HandleAllocated then
-    dpi := GetDpiForWindow(AForm.Handle)
-  else
-    dpi := ScreenInfo.PixelsPerInchX;
-  AdjustWindowRectExForDpi(@ioSizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
-    False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm), dpi);
+  begin
+    Info := Default(tagWINDOWINFO);
+    Info.cbSize := SizeOf(Info);
+    if GetWindowInfo(AForm.Handle, @Info) then
+    begin
+      AdjustFormBounds(AForm.Handle, GetMenu(AForm.Handle)<>0, Info.dwStyle, Info.dwExStyle, ioSizeRect);
+      Exit; // handled -> no default handling
+    end;
+  end;
+
+  // default handling
+  AdjustFormBounds(0, AForm.Menu<>nil,
+    CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
+    CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm), ioSizeRect);
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
@@ -326,8 +333,8 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
   begin
     SizeRect := Classes.Rect(0, 0, AWidth, AHeight);
     AdjustFormBounds(AForm, SizeRect);
-    AWidth := SizeRect.Right - SizeRect.Left;
-    AHeight := SizeRect.Bottom - SizeRect.Top;
+    AWidth := SizeRect.Width;
+    AHeight := SizeRect.Height;
   end;
 
   procedure SetMinMaxInfo(WinControl: TWinControl; var MinMaxInfo: TMINMAXINFO);
@@ -340,9 +347,7 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
 
       IntfWidth := AWidth;
       IntfHeight := AHeight;
-      {$IFNDEF LCLRealFormBounds}
       LCLFormSizeToWin32Size(TCustomForm(WinControl), IntfWidth, IntfHeight);
-      {$ENDIF}
 
       if AWidth > 0 then
         pt.X := IntfWidth;
@@ -473,9 +478,7 @@ begin
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
     Bounds := lForm.BoundsRect;
-    {$IFNDEF LCLRealFormBounds}
     AdjustFormBounds(lForm, Bounds);
-    {$ENDIF}
     if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
     begin
       Left := CW_USEDEFAULT;
@@ -654,9 +657,7 @@ begin
   // -> adjust size according to BorderStyle
   SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
 
-  {$IFNDEF LCLRealFormBounds}
   AdjustFormBounds(AForm, SizeRect);
-  {$ENDIF}
   L := ALeft;
   T := ATop;
   W := SizeRect.Right - SizeRect.Left;

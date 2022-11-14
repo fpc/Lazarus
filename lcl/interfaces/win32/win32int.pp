@@ -94,6 +94,17 @@ const
   SKIP_LMCHANGE = 1000;
 
 type
+  DPI_AWARENESS_CONTEXT = HANDLE;
+
+const
+  // GetThreadDpiAwarenessContext results
+  DPI_AWARENESS_CONTEXT_UNAWARE              = DPI_AWARENESS_CONTEXT(-1);
+  DPI_AWARENESS_CONTEXT_SYSTEM_AWARE         = DPI_AWARENESS_CONTEXT(-2);
+  DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE    = DPI_AWARENESS_CONTEXT(-3);
+  DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = DPI_AWARENESS_CONTEXT(-4);
+  DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED    = DPI_AWARENESS_CONTEXT(-5);
+
+type
   PPPipeEventInfo = ^PPipeEventInfo;
   PPipeEventInfo = ^TPipeEventInfo;
   TPipeEventInfo = record
@@ -261,11 +272,15 @@ function DestroyWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 
 // Multi Dpi support (not yet in FCL); ToDo: move to FCL
 
+function GetThreadDpiAwarenessContext: DPI_AWARENESS_CONTEXT;
+function AreDpiAwarenessContextsEqual(dpiContextA, dpiContextB: DPI_AWARENESS_CONTEXT): BOOL;
 function GetSystemMetricsForDpi(nIndex: Integer; dpi: UINT): Integer;
 function GetDpiForWindow(hwnd: HWND): UINT;
 function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL;
 function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
 function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
+
+procedure AdjustFormBounds(const AHandle: HANDLE; aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; var ioSizeRect: TRect); overload;
 
 implementation
 
@@ -314,6 +329,8 @@ type
   TAdjustWindowRectExForDpi = function(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL; stdcall;
   TGetSystemMetricsForDpi = function (nIndex: Integer; dpi: UINT): Integer; stdcall;
   TLoadIconWithScaleDown = function ( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT; stdcall;
+  TGetThreadDpiAwarenessContext = function (): DPI_AWARENESS_CONTEXT; stdcall;
+  TAreDpiAwarenessContextsEqual = function (dpiContextA, dpiContextB: DPI_AWARENESS_CONTEXT): BOOL; stdcall;
 
 var
   g_GetDpiForMonitor: TGetDpiForMonitor = nil;
@@ -321,6 +338,8 @@ var
   g_AdjustWindowRectExForDpi: TAdjustWindowRectExForDpi = nil;
   g_GetSystemMetricsForDpi: TGetSystemMetricsForDpi = nil;
   g_LoadIconWithScaleDown: TLoadIconWithScaleDown = nil;
+  g_GetThreadDpiAwarenessContext: TGetThreadDpiAwarenessContext = nil;
+  g_AreDpiAwarenessContextsEqual: TAreDpiAwarenessContextsEqual = nil;
   g_HighDPIAPIDone: Boolean = False;
 
 procedure InitHighDPIAPI;
@@ -340,6 +359,8 @@ begin
     Pointer(g_AdjustWindowRectExForDpi) := GetProcAddress(lib, 'AdjustWindowRectExForDpi');
     Pointer(g_GetDpiForWindow) := GetProcAddress(lib, 'GetDpiForWindow');
     Pointer(g_GetSystemMetricsForDpi) := GetProcAddress(lib, 'GetSystemMetricsForDpi');
+    Pointer(g_GetThreadDpiAwarenessContext) := GetProcAddress(lib, 'GetThreadDpiAwarenessContext');
+    Pointer(g_AreDpiAwarenessContextsEqual) := GetProcAddress(lib, 'AreDpiAwarenessContextsEqual');
   end;
 
   lib := LoadLibrary(comctl32);
@@ -347,6 +368,24 @@ begin
     Pointer(g_LoadIconWithScaleDown) := GetProcAddress(lib, 'LoadIconWithScaleDown');
 
   g_HighDPIAPIDone := True;
+end;
+
+function GetThreadDpiAwarenessContext: DPI_AWARENESS_CONTEXT;
+begin
+  InitHighDPIAPI;
+  if Assigned(g_GetThreadDpiAwarenessContext) then
+    Result := g_GetThreadDpiAwarenessContext()
+  else
+    Result := DPI_AWARENESS_CONTEXT_UNAWARE;
+end;
+
+function AreDpiAwarenessContextsEqual(dpiContextA, dpiContextB: DPI_AWARENESS_CONTEXT): BOOL;
+begin
+  InitHighDPIAPI;
+  if Assigned(g_AreDpiAwarenessContextsEqual) then
+    Result := g_AreDpiAwarenessContextsEqual(dpiContextA, dpiContextB)
+  else
+    Result := False;
 end;
 
 function GetSystemMetricsForDpi(nIndex: Integer; dpi: UINT): Integer;
@@ -397,6 +436,24 @@ begin
     Result := g_LoadIconWithScaleDown(hinst, pszName, cx, cy, phico)
   else
     Result := S_FALSE;
+end;
+
+procedure AdjustFormBounds(const AHandle: HANDLE; aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; var ioSizeRect: TRect); overload;
+var
+  xNonClientDPI: UINT;
+begin
+  {$IFNDEF LCLRealFormBounds}
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to window non-client areas
+  // !!! The non-client areas are scaled with Window DPI only for "DPI PerMonitor Aware V2"
+  //     otherwise they are scaled with screen DPI
+  if (AHandle<>0) and AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
+    xNonClientDPI := GetDpiForWindow(AHandle)
+  else
+    xNonClientDPI := ScreenInfo.PixelsPerInchX;
+
+  AdjustWindowRectExForDpi(@ioSizeRect, dwStyle, aHasMenu, dwExStyle, xNonClientDPI);
+  {$ENDIF}
 end;
 
 {$I win32listsl.inc}
