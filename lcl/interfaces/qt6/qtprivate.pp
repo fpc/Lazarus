@@ -426,6 +426,10 @@ end;
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
   W: WideString;
+  ATextEdit: QTextEditH;
+  ADoc: QTextDocumentH;
+  ABlock: QTextBlockH;
+  ACursor: QTextCursorH;
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
@@ -444,9 +448,19 @@ begin
     else
       W := GetUTF8String(S);
     if FHasTrailingLineBreak then
-      TQtTextEdit(FOwner.Handle).setLineText(Index, W)
-    else
-      TQtTextEdit(FOwner.Handle).Append(W);
+    begin
+      //issue #39444
+      ATextEdit := QTextEditH(TQtTextEdit(FOwner.Handle).Widget);
+      ADoc := QTextEdit_document(ATextEdit);
+      ABlock := QTextBlock_Create;
+      QTextDocument_lastBlock(ADoc, ABlock);
+      ACursor := QTextCursor_Create(ABlock);
+      QTextCursor_movePosition(ACursor, QTextCursorEnd);
+      QTextCursor_deletePreviousChar(ACursor);
+      QTextBlock_Destroy(ABlock);
+      QTextCursor_destroy(ACursor);
+    end;
+    TQtTextEdit(FOwner.Handle).Append(W);
   end else
   begin
     FStringList.Insert(Index, S);
