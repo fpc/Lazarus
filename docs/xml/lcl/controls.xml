@@ -4729,6 +4729,24 @@ dock manager.
 <short>Control examined in the method.</short>
 </element>
 
+<!-- TODO: This needs work.-->
+<element name="TDockManager.CanBeDoubleDocked">
+<short/>
+<descr>
+<p>
+<var>CanBeDoubleDocked</var> is a <var>Boolean</var> function.
+CanBeDoubleDocked always returns <b>True</b> in TDockManager.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TDockManager.CanBeDoubleDocked.Result">
+<short>
+Always returns <b>True</b> in TDockManager. Can be overridden in descendent 
+classes.
+</short>
+</element>
+
 <element name="TDockManagerClass">
 <short>
 The DockManager class type, for use when a DockManager is automatically 
