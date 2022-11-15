@@ -477,7 +477,9 @@ type
     function GetElementDetails(Detail: TThemedTreeview): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
     
-    function GetDetailSize(Details: TThemedElementDetails): TSize; virtual;
+    function GetDetailSize(Details: TThemedElementDetails): TSize; virtual; deprecated 'use GetDetailSizeForPPI';
+    function GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize; virtual;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; virtual;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
     function GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image, Mask: HBitmap): Boolean; virtual;
@@ -1875,6 +1877,11 @@ end;
 
 function TThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
+  Result := GetDetailSizeForPPI(Details, ScreenInfo.PixelsPerInchX);
+end;
+
+function TThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize;
+begin
   // default values here
   // -1 mean that we do not know size of detail
   Result := Size(-1, -1);
@@ -1905,9 +1912,14 @@ begin
         Result := Size(8, 5);
   end;
   if (Result.cx>0) then
-    Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
+    Result.cx := MulDiv(Result.cx, PPI, 96);
   if (Result.cy>0) then
-    Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
+    Result.cy := MulDiv(Result.cy, PPI, 96);
+end;
+
+function TThemeServices.GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize;
+begin
+  Result := GetDetailSizeForPPI(Details, ScreenInfo.PixelsPerInchX);
 end;
 
 function TThemeServices.GetDetailRegion(DC: HDC;

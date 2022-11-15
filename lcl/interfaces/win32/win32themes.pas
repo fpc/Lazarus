@@ -45,7 +45,8 @@ type
   public
     destructor Destroy; override;
 
-    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize; override;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetStockImage(StockID: LongInt; const AWidth, AHeight: Integer; out Image, Mask: HBitmap): Boolean; override;
@@ -184,7 +185,7 @@ begin
   FreeThemeLibrary;
 end;
 
-function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
+function TWin32ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize;
 var
   R: TRect;
 begin
@@ -200,13 +201,26 @@ begin
        (Details.Element = teTrackBar) or (Details.Element = teHeader) then
     begin
       R := Rect(0, 0, 800, 800);
-      GetThemePartSize(GetTheme(Details.Element), 0, Details.Part, Details.State, @R, TS_TRUE, Result);
+      GetThemePartSize(GetThemeForPPI(Details.Element, PPI), 0, Details.Part, Details.State, @R, TS_TRUE, Result);
     end
     else
-      Result := inherited GetDetailSize(Details);
+      Result := inherited GetDetailSizeForPPI(Details, PPI);
   end
   else
-    Result := inherited GetDetailSize(Details);
+    Result := inherited GetDetailSizeForPPI(Details, PPI);
+end;
+
+function TWin32ThemeServices.GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize;
+var
+  PPI: UINT;
+begin
+  if (AWindow<>0) and AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
+    PPI := GetDpiForWindow(AWindow)
+  else
+    PPI := 0;
+  if PPI=0 then
+    PPI := ScreenInfo.PixelsPerInchX;
+  Result := GetDetailSizeForPPI(Details, PPI);
 end;
 
 function TWin32ThemeServices.GetImageAndMaskFromIcon(const Icon: HICON; out Image, Mask: HBITMAP): Boolean;
