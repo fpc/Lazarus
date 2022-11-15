@@ -2005,7 +2005,7 @@ begin
       else
         // ToDo: Handle TToggleBox separately from TCheckbox
         details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-      with ThemeServices.GetDetailSize(details) do
+      with ThemeServices.GetDetailSizeForWindow(details, TWinControlAccess(AWinControl).WindowHandle) do
       begin
         iconWidth := CX;
         iconHeight := CY;
