@@ -2423,7 +2423,7 @@ function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
     if (Height<>0) and (Width<>0) then
     begin
       xRect := Rect(0, 0, 0, 0);
-      AdjustFormBounds(Handle, GetMenu(Handle)<>0, dwStyle, dwExStyle, xRect);
+      AdjustFormBounds(GetMenu(Handle)<>0, dwStyle, dwExStyle, GetDpiForWindow(Handle), xRect);
       Dec(Height, xRect.Height);
       Dec(Width, xRect.Width);
     end;
@@ -2457,11 +2457,13 @@ begin
     if Result then
     begin
       // for minimized window use normal position, in other case use rcWindow of WindowInfo
-      if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
-        SetWidthHeightFromRect(WP.rcNormalPosition)
+      if (WP.showCmd<>SW_MINIMIZE) and (WP.showCmd<>SW_SHOWMINIMIZED) and not Info.rcClient.IsEmpty then
+        SetWidthHeightFromRect(Info.rcClient)
       else
-        SetWidthHeightFromRect(Info.rcWindow);
-      ExcludeBorder(Info.dwStyle, Info.dwExStyle);
+      begin
+        SetWidthHeightFromRect(WP.rcNormalPosition);
+        ExcludeBorder(Info.dwStyle, Info.dwExStyle); // rcClient is not available -> get ExcludeBorder
+      end;
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
     end;

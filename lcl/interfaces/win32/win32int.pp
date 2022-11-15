@@ -280,7 +280,8 @@ function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: B
 function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
 function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
 
-procedure AdjustFormBounds(const AHandle: HANDLE; aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; var ioSizeRect: TRect); overload;
+procedure AdjustFormBounds(const AHandle: HANDLE; var ioSizeRect: TRect); overload;
+procedure AdjustFormBounds(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSizeRect: TRect); overload;
 
 implementation
 
@@ -438,21 +439,44 @@ begin
     Result := S_FALSE;
 end;
 
-procedure AdjustFormBounds(const AHandle: HANDLE; aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; var ioSizeRect: TRect); overload;
+procedure AdjustFormBounds(const AHandle: HANDLE; var ioSizeRect: TRect);
+{$IFNDEF LCLRealFormBounds}
 var
+  xClientRect, xWindowRect: TRect;
   xNonClientDPI: UINT;
+  Info: tagWINDOWINFO;
+{$ENDIF}
 begin
   {$IFNDEF LCLRealFormBounds}
-  // the LCL defines the size of a form without border, win32 with.
-  // -> adjust size according to window non-client areas
-  // !!! The non-client areas are scaled with Window DPI only for "DPI PerMonitor Aware V2"
-  //     otherwise they are scaled with screen DPI
+  xClientRect := Default(TRect);
+  xWindowRect := Default(TRect);
+  if (AHandle<>0)
+  and GetClientRect(AHandle, xClientRect) and not xClientRect.IsEmpty
+  and (GetWindowRect(AHandle, xWindowRect)<>0) and not xWindowRect.IsEmpty then
+  begin
+    Inc(ioSizeRect.Right, xWindowRect.Width-xClientRect.Width);
+    Inc(ioSizeRect.Bottom, xWindowRect.Height-xClientRect.Height);
+    Exit; // the sizes could be obtained from window-client -> exit
+  end;
+
+  // the sizes could not be obtained from window-client (e.g. the window is minimized) -> calculate default
   if (AHandle<>0) and AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
     xNonClientDPI := GetDpiForWindow(AHandle)
   else
     xNonClientDPI := ScreenInfo.PixelsPerInchX;
 
-  AdjustWindowRectExForDpi(@ioSizeRect, dwStyle, aHasMenu, dwExStyle, xNonClientDPI);
+  Info := Default(tagWINDOWINFO);
+  Info.cbSize := SizeOf(Info);
+  if GetWindowInfo(AHandle, @Info) then
+    AdjustWindowRectExForDpi(@ioSizeRect, Info.dwStyle, GetMenu(AHandle)<>0, Info.dwExStyle, xNonClientDPI);
+  {$ENDIF}
+end;
+
+procedure AdjustFormBounds(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSizeRect: TRect);
+begin
+  {$IFNDEF LCLRealFormBounds}
+  // no known handle -> default (1 menu line)
+  AdjustWindowRectExForDpi(@ioSizeRect, dwStyle, aHasMenu, dwExStyle, dpi);
   {$ENDIF}
 end;
 

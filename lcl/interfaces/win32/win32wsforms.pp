@@ -122,6 +122,7 @@ type
   published
   end;
 
+procedure AdjustFormBounds(const AForm: TCustomForm; var ioSizeRect: TRect); overload;
 
 implementation
 
@@ -306,23 +307,15 @@ end;
 
 procedure AdjustFormBounds(const AForm: TCustomForm; var ioSizeRect: TRect); overload;
 var
-  Info: tagWINDOWINFO;
+  xNonClientDPI: LCLType.UINT;
 begin
   if AForm.HandleAllocated then
-  begin
-    Info := Default(tagWINDOWINFO);
-    Info.cbSize := SizeOf(Info);
-    if GetWindowInfo(AForm.Handle, @Info) then
-    begin
-      AdjustFormBounds(AForm.Handle, GetMenu(AForm.Handle)<>0, Info.dwStyle, Info.dwExStyle, ioSizeRect);
-      Exit; // handled -> no default handling
-    end;
-  end;
-
-  // default handling
-  AdjustFormBounds(0, AForm.Menu<>nil,
-    CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
-    CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm), ioSizeRect);
+    AdjustFormBounds(AForm.Handle, ioSizeRect)
+  else // default handling
+    AdjustFormBounds(AForm.Menu<>nil,
+      CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
+      CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm),
+      ScreenInfo.PixelsPerInchX, ioSizeRect);
 end;
 
 function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
