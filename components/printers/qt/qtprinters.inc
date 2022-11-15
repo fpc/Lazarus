@@ -291,7 +291,7 @@ begin
     CurrentPageSize := QtDefaultPrinter.PageSize;
 
     EnumQPrinters(PrinterList);
-    Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
+    Index := PrinterList.IndexOf(UTF16ToUTF8(QtDefaultPrinter.PrinterName));
     if Index>=0 then
     begin
       {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
