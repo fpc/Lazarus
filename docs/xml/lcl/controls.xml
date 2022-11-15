@@ -18934,7 +18934,10 @@ in TAnchorSide.
 </seealso>
 </element>
 <element name="TWinControl.GetAdjustedLogicalClientRect.ARect">
-<short/>
+<short>
+Output variable with the client bounds adjusted for borders, bevels, edges, or 
+indentation used on the control.
+</short>
 </element>
 
 <element name="TWinControl.AlignControls">
@@ -18980,10 +18983,30 @@ lifting.
 
 <element name="TWinControl.CustomAlignInsertBefore">
 <short>
-Returns the placement order of custom-aligned child controls, using the 
-<var>OnAlignInsertBefore</var> handler.
+Indicates whether the specified controls were custom-aligned using the 
+OnAlignInsertBefore handler.
 </short>
+<descr>
+<p>
+<var>CustomAlignInsertBefore</var> is a <var>Boolean</var> function which 
+indicates whether the specified controls need to be custom-aligned using the 
+OnAlignInsertBefore handler. CustomAlignInsertBefore is called (circuitously) 
+when auto-sizing is performed in the DoAutoSize method, and the Align property 
+in the control is alCustom.
+</p>
+<p>
+<var>AControl1</var> and <var>AControl2</var> are child controls examined to 
+determine the alignment order in the parent control.
+</p>
+<p>
+The return value is <b>False</b> if OnAlignInsertBefore has not been assigned 
+in the control, or when the controls do not require custom alignment. 
+<b>True</b> indicates that the controls are swapped in the alignment order.
+</p>
+</descr>
 <seealso>
+<link id="TWinControl.OnAlignInsertBefore"/>
+<link id="TWinControl.DoAutoSize"/>
 <link id="TAlignInsertBeforeEvent"/>
 </seealso>
 </element>
@@ -18991,10 +19014,14 @@ Returns the placement order of custom-aligned child controls, using the
 <short><b>True</b> if Control2 should be placed before Control1.</short>
 </element>
 <element name="TWinControl.CustomAlignInsertBefore.AControl1">
-<short/>
+<short>
+Child control examined in the event handler for its aligment order.
+</short>
 </element>
 <element name="TWinControl.CustomAlignInsertBefore.AControl2">
-<short/>
+<short>
+Child control examined in the event handler for its aligment order.
+</short>
 </element>
 
 <element name="TWinControl.CustomAlignPosition">
@@ -19016,7 +19043,7 @@ The <var>OnAlignPosition</var> handler can update the coordinates as required.
 </seealso>
 </element>
 <element name="TWinControl.CustomAlignPosition.AControl">
-<short>The control to be placed.</short>
+<short>The control to be repositioned / resized.</short>
 </element>
 <element name="TWinControl.CustomAlignPosition.ANewLeft">
 <short/>
@@ -19046,9 +19073,9 @@ control.
 </short>
 <descr>
 <p>
-DoAlignChildControls always returns <b>False</b> in TWinControl. It can be 
-overridden in descendent classes to perform any actions needed, and to set 
-the return value to <b>True</b> to avoid the default handling performed in 
+<var>DoAlignChildControls</var> always returns <b>False</b> in TWinControl. It 
+can be overridden in descendent classes to perform any actions needed, and to 
+set the return value to <b>True</b> to avoid the default handling performed in 
 AlignControls.
 </p>
 </descr>
@@ -19336,8 +19363,9 @@ DoAutoSize performs the following:
 <ul>
 <li>Checks whether Autosize is permitted</li>
 <li>Checks for unaligned child components and aligns them as best it can</li>
-<li>Moves the constrained (aligned) child components to the correct 
-position</li>
+<li>
+Moves the constrained (aligned) child components to the correct position
+</li>
 <li>Adjusts the size of the client rectangle</li>
 <li>Adjusts the bounds of the whole control</li>
 </ul>
@@ -20737,12 +20765,14 @@ Handles key down messages which are not handled by the widget.
 <short><b>True</b> if the key was handled.</short>
 </element>
 <element name="TWinControl.DoRemainingKeyDown.Message">
-<short/>
+<short>
+Key down message examined in the method.
+</short>
 </element>
 
 <element name="TWinControl.DoRemainingKeyUp">
 <short>
-Handles key up messages which are not handled by the widget.
+Handles key up messages not already handled by the widget.
 </short>
 <descr/>
 <seealso/>
@@ -20751,7 +20781,9 @@ Handles key up messages which are not handled by the widget.
 <short><b>True</b> if the key was handled.</short>
 </element>
 <element name="TWinControl.DoRemainingKeyUp.Message">
-<short/>
+<short>
+Key up message examined in the method.
+</short>
 </element>
 
 <element name="TWinControl.DoKeyPress">
@@ -20899,6 +20931,9 @@ Forwards the key message to the parent form to be handled as an accelerator
 </short>
 <descr>
 <p>
+If the dialog character is handled in the Parent form, the CharCode member in Message is set to VK_UNKNOWN (0).
+</p>
+<p>
 No actions are performed in the method when accelerator keys are not enabled 
 for the LCL interface, or when ParentForm is unassigned for the control.
 </p>
@@ -20909,7 +20944,9 @@ for the LCL interface, or when ParentForm is unassigned for the control.
 <short><b>True</b> if the key was handled.</short>
 </element>
 <element name="TWinControl.SendDialogChar.Message">
-<short/>
+<short>
+Message with the key event handled and updated in the method.
+</short>
 </element>
 
 <element name="TWinControl.DialogChar">
