@@ -8061,10 +8061,10 @@ function QPrinter_duplex(handle: QPrinterH): QPrinterDuplexMode; cdecl; external
 procedure QPrinter_supportedResolutions(handle: QPrinterH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinter_supportedResolutions';
 procedure QPrinter_setFontEmbeddingEnabled(handle: QPrinterH; enable: Boolean); cdecl; external Qt6PasLib name 'QPrinter_setFontEmbeddingEnabled';
 function QPrinter_fontEmbeddingEnabled(handle: QPrinterH): Boolean; cdecl; external Qt6PasLib name 'QPrinter_fontEmbeddingEnabled';
-procedure QPrinter_paperRect(handle: QPrinterH; retval: QRectFH; AnonParam1: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_paperRect';
-procedure QPrinter_pageRect(handle: QPrinterH; retval: QRectFH; AnonParam1: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_pageRect';
-procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external Qt6PasLib name 'QPrinter_paperRect2';
-procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external Qt6PasLib name 'QPrinter_pageRect2';
+procedure QPrinter_paperRect(handle: QPrinterH; AnonParam1: QPrinterUnit; retval: QRectFH); cdecl; external Qt6PasLib name 'QPrinter_paperRect';
+procedure QPrinter_pageRect(handle: QPrinterH; AnonParam1: QPrinterUnit; retval: QRectFH); cdecl; external Qt6PasLib name 'QPrinter_pageRect';
+procedure QPrinter_paperRect(handle: QPrinterH; AnonParam1: QPrinterUnit; retval: PRect); cdecl; external Qt6PasLib name 'QPrinter_paperRect2';
+procedure QPrinter_pageRect(handle: QPrinterH; AnonParam1: QPrinterUnit; retval: PRect); cdecl; external Qt6PasLib name 'QPrinter_pageRect2';
 
 procedure QPrinter_pageLayout(handle: QPrinterH; retval: QPageLayoutH); cdecl; external Qt6PasLib name 'QPrinter_pageLayout';
 procedure QPrinter_pageSize(handle: QPrinterH; retval: QPageSizeH);  cdecl; external Qt6PasLib name 'QPrinter_pageSize';
@@ -8109,7 +8109,7 @@ procedure QPrinterInfo_location(handle: QPrinterInfoH; retval: PWideString); cde
 procedure QPrinterInfo_makeAndModel(handle: QPrinterInfoH; retval: PWideString); cdecl; external Qt6PasLib name 'QPrinterInfo_makeAndModel';
 function QPrinterInfo_isNull(handle: QPrinterInfoH): Boolean; cdecl; external Qt6PasLib name 'QPrinterInfo_isNull';
 function QPrinterInfo_isDefault(handle: QPrinterInfoH): Boolean; cdecl; external Qt6PasLib name 'QPrinterInfo_isDefault';
-procedure QPrinterInfo_supportedPaperSizes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedPaperSizes';
+procedure QPrinterInfo_supportedPageSizes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedPageSizes';
 procedure QPrinterInfo_availablePrinters(retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_availablePrinters';
 procedure QPrinterInfo_availablePrinterNames(retval: QStringListH); cdecl; external Qt6PasLib name 'QPrinterInfo_availablePrinterNames';
 procedure QPrinterInfo_defaultPrinter(retval: QPrinterInfoH); cdecl; external Qt6PasLib name 'QPrinterInfo_defaultPrinter';
@@ -15428,6 +15428,8 @@ function QGuiApplication_screenCount: integer;
 function QGuiApplication_screenNumber(AScreen: QScreenH): integer;
 function QGuiApplication_screenFromNumber(aNumber: integer): QScreenH;
 
+procedure QPrinterInfo_supportedPaperSizes(Info: QPrinterInfoH; out APageSizes: TPtrIntArray);
+
 implementation
 uses SysUtils,Math;
 
@@ -15576,6 +15578,24 @@ begin
   end else
   begin
     Result := QFontMetrics_horizontalAdvance(handle, str, len);
+  end;
+end;
+
+procedure QPrinterInfo_supportedPaperSizes(Info: QPrinterInfoH; out APageSizes: TPtrIntArray);
+var
+  Arr: TPtrIntArray;
+  APageSize: QPageSizeH;
+  i: Integer;
+begin
+  SetLength(APageSizes{%H-}, 0);
+  QPrinterInfo_supportedPageSizes(Info, @Arr);
+  if length(Arr) = 0 then
+    exit;
+  SetLength(APageSizes, length(Arr));
+  for i := 0 to High(Arr) do
+  begin
+    APageSize := QPageSizeH(Arr[i]);
+    APageSizes[i] := QPageSize_id(APageSize);
   end;
 end;
 
