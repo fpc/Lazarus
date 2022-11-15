@@ -2418,14 +2418,14 @@ function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
 
   procedure ExcludeBorder(dwStyle, dwExStyle: DWORD);
   var
-    xRect: Windows.RECT;
+    xSize: Windows.SIZE;
   begin
     if (Height<>0) and (Width<>0) then
     begin
-      xRect := Rect(0, 0, 0, 0);
-      AdjustFormBounds(GetMenu(Handle)<>0, dwStyle, dwExStyle, GetDpiForWindow(Handle), xRect);
-      Dec(Height, xRect.Height);
-      Dec(Width, xRect.Width);
+      xSize := TSize.Create(0, 0);
+      AdjustFormClientToWindowSize(Handle, xSize);
+      Dec(Height, xSize.Height);
+      Dec(Width, xSize.Width);
     end;
   end;
 
@@ -2457,13 +2457,12 @@ begin
     if Result then
     begin
       // for minimized window use normal position, in other case use rcWindow of WindowInfo
-      if (WP.showCmd<>SW_MINIMIZE) and (WP.showCmd<>SW_SHOWMINIMIZED) and not Info.rcClient.IsEmpty then
-        SetWidthHeightFromRect(Info.rcClient)
+      //  DO NOT USE rcClient here because it is wrong if the form has scrollbars
+      if (WP.showCmd<>SW_MINIMIZE) and (WP.showCmd<>SW_SHOWMINIMIZED) then
+        SetWidthHeightFromRect(Info.rcWindow)
       else
-      begin
         SetWidthHeightFromRect(WP.rcNormalPosition);
-        ExcludeBorder(Info.dwStyle, Info.dwExStyle); // rcClient is not available -> get ExcludeBorder
-      end;
+      ExcludeBorder(Info.dwStyle, Info.dwExStyle);
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
     end;

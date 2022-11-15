@@ -280,8 +280,8 @@ function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: B
 function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
 function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
 
-procedure AdjustFormBounds(const AHandle: HANDLE; var ioSizeRect: TRect); overload;
-procedure AdjustFormBounds(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSizeRect: TRect); overload;
+procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize); overload;
+procedure AdjustFormClientToWindowSize(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSize: TSize); overload;
 
 implementation
 
@@ -439,44 +439,68 @@ begin
     Result := S_FALSE;
 end;
 
-procedure AdjustFormBounds(const AHandle: HANDLE; var ioSizeRect: TRect);
+procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize);
 {$IFNDEF LCLRealFormBounds}
 var
-  xClientRect, xWindowRect: TRect;
+  xClientRect, xWindowRect, xSR: TRect;
   xNonClientDPI: UINT;
-  Info: tagWINDOWINFO;
+  xInfo: tagWINDOWINFO;
+  xTopLeft: TPoint;
+  xHasMenu: Boolean;
+  xReplaceTop: LongInt;
 {$ENDIF}
 begin
   {$IFNDEF LCLRealFormBounds}
-  xClientRect := Default(TRect);
-  xWindowRect := Default(TRect);
-  if (AHandle<>0)
-  and GetClientRect(AHandle, xClientRect) and not xClientRect.IsEmpty
-  and (GetWindowRect(AHandle, xWindowRect)<>0) and not xWindowRect.IsEmpty then
-  begin
-    Inc(ioSizeRect.Right, xWindowRect.Width-xClientRect.Width);
-    Inc(ioSizeRect.Bottom, xWindowRect.Height-xClientRect.Height);
-    Exit; // the sizes could be obtained from window-client -> exit
-  end;
+  // convert form client size to window size
+  //  the difference between Windows.GetClientRect(AHandle, xClientRect) and Windows.GetWindowRect(AHandle, xWindowRect)
+  //  must not be used because it fails when the form has visible scrollbars (and can be scrolled)
 
-  // the sizes could not be obtained from window-client (e.g. the window is minimized) -> calculate default
-  if (AHandle<>0) and AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
+  if AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
     xNonClientDPI := GetDpiForWindow(AHandle)
   else
     xNonClientDPI := ScreenInfo.PixelsPerInchX;
 
-  Info := Default(tagWINDOWINFO);
-  Info.cbSize := SizeOf(Info);
-  if GetWindowInfo(AHandle, @Info) then
-    AdjustWindowRectExForDpi(@ioSizeRect, Info.dwStyle, GetMenu(AHandle)<>0, Info.dwExStyle, xNonClientDPI);
+  xInfo := Default(tagWINDOWINFO);
+  xInfo.cbSize := SizeOf(xInfo);
+  if GetWindowInfo(AHandle, @xInfo) then
+  begin
+    xHasMenu := GetMenu(AHandle)<>0;
+    xTopLeft := Point(0, 0);
+    xClientRect := Default(TRect);
+    xWindowRect := Default(TRect);
+
+    // AdjustWindowRectExForDpi calculates only 1 menu line but on Win32 the menu can have multiple lines
+    //  therefore get the top coordinate from ClientToScreen difference if possible (that is correct also when scrollbars are shown)
+    if xHasMenu
+    and Windows.GetClientRect(AHandle, xClientRect) and not xClientRect.IsEmpty // just to check that there is some client rect and ClientToScreen will return some sane results
+    and Windows.GetWindowRect(AHandle, xWindowRect) and not xWindowRect.IsEmpty
+    and Windows.ClientToScreen(AHandle, xTopLeft) then
+    begin
+      xReplaceTop := xTopLeft.Y-xWindowRect.Top;
+      xHasMenu := False;
+    end else
+      xReplaceTop := 0;
+
+    xSR := Rect(0, 0, 0, 0);
+    AdjustWindowRectExForDpi(@xSR, xInfo.dwStyle, xHasMenu, xInfo.dwExStyle, xNonClientDPI);
+    if xReplaceTop>0 then
+      xSR.Top := -xReplaceTop;
+    Inc(ioSize.cx, xSR.Width);
+    Inc(ioSize.cy, xSR.Height);
+  end;
   {$ENDIF}
 end;
 
-procedure AdjustFormBounds(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSizeRect: TRect);
+procedure AdjustFormClientToWindowSize(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSize: TSize);
+var
+  SizeRect: TRect;
 begin
   {$IFNDEF LCLRealFormBounds}
   // no known handle -> default (1 menu line)
-  AdjustWindowRectExForDpi(@ioSizeRect, dwStyle, aHasMenu, dwExStyle, dpi);
+  SizeRect := Rect(0, 0, ioSize.Width, ioSize.Height);
+  AdjustWindowRectExForDpi(@SizeRect, dwStyle, aHasMenu, dwExStyle, dpi);
+  ioSize.Width := SizeRect.Width;
+  ioSize.Height := SizeRect.Height;
   {$ENDIF}
 end;
 
