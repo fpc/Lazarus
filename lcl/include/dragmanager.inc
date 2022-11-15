@@ -367,6 +367,25 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
     end;
   end;
 
+  function IsClientChildOfControl(AControl:TWinControl): Boolean;
+  var
+    Client:TControl;
+  begin
+    Result := False;
+    Client := FDockObject.Control;
+    if Assigned(AControl) then
+      while Assigned(Client) do
+      begin
+        if AControl=Client then
+        begin
+          Result := True;
+          exit;
+        end;
+        Client := Client.Parent;
+      end;
+  end;
+
+
   function FindDockSiteAtPosition: TWinControl;
   //Replace with lookup in Screen.Zorder(?)
   var
@@ -416,6 +435,9 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
         if not AControl.IsVisible then continue;
         if AControl=FDockObject.Control then continue;
         if IsControlChildOfClient(AControl) then continue;
+        if AControl.DockManager<>nil then
+          if not AControl.DockManager.CanBeDoubleDocked then
+            if IsClientChildOfControl(AControl) then continue;
 
         if ItCanBeHostSite then
         begin
