@@ -44,6 +44,7 @@ uses
   GraphType, LazStringUtils, LazUtilities, LazLoggerBase, LazUTF8, Maps,
   // WS
   {$IFDEF HASX11}
+  XAtom, X, XLib, XKB, xkblib,
   qtx11dummywidget,
   {$ENDIF}
   qtproc;
@@ -123,6 +124,7 @@ type
     FStockSystemFont: HFONT;
     FStockDefaultDC: HDC;
     {$IFDEF HASX11}
+    FX11Display: PDisplay;
     FWSFrameRect: TRect;
     {$ENDIF}
 
@@ -154,6 +156,7 @@ type
     {$IFDEF HASX11}
     function CreateDummyWidgetFrame(const ALeft, ATop, AWidth, AHeight: integer): boolean;
     function GetDummyWidgetFrame: TRect;
+    function x11Display: PDisplay;
     {$ENDIF}
   public
     constructor Create; override;
@@ -352,9 +355,6 @@ uses
 // To get as little as possible circles,
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
- {$IFDEF HASX11}
- XAtom, X, XLib, XKB, xkblib,
- {$ENDIF}
  QtCaret,
  QtThemes,
 

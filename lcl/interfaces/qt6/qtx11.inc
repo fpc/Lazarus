@@ -9,15 +9,9 @@ begin
   Result := APlatform = 'xcb';
 end;
 
-var
-  GlobDisplay: PDisplay = nil;
-
 function X11Display: PDisplay;
 begin
-  {$warning move X11Display to TQtWidgetSet to avoid global GlobDisplay variable}
-  if GlobDisplay = nil then
-    GlobDisplay := XOpenDisplay(nil);
-  Result := GlobDisplay;
+  Result := QtWidgetSet.x11Display
 end;
 
 function IsCompositingManagerRunning: boolean;

@@ -30,6 +30,7 @@ begin
     App := QApplicationH(QCoreApplication_instance())
   else
   begin
+    FX11Display := nil;
     {$IFDEF MSWINDOWS}
     //add directory plugins to the Qt paths if Qt is distributed with application under mswindows.
     WStr := 'plugins';
@@ -532,6 +533,13 @@ end;
 function TQtWidgetSet.GetDummyWidgetFrame: TRect;
 begin
   Result := FWSFrameRect;
+end;
+
+function TQtWidgetSet.x11Display: PDisplay;
+begin
+  if FX11Display = nil then
+    FX11Display := XOpenDisplay(nil);
+  Result := FX11Display;
 end;
 {$ENDIF}
 
