@@ -17,22 +17,22 @@ uses
 type
 
   TThemeData = array[TThemedElement] of HTHEME;
-  TThemeDpiDataEntry = record
-    DPI: Integer;
+  TThemePPIDataEntry = record
+    PPI: Integer;
     Data: TThemeData;
   end;
-  PThemeDpiDataEntry = ^TThemeDpiDataEntry;
-  TThemeDpiData = array of TThemeDpiDataEntry;
+  PThemePPIDataEntry = ^TThemePPIDataEntry;
+  TThemePPIData = array of TThemePPIDataEntry;
 
   { TWin32ThemeServices }
 
   TWin32ThemeServices = class(TThemeServices)
   private
     FThemeData: TThemeData;            // Holds a list of theme data handles.
-    FThemeDpiData: TThemeDpiData;
+    FThemePPIData: TThemePPIData;
   protected
-    function GetTheme(Element: TThemedElement): HTHEME;
-    function GetThemeForDPI(Element: TThemedElement; DPI: Integer): HTHEME;
+    function GetTheme(Element: TThemedElement): HTHEME; deprecated 'use GetThemeForPPI';
+    function GetThemeForPPI(Element: TThemedElement; PPI: Integer): HTHEME;
     function InitThemes: Boolean; override;
     procedure UnloadThemeData; override;
     function UseThemes: Boolean; override;
@@ -71,7 +71,7 @@ type
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); override;
     property Theme[Element: TThemedElement]: HTHEME read GetTheme;
-    property ThemeForDPI[Element: TThemedElement; DPI: Integer]: HTHEME read GetThemeForDPI;
+    property ThemeForPPI[Element: TThemedElement; PPI: Integer]: HTHEME read GetThemeForPPI;
   end;
 
 implementation
@@ -164,12 +164,12 @@ procedure TWin32ThemeServices.UnloadThemeData;
       end;
   end;
 var
-  E: TThemeDpiDataEntry;
+  E: TThemePPIDataEntry;
 begin
   _Unload(FThemeData);
-  for E in FThemeDpiData do
+  for E in FThemePPIData do
     _Unload(E.Data);
-  FThemeDpiData := nil;
+  FThemePPIData := nil;
 end;
 
 function TWin32ThemeServices.InitThemes: Boolean;
@@ -379,30 +379,30 @@ begin
   Result := FThemeData[Element];
 end;
 
-function TWin32ThemeServices.GetThemeForDPI(Element: TThemedElement; DPI: Integer): HTHEME;
+function TWin32ThemeServices.GetThemeForPPI(Element: TThemedElement; PPI: Integer): HTHEME;
 var
   I: Integer;
-  E: PThemeDpiDataEntry;
+  E: PThemePPIDataEntry;
 begin
-  if (WindowsVersion < wv10) or (DPI=0) or (DPI=ScreenInfo.PixelsPerInchX) then
+  if (WindowsVersion < wv10) or (PPI=0) or (PPI=ScreenInfo.PixelsPerInchX) then
     Exit(GetTheme(Element));
 
   E := nil;
-  for I := 0 to High(FThemeDpiData) do
-    if FThemeDpiData[I].DPI=DPI then
+  for I := 0 to High(FThemePPIData) do
+    if FThemePPIData[I].PPI=PPI then
     begin
-      E := @FThemeDpiData[I];
+      E := @FThemePPIData[I];
       break;
     end;
   if not Assigned(E) then
   begin
-    FThemeDpiData := FThemeDpiData + [Default(TThemeDpiDataEntry)];
-    E := @FThemeDpiData[High(FThemeDpiData)];
-    E^.DPI := DPI;
+    FThemePPIData := FThemePPIData + [Default(TThemePPIDataEntry)];
+    E := @FThemePPIData[High(FThemePPIData)];
+    E^.PPI := PPI;
   end;
 
   if (E^.Data[Element] = 0) then
-    E^.Data[Element] := OpenThemeDataForDpi(0, ThemeDataNamesVista[Element], DPI);
+    E^.Data[Element] := OpenThemeDataForDpi(0, ThemeDataNamesVista[Element], PPI);
   Result := E^.Data[Element];
 end;
 

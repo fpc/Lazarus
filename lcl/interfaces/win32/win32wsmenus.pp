@@ -419,7 +419,7 @@ var
   DPI: Integer;
 begin
   DPI := AMenuItem.GetDPI;
-  Theme := TWin32ThemeServices(ThemeServices).ThemeForDPI[teMenu, DPI];
+  Theme := TWin32ThemeServices(ThemeServices).ThemeForPPI[teMenu, DPI];
   Result := Default(TVistaPopupMenuMetrics);
   GetThemeMargins(Theme, DC, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
   GetThemePartSize(Theme, DC, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
@@ -476,7 +476,7 @@ var
   DPI: Integer;
 begin
   DPI := AMenuItem.GetDPI;
-  Theme := TWin32ThemeServices(ThemeServices).ThemeForDPI[teMenu, DPI];
+  Theme := TWin32ThemeServices(ThemeServices).ThemeForPPI[teMenu, DPI];
   Result := Default(TVistaBarMenuMetrics);
   GetThemeMargins(Theme, 0, MENU_BARITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
 
@@ -604,7 +604,7 @@ end;
 procedure ThemeDrawElement(DC: HDC; Details: TThemedElementDetails; const DPI: Integer; const R: TRect; ClipRect: PRect); inline;
 begin
   with Details do
-    DrawThemeBackground(TWin32ThemeServices(ThemeServices).ThemeForDPI[Element, DPI], DC, Part, State, R, ClipRect);
+    DrawThemeBackground(TWin32ThemeServices(ThemeServices).ThemeForPPI[Element, DPI], DC, Part, State, R, ClipRect);
 end;
 
 procedure ThemeDrawText(DC: HDC; Details: TThemedElementDetails; const DPI: Integer;
@@ -615,7 +615,7 @@ begin
   with Details do
   begin
     w := UTF8ToUTF16(S);
-    DrawThemeText(TWin32ThemeServices(ThemeServices).ThemeForDPI[Element, DPI], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
+    DrawThemeText(TWin32ThemeServices(ThemeServices).ThemeForPPI[Element, DPI], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
   end;
 end;
 
