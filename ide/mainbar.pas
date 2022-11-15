@@ -512,7 +512,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -533,10 +533,9 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
-  //Gtk2 + Win32 + Qt
+  {$IF DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
+  //Gtk2 + Qt
   //retrieve real main menu height because
-  // - Win32: multi-line is possible (SM_CYMENU reflects only single line)
   // - Gtk2, Qt:  SM_CYMENU does not work
   LclIntf.GetWindowRect(Handle, WindowRect{%H-});
   LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
@@ -546,14 +545,10 @@ begin
 
   Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result '+IntToStr(Result)+' is below zero.');
 
-  {$IFDEF LCLWin32}
-  //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYCAPTION;
-  Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYCAPTION));
-  {$ENDIF LCLWin32}
-
   {$ELSE}
   //other widgetsets
   //Carbon tested - behaves correctly
+  //Win32 tested - behaves correctly
   Result := 0;
   {$ENDIF}
 end;
