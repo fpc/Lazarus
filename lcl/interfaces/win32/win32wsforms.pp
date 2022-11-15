@@ -653,8 +653,11 @@ begin
   // Problem:
   //   When setting the ClientRect, the main menu may change height (the menu lines may change).
   //   After the first attempt to set bounds, they can be wrong because the number of the lines changed and
-  //     it is not possible to determine the menu line count for the target rectangle/
-  //   Therefore a second attempt is needed to get the correct height.
+  //     it is not possible to determine the menu line count for the target rectangle.
+  //   Also, when handling the WM_DPICHANGED message, Windows don't update the menu bar height, therefore
+  //     wrong menu bar height is used for the calculation. The menu bar height gets updated during the first
+  //     TWin32WSWinControl.SetBounds() call.
+  //   -> Therefore a second attempt is needed to get the correct height.
   for Attempt := Low(Attempt) to High(Attempt) do
   begin
     // the LCL defines the size of a form without border, win32 with.
