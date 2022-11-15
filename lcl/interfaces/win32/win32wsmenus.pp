@@ -104,16 +104,31 @@ end;
 
 function TMenuItemHelper.GetDPI: Integer;
 var
-  AWnd: HWND;
-  xMerged: TMenu;
+  xMenu: TMenu;
+  xMon: TMonitor;
 begin
   // PopupMenus can be all scaled, but main menu bar is scaled only since DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
   if not IsInMenuBar
   or AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
   begin
-    AWnd := TCustomForm(GetMergedParentMenu.Parent).Handle;
-    if AWnd<>0 then
-      Exit(GetDpiForWindow(AWnd));
+    xMenu := GetMergedParentMenu;
+    if Assigned(xMenu) and (xMenu is TMainMenu) and (xMenu.Parent is TCustomForm) then
+    begin
+      if TCustomForm(xMenu.Parent).HandleAllocated then
+        Exit(GetDpiForWindow(TCustomForm(xMenu.Parent).Handle));
+    end else
+    begin
+      xMenu := Self.GetParentMenu;
+      if xMenu is TPopupMenu then
+      begin
+        if (TPopupMenu(xMenu).PopupComponent is TWinControl)
+        and (TWinControl(TPopupMenu(xMenu).PopupComponent).HandleAllocated) then
+          Exit(GetDpiForWindow(TWinControl(TPopupMenu(xMenu).PopupComponent).Handle));
+        xMon := Screen.MonitorFromPoint(TPopupMenu(xMenu).PopupPoint);
+        if Assigned(xMon) then
+          Exit(xMon.PixelsPerInch);
+      end;
+    end;
   end;
   // default
   Result := ScreenInfo.PixelsPerInchX;
