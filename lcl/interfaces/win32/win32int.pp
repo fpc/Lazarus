@@ -30,7 +30,7 @@ interface
 }
 uses
   Windows, // keep as first
-  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, ctypes,
+  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, UxTheme, ctypes,
   {$IF FPC_FULLVERSION>=30000}
   character,
   {$ENDIF}
@@ -279,6 +279,7 @@ function GetDpiForWindow(hwnd: HWND): UINT;
 function AdjustWindowRectExForDpi(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL;
 function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
 function LoadIconWithScaleDown(hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT;
+function OpenThemeDataForDpi(hwnd: HWND; pszClassList: LPCWSTR; dpi: UINT): HTHEME;
 
 procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize); overload;
 procedure AdjustFormClientToWindowSize(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSize: TSize); overload;
@@ -330,6 +331,7 @@ type
   TAdjustWindowRectExForDpi = function(const lpRect: LPRECT; dwStyle: DWORD; bMenu: BOOL; dwExStyle: DWORD; dpi: UINT): BOOL; stdcall;
   TGetSystemMetricsForDpi = function (nIndex: Integer; dpi: UINT): Integer; stdcall;
   TLoadIconWithScaleDown = function ( hinst:HINST; pszName:LPCWStr;cx:cint;cy:cint;var phico: HICON ):HRESULT; stdcall;
+  TOpenThemeDataForDpi = function (hwnd: HWND; pszClassList: LPCWSTR; dpi: UINT): HTHEME; stdcall;
   TGetThreadDpiAwarenessContext = function (): DPI_AWARENESS_CONTEXT; stdcall;
   TAreDpiAwarenessContextsEqual = function (dpiContextA, dpiContextB: DPI_AWARENESS_CONTEXT): BOOL; stdcall;
 
@@ -339,6 +341,7 @@ var
   g_AdjustWindowRectExForDpi: TAdjustWindowRectExForDpi = nil;
   g_GetSystemMetricsForDpi: TGetSystemMetricsForDpi = nil;
   g_LoadIconWithScaleDown: TLoadIconWithScaleDown = nil;
+  g_OpenThemeDataForDpi: TOpenThemeDataForDpi = nil;
   g_GetThreadDpiAwarenessContext: TGetThreadDpiAwarenessContext = nil;
   g_AreDpiAwarenessContextsEqual: TAreDpiAwarenessContextsEqual = nil;
   g_HighDPIAPIDone: Boolean = False;
@@ -367,6 +370,10 @@ begin
   lib := LoadLibrary(comctl32);
   if lib<>0 then
     Pointer(g_LoadIconWithScaleDown) := GetProcAddress(lib, 'LoadIconWithScaleDown');
+
+  lib := LoadLibrary('uxtheme.dll');
+  if lib<>0 then
+    Pointer(g_OpenThemeDataForDpi) := GetProcAddress(lib, 'OpenThemeDataForDpi');
 
   g_HighDPIAPIDone := True;
 end;
@@ -437,6 +444,15 @@ begin
     Result := g_LoadIconWithScaleDown(hinst, pszName, cx, cy, phico)
   else
     Result := S_FALSE;
+end;
+
+function OpenThemeDataForDpi(hwnd: HWND; pszClassList: LPCWSTR; dpi: UINT): HTHEME;
+begin
+  InitHighDPIAPI;
+  if Assigned(g_OpenThemeDataForDpi) then
+    Result := g_OpenThemeDataForDpi(hwnd, pszClassList, dpi)
+  else
+    Result := OpenThemeData(hwnd, pszClassList);
 end;
 
 procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize);
