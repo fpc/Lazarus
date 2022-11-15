@@ -385,7 +385,7 @@ begin
   if Assigned(g_AreDpiAwarenessContextsEqual) then
     Result := g_AreDpiAwarenessContextsEqual(dpiContextA, dpiContextB)
   else
-    Result := False;
+    Result := dpiContextA=dpiContextB;
 end;
 
 function GetSystemMetricsForDpi(nIndex: Integer; dpi: UINT): Integer;
