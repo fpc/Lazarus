@@ -1025,10 +1025,10 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.GetIconSize: TPoint;
  ------------------------------------------------------------------------------}
-function TMenuItem.GetIconSize(ADC: HDC): TPoint;
+function TMenuItem.GetIconSize(ADC: HDC; DPI: Integer): TPoint;
 var
   AImageList: TCustomImageList;
-  PPI, AImageListWidth: Integer;
+  AImageListWidth: Integer;
   Size: TSize;
 begin
   FillChar(Result, SizeOf(Result), 0);
@@ -1039,8 +1039,9 @@ begin
     begin
       if (FImageIndex >= AImageList.Count) then
         Exit;
-      PPI := GetDeviceCaps(ADC, LOGPIXELSX);
-      Size := AImageList.SizeForPPI[AImageListWidth, PPI];
+      if DPI=0 then
+        DPI := GetDeviceCaps(ADC, LOGPIXELSX);
+      Size := AImageList.SizeForPPI[AImageListWidth, DPI];
       Result.x := Size.cx;
       Result.y := Size.cy;
     end

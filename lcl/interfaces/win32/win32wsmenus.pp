@@ -90,6 +90,8 @@ type
   public
     function MeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean;
     function DrawItem(ACanvas: TCanvas; ARect: TRect; AState: LCLType.TOwnerDrawState): Boolean;
+
+    function GetDPI: Integer;
   end;
 
 { TMenuItemHelper }
@@ -98,6 +100,23 @@ function TMenuItemHelper.DrawItem(ACanvas: TCanvas; ARect: TRect;
   AState: LCLType.TOwnerDrawState): Boolean;
 begin
   Result := DoDrawItem(ACanvas, ARect, AState);
+end;
+
+function TMenuItemHelper.GetDPI: Integer;
+var
+  AWnd: HWND;
+  xMerged: TMenu;
+begin
+  // PopupMenus can be all scaled, but main menu bar is scaled only since DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+  if not IsInMenuBar
+  or AreDpiAwarenessContextsEqual(GetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) then
+  begin
+    AWnd := TCustomForm(GetMergedParentMenu.Parent).Handle;
+    if AWnd<>0 then
+      Exit(GetDpiForWindow(AWnd));
+  end;
+  // default
+  Result := ScreenInfo.PixelsPerInchX;
 end;
 
 function TMenuItemHelper.MeasureItem(ACanvas: TCanvas; var AWidth,
@@ -208,7 +227,7 @@ begin
     Result := MakeLResult(MenuItemIndex, MNC_EXECUTE);
 end;
 
-function GetMenuItemFont(const AFlags: TCaptionFlagsSet): HFONT;
+function GetMenuItemFont(const AFlags: TCaptionFlagsSet; const aDPI: Integer): HFONT;
 var
   lf: LOGFONT;
   ncm: NONCLIENTMETRICS;
@@ -229,6 +248,8 @@ begin
     else
       lf.lfWeight := lf.lfWeight + 100;
   end;
+  if aDPI<>ScreenInfo.PixelsPerInchX then
+    lf.lfHeight := MulDiv(lf.lfHeight, aDPI, ScreenInfo.PixelsPerInchX);
   Result := CreateFontIndirect(@lf);
 end;
 
@@ -293,13 +314,14 @@ end;
 function MenuIconWidth(const AMenuItem: TMenuItem; DC: HDC): integer;
 var
   SiblingMenuItem : TMenuItem;
-  i, RequiredWidth: integer;
+  i, RequiredWidth, DPI: integer;
 begin
   Result := 0;
 
+  DPI := AMenuItem.GetDPI;
   if AMenuItem.IsInMenuBar then
   begin
-    Result := AMenuItem.GetIconSize(DC).x;
+    Result := AMenuItem.GetIconSize(DC, DPI).x;
   end
   else
   begin
@@ -308,7 +330,7 @@ begin
       SiblingMenuItem := AMenuItem.Parent.Items[i];
       if SiblingMenuItem.HasIcon then
       begin
-        RequiredWidth := SiblingMenuItem.GetIconSize(DC).x;
+        RequiredWidth := SiblingMenuItem.GetIconSize(DC, DPI).x;
         if RequiredWidth > Result then
           Result := RequiredWidth;
       end;
@@ -327,7 +349,7 @@ begin
   // We draw our MenuItem so: space Image space Caption.
   // Items not in menu bar always have enough space for a check mark.
 
-  CheckMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
+  CheckMarkWidth := GetSystemMetricsForDpi(SM_CXMENUCHECK, AMenuItem.GetDPI);
   LeftSpace := MenuIconWidth(AMenuItem, DC);
 
   if LeftSpace > 0 then
@@ -394,8 +416,10 @@ var
   TextRect: TRect;
   W: WideString;
   AFont, OldFont: HFONT;
+  DPI: Integer;
 begin
-  Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
+  DPI := AMenuItem.GetDPI;
+  Theme := TWin32ThemeServices(ThemeServices).ThemeForDPI[teMenu, DPI];
   Result := Default(TVistaPopupMenuMetrics);
   GetThemeMargins(Theme, DC, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
   GetThemePartSize(Theme, DC, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
@@ -418,9 +442,9 @@ begin
     GetThemeInt(Theme, MENU_POPUPBACKGROUND, 0, TMT_BORDERSIZE, Result.TextMargins.cxLeftWidth);
 
     if AMenuItem.Default then
-      AFont := GetMenuItemFont([cfBold])
+      AFont := GetMenuItemFont([cfBold], DPI)
     else
-      AFont := GetMenuItemFont([]);
+      AFont := GetMenuItemFont([], DPI);
     OldFont := SelectObject(DC, AFont);
 
     W := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem, #9));
@@ -449,15 +473,17 @@ var
   TextRect: TRect;
   W: WideString;
   AFont, OldFont: HFONT;
+  DPI: Integer;
 begin
-  Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
+  DPI := AMenuItem.GetDPI;
+  Theme := TWin32ThemeServices(ThemeServices).ThemeForDPI[teMenu, DPI];
   Result := Default(TVistaBarMenuMetrics);
   GetThemeMargins(Theme, 0, MENU_BARITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
 
   if AMenuItem.Default then
-    AFont := GetMenuItemFont([cfBold])
+    AFont := GetMenuItemFont([cfBold], DPI)
   else
-    AFont := GetMenuItemFont([]);
+    AFont := GetMenuItemFont([], DPI);
 
   OldFont := SelectObject(DC, AFont);
 
@@ -480,7 +506,7 @@ begin
   Result.cx := 0; //Metrics.ItemMargins.cxLeftWidth + Metrics.ItemMargins.cxRightWidth;
   Result.cy := 0; //Metrics.ItemMargins.cyTopHeight + Metrics.ItemMargins.cyBottomHeight;
   // + text size / icon size
-  IconSize := AMenuItem.GetIconSize(ADC);
+  IconSize := AMenuItem.GetIconSize(ADC, AMenuItem.GetDPI);
   Result.cx := Result.cx + Metrics.TextSize.cx + IconSize.x;
   if IconSize.x > 0 then
     inc(Result.cx, Metrics.ItemMargins.cxLeftWidth);
@@ -506,7 +532,7 @@ begin
     Result.cy := Max(Metrics.TextSize.cy + 1, Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight);
     if AMenuItem.HasIcon then
     begin
-      IconSize := AMenuItem.GetIconSize(ADC);
+      IconSize := AMenuItem.GetIconSize(ADC, AMenuItem.GetDPI);
       Result.cy := Max(Result.cy, IconSize.y);
       Result.cx := Max(Result.cx, IconSize.x);
     end;
@@ -524,15 +550,16 @@ end;
 
 function ClassicMenuItemSize(AMenuItem: TMenuItem; ADC: HDC): TSize;
 var
-  LeftSpace, RightSpace: Integer;
+  LeftSpace, RightSpace, DPI: Integer;
   oldFont: HFONT;
   newFont: HFONT;
   AvgCharSize: TSize;
 begin
+  DPI := AMenuItem.GetDPI;
   if AMenuItem.Default then
-    newFont := GetMenuItemFont([cfBold])
+    newFont := GetMenuItemFont([cfBold], DPI)
   else
-    newFont := GetMenuItemFont([]);
+    newFont := GetMenuItemFont([], DPI);
   oldFont := SelectObject(ADC, newFont);
   AvgCharSize := GetAverageCharSize(ADC);
 
@@ -553,20 +580,20 @@ begin
   // Windows seems to always use SM_CYMENUSIZE (space for a border is included).
 
   if AMenuItem.IsLine then
-    Result.cy := GetSystemMetrics(SM_CYMENUSIZE) div 2 // it is a separator
+    Result.cy := GetSystemMetricsForDpi(SM_CYMENUSIZE, DPI) div 2 // it is a separator
   else
   begin
     if AMenuItem.IsInMenuBar then
     begin
-      Result.cy := Max(Result.cy, GetSystemMetrics(SM_CYMENUSIZE));
+      Result.cy := Max(Result.cy, GetSystemMetricsForDpi(SM_CYMENUSIZE, DPI));
       if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC).y);
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC, DPI).y);
     end
     else
     begin
       Result.cy := Max(Result.cy + 2, AvgCharSize.cy + 4);
       if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC).y + 2);
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC, DPI).y + 2);
     end;
   end;
 
@@ -574,13 +601,13 @@ begin
   DeleteObject(newFont);
 end;
 
-procedure ThemeDrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); inline;
+procedure ThemeDrawElement(DC: HDC; Details: TThemedElementDetails; const DPI: Integer; const R: TRect; ClipRect: PRect); inline;
 begin
   with Details do
-    DrawThemeBackground(TWin32ThemeServices(ThemeServices).Theme[Element], DC, Part, State, R, ClipRect);
+    DrawThemeBackground(TWin32ThemeServices(ThemeServices).ThemeForDPI[Element, DPI], DC, Part, State, R, ClipRect);
 end;
 
-procedure ThemeDrawText(DC: HDC; Details: TThemedElementDetails;
+procedure ThemeDrawText(DC: HDC; Details: TThemedElementDetails; const DPI: Integer;
   const S: String; R: TRect; Flags, Flags2: Cardinal);
 var
   w: widestring;
@@ -588,7 +615,7 @@ begin
   with Details do
   begin
     w := UTF8ToUTF16(S);
-    DrawThemeText(TWin32ThemeServices(ThemeServices).Theme[Element], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
+    DrawThemeText(TWin32ThemeServices(ThemeServices).ThemeForDPI[Element, DPI], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
   end;
 end;
 
@@ -621,7 +648,9 @@ var
   AWnd, ActiveChild: HWND;
   CalculatedSize: TSIZE;
   MaximizedActiveChild: WINBOOL;
+  DPI: Integer;
 begin
+  DPI := AMenuItem.GetDPI;
   if (ItemState and ODS_SELECTED) <> 0 then
     MenuState := tmBarItemPushed
   else
@@ -657,7 +686,7 @@ begin
     GetWindowRect(AWnd, @WndRect);
     OffsetRect(Info.rcBar, -WndRect.Left, -WndRect.Top);
     Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
-    ThemeDrawElement(AHDC, Tmp, Info.rcBar, nil);
+    ThemeDrawElement(AHDC, Tmp, DPI, Info.rcBar, nil);
     // if there is any maximized MDI child, the call above erased its icon... so we'll
     // need to redraw the icon again
     if (AMenuItem.GetMergedParentMenu.Parent=Application.MainForm) and
@@ -695,11 +724,11 @@ begin
     dec(BGRect.Left, 2);
   end;
   Tmp := ThemeServices.GetElementDetails(BarState[(ItemState and ODS_INACTIVE) = 0]);
-  ThemeDrawElement(AHDC, Tmp, BGRect, @BGClip);
+  ThemeDrawElement(AHDC, Tmp, DPI, BGRect, @BGClip);
 
   Details := ThemeServices.GetElementDetails(MenuState);
   // draw menu item
-  ThemeDrawElement(AHDC, Details, ARect, nil);
+  ThemeDrawElement(AHDC, Details, DPI, ARect, nil);
 
   TextRect := ARect;
   //center the menu item
@@ -712,7 +741,7 @@ begin
   // draw check/image
   if AMenuItem.HasIcon then
   begin
-    IconSize := AMenuItem.GetIconSize(AHDC);
+    IconSize := AMenuItem.GetIconSize(AHDC, DPI);
     if IsRightToLeft then
       ImageRect.Left := TextRect.Right - IconSize.x
     else
@@ -736,11 +765,11 @@ begin
   if ANoAccel then
     TextFlags := TextFlags or DT_HIDEPREFIX;
   if AMenuItem.Default then
-    AFont := GetMenuItemFont([cfBold])
+    AFont := GetMenuItemFont([cfBold], DPI)
   else
-    AFont := GetMenuItemFont([]);
+    AFont := GetMenuItemFont([], DPI);
   OldFont := SelectObject(AHDC, AFont);
-  ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+  ThemeDrawText(AHDC, Details, DPI, AMenuItem.Caption, TextRect, TextFlags, 0);
   if OldFont <> 0 then
     DeleteObject(SelectObject(AHDC, OldFont));
 end;
@@ -754,15 +783,16 @@ var
   TextFlags: DWord;
   AFont, OldFont: HFONT;
   IsRightToLeft: Boolean;
-  IconWidth: Integer;
+  IconWidth, DPI: Integer;
 begin
+  DPI := AMenuItem.GetDPI;
   Metrics := GetVistaPopupMenuMetrics(AMenuItem, AHDC);
   // draw backgound
   Details := ThemeServices.GetElementDetails(PopupItemStates[AMenuItem.Enabled, ASelected]);
   if ThemeServices.HasTransparentParts(Details) then
   begin
     Tmp := ThemeServices.GetElementDetails(tmPopupBackground);
-    ThemeDrawElement(AHDC, Tmp, ARect, nil);
+    ThemeDrawElement(AHDC, Tmp, DPI, ARect, nil);
   end;
   IsRightToLeft := AMenuItem.GetIsRightToLeft;
   if IsRightToLeft then
@@ -773,7 +803,7 @@ begin
   CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
   if AMenuItem.HasIcon then
   begin
-    IconSize := AMenuItem.GetIconSize(AHDC);
+    IconSize := AMenuItem.GetIconSize(AHDC, DPI);
     CheckRect.Bottom := Max(CheckRect.Bottom, CheckRect.Top+IconSize.y);
   end;
   IconWidth := MenuIconWidth(AMenuItem, AHDC);
@@ -785,7 +815,7 @@ begin
   GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
   GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
   Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
-  ThemeDrawElement(AHDC, Tmp, GutterRect, nil);
+  ThemeDrawElement(AHDC, Tmp, DPI, GutterRect, nil);
 
   if AMenuItem.IsLine then
   begin
@@ -795,12 +825,12 @@ begin
     SeparatorRect.Top := ARect.Top + Metrics.ItemMargins.cyTopHeight;
     SeparatorRect.Bottom := ARect.Bottom - Metrics.ItemMargins.cyBottomHeight;
     Tmp := ThemeServices.GetElementDetails(tmPopupSeparator);
-    ThemeDrawElement(AHDC, Tmp, SeparatorRect, nil);
+    ThemeDrawElement(AHDC, Tmp, DPI, SeparatorRect, nil);
   end
   else
   begin
     // draw menu item
-    ThemeDrawElement(AHDC, Details, ARect, nil);
+    ThemeDrawElement(AHDC, Details, DPI, ARect, nil);
     // draw submenu
     if AMenuItem.Count > 0 then
     begin
@@ -811,7 +841,7 @@ begin
       SubMenuRect.Left := SubMenuRect.Right - Metrics.SubMenuSize.cx;
       Tmp := ThemeServices.GetElementDetails(PopupSubmenuStates[AMenuItem.Enabled]);
       Tmp.State := Tmp.State + 2;
-      ThemeDrawElement(AHDC, Tmp, SubMenuRect, nil);
+      ThemeDrawElement(AHDC, Tmp, DPI, SubMenuRect, nil);
     end;
     // draw check/image
     if AMenuItem.HasIcon then
@@ -820,7 +850,7 @@ begin
       if AMenuItem.Checked then // draw checked rectangle around
       begin
         Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
-        ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
+        ThemeDrawElement(AHDC, Tmp, DPI, CheckRect, nil);
       end;
       ImageRect.Left := (ImageRect.Left + ImageRect.Right - IconSize.x) div 2;
       ImageRect.Top := (ImageRect.Top + ImageRect.Bottom - IconSize.y) div 2;
@@ -841,13 +871,13 @@ begin
     if AMenuItem.Checked then
     begin
       Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
-      ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
+      ThemeDrawElement(AHDC, Tmp, DPI, CheckRect, nil);
       CheckRect2.Left := CheckRect.Left + (CheckRect.Right-CheckRect.Left-Metrics.CheckSize.cx) div 2;
       CheckRect2.Top := CheckRect.Top + (CheckRect.Bottom-CheckRect.Top-Metrics.CheckSize.cy) div 2;
       CheckRect2.Right := CheckRect2.Left + Metrics.CheckSize.cx;
       CheckRect2.Bottom := CheckRect2.Top + Metrics.CheckSize.cy;
       Tmp := ThemeServices.GetElementDetails(PopupCheckStates[AMenuItem.Enabled, AMenuItem.RadioItem]);
-      ThemeDrawElement(AHDC, Tmp, CheckRect2, nil);
+      ThemeDrawElement(AHDC, Tmp, DPI, CheckRect2, nil);
     end;
     // draw text
     TextFlags := DT_SINGLELINE or DT_EXPANDTABS;
@@ -876,12 +906,12 @@ begin
     if ANoAccel then
       TextFlags := TextFlags or DT_HIDEPREFIX;
     if AMenuItem.Default then
-      AFont := GetMenuItemFont([cfBold])
+      AFont := GetMenuItemFont([cfBold], DPI)
     else
-      AFont := GetMenuItemFont([]);
+      AFont := GetMenuItemFont([], DPI);
     OldFont := SelectObject(AHDC, AFont);
 
-    ThemeDrawText(AHDC, Details, AMenuItem.Caption, TextRect, TextFlags, 0);
+    ThemeDrawText(AHDC, Details, DPI, AMenuItem.Caption, TextRect, TextFlags, 0);
     if AMenuItem.ShortCut <> scNone then
     begin
       if IsRightToLeft then
@@ -894,7 +924,7 @@ begin
         TextRect.Left := TextRect.Right - Metrics.ShortCustSize.cx;
         TextFlags := TextFlags xor DT_LEFT or DT_RIGHT;
       end;
-      ThemeDrawText(AHDC, Details, MenuItemShortCut(AMenuItem), TextRect, TextFlags, 0);
+      ThemeDrawText(AHDC, Details, DPI, MenuItemShortCut(AMenuItem), TextRect, TextFlags, 0);
     end;
     // exlude menu item rectangle to prevent drawing by windows after us
     if AMenuItem.Count > 0 then
@@ -985,7 +1015,7 @@ begin
     Result := GetSysColor(COLOR_GRAYTEXT);
 end;
 
-procedure DrawSeparator(const AHDC: HDC; const ARect: Windows.RECT);
+procedure DrawSeparator(const AHDC: HDC; DPI: Integer; const ARect: Windows.RECT);
 var
   separatorRect: Windows.RECT;
   space: Integer;
@@ -997,7 +1027,7 @@ begin
 
   separatorRect.Left  := ARect.Left  + space;
   separatorRect.Right := ARect.Right - space;
-  separatorRect.Top   := ARect.Top + GetSystemMetrics(SM_CYMENUSIZE) div 4 - 1;
+  separatorRect.Top   := ARect.Top + GetSystemMetricsForDpi(SM_CYMENUSIZE, DPI) div 4 - 1;
   DrawEdge(AHDC, separatorRect, EDGE_ETCHED, BF_TOP);
 end;
 
@@ -1012,11 +1042,12 @@ var
   checkMarkShape: integer;
   checkMarkRect: Windows.RECT;
   x:Integer;
-  space: Integer;
+  space, DPI: Integer;
 begin
+  DPI := aMenuItem.GetDPI;
   hdcMem := CreateCompatibleDC(aHDC);
-  checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
-  checkMarkHeight := GetSystemMetrics(SM_CYMENUCHECK);
+  checkMarkWidth := GetSystemMetricsForDpi(SM_CXMENUCHECK, DPI);
+  checkMarkHeight := GetSystemMetricsForDpi(SM_CYMENUCHECK, DPI);
   monoBitmap := CreateBitmap(checkMarkWidth, checkMarkHeight, 1, 1, nil);
   oldBitmap := SelectObject(hdcMem, monoBitmap);
   checkMarkRect.left := 0;
@@ -1176,7 +1207,7 @@ begin
 
   if AImageIndex < AImageList.Count then
   begin
-    APPI := GetDeviceCaps(AHDC, LOGPIXELSX);
+    APPI := AMenuItem.GetDPI;
     TWin32WSCustomImageListResolution.DrawToDC(AImageList.ResolutionForPPI[AImagesWidth, APPI, 1].Resolution,
       AImageIndex, AHDC, ImageRect,
       AImageList.BkColor, AImageList.BlendColor,
@@ -1220,10 +1251,11 @@ var
   Space: Integer = SpaceNextToCheckMark;
   ImageRect: TRect;
   IconSize: TPoint;
-  checkMarkWidth: integer;
+  checkMarkWidth, DPI: integer;
 begin
-  IconSize := AMenuItem.GetIconSize(AHDC);
-  checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
+  DPI := AMenuItem.GetDPI;
+  IconSize := AMenuItem.GetIconSize(AHDC, DPI);
+  checkMarkWidth := GetSystemMetricsForDpi(SM_CXMENUCHECK, DPI);
   if not AMenuItem.IsInMenuBar then
   begin
     if IconSize.x < checkMarkWidth then
@@ -1261,16 +1293,17 @@ procedure DrawClassicMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC;
 var
   oldFont: HFONT;
   newFont: HFONT;
-  AvgCharWidth: Integer;
+  AvgCharWidth, DPI: Integer;
 begin
+  DPI := AMenuItem.GetDPI;
   if AMenuItem.IsLine then
-    DrawSeparator(AHDC, ARect)
+    DrawSeparator(AHDC, DPI, ARect)
   else
   begin
     if AMenuItem.Default then
-      newFont := GetMenuItemFont([cfBold])
+      newFont := GetMenuItemFont([cfBold], DPI)
     else
-      newFont := GetMenuItemFont([]);
+      newFont := GetMenuItemFont([], DPI);
     oldFont := SelectObject(AHDC, newFont);
     AvgCharWidth := GetAverageCharSize(AHDC).cx;
 

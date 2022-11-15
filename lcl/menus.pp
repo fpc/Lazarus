@@ -286,7 +286,7 @@ type
     function IsInMenuBar: boolean; virtual;
     procedure Clear;
     function HasBitmap: boolean;
-    function GetIconSize(ADC: HDC): TPoint; virtual;
+    function GetIconSize(ADC: HDC; DPI: Integer = 0): TPoint; virtual;
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
