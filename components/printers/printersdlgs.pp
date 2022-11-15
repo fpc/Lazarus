@@ -159,7 +159,11 @@ implementation
     {$IFDEF LCLQt5}
       uses qtobjects, qt5, qtint, LazUTF8;
       {$I qtprndialogs.inc}
-    {$ENDIF}    
+    {$ENDIF}
+    {$IFDEF LCLQt6}
+      uses qtobjects, qt6, qtint, LazUTF8;
+      {$I qtprndialogs.inc}
+    {$ENDIF}
     {$IFDEF LCLGtk2}
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, Printer4LazStrConst;
       {$I cupsprndialogs.inc}
@@ -172,11 +176,16 @@ implementation
     {$IFDEF LCLQt5}
       uses qtobjects, qt5, qtint, LazUTF8;
       {$I qtprndialogs.inc}
-    {$ELSE}    
+    {$ELSE}
+    {$IFDEF LCLQt6}
+      uses qtobjects, qt6, qtint, LazUTF8;
+      {$I qtprndialogs.inc}
+    {$ELSE}
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, Printer4LazStrConst;
       {$I cupsprndialogs.inc}
     {$ENDIF}
-    {$ENDIF}    
+    {$ENDIF}
+    {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
@@ -190,11 +199,17 @@ implementation
     uses Windows,
     qtobjects, qtwidgets, qt5, LCLIntf, LCLType, LazUTF8;
     {$I qtprndialogs.inc}
-  {$ELSE}  
+  {$ELSE}
+  {$IFDEF LCLQt6}
+    uses Windows,
+    qtobjects, qtwidgets, qt6, LCLIntf, LCLType, LazUTF8;
+    {$I qtprndialogs.inc}
+  {$ELSE}
     uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
     {$I winprndialogs.inc}
   {$ENDIF}
-  {$ENDIF}  
+  {$ENDIF}
+  {$ENDIF}
 
 {$ENDIF}
 

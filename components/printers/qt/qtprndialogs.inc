@@ -130,7 +130,11 @@ begin
       PrnOptions := PrnOptions or QAbstractPrintDialogPrintPageRange;
 
     {this function does not have effect on Darwin}
+    {$IFDEF LCLQt6}
+    QPrintDialog_setOptions(QtPrnDlg, PrnOptions);
+    {$ELSE}
     QAbstractPrintDialog_setEnabledOptions(QtPrnDlg, PrnOptions);
+    {$ENDIF}
 
     QtDefaultPrinter.numCopies := Copies;
 

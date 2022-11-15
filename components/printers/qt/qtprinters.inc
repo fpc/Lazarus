@@ -35,7 +35,7 @@ begin
   if i>=0 then
     result := FPapers[i].PageSize
   else
-    Result := {$IFDEF LCLQt5}QPagedPaintDeviceA4{$ELSE}QPrinterA4{$ENDIF};
+    Result := {$IFDEF LCLQt6}QPageSizeId_A4{$ELSE}{$IFDEF LCLQt5}QPagedPaintDeviceA4{$ELSE}QPrinterA4{$ENDIF}{$ENDIF};
 end;
 
 procedure TQtPrinters.BeginPage;
@@ -56,7 +56,7 @@ procedure TQtPrinters.EnumQPrinters(Lst: TStrings);
 var
   i: Integer;
   PrnInfo: QPrinterInfoH;
-  {$IFDEF LCLQt5}
+  {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
   AList: QStringListH;
   DefaultPrn: WideString;
   {$ELSE}
@@ -66,7 +66,7 @@ var
   PrnName: WideString;
 begin
   inherited DoEnumPrinters(Lst);
-  {$IFDEF LCLQt5}
+  {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
   Lst.Clear;
   AList := QStringList_create();
   PrnInfo := QPrinterInfo_create();
@@ -142,6 +142,33 @@ end;
 
 procedure TQtPrinters.CachePapers(OnlySupportedByPrinter: boolean);
 const
+  {$IFDEF LCLQt6}
+  ArrPapers: array[0..QPageSizeId_LastPageSize] of string[119] = (
+    'Letter', 'Legal', 'Executive', 'A0', 'A1', 'A2', 'A3',
+    'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'B0', 'B1', 'B2',
+    'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'C5E',
+    'Comm10E', 'DLE', 'Folio', 'Ledger', 'Tabloid', 'Custom',
+    'A3Extra', 'A4Extra', 'A4Plus', 'A4Small', 'A5Extra', 'B5Extra',
+    'JisB0', 'JisB1', 'JisB2', 'JisB3', 'JisB4', 'JisB5', 'JisB6',
+    'JisB7', 'JisB8', 'JisB9', 'JisB10', 'AnsiC', 'AnsiD', 'AnsiE' {51},
+    'LegalExtra', 'LetterExtra', 'LetterPlus', 'LetterSmall',
+    'TabloidExtra', 'ArchA', 'ArchB', 'ArchC', 'ArchD', 'ArchE',
+    'Imperial7x9', 'Imperial8x10', 'Imperial9x11', 'Imperial9x12', 'Imperial10x11',
+    'Imperial10x13', 'Imperial10x14', 'Imperial12x11', 'Imperial15x11',
+    'ExecutiveStandard' {71}, 'Note', 'Quarto', 'Statement', 'SuperA', 'SuperB',
+    'Postcard', 'DoublePostcard','Prc16K', 'Prc32K', 'Prc32KBig', 'FanFoldUS',
+    'FanFoldGerman', 'FanFoldGermanLegal',
+    'EnvelopeB4', 'EnvelopeB5', 'EnvelopeB6', 'EnvelopeC0', 'EnvelopeC1',
+    'EnvelopeC2', 'EnvelopeC3', 'EnvelopeC4', 'EnvelopeC6', 'EnvelopeC65' {94},
+    'EnvelopeC7', 'EnvelopeC9', 'EnvelopeC11', 'EnvelopeC12', 'EnvelopeC14',
+    'EnvelopeMonarch', 'EnvelopePersonal', 'EnvelopeChou3', 'EnvelopeChou4',
+    'EnvelopeInvite', 'EnvelopeItalian', 'EnvelopeKaku2', 'EnvelopeKaku3',
+    'EnvelopePrc1', 'EnvelopePrc2', 'EnvelopePrc3', 'EnvelopePrc4',
+    'EnvelopePrc5', 'EnvelopePrc6', 'EnvelopePrc7', 'EnvelopePrc8',
+    'EnvelopePrc9', 'EnvelopePrc10', 'EnvelopeYou4'
+    );
+
+  {$ELSE}
   {$IFDEF LCLQt5}
   ArrPapers: array[0..QPagedPaintDeviceCustom] of string[12] = (
   {$ELSE}
@@ -154,11 +181,12 @@ const
     'B6',       'B7',         'B8',         'B9',         'C5E',
     'Comm10E',  'DLE',        'Folio',      'Ledger',     'Tabloid',
     'Custom');
+  {$ENDIF}
 var
   PrinterList: TStringList;
   Info: QPrinterInfoH;
   Arr: TPtrIntArray;
-  {$IFDEF LCLQt5}
+  {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
   APrnName: WideString;
   {$ENDIF}
   CurrentPageSize, PageSize: QtLCLPrinterPageSize;
@@ -181,7 +209,12 @@ var
     // In the mean time, in order to not present the user with multiple
     // custom papers, just one is allowed.
     {$endif}
+
+    {$IFDEF LCLQt6}
+    if (PgSize = QPageSizeId_Custom) and customPaperAdded then
+    {$ELSE}
     if (pgSize=30) and customPaperAdded then
+    {$ENDIF}
       exit;
     i := Length(FPapers);
     SetLength(FPapers, i+1);
@@ -220,10 +253,17 @@ var
   procedure AddAll;
   var
     i: Integer;
-    {$IFDEF LCLQt5}
-    oldPageSize: QPagedPaintDevicePageSize;
+    {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
+    oldPageSize: QtLCLPrinterPageSize;
     {$ENDIF}
   begin
+    {$IFDEF LCLQt6}
+    oldPageSize := QtDefaultPrinter.PageSize;
+    for i := QPageSizeId_Letter to QPageSizeId_LastPageSize do
+      Add(ArrPapers[i], i);
+    if oldPageSize <> QtDefaultPrinter.PageSize then
+      QtDefaultPrinter.PageSize := oldPageSize;
+    {$ELSE}
     {$IFDEF LCLQt5}
     oldPageSize := QtDefaultPrinter.PageSize;
     for i:=QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
@@ -233,6 +273,7 @@ var
     {$ELSE}
     for i:=QPrinterA4 to QPrinterCustom do
       Add(ArrPapers[i], i);
+    {$ENDIF}
     {$ENDIF}
   end;
 
@@ -253,22 +294,32 @@ begin
     Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
     if Index>=0 then
     begin
-      {$IFDEF LCLQt5}
+      {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       Info := QPrinterInfo_create();
       APrnName := PrinterList{%H-}[Index];
       QPrinterInfo_printerInfo(Info, @APrnName);
       {$ELSE}
       Info := QPrinterInfoH(PrinterList.Objects[Index]);
       {$ENDIF}
+      {$IFDEF LCLQt6}
+      // rewrite in qt62.pas
+      QPrinterInfo_supportedPaperSizes(Info, Arr);
+      {$ELSE}
       QPrinterInfo_supportedPaperSizes(Info, @Arr);
+      {$ENDIF}
+
       {$IFDEF LCLQt5}
       QPrinterInfo_destroy(Info);
       {$ENDIF}
       for PageSize in Arr do
+        {$IFDEF LCLQt6}
+        for Index := QPageSizeId_Letter to QPageSizeId_LastPageSize do
+        {$ELSE}
         {$IFDEF LCLQt5}
         for Index := QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
         {$ELSE}
         for Index := QPrinterA4 to QPrinterCustom do
+        {$ENDIF}
         {$ENDIF}
         begin
           if Index=PageSize then

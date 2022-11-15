@@ -44,14 +44,14 @@ interface
     {$IFDEF LCLCocoa}
       {$I cocoaprinters_h.inc}
     {$ENDIF}
-    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters_h.inc}
     {$ENDIF}
     {$IFDEF LCLGtk2}
       {$I cupsprinters_h.inc}
     {$ENDIF}
   {$ELSE}
-    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters_h.inc}
     {$ELSE}
       {$I cupsprinters_h.inc}
@@ -60,7 +60,7 @@ interface
 {$ENDIF}
 
 {$IFDEF MSWindows}
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
     {$I qtprinters_h.inc}
   {$ELSE}
     {$I winprinters_h.inc}
@@ -81,14 +81,14 @@ implementation
     {$IFDEF LCLCocoa}
       {$I cocoaprinters.inc}
     {$ENDIF}
-    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters.inc}
     {$ENDIF}
     {$IFDEF LCLGtk2}
       {$I cupsprinters.inc}
     {$ENDIF}
   {$ELSE}
-    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+    {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters.inc}
     {$ELSE}
       {$I cupsprinters.inc}
@@ -97,7 +97,7 @@ implementation
 {$ENDIF}
 
 {$IFDEF MSWindows}
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
     {$I qtprinters.inc}
   {$ELSE}
     {$I winprinters.inc}

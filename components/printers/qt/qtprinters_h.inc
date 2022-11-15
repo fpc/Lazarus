@@ -1,20 +1,21 @@
 {%MainUnit ../osprinters.pas}
 uses
-  Classes, SysUtils, Printers, {$IFDEF LCLQt5}qt5{$ELSE}qt4{$ENDIF}, qtobjects,
+  Classes, SysUtils, Printers,
+  {$IFDEF LCLQt6}qt6{$ELSE}{$IFDEF LCLQt5}qt5{$ELSE}qt4{$ENDIF}{$ENDIF}, qtobjects,
   LCLType, LCLProc, LazUTF8;
 
 type
+  {$IFDEF LCLQt6}
+  QtLCLPrinterPageSize = QPageSizeId;
+  {$ELSE}
   {$IFDEF LCLQt5}
   QtLCLPrinterPageSize = QPagedPaintDevicePageSize;
   {$ELSE}
   QtLCLPrinterPageSize = QPrinterPageSize;
   {$ENDIF}
+  {$ENDIF}
   TPaperRec = record
-    {$IFDEF LCLQt5}
-    PageSize: QPagedPaintDevicePageSize;
-    {$ELSE}
-    PageSize: QPrinterPageSize;
-    {$ENDIF}
+    PageSize: QtLCLPrinterPageSize;
     PaperName: string;
     PageRect: TRect;
     PaperRect: TRect;
