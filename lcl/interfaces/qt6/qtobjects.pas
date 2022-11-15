@@ -4583,8 +4583,10 @@ end;
 
 procedure TQtPrinter.setDoubleSidedPrinting(const AValue: Boolean);
 begin
-  {$warning fixme qt6}
-  // QPrinter_setDoubleSidedPrinting(Handle, AValue);
+  if AValue then
+    QPrinter_setDuplex(Handle, QPrinterDuplexAuto)
+  else
+    QPrinter_setDuplex(Handle, QPrinterDuplexNone);
 end;
 
 
@@ -4640,23 +4642,19 @@ procedure TQtPrinter.setPageSize(const AValue: QPageSizeId);
 var
   APageSize: QPageSizeH;
 begin
-  {$warning fixme Qt6}
   APageSize := QPageSize_Create3(AValue);
   QPrinter_setPageSize(Handle, APageSize);
   QPageSize_destroy(APageSize);
-  // QPrinter_setPaperSize(Handle, AValue);
 end;
 
 function TQtPrinter.getPageSize: QPageSizeId;
 var
   APageSize: QPageSizeH;
 begin
-  {$warning fixme Qt6}
   APageSize := QPageSize_Create();
   QPrinter_pageSize(Handle, APageSize);
   Result := QPageSize_id(APageSize);
   QPageSize_Destroy(APageSize);
-  // Result := QPrinter_paperSize(Handle);
 end;
 
 procedure TQtPrinter.setPageOrder(const AValue: QPrinterPageOrder);
@@ -4670,11 +4668,8 @@ begin
 end;
 
 procedure TQtPrinter.setPrintProgram(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := AValue; // GetUtf8String(AValue);
-  QPrinter_setPrintProgram(Handle, @Str);
+  QPrinter_setPrintProgram(Handle, @AValue);
 end;
 
 procedure TQtPrinter.setPrintRange(const AValue: QPrinterPrintRange);
@@ -4739,13 +4734,11 @@ end;
 
 function TQtPrinter.PageRect: TRect;
 begin
-  {$warning fixme Qt6}
-   QPrinter_pageRect(Handle, QPrinterUnit.QPrinterDevicePixel, @Result);
+  QPrinter_pageRect(Handle, QPrinterUnit.QPrinterDevicePixel, @Result);
 end;
 
 function TQtPrinter.PaperRect: TRect;
 begin
-  {$warning fixme Qt6}
   QPrinter_paperRect(Handle, QPrinterUnit.QPrinterDevicePixel, @Result);
 end;
 
@@ -4753,7 +4746,6 @@ function TQtPrinter.PageRect(AUnits: QPrinterUnit): TRect;
 var
   ARect: QRectFH;
 begin
-  {$warning fixme Qt6}
   ARect := QRectF_create();
   QPrinter_pageRect(Handle, AUnits, ARect);
   QRectF_toRect(ARect, @Result);
@@ -4765,7 +4757,6 @@ var
   R: QRectFH;
 begin
   R := QRectF_create();
-  {$warning fixme Qt6}
   QPrinter_paperRect(Handle, AUnits, R);
   QRectF_toRect(R, @Result);
   QRectF_destroy(R);
@@ -4778,20 +4769,15 @@ end;
 
 function TQtPrinter.GetPaperSize(AUnits: QPrinterUnit): TSize;
 var
-  //SizeF: QSizeFH;
   R: QRectFH;
   R1: TRect;
 begin
   Result := Default(TSize);
-  //SizeF := QSizeF_create(0, 0);
   R := QRectF_Create;
-  {$warning fixme Qt6}
   QPrinter_paperRect(Handle, AUnits, R);
-  // QPrinter_paperSize(Handle, SizeF, AUnits);
   QRectF_toRect(R, @R1);
   Result.cx := R1.Width;
   Result.cy := R1.Height;
-  //QSizeF_destroy(SizeF);
   QRectF_Destroy(R);
 end;
 
