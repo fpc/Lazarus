@@ -8102,13 +8102,6 @@ procedure QPrinter_setWinPageSize(handle: QPrinterH; winPageSize: Integer); cdec
 function QPrinter_winPageSize(handle: QPrinterH): Integer; cdecl; external Qt6PasLib name 'QPrinter_winPageSize';
 {$endif}
 
-//procedure QPrinter_setPageSizeMM(handle: QPrinterH; size: QSizeFH); cdecl; external Qt6PasLib name 'QPrinter_setPageSizeMM';
-// procedure QPrinter_setPaperSize(handle: QPrinterH; AnonParam1: QPagedPaintDevicePageSize); cdecl; external Qt6PasLib name 'QPrinter_setPaperSize';
-// function QPrinter_paperSize(handle: QPrinterH): QPagedPaintDevicePageSize; cdecl; external Qt6PasLib name 'QPrinter_paperSize';
-// procedure QPrinter_setPaperSize(handle: QPrinterH; paperSize: QSizeFH; _unit: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_setPaperSize2';
-// procedure QPrinter_paperSize(handle: QPrinterH; retval: QSizeFH; _unit: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_paperSize2';
-
-
 function QPrinterInfo_Create(): QPrinterInfoH; cdecl; external Qt6PasLib name 'QPrinterInfo_Create';
 procedure QPrinterInfo_Destroy(handle: QPrinterInfoH); cdecl; external Qt6PasLib name 'QPrinterInfo_Destroy'; 
 function QPrinterInfo_Create(other: QPrinterInfoH): QPrinterInfoH; cdecl; external Qt6PasLib name 'QPrinterInfo_Create2';
@@ -8120,11 +8113,21 @@ procedure QPrinterInfo_makeAndModel(handle: QPrinterInfoH; retval: PWideString);
 function QPrinterInfo_isNull(handle: QPrinterInfoH): Boolean; cdecl; external Qt6PasLib name 'QPrinterInfo_isNull';
 function QPrinterInfo_isDefault(handle: QPrinterInfoH): Boolean; cdecl; external Qt6PasLib name 'QPrinterInfo_isDefault';
 procedure QPrinterInfo_supportedPageSizes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedPageSizes';
+function QPrinterInfo_defaultColorMode(handle: QPrinterInfoH): QPrinterColorMode; cdecl; external Qt6PasLib name 'QPrinterInfo_defaultColorMode';
+function QPrinterInfo_defaultDuplexMode(handle: QPrinterInfoH): QPrinterDuplexMode; cdecl; external Qt6PasLib name 'QPrinterInfo_defaultDuplexMode';
+procedure QPrinterInfo_defaultPageSize(handle: QPrinterInfoH; retval: QPageSizeH); cdecl; external Qt6PasLib name 'QPrinterInfo_defaultPageSize';
+function QPrinterInfo_isRemote(handle: QPrinterInfoH): boolean; cdecl; external Qt6PasLib name 'QPrinterInfo_isRemote';
+procedure QPrinterInfo_maximumPhysicalPageSize(handle: QPrinterInfoH; retval: QPageSizeH); cdecl; external Qt6PasLib name 'QPrinterInfo_maximumPhysicalPageSize';
+procedure QPrinterInfo_minimumPhysicalPageSize(handle: QPrinterInfoH; retval: QPageSizeH); cdecl; external Qt6PasLib name 'QPrinterInfo_minimumPhysicalPageSize';
+function QPrinterInfo_state(handle: QPrinterInfoH): QPrinterPrinterState; cdecl; external Qt6PasLib name 'QPrinterInfo_state';
+procedure QPrinterInfo_supportedColorModes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedColorModes';
+procedure QPrinterInfo_supportedDuplexModes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedDuplexModes';
+procedure QPrinterInfo_supportedResolutions(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_supportedResolutions';
 procedure QPrinterInfo_availablePrinters(retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QPrinterInfo_availablePrinters';
 procedure QPrinterInfo_availablePrinterNames(retval: QStringListH); cdecl; external Qt6PasLib name 'QPrinterInfo_availablePrinterNames';
 procedure QPrinterInfo_defaultPrinter(retval: QPrinterInfoH); cdecl; external Qt6PasLib name 'QPrinterInfo_defaultPrinter';
 procedure QPrinterInfo_printerInfo(retval: QPrinterInfoH; printerName: PWideString); cdecl; external Qt6PasLib name 'QPrinterInfo_printerInfo';
-
+procedure QPrinterInfo_defaultPrinterName(retval: PWideString); cdecl; external Qt6PasLib name 'QPrinterInfo_defaultPrinterName';
 
 type
   QFontStyle = ( // QFont::Style (1)
