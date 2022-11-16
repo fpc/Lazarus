@@ -6202,6 +6202,15 @@ function QWidget_inputMethodHints(handle: QWidgetH): QtInputMethodHints; cdecl; 
 procedure QWidget_setInputMethodHints(handle: QWidgetH; hints: QtInputMethodHints); cdecl; external Qt6PasLib name 'QWidget_setInputMethodHints';
 function QWidget_to_QPaintDevice(handle: QWidgetH): QPaintDeviceH; cdecl; external Qt6PasLib name 'QWidget_to_QPaintDevice';
 
+function QWidget_screen(handle: QWidgetH): QScreenH; cdecl; external Qt6PasLib name 'QWidget_screen';
+procedure QWidget_setScreen(handle: QWidgetH; screen: QScreenH); cdecl; external Qt6PasLib name 'QWidget_setScreen';
+procedure QWidget_setWindowFlag(handle: QWidgetH; flag: QtWindowType; setOn: boolean); cdecl; external Qt6PasLib name 'QWidget_setWindowFlag';
+function QWidget_hasTabletTracking(handle: QWidgetH): boolean; cdecl; external Qt6PasLib name 'QWidget_hasTabletTracking';
+procedure QWidget_setTabletTracking(handle: QWidgetH; aEnable: boolean); cdecl; external Qt6PasLib name 'QWidget_setTabletTracking';
+function QWidget_toolTipDuration(handle: QWidgetH): integer; cdecl; external Qt6PasLib name 'QWidget_toolTipDuration';
+procedure QWidget_setToolTipDuration(handle: QWidgetH; aMsec: integer); cdecl; external Qt6PasLib name 'QWidget_setToolTipDuration';
+
+
 type
   QWidget_customContextMenuRequested_Event = procedure (pos: PQtPoint) of object cdecl;
 
