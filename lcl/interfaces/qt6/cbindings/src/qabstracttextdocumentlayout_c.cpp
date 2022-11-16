@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -61,6 +61,28 @@ QTextDocumentH QAbstractTextDocumentLayout_document(QAbstractTextDocumentLayoutH
 void QAbstractTextDocumentLayout_registerHandler(QAbstractTextDocumentLayoutH handle, int objectType, QObjectH component)
 {
 	((QAbstractTextDocumentLayout *)handle)->registerHandler(objectType, (QObject*)component);
+}
+
+void QAbstractTextDocumentLayout_unregisterHandler(QAbstractTextDocumentLayoutH handle, int objectType, QObjectH component)
+{
+	((QAbstractTextDocumentLayout *)handle)->unregisterHandler(objectType, (QObject*)component);
+}
+
+void QAbstractTextDocumentLayout_blockWithMarkerAt(QAbstractTextDocumentLayoutH handle, PQtPointF pt, QTextBlockH retval)
+{
+  *(QTextBlock *)retval = ((QAbstractTextDocumentLayout *)handle)->blockWithMarkerAt(*(const QPointF *)pt);
+}
+
+void QAbstractTextDocumentLayout_formatAt(QAbstractTextDocumentLayoutH handle, PQtPointF pt, QTextFormatH retval)
+{
+  *(QTextFormat *)retval = ((QAbstractTextDocumentLayout *)handle)->formatAt(*(const QPointF *)pt);
+}
+
+void QAbstractTextDocumentLayout_imageAt(QAbstractTextDocumentLayoutH handle, PQtPointF pt, PWideString retval)
+{
+	QString t_retval;
+	t_retval = ((QAbstractTextDocumentLayout *)handle)->imageAt(*(const QPointF *)pt);
+	copyQStringToPWideString(t_retval, retval);
 }
 
 QTextObjectInterfaceH QAbstractTextDocumentLayout_handlerForObject(QAbstractTextDocumentLayoutH handle, int objectType)
