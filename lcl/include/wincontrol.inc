@@ -5956,7 +5956,7 @@ begin
   end;
 end;
 
-function TWinControl.DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
+function TWinControl.DoRemainingKeyUp(var Message: TLMKeyUp): Boolean;
 var
   ShiftState: TShiftState;
 begin

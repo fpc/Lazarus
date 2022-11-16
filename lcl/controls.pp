@@ -2192,7 +2192,7 @@ type
     procedure DoExit; virtual;
     function  DoKeyDownBeforeInterface(var Message: TLMKey; IsRecurseCall: Boolean): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
-    function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
+    function  DoRemainingKeyUp(var Message: TLMKeyUp): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): Boolean; virtual;
     function  DoKeyUpBeforeInterface(var Message: TLMKey): Boolean;
