@@ -380,6 +380,7 @@ typedef struct QTextEdit_hook__ { PTRINT dummy; } *QTextEdit_hookH;
 typedef struct QGridLayout__ { PTRINT dummy; } *QGridLayoutH;
 typedef struct QAbstractItemDelegate__ { PTRINT dummy; } *QAbstractItemDelegateH;
 typedef struct QStyleOptionToolButton__ { PTRINT dummy; } *QStyleOptionToolButtonH;
+typedef struct QCompleter_hook__ { PTRINT dummy; } *QCompleter_hookH;
 typedef struct QLineEdit_hook__ { PTRINT dummy; } *QLineEdit_hookH;
 typedef struct QTextBrowser__ { PTRINT dummy; } *QTextBrowserH;
 typedef struct QFont__ { PTRINT dummy; } *QFontH;
