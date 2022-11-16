@@ -76,6 +76,72 @@ void QPrinterInfo_supportedPageSizes(QPrinterInfoH handle, PPtrIntArray retval)
 	copyQListTemplateToPtrIntArrayWithNew(t_retval, retval);
 }
 
+
+QPrinter::ColorMode QPrinterInfo_defaultColorMode(QPrinterInfoH handle)
+{
+  return (QPrinter::ColorMode) ((QPrinterInfo *)handle)->defaultColorMode();
+}
+
+QPrinter::DuplexMode QPrinterInfo_defaultDuplexMode(QPrinterInfoH handle)
+{
+  return (QPrinter::DuplexMode) ((QPrinterInfo *)handle)->defaultDuplexMode();
+}
+
+void QPrinterInfo_defaultPageSize(QPrinterInfoH handle, QPageSizeH retval)
+{
+  *(QPageSize*)retval = ((QPrinterInfo *)handle)->defaultPageSize();
+}
+
+bool QPrinterInfo_isRemote(QPrinterInfoH handle)
+{
+  return (bool) ((QPrinterInfo *)handle)->isRemote();
+}
+
+void QPrinterInfo_maximumPhysicalPageSize(QPrinterInfoH handle, QPageSizeH retval)
+{
+  *(QPageSize*)retval = ((QPrinterInfo *)handle)->maximumPhysicalPageSize();
+}
+
+void QPrinterInfo_minimumPhysicalPageSize(QPrinterInfoH handle, QPageSizeH retval)
+{
+  *(QPageSize*)retval = ((QPrinterInfo *)handle)->minimumPhysicalPageSize();
+}
+
+QPrinter::PrinterState QPrinterInfo_state(QPrinterInfoH handle)
+{
+  return (QPrinter::PrinterState) ((QPrinterInfo *)handle)->state();
+}
+
+void QPrinterInfo_supportedColorModes(QPrinterInfoH handle, PPtrIntArray retval)
+{
+  QList<QPrinter::ColorMode> t_retval;
+  t_retval = ((QPrinterInfo *)handle)->supportedColorModes();
+	copyQListTemplateToPtrIntArray(t_retval, retval);
+}
+
+void QPrinterInfo_supportedDuplexModes(QPrinterInfoH handle, PPtrIntArray retval)
+{
+  QList<QPrinter::DuplexMode> t_retval;
+  t_retval = ((QPrinterInfo *)handle)->supportedDuplexModes();
+	copyQListTemplateToPtrIntArray(t_retval, retval);
+}
+
+void QPrinterInfo_supportedResolutions(QPrinterInfoH handle, PPtrIntArray retval)
+{
+  QList<int> t_retval;
+  t_retval = ((QPrinterInfo *)handle)->supportedResolutions();
+	copyQListTemplateToPtrIntArray(t_retval, retval);
+}
+
+
+void QPrinterInfo_defaultPrinterName(PWideString retval)
+{
+	QString t_retval;
+	t_retval = QPrinterInfo::defaultPrinterName();
+	copyQStringToPWideString(t_retval, retval);
+}
+
+
 void QPrinterInfo_availablePrinters(PPtrIntArray retval)
 {
 	QList<QPrinterInfo> t_retval;

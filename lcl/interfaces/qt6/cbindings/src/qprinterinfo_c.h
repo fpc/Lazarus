@@ -26,6 +26,21 @@ C_EXPORT void QPrinterInfo_makeAndModel(QPrinterInfoH handle, PWideString retval
 C_EXPORT bool QPrinterInfo_isNull(QPrinterInfoH handle);
 C_EXPORT bool QPrinterInfo_isDefault(QPrinterInfoH handle);
 C_EXPORT void QPrinterInfo_supportedPageSizes(QPrinterInfoH handle, PPtrIntArray retval);
+
+C_EXPORT QPrinter::ColorMode QPrinterInfo_defaultColorMode(QPrinterInfoH handle);
+C_EXPORT QPrinter::DuplexMode QPrinterInfo_defaultDuplexMode(QPrinterInfoH handle);
+C_EXPORT void QPrinterInfo_defaultPageSize(QPrinterInfoH handle, QPageSizeH retval);
+C_EXPORT bool QPrinterInfo_isRemote(QPrinterInfoH handle);
+C_EXPORT void QPrinterInfo_maximumPhysicalPageSize(QPrinterInfoH handle, QPageSizeH retval);
+C_EXPORT void QPrinterInfo_minimumPhysicalPageSize(QPrinterInfoH handle, QPageSizeH retval);
+C_EXPORT QPrinter::PrinterState QPrinterInfo_state(QPrinterInfoH handle);
+C_EXPORT void QPrinterInfo_supportedColorModes(QPrinterInfoH handle, PPtrIntArray retval);
+C_EXPORT void QPrinterInfo_supportedDuplexModes(QPrinterInfoH handle, PPtrIntArray retval);
+C_EXPORT void QPrinterInfo_supportedResolutions(QPrinterInfoH handle, PPtrIntArray retval);
+
+C_EXPORT void QPrinterInfo_defaultPrinterName(PWideString retval);
+
+
 C_EXPORT void QPrinterInfo_availablePrinters(PPtrIntArray retval);
 C_EXPORT void QPrinterInfo_availablePrinterNames(QStringListH retval);
 C_EXPORT void QPrinterInfo_defaultPrinter(QPrinterInfoH retval);
