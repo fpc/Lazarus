@@ -2417,22 +2417,38 @@ Indicates whether a TBitmap instance has been assigned to the Bitmap property.
 
 <element name="TMenuItem.GetIconSize">
 <short>
-Gets the size for the icon (glyph) used on the menu item.
+Gets the size for the icon (glyph) when used on the menu item.
 </short>
 <descr>
 <p>
-The return value is a <var>TPoint</var> instance with the Width and Height 
-for the glyph displayed on the menu item.
+The return value is a <var>TPoint</var> instance with the Width (X) and Height 
+(y) for the glyph displayed on the menu item. The return value is an empty 
+TPoint instance if HasIcon returns <b>False</b>.
 </p>
 <p>
-Calls <var>HasIcon</var> to determine if <var>GlyphShowMode</var> allows (or 
-requires) a glyph to be displayed for the menu item, and whether image(s) are 
-available. When HasIcon returns <b>True</b>, the images available for the 
-menu item are retrieved to get the Width and Height required for the device 
-context in <var>ADC</var>. If an image list is not available, the Width and 
-Height in <var>Bitmap</var> are used in the return value.
+If <var>HasIcon</var> returns <b>True</b>, GetImageList is called to get the 
+images and their Width. If ImageIndex does not exist in the image list, the 
+method is exited with an empty TPoint instance in the return value.
+</p>
+<p>
+<var>DPI</var> indicates the Dots Per Inch requested for the icon image. When 
+DPI contains the default value (0), GetDeviceCaps is called to get the logical 
+pixel size for the device context in the ADC argument. The SizeForPPI method 
+in the image list is called to get the size for the scaled image resolution 
+for the DPI value. The size information is stored in the return value.
+</p>
+<p>
+If an image list has not been assigned to Images or SubMenuImages, the Width 
+and Height values in Bitmap as used in the return value.
+</p>
+<p>
+GetIconSize is called when a widgetset class renders the menu or menu item to 
+the device context for its window Handle.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4 to include the DPI argument.
+</version>
 <seealso/>
 </element>
 <element name="TMenuItem.GetIconSize.Result">
@@ -2446,11 +2462,17 @@ item.
 Device context used to get the display density (PPI) for the glyph images.
 </short>
 </element>
+<element name="TMenuItem.GetIconSize.DPI">
+<short>
+DPI setting used to scale the icon images retrieved in the method to the 
+monitor where menu item is displayed.
+</short>
+</element>
 
 <element name="TMenuItem.RemoveAllHandlersOfObject">
 <short>
-Removes all handlers for the specified object instance from the internal list 
-of handlers.
+Removes all handler routines for the specified object instance from the 
+internal handler lists.
 </short>
 <descr/>
 <seealso>
