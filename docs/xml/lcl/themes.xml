@@ -1922,12 +1922,12 @@ or retrieving theme element details.
 </element>
 
 <element name="TThemeServices.InitThemes">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TThemeServices.InitThemes.Result">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 </element>
 
 <element name="TThemeServices.UnloadThemeData">
@@ -1937,21 +1937,21 @@ or retrieving theme element details.
 </element>
 
 <element name="TThemeServices.UseThemes">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TThemeServices.UseThemes.Result">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 </element>
 
 <element name="TThemeServices.ThemedControlsEnabled">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TThemeServices.ThemedControlsEnabled.Result">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 </element>
 
 <element name="TThemeServices.InternalColorToRGB">
@@ -2105,22 +2105,169 @@ state.
 
 <element name="TThemeServices.GetDetailSize">
 <short>
-Gets the default dimensions for a theme element detail.
+Deprecated. Use GetDetailSizeForPPI instead.
 </short>
 <descr>
 <p>
-Gets the default size for a theme element detail. -1 in the Width and Height 
-for the <var>TSize</var> instance means the size for the theme element detail 
-is not known.
+Gets the default dimensions for the specified theme element detail. Calls 
+GetDetailSizeForPPI to get the return value for the method. -1 in the Width 
+and Height for the <var>TSize</var> instance means the size for the theme 
+element detail is not known.
 </p>
 </descr>
-<seealso/>
+<version>
+Deprecated in LCL Version 2.4; use GetDetailSizeForPPI instead.
+</version>
+<seealso>
+<link id="TThemeServices.GetDetailSizeForPPI"/>
+<link id="TThemedElementDetails"/>
+<link id="TThemedElement"/>
+<link id="#rtl.types.TSize">TSize</link>
+</seealso>
 </element>
 <element name="TThemeServices.GetDetailSize.Result">
-<short/>
+<short>
+Dimensions for the theme element detail specified in the Details argument.
+</short>
 </element>
 <element name="TThemeServices.GetDetailSize.Details">
-<short/>
+<short>
+Identifies the element, part, and state for the requested theme element.
+</short>
+</element>
+
+<element name="TThemeServices.GetDetailSizeForWindow">
+<short>
+Gets the dimensions for a theme element on the control with the specified 
+window handle.
+</short>
+<descr>
+<p>
+Gets the default dimensions for the specified theme element detail. Calls 
+GetDetailSizeForPPI to get the return value for the method. -1 in the Width 
+and Height for the <var>TSize</var> instance means the size for the theme 
+element detail is not known.
+</p>
+<remark>
+The handle specified in AWindow is not used is the LCL implementation of the 
+method. It is provided for compatibility with widgetset implementations which 
+use the handle for DPI-aware contexts (Windows).
+</remark>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TThemeServices.GetDetailSizeForPPI"/>
+<link id="TThemedElementDetails"/>
+<link id="TThemedElement"/>
+<link id="#rtl.types.TSize">TSize</link>
+</seealso>
+</element>
+<element name="TThemeServices.GetDetailSizeForWindow.Result">
+<short>
+TSize instance with the Width and Height for the specified theme element 
+detail.
+</short>
+</element>
+<element name="TThemeServices.GetDetailSizeForWindow.Details">
+<short>
+Identifies the element, part, and state for the requested themed element.
+</short>
+</element>
+<element name="TThemeServices.GetDetailSizeForWindow.AWindow">
+<short>
+The window handle for the control where the theme element size is used.
+</short>
+</element>
+
+<element name="TThemeServices.GetDetailSizeForPPI">
+<short>
+Gets the dimensions for a theme element scaled to the specified Pixels per 
+Inch (PPI).
+</short>
+<descr>
+<p>
+<var>GetDetailSizeForPPI</var> is a <var>TSize</var> function used to get the 
+dimensions for a theme element detail scaled to the display density specified 
+in <var>PPI</var>.
+</p>
+<p>
+<var>Details</var> contains the theme element, part, and state values which 
+identify a  themed element or one of its constituent parts.
+</p>
+<p>
+<var>PPI</var> contains the Pixels per Inch values used to scale the size 
+for the theme element. It is used to generate a scaling factor that converts 
+values from 96 PPI (used at design-time) to the given PPI setting. PPI 
+normally contains the PixelsPerInch setting for the monitor where the themed 
+element is displayed.
+</p>
+<p>
+The return value is a TSize instance which contains the Width (in cx) and the 
+Height (in cy) for the themed element detail scaled to the given PPI setting. 
+When cx and cy are set to -1, this indicates that the size for the themed 
+element is not known. This can occur if Details has an unknown value in its 
+Element or Part members.
+</p>
+<p>
+<b>Themed Elements and Parts</b>
+</p>
+<dl>
+<dt>teButton</dt>
+<dd>
+Part allows: BP_RADIOBUTTON, BP_CHECKBOX, or BP_PUSHBUTTON.
+</dd>
+<dt>teRebar</dt>
+<dd>
+Part allows: RP_GRIPPER or RP_GRIPPERVERT.
+</dd>
+<dt>teToolBar</dt>
+<dd>
+Part allows: TP_SPLITBUTTONDROPDOWN or TP_DROPDOWNBUTTON
+</dd>
+<dt>teTreeView</dt>
+<dd>
+Part allows: TVP_GLYPH or TVP_HOTGLYPH.
+</dd>
+<dt>teWindow</dt>
+<dd>
+Part allows: WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON, WP_MDIHELPBUTTON, 
+WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, or WP_MDISYSBUTTON.
+</dd>
+<dt>teHeader</dt>
+<dd>
+Part allows: HP_HEADERSORTARROW
+</dd>
+</dl>
+</descr>
+<seealso>
+<link id="TThemeServices.GetDetailSize"/>
+<link id="TThemedElementDetails"/>
+<link id="TThemedElement"/>
+<link id="#lcl.graphics.ScreenInfo">ScreenInfo</link>
+<link id="#lcl.lcltype.TScreenInfo">TScreenInfo</link>
+<link id="#rtl.types.TSize">TSize</link>
+</seealso>
+<version>
+Added in LCL version 2.4. Replaces the deprecated GetDetailSize method.
+</version>
+</element>
+<element name="TThemeServices.GetDetailSizeForPPI.Result">
+<short>
+TSize instance with the Width and Height for the specified theme element 
+detail.
+</short>
+</element>
+<element name="TThemeServices.GetDetailSizeForPPI.Details">
+<short>
+Identifies the element, part, and state for the requested themed element.
+</short>
+</element>
+<element name="TThemeServices.GetDetailSizeForPPI.PPI">
+<short>
+Pixels per Inch used to scale size values in the theme element.
+</short>
 </element>
 
 <element name="TThemeServices.GetDetailRegion">
@@ -2147,12 +2294,12 @@ Gets the handle to the region for a theme element.
 </element>
 
 <element name="TThemeServices.GetStockImage">
-<short>Always returns False.</short>
+<short>Always returns <b>False</b>.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TThemeServices.GetStockImage.Result">
-<short/>
+<short>Always returns <b>False</b>.</short>
 </element>
 <element name="TThemeServices.GetStockImage.StockID">
 <short/>
@@ -2177,7 +2324,7 @@ Returns 1 if the theme option is used for the platform, or 0 when not used.
 <descr>
 <p>
 Use of toUseGlyphEffects is OS-dependent. The option is used for Linux. It is 
-not used for Windows or OSX.
+not used for Windows or macOS (OSX).
 </p>
 </descr>
 <seealso/>
@@ -2305,7 +2452,9 @@ clBackground was used in previous versions.
 <short>Rectangle used to draw the frame for the themed element.</short>
 </element>
 <element name="TThemeServices.DrawElement.ClipRect">
-<short>Not used in the current implementation. Default value is Nil.</short>
+<short>
+Not used in the current implementation. Default value is <b>Nil</b>.
+</short>
 </element>
 
 <element name="TThemeServices.DrawIcon">
@@ -2395,7 +2544,7 @@ for a themed control.
 </element>
 
 <element name="TThemeServices.HasTransparentParts">
-<short>Always returns True.</short>
+<short>Always returns <b>True</b>.</short>
 <descr/>
 <seealso/>
 </element>
@@ -2427,7 +2576,9 @@ the native border drawing style for the widgetset.
 </element>
 
 <element name="TThemeServices.UpdateThemes">
-<short>Reloads theme elements and details when UseThemes is True.</short>
+<short>
+Reloads theme elements and details when UseThemes is <b>True</b>.
+</short>
 <descr>
 <p>
 Called from the <var>Create</var> constructor. Think of it as the theme 
