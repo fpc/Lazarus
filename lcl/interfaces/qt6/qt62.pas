@@ -9102,6 +9102,7 @@ procedure QTextDocument_setDefaultCursorMoveStyle(handle: QTextDocumentH; style:
 procedure QTextDocument_undo(handle: QTextDocumentH); cdecl; external Qt6PasLib name 'QTextDocument_undo2';
 procedure QTextDocument_redo(handle: QTextDocumentH); cdecl; external Qt6PasLib name 'QTextDocument_redo2';
 procedure QTextDocument_setModified(handle: QTextDocumentH; m: Boolean = True); cdecl; external Qt6PasLib name 'QTextDocument_setModified';
+procedure QTextDocument_allFormats(handle: QTextDocumentH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QTextDocument_allFormats';
 
 function QAbstractTextDocumentLayout_hitTest(handle: QAbstractTextDocumentLayoutH; point: PQtPointF; accuracy: QtHitTestAccuracy): Integer; cdecl; external Qt6PasLib name 'QAbstractTextDocumentLayout_hitTest';
 procedure QAbstractTextDocumentLayout_anchorAt(handle: QAbstractTextDocumentLayoutH; retval: PWideString; pos: PQtPointF); cdecl; external Qt6PasLib name 'QAbstractTextDocumentLayout_anchorAt';
