@@ -113,3 +113,14 @@ void QAbstractScrollArea_setupViewport(QAbstractScrollAreaH handle, QWidgetH vie
 	((QAbstractScrollArea *)handle)->setupViewport((QWidget*)viewport);
 }
 
+QAbstractScrollArea::SizeAdjustPolicy QAbstractScrollArea_sizeAdjustPolicy(QAbstractScrollAreaH handle)
+{
+  return (QAbstractScrollArea::SizeAdjustPolicy) ((QAbstractScrollArea *)handle)->sizeAdjustPolicy();
+}
+
+void QAbstractScrollArea_setSizeAdjustPolicy(QAbstractScrollAreaH handle, QAbstractScrollArea::SizeAdjustPolicy adjustPolicy)
+{
+  ((QAbstractScrollArea *)handle)->setSizeAdjustPolicy(adjustPolicy);
+}
+
+

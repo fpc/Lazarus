@@ -35,5 +35,7 @@ C_EXPORT void QAbstractScrollArea_maximumViewportSize(QAbstractScrollAreaH handl
 C_EXPORT void QAbstractScrollArea_minimumSizeHint(QAbstractScrollAreaH handle, PSize retval);
 C_EXPORT void QAbstractScrollArea_sizeHint(QAbstractScrollAreaH handle, PSize retval);
 C_EXPORT void QAbstractScrollArea_setupViewport(QAbstractScrollAreaH handle, QWidgetH viewport);
+C_EXPORT QAbstractScrollArea::SizeAdjustPolicy QAbstractScrollArea_sizeAdjustPolicy(QAbstractScrollAreaH handle);
+C_EXPORT void QAbstractScrollArea_setSizeAdjustPolicy(QAbstractScrollAreaH handle, QAbstractScrollArea::SizeAdjustPolicy adjustPolicy);
 
 #endif
