@@ -425,10 +425,67 @@ void QTextDocument_setBaseUrl(QTextDocumentH handle, const QUrlH url)
   ((QTextDocument *)handle)->setBaseUrl(*(const QUrl*)url);
 }
 
+qreal QTextDocument_baselineOffset(QTextDocumentH handle)
+{
+  return (qreal) ((QTextDocument *)handle)->baselineOffset();
+}
+
+void QTextDocument_setBaselineOffset(QTextDocumentH handle, qreal offset)
+{
+  ((QTextDocument *)handle)->setBaselineOffset(offset);
+}
+
 void QTextDocument_toRawText(QTextDocumentH handle, PWideString retval)
 {
 	QString t_retval;
 	t_retval = ((QTextDocument *)handle)->toRawText();
 	copyQStringToPWideString(t_retval, retval);
+}
+
+void QTextDocument_allFormats(QTextDocumentH handle, PPtrIntArray retval)
+{
+	QList<QTextFormat> t_retval;
+	t_retval = ((QTextDocument *)handle)->allFormats();
+	copyQListTemplateToPtrIntArrayWithNew(t_retval, retval);
+}
+
+qreal QTextDocument_subScriptBaseline(QTextDocumentH handle)
+{
+  return (qreal) ((QTextDocument *)handle)->subScriptBaseline();
+}
+
+void QTextDocument_setSubScriptBaseline(QTextDocumentH handle, qreal baseline)
+{
+  ((QTextDocument *)handle)->setSubScriptBaseline(baseline);
+}
+
+qreal QTextDocument_superScriptBaseline(QTextDocumentH handle)
+{
+  return (qreal) ((QTextDocument *)handle)->superScriptBaseline();
+}
+
+void QTextDocument_setSuperScriptBaseline(QTextDocumentH handle, qreal baseline)
+{
+  ((QTextDocument *)handle)->setSuperScriptBaseline(baseline);
+}
+
+QTextDocument::ResourceProvider QTextDocument_resourceProvider(QTextDocumentH handle)
+{
+  return (QTextDocument::ResourceProvider) ((QTextDocument *)handle)->resourceProvider();
+}
+
+void QTextDocument_setResourceProvider(QTextDocumentH handle, QTextDocument::ResourceProvider provider)
+{
+  ((QTextDocument *)handle)->setResourceProvider(provider);
+}
+
+QTextDocument::ResourceProvider QTextDocument_defaultResourceProvider()
+{
+  return (QTextDocument::ResourceProvider) QTextDocument::defaultResourceProvider();
+}
+
+void QTextDocument_setDefaultResourceProvider(QTextDocument::ResourceProvider provider)
+{
+  QTextDocument::setDefaultResourceProvider(provider);
 }
 

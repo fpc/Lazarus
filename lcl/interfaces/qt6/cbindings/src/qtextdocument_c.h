@@ -93,6 +93,17 @@ C_EXPORT void QTextDocument_redo2(QTextDocumentH handle);
 C_EXPORT void QTextDocument_setModified(QTextDocumentH handle, bool m);
 C_EXPORT void QTextDocument_baseUrl(QTextDocumentH handle, QUrlH retval);
 C_EXPORT void QTextDocument_setBaseUrl(QTextDocumentH handle, const QUrlH url);
+C_EXPORT qreal QTextDocument_baselineOffset(QTextDocumentH handle);
+C_EXPORT void QTextDocument_setBaselineOffset(QTextDocumentH handle, qreal offset);
 C_EXPORT void QTextDocument_toRawText(QTextDocumentH handle, PWideString retval);
+C_EXPORT void QTextDocument_allFormats(QTextDocumentH handle, PPtrIntArray retval);
+C_EXPORT qreal QTextDocument_subScriptBaseline(QTextDocumentH handle);
+C_EXPORT void QTextDocument_setSubScriptBaseline(QTextDocumentH handle, qreal baseline);
+C_EXPORT qreal QTextDocument_superScriptBaseline(QTextDocumentH handle);
+C_EXPORT void QTextDocument_setSuperScriptBaseline(QTextDocumentH handle, qreal baseline);
+C_EXPORT QTextDocument::ResourceProvider QTextDocument_resourceProvider(QTextDocumentH handle);
+C_EXPORT void QTextDocument_setResourceProvider(QTextDocumentH handle, QTextDocument::ResourceProvider provider);
+C_EXPORT QTextDocument::ResourceProvider QTextDocument_defaultResourceProvider();
+C_EXPORT void QTextDocument_setDefaultResourceProvider(QTextDocument::ResourceProvider provider);
 
 #endif
