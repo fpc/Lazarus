@@ -586,6 +586,7 @@ QMenuBar_hookH = class(QWidget_hookH) end;
 QButtonGroup_hookH = class(QObject_hookH) end;
 QAbstractButton_hookH = class(QWidget_hookH) end;
 QPushButton_hookH = class(QAbstractButton_hookH) end;
+QCompleter_hookH = class(QObject_hookH) end;
 QLineEdit_hookH = class(QWidget_hookH) end;
 QPlainTextEdit_hookH = class(QAbstractScrollArea_hookH) end;
 QPlainTextDocumentLayout_hookH = class(QAbstractTextDocumentLayout_hookH) end;
@@ -9760,6 +9761,54 @@ function QRadioButton_Create(text: PWideString; parent: QWidgetH = nil): QRadioB
 procedure QRadioButton_sizeHint(handle: QRadioButtonH; retval: PSize); cdecl; external Qt5PasLib name 'QRadioButton_sizeHint';
 procedure QRadioButton_minimumSizeHint(handle: QRadioButtonH; retval: PSize); cdecl; external Qt5PasLib name 'QRadioButton_minimumSizeHint';
 
+type
+  QCompleter_activated_Event = procedure (aIndex: QModelIndexH) of object cdecl;
+  QCompleter_activated2_Event = procedure (aText: PWideString) of object cdecl;
+  QCompleter_highlighted_Event = procedure (aIndex: QModelIndexH) of object cdecl;
+  QCompleter_highlighted2_Event = procedure (aText: PWideString) of object cdecl;
+
+type
+  QCompleterCompletionMode = (QCompleterPopupCompletion, QCompleterUnfilteredPopupCompletion, QCompleterInlineCompletion);
+  QCompleterModelSorting = (QCompleterUnsortedModel, QCompleterCaseSensitiveSortedModel, QCompleterCaseInsensitivelySortedModel);
+
+function QCompleter_Create(): QCompleterH; cdecl; external Qt5PasLib name 'QCompleter_Create';
+function QCompleter_Create2(parent: QObjectH): QCompleterH; cdecl; external Qt5PasLib name 'QCompleter_Create2';
+function QCompleter_Create3(model: QAbstractItemModelH; parent: QObjectH): QCompleterH; cdecl; external Qt5PasLib name 'QCompleter_Create3';
+function QCompleter_Create4(list: QStringListH; parent: QObjectH): QCompleterH; cdecl; external Qt5PasLib name 'QCompleter_Create4';
+procedure QCompleter_Destroy(handle: QCompleterH); cdecl; external Qt5PasLib name 'QCompleter_Destroy';
+function QCompleter_caseSensitivity(handle: QCompleterH): QtCaseSensitivity; cdecl; external Qt5PasLib name 'QCompleter_caseSensitivity';
+function QCompleter_completionColumn(handle: QCompleterH): integer; cdecl; external Qt5PasLib name 'QCompleter_completionColumn';
+function QCompleter_completionCount(handle: QCompleterH): integer; cdecl; external Qt5PasLib name 'QCompleter_completionCount';
+function QCompleter_completionMode(handle: QCompleterH): QCompleterCompletionMode; cdecl; external Qt5PasLib name 'QCompleter_completionMode';
+function QCompleter_completionModel(handle: QCompleterH): QAbstractItemModelH; cdecl; external Qt5PasLib name 'QCompleter_completionModel';
+procedure QCompleter_completionPrefix(handle: QCompleterH; retval: PWideString); cdecl; external Qt5PasLib name 'QCompleter_completionPrefix';
+function QCompleter_completionRole(handle: QCompleterH): integer; cdecl; external Qt5PasLib name 'QCompleter_completionRole';
+procedure QCompleter_currentCompletion(handle: QCompleterH; retval: PWideString); cdecl; external Qt5PasLib name 'QCompleter_currentCompletion';
+procedure QCompleter_currentIndex(handle: QCompleterH; retval: QModelIndexH); cdecl; external Qt5PasLib name 'QCompleter_currentIndex';
+function QCompleter_currentRow(handle: QCompleterH): integer; cdecl; external Qt5PasLib name 'QCompleter_currentRow';
+function QCompleter_filterMode(handle: QCompleterH): QtMatchFlags; cdecl; external Qt5PasLib name 'QCompleter_filterMode';
+function QCompleter_maxVisibleItems(handle: QCompleterH): integer; cdecl; external Qt5PasLib name 'QCompleter_maxVisibleItems';
+function QCompleter_model(handle: QCompleterH): QAbstractItemModelH; cdecl; external Qt5PasLib name 'QCompleter_model';
+function QCompleter_modelSorting(handle: QCompleterH): QCompleterModelSorting; cdecl; external Qt5PasLib name 'QCompleter_modelSorting';
+procedure QCompleter_pathFromIndex(handle: QCompleterH; aModel: QModelIndexH; retval: PWideString); cdecl; external Qt5PasLib name 'QCompleter_pathFromIndex';
+function QCompleter_popup(handle: QCompleterH): QAbstractItemViewH; cdecl; external Qt5PasLib name 'QCompleter_popup';
+procedure QCompleter_setCaseSensitivity(handle: QCompleterH; aCaseSensitivity: QtCaseSensitivity); cdecl; external Qt5PasLib name 'setCaseSensitivity';
+procedure QCompleter_setCompletionColumn(handle: QCompleterH; aColumn: integer); cdecl; external Qt5PasLib name 'QCompleter_setCompletionColumn';
+procedure QCompleter_setCompletionMode(handle: QCompleterH; aMode: QCompleterCompletionMode); cdecl; external Qt5PasLib name 'QCompleter_setCompletionMode';
+procedure QCompleter_setCompletionRole(handle: QCompleterH; aRole: integer); cdecl; external Qt5PasLib name 'QCompleter_setCompletionRole';
+procedure QCompleter_setCurrentRow(handle: QCompleterH; aRow: integer); cdecl; external Qt5PasLib name 'QCompleter_setCurrentRow';
+procedure QCompleter_setFilterMode(handle: QCompleterH; aFilterMode: QtMatchFlags); cdecl; external Qt5PasLib name 'QCompleter_setFilterMode';
+procedure QCompleter_setMaxVisibleItems(handle: QCompleterH; aMaxItems: integer); cdecl; external Qt5PasLib name 'QCompleter_setMaxVisibleItems';
+procedure QCompleter_setModel(handle: QCompleterH; aModel: QAbstractItemModelH); cdecl; external Qt5PasLib name 'QCompleter_setModel';
+procedure QCompleter_setModelSorting(handle: QCompleterH; aSorting: QCompleterModelSorting); cdecl; external Qt5PasLib name 'QCompleter_setModelSorting';
+procedure QCompleter_setPopup(handle: QCompleterH; aPopup: QAbstractItemViewH); cdecl; external Qt5PasLib name 'QCompleter_setPopup';
+procedure QCompleter_setWidget(handle: QCompleterH; aWidget: QWidgetH); cdecl; external Qt5PasLib name 'QCompleter_setWidget';
+procedure QCompleter_splitPath(handle: QCompleterH; aPath: PWideString; retval: QStringListH); cdecl; external Qt5PasLib name 'QCompleter_splitPath';
+function QCompleter_widget(handle: QCompleterH):QWidgetH; cdecl; external Qt5PasLib name 'QCompleter_widget';
+function QCompleter_wrapAround(handle: QCompleterH): boolean; cdecl; external Qt5PasLib name 'QCompleter_wrapAround';
+procedure QCompleter_complete(handle: QCompleterH; r: PRect); cdecl; external Qt5PasLib name 'QCompleter_complete';
+procedure QCompleter_setCompletionPrefix(handle: QCompleterH; aPrefix: PWideString); cdecl; external Qt5PasLib name 'QCompleter_setCompletionPrefix';
+procedure QCompleter_setWrapAround(handle: QCompleterH; aWrap: boolean); cdecl; external Qt5PasLib name 'QCompleter_setWrapAround';
 
 type
   QLineEditEchoMode = ( // QLineEdit::EchoMode (1)
@@ -15266,6 +15315,13 @@ procedure QAbstractButton_hook_hook_toggled(handle: QAbstractButton_hookH; hook:
 
 function QPushButton_hook_Create(handle: QObjectH): QPushButton_hookH; cdecl; external Qt5PasLib name 'QPushButton_hook_Create';
 procedure QPushButton_hook_Destroy(handle: QPushButton_hookH); cdecl; external Qt5PasLib name 'QPushButton_hook_Destroy'; 
+
+function QCompleter_hook_Create(handle: QObjectH): QCompleter_hookH; cdecl; external Qt5PasLib name 'QCompleter_hook_Create';
+procedure QCompleter_hook_Destroy(handle: QCompleter_hookH); cdecl; external Qt5PasLib name 'QCompleter_hook_Destroy';
+procedure QCompleter_hook_hook_activated(handle: QCompleter_hookH; hook: QCompleter_activated_Event); cdecl; external Qt5PasLib name 'QCompleter_hook_hook_activated';
+procedure QCompleter_hook_hook_activated2(handle: QCompleter_hookH; hook: QCompleter_activated2_Event); cdecl; external Qt5PasLib name 'QCompleter_hook_hook_activated2';
+procedure QCompleter_hook_hook_highlighted(handle: QCompleter_hookH; hook: QCompleter_highlighted_Event); cdecl; external Qt5PasLib name 'QCompleter_hook_hook_highlighted';
+procedure QCompleter_hook_hook_highlighted2(handle: QCompleter_hookH; hook: QCompleter_highlighted2_Event); cdecl; external Qt5PasLib name 'QCompleter_hook_hook_highlighted2';
 
 function QLineEdit_hook_Create(handle: QObjectH): QLineEdit_hookH; cdecl; external Qt5PasLib name 'QLineEdit_hook_Create';
 procedure QLineEdit_hook_Destroy(handle: QLineEdit_hookH); cdecl; external Qt5PasLib name 'QLineEdit_hook_Destroy'; 
