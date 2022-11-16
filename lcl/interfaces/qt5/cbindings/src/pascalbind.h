@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -40,6 +40,7 @@
 typedef bool (*EventFilter)(void *message, long *result);
 typedef bool (*EventFilter2)(void *message);
 
+/*
 #if defined(_LP64) || defined(__amd64__)
 typedef long long int PTRINT;
 typedef unsigned long long int PTRUINT;
@@ -47,7 +48,7 @@ typedef unsigned long long int PTRUINT;
 typedef int PTRINT;
 typedef unsigned int PTRUINT;
 #endif
-
+*/
 
 typedef uint WFlags;
 typedef int QCOORDH;

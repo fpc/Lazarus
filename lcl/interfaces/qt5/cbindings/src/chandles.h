@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -13,6 +13,7 @@
 #ifndef CHANDLES_H
 #define CHANDLES_H
 
+/*
 #if defined(_LP64) || defined(__amd64__)
 typedef long long int PTRINT;
 typedef unsigned long long int PTRUINT;
@@ -20,6 +21,9 @@ typedef unsigned long long int PTRUINT;
 typedef int PTRINT;
 typedef unsigned int PTRUINT;
 #endif
+*/
+typedef qintptr PTRINT;
+typedef quintptr PTRUINT;
 
 typedef struct QAbstractButton__ { PTRINT dummy; } *QAbstractButtonH;
 typedef struct QSizePolicy__ { PTRINT dummy; } *QSizePolicyH;
@@ -417,6 +421,7 @@ typedef struct QTextEdit_hook__ { PTRINT dummy; } *QTextEdit_hookH;
 typedef struct QGridLayout__ { PTRINT dummy; } *QGridLayoutH;
 typedef struct QAbstractItemDelegate__ { PTRINT dummy; } *QAbstractItemDelegateH;
 typedef struct QStyleOptionToolButton__ { PTRINT dummy; } *QStyleOptionToolButtonH;
+typedef struct QCompleter_hook__ { PTRINT dummy; } *QCompleter_hookH;
 typedef struct QLineEdit_hook__ { PTRINT dummy; } *QLineEdit_hookH;
 typedef struct QTextBrowser__ { PTRINT dummy; } *QTextBrowserH;
 typedef struct QFont__ { PTRINT dummy; } *QFontH;

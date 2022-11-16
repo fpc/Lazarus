@@ -1,5 +1,5 @@
 #******************************************************************************
-#  Copyright (c) 2005-2013 by Jan Van hijfte
+#  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
 #  
 #  See the included file COPYING.TXT for details about the copyright.
 #
@@ -10,10 +10,14 @@
 
 
 
-# Binding Release Version 2.6 against Qt5 5.6 LTS release.
+# Binding Release Version 1.2.11 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.10
+VERSION = 1.2.11
+VER_MAJ = 1
+VER_MIN = 2
+VER_PAT = 11
+win32:VERSION_PE_HEADER = 1.2
 
 QT += gui network printsupport
 TARGET = Qt5Pas
@@ -248,6 +252,8 @@ HEADERS +=  \
            qpushbutton_hook.h \
            qradiobutton_c.h \
            qlineedit_c.h \
+           qcompleter_c.h \
+           qcompleter_hook.h \
            qlineedit_hook.h \
            qplaintextedit_c.h \
            qplaintextedit_hook.h \
@@ -410,6 +416,7 @@ HEADERS +=  \
            qabstractbutton_hook_c.h \
            qpushbutton_hook_c.h \
            qlineedit_hook_c.h \
+           qcompleter_hook_c.h \
            qplaintextedit_hook_c.h \
            qtextedit_hook_c.h \
            qtabwidget_hook_c.h \
@@ -582,6 +589,7 @@ SOURCES +=  \
            qpushbutton_c.cpp \
            qradiobutton_c.cpp \
            qlineedit_c.cpp \
+           qcompleter_c.cpp \
            qplaintextedit_c.cpp \
            qtextedit_c.cpp \
            qtabwidget_c.cpp \
@@ -694,6 +702,7 @@ SOURCES +=  \
            qabstractbutton_hook_c.cpp \
            qpushbutton_hook_c.cpp \
            qlineedit_hook_c.cpp \
+           qcompleter_hook_c.cpp \
            qplaintextedit_hook_c.cpp \
            qtextedit_hook_c.cpp \
            qtabwidget_hook_c.cpp \
