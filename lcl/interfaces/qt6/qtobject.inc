@@ -30,7 +30,9 @@ begin
     App := QApplicationH(QCoreApplication_instance())
   else
   begin
+    {$IFDEF HASX11}
     FX11Display := nil;
+    {$ENDIF}
     {$IFDEF MSWINDOWS}
     //add directory plugins to the Qt paths if Qt is distributed with application under mswindows.
     WStr := 'plugins';
