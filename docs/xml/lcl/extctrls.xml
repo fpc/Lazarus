@@ -259,7 +259,7 @@ is unassigned, or not derived from <var>TNotebook</var>.
 </seealso>
 </element>
 
-<element name="TPage. OnBeforeShow">
+<element name="TPage.OnBeforeShow">
 <short>Event handler signalled before a page is displayed.</short>
 <descr>
 <p>
@@ -1982,7 +1982,7 @@ Used in the implementation of the MoveSplitter method.
 </element>
 <element name="TCustomSplitter.CheckOffset.Result">
 <short>
-True if the offset was successfully determined for the splitter control.
+<b>True</b> if the offset was successfully determined for the splitter control.
 </short>
 </element>
 <element name="TCustomSplitter.CheckOffset.NewOffset">
@@ -2012,8 +2012,8 @@ ResizeControl property.
 </element>
 <element name="TCustomSplitter.FindAlignControl.Result">
 <short>
-TControl instance to which the splitter is aligned, or Nil when s sibling 
-control is not found.
+TControl instance to which the splitter is aligned, or <b>Nil</b> when a 
+sibling control is not found.
 </short>
 </element>
 
@@ -7612,7 +7612,7 @@ Preferred height for new instances of the control.
 </element>
 <element name="TCustomFlowPanel.CalculatePreferredSize.WithThemeSpace">
 <short>
-True if additional space is reserved for theme element details.
+<b>True</b> if additional space is reserved for theme element details.
 </short>
 </element>
 
@@ -10042,8 +10042,8 @@ PreferredWidth is set to 0 to trigger the auto-sizing feature specified in
 ControlStyle. PreferredHeight is set to the value from the 
 CalcLowestBandBottomPx method, and actually contains the largest value in the 
 Bottom property for the visible controls on the control bands. A positive 
-non-zero value in PreferredHeight also include the space needed inner bevels 
-on the control bands.
+non-zero value in PreferredHeight also includes the space needed for inner 
+bevels on the control bands.
 </p>
 <p>
 CalculatePreferredSize is called when LCL auto-sizing algorithms are executed 
@@ -10262,25 +10262,68 @@ for the band.
 
 <element name="TCustomControlBar.DragControl">
 <short>
-Signals an assigned OnBandDrag event handler and starts a drag operation.
+Signals an assigned OnBandDrag event handler and starts a drag operation for 
+the specified control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DragControl</var> is a <var>Boolean</var> function used to start a drag 
+operation using the control bar band for the control under the mouse pointer. 
+DragControl is called from the MouseMove method, and occurs when a drag 
+operation for a band on the control is auto-started.
+</p>
+<p>
+<var>AControl</var> is the optional control on the band to be dragged in the 
+method. If the band does not have a control, the argument value is <b>Nil</b>.
+</p>
+<p>
+The <var>X</var> and <var>Y</var> arguments contain the coordinates for the 
+mouse pointer when the mouse movement was detected and handled in MouseMove.
+</p>
+<p>
+The return value is set to <b>True</b> on entry.
+</p>
+<p>
+DragControl signals the OnBandDrag event handler (when assigned) to determine 
+whether the control bar allows the specified control to the dragged. The 
+handler routine can set the return value to <b>False</b> to prevent the drag 
+operation from being started.
+</p>
+<p>
+If the return value is <b>True</b>, the DragStart method in DragManager is 
+called to start the drag operation for the specified control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlBar.MouseMove"/>
+<link id="TCustomControlBar.OnBandDrag"/>
+</seealso>
 </element>
 <element name="TCustomControlBar.DragControl.Result">
-<short/>
+<short>
+<b>True</b> if the drag operation was started for the specified control.
+</short>
 </element>
 <element name="TCustomControlBar.DragControl.AControl">
-<short/>
+<short>
+TControl instance beneath the mouse pointer when an auto-drag operation is 
+started for the control bar.
+</short>
 </element>
 <element name="TCustomControlBar.DragControl.X">
-<short/>
+<short>
+Horizontal position for the mouse pointer when the mouse move event occurred.
+</short>
 </element>
 <element name="TCustomControlBar.DragControl.Y">
-<short/>
+<short>
+Vertical position for the mouse pointer when the mouse move event occurred.
+</short>
 </element>
 <element name="TCustomControlBar.DragControl.KeepCapture">
-<short/>
+<short>
+This argument is not used in the current implementation.
+</short>
 </element>
 
 <element name="TCustomControlBar.DragOver" link="#lcl.controls.TControl.DragOver"/>
@@ -10331,18 +10374,23 @@ Number of rows needed for the band / control using the default row height.
 
 <element name="TCustomControlBar.InitializeBand">
 <short>
-Configures a band and calculates its row position, order, and geometry 
-including client decorations.
+Configures a control bar band and calculates its row position, order, and 
+geometry including client decorations.
 </short>
 <descr>
 </descr>
 <seealso/>
 </element>
 <element name="TCustomControlBar.InitializeBand.ABand">
-<short/>
+<short>
+TCtrlBand instance configured in the method.
+</short>
 </element>
 <element name="TCustomControlBar.InitializeBand.AKeepPos">
-<short/>
+<short>
+<b>True</b> to retain the order for the bands (when possible) when sizing the 
+bands.
+</short>
 </element>
 
 <element name="TCustomControlBar.InitializeMove">
@@ -10353,7 +10401,9 @@ Prepares visible bands on the control bar for a drag and drop operation.
 <seealso/>
 </element>
 <element name="TCustomControlBar.InitializeMove.AMovingBand">
-<short/>
+<short>
+TCtrlBand instance prepared to be moved in the list of visible bands.
+</short>
 </element>
 
 <element name="TCustomControlBar.Loaded">
@@ -10391,35 +10441,57 @@ Determines if the display rectangles for two bands overlap.
 </short>
 </element>
 <element name="TCustomControlBar.IsBandOverlap.ARect">
-<short/>
+<short>
+Display rectangle for a TCtrlBand instance compared in the method.
+</short>
 </element>
 <element name="TCustomControlBar.IsBandOverlap.BRect">
-<short/>
+<short>
+Display rectangle for the other TCtrlBand instance compared in the method.
+</short>
 </element>
 
 <element name="TCustomControlBar.MouseDown">
 <short>Handles a mouse down message in the control.</short>
 <descr>
 <p>
-Overridden to provide support for dragging the control band under the mouse 
-cursor.
+<var>MouseDown</var> is an overridden method in <var>TCustomControlBar</var> 
+which provides support for dragging the control band / control under 
+the mouse pointer. It calls the inherited method on entry to validate the 
+parent form, active control, and drag manager state. The inherited method also 
+signals the OnMouseDown event handler (when assigned).
+</p>
+<p>
+MouseDown ensures that the internal flags for band movement are set, and calls 
+InitializeMove to prepare the hovered band control to be moved to a new 
+position in the list of bands.
 </p>
 </descr>
 <seealso>
+<link id="TCustomControlBar.InitializeMove"/>
 <link id="#lcl.controls.TControl.MouseDown">TControl.MouseDown</link>
+<link id="#lcl.controls.TControl.OnMouseDown">TControl.OnMouseDown</link>
 </seealso>
 </element>
 <element name="TCustomControlBar.MouseDown.Button">
-<short/>
+<short>
+Mouse button for the mouse down event.
+</short>
 </element>
 <element name="TCustomControlBar.MouseDown.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier active when the mouse down event was detected.
+</short>
 </element>
 <element name="TCustomControlBar.MouseDown.X">
-<short/>
+<short>
+Horizontal coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomControlBar.MouseDown.Y">
-<short/>
+<short>
+Vertical coordinate for the mouse pointer.
+</short>
 </element>
 
 <element name="TCustomControlBar.MouseMove">
@@ -10455,32 +10527,57 @@ for the specified position.
 <short>Shift, Ctrl, or Alt modifier for the mouse event.</short>
 </element>
 <element name="TCustomControlBar.MouseMove.X">
-<short>Horizontal coordinate for the mouse pointer.</short> 
+<short>Horizontal coordinate for the mouse pointer.</short>
 </element>
 <element name="TCustomControlBar.MouseMove.Y">
-<short>Vertical coordinate for the mouse pointer.</short> 
+<short>Vertical coordinate for the mouse pointer.</short>
 </element>
 
 <element name="TCustomControlBar.MouseUp">
 <short>
 Handles a mouse up message that ends a drag operation for a control band.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MouseUp</var> is an overridden method in <var>TCustomControlBar</var>. It 
+calls the inherited method on entry to signal the OnMouseUp event handler 
+(when assigned). If the control is currently moving one of its bands, the 
+internal flag is reset to reflect the end of the drag operation. ChangeCursor 
+is called to restore the default cursor shape. SortVisibleBands is called to 
+sort the visible bands on the control by their display coordinates (Left and 
+Top).
+</p>
+<p>
+MouseUp is called when the LM_LBUTTONUP message is handled for the control.
+</p>
+</descr>
 <seealso>
+<link id="TCustomControlBar.ChangeCursor"/>
+<link id="TCustomControlBar.SortVisibleBands"/>
 <link id="#lcl.controls.TControl.MouseUp">TControl.MouseUp</link>
+<link id="#lcl.controls.TControl.OnMouseUp">TControl.OnMouseUp</link>
+<link id="#lcl.controls.TControl.DoMouseUp">TControl.DoMouseUp</link>
 </seealso>
 </element>
 <element name="TCustomControlBar.MouseUp.Button">
-<short/>
+<short>
+Mouse button for the notification.
+</short>
 </element>
 <element name="TCustomControlBar.MouseUp.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse event.
+</short>
 </element>
 <element name="TCustomControlBar.MouseUp.X">
-<short/>
+<short>
+Horizontal coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomControlBar.MouseUp.Y">
-<short/>
+<short>
+Vertical coordinate for the mouse pointer.
+</short>
 </element>
 
 <element name="TCustomControlBar.MoveBand">
@@ -10489,49 +10586,158 @@ Performs actions needed when a band is moved to new position.
 </short>
 <descr>
 <p>
-Determines the new position for a band moved using the mouse or by settings 
-its coordinates. Rearranges adjacent bands (and rows) as needed.
+MoveBand determines the new position for a band moved using the mouse or by 
+setting its coordinates. Rearranges adjacent bands (and rows) as needed.
+The DoBandMove method is called to signal the OnBandMove event handler (when 
+assigned).
+</p>
+<p>
+MoveBand is called from the MouseMove method, and occurs after the DragManager 
+has started the drag operation for the control. It is also used in the 
+CheckBandsSizeAndVisibility method, where it is called after visible bands 
+have been sorted and normalized.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomControlBar.MouseMove"/>
+<link id="TCustomControlBar.DoBandMove"/>
+<link id="TCustomControlBar.OnBandMove"/>
+<link id="TCustomControlBar.ChangeCursor"/>
+<link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+<link id="TCursorDesign"/>
+</seealso>
 </element>
 <element name="TCustomControlBar.MoveBand.AMoveBand">
-<short/>
+<short>
+TCtrlBand instance moved in the method.
+</short>
 </element>
 <element name="TCustomControlBar.MoveBand.X">
-<short/>
+<short>
+Horizontal coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomControlBar.MoveBand.Y">
-<short/>
+<short>
+Vertical coordinate for the mouse pointer.
+</short>
 </element>
 <element name="TCustomControlBar.MoveBand.ByMouse">
-<short/>
+<short>
+<b>True</b> if the mouse cursor is changed to the cdGrabber shape prior to 
+moving the specified band on the control.
+</short>
 </element>
 
 <element name="TCustomControlBar.NormalizeRows">
-<short>Orders visible bands in the control, and removes empty rows.</short>
-<descr/>
-<seealso/>
+<short>
+Orders visible bands on the control by their coordinates, and hides empty 
+rows.
+</short>
+<descr>
+<p>
+<var>Shifts</var> the order of visible bands on the control so the Top 
+coordinates in the bands are in ascending order. Blank rows on the control are 
+removed so that all band rows are adjacent with no unused space between rows. 
+Space is reserved for an inner bevel displayed for the band rows on the 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlBar.RowSize"/>
+<link id="TCtrlBand.Top"/>
+<link id="TCtrlBand.Bottom"/>
+</seealso>
 </element>
 
 <element name="TCustomControlBar.Paint">
 <short>
 Draws the control with its image, decorations, and visible bands.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Paint</var> is an overridden method in <var>TCustomControlBar</var> used 
+to render the control bar and its bands on the Canvas for the control.
+</p>
+<p>
+Paint calls the inherited method (in TCustomPanel) on entry to draw the outer 
+bevels and Caption text for the control. It performs additional actions needed 
+to draw the image, decorations, and visible bands on the control. These action 
+include:
+</p>
+<ul>
+<li>
+Adjusts the clipping rectangle on the Canvas to account for the inner bevel on 
+the control (when used).
+</li>
+<li>
+Draws the bitmap in Picture (when assigned) with space reserved for the bevels 
+on the control.
+</li>
+<li>
+Draws the visible bands on the control using the default TBandPaintOption 
+settings for the control ([bpoGrabber, bpoFrame, bpoGradient, bpoRoundRect]).
+Calls DoBandPaint to draw the Control on each of the visible TCtrlBand 
+instances.
+</li>
+</ul>
+<p>
+Use OnBandPaint to perform custom drawing operations needed to draw a specific 
+band on the control. Use OnPaint to perform custom drawing operations needed 
+for the control bar. The default PaintHandler (in TWinControl) is used when 
+the OnPaint has not been assigned.
+</p>
+<p>
+Set DrawingStyle to dsGradient to enable color gradients on the background for 
+the bands. Use GradientStartColor and GradientEndColor to specify the colors 
+used in the gradient.
+</p>
+<p>
+The grabber for the bands are aligned to the edge indicated by IsRightToLeft.
+</p>
+<p>
+Paint calls DoBandPaint to draw the Control for each of the visible TCtrlBand 
+instances. Use OnBandPaint to perform custom drawing operations needed to draw 
+a specific band on the control. Use OnPaint to perform custom drawing 
+operations needed for the control bar. 
+</p>
+<p>
+Paint is called when the LM_PAINT message is received and handled for the 
+control in the WMPaint method. The default PaintHandler (in TWinControl) is 
+called when OnPaint has not been assigned.
+</p>
+</descr>
 <seealso>
+<link id="TCustomControlBar.DrawingStyle"/>
+<link id="TCustomControlBar.GradientStartColor"/>
+<link id="TCustomControlBar.GradientEndColor"/>
+<link id="TCustomControlBar.Picture"/>
+<link id="TCustomControlBar.DoBandPaint"/>
+<link id="TCustomControlBar.OnBandPaint"/>
+<link id="TCtrlBand.Control"/>
+<link id="TBandPaintOptions"/>
+<link id="TBandPaintOption"/>
+<link id="#lcl.graphics.TCanvas.Draw">TCanvas.Draw</link>
+<link id="#lcl.graphics.TCanvas.Frame3D">TCanvas.Frame3D</link>
+<link id="#lcl.graphics.TCanvas.GradientFill">TCanvas.GradientFill</link>
 <link id="#lcl.extctrls.TCustomPanel.Paint">TCustomPanel.Paint</link>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.controls.TControl.IsRightToLeft">TControl.IsRightToLeft</link>
+<link id="#lcl.controls.TWinControl.WMPaint">TWinControl.WMPaint</link>
+<link id="#lcl.controls.TWinControl.PaintHandler">TWinControl.PaintHandler</link>
 </seealso>
 </element>
 
 <element name="TCustomControlBar.PictureChanged">
 <short>
-Redraws the control bar when the internal update counter reaches 0.
+Redraws the image on the control bar when the Picture property has been 
+changed.
 </short>
 <descr>
 <p>
-Assigned as the OnChange event handler for the Picture property in the Create 
-constructor.
+<var>PictureChanged</var> is assigned as the OnChange event handler for the 
+Picture property in the Create constructor. It calls the Invalidate method 
+when the internal update counter for the control reaches 0.
 </p>
 </descr>
 <seealso>
@@ -10598,44 +10804,88 @@ applies the cursor shape in <var>Value</var>. Value is also stored in the
 
 <element name="TCustomControlBar.ShiftBands">
 <short>
-Shifts the position for the specified range of bands by the specified amount 
-and limit.
+Shifts the positions for a range of bands by the specified amount.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ShiftBands</var> is a method used to reposition a range of visible bands 
+on the control by updating the values in the their Left properties.
+</p>
+<p>
+<var>AFrom</var> and <var>ATo</var> contain the ordinal index positions for 
+the bands updated in the method. Their values are used to access the 
+pre-sorted visible bands on the control.
+</p>
+<p>
+<var>AShift</var> indicates the number of pixels that each band is shifted. 
+IsRightToLeft determines whether the band is moved relative to the left- or 
+right-hand edge for each band instance. Right-to-Left layout causes the Left 
+property to be decreased by the value in AShift. Otherwise, the Left property 
+for each band is increased by the value in AShift.
+</p>
+<p>
+<var>ALimit</var> sets the upper limit for any value in the Left property 
+after it has been adjusted in the method.
+</p>
+</descr>
+<seealso>
+<link id="TCtrlBand.Left"/>
+<link id="#lcl.controls.TControl.IsRightToLeft">TControl.IsRightToLeft</link>
+</seealso>
 </element>
 <element name="TCustomControlBar.ShiftBands.AFrom">
-<short/>
+<short>
+Ordinal position for the first visible band moved in the method.
+</short>
 </element>
 <element name="TCustomControlBar.ShiftBands.ATo">
-<short/>
+<short>
+Ordinal position for the last visible band moved in the method.
+</short>
 </element>
 <element name="TCustomControlBar.ShiftBands.AShift">
-<short/>
+<short>
+Number of pixels that each band is moved in the method.
+</short>
 </element>
 <element name="TCustomControlBar.ShiftBands.ALimit">
-<short/>
+<short>
+Largest value allowed in the Left property for shifted bands.
+</short>
 </element>
 
 <element name="TCustomControlBar.SortVisibleBands">
 <short>
 Calculates the number of visible bands (and controls) and optionally sorts 
-bands to reflect their coordinates.
+visible bands to reflect their Top and Left coordinates.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the MouseUp and CheckBandsSizeAndVisibility methods.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlBar.MouseUp"/>
+<link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+</seealso>
 </element>
 
 <element name="TCustomControlBar.WMSize">
-<short>Handles the LM_SIZE message.</short>
+<short>
+Handles the LM_SIZE message for the control.
+</short>
 <descr>
 <p>
-Overridden to resize and arrange visible bands on the control when the size 
-for the control bar is changed.
+<var>WMSize</var> is overridden in <var>TCustomControlBar</var> to resize and 
+arrange visible bands when the size for the control bar is changed. It calls 
+the inherited method on entry to handle changes to the control bounds. it 
+extends the inherited method to handle right-to-left alignment when the 
+control is resized.
 </p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TWinControl.WMSize">TWinControl.WMSize</link>
+<link id="#lcl.controls.TControl.IsRightToLeft">TControl.IsRightToLeft</link>
 </seealso>
 </element>
 <element name="TCustomControlBar.WMSize.Message">
@@ -10719,7 +10969,7 @@ reaches 0 (zero).
 <element name="TCustomControlBar.EndUpdate">
 <short>
 Decrements the internal counter used to track update requests, and calls 
-Invalidate when the counter is zero (0)
+Invalidate when the counter reaches zero (0).
 </short>
 <descr>
 <p>
@@ -10736,10 +10986,14 @@ reaches 0 (zero).
 </element>
 
 <element name="TCustomControlBar.FlipChildren">
-<short>Flips the horizontal display order for child controls.</short>
+<short>Flips the horizontal display coordiantes for child controls.</short>
 <descr>
-<remark>
-FlipChildren is an empty implementation in TCustomControlBar.
+<p>
+<var>FlipChildren</var> is used to realign child controls when the BiDiMode in 
+the application has been changed.
+</p>  
+<remark>  
+FlipChildren has an empty implementation in TCustomControlBar.
 </remark>
 </descr>
 <seealso/>
@@ -10750,15 +11004,15 @@ FlipChildren is an empty implementation in TCustomControlBar.
 
 <element name="TCustomControlBar.HitTest">
 <short>
-Gets the visible control for a band under the specified coordinates.
+Gets the control for the visible band under the specified mouse coordinates.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomControlBar.HitTest.Result">
 <short>
-The tool bar or tool button in the band at the specified position, or Nil 
-when a visible control is not found.
+The band or control at the specified position, or <b>Nil</b> when a visible 
+control is not found.
 </short>
 </element>
 <element name="TCustomControlBar.HitTest.X">
@@ -10769,13 +11023,15 @@ when a visible control is not found.
 </element>
 
 <element name="TCustomControlBar.InsertControl">
-<short>Creates and stores a new band for the specified control.</short>
+<short>
+Creates and stores a new band for the specified control.
+</short>
 <descr>
 <p>
-InsertControl is an overridden procedure used to create, initialize, and 
-store a TCtrlBand instance for the specified control. InsertControl calls the 
-method inherited from TWinControl, and creates and stores a new TCtrlBand 
-instance for the control in AControl.
+<var>InsertControl</var> is an overridden procedure used to create, 
+initialize, and store a TCtrlBand instance for the specified control. 
+InsertControl calls the inherited method, and creates and stores a new 
+TCtrlBand instance for the control in AControl.
 </p>
 </descr>
 <seealso>
@@ -10793,17 +11049,33 @@ Tool bar or tool button added to the new band in the control bar.
 
 <element name="TCustomControlBar.MouseToBandPos">
 <short>
-Gets the control band at the specified mouse coordinates.
+Gets the visible band on the control bar at the specified mouse coordinates.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MouseToBandPos</var> iterates over the visible bands in the control to 
+find the TCtrlBand instance which is under the coordinates specified in X and 
+Y. The return value is <b>Nil</b> if a band is not found under the specified 
+coordinates.
+</p>
+<p>
+<var>AGrabber</var> is a <var>Boolean</var> output argument used to indicate 
+whether the coordinates are over the grabber decoration on the control. Its 
+value is <b>False</b> if a band was not found, or the value in Y is greater 
+than the largest bottom property in the list of visible bands.
+</p>
+<p>
+Perhaps this should have been named MousePosToBand.
+</p>
+</descr>
 <seealso>
 <link id="TCustomControlBar.MouseMove"/>
 </seealso>
 </element>
 <element name="TCustomControlBar.MouseToBandPos.Result">
 <short>
-TCtrlBand instance at the specified coordinates, or Nil when not on a visible 
-band.
+TCtrlBand instance at the specified coordinates, or <b>Nil</b> when the 
+coordinates are not on a visible band.
 </short>
 </element>
 <element name="TCustomControlBar.MouseToBandPos.X">
@@ -10814,7 +11086,8 @@ band.
 </element>
 <element name="TCustomControlBar.MouseToBandPos.AGrabber">
 <short>
-<b>True</b> if the mouse coordinates are over the grabber for the band.
+<b>True</b> if the mouse coordinates are over the grabber decoration on the 
+band.
 </short>
 </element>
 
