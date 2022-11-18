@@ -7945,7 +7945,9 @@ non-Win32 widgetsets.
 </element>
 
 <element name="TCustomEdit.Modified">
-<short><b>True</b> when the value in Text has been changed.</short>
+<short>
+<b>True</b> when the value in Text has been changed using the keyboard.
+</short>
 <descr>
 <p>
 <var>Modified</var> is a <var>Boolean</var> property which indicates if the 
@@ -7955,11 +7957,22 @@ message is handled for the control. The value is set to <b>True</b> in the
 <var>RealSetText</var> is called to store the value in Text to the buffer for 
 the control.
 </p>
+<p>
+In short, Modified is set to <var>True</var> if the value in Text is changed 
+by user interaction with the control (keyboard or clipboard). It is set to 
+<var>False</var> if the value in Text was assigned in program code.
+</p>
+<p>
+Use event handlers, like OnEditingDone or OnChange, to perform actions needed 
+when the value for the control has been changed.
+</p>
 </descr>
 <seealso>
 <link id="TCustomEdit.Text"/>
 <link id="TCustomEdit.TextChanged"/>
 <link id="TCustomEdit.RealSetText"/>
+<link id="TCustomEdit.OnChange"/>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
 </seealso>
 </element>
 
@@ -8027,15 +8040,25 @@ this differs from controls, like <var>TCustomComboBox</var> /
 is changed in program code.
 </p>
 <p>
+When the control value is edited using the keyboard, OnChange is signalled 
+after each character or keystroke is handled and applied to the value in 
+Text. To avoid visible delays during editing, the event handler should not be 
+too time or resource intensive.
+</p>
+<p>
+Use the Modified property to determine whether the change is the result of 
+user interaction with the control, or setting the control value in program 
+code. Modified contains <b>False</b> if the value was assigned in program code.
+</p>
+<p>
 OnChange is signalled (when assigned) from the <var>Change</var> method, and 
 occurs after the <var>Changed</var> method is used to post the 
 <var>CM_CHANGED</var> control message.
 </p>
 <p>
-When the control value is edited using the keyboard, OnChange is signalled 
-after each character or keystroke is handled and applied to the value in 
-Text. To avoid visible delays during editing, the event handler should not be 
-too time or resource intensive.
+Use the OnEditingDone event handler to perform actions needed when editing has 
+been completed in the control. For example: when the Enter key is pressed or 
+the focus is changed to another control.
 </p>
 </descr>
 <seealso>
@@ -8043,6 +8066,7 @@ too time or resource intensive.
 <link id="TCustomEdit.Text"/>
 <link id="TCustomEdit.Modified"/>
 <link id="#lcl.controls.TControl.Changed">TControl.Changed</link>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
 </seealso>
 </element>
 
