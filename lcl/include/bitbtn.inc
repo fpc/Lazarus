@@ -353,7 +353,7 @@ end;
   do not work with an const array }
 function TCustomBitBtn.GetCaptionOfKind(AKind: TBitBtnKind): String;
 begin
-  Result := GetButtonCaption(BitBtnImages[Kind]);
+  Result := GetButtonCaption(BitBtnImages[AKind]);
   if Result = '?' then
     Result := '';
 end;
