@@ -64,6 +64,7 @@ type
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
@@ -960,6 +961,16 @@ begin
     else
       Result := inherited;
   end;
+end;
+
+function TQtThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
+  PPI: Integer): TSize;
+begin
+  Result := GetDetailSize(Details);
+  if (Result.cx>0) then
+    Result.cx := MulDiv(Result.cx, PPI, 96);
+  if (Result.cy>0) then
+    Result.cy := MulDiv(Result.cy, PPI, 96);
 end;
 
 function TQtThemeServices.GetStockImage(StockID: LongInt; out Image,
