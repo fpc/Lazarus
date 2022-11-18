@@ -287,7 +287,7 @@ begin
     else
       QTimer_setInterval(ATimer, 0);
     {$ELSE}
-    QTimer_setInterval(ATimer, {$IFDEF QtCocoa}5{$ELSE}0{$ENDIF});
+    QTimer_setInterval(ATimer, {$IFDEF QtCocoa}5{$ELSE}1{$ENDIF});
     {$ENDIF}
     QTimer_start(ATimer);
     FMainTimerID := QTimer_timerId(ATimer);
@@ -314,7 +314,7 @@ begin
   {we cannot call directly processEvents() with this flag
    since it produces AV's sometimes, so better check is there
    any pending event.}
-  {$IF DEFINED(QtUseNativeEventLoop) AND DEFINED(QtCocoa)}
+  {$IF DEFINED(QtUseNativeEventLoop) AND NOT DEFINED(HASX11)}
   if not QCoreApplication_hasPendingEvents() then
   {$ENDIF}
     QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
