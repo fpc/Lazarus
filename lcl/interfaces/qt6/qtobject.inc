@@ -43,6 +43,7 @@ begin
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontUseNativeDialogs, False);
+  QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_Round);
   //QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
 
   {$IFDEF QtUseNativeEventLoop}
