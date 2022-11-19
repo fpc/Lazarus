@@ -230,7 +230,7 @@ begin
     end;
   end;
 
-  if lcSetReturns.RemoveProcedureDefReturns and pt.HasParentNode(nFormalParams) then
+  if lcSetReturns.RemoveProcedureDefReturns and pt.HasParentNode([nFormalParams,nFunctionReturnType,nProcedureDirectives]) then
   begin
     Result := True;
     exit;
