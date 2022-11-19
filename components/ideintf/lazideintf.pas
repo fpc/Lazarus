@@ -129,7 +129,6 @@ type
     sfSaveNonProjectFiles,
     sfDoNotSaveVirtualFiles,
     sfCanAbort,  // show 'Cancel all' button in error messages
-    sfSaveMainSourceAs,  // on sfSaveAs use .lpr file instead of .lpi file
     sfQuietUnitCheck     // don't ask questions when adding unit dependency.
     );
   TSaveFlags = set of TSaveFlag;
