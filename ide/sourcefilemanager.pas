@@ -7593,7 +7593,8 @@ var
   SaveDialog: TSaveDialog;
   NewBuf, OldBuf: TCodeBuffer;
   TitleWasDefault: Boolean;
-  NewLPIFilename, NewProgramFN, NewProgramName, AFilename: String;
+  AFilename, NewPath: String;
+  NewLPIFilename, NewProgramFN, NewProgramName, LCProgramName: String;
   AText, ACaption, Ext: string;
   OldSourceCode, OldProjectDir, prDir: string;
 begin
@@ -7601,21 +7602,21 @@ begin
   Project1.BeginUpdate(false);
   try
     OldProjectDir := Project1.Directory;
-    if Assigned(Project1.MainUnitInfo) then
-    begin
-      // build a nice project info filename suggestion
-      AFileName := Project1.MainUnitInfo.ReadUnitNameFromSource(false);
-      Assert(AFilename<>'', 'ShowSaveProjectAsDialog: UnitNameFromSource is empty.');
-      NewProgramName := AFilename;
-    end
-    else
+    if Project1.IsVirtual then
       UseMainSourceFile := False;
+    // ToDo: If this assertion never triggers, the code can be simplified a lot.
+    Assert(not UseMainSourceFile, 'ShowSaveProjectAsDialog: UseMainSourceFile is still on.');
+
+    // build a nice project info filename suggestion
+    if Assigned(Project1.MainUnitInfo) then
+      AFileName := Project1.MainUnitInfo.ReadUnitNameFromSource(false);
     if AFilename = '' then
       AFilename := ExtractFileName(Project1.ProjectInfoFile);
     if AFilename = '' then
       AFilename := Trim(Project1.GetTitle);
     if AFilename = '' then
       AFilename := 'Project1';
+    // Figure out a filename extension
     Ext := ExtractFileExt(AFilename);
     if UseMainSourceFile then
     begin
@@ -7625,16 +7626,17 @@ begin
       if (Ext = '') or FilenameIsPascalSource(AFilename) then
         AFilename := ChangeFileExt(AFilename, '.lpi');
     end;
-    // apply naming conventions, suggest lowercased name if user wants so
-    if EnvironmentOptions.LowercaseDefaultFilename then
-      AFilename := LowerCase(AFilename);
     Ext := ExtractFileExt(AFilename);
+    //DebugLn(['ShowSaveProjectAsDialog: 1. AFilename=',AFilename]);
 
     SaveDialog := IDESaveDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Title := Format(lisSaveProject, [Project1.GetTitleOrName, Ext]);
-      SaveDialog.FileName := AFilename;
+      if EnvironmentOptions.LowercaseDefaultFilename then
+        SaveDialog.FileName := LowerCase(AFilename)
+      else
+        SaveDialog.FileName := AFilename;
       // Note: add *.* filter, so users can see the files in the target directory
       SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext
          + '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
@@ -7649,12 +7651,11 @@ begin
 
         if not SaveDialog.Execute then
           exit;   // user cancels
-        AFilename:=ExpandFileNameUTF8(SaveDialog.FileName);
-        Assert(FilenameIsAbsolute(AFilename),'ShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
+        AFilename := ExpandFileNameUTF8(SaveDialog.FileName);
+        //DebugLn(['ShowSaveProjectAsDialog: 2. AFilename=',AFilename]);
 
         // check program name
-        if NewProgramName='' then
-          NewProgramName:=ExtractFileNameOnly(AFilename);
+        NewProgramName:=ExtractFileNameOnly(AFilename);
         if (NewProgramName='') or (not IsValidUnitName(NewProgramName)) then begin
           Result:=IDEMessageDialog(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject,[SaveDialog.Filename,LineEnding]),
@@ -7663,33 +7664,25 @@ begin
           continue; // try again
         end;
 
+        NewPath := ExtractFilePath(AFilename);
+        LCProgramName := NewProgramName;
+        // apply naming conventions, suggest lowercased name if user wants so
+        if EnvironmentOptions.LowercaseDefaultFilename then
+          LCProgramName := LowerCase(LCProgramName);
         // append default extension
-        if UseMainSourceFile then
-          NewLPIFilename := ChangeFileExt(AFilename,'.lpi')
-        else
-        begin
-          NewLPIFilename := AFilename;
-          if ExtractFileExt(NewLPIFilename)='' then
-            NewLPIFilename := NewLPIFilename+'.lpi';
-        end;
+        NewLPIFilename := NewPath + LCProgramName + '.lpi';
 
         if Project1.MainUnitID >= 0 then
         begin
           // check mainunit filename
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
-          if Ext = '' then begin
-            Ext := '.pas';
-            DebugLn('ShowSaveProjectAsDialog: Forced suffix to be .pas');
-          end;
+          Assert(Ext<>'', 'ShowSaveProjectAsDialog: Ext is empty');
           if UseMainSourceFile then
             NewProgramFN := ExtractFileName(AFilename)
-          else begin
-            NewProgramFN := NewProgramName + Ext;
-            if EnvironmentOptions.LowercaseDefaultFilename then
-              NewProgramFN := LowerCase(NewProgramFN);
-          end;
-          NewProgramFN := ExtractFilePath(NewLPIFilename) + NewProgramFN;
-          if (CompareFilenames(NewLPIFilename, NewProgramFN) = 0) then
+          else
+            NewProgramFN := LCProgramName + Ext;
+          NewProgramFN := NewPath + NewProgramFN;
+          if CompareFilenames(NewLPIFilename, NewProgramFN) = 0 then
           begin
             ACaption:=lisChooseADifferentName;
             AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource,[NewLPIFilename,LineEnding]);
@@ -7718,7 +7711,7 @@ begin
       SaveDialog.Free;
     end;
 
-    //DebugLn(['ShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,
+    //DebugLn(['ShowSaveProjectAsDialog: NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,
     //         ' NewMainSource=',NewProgramFN]);
     // check if info file or source file already exists
     // Note: if user confirms overwriting .lpi do not ask for overwriting .lpr
