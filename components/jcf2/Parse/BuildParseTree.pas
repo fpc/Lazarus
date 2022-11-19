@@ -4119,7 +4119,10 @@ begin
 
   { Path to directives : <pt>/nProcedureHeading/nProcedureDirectives }
   if pt.NodeType in ProcedureNodes then
-    lpt:= pt.GetImmediateChild(nProcedureHeading);
+    lpt:= pt.GetImmediateChild(ProcedureHeadings);
+
+  if Assigned(lpt) then
+    lpt := lpt.GetImmediateChild(nProcedureDirectives);
 
   if Assigned(lpt) then
     result := lpt.HasChildNode([ttForward,ttExternal]) // This searches all sub nodes !
