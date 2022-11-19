@@ -4528,8 +4528,7 @@ end;
 
 function TQtPrinter.getDoubleSidedPrinting: Boolean;
 begin
-  {$warning fixme Qt6}
-  Result := False; // QPrinter_doubleSidedPrinting(Handle);
+  Result := QPrinter_duplex(Handle) = QPrinterDuplexAuto;
 end;
 
 function TQtPrinter.getFontEmbedding: Boolean;
@@ -4801,7 +4800,7 @@ var
 begin
   ASizeF := QSizeF_create(@ASize);
   try
-    {$warning fixme Qt6}
+    {$warning fixme Qt6 - try to get paperName from size, otherwise set Custom}
     AName := '';
     APageSize := QPageSize_Create4(ASizeF, QPageSizeUnit(Ord(AUnits)), @AName);
     QPrinter_setPageSize(Handle, APageSize);
