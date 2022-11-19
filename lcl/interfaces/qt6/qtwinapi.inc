@@ -591,6 +591,7 @@ begin
 
     if LogFont.lfQuality <= High(QStyleStategy) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
+
     Result := HFONT(QtFont);
   except
     Result := 0;
@@ -1713,7 +1714,6 @@ var
   Metric: TNewTextMetricEx;
   FontList: TStringList;
   FontType: Integer;
-  FontDB: QFontDatabaseH;
   i: Integer;
   y: Integer;
   AStyle: String;
@@ -1732,7 +1732,7 @@ var
     Result := -1;
     StrLst := QStringList_create;
     try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
+      QFontDatabase_families(StrLst, AWritingSystem);
       Result := QStringList_size(StrLst);
       for j := 0 to Result - 1 do
       begin
@@ -1759,7 +1759,7 @@ var
     NewList := QStringList_create();
 
     try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
+      QFontDatabase_families(StrLst, AWritingSystem);
       for j := 0 to QStringList_size(StrLst) - 1 do
       begin
         QStringList_at(StrLst, @WStr, j);
@@ -1768,12 +1768,12 @@ var
           case APitch of
             FIXED_PITCH, MONO_FONT:
             begin
-              if QFontDatabase_isFixedPitch(FontDB, @WStr) then
+              if QFontDatabase_isFixedPitch(@WStr) then
                 QStringList_append(NewList, @WStr);
             end;
             VARIABLE_PITCH:
             begin
-              if QFontDatabase_isScalable(FontDB, @WStr) then
+              if QFontDatabase_isScalable(@WStr) then
                 QStringList_append(NewList, @WStr);
             end;
           end;
@@ -1826,7 +1826,7 @@ var
     if Assigned(CharSetList) then
       CharSetList.Clear;
     WStr := UTF8ToUTF16(AFontName);
-    QFontDatabase_writingSystems(FontDB, @Arr, @WStr);
+    QFontDatabase_writingSystems(@Arr, @WStr);
     Result := length(Arr) > 0;
     for j := 0 to High(Arr) do
     begin
@@ -1861,7 +1861,7 @@ var
       AFontType := AFontType and not TRUETYPE_FONTTYPE;
 
     QStringList_clear(StylesList);
-    QFontDatabase_styles(FontDB, StylesList, @WStr);
+    QFontDatabase_styles(StylesList, @WStr);
     AStyle := '';
     Result := QStringList_size(StylesList);
 
@@ -1880,72 +1880,68 @@ begin
   {$endif}
   Result := 0;
   Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
-  FontDB := QFontDatabase_create();
-  try
-    if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
-       (lpLogFont^.lfFaceName= '') and
-       (lpLogFont^.lfPitchAndFamily = 0) then
-    begin
-      FontType := 0;
-      FontList := TStringList.create;
-      try
-        if QtGetFontFamiliesDefault(FontList) > 0 then
-        begin
-          for i := 0 to FontList.Count - 1 do
-          begin
-            EnumLogFont.elfLogFont.lfFaceName := FontList[i];
-            Result := Callback(EnumLogFont, Metric, FontType, LParam);
-          end;
-        end;
-      finally
-        FontList.free;
-      end;
-    end else
-    begin
-      Result := 0;
-      FontType := TRUETYPE_FONTTYPE;
-      FontList := TStringList.create;
-      StylesList := QStringList_create();
-      ScriptList := QStringList_create();
-      CharsetList := TFPList.Create;
-      try
-        if QtGetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
-          lpLogFont^.lfFaceName, CharsetToQtCharSet(lpLogFont^.lfCharSet)) > 0 then
-        begin
-          StylesList := QStringList_create();
-          for i := 0 to FontList.Count - 1 do
-          begin
-            EnumLogFont.elfLogFont.lfFaceName := FontList[i];
-            EnumLogFont.elfLogFont.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
-            EnumLogFont.elfFullName := FontList[i];
 
-            StylesCount := FillLogFontA(FontList[i], EnumLogFont.elfLogFont, Metric, FontType,
-              AStyle);
+  if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
+     (lpLogFont^.lfFaceName= '') and
+     (lpLogFont^.lfPitchAndFamily = 0) then
+  begin
+    FontType := 0;
+    FontList := TStringList.create;
+    try
+      if QtGetFontFamiliesDefault(FontList) > 0 then
+      begin
+        for i := 0 to FontList.Count - 1 do
+        begin
+          EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
+        end;
+      end;
+    finally
+      FontList.free;
+    end;
+  end else
+  begin
+    Result := 0;
+    FontType := TRUETYPE_FONTTYPE;
+    FontList := TStringList.create;
+    StylesList := QStringList_create();
+    ScriptList := QStringList_create();
+    CharsetList := TFPList.Create;
+    try
+      if QtGetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
+        lpLogFont^.lfFaceName, CharsetToQtCharSet(lpLogFont^.lfCharSet)) > 0 then
+      begin
+        StylesList := QStringList_create();
+        for i := 0 to FontList.Count - 1 do
+        begin
+          EnumLogFont.elfLogFont.lfFaceName := FontList[i];
+          EnumLogFont.elfLogFont.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
+          EnumLogFont.elfFullName := FontList[i];
+
+          StylesCount := FillLogFontA(FontList[i], EnumLogFont.elfLogFont, Metric, FontType,
+            AStyle);
+          EnumLogFont.elfStyle := AStyle;
+          if CharSetList.Count > 0 then
+            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[0]);
+          Result := Callback(EnumLogFont, Metric, FontType, LParam);
+          for y := 1 to StylesCount - 1 do
+          begin
+            AStyle := GetStyleAt(y);
             EnumLogFont.elfStyle := AStyle;
-            if CharSetList.Count > 0 then
-              EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[0]);
             Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            for y := 1 to StylesCount - 1 do
-            begin
-              AStyle := GetStyleAt(y);
-              EnumLogFont.elfStyle := AStyle;
-              Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            end;
-            for y := 1 to CharsetList.Count - 1 do
-            begin
-              EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[y]);
-              Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            end;
+          end;
+          for y := 1 to CharsetList.Count - 1 do
+          begin
+            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[y]);
+            Result := Callback(EnumLogFont, Metric, FontType, LParam);
           end;
         end;
-      finally
-        FontList.free;
-        QStringList_destroy(StylesList);
-        CharSetList.Free;
       end;
+    finally
+      FontList.free;
+      QStringList_destroy(StylesList);
+      CharSetList.Free;
     end;
-  finally
-    QFontDatabase_destroy(FontDB);
   end;
 end;
 

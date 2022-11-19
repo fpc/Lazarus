@@ -8333,27 +8333,29 @@ const
     QFontDatabaseNko = 33 { $21 };
     QFontDatabaseWritingSystemsCount = 34 { $22 };
 
+type
+  QFontDataBaseSystemFont = (QFontDatabaseGeneralFont, QFontDatabaseFixedFont,
+    QFontDatabaseTitleFont, QFontDatabaseSmallestReadableFont);
+
 
 procedure QFontDatabase_standardSizes(retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QFontDatabase_standardSizes';
-function QFontDatabase_Create(): QFontDatabaseH; cdecl; external Qt6PasLib name 'QFontDatabase_Create';
-procedure QFontDatabase_Destroy(handle: QFontDatabaseH); cdecl; external Qt6PasLib name 'QFontDatabase_Destroy'; 
-procedure QFontDatabase_writingSystems(handle: QFontDatabaseH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystems';
-procedure QFontDatabase_writingSystems(handle: QFontDatabaseH; retval: PPtrIntArray; family: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystems2';
-procedure QFontDatabase_families(handle: QFontDatabaseH; retval: QStringListH; writingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny); cdecl; external Qt6PasLib name 'QFontDatabase_families';
-procedure QFontDatabase_styles(handle: QFontDatabaseH; retval: QStringListH; family: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_styles';
-procedure QFontDatabase_pointSizes(handle: QFontDatabaseH; retval: PPtrIntArray; family: PWideString; style: PWideString = nil); cdecl; external Qt6PasLib name 'QFontDatabase_pointSizes';
-procedure QFontDatabase_smoothSizes(handle: QFontDatabaseH; retval: PPtrIntArray; family: PWideString; style: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_smoothSizes';
-procedure QFontDatabase_styleString(handle: QFontDatabaseH; retval: PWideString; font: QFontH); cdecl; external Qt6PasLib name 'QFontDatabase_styleString';
-procedure QFontDatabase_styleString(handle: QFontDatabaseH; retval: PWideString; fontInfo: QFontInfoH); cdecl; external Qt6PasLib name 'QFontDatabase_styleString2';
-procedure QFontDatabase_font(handle: QFontDatabaseH; retval: QFontH; family: PWideString; style: PWideString; pointSize: Integer); cdecl; external Qt6PasLib name 'QFontDatabase_font';
-function QFontDatabase_isBitmapScalable(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isBitmapScalable';
-function QFontDatabase_isSmoothlyScalable(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isSmoothlyScalable';
-function QFontDatabase_isScalable(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isScalable';
-function QFontDatabase_isFixedPitch(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isFixedPitch';
-function QFontDatabase_italic(handle: QFontDatabaseH; family: PWideString; style: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_italic';
-function QFontDatabase_bold(handle: QFontDatabaseH; family: PWideString; style: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_bold';
-function QFontDatabase_weight(handle: QFontDatabaseH; family: PWideString; style: PWideString): Integer; cdecl; external Qt6PasLib name 'QFontDatabase_weight';
-function QFontDatabase_hasFamily(handle: QFontDatabaseH; family: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_hasFamily';
+procedure QFontDatabase_writingSystems(retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystems';
+procedure QFontDatabase_writingSystems(retval: PPtrIntArray; family: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystems2';
+procedure QFontDatabase_families(retval: QStringListH; writingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny); cdecl; external Qt6PasLib name 'QFontDatabase_families';
+procedure QFontDatabase_styles(retval: QStringListH; family: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_styles';
+procedure QFontDatabase_pointSizes(retval: PPtrIntArray; family: PWideString; style: PWideString = nil); cdecl; external Qt6PasLib name 'QFontDatabase_pointSizes';
+procedure QFontDatabase_smoothSizes(retval: PPtrIntArray; family: PWideString; style: PWideString); cdecl; external Qt6PasLib name 'QFontDatabase_smoothSizes';
+procedure QFontDatabase_styleString(retval: PWideString; font: QFontH); cdecl; external Qt6PasLib name 'QFontDatabase_styleString';
+procedure QFontDatabase_styleString(retval: PWideString; fontInfo: QFontInfoH); cdecl; external Qt6PasLib name 'QFontDatabase_styleString2';
+procedure QFontDatabase_font(retval: QFontH; family: PWideString; style: PWideString; pointSize: Integer); cdecl; external Qt6PasLib name 'QFontDatabase_font';
+function QFontDatabase_isBitmapScalable(family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isBitmapScalable';
+function QFontDatabase_isSmoothlyScalable(family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isSmoothlyScalable';
+function QFontDatabase_isScalable(family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isScalable';
+function QFontDatabase_isFixedPitch(family: PWideString; style: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isFixedPitch';
+function QFontDatabase_italic(family: PWideString; style: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_italic';
+function QFontDatabase_bold(family: PWideString; style: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_bold';
+function QFontDatabase_weight(family: PWideString; style: PWideString): Integer; cdecl; external Qt6PasLib name 'QFontDatabase_weight';
+function QFontDatabase_hasFamily(family: PWideString): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_hasFamily';
 procedure QFontDatabase_writingSystemName(retval: PWideString; writingSystem: QFontDatabaseWritingSystem); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystemName';
 procedure QFontDatabase_writingSystemSample(retval: PWideString; writingSystem: QFontDatabaseWritingSystem); cdecl; external Qt6PasLib name 'QFontDatabase_writingSystemSample';
 function QFontDatabase_addApplicationFont(fileName: PWideString): Integer; cdecl; external Qt6PasLib name 'QFontDatabase_addApplicationFont';
@@ -8361,7 +8363,8 @@ function QFontDatabase_addApplicationFontFromData(fontData: QByteArrayH): Intege
 procedure QFontDatabase_applicationFontFamilies(retval: QStringListH; id: Integer); cdecl; external Qt6PasLib name 'QFontDatabase_applicationFontFamilies';
 function QFontDatabase_removeApplicationFont(id: Integer): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_removeApplicationFont';
 function QFontDatabase_removeAllApplicationFonts(): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_removeAllApplicationFonts';
-function QFontDatabase_supportsThreadedFontRendering(): Boolean; cdecl; external Qt6PasLib name 'QFontDatabase_supportsThreadedFontRendering';
+function QFontDatabase_isPrivateFamily(): boolean; cdecl; external Qt6PasLib name 'QFontDatabase_isPrivateFamily';
+function QFontDatabase_systemFont(sysfont: QFontDataBaseSystemFont; retval: QFontH): boolean; cdecl; external Qt6PasLib name 'QFontDatabase_systemFont';
 
 
 type

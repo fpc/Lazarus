@@ -185,6 +185,7 @@ type
     function getUnderline: Boolean;
     function getStrikeOut: Boolean;
     function getFamily: WideString;
+    function getHintingPreference: QFontHintingPreference;
     function getStyleStategy: QFontStyleStrategy;
 
     procedure setPointSize(p1: Integer);
@@ -196,6 +197,7 @@ type
     procedure setStrikeOut(p1: Boolean);
     procedure setRawName(p1: string);
     procedure setFamily(p1: string);
+    procedure setHintingPreference(pref: QFontHintingPreference);
     procedure setStyleStrategy(s: QFontStyleStrategy);
     procedure family(retval: PWideString);
     function fixedPitch: Boolean;
@@ -1671,6 +1673,11 @@ begin
     QFont_family(FHandle, @Result);
 end;
 
+function TQtFont.getHintingPreference: QFontHintingPreference;
+begin
+  Result := QFont_hintingPreference(FHandle);
+end;
+
 function TQtFont.getStyleStategy: QFontStyleStrategy;
 begin
   if FHandle = nil then
@@ -1720,6 +1727,11 @@ begin
   Str := GetUtf8String(p1);
 
   QFont_setFamily(FHandle, @Str);
+end;
+
+procedure TQtFont.setHintingPreference(pref: QFontHintingPreference);
+begin
+  QFont_setHintingPreference(FHandle, pref);
 end;
 
 procedure TQtFont.setStyleStrategy(s: QFontStyleStrategy);
