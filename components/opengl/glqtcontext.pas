@@ -28,6 +28,7 @@ uses
   // Bindings
   {$IFDEF LCLQt}qt4,{$ENDIF}
   {$IFDEF LCLQt5}qt5, qlclopenglwidget,{$ENDIF}
+  {$IFDEF LCLQt6}qt6, qlclopenglwidget,{$ENDIF}
   qtwidgets, qtobjects, qtproc, qtint,
   QtWSControls;
 
@@ -119,10 +120,10 @@ end;
 type
   { TQtGLWidget }
 
-  TQtGLWidget = class({$IFDEF LCLQt5}TQtOpenGLWidget{$ELSE}TQtWidget{$ENDIF})
+  TQtGLWidget = class({$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}TQtOpenGLWidget{$ELSE}TQtWidget{$ENDIF})
   protected
     function PaintGLControl(Sender: QObjectH; Event: QEventH): boolean; cdecl;
-    {$IFDEF LCLQt5}
+    {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
     procedure paintGL(); cdecl; override;
     {$ENDIF}
   public
@@ -186,7 +187,7 @@ begin
   end;
 end;
 
-{$IFDEF LCLQt5}
+{$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
 procedure TQtGLWidget.paintGL(); cdecl;
 var
   AEvent: QPaintEventH;
@@ -309,7 +310,7 @@ var
   AttrList: TContextAttribs;
   NewQtWidget: TQtGLWidget;
   direct: boolean;
-  {$IFDEF LCLQt5}
+  {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
   AWinFormat: QSurfaceFormatH;
   {$ENDIF}
   {$IFDEF VerboseMultiSampling}
@@ -327,11 +328,15 @@ begin
     NewQtWidget.setAttribute(QtWA_OpaquePaintEvent);
     {$endif}
     NewQtWidget.HasPaint := false;
+    {$IFDEF LCLQt6}
+    NewQtWidget.xdisplay := QtWidgetSet.x11Display;
+    {$ELSE}
     NewQtWidget.xdisplay := QX11Info_display;
+    {$ENDIF}
     NewQtWidget.visual := glXChooseVisual(NewQtWidget.xdisplay,
       DefaultScreen(NewQtWidget.xdisplay), @attrList.AttributeList[0]);
     direct := false;
-    {$IFDEF LCLQt5}
+    {$IF DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
     QWindow_setSurfaceType(QWidget_windowHandle(NewQtWidget.Widget), QSurfaceSurfaceTypeOpenGLSurface);
 
     AWinFormat := QSurfaceFormat_Create();
@@ -564,8 +569,12 @@ begin
   {$IFDEF VerboseMultiSampling}
   debugln(['CreateOpenGLContextAttrList MultiSampling=',MultiSampling]);
   {$ENDIF}
-   {$IFDEF ModernGL}
+  {$IFDEF ModernGL}
+  {$IFDEF LCLQt6}
+  UseFBConfig := GLX_version_1_3(QtWidgetSet.x11Display());
+  {$ELSE}
   UseFBConfig := GLX_version_1_3(QX11Info_display());
+  {$ENDIF}
   {$ELSE}
   UseFBConfig := false;
   {$ENDIF}

@@ -14,16 +14,21 @@ unit qlclopenglwidget;
 interface
 
 uses
-  qt5, qtobjects, qtwidgets,
+  {$IFDEF LCLQt5}qt5,{$ENDIF}
+  {$IFDEF LCLQt6}qt6,{$ENDIF}
+  qtobjects, qtwidgets,
   Classes, SysUtils, Types, Controls, LCLType;
 
 type
   QLCLOpenGLWidget_gl_Override = procedure of object cdecl;
 
-function QLCLOpenGLWidget_Create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QWidgetH; cdecl; external Qt5PasLib name 'QLCLOpenGLWidget_Create';
-procedure QLCLOpenGLWidget_Destroy(handle: QWidgetH); cdecl; external Qt5PasLib name 'QLCLOpenGLWidget_Destroy';
-procedure QLCLOpenGLWidget_override_paintGL(handle: QLCLOpenGLWidgetH; hook: QLCLOpenGLWidget_gl_Override); cdecl; external Qt5PasLib name 'QLCLOpenGLWidget_override_paintGL';
-procedure QLCLOpenGLWidget_InheritedPaintGL(handle: QLCLOpenGLWidgetH); cdecl; external Qt5PasLib name 'QLCLOpenGLWidget_InheritedPaintGL';
+const
+  QtPasLibrary = {$IFDEF LCLQt5}Qt5PasLib;{$ENDIF}{$IFDEF LCLQt6}Qt6PasLib;{$ENDIF}
+
+function QLCLOpenGLWidget_Create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QWidgetH; cdecl; external QtPasLibrary name 'QLCLOpenGLWidget_Create';
+procedure QLCLOpenGLWidget_Destroy(handle: QWidgetH); cdecl; external QtPasLibrary name 'QLCLOpenGLWidget_Destroy';
+procedure QLCLOpenGLWidget_override_paintGL(handle: QLCLOpenGLWidgetH; hook: QLCLOpenGLWidget_gl_Override); cdecl; external QtPasLibrary name 'QLCLOpenGLWidget_override_paintGL';
+procedure QLCLOpenGLWidget_InheritedPaintGL(handle: QLCLOpenGLWidgetH); cdecl; external QtPasLibrary name 'QLCLOpenGLWidget_InheritedPaintGL';
 
 type
 

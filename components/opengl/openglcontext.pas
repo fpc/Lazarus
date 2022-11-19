@@ -78,7 +78,7 @@ unit OpenGLContext;
   {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
-{$IFDEF LCLQT5}
+{$IF DEFINED(LCLQT5) OR DEFINED(LCLQt6)}
   {$DEFINE UseQTGLX}
   {$DEFINE UsesModernGL}
   {$DEFINE HasRGBA}
