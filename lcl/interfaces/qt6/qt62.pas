@@ -8171,27 +8171,7 @@ type
     QFontExpanded = 125,
     QFontExtraExpanded = 150,
     QFontUltraExpanded = 200 );
-  (*
-  QFontResolveProperties = (  //QFont::ResolveProperties (2)
-    QFontFamilyResolved = $0001,
-    QFontSizeResolved = $0002,
-    QFontStyleHintResolved = $0004,
-    QFontStyleStrategyResolved = $0008,
-    QFontWeightResolved = $0010,
-    QFontStyleResolved = $0020,
-    QFontUnderlineResolved = $0040,
-    QFontOverlineResolved = $0080,
-    QFontStrikeOutResolved = $0100,
-    QFontFixedPitchResolved = $0200,
-    QFontStretchResolved = $0400,
-    QFontKerningResolved = $0800,
-    QFontCapitalizationResolved = $1000,
-    QFontLetterSpacingResolved = $2000,
-    QFontWordSpacingResolved = $4000,
-    QFontHintingPreferenceResolved = $8000,
-    QFontStyleNameResolved = $10000,
-    QFontAllPropertiesResolved = $1ffff );
-   *)
+
 type
   QFontStyleHint = cardinal; //  QFont::StyleHint (4)
 
@@ -8262,8 +8242,8 @@ function QFont_styleHint(handle: QFontH): QFontStyleHint; cdecl; external Qt6Pas
 function QFont_styleStrategy(handle: QFontH): QFontStyleStrategy; cdecl; external Qt6PasLib name 'QFont_styleStrategy';
 procedure QFont_setStyleHint(handle: QFontH; AnonParam1: QFontStyleHint; AnonParam2: QFontStyleStrategy = QFontPreferDefault); cdecl; external Qt6PasLib name 'QFont_setStyleHint';
 procedure QFont_setStyleStrategy(handle: QFontH; s: QFontStyleStrategy); cdecl; external Qt6PasLib name 'QFont_setStyleStrategy';
-function QFont_stretch(handle: QFontH): Integer; cdecl; external Qt6PasLib name 'QFont_stretch';
-procedure QFont_setStretch(handle: QFontH; AnonParam1: Integer); cdecl; external Qt6PasLib name 'QFont_setStretch';
+function QFont_stretch(handle: QFontH): QFontStretch; cdecl; external Qt6PasLib name 'QFont_stretch';
+procedure QFont_setStretch(handle: QFontH; stretch: QFontStretch); cdecl; external Qt6PasLib name 'QFont_setStretch';
 function QFont_letterSpacing(handle: QFontH): qreal; cdecl; external Qt6PasLib name 'QFont_letterSpacing';
 function QFont_letterSpacingType(handle: QFontH): QFontSpacingType; cdecl; external Qt6PasLib name 'QFont_letterSpacingType';
 procedure QFont_setLetterSpacing(handle: QFontH; _type: QFontSpacingType; spacing: qreal); cdecl; external Qt6PasLib name 'QFont_setLetterSpacing';

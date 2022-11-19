@@ -211,14 +211,14 @@ void QFont_setStyleStrategy(QFontH handle, QFont::StyleStrategy s)
 	((QFont *)handle)->setStyleStrategy(s);
 }
 
-int QFont_stretch(QFontH handle)
+QFont::Stretch QFont_stretch(QFontH handle)
 {
-	return (int) ((QFont *)handle)->stretch();
+	return (QFont::Stretch) ((QFont *)handle)->stretch();
 }
 
-void QFont_setStretch(QFontH handle, int AnonParam1)
+void QFont_setStretch(QFontH handle, QFont::Stretch stretch)
 {
-	((QFont *)handle)->setStretch(AnonParam1);
+	((QFont *)handle)->setStretch(stretch);
 }
 
 qreal QFont_letterSpacing(QFontH handle)
