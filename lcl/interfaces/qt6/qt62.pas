@@ -2589,7 +2589,6 @@ type
 
 function QAbstractEventDispatcher_instance(thread: QThreadH = nil): QAbstractEventDispatcherH; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_instance';
 function QAbstractEventDispatcher_processEvents(handle: QAbstractEventDispatcherH; flags: QEventLoopProcessEventsFlags): Boolean; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_processEvents';
-function QAbstractEventDispatcher_hasPendingEvents(handle: QAbstractEventDispatcherH): Boolean; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_hasPendingEvents';
 procedure QAbstractEventDispatcher_registerSocketNotifier(handle: QAbstractEventDispatcherH; notifier: QSocketNotifierH); cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_registerSocketNotifier';
 procedure QAbstractEventDispatcher_unregisterSocketNotifier(handle: QAbstractEventDispatcherH; notifier: QSocketNotifierH); cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_unregisterSocketNotifier';
 function QAbstractEventDispatcher_registerTimer(handle: QAbstractEventDispatcherH; interval: Integer; timerType: QtTimerType; _object: QObjectH): Integer; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_registerTimer';
@@ -5461,24 +5460,6 @@ type
   QClipboard_findBufferChanged_Event = procedure () of object cdecl;
   QClipboard_dataChanged_Event = procedure () of object cdecl;
 
-
-{$ifdef BINUX }
-(*
-function QX11Info_isPlatformX11(): Boolean; cdecl; external Qt6PasLib name 'QX11Info_isPlatformX11';
-function QX11Info_display(): PDisplay; cdecl; external Qt6PasLib name 'QX11Info_display';
-function QX11Info_appScreen(): Integer; cdecl; external Qt6PasLib name 'QX11Info_appScreen';
-function QX11Info_appRootWindow(screen: Integer = -1): QtHANDLE; cdecl; external Qt6PasLib name 'QX11Info_appRootWindow';
-function QX11Info_appDpiX(screen: Integer = -1): Integer; cdecl; external Qt6PasLib name 'QX11Info_appDpiX';
-function QX11Info_appDpiY(screen: Integer = -1): Integer; cdecl; external Qt6PasLib name 'QX11Info_appDpiY';
-procedure QX11Info_setAppDpiX(screen: Integer; dpi: Integer); cdecl; external Qt6PasLib name 'QX11Info_setAppDpiX';
-procedure QX11Info_setAppDpiY(screen: Integer; dpi: Integer); cdecl; external Qt6PasLib name 'QX11Info_setAppDpiY';
-function QX11Info_appTime(): Longword; cdecl; external Qt6PasLib name 'QX11Info_appTime';
-function QX11Info_appUserTime(): Longword; cdecl; external Qt6PasLib name 'QX11Info_appUserTime';
-procedure QX11Info_setAppTime(time: Longword); cdecl; external Qt6PasLib name 'QX11Info_setAppTime';
-procedure QX11Info_setAppUserTime(time: Longword); cdecl; external Qt6PasLib name 'QX11Info_setAppUserTime';
-*)
-// function QX11Info_isCompositingManagerRunning(): Boolean; cdecl; external Qt6PasLib name 'QX11Info_isCompositingManagerRunning';
-{$endif}
 
 function QDrag_Create(dragSource: QObjectH): QDragH; cdecl; external Qt6PasLib name 'QDrag_Create';
 procedure QDrag_Destroy(handle: QDragH); cdecl; external Qt6PasLib name 'QDrag_Destroy'; 
@@ -8900,11 +8881,8 @@ function QFontMetrics_inFont(handle: QFontMetricsH; AnonParam1: PWideChar): Bool
 function QFontMetrics_inFontUcs4(handle: QFontMetricsH; ucs4: LongWord): Boolean; cdecl; external Qt6PasLib name 'QFontMetrics_inFontUcs4';
 function QFontMetrics_leftBearing(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt6PasLib name 'QFontMetrics_leftBearing';
 function QFontMetrics_rightBearing(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt6PasLib name 'QFontMetrics_rightBearing';
-// function QFontMetrics_width(handle: QFontMetricsH; AnonParam1: PWideString; len: Integer = -1): Integer; cdecl; external Qt6PasLib name 'QFontMetrics_width';
 function QFontMetrics_horizontalAdvance(handle: QFontMetricsH; AnonParam1: PWideString; len: Integer = -1): integer; cdecl; external Qt6PasLib name 'QFontMetrics_horizontalAdvance';
 function QFontMetrics_horizontalAdvance(handle: QFontMetricsH; AnonParam1: PWideChar): integer; cdecl; external Qt6PasLib name 'QFontMetrics_horizontalAdvance2';
-//function QFontMetrics_width(handle: QFontMetricsH; AnonParam1: PWideString; len: Integer; flags: Integer): Integer; cdecl; external Qt6PasLib name 'QFontMetrics_width2';
-//function QFontMetrics_width(handle: QFontMetricsH; AnonParam1: PWideChar): Integer; cdecl; external Qt6PasLib name 'QFontMetrics_width3';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; AnonParam1: PWideChar); cdecl; external Qt6PasLib name 'QFontMetrics_boundingRect';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; text: PWideString); cdecl; external Qt6PasLib name 'QFontMetrics_boundingRect2';
 procedure QFontMetrics_boundingRect(handle: QFontMetricsH; retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt6PasLib name 'QFontMetrics_boundingRect3';
@@ -8945,8 +8923,6 @@ function QFontMetricsF_inFont(handle: QFontMetricsFH; AnonParam1: PWideChar): Bo
 function QFontMetricsF_inFontUcs4(handle: QFontMetricsFH; ucs4: LongWord): Boolean; cdecl; external Qt6PasLib name 'QFontMetricsF_inFontUcs4';
 function QFontMetricsF_leftBearing(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_leftBearing';
 function QFontMetricsF_rightBearing(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_rightBearing';
-//function QFontMetricsF_width(handle: QFontMetricsFH; _string: PWideString): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_width';
-//function QFontMetricsF_width(handle: QFontMetricsFH; AnonParam1: PWideChar): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_width2';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; _string: PWideString); cdecl; external Qt6PasLib name 'QFontMetricsF_boundingRect';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; AnonParam1: PWideChar); cdecl; external Qt6PasLib name 'QFontMetricsF_boundingRect2';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; r: QRectFH; flags: Integer; _string: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt6PasLib name 'QFontMetricsF_boundingRect3';
@@ -10257,7 +10233,6 @@ procedure QLineEdit_setInputMask(handle: QLineEditH; inputMask: PWideString); cd
 function QLineEdit_hasAcceptableInput(handle: QLineEditH): Boolean; cdecl; external Qt6PasLib name 'QLineEdit_hasAcceptableInput';
 procedure QLineEdit_setTextMargins(handle: QLineEditH; left: Integer; top: Integer; right: Integer; bottom: Integer); cdecl; external Qt6PasLib name 'QLineEdit_setTextMargins';
 procedure QLineEdit_setTextMargins(handle: QLineEditH; margins: QMarginsH); cdecl; external Qt6PasLib name 'QLineEdit_setTextMargins2';
-// procedure QLineEdit_getTextMargins(handle: QLineEditH; left: PInteger; top: PInteger; right: PInteger; bottom: PInteger); cdecl; external Qt6PasLib name 'QLineEdit_getTextMargins';
 procedure QLineEdit_textMargins(handle: QLineEditH; retval: QMarginsH); cdecl; external Qt6PasLib name 'QLineEdit_textMargins';
 procedure QLineEdit_setText(handle: QLineEditH; AnonParam1: PWideString); cdecl; external Qt6PasLib name 'QLineEdit_setText';
 procedure QLineEdit_clear(handle: QLineEditH); cdecl; external Qt6PasLib name 'QLineEdit_clear';
@@ -10879,10 +10854,6 @@ procedure QComboBox_setMaxVisibleItems(handle: QComboBoxH; maxItems: Integer); c
 function QComboBox_count(handle: QComboBoxH): Integer; cdecl; external Qt6PasLib name 'QComboBox_count';
 procedure QComboBox_setMaxCount(handle: QComboBoxH; max: Integer); cdecl; external Qt6PasLib name 'QComboBox_setMaxCount';
 function QComboBox_maxCount(handle: QComboBoxH): Integer; cdecl; external Qt6PasLib name 'QComboBox_maxCount';
-//function QComboBox_autoCompletion(handle: QComboBoxH): Boolean; cdecl; external Qt6PasLib name 'QComboBox_autoCompletion';
-// procedure QComboBox_setAutoCompletion(handle: QComboBoxH; enable: Boolean); cdecl; external Qt6PasLib name 'QComboBox_setAutoCompletion';
-//function QComboBox_autoCompletionCaseSensitivity(handle: QComboBoxH): QtCaseSensitivity; cdecl; external Qt6PasLib name 'QComboBox_autoCompletionCaseSensitivity';
-//procedure QComboBox_setAutoCompletionCaseSensitivity(handle: QComboBoxH; sensitivity: QtCaseSensitivity); cdecl; external Qt6PasLib name 'QComboBox_setAutoCompletionCaseSensitivity';
 function QComboBox_duplicatesEnabled(handle: QComboBoxH): Boolean; cdecl; external Qt6PasLib name 'QComboBox_duplicatesEnabled';
 procedure QComboBox_setDuplicatesEnabled(handle: QComboBoxH; enable: Boolean); cdecl; external Qt6PasLib name 'QComboBox_setDuplicatesEnabled';
 procedure QComboBox_setFrame(handle: QComboBoxH; AnonParam1: Boolean); cdecl; external Qt6PasLib name 'QComboBox_setFrame';
@@ -11765,8 +11736,6 @@ procedure QListWidget_closePersistentEditor(handle: QListWidgetH; item: QListWid
 function QListWidget_itemWidget(handle: QListWidgetH; item: QListWidgetItemH): QWidgetH; cdecl; external Qt6PasLib name 'QListWidget_itemWidget';
 procedure QListWidget_setItemWidget(handle: QListWidgetH; item: QListWidgetItemH; widget: QWidgetH); cdecl; external Qt6PasLib name 'QListWidget_setItemWidget';
 procedure QListWidget_removeItemWidget(handle: QListWidgetH; item: QListWidgetItemH); cdecl; external Qt6PasLib name 'QListWidget_removeItemWidget';
-// function QListWidget_isItemSelected(handle: QListWidgetH; item: QListWidgetItemH): Boolean; cdecl; external Qt6PasLib name 'QListWidget_isItemSelected';
-// procedure QListWidget_setItemSelected(handle: QListWidgetH; item: QListWidgetItemH; select: Boolean); cdecl; external Qt6PasLib name 'QListWidget_setItemSelected';
 procedure QListWidget_selectedItems(handle: QListWidgetH; retval: PPtrIntArray); cdecl; external Qt6PasLib name 'QListWidget_selectedItems';
 procedure QListWidget_findItems(handle: QListWidgetH; retval: PPtrIntArray; text: PWideString; flags: QtMatchFlags); cdecl; external Qt6PasLib name 'QListWidget_findItems';
 procedure QListWidget_scrollToItem(handle: QListWidgetH; item: QListWidgetItemH; hint: QAbstractItemViewScrollHint); cdecl; external Qt6PasLib name 'QListWidget_scrollToItem';
@@ -12590,7 +12559,6 @@ function QColorDialog_options(handle: QColorDialogH): QColorDialogColorDialogOpt
 procedure QColorDialog_open(handle: QColorDialogH; receiver: QObjectH; member: PAnsiChar); cdecl; external Qt6PasLib name 'QColorDialog_open';
 procedure QColorDialog_setVisible(handle: QColorDialogH; visible: Boolean); cdecl; external Qt6PasLib name 'QColorDialog_setVisible';
 function QColorDialog_getColor(retval: PQColor; initial: PQColor; parent: QWidgetH = nil; title: PWideString = nil; options: QColorDialogColorDialogOptions = 0): boolean; cdecl; external Qt6PasLib name 'QColorDialog_getColor';
-//function QColorDialog_getRgba(rgba: QRgb = 4294967295; ok: PBoolean = nil; parent: QWidgetH = nil): QRgb; cdecl; external Qt6PasLib name 'QColorDialog_getRgba';
 function QColorDialog_customCount(): Integer; cdecl; external Qt6PasLib name 'QColorDialog_customCount';
 procedure QColorDialog_customColor(retval: PQColor; index: Integer); cdecl; external Qt6PasLib name 'QColorDialog_customColor';
 procedure QColorDialog_setCustomColor(index: Integer; color: PQColor); cdecl; external Qt6PasLib name 'QColorDialog_setCustomColor';
@@ -12646,14 +12614,10 @@ procedure QFileDialog_setFileMode(handle: QFileDialogH; mode: QFileDialogFileMod
 function QFileDialog_fileMode(handle: QFileDialogH): QFileDialogFileMode; cdecl; external Qt6PasLib name 'QFileDialog_fileMode';
 procedure QFileDialog_setAcceptMode(handle: QFileDialogH; mode: QFileDialogAcceptMode); cdecl; external Qt6PasLib name 'QFileDialog_setAcceptMode';
 function QFileDialog_acceptMode(handle: QFileDialogH): QFileDialogAcceptMode; cdecl; external Qt6PasLib name 'QFileDialog_acceptMode';
-//procedure QFileDialog_setReadOnly(handle: QFileDialogH; enabled: Boolean); cdecl; external Qt6PasLib name 'QFileDialog_setReadOnly';
-//function QFileDialog_isReadOnly(handle: QFileDialogH): Boolean; cdecl; external Qt6PasLib name 'QFileDialog_isReadOnly';
 procedure QFileDialog_setResolveSymlinks(handle: QFileDialogH; enabled: Boolean); cdecl; external Qt6PasLib name 'QFileDialog_setResolveSymlinks';
 function QFileDialog_resolveSymlinks(handle: QFileDialogH): Boolean; cdecl; external Qt6PasLib name 'QFileDialog_resolveSymlinks';
 procedure QFileDialog_saveState(handle: QFileDialogH; retval: QByteArrayH); cdecl; external Qt6PasLib name 'QFileDialog_saveState';
 function QFileDialog_restoreState(handle: QFileDialogH; state: QByteArrayH): Boolean; cdecl; external Qt6PasLib name 'QFileDialog_restoreState';
-// procedure QFileDialog_setConfirmOverwrite(handle: QFileDialogH; enabled: Boolean); cdecl; external Qt6PasLib name 'QFileDialog_setConfirmOverwrite';
-// function QFileDialog_confirmOverwrite(handle: QFileDialogH): Boolean; cdecl; external Qt6PasLib name 'QFileDialog_confirmOverwrite';
 procedure QFileDialog_setDefaultSuffix(handle: QFileDialogH; suffix: PWideString); cdecl; external Qt6PasLib name 'QFileDialog_setDefaultSuffix';
 procedure QFileDialog_defaultSuffix(handle: QFileDialogH; retval: PWideString); cdecl; external Qt6PasLib name 'QFileDialog_defaultSuffix';
 procedure QFileDialog_setHistory(handle: QFileDialogH; paths: QStringListH); cdecl; external Qt6PasLib name 'QFileDialog_setHistory';
@@ -14110,8 +14074,6 @@ function QStyleOptionProgressBar_textAlignment(handle : QStyleOptionProgressBarH
 procedure QStyleOptionProgressBar_setTextAlignment(handle : QStyleOptionProgressBarH; textAlignment : QtAlignment); cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_setTextAlignment';
 function QStyleOptionProgressBar_textVisible(handle : QStyleOptionProgressBarH) : Boolean; cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_textVisible';
 procedure QStyleOptionProgressBar_setTextVisible(handle : QStyleOptionProgressBarH; textVisible : Boolean); cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_setTextVisible';
-// function QStyleOptionProgressBar_orientation(handle : QStyleOptionProgressBarH) : QtOrientation; cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_orientation';
-// procedure QStyleOptionProgressBar_setOrientation(handle : QStyleOptionProgressBarH; orientation : QtOrientation); cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_setOrientation';
 function QStyleOptionProgressBar_invertedAppearance(handle : QStyleOptionProgressBarH) : Boolean; cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_invertedAppearance';
 procedure QStyleOptionProgressBar_setInvertedAppearance(handle : QStyleOptionProgressBarH; invertedAppearance : Boolean); cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_setInvertedAppearance';
 function QStyleOptionProgressBar_bottomToTop(handle : QStyleOptionProgressBarH) : Boolean; cdecl; external Qt6PasLib name 'QStyleOptionProgressBar_bottomToTop';
