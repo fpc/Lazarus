@@ -11,9 +11,9 @@
   {$DEFINE QTSCROLLABLEFORMS}
   {.$DEFINE QTACCESSIBILITY}
   {Qt must use native event loop at least under MacOSX cocoa 64}
-  {$IFNDEF HASX11}
+  {.$IFNDEF HASX11}
   {$DEFINE QtUseNativeEventLoop}
-  {$ENDIF}
+  {.$ENDIF}
   {$IFDEF DARWIN}
   {enable this define if you have problems when dialogs are shown behind application}
   {.$DEFINE TQTMESSAGEBOXUSEPARENT}
