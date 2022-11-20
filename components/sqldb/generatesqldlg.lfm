@@ -8,10 +8,10 @@ object GenerateSQLForm: TGenerateSQLForm
   ClientHeight = 423
   ClientWidth = 796
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PCSQL: TPageControl
     Left = 0
-    Height = 372
+    Height = 377
     Top = 0
     Width = 796
     ActivePage = TSFields
@@ -25,17 +25,17 @@ object GenerateSQLForm: TGenerateSQLForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       OnResize = TSResize
       object POptions: TPanel
         Left = 0
-        Height = 341
+        Height = 349
         Top = 0
         Width = 254
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 341
+        ClientHeight = 349
         ClientWidth = 254
         Constraints.MinWidth = 180
         TabOrder = 0
@@ -47,6 +47,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
           Caption = 'Ta&ble'
+          Color = clDefault
           FocusControl = CBTables
           ParentColor = False
         end
@@ -59,6 +60,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
           Caption = 'I&ndent'
+          Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
@@ -71,16 +73,17 @@ object GenerateSQLForm: TGenerateSQLForm
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
           Caption = 'Line Length'
+          Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object CBTables: TComboBox
           Left = 8
-          Height = 31
+          Height = 23
           Top = 32
           Width = 238
           Anchors = [akTop, akLeft, akRight]
-          ItemHeight = 0
+          ItemHeight = 15
           OnChange = CBTablesChange
           Sorted = True
           Style = csDropDownList
@@ -89,7 +92,7 @@ object GenerateSQLForm: TGenerateSQLForm
         object BGenerate: TButton
           Left = 8
           Height = 25
-          Top = 305
+          Top = 313
           Width = 238
           Anchors = [akLeft, akRight, akBottom]
           BorderSpacing.InnerBorder = 4
@@ -99,7 +102,7 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object seIndent: TSpinEdit
           Left = 196
-          Height = 29
+          Height = 23
           Top = 197
           Width = 50
           TabOrder = 2
@@ -107,7 +110,7 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object seLineLength: TSpinEdit
           Left = 196
-          Height = 29
+          Height = 23
           Top = 229
           Width = 50
           TabOrder = 3
@@ -115,48 +118,48 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object CBQuoteFields: TCheckBox
           Left = 8
-          Height = 23
+          Height = 19
           Top = 72
-          Width = 95
+          Width = 84
           Caption = 'Quote Fields'
           TabOrder = 4
         end
         object CBSystemTables: TCheckBox
           Left = 88
-          Height = 23
+          Height = 19
           Top = 3
-          Width = 136
+          Width = 121
           Caption = 'Show system tables'
           OnChange = CBSystemTablesChange
           TabOrder = 5
         end
         object CBOneFieldPerLine: TCheckBox
           Left = 8
-          Height = 23
+          Height = 19
           Top = 104
-          Width = 121
+          Width = 108
           Caption = 'One field per line'
           TabOrder = 6
         end
         object cbUpperCaseKeywords: TCheckBox
           Left = 8
-          Height = 23
+          Height = 19
           Top = 136
-          Width = 143
+          Width = 126
           Caption = 'Uppercase keywords'
           TabOrder = 7
         end
         object cbFullyQualifiedFields: TCheckBox
           Left = 8
-          Height = 23
+          Height = 19
           Top = 168
-          Width = 135
+          Width = 123
           Caption = 'Fully qualified fields'
           TabOrder = 8
         end
         object edtQuoteChar: TEdit
           Left = 214
-          Height = 29
+          Height = 23
           Top = 69
           Width = 32
           MaxLength = 1
@@ -165,11 +168,12 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object lblQuoteChar: TLabel
           Left = 143
-          Height = 17
+          Height = 15
           Top = 74
-          Width = 62
+          Width = 59
           Alignment = taRightJustify
           Caption = 'Quote char'
+          Color = clDefault
           ParentColor = False
         end
       end
@@ -178,48 +182,48 @@ object GenerateSQLForm: TGenerateSQLForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = PSelectFields
         Left = 254
-        Height = 341
+        Height = 349
         Top = 0
-        Width = 244
+        Width = 246
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 341
-        ClientWidth = 244
+        ClientHeight = 349
+        ClientWidth = 246
         TabOrder = 1
         object LLBKeyFields: TLabel
           Left = 0
           Height = 26
           Top = 0
-          Width = 244
+          Width = 246
           Align = alTop
           Alignment = taCenter
           AutoSize = False
           Caption = '&Key fields'
+          Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object LBKeyFields: TListBox
           Left = 2
-          Height = 296
+          Height = 304
           Top = 34
-          Width = 238
+          Width = 240
           Anchors = [akTop, akLeft, akRight, akBottom]
           ItemHeight = 0
           MultiSelect = True
           ScrollWidth = 236
           Sorted = True
           TabOrder = 0
-          TopIndex = -1
         end
       end
       object PSelectFields: TPanel
-        Left = 498
-        Height = 341
+        Left = 500
+        Height = 349
         Top = 0
         Width = 288
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 341
+        ClientHeight = 349
         ClientWidth = 288
         TabOrder = 2
         object Label2: TLabel
@@ -231,12 +235,13 @@ object GenerateSQLForm: TGenerateSQLForm
           Alignment = taCenter
           AutoSize = False
           Caption = 'Select/Update/Insert fields'
+          Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object LBFields: TListBox
           Left = 12
-          Height = 296
+          Height = 304
           Top = 34
           Width = 266
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -245,19 +250,18 @@ object GenerateSQLForm: TGenerateSQLForm
           ScrollWidth = 264
           Sorted = True
           TabOrder = 0
-          TopIndex = -1
         end
       end
     end
     object TSSelect: TTabSheet
       Caption = 'Select'
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       inline MSelect: TSynEdit
         Left = 0
-        Height = 328
+        Height = 349
         Top = 0
-        Width = 802
+        Width = 788
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -266,7 +270,7 @@ object GenerateSQLForm: TGenerateSQLForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -723,7 +727,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -756,13 +760,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSInsert: TTabSheet
       Caption = '&Insert'
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       inline MInsert: TSynEdit
         Left = 0
-        Height = 328
+        Height = 349
         Top = 0
-        Width = 802
+        Width = 788
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -771,7 +775,7 @@ object GenerateSQLForm: TGenerateSQLForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1228,7 +1232,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1261,13 +1265,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSUpdate: TTabSheet
       Caption = '&Update'
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       inline MUpdate: TSynEdit
         Left = 0
-        Height = 328
+        Height = 349
         Top = 0
-        Width = 802
+        Width = 788
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -1276,7 +1280,7 @@ object GenerateSQLForm: TGenerateSQLForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1733,7 +1737,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1766,13 +1770,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSDelete: TTabSheet
       Caption = '&Delete'
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       inline MDelete: TSynEdit
         Left = 0
-        Height = 328
+        Height = 349
         Top = 0
-        Width = 802
+        Width = 788
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -1781,7 +1785,7 @@ object GenerateSQLForm: TGenerateSQLForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2238,7 +2242,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -2271,13 +2275,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSRefresh: TTabSheet
       Caption = 'Refresh'
-      ClientHeight = 341
-      ClientWidth = 786
+      ClientHeight = 349
+      ClientWidth = 788
       inline MRefresh: TSynEdit
         Left = 0
-        Height = 328
+        Height = 349
         Top = 0
-        Width = 802
+        Width = 788
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -2286,7 +2290,7 @@ object GenerateSQLForm: TGenerateSQLForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2743,7 +2747,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -2777,8 +2781,8 @@ object GenerateSQLForm: TGenerateSQLForm
   end
   object BPGenSQL: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 378
+    Height = 34
+    Top = 383
     Width = 784
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -2795,7 +2799,7 @@ object GenerateSQLForm: TGenerateSQLForm
     DefaultFilter = 'SQL Files (*.sql)|*.sql'
     Enabled = False
     SQLDialect = sqlFirebird40
-    left = 392
-    top = 64
+    Left = 392
+    Top = 64
   end
 end
