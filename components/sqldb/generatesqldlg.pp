@@ -164,7 +164,7 @@ begin
     L:=L+' '+Format('(%s = :%s%s)', [FieldName,ParamPrefix,KeyFields[I]]);
     if I<KeyFields.Count - 1 then
       L:=L+' '+SQLKeyWord(skAnd);
-    if CBOneFieldPerLine.Checked or ((Length(L)>MaxLen) and IsNotLast) then
+    if CBOneFieldPerLine.Checked or (Length(L)>MaxLen) or (not IsNotLast) then
       begin
       SQL.Add(L);
       L:=IndentString;
@@ -213,7 +213,7 @@ procedure TGenerateSQLForm.GenInsertSQL(const TableName: string; UpdateFields, S
       L:=L+FN;
       if IsNotLast then
         L:=L+', ';
-      if CBOneFieldPerLine.Checked or ((Length(L)>MaxLen) and IsNotLast) then
+      if CBOneFieldPerLine.Checked or (Length(L)>MaxLen) or (not IsNotLast) then
         begin
         SQL.Add(L);
         L:=IndentString;
@@ -251,7 +251,7 @@ begin
    L:=L+FN;
    if IsNotLast then
      L:=L+', ';
-   if CBOneFieldPerLine.Checked or ((Length(L)>MaxLen) and IsNotLast) then
+   if CBOneFieldPerLine.Checked or (Length(L)>MaxLen) or (not IsNotLast) then
      begin
      SQL.Add(L);
      L:=IndentString;
@@ -299,7 +299,7 @@ begin
    L:=L+FN;
    if IsNotLast then
      L:=L+', ';
-   if CBOneFieldPerLine.Checked or ((Length(L)>MaxLen) and IsNotLast) then
+   if CBOneFieldPerLine.Checked or (Length(L)>MaxLen) or (not IsNotLast) then
      begin
      SQL.Add(L);
      L:=IndentString;
