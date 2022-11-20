@@ -532,6 +532,16 @@ procedure TGenerateSQLForm.FormCreate(Sender: TObject);
 begin
   Caption:= lrsGeneratesqlstatements;
   EdtQuoteChar.Text:='"';
+  MSelect.Font.Height := SynDefaultFontHeight;
+  MSelect.Font.Name := SynDefaultFontName;
+  MInsert.Font.Height := SynDefaultFontHeight;
+  MInsert.Font.Name := SynDefaultFontName;
+  MUpdate.Font.Height := SynDefaultFontHeight;
+  MUpdate.Font.Name := SynDefaultFontName;
+  MDelete.Font.Height := SynDefaultFontHeight;
+  MDelete.Font.Name := SynDefaultFontName;
+  MRefresh.Font.Height := SynDefaultFontHeight;
+  MRefresh.Font.Name := SynDefaultFontName;
 end;
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);

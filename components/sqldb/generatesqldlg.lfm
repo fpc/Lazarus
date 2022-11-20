@@ -264,13 +264,13 @@ object GenerateSQLForm: TGenerateSQLForm
         Width = 788
         Align = alClient
         Font.Height = 13
-        Font.Name = 'DejaVu Sans Mono'
+        Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 55
+        Gutter.Width = 53
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -727,7 +727,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 15
+            Width = 13
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -769,13 +769,13 @@ object GenerateSQLForm: TGenerateSQLForm
         Width = 788
         Align = alClient
         Font.Height = 13
-        Font.Name = 'DejaVu Sans Mono'
+        Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 55
+        Gutter.Width = 53
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1232,7 +1232,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 15
+            Width = 13
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1274,13 +1274,13 @@ object GenerateSQLForm: TGenerateSQLForm
         Width = 788
         Align = alClient
         Font.Height = 13
-        Font.Name = 'DejaVu Sans Mono'
+        Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 55
+        Gutter.Width = 53
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1737,7 +1737,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 15
+            Width = 13
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1779,13 +1779,13 @@ object GenerateSQLForm: TGenerateSQLForm
         Width = 788
         Align = alClient
         Font.Height = 13
-        Font.Name = 'DejaVu Sans Mono'
+        Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 55
+        Gutter.Width = 53
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2242,7 +2242,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 15
+            Width = 13
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -2284,13 +2284,13 @@ object GenerateSQLForm: TGenerateSQLForm
         Width = 788
         Align = alClient
         Font.Height = 13
-        Font.Name = 'DejaVu Sans Mono'
+        Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 55
+        Gutter.Width = 53
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2747,7 +2747,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 15
+            Width = 13
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
