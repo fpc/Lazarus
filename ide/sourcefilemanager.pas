@@ -7578,17 +7578,97 @@ begin
   end;
 end;
 
-function ShowSaveProjectAsDialog: TModalResult;
+function FinalizeSavingProject(AProgramName, AProgramFilename, AnLPIFilename,
+                               OldProjectDir: String): TModalResult;
+// Called from ShowSaveProjectAsDialog. Set up the project with new names and paths.
 var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
-  SaveDialog: TSaveDialog;
-  NewBuf, OldBuf: TCodeBuffer;
   TitleWasDefault: Boolean;
-  AFilename, NewPath: String;
-  NewLPIFilename, NewProgramFN, NewProgramName, LCProgramName: String;
-  AText, ACaption, Ext: string;
-  OldSourceCode, OldProjectDir, prDir: string;
+  NewBuf, OldBuf: TCodeBuffer;
+  OldSourceCode, prDir: string;
+begin
+  TitleWasDefault := Project1.TitleIsDefault(true);
+  UpdateTargetFilename(AProgramFilename);   // set new project target filename
+
+  // set new project filename
+  Project1.ProjectInfoFile:=AnLPIFilename;
+  EnvironmentOptions.AddToRecentProjectFiles(AnLPIFilename);
+  MainIDE.SetRecentProjectFilesMenu;
+
+  // change main source
+  if (Project1.MainUnitID >= 0) then
+  begin
+    GetMainUnit(MainUnitInfo, MainUnitSrcEdit);
+    if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,AProgramFilename)
+    then begin
+      DebugLn(['ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,
+               '" New="',AProgramFilename,'"']);
+      // silently ignore
+    end;
+
+    // Save old source code, to prevent overwriting it,
+    // if the file name didn't actually change.
+    OldBuf := MainUnitInfo.Source;
+    OldSourceCode := OldBuf.Source;
+
+    // switch MainUnitInfo.Source to new code
+    NewBuf := CodeToolBoss.CreateFile(AProgramFilename);
+    if NewBuf=nil then begin
+      Result:=IDEMessageDialog(lisErrorCreatingFile,
+        Format(lisUnableToCreateFile3, [LineEnding, AProgramFilename]),
+        mtError, [mbCancel]);
+      exit;
+    end;
+
+    // copy the source to the new buffer
+    NewBuf.Source:=OldSourceCode;
+    if (OldBuf.DiskEncoding<>'') and (OldBuf.DiskEncoding<>EncodingUTF8) then
+    begin
+      NewBuf.DiskEncoding:=OldBuf.DiskEncoding;
+      InputHistories.FileEncodings[AProgramFilename]:=NewBuf.DiskEncoding;
+    end else
+      InputHistories.FileEncodings[AProgramFilename]:='';
+
+    // assign the new buffer to the MainUnit
+    MainUnitInfo.Source:=NewBuf;
+    if MainUnitSrcEdit<>nil then
+      MainUnitSrcEdit.CodeBuffer:=NewBuf;
+
+    // change program name
+    MainUnitInfo.Unit_Name:=AProgramName;
+    MainUnitInfo.Modified:=true;
+
+    // update source notebook page names
+    UpdateSourceNames;
+  end;
+
+  // update paths
+  prDir := Project1.Directory;
+  with Project1.CompilerOptions do begin
+    OtherUnitFiles:=RebaseSearchPath(OtherUnitFiles,OldProjectDir,prDir,true);
+    IncludePath   :=RebaseSearchPath(IncludePath,OldProjectDir,prDir,true);
+    Libraries     :=RebaseSearchPath(Libraries,OldProjectDir,prDir,true);
+    ObjectPath    :=RebaseSearchPath(ObjectPath,OldProjectDir,prDir,true);
+    SrcPath       :=RebaseSearchPath(SrcPath,OldProjectDir,prDir,true);
+    DebugPath     :=RebaseSearchPath(DebugPath,OldProjectDir,prDir,true);
+  end;
+  // change title
+  if TitleWasDefault then begin
+    Project1.Title:=Project1.GetDefaultTitle;
+    // title does not need to be removed from source, because it was default
+  end;
+  // invalidate cached substituted macros
+  IncreaseCompilerParseStamp;
+  Result:=mrOk;
+end;
+
+function ShowSaveProjectAsDialog: TModalResult;
+var
+  SaveDialog: TSaveDialog;
+  NewProgramName, LCProgramName: String;
+  NewPath, NewLPIFilename, NewProgramFN: String;
+  AFilename, Ext, AText, ACaption, OldProjectDir: string;
 begin
   Project1.BeginUpdate(false);
   try
@@ -7684,7 +7764,6 @@ begin
       InputHistories.StoreFileDialogSettings(SaveDialog);
       SaveDialog.Free;
     end;
-
     //DebugLn(['ShowSaveProjectAsDialog: NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,
     //         ' NewMainSource=',NewProgramFN]);
     // check if info file or source file already exists
@@ -7708,79 +7787,8 @@ begin
         if Result=mrCancel then exit;
       end;
     end;
-
-    TitleWasDefault := Project1.TitleIsDefault(true);
-    UpdateTargetFilename(NewProgramFN);   // set new project target filename
-
-    // set new project filename
-    Project1.ProjectInfoFile:=NewLPIFilename;
-    EnvironmentOptions.AddToRecentProjectFiles(NewLPIFilename);
-    MainIDE.SetRecentProjectFilesMenu;
-
-    // change main source
-    if (Project1.MainUnitID >= 0) then
-    begin
-      GetMainUnit(MainUnitInfo, MainUnitSrcEdit);
-      if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFN)
-      then begin
-        DebugLn(['ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFN,'"']);
-        // silently ignore
-      end;
-
-      // Save old source code, to prevent overwriting it,
-      // if the file name didn't actually change.
-      OldBuf := MainUnitInfo.Source;
-      OldSourceCode := OldBuf.Source;
-
-      // switch MainUnitInfo.Source to new code
-      NewBuf := CodeToolBoss.CreateFile(NewProgramFN);
-      if NewBuf=nil then begin
-        Result:=IDEMessageDialog(lisErrorCreatingFile,
-          Format(lisUnableToCreateFile3, [LineEnding, NewProgramFN]),
-          mtError, [mbCancel]);
-        exit;
-      end;
-
-      // copy the source to the new buffer
-      NewBuf.Source:=OldSourceCode;
-      if (OldBuf.DiskEncoding<>'') and (OldBuf.DiskEncoding<>EncodingUTF8) then
-      begin
-        NewBuf.DiskEncoding:=OldBuf.DiskEncoding;
-        InputHistories.FileEncodings[NewProgramFN]:=NewBuf.DiskEncoding;
-      end else
-        InputHistories.FileEncodings[NewProgramFN]:='';
-
-      // assign the new buffer to the MainUnit
-      MainUnitInfo.Source:=NewBuf;
-      if MainUnitSrcEdit<>nil then
-        MainUnitSrcEdit.CodeBuffer:=NewBuf;
-
-      // change program name
-      MainUnitInfo.Unit_Name:=NewProgramName;
-      MainUnitInfo.Modified:=true;
-
-      // update source notebook page names
-      UpdateSourceNames;
-    end;
-
-    // update paths
-    prDir := Project1.Directory;
-    with Project1.CompilerOptions do begin
-      OtherUnitFiles:=RebaseSearchPath(OtherUnitFiles,OldProjectDir,prDir,true);
-      IncludePath   :=RebaseSearchPath(IncludePath,OldProjectDir,prDir,true);
-      Libraries     :=RebaseSearchPath(Libraries,OldProjectDir,prDir,true);
-      ObjectPath    :=RebaseSearchPath(ObjectPath,OldProjectDir,prDir,true);
-      SrcPath       :=RebaseSearchPath(SrcPath,OldProjectDir,prDir,true);
-      DebugPath     :=RebaseSearchPath(DebugPath,OldProjectDir,prDir,true);
-    end;
-    // change title
-    if TitleWasDefault then begin
-      Project1.Title:=Project1.GetDefaultTitle;
-      // title does not need to be removed from source, because it was default
-    end;
-
-    // invalidate cached substituted macros
-    IncreaseCompilerParseStamp;
+    Result:=FinalizeSavingProject(NewProgramName,NewProgramFN,NewLPIFilename,OldProjectDir);
+    if Result<>mrOK then exit;
   finally
     Project1.EndUpdate;
   end;
