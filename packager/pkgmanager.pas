@@ -4453,17 +4453,24 @@ var
 
 var
   Dependencies: TPackagePackageArray;
+  UnitInfo: TUnitInfo;
 begin
-  Result:=mrCancel;
   UnitNames:=nil;
   Dependencies:=nil;
   MissingDependencies:=nil;
   try
     Result:=GetUnitsAndDepsForComps(ComponentClasses, Dependencies, UnitNames);
     if Result<>mrOk then exit;
-    // TODO: Frame instances are not registered components, UnitNames is not assigned
-    if (UnitNames=nil) then exit(mrCancel);
-
+    // Frame instances are not registered components, UnitNames is not assigned.
+    // Find the frame from the project units.
+    if UnitNames=nil then begin
+      UnitNames:=TStringList.Create;
+      Assert(ComponentClasses.Count=1, 'TPkgManager.AddUnitDepsForCompClasses: '
+           + IntToStr(ComponentClasses.Count) + ' frame classes requested.');
+      UnitInfo:=Project1.UnitWithComponentClass(TComponentClass(ComponentClasses[0]));
+      if UnitInfo=nil then exit(mrCancel);
+      UnitNames.Add(UnitInfo.Unit_Name);
+    end;
     if (Dependencies<>nil) then
     begin
       Result:=FilterMissingDepsForUnit(UnitFilename,Dependencies,MissingDependencies);
