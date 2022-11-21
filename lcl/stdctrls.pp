@@ -1615,7 +1615,7 @@ type
     procedure Paint; override;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     property AutoSize default True;
-    property Color nodefault;
+    property Color;
   end;
 
 
