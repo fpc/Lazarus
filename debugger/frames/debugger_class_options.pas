@@ -588,7 +588,7 @@ begin
   tbCopy.Enabled := FSelectedDbgPropertiesConfig <> nil;
   tbDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
 
-  if ShowWarningOverridenByProject then
+  if ShowWarningOverridenByProject and Assigned(FSelectedDbgPropertiesConfig) then
     lblWarningProject.Visible := not (
       (Project1.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
       (Project1.DebuggerBackend = 'IDE') or
