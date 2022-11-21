@@ -1,19 +1,21 @@
 object GenerateSQLForm: TGenerateSQLForm
   Left = 364
-  Height = 423
+  Height = 419
   Top = 295
-  Width = 796
+  Width = 797
   ActiveControl = PCSQL
   Caption = 'Edit/Generate SQL statements'
-  ClientHeight = 423
-  ClientWidth = 796
+  ClientHeight = 419
+  ClientWidth = 797
+  OnActivate = FormActivate
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '2.3.0.0'
   object PCSQL: TPageControl
     Left = 0
-    Height = 377
+    Height = 373
     Top = 0
-    Width = 796
+    Width = 797
     ActivePage = TSFields
     Align = alClient
     TabIndex = 0
@@ -25,155 +27,228 @@ object GenerateSQLForm: TGenerateSQLForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       OnResize = TSResize
       object POptions: TPanel
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 254
+        Width = 263
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 349
-        ClientWidth = 254
-        Constraints.MinWidth = 180
+        ClientHeight = 345
+        ClientWidth = 263
         TabOrder = 0
         object LCBTables: TLabel
+          AnchorSideLeft.Control = CBTables
+          AnchorSideTop.Control = CBSystemTables
+          AnchorSideTop.Side = asrCenter
           Left = 8
-          Height = 16
-          Top = 8
-          Width = 64
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
+          Height = 15
+          Top = 5
+          Width = 27
           Caption = 'Ta&ble'
           Color = clDefault
           FocusControl = CBTables
           ParentColor = False
         end
         object LSEIndent: TLabel
-          Left = 30
-          Height = 20
-          Top = 202
-          Width = 150
+          AnchorSideTop.Control = seIndent
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seIndent
+          Left = 169
+          Height = 15
+          Top = 214
+          Width = 34
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 4
           Caption = 'I&ndent'
           Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object LSELineLength: TLabel
-          Left = 22
-          Height = 20
-          Top = 231
-          Width = 154
+          AnchorSideTop.Control = seLineLength
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seLineLength
+          Left = 141
+          Height = 15
+          Top = 245
+          Width = 62
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = False
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 4
           Caption = 'Line Length'
           Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object CBTables: TComboBox
+          AnchorSideLeft.Control = POptions
+          AnchorSideTop.Control = CBSystemTables
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = POptions
+          AnchorSideRight.Side = asrBottom
           Left = 8
           Height = 23
-          Top = 32
-          Width = 238
+          Top = 25
+          Width = 247
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 8
           ItemHeight = 15
           OnChange = CBTablesChange
           Sorted = True
           Style = csDropDownList
-          TabOrder = 0
+          TabOrder = 1
         end
         object BGenerate: TButton
+          AnchorSideLeft.Control = CBTables
+          AnchorSideRight.Control = CBTables
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = POptions
+          AnchorSideBottom.Side = asrBottom
           Left = 8
           Height = 25
-          Top = 313
-          Width = 238
+          Top = 314
+          Width = 247
           Anchors = [akLeft, akRight, akBottom]
+          BorderSpacing.Top = 6
+          BorderSpacing.Bottom = 6
           BorderSpacing.InnerBorder = 4
           Caption = '&Generate SQL'
           OnClick = BGenerateClick
-          TabOrder = 1
+          TabOrder = 9
         end
         object seIndent: TSpinEdit
-          Left = 196
+          AnchorSideTop.Control = cbFullyQualifiedFields
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = CBTables
+          AnchorSideRight.Side = asrBottom
+          Left = 207
           Height = 23
-          Top = 197
-          Width = 50
-          TabOrder = 2
+          Top = 210
+          Width = 48
+          Alignment = taRightJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 16
+          TabOrder = 7
           Value = 2
         end
         object seLineLength: TSpinEdit
-          Left = 196
+          AnchorSideTop.Control = seIndent
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = CBTables
+          AnchorSideRight.Side = asrBottom
+          Left = 207
           Height = 23
-          Top = 229
-          Width = 50
-          TabOrder = 3
+          Top = 241
+          Width = 48
+          Alignment = taRightJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 8
+          TabOrder = 8
           Value = 72
         end
         object CBQuoteFields: TCheckBox
+          AnchorSideLeft.Control = POptions
+          AnchorSideTop.Control = edtQuoteChar
+          AnchorSideTop.Side = asrCenter
           Left = 8
           Height = 19
-          Top = 72
+          Top = 70
           Width = 84
+          BorderSpacing.Left = 8
           Caption = 'Quote Fields'
-          TabOrder = 4
+          TabOrder = 2
         end
         object CBSystemTables: TCheckBox
-          Left = 88
+          AnchorSideTop.Control = POptions
+          AnchorSideRight.Control = CBTables
+          AnchorSideRight.Side = asrBottom
+          Left = 134
           Height = 19
           Top = 3
           Width = 121
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 3
           Caption = 'Show system tables'
           OnChange = CBSystemTablesChange
-          TabOrder = 5
+          TabOrder = 0
         end
         object CBOneFieldPerLine: TCheckBox
+          AnchorSideLeft.Control = POptions
+          AnchorSideTop.Control = CBQuoteFields
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
-          Top = 104
+          Top = 105
           Width = 108
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 16
           Caption = 'One field per line'
-          TabOrder = 6
+          TabOrder = 4
         end
         object cbUpperCaseKeywords: TCheckBox
+          AnchorSideLeft.Control = POptions
+          AnchorSideTop.Control = CBOneFieldPerLine
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
-          Top = 136
+          Top = 140
           Width = 126
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 16
           Caption = 'Uppercase keywords'
-          TabOrder = 7
+          TabOrder = 5
         end
         object cbFullyQualifiedFields: TCheckBox
+          AnchorSideLeft.Control = POptions
+          AnchorSideTop.Control = cbUpperCaseKeywords
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
-          Top = 168
+          Top = 175
           Width = 123
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 16
           Caption = 'Fully qualified fields'
-          TabOrder = 8
+          TabOrder = 6
         end
         object edtQuoteChar: TEdit
-          Left = 214
+          AnchorSideTop.Control = CBTables
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = CBTables
+          AnchorSideRight.Side = asrBottom
+          Left = 223
           Height = 23
-          Top = 69
+          Top = 68
           Width = 32
+          Alignment = taCenter
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 20
           MaxLength = 1
-          TabOrder = 9
+          TabOrder = 3
           Text = '"'
         end
         object lblQuoteChar: TLabel
-          Left = 143
+          AnchorSideTop.Control = edtQuoteChar
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = edtQuoteChar
+          Left = 160
           Height = 15
-          Top = 74
+          Top = 72
           Width = 59
           Alignment = taRightJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 16
+          BorderSpacing.Right = 4
           Caption = 'Quote char'
           Color = clDefault
+          Layout = tlCenter
           ParentColor = False
         end
       end
@@ -181,73 +256,78 @@ object GenerateSQLForm: TGenerateSQLForm
         AnchorSideLeft.Control = POptions
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = PSelectFields
-        Left = 254
-        Height = 349
+        Left = 263
+        Height = 345
         Top = 0
-        Width = 246
+        Width = 263
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 349
-        ClientWidth = 246
+        ClientHeight = 345
+        ClientWidth = 263
         TabOrder = 1
         object LLBKeyFields: TLabel
           Left = 0
-          Height = 26
-          Top = 0
-          Width = 246
+          Height = 15
+          Top = 4
+          Width = 263
           Align = alTop
           Alignment = taCenter
-          AutoSize = False
+          BorderSpacing.Top = 4
           Caption = '&Key fields'
           Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object LBKeyFields: TListBox
-          Left = 2
-          Height = 304
-          Top = 34
-          Width = 240
-          Anchors = [akTop, akLeft, akRight, akBottom]
+          Left = 6
+          Height = 314
+          Top = 25
+          Width = 247
+          Align = alClient
+          BorderSpacing.Right = 4
+          BorderSpacing.Around = 6
           ItemHeight = 0
           MultiSelect = True
-          ScrollWidth = 236
+          ScrollWidth = 240
           Sorted = True
           TabOrder = 0
         end
       end
       object PSelectFields: TPanel
-        Left = 500
-        Height = 349
+        Left = 526
+        Height = 345
         Top = 0
-        Width = 288
+        Width = 263
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 349
-        ClientWidth = 288
+        ClientHeight = 345
+        ClientWidth = 263
         TabOrder = 2
         object Label2: TLabel
+          AnchorSideRight.Side = asrBottom
           Left = 0
-          Height = 26
-          Top = 0
-          Width = 288
+          Height = 15
+          Top = 4
+          Width = 263
           Align = alTop
           Alignment = taCenter
-          AutoSize = False
+          BorderSpacing.Top = 4
           Caption = 'Select/Update/Insert fields'
           Color = clDefault
           Layout = tlCenter
           ParentColor = False
         end
         object LBFields: TListBox
-          Left = 12
-          Height = 304
-          Top = 34
-          Width = 266
-          Anchors = [akTop, akLeft, akRight, akBottom]
+          Left = 6
+          Height = 314
+          Top = 25
+          Width = 247
+          Align = alClient
+          BorderSpacing.Right = 4
+          BorderSpacing.Around = 6
           ItemHeight = 0
           MultiSelect = True
-          ScrollWidth = 264
+          ScrollWidth = 240
           Sorted = True
           TabOrder = 0
         end
@@ -255,22 +335,22 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSSelect: TTabSheet
       Caption = 'Select'
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       inline MSelect: TSynEdit
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 788
+        Width = 789
         Align = alClient
-        Font.Height = 13
+        Font.Height = -13
         Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 53
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -727,7 +807,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 13
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -760,22 +840,22 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSInsert: TTabSheet
       Caption = '&Insert'
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       inline MInsert: TSynEdit
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 788
+        Width = 789
         Align = alClient
-        Font.Height = 13
+        Font.Height = -13
         Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 53
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1232,7 +1312,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 13
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1265,22 +1345,22 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSUpdate: TTabSheet
       Caption = '&Update'
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       inline MUpdate: TSynEdit
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 788
+        Width = 789
         Align = alClient
-        Font.Height = 13
+        Font.Height = -13
         Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 53
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -1737,7 +1817,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 13
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1770,22 +1850,22 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSDelete: TTabSheet
       Caption = '&Delete'
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       inline MDelete: TSynEdit
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 788
+        Width = 789
         Align = alClient
-        Font.Height = 13
+        Font.Height = -13
         Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 53
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2242,7 +2322,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 13
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -2275,22 +2355,22 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSRefresh: TTabSheet
       Caption = 'Refresh'
-      ClientHeight = 349
-      ClientWidth = 788
+      ClientHeight = 345
+      ClientWidth = 789
       inline MRefresh: TSynEdit
         Left = 0
-        Height = 349
+        Height = 345
         Top = 0
-        Width = 788
+        Width = 789
         Align = alClient
-        Font.Height = 13
+        Font.Height = -13
         Font.Name = 'Courier New'
         Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 53
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -2747,7 +2827,7 @@ object GenerateSQLForm: TGenerateSQLForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 13
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -2782,8 +2862,8 @@ object GenerateSQLForm: TGenerateSQLForm
   object BPGenSQL: TButtonPanel
     Left = 6
     Height = 34
-    Top = 383
-    Width = 784
+    Top = 379
+    Width = 785
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
