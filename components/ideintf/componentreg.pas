@@ -276,7 +276,7 @@ type
     procedure SetSelectedComp(AComponent: TRegisteredComponent; AMulti: Boolean);
     // Registered handlers
     procedure DoAfterComponentAdded(ALookupRoot, AComponent: TComponent;
-                            ARegisteredComponent: TRegisteredComponent); virtual;
+                                    ARegisteredComponent: TRegisteredComponent);
     procedure DoAfterSelectionChanged;
     procedure DoAfterUpdate;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);

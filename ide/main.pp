@@ -13430,10 +13430,10 @@ begin
               AComponent.ClassName, ' not registered');
       exit;
     end;
-    //debugln('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+    //DebugLn('TMainIDE.PropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
     // set component into design mode
     SetDesigning(AComponent,true);
-    //debugln('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+    //DebugLn('TMainIDE.PropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
     // add to source
     FComponentAddedDesigner:=FindRootDesigner(AComponent) as TDesigner;
     if FComponentAddedDesigner<>nil then
@@ -13467,7 +13467,7 @@ begin
   // Update Object Inspector
   if ObjectInspector1<>nil then   // Moving this to Idle handler somehow removes
     ObjectInspector1.FillComponentList(False); // selection of pasted components!
-  //debugln('TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
+  //DebugLn(['TMainIDE.PropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select]);
 end;
 
 procedure TMainIDE.PropHookPersistentDeleting(APersistent: TPersistent);
