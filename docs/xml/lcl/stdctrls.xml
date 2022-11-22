@@ -13206,8 +13206,7 @@ The default value for the property is <b>True</b> in <var>TCustomLabel</var>.
 <descr>
 <p>
 <var>Color</var> is <var>TColor</var> property with the background color for 
-the control. Color is re-introduced in <var>TCustomLabel</var> to remove the 
-default value for the property.
+the control.
 </p>
 <p>
 Setting a new value for the property causes the value in ParentColor to be 
