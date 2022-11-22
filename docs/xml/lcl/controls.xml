@@ -1530,7 +1530,10 @@ Child controls owned by this control are not selectable in the designer.
 </short>
 </element>
 <element name="TControlStyleType.csAutoSize0x0">
-<short>If the preferred size is 0x0 then control is shrunk to 0x0</short>
+<short>
+If the preferred size is 0x0 pixels then the control is auto-sized; the 
+default minimum client size will be 1x1 pixels.
+</short>
 </element>
 <element name="TControlStyleType.csAutoSizeKeepChildLeft">
 <short>
@@ -8193,7 +8196,8 @@ Override this method to return the preferred height and width for the control.
 <p>
 Calculates the preferred width and height for a control, which is used by the 
 LCL auto-sizing algorithms as the default size. Negative or zero (0) values 
-are treated as undefined and the LCL uses other sizes instead.
+are treated as undefined and the LCL uses other sizes instead. This value is 
+independent of constraints and siblings, only the inner parts are relevant.
 </p>
 <p>
 <var>TWinControl</var> overrides this and asks the interface for theme 
@@ -16555,7 +16559,7 @@ ClientWidth is needed / used.
 </element>
 
 <element name="TControl.Color">
-<short>The background color of the control.</short>
+<short>The background color for the control.</short>
 <descr>
 <p>
 The default value in <var>Color</var> is the same as the value in the parent 
@@ -19485,7 +19489,7 @@ are relevant for the calculates values.
 <var>WithThemeSpace</var> adds space for stacking when set to <b>True</b>. 
 For example: <var>TRadioButton</var> has a minimum size. But for stacking 
 multiple TRadioButtons there should be space around each control. This space 
-is theme- dependent, so it is passed as a parameter to the widgetset.
+is theme-dependent, so it is passed as a parameter to the widgetset.
 </p>
 </descr>
 <seealso>
