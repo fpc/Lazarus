@@ -4647,6 +4647,7 @@ begin
   while FLineInfo.StateMachine.NextLine do
   begin
     Line := FLineInfo.StateMachine.Line;
+    LineMap:=nil;
 
     if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
       idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
@@ -4665,6 +4666,7 @@ begin
     addr := FLineInfo.StateMachine.Address;
     if (not FLineInfo.StateMachine.EndSequence) and (FLineInfo.StateMachine.IsStmt)
     and (Line > 0)
+    and (LineMap<>nil)
     then
       LineMap^.SetAddressForLine(Line, addr);
 
