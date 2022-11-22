@@ -4644,10 +4644,10 @@ begin
   Info := nil;
   NextInfo := nil;
 
+  LineMap:=nil;
   while FLineInfo.StateMachine.NextLine do
   begin
     Line := FLineInfo.StateMachine.Line;
-    LineMap:=nil;
 
     if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
       idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
