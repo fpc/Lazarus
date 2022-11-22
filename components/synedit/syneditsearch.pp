@@ -757,7 +757,7 @@ begin
     exit;
   end;
   MinY:=Max(0,StartPos.Y-1);
-  MaxY:=Min(Lines.Count,EndPos.Y-1);
+  MaxY:=Min(Lines.Count,EndPos.Y)-1;
   if MinY>MaxY then exit;
   if Backwards then begin
     // backwards

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, TestBase,
-  SynEdit, SynEditSearch, SynHighlighterPas;
+  SynEdit, SynEditSearch, SynHighlighterPas, SynEditTypes;
 
 type
 
@@ -17,6 +17,8 @@ type
   protected
     fTSearch: TSynEditSearch;
     //procedure ReCreateEdit; reintroduce;
+    function TextLinesSimple: TStringArray;
+    function TextLinesSimple2: TStringArray;
     procedure ReCreateEditWithLinesSimple;
     procedure TestFindNext(AName, ASearchTxt: String;
       AStartX, AStartY, AEndX, AEndY: Integer;
@@ -25,6 +27,7 @@ type
     procedure TestSearchSimple;
     procedure TestSearchSimpleUtf8;
     procedure TestSearchSimpleRegEx;
+    procedure TestSearchZeroLengthRegEx;
     procedure FindMatchingBracket;
     procedure TestSearchMultiLine; // not regex
   end;
@@ -33,24 +36,38 @@ implementation
 
 { TTestSynSearch }
 
+function TTestSynSearch.TextLinesSimple: TStringArray;
+begin
+  SetLength(Result, 12);
+  Result[ 0] := 'Some text to search Text';
+  Result[ 1] := 'Text and more Text, texting';
+  Result[ 2] := 'text and more text, texting';
+  Result[ 3] := 'Text';
+  Result[ 4] := '';
+  Result[ 5] := 'utf8: äöü äää äöü ÄÖÜ ÄÄÄ ÄÖÜ  äÖü ÄäÄ äääää äöüäöüä ä Ä';
+  Result[ 6] := '';
+  Result[ 7] := '';
+  Result[ 8] := '';
+  Result[ 9] := 'Test or Dest or Destination. Test.';
+  Result[10] := 'test or dest or destination. test.';
+  Result[11] := '';
+end;
+
+function TTestSynSearch.TextLinesSimple2: TStringArray;
+begin
+  SetLength(Result, 6);
+  Result[ 0] := 'foo bar some more';
+  Result[ 1] := 'äöü äää äöü';
+  Result[ 2] := 'abc def 123';
+  Result[ 3] := 'mno xyz 789';
+  Result[ 4] := 'Text';
+  Result[ 5] := '';
+end;
+
 procedure TTestSynSearch.ReCreateEditWithLinesSimple;
 begin
   ReCreateEdit;
-  SetLines
-    ([ 'Some text to search Text',
-       'Text and more Text, texting',
-       'text and more text, texting',
-       'Text',
-       '',
-       'utf8: äöü äää äöü ÄÖÜ ÄÄÄ ÄÖÜ  äÖü ÄäÄ äääää äöüäöüä ä Ä',
-       '',
-       '',
-       '',
-       'Test or Dest or Destination. Test.',
-       'test or dest or destination. test.',
-       ''
-    ]);
-
+  SetLines(TextLinesSimple);
 end;
 
 procedure TTestSynSearch.TestFindNext(AName, ASearchTxt: String; AStartX, AStartY, AEndX,
@@ -179,6 +196,213 @@ begin
   TestFindNext('RegEx Case',           '(t...),',   1,2,  25,3,  true,   15,3, 20,3);
   AssertEquals('RegexRepl Case', 'atextB', fTSearch.RegExprReplace);
 
+  fTSearch.Free;
+end;
+
+procedure TTestSynSearch.TestSearchZeroLengthRegEx;
+var
+  aBackwards: Boolean;
+
+  procedure DoTestSearch(AName: String;
+    AStartX, AStartY: Integer; ASearch: String;
+    AExpX, AExpY: Integer;
+    AOpts: TSynSearchOptions = [ssoRegExpr]);
+  begin
+    AName := AName + ' # Search: "' + ASearch + '" ';
+    if aBackwards then
+      AOpts := AOpts + [ssoBackwards];
+    ReCreateEdit;
+    SetLines(TextLinesSimple2);
+    SetCaret(AStartX, AStartY);
+    SynEdit.SearchReplaceEx(ASearch, '', AOpts, SynEdit.CaretObj.LineBytePos);
+
+    TestIsCaret(AName+' (Caret): ', AExpX, AExpY);
+  end;
+
+  procedure DoTestRepl(AName: String;
+    AStartX, AStartY: Integer; ASearch, ARepl: String;
+    AExpX, AExpY: Integer; AExpTextRepl: Array of const;
+    AOpts: TSynSearchOptions = [ssoRegExpr, ssoReplaceAll]);
+  begin
+    AName := AName + ' # Replace "' + ASearch + '" => "' + ARepl + '"';
+    if aBackwards then
+      AOpts := AOpts + [ssoBackwards];
+    ReCreateEdit;
+    SetLines(TextLinesSimple2);
+    SetCaret(AStartX, AStartY);
+    SynEdit.SearchReplaceEx(ASearch, ARepl, AOpts, SynEdit.CaretObj.LineBytePos);
+
+    TestIsCaret(AName+' (Caret): ', AExpX, AExpY);
+    TestIsText(AName+' (Text): ', TextLinesSimple2, AExpTextRepl);
+  end;
+
+begin
+  aBackwards := False;
+
+  // Search ^
+  DoTestSearch('Cont',  3, 3,  '^',   1, 4, [ssoRegExpr, ssoFindContinue]);
+  DoTestSearch('',      3, 3,  '^',   1, 4);
+  DoTestSearch('',      1, 4,  '^',   1, 4);
+  DoTestSearch('Cont',  1, 4,  '^',   1, 5, [ssoRegExpr, ssoFindContinue]);
+
+  // Search $
+  DoTestSearch('Cont',  3, 3,  '$',  12, 3, [ssoRegExpr, ssoFindContinue]);
+  DoTestSearch('',      3, 3,  '$',  12, 3);
+// TODO: fTSearch.FindNextOne does not find the end in line 3 (when it is the start point)
+//  DoTestSearch('',     12, 3,  '$',  12, 3);
+  DoTestSearch('Cont', 12, 3,  '$',  12, 4, [ssoRegExpr, ssoFindContinue]);
+
+  // Search ^|$
+  DoTestSearch('',      3, 3,  '^|$',  12, 3);
+//  DoTestSearch('',     12, 3,  '^|$',  12, 3);
+  DoTestSearch('Cont', 12, 3,  '^|$',   1, 4, [ssoRegExpr, ssoFindContinue]);
+  DoTestSearch('',      1, 4,  '^|$',   1, 4);
+  DoTestSearch('Cont',  1, 4,  '^|$',  12, 4, [ssoRegExpr, ssoFindContinue]);
+
+  // Search ()
+  DoTestSearch('',      3, 3,  '()',  3, 3);
+  DoTestSearch('Cont',  3, 3,  '()',  4, 3, [ssoRegExpr, ssoFindContinue]);
+
+  DoTestSearch('UTF ',      3, 2,  '()',  3, 2);
+  DoTestSearch('UTF Cont',  3, 2,  '()',  5, 2, [ssoRegExpr, ssoFindContinue]);
+
+
+  // Replace ^
+  DoTestRepl('',  3, 3,  '^', 'X',    2, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^', 'X',    2, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^', 'X',    2, 5, [5, 'XText'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  DoTestRepl('',  3, 3,  '^', '',    1, 5, []);
+  DoTestRepl('',  1, 4,  '^', '',    1, 5, []);
+  DoTestRepl('',  1, 4,  '^', '',    1, 5, [], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+  // Replace-All ^
+  DoTestRepl('',  3, 3,  '^', 'X',   2, 5, [4, 'Xmno xyz 789', 5, 'XText']);
+  DoTestRepl('',  1, 4,  '^', 'X',   2, 5, [4, 'Xmno xyz 789', 5, 'XText']);
+  DoTestRepl('',  1, 4,  '^', 'X',   2, 5, [5, 'XText'], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+  DoTestRepl('',  3, 3,  '^', '',    1, 4, [], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^', '',    1, 4, [], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^', '',    1, 5, [], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+
+  // Replace $
+  DoTestRepl('',  4, 4,  '$', 'X',  13, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', 'X',  13, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('', 12, 4,  '$', 'X',   6, 5, [5, 'TextX'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  DoTestRepl('',  4, 4,  '$', '',  12, 4, [], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', '',  12, 4, [], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('', 12, 4,  '$', '',   5, 5, [], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  // Replace-All $
+  DoTestRepl('',  4, 4,  '$', 'X',   6, 5, [4, 'mno xyz 789X', 5, 'TextX']);
+//  DoTestRepl('', 12, 4,  '$', 'X',   6, 5, [4, 'mno xyz 789X', 5, 'TextX']);
+  DoTestRepl('', 12, 4,  '$', 'X',   6, 5, [5, 'TextX'], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+  DoTestRepl('',  4, 4,  '$', '',    5, 5, []);
+  DoTestRepl('', 12, 4,  '$', '',    5, 5, []);
+  DoTestRepl('', 12, 4,  '$', '',    5, 5, [], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+
+  // Replace ^|$
+  DoTestRepl('',  1, 4,  '^|$', 'X',   2, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^|$', 'X',  13, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+//  DoTestRepl('', 12, 4,  '^|$', 'X',  13, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('', 12, 4,  '^|$', 'X',   2, 5, [5, 'XText'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  // Replace-All ^|$
+  DoTestRepl('',  1, 4,  '^|$', 'X',   7, 5, [4, 'Xmno xyz 789X', 5, 'XTextX']);
+  DoTestRepl('',  4, 4,  '^|$', 'X',   7, 5, [4, 'mno xyz 789X', 5, 'XTextX']);
+//  DoTestRepl('', 12, 4,  '^|$', 'X',   7, 5, [4, 'mno xyz 789X', 5, 'XTextX']);
+  DoTestRepl('', 12, 4,  '^|$', 'X',   7, 5, [5, 'XTextX'], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+
+  // Replace ()
+  DoTestRepl('',  1,4,  '()', 'X',   2, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1,4,  '()', 'X',   3, 4, [4, 'mXno xyz 789'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+  DoTestRepl('',  2,4,  '()', 'X',   3, 4, [4, 'mXno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  2,4,  '()', 'X',   4, 4, [4, 'mnXo xyz 789'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+//  DoTestRepl('', 12,4,  '()', 'X',  13, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('', 12,4,  '()', 'X',   2, 5, [5, 'XText'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  // Replace-All ()
+//  DoTestRepl('', 11,4,  '()', 'X',  10, 5, [4, 'mno xyz 78X9X', 5, 'XTXeXxXtX']);
+//  DoTestRepl('', 11,4,  '()', '',    5, 5, []);
+// Incorrect results BELOW (expect wrong caret and text, but test that it does not hang
+DoTestRepl('', 11,4,  '()', 'X',   8, 5, [4, 'mno xyz 78X9', 5, 'XTXeXxXt']);
+DoTestRepl('', 11,4,  '()', '',    4, 5, []);
+// << end incorrect result
+
+
+  // ****************************
+  aBackwards := True;
+//exit; // backward reg-ex is not (fully?) implemented
+
+  // Search ^
+  DoTestSearch('Cont',  3, 4,  '^',   1, 4, [ssoRegExpr, ssoFindContinue]);
+  DoTestSearch('',      3, 4,  '^',   1, 4);
+  DoTestSearch('',      1, 4,  '^',   1, 4);
+//  DoTestSearch('Cont',  1, 4,  '^',   1, 3, [ssoRegExpr, ssoFindContinue]);
+
+  // Search $
+//  DoTestSearch('',      4, 4,  '$',  12, 3);
+//  DoTestSearch('Cont',  1, 4,  '$',  12, 3);
+//  DoTestSearch('Cont',  1, 4,  '$',  12, 3, [ssoRegExpr, ssoFindContinue]);
+//  DoTestSearch('',     12, 4,  '$',  12, 4);
+//  DoTestSearch('Cont', 12, 4,  '$',  12, 3, [ssoRegExpr, ssoFindContinue]);
+
+  // Search ^|$
+//  DoTestSearch('',      4, 4,  '^|$',   1, 4);
+//  DoTestSearch('',      1, 4,  '^|$',   1, 4);
+//  DoTestSearch('Cont',  1, 4,  '^|$',  12, 3, [ssoRegExpr, ssoFindContinue]);
+//  DoTestSearch('Cont', 12, 3,  '^|$',  12, 3);
+//  DoTestSearch('Cont', 12, 3,  '^|$',   1, 3, [ssoRegExpr, ssoFindContinue]);
+
+  // Search ()
+//  DoTestSearch('',      3, 3,  '()',  3, 3);
+//  DoTestSearch('Cont',  3, 3,  '()',  2, 3, [ssoRegExpr, ssoFindContinue]);
+
+//  DoTestSearch('UTF ',      3, 2,  '()',  3, 2);
+//  DoTestSearch('UTF Cont',  5, 2,  '()',  3, 2, [ssoRegExpr, ssoFindContinue]);
+
+  // Replace ^  // selection is backward on inserted text
+//  DoTestRepl('',  3, 4,  '^', 'X',    1, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+  DoTestRepl('',  1, 4,  '^', 'X',    1, 4, [4, 'Xmno xyz 789'], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('',  1, 4,  '^', 'X',    1, 3, [5, 'XText'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+//  DoTestRepl('',  3, 4,  '^', '',    1, 4, []);
+//  DoTestRepl('',  1, 4,  '^', '',    1, 4, []);
+//  DoTestRepl('',  1, 4,  '^', '',    1, 3, [], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+  // Replace-All ^
+//  DoTestRepl('',  3, 2,  '^', 'X',   1, 1, [1, 'Xfoo bar some more', 2, 'Xäöü äää äöü']);
+//  DoTestRepl('',  1, 2,  '^', 'X',   1, 1, [1, 'Xfoo bar some more', 2, 'Xäöü äää äöü']);
+//  DoTestRepl('',  1, 2,  '^', 'X',   1, 1, [1, 'Xfoo bar some more'], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+//  DoTestRepl('',  3, 2,  '^', '',   1, 1, []);
+//  DoTestRepl('',  1, 2,  '^', '',   1, 1, []);
+//  DoTestRepl('',  1, 2,  '^', '',   1, 1, [], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+  // Replace $
+//  DoTestRepl('',  4, 5,  '$', 'X',  12, 4, [4, 'mno xyz 789X'], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', 'X',  12, 4, [4, 'mno xyz 789X', 5, 'TextX'], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', 'X',  12, 3, [3, 'abc def 123X'], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+//  DoTestRepl('',  4, 5,  '$', '',  12, 4, [], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', '',  12, 4, [], [ssoRegExpr, ssoReplace]);
+//  DoTestRepl('', 12, 4,  '$', '',  12, 3, [], [ssoRegExpr, ssoReplace, ssoFindContinue]);
+
+  // Replace-All $
+//  DoTestRepl('',  3, 3,  '$', 'X',  18, 1, [1, 'foo bar some moreX', 2, 'äöü äää äöüX']);
+//  DoTestRepl('', 21, 2,  '$', 'X',  18, 1, [1, 'foo bar some moreX', 2, 'äöü äää äöüX']);
+//  DoTestRepl('', 21, 2,  '$', 'X',  18, 1, [1, 'foo bar some moreX'], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+//  DoTestRepl('',  3, 3,  '$', '',  18, 1, []);
+//  DoTestRepl('', 21, 2,  '$', '',  18, 1, []);
+//  DoTestRepl('', 21, 2,  '$', '',  18, 1, [], [ssoRegExpr, ssoReplaceAll, ssoFindContinue]);
+
+
 end;
 
 procedure TTestSynSearch.FindMatchingBracket;
@@ -280,6 +504,7 @@ begin
   TestFindNext('3 lines middle empty',  'a'+LineEnding+LineEnding+'b',  1,1,  1,9,  true,   1,2, 2,4);
   TestFindNext('3 lines middle empty - no match',  'a'+LineEnding+LineEnding+'b',  1,5,  1,9,  False,   1,2, 2,4);
 
+  fTSearch.Free;
 end;
 
 //more ftsearch:

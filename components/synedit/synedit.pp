@@ -7998,7 +7998,7 @@ var
   nFound: integer;
   bBackward, bFromCursor: boolean;
   bPrompt: boolean;
-  bReplace, bReplaceAll, SelIsColumn: boolean;
+  bReplace, bReplaceAll, SelIsColumn, ZeroLen: boolean;
   nAction: TSynReplaceAction;
   CurReplace: string;
   ptFoundStart, ptFoundEnd: TPoint;
@@ -8091,10 +8091,16 @@ begin
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
-      if (not SelIsColumn) or
-         ( (ptFoundStart.Y=ptFoundEnd.Y) and
-           (ptFoundStart.X >= ReplaceBlockSelection.ColumnStartBytePos[ptFoundStart.Y]) and
-           (ptFoundEnd.X   <= ReplaceBlockSelection.ColumnEndBytePos[ptFoundStart.Y])
+      ZeroLen := ptFoundStart = ptFoundEnd;
+      if ( (not SelIsColumn) or
+           ( (ptFoundStart.Y=ptFoundEnd.Y) and
+             (ptFoundStart.X >= ReplaceBlockSelection.ColumnStartBytePos[ptFoundStart.Y]) and
+             (ptFoundEnd.X   <= ReplaceBlockSelection.ColumnEndBytePos[ptFoundStart.Y])
+           )
+         ) and (
+           not( ZeroLen and (ptStart = ptFoundStart) and
+                (ssoFindContinue in AOptions) and (not SelAvail)
+              )
          )
       then
       begin
@@ -8149,6 +8155,8 @@ begin
         if not bReplaceAll then
           exit;
       end;
+      Exclude(AOptions, ssoFindContinue); // ZeroLen will now be handled below
+
       // shrink search range for next search
       if ssoSearchInReplacement in AOptions then begin
         if bBackward then begin
@@ -8161,6 +8169,21 @@ begin
           ptEnd:=ptFoundStart;
         end else begin
           ptStart:=ptFoundEnd;
+        end;
+      end;
+      if ZeroLen then begin
+        FInternalCaret.LineBytePos := ptStart;
+        if bBackward then begin
+          if not FInternalCaret.MoveHoriz(-1) then
+            ptStart := Point(length(FTheLinesView[ptStart.Y - 1]), ptStart.Y - 1)
+          else
+            ptStart := FInternalCaret.LineBytePos;
+        end
+        else begin
+          if not FInternalCaret.MoveHoriz(1) then
+            ptStart := Point(1, ptStart.Y + 1)
+          else
+            ptStart := FInternalCaret.LineBytePos;
         end;
       end;
       //DebugLn(['TCustomSynEdit.SearchReplace FIND NEXT ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd)]);
