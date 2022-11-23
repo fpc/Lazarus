@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-<!-- DialogRes -->
+<!--
+====================================================================
+DialogRes
+====================================================================
+-->
 <module name="DialogRes">
 <short>
 Contains types and constants used to access scalable dialog images.
@@ -9,7 +13,9 @@ Contains types and constants used to access scalable dialog images.
 <descr>
 <p>
 <file>DialogRes.pas</file> contains constants and types used to access 
-scalable images as TIcon or TImage resources used on dialog forms.
+scalable images as TIcon or TImage resources used on dialog forms. This unit 
+registers a handler routine in the initialization section which frees the 
+DialogImages variable in the unit when LCL units have been finalized.
 </p>
 <p>
 <file>DialogRes.pas</file> is part of the Lazarus Component Library 
@@ -25,6 +31,7 @@ scalable images as TIcon or TImage resources used on dialog forms.
 <element name="imglist"/>
 <element name="interfacebase"/>
 <element name="lclintf"/>
+<element name="lclproc"/>
 <element name="sysutils"/>
 <element name="classes"/>
 
