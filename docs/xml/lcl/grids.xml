@@ -797,30 +797,14 @@ Not used in the current LCL implementation.
 </descr>
 <seealso/>
 </element>
-<element name="TItemType.itNormal">
-<short/>
-</element>
-<element name="TItemType.itCell">
-<short/>
-</element>
-<element name="TItemType.itColumn">
-<short/>
-</element>
-<element name="TItemType.itRow">
-<short/>
-</element>
-<element name="TItemType.itFixed">
-<short/>
-</element>
-<element name="TItemType.itFixedColumn">
-<short/>
-</element>
-<element name="TItemType.itFixedRow">
-<short/>
-</element>
-<element name="TItemType.itSelected">
-<short/>
-</element>
+<element name="TItemType.itNormal"/>
+<element name="TItemType.itCell"/>
+<element name="TItemType.itColumn"/>
+<element name="TItemType.itRow"/>
+<element name="TItemType.itFixed"/>
+<element name="TItemType.itFixedColumn"/>
+<element name="TItemType.itFixedRow"/>
+<element name="TItemType.itSelected"/>
 
 <element name="TColumnButtonStyle">
 <short>
@@ -3327,49 +3311,78 @@ Pointer to the column, row, or cell properties freed in the method.
 
 <element name="TVirtualGrid.doNewItem">
 <short>Creates a new item at the location specified by Col and Row.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+This method implements the handler routine assigned to the OnNewItem event 
+handler in the internal class used to maintain row or column values.
+</p>
+</descr>
+<seealso>
+<link id="TVirtualGrid.Create"/>
+<link id="#lazutils.dynamicarray.TPointerPointerArray.OnNewItem">TPointerPointerArray.OnNewItem</link>
+<link id="#lazutils.dynamicarray.TOnNotifyItem">TOnNotifyItem</link>
+</seealso>
 </element>
 <element name="TVirtualGrid.doNewItem.Sender">
-<short/>
+<short>
+Class instance where the new item is created.
+</short>
 </element>
 <element name="TVirtualGrid.doNewItem.Col">
-<short/>
+<short>
+Ordinal column number where the new item is created.
+</short>
 </element>
 <element name="TVirtualGrid.doNewItem.Row">
-<short/>
+<short>
+Ordinal row number where the new item is created.
+</short>
 </element>
 <element name="TVirtualGrid.doNewItem.Item">
-<short/>
+<short>
+Pointer to the item data created in the handler routine.
+</short>
 </element>
 
 <element name="TVirtualGrid.DeleteColRow">
-<short>Removes either a column or a row in the grid.</short>
+<short>Removes a column or a row in the grid.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TVirtualGrid.DeleteColRow.IsColumn">
-<short/>
+<short>
+<b>True</b> if a column is affected in the method. <b>False</b> if a row is 
+affected.
+</short>
 </element>
 <element name="TVirtualGrid.DeleteColRow.Index">
-<short/>
+<short>
+Ordinal position for the column or row deleted in the method.
+</short>
 </element>
 
 <element name="TVirtualGrid.MoveColRow">
 <short>
-Moves either a column or a row using the specified index positions.
+Moves a column or a row using the specified index positions.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TVirtualGrid.MoveColRow.IsColumn">
-<short/>
+<short>
+<b>True</b> if a column is affected in the method. <b>False</b> if a row is 
+affected.
+</short>
 </element>
 <element name="TVirtualGrid.MoveColRow.FromIndex">
-<short/>
+<short>
+Ordinal position for the column or row relocated in the method.
+</short>
 </element>
 <element name="TVirtualGrid.MoveColRow.ToIndex">
-<short/>
+<short>
+New ordinal position for the specified column or row.
+</short>
 </element>
 
 <element name="TVirtualGrid.ExchangeColRow">
@@ -3381,13 +3394,20 @@ position.
 <seealso/>
 </element>
 <element name="TVirtualGrid.ExchangeColRow.IsColumn">
-<short/>
+<short>
+<b>True</b> if columns are affected in the method. <b>False</b> if rows are 
+affected.
+</short>
 </element>
 <element name="TVirtualGrid.ExchangeColRow.Index">
-<short/>
+<short>
+Ordinal position for a column or row swapped in the method.
+</short>
 </element>
 <element name="TVirtualGrid.ExchangeColRow.WithIndex">
-<short/>
+<short>
+Ordinal position for the other column or row swapped in the method.
+</short>
 </element>
 
 <element name="TVirtualGrid.DisposeCell">
@@ -3396,7 +3416,9 @@ position.
 <seealso/>
 </element>
 <element name="TVirtualGrid.DisposeCell.P">
-<short/>
+<short>
+Pointer to the cell properties freed in the method.
+</short>
 </element>
 
 <element name="TVirtualGrid.DisposeColRow">
@@ -3405,7 +3427,9 @@ position.
 <seealso/>
 </element>
 <element name="TVirtualGrid.DisposeColRow.p">
-<short/>
+<short>
+Pointer to the column or row properties freed in the method.
+</short>
 </element>
 
 <element name="TVirtualGrid.IsColumnIndexValid">
@@ -6255,14 +6279,42 @@ TGridColumn instance with the specified title, or Nil when not found.
 The actual grid index for the visible columns in the collection.
 </short>
 <descr>
+<p>
+<var>RealIndex</var> is an <var>Integer</var> function used to get the ordinal 
+position in the collection for the visible column specified in 
+<var>Index</var>. It is provided to maintain compatibility with older versions 
+of the LCL, where Items was used to access column instances with their visible 
+property set to <b>True</b>. Current LCL version do not have this limitation; 
+they access the collection directly.
+</p>
+<p>
+The return value is set to the value in the Index argument when it is a value 
+position in the collection. Otherwise, the return value is set to -1.
+</p>
+<p>
+RealIndex is called from the ColumnIndexFromGridColumn method in TCustomGrid 
+when its Columns collection has been enabled.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TGridColumns.Enabled"/>
+<link id="TGridColumns.Items"/>
+<link id="TGridColumns.VisibleIndex"/>
+<link id="TGridColumns.VisibleCount"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.ColumnIndexFromGridColumn"/>
+</seealso>
 </element>
 <element name="TGridColumns.RealIndex.Result">
-<short/>
+<short>
+Ordinal position in the column for the specified visible column number, or -1 
+when not a valid position in the collection.
+</short>
 </element>
 <element name="TGridColumns.RealIndex.Index">
-<short/>
+<short>
+Position for the visible column requested in the method.
+</short>
 </element>
 
 <element name="TGridColumns.IndexOf">
@@ -6483,8 +6535,8 @@ Stores size and movement data for columns or rows in a grid.
 <p>
 <var>TSizingRec</var> is a record type used to store size and positioning 
 information for columns or rows in TCustomGrid and descendent classes. 
-TSizingRec is the type used for an internal member in TCustomGrid used in 
-method that perform column or row sizing operations.
+TSizingRec is the type used for an internal member in TCustomGrid which is 
+used in methods that perform column or row sizing operations.
 </p>
 </descr>
 <seealso>
@@ -6494,22 +6546,34 @@ method that perform column or row sizing operations.
 </seealso>
 </element>
 <element name="TSizingRec.Index">
-<short/>
+<short>
+Column or row number for the sizing information.
+</short>
 </element>
 <element name="TSizingRec.OffIni">
-<short/>
+<short>
+Initial offset for the sizing information.
+</short>
 </element>
 <element name="TSizingRec.OffEnd">
-<short/>
+<short>
+Final offset included in the sizing information.
+</short>
 </element>
 <element name="TSizingRec.DeltaOff">
-<short/>
+<short>
+Delta change (in pixels) for the column offsets in a resizing operation.
+</short>
 </element>
 <element name="TSizingRec.PrevLine">
-<short/>
+<short>
+<b>True</b> if the row in PrevOffset is updated in a row sizing operation.
+</short>
 </element>
 <element name="TSizingRec.PrevOffset">
-<short/>
+<short>
+Offset to a row affected in a row sizing operation.
+</short>
 </element>
 
 <element name="TGridDataCache">
@@ -7025,6 +7089,7 @@ TStringGrid
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TCustomGrid.FAlternateColor"/>
 <element name="TCustomGrid.FAutoAdvance"/>
 <element name="TCustomGrid.FAutoEdit"/>
@@ -7364,21 +7429,14 @@ Calls TopLeftChanged (when needed) and VisualChange to cause the control to be r
 </element>
 <element name="TCustomGrid.CheckTopLeft.Result">
 <short>
-<b>True</b> if the top left cell was different than the cached grid value.
+<b>True</b> if the top left cell was different than the cached value for the 
+grid.
 </short>
 </element>
-<element name="TCustomGrid.CheckTopLeft.aCol">
-<short/>
-</element>
-<element name="TCustomGrid.CheckTopLeft.aRow">
-<short/>
-</element>
-<element name="TCustomGrid.CheckTopLeft.CheckCols">
-<short/>
-</element>
-<element name="TCustomGrid.CheckTopLeft.CheckRows">
-<short/>
-</element>
+<element name="TCustomGrid.CheckTopLeft.aCol"/>
+<element name="TCustomGrid.CheckTopLeft.aRow"/>
+<element name="TCustomGrid.CheckTopLeft.CheckCols"/>
+<element name="TCustomGrid.CheckTopLeft.CheckRows"/>
 
 <element name="TCustomGrid.GetQuickColRow">
 <short>Gets the value for the ColRow property.</short>
@@ -7666,15 +7724,9 @@ size.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomGrid.doRowSizing.Result">
-<short/>
-</element>
-<element name="TCustomGrid.doRowSizing.X">
-<short/>
-</element>
-<element name="TCustomGrid.doRowSizing.Y">
-<short/>
-</element>
+<element name="TCustomGrid.doRowSizing.Result"/>
+<element name="TCustomGrid.doRowSizing.X"/>
+<element name="TCustomGrid.doRowSizing.Y"/>
 
 <element name="TCustomGrid.doColMoving">
 <short>
@@ -8365,9 +8417,7 @@ Used as the storage specifier for the Columns property.
 <link id="TCustomGrid.GetGridDrawState"/>
 </seealso>
 </element>
-<element name="TCustomGrid.IsPushCellActive.Result">
-<short/>
-</element>
+<element name="TCustomGrid.IsPushCellActive.Result"/>
 
 <element name="TCustomGrid.LoadColumns">
 <short>
@@ -8404,7 +8454,9 @@ and assigned to the TBitmap return value.
 </element>
 
 <element name="TCustomGrid.LoadSub">
-<short/>
+<short>
+Loads grid content from the specified XML configuration file.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -8509,7 +8561,10 @@ ResetPushedCell is called from methods like <var>HeadersMouseMove</var> and
 </seealso>
 </element>
 <element name="TCustomGrid.ResetPushedCell.ResetColRow">
-<short/>
+<short>
+<b>True</b> (the default value) if PushedCell is reset to an undefined column 
+and row (-1, -1).
+</short>
 </element>
 
 <element name="TCustomGrid.RestoreCursor">
@@ -8533,7 +8588,10 @@ configuration file.
 <short>XML configuration file where the values are written.</short>
 </element>
 <element name="TCustomGrid.SaveColumns.Version">
-<short/>
+<short>
+Version number for the storage format (tags, attributes) used in the XML 
+configuration file.
+</short>
 </element>
 
 <element name="TCustomGrid.ScrollToCell">
@@ -8584,18 +8642,10 @@ for the control.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomGrid.ScrollGrid.Result">
-<short/>
-</element>
-<element name="TCustomGrid.ScrollGrid.Relative">
-<short/>
-</element>
-<element name="TCustomGrid.ScrollGrid.DCol">
-<short/>
-</element>
-<element name="TCustomGrid.ScrollGrid.DRow">
-<short/>
-</element>
+<element name="TCustomGrid.ScrollGrid.Result"/>
+<element name="TCustomGrid.ScrollGrid.Relative"/>
+<element name="TCustomGrid.ScrollGrid.DCol"/>
+<element name="TCustomGrid.ScrollGrid.DRow"/>
 
 <element name="TCustomGrid.SetCol">
 <short>Sets the value in the Col property.</short>
@@ -8887,15 +8937,9 @@ Sets the value for the indexed cursor states in the grid control.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomGrid.StartColSizing.Result">
-<short/>
-</element>
-<element name="TCustomGrid.StartColSizing.X">
-<short/>
-</element>
-<element name="TCustomGrid.StartColSizing.Y">
-<short/>
-</element>
+<element name="TCustomGrid.StartColSizing.Result"/>
+<element name="TCustomGrid.StartColSizing.X"/>
+<element name="TCustomGrid.StartColSizing.Y"/>
 
 <element name="TCustomGrid.ChangeCursor">
 <short>Changes the cursor shape to the specified value.</short>
@@ -8917,19 +8961,15 @@ Indicates if the existing cursor shape is stored for later reuse.
 </element>
 
 <element name="TCustomGrid.TrySmoothScrollBy">
-<short/>
+<short>
+Scroll the grid origin by the specified relative columns and rows as needed.
+</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomGrid.TrySmoothScrollBy.Result">
-<short/>
-</element>
-<element name="TCustomGrid.TrySmoothScrollBy.aColDelta">
-<short/>
-</element>
-<element name="TCustomGrid.TrySmoothScrollBy.aRowDelta">
-<short/>
-</element>
+<element name="TCustomGrid.TrySmoothScrollBy.Result"/>
+<element name="TCustomGrid.TrySmoothScrollBy.aColDelta"/>
+<element name="TCustomGrid.TrySmoothScrollBy.aRowDelta"/>
 
 <element name="TCustomGrid.TryScrollTo">
 <short>
@@ -8988,7 +9028,6 @@ changed.
 <seealso/>
 </element>
 
-<!-- private -->
 <element name="TCustomGrid.WriteColumns">
 <short>
 Writes the Columns collection using the specified TWriter instance.
@@ -9067,6 +9106,7 @@ Msg.
 <short>Lazarus message processed in the method.</short>
 </element>
 
+<!-- protected -->
 <element name="TCustomGrid.fGridState">
 <short>
 Member with the current state for the grid (edited, updated, etc.).
@@ -9397,21 +9437,11 @@ Not used in the current implementation.
 <note>Not currently used in the grid implementation.</note>
 </notes>
 </element>
-<element name="TCustomGrid.BoxRect.Result">
-<short/>
-</element>
-<element name="TCustomGrid.BoxRect.ALeft">
-<short/>
-</element>
-<element name="TCustomGrid.BoxRect.ATop">
-<short/>
-</element>
-<element name="TCustomGrid.BoxRect.ARight">
-<short/>
-</element>
-<element name="TCustomGrid.BoxRect.ABottom">
-<short/>
-</element>
+<element name="TCustomGrid.BoxRect.Result"/>
+<element name="TCustomGrid.BoxRect.ALeft"/>
+<element name="TCustomGrid.BoxRect.ATop"/>
+<element name="TCustomGrid.BoxRect.ARight"/>
+<element name="TCustomGrid.BoxRect.ABottom"/>
 
 <element name="TCustomGrid.CacheMouseDown">
 <short>
@@ -9473,15 +9503,9 @@ in the current LCL version.
 </descr>
 <seealso/>
 </element>
-<element name="TCustomGrid.CalcCellExtent.aCol">
-<short/>
-</element>
-<element name="TCustomGrid.CalcCellExtent.aRow">
-<short/>
-</element>
-<element name="TCustomGrid.CalcCellExtent.aRect">
-<short/>
-</element>
+<element name="TCustomGrid.CalcCellExtent.aCol"/>
+<element name="TCustomGrid.CalcCellExtent.aRow"/>
+<element name="TCustomGrid.CalcCellExtent.aRect"/>
 
 <element name="TCustomGrid.CalcFocusRect">
 <short>
@@ -9526,7 +9550,9 @@ CalcFocusRect is called from the <var>DrawRow</var> and
 </seealso>
 </element>
 <element name="TCustomGrid.CalcFocusRect.ARect">
-<short/>
+<short>
+TRect instance where the adjusted row or cell selection is stored.
+</short>
 </element>
 
 <element name="TCustomGrid.CalcMaxTopLeft">
@@ -10157,7 +10183,8 @@ property.
 
 <element name="TCustomGrid.CheckNewCachedSizes">
 <short>
-Checks the values for cached column sizes when have been reset in the grid.
+Checks the values for cached column sizes when they have been reset in the 
+grid.
 </short>
 <descr>
 <p>
@@ -10168,7 +10195,9 @@ Checks the values for cached column sizes when have been reset in the grid.
 <seealso/>
 </element>
 <element name="TCustomGrid.CheckNewCachedSizes.AGCache">
-<short/>
+<short>
+Grid cache examined in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.CreateWnd">
@@ -12105,14 +12134,24 @@ Sets the mask and value for a visible cell editor in the grid control.
 Returns <b>True</b> if the Editor is able to accept the specified UTF-8 
 character.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Always returns <b>True</b> in TCustomGrid. It is overridden in descendent classes like TCustomDbGrid.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.dbgrids.TCustomDBGrid.EditorCanAcceptKey">TCustomDBGrid.EditorCanAcceptKey</link>
+</seealso>
 </element>
 <element name="TCustomGrid.EditorCanAcceptKey.Result">
-<short/>
+<short>
+<b>True</b> the active cell editor can accept the specified UTF-8 character.
+</short>
 </element>
 <element name="TCustomGrid.EditorCanAcceptKey.ch">
-<short/>
+<short>
+UTF-8 character examined in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.EditorIsReadOnly">
@@ -12875,13 +12914,20 @@ layout used in a column when Columns are Enabled.
 Gets the default setting for the ReadOnly flag in the specified column number.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.dbgrids.TCustomDBGrid.GetDefaultColumnReadOnly">TCustomDBGrid.GetDefaultColumnReadOnly</link>
+<link id="#fcl.db.TField.ReadOnly">TField.ReadOnly</link>
+</seealso>
 </element>
 <element name="TCustomGrid.GetDefaultColumnReadOnly.Result">
-<short/>
+<short>
+Always returns <b>False</b> in TCustomGrid; overridden in descendent classes.
+</short>
 </element>
 <element name="TCustomGrid.GetDefaultColumnReadOnly.Column">
-<short/>
+<short>
+Ordinal position for the column definition examined in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.GetDefaultColumnTitle">
@@ -13148,26 +13194,61 @@ Gets the values for the scroll bar visibility flags in the control.
 
 <element name="TCustomGrid.GetSBRanges">
 <short>Gets the range values for the scroll bars when visible.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the CalcScrollbarsRange method when the grid has been scrolled or 
+when a size value in ColWidths has been changed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.CalcScrollbarsRange"/>
+<link id="TCustomGrid.ColWidths"/>
+<link id="TCustomGrid.ScrollBy"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetSBRanges.HsbVisible">
-<short/>
+<short>
+<b>True</b> if the horizontal scroll bar is visible and updated in the method.
+</short>
 </element>
 <element name="TCustomGrid.GetSBRanges.VsbVisible">
-<short/>
+<short>
+<b>True</b> if the vertical scroll bar is visible and updated in the method.
+</short>
 </element>
 <element name="TCustomGrid.GetSBRanges.HsbRange">
-<short/>
+<short>
+Returns the horizontal scroll bar range, or 0 when the scroll bar is not 
+visible.
+</short>
 </element>
 <element name="TCustomGrid.GetSBRanges.VsbRange">
-<short/>
+<short>
+Returns the vertical scroll bar range, or 0 when the scroll bar is not 
+visible.
+</short>
 </element>
 <element name="TCustomGrid.GetSBRanges.HsbPage">
-<short/>
+<short>
+Returns the page size for the horizontal scroll bar (ClientWidth).
+</short>
 </element>
 <element name="TCustomGrid.GetSBRanges.VsbPage">
-<short/>
+<short>
+Returns the page size for the vertical scroll bar (ClientHeight).
+</short>
+</element>
+<element name="TCustomGrid.GetSBRanges.HsbPos">
+<short>
+Returns the position for the thumb bar on the horizontal scroll bar, or 0 if 
+the scroll bar is not visible.
+</short>
+</element>
+<element name="TCustomGrid.GetSBRanges.VsbPos">
+<short>
+Returns the position for the thumb bar on the vertical scroll bar, or 0 if the 
+scroll bar is not visible.
+</short>
 </element>
 
 <element name="TCustomGrid.GetSelectedState">
@@ -13175,8 +13256,21 @@ Gets the values for the scroll bar visibility flags in the control.
 Gets the effective selected state using the control Options and the grid draw 
 state.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the PrepareCanvas method when fixed cells are drawn, or when 
+DefaultDrawing is enabled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.PrepareCanvas"/>
+<link id="TCustomGrid.DefaultDrawing"/>
+<link id="TCustomGrid.Options"/>
+<link id="TGridOption"/>
+<link id="TGridOptions"/>
+<link id="TGridDrawState"/>
+<link id="TGridState"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetSelectedState.AState">
 <short>Grid draw state values examined in the method.</short>
@@ -13191,11 +13285,20 @@ state.
 <short>Gets the edit mask for the specified cell.</short>
 <descr>
 <p>
-Always returns an empty string ('') in TCustomGrid. It is overridden in 
-descendent classes.
+<var>GetEditMask</var> provides the mask posted in a grid message to an 
+active cell Editor control. It occurs immediately before the grid message that 
+posts the cell value to the editor control.
+</p>
+<p>
+GetEditMask always returns an empty string ('') in TCustomGrid. It is 
+overridden in descendent classes.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.Editor"/>
+<link id="TCustomGrid.EditorDoSetValue"/>
+<link id="TCustomDrawGrid.GetEditMask"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetEditMask.Result">
 <short>Edit mask for the specified cell.</short>
@@ -13282,8 +13385,32 @@ GetFirstVisibleColumn is called from the KeyDown method when handling
 <short>
 Gets the row number for the first visible non-fixed row in the grid.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetFirstVisibleRow</var> is an <var>Integer</var> function used to get 
+the row number for the first visible non-fixed row in the grid. A visible row 
+is one which starts after the fixed rows specified in <var>FixedRows</var> and 
+has a non-zero height for the row in <var>RowHeights</var>.
+</p>
+<p>
+The return value contains the row number (zero-based) for the row matching the 
+criteria. If a non-fixed row with a non-zero height is not found, the return 
+value is set to <var>RowCount</var>.
+</p>
+<p>
+GetFirstVisibleRow is called from the KeyDown method when handling <b>Tab</b> 
+key navigation for the grid control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.FixedRows"/>
+<link id="TCustomGrid.RowCount"/>
+<link id="TCustomGrid.RowHeights"/>
+<link id="TCustomGrid.GetLastVisibleRow"/>
+<link id="TCustomGrid.GetFirstVisibleColumn"/>
+<link id="TCustomGrid.GetLastVisibleColumn"/>
+<link id="TCustomGrid.KeyDown"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetFirstVisibleRow.Result">
 <short>Row number for the first visible row.</short>
@@ -13293,8 +13420,29 @@ Gets the row number for the first visible non-fixed row in the grid.
 <short>
 Gets the column number for the last visible non-fixed column in the grid.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetLastVisibleColumn</var> is an <var>Integer</var> function used to get 
+the column number for the last visible non-fixed column in the grid. A visible 
+column is one which has a non-zero width for the column in 
+<var>ColWidths</var>.
+</p>
+<p>
+The return value contains the column number (zero-based) for the column 
+matching the criteria. If a column with a non-zero width is not found, the 
+return value contains -1.
+</p>
+<p>
+GetLastVisibleColumn is called from the KeyDown method when handling 
+<b>Tab</b> key navigation for the grid control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.ColCount"/>
+<link id="TCustomGrid.ColWidths"/>
+<link id="TCustomGrid.KeyDown"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetLastVisibleColumn.Result">
 <short>Position for the last visible column in the grid.</short>
@@ -13304,8 +13452,31 @@ Gets the column number for the last visible non-fixed column in the grid.
 <short>
 Gets the row number for the last visible non-fixed row in the grid.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetLastVisibleRow</var> is an <var>Integer</var> function used to get the 
+row number for the last visible non-fixed row in the grid. A visible row is 
+one which has a non-zero height for the row in <var>RowHeights</var>.
+</p>
+<p>
+The return value contains the row number (zero-based) for the row matching the 
+criteria. If a row with a non-zero height is not found, the return value 
+contains -1.
+</p>
+<p>
+GetLastVisibleRow is called from the KeyDown method when handling <b>Tab</b> 
+key navigation for the grid control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.FixedRows"/>
+<link id="TCustomGrid.RowCount"/>
+<link id="TCustomGrid.RowHeights"/>
+<link id="TCustomGrid.GetFirstVisibleRow"/>
+<link id="TCustomGrid.GetFirstVisibleColumn"/>
+<link id="TCustomGrid.GetLastVisibleColumn"/>
+<link id="TCustomGrid.KeyDown"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetLastVisibleRow.Result">
 <short>Row number for the last visible non-fixed row.</short>
@@ -13338,7 +13509,12 @@ GetTitleShowPrefix is called from the <var>PrepareCanvas</var> method when
 drawing a cell in the fixed rows for the grid.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.PrepareCanvas"/>
+<link id="TCustomGrid.DrawCell"/>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.graphics.TTextStyle">TTextStyle</link>
+</seealso>
 </element>
 <element name="TCustomGrid.GetTitleShowPrefix.Result">
 <short><b>True</b> when the TGridColumn is configured to use prefixes.</short>
@@ -13352,8 +13528,16 @@ drawing a cell in the fixed rows for the grid.
 Gets a TPoint instance with the top and left coordinates for the first 
 visible, non-fixed row in the grid control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+GetPxTopLeft is used to implement scrolling operations in the WMHScroll and 
+WMVScroll window message handlers.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.WMHScroll"/>
+<link id="TCustomGrid.WMVScroll"/>
+</seealso>
 </element>
 <element name="TCustomGrid.GetPxTopLeft.Result">
 <short>TPoint instance with the coordinates for the row.</short>
@@ -18677,23 +18861,48 @@ assigned.
 
 <element name="TCustomGrid.FlipRect">
 <short>
-Flips coordinates in the cell rectangle when BiDiMode or RTL alignment is 
-used.
+Flips coordinates for the specified cell rectangle when BiDiMode or RTL 
+alignment is used.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>FlipRect</var> causes the control display area in <var>ARect</var> to be 
+aligned to the opposite horizontal edge of the parent control when 
+UseRightToLeftAlignment is enabled. Values in the Left and Right members in 
+ARect are modified to reflect the new position / alignment.
+</p>
+<p>
+FlipRect calls the BidiFlipRect routine to reposition the control on the 
+parent rectangle.
+</p>
+<p>
+The return value is a <var>TRect</var> instance with modified Left and Right 
+coordinates for the repositioned control.
+</p>
+<p>
+No actions are performed in the method when UseRightToLeftAlignment is set to 
+<b>False</b>, and the return value is set to ARect.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.BidiFlipRect">BidiFlipRect</link>
+</seealso>
 </element>
 <element name="TCustomGrid.FlipRect.Result">
-<short/>
+<short>
+TRect instance with the updated display area for the control.
+</short>
 </element>
 <element name="TCustomGrid.FlipRect.ARect">
-<short/>
+<short>
+Control display area examined and potentially updated in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.FlipPoint">
 <short>
-Flips cell coordinates in the specified point when BiDiMode or RTL alignment 
-is used.
+Flips cell coordinates for the specified point on the parent rectangle when 
+BiDiMode or RTL alignment is used.
 </short>
 <descr/>
 <seealso/>
@@ -18780,6 +18989,7 @@ Event handler signalled when a column is loaded in the LoadColumns method.
 </seealso>
 </element>
 
+<!-- public -->
 <element name="TCustomGrid.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -18799,7 +19009,9 @@ be fully instantiated it is called.
 </seealso>
 </element>
 <element name="TCustomGrid.Create.AOwner">
-<short/>
+<short>
+Owner of the class instance.
+</short>
 </element>
 
 <element name="TCustomGrid.Destroy">
@@ -20181,6 +20393,7 @@ control.
 </seealso>
 </element>
 
+<!-- protected -->
 <element name="TCustomGrid.IMEStartComposition">
 <short>Handles IME Composition start messages.</short>
 <descr>
@@ -20402,6 +20615,7 @@ TStringGrid
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TCustomDrawGrid.FEditorRow"/>
 <element name="TCustomDrawGrid.FEditorCol"/>
 <element name="TCustomDrawGrid.FOnColRowDeleted"/>
@@ -20472,6 +20686,7 @@ Posts a grid message to get the value from the Editor control in a cell.
 <short>Row number for the cell.</short>
 </element>
 
+<!-- protected -->
 <element name="TCustomDrawGrid.FGrid">
 <short>Contains the virtual grid for the control.</short>
 </element>
@@ -20553,10 +20768,15 @@ list of column widths, and updating the cached grid information in
 </seealso>
 </element>
 <element name="TCustomDrawGrid.ColRowDeleted.IsColumn">
-<short/>
+<short>
+<b>True</b> when a column is affected in the method. <b>False</b> when a row 
+is affected.
+</short>
 </element>
 <element name="TCustomDrawGrid.ColRowDeleted.Index">
-<short/>
+<short>
+Ordinal position for the column or row deleted in the method.
+</short>
 </element>
 
 <element name="TCustomDrawGrid.ColRowExchanged">
@@ -20707,7 +20927,9 @@ Creates and returns the internal virtual grid instance for the control.
 </seealso>
 </element>
 <element name="TCustomDrawGrid.CreateVirtualGrid.Result">
-<short/>
+<short>
+TVirtualGrid instance created for the control.
+</short>
 </element>
 
 <element name="TCustomDrawGrid.DrawCell">
@@ -21495,6 +21717,7 @@ Use <var>OnGetCheckboxState</var> to get the state for the check box cell.
 <seealso/>
 </element>
 
+<!-- public -->
 <element name="TCustomDrawGrid.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -22159,7 +22382,10 @@ TStringGrid
 </seealso>
 </element>
 
+<!-- public -->
 <element name="TDrawGrid.InplaceEditor" link="#lcl.grids.TCustomGrid.InplaceEditor"/>
+
+<!-- published -->
 <element name="TDrawGrid.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TDrawGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TDrawGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
@@ -22326,6 +22552,7 @@ instance.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TStringGridStrings.FAddedCount"/>
 <element name="TStringGridStrings.FGrid"/>
 <element name="TStringGridStrings.FIsCol"/>
@@ -22358,6 +22585,7 @@ Converts an index position to line and column numbers for the Cells in a grid.
 <short/>
 </element>
 
+<!-- protected -->
 <element name="TStringGridStrings.Get">
 <short>Gets the string at the specified index position.</short>
 <descr/>
@@ -22428,6 +22656,7 @@ Converts an index position to line and column numbers for the Cells in a grid.
 <short>New value for the indexed property.</short>
 </element>
 
+<!-- public -->
 <element name="TStringGridStrings.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -22534,8 +22763,9 @@ Ordinal position for the value to be removed; not used in the method.
 <short>Inserts a value in the class instance.</short>
 <descr>
 <p>
-Raises an <var>EGridException</var> exception with the message <b>'Cannot 
-insert value'</b>.
+Insert is an overridden method in TStringGridStrings. It prevents an insert 
+using the class instance, and raises an <var>EGridException</var> exception 
+with the message <b>'Cannot insert value'</b>.
 </p>
 </descr>
 <seealso>
@@ -22543,10 +22773,14 @@ insert value'</b>.
 </seealso>
 </element>
 <element name="TStringGridStrings.Insert.Index">
-<short/>
+<short>
+Ordinal position where the string value would be inserted.
+</short>
 </element>
 <element name="TStringGridStrings.Insert.S">
-<short/>
+<short>
+String value that would be inserted in the method.
+</short>
 </element>
 
 <element name="TCustomStringGrid">
@@ -22596,6 +22830,7 @@ TStringGrid
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TCustomStringGrid.FModified"/>
 <element name="TCustomStringGrid.FColsMap"/>
 <element name="TCustomStringGrid.FRowsMap"/>
@@ -22663,24 +22898,61 @@ Gets the values in the specified column number as a TStrings instance.
 </element>
 
 <element name="TCustomStringGrid.MapGetColsRows">
-<short></short>
-<descr/>
-<seealso/>
-<notes><note>?</note></notes>
+<short>
+Gets the values for the specified column or row number.
+</short>
+<descr>
+<p>
+<var>IsCols</var> indicates whether column or row values are accessed and 
+returned in the method. When set to <b>True</b>, values for each of the rows 
+in the specified column number are returned as the result. Otherwise, values 
+for each of the columns  in the specified row number are returned as the 
+result.
+</p>
+<p>
+<var>Index</var> is the ordinal position in the grid with the column or row 
+values returned in the method.
+</p>
+<p>
+<var>AMap</var> is a TMap instance with the values returned in the TStrings 
+result for the function. If a value has not been assigned to AMap, a new TMap 
+instance is created to store the TStringGridStrings instance used to represent 
+the specified column or row number. 
+</p>
+<p>
+The HasID method in the map is called to check for an existing node in the 
+map. The GetData method in the map is called to store the map data in the 
+return value. If the map does not contain the value in Index, a new 
+TStringGridStrings instance is created for the map, and assigned as the return 
+value.
+</p>
+<p>
+MapGetColsRows is used to implement the read access specifiers for the Cols 
+and Rows properties.
+</p>
+</descr>
+<seealso>
+<link id="TCustomStringGrid.Cols"/>
+<link id="TCustomStringGrid.GetCols"/>
+<link id="TCustomStringGrid.Rows"/>
+<link id="TCustomStringGrid.GetRows"/>
+<link id="TStringGridStrings"/>
+<link id="#lazutils.maps.TMap">TMap</link>
+</seealso>
 </element>
 <element name="TCustomStringGrid.MapGetColsRows.Result">
 <short>
-TStrings instance with the values for the specified column or row.
+TStrings instance with the values in the specified column or row.
 </short>
 </element>
 <element name="TCustomStringGrid.MapGetColsRows.IsCols">
 <short><b>True</b> when columns are returned, <b>False</b> for rows.</short>
 </element>
 <element name="TCustomStringGrid.MapGetColsRows.Index">
-<short>Column or row number for values retrieved in the method.</short>
+<short>Column or row number for the values retrieved in the method.</short>
 </element>
 <element name="TCustomStringGrid.MapGetColsRows.AMap">
-<short>Map instance used in the method.</short>
+<short>Map instance used (or created) in the method.</short>
 </element>
 
 <element name="TCustomStringGrid.ReadCells">
@@ -22748,7 +23020,10 @@ instance.
 <seealso/>
 </element>
 <element name="TCustomStringGrid.WriteCells.Writer">
-<short/>
+<short>
+TWriter instance used to write values to the LCL resource stream for the 
+component.
+</short>
 </element>
 
 <element name="TCustomStringGrid.CopyCellRectToClipboard">
@@ -22770,6 +23045,7 @@ translated into HTML-safe tags or HTML character entities.
 <short>Cell selection rectangle with values copied in the method.</short>
 </element>
 
+<!-- protected -->
 <element name="TCustomStringGrid.AssignTo">
 <short>
 Assigns values from the current class instance to the target class instance.
@@ -22842,15 +23118,9 @@ CalcCellExtent is marked as deprecated in the ancestor class.
 <link id="#lcl.grids.TCustomGrid.CalcCellExtent">TCustomGrid.CalcCellExtent</link>
 </seealso>
 </element>
-<element name="TCustomStringGrid.CalcCellExtent.ACol">
-<short/>
-</element>
-<element name="TCustomStringGrid.CalcCellExtent.ARow">
-<short/>
-</element>
-<element name="TCustomStringGrid.CalcCellExtent.ARect">
-<short/>
-</element>
+<element name="TCustomStringGrid.CalcCellExtent.ACol"/>
+<element name="TCustomStringGrid.CalcCellExtent.ARow"/>
+<element name="TCustomStringGrid.CalcCellExtent.ARect"/>
 
 <element name="TCustomStringGrid.DefineProperties">
 <short>
@@ -23300,6 +23570,7 @@ DoCellProcess method when assigned.
 <seealso/>
 </element>
 
+<!-- public -->
 <element name="TCustomStringGrid.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -24166,9 +24437,14 @@ TStringGrid
 </seealso>
 </element>
 
+<!-- protected -->
 <element name="TStringGrid.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+
+<!-- public -->
 <element name="TStringGrid.Modified" link="#lcl.grids.TCustomStringGrid.Modified"/>
 <element name="TStringGrid.InplaceEditor" link="#lcl.grids.TCustomGrid.InplaceEditor"/>
+
+<!-- published -->
 <element name="TStringGrid.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TStringGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TStringGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
