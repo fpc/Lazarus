@@ -5,7 +5,7 @@ unit DialogRes;
 interface
 
 uses
-  LCLType, Graphics, Themes, Controls, ImgList, InterfaceBase, LCLIntf, SysUtils, Classes;
+  LCLType, Graphics, Themes, Controls, ImgList, InterfaceBase, LCLIntf, LCLProc, SysUtils, Classes;
 
 type
   TDialogImage = idDialogWarning..idDialogShield;
@@ -107,8 +107,13 @@ begin
   fDialogIndexes[AIndex] := GetImageIndex(DialogResName[AIndex]);
 end;
 
-finalization
+procedure InterfaceFinal;
+begin
   FreeAndNil(DialogImages);
+end;
+
+initialization
+  RegisterInterfaceFinalizationHandler(@InterfaceFinal);
 
 end.
 
