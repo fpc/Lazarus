@@ -4056,7 +4056,10 @@ end;
 
 function TStringListUTF8Fast.DoCompareText(const s1, s2: string): PtrInt;
 begin
-  Result:=UTF8CompareLatinTextFast(s1, s2);
+  if CaseSensitive then
+    Result := Utf8CompareStr(s1, s2)
+  else
+    Result:=UTF8CompareLatinTextFast(s1, s2);
 end;
 
 
