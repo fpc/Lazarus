@@ -632,6 +632,7 @@ type
     FText: TTranslateString;
     FTitle: TTranslateString;
     FVerificationText: TTranslateString;
+    FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
     procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
       var ACanClose: Boolean);
@@ -663,6 +664,7 @@ type
     property Text: TTranslateString read FText write FText;
     property Title: TTranslateString read FTitle write FTitle;
     property VerificationText: TTranslateString read FVerificationText write FVerificationText;
+    property Width: Integer read FWidth write FWidth default 0;
     property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
   end;
 
@@ -682,6 +684,7 @@ type
     property Text;
     property Title;
     property VerificationText;
+    property Width;
     property OnButtonClicked;
   end;
 

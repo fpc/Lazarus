@@ -240,7 +240,7 @@ begin
   TaskDlg.Verify := VerificationText;
 
   ButtonID := TaskDlg.Execute(TD_COMMONBUTTONS(CommonButtons), DefBtn, TD_FLAGS(Flags), TF_DIALOGICON(MainIcon), TF_FOOTERICON(FooterIcon),
-    DefRB, 0, ParentWnd, tfForceNonNative in Flags, False, @DoOnButtonClickedHandler);
+    DefRB, FWidth, ParentWnd, tfForceNonNative in Flags, False, @DoOnButtonClickedHandler);
   Result := ButtonID>=0;
   FModalResult := ButtonIDToModalResult(ButtonID);
 

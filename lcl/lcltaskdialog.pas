@@ -783,7 +783,8 @@ begin
   {$ifdef MSWINDOWS}
   if (WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_YES) and
     Assigned(TaskDialogIndirect) and not aNonNative and
-     not (tdfQuery in aFlags) and (Selection='') then begin
+     not (tdfQuery in aFlags) and (Selection='') then
+  begin
     Dialog.Emulated := False;
     // use Vista/Seven TaskDialog implementation (not tdfQuery nor Selection)
     FillChar(Config{%H-},sizeof(Config),0);
@@ -845,13 +846,14 @@ begin
     FontHeight := Dialog.Form.Font.Height;
     if FontHeight = 0 then
       FontHeight := Screen.SystemFont.Height;
-    if aWidth=0 then begin
+    if aWidth<=0 then begin
       aWidth := Dialog.Form.Canvas.TextWidth(Inst);
       if (aWidth>300) or (Dialog.Form.Canvas.TextWidth(Content)>300) or
          (length(Buttons)>40) then
         aWidth := 480 else
         aWidth := 420;
-    end;
+    end else
+      if aWidth<120 then aWidth := 120;
     Dialog.Form.ClientWidth := aWidth;
     Dialog.Form.Height := 200;
     Dialog.Form.Caption := Title;
