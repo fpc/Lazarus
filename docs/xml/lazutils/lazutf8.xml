@@ -2414,15 +2414,26 @@ instance.
 
 <element name="TStringListUTF8Fast.DoCompareText">
 <short>
-Compares UTF-8-encoded values using UTF8CompareLatinTextFast.
+Compares UTF-8-encoded values using UTF8CompareLatinTextFast when case 
+sensitivity is not enabled.
 </short>
 <descr>
 <p>
-Calls the UTF8CompareLatinTextFast routine to compare the values in s1 and s2. The return value is a pointer to an Integer with the relative order for the compared values. &lt;0 indicates s1 comes before s2. 0 indicated the compared values are the same. &gt;0 indicates s2 comes after s1.
+Calls the UTF8CompareLatinTextFast routine to compare the values in 
+<var>s1</var> and <var>s2</var> when the CaseSensitive property is set to 
+<b>False</b>. Otherwise, the Utf8CompareStr routine is called to compare the 
+string values.
+</p>
+<p>
+The return value is a pointer to an Integer with the relative order for the 
+compared values. &lt;0 indicates s1 comes before s2. 0 indicated the compared 
+values are the same. &gt;0 indicates s2 comes after s1.
 </p>
 </descr>
 <seealso>
 <link id="UTF8CompareLatinTextFast"/>
+<link id="UTF8CompareStr"/>
+<link id="#rtl.classes.TStringList.CaseSensitive">TStringList.CaseSensitive</link>
 </seealso>
 </element>
 <element name="TStringListUTF8Fast.DoCompareText.Result">
