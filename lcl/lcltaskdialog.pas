@@ -129,7 +129,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ctypes,
   {$ENDIF}
-  Classes, SysUtils,        lazlogger,
+  Classes, SysUtils,
   LazUTF8,
   LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, DialogRes;
@@ -908,8 +908,6 @@ begin
       X := IconBorder;
       Y := IconBorder;
     end;
-
-    DebugLn(['After Image: Initial Y=', Y]);
 
     // add main texts (Instruction, Content, Information)
     Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true);
