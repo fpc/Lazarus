@@ -129,7 +129,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ctypes,
   {$ENDIF}
-  Classes, SysUtils,
+  Classes, SysUtils,        lazlogger,
   LazUTF8,
   LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, DialogRes;
@@ -697,6 +697,9 @@ var
   var R: TRect;
       W: integer;
   begin
+    if Text = '' then
+      exit(nil);
+
     result := TLabel.Create(Dialog.Form);
     result.Parent := Par;
     result.WordWrap := true;
@@ -900,11 +903,13 @@ begin
     end else
     begin
       Image := nil;
-      if not aEmulateClassicStyle then
+      if (not aEmulateClassicStyle) and (Inst <> '') then
         IconBorder := IconBorder*2;
       X := IconBorder;
       Y := IconBorder;
     end;
+
+    DebugLn(['After Image: Initial Y=', Y]);
 
     // add main texts (Instruction, Content, Information)
     Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true);
@@ -1143,7 +1148,10 @@ begin
   case element of
   tdeContent..tdeMainInstruction:
     if Dialog.Emulated then
-      Dialog.Form.Element[element].Caption := Text
+    begin
+      if Dialog.Form.Element[element] <> nil then
+        Dialog.Form.Element[element].Caption := Text
+    end
     {$IFDEF MSWINDOWS}
     else
     begin
