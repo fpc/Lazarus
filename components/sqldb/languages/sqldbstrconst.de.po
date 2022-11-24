@@ -117,7 +117,7 @@ msgstr "Wahrscheinlicher SQL-Fehler"
 #: sqldbstrconst.ssqlfullyqualifiedfields
 msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
 msgid "Fully qualified fields"
-msgstr "Voll ausgezeichnete Felder"
+msgstr "Vollständig qualifizierte Felder"
 
 #: sqldbstrconst.ssqlgenerated
 msgid "SQL statements successfully generated."
