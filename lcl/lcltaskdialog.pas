@@ -669,6 +669,14 @@ var RU: array of Ws;
       inc(RUCount);
     end;
   end;
+
+  function DialogBaseUnits: Integer;
+  //https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdialogbaseunits
+  type
+    TLongRec = record L, H: Word; end;
+  begin
+    Result := TLongRec(GetDialogBaseUnits).L;
+  end;
 {$ENDIF}
 
 var
@@ -815,7 +823,7 @@ begin
     Config.hFooterIcon := TD_FOOTERICONS[aFooterIcon];
     Config.nDefaultButton := aButtonDef;
     Config.nDefaultRadioButton := aRadioDef+200;
-    Config.cxWidth := aWidth;
+    Config.cxWidth := MulDiv(aWidth, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
     Config.pfCallback := @TaskDialogCallbackProc;
     Config.lpCallbackData := @self;
     if TaskDialogIndirect(@Config,@result,@RadioRes,@VerifyChecked)=S_OK then
