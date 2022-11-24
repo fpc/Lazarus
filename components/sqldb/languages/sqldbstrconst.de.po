@@ -1,40 +1,40 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 1.8.9\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
-msgid "Edit/Generate SQL statements"
-msgstr ""
+msgid "Edit/Generate SQL Statements"
+msgstr "SQL-Anweisungen bearbeiten/erzeugen"
 
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
 msgid "Dataset not open: %s"
-msgstr ""
+msgstr "Datenmenge nicht offen: %s"
 
 #: sqldbstrconst.lrssqlgenselect
 msgid "You must select fields to be updated and key fields."
-msgstr ""
+msgstr "Zu aktualisierende Felder und Schlüsselfelder müssen ausgewählt werden."
 
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
-msgstr ""
+msgstr "SQL bearbeiten..."
 
 #: sqldbstrconst.seditupdatesql
 msgid "Edit all SQL statements"
-msgstr ""
+msgstr "Alle SQL-Anweisungen bearbeiten"
 
 #: sqldbstrconst.serrconnectionnotassigned
 msgid "Database not assigned. Assign Database first."
-msgstr ""
+msgstr "Datenbank nicht zugewiesen. Zuerst Datenbank zuweisen."
 
 #: sqldbstrconst.sfirebirddatabases
 msgid "Firebird databases"
@@ -42,7 +42,7 @@ msgstr "Firebird-Datenbanken"
 
 #: sqldbstrconst.sgenerateupdatesql
 msgid "Generate update SQL"
-msgstr ""
+msgstr "Aktualisierungs-SQL erzeugen"
 
 #: sqldbstrconst.sinterbasedatabases
 msgid "Interbase databases"
@@ -50,7 +50,7 @@ msgstr "Interbase-Datenbanken"
 
 #: sqldbstrconst.slibraries
 msgid "Shared libraries"
-msgstr ""
+msgstr "Gemeinsame Bibliotheken"
 
 #: sqldbstrconst.sloadsqlcodehint
 msgid "Load SQL code ..."
@@ -100,17 +100,75 @@ msgstr "SQL-Code starten"
 msgid "Save SQL code ..."
 msgstr "SQL-Code speichern..."
 
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr "Klammern"
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr "Begrenzer für Feld-/Tabellennamen"
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "Wahrscheinlicher SQL-Fehler"
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr "Voll ausgezeichnete Felder"
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr "SQL-Anweisungen erfolgreich erzeugt."
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr "SQL erzeugen"
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
+msgstr "Einrückung"
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
 msgstr "SQLite3-Datenbanken"
 
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr "Schlüssel-Felder"
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr "Zeilenlänge"
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr "Es wurden keine SQL-Anweisungen erzeugt. Trotzdem schließen?"
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr "Für die Erzeugung von SQL-Anweisungen ist keine Tabelle ausgewählt."
+
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
 msgstr "Schnelle SQL-Prüfung ist OK"
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr "Ein Feld pro Zeile"
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
+msgstr "Anführungszeichen"
 
 #: sqldbstrconst.ssqlscript
 msgid "SQL Script file"
@@ -119,6 +177,16 @@ msgstr "SQL-Skript-Datei"
 #: sqldbstrconst.ssqlscriptdesc
 msgid "Create a new SQL Script file"
 msgstr "Erzeuge neue SQL-Skript-Datei"
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr "\"Select\"/\"Update\"/\"Insert\"-Felder"
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
+msgstr "Systemtabellen zeigen"
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
@@ -130,18 +198,29 @@ msgid "Editing %s"
 msgstr "Bearbeite %s"
 
 #: sqldbstrconst.ssqlsyntaxerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Probable syntax error in SQL statement:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s"
 msgstr ""
 "Wahrscheinlicher Syntax-Fehler in SQL-Anweisung:\n"
-"%s\n"
+"%s"
 
 #: sqldbstrconst.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL-Code"
 
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr "Tabelle"
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr "Tabellen und Felder"
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase key words"
+msgstr "Schlüsselwörter in Großbuchstaben"

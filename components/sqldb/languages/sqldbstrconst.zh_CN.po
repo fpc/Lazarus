@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
-msgid "Edit/Generate SQL statements"
+msgid "Edit/Generate SQL Statements"
 msgstr ""
 
 #: sqldbstrconst.lrssqldatasetopen
@@ -101,17 +101,75 @@ msgstr "运行SQL代码"
 msgid "Save SQL code ..."
 msgstr "保存SQL代码..."
 
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr ""
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "可能的SQL错误"
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr ""
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr ""
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
+msgstr ""
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
 msgstr "SQLite3数据库"
 
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr ""
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr ""
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr ""
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr ""
+
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
 msgstr "快速SQL检查OK"
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr ""
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
+msgstr ""
 
 #: sqldbstrconst.ssqlscript
 msgid "SQL Script file"
@@ -120,6 +178,16 @@ msgstr "SQL脚本文件"
 #: sqldbstrconst.ssqlscriptdesc
 msgid "Create a new SQL Script file"
 msgstr "创建一个新的SQL脚本文件"
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
+msgstr ""
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
@@ -131,18 +199,29 @@ msgid "Editing %s"
 msgstr "编辑%s"
 
 #: sqldbstrconst.ssqlsyntaxerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Probable syntax error in SQL statement:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s"
 msgstr ""
 "可能的语法错误在SQL声明:\n"
-"%s\n"
+"%s"
 
 #: sqldbstrconst.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL代码"
 
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr ""
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr ""
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase key words"
+msgstr ""

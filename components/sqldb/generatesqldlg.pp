@@ -38,12 +38,13 @@ type
     BGenerate: TButton;
     BPGenSQL: TButtonPanel;
     CBOneFieldPerLine: TCheckBox;
-    cbUpperCaseKeywords: TCheckBox;
+    CBUpperCaseKeywords: TCheckBox;
     CBSystemTables: TCheckBox;
     CBTables: TComboBox;
-    CBQuoteFields: TCheckBox;
+    CBDelimiters: TCheckBox;
     edtQuoteChar: TEdit;
-    lblQuoteChar: TLabel;
+    edtBrackets: TEdit;
+    LStatusMsg: TLabel;
     LBKeyFields: TListBox;
     LCBTables: TLabel;
     Label2: TLabel;
@@ -60,6 +61,8 @@ type
     PSelectFields: TPanel;
     PCSQL: TPageControl;
     cbFullyQualifiedFields: TCheckBox;
+    RBBrackets: TRadioButton;
+    RBQuoteChar: TRadioButton;
     seIndent: TSpinEdit;
     seLineLength: TSpinEdit;
     MSelect: TSynEdit;
@@ -71,22 +74,28 @@ type
     TSUpdate: TTabSheet;
     TSDelete: TTabSheet;
     procedure BGenerateClick(Sender: TObject);
+    procedure CBDelimitersChange(Sender: TObject);
     procedure CBSystemTablesChange(Sender: TObject);
-    procedure CBTablesChange(Sender: TObject);
+//    procedure CBTablesChange(Sender: TObject);
+    procedure CBTablesSelect(Sender: TObject);
+    procedure edtQuoteCharChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
+    { private declarations }
     FConnection : TSQLConnection;
     FDataset: TSQLQuery;
-    QuoteChar : Char;
     FActivateCalled: Boolean;
+    procedure ApplyTranslation;
     Function IndentString : string;
     Function SQLKeyWord(aKeyWord : TSQLKeyWord) : String;
     procedure GenDeleteSQL(const TableName : string; KeyFields, SQL: TStrings);
     procedure GenInsertSQL(const TableName : string; UpdateFields, SQL: TStrings);
     procedure GenModifySQL(const TableName : string; KeyFields, UpdateFields, SQL: TStrings);
     procedure GenRefreshSQL(const TableName : string; SelectFields,KeyFields, SQL: TStrings);
+    procedure GenSelectSQL(const TableName : string; SelectFields, SQL: TStrings);
     procedure GenWhereClause(const aTableName,ParamPrefix : string; KeyFields, SQL: TStrings);
     function GetAS: Boolean;
     procedure GetDataFieldNames(List: TStrings);
@@ -97,7 +106,7 @@ type
     procedure SetConnection(AValue: TSQLConnection);
     procedure SetTableName(const AValue: String);
     Procedure SetFieldLists(aFields : TStrings);
-    { private declarations }
+    procedure UpdateStatusMsg(Done: Boolean);
   public
     { public declarations }
     Procedure RefreshTableList;
@@ -117,6 +126,11 @@ type
 Function GenerateSQL(Q : TSQLQuery): Boolean;
 
 implementation
+
+Function Max(a, b: Integer): Integer;
+begin
+  if a > b then Result := a else Result := b;
+end;
 
 Function GenerateSQL(Q : TSQLQuery): Boolean;
 
@@ -176,11 +190,42 @@ begin
 end;
 
 function TGenerateSQLForm.GetQuoted(const aIdentifier: string; const aTable: String =''): string;
-
+var
+  ch, ch1: char;
+  L: Integer;
 begin
   Result:=aIdentifier;
-  if CBQuoteFields.Checked then
-    Result:=QuoteChar + Result + QuoteChar;
+  if CBDelimiters.Checked then
+  begin
+    if RBQuoteChar.Checked then
+    begin
+      if edtQuoteChar.text<>'' then
+        ch := edtQuoteChar.Text[1]
+      else
+        ch := '"';
+      Result := ch + Result + ch;
+    end else
+    if RBBrackets.Checked then
+    begin
+      L := Length(edtBrackets.Text);
+      case L of
+        0: exit;
+        1: begin
+             ch := edtBrackets.Text[1];
+             case ch of
+               '[': ch1 := ']';
+               '(': ch1 := ')';
+               '{': ch1 := '}';
+               else ch1 := ch;
+             end;
+           end;
+        else
+          ch := edtBrackets.Text[1];
+          ch1 := edtBrackets.Text[2];
+      end;
+      Result := ch + Result + ch1;
+    end;
+  end;
   if (aTable<>'') and CBFullyQualifiedFields.Checked then
     Result:=GetQuoted(aTable)+'.'+Result;
 end;
@@ -262,6 +307,32 @@ begin
   GenWhereClause(TableName, 'OLD_',KeyFields,SQL);
 end;
 
+procedure TGenerateSQLForm.GenSelectSQL(const TableName: string; SelectFields, SQL: TStrings);
+var
+  MaxLen, I: integer;
+  L, FN: string;
+  isNotLast: Boolean;
+begin
+  MaxLen:=seLineLength.Value;
+  SQL.Clear;
+  SQL.Add(Format('%s', [SQLKeyWord(skselect)]));  { Do not localize }
+  L := IndentString;
+  for I := 0 to SelectFields.Count-1 do
+  begin
+    isNotLast:=I<SelectFields.Count-1;
+    FN:=GetQuoted(SelectFields[i],TableName);
+    L:=L+FN;
+    if IsNotLast then
+      L:=L+', ';
+    if CBOneFieldPerLine.Checked or (Length(L)>MaxLen) or (not IsNotLast) then
+    begin
+      SQL.Add(L);
+      L:=IndentString;
+    end;
+  end;
+  SQL.Add(Format('%s %s', [SQLKeyWord(skFrom),GetQuoted(TableName)]));  { Do not localize }
+end;
+
 procedure TGenerateSQLForm.GetDataFieldNames(List: TStrings);
 var
   I: Integer;
@@ -325,7 +396,7 @@ procedure TGenerateSQLForm.GenerateSQL;
 
   function QuotedTableName(const BaseName: string): string;
   begin
-      if CBQuoteFields.Checked then
+      if CBDelimiters.Checked then
         Result := Format('"%s"', [BaseName])   {do not localize}
       else
         Result := BaseName;
@@ -337,12 +408,17 @@ var
   DidConnect : Boolean;
 
 begin
-  if EdtQuoteChar.text<>'' then
-    QuoteChar:=EdtQuoteChar.text[1]
-  else
-    QuoteChar:='"';
+  if TableName = '' then
+  begin
+    MessageDlg(SSQLNoTable, mtError, [mbOK], 0);
+    exit;
+  end;
   if (LBKeyFields.SelCount = 0) or (LBFields.SelCount = 0) then
-    raise Exception.Create(lrsSQLGenSelect);
+  begin
+    MessageDlg(lrsSQLGenSelect, mtError, [mbOK], 0);
+    exit;
+  end;
+
   KeyFields := TStringList.Create;
   DidConnect := not DataSet.Database.Connected;
   if DidConnect then
@@ -353,7 +429,9 @@ begin
     UpdateFields := TStringList.Create;
     try
       GetSelectedItems(LBFields, UpdateFields);
-      TableName := CBTables.Text;
+      if TableName <> CBTables.Text then
+        TableName := CBTables.Text;
+      GenSelectSQL(TableName, UpdateFields, MSelect.Lines);
       GenDeleteSQL(TableName, KeyFields, MDelete.Lines);
       GenInsertSQL(TableName, UpdateFields, Minsert.Lines);
       GenModifySQL(TableName, KeyFields, UpdateFields, MUpdate.Lines);
@@ -361,6 +439,7 @@ begin
     finally
       UpdateFields.Free;
     end;
+    UpdateStatusMsg(true);
   finally
     KeyFields.Free;
     if DidConnect then
@@ -370,13 +449,26 @@ end;
 
 procedure TGenerateSQLForm.TSResize(Sender: TObject);
 
+  procedure SetScrollWidth(AListbox: TListbox);
+  var
+    I, MaxWidth: Integer;
+  begin
+    MaxWidth := -1;
+    AListBox.Canvas.Font := AListBox.Font;
+    for I := 0 to AListBox.Items.Count - 1 do
+      MaxWidth := Max(MaxWidth, AListBox.Canvas.TextWidth(AListBox.Items[I]));
+    if MaxWidth <> -1 then
+      AListBox.ScrollWidth := MaxWidth + AListBox.Width - AListBox.ClientWidth;
+  end;
+
 Var
   W : Integer;
-  
 begin
   W:=TSFields.ClientWidth div 3;
   POptions.Width:=W;
   PSelectFields.Width:= (TSFields.ClientWidth - POptions.Width) div 2;
+  SetScrollWidth(LBKeyFields);
+  SetScrollWidth(LBFields);
 end;
 
 function TGenerateSQLForm.IndentString: string;
@@ -392,7 +484,7 @@ Const
 
 begin
   Result:=KeyWords[aKeyWord];
-  if CBUppercaseKeyWords.Checked then
+  if CBUpperCaseKeywords.Checked then
     Result:=UpperCase(Result);
 end;
 
@@ -449,8 +541,13 @@ begin
       EndUpdate;
     end;
   With CBTables do
+  begin
     If (TN<>'') then
       ItemIndex:=Items.IndexOf(TN);
+    If ItemIndex = -1 then
+      SetFieldLists(nil);
+  end;
+  UpdateStatusMsg(false);
 end;
 
 procedure TGenerateSQLForm.ClearSQL(clearSelect : Boolean =  False);
@@ -470,100 +567,222 @@ begin
   With CBTables do
     begin
     ItemIndex:=Items.IndexOf(AValue);
-    CBTablesChange(CBTables);
+    CBTablesSelect(CBTables);
     end;
 end;
 
 procedure TGenerateSQLForm.SetFieldLists(aFields: TStrings);
-
 Var
   I,Idx : Integer;
-
+  fieldName: String;
+  selFields: TStrings;
+  selKeyFields: TStrings;
 begin
-  if aFields=Nil then
+  selFields := TStringList.Create;
+  selKeyFields := TStringList.Create;
+  try
+    if aFields=Nil then
+      begin
+      LBKeyFields.Items.Clear;
+      LBFields.Items.Clear;
+      end
+    else
     begin
-    LBKeyFields.Items.Clear;
-    LBFields.Items.Clear;
-    end
-  else
-    begin
-    LBKeyFields.Items:=aFields;
-    LBFields.Items:=aFields;
+      // Preserve selections from previous runs
+      for I := 0 to LBFields.Items.Count-1 do
+        if LBFields.Selected[I] then
+          selFields.Add(LBFields.Items[I]);
+      for I := 0 to LBKeyFields.Items.Count-1 do
+        if LBKeyFields.Selected[I] then
+          selKeyfields.Add(LBKeyFields.Items[I]);
+      LBKeyFields.Items:=aFields;
+      LBFields.Items:=aFields;
     end;
-  if not Assigned(Dataset) then exit;
-  For I:=0 to FDataset.FieldDefs.Count-1 do
+    if not Assigned(Dataset) then exit;
+
+    // 1st run: Collect field names to be selected
+    if (selFields.Count = 0) and (FDataset.FieldDefs.Count > 0) then
     begin
-    Idx:=LBFields.Items.IndexOf(FDataset.FieldDefs[i].Name);
-    if Idx>=0 then
-      LBFields.Selected[Idx]:=true
+      for I := 0 to FDataset.FieldDefs.Count-1 do
+      begin
+        fieldName := FDataset.FieldDefs[I].Name;
+        Idx := LBFields.Items.IndexOf(fieldName);
+        if Idx>=0 then
+          selFields.Add(fieldName);
+      end;
     end;
-  For I:=0 to FDataset.Fields.Count-1 do
-    if ((Dataset.UpdateMode=upWhereKeyOnly) and (pfInKey in FDataset.Fields[i].ProviderFlags)) or
-       (Dataset.UpdateMode=upWhereAll) then
+    // Select these fields.
+    if selFields.Count > 0 then
+      for I := 0 to selFields.Count-1 do
+      begin
+        idx := LBFields.Items.IndexOf(selFields[I]);
+        if idx >= 0 then
+          LBFields.Selected[idx] := true;
+      end
+    else
+      LBFields.SelectAll;
+
+    // 1st run: Collect key field names to be selected
+    if (selKeyFields.Count = 0) and (FDataset.Fields.Count-1 > 0) then
     begin
-    Idx:=LBKeyFields.Items.IndexOf(FDataset.Fields[i].FieldName);
-    if (Idx>=0) then
-      LBKeyFields.Selected[Idx]:=true;
+      for I := 0 to FDataset.Fields.Count-1 do
+      begin
+        if ((Dataset.UpdateMode=upWhereKeyOnly) and (pfInKey in FDataset.Fields[i].ProviderFlags)) or
+           (Dataset.UpdateMode=upWhereAll) then
+        begin
+          fieldName := FDataset.Fields[I].FieldName;
+          Idx:=LBKeyFields.Items.IndexOf(fieldName);
+          if (Idx>=0) then
+            selKeyFields.Add(fieldName);
+        end;
+      end;
     end;
+    // Select these fields in the "Keys" listbox
+    if selKeyFields.Count > 0 then
+      for I := 0 to selKeyFields.Count-1 do
+      begin
+        idx := LBKeyFields.Items.IndexOf(selKeyFields[I]);
+        if idx >= 0 then
+          LBKeyFields.Selected[idx] := true;
+      end
+    else
+      if (LBKeyFields.Items.Count > 0) then LBKeyFields.Selected[0] := true;
+  finally
+    selFields.Free;
+    selKeyFields.Free;
+  end;
 end;
 
-procedure TGenerateSQLForm.CBTablesChange(Sender: TObject);
-
+procedure TGenerateSQLForm.CBTablesSelect(Sender: TObject);
 Var
   l : TStringList;
-
 begin
   With CBTables do
-    If (ItemIndex=-1) Then
-      SetFieldLists(Nil)
-    else
-      begin
+  begin
+    SetFieldLists(nil);
+    if (ItemIndex >= 0) then
+    begin
       L:=TstringList.Create;
       try
         Connection.GetFieldNames(TableName,L);
-        SetFieldLists(L)
+        SetFieldLists(L);
+        UpdateStatusMsg(false);
       finally
         L.Free;
       end;
-      end;
+    end;
+  end;
   ClearSQL;
 end;
 
+procedure TGenerateSQLForm.edtQuoteCharChange(Sender: TObject);
+begin
+  UpdateStatusMsg(false);
+end;
+
 procedure TGenerateSQLForm.FormActivate(Sender: TObject);
+var
+  w: Integer;
 begin
   if FActivateCalled then
     exit;
   FActivateCalled := true;
+
   Constraints.MinHeight := PCSQL.Height - PCSQL.ClientHeight +
     seLineLength.Top + seLineLength.Height +
     bGenerate.Height + bGenerate.BorderSpacing.Top + bGenerate.BorderSpacing.Bottom +
     BPGenSQL.Height + BPGenSQL.BorderSpacing.Around*2;
-  Constraints.MinWidth := 3 * (PCSQL.Width - PCSQL.ClientWidth +
-    CBQuoteFields.Left + CBQuoteFields.Width +
-    lblQuoteChar.BorderSpacing.Left + lblQuoteChar.Width + lblQuoteChar.BorderSpacing.Right +
-    edtQuoteChar.Width + CBTables.BorderSpacing.Right);
+
+  w := LCBTables.Left + LCBTables.Width +
+    CBSystemTables.BorderSpacing.Left + CBSystemTables.Width;
+  w := Max(w, CBDelimiters.Left + CBDelimiters.Width);
+  w := Max(w, RBQuoteChar.Left + RBQuoteChar.Width + edtQuoteChar.BorderSpacing.Left + edtQuoteChar.Width);
+  w := Max(w, CBUppercaseKeywords.Left + CBUppercaseKeywords.Width);
+  w := Max(w, CBFullyQualifiedfields.Left + CBFullyQualifiedFields.Width);
+  inc(w, CBTables.BorderSpacing.Right);
+  Constraints.MinWidth := 3 * (PCSQL.Width - PCSQL.ClientWidth + w);
+
+  // Enforce constraints
+  if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
+  if Width < Constraints.MinWidth then Width := Constraints.MinWidth;
 end;
 
 procedure TGenerateSQLForm.FormCreate(Sender: TObject);
-
 begin
-  Caption:= lrsGeneratesqlstatements;
-  EdtQuoteChar.Text:='"';
+  ApplyTranslation;
   MSelect.Font.Height := SynDefaultFontHeight;
   MSelect.Font.Name := SynDefaultFontName;
+  MSelect.Font.Quality := SynDefaultFontQuality;
   MInsert.Font.Height := SynDefaultFontHeight;
   MInsert.Font.Name := SynDefaultFontName;
+  MInsert.Font.Quality := SynDefaultFontQuality;
   MUpdate.Font.Height := SynDefaultFontHeight;
   MUpdate.Font.Name := SynDefaultFontName;
+  MUpdate.Font.Quality := SynDefaultFontQuality;
   MDelete.Font.Height := SynDefaultFontHeight;
   MDelete.Font.Name := SynDefaultFontName;
+  MDelete.Font.Quality := SynDefaultFontQuality;
   MRefresh.Font.Height := SynDefaultFontHeight;
   MRefresh.Font.Name := SynDefaultFontName;
+  MRefresh.Font.Quality := SynDefaultFontQuality;
+  PCSQL.TabIndex := 0;
+  LStatusMsg.Caption := '';
+end;
+
+procedure TGenerateSQLForm.OKButtonClick(Sender: TObject);
+var
+  hasSQL: Boolean;
+  res: TModalResult;
+  i: Integer;
+begin
+  hasSQL := false;
+  for i := 0 to 4 do
+    if GetSQLStatement(i).Count > 0 then
+    begin
+      hasSQL := true;
+      break;
+    end;
+  if not hasSQL then
+  begin
+    res := MessageDlg(SSQLNoSQLGenerated, mtConfirmation, [mbYes, mbNo], 0);
+    if res <> mrYes then
+      ModalResult := mrNone;
+  end;
+end;
+
+procedure TGenerateSQLForm.ApplyTranslation;
+begin
+  Caption:= lrsGeneratesqlstatements;
+  TSFields.Caption := SSQLTablesAndFields;
+  LCBTables.Caption := SSQLTable;
+  CBSystemTables.Caption := SSQLShowSystemTables;
+  CBDelimiters.Caption := SSQLDelimitersForFieldTableNames;
+  RBQuoteChar.Caption := SSQLQuoteChar;
+  RBBrackets.Caption := SSQLBrackets;
+  EdtQuoteChar.Text:='"';
+  EdtBrackets.Text := '[]';
+  CBOneFieldPerLine.Caption := SSQLOneFieldPerLine;
+  CBUpperCaseKeywords.Caption := SSQLUppercaseKeywords;
+  CBFullyQualifiedFields.Caption := SSQLFullyQualifiedFields;
+  LSEIndent.Caption := SSQLIndent;
+  LSELineLength.Caption := SSQLLineLength;
+  BGenerate.Caption := SSQLGenerateSQL;
+  LLBKeyFields.Caption := SSQLKeyFields;
+  Label2.Caption := SSQLSelectUpdateInsertFields;
 end;
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);
 begin
   GenerateSQL;
+end;
+
+procedure TGenerateSQLForm.CBDelimitersChange(Sender: TObject);
+begin
+  RBQuoteChar.Enabled := CBDelimiters.Checked;
+  edtQuoteChar.Enabled := CBDelimiters.Checked and RBQuoteChar.Checked;
+  RBBrackets.Enabled := CBDelimiters.Checked;
+  edtBrackets.Enabled := CBDelimiters.Checked and RBBrackets.Checked;
+  UpdateStatusMsg(false);
 end;
 
 procedure TGenerateSQLForm.CBSystemTablesChange(Sender: TObject);
@@ -572,6 +791,13 @@ begin
     RefreshTableList;
 end;
 
+procedure TGenerateSQLForm.UpdateStatusMsg(Done: Boolean);
+begin
+  if Done then
+    LStatusMsg.Caption := SSQLGenerated
+  else
+    LStatusMsg.Caption := '';
+end;
 
 end.
 

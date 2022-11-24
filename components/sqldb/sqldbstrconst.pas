@@ -6,7 +6,7 @@ interface
 
 resourcestring
 
-  lrsGeneratesqlstatements = 'Edit/Generate SQL statements';
+  lrsGeneratesqlstatements = 'Edit/Generate SQL Statements';
   lrsSQLDataSetOpen = 'Dataset not open: %s';
   lrsSQLGenSelect = 'You must select fields to be updated and key fields.';
 
@@ -46,6 +46,25 @@ resourcestring
   SQLSyntaxOK       = 'No syntax errors in SQL statement found.';
   SSQLError         = 'Probable SQL error';
   SSQLSyntaxError   = 'Probable syntax error in SQL statement:'+slineBreak+'%s';
+
+  // GenerateSQLDlg
+  SSQLGenerated = 'SQL statements successfully generated.';
+  SSQLNoTable = 'No table is selected for generation of SQL statements.';
+  SSQLTablesAndFields = 'Tables and Fields';
+  SSQLTable = 'Table';
+  SSQLShowSystemTables = 'Show system tables';
+  SSQLDelimitersForFieldTableNames = 'Delimiters for field/table names';
+  SSQLQuoteChar = 'Quote character';
+  SSQLBrackets = 'Brackets';
+  SSQLOneFieldPerLine = 'One field per line';
+  SSQLUppercaseKeywords = 'Uppercase key words';
+  SSQLFullyQualifiedFields = 'Fully qualified fields';
+  SSQLIndent = 'Indent';
+  SSQLLineLength = 'Line length';
+  SSQLGenerateSQL = 'Generate SQL';
+  SSQLKeyFields = 'Key fields';
+  SSQLSelectUpdateInsertFields = '"Select"/"Update"/"Insert" fields';
+  SSQLNoSQLGenerated = 'No SQL statements were generated. Do you really want to close?';
 
 implementation
 

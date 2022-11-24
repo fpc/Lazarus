@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
-msgid "Edit/Generate SQL statements"
+msgid "Edit/Generate SQL Statements"
 msgstr ""
 
 #: sqldbstrconst.lrssqldatasetopen
@@ -90,16 +90,74 @@ msgstr ""
 msgid "Save SQL code ..."
 msgstr ""
 
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr ""
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
+msgstr ""
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr ""
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr ""
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
 msgstr ""
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
 msgstr ""
 
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr ""
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr ""
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr ""
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr ""
+
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
+msgstr ""
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr ""
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
 msgstr ""
 
 #: sqldbstrconst.ssqlscript
@@ -108,6 +166,16 @@ msgstr ""
 
 #: sqldbstrconst.ssqlscriptdesc
 msgid "Create a new SQL Script file"
+msgstr ""
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
 msgstr ""
 
 #: sqldbstrconst.ssqlsource
@@ -128,5 +196,20 @@ msgstr ""
 
 #: sqldbstrconst.ssqltabcaption
 msgid "SQL Code"
+msgstr ""
+
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr ""
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr ""
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase key words"
 msgstr ""
 

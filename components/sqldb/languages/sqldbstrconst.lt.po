@@ -1,19 +1,20 @@
 # Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 20:57+0200\n"
 "Project-Id-Version: registersqldb\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-11-24 17:37+0100\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 2.0\n"
-"MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.2\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
-msgid "Edit/Generate SQL statements"
+msgid "Edit/Generate SQL Statements"
 msgstr ""
 
 #: sqldbstrconst.lrssqldatasetopen
@@ -101,17 +102,75 @@ msgstr "Vikdyti „SQL“ kodą"
 msgid "Save SQL code ..."
 msgstr "Įrašyti „SQL“ kodą…"
 
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr ""
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "Galima „SQL“ klaida"
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr ""
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr ""
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
+msgstr ""
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
 msgstr "„SQLite3“ duomenų bazės"
 
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr ""
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr ""
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr ""
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr ""
+
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
 msgstr "Nėra „SQL“ klaidų"
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr ""
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
+msgstr ""
 
 #: sqldbstrconst.ssqlscript
 msgid "SQL Script file"
@@ -120,6 +179,16 @@ msgstr "SQL scenarijaus failas"
 #: sqldbstrconst.ssqlscriptdesc
 msgid "Create a new SQL Script file"
 msgstr "Kurti naują SQL scenarijaus failą"
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr ""
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
+msgstr ""
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
@@ -131,18 +200,29 @@ msgid "Editing %s"
 msgstr "%s redaguojamas"
 
 #: sqldbstrconst.ssqlsyntaxerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Probable syntax error in SQL statement:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s"
 msgstr ""
 "Galima sintaksės klaida „SQL“ sakinyje:\n"
-"%s\n"
+"%s"
 
 #: sqldbstrconst.ssqltabcaption
 msgid "SQL Code"
 msgstr "SQL kodas"
 
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr ""
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr ""
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase key words"
+msgstr ""
