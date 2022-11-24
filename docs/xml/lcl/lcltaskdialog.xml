@@ -1134,10 +1134,13 @@ set to 0.
 aDialogIcon and aFooterIcon are used to specify the icons on the dialog form.
 </p>
 <p>
-aWidth can be used to force a custom form width (in pixels).
+aWidth can be used to supply a custom form width (in pixels). When set to a 
+value &amp;lt;= 0, the length of the text in Inst and Content are used to 
+determine the width for the dialog form. When an emulated task dialog is used, 
+the upper limit for the value is 480 pixels and the lower limit is 120 pixels.
 </p>
 <p>
-aParent can be set to any HWND - by default, Application.DialogHandle.
+aParent can be set to any HWND instance - by default, Application.DialogHandle.
 </p>
 <p>
 If aNonNative is <b>True</b>, the Delphi emulation code will always be used. 
