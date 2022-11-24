@@ -5508,6 +5508,7 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 <element name="TCustomTaskDialog.FTask"/>
 <element name="TCustomTaskDialog.FTitle"/>
 <element name="TCustomTaskDialog.FVerificationText"/>
+<element name="TCustomTaskDialog.FWidth"/>
 <element name="TCustomTaskDialog.FOnButtonClicked"/>
 
 <element name="TCustomTaskDialog.DoOnButtonClickedHandler"/>
@@ -6104,6 +6105,34 @@ a bold font style.
 </seealso>
 </element>
 
+<element name="TCustomTaskDialog.Width">
+<short>
+Sets the width in pixels for the task dialog form.
+</short>
+<descr>
+<p>
+<var>Width</var> is an <var>Integer</var> property which sets the width (in 
+pixels) for the task dialog form. The default value for the property is 0 
+(zero), and causes the width for the dialog form to be calculated when the 
+dialog is executed using the length of its textual content.
+</p>
+<p>
+Width is passed as an argument to the Execute method in the TTaskDialog 
+instance used in the class.
+</p>
+<p>
+Please note that an emulated task dialog form imposes a lower limit (120 
+pixels) or an upper limit (480 pixels) on the auto-calculated width.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTaskDialog.Text"/>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.Execute"/>
+<link id="#lcl.lcltaskdialog.TTaskDialog.Execute">TTaskDialog.Execute</link>
+</seealso>
+</element>
+
 <element name="TCustomTaskDialog.VerificationText">
 <short>
 Optional caption text for the check box displayed at the bottom of the Task 
@@ -6199,6 +6228,7 @@ end;
 <element name="TTaskDialog.RadioButtons" link="#lcl.dialogs.TCustomTaskDialog.RadioButtons"/>
 <element name="TTaskDialog.Text" link="#lcl.dialogs.TCustomTaskDialog.Text"/>
 <element name="TTaskDialog.Title" link="#lcl.dialogs.TCustomTaskDialog.Title"/>
+<element name="TTaskDialog.Width" link="#lcl.dialogs.TCustomTaskDialog.Width"/>
 <element name="TTaskDialog.VerificationText" link="#lcl.dialogs.TCustomTaskDialog.VerificationText"/>
 <element name="TTaskDialog.OnButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnButtonClicked"/>
 
