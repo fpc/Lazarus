@@ -445,7 +445,10 @@ begin
     QtFileDialog.setAcceptMode(QFileDialogAcceptOpen)
   else
   if ACommonDialog is TSelectDirectoryDialog then
-    QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
+  begin
+    QtFileDialog.setFileMode(QFileDialogDirectory);
+    QFileDialog_setOption(QFileDialogH(QtFileDialog.Widget), QFileDialogOptionShowDirsOnly, True);
+  end;
 
   ActiveWin := QtWidgetSet.GetActiveWindow;
   if ACommonDialog is TSaveDialog then

@@ -12569,7 +12569,7 @@ type
     QFileDialogDetail, QFileDialogList );
 
   QFileDialogFileMode = ( // QFileDialog::FileMode (1)
-    QFileDialogAnyFile, QFileDialogExistingFile, QFileDialogDirectory, QFileDialogExistingFiles, QFileDialogDirectoryOnly );
+    QFileDialogAnyFile, QFileDialogExistingFile, QFileDialogDirectory, QFileDialogExistingFiles);
 
   QFileDialogAcceptMode = ( // QFileDialog::AcceptMode (1)
     QFileDialogAcceptOpen, QFileDialogAcceptSave );
