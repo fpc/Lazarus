@@ -3576,7 +3576,8 @@ begin
     end;
   end;
   if Count > 0 then
-    Result := Byte(Chr1)-Byte(Chr2)
+    //Both Chr1 and Ch2 are lower ASCII if we arrive here, so this is safe
+    Result := AnsiCompareText(Chr1, Chr2)
   else
     Result := Count1-Count2;
 end;
