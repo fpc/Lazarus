@@ -12219,7 +12219,7 @@ type
     QFileDialogDetail, QFileDialogList );
 
   QFileDialogFileMode = ( // QFileDialog::FileMode (1)
-    QFileDialogAnyFile, QFileDialogExistingFile, QFileDialogDirectory, QFileDialogExistingFiles, QFileDialogDirectoryOnly );
+    QFileDialogAnyFile, QFileDialogExistingFile, QFileDialogDirectory, QFileDialogExistingFiles);
 
   QFileDialogAcceptMode = ( // QFileDialog::AcceptMode (1)
     QFileDialogAcceptOpen, QFileDialogAcceptSave );
@@ -12237,7 +12237,8 @@ const
   QFileDialogDontUseSheet =   $00000008;
   QFileDialogDontUseNativeDialog =   $00000010;
   QFileDialogReadOnly =   $00000020;
-  QFileDialogHideNameFilterDetails =   $00000040;
+  QFileDialogHideNameFilterDetails = $00000040;
+  QFileDialogDontUseCustomDirectoryIcons = $00000080;
 
 function QFileDialog_Create(parent: QWidgetH; f: QtWindowFlags): QFileDialogH; cdecl; external Qt5PasLib name 'QFileDialog_Create';
 procedure QFileDialog_Destroy(handle: QFileDialogH); cdecl; external Qt5PasLib name 'QFileDialog_Destroy'; 

@@ -19184,7 +19184,7 @@ end;
 
 procedure TQtFileDialog.setReadOnly(const AReadOnly: Boolean);
 begin
-  QFileDialog_setReadOnly(QFileDialogH(Widget), AReadOnly);
+  QFileDialog_setOption(QFileDialogH(Widget), QFileDialogReadOnly, AReadOnly);
 end;
 
 procedure TQtFileDialog.setSelectedFilter(const ASelFilter: WideString);
