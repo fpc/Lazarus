@@ -730,7 +730,8 @@ begin
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
     QFileDialogOptionDontUseNativeDialog, False);
 
-  FileDialog.setFileMode(QFileDialogDirectoryOnly);
+  FileDialog.setFileMode(QFileDialogDirectory);
+  QFileDialog_setOption(QFileDialogH(FileDialog.Widget), QFileDialogOptionShowDirsOnly, True);
 
   FileDialog.AttachEvents;
 
