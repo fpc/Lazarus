@@ -57,7 +57,7 @@ resourcestring
   SSQLQuoteChar = 'Quote character';
   SSQLBrackets = 'Brackets';
   SSQLOneFieldPerLine = 'One field per line';
-  SSQLUppercaseKeywords = 'Uppercase key words';
+  SSQLUppercaseKeywords = 'Uppercase keywords';
   SSQLFullyQualifiedFields = 'Fully qualified fields';
   SSQLIndent = 'Indent';
   SSQLLineLength = 'Line length';
