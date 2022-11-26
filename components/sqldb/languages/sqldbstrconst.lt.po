@@ -224,5 +224,6 @@ msgstr ""
 
 #: sqldbstrconst.ssqluppercasekeywords
 msgctxt "sqldbstrconst.ssqluppercasekeywords"
-msgid "Uppercase key words"
+msgid "Uppercase keywords"
 msgstr ""
+

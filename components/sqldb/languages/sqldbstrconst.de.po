@@ -221,6 +221,9 @@ msgid "Tables and Fields"
 msgstr "Tabellen und Felder"
 
 #: sqldbstrconst.ssqluppercasekeywords
+#, fuzzy
+#| msgid "Uppercase key words"
 msgctxt "sqldbstrconst.ssqluppercasekeywords"
-msgid "Uppercase key words"
+msgid "Uppercase keywords"
 msgstr "Schlüsselwörter in Großbuchstaben"
+
