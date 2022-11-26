@@ -105,9 +105,15 @@ end;
   TNBPages Clear
  ------------------------------------------------------------------------------}
 procedure TNBPages.Clear;
+var
+  i: Integer;
 begin
-  while FPageList.Count>0 do
-    Delete(FPageList.Count-1);
+  // remove the pages in reverse order but skip the Active Page,
+  // and remove the Active Page at the end,
+  // to avoid activating other Pages.
+  for i:=FNoteBook.PageCount-1 downto 0 do
+    if i<>FNoteBook.PageIndex then Delete(i);
+  if FNoteBook.PageCount>0 then Delete(0);
 end;
 
 {------------------------------------------------------------------------------
