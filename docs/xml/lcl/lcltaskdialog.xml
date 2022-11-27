@@ -1116,45 +1116,54 @@ Launches the task dialog form.
 </short>
 <descr>
 <p>
-Some common buttons can be set via aCommonButtons. In emulation mode, aFlags 
-will handle only tdfUseCommandLinks, tdfUseCommandLinksNoIcon, and tdfQuery 
-options.
+Some common buttons can be set via <var>aCommonButtons</var>. In emulation 
+mode, <var>aFlags</var> will handle only tdfUseCommandLinks, 
+tdfUseCommandLinksNoIcon, and tdfQuery options.
 </p>
 <p>
-Will return 0 on error, or the Button ID (e.g. mrOk for the OK button or 100 
+Returns 0 on error, or the Button ID (e.g. mrOk for the OK button or 100 
 for the first custom button defined in Buttons string).
 </p>
 <p>
-If Buttons have been defined, aButtonDef can set the selected Button ID. If 
-Radio buttons have been defined, the default radio button defined in the 
-RadioButtons property is pre-selected. Otherwise, the default radio button is 
-set to 0.
+If Buttons have been defined, <var>aButtonDef</var> can set the selected 
+Button ID. If Radio buttons have been defined, the default radio button 
+defined in the RadioButtons property is pre-selected. Otherwise, the default 
+radio button is set to 0.
 </p>
 <p>
-aDialogIcon and aFooterIcon are used to specify the icons on the dialog form.
+<var>aDialogIcon</var> and <var>aFooterIcon</var> are used to specify the 
+icons displayed on the dialog form.
 </p>
 <p>
-aWidth can be used to supply a custom form width (in pixels). When set to a 
-value &amp;lt;= 0, the length of the text in Inst and Content are used to 
-determine the width for the dialog form. When an emulated task dialog is used, 
-the upper limit for the value is 480 pixels and the lower limit is 120 pixels.
+<var>aWidth</var> can be used to supply a custom form width (in pixels). When 
+set to a value &amp;lt;= 0, the length of the text in Inst and Content are 
+used to determine the width for the dialog form. When an emulated task dialog 
+is used, the upper limit for the value is 480 pixels and the lower limit is 
+120 pixels.
 </p>
 <p>
-aParent can be set to any HWND instance - by default, Application.DialogHandle.
+<var>aParent</var> can be set to any HWND instance - by default, 
+Application.DialogHandle.
 </p>
 <p>
-If aNonNative is <b>True</b>, the Delphi emulation code will always be used. 
-aEmulateClassicStyle can be set to enforce conformity with the non-themed 
-user interface - see 
+If <var>aNonNative</var> is <b>True</b>, the Delphi emulation code will always 
+be used. <var>aEmulateClassicStyle</var> can be set to enforce conformity with 
+the non-themed user interface - see 
 <url href="http://synopse.info/forum/viewtopic.php?pid=2867#p2867">
 http://synopse.info/forum/viewtopic.php?pid=2867#p2867
 </url>.
 </p>
 <p>
-aOnButtonClicked can be set to a callback executed when a button is clicked.
+<var>aOnButtonClicked</var> can be set to a callback routine executed when a 
+button is clicked.
 </p>
 </descr>
 <seealso/>
+<version>
+Modified in LCL version 2.2.6+ for native dialogs on the Windows platform. An 
+explicit dialog width (in pixels) is converted to dialog base units for use in 
+the TaskDialogIndirect Windows API.
+</version>
 </element>
 <element name="TTaskDialog.Execute.Result">
 <short>
@@ -1193,7 +1202,7 @@ Ordinal position for the default radio button selected on the task dialog.
 </element>
 <element name="TTaskDialog.Execute.aWidth">
 <short>
-Specifies the display width for the task dialog form.
+Specifies the display width for the task dialog form, or 0 to automtically calculate the width.
 </short>
 </element>
 <element name="TTaskDialog.Execute.aParent">
@@ -1225,13 +1234,15 @@ Sets the value for the specified visual element on the dialog.
 </short>
 <descr>
 <p>
-Allow a OnButtonClicked callback to change the Task Dialog main elements. 
-Note that tdeVerif could be modified only in emulation mode, since the API 
-does not give any run-time access to the checkbox caption. Other elements 
-will work in both emulated and native modes.
+Allows a OnButtonClicked callback to change the value for a Task Dialog main 
+element. Note that tdeVerif could be modified only in emulation mode, since 
+the API does not give any run-time access to the checkbox caption. Other 
+elements will work in both emulated and native modes.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTaskDialogElement"/>
+</seealso>
 </element>
 <element name="TTaskDialog.SetElementText.element">
 <short>
@@ -1239,9 +1250,10 @@ TTaskDialogElement enumeration value for the visual element updated in the
 method.
 </short>
 </element>
-
 <element name="TTaskDialog.SetElementText.Text">
-<short/>
+<short>
+New value for the specified dialog element. Assigned to the Caption or Text property in the corresponding element.
+</short>
 </element>
 
 <element name="TTaskDialogEx">
