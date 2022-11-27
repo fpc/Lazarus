@@ -262,6 +262,29 @@ begin
   Invalidate;
 end;
 
+procedure TCustomLabel.SetVisible(Value: Boolean);
+var
+  OldWidth, OldLeft: Integer;
+begin
+  // when changing to Visible, the width gets updated, check for right aligment and change left just like it is done in UpdateSize
+  // see issue #21898
+  if Value and not Visible then
+  begin
+    OldWidth := Width;
+    OldLeft := Left;
+  end else
+  begin
+    OldWidth := -1;
+    OldLeft := -1;
+  end;
+
+  inherited SetVisible(Value);
+
+  if (OldWidth>=0) and (AutoSize or OptimalFill) and (Alignment=taRightJustify)
+  and (OldWidth<>Width) and (OldLeft=Left) then
+    Left := Left-Width+OldWidth;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomLabel.SetWordWrap
   Params: None
