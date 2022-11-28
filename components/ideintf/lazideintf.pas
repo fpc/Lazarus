@@ -248,6 +248,7 @@ type
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
     lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
+    lihtFPCSrcDirScanned, // called after IDE scanned the FPC source directory
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
     lihtChangeToolStatus, //called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
@@ -542,6 +543,10 @@ type
                  const Handler: TGetFPCFrontEndPath; AsLast: boolean = false);
     procedure RemoveHandlerGetFPCFrontEndPath(const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
+    procedure AddHandlerFPCSrcDirScanned(
+                 const Handler: TNotifyEvent; AsLast: boolean = false);
+    procedure RemoveHandlerGetFPCSrcDirScanned(const Handler: TNotifyEvent);
+    procedure CallHandlerFPCSrcDirScanned(Sender: TObject);
     procedure AddHandlerOnShowDesignerFormOfSource(
                            const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
                            AsLast: boolean = false);
@@ -1173,6 +1178,23 @@ begin
     then exit(false);
   end;
   Result:=true;
+end;
+
+procedure TLazIDEInterface.AddHandlerFPCSrcDirScanned(
+  const Handler: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(lihtFPCSrcDirScanned,TMethod(Handler),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerGetFPCSrcDirScanned(
+  const Handler: TNotifyEvent);
+begin
+  RemoveHandler(lihtFPCSrcDirScanned,TMethod(Handler));
+end;
+
+procedure TLazIDEInterface.CallHandlerFPCSrcDirScanned(Sender: TObject);
+begin
+  FLazarusIDEHandlers[lihtFPCSrcDirScanned].CallNotifyEvents(Sender);
 end;
 
 procedure TLazIDEInterface.AddHandlerOnShowDesignerFormOfSource(

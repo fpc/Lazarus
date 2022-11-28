@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, LazFileUtils, DefineTemplates, CodeToolManager,
-  LazarusIDEStrConsts, ProgressWnd, BaseBuildManager;
+  LazIDEIntf, LazarusIDEStrConsts, ProgressWnd, BaseBuildManager;
 
 type
   TFPCSrcScans = class;
@@ -91,6 +91,8 @@ begin
     debugln(['ApplyFPCSrcFiles BuildBoss.RescanCompilerDefines ...']);
     if BuildBoss<>nil then
       BuildBoss.RescanCompilerDefines(false,false,false,true);
+    if LazarusIDE<>nil then
+      LazarusIDE.CallHandlerFPCSrcDirScanned(LazarusIDE);
   end;
   FreeAndNil(Files);
 end;
