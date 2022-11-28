@@ -8492,13 +8492,14 @@ the owner document.
 
 <!-- property Visibility: public -->
 <element name="TDOMAttrDef.Tag">
-<short/>
+<short>
+Utility property provided for general use.
+</short>
 <descr>
 <p>
 <var>Tag</var> is a <var>Cardinal</var> property.
 </p>
 </descr>
-<notes><note>?</note></notes>
 <seealso/>
 </element>
 
