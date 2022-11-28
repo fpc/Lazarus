@@ -181,7 +181,9 @@ Member used to store String content loaded into the configuration file.
 </element>
 
 <element name="TXMLConfig.fPathCache">
-<short></short>
+<short>
+Not used/updated in the current implementation.
+</short>
 <descr>
 Not used/updated in the current implementation.
 </descr>
