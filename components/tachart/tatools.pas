@@ -2027,10 +2027,10 @@ begin
   
   for i := 0 to FChart.SeriesCount-1 do
   begin
-    if not (FChart.Series[i] is TBasicChartSeries) then
+    if not (FChart.Series[i] is TBasicPointSeries) then
       continue;
     ser := TBasicPointSeries(FChart.Series[i]);
-    if ser.Active and ser.IsPointInLabel(FChart.Drawer, APoint, FPointIndex, FYIndex) then
+    if ser.Active and (ser.Count > 0) and ser.IsPointInLabel(FChart.Drawer, APoint, FPointIndex, FYIndex) then
     begin
       FSeries := ser;
       FXIndex := 0;  // to do: fix X index
