@@ -127,7 +127,7 @@ defined, the pointer in <var>p</var> is used as the return value.
 </seealso>
 </element>
 <element name="AlignToInt.p">
-<short></short>
+<short>Pointer to the value aligned in the routine.</short>
 </element>
 
 </module>
