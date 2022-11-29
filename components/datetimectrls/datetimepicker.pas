@@ -95,6 +95,8 @@ type
     AdjustEffectiveDateDisplayOrder procedure }
   TDateDisplayOrder = (ddoDMY, ddoMDY, ddoYMD, ddoTryDefault);
 
+  TMonthDisplay = (mdShort, mdLong, mdCustom);
+
   TTimeDisplay = (tdHM,   // hour and minute
                   tdHMS,  // hour, minute and second
                   tdHMSMs // hour, minute, second and milisecond
@@ -161,8 +163,11 @@ type
     FEffectiveHideDateTimeParts: set of TDateTimePart;
     FKind: TDateTimeKind;
     FLeadingZeros: Boolean;
+    FMonthDisplay: TMonthDisplay;
     FMonthNames: String;
+    FInitiallyLoadedMonthNames: String;  //remove if MonthNames property is removed
     FMonthNamesArray: TMonthNameArray;
+    FCustomMonthNames: TStrings;
     FNullInputAllowed: Boolean;
     FDateTime: TDateTime;
     FDateSeparator: String;
@@ -225,6 +230,7 @@ type
     function GetDateTime: TDateTime;
     function GetDroppedDown: Boolean;
     function GetTime: TTime;
+    procedure CustomMonthNamesChange(Sender: TObject);
     procedure SetAlignment(AValue: TAlignment);
     procedure SetArrowShape(const AValue: TArrowShape);
     procedure SetAutoButtonSize(AValue: Boolean);
@@ -233,11 +239,13 @@ type
     procedure SetCenturyFrom(const AValue: Word);
     procedure SetChecked(const AValue: Boolean);
     procedure CheckTextEnabled;
+    procedure SetCustomMonthNames(AValue: TStrings);
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
+    procedure SetMonthDisplay(AValue: TMonthDisplay);
     procedure SetMonthNames(AValue: String);
     procedure SetNullInputAllowed(const AValue: Boolean);
     procedure SetDate(const AValue: TDate);
@@ -325,6 +333,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                   PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
+    procedure Loaded; override;
 
     procedure IncreaseCurrentTextPart;
     procedure DecreaseCurrentTextPart;
@@ -426,7 +435,9 @@ type
              read FHideDateTimeParts write SetHideDateTimeParts;
     property CalendarWrapperClass: TCalendarControlWrapperClass
              read FCalendarWrapperClass write SetCalendarWrapperClass;
+    property MonthDisplay: TMonthDisplay read FMonthDisplay write SetMonthDisplay default mdLong;
     property MonthNames: String read FMonthNames write SetMonthNames;
+    property CustomMonthNames: TStrings read FCustomMonthNames write SetCustomMonthNames;
     property ShowMonthNames: Boolean
              read FShowMonthNames write SetShowMonthNames default False;
     property DroppedDown: Boolean read GetDroppedDown;
@@ -510,7 +521,9 @@ type
     property HideDateTimeParts;
     property BiDiMode;
     property ParentBiDiMode;
-    property MonthNames;
+    property MonthNames; deprecated 'Use MonthDisplay in conjunction with CustomMonthNames property';
+    property MonthDisplay;
+    property CustomMonthNames;
     property ShowMonthNames;
     property CalAlignment;
     property Alignment;
@@ -988,6 +1001,12 @@ begin
     FUpDown.Enabled := FTextEnabled;
 end;
 
+procedure TCustomDateTimePicker.SetCustomMonthNames(AValue: TStrings);
+begin
+  if (AValue <> nil) then
+    FCustomMonthNames.Assign(AValue);
+end;
+
 procedure TCustomDateTimePicker.SetDateDisplayOrder(
   const AValue: TDateDisplayOrder);
 var
@@ -1034,56 +1053,83 @@ begin
   UpdateDate;
 end;
 
+procedure TCustomDateTimePicker.SetMonthDisplay(AValue: TMonthDisplay);
+var
+  i: Integer;
+begin
+  if FMonthDisplay = AValue then Exit;
+  FMonthDisplay := AValue;
+  case AValue of
+    mdLong:
+    begin
+      for i := Low(TMonthNameArray) to High(TMonthNameArray) do
+        FMonthNamesArray[i] := AnsiToUtf8(DefaultFormatSettings.LongMonthNames[i]);
+    end;
+    mdShort:
+    begin
+      for i := Low(TMonthNameArray) to High(TMonthNameArray) do
+        FMonthNamesArray[i] := AnsiToUtf8(DefaultFormatSettings.ShortMonthNames[i]);
+    end;
+    mdCustom:
+    begin
+      for i := 0 to Min(FCustomMonthNames.Count - 1,11) do
+      begin
+        if (Trim(FCustomMonthNames[i]) <> '') then
+          FMonthNamesArray[i+1] := FCustomMonthNames[i]
+        else
+          //disallow empty names, default to long names in that case
+          FMonthNamesArray[i+1] := AnsiToUtf8(DefaultFormatSettings.LongMonthNames[i+1]);
+      end;
+      for i := FCustomMonthNames.Count to 11 do
+        FMonthNamesArray[i+1] := AnsiToUtf8(DefaultFormatSettings.LongMonthNames[i+1]);
+    end;
+  end;
+  if FShowMonthNames and not (dtpMonth in FEffectiveHideDateTimeParts) then
+  begin
+    FRecalculatingTextSizesNeeded := True;
+    UpdateDate;
+  end;
+end;
+
 procedure TCustomDateTimePicker.SetMonthNames(AValue: String);
 var
-  I, N, LenMNSep: Integer;
+  i: Integer;
   MonthNamesSeparator: String;
-
+  Arr: TStringArray;
 begin
-  if FMonthNames <> AValue then begin
-    AValue := TrimRight(AValue);
+  AValue := TrimRight(AValue);
+  if (csLoading in ComponentState) then
+  begin
+    FInitiallyLoadedMonthNames := AValue;
+    Exit;
+  end;
+  if FMonthNames <> AValue then
+  begin
     FMonthNames := AValue;
-
     if CompareText(AValue, 'SHORT') = 0 then
-      for I := Low(TMonthNameArray) to High(TMonthNameArray) do
-        FMonthNamesArray[I] := AnsiToUtf8(DefaultFormatSettings.ShortMonthNames[I])
-    else begin
-      N := 0;
-      if Length(AValue) >= 24 then begin
+      SetMonthDisplay(mdShort)
+    else
+    begin
+      if Length(AValue) >= 24 then
+      begin
         MonthNamesSeparator := UTF8Copy(AValue, 1, 1);
-        LenMNSep := Length(MonthNamesSeparator);
-        if LenMNSep > 0 then begin
-          Delete(AValue, 1, LenMNSep);
-
-          while N < 12 do begin
-            I := Pos(MonthNamesSeparator, AValue);
-            if I <= 1 then begin
-              if (I = 0) and (N = 11) and (Length(AValue) > 0) then begin
-                Inc(N);
-                FMonthNamesArray[N] := AValue;
-              end;
-
-              Break;
-            end;
-
-            Inc(N);
-            Dec(I);
-            FMonthNamesArray[N] := Copy(AValue, 1, I);
-            Delete(AValue, 1, I + LenMNSep);
-          end;
-
-        end;
+        Arr := AValue.Split([MonthNamesSeparator], TStringSplitOptions.ExcludeEmpty);
+        //only apply if at least 12 names are specified
+        if (Length(Arr) >= 12) then
+        begin
+          FCustomMonthNames.BeginUpdate;
+          FCustomMonthNames.Clear;
+          for i := Low(Arr) to High(Arr) do FCustomMonthNames.Add(Arr[i]);
+          FCustomMonthNames.EndUpdate;
+          SetMonthDisplay(mdCustom);
+        end
+        else
+          SetMonthDisplay(mdLong);
+      end
+      else
+      begin
+        SetMonthDisplay(mdLong);
       end;
-
-      if N < 12 then
-        for I := Low(TMonthNameArray) to High(TMonthNameArray) do
-          FMonthNamesArray[I] := AnsiToUtf8(DefaultFormatSettings.LongMonthNames[I]);
-    end;
-
-    if FShowMonthNames and
-              not (dtpMonth in FEffectiveHideDateTimeParts) then begin
-      FRecalculatingTextSizesNeeded := True;
-      UpdateDate;
     end;
   end;
 end;
@@ -2271,6 +2317,19 @@ begin
   ArrangeCtrls;
 end;
 
+procedure TCustomDateTimePicker.Loaded;
+begin
+  inherited Loaded;
+  //Since both deprecated MonthNames property and new MonthDisplay property control the same thing
+  //only apply design time value of MonthNames if:
+  // - MonthDisplay at design time is he default value (mdLong) and
+  // - MonthNames at design time <> default value for MonthNames ('Long'), since in that case there is nothing to do
+  if (FMonthDisplay = mdLong) and (CompareText(TrimRight(FInitiallyLoadedMonthNames), 'LONG') = 0) then
+  begin
+    SetMonthNames(FInitiallyLoadedMonthNames);
+  end;
+end;
+
 procedure TCustomDateTimePicker.IncreaseCurrentTextPart;
 begin
   if DateIsNull then begin
@@ -3288,6 +3347,16 @@ begin
     Result := Abs(Frac(FDateTime));
 end;
 
+procedure TCustomDateTimePicker.CustomMonthNamesChange(Sender: TObject);
+begin
+  if (FMonthDisplay = mdCustom) then
+  begin
+    //trick the control to re-apply the custom names
+    FMonthDisplay := mdLong;
+    SetMonthDisplay(mdCustom);
+  end;
+end;
+
 procedure TCustomDateTimePicker.SetAlignment(AValue: TAlignment);
 begin
   if FAlignment <> AValue then begin
@@ -4025,8 +4094,12 @@ begin
 
   AdjustEffectiveDateDisplayOrder;
   AdjustEffectiveHideDateTimeParts;
-
-  SetMonthNames('Long');
+  FCustomMonthNames := TStringList.Create;
+  TStringList(FCustomMonthNames).SkipLastLineBreak := True;
+  TStringList(FCustomMonthNames).OnChange := @CustomMonthNamesChange;
+  FInitiallyLoadedMonthNames := '';
+  FMonthNames := 'Long';
+  SetMonthDisplay(mdLong);
   SetDateMode(dmComboBox);
 end;
 
@@ -4067,6 +4140,7 @@ begin
   SetShowCheckBox(False);
   FOnChangeHandlers.Free;
   FOnCheckBoxChangeHandlers.Free;
+  FCustomMonthNames.Free;
 
   inherited Destroy;
 end;
