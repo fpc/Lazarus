@@ -37,8 +37,6 @@ uses
 
 type
 
-  { TObjectTypes }
-
   TObjectType = (otFolders, otNonFolders, otHidden);
 
   TObjectTypes = set of TObjectType;
@@ -46,6 +44,12 @@ type
   TFileSortType = (fstNone, fstAlphabet, fstFoldersFirst);
 
   TMaskCaseSensitivity = (mcsPlatformDefault, mcsCaseInsensitive, mcsCaseSensitive);
+
+  TExpandCollapseMode = (
+    ecmRefreshedExpanding,  // Clear already existing children before expanding
+    ecmKeepChildren,        // Do not clear children of already-expanded, but collapsed nodes
+    ecmCollapseAndClear     // Clear children when a node is collapsed
+  );
 
   { Forward declaration of the classes }
 
@@ -62,6 +66,7 @@ type
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellListView: TCustomShellListView;
+    FExpandCollapseMode: TExpandCollapseMode;
     FFileSortType: TFileSortType;
     FInitialRoot: String;
     FUseBuiltinIcons: Boolean;
@@ -85,9 +90,11 @@ type
     procedure DoSelectionChanged; override;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function CanExpand(Node: TTreeNode): Boolean; override;
+    procedure Collapse(Node: TTreeNode); override;
     function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
     function GetBuiltinIconSize: TSize; override;
     function NodeHasChildren(Node: TTreeNode): Boolean; override;
+    property ExpandCollapseMode: TExpandCollapseMode read FExpandCollapseMode write FExpandCollapseMode default ecmRefreshedExpanding;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -129,6 +136,7 @@ type
     property Color;
     property Constraints;
     property Enabled;
+    property ExpandCollapseMode;
     property ExpandSignType;
     property Font;
     property FileSortType;
@@ -625,12 +633,44 @@ begin
   AutoExpand:=False;
   BeginUpdate;
   try
-    Node.DeleteChildren;
-    Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
+    case FExpandCollapseMode of
+      ecmRefreshedExpanding:
+        begin
+          Node.DeleteChildren;
+          Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
+        end;
+      ecmKeepChildren:
+        if Node.Count = 0 then
+          Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node))
+        else
+          Result := true;
+      ecmCollapseAndClear:
+        Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
+    end;
     AutoExpand:=OldAutoExpand;
   finally
     EndUpdate;
   end;
+end;
+
+procedure TCustomShellTreeView.Collapse(Node: TTreeNode);
+var
+  hadChildren: Boolean;
+begin
+  if csDestroying in ComponentState then
+    exit;
+  if ExpandCollapseMode = ecmCollapseAndClear then
+  begin
+    BeginUpdate;
+    try
+      hadChildren := Node.HasChildren;
+      Node.DeleteChildren;
+      Node.HasChildren := hadChildren;
+    finally
+      EndUpdate;
+    end;
+  end;
+  inherited;
 end;
 
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
