@@ -12951,6 +12951,268 @@ and <var>TextChanged</var> methods, and when setting a new value for the
 <seealso/>
 </element>
 
+<element name="TCustomLabel.SetVisible">
+<short>
+Sets the value for the Visible property.
+</short>
+<descr>
+<p>
+<var>SetVisible</var> is an overridden method in <var>TCustomLabel</var> used 
+to set the value for the Visible property. It ensures that the Left property 
+is updated when taRightJustify is used in the Alignment property. For a 
+right-aligned value, Left is moved as needed to display the new Width for the 
+control. This action is performed when the value in Visible is changed to True 
+and either AutoSize or OptimalFill is also enabled.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomLabel.Alignment"/>
+<link id="TCustomLabel.AutoSize"/>
+<link id="TCustomLabel.OptimalFill"/>
+<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Left">TControl.Left</link>
+<link id="#lcl.controls.TControl.SetVisible">TControl.SetVisible</link>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
+</element>
+<element name="TCustomLabel.SetVisible.Value">
+<short>
+New value for the Visible property.
+</short>
+</element>
+
+<element name="TCustomLabel.Alignment">
+<short>
+Horizontal text justification in the control (centered, left- or 
+right-justified).
+</short>
+<descr>
+<p>
+<var>Alignment</var> is a <var>TAlignment</var> property which controls the 
+horizontal justification of the text displayed in the control. The default 
+value for the property is <var>taLeftJustify</var>. When a new value is 
+assigned to the Alignment property, the <var>Invalidate</var> method is 
+called to repaint the control.
+</p>
+<p>
+Alignment (and other properties) are used in the <var>Paint</var> method when 
+the text is rendered to the <var>Canvas</var> for the control. It is also 
+used in <var>UpdateSize</var> when right alignment needs to be considered for 
+an auto-sized or optimal-filled control.
+</p>
+<p>
+Use the <var>Layout</var> property to control the vertical alignment of the 
+text displayed in the control.
+</p>
+<p>
+Use <var>OptimalFill</var> to indicate if the font height can be adjust to 
+fill the client area for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.AutoSize"/>
+<link id="TCustomLabel.Layout"/>
+<link id="TCustomLabel.OptimalFill"/>
+<link id="TCustomLabel.Paint"/>
+<link id="TCustomLabel.UpdateSize"/>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.FocusControl">
+<short>
+The control associated with the label and its accelerator key (AccelChar).
+</short>
+<descr>
+<p>
+Set <var>FocusControl</var> to the control which is focused when the 
+accelerator key in the label is pressed.
+</p>
+<p>
+A label control cannot receive the input focus (it is read-only), but can 
+display an accelerator key indicator, just like a menu entries. A windowed 
+control (Edit...) can receive focus, but cannot indicate an accelerator key.
+</p>
+<p>
+Using a combination of a label and another control allows setting the 
+accelerator key in the label caption. The other control receives focus when 
+the user presses the accelerator key.
+</p>
+<p>
+An accelerator key is marked by an Ampersand '&amp;' in the label caption, 
+immediately preceding the character to be used as the accelerator key. The 
+marked character appears underlined on screen, when ShowAccelChar is set to 
+<b>True</b>.
+</p>
+<p>
+For example: When you have a NameEdit1 control on a form, preceded by a label 
+NameLabel1, you can set NameLabel1.FocusControl to NameEdit1, and 
+NameLabel1.Caption to '&amp;Name'.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.ShowAccelChar"/>
+</seealso>
+</element>
+
+<element name="TCustomLabel.Layout">
+<short>
+Vertical alignment for control text (at the top, bottom, or center).
+</short>
+<descr>
+<p>
+<var>Layout</var> is a <var>TTextLayout</var> property with the vertical 
+alignment used for the text displayed in the control. The default value for 
+the property is <var>tlTop</var>. Changing the value in Layout causes the 
+<var>Invalidate</var> method to be called to redraw the control.
+</p>
+<p>
+Use the <var>Alignment</var> property to control the horizontal alignment for 
+the text in the control.
+</p>
+<p>
+Use <var>OptimalFill</var> to indicate if the font height can be adjusted to 
+fill the client area for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.Alignment"/>
+<link id="TCustomLabel.OptimalFill"/>
+<link id="#lcl.graphics.TTextLayout">TTextLayout</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.ShowAccelChar">
+<short>
+Underlines the character in the label that acts as the accelerator or short 
+cut key.
+</short>
+<descr>
+<p>
+When <b>False</b>, an <b>Ampersand (&amp;)</b> character in the label caption 
+is displayed as an ordinary character (as used in the Object Inspector).
+</p>
+<p>
+When <b>True</b>, the character following the <b>Ampersand</b> is drawn with 
+an underline. When the user presses the accelerator key, input focus is given 
+to the associated <var>FocusControl</var>.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.FocusControl"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.Transparent">
+<short>Indicates whether the viewer can see through the control.</short>
+<descr>
+<p>
+When Transparent is set to <b>False</b>, the enclosing rectangle for the 
+control is filled with the background Color for the label. When set to 
+<b>True</b>, Color is not used to fill the background for the control and the 
+underlying control is visible.
+</p>
+<p>
+The property value is <b>True</b> when csOpaque has not been included in the 
+style flags for the control. Changing the value for the property causes 
+<var>ControlStyle</var> to be updated. When set to <b>True</b>, csOpaque is 
+removed from ControlStyle. When set to <b>False</b>, csOpaque is included in 
+ControlStyle. The control is redrawn when a new value is assigned to the 
+property.
+</p>
+<p>
+The default value for Transparent in the LCL is <b>True</b>. This differs 
+from the default value in the Delphi VCL.
+</p>
+<p>
+Values in Transparent and Color are used in the Paint method when the 
+background and text for the control are drawn. When Transparent is 
+<b>False</b> and Color has a value other than clNone, a solid brush is used 
+to fill the display area with the value in Color.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4. Transparent is no longer toggled when Color is 
+changed. Its value is independent of Color.
+</version>
+<seealso>
+<link id="TCustomLabel.Color"/>
+<link id="TCustomLabel.Paint"/>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.WordWrap">
+<short>
+Allows the caption to wrap to multiple lines when it is longer than the 
+available Width.
+</short>
+<descr>
+<p>
+<var>WordWrap</var> is a <var>Boolean</var> property which indicates if the 
+caption in the control can be wrapped to multiple lines when its length 
+exceeds the value in <var>Width</var>. The default value for the property is 
+<b>False</b>.
+</p>
+<p>
+When a new value is assigned to the property, the <var>Invalidate</var> and 
+<var>UpdateSize</var> methods are called to auto-size and repaint the control.
+</p>
+<p>
+When WordWrap is <b>False</b>, the text is truncated at the right boundary 
+when it is too long for the control Width. When WordWrap is <b>True</b> and 
+<var>AutoSize</var> is <b>True</b>, the maximum <var>Width</var> is 
+determined by anchoring the left and right sides for the control to its 
+Parent.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.AutoSize"/>
+<link id="TCustomLabel.UpdateSize"/>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.OptimalFill">
+<short>
+If <b>True</b>, the font size is adjusted for optimal fill of the available 
+space.
+</short>
+<descr>
+<p>
+<var>OptimalFill</var> is a <var>Boolean</var> property which indicates that 
+the <var>Font</var> height should be maximized to fill the available width in 
+the control. The default value for the property is <b>False</b>.
+</p>
+<p>
+Setting OptimalFill to <b>True</b> causes <var>AutoSize</var> to be set to 
+<b>False</b>. The <var>AdjustFontForOptimalFill</var> method is called to get 
+and apply the maximum font height allowed for the <var>Width</var> and 
+<var>Height</var> in the control.
+</p>
+<p>
+Changing the value for the property causes <var>Invalidate</var> to be called 
+to redraw the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.AutoSize"/>
+<link id="TCustomLabel.AdjustFontForOptimalFill"/>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Height">TControl.Height</link>
+<link id="#lcl.controls.TControl.Font">TControl.Font</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
+</element>
+
 <element name="TCustomLabel.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -13145,59 +13407,73 @@ enabled in the control. Calls the inherited method prior to exit.
 <short>New Height for the control.</short>
 </element>
 
-<element name="TCustomLabel.Alignment">
+<element name="TCustomLabel.AutoSize">
 <short>
-Horizontal text justification in the control (centered, left- or 
-right-justified).
+Enables or disables auto-sizing the control to its content.
 </short>
 <descr>
 <p>
-<var>Alignment</var> is a <var>TAlignment</var> property which controls the 
-horizontal justification of the text displayed in the control. The default 
-value for the property is <var>taLeftJustify</var>. When a new value is 
-assigned to the Alignment property, the <var>Invalidate</var> method is 
-called to repaint the control.
+AutoSize is a Boolean property reintroduced in TCustomLabel to set its default 
+value to <b>True</b>. 
 </p>
 <p>
-Alignment (and other properties) are used in the <var>Paint</var> method when 
-the text is rendered to the <var>Canvas</var> for the control. It is also 
-used in <var>UpdateSize</var> when right alignment needs to be considered for 
-an auto-sized or optimal-filled control.
+Auto-sizing behavior in <var>TCustomLabel</var> differs from the 
+implementation in the ancestor class (TControl). For example, a label can 
+become bigger or smaller to accommodate a longer or shorter caption. In other 
+controls, the property may control only the height for the control based on 
+the Font size.
 </p>
 <p>
-Use the <var>Layout</var> property to control the vertical alignment of the 
-text displayed in the control.
+AutoSize causes the control to be resized to fit the content in the Caption 
+property. This can include changing the values in Top, Left, Width, or Height 
+if the corresponding edge(s) are not fixed using the Anchors property. Any 
+edge included in Anchors is not altered when the control is auto-sized.
 </p>
 <p>
-Use <var>OptimalFill</var> to indicate if the font height can be adjust to 
-fill the client area for the control.
+In addition to Anchors, auto-sizing behavior is also influenced by the 
+Alignment and WordWrap properties for the control. When Alignment is set to 
+taLeftJust or taRightJustify, and AutoSize is not enabled, the control 
+displays the caption value aligned to the edge specified in Alignment. Excess 
+characters which do not fit in the Width for the control are truncated.
+</p>
+<p>
+When AutoSize is enabled, the control is resized to fit the characters in 
+Caption by repositioning the opposite edge for the Alignment value. For 
+taLeftJustify, the right edge is expanded or contracted by changing the value 
+in Width. For taRightJustify, the value in Left is repositioned until all 
+characters are displayed using the Alignment.
+</p>
+<p>
+Use the Anchors property to fix the position for an edge during auto-sizing 
+regardless of the value in the Alignment property. For example, when Anchors 
+is set to [akTop, akLeft, akRight], only the height for the control can be 
+altered when AutoSize is enabled.
+</p>
+<p>
+When WordWrap is enabled, and both the left and right edges are included in 
+Anchors, the height for the label control is adjusted during auto-sizing.
+</p>
+<p>
+Simultaneous use of both AutoSize and OptimalFill can have conflicting 
+results. AutoSize tries to use the existing Font to determine the control width
+/height. OptimalFill adjusts the Font size to fill the control width/height.
+</p>
+<p>
+Changing the value for the property causes AdjustSize (in TControl) to be 
+called when the property is enabled.
 </p>
 </descr>
 <seealso>
-<link id="TCustomLabel.AutoSize"/>
+<link id="TCustomLabel.Alignment"/>
 <link id="TCustomLabel.Layout"/>
+<link id="TCustomLabel.WordWrap"/>
 <link id="TCustomLabel.OptimalFill"/>
-<link id="TCustomLabel.Paint"/>
-<link id="TCustomLabel.UpdateSize"/>
-<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
-<link id="#rtl.classes.TAlignment">TAlignment</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.AutoSize">
-<short>Enables or disables auto-sizing for the control to its content.</short>
-<descr>
-<p>
-The action performed depends on the control type. For example, a label or 
-button can become bigger or smaller to accommodate a longer or shorter 
-caption.
-</p>
-<p>
-The default value for the property is <b>True</b> in <var>TCustomLabel</var>.
-</p>
-</descr>
-<seealso>
+<link id="TCustomLabel.CalculateSize"/>
+<link id="TCustomLabel.CalculatePreferredSize"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+<link id="#lcl.controls.TControl.Anchors">TControl.Anchors</link>
 <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+<link id="#lcl.controls.TControl.AdjustSize">TControl.AdjustSize</link>
 </seealso>
 </element>
 
@@ -13237,194 +13513,6 @@ Setting Color does not automatically change Transparent from <b>True</b> to
 <link id="TCustomLabel.Transparent"/>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
 <link id="#lcl.controls.TControl.Font">TControl.Font</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.FocusControl">
-<short>
-The control associated with the label and its accelerator key (AccelChar).
-</short>
-<descr>
-<p>
-Set <var>FocusControl</var> to the control which is focused when the 
-accelerator key in the label is pressed.
-</p>
-<p>
-A label control cannot receive the input focus (it is read-only), but can 
-display an accelerator key indicator, just like a menu entries. A windowed 
-control (Edit...) can receive focus, but cannot indicate an accelerator key.
-</p>
-<p>
-Using a combination of a label and another control allows setting the 
-accelerator key in the label caption. The other control receives focus when 
-the user presses the accelerator key.
-</p>
-<p>
-An accelerator key is marked by an Ampersand '&amp;' in the label caption, 
-immediately preceding the character to be used as the accelerator key. The 
-marked character appears underlined on screen, when ShowAccelChar is set to 
-<b>True</b>.
-</p>
-<p>
-For example: When you have a NameEdit1 control on a form, preceded by a label 
-NameLabel1, you can set NameLabel1.FocusControl to NameEdit1, and 
-NameLabel1.Caption to '&amp;Name'.
-</p>
-</descr>
-<seealso>
-<link id="TCustomLabel.ShowAccelChar"/>
-</seealso>
-</element>
-
-<element name="TCustomLabel.Layout">
-<short>
-Vertical alignment for control text (at the top, bottom, or center).
-</short>
-<descr>
-<p>
-<var>Layout</var> is a <var>TTextLayout</var> property with the vertical 
-alignment used for the text displayed in the control. The default value for 
-the property is <var>tlTop</var>. Changing the value in Layout causes the 
-<var>Invalidate</var> method to be called to redraw the control.
-</p>
-<p>
-Use the <var>Alignment</var> property to control the horizontal alignment for 
-the text in the control.
-</p>
-<p>
-Use <var>OptimalFill</var> to indicate if the font height can be adjusted to 
-fill the client area for the control.
-</p>
-</descr>
-<seealso>
-<link id="TCustomLabel.Alignment"/>
-<link id="TCustomLabel.OptimalFill"/>
-<link id="#lcl.graphics.TTextLayout">TTextLayout</link>
-<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.OptimalFill">
-<short>
-If <b>True</b>, the font size is adjusted for optimal fill of the available 
-space.
-</short>
-<descr>
-<p>
-<var>OptimalFill</var> is a <var>Boolean</var> property which indicates that 
-the <var>Font</var> height should be maximized to fill the available width in 
-the control. The default value for the property is <b>False</b>.
-</p>
-<p>
-Setting OptimalFill to <b>True</b> causes <var>AutoSize</var> to be set to 
-<b>False</b>. The <var>AdjustFontForOptimalFill</var> method is called to get 
-and apply the maximum font height allowed for the <var>Width</var> and 
-<var>Height</var> in the control.
-</p>
-<p>
-Changing the value for the property causes <var>Invalidate</var> to be called 
-to redraw the control.
-</p>
-</descr>
-<seealso>
-<link id="TCustomLabel.AutoSize"/>
-<link id="TCustomLabel.AdjustFontForOptimalFill"/>
-<link id="#lcl.controls.TControl.Width">TControl.Width</link>
-<link id="#lcl.controls.TControl.Height">TControl.Height</link>
-<link id="#lcl.controls.TControl.Font">TControl.Font</link>
-<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.ShowAccelChar">
-<short>
-Underlines the character in the label that acts as the accelerator or short 
-cut key.
-</short>
-<descr>
-<p>
-When <b>False</b>, an <b>Ampersand (&amp;)</b> character in the label caption 
-is displayed as an ordinary character (as used in the Object Inspector).
-</p>
-<p>
-When <b>True</b>, the character following the <b>Ampersand</b> is drawn with 
-an underline. When the user presses the accelerator key, input focus is given 
-to the associated <var>FocusControl</var>.
-</p>
-</descr>
-<seealso>
-<link id="TCustomLabel.FocusControl"/>
-<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.Transparent">
-<short>Indicates whether the viewer can see through the control.</short>
-<descr>
-<p>
-When Transparent is set to <b>False</b>, the enclosing rectangle for the 
-control is filled with the background Color for the label. When set to 
-<b>True</b>, Color is not used to fill the background for the control and the 
-underlying control is visible.
-</p>
-<p>
-The property value is <b>True</b> when csOpaque has not been included in the 
-style flags for the control. Changing the value for the property causes 
-<var>ControlStyle</var> to be updated. When set to <b>True</b>, csOpaque is 
-removed from ControlStyle. When set to <b>False</b>, csOpaque is included in 
-ControlStyle. The control is redrawn when a new value is assigned to the 
-property.
-</p>
-<p>
-The default value for Transparent in the LCL is <b>True</b>. This differs 
-from the default value in the Delphi VCL.
-</p>
-<p>
-Values in Transparent and Color are used in the Paint method when the 
-background and text for the control are drawn. When Transparent is 
-<b>False</b> and Color has a value other than clNone, a solid brush is used 
-to fill the display area with the value in Color.
-</p>
-</descr>
-<version>
-Modified in LCL version 2.4. Transparent is no longer toggled when Color is changed. Its value is independent of Color.
-</version>
-<seealso>
-<link id="TCustomLabel.Color"/>
-<link id="TCustomLabel.Paint"/>
-<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
-</seealso>
-</element>
-
-<element name="TCustomLabel.WordWrap">
-<short>
-Allows the caption to wrap to multiple lines when it is longer than the 
-available Width.
-</short>
-<descr>
-<p>
-<var>WordWrap</var> is a <var>Boolean</var> property which indicates if the 
-caption in the control can be wrapped to multiple lines when its length 
-exceeds the value in <var>Width</var>. The default value for the property is 
-<b>False</b>.
-</p>
-<p>
-When a new value is assigned to the property, the <var>Invalidate</var> and 
-<var>UpdateSize</var> methods are called to auto-size and repaint the control.
-</p>
-<p>
-When WordWrap is <b>False</b>, the text is truncated at the right boundary 
-when it is too long for the control Width. When WordWrap is <b>True</b> and 
-<var>AutoSize</var> is <b>True</b>, the maximum <var>Width</var> is 
-determined by anchoring the left and right sides for the control to its 
-Parent.
-</p>
-</descr>
-<seealso>
-<link id="TCustomLabel.AutoSize"/>
-<link id="TCustomLabel.UpdateSize"/>
-<link id="#lcl.controls.TControl.Width">TControl.Width</link>
-<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
 </seealso>
 </element>
 
