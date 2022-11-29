@@ -145,6 +145,44 @@ It is also passed as an argument to methods in
 <short>File masks are case sensitive.</short>
 </element>
 
+<element name="TExpandCollapseMode">
+<short>
+Indicates actions performed for child nodes when a shell tree node is expanded or collapsed.
+</short>
+<descr>
+<p>
+<var>TExpandCollapseMode</var> is an enumerated type with values that indicate 
+the actions performed for child nodes when a shell tree node is expanded or 
+collapsed. TExpandCollapseMode is the type used to implement the 
+ExpandCollapseMode property in TCustomShellTreeView.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellTreeView.ExpandCollapseMode"/>
+<link id="TCustomShellTreeView.CanExpand"/>
+<link id="TCustomShellTreeView.Collapse"/>
+</seealso>
+<version>
+Added in LCL version 2.4.
+</version>
+</element>
+<element name="TExpandCollapseMode.ecmRefreshedExpanding">
+<short>
+Clear existing children before expanding.
+</short>
+</element>
+<element name="TExpandCollapseMode.ecmKeepChildren">
+<short>
+Do not clear children of previously expanded tree nodes when they are 
+collapsed.
+</short>
+</element>
+<element name="TExpandCollapseMode.ecmCollapseAndClear">
+<short>
+Clear children when a node is collapsed.
+</short>
+</element>
+
 <element name="TAddItemEvent">
 <short>
 Specifies an event handler signalled when an item is added to a shell control.
@@ -222,6 +260,7 @@ methods implemented in the descendent classes.
 <element name="TCustomShellTreeView.FPopulateDelayed"/>
 <element name="TCustomShellTreeView.FRoot"/>
 <element name="TCustomShellTreeView.FShellListView"/>
+<element name="TCustomShellTreeView.FExpandCollapseMode"/>
 <element name="TCustomShellTreeView.FFileSortType"/>
 <element name="TCustomShellTreeView.FInitialRoot"/>
 <element name="TCustomShellTreeView.FUseBuiltinIcons"/>
@@ -534,13 +573,19 @@ notification.
 
 <element name="TCustomShellTreeView.CanExpand">
 <short>
-Determines if the specified tree node can be expanded in the shell control.
+Determines if the specified tree node can be expanded in the shell tree view 
+control.
 </short>
 <descr>
 <p>
 <var>CanExpand</var> is an overridden <var>Boolean</var> function used to 
-determine if the specified tree node can be expanded in the shell control. 
-<var>Node</var> contains the <var>TTreeNode</var> examined in the method.
+determine if the specified tree node can be expanded in the shell tree view 
+control. CanExpand ensures that the shell control reflects the current content 
+in the local file system during execution of the method.
+</p>
+<p>
+<var>Node</var> contains the <var>TTreeNode</var> examined and updated in the 
+method.
 </p>
 <p>
 CanExpand calls the inherited method to signal the OnExpanding event handler 
@@ -549,12 +594,30 @@ returns <b>False</b>.
 </p>
 <p>
 <var>CanExpand</var> temporarily disables the <var>AutoExpand</var> 
-functionality in the shell control, and removes all child tree nodes in 
-<var>Node</var>. The child nodes are re-created using the 
-<var>PopulateTreeNodeWithFiles</var> method. This ensures that the shell 
-control reflects the current content in the local file system during 
-execution of the method. The value in <var>AutoExpand</var> is restored to 
-its original value prior to exiting from the method.
+functionality in the shell tree view control, and updates the child nodes in 
+Node when needed. The value in ExpandCollapseMode is used to determine whether 
+child nodes are created or recreated. The following actions are performed for 
+the ExpandCollapseMode property values:
+</p>
+<dl>
+<dt>ecmRefreshedExpanding</dt>
+<dd>
+Deletes existing child nodes and calls PopulateTreeNodeWithFiles to reload 
+entries for the path in Node.
+</dd>
+<dt>ecmKeepChildren</dt>
+<dd>
+Keeps existing child nodes. Calls PopulateTreeNodeWithFiles if the existing 
+child node count is 0 (zero).
+</dd>
+<dt>ecmCollapseAndClear</dt>
+<dd>
+Calls PopulateTreeNodeWithFiles to load files for the path in Node.
+</dd>
+</dl>
+<p>
+The value in <var>AutoExpand</var> is restored to its original value prior to 
+exiting from the method.
 </p>
 <p>
 The entire update process is done in a BeginUpdate  / EndUpdate block to 
@@ -562,20 +625,73 @@ reduce the number of screen refreshes in the method.
 </p>
 </descr>
 <seealso>
+<link id="TCustomShellTreeView.ExpandCollapseMode"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TShellTreeView.AutoExpand"/>
 <link id="TShellTreeNode"/>
 <link id="TTreeNode"/>
 <link id="#lcl.comctrls.TCustomTreeView.AutoExpand">TCustomTreeView.AutoExpand</link>
 </seealso>
+<version>
+Modified in LCL version 2.4 to use ExpandCollapseMode to control actions 
+performed for child nodes.
+</version>
 </element>
 <element name="TCustomShellTreeView.CanExpand.Result">
 <short>
-<b>True</b> when the tree node contains child nodes and be expanded.
+<b>True</b> when the tree node can be expanded to display child nodes.
 </short>
 </element>
 <element name="TCustomShellTreeView.CanExpand.Node">
 <short>Tree node examined in the method.</short>
+</element>
+
+<element name="TCustomShellTreeView.Collapse">
+<short>
+Removes child nodes (if needed) when the specified tree node is collapsed.
+</short>
+<descr>
+<p>
+<var>Collapse</var> is an overridden method in <var>TCustomShellTreeView</var> 
+used to update the tree node specified in <var>Node</var> when it changes from 
+the expanded to the collapsed state. It uses the value in the 
+ExpandCollapseMode property to determine whether existing child nodes are 
+removed from the collapsed tree node.
+</p>
+<p>
+When ExpandCollapseMode is set to ecmCollapseAndClear, the DeleteChildren 
+method in Node is called to free its child nodes. The operation is performed 
+in a BeginUpdate / EndUpdate block to prevent updates to the control while the 
+child nodes are deleted.
+</p>
+<p>
+Collapse calls the inherited method prior to exit to update scroll bars on the control and to signal the OnCollapsed event handler (when assigned).
+</p>
+<p>
+No actions are performed in the method when ComponentState is set to 
+csDestroying.
+</p>
+<p>
+Collapse is called when a tree node has executed its Collapse method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellTreeView.ExpandCollapseMode"/>
+<link id="#lcl.comctrls.TCustomTreeView.Collapse">TCustomTreeView.Collapse</link>
+<link id="#lcl.comctrls.TCustomTreeView.OnCollapsed">TCustomTreeView.OnCollapsed</link>
+<link id="#lcl.comctrls.TTreeNode.Collapse">TTreeNode.Collapse</link>
+<link id="#lcl.comctrls.TTreeNode.HasChildren">TTreeNode.HasChildren</link>
+<link id="#lcl.comctrls.TTreeNode.DeleteChildren">TTreeNode.DeleteChildren</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
+<version>
+Added in LCL version 2.4.
+</version>
+</element>
+<element name="TCustomShellTreeView.Collapse.Node">
+<short>
+Tree node affected in the method.
+</short>
 </element>
 
 <element name="TCustomShellTreeView.DrawBuiltInIcon">
@@ -743,7 +859,7 @@ Please note: Values in the <var>Items</var> property are populated when the
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to initialize the PathDelimiter property and internal find options.  
+Modified in LCL version 2.4 to initialize the PathDelimiter property and internal find options.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.ObjectTypes"/>
