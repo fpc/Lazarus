@@ -101,6 +101,8 @@ to implement the <var>TCustomShellTreeView.FileSortType</var> property.
 </descr>
 <seealso>
 <link id="TCustomShellTreeView.FileSortType"/>
+<link id="TCustomShellTreeView.OnSortCompare"/>
+<link id="TFileItemCompareEvent"/>
 </seealso>
 </element>
 <element name="TFileSortType.fstNone">
@@ -116,6 +118,14 @@ file system.
 <short>
 Items are sorted alphabetically with folders placed at the beginning of the 
 list.
+</short>
+</element>
+<element name="TFileSortType.fstCustom">
+<short>
+Items are sorted using a user-defined compare function for files and 
+directories. The sort routine should return a negative value if the first item 
+comes before the second item, a positive value when the first item comes after 
+the second item, or 0 (zero) when both items have the same value.
 </short>
 </element>
 
@@ -183,6 +193,231 @@ Clear children when a node is collapsed.
 </short>
 </element>
 
+<element name="TFileItem">
+<short>
+Provides information about a file or directory on the local file system for 
+use in file sort comparison routines.
+</short>
+<descr>
+<p>
+<var>TFileItem</var> is a utility class used to represent a file or directory. 
+It contains BasePath with the path to the directory where the item is located 
+on the local file system, and FileInfo with the TSearchRec values for the item.
+</p>
+<p>
+TFileItem is the type used to represent the items passed as arguments to a 
+TFileItemCompareEvent handler routine. TFileItem instances are created and 
+used in the implementation of file listing and sort routines as well.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4. It was moved from the implementation section to 
+the interface section, and used to implement TFileItemCompareEvent routines.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TCustomShellTreeView.OnAddItem"/>
+<link id="TCustomShellTreeView.OnSortCompare"/>
+<link id="TCustomShellTreeView.FileSortType"/>
+<link id="TFileItemCompareEvent"/>
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TFileItem.FFileInfo"/>
+<element name="TFileItem.FBasePath"/>
+
+<!-- public -->
+<element name="TFileItem.isFolder">
+<short>
+<b>True</b> when the item represents a folder on the local file system.
+</short>
+<descr>
+<p>
+<var>isFolder</var> is a <var>Boolean</var> member which indicates if the item 
+represents a folder or directory on the local file system. Its value is 
+assigned in the Create constructor, and is set to True if the TSearchRec 
+instance in the DirInfo argument includes faDirectory in its Attr member.
+</p>
+</descr>
+<seealso>
+<link id="TFileItem.Create"/>
+<link id="TFileItem.FileInfo"/>
+<link id="TFileItem.BasePath"/>
+<link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+</seealso>
+</element>
+<element name="TFileItem.isFolder.Result">
+<short>
+<b>True</b> when the file item represents a folder on the local file system.
+</short>
+</element>
+
+<element name="TFileItem.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> stores values in the DirInfo and ABasePath arguments to the 
+FileInfo and BasePath properties in the class instance. isFolder is updated to 
+indicate whether the file item is a directory on the local file system.
+</p>
+</descr>
+<seealso>
+<link id="TFileItem.isFolder"/>
+<link id="TFileItem.BasePath"/>
+<link id="TFileItem.FileInfo"/>
+</seealso>
+</element>
+<element name="TFileItem.Create.DirInfo">
+<short>
+TSearchRec instance with the directory information for the file item.
+</short>
+</element>
+<element name="TFileItem.Create.ABasePath">
+<short>
+Contains the path on the local file system where the file item is stored.
+</short>
+</element>
+
+<element name="TFileItem.BasePath">
+<short>
+Path to the directory where the file item is stored on the local file system.
+</short>
+<descr>
+<p>
+<var>BasePath</var> is assigned in the Create constructor using the value 
+passed in the ABasePath argument.
+</p>
+</descr>
+<seealso>
+<link id="TFileItem.Create"/>
+<link id="TFileItem.FileInfo"/>
+<link id="TFileItem.isFolder"/>
+</seealso>
+</element>
+
+<element name="TFileItem.FileInfo">
+<short>
+TSearchRec instance with information about the file or directory in the item.
+</short>
+<descr>
+<p>
+<var>FileInfo</var> is assigned in the Create constructor using the value 
+passed in the DirInfo argument.
+</p>
+</descr>
+<seealso>
+<link id="TFileItem.Create"/>
+<link id="TFileItem.BasePath"/>
+<link id="TFileItem.isFolder"/>
+</seealso></element>
+
+<element name="TFileItemCompareEvent">
+<short>
+Implements a handler routine used to compare values in a custom file sort 
+for TCustomShellTreeView.
+</short>
+<descr>
+<p>
+<var>TFileItemCompareEvent</var> is the type used to implement the 
+OnSortCompare event handler in TCustomShellTreeView. TFileItemCompareEvent 
+compares the file items specified in the Item1 and Item2 arguments to 
+determine which value occurs first in the sort order.
+</p>
+<p>
+The return value is an <var>Integer</var> with the relative sort order for the 
+compared values:
+</p>
+<dl>
+<dt>A negative value (&amp;lt;0)</dt>
+<dd>Indicates that Item1 occurs before Item2 in the sort order.</dd>
+<dt>A positive value (&amp;gt;0)</dt>
+<dd>Indicates that Item1 occurs after Item2 in the sort order.</dd>
+<dt>0 (zero)</dt>
+<dd>Indicates that Item1 and Item2 have the same value in the sort order.</dd>
+</dl>
+<p>
+An application can implement and assign a routine using the signature to the 
+OnSortCompare event handler in TCustomShellTreeView. Set its FileSortType 
+property to fstCustom to enable the handler routine.
+</p>
+<p>
+The following is an item compare function, as implemented by forum member 
+d7_2_laz, used to order items with leading Underscore characters:
+</p>
+<code>
+function TForm1.SortCompareUnderscore(Item1, Item2: TFileItem): integer;
+begin
+  // Make sure that folders are moved to the top
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+    if (pos('_', Item1.FileInfo.Name) = 1) or 
+      (pos('_', Item2.FileInfo.Name) = 1) then
+      Result := AnsiCompareText(Item1.FileInfo.Name, Item2.FileInfo.Name)
+    else
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+end;
+</code>
+<p>
+<b>Sort File Items by Date</b>
+</p>
+<code>
+function TForm1.SortCompareByDate(Item1, Item2: TFileItem): integer;
+begin
+  // Folders first ...
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+  begin
+    // then file date ...
+    Result := CompareValue(Item1.FileInfo.TimeStamp, Item2.FileInfo.TimeStamp);
+    if Result = 0 then
+      // then file name
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+  end;
+end;
+</code>
+<p>
+<b>Sort File Items by Size</b>
+</p>
+<code>
+function TForm1.SortCompareBySize(Item1, Item2: TFileItem): integer;
+begin
+  // Folders first
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+  begin
+    // then file size ...
+    Result := Item1.FileInfo.Size - Item2.FileInfo.Size;
+    if Result = 0 then
+      // then file name
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+  end;
+end;
+</code>
+</descr>
+<seealso>
+<link id="TCustomShellTreeView.OnSortCompare"/>
+<link id="TCustomShellTreeView.FileSortType"/>
+<link id="TFileItem"/>
+</seealso>
+</element>
+<element name="TFileItemCompareEvent.Item1">
+<short>
+First file item for the comparison routine.
+</short>
+</element>
+<element name="TFileItemCompareEvent.Item2">
+<short>
+Second file item for the comparison routine.
+</short></element>
+<element name="TFileItemCompareEvent.Result">
+<short>
+Integer with the relative sort order for the compared file items.
+</short>
+</element>
+
 <element name="TAddItemEvent">
 <short>
 Specifies an event handler signalled when an item is added to a shell control.
@@ -204,7 +439,7 @@ procedure.
 </p>
 </descr>
 <seealso>
-<link id="TCustomShellListView.OnAddItem"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TCustomShellTreeView.OnAddItem"/>
 </seealso>
 </element>
@@ -297,6 +532,25 @@ methods implemented in the descendent classes.
 </element>
 <element name="TCustomShellTreeView.SetObjectTypes.AValue">
 <short>New value for the property.</short>
+</element>
+
+<element name="TCustomShellTreeView.SetOnSortCompare">
+<short>
+Sets the value for the OnSortCompare property.
+</short>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.OnSortCompare"/>
+<link id="TFileItemCompareEvent"/>
+</seealso>
+</element>
+<element name="TCustomShellTreeView.SetOnSortCompare.AValue">
+<short>
+New value for the OnSortCompare property.
+</short>
 </element>
 
 <element name="TCustomShellTreeView.SetPath">
@@ -1290,6 +1544,90 @@ to omit the file system object in Items.
 </seealso>
 </element>
 
+<element name="TCustomShellTreeView.OnSortCompare">
+<short>
+Event handler signalled to compare file items in a custom sort routine.
+</short>
+<descr>
+<p>
+<var>OnSortCompare</var> is a <var>TFileItemCompareEvent</var> property with 
+the event handler signalled to implement a custom file sort for the tree view 
+control. OnSortCompare is used to order the directories or files displayed in 
+the tree view control when its FileSortType property is set to fstCustom.
+</p>
+<p>
+Changing the routine assigned to the property causes the Items in the control 
+to be reloaded and ordered using the new file sort compare routine.
+</p>
+<p>
+An application can implement and assign a routine using the signature perform 
+custom file comparison routines using various attributes. The following is an 
+item compare function, as implemented by forum member d7_2_laz, used to order 
+items with leading Underscore characters:
+</p>
+<code>
+function TForm1.SortCompareUnderscore(Item1, Item2: TFileItem): integer;
+begin
+  // Make sure that folders are moved to the top
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+    if (pos('_', Item1.FileInfo.Name) = 1) or 
+      (pos('_', Item2.FileInfo.Name) = 1) then
+      Result := AnsiCompareText(Item1.FileInfo.Name, Item2.FileInfo.Name)
+    else
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+end;
+</code>
+<p>
+<b>Sort File Items by Date</b>
+</p>
+<code>
+function TForm1.SortCompareByDate(Item1, Item2: TFileItem): integer;
+begin
+  // Folders first ...
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+  begin
+    // then file date ...
+    Result := CompareValue(Item1.FileInfo.TimeStamp, Item2.FileInfo.TimeStamp);
+    if Result = 0 then
+      // then file name
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+  end;
+end;
+</code>
+<p>
+<b>Sort File Items by Size</b>
+</p>
+<code>
+function TForm1.SortCompareBySize(Item1, Item2: TFileItem): integer;
+begin
+  // Folders first
+  Result := ord(Item2.isFolder) - ord(Item1.isFolder);
+  if Result = 0 then
+  begin
+    // then file size ...
+    Result := Item1.FileInfo.Size - Item2.FileInfo.Size;
+    if Result = 0 then
+      // then file name
+      Result := CompareText(Item1.FileInfo.Name, Item2.FileInfo.Name);
+  end;
+end;
+</code>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.FileSortType"/>
+<link id="TCustomShellTreeView.Items"/>
+<link id="TCustomShellTreeView.Path"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
+<link id="TCustomShellTreeView.Root"/>
+</seealso>
+</element>
+
 <element name="TCustomShellTreeView.Items" link="#lcl.comctrls.TCustomTreeView.Items"/>
 
 <element name="TShellTreeView">
@@ -1437,6 +1775,7 @@ used for instance to quickly identify a component in an event handler.
 <element name="TShellTreeView.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TShellTreeView.OnSelectionChanged" link="#lcl.comctrls.TCustomTreeView.OnSelectionChanged"/>
 <element name="TShellTreeView.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+<element name="TShellTreeView.OnSortCompare" link="#lcl.shellctrls.TCustomShellTreeView.OnSortCompare"/>
 <element name="TShellTreeView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TShellTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
 <element name="TShellTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
@@ -1529,6 +1868,7 @@ in the class.
 <element name="TCustomShellListView.FShellTreeView"/>
 <element name="TCustomShellListView.FUseBuiltInIcons"/>
 <element name="TCustomShellListView.FOnAddItem"/>
+<element name="TCustomShellListView.FOnSortCompare"/>
 <element name="TCustomShellListView.FOnFileAdded"/>
 
 <element name="TCustomShellListView.SetMask">
