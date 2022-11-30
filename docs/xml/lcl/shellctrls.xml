@@ -331,9 +331,9 @@ The return value is an <var>Integer</var> with the relative sort order for the
 compared values:
 </p>
 <dl>
-<dt>A negative value (&amp;lt;0)</dt>
+<dt>A negative value (&lt;0)</dt>
 <dd>Indicates that Item1 occurs before Item2 in the sort order.</dd>
-<dt>A positive value (&amp;gt;0)</dt>
+<dt>A positive value (&gt;0)</dt>
 <dd>Indicates that Item1 occurs after Item2 in the sort order.</dd>
 <dt>0 (zero)</dt>
 <dd>Indicates that Item1 and Item2 have the same value in the sort order.</dd>
