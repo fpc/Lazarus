@@ -12951,40 +12951,6 @@ and <var>TextChanged</var> methods, and when setting a new value for the
 <seealso/>
 </element>
 
-<element name="TCustomLabel.SetVisible">
-<short>
-Sets the value for the Visible property.
-</short>
-<descr>
-<p>
-<var>SetVisible</var> is an overridden method in <var>TCustomLabel</var> used 
-to set the value for the Visible property. It ensures that the Left property 
-is updated when taRightJustify is used in the Alignment property. For a 
-right-aligned value, Left is moved as needed to display the new Width for the 
-control. This action is performed when the value in Visible is changed to True 
-and either AutoSize or OptimalFill is also enabled.
-</p>
-</descr>
-<version>
-Added in LCL version 2.4.
-</version>
-<seealso>
-<link id="TCustomLabel.Alignment"/>
-<link id="TCustomLabel.AutoSize"/>
-<link id="TCustomLabel.OptimalFill"/>
-<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
-<link id="#lcl.controls.TControl.Width">TControl.Width</link>
-<link id="#lcl.controls.TControl.Left">TControl.Left</link>
-<link id="#lcl.controls.TControl.SetVisible">TControl.SetVisible</link>
-<link id="#rtl.classes.TAlignment">TAlignment</link>
-</seealso>
-</element>
-<element name="TCustomLabel.SetVisible.Value">
-<short>
-New value for the Visible property.
-</short>
-</element>
-
 <element name="TCustomLabel.Alignment">
 <short>
 Horizontal text justification in the control (centered, left- or 
@@ -13009,7 +12975,7 @@ Use the <var>Layout</var> property to control the vertical alignment of the
 text displayed in the control.
 </p>
 <p>
-Use <var>OptimalFill</var> to indicate if the font height can be adjust to 
+Use <var>OptimalFill</var> to indicate if the font height can be adjusted to 
 fill the client area for the control.
 </p>
 </descr>
