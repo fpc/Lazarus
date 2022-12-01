@@ -5455,7 +5455,7 @@ begin
         $2060, // zero width word joiner
         $FEFF  // zero width no-break space
           : Replace(CodepointLen,'');
-        $0020, // space
+//        $0020, // space
         $00A0, // non breakable space
         $2000, // en quad, half wide space
         $2002, // en space, half wide space
@@ -5472,8 +5472,8 @@ begin
         $2001, // em quad, wide space
         $2003  // em space, wide space
          : Replace(CodepointLen,'  ');
+        else inc(p,CodepointLen);
         end;
-        inc(p,CodepointLen);
       end;
     end;
   until false;
