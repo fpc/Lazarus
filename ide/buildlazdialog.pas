@@ -393,8 +393,20 @@ var
   end;
 
   function Run(CurTitle: string): TModalResult;
+  var
+    Cmds: TStrings;
   begin
-    AddCmdLineParam(Cmd,false);
+    if Pos(' ',Cmd)>0 then
+    begin
+      Cmds:=TStringList.Create;
+      try
+        SplitCmdLineParams(Cmd,Cmds);
+        CmdLineParams.AddStrings(Cmds);
+      finally
+        Cmds.Free;
+      end;
+    end else
+      CmdLineParams.Add(Cmd);
     Tool:=ExternalToolList.Add(CurTitle);
     Tool.Reference(Self,ClassName);
     try
