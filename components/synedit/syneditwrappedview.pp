@@ -590,8 +590,11 @@ begin
   while (i < FWrappedExtraSumsCount) and (FWrappedExtraSums[i] = 0) do
     inc(i);
   if i > 0 then begin
+    assert(i<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.ShrinkCapacity: i<=FWrappedExtraSumsCount');
     WrapInfoCopyFromTo(
+      {$PUSH}{$R-}
       @FWrappedExtraSums[i],
+      {$POP}
       @FWrappedExtraSums[0],
       FWrappedExtraSumsCount-i);
     FOffsetAtStart := FOffsetAtStart + i;
@@ -690,20 +693,26 @@ begin
 
 
   if ALineOffset < FOffsetAtStart then begin
+    assert(FWrappedExtraSumsCount>0, 'TSynWordWrapLineMap.ValidateLine: FWrappedExtraSumsCount>0');
     if AWrappCount <> 1 then begin
       i := FirstInvalidLine;
       if (i < 0) or (ALineOffset < i) then
         i := ALineOffset;
       j := FOffsetAtStart - i;
+      assert(j>0, 'TSynWordWrapLineMap.ValidateLine: j>0');
       GrowCapacity(FWrappedExtraSumsCount + j);
       WrapInfoMoveUpAndAdjustFromTo(
         @FWrappedExtraSums[0],
         @FWrappedExtraSums[j],
         FWrappedExtraSumsCount,
         AWrappCount - 1);
+      assert((ALineOffset-i)<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.ValidateLine: (ALineOffset-i)<=FWrappedExtraSumsCount');
+      assert((ALineOffset-i)>=0, 'TSynWordWrapLineMap.ValidateLine: (ALineOffset-i)>=0');
       WrapInfoFillFrom(
-        @FWrappedExtraSums[i - ALineOffset],
-        j - (i - ALineOffset),
+        {$PUSH}{$R-}
+        @FWrappedExtraSums[ALineOffset - i],
+        {$POP}
+        j - (ALineOffset - i),
         AWrappCount - 1);
 
       assert(FOffsetAtStart >= j, 'TSynWordWrapLineMap.ValidateLine: FOffsetAtStart >= j');
@@ -902,6 +911,7 @@ begin
     // Moving to an empty page. Do NOT include any lines after FWrappedExtraSumsCount
     if MinLineCount > 0 then begin;
       ADestPage.GrowCapacity(MinLineCount);
+      assert(ASourceStartLine<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine<=FWrappedExtraSumsCount');
       WrapInfoCopyAndAdjustFromTo(
         @FWrappedExtraSums[ASourceStartLine],
         @ADestPage.FWrappedExtraSums[0],
@@ -920,6 +930,7 @@ begin
     @ADestPage.FWrappedExtraSums[ALineCount + OldOffset],
     ADestPage.FWrappedExtraSumsCount,
     SrcO2 - SrcO1);
+  assert(ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount');
   if MinLineCount > 0 then
     WrapInfoCopyAndAdjustFromTo(
       @FWrappedExtraSums[ASourceStartLine],
@@ -970,7 +981,7 @@ end;
 procedure TSynWordWrapLineMap.DeleteLinesAtOffset(ALineOffset,
   ALineCount: Integer; ADoNotShrink: Boolean);
 var
-  i, j: Integer;
+  i, j, AMoveCount: Integer;
 begin
   assert((FOffsetAtStart = 0) or (FWrappedExtraSumsCount > 0), 'TSynWordWrapLineMap.DeleteLinesAtOffset: (FOffsetAtStart = 0) or (FWrappedExtraSumsCount > 0)');
   if ALineCount = 0 then
@@ -991,11 +1002,15 @@ begin
 
   if ALineOffset < FWrappedExtraSumsCount then begin
     ALineCount := Min(ALineCount, FWrappedExtraSumsCount - ALineOffset);
-    WrapInfoCopyAndAdjustFromTo(
-      @FWrappedExtraSums[ALineOffset + ALineCount],
-      @FWrappedExtraSums[ALineOffset],
-      FWrappedExtraSumsCount - (ALineCount + ALineOffset),
-      GetWrappedExtraSumBefore(ALineOffset) - FWrappedExtraSums[ALineOffset + ALineCount - 1] );
+    AMoveCount := FWrappedExtraSumsCount - (ALineCount + ALineOffset);
+    assert(ALineCount>0, 'TSynWordWrapLineMap.DeleteLinesAtOffset: ALineCount>0');
+    assert(ALineOffset+ALineCount<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.DeleteLinesAtOffset: ALineOffset+ALineCount<=FWrappedExtraSumsCount');
+    if AMoveCount > 0 then
+      WrapInfoCopyAndAdjustFromTo(
+        @FWrappedExtraSums[ALineOffset + ALineCount],
+        @FWrappedExtraSums[ALineOffset],
+        AMoveCount,
+        GetWrappedExtraSumBefore(ALineOffset) - FWrappedExtraSums[ALineOffset + ALineCount - 1] );
     FWrappedExtraSumsCount := FWrappedExtraSumsCount - ALineCount;
 
     if (ALineOffset > 0) and (ALineOffset = FWrappedExtraSumsCount) then begin
