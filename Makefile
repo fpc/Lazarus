@@ -3166,6 +3166,9 @@ ifneq ($(filter $(CPU_TARGET),x86_64 mips mipsel mips64 mips64el riscv64 powerpc
 override FPCOPT+=-Cg
 endif
 endif
+ifneq ($(filter $(CPU_TARGET),z80),)
+override FPCOPT+=-CX -XX
+endif
 ifdef LINKSHARED
 endif
 ifdef GCCLIBDIR
@@ -3755,12 +3758,12 @@ help:
 	@exit
 registration:
 	$(MAKE) -C packager/registration
-lazutils: registration
+lazutils:
 	$(MAKE) -C components/lazutils
-lcl: lazutils
+lcl:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
-basecomponents: lcl
+basecomponents:
 	$(MAKE) -C components/buildintf
 	$(MAKE) -C components/lazdebuggers/lazdebuggerintf
 	$(MAKE) -C components/debuggerintf
@@ -3779,9 +3782,9 @@ bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
 	$(MAKE) -C tools
-revisioninc: lazutils
+revisioninc:
 	$(MAKE) -C ide revisioninc
-ide: basecomponents
+ide:
 	$(MAKE) -C ide ide
 idepkg: ide
 idebig:

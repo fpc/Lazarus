@@ -121,14 +121,14 @@ registration:
 	$(MAKE) -C packager/registration
 
 #-----------------------------------------------------------------------------
-# build package lazutils (shared by all LCL_PLATFORMs) 
-lazutils: registration
+# build package lazutils (shared by all LCL_PLATFORMs)
+lazutils:
 	$(MAKE) -C components/lazutils
 
 #-----------------------------------------------------------------------------
 # build package FreeType, LCLBase and LCL for LCL_PLATFORM
 # requires lazutils
-lcl: lazutils
+lcl:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
 
@@ -136,7 +136,7 @@ lcl: lazutils
 # build required LCL components needed by IDE for the LCL_PLATFORM
 # (Note: lazutils and codetools are shared on all LCL platforms)
 # requires lcl
-basecomponents: lcl
+basecomponents:
 	$(MAKE) -C components/buildintf
 	$(MAKE) -C components/lazdebuggers/lazdebuggerintf
 	$(MAKE) -C components/debuggerintf
@@ -167,13 +167,13 @@ tools:
 #-----------------------------------------------------------------------------
 # create/update ide/revision.inc
 # requires tools
-revisioninc: lazutils
+revisioninc:
 	$(MAKE) -C ide revisioninc
 
 #-----------------------------------------------------------------------------
 # build lazarus exe with minimum of packages for the LCL_PLATFORM
 # requires basecomponents and tools
-ide: basecomponents
+ide:
 	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
