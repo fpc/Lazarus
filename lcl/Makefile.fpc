@@ -9,36 +9,27 @@ units=alllclunits
 implicitunits= \
   actnlist \
   arrow \
-  avglvltree \
   buttons \
   calendar \
-  chart \
   checklst \
   clipbrd \
-  clistbox \
   comctrls \
   controls \
   dbactns \
   dbctrls \
   dbgrids \
   dialogs \
-  dynamicarray \
-  dynhasharray \
   editbtn \
   extctrls \
   extdlgs \
-  extendedstrings \
   extgraphics \
   filectrl \
   forms \
-  fpcadds \
   graphics \
-  graphtype \
   grids \
   imglist \
   inipropstorage \
   interfacebase \
-  lazlinkedlist \
   lclintf \
   lclmemmanager \
   lclproc \
@@ -46,7 +37,6 @@ implicitunits= \
   lclstrconsts \
   lcltype \
   lclunicodedata \
-  lconvencoding \
   lmessages \
   lresources \
   maskedit \
@@ -59,8 +49,6 @@ implicitunits= \
   spin \
   stdactns \
   stdctrls \
-  stringhashlist \
-  textstrings \
   toolwin \
   utrace \
   xmlpropstorage
