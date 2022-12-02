@@ -174,7 +174,7 @@ function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
 function UTF8CompareTextP(S1, S2: PChar): PtrInt;
-function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;
+function UTF8CompareLatinTextFast(S1, S2: String): PtrInt;
 function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
@@ -3518,16 +3518,15 @@ begin
   Result := WideCompareText(UTF8ToUTF16(S1,StrLen(S1)), UTF8ToUTF16(S2,StrLen(S2)));
 end;
 
-function UTF8CompareLatinTextFast(const S1, S2: String): PtrInt;
+function UTF8CompareLatinTextFast(S1, S2: String): PtrInt;
 // Like UTF8CompareText but does not return strict alphabetical order.
 // The order is deterministic and good for binary search and such uses.
 // Optimizes comparison of single-byte encoding and also multi-byte portions
-// when they are equal. Otherwise falls back to WideCompareText.
+// when they are equal. Otherwise falls back to AnsiCompareText.
 var
-  Count, Count1, Count2: sizeint;
+  Count, Count1, Count2: SizeInt;
   Chr1, Chr2: Char;
-  P1, P2: PChar;
-  P1LastBytePointOffset: PChar;
+  P1, P2, P1LastBytePointOffset: PChar;
 begin
   Count1 := Length(S1);
   Count2 := Length(S2);
@@ -3547,7 +3546,7 @@ begin
 
       if Chr1 <> Chr2 then
       begin
-        if (ord(Chr1) or ord(Chr2)) < 128 then
+        if (Ord(Chr1) or Ord(Chr2)) < 128 then
         begin
           P1LastBytePointOffset := P1;
           if (Chr1 in ['A'..'Z']) then
@@ -3559,16 +3558,14 @@ begin
         end
         else
         begin
-          p2 := p2 + (P1LastBytePointOffset - P1);
-          p1 := P1LastBytePointOffset;
-          Exit(WideCompareText(
-            UTF8ToUTF16(p1, Length(s1) - (p1 - @S1[1])),
-            UTF8ToUTF16(p2, Length(s2) - (p2 - @S2[1]))
-          ));
+          P2 := P2 + (P1LastBytePointOffset - P1);
+          Delete(S1, 1, P1LastBytePointOffset-@S1[1]);
+          Delete(S2, 1, P2-@S2[1]);
+          Exit(AnsiCompareText(S1, S2));
         end;
       end
       else
-      if (ord(Chr1) or ord(Chr2)) < 128 then
+      if (Ord(Chr1) or Ord(Chr2)) < 128 then
         P1LastBytePointOffset := P1;
 
       Inc(P1); Inc(P2);
@@ -4161,7 +4158,7 @@ end;
 function TStringListUTF8Fast.DoCompareText(const s1, s2: string): PtrInt;
 begin
   if CaseSensitive then
-    Result := Utf8CompareStr(s1, s2)
+    Result:=Utf8CompareStr(s1, s2)
   else
     Result:=UTF8CompareLatinTextFast(s1, s2);
 end;
