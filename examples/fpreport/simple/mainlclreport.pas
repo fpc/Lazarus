@@ -124,6 +124,7 @@ begin
     FReport.RenderReport(P);
     ShowMessage('PDF created: '+P.FileName);
   finally
+    P.Free;
     ButtonSet(true);
   end;
 end;
