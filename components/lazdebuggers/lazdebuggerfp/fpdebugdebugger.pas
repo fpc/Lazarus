@@ -668,6 +668,10 @@ end;
 
 procedure TFpThreadWorkerModifyUpdate.DoCallback_DecRef(Data: PtrInt);
 begin
+  if not Success then begin
+    if Assigned(FDebugger.OnFeedback) then
+      FDebugger.OnFeedback(self, 'Failed to modify value', '', ftError, [frOk]);
+  end;
   //
   FDebugger.Locals.TriggerInvalidateLocals;
   FDebugger.Watches.TriggerInvalidateWatchValues;

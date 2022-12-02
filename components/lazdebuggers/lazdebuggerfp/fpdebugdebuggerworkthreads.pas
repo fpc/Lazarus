@@ -746,22 +746,35 @@ begin
     if ResValue = nil then
       exit;
 
-    case ResValue.Kind of
-      skInteger:   if TryStrToInt64(FNewVal, i64) then ResValue.AsInteger := i64;
-      skCardinal:  if TryStrToQWord(FNewVal, c64) then ResValue.AsCardinal := c64;
-      skBoolean:   case LowerCase(trim(FNewVal)) of
-          'true':  ResValue.AsBool := True;
-          'false': ResValue.AsBool := False;
-        end;
-      skChar:      ResValue.AsString := FNewVal;
-      skEnum:      ResValue.AsString := FNewVal;
-      skSet:       ResValue.AsString := FNewVal;
-      skPointer:   if TryStrToQWord(FNewVal, c64) then ResValue.AsCardinal := c64;
-      skFloat: ;
-      skCurrency: ;
-      skVariant: ;
+    FSuccess := True;
+    try
+      case ResValue.Kind of
+        skInteger:   if TryStrToInt64(FNewVal, i64)
+                     then ResValue.AsInteger := i64
+                     else FSuccess := False;
+        skCardinal:  if TryStrToQWord(FNewVal, c64)
+                     then ResValue.AsCardinal := c64
+                     else FSuccess := False;
+        skBoolean:   case LowerCase(trim(FNewVal)) of
+            'true':  ResValue.AsBool := True;
+            'false': ResValue.AsBool := False;
+            otherwise FSuccess := False;
+          end;
+        skChar:      ResValue.AsString := FNewVal;
+        skEnum:      ResValue.AsString := FNewVal;
+        skSet:       ResValue.AsString := FNewVal;
+        skPointer:   if TryStrToQWord(FNewVal, c64) then
+                     ResValue.AsCardinal := c64
+                     else FSuccess := False;
+        //skFloat: ;
+        //skCurrency: ;
+        //skVariant: ;
+        otherwise
+          FSuccess := False;
+      end;
+    except
+      FSuccess := False;
     end;
-
 
   finally
     APasExpr.Free;
