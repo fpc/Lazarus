@@ -4299,7 +4299,7 @@ begin
       $A3: begin
         SetOpcode(OPmov);
         AddOv;
-        AddReg(regGeneral, os8, REG_A);
+        AddReg(regGeneral, OperandSize, REG_A);
       end;
       $A4: begin
         SetOpcode(OPmovs, OPSx_b); CheckRepeat;

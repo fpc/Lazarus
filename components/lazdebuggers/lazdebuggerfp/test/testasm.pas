@@ -75,11 +75,11 @@ begin
   try
 
   TestDis('callq  0x7ffbf0250860',       #$e8#$99#$da#$04#$00        ,  'call +$0004DA99');
-  TestDis('callq  *0x6c1ec(%rip)',       #$ff#$15#$ec#$c1#$06#$00    ,  'call dword ptr [rip+$0006C1EC]');
+  TestDis('callq  *0x6c1ec(%rip)',       #$ff#$15#$ec#$c1#$06#$00    ,  'call qword ptr [rip+$0006C1EC]');
   TestDis('rex.W callq *0x724f2(%rip)',  #$48#$ff#$15#$f2#$24#$07#$00,  'call qword ptr [rip+$000724F2]');
   TestDis('callq  0x100001f70',          #$e8#$7a#$48#$dc#$ff        ,  'call -$0023B786');
-  TestDis('callq  *0x100(%rbx)',         #$ff#$93#$00#$01#$00#$00    ,  'call dword ptr [rbx+$00000100]');
-  TestDis('callq  *(%rax)',              #$ff#$10                    ,  'call dword ptr [rax]');
+  TestDis('callq  *0x100(%rbx)',         #$ff#$93#$00#$01#$00#$00    ,  'call qword ptr [rbx+$00000100]');
+  TestDis('callq  *(%rax)',              #$ff#$10                    ,  'call qword ptr [rax]');
 
   TestDis('add al,$05',                  #$04#$05,                             'add al,$05');
   TestDis('add ah,$05',                  #$80#$c4#$05,                         'add ah,$05');
@@ -233,6 +233,11 @@ begin
   TestDis('add [esi*4+edx+$123456],eax', #$67#$01#$84#$b2#$56#$34#$12#$00,     'add [esi*4+edx+$123456],eax');
   TestDis('add [esi*4+edx+$123456],rax', #$67#$48#$01#$84#$b2#$56#$34#$12#$00, 'add [esi*4+edx+$123456],rax');
 
+  TestDis('mov [$0000001a],al ',   #$a2#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],al');
+  TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],ax');
+  TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],eax');
+  TestDis('mov [$0000001a],rax',   #$48#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],rax');
+
 
   Process.NewMode := dm32;
 
@@ -326,8 +331,9 @@ begin
   TestDis('add [esi*4+edx+$123456],ax',  #$66#$01#$84#$b2#$56#$34#$12#$00,     'add [esi*4+edx+$123456],ax');
   TestDis('add [esi*4+edx+$123456],eax', #$01#$84#$b2#$56#$34#$12#$00,         'add [esi*4+edx+$123456],eax');
 
-
-
+  TestDis('mov [$0000001a],al ',   #$a2#$1a#$00#$00#$00,         'mov [$0000001a],al');
+  TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00,     'mov [$0000001a],ax');
+  TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00,         'mov [$0000001a],eax');
 
 
   Process.NewMode := dm64;
