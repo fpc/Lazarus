@@ -7,8 +7,8 @@ interface
 
 uses
   FpDbgInfo, FpPascalBuilder, FpdMemoryTools, FpErrorMessages, FpDbgDwarf,
-  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, fgl, Math, SysUtils,
-  LazDebuggerIntf;
+  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, LazLoggerBase, fgl, Math,
+  SysUtils, LazDebuggerIntf;
 
 type
 
@@ -330,6 +330,8 @@ begin
   Result := True;
 
   Cnt := AnFpValue.MemberCount;
+  if CheckError(AnFpValue, AnResData) then
+    exit;
   CurRecurseDynArray := FRecurseDynArray;
   OuterIdx := FOuterArrayIdx;
 
@@ -392,7 +394,7 @@ begin
         FTotalArrayCnt := MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH;
       if i > FOuterArrayIdx then
         FOuterArrayIdx := i;
-      MemberValue := AnFpValue.Member[i+LowBnd];
+      MemberValue := AnFpValue.Member[i+LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
       EntryRes := AnResData.SetNextArrayData;
       if MemberValue = nil then
         EntryRes.CreateError('Error: Could not get member')
@@ -400,6 +402,8 @@ begin
         DoWritePointerWatchResultData(MemberValue, EntryRes, Addr);
       MemberValue.ReleaseReference;
     end;
+    DebugLn(IsError(AnFpValue.LastError), ['!!! ArrayToResData() unexpected error in array value', ErrorHandler.ErrorAsString(AnFpValue.LastError)]);
+    AnFpValue.ResetError;
 
   finally
     FRecurseDynArray := CurRecurseDynArray;
