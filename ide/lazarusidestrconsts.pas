@@ -4184,10 +4184,10 @@ resourcestring
   lisMacroPromptEnterRunParameters = 'Enter run parameters';
   
   // debugger
-  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error'
-    +'%sOoops, the debugger entered the error state'
-    +'%sSave your work now !'
-    +'%sHit Stop, and hope the best, we''re pulling the plug.';
+  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState =
+    'The debugger encountered an internal error.'
+    +'%0:s%0:sSave your work.'
+    +'%0:sYou may then hit "Stop", or "Reset debugger" to terminate the debug session.';
   lisExecutionStopped = 'Execution stopped';
   lisExecutionStoppedExitCode = 'Execution stopped with exit-code %1:d ($%2:s)';
   lisFileNotFound = 'File not found';

@@ -1449,8 +1449,7 @@ begin
       // shutting down lazarus may kill gdb, so we get an error
       if not Application.Terminated
       then FeedbackDlg.ExecuteFeedbackDialog
-        (Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState,
-                [LineEnding+LineEnding, LineEnding, LineEnding+LineEnding])
+        (Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [LineEnding])
          + LineEnding + LineEnding + FDebugger.ErrorStateMessage,
          FDebugger.ErrorStateInfo, ftError, [frStop]);
     end;
