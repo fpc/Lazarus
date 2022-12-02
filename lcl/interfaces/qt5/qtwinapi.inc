@@ -5224,8 +5224,8 @@ begin
     QMessageBoxWarning: Result := QMessageBox_warning(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
     else
     begin
-      DebugLn('WARNING: TQtWidgetSet.MessageBox() unspecified dialog type.');
-      Result := QMessageBox_information(AParent, @Str, @TitleStr, ButtonToQtButtons(DialogType), ButtonToQtButton[DefButton]);
+      DebugLn(Format('WARNING: TQtWidgetSet.MessageBox() unspecified dialog type %d DefButton %d.',[DialogType, DefButton]));
+      Result := QMessageBox_information(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));
     end;
   end;
   Result := QtButtonToResult(Result);
