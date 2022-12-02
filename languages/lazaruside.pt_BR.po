@@ -8441,8 +8441,9 @@ msgid "Debugger"
 msgstr "Depurador"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format, fuzzy
+#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Erro do Depurador%sOoops, o depurador entrou em uma condição de erro%sSalve seu trabalho agora !%sClique Parar e espere pelo melhor, estamos puxando a tomada."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror

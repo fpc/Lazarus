@@ -8439,8 +8439,9 @@ msgid "Debugger"
 msgstr "调试器"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format, fuzzy
+#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "调试器错误%s哎呀, 调试器进入错误状态%s现在保存你的工作!%s点击停止,相信(hope)最好的 , 我们将终止(pulling the plug)."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror

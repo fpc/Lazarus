@@ -8679,8 +8679,9 @@ msgid "Debugger"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format, fuzzy
+#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Debugger error%sOeps, de debugger is gecrashed%sSla uw werk op!%sKies Stop, en hoop voor het beste!"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror

@@ -8432,8 +8432,9 @@ msgid "Debugger"
 msgstr "Hibakereső"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format, fuzzy
+#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Hibakereső hiba%sHoppá, a hibakereső hibaállapotba került.%sMentse a munkáját most!%sNyomja meg az Leállítás-t, és reménykedjen a legjobbakban, most kihúzzuk a dugót."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror

@@ -8553,8 +8553,9 @@ msgid "Debugger"
 msgstr "Debuger"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format, fuzzy
+#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Chyba debugera %sDebuger vstúpil do chybového stavu%sUložte svoju prácu!%sPoužite Stop, a dúfajte v najlepšie, we're pulling the plug."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror

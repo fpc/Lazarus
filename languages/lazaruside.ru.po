@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-10-15 01:35+0300\n"
+"PO-Revision-Date: 2022-12-03 02:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8404,8 +8404,8 @@ msgstr "Отладчик"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 #, object-pascal-format
-msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Ошибка отладчика%sОй, отладчик попал в состояние ошибки%sСохраните работу прямо сейчас!%sНажмите Стоп и надейтесь на лучшее."
+msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
+msgstr "Произошла внутренняя ошибка отладчика.%0:s%0:sСохраните свои данные.%0:sЗатем можно нажать \"Стоп\" либо \"Сбросить отладчик\" для прекращения сеанса отладки."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
