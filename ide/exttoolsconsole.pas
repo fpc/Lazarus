@@ -222,7 +222,7 @@ procedure TExternalToolsConsole.HandleMessages;
 begin
   if IsMultiThread then begin
     if ConsoleVerbosity>0 then
-      DebugLn('TExternalToolsConsole.HandleMesages: Calling CheckSynchronize!');
+      DebugLn('TExternalToolsConsole.HandleMessages: Calling CheckSynchronize.');
     CheckSynchronize;
   end;
 end;
