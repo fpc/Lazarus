@@ -90,7 +90,6 @@ type
     fOutputCountNotified: integer;
     procedure ProcessRunning; // (worker thread) after Process.Execute
     procedure ProcessStopped; // (worker thread) when process stopped
-    procedure AddOutputLines(Lines: TStringList); // (worker thread) when new output arrived
     procedure NotifyHandlerStopped; // (main thread) called by ProcessStopped
     procedure NotifyHandlerNewOutput; // (main thread) called by AddOutputLines
     procedure SetThread(AValue: TExternalToolThread); // main or worker thread
@@ -121,6 +120,12 @@ type
     procedure AddExecuteBefore(Tool: TAbstractExternalTool); override;
     function CanStart: boolean;
     function GetLongestEstimatedLoad: int64;
+
+    procedure UserThreadRunning; override; // (worker thread) when thread Execute
+    procedure UserThreadStopped; override; // (worker thread) when thread stopped
+    procedure AddOutputLines(Lines: TStringList); override; // (worker thread) when new output arrived
+
+    function InitParsers: boolean; override;
   end;
 
   TExternalToolClass = class of TExternalTool;
@@ -344,14 +349,17 @@ begin
       if (not Handled) then begin
         MsgLine:=WorkerMessages.CreateLine(Line);
         MsgLine.Msg:=LineStr; // use raw output as default msg
-        MsgLine.Urgency:=mluDebug;
+        if ParserCount=0 then
+          MsgLine.Urgency:=mluImportant
+        else
+          MsgLine.Urgency:=mluDebug;
         if IsStdErr then
           MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
         WorkerMessages.Add(MsgLine);
       end;
     end;
 
-    // let all parsers improve the new messages
+    // let all parsers improve the new messages in worker thread before synchronized
     if OldMsgCount<WorkerMessages.Count then begin
       for i:=0 to ParserCount-1 do begin
         Parser:=Parsers[i];
@@ -369,16 +377,20 @@ begin
     LeaveCriticalSection;
   end;
 
-  // let all parsers improve the new messages
+  // let all parsers improve the new messages in main thread
   if NeedSynchronize then begin
     {$IFDEF VerboseExtToolAddOutputLines}
     DebuglnThreadLog(['TExternalTool.AddOutputLines SynchronizedImproveMessages ...']);
     {$ENDIF}
-    Thread.Synchronize(Thread,@SynchronizedImproveMessages);
+    if Thread<>nil then
+      Thread.Synchronize(Thread,@SynchronizedImproveMessages)
+    else if UserThread<>nil then
+      TThread.Synchronize(UserThread,@SynchronizedImproveMessages)
   end;
 
   EnterCriticalSection;
   try
+    // let all parsers improve the new messages in worker thread after synchronized
     if fNeedAfterSync then begin
       for i:=0 to ParserCount-1 do begin
         Parser:=Parsers[i];
@@ -416,6 +428,34 @@ begin
   {$IFDEF VerboseExtToolAddOutputLines}
   DebuglnThreadLog(['TExternalTool.AddOutputLines END']);
   {$ENDIF}
+end;
+
+function TExternalTool.InitParsers: boolean;
+var
+  i: Integer;
+  aParser: TExtToolParser;
+begin
+  for i:=0 to ParserCount-1 do begin
+    aParser:=Parsers[i];
+    try
+      aParser.Init;
+    except
+      on E: Exception do begin
+        ErrorMessage:=Format(lisParser, [DbgSName(aParser), E.Message]);
+        if (FStage>=etsStopped) then exit(true);
+        debugln(['Error: (lazarus) [TExternalTool.InitParsers] Error=',ErrorMessage]);
+        EnterCriticalSection;
+        try
+          if FStage>=etsStopped then exit(true);
+          FStage:=etsStopped;
+        finally
+          LeaveCriticalSection;
+        end;
+        exit;
+      end;
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TExternalTool.NotifyHandlerStopped;
@@ -869,6 +909,26 @@ begin
     end;
     ToolToInfo.Free;
   end;
+end;
+
+procedure TExternalTool.UserThreadRunning;
+var
+  i: Integer;
+begin
+  EnterCriticalSection;
+  try
+    if FStage>etsRunning then exit;
+    FStage:=etsRunning;
+  finally
+    LeaveCriticalSection;
+  end;
+  for i:=0 to ParserCount-1 do
+    Parsers[i].InitReading;
+end;
+
+procedure TExternalTool.UserThreadStopped;
+begin
+  ProcessStopped;
 end;
 
 procedure TExternalTool.Execute;

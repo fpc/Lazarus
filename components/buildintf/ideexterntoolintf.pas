@@ -478,6 +478,7 @@ type
     FReadStdOutBeforeErr: boolean;
     FResolveMacrosOnExecute: boolean;
     FThread: TThread;
+    FUserThread: TThread;
     FWorkerDirectory: string;
     FWorkerMessages: TMessageLines;
     FParsers: TFPList; // list of TExtToolParser
@@ -565,6 +566,12 @@ type
     property ReadStdOutBeforeErr: boolean read FReadStdOutBeforeErr write FReadStdOutBeforeErr;
     property MaxIdleInMS: integer read FMaxIdleInMS write FMaxIdleInMS; // if >0 then free Process after this time without output (detach, PID is not killed)
 
+    // user thread
+    property UserThread: TThread read FUserThread write FUserThread;
+    procedure UserThreadRunning; virtual; abstract; // (worker thread) when thread Execute
+    procedure UserThreadStopped; virtual; abstract; // (worker thread) when thread stopped
+    procedure AddOutputLines(Lines: TStringList); virtual; abstract; // (worker thread) when new output arrived
+
     // output
     property WorkerOutput: TStrings read FWorkerOutput; // the raw output
     property WorkerDirectory: string read FWorkerDirectory write FWorkerDirectory; // changed by parsers, initialized from Process.CurrentDirectory
@@ -583,6 +590,7 @@ type
     procedure ClearParsers(Delete: boolean = true);
     function FindParser(aParserClass: TExtToolParserClass): TExtToolParser;
     function FindParser(const SubTool: string): TExtToolParser;
+    function InitParsers: boolean; virtual; abstract;
 
     // viewers
     function ViewCount: integer;
