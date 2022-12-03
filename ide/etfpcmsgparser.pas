@@ -1565,12 +1565,17 @@ end;
 function TIDEFPCParser.CheckForUnspecificStdErr(p: PChar): boolean;
 var
   MsgLine: TMessageLine;
+  s: string;
 begin
   if not fMsgIsStdErr then exit(false);
   Result:=true;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
-  MsgLine.Urgency:=mluError;
+  s:=p;
+  if Pos('warning',s)>0 then
+    MsgLine.Urgency:=mluWarning
+  else
+    MsgLine.Urgency:=mluError;
   MsgLine.Msg:=p;
   AddMsgLine(MsgLine);
 end;

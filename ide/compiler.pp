@@ -58,6 +58,7 @@ type
   TCompiler = class(TObject)
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
+    procedure WriteError(const Msg: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -65,7 +66,6 @@ type
                      const WorkingDir, CompilerFilename, CompilerParams: string;
                      BuildAll, SkipLinking, SkipAssembler, CurrentDirectoryIsTestDir: boolean;
                      const aCompileHint: string): TModalResult;
-    procedure WriteError(const Msg: string);
   end;
 
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
