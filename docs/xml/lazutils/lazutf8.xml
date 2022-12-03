@@ -2312,14 +2312,38 @@ Like UTF8CompareText but does not return strict alphabetical order.
 </short>
 <descr>
 <p>
-Like UTF8CompareText, but does not return strict alphabetical order. The 
-order is deterministic and good for binary search and similar uses. Optimizes 
-comparison of single-byte encoding and also multi-byte portions when they are 
-equal. Otherwise falls back to WideCompareText.
+<var>UTF8CompareLatinTextFast</var> is like UTF8CompareText, but does not 
+return strict alphabetical order. The order is deterministic and good for 
+binary search and similar uses. It avoids the conversions from UTF-8 to UTF-16 
+needed to use WideCompareText.
 </p>
+<p>
+UTF8CompareLatinTextFast optimizes the comparison of values using single-byte 
+encoding by converting uppercase characters to lowercase characters for the 
+comparison. Multi-byte portions (with character values larger than Decimal 
+127) are optimized to ignore leading bytes sequences common to both compared 
+values.
+</p>
+<p>
+Otherwise, the routine falls back to AnsiCompareText to compare lowercase 
+ASCII values in S1 and S2.
+</p>
+<p>
+The return value is a pointer to an Integer where the relative sort order for 
+the compared values is stored.
+</p>
+<dl>
+<dt>&lt;0</dt>
+<dd>S1 comes before S2 in the sort order.</dd>
+<dt>&gt;0</dt>
+<dd>S1 comes after S2 in the sort order.</dd>
+<dt>0 (zero)</dt>
+<dd>S1 and S2 have the same value in the sort order.</dd>
+</dl>
 </descr>
 <seealso>
-<link id="#rtl.sysutils.WideCompareText">WideCompareText</link>
+<link id="UTF8CompareText"/>
+<link id="#rtl.sysutils.AnsiCompareText">AnsiCompareText</link>
 </seealso>
 </element>
 <element name="UTF8CompareLatinTextFast.Result">
@@ -2329,12 +2353,12 @@ Pointer to an Integer with the relative order for the compared values.
 </element>
 <element name="UTF8CompareLatinTextFast.S1">
 <short>
-String value used in the comparison.
+UTF-8-encoded String value used in the comparison.
 </short>
 </element>
 <element name="UTF8CompareLatinTextFast.S2">
 <short>
-String value used in the comparison.
+UTF-8-encoded String value used in the comparison.
 </short>
 </element>
 
