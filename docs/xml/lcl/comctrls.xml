@@ -2447,13 +2447,28 @@ Frees and releases resources allocated to PageList.
 <short>Removes all pages stored in the class instance.</short>
 <descr>
 <p>
-Calls <var>Delete</var> until all <var>TCustomPage</var> instances in 
-<var>PageList</var> have been removed.
+<var>Clear</var> is an overridden method in <var>TNBPages</var> used to remove 
+all of the <var>TCustomPage</var> instances in <var>PageList</var>. Pages are 
+deleted (in reverse order) by calling the Delete method, but the active page 
+is skipped to avoid activating other pages in the process. The active page is 
+deleted last.
+</p>
+<p>
+The inherited Clear method is <b>not</b> called in the implementation.
 </p>
 </descr>
 <seealso>
+<link id="TNBPages.Delete"/>
+<link id="TNBPages.NoteBook"/>
+<link id="TNBPages.PageList"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.PageIndex"/>
 <link id="#rtl.classes.TStrings.Clear">TStrings.Clear</link>
 </seealso>
+<version>
+Modified in LCL version 2.2.6 to avoid OnChanging and OnChange events when 
+pages are deleted.
+</version>
 </element>
 
 <element name="TNBPages.Delete">
