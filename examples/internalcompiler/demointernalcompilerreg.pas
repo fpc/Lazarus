@@ -50,6 +50,7 @@ begin
 
   // create the thread
   MyThread:=TMyPascalCompiler.Create(true);
+  MyThread.FreeOnTerminate:=true;
   MyThread.Tool:=Tool;
   Tool.Reference(MyThread,'RunMyPascalCompiler');
   Tool.UserThread:=MyThread;
