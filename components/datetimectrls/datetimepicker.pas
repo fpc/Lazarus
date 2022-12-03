@@ -116,6 +116,7 @@ type
            // because this set type is used for HideDateTimeParts property,
            // where hiding of AMPM part is tied to hiding of hour (and, of
            // course, it makes a difference only when TimeFormat is set to tf12)
+  TEffectiveDateTimeParts = set of TDateTimePart;
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
     asModernLarger, asYetAnotherShape, asTheme);
@@ -160,7 +161,7 @@ type
     FChecked: Boolean;
     FDateDisplayOrder: TDateDisplayOrder;
     FHideDateTimeParts: TDateTimeParts;
-    FEffectiveHideDateTimeParts: set of TDateTimePart;
+    FEffectiveHideDateTimeParts: TEffectiveDateTimeParts;
     FKind: TDateTimeKind;
     FLeadingZeros: Boolean;
     FMonthDisplay: TMonthDisplay;
@@ -381,6 +382,9 @@ type
       AsFirst: Boolean = False); virtual;
     procedure RemoveHandlerOnChange(AOnChange: TNotifyEvent); virtual;
     procedure RemoveHandlerOnCheckBoxChange(AOnCheckBoxChange: TNotifyEvent); virtual;
+
+    property EffectiveHideDateTimeParts: TEffectiveDateTimeParts read FEffectiveHideDateTimeParts;
+    property EffectiveDateDisplayOrder: TDateDisplayOrder read FEffectiveDateDisplayOrder;
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
