@@ -943,7 +943,7 @@ begin
     IDEMessageDialog(lisEdtExtToolTitleAndFilenameRequired,
                   lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
                   mtError, [mbCancel]);
-    ModalResult:=mrCancel;
+    ModalResult:=mrNone;
   end;
 end;
 
