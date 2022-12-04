@@ -1,4 +1,4 @@
-unit exwinsettings;
+unit ExWinSettings;
 {
  **********************************************************************
   This file is part of a Lazarus Package, Examples Window.
@@ -20,8 +20,18 @@ working space is. Easily extended.  David Bannon, Feb 2022
 interface
 
 uses
-    Classes, SysUtils, Forms, Controls, StdCtrls, EditBtn, IDEOptionsIntf,
-    IDEOptEditorIntf;
+    Classes, SysUtils,
+    // LazUtils
+    LazConfigStorage, LazFileUtils, LazLoggerBase,
+    // LCL
+    Controls, StdCtrls, EditBtn, Dialogs,
+    // BuildIntf
+    IDEOptionsIntf, baseIDEIntf,
+    // IdeIntf
+    LazIDEIntf, IDEOptEditorIntf,
+    //
+    UConst;
+
 
 { TExWinSettings }
 
@@ -33,7 +43,7 @@ type
     private
 
     public
-        constructor Create(const pbReadRegFile: boolean);
+        constructor Create(const {%H-}pbReadRegFile: boolean);
         destructor Destroy; override;
         class function GetGroupCaption: String; override;
         class function GetInstance: TAbstractIDEOptions; override;
@@ -70,9 +80,6 @@ var
   ExWinOptionsFrameID : integer;
 
 implementation
-
-uses Dialogs, LazLogger, UConst, baseIDEIntf, LazConfigStorage, LazFileUtils,
-    LazIDEIntf;
 
 {$R *.lfm}
 
@@ -126,7 +133,7 @@ end;
 
 function TExWinSettingsFrame.GetTitle: String;
 begin
-    Result := rsExampleProjects;
+    Result := rsGeneral;
 end;
 
 procedure TExWinSettingsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

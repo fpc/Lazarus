@@ -25,19 +25,23 @@ Notes -
     David Bannon, Feb 2022
 }
 {$mode objfpc}{$H+}
-{$define EXTESTMODE}
+{.$define EXTESTMODE}
 
 {X$define ONLINE_EXAMPLES}
 
 interface
 
 uses
-    Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-    ExtCtrls, Interfaces, uexampledata, uConst
+    Classes, SysUtils,
+    // LazUtils
+    LazFileUtils, fileutil, LazLoggerBase,
+    // LCL
+    LCLType, LCLIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
+    ExtCtrls,
     {$ifndef EXTESTMODE}
-    , IDEWindowIntf
+    IDEWindowIntf,
     {$endif}
-    ;
+    uexampledata, uConst;
 
 
 type
@@ -60,18 +64,17 @@ type
         procedure ButtonOpenClick(Sender: TObject);
         procedure ButtonViewClick(Sender: TObject);
         procedure CheckGroupCategoryDblClick(Sender: TObject);
-        procedure CheckGroupCategoryItemClick(Sender: TObject; Index: integer);
+        procedure CheckGroupCategoryItemClick(Sender: TObject; {%H-}Index: integer);
         procedure EditSearchChange(Sender: TObject);
         procedure EditSearchExit(Sender: TObject);
-        procedure EditSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+        procedure EditSearchKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
         procedure FormDestroy(Sender: TObject);
         procedure FormShow(Sender: TObject);
         procedure ListView1Click(Sender: TObject);
         procedure ListView1DblClick(Sender: TObject);
-        procedure ListView1KeyDown(Sender: TObject; var Key: Word;
-          Shift: TShiftState);
-        procedure ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+        procedure ListView1KeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure ListView1SelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     private
         procedure BuildSearchList(SL: TStringList; const Term: AnsiString);
                         // Copies the passed ex dir to a dir named for the Proj.
@@ -106,8 +109,6 @@ var
     Ex : TExampleData;
 
 implementation
-
-uses LazFileUtils, LCLType, fileutil, LazLogger, LCLIntf;
 
 {$R *.lfm}
 

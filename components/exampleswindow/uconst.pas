@@ -57,6 +57,7 @@ resourcestring
     rsExampleView = 'View in Browser';                      //  "
 
     // Settings Frame
+    rsGeneral = 'General';
     rsDirWhereExamplesGo = 'Directory where Examples go';
 
     // ------- rsExampleData

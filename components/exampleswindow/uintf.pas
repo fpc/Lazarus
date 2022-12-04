@@ -17,19 +17,22 @@ This unit provides the interface between Lazarus and the Package.
 interface
 
 uses
-  Classes,
-  //LCL,
-  LCLType,
-  //IDEIntf,
-  MenuIntf, IDECommands, ToolBarIntf, IDEOptEditorIntf;
+    Classes, SysUtils,
+    // LazUtils
+    LazFileUtils, LazConfigStorage, LazLoggerBase,
+    // LCL,
+    LCLType,
+    // BuildIntf
+    BaseIDEIntf, IDEOptionsIntf,
+    // IdeIntf
+    LazIDEIntf, MenuIntf, IDECommands, ToolBarIntf, IDEOptEditorIntf;
 
 procedure Register;
 
 implementation
 
-uses uLaz_Examples, uConst, lazlogger,
-  LazIDEintf, LazFileUtils, BuildIntf, ExWinSettings,
-  baseIDEIntf, IDEOptionsIntf, LazConfigStorage, SysUtils;
+uses
+    uLaz_Examples, uConst, ExWinSettings;
 
 // Note : IDEEnvironmentOptions.GetParsedLazarusDirectory is the Lazarus STC tree.
 

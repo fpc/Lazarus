@@ -1,4 +1,4 @@
-unit uexampledata;
+unit uExampleData;
 
 {
  **********************************************************************
@@ -48,7 +48,15 @@ Code would be greatly simplified if we were not trying to also support OnLine.
 
 interface
 
-uses Classes, SysUtils, fpjson, jsonparser ;
+uses
+    Classes, SysUtils, fpjson, jsonparser, jsonscanner, // these are the FPC JSON tools
+    httpprotocol,  // for http encoding
+    fphttpclient,  // determines a dependency on FPC 3.2.0 or later. Must for https downloads
+    ssockets, fpopenssl, base64,
+    // LazUtils
+    LazFileUtils, FileUtil, LazLoggerBase,
+    // BuildIntf
+    IDEOptionsIntf;
 
 const
     MetaFileExt = '.ex-meta';              // Extension of meta files.
@@ -119,8 +127,6 @@ type
             function ExtractFromJSON(const Field, data: string; Base64: boolean=false) : string;
             function ExtractFromJSON(const Field: string; const jItem: TJSONData; out
                                         Res: string; Base64: boolean = false): boolean;
-            function GetLazDir: string;
-
                                 // Receives a pretested JSON (not just a field) containing metadata of an Example
                                 // Returns false if data missing, drops msg to console about bad field.
                                 // Path may be relative or absolute (ie starting with '/' or '\'). Ones without
@@ -187,19 +193,11 @@ type
 implementation
 
 
-uses LCLProc,
-    uConst,
-    httpprotocol,  // for http encoding
-    fphttpclient,  // determines a dependency on FPC 3.2.0 or later. Must for https downloads
-    opensslsockets,
-    ssockets, fpopenssl,
-    lazfileutils, fileutil,
-    jsonscanner,                        // these are the FPC JSON tools
-    base64,
-    laz2_DOM, laz2_XMLRead;            // just to get LazarusDirectory, remove if we find a better way !
+uses
+    uConst;
 
-const
-    LastUpDate = 'LastUpDate';              // Name of JSON item were we store last update date
+//const
+//    LastUpDate = 'LastUpDate';      // Name of JSON item were we store last update date
 
 
 { A URL starts with eg 'https://gitlab.com/api/v4/projects/32480729/repository/'
@@ -540,10 +538,10 @@ begin
                             if ScanLocalTree(GitDir, False) then        // This should leave relative paths, suitable to upload to gitlab
                          end;
         FromLazSrcTree : begin
-                               ScanLocalTree(GetLazDir(), True);                 // Scan the Lazarus SRC tree
-                               ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
-                               // in the above line, we assume if user has moved Examples, then they will have OPM there too.
-                         end;
+            ScanLocalTree(IDEEnvironmentOptions.GetParsedLazarusDirectory, True); // Scan the Lazarus SRC tree
+            ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
+            // in the above line, we assume if user has moved Examples, then they will have OPM there too.
+            end;
         FromCacheFile  : begin
                             if not LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt) then begin
                                 DownLoadFile('master' + MetaFileExt, ExampleWorkingDir()+ 'master' + MetaFileExt);
@@ -555,7 +553,7 @@ begin
     ExList.Sort(@CategorySorter);
 //    if ExList.Count = 0 then begin
 //        debugln('TExampleData.LoadExData - found examples = ' + inttostr(ExList.Count));
-//        debugln('Lazarus Dir (ie source tree) = ' + GetLazDir());
+//        debugln('Lazarus Dir (ie source tree) = ' + IDEEnvironmentOptions.GetParsedLazarusDirectory);
 //        debugln('Lazarus Config Dir = ' + LazConfigDir);
 //        debugln('Examples Home Dir  = ' + ExamplesHome);
 //    end;
@@ -614,34 +612,6 @@ begin
         FileContent.Free;
     end;
     Result := true;
-end;
-
-{   environmentoptions.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <EnvironmentOptions>
-    ...
-    <LazarusDirectory Value="/home/dbannon/bin/Lazarus/lazarus-main">  .... }
-
-
-function TExampleData.GetLazDir() : string;                          // Todo : make direct call
-var
-    Doc : TXMLDocument;
-    Node, Node1 : TDOMNode;
-begin
-    Result := '';
-    ReadXMLFile(Doc, LazConfigDir + 'environmentoptions.xml');       // even in EXTESTMODE LazConfigDir should be valid
-    Node1 := Doc.DocumentElement.FindNode('EnvironmentOptions');
-    if Node1 <> nil then begin
-       Node := Node1.FindNode('LazarusDirectory');
-        if Node <> nil then
-           Result := AppendPathDelim(Resolvedots(Node.Attributes.GetNamedItem('Value').NodeValue));
-            // Apparently sometimes Lazarus puts a relative path in envopts.xml - danger here is
-            // that if Lazarus now has a working dir different from when the path was written, it
-            // will be wrong anyway. Further research is indicated.
-    end;
-    Doc.free;
-    // debugln('TExampleData.GetLazDir = ' + Result);
 end;
 
 class function TExampleData.EscJSON(InStr : string) : string;
