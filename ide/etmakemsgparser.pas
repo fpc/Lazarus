@@ -114,10 +114,8 @@ begin
   if (SubStr='') or (p=nil) then exit;
   s:=PChar(SubStr);
   while p^<>#0 do begin
-    if (UpChars[p^]=UpChars[s^]) and CompStrI(SubStr,p) then begin
-      Result:=p;
-      exit;
-    end;
+    if (UpChars[p^]=UpChars[s^]) and CompStrI(SubStr,p) then
+      exit(p);
     inc(p);
   end;
 end;
@@ -151,10 +149,8 @@ begin
     Negated:=false;
   while p^ in ['0'..'9'] do begin
     i:=i*10+ord(p^)-ord('0');
-    if (i>High(Result)) then begin
-      Result:=Default;
-      exit;
-    end;
+    if (i>High(Result)) then
+      exit(Default);
     inc(p);
   end;
   Result:=i;
