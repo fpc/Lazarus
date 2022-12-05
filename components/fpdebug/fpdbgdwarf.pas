@@ -3356,8 +3356,10 @@ begin
               TFpSymbolDwarfTypeVariant(MemberGroup.DbgSymbol).IsDefaultDiscr
             )
         )
-        then
+        then begin
+          MemberGroup.ReleaseReference;
           continue;
+        end;
         Result := MemberGroup.MemberByName[AIndex];
         if Result <> nil then begin
           MemberGroup.ReleaseReference;
