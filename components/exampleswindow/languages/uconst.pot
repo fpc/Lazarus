@@ -1,6 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: uconst.rsdefault
+msgid "Default"
+msgstr ""
+
 #: uconst.rsdirwhereexamplesgo
 msgid "Directory where Examples go"
 msgstr ""
@@ -84,6 +88,10 @@ msgstr ""
 #: uconst.rsfoundexampleprojects
 #, object-pascal-format
 msgid "Found %d Example Projects"
+msgstr ""
+
+#: uconst.rsgeneral
+msgid "General"
 msgstr ""
 
 #: uconst.rsgrouphint

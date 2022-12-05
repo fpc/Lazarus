@@ -12,6 +12,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: pt_BR\n"
 
+#: uconst.rsdefault
+msgid "Default"
+msgstr ""
+
 #: uconst.rsdirwhereexamplesgo
 msgid "Directory where Examples go"
 msgstr "Diretório para onde vão os exemplos"
@@ -96,6 +100,10 @@ msgstr "Falha ao copiar arquivos para"
 #, object-pascal-format
 msgid "Found %d Example Projects"
 msgstr "Encontrado(s) %d Projeto(s) de exemplo"
+
+#: uconst.rsgeneral
+msgid "General"
+msgstr ""
 
 #: uconst.rsgrouphint
 msgid "Double click inverts selection"

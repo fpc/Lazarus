@@ -160,6 +160,7 @@ end;
 procedure TExWinSettingsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
     Label1.Caption := rsDirWhereExamplesGo;
+    ButtonDefault.Caption := rsDefault;
 end;
 
 class function TExWinSettingsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
