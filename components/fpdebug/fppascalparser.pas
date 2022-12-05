@@ -601,6 +601,8 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetTypeInfo: TFpSymbol; override;
     function GetAsCardinal: QWord; override;
+    function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
     function GetAddress: TFpDbgMemLocation; override;
     function GetDerefAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpValue; override;
@@ -741,10 +743,28 @@ begin
 end;
 
 function TFpPasParserValueCastToPointer.GetFieldFlags: TFpValueFieldFlags;
+var
+  t: TFpSymbol;
+  Size: TFpDbgValueSize;
 begin
   if (FValue.FieldFlags * [svfAddress, svfOrdinal] <> [])
-  then
-    Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress]
+  then begin
+    Result := [svfOrdinal, svfCardinal, svfSizeOfPointer, svfDataAddress];
+
+    t := TypeInfo;
+    if (t <> nil) then t := t.TypeInfo;
+    if (t <> nil) and (t.Kind = skChar) and
+       //(IsNilLoc(OrdOrDataAddr) or
+       IsValidLoc(GetDerefAddress) //)  // always true
+    then begin // pchar
+      if not t.ReadSize(nil, Size) then
+        Size := ZeroSize;
+      case Size.Size of
+        1: Result := Result + [svfString];
+        2: Result := Result + [svfWideString];
+      end;
+    end;
+  end
   else
     Result := [];
 end;
@@ -772,6 +792,84 @@ begin
   else begin
     SetLastError(CreateError(fpErrAnyError, ['']));
   end;
+end;
+
+function TFpPasParserValueCastToPointer.GetAsString: AnsiString;
+var
+  t: TFpSymbol;
+  i: Cardinal;
+  Size: TFpDbgValueSize;
+  a: TFpDbgMemLocation;
+begin
+  Result := '';
+  if (FValue = nil) or (Context.MemManager = nil) then
+    exit;
+
+  t := TypeInfo;
+  if t <> nil then
+    t := t.TypeInfo;
+  if (t = nil) or (t.Kind <> skChar) then
+    exit;
+
+  a := GetDerefAddress;
+  if not IsReadableMem(a) then
+    exit;
+
+  // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+  if not t.ReadSize(nil, Size) then
+    exit;
+
+  if Size = 2 then
+    Result := GetAsWideString
+  else
+  if Size = 1 then begin // pchar
+    if not Context.MemManager.ReadPChar(a, 0, Result) then begin
+      Result := '';
+      SetLastError(Context.LastMemError);
+      exit;
+    end;
+  end
+  else
+    Result := inherited GetAsString;
+end;
+
+function TFpPasParserValueCastToPointer.GetAsWideString: WideString;
+var
+  t: TFpSymbol;
+  i: Cardinal;
+  Size: TFpDbgValueSize;
+  a: TFpDbgMemLocation;
+begin
+  Result := '';
+  if (FValue = nil) or (Context.MemManager = nil) then
+    exit;
+
+  t := TypeInfo;
+  if t <> nil then
+    t := t.TypeInfo;
+  if (t = nil) or (t.Kind <> skChar) then
+    exit;
+
+  a := GetDerefAddress;
+  if not IsReadableMem(a) then
+    exit;
+
+  // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+  if not t.ReadSize(nil, Size) then
+    exit;
+
+  if Size = 1 then
+    Result := GetAsString
+  else
+  if Size = 2 then begin // pchar
+    if not Context.MemManager.ReadPWChar(a, 0, Result) then begin
+      Result := '';
+      SetLastError(Context.LastMemError);
+      exit;
+    end;
+  end
+  else
+    Result := inherited GetAsWideString;
 end;
 
 function TFpPasParserValueCastToPointer.GetAddress: TFpDbgMemLocation;
