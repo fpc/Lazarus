@@ -103,8 +103,10 @@
 
   pre__PChar{e}         _OP_ PChar       ( nil );                               //@@ _pre3_PChar{e3};
   pre__PChar2{e}        _OP_ TPChr       ( nil );                               //@@ _pre3_PChar2{e3};
+  pre__PChar3{e}        _OP_ TPChr       ( nil );                               //@@ _pre3_PChar2{e3};
   {$IFDEF TestAssign}
   pre__PChar2{e} := @pre__Ansi2{e}[1];                                          //@@ _pre3_PChar2{e3}; // }
+  pre__PChar3{e} := @pre__Ansi2{e}[4];                                          //@@ _pre3_PChar2{e3}; // }
   {$ENDIF}
 
   pre__WideChar{e}      _OP_ char        (CHR1                    );            //@@ _pre3_WideChar{e3};

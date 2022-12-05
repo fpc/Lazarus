@@ -899,9 +899,9 @@ function TFpSymbolDwarfFreePascalTypePointer.GetDataAddressNext(
   AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation; out
   ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
-  if (not IsInternalPointer) and (ATargetType = nil) then exit(True);
-
   Result := inherited GetDataAddressNext(AValueObj, AnAddress, ADoneWork, ATargetType);
+  if (not IsInternalPointer) and (ATargetType = nil) then exit;
+
   if (not Result) or ADoneWork then
     exit;
 

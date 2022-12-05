@@ -317,12 +317,12 @@ type
   TFpValueDwarfPointer = class(TFpValueDwarfNumeric)
   private
     FPointedToAddr: TFpDbgMemLocation;
-    function GetDerefAddress: TFpDbgMemLocation;
   protected
     function GetAsCardinal: QWord; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
+    function GetDerefAddress: TFpDbgMemLocation; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
     function GetMember(AIndex: Int64): TFpValue; override;

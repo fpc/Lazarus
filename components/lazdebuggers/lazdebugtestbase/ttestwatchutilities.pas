@@ -44,6 +44,10 @@ type
 
      ehNoCharQuoting,     // unprintable chars are already escaped/quoted
      ehCharFromIndex,     // Debugger is allowed Pchar: 'x' String 'y'
+     ehChrIdxExpString,   // Use "String" *IF* Debugger returns Pchar: 'x' String 'y'
+     ehChrIdxExpPChar,    // Use "PChar" *IF* Debugger returns Pchar: 'x' String 'y'
+     ehChrIdxSkip,        // SKIP checks " *IF* Debugger returns Pchar: 'x' String 'y'
+     //ehChrIdxOnly,        // SKIP checks " *UNLESS* Debugger returns Pchar: 'x' String 'y'
      ehNoFieldOrder,  // structure: fields can be in any order
      ehMissingFields, // structure: fields may have gaps
 
@@ -94,6 +98,9 @@ type
     function MatchTypeName(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
 
     function CharFromIndex(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
+    function ChrIdxExpString(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
+    function ChrIdxExpPChar(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
+    function ChrIdxSkip(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
 
     function ExpectNotFound(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
     function ExpectError(ASymTypes: TSymbolTypes = []): TWatchExpectationResult;
@@ -189,6 +196,9 @@ type
 
     function NoCharQuoting(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function CharFromIndex(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function ChrIdxExpString(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function ChrIdxExpPChar(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
+    function ChrIdxSkip(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
 
     function ExpectNotFound(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
     function ExpectError(ASymTypes: TSymbolTypes = []; ACond: Boolean = True): PWatchExpectation;
@@ -919,6 +929,24 @@ begin
   Result := Self.AddFlag(ehCharFromIndex, ASymTypes);
 end;
 
+function TWatchExpectationResult.ChrIdxExpString(ASymTypes: TSymbolTypes
+  ): TWatchExpectationResult;
+begin
+  Result := Self.AddFlag(ehChrIdxExpString, ASymTypes);
+end;
+
+function TWatchExpectationResult.ChrIdxExpPChar(ASymTypes: TSymbolTypes
+  ): TWatchExpectationResult;
+begin
+  Result := Self.AddFlag(ehChrIdxExpPChar, ASymTypes);
+end;
+
+function TWatchExpectationResult.ChrIdxSkip(ASymTypes: TSymbolTypes
+  ): TWatchExpectationResult;
+begin
+  Result := Self.AddFlag(ehChrIdxSkip, ASymTypes);
+end;
+
 function TWatchExpectationResult.ExpectNotFound(ASymTypes: TSymbolTypes
   ): TWatchExpectationResult;
 begin
@@ -1071,6 +1099,27 @@ function TWatchExpectationHelper.CharFromIndex(ASymTypes: TSymbolTypes; ACond: B
 begin
   if not ACond then exit(Self);
   Result := Self^.AddFlag(ehCharFromIndex, ASymTypes);
+end;
+
+function TWatchExpectationHelper.ChrIdxExpString(ASymTypes: TSymbolTypes;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if not ACond then exit(Self);
+  Result := Self^.AddFlag(ehChrIdxExpString, ASymTypes);
+end;
+
+function TWatchExpectationHelper.ChrIdxExpPChar(ASymTypes: TSymbolTypes;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if not ACond then exit(Self);
+  Result := Self^.AddFlag(ehChrIdxExpPChar, ASymTypes);
+end;
+
+function TWatchExpectationHelper.ChrIdxSkip(ASymTypes: TSymbolTypes;
+  ACond: Boolean): PWatchExpectation;
+begin
+  if not ACond then exit(Self);
+  Result := Self^.AddFlag(ehChrIdxSkip, ASymTypes);
 end;
 
 function TWatchExpectationHelper.ExpectNotFound(ASymTypes: TSymbolTypes; ACond: Boolean): PWatchExpectation;
@@ -1375,6 +1424,23 @@ begin
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
       Context.WatchRes := WatchVal.ResultData;
+
+      if (Context.WatchRes <> nil) and
+         (Context.WatchRes.ValueKind = rdkPCharOrString)
+      then begin
+        if ehChrIdxExpPChar in ehf then begin
+          Context.WatchRes.SetSelectedIndex(0);
+          Context.WatchRes := Context.WatchRes.SelectedEntry;
+        end
+        else
+        if ehChrIdxExpString in ehf then begin
+          Context.WatchRes.SetSelectedIndex(1);
+          Context.WatchRes := Context.WatchRes.SelectedEntry;
+        end;
+        if ehChrIdxSkip in ehf then
+          exit;
+      end;
+
       if (Context.WatchRes <> nil) and
          (Context.WatchRes.ValueKind = rdkConvertRes) and
          (Context.WatchRes.FieldCount > 0)

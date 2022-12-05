@@ -3513,6 +3513,24 @@ begin
     t.Add('Pointer-Op: ', '^Word(10)-^Word(4)',     weInteger(3));
     t.Add('Pointer-Op: ', '^Word(10)-Pointer(4)',     weInteger(3)).ExpectError();
 
+    t.Add('Pointer-Op: ', '^Char(10)-^Char(4)',     weInteger(6));
+    t.Add('Pointer-Op: ', '^Char(10)-PChar(4)',     weInteger(6));
+    t.Add('Pointer-Op: ', 'PChar(10)-^Char(4)',     weInteger(6));
+    t.Add('Pointer-Op: ', 'PChar(10)-PChar(4)',     weInteger(6));
+
+    t.Add('Pointer-Op: ', 'gvPChar3-gvPChar2',      weInteger(3));
+    t.Add('Pointer-Op: ', 'PChar(@gvAnsi2[3])-PChar(gvAnsi2)',     weInteger(2)).ChrIdxExpString(stDwarf2);
+    t.Add('Pointer-Op: ', '^Char(@gvAnsi2[3])-^Char(gvAnsi2)',     weInteger(2)).ChrIdxExpString(stDwarf2);
+    t.Add('Pointer-Op: ', '@gvAnsi2[3]-@gvAnsi2[1]',      weInteger(2)).ChrIdxExpString(stDwarf2);
+
+    t.Add('Pointer-Op: ', '@gvAnsi2[3]-@gvPChar2[1]',     weInteger(1))
+      .ChrIdxSkip(stDwarf2) //skip
+      .ChrIdxExpPChar(stDwarf3Up);
+    t.Add('Pointer-Op: ', '@gvAnsi2[3]-gvPChar2',         weInteger(2)).ChrIdxExpString();
+    t.Add('Pointer-Op: ', '@gvPChar2[3]-@gvPChar2[1]',     weInteger(2)).ChrIdxExpPChar();
+    t.Add('Pointer-Op: ', '@gvPChar3[2]-@gvPChar2[1]',     weInteger(4)).ChrIdxExpPChar();
+
+
     t.Add('Pointer-Op: ', 'gcPtr2 - gcPtr1',     weInteger(1000));
     t.Add('Pointer-Op: ', 'gcPtr2 - gvPtr1',     weInteger(1000));
     t.Add('Pointer-Op: ', 'gvPtr2 - gcPtr2',     weInteger(1));

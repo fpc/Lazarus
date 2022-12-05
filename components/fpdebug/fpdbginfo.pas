@@ -133,6 +133,7 @@ type
     function GetAddress: TFpDbgMemLocation;  virtual;
     function DoGetSize(out ASize: TFpDbgValueSize): Boolean; virtual;
     function GetDataAddress: TFpDbgMemLocation;  virtual;
+    function GetDerefAddress: TFpDbgMemLocation;  virtual;
     function GetDataSize: TFpDbgValueSize;  virtual;
 
     function GetHasBounds: Boolean; virtual;
@@ -174,10 +175,11 @@ type
        * DataAddress/DataSize
          Address of Data, if avail and diff from Address (e.g. String, TObject, DynArray, ..., BUT NOT record)
          Otherwise same as Address/Size
-         For pointers, this is the address of the pointed-to data
+         For pointers, this is the same as Address (Not DerefAddress)
     *)
     property Address: TFpDbgMemLocation read GetAddress;
     property DataAddress: TFpDbgMemLocation read GetDataAddress; //
+    property DerefAddress: TFpDbgMemLocation read GetDerefAddress; //
     property DataSize: TFpDbgValueSize read GetDataSize;
 
     property HasBounds: Boolean  read GetHasBounds;
@@ -236,6 +238,7 @@ type
   public
     destructor Destroy; override;
     procedure SetTypeName(AName: String);
+    procedure SetType(AType: TFpSymbol);
     procedure SetAddress(AnAddress: TFpDbgMemLocation);
   end;
 
@@ -1087,6 +1090,11 @@ begin
   Result := Address;
 end;
 
+function TFpValue.GetDerefAddress: TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
+end;
+
 function TFpValue.GetDataSize: TFpDbgValueSize;
 begin
   if not GetSize(Result) then
@@ -1181,6 +1189,14 @@ begin
     FType := TFpSymbol.Create(AName)
   else
     FType.SetName(AName);
+end;
+
+procedure TFpValueConstWithType.SetType(AType: TFpSymbol);
+begin
+  assert(FType=nil, 'TFpValueConstWithType.SetType: FType=nil');
+  FType := AType;
+  if FType <> nil then
+    FType.AddReference;
 end;
 
 procedure TFpValueConstWithType.SetAddress(AnAddress: TFpDbgMemLocation);
