@@ -60,7 +60,6 @@ resourcestring
   ehrsAddNewItem = 'Add new item';
   ehrsDeleteItem = 'Delete item';
   ehrsBrowseForPath = 'Browse for path';
-  ehrsGeneral = 'General';
   ehrsBrowse = 'Browse ...';
   ehrsMacrofy = 'Use macros';
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '

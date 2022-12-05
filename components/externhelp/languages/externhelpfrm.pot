@@ -39,10 +39,6 @@ msgstr ""
 msgid "File not found: %s"
 msgstr ""
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr ""
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr ""

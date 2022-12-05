@@ -49,10 +49,6 @@ msgstr "Išorės"
 msgid "File not found: %s"
 msgstr "Failas nerastas: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Pagrindinis"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Išorės žinynas"

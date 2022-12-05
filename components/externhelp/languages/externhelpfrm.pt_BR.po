@@ -47,10 +47,6 @@ msgstr "Externo"
 msgid "File not found: %s"
 msgstr "Arquivo não encontrado: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Geral"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Ajuda externa"

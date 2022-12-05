@@ -50,10 +50,6 @@ msgstr "Зовнішні"
 msgid "File not found: %s"
 msgstr "Файл не знайдено: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Загальні"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Зовнішня довідка"

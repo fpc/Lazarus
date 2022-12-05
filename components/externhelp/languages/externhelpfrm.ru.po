@@ -47,10 +47,6 @@ msgstr "Внешние источники"
 msgid "File not found: %s"
 msgstr "Файл не найден: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Общие"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Внешние источники справки"

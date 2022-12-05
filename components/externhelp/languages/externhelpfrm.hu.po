@@ -49,10 +49,6 @@ msgstr "Külső"
 msgid "File not found: %s"
 msgstr "A fájl nem található: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Általános"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Külső súgó"

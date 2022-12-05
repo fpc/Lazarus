@@ -50,10 +50,6 @@ msgstr "Zewnętrzny"
 msgid "File not found: %s"
 msgstr "Nie znaleziono pliku: %s"
 
-#: externhelpfrm.ehrsgeneral
-msgid "General"
-msgstr "Ogólne"
-
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
 msgstr "Zewnętrzny plik pomocy"
