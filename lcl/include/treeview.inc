@@ -2415,8 +2415,9 @@ function TTreeNodes.GetSelections(const AIndex: Integer): TTreeNode;
 
   procedure RaiseOutOfBounds;
   begin
-    TreeNodeError('TTreeNodes.GetSelections Index '+IntToStr(AIndex)
-        +' out of bounds (Count='+IntToStr(FSelection.Count)+')');
+    TreeNodeError(Format(
+      'TTreeNodes.GetSelections Index %d out of bounds (Count=%d)',
+      [AIndex, FSelection.Count]));
   end;
 
 begin
@@ -2709,8 +2710,9 @@ function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
 
   procedure RaiseIndexOutOfBounds;
   begin
-    TreeNodeError('TTreeNodes.GetNodeFromIndex Index '+IntToStr(Index)
-           +' out of bounds (Count='+IntToStr(FCount)+')');
+    TreeNodeError(Format(
+      'TTreeNodes.GetNodeFromIndex Index %d out of bounds (Count=%d)',
+      [Index, FCount]));
   end;
 
   procedure RaiseSubTreeCount0;
@@ -3356,16 +3358,16 @@ begin
   if (Level > OldLevel) or (Node = nil) then
   begin
     if Level - OldLevel > 1 then
-      TreeViewError('TTreeStrings.Add: Invalid level, Level='+IntToStr(Level)
-        +' OldLevel='+IntToStr(OldLevel));
+      TreeViewError(Format('TTreeStrings.Add: Invalid level: Level=%d, OldLevel=%d',
+        [Level, OldLevel]));
   end
   else begin
     for I := OldLevel downto Level do
     begin
       Node := Node.Parent;
       if (Node = nil) and (I - Level > 0) then
-        TreeViewError('TTreeStrings.Add: Invalid level, Node=nil I='+IntToStr(I)
-          +' Level='+IntToStr(Level));
+        TreeViewError(Format('TTreeStrings.Add: Invalid level: Node=nil, I=%d, Level=%d',
+          [I, Level]));
     end;
   end;
   Owner.AddChild(Node, NewStr);
@@ -3406,8 +3408,8 @@ begin
           NextNode := NextNode.Parent;
         ANode := Owner.AddChild(NextNode.Parent, CurrStr);
       end
-      else TreeViewError('TTreeStrings.LoadTreeFromStream: Level='
-        +IntToStr(ALevel)+' CuurStr="'+CurrStr+'"');
+      else TreeViewError(Format('TTreeStrings.LoadTreeFromStream: Level=%d, CurrStr="%s"',
+             [ALevel, CurrStr]));
     end;
   finally
     Owner.EndUpdate;
