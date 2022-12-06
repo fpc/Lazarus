@@ -128,6 +128,8 @@ type
     procedure RemoveChild(ChildObj: PObject_); override;
     procedure SetLeft(ALeft: LongInt); override;
     procedure SetTop(ATop: LongInt); override;
+    procedure SetWidth(AWidth: integer); override;
+    procedure SetHeight(AHeight: integer); override;
     function GetTop(): Integer; override;
     function GetLeft(): Integer; override;
     function GetWidth(): Integer; override;
@@ -662,30 +664,58 @@ begin
   FBlockMove := False;
 end;
 
+procedure TMuiWindow.SetWidth(AWidth: integer);
+begin
+  FWidth := AWidth;
+  //SetAttribute(MUIA_Window_Width, AWidth);
+end;
+
+procedure TMuiWindow.SetHeight(AHeight: integer);
+begin
+  FHeight := AHeight;
+  //SetAttribute(MUIA_Window_Height, AHeight);
+end;
+
 function TMuiWindow.GetTop(): Integer;
 begin
-  Result := GetAttribute(MUIA_Window_TopEdge);
+  if Assigned(Obj) then
+    Result := GetAttribute(MUIA_Window_TopEdge)
+  else
+    Result := FTop;
 end;
 
 function TMuiWindow.GetLeft(): Integer;
 begin
-  Result := GetAttribute(MUIA_Window_LeftEdge);
+  if Assigned(Obj) then
+    Result := GetAttribute(MUIA_Window_LeftEdge)
+  else
+    Result := FLeft;
 end;
 
 function TMuiWindow.GetWidth(): Integer;
 begin
-  if Sizeable then
-    Result := GetAttribute(MUIA_Window_Width)
+  if Assigned(Obj) and Visible then
+  begin
+    if Sizeable then
+      Result := GetAttribute(MUIA_Window_Width)
+    else
+      Result := PasObject.Width;
+  end
   else
-    Result := PasObject.Width;
+    Result := FWidth;
 end;
 
 function TMuiWindow.GetHeight(): Integer;
 begin
-  if Sizeable then
-    Result := GetAttribute(MUIA_Window_Height)
+  if Assigned(Obj) and Visible then
+  begin
+    if Sizeable then
+      Result := GetAttribute(MUIA_Window_Height)
+    else
+      Result := PasObject.Height;
+  end
   else
-    Result := PasObject.Height;
+    Result := FHeight;
 end;
 
 function TMuiWindow.GetCaption: string;

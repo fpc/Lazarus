@@ -242,7 +242,7 @@ begin
     begin
       NewDC.RastPort := CreateRastPortA;
       NewDC.RastPort^.Layer := nil;
-      NewDC.RastPort^.Bitmap := AllocBitMap(IntuitionBase^.ActiveScreen^.Width, IntuitionBase^.ActiveScreen^.Height, 32, BMF_CLEAR or BMF_MINPLANES or BMF_DISPLAYABLE, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
+      NewDC.RastPort^.Bitmap := AllocBitMap(IntuitionBase^.ActiveScreen^.Width, IntuitionBase^.ActiveScreen^.Height, 32, BMF_CLEAR or {$ifdef AROS}0{$else}BMF_MINPLANES{$endif}, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
       NewDC.DrawRect := Rect(0, 0, IntuitionBase^.ActiveScreen^.Width, IntuitionBase^.ActiveScreen^.Height);
     end;
     NewDC.InitCanvas;
@@ -628,7 +628,7 @@ begin
   ARect.Right := Widget.Left + Widget.Width;
   ARect.Top := Widget.Top;
   ARect.Bottom := Widget.Top + Widget.Height;
-  //writeln(Widget.classname, '################Get Clientbounds ', ARect.Left, ', ', ARect.Right);
+  //writeln(Widget.classname, '################Get Clientbounds ', ARect.Left, ', ', ARect.Top);
   Result := True;
 end;
 
@@ -954,17 +954,45 @@ function TMUIWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   Sc: PScreen;
 begin
-  //writeln('get system metrics ', nIndex);
+
   Sc := LockPubscreen('Workbench');
+  Result := 0;
   if Assigned(Sc) then
   begin
     case nIndex of
       //Current screen size
-      SM_CXSCREEN: Result:= Sc^.Width;
-      SM_CYSCREEN: Result:= Sc^.Height;
-      //Desktop size
-      SM_CXVIRTUALSCREEN: Result:=Sc^.Width;
-      SM_CYVIRTUALSCREEN: Result:=Sc^.Height;
+      SM_CXSCREEN,
+      SM_CXVIRTUALSCREEN,
+      SM_CXFULLSCREEN:
+        begin
+          Result := Sc^.Width;
+          //writeln('get system metrics width ', nIndex, ' Result ', Result);
+        end;
+
+      SM_CYSCREEN,
+      SM_CYVIRTUALSCREEN,
+      SM_CYFULLSCREEN:
+        begin
+          Result:= Sc^.Height;
+          //writeln('get system metrics Height ', nIndex, ' Result ', Result);
+        end;
+      //
+      // from cocoawinapi
+      SM_CXSMICON,
+      SM_CYSMICON:
+        Result := 16;
+      SM_CXICON,
+      SM_CYICON:
+        Result := 128;
+      SM_CXCURSOR,
+      SM_CYCURSOR:
+        Result := 16;
+      SM_CXDRAG,
+      SM_CYDRAG:
+        Result := 5;
+      SM_CXHTHUMB,
+      SM_CYVTHUMB:
+        Result := 5;
     end;
     UnlockPubScreen('Workbench', Sc);
   end;
@@ -1766,7 +1794,7 @@ begin
     begin
       if Src.Drawn then
       begin
-        ScaledBitmap := AllocBitMap(Width, Height, 32, BMF_MINPLANES or BMF_DISPLAYABLE, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
+        ScaledBitmap := AllocBitMap(Width, Height, 32, {$ifdef AROS}0{$else}BMF_MINPLANES{$endif}, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
         with bsa do
         begin
           bsa_SrcX := XSrc;
@@ -1910,7 +1938,7 @@ begin
     begin
       if Src.Drawn then
       begin
-        ScaledBitmap := AllocBitMap(Width, Height, 32, BMF_MINPLANES or BMF_DISPLAYABLE, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
+        ScaledBitmap := AllocBitMap(Width, Height, 32, {$ifdef AROS}0{$else}BMF_MINPLANES{$endif}, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
         with bsa do
         begin
           bsa_SrcX := XSrc;

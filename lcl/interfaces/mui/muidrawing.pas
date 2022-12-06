@@ -130,16 +130,21 @@ type
   { TMUIBitmap }
 
   TMUIBitmap = class(TMUIWinAPIObject)
+  private
+    FMUICanvas: TMUICanvas;
+    procedure SetMUICanvas(AValue: TMUICanvas);
   public
     FImage: Pointer;
     FWidth: Integer;
     FHeight: Integer;
     FDepth: Integer;
-    MUICanvas: TMUICanvas;
+
     constructor Create(Width, Height, Depth: Integer); virtual; overload;
     destructor Destroy; override;
 
     procedure GetFromCanvas;
+
+    property MUICanvas: TMUICanvas read FMUICanvas write SetMUICanvas;
   end;
 
   { TMUIFontObj }
@@ -451,12 +456,19 @@ procedure TMUIBitmap.GetFromCanvas;
 var
   T: TPoint;
 begin
+  //writeln('TMUICanvas.GetFromCanvas  ', HexStr(Self), ' MuiCanvas ', Assigned(MUICanvas));
   if Assigned(MUICanvas) and Assigned(FImage) and Assigned(MUICanvas.RastPort) then
   begin
     T := MUICanvas.GetOffset;
     if Assigned(CyberGfxBase) then
       Cybergraphics.ReadPixelarray(FImage, 0, 0, FWidth * SizeOf(LongWord), MUICanvas.RastPort, T.X, T.Y, FWidth, FHeight, RECTFMT_ARGB);
   end;
+end;
+
+procedure TMUIBitmap.SetMUICanvas(AValue: TMUICanvas);
+begin
+  FMUICanvas := AValue;
+  //writeln('TMUICanvas.SetMUICanvas  ', HexStr(Self), ' MuiCanvas ', Assigned(AValue));
 end;
 
 { TMUIFontObj }
@@ -1825,10 +1837,12 @@ begin
     if not Assigned(MUIObject) then
     begin
       Drawn := False;
-      if Bitmap.MUICanvas = nil then
-        Bitmap.MUICanvas := Self;
+      // deactiaved for now or Bitmap.Assign(Bitmap) does not work when the
+      //if Bitmap.MUICanvas = nil then
+      //  Bitmap.MUICanvas := Self;
       FreeBitmap(RastPort^.Bitmap);
-      RastPort^.Bitmap := AllocBitMap(Bitmap.FWidth, Bitmap.FHeight, 32, BMF_CLEAR or BMF_MINPLANES or BMF_DISPLAYABLE, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
+      //writeln('set size to ',Bitmap.FWidth,' x ', Bitmap.FHeight);
+      RastPort^.Bitmap := AllocBitMap(Bitmap.FWidth + 1, Bitmap.FHeight + 1, 32, BMF_CLEAR or {$ifdef AROS}0{$else}BMF_MINPLANES{$endif}, IntuitionBase^.ActiveScreen^.RastPort.Bitmap);
       DrawRect := Rect(0, 0, Bitmap.FWidth, Bitmap.FHeight);
       if Assigned(CyberGfxBase) then
         Cybergraphics.WritePixelArray(Bitmap.FImage, 0, 0, Bitmap.FWidth * SizeOf(LongWord), RastPort, 0, 0, Bitmap.FWidth, Bitmap.FHeight, RECTFMT_ARGB);

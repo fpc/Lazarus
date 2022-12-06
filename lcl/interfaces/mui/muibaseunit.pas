@@ -1666,7 +1666,7 @@ begin
           MUIB.FMUICanvas.DrawRect := Rect(0, 0, PaintW, PaintH);
           MUIB.FMUICanvas.RastPort := CreateRastPortA;
           li := NewLayerInfo();
-          MUIB.FMUICanvas.RastPort^.Bitmap := AllocBitMap(PaintW, PaintH, rp^.Bitmap^.Depth, BMF_MINPLANES or BMF_DISPLAYABLE, rp^.Bitmap);
+          MUIB.FMUICanvas.RastPort^.Bitmap := AllocBitMap(PaintW, PaintH, rp^.Bitmap^.Depth, {$ifdef AROS}0{$else}BMF_MINPLANES{$endif}, rp^.Bitmap);
           MUIB.FMUICanvas.RastPort^.Layer := CreateUpFrontHookLayer(li, MUIB.FMUICanvas.RastPort^.Bitmap, 0, 0, PaintW - 1, PaintH - 1, LAYERSIMPLE, nil, nil);
           ClipBlit(rp, PaintX, PaintY, MUIB.FMUICanvas.RastPort, 0, 0, PaintW, PaintH, $00C0);
         end else
@@ -1697,8 +1697,8 @@ begin
           MUIB.FMUICanvas.RastPort^.layer := nil;
           FreeBitmap(MUIB.FMUICanvas.RastPort^.Bitmap);
           FreeRastPortA(MUIB.FMUICanvas.RastPort);
-          MUIB.FMUICanvas.RastPort := nil;
         end;
+        MUIB.FMUICanvas.RastPort := nil;
         //writeln('<--Draw ', muib.classname);
       end;
     finally
