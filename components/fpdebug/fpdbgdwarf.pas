@@ -1559,6 +1559,11 @@ var
   SelfParam: TFpValue;
   StartScope: Integer;
 begin
+  (* TODO:
+     Always use SelfParam, don't search before if there is such a member
+     - Implement/Extend "MemberByName" to ONLY go for the one member. / maybe prepare all TDwarfInformationEntry
+     - "MemberByName" needs to handle class fields, see TFpDwarfFreePascalSymbolScope.FindSymbolInStructure
+  *)
   Result := False;
   ADbgValue := nil;
   InfoEntry.AddReference;
@@ -1591,13 +1596,34 @@ begin
     if FindSymbolInStructure(AName, ANameInfo, InfoEntry, ADbgValue) then
       break;
 
+    ReleaseRefAndNil(InfoEntry);
+    while (InfoEntryInheritance <> nil) do begin
+      if not InfoEntryInheritance.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint) then
+        break;
 
-    if not( (InfoEntryInheritance <> nil) and
-            (InfoEntryInheritance.ReadReference(DW_AT_type, FwdInfoPtr, FwdCompUint)) )
-    then
+      ReleaseRefAndNil(InfoEntryInheritance);
+      InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      if (InfoEntry.AbbrevTag = DW_TAG_packed_type) or
+         (InfoEntry.AbbrevTag = DW_TAG_const_type) or
+         (InfoEntry.AbbrevTag = DW_TAG_volatile_type) or
+         (InfoEntry.AbbrevTag = DW_TAG_reference_type) or
+         (InfoEntry.AbbrevTag = DW_TAG_typedef) or
+         (InfoEntry.AbbrevTag = DW_TAG_pointer_type)
+      then begin
+        InfoEntryInheritance := InfoEntry;
+        InfoEntry := nil;
+      end
+      else
+      if (InfoEntry.AbbrevTag <> DW_TAG_structure_type) and
+         (InfoEntry.AbbrevTag <> DW_TAG_class_type)
+      then begin
+        ReleaseRefAndNil(InfoEntry);
+        break;
+      end;
+    end;
+    if InfoEntry = nil then
       break;
-    InfoEntry.ReleaseReference;
-    InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+
     DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntry, FwdCompUint) ]);
   end;
 

@@ -615,7 +615,8 @@ procedure TTestWatches.TestWatchesValue;
   type
     TTestLoc = (tlAny, tlConst, tlParam, tlArrayWrap, tlPointer, tlPointerAny, tlClassConst, tlClassVar);
     TTestIgn = set of (
-      tiPointerMath  // pointer math / (ptr+n)^ / ptr[n]
+      tiPointerMath,  // pointer math / (ptr+n)^ / ptr[n]
+      tlReduced       // reduced set of tests
     );
 
   procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
@@ -639,6 +640,7 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'IntRange'+e,   weInteger (-50+n,                  'TIntRange',0));
     t.Add(AName, p+'CardinalRange'+e, weCardinal(50+n,                 'TCardinalRange',0));
 
+if not (tlReduced in AIgnFlags) then begin
     t.Add(AName, p+'Byte_2'+e,     weCardinal(240+n,                  'Byte',     1));
     t.Add(AName, p+'Word_2'+e,     weCardinal(65501+n,                'Word',     2));
     t.Add(AName, p+'Longword_2'+e, weCardinal(4123456789+n,           'Longword', 4));
@@ -661,6 +663,7 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'LBool2'+e,      weBool(True , 'Boolean32'));
     t.Add(AName, p+'QBool1'+e,      weBool(False, 'Boolean64'));
     t.Add(AName, p+'QBool2'+e,      weBool(True , 'Boolean64'));
+end;
 
     t.Add(AName, p+'ByteBool1'+e,  weSizedBool(False, 'ByteBool'));
     t.Add(AName, p+'ByteBool2'+e,  weSizedBool(True , 'ByteBool'));
@@ -713,6 +716,7 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
     t.Add(AName, p+'String255'+e,  weShortStr(AChr1+'bcd0123456789', 'ShortStr255'))                                      .NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
 
+if not (tlReduced in AIgnFlags) then begin
     t.Add(AName, p+'Ansi1'+e,      weAnsiStr(Succ(AChr1)))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
       .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
     t.Add(AName, p+'Ansi2'+e,      weAnsiStr(AChr1+'abcd0123')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
@@ -794,7 +798,6 @@ for i := StartIdx to t.Count-1 do
       .SkipIf(ALoc in [tlClassConst])
       .SkipIf(ALoc = tlPointerAny);
 
-
 StartIdx := t.Count;
     t.add(AName, p+'CharDynArray'+e,  weDynArray([]                                        )).SkipIf(ALoc in [tlPointer, tlClassConst]);
     t.add(AName, p+'CharDynArray2'+e, weDynArray(weChar(['N', AChr1, 'M'])                 )).SkipIf(ALoc in [tlConst, tlClassConst, tlPointer]);
@@ -838,6 +841,7 @@ StartIdx := t.Count;
     t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc in [tlClassConst]);
+end; //     if not (tlReduced in AIgnFlags) then begin
 
 
 StartIdx := t.Count; // tlConst => Only eval the watch. No tests
@@ -917,6 +921,8 @@ StartIdxClassConst := t.Count;
     t.Add(AName, p+'CharStatArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
     t.Add(AName, p+'CharStatArray2'+e, weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'c']), 'TCharStatArray'));
+
+if  (tlReduced in AIgnFlags) then exit;
 
     t.Add(AName, p+'WCharStatArray'+e, weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'd'])                   ))
       .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
@@ -1169,7 +1175,8 @@ var
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg, BrkFooBegin, BrkFoo, BrkFooVar, BrkFooVarBegin,
-    BrkFooConstRef, BrkMethFoo, BrkBaseMethFoo: TDBGBreakPoint;
+    BrkFooConstRef, BrkMethFoo, BrkBaseMethFoo,
+    BaseObjMethFoo, ObjMethFoo: TDBGBreakPoint;
   c, i: Integer;
 begin
   if SkipTest then exit;
@@ -1199,6 +1206,11 @@ begin
     BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
     BrkMethFoo     := Debugger.SetBreakPoint(Src, 'MethFoo');  // call with TMyClass
     BrkBaseMethFoo := Debugger.SetBreakPoint(Src, 'BaseMethFoo'); // call with TMyClass
+
+    if Compiler.Version >= 030300 then begin
+      BaseObjMethFoo := Debugger.SetBreakPoint(Src, 'BaseObjMethFoo');
+      ObjMethFoo     := Debugger.SetBreakPoint(Src, 'ObjMethFoo');
+    end;
 
     AssertDebuggerNotInErrorState;
 
@@ -1323,6 +1335,16 @@ begin
     for i := c to t.Count-1 do
       t.Tests[i].Skip;  // class var do not work => but ensure they do not crash
 
+    if (Compiler.Version >= 030200) or (Compiler.SymbolType in stDwarf2) then begin
+      AddWatches(t, 'glob MyOldObjectBase',      'MyOldObjectBase.obc', 003, 'D', tlAny, '', [tlReduced]);
+      AddWatches(t, 'glob MyOldObject inherhit', 'MyOldObject.obc', 004, 'E', tlAny, '', [tlReduced]);
+      AddWatches(t, 'glob MyOldObject',          'MyOldObject.oc',  002, 'C', tlAny, '', [tlReduced]);
+
+      AddWatches(t, 'glob MyPOldObjectBase^',      'MyPOldObjectBase^.obc', 003, 'D', tlAny, '', [tlReduced]);
+      AddWatches(t, 'glob MyPOldObject^ inherhit', 'MyPOldObject^.obc', 004, 'E', tlAny, '', [tlReduced]);
+      AddWatches(t, 'glob MyPOldObject^',          'MyPOldObject^.oc',  002, 'C', tlAny, '', [tlReduced]);
+    end;
+
     AddWatches(t, 'glob MyTestRec1',     'MyTestRec1.rc_f_',  002, 'r');
     AddWatches(t, 'glob MyPTestRec1',     'MyPTestRec1^.rc_f_',  002, 'r');
 
@@ -1433,7 +1455,7 @@ if Compiler.Version < 030300 then
     t.Add('BaseMethFoo of TMyClass1 - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
 //    t.Add('BaseMethFoo of TMyClass1 - ClassVar1', 'ClassVar1', weInteger(119));
     // Trigger a search through everything
-    t.Add('BaseMethFoo of NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    t.Add('NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
     //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
     t.EvaluateWatches;
     t.CheckResults;
@@ -1444,8 +1466,14 @@ if Compiler.Version < 030300 then
     t.Add('MethFoo of TMyClass1 - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
     t.Add('MethFoo of TMyClass1 - ClassVar1', 'ClassVar1', weInteger(119));
     // Trigger a search through everything
-    t.Add('MethFoo of TMyClass1 - NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    t.Add('NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
     //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+
+    AddWatches(t, 'FIELD MyClass1',     'mc',  002, 'C', tlAny, '', [tlReduced]);
+    AddWatches(t, 'FIELD MyBaseClass1', 'mbc', 003, 'D', tlAny, '', [tlReduced]);
+    AddWatches(t, 'self MyClass1',     'self.mc',  002, 'C', tlAny, '', [tlReduced]);
+    AddWatches(t, 'self MyBaseClass1', 'self.mbc', 003, 'D', tlAny, '', [tlReduced]);
+
     t.EvaluateWatches;
     t.CheckResults;
 
@@ -1455,10 +1483,32 @@ if Compiler.Version < 030300 then
     t.Add('BaseMethFoo of TMyBaseClass - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
 //    t.Add('BaseMethFoo of TMyBaseClass - ClassVar1', 'ClassVar1', weInteger(119));
     // Trigger a search through everything
-    t.Add('BaseMethFoo of TMyBaseClass - NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    t.Add('NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
     //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
     t.EvaluateWatches;
     t.CheckResults;
+
+
+    if Compiler.Version >= 030300 then begin
+      RunToPause(BaseObjMethFoo);
+      t.Clear;
+      AddWatches(t, 'field MyOldObject base', 'obc', 003, 'D', tlAny, '', [tlReduced]);
+      AddWatches(t, 'self MyOldObject base', 'self.obc', 003, 'D', tlAny, '', [tlReduced]);
+      t.Add('ocByte', weInteger(0))^.AddFlag(ehExpectError);
+      t.Add('NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+      t.EvaluateWatches;
+      t.CheckResults;
+
+      RunToPause(ObjMethFoo);
+      t.Clear;
+      AddWatches(t, 'field MyOldObject inherhit', 'obc', 004, 'E', tlAny, '', [tlReduced]);
+      AddWatches(t, 'field MyOldObject',          'oc',  002, 'C', tlAny, '', [tlReduced]);
+      AddWatches(t, 'self MyOldObject inherhit', 'self.obc', 004, 'E', tlAny, '', [tlReduced]);
+      AddWatches(t, 'self MyOldObject',          'self.oc',  002, 'C', tlAny, '', [tlReduced]);
+      t.Add('MyOldObject - NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+      t.EvaluateWatches;
+      t.CheckResults;
+    end;
 
 
   finally

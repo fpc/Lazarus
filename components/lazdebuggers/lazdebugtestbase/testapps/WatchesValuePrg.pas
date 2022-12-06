@@ -189,7 +189,6 @@ type
     FMeA: PClass1;
   end;
 
-
   TEnum  = (EnVal1, EnVal2, EnVal3, EnVal4);
   // TEnum16 more than 256 values => wordsized
   TEnum16  = (
@@ -450,6 +449,27 @@ type
   PMyClass = ^TMyClass;
 
 
+  (******** OLD OBJECT ***********)
+
+  TMyBaseOldObject = object
+    (* LOCATION: field in baseclass *)
+    // obcByte: Byte;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=obc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+    procedure BaseObjMethFoo;
+  end;
+  PMyBaseOldObject = ^TMyBaseOldObject;
+
+  TMyOldObject = object(TMyBaseOldObject)
+    (* LOCATION: field in class *)
+    // ocByte: Byte;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=oc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+    procedure ObjMethFoo;
+  end;
+  PMyOldObject = ^TMyOldObject;
+
+
   (******** RECORD ***********)
 
   TMyTestRec = record
@@ -467,6 +487,11 @@ var
   MyClass2: TMyBaseClass; (* LOCATION: field, requires typecast of containing class *)
   MyPClass1: PMyClass;
   MyPClass2: PMyBaseClass;
+
+  MyOldObjectBase: TMyBaseOldObject;
+  MyOldObject:     TMyOldObject;
+  MyPOldObjectBase: PMyBaseOldObject;
+  MyPOldObject:     PMyOldObject;
 
   MyTestRec1: TMyTestRec;
   MyPTestRec1: PMyTestRec;
@@ -648,6 +673,15 @@ function TMyClass.SomeFuncIntResAdd(a: integer): Integer;
 begin
   result := 77 + a;
   FFunctInt := result;
+end;
+
+procedure TMyBaseOldObject.BaseObjMethFoo();
+begin
+  BreakDummy:= 1; // TEST_BREAKPOINT=BaseObjMethFoo
+end;
+procedure TMyOldObject.ObjMethFoo();
+begin
+  BreakDummy:= 1; // TEST_BREAKPOINT=ObjMethFoo
 end;
 
 var
@@ -1001,6 +1035,14 @@ begin
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,"pre__=TMyClass(MyClass2).mc", ADD=4, CHR1='E', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
 
+
+  MyPOldObjectBase := @MyOldObjectBase;
+  MyPOldObject     := @MyOldObject;
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyOldObjectBase.obc, ADD=3, CHR1='D', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyOldObject.obc, ADD=4, CHR1='E', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyOldObject.oc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+
 (* INIT: record var *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=MyTestRec1.rc_f_, ADD=2, CHR1='r', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
   MyPTestRec1 := @MyTestRec1;
@@ -1130,6 +1172,10 @@ begin
   MyClass2.BaseMethFoo();
   variant1 := 102;
   variant2 := True;
+
+  MyOldObjectBase.BaseObjMethFoo();
+  MyOldObject.ObjMethFoo();
+
 
 end.
 
