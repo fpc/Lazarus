@@ -12424,6 +12424,11 @@ msgstr "Lazarus predefiniti"
 msgid "Lazarus directory"
 msgstr "Cartella di Lazarus"
 
+#: lazarusidestrconsts.lislazarusdirhint
+#, object-pascal-format
+msgid "Lazarus sources. This path is relative to primary config directory (%s)."
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdiroverride
 #, fuzzy
 #| msgid "directory, to be used as a basedirectory"

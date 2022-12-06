@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-12-03 02:47+0300\n"
+"PO-Revision-Date: 2022-12-07 02:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12158,6 +12158,11 @@ msgstr "Lazarus по умолчанию"
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Каталог Lazarus"
+
+#: lazarusidestrconsts.lislazarusdirhint
+#, object-pascal-format
+msgid "Lazarus sources. This path is relative to primary config directory (%s)."
+msgstr "Исходный код Lazarus. Путь указывается относительно первичного каталога настройки (%s)."
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory to be used as a basedirectory"

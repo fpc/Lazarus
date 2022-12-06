@@ -12199,6 +12199,11 @@ msgstr "Lazarus默认"
 msgid "Lazarus directory"
 msgstr "Lazarus目录"
 
+#: lazarusidestrconsts.lislazarusdirhint
+#, object-pascal-format
+msgid "Lazarus sources. This path is relative to primary config directory (%s)."
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory to be used as a basedirectory"
 msgstr "目录,来被用作一个基本目录"

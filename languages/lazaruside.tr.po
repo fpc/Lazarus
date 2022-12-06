@@ -12121,6 +12121,11 @@ msgstr "Lazarus Varsayılan"
 msgid "Lazarus directory"
 msgstr "Lazarus dizini"
 
+#: lazarusidestrconsts.lislazarusdirhint
+#, object-pascal-format
+msgid "Lazarus sources. This path is relative to primary config directory (%s)."
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory to be used as a basedirectory"
 msgstr "dizin, bir alt dizin olarak kullanılacak"
