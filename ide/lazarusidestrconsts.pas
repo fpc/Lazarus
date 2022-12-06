@@ -1470,7 +1470,7 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgMaxRecentHint = 'Value 0 means unlimited.';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
-  lisLazarusDirHint = 'Lazarus sources. Stored as a path relative to PCP (%s).';
+  lisLazarusDirHint = 'Lazarus sources. This path is relative to primary config directory (%s).';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakeExecutable = '"Make" executable';
