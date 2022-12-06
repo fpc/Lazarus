@@ -2440,16 +2440,47 @@ property.
 </element>
 
 <element name="TCustomAbstractGroupedEdit.TextHint">
-<short>Contains the hint text displayed for the grouped edit control.</short>
+<short>
+Default hint text shown when the Text property is empty for the grouped edit 
+control.
+</short>
 <descr>
 <p>
 <var>TextHint</var> is a <var>TTranslateString</var> property which contains 
-the hint text displayed for the grouped edit control. Read and write access 
-to the property value are redirected to the <var>BaseEditor</var> property.
+the inline hint text displayed for the control. It is displayed in the 
+editable area for the <var>TCustomEdit</var> when the Text property is empty. 
+Some platforms may refer to this feature as a "placeholder" or "editing hint". 
+The value in TextHint is normally displayed using the color in clGrayText.
+</p>
+<p>
+The display behavior for TextHint is platform-specific. On some platforms, the 
+text hint is displayed any time the value in Text is empty. For others, it is 
+displayed only when the control does not have focus.
+</p>
+<p>
+Read and write access to the property value are redirected to the 
+<var>BaseEditor</var> property. Setting a new value in TextHint causes the 
+widgetset class to be notified, and the value is displayed in the edit control 
+when allowed. If the new property value is an empty string (''), the text hint 
+is removed from the control.
+</p>
+<p>
+For platforms that do not provide native support for TextHint, an emulated 
+text hint is displayed. This is a TCustomEdit control created to enable the 
+feature, and can be displayed only when the original control does not have 
+focus.
+</p>
+<p>
+TextHint is different than Hint, which displays a balloon tip when ShowHint is 
+set to <b>True</b> and the mouse is over the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+<link id="TCustomAbstractGroupedEdit.Text"/>
+<link id="#lcl.stdctrls.TCustomEdit.TextHint">TCustomEdit.TextHint</link>
+<link id="#lcl.stdctrls.TCustomEdit.CanShowEmulatedTextHint">TCustomEdit.CanShowEmulatedTextHint</link>
+<link id="#lcl.controls.TControl.Text">TControl.Text</link>
 <link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
 </seealso>
 </element>
