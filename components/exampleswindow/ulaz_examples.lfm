@@ -1,14 +1,16 @@
 object FormLazExam: TFormLazExam
-  Left = 88
+  Left = 457
   Height = 400
-  Top = 155
+  Top = 318
   Width = 781
   Caption = 'Prototype Lazarus Examples Window'
   ClientHeight = 400
   ClientWidth = 781
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
+  Position = poWorkAreaCenter
   LCLVersion = '2.3.0.0'
   object Memo1: TMemo
     AnchorSideLeft.Control = Owner
@@ -28,10 +30,11 @@ object FormLazExam: TFormLazExam
     Lines.Strings = (
       'Memo1'
     )
+    OnKeyDown = FormKeyDown
     ParentShowHint = False
     ReadOnly = True
     ScrollBars = ssAutoVertical
-    TabOrder = 1
+    TabOrder = 2
     TabStop = False
   end
   object ListView1: TListView
@@ -46,6 +49,7 @@ object FormLazExam: TFormLazExam
     Top = 37
     Width = 771
     Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSort = False
     BorderSpacing.Around = 5
     Columns = <    
       item
@@ -63,6 +67,8 @@ object FormLazExam: TFormLazExam
     TabOrder = 0
     OnClick = ListView1Click
     OnDblClick = ListView1DblClick
+    OnEnter = ListView1Enter
+    OnExit = ListView1Exit
     OnKeyDown = ListView1KeyDown
     OnSelectItem = ListView1SelectItem
   end
@@ -95,7 +101,7 @@ object FormLazExam: TFormLazExam
     OnItemClick = CheckGroupCategoryItemClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 3
   end
   object Splitter2: TSplitter
     AnchorSideLeft.Control = Owner
@@ -120,8 +126,7 @@ object FormLazExam: TFormLazExam
     Panels = <>
   end
   object ButtonDownload: TButton
-    AnchorSideLeft.Control = ButtonOpen
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
@@ -134,7 +139,7 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Left = 5
     Caption = 'Download'
     OnClick = ButtonDownloadClick
-    TabOrder = 5
+    TabOrder = 6
   end
   object ButtonClose: TButton
     AnchorSideLeft.Control = ButtonView
@@ -150,11 +155,13 @@ object FormLazExam: TFormLazExam
     AutoSize = True
     BorderSpacing.Left = 5
     Caption = 'Close'
+    ModalResult = 11
     OnClick = ButtonCloseClick
-    TabOrder = 6
+    TabOrder = 9
   end
   object ButtonOpen: TButton
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = ButtonDownload
+    AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
     Left = 5
@@ -170,7 +177,7 @@ object FormLazExam: TFormLazExam
     TabOrder = 7
   end
   object ButtonView: TButton
-    AnchorSideLeft.Control = ButtonDownload
+    AnchorSideLeft.Control = ButtonOpen
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
@@ -201,11 +208,9 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Top = 5
     BorderSpacing.Right = 5
     OnChange = EditSearchChange
-    OnExit = EditSearchExit
-    OnKeyUp = EditSearchKeyUp
+    OnKeyDown = EditSearchKeyDown
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
-    Text = 'EditSearch'
+    TabOrder = 1
   end
 end

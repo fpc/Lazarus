@@ -18,14 +18,10 @@ In either case will scan the LazConfigDir (excluding Examples ???) looking for
 potential 'other' example projects, recognisable by a valid json file with an
 extension of ex-meta.
 
-Notes -
-    We have a search field across the top, its requires user to press enter,
-    performance notwithstanding, it could be converted to update with every key press.
-
-    David Bannon, Feb 2022
+    David Bannon, Dec 2022
 }
 {$mode objfpc}{$H+}
-{.$define EXTESTMODE}
+{$define EXTESTMODE}
 
 {X$define ONLINE_EXAMPLES}
 
@@ -42,7 +38,6 @@ uses
     IDEWindowIntf,
     {$endif}
     uexampledata, uConst;
-
 
 type
 
@@ -66,16 +61,19 @@ type
         procedure CheckGroupCategoryDblClick(Sender: TObject);
         procedure CheckGroupCategoryItemClick(Sender: TObject; {%H-}Index: integer);
         procedure EditSearchChange(Sender: TObject);
-        procedure EditSearchExit(Sender: TObject);
-        procedure EditSearchKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure EditSearchKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
         procedure FormDestroy(Sender: TObject);
+        procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
         procedure FormShow(Sender: TObject);
         procedure ListView1Click(Sender: TObject);
         procedure ListView1DblClick(Sender: TObject);
+        procedure ListView1Enter(Sender: TObject);
+        procedure ListView1Exit(Sender: TObject);
         procedure ListView1KeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure ListView1SelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     private
+        LastListViewIndex : integer;    // If 0 or greater, its an index to ListView
         procedure BuildSearchList(SL: TStringList; const Term: AnsiString);
                         // Copies the passed ex dir to a dir named for the Proj.
                         // SrcDir includes name of actual dir, DestDir does not.
@@ -90,8 +88,7 @@ type
                         // Thats triggers a Lazarus Open when this window closes.
         function GetProjectFile(const APath: string; WriteProjectToOpen: boolean = false): boolean;
         procedure KeyWordSearch;
-        function NewLVItem(const LView: TListView; const Proj, Path, KeyWords,
-            Cat: string): TListItem;
+        procedure NewLVItem(const Proj, Path, KeyWords, Cat: string);
                         // Displays the current content of Examples List in the listview and
                         // populates the Category checkboxes.
         procedure LoadUpListView();
@@ -117,16 +114,15 @@ implementation
 
 // ------------------------ L I S T   V I E W ----------------------------------
 
-function TFormLazExam.NewLVItem(const LView : TListView; const Proj, Path, KeyWords, Cat : string): TListItem;
+procedure TFormLazExam.NewLVItem(const Proj, Path, KeyWords, Cat : string);
 var
     TheItem : TListItem;
 begin
-    TheItem := LView.Items.Add;
+    TheItem := ListView1.Items.Add;
     TheItem.Caption := Proj;
     TheItem.SubItems.Add(KeyWords);
     TheItem.SubItems.Add(Path);
     TheItem.SubItems.Add(Cat);
-    Result := TheItem;
 end;
 
 procedure TFormLazExam.ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -147,15 +143,15 @@ begin
     end;
     try
         if Ex.GetListData(Proj, Cat, Path, KeyW, True, KeyList) then begin
-            NewLVItem(ListView1, Proj, Path, KeyW, Cat);
+            NewLVItem(Proj, Path, KeyW, Cat);
             inc(Cnt);
         end;
         while Ex.GetListData(Proj, Cat, Path, KeyW, False, KeyList) do begin
-            NewLVItem(ListView1, Proj, Path, KeyW, Cat);
+            NewLVItem(Proj, Path, KeyW, Cat);
             inc(Cnt);
         end;
     finally
-        if KeyList <> Nil then KeyList.Free;
+        KeyList.Free;
         Screen.Cursor := crDefault;
     end;
     ButtonOpen.Enabled := false;
@@ -163,6 +159,7 @@ begin
     ButtonView.enabled := false;
     Memo1.append(format(rsFoundExampleProjects, [Cnt]));
     StatusBar1.SimpleText := format(rsFoundExampleProjects, [Cnt]);
+    LastListViewIndex := -1;        // start afresh
 end;
 
 procedure TFormLazExam.ListView1Click(Sender: TObject);
@@ -179,26 +176,50 @@ begin
     ButtonOpen.Enabled := GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption);
 end;
 
-
 procedure TFormLazExam.ListView1DblClick(Sender: TObject);
+// A doubleclick will select that row, but it happens after OnEnter.
 begin
+    if ListView1.Selected = Nil then exit
+    else
+        LastListViewIndex := ListView1.ItemIndex;   // So other methods can find user choice
     ButtonDownloadClick(self);
     ButtonOpenClick(self);
+end;
+
+procedure TFormLazExam.ListView1Enter(Sender: TObject);
+begin
+    ListView1.ItemIndex := LastListViewIndex;    // possibly -1, half highlight item 0
+end;
+
+procedure TFormLazExam.ListView1Exit(Sender: TObject);
+begin
+    LastListViewIndex := ListView1.ItemIndex;        // save it before we leave, we'll be back
+    ListView1.ClearSelection;
+    ListView1.ItemIndex := -1;
 end;
 
 procedure TFormLazExam.ListView1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-     if Key = vk_return then begin
+     if Key = VK_RETURN then begin
          Key := 0;
+         // Its possible we tabbed into ListView without "selecting" a row.
+         if ListView1.ItemIndex < 0 then        // I don't think this can happen anymore ?
+            if ListView1.Items.count > 0 then
+               ListView1.ItemIndex := 0         // Force select first item, its half highlite ??
+            else exit;
          ListView1DblClick(Sender);
-     end;
+     end
+     else if Key = VK_ESCAPE then
+         ModalResult := mrClose;
 end;
 
 // --------------------- B U T T O N S -----------------------------------------
 
 procedure TFormLazExam.ButtonOpenClick(Sender: TObject);
 begin
+     if LastListViewIndex < 0 then exit;
+     ListView1.ItemIndex:= LastListViewIndex;
     if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption, True)     // Sets ProjectToOpen on success
         and ProjectToOpen.IsEmpty then
             showmessage(rsExNoProjectFile)
@@ -208,7 +229,9 @@ end;
 
 procedure TFormLazExam.ButtonDownloadClick(Sender: TObject);
 begin
-    if  ListView1.Selected = nil then exit;         // White space below entries ....
+    if LastListViewIndex < 0 then exit;         // Can that happen ?
+    ListView1.ItemIndex:= LastListViewIndex;
+
     if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption) then begin
         if Application.MessageBox(pchar(rsRefreshExistingExample)
                         , pchar(ListView1.Selected.Caption)
@@ -238,12 +261,17 @@ begin
         Screen.Cursor := crDefault;
     end;
     ButtonOpen.Enabled := GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption);
-
+    ListView1.ItemIndex := -1;      // Unselect again for the Tabbers of this world.
 end;
 
 procedure TFormLazExam.ButtonViewClick(Sender: TObject);
 begin
+    // When we get here, we will have left the ListView and therefore triggered its onExit
+    // Must restore its selected before we access it !
+    if LastListViewIndex < 0 then exit;         // lets not be silly
+    ListView1.ItemIndex:= LastListViewIndex;
     OpenURL(BaseURL + ListView1.Selected.SubItems[2] + '/' + ListView1.Selected.Caption);
+    ListView1.ItemIndex := -1;
 end;
 
 procedure TFormLazExam.ButtonCloseClick(Sender: TObject);
@@ -375,16 +403,6 @@ begin
         SL.Add(AWord);
 end;
 
-procedure TFormLazExam.EditSearchExit(Sender: TObject);
-begin
-    if EditSearch.Text = '' then begin
-        EditSearch.Hint:= rsExSearchPrompt;
-        EditSearch.Text := rsExSearchPrompt;
-        EditSearch.SelStart := 1;
-        EditSearch.SelLength := length(EditSearch.Text);
-    end;
-end;
-
 procedure TFormLazExam.KeyWordSearch();
 begin
       Memo1.clear;
@@ -395,17 +413,19 @@ end;
 
 procedure TFormLazExam.EditSearchChange(Sender: TObject);
 begin
-    if (EditSearch.Text <> '') and (EditSearch.Text <> rsExSearchPrompt) then
-       KeyWordSearch();
+    if visible then KeyWordSearch();
 end;
 
-procedure TFormLazExam.EditSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TFormLazExam.EditSearchKeyDown(Sender: TObject; var Key: Word;
+    Shift: TShiftState);
 begin
-    // Must do this here to stop LCL from selecting the text on VK_RETURN
     if Key = VK_RETURN then begin
-      Key := 0;
-      KeyWordSearch();
-    end;
+        key := 0;
+        if ListView1.items.Count > 0 then
+            ListView1.SetFocus;
+    end
+    else if Key = VK_ESCAPE then
+        ModalResult := mrClose;
 end;
 
 procedure TFormLazExam.PrimeCatFilter();
@@ -439,7 +459,9 @@ begin
     ListView1.Column[1].AutoSize := true;
     ListView1.Column[2].Visible := false;
     ListView1.ReadOnly := True;
-    EditSearch.text := rsExSearchPrompt;
+    LastListViewIndex := -1;        // Used to record ListView1.ItemIndex before Tabbing away
+
+    EditSearch.TextHint := rsExSearchPrompt;
     CheckGroupCategory.Hint := rsGroupHint;
     Ex := nil;
     // These are ObjectInspector set but I believe I cannot get OI literals set in a Package ??
@@ -459,7 +481,13 @@ end;
 
 procedure TFormLazExam.FormDestroy(Sender: TObject);
 begin
-    if Ex <> nil then Ex.Free;
+    Ex.Free;
+end;
+
+procedure TFormLazExam.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+    if Key = VK_ESCAPE then
+        ModalResult := mrClose;
 end;
 
 procedure TFormLazExam.FormShow(Sender: TObject);
@@ -467,10 +495,11 @@ var
     i : integer;
 begin
     Memo1.clear;
+    EditSearch.text := '';              // or should we resume previous search ?
     Top := Screen.Height div 10;
     Height := Screen.Height * 7 div 10;
     ListView1.Height:= Screen.Height * 3 div 10;
-    if Ex <> Nil then Ex.Free;
+    Ex.Free;
     StatusBar1.SimpleText := rsExSearchingForExamples;
     Ex := TExampleData.Create();
     Ex.GitDir     := GitDir;
@@ -490,9 +519,7 @@ begin
     ListView1.Clear;
     PrimeCatFilter();
     LoadUpListView();
-    if EditSearch.Text <> rsExSearchPrompt then
-        KeyWordSearch()
-    else EditSearch.SetFocus;
+    ListView1.SetFocus;
 end;
 
 {   Must add a FormClose event 
