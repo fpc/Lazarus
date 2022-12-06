@@ -278,6 +278,9 @@ begin
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
   LazarusDirLabel.Caption:=dlgLazarusDir;
+  LazarusDirLabel.Hint:=Format(lisLazarusDirHint,[GetPrimaryConfigPath]);
+  LazarusDirComboBox.Hint:=LazarusDirLabel.Hint;
+  LazarusDirButton.Hint:=LazarusDirLabel.Hint;
   with LazarusDirComboBox.Items do
   begin
     BeginUpdate;

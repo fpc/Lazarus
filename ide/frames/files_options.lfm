@@ -57,6 +57,8 @@ object FilesOptionsFrame: TFilesOptionsFrame
     BorderSpacing.Top = 10
     Caption = 'LazarusDirLabel'
     ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
   end
   object LazarusDirButton: TButton
     AnchorSideLeft.Side = asrBottom
@@ -72,6 +74,8 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
     OnClick = DirectoriesButtonClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 5
   end
   object LazarusDirComboBox: TComboBox
@@ -85,6 +89,8 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 595
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 24
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
     Text = 'LazarusDirComboBox'
   end

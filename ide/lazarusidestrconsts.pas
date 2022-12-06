@@ -1470,6 +1470,7 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgMaxRecentHint = 'Value 0 means unlimited.';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
+  lisLazarusDirHint = 'Lazarus sources. Stored as a path relative to PCP (%s).';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakeExecutable = '"Make" executable';
@@ -1478,6 +1479,7 @@ resourcestring
   lisSetThisToTranslateTheCompilerMessagesToAnotherLang = 'Set this to '
     +'translate the compiler messages to another language (i.e. not English). '
     +'For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg.';
+
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
 
