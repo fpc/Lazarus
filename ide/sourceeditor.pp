@@ -1687,8 +1687,8 @@ begin
     SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',lisCut, nil, nil, nil, 'laz_cut');
     SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
     SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
-    SrcEditMenuMultiPaste:=RegisterIDEMenuCommand(AParent,'MultiPaste',lisMenuMultiPaste);
-    SrcEditMenuSelectAll:=RegisterIDEMenuCommand(AParent,'SelectAll',lisMenuSelectAll);
+    SrcEditMenuMultiPaste:=RegisterIDEMenuCommand(AParent,'MultiPaste',lisMenuMultiPaste, nil, nil, nil, 'laz_multipaste');
+    SrcEditMenuSelectAll:=RegisterIDEMenuCommand(AParent,'SelectAll',lisMenuSelectAll, nil, nil, nil, 'menu_edit_select_all');
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
   {%endregion}
 
