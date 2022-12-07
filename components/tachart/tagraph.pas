@@ -447,7 +447,6 @@ type
     property OnAfterCustomDrawBackWall: TChartAfterCustomDrawEvent
       read FOnAfterCustomDrawBackWall write SetOnAfterCustomDrawBackWall;
     property OnAfterDraw: TChartDrawEvent read FOnAfterDraw write SetOnAfterDraw;
-      deprecated 'Use OnAfterCustomDraw instead';
     property OnAfterDrawBackground: TChartAfterDrawEvent
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
       deprecated 'Use OnAfterCustomDrawBackground instead';
