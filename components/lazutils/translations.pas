@@ -344,83 +344,84 @@ end;
 
 function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
 const
-  FormatArgs = 'DEFGMNPSUX';
   FormatChar = '%';
-  FormatSpecs = ':-.0123456789';
 var
-  p: PtrInt;
-  NewStr, Symb: String;
+  i, ArgStartPosition, ArgCount: Integer;
+  ArgStartDetected, ArgErrorFlag: Boolean;
 begin
-  NewStr := '';
+  Result := '';
+  ArgCount := 0;
   ArgumentError := 0;
-  p := UTF8Pos(FormatChar, S);
-  while (Length(S)>0) and (p>0) and (ArgumentError=0) do
+  ArgStartPosition := 0;
+
+  // note that formatting arguments are strictly ASCII
+  ArgErrorFlag := false;
+  ArgStartDetected := false;
+  i := 1;
+  while (i <= Length(S)) and (ArgErrorFlag = false) do
   begin
-    UTF8Delete(S, 1, p);
-    if Length(S)>0 then
+    if ArgStartDetected = false then
     begin
-      Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
-      while (Length(S)>1) and (UTF8Pos(Symb, FormatSpecs)>0) do
+      if S[i] = FormatChar then
       begin
-        //weak syntax check for formatting options, skip them if found
-        UTF8Delete(S, 1, 1);
-        Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
+        ArgStartDetected := true;
+        ArgStartPosition := i;
       end;
-      if Symb <> FormatChar then
-      begin
-        NewStr := NewStr+Symb;
-        if UTF8Pos(Symb, FormatArgs)=0 then
-          ArgumentError := Utf8Length(NewStr);
-      end;
-      //removing processed symbol
-      UTF8Delete(S, 1, 1);
-      //searching for next argument
-      p := UTF8Pos(FormatChar, S);
     end
     else
-      //in this case formatting symbol doesn't have its argument
-      ArgumentError := Utf8Length(NewStr) + 1;
+    begin
+      if (S[i] = FormatChar) and (S[i] = S[i-1]) then
+        // escaped percent sign ('%%') was found, skip it
+        ArgStartDetected := false
+      else
+      begin
+        case S[i] of
+          // the following symbols are normal inside formatting argument, do nothing when they are encountered
+          ':', '-', '.', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':;
+          // the following case insensitive symbols denote the end of the argument
+          'D', 'E', 'F', 'G', 'M', 'N', 'P', 'S', 'U', 'X',
+            'd', 'e', 'f', 'g', 'm', 'n', 'p', 's', 'u', 'x':
+            begin
+              ArgStartDetected := false;
+              Result := Result + Copy(S, ArgStartPosition + 1, i - ArgStartPosition);
+              Inc(ArgCount);
+            end;
+          otherwise
+            ArgErrorFlag := true;
+        end;
+      end;
+    end;
+    Inc(i);
   end;
-  Result := NewStr;
+  // ArgStartDetected=true here means ArgErrorFlag is true or no end of the last argument found
+  if ArgStartDetected = true then
+    ArgumentError := ArgCount + 1;
+  Result := LowerCase(Result);
 end;
 
 function CompareFormatArgs(S1, S2: String): Boolean;
+// Note, the purpose of this function is to only ensure that S1 and S2 have
+// identical formatting arguments (it is acceptable for them to have formatting
+// errors in this case). This allows to avoid crashes due to typos in formatting
+// arguments of translations.
 var
   Extr1, Extr2: String;
   ArgErr1, ArgErr2: Integer;
 begin
   Result := true;
-  //do not check arguments if strings are equal to save time and avoid some
-  //false positives, e.g. for '{%Region}' string in lazarusidestrconsts
+  // Do not check arguments if strings are equal to save time and avoid some
+  // false positives, e.g. for '{%Region}' string in lazarusidestrconsts.
   if S1 <> S2 then
   begin
     Extr1 := ExtractFormatArgs(S1, ArgErr1);
-    Extr2 := ExtractFormatArgs(S2, ArgErr2);
-    //writeln('Extr1 = ',Extr1,' ArgErr1 = ',ArgErr1);
-    //writeln('Extr2 = ',Extr1,' ArgErr2 = ',ArgErr2);
-    if (ArgErr1 = 0) then
+    // If S1 does not contain arguments, there is no point to analyze S2
+    // further too, just do nothing and thus report positive result.
+    if not ((ArgErr1 = 0) and (Extr1 = '')) then
     begin
-      if (ArgErr2 = 0) then
-      begin
-        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
-      end
-      else
-      begin
-        //Extr2 can have dangling %'s
-        //e.g. Extr1 = "%s %d" Extr2 = "%s %d {%H}", it does not make sense, but it's not illegal
-        if (ArgErr2 = Utf8Length(Extr1)+1) and not (ArgErr2 > Utf8Length(Extr2)) then Extr2 := Utf8Copy(Extr2,1,ArgErr2-1);
-        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
-      end;
-    end
-    else
-    begin  //ArgErr1 <> 0
-      //Assume Extr1 is always legal, otherwise the IDE would crash in it's default language...
-      //Only compare until the last valid argument in Extr1
-      if (ArgErr1 = Utf8Length(Extr1)) then Utf8Delete(Extr1, ArgErr1, 1);
-      if Utf8Length(Extr2) > Utf8Length(Extr1) then Extr2 := Utf8Copy(Extr2, 1, Utf8Length(Extr1));
+      // If S1 contains arguments, then analyze S2
+      Extr2 := ExtractFormatArgs(S2, ArgErr2);
       Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
     end;
-    //writeln('CompareFormatArgs: Result = ',Result);
   end;
 end;
 
