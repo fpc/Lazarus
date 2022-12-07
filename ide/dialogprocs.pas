@@ -121,6 +121,9 @@ function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
 function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 procedure NotImplementedDialog(const Feature: string);
 
+function SimpleDirectoryCheck(const OldDir, NewDir,
+  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
+
 implementation
 
 {$IFDEF Unix}
@@ -723,6 +726,30 @@ procedure NotImplementedDialog(const Feature: string);
 begin
   IDEMessageDialog(lisNotImplemented,
     Format(lisNotImplementedYet, [LineEnding, Feature]), mtError, [mbCancel]);
+end;
+
+function SimpleDirectoryCheck(const OldDir, NewDir,
+  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
+var
+  SubResult: TModalResult;
+begin
+  StopChecking:=true;
+  if OldDir=NewDir then begin
+    Result:=true;
+    exit;
+  end;
+  SubResult:=CheckDirPathExists(NewDir,lisEnvOptDlgDirectoryNotFound,
+                                NotFoundErrMsg);
+  if SubResult=mrIgnore then begin
+    Result:=true;
+    exit;
+  end;
+  if SubResult=mrCancel then begin
+    Result:=false;
+    exit;
+  end;
+  StopChecking:=false;
+  Result:=true;
 end;
 
 end.

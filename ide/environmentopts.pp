@@ -51,7 +51,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE
-  IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts,
   IdeCoolbarData, EditorToolbarStatic, IdeDebuggerOpts;
 
@@ -1072,9 +1072,6 @@ function StrToIDEMultipleInstancesOption(const s: string): TIDEMultipleInstances
 function BackupTypeToName(b: TBackupType): string;
 function NameToBackupType(const s: string): TBackupType;
 
-function SimpleDirectoryCheck(const OldDir, NewDir,
-  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
-
 const
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   MaxComboBoxCount: integer = 20;
@@ -1161,30 +1158,6 @@ begin
   for b in TBackupType do
     if CompareText(s,BackupTypeToName(b))=0 then exit(b);
   Result:=bakNone;
-end;
-
-function SimpleDirectoryCheck(const OldDir, NewDir,
-  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
-var
-  SubResult: TModalResult;
-begin
-  StopChecking:=true;
-  if OldDir=NewDir then begin
-    Result:=true;
-    exit;
-  end;
-  SubResult:=CheckDirPathExists(NewDir,lisEnvOptDlgDirectoryNotFound,
-                                NotFoundErrMsg);
-  if SubResult=mrIgnore then begin
-    Result:=true;
-    exit;
-  end;
-  if SubResult=mrCancel then begin
-    Result:=false;
-    exit;
-  end;
-  StopChecking:=false;
-  Result:=true;
 end;
 
 function dbgs(o: TEnvOptParseType): string;
