@@ -391,6 +391,7 @@ DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
   -Fu../components/virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lazdebuggers/lazdebuggerfp/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
 BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/synedit/design/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -426,6 +427,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/projectgroups/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/pas2js/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/exampleswindow/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
@@ -5389,6 +5391,7 @@ endif
 	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
 endif
 idepackages:
+	$(MAKE) -C packages/ideconfig
 	$(MAKE) -C packages/idedebugger
 ide: $(COMPILER_UNITTARGETDIR) revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
@@ -5425,6 +5428,7 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
 endif
 cleanlaz: clean cleanide
+	$(MAKE) -C packages/ideconfig clean
 	$(MAKE) -C packages/idedebugger clean
 	${DELTREE} ../units/*
 purge: cleanlaz

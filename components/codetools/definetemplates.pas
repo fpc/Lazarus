@@ -6698,6 +6698,7 @@ begin
       d(LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
+       +LazarusSrcDir+'/ide/packages/ideconfig;'
        +LazarusSrcDir+'/ide/packages/idedebugger;'
        +LazarusSrcDir+'/ide/packages/idedebugger/frames;'
        +LazarusSrcDir+'/debugger;'

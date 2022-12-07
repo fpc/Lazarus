@@ -3777,6 +3777,7 @@ basecomponents:
 	$(MAKE) -C components/virtualtreeview
 	$(MAKE) -C components/fpdebug
 	$(MAKE) -C components/lazdebuggers/lazdebuggerfp
+	$(MAKE) -C ide/packages/ideconfig
 	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
 	$(MAKE) -C components bigide
@@ -3818,6 +3819,7 @@ lazbuild: registration lazutils
 	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
+	$(MAKE) -C ide/packages/ideconfig LCL_PLATFORM=nogui
 	$(MAKE) -C ide/packages/idedebugger lazbuild LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
@@ -3830,6 +3832,7 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
+	$(MAKE) -C ide/packages/ideconfig clean
 	$(MAKE) -C ide/packages/idedebugger clean
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
@@ -3841,6 +3844,7 @@ purge:
 	$(MAKE) -C packager/registration distclean
 	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
+	$(MAKE) -C ide/packages/ideconfig distclean
 	$(MAKE) -C ide/packages/idedebugger distclean
 	$(MAKE) -C tools distclean
 	$(MAKE) -C components/chmhelp/lhelp distclean

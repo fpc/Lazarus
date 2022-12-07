@@ -191,6 +191,7 @@ type
     FLazDebuggerIntfPackage: TLazPackage;
     FLazDebuggerGdbmiPackage: TLazPackage;
     FIdeDebuggerPackage: TLazPackage;
+    FIdeConfigPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
     FLazUtilsPackage: TLazPackage;
@@ -483,6 +484,7 @@ type
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
     property IdeDebuggerPackage: TLazPackage read FIdeDebuggerPackage;
+    property IdeConfigPackage: TLazPackage read FIdeConfigPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
 
     // events
@@ -1156,6 +1158,8 @@ begin
     FDebuggerIntfPackage:=nil
   else if CurPkg=LazDebuggerGdbmiPackage then
     FLazDebuggerGdbmiPackage:=nil
+  else if CurPkg=IdeConfigPackage then
+    FIdeConfigPackage:=nil
   else if CurPkg=IdeDebuggerPackage then
     FIdeDebuggerPackage:=nil
   else if CurPkg=SynEditPackage then
@@ -2145,6 +2149,8 @@ begin
       SetBasePackage(FLazDebuggerGdbmiPackage)
     else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
       SetBasePackage(FIdeDebuggerPackage)
+    else if SysUtils.CompareText(APackage.Name,'IdeConfig')=0 then
+      SetBasePackage(FIdeConfigPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -2264,6 +2270,7 @@ begin
   LoadLazarusBasePackage('LazDebuggerIntf');
   LoadLazarusBasePackage('DebuggerIntf');
   LoadLazarusBasePackage('LazDebuggerGdbmi');
+  LoadLazarusBasePackage('IdeConfig');
   LoadLazarusBasePackage('IdeDebugger');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
@@ -2400,6 +2407,7 @@ begin
        or (PackageName='lazdebuggerintf')
        or (PackageName='debuggerintf')
        or (PackageName='lazdebuggergdbmi')
+       or (PackageName='ideconfig')
        or (PackageName='idedebugger')
        or (PackageName='codetools')
        or (PackageName='buildintf')
