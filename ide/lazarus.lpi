@@ -753,18 +753,9 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="version.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="idecmdline.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="IDECmdLine"/>
-      </Unit>
-      <Unit>
-        <Filename Value="lazconf.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="LazConf"/>
       </Unit>
       <Unit>
         <Filename Value="initialsetupdlgs.pas"/>

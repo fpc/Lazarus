@@ -163,7 +163,7 @@ begin
   if not SubDirExists('ide',Result) then exit;
   if not SubDirExists('components',Result) then exit;
   if not SubFileExists('ide/lazarus.lpi',Result) then exit;
-  VersionIncFile:=GetForcedPathDelims('ide/version.inc');
+  VersionIncFile:=GetForcedPathDelims('ide/packages/ideconfig/version.inc');
   if not SubFileExists(VersionIncFile,Result) then exit;
   sl:=TStringList.Create;
   try

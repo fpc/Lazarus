@@ -9,6 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <IncludeFiles Value="include;include\$(TargetOS)"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -31,6 +32,14 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="idexmlconfigprocs.pas"/>
         <UnitName Value="IdeXmlConfigProcs"/>
       </Item>
+      <Item>
+        <Filename Value="lazconf.pp"/>
+        <UnitName Value="LazConf"/>
+      </Item>
+      <Item>
+        <Filename Value="version.inc"/>
+        <Type Value="Include"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
@@ -38,6 +47,9 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <PackageName Value="LazUtils"/>
+      </Item>
+      <Item>
+        <PackageName Value="CodeTools"/>
       </Item>
       <Item>
         <PackageName Value="FCL"/>

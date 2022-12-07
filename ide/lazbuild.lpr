@@ -188,7 +188,7 @@ const
   ErrorLoadPackageFailed = 3;
   ErrorPackageNameInvalid = 4;
   ErrorLoadProjectFailed = 5;
-  VersionStr = {$I version.inc};
+  VersionStr = {$I packages/ideconfig/version.inc};
 
 procedure FilterConfigFileContent;
 var

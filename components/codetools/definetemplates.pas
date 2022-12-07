@@ -6725,11 +6725,11 @@ begin
     ,da_DefineRecurse));
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
+    Format(ctsSetsIncPathTo,['include, include/packages/ideconfig/TargetOS, include/packages/ideconfig/SrcOS']),
     IncludePathMacroName,
     d(LazarusSrcDir+'/ide/include;'
-      +LazarusSrcDir+'/ide/include/'+TargetOS+';'
-      +LazarusSrcDir+'/ide/include/'+SrcOS),
+      +LazarusSrcDir+'/ide/packages/ideconfig/include/'+TargetOS+';'
+      +LazarusSrcDir+'/ide/packages/ideconfig/include/'+SrcOS),
     da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
@@ -6760,7 +6760,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
     IncludePathMacroName,
-    d('../ide/include;../ide/include/'+TargetOS),
+    d('../ide/include;../ide/packages/ideconfig/include/'+TargetOS),
     da_Define));
   // <LazarusSrcDir>/designer/units
   MainDir.AddChild(DirTempl);
