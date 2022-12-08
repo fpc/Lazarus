@@ -1017,6 +1017,9 @@ packages/pkg_links_200.png
 packages/pkg_lrs.png
 packages/pkg_lrs_150.png
 packages/pkg_lrs_200.png
+packages/pkg_new.png
+packages/pkg_new_150.png
+packages/pkg_new_200.png
 packages/pkg_open.png
 packages/pkg_open_150.png
 packages/pkg_open_200.png
