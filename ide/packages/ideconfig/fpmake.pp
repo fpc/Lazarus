@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 07/12/2022
+   This file was generated on 08/12/2022
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,8 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('lclbase');
+    D := P.Dependencies.Add('lazutils');
     D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -44,7 +46,13 @@ begin
     P.Options.Add('-vewnhibq');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideconfig.pas');
+    t.Dependencies.AddUnit('searchpathprocs');
+    t.Dependencies.AddUnit('recentlistprocs');
+    t.Dependencies.AddUnit('idexmlconfigprocs');
 
+    T:=P.Targets.AddUnit('searchpathprocs.pas');
+    T:=P.Targets.AddUnit('recentlistprocs.pas');
+    T:=P.Targets.AddUnit('idexmlconfigprocs.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeConfig.compiled');
