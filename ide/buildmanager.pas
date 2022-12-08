@@ -55,7 +55,7 @@ uses
   TransferMacros, CompilerOptions, ExtTools, etMakeMsgParser, etFPCMsgParser,
   etPas2jsMsgParser, Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project,
   ProjectIcon, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  RunParamsOpts, SearchPathProcs;
+  RunParamsOpts, IdeTransferMacros, SearchPathProcs;
   
 const
   cInvalidCompiler = 'InvalidCompiler';
@@ -422,8 +422,7 @@ begin
   IDEMacros:=TLazIDEMacros.Create;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
 
-  // environment
-  EnvironmentOptions.InitMacros(GlobalMacroList);
+  TIdeTransferMarcros.InitMacros(GlobalMacroList);
 
   // project
   GlobalMacroList.Add(TTransferMacro.Create('Project','',

@@ -1466,6 +1466,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FindInFilesWnd"/>
       </Unit>
+      <Unit>
+        <Filename Value="idetransfermacros.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IdeTransferMacros"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

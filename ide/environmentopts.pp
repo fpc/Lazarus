@@ -47,11 +47,11 @@ uses
   FileProcs, SourceChanger, CodeCompletionTool,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf,
-  ComponentReg, IDEExternToolIntf, MacroDefIntf, SrcEditorIntf,
+  ComponentReg, IDEExternToolIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE
-  RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts,
   IdeCoolbarData, EditorToolbarStatic, IdeDebuggerOpts;
 
@@ -798,23 +798,6 @@ type
     function GetParsedDebuggerSearchPath: string;
     function GetParsedFppkgConfig: string; override;
     function GetParsedValue(o: TEnvOptParseType; AUnparsedValue: String = ''): string;
-
-    // macros
-    procedure InitMacros(AMacroList: TTransferMacroList);
-    function MacroFuncFPCSrcDir(const {%H-}s:string; const {%H-}Data: PtrInt;
-                                var {%H-}Abort: boolean): string;
-    function MacroFuncLazarusDir(const {%H-}s:string; const {%H-}Data: PtrInt;
-                                 var {%H-}Abort: boolean): string;
-    function MacroFuncExeExt(const {%H-}s:string; const {%H-}Data: PtrInt;
-                                 var {%H-}Abort: boolean): string;
-    function MacroFuncLanguageID(const {%H-}s:string; const {%H-}Data: PtrInt;
-                                 var {%H-}Abort: boolean): string;
-    function MacroFuncLanguageName(const {%H-}s:string; const {%H-}Data: PtrInt;
-                                   var {%H-}Abort: boolean): string;
-    function MacroFuncTestDir(const {%H-}s:string; const {%H-}Data: PtrInt;
-                              var {%H-}Abort: boolean): string;
-    function MacroFuncConfDir(const {%H-}s:string; const {%H-}Data: PtrInt;
-                              var {%H-}Abort: boolean): string;
 
     procedure UseDesktop(ADesktop: TDesktopOpt);
     procedure EnableDebugDesktop;
@@ -3154,68 +3137,6 @@ end;
 function TEnvironmentOptions.GetParsedCompilerFilename: string;
 begin
   Result:=GetParsedValue(eopCompilerFilename);
-end;
-
-procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);
-begin
-  AMacroList.Add(TTransferMacro.Create('FPCSrcDir','',
-                 lisFreePascalSourceDirectory,@MacroFuncFPCSrcDir,[]));
-  AMacroList.Add(TTransferMacro.Create('LazarusDir','',
-                 lisLazarusDirectory,@MacroFuncLazarusDir,[]));
-  AMacroList.Add(TTransferMacro.Create('ExeExt','',
-                 lisFileExtensionOfPrograms, @MacroFuncExeExt, []));
-  AMacroList.Add(TTransferMacro.Create('LanguageID','',
-                 lisLazarusLanguageID,@MacroFuncLanguageID,[]));
-  AMacroList.Add(TTransferMacro.Create('LanguageName','',
-                 lisLazarusLanguageName,@MacroFuncLanguageName,[]));
-  AMacroList.Add(TTransferMacro.Create('TestDir','',
-                 lisTestDirectory,@MacroFuncTestDir,[]));
-  AMacroList.Add(TTransferMacro.Create('ConfDir','',
-                 lisConfigDirectory,@MacroFuncConfDir,[]));
-  AMacroList.Add(TTransferMacro.Create('Home',GetUserDir,
-                 lisUserSHomeDirectory, nil, []));
-end;
-
-function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetParsedFPCSourceDirectory;
-end;
-
-function TEnvironmentOptions.MacroFuncLazarusDir(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetParsedLazarusDirectory;
-end;
-
-function TEnvironmentOptions.MacroFuncExeExt(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetExecutableExt;
-end;
-
-function TEnvironmentOptions.MacroFuncLanguageID(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=LanguageID;
-end;
-
-function TEnvironmentOptions.MacroFuncLanguageName(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetLazarusLanguageLocalizedName(LanguageID);
-end;
-
-function TEnvironmentOptions.MacroFuncTestDir(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetParsedTestBuildDirectory;
-end;
-
-function TEnvironmentOptions.MacroFuncConfDir(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-begin
-  Result:=GetPrimaryConfigPath;
 end;
 
 procedure TEnvironmentOptions.SaveDebuggerPropertiesList;
