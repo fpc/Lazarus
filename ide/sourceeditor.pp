@@ -1836,7 +1836,8 @@ begin
     SrcEditMenuFindOverloads.Visible := false;
     {$ENDIF}
     SrcEditMenuMakeResourceString := RegisterIDEMenuCommand(AParent,
-        'MakeResourceString', lisMenuMakeResourceString, nil, @ExecuteIdeMenuClick);
+        'MakeResourceString', lisMenuMakeResourceString, nil, @ExecuteIdeMenuClick,
+          nil, 'menu_source_makeresourcestring');
   {%endregion}
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,

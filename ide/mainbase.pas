@@ -1149,7 +1149,7 @@ begin
     ParentMI:=itmSourceBlockActions;
     CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
-    CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
+    CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_togglecomment');
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     CreateMenuItem(ParentMI,itmSourceCompleteCodeInteractive,'itmSourceCompleteCodeInteractive',lisMenuCompleteCodeInteractive, 'menu_source_completecode');
@@ -1176,7 +1176,7 @@ begin
       CreateMenuSeparatorSection(SubParentMI,itmRefactorTools,'itmRefactorTools');
       ParentMI:=itmRefactorTools;
       CreateMenuItem(ParentMI,itmRefactorMakeResourceString,'itmRefactorMakeResourceString',
-                     lisMenuMakeResourceString,'menu_tool_make_resourcestring');
+                     lisMenuMakeResourceString,'menu_source_makeresourcestring');
     // CodeToolChecks
     CreateMenuSeparatorSection(mnuSource,itmSourceCodeToolChecks,'itmSourceCodeToolChecks');
     ParentMI:=itmSourceCodeToolChecks;

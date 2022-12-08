@@ -822,6 +822,9 @@ menu/menu_set_free_bookmark_200.png
 menu/menu_source_completecode.png
 menu/menu_source_completecode_150.png
 menu/menu_source_completecode_200.png
+menu/menu_source_makeresourcestring.png
+menu/menu_source_makeresourcestring_150.png
+menu/menu_source_makeresourcestring_200.png
 menu/menu_stepinto.png
 menu/menu_stepinto_150.png
 menu/menu_stepinto_200.png
@@ -840,6 +843,9 @@ menu/menu_stepover_instr_200.png
 menu/menu_stop.png
 menu/menu_stop_150.png
 menu/menu_stop_200.png
+menu/menu_togglecomment.png
+menu/menu_togglecomment_150.png
+menu/menu_togglecomment_200.png
 menu/menu_toggle_bookmark0.png
 menu/menu_toggle_bookmark0_150.png
 menu/menu_toggle_bookmark0_200.png
