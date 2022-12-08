@@ -50,12 +50,12 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
-  InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
-  EnvironmentOpts, TransferMacros, CompilerOptions,
-  ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,
-  Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
-  ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, InputHistory,
+  EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
+  TransferMacros, CompilerOptions, ExtTools, etMakeMsgParser, etFPCMsgParser,
+  etPas2jsMsgParser, Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project,
+  ProjectIcon, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
+  RunParamsOpts, SearchPathProcs;
   
 const
   cInvalidCompiler = 'InvalidCompiler';

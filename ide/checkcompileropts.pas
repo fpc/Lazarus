@@ -43,8 +43,8 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
   // IDE
-  Project, PackageSystem, IDEProcs,
-  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros;
+  Project, PackageSystem, IDEProcs, LazarusIDEStrConsts, PackageDefs,
+  CompilerOptions, TransferMacros, SearchPathProcs;
 
 type
   TCompilerOptionsTest = (

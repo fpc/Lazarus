@@ -41,7 +41,8 @@ uses
   // IDE
   MainBase, MainBar, BasePkgManager, PackageDefs, Project, CompilerOptions,
   EnvironmentOpts, TransferMacros, BaseBuildManager, Compiler_ModeMatrix,
-  BuildModeDiffDlg, GenericCheckList, IDEProcs, LazarusIDEStrConsts;
+  BuildModeDiffDlg, GenericCheckList, IDEProcs, LazarusIDEStrConsts,
+  SearchPathProcs;
 
 type
 

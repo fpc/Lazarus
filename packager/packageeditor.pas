@@ -50,9 +50,10 @@ uses
   IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf,
   IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
   // IDE
-  MainBase, IDEProcs, DialogProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
-  EnvironmentOpts, InputHistory, PackageSystem, PackageDefs, AddToPackageDlg,
-  AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
+  MainBase, IDEProcs, DialogProcs, LazarusIDEStrConsts, IDEDefs,
+  CompilerOptions, EnvironmentOpts, InputHistory, SearchPathProcs,
+  PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg,
+  AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, CleanPkgDeps, ProjPackFilePropGui, ProjPackEditing,
   BasePkgManager;
   

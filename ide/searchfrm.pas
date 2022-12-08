@@ -42,7 +42,8 @@ uses
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, ProjectGroupIntf,
   // ide
-  LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project;
+  LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project,
+  SearchPathProcs;
 
 type
 

@@ -63,8 +63,8 @@ uses
   LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
-  TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg, FppkgHelper;
+  TransferMacros, DialogProcs, IDETranslations, CompilerOptions,
+  SearchPathProcs, PackageLinks, PackageDefs, ComponentReg, FppkgHelper;
 
 const
   MakefileCompileVersion = 2;

@@ -42,7 +42,8 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs, EnvironmentOpts;
+  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs,
+  EnvironmentOpts, RecentListProcs;
 
 type
   TCodeToolsDefinesNodeValues = class

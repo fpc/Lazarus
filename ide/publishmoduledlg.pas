@@ -43,7 +43,8 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf,
   // IDE
   ProjectDefs, Project, PackageDefs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions;
+  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions,
+  RecentListProcs;
 
 type
   { TPublishModuleDialog }

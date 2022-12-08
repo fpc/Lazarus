@@ -53,7 +53,7 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
-  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, PackageDefs;
+  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, SearchPathProcs, PackageDefs;
 
 type
   TIDEProjectItem = (

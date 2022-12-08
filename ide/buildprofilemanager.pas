@@ -42,7 +42,8 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, EnvironmentOpts;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, EnvironmentOpts,
+  IdeXmlConfigProcs;
 
 type
 

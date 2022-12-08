@@ -56,7 +56,7 @@ uses
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDE
   IDEProcs, MiscOptions, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts,
-  EnvironmentOpts;
+  EnvironmentOpts, RecentListProcs;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

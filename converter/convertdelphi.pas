@@ -44,8 +44,9 @@ uses
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf, IDEOptEditorIntf,
   // IDE
-  IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project, ProjectDescriptorTypes,
-  PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project,
+  ProjectDescriptorTypes, PackageDefs, PackageSystem, PackageEditor,
+  BasePkgManager, LazarusIDEStrConsts, SearchPathProcs,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;

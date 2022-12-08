@@ -51,7 +51,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE
-  IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts,
   IdeCoolbarData, EditorToolbarStatic, IdeDebuggerOpts;
 
@@ -89,6 +89,14 @@ const
 
   //----------------------------------------------------------------------------
   
+type
+  TParseString = record
+    UnparsedValue: string;
+    ParsedValue: string;
+    ParseStamp: integer;
+    Parsing: boolean;
+  end;
+
   { Backup }
 type
   TBackupType = (

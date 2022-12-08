@@ -49,7 +49,8 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, InputHistory, MiscOptions, IDEProcs;
+  LazarusIDEStrConsts, EditorOptions, InputHistory, MiscOptions, IDEProcs,
+  RecentListProcs;
 
 type
 

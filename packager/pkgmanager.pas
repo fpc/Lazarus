@@ -71,7 +71,7 @@ uses
   SourceEditor, ProjPackChecks, AddFileToAPackageDlg, LazarusPackageIntf,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
   ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager, BasePkgManager,
-  MainBar, MainIntf, MainBase, ModeMatrixOpts;
+  MainBar, MainIntf, MainBase, ModeMatrixOpts, RecentListProcs, SearchPathProcs;
 
 type
 

@@ -39,7 +39,7 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
   IDEProcs, LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
-  ShowDeletingFilesDlg, EnvironmentOpts;
+  ShowDeletingFilesDlg, EnvironmentOpts, RecentListProcs;
 
 type
 

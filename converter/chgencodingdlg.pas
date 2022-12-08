@@ -41,7 +41,8 @@ uses
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
-  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts, EnvironmentOpts;
+  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts,
+  EnvironmentOpts, SearchPathProcs;
 
 type
 

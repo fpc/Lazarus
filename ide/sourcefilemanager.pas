@@ -56,7 +56,7 @@ uses
   SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
   BuildManager, EditorMacroListViewer, FindRenameIdentifier, BuildModesManager,
-  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd,
+  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd, SearchPathProcs,
   ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type

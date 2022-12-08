@@ -42,7 +42,7 @@ uses
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
   IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
-  DebuggerStrConst, EnvironmentOpts;
+  DebuggerStrConst, EnvironmentOpts, RecentListProcs;
 
 type
 

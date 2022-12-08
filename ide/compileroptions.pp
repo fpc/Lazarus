@@ -56,7 +56,8 @@ uses
   IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, etFPCMsgParser,
-  IDECmdLine, ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
+  IDECmdLine, ModeMatrixOpts, CompOptsModes, EnvironmentOpts, SearchPathProcs,
+  IdeXmlConfigProcs;
 
 const
   DefaultCompilerPath = '$(CompPath)';

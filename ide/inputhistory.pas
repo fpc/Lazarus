@@ -47,7 +47,7 @@ uses
   // IdeIntf
   ProjectIntf, IDEDialogs,
   // IDE
-  DiffPatch, LazConf, IDEProcs;
+  DiffPatch, LazConf, IDEProcs, RecentListProcs, IdeXmlConfigProcs;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}

@@ -54,7 +54,8 @@ uses
   LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, FppkgHelper;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, SearchPathProcs,
+  IdeXmlConfigProcs, FppkgHelper;
 
 type
   TLazPackage = class;

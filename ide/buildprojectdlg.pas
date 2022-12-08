@@ -39,7 +39,7 @@ uses
   IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
-  EnvironmentOpts, IDEProcs;
+  EnvironmentOpts, IDEProcs, RecentListProcs;
 
 type
   TBuildProjectDialogItem = class

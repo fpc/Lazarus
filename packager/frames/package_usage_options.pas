@@ -13,7 +13,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
   // IDE
-  PathEditorDlg, LazarusIDEStrConsts, IDEProcs, PackageDefs;
+  PathEditorDlg, LazarusIDEStrConsts, IDEProcs, SearchPathProcs, PackageDefs;
 
 type
 

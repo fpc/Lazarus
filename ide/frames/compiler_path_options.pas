@@ -14,7 +14,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, CompOptsIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, IDEProcs,
-  CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
+  CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts, SearchPathProcs;
 
 type
 

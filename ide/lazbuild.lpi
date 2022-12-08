@@ -49,19 +49,22 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="IdeDebugger"/>
+        <PackageName Value="IdeConfig"/>
       </Item1>
       <Item2>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="IdeDebugger"/>
       </Item2>
       <Item3>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item4>
+      <Item5>
+        <PackageName Value="IDEIntf"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="4">
       <Unit0>

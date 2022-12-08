@@ -47,7 +47,7 @@ uses
   // IdeIntf
   IDEHelpIntf,
   // IDE
-  InputHistory, IDEProcs, LazarusIDEStrConsts, EnvironmentOpts;
+  InputHistory, IDEProcs, LazarusIDEStrConsts, EnvironmentOpts, RecentListProcs;
 
 const
   hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';

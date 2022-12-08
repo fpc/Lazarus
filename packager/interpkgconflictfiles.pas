@@ -66,7 +66,7 @@ uses
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IDE
   CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
-  TransferMacros, PackageDefs, PackageSystem;
+  TransferMacros, SearchPathProcs, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

@@ -113,6 +113,8 @@ uses
   etQuickFixes, etMessageFrame, etMessagesWnd,
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
+  // IdeConfig
+  IdeConfig,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, Files_Options, Desktop_Options, window_options, IdeStartup_Options,
@@ -162,7 +164,7 @@ uses
   SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
   WordCompletion,
   // main ide
-  MainBar, MainIntf, MainBase;
+  MainBar, MainIntf, MainBase, SearchPathProcs;
 
 type
   { TMainIDE }

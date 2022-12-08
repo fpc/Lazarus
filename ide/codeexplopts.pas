@@ -45,7 +45,7 @@ uses
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  LazConf, IDEProcs, LazarusIDEStrConsts;
+  LazConf, IDEProcs, LazarusIDEStrConsts, IdeXmlConfigProcs;
 
 type
   { TCodeExplorerOptions }

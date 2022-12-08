@@ -34,7 +34,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
   LazarusIDEStrConsts, PathEditorDlg, IDEProcs,
-  EnvironmentOpts, BaseDebugManager, IdeDebuggerOpts;
+  EnvironmentOpts, BaseDebugManager, IdeDebuggerOpts, SearchPathProcs;
 
 type
 

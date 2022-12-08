@@ -63,11 +63,11 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
   // IDE
-  EnvironmentOpts,
-  CompOptsModes, ProjectResources, LazConf, ProjectIcon,
+  EnvironmentOpts, CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
-  TransferMacros, ProjectDefs, EditDefineTree,
-  LazarusIDEStrConsts, InputHistory, ProjPackCommon, PackageDefs, PackageSystem;
+  TransferMacros, ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
+  InputHistory, SearchPathProcs, IdeXmlConfigProcs, ProjPackCommon, PackageDefs,
+  PackageSystem;
 
 type
   TUnitInfo = class;

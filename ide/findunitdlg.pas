@@ -42,7 +42,7 @@ uses
   LazIDEIntf, IDEMsgIntf, PackageLinkIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
-  etFPCMsgParser, PackageLinks, PackageSystem, BasePkgManager;
+  etFPCMsgParser, SearchPathProcs, PackageLinks, PackageSystem, BasePkgManager;
 
 type
   TFindUnitDialog = class;

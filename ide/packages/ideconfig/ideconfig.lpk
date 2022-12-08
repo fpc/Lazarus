@@ -9,7 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="-- This package is part of the IDE --
@@ -18,7 +18,27 @@ This package does not guarantee any particular interface/API. Files are maintain
 Files in this package are for the main configuration of the IDE."/>
     <License Value="GPLv2"/>
     <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="searchpathprocs.pas"/>
+        <UnitName Value="SearchPathProcs"/>
+      </Item>
+      <Item>
+        <Filename Value="recentlistprocs.pas"/>
+        <UnitName Value="RecentListProcs"/>
+      </Item>
+      <Item>
+        <Filename Value="idexmlconfigprocs.pas"/>
+        <UnitName Value="IdeXmlConfigProcs"/>
+      </Item>
+    </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazUtils"/>
+      </Item>
       <Item>
         <PackageName Value="FCL"/>
       </Item>

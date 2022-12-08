@@ -31,7 +31,7 @@ uses
   ProjectGroupIntf,
   // IDE
   LazarusIDEStrConsts, InputHistory, InputhistoryWithSearchOpt, EditorOptions, Project,
-  IDEProcs, SearchFrm, SearchResultView, EnvironmentOpts;
+  IDEProcs, SearchFrm, SearchResultView, EnvironmentOpts, SearchPathProcs;
 
 type
   { TLazFindInFilesDialog }

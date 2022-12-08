@@ -56,8 +56,8 @@ uses
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs,
-  EnvironmentOpts, TransferMacros, PackageSystem, DialogProcs, KeyMapping;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs, EnvironmentOpts,
+  TransferMacros, PackageSystem, DialogProcs, KeyMapping, SearchPathProcs;
 
 const
   IDEProjectName = 'Lazarus';

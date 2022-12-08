@@ -18,7 +18,8 @@ uses
   IDEDialogs, IDEUtils,
   // IDE
   Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
-  LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc;
+  LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc,
+  RecentListProcs;
 
 type
 

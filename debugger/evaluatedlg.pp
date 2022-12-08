@@ -49,7 +49,7 @@ uses
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
-  IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts;
+  IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts, RecentListProcs;
 
 type
 

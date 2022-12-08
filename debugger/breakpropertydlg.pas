@@ -15,8 +15,8 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE
-  BreakPropertyDlgGroups, DebuggerDlg, Debugger,
-  BaseDebugManager, LazarusIDEStrConsts, InputHistory, IDEProcs, EnvironmentOpts;
+  BreakPropertyDlgGroups, DebuggerDlg, Debugger, BaseDebugManager,
+  LazarusIDEStrConsts, InputHistory, IDEProcs, EnvironmentOpts, RecentListProcs;
 
 type
 
