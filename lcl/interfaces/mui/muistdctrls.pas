@@ -868,7 +868,7 @@ begin
     inherited Create(ObjType, Params);
   Tags.Clear;
   CheckLabel := TMuiText.Create(Tags);
-  //CheckLabel.Visible := False;
+  CheckLabel.Visible := False;
 end;
 
 destructor TMuiCheckMark.Destroy;
@@ -972,13 +972,18 @@ begin
       CheckLabel.Height := 16;
     FCheckWidth := w;
     // set the coords for the label
-    if Assigned(CheckLabel) and (CheckLabel.Visible) then
+    if Assigned(CheckLabel) and CheckLabel.Visible then
     begin
-      CheckLabel.Left := Left + FCheckWidth + 2;
-      CheckLabel.Width := FullWidth - (FCheckWidth + 2);
-      CheckLabel.Top := Top + w  div 2 - CheckLabel.Height div 2;
-      // lets do it :-)
-      CheckLabel.SetOwnSize;
+      if CheckLabel.caption = '' then
+        CheckLabel.Visible := False
+      else
+      begin
+        CheckLabel.Left := Left + FCheckWidth + 2;
+        CheckLabel.Width := FullWidth - (FCheckWidth + 2);
+        CheckLabel.Top := Top + w  div 2 - CheckLabel.Height div 2;
+        // lets do it :-)
+        CheckLabel.SetOwnSize;
+      end;
     end;
   end;
   // let the checkmark set its size
