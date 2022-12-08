@@ -389,9 +389,9 @@ type
 
   TShellTreeNode = class(TTreeNode)
   private
-    FFileInfo: TSearchRec;
     FBasePath: String;
   protected
+    FFileInfo: TSearchRec;
     procedure SetBasePath(ABasePath: String);
   public
     function ShortFilename: String;
