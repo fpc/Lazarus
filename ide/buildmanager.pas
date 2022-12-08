@@ -49,6 +49,8 @@ uses
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
+  // IdeOptions
+  TransferMacrosIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
@@ -417,7 +419,7 @@ end;
 procedure TBuildManager.SetupTransferMacros;
 begin
   LazConfMacroFunc:=@BMLazConfMacroFunction;
-  GlobalMacroList:=TTransferMacroList.Create;
+  TransferMacrosIntf.GlobalMacroList:=TTransferMacroList.Create;
   GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
   IDEMacros:=TLazIDEMacros.Create;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;

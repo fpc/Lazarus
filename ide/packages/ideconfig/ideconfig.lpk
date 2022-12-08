@@ -40,8 +40,15 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="version.inc"/>
         <Type Value="Include"/>
       </Item>
+      <Item>
+        <Filename Value="transfermacrosintf.pas"/>
+        <UnitName Value="transfermacrosintf"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="BuildIntf"/>
+      </Item>
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>

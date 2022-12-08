@@ -8,7 +8,8 @@ unit IdeConfig;
 interface
 
 uses
-  SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, LazarusPackageIntf;
+  SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, 
+  TransferMacrosIntf, LazarusPackageIntf;
 
 implementation
 

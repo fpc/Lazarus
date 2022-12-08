@@ -52,7 +52,7 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, LazConf,
-  IDEOptionDefs, TransferMacros, ModeMatrixOpts,
+  IDEOptionDefs, TransferMacrosIntf, ModeMatrixOpts,
   IdeCoolbarData, EditorToolbarStatic, IdeDebuggerOpts;
 
 const
@@ -2549,7 +2549,7 @@ var
 begin
   // files
   CurLazDir:=ChompPathDelim(LazarusDirectory);
-  if not TTransferMacroList.StrHasMacros(CurLazDir) then begin
+  if not GlobalMacroListClass.StrHasMacros(CurLazDir) then begin
     BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
     if PathIsInPath(CurLazDir,BaseDir) then begin
       // the pcp directory is in the lazarus directory

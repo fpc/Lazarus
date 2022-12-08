@@ -34,6 +34,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lclbase');
     D := P.Dependencies.Add('lazutils');
     D := P.Dependencies.Add('codetools');
@@ -53,11 +54,13 @@ begin
     t.Dependencies.AddUnit('recentlistprocs');
     t.Dependencies.AddUnit('idexmlconfigprocs');
     t.Dependencies.AddUnit('lazconf');
+    t.Dependencies.AddUnit('transfermacrosintf');
 
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('recentlistprocs.pas');
     T:=P.Targets.AddUnit('idexmlconfigprocs.pas');
     T:=P.Targets.AddUnit('lazconf.pp');
+    T:=P.Targets.AddUnit('transfermacrosintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeConfig.compiled');

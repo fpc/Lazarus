@@ -79,7 +79,7 @@ uses
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, CharacterMapDlg, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
-  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
+  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger, TransferMacrosIntf;
 
 type
   TSourceNotebook = class;
@@ -1177,7 +1177,7 @@ type
     function MacroFuncSaveAll(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var Abort: boolean): string;
   public
-    procedure InitMacros(AMacroList: TTransferMacroList);
+    procedure InitMacros(AMacroList: TTransferMacroListIntf);
     procedure SetupShortCuts;
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
@@ -10857,7 +10857,7 @@ begin
   Abort:=LazarusIDE.DoSaveAll([sfCheckAmbiguousFiles])<>mrOk;
 end;
 
-procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroList);
+procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroListIntf);
 begin
   AMacroList.Add(TTransferMacro.Create('Col','',
                  lisCursorColumnInCurrentEditor,@MacroFuncCol,[]));

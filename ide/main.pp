@@ -146,6 +146,7 @@ uses
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
   // rest of the ide
+  TransferMacrosIntf,
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros, KeyMapping,
@@ -1761,7 +1762,7 @@ begin
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(FLastActivatedWindows);
-  FreeThenNil(GlobalMacroList);
+  FreeThenNil(TransferMacrosIntf.GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(IDECodeMacros);
   FreeThenNil(LazProjectFileDescriptors);
@@ -2285,7 +2286,7 @@ begin
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 
-  SourceEditorManager.InitMacros(GlobalMacroList);
+  SourceEditorManager.InitMacros(TransferMacrosIntf.GlobalMacroList);
   EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
 end;
 
