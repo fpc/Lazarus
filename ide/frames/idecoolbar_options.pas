@@ -36,7 +36,7 @@ uses
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, MainBar, EnvironmentOpts, IdeCoolbarData;
+  LazarusIDEStrConsts, MainBar, EnvironmentOpts, IdeCoolbarData, CoolBarOptions;
 
 type
 

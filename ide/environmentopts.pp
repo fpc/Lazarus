@@ -53,7 +53,7 @@ uses
   // IDE
   RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, LazConf,
   IDEOptionDefs, TransferMacrosIntf, ModeMatrixOpts,
-  IdeCoolbarData, EditorToolbarStatic, IdeDebuggerOpts;
+  CoolBarOptions, EditorToolBarOptions, IdeDebuggerOpts;
 
 const
   EnvOptsVersion: integer = 110;

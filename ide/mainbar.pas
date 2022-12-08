@@ -46,7 +46,7 @@ uses
   // IDEIntf
   MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf, ComponentReg,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IdeCoolbarData;
+  EnvironmentOpts, LazarusIDEStrConsts, IdeCoolbarData, CoolBarOptions;
 
 type
   { TMainIDEBar }

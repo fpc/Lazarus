@@ -52,6 +52,18 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="modematrixopts.pas"/>
         <UnitName Value="ModeMatrixOpts"/>
       </Item>
+      <Item>
+        <Filename Value="editortoolbaroptions.pas"/>
+        <UnitName Value="EditorToolBarOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="toolbaroptionsbase.pas"/>
+        <UnitName Value="ToolBarOptionsBase"/>
+      </Item>
+      <Item>
+        <Filename Value="coolbaroptions.pas"/>
+        <UnitName Value="coolbaroptions"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

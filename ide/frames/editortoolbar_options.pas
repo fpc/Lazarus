@@ -35,8 +35,10 @@ uses
   DividerBevel,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  // IdeConfig
+  EditorToolBarOptions,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, EditorToolbarStatic, ToolbarConfig;
+  LazarusIDEStrConsts, EnvironmentOpts, ToolbarConfig;
 
 type
 

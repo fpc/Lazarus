@@ -57,6 +57,9 @@ begin
     t.Dependencies.AddUnit('transfermacrosintf');
     t.Dependencies.AddUnit('ideoptiondefs');
     t.Dependencies.AddUnit('modematrixopts');
+    t.Dependencies.AddUnit('editortoolbaroptions');
+    t.Dependencies.AddUnit('toolbaroptionsbase');
+    t.Dependencies.AddUnit('coolbaroptions');
 
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('recentlistprocs.pas');
@@ -65,6 +68,9 @@ begin
     T:=P.Targets.AddUnit('transfermacrosintf.pas');
     T:=P.Targets.AddUnit('ideoptiondefs.pas');
     T:=P.Targets.AddUnit('modematrixopts.pas');
+    T:=P.Targets.AddUnit('editortoolbaroptions.pas');
+    T:=P.Targets.AddUnit('toolbaroptionsbase.pas');
+    T:=P.Targets.AddUnit('coolbaroptions.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeConfig.compiled');
