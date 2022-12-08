@@ -39,7 +39,7 @@ uses
   LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   BaseIDEIntf, IDEExternToolIntf,
-  // IDE
+  // IdeConfig
   LazConf;
 
 type

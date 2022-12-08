@@ -55,12 +55,16 @@ begin
     t.Dependencies.AddUnit('idexmlconfigprocs');
     t.Dependencies.AddUnit('lazconf');
     t.Dependencies.AddUnit('transfermacrosintf');
+    t.Dependencies.AddUnit('ideoptiondefs');
+    t.Dependencies.AddUnit('modematrixopts');
 
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('recentlistprocs.pas');
     T:=P.Targets.AddUnit('idexmlconfigprocs.pas');
     T:=P.Targets.AddUnit('lazconf.pp');
     T:=P.Targets.AddUnit('transfermacrosintf.pas');
+    T:=P.Targets.AddUnit('ideoptiondefs.pas');
+    T:=P.Targets.AddUnit('modematrixopts.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeConfig.compiled');

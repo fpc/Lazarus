@@ -654,10 +654,6 @@
         <UnitName Value="CleanPkgDeps"/>
       </Unit>
       <Unit>
-        <Filename Value="modematrixopts.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="frames/compiler_modematrix.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptModeMatrixFrame"/>
@@ -1227,11 +1223,6 @@
         <Filename Value="gotofrm.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="ideoptiondefs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEOptionDefs"/>
       </Unit>
       <Unit>
         <Filename Value="sourceeditprocs.pas"/>

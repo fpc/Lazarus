@@ -42,7 +42,15 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <Filename Value="transfermacrosintf.pas"/>
-        <UnitName Value="transfermacrosintf"/>
+        <UnitName Value="TransferMacrosIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="ideoptiondefs.pas"/>
+        <UnitName Value="IDEOptionDefs"/>
+      </Item>
+      <Item>
+        <Filename Value="modematrixopts.pas"/>
+        <UnitName Value="ModeMatrixOpts"/>
       </Item>
     </Files>
     <RequiredPkgs>

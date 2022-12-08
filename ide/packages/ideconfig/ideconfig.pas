@@ -9,7 +9,7 @@ interface
 
 uses
   SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, 
-  TransferMacrosIntf, LazarusPackageIntf;
+  TransferMacrosIntf, IDEOptionDefs, ModeMatrixOpts, LazarusPackageIntf;
 
 implementation
 

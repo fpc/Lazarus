@@ -46,6 +46,7 @@ uses
   LCLProc, Controls, Graphics, ComCtrls, Menus,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, CompOptsIntf,
+  KeywordFuncLists,
   // IDE
   EnvironmentOpts, PackageSystem, PackageDefs, Project, LazarusIDEStrConsts,
   TransferMacros, ModeMatrixOpts, ModeMatrixCtrl, compiler_config_target;
@@ -169,6 +170,10 @@ function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
 function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
 function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
 function BuildMatrixDefaultValue(Typ: TBuildMatrixOptionType): string;
+
+function CheckBuildMatrixTargetsSyntax(const Targets: String): String;
+function SplitMatrixMacro(MacroAssignment: string;
+  out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
 
 var
   ModeMatrixFrame: TCompOptModeMatrixFrame = nil;
@@ -1278,6 +1283,90 @@ begin
   LazProject.BuildModes.SessionMatrixOptions.Assign(fOldSessionOptions);
 
   IncreaseCompilerParseStamp;
+end;
+
+function CheckBuildMatrixTargetsSyntax(const Targets: String): String;
+var
+  p: PChar;
+
+  procedure WarnInvalidChar;
+  begin
+    Result:=Format(lisMMInvalidCharacterAt, [dbgstr(p^), IntToStr(p-PChar(
+      Targets)+1)]);
+  end;
+
+begin
+  Result:='';
+  if Targets='' then exit;
+  p:=PChar(Targets);
+  repeat
+    case p^ of
+    #0:
+      if p-PChar(Targets)=length(Targets) then
+        break
+      else begin
+        WarnInvalidChar;
+        exit;
+      end;
+    #1..#32,#127:
+      begin
+        WarnInvalidChar;
+        exit;
+      end;
+    end;
+    inc(p);
+  until false;
+end;
+
+function SplitMatrixMacro(MacroAssignment: string; out MacroName,
+  MacroValue: string; ExceptionOnError: boolean): boolean;
+
+  procedure E(Msg: string);
+  begin
+    raise EMMMacroSyntaxException.Create(Msg);
+  end;
+
+var
+  p: PChar;
+  StartP: PChar;
+begin
+  Result:=false;
+  MacroName:='';
+  MacroValue:='';
+  if MacroAssignment='' then begin
+    if ExceptionOnError then
+      E(lisMMMissingMacroName);
+    exit;
+  end;
+  p:=PChar(MacroAssignment);
+  if not IsIdentStartChar[p^] then begin
+    if ExceptionOnError then
+      E(Format(lisMMExpectedMacroNameButFound, [dbgstr(p^)]));
+    exit;
+  end;
+  StartP:=p;
+  repeat
+    inc(p);
+  until not IsIdentChar[p^];
+  MacroName:=copy(MacroAssignment,1,p-StartP);
+  if (p^<>':') or (p[1]<>'=') then begin
+    if ExceptionOnError then
+      E(Format(lisMMExpectedAfterMacroNameButFound, [dbgstr(p^)]));
+    exit;
+  end;
+  inc(p,2);
+  StartP:=p;
+  repeat
+    if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
+    if p^ in [#0..#31,#127] then begin
+      if ExceptionOnError then
+        E(Format(lisMMInvalidCharacterInMacroValue, [dbgstr(p^)]));
+      exit;
+    end;
+    inc(p);
+  until false;
+  MacroValue:=copy(MacroAssignment,StartP-PChar(MacroAssignment)+1,p-StartP);
+  Result:=true;
 end;
 
 initialization
