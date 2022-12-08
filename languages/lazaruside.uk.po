@@ -18982,7 +18982,7 @@ msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and 
 msgstr "Клавішу %s вже призначено для %s%s.%s%sВидалити старе призначення і призначити клавішу для нової функції %s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "Необхідний для виконання пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проєкт -> Параметри проєкту -> Застосунок."
 
