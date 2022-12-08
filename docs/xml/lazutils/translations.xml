@@ -74,10 +74,32 @@ property list to CFBundleLocalizations key, see
 </p>
 </descr>
 
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="jsonscanner"/>
+<element name="jsonparser"/>
+<element name="fpjson"/>
+<element name="FileUtil"/>
+<element name="LazFileUtils"/>
+<element name="LazUTF8"/>
+<element name="LConvEncoding"/>
+<element name="LazLoggerBase"/>
+<element name="AvgLvlTree"/>
+<element name="StringHashList"/>
+
 <element name="TStringsType">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Format used in the string table passed to the TPOFile.UpdateStrings method.
+</short>
+<descr>
+<p>
+Determines the inner method called to process values passed in the argument.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.UpdateStrings"/>
+</seealso>
 </element>
 <element name="TStringsType.stLrj">
 <short>Lazarus resource string table in JSON format.</short>
@@ -128,9 +150,11 @@ property list to CFBundleLocalizations key, see
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TPOFileItem.FInitialFuzzyState"/>
 <element name="TPOFileItem.FVirtualTranslation"/>
 
+<!-- public -->
 <element name="TPOFileItem.Tag">
 <short/>
 <descr/>
@@ -185,6 +209,12 @@ property list to CFBundleLocalizations key, see
 <seealso/>
 </element>
 
+<element name="TPOFileItem.Duplicate">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
 <element name="TPOFileItem.Create">
 <short/>
 <descr/>
@@ -201,19 +231,36 @@ property list to CFBundleLocalizations key, see
 </element>
 
 <element name="TPOFileItem.ModifyFlag">
-<short/>
+<short>
+Examines and updates the Flags property for the specified values.
+</short>
 <descr/>
-<errors></errors>
 <seealso/>
 </element>
-<element name="TPOFileItem.ModifyFlag.AFlag">
-<short/>
+<element name="TPOFileItem.ModifyFlag.Result">
+<short>
+<b>True</b> if the Flags property has been modified in the method.
+</short>
+</element>
+<element name="TPOFileItem.ModifyFlag.AFlags">
+<short>
+Comma-delimited list of flags accepted in the method.
+</short>
 </element>
 <element name="TPOFileItem.ModifyFlag.Check">
-<short/>
+<short>
+<b>True</b> causes an existing flag value to be removed. <b>False</b> causes a 
+missing flag value to be added.
+</short>
 </element>
 
-<element name="TPOFileItem.Identifier">
+<element name="TPOFileItem.InitialFuzzyState">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPOFileItem.VirtualTranslation">
 <short/>
 <descr/>
 <seealso/>
@@ -226,11 +273,13 @@ property list to CFBundleLocalizations key, see
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TPOFile.FStatisticsUpdated"/>
 <element name="TPOFile.FStatistics"/>
 <element name="TPOFile.GetStatistics"/>
 <element name="TPOFile.GetStatistics.Result"/>
 
+<!-- protected -->
 <element name="TPOFile.FItems">
 <short/>
 </element>
@@ -321,9 +370,15 @@ property list to CFBundleLocalizations key, see
 <element name="TPOFile.ReadPOText.AStream">
 <short/>
 </element>
+<!-- params for the overload -->
+<element name="TPOFile.ReadPOText.Txt">
+<short/>
+</element>
 
 <element name="TPOFile.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -338,14 +393,11 @@ property list to CFBundleLocalizations key, see
 </element>
 
 <element name="TPOFile.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
-</element>
-
-<!-- Params for the Overload -->
-<element name="TPOFile.ReadPOText.Txt">
-<short/>
 </element>
 
 <element name="TPOFile.Translate">
@@ -509,21 +561,21 @@ property list to CFBundleLocalizations key, see
 <short/>
 </element>
 
-<element name="TPOFile.RemoveIdentifiers">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TPOFile.RemoveIdentifiers.AIdentifiers">
-<short/>
-</element>
-
 <element name="TPOFile.RemoveOriginal">
 <short/>
 <descr/>
 <seealso/>
 </element>
 <element name="TPOFile.RemoveOriginal.AOriginal">
+<short/>
+</element>
+
+<element name="TPOFile.RemoveIdentifiers">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPOFile.RemoveIdentifiers.AIdentifiers">
 <short/>
 </element>
 
@@ -639,6 +691,36 @@ property list to CFBundleLocalizations key, see
 <short/>
 <descr/>
 <seealso/>
+</element>
+
+<element name="GetPOFilenameParts">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="GetPOFilenameParts.Result">
+<short/>
+</element>
+<element name="GetPOFilenameParts.Filename">
+<short/>
+</element>
+<element name="GetPOFilenameParts.UnitName">
+<short/>
+</element>
+<element name="GetPOFilenameParts.Language">
+<short/>
+</element>
+
+<element name="FindAllTranslatedPoFiles">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="FindAllTranslatedPoFiles.Result">
+<short/>
+</element>
+<element name="FindAllTranslatedPoFiles.Filename">
+<short/>
 </element>
 
 <element name="TranslateUnitResourceStrings">
