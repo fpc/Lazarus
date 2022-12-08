@@ -420,7 +420,16 @@ begin
     begin
       // If S1 contains arguments, then analyze S2
       Extr2 := ExtractFormatArgs(S2, ArgErr2);
-      Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
+      // If S1 contains arguments without errors and S2 has errors,
+      // S2 formatting is bad, no further comparison needed.
+      // This allows to catch a case when S1 contains %s%s and S2 contains s%s%s%
+      // (note the order of 's' and '%' in S2).
+      // All other cases (no errors in both S1 and S2, errors in both S1 and S2,
+      // errors in S1 but not S2) warrant performing argument comparison.
+      if (ArgErr1 = 0) and (ArgErr2 <> 0) then
+        Result := false
+      else
+        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
     end;
   end;
 end;
