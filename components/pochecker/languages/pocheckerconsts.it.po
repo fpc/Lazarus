@@ -333,19 +333,19 @@ msgid "Original"
 msgstr "Originale"
 
 #: pocheckerconsts.spercfuzzy
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% fuzzy strings."
 msgid "%s: %5.1f%% fuzzy strings."
 msgstr "%s: %4.1f%% stringhe incerte."
 
 #: pocheckerconsts.sperctranslated
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% translated strings."
 msgid "%s: %5.1f%% translated strings."
 msgstr "%s: %4.1f%% stringhe tradotte."
 
 #: pocheckerconsts.spercuntranslated
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
 msgstr "%s: %4.1f%% stringhe non tradotte."
@@ -420,7 +420,7 @@ msgid "Show statistics graph"
 msgstr "Mostra il grafico"
 
 #: pocheckerconsts.sstathint
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid ""
 #| "%d Translated (%.1f%%)\n"
 #| "%d UnTranslated (%.1f%%)\n"

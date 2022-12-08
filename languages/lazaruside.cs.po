@@ -8474,7 +8474,7 @@ msgid "Debugger"
 msgstr "Ladič"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Chyba ladiče%sLadič je v chybovém stavu%sUložte svou práci!%sPoužijte Stop, a doufejte v nejlepší."
@@ -10953,7 +10953,7 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "IDE bude znovu přeloženo a restartováno během instalace/odinstalace balíčků."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Vítejte v Lazarusu.%0:sNalezená Konfigurace IDE  byla dříve použita jinou instalací Lazarusu.%0:sPokud máte dvě a více oddělených instalací Lazarusu, tyto instalace by neměly sdílet stejnou konfiguraci. To by mohlo vést ke konfliktům a Vaše instalace Lazarusu by se mohly stát nestabilní.%0:s%0:sPokud máte pouze jednu instalaci a zkopírovanoý/přesunutý spustitelný soubor Lazarusu, může aktualizovat tuto konfiguraci.%0:s%1:s%0:s%0:sVyberte:%0:s%:s* Informace o aktualizaci: Použijte tuto konfiguraci a aktualizujte jipro budoucí použití s Lazarusem. Stará instalace ji nebude více používat.%0:s* Ignorovat: Použít tuto konfiguraci, ale ponechat upozornění. Toto může vést ke konfliktům s ostatními instalacemi.%0:s* Zrušit: Ukončit právě teď. Můžete potom vyřešit problém spuštěním Lazarusu se správnou konfigurací.%0:s%0:sDalší informace:%0:sTato konfigurace je pro: %2:s%0:sPatří instalaci Lazarusu v %3:s%0:s.Aktuální IDE bylo spuštěno z: %4:s%0:s"
 

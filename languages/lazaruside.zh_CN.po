@@ -8439,7 +8439,7 @@ msgid "Debugger"
 msgstr "调试器"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "调试器错误%s哎呀, 调试器进入错误状态%s现在保存你的工作!%s点击停止,相信(hope)最好的 , 我们将终止(pulling the plug)."
@@ -10213,7 +10213,7 @@ msgid "Filter already exists"
 msgstr "过滤器已经存在"
 
 #: lazarusidestrconsts.lisfilterdebugmessagesandbelow
-#, fuzzy, badformat
+#, fuzzy
 msgid "Filter Debug Messages and below"
 msgstr "过滤类型%s的所有信息"
 
@@ -10231,7 +10231,7 @@ msgid "Filter None, do not filter by urgency"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilternonurgentmessages
-#, fuzzy, badformat
+#, fuzzy
 msgid "Filter non urgent Messages"
 msgstr "过滤类型%s的所有信息"
 
@@ -10462,7 +10462,7 @@ msgid "Failed to generate the configuration file \"%s\": %s"
 msgstr "复制文件\"%s\"到\"%s\" 失败"
 
 #: lazarusidestrconsts.lisfppkgfilestobewritten
-#, fuzzy, badformat
+#, fuzzy
 msgid "Files to be written:"
 msgstr "编写文件日期:%s"
 
@@ -20911,7 +20911,7 @@ msgid "Crossings"
 msgstr ""
 
 #: lazarusidestrconsts.lvlgraphoptedgelen
-#, fuzzy, badformat
+#, fuzzy
 msgid "Edge len"
 msgstr "长度=%d: "
 

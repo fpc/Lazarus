@@ -8702,7 +8702,7 @@ msgid "Debugger"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Kesalahan Debugger%sOoops, debugger masuk ke keadaan salah%sSimpan pekerjaan anda sekarang !%sTekan Hentikan, dan harapan terbaik, kami mencabut colokan."
@@ -10938,7 +10938,7 @@ msgid "Goto selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -11969,7 +11969,7 @@ msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Config %sBuild File%s"
 msgid "Config \"Build File\""
 msgstr "Konfig %sBuild File%s"
@@ -12846,7 +12846,7 @@ msgid "LFM is ok"
 msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -15090,7 +15090,7 @@ msgid ", Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -15352,7 +15352,7 @@ msgid "New page"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - (proyek baru)"

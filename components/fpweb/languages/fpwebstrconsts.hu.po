@@ -16,7 +16,7 @@ msgid "Apache Module"
 msgstr "Apache modul"
 
 #: fpwebstrconsts.rsapachemodule2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgstr "Apache modul%sEgy az Apache által betölthető modul Free Pascal-ban webmodulok használatával. A fő fügvénytár forráskódját a Lazarus automatikusan karbantartja."
@@ -26,7 +26,7 @@ msgid "CGI Application"
 msgstr "CGI alkalmazás"
 
 #: fpwebstrconsts.rscgiapplicati2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
@@ -36,7 +36,7 @@ msgid "Custom CGI Application"
 msgstr "Egyéni CGI alkalmazás"
 
 #: fpwebstrconsts.rscustomcgiapp2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal."
 msgstr "Egyéni CGI alkalmazás%sEgy CGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
@@ -46,7 +46,7 @@ msgid "Custom FastCGI Application"
 msgstr "Egyéni FastCGI alkalmazás"
 
 #: fpwebstrconsts.rscustomfastcg2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
 msgstr "Egyéni FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban. A program forráskódját a Lazarus automatikusan karbantartja."
@@ -56,7 +56,7 @@ msgid "FastCGI Application"
 msgstr "FastCGI alkalmazás"
 
 #: fpwebstrconsts.rsfastcgiappli2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
@@ -74,7 +74,7 @@ msgid "HTML Web Module"
 msgstr "HTTP web modul"
 
 #: fpwebstrconsts.rshtmlwebmodul2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgid "A Web datamodule for producing strict HTML."
 msgstr "HTML WEB modul%sEgy web adatmodul szigorú HTML létrehozására."
@@ -98,7 +98,7 @@ msgid "Web DataProvider Module"
 msgstr "Web adatszolgáltató modul"
 
 #: fpwebstrconsts.rswebdataprovi2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgstr "WEB adatszolgáltató modul%sEgy adatmodul WEB (HTTP) alkalmazások számára az adatkérések kezelésére WebDataProvider komponensek haszálatával."
@@ -108,7 +108,7 @@ msgid "Web Ext.Direct Module"
 msgstr "Web Ext.Direct modul"
 
 #: fpwebstrconsts.rswebextdirect2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Web Ext.Direct modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban az Ext.Direct kéréseket kezeli TJSONRPCHandler komponensek használatával."
@@ -118,7 +118,7 @@ msgid "Web JSON-RPC Module"
 msgstr "Web JSON-RPC modul"
 
 #: fpwebstrconsts.rswebjsonrpcmo2
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgstr "Web JSON-RPC modul%sEgy adatmodul, mely WEB (HTTP) alkalmazásokban a JSON-RPC kéréseket kezeli TJSONRPCHandler komponensek használatával."
@@ -128,7 +128,7 @@ msgid "Web Module"
 msgstr "Web modul"
 
 #: fpwebstrconsts.rswebmoduleada
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgid "A datamodule for WEB (HTTP) applications."
 msgstr "Web modul%sEgy adatmodul WEB (HTTP) alkalmazások számára."

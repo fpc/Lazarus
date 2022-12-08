@@ -240,7 +240,7 @@ msgid "Failed to load application executable"
 msgstr "Nepavyko įkelti programos vykdomojo failo"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr "Inicializacijos metu derintuvei nepavyko nustatyti visų stabdos taškų.%s Patikrinkite ar kompiliuojant visus pirminio kodo failus buvo įgalinta derinimo informacija.%s Spustelėju „Tinka“ nepaisant klaidos bus tęsiama toliau."
 

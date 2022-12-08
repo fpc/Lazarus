@@ -14288,7 +14288,7 @@ msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -14745,7 +14745,7 @@ msgid "New page"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - مشروع جديد"

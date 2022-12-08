@@ -8553,7 +8553,7 @@ msgid "Debugger"
 msgstr "Debuger"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Chyba debugera %sDebuger vstúpil do chybového stavu%sUložte svoju prácu!%sPoužite Stop, a dúfajte v najlepšie, we're pulling the plug."
@@ -10780,7 +10780,7 @@ msgid "Goto selected"
 msgstr "Choď na vybraté"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -11809,7 +11809,7 @@ msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Config %sBuild File%s"
 msgid "Config \"Build File\""
 msgstr "Konfigurovať %sVybudovanie súboru%s"
@@ -12649,7 +12649,7 @@ msgid "LFM is ok"
 msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"
@@ -14730,7 +14730,7 @@ msgid ", Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy, badformat
+#, fuzzy
 #| msgid ""
 #| "<description>\n"
 #| "\n"

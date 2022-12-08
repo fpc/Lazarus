@@ -80,7 +80,7 @@ msgid "You selected %s."
 msgstr "Ha seleccionado %s."
 
 #: stringsunit.rsyouselectedat
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgctxt "stringsunit.rsyouselectedat"
 msgid "You selected %0:s at %1:s."
 msgstr "A las %1:s usted ha elegido %0:s."

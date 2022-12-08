@@ -1395,7 +1395,7 @@ msgid "C&ut"
 msgstr "W&ytnij"
 
 #: lr_const.sfrdesignerform_datainsp
-#, fuzzy, badformat
+#, fuzzy
 msgid "&Data inspector"
 msgstr "Inspektor %danych"
 

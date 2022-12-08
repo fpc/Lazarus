@@ -28,7 +28,7 @@ msgid "FPCUnit Console Test Application"
 msgstr "Applicazione console di test FPCUnit"
 
 #: strtestcaseopts.sfpcunconsoletestdesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases in console mode."
 msgstr "Applicazione console di test FPCUnit%sUna applicazione per far girare dei test su FPCUnit in modo console.%sIl sorgente dell'applicazione è mantenuto automaticamente da Lazarus."
@@ -38,7 +38,7 @@ msgid "FPCUnit Test Application"
 msgstr "Applicazione di test FPCUnit"
 
 #: strtestcaseopts.sfpcuntestappdesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases."
 msgstr "Applicazione di test FPCUnit%sUna applicazione per far girare dei test su FPCUnit.%sIl sorgente dell'applicazione è mantenuto automaticamente da Lazarus."
@@ -48,7 +48,7 @@ msgid "FPCUnit Test Case"
 msgstr "Caso di test FPCUnit"
 
 #: strtestcaseopts.sfpcuntestcasedesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgid "A unit containing a FPCUnit Test Case."
 msgstr "Caso di test FPCUnit%sUna unit che contiene un caso di test FPCUnit."

@@ -6064,7 +6064,7 @@ msgid "Change Class"
 msgstr "Osztály módosítása"
 
 #: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
 msgstr "A(z) %1:s %0:s koordinátája megváltozott erről: %2:d, erre: %3:d, ebben: %4:s."
 
@@ -8432,7 +8432,7 @@ msgid "Debugger"
 msgstr "Hibakereső"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Hibakereső hiba%sHoppá, a hibakereső hibaállapotba került.%sMentse a munkáját most!%sNyomja meg az Leállítás-t, és reménykedjen a legjobbakban, most kihúzzuk a dugót."

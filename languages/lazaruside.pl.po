@@ -1336,7 +1336,7 @@ msgid "Dwarf 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "Dwarf with sets"
 msgid "Dwarf 2 with sets"
 msgstr "ustawia IncPath na %s"
@@ -2065,7 +2065,7 @@ msgid "Comment //"
 msgstr "Komentarz //"
 
 #: lazarusidestrconsts.dlgfoldpastry
-#, fuzzy, badformat
+#, fuzzy
 msgid "Try"
 msgstr "Porada: Funkcja Make Resourcestring wymaga stałej łańcuchowej.%sWybierz wyrażenie i spróbuj ponownie."
 
@@ -3361,7 +3361,7 @@ msgid "Highlight control statements as keywords"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
-#, fuzzy, badformat
+#, fuzzy
 msgid "Extended Pascal Keyword Options"
 msgstr "Jako nazwy komponentu \"%s\" próbujesz użyć słowa kluczowego języka Pascal"
 
@@ -3383,7 +3383,7 @@ msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Prześlij opcje do linkera za pomocą \"-k\" (oddzielone spacją)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-#, fuzzy, badformat
+#, fuzzy
 msgid "Highlight \"String\" keyword(s)"
 msgstr "Nie znaleziono wyrażenia '%s'!"
 
@@ -3533,7 +3533,7 @@ msgid "Title:"
 msgstr "Nazwa:"
 
 #: lazarusidestrconsts.dlgpouiaccess
-#, fuzzy, badformat
+#, fuzzy
 msgid "UI Access (uiAccess)"
 msgstr "brak uprawnień do wykonania dla %s"
 
@@ -3964,7 +3964,7 @@ msgid "Show single button in TaskBar"
 msgstr "Pojedynczy przycisk na pasku zadań"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
-#, fuzzy, badformat
+#, fuzzy
 msgid "Skip forward class declarations"
 msgstr "Brak klasy zadeklarowanej jako Forward: %s"
 
@@ -5812,7 +5812,7 @@ msgid "All tests succeeded."
 msgstr "Wszystkie testy pozytywne."
 
 #: lazarusidestrconsts.lisccounabletocreatetestfile
-#, fuzzy, badformat
+#, fuzzy
 msgid "Unable to create Test File"
 msgstr "Nie można utworzyć pliku \"%s\""
 
@@ -8578,7 +8578,7 @@ msgid "Debugger"
 msgstr "Odpluskiwacz"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Błąd odpluskwiacza%sOoops, odpluskwiacz wszedł w stan błędu%sZapisz teraz swoją pracę !%sWciśnij zatrzymaj, i miejmy nadzieję że wszystko będzie dobrze."
@@ -10544,7 +10544,7 @@ msgid "Error writing \"%s\"%s%s"
 msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-#, fuzzy, badformat
+#, fuzzy
 msgid "FPDoc syntax error"
 msgstr "Błąd składniowy w wyrażeniu \"%s\""
 
@@ -10843,7 +10843,7 @@ msgid "Group name:"
 msgstr "Nazwa grupy:"
 
 #: lazarusidestrconsts.lisgroupnameinvalid
-#, fuzzy, badformat
+#, fuzzy
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr "Nazwa \"%s\" nie jest prawid?owym identyfikatorem pascala."
 
@@ -11295,7 +11295,7 @@ msgid ", incompatible ppu=%s"
 msgstr "Niekompatybilny identyfikator"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
-#, fuzzy, badformat
+#, fuzzy
 msgid "Incorrect configuration directory found"
 msgstr "Nie znaleziono katalogu \"%s\""
 
@@ -13302,7 +13302,7 @@ msgid "Delete selected menu template"
 msgstr "Usuń wybrany szablon menu"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
-#, fuzzy, badformat
+#, fuzzy
 msgid "Delete this item and its subitems?"
 msgstr "Usunąć element \"%s\"?"
 
@@ -16666,7 +16666,7 @@ msgid "The file \"%s\" of package %s was not found."
 msgstr "Nie znaleziono pakietu \"%s\"."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
-#, fuzzy, badformat
+#, fuzzy
 msgid "The following package failed to load:"
 msgstr "Nie można załadować pakietu \"%s\""
 
@@ -20405,7 +20405,7 @@ msgid "Unable to stream selected components"
 msgstr "Nie można wysłać do strumienia zaznaczonych komponentów"
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents2
-#, fuzzy, badformat
+#, fuzzy
 msgid "Unable to stream selected components."
 msgstr "Nie można wysłać do strumienia %s:T%s."
 

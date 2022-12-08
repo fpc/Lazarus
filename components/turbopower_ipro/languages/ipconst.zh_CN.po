@@ -78,7 +78,7 @@ msgid "HEAD: (%s) FAILED"
 msgstr "头: (%s)失败"
 
 #: ipconst.httpnoheaderdata
-#, fuzzy, badformat
+#, fuzzy
 msgid "No Header Data for Entity"
 msgstr "下载: (%s),获得数据头"
 
@@ -538,7 +538,7 @@ msgid "TIpTerminalArray.GetItemPtr: invalid item size"
 msgstr "无效图像的大小"
 
 #: ipconst.sinvscrollrow
-#, fuzzy, badformat
+#, fuzzy
 msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
 msgstr "无效的整数数: %s"
 
@@ -1821,7 +1821,7 @@ msgid "Ras Error (%d): on API '%s'"
 msgstr "WinSock错误(%d): %s,关于API '%s'"
 
 #: ipconst.srasinteractive
-#, fuzzy, badformat
+#, fuzzy
 msgid "Interactive"
 msgstr "%s%s%s%slazbuild是非交互的,现在放弃(aborting)."
 
@@ -2075,7 +2075,7 @@ msgid "Invalid command arguments"
 msgstr "无效命令参数"
 
 #: ipconst.ssmtpresponse55
-#, fuzzy, badformat
+#, fuzzy
 msgid "Wrong protocol version"
 msgstr "错误版本在%s: %s"
 
@@ -2121,7 +2121,7 @@ msgid "Mailing list expansion prohibited"
 msgstr ""
 
 #: ipconst.ssmtpresponse73
-#, fuzzy, badformat
+#, fuzzy
 msgid "Security conversion required but not possible"
 msgstr "不能从%s到%s转换"
 
@@ -2213,7 +2213,7 @@ msgid "Cert type not found"
 msgstr "类型未找到"
 
 #: ipconst.ssslbadcompressionvalue
-#, fuzzy, badformat
+#, fuzzy
 msgid "Compression value is wrong."
 msgstr "无效值或错误类型:\"%s\""
 
@@ -2691,7 +2691,7 @@ msgid "Protocol not supported"
 msgstr "协议不支持"
 
 #: ipconst.swsaeprototype
-#, fuzzy, badformat
+#, fuzzy
 msgid "Protocol wrong type for socket"
 msgstr "无效值或错误类型:\"%s\""
 
@@ -2712,7 +2712,7 @@ msgid "Cannot send after socket shutdown"
 msgstr ""
 
 #: ipconst.swsaesocktnosupport
-#, fuzzy, badformat
+#, fuzzy
 msgid "Socket type not supported"
 msgstr "支持的URL类型:(%s)"
 

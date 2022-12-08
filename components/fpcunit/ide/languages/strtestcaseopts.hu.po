@@ -29,7 +29,7 @@ msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit parancssoros teszt alkalmazás"
 
 #: strtestcaseopts.sfpcunconsoletestdesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases in console mode."
 msgstr "FPCUnit parancssoros teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
@@ -39,7 +39,7 @@ msgid "FPCUnit Test Application"
 msgstr "FPCUnit teszt alkalmazás"
 
 #: strtestcaseopts.sfpcuntestappdesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases."
 msgstr "FPCUnit teszt alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
@@ -49,7 +49,7 @@ msgid "FPCUnit Test Case"
 msgstr "FPCUnit teszt"
 
 #: strtestcaseopts.sfpcuntestcasedesc
-#, fuzzy, badformat
+#, fuzzy
 #| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgid "A unit containing a FPCUnit Test Case."
 msgstr "FPCUnit teszt%sEgy unit, amely FPCUnit tesztet tartalmaz."

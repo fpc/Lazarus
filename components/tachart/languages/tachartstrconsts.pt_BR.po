@@ -354,12 +354,12 @@ msgid "Line series"
 msgstr "Série Linha"
 
 #: tachartstrconsts.rslistsourcecolorerror
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
 msgstr "A string \"%1:s\" %0:s DataPoints não é um inteiro."
 
 #: tachartstrconsts.rslistsourcenumericerror
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
 msgstr "A string \"%1:s\" %0:s DataPoints não é um número válido."
 

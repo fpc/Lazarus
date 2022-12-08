@@ -8413,7 +8413,7 @@ msgid "Debugger"
 msgstr "Virheenjäljitin"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Virheenjäljittimen virhe%sHups, virhetila%sTalleta muutokset nyt!%sPaina Seis ja toivo parasta, vedämme piuhan irti."
@@ -13349,7 +13349,7 @@ msgid "Shortcuts used in %s"
 msgstr "%s:n pikanappäinten käyttö"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedinsd
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Shortcuts used in %s (%d)"
 msgstr "%:ssa käytetään %d kpl pikanäppäintä"
 
