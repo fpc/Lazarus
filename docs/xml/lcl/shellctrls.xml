@@ -2751,8 +2751,23 @@ TShellTreeNode is the class type used to create new nodes in the
 </seealso>
 </element>
 
-<element name="TShellTreeNode.FFileInfo"/>
+<!-- private -->
 <element name="TShellTreeNode.FBasePath"/>
+
+<!-- protected -->
+<element name="TShellTreeNode.FFileInfo">
+<short>
+Member used to store the TSearchRec instance with file or directory 
+information for the tree node.
+</short>
+<seealso>
+<link id="TShellTreeNode.IsDirectory"/>
+<link id="TCustomShellTreeView.Root"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
+<link id="TFileItem.FileInfo"/>
+</seealso>
+</element>
 
 <element name="TShellTreeNode.SetBasePath">
 <short>Sets the value in the BasePath property.</short>
@@ -2765,6 +2780,7 @@ TShellTreeNode is the class type used to create new nodes in the
 <short>New value for the BasePath property.</short>
 </element>
 
+<!-- public -->
 <element name="TShellTreeNode.ShortFilename">
 <short>Gets the name for the item represented in the tree node.</short>
 <descr>
