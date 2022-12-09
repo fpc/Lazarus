@@ -6727,9 +6727,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsSetsIncPathTo,['include, include/packages/ideconfig/TargetOS, include/packages/ideconfig/SrcOS']),
     IncludePathMacroName,
-    d(LazarusSrcDir+'/ide/include;'
-      +LazarusSrcDir+'/ide/packages/ideconfig/include/'+TargetOS+';'
-      +LazarusSrcDir+'/ide/packages/ideconfig/include/'+SrcOS),
+    d(LazarusSrcDir+'/ide/include;'),
     da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
