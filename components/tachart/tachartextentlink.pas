@@ -53,6 +53,7 @@ type
     destructor Destroy; override;
 
     procedure AddChart(AChart: TChart);
+    procedure RemoveChart(AChart: TChart);
     procedure SyncSides(AChart: TChart); virtual;
     procedure SyncWith(AChart: TChart);
   published
@@ -162,6 +163,21 @@ begin
 
   LinkedCharts.Add.Chart := AChart;
   SyncWith(AChart);
+end;
+
+procedure TChartExtentLink.RemoveChart(AChart: TChart);
+var
+  i: TCollectionItem;
+begin
+  if AChart = nil then
+    exit;
+
+  for i in LinkedCharts do
+    if TLinkedChart(i).Chart = AChart then
+    begin
+      LinkedCharts.Delete(i.Index);
+      exit;
+    end;
 end;
 
 constructor TChartExtentLink.Create(AOwner: TComponent);
