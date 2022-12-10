@@ -1,0 +1,296 @@
+object MainForm: TMainForm
+  Left = 828
+  Height = 405
+  Top = 332
+  Width = 537
+  AutoSize = True
+  Caption = 'Chart Title Demo'
+  ClientHeight = 405
+  ClientWidth = 537
+  OnActivate = FormActivate
+  LCLVersion = '2.3.0.0'
+  object Chart1: TChart
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = rgAlignment
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 373
+    Top = 16
+    Width = 300
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'y axis'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Visible = True
+        Title.Caption = 'x axis'
+        Title.LabelBrush.Style = bsClear
+      end>
+    Title.Brush.Color = clMenuHighlight
+    Title.Font.Color = clWindow
+    Title.Font.Height = -16
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'Chart Title'
+    )
+    Title.Visible = True
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 16
+    Constraints.MinWidth = 300
+  end
+  object cbFullWidth: TCheckBox
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = gbTitleMargins
+    AnchorSideTop.Side = asrBottom
+    Left = 328
+    Height = 19
+    Top = 308
+    Width = 93
+    BorderSpacing.Top = 16
+    Caption = 'Title full width'
+    OnChange = cbFullWidthChange
+    TabOrder = 5
+  end
+  object mmoTitleText: TMemo
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = lblTitleText
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgAlignment
+    AnchorSideRight.Side = asrBottom
+    Left = 328
+    Height = 48
+    Top = 41
+    Width = 187
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    Lines.Strings = (
+      'Chart Title'
+    )
+    OnChange = mmoTitleTextChange
+    TabOrder = 1
+  end
+  object cbShowAxisMarksAndTitle: TCheckBox
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = cbFullWidth
+    AnchorSideTop.Side = asrBottom
+    Left = 328
+    Height = 19
+    Top = 333
+    Width = 151
+    BorderSpacing.Top = 6
+    Caption = 'Show axis marks and title'
+    Checked = True
+    OnChange = cbShowAxisMarksAndTitleChange
+    State = cbChecked
+    TabOrder = 6
+  end
+  object rgAlignment: TRadioGroup
+    AnchorSideTop.Control = cbShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 328
+    Height = 51
+    Top = 149
+    Width = 193
+    Anchors = [akTop, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Top = 12
+    BorderSpacing.Right = 16
+    Caption = 'Alignment'
+    ChildSizing.LeftRightSpacing = 18
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 12
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 31
+    ClientWidth = 189
+    Columns = 3
+    ItemIndex = 1
+    Items.Strings = (
+      'left'
+      'center'
+      'right'
+    )
+    OnClick = rgAlignmentClick
+    TabOrder = 3
+  end
+  object gbTitleMargins: TGroupBox
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = rgAlignment
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgAlignment
+    AnchorSideRight.Side = asrBottom
+    Left = 328
+    Height = 80
+    Top = 212
+    Width = 193
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    Caption = 'Margins'
+    ClientHeight = 60
+    ClientWidth = 189
+    TabOrder = 4
+    object Label1: TLabel
+      AnchorSideLeft.Control = gbTitleMargins
+      AnchorSideTop.Control = gbTitleMargins
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 20
+      BorderSpacing.Left = 16
+      BorderSpacing.Top = 8
+      Caption = 'Left'
+    end
+    object Label2: TLabel
+      AnchorSideTop.Control = Label1
+      AnchorSideRight.Control = gbTitleMargins
+      AnchorSideRight.Side = asrBottom
+      Left = 145
+      Height = 15
+      Top = 8
+      Width = 28
+      Alignment = taRightJustify
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 16
+      Caption = 'Right'
+    end
+    object seLeftMargin: TSpinEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Bevel1
+      Left = 16
+      Height = 23
+      Top = 25
+      Width = 67
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      BorderSpacing.Bottom = 12
+      OnChange = seLeftMarginChange
+      TabOrder = 0
+      Value = 4
+    end
+    object seRightMargin: TSpinEdit
+      AnchorSideLeft.Control = Bevel1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seLeftMargin
+      AnchorSideRight.Control = Label2
+      AnchorSideRight.Side = asrBottom
+      Left = 106
+      Height = 23
+      Top = 25
+      Width = 67
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      OnChange = seRightMarginChange
+      TabOrder = 1
+      Value = 4
+    end
+    object Bevel1: TBevel
+      AnchorSideLeft.Control = gbTitleMargins
+      AnchorSideLeft.Side = asrCenter
+      Left = 83
+      Height = 30
+      Top = 8
+      Width = 23
+      Shape = bsSpacer
+    end
+  end
+  object cbShape: TComboBox
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = lblShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgAlignment
+    AnchorSideRight.Side = asrBottom
+    Left = 328
+    Height = 23
+    Top = 114
+    Width = 187
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'Rectangle'
+      'Ellipse'
+      'RoundRect'
+      'RoundSide'
+      'Userdefined (Rhomboid)'
+    )
+    OnChange = cbShapeChange
+    Style = csDropDownList
+    TabOrder = 2
+    Text = 'Rectangle'
+  end
+  object lblTitleText: TLabel
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = Chart1
+    Left = 328
+    Height = 15
+    Top = 24
+    Width = 45
+    BorderSpacing.Top = 8
+    Caption = 'Title text'
+  end
+  object lblShape: TLabel
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = mmoTitleText
+    AnchorSideTop.Side = asrBottom
+    Left = 328
+    Height = 15
+    Top = 97
+    Width = 32
+    BorderSpacing.Top = 8
+    Caption = 'Shape'
+  end
+  object cbFrame: TCheckBox
+    AnchorSideLeft.Control = rgAlignment
+    AnchorSideTop.Control = cbShowAxisMarksAndTitle
+    AnchorSideTop.Side = asrBottom
+    Left = 328
+    Height = 19
+    Top = 358
+    Width = 74
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 16
+    Caption = 'Title frame'
+    OnChange = cbFrameChange
+    TabOrder = 7
+  end
+  object clbFrameColor: TColorButton
+    AnchorSideLeft.Control = cbFrame
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbFrame
+    AnchorSideTop.Side = asrCenter
+    Left = 410
+    Height = 25
+    Top = 355
+    Width = 29
+    BorderSpacing.Left = 8
+    BorderSpacing.Bottom = 16
+    BorderWidth = 2
+    ButtonColorSize = 16
+    ButtonColor = clBlack
+    OnColorChanged = clbFrameColorColorChanged
+  end
+end
