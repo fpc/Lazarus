@@ -49,7 +49,7 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="4">
       <Item1>
         <PackageName Value="IdeConfig"/>
       </Item1>
@@ -62,9 +62,6 @@
       <Item4>
         <PackageName Value="CodeTools"/>
       </Item4>
-      <Item5>
-        <PackageName Value="IDEIntf"/>
-      </Item5>
     </RequiredPackages>
     <Units Count="4">
       <Unit0>
