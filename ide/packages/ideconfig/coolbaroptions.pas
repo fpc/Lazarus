@@ -5,7 +5,7 @@ unit CoolBarOptions;
 interface
 
 uses
-  SysUtils, fgl, ToolBarOptionsBase, Laz2_XMLCfg, ComCtrls;
+  SysUtils, fgl, ToolBarOptionsBase, Laz2_XMLCfg;
 
 type
 
@@ -23,7 +23,7 @@ type
     //destructor Destroy; override;
     function Equals(Opts: TIDEToolBarOptions): boolean; overload;
     procedure Assign(Source: TIDEToolBarOptions);
-    procedure CopyPosFromBand(Band: TCoolBand);
+    procedure CopyPosFromBandValues(APosIndex: Integer; ABreak: Boolean);
     procedure Load(XMLConfig: TXMLConfig; SubPath: String);
     procedure Save(XMLConfig: TXMLConfig; SubPath: String);
   published
@@ -94,10 +94,10 @@ begin
   FBreak := Source.FBreak;
 end;
 
-procedure TIDEToolBarOptions.CopyPosFromBand(Band: TCoolBand);
+procedure TIDEToolBarOptions.CopyPosFromBandValues(APosIndex: Integer; ABreak: Boolean);
 begin
-  FPosIndex := Band.Index;
-  FBreak := Band.Break;
+  FPosIndex := APosIndex;
+  FBreak := ABreak;
 end;
 
 procedure TIDEToolBarOptions.Load(XMLConfig: TXMLConfig; SubPath: String);

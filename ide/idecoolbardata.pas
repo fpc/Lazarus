@@ -230,6 +230,7 @@ end;
 procedure TIDECoolBar.CopyFromRealCoolbar(RealCoolbar: TCoolBar);
 var
   ToolBar: TToolBar;
+  Band: TCoolBand;
   I, J: Integer;
 begin
   for I := 0 to RealCoolbar.Bands.Count - 1 do
@@ -239,7 +240,10 @@ begin
     ToolBar := (RealCoolbar.Bands[I].Control as TToolBar);
     J := FindByToolBar(ToolBar);
     if J <> -1 then
-      ToolBars[J].CurrentOptions.CopyPosFromBand(RealCoolbar.Bands[I]);
+    begin
+      Band := RealCoolbar.Bands[I];
+      ToolBars[J].CurrentOptions.CopyPosFromBandValues(Band.Index, Band.Break);
+    end;
   end;
   Sort;
 end;
