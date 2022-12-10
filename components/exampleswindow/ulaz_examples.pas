@@ -141,6 +141,7 @@ begin
         KeyList := TStringList.Create;
         BuildSearchList(KeyList, EditSearch.Text);
     end;
+    ListView1.BeginUpdate;
     try
         if Ex.GetListData(Proj, Cat, Path, KeyW, True, KeyList) then begin
             NewLVItem(Proj, Path, KeyW, Cat);
@@ -153,6 +154,7 @@ begin
     finally
         KeyList.Free;
         Screen.Cursor := crDefault;
+        ListView1.EndUpdate;
     end;
     ButtonOpen.Enabled := false;
     ButtonDownLoad.enabled := false;
@@ -201,25 +203,26 @@ end;
 procedure TFormLazExam.ListView1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-     if Key = VK_RETURN then begin
-         Key := 0;
-         // Its possible we tabbed into ListView without "selecting" a row.
-         if ListView1.ItemIndex < 0 then        // I don't think this can happen anymore ?
+    if Key = VK_RETURN then begin
+        Key := 0;
+        // Its possible we tabbed into ListView without "selecting" a row.
+        if ListView1.ItemIndex < 0 then        // I don't think this can happen anymore ?
             if ListView1.Items.count > 0 then
-               ListView1.ItemIndex := 0         // Force select first item, its half highlite ??
-            else exit;
-         ListView1DblClick(Sender);
-     end
-     else if Key = VK_ESCAPE then
-         ModalResult := mrClose;
+                ListView1.ItemIndex := 0       // Force select first item, its half highlite ??
+            else
+                Exit;
+        ListView1DblClick(Sender);
+    end
+    else if not (Key in [VK_TAB, VK_ESCAPE, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN]) then
+        EditSearch.SetFocus;
 end;
 
 // --------------------- B U T T O N S -----------------------------------------
 
 procedure TFormLazExam.ButtonOpenClick(Sender: TObject);
 begin
-     if LastListViewIndex < 0 then exit;
-     ListView1.ItemIndex:= LastListViewIndex;
+    if LastListViewIndex < 0 then exit;
+    ListView1.ItemIndex:= LastListViewIndex;
     if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption, True)     // Sets ProjectToOpen on success
         and ProjectToOpen.IsEmpty then
             showmessage(rsExNoProjectFile)
@@ -419,13 +422,16 @@ end;
 procedure TFormLazExam.EditSearchKeyDown(Sender: TObject; var Key: Word;
     Shift: TShiftState);
 begin
-    if Key = VK_RETURN then begin
-        key := 0;
-        if ListView1.items.Count > 0 then
+    if Key in [VK_RETURN, VK_DOWN] then begin
+        Key := 0;
+        if ListView1.items.Count > 0 then begin
             ListView1.SetFocus;
-    end
-    else if Key = VK_ESCAPE then
-        ModalResult := mrClose;
+            if Key = VK_DOWN then begin       // Is this logic for VK_DOWN good?
+                ListView1.Selected := ListView1.Items[0];
+                ListView1.ItemFocused := ListView1.Items[0];
+            end;
+        end;
+    end;
 end;
 
 procedure TFormLazExam.PrimeCatFilter();
