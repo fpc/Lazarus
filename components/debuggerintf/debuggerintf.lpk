@@ -62,7 +62,7 @@ Provides an interface to add debuggers to the IDE"/>
         <PackageName Value="LazDebuggerIntf"/>
       </Item>
       <Item>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="LazUtils"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>
