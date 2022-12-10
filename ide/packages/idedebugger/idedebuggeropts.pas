@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, IDEOptionsIntf, Laz2_XMLCfg, LazFileUtils, LazUTF8,
   LazLoggerBase, DbgIntfDebuggerBase, IdeDebuggerStringConstants,
-  IdeDebuggerBackendValueConv;
+  IdeDebuggerBackendValueConv,
+  EnvironmentOpts;
 
 type
 
@@ -98,8 +99,15 @@ type
   private
     FFilename: string;
     FBackendConverterConfig: TIdeDbgValueConvertSelectorList;
+    FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
     FXMLCfg: TRttiXMLConfig;
+
+    FDebuggerConfigList: TDebuggerPropertiesConfigList; // named entries
+
+    function GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
+    procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
+    procedure LoadDebuggerProperties;
   protected
     procedure InitXMLCfg(CleanConfig: boolean);
   public
@@ -117,6 +125,17 @@ type
     property PrimaryConfigPath: String read FPrimaryConfigPath write FPrimaryConfigPath;
 
     property BackendConverterConfig: TIdeDbgValueConvertSelectorList read FBackendConverterConfig write FBackendConverterConfig;
+
+    function DebuggerFilename: string;
+    function GetParsedDebuggerFilename(AProjectDbgFileName: String = ''): string;
+
+    procedure SaveDebuggerPropertiesList;
+    function  DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
+    function  CurrentDebuggerClass: TDebuggerClass;
+    function  CurrentDebuggerPropertiesConfigEx(AnUID: String = ''): TDebuggerPropertiesConfig;
+    property  CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read GetCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
+    property  HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
+    //property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
   end;
 
 function GetDebuggerOptions: TDebuggerOptions;
@@ -654,6 +673,7 @@ end;
 constructor TDebuggerOptions.Create;
 begin
   inherited Create;
+  FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
 end;
 
@@ -661,6 +681,10 @@ destructor TDebuggerOptions.Destroy;
 begin
   inherited Destroy;
   BackendConverterConfig.Free;
+
+  FDebuggerConfigList.ClearAll;
+  FreeAndNil(FDebuggerConfigList);
+
   FXMLCfg.Free;
 end;
 
@@ -686,6 +710,8 @@ begin
     FBackendConverterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FBackendConverterConfig.Changed := False;
 
+  SaveDebuggerPropertiesList;
+
   FXMLCfg.Flush;
 end;
 
@@ -698,6 +724,78 @@ end;
 procedure TDebuggerOptions.CreateConfig;
 begin
   FFilename:=GetDefaultConfigFilename;
+end;
+
+function TDebuggerOptions.DebuggerFilename: string;
+var
+  DbgCfg: TDebuggerPropertiesConfig;
+begin
+  Result := '';
+  DbgCfg := CurrentDebuggerPropertiesConfig;
+  if DbgCfg <> nil then
+    Result := DbgCfg.DebuggerFilename;
+end;
+
+function TDebuggerOptions.GetParsedDebuggerFilename(AProjectDbgFileName: String
+  ): string;
+begin
+  if AProjectDbgFileName = '' then
+    AProjectDbgFileName := DebuggerFilename;
+
+  Result:=EnvironmentOptions.GetParsedDebuggerFilename(AProjectDbgFileName);
+end;
+
+function TDebuggerOptions.GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
+begin
+  LoadDebuggerProperties;
+  Result := FDebuggerConfigList.CurrentDebuggerPropertiesConfig;
+end;
+
+procedure TDebuggerOptions.SetCurrentDebuggerPropertiesOpt(
+  AValue: TDebuggerPropertiesConfig);
+begin
+  LoadDebuggerProperties;
+  FDebuggerConfigList.CurrentDebuggerPropertiesConfig := AValue;
+end;
+
+procedure TDebuggerOptions.LoadDebuggerProperties;
+begin
+  FDebuggerConfigList.LoadFromXml(EnvironmentOptions.XMLCfg, 'EnvironmentOptions/Debugger/', 'EnvironmentOptions/DebuggerFilename/Value');
+  HasActiveDebuggerEntry := FDebuggerConfigList.HasActiveDebuggerEntry;
+end;
+
+procedure TDebuggerOptions.SaveDebuggerPropertiesList;
+begin
+  FDebuggerConfigList.SaveToXml(EnvironmentOptions.XMLCfg, 'EnvironmentOptions/Debugger/', 'EnvironmentOptions/DebuggerFilename/Value');
+end;
+
+function TDebuggerOptions.DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
+begin
+  LoadDebuggerProperties;
+
+  Result := FDebuggerConfigList;
+end;
+
+function TDebuggerOptions.CurrentDebuggerClass: TDebuggerClass;
+var
+  Cfg: TDebuggerPropertiesConfig;
+begin
+  LoadDebuggerProperties;
+
+  Result := nil;
+  Cfg := CurrentDebuggerPropertiesConfig;
+  if  Cfg<> nil then
+    Result := Cfg.DebuggerClass;
+end;
+
+function TDebuggerOptions.CurrentDebuggerPropertiesConfigEx(AnUID: String): TDebuggerPropertiesConfig;
+begin
+  Result := nil;
+  if AnUID <> '' then
+    Result := FDebuggerConfigList.EntryByUid(AnUID);
+
+  if Result = nil then
+    Result := CurrentDebuggerPropertiesConfig;
 end;
 
 finalization

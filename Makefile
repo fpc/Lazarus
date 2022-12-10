@@ -3820,7 +3820,6 @@ lazbuild: registration lazutils
 	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
 	$(MAKE) -C ide/packages/ideconfig LCL_PLATFORM=nogui
-	$(MAKE) -C ide/packages/idedebugger lazbuild LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp

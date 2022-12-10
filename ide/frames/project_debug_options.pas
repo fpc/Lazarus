@@ -90,7 +90,7 @@ begin
       FDebuggerBackend := FDebuggerBackendUnknown
     else
     if FDebuggerBackendIdx >= 0 then
-      FDebuggerBackend := EnvironmentOptions.DebuggerPropertiesConfigList.Opt[FDebuggerBackendIdx].UID;
+      FDebuggerBackend := DebuggerOptions.DebuggerPropertiesConfigList.Opt[FDebuggerBackendIdx].UID;
   end;
 end;
 
@@ -111,7 +111,7 @@ begin
   if FDebuggerBackend = DBG_TOKEN_IDE then
     sel := 1;
 
-  dbg := EnvironmentOptions.DebuggerPropertiesConfigList;
+  dbg := DebuggerOptions.DebuggerPropertiesConfigList;
   for i := 0 to dbg.Count - 1 do begin
     cbProjectDebugger.AddItem(dbg.Opt[i].DisplayName, TObject(PtrUInt(i)));
     if dbg.Opt[i].UID = FDebuggerBackend then

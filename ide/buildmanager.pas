@@ -3047,5 +3047,8 @@ begin
       // Note: no need to check if CompilerFilename is the default
 end;
 
+initialization
+  EnvironmentOpts.GroupEnvironmentI18NCaption := @dlgGroupEnvironment;
+
 end.
 

@@ -50,10 +50,10 @@ uses
   ComponentReg, IDEExternToolIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
-  // IDE
-  RecentListProcs, SearchPathProcs, LazarusIDEStrConsts, LazConf,
+  // IdeOptions
+  RecentListProcs, SearchPathProcs, LazConf,
   IDEOptionDefs, TransferMacrosIntf, ModeMatrixOpts,
-  CoolBarOptions, EditorToolBarOptions, IdeDebuggerOpts;
+  CoolBarOptions, EditorToolBarOptions;
 
 const
   EnvOptsVersion: integer = 110;
@@ -546,7 +546,6 @@ type
     FDebuggerAutoSetInstanceFromClass: boolean;
     FDebuggerShowExitCodeMessage: boolean;
     FFppkgCheck: boolean;
-    FHasActiveDebuggerEntry: Boolean;
     fRegisteredSubConfig: TObjectList;
     FDebuggerAutoCloseAsm: boolean;
     // config file
@@ -659,7 +658,6 @@ type
     FDebuggerResetAfterRun: boolean;
     FDebuggerConfig: TDebuggerConfigStore;
     FDebuggerFileHistory: TStringList; // per debugger class
-    FDebuggerProperties: TDebuggerPropertiesConfigList; // named entries
     FDebuggerShowStopMessage: Boolean;
     FDebuggerEventLogClearOnRun: Boolean;
     FDebuggerEventLogCheckLineLimit: Boolean;
@@ -731,7 +729,6 @@ type
     function GetActiveDesktop: TDesktopOpt;
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
-    function GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
     function GetDebugDesktop: TDesktopOpt;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetDebuggerSearchPath: string;
@@ -749,7 +746,6 @@ type
     procedure SaveNonDesktop(Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
-    procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
@@ -767,7 +763,6 @@ type
     procedure InitXMLCfg(CleanConfig: boolean);
     procedure FileUpdated;
     procedure SetTestBuildDirectory(const AValue: string);
-    procedure LoadDebuggerProperties;
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -794,7 +789,7 @@ type
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
     function GetParsedFPDocPaths: string;
-    function GetParsedDebuggerFilename(AProjectDbgFileName: String = ''): string;
+    function GetParsedDebuggerFilename(AProjectDbgFileName: String): string;
     function GetParsedDebuggerSearchPath: string;
     function GetParsedFppkgConfig: string; override;
     function GetParsedValue(o: TEnvOptParseType; AUnparsedValue: String = ''): string;
@@ -885,7 +880,6 @@ type
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory;
-    function DebuggerFilename: string;
     property DebuggerFileHistory[AnIndex: String]: TStringList read GetNamedDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
@@ -922,12 +916,8 @@ type
     property CleanBuildPkgSrc: Boolean read FCleanBuildPkgSrc write FCleanBuildPkgSrc;
 
     // Debugger
-    procedure SaveDebuggerPropertiesList;
-    function  DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
-    function  CurrentDebuggerClass: TDebuggerClass;
-    function  CurrentDebuggerPropertiesConfigEx(AnUID: String = ''): TDebuggerPropertiesConfig;
-    property  CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read GetCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
-    property  HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
+    // for the debugger config
+    property XMLCfg: TRttiXMLConfig read FXMLCfg;
     property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
     // Debugger event log
@@ -1052,6 +1042,7 @@ type
 
 var
   OverrideFPCVer: string = '';
+  GroupEnvironmentI18NCaption: PAnsiString = nil;
   EnvironmentOptions: TEnvironmentOptions = nil;
 
 function PascalExtToType(const Ext: string): TPascalExtType;
@@ -1907,7 +1898,6 @@ begin
   FMakeFileHistory:=TStringList.Create;
   FDebuggerFileHistory:=TStringList.Create;
   FDebuggerFileHistory.OwnsObjects := True;
-  FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
   FDebuggerEventLogColors:=DebuggerDefaultColors;
   FppkgCheck:=false;
   FppkgConfigFile:='';
@@ -1990,8 +1980,6 @@ begin
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
-  FDebuggerProperties.ClearAll;
-  FreeAndNil(FDebuggerProperties);
   FreeAndNil(FDebuggerFileHistory);
   FreeAndNil(FManyBuildModesSelection);
   FreeAndNil(FTestBuildDirHistory);
@@ -2024,7 +2012,9 @@ end;
 
 class function TEnvironmentOptions.GetGroupCaption: string;
 begin
-  Result := dlgGroupEnvironment;
+  Result := '';
+  if GroupEnvironmentI18NCaption <> nil then
+    Result := GroupEnvironmentI18NCaption^;
 end;
 
 class function TEnvironmentOptions.GetInstance: TAbstractIDEOptions;
@@ -2597,7 +2587,6 @@ begin
 
   // debugger
   FDebuggerConfig.Save;
-  SaveDebuggerPropertiesList;
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
       FDebuggerShowStopMessage, True);
   FXMLCfg.SetDeleteValue(Path+'DebuggerOptions/DebuggerShowExitCodeMessage/Value',
@@ -2995,9 +2984,6 @@ end;
 function TEnvironmentOptions.GetParsedDebuggerFilename(
   AProjectDbgFileName: String): string;
 begin
-  if AProjectDbgFileName = '' then
-    AProjectDbgFileName := DebuggerFilename;
-
   if FParseValues[eopDebuggerFilename].UnparsedValue <> AProjectDbgFileName then
     SetParseValue(eopDebuggerFilename,UTF8Trim(AProjectDbgFileName));
 
@@ -3137,59 +3123,6 @@ end;
 function TEnvironmentOptions.GetParsedCompilerFilename: string;
 begin
   Result:=GetParsedValue(eopCompilerFilename);
-end;
-
-procedure TEnvironmentOptions.SaveDebuggerPropertiesList;
-begin
-  FDebuggerProperties.SaveToXml(FXMLCfg, 'EnvironmentOptions/Debugger/', 'EnvironmentOptions/DebuggerFilename/Value');
-end;
-
-procedure TEnvironmentOptions.LoadDebuggerProperties;
-begin
-  FDebuggerProperties.LoadFromXml(FXMLCfg, 'EnvironmentOptions/Debugger/', 'EnvironmentOptions/DebuggerFilename/Value');
-  HasActiveDebuggerEntry := FDebuggerProperties.HasActiveDebuggerEntry;
-end;
-
-function TEnvironmentOptions.CurrentDebuggerClass: TDebuggerClass;
-var
-  Cfg: TDebuggerPropertiesConfig;
-begin
-  LoadDebuggerProperties;
-
-  Result := nil;
-  Cfg := CurrentDebuggerPropertiesConfig;
-  if  Cfg<> nil then
-    Result := Cfg.DebuggerClass;
-end;
-
-function TEnvironmentOptions.GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
-begin
-  LoadDebuggerProperties;
-  Result := FDebuggerProperties.CurrentDebuggerPropertiesConfig;
-end;
-
-procedure TEnvironmentOptions.SetCurrentDebuggerPropertiesOpt(
-  AValue: TDebuggerPropertiesConfig);
-begin
-  LoadDebuggerProperties;
-  FDebuggerProperties.CurrentDebuggerPropertiesConfig := AValue;
-end;
-
-function TEnvironmentOptions.DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
-begin
-  LoadDebuggerProperties;
-
-  Result := FDebuggerProperties;
-end;
-
-function TEnvironmentOptions.CurrentDebuggerPropertiesConfigEx(AnUID: String): TDebuggerPropertiesConfig;
-begin
-  Result := nil;
-  if AnUID <> '' then
-    Result := FDebuggerProperties.EntryByUid(AnUID);
-
-  if Result = nil then
-    Result := CurrentDebuggerPropertiesConfig;
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
@@ -3378,16 +3311,6 @@ end;
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
-end;
-
-function TEnvironmentOptions.DebuggerFilename: string;
-var
-  DbgCfg: TDebuggerPropertiesConfig;
-begin
-  Result := '';
-  DbgCfg := CurrentDebuggerPropertiesConfig;
-  if DbgCfg <> nil then
-    Result := DbgCfg.DebuggerFilename;
 end;
 
 function TEnvironmentOptions.GetDebuggerSearchPath: string;

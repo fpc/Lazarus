@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeDebugger 0.0.1
 
-   This file was generated on 22/06/2022
+   This file was generated on 10/12/2022
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('ideconfig');
     D := P.Dependencies.Add('lazdebuggerfp');
     D := P.Dependencies.Add('lazcontroldsgn');
     D := P.Dependencies.Add('laz.virtualtreeview_package');
@@ -62,10 +63,12 @@ begin
     t.Dependencies.AddUnit('idedebuggerwatchresutils');
     t.Dependencies.AddUnit('arraynavigationframe');
     t.Dependencies.AddUnit('idedebuggerstringconstants');
-    t.Dependencies.AddUnit('idedebuggerfpdbgvalueconv');
-    t.Dependencies.AddUnit('idefpdbgvalueconvertersettingsframe');
-    t.Dependencies.AddUnit('idedebugger_fpvalconv_options');
+    t.Dependencies.AddUnit('idedebuggerbackendvalueconv');
+    t.Dependencies.AddUnit('idedbgvalueconvertersettingsframe');
+    t.Dependencies.AddUnit('idedebugger_valconv_options');
     t.Dependencies.AddUnit('idedebuggeropts');
+    t.Dependencies.AddUnit('idedebuggerwatchresultjson');
+    t.Dependencies.AddUnit('watchinspecttoolbar');
 
     T:=P.Targets.AddUnit('idedebuggerbase.pas');
     T:=P.Targets.AddUnit('debugger.pp');
@@ -78,10 +81,12 @@ begin
     T:=P.Targets.AddUnit('idedebuggerwatchresutils.pas');
     T:=P.Targets.AddUnit('arraynavigationframe.pas');
     T:=P.Targets.AddUnit('idedebuggerstringconstants.pas');
-    T:=P.Targets.AddUnit('idedebuggerfpdbgvalueconv.pas');
-    T:=P.Targets.AddUnit('idefpdbgvalueconvertersettingsframe.pas');
-    T:=P.Targets.AddUnit('frames\idedebugger_fpvalconv_options.pas');
+    T:=P.Targets.AddUnit('idedebuggerbackendvalueconv.pas');
+    T:=P.Targets.AddUnit('idedbgvalueconvertersettingsframe.pas');
+    T:=P.Targets.AddUnit('frames\idedebugger_valconv_options.pas');
     T:=P.Targets.AddUnit('idedebuggeropts.pas');
+    T:=P.Targets.AddUnit('idedebuggerwatchresultjson.pas');
+    T:=P.Targets.AddUnit('frames\watchinspecttoolbar.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeDebugger.compiled');

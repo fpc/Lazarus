@@ -821,11 +821,6 @@
         <UnitName Value="IDEProcs"/>
       </Unit>
       <Unit>
-        <Filename Value="environmentopts.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EnvironmentOpts"/>
-      </Unit>
-      <Unit>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazarusIDEStrConsts"/>

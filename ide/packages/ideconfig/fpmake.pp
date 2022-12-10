@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 08/12/2022
+   This file was generated on 09/12/2022
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,8 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('ideintf');
+    D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lclbase');
     D := P.Dependencies.Add('lazutils');
@@ -46,6 +48,8 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
+    P.Options.Add('-dLCL');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
@@ -60,6 +64,7 @@ begin
     t.Dependencies.AddUnit('editortoolbaroptions');
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('coolbaroptions');
+    t.Dependencies.AddUnit('environmentopts');
 
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('recentlistprocs.pas');
@@ -71,6 +76,7 @@ begin
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');
     T:=P.Targets.AddUnit('toolbaroptionsbase.pas');
     T:=P.Targets.AddUnit('coolbaroptions.pas');
+    T:=P.Targets.AddUnit('environmentopts.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeConfig.compiled');

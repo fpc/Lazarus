@@ -105,6 +105,9 @@
     </i18n>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="IdeConfig"/>
+      </Item>
+      <Item>
         <PackageName Value="LazDebuggerFp"/>
       </Item>
       <Item>

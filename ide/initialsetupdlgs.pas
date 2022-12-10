@@ -244,8 +244,8 @@ begin
   Note := '';
   Result:=sddqCompatible;
   if ASkip and // assume compatible
-     ( (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) or
-       (EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename = AFilename)   // unless the user edited the filename
+     ( (DebuggerOptions.CurrentDebuggerPropertiesConfig = nil) or
+       (DebuggerOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename = AFilename)   // unless the user edited the filename
      )
   then
     exit;
@@ -308,10 +308,10 @@ begin
   Result:=nil;
 
   // check current setting
-  if CheckFile(EnvironmentOptions.DebuggerFilename,Result) then exit;
+  if CheckFile(DebuggerOptions.DebuggerFilename,Result) then exit;
 
-  if EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil then
-    CurDbgClassName := UpperCase(EnvironmentOptions.CurrentDebuggerPropertiesConfig.ConfigClass)
+  if DebuggerOptions.CurrentDebuggerPropertiesConfig <> nil then
+    CurDbgClassName := UpperCase(DebuggerOptions.CurrentDebuggerPropertiesConfig.ConfigClass)
   else
     CurDbgClassName := UpperCase(DefaultDebuggerClass.ClassName);
 
@@ -334,8 +334,8 @@ begin
   end;
 
   // Check locations proposed by debugger class
-  if EnvironmentOptions.CurrentDebuggerClass <> nil then
-    s := EnvironmentOptions.CurrentDebuggerClass.ExePaths
+  if DebuggerOptions.CurrentDebuggerClass <> nil then
+    s := DebuggerOptions.CurrentDebuggerClass.ExePaths
   else
     s := DefaultDebuggerClass.ExePaths;
   while s <> '' do begin
@@ -790,12 +790,12 @@ begin
   s:=MakeExeComboBox.Text;
   if s<>'' then
     EnvironmentOptions.MakeFilename:=s;
-  if not FSkipDebugger and (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil)
+  if not FSkipDebugger and (DebuggerOptions.CurrentDebuggerPropertiesConfig <> nil)
   then begin
     s:=DebuggerComboBox.Text;
     if s<>'' then begin
-      EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=s;
-      EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
+      DebuggerOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=s;
+      DebuggerOptions.SaveDebuggerPropertiesList; // Update XML
     end;
   end;
 
@@ -1473,34 +1473,34 @@ begin
   UpdateMakeExeNote;
 
   RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
-  FSkipDebugger := EnvironmentOptions.HasActiveDebuggerEntry // There is a configured entry. Assume it is right, unless we can prove it is incorrect
+  FSkipDebugger := DebuggerOptions.HasActiveDebuggerEntry // There is a configured entry. Assume it is right, unless we can prove it is incorrect
     and not (
-      (EnvironmentOptions.CurrentDebuggerPropertiesConfig <> nil) and    // The ACTIVE dbg is a known debugger
-      (EnvironmentOptions.CurrentDebuggerClass <> nil)     and           // with existing debugger class
-      (EnvironmentOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Does need an exe
+      (DebuggerOptions.CurrentDebuggerPropertiesConfig <> nil) and    // The ACTIVE dbg is a known debugger
+      (DebuggerOptions.CurrentDebuggerClass <> nil)     and           // with existing debugger class
+      (DebuggerOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Does need an exe
     );
   // Debugger
-  FInitialDebuggerFileName := EnvironmentOptions.DebuggerFilename;
+  FInitialDebuggerFileName := DebuggerOptions.DebuggerFilename;
   UpdateDebuggerCandidates;
   if (not FSkipDebugger) then begin
-    if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
-      EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
-        EnvironmentOptions.DebuggerPropertiesConfigList.EntryByName('', TGDBMIDebugger.ClassName);
-    if EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil then
-      EnvironmentOptions.CurrentDebuggerPropertiesConfig :=
+    if DebuggerOptions.CurrentDebuggerPropertiesConfig = nil then
+      DebuggerOptions.CurrentDebuggerPropertiesConfig :=
+        DebuggerOptions.DebuggerPropertiesConfigList.EntryByName('', TGDBMIDebugger.ClassName);
+    if DebuggerOptions.CurrentDebuggerPropertiesConfig = nil then
+      DebuggerOptions.CurrentDebuggerPropertiesConfig :=
         TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
-    if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename))
+    if IsFirstStart or (not FileExistsCached(DebuggerOptions.GetParsedDebuggerFilename))
     then begin
       // first start => choose first best candidate
       Candidate:=GetFirstCandidate(FCandidates[sddtDebuggerFilename]);
       if Candidate<>nil then begin
-        EnvironmentOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=Candidate.Caption;
+        DebuggerOptions.CurrentDebuggerPropertiesConfig.DebuggerFilename:=Candidate.Caption;
       end;
     end;
-    EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
+    DebuggerOptions.SaveDebuggerPropertiesList; // Update XML
   end;
 
-  DebuggerComboBox.Text:=EnvironmentOptions.DebuggerFilename;
+  DebuggerComboBox.Text:=DebuggerOptions.DebuggerFilename;
   fLastParsedDebugger:='. .';
   UpdateDebuggerNote;
 

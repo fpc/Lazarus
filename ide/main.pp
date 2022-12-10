@@ -1479,11 +1479,11 @@ begin
     // Todo: add LldbFpDebugger for Mac
     // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
     Note:='';
-    if ( (EnvironmentOptions.CurrentDebuggerPropertiesConfig = nil) and  // no debugger at all
-         (not EnvironmentOptions.HasActiveDebuggerEntry) )               // not even with unknown class
-    or ( (EnvironmentOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
-         and (EnvironmentOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Which does need an exe
-         and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
+    if ( (DebuggerOptions.CurrentDebuggerPropertiesConfig = nil) and  // no debugger at all
+         (not DebuggerOptions.HasActiveDebuggerEntry) )               // not even with unknown class
+    or ( (DebuggerOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
+         and (DebuggerOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Which does need an exe
+         and (CheckDebuggerQuality(DebuggerOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
        )
     then begin
       debugln(['Warning: (lazarus) missing GDB exe ',EnvironmentOptions.GetParsedLazarusDirectory,' ',Note]);
@@ -7444,7 +7444,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',DbgSName(EnvironmentOptions.CurrentDebuggerClass));
+  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',DbgSName(DebuggerOptions.CurrentDebuggerClass));
 
   try
     Result:=mrCancel;
@@ -14009,5 +14009,6 @@ initialization
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('main.pp: initialization');{$ENDIF}
   ShowSplashScreen:=true;
   DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
+  EnvironmentOpts.GroupEnvironmentI18NCaption := @dlgGroupEnvironment;
 end.
 

@@ -474,7 +474,7 @@ begin
 
   edName.Text := FSelectedDbgPropertiesConfig.ConfigName;
 
-//  txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
+//  txtAdditionalPath.Text:=DebuggerOptions.GetParsedDebuggerSearchPath;
 
   // get ptoperties
   Prop := SelectedDebuggerProperties;
@@ -682,7 +682,7 @@ end;
 procedure TDebuggerClassOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   ShowWarningOverridenByProject := True;
-  ReadSettings(EnvironmentOptions.DebuggerPropertiesConfigList);
+  ReadSettings(DebuggerOptions.DebuggerPropertiesConfigList);
 end;
 
 procedure TDebuggerClassOptionsFrame.ReadSettings(
@@ -713,8 +713,8 @@ end;
 
 procedure TDebuggerClassOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  WriteSettings(EnvironmentOptions.DebuggerPropertiesConfigList);
-  EnvironmentOptions.SaveDebuggerPropertiesList; // Update XML
+  WriteSettings(DebuggerOptions.DebuggerPropertiesConfigList);
+  DebuggerOptions.SaveDebuggerPropertiesList; // Update XML
 end;
 
 procedure TDebuggerClassOptionsFrame.WriteSettings(

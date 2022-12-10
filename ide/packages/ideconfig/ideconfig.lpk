@@ -62,10 +62,20 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <Filename Value="coolbaroptions.pas"/>
-        <UnitName Value="coolbaroptions"/>
+        <UnitName Value="CoolBarOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="environmentopts.pp"/>
+        <UnitName Value="EnvironmentOpts"/>
       </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="DebuggerIntf"/>
+      </Item>
       <Item>
         <PackageName Value="BuildIntf"/>
       </Item>
