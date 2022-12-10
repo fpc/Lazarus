@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-09-30 11:56+0200\n"
+"PO-Revision-Date: 2022-12-09 12:37+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -140,7 +140,7 @@ msgstr "Pridať polia"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Editor stĺpcov DBGrid"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
@@ -152,7 +152,7 @@ msgstr ""
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Týmto sa zmažú všetky stĺpce. Pokračovať?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
@@ -172,10 +172,8 @@ msgid "Cancel"
 msgstr "Zrušiť"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "Skontrolovať nastavenia dataset"
+msgstr "Skontrolovať nastavenia Datasetu."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -191,6 +189,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"Chybová správa:\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -239,16 +239,12 @@ msgid "&Name:"
 msgstr ""
 
 #: objinspstrconsts.fesnofields
-#, fuzzy
-#| msgid "It was not possible to get the dataset field's list"
 msgid "It was not possible to get the dataset fields list."
-msgstr "Nebolo možné získať zoznam poľa dataset"
+msgstr "Nebolo možné získať zoznam polí Datasetu."
 
 #: objinspstrconsts.fesnofieldsnote
-#, fuzzy
-#| msgid "Field's list is not available, can't check for duplicates"
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Zoznam polí nie je dostupný, nie je možné skontrolovať duplicity"
+msgstr "Zoznam polí nie je dostupný, nie je možné skontrolovať duplicity."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -318,19 +314,19 @@ msgstr ""
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "Kopírovať dáta z iného Datasetu"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "Vytvoriť Dataset"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "Dataset je aktívny, najskôr ho zatvorte."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "Načítať údaje zo súboru"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
@@ -342,7 +338,7 @@ msgstr ""
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "Uložiť údaje do súboru"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
@@ -427,15 +423,15 @@ msgstr "Pridať"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Pridať položku"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Pridať polia"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Pridať polia z FieldDefs"
 
 #: objinspstrconsts.oisaddpage
 msgctxt "objinspstrconsts.oisaddpage"
@@ -485,7 +481,7 @@ msgstr ""
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Zmeniť rodiča"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -508,10 +504,9 @@ msgid "Clear picture"
 msgstr "Vyčistiť obrázok"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
+#, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
+msgstr "Názov komponentu \"%s\" nie je platný identifikátor"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -519,7 +514,7 @@ msgstr "Obmedzenia komponentu: "
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Podtvrdiť zmazanie"
+msgstr "Potvrdiť zmazanie"
 
 #: objinspstrconsts.oiscopycomponents
 #, fuzzy
@@ -534,15 +529,15 @@ msgstr "Vytvoriť predvolenú udalosť"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Vytvoriť nové pole a pridať ho na aktuálnu pozíciu"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Aktuálny rodič"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Aktuálny rodičia"
 
 #: objinspstrconsts.oiscutcomponents
 #, fuzzy
@@ -570,11 +565,11 @@ msgstr "Zmazať položku \"%s\"?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Chcete zmazať stránku?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Zmazať vybraté polia"
 
 #: objinspstrconsts.oisdlinesdchars
 #, object-pascal-format
@@ -591,7 +586,7 @@ msgstr "Chyba"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Chyba pri mazaní akcie"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -670,7 +665,7 @@ msgstr "Neplatná hodnota vlastnosti"
 #: objinspstrconsts.oisisnotavalidmethodname
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
-msgstr ""
+msgstr "\"%s\" nie je platné meno metódy."
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format
@@ -680,7 +675,7 @@ msgstr "vybraných %u položiek"
 #: objinspstrconsts.oisjumptodeclarationof
 #, object-pascal-format
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Skočiť na deklaráciu %s"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -749,7 +744,7 @@ msgstr "Ok"
 
 #: objinspstrconsts.oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr "Orvoriť súbor s maskami (*.dem)"
+msgstr "Otvoriť súbor s maskami (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -757,19 +752,19 @@ msgstr "Možnosti"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "O jednu späť"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "O jednu dopredu"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Posunúť dozadu"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Posunúť dopredu"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
@@ -777,7 +772,7 @@ msgstr "Stránky"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Editor stránok"
 
 #: objinspstrconsts.oispastecomponents
 #, fuzzy
@@ -800,7 +795,7 @@ msgstr "Uložiť obrázok ako"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Stlačte kláves ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
@@ -861,7 +856,7 @@ msgstr "Vybrať súbor"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Vybrať &všetky"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
@@ -916,7 +911,7 @@ msgstr ""
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Zobraziť triedy"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -924,15 +919,15 @@ msgstr "Zobraziť Strom komponentov"
 
 #: objinspstrconsts.oisshowhints
 msgid "Show Hints"
-msgstr "Zobariť rady"
+msgstr "Zobraziť rady"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Zobraziť informačný rámček"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Zobraziť filter vlastností"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
@@ -1170,10 +1165,8 @@ msgid "Save As"
 msgstr "Uložiť ako"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Vybrať &font..."
+msgstr "Vybrať &font ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1244,14 +1237,12 @@ msgid "Replace"
 msgstr "Nahradiť"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
 msgstr "Testovať dialóg..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
-msgstr "Testvstupu"
+msgstr "Testovať vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 #, object-pascal-format, fuzzy, badformat
@@ -1288,11 +1279,11 @@ msgstr "Neznámy"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "&Odznačiť všetko"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Odznačiť všetko"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1391,11 +1382,11 @@ msgstr "Pridať..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Pridať ďalšie rozlíšenia ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Nové rozlíšenie ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
@@ -1410,15 +1401,13 @@ msgid "Adjustment"
 msgstr "Doladenie"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Použiť"
+msgstr "&Použiť"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Nie je možné zmazať predvolené rozlíšenie."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
@@ -1433,11 +1422,9 @@ msgid "Center"
 msgstr "Vystredniť"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Zmazať"
+msgstr "Vyčistiť"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
@@ -1450,11 +1437,11 @@ msgstr "&Zmazať"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Zmazať rozlíšenie ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Vyberte rozlíšenie, ktoré chcete zmazať."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1500,7 +1487,7 @@ msgstr "Nahradiť ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Nahradiť všetky rozlíšenia ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1526,7 +1513,7 @@ msgstr "Upraviť stĺpce ..."
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Editovať položky ..."
+msgstr "Upraviť položky ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1590,10 +1577,8 @@ msgid "Panels Editor ..."
 msgstr "Editor panelov ..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Editovať StringGrid..."
+msgstr "Upraviť StringGrid ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1638,7 +1623,7 @@ msgstr "Uložiť"
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Editovať položky ..."
+msgstr "Upraviť položky ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1738,7 +1723,7 @@ msgstr "Chcete rozdeliť obrázok?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Nové tlačítko"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
@@ -1750,7 +1735,7 @@ msgstr ""
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Nový oddeľovač"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
