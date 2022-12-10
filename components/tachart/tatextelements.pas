@@ -75,7 +75,7 @@ type
     procedure DrawLink(
       ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint); virtual;
     function GetBoundingBox(
-      ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
+      ADrawer: IChartDrawer; const ATextSize: TPoint): TRect; virtual;
     function GetTextShiftNeeded: Boolean;
     function IsMarginRequired: Boolean;
   strict protected
@@ -140,6 +140,7 @@ type
     FBrush: TBrush;
     FCenter: TPoint;
     FFont: TFont;
+    FFullWidth: Boolean;
     FFrame: TChartTitleFramePen;
     FMargin: TChartDistance;
     FPolygon: TPointArray;
@@ -152,11 +153,14 @@ type
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartTitleFramePen);
+    procedure SetFullWidth(AValue: Boolean);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetText(AValue: TStrings);
     procedure SetWordwrap(AValue: Boolean);
     procedure WordWrapCaption(ADrawer: IChartDrawer; AMaxWidth: Integer);
   strict protected
+    function GetBoundingBox(ADrawer: IChartDrawer;
+      const ATextSize: TPoint): TRect; override;
     function GetFrame: TChartPen; override;
     function GetLabelBrush: TBrush; override;
     function GetLabelFont: TFont; override;
@@ -175,6 +179,7 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartTitleFramePen read FFrame write SetFrame;
+    property FullWidth: Boolean read FFullWidth write SetFullWidth default false;
     property Margin: TChartDistance
       read FMargin write SetMargin default DEF_MARGIN;
     property OnGetShape;
@@ -667,6 +672,34 @@ begin
   DrawLabel(ADrawer, FCenter, FCenter, GetRealCaption, FPolygon);
 end;
 
+function TChartTitle.GetBoundingBox(
+  ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
+begin
+  Result := inherited;
+  if FullWidth then
+  begin
+    case Alignment of
+      taLeftJustify:
+        begin
+          Result.Left := -ATextSize.X div 2 - Margins.Left;
+          Result.Right := Result.Left + FOwner.Width;
+          FCenter.X := ATextSize.X div 2 + Margins.Left;
+        end;
+      taRightJustify:
+        begin
+          Result.Right := ATextSize.X div 2 + Margins.Right;
+          Result.Left := Result.Right - FOwner.Width;
+          FCenter.X := FOwner.Width - ATextSize.X div 2 - Margins.Right;
+        end;
+      taCenter:
+        begin
+          Result.Left := -FOwner.Width div 2;
+          Result.Right := +FOwner.Width div 2;
+        end;
+    end;
+  end;
+end;
+
 function TChartTitle.GetFrame: TChartPen;
 begin
   Result := Frame;
@@ -735,6 +768,13 @@ end;
 procedure TChartTitle.SetFrame(AValue: TChartTitleFramePen);
 begin
   FFrame.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartTitle.SetFullWidth(AValue: Boolean);
+begin
+  if FFullWidth = AValue then exit;
+  FFullWidth := AValue;
   StyleChanged(Self);
 end;
 
