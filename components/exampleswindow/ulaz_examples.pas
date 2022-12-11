@@ -33,7 +33,7 @@ uses
     LazFileUtils, fileutil, LazLoggerBase,
     // LCL
     LCLType, LCLIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-    ExtCtrls,
+    ExtCtrls, Buttons,
     {$ifndef EXTESTMODE}
     IDEWindowIntf,
     {$endif}
@@ -52,6 +52,7 @@ type
         EditSearch: TEdit;
         ListView1: TListView;
         Memo1: TMemo;
+        ClearSearchButton: TSpeedButton;
         Splitter2: TSplitter;
         StatusBar1: TStatusBar;
         procedure ButtonCloseClick(Sender: TObject);
@@ -60,6 +61,7 @@ type
         procedure ButtonViewClick(Sender: TObject);
         procedure CheckGroupCategoryDblClick(Sender: TObject);
         procedure CheckGroupCategoryItemClick(Sender: TObject; {%H-}Index: integer);
+        procedure ClearSearchButtonClick(Sender: TObject);
         procedure EditSearchChange(Sender: TObject);
         procedure EditSearchKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
@@ -137,12 +139,10 @@ var
     KeyList : TStringList = nil;
 begin
     Screen.Cursor := crHourGlass;
-    if EditSearch.text <> rsExSearchPrompt then begin
-        KeyList := TStringList.Create;
-        BuildSearchList(KeyList, EditSearch.Text);
-    end;
+    KeyList := TStringList.Create;
     ListView1.BeginUpdate;
     try
+        BuildSearchList(KeyList, EditSearch.Text);
         if Ex.GetListData(Proj, Cat, Path, KeyW, True, KeyList) then begin
             NewLVItem(Proj, Path, KeyW, Cat);
             inc(Cnt);
@@ -213,7 +213,8 @@ begin
                 Exit;
         ListView1DblClick(Sender);
     end
-    else if not (Key in [VK_TAB, VK_ESCAPE, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN]) then
+    else if not (Key in [VK_TAB, VK_ESCAPE, VK_PRIOR, VK_NEXT, VK_END, VK_HOME,
+                         VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN]) then
         EditSearch.SetFocus;
 end;
 
@@ -408,15 +409,17 @@ end;
 
 procedure TFormLazExam.KeyWordSearch();
 begin
-      Memo1.clear;
-      ListView1.Clear;
-      Ex.KeyFilter := EditSearch.Text;
-      LoadUpListView();
+    Memo1.Clear;
+    ListView1.Clear;
+    Ex.KeyFilter := EditSearch.Text;
+    LoadUpListView();
 end;
 
 procedure TFormLazExam.EditSearchChange(Sender: TObject);
 begin
-    if visible then KeyWordSearch();
+    ClearSearchButton.Enabled := EditSearch.Text <> '' ;
+    if visible then
+        KeyWordSearch();
 end;
 
 procedure TFormLazExam.EditSearchKeyDown(Sender: TObject; var Key: Word;
@@ -432,6 +435,13 @@ begin
             end;
         end;
     end;
+end;
+
+procedure TFormLazExam.ClearSearchButtonClick(Sender: TObject);
+begin
+    if EditSearch.Text = '' then Exit;
+    EditSearch.Text := '';
+    KeyWordSearch();
 end;
 
 procedure TFormLazExam.PrimeCatFilter();
@@ -468,6 +478,9 @@ begin
     LastListViewIndex := -1;        // Used to record ListView1.ItemIndex before Tabbing away
 
     EditSearch.TextHint := rsExSearchPrompt;
+    // Does not work. Resource 'btnfiltercancel' not found.
+    //ClearSearchButton.LoadGlyphFromLazarusResource('btnfiltercancel');
+    ClearSearchButton.Enabled := False;
     CheckGroupCategory.Hint := rsGroupHint;
     Ex := nil;
     // These are ObjectInspector set but I believe I cannot get OI literals set in a Package ??

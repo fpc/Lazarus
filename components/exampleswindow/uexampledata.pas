@@ -632,7 +632,6 @@ var
    St : string;
    DoContinue : boolean = false;
 begin
-    //KeyList may be Nil, if so, ignore
     Result := True;
     if CatFilter = '' then exit(False);
     if GetFirst then
@@ -646,19 +645,18 @@ begin
                 continue;
             end;
         end;
-        if KeyList <> Nil then begin
-            for St in KeyList do
-                // IndexOf requires a 1:1 match, we want to know if St is in the keyword.
-                //if ExList.Items[GetListDataIndex]^.Keywords.IndexOf(St) = -1 then begin
-                if not ExList.IsInKeywords(St, GetListDataIndex) then begin
-                    inc(GetListDataIndex);
-                    DoContinue := True;
-                    Break;
-                end;
-            if DoContinue then begin          // Hmm, a GoTo would be easier ......
-                DoContinue := False;
-                Continue;
+        Assert(Assigned(KeyList), 'TExampleData.GetListData: KeyList=Nil');
+        for St in KeyList do
+            // IndexOf requires a 1:1 match, we want to know if St is in the keyword.
+            //if ExList.Items[GetListDataIndex]^.Keywords.IndexOf(St) = -1 then begin
+            if not ExList.IsInKeywords(St, GetListDataIndex) then begin
+                inc(GetListDataIndex);
+                DoContinue := True;
+                Break;
             end;
+        if DoContinue then begin          // Hmm, a GoTo would be easier ......
+            DoContinue := False;
+            Continue;
         end;
         break;
     end;
