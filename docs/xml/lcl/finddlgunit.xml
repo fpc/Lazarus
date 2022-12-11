@@ -34,94 +34,135 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <element name="ExtCtrls"/>
 
 <element name="TFindDialogForm">
-<short/>
+<short>
+TForm descendant which implements a find text dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.BtnPanel">
-<short/>
+<short>
+Panel with the buttons displayed on the dialog form.  
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.EntireScopeCheckBox">
-<short/>
+<short>
+Check box used for the "Search Entire File" option.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.FindButton">
-<short/>
+<short>
+Button used to perform the "Find More" action.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.CancelButton">
-<short/>
+<short>
+Button used to cancel and close the the dialog form.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.FlagsPanel">
-<short/>
+<short>
+Panel which contains the check box options on the dialog form.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.HelpButton">
-<short/>
+<short>
+Button used to display help information for the dialog form.  
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.WholeWordsOnlyCheckBox">
-<short/>
+<short>
+Check box to enable or disable searching for whole words only.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.CaseSensitiveCheckBox">
-<short/>
+<short>
+Check box to enable or disable case-sensitive search in the dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.EditFind">
-<short/>
+<short>
+Edit control with the value to locate using the dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.FindLabel">
-<short/>
+<short>
+Label for the EditFind control.  
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.DirectionRadioGroup">
-<short/>
+<short>
+Radio button group used to select the search direction for the dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TFindDialogForm.EditFindChange">
-<short/>
-<descr/>
+<short>
+Implements the OnChange event handler for the EditFind control.
+</short>
+<descr>
+<p>
+Enables or disables the FindButton on the dialog. The button is enabled when 
+the text in the control is not empty.
+</p>
+</descr>
 <seealso/>
 </element>
-
 <element name="TFindDialogForm.EditFindChange.Sender">
-<short/>
+<short>
+Object instance (TControl) for the event notification, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TFindDialogForm.FormCreate">
-<short/>
-<descr/>
+<short>
+Implements the OnCreate event handler for the form instance.
+</short>
+<descr>
+<p>
+Signals the OnChange event handler for the EditFind control on entry to set 
+the state for the "Find More" button.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TFindDialogForm.FormCreate.Sender">
-<short/>
+<short>
+Object instance for the event notification, or <b>Nil</b>.
+</short>
 </element>
 
 </module>
