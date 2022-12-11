@@ -389,7 +389,7 @@ Frees the class instance.
 <p>
 <var>Destroy</var> is the destructor for the class instance. Destroy frees 
 resources allocated in the constructor for the Icon, Title, Text, and Button 
-on the form. Destroy calls the inherited destructor proper to exiting from 
+on the form. Destroy calls the inherited destructor prior to exiting from 
 the method.
 </p>
 </descr>
