@@ -4678,7 +4678,7 @@ the checked state value stored to the <var>State</var> property.
 </p>
 <p>
 The OnDataChange event handler in the data link is temporarily unassigned 
-proper to updating the field value. The handler is reassigned when the 
+prior to updating the field value. The handler is reassigned when the 
 actions have been completed.
 </p>
 <p>
