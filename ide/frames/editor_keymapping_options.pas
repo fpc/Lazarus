@@ -347,8 +347,7 @@ begin
     if ShortCutDialog.ShowModal = mrOK then begin
       KeyMapKeyFilter := ShortCutDialog.PrimaryShortCut;
       UpdateKeyFilterButton;
-      FilterEdit.Filter:='';       // Allow only one of the filters to be active.
-      FilterEdit.InvalidateFilter;
+      FilterEdit.ResetFilter;      // Allow only one of the filters to be active.
     end;
   finally
     ShortCutDialog.Free;

@@ -1885,7 +1885,6 @@ begin
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchyButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
-  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
@@ -1894,7 +1893,6 @@ begin
   FSortAlphabetically:=AValue;
   SortAlphabeticallyButton.Down:=FSortAlphabetically;
   FilterEdit.SortData:=FSortAlphabetically;
-  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
@@ -2233,7 +2231,7 @@ var
   OldFilter : String;
 begin
   if not CanUpdate(pefNeedUpdateFiles,Immediately) then exit;
-  OldFilter := FilterEdit.ForceFilter('');
+  OldFilter:=FilterEdit.ForceFilter('');
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
@@ -2259,8 +2257,8 @@ begin
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
     FreeAndNil(FNextSelectedPart);
 
-  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
-  FilterEdit.InvalidateFilter;
+  FilterEdit.Filter:=OldFilter;
+  FilterEdit.InvalidateFilter;         // Needed when OldFilter = ''
   UpdatePEProperties;
   UpdateButtons;
 end;
@@ -2295,8 +2293,8 @@ begin
     // No more removed files left -> delete the root node
     if FRemovedFilesNode<>nil then begin
       FilterEdit.DeleteBranch(FRemovedFilesNode);
-      FreeAndNil(FRemovedFilesNode);
       FilterEdit.InvalidateFilter;
+      FreeAndNil(FRemovedFilesNode);
     end;
   end;
 
@@ -2312,7 +2310,7 @@ var
   NodeData: TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
-  OldFilter := FilterEdit.ForceFilter('');
+  OldFilter:=FilterEdit.ForceFilter('');
   // required packages
   RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
   RequiredBranch.ClearNodeData;
@@ -2355,10 +2353,8 @@ begin
     end;
   end;
   FNextSelectedPart:=nil;
-  if OldFilter <> '' then begin
-    FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
-    FilterEdit.InvalidateFilter;
-  end;
+  FilterEdit.Filter:=OldFilter;
+  FilterEdit.InvalidateFilter;     // Needed when OldFilter = ''
   UpdatePEProperties;
   UpdateButtons;
 end;
@@ -2993,7 +2989,7 @@ begin
   FilesBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
   UpdateStatusBar;
-  FilterEdit.InvalidateFilter;
+  //FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoMoveDependency(Offset: integer);
@@ -3016,7 +3012,7 @@ begin
   RequiredBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
   UpdateStatusBar;
-  FilterEdit.InvalidateFilter;
+  //FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoSortFiles;

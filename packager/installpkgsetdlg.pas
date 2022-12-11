@@ -269,8 +269,8 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogShow(Sender: TObject);
 begin
-  InstalledFilterEdit.Filter:='';    // (filter) - text is shown after this.
-  AvailableFilterEdit.Filter:='';
+  InstalledFilterEdit.ResetFilter;    // (filter) - TextHint is shown after this.
+  AvailableFilterEdit.ResetFilter;
   SetControlsWidthOnMax([UninstallButton, AddToInstallButton]);
   SetControlsWidthOnMax([ImportButton, ExportButton]);
 end;

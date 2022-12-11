@@ -519,7 +519,6 @@ begin
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
-  FilterEdit.InvalidateFilter;
 end;
 
 procedure TViewUnitDialog.ShowEntries;

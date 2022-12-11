@@ -379,7 +379,6 @@ begin
   FSortAlphabetically:=AValue;
   SortAlphabeticallyButton.Down:=FSortAlphabetically;
   FilterEdit.SortData:=FSortAlphabetically;
-  FilterEdit.InvalidateFilter;
 end;
 
 procedure TEditorFileManagerForm.UpdateCheckAllCaption;

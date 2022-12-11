@@ -399,6 +399,7 @@ end;
 procedure TTreeFilterBranch.Move(CurIndex, NewIndex: integer);
 begin
   fOriginalData.Move(CurIndex, NewIndex);
+  InvalidateBranch;
 end;
 
 { TFileNameItem }
@@ -449,7 +450,7 @@ begin
   fFilteredTreeview := AValue;
   if fFilteredTreeview <> nil then
   begin
-    Filter := Text;
+    InternalSetFilter(Text);
     fFilteredTreeview.FreeNotification(Self);
     fFilteredTreeview.AddHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
   end;
@@ -461,6 +462,7 @@ begin
   if not Assigned(fFilteredTreeview) then
     raise Exception.Create('Showing directory hierarchy requires Treeview.');
   fShowDirHierarchy:=AValue;
+  InvalidateFilter;
 end;
 
 function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
@@ -634,6 +636,7 @@ begin
     if fBranches[i].fRootNode = ARootNode then begin
       fBranches.Delete(i);
       Result := True;
+      InvalidateFilter;
       Break;
     end;
 end;

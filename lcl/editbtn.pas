@@ -231,7 +231,10 @@ type
     fSortData: Boolean;             // Data needs to be sorted.
     fIsFirstSetFormActivate: Boolean;
     fOnAfterFilter: TNotifyEvent;
+    procedure ApplyFilter(Immediately: Boolean = False);
     procedure SetFilter(const AValue: string);
+    procedure SetFilterOptions(AValue: TFilterStringOptions);
+    procedure SetSortData(AValue: Boolean);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     function IsTextHintStored: Boolean;
@@ -243,6 +246,7 @@ type
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure DestroyWnd; override;
+    procedure InternalSetFilter(const AValue: string);
     function DoDefaultFilterItem(const ACaption: string;
       const ItemData: Pointer): Boolean; virtual;
     function DoFilterItem(const ACaption: string;
@@ -251,7 +255,6 @@ type
     procedure EditChange; override;
     procedure BuddyClick; override;
     procedure SortAndFilter; virtual; abstract;
-    procedure ApplyFilter(Immediately: Boolean = False);
     procedure ApplyFilterCore; virtual; abstract;
     procedure MoveNext(ASelect: Boolean = False); virtual; abstract;
     procedure MovePrev(ASelect: Boolean = False); virtual; abstract;
@@ -274,11 +277,11 @@ type
     property Filter: string read fFilter write SetFilter;
     property FilterLowercase: string read fFilterLowercase;
     property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
-    property SortData: Boolean read fSortData write fSortData;
+    property SortData: Boolean read fSortData write SetSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
   published
     property CharCase default ecLowerCase;
-    property FilterOptions: TFilterStringOptions read fFilterOptions write fFilterOptions default [];
+    property FilterOptions: TFilterStringOptions read fFilterOptions write SetFilterOptions default [];
     property OnAfterFilter: TNotifyEvent read fOnAfterFilter write fOnAfterFilter;
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
       deprecated 'Use OnFilterItemEx with a caption parameter instead.';
@@ -1168,6 +1171,36 @@ begin
   inherited DestroyWnd;
 end;
 
+procedure TCustomControlFilterEdit.InternalSetFilter(const AValue: string);
+begin
+  if fFilter=AValue then Exit;
+  Button.Enabled:=AValue<>'';
+  fFilter:=AValue;
+  fFilterLowercase:=UTF8LowerCase(fFilter);
+  InvalidateFilter;
+end;
+
+procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
+begin
+  if Text=AValue then Exit;
+  Text:=AValue;
+  InternalSetFilter(AValue);
+end;
+
+procedure TCustomControlFilterEdit.SetFilterOptions(AValue: TFilterStringOptions);
+begin
+  if fFilterOptions=AValue then Exit;
+  fFilterOptions:=AValue;
+  InvalidateFilter;
+end;
+
+procedure TCustomControlFilterEdit.SetSortData(AValue: Boolean);
+begin
+  if fSortData=AValue then Exit;
+  fSortData:=AValue;
+  InvalidateFilter;
+end;
+
 function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
   const ItemData: Pointer): Boolean;
 var
@@ -1217,16 +1250,6 @@ begin
     fOnAfterFilter(Self);
 end;
 
-procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
-begin
-  Button.Enabled:=AValue<>'';
-  if fFilter=AValue then
-    Exit;
-  fFilter:=AValue;
-  fFilterLowercase:=UTF8LowerCase(fFilter);
-  ApplyFilter;
-end;
-
 procedure TCustomControlFilterEdit.SetIdleConnected(const AValue: Boolean);
 begin
   if fIdleConnected=AValue then exit;
@@ -1271,14 +1294,14 @@ end;
 
 procedure TCustomControlFilterEdit.EditChange;
 begin
-  Filter:=Text;
+  InternalSetFilter(Text);
   inherited;
 end;
 
 procedure TCustomControlFilterEdit.BuddyClick;
 begin
   Text:='';
-  Filter:='';
+  ResetFilter;
   if FocusOnButtonClick then
     Edit.SetFocus; //don't SelectAll here
   inherited;
@@ -1310,12 +1333,12 @@ end;
 
 function TCustomControlFilterEdit.IsTextHintStored: Boolean;
 begin
-  Result := TextHint <> rsFilter;
+  Result := TextHint<>rsFilter;
 end;
 
 procedure TCustomControlFilterEdit.ResetFilter;
 begin
-  Filter := '';
+  Filter:='';
 end;
 
 function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;

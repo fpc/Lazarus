@@ -514,7 +514,6 @@ begin
          FActiveTree := InheritanceTree;
         end;
   end;
-  TreeFilterEd.InvalidateFilter;
   EnvironmentOptions.ComponentListPageIndex := PageControl.PageIndex;
   FActiveTree.BeginUpdate;
   tmDeselect.Enabled := True;

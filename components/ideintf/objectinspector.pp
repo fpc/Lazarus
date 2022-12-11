@@ -4631,7 +4631,7 @@ begin
   for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page]<>nil then
       GridControl[Page].PropEditLookupRootChange;
-  CompFilterEdit.Filter:='';
+  CompFilterEdit.ResetFilter;
   FillComponentList(True);
 end;
 

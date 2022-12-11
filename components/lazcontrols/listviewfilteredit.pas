@@ -50,6 +50,7 @@ type
     // Data sorted for viewing.
     fFilteredData: TListViewDataList;
     function MatchesFilter(aData: TListViewDataItem): Boolean;
+    procedure SetByAllFields(AValue: Boolean);
     procedure SetFilteredListview(const AValue: TCustomListView);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -75,7 +76,7 @@ type
     property Items: TListViewDataList read fOriginalData;
   published
     property FilteredListview: TCustomListView read fFilteredListview write SetFilteredListview;
-    property ByAllFields: Boolean read fByAllFields write fByAllFields default False;
+    property ByAllFields: Boolean read fByAllFields write SetByAllFields default False;
   end;
 
 implementation
@@ -153,10 +154,17 @@ begin
   fFilteredListview:=AValue;
   if Assigned(fFilteredListview) then
   begin
-    Filter:=Text;
+    InternalSetFilter(Text);
     for i := 0 to fFilteredListview.Items.Count-1 do
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
   end;
+end;
+
+procedure TListViewFilterEdit.SetByAllFields(AValue: Boolean);
+begin
+  if fByAllFields=AValue then Exit;
+  fByAllFields:=AValue;
+  InvalidateFilter;
 end;
 
 procedure TListViewFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);

@@ -1036,8 +1036,7 @@ begin
       else
         NewTreeView:=nil;
       Result:= Pages[PageIndex];
-      SearchInListEdit.Text:='';
-      SearchInListEdit.Filter:='';
+      SearchInListEdit.ResetFilter;
       SearchInListEdit.FilteredTreeview := NewTreeView;
     end;//with
   end;
