@@ -2341,36 +2341,29 @@ new Parent which contains an action list is assigned for the frame instance.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomFrame.ReadDesignLeft.Reader">
-<short/>
-</element>
+<element name="TCustomFrame.ReadDesignLeft.Reader"/>
 
 <element name="TCustomFrame.ReadDesignTop">
 <short>Implements reading the Right property for the designer surface.</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomFrame.ReadDesignTop.Reader">
-<short/>
-</element>
+<element name="TCustomFrame.ReadDesignTop.Reader"/>
 
 <element name="TCustomFrame.WriteDesignLeft">
 <short>Implements writing the Left property for the designer surface.</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomFrame.WriteDesignLeft.Writer">
-<short/>
-</element>
+<element name="TCustomFrame.WriteDesignLeft.Writer"/>
 
 <element name="TCustomFrame.WriteDesignTop">
 <short>Implements writing the Top property for the designer surface.</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomFrame.WriteDesignTop.Writer">
-<short/>
-</element>
+<element name="TCustomFrame.WriteDesignTop.Writer"/>
+
 <element name="TCustomFrame.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TCustomFrame.GetChildren">
@@ -3436,11 +3429,13 @@ in the widgetset class.
 <link id="TCloseAction"/>
 </seealso>
 </element>
+
 <element name="TCustomForm.FreeIconHandles">
 <short>Destroys the form icons.</short>
 <descr/>
 <seealso/>
 </element>
+
 <element name="TCustomForm.IconChanged">
 <short>
 Loads the new form icons, and notifies the widgetset and all forms.
@@ -3448,9 +3443,7 @@ Loads the new form icons, and notifies the widgetset and all forms.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomForm.IconChanged.Sender">
-<short/>
-</element>
+<element name="TCustomForm.IconChanged.Sender"/>
 
 <element name="TCustomForm.DelayedEvent">
 <short>
@@ -3686,7 +3679,9 @@ the TMethod instance in Handler. Raised with the message
 <seealso/>
 </element>
 <element name="TCustomForm.RemoveHandler.HandlerType">
-<short/>
+<short>
+Form handler type for the routine removed in the method.
+</short>
 </element>
 <element name="TCustomForm.RemoveHandler.Handler">
 <short>
@@ -3694,14 +3689,8 @@ Handler routine removed in the method.
 </short>
 </element>
 
-<element name="TCustomForm.FindDefaultForActiveControl">
-<short>Returns the first control in the form Tab order.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomForm.FindDefaultForActiveControl.Result">
-<short/>
-</element>
+<element name="TCustomForm.FindDefaultForActiveControl"/>
+<element name="TCustomForm.FindDefaultForActiveControl.Result"/>
 
 <element name="TCustomForm.UpdateMenu">
 <short>Called when the main menu has been changed.</short>
@@ -5444,14 +5433,16 @@ as soon as the action is handled.
 <short>Tries all applicable components to update an action.</short>
 <descr/>
 <seealso>
-<link id="#LCL.Forms.TCustomForm.DoExecuteAction">DoExecuteAction</link>
+<link id="#lcl.forms.TCustomForm.DoExecuteAction">DoExecuteAction</link>
 </seealso>
 </element>
 <element name="TCustomForm.DoUpdateAction.Result">
 <short><b>True</b> when the action was updated.</short>
 </element>
 <element name="TCustomForm.DoUpdateAction.TheAction">
-<short/>
+<short>
+Action instance passed as an argument and updated by component(s) on the form.
+</short>
 </element>
 
 <element name="TCustomForm.UpdateActions">
@@ -5629,10 +5620,18 @@ is a MDI child form, merged menu items are removed from the menu in the
 <element name="TCustomForm.GetControlClassDefaultSize.Result"/>
 
 <element name="TCustomForm.BigIconHandle">
-<short>Handle for the large icon used on the form.</short>
+<short>
+Returns the handle for the large icon on the form or in the application.
+</short>
+<seealso>
+<link id="TCustomForm.Icon"/>
+<link id="TApplication.BigIconHandle"/>
+</seealso>
 </element>
 <element name="TCustomForm.BigIconHandle.Result">
-<short/>
+<short>
+HICON Instance with the handle for the icon, or 0 (zero) when not available.
+</short>
 </element>
 
 <element name="TCustomForm.Close">
@@ -5656,10 +5655,16 @@ An <var>OnCloseQuery</var> handler can refuse to allow the form to close.
 <descr/>
 <seealso>
 <link id="TCustomForm.OnCloseQuery"/>
+<link id="TCustomForm.FormStyle"/>
+<link id="TCustomForm.MDIChildren"/>
+<link id="TFormStyle"/>
 </seealso>
 </element>
 <element name="TCustomForm.CloseQuery.Result">
-<short/>
+<short>
+Returns <b>True</b> if the event handler (or MDI child forms) allow the form 
+to be closed. The default return value is <b>True</b>.
+</short>
 </element>
 
 <element name="TCustomForm.DefocusControl">
@@ -5765,16 +5770,25 @@ handled in the method.
 
 <element name="TCustomForm.GetRolesForControl">
 <short>
-The role(s) for the control in a modal form (default or cancel button).
+Gets the role(s) for the control in a modal form (default or cancel button).
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomForm.DefaultControl"/>
+<link id="TCustomForm.CancelControl"/>
+<link id="#lcl.controls.TControlRolesForForm">TControlRolesForForm</link>
+<link id="#lcl.controls.TControlRoleForForm">TControlRoleForForm</link>
+</seealso>
 </element>
 <element name="TCustomForm.GetRolesForControl.Result">
-<short/>
+<short>
+Set of TControlRoleForForm values for the specified control. The default return value is an empty set ([]).
+</short>
 </element>
 <element name="TCustomForm.GetRolesForControl.AControl">
-<short/>
+<short>
+TControl instance examined and compared to the values for the form instance.
+</short>
 </element>
 
 <element name="TCustomForm.GetRealPopupParent">
@@ -5801,30 +5815,39 @@ the form. This function is called by the LCL interface.
 </short>
 <descr>
 <p>
-The drop files event will be invoked when the user drops one or more dragged 
-files onto one of forms in the application. First this event should be fired 
-for the target form (or main form if drop target is unknown), and then for 
-the application instance.
+<var>OnDropFiles</var> is signalled when the user drops one or more dragged 
+files onto one of forms in the application. This event should be fired first 
+for the target form (or main form if drop target is unknown), and then for the 
+application instance.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="TCustomForm.IntfDropFiles.FileNames">
-<short/>
+<short>
+Array of file names passed as an argument to the OnDropFiles event handler.
+</short>
 </element>
 
 <element name="TCustomForm.IntfHelp">
 <short>
-Show help for control or menu item. This function is called by the LCL 
+Shows help for a control or menu item. This function is called by the LCL 
 interface.
 </short>
-<descr/>
+<descr>
+<p>
+Calls the ShowHelp method in AComponent when the argument is derived from 
+TControl.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TControl.ShowHelp">TControl.ShowHelp</link>
 </seealso>
 </element>
 <element name="TCustomForm.IntfHelp.AComponent">
-<short/>
+<short>
+TComponent instance for the help displayed in the method.
+</short>
 </element>
 
 <element name="TCustomForm.IsShortcut">
@@ -6218,12 +6241,20 @@ handlers. <b>False</b> if it is appended to the end of the list.
 <short>
 Removes the handler called the first time the form executes its Show method.
 </short>
-<descr/>
-<seealso/>
-<notes><note>Not used in the current LCL version.</note></notes>
+<descr>
+<p>
+Not used in the current LCL version.
+</p>
+</descr>
+<seealso>
+<link id="TFormHandlerType"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 <element name="TCustomForm.RemoveHandlerFirstShow.OnFirstShowHandler">
-<short/>
+<short>
+Handler routine removed from the list for the form handler type.
+</short>
 </element>
 
 <element name="TCustomForm.AddHandlerClose">
@@ -6392,18 +6423,20 @@ A non-<b>Nil</b> result is returned only when FormStyle contains
 <element name="TCustomForm.GetMDIChildren" link="#lcl.forms.TCustomForm.MDIChildren"/>
 <element name="TCustomForm.GetMDIChildren.Result">
 <short>
-Nil if the caller is not a MDI form type or a handle has not been allocated 
-for the form.
+TCustomForm instance for the requested MDI child, or <b>Nil</b> if the caller 
+is not a MDI form type or a handle has not been allocated for the form.
 </short>
 </element>
 <element name="TCustomForm.GetMDIChildren.AIndex">
-<short/>
+<short>
+Ordinal position for the MDI child form in the property value.
+</short>
 </element>
 
 <element name="TCustomForm.MDIChildCount" link="#lcl.forms.TCustomForm.MDIChildren"/>
 <element name="TCustomForm.MDIChildCount.Result">
 <short>
--1 if caller isn't an MDI form or handle is not allocated.
+-1 if form is not a MDI form or its handle has not been allocated.
 </short>
 </element>
 
@@ -6453,10 +6486,15 @@ Calls the inherited method using the values in <var>NewDockSite</var> and
 </seealso>
 </element>
 <element name="TCustomForm.Dock.NewDockSite">
-<short/>
+<short>
+Dock site where the form instance is hosted.
+</short>
 </element>
 <element name="TCustomForm.Dock.ARect">
-<short/>
+<short>
+Returns the bounds rectangle for the form instance on the dock site. The 
+origin is 0, 0. Width and Height depend on the AutoSize setting in NewDockSite.
+</short>
 </element>
 
 <element name="TCustomForm.UpdateDockCaption">
@@ -8230,7 +8268,8 @@ form after the Client has been added.
 
 <element name="TCustomDockForm.DoRemoveDockClient">
 <short>
-Closes (releases) the form after the last client has been undocked.
+Removes the specified form from the list of docked clients, and releases the 
+dock form when all docked clients have been removed.
 </short>
 <descr/>
 <seealso>
@@ -8238,25 +8277,45 @@ Closes (releases) the form after the last client has been undocked.
 </seealso>
 </element>
 <element name="TCustomDockForm.DoRemoveDockClient.Client">
-<short/>
+<short>
+Client control removed from the dock list in the method.
+</short>
 </element>
 
-<element name="TCustomDockForm.GetSiteInfo" link="#lcl.controls.TWinControl.GetSiteInfo">
-<short>Disallows docking of an second client.</short>
-<descr/>
-<seealso/>
+<element name="TCustomDockForm.GetSiteInfo">
+<short>
+Disallows docking of a second client.
+</short>
+<descr>
+<p>
+<var>GetSiteInfo</var> is an overridden method in <var>TCustomDockForm</var>. 
+It reimplements the method introduced in the ancestor class (TWinControl). 
+The value in the <var>CanDock</var> argument is set to <b>True</b> when there 
+are no other docked clients on the docking form instance. Values in the 
+Client, InfluenceRect, and MousePos arguments are <b>not</b> used in the 
+method.
+</p>
+<p>
+GetSiteInfo does <b>not</b> call the inherited method.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnGetSiteInfo">TWinControl.OnGetSiteInfo</link>
+</seealso>
 </element>
 <element name="TCustomDockForm.GetSiteInfo.Client">
-<short/>
+<short>Not used in the method.</short>
 </element>
 <element name="TCustomDockForm.GetSiteInfo.InfluenceRect">
-<short/>
+<short>Not used in the method.</short>
 </element>
 <element name="TCustomDockForm.GetSiteInfo.MousePos">
-<short/>
+<short>Not used in the method.</short>
 </element>
 <element name="TCustomDockForm.GetSiteInfo.CanDock">
-<short/>
+<short>
+Returns <b>True</b> when no other docked clients exist on the form instance.
+</short>
 </element>
 
 <element name="TCustomDockForm.Loaded">
@@ -12325,18 +12384,10 @@ TCMHintShowPause is not used in the current LCL implementation.
 </descr>
 <seealso/>
 </element>
-<element name="TCMHintShowPause.Msg">
-<short/>
-</element>
-<element name="TCMHintShowPause.WasActive">
-<short/>
-</element>
-<element name="TCMHintShowPause.Pause">
-<short/>
-</element>
-<element name="TCMHintShowPause.Result">
-<short/>
-</element>
+<element name="TCMHintShowPause.Msg"/>
+<element name="TCMHintShowPause.WasActive"/>
+<element name="TCMHintShowPause.Pause"/>
+<element name="TCMHintShowPause.Result"/>
 
 <element name="TAppHintTimerType">
 <short>Represents TApplication hint timer states.</short>
@@ -13249,12 +13300,29 @@ to post a <var>CM_APPSHOWBTNGLYPHCHANGED</var> control message to
 <element name="TApplication.SetTaskBarBehavior.AValue"/>
 
 <element name="TApplication.UpdateMouseControl">
-<short>Handles mouse movement to a new control.</short>
-<descr/>
-<seealso/>
+<short>
+Updates the internal member used to track the mouse capture control in the 
+application.
+</short>
+<descr>
+<p>
+Ensures that a CM_MOUSELEAVE message is performed for the current MouseControl 
+before the member is updated. Updates values in the HintControl and Hint 
+properties, and performs a CM_MOUSEENTER message after the MouseControl has 
+been changed.
+</p>
+</descr>
+<seealso>
+<link id="TApplication.MouseControl"/>
+<link id="TApplication.Hint"/>
+<link id="TApplication.HintControl"/>
+<link id="GetLongHint"/>
+</seealso>
 </element>
 <element name="TApplication.UpdateMouseControl.NewMouseControl">
-<short/>
+<short>
+Control instance to receive the mouse capture.
+</short>
 </element>
 
 <element name="TApplication.UpdateMouseHint">
@@ -13310,16 +13378,11 @@ id="#lcl.HelpIntfs.HelpManager">HelpManager</link>.
 <descr/>
 <seealso/>
 </element>
-
 <element name="TApplication.DispatchAction.Result">
 <short><b>True</b> when the action was handled.</short>
 </element>
-<element name="TApplication.DispatchAction.Msg">
-<short/>
-</element>
-<element name="TApplication.DispatchAction.Action">
-<short/>
-</element>
+<element name="TApplication.DispatchAction.Msg"/>
+<element name="TApplication.DispatchAction.Action"/>
 
 <element name="TApplication.AddHandler">
 <short>
@@ -13643,6 +13706,12 @@ the active form and the Application, as well as handler routines added for
 the ahtHelp handler type.
 </p>
 <p>
+The <var>CallHelp</var> argument indicates if handler(s) in the 
+<var>Application</var> instance should be called when the event handler in 
+the form is completed. Set CallHelp to <b>False</b> when the help request has 
+been satisfied in one of the event handlers.
+</p>
+<p>
 DoOnHelp is called from the HelpCommand method.
 </p>
 </descr>
@@ -13665,7 +13734,10 @@ Pointer to the help data used in the event handler(s).
 </short>
 </element>
 <element name="TApplication.DoOnHelp.CallHelp">
-<short/>
+<short>
+<b>True</b> to signal a help handler in the form. <b>False</b> if the Help 
+request is handled by the application.
+</short>
 </element>
 
 <element name="TApplication.DoOnMouseMove">
@@ -13733,7 +13805,9 @@ is set to 0 (or a negative value).
 <seealso/>
 </element>
 <element name="TApplication.OnHintTimer.Sender">
-<short/>
+<short>
+Object instance (TApplication) for the event notification.
+</short>
 </element>
 
 <element name="TApplication.SetTitle">
@@ -13754,22 +13828,54 @@ in the widgetset class to apply the new value for the property.
 
 <element name="TApplication.StartHintTimer">
 <short>Starts the timer for display of a hint message.</short>
-<descr/>
+<descr>
+<p>
+Called from the ActivateHint method when a hint window is not already active 
+and visible in the application.
+</p>
+</descr>
 <seealso>
 <link id="TApplication.Hint"/>
+<link id="TApplication.HintPause"/>
+<link id="TApplication.ActivateHint"/>
+<link id="TAppHintTimerType"/>
 </seealso>
 </element>
 <element name="TApplication.StartHintTimer.Interval">
-<short/>
+<short>
+Interval (in milliseconds) that the hint timer must wait before executing the 
+OnHintTimer routine. Normally contains the value in HintPause where 500ms is the default.
+</short>
 </element>
 <element name="TApplication.StartHintTimer.TimerType">
-<short/>
+<short>
+Contains ahttShowHint in StartHintTimer.
+</short>
 </element>
 
 <element name="TApplication.UpdateVisible">
-<short>Asks the widgetset to update the task bar entries.</short>
-<descr/>
-<seealso/>
+<short>Asks the widgetset to update its task bar entries.</short>
+<descr>
+<p>
+<var>UpdateVisible</var> is a method used to notify the widgetset class 
+instance that the task bar needs to be updated for the visible forms in the 
+application. If there are visible forms which share application taskbar item 
+then the application task bar item must be visible, too. Otherwise, hide it.
+</p>
+<p>
+UpdateVisible is called when a form is added to or removed from the 
+CustomForms in the Screen singleton for the application.
+</p>
+</descr>
+<seealso>
+<link id="TApplication.TaskBarBehavior"/>
+<link id="TCustomForm.ShowInTaskBar"/>
+<link id="Screen"/>
+<link id="TScreen.CustomForms"/>
+<link id="TScreen.CustomFormCount"/>
+<link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
+<link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
+</seealso>
 </element>
 
 <element name="TApplication.DoIdleActions">
@@ -14060,23 +14166,31 @@ ControlDestroyed is called from the <var>Destroy</var> method in
 </element>
 
 <element name="TApplication.BigIconHandle">
-<short>The Handle for the large application Icon.</short>
+<short>Returns the Handle for the large application Icon.</short>
 <seealso>
 <link id="TApplication.Icon"/>
+<link id="TApplication.SmallIconHandle"/>
 </seealso>
 </element>
 <element name="TApplication.BigIconHandle.Result">
-<short/>
+<short>
+HIcon instance with the handle for the large icon, or 0 (zero) when not 
+available.
+</short>
 </element>
 
 <element name="TApplication.SmallIconHandle">
-<short>The Handle for the small application Icon.</short>
+<short>Returns the Handle for the small application Icon.</short>
 <seealso>
 <link id="TApplication.Icon"/>
+<link id="TApplication.BigIconHandle"/>
 </seealso>
 </element>
 <element name="TApplication.SmallIconHandle.Result">
-<short/>
+<short>
+HIcon instance with the handle for the small icon, or 0 (zero) when not 
+available.
+</short>
 </element>
 
 <element name="TApplication.BringToFront">
@@ -14178,9 +14292,20 @@ This is thread safe.
 <errors>
 Exceptions are raised for various inconsistencies in the queue.
 </errors>
+<seealso>
+<link id="TApplication.QueueAsyncCall"/>
+<link id="TApplication.Flags"/>
+<link id="TApplicationFlags"/>
+<link id="TApplicationFlag"/>
+<link id="TAsyncCallQueues"/>
+<link id="TAsyncCallQueue"/>
+<link id="#rtl.system.TMethod">TMethod</link>
+</seealso>
 </element>
 <element name="TApplication.RemoveAsyncCalls.AnObject">
-<short/>
+<short>
+Object instance with the queued TMethod request removed in the method.
+</short>
 </element>
 
 <element name="TApplication.ReleaseComponent">
@@ -14280,10 +14405,28 @@ gracefully.
 <descr>
 <p>
 Individual exception handler methods should be supplied by the application 
-programmer, to override place-holder entries declared in ancestor classes. 
+programmer to override place-holder entries declared in ancestor classes. 
 This method checks whether the application is halted when an exception 
 occurs, or invokes the appropriate handler. It also writes details about the 
 exception to the appropriate place for debugging.
+</p>
+<p>
+HandleException may signal the OnCircularException event handler (when 
+assigned) if an exception is raised while the method is already active.
+</p>
+<p>
+HandleException ensures that existing capture(s) are released, and that all 
+forms with the stay on top attribute are removed so that the exception message 
+can be shown.
+</p>
+<p>
+The OnException event handler (and other handlers for the ahtException handler 
+type) are signalled (when assigned). If OnException handlers are not used,  
+the ShowException method is called.
+</p>
+<p>
+Any forms with the stay on top attribute are restored prior to exiting the 
+method.
 </p>
 </descr>
 <seealso>
@@ -14291,7 +14434,9 @@ exception to the appropriate place for debugging.
 </seealso>
 </element>
 <element name="TApplication.HandleException.Sender">
-<short/>
+<short>
+Object instance (TApplication) for the exception.
+</short>
 </element>
 
 <element name="TApplication.HandleMessage">
@@ -14322,32 +14467,43 @@ HandleMessage is called from the private RunLoop method in
 <short>Show help.</short>
 <descr>
 <p>
-Currently relies on OnHelp handlers. CallHelp is not implemented.
+Currently relies on OnHelp handlers. CallHelp is not implemented at the 
+application level.
 </p>
 </descr>
 <seealso>
+<link id="TApplication.OnHelp"/>
+<link id="TApplication.AddOnHelpHandler"/>
+<link id="TApplication.RemoveOnHelpHandler"/>
 </seealso>
 </element>
 <element name="TApplication.HelpCommand.Result">
-<short/>
+<short>
+<b>True</b> if the help command was handled when the OnHelp event handler was 
+executed.
+</short>
 </element>
 <element name="TApplication.HelpCommand.Command">
-<short/>
+<short>
+Numeric help command type requested in the method.
+</short>
 </element>
 <element name="TApplication.HelpCommand.Data">
-<short/>
+<short>
+Pointer to the data for the help request.
+</short>
 </element>
 
 <element name="TApplication.HelpContext">
 <short>Shows context-sensitive help for the application.</short>
 <descr>
 <p>
-HelpContext is a Boolean function used to display context-sensitive help for 
-the specified help context. It calls the DoOnHelp method to select and 
-execute a help handler routine for the specified help context. The routine 
-may be one of the OnHelp event handlers found in the active form or in 
-TApplication. If neither are assigned, the application handlers are checked 
-for a routine using the ahtHelp handler type.
+<var>HelpContext</var> is a <var>Boolean</var> function used to display 
+context-sensitive help for the specified help context. It calls the DoOnHelp 
+method to select and execute a help handler routine for the specified help 
+context. The routine may be one of the OnHelp event handlers found in the 
+active form or in TApplication. If neither are assigned, the application 
+handlers are checked for a routine using the ahtHelp handler type.
 </p>
 <p>
 If the help context was handled in DoOnHelp, not additional actions are 
@@ -14359,7 +14515,11 @@ The return value is <b>False</b> if the help context could not be handled
 using any of these options.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TApplication.OnHelp"/>
+<link id="TApplication.AddOnHelpHandler"/>
+<link id="TApplication.RemoveOnHelpHandler"/>
+</seealso>
 </element>
 <element name="TApplication.HelpContext.Result">
 <short><b>True</b> if the help request was handled in the method.</short>
@@ -14371,13 +14531,22 @@ using any of these options.
 <element name="TApplication.HelpKeyword">
 <short>Shows help for the specified keyword.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TApplication.OnHelp"/>
+<link id="TApplication.AddOnHelpHandler"/>
+<link id="TApplication.RemoveOnHelpHandler"/>
+</seealso>
 </element>
 <element name="TApplication.HelpKeyword.Result">
-<short/>
+<short>
+Returns <b>True</b> if the keyword help request was handled in the OnHelp 
+event handler.
+</short>
 </element>
 <element name="TApplication.HelpKeyword.Keyword">
-<short/>
+<short>
+String with the keyword for the help request.
+</short>
 </element>
 
 <element name="TApplication.HelpShowTableOfContents">
@@ -14426,19 +14595,54 @@ application.
 
 <element name="TApplication.RemoveStayOnTop">
 <short>
-Removes the StayOnTop attribute from all forms in the application.
+Removes the StayOnTop attribute from all visible forms in the application.
 </short>
 <descr>
 <p>
-Builds a list of forms for use in the RestoreStayOnTop method.
+<var>RemoveStayOnTop</var> is a method used to remove the stay on top 
+attribute from visible forms in the application.
+</p>
+<p>
+RemoveStayOnTop calls the AppRemoveStayOnTopFlags method in the widgetset 
+class instance. <var>ASystemTopAlso</var> indicates whether system 
+dialogs/forms with the stay on top attribute are included in the list of forms 
+affected in the method. The default value for ASystemTopAlso is <b>False</b>, 
+and omits these forms from the list.
+</p>
+<p>
+RemoveStayOnTop builds the internal list of forms used in the RestoreStayOnTop 
+method. It adds each visible form instance in Screen.CustomForms to the 
+internal list, and sets its FormStyle property to fsNormal. Any form without a 
+Parent, not Visible, or without FormStyle set to fsStayOnTop is not 
+added to the list or affected in the method.
+</p>
+<p>
+RemoveStayOnTop is called from methods like ModalStarted and HandleException.
+</p>
+<p>
+See <var>RestoreStayOnTop</var> for the actions performed to restore the stay 
+on top attribute to the list of forms.
 </p>
 </descr>
 <seealso>
 <link id="TApplication.RestoreStayOnTop"/>
+<link id="TApplication.ModalStarted"/>
+<link id="TApplication.HandleException"/>
+<link id="TCustomForm.FormStyle"/>
+<link id="TCustomForm.Visible"/>
+<link id="Screen"/>
+<link id="TScreen.CustomForms"/>
+<link id="TScreen.CustomFormCount"/>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TFormStyle">TFormStyle</link>
+<link id="#lcl.controls.fsAllNonSystemStayOnTop">fsAllNonSystemStayOnTop</link>
 </seealso>
 </element>
 <element name="TApplication.RemoveStayOnTop.ASystemTopAlso">
-<short/>
+<short>
+Indicates whether system dialogs/forms with stay on top set are also updated. 
+Default value is <b>False</b>.
+</short>
 </element>
 
 <element name="TApplication.RestoreStayOnTop">
@@ -14452,7 +14656,10 @@ Restores StayOnTop for all forms changed by RemoveStayOnTop.
 </seealso>
 </element>
 <element name="TApplication.RestoreStayOnTop.ASystemTopAlso">
-<short/>
+<short>
+Indicates whether system dialogs/forms with stay on top set are also updated. 
+Default value is <b>False</b>.
+</short>
 </element>
 
 <element name="TApplication.IsWaiting">
@@ -14487,17 +14694,13 @@ Called when the Hint timer has expired to stop showing the Hint.
 <short>Called when the the mouse is over a control with a Hint.</short>
 <descr>
 <p>
-Does nothing.
+Does nothing in the current LCL version.
 </p>
 </descr>
 <seealso/>
 </element>
-<element name="TApplication.HintMouseMessage.Control">
-<short/>
-</element>
-<element name="TApplication.HintMouseMessage.AMessage">
-<short/>
-</element>
+<element name="TApplication.HintMouseMessage.Control"/>
+<element name="TApplication.HintMouseMessage.AMessage"/>
 
 <element name="TApplication.Initialize">
 <short>Initializes the widgetset (and more).</short>
@@ -15720,7 +15923,9 @@ Asks all QueryEndSession handlers to confirm termination of the application.
 </seealso>
 </element>
 <element name="TApplication.IntfQueryEndSession.Cancel">
-<short/>
+<short>
+Returns <b>True</b> if the application can be terminated.
+</short>
 </element>
 
 <element name="TApplication.IntfEndSession">
@@ -15779,7 +15984,9 @@ Notifies all activation handlers.
 </seealso>
 </element>
 <element name="TApplication.IntfDropFiles.FileNames">
-<short/>
+<short>
+Array of file file names processed using the OnDropFiles event handler.
+</short>
 </element>
 
 <element name="TApplication.IntfSettingsChange">
@@ -15798,15 +16005,39 @@ depending on use of UTF-8 in the RTL, when UpdateFormatSettings is set to
 
 <element name="TApplication.IntfThemeOptionChange">
 <short>Called by the interface when a theme option has changed.</short>
-<descr/>
+<descr>
+<p>
+<var>IntfThemeOptionChange</var> posts control messages to notify a custom 
+form when either toShowButtonImages or toShowMenuImages is the value in 
+<var>AOption</var>.
+</p>
+<dl>
+<dt>toShowButtonImages</dt>
+<dd>
+Posts a CM_APPSHOWBTNGLYPHCHANGED control message when ShowButtonGlyphs is set 
+to sbgSystem.
+</dd>
+<dt>toShowMenuImages</dt>
+<dd>
+Posts a CM_APPSHOWMENUGLYPHCHANGED control message when ShowMenuGlyphs is set 
+to sbgSystem.
+</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 <element name="TApplication.IntfThemeOptionChange.AThemeServices">
-<short/>
+<short>
+TThemeServices instance for the callback. Not used in the current LCL 
+implementation.
+</short>
 </element>
 <element name="TApplication.IntfThemeOptionChange.AOption">
-<short/>
+<short>
+TThemeOption changed in the callback.
+</short>
 </element>
+
 <element name="TApplication.IsRightToLeft">
 <short>
 Indicates if BiDiMode contains a value other than bdLeftToRight.
@@ -15815,7 +16046,9 @@ Indicates if BiDiMode contains a value other than bdLeftToRight.
 <seealso/>
 </element>
 <element name="TApplication.IsRightToLeft.Result">
-<short/>
+<short>
+Returns <b>True</b> if BiDiMode is set to a value other than bdLeftToRight.
+</short>
 </element>
 
 <element name="TApplication.IsRTLLang">
@@ -15943,8 +16176,36 @@ intended).
 
 <element name="TApplication.CaptureExceptions">
 <short>Enables exception handling in the Application.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CaptureExceptions</var> is a <var>Boolean</var> property which enables or 
+disables exception handling for errors which occur when messages are handled 
+in the application. The default value for CaptureExceptions is set to 
+<b>True</b> in the Create constructor. CaptureExceptions is set to 
+<b>False</b> in the Destroy destructor.
+</p>
+<p>
+Changing the value for the property causes the routine in the RTL ExceptProc 
+constant to be updated. When set to <b>True</b>, the constant is set to the 
+ExceptionOccurred routine in the implementation section for the 
+<file>forms.pp</file> unit. When set to <b>False</b>, the previous exception 
+handler routine is restored.
+</p>
+<p>
+CaptureExceptions is used in the message processing loop for the TApplication 
+instance. When enabled, the HandleMessage method is called in a 
+<b>TRY..EXCEPT</b> block, and HandleException is called if an exception is 
+raised. When disabled, HandleMessage is called without the benefit of 
+exception handling.
+</p>
+</descr>
+<seealso>
+<link id="TApplication.HandleMessage"/>
+<link id="TApplication.HandleException"/>
+<link id="TApplication.Create"/>
+<link id="TApplication.Destroy"/>
+<link id="#rtl.system.ExceptProc">ExceptProc</link>
+</seealso>
 </element>
 
 <element name="TApplication.DoubleBuffered">
@@ -16707,7 +16968,10 @@ message when the process is killed.
 </element>
 
 <element name="TApplication.OnQueryEndSession">
-<short>This event handler can deny to end the session.</short>
+<short>
+Event handler signalled to determine if the current session be be ended, and 
+the application can be closed.
+</short>
 <descr/>
 <seealso>
 <link id="TApplication.IntfQueryEndSession"/>
@@ -17071,7 +17335,7 @@ The default value for the property is <b>True</b> as assigned in the
 </p>
 <p>
 The property value is updated at run-time when a new value is assigned to the 
-<var>ShowMainFrom</var> property in <var>TApplicationProperties</var>.
+<var>ShowMainForm</var> property in <var>TApplicationProperties</var>.
 </p>
 <p>
 ShowMainForm is used in the <var>Run</var> method to determine if the 
@@ -17772,20 +18036,26 @@ editors used in the Lazarus IDE.
 
 <element name="TIDesigner.IsDesignMsg">
 <short>
-<var>IsDesignMsg</var> - receives a message from Sender, and returns 
-<b>True</b> if it is a design message.
+Checks a message received from the Sender argument, and returns <b>True</b> if 
+it is a design message.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TIDesigner.IsDesignMsg.Result">
-<short/>
+<short>
+<b>True</b> if the message is targeted at the designer class instance.
+</short>
 </element>
 <element name="TIDesigner.IsDesignMsg.Sender">
-<short/>
+<short>
+Object instance (TControl) where the specified messsage originated.
+</short>
 </element>
 <element name="TIDesigner.IsDesignMsg.Message">
-<short/>
+<short>
+Message examined in the method.
+</short>
 </element>
 
 <element name="TIDesigner.UTF8KeyPress">
@@ -17815,10 +18085,14 @@ specified Component.
 <seealso/>
 </element>
 <element name="TIDesigner.Notification.AComponent">
-<short/>
+<short>
+Component affected by the notification.
+</short>
 </element>
 <element name="TIDesigner.Notification.Operation">
-<short/>
+<short>
+Operation performed on the component.
+</short>
 </element>
 
 <element name="TIDesigner.PaintGrid">
@@ -17997,10 +18271,53 @@ the inherited destructor prior to exit.
 
 <element name="KeysToShiftState">
 <short>
-Converts modifier keys in the LParam of a mouse message to a TShiftState 
+Converts modifier keys in the LParam for a mouse message to a TShiftState 
 value.
 </short>
-<descr/>
+<descr>
+<p>
+<var>KeysToShiftState</var> returns a <var>TShiftState</var> type with the 
+<var>TShiftStateEnum</var> values needed to represent the mouse key states in 
+the <var>Keys</var> argument. KeysToShiftState <b>AND</b>s the value in Keys 
+with RTL mouse key constants to determine the values in the set, including:
+</p>
+<dl>
+<dt>MK_Shift</dt>
+<dd>Includes ssShift for a non-zero result.</dd>
+<dt>MK_Control</dt>
+<dd>Includes ssCtrl for a non-zero result.</dd>
+<dt>MK_LButton</dt>
+<dd>Includes ssLeft for a non-zero result.</dd>
+<dt>MK_RButton</dt>
+<dd>Includes ssRight for a non-zero result.</dd>
+<dt>MK_MButton</dt>
+<dd>Includes ssMiddle for a non-zero result.</dd>
+<dt>MK_XBUTTON1</dt>
+<dd>Includes ssExtra1 for a non-zero result.</dd>
+<dt>MK_XBUTTON2</dt>
+<dd>Includes ssExtra2 for a non-zero result.</dd>
+<dt>MK_DOUBLECLICK</dt>
+<dd>Includes ssDouble for a non-zero result.</dd>
+<dt>MK_TRIPLECLICK</dt>
+<dd>Includes ssTriple for a non-zero result.</dd>
+<dt>MK_QUADCLICK</dt>
+<dd>Includes ssQuad for a non-zero result.</dd>
+</dl>
+<p>
+GetKeyState is also called, and the following virtual key codes are processed 
+for the return value:
+</p>
+<dl>
+<dt>VK_MENU</dt>
+<dd>Includes ssAlt when the result is a negative number.</dd>
+<dt>VK_LWIN, VK_RWIN</dt>
+<dd>Includes ssMeta when the result is a negative number.</dd>
+</dl>
+<p>
+KeysToShiftState is used to translate the key values for mouse messages in 
+methods like DoMouseDown, DoMouseUp, and WMMouseMove in TControl.
+</p>
+</descr>
 <seealso>
 <link id="ShiftStateToKeys"/>
 <link id="KeyDataToShiftState"/>
@@ -18015,22 +18332,32 @@ value.
 </seealso>
 </element>
 <element name="KeysToShiftState.Result">
-<short/>
+<short>
+Set type with the TShiftStateEnum values representing the specified Keys.
+</short>
 </element>
 <element name="KeysToShiftState.Keys">
-<short>The asynchronous keyboard state.</short>
+<short>
+Pointer to an unsigned Integer with the mouse key states examined in the 
+routine.
+</short>
 </element>
 
 <element name="KeyDataToShiftState">
 <short>
-Converts modifier keys from the LParam keyboard message (WM_KEYUP for
-example) to a TShiftState.
+Converts modifier keys from the LParam in a keyboard message (WM_KEYUP for
+example) to a TShiftState value.
 </short>
-<descr/>
+<descr>
+<p>
+Calls MsgKeyDataToShiftState in the lclintf.pas unit to get the TShiftState 
+return value.
+</p>
+</descr>
 <seealso>
-<link id="#rtl.classes.TShiftState">TShiftState</link>
 <link id="KeysToShiftState"/>
 <link id="ShiftStateToKeys"/>
+<link id="#lcl.lclintf.MsgKeyDataToShiftState">MsgKeyDataToShiftState</link>
 <link id="#lcl.lcltype.MK_SHIFT">MK_SHIFT</link>
 <link id="#lcl.lcltype.MK_CONTROL">MK_CONTROL</link>
 <link id="#lcl.lcltype.MK_LBUTTON">MK_LBUTTON</link>
@@ -18038,13 +18365,18 @@ example) to a TShiftState.
 <link id="#lcl.lcltype.MK_MBUTTON">MK_MBUTTON</link>
 <link id="#lcl.lcltype.MK_XBUTTON1">MK_XBUTTON1</link>
 <link id="#lcl.lcltype.MK_XBUTTON2">MK_XBUTTON2</link>
+<link id="#rtl.classes.TShiftState">TShiftState</link>
 </seealso>
 </element>
 <element name="KeyDataToShiftState.Result">
-<short/>
+<short>
+Set type with the TShiftStateEnum values representing the specified KeyData.
+</short>
 </element>
 <element name="KeyDataToShiftState.KeyData">
-<short/>
+<short>
+PtrInt value with the address for the key data examined in the routine.
+</short>
 </element>
 
 <element name="KeyboardStateToShiftState">
@@ -18071,7 +18403,9 @@ are detected.
 <seealso/>
 </element>
 <element name="KeyboardStateToShiftState.Result">
-<short/>
+<short>
+Set type with the TShiftStateEnum values representing the current key states.
+</short>
 </element>
 
 <element name="ShiftStateToKeys">
@@ -18108,10 +18442,15 @@ following constants:
 </seealso>
 </element>
 <element name="ShiftStateToKeys.Result">
-<short/>
+<short>
+PtrUInt type with the address for the value representing the specified 
+ShiftState enumeration values.
+</short>
 </element>
 <element name="ShiftStateToKeys.ShiftState">
-<short/>
+<short>
+Set type with the TShiftStateEnum values examined in the routine.
+</short>
 </element>
 
 <element name="WindowStateToStr">
@@ -18200,16 +18539,28 @@ function.
 
 <element name="SaveFocusState">
 <short>
-Returns the last focused control (focus state) in an application.
+Saves the last focus state (focused control) in an application.
 </short>
 <descr>
 <p>
-Returns the value from the LastFocusedControl variable in the implementation 
-for the unit. The type used for the return value is TFocusState.
+<var>SaveFocusState</var> returns the value from the LastFocusedControl 
+variable in the implementation for the unit. The type used for the return 
+value is <var>TFocusState</var>, and is a Pointer to the TWinControl instance 
+in LastFocusedControl.
+</p>
+<p>
+SaveFocusState is used, along with RestoreFocusState, in form and dialog 
+methods (like SetFocusedControl, ShowModal, and Execute) and when the value in 
+FocusedForm is updated in TScreen.
 </p>
 </descr>
 <seealso>
 <link id="RestoreFocusState"/>
+<link id="TCustomForm.ShowModal"/>
+<link id="TCustomForm.SetFocusedControl"/>
+<link id="TScreen.FocusedForm"/>
+<link id="TFocusState"/>
+<link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
 </seealso>
 </element>
 <element name="SaveFocusState.Result">
@@ -18218,15 +18569,19 @@ for the unit. The type used for the return value is TFocusState.
 
 <element name="RestoreFocusState">
 <short>
-Restores the last focused control in an application to the specified state.
+Restores the previous focus state for an application to the specified value.
 </short>
 <descr/>
 <seealso>
 <link id="SaveFocusState"/>
+<link id="TCustomForm.ShowModal"/>
+<link id="TCustomForm.SetFocusedControl"/>
 </seealso>
 </element>
 <element name="RestoreFocusState.FocusState">
-<short/>
+<short>
+Control set as the focused control in the routine.
+</short>
 </element>
 
 <element name="TGetDesignerFormEvent">
@@ -18254,7 +18609,10 @@ variable in the <file>forms</file> unit.
 </seealso>
 </element>
 <element name="TGetDesignerFormEvent.Result">
-<short/>
+<short>
+TCustomForm instance with the designer object for the specified persistent 
+object.
+</short>
 </element>
 <element name="TGetDesignerFormEvent.APersistent">
 <short/>
@@ -18299,7 +18657,7 @@ or control.
 
 <element name="IsFormDesign">
 <short>
-Address of the function used to determine if specified control is a form 
+Address of the function used to determine if a specified control is a form 
 designer.
 </short>
 <descr/>
@@ -18780,15 +19138,24 @@ The return value contains the modal result returned from the message dialog.
 </seealso>
 </element>
 <element name="TMessageBoxFunction.Result">
-<short/>
+<short>
+Modal result from the message dialog routine.
+</short>
 </element>
 <element name="TMessageBoxFunction.Text">
+<short>
+Main content for the message dialog.
+</short>
 </element>
 <element name="TMessageBoxFunction.Caption">
-<short/>
+<short>
+Title displayed on the message dialog.
+</short>
 </element>
 <element name="TMessageBoxFunction.Flags">
-<short/>
+<short>
+Numeric flag value for the buttons and icons displayed on the message dialog.
+</short>
 </element>
 
 <element name="MessageBoxFunction">
