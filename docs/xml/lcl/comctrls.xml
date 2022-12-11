@@ -3914,7 +3914,7 @@ adjusts the index value to include any <var>TCustomPage</var> instances in
 </p>
 <p>
 The return value contains the value specified in AIndex after adding any 
-non-visible pages proper to the requested position.
+non-visible pages prior to the requested position.
 </p>
 <p>
 No actions are performed in the method at design-time; all pages are visible 
