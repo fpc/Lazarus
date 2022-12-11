@@ -8611,7 +8611,7 @@ Existing text (and objects) are copied, and assigned to the member variable
 for Lines after the widgetset class has been notified.
 </p>
 <p>
-FinalizeWnd calls the inherited method proper to exit.
+FinalizeWnd calls the inherited method prior to exit.
 </p>
 </descr>
 <seealso>
