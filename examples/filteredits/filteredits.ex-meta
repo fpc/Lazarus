@@ -1,0 +1,5 @@
+{ "FilterEditsDemo" : {
+   "Category" : "General",
+   "Keywords" : ["ListBox", "ListView", "TreeView", "Filter", "Search Here"],
+   "Description" : "An Example project to demonstrate use of FilterEdit components, namely ListFilterEdit, ListViewFilterEdit and TreeFilterEdit. They provide a simple means to filter ListBox, ListView and TreeView contents respectively.\n\nSee also https://wiki.freepascal.org/TListFilterEdit, wiki.freepascal.org/TListViewFilterEdit, wiki.freepascal.org/TTreeFilterEdit"}
+}

@@ -1,0 +1,124 @@
+object ListViewFilterForm: TListViewFilterForm
+  Left = 472
+  Height = 408
+  Top = 253
+  Width = 469
+  Caption = 'ListViewFilterForm'
+  ClientHeight = 408
+  ClientWidth = 469
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object ButtonProgram: TButton
+    AnchorSideLeft.Control = ListViewFilterEdit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ListViewFilterEdit1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CheckCaseSensitive
+    Left = 20
+    Height = 25
+    Top = 281
+    Width = 429
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Top = 20
+    BorderSpacing.Bottom = 20
+    Caption = 'programmatically x'
+    OnClick = ButtonProgramClick
+    TabOrder = 0
+  end
+  object ListView1: TListView
+    AnchorSideLeft.Control = ListViewFilterEdit1
+    AnchorSideTop.Control = ListViewFilterEdit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ListViewFilterEdit1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonProgram
+    Left = 20
+    Height = 151
+    Top = 110
+    Width = 429
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 20
+    BorderSpacing.Bottom = 20
+    Columns = <    
+      item
+        AutoSize = True
+        Caption = 'Col 1'
+        Width = 42
+      end    
+      item
+        Caption = 'Col 2'
+        Width = 365
+      end>
+    SortColumn = 0
+    SortType = stText
+    TabOrder = 1
+    ViewStyle = vsReport
+  end
+  object CheckCaseSensitive: TCheckBox
+    AnchorSideLeft.Control = ListViewFilterEdit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = CheckBothColumns
+    Left = 20
+    Height = 21
+    Top = 326
+    Width = 112
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 20
+    BorderSpacing.Bottom = 20
+    Caption = 'Case Sensitive'
+    OnChange = CheckCaseSensitiveChange
+    TabOrder = 2
+  end
+  object ListViewFilterEdit1: TListViewFilterEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 20
+    Height = 31
+    Top = 59
+    Width = 429
+    CharCase = ecNormal
+    ButtonWidth = 23
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 20
+    BorderSpacing.Right = 20
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 3
+    Text = 'listviewfilteredit1'
+    TextHint = 'Search Here'
+    FilteredListview = ListView1
+  end
+  object CheckBothColumns: TCheckBox
+    AnchorSideLeft.Control = ListViewFilterEdit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 20
+    Height = 21
+    Top = 367
+    Width = 110
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 20
+    BorderSpacing.Bottom = 20
+    Caption = 'Both Columns'
+    OnChange = CheckBothColumnsChange
+    TabOrder = 4
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 20
+    Height = 19
+    Top = 20
+    Width = 179
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 20
+    Caption = 'ListViewFilterEdit  Example'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+end
