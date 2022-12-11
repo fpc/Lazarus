@@ -12,6 +12,9 @@
         <IncludeFiles Value="include;include\$(TargetOS)"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
     <Description Value="-- This package is part of the IDE --
 This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.
