@@ -24285,7 +24285,7 @@ from the HostDockSite property in the docking clients.
 </p>
 <p>
 Destroy frees resource allocated in the constructor, and calls the inherited 
-method proper to exit.
+method prior to exit.
 </p>
 </descr>
 <seealso>
