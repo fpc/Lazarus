@@ -1803,9 +1803,9 @@ begin
         'Source', uemSource, nil, nil, 'item_unit');
     AParent:=SrcEditSubMenuSource;
     SrcEditMenuEncloseSelection := RegisterIDEMenuCommand(AParent,
-        'EncloseSelection', lisMenuEncloseSelection);
+        'EncloseSelection', lisMenuEncloseSelection, nil, nil, nil, 'menu_source_encloseselection');
     SrcEditMenuEncloseInIFDEF := RegisterIDEMenuCommand(AParent,
-        'itmSourceEncloseInIFDEF', lisMenuEncloseInIFDEF);
+        'itmSourceEncloseInIFDEF', lisMenuEncloseInIFDEF, nil, nil, nil, 'menu_source_encloseinifdef');
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand(AParent,
         'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
     SrcEditMenuInvertAssignment := RegisterIDEMenuCommand(AParent,

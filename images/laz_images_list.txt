@@ -822,6 +822,12 @@ menu/menu_set_free_bookmark_200.png
 menu/menu_source_completecode.png
 menu/menu_source_completecode_150.png
 menu/menu_source_completecode_200.png
+menu/menu_source_encloseselection.png
+menu/menu_source_encloseselection_150.png
+menu/menu_source_encloseselection_200.png
+menu/menu_source_encloseinifdef.png
+menu/menu_source_encloseinifdef_150.png
+menu/menu_source_encloseinifdef_200.png
 menu/menu_source_makeresourcestring.png
 menu/menu_source_makeresourcestring_150.png
 menu/menu_source_makeresourcestring_200.png

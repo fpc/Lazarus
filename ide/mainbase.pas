@@ -978,6 +978,9 @@ begin
   end;
 end;
 
+{ Note: Icons are specified as last argument in the CreateMenuItem call. If these
+  icons do not show up in the IDE there may be another registration place somewhere
+  else, usually in RegisterStandardSourceEditorMenuItems (sourceeditor unit). }
 procedure TMainIDEBase.SetupEditMenu;
 var
   ParentMI: TIDEMenuSection;
@@ -1024,6 +1027,9 @@ begin
   end;
 end;
 
+{ Note: Icons are specified as last argument in the CreateMenuItem call. If these
+  icons do not show up in the IDE there may be another registration place somewhere
+  else, usually in RegisterStandardSourceEditorMenuItems (sourceeditor unit). }
 procedure TMainIDEBase.SetupSearchMenu;
 var
   ParentMI: TIDEMenuSection;
@@ -1140,6 +1146,9 @@ begin
   end;
 end;
 
+{ Note: Icons are specified as last argument in the CreateMenuItem call. If these
+  icons do not show up in the IDE there may be another registration place somewhere
+  else, usually in RegisterStandardSourceEditorMenuItems (sourceeditor unit). }
 procedure TMainIDEBase.SetupSourceMenu;
 var
   ParentMI, SubParentMI: TIDEMenuSection;
@@ -1150,8 +1159,8 @@ begin
     CreateMenuItem(ParentMI,itmSourceCommentBlock,'itmSourceCommentBlock',lisMenuCommentSelection, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceUncommentBlock,'itmSourceUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_togglecomment');
-    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
-    CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
+    CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection, 'menu_source_encloseselection');
+    CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF, 'menu_source_encloseinifdef');
     CreateMenuItem(ParentMI,itmSourceCompleteCodeInteractive,'itmSourceCompleteCodeInteractive',lisMenuCompleteCodeInteractive, 'menu_source_completecode');
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
     CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseUnit);
