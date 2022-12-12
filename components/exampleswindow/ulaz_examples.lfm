@@ -21,7 +21,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckGroupCategory
     Left = 6
-    Height = 151
+    Height = 158
     Top = 157
     Width = 769
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -45,9 +45,9 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Splitter2
     Left = 6
-    Height = 109
+    Height = 117
     Hint = 'Click for Info, Double Click to download'
-    Top = 37
+    Top = 29
     Width = 775
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSort = False
@@ -56,13 +56,13 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Bottom = 6
     Columns = <    
       item
-        Width = 8
+        Width = 10
       end    
       item
-        Width = 8
+        Width = 10
       end    
       item
-        Width = 740
+        Width = 10
       end>
     ParentShowHint = False
     ReadOnly = True
@@ -81,8 +81,8 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     Left = 6
-    Height = 20
-    Top = 314
+    Height = 19
+    Top = 321
     Width = 769
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -123,8 +123,8 @@ object FormLazExam: TFormLazExam
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 21
-    Top = 379
+    Height = 23
+    Top = 377
     Width = 781
     Panels = <>
   end
@@ -134,9 +134,9 @@ object FormLazExam: TFormLazExam
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 33
-    Top = 340
-    Width = 76
+    Height = 25
+    Top = 346
+    Width = 80
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -150,10 +150,10 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 230
-    Height = 33
-    Top = 340
-    Width = 45
+    Left = 246
+    Height = 25
+    Top = 346
+    Width = 55
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -167,10 +167,10 @@ object FormLazExam: TFormLazExam
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
-    Left = 88
-    Height = 33
-    Top = 340
-    Width = 46
+    Left = 92
+    Height = 25
+    Top = 346
+    Width = 55
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -185,10 +185,10 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 140
-    Height = 33
-    Top = 340
-    Width = 84
+    Left = 153
+    Height = 25
+    Top = 346
+    Width = 87
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -201,7 +201,7 @@ object FormLazExam: TFormLazExam
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = ClearSearchButton
     Left = 6
-    Height = 31
+    Height = 23
     Hint = 'Searches for Keywords'
     Top = 3
     Width = 743
@@ -222,47 +222,11 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     Left = 752
     Height = 22
-    Top = 7
+    Top = 3
     Width = 23
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 3
     BorderSpacing.Right = 6
-    Glyph.Data = {
-      36040000424D3604000000000000360000002800000010000000100000000100
-      2000000000000004000064000000640000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      FF730000FF8C0000000000000000000000000000FF8C0000FF73000000000000
-      000000000000000000002C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF000000000000
-      FF8C0000FFFF0000FF8C0000FF010000FF8C0000FFFF0000FF8C000000000000
-      000000000000000000002C8EC8FFC0F2FFFFA0ECFFFF2C8EC8FF000000000000
-      00000000FF8C0000FFFF0000FFCC0000FFFF0000FF8C00000000000000000000
-      000000000000000000002C8EC8FFC0F2FFFFA0ECFFFF2C8EC8FF000000000000
-      00000000FF010000FFCB0000FFFF0000FFCB0000FF0100000000000000000000
-      000000000000000000002C8EC8FFC0F2FFFFA0ECFFFF2C8EC8FF000000000000
-      00000000FF8C0000FFFF0000FFCC0000FFFF0000FF8C00000000000000000000
-      000000000000000000002C8EC8FFC0F2FFFFA0ECFFFF2C8EC8FF000000000000
-      FF8C0000FFFF0000FF8C0000FF010000FF8C0000FFFF0000FF8C000000000000
-      0000000000002B8DC92F2C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF2B8DC92F0000
-      FF710000FF8E0000000000000000000000000000FF860000FF79000000000000
-      00002D87C3112D92CBE767C8ECFEC5F3FFFFBEF2FFFF7ACEEDFE2F92CAE9268C
-      CC14000000000000000000000000000000000000000000000000000000000080
-      FF022A91CBC13FB1E0F893E9FFFFD1F5FFFFB8F0FFFF9AEAFFFF4FB3E0F92E93
-      CBC655AAAA030000000000000000000000000000000000000000000000002B91
-      CA902A9ED4F461DDFEFFA0ECFFFFD1F5FFFFB2EFFFFF93E9FFFF74E2FFFF36A2
-      D6F42C91CA9000000000000000000000000000000000000000002B90C8532893
-      CDF530D0FBFF6FE2FFFFACEEFFFFCBF4FFFFACEEFFFF8DE8FFFF6FE2FFFF4DD6
-      FBFF2D95CEF42B8FC959000000000000000000000000000000002B90C9F808C0
-      F5FF3DD8FFFF7BE4FFFFB8F0FFFFC5F3FFFFA6EDFFFF87E7FFFF68E1FFFF4ADB
-      FFFF2BC7F5FF2B90C9F8000000000000000000000000000000002C8EC8FF2C8E
-      C8FF2C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF2C8EC8FF2C8E
-      C8FF2C8EC8FF2C8EC8FF00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000
-    }
     OnClick = ClearSearchButtonClick
   end
 end

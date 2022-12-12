@@ -33,7 +33,7 @@ uses
     LazFileUtils, fileutil, LazLoggerBase,
     // LCL
     LCLType, LCLIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-    ExtCtrls, Buttons,
+    ExtCtrls, Buttons, IDEImagesIntf,
     {$ifndef EXTESTMODE}
     IDEWindowIntf,
     {$endif}
@@ -478,8 +478,8 @@ begin
     LastListViewIndex := -1;        // Used to record ListView1.ItemIndex before Tabbing away
 
     EditSearch.TextHint := rsExSearchPrompt;
-    // Does not work. Resource 'btnfiltercancel' not found.
-    //ClearSearchButton.LoadGlyphFromLazarusResource('btnfiltercancel');
+    ClearSearchButton.Images := IDEImages.Images_16;
+    ClearSearchButton.ImageIndex := IDEImages.GetImageIndex('btnfiltercancel');
     ClearSearchButton.Enabled := False;
     CheckGroupCategory.Hint := rsGroupHint;
     Ex := nil;
