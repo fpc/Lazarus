@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
 ====================================================================
 XMLPropStorage
 ====================================================================
 -->
-
 <module name="XMLPropStorage">
 <short>
 Contains a component that stores Form Session Properties in XML format.
@@ -18,10 +16,10 @@ In this unit you can find an implementation of a name/value pair storage
 container in XML format.
 </p>
 <p>
-This container will get the Form's Session Properties that you setup in <link 
-id="#LCL.Forms.TForm">TForm.SessionProperties</link> and read/write them on 
-the file you specify on <link 
-id="#LCL.XmlPropStorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link>.
+This container will get the Form's Session Properties that you setup in 
+<link id="#lcl.forms.TForm">TForm.SessionProperties</link> 
+and read/write them to the file specified in 
+<link id="#lcl.xmlpropstorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link>.
 </p>
 </descr>
 
@@ -37,7 +35,6 @@ id="#LCL.XmlPropStorage.TXMLPropStorage.FileName">TXMLPropStorage.FileName</link
 <element name="LazConfigStorage"/>
 <element name="LazUTF8"/>
 
-<!-- object Visibility: default -->
 <element name="TPropStorageXMLConfig">
 <short>
 Wrapper for the TXMLConfig class defined in the FCL <file>XMLConf.pp</file> 
@@ -55,346 +52,220 @@ at:
 <url href="http://wiki.freepascal.org/TXMLConfig">TXMLConfig</url>
 </p>
 </descr>
-<errors/>
 <seealso/>
-</element> <!-- object TPropStorageXMLConfig -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TPropStorageXMLConfig.DeleteSubNodes">
 <short>Deletes sub nodes on a path.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TPropStorageXMLConfig.DeleteSubNodes -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TPropStorageXMLConfig.DeleteSubNodes.ARootNode">
 <short>The path of the node to have it's sub nodes deleted.</short>
-</element> <!-- argument TPropStorageXMLConfig.DeleteSubNodes.ARootNode -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TPropStorageXMLConfig.LoadFromStream">
 <short>Loads XML content from a stream.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TPropStorageXMLConfig.LoadFromStream -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TPropStorageXMLConfig.LoadFromStream.s">
 <short>The stream to load the XML content from.</short>
-</element> <!-- argument TPropStorageXMLConfig.LoadFromStream.s -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TPropStorageXMLConfig.SaveToStream">
 <short>Saves XML content to a stream.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TPropStorageXMLConfig.SaveToStream -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TPropStorageXMLConfig.SaveToStream.s">
 <short>The stream to save the XML content to.</short>
-</element> <!-- argument TPropStorageXMLConfig.SaveToStream.s -->
+</element>
 
-<!-- property Visibility: public -->
 <element name="TPropStorageXMLConfig.XMLDoc">
 <short>Contains the XML document.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- property TPropStorageXMLConfig.XMLDoc -->
+</element>
 
-<!-- object Visibility: default -->
 <element name="TCustomXMLPropStorage">
 <short>
 Implements the base class for the XML Form's Session Properties Storage.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- object TCustomXMLPropStorage -->
+</element>
 
-<!-- variable Visibility: private -->
-<element name="TCustomXMLPropStorage.FCount">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- variable TCustomXMLPropStorage.FCount -->
+<!-- private -->
+<element name="TCustomXMLPropStorage.FCount"/>
+<element name="TCustomXMLPropStorage.FFileName"/>
+<element name="TCustomXMLPropStorage.FXML"/>
+<element name="TCustomXMLPropStorage.FRootNode"/>
+<element name="TCustomXMLPropStorage.FRootNodePath"/>
 
-<!-- variable Visibility: private -->
-<element name="TCustomXMLPropStorage.FFileName">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- variable TCustomXMLPropStorage.FFileName -->
-
-<!-- variable Visibility: private -->
-<element name="TCustomXMLPropStorage.FXML">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- variable TCustomXMLPropStorage.FXML -->
-
-<!-- variable Visibility: private -->
-<element name="TCustomXMLPropStorage.FRootNode">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- variable TCustomXMLPropStorage.FRootNode -->
-
-<!-- variable Visibility: private -->
-<element name="TCustomXMLPropStorage.FRootNodePath">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- variable TCustomXMLPropStorage.FRootNodePath -->
-
-<!-- function Visibility: protected -->
+<!-- protected -->
 <element name="TCustomXMLPropStorage.GetXMLFileName">
 <short>
-Getter for the property <link 
-id="#LCL.XmlPropStorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link>.
+Gets the value for the FileName property.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- function TCustomXMLPropStorage.GetXMLFileName -->
-
-<!-- function result Visibility: default -->
+</element>
 <element name="TCustomXMLPropStorage.GetXMLFileName.Result">
 <short>
-The current value of the property <link 
-id="#LCL.XmlPropStorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link>.
+The current value in the 
+<link id="#lcl.xmlpropstorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link> property.
 </short>
-</element> <!-- function result TCustomXMLPropStorage.GetXMLFileName.Result 
--->
+</element> 
 
-<!-- function Visibility: protected -->
 <element name="TCustomXMLPropStorage.RootSection">
 <short>Returns the name of the RootSection.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- function TCustomXMLPropStorage.RootSection -->
-
-<!-- function result Visibility: default -->
+</element>
 <element name="TCustomXMLPropStorage.RootSection.Result">
 <short>The current value of RootSection.</short>
-</element> <!-- function result TCustomXMLPropStorage.RootSection.Result -->
+</element>
 
-<!-- function Visibility: protected -->
 <element name="TCustomXMLPropStorage.FixPath">
 <short>
 Turns '.' notation into '/' notation for the XPATH-like implementation in 
 <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- function TCustomXMLPropStorage.FixPath -->
-
-<!-- function result Visibility: default -->
+</element>
 <element name="TCustomXMLPropStorage.FixPath.Result">
 <short>The fixed path is returned with '.' replaced by '/'.</short>
-</element> <!-- function result TCustomXMLPropStorage.FixPath.Result -->
-
-<!-- argument Visibility: default -->
+</element>
 <element name="TCustomXMLPropStorage.FixPath.APath">
 <short>The path to be fixed.</short>
-</element> <!-- argument TCustomXMLPropStorage.FixPath.APath -->
+</element>
 
-<!-- property Visibility: protected -->
 <element name="TCustomXMLPropStorage.XMLConfig">
 <short>
 Property to access the <link 
-id="#LCL.XmlPropStorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>.
+id="#lcl.xmlpropstorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>.
 </short>
 <descr/>
 <seealso/>
-</element> <!-- property TCustomXMLPropStorage.XMLConfig -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.StorageNeeded">
 <short>Ask the underlying storage object for an entry.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TCustomXMLPropStorage.StorageNeeded -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.StorageNeeded.ReadOnly">
 <short>If the item is read-only.</short>
-</element> <!-- argument TCustomXMLPropStorage.StorageNeeded.ReadOnly -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.FreeStorage">
 <short>Frees an entry from the underlying storage object.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TCustomXMLPropStorage.FreeStorage -->
+</element>
 
-<!-- function Visibility: public -->
 <element name="TCustomXMLPropStorage.DoReadString">
 <short>
 Implements the actual reading of a value from the underlying storage 
 container.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- function TCustomXMLPropStorage.DoReadString -->
+</element>
 
-<!-- function result Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Result">
 <short>The value of the section/ident requested.</short>
-</element> <!-- function result TCustomXMLPropStorage.DoReadString.Result -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Section">
 <short>The section to be read.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoReadString.Section -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.Ident">
 <short>The ident to be read.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoReadString.Ident -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoReadString.TheDefault">
 <short>If has no value then return this as default.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoReadString.TheDefault -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.DoWriteString">
 <short>
 Implements writing of a string value to the underlying storage container.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TCustomXMLPropStorage.DoWriteString -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Section">
 <short>The section to be written.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoWriteString.Section -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Ident">
 <short>The ident to be written.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoWriteString.Ident -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoWriteString.Value">
 <short>The value to be written.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoWriteString.Value -->
+</element>
 
-<!-- procedure Visibility: public -->
 <element name="TCustomXMLPropStorage.DoEraseSections">
 <short>Erases a section from the underlying storage container.</short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure TCustomXMLPropStorage.DoEraseSections -->
+</element>
 
-<!-- argument Visibility: default -->
 <element name="TCustomXMLPropStorage.DoEraseSections.ARootSection">
 <short>The path to the section that will be erased.</short>
-</element> <!-- argument TCustomXMLPropStorage.DoEraseSections.ARootSection 
--->
+</element>
 
-<!-- property Visibility: public -->
 <element name="TCustomXMLPropStorage.FileName">
 <short>
 Name of the file where the property data is saved in XML format.
 </short>
 <descr/>
 <seealso/>
-</element> <!-- propert TCustomXMLPropStorage.FileName -->
+</element>
 
-<!-- property Visibility: public -->
 <element name="TCustomXMLPropStorage.RootNodePath">
 <short>Name of the root object path on your XML file.</short>
 <descr/>
 <seealso/>
-</element> <!-- property TCustomXMLPropStorage.RootNodePath -->
+</element>
 
-<!-- object Visibility: default -->
 <element name="TXMLPropStorage">
 <short>
 Implements a class for XML Form Session Properties storage.
 </short>
 <descr/>
-<errors/>
 <seealso>
-<link id="#LCL.Forms.TForm">TForm.SessionProperties</link>
-<link id="#LCL.INIPropStorage.TINIPropStorage">TINIPropStorage</link>
-<link id="#LCL.JSONPropStorage.TJSONPropStorage">TJSONPropStorage</link>
+<link id="#lcl.forms.TForm">TForm.SessionProperties</link>
+<link id="#lcl.inipropstorage.TINIPropStorage">TINIPropStorage</link>
+<link id="#lcl.jsonpropstorage.TJSONPropStorage">TJSONPropStorage</link>
 </seealso>
-</element> <!-- object TXMLPropStorage -->
+</element>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.StoredValues" link="#LCL.PropertyStorage.TCustomPropertyStorage.StoredValues">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.StoredValues -->
+<element name="TXMLPropStorage.StoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.FileName" link="#LCL.XmlPropStorage.TCustomXmlPropStorage.FileName">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.FileName -->
+<element name="TXMLPropStorage.FileName" link="#lcl.xmlpropstorage.TCustomXmlPropStorage.FileName"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.RootNodePath" link="#LCL.XmlPropStorage.TCustomXmlPropStorage.RootNodePath">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.RootNodePath -->
+<element name="TXMLPropStorage.RootNodePath" link="#lcl.xmlpropstorage.TCustomXmlPropStorage.RootNodePath"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.Active" link="#LCL.PropertyStorage.TCustomPropertyStorage.Active">
-<short/>
-<descr/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.Active -->
+<element name="TXMLPropStorage.Active" link="#lcl.propertystorage.TCustomPropertyStorage.Active"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.OnSavingProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSavingProperties">
-<short/>
-<descr/>
-<errors/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.OnSavingProperties -->
+<element name="TXMLPropStorage.OnSavingProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSavingProperties"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.OnSaveProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnSaveProperties">
-<short/>
-<descr/>
-<errors/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.OnSaveProperties -->
+<element name="TXMLPropStorage.OnSaveProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnSaveProperties"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.OnRestoringProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoringProperties">
-<short/>
-<descr/>
-<errors/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.OnRestoringProperties -->
+<element name="TXMLPropStorage.OnRestoringProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoringProperties"/>
 
-<!-- property Visibility: published -->
-<element name="TXMLPropStorage.OnRestoreProperties" link="#LCL.PropertyStorage.TCustomPropertyStorage.OnRestoreProperties">
-<short/>
-<descr/>
-<errors/>
-<seealso/>
-</element> <!-- property TXMLPropStorage.OnRestoreProperties -->
+<element name="TXMLPropStorage.OnRestoreProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoreProperties"/>
 
 <element name="TXMLConfigStorage">
 <short>
@@ -428,7 +299,6 @@ the class instance. For example:
 <li>SetFullPathValue</li>
 </ul>
 </descr>
-<errors/>
 <seealso>
 <link id="#lazutils.lazconfigstorage.TConfigStorage">TConfigStorage</link>
 </seealso>
@@ -640,18 +510,16 @@ Saves the content in XMLConfig to the specified TStream instance.
 <short>TStream instance where the XML content is stored.</short>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="Register">
 <short>
-Registers <link 
-id="#LCL.XmlPropStorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' 
-tab of the component palette.
+Registers 
+<link id="#lcl.xmlpropstorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component palette.
 </short>
 <descr/>
-<errors/>
 <seealso/>
-</element> <!-- procedure Register -->
+</element>
 
-</module> <!-- moduleXMLPropStorage -->
-</package> <!-- package lcl -->
+</module>
+</package>
+<!-- XMLPropStorage -->
 </fpdoc-descriptions>
