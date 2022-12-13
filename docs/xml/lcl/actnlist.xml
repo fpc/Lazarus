@@ -908,7 +908,7 @@ items in the Actions property. Index values must be in the range
 <short>Image list with images for the actions in the list.</short>
 <descr>
 <p>
-<var>ImageList</var>  is a <var>TCustomImageList</var> property with the 
+<var>ImageList</var> is a <var>TCustomImageList</var> property with the 
 <var>Images</var> that can be associated with the actions in the list., e. g. 
 in a Menu display. Assigning a new image list to the property causes the 
 Change method to be called, and the OnChange event handler to be signalled 
@@ -1950,10 +1950,10 @@ Registers the array of action classes using the specified category name.
 </short>
 <descr>
 <p>
-RegisterActions is a procedure used to register the specified array of action 
-class types. Category contains the category name for the action used to group 
-related actions in an action list. Resource contains the optional class type 
-for a resource used in the action classes.
+<var>RegisterActions</var> is a procedure used to register the specified array 
+of action class types. Category contains the category name for the action used 
+to group related actions in an action list. Resource contains the optional 
+class type for a resource used in the action classes.
 </p>
 <p>
 RegisterActions calls RegisterActionsProc to perform the actions needed to 
@@ -2030,28 +2030,50 @@ if the CreateActionProc constant has not been assigned.
 <element name="RegisterActionsProc">
 <short>
 Address of the routine used to register actions used in the action list 
-editor.
+editor in the Lazarus IDE.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The routine in the constant is assigned in the initialization section for the action list editor.
+</p>
+</descr>
+<seealso>
+<link id="RegisterActions"/>
+<link id="UnRegisterActionsProc"/>
+</seealso>
 </element>
 <element name="RegisterActionsProc.CategoryName">
-<short/>
+<short>
+Category name where the action is displayed in the action list editor.
+</short>
+</element>
+<element name="RegisterActionsProc.AClasses">
+<short>
+Array of TBasicActionClass instances to which the action can be applied.
+</short>
 </element>
 <element name="RegisterActionsProc.Resource">
-<short/>
+<short>
+TComponentClass instance used to create new instances of the action,
+</short>
 </element>
 
 <element name="UnRegisterActionsProc">
 <short>
 Address of the routine used to unregister actions used in the action list 
-editor.
+editor in the Lazarus IDE.
 </short>
-<descr/>
-<seealso/>
+<descr>
+</descr>
+<seealso>
+<link id="UnRegisterActions"/>
+<link id="RegisterActionsProc"/>
+</seealso>
 </element>
 <element name="UnRegisterActionsProc.AClasses">
-<short/>
+<short>
+Array of TBasicActionClass instances for which the action was registered.
+</short>
 </element>
 
 <element name="EnumRegisteredActionsProc">
@@ -2062,10 +2084,15 @@ Address of the routine used to enumerate actions in the action list editor.
 <seealso/>
 </element>
 <element name="EnumRegisteredActionsProc.Proc">
-<short/>
+<short>
+Object procedure which implements the enumerator used to gather the registered 
+actions in Info.
+</short>
 </element>
 <element name="EnumRegisteredActionsProc.Info">
-<short/>
+<short>
+Pointer to the registered action(s) located in the enumerator procedure.
+</short>
 </element>
 
 <element name="CreateActionProc">
@@ -2076,19 +2103,33 @@ Address of the routine used to create a new action in the action list editor.
 <seealso/>
 </element>
 <element name="CreateActionProc.Result">
-<short/>
+<short>
+TBasicAction class instance created in the routine.
+</short>
 </element>
 <element name="CreateActionProc.TheOwner">
-<short/>
+<short>
+TComponent which owns the newly created action instance.
+</short>
 </element>
 <element name="CreateActionProc.ActionClass">
-<short/>
+<short>
+TBasicActionClass reference used to create the new action instance.
+</short>
 </element>
 
 <element name="ApplicationActionComponent">
-<short/>
+<short>
+TApplication instance used to update and execute actions.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TContainedAction.Execute"/>
+<link id="TContainedAction.Update"/>
+<link id="#lcl.forms.TApplication.Create">TApplication.Create</link>
+<link id="#lcl.forms.TApplication.Destroy">TApplication.Destroy</link>
+<link id="#lcl.forms.Application">Application</link>
+</seealso>
 </element>
 
 <element name="Register">
