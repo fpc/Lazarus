@@ -94,14 +94,10 @@ features.
 <element name="TStoredValue.FOnRestore" link="#lcl.propertystorage.TStoredValue.OnRestore"/>
 
 <element name="TStoredValue.IsValueStored" link="#lcl.propertystorage.TStoredValue.Value"/>
-<element name="TStoredValue.IsValueStored.Result">
-<short/>
-</element>
+<element name="TStoredValue.IsValueStored.Result"/>
 
 <element name="TStoredValue.GetStoredValues" link="#lcl.propertystorage.TStoredValue.StoredValues"/>
-<element name="TStoredValue.GetStoredValues.Result">
-<short/>
-</element>
+<element name="TStoredValue.GetStoredValues.Result"/>
 
 <element name="TStoredValue.GetDisplayName">
 <short>
@@ -466,9 +462,7 @@ the <var>Storage</var> container for the collection.
 
 <element name="TStoredValues.GetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
 <element name="TStoredValues.GetItem.Result"/>
-<element name="TStoredValues.GetItem.Index">
-<short/>
-</element>
+<element name="TStoredValues.GetItem.Index"/>
 
 <element name="TStoredValues.SetItem" link="#lcl.propertystorage.TStoredValues.Items"/>
 <element name="TStoredValues.SetItem.Index"/>
@@ -750,14 +744,10 @@ installed handlers.
 <element name="TPropertyStorageLink.FOnLoad" link="#lcl.propertystorage.TPropertyStorageLink.OnLoad"/>
 
 <element name="TPropertyStorageLink.GetRootSection" link="#lcl.propertystorage.TPropertyStorageLink.RootSection"/>
-<element name="TPropertyStorageLink.GetRootSection.Result">
-<short/>
-</element>
+<element name="TPropertyStorageLink.GetRootSection.Result"/>
 
 <element name="TPropertyStorageLink.SetStorage" link="#lcl.propertystorage.TPropertyStorageLink.Storage"/>
-<element name="TPropertyStorageLink.SetStorage.Value">
-<short/>
-</element>
+<element name="TPropertyStorageLink.SetStorage.Value"/>
 
 <element name="TPropertyStorageLink.SaveProperties">
 <short>Invokes the OnSave handler.</short>
@@ -867,31 +857,49 @@ or format. For example: <var>TControlPropertyStorage</var>,
 <element name="TCustomPropertyStorage.FOnRestoreProperties" link="#lcl.propertystorage.TCustomPropertyStorage.OnRestoreProperties"/>
 
 <element name="TCustomPropertyStorage.AddLink">
-<short>Establishes a connection to a property collection.</short>
+<short>
+Adds the specified storage link to the internal list, with the current class 
+instance as the Storage for the link.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.AddLink.ALink">
-<short/>
+<short>
+TPropertyStorageLink updated and added to the internal list of storage links 
+for the class instance.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.RemoveLink">
-<short>Drops the connection to a property collection.</short>
+<short>
+Clears the Storage for the specified link, and removes the storage link from 
+the internal list.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.RemoveLink.ALink">
-<short/>
+<short>
+Storage link removed in the method.  
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.NotifyLinks">
-<short>Notifies all connected property collections.</short>
+<short>
+Notifies all connected property storage collections of the specified Operation.
+</short>
 <descr>
 </descr>
-<seealso/>
+<seealso>
+<link id="TPropertyStorageLink.SaveProperties"/>
+<link id="TPropertyStorageLink.LoadProperties"/>  
+</seealso>
 </element>
 <element name="TCustomPropertyStorage.NotifyLinks.Operation">
-<short/>
+<short>
+Operation performed for the storage links in the internal list.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.SetStoredValues" link="#lcl.propertystorage.TCustomPropertyStorage.StoredValues"/>
@@ -1116,25 +1124,36 @@ method.
 </element>
 
 <element name="TCustomPropertyStorage.DoReadInteger">
-<short>Reads an integer value, stored as a string.</short>
+<short>Reads an integer value stored as a string.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.DoReadInteger.Result">
-<short/>
+<short>
+Integer value for the identifier read from the specified section.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadInteger.Section">
-<short/>
+<short>
+Section where the value for the specified identifier is stored.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadInteger.Ident">
-<short/>
+<short>
+Identifier or name for the value read in the method.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadInteger.DefaultValue">
-<short/>
+<short>
+Default used as the return value when the identifier is not found in the 
+specified section.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.DoReadString">
-<short>Default OnReadString handler; must be overridden.</short>
+<short>
+Default OnReadString handler; must be overridden.
+</short>
 <descr>
 </descr>
 <seealso/>
@@ -1143,10 +1162,14 @@ method.
 <short>The previously stored string.</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadString.Section">
-<short/>
+<short>
+Section name where the value for the specified identifier is located.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadString.Ident">
-<short/>
+<short>
+Name for the value read from the specified section.  
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoReadString.DefaultValue">
 <short>The default value, when no string was stored.</short>
@@ -1159,13 +1182,19 @@ method.
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.DoWriteString.Section">
-<short>The name of the section.</short>
+<short>
+The name of the section where the value for the identifier is stored.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoWriteString.Ident">
-<short>The name (key) of the property.</short>
+<short>
+The name (key) for the property value written in the method.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoWriteString.Value">
-<short>The value string to store.</short>
+<short>
+The value (String) for the identifier written in the method.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.DoWriteInteger">
@@ -1174,24 +1203,36 @@ method.
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.DoWriteInteger.Section">
-<short/>
+<short>
+Section where the value for the specified identifier is stored.  
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoWriteInteger.Ident">
-<short/>
+<short>
+Name for the value stored in the specified section.
+</short>
 </element>
 <element name="TCustomPropertyStorage.DoWriteInteger.Value">
-<short/>
+<short>
+The value (Integer) for the identifier written in the method.  
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.DoEraseSections">
-<short/>
+<short>
+Remove identifiers and values stored below in the specified root section.
+</short>
 <descr>
-Must be overridden
+<p>
+Must be overridden in a descendent class.
+</p>
 </descr>
 <seealso/>
 </element>
 <element name="TCustomPropertyStorage.DoEraseSections.ARootSection">
-<short/>
+<short>
+Name of the section with the identifiers and values removed in the method.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.Create">
@@ -1298,7 +1339,10 @@ and the <var>Restore</var> method does not.
 </seealso>
 </element>
 <element name="TCustomPropertyStorage.StorageNeeded.ReadOnly">
-<short/>
+<short>
+<b>True</b> if write access is disabled for the property store. <b>False</b> 
+if write access is allowed.
+</short>
 </element>
 
 <element name="TCustomPropertyStorage.FreeStorage">
@@ -1317,7 +1361,7 @@ and must be overridden in a descendent class.
 </element>
 
 <element name="TCustomPropertyStorage.ReadBoolean">
-<short>Reads an Boolean value, stored as a string.</short>
+<short>Reads a Boolean value stored as a string.</short>
 <descr>
 </descr>
 <seealso>
@@ -1334,7 +1378,7 @@ and must be overridden in a descendent class.
 </element>
 
 <element name="TCustomPropertyStorage.ReadString">
-<short>Reads an String value from the RootSection.</short>
+<short>Reads a String value from the RootSection.</short>
 <descr/>
 <seealso/>
 </element>
@@ -1366,7 +1410,7 @@ Reads an integer value, stored as a string, from the RootSection.
 </element>
 
 <element name="TCustomPropertyStorage.ReadRect">
-<short>Reads an TRect instance stored as a String value.</short>
+<short>Reads a TRect instance stored as a String value.</short>
 <descr>
 </descr>
 <seealso>
@@ -1383,7 +1427,7 @@ Reads an integer value, stored as a string, from the RootSection.
 </element>
 
 <element name="TCustomPropertyStorage.ReadStrings">
-<short>Reads a list of strings, stored with a Count value.</short>
+<short>Reads a list of strings stored with a Count value.</short>
 <descr>
 </descr>
 <seealso>
