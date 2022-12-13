@@ -1809,9 +1809,9 @@ begin
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand(AParent,
         'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
     SrcEditMenuInvertAssignment := RegisterIDEMenuCommand(AParent,
-        'InvertAssignment', uemInvertAssignment, nil, @ExecuteIdeMenuClick);
+        'InvertAssignment', uemInvertAssignment, nil, @ExecuteIdeMenuClick, nil, 'menu_source_invertassignment');
     SrcEditMenuUseUnit := RegisterIDEMenuCommand(AParent,
-        'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
+        'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick, nil, 'menu_source_useunit');
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand(AParent,
         'ShowUnitInfo', lisMenuViewUnitInfo , nil, nil, nil, 'menu_view_unit_info');
   {%endregion}
