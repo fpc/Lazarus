@@ -4277,7 +4277,7 @@ the inherited destructor prior to exit.
 <short>Convenience routine to add a rectangle to the region.</short>
 <descr>
 <p>Gets a handle for the rectangular defined by the opposing corners with the 
-X1, Y1, X2, and Y2 coordinates. The new region handle is OR'd with the 
+X1, Y1, X2, and Y2 coordinates. The new region handle is OR-ed with the 
 existing handle for the region.
 </p>
 <p>Calls ReferenceNeeded to ensure that the handle for the region has been 
