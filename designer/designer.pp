@@ -3213,7 +3213,7 @@ var
   Count: integer;
   i: integer;
   CurControl: TControl;
-  R, R1: TRect;
+  R: TRect;
   P: TPoint;
 begin
   if (AWinControl=nil)
