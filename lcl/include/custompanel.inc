@@ -77,11 +77,8 @@ procedure TCustomPanel.SetParentBackground(const AParentBackground: Boolean);
 begin
   if ParentBackground=AParentBackground then
     Exit;
-  if AParentBackground then
-    ControlStyle := ControlStyle - [csOpaque]
-  else
-    ControlStyle := ControlStyle + [csOpaque];
   inherited;
+  UpdateParentColorChange;
 end;
 
 procedure TCustomPanel.SetShowAccelChar(const Value: Boolean);
@@ -220,7 +217,7 @@ end;
 
 procedure TCustomPanel.UpdateParentColorChange;
 begin
-  if ParentColor then
+  if ParentColor or ParentBackground then
     ControlStyle := ControlStyle - [csOpaque]
   else
     ControlStyle := ControlStyle + [csOpaque];
