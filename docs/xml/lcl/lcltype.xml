@@ -6951,8 +6951,8 @@ This is done to prevent type conflicts when both System.UITypes and LCL units
 are used.
 </p>
 <p>
-Values in COLORREF (and TColorRef) are normally OR'd with the value $80000000 
-to prevent interference with other MS color enumeration values.
+Values in COLORREF (and TColorRef) are normally OR-ed with the value 
+$80000000 to prevent interference with other MS color enumeration values.
 </p>
 </descr>
 <seealso>
