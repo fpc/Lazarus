@@ -2535,7 +2535,7 @@ dialog.
 </p>
 <p>
 <var>uType</var> is a Cardinal value which identifies the content and 
-behavior for the modal dialog. It consists of flag values which can be OR'd 
+behavior for the modal dialog. It consists of flag values which can be OR-ed  
 together and passed to the widgetset implementation. uType can contain flag 
 values from the following flag groups:
 </p>
