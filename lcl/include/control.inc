@@ -1343,6 +1343,11 @@ begin
   Result:=0;
 end;
 
+function TControl.GetParentBackground: Boolean;
+begin
+  Result := csParentBackground in ControlStyle;
+end;
+
 function TControl.ChildClassAllowed(ChildClass: TClass): Boolean;
 begin
   Result:=false;
@@ -1837,6 +1842,7 @@ begin
   begin
     FColor := Value;
     ParentColor := False;
+    ParentBackground := False;
     Perform(CM_COLORCHANGED, 0, 0);
     Invalidate;
   end;
@@ -4420,6 +4426,18 @@ begin
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.SetParent'){$ENDIF};
   end;
+end;
+
+procedure TControl.SetParentBackground(const AParentBackground: Boolean);
+begin
+  if ParentBackground = AParentBackground then
+    Exit;
+
+  if AParentBackground then
+    ControlStyle := ControlStyle + [csParentBackground]
+  else
+    ControlStyle := ControlStyle - [csParentBackground];
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------

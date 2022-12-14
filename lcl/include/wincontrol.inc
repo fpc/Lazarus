@@ -6529,18 +6529,6 @@ begin
   InvalidatePreferredSize;
 end;
 
-procedure TWinControl.SetParentBackground(const AParentBackground: Boolean);
-begin
-  if ParentBackground = AParentBackground then
-    Exit;
-
-  if AParentBackground then
-    ControlStyle := ControlStyle + [csParentBackground]
-  else
-    ControlStyle := ControlStyle - [csParentBackground];
-  Invalidate;
-end;
-
 procedure TWinControl.SetParentDoubleBuffered(Value: Boolean);
 begin
   if FParentDoubleBuffered <> Value then
@@ -7728,11 +7716,6 @@ end;
 function TWinControl.GetMouseCapture: Boolean;
 begin
   Result:=HandleAllocated and (GetCaptureControl=Self);
-end;
-
-function TWinControl.GetParentBackground: Boolean;
-begin
-  Result := csParentBackground in ControlStyle;
 end;
 
 {------------------------------------------------------------------------------

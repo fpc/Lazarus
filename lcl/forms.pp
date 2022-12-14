@@ -205,6 +205,12 @@ type
   TScrollBox = class(TScrollingWinControl)
   protected
     class procedure WSRegisterClass; override;
+
+    procedure SetParentBackground(const AParentBackground: Boolean); override;
+
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure Loaded; override;
+    procedure UpdateParentColorChange;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -227,7 +233,7 @@ type
     property Enabled;
     property Color nodefault;
     property Font;
-    property ParentBackground default False;
+    property ParentBackground default True;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;

@@ -1431,6 +1431,7 @@ type
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
+    function GetParentBackground: Boolean;
     function ChildClassAllowed(ChildClass: TClass): Boolean; virtual;
     procedure ReadState(Reader: TReader); override; // called
     procedure Loaded; override;
@@ -1453,6 +1454,7 @@ type
     procedure SetHint(const Value: TTranslateString); virtual;
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(NewParent: TWinControl); virtual;
+    procedure SetParentBackground(const AParentBackground: Boolean); virtual;
     procedure SetParentComponent(NewParentComponent: TComponent); override;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure ParentFormHandleInitialized; virtual; // called by ChildHandlesCreated of parent form
@@ -1504,6 +1506,7 @@ type
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read FDragMode write SetDragMode default dmManual;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
     property ParentColor: Boolean read FParentColor write SetParentColor default True;
     property ParentFont: Boolean  read FParentFont write SetParentFont default True;
     property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
@@ -2219,7 +2222,6 @@ type
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWND): HDC; override;
-    function GetParentBackground: Boolean;
     function  IsControlMouseMsg(var TheMessage): Boolean;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
@@ -2243,7 +2245,6 @@ type
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure SetColor(Value: TColor); override;
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
-    procedure SetParentBackground(const AParentBackground: Boolean); virtual;
     procedure ShowControl(AControl: TControl); virtual;
     procedure UpdateControlState;
     procedure UpdateShowing; virtual; // checks control's handle visibility, called by DoAllAutoSize and UpdateControlState
@@ -2255,7 +2256,6 @@ type
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
     property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
