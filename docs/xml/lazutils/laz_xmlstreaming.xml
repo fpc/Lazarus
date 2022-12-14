@@ -884,7 +884,7 @@ Int64 value for the 'value' attribute in the DOM Element.
 </element>
 <element name="TXMLObjectReader.ReadSet.Result">
 <short>
-Integer value representing the OR'd enumeration values for the set type.
+Integer value representing the OR-ed enumeration values for the set type.
 </short>  
 </element>
 <element name="TXMLObjectReader.ReadSet.SetType">
