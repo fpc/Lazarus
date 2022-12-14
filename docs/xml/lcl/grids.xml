@@ -9094,7 +9094,7 @@ controls.
 </short>
 <descr>
 Examines the Options property for the presence of the goTabs enumeration 
-value. When present, the DLGC_WANTTAB value is OR'd to the result value in 
+value. When present, the DLGC_WANTTAB value is OR-ed to the result value in 
 Msg.
 </descr>
 <seealso>
@@ -18908,10 +18908,15 @@ BiDiMode or RTL alignment is used.
 <seealso/>
 </element>
 <element name="TCustomGrid.FlipPoint.Result">
-<short/>
+<short>
+TPoint instance with the updated cell coordinates.
+</short>
 </element>
 <element name="TCustomGrid.FlipPoint.P">
-<short/>
+<short>
+TPoint instance where the cell coordinates are represented in the X and Y 
+members.
+</short>
 </element>
 
 <element name="TCustomGrid.FlipX">
@@ -18923,10 +18928,14 @@ used.
 <seealso/>
 </element>
 <element name="TCustomGrid.FlipX.Result">
-<short/>
+<short>
+Integer value with the adjusted X coordinate.
+</short>
 </element>
 <element name="TCustomGrid.FlipX.X">
-<short/>
+<short>
+X coordinate examined and recalculated in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.OnGetCellHint">
@@ -20044,16 +20053,44 @@ TPoint instance with the mouse coordinates converted in the method.
 
 <element name="TCustomGrid.MouseToLogCell">
 <short>
-Converts mouse coordinates to the position for a logical cell in the grid.
+Converts mouse coordinates to logical cell coordinates on the grid.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MouseToLogCell</var> is a <var>TPoint</var> function used to convert 
+physical mouse coordinates, represented using the X and Y members in 
+<var>Mouse</var>, to logical cell coordinates for the grid control. Logical 
+cell coordinates are relative to the origin cell displayed as the upper-left 
+non-fixed cell on the grid control.
+</p>
+<p>
+MouseToGridZone is used to determine where the mouse coordinates are located 
+on the grid control. When the mouse coordinates are located in the non-fixed 
+cells (grid zone is gzNormal), the value from MouseToCell is used as the 
+return value.
+</p>
+<p>
+For grid zones (like gzFixedRows, gzFixedCols, or gzFixedCells), the cell 
+coordinates in the return value are changed to the last fixed column and/or 
+row number(s) as needed. If the mouse coordinates are in one of several fixed 
+columns or rows, the last column or row is always used in the return value.
+</p>
+<p>
+MouseToLogCell is used in the MouseMove method when the active cell selection 
+has been changed using the mouse.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomGrid.MouseToLogCell.Result">
-<short/>
+<short>
+TPoint instance with the logical cell coordinates in its X and Y members.
+</short>
 </element>
 <element name="TCustomGrid.MouseToLogCell.Mouse">
-<short/>
+<short>
+TPoint instance with the physical mouse coordinates in its X and Y members.
+</short>
 </element>
 
 <element name="TCustomGrid.MouseToGridZone">
@@ -20404,7 +20441,9 @@ Defined for Windows platforms only.
 <seealso/>
 </element>
 <element name="TCustomGrid.IMEStartComposition.Message">
-<short/>
+<short>
+Record with the arguments for the WM_IME_STARTCOMPOSITION message.
+</short>
 </element>
 
 <element name="TCustomGrid.IMEComposition">
@@ -20417,7 +20456,9 @@ Defined for Windows platforms only.
 <seealso/>
 </element>
 <element name="TCustomGrid.IMEComposition.Msg">
-<short/>
+<short>
+Record with the arguments for the WM_IME_COMPOSITION message.
+</short>
 </element>
 
 <element name="TCustomGrid.IMEEndComposition">
@@ -22559,11 +22600,33 @@ instance.
 <element name="TStringGridStrings.FIndex"/>
 <element name="TStringGridStrings.FOwner"/>
 
+<!-- private - but good to know -->
 <element name="TStringGridStrings.ConvertIndexLineCol">
 <short>
 Converts an index position to line and column numbers for the Cells in a grid.
 </short>
-<descr/>
+<descr>
+<p>
+<var>ConvertIndexLineCol</var> is a <var>Boolean</var> function used to 
+convert the specified Index position to line and column numbers for the Cells 
+in the grid control. If the class instance was created to represent values in 
+a single column, Index represents a row number. Otherwise, it represents a 
+column number.
+</p>
+<p>
+The <var>Line</var> and <var>Col</var> parameters are variable arguments used 
+to return the line number and column number represented by Index to the 
+caller. For row values in a single column, Line is set to the row number 
+passed to the constructor and Col is set to the value in Index. For column 
+values in a single row, Line is set to the value in Index and Col is set to 
+the column number passed to the constructor.
+</p>
+<p>
+The return value is set to <b>True</b> when Index is valid for the column or 
+row, and the values in Line and Col arguments have been updated. Values in 
+Line and Col are not maintained when the return value is <b>False</b>.
+</p>
+</descr>
 <seealso>
 <link id="TStringGridStrings.Add"/>
 <link id="TStringGridStrings.Get"/>
@@ -22573,16 +22636,24 @@ Converts an index position to line and column numbers for the Cells in a grid.
 </seealso>
 </element>
 <element name="TStringGridStrings.ConvertIndexLineCol.Result">
-<short/>
+<short>
+<b>True</b> when Index is valid, and both Line and Col have been updated.
+</short>
 </element>
 <element name="TStringGridStrings.ConvertIndexLineCol.Index">
-<short/>
+<short>
+Ordinal position in the column or row values.
+</short>
 </element>
 <element name="TStringGridStrings.ConvertIndexLineCol.Line">
-<short/>
+<short>
+Returns the line (row) number for requested Index.
+</short>
 </element>
 <element name="TStringGridStrings.ConvertIndexLineCol.Col">
-<short/>
+<short>
+Returns the column number for requested Index.
+</short>
 </element>
 
 <!-- protected -->
@@ -24624,7 +24695,7 @@ Draws a dotted rubber banding rectangle around the provided cell rectangle.
 <p>
 <var>DrawBits</var> contains a <var>Byte</var> value that indicates the 
 rectangle sides drawn in the routine. By default, all sides for the 
-rectangle are drawn. Use the following byte values or-ed together in 
+rectangle are drawn. Use the following byte values OR-ed together in 
 <var>DrawBits</var> to specify the sides drawn:
 </p>
 <dl>
@@ -24866,7 +24937,7 @@ columns in the fixed area; active by default.
 <var>goVertLine, goHorzLine</var>
 </dt>
 <dd>
-The same as previous, but for the normal browseable area. A grid can be made 
+The same as previous, but for the normal browsable area. A grid can be made 
 to simulate the visual appearance of a list box by removing both of these 
 options.
 </dd>
@@ -25187,7 +25258,7 @@ click or pressing the SPACE key.
 If a ButtonStyle for a column is set to cbsAuto and DBGrid detects that the 
 field associated with the column is a Boolean field, then the grid uses this 
 editor style automatically. This automatic selection can be disabled or 
-enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn 
+enabled using the DBGrid OptionsExtra property; setting dgeCheckboxColumn 
 element to <b>False</b> disables this feature.
 </li>
 <li>
