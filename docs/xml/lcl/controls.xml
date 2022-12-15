@@ -10573,6 +10573,21 @@ Always returns 0 (zero) in TControl.
 <short>The Palette handle, zero (no Palette) by default.</short>
 </element>
 
+<element name="TControl.GetParentBackground">
+<short>
+Gets the value for the ParentBackground property.
+</short>
+<descr/>
+<seealso>
+<link id="TControl.ParentBackground"/>
+</seealso>
+</element>
+<element name="TControl.GetParentBackground.Result">
+<short>
+Value for the ParentBackground property.
+</short>
+</element>
+
 <element name="TControl.ChildClassAllowed">
 <short>
 Returns <b>True</b> if the specified class is allowed for children of this 
@@ -11016,6 +11031,21 @@ in the LCL translation facilities.
 </element>
 <element name="TControl.SetParent.NewParent">
 <short>New value for the the Parent property.</short>
+</element>
+
+<element name="TControl.SetParentBackground">
+<short>
+Sets the value for the ParentBackground property.
+</short>
+<descr/>
+<seealso>
+<link id="TControl.ParentBackground"/>
+</seealso>
+</element>
+<element name="TControl.SetParentBackground.AParentBackground">
+<short>
+New value for the ParentBackground property.
+</short>
 </element>
 
 <element name="TControl.SetParentComponent">
@@ -12144,6 +12174,39 @@ application controls will work properly so long.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TControl.ParentBackground">
+<short>
+Indicates if the control uses the background color from its Parent control.
+</short>
+<descr>
+<p>
+<var>ParentBackground</var> is a <var>Boolean</var> property which indicates 
+if the background color from the <var>Parent</var> control is used as the 
+background color for the current control instance.
+</p>
+<p>
+ParentBackground is <b>True</b> when <var>csParentBackground</var> is 
+included in the <var>ControlStyle</var> property. Setting the value in 
+ParentBackground causes ControlStyle to be updated to include or exclude the 
+csParentBackground enumeration value; it is included when the property is set 
+to <b>True</b>.
+</p>
+<p>
+ParentBackground and ParentColor are updated when a new value is assigned to 
+the Color property. The properties are set to <b>False</b> when an explicit 
+color is assigned to the Color property.
+</p>
+</descr>
+<seealso>
+<link id="TControl.ParentColor"/>
+<link id="TControl.Color"/>
+<link id="TControl.ControlStyle"/>
+<link id="TControl.Parent"/>
+<link id="TControlStyleType"/>
+<link id="TControlStyle"/>
+</seealso>
 </element>
 
 <element name="TControl.ParentColor">
@@ -21334,17 +21397,6 @@ method.
 </short>
 </element>
 
-<element name="TWinControl.GetParentBackground">
-<short>Gets the value for the ParentBackground property.</short>
-<descr/>
-<seealso>
-<link id="TWinControl.ParentBackground"/>
-</seealso>
-</element>
-<element name="TWinControl.GetParentBackground.Result">
-<short>Value for the property.</short>
-</element>
-
 <element name="TWinControl.IsControlMouseMsg">
 <short>Sends the mouse message to a child control.</short>
 <descr/>
@@ -21780,17 +21832,6 @@ Updates the position of the child control in the Z plane (i.e. front-to-back).
 <short>New ordinal position for the control in the Controls property.</short>
 </element>
 
-<element name="TWinControl.SetParentBackground">
-<short>Sets the value for the ParentBackground property.</short>
-<descr/>
-<seealso>
-<link id="TWinControl.ParentBackground"/>
-</seealso>
-</element>
-<element name="TWinControl.SetParentBackground.AParentBackground">
-<short>New value for the ParentBackground property.</short>
-</element>
-
 <element name="TWinControl.ShowControl">
 <short>Displays the control on its Parent.</short>
 <descr>
@@ -21984,31 +22025,6 @@ default.
 </short>
 <descr/>
 <seealso/>
-</element>
-
-<element name="TWinControl.ParentBackground">
-<short>
-Indicates if the control uses the background for its Parent control.
-</short>
-<descr>
-<p>
-<var>ParentBackground</var> is a <var>Boolean</var> property which indicates 
-if the background for the <var>Parent</var> control is drawn as the 
-background for the current control instance.
-</p>
-<p>
-ParentBackground is <b>True</b> when <var>csParentBackground</var> is 
-included in the <var>ControlStyle</var> property. Setting the value in 
-ParentBackground causes ControlStyle to be updated to include or exclude the 
-csParentBackground enumeration value; it is included when <b>True</b>.
-</p>
-</descr>
-<seealso>
-<link id="TControl.ControlStyle"/>
-<link id="TControl.Parent"/>
-<link id="TControlStyleType"/>
-<link id="TControlStyle"/>
-</seealso>
 </element>
 
 <element name="TWinControl.BorderWidth">
