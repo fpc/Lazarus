@@ -1885,6 +1885,118 @@ An example application using TScrollBox is located in the
 
 <element name="TScrollBox.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
+<element name="TScrollBox.SetParentBackground">
+<short>
+Sets the value for the ParentBackground property.
+</short>
+<descr>
+<p>
+<var>SetParentBackground</var> is an overridden method in 
+<var>TScrollBox</var> which implements the write access specifier for the 
+ParentBackground property. It calls the inherited method on entry to update 
+the values in the ControlStyle property and invalidate the control. It calls 
+the UpdateParentColorChange method to include or exclude csOpaque as needed in 
+ControlStyle; the value is included when ParentBackground is changed to 
+<b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TScrollBox.ParentBackground"/>
+<link id="TScrollBox.UpdateParentColorChange"/>
+<link id="TControl.SetParentBackground">TControl.SetParentBackground</link>
+</seealso>
+</element>
+<element name="TScrollBox.SetParentBackground.AParentBackground">
+<short>
+New value for the ParentBackground property.
+</short>
+</element>
+
+<element name="TScrollBox.CMParentColorChanged">
+<short>
+Handles the CM_PARENTCOLORCHANGED message for the control.
+</short>
+<descr>
+<p>
+<var>CMParentColorChanged</var> is an overridden method in 
+<var>TScrollBox</var> used to handle a <b>CM_PARENTCOLORCHANGED</b> message 
+received for the control. It calls the UpdateParentColorChange method to 
+include or exclude csOpaque in the ControlStyle property; csOpaque is included 
+if either ParentColor or ParentBackground is set to <b>True</b>. Otherwise, 
+the value is excluded from ControlStyle. 
+</p>
+<p>
+CMParentColorChanged calls the inherited method to update the Color property 
+when ParentColor is enabled.
+</p>
+</descr>
+<seealso>
+<link id="TScrollBox.ParentBackground"/>
+<link id="TScrollBox.ParentColor"/>
+<link id="TScrollBox.Color"/>
+<link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TControlStyleType">TControlStyleType</link>
+</seealso>
+</element>
+<element name="TScrollBox.CMParentColorChanged.Message">
+<short>
+Control message handled in the method.
+</short>
+</element>
+
+<element name="TScrollBox.Loaded">
+<short>
+Performs actions when a component has been loaded during LCL component 
+streaming. 
+</short>
+<descr>
+<p>
+<var>Loaded</var> is an overridden method in <var>TScrollBox</var> used to 
+perform actions needed when a component has been loaded from a resource during 
+LCL streaming. It calls the inherited method (in TScrollingWinControl) on 
+entry to resize its child Controls and update its scroll bars. It calls the 
+UpdateParentColorChange method to set the opacity for the control based on the 
+values in ParentColor and ParentBackground.
+</p>
+</descr>
+<seealso>
+<link id="TScrollBox.ParentBackground"/>
+<link id="TScrollBox.ParentColor"/>
+<link id="TScrollBox.Color"/>
+<link id="TScrollBox.UpdateParentColorChange"/>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TControlStyleType">TControlStyleType</link>
+</seealso>
+</element>
+
+<element name="TScrollBox.UpdateParentColorChange">
+<short>
+Updates ControlStyle flags to set the opacity for the control.
+</short>
+<descr>
+<p>
+<var>UpdateParentColorChange</var> is method used to update the ControlStlye 
+property when the value in ParentColor or ParentBackground has been changed.
+</p>
+<p>
+If either ParentColor or ParentBackground is set to True, the control needs to 
+be transparent so that the parent background color is seen as the control 
+background color. This is achieved by excluding the value csOpaque from the 
+ControlStyle property.
+</p>
+<p>
+If both ParentColor and ParentBackground are set to False, csOpaque is 
+included in the ControlStyle property.
+</p>
+<p>
+UpdateParentColorChange is also called when the control is Loaded during LCL 
+streaming or when the CM_PARENTCOLORCHANGED message is handled for the control.
+</p>
+</descr>
+<seealso/>
+</element>
+
 <element name="TScrollBox.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -1974,17 +2086,23 @@ Indicates if the control uses the background from its Parent control.
 <p>
 ParentBackground is a Boolean property which indicates if the background for 
 the Parent control is drawn as the background for the current control 
-instance. The default value in TScrollBox is <b>False</b>.
+instance. The default value in TScrollBox is <b>True</b>.
 </p>
 <p>
 ParentBackground is <b>True</b> when csParentBackground is included in the 
 ControlStyle property. Setting the value in ParentBackground causes 
 ControlStyle to be updated to include or exclude the csParentBackground 
-enumeration value; it is included when <b>True</b>.
+enumeration value. csOpaque is added to or removed from ControlStyle by 
+calling the UpdateParentColorChange method. The style flags are included in 
+ControlStyle when ParentBackground is set to <b>True</b>, and excluded when 
+set to <b>False</b>.
 </p>
 </descr>
 <seealso>
-<link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+<link id="TScrollBox.UpdateParentColorChange"/>
+<link id="#lcl.controls.TControl.ParentBackground">TControl.ParentBackground</link>
+<link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+<link id="#lcl.controls.TControl.Color">TControl.Color</link>
 <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
 <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
 <link id="#lcl.controls.TControlStyle">TControlStyle</link>
@@ -2444,7 +2562,9 @@ value.
 </element>
 
 <element name="TCustomFrame.SetParentBackground">
-<short>Sets the value for the ParentBackground property.</short>
+<short>
+Sets the value for the ParentBackground property.
+</short>
 <descr>
 <p>
 Ensures that Color is changed to the value in the Parent control when the 
@@ -2458,7 +2578,9 @@ flag is applied to the ControlStyle property as needed.
 </seealso>
 </element>
 <element name="TCustomFrame.SetParentBackground.AParentBackground">
-<short>New value for the ParentBackground property.</short>
+<short>
+New value for the ParentBackground property.
+</short>
 </element>
 
 <element name="TCustomFrame.CMParentColorChanged">
@@ -2641,7 +2763,7 @@ The default value for the property is <b>True</b>.
 </descr>
 <seealso>
 <link id="TCustomFrame.UpdateOpaque"/>
-<link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+<link id="#lcl.controls.TControl.ParentBackground">TControl.ParentBackground</link>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
 <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
 </seealso>
