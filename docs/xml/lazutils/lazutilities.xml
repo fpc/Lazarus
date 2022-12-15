@@ -212,20 +212,26 @@ the result to the <var>Double</var> data type used as the return value.
 
 <element name="MergeSortWithLen">
 <short>
-Implements a merge sort algorithm for a list of pointers with the given 
+Implements a merge/sort algorithm for a list of pointers with the given 
 length.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr/>
+<seealso/>
 </element>
 <element name="MergeSortWithLen.List">
-<short></short>
+<short>
+PPointer to the list of items examined in the merge/sort routine.
+</short>
 </element>
 <element name="MergeSortWithLen.ListLength">
-<short></short>
+<short>
+PtrInt with the length for the List argument.
+</short>
 </element>
 <element name="MergeSortWithLen.Compare">
-<short></short>
+<short>
+TListSortCompare routine used to compare items for the merge/sort algorithm.
+</short>
 </element>
 
 <element name="ConsoleVerbosity">
