@@ -1158,7 +1158,7 @@ The default value for the property is <b>True</b>.
 </descr>
 <seealso>
 <link id="TCustomGroupBox.UpdateOpaque"/>
-<link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+<link id="#lcl.controls.TControl.ParentBackground">TControl.ParentBackground</link>
 </seealso>
 </element>
 
