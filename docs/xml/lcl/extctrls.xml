@@ -6545,22 +6545,35 @@ handler (when assigned).
 </element>
 
 <element name="TCustomPanel.SetParentBackground">
-<short>Sets the background used for the parent control.</short>
+<short>
+Sets the value for the ParentBackground property.
+</short>
 <descr>
 <p>
-<var>SetParentBackground</var> is an overridden procedure used to the set the 
-background used for the parent control. SetParentBackground ensures that the 
-<var>ControlStyle</var> property is updated to include or omit the value 
-<var>csOpaque</var>. When AParentBackground contains <b>True</b>, the value 
-is excluded from ControlStyle. When AParentBackground contains <b>False</b>, 
-the value is included in ControlStyle.
+<var>SetParentBackground</var> is an overridden method used to set the 
+value for the ParentBackground property. SetParentBackground ensures that the 
+<var>ControlStyle</var> property is updated to include or omit the values 
+which control the opacity for the control. When AParentBackground contains 
+<b>True</b>, the value csParentBackground is included in ControlStyle. When 
+AParentBackground contains <b>False</b>, csParentBackground is excluded from 
+ControlStyle.
 </p>
 <p>
-SetParentBackground calls the inherited method prior to exit.
+The UpdateParentColorChange method is called to update ControlStyle to reflect 
+the values in the ParentColor or ParentBackground properties. If either 
+ParentColor or ParentBackground are set to <b>True</b>, csOpaque is excluded 
+from ControlStyle and the control becomes transparent. When both properties 
+are set to <b>False</b>, csOpaque is included in ControlStyle and the control 
+is drawn using the value in Color as the background color.
 </p>
 </descr>
 <seealso>
-<link id="#lcl.controls.TWinControl.SetParentBackground">TWinControl.SetParentBackground</link>
+<link id="TCustomPanel.UpdateParentColorChange"/>
+<link id="TCustomPanel.ParentColor"/>
+<link id="TCustomPanel.ParentBackground"/>
+<link id="#lcl.controls.TControl.SetParentBackground">TControl.SetParentBackground</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.COntrolStyle</link>
+<link id="#lcl.controls.TControlStyleType">TControlStyleType</link>
 </seealso>
 </element>
 <element name="TCustomPanel.SetParentBackground.AParentBackground">
@@ -6573,24 +6586,30 @@ Updates the control to reflect changes to the ParentColor property.
 </short>
 <descr>
 <p>
-<var>UpdateParentColorChange</var> updates the control to reflect changes to 
-the <var>ParentColor</var> property.
+<var>UpdateParentColorChange</var> updates the control to use the opacity 
+needed for the values in the <var>ParentColor</var> or 
+<var>ParentBackground</var> properties.
 </p>
 <p>
-When ParentColor is <b>True</b>, the parent color is used, so the value 
+If either ParentColor or ParentBackground is <b>True</b>, the value 
 <var>csOpaque</var> is excluded from the <var>ControlStyle</var> property. 
-Otherwise, Parent color is not used, and the value <var>csOpaque</var> is 
-included in the <var>ControlStyle</var> property.
+If both properties are <b>False</b>, csOpaque is included in the ControlStyle 
+property.
 </p>
 <p>
 UpdateParentColorChange is called from the <var>Loaded</var> method when the 
 component has finished loading using the LCL component streaming mechanism. 
-It is also called from the <var>CMParentColorChanged</var> method when the 
-change message is handled for the control.
+It is called from the <var>CMParentColorChanged</var> method when the 
+change message is handled for the control. It is also called when a new value 
+is assigned to the ParentColor or ParentBackground properties.
 </p>
 </descr>
-<errors/>
-<seealso/>
+<seealso>
+<link id="TCustomPanel.ParentColor"/>
+<link id="TCustomPanel.ParentBackground"/>
+<link id="TCustomPanel.Loaded"/>
+<link id="TCustomPanel.CMParentColorChanged"/>
+</seealso>
 </element>
 
 <element name="TCustomPanel.ShowAccelChar">
@@ -6829,18 +6848,29 @@ the control.
 <descr>
 <p>
 <var>Color</var> is a <var>TColor</var> property with the background color 
-for the panel. It sets the default value for the property.
+for the panel.
 </p>
 <p>
-The default value in Color is the same as the value in the parent window 
-Color property. If the color is clDefault , the result will need to be 
-resolved using the <var>GetDefaultColor</var> method. Convenience routines 
-which obtain the color by resolving clDefault and ParentColor are also 
-provided in <var>TControl.GetColorResolvingParent</var> and 
-<var>TControl.GetRGBColorResolvingParent</var>.
+The default value for Color is determined by the UseCLDefault compiler define. 
+When UseCLDefault is defined, the default value is clDefault, and the color 
+will need to be resolved using the <var>GetDefaultColor</var> method. 
+Convenience routines which obtain the color by resolving clDefault and 
+ParentColor are also provided in <var>TControl.GetColorResolvingParent</var> 
+and <var>TControl.GetRGBColorResolvingParent</var>. If UseCLDefault is not 
+defined, the the default value is clWindow. 
+</p>
+<p>
+Setting an explicit value in Color causes both ParentColor and 
+ParentBackground to be set to <b>False</b>, and the control is redrawn.
+</p>
+<p>
+Set ParentBackground or ParentColor to <b>True</b> to use the background color 
+from the Parent control, making the panel transparent when drawn.
 </p>
 </descr>
 <seealso>
+<link id="TCustomPanel.ParentBackground"/>
+<link id="TCustomPanel.ParentColor"/>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
 </seealso>
 </element>
@@ -6884,7 +6914,7 @@ The default value for the property is <b>True</b>.
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
-<link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+<link id="#lcl.controls.TControl.ParentBackground">TControl.ParentBackground</link>
 </seealso>
 </element>
 
@@ -11877,6 +11907,6 @@ the display in the other docked control.
 </topic>
 
 </module>
-<!-- ExtCtrls -->
 </package>
+<!-- ExtCtrls -->
 </fpdoc-descriptions>
