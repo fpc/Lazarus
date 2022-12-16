@@ -132,7 +132,7 @@ type
     FLazarusPath: string;
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
-    FCmdLineFiles: string;
+    FCmdLineFiles: TStrings;
     FShowSplashOption: boolean;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
@@ -150,6 +150,7 @@ implementation
 destructor TLazarusManager.Destroy;
 begin
   FreeAndNil(FCmdLineParams);
+  FreeAndNil(FCmdLineFiles);
   inherited Destroy;
 end;
 
@@ -239,7 +240,7 @@ end;
 
 procedure TLazarusManager.Initialize;
 var
-  CmdLineFiles: TStrings;
+  Files: TStrings;
   i: integer;
   PCP: String;
 begin
@@ -262,14 +263,12 @@ begin
     SetPrimaryConfigPath(PCP);
 
   // get command line files
-  CmdLineFiles := LazIDEInstances.FilesToOpen;
-  if CmdLineFiles<>nil then
+  Files := LazIDEInstances.FilesToOpen;
+  FCmdLineFiles := TStringListUTF8Fast.Create;
+  if Files<>nil then
   begin
-    for i := 0 to CmdLineFiles.Count-1 do
-      if pos(' ',CmdLineFiles[i])>0 then
-        CmdLineFiles[i] := '"' + CmdLineFiles[i] + '"';
-    CmdLineFiles.Delimiter:=' ';
-    FCmdLineFiles:=CmdLineFiles.DelimitedText;
+    for i := 0 to Files.Count-1 do
+      FCmdLineFiles.Add(Files[i]);
   end;
 end;
 
@@ -406,23 +405,25 @@ begin
         Params.Add(FLazarusPath);
         Params.Add('--args');
         {$ELSE}
-        // tell lazarus, startlazarus is waiting for its exitcode
+        // tell lazarus that startlazarus is waiting for its exitcode
         // When the special 99 (ExitCodeRestartLazarus) code is received,
-        // start a new lazars
+        // start a new lazarus
         Params.Add(StartedByStartLazarusOpt);
         {$ENDIF}
         Params.Add(NoSplashScreenOptLong);
         for i:=0 to FCmdLineParams.Count-1 do
           AddExpandedParam(Params,FCmdLineParams[i]);
+        for i:=0 to FCmdLineFiles.Count-1 do
+          Params.Add(ExpandFileNameUTF8(FCmdLineFiles[i]));
         FLazarusProcess.Process.Parameters.AddStrings(Params);
       finally
         Params.Free;
         EnvOverrides.Free;
       end;
       // clear the command line files, so that they are passed only once.
-      FCmdLineFiles:='';
+      FCmdLineFiles.Clear;
       FLazarusProcess.OnStart := @LazarusProcessStart;
-      DebugLn(['Info: (startlazarus) [TLazarusManager.Run] exe',FLazarusProcess.Process.Executable,' Params=[',FLazarusProcess.Process.Parameters.Text,']']);
+      DebugLn(['Info: (startlazarus) [TLazarusManager.Run] exe=',FLazarusProcess.Process.Executable,' Params=[',FLazarusProcess.Process.Parameters.Text,']']);
       FLazarusProcess.Execute;
       {$IFDEF darwin}
       Restart:=false;
