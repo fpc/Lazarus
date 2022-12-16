@@ -661,12 +661,12 @@ begin
   inherited Create;
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
-  if FForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
+  if FForm is INonControlDesigner then begin
     LNonControlDesigner := FForm as INonControlDesigner;
     FLookupRoot := LNonControlDesigner.LookupRoot;
     Mediator := LNonControlDesigner.Mediator;
   end
-  else if FForm is BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId] then
+  else if FForm is IFrameDesigner then
     FLookupRoot := (FForm as IFrameDesigner).LookupRoot
   else
     FLookupRoot := FForm;
@@ -784,6 +784,7 @@ procedure TDesigner.AddComponentCheckParent(var NewParent: TComponent;
 var
   NewParentControl: TWinControl;
 begin
+  //debugln(['TDesigner.AddComponentCheckParent Mediator=',DbgSName(Mediator),' NewParent=',DbgSName(NewParent),' NewComponentClass=',NewComponentClass.ClassName]);
   if Mediator<>nil then begin
     // mediator, non LCL components
     if NewParent=nil then
