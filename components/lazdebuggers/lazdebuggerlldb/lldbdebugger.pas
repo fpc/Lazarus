@@ -370,6 +370,7 @@ type
               const ACallback: TMethod): Boolean; override;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
+    class function ExeBaseName: String; override;
     class function Caption: String; override;
     class function ExePaths: String; override;
     class function ExePathsMruGroup: TDebuggerClass; override;
@@ -3043,6 +3044,11 @@ end;
 class function TLldbDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TLldbDebuggerProperties.Create;
+end;
+
+class function TLldbDebugger.ExeBaseName: String;
+begin
+  Result := 'lldb';
 end;
 
 class function TLldbDebugger.Caption: String;

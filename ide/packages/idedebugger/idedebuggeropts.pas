@@ -90,6 +90,8 @@ type
     function  GetListForEntry(AnEntry: TDebuggerPropertiesConfig): TDebuggerPropertiesConfigListBase;
     procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
     procedure AddEntry(AnEntry: TDebuggerPropertiesConfig);
+  protected
+    property HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
   public
     constructor Create;
     destructor Destroy; override;
@@ -98,7 +100,6 @@ type
     procedure LoadFromOldXml(AXMLCfg: TRttiXMLConfig; APath: String; AnOldFileNamePath: String = '');
     procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String; AForceSaveEmpty: Boolean = False);
 
-    property HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
     property CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read FCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
 
     property Unsuitable: TDebuggerPropertiesConfigListBase read FUnsuitable;
@@ -109,11 +110,21 @@ type
   { TDebuggerOptions }
 
   TDebuggerOptions = class(TAbstractIDEEnvironmentOptions)
+  private const
+    DebuggerOptsVersion = integer(1);
+    (*
+      0: Initial version
+      1: Upgrade check for GDB to FpDebug done
+    *)
+    DebuggerOptsVersionFpDebugUpdate = 1;
   private
     FFilename: string;
+    FFileVersion: integer;
+
     FBackendConverterConfig: TIdeDbgValueConvertSelectorList;
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
+    FSetupCheckIgnoreNoDefault: Boolean;
     FXMLCfg: TRttiXMLConfig;
 
     FDebuggerConfigList: TDebuggerPropertiesConfigList; // named entries
@@ -129,7 +140,10 @@ type
     class function GetInstance: TAbstractIDEOptions; override;
   public
     constructor Create;
+    constructor CreateDefaultOnly;
     destructor Destroy; override;
+    procedure Init;
+
     procedure Load;
     procedure Save;
     function GetDefaultConfigFilename: string;
@@ -151,11 +165,25 @@ type
     // HasActiveDebuggerEntry => marked as active in the xml, even if not IsLoaded
     property  HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
     //property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
+
+  published
+    property SetupCheckIgnoreNoDefault: Boolean read FSetupCheckIgnoreNoDefault write FSetupCheckIgnoreNoDefault;
   end;
+
+  TCurrentDebuggerSetupResult = (
+    cdsOk,
+    cdsNoActive,      // No Debugger is set as active/current
+    cdsNotRegistered, // Active/Current class is not (yet) registered
+    cdsNotSupported,  // Active/Current class does not support current OS/Arch
+
+    cdsUpdateToFpDbgNeeded  // Still using GDB - and not yet confirmed as intentional
+    // External exe will be checked by caller
+  );
+
+function CheckCurrentDebuggerSetup: TCurrentDebuggerSetupResult;
 
 function GetDebuggerOptions: TDebuggerOptions;
 property DebuggerOptions: TDebuggerOptions read GetDebuggerOptions;
-
 
 implementation
 
@@ -163,6 +191,31 @@ const
   DebuggerOptsConfFileName = 'debuggeroptions.xml';
 var
   TheDebuggerOptions: TDebuggerOptions = nil;
+
+function CheckCurrentDebuggerSetup: TCurrentDebuggerSetupResult;
+var
+  DbgConf: TDebuggerPropertiesConfig;
+begin
+  Result := cdsOk;
+  DebuggerOptions.LoadDebuggerProperties;
+
+  if not DebuggerOptions.HasActiveDebuggerEntry then
+    exit(cdsNoActive);
+
+  DbgConf := DebuggerOptions.DebuggerPropertiesConfigList.CurrentDebuggerPropertiesConfig;
+  if (DbgConf = nil) or (DbgConf.DebuggerClass = nil) then
+    exit(cdsNotRegistered); // class was not found in registered list
+
+  if dfNotSuitableForOsArch in DbgConf.DebuggerClass.SupportedFeatures then
+    exit(cdsNotSupported);
+
+  if (DbgConf.DebuggerClass.ClassName = 'TGDBMIDebugger') and
+     (DebuggerOptions.FFileVersion < DebuggerOptions.DebuggerOptsVersionFpDebugUpdate)
+  then
+    exit(cdsUpdateToFpDbgNeeded);
+
+  assert((DebuggerOptions.CurrentDebuggerClass <> nil), 'CheckCurrentDebuggerSetup: (DebuggerOptions.CurrentDebuggerClass <> nil)');
+end;
 
 function GetDebuggerOptions: TDebuggerOptions;
 begin
@@ -751,6 +804,13 @@ begin
   inherited Create;
   FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
+  Init;
+end;
+
+constructor TDebuggerOptions.CreateDefaultOnly;
+begin
+  // Used as default for ReadObject / WriteObject;
+  Init;
 end;
 
 destructor TDebuggerOptions.Destroy;
@@ -762,13 +822,24 @@ begin
   FXMLCfg.Free;
 end;
 
+procedure TDebuggerOptions.Init;
+begin
+  // Init for all published values
+end;
+
 procedure TDebuggerOptions.Load;
 var
   Path: String;
+  Def: TDebuggerOptions;
 begin
   InitXMLCfg(False);
 
   Path := 'Debugger/';
+  FFileVersion:=FXMLCfg.GetValue(Path+'Version', 0);
+
+  Def := TDebuggerOptions.CreateDefaultOnly;
+  FXMLCfg.ReadObject(Path + 'Options/', Self, Def);
+  FreeAndNil(Def);
 
   FBackendConverterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
 end;
@@ -776,9 +847,15 @@ end;
 procedure TDebuggerOptions.Save;
 var
   Path: String;
+  Def: TDebuggerOptions;
 begin
   InitXMLCfg(False); // Dont delete old content
   Path := 'Debugger/';
+  FXMLCfg.SetValue(Path+'Version', DebuggerOptsVersion);
+
+  Def := TDebuggerOptions.CreateDefaultOnly;
+  FXMLCfg.WriteObject(Path + 'Options/', Self, Def);
+  FreeAndNil(Def);
 
   if FBackendConverterConfig.Changed then
     FBackendConverterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');

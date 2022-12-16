@@ -1741,6 +1741,7 @@ type
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
+    class function ExeBaseName: String; virtual;        // The default locations of the exe
     class function ExePathsMruGroup: TDebuggerClass; virtual;        // The default locations of the exe
     class function HasExePath: boolean; virtual; deprecated; // use NeedsExePath instead
     class function NeedsExePath: boolean; virtual;        // If the debugger needs to have an exe path
@@ -5765,6 +5766,11 @@ begin
 end;
 
 class function TDebuggerIntf.ExePaths: String;
+begin
+  Result := '';
+end;
+
+class function TDebuggerIntf.ExeBaseName: String;
 begin
   Result := '';
 end;

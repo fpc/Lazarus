@@ -1476,17 +1476,14 @@ begin
   and (not SkipAllTests)
   and (not GetSkipCheck(skcDebugger))
   then begin
-    // Todo: add LldbFpDebugger for Mac
-    // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
     Note:='';
-    if ( (DebuggerOptions.CurrentDebuggerPropertiesConfig = nil) and  // no debugger at all
-         (not DebuggerOptions.HasActiveDebuggerEntry) )               // not even with unknown class
-    or ( (DebuggerOptions.CurrentDebuggerClass <> nil)                       // Debugger with known class
-         and (DebuggerOptions.CurrentDebuggerPropertiesConfig.NeedsExePath)  // Which does need an exe
-         and (CheckDebuggerQuality(DebuggerOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
+    if (CheckCurrentDebuggerSetup <> cdsOk) or
+       ( (DebuggerOptions.CurrentDebuggerPropertiesConfig<> nil) and         // should be true for cdsOk
+         (DebuggerOptions.CurrentDebuggerPropertiesConfig.NeedsExePath) and  // Which does need an exe
+         (CheckDebuggerQuality(DebuggerOptions.GetParsedDebuggerFilename)<>sdfOk)
        )
     then begin
-      debugln(['Warning: (lazarus) missing GDB exe ',EnvironmentOptions.GetParsedLazarusDirectory,' ',Note]);
+      debugln(['Warning: (lazarus) may be missing GDB/LLDB exe ',EnvironmentOptions.GetParsedLazarusDirectory,' ',Note]);
       ShowSetupDialog:=true;
     end;
   end;

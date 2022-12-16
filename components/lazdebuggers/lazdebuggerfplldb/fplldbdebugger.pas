@@ -173,6 +173,7 @@ type
     property CommandQueue;
   public
     class function Caption: String; override;
+    class function ExeBaseName: String; override;
     class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; override;
   public
     constructor Create(const AExternalDebugger: String); override;
@@ -1701,6 +1702,11 @@ end;
 class function TFpLldbDebugger.Caption: String;
 begin
   Result := 'LLDB debugger (with fpdebug) (Beta)';
+end;
+
+class function TFpLldbDebugger.ExeBaseName: String;
+begin
+  Result := 'lldb';
 end;
 
 class function TFpLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;

@@ -48,8 +48,16 @@ type
     sddqWrongVersion,
     sddqIncomplete,
     sddqCompatible,
-    sddqMakeNotWithFpc  // Make not in the same directory as compiler
+    sddqMakeNotWithFpc,  // Make not in the same directory as compiler
+    sddqHint
     );
+
+  TSDFileQuality = (
+    sdfOk,
+    sdfNotFound,
+    sdfIsDirectory,
+    sdfNotExecutable
+  );
 
   TSDFileInfo = class
   public
@@ -105,6 +113,10 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
   const FPCVer: String; aUseFileCache: Boolean = True): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TSDFileInfoList;
+
+// Debugger
+// Checks a given file to see if it is a valid debugger (only gdb supported for now)
+function CheckDebuggerQuality(AFilename: string): TSDFileQuality;
 
 // Fppkg
 function CheckFppkgConfiguration(var ConfigFile: string; out Msg: string): TSDFilenameQuality;
@@ -462,6 +474,7 @@ var
   OldCompilerFilename: String;
 begin
   Result:=nil;
+exit;
 
   OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
   try
@@ -831,6 +844,29 @@ begin
   finally
     EnvironmentOptions.FPCSourceDirectory:=OldFPCSrcDir;
   end;
+end;
+
+function CheckDebuggerQuality(AFilename: string): TSDFileQuality;
+begin
+  AFilename:=TrimFilename(AFilename);
+  AFilename := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, AFilename);
+  if not FileExistsCached(AFilename) then
+  begin
+    Result:=sdfNotFound;
+    exit;
+  end;
+  if DirPathExistsCached(AFilename) then
+  begin
+    Result:=sdfIsDirectory;
+    exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then
+  begin
+    Result:=sdfNotExecutable;
+    exit;
+  end;
+
+  Result:=sdfOk;
 end;
 
 function CheckFppkgConfiguration(var ConfigFile: string; out Msg: string): TSDFilenameQuality;

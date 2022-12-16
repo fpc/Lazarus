@@ -1076,6 +1076,7 @@ type
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
+    class function ExeBaseName: String; override;
     class function ExePathsMruGroup: TDebuggerClass; override;
 
     constructor Create(const AExternalDebugger: String); override;
@@ -9446,6 +9447,11 @@ begin
   {$ELSE}
   Result := 'gdb;/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
   {$ENDIF}
+end;
+
+class function TGDBMIDebuggerBase.ExeBaseName: String;
+begin
+  Result := 'gdb';
 end;
 
 class function TGDBMIDebuggerBase.ExePathsMruGroup: TDebuggerClass;

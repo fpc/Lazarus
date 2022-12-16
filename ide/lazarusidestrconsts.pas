@@ -6280,11 +6280,6 @@ resourcestring
     +'target specific compiler like "%s". Please give the full file path.';
   lisTheMakeExecutableTypicallyHasTheName = 'The "make" executable typically '
     +'has the name "%s". It is needed for building the IDE. Please give the full file path.';
-  lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive = 'The debugger '
-    +'executable typically has the name "%s". Please give the full file path.';
-  lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin = 'A useful setting on'
-    +' Windows systems is: $(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\'
-    +'gdb.exe';
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';
   lisWrongVersionIn = 'wrong version in %s: %s';
@@ -6678,6 +6673,69 @@ resourcestring
     +'below. The options setting which list to use are always stored in the session.';
   drsUseTheIDEGlobalListOfConv = 'Use the IDE-Global list of converters';
   drsUseTheProjectListOfConver = 'Use the project list of converters';
+
+  InitDlgDebugPopupInformation = 'A backend provides OS and architecture '
+    +'specific implementations for the debugger.%0:s'
+    +'Default for your OS/Arch is: "%1:s"%0:s%0:s'
+    +'Other backends are provided for special tasks (e.g. '
+    +'cross debugging on some platforms) or as generic alternatives.%0:sThe '
+    +'debugger can have different features, depending on the backend.%0:s%0:s'
+    +'Some backends require an external exe (such as gdb or lldb). This exe '
+    +'may be part of your OS (Linux/Mac), or be provided by the Lazarus '
+    +'installer (Windows).%0:s%0:s'
+    +'If you have just upgraded your installation,'
+    +' your may have to rebuild the IDE before your previously configured '
+    +'backend can be used (If you used a 3rd-party or optional backend. In '
+    +'that case you may chose ignore.';
+
+  InitDlgDebugExternalExePathDisplay = 'The selected backend uses the external'
+    +' executable:';
+  InitDlgDebugExternalExePathPrompt = 'The selected backend requires an '
+    +'external executable: "%s"';
+  InitDlgDebugClassNoteErrorNotSupported = 'Error: Your current config uses a '
+    +'backend that is not supported on your OS/Arch';
+  InitDlgDebugClassNoteErrorNotConfigured = 'Error: The backend is not configured';
+  InitDlgDebugClassNoteErrorNotConfiguredMissingPackage = '(The configured '
+    +'backend''s package is not installed)';
+  InitDlgDebugClassNoteHintNotRecommended = 'Hint: The backend type is ok, but'
+    +' not the recommended type';
+  InitDlgDebugPathNoteErrorNoDefaultFound = 'Error: No default for external '
+    +'executable found';
+  InitDlgDebugPathNoteErrorNoExeSpecified = 'Error: No external executable specified';
+  InitDlgDebugPathNoteErrorExeNotFound = 'Error: External executable not found';
+  InitDlgDebugPathNoteErrorExeIsDirectory = 'Error: External executable is a '
+    +'directory, not a file';
+  InitDlgDebugPathNoteErrorExeNotRunnable = 'Error: External file is not '
+    +'executable ';
+  InitDlgDebugHeaderDefaultForYourOSArchIsS = 'Default for your OS/Arch is: "%'
+    +'s"';
+  InitDlgDebugKeepBackend = 'Keep backend';
+  InitDlgDebugChangePath = 'Change path';
+  InitDlgDebugCreateANewRecommendedBack = 'Create a new recommended backend';
+  InitDlgDebugSelectAnExistingBackend = 'Select an existing backend';
+  InitDlgDebugIgnore = 'Ignore';
+  InitDlgDebugStateMissingPackages = 'There may be packages(lpk) missing '
+    +'from your IDE installation. You may need to rebuild the IDE and install '
+    +'them, before making changes to the setup.';
+  InitDlgDebugStateUpdateBackend = 'You are using an older backend. This may'
+    +' give not give you the best debugging experience. Consider upgrading to '
+    +'the recommended backend';
+  InitDlgDebugStateRecommendedNotInList = 'There is no backend of '
+    +'recommended type in the list of existing debuggers. Consider creating a '
+    +'new backend.';
+  InitDlgDebugStateRecommendedFoundInList = 'There is a backend of '
+    +'recommended type in the list of existing debuggers. You may pick this '
+    +'instead of creating a new backend.';
+  InitDlgDebugStateSetupOk = 'Setup is ok.';
+  InitDlgDebugStateMissingPackageRebuild = 'If you decide to rebuild the IDE'
+    +' first and install missing packages, then select "Ignore" for now.%0:s'
+    +'After the rebuild, the debugger backend can be changed in the menu: '
+    +'Tools > Options.';
+  InitDlgDebugStateMissingPackageFooter = 'Note: There are more backend '
+    +'configurations available, but their packages (lpk) are not installed. '
+    +'You may want to rebuild the IDE with the packages installed.After the '
+    +'rebuild, the debugger backend can be changed in the menu: Tools > '
+    +'Options.';
 
 implementation
 
