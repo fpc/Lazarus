@@ -3154,10 +3154,12 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TLldbDebugger);
+  //RegisterDebugger(TLldbDebugger);
 end;
 
 initialization
+  RegisterDebugger(TLldbDebugger);
+
   DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 
 end.

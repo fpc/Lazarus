@@ -1472,7 +1472,7 @@ begin
   fLastParsedMakeExe:='. .';
   UpdateMakeExeNote;
 
-  RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+  //RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
   FSkipDebugger := DebuggerOptions.HasActiveDebuggerEntry // There is a configured entry. Assume it is right, unless we can prove it is incorrect
     and not (
       (DebuggerOptions.CurrentDebuggerPropertiesConfig <> nil) and    // The ACTIVE dbg is a known debugger

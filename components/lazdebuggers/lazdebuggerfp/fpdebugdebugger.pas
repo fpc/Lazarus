@@ -646,7 +646,7 @@ type
 
 procedure Register;
 begin
-  RegisterDebugger(TFpDebugDebugger);
+  //RegisterDebugger(TFpDebugDebugger);
 end;
 
 { TFpDebugExceptionStepping.TFrameList }
@@ -4625,6 +4625,8 @@ begin
 end;
 
 initialization
+  RegisterDebugger(TFpDebugDebugger);
+
   DBG_VERBOSE     := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS    := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );

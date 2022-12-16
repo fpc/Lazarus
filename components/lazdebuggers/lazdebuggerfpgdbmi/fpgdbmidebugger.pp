@@ -1209,7 +1209,7 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TFpGDBMIDebugger);
+  //RegisterDebugger(TFpGDBMIDebugger);
 
   MenuCmd := RegisterIDEMenuCommand(itmRunDebugging, 'fpGdbmiToggleGDB',
     fpgdbmiDisplayGDBInsteadOfFpDebugWatches, nil,
@@ -1220,6 +1220,8 @@ begin
 end;
 
 initialization
+  RegisterDebugger(TFpGDBMIDebugger);
+
   DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_ERRORS         := DebugLogger.FindOrRegisterLogGroup('DBG_ERRORS' {$IFDEF DBG_ERRORS} , True {$ENDIF} );
 end.

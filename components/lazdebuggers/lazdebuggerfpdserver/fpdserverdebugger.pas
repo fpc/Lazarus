@@ -414,7 +414,7 @@ type
 
 procedure Register;
 begin
-  RegisterDebugger(TFPDServerDebugger);
+  //RegisterDebugger(TFPDServerDebugger);
 end;
 
 { TFPDSendCommand }
@@ -1541,6 +1541,9 @@ begin
   DisconnectFromFPDServer;
   SetState(dsStop);
 end;
+
+initialization
+  RegisterDebugger(TFPDServerDebugger);
 
 end.
 

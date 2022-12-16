@@ -1471,7 +1471,7 @@ begin
 
   // check debugger
   // PackageBoss is not yet loaded...
-  RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+  //RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
   if (not ShowSetupDialog)
   and (not SkipAllTests)
   and (not GetSkipCheck(skcDebugger))

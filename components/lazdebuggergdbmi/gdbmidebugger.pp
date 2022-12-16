@@ -14827,10 +14827,12 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TGDBMIDebugger);
+  //RegisterDebugger(TGDBMIDebugger);
 end;
 
 initialization
+  RegisterDebugger(TGDBMIDebugger);
+
   DBGMI_QUEUE_DEBUG := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
   DBGMI_STRUCT_PARSER := DebugLogger.RegisterLogGroup('DBGMI_STRUCT_PARSER' {$IFDEF DBGMI_STRUCT_PARSER} , True {$ENDIF} );
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );

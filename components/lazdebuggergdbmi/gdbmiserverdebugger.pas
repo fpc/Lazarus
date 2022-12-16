@@ -478,8 +478,11 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TGDBMIServerDebugger);
+  //RegisterDebugger(TGDBMIServerDebugger);
 end;
+
+initialization
+  RegisterDebugger(TGDBMIServerDebugger);
 
 end.
 

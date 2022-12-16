@@ -1734,10 +1734,12 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TFpLldbDebugger);
+  //RegisterDebugger(TFpLldbDebugger);
 end;
 
 initialization
+  RegisterDebugger(TFpLldbDebugger);
+
   DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_ERRORS         := DebugLogger.FindOrRegisterLogGroup('DBG_ERRORS' {$IFDEF DBG_ERRORS} , True {$ENDIF} );
 end.

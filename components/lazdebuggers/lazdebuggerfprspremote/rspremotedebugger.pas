@@ -217,8 +217,11 @@ end;
 
 procedure Register;
 begin
-  RegisterDebugger(TFpRspRemoteDebugger);
+  //RegisterDebugger(TFpRspRemoteDebugger);
 end;
+
+initialization
+  RegisterDebugger(TFpRspRemoteDebugger);
 
 end.
 

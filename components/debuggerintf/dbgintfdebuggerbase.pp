@@ -1875,6 +1875,10 @@ type
     procedure DoBackendConverterChanged; virtual; abstract;
   end;
 
+(* RegisterDebugger
+   Should be run in the initialization section of one of the units of the package.
+   The PackageManager's call to "Register()" (as part of RegisterPackage / RegisterUnit is to late.
+*)
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 function MinDbgPtr(a, b: TDBGPtr): TDBGPtr;inline; overload;
 

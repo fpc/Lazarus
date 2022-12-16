@@ -361,8 +361,11 @@ end;
 procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(String), TSSHGDBMIDebuggerProperties, 'Note', TSSHGDBMINotePropertyEditor);
-  RegisterDebugger(TSSHGDBMIDebugger);
+  //RegisterDebugger(TSSHGDBMIDebugger);
 end;
+
+initialization
+  RegisterDebugger(TSSHGDBMIDebugger);
 
 end.
 
