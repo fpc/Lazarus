@@ -890,7 +890,10 @@ specified in the DOM specification. These descendent classes may alter the
 base value and/or behavior as required for the specialized node type.
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="laz2_XMLWrite.WriteXML"/>
+<link id="laz2_XMLRead.ReadXMLFragment"/>
+</seealso>
 </element>
 
 <!-- variable Visibility: protected -->
@@ -4926,8 +4929,10 @@ TDOMDocument includes the DocumentURI property introduced in DOM Level 3.
 <seealso>
 <link id="TDOMNode_WithChildren"/>
 <link id="TXMLDocument"/>
-</seealso>
-</element>
+<link id="laz2_XMLWrite.WriteXMLFile"/>
+<link id="laz2_XMLRead.ReadXMLFile"/>
+<link id="laz2_XMLRead.ReadDTDFile"/>
+</seealso></element>
 
 <!-- variable Visibility: protected -->
 <element name="TDOMDocument.FIDList"/>
