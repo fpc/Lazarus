@@ -264,15 +264,16 @@ void QGuiApplication_setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorR
 }
 
 
-/* QTBUG-49667 fixed this workaround, fallback session management does not exist in Qt6
-bool QGuiApplication_isFallbackSessionManagementEnabled()
+#if defined BINUX
+Display* QGuiApplication_x11Display(QGuiApplicationH handle)
 {
-	return (bool) QGuiApplication::isFallbackSessionManagementEnabled();
+  auto x11app = ((QGuiApplication *)handle)->nativeInterface<QNativeInterface::QX11Application>();
+  return x11app->display();
 }
 
-void QGuiApplication_setFallbackSessionManagementEnabled(bool enabled)
-{
-	QGuiApplication::setFallbackSessionManagementEnabled(enabled);
+xcb_connection_t* QGuiApplication_xcbConnection(QGuiApplicationH handle){
+  auto xcbapp = ((QGuiApplication *)handle)->nativeInterface<QNativeInterface::QX11Application>();
+  return xcbapp->connection();
 }
-*/
+#endif
 

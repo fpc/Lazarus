@@ -55,8 +55,6 @@ C_EXPORT void QGuiApplication_setQuitOnLastWindowClosed(bool quit);
 C_EXPORT bool QGuiApplication_quitOnLastWindowClosed();
 C_EXPORT int QGuiApplication_exec();
 C_EXPORT bool QGuiApplication_notify(QGuiApplicationH handle, QObjectH AnonParam1, QEventH AnonParam2);
-/* see comments in .cpp file C_EXPORT bool QGuiApplication_isFallbackSessionManagementEnabled();
-C_EXPORT void QGuiApplication_setFallbackSessionManagementEnabled(bool enabled);*/
 C_EXPORT bool QGuiApplication_isSessionRestored(QGuiApplicationH handle);
 C_EXPORT void QGuiApplication_sessionId(QGuiApplicationH handle, PWideString retval);
 C_EXPORT void QGuiApplication_sessionKey(QGuiApplicationH handle, PWideString retval);
@@ -64,5 +62,9 @@ C_EXPORT bool QGuiApplication_isSavingSession(QGuiApplicationH handle);
 C_EXPORT Qt::ApplicationState QGuiApplication_applicationState();
 C_EXPORT Qt::HighDpiScaleFactorRoundingPolicy QGuiApplication_highDpiScaleFactorRoundingPolicy();
 C_EXPORT void QGuiApplication_setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy policy);
+#if defined BINUX
+C_EXPORT Display* QGuiApplication_x11Display(QGuiApplicationH handle);
+C_EXPORT xcb_connection_t* QGuiApplication_xcbConnection(QGuiApplicationH handle);
+#endif
 
 #endif
