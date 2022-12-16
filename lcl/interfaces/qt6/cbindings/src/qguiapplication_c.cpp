@@ -268,12 +268,12 @@ void QGuiApplication_setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorR
 Display* QGuiApplication_x11Display(QGuiApplicationH handle)
 {
   auto x11app = ((QGuiApplication *)handle)->nativeInterface<QNativeInterface::QX11Application>();
-  return x11app->display();
+  return (Display*) x11app->display();
 }
 
 xcb_connection_t* QGuiApplication_xcbConnection(QGuiApplicationH handle){
   auto xcbapp = ((QGuiApplication *)handle)->nativeInterface<QNativeInterface::QX11Application>();
-  return xcbapp->connection();
+  return (xcb_connection_t*) xcbapp->connection();
 }
 #endif
 
