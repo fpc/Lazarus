@@ -546,7 +546,7 @@ end;
 function TQtWidgetSet.x11Display: PDisplay;
 begin
   if FX11Display = nil then
-    FX11Display := XOpenDisplay(nil);
+    FX11Display := PDisplay(QGuiApplication_x11Display(QGuiApplicationH(QCoreApplication_instance())));
   Result := FX11Display;
 end;
 {$ENDIF}

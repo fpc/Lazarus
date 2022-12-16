@@ -5554,6 +5554,10 @@ function QGuiApplication_isSavingSession(handle: QGuiApplicationH): Boolean; cde
 function QGuiApplication_applicationState(): QtApplicationState; cdecl; external Qt6PasLib name 'QGuiApplication_applicationState';
 function QGuiApplication_highDpiScaleFactorRoundingPolicy(): QtHighDpiScaleFactorRoundingPolicy; cdecl; external Qt6PasLib name 'QGuiApplication_highDpiScaleFactorRoundingPolicy';
 procedure QGuiApplication_setHighDpiScaleFactorRoundingPolicy(const policy: QtHighDpiScaleFactorRoundingPolicy); cdecl; external Qt6PasLib name 'QGuiApplication_setHighDpiScaleFactorRoundingPolicy';
+{$IFDEF BINUX}
+function QGuiApplication_x11Display(handle: QGuiApplicationH): Pointer; cdecl; external Qt6PasLib name 'QGuiApplication_x11Display';
+function QGuiApplication_xcbConnection(handle: QGuiApplicationH): Pointer; cdecl; external Qt6PasLib name 'QGuiApplication_xcbConnection';
+{$ENDIF}
 
 
 type
