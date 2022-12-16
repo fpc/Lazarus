@@ -897,8 +897,7 @@ begin
     (Result as INonFormDesigner).LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
-    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId]
-    then begin
+    if Result is INonControlDesigner then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
       if MediatorClass<>nil then
@@ -1290,6 +1289,21 @@ var
       Result := Screen.PrimaryMonitor;
   end;
 
+  procedure CreateMediator;
+  begin
+    if Mediator<>nil then exit;
+    MediatorClass:=GetDesignerMediatorClass(TComponentClass(NewComponent.ClassType));
+    if MediatorClass<>nil then begin
+      Mediator:=MediatorClass.CreateMediator(nil,NewComponent);
+      FreeMediator:=Mediator<>nil;
+    end;
+    //DebugLn(['TCustomFormEditor.CreateComponent ',DbgSName(NewComponent),' ',dbgs(Bounds(CompLeft,CompTop,CompWidth,CompHeight)),' ',Mediator<>nil]);
+    if Mediator<>nil then begin
+      Mediator.InitComponent(NewComponent,ParentComponent,
+        Bounds(CompLeft,CompTop,CompWidth,CompHeight));
+    end;
+  end;
+
 begin
   Result:=nil;
   AParent:=nil;
@@ -1466,6 +1480,7 @@ begin
           AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LazLongRec(AControl.DesignInfo).Lo,',',LazLongRec(AControl.DesignInfo).Hi]);
         end;
+        CreateMediator;
       end
       else
       if (NewComponent is TDataModule) then
@@ -1501,19 +1516,7 @@ begin
           DesignForm := GetDesignerForm(ParentComponent);
           if DesignForm <> nil then DesignForm.Invalidate;
         end;
-        if Mediator=nil then begin
-          MediatorClass:=GetDesignerMediatorClass(TComponentClass(NewComponent.ClassType));
-          if MediatorClass<>nil then begin
-            Mediator:=MediatorClass.CreateMediator(nil,NewComponent);
-            FreeMediator:=Mediator<>nil;
-          end;
-        end;
-        //DebugLn(['TCustomFormEditor.CreateComponent ',DbgSName(NewComponent),' ',dbgs(Bounds(CompLeft,CompTop,CompWidth,CompHeight)),' ',Mediator<>nil]);
-        if Mediator<>nil then begin
-          Mediator.InitComponent(NewComponent,ParentComponent,
-            Bounds(CompLeft,CompTop,CompWidth,CompHeight));
-        end;
-
+        CreateMediator;
       end;
     except
       on e: Exception do begin
