@@ -916,14 +916,45 @@ allocated and SimplePanel is set to <b>True</b>.
 
 <element name="TStatusBar.UpdateHandleObject">
 <short>
-<var>UpdateHandleObject</var> - updates all panel parts that have been 
-changed.
+Updates the handle for the status bar when one or all of the panels on the 
+control need to be updated.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>UpdateHandleObject</var> is a method used to update the widgetset handle 
+for the status bar. It calls either the Update or PanelUpdate method in the 
+widget when one or all of the Panels on the status bar need to be redrawn.
+</p>
+<p>
+<var>PanelIndex</var> contains the ordinal position for the panel(s) updated  
+on the status bar. A value in the range <b>0..Panels.Count-1</b> causes the 
+corresponding panel to be redrawn when the status bar is updated. -1 (or any 
+value less than zero actually) causes all of the defined Panels to be redrawn.
+</p>
+<p>
+No actions are performed in the method when the handle has not been allocated 
+for the widgetset class, or when SimplePanel is enabled and PanelIndex 
+contains a value other than 0 (zero).
+</p>
+<p>
+UpdateHandleObject is called when the visual appearance for the status bar has 
+been changed. It occurs when the component is loaded from its LCL resource, 
+and when the handle for the widget is allocated. It is also called when a new 
+value is assigned to the SimplePanel or BiDiMode properties.
+</p>
+</descr>
+<seealso>
+<link id="TStatusBar.Panels"/>
+<link id="TStatusBar.SimplePanel"/>
+<link id="TStatusBar.BiDiMode"/>
+<link id="TStatusBar.Loaded"/>
+<link id="TStatusBar.OnDrawPanel"/>
+</seealso>
 </element>
 <element name="TStatusBar.UpdateHandleObject.PanelIndex">
-<short/>
+<short>
+Ordinal position for the panel updated on the control, or -1 for all panels.
+</short>
 </element>
 
 <element name="TStatusBar.CalculatePreferredSize">
@@ -2221,6 +2252,7 @@ PageList.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TNBPages.FPageList"/>
 <element name="TNBPages.FNotebook"/>
 
@@ -2229,12 +2261,8 @@ PageList.
 <descr/>
 <seealso/>
 </element>
-<element name="TNBPages.PageListChange.Ptr">
-<short/>
-</element>
-<element name="TNBPages.PageListChange.AnAction">
-<short/>
-</element>
+<element name="TNBPages.PageListChange.Ptr"/>
+<element name="TNBPages.PageListChange.AnAction"/>
 
 <element name="TNBPages.Get">
 <short>Implements read access to values for the Strings property.</short>
@@ -2545,48 +2573,79 @@ removes the methods used to add and maintain the values in the class instance.
 </element>
 
 <element name="TNBNoPages.Get">
-<short/>
+<short>
+Gets the caption for the page at the specified ordinal position.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#rtl.classes.TStrings">TStrings</link>
+</seealso>
 </element>
 <element name="TNBNoPages.Get.Result">
-<short/>
+<short>
+Caption for the TCustomPage instance at the specified position.
+</short>
 </element>
 <element name="TNBNoPages.Get.Index">
-<short/>
+<short>
+Ordinal position in the list of pages for the requested value.
+</short>
 </element>
 
 <element name="TNBNoPages.GetCount">
-<short/>
-<descr/>
+<short>
+Gets the value for the Count property.
+</short>
+<descr>
+<p>Always returns 0 (zero) in TNBNoPages.</p>
+</descr>
 <seealso/>
 </element>
 <element name="TNBNoPages.GetCount.Result">
-<short/>
+<short>
+Value for the Count property.
+</short>
 </element>
 
 <element name="TNBNoPages.IndexOfPage">
-<short/>
-<descr/>
+<short>
+Gets the ordinal position in the page list for the specified page object.
+</short>
+<descr>
+<p>Always returns -1 in TNBNoPages.</p>
+</descr>
 <seealso/>
 </element>
 <element name="TNBNoPages.IndexOfPage.Result">
-<short/>
+<short>
+Always returns -1 in TNBNoPages.
+</short>
 </element>
 <element name="TNBNoPages.IndexOfPage.AnObject">
-<short/>
+<short>
+Page object to locate in the page list. Not used in the method.
+</short>
 </element>
 
 <element name="TNBNoPages.GetPage">
-<short/>
-<descr/>
+<short>
+Gets the page object at the specified position in the page list.
+</short>
+<descr>
+<p>Always returns <b>Nil</b> in TNBNoPages.</p>
+</descr>
 <seealso/>
 </element>
 <element name="TNBNoPages.GetPage.Result">
-<short/>
+<short>
+Always returns <b>Nil</b> in TNBNoPages.
+</short>
 </element>
 <element name="TNBNoPages.GetPage.Index">
-<short/>
+<short>
+Ordinal position for the page object retrieved in the method. Not used in 
+TNBNoPages.
+</short>
 </element>
 
 <element name="TTabChangingEvent">
@@ -2663,80 +2722,151 @@ Tabs are drawn using the tab style common to manilla file folders.
 
 <element name="TTabGetImageEvent">
 <short>
-<var>TTabGetImageEvent</var> - generic event handling method for getting an 
-image for a Tab.
+Specifies an event handler type used to get the position in an image list for 
+the image on a tab.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TTabGetImageEvent</var> is the type used for the OnGetImageIndex event 
+handler in TCustomTabControl.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.OnGetImageIndex"/>
+</seealso>
 </element>
 <element name="TTabGetImageEvent.Sender">
-<short>Object for the event notification.</short>
+<short>
+Object (TCustomTabControl) for the event notification. Provides access to the 
+pages and the image list for the control.
+</short>
 </element>
 <element name="TTabGetImageEvent.TabIndex">
-<short/>
+<short>
+Ordinal position for the tab (or page) examined in the handler.
+</short>
 </element>
 <element name="TTabGetImageEvent.ImageIndex">
-<short/>
+<short>
+Used to return the ordinal position for the image displayed for the specified 
+tab. Return -1 if an image index is not assigned or available for the tab.
+</short>
 </element>
 
 <element name="TCTabControlOption">
 <short>
-<var>TCTabControlOption</var> - Show the close button on a tab, allow 
-multi-line tabs.
+Represents the LCL options available for TCustomTabControl.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCTabControlOption.nboShowCloseButtons">
-<short/>
+<short>
+Enables close buttons on each tab control page. Requires support in the native 
+tab control for a given platform.
+</short>
 </element>
 <element name="TCTabControlOption.nboMultiLine">
-<short/>
+<short>
+Enables word wrapped, multi-line captions on tabs.
+</short>
+</element>
+<element name="TCTabControlOption.nboHidePageListPopup">
+<short>
+Hides the pop-up list of tab pages.
+</short>
+</element>
+<element name="TCTabControlOption.nboKeyboardTabSwitch">
+<short>
+Enables use of the tab key to change the active page on a tab control.
+</short>
+</element>
+<element name="TCTabControlOption.nboShowAddTabButton">
+<short>
+Enables a button which adds a page to a tab control.
+</short>
+</element>
+<element name="TCTabControlOption.nboDoChangeOnSetIndex">
+<short>
+Causes the OnChange event handler to be signalled when a value is assigned to 
+the TabIndex property in a tab control.
+</short>
 </element>
 
 <element name="TCTabControlOptions">
 <short>
-<var>TCTabControlOptions</var> - set of <var>TCTabControlOption</var>.
+Set type used to store values from the TCTabControlOption enumeration.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TCTabControlOptions</var> is a set type used to store zero (0) or more 
+values from the <var>TCTabControlOption</var> enumeration. When a value is 
+included in the set, the corresponding option is enabled in a tab control.
+</p>
+<p>
+TCTabControlOptions is the type used to implement the Options property in 
+TCustomTabControl.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Options"/>
+<link id="TCTabControlOption"/>
+</seealso>
 </element>
 
 <element name="TCTabControlCapability">
 <short>
-<var>TCTabControlCapability</var> - enumerated type containing possible 
-capabilities of a notebook or tabbed control.
+Represents the capabilities which can be enabled for a notebook or tab control.
 </short>
-<descr>
-nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton
-</descr>
+<descr/>
+<seealso>
+<link id="TCTabControlCapabilities"/>
+<link id="TCustomTabControl.GetCapabilities"/>
+</seealso>
 </element>
 <element name="TCTabControlCapability.nbcShowCloseButtons">
-<short/>
+<short>
+Indicates the widgetset class allows close buttons on each tab in a tab 
+control.
+</short>
 </element>
 <element name="TCTabControlCapability.nbcMultiLine">
-<short/>
+<short>
+Indicates the widgetset class allows multi-line captions on tabs in a tab 
+control.
+</short>
 </element>
 <element name="TCTabControlCapability.nbcPageListPopup">
-<short/>
+<short>
+Indicates the widgetset class displays a button for the pop-up page list for a tab control.
+</short>
 </element>
 <element name="TCTabControlCapability.nbcShowAddTabButton">
-<short/>
+<short>
+Indicates the widgetset class displays a button to add a page to a tab control.
+</short>
 </element>
 <element name="TCTabControlCapability.nbcTabsSizeable">
-<short/>
+<short>
+Indicates the widgetset class allows the size of a tab to be changed for a tab 
+control.
+</short>
 </element>
 
 <element name="TCTabControlCapabilities">
 <short>
-<var>TCTabControlCapabilities</var> - set of 
-<var>TCTabControlCapability</var>.
+Set type used to store values from the TCTabControlCapability enumeration.
 </short>
+<descr/>
+<seealso>
+<link id="TCTabControlCapability"/>
+<link id="TCustomTabControl.GetCapabilities"/>
+</seealso>
 </element>
 
 <element name="TDrawTabEvent">
 <short>
-Specifies an event handler signalled to draw the tab at the given index to a 
+Specifies an event handler used to draw the tab at the given index to a 
 display rectangle on a tab control.
 </short>
 <descr>
@@ -2746,18 +2876,10 @@ TDrawTabEvent is not used in the current LCL implementation.
 </descr>
 <seealso/>
 </element>
-<element name="TDrawTabEvent.Control">
-<short/>
-</element>
-<element name="TDrawTabEvent.TabIndex">
-<short/>
-</element>
-<element name="TDrawTabEvent.Rect">
-<short/>
-</element>
-<element name="TDrawTabEvent.Active">
-<short/>
-</element>
+<element name="TDrawTabEvent.Control"/>
+<element name="TDrawTabEvent.TabIndex"/>
+<element name="TDrawTabEvent.Rect"/>
+<element name="TDrawTabEvent.Active"/>
 
 <element name="TCustomTabControl">
 <short>
@@ -2779,6 +2901,7 @@ pages.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TCustomTabControl.FAccess"/>
 <element name="TCustomTabControl.FAddingPages"/>
 <element name="TCustomTabControl.FHotTrack"/>
@@ -2804,32 +2927,22 @@ pages.
 
 <element name="TCustomTabControl.DoSendPageIndex">
 <short>Notifies the widgetset class when PageIndex has been changed.</short>
-<descr/>
-<seealso/>
 </element>
 
 <element name="TCustomTabControl.DoSendShowTabs">
 <short>Notifies the widgetset class when ShowTabs has been changed.</short>
-<descr/>
-<seealso/>
 </element>
 
 <element name="TCustomTabControl.DoSendTabPosition">
 <short>Notifies the widgetset class when TabPosition has been changed.</short>
-<descr/>
-<seealso/>
 </element>
 
 <element name="TCustomTabControl.DoSendTabSize">
 <short>Notifies the widgetset class when TabSize has been changed.</short>
-<descr/>
-<seealso/>
 </element>
 
 <element name="TCustomTabControl.DoImageListChange">
 <short>Notifies the widgetset class when Images has been changed.</short>
-<descr/>
-<seealso/>
 </element>
 
 <element name="TCustomTabControl.GetActivePage">
@@ -2969,12 +3082,8 @@ Notifies the widgetset class when a page is moved in the control.
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomTabControl.WSMovePage.APage">
-<short/>
-</element>
-<element name="TCustomTabControl.WSMovePage.NewIndex">
-<short/>
-</element>
+<element name="TCustomTabControl.WSMovePage.APage"/>
+<element name="TCustomTabControl.WSMovePage.NewIndex"/>
 
 <element name="TCustomTabControl.PageRemoved">
 <short>
@@ -3183,23 +3292,37 @@ Queued and executed asynchronously by the Application instance.
 <short>Pointer to the Data for the asynchronous event.</short>
 </element>
 
+<!-- protected -->
 <element name="TCustomTabControl.DoAutoAdjustLayout">
 <short>
 Performs actions needed to apply the specified auto-adjust layout policy.
 </short>
-<descr/>
+<descr>
+<p>
+Notifies the widgetset class when Images is assigned and AMode contains an 
+adjustment policy that affects their scaling.
+</p>
+</descr>
 <seealso>
+<link id="TCustomTabControl.Images"/>
 <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+<link id="#lcl.controls.TLayoutAdjustmentPolicy">TLayoutAdjustmentPolicy</link>
 </seealso>
 </element>
 <element name="TCustomTabControl.DoAutoAdjustLayout.AMode">
-<short/>
+<short>
+Layout adjustment policy applied in the method.
+</short>
 </element>
 <element name="TCustomTabControl.DoAutoAdjustLayout.AXProportion">
-<short/>
+<short>
+Horizontal scaling factor for a layout adjustment policy.
+</short>
 </element>
 <element name="TCustomTabControl.DoAutoAdjustLayout.AYProportion">
-<short/>
+<short>
+Vertical scaling factor for a layout adjustment policy.
+</short>
 </element>
 
 <element name="TCustomTabControl.GetPageClass">
@@ -3207,7 +3330,10 @@ Performs actions needed to apply the specified auto-adjust layout policy.
 Gets the class type used to create new page instances in the control.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTabControl.InsertPage"/>
+<link id="TNBPages.InsertPage"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.GetPageClass.Result">
 <short>Class type used to create new page instances in the control.</short>
@@ -3215,7 +3341,7 @@ Gets the class type used to create new page instances in the control.
 
 <element name="TCustomTabControl.GetListClass">
 <short>
-Gets the class type used to access a list of pages in the control.
+Gets the class type used to create the page list class for the control.
 </short>
 <descr/>
 <seealso/>
@@ -3308,10 +3434,21 @@ Called when a new value is assigned to PageIndex.
 <seealso/>
 </element>
 
-<element name="TCustomTabControl.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
-<short/>
-<descr/>
-<seealso/>
+<element name="TCustomTabControl.InitializeWnd">
+<short>
+Copies cached control properties and initializes a new tab control instance. 
+</short>
+<descr>
+<p>
+<var>InitializeWnd</var> is an overridden method in 
+<var>TCustomTabControl</var>. It is called after the Handle has been created, 
+and before child handles are created. InitializeWnd ensures that internal 
+members in the class instance are initialized when the handle is allocated.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.Change">
@@ -3433,50 +3570,122 @@ ShowControl is provided for Delphi compatibility.
 
 <element name="TCustomTabControl.IndexOfTabAt">
 <short>
-<var>IndexOfTabAt</var> returns the index value for the Tab located at the 
-specified client coordinates.
+Returns the ordinal position for the visible tab located at the specified 
+client coordinates.
 </short>
-<descr/>
+<descr>
+<p>
+<var>IndexOfTab</var> is an overloaded method in <var>TCustomTabControl</var> 
+used to get the position for a tab located at the client client coordinates. 
+The overloaded variants allow the client position to be specified as separate 
+Integer values, or as a TPoint instance where the X and Y members contain the 
+client-relative coordinates.
+</p>
+<p>
+IndexOfTabAt calls the GetTabIndexAtPos method in the widgetset class to get 
+the ordinal tab position in the return value. The return value is -1 if a tab 
+is not visible at the specified coordinates, or when the handle has not been 
+allocated for the widget instance.
+</p>
+<p>
+<b>Example Usage:</b>
+</p>
+<code>
+APos := TabControl1.IndexOfTabAt(TabControl1.ScreenToClient(Mouse.CursorPos));
+</code>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTabControl.IndexOfTabAt.Result">
-<short/>
+<short>
+Ordinal position in Tabs for the visible tab located at the specified 
+coordinates, or -1 when not found or available.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfTabAt.X">
-<short/>
+<short>
+Horizontal client coordinate for the tab position located in the method.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfTabAt.Y">
-<short/>
+<short>
+Vertical client coordinate for the tab position located in the method.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfTabAt.P">
-<short/>
+<short>
+TPoint instance with the client coordinates for the requested tab index.
+</short>
 </element>
 
 <element name="TCustomTabControl.IndexOfPageAt">
 <short>
-Gets the index for the page at the specified client coordinates.
+Gets the ordinal position for the page object located at the specified client 
+coordinates.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IndexOfPageAt</var> is an overloaded method in 
+<var>TCustomTabControl</var> used to get the ordinal position for the page 
+object located at the specified client coordinates. The overloaded variants 
+allow the client coordinates to be specified as separate Integer values, or as 
+a TPoint instance where the X and Y members contain the client-relative 
+coordinates.
+</p>
+<p>
+<b>Example Usage:</b>
+</p>
+<code>
+APos := TabControl1.IndexOfPageAt(TabControl1.ScreenToClient(Mouse.CursorPos));
+</code>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.TabToPageIndex"/>
+<link id="TCustomTabControl.IndexOfTabAt"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.IndexOfPageAt.Result">
-<short/>
+<short>
+Ordinal position for the page object located the specified client coordinates.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfPageAt.X">
-<short/>
+<short>
+Horizontal client coordinate for the page position located in the method.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfPageAt.Y">
-<short/>
+<short>
+Vertical client coordinate for the page position located in the method.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOfPageAt.P">
-<short/>
+<short>
+TPoint instance with the client coordinates for the requested page index.
+</short>
 </element>
 
 <element name="TCustomTabControl.UpdateTabProperties">
 <short>
-<var>UpdateTabProperties</var> - apply all pending changes to the Tab.</short>
-<descr/>
-<seealso/>
+Applies property changes for all of the pages on the tab control to the 
+widgetset class instances.
+</short>
+<descr>
+<p>
+Calls the UpdateTabProperties method for the page objects defined in the widget instance.
+</p>
+<p>
+No actions are performed in the method if the Handle has not been allocated 
+for the widget instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageCount"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.GetControlClassDefaultSize">
@@ -3489,12 +3698,15 @@ inherited values.
 </seealso>
 </element>
 <element name="TCustomTabControl.GetControlClassDefaultSize.Result">
-<short/>
+<short>
+TSize instance with the default dimensions for a new instance of the tab 
+control.
+</short>
 </element>
 
 <element name="TCustomTabControl.Notification">
 <short>
-Handles the notification when a component is added to or removed from the 
+Handles a notification when a component is added to or removed from the 
 control.
 </short>
 <descr>
@@ -3598,6 +3810,7 @@ Use <var>Tabs</var> to access the internal page (or tab) list for the control.
 <descr/>
 <seealso>
 <link id="TCustomTabControl.Page"/>
+<link id="TCustomPage"/>
 </seealso>
 </element>
 <element name="TCustomTabControl.GetPage.Result">
@@ -3612,6 +3825,7 @@ Use <var>Tabs</var> to access the internal page (or tab) list for the control.
 <descr/>
 <seealso>
 <link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.Page"/>
 </seealso>
 </element>
 <element name="TCustomTabControl.GetPageCount.Result">
@@ -3620,39 +3834,108 @@ Use <var>Tabs</var> to access the internal page (or tab) list for the control.
 
 <element name="TCustomTabControl.InsertPage">
 <short>
-Updates the control when the specified page is inserted into the page list.
+Inserts the specified page into the page list and updates both the page and 
+the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>InsertPage</var> is a method used to insert the page object in 
+<var>APage</var> into the page list at the ordinal position specified in 
+<var>Index</var>.
+</p>
+<p>
+<var>APage</var> is the TCustomPage instance inserted as a new tab on the 
+tabbed control. Values in the Flags property in APage are updated to reflect 
+the page object state, both before the page is stored and after the page has 
+been inserted.
+</p>
+<p>
+InsertPage sets the Parent property in APage to the current tab control 
+instance. The SetControlIndex is called (when needed) to set the Z-axis order 
+for the page object on the parent control.
+</p>
+<p>
+If an ActivePage has not been assigned for the control, the value in Index is 
+stored in the PageIndex property to make the new page the active page. Values 
+in the ControlStyle property are updated to indicate whether the page is the 
+active page on the IDE design surface.
+</p>
+<p>
+No actions are performed in the method if the page object in APage is already 
+stored in the page list.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.IndexOf"/>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomPage"/>
+<link id="TNBPages.Insert"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.InsertPage.APage">
-<short/>
+<short>
+TCustomPage instance inserted in the page list at the specified ordinal 
+position.
+</short>
 </element>
 <element name="TCustomTabControl.InsertPage.Index">
-<short/>
+<short>
+Ordinal position in the page list where the specified page object is inserted.
+</short>
 </element>
 
 <element name="TCustomTabControl.RemovePage">
 <short>
-Updates the control when the page at the specified position is removed from 
-the page list.
+Removes the page object at the specified position in the page list and 
+updates the visible tabs on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>RemovePage</var> is a method used to remove the page object at the 
+position specified in Index from the page list in the tabbed control.
+</p>
+<p>
+RemovePage gets the TCustomPage instance at the specified position in Page and 
+performs actions needed to remove the page object. The TabVisible property in 
+the page is set to <b>False</b>, and the page is removed from both the local 
+page list and the page list in the widget. PageIndex is decremented when it 
+contains the page Index removed in the method.
+</p>
+<p>
+No actions are performed in the method if Index is not in the range 
+<b>0..PageCount-1</b>.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.PageIndex"/>
+<link id="TNBPages.DeletePage"/>
+<link id="TCustomPage.TabVisible"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.RemovePage.Index">
-<short/>
+<short>
+Ordinal position for the page object removed from the page list.
+</short>
 </element>
 
 <element name="TCustomTabControl.CanChange">
 <short>
 Signals the OnChanging event handler prior to updates to PageIndex.
 </short>
-<descr/>
+<descr>
+<p>
+Provided for Delphi code compatibility. Use CanChangePageIndex instead.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTabControl.CanChange.Result">
-<short>Always returns <b>True</b>.</short>
+<short>
+True if the value in PageIndex (ActivePage) can be changed.
+</short>
 </element>
 
 <element name="TCustomTabControl.DisplayRect">
@@ -3751,13 +4034,22 @@ control, and when a tab is re-ordered using the <var>MoveTab</var> method.
 </seealso>
 </element>
 
+<!-- public -->
 <element name="TCustomTabControl.Create">
 <short>
-<var>Create</var> - constructor for <var>TCustomTabControl</var>: calls 
-inherited <var>Create</var> creates a page list, then sets initial bounds and 
-default values for local variables and properties.
+Constructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for 
+<var>TCustomTabControl</var>, and calls the inherited <var>Create</var> method 
+on entry. Create allocates resources needed for the internal page list and 
+the change link for its image list. It sets the default values for properties, 
+including: PageIndex, ControlStyle, TabPosition, TabStop and ShowTabs. It also 
+sets the initial bounds for the control to the values returned from 
+GetControlClassDefaultSize.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
 </seealso>
@@ -3781,17 +4073,34 @@ frees pages and list, then calls inherited <var>Destroy</var>.
 
 <element name="TCustomTabControl.TabRect">
 <short>
-Gets the client rectangle for the control adjusted to the parent (when 
-needed).
+Gets the client rectangle for the specified tab adjusted to the parent.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TabRect</var> is a <var>TRect</var> function used to get the rectangle 
+for the tab specified in the AIndex argument.
+</p>
+<p>
+TabRect calls the GetTabRect in the widget instance to get the return value 
+for the method. The values in the rectangle are adjusted to reflect the client 
+coordinates relative to the Parent for the control.
+</p>
+<p>
+If the handle has not been allocated for the widget, the return value is a 
+rectangle where the Left, Top, Bottom, and Right members are all set to -1.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTabControl.TabRect.Result">
-<short/>
+<short>
+TRect instance with the client rectangle for the specified tab.
+</short>
 </element>
 <element name="TCustomTabControl.TabRect.Index">
-<short/>
+<short>
+Ordinal position for the tab coordinates in the return value.
+</short>
 </element>
 
 <element name="TCustomTabControl.GetImageIndex">
@@ -3835,29 +4144,44 @@ displayed on a tab is needed.
 
 <element name="TCustomTabControl.IndexOf">
 <short>
-<var>IndexOf</var> - returns the index value of a specified page.</short>
+Gets the ordinal position in the page list for the specified page object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TNBPages.IndexOfPage"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.IndexOf.Result">
-<short/>
+<short>
+Ordinal position in the page list for the page object, or -1 when not found.
+</short>
 </element>
 <element name="TCustomTabControl.IndexOf.APage">
-<short/>
+<short>
+Page object (TPersistent) to locate in the page list.
+</short>
 </element>
 
 <element name="TCustomTabControl.CustomPage">
 <short>
-<var>CustomPage</var> - returns the page specified by <var>Index</var>.
+Gets the page object at the specified position as a TCustomPage type.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.GetPage"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.CustomPage.Result">
-<short/>
+<short>
+TCustomPage instance for the page object at the specified position in the page 
+list.
+</short>
 </element>
 <element name="TCustomTabControl.CustomPage.Index">
-<short/>
+<short>
+Ordinal position in the page list for the return value.  
+</short>
 </element>
 
 <element name="TCustomTabControl.CanChangePageIndex">
@@ -3866,40 +4190,85 @@ displayed on a tab is needed.
 the index of the page.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTabControl.CanChange"/>
+<link id="TCustomTabControl.PageIndex"/>
+<link id="TCustomTabControl.OnChanging"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.CanChangePageIndex.Result">
-<short/>
+<short>
+<b>True</b> if the value in PageIndex can be changed to make another page/tab 
+become active.
+</short>
 </element>
 
 <element name="TCustomTabControl.GetMinimumTabWidth">
 <short>
-<var>GetMinimumTabWidth</var> - find the smallest permissible tab 
-width.</short>
-<descr/>
+Gets the smallest tab width allowed on the tabbed control.
+</short>
+<descr>
+<p>
+The return value is provide by the GetNotebookMinTabWidth method in the 
+widgetset class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTabControl.GetMinimumTabWidth.Result">
-<short/>
+<short>
+Minimum tab width in pixels.
+</short>
 </element>
 
 <element name="TCustomTabControl.GetMinimumTabHeight">
 <short>
-<var>GetMinimumTabHeight</var> - find the least permissible height for a 
-tab.</short>
-<descr/>
+Gets the smallest tab height allowed on the tabbed control.
+</short>
+<descr>
+<p>
+The return value is provide by the GetNotebookMinTabHeight method in the 
+widgetset class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTabControl.GetMinimumTabHeight.Result">
-<short/>
+<short>
+Minimum tab height in pixels.
+</short>
 </element>
 
 <element name="TCustomTabControl.GetCapabilities">
 <short>
-<var>GetCapabilities</var> - returns the set of capabilities.
+Gets the set of platform-specific tab control options supported for the 
+widgetset.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The return value is provided by the GetCapabilities method in the widgetset 
+class instance.
+</p>
+<p>
+GetCapabilities is called when a new value is assigned to a property, like 
+TabWidth and TabHeight, which may not be available on all of the supported LCL 
+platforms. If the platform does not support the capability, the new property 
+value is <b>not</b> posted to the widgetset class instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Options"/>
+<link id="TCTabControlCapabilities"/>
+<link id="TCTabControlCapability"/>
+<link id="TCTabControlOptions"/>
+<link id="TCTabControlOption"/>
+</seealso>
+</element>
+<element name="TCustomTabControl.GetCapabilities.Result">
+<short>
+Set type with the TCTabControlCapability enumeration values supported for the 
+platform.
+</short>
 </element>
 
 <element name="TCustomTabControl.TabToPageIndex">
@@ -3924,55 +4293,140 @@ on the designer surface.
 <seealso/>
 </element>
 <element name="TCustomTabControl.TabToPageIndex.Result">
-<short/>
+<short>
+Ordinal page index after adjusting for tabs/pages not currently visible on the 
+control.
+</short>
 </element>
 <element name="TCustomTabControl.TabToPageIndex.AIndex">
-<short/>
+<short>
+Ordinal position for the visible tab to convert to a physical page index.
+</short>  
 </element>
 
 <element name="TCustomTabControl.PageToTabIndex">
 <short>
-Maps the LCL page to the tab index in the widgetset class.
+Maps a LCL page index to a tab index in the widgetset class.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>PageToTabIndex</var> is an <var>Integer</var> function used to get the 
+tab index for the specified page index. A page index is the physical location 
+in the list of page objects. A tab index, on the other hand, is the logical 
+position within the visible tabs on the tabbed control.
+</p>
+<p>
+<var>AIndex</var> is the ordinal position in the page list for a tab, and is 
+converted to the logical tab index in the return value. Values in AIndex must 
+be in the range <b>0..PageCount-1</b>.
+</p>
+<p>
+The return value contains the position for the tab when only visible tabs are 
+taken into consideration. In other words, the physical page index minus any 
+preceding page objects with their TabVisible property set to <b>False</b>.
+</p>
+<p>
+The return value is -1 when AIndex has a value less than 0 (zero) or greater 
+than PageCount-1, or when the page object at the position in AIndex is not 
+visible.
+</p>
+<remark>
+At design-time, all tabs are visible on the design surface for the tabbed 
+control. The return value is set to the value in AIndex at design-time.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomPage.TabVisible"/>
+<link id="TCustomPage.PageIndex"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.PageToTabIndex.Result">
-<short/>
+<short>
+Ordinal position for the page object in the list of visible tabs on the 
+control.
+</short>
 </element>
 <element name="TCustomTabControl.PageToTabIndex.AIndex">
-<short/>
+<short>
+Ordinal position for the page object in the internal list.
+</short>
 </element>
 
 <element name="TCustomTabControl.DoCloseTabClicked">
 <short>
-<var>DoCloseTabClicked</var> - perform the action associated with clicking 
-the Close tab for this page (<var>OnCloseTabClicked</var>).
+Performs actions needed when the tab for the specified page object is closed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoCloseTabClicked</var> signals the OnCloseTabClicked event handler (when 
+assigned) using the value in <var>APage</var> as the Sender for the event 
+notification. DoCloseTabClicked occurs when the user clicks on the close 
+button for a tab.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.OnCloseTabClicked"/>
+<link id="TCustomPage"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 <element name="TCustomTabControl.DoCloseTabClicked.APage">
-<short/>
+<short>
+Page object (TCustomPage) for the tab closed on the control.
+</short>
 </element>
 
 <element name="TCustomTabControl.HotTrack">
 <short>
-<var>HotTrack</var> - the property whereby the item under the mouse pointer 
-becomes emphasized.
+Enables or disables drawing a "hotlighted" tab when the mouse pointer is 
+hovered over the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>HotTrack</var> is a <var>Boolean</var> property which indicates whether a 
+tab on the control is "hot-lighted" (or highlighted but not selected) when the 
+mouse is hovered over the tab. The default value for the property is 
+<b>False</b> and disables the feature. When enabled, the tab is drawn (when 
+hovered) using the background color in clHotlight.
+</p>
+</descr>
 <seealso>
-<link id="TCustomListView.HotTrack"/>
+<!-- link id="TCustomListView.HotTrack"/ -->
 </seealso>
 </element>
 
 <element name="TCustomTabControl.Images">
 <short>
-<var>Images</var> - the list of images associated with the pages of this 
-notebook.</short>
-<descr/>
-<seealso/>
+Contains the images displayed on the tabs for the control.
+</short>
+<descr>
+<p>
+<var>Images</var> is a <var>TCustomImageList</var> property which contains the 
+images displayed on tabs for the control. Assigning a new image list to the 
+property causes the widgetset class instance to be updated; the image list, 
+the tab position, and properties for the page objects are sent to the widget. 
+The Invalidate method is called to cause the control to be redrawn.
+</p>
+<p>
+Use ImagesWidth to set the default width and height for the images in the list.
+</p>
+<p>
+Use the indexed Page property to access to each page object on the tabbed 
+control.
+</p>
+<p>
+Use the ImageIndex property in the TCustomPage instances to specify which 
+image is displayed for a given tab/page on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.ImagesWidth"/>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomPage.ImageIndex"/>
+<link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.ImagesWidth">
@@ -4000,111 +4454,396 @@ called to propagate the change to all tabs in the control.
 
 <element name="TCustomTabControl.MultiLine">
 <short>
-<var>MultiLine</var> - whether the Tab's caption is allowed to have multiple 
-lines.
+Indicates whether the caption on a tab can have multiple lines of text.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MultiLine</var> is a <var>Boolean</var> property which indicates whether 
+the caption for a tab can be displayed as multiple lines of text. A multi-line 
+caption may be needed when the length of the text exceeds the value in 
+TabWidth, or the caption text contains embedded end-of-line character(s).
+</p>
+<p>
+MultiLine contains <b>True</b> when the value nboMultiLine has been included 
+in the Options for the tabbed control. The default value for the property is 
+<b>False</b> and limits tab captions to a single line of text.
+</p>
+<p>
+Changing the value for the property causes the Options property to be updated 
+to reflect the new property value. When set to <b>True</b>, nboMultiLine is 
+included in the Options property. Otherwise, the value is excluded from 
+Options.
+</p>
+<remark>
+MultiLine (and the nboMultiLine option) may not be supported on all of the 
+platforms where the LCL is hosted. Use the GetCapabilities method to determine 
+whether a specific tab control option is supported for the platform.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Options"/>
+<link id="TCustomTabControl.Pages"/>
+<link id="TCustomTabControl.TabWidth"/>
+<link id="TCustomTabControl.GetCapabilities"/>
+<link id="TCTabControlOption"/>
+<link id="TCTabControlOptions"/>
+<link id="TCTabControlCapabilities"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.MultiSelect">
 <short>
-<var>MultiSelect</var> - whether multiple Tabs are allowed to be selected at 
-the same time (e.g. by pressing Shift or Ctrl while selecting).
+Indicates whether multiple tabs can be simultaneously selected on the tabbed 
+control.
 </short>
 <descr/>
+<p>
+<var>MultiSelect</var> is a <var>Boolean</var> property which controls whether 
+multiple tabs can be simultaneously selected on the tab control. When set to 
+<b>True</b>, additional tabs can be selected by holding Shift or Ctrl when the mouse button is clicked.
+</p>
 <seealso/>
 </element>
 
 <element name="TCustomTabControl.OnChanging">
 <short>
-<var>OnChanging</var> - event handler for changing a tab.</short>
-<descr/>
-<seealso/>
+Event handler signalled prior to changing the active tab/page on the tabbed 
+control.
+</short>
+<descr>
+<p>
+<var>OnChanging</var> is a <var>TTabChangingEvent</var> property with the 
+event handler signalled prior to changing the active page/tab on the tabbed 
+control. OnChanging is signalled from the CanChange method, and occurs 
+immediately before the new value is applied to the PageIndex property.
+</p>
+<p>
+An application can implement and assign a handler routine to the property to 
+determine whether the PageIndex and the active tab/page can be changed.
+</p>
+<p>
+The <var>Sender</var> argument is the TCustomTabControl for the event. 
+</p>
+<p>
+<var>AllowChange</var> is a variable argument which indicates whether 
+PageIndex can be changed. When set to <b>True</b> (the default), the value in 
+PageIndex can be updated. Otherwise, the value in PageIndex is not updated.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.CanChange"/>
+<link id="TCustomTabControl.CanChangePageIndex"/>
+<link id="TCustomTabControl.PageIndex"/>
+<link id="TTabChangingEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.OnCloseTabClicked">
 <short>
-<var>OnCloseTabClicked</var> - event handler for clicking on the Close button 
-to close a tab.
+Event handler signalled when a tab is closed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCloseTabClicked</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when a tab on the control is closed. OnCloseTabClicked 
+is signalled (when assigned) when the user clicks on the close button for a 
+given tab. An application can implement and assign a handler routine which 
+performs actions needed when the tab is closed.
+</p>
+<p>
+The <var>Sender</var> argument contains the tabbed control instance for the 
+event notification, but must be cast to <var>TCustomTabControl</var> to access 
+properties and methods specific for the class type.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.DoCloseTabClicked"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.OnGetImageIndex">
 <short>
-<var>OnGetImageIndex</var> - event handler for getting an image index.
+Event handler signalled to get the image index for a tab on the tabbed control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnGetImageIndex</var> is a <var>TTabGetImageEvent</var> property with the 
+event handler signalled to get the ordinal position for the image displayed 
+for the specified tab. It is signalled (when assigned) from the GetImageIndex 
+method, and allows the application to override the value assigned to the 
+ImageIndex property in a page object (TCustomPage).
+</p>
+<p>
+The <var>Sender</var> argument is the object (TCustomTabControl) for the event 
+notification.
+</p>
+<p>
+<var>TabIndex</var> contains the ordinal position for a tab/page which is 
+visible on the tabbed control.
+</p>
+<p>
+<var>ImageIndex</var> is a variable argument used to return the position in 
+Images for the bitmap displayed on the specified tab. Return -1 in the 
+argument value if an image is not available in Images or not needed for the 
+tab.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Images"/>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.GetImageIndex"/>
+<link id="TCustomPage.ImageIndex"/>
+<link id="TTabGetImageEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.Options">
 <short>
-The set of <var>Options</var> for the Notebook: Show close buttons on the 
-tabs, multi-line tabs.
+The set of Options enabled for the tabbed control.
 </short>
 <descr>
-<p>The set of <var>Options</var> for the Notebook: </p>
 <p>
-<var>nboShowCloseButtons</var> (display a little Close Button on the Tab next 
-to the label to allow a user to close that tab),</p>
+<var>Options</var> is a <var>TCTabControlOptions</var> property with the set 
+of options enabled for the tabbed control. It contains values from the 
+<var>TCTabControlOption</var> enumeration which enable the corresponding 
+features, including:
+</p>
+<dl>
+<dt>nboShowCloseButtons</dt>
+<dd>
+Enables close buttons on each tab control page. Requires support in the native 
+tab control for a given platform.
+</dd>
+<dt>nboMultiLine</dt>
+<dd>
+Enables word wrapped or multi-line captions on tabs. Used to read or write the 
+value for the MultiLine property.
+</dd>
+<dt>nboHidePageListPopup</dt>
+<dd>
+Hides the pop-up list of tab pages.
+</dd>
+<dt>nboKeyboardTabSwitch</dt>
+<dd>
+Enables use of the Tab key to change the active page on a tabbed control. When 
+enabled, Ctrl+Tab moves to the next tab and Ctrl+Shift+Tab moves to the 
+previous tab. Tab and Shift+Tab are used for navigation between controls in 
+the tab order for the parent form.
+</dd>
+<dt>nboShowAddTabButton</dt>
+<dd>
+Enables a button which adds a page to a tab control.
+</dd>
+<dt>nboDoChangeOnSetIndex</dt>
+<dd>
+Causes the OnChange event handler to be signalled when a value is assigned to 
+the to ActivePage or PageIndex properties.
+</dd>
+</dl>
 <p>
-<var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
+The default value for the property is an empty set ([]) and indicates that 
+none of the optional features are enabled. Changing the value for the property 
+causes the widgetset class instance to be updated when its handle has been 
+allocated.
+</p>
 </descr>
+<seealso>
+<link id="TCustomTabControl.ActivePage"/>
+<link id="TCustomTabControl.PageIndex"/>
+<link id="TCustomTabControl.KeyDown"/>
+<link id="TCustomTabControl.MultiLine"/>
+<link id="TCustomTabControl.DoChange"/>
+<link id="TCustomTabControl.OnChange"/>
+<link id="TCTabControlOptions"/>
+<link id="TCTabControlOption"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.OwnerDraw">
 <short>
-<var>OwnerDraw</var> - is the calling routine (<var>Owner</var>) allowed to 
-specify the drawing method?
+Reads and write the value for the OwnerDraw property in Tabs.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OwnerDraw</var> is a <var>Boolean</var> property. Its value is read from 
+and written to the corresponding property in Tabs. In widgetset classes, it 
+affects the style flags for a tab -  but is not used in the current LCL 
+version or its widgetsets.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomTabControl.Page">
-<short>The current <var>Page</var> of the Notebook.</short>
-<descr/>
-<seealso/>
+<short>
+Provides indexed access to the page objects used on the tabbed control.
+</short>
+<descr>
+<p>
+<var>Page</var> is an indexed read-only <var>TCustomPage</var> property used 
+to access the page objects on the tabbed control by their ordinal position in 
+the internal page list.
+</p>
+<p>
+Use InsertPage or RemovePage to maintain the TCustomPage instances in the page 
+list.
+</p>
+<p>
+Use PageCount to get the number of page objects in the internal list.
+</p>
+<p>
+Use PageIndex to red or write the selected page object on the tabbed control.
+</p>
+<p>
+Use Tabs or Pages to access the list of captions for the tabs/page objects on 
+the tabbed control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.Pages"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.ActivePageComponent"/>
+<link id="TCustomTabControl.InsertPage"/>
+<link id="TCustomTabControl.RemovePage"/>
+<link id="TCustomPage"/>
+<link id="TNBPages.GetPage"/>
+</seealso>
 </element>
 <element name="TCustomTabControl.Page.Index">
-<short/>
+<short>
+Ordinal position for the TCustomPage instance in the property value.
+</short>
 </element>
 
 <element name="TCustomTabControl.PageCount">
 <short>
-<var>PageCount</var> - the number of Pages in the Notebook.</short>
-<descr/>
-<seealso/>
+Returns the number of page objects stored in the internal page list for the 
+tabbed control.  
+</short>
+<descr>
+<p>
+<var>PageCount</var> is a read-only <var>Integer</var> property with the 
+number of TCustomPage instances in the internal page list for the control. The 
+value for the property is read from the Count property in the internal 
+TNBPages instance in the control.
+</p>
+<p>
+Use InsertPage or RemovePage to maintain the page objects in the list.
+</p>
+<p>
+Use tabs or Pages to access the list with the captions for the tabs on the 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.Pages"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomPage"/>
+<link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.PageIndex">
 <short>
-<var>PageIndex</var> - Index number of the current page.</short>
-<descr/>
-<seealso/>
+Ordinal position for the selected page on the tabbed control.
+</short>
+<descr>
+<p>
+<var>PageIndex</var> is an <var>Integer</var> property which indicates the 
+ordinal position in the page list for the selected page object on the tabbed 
+control. The default value for the property is -1 and indicates that a page/
+tab is not active on the control.
+</p>
+<p>
+Changing the value for the property causes the OnChange event handler to be 
+signalled when nboDoChangeOnSetIndex has been included in the Options for the 
+control. OnChange is not signalled at design-time - even when enabled in 
+Options. The InternalSetPageIndex method is called to update the property 
+value and the design-time flags for the control. The new value is also sent to 
+the widgetset class instance.
+</p>
+<p>
+No actions are needed or performed when PageIndex is set to -1, or when its  
+value is larger than PageCount-1.
+</p>
+<p>
+The value in PageIndex is used to determine the value for both the ActivePage 
+and ActivePageComponent properties. Changing the value in either of these 
+properties causes PageIndex to be updated (when allowed by Options and 
+CanChangePageIndex).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Options"/>
+<link id="TCustomTabControl.PageCount"/>
+<link id="TCustomTabControl.Pages"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.TabToPageIndex"/>
+<link id="TCustomTabControl.ActivePage"/>
+<link id="TCustomTabControl.ActivePageComponent"/>
+<link id="TCustomTabControl.OnChange"/>
+<link id="TCustomTabControl.CanChange"/>
+<link id="TCustomTabControl.CanChangePageIndex"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.Pages">
-<short>The list of page names in the control.</short>
-<descr/>
-<seealso/>
+<short>
+The list of captions for the page objects on the control.
+</short>
+<descr>
+<p>
+<var>Pages</var> is a read-only <var>TStrings</var> property which provides 
+access to the list with the captions and page objects for the tabbed control. 
+At run-time, the GetListClass is used to get the class type needed to create 
+the member. The default list class type is TNBPages in TCustomTabControl. 
+</p>
+<p>
+Methods in TCustomTabControl cast the internal list to the TNBPages type when 
+reading or writing its values.
+</p>
+<p>
+Use InsertPage or RemovePage to maintain the page objects in the Pages 
+property.
+</p>
+<p>
+Use the indexed Page property to access a TCustomPage instance for a page by 
+its ordinal position in Pages.
+</p>
+<p>
+Use Tabs to access the list with the captions for the tabs on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.InsertPage"/>
+<link id="TCustomTabControl.RemovePage"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.GetListClass"/>
+<link id="TNBPages"/>
+<link id="#rtl.classes.TStrings">TStrings</link>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.RaggedRight">
 <short>
-<var>RaggedRight</var> - un-justified or un-aligned text.
+Enables or disables justified text in the captions for tabs on the control.
 </short>
-<descr/>
+<descr>
+<p>
+When set to False, captions are center-justified on the tabs. This property  
+requires support for the capability in the native tab control for the platform.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomTabControl.ScrollOpposite">
 <short>
-<var>ScrollOpposite</var> - is scrolling to happen in the opposite direction 
-to usual?
+Introduced for use in descendent classes.
 </short>
 <descr/>
 <seealso/>
@@ -4112,7 +4851,7 @@ to usual?
 
 <element name="TCustomTabControl.ShowTabs">
 <short>
-Shows the tabs for each page when set to <b>True</b> (default).
+Enables display of tabs on the control when set to <b>True</b> (default).
 </short>
 <descr/>
 <seealso/>
@@ -4120,43 +4859,130 @@ Shows the tabs for each page when set to <b>True</b> (default).
 
 <element name="TCustomTabControl.Style">
 <short>
-<var>Style</var> - Tabs, buttons or flat buttons?
+Indicates the display style for the tabs on the tabbed control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Style</var> is a <var>TTabStyle</var> property which controls the visual 
+appearance and behavior for the tabs on the control. The default value for the 
+property is tsTabs and causes convention tab appearance and behavior to be 
+used for the tab controls. See TTabStyle for the values for the property and 
+their meanings.
+</p>
+</descr>
+<seealso>
+<link id="TTabStyle"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.TabHeight">
 <short>
-<var>TabHeight</var> - height of the tabs.
+Height in pixels for the tabs on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TabHeight</var> is a <var>SmallInt</var> property which contains the 
+number of pixels used as the height for the tabs displayed on the tabbed 
+control. The default value is 0 (zero) and causes the default value for the 
+native tab control to be used.
+</p>
+<p>
+Changing the value for the property causes the widgetset class instance to be 
+updated with the new value.
+</p>
+<remark>
+Use of TabHeight requires support for the feature in the native tab control. 
+The property value is not used if nbcTabsSizeable is not included in the 
+capabilities for the platform (GetCapabilities).
+</remark>
+<p>
+Use TabWidth to set the width for the tabs on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.TabWidth"/>
+<link id="TCustomTabControl.Style"/>
+<link id="TCustomTabControl.ShowTabs"/>
+<link id="TCustomTabControl.GetCapabilities"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.TabPosition">
 <short>
-<var>TabPosition</var> - top, bottom, left or right.
+Indicates the edge where the tabs for the control are aligned.
 </short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TCustomTabControl.TabWidth">
-<short>Width of the tabs displayed on the control.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TCustomTabControl.TabStop">
-<short>Enables or disables navigation using the Tab key.</short>
 <descr>
 <p>
-The default value for the property is <b>True</b> in 
-<var>TCustomTabControl</var>.
+<var>TabPosition</var> is a <var>TTabPosition</var> property which indicates 
+the edge on the control where its tabs are aligned. The default value for the 
+property is tpTop and causes the tabs to be drawn across the top edge of the 
+control. Changing the value for the property causes to the widgetset class 
+instance to be updated with the new value.
 </p>
 </descr>
 <seealso>
+<link id="TCustomTabControl.ShowTabs"/>
+<link id="TCustomTabControl.Style"/>
+<link id="TTabPosition"/>
+</seealso>
+</element>
+
+<element name="TCustomTabControl.TabWidth">
+<short>
+Width in pixels for the tabs on the control.
+</short>
+<descr>
+<p>
+<var>TabWidth</var> is a <var>SmallInt</var> property which contains the 
+number of pixels used as the width for the tabs displayed on the tabbed 
+control. The default value is 0 (zero) and causes the default value for the 
+native tab control to be used.
+</p>
+<p>
+Changing the value for the property causes the widgetset class instance to be 
+updated with the new value.
+</p>
+<remark>
+Use of TabWidth requires support for the feature in the native tab control. 
+The property value is not used if nbcTabsSizeable is not included in the 
+capabilities for the platform (GetCapabilities).
+</remark>
+<p>
+Use TabHeight to set the width for the tabs on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.TabHeight"/>
+<link id="TCustomTabControl.Style"/>
+<link id="TCustomTabControl.ShowTabs"/>
+<link id="TCustomTabControl.GetCapabilities"/>
+</seealso>
+</element>
+
+<!-- published -->
+<element name="TCustomTabControl.TabStop">
+<short>
+Enables or disables navigation using the Tab key.
+</short>
+<descr>
+<p>
+<var>TabStop</var> is a <var>Boolean</var> property which indicates whether 
+the Tab key can be used to navigate between adjacent controls in the tab order 
+for the parent control. The default value for the property is <b>True</b> in 
+<var>TCustomTabControl</var>.
+</p>
+<p>
+When enabled, the Tab key changes the focus to the next control in the tab 
+order. Shift+Tab changes the focus to the previous control in the tab order.
+</p>
+<p>
+Include nboKeyboardTabSwitch in the Options property to enable use Ctrl+Tab 
+and Shift+Ctrl+Tab to change the active tab on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Options"/>
+<link id="#lcl.controls.TWinControl.TabOrder">TWinControl.TabOrder</link>
 <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
 </seealso>
 </element>
@@ -4542,10 +5368,14 @@ be added and client placed on it.
 </seealso>
 </element>
 
-<element name="TPageControl.DockOver" link="#lcl.controls.TWinControl.DockOver">
-<short>Called to check whether this control allows docking and where.</short>
+<element name="TPageControl.DockOver">
+<short>
+Called to check whether this control allows docking and where.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.controls.TWinControl.DockOver">TWinControl.DockOver</link>
+</seealso>
 </element>
 <element name="TPageControl.DockOver.Source">
 <short/>
@@ -4575,6 +5405,7 @@ be added and client placed on it.
 
 <element name="TPageControl.DoUndockClientMsg" link="#lcl.controls.TWinControl.DoUndockClientMsg"/>
 
+<!-- TODO: Needs description for override. -->
 <element name="TPageControl.ChildClassAllowed" link="#lcl.controls.TWinControl.ChildClassAllowed">
 <short/>
 <descr/>
