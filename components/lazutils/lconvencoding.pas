@@ -64,6 +64,7 @@ const
   EncodingCP437 = 'cp437';
   EncodingCP850 = 'cp850';
   EncodingCP852 = 'cp852';
+  EncodingCP865 = 'cp865';
   EncodingCP866 = 'cp866';
   EncodingCP874 = 'cp874';
 
@@ -155,6 +156,7 @@ function CP1258ToUTF8(const s: string): string; // vietnam
 function CP437ToUTF8(const s: string): string;  // DOS central europe
 function CP850ToUTF8(const s: string): string;  // DOS western europe
 function CP852ToUTF8(const s: string): string;  // DOS central europe
+function CP865ToUTF8(const s: string): string;  // DOS nordic
 function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyrillic
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8RToUTF8(const s: string): string;  // russian cyrillic
@@ -191,6 +193,7 @@ function UTF8ToCP1258(const s: string; SetTargetCodePage: boolean = false): RawB
 function UTF8ToCP437(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS central europe
 function UTF8ToCP850(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS western europe
 function UTF8ToCP852(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS central europe
+function UTF8ToCP865(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS nordic
 function UTF8ToCP866(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // thai
 function UTF8ToKOI8R(const s: string; SetTargetCodePage: boolean = false): RawByteString;  // russian cyrillic
@@ -486,6 +489,11 @@ end;
 function CP852ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayCP852ToUTF8);
+end;
+
+function CP865ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayCP865ToUTF8);
 end;
 
 function CP866ToUTF8(const s: string): string;
@@ -1077,6 +1085,142 @@ begin
   9600: Result:=223;
   9604: Result:=220;
   9608: Result:=219;
+  9617..9619: Result:=Unicode-9441;
+  9632: Result:=254;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToCP865(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  160: Result:=255;
+  161: Result:=173;
+  163: Result:=163-7;
+  164: Result:=$AF;
+  170: Result:=166;
+  171: Result:=174;
+  172: Result:=170;
+  176: Result:=248;
+  177: Result:=241;
+  178: Result:=253;
+  181: Result:=230;
+  183: Result:=250;
+  186: Result:=167;
+  188: Result:=172;
+  189: Result:=171;
+  191: Result:=168;
+  196..197: Result:=Unicode-54;
+  198: Result:=146;
+  199: Result:=128;
+  201: Result:=144;
+  209: Result:=165;
+  214: Result:=153;
+  216: Result:=$9D;
+  220: Result:=154;
+  223: Result:=225;
+  224: Result:=133;
+  225: Result:=160;
+  226: Result:=131;
+  228: Result:=132;
+  229: Result:=134;
+  230: Result:=145;
+  231: Result:=135;
+  232: Result:=138;
+  233: Result:=130;
+  234..235: Result:=Unicode-98;
+  236: Result:=141;
+  237: Result:=161;
+  238: Result:=140;
+  239: Result:=139;
+  241: Result:=164;
+  242: Result:=149;
+  243: Result:=162;
+  244: Result:=147;
+  246: Result:=148;
+  247: Result:=246;
+  248: Result:=$9B;
+  249: Result:=151;
+  250: Result:=163;
+  251: Result:=150;
+  252: Result:=129;
+  255: Result:=152;
+  262: Result := 93;
+  263: Result := 125;
+  268: Result := 94;
+  269: Result := 126;
+  272: Result := 92;
+  273: Result := 124;
+  381: Result := 64;
+  382: Result := 96;
+  352: Result := 91;
+  353: Result := 123;
+  402: Result:=159;
+  915: Result:=226;
+  920: Result:=233;
+  931: Result:=228;
+  934: Result:=232;
+  937: Result:=234;
+  945: Result:=224;
+  948: Result:=235;
+  949: Result:=238;
+  960: Result:=227;
+  963: Result:=229;
+  964: Result:=231;
+  966: Result:=237;
+  8319: Result:=252;
+  8359: Result:=158;
+  8729: Result:=249;
+  8730: Result:=251;
+  8734: Result:=236;
+  8745: Result:=239;
+  8776: Result:=247;
+  8801: Result:=240;
+  8804: Result:=243;
+  8805: Result:=242;
+  8976: Result:=169;
+  8992..8993: Result:=Unicode-8748;
+  9472: Result:=196;
+  9474: Result:=179;
+  9484: Result:=218;
+  9488: Result:=191;
+  9492: Result:=192;
+  9496: Result:=217;
+  9500: Result:=195;
+  9508: Result:=180;
+  9516: Result:=194;
+  9524: Result:=193;
+  9532: Result:=197;
+  9552: Result:=205;
+  9553: Result:=186;
+  9554..9555: Result:=Unicode-9341;
+  9556: Result:=201;
+  9557: Result:=184;
+  9558: Result:=183;
+  9559: Result:=187;
+  9560: Result:=212;
+  9561: Result:=211;
+  9562: Result:=200;
+  9563: Result:=190;
+  9564: Result:=189;
+  9565: Result:=188;
+  9566..9567: Result:=Unicode-9368;
+  9568: Result:=204;
+  9569..9570: Result:=Unicode-9388;
+  9571: Result:=185;
+  9572..9573: Result:=Unicode-9363;
+  9574: Result:=203;
+  9575..9576: Result:=Unicode-9368;
+  9577: Result:=202;
+  9578: Result:=216;
+  9579: Result:=215;
+  9580: Result:=206;
+  9600: Result:=223;
+  9604: Result:=220;
+  9608: Result:=219;
+  9612: Result:=221;
+  9616: Result:=222;
   9617..9619: Result:=Unicode-9441;
   9632: Result:=254;
   else Result:=-1;
@@ -2518,6 +2662,11 @@ begin
   InternalUTF8ToCP(s,852,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP852{$endif},Result);
 end;
 
+function UTF8ToCP865(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,865,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP865{$endif},Result);
+end;
+
 function UTF8ToCP866(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
   InternalUTF8ToCP(s,866,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToCP866{$endif},Result);
@@ -2690,6 +2839,7 @@ begin
   List.Add(EncodingCP437);
   List.Add(EncodingCP850);
   List.Add(EncodingCP852);
+  List.Add(EncodingCP865);
   List.Add(EncodingCP866);
   List.Add(EncodingCP874);
 
@@ -2887,6 +3037,7 @@ begin
   if ATo=EncodingCP437 then begin Result:=UTF8ToCP437(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP850 then begin Result:=UTF8ToCP850(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP852 then begin Result:=UTF8ToCP852(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCP865 then begin Result:=UTF8ToCP865(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP866 then begin Result:=UTF8ToCP866(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP874 then begin Result:=UTF8ToCP874(s,SetTargetCodePage); exit; end;
   {$IFnDEF DisableAsianCodePages}
@@ -2943,6 +3094,7 @@ begin
   if AFrom=EncodingCP437 then begin Result:=CP437ToUTF8(s); exit; end;
   if AFrom=EncodingCP850 then begin Result:=CP850ToUTF8(s); exit; end;
   if AFrom=EncodingCP852 then begin Result:=CP852ToUTF8(s); exit; end;
+  if AFrom=EncodingCP865 then begin Result:=CP865ToUTF8(s); exit; end;
   if AFrom=EncodingCP866 then begin Result:=CP866ToUTF8(s); exit; end;
   if AFrom=EncodingCP874 then begin Result:=CP874ToUTF8(s); exit; end;
   {$IFnDEF DisableAsianCodePages}
