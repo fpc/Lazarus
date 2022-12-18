@@ -26,6 +26,9 @@ unit TAChartUtils;
 interface
 
 uses
+  {$IF FPC_FULLVERSION>30300}
+  System.UITypes,
+  {$ENDIF}
   Classes, Math, Types, SysUtils;
 
 const
@@ -47,12 +50,24 @@ type
   EListenerError = class(EChartError);
   EDrawDataError = class(EChartError);
 
+  {$IF FPC_FULLVERSION>30300}
+  TChartColor = TColor;
+  TChartFontStyle = TFontStyle;
+  TChartFontStyles = TFontStyles;
+const
+  cfsBold = fsBold;
+  cfsItalic = fsItalic;
+  cfsUnderline = fsUnderline;
+  cfsStrikeout = fsStrikeout;
+type
+  {$ELSE}
   // Like TColor, but avoiding dependency on Graphics.
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
 
   // dto with TFontStyle
   TChartFontStyle = (cfsBold, cfsItalic, cfsUnderline, cfsStrikeout);
   TChartFontStyles = set of TChartFontStyle;
+  {$ENDIF}
 
   TChartTextFormat = (tfNormal, tfHTML);
 

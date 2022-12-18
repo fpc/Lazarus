@@ -126,7 +126,7 @@ end;
 
 function DelphiIntToFpcFontStyle(aStyle: Integer): TFontStyles;
 begin
-  result := TFontStyles(aStyle);
+  result := TFontStyles(Byte(aStyle));
 end;
 
 function DelphiIntToFPCFrameBorders(aFrameTyp: Integer): TfrFrameBorders;
