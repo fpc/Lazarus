@@ -2136,11 +2136,7 @@ begin
   cfg.SetValue(AKey + '/name/value', AFont.Name);
   cfg.SetValue(AKey + '/size/value', AFont.Size);
   cfg.SetValue(AKey + '/color/value', ColorToString(AFont.Color));
-  {$IF FPC_FULLVERSION>=30300}
-  cfg.SetValue(AKey + '/style/value', Byte(AFont.Style));
-  {$ELSE}
   cfg.SetValue(AKey + '/style/value', Integer(AFont.Style));
-  {$ENDIF}
 end;
 
 procedure CfgGetFontValue(cfg: TXMLConfig; AKey: WideString; AFont: TFont);
@@ -2148,11 +2144,7 @@ begin
   AFont.Name := cfg.GetValue(AKey + '/name/value', 'default');
   AFont.Size := cfg.GetValue(AKey + '/size/value', 0);
   AFont.Color:= StringToColor(cfg.GetValue(AKey + '/color/value', 'clWindowText'));
-  {$IF FPC_FULLVERSION>=30300}
-  AFont.Style:= TFontStyles(Byte(cfg.GetValue(AKey + '/style/value', 0)));
-  {$ELSE}
   AFont.Style:= TFontStyles(cfg.GetValue(AKey + '/style/value', 0));
-  {$ENDIF}
 end;
 
 // Draws a dotted rectangle by drawing each enabled side. By default all sides are

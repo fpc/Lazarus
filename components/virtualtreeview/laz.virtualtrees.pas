@@ -11757,11 +11757,7 @@ begin
       ReadBuffer(Dummy, SizeOf(Dummy));
       Pitch := TFontPitch(Dummy);
       ReadBuffer(Dummy, SizeOf(Dummy));
-      {$IF FPC_FULLVERSION>30300}
-      Style := TFontStyles(Byte(Dummy));
-      {$ELSE}
       Style := TFontStyles(LongWord(Dummy));
-      {$ENDIF}
     end;
     // LCL port started with header stream version 6 so no need to do the check here
     // Read data introduced by stream version 1+.
@@ -12034,11 +12030,7 @@ begin
       WriteBuffer(PAnsiChar(Tmp)^, Dummy);
       Dummy := Ord(Pitch);
       WriteBuffer(Dummy, SizeOf(Dummy));
-      {$IF FPC_FULLVERSION>30300}
-      Dummy := Byte(Style);
-      {$ELSE}
       Dummy := Integer(Style);
-      {$ENDIF}
       WriteBuffer(Dummy, SizeOf(Dummy));
     end;
 
