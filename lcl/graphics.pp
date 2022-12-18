@@ -72,6 +72,16 @@ type
   PColor = {$IFDEF UseSystemUITypes}System.UITypes.PColor{$ELSE}^TColor{$ENDIF};
   TColor = TGraphicsColor;
 
+  {$IF FPC_FULLVERSION>=30300}
+  TFontPitch = System.UITypes.TFontPitch;
+  TFontName = System.UITypes.TFontName;
+  TFontDataName = System.UITypes.TFontDataName;
+  TFontStyle = System.UITypes.TFontStyle;
+  TFontStyles = System.UITypes.TFontStyles;
+  TFontStylesBase = System.UITypes.TFontStylesBase;
+  TFontCharSet = System.UITypes.TFontCharSet;
+  TFontQuality = System.UITypes.TFontQuality;
+  {$ELSE}
   TFontPitch = (fpDefault, fpVariable, fpFixed);
   TFontName = string;
   TFontDataName = string[LF_FACESIZE -1];
@@ -81,6 +91,7 @@ type
   TFontCharSet = 0..255;
   TFontQuality = (fqDefault, fqDraft, fqProof, fqNonAntialiased, fqAntialiased,
     fqCleartype, fqCleartypeNatural);
+  {$ENDIF}
 
   TFontData = record
     Handle: HFont;
@@ -94,6 +105,25 @@ type
   end;
 
 const
+  {$IF FPC_FULLVERSION>=30300}
+  fpDefault = System.UITypes.fpDefault;
+  fpVariable = System.UITypes.fpVariable;
+  fpFixed = System.UITypes.fpFixed;
+
+  fsBold = System.UITypes.fsBold;
+  fsItalic = System.UITypes.fsItalic;
+  fsUnderline = System.UITypes.fsUnderline;
+  fsStrikeOut = System.UITypes.fsStrikeOut;
+
+  fqDefault = System.UITypes.fqDefault;
+  fqDraft = System.UITypes.fqDraft;
+  fqProof = System.UITypes.fqProof;
+  fqNonAntialiased = System.UITypes.fqNonAntialiased;
+  fqAntialiased = System.UITypes.fqAntialiased;
+  fqCleartype = System.UITypes.fqCleartype;
+  fqCleartypeNatural = System.UITypes.fqCleartypeNatural;
+  {$ENDIF}
+
   // New TFont instances are initialized with the values in this structure.
   // About font default values: The default font is chosen by the interfaces
   // depending on the context. For example, there can be a different default

@@ -50,11 +50,6 @@ uses
   ;
 
 type
-  // forward class declarations
-  TIDesigner = class;
-  TMonitor = class;
-  TScrollingWinControl = class;
-
   TProcedure = procedure;
   TProcedureOfObject = procedure of object;
 
@@ -72,7 +67,25 @@ type
     );
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);
+  {$IF FPC_FULLVERSION >= 30300}
+  TCloseAction = System.UITypes.TCloseAction;
+  {$ELSE}
   TCloseAction = (caNone, caHide, caFree, caMinimize);
+  {$ENDIF}
+
+{$IF FPC_FULLVERSION >= 30300}
+const
+  caNone = System.UITypes.caNone;
+  caHide = System.UITypes.caHide;
+  caFree = System.UITypes.caFree;
+  caMinimize = System.UITypes.caMinimize;
+{$ENDIF}
+
+type
+  // forward class declarations
+  TIDesigner = class;
+  TMonitor = class;
+  TScrollingWinControl = class;
 
   { Hint actions }
 

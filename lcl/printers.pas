@@ -22,6 +22,9 @@ unit Printers;
 interface
 
 uses
+  {$IF FPC_FULLVERSION >= 30300}
+  System.UITypes,
+  {$ENDIF}
   Classes, SysUtils,
   // LazUtils
   LazLoggerBase, LazUTF8,
@@ -29,14 +32,33 @@ uses
   LCLProc, Graphics;
 
 type
-  TPrinter = Class;
-  EPrinter = class(Exception);
-
+  {$IF FPC_FULLVERSION >= 30300}
+  TPrinterOrientation = System.UITypes.TPrinterOrientation;
+  TPrinterCapability = System.UITypes.TPrinterCapability;
+  TPrinterCapabilities = System.UITypes.TPrinterCapabilities;
+  {$ELSE}
   TPrinterOrientation = (poPortrait,poLandscape,poReverseLandscape,poReversePortrait);
   TPrinterCapability  = (pcCopies, pcOrientation, pcCollation);
   TPrinterCapabilities= Set of TPrinterCapability;
+  {$ENDIF}
   TPrinterState       = (psNoDefine,psReady,psPrinting,psStopped);
   TPrinterType        = (ptLocal,ptNetWork);
+
+{$IF FPC_FULLVERSION >= 30300}
+const
+  poPortrait = System.UITypes.poPortrait;
+  poLandscape = System.UITypes.poLandscape;
+  poReverseLandscape = System.UITypes.poReverseLandscape;
+  poReversePortrait = System.UITypes.poReversePortrait;
+
+  pcCopies = System.UITypes.pcCopies;
+  pcOrientation = System.UITypes.pcOrientation;
+  pcCollation = System.UITypes.pcCollation;
+{$ENDIF}
+
+type
+  TPrinter = Class;
+  EPrinter = class(Exception);
 
   {
    This object it's a base class for TCanvas for TPrinter Object.

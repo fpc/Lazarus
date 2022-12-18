@@ -33,34 +33,42 @@ interface
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
+{$MACRO ON}
+
+{$IF FPC_FULLVERSION >= 30300}
+{$DEFINE SysUITypes:=System.UITypes}
+{$ELSE}
+{$DEFINE SysUITypes:=UITypes}
+{$ENDIF}
 
 {$INTERFACES CORBA}
 
 uses
+  SysUITypes,
   Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
   // LCL
   LCLStrConsts, LCLType, LCLProc, Graphics, LMessages, LCLIntf, InterfaceBase,
   ImgList, PropertyStorage, Menus, ActnList, LCLClasses, LResources, LCLPlatformDef,
   // LazUtils
-  GraphType, UITypes, LazMethodList, LazLoggerBase, LazTracer, LazUtilities;
+  GraphType, LazMethodList, LazLoggerBase, LazTracer, LazUtilities;
 
 {$I controlconsts.inc}
 
 const
   // Used for ModalResult
-  mrNone    = UITypes.mrNone;
-  mrOK      = UITypes.mrOK;
-  mrCancel  = UITypes.mrCancel;
-  mrAbort   = UITypes.mrAbort;
-  mrRetry   = UITypes.mrRetry;
-  mrIgnore  = UITypes.mrIgnore;
-  mrYes     = UITypes.mrYes;
-  mrNo      = UITypes.mrNo;
-  mrAll     = UITypes.mrAll;
-  mrNoToAll = UITypes.mrNoToAll;
-  mrYesToAll= UITypes.mrYesToAll;
-  mrClose   = UITypes.mrClose;
-  mrLast    = UITypes.mrLast;
+  mrNone    = SysUITypes.mrNone;
+  mrOK      = SysUITypes.mrOK;
+  mrCancel  = SysUITypes.mrCancel;
+  mrAbort   = SysUITypes.mrAbort;
+  mrRetry   = SysUITypes.mrRetry;
+  mrIgnore  = SysUITypes.mrIgnore;
+  mrYes     = SysUITypes.mrYes;
+  mrNo      = SysUITypes.mrNo;
+  mrAll     = SysUITypes.mrAll;
+  mrNoToAll = SysUITypes.mrNoToAll;
+  mrYesToAll= SysUITypes.mrYesToAll;
+  mrClose   = SysUITypes.mrClose;
+  mrLast    = SysUITypes.mrLast;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
   deprecated 'Use the ModalResultStr array from unit UITypes directly.';
@@ -167,11 +175,28 @@ type
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
+  {$IF FPC_FULLVERSION >= 30300}
+  TAnchorKind = SysUITypes.TAnchorKind;
+  TAnchors = SysUITypes.TAnchors;
+  TAnchorSideReference = SysUITypes.TAnchorSideReference;
+  {$ELSE}
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
   TAnchorSideReference = (asrTop, asrBottom, asrCenter);
+  {$ENDIF}
 
 const
+  {$IF FPC_FULLVERSION >= 30300}
+  akLeft = SysUITypes.akLeft;
+  akTop = SysUITypes.akTop;
+  akRight = SysUITypes.akRight;
+  akBottom = SysUITypes.akBottom;
+
+  asrTop = SysUITypes.asrTop;
+  asrBottom = SysUITypes.asrBottom;
+  asrCenter = SysUITypes.asrCenter;
+  {$ENDIF}
+
   asrLeft = asrTop;
   asrRight = asrBottom;
 
@@ -193,9 +218,21 @@ type
 
   TBevelCut = TGraphicsBevelCut;
 
+  {$IF FPC_FULLVERSION >= 30300}
+  TMouseButton = SysUITypes.TMouseButton;
+  {$ELSE}
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
+  {$ENDIF}
 
 const
+  {$IF FPC_FULLVERSION >= 30300}
+  mbLeft = SysUITypes.mbLeft;
+  mbRight = SysUITypes.mbRight;
+  mbMiddle = SysUITypes.mbMiddle;
+  mbExtra1 = SysUITypes.mbExtra1;
+  mbExtra2 = SysUITypes.mbExtra2;
+  {$ENDIF}
+
   fsAllStayOnTop = [fsStayOnTop, fsSystemStayOnTop];
   fsAllNonSystemStayOnTop = [fsStayOnTop];
 
@@ -430,11 +467,18 @@ type
 
   TDragObject = class;
 
+  {$IF FPC_FULLVERSION >= 30300}
+  TDragKind = SysUITypes.TDragKind;
+  TDragMode = SysUITypes.TDragMode;
+  TDragState = SysUITypes.TDragState;
+  TDragMessage = SysUITypes.TDragMessage;
+  {$ELSE}
   TDragKind = (dkDrag, dkDock);
   TDragMode = (dmManual , dmAutomatic);
   TDragState = (dsDragEnter, dsDragLeave, dsDragMove);
   TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
                   dmDragCancel,dmFindTarget);
+  {$ENDIF}
 
   TDragOverEvent = procedure(Sender, Source: TObject;
                X,Y: Integer; State: TDragState; var Accept: Boolean) of object;
@@ -938,7 +982,11 @@ type
     );
   TControlAutoSizePhases = set of TControlAutoSizePhase;
 
+  {$IF FPC_FULLVERSION >= 30300}
+  TTabOrder = SysUITypes.TTabOrder;
+  {$ELSE}
   TTabOrder = -1..32767;
+  {$ENDIF}
 
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: PHintInfo) of object;
   TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint;
@@ -2804,6 +2852,25 @@ function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): Integer;
 // register (called by the package initialization in design mode)
 procedure Register;
 
+{$IF FPC_FULLVERSION >= 30300}
+const
+  dkDrag = SysUITypes.dkDrag;
+  dkDock = SysUITypes.dkDock;
+
+  dmManual = SysUITypes.dmManual;
+  dmAutomatic = SysUITypes.dmAutomatic;
+
+  dsDragEnter = SysUITypes.dsDragEnter;
+  dsDragLeave = SysUITypes.dsDragLeave;
+  dsDragMove = SysUITypes.dsDragMove;
+
+  dmDragEnter = SysUITypes.dmDragEnter;
+  dmDragLeave = SysUITypes.dmDragLeave;
+  dmDragMove = SysUITypes.dmDragMove;
+  dmDragDrop = SysUITypes.dmDragDrop;
+  dmDragCancel = SysUITypes.dmDragCancel;
+  dmFindTarget = SysUITypes.dmFindTarget;
+{$ENDIF}
 
 implementation
 
@@ -3051,7 +3118,7 @@ end;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
 begin
-  Result := UITypes.ModalResultStr[ModalResult];
+  Result := SysUITypes.ModalResultStr[ModalResult];
 end;
 
 {------------------------------------------------------------------------------
