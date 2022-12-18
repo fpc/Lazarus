@@ -1426,8 +1426,13 @@ const
 //------------
 // Font Styles
 //------------
+{$if FPC_FULLVERSION >= 30300}
+  LF_FULLFACESIZE = System.UITypes.LF_FULLFACESIZE;
+  LF_FACESIZE = System.UITypes.LF_FACESIZE;
+{$ELSE}
   LF_FULLFACESIZE = 64;
   LF_FACESIZE = 32;
+{$ENDIF}
 
   OUT_DEFAULT_PRECIS = 0;
   OUT_STRING_PRECIS = 1;
