@@ -609,6 +609,9 @@ menu/menu_environment_options_200.png
 menu/menu_exit.png
 menu/menu_exit_150.png
 menu/menu_exit_200.png
+menu/menu_exporthtml.png
+menu/menu_exporthtml_150.png
+menu/menu_exporthtml_200.png
 menu/menu_file_print.png
 menu/menu_file_print_150.png
 menu/menu_file_print_200.png
