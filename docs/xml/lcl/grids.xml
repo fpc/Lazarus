@@ -23613,17 +23613,55 @@ coordinates.
 </element>
 
 <element name="TCustomStringGrid.Modified">
-<short>Indicates if the content in the grid cells has been changed.</short>
+<short>
+Indicates whether the content in the grid cells has been changed.
+</short>
 <descr>
 <p>
-The value in <var>Modified</var> is set to <b>False</b> when Loaded using 
-the LCL streaming mechanism. The value in Modified is changed to <b>True</b> 
-when the <var>Cells</var> property is updated in the <var>SetCells</var> 
-method.
+<var>Modified</var> is a <var>Boolean</var> property which indicates whether 
+the cell content in the grid control has been changed. Modified is set to 
+<b>True</b> when the <var>Cells</var> property is updated and the 
+<var>SetCells</var> method is called to apply the new value. This occurs when 
+a cell is edited using a built-in cell editor, or when a value is directly 
+assigned to the Cells property.
+</p>
+<p>
+<var>Modified</var> is set to <b>False</b> when the control is Loaded using
+the LCL streaming mechanism. 
+</p>
+<p>
+Methods which use Cells to indirectly assign value(s) also set Modified to 
+<b>True</b>. These include: AssignTo, SelectionSetText, SelectionSetHTML, 
+SetCheckBoxState, SetEditText, LoadContent, Clean, InsertRowWithValues, 
+LoadContent, LoadFromFile, LoadFromStream, LoadFromCSVFile and 
+LoadFromCSVStream. 
+</p>
+<p>
+In contrast, methods which perform row or column operations without changing 
+Cells do <b>not</b> cause the Modified property to be set. These are generally 
+methods from an ancestor class where Modified does not exist, and include: 
+ClearCols, ClearRows, DeleteColRow, DeleteCol, DeleteRow, ExchangeColRow, 
+InsertColRow, MoveColRow, SortColRow, DoOPDeleteColRow, DoOPExchangeColRow, 
+DoOPInsertColRow, and DoOPMoveColRow.
+</p>
+<p>
+The event handlers signalled from these methods can be used to update the 
+value in Modified, including: OnColRowDeleted, OnColRowExchanged, 
+OnColRowInserted, OnColRowMoved, and OnCompareCells. Or, as an alternative, 
+update Modified from an event handler like OnClick assigned to the control 
+which triggers one of these operations.
+</p>
+<p>
+Methods which save the grid content do <b>not</b> reset the value in Modified 
+when the operation is completed. These include: SaveContent, SaveToFile, 
+SaveToCSVFile, SaveToStream, and SaveToCSVStream. These actions are triggered 
+by a control in the application, and its OnClick or OnExecute handler can be 
+used to set the value in Modified.
 </p>
 </descr>
 <seealso>
 <link id="TCustomStringGrid.Cells"/>
+<link id="TCustomStringGrid.SetCells"/>
 </seealso>
 </element>
 
