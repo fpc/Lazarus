@@ -39,6 +39,8 @@ type
   TLCLPlatforms = set of TLCLPlatform;
 
   function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
+  function DirNameToDisplayName(const ADirName: string): String;
+  function DisplayNameToDirName(const ADisplayName: String): String;
   function GetBuildLCLWidgetType: TLCLPlatform;
 
 const
@@ -104,6 +106,21 @@ begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
     if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
   Result:=lpGtk2;
+end;
+
+function DirNameToDisplayName(const ADirName: string): String;
+begin
+  Result:=LCLPlatformDisplayNames[DirNameToLCLPlatform(ADirName)];
+end;
+
+function DisplayNameToDirName(const ADisplayName: String): String;
+var
+  PlatForm: TLCLPlatform;
+begin
+  for PlatForm:=Low(TLCLPlatform) to High(TLCLPlatform) do
+    if CompareText(ADisplayName,LCLPlatformDisplayNames[PlatForm])=0 then
+      exit(LCLPlatformDirNames[PlatForm]);
+  Result:='gtk2';
 end;
 
 function GetBuildLCLWidgetType: TLCLPlatform;

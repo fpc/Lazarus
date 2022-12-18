@@ -35,18 +35,13 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  //Classes, SysUtils, types, LazLoggerBase, LazUTF8, Controls, Graphics, ComCtrls,
-  //Menus, LCLProc, IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, EnvironmentOpts,
-  //PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
-  //ModeMatrixOpts, ModeMatrixCtrl, compiler_config_target;
   Classes, SysUtils, types,
   // LazUtils
   LazLoggerBase, LazUTF8,
   // LCL
-  LCLProc, Controls, Graphics, ComCtrls, Menus,
+  LCLPlatformDef, Controls, Graphics, ComCtrls, Menus,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, CompOptsIntf,
-  KeywordFuncLists,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, CompOptsIntf, KeywordFuncLists,
   // IDE
   EnvironmentOpts, PackageSystem, PackageDefs, Project, LazarusIDEStrConsts,
   TransferMacros, ModeMatrixOpts, ModeMatrixCtrl, compiler_config_target;
@@ -514,6 +509,7 @@ var
 begin
   ValueMenuItem:=Sender as TMenuItem;
   Value:=GetCaptionValue(ValueMenuItem.Caption,fCaptionPatternMacroValue);
+  Value:=DisplayNameToDirName(Value);
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),'LCLWidgetType:='+Value);
   // Update LCLWidgetType to Config and Target page. ToDo: update also when deleting or changing.
   TargetFrame := TCompilerConfigTargetFrame(FDialog.FindEditor(TCompilerConfigTargetFrame));
@@ -618,7 +614,7 @@ begin
       if i=ParentMenu.Items.Count then
         ParentMenu.Items.Add(TMenuItem.Create(Self));
       ValueMI:=ParentMenu.Items[i];
-      ValueMI.Caption:=Format(fCaptionPatternMacroValue,[Mcr.Values[i]]);
+      ValueMI.Caption:=Format(fCaptionPatternMacroValue,[DirNameToDisplayName(Mcr.Values[i])]);
       ValueMI.OnClick:=@OnAddLCLWidgetTypeClick;
     end;
   end;
