@@ -152,6 +152,9 @@ ConvertEncodingErrorRaisesException variable.
 <element name="EncodingCP852">
 <short>Encoding name for Code Page 852.</short>
 </element>
+<element name="EncodingCP865">
+<short>Encoding name for Code Page 865.</short>
+</element>
 <element name="EncodingCP866">
 <short>Encoding name for Code Page 866.</short>
 </element>
@@ -336,14 +339,48 @@ corresponding conversion routines:
 <dd>UTF8ToISO_8859_14</dd>
 <dt>EncodingCPIso15 ('iso885915')</dt>
 <dd>UTF8ToISO_8859_15</dd>
+<dt>EncodingCPIso16 ('iso885916')</dt>
+<dd>UTF8ToISO_8859_16</dd>
 <dt>EncodingCP1250 ('cp1250')</dt>
 <dd>UTF8ToCP1250</dd>
+<dt>EncodingCP1251 ('cp1251')</dt>
+<dd>UTF8ToCP1251</dd>
 <dt>EncodingCP1252 ('cp1252')</dt>
 <dd>UTF8ToCP1252</dd>
+<dt>EncodingCP1253 ('cp1253')</dt>
+<dd>UTF8ToCP1253</dd>
+<dt>EncodingCP1254 ('cp1254')</dt>
+<dd>UTF8ToCP1254</dd>
+<dt>EncodingCP1255 ('cp1255')</dt>
+<dd>UTF8ToCP1255</dd>
+<dt>EncodingCP1256 ('cp1256')</dt>
+<dd>UTF8ToCP1256</dd>
+<dt>EncodingCP1257 ('cp1257')</dt>
+<dd>UTF8ToCP1257</dd>
+<dt>EncodingCP1258 ('cp1258')</dt>
+<dd>UTF8ToCP1258</dd>
 <dt>EncodingCP850 ('cp850')</dt>
 <dd>UTF8ToCP850</dd>
+<dt>EncodingCP852 ('cp852')</dt>
+<dd>UTF8ToCP852</dd>
+<dt>EncodingCP865 ('cp865')</dt>
+<dd>UTF8ToCP865</dd>
+<dt>EncodingCP866 ('cp866')</dt>
+<dd>UTF8ToCP866</dd>
+<dt>EncodingCP874 ('cp874')</dt>
+<dd>UTF8ToCP874</dd>
 <dt>EncodingCPKOI8R ('koi8r')</dt>
 <dd>UTF8ToKOI8R</dd>
+<dt>EncodingCPKOI8U ('koi8u')</dt>
+<dd>UTF8ToKOI8U</dd>
+<dt>EncodingCPKOI8RU ('koi8ru')</dt>
+<dd>UTF8ToKOI8RU</dd>
+<dt>EncodingCPMac ('macinstosh')</dt>
+<dd>UTF8ToMacinstosh</dd>
+<dt>EncodingUCS2LE ('ucs2le')</dt>
+<dd>UTF8ToUCS2LE</dd>
+<dt>EncodingUCS2BE ('ucs2be')</dt>
+<dd>UTF8ToUCS2BE</dd>
 <dt>EncodingAnsi ('ansi')</dt>
 <dd>ConvertUTF8ToAnsi</dd>
 </dl>
@@ -439,12 +476,55 @@ corresponding conversion routines:
 <dd>ISO_8859_16ToUTF8</dd>
 <dt>EncodingCP1250 ('cp1250')</dt>
 <dd>CP1250ToUTF8</dd>
+<dt>EncodingCP1251 ('cp1251')</dt>
+<dd>CP1251ToUTF8</dd>
 <dt>EncodingCP1252 ('cp1252')</dt>
 <dd>CP1252ToUTF8</dd>
+<dt>EncodingCP1253 ('cp1253')</dt>
+<dd>CP1253ToUTF8</dd>
+<dt>EncodingCP1254 ('cp1254')</dt>
+<dd>CP1254ToUTF8</dd>
+<dt>EncodingCP1255 ('cp1255')</dt>
+<dd>CP1255ToUTF8</dd>
+<dt>EncodingCP1256 ('cp1256')</dt>
+<dd>CP1256ToUTF8</dd>
+<dt>EncodingCP1257 ('cp1257')</dt>
+<dd>CP1257ToUTF8</dd>
+<dt>EncodingCP1258 ('cp1258')</dt>
+<dd>CP1258ToUTF8</dd>
+<dt>EncodingCP437 ('cp437')</dt>
+<dd>CP437ToUTF8</dd>
 <dt>EncodingCP850 ('cp850')</dt>
 <dd>CP850ToUTF8</dd>
+<dt>EncodingCP852 ('cp852')</dt>
+<dd>CP852ToUTF8</dd>
+<dt>EncodingCP854 ('cp865')</dt>
+<dd>CP865ToUTF8</dd>
+<dt>EncodingCP866 ('cp866')</dt>
+<dd>CP866ToUTF8</dd>
+<dt>EncodingCP874 ('cp874')</dt>
+<dd>CP874ToUTF8</dd>
+<!-- Asian code pages -->
+<dt>EncodingCP932 ('cp932')</dt>
+<dd>CP932TOUTF8</dd>
+<dt>EncodingCP936 ('cp936')</dt>
+<dd>CP936TOUTF8</dd>
+<dt>EncodingCP949 ('cp949')</dt>
+<dd>CP949TOUTF8</dd>
+<dt>EncodingCP950 ('cp950')</dt>
+<dd>CP950TOUTF8</dd>
 <dt>EncodingCPKOI8R ('koi8r')</dt>
 <dd>KOI8RToUTF8</dd>
+<dt>EncodingCPKOI8U ('koi8u')</dt>
+<dd>KOI8UToUTF8</dd>
+<dt>EncodingCPKOI8RU ('koi8ru')</dt>
+<dd>KOI8RUToUTF8</dd>
+<dt>EncodingCPMac ('macinstosh')</dt>
+<dd>MacintoshToUTF8</dd>
+<dt>EncodingUCS2LE ('ucs2le')</dt>
+<dd>UCS2LEToUTF8</dd>
+<dt>EncodingUCS2BE ('ucs2be')</dt>
+<dd>UCS2BEToUTF8</dd>
 <dt>EncodingAnsi ('ansi') or the default text encoding for the platform</dt>
 <dd>ConvertAnsiToUTF8</dd>
 </dl>
@@ -1220,6 +1300,23 @@ translation array in ArrayCP852ToUTF8.
 </element>
 <element name="CP852ToUTF8.s">
 <short>String with the value in Code Page 852 encoding.</short>
+</element>
+
+<element name="CP865ToUTF8">
+<short>Converts a Code Page 852-encoded value to UTF-8.</short>
+<descr>
+<p>
+Calls SingleByteToUTF8 to convert the specified string using the character 
+translation array in ArrayCP865ToUTF8.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="CP865ToUTF8.Result">
+<short>UTF-8-encoded value for the specified string.</short>
+</element>
+<element name="CP865ToUTF8.s">
+<short>String with the value in Code Page 865 encoding.</short>
 </element>
 
 <element name="CP866ToUTF8">
@@ -2480,6 +2577,48 @@ if a code page is not used.
 </short>
 </element>
 
+<element name="UTF8ToCP865">
+<short>Converts a string from UTF-8 encoding to Code Page 865.</short>
+<descr>
+<p>
+<var>UTF8ToCP865</var> is a <var>RawByteString</var> function used to convert 
+a UTF-8-encoded string to the Code Page 865 (DOS Nordic) encoding.
+</p>
+<p>
+For platforms where system code pages are enabled, SetCodePage is called to 
+convert the value to the DOS Nordic code page (865). If 
+SetTargetCodePage is <b>False</b>, SetCodePage is called again to apply the 
+CP_ACP (ANSI) code page in the return value.
+</p>
+<p>
+For other platforms, the UTF8ToSingleByte routine is called using 
+UnicodeToCP865 to perform character conversions needed for the target 
+encoding.
+</p>
+<p>
+UTF8ToCP865 is used in the implementation of the ConvertEncodingFromUTF8 
+encoding conversion routine.
+</p>
+</descr>
+<seealso>
+<link id="ConvertEncodingFromUTF8"/>
+<link id="UTF8ToSingleByte"/>
+<link id="#rtl.system.SetCodePage">SetCodePage</link>
+</seealso>
+</element>
+<element name="UTF8ToCP865.Result">
+<short>String value after conversion to Code Page 865.</short>
+</element>
+<element name="UTF8ToCP865.s">
+<short>UTF-8-encoded string value converted in the routine.</short>
+</element>
+<element name="UTF8ToCP865.SetTargetCodePage">
+<short>
+<b>True</b> if the target code page is set in the return value, <b>False</b> 
+if a code page is not used.
+</short>
+</element>
+
 <element name="UTF8ToCP866">
 <short>Converts a string from UTF-8 encoding to Code Page 866.</short>
 <descr>
@@ -3091,6 +3230,7 @@ GetSupportedEncodings stores the following values in the List argument:
 <li>'cp437' (EncodingCP437)</li>
 <li>'cp850' (EncodingCP850)</li>
 <li>'cp852' (EncodingCP852)</li>
+<li>'cp865' (EncodingCP865)</li>
 <li>'cp866' (EncodingCP866)</li>
 <li>'cp874' (EncodingCP874)</li>
 </ul>
