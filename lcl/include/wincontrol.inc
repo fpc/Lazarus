@@ -4050,7 +4050,7 @@ begin
       or (Height<>InterfaceHeight) then
       begin
         // the LCL is not in sync with the interface
-        if wcfBoundsRealized in FWinControlFlags then
+        if not (wcfBoundsRealized in FWinControlFlags) then
         begin
           // no bounds were sent yet to the interface and it didn't initialize
           // them on its own
