@@ -24,24 +24,26 @@ RUN docarchive=doc-chm.zip; \
       exit 1; \
     fi; \
     tarballs=( \
-              "https://sourceforge.net/projects/freepascal/files/Linux/$FPC_OLDSTABLE_VER/fpc-$FPC_OLDSTABLE_VER-x86_64-linux.tar fpc-$FPC_OLDSTABLE_VER-x86_64-linux" \
-              "https://sourceforge.net/projects/freepascal/files/Linux/$FPC_STABLE_VER/fpc-$FPC_STABLE_VER.x86_64-linux.tar fpc-$FPC_STABLE_VER.x86_64-linux" \
-              "https://gitlab.com/freepascal.org/fpc/build/-/jobs/artifacts/fixes_3_2/raw/fpc-$FPC_FIXES_VER.x86_64-linux.tar?job=build-job fpc-$FPC_FIXES_VER.x86_64-linux" \
-              "https://gitlab.com/freepascal.org/fpc/build/-/jobs/artifacts/main/raw/fpc-$FPC_MAIN_VER.x86_64-linux.tar?job=build-job fpc-$FPC_MAIN_VER.x86_64-linux" \
+              "$FPC_OLDSTABLE_VER https://sourceforge.net/projects/freepascal/files/Linux/$FPC_OLDSTABLE_VER/fpc-$FPC_OLDSTABLE_VER-x86_64-linux.tar fpc-$FPC_OLDSTABLE_VER-x86_64-linux" \
+              "$FPC_STABLE_VER https://sourceforge.net/projects/freepascal/files/Linux/$FPC_STABLE_VER/fpc-$FPC_STABLE_VER.x86_64-linux.tar fpc-$FPC_STABLE_VER.x86_64-linux" \
+              "$FPC_FIXES_VER https://gitlab.com/freepascal.org/fpc/build/-/jobs/artifacts/fixes_3_2/raw/fpc-$FPC_FIXES_VER.x86_64-linux.tar?job=build-job fpc-$FPC_FIXES_VER.x86_64-linux" \
+              "$FPC_MAIN_VER https://gitlab.com/freepascal.org/fpc/build/-/jobs/artifacts/main/raw/fpc-$FPC_MAIN_VER.x86_64-linux.tar?job=build-job fpc-$FPC_MAIN_VER.x86_64-linux" \
              ); \
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
-      wget --no-verbose --output-document=${tarball[1]}.tar ${tarball[0]}; \
-      tar xf ${tarball[1]}.tar; \
-      cd ${tarball[1]}; \
+      wget --no-verbose --output-document=${tarball[2]}.tar ${tarball[1]}; \
+      tar xf ${tarball[2]}.tar; \
+      cd ${tarball[2]}; \
       # install only compiler and RTL, do not install documentation and demos
       echo -e "\nn\nn\n" | ./install.sh; \
       if [ $? -ne 0 ]; then \
         exit 1; \
       fi; \ 
       cd ..; \
-      rm -vf ${tarball[1]}.tar; \
-      rm -vrf ${tarball[1]}; \
+      # store fpdoc binaries separately for each FPC version (needed to build Lazarus docs)
+      cp -v /usr/bin/fpdoc /usr/bin/fpdoc-${tarball[0]}; \
+      rm -vf ${tarball[2]}.tar; \
+      rm -vrf ${tarball[2]}; \
     done; \
     echo; \
     echo "Contents of /etc/fpc.cfg:"; \
