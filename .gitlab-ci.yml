@@ -258,3 +258,37 @@ x86_64-win64-stable:
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.manualjob, rules]
+
+
+.docs-build:
+  stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64
+    - cd docs/html
+    - unzip -j /doc-chm.zip -d ../chm
+    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_STABLE_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR build_lcl_docs.lpi
+    - ./build_lcl_docs --fpdoc /usr/bin/fpdoc-$FPDOC_VER --fpcdocs=../chm --outfmt chm --footer $FOOTER
+    - ./build_lcl_docs --fpdoc /usr/bin/fpdoc-$FPDOC_VER --fpcdocs=../chm --outfmt html --footer $FOOTER
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - docs/chm/
+      - docs/html/lcl/lcl/
+      - docs/html/lazutils/lazutils/
+    expire_in: 1 week  
+
+docs-fpdoc-main:
+  extends: .docs-build
+  variables:
+    FPDOC_VER: $FPC_MAIN_VER
+    FOOTER: "@locallclfooter.xml"
+  rules:
+    - !reference [.manualjob, rules]
+
+docs-fpdoc-fixes:
+  extends: .docs-build
+  variables:
+    FPDOC_VER: $FPC_FIXES_VER
+    FOOTER: "@locallclfooter.xml"
+  rules:
+    - !reference [.manualjob, rules]
