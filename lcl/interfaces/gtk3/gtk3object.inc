@@ -351,7 +351,8 @@ begin
 
 
   cssProvider := gtk_css_provider_new();
-  gtk_css_provider_load_from_path(cssProvider, 'theme.css', nil);
+  if FileExists('theme.css') then
+    gtk_css_provider_load_from_path(cssProvider, 'theme.css', nil);
   gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
                                PGtkStyleProvider(cssProvider),
                                GTK_STYLE_PROVIDER_PRIORITY_USER);
