@@ -202,11 +202,23 @@ option.
 </short>
 </element>
 
+<!-- Modified in 43d7f203. -->
+
 <element name="TCloseAction">
-<short>What should happen when a form is closed.</short>
+<short>
+Represents actions that can occur when a form is closed.
+</short>
 <descr/>
+<version>
+Modified in LCL 2.4 to be an alias to TCloseAction in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TCustomForm.OnClose">TCustomForm.OnClose</link>
+<!-- 
+Uncomment when the topic exists in RTL documentation.  
+<link id="#rtl.system.uitypes.TCloseAction">TCloseAction</link> 
+-->
 </seealso>
 </element>
 <element name="TCloseAction.caNone">
@@ -220,6 +232,56 @@ option.
 </element>
 <element name="TCloseAction.caMinimize">
 <short>The form is minimized.</short>
+</element>
+
+<!-- Added in 43d7f203. -->
+
+<element name="caNone">
+<short>
+Represents the caNone enumeration value in TCloseAction.  
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+higher.  
+</version>
+<seealso/>
+</element>
+
+<element name="caHide">
+<short>
+Represents the caHide enumeration value in TCloseAction.  
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+higher.  
+</version>
+<seealso/>
+</element>
+
+<element name="caFree">
+<short>
+Represents the caFree enumeration value in TCloseAction.  
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+higher.  
+</version>
+<seealso/>
+</element>
+
+<element name="caMinimize">
+<short>
+Represents the caMinimize enumeration value in TCloseAction.  
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+higher.  
+</version>
+<seealso/>
 </element>
 
 <element name="TCustomHintAction">
