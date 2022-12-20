@@ -8578,11 +8578,63 @@ its default value.
 
 <element name="TCustomGrid.SaveColumns">
 <short>
-Saves column configuration, layout, and appearance values to an XML 
-configuration file.
+Saves column configuration, layout, and appearance to an XML configuration 
+file.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveColumns</var> is a method used to store information about columns on 
+the grid to the specified XML configuration file. It stores information about 
+the configuration, layout, and appearance of Columns defined for the grid, 
+including: 
+</p>
+<ul>
+<li>Columns.Count</li>
+<li>Columns.Enabled</li>
+</ul>
+<p>
+Information about each of the TGridColumn instances in Columns are written to 
+the XML configuration file, and includes the following:
+</p>
+<ul>
+<li>TGridColumn.Index</li>
+<li>TGridColumn.Width</li>
+<li>TGridColumn.MinSize</li>
+<li>TGridColumn.MaxSize</li>
+<li>TGridColumn.Alignment</li>
+<li>TGridColumn.Layout</li>
+<li>TGridColumn.ButtonStyle</li>
+<li>TGridColumn.Color</li>
+<li>TGridColumn.ValueChecked</li>
+<li>TGridColumn.ValueUnChecked</li>
+<li>TGridColumn.PickList</li>
+<li>TGridColumn.SizePriority</li>
+<li>TGridColumn.Font</li>
+<li>TGridColumn.Title.Caption</li>
+<li>TGridColumn.Title.Font</li>
+<li>TGridColumn.Title.Alignment</li>
+<li>TGridColumn.Title.Color</li>
+<li>TGridColumn.Title.Layout</li>
+</ul>
+<p>
+SaveColumns calls the DoSaveColumn method for each of the columns to signal 
+the OnSaveColumn event handler (when assigned).
+</p>
+<p>
+SaveColumns is called from the SaveContent method, and occurs when soDesign 
+has been included in the SaveOptions for the control and the Columns 
+collection has been enabled.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.DoSaveColumn"/>
+<link id="TCustomGrid.OnSaveColumn"/>
+<link id="TCustomGrid.SaveContent"/>
+<link id="TCustomGrid.SaveOptions"/>
+<link id="TCGridColumn"/>
+<link id="#lazutils.laz2_xmlcfg.TXMLConfig">TXMLConfig</link>
+</seealso>
 </element>
 <element name="TCustomGrid.SaveColumns.cfg">
 <short>XML configuration file where the values are written.</short>
@@ -9147,7 +9199,7 @@ for the current selection rectangle.
 </p>
 <p>
 No actions are performed in the method if goRangeSelect has not been included 
-in the  Options property, or when RangeSelectMode has a value other than 
+in the Options property, or when RangeSelectMode has a value other than 
 rsmMulti.
 </p>
 <p>
@@ -11297,7 +11349,7 @@ additional actions are performed in the method.
 </p>
 <p>
 <var>IsColumn</var> determines whether column or row data is affected in the 
-method. When set to <b>True</b>, the index values refer to column positions  
+method. When set to <b>True</b>, the index values refer to column positions 
 on the grid. Otherwise, the index values refer to row positions.
 </p>
 <p>
@@ -15304,7 +15356,7 @@ are hidden.
 </p>
 <p>
 No actions are performed in the method if a handle has not been allocated for 
-the grid  (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow 
+the grid (<var>HandleAllocated</var> returns <b>False</b>). ScrollBarShow 
 ensures that <var>gfUpdatingScrollbar</var> is included in the grid flags 
 prior to calling the <var>ShowScrollBar</var> routine in the LCL interface. 
 The flag value is removed immediately after updating the scroll bar display. 
@@ -20829,7 +20881,7 @@ are exchanged in the grid control.
 <p>
 <var>ColRowExchanged</var> is overridden in <var>TCustomDrawGrid</var> and 
 implements the method defined in the ancestor class. It is used to perform 
-actions needed when  column or row values are exchanged (swapped) in the grid 
+actions needed when column or row values are exchanged (swapped) in the grid 
 control.
 </p>
 <p>
@@ -20924,7 +20976,7 @@ implement the virtual method defined in the ancestor class. It is used to
 perform actions when a column or a row is moved in the grid control.
 </p>
 <p>
-ColRowMoved calls the MoveColRow method in the internal virtual grid  for the 
+ColRowMoved calls the MoveColRow method in the internal virtual grid for the 
 class to change the position for the column or row. The OnColRowMoved event 
 handler is signalled (when assigned) prior to exiting from the method.
 </p>
@@ -22559,11 +22611,11 @@ GetRGBColorResolvingParent method.
 <element name="TDrawGrid.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TDrawGrid.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TDrawGrid.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TDrawGrid.OnMouseWheelDown"  link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TDrawGrid.OnMouseWheelUp"  link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TDrawGrid.OnMouseWheelHorz"  link="#lcl.controls.TControl.OnMouseWheelHorz"/>
-<element name="TDrawGrid.OnMouseWheelLeft"  link="#lcl.controls.TControl.OnMouseWheelLeft"/>
-<element name="TDrawGrid.OnMouseWheelRight"  link="#lcl.controls.TControl.OnMouseWheelRight"/>
+<element name="TDrawGrid.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TDrawGrid.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TDrawGrid.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+<element name="TDrawGrid.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+<element name="TDrawGrid.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TDrawGrid.OnPickListSelect" link="#lcl.grids.TCustomGrid.OnPickListSelect"/>
 <element name="TDrawGrid.OnPrepareCanvas" link="#lcl.grids.TCustomGrid.OnPrepareCanvas"/>
 <element name="TDrawGrid.OnSelectEditor" link="#lcl.grids.TCustomGrid.OnSelectEditor"/>
@@ -22586,11 +22638,17 @@ Represents strings used as the cell values in TCustomStringGrid / TStringGrid.
 <descr>
 <p>
 <var>TStringGridStrings</var> is a <var>TStrings</var> descendant that 
-represents the strings used to populate the cells in a <var>TStringGrid</var> 
-instance.
+implements the string container used to populate the cells in a 
+<var>TStringGrid</var> instance. A temporary TStringGridStrings instance is 
+created and used to store a new value assigned to the Cols or Rows property in 
+TStringGrid.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomStringGrid.Cols"/>
+<link id="TCustomStringGrid.Rows"/>
+<link id="TStringGrid"/>
+</seealso>
 </element>
 
 <!-- private -->
@@ -22600,7 +22658,7 @@ instance.
 <element name="TStringGridStrings.FIndex"/>
 <element name="TStringGridStrings.FOwner"/>
 
-<!-- private - but good to know -->
+<!-- private -->
 <element name="TStringGridStrings.ConvertIndexLineCol">
 <short>
 Converts an index position to line and column numbers for the Cells in a grid.
