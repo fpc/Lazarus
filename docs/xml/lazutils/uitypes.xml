@@ -25,6 +25,7 @@ higher) Run-time Library (RTL).
 </descr>
 
 <!-- unresolved external references -->
+<!-- used for FPC 3.X type aliases -->
 <element name="System.UITypes"/>
 
 <element name="mtWarning">
@@ -32,7 +33,10 @@ higher) Run-time Library (RTL).
 Alias to TMsgDlgType.mtWarning in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType.mtWarning"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mtWarning">mtWarning</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -44,7 +48,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgType.mtError in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType.mtError"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgType">TMsgDlgType</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -56,7 +63,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgType.mtInformation in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType.mtInformation"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgType">TMsgDlgType</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -69,7 +79,10 @@ Alias to TMsgDlgType.mtConfirmation in the System.UITypes unit for the FPC
 RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType.mtConfirmation"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgType">TMsgDlgType</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -81,7 +94,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgType.mtCustom in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType.mtCustom"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgType">TMsgDlgType</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -93,7 +109,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbYes in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbYes"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -105,7 +124,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbNo in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbNo"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -117,7 +139,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbOK in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbOK"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -129,7 +154,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbCancel in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbCancel"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -141,7 +169,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbAbort in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbAbort"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -153,7 +184,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbRetry in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbRetry"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -165,7 +199,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbIgnore in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbIgnore"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -177,7 +214,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbAll in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbAll"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -189,7 +229,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbNoToAll in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbNoToAll"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -201,7 +244,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbYesToAll in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbYesToAll"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -213,7 +259,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbHelp in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbHelp"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -225,7 +274,10 @@ Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
 Alias to TMsgDlgBtn.mbClose in the System.UITypes unit for the FPC RTL.
 </short>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbClose"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 <version>
 Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -255,12 +307,15 @@ FPC 3.2.0 RTL instead.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgType"/ -->
 <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
 <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
 <link id="#lcl.dialogs.CreateMessageDialog">CreateMessageDialog</link>
 <link id="#lcl.dialogs.QuestionDlg">QuestionDlg</link>
 <link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgType">TMsgDlgType</link> 
+-->
 </seealso>
 </element>
 <element name="TMsgDlgType.mtWarning">
@@ -314,13 +369,16 @@ RTL instead.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgBtn"/ -->
 <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
 <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
 <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHep</link>
 <link id="#lcl.dialogs.CreateMessageDialog">CreateMessageDialog</link>
 <link id="#lcl.dialogs.QuestionDlg">QuestionDlg</link>
 <link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">TMsgDlgBtn</link> 
+-->
 </seealso>
 </element>
 <element name="TMsgDlgBtn.mbYes">
@@ -403,13 +461,16 @@ FPC 3.2.0 RTL instead.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TMsgDlgButtons"/ -->
 <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
 <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
 <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHelp</link>
 <link id="#lcl.dialogs.CreateMessageDialog">CreateMessageDialog</link>
 <link id="#lcl.dialogs.QuestionDlg">QuestionDlg</link>
 <link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TMsgDlgButtons">TMsgDlgButtons</link> 
+-->
 </seealso>
 </element>
 
@@ -451,13 +512,16 @@ FPC 3.2.0 RTL instead.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.TModalResult"/ -->
 <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
 <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
 <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHelp</link>
 <link id="#lcl.dialogs.CreateMessageDialog">CreateMessageDialog</link>
 <link id="#lcl.dialogs.QuestionDlg">QuestionDlg</link>
 <link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.TModalResult">TModalResult</link> 
+-->
 </seealso>
 </element>
 
@@ -476,7 +540,10 @@ FPC 3.2.0 RTL instead.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.PModalResult"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.PModalResult">PModalResult</link> 
+-->
 </seealso>
 </element>
 
@@ -489,7 +556,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrNone"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrNone">mrNone</link> 
+-->
 </seealso>
 </element>
 
@@ -502,7 +572,10 @@ System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrOK"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrOk">mrOk</link> 
+-->
 </seealso>
 </element>
 
@@ -515,7 +588,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrCancel"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrCancel">mrCancel</link>
+-->
 </seealso>
 </element>
 
@@ -528,7 +604,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrAbort"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.  
+<link id="#rtl.system.uitypes.mrAbort">mrAbort</link>
+-->
 </seealso>
 </element>
 
@@ -541,7 +620,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrRetry"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrRetry">mrRetry</link>
+-->
 </seealso>
 </element>
 
@@ -554,7 +636,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrIgnore"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.  
+<link id="#rtl.system.uitypes.mrIgnore">mrIgnore</link>
+-->
 </seealso>
 </element>
 
@@ -567,7 +652,10 @@ System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrYes"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrYes">mrYes</link> 
+-->
 </seealso>
 </element>
 
@@ -580,7 +668,10 @@ System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrNo"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrNo">mrNo</link> 
+-->
 </seealso>
 </element>
 
@@ -593,7 +684,10 @@ System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrAll"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrAll">mrAll</link> 
+-->
 </seealso>
 </element>
 
@@ -606,7 +700,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrNoToAll"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrNoToAll">mrNoToAll</link> 
+-->
 </seealso>
 </element>
 
@@ -619,7 +716,10 @@ from the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-link id="#rtl.system.uitypes.mrYesToAll"/
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrYesToAll">mrYesToAll</link> 
+-->
 </seealso>
 </element>
 
@@ -632,7 +732,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrClose"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrClose">mrClose</link> 
+-->
 </seealso>
 </element>
 
@@ -645,7 +748,10 @@ the System.UITypes unit in the FPC 3.2.0 RTL.
 </remark>
 </descr>
 <seealso>
-<!-- link id="#rtl.system.uitypes.mrLast"/ -->
+<!-- 
+Uncomment when RTL documentation contains the topic.
+<link id="#rtl.system.uitypes.mrLast">mrLast</link> 
+-->
 </seealso>
 </element>
 
