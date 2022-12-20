@@ -113,13 +113,108 @@ widgetset override has been provided on the command line.
 <short>Directory name to convert to a TLCLPlatform enumeration value.</short>
 </element>
 
+<element name="DirNameToDisplayName">
+<short>
+Gets the descriptive name for the LCL widgetset located in the specified 
+directory name.
+</short>
+<descr>
+<p>
+<var>DirNameToDisplayName</var> is <var>String</var> function used to get the 
+descriptive name associated with the specified widgetset directory name.
+</p>
+<p>
+<var>ADirName</var> contains the widgetset directory handled in the routine. 
+It is not a full path - or even a relative path - it simply a directory name 
+like 'qt5' or 'win32'.
+</p>
+<p>
+DirNameToDisplayName calls DirNameToLCLPlatform to get the TLCLPlatform 
+enumeration value for the widgetset directory. If ADirName is not found, the 
+lpGtk2 platform is assumed. The enumeration value is used an an index into the 
+LCLPlatformDisplayNames constant where the return value is stored.
+</p>
+<p>
+Use DisplayNameToDirName to convert the descriptive name back to the directory 
+where the widgetset files are found.
+</p>
+</descr>
+<version>
+Added in LCL 2.4.
+</version>
+<seealso>
+<link id="DisplayNameToDirName"/>
+<link id="TLCLPlatform"/>
+<link id="LCLPlatformDirNames"/>
+<link id="LCLPlatformDisplayNames"/>
+</seealso>
+</element>
+<element name="DirNameToDisplayName.Result">
+<short>
+Descriptive name for the specified widgetset directory.
+</short>
+</element>
+<element name="DirNameToDisplayName.ADirName">
+<short>
+Widgetset directory name converted in the routine.
+</short>
+</element>
+
+<element name="DisplayNameToDirName">
+<short>
+Gets the directory name where the widgetset files are stored for the specified 
+descriptive name.
+</short>
+<descr>
+<p>
+<var>DisplayNameToDirName</var> is a <var>String</var> function used to 
+convert the specified descriptive name for a widgetset to the directory where 
+its files are stored.
+</p>
+<p>
+The return value refers to a directory located in the 
+<file>($LazarusDir)/lcl/interfaces</file> directory.
+</p>
+<p>
+ADisplayName contains the descriptive name for the widgetset as returned from 
+DirNameToDisplayName, and should contain a value from the 
+LCLPlatformDisplayNames constant. Case is not significant for the argument 
+value.
+</p>
+<p>
+DisplayNameToDirName iterates over the values in LCLPlatformDisplayNames to 
+locate the position for the value in ADisplayName. The corresponding value 
+from LCLPatformDirNames is used as the return value. If the specified 
+descriptive name is not found, the value 'gtk2' is used.
+</p>
+</descr>
+<version>
+Added in LCL 2.4.
+</version>
+<seealso>
+<link id="DirNameToLCLPlatform"/>
+<link id="TLCLPlatform"/>
+<link id="LCLPlatformDirNames"/>
+<link id="LCLPlatformDisplayNames"/>
+</seealso>
+</element>
+<element name="DisplayNameToDirName.Result">
+<short>
+Directory name where the files for the specified widgetset are located.
+</short>
+</element>
+<element name="DisplayNameToDirName.ADisplayName">
+<short>
+Descriptive name for the requested widgetset directory.
+</short>
+</element>
+
 <element name="GetBuildLCLWidgetType">
 <short>Gets the value in the BuildLCLWidgetType variable.</short>
 <descr>
 <p>
 Used in the <var>lazbuild</var> utility to get the target widgetset used for 
-the
-various platform defines.
+ the various platform defines.
 </p>
 </descr>
 <seealso>
