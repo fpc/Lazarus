@@ -141,15 +141,30 @@ id="RGBToColor">RGBToColor</link>.
 <link id="clDefault"/>
 </seealso>
 </element>
+
+<!-- Modified in 43d7f203. -->
+
 <element name="TFontPitch">
-<short>Represents pitches (or spacings) used in typefaces.</short>
+<short>
+Represents pitches (or spacings) used in typefaces.
+</short>
 <descr>
-<p>Used to implement the Pitch member in TFontData and TFont.
+<p>
+Used to implement the Pitch member in TFontData and the Pitch property in 
+TFont.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontPitch in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFontData"/>
 <link id="TFont"/>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TFontPitch">TFontPitch</link> 
+-->
 </seealso>
 </element>
 <element name="TFontPitch.fpDefault">
@@ -161,18 +176,35 @@ id="RGBToColor">RGBToColor</link>.
 <element name="TFontPitch.fpFixed">
 <short>Font uses fixed pitch (or mono-spacing).</short>
 </element>
+
 <element name="TFontName">
-<short>Alias for the String type.</short>
+<short>
+Alias to the String type used to represent font names.
+</short>
 <descr>
 <p>
 <var>TFontName</var> is an alias for the <var>String</var> type. Not used in 
 the current LCL implementation.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to TFontName in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<link id="TFont.Name"/>
+<link id="TFontData"/>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TFontName">TFontName</link> 
+-->
+</seealso>
 </element>
+
 <element name="TFontDataName">
-<short>Short String type used for typeface names.</short>
+<short>
+Short String type used for typeface names.
+</short>
 <descr>
 <p>
 <var>TFontDataName</var> is a <var>Short String</var> type used to represent 
@@ -185,24 +217,43 @@ Be aware that the definition can result in truncation of typeface names
 longer than 31 characters.
 </remark>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontDataName in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFontData"/>
 <link id="#lcl.lcltype.LF_FACESIZE">LF_FACESIZE</link>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TFontDataName">TFontDataName</link> 
+-->
 </seealso>
 </element>
+
 <element name="TFontStyle">
-<short>Represents font styles or variants.</short>
+<short>
+Represents styles or variants for a font.
+</short>
 <descr>
-<var>TFontStyle</var> is an enumerated type with values used to represent a 
-style or variant for a typeface. Value(s) from TFontStyle are stored in the 
+<var>TFontStyle</var> is an enumerated type with values used to represent 
+styles or variants for a typeface. Value(s) from TFontStyle are stored in the 
 <var>TFontStyles</var> and <var>TFontStylesBase</var> set types, and used to 
-implement the <var>Style</var> members in <var>TFontData</var> and 
-<var>TFont</var>.
+implement the <var>Style</var> member in <var>TFontData</var> and the Style 
+property in <var>TFont</var>.
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontStyle in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
-<link id="TFontStyles"/>
 <link id="TFont.Style"/>
+<link id="TFontStyles"/>
 <link id="TFontData"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TFontStyle">TFontStyle</link> 
+-->
 </seealso>
 </element>
 <element name="TFontStyle.fsBold">
@@ -211,27 +262,38 @@ implement the <var>Style</var> members in <var>TFontData</var> and
 <element name="TFontStyle.fsItalic">
 <short>Italic font style.</short>
 </element>
-<element name="TFontStyle.fsStrikeOut">
-<short>Strike-out (or strike-through) font style.</short>
-</element>
 <element name="TFontStyle.fsUnderline">
 <short>Underline font style.</short>
 </element>
+<element name="TFontStyle.fsStrikeOut">
+<short>Strike-out (or strike-through) font style.</short>
+</element>
+
 <element name="TFontStyles">
-<short>Set type used to store TFontStyle value(s).</short>
+<short>
+Set type used to store TFontStyle value(s).
+</short>
 <descr>
 <p>
 <var>TFontStyles</var> is a set type used to store <b>0</b> (<b>zero</b>) or 
-more values from the
-<var>TFontStyle</var> enumeration.
+more values from the <var>TFontStyle</var> enumeration.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontStyles in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFontStylesBase"/>
 <link id="TFont.Style"/>
 <link id="TFontData"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TFontStyles">TFontStyles</link> 
+-->
 </seealso>
 </element>
+
 <element name="TFontStylesBase">
 <short>Set type used to store TFontStyle value(s).</short>
 <descr>
@@ -242,14 +304,25 @@ implement the <var>Style</var> member in <var>TFontData</var> and
 <var>TFont</var>.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontStylesBase in System.UITypes for 
+FPC 3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFontStyles"/>
 <link id="TFontData"/>
 <link id="TFont.Style"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TFontStylesBase">TFontStylesBase</link> 
+-->
 </seealso>
 </element>
+
 <element name="TFontCharSet">
-<short>Represents a font character set as a numeric value.</short>
+<short>
+Represents a font character set as a numeric value.
+</short>
 <descr>
 <p>
 <var>TFontCharSet</var> is a range type with values representing font 
@@ -263,11 +336,20 @@ used refer to constants defined in the widgetset interface.
 member in <var>TFontData</var> and <var>TFont</var>.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontCharSet in System.UITypes for 
+FPC 3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFont.CharSet"/>
 <link id="TFontData"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TFontCharSet">TFontCharSet</link> 
+-->
 </seealso>
 </element>
+
 <element name="TFontQuality">
 <short>Font output quality, like anti-aliasing.</short>
 <descr>
@@ -291,9 +373,17 @@ bitmaps, like most East Asian fonts, do not use ClearType anti-aliasing.
 member in <var>TFontData</var> and <var>TFont</var>.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TFontQuality in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TFont.Quality"/>
 <link id="TFontData"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TFontQuality">TFontQuality</link> 
+-->
 </seealso>
 </element>
 <element name="TFontQuality.fqDefault">
@@ -301,28 +391,25 @@ member in <var>TFontData</var> and <var>TFont</var>.
 </element>
 <element name="TFontQuality.fqDraft">
 <short>
-Prefer other font features (size, style) against output quality.
+Prefer other font features (size, style) against output quality. Appearance of 
+the font is less important than when fqProof is used. Generally offers lower 
+quality than fqProof or fqDefault.
 </short>
-<descr>Appearance of the font is less important than when fqProof is used. 
-Generally offers lower quality than fqProof or fqDefault.
-</descr>
 </element>
 <element name="TFontQuality.fqProof">
 <short>
-Prefer output quality against other font features (size, style).
+Prefer output quality against other font features (size, style). Font quality 
+is more important exactly reproducing the size or style for the font.
 </short>
-<descr>Font quality is more important exactly reproducing the size or style 
-for the font.
-</descr>
 </element>
 <element name="TFontQuality.fqNonAntialiased">
 <short>Disable font anti-aliasing.</short>
 </element>
 <element name="TFontQuality.fqAntialiased">
-<short>Use font anti-aliasing.</short>
-<descr>The font is always anti-aliased when supported, and the font size is 
-not too small or too large.
-</descr>
+<short>
+Use font anti-aliasing. The font is always anti-aliased when supported, and 
+the font size is not too small or too large.
+</short>
 </element>
 <element name="TFontQuality.fqCleartype">
 <short>Use ClearType font anti-aliasing when available.</short>
@@ -330,8 +417,10 @@ not too small or too large.
 <element name="TFontQuality.fqCleartypeNatural">
 <short>Use Clear Type Natural font anti-aliasing when available.</short>
 </element>
+
 <element name="TFontData">
-<short>Contains information about a font used in an application.
+<short>
+Contains information about a font used in an application.
 </short>
 <descr>
 <p>
@@ -350,19 +439,24 @@ in <var>TFont</var>.
 <link id="DefFontData"/>
 </seealso>
 </element>
+
 <element name="TFontData.Handle">
 <short>The Operating System <var>Handle</var> for the <var>Font</var>.
 </short>
 </element>
+
 <element name="TFontData.Height">
 <short>The <var>Height</var> (in pixels) for the <var>Font</var>.
 </short>
 </element>
+
 <element name="TFontData.Pitch">
 <short>The <var>Pitch</var> (layout style) for the <var>Font</var>.</short>
 </element>
+
 <element name="TFontData.Style">
-<short>The <var>Style</var> (or variant) for the <var>Font</var>.
+<short>
+The <var>Style</var> (or variant) for the <var>Font</var>.
 </short>
 <descr>
 <p>
@@ -376,29 +470,32 @@ more information about the enumeration values and their meanings.
 <link id="TFontStylesBase"/>
 </seealso>
 </element>
+
 <element name="TFontData.CharSet">
-<short>The character set for a Font as an Integer value.
+<short>
+The character set for a Font as an Integer value.
 </short>
 <descr>
 <p>
-<var>CharSet</var> is a
-<var>TFontCharSet</var> member which stores an Integer identifier for a font 
-character set. Its value identifies the character set or encoding supported 
-in the font.
+<var>CharSet</var> is a <var>TFontCharSet</var> member which stores an Integer 
+identifier for a font character set. Its value identifies the character set or 
+encoding supported in the font.
 </p>
-<p>The actual value is specific to the Operating System and/or widgetset for 
-the application. For the Windows platform, it corresponds to the value in 
-TLogFont as retrieved from the <var>Win32 GDI LogFont</var> routine. Other 
-platforms and widgetsets rely on the mechanism native to the interface like: 
-X-Fonts, device contexts, or whatever API weirdness the Mac developers could 
-dream up. The native values are translated to to the value represented in the 
-member as an Integer.
+<p>
+The actual value is specific to the Operating System and/or widgetset for the 
+application. For the Windows platform, it corresponds to the value in TLogFont 
+as retrieved from the <var>Win32 GDI LogFont</var> routine. Other platforms 
+and widgetsets rely on the mechanism native to the interface like: X-Fonts, 
+device contexts, or whatever API weirdness the Mac developers could dream up. 
+The native values are translated to to the value represented in the member as 
+an Integer.
 </p>
 </descr>
 <seealso>
 <link id="TFontCharSet"/>
 </seealso>
 </element>
+
 <element name="TFontData.Quality">
 <short>Output quality for the font.</short>
 <descr>
@@ -416,11 +513,182 @@ values and their meanings.
 <link id="TFontQuality"/>
 </seealso>
 </element>
+
 <element name="TFontData.Name">
 <short>
 The <var>Name</var> (as a string) of the current <var>Font</var>.
 </short>
 </element>
+
+<!-- Added in 43d7f203. -->
+<element name="fpDefault">
+<short>
+Represents the fpDefault enumeration value in TFontPitch.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fpVariable">
+<short>
+Represents the fpVariable enumeration value in TFontPitch.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fpFixed">
+<short>
+Represents the fpFixed enumeration value in TFontPitch.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fsBold">
+<short>
+Represents the fsBold enumeration value in TFontStyle.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fsItalic">
+<short>
+Represents the fsItalic enumeration value in TFontStyle.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fsUnderline">
+<short>
+Represents the fsUnderline enumeration value in TFontStyle.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fsStrikeOut">
+<short>
+Represents the fsStrikeout enumeration value in TFontStyle.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqDefault">
+<short>
+Represents the fqDefault enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqDraft">
+<short>
+Represents the fqDraft enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqProof">
+<short>
+Represents the fqProof enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqNonAntialiased">
+<short>
+Represents the fqNonAntialiased enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqAntialiased">
+<short>
+Represents the fqAntialiased enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqCleartype">
+<short>
+Represents the fqCleartype enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
+<element name="fqCleartypeNatural">
+<short>
+Represents the fqCleartypeNatural enumeration value in TFontQuality.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso/>
+</element>
+
 <element name="DefFontData">
 <short>Default font data used for new TFont instances.</short>
 <descr>
@@ -435,6 +703,7 @@ example, there can be a different default font for a button and a group box.
 <link id="TFontData"/>
 </seealso>
 </element>
+
 <element name="TTextLayout">
 <short>
 Represents the text layout used to render text in its rectangle.
@@ -459,6 +728,7 @@ implement the <var>Layout</var> member in <var>TTextStyle</var>.
 <element name="TTextLayout.tlBottom">
 <short>Text is aligned to the bottom of the text rectangle.</short>
 </element>
+
 <element name="TTextStyle">
 <short>
 The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle.
@@ -487,7 +757,7 @@ characters and do not result in line breaks.
 </p>
 </descr>
 <seealso>
-<link id="TTestStyle.WordBreak"/>
+<link id="TTextStyle.WordBreak"/>
 </seealso>
 </element>
 <element name="TTextStyle.Clipping">
@@ -556,6 +826,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psSolid">
 <short>Represents the solid pen style.</short>
 <descr>
@@ -564,6 +835,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psDash">
 <short>Represents the dashed pen style.</short>
 <descr>
@@ -572,6 +844,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psDot">
 <short>Represents the dotted pen style.</short>
 <descr>
@@ -580,6 +853,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psDashDot">
 <short>Represents the dash-dot pattern pen style.</short>
 <descr>
@@ -588,6 +862,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psDashDotDot">
 <short>Represents the dash-dot-dot pattern pen style.</short>
 <descr>
@@ -596,6 +871,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psClear">
 <short>Represents the clear pen style.</short>
 <descr>
@@ -604,6 +880,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psInsideframe">
 <short>Represents the pen style used for an inside frame.</short>
 <descr>
@@ -612,6 +889,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="psPattern">
 <short>Represents a pattern pen style.</short>
 <descr>
@@ -620,6 +898,7 @@ is added to the end of the text value. Preference is given to
 </descr>
 <seealso/>
 </element>
+
 <element name="pmBlack">
 <short>Represents the Black pen mode.</short>
 <descr>
@@ -628,6 +907,7 @@ Pixels affected by the pen are always set to black.
 </p>
 </descr>
 </element>
+
 <element name="pmWhite">
 <short>Represents the White pen mode.</short>
 <descr>
@@ -636,6 +916,7 @@ Pixels affected by the pen are always set to white.
 </p>
 </descr>
 </element>
+
 <element name="pmNop">
 <short>Represents the No OP pen mode.</short>
 <descr>
@@ -645,6 +926,7 @@ Pixels affected by the pen are unchanged.
 </p>
 </descr>
 </element>
+
 <element name="pmNot">
 <short>Represents the NOT pen mode.</short>
 <descr>
@@ -653,6 +935,7 @@ Pixels affected by the pen are set to the inverse for the current color.
 </p>
 </descr>
 </element>
+
 <element name="pmCopy">
 <short>Represents the Copy pen mode.</short>
 <descr>
@@ -661,6 +944,7 @@ Pixels affected by the pen are set to the pen color.
 </p>
 </descr>
 </element>
+
 <element name="pmNotCopy">
 <short>Represents the Not Copy pen mode.</short>
 <descr>
@@ -669,6 +953,7 @@ Pixels affected by the pen are set to the inverse of the pen color.
 </p>
 </descr>
 </element>
+
 <element name="pmMergePenNot">
 <short>Represents the Merge Pen Not pen mode.</short>
 <descr>
@@ -678,6 +963,7 @@ inverse of the pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmMaskPenNot">
 <short>Represents the Mask Pen Not pen mode.</short>
 <descr>
@@ -687,6 +973,7 @@ inverse of the pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmMergeNotPen">
 <short>Represents the Merge Not Pen pen mode.</short>
 <descr>
@@ -696,6 +983,7 @@ inverse of the pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmMaskNotPen">
 <short>Represents the Mask Not Pen pen mode.</short>
 <descr>
@@ -705,6 +993,7 @@ the inverse of the pen color and the current pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmMerge">
 <short>Represents the Merge pen mode.</short>
 <descr>
@@ -714,6 +1003,7 @@ current pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmNotMerge">
 <short>Represents the Not Merge pen mode.</short>
 <descr>
@@ -723,6 +1013,7 @@ pmMerge pen mode.
 </p>
 </descr>
 </element>
+
 <element name="pmMask">
 <short>Represents the Mask pen mode.</short>
 <descr>
@@ -732,6 +1023,7 @@ pen color and the current pixel color.
 </p>
 </descr>
 </element>
+
 <element name="pmNotMask">
 <short>Represents the Not Mask pen mode.</short>
 <descr>
@@ -741,6 +1033,7 @@ mode.
 </p>
 </descr>
 </element>
+
 <element name="pmXor">
 <short>Represents the XOR pen mode.</short>
 <descr>
@@ -750,6 +1043,7 @@ current pixel color, but not both.
 </p>
 </descr>
 </element>
+
 <element name="pmNotXor">
 <short>Represents the Not XOR pen mode.</short>
 <descr>
@@ -759,6 +1053,7 @@ pen mode.
 </p>
 </descr>
 </element>
+
 <element name="bsSolid">
 <short>Represents the Solid brush style.</short>
 <descr>
@@ -770,6 +1065,7 @@ Fills a shape using the color for the brush.
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsClear">
 <short>Represents the Clear brush style.</short>
 <descr>
@@ -781,6 +1077,7 @@ Fills a shape with transparency (using the existing color as the fill color).
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsHorizontal">
 <short>Represents the Horizontal brush style.</short>
 <descr>
@@ -792,6 +1089,7 @@ Fills a shape with a pattern consisting of equidistant horizontal lines.
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsVertical">
 <short>Represents the Vertical brush style.</short>
 <descr>
@@ -803,6 +1101,7 @@ Fills a shape with a pattern consisting of equidistant vertical lines.
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsFDiagonal">
 <short>Represents the FDiagonal brush style.</short>
 <descr>
@@ -815,6 +1114,7 @@ Fills a shape with a pattern consisting of equidistant lines drawn with a
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsBDiagonal">
 <short>Represents the BDiagonal brush style.</short>
 <descr>
@@ -827,6 +1127,7 @@ Fills a shape with a pattern consisting of equidistant lines drawn with a
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsCross">
 <short>Represents the Cross brush style.</short>
 <descr>
@@ -839,6 +1140,7 @@ horizontal and vertical cross-hatch.
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="bsDiagCross">
 <short>Represents the DiagCross brush style.</short>
 <descr>
@@ -851,36 +1153,43 @@ degree cross-hatch.
 <link id="TBrushStyle"/>
 </seealso>
 </element>
+
 <element name="pecRound">
 <short>Represents the Round pen end cap.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="pecSquare">
 <short>Represents the Square pen end cap.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="pecFlat">
 <short>Represents the Flat pen end cap.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="pjsRound">
 <short>Represents the Round pen join style.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="pjsBevel">
 <short>Represents the Bevel pen join style.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="pjsMiter">
 <short>Represents the Miter pen join style.</short>
 <descr/>
 <version>Added in LCL version 2.6.3.</version>
 </element>
+
 <element name="TFillStyle">
 <short>Alias for the TGraphicsFillStyle enumeration type in LazUtils.</short>
 <descr>
@@ -890,6 +1199,7 @@ degree cross-hatch.
 <link id="#lazutils.graphtype.TGraphicsFillStyle">TGraphicsFillStyle</link>
 </seealso>
 </element>
+
 <element name="TFillMode">
 <short>Represents Fill Mode values.</short>
 <descr>
@@ -905,6 +1215,7 @@ with the <var>LazRegionFillMode</var> type in <file>lazregions.pas</file>.
 <element name="TFillMode.fmWinding">
 <short/>
 </element>
+
 <element name="TCopyMode">
 <short>Type used to represent canvas copy modes.</short>
 <descr>
@@ -999,6 +1310,7 @@ Copy mode constants are omitted for the <b>CAPTUREBLT</b> and
 <link id="TCanvas.CopyMode"/>
 </seealso>
 </element>
+
 <element name="TCanvasStates">
 <short>Represents states values for TCanvas.</short>
 <descr>
@@ -1028,11 +1340,13 @@ Context (DC).
 <element name="TCanvasStates.csRegionValid">
 <short/>
 </element>
+
 <element name="TCanvasState">
 <short>Set type used to store TCanvasStates values.</short>
 <descr/>
 <seealso/>
 </element>
+
 <element name="TCanvasOrientation">
 <short>Represents orientations for a canvas.</short>
 <descr>Not used in the current LCL implementation.
@@ -1048,6 +1362,7 @@ Context (DC).
 <element name="TCanvasOrientation.coRighttoLeft">
 <short/>
 </element>
+
 <element name="TProgressStage">
 <short>
 Alias for the TFPImgProgressStage type in the FCL.
@@ -1055,6 +1370,7 @@ Alias for the TFPImgProgressStage type in the FCL.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TProgressEvent">
 <short>
 TProgressEvent - for monitoring the progress of a drawing process.
@@ -1063,6 +1379,7 @@ TProgressEvent - for monitoring the progress of a drawing process.
 </descr>
 <seealso/>
 </element>
+
 <element name="TPixelFormat">
 <short>Represents storage formats for pixels in image data.</short>
 <descr>
@@ -1111,6 +1428,7 @@ TIconImage, TCustomIcon, et. al.
 <element name="TPixelFormat.pfCustom">
 <short>Uses a pixel format other than the defined values.</short>
 </element>
+
 <element name="PIXELFORMAT_BPP">
 <short>
 Constant with the number of bits per pixel for TPixelFormat enumeration 
@@ -1129,6 +1447,7 @@ for the associated pixel format.
 <link id="TPixelFormat"/>
 </seealso>
 </element>
+
 <element name="TTransparentMode">
 <short>Represents transparency modes used in raster images.</short>
 <descr/>
@@ -1221,10 +1540,12 @@ Transparency is determined by examining a designated pixel in the image data.
 <descr/>
 <seealso/>
 </element>
+
 <element name="clNone">
 <short>One of the special colors.</short>
 <descr/>
 </element>
+
 <element name="clDefault">
 <short>The default color of a given control.
 </short>
@@ -1241,6 +1562,7 @@ TControl.GetRGBColorResolvingParent.
 <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
 </seealso>
 </element>
+
 <element name="clScrollBar">
 <short>One of the System colors.</short>
 </element>
@@ -1687,11 +2009,13 @@ other places for raised areas such as a panel.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TMappedColor">
 <short>Deprecated CLX color range. Do not use.</short>
 <descr/>
 <seealso/>
 </element>
+
 <element name="TColorGroup">
 <short>Deprecated CLX color enumeration. Do not use.</short>
 <descr/>
@@ -1706,6 +2030,7 @@ other places for raised areas such as a panel.
 <element name="TColorGroup.cgActive">
 <short/>
 </element>
+
 <element name="TColorRole">
 <short>Deprecated CLX color enumeration. Do not use.</short>
 <descr/>
@@ -1779,11 +2104,13 @@ other places for raised areas such as a panel.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TCustomBitmapClass">
 <short>Class reference used to create new instances of TCustomBitmap.</short>
 <descr/>
 <seealso/>
 </element>
+
 <element name="TGraphicsObject">
 <short>Primitive ancestor class, mainly for Delphi compatibility.
 </short>
@@ -1799,6 +2126,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
 <element name="TGraphicsObject.FOnChange"/>
 <element name="TGraphicsObject.DoChange"/>
 <element name="TGraphicsObject.DoChange.Msg"/>
+
 <element name="TGraphicsObject.Changing">
 <short>
 <var>Changing</var> - software emulation of
@@ -1807,6 +2135,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TGraphicsObject.Changed">
 <short>
 <var>Changed</var> - software emulation of
@@ -1815,6 +2144,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TGraphicsObject.Lock">
 <short>
 <var>Lock</var> - method for locking the object, making it unavailable for 
@@ -1823,6 +2153,7 @@ changes.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TGraphicsObject.UnLock">
 <short>
 <var>UnLock</var> - method for releasing locked object.
@@ -1837,6 +2168,7 @@ changes.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TGraphicsObject.OnChange">
 <short>
 <var>OnChange</var> - event handler for changed object.
@@ -1844,6 +2176,7 @@ changes.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TFontHandleCacheDescriptor">
 <short>
 <var>TFontHandleCacheDescriptor</var> - descriptor for items in Font Handle 
@@ -1852,12 +2185,14 @@ Cache.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TFontHandleCacheDescriptor.LogFont">
 <short>Contains the logical font information for the cache descriptor.
 </short>
 <descr/>
 <seealso/>
 </element>
+
 <element name="TFontHandleCacheDescriptor.LongFontName">
 <short>
 <var>LongFontName</var> - the long name for the Font.
@@ -1865,6 +2200,7 @@ Cache.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TFontHandleCache">
 <short>
 <var>TFontHandleCache</var> - a resource cache for font handles.
@@ -1872,6 +2208,7 @@ Cache.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TFontHandleCache.RemoveItem">
 <short>Removes the specified resource item from the cache.</short>
 <descr/>
@@ -1882,6 +2219,7 @@ Cache.
 <element name="TFontHandleCache.RemoveItem.Item">
 <short>Item removed from the resource cache.</short>
 </element>
+
 <element name="TFontHandleCache.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -1895,6 +2233,7 @@ to create new cache entries.
 <link id="TFontHandleCacheDescriptor"/>
 </seealso>
 </element>
+
 <element name="TFontHandleCache.CompareDescriptors">
 <short>Compares the specified logical font names and font details.</short>
 <descr/>
@@ -1914,6 +2253,7 @@ to create new cache entries.
 <element name="TFontHandleCache.CompareDescriptors.Desc2">
 <short/>
 </element>
+
 <element name="TFontHandleCache.FindFont">
 <short>
 <var>FindFont</var> - returns the Font specified by its handle as a cache 
@@ -1928,6 +2268,7 @@ item from the FontHandleCache.
 <element name="TFontHandleCache.FindFont.TheFont">
 <short/>
 </element>
+
 <element name="TFontHandleCache.FindFontDesc">
 <short>
 <var>FindFontDesc</var> - returns the descriptor for the FontHandle using its
@@ -1946,6 +2287,7 @@ item from the FontHandleCache.
 <element name="TFontHandleCache.FindFontDesc.LongFontName">
 <short/>
 </element>
+
 <element name="TFontHandleCache.Add">
 <short>
 <var>Add</var> the Font specified by its handle,
@@ -1967,8 +2309,11 @@ item from the FontHandleCache.
 <element name="TFontHandleCache.Add.LongFontName">
 <short/>
 </element>
+
 <element name="TFont">
-<short>Represents a font used to draw text in an application.</short>
+<short>
+Represents a font used to draw text in an application.
+</short>
 <descr>
 <p>
 <var>TFont</var> is a <var>TFPCustomFont</var> descendant, and provides 
@@ -1988,6 +2333,8 @@ widgetset implementation.
 </p>
 </descr>
 </element>
+
+<!-- private -->
 <element name="TFont.FIsMonoSpace"/>
 <element name="TFont.FIsMonoSpaceValid"/>
 <element name="TFont.FOrientation"/>
@@ -2002,6 +2349,7 @@ widgetset implementation.
 <element name="TFont.FColor"/>
 <element name="TFont.FHeight"/>
 <element name="TFont.FReference"/>
+
 <element name="TFont.FreeReference">
 <short>Frees the widgetset font reference in the class instance.</short>
 <descr>
@@ -2028,6 +2376,7 @@ when the class instance is freed.
 <link id="TFont.Orientation"/>
 </seealso>
 </element>
+
 <element name="TFont.GetHandle">
 <short>Gets the value for the Handle property.</short>
 <descr/>
@@ -2038,6 +2387,7 @@ when the class instance is freed.
 <element name="TFont.GetHandle.Result">
 <short>Value for the property.</short>
 </element>
+
 <element name="TFont.GetData">
 <short>Gets the value for the FontData property.</short>
 <descr/>
@@ -5339,7 +5689,7 @@ BitMap, PixMap, PNG, JPEG, GIF, TIFF or Icon image formats.
 <var>LoadFromFile</var> and <var>SaveToFile</var> are polymorphic. For 
 example, if the <var>TPicture</var> is holding an <var>Icon</var>, you can 
 <var>LoadFromFile</var> a bitmap file, whereas if the class is 
-<var>TIcon</var> you could only read  .ICO files.
+<var>TIcon</var> you could only read .ICO files.
 </p>
 <ul>
 <li>
@@ -7834,7 +8184,7 @@ Draws an arc over a specified angle along the circumference of a circle.
 along the circumference of a circle with given radius and center point.
 </p>
 <p>
-<var>X</var> and <var>Y</var>  contain the coordinates for the center of the 
+<var>X</var> and <var>Y</var> contain the coordinates for the center of the 
 circle along which the arc is drawn.
 </p>
 <p>
@@ -10382,7 +10732,7 @@ The <var>MaskHandle</var> is not created when:
 BitmapHandleNeeded calls CreateCompatibleBitmaps to get the handles for the 
 bitmap and mask using a pointer to the raw image data, and creates a default 
 handle if CreateCompatibleBitmaps is unsuccessful. UpdateHandles is called to 
-assign the new handles to BitmapHandle and MaskHandle  (when used).
+assign the new handles to BitmapHandle and MaskHandle (when used).
 </p>
 <p>
 BitmapHandleNeeded is called from the Draw method prior to performing 
@@ -10787,7 +11137,7 @@ valid stream could not be created for the image data.
 <p>
 WriteData is an overridden method with support for writing a header with the 
 size for the raw image data. WriteData re-implements the method, and does not 
-call the inherited method -  but does call <var>SaveToStream</var> to 
+call the inherited method - but does call <var>SaveToStream</var> to 
 complete the operation (just like the ancestor).
 </p>
 </descr>
@@ -16622,7 +16972,7 @@ Implements support for the TIFF (Tag Image File Format) graphic format.
 <descr>
 <p>
 TTiffImage is a TFPImageBitmap descendant which implements support for the 
-<b>TIFF</b> (<b>Tag Image File Format</b>)  image format.
+<b>TIFF</b> (<b>Tag Image File Format</b>) image format.
 </p>
 <p>
 It is a raster graphics image format. TIFF is widely supported by scanning, 
