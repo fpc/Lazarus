@@ -38,7 +38,11 @@ This file is part of the Lazarus Component Library (LCL).
 </p>
 </descr>
 
-<!-- unresolved external references; interface uses clause -->
+<!-- unresolved external references -->
+<!-- used for FPC 3.3.X type aliases -->
+<element name="System.UITypes"/>
+<element name="UITypes"/>
+
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="TypInfo"/>
@@ -59,7 +63,6 @@ This file is part of the Lazarus Component Library (LCL).
 <element name="LResources"/>
 <element name="LCLPlatformDef"/>
 <element name="GraphType"/>
-<element name="UITypes"/>
 <element name="LazMethodList"/>
 <element name="LazLoggerBase"/>
 <element name="LazTracer"/>
@@ -425,44 +428,203 @@ Starting value for control message constants defined in the LCL.
 <short>Control notification message constant.</short>
 </element>
 
+<!-- Added or modified in 43d7f203. -->
+
 <element name="mrNone">
-<short>Modal dialog left with None button.</short>
+<short>
+Modal dialog exited with the None button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrNone in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrNone">mrNone</link>
+-->
+</seealso>
 </element>
 <element name="mrOK">
-<short>Modal dialog left with OK button.</short>
+<short>
+Modal dialog exited with the OK button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrOK in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrOK">mrOK</link>
+-->
+</seealso>
 </element>
 <element name="mrCancel">
-<short>Modal dialog left with Cancel button.</short>
+<short>
+Modal dialog exited with the Cancel button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrCancel in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrCancel">mrCancel</link>
+-->
+</seealso>
 </element>
 <element name="mrAbort">
-<short>Modal dialog aborted.</short>
+<short>
+Modal dialog aborted.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrAbort in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrAbort">mrAbort</link>
+-->
+</seealso>
 </element>
 <element name="mrRetry">
-<short>Modal dialog left with Retry button.</short>
+<short>
+Modal dialog exited with the Retry button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrRetry in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrRetry">mrRetry</link>
+-->
+</seealso>
 </element>
 <element name="mrIgnore">
-<short>Modal dialog left with Ignore button.</short>
+<short>
+Modal dialog exited with the Ignore button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrIgnore in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrIgnore">mrIgnore</link>
+-->
+</seealso>
+
 </element>
 <element name="mrYes">
-<short>Modal dialog left with Yes button.</short>
+<short>
+Modal dialog exited with the Yes button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrYes in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrYes">mrYes</link>
+-->
+</seealso>
 </element>
 <element name="mrNo">
-<short>Modal dialog left with No button.</short>
+<short>
+Modal dialog exited with the No button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrNo in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrNo">mrNo</link>
+-->
+</seealso>
 </element>
 <element name="mrAll">
-<short>Modal dialog left with All button.</short>
+<short>
+Modal dialog exited with the All button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrAll in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrAll">mrAll</link>
+-->
+</seealso>
 </element>
 <element name="mrNoToAll">
-<short>Modal dialog left with NoToAll button.</short>
+<short>
+Modal dialog exited with the NoToAll button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrNoToAll in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrNoToAll">mrNoToAll</link>
+-->
+</seealso>
 </element>
 <element name="mrYesToAll">
-<short>Modal dialog left with YesToAll button.</short>
+<short>
+Modal dialog exited with the YesToAll button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrYesToAll in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrYesToAll">mrYesToAll</link>
+-->
+</seealso>
 </element>
 <element name="mrClose">
-<short>Modal dialog left with Close button.</short>
+<short>
+Modal dialog exited with the Close button.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrClose in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrClose">mrClose</link>
+-->
+</seealso>
 </element>
 <element name="mrLast">
-<short>Last (highest) value of modal results.</short>
+<short>
+Last (highest) value of modal results.
+</short>
+<version>
+Modified in LCL 2.4 to be an alias to mrLast in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrLast">mrLast</link>
+-->
+</seealso>
 </element>
 
 <element name="GetModalResultStr">
@@ -858,9 +1020,21 @@ alignment requests (e.g. one at top, one at right) is resolved.
 <element name="TAnchorKind">
 <short>The control side to be anchored.</short>
 <descr>
+<p>
 With the TAnchorSideReference value asrCenter, the sides mean horizontal or 
 vertical alignment of the control's center.
+</p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to the TAnchorKind type in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TAnchorKind">TAnchorKind</link>
+-->
+</seealso>
 </element>
 <element name="TAnchorKind.akTop">
 <short>Top side (or center vertically).</short>
@@ -883,9 +1057,17 @@ TAnchors is the the type used to implement the Anchors property in TControl
 and descendent classes.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to the TAnchors type in System.UITypes 
+for FPC 3.3.0 or higher.
+</version>
 <seealso>
 <link id="TAnchorKind"/>
 <link id="TControl.Anchors"/>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TAnchors">TAnchors</link>
+-->
 </seealso>
 </element>
 
@@ -894,7 +1076,16 @@ and descendent classes.
 The side of another control, to which this control's side is anchored.
 </short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to the TAnchorSideReference type in 
+System.UITypes for FPC 3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.TAnchorSideReference">TAnchorSideReference</link>
+-->
+</seealso>
 </element>
 <element name="TAnchorSideReference.asrTop">
 <short>Anchor to the top side.</short>
@@ -904,6 +1095,124 @@ The side of another control, to which this control's side is anchored.
 </element>
 <element name="TAnchorSideReference.asrCenter">
 <short>Anchor to the center of the other control.</short>
+</element>
+
+<element name="akLeft">
+<short>
+Represents the enumeration value akLeft in TAnchorKind.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.akLeft">akLeft</link>
+-->
+</seealso>
+</element>
+
+<element name="akTop">
+<short>
+Represents the enumeration value akTop in TAnchorKind.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.akTop">akTop</link>
+-->
+</seealso>
+</element>
+
+<element name="akRight">
+<short>
+Represents the enumeration value akRight in TAnchorKind.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.akRight">akRight</link>
+-->
+</seealso></element>
+
+<element name="akBottom">
+<short>
+Represents the enumeration value akRight in TAnchorKind.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.akBottom">akBottom</link>
+-->
+</seealso>
+</element>
+
+<element name="asrTop">
+<short>
+Represents the enumeration value asrTop in TAnchorSideReference.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.asrTop">asrTop</link>
+-->
+</seealso>
+</element>
+
+<element name="asrBottom">
+<short>
+Represents the enumeration value asrBottom in TAnchorSideReference.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.asrBottom">asrBottom</link>
+-->
+</seealso>
+</element>
+
+<element name="asrCenter">
+<short>
+Represents the enumeration value asrCenter in TAnchorSideReference.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.asrCenter">asrCenter</link>
+-->
+</seealso>
 </element>
 
 <element name="asrLeft">
@@ -1144,13 +1453,25 @@ arguments to methods in widgetset classes.
 </element>
 
 <element name="TMouseButton">
-<short>Enumeration of recognized mouse buttons.</short>
+<short>
+Enumeration with values for logical mouse buttons.
+</short>
 <descr>
 <p>
 These are <b>logical</b> buttons; the left and right physical buttons can be 
 swapped for left-handed users.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4 to be an alias for the TMouseButton type in 
+System.UITypes for FPC 3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.  
+<link id="#rtl.system.uitypes.TMouseButton">TMouseButton</link> 
+-->
+</seealso>
 </element>
 <element name="TMouseButton.mbLeft">
 <short>
@@ -1176,8 +1497,95 @@ person.
 <short>Represents the second extra mouse button.</short>
 </element>
 
+<element name="mbLeft">
+<short>
+Represents the mbLeft enumeration value in TMouseButton.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.mbLeft">mbLeft</link> 
+-->
+</seealso>
+</element>
+
+<element name="mbRight">
+<short>
+Represents the mbRight enumeration value in TMouseButton.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.mbRight">mbRight</link> 
+-->
+</seealso>
+</element>
+
+<element name="mbMiddle">
+<short>
+Represents the mbMiddle enumeration value in TMouseButton.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.mbMiddle">mbMiddle</link> 
+-->
+</seealso>
+</element>
+
+<element name="mbExtra1">
+<short>
+Represents the mbExtra1 enumeration value in TMouseButton.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.mbExtra1">mbExtra1</link> 
+-->
+</seealso>
+</element>
+
+<element name="mbExtra2">
+<short>
+Represents the mbExtra2 enumeration value in TMouseButton.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documentation.
+<link id="#rtl.system.uitypes.mbExtra2">mbExtra2</link> 
+-->
+</seealso>
+</element>
+
 <element name="fsAllStayOnTop">
-<short>Set of form styles, which make a form stay on top.</short>
+<short>
+Set of form styles which make a form stay on top.
+</short>
 <descr/>
 <seealso>
 <link id="TFormStyle"/>
@@ -1186,7 +1594,7 @@ person.
 
 <element name="fsAllNonSystemStayOnTop">
 <short>
-Set of form styles, except those which make a form stay on top of all other 
+Set of form styles except those which make a form stay on top of all other 
 forms of the system.
 </short>
 <seealso>
@@ -2945,8 +3353,16 @@ action performed when the mouse is used to start a drag operation.
 TDragKind is the type used to implement the Dragkind property in TControl.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be ab alias to TDragKind in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
 <seealso>
 <link id="TControl.DragKind"/>
+<!-- 
+Uncomment when the topic exists in RTL documentation.  
+<link id="#rtl.system.uitypes.TDragKind">TDragKind</link> 
+-->
 </seealso>
 </element>
 <element name="TDragKind.dkDrag">
@@ -2957,9 +3373,20 @@ TDragKind is the type used to implement the Dragkind property in TControl.
 </element>
 
 <element name="TDragMode">
-<short>Indicates whether dragging can start automatically.</short>
+<short>
+Indicates whether a drag operation can start automatically.
+</short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to TDragMode in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TDragMode">TDragMode</link> 
+-->
+</seealso>
 </element>
 <element name="TDragMode.dmManual">
 <short>Dragging can start only by explicit code.</short>
@@ -2971,12 +3398,23 @@ Dragging starts when the left mouse button is pressed on the control.
 </element>
 
 <element name="TDragState">
-<short>Values representing State changes while dragging.</short>
+<short>
+Values representing State changes for a drag operation.
+</short>
 <descr>
 These values are sent in drag messages, allowing the control to perform 
 special actions when the mouse moves over, enters, or leaves the control.
 </descr>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to TDragState in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TDragState">TDragState</link> 
+-->
+</seealso>
 </element>
 <element name="TDragState.dsDragEnter">
 <short>Mouse has just entered the control.</short>
@@ -3010,6 +3448,16 @@ dmDragCancel is sent to the source control.
 <dd>Find child control under the mouse</dd>
 </dl>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to TDragMessage in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in RTL documentation.
+<link id="#rtl.system.uitypes.TDragMessage">TDragMessage</link> 
+-->
+</seealso>
 </element>
 <element name="TDragMessage.dmDragEnter">
 <short>mouse enters control.</short>
@@ -4732,7 +5180,7 @@ dock manager.
 <short>Control examined in the method.</short>
 </element>
 
-<!-- TODO: This needs work.-->
+<!-- TODO: This needs more information.-->
 <element name="TDockManager.CanBeDoubleDocked">
 <short/>
 <descr>
@@ -6537,9 +6985,20 @@ Set type used to store values from the TControlAutoSizePhase enumeration.
 </element>
 
 <element name="TTabOrder">
-<short>Type used for <link id="TWinControl.TabOrder"/></short>
+<short>
+Range type used to represent the tab order for windowed controls.
+</short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to TTabOrder in System.UITypes for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when the topic exists in the RTL documenetation.  
+<link id="#rtl.system.uitypes.TTabOrder">TTabOrder</link>
+-->
+</seealso>
 </element>
 
 <element name="TControlShowHintEvent">
@@ -26321,6 +26780,30 @@ Register can also be used to register the controls required by an application.
 <link id="#rtl.classes.registercomponents">RegisterComponents</link>
 </seealso>
 </element>
+
+<!-- 
+HERE:
+
+{$IF FPC_FULLVERSION >= 30300}
+const
+  dkDrag = SysUITypes.dkDrag;
+  dkDock = SysUITypes.dkDock;
+
+  dmManual = SysUITypes.dmManual;
+  dmAutomatic = SysUITypes.dmAutomatic;
+
+  dsDragEnter = SysUITypes.dsDragEnter;
+  dsDragLeave = SysUITypes.dsDragLeave;
+  dsDragMove = SysUITypes.dsDragMove;
+
+  dmDragEnter = SysUITypes.dmDragEnter;
+  dmDragLeave = SysUITypes.dmDragLeave;
+  dmDragMove = SysUITypes.dmDragMove;
+  dmDragDrop = SysUITypes.dmDragDrop;
+  dmDragCancel = SysUITypes.dmDragCancel;
+  dmFindTarget = SysUITypes.dmFindTarget;
+{$ENDIF}
+ -->
 
 <topic name="AutoSize">
 <short>
