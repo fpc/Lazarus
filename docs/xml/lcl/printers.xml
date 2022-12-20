@@ -35,7 +35,10 @@ https://wiki.lazarus.freepascal.org/Using_the_printer
 </dl>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
+<!-- unresolved type references -->
+<!-- used for FPC 3.3.0+ type aliases -->
+<element name="System.UITypes"/>
+
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="LazLoggerBase"/>
@@ -62,13 +65,22 @@ TPrinterOrientation is the type used to implement
 properties.
 </p>
 </descr>
+<version>
+Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterOrientation 
+type for FPC versions 3.3.0 or higher.
+</version>
 <seealso>
 <link id="TPrinter.Orientation"/>
 <link id="TPrinterCanvas.Orientation"/>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.TPrinterOrientation">TPrinterOrientation</link>-->
 </seealso>
 </element>
 <element name="TPrinterOrientation.poPortrait">
-<short>Output uses Portrait orientation.</short>
+<short>
+Output uses Portrait orientation.
+</short>
 </element>
 <element name="TPrinterOrientation.poLandscape">
 <short>Output uses Landscape orientation.</short>
@@ -91,7 +103,16 @@ Output uses Portrait orientation with coordinates rotated 180 degrees.
 Not implemented in the current LCL version.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterCapability 
+type for FPC versions 3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.TPrinterCapability">TPrinterCapability</link>
+-->
+</seealso>
 </element>
 <element name="TPrinterCapability.pcCopies">
 <short>Devices supports copy mode.</short>
@@ -110,7 +131,16 @@ Not implemented in the current LCL version.
 Not implemented in the current LCL version.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterCapabilities  
+type for FPC versions 3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.TPrinterCapabilities">TPrinterCapabilities</link>
+-->
+</seealso>
 </element>
 
 <element name="TPrinterState">
@@ -141,6 +171,127 @@ Not implemented in the current LCL version.
 </element>
 <element name="TPrinterType.ptNetWork">
 <short>Device is a network-enabled printer.</short>
+</element>
+
+<!-- TODO: Added in 43d7f203. -->
+
+<element name="poPortrait">
+<short>
+Output uses Portrait orientation.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.poPortrait for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.poPortrait">poPortrait</link> 
+-->
+</seealso>
+</element>
+
+<element name="poLandscape">
+<short>
+Output uses Landscape orientation.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.poLandscape for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.poLandscape">poLandscape</link> 
+-->
+</seealso>
+</element>
+
+<element name="poReverseLandscape">
+<short>
+Output uses Landscape orientation with coordinates rotated 180 degrees.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.poReverseLandscape for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.poReverseLandscape">poReverseLandscape</link> 
+-->
+</seealso>
+</element>
+
+<element name="poReversePortrait">
+<short>
+Output uses Portrait orientation with coordinates rotated 180 degrees.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.poReversePortrait for FPC 
+3.3.0 or higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.poReversePortrait">poReversePortrait</link> 
+-->
+</seealso>
+</element>
+
+<element name="pcCopies">
+<short>
+Device supports copy mode.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.pcCopies for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.pcCopies">pcCopies</link> 
+-->
+</seealso>
+</element>
+
+<element name="pcOrientation">
+<short>
+Device supports page orientations.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.pcOrientation for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.pcOrientation">pcOrientation</link> 
+-->
+</seealso>
+</element>
+
+<element name="pcCollation">
+<short>
+Device supports custom collation for printed pages.
+</short>
+<descr/>
+<version>
+Added in LCL 2.4 as an alias to System.UITypes.pcCollation for FPC 3.3.0 or 
+higher.
+</version>
+<seealso>
+<!-- 
+Uncomment when RTL documentation exists with the topic.
+<link id="#rtl.system.uitypes.pcCollation">pcCollation</link> 
+-->
+</seealso>
 </element>
 
 <element name="TPrinterCanvas">
