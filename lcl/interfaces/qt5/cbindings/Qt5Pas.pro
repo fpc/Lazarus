@@ -751,5 +751,8 @@ SOURCES +=  \
            qtcpsocket_hook_c.cpp \
            qtcpserver_hook_c.cpp \
            qnetworkaccessmanager_hook_c.cpp \
-           qnetworkreply_hook_c.cpp
+           qnetworkreply_hook_c.cpp \
+           qnativeeventfilter_hook_c.cpp \
+           qnativeeventfilter_hook.h \
+           qnativeeventfilter_hook_c.h
 # end of file
