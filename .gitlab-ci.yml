@@ -292,3 +292,11 @@ docs-fpdoc-fixes:
     FOOTER: "@locallclfooter.xml"
   rules:
     - !reference [.manualjob, rules]
+
+docs-fpdoc-stable:
+  extends: .docs-build
+  variables:
+    FPDOC_VER: $FPC_STABLE_VER
+    FOOTER: "locallclfooter.xml"
+  rules:
+    - !reference [.manualjob, rules]
