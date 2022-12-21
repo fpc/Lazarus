@@ -702,5 +702,8 @@ SOURCES +=  \
            qprintpreviewdialog_hook_c.cpp \
            qprintpreviewwidget_hook_c.cpp \
            qsystemtrayicon_hook_c.cpp \
-           qgraphicsscene_hook_c.cpp
+           qgraphicsscene_hook_c.cpp \
+           qnativeeventfilter_hook_c.cpp \
+           qnativeeventfilter_hook.h \
+           qnativeeventfilter_hook_c.h
 # end of file
