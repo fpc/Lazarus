@@ -15,24 +15,15 @@
 #include <qabstractnativeeventfilter.h>
 #include "pascalbind.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
-	#define _NATIVE_EVENT_RESULT qintptr
-#else
-	#define _NATIVE_EVENT_RESULT long
-#endif
-
-
 class Q_NativeEventFilter_hook : public QAbstractNativeEventFilter {
-  //Q_OBJECT
 
   public:  
-	bool nativeEventFilter(const QByteArray &eventType, void *message, _NATIVE_EVENT_RESULT *result) override;
+	bool nativeEventFilter(const QByteArray &eventType, void *message, long *result) override;
 
   Q_NativeEventFilter_hook(QCoreApplication *handle) : QAbstractNativeEventFilter() {
     this->handle = handle;
     this->events.func = NULL;
     this->destroyed_event.func = NULL;
-    //connect(handle, SIGNAL(destroyed()), this, SLOT(destroyed_hook()));
   }
 
   virtual ~Q_NativeEventFilter_hook() {
@@ -84,7 +75,7 @@ class Q_NativeEventFilter_hook : public QAbstractNativeEventFilter {
 };
 
 
-bool Q_NativeEventFilter_hook::nativeEventFilter(const QByteArray &eventType, void *message, _NATIVE_EVENT_RESULT *result) {
+bool Q_NativeEventFilter_hook::nativeEventFilter(const QByteArray &eventType, void *message, long *result) {
   if (events.func) {
     Q_NativeEventFilter_hook* sender = this;
     typedef bool (*func_type)(void *data, Q_NativeEventFilter_hook* sender, const QByteArray &eventType, void *message);

@@ -15674,7 +15674,7 @@ procedure QNetworkReply_hook_hook_downloadProgress(handle: QNetworkReply_hookH; 
 
 type
   QNativeEventFilter_hookH = class(TObject) end;
-  QNativeEventFilterEvent = function (handle: QNativeEventFilter_hookH; eventType: QByteArrayH; message: Pointer):boolean of object cdecl;
+  QNativeEventFilterEvent = function (handle: QNativeEventFilter_hookH; eventType: QByteArrayH; message: long):boolean of object cdecl;
 
 function QNativeEventFilter_hook_Create(handle : QCoreApplicationH) : QNativeEventFilter_hookH; cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_Create';
 procedure QNativeEventFilter_Destroy(handle : QNativeEventFilter_hookH ); cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_Destroy';
