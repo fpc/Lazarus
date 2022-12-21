@@ -1,6 +1,6 @@
 variables:
   FPC_OLDSTABLE_VER: 3.2.0
-  FPC_STABLE_VER: 3.2.2
+  FPC_STABLE_VER: 3.2.2     # make sure to properly adjust FOOTER variable value in docs-fpdoc-stable job on version bump (needed only once)
   FPC_FIXES_VER: 3.2.3
   FPC_MAIN_VER: 3.3.1
 
