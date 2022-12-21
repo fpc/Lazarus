@@ -84,9 +84,4 @@ C_EXPORT void QPrinter_pageSize(QPrinterH handle, QPageSizeH retval);
 C_EXPORT void QPrinter_setPageLayout(QPrinterH handle, const QPageLayoutH pageLayout);
 C_EXPORT void QPrinter_setPageSize(QPrinterH handle, const QPageSizeH pageSize);
 
-#if defined MSWINDOWS
-C_EXPORT void QPrinter_setWinPageSize(QPrinterH handle, int winPageSize);
-C_EXPORT int QPrinter_winPageSize(QPrinterH handle);
-#endif
-
 #endif

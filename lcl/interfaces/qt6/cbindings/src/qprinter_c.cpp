@@ -363,15 +363,3 @@ void QPrinter_setPageSize(QPrinterH handle, const QPageSizeH pageSize)
 }
 
 
-#if defined MSWINDOWS
-void QPrinter_setWinPageSize(QPrinterH handle, int winPageSize)
-{
-	((QPrinter *)handle)->setWinPageSize(winPageSize);
-}
-
-int QPrinter_winPageSize(QPrinterH handle)
-{
-	return (int) ((QPrinter *)handle)->winPageSize();
-}
-
-#endif

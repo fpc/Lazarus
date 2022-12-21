@@ -2604,10 +2604,6 @@ procedure QAbstractEventDispatcher_closingDown(handle: QAbstractEventDispatcherH
 procedure QAbstractEventDispatcher_installNativeEventFilter(handle: QAbstractEventDispatcherH; filterObj: QAbstractNativeEventFilterH); cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_installNativeEventFilter';
 procedure QAbstractEventDispatcher_removeNativeEventFilter(handle: QAbstractEventDispatcherH; filterObj: QAbstractNativeEventFilterH); cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_removeNativeEventFilter';
 function QAbstractEventDispatcher_filterNativeEvent(handle: QAbstractEventDispatcherH; eventType: QByteArrayH; message: Pointer; result: PLong): Boolean; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_filterNativeEvent';
-{$ifdef MSWINDOWS }
-function QAbstractEventDispatcher_registerEventNotifier(handle: QAbstractEventDispatcherH; notifier: QWinEventNotifierH): Boolean; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_registerEventNotifier';
-procedure QAbstractEventDispatcher_unregisterEventNotifier(handle: QAbstractEventDispatcherH; notifier: QWinEventNotifierH); cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_unregisterEventNotifier';
-{$endif}
 
 function QMimeData_Create(): QMimeDataH; cdecl; external Qt6PasLib name 'QMimeData_Create';
 procedure QMimeData_Destroy(handle: QMimeDataH); cdecl; external Qt6PasLib name 'QMimeData_Destroy'; 
@@ -8080,10 +8076,6 @@ procedure QPrinter_setPrintRange(handle: QPrinterH; range: QPrinterPrintRange); 
 function QPrinter_printRange(handle: QPrinterH): QPrinterPrintRange; cdecl; external Qt6PasLib name 'QPrinter_printRange';
 procedure QPrinter_setPageMargins(handle: QPrinterH; left: qreal; top: qreal; right: qreal; bottom: qreal; _unit: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_setPageMargins';
 procedure QPrinter_getPageMargins(handle: QPrinterH; left: PQReal; top: PQReal; right: PQReal; bottom: PQReal; _unit: QPrinterUnit); cdecl; external Qt6PasLib name 'QPrinter_getPageMargins';
-{$ifdef MSWINDOWS }
-procedure QPrinter_setWinPageSize(handle: QPrinterH; winPageSize: Integer); cdecl; external Qt6PasLib name 'QPrinter_setWinPageSize';
-function QPrinter_winPageSize(handle: QPrinterH): Integer; cdecl; external Qt6PasLib name 'QPrinter_winPageSize';
-{$endif}
 
 function QPrinterInfo_Create(): QPrinterInfoH; cdecl; external Qt6PasLib name 'QPrinterInfo_Create';
 procedure QPrinterInfo_Destroy(handle: QPrinterInfoH); cdecl; external Qt6PasLib name 'QPrinterInfo_Destroy'; 

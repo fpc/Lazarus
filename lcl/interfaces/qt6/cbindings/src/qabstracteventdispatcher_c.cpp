@@ -91,15 +91,3 @@ bool QAbstractEventDispatcher_filterNativeEvent(QAbstractEventDispatcherH handle
 	return (bool) ((QAbstractEventDispatcher *)handle)->filterNativeEvent(*(const QByteArray*)eventType, message, result);
 }
 
-#if defined MSWINDOWS
-bool QAbstractEventDispatcher_registerEventNotifier(QAbstractEventDispatcherH handle, QWinEventNotifierH notifier)
-{
-	return (bool) ((QAbstractEventDispatcher *)handle)->registerEventNotifier((QWinEventNotifier*)notifier);
-}
-
-void QAbstractEventDispatcher_unregisterEventNotifier(QAbstractEventDispatcherH handle, QWinEventNotifierH notifier)
-{
-	((QAbstractEventDispatcher *)handle)->unregisterEventNotifier((QWinEventNotifier*)notifier);
-}
-
-#endif

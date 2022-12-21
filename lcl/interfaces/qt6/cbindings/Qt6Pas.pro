@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 6.2.3 against Qt6 6.2 LTS release.
+# Binding Release Version 6.2.4 against Qt6 6.2 LTS release.
 
-win32:VERSION = 6.2.3.0
-else:VERSION = 6.2.3
+win32:VERSION = 6.2.4.0
+else:VERSION = 6.2.4
 VER_MAJ = 6
 VER_MIN = 2
-VER_PAT = 3
+VER_PAT = 4
 win32:VERSION_PE_HEADER = 6.2
 
 QT += gui printsupport
