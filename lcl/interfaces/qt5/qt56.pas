@@ -15672,6 +15672,15 @@ procedure QNetworkReply_hook_hook_encrypted(handle: QNetworkReply_hookH; hook: Q
 procedure QNetworkReply_hook_hook_uploadProgress(handle: QNetworkReply_hookH; hook: QNetworkReply_uploadProgress_Event); cdecl; external Qt5PasLib name 'QNetworkReply_hook_hook_uploadProgress';
 procedure QNetworkReply_hook_hook_downloadProgress(handle: QNetworkReply_hookH; hook: QNetworkReply_downloadProgress_Event); cdecl; external Qt5PasLib name 'QNetworkReply_hook_hook_downloadProgress';
 
+type
+  QNativeEventFilter_hookH = class(TObject) end;
+  QNativeEventFilterEvent = function (handle: QNativeEventFilter_hookH; eventType: QByteArrayH; message: long):boolean of object cdecl;
+
+function QNativeEventFilter_hook_Create(handle : QCoreApplicationH) : QNativeEventFilter_hookH; cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_Create';
+procedure QNativeEventFilter_Destroy(handle : QNativeEventFilter_hookH ); cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_Destroy';
+procedure QNativeEventFilter_hook_installfilter(handle : QNativeEventFilter_hookH; hook : QNativeEventFilterEvent); cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_installfilter';
+procedure QNativeEventFilter_hook_destroyed(handle : QNativeEventFilter_hookH; hook : QObject_destroyed_Event); cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_destroyed';
+procedure QNativeEventFilter_hook_removefilter(handle : QNativeEventFilter_hookH); cdecl; external Qt5PasLib name 'Q_NativeEventFilter_hook_removefilter';
 
 
 //=======================================================

@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 1.2.11 against Qt5 5.6 LTS release.
+# Binding Release Version 1.2.12 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.11
+VERSION = 1.2.12
 VER_MAJ = 1
 VER_MIN = 2
-VER_PAT = 11
+VER_PAT = 12
 win32:VERSION_PE_HEADER = 1.2
 
 QT += gui network printsupport
@@ -751,5 +751,8 @@ SOURCES +=  \
            qtcpsocket_hook_c.cpp \
            qtcpserver_hook_c.cpp \
            qnetworkaccessmanager_hook_c.cpp \
-           qnetworkreply_hook_c.cpp
+           qnetworkreply_hook_c.cpp \
+           qnativeeventfilter_hook_c.cpp \
+           qnativeeventfilter_hook.h \
+           qnativeeventfilter_hook_c.h
 # end of file

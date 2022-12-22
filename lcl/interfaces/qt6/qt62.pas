@@ -15392,6 +15392,16 @@ procedure QGraphicsScene_hook_hook_sceneRectChanged(handle: QGraphicsScene_hookH
 procedure QGraphicsScene_hook_hook_selectionChanged(handle: QGraphicsScene_hookH; hook: QGraphicsScene_selectionChanged_Event); cdecl; external Qt6PasLib name 'QGraphicsScene_hook_hook_selectionChanged';
 procedure QGraphicsScene_hook_hook_focusItemChanged(handle: QGraphicsScene_hookH; hook: QGraphicsScene_focusItemChanged_Event); cdecl; external Qt6PasLib name 'QGraphicsScene_hook_hook_focusItemChanged';
 
+type
+  QNativeEventFilter_hookH = class(TObject) end;
+  QNativeEventFilterEvent = function (handle: QNativeEventFilter_hookH; eventType: QByteArrayH; message: PtrInt):boolean of object cdecl;
+
+function QNativeEventFilter_hook_Create(handle : QCoreApplicationH) : QNativeEventFilter_hookH; cdecl; external Qt6PasLib name 'Q_NativeEventFilter_hook_Create';
+procedure QNativeEventFilter_Destroy(handle : QNativeEventFilter_hookH ); cdecl; external Qt6PasLib name 'Q_NativeEventFilter_hook_Destroy';
+procedure QNativeEventFilter_hook_installfilter(handle : QNativeEventFilter_hookH; hook : QNativeEventFilterEvent); cdecl; external Qt6PasLib name 'Q_NativeEventFilter_hook_installfilter';
+procedure QNativeEventFilter_hook_destroyed(handle : QNativeEventFilter_hookH; hook : QObject_destroyed_Event); cdecl; external Qt6PasLib name 'Q_NativeEventFilter_hook_destroyed';
+procedure QNativeEventFilter_hook_removefilter(handle : QNativeEventFilter_hookH); cdecl; external Qt6PasLib name 'Q_NativeEventFilter_hook_removefilter';
+
 //=======================================================
 // Dynamic Qt Version 
 //=======================================================

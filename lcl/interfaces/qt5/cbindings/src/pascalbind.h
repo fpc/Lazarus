@@ -297,4 +297,6 @@ inline void copyQRealArrayToQVectorQReal(PQRealArray parr,QVector<qreal> &qvecto
 
 C_EXPORT void initializeQRealArray(GetQRealArrayAddr gaa, GetQRealArrayLength gal, SetQRealArrayLength sal);
 
+typedef bool (*NativeEventFilter)(const QByteArray &eventType, void *message, long *result);
+
 #endif

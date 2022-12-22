@@ -485,4 +485,7 @@ typedef struct QAccessibleEvent__ { PTRINT dummy; } *QAccessibleEventH;
 typedef struct QAccessibleInterface__ { PTRINT dummy; } *QAccessibleInterfaceH;
 typedef struct QAccessibleWidget__ { PTRINT dummy; }  *QAccessibleWidgetH;
 typedef struct QLCLAccessibleWidget__ { PTRINT dummy; }  *QLCLAccessibleWidgetH;
+
+typedef struct Q_NativeEventFilter_hook__ { PTRINT dummy; } *Q_NativeEventFilter_hookH;
+typedef struct Q_NativeEventFilter__ { PTRINT dummy; } *Q_NativeEventFilterH;
 #endif

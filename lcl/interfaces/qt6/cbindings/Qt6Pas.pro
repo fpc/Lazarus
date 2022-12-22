@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 6.2.4 against Qt6 6.2 LTS release.
+# Binding Release Version 6.2.5 against Qt6 6.2 LTS release.
 
-win32:VERSION = 6.2.4.0
-else:VERSION = 6.2.4
+win32:VERSION = 6.2.5.0
+else:VERSION = 6.2.5
 VER_MAJ = 6
 VER_MIN = 2
-VER_PAT = 4
+VER_PAT = 5
 win32:VERSION_PE_HEADER = 6.2
 
 QT += gui printsupport
@@ -702,5 +702,8 @@ SOURCES +=  \
            qprintpreviewdialog_hook_c.cpp \
            qprintpreviewwidget_hook_c.cpp \
            qsystemtrayicon_hook_c.cpp \
-           qgraphicsscene_hook_c.cpp
+           qgraphicsscene_hook_c.cpp \
+           qnativeeventfilter_hook_c.cpp \
+           qnativeeventfilter_hook.h \
+           qnativeeventfilter_hook_c.h
 # end of file
