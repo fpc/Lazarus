@@ -3198,11 +3198,16 @@ function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
   function MoveToLastIdentifierThroughDots(ExtTool: TFindDeclarationTool): Boolean;
   var
     LastPos: TAtomPosition;
+    HasSpecialize: Boolean;
   begin
     LastPos := ExtTool.CurPos;
     ExtTool.ReadNextAtom;
-    if ExtTool.CurPos.Flag = cafWord then
+    if ExtTool.CurPos.Flag = cafWord then begin
+      HasSpecialize := ExtTool.UpAtomIs('SPECIALIZE');
       ExtTool.ReadNextAtom;
+      if HasSpecialize then
+        LastPos := ExtTool.CurPos;  // Type starts after "specialize".
+    end;
     while ExtTool.CurPos.Flag = cafPoint do
     begin
       ExtTool.ReadNextAtom;
