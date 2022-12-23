@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="LazControls">
-
+<!--
+========================================================================
+ListFilterEdit
+========================================================================
+-->
 <module name="ListFilterEdit">
-<short>Implements a control used to filter an associated list box.</short>
+<short>
+Implements a control used to filter the items in an associated list box.
+</short>
 <descr>
 <p>
 <file>ListFilterEdit.pas</file> contains classes and types used to implement 
@@ -29,22 +35,16 @@ This file is part of the <file>LazControls</file> package.
 <element name="AvgLvlTree"/>
 
 <element name="TImageIndexEvent">
-<short>Not used in the current LCL version.</short>
+<short>
+Not used in the current implementation.
+</short>
 <descr/>
 <seealso/>
 </element>
-<element name="TImageIndexEvent.Result">
-<short/>
-</element>
-<element name="TImageIndexEvent.Str">
-<short/>
-</element>
-<element name="TImageIndexEvent.Data">
-<short/>
-</element>
-<element name="TImageIndexEvent.IsEnabled">
-<short/>
-</element>
+<element name="TImageIndexEvent.Result"/>
+<element name="TImageIndexEvent.Str"/>
+<element name="TImageIndexEvent.Data"/>
+<element name="TImageIndexEvent.IsEnabled"/>
 
 <element name="TListFilterEdit">
 <short>
@@ -211,7 +211,7 @@ Moves to the next item in FilteredListbox and optionally selects the value.
 </element>
 <element name="TListFilterEdit.MoveNext.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -225,7 +225,7 @@ value.
 </element>
 <element name="TListFilterEdit.MovePrev.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -239,7 +239,7 @@ list.
 </element>
 <element name="TListFilterEdit.MovePageUp.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -252,7 +252,7 @@ Moves the position in FilteredListbox by one page towards the end of the list.
 </element>
 <element name="TListFilterEdit.MovePageDown.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -265,7 +265,7 @@ Moves the position in FilteredListbox to the first entry in the list.
 </element>
 <element name="TListFilterEdit.MoveHome.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -278,7 +278,7 @@ Moves the position in FilteredListbox to the last entry in the list.
 </element>
 <element name="TListFilterEdit.MoveEnd.ASelect">
 <short>
-<b>True</b> to add the list item to Selected items in the list box.
+<b>True</b> to add the list item to the Selected items in the list box.
 </short>
 </element>
 
@@ -467,7 +467,9 @@ Destroy calls the inherited method prior to exit.
 </element>
 
 <element name="TListFilterEdit.RemoveItem">
-<short>Removes the specified string value from the Items property.</short>
+<short>
+Removes the specified string value from the Items property.
+</short>
 <descr>
 <p>
 <var>RemoveItem</var> calls the IndexOf method in Items to get the ordinal 
@@ -657,21 +659,27 @@ The list box associated with the filtered edit control.
 <p>
 <var>FilteredListbox</var> is a <var>TCustomListBox</var> property with the 
 list box which provides the data for the filter edit control. TCustomListBox 
-descendants other than TListBox can be assigned to the property; i. e. 
-TCheckListBox. 
+descendants can be assigned to the property; i. e. TCheckListBox. 
 </p>
 <p>
 The Items and Selected properties in the list box instance are used to 
 populate the Items, sorted data, and SelectionList properties in the control. 
 FilteredListbox is also used to display the results after the Filter is 
-applied to the Items in the edit control.
+applied to the Items in the edit control. The original data in FilteredListBox 
+is preserved internally while a Filter and/or Selections are active, and 
+restored when these items are cleared.
 </p>
 <p>
 Assigning a new value to the property causes the Filter and Items properties 
-to be updated for the control. Filter is set to the current value in the Text 
-property. Items is reloaded from the Items property in FilteredListbox. When 
-FilteredListbox is a TCheckListBox instance, the internal string map with the 
-check box items on the control is created.
+for the control to be updated when AValue is not <b>Nil</b>. The inherited 
+InternalSetFilter method is called to apply the value in Text to the Filter 
+and Items for the control. Button is disabled when the new text value is an 
+empty string ('').
+</p>
+<p>
+The updated results from the filtered list box are stored internally and used 
+in the SelectionList for the control. If the new list box in AValue is derived 
+from TCustomCheckListBox, the internal map used for checked items is created.
 </p>
 </descr>
 <seealso>
@@ -686,6 +694,6 @@ check box items on the control is created.
 </element>
 
 </module>
-
+<!-- ListFilterEdit -->
 </package>
 </fpdoc-descriptions>
