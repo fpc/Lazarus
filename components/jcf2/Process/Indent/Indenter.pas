@@ -390,7 +390,16 @@ begin
   }
   else if pt.HasParentNode(nDeclSection) and (not pt.HasParentNode(ProcedureNodes)) then
   begin
-    if pt.TokenType in Declarations + ProcedureWords then
+    // generic procedure/fucntion declarations.
+    if (pt.TokenType=ttGeneric) and (pt.NextSolidTokenType in ProcedureWords) then
+    begin
+      if (pt.NextSolidTokenType in ProcedureWords + ParamTypes) and
+        (pt.HasParentNode(nProcedureType) or pt.HasParentNode(nFormalParams)) then
+        liIndentCount := 1
+      else
+        liIndentCount := 0;
+    end
+    else if pt.TokenType in Declarations + ProcedureWords then
     begin
       {
         the words 'var' and 'const' can be found in proc params
