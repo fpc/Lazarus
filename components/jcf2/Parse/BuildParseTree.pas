@@ -2323,7 +2323,7 @@ begin
       RecogniseClassOperator(False);
     ttProcedure:
     begin
-      PushNode(nFunctionDecl);
+      PushNode(nProcedureDecl);
       RecogniseProcedureHeading(false, false);
       PopNode;
     end;
