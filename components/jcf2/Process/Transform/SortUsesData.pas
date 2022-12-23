@@ -349,9 +349,7 @@ end;
 constructor TUsesSection.Create;
 begin
   inherited;
-  fcItems := TObjectList.Create;
-  // tokens are just referred here, owned by the parse treee
-  fcItems.OwnsObjects := False;
+  fcItems := TObjectList.Create(true);
 end;
 
 destructor TUsesSection.Destroy;
