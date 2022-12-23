@@ -1141,6 +1141,7 @@ does not have focus, it displays the greyed value "(filter)".
 </descr>
 </element>
 
+<!-- private -->
 <element name="TCustomControlFilterEdit.fFilter"/>
 <element name="TCustomControlFilterEdit.fFilterLowercase"/>
 <element name="TCustomControlFilterEdit.fFilterOptions"/>
@@ -1148,6 +1149,20 @@ does not have focus, it displays the greyed value "(filter)".
 <element name="TCustomControlFilterEdit.fSortData"/>
 <element name="TCustomControlFilterEdit.fIsFirstSetFormActivate"/>
 <element name="TCustomControlFilterEdit.fOnAfterFilter"/>
+
+<element name="TCustomControlFilterEdit.ApplyFilter">
+<short>Filters the data and updates the container.</short>
+<descr>
+<p>
+Does its job at once when Immediately is set to <b>True</b>. Otherwise, it 
+connects the OnIdle event handler which applies the filter when the 
+Application is idle.
+</p>
+</descr>
+</element>
+<element name="TCustomControlFilterEdit.ApplyFilter.Immediately">
+<short>Indicates the filter is applied immediately.</short>
+</element>
 
 <element name="TCustomControlFilterEdit.SetFilter">
 <short>Sets the value for the Filter property.</short>
@@ -1159,6 +1174,11 @@ does not have focus, it displays the greyed value "(filter)".
 <element name="TCustomControlFilterEdit.SetFilter.AValue">
 <short>New value for the property.</short>
 </element>
+
+<element name="TCustomControlFilterEdit.SetFilterOptions"/>
+<element name="TCustomControlFilterEdit.SetFilterOptions.AValue"/>
+<element name="TCustomControlFilterEdit.SetSortData"/>
+<element name="TCustomControlFilterEdit.SetSortData.AValue"/>
 
 <element name="TCustomControlFilterEdit.SetIdleConnected">
 <short>Sets the value for the IdleConnected property.</short>
@@ -1195,7 +1215,6 @@ OnIdle signals the <var>OnAfterFilter</var> event handler (when assigned).
 </p>
 </descr>
 <seealso>
-<link id="TCustomControlFilterEdit.ApplyFilter"/>
 <link id="TCustomControlFilterEdit.OnFilterItem"/>
 <link id="TCustomControlFilterEdit.OnFilterItemEx"/>
 <link id="TCustomControlFilterEdit.IdleConnected"/>
@@ -1267,6 +1286,24 @@ Calls the inherited DestroyWnd method.
 <seealso>
 <link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
 </seealso>
+</element>
+
+<element name="TCustomControlFilterEdit.InternalSetFilter">
+<short>
+Causes the control to apply the specified filter value and re-sort the items 
+which match the filter value.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
+<link id="TCustomControlFilterEdit.SortAndFilter"/>
+</seealso>
+</element>
+<element name="TCustomControlFilterEdit.InternalSetFilter.AValue">
+<short>
+Filter value used to select the available items for the control.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.DoDefaultFilterItem">
@@ -1400,20 +1437,6 @@ class to provide the specific functionality needed.
 </p>
 </descr>
 <seealso/>
-</element>
-
-<element name="TCustomControlFilterEdit.ApplyFilter">
-<short>Filters the data and updates the container.</short>
-<descr>
-<p>
-Does its job at once when Immediately is set to <b>True</b>. Otherwise, it 
-connects the OnIdle event handler which applies the filter when the 
-Application is idle.
-</p>
-</descr>
-</element>
-<element name="TCustomControlFilterEdit.ApplyFilter.Immediately">
-<short>Indicates the filter is applied immediately.</short>
 </element>
 
 <element name="TCustomControlFilterEdit.ApplyFilterCore">
@@ -1626,7 +1649,6 @@ Used in the implementation of the <var>ApplyFilter</var> method.
 </descr>
 <seealso>
 <link id="TCustomControlFilterEdit.RestoreSelection"/>
-<link id="TCustomControlFilterEdit.ApplyFilter"/>
 </seealso>
 </element>
 
@@ -1709,7 +1731,6 @@ The default value for the property is <b>False</b>.
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
 <link id="TCustomControlFilterEdit.InvalidateFilter"/>
-<link id="TCustomControlFilterEdit.ApplyFilter"/>
 <link id="#lcl.forms.Application">Application</link>
 <link id="#lcl.forms.TApplication">TApplication</link>
 <link id="#lcl.forms.TApplication.AddOnIdleHandler">TApplication.AddOnIdleHandler</link>
@@ -1718,9 +1739,34 @@ The default value for the property is <b>False</b>.
 </element>
 
 <element name="TCustomControlFilterEdit.SortData">
-<short>Items can be sorted while they are filtered.</short>
-<descr/>
-<seealso/>
+<short>
+Indicates whether items are sorted as they are filtered.
+</short>
+<descr>
+<p>
+<var>SortData</var> is a <var>Boolean</var> property which determines whether 
+items in the filtered control are sorted when the Filter value is applied in 
+the ApplyFilter method. An explicit default value is not assigned for the 
+property, but the default value for the Boolean type is <b>False</b>.
+</p>
+<p>
+Changing the value for the property causes the InvalidateFilter method to be 
+called. This method sets internal flags to signify a pending update, and 
+enables the OnIdle event handler where the filter value is applied and sorting 
+is performed.
+</p>
+<p>
+Descendant classes provide an overridden SortAndFilter method which performs 
+the actions needed to filter and sort the item data for an associated control 
+type.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
+<link id="TCustomControlFilterEdit.InvalidateFilter"/>
+<link id="TCustomControlFilterEdit.SortAndFilter"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.SelectedPart">
@@ -1756,7 +1802,8 @@ for the type.
 
 <element name="TCustomControlFilterEdit.FilterOptions">
 <short>
-Contains options which control string comparisons for filters in the control.
+Contains options which control string comparisons using the Filter for the 
+control.
 </short>
 <descr>
 <p>
@@ -1768,7 +1815,7 @@ id="TFilterStringOption"/> for more information about the enumeration values
 and their meanings.
 </p>
 <p>
-The default value for the property is an empty set ([]).
+The default value for the property is an empty set ([]). Changing the value for the property causes the Filter to be invalidated and re-applied to the items from the associated control.
 </p>
 </descr>
 <seealso>
@@ -1780,9 +1827,19 @@ The default value for the property is an empty set ([]).
 </element>
 
 <element name="TCustomControlFilterEdit.OnAfterFilter">
-<short>Called after all items are filtered.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled after all items have been filtered in the control.
+</short>
+<descr>
+<p>
+OnAfterFilter is signalled from the OnIdle event handler, and occurs after 
+ApplyFilter has been completed. 
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.OnFilterItem">
