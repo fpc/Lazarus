@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="LazControls">
+<!--
+========================================================================
+ListViewFilterEdit
+========================================================================
+-->
 <module name="ListViewFilterEdit">
 <short>
 Implements an edit control used to filter an associated TListView control.
@@ -133,6 +138,7 @@ its Items property. This prevents use of virtual mode (when OwnerData is
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TListViewFilterEdit.FFilteredListView">
 <short>TListView control showing the filtered data.</short>
 </element>
@@ -169,6 +175,21 @@ control.
 </element>
 <element name="TListViewFilterEdit.MatchesFilter.AData">
 <short/>
+</element>
+
+<element name="TListViewFilterEdit.SetByAllFields">
+<short>
+Sets the value for the ByAllFields property.
+</short>
+<descr/>
+<seealso>
+<link id="TListViewFilterEdit.ByAllFields"/>
+</seealso>
+</element>
+<element name="TListViewFilterEdit.SetByAllFields.AValue">
+<short>
+New value for the ByAllFields property.
+</short>
 </element>
 
 <element name="TListViewFilterEdit.SetFilteredListview">
@@ -584,20 +605,26 @@ the filtered values for the control.
 </element>
 
 <element name="TListViewFilterEdit.ByAllFields">
-<short>Indicates if all fields are compared using the filter.</short>
+<short>
+Indicates whether all fields are compared using the filter.
+</short>
 <descr>
 <p>
-When set to <b>True</b>, all fields in the list view data are used when 
-searching for a value that matches the filter. Otherwise, only the Caption is 
-used. The default value for the property is <b>False</b>.
+ByAllFields is a Boolean property which controls the properties used to find matches for the Filter in the control. When set to <b>True</b>, all properties in a TListViewDataItem are used when searching for a value that matches the Filter. Otherwise, only the Caption (element 0 in the list item data) is used.
 </p>
 <p>
-<var>ByAllFields</var> is used when <var>SortAndFilter</var> is called to 
-select and order the filtered data for the control.
+The default value for the property is <b>False</b>. Changing the value for the 
+property causes the inherited InvalidateFilter method to be called to update 
+the control.
+</p>
+<p>
+<var>ByAllFields</var> is used in the MatchesFilter method called when 
+list item data is selected and sorted for the control.
 </p>
 </descr>
 <seealso/>
 </element>
 </module>
+<!-- ListViewFilterEdit -->
 </package>
 </fpdoc-descriptions>
