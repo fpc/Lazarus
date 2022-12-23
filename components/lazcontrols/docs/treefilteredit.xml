@@ -190,17 +190,23 @@ owner control.
 
 <element name="TTreeFilterBranch.Move">
 <short>
-Moves the tree node at the specified position in Items to the position in 
+Moves the tree node and data at the specified position to the position in 
 NewIndex.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeFilterBranch.InvalidateBranch"/>
+</seealso>
 </element>
 <element name="TTreeFilterBranch.Move.CurIndex">
-<short/>
+<short>
+Ordinal position for the tree node data moved in the method.
+</short>
 </element>
 <element name="TTreeFilterBranch.Move.NewIndex">
-<short/>
+<short>
+Ordinal position where tree node data is relocated in the method.
+</short>
 </element>
 
 <element name="TTreeFilterBranch.Items">
@@ -246,6 +252,23 @@ It uses each TreeNode's Visible property to show/hide it.
 </descr>
 </element>
 
+<!-- private -->
+<element name="TTreeFilterEdit.fFilteredTreeview"/>
+<element name="TTreeFilterEdit.fImageIndexDirectory"/>
+<element name="TTreeFilterEdit.fSelectionList"/>
+<element name="TTreeFilterEdit.fShowDirHierarchy"/>
+<element name="TTreeFilterEdit.fBranches"/>
+<element name="TTreeFilterEdit.fExpandAllInitially"/>
+<element name="TTreeFilterEdit.fIsFirstTime"/>
+<element name="TTreeFilterEdit.fFirstPassedNode"/>
+<element name="TTreeFilterEdit.fOnGetImageIndex"/>
+<element name="TTreeFilterEdit.fOnFilterNode"/>
+<element name="TTreeFilterEdit.SetFilteredTreeview"/>
+<element name="TTreeFilterEdit.SetShowDirHierarchy"/>
+<element name="TTreeFilterEdit.FilterTree"/>
+<element name="TTreeFilterEdit.OnBeforeTreeDestroy"/>
+
+<!-- protected -->
 <element name="TTreeFilterEdit.Notification">
 <short>
 Performs actions needed when the specified component is added to or removed 
@@ -526,22 +549,35 @@ those branches.
 
 <element name="TTreeFilterEdit.DeleteBranch">
 <short>
-Deletes the specified branch root node from the internal list for the control.
+Deletes the branch with the specified root node from the internal list.
 </short>
-<descr/>
+<descr>
+<p>
+<var>DeleteBranch</var> iterates over the items in the internal branch list to 
+locate an entry with the root node specified in ARootNode. The delete method 
+in list is called to remove the branch entry.
+</p>
+<p>
+No actions are performed in the method if an internal TBranchList has not been 
+allocated in the class instance by calling the GetCleanBranch method.
+</p>
+</descr>
 <seealso>
 <link id="TTreeFilterEdit.GetCleanBranch"/>
 <link id="TTreeFilterEdit.GetExistingBranch"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InvalidateFilter">TCustomControlFilterEdit.InvalidateFilter</link>
+<link id="#lcl.comctrls.TTreeNode">TTreeNode</link>
+<link id="#rtl.fgl.TFPSList.Delete">TFPSList.Delete</link>
 </seealso>
 </element>
 <element name="TTreeFilterEdit.DeleteBranch.Result">
 <short>
-Returns <b>True</b> if the specified branch node was successfully removed from the internal list.
+Returns <b>True</b> if the specified branch node was successfully removed from the internal list. Returns <b>False</b> if a branch with the specified root node is not found, or the branch list is empty.
 </short>
 </element>
 <element name="TTreeFilterEdit.DeleteBranch.ARootNode">
 <short>
-Tree node that represents the root for a given branch.
+Tree node that represents the root node for the branch deleted in the method.
 </short>
 </element>
 
