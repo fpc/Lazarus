@@ -586,8 +586,8 @@ type
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
-    property CustomData: TStringToStringTree read FCustomData;
-    property CustomSessionData: TStringToStringTree read FCustomSessionData;
+    property CustomData: TStringToStringTree read FCustomData; // for machine unspecific data, e.g. x-platform
+    property CustomSessionData: TStringToStringTree read FCustomSessionData; // for machine specific data
     property UseAppBundle: Boolean read FUseAppBundle write SetUseAppBundle;
     property NSPrincipalClass: string read FNSPrincipalClass write SetNSPrincipalClass;
     property Resources: TObject read FResources; // TAbstractProjectResources
