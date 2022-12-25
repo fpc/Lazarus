@@ -526,7 +526,9 @@ msgid "Indent for procedure body"
 msgstr "Einrückung für Prozedurkörper"
 
 #: jcfuiconsts.lisindentindentforproceduresinlibrary
-msgid "Indent for procedures in library"
+#, fuzzy
+#| msgid "Indent for procedures in library"
+msgid "Indent for procedures in program/library"
 msgstr "Einrückung für Bibliotheksprozeduren "
 
 #: jcfuiconsts.lisindentindentnestedtypes

@@ -526,7 +526,9 @@ msgid "Indent for procedure body"
 msgstr "Indenter le corps des procédures"
 
 #: jcfuiconsts.lisindentindentforproceduresinlibrary
-msgid "Indent for procedures in library"
+#, fuzzy
+#| msgid "Indent for procedures in library"
+msgid "Indent for procedures in program/library"
 msgstr "Indenter les procédures dans les bibliothèques"
 
 #: jcfuiconsts.lisindentindentnestedtypes

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: jcfuiconsts.format_about_menu
 msgid "&About"
@@ -526,8 +526,8 @@ msgid "Indent for procedure body"
 msgstr "Отступ для тела процедуры"
 
 #: jcfuiconsts.lisindentindentforproceduresinlibrary
-msgid "Indent for procedures in library"
-msgstr "Отступ для процедур в библиотеке"
+msgid "Indent for procedures in program/library"
+msgstr "Отступ для процедур в программе/библиотеке"
 
 #: jcfuiconsts.lisindentindentnestedtypes
 msgid "Indent nested types"
