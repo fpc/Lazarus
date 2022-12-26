@@ -173,8 +173,6 @@ Uncomment when RTL documentation exists with the topic.
 <short>Device is a network-enabled printer.</short>
 </element>
 
-<!-- TODO: Added in 43d7f203. -->
-
 <element name="poPortrait">
 <short>
 Output uses Portrait orientation.
