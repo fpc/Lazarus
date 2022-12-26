@@ -5405,17 +5405,43 @@ Called to check whether this control allows docking and where.
 
 <element name="TPageControl.DoUndockClientMsg" link="#lcl.controls.TWinControl.DoUndockClientMsg"/>
 
-<!-- TODO: Needs description for override. -->
-<element name="TPageControl.ChildClassAllowed" link="#lcl.controls.TWinControl.ChildClassAllowed">
-<short/>
-<descr/>
-<seealso/>
+<element name="TPageControl.ChildClassAllowed">
+<short>
+Determines whether the specified class can be a child control on the 
+TPageControl instance.
+</short>
+<descr>
+<p>
+<var>ChildClassAllowed</var> is an overridden method in 
+<var>TPageControl</var>. It re-implements the inherited method, and returns
+<b>True</b> if the class reference in ChildClass is assigned and derived from 
+TTabSheet. The GetLCLCapability method in the widgetset class is also called 
+to check whether child controls are allowed for the native control on a given 
+platform.
+</p>
+<p>
+ChildClassAllowed is called at run-time prior to using a control as the new 
+value for the Parent property in one of its child control. It is also used at 
+design-time when the component tree view or property editors are created/ 
+updated in the Lazarus IDE.
+</p>
+</descr>
+<seealso>
+<link id="TTabSheet"/>  
+<link id="#lcl.controls.TWinControl.ChildClassAllowed">TWinControl.ChildClassAllowed</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TControl.CHeckNewParent">TControl.CheckNewParent</link>
+</seealso>
 </element>
 <element name="TPageControl.ChildClassAllowed.Result">
-<short/>
+<short>
+<b>True</b> if an instance of ChildClass can be used as a child control.
+</short>
 </element>
 <element name="TPageControl.ChildClassAllowed.ChildClass">
-<short/>
+<short>
+Class reference used to create instances if the child control.
+</short>
 </element>
 
 <element name="TPageControl.FindNextPage">
