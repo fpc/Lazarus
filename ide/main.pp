@@ -1510,6 +1510,7 @@ begin
       Application.Terminate;
       exit;
     end;
+    DebuggerOptions.Save; // before environment
     EnvironmentOptions.Save(true);
     if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
       // fetch new translations
@@ -5308,8 +5309,8 @@ begin
   begin
     Exclude(FIdleIdeActions, iiaSaveEnvironment);
     SaveDesktopSettings(EnvironmentOptions);
+    DebuggerOptions.Save; // before environment
     EnvironmentOptions.Save(false);
-    DebuggerOptions.Save;
     EditorMacroListViewer.SaveGlobalInfo;
     //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
     if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then

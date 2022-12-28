@@ -149,6 +149,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestWatchResult"/>
       </Unit>
+      <Unit>
+        <Filename Value="testxmlopts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestXmlOpts"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

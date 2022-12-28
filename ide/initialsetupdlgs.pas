@@ -1488,7 +1488,7 @@ begin
         DebuggerOptions.DebuggerPropertiesConfigList.EntryByName('', TGDBMIDebugger.ClassName);
     if DebuggerOptions.CurrentDebuggerPropertiesConfig = nil then
       DebuggerOptions.CurrentDebuggerPropertiesConfig :=
-        TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
+        TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger, True);
     if IsFirstStart or (not FileExistsCached(DebuggerOptions.GetParsedDebuggerFilename))
     then begin
       // first start => choose first best candidate

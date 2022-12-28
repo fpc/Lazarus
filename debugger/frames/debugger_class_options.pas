@@ -244,7 +244,7 @@ begin
   UpdateDebuggerClass;
   cmbDebuggerPathEditingDone(nil);
 
-  FSelectedDbgPropertiesConfig := TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger);
+  FSelectedDbgPropertiesConfig := TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger, True);
   FSelectedDbgPropertiesConfig.ConfigName := GetUniqueName(lisNew);
   FCopiedDbgPropertiesConfigList.AddObject(FSelectedDbgPropertiesConfig.ConfigName, FSelectedDbgPropertiesConfig);
 
