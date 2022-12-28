@@ -9360,22 +9360,29 @@ var
   function ResolveAttribute(const Context: TFindContext): boolean;
   var
     Identifier: String;
-    l: Integer;
+    I: Integer;
   begin
     Result:=false;
     if CurAtom.Flag<>cafWord then exit;
     Identifier:=GetAtom;
-    l:=length(Identifier)-length('attribute');
-    if (l>0) and (CompareIdentifiers(@Identifier[l+1],'attribute')=0) then
-      exit;
-    // auto append 'attribute' to typename
-    Identifier+='Attribute';
-    Params.SetIdentifier(Self,PChar(Identifier),@CheckSrcIdentifier);
-    if Context.Tool.FindIdentifierInContext(Params) then begin
-      ExprType.Desc:=xtContext;
-      ExprType.Context:=CreateFindContext(Params);
-      Params.Load(OldInput,true);
-      exit(true);
+    for I := 0 to 1 do
+    begin
+      // first check for attribute with exactly the same name
+      // if not found, append 'Attribute'
+      if I=1 then // append 'attribute' to typename
+        Identifier+='Attribute';
+      Params.SetIdentifier(Self,PChar(Identifier),@CheckSrcIdentifier);
+      try
+        if Context.Tool.FindIdentifierInContext(Params) then begin
+          ExprType.Desc:=xtContext;
+          ExprType.Context:=CreateFindContext(Params);
+          Params.Load(OldInput,true);
+          exit(true);
+        end;
+      except
+        on E: ECodeToolError do
+          // ignore - CodeTools raise ECodeToolError when identifier is not found
+      end;
     end;
     Params.Load(OldInput,false);
   end;
