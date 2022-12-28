@@ -9365,6 +9365,7 @@ var
     Result:=false;
     if CurAtom.Flag<>cafWord then exit;
     Identifier:=GetAtom;
+    Params.Flags := Params.Flags - [fdfExceptionOnNotFound];
     for I := 0 to 1 do
     begin
       // first check for attribute with exactly the same name
@@ -9372,16 +9373,11 @@ var
       if I=1 then // append 'attribute' to typename
         Identifier+='Attribute';
       Params.SetIdentifier(Self,PChar(Identifier),@CheckSrcIdentifier);
-      try
-        if Context.Tool.FindIdentifierInContext(Params) then begin
-          ExprType.Desc:=xtContext;
-          ExprType.Context:=CreateFindContext(Params);
-          Params.Load(OldInput,true);
-          exit(true);
-        end;
-      except
-        on E: ECodeToolError do
-          // ignore - CodeTools raise ECodeToolError when identifier is not found
+      if Context.Tool.FindIdentifierInContext(Params) then begin
+        ExprType.Desc:=xtContext;
+        ExprType.Context:=CreateFindContext(Params);
+        Params.Load(OldInput,true);
+        exit(true);
       end;
     end;
     Params.Load(OldInput,false);
