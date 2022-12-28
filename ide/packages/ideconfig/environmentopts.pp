@@ -2652,7 +2652,13 @@ var
   xActiveDesktopName: string;
 begin
   try
-    InitXMLCfg(true);
+    // Don't discard any loaded XML
+    // It is not consistent to normally keep it,
+    // yet discard it if the file changed on disk (especially since the changed file will be overwritten anyway)
+    if (FXMLCfg=nil) then
+      InitXMLCfg(true)
+    else
+      FXMLCfg.Filename := FFilename;
     // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
     //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
