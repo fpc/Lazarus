@@ -591,13 +591,13 @@ const
   TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
   TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
 var
-  FontSize: Integer;
+  FontSize: Double;
   TextStr: String;
   PtX, PtY: double;
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AText.X, AText.Y, PtX, PtY);
   TextStr := AText.Value.Text;
-  FontSize:= ceil(AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER);
+  FontSize:= AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER;
 
   AStrings.Add('  <text ');
   // Discussion about this offset in bugs 22091 and 26817
@@ -630,7 +630,7 @@ begin
         Format('    font-family="%s"', [AText.Font.Name]));
 
   AStrings.Add(
-        Format('    font-size="%d"', [FontSize]));
+        Format('    font-size="%f"', [FontSize], FPointSeparator));
 
   AStrings.Add(
         Format('    fill="#%s"', [FPColorToRGBHexString(AText.Font.Color)]));

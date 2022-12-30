@@ -1416,9 +1416,9 @@ begin
 
   if spbfFontSize in AStyle.SetElements then
   begin
-    Result := Result + ' fo:font-size="'+IntToStr(AStyle.Font.Size)+'pt" ';
-    Result := Result + ' fo:font-size-asian="'+IntToStr(AStyle.Font.Size)+'pt" ';
-    Result := Result + ' fo:font-size-complex="'+IntToStr(AStyle.Font.Size)+'pt" ';
+    Result := Result + ' fo:font-size="'+FloatToODTText(AStyle.Font.Size)+'pt" ';
+    Result := Result + ' fo:font-size-asian="'+FloatToODTText(AStyle.Font.Size)+'pt" ';
+    Result := Result + ' fo:font-size-complex="'+FloatToODTText(AStyle.Font.Size)+'pt" ';
   end;
 
   if spbfFontName in AStyle.SetElements then

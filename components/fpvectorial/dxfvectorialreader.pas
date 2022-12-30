@@ -1759,7 +1759,7 @@ begin
   Result.Value.Text := Str;
   Result.X := PosX;
   Result.Y := PosY;
-  Result.Font.Size := Round(FontSize);
+  Result.Font.Size := FontSize;
   Result.Font.Color := colWhite;
   if not AOnlyCreate then AData.AddEntity(Result);
 end;
@@ -2026,7 +2026,7 @@ begin
   PosY := PosY + FontSize - DOC_OFFSET.Y;
 
   //
-  Result := AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str, AOnlyCreate);
+  Result := AData.AddText(PosX, PosY, 0, '', FontSize, Str, AOnlyCreate);
   Result.Font.Color := colWhite;
 end;
 

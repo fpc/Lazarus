@@ -173,6 +173,7 @@ Type
     FData: TvVectorialDocument;
 
     FFiles: TFileList;
+    FPointSeparator: TFormatSettings;
 
     Function PrepareContentTypes: String;
     Function PrepareRelationships: String;
@@ -184,6 +185,7 @@ Type
 
     Procedure PrepareTextRunStyle(ADoc: TIndentedStringList; AStyle: TvStyle);
     Function StyleNameToStyleID(AStyle: TvStyle): String;
+    function FloatToDOCXStr(x: Double): String;
   Public
     { General reading methods }
     Constructor Create; Override;
@@ -461,6 +463,10 @@ Begin
   Inherited Create;
 
   FFiles := TFileList.Create;
+  // Format seetings to convert a string to a float
+  FPointSeparator := DefaultFormatSettings;
+  FPointSeparator.DecimalSeparator := '.';
+  FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 End;
 
 Destructor TvDOCXVectorialWriter.Destroy;
@@ -1077,6 +1083,11 @@ Begin
   End;
 End;
 
+Function TvDOCXVectorialWriter.FloatToDOCXStr(x : Double) : String;
+Begin
+  Result := FloatToStr(x, FPointSeparator);
+End;
+
 Procedure TvDOCXVectorialWriter.PrepareTextRunStyle(ADoc: TIndentedStringList;
   AStyle: TvStyle);
 Begin
@@ -1088,7 +1099,7 @@ Begin
 
   If spbfFontSize In AStyle.SetElements Then
     { TODO : Where does the magic Font.Size*2 come from?  Confirm... }
-    ADoc.Add('<w:sz w:val="' + IntToStr(2 * AStyle.Font.Size) + '"/>');
+    ADoc.Add('<w:sz w:val="' + FloatToDOCXStr(2 * AStyle.Font.Size) + '"/>');
 
   If spbfFontBold In AStyle.SetElements Then
     ADoc.Add('<w:b w:val="' + LU_ON_OFF[AStyle.Font.Bold] + '"/>');

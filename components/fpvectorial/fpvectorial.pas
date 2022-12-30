@@ -174,7 +174,7 @@ type
 
   TvFont = record
     Color: TFPColor;
-    Size: integer;
+    Size: Double;
     Name: utf8string;
     {@@
       Font orientation is measured in degrees and uses the
@@ -1565,7 +1565,7 @@ type
     procedure SetPenWidth(AWidth: Integer);
     procedure SetClipPath(AClipPath: TPath; AClipMode: TvClipMode);
     function  EndPath(AOnlyCreate: Boolean = False): TPath;
-    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: Double; AText: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
     function  AddText(AX, AY: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
     function  AddText(AX, AY, AZ: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
     function AddCircle(ACenterX, ACenterY, ARadius: Double; AOnlyCreate: Boolean = False): TvCircle;
@@ -2068,7 +2068,7 @@ begin
   if spbfFontColor in SetElements then
     lStr := lStr + Format(' Font.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
   if spbfFontSize in SetElements then
-    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
+    lStr := lStr + Format(' Font.Size=%f', [Font.Size]);
   if spbfFontName in SetElements then
     lStr := lStr + ' Font.Name=' + Font.Name;
   if spbfFontBold in SetElements then
@@ -4640,7 +4640,7 @@ end;
 procedure TvEntityWithPenBrushAndFont.Scale(ADeltaScaleX, ADeltaScaleY: Double);
 begin
   inherited Scale(ADeltaScaleX, ADeltaScaleY);
-  Font.Size := Round(Font.Size * ADeltaScaleX);
+  Font.Size := Font.Size * ADeltaScaleX;
 end;
 
 procedure TvEntityWithPenBrushAndFont.Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean);
@@ -4656,7 +4656,7 @@ var
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
-  lStr := Format('[Font] Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s',
+  lStr := Format('[Font] Color=%s Size=%f Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s',
     [GenerateDebugStrForFPColor(Font.Color),
     Font.Size, Font.Name, Font.Orientation,
     BoolToStr(Font.Bold),
@@ -5608,7 +5608,7 @@ var
   ACanvas: TCanvas absolute ARenderInfo.Canvas;
   tm: TLCLTextMetric;
   {$else}
-  lFontSizePx: Integer;
+  lFontSizePx: Double;
   lTextSize: TSize;
   {$endif}
 begin
@@ -5621,7 +5621,7 @@ begin
   lFontSizePx := Font.Size;        // is without multiplier!
   if lFontSizePx = 0 then lFontSizePx := 10;
   lTextSize := ADest.TextExtent(Str_Line_Height_Tester);
-  Result := (lTextSize.CY - lFontSizePx) div 2;  // rough estimate only
+  Result := Round((lTextSize.CY*1.0 - lFontSizePx) * 0.5);  // rough estimate only
   {$ENDIF}
 end;
 
@@ -5708,7 +5708,8 @@ var
   pt, refPt: TPoint;
   LowerDimY, UpperDimY, CurDimY: Double;
   XAnchorAdjustment: Integer;
-  lLongestLine, lLineWidth, lFontSizePx, lFontDescenderPx: Integer;
+  lLongestLine, lLineWidth, lFontDescenderPx: Integer;
+  lFontSizePx: Double;
   lText: string;
   lDescender: Integer;
   phi: Double;
@@ -5840,7 +5841,7 @@ var
   lStr, lValueStr: string;
 begin
   lValueStr := GenerateDebugStrForString(Value.Text);
-  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" [.Font=>] Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
+  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" [.Font=>] Color=%s Size=%f Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
     [
     Self.ClassName, Name, X, Y, lValueStr,
     GenerateDebugStrForFPColor(Font.Color),
@@ -7456,7 +7457,7 @@ var
 var
   LeftC, TopC: Integer;
   lPt: array[0..3] of TPoint;
-  lOldFontSize: Integer;
+  lOldFontSize: Double;
   lStr: string;
 begin
   LeftC := CoordToCanvasX(Left);
@@ -7517,9 +7518,9 @@ begin
         // The superscripted power
         lOldFontSize := ADest.Font.Size;
         if lOldFontSize = 0 then ADest.Font.Size := 5
-        else ADest.Font.Size := lOldFontSize div 2;
+        else ADest.Font.Size := Round(lOldFontSize * 0.5);
         AdjacentFormula.Render(ARenderInfo, ADoDraw);
-        ADest.Font.Size := lOldFontSize;
+        ADest.Font.Size := Round(lOldFontSize);
       end;
       fekSubscript:
       begin
@@ -7527,9 +7528,9 @@ begin
         // The subscripted item
         lOldFontSize := ADest.Font.Size;
         if lOldFontSize = 0 then ADest.Font.Size := 5
-        else ADest.Font.Size := lOldFontSize div 2;
+        else ADest.Font.Size := Round(lOldFontSize * 0.5);
         AdjacentFormula.Render(ARenderInfo, ADoDraw);
-        ADest.Font.Size := lOldFontSize;
+        ADest.Font.Size := Round(lOldFontSize);
       end;
       fekSummation:
       begin
@@ -7538,7 +7539,7 @@ begin
         ADest.Font.Size := 15;
         lStr := #$E2#$88#$91; // Unicode Character 'N-ARY SUMMATION' (U+2211)
         ADest.TextOut(LeftC, TopC, lStr);
-        ADest.Font.Size := lOldFontSize;
+        ADest.Font.Size := Round(lOldFontSize);
 
         // Draw the bottom/main formula
         Formula.Render(ARenderInfo, ADoDraw);
@@ -8194,7 +8195,7 @@ begin
   if spbfFontColor in SetPenBrushAndFontElements then
     lStr := lStr + Format(' Font.Color=%s', [GenerateDebugStrForFPColor(Font.Color)]);
   if spbfFontSize in SetPenBrushAndFontElements then
-    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
+    lStr := lStr + Format(' Font.Size=%f', [Font.Size]);
 
   Result := ADestRoutine(lStr, APageItem);
 
@@ -9508,7 +9509,7 @@ begin
 end;
 
 function TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
-  FontSize: integer; AText: utf8string; AOnlyCreate: Boolean = False): TvText;
+  FontSize: Double; AText: utf8string; AOnlyCreate: Boolean = False): TvText;
 var
   lText: TvText;
 begin
@@ -10487,7 +10488,7 @@ begin
   case AFormat of
     vfHTML: lCurStyle.Font.Size := 20;
   else
-    lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
+    lCurStyle.Font.Size := 1.15 * lBaseHeading.Font.Size;
   end;
   lCurStyle.Brush.Style := bsClear;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold];

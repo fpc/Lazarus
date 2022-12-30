@@ -1108,8 +1108,8 @@ begin
   end
   else if AKey = 'font-size' then
   begin
-    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPT, suPT));
-    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPT, suPT));
+    if ADestEntity <> nil then ADestEntity.Font.Size := StringWithUnitToFloat(AValue, sckXSize, suPT, suPT);
+    if ADestStyle <> nil then ADestStyle.Font.Size := StringWithUnitToFloat(AValue, sckXSize, suPT, suPT);
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
