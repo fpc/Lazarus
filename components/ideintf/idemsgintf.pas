@@ -91,6 +91,7 @@ type
       WithSrcPos: boolean): boolean; virtual; abstract;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos, Downwards: boolean): boolean; virtual; abstract;
+    function OpenSelection: Boolean; virtual; abstract;
 
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aSrcFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;

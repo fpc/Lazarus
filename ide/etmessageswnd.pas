@@ -81,6 +81,7 @@ type
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
       const ViewCaption: string=''): TMessageLine; override;
+    function OpenSelection: Boolean; override;
 
     // misc
     procedure SourceEditorPopup(MarkLine: TSynEditMarkLine; const LogicalCaretXY: TPoint);
@@ -140,6 +141,11 @@ begin
     // open file in source editor and mark it as error
     Result:=LazarusIDE.DoJumpToCompilerMessage(true,Msg);
   end;
+end;
+
+function TMessagesView.OpenSelection: Boolean;
+begin
+  Result := MessagesFrame1.MessagesCtrl.OpenSelection;
 end;
 
 procedure TMessagesView.SetDblClickJumps(AValue: boolean);
