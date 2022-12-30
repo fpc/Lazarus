@@ -675,6 +675,9 @@ procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor;
   const Category, Caption, Description, Units: string);
 }
 
+var
+  LazProject1: TLazProject = nil; // the main project
+
 implementation
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);

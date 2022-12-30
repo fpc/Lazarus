@@ -1188,7 +1188,7 @@ const
     );
 
 var
-  Project1: TProject = nil;// the main project
+  Project1: TProject absolute LazProject1;// the main project
   
 function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 function AddCompileReasonsDiff(const PropertyName: string;
