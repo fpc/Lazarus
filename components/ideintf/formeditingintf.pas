@@ -148,6 +148,7 @@ type
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual;
     class procedure InitFormInstance({%H-}aForm: TComponent); virtual; // called after NewInstance, before constructor
+    class function GetDefaultSize: TPoint; virtual;
   public
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual;
@@ -596,6 +597,11 @@ end;
 class procedure TDesignerMediator.InitFormInstance(aForm: TComponent);
 begin
 
+end;
+
+class function TDesignerMediator.GetDefaultSize: TPoint;
+begin
+  Result:=Point(320,240);
 end;
 
 procedure TDesignerMediator.SetBounds(AComponent: TComponent; NewBounds: TRect);

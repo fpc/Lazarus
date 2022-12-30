@@ -1290,15 +1290,27 @@ var
   end;
 
   procedure CreateMediator;
+  var
+    NewSize: TPoint;
   begin
     if Mediator<>nil then exit;
     MediatorClass:=GetDesignerMediatorClass(TComponentClass(NewComponent.ClassType));
-    if MediatorClass<>nil then begin
+    if MediatorClass<>nil then
+    begin
       Mediator:=MediatorClass.CreateMediator(nil,NewComponent);
-      FreeMediator:=Mediator<>nil;
+      if Mediator<>nil then
+      begin
+        NewSize:=Mediator.GetDefaultSize;
+        NewWidth:=NewSize.X;
+        NewHeight:=NewSize.Y;
+      end;
     end;
-    //DebugLn(['TCustomFormEditor.CreateComponent ',DbgSName(NewComponent),' ',dbgs(Bounds(CompLeft,CompTop,CompWidth,CompHeight)),' ',Mediator<>nil]);
+  end;
+
+  procedure MediatorInitComponent;
+  begin
     if Mediator<>nil then begin
+      //DebugLn(['TCustomFormEditor.CreateComponent ',DbgSName(NewComponent),' ',dbgs(Bounds(CompLeft,CompTop,CompWidth,CompHeight)),' ',Mediator<>nil]);
       Mediator.InitComponent(NewComponent,ParentComponent,
         Bounds(CompLeft,CompTop,CompWidth,CompHeight));
     end;
@@ -1412,6 +1424,8 @@ begin
     end;
 
     try
+      CreateMediator;
+
       // set bounds
       CompLeft:=NewLeft;
       CompTop:=NewTop;
@@ -1480,7 +1494,6 @@ begin
           AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
           //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LazLongRec(AControl.DesignInfo).Lo,',',LazLongRec(AControl.DesignInfo).Hi]);
         end;
-        CreateMediator;
       end
       else
       if (NewComponent is TDataModule) then
@@ -1509,15 +1522,16 @@ begin
 
         CompLeft := Max(Low(SmallInt), Min(High(SmallInt), CompLeft));
         CompTop := Max(Low(SmallInt), Min(High(SmallInt), CompTop));
+        if Mediator=nil then
+          SetComponentLeftTopOrDesignInfo(NewComponent,CompLeft,CompTop);
 
-        SetComponentLeftTopOrDesignInfo(NewComponent,CompLeft,CompTop);
         if ParentComponent <> nil then
         begin
           DesignForm := GetDesignerForm(ParentComponent);
           if DesignForm <> nil then DesignForm.Invalidate;
         end;
-        CreateMediator;
       end;
+      MediatorInitComponent;
     except
       on e: Exception do begin
         DebugLn(e.Message);
