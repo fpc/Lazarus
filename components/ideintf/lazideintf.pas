@@ -22,7 +22,7 @@ uses
   // LazUtils
   UITypes, LazMethodList, AvgLvlTree,
   // BuildIntf
-  BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
+  BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf, PackageIntf,
   // IdeIntf
   IDEOptEditorIntf, SrcEditorIntf, IDEWindowIntf;
 
@@ -208,6 +208,7 @@ type
                                  AProject: TLazProject): TModalResult of object;
   TModalHandledFunction = function(Sender: TObject; var Handled: boolean
                               ): TModalResult of object;
+  TLazPackageBuildingEvent = function(Package: TIDEPackage): TModalResult of object;
   TGetFPCFrontEndParams = function(Sender: TObject;
     var Params: string // these parameters are passed to fpc.
       // Global options should be prependended, project options should be appended.
@@ -241,6 +242,7 @@ type
     lihtProjectBuilding, // called before IDE builds the project
     lihtProjectDependenciesCompiling, // called before IDE compiles dependencies of project
     lihtProjectDependenciesCompiled, // called after IDE compiled dependencies of project
+    lihtPackageBuilding, // called before IDE builds a package
     lihtProjectBuildingFinished, // called after IDE builds the project
     lihtLazarusBuilding, // called before IDE builds Lazarus IDE
     lihtLazarusBuildingFinished, // called after IDE builds Lazarus IDE
@@ -389,6 +391,7 @@ type
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
+    function DoCallPackageBuildingHandler(APackage: TIDEPackage): TModalResult;
     function DoCallRunDebugInit(var Handled: boolean): TModalResult;
     function DoCallRunDebug(var Handled: boolean): TModalResult;
     function DoCallRunWithoutDebugBuilding(var Handled: boolean): TModalResult;
@@ -515,6 +518,11 @@ type
                     AsLast: boolean = false);
     procedure RemoveHandlerOnProjectDependenciesCompiled(
                    const OnProjDependenciesCompiledEvent: TModalResultFunction);
+    procedure AddHandlerOnPackageBuilding(
+                                const OnPkgBuildingEvent: TLazPackageBuildingEvent;
+                                AsLast: boolean = false);
+    procedure RemoveHandlerOnPackageBuilding(
+                                const OnPkgBuildingEvent: TLazPackageBuildingEvent);
     procedure AddHandlerOnLazarusBuilding(
                                 const OnLazBuildingEvent: TModalResultFunction;
                                 AsLast: boolean = false);
@@ -756,6 +764,24 @@ begin
   FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
 
+function TLazIDEInterface.DoCallPackageBuildingHandler(APackage: TIDEPackage): TModalResult;
+var
+  I: Integer;
+  Handler: TLazPackageBuildingEvent;
+  CurResult: TModalResult;
+begin
+  Result := mrOK;
+  for I := 0 to FLazarusIDEHandlers[lihtPackageBuilding].Count-1 do
+  begin
+    Handler := TLazPackageBuildingEvent(FLazarusIDEHandlers[lihtPackageBuilding][I]);
+    CurResult := Handler(APackage);
+    if CurResult=mrAbort then
+      Exit(mrAbort);
+    if CurResult<>mrOK then
+      Result := mrCancel;
+  end;
+end;
+
 procedure TLazIDEInterface.DoCallShowDesignerFormOfSourceHandler(Sender: TObject;
   AEditor: TSourceEditorInterface; AComponentPaletteClassSelected: Boolean);
 var
@@ -938,10 +964,23 @@ begin
   AddHandler(lihtLoadSafeCustomData,TMethod(OnLoadSaveEvent),AsLast);
 end;
 
+procedure TLazIDEInterface.AddHandlerOnPackageBuilding(const OnPkgBuildingEvent: TLazPackageBuildingEvent;
+  AsLast: boolean);
+begin
+  AddHandler(lihtPackageBuilding,
+             TMethod(OnPkgBuildingEvent),AsLast);
+end;
+
 procedure TLazIDEInterface.RemoveHandlerOnLoadSaveCustomData(
   const OnLoadSaveEvent: TLazLoadSaveCustomDataEvent; AsLast: boolean);
 begin
   RemoveHandler(lihtLoadSafeCustomData,TMethod(OnLoadSaveEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnPackageBuilding(const OnPkgBuildingEvent: TLazPackageBuildingEvent);
+begin
+  RemoveHandler(lihtPackageBuilding,
+                TMethod(OnPkgBuildingEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnIDEClose(
