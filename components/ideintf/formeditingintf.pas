@@ -150,6 +150,8 @@ type
     class procedure InitFormInstance({%H-}aForm: TComponent); virtual; // called after NewInstance, before constructor
     class function GetDefaultSize: TPoint; virtual;
   public
+    procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
+    procedure ChangeParent(AComponent, NewParent: TComponent); virtual;
     procedure SetBounds(AComponent: TComponent; NewBounds: TRect); virtual;
     procedure GetBounds(AComponent: TComponent; out CurBounds: TRect); virtual;
     procedure SetFormBounds(RootComponent: TComponent; NewBounds, ClientRect: TRect); virtual;
@@ -158,7 +160,8 @@ type
                             out ScrollOffset: TPoint); virtual;
     function GetComponentOriginOnForm(AComponent: TComponent): TPoint; virtual;
     function ComponentIsIcon({%H-}AComponent: TComponent): boolean; virtual;
-    function ParentAcceptsChild({%H-}Parent: TComponent; {%H-}Child: TComponentClass): boolean; virtual;
+    function ParentAcceptsChild({%H-}Parent: TComponent; {%H-}ChildClass: TComponentClass): boolean; virtual;
+    function ParentAcceptsChildComponent({%H-}Parent, {%H-}Child: TComponent): boolean; virtual;
     function ComponentIsVisible({%H-}AComponent: TComponent): Boolean; virtual;
     function ComponentIsSelectable({%H-}AComponent: TComponent): Boolean; virtual;
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
@@ -167,7 +170,6 @@ type
     function UseRTTIForMethods({%H-}aComponent: TComponent): boolean; virtual; // false = use sources
 
     // events
-    procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
     procedure Paint; virtual;
     procedure KeyDown(Sender: TControl; var {%H-}Key: word; {%H-}Shift: TShiftState); virtual;
     procedure KeyUp(Sender: TControl; var {%H-}Key: word; {%H-}Shift: TShiftState); virtual;
@@ -230,6 +232,8 @@ type
     procedure CreateChildComponentsFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl; NewComponents: TFPList); virtual; abstract;
+    function ParentAcceptsChild(Parent, Child, aLookupRoot: TComponent): boolean; virtual; abstract;
+    function ParentAcceptsChildClass(Parent: TComponent; ChildClass: TComponentClass; aLookupRoot: TComponent): boolean; virtual; abstract;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; virtual; abstract;
@@ -692,9 +696,16 @@ begin
 end;
 
 function TDesignerMediator.ParentAcceptsChild(Parent: TComponent;
-  Child: TComponentClass): boolean;
+  ChildClass: TComponentClass): boolean;
 begin
-  Result:=false;
+  Result:=true;
+end;
+
+function TDesignerMediator.ParentAcceptsChildComponent(Parent, Child: TComponent
+  ): boolean;
+begin
+  if (Parent=nil) or (Child=nil) then exit(false);
+  Result:=ParentAcceptsChild(Parent,TComponentClass(Child.ClassType));
 end;
 
 function TDesignerMediator.ComponentIsVisible(AComponent: TComponent): Boolean;
@@ -783,6 +794,11 @@ procedure TDesignerMediator.InitComponent(AComponent, NewParent: TComponent;
   NewBounds: TRect);
 begin
   SetBounds(AComponent,NewBounds);
+  TDesignerMediator(AComponent).SetParentComponent(NewParent);
+end;
+
+procedure TDesignerMediator.ChangeParent(AComponent, NewParent: TComponent);
+begin
   TDesignerMediator(AComponent).SetParentComponent(NewParent);
 end;
 

@@ -35,6 +35,8 @@ uses
 type
   TCTVGetImageIndexEvent = procedure(APersistent: TPersistent;
     var AIndex: integer) of object;
+  TCTVParentAcceptsChildEvent = function(aParent, aChild, aLookupRoot: TPersistent): boolean of object;
+  TCTVSetParentEvent = procedure(aChild, aParent, aLookupRoot: TPersistent) of object;
 
   // First 4 are ways to change ZOrder, zoDelete deletes a component.
   TZOrderDelete = (zoToFront, zoToBack, zoForward, zoBackward, zoDelete);
@@ -44,6 +46,8 @@ type
   TComponentTreeView = class(TCustomTreeView)
   private
     FComponentList: TBackupComponentList;
+    FOnParentAcceptsChild: TCTVParentAcceptsChildEvent;
+    FOnSetParent: TCTVSetParentEvent;
     FPropertyEditorHook: TPropertyEditorHook;
     // Map of Root component -> TAVLTree of collapsed components.
     FRoot2CollapasedMap: TPointerToPointerTree;
@@ -104,6 +108,8 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnComponentGetImageIndex : TCTVGetImageIndexEvent
                   read FOnComponentGetImageIndex write FOnComponentGetImageIndex;
+    property OnParentAcceptsChild: TCTVParentAcceptsChildEvent read FOnParentAcceptsChild write FOnParentAcceptsChild;
+    property OnSetParent: TCTVSetParentEvent read FOnSetParent write FOnSetParent;
   end;
 
 implementation
@@ -360,7 +366,14 @@ var
   CompEditDsg: TComponentEditorDesigner;
   NewIndex, AIndex: Integer;
   ok: Boolean;
+  ParentObj: TObject;
+  aLookupRoot, aParent, aChild: TPersistent;
 begin
+  if PropertyEditorHook<>nil then
+    aLookupRoot := PropertyEditorHook.LookupRoot
+  else
+    aLookupRoot := nil;
+
   GetComponentInsertMarkAt(X, Y, Node, InsertType);
   SetInsertMark(nil, tvimNone);
   if InsertType in [tvimAsNextSibling, tvimAsPrevSibling] then
@@ -377,9 +390,11 @@ begin
     else
       CompEditDsg := nil;
 
-    if TObject(ParentNode.Data) is TWinControl then
+    ParentObj:=TObject(ParentNode.Data);
+    if ParentObj is TWinControl then
     begin
-      AContainer := TWinControl(ParentNode.Data);
+      // reparent lcl TControl(s)
+      AContainer := TWinControl(ParentObj);
       SelNode := GetFirstMultiSelected;
       while Assigned(SelNode) do
       begin
@@ -410,6 +425,7 @@ begin
     else
     if TObject(Node.Data) is TCollectionItem then
     begin
+      // reorder collection item
       ACollection := TCollectionItem(Node.Data).Collection;
       ACollection.BeginUpdate;
       case InsertType of
@@ -442,6 +458,19 @@ begin
         SelNode := SelNode.GetPrevMultiSelected;
       end;
       ACollection.EndUpdate;
+    end else if Assigned(OnSetParent) and (ParentObj is TPersistent) then begin
+      // default: reparent
+      aParent:=TPersistent(ParentObj);
+      SelNode := GetLastMultiSelected;
+      while Assigned(SelNode) do
+      begin
+        if (TObject(SelNode.Data) is TPersistent) then
+        begin
+          aChild:=TPersistent(TObject(SelNode.Data));
+          OnSetParent(aChild,aParent,aLookupRoot);
+        end;
+        SelNode := SelNode.GetPrevMultiSelected;
+      end;
     end;
     BuildComponentNodes(True);
   end;
@@ -454,16 +483,14 @@ var
   Node: TTreeNode;
   AnObject: TObject;
   AControl: TControl absolute AnObject;
-  AContainer: TPersistent;
-  AcceptControl, AcceptContainer: Boolean;
+  aLookupRoot, AContainer: TPersistent;
   InsertType: TTreeViewInsertMarkType;
   ParentNode: TTreeNode;
-  aLookupRoot: TPersistent;
+  UserAccept: Boolean;
 begin
   //debugln('TComponentTreeView.DragOver START ',dbgs(Accept));
-
-  AcceptContainer := False;
-  AcceptControl := True;
+  Accept:=false;
+  AContainer := nil;
 
   GetComponentInsertMarkAt(X, Y, Node, InsertType);
   SetInsertMark(Node, InsertType);
@@ -480,53 +507,53 @@ begin
   if Assigned(ParentNode) and Assigned(ParentNode.Data) then
   begin
     AnObject := TObject(ParentNode.Data);
-    if (AnObject is TWinControl) then
+    if AnObject is TPersistent then
     begin
-      if ControlAcceptsStreamableChildComponent(TWinControl(AControl),
-         TComponentClass(AnObject.ClassType),aLookupRoot)
-      then begin
-        AContainer := TPersistent(AnObject);
-        //DebugLn(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
-        AcceptContainer := True;
-      end;
-    end
-    else
-    if (AnObject is TCollection) then
-    begin
-      // it is allowed to move container items inside the container
-      AContainer := TPersistent(AnObject);
-      AcceptContainer := True;
+      AContainer:=TPersistent(AnObject);
     end;
   end;
 
-  if AcceptContainer then 
+  //debugln(['TComponentTreeView.DragOver AContainer=',DbgSName(AContainer)]);
+  if AContainer<>nil then
   begin
     Node := GetFirstMultiSelected;
-    while Assigned(Node) and AcceptControl do
+    while Assigned(Node) do
     begin
       AnObject := TObject(Node.Data);
-      // don't allow to move ancestor components
-      if (AnObject is TComponent) and
-         (csAncestor in TComponent(AnObject).ComponentState) then break;
-      if (AnObject is TControl) then
+
+      if Assigned(OnParentAcceptsChild) and (AnObject is TPersistent) then
       begin
-        if AnObject = AContainer then break;
-        if not (AContainer is TWinControl) then break;
-        //DebugLn(['TComponentTreeView.DragOver AControl=',DbgSName(AControl),' Parent=',DbgSName(AControl.Parent),' OldAccepts=',csAcceptsControls in AControl.Parent.ControlStyle]);
-        // check if new parent allows this control class
-        if not TWinControl(AContainer).CheckChildClassAllowed(AnObject.ClassType, False) then
+        //debugln(['TComponentTreeView.DragOver Child=',DbgSName(AnObject),' AContainer=',DbgSName(AContainer)]);
+        if not OnParentAcceptsChild(AContainer,TPersistent(AnObject),aLookupRoot) then
           break;
-        // check if one of the parent of the container is the control itself
-        if AControl.IsParentOf(TWinControl(AContainer)) then break;
-        // do not move children of a restricted parent to another parent
-        // e.g. TPage of TPageControl
-        if (AControl.Parent <> nil) and (AControl.Parent <> AContainer) and
-            (not (csAcceptsControls in AControl.Parent.ControlStyle)) then
-          break;
-      end
-      else
+      end else begin
+        // default rules for components:
+
+        // don't allow to move ancestor components
+        if (AnObject is TComponent) and
+           (csAncestor in TComponent(AnObject).ComponentState) then break;
+
+        if (AnObject is TControl) then
+        begin
+          if AnObject = AContainer then break;
+          if not (AContainer is TWinControl) then break;
+          //DebugLn(['TComponentTreeView.DragOver AControl=',DbgSName(AControl),' Parent=',DbgSName(AControl.Parent),' OldAccepts=',csAcceptsControls in AControl.Parent.ControlStyle]);
+          // check if new parent allows this control class
+          if not TWinControl(AContainer).CheckChildClassAllowed(AnObject.ClassType, False) then
+            break;
+          // check if one of the parents of the container is the control itself
+          if AControl.IsParentOf(TWinControl(AContainer)) then break;
+          // do not move children of a restricted parent to another parent
+          // e.g. TPage of TPageControl
+          if (AControl.Parent <> nil) and (AControl.Parent <> AContainer) and
+              (not (csAcceptsControls in AControl.Parent.ControlStyle)) then
+            break;
+        end;
+      end;
+
       if (AnObject is TCollectionItem) then
       begin
+        // allow to reorder collection items
         if AnObject = AContainer then break;
         if not (AContainer is TCollection) then
           break;
@@ -535,15 +562,15 @@ begin
       end;
       Node := Node.GetNextMultiSelected;
     end;
-    AcceptControl := (Node = nil);
+    Accept := (Node = nil);
   end;
 
-  Accept := AcceptContainer and AcceptControl;
   //debugln('TComponentTreeView.DragOver A ',dbgs(Accept));
-  inherited DragOver(Source, X, Y, State, Accept);
+  UserAccept:=Accept;
+  inherited DragOver(Source, X, Y, State, UserAccept);
+  if Assigned(OnDragOver) then
+    Accept:=UserAccept;
   //debugln('TComponentTreeView.DragOver B ',dbgs(Accept));
-
-  Accept := AcceptContainer and AcceptControl and ((OnDragOver=nil) or Accept);
 end;
 
 procedure TComponentTreeView.DragCanceled;
