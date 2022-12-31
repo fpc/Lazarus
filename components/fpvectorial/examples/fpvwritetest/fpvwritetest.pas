@@ -106,7 +106,7 @@ begin
     // text_europen     One text testing european languages at (20, 20)
     Page.Clear;
     Page.AddText(20, 20, 0, '20, 20 Mówić, cześć, Włosku, Parabéns, Assunção, Correções.');
-    Vec.WriteToFile('text_europen' + cExtension, cFormat);
+    Vec.WriteToFile('text_european' + cExtension, cFormat);
 
     // text_asian       One text testing asian languages at (30, 30)
     Page.Clear;
@@ -129,7 +129,7 @@ begin
     Page.AddBezierToPath(10, 20, 20, 20, 20, 10);
     Page.AddLineToPath(30, 0);
     Page.EndPath();
-    Page.AddText(10, 10, 0, '10,10 Some text in english.');
+    Page.AddText(10, 10, 0, '10, 10 Some text in english.');
     Page.AddText(20, 20, 0, '20, 20 Mówić, cześć, Włosku, Parabéns.');
     Page.AddText(30, 30, 0, '30, 30 森林，是一个高密');
     Vec.WriteToFile('multi_test_1' + cExtension, cFormat);
