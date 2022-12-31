@@ -187,7 +187,9 @@ begin
     FActive := False;
 
   FDebuggerClass := TBaseDebugManagerIntf.DebuggersByClassName[ConfigClass];
-  if FDebuggerClass <> nil then begin
+  if (FDebuggerClass <> nil) and
+     ( Active or not (dfNotSuitableForOsArch in FDebuggerClass.SupportedFeatures) ) // Active entries will always be loaded for compatibility
+  then begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     if FDebuggerProperties <> nil then
       AXMLCfg.ReadObject(APath + 'Properties/', FDebuggerProperties);
@@ -235,7 +237,8 @@ begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
     if FDebuggerProperties <> nil then
       AXMLCfg.ReadObject(p, FDebuggerProperties);
-    FFLags := [dpcLoaded];
+    if Active or not (dfNotSuitableForOsArch in FDebuggerClass.SupportedFeatures) then
+      FFLags := [dpcLoaded];
   end
   else begin
     if p[Length(p)] = '/' then
@@ -263,7 +266,8 @@ begin
   FConfigName := '';
   FActive := ACreateAsActive;
   FDebuggerProperties := ADebuggerClass.CreateProperties;
-  FFLags := [dpcLoaded]; // i.e. treat as loaded, save when saving all
+  if FActive or not (dfNotSuitableForOsArch in FDebuggerClass.SupportedFeatures) then
+    FFLags := [dpcLoaded]; // i.e. treat as loaded, save when saving all
 
   InitUID;
 end;
@@ -279,7 +283,8 @@ begin
   FDebuggerClass := TBaseDebugManagerIntf.DebuggersByClassName[ConfigClass];
   if FDebuggerClass <> nil then begin
     FDebuggerProperties := FDebuggerClass.CreateProperties;
-    FFLags := [dpcLoaded]; // i.e. treat as loaded, save when saving all
+    if FActive or not (dfNotSuitableForOsArch in FDebuggerClass.SupportedFeatures) then
+      FFLags := [dpcLoaded]; // i.e. treat as loaded, save when saving all
   end;
 
   InitUID;

@@ -332,6 +332,8 @@ begin
   List := TStringListUTF8Fast.Create;
   for i := 0 to TBaseDebugManagerIntf.DebuggerCount - 1 do begin
     d := TBaseDebugManagerIntf.Debuggers[i];
+    if dfNotSuitableForOsArch in d.SupportedFeatures then
+      continue;
     List.AddObject(d.Caption, TObject(d));
   end;
   List.Sorted := True;

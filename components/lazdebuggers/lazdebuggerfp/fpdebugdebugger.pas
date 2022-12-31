@@ -4621,7 +4621,11 @@ end;
 
 class function TFpDebugDebugger.SupportedFeatures: TDBGFeatures;
 begin
+  {$IF defined(windows) or defined(linux)}
   Result := [dfEvalFunctionCalls, dfThreadSuspension];
+  {$ELSE}
+  Result := [dfNotSuitableForOsArch];
+  {$ENDIF}
 end;
 
 initialization

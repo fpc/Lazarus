@@ -62,7 +62,13 @@ type
 
   TDBGFeature = (
     dfEvalFunctionCalls,   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
-    dfThreadSuspension
+    dfThreadSuspension,
+
+    (* dfNotSuitableForOsArch:
+       If this is set, then this debugger can not be used on the current
+       architecture and/or OS
+    *)
+    dfNotSuitableForOsArch
   );
   TDBGFeatures = set of TDBGFeature;
 
