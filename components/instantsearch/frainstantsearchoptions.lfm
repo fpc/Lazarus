@@ -1,0 +1,662 @@
+object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
+  Left = 0
+  Height = 567
+  Top = 0
+  Width = 567
+  ClientHeight = 567
+  ClientWidth = 567
+  TabOrder = 0
+  DesignLeft = 742
+  DesignTop = 164
+  object PCOptions: TPageControl
+    Left = 0
+    Height = 543
+    Top = 24
+    Width = 567
+    ActivePage = TSSearchEngine
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TSSearchEngine: TTabSheet
+      Caption = 'Search engine'
+      ClientHeight = 513
+      ClientWidth = 557
+      object GBManticore: TGroupBox
+        Left = 0
+        Height = 208
+        Top = 0
+        Width = 557
+        Align = alTop
+        Caption = 'Manticore Server'
+        ClientHeight = 191
+        ClientWidth = 555
+        TabOrder = 0
+        object cbMySQLVersion: TComboBox
+          AnchorSideLeft.Control = cbProtocol
+          AnchorSideTop.Control = cbProtocol
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 29
+          Top = 45
+          Width = 136
+          BorderSpacing.Top = 8
+          ItemHeight = 0
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object lblMySQLversion: TLabel
+          AnchorSideLeft.Control = GBManticore
+          AnchorSideTop.Control = cbProtocol
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = cbMySQLVersion
+          AnchorSideBottom.Control = cbMySQLVersion
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 29
+          Top = 45
+          Width = 144
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          Caption = 'MySQL Client version'
+          Layout = tlCenter
+        end
+        object lblPort: TLabel
+          AnchorSideLeft.Control = GBManticore
+          AnchorSideTop.Control = edtPort
+          AnchorSideRight.Control = edtPort
+          AnchorSideBottom.Control = edtPort
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 27
+          Top = 117
+          Width = 152
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Right = 8
+          Caption = 'Port'
+          Layout = tlCenter
+        end
+        object edtPort: TEdit
+          AnchorSideLeft.Control = cbProtocol
+          AnchorSideTop.Control = edtHostname
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 117
+          Width = 80
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 1
+          TextHint = 'Enter port number'
+        end
+        object edtHostname: TEdit
+          AnchorSideLeft.Control = cbProtocol
+          AnchorSideTop.Control = cbMySQLVersion
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 82
+          Width = 224
+          BorderSpacing.Top = 8
+          TabOrder = 2
+          TextHint = 'Enter hostname, leave empty for localhost'
+        end
+        object lblHost: TLabel
+          AnchorSideLeft.Control = GBManticore
+          AnchorSideTop.Control = edtHostname
+          AnchorSideRight.Control = edtHostname
+          AnchorSideBottom.Control = edtHostname
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 27
+          Top = 82
+          Width = 152
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Right = 8
+          Caption = 'Host'
+          Layout = tlCenter
+        end
+        object cbProtocol: TComboBox
+          AnchorSideTop.Control = GBManticore
+          Left = 160
+          Height = 29
+          Top = 8
+          Width = 136
+          BorderSpacing.Top = 8
+          ItemHeight = 0
+          Style = csDropDownList
+          TabOrder = 3
+        end
+        object BtnTest: TButton
+          AnchorSideRight.Control = GBManticore
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = GBManticore
+          AnchorSideBottom.Side = asrBottom
+          Left = 406
+          Height = 31
+          Top = 152
+          Width = 141
+          Action = actTestConnection
+          Anchors = [akRight, akBottom]
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 4
+        end
+        object lblProtocol: TLabel
+          AnchorSideLeft.Control = GBManticore
+          AnchorSideTop.Control = cbProtocol
+          AnchorSideRight.Control = cbProtocol
+          AnchorSideBottom.Control = cbProtocol
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 29
+          Top = 8
+          Width = 152
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Protocol'
+          Layout = tlCenter
+        end
+        object edtIdleDisconnect: TEdit
+          AnchorSideLeft.Control = cbProtocol
+          AnchorSideTop.Control = edtPort
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 152
+          Width = 80
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 5
+          TextHint = 'Enter port number'
+        end
+        object lblDisconnect: TLabel
+          AnchorSideLeft.Control = GBManticore
+          AnchorSideTop.Control = edtIdleDisconnect
+          AnchorSideRight.Control = edtIdleDisconnect
+          AnchorSideBottom.Control = edtIdleDisconnect
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 27
+          Top = 152
+          Width = 152
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Right = 8
+          Caption = 'Idle disconnect  time'
+          Layout = tlCenter
+        end
+      end
+      object GBIndexing: TGroupBox
+        Left = 0
+        Height = 168
+        Top = 208
+        Width = 557
+        Align = alTop
+        Caption = 'Indexing options'
+        ClientHeight = 151
+        ClientWidth = 555
+        TabOrder = 1
+        object edtMinSearchTermLength: TEdit
+          AnchorSideTop.Control = GBIndexing
+          Left = 160
+          Height = 27
+          Top = 8
+          Width = 80
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 0
+        end
+        object EdtMaxClipboardLength: TEdit
+          AnchorSideTop.Control = edtMinSearchTermLength
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 43
+          Width = 80
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 1
+        end
+        object edtLimit: TEdit
+          AnchorSideTop.Control = EdtMaxClipboardLength
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 78
+          Width = 80
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 2
+        end
+        object lblMinSearchTermLength: TLabel
+          AnchorSideTop.Control = edtMinSearchTermLength
+          AnchorSideRight.Control = edtMinSearchTermLength
+          AnchorSideBottom.Control = edtMinSearchTermLength
+          AnchorSideBottom.Side = asrBottom
+          Left = 16
+          Height = 27
+          Top = 8
+          Width = 136
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Min searchterm length'
+          Layout = tlCenter
+        end
+        object lblMaxClipbrdSearchTermLength: TLabel
+          AnchorSideTop.Control = EdtMaxClipboardLength
+          AnchorSideRight.Control = EdtMaxClipboardLength
+          AnchorSideBottom.Control = EdtMaxClipboardLength
+          AnchorSideBottom.Side = asrBottom
+          Left = 16
+          Height = 27
+          Top = 43
+          Width = 136
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Max clipboard length'
+          Layout = tlCenter
+        end
+        object lblLimit: TLabel
+          AnchorSideTop.Control = edtLimit
+          AnchorSideRight.Control = edtLimit
+          AnchorSideBottom.Control = edtLimit
+          AnchorSideBottom.Side = asrBottom
+          Left = 37
+          Height = 27
+          Top = 78
+          Width = 115
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Max result count'
+          Layout = tlCenter
+        end
+        object cbIndexName: TComboBox
+          AnchorSideTop.Control = edtLimit
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 113
+          Width = 242
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 8
+          ItemHeight = 0
+          TabOrder = 3
+        end
+        object lblIndexName: TLabel
+          AnchorSideTop.Control = cbIndexName
+          AnchorSideRight.Control = cbIndexName
+          AnchorSideBottom.Control = cbIndexName
+          AnchorSideBottom.Side = asrBottom
+          Left = 64
+          Height = 27
+          Top = 113
+          Width = 85
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Index name'
+          Layout = tlCenter
+        end
+        object btnCreateIndex: TButton
+          Left = 419
+          Height = 25
+          Top = 113
+          Width = 128
+          Action = actCreateIndex
+          Anchors = [akTop, akRight]
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 4
+        end
+        object btnDeleteIndex: TButton
+          Left = 419
+          Height = 25
+          Top = 80
+          Width = 128
+          Action = actDeleteIndex
+          Anchors = [akTop, akRight]
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 5
+        end
+      end
+      object gbAutomations: TGroupBox
+        Left = 0
+        Height = 136
+        Top = 376
+        Width = 557
+        Align = alTop
+        Caption = 'Automation'
+        ClientHeight = 119
+        ClientWidth = 555
+        TabOrder = 2
+        object cbIndexProjectMoment: TComboBox
+          AnchorSideTop.Control = gbAutomations
+          Left = 160
+          Height = 27
+          Top = 8
+          Width = 239
+          BorderSpacing.Top = 8
+          ItemHeight = 0
+          TabOrder = 0
+          Text = 'cbIndexProjectMoment'
+        end
+        object lblIndexProjectMoment: TLabel
+          AnchorSideTop.Control = cbIndexProjectMoment
+          AnchorSideRight.Control = cbIndexProjectMoment
+          AnchorSideBottom.Control = cbIndexProjectMoment
+          AnchorSideBottom.Side = asrBottom
+          Left = 24
+          Height = 27
+          Top = 8
+          Width = 128
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Right = 8
+          Caption = 'Index projects when'
+          Layout = tlCenter
+        end
+        object lblIndexProjectstrategy: TLabel
+          AnchorSideTop.Control = cbIndexProjectStrategy
+          AnchorSideRight.Control = cbIndexProjectStrategy
+          AnchorSideBottom.Control = cbIndexProjectStrategy
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 27
+          Top = 43
+          Width = 144
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Right = 8
+          Caption = 'Mark Projects indexable'
+          Layout = tlCenter
+        end
+        object cbIndexProjectStrategy: TComboBox
+          AnchorSideLeft.Control = cbIndexProjectMoment
+          AnchorSideTop.Control = cbIndexProjectMoment
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 43
+          Width = 238
+          BorderSpacing.Top = 8
+          ItemHeight = 0
+          OnChange = cbIndexProjectStrategyChange
+          TabOrder = 1
+          Text = 'cbIndexProjectStrategy'
+        end
+        object edtIndexDelay: TEdit
+          AnchorSideLeft.Control = cbIndexProjectMoment
+          AnchorSideTop.Control = cbIndexProjectStrategy
+          AnchorSideTop.Side = asrBottom
+          Left = 160
+          Height = 27
+          Top = 78
+          Width = 88
+          BorderSpacing.Top = 8
+          NumbersOnly = True
+          TabOrder = 2
+        end
+        object lblEditIndexDelay1: TLabel
+          AnchorSideTop.Control = edtIndexDelay
+          AnchorSideRight.Control = edtIndexDelay
+          AnchorSideBottom.Control = edtIndexDelay
+          AnchorSideBottom.Side = asrBottom
+          Left = 16
+          Height = 27
+          Top = 78
+          Width = 136
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          Caption = 'Mark indexable'
+          Layout = tlCenter
+        end
+        object lblEditIndexDelay2: TLabel
+          AnchorSideLeft.Control = edtIndexDelay
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtIndexDelay
+          AnchorSideBottom.Control = edtIndexDelay
+          AnchorSideBottom.Side = asrBottom
+          Left = 256
+          Height = 27
+          Top = 78
+          Width = 144
+          Anchors = [akTop, akLeft, akBottom]
+          AutoSize = False
+          BorderSpacing.Left = 8
+          Caption = 'minutes after opening'
+          Layout = tlCenter
+        end
+      end
+    end
+    object TSSourceTrees: TTabSheet
+      Caption = 'Source Trees'
+      ClientHeight = 513
+      ClientWidth = 557
+      object VLETrees: TValueListEditor
+        Left = 0
+        Height = 487
+        Top = 26
+        Width = 557
+        Align = alClient
+        AlternateColor = clSilver
+        ExtendedSelect = False
+        FixedCols = 0
+        RowCount = 2
+        TabOrder = 0
+        OnClick = VLETreesClick
+        OnDblClick = VLETreesDblClick
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goThumbTracking]
+        TitleCaptions.Strings = (
+          'Name'
+          'Path'
+        )
+        ColWidths = (
+          64
+          489
+        )
+      end
+      object TBSourceTrees: TToolBar
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 557
+        Images = ilInstantSearch
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        object TBAdd: TToolButton
+          Left = 1
+          Top = 2
+          Action = actAdd
+        end
+        object TBEdit: TToolButton
+          Left = 24
+          Top = 2
+          Action = actEdit
+        end
+        object TBDelete: TToolButton
+          Left = 47
+          Top = 2
+          Action = actDelete
+        end
+        object tbIndex: TToolButton
+          Left = 78
+          Top = 2
+          Action = actIndex
+        end
+        object ToolButton1: TToolButton
+          Left = 70
+          Height = 22
+          Top = 2
+          Caption = 'ToolButton1'
+          Style = tbsSeparator
+        end
+        object TBClear: TToolButton
+          Left = 101
+          Top = 2
+          Action = actClear
+        end
+        object TBClearAll: TToolButton
+          Left = 124
+          Top = 2
+          Action = actClearAll
+        end
+      end
+    end
+  end
+  object lblIndexing: TLabel
+    Left = 0
+    Height = 24
+    Top = 0
+    Width = 567
+    Align = alTop
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Indexing operation in progress....'
+    Layout = tlCenter
+  end
+  object alInstantSearch: TActionList
+    Images = ilInstantSearch
+    Left = 368
+    Top = 56
+    object actAdd: TAction
+      Caption = 'Add'
+      ImageIndex = 0
+      OnExecute = HandleAdd
+    end
+    object actDelete: TAction
+      Caption = 'Delete'
+      ImageIndex = 1
+      OnExecute = HandleDelete
+      OnUpdate = actDeleteUpdate
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+      ImageIndex = 2
+      OnExecute = HandleEdit
+      OnUpdate = actEditUpdate
+    end
+    object actIndex: TAction
+      Caption = 'Index'
+      ImageIndex = 3
+      OnExecute = HandleIndex
+      OnUpdate = actIndexUpdate
+    end
+    object actClear: TAction
+      Caption = 'Clear'
+      ImageIndex = 4
+      OnExecute = HandleClear
+      OnUpdate = DoHandleClearUpdate
+    end
+    object actClearAll: TAction
+      Caption = 'Clear  All'
+      ImageIndex = 5
+      OnExecute = actClearAllExecute
+    end
+    object actTestConnection: TAction
+      Caption = 'Test connection'
+      Hint = 'Use this button to test the connection parameters.'
+      OnExecute = actTestConnectionExecute
+    end
+    object actCreateIndex: TAction
+      Caption = 'Create index'
+      OnExecute = actCreateIndexExecute
+      OnUpdate = actCreateIndexUpdate
+    end
+    object actDeleteIndex: TAction
+      Caption = 'Delete Index'
+      Hint = 'Delete an index table'
+      OnExecute = actDeleteIndexExecute
+      OnUpdate = actDeleteIndexUpdate
+    end
+  end
+  object ilInstantSearch: TImageList
+    Left = 448
+    Top = 80
+    Bitmap = {
+      4C7A060000001000000010000000D20700000000000078DAD5970B50536716C7
+      EF8AD08A02A2342069D455BA76EA5A79051441ABAD6DADB583B574A5B26BB583
+      01093E5B1D776B37B3B6504420F8A0F2102C2421016482400D15AD8844826094
+      D782A080CAA32024F7268808E4ECF7F170208684E0EE8C7B67CEC0DCFBFDCE39
+      DFFFFB9F3BB90040C04B15FD287A88A3DBD7C2E8C0F7869E19E2FB5050837C5B
+      99643086780ADD7F3ABC46334E5DCC76A3E8D4C1770C3FEB1DA78F1E62A8065E
+      D7A2836F197E460EAF1DCB6BEF579B7F5E8FE7F991F586E27FC5BF48FF004F86
+      F5EBD4A35FE7F09A9E1738BF3E033ED2E79FBE17F6EFC04B376F2FEDFC8F8949
+      CC3F21CF081F8C21DEE8F9D7E28D9E7F2DDEF8F9D717FF0FF36F4CFF3AE65F87
+      7E46CDFF38E737E1F9D7E19FBE17F6EFCB36FFC65D69560491EB484CEAC26C76
+      3141DC5012C4C365C690B1B1B156DEDE69C988D52016353D8072B4B94F944D49
+      4929BE7AF52AB0D94DD7108B72B4A21C65284796933ED6C527D6EAAD4362C9D9
+      C2E2BB8D8D8DD8B3B07B7773016207D05E4A09826FAD8F7538282EB69435C214
+      B5BA43DEF3E46E535313E03E3EFDF45CF2901E865942AD86A99575302BABA423
+      F9C2953A1E8F571A1313636D0C3B532C83D7C325F0F6CED40B580FBDEC01F175
+      5DEC9B2C41E9922F0CEC77922CBE3EFE41CAB59235F4EB608B716E7DECB6880A
+      C6D6888AFE8D093552D38ABA3E63EAE26B4BC8F530C4038ECF8E974B19E192BE
+      89B21B7670CC3D56AFEFFBFCEFE7613847FF279C22AEA19E472E2693F9B98B8B
+      0B2C4739FC4264115F46C9E71B331B4E4E4E4B710EDC07F15FB852586E4B856C
+      AF13197BDFBD91BE67B55C14EC1597B2C3653D87434C7936C93E8BCD783BDCB6
+      6AB3A9419E07D377BFA32A1786F6B5156540872C0BFE9DC9D5E47CB7894CDBB5
+      AA91CF72FD08B328A784C7620E8C6679816E5BC5873E56A9AB0B4179EB22286F
+      E7033C280768BA09D070035A2FFD0CE7F6BFA716EEF468B81CFAD76EFE0EA666
+      844DDAC9B413B23DC99B89FFD0A4EF79479DBE6BD583B460AFD68CBD6B540DE2
+      480D545F04A894C0D3D24CA8137060E0463A8CE6052CF743A981CB3422B6672D
+      DF9FF9ECFDC6F3673245EC15B5D263DB1E6B647C80621E80F467806B67C6F0C2
+      208F7A619067D199ED2B2CB435E1072EB14E0D7053D627EE03F8ED24C0252EC0
+      C588313CD6F278B0C32BCFBD31B15641CB2597BFDBA01EC8FD0120F708403667
+      3046F3E39F25731BD619AFD50E41A03BF96CFFA83FBC4E57E01C86EAE07C237D
+      E11E71AF97FFF949771ADB230FEF417B3DDEEB68FF0CF24893416D9046582BAC
+      19D64E9BE505BB5B8AD85E52ACF9181E9DC9E0D9A033C26785CF0C9F1D3FC0D5
+      6DF479229FD4A7062ED7F059CB0E8EE6B127B037B047B057B067B077CE210F89
+      76AD6C439E6DC6FFCBCF7E0B42F60A3239E06DDA681E7B127B13795485BD8A3D
+      3BE85DE461127999AAB80CEAAA02101F5CA7E2B1DCFDC6EC09E98C67026B8567
+      04D56BC839BC91ACCE88D0B4148AA0B5300D6EF3BFEF4333A4120478EC7F4E13
+      A4E5689DF1ACF2FC5DD70983BD62F01CE31005AD8C16F833176BB3665FC62E31
+      FF2AE157135FAE80D872DCD2D8F7C5AB88751674C2DC235761EA666E09E11D35
+      D318DEC4373A9571A4009C055D2847E1B31C3607C22C6CBF0E9F6E3081CF8F56
+      537DB95206AA3F92C3D42FFA163DF24C19E3686CE4849A40F5467238A6B40123
+      2AA5D9EB7A0DBC1527942331A74C3487A91FB78C11C56B5E23AB83BFC81F02DD
+      ABA2DFDE5B52B5242AE1471B4E98BD3E1CEF776E5462D97B2575E077BB191CD6
+      DE8145ABEBE06423093F3576C01671FEFDA5DCC46887E0E3AFE8E2B156F38FC5
+      453AC68BE48C9515FD8BDFAF8784872AC8EE7A0279CA5EC878F418426B9A0798
+      A7F9657343A35DC6EF04FE30EFB3FC2ACC5E50F4C2CDC79AC1BF677F57C3D1FB
+      0AD877E777F0CACC6F5D109594430F3DB1465706B75329225C0FD7C5F5311B8E
+      D86FEADB616B75337C286F04A7EB77C02EE28C4417EF189D181677BF1378EDDD
+      70BA8582D0A62ED85FD70E7FAB1A629D65F540CF913EB50D39E5AF8BB7E74439
+      B3AE9451B8DFC3F71E01BBB60D7C2B1FC2DA9B8DE0585C07F4822AB0E5269610
+      3E69263A254067BE22E95CE51EB4D7EDD52DB0B1FC3EAC2ABD077FC63D5FA902
+      5A8CA0DE26E4E49FF49DE7A2A88418EFD27AF800F5EB5E520F6F14D5002DAF54
+      43E39EBD6DF7AFC8C586EC64CF3966E310977607D7A4E7CA0668A785B5764763
+      4FBEBE3772DA4467CB3EF4B4AFEDB184F3B4D01301F61CDDBF0F747D1398E72A
+      5D2DF255F1332E50F116B954BC9550F9BE31DF1416BFA8CF13BDDD4068BAC1B4
+      49DD639D446D98F0F7482C98CEC8A36A4C3AD46042768345B6AA1C9FD34479AB
+      38E526F36255AFD93D3598DD55C3AC782A7EE4193D849A6D7BE0D1BBFAF8D909
+      54D634990AA6DD52838598EC7C2D8C14599F52E4582792728B4CAA9916A2948F
+      DB3BA7CA6C561C593B3D9F82E9052A98FE9B0ACCAFA15C7235BC5AA902CB2C4A
+      413FA01EB73E2D54B5696612D96B99498165B60A2C2414CCC847790A28302F52
+      01EDB0F292BEDE691C523C2B8102EB58126C22C8F6D7380AF99CBD0AF9CC6452
+      33FB27AA6B0E4BB1521F6FF7B5B2D4EE1B45167D8F62DF9CAF14F3F0BD39418A
+      64EB140AEC8394F993F9BEA4EF544AEDBE5576D9FBB47B1ACB2EF0E9B2A2B314
+      0F185F74E54DA636637DD7E6B99B15E4820F49E664F83FAE53A4CFFF40F1EB64
+      BFAD177A753D98E7DAEE3419F64D376AF642E7CE5F265B7B915387BD838B72A1
+      A175FF01AEC54676
+    }
+  end
+end

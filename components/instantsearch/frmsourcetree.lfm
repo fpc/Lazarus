@@ -1,0 +1,165 @@
+object SourceTreeDefinitionForm: TSourceTreeDefinitionForm
+  Left = 550
+  Height = 268
+  Top = 425
+  Width = 510
+  Caption = 'Indexer source tree definition'
+  ClientHeight = 268
+  ClientWidth = 510
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '2.3.0.0'
+  object bpSourceTree: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 224
+    Width = 498
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object lblName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtName
+    AnchorSideRight.Control = edtName
+    AnchorSideBottom.Control = edtName
+    AnchorSideBottom.Side = asrBottom
+    Left = 8
+    Height = 27
+    Top = 15
+    Width = 112
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 8
+    Caption = 'Name'
+    Layout = tlCenter
+  end
+  object lblBaseDir: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtBaseDir
+    AnchorSideRight.Control = edtBaseDir
+    AnchorSideBottom.Control = edtBaseDir
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 27
+    Top = 50
+    Width = 104
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 8
+    Caption = 'Path'
+    Layout = tlCenter
+  end
+  object lblExtensions: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtExtensions
+    AnchorSideRight.Control = edtExtensions
+    AnchorSideBottom.Control = edtExtensions
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 27
+    Top = 178
+    Width = 104
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 8
+    Caption = 'Extensions'
+    Layout = tlCenter
+  end
+  object edtName: TEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 128
+    Height = 27
+    Top = 15
+    Width = 366
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 16
+    TabOrder = 1
+    TextHint = 'Unique name for tree'
+  end
+  object edtExtensions: TEdit
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = CBEnabled
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 128
+    Height = 27
+    Top = 178
+    Width = 366
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 16
+    TabOrder = 2
+    TextHint = 'Comma-separated list of extensions'
+  end
+  object edtBaseDir: TDirectoryEdit
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = edtName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 128
+    Height = 27
+    Top = 50
+    Width = 366
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 16
+    MaxLength = 0
+    TabOrder = 3
+    TextHint = 'Path to sources'
+  end
+  object cbRecurse: TCheckBox
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = edtBaseDir
+    AnchorSideTop.Side = asrBottom
+    Left = 128
+    Height = 23
+    Top = 85
+    Width = 73
+    BorderSpacing.Top = 8
+    Caption = 'Recurse'
+    TabOrder = 4
+  end
+  object CBAllFiles: TCheckBox
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = cbRecurse
+    AnchorSideTop.Side = asrBottom
+    Left = 128
+    Height = 23
+    Top = 116
+    Width = 72
+    BorderSpacing.Top = 8
+    Caption = 'All files'
+    TabOrder = 5
+  end
+  object CBEnabled: TCheckBox
+    AnchorSideLeft.Control = edtName
+    AnchorSideTop.Control = CBAllFiles
+    AnchorSideTop.Side = asrBottom
+    Left = 128
+    Height = 23
+    Top = 147
+    Width = 76
+    BorderSpacing.Top = 8
+    Caption = 'Enabled'
+    TabOrder = 6
+  end
+end

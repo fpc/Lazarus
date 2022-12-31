@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazinstantsearch"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="A fast search mechanism: 
+Configure source file trees and search thousands of files as you type.
+Works using ManticoreSearch and search indexes."/>
+    <Version Release="1"/>
+    <Files>
+      <Item>
+        <Filename Value="idemcindexer.pas"/>
+        <UnitName Value="idemcindexer"/>
+      </Item>
+      <Item>
+        <Filename Value="reginstantsearch.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reginstantsearch"/>
+      </Item>
+      <Item>
+        <Filename Value="lazinstantsearch.pas"/>
+        <UnitName Value="lazinstantsearch"/>
+      </Item>
+      <Item>
+        <Filename Value="frminstantsearch.pas"/>
+        <UnitName Value="frmInstantSearch"/>
+      </Item>
+      <Item>
+        <Filename Value="instantsearchstrings.pas"/>
+        <UnitName Value="instantsearchstrings"/>
+      </Item>
+      <Item>
+        <Filename Value="ideinstantsearch.pas"/>
+        <UnitName Value="ideinstantsearch"/>
+      </Item>
+      <Item>
+        <Filename Value="frainstantsearchoptions.pas"/>
+        <UnitName Value="frainstantsearchoptions"/>
+      </Item>
+      <Item>
+        <Filename Value="frmsourcetree.pas"/>
+        <UnitName Value="frmSourceTree"/>
+      </Item>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
