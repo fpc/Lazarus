@@ -10,7 +10,7 @@ polyline_2       One line from (10, 10) to (20, 30) to (30, 20) to (40, 40)
 bezier_1         One path starting in (0, 0) lining to (10, 10) then bezier to (20, 10) and then line to (30, 0)
 bezier_2         One curve from (10, 10) to (20, 20)
 text_ascii       One text written at (10, 10)
-text_europen     One text testing european languages at (20, 20)
+text_european    One text testing european languages at (20, 20)
 text_asian       One text testing asian languages at (30, 30)
 
 Author: Felipe Monteiro de Carvalho
@@ -34,7 +34,7 @@ begin
   Vec := TvVectorialDocument.Create;
   try
     // All documents are 10cm x 10cm
-    Vec.Width := 100;
+    Vec.Width := 200;
     Vec.Height := 100;
     Page := Vec.AddPage();
 

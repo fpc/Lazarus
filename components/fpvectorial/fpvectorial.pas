@@ -175,7 +175,7 @@ type
   TvFont = record
     Color: TFPColor;
     Size: Double;
-    Name: utf8string;
+    Name: string;
     {@@
       Font orientation is measured in degrees and uses the
       same direction as the LCL TFont.orientation, which is counter-clockwise.
@@ -1565,9 +1565,9 @@ type
     procedure SetPenWidth(AWidth: Integer);
     procedure SetClipPath(AClipPath: TPath; AClipMode: TvClipMode);
     function  EndPath(AOnlyCreate: Boolean = False): TPath;
-    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: Double; AText: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
-    function  AddText(AX, AY: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
-    function  AddText(AX, AY, AZ: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: Double; AText: string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY: Double; AStr: string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY, AZ: Double; AStr: string; AOnlyCreate: Boolean = False): TvText; overload;
     function AddCircle(ACenterX, ACenterY, ARadius: Double; AOnlyCreate: Boolean = False): TvCircle;
     function AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor; AOnlyCreate: Boolean = False): TvCircularArc;
     function AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double; AOnlyCreate: Boolean = False): TvEllipse;
@@ -9509,7 +9509,7 @@ begin
 end;
 
 function TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
-  FontSize: Double; AText: utf8string; AOnlyCreate: Boolean = False): TvText;
+  FontSize: Double; AText: string; AOnlyCreate: Boolean = False): TvText;
 var
   lText: TvText;
 begin
@@ -9524,12 +9524,12 @@ begin
   Result := lText;
 end;
 
-function TvVectorialPage.AddText(AX, AY: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText;
+function TvVectorialPage.AddText(AX, AY: Double; AStr: string; AOnlyCreate: Boolean = False): TvText;
 begin
   Result := AddText(AX, AY, 0, '', 10, AStr, AOnlyCreate);
 end;
 
-function TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText;
+function TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: string; AOnlyCreate: Boolean = False): TvText;
 begin
   Result := AddText(AX, AY, AZ, '', 10, AStr, AOnlyCreate);
 end;
