@@ -301,7 +301,7 @@ Begin
     CurTable := Page.AddTable;
     CurTable.PreferredWidth := Dimension(100, dimPercent);
 
-    CurTable.CellSpacing    := 0;
+//    CurTable.CellSpacing    := 0;
     CurTable.Borders.Left.Width := 2 * ONE_POINT_IN_MM;
     CurTable.Borders.Right.Width := 2 * ONE_POINT_IN_MM;
     CurTable.Borders.Top.Width := 2 * ONE_POINT_IN_MM;

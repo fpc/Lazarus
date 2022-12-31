@@ -1345,6 +1345,7 @@ type
     function GetRowCount : Integer;
     function GetRow(AIndex: Integer) : TvTableRow;
     //
+    function AddColWidth(AValue: Double): Integer;
     function GetColCount(): Integer;
     //
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
@@ -2573,6 +2574,14 @@ begin
     lCurRow.GenerateDebugTree(ADestRoutine, Result);
   end;
 end;
+
+function TvTable.AddColWidth(AValue: Double): Integer;
+begin
+  SetLength(ColWidths, Length(ColWidths) + 1);
+  Result := High(ColWidths);
+  ColWidths[Result] := AValue;
+end;
+
 
 { TvEmbeddedVectorialDoc }
 
