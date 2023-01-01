@@ -2881,7 +2881,6 @@ begin
   FreeThenNil(FDefineTemplates);
   FreeThenNil(FHistoryLists);
   {$IFnDEF LCLNOGUI}
-  FDebuggerProperties.ClearAll;
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FBackendConverterConfig);
   {$EndIf}

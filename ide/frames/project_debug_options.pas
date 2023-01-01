@@ -133,13 +133,13 @@ begin
   lblResolvedDebuggerHint.Visible := False;
   case FDebuggerBackendIdx of
     DBG_IDX_PROJECT: begin
-      if FClassOpts.ModifiedDbgPropertiesConfigList.CountWithoutDeleted = 0 then begin
+      if FClassOpts.ModifiedDbgPropertiesConfigList.Count = 0 then begin
         lblResolvedDebuggerHint.Caption := drsUsingIDEDefaultDebuggerSe;
         lblResolvedDebuggerHint.Visible := True;
       end;
     end;
     DBG_IDX_IDE: begin
-      if FClassOpts.ModifiedDbgPropertiesConfigList.CountWithoutDeleted > 0 then begin
+      if FClassOpts.ModifiedDbgPropertiesConfigList.Count > 0 then begin
         lblResolvedDebuggerHint.Caption := drsUsingIDEDefaultDebuggerSe;
         lblResolvedDebuggerHint.Caption := lblResolvedDebuggerHint.Caption + drsIgnoringProjectDebuggerSettings;
         lblResolvedDebuggerHint.Visible := True;
@@ -147,12 +147,12 @@ begin
     end;
     DBG_IDX_UNKNOWN: begin
       lblResolvedDebuggerHint.Caption := drsUsingIDEDefaultDebuggerSe;
-      if FClassOpts.ModifiedDbgPropertiesConfigList.CountWithoutDeleted > 0 then
+      if FClassOpts.ModifiedDbgPropertiesConfigList.Count > 0 then
         lblResolvedDebuggerHint.Caption := lblResolvedDebuggerHint.Caption + drsIgnoringProjectDebuggerSettings;
       lblResolvedDebuggerHint.Visible := True;
     end;
     otherwise begin
-      if FClassOpts.ModifiedDbgPropertiesConfigList.CountWithoutDeleted > 0 then begin
+      if FClassOpts.ModifiedDbgPropertiesConfigList.Count > 0 then begin
         lblResolvedDebuggerHint.Caption := drsUsingSelectedIDEDebuggerS;
         lblResolvedDebuggerHint.Caption := lblResolvedDebuggerHint.Caption + drsIgnoringProjectDebuggerSettings;
         lblResolvedDebuggerHint.Visible := True;

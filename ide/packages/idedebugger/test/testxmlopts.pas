@@ -530,7 +530,7 @@ begin
   writeln(opts.DebuggerPropertiesConfigList.Count);
   for i := 0 to opts.DebuggerPropertiesConfigList.Count - 1 do
     with opts.DebuggerPropertiesConfigList.Opt[i] do
-      WriteLn(' # ', ConfigName, 'C=', ConfigClass, ' , A=', Active, ' , D=', IsDeleted, ' , L=',IsLoaded);
+      WriteLn(' # ', ConfigName, 'C=', ConfigClass, ' , A=', Active, '  , L=',IsLoaded);
 end;
 
 procedure TTestXmlOpts.TearDown;
