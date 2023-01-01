@@ -108,24 +108,28 @@ type
 
   TPathEditorButton = class(TButton)
   private
+    FAssociatedComboBox: TCustomComboBox;
     FCurrentPathEditor: TPathEditorDialog;
     FAssociatedEdit: TCustomEdit;
     FContextCaption: String;
     FTemplates: String;
     FOnExecuted: TOnPathEditorExecuted;
+    function GetAssociatedText: string;
   protected
     procedure DoOnPathEditorExecuted;
   public
     procedure Click; override;
     property CurrentPathEditor: TPathEditorDialog read FCurrentPathEditor;
+    property AssociatedComboBox: TCustomComboBox read FAssociatedComboBox write FAssociatedComboBox;
     property AssociatedEdit: TCustomEdit read FAssociatedEdit write FAssociatedEdit;
+    property AssociatedText: string read GetAssociatedText;
     property ContextCaption: String read FContextCaption write FContextCaption;
     property Templates: String read FTemplates write FTemplates;
     property OnExecuted: TOnPathEditorExecuted read FOnExecuted write FOnExecuted;
   end;
 
 function PathEditorDialog: TPathEditorDialog;
-procedure SetPathTextAndHint(aPath: String; aEdit: TCustomEdit);
+procedure SetPathTextAndHint(aPath: String; aEdit: TWinControl);
 
 
 implementation
@@ -185,11 +189,14 @@ begin
   SetLength(Result,j-1);
 end;
 
-procedure SetPathTextAndHint(aPath: String; aEdit: TCustomEdit);
+procedure SetPathTextAndHint(aPath: String; aEdit: TWinControl);
 var
   sl: TStrings;
 begin
-  aEdit.Text := aPath;
+  if aEdit is TCustomEdit then
+    TCustomEdit(aEdit).Text := aPath
+  else if aEdit is TCustomComboBox then
+    TCustomComboBox(aEdit).Text := aPath;
   if Pos(';', aPath) > 0 then
   begin
     sl := SplitString(aPath, ';');
@@ -577,12 +584,22 @@ begin
   try
     inherited Click;
     FCurrentPathEditor.Templates := FTemplates;
-    FCurrentPathEditor.Path := AssociatedEdit.Text;
+    FCurrentPathEditor.Path := AssociatedText;
     FCurrentPathEditor.ShowModal;
     DoOnPathEditorExecuted;
   finally
     FCurrentPathEditor:=nil;
   end;
+end;
+
+function TPathEditorButton.GetAssociatedText: string;
+begin
+  if AssociatedEdit<>nil then
+    Result:=AssociatedEdit.Text
+  else if AssociatedComboBox<>nil then
+    Result:=AssociatedComboBox.Text
+  else
+    Result:='';
 end;
 
 procedure TPathEditorButton.DoOnPathEditorExecuted;
@@ -591,12 +608,15 @@ var
   NewPath: String;
 begin
   NewPath := FCurrentPathEditor.Path;
-  Ok := (FCurrentPathEditor.ModalResult = mrOk) and (AssociatedEdit.Text <> NewPath);
+  Ok := (FCurrentPathEditor.ModalResult = mrOk) and (AssociatedText <> NewPath);
   if Ok and Assigned(OnExecuted) then
     Ok := OnExecuted(ContextCaption, NewPath);
   // Assign value only if old <> new and OnExecuted allows it.
-  if Ok then
-    SetPathTextAndHint(NewPath, AssociatedEdit);
+  if not Ok then exit;
+  if AssociatedEdit<>nil then
+    SetPathTextAndHint(NewPath, AssociatedEdit)
+  else if AssociatedComboBox<>nil then
+    SetPathTextAndHint(NewPath, AssociatedComboBox);
 end;
 
 end.
