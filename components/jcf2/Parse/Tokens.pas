@@ -198,6 +198,7 @@ type
     ttGeneric,
     ttCVar,
     ttNostackframe,
+    ttNoreturn,
     ttNested,
     ttVectorcall,
     // used in asm
@@ -398,7 +399,7 @@ const
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
     ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
-    ttPublic, ttVectorcall,ttHuge];
+    ttPublic, ttVectorcall, ttHuge, ttNoreturn];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -732,6 +733,7 @@ begin
   AddKeyword('reintroduce', wtReservedWordDirective, ttReintroduce);
 
   AddKeyword('cvar', wtReservedWordDirective, ttCVar);
+  AddKeyword('noreturn', wtReservedWordDirective, ttNoReturn);
   AddKeyword('nostackframe', wtReservedWordDirective, ttNostackframe);
   AddKeyword('nested', wtReservedWordDirective, ttNested);
 
