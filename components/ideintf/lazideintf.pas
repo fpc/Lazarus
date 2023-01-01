@@ -771,6 +771,8 @@ var
   CurResult: TModalResult;
 begin
   Result := mrOK;
+  if not Assigned(FLazarusIDEHandlers[lihtPackageBuilding]) then
+    Exit;
   for I := 0 to FLazarusIDEHandlers[lihtPackageBuilding].Count-1 do
   begin
     Handler := TLazPackageBuildingEvent(FLazarusIDEHandlers[lihtPackageBuilding][I]);
