@@ -6,13 +6,14 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
   Caption = 'Find in Files'
   ClientHeight = 476
   ClientWidth = 801
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '2.3.0.0'
   object CaseSensitiveSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = WholeWordsSpeedButton
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 686
     Height = 30
@@ -26,9 +27,9 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ParentShowHint = False
   end
   object WholeWordsSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = RegularExpressionsSpeedButton
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 709
     Height = 30
@@ -42,9 +43,9 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ParentShowHint = False
   end
   object RegularExpressionsSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = MultilineSpeedButton
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 732
     Height = 30
@@ -58,10 +59,10 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ParentShowHint = False
   end
   object AutoUpdateSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 778
     Height = 30
@@ -76,9 +77,9 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ParentShowHint = False
   end
   object MultilineSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = AutoUpdateSpeedButton
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 755
     Height = 30
@@ -92,9 +93,9 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ParentShowHint = False
   end
   object StoreAndNewSpeedButton: TSpeedButton
-    AnchorSideTop.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideRight.Control = CaseSensitiveSpeedButton
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 663
     Height = 30
@@ -107,8 +108,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
   end
   object ShowReplaceSpeedButton: TSpeedButton
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FindCombobox
-    AnchorSideBottom.Control = FindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
+    AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 30
@@ -120,7 +121,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     GroupIndex = 1
     OnClick = ShowReplaceSpeedButtonClick
   end
-  object FindCombobox: TComboBox
+  object TextToFindCombobox: TComboBox
     AnchorSideLeft.Control = ShowReplaceSpeedButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
@@ -133,9 +134,9 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ItemHeight = 0
     TabOrder = 0
   end
-  object ReplaceComboBox: TComboBox
-    AnchorSideLeft.Control = FindCombobox
-    AnchorSideTop.Control = FindCombobox
+  object ReplaceTextComboBox: TComboBox
+    AnchorSideLeft.Control = TextToFindCombobox
+    AnchorSideTop.Control = TextToFindCombobox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ReplaceButton
     Left = 23
@@ -679,7 +680,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
   end
   object WherePanel: TPanel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ReplaceComboBox
+    AnchorSideTop.Control = ReplaceTextComboBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -694,7 +695,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     ClientHeight = 62
     ClientWidth = 801
     TabOrder = 4
-    object DirsComboBox: TComboBox
+    object DirectoriesComboBox: TComboBox
       AnchorSideLeft.Control = WherePanel
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideTop.Side = asrBottom
@@ -785,10 +786,10 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Caption = '...'
     end
     object DirsEditSpeedButton: TSpeedButton
-      AnchorSideTop.Control = DirsComboBox
+      AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideRight.Control = WherePanel
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = DirsComboBox
+      AnchorSideBottom.Control = DirectoriesComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 778
       Height = 30
@@ -799,7 +800,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     end
   end
   object ReplaceButton: TButton
-    AnchorSideTop.Control = ReplaceComboBox
+    AnchorSideTop.Control = ReplaceTextComboBox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 741
@@ -809,6 +810,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     Anchors = [akTop, akRight]
     AutoSize = True
     Caption = 'Replace'
+    Enabled = False
     TabOrder = 5
     Visible = False
   end

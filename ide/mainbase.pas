@@ -1042,9 +1042,7 @@ begin
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext, 'menu_search_find_next');
     CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious, 'menu_search_find_previous');
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles, 'menu_search_files');
-    {$IFDEF EnableFindInFilesWnd}
     RegisterFindInFilesWnd;
-    {$ENDIF}
     CreateMenuItem(ParentMI,itmSearchReplace, 'itmSearchReplace', lisBtnDlgReplace, 'menu_search_replace');
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind, 'menu_search_incremental');
 
