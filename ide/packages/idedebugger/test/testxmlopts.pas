@@ -64,12 +64,12 @@ type
   public
     procedure InitXMLCfg(CleanConfig: boolean);
     property XMLCfg;
-    function EntryCntByName(AName: String): Integer;
-    function EntryCntByClass(AClass: String): Integer;
-    function EntryCntByNameAndClass(AName, AClass: String): Integer;
-    function EntryByName(AName: String): TDebuggerPropertiesConfig;
-    function EntryByClass(AClass: String): TDebuggerPropertiesConfig;
-    function EntryByNameAndClass(AName,AClass: String): TDebuggerPropertiesConfig;
+    function EntryCntByName(AName: String; AnUnloaded: Boolean = False): Integer;
+    function EntryCntByClass(AClass: String; AnUnloaded: Boolean = False): Integer;
+    function EntryCntByNameAndClass(AName, AClass: String; AnUnloaded: Boolean = False): Integer;
+    function EntryByName(AName: String; AnUnloaded: Boolean = False): TDebuggerPropertiesConfig;
+    function EntryByClass(AClass: String; AnUnloaded: Boolean = False): TDebuggerPropertiesConfig;
+    function EntryByNameAndClass(AName,AClass: String; AnUnloaded: Boolean = False): TDebuggerPropertiesConfig;
   end;
 
   { TTestXmlOpts }
@@ -88,20 +88,20 @@ type
   protected
     procedure DebuglnDbgOptConfigs(opts: TTestDebuggerOptions);
     procedure TearDown; override;
-    procedure TestEntryCnt(AnOpts: TTestDebuggerOptions; ExpCount: Integer);
+    procedure TestEntryCnt(AnOpts: TTestDebuggerOptions; ExpCount, ExpUnloadedCount: Integer);
     procedure TestHasEntry(AnOpts: TTestDebuggerOptions;
       ExpName, ExpClass: String;
       ExpActive: Boolean = False;
       ExpPath: String = '';
-      ExpUUID: String = ''
-      //ExpLoaded: Boolean = False;
+      ExpUUID: String = '';
+      ExpLoaded: Boolean = True
       );
     procedure TestHasClassEntry(AnOpts: TTestDebuggerOptions;
       ExpClass: String;
       ExpActive: Boolean = False;
       ExpPath: String = '';
-      ExpUUID: String = ''
-      //ExpLoaded: Boolean = False;
+      ExpUUID: String = '';
+      ExpLoaded: Boolean = True
       );
     procedure TestEntryCnt(AnXml: TXMLDocument; ExpCount: Integer);
     procedure TestHasEntry(AnXml: TXMLDocument;
@@ -118,6 +118,8 @@ type
     procedure TestLoadEnvNew;
     procedure TestLoadEnvOld;
     procedure TestLoadEnvMixed;
+    procedure TestLoadEnvNewUnknowActive;
+    procedure TestLoadEnvOldUnknowActive;
     procedure TestLoadFromDbg; // Check options from DebuggerOptions are loaded, and not EnvironmentOpts
     procedure TestDeleteSave;
   end;
@@ -259,6 +261,48 @@ begin
     '</CONFIG>';
 end;
 
+function ConfigEnvNewUnknowActive: String;
+begin
+  Result :=
+    '<?xml version="1.0"?>' +
+    '<CONFIG>' +
+    '  <EnvironmentOptions>' +
+    '    <Version Value="110" Lazarus="2.3.0"/>' +
+    '    <Debugger>' +
+    '      <Configs>' +
+    EntryNew('abc1', 'TTestDebuggerBackendAbc', 'abc.exe', False, '',         'U-1') +
+    EntryNew('abc2', 'TTestDebuggerBackendAbc', 'abc.exe', False, PROPS_ABC1, 'U-2') +
+    EntryNew('abc3', 'TTestDebuggerBackendAbc', 'abc3.exe', False, '',         'U-3') +
+    EntryNew('foo1', 'TTestDebuggerBackendFoo', 'foo.exe', False, PROPS_FOO1, 'U-4') +
+    EntryNew('xxx0', 'TUnknownDebuggerBackend', 'any.exe', True, PROPS_UNK1, 'U-5') +
+    EntryNew('xxx1', 'TNotFoundDebuggerBackend', 'no.exe', False, PROPS_ABC1, 'U-6') +
+    '      </Configs>' +
+    '    </Debugger>' +
+    '  </EnvironmentOptions>' +
+    '</CONFIG>';
+end;
+
+function ConfigEnv1_8_UnknownActive: String;
+begin
+  Result :=
+    '<?xml version="1.0"?>' +
+    '<CONFIG>' +
+    '  <EnvironmentOptions>' +
+    '    <Version Value="110" Lazarus="1.8.5"/>' +
+    '    <Debugger Class="TUnknownDebuggerBackend" EventLogLineLimit="100">' +
+    EntryOld('TTestDebuggerBackendBar') +
+    EntryOld('TTestDebuggerBackendAbc', PROPS_ABC1) +
+    EntryOld('TUnknownDebuggerBackend', PROPS_UNK1)+
+    EntryOld('TTestDebuggerBackendFoo', PROPS_FOO1)+
+    '    </Debugger>' +
+    '    <DebuggerFilename Value="C:\gdb.exe">' +
+    '      <History Count="1">' +
+    '        <Item1 Value="$Path($(CompPath))\gdb.exe"/>' +
+    '      </History>' +
+    '    </DebuggerFilename>' +
+    '  </EnvironmentOptions>' +
+    '</CONFIG>';
+end;
 function ConfigDbgNewOne: String;
 begin
   Result :=
@@ -356,71 +400,97 @@ begin
   inherited InitXMLCfg(CleanConfig);
 end;
 
-function TTestDebuggerOptions.EntryCntByName(AName: String): Integer;
-var
-  i: Integer;
-begin
-  Result := 0;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if DebuggerPropertiesConfigList.Opt[i].ConfigName = AName then
-      inc(Result);
-end;
-
-function TTestDebuggerOptions.EntryCntByClass(AClass: String): Integer;
-var
-  i: Integer;
-begin
-  Result := 0;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if DebuggerPropertiesConfigList.Opt[i].ConfigClass = AClass then
-      inc(Result);
-end;
-
-function TTestDebuggerOptions.EntryCntByNameAndClass(AName, AClass: String
+function TTestDebuggerOptions.EntryCntByName(AName: String; AnUnloaded: Boolean
   ): Integer;
 var
   i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
 begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
   Result := 0;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if (DebuggerPropertiesConfigList.Opt[i].ConfigName = AName) and
-       (DebuggerPropertiesConfigList.Opt[i].ConfigClass = AClass)
+  for i := 0 to l.Count - 1 do
+    if l.Opt[i].ConfigName = AName then
+      inc(Result);
+end;
+
+function TTestDebuggerOptions.EntryCntByClass(AClass: String;
+  AnUnloaded: Boolean): Integer;
+var
+  i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
+begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
+  Result := 0;
+  for i := 0 to l.Count - 1 do
+    if l.Opt[i].ConfigClass = AClass then
+      inc(Result);
+end;
+
+function TTestDebuggerOptions.EntryCntByNameAndClass(AName, AClass: String;
+  AnUnloaded: Boolean): Integer;
+var
+  i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
+begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
+  Result := 0;
+  for i := 0 to l.Count - 1 do
+    if (l.Opt[i].ConfigName = AName) and
+       (l.Opt[i].ConfigClass = AClass)
     then
       inc(Result);
 end;
 
-function TTestDebuggerOptions.EntryByName(AName: String
+function TTestDebuggerOptions.EntryByName(AName: String; AnUnloaded: Boolean
   ): TDebuggerPropertiesConfig;
 var
   i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
 begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
   Result := nil;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if DebuggerPropertiesConfigList.Opt[i].ConfigName = AName then
-      exit(DebuggerPropertiesConfigList.Opt[i]);
+  for i := 0 to l.Count - 1 do
+    if l.Opt[i].ConfigName = AName then
+      exit(l.Opt[i]);
 end;
 
-function TTestDebuggerOptions.EntryByClass(AClass: String
+function TTestDebuggerOptions.EntryByClass(AClass: String; AnUnloaded: Boolean
   ): TDebuggerPropertiesConfig;
 var
   i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
 begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
   Result := nil;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if DebuggerPropertiesConfigList.Opt[i].ConfigClass = AClass then
-      exit(DebuggerPropertiesConfigList.Opt[i]);
+  for i := 0 to l.Count - 1 do
+    if l.Opt[i].ConfigClass = AClass then
+      exit(l.Opt[i]);
 end;
 
-function TTestDebuggerOptions.EntryByNameAndClass(AName, AClass: String
-  ): TDebuggerPropertiesConfig;
+function TTestDebuggerOptions.EntryByNameAndClass(AName, AClass: String;
+  AnUnloaded: Boolean): TDebuggerPropertiesConfig;
 var
   i: Integer;
+  l: TDebuggerPropertiesConfigListBase;
 begin
+  l := DebuggerPropertiesConfigList;
+  if AnUnloaded then l := DebuggerPropertiesConfigList.Unloaded;
+
   Result := nil;
-  for i := 0 to DebuggerPropertiesConfigList.Count - 1 do
-    if (DebuggerPropertiesConfigList.Opt[i].ConfigName = AName) and
-       (DebuggerPropertiesConfigList.Opt[i].ConfigClass = AClass) then
-      exit(DebuggerPropertiesConfigList.Opt[i]);
+  for i := 0 to l.Count - 1 do
+    if (l.Opt[i].ConfigName = AName) and
+       (l.Opt[i].ConfigClass = AClass) then
+      exit(l.Opt[i]);
 end;
 
 
@@ -539,31 +609,36 @@ begin
   inherited TearDown;
 end;
 
-procedure TTestXmlOpts.TestEntryCnt(AnOpts: TTestDebuggerOptions;
-  ExpCount: Integer);
+procedure TTestXmlOpts.TestEntryCnt(AnOpts: TTestDebuggerOptions; ExpCount,
+  ExpUnloadedCount: Integer);
 begin
   AssertEquals('Opts-Cnt', ExpCount, AnOpts.DebuggerPropertiesConfigList.Count);
+  AssertEquals('Opts-Cnt', ExpUnloadedCount, AnOpts.DebuggerPropertiesConfigList.Unloaded.Count);
 end;
 
 procedure TTestXmlOpts.TestHasEntry(AnOpts: TTestDebuggerOptions; ExpName,
-  ExpClass: String; ExpActive: Boolean; ExpPath: String; ExpUUID: String);
+  ExpClass: String; ExpActive: Boolean; ExpPath: String; ExpUUID: String;
+  ExpLoaded: Boolean);
 var
   e: TDebuggerPropertiesConfig;
 begin
   if ExpName = #1 then begin
-    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByNameAndClass('', ExpClass));
-    e := AnOpts.EntryByNameAndClass('', ExpClass);
+    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByNameAndClass('', ExpClass, not ExpLoaded));
+    AssertEquals('Opt Has Entry', 0, AnOpts.EntryCntByNameAndClass('', ExpClass, ExpLoaded));
+    e := AnOpts.EntryByNameAndClass('', ExpClass, not ExpLoaded);
   end
   else
   if ExpName = '' then begin
     // Unnamed Entry for class => and NO other entries by that class
-    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByClass(ExpClass));
-    e := AnOpts.EntryByClass(ExpClass);
+    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByClass(ExpClass, not ExpLoaded));
+    AssertEquals('Opt Has Entry', 0, AnOpts.EntryCntByClass(ExpClass, ExpLoaded));
+    e := AnOpts.EntryByClass(ExpClass, not ExpLoaded);
     AssertEquals('name', '', e.ConfigName);
   end
   else begin
-    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByName(ExpName));
-    e := AnOpts.EntryByName(ExpName);
+    AssertEquals('Opt Has Entry', 1, AnOpts.EntryCntByName(ExpName, not ExpLoaded));
+    AssertEquals('Opt Has Entry', 0, AnOpts.EntryCntByName(ExpName, ExpLoaded));
+    e := AnOpts.EntryByName(ExpName, not ExpLoaded);
   end;
 
   AssertEquals('class', ExpClass, e.ConfigClass);
@@ -577,9 +652,10 @@ begin
 end;
 
 procedure TTestXmlOpts.TestHasClassEntry(AnOpts: TTestDebuggerOptions;
-  ExpClass: String; ExpActive: Boolean; ExpPath: String; ExpUUID: String);
+  ExpClass: String; ExpActive: Boolean; ExpPath: String; ExpUUID: String;
+  ExpLoaded: Boolean);
 begin
-  TestHasEntry(AnOpts, #1, ExpClass, ExpActive, ExpPath, ExpUUID );
+  TestHasEntry(AnOpts, #1, ExpClass, ExpActive, ExpPath, ExpUUID, ExpLoaded);
 end;
 
 procedure TTestXmlOpts.TestEntryCnt(AnXml: TXMLDocument; ExpCount: Integer);
@@ -655,12 +731,12 @@ begin
 //WriteLn(SaveDbgOpts(opts));
 //WriteLn(SaveEnvOpts);
 
-  TestEntryCnt(opts, 5);
+  TestEntryCnt(opts, 4, 1);
   TestHasEntry(opts, 'abc1', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-1');
   TestHasEntry(opts, 'abc2', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-2');
   TestHasEntry(opts, 'abc3', 'TTestDebuggerBackendAbc', True,  'abc3.exe', 'U-3');
   TestHasEntry(opts, 'foo1', 'TTestDebuggerBackendFoo', False, 'foo.exe',  'U-4');
-  TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5');
+  TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5', False);
 
 
   xml := ParseXml(SaveDbgOpts(opts));
@@ -700,10 +776,10 @@ begin
   InitEnvOpts(ConfigEnv1_8(NoDataForDefault));
   opts := InitDbgOpts(CONF_EMPTY);
 
-  TestEntryCnt(opts, 4);
+  TestEntryCnt(opts, 3, 1);
   TestHasEntry(opts, '', 'TTestDebuggerBackendBar', False, '');
   TestHasEntry(opts, '', 'TTestDebuggerBackendAbc', True,  'C:\gdb.exe');
-  TestHasEntry(opts, '', 'TUnknownDebuggerBackend', False, '');
+  TestHasEntry(opts, '', 'TUnknownDebuggerBackend', False, '', '', False);
   TestHasEntry(opts, '', 'TTestDebuggerBackendFoo', False, '');
 
 
@@ -748,21 +824,21 @@ begin
   InitEnvOpts(ConfigEnv_Mixed(OldDefault, NoOldClassAttr));
   opts := InitDbgOpts(CONF_EMPTY);
 
-  TestEntryCnt(opts, 11);
+  TestEntryCnt(opts, 7, 4);
   TestHasEntry(opts, 'abc1', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-1');
   TestHasEntry(opts, 'abc2', 'TTestDebuggerBackendAbc', not OldDefault,  'abc.exe',  'U-2');
   TestHasEntry(opts, 'abc3', 'TTestDebuggerBackendAbc', False, 'abc3.exe', 'U-3');
   TestHasEntry(opts, 'foo1', 'TTestDebuggerBackendFoo', False, 'foo.exe',  'U-4');
-  TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5');
-  TestHasEntry(opts, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6');
+  TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5', False);
+  TestHasEntry(opts, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6', False);
 
   TestHasClassEntry(opts, 'TTestDebuggerBackendBar', False, 'mixbar', 'M-U1');
   if NoOldClassAttr then
     TestHasClassEntry(opts, 'TTestDebuggerBackendAbc', False, '')
   else
     TestHasClassEntry(opts, 'TTestDebuggerBackendAbc', OldDefault,  'C:\gdb.exe');
-  TestHasClassEntry(opts, 'TUnknownDebuggerBackend', False, '');
-  TestHasClassEntry(opts, 'TOtherDebuggerBackend', False, '');
+  TestHasClassEntry(opts, 'TUnknownDebuggerBackend', False, '', '', False);
+  TestHasClassEntry(opts, 'TOtherDebuggerBackend', False, '', '', False);
   TestHasClassEntry(opts, 'TTestDebuggerBackendFoo', False, 'mixfoo', 'M-U2');
 
 
@@ -820,6 +896,88 @@ begin
   end;
 end;
 
+procedure TTestXmlOpts.TestLoadEnvNewUnknowActive;
+var
+  opts: TTestDebuggerOptions;
+  xml: TXMLDocument;
+begin
+  InitEnvOpts(ConfigEnvNewUnknowActive);
+  opts := InitDbgOpts(CONF_EMPTY);
+
+  TestEntryCnt(opts, 4, 2);
+  TestHasEntry(opts, 'abc1', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-1');
+  TestHasEntry(opts, 'abc2', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-2');
+  TestHasEntry(opts, 'abc3', 'TTestDebuggerBackendAbc', False,  'abc3.exe', 'U-3');
+  TestHasEntry(opts, 'foo1', 'TTestDebuggerBackendFoo', False, 'foo.exe',  'U-4');
+  TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', True, 'any.exe',  'U-5', False);
+  TestHasEntry(opts, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6', False);
+
+
+  xml := ParseXml(SaveDbgOpts(opts));
+  TestEntryCnt(xml, 6);
+
+  TestHasEntry(xml, 'abc1', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-1');
+  TestHasEntry(xml, 'abc2', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-2');
+  TestHasEntry(xml, 'abc3', 'TTestDebuggerBackendAbc', False,  'abc3.exe', 'U-3');
+  TestHasEntry(xml, 'foo1', 'TTestDebuggerBackendFoo', False, 'foo.exe',  'U-4');
+  TestHasEntry(xml, 'xxx0', 'TUnknownDebuggerBackend', True, 'any.exe',  'U-5');
+  TestHasEntry(xml, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6');
+
+  TestHasEntryWithoutProps(xml, 'abc1');
+
+  TestHasEntryProps(xml, 'abc2', 'AbcVal',  '123');
+  TestHasEntryProps(xml, 'abc2', 'AbcProp',  'True');
+
+  TestHasEntryWithoutProps(xml, 'abc3');
+
+  TestHasEntryProps(xml, 'foo1', 'FooProp',  '987');
+
+  TestHasEntryProps(xml, 'xxx0', 'SomeProp',  '100');
+  TestHasEntryProps(xml, 'xxx0', 'SomeVal',  'False');
+  TestHasEntryProps(xml, 'xxx0', 'SomeTxt',  '');
+
+  xml.Destroy;
+  opts.Free;
+end;
+
+procedure TTestXmlOpts.TestLoadEnvOldUnknowActive;
+var
+  opts: TTestDebuggerOptions;
+  xml: TXMLDocument;
+begin
+  InitEnvOpts(ConfigEnv1_8_UnknownActive);
+  opts := InitDbgOpts(CONF_EMPTY);
+
+  TestEntryCnt(opts, 3, 1);
+  TestHasEntry(opts, '', 'TTestDebuggerBackendBar', False, '');
+  TestHasEntry(opts, '', 'TTestDebuggerBackendAbc', False,  '');
+  TestHasEntry(opts, '', 'TUnknownDebuggerBackend', True, 'C:\gdb.exe', '', False);
+  TestHasEntry(opts, '', 'TTestDebuggerBackendFoo', False, '');
+
+
+  xml := ParseXml(SaveDbgOpts(opts));
+  TestEntryCnt(xml, 4);
+
+  TestHasEntry(xml, '', 'TTestDebuggerBackendBar', False, '');
+  TestHasEntry(xml, '', 'TTestDebuggerBackendAbc', False,  '');
+  TestHasEntry(xml, '', 'TUnknownDebuggerBackend', True, 'C:\gdb.exe');
+  TestHasEntry(xml, '', 'TTestDebuggerBackendFoo', False, '');
+
+  TestHasClassOnlyEntryWithoutProps(xml, 'TTestDebuggerBackendBar');
+
+  TestHasClassOnlyEntryProps(xml, 'TTestDebuggerBackendAbc', 'AbcVal',  '123');
+  TestHasClassOnlyEntryProps(xml, 'TTestDebuggerBackendAbc', 'AbcProp',  'True');
+
+  TestHasClassOnlyEntryProps(xml, 'TTestDebuggerBackendFoo', 'FooProp',  '987');
+
+  TestHasClassOnlyEntryProps(xml, 'TUnknownDebuggerBackend', 'SomeProp',  '100');
+  TestHasClassOnlyEntryProps(xml, 'TUnknownDebuggerBackend', 'SomeVal',  'False');
+  TestHasClassOnlyEntryProps(xml, 'TUnknownDebuggerBackend', 'SomeTxt',  '');
+
+  xml.Destroy;
+  opts.Free;
+end;
+
 procedure TTestXmlOpts.TestLoadFromDbg;
 var
   opts: TTestDebuggerOptions;
@@ -834,7 +992,7 @@ begin
     end;
     opts := InitDbgOpts(ConfigDbgNewOne);
 
-    TestEntryCnt(opts, 1);
+    TestEntryCnt(opts, 1, 0);
     TestHasEntry(opts, 'new', 'TTestDebuggerBackendAbc', True, 'new.exe',  'U-99');
 
     xml := ParseXml(SaveDbgOpts(opts));
@@ -861,20 +1019,21 @@ begin
       2: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('abc2'));
       3: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('abc3'));
       4: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('foo1'));
-      5: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('xxx0'));
-      6: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('xxx1'));
+      5: opts.DebuggerPropertiesConfigList.Unloaded.Delete(opts.DebuggerPropertiesConfigList.Unloaded.IndexOf('xxx0'));
+      6: opts.DebuggerPropertiesConfigList.Unloaded.Delete(opts.DebuggerPropertiesConfigList.Unloaded.IndexOf('xxx1'));
       7: opts.DebuggerPropertiesConfigList.Delete(opts.DebuggerPropertiesConfigList.IndexOf('zbar'));
     end;
 
-    if i = 0 then TestEntryCnt(opts, 7)
-    else          TestEntryCnt(opts, 6);
+    if i = 0           then TestEntryCnt(opts, 5, 2)
+    else if i in [5,6] then TestEntryCnt(opts, 5, 1)
+    else                    TestEntryCnt(opts, 4, 2);
 
     if i <> 1 then TestHasEntry(opts, 'abc1', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-1');
     if i <> 2 then TestHasEntry(opts, 'abc2', 'TTestDebuggerBackendAbc', False, 'abc.exe',  'U-2');
     if i <> 3 then TestHasEntry(opts, 'abc3', 'TTestDebuggerBackendAbc', True,  'abc3.exe', 'U-3');
     if i <> 4 then TestHasEntry(opts, 'foo1', 'TTestDebuggerBackendFoo', False, 'foo.exe',  'U-4');
-    if i <> 5 then TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5');
-    if i <> 6 then TestHasEntry(opts, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6');
+    if i <> 5 then TestHasEntry(opts, 'xxx0', 'TUnknownDebuggerBackend', False, 'any.exe',  'U-5', False);
+    if i <> 6 then TestHasEntry(opts, 'xxx1', 'TNotFoundDebuggerBackend', False, 'no.exe',  'U-6', False);
     if i <> 7 then TestHasEntry(opts, 'zbar',  'TTestDebuggerBackendBar', False, 'bar.exe',  'U-7');
 
     xml := ParseXml(SaveDbgOpts(opts));

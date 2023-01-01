@@ -59,30 +59,51 @@ type
     property UID: String read FUID write FUID;
   end;
 
-  { TDebuggerPropertiesConfigList }
+  { TDebuggerPropertiesConfigListBase }
 
-  TDebuggerPropertiesConfigList = class(TStringListUTF8Fast)
-  private const
-    XML_PATH_DEBUGGER_CONF     = 'Config[%d]/';
-    XML_PATH_DEBUGGER_CONF_OLD = 'Class%s/';
+  TDebuggerPropertiesConfigListBase = class(TStringListUTF8Fast)
   private
-    FHasActiveDebuggerEntry: Boolean;
-    FKnownDebuggerClassCount: Integer;
     FCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig; // Active entry, if loaded (if class was found, and is supported)
 
     function GetOpt(Index: Integer): TDebuggerPropertiesConfig;
-    procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
   public
     constructor Create;
-    procedure LoadFromXml(AXMLCfg: TRttiXMLConfig; APath: String);
-    procedure LoadFromOldXml(AXMLCfg: TRttiXMLConfig; APath: String; AnOldFileNamePath: String = '');
-    procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String; AForceSaveEmpty: Boolean = False);
 
     function EntryByName(AConfName, AConfClass: String): TDebuggerPropertiesConfig;
     function EntryByUid(AnUid: String): TDebuggerPropertiesConfig;
     property Opt[Index: Integer]: TDebuggerPropertiesConfig read GetOpt;
+    property CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read FCurrentDebuggerPropertiesConfig;
+  end;
+
+  { TDebuggerPropertiesConfigList }
+
+  TDebuggerPropertiesConfigList = class(TDebuggerPropertiesConfigListBase)
+  private const
+    XML_PATH_DEBUGGER_CONF     = 'Config[%d]/';
+    XML_PATH_DEBUGGER_CONF_OLD = 'Class%s/';
+  private
+    FForcedUnsuitableClass: TDebuggerClass;
+    FHasActiveDebuggerEntry: Boolean;
+    FKnownDebuggerClassCount: Integer;
+    FUnsuitable, FUnloaded: TDebuggerPropertiesConfigListBase;
+
+    function  GetListForEntry(AnEntry: TDebuggerPropertiesConfig): TDebuggerPropertiesConfigListBase;
+    procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
+    procedure AddEntry(AnEntry: TDebuggerPropertiesConfig);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; override;
+    procedure LoadFromXml(AXMLCfg: TRttiXMLConfig; APath: String);
+    procedure LoadFromOldXml(AXMLCfg: TRttiXMLConfig; APath: String; AnOldFileNamePath: String = '');
+    procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String; AForceSaveEmpty: Boolean = False);
+
     property HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
     property CurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig read FCurrentDebuggerPropertiesConfig write SetCurrentDebuggerPropertiesOpt;
+
+    property Unsuitable: TDebuggerPropertiesConfigListBase read FUnsuitable;
+    property Unloaded: TDebuggerPropertiesConfigListBase read FUnloaded;
+    property ForcedUnsuitableClass: TDebuggerClass read FForcedUnsuitableClass;
   end;
 
   { TDebuggerOptions }
@@ -463,27 +484,106 @@ end;
 //  end;
 //end;
 
-{ TDebuggerPropertiesConfigList }
+{ TDebuggerPropertiesConfigListBase }
 
-function TDebuggerPropertiesConfigList.GetOpt(Index: Integer): TDebuggerPropertiesConfig;
+function TDebuggerPropertiesConfigListBase.GetOpt(Index: Integer
+  ): TDebuggerPropertiesConfig;
 begin
   Result := TDebuggerPropertiesConfig(Objects[Index]);
+end;
+
+constructor TDebuggerPropertiesConfigListBase.Create;
+begin
+  inherited Create;
+  OwnsObjects := True;
+
+end;
+
+function TDebuggerPropertiesConfigListBase.EntryByName(AConfName,
+  AConfClass: String): TDebuggerPropertiesConfig;
+var
+  i: Integer;
+  dpCfg: TDebuggerPropertiesConfig;
+begin
+  Result := nil;
+  i := Count - 1;
+  while i >= 0 do begin
+    dpCfg := Opt[i];
+    if dpCfg.IsLoaded
+    and (dpCfg.ConfigName = AConfName)
+    and (dpCfg.ConfigClass = AConfClass) then
+      Break;
+    dec(i);
+  end;
+  if i >= 0 then
+    Result := dpCfg;
+end;
+
+function TDebuggerPropertiesConfigListBase.EntryByUid(AnUid: String
+  ): TDebuggerPropertiesConfig;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := Count - 1;
+  while (i >= 0) and (Opt[i].UID <> AnUid) do
+    dec(i);
+  if i >= 0 then
+    Result := Opt[i];
+end;
+
+{ TDebuggerPropertiesConfigList }
+
+function TDebuggerPropertiesConfigList.GetListForEntry(
+  AnEntry: TDebuggerPropertiesConfig): TDebuggerPropertiesConfigListBase;
+begin
+  Result := Self;
+  if not AnEntry.IsLoaded then begin
+    if (AnEntry.DebuggerClass <> nil) and (dfNotSuitableForOsArch in AnEntry.DebuggerClass.SupportedFeatures) then
+      Result := FUnsuitable
+    else
+      Result := FUnloaded;
+  end;
 end;
 
 procedure TDebuggerPropertiesConfigList.SetCurrentDebuggerPropertiesOpt(
   AValue: TDebuggerPropertiesConfig);
 begin
   if FCurrentDebuggerPropertiesConfig = AValue then Exit;
-
+  assert(AValue.IsLoaded, 'TDebuggerPropertiesConfigList.SetCurrentDebuggerPropertiesOpt: AValue.IsLoaded');
   if (AValue <> nil) and (IndexOfObject(AValue) < 0) then
-    AddObject(AValue.ConfigName, AValue);
+    AddEntry(AValue);
   FCurrentDebuggerPropertiesConfig := AValue;
+end;
+
+procedure TDebuggerPropertiesConfigList.AddEntry(
+  AnEntry: TDebuggerPropertiesConfig);
+begin
+  GetListForEntry(AnEntry).AddObject(AnEntry.ConfigName, AnEntry);
+
+  if AnEntry.IsLoaded and (dfNotSuitableForOsArch in AnEntry.DebuggerClass.SupportedFeatures) then
+    FForcedUnsuitableClass := AnEntry.DebuggerClass;
 end;
 
 constructor TDebuggerPropertiesConfigList.Create;
 begin
+  FUnsuitable := TDebuggerPropertiesConfigListBase.Create;
+  FUnloaded := TDebuggerPropertiesConfigListBase.Create;
   inherited Create;
-  OwnsObjects := True;
+end;
+
+destructor TDebuggerPropertiesConfigList.Destroy;
+begin
+  inherited Destroy;
+  FUnsuitable.Free;
+  FUnloaded.Free;
+end;
+
+procedure TDebuggerPropertiesConfigList.Clear;
+begin
+  inherited Clear;
+  FUnsuitable.Clear;
+  FUnloaded.Clear;
 end;
 
 procedure TDebuggerPropertiesConfigList.LoadFromXml(AXMLCfg: TRttiXMLConfig;
@@ -503,15 +603,16 @@ begin
 
   Clear;
   FCurrentDebuggerPropertiesConfig := nil;
+  FForcedUnsuitableClass := nil;
 
   ConfCount := AXMLCfg.GetListItemCount(APath, 'Config', False);
   for i := 1 to ConfCount do begin
     Entry := TDebuggerPropertiesConfig.CreateFromXmlConf(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF, i, FCurrentDebuggerPropertiesConfig<>nil);
-    AddObject(Entry.ConfigName, Entry);
+    AddEntry(Entry);
     if Entry.Active then begin
       HasActiveDebuggerEntry := True;
-      if Entry.IsLoaded and (FCurrentDebuggerPropertiesConfig = nil) then
-        FCurrentDebuggerPropertiesConfig := Entry;
+      if GetListForEntry(Entry).FCurrentDebuggerPropertiesConfig = nil then
+        GetListForEntry(Entry).FCurrentDebuggerPropertiesConfig := Entry;
     end;
   end;
 end;
@@ -561,13 +662,13 @@ begin
 
         if IsEntryForCurrentClass then begin
           ActiveClassName := '';
-          if Entry.IsLoaded and Entry.Active then
-            FCurrentDebuggerPropertiesConfig := Entry;
+          if GetListForEntry(Entry).FCurrentDebuggerPropertiesConfig = nil then
+            GetListForEntry(Entry).FCurrentDebuggerPropertiesConfig := Entry;
           if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
             Entry.DebuggerFilename := CurFilename;
         end;
 
-        AddObject(Entry.ConfigName, Entry);
+        AddEntry(Entry);
       end;
     end;
 
@@ -576,10 +677,9 @@ begin
       if (Entry.DebuggerFilename = '') and (Entry.NeedsExePath or (not Entry.IsLoaded)) then
         Entry.DebuggerFilename := CurFilename;
 
-      AddObject(Entry.ConfigName, Entry);
+      AddEntry(Entry);
       assert(FCurrentDebuggerPropertiesConfig=nil, 'TDebuggerPropertiesConfigList.LoadFromOldXml: FCurrentDebuggerPropertiesConfig=nil');
-      if Entry.IsLoaded then
-        FCurrentDebuggerPropertiesConfig := Entry;
+      GetListForEntry(Entry).FCurrentDebuggerPropertiesConfig := Entry;
     end;
   end;
 end;
@@ -603,41 +703,24 @@ begin
     inc(Idx);
   end;
 
+  for i := 0 to FUnloaded.Count - 1 do begin
+    Entry := FUnloaded.Opt[i];
+    Entry.Active := (FCurrentDebuggerPropertiesConfig = nil) and
+                    (Entry = FUnloaded.FCurrentDebuggerPropertiesConfig);
+    Entry.SaveToXml(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF, Idx);
+    inc(Idx);
+  end;
+  for i := 0 to FUnsuitable.Count - 1 do begin
+    Entry := FUnsuitable.Opt[i];
+    Entry.Active := (FCurrentDebuggerPropertiesConfig = nil) and
+                    (FUnloaded.FCurrentDebuggerPropertiesConfig = nil) and
+                    (Entry = FUnsuitable.FCurrentDebuggerPropertiesConfig);
+    Entry.SaveToXml(AXMLCfg, APath + XML_PATH_DEBUGGER_CONF, Idx);
+    inc(Idx);
+  end;
+
   if (Count > 0) or AForceSaveEmpty then
     AXMLCfg.SetValue(APath+'Version', 1);
-end;
-
-function TDebuggerPropertiesConfigList.EntryByName(AConfName, AConfClass: String
-  ): TDebuggerPropertiesConfig;
-var
-  i: Integer;
-  dpCfg: TDebuggerPropertiesConfig;
-begin
-  Result := nil;
-  i := Count - 1;
-  while i >= 0 do begin
-    dpCfg := Opt[i];
-    if dpCfg.IsLoaded
-    and (dpCfg.ConfigName = AConfName)
-    and (dpCfg.ConfigClass = AConfClass) then
-      Break;
-    dec(i);
-  end;
-  if i >= 0 then
-    Result := dpCfg;
-end;
-
-function TDebuggerPropertiesConfigList.EntryByUid(AnUid: String
-  ): TDebuggerPropertiesConfig;
-var
-  i: Integer;
-begin
-  Result := nil;
-  i := Count - 1;
-  while (i >= 0) and (Opt[i].UID <> AnUid) do
-    dec(i);
-  if i >= 0 then
-    Result := Opt[i];
 end;
 
 { TDebuggerOptions }

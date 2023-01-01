@@ -332,7 +332,10 @@ begin
   List := TStringListUTF8Fast.Create;
   for i := 0 to TBaseDebugManagerIntf.DebuggerCount - 1 do begin
     d := TBaseDebugManagerIntf.Debuggers[i];
-    if dfNotSuitableForOsArch in d.SupportedFeatures then
+    if (dfNotSuitableForOsArch in d.SupportedFeatures) and
+       ( (DebuggerOptions.DebuggerPropertiesConfigList.ForcedUnsuitableClass = nil) or
+         ( d <> DebuggerOptions.DebuggerPropertiesConfigList.ForcedUnsuitableClass) )
+    then
       continue;
     List.AddObject(d.Caption, TObject(d));
   end;
@@ -569,16 +572,14 @@ begin
   tbSelect.DropdownMenu := tbDropMenu;
   {$ENDIF}
   tbDropMenu.Items.Clear;
-  for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do
-    if (FCopiedDbgPropertiesConfigList.Opt[i].IsLoaded)
-    then begin
-      m := TMenuItem.Create(tbDropMenu);
-      m.Caption := FCopiedDbgPropertiesConfigList.Opt[i].DisplayName;
-      m.Tag := i;
-      m.OnClick := @DoNameSelected;
-      m.Checked := FCopiedDbgPropertiesConfigList.Opt[i] = FSelectedDbgPropertiesConfig;
-      tbDropMenu.Items.Add(m);
-    end;
+  for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do begin
+    m := TMenuItem.Create(tbDropMenu);
+    m.Caption := FCopiedDbgPropertiesConfigList.Opt[i].DisplayName;
+    m.Tag := i;
+    m.OnClick := @DoNameSelected;
+    m.Checked := FCopiedDbgPropertiesConfigList.Opt[i] = FSelectedDbgPropertiesConfig;
+    tbDropMenu.Items.Add(m);
+  end;
   if FSelectedDbgPropertiesConfig <> nil then
     tbSelect.Caption := FSelectedDbgPropertiesConfig.DisplayName
   else
