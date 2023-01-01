@@ -36,17 +36,17 @@ type
     function GetBrushAsXMLStyle(ABrush: TvBrush): String;
     function GetGradientBrushAsXML(ABrush: TvBrush): String;
     function GetPenAsXMLStyle(APen: TvPen): String;
-    procedure PrepareGradients(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure PrepareGradients(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage);
 
     procedure WriteDocumentSize(AStrings: TStrings; AData: TvVectorialDocument);
-    procedure WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
+    procedure WriteDocumentName(AStrings: TStrings; {%H-}AData: TvVectorialDocument);
     procedure WriteViewBox(AStrings: TStrings; AData: TvVectorialDocument);
 
     // Writing of svg entities
-    procedure WriteCircle(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure WriteCircle(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; ACircle: TvCircle);
-    procedure WriteEllipse(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure WriteEllipse(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; AEllipse: TvEllipse);
     procedure WriteEntities(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage);
@@ -56,13 +56,13 @@ type
       APage: TvVectorialPage; ALayer: Tvlayer);
     procedure WriteParagraph(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; AParagraph: TvParagraph);
-    procedure WritePath(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure WritePath(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; APath: TPath);
-    procedure WritePolygon(AStrings: TStrings;ADoc: TvVectorialDocument;
+    procedure WritePolygon(AStrings: TStrings;{%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; APolygon: TvPolygon);
-    procedure WriteRectangle(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure WriteRectangle(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; ARectangle: TvRectangle);
-    procedure WriteText(AStrings: TStrings; ADoc: TvVectorialDocument;
+    procedure WriteText(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; AText: TvText);
     {
     procedure WriteLayer(layer: TvLayer; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -87,7 +87,7 @@ const
   // 90 inches per pixel = (1 / 90) * 25.4 = 0.2822
   // FLOAT_MILLIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
 
-  FLOAT_MILLIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
+//  FLOAT_MILLIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
   FLOAT_PIXELS_PER_MILLIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
 
 
@@ -223,8 +223,6 @@ procedure TvSVGVectorialWriter.PrepareGradients(AStrings: TStrings;
   ADoc: TvVectorialDocument; APage: TvVectorialPage);
 
   procedure ProcessGradient(ABrush: TvBrush);
-  var
-    gradient: String;
   begin
     if FGradientIndex = 0 then
       AStrings.Add('  <defs>');
@@ -280,7 +278,10 @@ end;
 procedure TvSVGVectorialWriter.WriteViewbox(AStrings: TStrings;
   AData: TvVectorialDocument);
 var
-  x, y, w, h: Double;
+  x: Double = 0.0;
+  y: Double = 0.0;
+  w: Double = 0.0;
+  h: Double = 0.0;
 begin
   x := 0;
   y := 0;
@@ -291,7 +292,10 @@ end;
 procedure TvSVGVectorialWriter.WriteCircle(AStrings: TStrings;
   ADoc: TvVectorialDocument; APage: TvVectorialPage; ACircle: TvCircle);
 var
-  cx, cy, cr, dtmp: double;
+  cx: Double = 0.0;
+  cy: Double = 0.0;
+  cr: Double = 0.0;
+  dtmp: double = 0.0;
   circleStr: string;
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, ACircle.X, ACircle.Y, cx, cy);
@@ -308,7 +312,10 @@ end;
 procedure TvSVGVectorialWriter.WriteEllipse(AStrings: TStrings;
   ADoc: TvVectorialDocument; APage: TvVectorialPage; AEllipse: TvEllipse);
 var
-  cx, cy, rx, ry: double;
+  cx: Double = 0.0;
+  cy: Double = 0.0;
+  rx: Double = 0.0;
+  ry: double = 0.0;
   ellipseStr: string;
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AEllipse.X, AEllipse.Y, cx, cy);
@@ -419,9 +426,6 @@ procedure TvSVGVectorialWriter.WritePath(AStrings: TStrings;
 var
   j: Integer;
   PathStr: string;
-  PtX, PtY, OldPtX, OldPtY: double;
-  BezierCP1X, BezierCP1Y, BezierCP2X, BezierCP2Y: double;
-  cx, cy, rx, ry, phi: Double;
   t1, t2: Double;
   x1,y1,x2,y2: Double;
   sweep, longarc: Integer;
@@ -430,6 +434,18 @@ var
   l2DBSegment: T2DBezierSegment absolute segment;
   l2DArcSegment: T2dEllipticalArcSegment absolute segment;
   styleStr: string;
+  OldPtX, OldPtY: double;
+  phi: Double;
+  cx: Double = 0.0;
+  cy: Double = 0.0;
+  rx: Double = 0.0;
+  ry: Double = 0.0;
+  PtX: Double = 0.0;
+  PtY: Double = 0.0;
+  BezierCP1X: Double = 0.0;
+  BezierCP1Y: Double = 0.0;
+  BezierCP2X: Double = 0.0;
+  BezierCP2Y: double = 0.0;
 begin
   OldPtX := 0;
   OldPtY := 0;
@@ -537,8 +553,9 @@ procedure TvSVGVectorialWriter.WritePolygon(AStrings: TStrings;
 var
   pointsStr: String;
   styleStr: String;
-  ptX, ptY: Double;
   i: Integer;
+  ptX: Double = 0.0;
+  ptY: Double = 0.0;
 begin
   // Collect point coordinates in a string as x,y pairs
   pointsStr := '';
@@ -564,7 +581,12 @@ end;
 procedure TvSVGVectorialWriter.WriteRectangle(AStrings: TStrings;
   ADoc: TvVectorialDocument; APage: TvVectorialPage; ARectangle: TvRectangle);
 var
-  cx, cy, w, h, rx, ry: double;
+  cx: Double = 0.0;
+  cy: Double = 0.0;
+  w: Double = 0.0;
+  h: Double = 0.0;
+  rx: Double = 0.0;
+  ry: Double = 0.0;
   rectStr: string;
   styleStr: String;
 begin
@@ -593,10 +615,16 @@ const
 var
   FontSize: Double;
   TextStr: String;
-  PtX, PtY: double;
+  PtX: Double = 0.0;
+  PtY: double = 0.0;
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AText.X, AText.Y, PtX, PtY);
   TextStr := AText.Value.Text;
+  if DefaultTextLineBreakStyle = tlbsCRLF then    // Trim extra CRLF appended by TStringList.Text
+    TextStr := Copy(TextStr, 1, Length(TextStr) - 2)
+  else
+    TextStr := Copy(TextStr, 1, Length(TextStr) - 1);
+
   FontSize:= AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER;
 
   AStrings.Add('  <text ');
