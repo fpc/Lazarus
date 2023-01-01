@@ -428,8 +428,6 @@ Starting value for control message constants defined in the LCL.
 <short>Control notification message constant.</short>
 </element>
 
-<!-- Added or modified in 43d7f203. -->
-
 <element name="mrNone">
 <short>
 Modal dialog exited with the None button.
@@ -1082,7 +1080,7 @@ System.UITypes for FPC 3.3.0 or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.TAnchorSideReference">TAnchorSideReference</link>
 -->
 </seealso>
@@ -1108,7 +1106,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akLeft">akLeft</link>
 -->
 </seealso>
@@ -1125,7 +1123,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akTop">akTop</link>
 -->
 </seealso>
@@ -1142,7 +1140,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akRight">akRight</link>
 -->
 </seealso></element>
@@ -1158,7 +1156,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akBottom">akBottom</link>
 -->
 </seealso>
@@ -1175,7 +1173,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrTop">asrTop</link>
 -->
 </seealso>
@@ -1192,7 +1190,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrBottom">asrBottom</link>
 -->
 </seealso>
@@ -1209,7 +1207,7 @@ higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrCenter">asrCenter</link>
 -->
 </seealso>
@@ -1468,7 +1466,7 @@ System.UITypes for FPC 3.3.0 or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.  
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.TMouseButton">TMouseButton</link> 
 -->
 </seealso>
@@ -1508,7 +1506,7 @@ or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbLeft">mbLeft</link> 
 -->
 </seealso>
@@ -1525,7 +1523,7 @@ or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbRight">mbRight</link> 
 -->
 </seealso>
@@ -1542,7 +1540,7 @@ or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbMiddle">mbMiddle</link> 
 -->
 </seealso>
@@ -1559,7 +1557,7 @@ or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbExtra1">mbExtra1</link> 
 -->
 </seealso>
@@ -1576,7 +1574,7 @@ or higher.
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documentation.
+Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbExtra2">mbExtra2</link> 
 -->
 </seealso>
@@ -3360,7 +3358,7 @@ Modified in LCL 2.4 to be ab alias to TDragKind in System.UITypes for FPC
 <seealso>
 <link id="TControl.DragKind"/>
 <!-- 
-Uncomment when the topic exists in RTL documentation.  
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragKind">TDragKind</link> 
 -->
 </seealso>
@@ -3383,7 +3381,7 @@ Modified in LCL 2.4 to be an alias to TDragMode in System.UITypes for FPC
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragMode">TDragMode</link> 
 -->
 </seealso>
@@ -3411,7 +3409,7 @@ Modified in LCL 2.4 to be an alias to TDragState in System.UITypes for FPC
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragState">TDragState</link> 
 -->
 </seealso>
@@ -3454,7 +3452,7 @@ Modified in LCL 2.4 to be an alias to TDragMessage in System.UITypes for FPC
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in RTL documentation.
+Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragMessage">TDragMessage</link> 
 -->
 </seealso>
@@ -5180,7 +5178,6 @@ dock manager.
 <short>Control examined in the method.</short>
 </element>
 
-<!-- TODO: This needs more information.-->
 <element name="TDockManager.CanBeDoubleDocked">
 <short/>
 <descr>
@@ -5359,8 +5356,14 @@ Holds maximum and minimum values that can be used in sizing objects.
 </element>
 
 <element name="TSizeConstraints.SetInterfaceConstraints">
-<short>Used by the interface to set the interface constraints.</short>
-<descr>Should only be used by custom components, not by applications.</descr>
+<short>
+Used by the LCL interface to set the widgetset constraints.
+</short>
+<descr>
+<p>
+Should only be used by custom components, not by applications.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TSizeConstraints.SetInterfaceConstraints.MinW">
@@ -5605,19 +5608,15 @@ controls. TSpacingSize is the type used to implement properties in
 <descr/>
 <seealso/>
 </element>
-
 <element name="TControlCellAlign.ccaFill">
 <short>Causes the cell to fill the available space for the cell.</short>
 </element>
-
 <element name="TControlCellAlign.ccaLeftTop">
 <short>Cell is aligned to the Left and Top coordinates.</short>
 </element>
-
 <element name="TControlCellAlign.ccaRightBottom">
 <short>Cell is aligned to the Right and Bottom coordinates.</short>
 </element>
-
 <element name="TControlCellAlign.ccaCenter">
 <short>Cell is aligned to the center of the its width and height.</short>
 </element>
@@ -5695,7 +5694,7 @@ InnerBorder to the width and height.
 CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
 </dt>
 <dd>
-Used, for example, when the Parents.ChildSizing.Layout defines a table layout.
+Used, for example, when the Parent ChildSizing.Layout defines a table layout.
 </dd>
 </dl>
 </descr>
@@ -6995,7 +6994,7 @@ Modified in LCL 2.4 to be an alias to TTabOrder in System.UITypes for FPC
 </version>
 <seealso>
 <!-- 
-Uncomment when the topic exists in the RTL documenetation.  
+Uncomment when the topic exists in the RTL documenetation. 
 <link id="#rtl.system.uitypes.TTabOrder">TTabOrder</link>
 -->
 </seealso>
@@ -11115,7 +11114,7 @@ control.
 <p>
 If an ancestor control is still loading its child controls, resize and align 
 operations are deferred for the control. Otherwise, the LoadedAll method is 
-called to adjust the sizes and layouts for the control.
+called to adjust the sizes and layout for the control.
 </p>
 </descr>
 <seealso>
@@ -18336,6 +18335,21 @@ See <link id="TChildControlResizeStyle"/> and <link
 id="TControlChildrenLayout"/> for details about the enumeration values used 
 in the properties.
 </p>
+<p>
+Additional information about child sizing and layout can be found on the Lazarus Wiki at:
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/Autosize_/_Layout">
+Autosize / Layout
+(https://wiki.lazarus.freepascal.org/Autosize_/_Layout)
+</url>
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/LCL_AutoSizing">
+LCL AutoSizing
+(https://wiki.lazarus.freepascal.org/LCL_AutoSizing)
+</url>
+</p>
 </descr>
 <seealso>
 <link id="TChildControlResizeStyle"/>
@@ -18378,10 +18392,19 @@ in the properties.
 
 <element name="TControlChildSizing.Change">
 <short>
-Notifies the Control and signals the <var>OnChange</var> handler.
+Notifies the Control of the child sizing changes and signals the OnChange 
+event handler.
 </short>
-<descr/>
+<descr>
+<p>
+The DoChildSizingChange method in Control is called to recalculate the size 
+for its child controls and to realign them. The OnChange event handler is 
+signalled (when assigned) to resize and realign the parent Control.
+</p>
+</descr>
 <seealso>
+<link id="TControlChildSizing.OnChange"/>
+<link id="TControlChildSizing.Control"/>
 <link id="TWinControl.DoChildSizingChange"/>
 </seealso>
 </element>
@@ -18412,7 +18435,45 @@ inherited constructor, and sets the default values for properties including:
 Copies property values from the specified persistent object into the current 
 class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in <var>TControlChildSizing</var> 
+used to copy property values from the persistent object in <var>Source</var> 
+to the corresponding properties in the current class instance. 
+</p>
+<p>
+When Source is derived from TControlChildSizing, the properties specific to 
+the class type are examined and copied. The Change method is called prior to 
+exiting from the procedure.
+</p>
+<p>
+The following property values are copied from Source:
+</p>
+<ul>
+<li>EnlargeHorizontal</li>
+<li>EnlargeVertical</li>
+<li>ShrinkHorizontal</li>
+<li>ShrinkVertical</li>
+<li>EnlargeHorizontal</li>
+<li>EnlargeVertical</li>
+<li>ShrinkHorizontal</li>
+<li>ShrinkVertical</li>
+<li>ControlsPerLine</li>
+<li>Layout</li>
+<li>LeftRightSpacing</li>
+<li>TopBottomSpacing</li>
+<li>HorizontalSpacing</li>
+<li>VerticalSpacing</li>
+</ul>
+<p>
+No actions are performed in the method if the property values from Source have 
+the same values as the properties in the class instance.
+</p>
+<p>
+If Source is not derived from TControlChildSizing, the inherited Assign method 
+is called top copy the values in Source.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TControlChildSizing.Assign.Source">
@@ -18426,11 +18487,22 @@ Persistent object with the property values copied in the method.
 Copies property values from the current class instance to the specified 
 persistent object.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AssignTo</var> calls the Assign method for the object instance in 
+<var>Dest</var> using the current class instance as the source of the values 
+copied in the method.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Assign"/>
+<link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
+</seealso>
 </element>
 <element name="TControlChildSizing.AssignTo.Dest">
-<short>Persistent object where the property values are stored.</short>
+<short>
+Persistent object where the property values are stored.
+</short>
 </element>
 
 <element name="TControlChildSizing.IsEqual">
@@ -18480,9 +18552,26 @@ class instance.
 
 <element name="TControlChildSizing.SetGridSpacing">
 <short>
-Sets all spacing in the class instance to the specified value.
+Sets spacing properties in the class instance to the specified value.
 </short>
-<descr/>
+<descr>
+<p>
+<var>SetGridSpacing</var> is a convenience method used to set the values for 
+the spacing properties to a uniform value. The properties are used when child 
+controls are arranged into rows and columns when the Layout property has a 
+value other than cclNone. 
+</p>
+<p>
+The value in the <var>Spacing</var> argument is stored to the following 
+properties:
+</p>
+<ul>
+<li>LeftRightSpacing</li>
+<li>TopBottomSpacing</li>
+<li>HorizontalSpacing</li>
+<li>VerticalSpacing</li>
+</ul>
+</descr>
 <seealso>
 <link id="TControlChildSizing.LeftRightSpacing"/>
 <link id="TControlChildSizing.TopBottomSpacing"/>
@@ -18498,55 +18587,120 @@ Integer value applied to each of the spacing properties.
 
 <element name="TControlChildSizing.Control">
 <short>
-The <var>Control</var> where the class instance is used.
+The Control where the class instance is used.
 </short>
 <descr>
 <p>
-The value for the property is passed as an argument to the Create constructor.
+<var>Control</var> is a read-only <var>TWinControl</var> property which 
+contains a reference to the control where the TControlChildSizing is used. Its 
+value is passed as the OwnerControl argument in the Create constructor. 
+Control provides access to properties and methods in the parent control used 
+to resize and/or realign its child controls. This occurs in the Change method 
+when property value(s) in the class instance have been changed.
+</p>
+<p>
+Control can also be used in the OnChange event handler as needed, but will 
+likely need to be cast to a descendant class type to access it 
+implementation-specific properties and methods.
 </p>
 </descr>
 <seealso>
 <link id="TControlChildSizing.Create"/>
+<link id="TControlChildSizing.Change"/>
+<link id="TControlChildSizing.OnChange"/>
 </seealso>
 </element>
 
 <element name="TControlChildSizing.ControlsPerLine">
-<short>The number of controls per line.</short>
-<descr/>
-<seealso/>
+<short>
+The number of controls displayed per column or row for the orientation 
+specified in Layout.
+</short>
+<descr>
+<p>
+<var>ControlsPerLine</var> is an <var>Integer</var> property which indicates 
+the number of child controls displayed in a column or row using the Layout for 
+the Control. It is relevant when Layout is set to a value other than cclNone.
+</p>
+<p>
+When Layout is set to cclLeftToRightThenTopToBottomm it indicates the child 
+controls displayed per row. When Layout contains clTopToBottomThenLeftToRight, 
+it indicates the child controls displayed per column. The default value is 0 
+(zero), and indicates that an explicit value has not been assigned to the 
+property and causes the grid Layout to act as if 1 was specified in the 
+property value.
+</p>
+<p>
+Changing the value in ControlsPerLine causes the Change method to be called to 
+resize the child controls on the parent Control and signal the OnChange event 
+handler (when assigned).
+</p>
+<p>
+ControlsPerLine is used in controls like TRadioGroup and TCheckGroup to 
+arrange the radio buttons or check boxes on the control into columns and rows.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Layout"/>
+<link id="TControlChildSizing.Change"/>
+<link id="TControlChildSizing.OnChange"/>
+<link id="TControlChildrenLayout"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.EnlargeHorizontal">
 <short>
-Indicates how child controls are expanded or aligned horizontally in the 
+Indicates how child controls are expanded and/or aligned horizontally on the 
 parent Control.
 </short>
 <descr>
 <p>
 <var>EnlargeHorizontal</var> is a <var>TChildControlResizeStyle</var> property 
-which indicates how child controls are expanded or aligned horizontally in the 
-parent Control.
+which indicates how child controls are expanded or aligned horizontally on the 
+parent Control. The default value for the property is crsAnchorAligning, and 
+indicates that the Anchors, Align, and BorderSpacing properties in the child 
+controls are used - and work like Delphi.
 </p>
+<dl>
+<dt>crsAnchorAligning</dt>
+<dd>
+The Layout and spacing values in the class instance are not used. Instead, 
+properties in the child controls like Align, Anchors, and BorderSpacing are 
+used to resize and align the controls horizontally. Child controls which use 
+the Align property are processed in a specific order: alTop, alBottom, alLeft, 
+and finally alRight.
+</dd>
+<dt>crsHomogenousChildResize</dt>
+<dd>
+Applies a homogeneous width to child controls when Layout is set to a value 
+other than cclNone. The realized width is adjusted for the number of pixels 
+specified in LeftRightSpacing, and the number of rows or columns needed for 
+the setting in ControlsPerLine. 
+</dd>
+<dt>crsHomogenousSpaceResize</dt>
+<dd>
+Applies a uniform number of pixels as horizontal space between child controls 
+on the same row. The number of available pixels is determined by the unused 
+space on the Control and the settings in Layout and ControlsPerLine. An equal 
+number of pixels is applied before, between, and after each column on a given 
+row - including on the left and right edges of the Control. The width of the 
+child controls is not affected.
+</dd>
+<dt>crsScaleChilds</dt>
+<dd>
+Scales child controls so they all have a uniform width. The width for each 
+control is determined by the unused client area for the Control and the Layout 
+and ControlsPerLine properties.
+</dd>
+</dl>
 <p>
-The default value for the property is crsAnchorAligning, and indicates that 
-Anchors and Align work like Delphi.
-</p>
-<p>
-For example: when the Anchors property of the control is [akLeft] it means 
-fixed distance between left border of parent's client area. [akRight] means 
-fixed distance between right border of the control and the right border of the 
-parent's client area. When the parent is resized the child is moved to keep 
-the distance. [akLeft,akRight] means fixed distance to left border and fixed 
-distance to right border. When the parent is resized, the controls width is 
-changed (resized) to keep the left and right distance.
-</p>
-<p>
-See <link id="TChildControlResizeStyle"/> for more information about the 
-values for the property and their meanings.
+The value in EnlargeHorizontal is not used or applied when Layout is set to 
+cclNone.
 </p>
 </descr>
 <seealso>
 <link id="TControlChildSizing.Control"/>
+<link id="TControlChildSizing.Layout"/>
 <link id="TControlChildSizing.EnlargeVertical"/>
 <link id="TChildControlResizeStyle"/>
 </seealso>
@@ -18554,27 +18708,97 @@ values for the property and their meanings.
 
 <element name="TControlChildSizing.EnlargeVertical">
 <short>
-Indicates how child controls are expanded or aligned vertically in the parent 
+Indicates how child controls are expanded or aligned vertically on the parent 
 Control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>EnlargeVertical</var> is a <var>TChildControlResizeStyle</var> property 
+which indicates how child controls are expanded or aligned vertically on the 
+parent Control. The default value for the property is crsAnchorAligning, and 
+indicates that the Anchors, Align, and BorderSpacing properties in the child 
+controls are used - and work like Delphi.
+</p>
+<dl>
+<dt>crsAnchorAligning</dt>
+<dd>
+The Layout and spacing values in the class instance are not used. Instead, 
+properties in the child controls like Align, Anchors, and BorderSpacing are 
+used to resize and align the controls vertically. Child controls which use the 
+Align property are processed in a specific order: alTop, alBottom, alLeft, and 
+finally alRight.
+</dd>
+<dt>crsScaleChilds</dt>
+<dd>
+Scales child controls so they all have a uniform height. The height for each 
+control is determined by the unused client area for the Control and the Layout 
+and ControlsPerLine properties.
+</dd>
+<dt>crsHomogenousChildResize</dt>
+<dd>
+Applies a homogeneous height to child controls when Layout is set to a value 
+other than cclNone. The realized height is adjusted for the number of pixels 
+specified in TopBottomSpacing, and the number of rows or columns needed for 
+the setting in ControlsPerLine. 
+</dd>
+<dt>crsHomogenousSpaceResize</dt>
+<dd>
+Applies a uniform number of pixels as vertical space between child controls 
+in the same column. The number of pixels is determined by the unused space on 
+the Control and the settings in Layout and ControlsPerLine. An equal number of 
+pixels is applied before, between, and after each child control in a given 
+column - including on the top and bottom edges of the Control. The height of 
+the child controls is not affected.
+</dd>
+</dl>
+<p>
+The value in EnlargeVertical is not used or applied when Layout is set to 
+cclNone.
+</p>
+</descr>
 <seealso>
+<link id="TControlChildSizing.Control"/>
+<link id="TControlChildSizing.Layout"/>
+<link id="TControlChildSizing.EnlargeHorizontal"/>
 <link id="TChildControlResizeStyle"/>
 </seealso>
 </element>
 
 <element name="TControlChildSizing.HorizontalSpacing">
 <short>
-Minimum space between children.
+Minimum space between child controls which are horizontally adjacent.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+HorizontalSpacing is the number of pixels reserved as space between 
+horizontally adjacent child controls. It is used when Layout contains a value 
+other than cclNone.
+</p>
+<p>
+Use VerticalSpacing to set the space reserved between vertically adjacent 
+child control.
+</p>
+<p>
+Use TopBottomSpacing to set the space reserved at the top or bottom edge for 
+the Control.
+</p>
+<p>
+Use LeftRightSpacing to set the space reserved at the left or right edge for 
+the Control.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.VerticalSpacing"/>
+<link id="TControlChildSizing.LeftRightSpacing"/>
+<link id="TControlChildSizing.TopBottomSpacing"/>
+<link id="TControlChildSizing.Layout"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.Layout">
 <short>
-Indicates the layout direction when child controls are arranged into rows and 
-/ or columns.
+Indicates the layout direction used when child controls are resized and 
+arranged into rows and / or columns.
 </short>
 <descr>
 <p>
@@ -18585,65 +18809,286 @@ arrange their child controls into columns or rows.
 </p>
 <p>
 The default value for the property is cclNone, and indicates that a layout 
-direction has not been specified. This causes the design-time positioning for 
-the child controls to be used. Use cclLeftToRightThenTopToBottom or 
-cclTopToBottomThenLeftToRight to layout child control in column / row order 
-using the BiDiMode settings for the Control.
+direction has not been specified. This causes the design-time positioning in 
+the Anchors, Align, and BorderSpacing properties for the child controls to be 
+used.
+</p>
+<p>
+Use cclLeftToRightThenTopToBottom or cclTopToBottomThenLeftToRight to 
+layout child controls in column / row order using the BiDiMode settings for 
+the Control. These values also enable use of the spacing and alignment 
+settings in the class including: ControlsPerLine, HorizontalSpacing, 
+VerticalSpacing, TopBottomSpacing, LeftRightSpacing, EnlargeHorizontal, and 
+EnlargeVertical.
 </p>
 <p>
 Changing the value for the property causes the Change method to be called to 
-realign child controls and signal the OnChange event handler (when assigned).
+resize / realign child controls and to signal the OnChange event handler (when 
+assigned).
 </p>
 <p>
-Layout is used in TControl methods like WidthIsAnchored and HeightIsAnchored, and in the AlignControls method in TWinControl.
+Layout is used in TControl methods like WidthIsAnchored and HeightIsAnchored, 
+and in the AlignControls method in TWinControl.
 </p>
 </descr>
 <seealso>
 <link id="TControlChildSizing.Change"/>
 <link id="TControlChildSizing.Control"/>
 <link id="TControlChildSizing.OnChange"/>
+<link id="TControlChildrenLayout"/>
+<link id="TWinControl.AlignControls"/>
 <link id="TControl.HeightIsAnchored"/>
 <link id="TControl.WidthIsAnchored"/>
-<link id="TWinControl.AlignControls"/>
-<link id="TControlChildrenLayout"/>
+<link id="TControl.Align"/>
+<link id="TControl.Anchors"/>
+<link id="TControl.BorderSpacing"/>
 </seealso>
 </element>
 
 <element name="TControlChildSizing.LeftRightSpacing">
-<short>Minimum distance between children and client border.
+<short>
+Minimum distance between the left or right edge for the Control and the left 
+or right edge for a child control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+LeftRightSpacing is an Integer property used to specify the number of pixels 
+reserved at the left and right edges of the Control where the class instance 
+is used. For example: When LeftRightSpacing is set to 5 for the Control, the 
+Left property for a child control cannot be smaller than 5.
+</p>
+<p>
+LeftRightSpacing (and the other spacing properties) are used when Layout 
+contains a value other than cclNone.
+</p>
+<p>
+Use TopBottomSpacing to reserve space on the corresponding edges for the 
+Control.
+</p>
+<p>
+Use HorizontalSpacing and VerticalSpacing to specify the space between child 
+controls when a grid Layout is used.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.TopBottomSpacing"/>
+<link id="TControlChildSizing.HorizontalSpacing"/>
+<link id="TControlChildSizing.VerticalSpacing"/>
+<link id="TControlChildSizing.Layout"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.OnChange">
-<short>Event handler for any change in the data.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled when the size or layout for child controls has been 
+changed.
+</short>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled (when assigned) from the Change method. It occurs after 
+child controls have been resized and/or realigned.
+</p>
+<p>
+The <var>Sender</var> argument is the TControlChildSizing instance for the 
+event notification.
+</p>
+<p>
+In a TWinControl instance, its DoChildSizingChange method is assigned as the 
+default handler routine used in OnChange. It invalidates the preferred sizes 
+for the child controls, and calls their Realign method.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Change"/>
+<link id="TWinControl.DoChildSizingChange"/>
+<link id="TWinControl.Realign"/>
+<link id="TControl.InvalidatePreferredSize"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.ShrinkHorizontal">
-<short>Various ways to fit controls into the available Width.</short>
-<descr/>
-<seealso/>
+<short>
+Various ways to fit controls into the available Width.
+</short>
+<descr>
+<p>
+<var>ShrinkHorizontal</var> is a <var>TChildControlResizeStyle</var> property 
+which indicates if and how child controls are resized and aligned horizontally 
+on the parent control. It can contain one of the values from the 
+TChildControlResizeStyle enumeration.
+</p>
+<p>
+The default value for the property is <var>crsAnchorAligning</var>, and causes 
+the width of child control to be determined using the Anchor and Align 
+properties (like Delphi). For example if Anchors property of the control is 
+[akLeft], it means fixed distance between left border of parent's client area. 
+[akRight] means fixed distance between right border for the control and the 
+right border for the client area on the Parent. 
+</p>
+<p>
+When the parent is resized, the child is moved to keep the defined distances. 
+[akLeft,akRight] means fixed distance to left border and fixed distance to 
+right border. When the parent is resized, the controls width is changed 
+(resized) to keep the left and right distance. Same for akTop, akBottom.
+</p>
+<p>
+When Align is set to alLeft, the means the control Left and Top are adjusted 
+to fill the available space with the Height at its maximum value. The Width is 
+retained if akRight is not set. If akRight is set in the Anchors property, 
+then the right distance is kept and the control width is resized. If there are 
+several child controls with Align set to alLeft, they will not overlap and be 
+placed side by side. Same for alRight, alTop, alBottom. (Always expand 3 
+sides).
+</p>
+<p>
+When Align is alClient. The control will fill the available space in the 
+client area on the parent control. Setting Align in two child controls to 
+alClient can be used if there are maximum value (for width and/or height) in 
+the Constraints property.
+</p>
+<p>
+Order: First all alTop children are resized, then alBottom, then alLeft,
+then alRight and finally alClient.
+</p>
+<p>
+Changing the value for the ShrinkHorizontal property causes the Change method 
+to be called. This causes child controls to recalculate their preferred size 
+and to be realigned on the Control. The OnChange event handler is also 
+signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Change"/>
+<link id="TWinControl.DoChildSizingChange"/>
+<link id="TWinControl.Realign"/>
+<link id="TControl.Align"/>
+<link id="TControl.Anchors"/>
+<link id="TControl.BorderSpacing"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.ShrinkVertical">
-<short>Various ways to fit controls into the available Height.</short>
-<descr/>
-<seealso/>
+<short>
+Various ways to fit controls into the available Height.
+</short>
+<descr>
+<p>
+<var>ShrinkVertical</var> is a <var>TChildControlResizeStyle</var> property 
+which indicates if and how child controls are resized and aligned vertically 
+on the parent control. It can contain one of the values from the 
+TChildControlResizeStyle enumeration.
+</p>
+<p>
+The default value for the property is <var>crsAnchorAligning</var>, and causes 
+the height of child control to be determined using the Anchor and Align 
+properties (like Delphi). For example if Anchors property of the control is 
+[akTop], it means the distance is fixed between top border of the control and 
+the child control. [akBottom] means the distance is fixed between the bottom 
+border for the control and the bottom border for the child control. 
+</p>
+<p>
+When the parent is resized, the child is moved to keep the defined distances. 
+[akLeft,akRight] means fixed distance to left border and fixed distance to 
+right border. When the parent is resized, the controls width is changed 
+(resized) to keep the left and right distance. Same for akTop, akBottom.
+</p>
+<p>
+When Align is set to alLeft, the means the control Left and Top are adjusted 
+to fill the available space with the Height at its maximum value. The Width is 
+retained if akRight is not set. If akRight is set in the Anchors property, 
+then the right distance is kept and the control width is resized. If there are 
+several child controls with Align set to alLeft, they will not overlap and be 
+placed side by side. Same for alRight, alTop, alBottom. (Always expand 3 
+sides).
+</p>
+<p>
+When Align is alClient. The control will fill the available space in the 
+client area on the parent control. Setting Align in two child controls to 
+alClient can be used if there are maximum value (for width and/or height) in 
+the Constraints property.
+</p>
+<p>
+Order: alTop children are resized first, then alBottom, then alLeft,
+then alRight, and finally alClient.
+</p>
+<p>
+Changing the value for the ShrinkVertical property causes the Change method 
+to be called. This causes child controls to recalculate their preferred size 
+and to be realigned on the Control. The OnChange event handler is also 
+signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Change"/>
+<link id="TWinControl.DoChildSizingChange"/>
+<link id="TWinControl.Realign"/>
+<link id="TControl.Align"/>
+<link id="TControl.Anchors"/>
+<link id="TControl.BorderSpacing"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.TopBottomSpacing">
-<short>Minimum distance between children and client border.</short>
-<descr/>
-<seealso/>
+<short>
+Minimum distance between the top or bottom edge of a Control and the top or 
+bottom edge for a child control.
+</short>
+<descr>
+<p>
+<var>TopBottomSpacing</var> is an <var>Integer</var> property with number of 
+pixels reserved as spacing between child controls and the top and bottom edges 
+of the Control. For example: When TopBottomSpacing is set to 5 for a Control, 
+the Top property for a child control starts at 5.
+</p>
+<p>
+The default value for the property is 0 (zero) and indicates that no 
+additional space is reserved on the corresponding edges of the Control. 
+Changing the value for the property causes the Change method to be called to 
+resize/realign child controls. The OnChange event handler is also signalled 
+(when assigned).
+</p>
+<p>
+Use LeftRightSpacing to reserved space on the left and right edges of the 
+Control.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Change"/>
+<link id="TControlChildSizing.LeftRightSpacing"/>
+</seealso>
 </element>
 
 <element name="TControlChildSizing.VerticalSpacing">
-<short>Minimum space between children.</short>
-<descr/>
-<seealso/>
+<short>
+Minimum space between child controls which are vertically adjacent.
+</short>
+<descr>
+<p>
+<var>VerticalSpacing</var> is an <var>Integer</var> property with the number 
+of pixels reserved as spacing between vertically adjacent child controls. The 
+default value for the property is 0 (zero) and indicates that no additional 
+space is reserved on the corresponding edges of the Control. Changing the 
+value for the property causes the Change method to be called to resize/realign 
+child controls. The OnChange event handler is also signalled (when assigned).
+</p>
+<p>
+Use HorizontalSpacing to set the space reserved between horizontally adjacent 
+child control.
+</p>
+<p>
+Use TopBottomSpacing to set the space reserved at the top or bottom edge for 
+the Control.
+</p>
+<p>
+Use TopBottomSpacing to set the space reserved at the top or bottom edge for 
+the Control.
+</p>
+</descr>
+<seealso>
+<link id="TControlChildSizing.Change"/>
+<link id="TControlChildSizing.TopBottomSpacing"/>
+</seealso>
 </element>
 
 <element name="TWinControlActionLink">
@@ -18741,7 +19186,9 @@ operations. Prevents a loop.
 </element>
 
 <element name="TWinControlFlags">
-<short>Set of TWinControlFlag enumeration values.</short>
+<short>
+Set type used to store TWinControlFlag enumeration values.
+</short>
 <descr>
 <p>
 <var>TWinControlFlags</var> is a set type used to store zero (0) or more 
@@ -21591,12 +22038,50 @@ otherwise handled by a control or its parent forms.
 </element>
 
 <element name="TWinControl.KeyDown">
-<short>Signals the OnKeyDown event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<short>
+Signals OnKeyDown event handlers (when assigned).
+</short>
+<descr>
+<p>
+<var>KeyDown</var> is a method used to signal the assigned 
+<var>OnKeyDown</var> event handler(s) for the control. It provides arguments 
+with the virtual key code and the state modifiers for the TKeyEvent type.
+</p>
+<p>
+KeyDown signals the OnKeyDown event handler (when assigned). The handler 
+routine can modify the Key argument if it is handled (or discarded) in the 
+event handler. Set Key to VK_UNKNOWN (0) in the handler routine if the key 
+event is either applied or discarded by the handler.
+</p>
+<p>
+When Key has a non-zero value - because OnKeyDown was not assigned or did not 
+handle the key - DoCallKeyEventHandler is called to check other chtOnKeyDown 
+handlers added to the control using AddHandler or AddHandlerOnKeyDown.
+</p>
+<p>
+KeyDown is called from the KeyDownBeforeInterface method. It occurs after the Application, any forms with KeyPreview enabled, and the active DragManager have examined and possibly handled the key event.
+</p>
+<p>
+See KeyUp for the actions performed when the key is released.
+</p>
+</descr>
+<seealso>  
+<link id="TWinControl.OnKeyDown"/>
+<link id="TWinControl.KeyUp"/>
+<link id="TWinControl.KeyDownBeforeInterface"/>
+<link id="TControl.DoCallKeyEventHandler"/>
+<link id="TControl.AddHandler"/>
+<link id="TControl.AddHandlerOnKeyDown"/>
+<link id="TKeyEvent"/>
+<link id="TControlHandlerType"/>
+<link id="#lcl.forms.TCustomForm.KeyPreview">TCustomForm.KeyPreview</link>
+<link id="#lcl.forms.TCustomForm.IsShortcut">TCustomForm.IsShortcut</link>
+<link id="#lcl.forms.TApplication.IsShortcut">TApplication.IsShortcut</link>
+<link id="#lcl.forms.Application">Application</link>
+</seealso>
 </element>
 <element name="TWinControl.KeyDown.Key">
-<short>Numeric key code examined in the method.</short>
+<short>Numeric key code examined and handled in the method.</short>
 </element>
 <element name="TWinControl.KeyDown.Shift">
 <short>Shift, Ctrl, or Alt modifier for the key.</short>
@@ -21604,8 +22089,8 @@ otherwise handled by a control or its parent forms.
 
 <element name="TWinControl.KeyDownBeforeInterface">
 <short>
-Lets the application, parent forms, or control handle key preview before the 
-LCL interface.
+Allows the application, parent forms, or control to handle key preview before 
+the LCL interface.
 </short>
 <descr/>
 <seealso/>
@@ -21627,24 +22112,61 @@ An empty implementation in the current LCL version.
 <seealso/>
 </element>
 <element name="TWinControl.KeyDownAfterInterface.Key">
-<short/>
+<short>
+Numeric key code handled in the method.
+</short>
 </element>
 <element name="TWinControl.KeyDownAfterInterface.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key.
+</short>
 </element>
 
 <element name="TWinControl.KeyPress">
-<short>Signals the OnKeyPress event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<short>
+Signals the OnKeyPress event handler (when assigned).
+</short>
+<descr>
+<p>
+<var>KeyPress</var> is called from the DoKeyPress method when the parent form 
+does not have KeyPreview enabled or does not handle the character code in 
+<var>Key</var>. KeyPress is <b>not</b> called if csNoStdEvents has been 
+included in the ControlStyle property.
+</p>
+<p>
+See UTF8KeyPress for the actions performed for a UTF-8-encoded character in a 
+key press.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.UTF8KeyPress"/>
+</seealso>
 </element>
 <element name="TWinControl.KeyPress.Key">
-<short>Character value for the key press event.</short>
+<short>
+Character value for the key press event.
+</short>
 </element>
 
 <element name="TWinControl.KeyUp">
-<short>Signals the OnKeyUp event handler (when assigned).</short>
-<descr/>
+<short>
+Signals the OnKeyUp event handler (when assigned).
+</short>
+<descr>
+<p>
+<var>KeyUp</var> is a method used to signal the OnKeyUp event handler (when 
+assigned). It provides the arguments with the virtual key code and the state 
+modifiers for the TKeyEvent type.
+</p>
+<p>
+KeyUp is called from the KeyUpBeforeInterface method. It occurs after forms 
+with KeyPreview enabled or the active DragManager have examined and possibly 
+handled the key event.
+</p>
+<p>
+See KeyDown for the actions performed when the key down event has occurred.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TWinControl.KeyUp.Key">
@@ -21656,21 +22178,33 @@ An empty implementation in the current LCL version.
 
 <element name="TWinControl.KeyUpBeforeInterface">
 <short>
-Signals the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> 
-handler.
+Signals the OnKeyUp handler (when assigned)) before calling the LCL interface.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TWinControl.KeyUp"/>
+<link id="TWinControl.DoKeyUpBeforeInterface"/>
+<link id="TWinControl.OnKeyUp"/>
+<link id="TControl.ControlStyle"/>
+<link id="DragManager"/>
+<link id="#lcl.forms.TCustomForm.KeyPreview">TCustomForm.KeyPreview</link>
+</seealso>
 </element>
 <element name="TWinControl.KeyUpBeforeInterface.Key">
-<short/>
+<short>
+Numeric key code for the key up event.
+</short>
 </element>
 <element name="TWinControl.KeyUpBeforeInterface.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key.
+</short>
 </element>
 
 <element name="TWinControl.KeyUpAfterInterface">
-<short>An empty implementation in the current LCL version.</short>
+<short>
+An empty implementation in the current LCL version.
+</short>
 <descr>
 <p>
 An empty implementation in the current LCL version.
@@ -21679,23 +22213,54 @@ An empty implementation in the current LCL version.
 <seealso/>
 </element>
 <element name="TWinControl.KeyUpAfterInterface.Key">
-<short/>
+<short>
+Numeric key code for the key up event.
+</short>
 </element>
 <element name="TWinControl.KeyUpAfterInterface.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key.
+</short>
 </element>
 
 <element name="TWinControl.UTF8KeyPress">
-<short>Signals the OnUTF8KeyPress event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<short>
+Signals the OnUTF8KeyPress event handler (when assigned).
+</short>
+<descr>
+<p>
+<var>UTF8KeyPress</var> is called from the DoUTF8KeyPress method when the 
+parent form does not have KeyPreview enabled or does not handle the character 
+code in <var>Key</var>. UTF8KeyPress is <b>not</b> called if csNoStdEvents has 
+been included in the ControlStyle property.
+</p>
+<p>
+The handler routine in OnUTF8KeyPress can modify the value in the Key 
+argument. It sets Key to an empty string ('') if the encoded value is handled 
+in the routine.
+</p>
+<p>
+See KeyPress for the actions performed for a character value that does not use 
+UTF-9 encoding.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.OnUTF8KeyPress"/>
+<link id="TWinControl.OnKeyPress"/>
+<link id="TWinControl.KeyPress"/>
+<link id="TUTF8KeyPressEvent"/>
+</seealso>
 </element>
 <element name="TWinControl.UTF8KeyPress.UTF8Key">
-<short>UTF-8-encoded character value for the key press event.</short>
+<short>
+UTF-8-encoded character value for the key press event.
+</short>
 </element>
 
 <element name="TWinControl.FindNextControl">
-<short>Returns the preceding or next control in the tab order.</short>
+<short>
+Returns the preceding or next control in the tab order.
+</short>
 <descr>
 <p>
 When <var>CurrentControl</var> is <b>Nil</b>, the first control (forward) or 
@@ -21727,7 +22292,9 @@ When <b>True</b> only a control with Parent set to Self is found.
 </element>
 
 <element name="TWinControl.SelectFirst">
-<short>Returns the first control in the tab order for the parent form.</short>
+<short>
+Returns the first control in the tab order for the parent form.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -21857,7 +22424,9 @@ method.
 </element>
 
 <element name="TWinControl.IsControlMouseMsg">
-<short>Sends the mouse message to a child control.</short>
+<short>
+Sends the specified mouse message to a child control.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -22096,7 +22665,9 @@ inherited <var>FormEndUpdated</var> method, then informs each child control.
 </element>
 
 <element name="TWinControl.MainWndProc">
-<short> The message handler for the control.</short>
+<short>
+The message handler loop for the control.
+</short>
 <descr>
 <p>
 Used for controls which need features not yet supported by the LCL. 
@@ -22135,11 +22706,11 @@ wcfCreatingChildHandles.
 <short>Gets the value for the MouseCapture property.</short>
 <descr>
 <p>
-GetMouseCapture is a Boolean function used to get the value for the 
-MouseCapture property. It is overridden in TWinControl to ensure that the 
-Handle for the control has been allocated. The return value is <b>True</b> 
-when HandleAllocated returns <b>True</b>, and GetCaptureControl returns the 
-current class instance.
+<var>GetMouseCapture</var> is a <var>Boolean</var> function used to get the 
+value for the MouseCapture property. It is overridden in TWinControl to ensure 
+that the Handle for the control has been allocated. The return value is 
+<b>True</b> when HandleAllocated returns <b>True</b>, and GetCaptureControl 
+returns the current class instance.
 </p>
 </descr>
 <seealso>
@@ -22215,7 +22786,7 @@ Sends Move or Size messages using the window message processing loop.
 </short>
 <descr>
 <p>
-Send Move and Size messages through the LCL message paths. This simulates the 
+Sends Move and Size messages through the LCL message paths. This simulates the 
 VCL behavior and has no real effect.
 </p>
 </descr>
@@ -22487,7 +23058,9 @@ default.
 </element>
 
 <element name="TWinControl.BorderWidth">
-<short>Width of the Border around the control; default is zero.</short>
+<short>
+Width of the Border around the control; default is zero.
+</short>
 <descr>
 <p>
 <var>BorderWidth</var> is a <var>TBorderWidth</var> property which contains 
@@ -22511,11 +23084,30 @@ rectangle for the control.
 
 <element name="TWinControl.BoundsLockCount">
 <short>
-For internal use: When greater than zero, updates to the BoundsRect are 
-blocked.
+A counter used to track updates to the BoundsRect for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>BoundsLockCount</var> is a read-only <var>Integer</var> property with the 
+counter used to track active updates to the BoundsRect for the control. Its 
+value is maintained when the BeginUpdateBounds and EndUpdateBounds methods are 
+called. Its value is incremented when BeginUpdateBounds is called, and 
+decremented when EndUpdateBounds is called. When it has a non-zero value, 
+updates to the BoundsRect property are blocked. When it reaches 0 (zero), the 
+SetBounds method is called to store the values in Left, Top, Width, and Height 
+to the bounds rectangle.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.BeginUpdateBounds"/>
+<link id="TWinControl.EndUpdateBounds"/>
+<link id="TWinControl.SetBounds"/>
+<link id="TControl.BoundsRect"/>
+<link id="TControl.Left"/>
+<link id="TControl.Top"/>
+<link id="TControl.Width"/>
+<link id="TControl.Height"/>
+</seealso>
 </element>
 
 <element name="TWinControl.Brush">
@@ -22564,15 +23156,30 @@ The intended ClientWidth, as sent to the widgetset class.
 
 <element name="TWinControl.ChildSizing">
 <short>
-Parameters for child control arrangement and spacing.
+Provides settings used to resize and align child controls using a tabular 
+layout.
 </short>
 <descr>
 <p>
-ChildSizing is a TControlChildSizing property which contains the class used 
-to apply sizing and layout for child controls in the control instance.
+<var>ChildSizing</var> is a <var>TControlChildSizing</var> property which 
+contains properties and methods used to resize and layout child controls on 
+the control instance. ChildSizing provides an alternative to using Anchors and 
+Align to position and resize child controls. It allows a dynamic tabular (or 
+matrix) layout to be applied to its child Controls.
+</p>
+<p>
+See <link id="TControlChildSizing">TControlChildSizing</link> for more 
+detailed information about the properties and methods in the class instance.
 </p>
 </descr>
 <seealso>
+<link id="TWinControl.ControlCount"/>
+<link id="TWinControl.Controls"/>
+<link id="TWinControl.AlignControls"/>
+<link id="TWinControl.DoChildSizingChange"/>
+<link id="TWinControl.InvalidatePreferredChildSizes"/>
+<link id="TControl.Align"/>
+<link id="TControl.Anchors"/>
 <link id="TControlChildSizing"/>
 </seealso>
 </element>
@@ -22695,7 +23302,7 @@ handlers.
 
 <element name="TWinControl.DockSite">
 <short>
-Allows controls to be drag-dock-ed into this control.
+Allows controls to be drag-and-dock-ed into this control.
 </short>
 <descr>
 <p>
@@ -22713,7 +23320,9 @@ A DockSite should initially be empty, not containing any child controls.
 </element>
 
 <element name="TWinControl.DoubleBuffered">
-<short>Allows to reduce flicker in the painting of the control.</short>
+<short>
+When enabled, it reduces flicker when the control is painted.
+</short>
 <descr>
 <p>
 <var>Paint</var> requests are typically buffered in the message queue. When a 
@@ -22894,26 +23503,40 @@ Event handler signalled to determine the order and placement for
 custom-aligned child controls.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TWinControl.AlignControls"/>
+<link id="TWinControl.CustomAlignInsertBefore"/>
+<link id="TWinControl.DoAllAutoSize"/>
+<link id="TAlignInsertBeforeEvent"/>
+</seealso>
 </element>
 
 <element name="TWinControl.OnAlignPosition">
 <short>
-Event handler signalled to determines the position for custom-aligned child 
-controls.
+Event handler signalled to determines the position and size for custom-aligned 
+child controls.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TWinControl.CustomAlignPosition"/>
+<link id="TWinControl.AlignControls"/>
+<link id="TControl.Align"/>
+<link id="TControl.Anchors"/>
+<link id="TAlign"/>
+<link id="TAlignPositionEvent"/>
+</seealso>
 </element>
 
 <element name="TWinControl.OnDockDrop">
-<short>Notification handler for the drop of a control to be docked.</short>
+<short>
+Event handler signalled for the drop of a control to be docked.
+</short>
 </element>
 
 <element name="TWinControl.OnDockOver">
 <short>
-Event handler for moves of a control over this docksite; determines 
-acceptance or rejection of an possible drop.
+Event handler signalled when a control is moved over a docksite; determines 
+whether the drop event is accepted or rejected.
 </short>
 <descr/>
 <seealso/>
@@ -22921,45 +23544,114 @@ acceptance or rejection of an possible drop.
 
 <element name="TWinControl.OnEnter">
 <short>
-Handler for control receiving the focus.
+Event handler signalled when the control receives focus.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnEnter</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the control receives focus. It is signaled from the 
+DoEnter method, and occurs when the CM_ENTER control message is received and 
+handled for the control.
+</p>
+<p>
+The <var>Sender</var> argument contains the object for the event notification, 
+and must be cast to TControl, TWinControl, or other descendent class to access 
+properties or methods specific to the implementation.
+</p>
+<p>
+Use OnExit to perform actions needed when the control loses focus.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.DoEnter"/>
+<link id="TWinControl.CMEnter"/>
+<link id="TWinControl.OnExit"/>
+</seealso>
 </element>
 
 <element name="TWinControl.OnExit">
 <short>
-Handler for control losing the focus; This is a good place for checking the 
-finished user input.
+Event handler signalled when the control loses focus.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnExit</var> is a <var>TNotifyEvent</var> property with the event handler 
+signalled when the control loses focus. It is signalled (when assigned) from 
+the DoExit method, and occurs when a CM_EXIT control message is received and 
+handled for the control.
+</p>
+<p>
+The <var>Sender</var> argument contains the object instance for the event 
+notification. It must be cast to TControl, TWinControl, or a other descendent 
+to access properties or methods specific to the implementation.
+</p>
+<p>
+OnExit occurs after the OnEditingDone event handler which is signalled when 
+the content for the control has been modified. Descendent classes generally 
+perform any actions needed to maintain their internal state before OnExit is 
+signalled. The notable exception is TCustomMaskEdit which can be configured to 
+perform validation <b>after</b> the event.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.DoExit"/>
+<link id="TWinControl.CMExit"/>
+<link id="TControl.EditingDone"/>
+<link id="TControl.OnEditingDone"/>
+</seealso>
 </element>
 
 <element name="TWinControl.OnKeyDown">
 <short>
-Handler for keyboard key pressed.
+Event handler signalled for key down keyboard events.
 </short>
 <descr>
 <p>
-This handler can filter keys, for special use in e.g. non-textual controls. 
-The handler receives all keystrokes, including control and other non-visual 
-keys. Keys are encoded as <b>virtual</b> keys, with separate active modifier 
-keys.
+<var> OnKeyDown</var> is a <var>TKeyEvent</var> property with the event 
+handler signalled to handle a key down event for the control. The event 
+handler receives keys including control and other non-visual keys. It is 
+signalled (when assigned) from the KeyDown method.
 </p>
 <p>
-Text input should be checked in an OnKeyPress handler.
+The <var> Sender</var> argument contains the control for the key event. It 
+must be cast to TControl or TwinControl type to access properties or methods 
+specific to the descendent classes.
+</p>
+<p>
+The <var>Key</var> argument contains the virtual keyboard constant for the 
+key event (like VK_F1 or VK_NUMPAD5). It is a variable argument and can be 
+modified in the event handler. Set Key to VK_UNKNOWN if the handler routine 
+has performed the actions needed to handle the key event. Otherwise, Key is 
+passed to other OnKeyDown handlers at the form or application level.
+</p>
+<p>
+<var>Shift</var> is a set type which contains the modifiers for the key down 
+event like: Ctrl, Shift, Alt, or Meta.
+</p>
+<remark>
+When a key is held down, the OnKeyDown event is re-triggered. The first 
+re-triggered event occurs after approximately 500ms, and subsequent events  
+cycle between 30ms and 50ms until the key is released.
+</remark>
+<p>
+Use OnKeyUp to perform actions needed when the key is released.
+</p>
+<p>
+Use OnKeyPress or OnUTF8KeyPress to implement a handler routine for printable 
+character values.
 </p>
 </descr>
 <seealso>
+<link id="TWinControl.KeyDown"/>
 <link id="TWinControl.OnKeyUp"/>
 <link id="TWinControl.OnKeyPress"/>
+<link id="TKeyEvent"/>
 </seealso>
 </element>
 
 <element name="TWinControl.OnKeyPress">
 <short>
-Handler for a character entered by the user.
+Event handler signalled for character data entered by the user.
 </short>
 <descr>
 <p>
@@ -22970,9 +23662,8 @@ different one.
 </p>
 <remark>
 We recommend using <var>OnUTF8KeyPress</var> to prevent data loss. Characters 
-are converted from UTF-8 to the system encoding in 
-<var>OnKeyPressEvent</var>, with possible loss of characters outside the 
-<b>ANSI</b> codepage.
+are converted from UTF-8 to the system encoding in <var>OnKeyPressEvent</var>, 
+with possible loss of characters outside the <b>ANSI</b> codepage.
 </remark>
 </descr>
 <seealso>
@@ -22987,15 +23678,44 @@ Event handler signalled when a key up event has occurred for the control.
 </short>
 <descr>
 <p>
-Unlike OnKeyDown, this event occurs only once for auto-repeated keys.
+<var>OnKeyUp</var> is a <var>TKeyEvent</var> property with the event handler 
+signalled when a key up event has occurred in the control. OnKeyUp is 
+signalled (when assigned) from the KeyUp method. It occurs when the CN_KEYUP 
+or CN_SYSKEYUP notifications are handled for the control.
 </p>
 <p>
-For details see <link id="TWinControl.OnKeyDown"/>.
+The <var> Sender</var> argument contains the control for the key event. It 
+must be cast to TControl or TwinControl type to access properties or methods 
+specific to the descendent classes.
+</p>
+<p>
+The <var>Key</var> argument contains the virtual keyboard constant for the 
+key event (like VK_F1 or VK_NUMPAD5).
+</p>
+<p>
+<var>Shift</var> is a set type which contains the modifiers for the key down 
+event like: Ctrl, Shift, Alt, or Meta.
+</p>
+<p>
+Unlike OnKeyDown, this event occurs only once for auto-repeated keys. For more 
+information, see <link id="TWinControl.OnKeyDown"/>.
+</p>
+<p>
+Use OnKeyDown to perform actions needed when a key down event for a 
+non-printable key is received for the control.
+</p>
+<p>
+Use OnKeyPress to handle a key press for printable characters entered into the 
+control.
 </p>
 </descr>
 <seealso>
+<link id="TWinControl.KeyUp"/>
+<link id="TWinControl.CNSysKeyUp"/>
+<link id="TWinControl.CNKeyUp"/>
 <link id="TWinControl.OnKeyDown"/>
 <link id="TWinControl.OnKeyPress"/>
+<link id="TKeyEvent"/>
 </seealso>
 </element>
 
@@ -23084,9 +23804,9 @@ controls when assigned before the forms and controls are created.
 <short>The window Handle for the Parent widget.</short>
 <descr>
 <p>
-ParentWindow is a HWND property with the window Handle for the Parent widget. 
-A new value assigned to the property is ignored when Parent has already been 
-assigned.
+<var> ParentWindow</var> is a <var> HWND</var> property with the window Handle 
+for the Parent widget. A new value assigned to the property is ignored when 
+Parent has already been assigned.
 </p>
 <p>
 The property value is assigned when the CreateParented constructor or the 
@@ -23097,7 +23817,7 @@ destroyed. <b>0</b> is the unassigned handle value.
 <p>
 ParentWindow is used in the the CreateWnd method to form an association 
 between the Handle in the widgetset class instance and the window handle 
-value for a control.
+for a control.
 </p>
 </descr>
 <seealso>
@@ -23179,7 +23899,7 @@ Indicates if the control has the wcfSpecialSubControl control flag.
 <descr>
 <p>
 <var>IsSpecialSubControl</var> is a read-only <var>Boolean</var> property. 
-Its vale is <b>True</b> when wcfSpecialSubControl has been included in the 
+Its value is <b>True</b> when wcfSpecialSubControl has been included in the 
 WinControlFlags for the control. Used in <var>TCustomPairSplitter</var> only.
 </p>
 </descr>
