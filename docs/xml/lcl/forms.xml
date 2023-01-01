@@ -3649,13 +3649,22 @@ event messages. When the counter reaches zero (0), the message is applied.
 </p>
 <p>
 When <var>WindowState</var> is changed to <var>wsNormal</var>, the window 
-origin or size is restored. For delayed <var>OnChangeBounds</var> and 
-<var>OnChangeBounds</var> messages, the <var>DoOnShow</var> and/or 
-<var>Activate</var> methods are called when the form is <var>Active</var>. If 
-the form has not already been displayed and activated, the DoOnResize or the 
-DoOnChangeBounds method is called for the corresponding delayed message.
+origin and size is saved internally for use when the bounds or size is 
+restored.
+</p>
+<p>
+When handling delayed <var>OnChangeBounds</var> and <var>OnChangeBounds</var> 
+messages, methods like <var>DoOnShow</var> and/or <var>Activate</var> are 
+called when the form is <var>Visible</var>. If the form has not already been 
+displayed and activated, the DoOnResize or the DoOnChangeBounds method is 
+called for the corresponding delayed message. The internal flags for the 
+delayed events are reset prior to exit.
 </p>
 </descr>
+<version>
+Modified in LCL 2.2.6 to check form visibility before showing or activating 
+the form.
+</version>
 <seealso>
 <link id="TApplication.QueueAsyncCall"/>
 <link id="TCustomForm.WindowState"/>
