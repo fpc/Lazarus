@@ -20,9 +20,11 @@ unit FindInFilesWnd;
 interface
 
 uses
-  Classes, SysUtils, Forms, StdCtrls, Buttons, ComCtrls, ExtCtrls, DividerBevel,
-  SynEdit, EnvironmentOpts, MenuIntf, IDEWindowIntf, LazIDEIntf, SrcEditorIntf,
-  LazFileUtils, InputHistory, EditorOptions;
+  Classes, SysUtils, System.UITypes, Forms, StdCtrls, Buttons, ComCtrls,
+  ExtCtrls, Controls, DividerBevel, SynEdit, EnvironmentOpts, SearchPathProcs,
+  MenuIntf, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, LazFileUtils,
+  LazLoggerBase, ProjectIntf, MacroIntf, InputHistory, EditorOptions,
+  PathEditorDlg;
 
 type
 
@@ -32,7 +34,6 @@ type
     CaseSensitiveSpeedButton: TSpeedButton;
     AutoUpdateSpeedButton: TSpeedButton;
     DirectoriesComboBox: TComboBox;
-    DirsEditSpeedButton: TSpeedButton;
     FileMaskComboBox: TComboBox;
     TextToFindCombobox: TComboBox;
     ShowReplaceSpeedButton: TSpeedButton;
@@ -51,11 +52,16 @@ type
     SynEdit1: TSynEdit;
     WholeWordsSpeedButton: TSpeedButton;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure ShowReplaceSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ShowReplaceSpeedButtonClick(Sender: TObject);
   private
+    DirectoriesPathEditBtn: TPathEditorButton;
+    procedure DirectoriesPathEditBtnClick(Sender: TObject);
+    function DirectoriesPathEditBtnExecuted(Context: String; var NewPath: String
+      ): Boolean;
   protected
+    function GetBaseDirectory: string; virtual;
     procedure DoFirstShow; override;
     procedure InitImageList; virtual;
     procedure LoadHistory; virtual;
@@ -130,11 +136,44 @@ begin
 
   DirectoriesComboBox.TextHint:='folder1;folder2';
   DirectoriesComboBox.Text:='';
+  DirectoriesPathEditBtn := TPathEditorButton.Create(Self);
+  with DirectoriesPathEditBtn do
+  begin
+    Name := 'DirectoriesPathEditBtn';
+    Caption := '...';
+    AutoSize := true;
+    Anchors := [akRight, akTop, akBottom];
+    AnchorParallel(akTop, 0, DirectoriesComboBox);
+    AnchorParallel(akBottom, 0, DirectoriesComboBox);
+    AnchorParallel(akRight, 0, WherePanel);
+    ContextCaption := 'Search in directories';
+    Templates:='$(ProjPath)'+
+              ';$(LazarusDir)' +
+              ';$(FPCSrcDir)';
+    AssociatedComboBox:=DirectoriesComboBox;
+    OnClick := @DirectoriesPathEditBtnClick;
+    OnExecuted := @DirectoriesPathEditBtnExecuted;
+    Parent := WherePanel;
+    TabOrder := DirectoriesComboBox.TabOrder+1;
+  end;
+  DirectoriesComboBox.AnchorToNeighbour(akRight, 0, DirectoriesPathEditBtn);
 
   SrcDividerBevel.Caption:='Preview';
   SynEdit1.Lines.Text:='No source selected';
 
   InitImageList;
+end;
+
+procedure TLazFindInFilesWindow.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if CloseAction=caNone then ;
+  SaveHistory;
+end;
+
+procedure TLazFindInFilesWindow.FormDestroy(Sender: TObject);
+begin
+
 end;
 
 procedure TLazFindInFilesWindow.ShowReplaceSpeedButtonClick(Sender: TObject);
@@ -154,16 +193,66 @@ begin
   end;
 end;
 
-procedure TLazFindInFilesWindow.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TLazFindInFilesWindow.DirectoriesPathEditBtnClick(Sender: TObject);
 begin
-  if CloseAction=caNone then ;
-  SaveHistory;
+  DirectoriesPathEditBtn.CurrentPathEditor.BaseDirectory := GetBaseDirectory;
 end;
 
-procedure TLazFindInFilesWindow.FormDestroy(Sender: TObject);
+function TLazFindInFilesWindow.DirectoriesPathEditBtnExecuted(Context: String;
+  var NewPath: String): Boolean;
+var
+  TrimmedPath, BaseDir, Dir: String;
+  p, r: Integer;
 begin
+  if Context='' then ;
+  TrimmedPath := TrimSearchPath(NewPath, '', true);
+  BaseDir:=GetBaseDirectory;
+  p:=1;
+  repeat
+    Dir:=GetNextDirectoryInSearchPath(TrimmedPath,p);
+    if Dir='' then break;
+    DebugLn(['TLazFindInFilesWindow.DirectoriesPathEditBtnExecuted Dir="',Dir,'"']);
+    if not IDEMacros.SubstituteMacros(Dir) then
+    begin
+      r:=IDEMessageDialog('Invalid Macro','Path "'+Dir+'" contains unknown macros',
+        mtError,[mbCancel,mbIgnore]);
+      if r<>mrIgnore then
+        exit(false);
+    end else begin
+      debugln(['TLazFindInFilesWindow.DirectoriesPathEditBtnExecuted macro resolved Dir="',Dir,'"']);
+      Dir:=ExpandFileNameUTF8(Dir,BaseDir);
+      debugln(['TLazFindInFilesWindow.DirectoriesPathEditBtnExecuted expanded Dir="',Dir,'"']);
+      if not DirectoryExists(Dir,true) then
+      begin
+        r:=IDEMessageDialog('Path not found','Path "'+Dir+'" not found',
+          mtError,[mbCancel,mbIgnore]);
+        if r<>mrIgnore then
+          exit(false);
+      end;
+    end;
+  until false;
 
+  NewPath:=TrimmedPath;
+  Result:=true;
+end;
+
+function TLazFindInFilesWindow.GetBaseDirectory: string;
+var
+  Proj: TLazProject;
+begin
+  Proj:=LazarusIDE.ActiveProject;
+  if Proj<>nil then
+  begin
+    Result:=Proj.Directory;
+    if FilenameIsAbsolute(Result) then
+      exit;
+    Result:=LazarusIDE.GetTestBuildDirectory;
+    if FilenameIsAbsolute(Result) then
+      exit;
+  end;
+  Result:='$(LazarusDir)';
+  if not IDEMacros.SubstituteMacros(Result) then
+    Result:=LazarusIDE.GetPrimaryConfigPath;
 end;
 
 procedure TLazFindInFilesWindow.DoFirstShow;
@@ -208,6 +297,18 @@ procedure TLazFindInFilesWindow.LoadHistory;
     AComboBox.Items.Insert(i,Filename);
   end;
 
+  procedure AddDir(Dir: string);
+  var
+    i: Integer;
+  begin
+    for i:=0 to DirectoriesComboBox.Items.Count-1 do
+    begin
+      if CompareFilenames(ChompPathDelim(Dir),ChompPathDelim(DirectoriesComboBox.Items[i]))=0 then
+        exit;
+    end;
+    DirectoriesComboBox.Items.Add(Dir);
+  end;
+
 var
   SrcEdit: TSourceEditorInterface;
 begin
@@ -227,6 +328,8 @@ begin
   AssignToComboBox(DirectoriesComboBox, InputHistories.FindInFilesPathHistory);
   if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
     AddFileToComboBox(DirectoriesComboBox, ExtractFilePath(SrcEdit.FileName));
+  AddDir('$(FPCSrcDir)');
+  AddDir('$(LazarusDir)');
   if DirectoriesComboBox.Items.Count>0 then
     DirectoriesComboBox.Text:=DirectoriesComboBox.Items[0];
 

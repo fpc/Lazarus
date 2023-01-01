@@ -699,7 +699,6 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideLeft.Control = WherePanel
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = DirsEditSpeedButton
       Left = 0
       Height = 30
       Top = 32
@@ -707,6 +706,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       Text = 'Directories'
     end
@@ -769,6 +770,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Width = 463
       Anchors = [akTop, akLeft, akRight]
       ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
       Text = 'Packages'
     end
@@ -781,19 +784,6 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Left = 778
       Height = 30
       Top = 0
-      Width = 23
-      Anchors = [akTop, akRight, akBottom]
-      Caption = '...'
-    end
-    object DirsEditSpeedButton: TSpeedButton
-      AnchorSideTop.Control = DirectoriesComboBox
-      AnchorSideRight.Control = WherePanel
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = DirectoriesComboBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 778
-      Height = 30
-      Top = 32
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       Caption = '...'
