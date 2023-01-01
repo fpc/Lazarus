@@ -1,0 +1,237 @@
+object PkgListEditorDialog: TPkgListEditorDialog
+  Left = 420
+  Height = 450
+  Top = 156
+  Width = 662
+  AutoSize = True
+  Caption = 'PkgListEditorDialog'
+  ClientHeight = 450
+  ClientWidth = 662
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 500
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object PkgsGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AddTemplateButton
+    Left = 6
+    Height = 363
+    Top = 6
+    Width = 378
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'PkgsGroupBox'
+    ClientHeight = 347
+    ClientWidth = 376
+    Constraints.MinHeight = 100
+    Constraints.MinWidth = 200
+    TabOrder = 0
+    object DeleteButton: TBitBtn
+      AnchorSideLeft.Control = PkgsGroupBox
+      AnchorSideBottom.Control = PkgsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 31
+      Top = 310
+      Width = 93
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteButton'
+      Enabled = False
+      OnClick = DeleteButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object MoveUpButton: TSpeedButton
+      AnchorSideRight.Control = PkgsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = PkgsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 345
+      Height = 25
+      Top = 85
+      Width = 25
+      Anchors = [akRight]
+      BorderSpacing.Around = 6
+      OnClick = MoveUpButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object MoveDownButton: TSpeedButton
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = MoveUpButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = MoveUpButton
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 345
+      Height = 25
+      Top = 119
+      Width = 25
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 9
+      OnClick = MoveDownButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object PkgsStringGrid: TStringGrid
+      AnchorSideLeft.Control = PkgsGroupBox
+      AnchorSideTop.Control = PkgsGroupBox
+      AnchorSideRight.Control = MoveUpButton
+      AnchorSideBottom.Control = DeleteButton
+      Left = 6
+      Height = 298
+      Top = 6
+      Width = 333
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoFillColumns = True
+      BorderSpacing.Around = 6
+      ColCount = 2
+      Columns = <      
+        item
+          SizePriority = 3
+          Title.Caption = 'Package'
+          Width = 166
+        end      
+        item
+          ButtonStyle = cbsPickList
+          PickList.Strings = (
+            'Include'
+            'Include, Recursive'
+            'Exclude'
+          )
+          Title.Caption = 'Option'
+          Width = 165
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goSmoothScroll]
+      TabOrder = 1
+      ColWidths = (
+        166
+        165
+      )
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 32
+    Top = 412
+    Width = 650
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+  object AddTemplateButton: TBitBtn
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 16
+    Height = 31
+    Top = 375
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'AddTemplateButton'
+    OnClick = AddTemplateButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object AvailableGroupBox: TGroupBox
+    AnchorSideLeft.Control = PkgsGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 390
+    Height = 400
+    Top = 6
+    Width = 266
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'AvailableGroupBox'
+    ClientHeight = 384
+    ClientWidth = 264
+    TabOrder = 3
+    object AvailableListBox: TListBox
+      AnchorSideLeft.Control = AvailableGroupBox
+      AnchorSideTop.Control = AvailableGroupBox
+      AnchorSideRight.Control = AvailableGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = AddButton
+      Left = 6
+      Height = 335
+      Top = 6
+      Width = 252
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object AddButton: TBitBtn
+      AnchorSideLeft.Control = AvailableListBox
+      AnchorSideBottom.Control = AvailableGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 12
+      Height = 31
+      Top = 347
+      Width = 77
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'AddButton'
+      Enabled = False
+      OnClick = AddButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 48
+    Top = 100
+    object CopyMenuItem: TMenuItem
+      Caption = 'Copy All'
+      OnClick = CopyMenuItemClick
+    end
+    object PasteMenuItem: TMenuItem
+      Caption = 'Paste'
+      OnClick = PasteMenuItemClick
+    end
+    object SeparMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExportMenuItem: TMenuItem
+      Caption = 'Export to file'
+      OnClick = ExportMenuItemClick
+    end
+    object ImportMenuItem: TMenuItem
+      Caption = 'Import from file'
+      OnClick = ImportMenuItemClick
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 128
+    Top = 100
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 128
+    Top = 170
+  end
+end

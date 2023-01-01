@@ -24,7 +24,7 @@ uses
   ExtCtrls, Controls, DividerBevel, SynEdit, EnvironmentOpts, SearchPathProcs,
   MenuIntf, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, LazFileUtils,
   LazLoggerBase, ProjectIntf, MacroIntf, InputHistory, EditorOptions,
-  PathEditorDlg;
+  PathEditorDlg, PackageListEditorDlg;
 
 type
 
@@ -57,8 +57,12 @@ type
     procedure ShowReplaceSpeedButtonClick(Sender: TObject);
   private
     DirectoriesPathEditBtn: TPathEditorButton;
+    PkgListEditBtn: TPkgListEditorButton;
     procedure DirectoriesPathEditBtnClick(Sender: TObject);
     function DirectoriesPathEditBtnExecuted(Context: String; var NewPath: String
+      ): Boolean;
+    procedure PkgListEditBtnClick(Sender: TObject);
+    function PkgListEditBtnExecuted(Context: String; var NewPath: String
       ): Boolean;
   protected
     function GetBaseDirectory: string; virtual;
@@ -131,9 +135,31 @@ begin
   FileMaskComboBox.TextHint:='*.pas;*.inc;*.txt;*.lfm';
   InEditorFilesSpeedButton.Hint:='Search in editor files';
   InProjectFilesSpeedButton1.Hint:='Search in project files';
-  PkgComboBox.TextHint:='lcl;lazutils';
-  PkgComboBox.Text:='do not search in packages';
 
+  // packages
+  PkgComboBox.TextHint:='pkg1;pkg2';
+  PkgComboBox.Text:='';
+  PkgListEditBtn := TPkgListEditorButton.Create(Self);
+  with PkgListEditBtn do
+  begin
+    Name := 'PkgListEditBtn';
+    Caption := '...';
+    AutoSize := true;
+    Anchors := [akRight, akTop, akBottom];
+    AnchorParallel(akTop, 0, PkgComboBox);
+    AnchorParallel(akBottom, 0, PkgComboBox);
+    AnchorParallel(akRight, 0, WherePanel);
+    ContextCaption := 'Search in packages';
+    Templates:='$(ProjectPackages)';
+    AssociatedComboBox:=PkgComboBox;
+    OnClick := @PkgListEditBtnClick;
+    OnExecuted := @PkgListEditBtnExecuted;
+    Parent := WherePanel;
+    TabOrder := PkgComboBox.TabOrder+1;
+  end;
+  PkgComboBox.AnchorToNeighbour(akRight, 0, PkgListEditBtn);
+
+  // directories
   DirectoriesComboBox.TextHint:='folder1;folder2';
   DirectoriesComboBox.Text:='';
   DirectoriesPathEditBtn := TPathEditorButton.Create(Self);
@@ -158,6 +184,7 @@ begin
   end;
   DirectoriesComboBox.AnchorToNeighbour(akRight, 0, DirectoriesPathEditBtn);
 
+  // preview
   SrcDividerBevel.Caption:='Preview';
   SynEdit1.Lines.Text:='No source selected';
 
@@ -233,6 +260,19 @@ begin
   until false;
 
   NewPath:=TrimmedPath;
+  Result:=true;
+end;
+
+procedure TLazFindInFilesWindow.PkgListEditBtnClick(Sender: TObject);
+begin
+
+end;
+
+function TLazFindInFilesWindow.PkgListEditBtnExecuted(Context: String;
+  var NewPath: String): Boolean;
+begin
+  if Context='' then ;
+  if NewPath<>PkgComboBox.Text then ;
   Result:=true;
 end;
 
