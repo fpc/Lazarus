@@ -53,6 +53,7 @@ var
   lFormat: TvVectorialFormat;
   lChunk, lCurChunk: TCDRChunk;
   Str: string;
+  path: String;
 begin
   // First check the in input
   if not CheckInput() then Exit;
@@ -60,9 +61,10 @@ begin
   // Now read the data from the input file
   Reader := TvCDRVectorialReader.Create;
   try
-    Reader.ExploreFromFile(shellInput.GetSelectedNodePath(), lChunk);
+    path := shellInput.GetPathFromNode(shellInput.Selected);
+    Reader.ExploreFromFile(path, lChunk);
 
-    labelFilename.Caption := 'Filename: ' + shellInput.GetSelectedNodePath();
+    labelFilename.Caption := 'Filename: ' + path;
     if (lChunk.ChildChunks <> nil) and (lChunk.ChildChunks.First <> nil) then
     begin
       // Version Chunk
@@ -71,7 +73,7 @@ begin
       labelVersion.Caption := 'Version: ' + Str;
 
       // Main data
-      lCurChunk := TCDRChunk(lChunk.ChildChunks.Items[1]);
+      lCurChunk := TCDRChunk(lChunk.ChildChunks.Items[0]);  // wp: was [1]
       //labelSize.Caption := 'Size: ' + ;
     end;
   finally
@@ -83,7 +85,7 @@ function TformCorelExplorer.CheckInput(): Boolean;
 var
   lPath: String;
 begin
-  lPath := shellInput.GetSelectedNodePath();
+  lPath := shellInput.GetPathFromNode(shellInput.Selected);
   Result := (ExtractFileExt(lPath) = STR_CORELDRAW_EXTENSION);
 end;
 

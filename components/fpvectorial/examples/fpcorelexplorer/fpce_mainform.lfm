@@ -6,12 +6,12 @@ object formCorelExplorer: TformCorelExplorer
   Caption = 'FP Corel Explorer'
   ClientHeight = 345
   ClientWidth = 466
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.3.0.0'
   object Label1: TLabel
     Left = 8
-    Height = 18
+    Height = 15
     Top = 40
-    Width = 158
+    Width = 133
     Caption = 'Location of the Input file:'
     ParentColor = False
   end
@@ -28,34 +28,36 @@ object formCorelExplorer: TformCorelExplorer
   object shellInput: TShellTreeView
     Left = 8
     Height = 272
-    Top = 64
+    Top = 65
     Width = 224
     FileSortType = fstFoldersFirst
+    ReadOnly = True
     TabOrder = 0
     OnSelectionChanged = shellInputSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     ObjectTypes = [otFolders, otNonFolders]
   end
   object labelFilename: TLabel
     Left = 256
-    Height = 18
+    Height = 15
     Top = 65
-    Width = 62
+    Width = 51
     Caption = 'Filename:'
     ParentColor = False
   end
   object labelVersion: TLabel
     Left = 256
-    Height = 18
+    Height = 15
     Top = 88
-    Width = 52
+    Width = 41
     Caption = 'Version:'
     ParentColor = False
   end
   object labelSize: TLabel
     Left = 256
-    Height = 18
+    Height = 15
     Top = 112
-    Width = 32
+    Width = 23
     Caption = 'Size:'
     ParentColor = False
   end
