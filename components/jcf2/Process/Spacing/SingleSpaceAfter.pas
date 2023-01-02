@@ -61,7 +61,11 @@ const
   SingleSpaceAfterWords: TTokenTypeSet = [
     ttProcedure, ttFunction,
     ttConstructor, ttDestructor, ttProperty,
-    ttOf, ttDo, ttWhile, ttUntil, ttCase, ttIf, ttTo, ttDownTo, ttGeneric];
+    ttOf, ttDo, ttWhile, ttUntil, ttCase, ttIf, ttTo, ttDownTo, ttGeneric,
+    ttWith, ttSpecialize];
+
+  SingleSpaceAfterClass: TTokenTypeSet = [ttConstructor, ttDestructor,
+  ttFunction, ttProcedure, ttOperator, ttVar, ttThreadvar];
 
   PossiblyUnaryOperators: TTokenTypeSet = [ttPlus, ttMinus];
 
@@ -73,6 +77,9 @@ begin
   Assert(ptNext <> nil);
 
   Result := False;
+
+  if (pt.TokenType=ttClass) and (pt.NextSolidTokenType in SingleSpaceAfterClass) then
+    Exit(True);
 
   if pt.HasParentNode(nLiteralString) then
     exit;
