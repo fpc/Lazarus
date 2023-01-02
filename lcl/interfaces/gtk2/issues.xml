@@ -64,10 +64,10 @@
 			<descr>Since GTK+ 2.4, this option is deprecated and ignored by GTK+. The information on which day the calendar week starts is derived from the locale.</descr>
 		</issue>
 		<issue name="TDateEdit.MinDate">
-			<short>TDateEdit.MinDate is not supported by the native Calendar.
+			<short>TDateEdit.MinDate is not supported by the native Calendar.</short>
 		</issue>
 		<issue name="TDateEdit.MaxDate">
-			<short>TDateEdit.MinDate is not supported by the native Calendar.
+			<short>TDateEdit.MaxDate is not supported by the native Calendar.</short>
 		</issue>
 		<issue name="TListBox.Columns">
 			<short>Multiple columns is not supported</short>
