@@ -182,8 +182,8 @@ function AlphaBlendColor(AColorBase, AColor: TFPColor): TFPColor;
 var
   f1, f2: Double;
 begin
-  f1 := 1 - f2;
   f2 := AColor.Alpha / alphaOpaque;
+  f1 := 1 - f2;
   Result.Alpha := Round(AColorBase.Alpha * f1 + AColor.Alpha * f2);
   Result.Red := Round(AColorBase.Red * f1 + AColor.Red * f2);
   Result.Green := Round(AColorBase.Green * f1 + AColor.Green * f2);
