@@ -14,7 +14,7 @@ uses
 type
   TVirtualTreeAccessibility = class(TInterfacedObject, IDispatch, IAccessible)
   private
-    FVirtualTree: TVirtualStringTree;
+    FVirtualTree: TLazVirtualStringTree;
   public
     { IAccessibility }
     function Get_accParent(out ppdispParent: IDispatch): HResult; stdcall;
@@ -49,7 +49,7 @@ type
     function Invoke(DispID: Integer; const IID: TGUID; LocaleID: Integer;
       Flags: Word; var Params; VarResult: Pointer; ExcepInfo: Pointer;
       ArgErr: Pointer): HRESULT; stdcall;
-    constructor Create(VirtualTree: TVirtualStringTree);
+    constructor Create(VirtualTree: TLazVirtualStringTree);
   end;
 
   TVirtualTreeItemAccessibility = class(TVirtualTreeAccessibility, IAccessible)
@@ -66,7 +66,7 @@ type
     function accLocation(out pxLeft: Integer;
       out pyTop: Integer; out pcxWidth: Integer;
       out pcyHeight: Integer; varChild: OleVariant): HResult; stdcall;
-    constructor Create(VirtualTree: TVirtualStringTree);
+    constructor Create(VirtualTree: TLazVirtualStringTree);
   end;
 
   TVTMultiColumnItemAccessibility = class(TVirtualTreeItemAccessibility, IAccessible)
@@ -179,7 +179,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-constructor TVirtualTreeAccessibility.Create(VirtualTree: TVirtualStringTree);
+constructor TVirtualTreeAccessibility.Create(VirtualTree: TLazVirtualStringTree);
 // assigns the parent and current fields, and lets the control's iAccessible object know its address.
 begin
   fVirtualTree := VirtualTree;
@@ -433,7 +433,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-constructor TVirtualTreeItemAccessibility.Create(VirtualTree: TVirtualStringTree);
+constructor TVirtualTreeItemAccessibility.Create(VirtualTree: TLazVirtualStringTree);
 // sets up the parent/child relationship.
 begin
   fVirtualTree := VirtualTree;
@@ -617,7 +617,7 @@ end;
 function TVTDefaultAccessibleProvider.CreateIAccessible(
   ATree: TBaseVirtualTree): IAccessible;
 begin
-  result := TVirtualTreeAccessibility.Create(TVirtualStringTree(ATree));
+  result := TVirtualTreeAccessibility.Create(TLazVirtualStringTree(ATree));
 end;
 
 { TVTDefaultAccessibleItemProvider }
@@ -625,7 +625,7 @@ end;
 function TVTDefaultAccessibleItemProvider.CreateIAccessible(
   ATree: TBaseVirtualTree): IAccessible;
 begin
-  result := TVirtualTreeItemAccessibility.Create(TVirtualStringTree(ATree));
+  result := TVirtualTreeItemAccessibility.Create(TLazVirtualStringTree(ATree));
 end;
 
 { TVTMultiColumnAccessibleItemProvider }
@@ -634,8 +634,8 @@ function TVTMultiColumnAccessibleItemProvider.CreateIAccessible(
   ATree: TBaseVirtualTree): IAccessible;
 begin
   result := nil;
-  if TVirtualStringTree(ATree).Header.UseColumns then
-    result := TVTMultiColumnItemAccessibility.Create(TVirtualStringTree(ATree));
+  if TLazVirtualStringTree(ATree).Header.UseColumns then
+    result := TVTMultiColumnItemAccessibility.Create(TLazVirtualStringTree(ATree));
 end;
 
 var

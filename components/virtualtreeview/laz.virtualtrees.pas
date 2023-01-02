@@ -3611,7 +3611,7 @@ type
     property Text[Node: PVirtualNode; Column: TColumnIndex]: String read GetText write SetText;
   end;
 
-  TVirtualStringTree = class(TCustomVirtualStringTree)
+  TLazVirtualStringTree = class(TCustomVirtualStringTree)
   private
     function GetOptions: TStringTreeOptions;
     procedure SetOptions(const Value: TStringTreeOptions);
@@ -3863,8 +3863,6 @@ type
     //property Touch;
   end;
 
-  TLazVirtualStringTree = class(TVirtualStringTree);
-
   TVTDrawNodeEvent = procedure(Sender: TBaseVirtualTree; const PaintInfo: TVTPaintInfo) of object;
   TVTGetCellContentMarginEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode;
     Column: TColumnIndex; CellContentMarginType: TVTCellContentMarginType; var CellContentMargin: TPoint) of object;
@@ -3889,7 +3887,7 @@ type
     property OnGetNodeWidth: TVTGetNodeWidthEvent read FOnGetNodeWidth write FOnGetNodeWidth;
   end;
 
-  TVirtualDrawTree = class(TCustomVirtualDrawTree)
+  TLazVirtualDrawTree = class(TCustomVirtualDrawTree)
   private
     function GetOptions: TVirtualTreeOptions;
     procedure SetOptions(const Value: TVirtualTreeOptions);
@@ -4121,7 +4119,6 @@ type
     {$ifend}
   end;
 
-  TLazVirtualDrawTree = class(TVirtualDrawTree);
 
 // OLE Clipboard and drag'n drop helper
 procedure EnumerateVTClipboardFormats(TreeClass: TVirtualTreeClass; const List: TStrings); overload;
@@ -35759,9 +35756,9 @@ begin
   end;
 end;
 
-//----------------- TVirtualStringTree ---------------------------------------------------------------------------------
+//----------------- TLazVirtualStringTree ---------------------------------------------------------------------------------
 
-function TVirtualStringTree.GetOptions: TStringTreeOptions;
+function TLazVirtualStringTree.GetOptions: TStringTreeOptions;
 
 begin
   Result := FOptions as TStringTreeOptions;
@@ -35769,7 +35766,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualStringTree.SetOptions(const Value: TStringTreeOptions);
+procedure TLazVirtualStringTree.SetOptions(const Value: TStringTreeOptions);
 
 begin
   FOptions.Assign(Value);
@@ -35777,7 +35774,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualStringTree.GetOptionsClass: TTreeOptionsClass;
+function TLazVirtualStringTree.GetOptionsClass: TTreeOptionsClass;
 
 begin
   Result := TStringTreeOptions;
@@ -35786,9 +35783,9 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 {$if CompilerVersion >= 23}
-class constructor TVirtualStringTree.Create();
+class constructor TLazVirtualStringTree.Create();
 begin
-  TCustomStyleEngine.RegisterStyleHook(TVirtualStringTree, TVclStyleScrollBarsHook);
+  TCustomStyleEngine.RegisterStyleHook(TLazVirtualStringTree, TVclStyleScrollBarsHook);
 end;
 {$ifend}
 
@@ -35834,9 +35831,9 @@ begin
   Result := vhkOwnerDraw;
 end;
 
-//----------------- TVirtualDrawTree -----------------------------------------------------------------------------------
+//----------------- TLazVirtualDrawTree -----------------------------------------------------------------------------------
 
-function TVirtualDrawTree.GetOptions: TVirtualTreeOptions;
+function TLazVirtualDrawTree.GetOptions: TVirtualTreeOptions;
 
 begin
   Result := FOptions as TVirtualTreeOptions;
@@ -35844,7 +35841,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualDrawTree.SetOptions(const Value: TVirtualTreeOptions);
+procedure TLazVirtualDrawTree.SetOptions(const Value: TVirtualTreeOptions);
 
 begin
   FOptions.Assign(Value);
@@ -35852,7 +35849,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualDrawTree.GetOptionsClass: TTreeOptionsClass;
+function TLazVirtualDrawTree.GetOptionsClass: TTreeOptionsClass;
 
 begin
   Result := TVirtualTreeOptions;
@@ -35861,9 +35858,9 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 {$if CompilerVersion >= 23}
-class constructor TVirtualDrawTree.Create();
+class constructor TLazVirtualDrawTree.Create();
 begin
-  TCustomStyleEngine.RegisterStyleHook(TVirtualDrawTree, TVclStyleScrollBarsHook);
+  TCustomStyleEngine.RegisterStyleHook(TLazVirtualDrawTree, TVclStyleScrollBarsHook);
 end;
 {$ifend}
 
