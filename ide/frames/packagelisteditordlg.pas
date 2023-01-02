@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                          packageslisteditordlg.pas
-                          -------------------------
+                          packagelisteditordlg.pas
+                          ------------------------
 
  ***************************************************************************/
 
@@ -11,7 +11,7 @@
  *****************************************************************************
 
  Abstract:
-   Defines the TPckListEditorDialog, which is a form to edit search lists of packages
+   Defines the TPkgListEditorDialog, which is a form to edit search lists of packages
  
 }
 unit PackageListEditorDlg;
