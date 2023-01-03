@@ -800,7 +800,7 @@ var
   page: TvVectorialPage;
   prevX, prevY: Word;
 begin
-  page := AData.AddPage(not (vrfWMF_UseBottomLeftCoords in Settings.VecReaderFlags));
+  page := AData.AddPage(not (vrf_UseBottomLeftCoords in Settings.VecReaderFlags));
 
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
@@ -1347,8 +1347,9 @@ function TvWMFVectorialReader.ScaleY(y: Integer): Double;
 begin
 //  Result := ScaleSizeY(y - FWindowOrigin.Y);    // there is probably an issue with y direction
 
-  if (vrfWMF_UseBottomLeftCoords in Settings.VecReaderFlags) then
-    Result := FPageHeight - ScaleSizeY(y) else
+  if (vrf_UseBottomLeftCoords in Settings.VecReaderFlags) then
+    Result := FPageHeight - ScaleSizeY(y)
+  else
     Result := ScaleSizeY(y - FWindowOrigin.Y);
 
 //  Result := FPageHeight - ScaleSizeY(y);

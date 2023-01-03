@@ -690,7 +690,8 @@ begin
   for i:=0 to High(points) do begin
     pts[i].X := points[i].X;
     if FUseTopLeftCoordinates then
-      pts[i].Y := points[i].Y else
+      pts[i].Y := points[i].Y
+    else
       pts[i].Y := FLogicalMaxY - points[i].Y;
   end;
 

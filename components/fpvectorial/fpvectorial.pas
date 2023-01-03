@@ -1359,7 +1359,7 @@ type
     FWidth, FHeight: Double;
   public
     Document: TvVectorialDocument;
-    constructor create(APage : TvPage); override;
+    constructor Create(APage : TvPage); override;
     destructor destroy; override;
     procedure UpdateDocumentSize();
     function GetWidth: Double;
@@ -1371,7 +1371,7 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  TvVectorialReaderFlag = (vrfSVG_UseBottomLeftCoords, vrfWMF_UseBottomLeftCoords);
+  TvVectorialReaderFlag = (vrf_UseBottomLeftCoords);
   TvVectorialReaderFlags = set of TvVectorialReaderFlag;
 
   TvVectorialReaderSettings = record
@@ -5001,6 +5001,8 @@ begin
   Result := Len;
 end;
 
+{ Rotates all points of the path by the given angle (in radians) around the
+  point ABase. }
 procedure TPath.Rotate(AAngle: Double; ABase: T3DPoint);
 var
   i: Integer;

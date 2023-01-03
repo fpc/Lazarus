@@ -99,7 +99,8 @@ procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
 begin
   ADestX := ASrcX * FLOAT_PIXELS_PER_MILLIMETER;
   if APage.UseTopLeftCoordinates then
-    ADestY := ASrcY * FLOAT_PIXELS_PER_MILLIMETER else
+    ADestY := ASrcY * FLOAT_PIXELS_PER_MILLIMETER
+  else
     ADestY := (APage.Height - ASrcY) * FLOAT_PIXELS_PER_MILLIMETER;
 end;
 
