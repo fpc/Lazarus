@@ -1,9 +1,19 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: instantsearchstrings.lrsabortoperation
 msgid "No, abort operation"
-msgstr ""
+msgstr "Нет, прервать операцию"
 
 #: instantsearchstrings.lrsallprojects
 msgid "All projects"
@@ -45,11 +55,11 @@ msgstr ""
 
 #: instantsearchstrings.lrsconfigure
 msgid "Configure Instant Search"
-msgstr ""
+msgstr "Настроить мгновенный поиск"
 
 #: instantsearchstrings.lrsconfirm
 msgid "Confirmation"
-msgstr ""
+msgstr "Подтверждение"
 
 #: instantsearchstrings.lrsconfirmdeletetree
 #, object-pascal-format
@@ -57,6 +67,8 @@ msgid ""
 "Delete tree \"%s\", are you sure?\n"
 "This action cannot be undone."
 msgstr ""
+"Вы действительно хотите удалить дерево \"%s\"?\n"
+"Это действие невозможно отменить."
 
 #: instantsearchstrings.lrsconnectiontestfailed
 #, object-pascal-format
@@ -64,10 +76,12 @@ msgid ""
 "Connection test failed, reason:\n"
 "%s"
 msgstr ""
+"Проверка соединения завершилась с ошибкой по причине:\n"
+"%s"
 
 #: instantsearchstrings.lrsconnectiontestok
 msgid "Connection test succeeded!"
-msgstr ""
+msgstr "Соединение успешно проверено!"
 
 #: instantsearchstrings.lrscreateindex
 msgid "Create index table"
@@ -95,7 +109,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsdeleteindex
 msgid "Delete index"
-msgstr ""
+msgstr "Удалить индекс"
 
 #: instantsearchstrings.lrsdeleteindexfailed
 #, object-pascal-format
@@ -103,10 +117,12 @@ msgid ""
 "Deletion of index %s failed, reason:\n"
 "%s"
 msgstr ""
+"Удалить индекс %s не удалось по причине:\n"
+"%s"
 
 #: instantsearchstrings.lrsdeleteindexhint
 msgid "Prompt for index name and delete the index."
-msgstr ""
+msgstr "Удалить индекс с запрошенным именем."
 
 #: instantsearchstrings.lrsdonotcreateindex
 msgid "No, do not create the index"
@@ -130,7 +146,7 @@ msgstr ""
 
 #: instantsearchstrings.lrserrorminlengthis2
 msgid "There should be at least two characters to search."
-msgstr ""
+msgstr "Должно быть хотя бы два символа для поиска."
 
 #: instantsearchstrings.lrserrorsearching
 #, object-pascal-format
@@ -156,7 +172,7 @@ msgstr ""
 
 #: instantsearchstrings.lrshost
 msgid "Hostname"
-msgstr ""
+msgstr "Имя сервера"
 
 #: instantsearchstrings.lrsindexalreadyexists
 #, object-pascal-format
@@ -212,23 +228,23 @@ msgstr ""
 
 #: instantsearchstrings.lrsindexproject
 msgid "Index project for Instant Search"
-msgstr ""
+msgstr "Индексировать проект для мгновенного поиска"
 
 #: instantsearchstrings.lrsindexprojectdelay1
 msgid "Mark indexable"
-msgstr ""
+msgstr "Пометить индексируемым через"
 
 #: instantsearchstrings.lrsindexprojectdelay2
 msgid "minutes after open"
-msgstr ""
+msgstr "минут после открытия"
 
 #: instantsearchstrings.lrsindexprojectmoment
 msgid "Index project when"
-msgstr ""
+msgstr "Момент индексации проекта"
 
 #: instantsearchstrings.lrsindexprojectstrategy
 msgid "Mark project indexable"
-msgstr ""
+msgstr "Пометка проекта индексируемым"
 
 #: instantsearchstrings.lrsindextodelete
 msgid "Enter the name of the index to delete. This operation cannot be undone."
@@ -237,16 +253,16 @@ msgstr ""
 #: instantsearchstrings.lrsinstantsearch
 msgctxt "instantsearchstrings.lrsinstantsearch"
 msgid "Instant search"
-msgstr ""
+msgstr "Мгновенный поиск"
 
 #: instantsearchstrings.lrsinstantsearchmenu
 msgctxt "instantsearchstrings.lrsinstantsearchmenu"
 msgid "Instant search"
-msgstr ""
+msgstr "Мгновенный поиск"
 
 #: instantsearchstrings.lrsmanticoreoptions
 msgid "Manticore server"
-msgstr ""
+msgstr "Сервер Manticore"
 
 #: instantsearchstrings.lrsmanual
 msgid "Manual only"
@@ -259,7 +275,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsmarkprojectindexable
 msgid "Mark project indexable for Instant Search"
-msgstr ""
+msgstr "Пометить проект индексируемым для мгновенного поиска"
 
 #: instantsearchstrings.lrsmaxclipbrdsearchtermlength
 msgid "Max. clipboard length"
@@ -271,7 +287,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsmysqlversion
 msgid "MySQL client version"
-msgstr ""
+msgstr "Версия клиента MySQL"
 
 #: instantsearchstrings.lrsneedindexing
 msgid "Source trees must be indexed."
@@ -288,15 +304,15 @@ msgstr ""
 
 #: instantsearchstrings.lrsnomysqlversion
 msgid "No MySQL Client library version was selected for MySQL transport."
-msgstr ""
+msgstr "Для транспорта MySQL не выбрана версия клиентской библиотеки."
 
 #: instantsearchstrings.lrsnosearchtrees
 msgid "No source trees were defined."
-msgstr ""
+msgstr "Не задано ни одного дерева исходного кода."
 
 #: instantsearchstrings.lrsnoservertrees
 msgid "Source trees were not yet indexed."
-msgstr ""
+msgstr "Деревья исходного кода ещё не были проиндексированы."
 
 #: instantsearchstrings.lrsnosuchindex
 #, object-pascal-format
@@ -314,7 +330,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsnotransport
 msgid "No transport protocol was selected."
-msgstr ""
+msgstr "Не выбран транспортный протокол."
 
 #: instantsearchstrings.lrsonfirstsave
 msgid "Project is first saved"
@@ -326,11 +342,11 @@ msgstr ""
 
 #: instantsearchstrings.lrsport
 msgid "Port"
-msgstr ""
+msgstr "Порт"
 
 #: instantsearchstrings.lrsprotocol
 msgid "Protocol"
-msgstr ""
+msgstr "Протокол"
 
 #: instantsearchstrings.lrsresultslimit
 msgid "Max. result count"
@@ -425,11 +441,11 @@ msgstr ""
 
 #: instantsearchstrings.lrstestbuttonhint
 msgid "Test the connection parameters."
-msgstr ""
+msgstr "Проверить параметры соединения."
 
 #: instantsearchstrings.lrstestconnection
 msgid "Test connection"
-msgstr ""
+msgstr "Проверить соединение"
 
 #: instantsearchstrings.lrsthesetreesneedindexing
 #, object-pascal-format
@@ -452,11 +468,11 @@ msgstr ""
 
 #: instantsearchstrings.lrstreebasedir
 msgid "Path"
-msgstr ""
+msgstr "Путь"
 
 #: instantsearchstrings.lrstreebasedirhint
 msgid "Directory with source files."
-msgstr ""
+msgstr "Каталог с файлами исходного кода."
 
 #: instantsearchstrings.lrstreeenabled
 msgid "Enabled"
@@ -472,11 +488,11 @@ msgstr ""
 
 #: instantsearchstrings.lrstreename
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 #: instantsearchstrings.lrstreenamehint
 msgid "Unique name for this tree."
-msgstr ""
+msgstr "Уникальное имя дерева."
 
 #: instantsearchstrings.lrstreenotfoundresfresh
 #, object-pascal-format
@@ -491,5 +507,5 @@ msgstr ""
 
 #: instantsearchstrings.lrsyescreateindex
 msgid "Yes, create the index"
-msgstr ""
+msgstr "Да, создать индекс"
 

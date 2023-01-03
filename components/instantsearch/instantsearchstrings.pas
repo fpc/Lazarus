@@ -11,51 +11,50 @@ Resourcestring
   lrsInstantSearch = 'Instant search';
   lrsInstantSearchMenu = 'Instant search';
   lrsCurrentProject = 'Active project';
-  lrsErrorMinLengthIs2 = 'Minimim characters for search must at least be 2';
+  lrsErrorMinLengthIs2 = 'There should be at least two characters to search.';
   lrsConfigNeeded = 'Configuration needed';
-  lrsConfigNeededReason = 'Instant search is not yet configured:'#10'%s';
-  lrsNotConfigured = 'User did not configure anything';
+  lrsConfigNeededReason = 'Instant search is not yet configured:'+LineEnding+'%s';
+  lrsNotConfigured = 'User did not configure anything.';
   lrsCancelSearch = 'Cancel search';
-  lrsConfigure = 'Configure InstantSearch';
-  lrsIndexEngineLocation = 'Index engine location not set';
-  lrsNoSearchTrees = 'No source trees were defined';
-  lrsNoServerTrees = 'Source trees were not yet indexed';
-  lrsNoTransport = 'No transport protocol was selected';
-  lrsNoMysqlVersion = 'No MySQL Client library version was selected for MySQL transport';
+  lrsConfigure = 'Configure Instant Search';
+  lrsNoSearchTrees = 'No source trees were defined.';
+  lrsNoServerTrees = 'Source trees were not yet indexed.';
+  lrsNoTransport = 'No transport protocol was selected.';
+  lrsNoMysqlVersion = 'No MySQL Client library version was selected for MySQL transport.';
   lrsConnectionTestOK = 'Connection test succeeded!';
-  lrsConnectionTestFailed = 'Connection test failed, reason:'#10'%s';
-  lrsCreateIndexFailed = 'Creation of index %s failed, reason:'#10'%s';
-  lrsDeleteIndexFailed = 'Deletion of index %s failed, reason:'#10'%s';
+  lrsConnectionTestFailed = 'Connection test failed, reason:'+LineEnding+'%s';
+  lrsCreateIndexFailed = 'Creation of index %s failed, reason:'+LineEnding+'%s';
+  lrsDeleteIndexFailed = 'Deletion of index %s failed, reason:'+LineEnding+'%s';
   lrsSearchTextHint = 'Enter search text, at least %d characters';
   lrsIndexAlreadyExists = 'Index table "%s" already exists.';
   lrsCannotDeleteIndexWhileIndexing = 'Cannot delete an index while an indexing operation is in progress';
   lrsDeleteIndex = 'Delete index';
-  lrsDeleteIndexHint = 'Prompt for index name and deletes the index.';
+  lrsDeleteIndexHint = 'Prompt for index name and delete the index.';
   lrsIndexToDelete = 'Enter the name of the index to delete. This operation cannot be undone.';
   lrsNoSuchIndex = 'No such index exists: %s';
   lrsIndexDeleted = 'Index %s successfully deleted';
-  lrsCreateIndexWithName = 'Create index with name %s ?';
+  lrsCreateIndexWithName = 'Create index with name %s?';
   lrsYesCreateIndex = 'Yes, create the index';
   lrsDoNotCreateIndex = 'No, do not create the index';
 
   lrsTreeName        = 'Name';
-  lrsTreeNameHint    = 'Unique name for this tree';
+  lrsTreeNameHint    = 'Unique name for this tree.';
   lrsTreeBaseDir     = 'Path';
-  lrsTreeBaseDirHint = 'Directory with source files';
+  lrsTreeBaseDirHint = 'Directory with source files.';
   lrsTreeRecurse     = 'Recurse';
   lrsTreeAllFiles    = 'All files';
   lrsTreeExtensions  = 'Extensions';
   lrsTreeExtensionsHint = 'Comma-separated list of extensions of files';
-  lrsErrorDuplicateName = 'Duplicate tree name: %s.'#10'Please choose another name.';
+  lrsErrorDuplicateName = 'Duplicate tree name: %s.'+LineEnding+'Please choose another name.';
   lrsErrNameCannotBeEmpty = 'Source tree name cannot be empty';
-  lrsErrPathDoesNotExist = 'Directory "%s" does not exist.'#10'Please select an existing directory';
+  lrsErrPathDoesNotExist = 'Directory "%s" does not exist.'+LineEnding+'Please select an existing directory';
   lrsErrorConnecting = 'Error "%s" attempting to connect to manticoresearch server.';
   lrsErrorSearching  = 'Error "%s" when searching using manticoresearch server.';
 
   lrsTreeEnabled = 'Enabled';
-  lrsTreeNotFoundResfresh = 'Source tree %s not found.'#10'Please refresh search results.';
+  lrsTreeNotFoundResfresh = 'Source tree %s not found.'+LineEnding+'Please refresh search results.';
   lrsAllTreesNeedindexing = 'All source trees must be indexed.';
-  lrsTheseTreesNeedIndexing = 'The following source trees need to be indexed:'#10'%s';
+  lrsTheseTreesNeedIndexing = 'The following source trees need to be indexed:'+LineEnding+'%s';
   lrsIndexNow = 'Would you like to start indexing them now?';
   lrsThisNeedsSavingSettings = 'This operation runs in the background, and will cause the settings to be saved now.';
 
@@ -66,7 +65,7 @@ Resourcestring
 
   lrsNewTree = 'New source tree %d';
   lrsConfirm = 'Confirmation';
-  lrsConfirmDeleteTree = 'Delete tree "%s", are you sure?'#10'This action cannot be undone';
+  lrsConfirmDeleteTree = 'Delete tree "%s", are you sure?'+LineEnding+'This action cannot be undone.';
 
   lrsTestConnection = 'Test connection';
   lrsSourceTreeAdd  = 'Add';
@@ -90,21 +89,21 @@ Resourcestring
   lrsProtocol = 'Protocol';
   lrsPort = 'Port';
   lrsHost = 'Hostname';
-  lrsMysqlversion = 'Mysql client version';
+  lrsMysqlversion = 'MySQL client version';
   lrsSearchEngine = 'Search engine';
   lrsSourceTrees = 'Source trees';
   lrsIndexName = 'Index name';
 
   lrsCannotConnectToManticore = 'Error "%s" trying to connect to manticoresearch : %s';
   lrsNoIndex = 'Search index table not found';
-  lrsIndexNotFoundCreate = 'Search index table "%s" was not found.'#10'Create search index table "%s"?';
+  lrsIndexNotFoundCreate = 'Search index table "%s" was not found.'+LineEnding+'Create search index table "%s"?';
   lrsCreateIndex = 'Create index table';
   lrsAbortOperation = 'No, abort operation';
   lrsSaveNeeded = 'Save settings required';
-  lrsIndexNeedsSave = 'In order to index a source tree, the settings must be saved.'#10'Save settings ?';
+  lrsIndexNeedsSave = 'In order to index a source tree, the settings must be saved.'+LineEnding+'Save settings ?';
   lrsSave = 'Yes, save settings';
   lrsIndexOperationFailed = 'Failed to start index operation.';
-  lrsCannotIndexIndexInProgress = 'Cannot start an index operation:'#10'Indexing is already in progress.';
+  lrsCannotIndexIndexInProgress = 'Cannot start an index operation:'+LineEnding+'Indexing is already in progress.';
   lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files';
   lrsStartIndexingTree = 'Start indexing tree "%s", directory: "%s"';
   lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files';
@@ -122,12 +121,12 @@ Resourcestring
   lrsAllProjects = 'All projects';
   lrsTimed = 'Delayed after project open';
 
-  lrsIndexProjectStrategy = 'Mark projects indexable';
+  lrsIndexProjectStrategy = 'Mark project indexable';
   lrsIndexProjectMoment = 'Index project when';
   lrsIndexProjectDelay1 = 'Mark indexable';
   lrsIndexProjectDelay2 = 'minutes after open';
-  lrsMarkProjectIndexable = 'Mark project indexable for InstantSearch';
-  lrsIndexProject = 'Index project for InstantSearch';
+  lrsMarkProjectIndexable = 'Mark project indexable for Instant Search';
+  lrsIndexProject = 'Index project for Instant Search';
 
 implementation
 
