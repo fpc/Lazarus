@@ -9824,6 +9824,10 @@ msgstr "打开第一个选择"
 msgid "Debugger Exception Notification"
 msgstr "调试器异常通知"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11155,6 +11159,10 @@ msgstr "包含路径"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "包含路径"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

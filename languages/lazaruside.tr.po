@@ -9741,6 +9741,10 @@ msgstr "İlk seçileni aç"
 msgid "Debugger Exception Notification"
 msgstr "Hata Ayıklayıcı İstisna Bildirimi"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11055,6 +11059,10 @@ msgstr "yolu ekle"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Yolları ekle"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

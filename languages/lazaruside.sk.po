@@ -9936,6 +9936,10 @@ msgstr "Otvoriť prvý vybratý"
 msgid "Debugger Exception Notification"
 msgstr ""
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11262,6 +11266,10 @@ msgstr "cesta include"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Cesty Include"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

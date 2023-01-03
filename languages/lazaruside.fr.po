@@ -9792,6 +9792,10 @@ msgstr "Ouvrir le premier sélectionné"
 msgid "Debugger Exception Notification"
 msgstr "Notification d'exception du débogueur"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11108,6 +11112,10 @@ msgstr "chemin d'inclusion"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Inclure les chemins"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

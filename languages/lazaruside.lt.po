@@ -9934,6 +9934,10 @@ msgstr "Atverti pirmą pažymėtą"
 msgid "Debugger Exception Notification"
 msgstr "Derintuvės pranešimas apie išimtinę situaciją"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11264,6 +11268,10 @@ msgstr "kelias iki įterpinių"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Įterpimo keliai"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

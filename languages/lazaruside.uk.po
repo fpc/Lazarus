@@ -9805,6 +9805,10 @@ msgstr "Відкрити перший вибраний"
 msgid "Debugger Exception Notification"
 msgstr "Повідомлення про виняток зневаджувача"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11120,6 +11124,10 @@ msgstr "шлях доданих файлів"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Шляхи до файлів для включення"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

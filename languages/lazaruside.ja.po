@@ -9930,6 +9930,10 @@ msgstr "初めに選択されたものを開く"
 msgid "Debugger Exception Notification"
 msgstr "デバッガ例外通知"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11261,6 +11265,10 @@ msgstr "パスを含むインクルードパス"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "パスを含むインクルードパス"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

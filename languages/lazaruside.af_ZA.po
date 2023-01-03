@@ -9792,6 +9792,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr ""
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11100,6 +11104,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
+msgstr ""
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories

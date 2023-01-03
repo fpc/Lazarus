@@ -10003,6 +10003,10 @@ msgstr "Abrir primero seleccionado"
 msgid "Debugger Exception Notification"
 msgstr "Notificación de Excepciones del Depurador"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11336,6 +11340,10 @@ msgstr "ruta incluida"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Rutas de archivos include"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

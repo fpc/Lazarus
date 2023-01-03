@@ -9851,6 +9851,10 @@ msgstr "Otevřít první vybraný"
 msgid "Debugger Exception Notification"
 msgstr "Upozornění výjimky Ladiče"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11178,6 +11182,10 @@ msgstr "cesta zahrnutí"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Cesty pro začleněné soubory"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

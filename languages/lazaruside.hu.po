@@ -9805,6 +9805,10 @@ msgstr "Első kijelölt megnyitása"
 msgid "Debugger Exception Notification"
 msgstr "Hibakereső kivétel figyelmeztetés"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11120,6 +11124,10 @@ msgstr "include útvonal"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Include útvonalak"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"

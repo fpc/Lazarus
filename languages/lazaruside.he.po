@@ -10270,6 +10270,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr "הערת חריגה של מנפה השגיאות"
 
+#: lazarusidestrconsts.lisexclude
+msgid "Exclude"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
 msgid "%s excluded at run time"
@@ -11616,6 +11620,10 @@ msgstr "כלול נתיב"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "כלול נתיבים"
+
+#: lazarusidestrconsts.lisincluderecursive
+msgid "Include, recursive"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
