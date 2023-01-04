@@ -216,7 +216,7 @@ Modified in LCL 2.4 to be an alias to TCloseAction in System.UITypes for FPC
 <seealso>
 <link id="TCustomForm.OnClose">TCustomForm.OnClose</link>
 <!-- 
-Uncomment when the topic exists in RTL documentation.  
+Uncomment when the topic exists in RTL documentation.
 <link id="#rtl.system.uitypes.TCloseAction">TCloseAction</link> 
 -->
 </seealso>
@@ -238,48 +238,48 @@ Uncomment when the topic exists in RTL documentation.
 
 <element name="caNone">
 <short>
-Represents the caNone enumeration value in TCloseAction.  
+Represents the caNone enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
 Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
-higher.  
+higher.
 </version>
 <seealso/>
 </element>
 
 <element name="caHide">
 <short>
-Represents the caHide enumeration value in TCloseAction.  
+Represents the caHide enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
 Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
-higher.  
+higher.
 </version>
 <seealso/>
 </element>
 
 <element name="caFree">
 <short>
-Represents the caFree enumeration value in TCloseAction.  
+Represents the caFree enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
 Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
-higher.  
+higher.
 </version>
 <seealso/>
 </element>
 
 <element name="caMinimize">
 <short>
-Represents the caMinimize enumeration value in TCloseAction.  
+Represents the caMinimize enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
 Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
-higher.  
+higher.
 </version>
 <seealso/>
 </element>
@@ -7206,6 +7206,9 @@ form, the icon for the <var>Application</var> is used.
 Assigning a new value to Icon causes existing icon handles to be freed, and 
 the widgetset class is notified to re-create the icon handles.
 </p>
+<remark>
+For the macOS Carbon widgetset, a form-level Icon is not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomForm.BigIconHandle"/>
@@ -8022,6 +8025,9 @@ use of the platform rules. Any given value assigned to either ShowInTaskBar
 or in Application.TaskBarBehavior can be overridden at run-time based on the 
 capabilities for the widgetset or the display manager.
 </p>
+<remark>
+For the macOS Carbon widgetset, ShowInTaskBar is not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomForm.EffectiveShowInTaskBar"/>
@@ -13107,9 +13113,20 @@ provides support for hints and content-sensitive help for forms and controls
 used in the application. Convenience methods, like <var>MessageBox</var>, are 
 provided to simplify access to dialogs and error messages in the application.
 </p>
+<remark>
+For the macOS Carbon widgetset, an application is executed via the Application 
+Bundle. As a result, command line parameters are not available to the 
+application instance. The OnDropFiles event handler must be used to detected 
+when associated files need to be opened.
+</remark>
 </descr>
 <seealso>
-<link id="TScreen"/>
+<link id="TApplication.GetParams"/>
+<link id="TApplication.OnDropFiles"/>
+<link id="#lazutils.lazutf8.ParamStrUTF8">ParamStrUTF8</link>
+<link id="#fcl.custapp.TCustomApplication.ExeName">TCustomApplication.ExeName</link>
+<link id="#fcl.custapp.TCustomApplication.Params">TCustomApplication.Params</link>
+<link id="#fcl.custapp.TCustomApplication.ParamCount">TCustomApplication.ParamCount</link>
 </seealso>
 </element>
 
@@ -17308,6 +17325,11 @@ application. It is signalled from the <var>IntfDropFiles</var> method, and
 occurs after the corresponding method for the form that is the drop target 
 has been notified from the window processing loop.
 </p>
+<remark>
+For the macOS Carbon widgetset, the OnDropFiles event is fired when a file is 
+dropped on the Application dock icon or opened via Finder (when associated). 
+The event must be enabled in the Application Bundle.
+</remark>
 </descr>
 <seealso>
 <link id="TApplication.IntfDropFiles"/>
@@ -17550,6 +17572,10 @@ the file name (without path information) for the application executable file.
 Write access ensures that a new value for the property is applied to the 
 widgetset class using its <var>AppSetTitle</var> method.
 </p>
+<remark>
+For the macOS Carbon widgetset, Title cannot be changed at run-time. It must 
+be changed in the Application Bundle.
+</remark>
 </descr>
 <seealso>
 <link id="#fcl.CustApp.TCustomApplication.Title">TCustomApplication.Title</link>
