@@ -45,8 +45,7 @@ type
     FNeedInvalidate: Boolean;
     procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
   protected
-    procedure FindMatchingBracketPair(LogCaret: TPoint;
-      var StartBracket, EndBracket: TPoint);
+    procedure FindMatchingBracketPair(LogCaret: TPoint; var StartBracket, EndBracket: TPoint); virtual;
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
