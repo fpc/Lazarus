@@ -1295,22 +1295,31 @@ The default value for the property is <b>True</b> in <var>TStatusBar</var>.
 <element name="TStatusBar.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
 
 <element name="TStatusBar.Color">
-<short>The background color of the control.</short>
+<short>
+The background color of the control.
+</short>
 <descr>
 <p>
-The default value for the property is clDefault or clBtnFace (depending on 
-the UseCLDefault compiler define). If the color is clDefault , the result 
-will need to be passed through GetDefaultColor to resolve clDefault to an 
-actual TColor value.
+<var>Color</var> is a published <var>TColor</var> property in 
+<var>TStatusBar</var>. The default value for the property is clDefault or 
+clBtnFace (depending on the UseCLDefault compiler define). If the color is 
+clDefault, the result will need to be passed through GetDefaultColor to 
+resolve clDefault to an actual TColor value.
 </p>
 <p>
 Convenience routines which obtain the color by resolving clDefault and 
-ParentColor are provided in the TControl.GetColorResolvingParent and 
-TControl.GetRGBColorResolvingParent methods.
+ParentColor are provided in the GetColorResolvingParent and 
+GetRGBColorResolvingParent methods in the TControl ancestor.
 </p>
+<remark>
+For the macOS Carbon widgetset, the Color property is not supported in 
+TStatusBar. The status bar is always transparent on the platform.
+</remark>
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+<link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+<link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
 </seealso>
 </element>
 
@@ -4180,7 +4189,7 @@ list.
 </element>
 <element name="TCustomTabControl.CustomPage.Index">
 <short>
-Ordinal position in the page list for the return value.  
+Ordinal position in the page list for the return value.
 </short>
 </element>
 
@@ -4301,7 +4310,7 @@ control.
 <element name="TCustomTabControl.TabToPageIndex.AIndex">
 <short>
 Ordinal position for the visible tab to convert to a physical page index.
-</short>  
+</short>
 </element>
 
 <element name="TCustomTabControl.PageToTabIndex">
@@ -4502,6 +4511,9 @@ control.
 multiple tabs can be simultaneously selected on the tab control. When set to 
 <b>True</b>, additional tabs can be selected by holding Shift or Ctrl when the mouse button is clicked.
 </p>
+<remark>
+For the macOS Carbon widgetset, the MultiSelect property is not supported.
+</remark>
 <seealso/>
 </element>
 
@@ -4720,7 +4732,7 @@ Ordinal position for the TCustomPage instance in the property value.
 <element name="TCustomTabControl.PageCount">
 <short>
 Returns the number of page objects stored in the internal page list for the 
-tabbed control.  
+tabbed control.
 </short>
 <descr>
 <p>
@@ -4834,8 +4846,9 @@ Enables or disables justified text in the captions for tabs on the control.
 </short>
 <descr>
 <p>
-When set to False, captions are center-justified on the tabs. This property  
-requires support for the capability in the native tab control for the platform.
+When set to <b>False</b>, captions are center-justified on the tabs. This 
+property requires support for the capability in the native tab control for the 
+platform.
 </p>
 </descr>
 <seealso/>
@@ -4843,9 +4856,23 @@ requires support for the capability in the native tab control for the platform.
 
 <element name="TCustomTabControl.ScrollOpposite">
 <short>
-Introduced for use in descendent classes.
+Indicates whether unused multi-line tabs are scrolled to the side opposite of 
+the tab position.
 </short>
-<descr/>
+<descr>
+<p>
+Set <var>ScrollOpposite</var> to <b>True</b> to force an unused row of tabs in 
+a multi-line tab control to be moved when a tab in a new row is selected. The 
+previous row of tabs is moved to edge opposite of the setting in TabPosition.
+When set to <b>False</b>, a unused tab row is moved behind the current tab row.
+</p>
+<p>
+The default value for the ScrollOpposite property is <b>False</b>.
+</p>
+<p>
+ScrollOpposite is supported on the Windows widgetset only. It causes the TCS_SCROLLOPPOSITE flag to be included in the tab style flags for the widget when set to <b>True</b>.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -4859,16 +4886,23 @@ Enables display of tabs on the control when set to <b>True</b> (default).
 
 <element name="TCustomTabControl.Style">
 <short>
-Indicates the display style for the tabs on the tabbed control.
+Indicates the appearance or display style used for the tabs on the control.
 </short>
 <descr>
 <p>
 <var>Style</var> is a <var>TTabStyle</var> property which controls the visual 
 appearance and behavior for the tabs on the control. The default value for the 
-property is tsTabs and causes convention tab appearance and behavior to be 
-used for the tab controls. See TTabStyle for the values for the property and 
-their meanings.
+property is tsTabs and causes the conventional tab appearance and behavior to 
+be used for the tab controls. 
 </p>
+<p>
+See <link id="TTabStyle"/> for the other values for the property and their 
+meanings.
+</p>
+<remark>
+Use of the Style property to control tab appearance is a platform-spcific 
+feature, and is not supported for all of the LCL widgetsets.
+</remark>
 </descr>
 <seealso>
 <link id="TTabStyle"/>
@@ -5427,7 +5461,7 @@ updated in the Lazarus IDE.
 </p>
 </descr>
 <seealso>
-<link id="TTabSheet"/>  
+<link id="TTabSheet"/>
 <link id="#lcl.controls.TWinControl.ChildClassAllowed">TWinControl.ChildClassAllowed</link>
 <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
 <link id="#lcl.controls.TControl.CHeckNewParent">TControl.CheckNewParent</link>
@@ -15132,7 +15166,9 @@ and indicator when a column header is clicked on the control.
 </element>
 
 <element name="TCustomListView.StateImages">
-<short>Image list with the state images for the items on the control.</short>
+<short>
+Image list with the state images for the items on the control.
+</short>
 <descr>
 <p>
 <var>StateImages</var> is a <var>TCustomImageList</var> property which 
@@ -15153,8 +15189,16 @@ Use the OnChange, OnItemChecked, or OnDataStateChange event handlers to
 perform actions like setting the state image index for a list item when a 
 list item is modified.
 </p>
+<remark>
+For the macOS Carbon widgetset, the StateImages property is not supported.
+</remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomListView.StateImagesWidth"/>
+<link id="TCustomListView.OnChange"/>
+<link id="TCustomListView.OnItemChecked"/>
+<link id="TCustomListView.OnDataStateChange"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.StateImagesWidth">
@@ -17876,7 +17920,24 @@ an animated marquee is used in the progress bar indicator.
 <short>
 Increment applied to the value in Position in the StepIt method.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Step</var> is an <var>Integer</var> property with the increment applied 
+to the value in Position in the StepIt method. The default value for the 
+property is 10, and represents 10% of the default range in Min and Max.
+</p>
+<p>
+Changing the value for the property causes the ApplyChanges method to be 
+called to normalize the values in Min, Max, and Position. ApplyChanges also 
+updates the visual appearance and settings in the widgetset class instance.
+</p>
+<p>
+Update Step when the range of values in Min and Max are changed.
+</p>
+<remark>
+For the macOS Carbon widgetset, the Step property is not supported.
+</remark>
+</descr>
 <seealso/>
 </element>
 
@@ -17896,7 +17957,7 @@ animated marquee-style progress bar to be displayed.
 
 <element name="TCustomProgressBar.BarShowText">
 <short>
-Indicates if status text is draw over the progress bar.
+Indicates if status or progress text is draw over the progress bar.
 </short>
 <descr>
 <p>
@@ -24407,55 +24468,241 @@ Sets the position for the tick mark displayed on the track bar control.
 
 <element name="TCustomTrackBar.Frequency">
 <short>
-Indicates the frequency of tick marks displayed for the control.
+Indicates the frequency for the tick marks displayed on the control.
 </short>
+<descr>
+<p>
+<var>Frequency</var> is an <var>Integer</var> property which indicates the 
+interval between tick marks displayed on the track bar control. The default 
+value for the property is <b>1</b>, and causes a tick mark to be drawn for 
+each value between Min and Max. When set to another value, tick marks are 
+drawn for each Position where the value modulus Frequency is 0 (zero).
+</p>
+<p>
+Changing the value for the property causes the ApplyChanges method to be 
+called to update the settings and visual appearance for the widgetset control.
+</p>
+<p>
+Use LineSize to specify the increment applied to Position when a cursor key is 
+pressed.
+</p>
+<p>
+Use Min and Max to specify the range of values allowed in the Position 
+property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.LineSize"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.LineSize">
 <short>
-Increment applied to the slider position when an arrow key is pressed.
+Increment (or decrement) applied to the slider position when an arrow key is 
+pressed.
 </short>
+<descr>
+<p>
+<var>LineSize</var> is an <var>Integer</var> property used to change the 
+Position for the control when one of the arrow (cursor) keys is pressed. It 
+contains the increment (or decrement) applied to the Position property when 
+a cursor key is pressed. Use the Left or Up cursor keys to decrease the value 
+in Position. Use the Right or Down cursor keys to increase the value. The 
+default value for the property is <b>1</b>.
+</p>
+<p>
+Changing the value in LineSize causes the ApplyChanges method to be called to 
+update the visual appearance and settings for the widgetset class instance.
+</p>
+<p>
+Use Min and Max to define the range of values allowed in the Position property.
+</p>
+<remark>
+For the macOS Carbon widgetset, the LineSize property is not supported.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.ApplyChanges"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.Max">
 <short>
-Maximum value or position for the track bar slider.
+Maximum value allowed in the Position for the track bar.
 </short>
+<descr>
+<p>
+<var>Max</var> is an <var>Integer</var> property which specifies the maximum 
+value allowed in the Position property. The default value for the property is 
+10.
+</p>
+<p>
+Changing the value for the property causes Min, Max, and Position to be range 
+checked, normalized, and applied to the widgetset class instance using the 
+SetParams method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.SetParams"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.Min">
 <short>
-Minimum value or position for the track bar slider.
+Minimum value allowed in the Position for the track bar.
 </short>
+<descr>
+<p>
+Min is an Integer property which specifies the minimum value allowed in the 
+Position property. The default value for the property is 0 (zero).
+</p>
+<p>
+Changing the value for the property causes Min, Max, and Position to be range 
+checked, normalized, and applied to the widgetset class instance using the 
+SetParams method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.SetParams"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.OnChange">
 <short>
 Event handler signalled when the Position in the control has been changed.
 </short>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the value in the Position property is changed. The 
+Sender argument for the event is the TCustomTrackBar instance for the 
+notification.
+</p>
+<p>
+OnChange is signalled from the Change method. It occurs after the new value 
+for Position has been stored and the OnEditingDone event handler has been 
+signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.Changed"/>
+<link id="TCustomTrackBar.DoChange"/>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.Orientation">
 <short>
 Indicates the horizontal or vertical orientation for the track bar control.
 </short>
+<descr>
+<p>
+<var>Orientation</var> is a <var>TTrackBarOrientation</var> property which 
+indicates whether the track bar is oriented horizontally or vertically. The 
+default value for the property is trHorizontal.
+</p>
+<p>
+Changing the value for the property causes values in Width and Height to be 
+swapped to reflect the new orientation for the control. Left and Top 
+coordinates for the control are not changed. The Constraints are updated in 
+the LCL interface and the new property value is posted to the widgetset class 
+instance when its Handle has been allocated.
+</p>
+</descr>
+<seealso>
+<link id="TTrackBarOrientation"/>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Height">TControl.Height</link>
+<link id="#lcl.controls.TControl.Constraints">TControl.Constraints</link>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.PageSize">
 <short>
-The increment for the slider position when PageUp or PageDown key is pressed.
+The increment (or decrement) applied to the slider Position when the PageUp or 
+PageDown key is pressed.
 </short>
+<descr>
+<p>
+<var>PageSize</var> is an <var>Integer</var> property with the increment or 
+decrement applied to the Position property when the PageUp or PageDown key is 
+pressed while the control has focus. The default value for the property is 2.
+</p>
+<p>
+For some platforms, modified cursor keys can be used for the same purpose. For example: Ctrl+Left, Ctrl+Right, Ctrl+Up, or Ctrl+Down.
+</p>
+<p>
+Changing the value for the property causes the ApplyChanges method to be 
+called to update the settings in the widgetset class instance.
+</p>
+<p>
+Use LineSize to control the increment applied to Position when an unmodified 
+cursor key is pressed while the control has focus.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.LineSize"/>
+<link id="TCustomTrackBar.ApplyChanges"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.Position">
 <short>
 Location of the slider on the track bar between the Min and Max values.
 </short>
+<descr>
+<p>
+<var>Position</var> is an <var>Integer</var> property with the current 
+location of the slider on the track bar control. Position contains a value in 
+the range specified by the Min and Max properties.
+</p>
+<p>
+If Position is set to a value outside that range, it is set to the limit which 
+it exceeds. The new value for the property is applied to the widgetset class 
+instance when its Handle has been allocated. Position is used in the SetParams 
+method to determine if new property values needs to be applied to the widget.
+</p>
+<p>
+The property value is updated in DoChange where its value is read from the 
+widget. It is also updated in FixParams if the property value is outside the 
+range allowed in Min and Max.
+</p>
+<p>
+Changing the value for the property causes the OnChange event handler to be 
+signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.FixParams"/>
+<link id="TCustomTrackBar.SetParams"/>
+<link id="TCustomTrackBar.Changed"/>
+<link id="TCustomTrackBar.DoChange"/>
+<link id="TCustomTrackBar.OnChange"/>
+</seealso>
 </element>
+
+<!-- HERE -->
 
 <element name="TCustomTrackBar.Reversed">
 <short>
-<b>True</b> if the values are displayed in ascending order from right-to-left.
+<b>True</b> if the values on the track bar are displayed from right-to-left in 
+ascending order.
 </short>
 <descr/>
 <seealso/>
@@ -24463,22 +24710,30 @@ Location of the slider on the track bar between the Min and Max values.
 
 <element name="TCustomTrackBar.ScalePos">
 <short>
-Position where the scale is displayed.
+Position where the scale is displayed for the track bar control.
 </short>
 <descr>
-This is a GTK-specific property.
+<remark>
+ScalePos is a GTK-specific property. It is not implemented or supported for 
+other widgetsets. Use the TickMarks property on other platforms.
+</remark>
 </descr>
+<seealso>
+<link id="TCustomTrackBar.TickMarks"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.SelEnd">
-<short>Ending value for the selection range in the track bar control.</short>
+<short>
+Ending value for the selection range on the track bar control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomTrackBar.SelStart">
 <short>
-Starting value for the selection range in the track bar control.
+Starting value for the selection range on the track bar control.
 </short>
 <descr/>
 <seealso/>
@@ -24486,15 +24741,17 @@ Starting value for the selection range in the track bar control.
 
 <element name="TCustomTrackBar.ShowSelRange">
 <short>
-Displays a selection range and indicators using the values in SelStart and 
-SelEnd.
+Enables or disables a highlighted selection range with tick marks using the 
+values in SelStart and SelEnd.
 </short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomTrackBar.TabStop">
-<short>Enables or disables navigatiopn using the Tab key.</short>
+<short>
+Enables or disables navigation using the Tab key.
+</short>
 <descr>
 <p>
 The default value for the property is <b>True</b> in TCustomTrackBar.
@@ -24512,7 +24769,7 @@ Position for the tick marks relative to the slider in the track bar.
 <descr>
 <p>
 <var>Tickmarks</var> indicates where the ticks appear relative to the slider 
-in the track bar control.
+on the track bar control.
 </p>
 <dl>
 <dt>tmBottomRight</dt>
@@ -24530,6 +24787,9 @@ the left for the vertical orientation.
 Tick marks are displayed on both sides for the selected orientation.
 </dd>
 </dl>
+<remark>
+For the macOS Carbon widgetset, the TickMarks property is not supported.
+</remark>
 </descr>
 </element>
 
@@ -24584,6 +24844,7 @@ associated <link id="#lcl.comctrls.TProgressBar">TProgressBar</link>.
 </p>
 </descr>
 <seealso>
+<link id="TCustomTrackBar"/>
 <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
 </seealso>
 <example file="comctrls/TrackBarEx.pas"/>
