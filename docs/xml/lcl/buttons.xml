@@ -2499,6 +2499,10 @@ bitmap is aligned.
 Use Margin to set the space reserved on the aligned edge prior to the glyph 
 bitmap.
 </p>
+<remark>
+For the macOS Carbon widgetset, the Spacing property is not supported. Layout 
+and alignment is determined by the native control for the platform.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomBitBtn.Caption"/>
