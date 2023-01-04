@@ -2261,6 +2261,9 @@ inherited <var>Destroy</var> method.
 dialog. The default value for the property is provided by the DefaultTitle 
 method. Set the value for the property before calling the Execute method.
 </p>
+<remark>
+For the macOS Carbon widgetset, the Title property is not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCommonDialog.DefaultTitle"/>
