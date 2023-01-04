@@ -6825,22 +6825,98 @@ the control.
 
 <element name="TCustomPanel.BevelInner">
 <short>
-<var>BevelInner</var> - determines the nature of the Inner Bevel of the panel 
-(whether raised, lowered etc)
+Determines the appearance of the Inner Bevel for the panel (whether raised, 
+lowered, etc.).
 </short>
+<descr>
+<p>
+<var>BevelInner</var> is a <var>TPanelBevel</var> property which indicates the 
+drawing style used to render the inner bevel for the panel. The default value 
+for the property is bvNone and indicates that the inner bevel is not drawn.
+</p>
+<p>
+Other values from TPanelBevel can be used to draw the bevel with a raised or 
+lowered appearance, or as reserved space.
+</p>
+<p>
+Changing the value for the property causes a CM_BORDERCHANGED control message 
+to be performed for the control.
+</p>
+<remark>
+For the macOS Carbon widgetset, the values bvLowered and bvSpace are not 
+supported for the BevelInner property.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomPanel.BevelOuter"/>
+<link id="TPanelBevel"/>
+</seealso>
 </element>
 
 <element name="TCustomPanel.BevelOuter">
 <short>
-<var>BevelOuter</var> - determines the nature of the Outer Bevel of the panel 
-(whether raised, lowered etc)
+Determines the appearance of the Outer Bevel for the panel (whether raised, 
+lowered, etc.).
 </short>
+<descr>
+<p>
+<var>BevelOuter</var> is a <var>TPanelBevel</var> property which indicates the 
+drawing style used to render the outer bevel for the panel. The default value 
+for the property is bvRaised and indicates that the inner bevel is drawn with 
+a raise or outset appearance.
+</p>
+<p>
+Other values from TPanelBevel can be used to draw the bevel with a 
+lowered appearance, as reserved space, or not drawn at all.
+</p>
+<p>
+Changing the value for the property causes a CM_BORDERCHANGED control message 
+to be performed for the control.
+</p>
+<remark>
+For the macOS Carbon widgetset, the values bvLowered and bvSpace are not 
+supported for the BevelOuter property.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomPanel.BevelInner"/>
+<link id="TPanelBevel"/>
+</seealso>
 </element>
 
 <element name="TCustomPanel.BevelWidth">
 <short>
-<var>BevelWidth</var> - the Width of the panel's bevel in pixels.
+Width for a bevel on the panel in pixels.
 </short>
+<descr>
+<p>
+<var>BevelWidth</var> is a <var>TBevelWidth</var> property which indicates the 
+width for bevels draw around the panel in pixels. The default value for the 
+property is 1.
+</p>
+<p>
+Changing the value for the property causes a CM_BORDERCHANGED control message 
+to be performed for the control.
+</p>
+<p>
+BevelWidth is used when the Paint method is called to redraw the control. The 
+value in BevelWidth is used to draw both the outer bevel (using the style in 
+BevelOuter) and the inner bevel (using the style in BevelInner). Each bevel is 
+drawn by calling the Frame3D method in Canvas with BevelWidth and BevelColor 
+passed as arguments.
+</p>
+<remark>
+For the macOS Carbon widgetset, the values bvLowered and bvSpace are not 
+supported for the BevelInner property.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomPanel.Paint"/>
+<link id="TCustomPanel.BevelInner"/>
+<link id="TCustomPanel.BevelOuter"/>
+<link id="TCustomPanel.BevelColor"/>
+<link id="#lcl.controls.TWinControl.BorderWidth">TWinControl.BorderWidth</link>
+</seealso>
 </element>
 
 <element name="TCustomPanel.Color">
@@ -11021,8 +11097,8 @@ reaches 0 (zero).
 <p>
 <var>FlipChildren</var> is used to realign child controls when the BiDiMode in 
 the application has been changed.
-</p>  
-<remark>  
+</p>
+<remark>
 FlipChildren has an empty implementation in TCustomControlBar.
 </remark>
 </descr>
