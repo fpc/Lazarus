@@ -17091,6 +17091,10 @@ resolving <var>clDefault</var> and <var>ParentColor</var> are also provided
 as <var>TControl.GetColorResolvingParent</var> and 
 <var>TControl.GetRGBColorResolvingParent</var>.
 </p>
+<remark>
+For the macOS Carbon widgetset, setting Color to clBtnFace causes the 
+background for the control to become transparent.
+</remark>
 </descr>
 <seealso>
 <link id="TControl.ParentColor"/>
@@ -17280,6 +17284,10 @@ be redrawn.
 Some Font attributes may be ignored in TControl descendants. It depends on 
 the drawing style for the specific control, and whether theme services are 
 enabled for text on the control.
+</remark>
+<remark>
+For the macOS Carbon widgetset, Font does not support use of the fsStrikeOut 
+attribute in its Style property.
 </remark>
 <p>
 The PixelsPerInch property in Font is used to perform font size scaling in 
@@ -22065,7 +22073,7 @@ KeyDown is called from the KeyDownBeforeInterface method. It occurs after the Ap
 See KeyUp for the actions performed when the key is released.
 </p>
 </descr>
-<seealso>  
+<seealso>
 <link id="TWinControl.OnKeyDown"/>
 <link id="TWinControl.KeyUp"/>
 <link id="TWinControl.KeyDownBeforeInterface"/>
@@ -25545,6 +25553,11 @@ BorderStyle property must be applied in code for the handler.
 <p>
 OnPaint is signalled from the Paint method.
 </p>
+<remark>
+For the macOS Carbon widgetset, drawing on the Canvas outside of the OnPaint 
+event handler is not supported. Drawing directly to a screen device context is 
+also not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomControl.Paint"/>
@@ -26588,13 +26601,48 @@ Mouse global unit variable.
 <element name="TMouse.SetDragThreshold.AValue"/>
 
 <element name="TMouse.Capture">
-<short>Handle for the control with mouse capture.</short>
-<descr/>
+<short>
+Handle for the control with mouse capture.
+</short>
+<descr>
+<p>
+<var>Capture</var> is a <var>HWND</var> property which contains the handle for 
+the control which has the mouse capture. Its value is read from the LCL 
+interface (and ultimately the widgetset class instance).
+</p>
+<p>
+Setting a new value for the property causes either SetCapture or 
+ReleaseCapture to be called in the LCL interface (or widgetset class 
+instance). When set to 0 (the unassigned handle value), ReleaseCapture is 
+called. Otherwise, SetCapture is called to assign the new handle value to the 
+widget.
+</p>
+<remark>
+For the macOS Carbon widgetset, release capture is not supported.
+</remark>
+</descr>
 </element>
 
 <element name="TMouse.CursorPos">
-<short>The screen position for the mouse cursor.</short>
-<descr/>
+<short>
+The screen position for the mouse cursor.
+</short>
+<descr>
+<p>
+<var>CursorPos</var> is a <var>TPoint</var> property which contains the screen 
+coordinates where the mouse pointer is located. The X and Y members in the 
+TPoint type contain the horizontal and vertical screen coordinates, 
+respectively, and are read from and written to the widgetset class instance.
+</p>
+<p>
+When reading values in the property, the X and Y members may return 0 if the 
+widgetset is unable to return a TPoint instance.
+</p>
+<remark>
+For the macOS Carbon widgetset, changing the values in CursorPos does not 
+triggering OnMoveMove events in a form or control.
+</remark>
+</descr>
 </element>
 
 <element name="TMouse.IsDragging">
