@@ -1621,6 +1621,11 @@ Items in the control when the drop-down list is displayed.
 Do not create instances of TCustomComboBox. Use one of the descendent 
 classes, like <var>TComboBox</var> or <var>TComboBoxEx</var>.
 </p>
+<remark>
+The Height property in TCustomComboBox / TComboBox cannot be changed for some 
+platforms, like Windows and macOS Carbon. It is best to set AutoSize to 
+<b>True</b> to ensure consistent size handling on the supported platforms.
+</remark>
 </descr>
 </element>
 
@@ -3535,7 +3540,9 @@ apply key press events for the control.
 </element>
 
 <element name="TCustomComboBox.DroppedDown">
-<short>Indicates whether the drop-down list has been displayed.</short>
+<short>
+Indicates whether the drop-down list has been displayed.
+</short>
 <descr>
 <p>
 <var>DroppedDown</var> is a <var>Boolean</var> property which indicates 
@@ -3558,10 +3565,15 @@ control is altered, when <b>CBN_DROPDOWN</b> or <b>CBN_CLOSEUP</b> control
 messages are handled, and when key down events are handled which change the 
 visibility of the drop-down list.
 </p>
+<remark>
+For the macOS Carbon widgetset, setting DroppedDown to <b>True</b> does not 
+cause the drop-down list to be displayed when Style is set to csDropDownList.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomComboBox.Style"/>
 <link id="TCustomComboBox.KeyDown"/>
+<link id="TComboBoxStyle"/>
 </seealso>
 </element>
 
@@ -3820,6 +3832,10 @@ drop-down list.
 <p>
 The default value for the property is <b>8</b>.
 </p>
+<remark>
+For the macOS Carbon widgetset, changing the value in DropDownCount does not 
+affect the control. This attribute is determined by the native control.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomComboBox.Items"/>
@@ -4024,7 +4040,9 @@ Assign a new string value to replace the selected text within the
 </element>
 
 <element name="TCustomComboBox.Style">
-<short>Appearance and behavior of the combo-box.</short>
+<short>
+Controls the appearance and behavior for the combo-box.
+</short>
 <descr>
 <p>
 Style is quite Windows-centric, reflecting the evolution of combo-box styles. 
@@ -4050,6 +4068,11 @@ Owner-drawn drop-down lists have been added, with the values:
 <dt>csOwnerDrawVariable</dt>
 <dd>Each item in the list can have a different height.</dd>
 </dl>
+<remark>
+For the macOS Carbon widgetset, the following style values are not recognized: 
+csSimple, csOwnerDrawFixed and csOwnerDrawVariable. They are not supported in 
+the native control.
+</remark>
 </descr>
 </element>
 
@@ -4217,6 +4240,11 @@ If no value is selected from the drop-down list, the default text (if any)
 remains, or any information typed directly into <var>Text</var> will be 
 returned, and <var>ItemIndex</var> takes the value of -1.
 </p>
+<remark>
+The Height property in TComboBox cannot be changed for some platforms, like 
+Windows and macOS Carbon. It is best to set AutoSize to <b>True</b> to ensure 
+consistent size handling on the supported platforms.
+</remark>
 </descr>
 <seealso>
 <link id="HowToUseStdCtrls"/>
@@ -5769,7 +5797,7 @@ behavior. The default value for the property is <b>True</b>.
 
 <element name="TCustomListBox.Columns">
 <short>
-The number of visible vertical columns displayed in the control.
+The number of visible columns displayed on the control.
 </short>
 <descr>
 <p>
@@ -5780,6 +5808,9 @@ single column becomes Width/Columns. Setting a new value for Columns causes
 the widgetset class to be notified when a handle has been allocated for the 
 control.
 </p>
+<remark>
+For the macOS Carbon widgetset, the Columns property is not supported.
+</remark>
 </descr>
 </element>
 
@@ -8106,6 +8137,9 @@ PasswordChar.
 Typically used in password input, to hide the input from other viewers. The 
 value in <var>Text</var> is still available for the <b>WM_GETTEXT</b> message.
 </p>
+<remark>
+For the macOS Carbon widgetset, changing the default value for the property is not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomEdit.EchoMode"/>
@@ -9184,6 +9218,10 @@ When <b>False</b>, the display for long lines is truncated at the right
 margin for the control. It can be made visible when the text can be scrolled 
 horizontally.
 </p>
+<remark>
+For the macOS Carbon widgetset, changing the property value to <b>False</b> 
+does not allow long text lines to be scrolled horizontally.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomMemo.ScrollBars"/>
@@ -11663,7 +11701,9 @@ returned from the <var>GetControlClassDefaultSize</var> class method.
 </element>
 
 <element name="TCustomCheckBox.Alignment">
-<short>Indicates the alignment for the caption text in the control.</short>
+<short>
+Indicates the alignment for the caption text in the control.
+</short>
 <descr>
 <p>
 <var>Alignment</var> is a <var>TLeftRight</var> property with the horizontal 
@@ -11679,6 +11719,9 @@ when its <var>Handle</var> has been allocated.
 <p>
 The value in Alignment is used to set the creation parameters for the control.
 </p>
+<remark>
+For the macOS Carbon widgetset, the Alignment property is not supported.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomCheckBox.CreateParams"/>
