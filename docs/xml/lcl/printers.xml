@@ -3575,7 +3575,9 @@ specified ordinal position in Printers.
 </element>
 
 <element name="TPrinter.FileName">
-<short>File name used to store output from the print device.</short>
+<short>
+File name used to store output from the print device.
+</short>
 <descr>
 <p>
 <var>FileName</var> is a <var>String</var> property which contains the path 
@@ -3585,6 +3587,12 @@ stored.
 <remark>
 FileName is not used in the implementation of <var>TPrinter</var>. It is 
 provided for use in descendent classes.
+</remark>
+<remark>
+The content stored in FileName is specific to the printer backend used for a 
+given platform. For example: When using CUPS (mainly under UNIX-like systems), 
+it will contain Postscript output. For Windows, it will contain the format 
+required for the selected printer device.
 </remark>
 </descr>
 <seealso/>
