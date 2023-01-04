@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="lcl">
-	<widgetset name="qt5">
+	<widgetset name="qt6">
 		<issue name="TCheckBox.Alignment">
 			<short>CheckBox Alignment property is not supported</short>
 			<descr>Use BiDiMode = bdRightToLeft as a workaround</descr>
