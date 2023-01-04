@@ -3919,6 +3919,10 @@ OwnerDraw is used when the widgetset class renders the menu. If OwnerDraw is
 the menu control. Otherwise, the <var>OnMeasureItem</var> and 
 <var>OnDrawItem</var> event handlers are signalled for the purpose.
 </p>
+<remark>
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
+widgetset.
+</remark>
 </descr>
 <seealso>
 <link id="TMenu.OnDrawItem"/>
@@ -3930,7 +3934,12 @@ the menu control. Otherwise, the <var>OnMeasureItem</var> and
 
 <element name="TMenu.OnDrawItem">
 <short>Event handler signalled to draw a menu item on the menu.</short>
-<descr/>
+<descr>
+<remark>
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
+widgetset.
+</remark>
+</descr>
 <seealso>
 <link id="TMenu.OwnerDraw"/>
 <link id="TMenu.OnMeasureItem"/>
@@ -3942,7 +3951,12 @@ the menu control. Otherwise, the <var>OnMeasureItem</var> and
 Event handler signalled to get the width and height for a menu item on the 
 menu.
 </short>
-<descr/>
+<descr>
+<remark>
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
+widgetset.
+</remark>
+</descr>
 <seealso>
 <link id="TMenu.OwnerDraw"/>
 <link id="TMenu.OnDrawItem"/>
