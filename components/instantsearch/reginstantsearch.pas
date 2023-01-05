@@ -161,11 +161,8 @@ begin
         IDEInstantSearchManager.StartMarkProjectTimer(aProject);
       end;
     end;
-  if aTreeID<>'' then
-    begin
-    IDEInstantSearchManager.ProjectTreeName:=aTreeID;
-    IDEInstantSearchManager.SearchProject:=True;
-    end;
+  IDEInstantSearchManager.ProjectTreeName:=aTreeID;
+  IDEInstantSearchManager.SearchProject:=(aTreeID<>'');
   if Assigned(InstantSearchForm) then
     InstantSearchForm.ActiveProjectChanged;
 end;
