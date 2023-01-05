@@ -2831,8 +2831,14 @@ Indicates whether a check mark is displayed beside the menu item.
 Indicates if the menu item is the default selection.
 </short>
 <descr>
+<p>
 When <var>Default</var> is set to <b>True</b>, the menu item is normally 
 displayed in boldface and can be executed by pressing the <b>Enter</b> key.
+</p>
+<remark>
+The Default property is not supported for the GTK2, GTK3, QT4, QT5, and QT6 
+widgetsets.
+</remark>
 </descr>
 <seealso/>
 </element>
@@ -2971,6 +2977,9 @@ Indicates if the menu item caption is displayed with right-justification.
 The default value for the property is <b>False</b>, and causes the menu item 
 caption to use left-justification.
 </p>
+<remark>
+RightJustify is not supported for the QT4, QT5, and QT6 widgetsets.
+</remark>
 </descr>
 <seealso/>
 </element>
@@ -3920,8 +3929,7 @@ the menu control. Otherwise, the <var>OnMeasureItem</var> and
 <var>OnDrawItem</var> event handlers are signalled for the purpose.
 </p>
 <remark>
-OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
-widgetset.
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon, GTK2, QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 <seealso>
@@ -3936,8 +3944,7 @@ widgetset.
 <short>Event handler signalled to draw a menu item on the menu.</short>
 <descr>
 <remark>
-OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
-widgetset.
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon, GTK2, QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 <seealso>
@@ -3953,8 +3960,7 @@ menu.
 </short>
 <descr>
 <remark>
-OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon 
-widgetset.
+OwnerDraw, OnDrawItem, and OnMeasureItem are not supported on the macOS Carbon, GTK2, QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 <seealso>
