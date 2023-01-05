@@ -15,7 +15,7 @@ unit svgvectorialwriter;
 interface
 
 uses
-  Classes, SysUtils, math, fpvectorial, fpvutils, fpcanvas;
+  Classes, SysUtils, math, fpvectorial, fpvutils, fpimage, fpcanvas;
 
 type
   { TvSVGVectorialWriter }
@@ -117,20 +117,19 @@ begin
 end;
 
 function TvSVGVectorialWriter.GetBrushAsXMLStyle(ABrush: TvBrush): String;
-var
-  fillStr: String;
 begin
   if ABrush.Kind = bkSimpleBrush then begin
     if ABrush.Style = bsClear then
-      fillStr := 'none'
-    else
-      fillStr := '#' + FPColorToRGBHexString(ABrush.Color)
+      Result := 'fill:none;'
+    else begin
+      Result := Format('fill:#%s;', [FPColorToRGBHexString(ABrush.Color)]);
+      if ABrush.Color.Alpha <> alphaOpaque then
+        Result := Format('%s fill-opacity:%f', [Result, ABrush.Color.Alpha / alphaOpaque], FPointSeparator);
+    end;
   end else begin
     inc(FGradientIndex);
-    fillStr := Format('url(#gradient%d)', [FGradientIndex]);
+    Result := Format('fill:url(#gradient%d);', [FGradientIndex]);
   end;
-
-  Result := Format('fill:%s;', [fillStr]);
 end;
 
 function TvSVGVectorialWriter.GetGradientBrushAsXML(ABrush: TvBrush): String;
@@ -202,11 +201,18 @@ end;
 function TvSVGVectorialWriter.GetPenAsXMLStyle(APen: TvPen): String;
 var
   colorStr: String;
+  opacity: Double;
   penWidth: Integer;
 begin
   if APen.Style = psClear then
-    colorStr := 'none' else
+  begin
+    colorStr := 'none';
+    opacity := 1.0;
+  end else
+  begin
     colorStr := '#' + FPColorToRGBHexString(APen.Color);
+    opacity := APen.Color.Alpha / alphaOpaque;
+  end;
 
   if APen.Width >= 1 then
     penWidth := APen.Width
@@ -214,9 +220,9 @@ begin
     penWidth := 1;
 
   Result := Format(
-    'stroke:%s; stroke-width:%dpx; stroke-linecap:butt; stroke-linejoin:miter; stroke-opacity:1;', [
-    colorStr, penwidth
-  ]);
+    'stroke:%s; stroke-width:%dpx; stroke-linecap:butt; stroke-linejoin:miter; stroke-opacity:%f;', [
+    colorStr, penwidth, opacity
+  ], FPointSeparator);
 
   case APen.Style of
     psDash       : Result := Result + 'stroke-dasharray: 9, 5;';
