@@ -1142,7 +1142,6 @@ does not have focus, it displays the greyed value "(filter)".
 </element>
 
 <!-- private -->
-<element name="TCustomControlFilterEdit.fFilter"/>
 <element name="TCustomControlFilterEdit.fFilterLowercase"/>
 <element name="TCustomControlFilterEdit.fFilterOptions"/>
 <element name="TCustomControlFilterEdit.fIdleConnected"/>
@@ -1164,15 +1163,32 @@ Application is idle.
 <short>Indicates the filter is applied immediately.</short>
 </element>
 
+<element name="TCustomControlFilterEdit.GetFilter">
+<short>
+Gets the value for the Filter property.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+</seealso>
+</element>
+<element name="TCustomControlFilterEdit.GetFilter.Result">
+<short>
+Value for the Filter property.
+</short>
+</element>
+
 <element name="TCustomControlFilterEdit.SetFilter">
-<short>Sets the value for the Filter property.</short>
+<short>
+Sets the value for the Filter property.
+</short>
 <descr/>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
 </seealso>
 </element>
 <element name="TCustomControlFilterEdit.SetFilter.AValue">
-<short>New value for the property.</short>
+<short>New value for the Filter property.</short>
 </element>
 
 <element name="TCustomControlFilterEdit.SetFilterOptions"/>
@@ -1236,10 +1252,10 @@ mechanism.
 <descr>
 <p>
 The value is <b>True</b> when <var>TextHint</var> contains a value other than 
-the <var>rsFilter</var> resource string.
+the default value in the <var>rsFilter</var> resource string.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TCustomControlFilterEdit.IsTextHintStored.Result">
 <short>
@@ -1288,22 +1304,29 @@ Calls the inherited DestroyWnd method.
 </seealso>
 </element>
 
-<element name="TCustomControlFilterEdit.InternalSetFilter">
+<element name="TCustomControlFilterEdit.ActivateFilter">
 <short>
-Causes the control to apply the specified filter value and re-sort the items 
-which match the filter value.
+Activates the Filter using the existing filter text.
 </short>
 <descr/>
+<p>
+<var>ActivateFilter</var> ensures that the Button for the control is enabled 
+when the value in Text is not an empty string (''). It stores an internal copy 
+of the Filter (converted to lowercase), and calls InvalidateFilter to set the 
+internal flags for the control.
+</p>
+<p>
+ActivateFilter is called from the EditChange method when the user types the 
+value for the Text property. It is also called initially when a container 
+control is assigned.
+</p>
 <seealso>
-<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
-<link id="TCustomControlFilterEdit.FilterOptions"/>
-<link id="TCustomControlFilterEdit.SortAndFilter"/>
+<link id="TCustomControlFilterEdit.EditChange"/>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.InvalidateFilter"/>
+<link id="TCustomEditButton.Button"/>
 </seealso>
-</element>
-<element name="TCustomControlFilterEdit.InternalSetFilter.AValue">
-<short>
-Filter value used to select the available items for the control.
-</short>
 </element>
 
 <element name="TCustomControlFilterEdit.DoDefaultFilterItem">
@@ -1314,14 +1337,15 @@ control.
 <descr>
 <p>
 Signals the OnFilterItemEx (preferred) or OnFilterItem (deprecated) event 
-handlers (when assigned) to determine if the item meets the filter condition. 
-Values in ACaption and ItemData are passed as arguments to the event handlers.
+handlers (when assigned) to determine if the item meets the Filter condition. 
+Values in <var>ACaption</var> and <var>ItemData</var> are passed as arguments 
+to the event handlers.
 </p>
 <p>
-The return value is <b>True</b> when the item meets the filter condition(s) 
-implemented in the event handlers. The DoDefaultFilterItem method is called 
-when the return value is <b>False</b>, or the event handlers are not assigned 
-in the class instance.
+The return value is <b>True</b> when the item matches the Filter value. The 
+DoDefaultFilterItem method is called when the return value from the event 
+handlers is <b>False</b>, or the event handlers are not assigned in the class 
+instance.
 </p>
 </descr>
 <seealso>
@@ -1402,8 +1426,22 @@ Shift, Alt, or Ctrl modifier for the key down event.
 <short>
 Performs actions needed when the Edit for the control is changed.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>EditChange</var> is an overridden method in 
+<var>TCustomControlFilterEdit</var> used to apply the Filter for the control 
+when its value has been changed in the edit control. EditChange calls the 
+ActivateFilter method to apply the Filter value and update the enabled state 
+for the Button on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.ActivateFilter"/>
+<link id="TCustomControlFilterEdit.InvalidateFilter"/>
+<link id="TCustomEditButton.Button"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.BuddyClick">
@@ -1626,11 +1664,20 @@ Connects to OnIdle handler which filters the data later.
 
 <element name="TCustomControlFilterEdit.ForceFilter">
 <short>
-Applies a new filter immediately without waiting for idle. Returns the 
-previous filter.
+Applies a new Filter immediately without waiting for an idle state.
 </short>
-<descr/>
+<descr>
+<p>
+Calls the ApplyFilter method to immediately apply the value in Filter using 
+the ApplyFilterCore method in the implementation.
+</p>
+</descr>
 <seealso/>
+</element>
+<element name="TCustomControlFilterEdit.ForceFilter.Result">
+<short>
+Returns the previous Filter value.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.StoreSelection">
@@ -1664,39 +1711,17 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 
+<!-- TODO: Modified in 4c822bb36e. -->
 <element name="TCustomControlFilterEdit.Filter">
-<short>The textual representation for the filter.</short>
+<short>
+The textual representation for the filter.
+</short>
 <descr>
 <p>
 Typically a user types it in the edit control but it can also be set in code. 
 Filtering is done during idle time after the value of Filter text has changed.
 </p>
 </descr>
-</element>
-
-<element name="TCustomControlFilterEdit.FilterLowercase">
-<short>Lowercase variant of the Filter property.</short>
-<descr>
-<p>
-<var>FilterLowercase</var> is a read-only <var>String</var> property which 
-contains a variant of <var>Filter</var> converted to lowercase characters. It 
-is used in the implementation of the <var>DoDefaultFilterItem</var> method 
-when case sensitivity is not enabled in the <var>FilterOptions</var> property 
-( <var>fsoCaseSensitive</var> is not included). The property can be used in a 
-similar manner in routines assigned to the <var>OnFilterItem</var> and 
-<var>OnFilterItemEx</var> event handlers.
-</p>
-<p>
-The value for FilterLowercase is derived and assigned when the value in the 
-<var>Filter</var> property is changed.
-</p>
-</descr>
-<seealso>
-<link id="TCustomControlFilterEdit.DoDefaultFilterItem"/>
-<link id="TCustomControlFilterEdit.OnFilterItem"/>
-<link id="TCustomControlFilterEdit.OnFilterItemEx"/>
-<link id="TCustomControlFilterEdit.Filter"/>
-</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.IdleConnected">
