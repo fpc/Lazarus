@@ -194,6 +194,9 @@ New value for the ByAllFields property.
 
 <element name="TListViewFilterEdit.SetFilteredListview">
 <short>Sets the value for the FilteredListview property.</short>
+<seealso>
+<link id="TListViewFilterEdit.FilteredListview"/>
+</seealso>
 </element>
 <element name="TListViewFilterEdit.SetFilteredListview.AValue">
 <short>New value for the FilteredListview property.</short>
@@ -570,7 +573,9 @@ FilteredListview when the Filter is cleared for the control.
 </element>
 
 <element name="TListViewFilterEdit.FilteredListview">
-<short>The associated list view for the filtered edit control.</short>
+<short>
+The associated list view for the filtered edit control.
+</short>
 <descr>
 <p>
 <var>FilteredListview</var> is a <var>TCustomListView</var> property with the 
@@ -584,13 +589,14 @@ not been assigned (contains Nil), or FilteredListView does not contain any
 list items in its Items property.
 </p>
 <p>
-Changing the value in the property causes the value in Text to be assigned to 
-the Filter property for the control. This causes the original list item data 
-in FilteredListView to be stored to the Items property in the control.
+Changing the value in the property causes the Filter text to be re-applied to 
+the control by calling the ActivateFilter method. Values in the Items property 
+are updated to reflect the list Items in FilteredListView after the Filter has 
+been applied.
 </p>
 <p>
-Use ByAllFields to control whether SubItems in list item data are included in 
-the filtered values for the control.
+Use the ByAllFields property to control whether SubItems in the list item data 
+are included in the filtered values for the control.
 </p>
 </descr>
 <seealso>
