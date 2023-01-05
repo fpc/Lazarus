@@ -27,7 +27,7 @@ Resourcestring
   lrsDeleteIndexFailed = 'Deletion of index %s failed, reason:'+LineEnding+'%s';
   lrsSearchTextHint = 'Enter search text, at least %d characters';
   lrsIndexAlreadyExists = 'Index table "%s" already exists.';
-  lrsCannotDeleteIndexWhileIndexing = 'Cannot delete an index while an indexing operation is in progress';
+  lrsCannotDeleteIndexWhileIndexing = 'Cannot delete an index while an indexing operation is in progress.';
   lrsDeleteIndex = 'Delete index';
   lrsDeleteIndexHint = 'Prompt for index name and delete the index.';
   lrsIndexToDelete = 'Enter the name of the index to delete. This operation cannot be undone.';
@@ -38,18 +38,18 @@ Resourcestring
   lrsDoNotCreateIndex = 'No, do not create the index';
 
   lrsTreeName        = 'Name';
-  lrsTreeNameHint    = 'Unique name for this tree.';
+  lrsTreeNameHint    = 'Unique name for this tree';
   lrsTreeBaseDir     = 'Path';
-  lrsTreeBaseDirHint = 'Directory with source files.';
+  lrsTreeBaseDirHint = 'Directory with source files';
   lrsTreeRecurse     = 'Recurse';
   lrsTreeAllFiles    = 'All files';
   lrsTreeExtensions  = 'Extensions';
   lrsTreeExtensionsHint = 'Comma-separated list of extensions of files';
   lrsErrorDuplicateName = 'Duplicate tree name: %s.'+LineEnding+'Please choose another name.';
-  lrsErrNameCannotBeEmpty = 'Source tree name cannot be empty';
-  lrsErrPathDoesNotExist = 'Directory "%s" does not exist.'+LineEnding+'Please select an existing directory';
-  lrsErrorConnecting = 'Error "%s" attempting to connect to manticoresearch server.';
-  lrsErrorSearching  = 'Error "%s" when searching using manticoresearch server.';
+  lrsErrNameCannotBeEmpty = 'Source tree name cannot be empty.';
+  lrsErrPathDoesNotExist = 'Directory "%s" does not exist.'+LineEnding+'Please select an existing directory.';
+  lrsErrorConnecting = 'Error "%s" attempting to connect to Manticore server.';
+  lrsErrorSearching  = 'Error "%s" when searching using Manticore server.';
 
   lrsTreeEnabled = 'Enabled';
   lrsTreeNotFoundResfresh = 'Source tree %s not found.'+LineEnding+'Please refresh search results.';
@@ -69,17 +69,16 @@ Resourcestring
 
   lrsTestConnection = 'Test connection';
   lrsSourceTreeAdd  = 'Add';
-  lrsSourceTreeAddHint  = 'Add a new source tree definition';
+  lrsSourceTreeAddHint  = 'Add a new source tree definition.';
   lrsSourceTreeDelete = 'Delete';
-  lrsSourceTreeDeleteHint  = 'Delete the highlighted source tree definition';
+  lrsSourceTreeDeleteHint  = 'Delete the highlighted source tree definition.';
   lrsSourceTreeIndex = 'Index';
-  lrsSourceTreeIndexHint = 'Index the highlighted source tree definition';
   lrsSourceTreeEdit = 'Edit';
-  lrsSourceTreeEditHint = 'Edit the highlighted source tree definition';
+  lrsSourceTreeEditHint = 'Edit the highlighted source tree definition.';
   lrsSourceTreeClear = 'Clear';
-  lrsSourceTreeClearHint = 'Remove all words in the highlighted source tree definition';
+  lrsSourceTreeClearHint = 'Remove all words in the highlighted source tree definition.';
   lrsSourceTreeClearAll = 'Clear all';
-  lrsSourceTreeClearAllHint = 'Remove all words in all source tree definitions';
+  lrsSourceTreeClearAllHint = 'Remove all words in all source tree definitions.';
 
   lrsManticoreOptions = 'Manticore server';
   lrsIndexingOptions = 'Indexing and searching';
@@ -94,16 +93,16 @@ Resourcestring
   lrsSourceTrees = 'Source trees';
   lrsIndexName = 'Index name';
 
-  lrsCannotConnectToManticore = 'Error "%s" trying to connect to manticoresearch : %s';
+  lrsCannotConnectToManticore = 'Error "%s" trying to connect to Manticore server: %s';
   lrsNoIndex = 'Search index table not found';
   lrsIndexNotFoundCreate = 'Search index table "%s" was not found.'+LineEnding+'Create search index table "%s"?';
   lrsCreateIndex = 'Create index table';
   lrsAbortOperation = 'No, abort operation';
-  lrsSaveNeeded = 'Save settings required';
-  lrsIndexNeedsSave = 'In order to index a source tree, the settings must be saved.'+LineEnding+'Save settings ?';
+  lrsSaveNeeded = 'Save settings required.';
+  lrsIndexNeedsSave = 'In order to index a source tree, the settings must be saved.'+LineEnding+'Save settings?';
   lrsSave = 'Yes, save settings';
   lrsIndexOperationFailed = 'Failed to start index operation.';
-  lrsCannotIndexIndexInProgress = 'Cannot start an index operation:'+LineEnding+'Indexing is already in progress.';
+  lrsCannotIndexIndexInProgress = 'Cannot start an index operation while another one is in progress.';
   lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files';
   lrsStartIndexingTree = 'Start indexing tree "%s", directory: "%s"';
   lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files';
@@ -112,7 +111,7 @@ Resourcestring
   lrsIndexingOperationFinished = 'Finished indexing operation.';
   lrsMarkingIndexable = 'Marking project "%s" as indexable';
   lrsTestButtonHint = 'Test the connection parameters.';
-  lrsCreateIndexButtonHint = 'Create the index table. You need to test the connection first';
+  lrsCreateIndexButtonHint = 'Create the index table. You need to test the connection first.';
   lrsNotProperlyConfigured = 'Instantsearch is not properly configured to connect to mantisearch: %s';
 
   lrsOnOpen = 'Project is opened';

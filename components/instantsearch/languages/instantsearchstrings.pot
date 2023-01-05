@@ -19,17 +19,15 @@ msgstr ""
 
 #: instantsearchstrings.lrscannotconnecttomanticore
 #, object-pascal-format
-msgid "Error \"%s\" trying to connect to manticoresearch : %s"
+msgid "Error \"%s\" trying to connect to Manticore server: %s"
 msgstr ""
 
 #: instantsearchstrings.lrscannotdeleteindexwhileindexing
-msgid "Cannot delete an index while an indexing operation is in progress"
+msgid "Cannot delete an index while an indexing operation is in progress."
 msgstr ""
 
 #: instantsearchstrings.lrscannotindexindexinprogress
-msgid ""
-"Cannot start an index operation:\n"
-"Indexing is already in progress."
+msgid "Cannot start an index operation while another one is in progress."
 msgstr ""
 
 #: instantsearchstrings.lrsconfigneeded
@@ -74,7 +72,7 @@ msgid "Create index table"
 msgstr ""
 
 #: instantsearchstrings.lrscreateindexbuttonhint
-msgid "Create the index table. You need to test the connection first"
+msgid "Create the index table. You need to test the connection first."
 msgstr ""
 
 #: instantsearchstrings.lrscreateindexfailed
@@ -113,12 +111,12 @@ msgid "No, do not create the index"
 msgstr ""
 
 #: instantsearchstrings.lrserrnamecannotbeempty
-msgid "Source tree name cannot be empty"
+msgid "Source tree name cannot be empty."
 msgstr ""
 
 #: instantsearchstrings.lrserrorconnecting
 #, object-pascal-format
-msgid "Error \"%s\" attempting to connect to manticoresearch server."
+msgid "Error \"%s\" attempting to connect to Manticore server."
 msgstr ""
 
 #: instantsearchstrings.lrserrorduplicatename
@@ -134,14 +132,14 @@ msgstr ""
 
 #: instantsearchstrings.lrserrorsearching
 #, object-pascal-format
-msgid "Error \"%s\" when searching using manticoresearch server."
+msgid "Error \"%s\" when searching using Manticore server."
 msgstr ""
 
 #: instantsearchstrings.lrserrpathdoesnotexist
 #, object-pascal-format
 msgid ""
 "Directory \"%s\" does not exist.\n"
-"Please select an existing directory"
+"Please select an existing directory."
 msgstr ""
 
 #: instantsearchstrings.lrsfinishedindexingproject
@@ -192,7 +190,7 @@ msgstr ""
 #: instantsearchstrings.lrsindexneedssave
 msgid ""
 "In order to index a source tree, the settings must be saved.\n"
-"Save settings ?"
+"Save settings?"
 msgstr ""
 
 #: instantsearchstrings.lrsindexnotfoundcreate
@@ -349,7 +347,7 @@ msgid "Yes, index all source trees"
 msgstr ""
 
 #: instantsearchstrings.lrssaveneeded
-msgid "Save settings required"
+msgid "Save settings required."
 msgstr ""
 
 #: instantsearchstrings.lrssearchengine
@@ -366,7 +364,7 @@ msgid "Add"
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeaddhint
-msgid "Add a new source tree definition"
+msgid "Add a new source tree definition."
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeclear
@@ -378,11 +376,11 @@ msgid "Clear all"
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeclearallhint
-msgid "Remove all words in all source tree definitions"
+msgid "Remove all words in all source tree definitions."
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeclearhint
-msgid "Remove all words in the highlighted source tree definition"
+msgid "Remove all words in the highlighted source tree definition."
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreedelete
@@ -390,7 +388,7 @@ msgid "Delete"
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreedeletehint
-msgid "Delete the highlighted source tree definition"
+msgid "Delete the highlighted source tree definition."
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeedit
@@ -398,15 +396,11 @@ msgid "Edit"
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeedithint
-msgid "Edit the highlighted source tree definition"
+msgid "Edit the highlighted source tree definition."
 msgstr ""
 
 #: instantsearchstrings.lrssourcetreeindex
 msgid "Index"
-msgstr ""
-
-#: instantsearchstrings.lrssourcetreeindexhint
-msgid "Index the highlighted source tree definition"
 msgstr ""
 
 #: instantsearchstrings.lrssourcetrees
@@ -455,7 +449,7 @@ msgid "Path"
 msgstr ""
 
 #: instantsearchstrings.lrstreebasedirhint
-msgid "Directory with source files."
+msgid "Directory with source files"
 msgstr ""
 
 #: instantsearchstrings.lrstreeenabled
@@ -475,7 +469,7 @@ msgid "Name"
 msgstr ""
 
 #: instantsearchstrings.lrstreenamehint
-msgid "Unique name for this tree."
+msgid "Unique name for this tree"
 msgstr ""
 
 #: instantsearchstrings.lrstreenotfoundresfresh
