@@ -144,35 +144,44 @@ begin
   if ABrush.Kind = bkRadialGradient then begin
     gradientTag := 'radialGradient';
     if ABrush.Gradient_cx_Unit = vcuPercentage then
-      cxstr := Format('%f%%', [ABrush.Gradient_cx*100], FPointSeparator) else
+      cxstr := Format('%f%%', [ABrush.Gradient_cx*100], FPointSeparator)
+    else
       cxstr := FloatToSVGStr(ABrush.Gradient_cx);
     if ABrush.Gradient_cy_Unit = vcuPercentage then
-      cystr := Format('%f%%', [ABrush.Gradient_cy*100], FPointSeparator) else
+      cystr := Format('%f%%', [ABrush.Gradient_cy*100], FPointSeparator)
+    else
       cystr := FloatToSVGStr(ABrush.Gradient_cy);
     if ABrush.Gradient_r_Unit = vcuPercentage then
-      rstr := Format('%f%%', [ABrush.Gradient_r*100], FPointSeparator) else
+      rstr := Format('%f%%', [ABrush.Gradient_r*100], FPointSeparator)
+    else
       rstr := FloatToSVGStr(ABrush.Gradient_r);
     if ABrush.Gradient_fx_Unit = vcuPercentage then
-      fxstr := Format('%f%%', [ABrush.Gradient_fx*100], FPointSeparator) else
+      fxstr := Format('%f%%', [ABrush.Gradient_fx*100], FPointSeparator)
+    else
       fxstr := FloatToSVGStr(ABrush.Gradient_fx);
     if ABrush.Gradient_fy_Unit = vcuPercentage then
-      fystr := Format('%f%%', [ABrush.Gradient_fy*100], FPointSeparator) else
+      fystr := Format('%f%%', [ABrush.Gradient_fy*100], FPointSeparator)
+    else
       fystr := FloatToSVGStr(ABrush.Gradient_fy);
     gradientParams := Format('cx="%s" cy="%s" r="%s" fx="%s" fy="%s"',
       [cxstr, cystr, rstr, fxstr, fystr]);
   end else begin
     gradientTag := 'linearGradient';
     if gfRelStartX in ABrush.Gradient_flags then
-      x1Str := Format('%f%%', [ABrush.Gradient_start.X*100], FPointSeparator) else
+      x1Str := Format('%f%%', [ABrush.Gradient_start.X*100], FPointSeparator)
+    else
       x1Str := FloatToSVGStr(ABrush.Gradient_start.X);
     if gfRelEndX in ABrush.Gradient_flags then
-      x2Str := Format('%f%%', [ABrush.Gradient_end.X*100], FPointSeparator) else
+      x2Str := Format('%f%%', [ABrush.Gradient_end.X*100], FPointSeparator)
+    else
       x2Str := FloatToSVGStr(ABrush.Gradient_end.X);
     if gfRelStartY in ABrush.Gradient_flags then
-      y1Str := Format('%f%%', [ABrush.Gradient_start.Y*100], FPointSeparator) else
+      y1Str := Format('%f%%', [ABrush.Gradient_start.Y*100], FPointSeparator)
+    else
       y1Str := FloatToSVGStr(ABrush.Gradient_start.Y);
     if gfRelEndY in ABrush.Gradient_flags then
-      y2Str := Format('%f%%', [ABrush.Gradient_end.Y*100], FPointSeparator) else
+      y2Str := Format('%f%%', [ABrush.Gradient_end.Y*100], FPointSeparator)
+    else
       y2Str := FloatToSVGStr(ABrush.Gradient_end.Y);
     gradientParams := Format('x1="%s" y1="%s" x2="%s" y2="%s"',
       [x1Str, y1Str, x2Str, y2Str]);

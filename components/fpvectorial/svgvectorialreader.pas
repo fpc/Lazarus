@@ -1420,7 +1420,6 @@ var
   lAttrName, lAttrValue, lNodeName: DOMString;
   i, len: Integer;
   lCurSubNode: TDOMNode;
-  lBrushEntity, lCurBrush: TvEntityWithPenAndBrush;
   lGradientColor: TvGradientColor;
   x1, y1, x2, y2: Double;
 begin
@@ -1468,6 +1467,7 @@ begin
         Exclude(ADest.Brush.Gradient_flags, gfRelToUserSpace);
     end;
   end;
+
   ADest.Brush.Gradient_start.X := x1;
   ADest.Brush.Gradient_end.X := x2;
   ADest.Brush.Gradient_start.Y := y1;
@@ -1498,7 +1498,6 @@ begin
     ADest.Brush.Kind := bkHorizontalGradient
   else
     ADest.Brush.Kind := bkOtherLinearGradient;
-
   // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
   // <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
   lCurSubNode := ANode.FirstChild;
@@ -1537,6 +1536,7 @@ begin
   lContent := StringReplace(lContent, '<![CDATA[', '', []);
   lContent := StringReplace(lContent, ']]>', '', []);
   lContent := Trim(lContent);
+  lCurName := '';
   lParserState := 0;
   for i := 1 to Length(lContent) do
   begin
@@ -1544,8 +1544,10 @@ begin
     case lParserState of
     0: // filling class name
     begin
-      if lCurChar = '{' then lParserState := 1
-      else lCurName += lCurChar;
+      if lCurChar = '{' then
+        lParserState := 1
+      else
+        lCurName += lCurChar;
     end;
     1: // filling class data
     begin
@@ -1560,7 +1562,8 @@ begin
         lCurName := '';
         lCurData := '';
       end
-      else lCurData += lCurChar;
+      else
+        lCurData += lCurChar;
     end;
     end;
   end;
@@ -1572,19 +1575,19 @@ var
   lEntityName: DOMString;
   lBlock: TvBlock;
   lPreviousLayer: TvEntityWithSubEntities;
-  lAttrName, lAttrValue, lNodeName, lEntityValue: DOMString;
+  lAttrName, lAttrValue: DOMString;
   lLayerName: String;
   i, len: Integer;
   lCurNode, lCurSubNode: TDOMNode;
   lBrushEntity, lCurBrush: TvEntityWithPenAndBrush;
   lCurEntity: TvEntity;
-  lAttrValue_Double: Double;
+  val_cx, val_cy, val_r, val_fx, val_fy: Double;
+  val_cx_doc, val_cy_doc, val_rx_doc, val_ry_doc, val_fx_doc, val_fy_doc: Double;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
     lEntityName := LowerCase(lCurNode.NodeName);
-    lEntityValue := lCurNode.NodeValue;
     case lEntityName of
       'radialgradient':
       begin
@@ -1608,7 +1611,6 @@ begin
         ReadDefs_LinearGradient(lBrushEntity, lCurNode, AData);
 
         // Now process our own properties
-
         lBrushEntity.Brush.Kind := bkRadialGradient;
 
         // <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
@@ -1621,28 +1623,64 @@ begin
         //  id="radialGradient3333" gradientUnits="userSpaceOnUse"
         //  gradientTransform="matrix(0.05999054,1.120093,-1.0249935,0.05489716,995.9708,109.4759)"
         //  cx="406.62762" cy="567.12799" fx="406.62762" fy="567.12799" r="37.15749" />
+        val_cx := 0.5;     lBrushEntity.Brush.Gradient_cx_Unit := vcuPercentage;
+        val_cy := 0.5;     lBrushEntity.Brush.Gradient_cy_Unit := vcuPercentage;
+        val_r := 0.5;      lBrushEntity.Brush.Gradient_r_Unit := vcuPercentage;
+        val_fx := 0.5;     lBrushEntity.Brush.Gradient_fx_Unit := vcuPercentage;
+        val_fy := 0.5;     lBrushEntity.Brush.Gradient_fy_Unit := vcuPercentage;
         for i := 0 to lCurNode.Attributes.Length - 1 do
         begin
           lAttrName := lCurNode.Attributes.Item[i].NodeName;
           lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
-          case lAttrName of
-          'cx', 'cy', 'fx', 'fy', 'r':
-            lAttrValue_Double := StringWithUnitToFloat(lAttrValue, sckUnknown, suMM, suMM);
-          end;
 
           case lAttrName of
-          'id': lBrushEntity.Name := lAttrValue;
-          'cx': lBrushEntity.Brush.Gradient_cx := lAttrValue_Double;
-          'cy': lBrushEntity.Brush.Gradient_cy := lAttrValue_Double;
-          'r':  lBrushEntity.Brush.Gradient_r  := lAttrValue_Double;
-          'fx': lBrushEntity.Brush.Gradient_fx := lAttrValue_Double;
-          'fy': lBrushEntity.Brush.Gradient_fy := lAttrValue_Double;
+            'id':
+              lBrushEntity.Name := lAttrValue;
+            'cx':
+              begin
+                if lAttrValue[Length(lAttrValue)] <> '%' then
+                  lBrushEntity.Brush.Gradient_cx_Unit := vcuDocumentUnit;
+                val_cx := StringWithPercentToFloat(lAttrValue);
+              end;
+            'cy':
+              begin
+                if lAttrValue[Length(lAttrValue)] <> '%' then
+                  lBrushEntity.Brush.Gradient_cy_Unit := vcuDocumentUnit;
+                val_cy := StringWithPercentToFloat(lAttrValue);
+              end;
+            'r':
+              begin
+                if lAttrValue[Length(lAttrValue)] <> '%' then
+                  lBrushEntity.Brush.Gradient_r_Unit := vcuDocumentUnit;
+                val_r := StringWithPercentToFloat(lAttrValue);
+              end;
+            'fx':
+              begin
+                if lAttrValue[Length(lAttrValue)] <> '%' then
+                  lBrushEntity.Brush.Gradient_fx_Unit := vcuDocumentUnit;
+                val_fx := StringWithPercentToFloat(lAttrValue);
+              end;
+            'fy':
+              begin
+                if lAttrValue[Length(lAttrValue)] <> '%' then
+                  lBrushEntity.Brush.Gradient_fy_Unit := vcuDocumentUnit;
+                val_fy := StringWithPercentToFloat(lAttrValue);
+              end;
           end;
-          //lBrushEntity.Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit
         end;
+
+        ConvertSVGCoordinatesToFPVCoordinates(AData, val_cx, val_cy, val_cx_doc, val_cy_doc);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, val_r, val_r, val_rx_doc, val_ry_doc);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, val_fx, val_fy, val_fx_doc, val_fy_doc);
+        lBrushEntity.Brush.Gradient_cx := IfThen(lBrushEntity.Brush.Gradient_cx_Unit = vcuPercentage, val_cx, val_cx_doc);
+        lBrushEntity.Brush.Gradient_cy := IfThen(lBrushEntity.Brush.Gradient_cy_Unit = vcuPercentage, val_cy, val_cy_doc);
+        lBrushEntity.Brush.Gradient_r  := IfThen(lBrushEntity.Brush.Gradient_r_Unit = vcuPercentage, val_r, val_rx_doc);
+        lBrushEntity.Brush.Gradient_fx := IfThen(lBrushEntity.Brush.Gradient_fx_Unit = vcuPercentage, val_fx, val_fx_doc);
+        lBrushEntity.Brush.Gradient_fy := IfThen(lBrushEntity.Brush.Gradient_fx_Unit = vcuPercentage, val_fy, val_fy_doc);
 
         FBrushDefs.Add(lBrushEntity);
       end;
+
       {
       <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
@@ -1652,9 +1690,7 @@ begin
       'lineargradient':
       begin
         lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
-
         ReadDefs_LinearGradient(lBrushEntity, lCurNode, AData);
-
         FBrushDefs.Add(lBrushEntity);
       end;
       // Sometime entities are also put in the defs
@@ -3418,7 +3454,7 @@ begin
   else if LastChar = '%' then
   begin
     ValueStr := Copy(AStr, 1, Len-1);
-    Result := StrToInt(ValueStr);
+    Result := StrToFloat(ValueStr, FPointSeparator);
   end
   else if UnitStr = 'pt' then
   begin

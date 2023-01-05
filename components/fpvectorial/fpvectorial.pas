@@ -166,7 +166,10 @@ type
     Gradient_start: T2DPoint; // Start/end point of gradient, in pixels by default,
     Gradient_end: T2DPoint;   // but if gfRel* in flags relative to entity boundary or user space
     Gradient_flags: TvGradientFlags;
-    Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
+    // Radial gradients
+    Gradient_cx, Gradient_cy: Double;  // center of outer-most circle
+    Gradient_r: Double;                // radius of outer-most circle
+    Gradient_fx, Gradient_fy: Double;  // focal point (center of inner-most circle)
     Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
     Gradient_colors: TvGradientColors;
   end;
@@ -260,6 +263,7 @@ type
                     vnfLowerRoman,   // i, ii, iii, iv....
                     vnfUpperLetter,  // A, B, C, D...
                     vnfUpperRoman);  // I, II, III, IV....
+
   { TvListLevelStyle }
 
   TvListLevelStyle = Class
@@ -4273,31 +4277,41 @@ var
   //
   i, j: Integer;
   lx, ly: Integer;
+  lGradient_cx_px, lGradient_cy_px, lGradient_r_px{, lGradient_fx_px, lGradient_fy_px}: Integer;
+  lWidth, lHeight: Integer;
+  lAspectRatio: Double;
   lDist: Double;
-  lGradient_cx_px, lGradient_cy_px, lGradient_r_px, lGradient_fx_px, lGradient_fy_px: Double;
-  lWidth, lHeight, lBiggestHalfSide: Integer;
-  lBiggestSizeIsY: Boolean;
   lColor: TFPColor;
 
-  function Gradient_value_to_px(AValue: Double; AUnit: TvCoordinateUnit; AIsY: Boolean): Integer;
+  function GradientValue_to_px(AValue: Double; AUnit: TvCoordinateUnit; AIsY: Boolean): Integer;
   var
     lSideLen: Integer;
   begin
     Result := 0;
-    if AIsY then lSideLen := (ARect.Bottom-ARect.Top)
-    else lSideLen := (ARect.Right-ARect.Left);
+
+    if AIsY then
+      lSideLen := (ARect.Bottom-ARect.Top)
+    else
+      lSideLen := (ARect.Right-ARect.Left);
+
     case AUnit of
-    //vcuDocumentUnit: Result := ;
-    vcuPercentage:   Result := Round(lSideLen * AValue);
+      vcuDocumentUnit:
+        if AIsY then
+          Result := CoordToCanvasY(AValue, ARenderInfo.DestY, ARenderInfo.MulY)
+        else
+          Result := CoordToCanvasX(AValue, ARenderInfo.DestX, ARenderInfo.MulX);
+      vcuPercentage:
+        Result := Round(lSideLen * AValue);
     end;
   end;
 
-  function Distance_To_RadialGradient_Color(ADist: Double): TFPColor;
+  function Distance_To_RadialGradientColor(ADist: Double): TFPColor;
   var
-    k: Integer;
+    k, kmax: Integer;
   begin
     Result := colTransparent;
-    for k := 0 to Length(Brush.Gradient_colors)-1 do
+    kmax := Length(Brush.Gradient_colors) - 1;
+    for k := 0 to kmax do
     begin
       if k = 0 then
       begin
@@ -4313,22 +4327,26 @@ var
           Brush.Gradient_colors[k].Position - Brush.Gradient_colors[k-1].Position);
         Exit;
       end;
+
+      if (k = kmax) and (ADist >= Brush.Gradient_colors[k].Position) then
+        Result := Brush.Gradient_Colors[k].Color;
     end;
   end;
 
 begin
   lWidth := (ARect.Right-ARect.Left);
   lHeight := (ARect.Bottom-ARect.Top);
-  lBiggestSizeIsY := lHeight > lWidth;
-  if lBiggestSizeIsY then lBiggestHalfSide := Round(lHeight / 2)
-  else lBiggestHalfSide := Round(lWidth / 2);
+  lAspectRatio := lHeight/lWidth;
 
-  // Calculate Gradient_X_px
-  lGradient_cx_px := Gradient_value_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
-  lGradient_cy_px := Gradient_value_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, True);
-  lGradient_r_px := Gradient_value_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, lBiggestSizeIsY);
-  lGradient_fx_px := Gradient_value_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, False);
-  lGradient_fy_px := Gradient_value_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, True);
+  // Calculate center of outer-most gradient circle
+  lGradient_cx_px := GradientValue_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
+  lGradient_cy_px := GradientValue_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, True);
+  // Calculate radius of outer-most gradient circle, relative the width
+  lGradient_r_px := GradientValue_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, False);
+  { -- not implemented, yet
+  lGradient_fx_px := GradientValue_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, False);
+  lGradient_fy_px := GradientValue_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, True);
+  }
 
   // pixel-by-pixel version
   for i := 0 to lWidth-1 do
@@ -4339,10 +4357,13 @@ begin
       ly := ARect.Top + j;
       if not IsPointInPolygon(lx, ly, APoints) then Continue;
 
-      lDist := sqrt(sqr(i-lGradient_cx_px)+sqr(j-lGradient_cy_px));
-      lDist := lDist / lBiggestHalfSide;
+      // distance of current point (i, j) to gradient center, corrected for aspect ratio
+      lDist := sqrt(sqr(i - lGradient_cx_px) + sqr((j - lGradient_cy_px)/lAspectRatio));
+      lDist := lDist / lGradient_r_px;
       lDist := Min(Max(0, lDist), 1);
-      lColor := Distance_To_RadialGradient_Color(lDist);
+
+      // Color for point (lx, ly)
+      lColor := Distance_To_RadialGradientColor(lDist);
       ADest.Colors[lx, ly] := AlphaBlendColor(ADest.Colors[lx, ly], lColor);
     end;
   end;
@@ -4364,11 +4385,18 @@ var
     lSideLen: Integer;
   begin
     Result := 0;
-    if AIsY then lSideLen := (ARect.Bottom-ARect.Top)
-    else lSideLen := (ARect.Right-ARect.Left);
+    if AIsY then
+      lSideLen := (ARect.Bottom-ARect.Top)
+    else
+      lSideLen := (ARect.Right-ARect.Left);
     case AUnit of
-    vcuDocumentUnit: Result := Round(AValue);
-    vcuPercentage:   Result := Round(lSideLen * AValue);
+      vcuDocumentUnit:
+        if AIsY then
+          Result := CoordToCanvasY(AValue, ARenderInfo.DestY, ARenderInfo.MulY)
+        else
+          Result := CoordToCanvasX(AValue, ARenderInfo.DestX, ARenderInfo.MulX);
+      vcuPercentage:
+        Result := Round(lSideLen * AValue);
     end;
   end;
 
@@ -6583,6 +6611,8 @@ begin
           end;
         bkRadialGradient:
           begin
+            // Boundary rect of shape to be filled by a gradient
+            lRect := Rect(x1, y1, x2, y2);
             // Border will be drawn later (gradient painting needs its own pen)
             ADest.Pen.Style := psClear;
             // Draw the gradient
