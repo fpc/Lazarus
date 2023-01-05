@@ -1623,7 +1623,7 @@ classes, like <var>TComboBox</var> or <var>TComboBoxEx</var>.
 </p>
 <remark>
 The Height property in TCustomComboBox / TComboBox cannot be changed for some 
-platforms, like Windows and macOS Carbon. It is best to set AutoSize to 
+platforms, including Windows and macOS Carbon. It is best to set AutoSize to 
 <b>True</b> to ensure consistent size handling on the supported platforms.
 </remark>
 </descr>
@@ -3833,8 +3833,9 @@ drop-down list.
 The default value for the property is <b>8</b>.
 </p>
 <remark>
-For the macOS Carbon widgetset, changing the value in DropDownCount does not 
-affect the control. This attribute is determined by the native control.
+For the macOS Carbon and GTK2 widgetsets, changing the value in DropDownCount 
+does not affect the control. This attribute is determined by the native 
+control.
 </remark>
 </descr>
 <seealso>
@@ -4244,6 +4245,10 @@ returned, and <var>ItemIndex</var> takes the value of -1.
 The Height property in TComboBox cannot be changed for some platforms, like 
 Windows and macOS Carbon. It is best to set AutoSize to <b>True</b> to ensure 
 consistent size handling on the supported platforms.
+</remark>
+<remark>
+Changing the value in BorderStyle to bsNone has no effect for the Windows 
+widgetset. It is impossible to remove the border under Windows.
 </remark>
 </descr>
 <seealso>
@@ -5809,7 +5814,7 @@ the widgetset class to be notified when a handle has been allocated for the
 control.
 </p>
 <remark>
-For the macOS Carbon widgetset, the Columns property is not supported.
+The Columns property is not supported for the macOS Carbon, Cocoa, GTK2, QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 </element>
@@ -7976,6 +7981,9 @@ Use SelText, SelStart, and SelLength to change the text selection in program
 code. Use ClearSelection to remove the current text selection in the edit 
 control.
 </p>
+<remark>
+HideSelection is not supported for the GTK2, QT4, QT5, and QT6 widgetsets.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomEdit.Text"/>
@@ -7998,6 +8006,9 @@ In Delphi MaxLength only limits user input. The LCL actually restricts the
 maximum length of the stored text; this simplifies the implementation for 
 non-Win32 widgetsets.
 </p>
+<remark>
+MaxLength is not supported for the QT4 widgetset.
+</remark>
 </descr>
 </element>
 
@@ -8034,7 +8045,9 @@ when the value for the control has been changed.
 </element>
 
 <element name="TCustomEdit.NumbersOnly">
-<short>Indicates if the edit control accepts numeric values only.</short>
+<short>
+Indicates if the edit control accepts numeric values only.
+</short>
 <descr>
 <p>
 <var>NumbersOnly</var> is a <var>Boolean</var> property which controls 
@@ -8070,6 +8083,9 @@ keyboard event handlers like OnKeyPress or OnKeyDown to filter values as they
 are entered into a control. Or, use TMaskEdit which supports using an edit 
 mask for the input values.
 </p>
+<remark>
+NumbersOnly is not supported for the GTK2 or GTK3 widgetset.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomEdit.Text"/>
@@ -11720,7 +11736,8 @@ when its <var>Handle</var> has been allocated.
 The value in Alignment is used to set the creation parameters for the control.
 </p>
 <remark>
-For the macOS Carbon widgetset, the Alignment property is not supported.
+The Alignment property is not supported for macOS Carbon, Cocoa, GTK2 and QT4 
+widgetsets. Set BiDiMode to bdRightToLeft as an alternative.
 </remark>
 </descr>
 <seealso>
