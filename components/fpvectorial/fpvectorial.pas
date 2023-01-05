@@ -3911,11 +3911,13 @@ end;
 procedure TvEntityWithPen.ApplyPenToCanvas(constref ARenderInfo: TvRenderInfo; APen: TvPen);
 var
   ADest: TFPCustomCanvas absolute ARenderInfo.Canvas;
+  AMulX: Double absolute ARenderInfo.MulX;
+  AMulY: Double absolute ARenderInfo.MulY;
 begin
   if ADest = nil then
     exit;
   ADest.Pen.FPColor := AdjustColorToBackground(APen.Color, ARenderInfo);
-  ADest.Pen.Width := Max(1, APen.Width);   // wp: why was here "1;//APen.Width;" ???
+  ADest.Pen.Width := Max(1, FPVSizeToCanvas(APen.Width, Max(AMulX, abs(AMulY))));
   ADest.Pen.Style := APen.Style;
   {$ifdef USE_LCL_CANVAS}
   if (APen.Style = psPattern) then
