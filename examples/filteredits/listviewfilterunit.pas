@@ -96,14 +96,11 @@ end;
 
 procedure TListViewFilterForm.FormCreate(Sender: TObject);
 begin
-    ListView1.BeginUpdate;
     AddLVItem('String1',  'String2');
     AddLVItem('String3',  'String4');
     AddLVItem('A String', 'another String');
     AddLVItem('x string', 'Extra String');
-    ListViewFilterEdit1.InvalidateFilter;
     ListViewFilterEdit1.ResetFilter;
-    ListView1.EndUpdate;
 end;
 
 procedure TListViewFilterForm.ButtonProgramClick(Sender: TObject);

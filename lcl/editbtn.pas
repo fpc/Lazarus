@@ -1187,10 +1187,7 @@ end;
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 begin
   if Text=AValue then Exit;
-  Text:=AValue;
-  Button.Enabled:=AValue<>'';
-  fFilterLowercase:=UTF8LowerCase(AValue);
-  InvalidateFilter;
+  Text:=AValue;           // ActivateFilter will be called by EditChange handler.
 end;
 
 procedure TCustomControlFilterEdit.SetFilterOptions(AValue: TFilterStringOptions);
