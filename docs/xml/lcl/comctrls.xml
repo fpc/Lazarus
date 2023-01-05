@@ -458,7 +458,11 @@ not derived from TStatusPanels, the return value is <b>Nil</b>.
 <short>
 <var>Alignment</var> - whether left- or right-justified or centered.
 </short>
-<descr>Only supported on Windows.</descr>
+<descr>
+<remark>
+Only supported for the Windows platform.
+</remark>
+</descr>
 <seealso/>
 </element>
 
@@ -4512,7 +4516,7 @@ multiple tabs can be simultaneously selected on the tab control. When set to
 <b>True</b>, additional tabs can be selected by holding Shift or Ctrl when the mouse button is clicked.
 </p>
 <remark>
-For the macOS Carbon widgetset, the MultiSelect property is not supported.
+The MultiSelect property is not supported for the macOS Carbon and Cocoa, GTK2, GTK3, QT4, QT5, and QT6 widgetsets.
 </remark>
 <seealso/>
 </element>
@@ -4900,7 +4904,7 @@ See <link id="TTabStyle"/> for the other values for the property and their
 meanings.
 </p>
 <remark>
-Use of the Style property to control tab appearance is a platform-spcific 
+Use of the Style property to control tab appearance is a platform-specific 
 feature, and is not supported for all of the LCL widgetsets.
 </remark>
 </descr>
@@ -14779,6 +14783,9 @@ property in the list view control.
 Use the indexed Column property to access a column definition by its ordinal 
 position in the Columns collection.
 </p>
+<remark>
+The Columns property is not supported for the GTK2 widgetset.  
+</remark>
 </descr>
 <seealso>
 <link id="TCustomListView.ViewStyle"/>
@@ -14830,6 +14837,9 @@ causes the widgetset class to be updated with the new value.
 <remark>
 The Windows API documentation recommends setting HideSelection to 
 <b>False</b> if the application uses Accessibility roles and descriptions.
+</remark>
+<remark>
+HideSelection is not supported for the QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 <seealso>
@@ -15190,7 +15200,8 @@ perform actions like setting the state image index for a list item when a
 list item is modified.
 </p>
 <remark>
-For the macOS Carbon widgetset, the StateImages property is not supported.
+The StateImages property is not supported for the macOS Carbon, Cocoa, 
+GTK2, QT4, QT5, and QT6 widgetsets.
 </remark>
 </descr>
 <seealso>
