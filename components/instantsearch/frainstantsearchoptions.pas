@@ -527,6 +527,7 @@ begin
   actClear.Hint := lrsSourceTreeClearHint;
   actClearAll.Caption := lrsSourceTreeClearAll;
   actClearAll.Hint := lrsSourceTreeClearAllHint;
+  actCreateIndex.Caption:=lrsCreateIndex2;
   actDeleteIndex.Caption:=lrsDeleteIndex;
   actDeleteIndex.Hint:=lrsDeleteIndexHint;
   GBManticore.Caption:=lrsManticoreOptions;
@@ -537,10 +538,13 @@ begin
   lblProtocol.Caption:=lrsProtocol;
   lblPort.Caption:=lrsPort;
   lblHost.Caption:=lrsHost;
+  edtHostname.TextHint:=lrsEnterHostnameLeaveEmptyForLocalhost;
   lblMySQLversion.Caption:=lrsMysqlversion;
+  lblDisconnect.Caption:=lrsIdleDisconnectTime;
   lblIndexName.Caption:=lrsIndexName;
   TSSearchEngine.Caption:=lrsSearchEngine;
   TSSourceTrees.Caption:=lrsSourceTrees;
+  gbAutomations.Caption:=lrsAutomation;
   lblIndexProjectStrategy.Caption:=lrsIndexProjectStrategy;
   lblIndexProjectMoment.Caption:=lrsIndexProjectMoment;
   lblEditIndexDelay1.Caption:=lrsIndexProjectDelay1;

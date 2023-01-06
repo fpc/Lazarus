@@ -1,447 +1,453 @@
 object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
   Left = 0
-  Height = 567
+  Height = 834
   Top = 0
-  Width = 567
-  ClientHeight = 567
-  ClientWidth = 567
+  Width = 709
+  ClientHeight = 834
+  ClientWidth = 709
+  DesignTimePPI = 120
+  ParentFont = False
   TabOrder = 0
   DesignLeft = 742
   DesignTop = 164
   object PCOptions: TPageControl
+    AnchorSideLeft.Control = lblIndexProjectMoment
     Left = 0
-    Height = 543
-    Top = 24
-    Width = 567
+    Height = 804
+    Top = 30
+    Width = 709
     ActivePage = TSSearchEngine
     Align = alClient
+    Anchors = [akTop, akLeft, akBottom]
     TabIndex = 0
     TabOrder = 0
     object TSSearchEngine: TTabSheet
       Caption = 'Search engine'
-      ClientHeight = 513
-      ClientWidth = 557
+      ClientHeight = 771
+      ClientWidth = 701
       object GBManticore: TGroupBox
-        Left = 0
-        Height = 208
-        Top = 0
-        Width = 557
+        Left = 10
+        Height = 251
+        Top = 10
+        Width = 681
         Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 10
         Caption = 'Manticore Server'
-        ClientHeight = 191
-        ClientWidth = 555
+        ClientHeight = 226
+        ClientWidth = 677
         TabOrder = 0
         object cbMySQLVersion: TComboBox
-          AnchorSideLeft.Control = cbProtocol
-          AnchorSideTop.Control = cbProtocol
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = lblMySQLversion
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 29
-          Top = 45
-          Width = 136
-          BorderSpacing.Top = 8
-          ItemHeight = 0
+          Left = 10
+          Height = 28
+          Top = 80
+          Width = 230
+          ItemHeight = 20
           Style = csDropDownList
           TabOrder = 0
         end
         object lblMySQLversion: TLabel
-          AnchorSideLeft.Control = GBManticore
+          AnchorSideLeft.Control = lblProtocol
           AnchorSideTop.Control = cbProtocol
           AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = cbMySQLVersion
-          AnchorSideBottom.Control = cbMySQLVersion
           AnchorSideBottom.Side = asrBottom
-          Left = 8
-          Height = 29
-          Top = 45
-          Width = 144
+          Left = 10
+          Height = 20
+          Top = 60
+          Width = 139
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Left = 8
-          BorderSpacing.Top = 8
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'MySQL Client version'
           Layout = tlCenter
         end
         object lblPort: TLabel
-          AnchorSideLeft.Control = GBManticore
-          AnchorSideTop.Control = edtPort
-          AnchorSideRight.Control = edtPort
-          AnchorSideBottom.Control = edtPort
+          AnchorSideLeft.Control = edtPort
+          AnchorSideTop.Control = lblHost
+          AnchorSideTop.Side = asrCenter
           AnchorSideBottom.Side = asrBottom
-          Left = 0
-          Height = 27
-          Top = 117
-          Width = 152
+          Left = 437
+          Height = 20
+          Top = 114
+          Width = 26
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Right = 8
           Caption = 'Port'
           Layout = tlCenter
         end
         object edtPort: TEdit
-          AnchorSideLeft.Control = cbProtocol
           AnchorSideTop.Control = edtHostname
-          AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 117
-          Width = 80
-          BorderSpacing.Top = 8
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = GBManticore
+          AnchorSideRight.Side = asrBottom
+          Left = 437
+          Height = 28
+          Top = 134
+          Width = 230
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 10
           NumbersOnly = True
+          ParentShowHint = False
           TabOrder = 1
-          TextHint = 'Enter port number'
         end
         object edtHostname: TEdit
-          AnchorSideLeft.Control = cbProtocol
-          AnchorSideTop.Control = cbMySQLVersion
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = lblHost
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 82
-          Width = 224
-          BorderSpacing.Top = 8
+          AnchorSideRight.Control = edtPort
+          Left = 10
+          Height = 28
+          Top = 134
+          Width = 417
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 10
           TabOrder = 2
           TextHint = 'Enter hostname, leave empty for localhost'
         end
         object lblHost: TLabel
-          AnchorSideLeft.Control = GBManticore
-          AnchorSideTop.Control = edtHostname
-          AnchorSideRight.Control = edtHostname
-          AnchorSideBottom.Control = edtHostname
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = cbMySQLVersion
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 0
-          Height = 27
-          Top = 82
-          Width = 152
+          Left = 10
+          Height = 20
+          Top = 114
+          Width = 31
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'Host'
           Layout = tlCenter
         end
         object cbProtocol: TComboBox
-          AnchorSideTop.Control = GBManticore
-          Left = 160
-          Height = 29
-          Top = 8
-          Width = 136
-          BorderSpacing.Top = 8
-          ItemHeight = 0
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = lblProtocol
+          AnchorSideTop.Side = asrBottom
+          Left = 10
+          Height = 28
+          Top = 26
+          Width = 230
+          ItemHeight = 20
           Style = csDropDownList
           TabOrder = 3
         end
         object BtnTest: TButton
+          AnchorSideTop.Control = GBManticore
           AnchorSideRight.Control = GBManticore
           AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = GBManticore
           AnchorSideBottom.Side = asrBottom
-          Left = 406
-          Height = 31
-          Top = 152
-          Width = 141
+          Left = 537
+          Height = 30
+          Top = 10
+          Width = 130
           Action = actTestConnection
-          Anchors = [akRight, akBottom]
-          BorderSpacing.Right = 8
-          BorderSpacing.Bottom = 8
+          Anchors = [akTop, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 10
+          BorderSpacing.Right = 10
           ParentShowHint = False
           ShowHint = True
           TabOrder = 4
         end
         object lblProtocol: TLabel
           AnchorSideLeft.Control = GBManticore
-          AnchorSideTop.Control = cbProtocol
-          AnchorSideRight.Control = cbProtocol
-          AnchorSideBottom.Control = cbProtocol
-          AnchorSideBottom.Side = asrBottom
-          Left = 0
-          Height = 29
-          Top = 8
-          Width = 152
+          AnchorSideTop.Control = GBManticore
+          Left = 10
+          Height = 20
+          Top = 6
+          Width = 56
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
+          BorderSpacing.Left = 10
+          BorderSpacing.Top = 6
           Caption = 'Protocol'
           Layout = tlCenter
         end
         object edtIdleDisconnect: TEdit
-          AnchorSideLeft.Control = cbProtocol
-          AnchorSideTop.Control = edtPort
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = lblDisconnect
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 152
-          Width = 80
-          BorderSpacing.Top = 8
+          Left = 10
+          Height = 28
+          Top = 188
+          Width = 230
+          BorderSpacing.Bottom = 10
           NumbersOnly = True
+          ParentShowHint = False
           TabOrder = 5
-          TextHint = 'Enter port number'
         end
         object lblDisconnect: TLabel
-          AnchorSideLeft.Control = GBManticore
-          AnchorSideTop.Control = edtIdleDisconnect
-          AnchorSideRight.Control = edtIdleDisconnect
-          AnchorSideBottom.Control = edtIdleDisconnect
+          AnchorSideLeft.Control = lblProtocol
+          AnchorSideTop.Control = edtHostname
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 0
-          Height = 27
-          Top = 152
-          Width = 152
+          Left = 10
+          Height = 20
+          Top = 168
+          Width = 134
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Right = 8
-          Caption = 'Idle disconnect  time'
+          BorderSpacing.Top = 6
+          Caption = 'Idle disconnect time'
           Layout = tlCenter
         end
       end
       object GBIndexing: TGroupBox
-        Left = 0
-        Height = 168
-        Top = 208
-        Width = 557
+        Left = 10
+        Height = 251
+        Top = 271
+        Width = 681
         Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 10
         Caption = 'Indexing options'
-        ClientHeight = 151
-        ClientWidth = 555
+        ClientHeight = 226
+        ClientWidth = 677
         TabOrder = 1
         object edtMinSearchTermLength: TEdit
-          AnchorSideTop.Control = GBIndexing
-          Left = 160
-          Height = 27
-          Top = 8
-          Width = 80
-          BorderSpacing.Top = 8
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = lblMinSearchTermLength
+          AnchorSideTop.Side = asrBottom
+          Left = 10
+          Height = 28
+          Top = 26
+          Width = 230
           NumbersOnly = True
           TabOrder = 0
         end
         object EdtMaxClipboardLength: TEdit
-          AnchorSideTop.Control = edtMinSearchTermLength
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = lblMaxClipbrdSearchTermLength
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 43
-          Width = 80
-          BorderSpacing.Top = 8
+          Left = 10
+          Height = 28
+          Top = 80
+          Width = 230
           NumbersOnly = True
           TabOrder = 1
         end
         object edtLimit: TEdit
-          AnchorSideTop.Control = EdtMaxClipboardLength
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = lblLimit
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 78
-          Width = 80
-          BorderSpacing.Top = 8
+          Left = 10
+          Height = 28
+          Top = 134
+          Width = 230
           NumbersOnly = True
           TabOrder = 2
         end
         object lblMinSearchTermLength: TLabel
-          AnchorSideTop.Control = edtMinSearchTermLength
-          AnchorSideRight.Control = edtMinSearchTermLength
-          AnchorSideBottom.Control = edtMinSearchTermLength
+          AnchorSideLeft.Control = GBIndexing
+          AnchorSideTop.Control = GBIndexing
           AnchorSideBottom.Side = asrBottom
-          Left = 16
-          Height = 27
-          Top = 8
-          Width = 136
+          Left = 10
+          Height = 20
+          Top = 6
+          Width = 148
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
+          BorderSpacing.Left = 10
+          BorderSpacing.Top = 6
           Caption = 'Min searchterm length'
           Layout = tlCenter
         end
         object lblMaxClipbrdSearchTermLength: TLabel
-          AnchorSideTop.Control = EdtMaxClipboardLength
-          AnchorSideRight.Control = EdtMaxClipboardLength
-          AnchorSideBottom.Control = EdtMaxClipboardLength
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = edtMinSearchTermLength
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 16
-          Height = 27
-          Top = 43
-          Width = 136
+          Left = 10
+          Height = 20
+          Top = 60
+          Width = 142
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'Max clipboard length'
           Layout = tlCenter
         end
         object lblLimit: TLabel
-          AnchorSideTop.Control = edtLimit
-          AnchorSideRight.Control = edtLimit
-          AnchorSideBottom.Control = edtLimit
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = EdtMaxClipboardLength
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 37
-          Height = 27
-          Top = 78
-          Width = 115
+          Left = 10
+          Height = 20
+          Top = 114
+          Width = 109
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'Max result count'
           Layout = tlCenter
         end
         object cbIndexName: TComboBox
-          AnchorSideTop.Control = edtLimit
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = lblIndexName
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 113
-          Width = 242
+          AnchorSideRight.Control = GBIndexing
+          AnchorSideRight.Side = asrBottom
+          Left = 10
+          Height = 28
+          Top = 188
+          Width = 657
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 8
-          ItemHeight = 0
+          BorderSpacing.Right = 10
+          BorderSpacing.Bottom = 10
+          ItemHeight = 20
           TabOrder = 3
         end
         object lblIndexName: TLabel
-          AnchorSideTop.Control = cbIndexName
-          AnchorSideRight.Control = cbIndexName
-          AnchorSideBottom.Control = cbIndexName
+          AnchorSideLeft.Control = lblMinSearchTermLength
+          AnchorSideTop.Control = edtLimit
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 64
-          Height = 27
-          Top = 113
-          Width = 85
+          Left = 10
+          Height = 20
+          Top = 168
+          Width = 77
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'Index name'
           Layout = tlCenter
         end
         object btnCreateIndex: TButton
-          Left = 419
-          Height = 25
-          Top = 113
-          Width = 128
+          AnchorSideRight.Control = btnDeleteIndex
+          AnchorSideBottom.Control = btnDeleteIndex
+          AnchorSideBottom.Side = asrBottom
+          Left = 438
+          Height = 30
+          Top = 10
+          Width = 109
           Action = actCreateIndex
-          Anchors = [akTop, akRight]
+          Anchors = [akRight, akBottom]
+          AutoSize = True
+          BorderSpacing.Right = 10
           ParentShowHint = False
           ShowHint = True
           TabOrder = 4
         end
         object btnDeleteIndex: TButton
-          Left = 419
-          Height = 25
-          Top = 80
-          Width = 128
+          AnchorSideTop.Control = GBIndexing
+          AnchorSideRight.Control = GBIndexing
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 557
+          Height = 30
+          Top = 10
+          Width = 110
           Action = actDeleteIndex
           Anchors = [akTop, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 10
+          BorderSpacing.Right = 10
           ParentShowHint = False
           ShowHint = True
           TabOrder = 5
         end
       end
       object gbAutomations: TGroupBox
-        Left = 0
-        Height = 136
-        Top = 376
-        Width = 557
+        Left = 10
+        Height = 143
+        Top = 532
+        Width = 681
         Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 10
         Caption = 'Automation'
-        ClientHeight = 119
-        ClientWidth = 555
+        ClientHeight = 118
+        ClientWidth = 677
         TabOrder = 2
         object cbIndexProjectMoment: TComboBox
-          AnchorSideTop.Control = gbAutomations
-          Left = 160
-          Height = 27
-          Top = 8
-          Width = 239
-          BorderSpacing.Top = 8
-          ItemHeight = 0
+          AnchorSideLeft.Control = lblIndexProjectMoment
+          AnchorSideTop.Control = lblIndexProjectMoment
+          AnchorSideTop.Side = asrBottom
+          Left = 10
+          Height = 28
+          Top = 26
+          Width = 363
+          ItemHeight = 20
           TabOrder = 0
           Text = 'cbIndexProjectMoment'
         end
         object lblIndexProjectMoment: TLabel
-          AnchorSideTop.Control = cbIndexProjectMoment
-          AnchorSideRight.Control = cbIndexProjectMoment
-          AnchorSideBottom.Control = cbIndexProjectMoment
+          AnchorSideLeft.Control = gbAutomations
+          AnchorSideTop.Control = gbAutomations
           AnchorSideBottom.Side = asrBottom
-          Left = 24
-          Height = 27
-          Top = 8
-          Width = 128
+          Left = 10
+          Height = 20
+          Top = 6
+          Width = 132
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Right = 8
+          BorderSpacing.Left = 10
+          BorderSpacing.Top = 6
           Caption = 'Index projects when'
           Layout = tlCenter
         end
         object lblIndexProjectstrategy: TLabel
-          AnchorSideTop.Control = cbIndexProjectStrategy
-          AnchorSideRight.Control = cbIndexProjectStrategy
-          AnchorSideBottom.Control = cbIndexProjectStrategy
+          AnchorSideLeft.Control = lblIndexProjectMoment
+          AnchorSideTop.Control = cbIndexProjectMoment
+          AnchorSideTop.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 8
-          Height = 27
-          Top = 43
-          Width = 144
+          Left = 10
+          Height = 20
+          Top = 60
+          Width = 158
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
           Caption = 'Mark Projects indexable'
           Layout = tlCenter
         end
         object cbIndexProjectStrategy: TComboBox
-          AnchorSideLeft.Control = cbIndexProjectMoment
-          AnchorSideTop.Control = cbIndexProjectMoment
+          AnchorSideLeft.Control = lblIndexProjectMoment
+          AnchorSideTop.Control = lblIndexProjectstrategy
           AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 43
-          Width = 238
-          BorderSpacing.Top = 8
-          ItemHeight = 0
+          Left = 10
+          Height = 28
+          Top = 80
+          Width = 363
+          ItemHeight = 20
           OnChange = cbIndexProjectStrategyChange
           TabOrder = 1
           Text = 'cbIndexProjectStrategy'
         end
         object edtIndexDelay: TEdit
-          AnchorSideLeft.Control = cbIndexProjectMoment
-          AnchorSideTop.Control = cbIndexProjectStrategy
-          AnchorSideTop.Side = asrBottom
-          Left = 160
-          Height = 27
-          Top = 78
-          Width = 88
-          BorderSpacing.Top = 8
+          AnchorSideLeft.Control = lblEditIndexDelay1
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblEditIndexDelay1
+          AnchorSideTop.Side = asrCenter
+          Left = 405
+          Height = 28
+          Top = 80
+          Width = 110
+          BorderSpacing.Left = 10
+          BorderSpacing.Bottom = 10
           NumbersOnly = True
           TabOrder = 2
         end
         object lblEditIndexDelay1: TLabel
-          AnchorSideTop.Control = edtIndexDelay
-          AnchorSideRight.Control = edtIndexDelay
-          AnchorSideBottom.Control = edtIndexDelay
+          AnchorSideLeft.Control = cbIndexProjectStrategy
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = cbIndexProjectStrategy
+          AnchorSideTop.Side = asrCenter
           AnchorSideBottom.Side = asrBottom
-          Left = 16
-          Height = 27
-          Top = 78
-          Width = 136
+          Left = 383
+          Height = 20
+          Top = 84
+          Width = 12
           Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          AutoSize = False
-          BorderSpacing.Right = 8
-          Caption = 'Mark indexable'
+          BorderSpacing.Left = 10
+          BorderSpacing.Top = 6
+          Caption = 'in'
           Layout = tlCenter
         end
         object lblEditIndexDelay2: TLabel
           AnchorSideLeft.Control = edtIndexDelay
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtIndexDelay
-          AnchorSideBottom.Control = edtIndexDelay
+          AnchorSideTop.Side = asrCenter
           AnchorSideBottom.Side = asrBottom
-          Left = 256
-          Height = 27
-          Top = 78
-          Width = 144
-          Anchors = [akTop, akLeft, akBottom]
-          AutoSize = False
-          BorderSpacing.Left = 8
+          Left = 525
+          Height = 20
+          Top = 84
+          Width = 146
+          BorderSpacing.Left = 10
           Caption = 'minutes after opening'
           Layout = tlCenter
         end
@@ -449,13 +455,13 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
     end
     object TSSourceTrees: TTabSheet
       Caption = 'Source Trees'
-      ClientHeight = 513
-      ClientWidth = 557
+      ClientHeight = 771
+      ClientWidth = 701
       object VLETrees: TValueListEditor
         Left = 0
-        Height = 487
-        Top = 26
-        Width = 557
+        Height = 739
+        Top = 32
+        Width = 701
         Align = alClient
         AlternateColor = clSilver
         ExtendedSelect = False
@@ -470,15 +476,14 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
           'Path'
         )
         ColWidths = (
-          64
-          489
+          80
+          596
         )
       end
       object TBSourceTrees: TToolBar
         Left = 0
-        Height = 26
         Top = 0
-        Width = 557
+        Width = 701
         Images = ilInstantSearch
         ParentShowHint = False
         ShowHint = True
@@ -489,34 +494,34 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
           Action = actAdd
         end
         object TBEdit: TToolButton
-          Left = 24
+          Left = 30
           Top = 2
           Action = actEdit
         end
         object TBDelete: TToolButton
-          Left = 47
+          Left = 59
           Top = 2
           Action = actDelete
         end
         object tbIndex: TToolButton
-          Left = 78
+          Left = 96
           Top = 2
           Action = actIndex
         end
         object ToolButton1: TToolButton
-          Left = 70
-          Height = 22
+          Left = 88
+          Height = 28
           Top = 2
           Caption = 'ToolButton1'
           Style = tbsSeparator
         end
         object TBClear: TToolButton
-          Left = 101
+          Left = 125
           Top = 2
           Action = actClear
         end
         object TBClearAll: TToolButton
-          Left = 124
+          Left = 154
           Top = 2
           Action = actClearAll
         end
@@ -525,9 +530,9 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
   end
   object lblIndexing: TLabel
     Left = 0
-    Height = 24
+    Height = 30
     Top = 0
-    Width = 567
+    Width = 709
     Align = alTop
     Alignment = taCenter
     AutoSize = False
@@ -536,8 +541,8 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
   end
   object alInstantSearch: TActionList
     Images = ilInstantSearch
-    Left = 368
-    Top = 56
+    Left = 460
+    Top = 70
     object actAdd: TAction
       Caption = 'Add'
       ImageIndex = 0
@@ -590,8 +595,8 @@ object IDEInstantSearchOptionsFrame: TIDEInstantSearchOptionsFrame
     end
   end
   object ilInstantSearch: TImageList
-    Left = 448
-    Top = 80
+    Left = 560
+    Top = 100
     Bitmap = {
       4C7A060000001000000010000000D20700000000000078DAD5970B50536716C7
       EF8AD08A02A2342069D455BA76EA5A79051441ABAD6DADB583B574A5B26BB583

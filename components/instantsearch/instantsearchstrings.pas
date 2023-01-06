@@ -29,10 +29,11 @@ Resourcestring
   lrsIndexAlreadyExists = 'Index table "%s" already exists.';
   lrsCannotDeleteIndexWhileIndexing = 'Cannot delete an index while an indexing operation is in progress.';
   lrsDeleteIndex = 'Delete index';
+  lrsCreateIndex2 = 'Create index';
   lrsDeleteIndexHint = 'Prompt for index name and delete the index.';
   lrsIndexToDelete = 'Enter the name of the index to delete. This operation cannot be undone.';
   lrsNoSuchIndex = 'No such index exists: %s';
-  lrsIndexDeleted = 'Index %s successfully deleted';
+  lrsIndexDeleted = 'Index %s successfully deleted.';
   lrsCreateIndexWithName = 'Create index with name %s?';
   lrsYesCreateIndex = 'Yes, create the index';
   lrsDoNotCreateIndex = 'No, do not create the index';
@@ -58,7 +59,7 @@ Resourcestring
   lrsIndexNow = 'Would you like to start indexing them now?';
   lrsThisNeedsSavingSettings = 'This operation runs in the background, and will cause the settings to be saved now.';
 
-  lrsNeedIndexing = 'Source trees must be indexed.';
+  lrsNeedIndexing = 'Source trees must be indexed';
   lrsSaveAndIndex = 'Yes, index needed source trees';
   lrsSaveAndIndexAll = 'Yes, index all source trees';
   lrsIndexLater = 'No, do not index now';
@@ -88,14 +89,17 @@ Resourcestring
   lrsProtocol = 'Protocol';
   lrsPort = 'Port';
   lrsHost = 'Hostname';
+  lrsEnterHostnameLeaveEmptyForLocalhost = 'Enter hostname, leave empty for '
+    +'localhost';
   lrsMysqlversion = 'MySQL client version';
+  lrsIdleDisconnectTime = 'Idle disconnect time';
   lrsSearchEngine = 'Search engine';
   lrsSourceTrees = 'Source trees';
   lrsIndexName = 'Index name';
 
   lrsCannotConnectToManticore = 'Error "%s" trying to connect to Manticore server: %s';
   lrsNoIndex = 'Search index table not found';
-  lrsIndexNotFoundCreate = 'Search index table "%s" was not found.'+LineEnding+'Create search index table "%s"?';
+  lrsIndexNotFoundCreate = 'Search index table "%s" was not found.'+LineEnding+'Create it?';
   lrsCreateIndex = 'Create index table';
   lrsAbortOperation = 'No, abort operation';
   lrsSaveNeeded = 'Save settings required.';
@@ -103,16 +107,16 @@ Resourcestring
   lrsSave = 'Yes, save settings';
   lrsIndexOperationFailed = 'Failed to start index operation.';
   lrsCannotIndexIndexInProgress = 'Cannot start an index operation while another one is in progress.';
-  lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files';
+  lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files.';
   lrsStartIndexingTree = 'Start indexing tree "%s", directory: "%s"';
-  lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files';
-  lrsIndexingProjectTerminated = 'Indexing project "%s" was terminated. Processed %d files';
+  lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files.';
+  lrsIndexingProjectTerminated = 'Indexing project "%s" was terminated. Processed %d files.';
   lrsStartIndexingProject = 'Start indexing project "%s", directory: "%s"';
   lrsIndexingOperationFinished = 'Finished indexing operation.';
-  lrsMarkingIndexable = 'Marking project "%s" as indexable';
+  lrsMarkingIndexable = 'Marking project "%s" as indexable.';
   lrsTestButtonHint = 'Test the connection parameters.';
   lrsCreateIndexButtonHint = 'Create the index table. You need to test the connection first.';
-  lrsNotProperlyConfigured = 'Instantsearch is not properly configured to connect to mantisearch: %s';
+  lrsNotProperlyConfigured = 'Instant search is not properly configured to connect to Manticore server: %s';
 
   lrsOnOpen = 'Project is opened';
   lrsManual = 'Manual only';
@@ -121,8 +125,9 @@ Resourcestring
   lrsTimed = 'Delayed after project open';
 
   lrsIndexProjectStrategy = 'Mark project indexable';
+  lrsAutomation = 'Automation';
   lrsIndexProjectMoment = 'Index project when';
-  lrsIndexProjectDelay1 = 'Mark indexable';
+  lrsIndexProjectDelay1 = 'in';
   lrsIndexProjectDelay2 = 'minutes after open';
   lrsMarkProjectIndexable = 'Mark project indexable for Instant Search';
   lrsIndexProject = 'Index project for Instant Search';
