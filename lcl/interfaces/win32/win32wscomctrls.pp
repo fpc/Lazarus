@@ -1009,8 +1009,16 @@ begin
       Windows.SendMessage(wHandle, TBM_CLEARSEL, Windows.WPARAM(True), 0)
     else
     begin
-      Windows.SendMessage(wHandle, TBM_SETSELSTART, Windows.WParam(False), SelStart);
-      Windows.SendMessage(wHandle, TBM_SETSELEND, Windows.WParam(True), SelEnd)
+      if (GetWindowLong(ATrackBar.Handle, GWL_STYLE) and TBS_REVERSED) <> 0 then
+      begin
+      Windows.SendMessage(wHandle, TBM_SETSELSTART, Windows.WParam(False), ATrackBar.Max-SelEnd); //SelStart/SelEnd are not relative to Min/Max
+      Windows.SendMessage(wHandle, TBM_SETSELEND, Windows.WParam(True), ATrackBar.Max-SelStart)
+      end
+      else
+      begin
+        Windows.SendMessage(wHandle, TBM_SETSELSTART, Windows.WParam(False), SelStart);
+        Windows.SendMessage(wHandle, TBM_SETSELEND, Windows.WParam(True), SelEnd)
+      end;
     end;
   end;
 end;
