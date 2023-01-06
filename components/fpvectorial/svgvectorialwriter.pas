@@ -135,7 +135,7 @@ end;
 function TvSVGVectorialWriter.GetGradientBrushAsXML(ABrush: TvBrush): String;
 var
   gradientCol: TvGradientColor;
-  colorStr, gradientColors, gradientParams: String;
+  colorStr, opacityStr, gradientColors, gradientParams: String;
   x1Str, y1Str, x2Str, y2Str: String;
   cxstr, cystr, rstr, fxstr, fystr: String;
   gradientTag: String;
@@ -189,8 +189,12 @@ begin
   gradientColors := '';
   for gradientCol in ABrush.Gradient_colors do begin
     colorStr := '#' + FPColorToRGBHexString(gradientCol.Color);
-    gradientColors := gradientColors + Format('<stop offset="%f%%" stop-color="%s" />', [
-      gradientCol.Position*100, colorStr], FPointSeparator);
+    if gradientCol.Color.Alpha <> alphaOpaque then
+      opacityStr := Format('stop-opacity="%f" ', [gradientCol.Color.Alpha/alphaOpaque], FPointSeparator)
+    else
+      opacityStr := '';
+    gradientColors := gradientColors + Format('<stop offset="%f%%" stop-color="%s" %s/>', [
+      gradientCol.Position*100, colorStr, opacityStr], FPointSeparator);
   end;
 
   Result := Format(
