@@ -13,6 +13,10 @@ msgstr ""
 msgid "All source trees must be indexed."
 msgstr ""
 
+#: instantsearchstrings.lrsautomation
+msgid "Automation"
+msgstr ""
+
 #: instantsearchstrings.lrscancelsearch
 msgid "Cancel search"
 msgstr ""
@@ -71,6 +75,10 @@ msgstr ""
 msgid "Create index table"
 msgstr ""
 
+#: instantsearchstrings.lrscreateindex2
+msgid "Create index"
+msgstr ""
+
 #: instantsearchstrings.lrscreateindexbuttonhint
 msgid "Create the index table. You need to test the connection first."
 msgstr ""
@@ -110,6 +118,10 @@ msgstr ""
 msgid "No, do not create the index"
 msgstr ""
 
+#: instantsearchstrings.lrsenterhostnameleaveemptyforlocalhost
+msgid "Enter hostname, leave empty for localhost"
+msgstr ""
+
 #: instantsearchstrings.lrserrnamecannotbeempty
 msgid "Source tree name cannot be empty."
 msgstr ""
@@ -144,16 +156,20 @@ msgstr ""
 
 #: instantsearchstrings.lrsfinishedindexingproject
 #, object-pascal-format
-msgid "Finished indexing project \"%s\". Processed %d files"
+msgid "Finished indexing project \"%s\". Processed %d files."
 msgstr ""
 
 #: instantsearchstrings.lrsfinishedindexingtree
 #, object-pascal-format
-msgid "Finished indexing tree \"%s\". Processed %d files"
+msgid "Finished indexing tree \"%s\". Processed %d files."
 msgstr ""
 
 #: instantsearchstrings.lrshost
 msgid "Hostname"
+msgstr ""
+
+#: instantsearchstrings.lrsidledisconnecttime
+msgid "Idle disconnect time"
 msgstr ""
 
 #: instantsearchstrings.lrsindexalreadyexists
@@ -163,7 +179,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsindexdeleted
 #, object-pascal-format
-msgid "Index %s successfully deleted"
+msgid "Index %s successfully deleted."
 msgstr ""
 
 #: instantsearchstrings.lrsindexingoperationfinished
@@ -176,7 +192,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsindexingprojectterminated
 #, object-pascal-format
-msgid "Indexing project \"%s\" was terminated. Processed %d files"
+msgid "Indexing project \"%s\" was terminated. Processed %d files."
 msgstr ""
 
 #: instantsearchstrings.lrsindexlater
@@ -197,7 +213,7 @@ msgstr ""
 #, object-pascal-format
 msgid ""
 "Search index table \"%s\" was not found.\n"
-"Create search index table \"%s\"?"
+"Create it?"
 msgstr ""
 
 #: instantsearchstrings.lrsindexnow
@@ -213,7 +229,7 @@ msgid "Index project for Instant Search"
 msgstr ""
 
 #: instantsearchstrings.lrsindexprojectdelay1
-msgid "Mark indexable"
+msgid "in"
 msgstr ""
 
 #: instantsearchstrings.lrsindexprojectdelay2
@@ -252,7 +268,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsmarkingindexable
 #, object-pascal-format
-msgid "Marking project \"%s\" as indexable"
+msgid "Marking project \"%s\" as indexable."
 msgstr ""
 
 #: instantsearchstrings.lrsmarkprojectindexable
@@ -272,7 +288,7 @@ msgid "MySQL client version"
 msgstr ""
 
 #: instantsearchstrings.lrsneedindexing
-msgid "Source trees must be indexed."
+msgid "Source trees must be indexed"
 msgstr ""
 
 #: instantsearchstrings.lrsnewtree
@@ -307,7 +323,7 @@ msgstr ""
 
 #: instantsearchstrings.lrsnotproperlyconfigured
 #, object-pascal-format
-msgid "Instantsearch is not properly configured to connect to mantisearch: %s"
+msgid "Instant search is not properly configured to connect to Manticore server: %s"
 msgstr ""
 
 #: instantsearchstrings.lrsnotransport
