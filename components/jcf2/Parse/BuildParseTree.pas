@@ -4614,11 +4614,12 @@ end;
 
 procedure TBuildParseTree.RecogniseObjHeritage;
 begin
-  // ObjHeritage -> '(' QualId ')'
-
+  // ObjHeritage -> '(' IdentList ')'
+  PushNode(nClassHeritage);
   Recognise(ttOpenBracket);
-  RecogniseQualId;
+  RecogniseHeritageList;
   Recognise(ttCloseBracket);
+  PopNode;
 end;
 
 procedure TBuildParseTree.RecogniseConstructorHeading(const pbDeclaration: boolean);
