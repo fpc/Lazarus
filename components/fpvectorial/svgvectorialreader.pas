@@ -593,15 +593,28 @@ begin
   // Another wierd valid variant: #000
   if (Length(lValue) > 1) and (lValue[1] = '#') then
   begin
-    lStr := Copy(lValue, 2, 2);
-    Result.Red := StrToInt('$'+lStr)*$101;
-    lStr := Copy(lValue, 4, 2);
-    if lStr = '' then Result.Green := 0
-    else Result.Green := StrToInt('$'+lStr)*$101;
-    lStr := Copy(lValue, 6, 2);
-    if lStr = '' then Result.Blue := 0
-    else Result.Blue := StrToInt('$'+lStr)*$101;
-    Exit;
+    if Length(lValue) = 4 then
+    begin
+      lStr := '$    ';
+      for i := 2 to 5 do lStr[i] := lValue[2];
+      Result.Red := StrToInt(lStr);
+      for i := 2 to 5 do lStr[i] := lValue[3];
+      Result.Green := StrToInt(lStr);
+      for i := 2 to 5 do lStr[i] := lValue[4];
+      Result.Blue := StrToInt(lStr);
+      Exit;
+    end else
+    begin
+      lStr := Copy(lValue, 2, 2);
+      Result.Red := StrToInt('$'+lStr)*$101;
+      lStr := Copy(lValue, 4, 2);
+      if lStr = '' then Result.Green := 0
+      else Result.Green := StrToInt('$'+lStr)*$101;
+      lStr := Copy(lValue, 6, 2);
+      if lStr = '' then Result.Blue := 0
+      else Result.Blue := StrToInt('$'+lStr)*$101;
+      Exit;
+    end;
   end;
 
   // Support for named colors
