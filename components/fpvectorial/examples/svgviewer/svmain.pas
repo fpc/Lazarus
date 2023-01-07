@@ -167,17 +167,12 @@ begin
   page := FVec.GetPage(0);
   page.AdjustPenColorToBackground := CbAdjustPenColorToBackground.Checked;
 
-
-  // Measure size of drawing
-//  page.Render(ACanvas, 0, 0, FScaleEff, FScaleEff, DO_NOT_DRAW);
-
-
   // Draw background as defined in the file
   page.DrawBackground(ACanvas);
 
   // Draw the page
-  dx := EdMargin.Value - page.RenderInfo.EntityCanvasMinXY.X;
-  dy := EdMargin.Value - page.RenderInfo.EntityCanvasMinXY.Y;
+  dx := round(FScale*EdMargin.Value) - page.RenderInfo.EntityCanvasMinXY.X;
+  dy := round(FScale*EdMargin.Value) - page.RenderInfo.EntityCanvasMinXY.Y;
 
   page.Render(ACanvas, dx, dy, FScaleEff, FScaleEff);
 end;
@@ -461,12 +456,14 @@ end;
 procedure TMainForm.PrepareCanvas(ACanvas: TCanvas);
 var
   page: TvPage;
+  delta: Integer;
 begin
   page := FVec.GetPage(0);
   page.Render(ACanvas, 0, 0, FScaleEff, FScaleEff, DO_NOT_DRAW);
 
-  FImgSize.cx := page.RenderInfo.EntityCanvasMaxXY.X - page.RenderInfo.EntityCanvasMinXY.X + 2*EdMargin.Value;
-  FImgSize.cy := page.RenderInfo.EntityCanvasMaxXY.Y - page.RenderInfo.EntityCanvasMinXY.Y + 2*EdMargin.Value;
+  delta := 2 * round(FScale * EdMargin.Value);
+  FImgSize.cx := page.RenderInfo.EntityCanvasMaxXY.X - page.RenderInfo.EntityCanvasMinXY.X + delta;
+  FImgSize.cy := page.RenderInfo.EntityCanvasMaxXY.Y - page.RenderInfo.EntityCanvasMinXY.Y + delta;
   Image.SetBounds(FImgPos.X, FImgPos.Y, FImgSize.cx, FImgSize.cy);
   Image.Picture.Bitmap.SetSize(FImgSize.cx, FImgSize.cy);
 end;
