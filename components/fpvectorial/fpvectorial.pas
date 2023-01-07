@@ -3572,8 +3572,8 @@ procedure TvEntity.CalculateBoundingBox(constref ARenderInfo: TvRenderInfo;
 begin
   ALeft := X;
   ATop := Y;
-  ARight := X+1;
-  ABottom := Y+1;
+  ARight := X; //+1;
+  ABottom := Y; //+1;
 end;
 
 // returns false if the element is invisible
@@ -3625,10 +3625,19 @@ var
   lLeft, lTop, lRight, lBottom: Double;
 begin
   CalculateBoundingBox(ARenderInfo, lLeft, lTop, lRight, lBottom);
-  if lLeft < ALeft then ALeft := lLeft;
-  if lTop < ATop then ATop := lTop;
-  if lRight > ARight then ARight := lRight;
-  if lBottom > ABottom then ABottom := lBottom;
+  if lLeft < ALeft then
+    ALeft := lLeft;
+  if lRight > ARight then
+    ARight := lRight;
+  if ARenderInfo.Page.UseTopLeftCoordinates then
+  begin
+    if lTop < ATop then ATop := lTop;
+    if lBottom > ABottom then ABottom := lBottom;
+  end else
+  begin
+    if lTop > ATop then ATop := lTop;
+    if lBottom < ABottom then ABottom := lBottom;
+  end;
 end;
 
 class procedure TvEntity.CalcEntityCanvasMinMaxXY(
@@ -3636,16 +3645,23 @@ class procedure TvEntity.CalcEntityCanvasMinMaxXY(
 begin
   if ARenderInfo.EntityCanvasMinXY.X = INVALID_RENDERINFO_CANVAS_XY then
     ARenderInfo.EntityCanvasMinXY.X := APointX
-  else ARenderInfo.EntityCanvasMinXY.X := Min(ARenderInfo.EntityCanvasMinXY.X, APointX);
+  else
+    ARenderInfo.EntityCanvasMinXY.X := Min(ARenderInfo.EntityCanvasMinXY.X, APointX);
+
   if ARenderInfo.EntityCanvasMinXY.Y = INVALID_RENDERINFO_CANVAS_XY then
     ARenderInfo.EntityCanvasMinXY.Y := APointY
-  else ARenderInfo.EntityCanvasMinXY.Y := Min(ARenderInfo.EntityCanvasMinXY.Y, APointY);
+  else
+    ARenderInfo.EntityCanvasMinXY.Y := Min(ARenderInfo.EntityCanvasMinXY.Y, APointY);
+
   if ARenderInfo.EntityCanvasMaxXY.X = INVALID_RENDERINFO_CANVAS_XY then
     ARenderInfo.EntityCanvasMaxXY.X := APointX
-  else ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
+  else
+    ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
+
   if ARenderInfo.EntityCanvasMaxXY.Y = INVALID_RENDERINFO_CANVAS_XY then
     ARenderInfo.EntityCanvasMaxXY.Y := APointY
-  else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
+  else
+    ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
 end;
 
 class procedure TvEntity.CalcEntityCanvasMinMaxXY_With2Points(
@@ -6213,14 +6229,15 @@ begin
     ARight := X + Round(tmp);
     t := arctan(VertHalfAxis*cot(Angle) / HorzHalfAxis);
     tmp := abs(VertHalfAxis*sin(t)*cos(Angle) + HorzHalfAxis*cos(t)*sin(Angle));
-    ATop := Y + Round(tmp);
-    ABottom := Y - Round(tmp);
+    tmp := tmp * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
+    ATop := Y - Round(tmp);
+    ABottom := Y + Round(tmp);
   end else
   begin
     ALeft := X - HorzHalfAxis;
     ARight := X + HorzHalfAxis;
-    ATop := Y + VertHalfAxis;       // wp: changed from - to +
-    ABottom := Y - VertHalfAxis;    // ... and this from + to -
+    ATop := Y - VertHalfAxis * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
+    ABottom := Y + VertHalfAxis * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
   end;
 end;
 
@@ -6349,6 +6366,7 @@ procedure TvRectangle.CalculateBoundingBox(constref ARenderInfo: TvRenderInfo;
   out ALeft, ATop, ARight, ABottom: Double);
 var
   pts: Array[0..3] of T3DPoint;
+  mx, mn: Double;
   j: Integer;
 begin
   if Angle <> 0 then
@@ -6362,21 +6380,30 @@ begin
       // Use inverted angle due to sign convention in Rotate3DPointInXY
     ALeft := pts[0].x;
     ARight := Pts[0].x;
-    ATop := pts[0].y;
-    ABottom := pts[0].y;
+    mx := pts[0].y;
+    mn := pts[0].y;
     for j:=1 to High(pts) do
     begin
       ALeft := Min(ALeft, pts[j].x);
       ARight := Max(ARight, pts[j].x);
-      ATop := Max(ATop, pts[j].y);
-      ABottom := Min(ABottom, pts[j].y);
+      mx := Max(mx, pts[j].y);
+      mn := Min(mx, pts[j].y);
+    end;
+    if ARenderInfo.Page.UseTopLeftCoordinates then
+    begin
+      ATop := mn;
+      ABottom := mx;
+    end else
+    begin
+      ATop := mx;
+      ABottom := mn;
     end;
   end else
   begin
     ALeft := X;
     ATop := Y;
     ARight := X + CX;
-    ABottom := IfThen(FPage.FUseTopLeftCoordinates, Y + CY, Y - CY);
+    ABottom := Y + CY * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
   end;
 end;
 
@@ -6450,7 +6477,7 @@ var
   AMulY: Double absolute ARenderInfo.MulY;
   //
   x1, y1, x2, y2: Integer;
-  fx1, fy1, fx2, fy2: Double;
+  fx1, fy1, fx2, fy2: Double;   // left, top, right, bottom
 begin
   inherited Render(ARenderInfo, ADoDraw);
 
@@ -6548,9 +6575,16 @@ begin
   for i := 0 to Length(Points)-1 do
   begin
     ALeft := Min(ALeft, Points[i].X);
-    ATop := Min(ATop, Points[i].Y);
     ARight := Max(ARight, Points[i].X);
-    ABottom := Max(ABottom, Points[i].Y);
+    if ARenderInfo.Page.UseTopLeftCoordinates then
+    begin
+      ATop := Min(ATop, Points[i].Y);
+      ABottom := Max(ABottom, Points[i].Y);
+    end else
+    begin
+      ATop := Max(ATop, Points[i].Y);
+      ABottom := Min(ABottom, Points[i].Y);
+    end;
   end;
 end;
 
@@ -6562,17 +6596,17 @@ var
   AMulX: Double absolute ARenderInfo.MulX;
   AMulY: Double absolute ARenderInfo.MulY;
   //
-  lPoints: array of TPoint;
+  lPoints: array of TPoint = nil;
   i: Integer;
   x1, x2, y1, y2: Integer;
-  polystarts: TIntegerDynArray;
+  polystarts: TIntegerDynArray = nil;
   lRect: TRect;
   gv1, gv2: T2DPoint;
 begin
   inherited Render(ARenderInfo, ADoDraw);
 
   x1 := MaxInt;
-  y1 := maxInt;
+  y1 := MaxInt;
   x2 := -MaxInt;
   y2 := -MaxInt;
   SetLength(lPoints, Length(Points));
@@ -8965,13 +8999,20 @@ begin
     lRenderInfo.Canvas := lBmp.Canvas;
     lCurEntity.CalculateBoundingBox(lRenderInfo, lLeft, lTop, lRight, lBottom);
     MinX := Min(MinX, lLeft);
-    MinY := Min(MinY, lTop);
     MaxX := Max(MaxX, lRight);
-    MaxY := Max(MaxY, lBottom);
+    if UseTopLeftCoordinates then
+    begin
+      MinY := Min(MinY, lTop);
+      MaxY := Max(MaxY, lBottom);
+    end else
+    begin
+      MinY := Min(MinY, lBottom);
+      MaxY := Max(MaxY, lTop);
+    end;
   end;
   lBmp.Free;
-  Width := MaxX - MinX;
-  Height := MaxY - MinY;
+  Width := abs(MaxX - MinX);
+  Height := abs(MaxY - MinY);
 end;
 
 procedure TvPage.AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer;
@@ -9003,9 +9044,16 @@ var
         if lCurEntity.CalculateSizeInCanvas(lRenderInfo, ARenderHeight, AZoom, lLeft, lTop, lWidth, lHeight) then
         begin
           lMinX := Min(lMinX, lLeft);
-          lMinY := Min(lMinY, lTop);
           lMaxX := Max(lMaxX, lLeft + lWidth);
-          lMaxY := Max(lMaxY, lTop  + lHeight);
+          if UseTopLeftCoordinates then
+          begin
+            lMinY := Min(lMinY, lTop);
+            lMaxY := Max(lMaxY, lTop + lHeight);
+          end else
+          begin
+            lMaxY := Max(lMaxY, lTop);
+            lMinY := Min(lMinY, lTop - lHeight);
+          end;
         end;
         {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
         AutoFitDebug.Add(Format('[%s] MinX=%d MinY=%d MaxX=%d MaxY=%D', [lCurEntity.ClassName, lMinX, lMinY, lMaxX, lMaxY]));
@@ -9013,9 +9061,16 @@ var
       end;
 
       lMinX := Min(lMinX, lLeft);
-      lMinY := Min(lMinY, lTop);
       lMaxX := Max(lMaxX, lLeft + lWidth);
-      lMaxY := Max(lMaxY, lTop  + lHeight);
+      if UseTopLeftCoordinates then
+      begin
+        lMinY := Min(lMinY, lTop);
+        lMaxY := Max(lMaxY, lTop + lHeight);
+      end else
+      begin
+        lMaxY := Max(lMaxY, lTop);
+        lMinY := Min(lMinY, lTop + lHeight);
+      end;
     end
     else
     begin
@@ -9027,8 +9082,9 @@ var
     end;
 
     if (lMinX = High(Integer)) or (lMinY = High(Integer)) or
-       (lMaxX = Low(Integer)) or(lMaxY = Low(Integer)) then
-       Exit(False);
+       (lMaxX = Low(Integer)) or(lMaxY = Low(Integer))
+    then
+      Exit(False);
 
     lWidth := lMaxX - lMinX;
     lHeight := lMaxY - lMinY;
@@ -9812,7 +9868,9 @@ begin
   InitializeRenderInfo(RenderInfo, ADest, nil);
   InitializeRenderInfo(rInfo, ADest, nil);
   TvEntity.CopyAndInitDocumentRenderInfo(rInfo, RenderInfo, False, False);
-  if Assigned(FOwner.FRenderer) then FOwner.FRenderer.BeginRender(RenderInfo, ADoDraw);
+
+  if Assigned(FOwner.FRenderer) then
+    FOwner.FRenderer.BeginRender(RenderInfo, ADoDraw);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
@@ -9842,7 +9900,9 @@ begin
     end;
   end;
 
-  if Assigned(FOwner.FRenderer) then FOwner.FRenderer.EndRender(RenderInfo, ADoDraw);
+  if Assigned(FOwner.FRenderer) then
+    FOwner.FRenderer.EndRender(RenderInfo, ADoDraw);
+
   TvEntity.CopyAndInitDocumentRenderInfo(RenderInfo, rInfo, True, False);
 
   {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
@@ -9928,16 +9988,15 @@ begin
   Result := MainText.GetEntityIndex(AEntity);
 end;
 
-function TvTextPageSequence.FindAndSelectEntity(Pos: TPoint
-  ): TvFindEntityResult;
+function TvTextPageSequence.FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
 begin
-
+  //
 end;
 
 function TvTextPageSequence.FindEntityWithNameAndType(AName: string;
   AType: TvEntityClass; ARecursively: Boolean): TvEntity;
 begin
-
+  //
 end;
 
 procedure TvTextPageSequence.Clear;
@@ -9985,13 +10044,13 @@ end;
 
 procedure TvTextPageSequence.DrawBackground(ADest: TFPCustomCanvas);
 begin
-
+  //
 end;
 
 procedure TvTextPageSequence.RenderPageBorder(ADest: TFPCustomCanvas;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
-
+  //
 end;
 
 procedure TvTextPageSequence.Render(ADest: TFPCustomCanvas; ADestX: Integer;
@@ -10187,7 +10246,6 @@ var
   AWriter: TvCustomVectorialWriter;
 begin
   AWriter := CreateVectorialWriter(AFormat);
-
   try
     AWriter.WriteToFile(AFileName, Self);
   finally
@@ -10211,7 +10269,6 @@ var
   AWriter: TvCustomVectorialWriter;
 begin
   AWriter := CreateVectorialWriter(AFormat);
-
   try
     AWriter.WriteToStream(AStream, Self);
   finally
@@ -10225,7 +10282,6 @@ var
   AWriter: TvCustomVectorialWriter;
 begin
   AWriter := CreateVectorialWriter(AFormat);
-
   try
     AWriter.WriteToStrings(AStrings, Self);
   finally
@@ -10345,7 +10401,7 @@ end;
 
 function  TvVectorialDocument.GetDetailedFileFormat(): string;
 begin
-
+  //
 end;
 
 procedure TvVectorialDocument.GuessDocumentSize();
@@ -10356,6 +10412,8 @@ var
   CurPage: TvPage;
   lRenderInfo: TvRenderInfo;
 begin
+  lRenderInfo := Default(TvRenderInfo);
+
   lLeft := 0;
   lTop := 0;
   lRight := 0;
@@ -10378,7 +10436,7 @@ end;
 
 procedure TvVectorialDocument.GuessGoodZoomLevel(AScreenSize: Integer);
 begin
-  If Height<>0 Then
+  If Height <> 0 Then
     ZoomLevel := AScreenSize / Height;
 end;
 
@@ -10906,8 +10964,8 @@ end;
   Opens the file and calls WriteToStream
 
   @param  AFileName The output file name.
-                   If the file already exists it will be replaced.
-  @param  AData     The Workbook to be saved.
+                    If the file already exists it will be replaced.
+  @param  AData     The document to be saved.
 
   @see    TsWorkbook
 }
