@@ -4883,9 +4883,16 @@ begin
       else
       begin
         if l2DSegment.X < ALeft then ALeft := l2DSegment.X;
-        if l2DSegment.Y < ATop then ATop := l2DSegment.Y;
         if l2DSegment.X > ARight then ARight := l2DSegment.X;
-        if l2DSegment.Y > ABottom then ABottom := l2DSegment.Y;
+        if ARenderInfo.Page.UseTopLeftCoordinates then
+        begin
+          if l2DSegment.Y < ATop then ATop := l2DSegment.Y;
+          if l2DSegment.Y > ABottom then ABottom := l2DSegment.Y;
+        end else
+        begin
+          if l2DSegment.Y > ATop then ATop := l2DSegment.Y;
+          if l2DSegment.Y < ABottom then ABottom := l2DSegment.Y;
+        end;
       end;
     end;
 
