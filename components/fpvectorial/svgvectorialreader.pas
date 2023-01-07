@@ -2371,7 +2371,7 @@ begin
     // Add default SVG pen/brush
     lCurPath.Pen.Style := psClear;
     lCurPath.Brush.Color := colBlack;
-    lCurPath.Brush.Style := bsClear;
+    lCurPath.Brush.Style := bsSolid;
     // Apply the layer style
     ApplyLayerStyles(AData, lCurPath);
     // name
