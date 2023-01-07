@@ -400,12 +400,14 @@ const
   Str_Comma: Char = ',';
   Str_Plus: Char = '+';
   Str_Minus: Char = '-';
+  Str_DecSep: Char = '.';
   ListOfCommandLetters: set of Char = ['a'..'d', 'f'..'z', 'A'..'D', 'F'..'Z'];
 var
   i: Integer;
   lTmpStr: string = '';
   lState: Integer;
   lFirstTmpStrChar, lCurChar, lPrevChar: Char;
+  lDecSepCount: Integer = 0;
 begin
   lState := 0;
 
@@ -422,16 +424,19 @@ begin
         lState := 1;
         AddToken(lTmpStr);
         lTmpStr := '';
+        lDecSepCount := 0;
       end
       else if lCurChar = Str_Comma then
       begin
         AddToken(lTmpStr);
         lTmpStr := '';
+        lDecSepCount := 0;
       end
       else if (lCurChar in [Str_Plus, Str_Minus]) and (lPrevChar in ['0'..'9']) then
       begin
         AddToken(lTmpStr);
         lTmpStr := lCurChar;
+        lDecSepCount := 0;
       end
       // Check for a break, from letter to number
       // Note: But don't forget that we need to support 3.799e-4 !!
@@ -445,8 +450,18 @@ begin
         end;
         AddToken(lCurChar);
         lTmpStr := '';
+        lDecSepCount := 0;
       end
-      else
+      else if (lCurChar = Str_DecSep) then
+      begin
+        inc(lDecSepCount);
+        if lDecSepCount > 1 then
+        begin
+          AddToken(lTmpStr);
+          lTmpStr := lCurChar;
+        end else
+          lTmpStr := lTmpStr + lCurChar;
+      end else
       begin
         lTmpStr := lTmpStr + lCurChar;
       end;
