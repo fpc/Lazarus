@@ -9471,7 +9471,7 @@ var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
-  c: Char;
+  {%H-}c: Char; // see fpc bug 38572
 begin
   if ConsoleVerbosity>0 then
     DebugLn('Hint: (lazarus) TMainIDE.DesignerPasteComponent A');
