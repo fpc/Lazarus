@@ -1020,8 +1020,7 @@ begin
   FStepInfoUnavailAfterStepOut := not IsAtLastHiddenBreakAddr;
   if not FStepInfoUnavailAfterStepOut then begin
     {$PUSH}{$Q-}{$R-}
-    FThread.StoreStepInfo(FThread.GetInstructionPointerRegisterValue +
-      FThread.GetInstructionPointerRegisterValue - 1);
+    FThread.StoreStepInfo(FThread.GetInstructionPointerRegisterValue - 1);
     {$POP}
   end;
   FStepInfoUpdatedForStepOut := True;
@@ -1043,8 +1042,7 @@ begin
     // only get here, if the original did have line info, so no line info should not happen
     // check if the next asm is on the same line, otherwise treat as new line
     {$PUSH}{$Q-}{$R-}
-    CompRes := FThread.CompareStepInfo(FThread.GetInstructionPointerRegisterValue +
-      FThread.GetInstructionPointerRegisterValue - 1);
+    CompRes := FThread.CompareStepInfo(FThread.GetInstructionPointerRegisterValue);
     {$POP}
     Result := not(CompRes in [dcsiNewLine, dcsiSameLine]); // Step once more, maybe we do a jmp....
     DebugLn(DBG_VERBOSE or FPDBG_COMMANDS, ['UNEXPECTED absence of debug info @',FThread.GetInstructionPointerRegisterValue,  ' Res:', Result]);
