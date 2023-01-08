@@ -9471,7 +9471,7 @@ var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
-  {%H-}c: Char; // see fpc bug 38572
+  c: Char;
 begin
   if ConsoleVerbosity>0 then
     DebugLn('Hint: (lazarus) TMainIDE.DesignerPasteComponent A');
@@ -9504,6 +9504,7 @@ begin
       LRSObjectTextToBinary(TxtCompStream,BinCompStream);
       // always append an "object list end"
       c:=#0;
+      if c=#0 then ; // see fpc bug 38572
       BinCompStream.Write(c,1);
     except
       on E: Exception do begin
