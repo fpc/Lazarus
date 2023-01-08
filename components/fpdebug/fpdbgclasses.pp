@@ -374,8 +374,8 @@ type
     constructor Create(AProcess: TDbgProcess);
     destructor Destroy; override;
     procedure Clear; reintroduce;
-    procedure AddLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
-    procedure RemoveLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
+    procedure AddLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
+    procedure RemoveLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
     // When the debugger modifies the debuggee's code, it might be that the
     // original value underneeth the breakpoint has to be changed. This function
     // makes this possible.
@@ -1096,14 +1096,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TBreakLocationMap.AddLocotion(const ALocation: TDBGPtr;
+procedure TBreakLocationMap.AddLocation(const ALocation: TDBGPtr;
   const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean);
 var
   LocData: PInternalBreakLocationEntry;
   Len, i: Integer;
   BList: TFpInternalBreakpointArray;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocotion');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocation');{$ENDIF}
   LocData := GetDataPtr(ALocation);
 
   if LocData <> nil then begin
@@ -1144,13 +1144,13 @@ begin
   Dispose(LocData);
 end;
 
-procedure TBreakLocationMap.RemoveLocotion(const ALocation: TDBGPtr;
+procedure TBreakLocationMap.RemoveLocation(const ALocation: TDBGPtr;
   const AInternalBreak: TFpInternalBreakpoint);
 var
   LocData: PInternalBreakLocationEntry;
   Len, i: Integer;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.RemoveLocotion');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.RemoveLocation');{$ENDIF}
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
     DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
@@ -2225,7 +2225,7 @@ end;
 
 procedure TDbgProcess.ClearAddedAndRemovedLibraries;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocotion');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.ClearAddedAndRemovedLibraries');{$ENDIF}
   FLibMap.ClearAddedAndRemovedLibraries;
 end;
 
@@ -3493,7 +3493,7 @@ begin
     exit;
   FLocation[i] := FLocation[l];
   SetLength(FLocation, l);
-  FProcess.FBreakMap.RemoveLocotion(ALocation, Self);
+  FProcess.FBreakMap.RemoveLocation(ALocation, Self);
 end;
 
 procedure TFpInternalBreakpoint.RemoveAllAddresses;
@@ -3510,7 +3510,7 @@ begin
   if FProcess = nil then
     exit;
   for i := 0 to High(FLocation) do
-    FProcess.FBreakMap.RemoveLocotion(FLocation[i], Self);
+    FProcess.FBreakMap.RemoveLocation(FLocation[i], Self);
 end;
 
 procedure TFpInternalBreakpoint.SetBreak;
@@ -3521,7 +3521,7 @@ begin
   if FProcess = nil then
     exit;
   for i := 0 to High(FLocation) do
-    FProcess.FBreakMap.AddLocotion(FLocation[i], Self, True);
+    FProcess.FBreakMap.AddLocation(FLocation[i], Self, True);
 end;
 
 { TFpInternalWatchpoint }
