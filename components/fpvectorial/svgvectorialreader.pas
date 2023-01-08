@@ -2347,7 +2347,7 @@ end;
 function TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
-  lNodeName, lDStr: WideString;
+  lNodeName, lDStr: String;
   i, j: Integer;
   lCurPath: TPath;
   lPaths: TvSVGPathList;
@@ -2362,7 +2362,7 @@ begin
 
   Inc(FPathNumber);
   FSVGPathTokenizer.ExtraDebugStr := Format(' [TvSVGVectorialReader.ReadPathFromNode] path#(1-based)=%d', [FPathNumber]);
-  lPaths := ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
+  lPaths := ReadPathFromString(lDStr, AData, ADoc);
   FSVGPathTokenizer.ExtraDebugStr := '';
   for j := 0 to lPaths.Count-1 do
   begin
