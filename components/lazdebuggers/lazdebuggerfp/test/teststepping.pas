@@ -237,7 +237,8 @@ begin
     TestLocation('At AfterStepBrkDis', 'AfterStepBrkDis', -1);
 
     // Step over a subroutine call, with a breakpoint that continues
-    RunToNextPauseTestInternal('', 1, dcStepOver);
+    // No internal pause should happen
+    RunToNextPauseTestInternal('', 0, dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkHitCnt', 'AfterStepBrkHitCnt', -1);
 
@@ -468,7 +469,7 @@ begin
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkDis', 'AfterStepBrkDis', -1);
 
-    StepInstrToNextLine('Go to AfterStepBrkHitCnt', 1);
+    StepInstrToNextLine('Go to AfterStepBrkHitCnt', 0);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkHitCnt', 'AfterStepBrkHitCnt', -1);
 
