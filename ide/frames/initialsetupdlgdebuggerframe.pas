@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, Types, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, Buttons, GDBMIDebugger, DbgIntfDebuggerBase, FileUtil, LazFileUtils,
   IDEDialogs, IDEUtils, IDEImagesIntf, FileProcs, FpDebugDebugger,
-  FpLldbDebugger, IdeDebuggerOpts, LazarusIDEStrConsts, InitialSetupProc,
+  {$If defined(Darwin) or defined(CD_Cocoa)} FpLldbDebugger, {$ENDIF}
+  IdeDebuggerOpts, LazarusIDEStrConsts, InitialSetupProc,
   EnvironmentOpts, LazConf, StrUtils;
 
 type
