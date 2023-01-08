@@ -117,7 +117,9 @@ type
     // Note that numbers are transmitted as hex characters in target endian sequence
     // For little endian targets this creates an endian swap if the string is parsed by Val
     // because a hex representation of a number is interpreted as big endian
-    function ConvertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
+    function HexToIntLittleEndian(constref hextext: string; out value: qword): boolean;
+    function IntToHexLittleEndian(value: qword): string;
+
     function HexEncodeStr(s: string): string;
     function HexDecodeStr(hexcode: string): string;
   public
@@ -131,8 +133,8 @@ type
     function Kill(): boolean;
     function Detach(): boolean;
     function MustReplyEmpty: boolean;
-    function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
-    function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
+    function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1; HWbreak: boolean = true): boolean;
+    function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1; HWBreak: boolean = true): boolean;
     // TODO: no support for thread ID or different address
     function Continue(): boolean;
     function SingleStep(): boolean;
@@ -417,7 +419,10 @@ begin
       outputPacket := False;
     end;
   until not outputPacket;
-  SafeWriteByte(byte('+'));
+
+  // Do not acknowledge OK
+  if retval <> 'OK' then
+    SafeWriteByte(byte('+'));
   result := not SockErr;
   DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
@@ -448,7 +453,7 @@ begin
     DebugLn(DBG_WARNINGS, ['Warning: Retries exceeded in TRspConnection.FSendCmdWaitForReply for cmd: ', cmd]);
 end;
 
-function TRspConnection.ConvertHexWithLittleEndianSwap(constref
+function TRspConnection.HexToIntLittleEndian(constref
   hextext: string; out value: qword): boolean;
 var
   err: integer;
@@ -471,6 +476,21 @@ begin
   end
   else
     result := false;
+end;
+
+function TRspConnection.IntToHexLittleEndian(value: qword): string;
+var
+  b, accumulator: byte;
+begin
+  Result := '';
+  accumulator := 0;
+  while value > 0 do
+  begin
+    inc(accumulator, 2);
+    b := byte(value);
+    value := value shr 8;
+    Result := Result + IntToHex(b, 2);
+  end;
 end;
 
 function TRspConnection.HexEncodeStr(s: string): string;
@@ -573,7 +593,7 @@ function TRspConnection.WaitForSignal(out msg: string; out
   registers: TInitializedRegisters): integer;
 var
   res: boolean;
-  startIndex, colonIndex, semicolonIndex, i, ID: integer;
+  startIndex, colonIndex, semicolonIndex, i: integer;
   tmp, tmp2: qword;
   part1, part2, s: string;
 begin
@@ -664,7 +684,7 @@ begin
                     if i > 2 then
                     begin
                       s := copy(part2, 2, i-1);
-                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                      if HexToIntLittleEndian(s, tmp) then
                         FStatusEvent.processID := tmp
                       else
                       begin
@@ -673,7 +693,7 @@ begin
                       end;
 
                       s := copy(part2, i+1, 255);
-                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                      if HexToIntLittleEndian(s, tmp) then
                         FStatusEvent.threadID := tmp
                       else
                       begin
@@ -687,7 +707,7 @@ begin
                   else
                   // Expect only thread ID
                   begin
-                    if ConvertHexWithLittleEndianSwap(part2, tmp) then
+                    if HexToIntLittleEndian(part2, tmp) then
                       FStatusEvent.threadID := tmp
                     else
                     begin
@@ -702,7 +722,7 @@ begin
             else // catch valid hex numbers - will be register info
               begin
                 // check if part1 is a number, this should then be a register index
-                if ConvertHexWithLittleEndianSwap(part1, tmp) and ConvertHexWithLittleEndianSwap(part2, tmp2) then
+                if HexToIntLittleEndian(part1, tmp) and HexToIntLittleEndian(part2, tmp2) then
                 begin
                   if tmp < length(FStatusEvent.registers) then
                   begin
@@ -745,7 +765,8 @@ begin
 end;
 
 function TRspConnection.SetBreakWatchPoint(addr: PtrUInt;
-  BreakWatchKind: TDBGWatchPointKind; watchsize: integer): boolean;
+  BreakWatchKind: TDBGWatchPointKind; watchsize: integer; HWbreak: boolean
+  ): boolean;
 var
   cmd, reply: string;
 begin
@@ -755,7 +776,11 @@ begin
     wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
-    wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
+    wkpExec:
+      if HWbreak then
+        cmd := cmd + '1,' + IntToHex(addr, 4) + ',00'
+      else
+        cmd := cmd + '0,' + IntToHex(addr, 4) + ',00';
   end;
 
   EnterCriticalSection(fCS);
@@ -769,7 +794,8 @@ begin
 end;
 
 function TRspConnection.DeleteBreakWatchPoint(addr: PtrUInt;
-  BreakWatchKind: TDBGWatchPointKind; watchsize: integer): boolean;
+  BreakWatchKind: TDBGWatchPointKind; watchsize: integer; HWBreak: boolean
+  ): boolean;
 var
   cmd, reply: string;
 begin
@@ -779,7 +805,11 @@ begin
     wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
-    wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
+    wkpExec:
+      if HWBreak then
+        cmd := cmd + '1,' + IntToHex(addr, 4) + ',00'
+      else
+        cmd := cmd + '0,' + IntToHex(addr, 4) + ',00';
   end;
 
   EnterCriticalSection(fCS);
@@ -831,7 +861,7 @@ begin
   end;
   if result then
   begin
-    result := ConvertHexWithLittleEndianSwap(reply, tmp);
+    result := HexToIntLittleEndian(reply, tmp);
     AVal := PtrUInt(tmp);
   end;
 
@@ -843,7 +873,7 @@ function TRspConnection.WriteDebugReg(ind: byte; AVal: TDbgPtr): boolean;
 var
   cmd, reply: string;
 begin
-  cmd := 'P'+IntToHex(ind, 2);
+  cmd := 'P'+IntToHex(ind, 2)+'='+IntToHexLittleEndian(AVal);
   EnterCriticalSection(fCS);
   try
     result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK');

@@ -480,6 +480,26 @@ begin
     SetCallFrameInformationRegisterCell(Row, 5, cfiSameValue, 0, 0);
     SetCallFrameInformationRegisterCell(Row, 6, cfiSameValue, 0, 0);
     SetCallFrameInformationRegisterCell(Row, 7, cfiSameValue, 0, 0);
+    end
+  else if TargetInfo.machineType=mtAVR8 then
+    begin
+    // Registers r2..r17, r28, r29 are call saved
+    SetCallFrameInformationRegisterCell(Row, 2, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 3, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 4, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 5, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 6, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 7, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 8, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 9, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 10, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 11, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 12, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 13, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 14, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 15, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 16, cfiSameValue, 0, 0);
+    SetCallFrameInformationRegisterCell(Row, 17, cfiSameValue, 0, 0);
     end;
 end;
 
