@@ -16,13 +16,13 @@ object MainForm: TMainForm
     Height = 508
     Top = 6
     Width = 529
-    ActivePage = PgImage
+    ActivePage = PgDebugTree
     Align = alClient
     BorderSpacing.Left = 2
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     OnChange = PageControlChange
     object PgImage: TTabSheet
@@ -635,6 +635,19 @@ object MainForm: TMainForm
             MouseActionsCollapsed = <>
           end
         end
+      end
+    end
+    object PgDebugTree: TTabSheet
+      Caption = 'Debug tree'
+      ClientHeight = 480
+      ClientWidth = 521
+      object TokensTreeView: TTreeView
+        Left = 0
+        Height = 480
+        Top = 0
+        Width = 521
+        Align = alClient
+        TabOrder = 0
       end
     end
   end

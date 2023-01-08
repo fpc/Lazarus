@@ -36,6 +36,8 @@ type
     SynXMLSyn1: TSynXMLSyn;
     PgImage: TTabSheet;
     PgSource: TTabSheet;
+    PgDebugTree: TTabSheet;
+    TokensTreeView: TTreeView;
     procedure BtnExternalViewerClick(Sender: TObject);
     procedure CbAdjustPenColorToBackgroundChange(Sender: TObject);
     procedure CbHistoryCloseUp(Sender: TObject);
@@ -74,6 +76,7 @@ type
     FImgPos: TPoint;
     FFormActivated: boolean;
     FFileName: string;
+    function  AddToDebugTreeProc(AStr: string; AParent: Pointer): Pointer;
     procedure DrawSVG(ACanvas: TCanvas; ACanvasSize: TSize);
     procedure LoadSVG(AFilename: String);
     procedure PrepareCanvas(ACanvas: TCanvas);
@@ -110,6 +113,11 @@ begin
 end;
 
 { TMainForm }
+
+function TMainForm.AddToDebugTreeProc(AStr: string; AParent: Pointer): Pointer;
+begin
+  Result := TokensTreeView.Items.AddChild(TTreeNode(AParent), AStr);
+end;
 
 procedure TMainForm.CbAdjustPenColorToBackgroundChange(Sender: TObject);
 begin
@@ -173,8 +181,11 @@ begin
   // Draw the page
   dx := round(FScale*EdMargin.Value) - page.RenderInfo.EntityCanvasMinXY.X;
   dy := round(FScale*EdMargin.Value) - page.RenderInfo.EntityCanvasMinXY.Y;
-
   page.Render(ACanvas, dx, dy, FScaleEff, FScaleEff);
+
+  // Prepare debug tree
+  TokensTreeView.Items.Clear;
+  FVec.GenerateDebugTree(@AddToDebugTreeProc);
 end;
 
 procedure TMainForm.EdOffsetXChange(Sender: TObject);
@@ -216,12 +227,13 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Caption := PROGRAM_NAME;
-  ShellListview.Mask := '*.svg';
+  PageControl.PageIndex := 0;
   {$IFNDEF MSWINDOWS}
   ShellTreeView.Images := ImageList1;
   ShellTreeView.OnGetImageIndex := @ShellTreeViewGetImageIndex;
   ShellTreeView.OnGetSelectedIndex := @ShellTreeViewGetSelectedIndex;
   {$ENDIF}
+  ShellListview.Mask := '*.svg';
   ReadIni;
 end;
 
