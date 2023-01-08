@@ -3777,6 +3777,8 @@ basecomponents:
 	$(MAKE) -C components/virtualtreeview
 	$(MAKE) -C components/fpdebug
 	$(MAKE) -C components/lazdebuggers/lazdebuggerfp
+	$(MAKE) -C components/lazdebuggers/lazdebuggerlldb
+	$(MAKE) -C components/lazdebuggers/lazdebuggerfplldb
 	$(MAKE) -C ide/packages/ideconfig
 	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
