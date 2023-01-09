@@ -89,6 +89,60 @@ const
   fpfSearchAllExisting = fpfSearchEverywhere+[fpfPkgLinkMustExist];
 
 type
+  // the base packages needed by the minimal IDE
+  TLazarusIDEBasePkg = (
+    libpFCL,
+    libpLazUtils,
+    libpFreeTypeLaz,
+    libpLCLBase,
+    libpLCL,
+    libpSynEdit,
+    libpBuildIntf,
+    libpLazDebuggerIntf,
+    libpIDEIntf,
+    libpDebuggerIntf,
+    libpCmdLineDebuggerBase,
+    libpfpdebug,
+    libpLazDebuggerGdbmi,
+    libpLazDebuggerFp,
+    libpLazDebuggerLldb,
+    libpLazDebuggerFpLldb,
+    libpCodeTools,
+    libpLazControls,
+    libpLazControlDsgn,
+    libpIdeConfig,
+    libpLCLExtensions_package,
+    libpLazVirtualtreeview_package,
+    libpIdeDebugger
+    );
+const
+  LazarusIDEBasePkgNames: array[TLazarusIDEBasePkg] of string = (
+    'FCL',
+    'LazUtils',
+    'freetypelaz',
+    'LCLBase',
+    'LCL',
+    'SynEdit',
+    'BuildIntf',
+    'LazDebuggerIntf',
+    'IDEIntf',
+    'DebuggerIntf',
+    'CmdLineDebuggerBase',
+    'fpdebug',
+    'LazDebuggerGdbmi',
+    'LazDebuggerFp',
+    'LazDebuggerLldb',
+    'LazDebuggerFpLldb',
+    'CodeTools',
+    'LazControls',
+    'LazControlDsgn',
+    'IdeConfig',
+    'lclextensions_package',
+    'laz.virtualtreeview_package',
+    'IdeDebugger'
+    );
+
+type
   TPkgUninstallFlag = (
     puifDoNotConfirm,
     puifDoNotBuildIDE
@@ -2259,22 +2313,11 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     OpenInstalledDependency(Dependency,pitStatic,Quiet);
   end;
 
+var
+  bp: TLazarusIDEBasePkg;
 begin
-  LoadLazarusBasePackage('FCL');
-  LoadLazarusBasePackage('LazUtils');
-  LoadLazarusBasePackage('LCLBase');
-  LoadLazarusBasePackage('LCL');
-  LoadLazarusBasePackage('SynEdit');
-  LoadLazarusBasePackage('BuildIntf');
-  LoadLazarusBasePackage('IDEIntf');
-  LoadLazarusBasePackage('LazDebuggerIntf');
-  LoadLazarusBasePackage('DebuggerIntf');
-  LoadLazarusBasePackage('LazDebuggerGdbmi');
-  LoadLazarusBasePackage('IdeConfig');
-  LoadLazarusBasePackage('IdeDebugger');
-  LoadLazarusBasePackage('LazControls');
-  LoadLazarusBasePackage('CodeTools');
-  LoadLazarusBasePackage('LazControlDsgn');
+  for bp in TLazarusIDEBasePkg do
+    LoadLazarusBasePackage(LazarusIDEBasePkgNames[bp]);
 
   SortAutoInstallDependencies;
 end;
@@ -2396,23 +2439,13 @@ begin
 end;
 
 function TLazPackageGraph.IsStaticBasePackage(PackageName: string): boolean;
+var
+  bp: TLazarusIDEBasePkg;
 begin
-  PackageName:=lowercase(PackageName);
-  Result:=(PackageName='fcl')
-       or (PackageName='lazutils')
-       or (PackageName='lclbase')
-       or (PackageName='lcl')
-       or (PackageName='synedit')
-       or (PackageName='ideintf')
-       or (PackageName='lazdebuggerintf')
-       or (PackageName='debuggerintf')
-       or (PackageName='lazdebuggergdbmi')
-       or (PackageName='ideconfig')
-       or (PackageName='idedebugger')
-       or (PackageName='codetools')
-       or (PackageName='buildintf')
-       or (PackageName='lazcontrols')
-       or (PackageName='lazcontroldsgn');
+  for bp in TLazarusIDEBasePkg do
+    if SameText(PackageName,LazarusIDEBasePkgNames[bp]) then
+      exit(true);
+  Result:=false;
 end;
 
 procedure TLazPackageGraph.FreeAutoInstallDependencies;
