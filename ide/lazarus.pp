@@ -62,6 +62,7 @@ uses
   Splash,
   Main,
   AboutFrm,
+  LazDebuggerFpLldb, LazDebuggerFp, laz.virtualtreeview_package,
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
@@ -75,9 +76,8 @@ uses
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
     EditorMacroScript, ExampleProjects,
-    laz.virtualtreeview_package, OnlinePackageManager,
+    OnlinePackageManager,
     SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn,
-    LazDebuggerFpLldb, LazDebuggerFp,
   {$ENDIF}
   MainBase;
 
