@@ -176,6 +176,8 @@ type
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
 
     procedure EvaluateModify(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
+    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer); virtual; abstract;
+
     procedure Inspect(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;

@@ -261,6 +261,7 @@ type
     function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string;
                              AskUserIfNotFound: Boolean): Boolean; override;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
+    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer); override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
@@ -968,6 +969,39 @@ begin
   then begin
     Filename:=SrcFile;
     Result:=True;
+  end;
+end;
+
+procedure TDebugManager.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo;
+  ALine: Integer);
+const
+  JmpFlags: TJumpToCodePosFlags =
+    [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath];
+var
+  Filename: String;
+  ok: Boolean;
+begin
+  if AnUnitInfo = nil then exit;
+  debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
+  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
+  LockCommandProcessing;
+  try
+  (* Maybe trim the filename here and use jfDoNotExpandFilename
+     ExpandFilename works with the current IDE path, and may be wrong
+  *)
+  // TODO: better detection of unsaved project files
+    if GetFullFilename(AnUnitInfo, Filename, False) then
+    begin
+      ok := false;
+      if ALine <= 0 then
+        ALine := AnUnitInfo.SrcLine;
+      if FilenameIsAbsolute(Filename) then
+        ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags) = mrOK;
+      if not ok then
+        MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags+[jfDoNotExpandFilename]);
+    end;
+  finally
+    UnLockCommandProcessing;
   end;
 end;
 

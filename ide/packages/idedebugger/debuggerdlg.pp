@@ -47,7 +47,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfMiscClasses,
   // IDE
-  MainIntf, EditorOptions, BaseDebugManager, Debugger;
+  BaseDebugManager, Debugger;
 
 type
 
@@ -123,6 +123,7 @@ type
   TDebuggerDlgClass = class of TDebuggerDlg;
 
 var
+  OnTranslateKey: function (Key: word; Shift: TShiftState; IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
   OnProcessCommand: procedure(Sender: TObject; Command: word; var Handled: boolean) of object;
 
 procedure CreateDebugDialog(Sender: TObject; aFormName: string;
@@ -367,35 +368,8 @@ begin
 end;
 
 procedure TDebuggerDlg.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
-const
-  JmpFlags: TJumpToCodePosFlags =
-    [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath];
-var
-  Filename: String;
-  ok: Boolean;
 begin
-  if AnUnitInfo = nil then exit;
-  debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
-  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
-  DebugBoss.LockCommandProcessing;
-  try
-  (* Maybe trim the filename here and use jfDoNotExpandFilename
-     ExpandFilename works with the current IDE path, and may be wrong
-  *)
-  // TODO: better detection of unsaved project files
-    if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then
-    begin
-      ok := false;
-      if ALine <= 0 then
-        ALine := AnUnitInfo.SrcLine;
-      if FilenameIsAbsolute(Filename) then
-        ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags) = mrOK;
-      if not ok then
-        MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags+[jfDoNotExpandFilename]);
-    end;
-  finally
-    DebugBoss.UnLockCommandProcessing;
-  end;
+  DebugBoss.JumpToUnitSource(AnUnitInfo, ALine);
 end;
 
 procedure TDebuggerDlg.DoWatchesChanged;
@@ -524,7 +498,9 @@ var
   Command: Word;
   Handled: Boolean;
 begin
-  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,TDebuggerDlg);
+  if OnTranslateKey = nil then
+    exit;
+  Command := OnTranslateKey(Key,Shift,TDebuggerDlg);
 
   if Assigned(OnProcessCommand) and (Command <> ecNone) and
      (Command <> ecContextHelp) and(Command <> ecEditContextHelp)

@@ -1024,6 +1024,12 @@ end;
 
 { TMainIDE }
 
+function DoTranslateKey(Key: word; Shift: TShiftState;
+  IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
+begin
+  EditorOpts.KeyMap.TranslateKey(Key, Shift, IDEWindowClass, UseLastKey);
+end;
+
 {-------------------------------------------------------------------------------
   procedure TMainIDE.ParseCmdLineOptions;
 
@@ -1616,6 +1622,7 @@ begin
   DebugBossManager:=DebugBoss;
   DebugBoss.ConnectMainBarEvents;
   DebuggerDlg.OnProcessCommand := @ProcessIDECommand;
+  DebuggerDlg.OnTranslateKey:= @DoTranslateKey;
 
   PkgMngr:=TPkgManager.Create(nil);
   PkgBoss:=PkgMngr;

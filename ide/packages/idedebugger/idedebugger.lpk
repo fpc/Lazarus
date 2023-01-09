@@ -106,6 +106,10 @@
         <Filename Value="watchpropertydlg.pp"/>
         <UnitName Value="WatchPropertyDlg"/>
       </Item>
+      <Item>
+        <Filename Value="debuggerdlg.pp"/>
+        <UnitName Value="DebuggerDlg"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
