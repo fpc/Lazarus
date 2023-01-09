@@ -4445,6 +4445,112 @@ msgctxt "lazarusidestrconsts.histdlgformname"
 msgid "History"
 msgstr "Praeitis"
 
+#: lazarusidestrconsts.initdlgdebugchangepath
+msgid "Change path"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfigured
+msgid "Error: The backend is not configured."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfiguredmissingpackage
+msgid "(The configured backend's package is not installed.)"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotsupported
+msgid "Error: Your current config uses a backend that is not supported on your OS/Arch."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugclassnotehintnotrecommended
+msgid "Hint: The backend type is OK, but not the recommended type."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugcreateanewrecommendedback
+msgid "Create a new recommended backend"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
+msgid "The selected backend uses the external executable:"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugexternalexepathprompt
+#, object-pascal-format
+msgid "The selected backend requires an external executable: \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugheaderdefaultforyourosarchiss
+#, object-pascal-format
+msgid "Default for your OS/Arch is: \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.initdlgdebugignore"
+msgid "Ignore"
+msgstr "Ignoruoti"
+
+#: lazarusidestrconsts.initdlgdebugkeepbackend
+msgid "Keep backend"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
+msgid "Error: External executable is a directory, not a file."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotfound
+msgid "Error: External executable not found."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotrunnable
+msgid "Error: External file is not executable."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrornodefaultfound
+msgid "Error: No default for external executable found."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrornoexespecified
+msgid "Error: No external executable specified."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugpopupinformation
+#, object-pascal-format
+msgid "A backend provides OS and architecture specific implementations for the debugger.%0:sDefault for your OS/Arch is: \"%1:s\".%0:s%0:sOther backends are provided for special tasks (e.g. cross debugging on some platforms) or as generic alternatives.%0:sThe debugger can have different features, depending on the backend.%0:s%0:sSome backends require an external exe (such as gdb or lldb). This exe may be part of your OS (Linux/Mac), or be provided by the Lazarus installer (Windows).%0:s%0:sIf you have just upgraded your installation, you may have to rebuild the IDE before your previously configured backend can be used (if you used a 3rd-party or optional backend). In that case you may choose \"Ignore\"."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugselectanexistingbackend
+msgid "Select an existing backend"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackagefooter
+msgid "Note: There are more backend configurations available, but their packages (LPK) are not installed. You may want to rebuild the IDE with the packages installed. After the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackagerebuild
+#, object-pascal-format
+msgid "If you decide to rebuild the IDE first and install missing packages, then select \"Ignore\" for now.%0:sAfter the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackages
+msgid "There may be packages (LPK) missing from your IDE installation. You may need to rebuild the IDE and install them, before making changes to the setup."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstaterecommendedfoundinlist
+msgid "There is a backend of recommended type in the list of existing debuggers. You may pick this instead of creating a new backend."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstaterecommendednotinlist
+msgid "There is no backend of recommended type in the list of existing debuggers. Consider creating a new backend."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstatesetupok
+msgid "Setup is OK."
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugstateupdatebackend
+msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "Jei 0, tai skyriklio linijos brėžiamos nebus; jei 1, tai linijos bus brėžiamos tik viršutiniame lygyje; jei 2, tai linijos bus brėžiamos pirmiems dviems lygiams;..."
@@ -5206,10 +5312,6 @@ msgstr "Sukūrus naują failą, klausti jo pavadinimo"
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
 msgstr "Sukūrus, klausti pavadinimo"
-
-#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
-msgstr "Naudinga nuostata Windows sistemoje: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -19122,11 +19224,6 @@ msgstr "Dabartinis FPC neturi konfigūracijos failo. Jis gali pasigesti kai kuri
 #, object-pascal-format
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "Nerasta derintuvė „%s“,%sarba ji nėra vykdomasis failas.%sŽvilgtelėkit į „Įrankiai“ -> „Parinktys…“ -> „Derintuvė“ -> „Pagrindinis“."
-
-#: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
-#, object-pascal-format
-msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
-msgstr "Įprastai derintuvės failo pavadinimas būna „%s“. Būtina nurodyti pilną adresą."
 
 #: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
 msgid "The default mode must be stored in project, not in session."

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-01-04 01:33+0300\n"
+"PO-Revision-Date: 2023-01-09 04:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4328,6 +4328,111 @@ msgctxt "lazarusidestrconsts.histdlgformname"
 msgid "History"
 msgstr "История"
 
+#: lazarusidestrconsts.initdlgdebugchangepath
+msgid "Change path"
+msgstr "Изменить путь"
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfigured
+msgid "Error: The backend is not configured."
+msgstr "Ошибка: механизм отладки не настроен."
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfiguredmissingpackage
+msgid "(The configured backend's package is not installed.)"
+msgstr "(Пакет выбранного механизма отладки не установлен.)"
+
+#: lazarusidestrconsts.initdlgdebugclassnoteerrornotsupported
+msgid "Error: Your current config uses a backend that is not supported on your OS/Arch."
+msgstr "Ошибка: выбранный в настоящий момент механизм отладки не поддерживается вашей архитектурой/ОС."
+
+#: lazarusidestrconsts.initdlgdebugclassnotehintnotrecommended
+msgid "Hint: The backend type is OK, but not the recommended type."
+msgstr "Подсказка: выбранный тип механизма отладки корректен, но не является рекомендуемым."
+
+#: lazarusidestrconsts.initdlgdebugcreateanewrecommendedback
+msgid "Create a new recommended backend"
+msgstr "Создать новый рекомендуемый механизм отладки"
+
+#: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
+msgid "The selected backend uses the external executable:"
+msgstr "Выбранный механизм отладки использует внешний исполнимый файл:"
+
+#: lazarusidestrconsts.initdlgdebugexternalexepathprompt
+#, object-pascal-format
+msgid "The selected backend requires an external executable: \"%s\""
+msgstr "Выбранный механизм отладки требует внешний исполнимый файл: \"%s\""
+
+#: lazarusidestrconsts.initdlgdebugheaderdefaultforyourosarchiss
+#, object-pascal-format
+msgid "Default for your OS/Arch is: \"%s\"."
+msgstr "Значение по умолчанию для вашей архитектуры/ОС: \"%s\"."
+
+#: lazarusidestrconsts.initdlgdebugignore
+msgctxt "lazarusidestrconsts.initdlgdebugignore"
+msgid "Ignore"
+msgstr "Пропустить"
+
+#: lazarusidestrconsts.initdlgdebugkeepbackend
+msgid "Keep backend"
+msgstr "Сохранить выбор механизма отладки"
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
+msgid "Error: External executable is a directory, not a file."
+msgstr "Ошибка: внешний исполнимый файл на самом деле является каталогом."
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotfound
+msgid "Error: External executable not found."
+msgstr "Ошибка: внешний исполнимый файл не найден."
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotrunnable
+msgid "Error: External file is not executable."
+msgstr "Ошибка: внешний файл не является исполнимым."
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrornodefaultfound
+msgid "Error: No default for external executable found."
+msgstr "Ошибка: не найдено варианта по умолчанию для внешнего исполнимого файла."
+
+#: lazarusidestrconsts.initdlgdebugpathnoteerrornoexespecified
+msgid "Error: No external executable specified."
+msgstr "Ошибка: не указан внешний исполнимый файл."
+
+#: lazarusidestrconsts.initdlgdebugpopupinformation
+#, object-pascal-format
+msgid "A backend provides OS and architecture specific implementations for the debugger.%0:sDefault for your OS/Arch is: \"%1:s\".%0:s%0:sOther backends are provided for special tasks (e.g. cross debugging on some platforms) or as generic alternatives.%0:sThe debugger can have different features, depending on the backend.%0:s%0:sSome backends require an external exe (such as gdb or lldb). This exe may be part of your OS (Linux/Mac), or be provided by the Lazarus installer (Windows).%0:s%0:sIf you have just upgraded your installation, you may have to rebuild the IDE before your previously configured backend can be used (if you used a 3rd-party or optional backend). In that case you may choose \"Ignore\"."
+msgstr "Механизмы отладки предоставляют реализации отладчика для конкретных архитектур и ОС.%0:sЗначение по умолчанию для вашей архитектуры/ОС: \"%1:s\".%0:s%0:sПрочие механизмы отладки поставляются для конкретных целей (например, кросс-отладки на некоторых платформах), либо в качестве стандартной альтернативы.%0:sВ зависимости от механизма, отладчик может иметь разные возможности.%0:s%0:sНекоторые механизмы требуют внешнего файла (такого, как gdb либо lldb). Этот исполнимый файл может быть частью вашей ОС (Linux/Mac) или поставляться в дистрибутиве Lazarus (Windows).%0:s%0:sПри обновлении Lazarus может потребоваться пересобрать IDE, чтобы продолжать использовать свой механизм отладки (если использовался сторонний либо не являющийся обязательным механизм). В этом случае выберите \"Пропустить\"."
+
+#: lazarusidestrconsts.initdlgdebugselectanexistingbackend
+msgid "Select an existing backend"
+msgstr "Выбрать механизм отладки из имеющихся"
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackagefooter
+msgid "Note: There are more backend configurations available, but their packages (LPK) are not installed. You may want to rebuild the IDE with the packages installed. After the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
+msgstr "Примечание: доступны дополнительные варианты механизмов отладки, но их пакеты (LPK) не установлены. Может потребоваться установить их и пересобрать IDE. После этого механизм отладки можно будет поменять в меню: Сервис -> Параметры."
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackagerebuild
+#, object-pascal-format
+msgid "If you decide to rebuild the IDE first and install missing packages, then select \"Ignore\" for now.%0:sAfter the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
+msgstr "Если вы решите установить отсутствующие пакеты и пересобрать IDE, выберите \"Пропустить\".%0:sПосле пересборки механизм отладки можно будет поменять в меню: Сервис -> Параметры."
+
+#: lazarusidestrconsts.initdlgdebugstatemissingpackages
+msgid "There may be packages (LPK) missing from your IDE installation. You may need to rebuild the IDE and install them, before making changes to the setup."
+msgstr "В IDE могут быть не установлены некоторые пакеты (LPK). Может потребоваться установить их и пересобрать IDE перед настройкой."
+
+#: lazarusidestrconsts.initdlgdebugstaterecommendedfoundinlist
+msgid "There is a backend of recommended type in the list of existing debuggers. You may pick this instead of creating a new backend."
+msgstr "Механизм отладки рекомендуемого типа уже имеется в списке. Можно выбрать его вместо создания нового."
+
+#: lazarusidestrconsts.initdlgdebugstaterecommendednotinlist
+msgid "There is no backend of recommended type in the list of existing debuggers. Consider creating a new backend."
+msgstr "Механизм отладки рекомендуемого типа отсутствует в списке. Следует создать новый."
+
+#: lazarusidestrconsts.initdlgdebugstatesetupok
+msgid "Setup is OK."
+msgstr "Параметры верны."
+
+#: lazarusidestrconsts.initdlgdebugstateupdatebackend
+msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+msgstr "Используется более старый механизм отладки. Это может уменьшить комфортность процесса отладки. Следует использовать рекомендуемый механизм отладки."
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "0 = не отображать, 1 = отображать только для верхнего уровня, 2 = отображать для первых двух уровней и т.д."
@@ -5076,10 +5181,6 @@ msgstr "Спрашивать имя нового файла при его соз
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
 msgstr "Спрашивать имя при создании"
-
-#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
-msgstr "Типичное значение для ОС Windows: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -18822,11 +18923,6 @@ msgstr "Для используемого компилятора FPC отсут�
 #, object-pascal-format
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "Отладчик \"%s\"%sне существует или не является исполнимым файлом.%sПроверьте Сервис -> Параметры -> Отладчик"
-
-#: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
-#, object-pascal-format
-msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
-msgstr "Исполнимый файл отладчика обычно называется \"%s\". Укажите полный путь к нему."
 
 #: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
 msgid "The default mode must be stored in project, not in session."
