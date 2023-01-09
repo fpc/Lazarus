@@ -51,13 +51,15 @@ uses
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources, ComponentReg,
   // IDE
-  IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
-  MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
-  SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
-  ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
-  BuildManager, EditorMacroListViewer, FindRenameIdentifier, BuildModesManager,
-  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd, SearchPathProcs,
-  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
+  IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
+  ProjectInspector, CompilerOptions, SourceSynEditor, SourceEditor,
+  EditorOptions, EnvironmentOpts, CustomFormEditor, ControlSelection,
+  FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros, BuildManager,
+  EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,
+  InputHistory, CheckLFMDlg, etMessagesWnd, DebugManager, SearchPathProcs,
+  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer,
+  DesignerProcs;
 
 type
 
@@ -616,7 +618,7 @@ begin
     //debugln(['TFileOpener.OpenFileInSourceEditor ',AnUnitInfo.Filename]);
 
     // restore source editor settings
-    DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
+    DebugBossMgr.DoRestoreDebuggerMarks(AnUnitInfo);
     NewSrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
     NewSrcEdit.EditorComponent.AfterLoadFromFile;
     try

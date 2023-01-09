@@ -1366,11 +1366,6 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="basedebugmanager.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseDebugManager"/>
-      </Unit>
-      <Unit>
         <Filename Value="imexportcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ImExportCompOptsDlg"/>

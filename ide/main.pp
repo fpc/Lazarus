@@ -5697,7 +5697,7 @@ procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; Merge: boolean);
 begin
   if TheProject=Project1 then
-    DebugBoss.LoadProjectSpecificInfo(XMLConfig,Merge);
+    DebugBossMgr.LoadProjectSpecificInfo(XMLConfig,Merge);
 
   if (TheProject=Project1) then
     EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig);
@@ -5720,7 +5720,7 @@ procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 begin
   if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags)) then
-    DebugBoss.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
+    DebugBossMgr.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
 
   if (TheProject=Project1) then
     EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);

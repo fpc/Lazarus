@@ -34,12 +34,7 @@ unit BaseDebugManager;
 
 interface
 
-{$I ide.inc}
-
 uses
-{$IFDEF IDE_MEM_CHECK}
-  MemCheck,
-{$ENDIF}
   Classes, SysUtils,
   // LCL
   Forms,
@@ -52,8 +47,7 @@ uses
   LazDebuggerIntf,
   IdeDebuggerOpts,
   // IDE
-  Debugger, IdeDebuggerBase, SourceMarks, Project, ProjectDefs,
-  LazarusIDEStrConsts;
+  Debugger, IdeDebuggerBase;
 
 type
   TDebugDialogType = (
@@ -145,14 +139,6 @@ type
     procedure UpdateToolStatus; virtual; abstract;
     procedure EnvironmentOptsChanged; virtual; abstract;
 
-    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
-                                      Merge: boolean); virtual; abstract;
-    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
-                                      Flags: TProjectWriteFlags); virtual; abstract;
-
-
-    procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
-
     function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; virtual; abstract;
     function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; virtual; abstract;
     
@@ -204,8 +190,7 @@ type
                                 AnUpdating: Boolean = False): TModalResult; virtual; abstract;
     function DoDeleteBreakPoint(const AFilename: string; ALine: integer
                                 ): TModalResult; virtual; abstract;
-    function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
-                                     ): TModalResult; virtual; abstract;
+    function DoDeleteBreakPointAtMark(const ASourceMarkObj: TObject): TModalResult; virtual; abstract;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;

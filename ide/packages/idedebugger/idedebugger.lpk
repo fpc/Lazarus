@@ -98,6 +98,10 @@
         <UnitName Value="WatchInspectToolbar"/>
         <ResourceBaseClass Value="Frame"/>
       </Item>
+      <Item>
+        <Filename Value="basedebugmanager.pas"/>
+        <UnitName Value="BaseDebugManager"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
