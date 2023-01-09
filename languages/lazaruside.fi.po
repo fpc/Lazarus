@@ -5014,10 +5014,6 @@ msgstr "Kaikki periytyvät asetukset"
 msgid "All Options"
 msgstr "Kaikki asetukset"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Salli funktiokutsut"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Salli etsintä monelta riviltä"
@@ -5361,11 +5357,6 @@ msgstr "Kun tämä tiedosto on aktiivinen editorissa"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Työhakemisto (tyhjä = tiedoston polku)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Binaari"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6186,10 +6177,6 @@ msgstr "Vaihda Unixin /"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Vaihda Windowsin \\"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Merkki"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8727,11 +8714,6 @@ msgstr "Tiedoston lataus ei onnistu"
 msgid "Unable to load file \"%s\"."
 msgstr "Tiedoston \"%s\" lataus ei onnistu."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Desimaali"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8945,10 +8927,6 @@ msgstr "Avaa eroavuudet editorissa"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "eri käännösyksikkö %s löytyi uudesta kohdasta \"%s\""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Numerot"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -9986,10 +9964,6 @@ msgstr "Vie valitut"
 msgid "Export >>"
 msgstr "Vie >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Ilmaisu:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10374,10 +10348,6 @@ msgstr "&Ensimmäinen testi"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM-tiedoston korjaus"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Liukuluku"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10800,10 +10770,6 @@ msgstr "Ohjemerkinnät"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Ohjeen valinta"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Heksadesimaali"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12799,10 +12765,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Toiminta"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Muistin sisältö"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -16902,10 +16864,6 @@ msgstr "Valitse .po-tiedoston hakemisto"
 msgid "Do not save any session info"
 msgstr "Älä tallenna istunnon tietoja"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Osoitin"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Tallenna .lps-tiedostoon config-hakemistossa"
@@ -17468,10 +17426,6 @@ msgstr "Nauhoita"
 msgid "Recorded"
 msgstr "Nauhoitettu"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr ""
-
 #: lazarusidestrconsts.lisredo
 msgid "Redo"
 msgstr "Tee uudelleen"
@@ -17626,10 +17580,6 @@ msgstr "Avaa uudestaan toisella merkkikoodauksella"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Toistoja"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Toistojen määrä:"
 
 #: lazarusidestrconsts.lisreplace
 msgid "Replace"
@@ -18573,15 +18523,6 @@ msgstr "Outo lpi-tiedosto"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Virran virhe"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "Merkkijono"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Tyyli"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20313,10 +20254,6 @@ msgstr "käännösyksikkö %s riippuu paketista %s"
 msgid "Units not found in project %s"
 msgstr "Käännösyksiköitä ei löydy projektista %s"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Etumerkitön"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20615,10 +20552,6 @@ msgstr "&Tieto/Vahti keskeytyskohta ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "&Tieto/Vahti keskeytyskohta ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Vahdin ominaisuudet"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

@@ -1,20 +1,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: debuggerstrconst.dlgbackendconvoptdebugconverter
-msgid "Backend Converter:"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdefault
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
-msgid "- Default -"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdisabled
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
-msgid "- Disabled -"
-msgstr ""
-
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr ""
@@ -130,16 +116,8 @@ msgstr ""
 msgid "Len=%d: "
 msgstr ""
 
-#: debuggerstrconst.drsrunallthreadswhileevaluat
-msgid "Run all threads while evaluating"
-msgstr ""
-
 #: debuggerstrconst.drssuspend
 msgid "Suspend"
-msgstr ""
-
-#: debuggerstrconst.drsuseinstanceclasstype
-msgid "Use Instance class type"
 msgstr ""
 
 #: debuggerstrconst.drswatchsplitterinspect

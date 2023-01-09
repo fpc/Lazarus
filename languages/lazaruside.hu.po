@@ -5019,10 +5019,6 @@ msgstr "Minden örökölt beállítás"
 msgid "All Options"
 msgstr "Minden beállítás"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Függvényhívások engedélyezése"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Többsoros keresés engedélyezése"
@@ -5366,11 +5362,6 @@ msgstr "Amikor ez a fájl aktív a forráskódszerkesztőben"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Munkakönyvtár (maradjon üres a fájl útvonalához)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Bináris"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6193,10 +6184,6 @@ msgstr "Váltás Unix-ra: /"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Váltás Windows-ra: \\"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Karakter"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8746,11 +8733,6 @@ msgstr "A fájl betöltése nem lehetséges"
 msgid "Unable to load file \"%s\"."
 msgstr "A(z) \"%s\" fájl betöltése nem lehetséges"
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Decimális"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8964,10 +8946,6 @@ msgstr "Eltérés megnyitása a szerkesztőben"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "másik %s unit található az új helyen: \"%s\""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Számjegyek:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10015,10 +9993,6 @@ msgstr "Kijelölt exportálása"
 msgid "Export >>"
 msgstr "Exportálás >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Kifejezés:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10404,10 +10378,6 @@ msgstr "Első teszt"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM fájl javítása"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Lebegőpontos"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10839,10 +10809,6 @@ msgstr "Súgó bejegyzések"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Súgó kiválasztó"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Hexadecimális"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12875,10 +12841,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Művelet"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Memória mentés"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17008,10 +16970,6 @@ msgstr "Válasszon .po fájl könyvtárat!"
 msgid "Do not save any session info"
 msgstr "Ne mentsen semmilyen információt a munkamenetről"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Mutató"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Mentés .lps fájlba az IDE beállításainak könyvtárában"
@@ -17579,10 +17537,6 @@ msgstr "Rögzítés"
 msgid "Recorded"
 msgstr "Rögzítve"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Rekord/Struktúra"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17738,10 +17692,6 @@ msgstr "Újra megnyitás másik kódolással"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Ismétlés"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Ismétlések száma:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18695,15 +18645,6 @@ msgstr "Furcsa lpi fájl"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Adatfolyam hiba"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "Karakterlánc"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Stílus"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20436,10 +20377,6 @@ msgstr "a(z) %s unit igényli a(z) %s csomagot"
 msgid "Units not found in project %s"
 msgstr "Nem található unitok a projektben: %s"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Előjel nélküli"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20739,10 +20676,6 @@ msgstr "Figyelési töréspont ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "Figyelési töréspont ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Tulajdonság figyelő"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

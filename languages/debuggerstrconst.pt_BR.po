@@ -11,22 +11,6 @@ msgstr ""
 "Language: pt_BR\n"
 "X-Generator: Poedit 1.8.13\n"
 
-#: debuggerstrconst.dlgbackendconvoptdebugconverter
-msgid "Backend Converter:"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdefault
-#, fuzzy
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
-msgid "- Default -"
-msgstr "- Padrão -"
-
-#: debuggerstrconst.dlgbackendconvoptdisabled
-#, fuzzy
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
-msgid "- Disabled -"
-msgstr "- Desabilitado -"
-
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Coluna ações"
@@ -142,17 +126,9 @@ msgstr "Coluna tipo método"
 msgid "Len=%d: "
 msgstr "Len=%d: "
 
-#: debuggerstrconst.drsrunallthreadswhileevaluat
-msgid "Run all threads while evaluating"
-msgstr ""
-
 #: debuggerstrconst.drssuspend
 msgid "Suspend"
 msgstr ""
-
-#: debuggerstrconst.drsuseinstanceclasstype
-msgid "Use Instance class type"
-msgstr "Usar tipo classe instância"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"

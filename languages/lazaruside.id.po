@@ -5212,10 +5212,6 @@ msgstr ""
 msgid "All Options"
 msgstr ""
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr ""
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Ijinkan pencarian untuk multipel baris"
@@ -5571,12 +5567,6 @@ msgstr "Ketika file ini aktif dalam editor sumber ..."
 #| msgid "Working directory (Leave empty for file path)"
 msgid "Working directory (leave empty for file path)"
 msgstr "Direktori kerja (biarkan kosong untuk path file)"
-
-#: lazarusidestrconsts.lisbinary
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Biner"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6419,10 +6409,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
-msgstr ""
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
 msgstr ""
 
 #: lazarusidestrconsts.lischaractermap
@@ -9019,11 +9005,6 @@ msgstr "Tidak bisa mengambil file"
 msgid "Unable to load file \"%s\"."
 msgstr "Tidak bisa mengambil file %s%s%s."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr ""
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -9240,10 +9221,6 @@ msgstr "Buka Diff dalam editor"
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
-msgstr ""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
 msgstr ""
 
 #: lazarusidestrconsts.lisdirectives
@@ -10301,10 +10278,6 @@ msgstr ""
 msgid "Export >>"
 msgstr ""
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr ""
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10702,10 +10675,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Betulkan file LFM"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr ""
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -11141,10 +11110,6 @@ msgstr ""
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Selektor Panduan"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr ""
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 #, fuzzy
@@ -13257,10 +13222,6 @@ msgstr ""
 #: lazarusidestrconsts.lismeaction
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
-msgstr ""
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuabortbuild
@@ -17658,10 +17619,6 @@ msgstr ""
 msgid "Do not save any session info"
 msgstr "Jangan simpan info sesi apapun"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr ""
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 #, fuzzy
 #| msgid "Save in IDE config directory"
@@ -18255,10 +18212,6 @@ msgstr ""
 msgid "Recorded"
 msgstr ""
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr ""
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -18415,10 +18368,6 @@ msgstr ""
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
-msgstr ""
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplace
@@ -19375,15 +19324,6 @@ msgstr ""
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Pengaliran salah"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr ""
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr ""
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -21176,10 +21116,6 @@ msgstr ""
 msgid "Units not found in project %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr ""
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -21480,10 +21416,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
-msgstr ""
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
 msgstr ""
 
 #: lazarusidestrconsts.liswatchscope

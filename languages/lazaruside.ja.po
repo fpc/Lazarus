@@ -5131,10 +5131,6 @@ msgstr "すべての継承されたオプション"
 msgid "All Options"
 msgstr "すべてのオプション"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "関数呼び出しを許可する"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "複数行の検索を許可する"
@@ -5478,12 +5474,6 @@ msgstr "このファイルがソースエディタでアクティブなとき"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "作業ディレクトリ （ファイルパスは空欄にしておいてください）"
-
-#: lazarusidestrconsts.lisbinary
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "バイナリ"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6309,10 +6299,6 @@ msgstr "Unix / に変換"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Windows \\ に変換"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "文字"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8867,11 +8853,6 @@ msgstr "ファイルを読み込めません。"
 msgid "Unable to load file \"%s\"."
 msgstr "ファイル\"%s\"を読み込めません。"
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "小数"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -9087,10 +9068,6 @@ msgstr "エディタの差分を開く"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "異なるユニット%sが新しい場所\"%s\"に見つかりました"
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "桁"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10140,10 +10117,6 @@ msgstr "選択対象をエクスポート"
 msgid "Export >>"
 msgstr "エクスポート >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "評価"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10532,10 +10505,6 @@ msgstr "最初のテスト(&F)"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFMファイルを修復"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "浮動小数点"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10978,10 +10947,6 @@ msgstr "ヘルプエントリ"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "ヘルプ選択"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "16進法"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -13018,10 +12983,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "アクション"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "メモリダンプ"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17202,10 +17163,6 @@ msgstr ".poファイルディレクトリを選択してください"
 msgid "Do not save any session info"
 msgstr "セッション情報を保存しない"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "ポインタ"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "IDE設定ディレクトリの.lpsファイルに保存"
@@ -17777,10 +17734,6 @@ msgstr "記録"
 msgid "Recorded"
 msgstr "記録済み"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "構造体"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17936,10 +17889,6 @@ msgstr "他のエンコーディングで開き直す"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "繰り返す"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "反復回数："
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18918,15 +18867,6 @@ msgstr "奇妙なlpiファイル"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "ストリーミングエラー"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "文字列"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "スタイル"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20678,10 +20618,6 @@ msgstr "ユニット%sはパッケージ%sを必要とします"
 msgid "Units not found in project %s"
 msgstr "プロジェクト %sのユニットが見つかりません"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "未署名"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20981,10 +20917,6 @@ msgstr "データ/監視ブレークポイント (&D) ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "データ/監視ブレークポイント (&D) ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "プロパティの監視"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

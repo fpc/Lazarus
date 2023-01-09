@@ -5312,10 +5312,6 @@ msgstr "כל האפשרויות שעברו בהורשה"
 msgid "All Options"
 msgstr ""
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "אפשר קריאות של פונקציות"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "אפשר חיפוש בשורות מרובות"
@@ -5674,12 +5670,6 @@ msgstr "כאשר קובץ זה פעיל בעורך הקוד ..."
 #| msgid "Working directory (Leave empty for file path)"
 msgid "Working directory (leave empty for file path)"
 msgstr "ספריית עבודה (השאר ריק לנתיב הקובץ)"
-
-#: lazarusidestrconsts.lisbinary
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "בינארי"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6539,10 +6529,6 @@ msgstr ""
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr ""
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "תו"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -9176,11 +9162,6 @@ msgstr "לא ניתן לטעון קובץ"
 msgid "Unable to load file \"%s\"."
 msgstr "לא ניתן לטעון את הקובץ %s%s%s."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "עשרוני"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -9401,10 +9382,6 @@ msgstr "פתח Diff בעורך"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr ""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "ספרות:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10481,10 +10458,6 @@ msgstr ""
 msgid "Export >>"
 msgstr ""
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "ביטוי:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10883,10 +10856,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "תקן קובץ LFM"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "נקודה צפה"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -11327,10 +11296,6 @@ msgstr "כניסות עזרה"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "בורר העזרה"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "הקסדצימלי"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 #, fuzzy
@@ -13507,10 +13472,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "פעולה"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "השלכת זיכרון"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17959,10 +17920,6 @@ msgstr "בחר תיקייה לקובץ po."
 msgid "Do not save any session info"
 msgstr "אל תשמור שום מידע session"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "מצביע"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 #, fuzzy
 #| msgid "Save in IDE config directory"
@@ -18564,10 +18521,6 @@ msgstr "רשומה"
 msgid "Recorded"
 msgstr ""
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "רשומה/מבנה נתונים"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -18729,10 +18682,6 @@ msgstr "פתח מחדש בקידוד אחר"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "חזור"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "חזור על הספירה:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -19708,15 +19657,6 @@ msgstr "קובץ lpi מוזר"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "שגיאת זרימה"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "מחרוזת"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "סגנון"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -21544,10 +21484,6 @@ msgstr ""
 msgid "Units not found in project %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "ללא סימן"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -21858,10 +21794,6 @@ msgstr ""
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr ""
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "תכונות המשגיח"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

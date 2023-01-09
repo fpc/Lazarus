@@ -5010,10 +5010,6 @@ msgstr "Todas opções herdadas"
 msgid "All Options"
 msgstr "Todas as opções"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Permitir Chamadas de Funções"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Permitir busca por múltiplas linhas"
@@ -5379,11 +5375,6 @@ msgstr "Quando este arquivo estiver ativo no editor de código"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Diretório de trabalho (deixar vazio para caminho de arquivo)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Binário"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6214,10 +6205,6 @@ msgstr "Alterar para / Unix"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Alterar para \\ Windows"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Caracter"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8755,11 +8742,6 @@ msgstr "Incapaz de carregar arquivo"
 msgid "Unable to load file \"%s\"."
 msgstr "Incapaz de carregar arquivo \"%s\"."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Decimal"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8973,10 +8955,6 @@ msgstr "Abrir diferenças no editor"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "unidade diferente %s encontrada na nova posição \"%s\""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Dígitos:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10026,10 +10004,6 @@ msgstr "Exportar selecionados"
 msgid "Export >>"
 msgstr "Exportar >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Expressão:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10415,10 +10389,6 @@ msgstr "&Primeiro teste"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Corrigir arquivo LFM"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Ponto Flutuante"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10849,10 +10819,6 @@ msgstr "Entradas da Ajuda"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Seletor de Ajuda"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Hexadecimal"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12887,10 +12853,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Ação"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Despejo Memória"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17015,10 +16977,6 @@ msgstr "Escolha o diretório do arquivo .po"
 msgid "Do not save any session info"
 msgstr "Não salvar informações de sessão"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Ponteiro"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Salvar em arquivo .lps no diretório de configurações da IDE"
@@ -17586,10 +17544,6 @@ msgstr "Gravar"
 msgid "Recorded"
 msgstr "Gravado"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Registro/Estrutura"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17745,10 +17699,6 @@ msgstr "Reabrir com outra codificação"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Repetir"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Núm. Repetição:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18711,15 +18661,6 @@ msgstr "Arquivo lpi estranho"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Erro de Fluxo"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "\"String\""
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Estilo"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20457,10 +20398,6 @@ msgstr "unidade %s requer o pacote %s"
 msgid "Units not found in project %s"
 msgstr "Unidades não encontradas no projeto %s"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Não assinado"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20760,10 +20697,6 @@ msgstr "&Dados/Observar ponto de parada ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "&Dados/Observar ponto de parada ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Propriedades Observador"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

@@ -11,20 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: debuggerstrconst.dlgbackendconvoptdebugconverter
-msgid "Backend Converter:"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdefault
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
-msgid "- Default -"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdisabled
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
-msgid "- Disabled -"
-msgstr ""
-
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Művelet oszlop"
@@ -140,17 +126,9 @@ msgstr "Metódus típusa oszlop"
 msgid "Len=%d: "
 msgstr "Hossz=%d:"
 
-#: debuggerstrconst.drsrunallthreadswhileevaluat
-msgid "Run all threads while evaluating"
-msgstr ""
-
 #: debuggerstrconst.drssuspend
 msgid "Suspend"
 msgstr ""
-
-#: debuggerstrconst.drsuseinstanceclasstype
-msgid "Use Instance class type"
-msgstr "Osztálypéldány-típus használata"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"

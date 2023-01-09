@@ -5004,10 +5004,6 @@ msgstr "Все унаследованные параметры"
 msgid "All Options"
 msgstr "Все параметры"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Разрешить вызовы функций"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Разрешить поиск для нескольких строк"
@@ -5351,11 +5347,6 @@ msgstr "Когда этот файл является текущим в реда
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Рабочий каталог (оставить пустым для пути к файлу)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Двоичное"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6178,10 +6169,6 @@ msgstr "Заменять на / Unix"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Заменять на \\ Windows"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Символ"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8715,11 +8702,6 @@ msgstr "Невозможно загрузить файл"
 msgid "Unable to load file \"%s\"."
 msgstr "Невозможно загрузить файл \"%s\"."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Десятичное"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8933,10 +8915,6 @@ msgstr "Открыть разницу в редакторе"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "найден отличающийся модуль %s по новому местонахождению \"%s\""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Разряды:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -9984,10 +9962,6 @@ msgstr "Экспортировать выбранный"
 msgid "Export >>"
 msgstr "Экспортировать >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Выражение:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10373,10 +10347,6 @@ msgstr "&Первая проверка"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Исправить файл LFM"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "С плавающей точкой"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10808,10 +10778,6 @@ msgstr "Элементы справки"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Выбор справки"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Шестнадцатеричное"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12842,10 +12808,6 @@ msgstr "%s МБ"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Действие"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Дамп памяти"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -16970,10 +16932,6 @@ msgstr "Выберите каталог для файлов .po"
 msgid "Do not save any session info"
 msgstr "Не сохранять сведения о сеансе работы"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Указатель"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Сохранять в файле .lps в каталоге настройки IDE"
@@ -17541,10 +17499,6 @@ msgstr "Записать"
 msgid "Recorded"
 msgstr "Записанные"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Запись/Структура"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17700,10 +17654,6 @@ msgstr "Открыть с другой кодировкой"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Повторить"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Число повторов:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18657,15 +18607,6 @@ msgstr "Странный файл LPI"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Ошибка потоков"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "Строка"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Стиль"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20398,10 +20339,6 @@ msgstr "модуль %s требует пакет %s"
 msgid "Units not found in project %s"
 msgstr "Не найдены модули в проекте %s"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Беззнаковое"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20701,10 +20638,6 @@ msgstr "Точка останова с &наблюдением ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "Точка останова с &наблюдением ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Свойства наблюдения"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

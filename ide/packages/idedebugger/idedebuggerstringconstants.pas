@@ -8,6 +8,15 @@ interface
 {$R images.res}
 
 resourcestring
+  // Overlap with the IDE
+  lisMenuOk = '&OK';
+  lisCancel = 'Cancel';
+  lisMenuHelp = '&Help';
+  lisEnabled = 'Enabled';
+  //lisDefault = 'Default';
+
+  //
+
   dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
   dlgInspectAmountOfItemsToShow = 'Amount of items to show';
   dlgInspectBoundsDD = 'Bounds: %d .. %d';
@@ -54,6 +63,22 @@ resourcestring
   dbgDispFormatRecordStruct = 'Record/Structure';
   dbgDispFormatMemoryDump = 'Memory Dump';
   dbgDispFormatBinary = 'Binary';
+
+  // Watch Property Dialog
+  lisWatchPropert = 'Watch Properties';
+  lisExpression = 'Expression:';
+  lisRepeatCount = 'Repeat Count:';
+  lisDigits = 'Digits:';
+  lisAllowFunctio = 'Allow Function Calls';
+  lisStyle = 'Style';
+
+
+  drsUseInstanceClassType = 'Use Instance class type';
+  dlgBackendConvOptDebugConverter = 'Backend Converter:';
+  dlgBackendConvOptDefault = '- Default -';
+  dlgBackendConvOptDisabled = '- Disabled -';
+  drsRunAllThreadsWhileEvaluat = 'Run all threads while evaluating';
+
 
 implementation
 

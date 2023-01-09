@@ -12,20 +12,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: debuggerstrconst.dlgbackendconvoptdebugconverter
-msgid "Backend Converter:"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdefault
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
-msgid "- Default -"
-msgstr ""
-
-#: debuggerstrconst.dlgbackendconvoptdisabled
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
-msgid "- Disabled -"
-msgstr ""
-
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Veiksmo stulpelis"
@@ -141,17 +127,9 @@ msgstr "Metodo tipo stulpelis"
 msgid "Len=%d: "
 msgstr "Ilgis = %d: "
 
-#: debuggerstrconst.drsrunallthreadswhileevaluat
-msgid "Run all threads while evaluating"
-msgstr ""
-
 #: debuggerstrconst.drssuspend
 msgid "Suspend"
 msgstr ""
-
-#: debuggerstrconst.drsuseinstanceclasstype
-msgid "Use Instance class type"
-msgstr "Naudoti egzemplioriaus klasės tipą"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"

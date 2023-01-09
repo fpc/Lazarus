@@ -5133,10 +5133,6 @@ msgstr "Viso paveldėtos parinktys"
 msgid "All Options"
 msgstr "Visos parinktys"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Leisti kreiptis į funkciją"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Ar galima keletos eilučių paieška"
@@ -5482,12 +5478,6 @@ msgstr "Kai šis failas pirminio kodo rengyklėje aktyvus"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Darbinis aplankas (palikite tuščią failo keliui)"
-
-#: lazarusidestrconsts.lisbinary
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Dvejetainis"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6314,10 +6304,6 @@ msgstr "Keisti į Unix naudojamą „/“"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Keisti į Windows naudojamą „\\“"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Simbolis"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8871,11 +8857,6 @@ msgstr "Nepavyko įkelti failą"
 msgid "Unable to load file \"%s\"."
 msgstr "Nepavyko įkelti failą „%s“."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Dešimtainis"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -9091,10 +9072,6 @@ msgstr "Skirtumus rodyti rengyklėje"
 #, object-pascal-format, fuzzy, badformat
 msgid "different unit %s found at new position \"%s\""
 msgstr "naujoje pozicijoje „%1:s“ rastas kitoks modulis „%0:s“"
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Skaitmenų:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10144,10 +10121,6 @@ msgstr "Eksportas pažymėtas"
 msgid "Export >>"
 msgstr "Eksportas >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Išraiška:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10536,10 +10509,6 @@ msgstr "&Pirmasis testas"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM failo taisa"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Slankaus kablelio"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10982,10 +10951,6 @@ msgstr "Žinyno įrašai"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Žinyno parinktys"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Šešioliktainis"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -13048,10 +13013,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Veiksmas"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Atminties išklotinė"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17238,10 +17199,6 @@ msgstr "Nurodykit .po failo aplanką"
 msgid "Do not save any session info"
 msgstr "Sesijos informacijos neįrašyti"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Rodyklė"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Įrašyti „.lps“ failan IKA nustatymų aplanke"
@@ -17812,10 +17769,6 @@ msgstr "Įrašyti"
 msgid "Recorded"
 msgstr "Įrašyta"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Įrašas/Struktūra"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17971,10 +17924,6 @@ msgstr "Atveri iš naujo kitoje koduotėje"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Repeat"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Kartojimų kiekis:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18957,15 +18906,6 @@ msgstr "Keistas„.lpi“ failas"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Klaida siunčiant srautu"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "Tekstas"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Stilius"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20717,10 +20657,6 @@ msgstr "moduliui „%s“ reikia paketo „%s“"
 msgid "Units not found in project %s"
 msgstr "Projekte „%s“ nepavyko rasti modulių"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Be ženklo"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -21020,10 +20956,6 @@ msgstr "&Stebėjimo stabdos taškas…"
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "&Stebėjimo stabdos taškas…"
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Stebimųjų savybės"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

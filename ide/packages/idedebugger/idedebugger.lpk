@@ -102,6 +102,10 @@
         <Filename Value="basedebugmanager.pas"/>
         <UnitName Value="BaseDebugManager"/>
       </Item>
+      <Item>
+        <Filename Value="watchpropertydlg.pp"/>
+        <UnitName Value="WatchPropertyDlg"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

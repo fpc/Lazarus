@@ -4967,10 +4967,6 @@ msgstr "Devralınan tüm seçenekler"
 msgid "All Options"
 msgstr "Tüm Seçenekler"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Fonksiyon Çağrısına İzin Ver"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Birden fazla satırı aramaya izin ver"
@@ -5314,11 +5310,6 @@ msgstr "Bu dosya kaynak düzenleyicide aktif olduğunda"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Çalışma dizini (dosya yolu için boş bırakın)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "İkili"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6141,10 +6132,6 @@ msgstr "Unix e göre değiştir /"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "Windows a göre değiştir \\"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Karakter"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8682,11 +8669,6 @@ msgstr "Dosya yüklenemiyor"
 msgid "Unable to load file \"%s\"."
 msgstr "Dosya \"%s\" yüklenemedi."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Ondalık"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8900,10 +8882,6 @@ msgstr "Farklı Editörde aç"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "farklı birim %s yeni \"%s\" konumunda bulundu"
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Rakamlar:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -9951,10 +9929,6 @@ msgstr "Seçilenleri dışa aktar"
 msgid "Export >>"
 msgstr "Dışa Aktar >>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "İfade:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10340,10 +10314,6 @@ msgstr "&İlk test"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM dosyasını düzelt"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Kayan nokta"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10774,10 +10744,6 @@ msgstr "Yardım girdileri"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Seçici yardım"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Onaltılık"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12799,10 +12765,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Aksiyon"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Bellek Dökümü"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -16897,10 +16859,6 @@ msgstr ".po dosya dizini seçin"
 msgid "Do not save any session info"
 msgstr "Herhangi bir oturum bilgisi kaydetme"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Işaretçi"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr ".lps dosyasını IDE yapılandırma dizinine kaydedin"
@@ -17462,10 +17420,6 @@ msgstr "Kayıt"
 msgid "Recorded"
 msgstr "Kaydedilmiş"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Kayıt/Yapı"
-
 #: lazarusidestrconsts.lisredo
 msgid "Redo"
 msgstr "İleri"
@@ -17619,10 +17573,6 @@ msgstr "Başka bir kodlamayla tekrar aç"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Tekrar et"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Tekrarlama Sayısı:"
 
 #: lazarusidestrconsts.lisreplace
 msgid "Replace"
@@ -18565,15 +18515,6 @@ msgstr "Garip lpi dosyası"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Akış hatası"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "String"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Stil"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20303,10 +20244,6 @@ msgstr "%s birimi %s paketini gerektiriyor"
 msgid "Units not found in project %s"
 msgstr "%s  projesinde bulunmayan birimler"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "İmzasız"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20602,10 +20539,6 @@ msgstr "&Veri/İzleme Noktası ..."
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "&Veri/İzleme noktası ..."
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "İzleme Özellikleri"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

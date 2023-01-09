@@ -13,7 +13,7 @@ uses
   IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
   IdeDebuggerBackendValueConv, IdeDbgValueConverterSettingsFrame, 
   IdeDebugger_ValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
-  WatchInspectToolbar, BaseDebugManager, LazarusPackageIntf;
+  WatchInspectToolbar, BaseDebugManager, WatchPropertyDlg, LazarusPackageIntf;
 
 implementation
 

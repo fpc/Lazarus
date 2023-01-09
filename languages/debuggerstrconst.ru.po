@@ -11,20 +11,6 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
-#: debuggerstrconst.dlgbackendconvoptdebugconverter
-msgid "Backend Converter:"
-msgstr "Преобразование в механизме отладки:"
-
-#: debuggerstrconst.dlgbackendconvoptdefault
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
-msgid "- Default -"
-msgstr "- По умолчанию -"
-
-#: debuggerstrconst.dlgbackendconvoptdisabled
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
-msgid "- Disabled -"
-msgstr "- Отключено -"
-
 #: debuggerstrconst.drsbreakpointcolwidthaction
 msgid "Action column"
 msgstr "Столбец действия"
@@ -140,17 +126,9 @@ msgstr "Столбец типа метода"
 msgid "Len=%d: "
 msgstr "Длина=%d: "
 
-#: debuggerstrconst.drsrunallthreadswhileevaluat
-msgid "Run all threads while evaluating"
-msgstr "Запускать все потоки исполнения при вычислении"
-
 #: debuggerstrconst.drssuspend
 msgid "Suspend"
 msgstr "Приостановить"
-
-#: debuggerstrconst.drsuseinstanceclasstype
-msgid "Use Instance class type"
-msgstr "Использовать тип экземпляра класса"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"

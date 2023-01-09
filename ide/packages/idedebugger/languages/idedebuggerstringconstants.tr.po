@@ -1,270 +1,268 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"Language-Team: \n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: idedebuggerstringconstants.dbgdispformatbinary
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
-msgstr "Двоичное"
+msgstr "İkili"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
 msgid "Character"
-msgstr "Символ"
+msgstr "Karakter"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
 msgid "Decimal"
-msgstr "Десятичное"
+msgstr "Ondalık"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
 msgid "Default"
-msgstr "По умолчанию"
+msgstr "Varsayılan"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
 msgid "Floating Point"
-msgstr "С плавающей точкой"
+msgstr "Kayan nokta"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
 msgid "Hexadecimal"
-msgstr "Шестнадцатеричное"
+msgstr "Onaltılık"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
 msgid "Memory Dump"
-msgstr "Дамп памяти"
+msgstr "Bellek Dökümü"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
 msgid "Pointer"
-msgstr "Указатель"
+msgstr "Işaretçi"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
 msgid "Record/Structure"
-msgstr "Запись/Структура"
+msgstr "Kayıt/Yapı"
 
 #: idedebuggerstringconstants.dbgdispformatstring
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatstring"
 msgid "String"
-msgstr "Строка"
+msgstr "String"
 
 #: idedebuggerstringconstants.dbgdispformatunsigned
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
 msgid "Unsigned"
-msgstr "Беззнаковое"
+msgstr "İmzasız"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr "Действие"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
-msgctxt "idedebuggerstringconstants.dlgbackconvoptaddnew"
 msgid "Add"
-msgstr "Добавить"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
-msgctxt "idedebuggerstringconstants.dlgbackconvoptdebugoptions"
 msgid "Backend Converter"
-msgstr "Преобразование в механизме отладки"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
-msgctxt "idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname"
 msgid "Match types by name"
-msgstr "Сопоставлять типы по имени"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
-msgstr "Имя"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
-msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
-msgstr "Удалить"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
 msgid "Backend Converter:"
-msgstr "Преобразование в механизме отладки:"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackendconvoptdefault
-msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
 msgid "- Default -"
-msgstr "- По умолчанию -"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
-msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
 msgid "- Disabled -"
-msgstr "- Отключено -"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
-msgstr "Отладчик"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
-msgstr "Введите имя"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgidedbgnewitem
 msgid "New Item"
-msgstr "Новый элемент"
+msgstr ""
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
-msgstr "Количество показываемых элементов"
+msgstr ""
 
 #: idedebuggerstringconstants.dlginspectboundsdd
 #, object-pascal-format
 msgid "Bounds: %d .. %d"
-msgstr "Границы: %d .. %d"
+msgstr ""
 
 #: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
 msgid "Index of first item to show"
-msgstr "Индекс первого показываемого элемента"
+msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch
 msgid "Add watch"
-msgstr "Добавить наблюдение"
+msgstr ""
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
-msgstr "Добавлять результат в историю снизу"
+msgstr ""
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr "Преобразование"
+msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgid "Disable/Enable updates for the entire window"
-msgstr "Отключить/включить обновления для всего окна"
+msgstr ""
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
-msgstr "Введите выражение"
+msgstr ""
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr "Вычислить"
+msgstr ""
 
 #: idedebuggerstringconstants.drshistory
 msgid "History"
-msgstr "История"
+msgstr ""
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
-msgstr "Добавлять результат в историю сверху"
+msgstr ""
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
-msgstr "Просмотреть"
+msgstr ""
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr "Новое значение"
+msgstr ""
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
 msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
-msgstr "Новое значение переменной отлаживаемого процесса для присвоения (нажмите Shift-Enter для подтверждения)"
+msgstr ""
 
 #: idedebuggerstringconstants.drsnodebugconverter
 msgid "No Converter"
-msgstr "Без преобразования"
+msgstr ""
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
-msgstr "Не сохранять историю"
+msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
-msgstr "Запускать все потоки исполнения при вычислении"
+msgstr ""
 
 #: idedebuggerstringconstants.drsusefunctioncalls
 msgid "Function"
-msgstr "Функция"
+msgstr ""
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr "Разрешить вызовы функций"
+msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
 msgid "Instance"
-msgstr "Экземпляр"
+msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
+#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
-msgstr "Использовать тип экземпляра класса"
+msgstr "Instance sınıf türünü kullan"
 
 #: idedebuggerstringconstants.drsuseinstanceclasstype
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
-msgstr "Использовать тип экземпляра класса"
+msgstr "Instance sınıf türünü kullan"
 
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
-msgstr "Разрешить вызовы функций"
+msgstr "Fonksiyon Çağrısına İzin Ver"
 
 #: idedebuggerstringconstants.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "İptal"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
-msgstr "Разряды:"
+msgstr "Rakamlar:"
 
 #: idedebuggerstringconstants.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
-msgstr ""
+msgstr "Etkin"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
-msgstr "Выражение:"
+msgstr "İfade:"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
-msgstr "Показывать столбец класса"
+msgstr ""
 
 #: idedebuggerstringconstants.lisinspectshowcoltype
 msgid "Show type column"
-msgstr "Показывать столбец типа"
+msgstr ""
 
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
-msgstr "Показывать столбец видимости"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
-msgstr ""
+msgstr "&Yardım"
 
 #: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
 msgid "&OK"
-msgstr "&ОК"
+msgstr "&TAMAM"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
-msgstr "Число повторов:"
+msgstr "Tekrarlama Sayısı:"
 
 #: idedebuggerstringconstants.lisstyle
 msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
-msgstr "Стиль"
+msgstr "Stil"
 
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
-msgstr "Свойства наблюдения"
+msgstr "İzleme Özellikleri"
 

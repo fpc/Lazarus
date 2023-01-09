@@ -40,9 +40,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel,
-  LazarusIDEStrConsts, IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
+  IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
   Debugger, IdeDebuggerOpts, BaseDebugManager, EnvironmentOpts,
-  DebuggerStrConst;
+  IdeDebuggerStringConstants;
 
 type
 
@@ -200,17 +200,17 @@ begin
   chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
   chkUseInstanceClass.Caption := drsUseInstanceClassType;
   rgStyle.Caption:= lisStyle;
-  rgStyle.Items[0]:= lisCharacter;
-  rgStyle.Items[1]:= lisString;
-  rgStyle.Items[2]:= lisDecimal;
-  rgStyle.Items[3]:= lisHexadecimal;
-  rgStyle.Items[4]:= lisUnsigned;
-  rgStyle.Items[5]:= lisPointer;
-  rgStyle.Items[6]:= lisRecordStruct;
-  rgStyle.Items[7]:= lisDefault;
-  rgStyle.Items[8]:= lisMemoryDump;
-  rgStyle.Items[9]:= lisBinary;
-  //rgStyle.Items[10]:= lisFloatingPoin;
+  rgStyle.Items[0]:= dbgDispFormatCharacter;
+  rgStyle.Items[1]:= dbgDispFormatString;
+  rgStyle.Items[2]:= dbgDispFormatDecimal;
+  rgStyle.Items[3]:= dbgDispFormatHexadecimal;
+  rgStyle.Items[4]:= dbgDispFormatUnsigned;
+  rgStyle.Items[5]:= dbgDispFormatPointer;
+  rgStyle.Items[6]:= dbgDispFormatRecordStruct;
+  rgStyle.Items[7]:= dbgDispFormatDefault;
+  rgStyle.Items[8]:= dbgDispFormatMemoryDump;
+  rgStyle.Items[9]:= dbgDispFormatBinary;
+  //rgStyle.Items[10]:= dbgDispFormatFloatingPoin;
 
   lblFpDbgConv.Caption := dlgBackendConvOptDebugConverter;
   dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);

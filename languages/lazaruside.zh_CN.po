@@ -5038,10 +5038,6 @@ msgstr "所有继承的(inherited)选项"
 msgid "All Options"
 msgstr "所有选项"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "允许函数调用"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "允许多行搜索"
@@ -5385,11 +5381,6 @@ msgstr "当这个文件在源文件编辑器中处于活动状态时"
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "工作目录(对文件路径留空)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "二进制"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6212,10 +6203,6 @@ msgstr "更改为Unix /"
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr "更改为Windows \\"
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "字符"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8754,11 +8741,6 @@ msgstr "不能加载文件"
 msgid "Unable to load file \"%s\"."
 msgstr "不能加载文件\"%s\"."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "小数"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -8972,10 +8954,6 @@ msgstr "在编辑器中打开不同的"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr "不同的单元%s被找到 在新位置\"%s\""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "数字:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10034,10 +10012,6 @@ msgstr "导出选择"
 msgid "Export >>"
 msgstr "导出>>"
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "表达式:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format, fuzzy, badformat
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10433,10 +10407,6 @@ msgstr "首先测试(&F)"
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "修复LFM文件"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "浮点"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10873,10 +10843,6 @@ msgstr "帮助条目(entries)"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "帮助选择器"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "十六进制"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -12888,10 +12854,6 @@ msgstr "%s MB"
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "动作"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "内存转储"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17023,10 +16985,6 @@ msgstr "选择.po文件目录"
 msgid "Do not save any session info"
 msgstr "不保存任何会话信息"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "指针"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "保存在.lps文件在 IDE配置目录"
@@ -17595,10 +17553,6 @@ msgstr "记录"
 msgid "Recorded"
 msgstr "记录"
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "记录/结构"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17754,10 +17708,6 @@ msgstr "使用另一个编码重新打开"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "重复(Repeat)"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "重复(Repeat)计数(Count):"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18701,15 +18651,6 @@ msgstr "奇怪的.lpi文件"
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "流错误"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "字符串"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "样式"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20450,10 +20391,6 @@ msgstr "单元%s需要软件包%s"
 msgid "Units not found in project %s"
 msgstr "单元未找到在工程%s"
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr "Unsigned(无符号整型)"
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -20754,10 +20691,6 @@ msgstr "数据/监视点(Watch)断点...(&D)"
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr "数据/监视点(Watch)断点...(&D)"
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "查看属性(Watch Properties)"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

@@ -5085,10 +5085,6 @@ msgstr ""
 msgid "All Options"
 msgstr "Všetky voľby"
 
-#: lazarusidestrconsts.lisallowfunctio
-msgid "Allow Function Calls"
-msgstr "Povoliť Function Calls"
-
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Dovoliť hľadanie na viacerých riadkoch"
@@ -5439,11 +5435,6 @@ msgstr "Keď je tento súbor aktívny v editore"
 #| msgid "Working directory (Leave empty for file path)"
 msgid "Working directory (leave empty for file path)"
 msgstr "Pracovný adresár (prázdne pre cestu súboru)"
-
-#: lazarusidestrconsts.lisbinary
-msgctxt "lazarusidestrconsts.lisbinary"
-msgid "Binary"
-msgstr "Binárny"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -6290,10 +6281,6 @@ msgstr ""
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
 msgstr ""
-
-#: lazarusidestrconsts.lischaracter
-msgid "Character"
-msgstr "Znak"
 
 #: lazarusidestrconsts.lischaractermap
 msgid "Character Map"
@@ -8868,11 +8855,6 @@ msgstr "Nemožno načítať súbor"
 msgid "Unable to load file \"%s\"."
 msgstr "Nemožno načítať súbor \"%s\"."
 
-#: lazarusidestrconsts.lisdecimal
-msgctxt "lazarusidestrconsts.lisdecimal"
-msgid "Decimal"
-msgstr "Desiatkovo"
-
 #: lazarusidestrconsts.lisdefault
 msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
@@ -9089,10 +9071,6 @@ msgstr "Otvoriť rozdiel v editore"
 #, object-pascal-format
 msgid "different unit %s found at new position \"%s\""
 msgstr ""
-
-#: lazarusidestrconsts.lisdigits
-msgid "Digits:"
-msgstr "Číslice:"
 
 #: lazarusidestrconsts.lisdirectives
 msgid "Directives"
@@ -10146,10 +10124,6 @@ msgstr "Exportovať vybraté"
 msgid "Export >>"
 msgstr ""
 
-#: lazarusidestrconsts.lisexpression
-msgid "Expression:"
-msgstr "Výraz:"
-
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 #, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
@@ -10540,10 +10514,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Opraviť súbor LFM"
-
-#: lazarusidestrconsts.lisfloatingpoin
-msgid "Floating Point"
-msgstr "Plávajúca čiarka"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10978,10 +10948,6 @@ msgstr "Položky pomoci"
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
 msgstr "Výber pomoci"
-
-#: lazarusidestrconsts.lishexadecimal
-msgid "Hexadecimal"
-msgstr "Šestnástkovo"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for Free Pascal Compiler message"
@@ -13051,10 +13017,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismeaction"
 msgid "Action"
 msgstr "Akcia"
-
-#: lazarusidestrconsts.lismemorydump
-msgid "Memory Dump"
-msgstr "Výpis pamäte"
 
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
@@ -17245,10 +17207,6 @@ msgstr ""
 msgid "Do not save any session info"
 msgstr "Neukladať žiadne informácie o relácii"
 
-#: lazarusidestrconsts.lispointer
-msgid "Pointer"
-msgstr "Ukazovateľ"
-
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
 msgid "Save in .lps file in IDE config directory"
 msgstr "Uložiť do súboru .lps v konfiguračnom adresári IDE"
@@ -17825,10 +17783,6 @@ msgstr "Záznam"
 msgid "Recorded"
 msgstr ""
 
-#: lazarusidestrconsts.lisrecordstruct
-msgid "Record/Structure"
-msgstr "Záznam/Štruktúra"
-
 #: lazarusidestrconsts.lisredo
 msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
@@ -17984,10 +17938,6 @@ msgstr "Znova otvoriť s iným kódovaním"
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Opakovať"
-
-#: lazarusidestrconsts.lisrepeatcount
-msgid "Repeat Count:"
-msgstr "Počet opakovaní:"
 
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
@@ -18937,15 +18887,6 @@ msgstr ""
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
 msgstr "Chyba streamovania"
-
-#: lazarusidestrconsts.lisstring
-msgid "String"
-msgstr "Reťazec"
-
-#: lazarusidestrconsts.lisstyle
-msgctxt "lazarusidestrconsts.lisstyle"
-msgid "Style"
-msgstr "Štýl"
 
 #: lazarusidestrconsts.lissubprocedure
 msgid "Sub Procedure"
@@ -20737,10 +20678,6 @@ msgstr ""
 msgid "Units not found in project %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunsigned
-msgid "Unsigned"
-msgstr ""
-
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
@@ -21041,10 +20978,6 @@ msgstr ""
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
 msgstr ""
-
-#: lazarusidestrconsts.liswatchpropert
-msgid "Watch Properties"
-msgstr "Vlastnosti pozorovania"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"

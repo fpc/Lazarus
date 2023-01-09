@@ -5650,24 +5650,6 @@ resourcestring
   // Watch Dialog
   lisWatchToWatchPoint = 'Create &Data/Watch Breakpoint ...';
 
-  // Watch Property Dialog
-  lisWatchPropert = 'Watch Properties';
-  lisExpression = 'Expression:';
-  lisRepeatCount = 'Repeat Count:';
-  lisDigits = 'Digits:';
-  lisAllowFunctio = 'Allow Function Calls';
-  lisStyle = 'Style';
-  lisCharacter = 'Character';
-  lisString = 'String';
-  lisDecimal = 'Decimal';
-  lisUnsigned = 'Unsigned';
-  lisHexadecimal = 'Hexadecimal';
-  lisFloatingPoin = 'Floating Point';
-  lisPointer = 'Pointer';
-  lisRecordStruct = 'Record/Structure';
-  lisMemoryDump = 'Memory Dump';
-  lisBinary = 'Binary';
-
   // Terminal Output
   lisDbgTerminal = 'Console In/Output';
 

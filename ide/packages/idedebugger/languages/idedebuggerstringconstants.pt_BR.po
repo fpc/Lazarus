@@ -13,46 +13,57 @@ msgstr ""
 "Language: pt_BR\n"
 
 #: idedebuggerstringconstants.dbgdispformatbinary
+msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
 msgstr "Binário"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
+msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
 msgid "Character"
 msgstr "Caracter"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
+msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
 msgid "Decimal"
 msgstr "Decimal"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
+msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
 msgid "Default"
 msgstr "Padrão"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
+msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
 msgid "Floating Point"
 msgstr "Ponto flutuante"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
+msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
 msgid "Hexadecimal"
 msgstr "Hexadecimal"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
+msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
 msgid "Memory Dump"
 msgstr "Despejo de memória"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
+msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
 msgid "Pointer"
 msgstr "Ponteiro"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
+msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
 msgid "Record/Structure"
 msgstr "Registro/Estrutura"
 
 #: idedebuggerstringconstants.dbgdispformatstring
+msgctxt "idedebuggerstringconstants.dbgdispformatstring"
 msgid "String"
 msgstr "String"
 
 #: idedebuggerstringconstants.dbgdispformatunsigned
+msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
 msgid "Unsigned"
 msgstr "Unsigned"
 
@@ -90,6 +101,22 @@ msgstr "Nome"
 msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
 msgid "Remove"
 msgstr "Remover"
+
+#: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
+msgid "Backend Converter:"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgbackendconvoptdefault
+#, fuzzy
+msgctxt "debuggerstrconst.dlgbackendconvoptdefault"
+msgid "- Default -"
+msgstr "- Padrão -"
+
+#: idedebuggerstringconstants.dlgbackendconvoptdisabled
+#, fuzzy
+msgctxt "debuggerstrconst.dlgbackendconvoptdisabled"
+msgid "- Disabled -"
+msgstr "- Desabilitado -"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -168,6 +195,10 @@ msgstr "Nenhum Conversor"
 msgid "No history kept"
 msgstr "Nenhum histórico mantido"
 
+#: idedebuggerstringconstants.drsrunallthreadswhileevaluat
+msgid "Run all threads while evaluating"
+msgstr ""
+
 #: idedebuggerstringconstants.drsusefunctioncalls
 msgid "Function"
 msgstr "Função"
@@ -181,8 +212,36 @@ msgid "Instance"
 msgstr "Instância"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
+msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
 msgstr "Usar tipo de classe Instância"
+
+#: idedebuggerstringconstants.drsuseinstanceclasstype
+msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
+msgid "Use Instance class type"
+msgstr "Usar tipo classe instância"
+
+#: idedebuggerstringconstants.lisallowfunctio
+msgid "Allow Function Calls"
+msgstr "Permitir Chamadas de Funções"
+
+#: idedebuggerstringconstants.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: idedebuggerstringconstants.lisdigits
+msgid "Digits:"
+msgstr "Dígitos:"
+
+#: idedebuggerstringconstants.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
+msgid "Enabled"
+msgstr "Ativo"
+
+#: idedebuggerstringconstants.lisexpression
+msgid "Expression:"
+msgstr "Expressão:"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
@@ -195,4 +254,26 @@ msgstr "Exibir coluna tipo"
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
 msgstr "Exibir coluna visibilidade"
+
+#: idedebuggerstringconstants.lismenuhelp
+msgid "&Help"
+msgstr "Aj&uda"
+
+#: idedebuggerstringconstants.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&OK"
+
+#: idedebuggerstringconstants.lisrepeatcount
+msgid "Repeat Count:"
+msgstr "Núm. Repetição:"
+
+#: idedebuggerstringconstants.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
+msgid "Style"
+msgstr "Estilo"
+
+#: idedebuggerstringconstants.liswatchpropert
+msgid "Watch Properties"
+msgstr "Propriedades Observador"
 
