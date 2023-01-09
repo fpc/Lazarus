@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Types, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, Buttons, GDBMIDebugger, DbgIntfDebuggerBase, FileUtil, LazFileUtils,
   IDEDialogs, IDEUtils, IDEImagesIntf, FileProcs, FpDebugDebugger,
-  {$If defined(Darwin) or defined(CD_Cocoa)} FpLldbDebugger, {$ENDIF}
+  {$Ifdef Darwin} FpLldbDebugger, {$ENDIF}
   IdeDebuggerOpts, LazarusIDEStrConsts, InitialSetupProc,
   EnvironmentOpts, LazConf, StrUtils;
 
@@ -206,7 +206,7 @@ begin
   Result := TFpDebugDebugger;
   {$ElseIf defined(Linux)}
   Result := TFpDebugDebugger;
-  {$ElseIf defined(Darwin) or defined(CD_Cocoa)}
+  {$ElseIf defined(Darwin)}
   Result := TFpLldbDebugger;
   {$ENDIF}
   if dfNotSuitableForOsArch in Result.SupportedFeatures then
