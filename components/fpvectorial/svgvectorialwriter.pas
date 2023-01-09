@@ -633,6 +633,7 @@ const
   TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
   TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
 var
+  FontName: String;
   FontSize: Double;
   TextStr: String;
   PtX: Double = 0.0;
@@ -640,11 +641,10 @@ var
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AText.X, AText.Y, PtX, PtY);
   TextStr := AText.Value.Text;
-  if DefaultTextLineBreakStyle = tlbsCRLF then    // Trim extra CRLF appended by TStringList.Text
-    TextStr := Copy(TextStr, 1, Length(TextStr) - 2)
+  if AText.Font.Name = '' then
+    FontName := 'Arial,Helvetica,sans-serif'
   else
-    TextStr := Copy(TextStr, 1, Length(TextStr) - 1);
-
+    FontName := AText.Font.Name;
   FontSize:= AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER;
 
   AStrings.Add('  <text ');
@@ -675,7 +675,7 @@ begin
         Format('    transform="rotate(%g,%g,%g)"', [-AText.Font.Orientation, PtX, PtY], FPointSeparator));
 
   AStrings.Add(
-        Format('    font-family="%s"', [AText.Font.Name]));
+        Format('    font-family="%s"', [FontName]));
 
   AStrings.Add(
         Format('    font-size="%f"', [FontSize], FPointSeparator));
@@ -683,9 +683,7 @@ begin
   AStrings.Add(
         Format('    fill="#%s"', [FPColorToRGBHexString(AText.Font.Color)]));
 
-  AStrings.Add('  >');
-  AStrings.Add(TextStr);
-  AStrings.Add('  </text>');
+  AStrings.Add('  >' + TextStr + '</text>');
 end;
 
 procedure TvSVGVectorialWriter.WriteToStrings(AStrings: TStrings;

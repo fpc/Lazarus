@@ -5693,6 +5693,7 @@ constructor TvText.Create(APage: TvPage);
 begin
   inherited Create(APage);
   Value := TStringList.Create;
+  Value.Options := Value.Options - [soTrailingLineBreak];
   Font.Color := colBlack;
 end;
 
@@ -5799,7 +5800,7 @@ begin
   lDescender := GetTextMetric_Descender_px(ARenderInfo);
 
   // Angle of text rotation
-  phi := sign(AMulY) * DegToRad(Font.Orientation);
+  phi := -DegToRad(Font.Orientation);
 
   // Reference point of the entity (X,Y) in pixels
   // rotation center in case of rotated text
@@ -5830,9 +5831,7 @@ begin
   // ...
   // We need to keep the order of lines drawing correct regardless of
   // the drawing direction
-  lowerDimY := refPt.Y - (lTextSize.CY - lDescender); // lowerDim.Y := refPt.Y + lFontSizePx * (1 + LINE_SPACING) * Value.Count * AMulY
-  upperDimY := refPt.Y;
-  curDimY := IfThen(AMulY < 0, lowerDimY, upperDimY);
+  curDimY := refPt.Y - (lTextSize.CY - lDescender);
 
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
