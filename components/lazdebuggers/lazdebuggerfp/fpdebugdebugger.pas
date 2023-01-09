@@ -333,7 +333,7 @@ type
     *)
     FWorkerThreadId: TThreadID;
     FEvalWorkItem: TFpThreadWorkerCmdEval;
-    FQuickPause, FPauseForEvent, FInternalPauseForEvent, FSendingEvents: boolean;
+    FQuickPause, FRunQuickPauseTasks, FPauseForEvent, FInternalPauseForEvent, FSendingEvents: boolean;
     FExceptionStepper: TFpDebugExceptionStepping;
     FConsoleOutputThread: TThread;
     // Helper vars to run in debug-thread
@@ -2000,7 +2000,7 @@ begin
       FSetBreakFlag:=true;
       Changed;
       end
-    else if not enabled and FIsSet then
+    else if (not enabled) and FIsSet then
       begin
       FResetBreakFlag:=true;
       Changed;
@@ -2025,8 +2025,13 @@ begin
     else if not Enabled and FIsSet then
       FResetBreakFlag := True;
     end
-  else if (ADebugger.State = dsRun) and (Enabled and not FIsSet) then
-    ADebugger.QuickPause;
+  else if (ADebugger.State = dsRun) then begin
+    if Enabled and (not FIsSet) then
+      ADebugger.QuickPause
+    else
+    if (not Enabled) and FIsSet then
+      ADebugger.FRunQuickPauseTasks := True;
+  end;
   inherited;
 end;
 
@@ -3725,6 +3730,7 @@ begin
 
   if (not AMoreHitEventsPending) and (FPauseForEvent or FInternalPauseForEvent) then begin
     FQuickPause := False; // Ok, because we will SetState => RunQuickPauseTasks is not needed
+    FRunQuickPauseTasks := False;
 
     if FPauseForEvent then
       &continue := False; // Only continue, if ALL events did say to continue
@@ -4098,9 +4104,13 @@ end;
 procedure TFpDebugDebugger.RunQuickPauseTasks(AForce: Boolean);
 begin
   if AForce or
-     FQuickPause
+     FQuickPause or
+     FRunQuickPauseTasks
   then
     TFPBreakpoints(Breakpoints).DoStateChange(dsRun);
+
+  FRunQuickPauseTasks :=false;
+  // FQuickPause will be reset by caller
 end;
 
 procedure TFpDebugDebugger.DoRelease;
