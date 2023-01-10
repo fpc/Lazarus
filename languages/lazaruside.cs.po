@@ -8524,6 +8524,10 @@ msgstr "Odstranit?"
 msgid "Delete addition \"%s\"?"
 msgstr "Odstranit přídavek \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Smazat vše"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Odstranit všechny tyto soubory?"
@@ -10287,6 +10291,11 @@ msgstr "Hledat také v příkazech"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Celá cesta"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkce"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12261,11 +12270,6 @@ msgstr "Nejvyšší počet vláken pro souběžný překlad. Výchozí je 0, co�
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Nejvýše souběžných procesů, 0 znamená výchozí (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Max %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22356,13 +22360,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informace o verzi"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Smazat vše"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkce"
 

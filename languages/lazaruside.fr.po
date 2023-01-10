@@ -8468,6 +8468,10 @@ msgstr "Supprimer ?"
 msgid "Delete addition \"%s\"?"
 msgstr "Voulez-vous supprimer l'ajout \"%s\" ?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Tout &Supprimer"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Voulez-vous supprimer ces fichiers ?"
@@ -10227,6 +10231,11 @@ msgstr "Chercher aussi dans les commentaires"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Complet"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Fonction"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12204,11 +12213,6 @@ msgstr "Nombre maximum de tâches à compiler en parallèle. Le nombre par défa
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Nombre maximum de processus parallèles - 0 signifie \"par défaut\" (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Max %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22268,13 +22272,4 @@ msgstr "Options du graphe des unités"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informations sur la version"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Tout &Supprimer"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Fonction"
 

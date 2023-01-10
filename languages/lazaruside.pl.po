@@ -8624,6 +8624,10 @@ msgstr "Skasować?"
 msgid "Delete addition \"%s\"?"
 msgstr "Usunąć dodatek \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Usuń &wszystko"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Czy usunąć wszystkie pliki?"
@@ -10396,6 +10400,11 @@ msgstr "Szukaj też w komentarzach"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Pełna nazwa"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcja"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12363,11 +12372,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maksymalna liczba równoległych procesów. 0 oznacza domyślnie (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format, fuzzy, badformat
-msgid "Max %d"
-msgstr "%d - %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22522,13 +22526,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informacje o wersji"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Usuń &wszystko"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkcja"
 

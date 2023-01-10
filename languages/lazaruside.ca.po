@@ -8691,6 +8691,10 @@ msgstr ""
 msgid "Delete addition \"%s\"?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Esborrar tots aquestos arxius?"
@@ -10469,6 +10473,10 @@ msgstr "Cerca també en els comentaris"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
+msgstr ""
+
+#: lazarusidestrconsts.lisfunction
+msgid "Function"
 msgstr ""
 
 #: lazarusidestrconsts.lisgeneral
@@ -12413,11 +12421,6 @@ msgstr ""
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
-msgstr ""
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage

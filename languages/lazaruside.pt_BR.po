@@ -8490,6 +8490,10 @@ msgstr "Excluir?"
 msgid "Delete addition \"%s\"?"
 msgstr "Excluir adição \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Excluir Tudo"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Excluir todos esses arquivos?"
@@ -10251,6 +10255,11 @@ msgstr "Localizar também nos comentários"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Cheio"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Função"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12228,11 +12237,6 @@ msgstr "Número máximo de \"threads\" para compilação em paralelo. Padrão é
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Máximo de processos paralelos. 0 padrão (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Máximo %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22299,13 +22303,4 @@ msgstr "Opções para o gráfico de unidades"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informações de versão"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Excluir Tudo"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Função"
 

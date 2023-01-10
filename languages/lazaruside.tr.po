@@ -8418,6 +8418,10 @@ msgstr "Sil?"
 msgid "Delete addition \"%s\"?"
 msgstr "\"%s\" ek silinsin mi?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Hepsini sil"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Tüm dosyalar silinsin mi?"
@@ -10176,6 +10180,11 @@ msgstr "Yorumlarda ara"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Tam"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Fonksiyon"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12142,11 +12151,6 @@ msgstr "Paralel olarak derlemek için maksimum iş parçacığı sayısı. Varsa
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maksimum paralel işlemler, 0 varsayılan (%s) anlamına gelir"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Maks. %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22139,13 +22143,4 @@ msgstr "Birim grafiği için seçenekler"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiyon bilgisi"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Hepsini sil"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Fonksiyon"
 

@@ -8450,6 +8450,10 @@ msgstr "Удалить?"
 msgid "Delete addition \"%s\"?"
 msgstr "Удалить справочное дополнение \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Удалить все"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Удалить все эти файлы?"
@@ -10209,6 +10213,11 @@ msgstr "Искать и в комментариях"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Полное"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Функция"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12183,11 +12192,6 @@ msgstr "Максимальное количество потоков испол�
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Максимально параллельных процессов, 0 - значение по умолчанию (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Максимум %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22240,13 +22244,4 @@ msgstr "Параметры диаграммы модулей"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Удалить все"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Функция"
 

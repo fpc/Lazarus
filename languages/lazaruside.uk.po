@@ -8481,6 +8481,10 @@ msgstr "Видалити?"
 msgid "Delete addition \"%s\"?"
 msgstr "Видалити додаток \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Видалити всі"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Видалити всі ці файли?"
@@ -10240,6 +10244,11 @@ msgstr "Шукати також і в коментарях"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Повний"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Функція"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12215,11 +12224,6 @@ msgstr "Найбільше число потоків для паралельно
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Найбільше число паралельних процесів, 0 - типове значення (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Макс %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22276,13 +22280,4 @@ msgstr "Параметри діаграми модулів"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Інформація про версію"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Видалити всі"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Функція"
 

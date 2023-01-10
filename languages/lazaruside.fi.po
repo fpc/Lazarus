@@ -8462,6 +8462,10 @@ msgstr "Poista?"
 msgid "Delete addition \"%s\"?"
 msgstr "Poista lisäys \"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Poista kaikki"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Poistetaanko kaikki nämä tiedostot?"
@@ -10211,6 +10215,11 @@ msgstr "Käy myös kommentit läpi"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Täysi"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funktio"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12140,11 +12149,6 @@ msgstr "Rinnakkaiseen käännökseen käytettävien säikeiden maximimäärä. O
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Suurin rinnakkaisten prosessien määrä, 0 tarkoittaa oletusta (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22154,13 +22158,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiotiedot"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Poista kaikki"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funktio"
 

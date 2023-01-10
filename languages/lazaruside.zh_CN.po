@@ -8489,6 +8489,10 @@ msgstr "删除?"
 msgid "Delete addition \"%s\"?"
 msgstr "删除附加\"%s\"?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "删除所有(&D)"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "删除所有这些文件？"
@@ -10271,6 +10275,11 @@ msgstr "同时在注释中搜索"
 #, fuzzy
 msgid "Full"
 msgstr "插入完整文件名称..."
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "函数"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12226,11 +12235,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "最大并行(parallel)进程,0意味着默认(%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "最大%d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22330,13 +22334,4 @@ msgstr "单元图表选项"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "版本信息"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "删除所有(&D)"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "函数"
 

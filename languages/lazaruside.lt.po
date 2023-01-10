@@ -8603,6 +8603,10 @@ msgstr "Naikinti?"
 msgid "Delete addition \"%s\"?"
 msgstr "Šalinti priedėlį „%s“?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Pašalinti visus"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Pašalinti visus šiuos failus?"
@@ -10369,6 +10373,11 @@ msgstr "Taip pat ir komentaruose"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Visas"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcija"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12382,11 +12391,6 @@ msgstr "Maksimalus gijų skaičius kompiliuojant lygiagrečiai. Numatytoji vert�
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maksimalus lygiagrečių procesų skaičius, 0 reiškia kaip numatyta (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Maksimaliai %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22560,13 +22564,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versijos informacija"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Pašalinti visus"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkcija"
 

@@ -8481,6 +8481,10 @@ msgstr "Törlés?"
 msgid "Delete addition \"%s\"?"
 msgstr "A(z) \"%s\" kiegészítés törlése?"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Min&den törlése"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Az összes fájlt töröli?"
@@ -10240,6 +10244,11 @@ msgstr "Keresés a megjegyzésekben is"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "Teljes"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Függvény"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12215,11 +12224,6 @@ msgstr "A párhuzamos fordításhoz engedélyezett szálak száma. Alapértelmez
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Párhuzamos folyamatok maximális száma, a 0 az alapértelmezést jelenti (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Maximum %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22277,13 +22281,4 @@ msgstr "Unit-fa beállítása"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Változatinformációk"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Min&den törlése"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Függvény"
 

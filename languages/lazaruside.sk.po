@@ -8601,6 +8601,10 @@ msgstr "Zmazať?"
 msgid "Delete addition \"%s\"?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Z&mazať všetky"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Zmazať všetky tieto súbory?"
@@ -10375,6 +10379,11 @@ msgstr "Hľadať aj v komentároch"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr ""
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcia"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12389,11 +12398,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "Max %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22601,13 +22605,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informácie o verzii"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Z&mazať všetky"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkcia"
 

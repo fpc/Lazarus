@@ -8905,6 +8905,10 @@ msgstr ""
 msgid "Delete addition \"%s\"?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "מחק& הכל"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "למחוק את כל הקבצים?"
@@ -10715,6 +10719,11 @@ msgstr "חפש גם בהערות"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr ""
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "פונקציה"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12833,11 +12842,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format, fuzzy, badformat
-msgid "Max %d"
-msgstr "מקסימום d%"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format, fuzzy, badformat
@@ -23519,13 +23523,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "מידע אודות הגרסה"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "מחק& הכל"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "פונקציה"
 

@@ -8599,6 +8599,10 @@ msgstr "削除？"
 msgid "Delete addition \"%s\"?"
 msgstr "追加項目\"%s\"を削除しますか？"
 
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "すべて削除(&D)"
+
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "これらすべてのファイルを削除しますか？"
@@ -10365,6 +10369,11 @@ msgstr "コメントも検索"
 #: lazarusidestrconsts.lisfull
 msgid "Full"
 msgstr "満杯"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "関数"
 
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
@@ -12352,11 +12361,6 @@ msgstr "並行してコンパイルするためのスレッドの最大値。デ
 #, object-pascal-format
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "同時並行のプロセスの最大。0が既定値 (%s)"
-
-#: lazarusidestrconsts.lismaxs
-#, object-pascal-format
-msgid "Max %d"
-msgstr "最大 %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 #, object-pascal-format
@@ -22525,13 +22529,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
-
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "すべて削除(&D)"
-
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "関数"
 
