@@ -172,7 +172,7 @@ type
 
   TDbgControllerStepOverOrFinallyCmd = class(TDbgControllerStepOverLineCmd)
   private
-    FFinState: (fsNone, fsMov, fsCall, fsInFin);
+    FFinState: (fsNone, fsMov, fsCall, fsInFin, fsDonePrologue, fsDonePrologue2);
   protected
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread;
@@ -1219,26 +1219,42 @@ begin
 }
   if (AThread = FThread) then begin
     Instr := NextInstruction;
-    if Instr is TX86AsmInstruction then begin
-      case TX86AsmInstruction(Instr).X86OpCode of
-        OPmov:
-          if FProcess.Mode = dm32 then begin
-            if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'EBP') = 0 then
-              FFinState := fsMov;
-          end
-          else begin
-            if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'RBP') = 0 then
-              FFinState := fsMov;
-          end;
-        OPcall:
-          if FFinState = fsMov then begin
-            CheckForCallAndSetBreak;
-            FProcess.Continue(FProcess, FThread, True); // Step into
-            FFinState := fsCall;
-            exit;
-          end;
-        else
-          FFinState := fsNone;
+
+    if FFinState in [fsInFin] then begin
+      if (TX86AsmInstruction(Instr).X86OpCode = OPmov) then begin
+        if FProcess.Mode = dm32 then begin
+          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[1].Value, 'EBP') = 0 then
+            FFinState := fsDonePrologue;
+        end
+        else begin
+          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[1].Value, 'RBP') = 0 then
+            FFinState := fsDonePrologue;
+        end;
+      end;
+    end
+    else
+    if FFinState in [fsNone, fsMov, fsCall] then begin
+      if Instr is TX86AsmInstruction then begin
+        case TX86AsmInstruction(Instr).X86OpCode of
+          OPmov:
+            if FProcess.Mode = dm32 then begin
+              if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'EBP') = 0 then
+                FFinState := fsMov;
+            end
+            else begin
+              if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'RBP') = 0 then
+                FFinState := fsMov;
+            end;
+          OPcall:
+            if FFinState = fsMov then begin
+              CheckForCallAndSetBreak;
+              FProcess.Continue(FProcess, FThread, True); // Step into
+              FFinState := fsCall;
+              exit;
+            end;
+          else
+            FFinState := fsNone;
+        end;
       end;
     end;
   end;
@@ -1249,24 +1265,51 @@ procedure TDbgControllerStepOverOrFinallyCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 var
   sym: TFpSymbol;
+  InFin: Boolean;
+  Instr: TDbgAsmInstruction;
 begin
   if FFinState = fsCall then begin
     sym := FProcess.FindProcSymbol(FThread.GetInstructionPointerRegisterValue);
-    if pos('fin$', sym.Name) > 0 then
-      FFinState := fsInFin
-    else
-      FFinState := fsNone;
+    InFin := pos('fin$', sym.Name) > 0;
     sym.ReleaseReference;
 
-    if FFinState = fsInFin then begin
-      FThread.StoreStepInfo;
+    if InFin then begin
+      FFinState := fsInFin;
+
+      FThread.StoreStepInfo; // Safety net. If line changes, prologue must be over. (fpc < 3.3.1 did have the prologue on the line number of the last linne of the finally)
       Finished := False;
       RemoveHiddenBreak;
       if AnEvent = deFinishedStep then
         AnEvent := deInternalContinue;
       exit;
+    end
+    else
+      FFinState := fsNone;
+  end
+  else
+  if FFinState in [fsDonePrologue, fsDonePrologue2] then begin
+    if FFinState = fsDonePrologue then begin
+      Instr := NextInstruction;
+      if (TX86AsmInstruction(Instr).X86OpCode = OPlea) then begin
+        if FProcess.Mode = dm32 then begin
+          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[1].Value, 'ESP') = 0 then
+            FFinState := fsDonePrologue2;
+        end
+        else begin
+          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[1].Value, 'RSP') = 0 then
+            FFinState := fsDonePrologue2;
+        end;
+      end;
+      if FFinState = fsDonePrologue2 then begin
+        inherited DoResolveEvent(AnEvent, AnEventThread, Finished);
+        exit;
+      end;
     end;
+    Finished := True;
+    AnEvent := deFinishedStep;
+    exit;
   end;
+
   inherited DoResolveEvent(AnEvent, AnEventThread, Finished);
 end;
 
