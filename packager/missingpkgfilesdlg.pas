@@ -123,7 +123,7 @@ begin
   if i>0 then begin
     ButtonPanel1.OKButton.Caption:=lisPERemoveFiles;
   end else begin
-    ButtonPanel1.OKButton.Caption:=lisMenuOk;
+    ButtonPanel1.OKButton.Caption:=lisBtnOk;
   end;
 end;
 

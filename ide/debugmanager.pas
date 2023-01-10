@@ -1509,7 +1509,7 @@ begin
             {$PUSH}{$R-}
             MsgResult:=IDEQuestionDialog(lisExecutionStopped,
                 Format(lisExecutionStoppedExitCode, [LineEnding+'', FDebugger.ExitCode, IntToHex(FDebugger.ExitCode, i)]),
-                mtInformation, [mrOK, lisMenuOk,
+                mtInformation, [mrOK, lisBtnOk,
                                 mrYesToAll, lisDoNotShowThisMessageAgain], '');
             {$POP}
             if MsgResult=mrYesToAll then
@@ -1519,7 +1519,7 @@ begin
           if EnvironmentOptions.DebuggerShowStopMessage
           then begin
             MsgResult:=IDEQuestionDialog(lisExecutionStopped, lisExecutionStopped,
-                mtInformation, [mrOK, lisMenuOk,
+                mtInformation, [mrOK, lisBtnOk,
                                 mrYesToAll, lisDoNotShowThisMessageAgain], '');
             if MsgResult=mrYesToAll then
               EnvironmentOptions.DebuggerShowStopMessage:=false;

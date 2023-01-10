@@ -280,7 +280,7 @@ begin
   StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
 
   // OK, Cancel, Help buttons
-  ButtonPanel1.OkButton.Caption:=lisMenuOk;
+  ButtonPanel1.OkButton.Caption:=lisBtnOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
 end;

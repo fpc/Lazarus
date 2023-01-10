@@ -688,7 +688,7 @@ begin
   NewModeButton.ImageIndex := IDEImages.LoadImage('laz_add');
   DeleteModeButton.ImageIndex := IDEImages.LoadImage('laz_delete');
   ToolBar1.Images := IDEImages.Images_16;
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SaveInComboBox.Items[0] := lisProjectSession+' (.lps)';

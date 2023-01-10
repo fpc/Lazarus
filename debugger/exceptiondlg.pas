@@ -75,7 +75,7 @@ begin
   inherited Create(AOwner);
   Caption := lisExceptionDialog;
   btnBreak.Caption := lisMenuBreak;
-  btnContinue.Caption := lisMenuContinue;
+  btnContinue.Caption := lisBtnContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
   IDEImages.AssignImage(btnBreak, 'menu_pause');

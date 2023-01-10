@@ -24,6 +24,10 @@ msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "Pri&dėti"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr "&Tęsti"
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
@@ -37,6 +41,11 @@ msgstr "&Pridėti…"
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "Į&galintas"
+
+#: lazaruscommonstrconst.lisbtnok
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "&Tinka"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -82,15 +91,6 @@ msgstr "Ignoruoti"
 msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
-
-#: lazaruscommonstrconst.lismenucontinue
-msgid "&Continue"
-msgstr "&Tęsti"
-
-#: lazaruscommonstrconst.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Tinka"
 
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"

@@ -16,20 +16,39 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Tambah"
 
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr ""
+
 #: lazaruscommonstrconst.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "T&ambah"
+
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Hapus"
 
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
 #: lazaruscommonstrconst.lisbtnenabled
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Dihidupkan"
+
+#: lazaruscommonstrconst.lisbtnok
+#, fuzzy
+#| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "&Ok"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -45,6 +64,10 @@ msgstr "Lanjutkan"
 msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Hapus"
+
+#: lazaruscommonstrconst.lisdisabled
+msgid "Disabled"
+msgstr ""
 
 #: lazaruscommonstrconst.lisdlgadd
 #, fuzzy
@@ -74,15 +97,20 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazaruscommonstrconst.lismenuok
-#, fuzzy
-#| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Ok"
+#: lazaruscommonstrconst.lisnever
+msgid "Never"
+msgstr ""
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
 
 #: lazaruscommonstrconst.lisok
 msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "OK"
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr ""
 

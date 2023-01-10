@@ -24,6 +24,10 @@ msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Pridať"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr "Pokračovať"
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
@@ -37,6 +41,11 @@ msgstr "Prid&ať ..."
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Povolené"
+
+#: lazaruscommonstrconst.lisbtnok
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "&OK"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -82,15 +91,6 @@ msgstr "Ignorovať"
 msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
-
-#: lazaruscommonstrconst.lismenucontinue
-msgid "&Continue"
-msgstr "Pokračovať"
-
-#: lazaruscommonstrconst.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"

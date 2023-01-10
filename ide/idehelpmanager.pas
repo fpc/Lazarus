@@ -972,7 +972,7 @@ begin
 
   Caption := lisHelpSelectorDialog;
   NodesGroupBox.Caption:=lisSelectAHelpItem;
-  BtnPanel.OKButton.Caption:=lisMenuOk;
+  BtnPanel.OKButton.Caption:=lisBtnOk;
 
   NodesTreeView.Images:=IDEImages.Images_16;
   FImgIndexDB:=IDEImages.LoadImage('item_package');

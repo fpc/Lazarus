@@ -533,7 +533,7 @@ begin
   MoveUpButton.Caption:=lisUp;
   MoveDownButton.Caption:=lisDown;
 
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 

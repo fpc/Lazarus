@@ -450,7 +450,7 @@ begin
   FBreakpointsNotification.OnRemove := @BreakPointRemove;
   UpdateInfo;
 
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 end;

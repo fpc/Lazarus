@@ -142,7 +142,7 @@ begin
   SetBuildModeVisibility(False);
   Caption := dlgIDEOptions;
   BuildModesLabel.Caption := lisBuildModes;
-  ButtonPanel.OKButton.Caption := lisMenuOk;
+  ButtonPanel.OKButton.Caption := lisBtnOk;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.OKButton.ModalResult := mrNone;
   ButtonPanel.CancelButton.Caption := lisCancel;

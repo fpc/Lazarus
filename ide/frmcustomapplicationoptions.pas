@@ -102,7 +102,7 @@ begin
   CGOptions.Items.Add(lisDestructorCode);
   CGOptions.Items.Add(lisCheckOptions);
 
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 
   // set all defaults to true

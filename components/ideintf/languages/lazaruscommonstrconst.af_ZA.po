@@ -5,20 +5,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lazaruscommonstrconst.lisabort
+msgid "Abort"
+msgstr ""
+
 #: lazaruscommonstrconst.lisadd
 msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Voeg by"
+
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr ""
 
 #: lazaruscommonstrconst.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "Voeg by"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr ""
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Skrap"
+
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgid "&Enabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnok
+#, fuzzy
+#| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "&Goed"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -29,6 +56,22 @@ msgstr "Kanselleer"
 msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Gaan aan"
+
+#: lazaruscommonstrconst.lisdelete
+msgid "Delete"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdisabled
+msgid "Disabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdlgadd
+msgid "Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisenabled
+msgid "Enabled"
+msgstr ""
 
 #: lazaruscommonstrconst.lishelp
 msgctxt "lazarusidestrconsts.lishelp"
@@ -46,10 +89,19 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazaruscommonstrconst.lismenuok
-#, fuzzy
-#| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Goed"
+#: lazaruscommonstrconst.lisnever
+msgid "Never"
+msgstr ""
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
+
+#: lazaruscommonstrconst.lisok
+msgid "OK"
+msgstr ""
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr ""
 

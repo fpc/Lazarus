@@ -24,6 +24,10 @@ msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Добавить"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr "&Продолжить"
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
@@ -37,6 +41,11 @@ msgstr "&Добавить ..."
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Включить"
+
+#: lazaruscommonstrconst.lisbtnok
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "&ОК"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -82,15 +91,6 @@ msgstr "Пропустить"
 msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
-
-#: lazaruscommonstrconst.lismenucontinue
-msgid "&Continue"
-msgstr "&Продолжить"
-
-#: lazaruscommonstrconst.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&ОК"
 
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"

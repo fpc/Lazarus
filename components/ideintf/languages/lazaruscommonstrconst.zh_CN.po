@@ -24,6 +24,10 @@ msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "添加(&A)"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr "继续(&C)"
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
@@ -37,6 +41,11 @@ msgstr "添加...(&A)"
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "激活(&E)"
+
+#: lazaruscommonstrconst.lisbtnok
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "确定(&O)"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -83,19 +92,14 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazaruscommonstrconst.lismenucontinue
-msgid "&Continue"
-msgstr "继续(&C)"
-
-#: lazaruscommonstrconst.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "确定(&O)"
-
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "从不"
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
 
 #: lazaruscommonstrconst.lisok
 msgctxt "lazarusidestrconsts.lisok"

@@ -315,7 +315,7 @@ begin
   fFoundFiles:=TFilenameToStringTree.Create(false);
 
   mniMultiSelect.Caption := dlgMultiSelect;
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;

@@ -549,7 +549,7 @@ begin
   OpenInFileManCheckbox.Caption:=lisOpenInFileMan;
   OpenInFileManCheckbox.Hint:=lisOpenInFileManHint;
 
-  ButtonPanel1.OkButton.Caption:=lisMenuOk;
+  ButtonPanel1.OkButton.Caption:=lisBtnOk;
   ButtonPanel1.OKButton.OnClick:=@OkButtonCLICK;
   ButtonPanel1.CloseButton.Caption:=lisSaveSettings;
   ButtonPanel1.CloseButton.ModalResult:=mrNone;

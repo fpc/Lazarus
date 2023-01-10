@@ -11,20 +11,64 @@ msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "أجهض"
 
+#: lazaruscommonstrconst.lisadd
+msgid "Add"
+msgstr ""
+
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr ""
+
 #: lazaruscommonstrconst.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "أضف"
+
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "إمسح"
 
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgid "&Enabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnok
+msgid "&OK"
+msgstr ""
+
+#: lazaruscommonstrconst.liscancel
+msgid "Cancel"
+msgstr ""
+
+#: lazaruscommonstrconst.liscontinue
+msgid "Continue"
+msgstr ""
+
 #: lazaruscommonstrconst.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "إمح"
+
+#: lazaruscommonstrconst.lisdisabled
+msgid "Disabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdlgadd
+msgid "Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisenabled
+msgid "Enabled"
+msgstr ""
 
 #: lazaruscommonstrconst.lishelp
 msgctxt "lazarusidestrconsts.lishelp"
@@ -37,8 +81,24 @@ msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "تجاهل"
 
+#: lazaruscommonstrconst.lislazarus
+msgid "Lazarus"
+msgstr ""
+
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "أبدا"
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
+
+#: lazaruscommonstrconst.lisok
+msgid "OK"
+msgstr ""
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr ""
 

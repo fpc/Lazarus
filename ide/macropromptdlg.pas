@@ -119,7 +119,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,25);
-      Caption:=lisMenuOk;
+      Caption:=lisBtnOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;

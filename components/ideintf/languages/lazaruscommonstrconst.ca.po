@@ -16,10 +16,37 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Afegeix"
 
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr ""
+
 #: lazaruscommonstrconst.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Afegeix"
+
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtndelete
+msgid "&Delete"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgid "&Enabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnok
+#, fuzzy
+#| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lisBtnOk"
+msgid "&OK"
+msgstr "D'Ac&ord"
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -36,12 +63,20 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Elimina"
 
+#: lazaruscommonstrconst.lisdisabled
+msgid "Disabled"
+msgstr ""
+
 #: lazaruscommonstrconst.lisdlgadd
 #, fuzzy
 #| msgid "Add..."
 msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "Afegeix"
+
+#: lazaruscommonstrconst.lisenabled
+msgid "Enabled"
+msgstr ""
 
 #: lazaruscommonstrconst.lishelp
 msgctxt "lazarusidestrconsts.lishelp"
@@ -59,15 +94,20 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazaruscommonstrconst.lismenuok
-#, fuzzy
-#| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "D'Ac&ord"
+#: lazaruscommonstrconst.lisnever
+msgid "Never"
+msgstr ""
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
 
 #: lazaruscommonstrconst.lisok
 msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "D'Acord"
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr ""
 

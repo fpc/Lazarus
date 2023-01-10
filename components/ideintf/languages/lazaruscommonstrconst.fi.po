@@ -24,6 +24,10 @@ msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Lisää"
 
+#: lazaruscommonstrconst.lisbtncontinue
+msgid "&Continue"
+msgstr "&Jatka"
+
 #: lazaruscommonstrconst.lisbtndelete
 msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
@@ -37,6 +41,10 @@ msgstr "&Lisää ..."
 msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Sallittu"
+
+#: lazaruscommonstrconst.lisbtnok
+msgid "&OK"
+msgstr ""
 
 #: lazaruscommonstrconst.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -77,9 +85,9 @@ msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Ohita"
 
-#: lazaruscommonstrconst.lismenucontinue
-msgid "&Continue"
-msgstr "&Jatka"
+#: lazaruscommonstrconst.lislazarus
+msgid "Lazarus"
+msgstr ""
 
 #: lazaruscommonstrconst.lisnever
 msgctxt "lazarusidestrconsts.lisnever"
@@ -89,6 +97,10 @@ msgstr "Ei koskaan"
 #: lazaruscommonstrconst.lisno
 msgid "No"
 msgstr "Ei"
+
+#: lazaruscommonstrconst.lisok
+msgid "OK"
+msgstr ""
 
 #: lazaruscommonstrconst.lisyes
 msgid "Yes"

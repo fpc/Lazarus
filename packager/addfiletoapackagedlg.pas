@@ -179,7 +179,7 @@ begin
   FileNameEdit.Text:='';
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
-  BtnPanel.OkButton.Caption:=lisMenuOk;
+  BtnPanel.OkButton.Caption:=lisBtnOk;
   BtnPanel.OkButton.OnClick:=@OkButtonClick;
   BtnPanel.OkButton.ModalResult:=mrNone;
   BtnPanel.HelpButton.OnClick:=@HelpButtonClick;

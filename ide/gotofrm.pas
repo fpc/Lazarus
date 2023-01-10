@@ -68,7 +68,7 @@ begin
 
   Caption := lisGotoLine;
   Label1.Caption := lisUEGotoLine;
-  ButtonPanel1.OKButton.Caption:=lisMenuOk;
+  ButtonPanel1.OKButton.Caption:=lisBtnOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   Edit1.Caption := '';
   Edit1.MaxLength := 10;  //enough for MaxLongInt

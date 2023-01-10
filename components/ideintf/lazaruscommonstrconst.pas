@@ -21,6 +21,9 @@ resourcestring
   lisAlways = 'Always';
   lisContinue = 'Continue';
 
+  lisBtnOk = '&OK';
+  lisBtnContinue = '&Continue';
+
   lisHelp = 'Help';
 
   lisAdd  = 'Add';
@@ -34,9 +37,6 @@ resourcestring
   lisEnabled = 'Enabled';
   lisDisabled = 'Disabled';
   lisBtnEnabled = '&Enabled';
-
-  lisMenuOk = '&OK';
-  lisMenuContinue = '&Continue';
 
 
 implementation
